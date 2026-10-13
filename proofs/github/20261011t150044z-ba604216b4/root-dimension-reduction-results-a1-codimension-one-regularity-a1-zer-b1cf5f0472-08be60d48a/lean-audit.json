@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9ce40aa5e5a78f7b822c490fe07db67180cb63fb3496796f782c9276c0bca3b3",
+  "git_delta": {
+    "base_commit": "4c14e15d36ae476750620e0359bfde3d85b0cfdd",
+    "candidate_commit": "6fcdb4b6e91e3ffe4cfefe43c9fcc79bd975a1a2",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a5b854ec271e226523db4865f8b7770f058e3644e3a532dc03754a358501a52a",
+    "source_sha256": "eda69f06db754932f91fcc6a4fa68d3608a79726ccb26d4fe82638e31827980c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_offset_plane_inClassO",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P (n + 1)) (a : Euclid P), IsUnitOrientationOf ξ Q → Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
