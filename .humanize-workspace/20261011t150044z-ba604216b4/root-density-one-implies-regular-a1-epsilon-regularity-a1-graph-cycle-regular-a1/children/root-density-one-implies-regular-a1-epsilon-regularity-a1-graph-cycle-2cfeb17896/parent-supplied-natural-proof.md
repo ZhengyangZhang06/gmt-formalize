@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 11 of the parent proof ("Two orthonormal bases of the same n-dimensional space differ by an orthogonal matrix O, and α(τ') = det(O)·α(τ(Pr x)) with det O = ±1"). The same linear-algebra argument was formalized for the comparator-accepted declaration Submission.rsdic_unitOrientation_eq_or_eq_neg of another DAG branch, whose type differs from this one only in binder order; it is re-proved here under a fresh name because a leaf sibling depends on it and cross-branch dependencies of leaves are avoided.
+Notation: ℝ^P means Euclid P; an n-covector is an element of Covector (Euclid P) n (continuous alternating n-linear map ℝ^P → ℝ); for a family σ : Fin n → ℝ^P, α(σ) := α(σ₁, …, σₙ).
+Formalization note: unless this child is split further it is a machine leaf (one theorem appended to the frozen GMT/Ch07/Submission.lean, no new import or helper declaration); all lemmas cited are in the import closure of GMT.Ch07.Submission.
+1. Unfolding the hypotheses (IsUnitOrientationOf): there are orthonormal families τ, τ' : Fin n → ℝ^P with span(range τ) = Q = span(range τ') and signs ε, ε' ∈ {1, −1} with ξ₁(α) = ε·α(τ) and ξ₂(α) = ε'·α(τ') for every n-covector α.
+2. Each τᵢ and τ'ᵢ lies in Q (Submodule.subset_span), so τ and τ' may be regarded as families in the inner product space Q, where they are still orthonormal. Since τ is linearly independent (Orthonormal.linearIndependent) and spans Q, it is a basis 𝔟 of Q indexed by Fin n (Module.Basis.mk, or OrthonormalBasis.mk), and dim Q = n; likewise τ' is an orthonormal (hence linearly independent) family of n vectors in the n-dimensional space Q, so it spans Q and is a basis 𝔟' of Q.
+3. Let d := det_𝔟(𝔟'), the determinant of the change-of-basis matrix from 𝔟 to 𝔟'. Both bases are orthonormal, so this matrix O (O_{ij} = ⟨τᵢ, τ'ⱼ⟩) is orthogonal (OᵀO = I because ⟨τ'ⱼ, τ'_l⟩ = Σᵢ O_{ij}O_{il}) and d = det O ∈ {1, −1} (d² = det(OᵀO) = 1; or OrthonormalBasis.det_to_matrix_orthonormalBasis_real).
+4. Let α be an n-covector and α_Q its restriction to Q (α composed with the inclusion Q → ℝ^P in each slot), an alternating n-linear form on the n-dimensional space Q. Every such form is a multiple of det_𝔟: α_Q = α_Q(𝔟)·det_𝔟 (AlternatingMap.eq_smul_basis_det). Evaluating at 𝔟' gives α(τ') = α_Q(𝔟') = α_Q(𝔟)·det_𝔟(𝔟') = d·α(τ). The number d does not depend on α.
+5. Hence for every α: ξ₂(α) = ε'·α(τ') = ε'd·α(τ) = (εε'd)·(ε·α(τ)) = s·ξ₁(α), where s := εε'd ∈ {1, −1} (using ε² = 1). By extensionality of continuous linear maps (ContinuousLinearMap.ext), ξ₂ = ξ₁ if s = 1 and ξ₂ = −ξ₁ if s = −1. For n = 0 the same argument applies (τ = τ' is the empty family, Q = {0}, d = 1). ∎
+
+## Key steps
+
+1. Write ξ₁ = ε·(α ↦ α(τ)), ξ₂ = ε'·(α ↦ α(τ')) with τ, τ' orthonormal bases of Q.
+2. Restrict α to Q: α|_Q = α(τ)·det_τ, so α(τ') = d·α(τ) with d = det_τ(τ') independent of α.
+3. The change-of-basis matrix is orthogonal, so d = ±1 and ξ₂ = (εε'd)·ξ₁ = ±ξ₁.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD vs manifest.json`
+- `rg -n 'integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|areaJacobianAt_eq_sqrt_det_adjoint_comp|def areaJacobianAt' simongmt/Poincare/SimonGMT/Chapter02`
+- `rg -n 'def HasApproximateTangentSpaceAt|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule|HasApproximateTangentSpaceAt.unique|def blowUpMap' Chapter03/Rectifiable.lean`
+- `rg -n 'exteriorDerivative_apply|def affinePullbackForm|exteriorDerivative_affinePullbackForm|tsupport_exteriorDerivative_subset|GeometricCurrentOn.boundary|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|VanishesOn' Chapter06/{Forms,Currents,AffineCurrentPushforward,CurrentLocalEquality}.lean`
+- `rg -n 'ae_eq_const_of_weak_coordinate_derivatives_zero|WeakDerivativesZero|abbrev Euclidean' Chapter08/{DistributionalConstancy,Varifold}.lean (C¹ tests only; no smooth-test variant)`
+- `rg -n 'theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem dist_convolution_le|def apply (m : ι → E)|theorem ContDiffOn.differentiableOn|continuousOn_fderiv_of_isOpen' in pinned Mathlib`
+- `lake env lean /tmp/gcr3-work/Closure{,2,3}.lean: #exists tests (Lean environment lookup) of ~150 cited names against import GMT.Ch07.Submission`
+- `lake env lean /tmp/gcr3-work/{Orig,Plus}.lean: hash dump of all GMT.Ch07 constants without/with import Chapter02.WeightedArea + Chapter08.DistributionalConstancy (diff: identical)`
+- `python3 lean_contract.validate_lean_statement + gmt-compare.contract_scope; lake env lean /tmp/gcr3-work/Challenges.lean`
+- `lake env lean /tmp/gcr3-work/Assembly.lean; #print axioms GMT.Ch07.dgcr_assembly_check`
+- `python3 scan of dag.json and nodes/*/{decomposition-v*,parent-child-handoff}.json lean_names (dgcr_ collisions; accepted reusable declarations such as rsdic_unitOrientation_eq_or_eq_neg); git grep dgcr_ over all refs`
+- `read runtime flow: leaf_verification.check_source_delta / check_git_delta, parent_verification.check_parent_git_delta, runtime._machine_leaf, _solve_children node bound, _existing_lean_name_problem, _overlay_accepted_children, _publish_workspace_branch; swarm-configs/583ac9fefa804936b5c9a125fda7b1f6.json (max_nodes 1000, leaf_lean_agent_review false)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/583ac9fefa804936b5c9a125fda7b1f6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-child-handoff.json`
+- `/tmp/gcr3-work/Closure.lean`
+- `/tmp/gcr3-work/Closure2.lean`
+- `/tmp/gcr3-work/Closure3.lean`
+- `/tmp/gcr3-work/Orig.lean`
+- `/tmp/gcr3-work/Plus.lean`
+- `/tmp/gcr3-work/Challenges.lean`
+- `/tmp/gcr3-work/Assembly.lean`
+
+Snapshot = project b4d606d and mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean, and the simongmt package is at its pinned commit 2b36630.
+Reusable facts found:
+- Chapter02.integral_area_formula_of_injective_derivative: Bochner area formula for an injective map with injective derivative, any integrand. Used by the parent with areaJacobianAt_eq_sqrt_det_adjoint_comp.
+- Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero: distributional constancy, C¹ tests only, so the smooth-to-C¹ child is needed.
+- Chapter03 HasApproximateTangentSpaceAt with finrank_eq, support_/regular_euclideanHausdorffMeasure_restrict_submodule.
+- Chapter06 exteriorDerivative_apply (Mathlib extDeriv convention), affinePullbackForm with exteriorDerivative_affinePullbackForm, tsupport_exteriorDerivative_subset, boundary_apply, zeroRegion/support.
+- Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.measure_compl_support, Convex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le, convolution smoothness/derivative lemmas and dist_convolution_le, ContinuousAlternatingMap.apply / norm_image_sub_le, AlternatingMap.eq_smul_basis_det, Fin.sign_cycleRange.
+Outside the frozen import closure, hence used only in the parent: Chapter02.WeightedArea/Area and Chapter08.DistributionalConstancy. Adding these two imports keeps all 103 GMT.Ch07 declarations hash-identical. Mathlib BumpFunction.Normed/Convolution are also outside, so the mollifier child normalizes a ContDiffBump by hand.
+Workflow facts: childless nodes are machine leaves that may append only one theorem. This worker allows 1000 nodes and the DAG has 249. The accepted rsdic_unitOrientation_eq_or_eq_neg exists but is not reused, because a leaf would depend on it across branches.
+Lean checks:
+- All 9 child types pass validate_lean_statement and elaborate in the comparator contract scope.
+- The exact parent type follows from the 7 parent-level child types plus the two library modules, using only propext, Classical.choice and Quot.sound.
+- No name collisions.
