@@ -2502,6 +2502,55 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **Compactly supported C¹ perturbation of the identity** (the cut-off `ζ` of Simon Ch. 6, 2.23,
+applied to `f − id`).  Let `O ⊆ ℝᴾ` be open, `K ⊆ O` compact and `f` of class C¹ on `O`.  Choose
+`ρ > 0` with `cthickening ρ K ⊆ O` and, by the smooth Urysohn lemma, a smooth `χ : ℝᴾ → [0, 1]`
+with `support χ = thickening ρ K` and `χ = 1` on `cthickening (ρ/2) K`.  Then
+`φ = id + χ • (f − id)` is C¹ (it is C¹ at points of `O`, and equals `id` near points off
+`K' = tsupport χ ⊆ cthickening ρ K ⊆ O`), `K'` is compact, `φ = id` off `K'`, and `φ = f` on the
+open `V = thickening (ρ/2) K ⊇ K`, so `φ x = f x` and `Dφ(x) = Df(x)` for `x ∈ V`. -/
+theorem Submission.dtc_bc_lc_pf_c1_compact_perturbation : ∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (V K' : Set (Euclid P)), IsOpen V ∧ K ⊆ V ∧ IsCompact K' ∧ ContDiff ℝ 1 φ ∧ (∀ x ∈ V, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x) ∧ ∀ x, x ∉ K' → φ x = x := by
+  intro P O K f hO hK hKO hf
+  -- Step 1: a margin `ρ > 0` with `cthickening ρ K ⊆ O`
+  obtain ⟨ρ, hρ, hρO⟩ := hK.exists_cthickening_subset_open hO hKO
+  -- Step 2: a smooth cut-off `χ` with `support χ = thickening ρ K`, `χ = 1` on `cthickening (ρ/2) K`
+  obtain ⟨χ, hχ, -, hχs, hχt⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+    (isOpen_thickening : IsOpen (thickening ρ K))
+    (isClosed_cthickening : IsClosed (cthickening (ρ / 2) K))
+    (cthickening_subset_thickening' hρ (half_lt_self hρ) K)
+  have hχ1 : ContDiff ℝ 1 χ := by exact_mod_cast hχ
+  -- `K' := tsupport χ ⊆ cthickening ρ K ⊆ O` is compact
+  have hK'sub : tsupport χ ⊆ cthickening ρ K := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening ρ K
+  have hK'O : tsupport χ ⊆ O := hK'sub.trans hρO
+  have hK'cpt : IsCompact (tsupport χ) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport χ) hK'sub
+  -- Step 3: the perturbation `φ = id + χ • (f - id)`, with `V = thickening (ρ/2) K`
+  refine ⟨fun x => x + χ x • (f x - x), thickening (ρ / 2) K, tsupport χ, isOpen_thickening,
+    self_subset_thickening (half_pos hρ) K, hK'cpt, ?_, ?_, ?_⟩
+  · -- Step 4: `φ` is C¹ at points of `O` (as `f` is) and near points off `tsupport χ` (`φ = id`)
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hx : x ∈ O
+    · have hfx : ContDiffAt ℝ 1 f x := hf.contDiffAt (hO.mem_nhds hx)
+      exact contDiffAt_id.add (hχ1.contDiffAt.smul (hfx.sub contDiffAt_id))
+    · have hx' : x ∉ tsupport χ := fun h => hx (hK'O h)
+      have hev : (fun y => y + χ y • (f y - y)) =ᶠ[𝓝 x] id := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hx'] with y hy
+        simp [hy]
+      exact contDiffAt_id.congr_of_eventuallyEq hev
+  · -- Step 5: `χ = 1` on the open set `V`, so `φ = f` near each `x ∈ V`
+    intro x hx
+    have hev : (fun y => y + χ y • (f y - y)) =ᶠ[𝓝 x] f := by
+      filter_upwards [isOpen_thickening.mem_nhds hx] with y hy
+      have hy1 : χ y = 1 := (hχt y).1 (thickening_subset_cthickening _ _ hy)
+      simp [hy1]
+    exact ⟨hev.eq_of_nhds, hev.fderiv_eq⟩
+  · -- Step 6: `χ = 0` off `tsupport χ`, so `φ = id` there
+    intro x hx
+    simp [image_eq_zero_of_notMem_tsupport hx]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
