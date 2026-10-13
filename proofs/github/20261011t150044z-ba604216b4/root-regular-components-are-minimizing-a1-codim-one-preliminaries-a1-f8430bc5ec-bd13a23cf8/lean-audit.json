@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "546043cd4ca0d0feeaaf6714e4134fff9cfd71573da36c5f20d9a9117f22d8ca",
+  "git_delta": {
+    "base_commit": "d4e65d96a958c4e7872be8d4524098e159447b45",
+    "candidate_commit": "b79a8362eb8e1de4d573486b97c38079112a1023",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_zdr_unitOrientation_zero",
+    "diff_sha256": "80747fde1d4e89a682af80c128ccc48be8bfc88508373f96393998d786d8fefa",
+    "source_sha256": "7ef4b907d4af32685c75c07a3d161bd5841efc80b2787bb7ceaa713e901ce552",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_zdr_unitOrientation_zero",
+      "statement": "∀ (P : ℕ) (ξ : MultiVector P 0) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ s : ℝ, |s| = 1 ∧ ∀ α : Covector (Euclid P) 0, ξ α = s * α (fun i => i.elim0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
