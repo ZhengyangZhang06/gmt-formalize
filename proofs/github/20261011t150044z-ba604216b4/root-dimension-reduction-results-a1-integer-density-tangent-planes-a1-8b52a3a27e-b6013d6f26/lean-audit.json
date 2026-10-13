@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4bd1a54e558f05bf32069518fb0bb2ae15fd99e458d1b7f831c0edee769c92f",
+  "git_delta": {
+    "base_commit": "dace1b319bfd7bd809d7c63d6a18f28433d977a6",
+    "candidate_commit": "7775de3ae1ffbce4663ee265f368fb207b9bbe9e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_rbi_projection_residual_le",
+    "diff_sha256": "ffc80ddd467be64e709db8138f3d651b485f6e51096e90803d61fe91170fb9d1",
+    "source_sha256": "04c3ea8606a8433d1010d21f987caaa2190b31aa4e242388cbb7e931a225c996",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_rbi_projection_residual_le",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a w : Euclid P) (s' : ℝ), a ∈ Q → 0 ≤ s' → ‖(a + s' • w) - Q.starProjection (a + s' • w)‖ ≤ s' * ‖w‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
