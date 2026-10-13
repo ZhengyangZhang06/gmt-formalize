@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.median_deviation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "depth": 6,
+  "title": "Deviation from a θ-median is controlled by the double-integral oscillation (Simon Ch. 2, 2.7; parent step 3)",
+  "statement": "Let P ∈ ℕ, W ⊆ Euclid P measurable with L(W) := volume(W) < ∞, v : Euclid P → ℝ integrable on W, β ∈ ℝ and θ > 0 with θ·L(W) ≤ L(W ∩ {β ≤ v}) and θ·L(W) ≤ L(W ∩ {v ≤ β}) (real numbers via toReal). Then ∫_W |v − β| ≤ (1 + θ⁻¹)·L(W)⁻¹·∫_W ∫_W |v(x) − v(y)| dy dx, where 0⁻¹ := 0.",
+  "lean_statement": "∀ (P : ℕ) (W : Set (Euclid P)) (v : Euclid P → ℝ) (β θ : ℝ), MeasurableSet W → volume W ≠ ∞ → IntegrableOn v W → 0 < θ → θ * (volume W).toReal ≤ (volume (W ∩ {y | β ≤ v y})).toReal → θ * (volume W).toReal ≤ (volume (W ∩ {y | v y ≤ β})).toReal → ∫ y in W, |v y - β| ≤ (1 + θ⁻¹) * ((volume W).toReal)⁻¹ * ∫ x in W, ∫ y in W, |v x - v y|",
+  "lean_name": "dor_lmb_fcd_cp_median_deviation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-0c2b5a6b3d-a1"
+}
