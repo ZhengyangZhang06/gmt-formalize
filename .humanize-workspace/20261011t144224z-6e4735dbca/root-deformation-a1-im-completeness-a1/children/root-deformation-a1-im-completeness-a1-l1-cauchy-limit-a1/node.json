@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.l1_cauchy_limit-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1",
+  "depth": 3,
+  "title": "Almost-everywhere and L¹ limit of a sequence with summable L¹ increments (Riesz–Fischer)",
+  "statement": "Let X be a type with a σ-algebra and a measure μ, let E be a complete normed additive group, and let f_n : X → E (n ∈ ℕ) be μ-a.e. strongly measurable with Σ_n ∫‖f_{n+1} − f_n‖ dμ < ∞ (the sum of the [0, ∞]-valued lintegrals of the extended norms ‖f_{n+1}(x) − f_n(x)‖ₑ is ≠ ∞). Then there is a μ-a.e. strongly measurable g : X → E such that f_n(x) → g(x) for μ-a.e. x and ∫‖f_n − g‖ dμ → 0 as n → ∞ (lintegrals of ‖f_n(x) − g(x)‖ₑ in [0, ∞]).",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (E : Type) [NormedAddCommGroup E] [CompleteSpace E] (f : ℕ → X → E), (∀ n, AEStronglyMeasurable (f n) μ) → (∑' n, ∫⁻ x, ‖f (n + 1) x - f n x‖ₑ ∂μ) ≠ ∞ → ∃ g : X → E, AEStronglyMeasurable g μ ∧ (∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x))) ∧ Tendsto (fun n => ∫⁻ x, ‖f n x - g x‖ₑ ∂μ) atTop (𝓝 0)",
+  "lean_name": "imc_ae_tendsto_of_summable_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-l1-cauchy-limit-a1-a1"
+}

@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsMeasureRepresentation|IsIntegerMultiplicity|IsRectifiableTriple|massAdmissibleOn|def mass|GeometricCurrentOn",
+        "HasWeightedApproximateTangentSpaceAt.unique",
+        "imc_",
+        "lintegral_tsum",
+        "tendsto_sum_nat_add",
+        "tendsto_integral_of_L1",
+        "exists_isCompact_isClosed_sdiff_lt|exists_isOpen_sdiff_lt|exists_isClosed_sdiff_lt",
+        "dist_convolution_le|contDiff_convolution_left",
+        "git show c4c0086a7ea3389e9e961d3c9df987255f8c064a:GMT/Ch06/Submission.lean",
+        "git show 1d327e46e1cf94e149261ae6958c7053533007af:GMT/Ch06/Submission.lean",
+        "git show 5b63f318a7c2767299e106753ba0ff341fd199c2:GMT/Ch06/Submission.lean",
+        "git show c90a40505abdbff33b9174acf9b20037eb2cb2a1:GMT/Ch06/Submission.lean",
+        "git show 8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88:GMT/Ch06/Submission.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1/decomposition-v2.json",
+        "/tmp/imc_independent_audit/Statements.lean",
+        "/tmp/imc_independent_audit/Parent.lean",
+        "/tmp/imc_independent_audit/MassApproximationAPI.lean",
+        "/tmp/imc_independent_audit/Reuse_pairing_expansion.lean",
+        "/tmp/imc_independent_audit/Reuse_tau_integrable.lean",
+        "/tmp/imc_independent_audit/Reuse_lusin_pieces.lean",
+        "/tmp/imc_independent_audit/Reuse_frame_sign.lean",
+        "/tmp/imc_independent_audit/Reuse_blowup_cov.lean"
+      ],
+      "conclusion": "Pinned revisions and parent digest independently confirmed. All 12 child propositions and the selected parent type elaborate independently in the frozen comparator scope. Names are bare identifiers; seven new names are unreserved, and five reused checkpoints have identical frozen types and passed comparator receipts. Recompiling those checkpoints yields only standard axioms. The four supplied child Lean proofs and parent assembly also compile, with temporary assumptions confined to declared sibling interfaces. The augmented DAG is acyclic. The parent assembly establishes this selected mass-completeness statement from mass_lower_bound, density_limit and tau_integrable, justifying the split. No Matrix/IsUnit misuse occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-measure representation statement. Testing against cutoff coordinate forms supplies the needed local integrability; finite weighted-measure approximation, mollification and exhaustion prove the bound without assuming μ locally finite. The proof is complete and non-circular."
+    },
+    {
+      "key": "l1_cauchy_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact complete normed-group contract is established by almost-everywhere summability, completeness, measurable limits and integrated tail bounds. Neither σ-finiteness nor integrability of f₀ is assumed secretly. The extracted Lean proof compiles with standard axioms only."
+    },
+    {
+      "key": "approx_tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All subset, null-measurability and local-finiteness hypotheses match. Applying zero_density to E′\\E and blowup_cov gives a vanishing comparison error. The exceptional set is independent of the test function and subspace, establishing the simultaneous equivalence."
+    },
+    {
+      "key": "weighted_tangent_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both directions of the exact contract. Lusin pieces and two zero-density applications control the complement; continuity controls weight oscillation. The required density bound is proved under either tangent hypothesis, and positivity justifies division by θ(x)."
+    },
+    {
+      "key": "limit_triple",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eventual membership supplies rectifiability up to a null remainder and measurable indicator approximants. The declared tangent lemmas transfer orientations; uniqueness and frame_sign place the limit in a closed two-point set. Every triple field is established. Compilation uses exactly the declared siblings."
+    },
+    {
+      "key": "density_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate unit identity, summable-increment limit, eventual integer stabilization, local integrability and orientation transfer prove the exact limit-triple conclusion. Pairing estimates prove convergence for every continuous compactly supported form. No finite total mass is assumed. Compilation confirms the declared dependency interface."
+    },
+    {
+      "key": "zero_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned withDensity construction permits arbitrary g. The Borel hull, localized finite measures and Vitali covering estimate prove the stated all-space result, including n=0. The fresh name avoids cross-branch reservation, and the supplied proof compiles with standard axioms only."
+    },
+    {
+      "key": "pairing_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Kronecker evaluation, sorting and alternating-map extensionality prove the expansion; the sum-of-squares definition proves the coordinate bound, including degenerate degrees. Reuse has an identical accepted frozen type, and independent compilation confirms standard axioms only."
+    },
+    {
+      "key": "tau_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orientation gives the operator-norm bound, continuous evaluation supplies measurability, and local integrability plus support localization proves both clauses for arbitrary U. The accepted frozen type is identical; its checkpoint independently compiles with standard axioms only."
+    },
+    {
+      "key": "lusin_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel cores, finite weighted measures and Lusin approximation produce compact pieces. Positivity gives finite Hausdorff measure on each piece and a Hausdorff-null remainder. Reuse is type-identical; the accepted checkpoint supplies an inline Lusin proof that compiles under the frozen imports."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction to the common span gives a change-of-basis determinant independent of the covector; orthonormality makes it ±1. Extensionality proves the exact conclusion, including degree zero. The identical accepted checkpoint recompiles with standard axioms only."
+    },
+    {
+      "key": "blowup_cov",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable equivalence and Hausdorff-measure scaling give the stated factor. Restriction and integral transport remain valid for arbitrary S and g, so no measurability or integrability hypothesis is missing. The identical accepted checkpoint recompiles with standard axioms only."
+    }
+  ],
+  "required_changes": []
+}
