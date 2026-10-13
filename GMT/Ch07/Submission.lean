@@ -451,7 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
+a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
+`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
+integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
+`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
+theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
+  intro n r hr
+  -- the bump `B` with `rIn = r/2`, `rOut = r`
+  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  have hBs : HasCompactSupport B := B.hasCompactSupport
+  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
+  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
+  have hI : 0 < ∫ x, B x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
+    exact measure_ball_pos volume 0 hr
+  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
+    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
+  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
+  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+
+/-- **Mollification approximates a `C¹_c` function in a directional derivative** (step 3 of the
+extension from smooth to `C¹` tests in the graph-cycle regularity step of Simon 7.4.3).  For
+`φ ∈ C¹_c(ℝⁿ)`, `δ > 0`, a direction `v` and `ε > 0` there is `ψ ∈ C^∞_c(ℝⁿ)` with `spt ψ` in the
+closed `δ`-neighbourhood of `spt φ` and `|Dψ(x)v − Dφ(x)v| ≤ ε` for all `x`.  Take `r₀ > 0` with
+`|∂ᵥφ(a) − ∂ᵥφ(b)| < ε` when `|a − b| < r₀` (`∂ᵥφ` is continuous with compact support), a
+normalized mollifier `ρ` with `spt ρ ⊆ B_r(0)`, `r = min r₀ δ`, and `ψ = ρ ⋆ φ`; then
+`∂ᵥψ = ρ ⋆ ∂ᵥφ`, which is within `ε` of `∂ᵥφ`. -/
+theorem Submission.dgcr_stc_mollify_C1_fderiv_approx : ∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ 1 φ → HasCompactSupport φ → ∀ (δ : ℝ), 0 < δ → ∀ (v : Euclid n) (ε : ℝ), 0 < ε → ∃ ψ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ cthickening δ (tsupport φ) ∧ ∀ x, |fderiv ℝ ψ x v - fderiv ℝ φ x v| ≤ ε := by
+  intro n φ hφ hφc δ hδ v ε hε
+  -- `∂ᵥφ = Dφ(·) v` is continuous with compact support, hence uniformly continuous: it varies by
+  -- less than `ε` on balls of radius `r₀`
+  have hDφ : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv one_ne_zero
+  have hDφc : HasCompactSupport (fderiv ℝ φ) := hφc.fderiv ℝ
+  have hg : Continuous fun x => fderiv ℝ φ x v := hDφ.clm_apply continuous_const
+  have hgc : HasCompactSupport fun x => fderiv ℝ φ x v :=
+    hDφc.comp_left (g := fun A : Euclid n →L[ℝ] ℝ => A v) rfl
+  obtain ⟨r₀, hr₀, hr₀g⟩ :=
+    Metric.uniformContinuous_iff.mp (hgc.uniformContinuous_of_continuous hg) ε hε
+  -- a normalized mollifier `ρ` with `spt ρ ⊆ B_r(0)`, `r = min r₀ δ`; `ψ = ρ ⋆ φ`
+  obtain ⟨ρ, hρ, hρc, hρ0, hρ1, hρs⟩ :=
+    Submission.dgcr_stc_exists_normalized_mollifier n (min r₀ δ) (lt_min hr₀ hδ)
+  have hρi : LocallyIntegrable ρ volume := hρ.continuous.locallyIntegrable
+  let L := ContinuousLinearMap.lsmul ℝ ℝ (E := ℝ)
+  -- `spt ψ ⊆ spt ρ + spt φ ⊆ B_r(0) + spt φ`, inside the closed set `cthickening δ (spt φ)`
+  have hsupp : tsupport (convolution ρ φ L volume) ⊆ cthickening δ (tsupport φ) := by
+    refine closure_minimal (fun z hz => ?_) isClosed_cthickening
+    obtain ⟨a, ha, b, hb, rfl⟩ := Set.mem_add.mp (support_convolution_subset L hz)
+    refine mem_cthickening_of_dist_le _ b δ _ (subset_tsupport φ hb) ?_
+    rw [dist_eq_norm, add_sub_cancel_right]
+    exact (mem_ball_zero_iff.mp (hρs ha)).le.trans (min_le_right r₀ δ)
+  -- `ψ` is smooth, and compactly supported as `cthickening δ (spt φ)` is compact
+  refine ⟨convolution ρ φ L volume,
+    hρc.contDiff_convolution_left L hρ hφ.continuous.locallyIntegrable,
+    (IsCompact.cthickening hφc).of_isClosed_subset (isClosed_tsupport _) hsupp, hsupp, fun x => ?_⟩
+  -- `Dψ(x) v = (ρ ⋆ ∂ᵥφ)(x)`
+  rw [(hφc.hasFDerivAt_convolution_right L hρi hφ x).fderiv,
+    convolution_precompR_apply L hρi hDφc hDφ x v, ← Real.dist_eq]
+  -- `ρ ≥ 0`, `∫ ρ = 1`, `spt ρ ⊆ B_r(0)` and `|∂ᵥφ(y) − ∂ᵥφ(x)| < ε` on `B_r(x)`
+  exact dist_convolution_le hε.le hρs hρ0 hρ1 hg.aestronglyMeasurable fun y hy =>
+    (hr₀g ((mem_ball.mp hy).trans_le (min_le_left r₀ δ))).le
 
 end GMT.Ch07

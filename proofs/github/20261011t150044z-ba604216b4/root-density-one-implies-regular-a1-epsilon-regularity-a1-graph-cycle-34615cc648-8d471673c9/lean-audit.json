@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e543df993a6d261bb851f46ca0dc02451540ffb7f16fd116bbf2b732c859365",
+  "git_delta": {
+    "base_commit": "a8d6132d515a56d4cde06771b2171d1117271e0e",
+    "candidate_commit": "91b2024c48883fc7455000c2331e04b955b30b1e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_stc_mollify_C1_fderiv_approx",
+    "diff_sha256": "23cf4de985e55ec55217e597a1eba921e887ad911eb386da8132bd54596641cf",
+    "source_sha256": "3490847d86d6ce731a734a5dc748fa0eda5603c8dc8978f94042cf2e8bf4dd53",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_stc_mollify_C1_fderiv_approx",
+      "statement": "∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ 1 φ → HasCompactSupport φ → ∀ (δ : ℝ), 0 < δ → ∀ (v : Euclid n) (ε : ℝ), 0 < ε → ∃ ψ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ cthickening δ (tsupport φ) ∧ ∀ x, |fderiv ℝ ψ x v - fderiv ℝ φ x v| ≤ ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
