@@ -451,6 +451,179 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The ball and cone masses are Borel functions of the centre.**  This is the measurability
+that Simon's proof of Ch. 3, 1.6 "⇐" does not check when it applies Egoroff's theorem to `f_k`
+and `q_k`, which are built from `μ(B_ρ(x))` and `μ(X_{1/2}(P_x^⊥, x) ∩ B_ρ(x))`.  For an s-finite
+`μ` on `E = ℝ^{m+1}`, a Borel `ν : E → E` and `α, q ∈ ℝ`, the maps `x ↦ μ(B̄_q(x))` and
+`x ↦ μ({z : α|z - x| ≤ |⟨z - x, ν(x)⟩|} ∩ B̄_q(x))` are measurable.  Each is `x ↦ μ(S_x)` for a
+measurable `S ⊆ E × E`, namely `S = A = {(x, z) : |z - x| ≤ q}` or `S = B ∩ A` with
+`B = {(x, z) : α|z - x| ≤ |⟨z - x, ν(x)⟩|}`, so the section lemma of Tonelli's theorem applies. -/
+theorem Submission.codim1_rdo_dg_rc_ball_cone_measurable : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (α q : ℝ), SFinite μ → Measurable ν → Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) ∧ Measurable (fun x : Euclid (m + 1) => μ ({z | α * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q)) := by
+  intro m μ ν α q hμ hν
+  -- `A = {(x, z) : |z - x| ≤ q}` is measurable, with sections `B̄_q(x)`
+  have hA : MeasurableSet {p : Euclid (m + 1) × Euclid (m + 1) | dist p.2 p.1 ≤ q} :=
+    measurableSet_le (continuous_dist.comp (continuous_snd.prodMk continuous_fst)).measurable
+      measurable_const
+  -- `B = {(x, z) : α|z - x| ≤ |⟨z - x, ν(x)⟩|}` is measurable since `ν` is
+  have hB : MeasurableSet {p : Euclid (m + 1) × Euclid (m + 1) |
+      α * ‖p.2 - p.1‖ ≤ |inner ℝ (p.2 - p.1) (ν p.1)|} := by
+    refine measurableSet_le ?_ ?_
+    · exact (continuous_const.mul (continuous_norm.comp
+        (continuous_snd.sub continuous_fst))).measurable
+    · exact continuous_abs.measurable.comp (Continuous.measurable2 continuous_inner
+        (measurable_snd.sub measurable_fst) (hν.comp measurable_fst))
+  -- for s-finite `μ`, `x ↦ μ(S_x)` is measurable for every measurable `S ⊆ E × E`
+  refine ⟨?_, ?_⟩
+  · have h := measurable_measure_prodMk_left (ν := μ) hA
+    convert h using 2 with x
+    rfl
+  · have h := measurable_measure_prodMk_left (ν := μ) (hB.inter hA)
+    convert h using 2 with x
+    rfl
+
+/-- **Uniform density and cone bounds on a large compact set** (Simon Ch. 3, proof of 1.6 "⇐",
+(4) and (7)–(9), chapter-03.txt lines 162–213).  Let `μ` be a finite measure on `ℝ^{m+1}`,
+`C(x) = {z : ¼|z − x| ≤ |⟨z − x, ν(x)⟩|}`, and suppose that for `μ`-a.e. `y`,
+`μ(B̄_r(y))/(ωₘrᵐ) → 1` and `μ(C(y) ∩ B̄_r(y))/rᵐ → 0` as `r ↓ 0`.  Then for `ε, η > 0` there are
+a compact `K` with `μ(Kᶜ) ≤ η` and `δ > 0` such that `(1 − ε)⁺ωₘρᵐ ≤ μ(B̄_ρ(x))` and
+`μ(C(x) ∩ B̄_ρ(x)) ≤ εωₘρᵐ` for all `x ∈ K`, `0 < ρ < δ`.  Egoroff's theorem is replaced by the
+Borel sets `G_k` of points where both bounds hold at every rational radius `0 < q < 1/(k + 1)`
+(Borel by `codim1_rdo_dg_rc_ball_cone_measurable`): they increase to a set of full measure, so
+`μ(G_kᶜ) < η/2` for some `k` by continuity from above, and inner regularity gives a compact
+`K ⊆ G_k` with `μ(G_k \ K) < η/2`.  The bounds pass from rational to real radii by monotonicity
+in the radius and continuity of `ρ ↦ cρᵐ`. -/
+theorem Submission.codim1_rdo_dg_rc_uniform_compact : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (ε : ℝ) (η : ℝ≥0∞), IsFiniteMeasure μ → Measurable ν → 0 < ε → 0 < η → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∃ K : Set (Euclid (m + 1)), ∃ δ : ℝ, IsCompact K ∧ 0 < δ ∧ μ Kᶜ ≤ η ∧ (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) ∧ (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) := by
+  intro m μ ν ε η hfin hν hε hη hae
+  have hω0 : unitBallVolume m ≠ 0 := by
+    unfold unitBallVolume; exact (measure_ball_pos _ _ one_pos).ne'
+  have hωtop : unitBallVolume m ≠ ∞ := by
+    unfold unitBallVolume; exact measure_ball_lt_top.ne
+  -- step 2: for each radius `q` both `x ↦ μ(B̄_q(x))` and `x ↦ μ(C(x) ∩ B̄_q(x))` are Borel
+  have hball : ∀ q : ℝ, Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) :=
+    fun q => (Submission.codim1_rdo_dg_rc_ball_cone_measurable m μ ν (1 / 4) q inferInstance hν).1
+  have hcone : ∀ q : ℝ, Measurable (fun x : Euclid (m + 1) =>
+      μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q)) :=
+    fun q => (Submission.codim1_rdo_dg_rc_ball_cone_measurable m μ ν (1 / 4) q inferInstance hν).2
+  -- monotonicity and continuity of `ρ ↦ c * ofReal (ρ ^ m)`
+  have hmono : ∀ (c : ℝ≥0∞) (s t : ℝ), 0 ≤ s → s ≤ t →
+      c * ENNReal.ofReal (s ^ m) ≤ c * ENNReal.ofReal (t ^ m) := by
+    intro c s t hs hst
+    exact mul_le_mul_right (ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ hs hst m)) c
+  have hcont : ∀ c : ℝ≥0∞, c ≠ ∞ → Continuous (fun s : ℝ => c * ENNReal.ofReal (s ^ m)) :=
+    fun c hc => (ENNReal.continuous_const_mul hc).comp
+      (ENNReal.continuous_ofReal.comp (continuous_pow m))
+  -- the argument for general constants `A`, `B` and a general family of sets `C x`
+  have main : ∀ (C : Euclid (m + 1) → Set (Euclid (m + 1))) (A B : ℝ≥0∞), A ≠ ∞ → B ≠ ∞ →
+      (∀ q : ℝ, Measurable (fun x => μ (C x ∩ closedBall x q))) →
+      (∀ᵐ y ∂μ, ∃ r₁ : ℝ, 0 < r₁ ∧ ∀ r : ℝ, 0 < r → r < r₁ →
+        A * ENNReal.ofReal (r ^ m) ≤ μ (closedBall y r) ∧
+          μ (C y ∩ closedBall y r) ≤ B * ENNReal.ofReal (r ^ m)) →
+      ∃ K : Set (Euclid (m + 1)), ∃ δ : ℝ, IsCompact K ∧ 0 < δ ∧ μ Kᶜ ≤ η ∧
+        (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → A * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) ∧
+        (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ →
+          μ (C x ∩ closedBall x ρ) ≤ B * ENNReal.ofReal (ρ ^ m)) := by
+    intro C A B hA hB hCmeas hgood
+    -- step 1: the good sets `G k`, bounds at rational radii `q < 1/(k + 1)`
+    let G : ℕ → Set (Euclid (m + 1)) := fun k => {x | ∀ q : ℚ, 0 < (q : ℝ) →
+      (q : ℝ) < 1 / ((k : ℝ) + 1) →
+      A * ENNReal.ofReal ((q : ℝ) ^ m) ≤ μ (closedBall x q) ∧
+        μ (C x ∩ closedBall x q) ≤ B * ENNReal.ofReal ((q : ℝ) ^ m)}
+    -- step 2: each `G k` is Borel
+    have hGmeas : ∀ k, MeasurableSet (G k) := by
+      intro k
+      refine Measurable.setOf (Measurable.forall fun q => ?_)
+      refine Measurable.imp measurable_const (Measurable.imp measurable_const
+        (Measurable.and ?_ ?_))
+      · exact measurableSet_setOfPred.1 (measurableSet_le measurable_const (hball q))
+      · exact measurableSet_setOfPred.1 (measurableSet_le (hCmeas q) measurable_const)
+    -- step 3: `G` is increasing
+    have hGmono : Monotone G := by
+      intro k l hkl x hx q hq0 hql
+      refine hx q hq0 (lt_of_lt_of_le hql ?_)
+      have hkl' : (k : ℝ) ≤ l := Nat.cast_le.mpr hkl
+      exact one_div_le_one_div_of_le (by positivity) (by linarith)
+    -- step 4: `μ`-a.e. point lies in some `G k`
+    have hGae : ∀ᵐ x ∂μ, x ∈ ⋃ k, G k := by
+      filter_upwards [hgood] with y hy
+      obtain ⟨r₁, hr₁, hy⟩ := hy
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt hr₁
+      exact mem_iUnion.mpr ⟨k, fun q hq0 hqk => hy q hq0 (hqk.trans hk)⟩
+    have hnull : μ (⋂ k, (G k)ᶜ) = 0 := by
+      rw [← compl_iUnion]
+      exact mem_ae_iff.mp hGae
+    -- step 5: continuity from above gives `μ (G k)ᶜ < η / 2` for some `k`
+    have htend : Tendsto (fun k => μ (G k)ᶜ) atTop (𝓝 0) := by
+      have := tendsto_measure_iInter_atTop (μ := μ) (s := fun k => (G k)ᶜ)
+        (fun k => (hGmeas k).compl.nullMeasurableSet)
+        (fun k l hkl => compl_subset_compl.mpr (hGmono hkl)) ⟨0, measure_ne_top μ _⟩
+      rw [hnull] at this
+      exact this
+    have hη2 : 0 < η / 2 := ENNReal.half_pos hη.ne'
+    obtain ⟨k, hk⟩ := (htend.eventually_lt_const hη2).exists
+    -- step 6: inner regularity gives a compact `K ⊆ G k` with `μ (G k \ K) < η / 2`
+    obtain ⟨K, hKG, hKc, hKμ⟩ :=
+      (hGmeas k).exists_isCompact_sdiff_lt (measure_ne_top μ _) hη2.ne'
+    refine ⟨K, 1 / ((k : ℝ) + 1), hKc, by positivity, ?_, ?_, ?_⟩
+    · calc μ Kᶜ ≤ μ ((G k)ᶜ ∪ (G k \ K)) := by
+            apply measure_mono
+            intro x hx
+            by_cases h : x ∈ G k
+            · exact Or.inr ⟨h, hx⟩
+            · exact Or.inl h
+        _ ≤ μ (G k)ᶜ + μ (G k \ K) := measure_union_le _ _
+        _ ≤ η / 2 + η / 2 := add_le_add hk.le hKμ.le
+        _ = η := ENNReal.add_halves η
+    -- step 7(a): lower bound at real radii, approximating `ρ` from below by rationals
+    · intro x hxK ρ hρ hρδ
+      have hxG := hKG hxK
+      have key : ∀ s ∈ Ioo 0 ρ, A * ENNReal.ofReal (s ^ m) ≤ μ (closedBall x ρ) := by
+        intro s hs
+        obtain ⟨q, hsq, hqρ⟩ := exists_rat_btwn hs.2
+        have hq0 : 0 < (q : ℝ) := hs.1.trans hsq
+        calc A * ENNReal.ofReal (s ^ m) ≤ A * ENNReal.ofReal ((q : ℝ) ^ m) :=
+              hmono A s q hs.1.le hsq.le
+          _ ≤ μ (closedBall x q) := (hxG q hq0 (hqρ.trans hρδ)).1
+          _ ≤ μ (closedBall x ρ) := measure_mono (closedBall_subset_closedBall hqρ.le)
+      exact le_of_tendsto (((hcont A hA).tendsto ρ).mono_left nhdsWithin_le_nhds)
+        (eventually_of_mem (Ioo_mem_nhdsLT hρ) key)
+    -- step 7(b): cone bound at real radii, approximating `ρ` from above by rationals
+    · intro x hxK ρ hρ hρδ
+      have hxG := hKG hxK
+      have key : ∀ s ∈ Ioo ρ (1 / ((k : ℝ) + 1)),
+          μ (C x ∩ closedBall x ρ) ≤ B * ENNReal.ofReal (s ^ m) := by
+        intro s hs
+        obtain ⟨q, hρq, hqs⟩ := exists_rat_btwn hs.1
+        have hq0 : 0 < (q : ℝ) := hρ.trans hρq
+        calc μ (C x ∩ closedBall x ρ) ≤ μ (C x ∩ closedBall x q) :=
+              measure_mono (inter_subset_inter_right _ (closedBall_subset_closedBall hρq.le))
+          _ ≤ B * ENNReal.ofReal ((q : ℝ) ^ m) := (hxG q hq0 (hqs.trans hs.2)).2
+          _ ≤ B * ENNReal.ofReal (s ^ m) := hmono B q s hq0.le hqs.le
+      exact ge_of_tendsto (((hcont B hB).tendsto ρ).mono_left nhdsWithin_le_nhds)
+        (eventually_of_mem (Ioo_mem_nhdsGT hρδ) key)
+  -- step 4 for the actual constants: where both limits hold, the bounds hold for small `r`
+  have hA1 : ENNReal.ofReal (1 - ε) < 1 := ENNReal.ofReal_lt_one.mpr (by linarith)
+  have hB0 : 0 < ENNReal.ofReal ε * unitBallVolume m :=
+    ENNReal.mul_pos (ENNReal.ofReal_pos.mpr hε).ne' hω0
+  refine main (fun x => {z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|})
+    (ENNReal.ofReal (1 - ε) * unitBallVolume m) (ENNReal.ofReal ε * unitBallVolume m)
+    (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop)
+    (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop) hcone ?_
+  filter_upwards [hae] with y hy
+  obtain ⟨h1, h2⟩ := hy
+  have e1 := h1.eventually_const_lt hA1
+  have e2 := h2.eventually_lt_const hB0
+  obtain ⟨r₁, hr₁, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp (e1.and e2)
+  refine ⟨r₁, hr₁, fun r hr0 hr1 => ?_⟩
+  obtain ⟨hlow, hup⟩ := hsub ⟨hr0, hr1⟩
+  have hpow0 : ENNReal.ofReal (r ^ m) ≠ 0 := (ENNReal.ofReal_pos.mpr (pow_pos hr0 m)).ne'
+  have hpowtop : ENNReal.ofReal (r ^ m) ≠ ∞ := ENNReal.ofReal_ne_top
+  constructor
+  · have := (ENNReal.le_div_iff_mul_le (Or.inl (mul_ne_zero hω0 hpow0))
+      (Or.inl (ENNReal.mul_ne_top hωtop hpowtop))).mp hlow.le
+    rw [mul_assoc]
+    exact this
+  · exact (ENNReal.div_le_iff hpow0 hpowtop).mp hup.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
