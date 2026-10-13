@@ -4307,6 +4307,100 @@ theorem allard52_support_density_ge_one : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p :
     exact ENNReal.one_le_ofReal.2 hθ1
   exact ENNReal.one_le_ofReal.1 h1
 
+/-- **Simon Ch. 5, 2.4 with explicit constants** (pinched mass and conical bounds near `0`).  For
+`n ≥ 1` and `p > n` there are `δ_P ∈ (0, 1/8]` and `C_P > 0` with `C_P δ_P ≤ 1/2`, depending only
+on `n, p` (the same for every codimension `ℓ`), such that if 2.3 holds with `0 < δ ≤ δ_P`, then for
+`|y| ≤ 3δρ` and `0 < s ≤ ρ/2`: `μ_V(B_s(y)) ≤ (1 + C_P δ) ω_n sⁿ`; and if `y ∈ spt V`, also
+`μ_V(B_s(y)) ≥ (1 − C_P δ) ω_n sⁿ` and `∫_{B_s(y)} |x − y − p_x(x − y)|² |x − y|^{−n−2} dμ_V ≤
+C_P ω_n δ` (the integrand is `0` at `x = y`).
+
+Proof: `δ_P, C_P` come from `allard52_density_constants` with `κ = (p − n)/(4p)` and `ω = ω_n`,
+before `ℓ` is chosen.  With `Λ = δ/κ ∈ (0, 1]` and `R = (1 − 3δ)ρ ∈ (s, ρ]`, `B_R(y) ⊆ B_ρ(0)`, so
+`aal_allard_subball_bounds` gives `B_R(y) ⊆ U`, `K(y, R) ≤ δ = κΛ` and
+`μ_V(B_r(y)) ≤ M = (1 + δ) ω_n ρⁿ`.  The tangent facts of `allard52_tangent_ae` feed
+`allard52_annular_monotonicity` at `(y, R, Λ)`, whose data drive
+`allard52_center_density_bounds`; at support points `allard52_support_density_ge_one` gives
+`Θⁿ(μ_V, y) ≥ 1`, i.e. `ω_n ≤ Φ` on `(0, R)`.  As `M/Rⁿ = (1 + δ)(1 − 3δ)⁻ⁿ ω_n`, the three
+inequalities of `allard52_density_constants` at `t = δ` are exactly the claimed bounds. -/
+theorem allard52_density_bounds : ∀ (n : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δP CP : ℝ, 0 < δP ∧ δP ≤ 1 / 8 ∧ 0 < CP ∧ CP * δP ≤ 1 / 2 ∧ ∀ (ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + CP * δ) * (unitBallVolume n * s ^ n)) ∧ (y ∈ V.support → ENNReal.ofReal ((1 - CP * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s) ∧ ∫⁻ x in closedBall y s, ENNReal.ofReal (‖x - y - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (CP * unitBallVolume n * δ)) := by
+  intro n hn p hp
+  -- Step 1: `δ_P, C_P` from `κ = (p − n)/(4p)` and `ω_n` alone, before `ℓ` is chosen.
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  have hκ : 0 < (p - n) / (4 * p) := div_pos (sub_pos.2 hp) (by positivity)
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  obtain ⟨δP, CP, hδP0, hδP8, hδPκ, hCP0, hCPδP, hineq⟩ :=
+    Submission.allard52_density_constants n ((p - n) / (4 * p)) (unitBallVolume n) hκ hω
+  refine ⟨δP, CP, hδP0, hδP8, hCP0, hCPδP, ?_⟩
+  intro ℓ U hU V H δ ρ hδ hδδP hA y hy s hs hsρ
+  have hρ : 0 < ρ := hA.1
+  have hδ8 : δ ≤ 1 / 8 := hδδP.trans hδP8
+  have hδκ : δ ≤ (p - n) / (4 * p) := hδδP.trans hδPκ
+  obtain ⟨hia, hib, hic⟩ := hineq δ hδ hδδP
+  -- Step 5: `Λ = δ/κ ∈ (0, 1]`, `R = (1 − 3δ)ρ` with `s < R ≤ ρ` and `B_R(y) ⊆ B_ρ(0)`.
+  set Λ := δ / ((p - n) / (4 * p))
+  have hΛ0 : 0 < Λ := div_pos hδ hκ
+  have hΛ1 : Λ ≤ 1 := (div_le_one hκ).2 hδκ
+  have hκΛ : (p - n) / (4 * p) * Λ = δ := mul_div_cancel₀ δ hκ.ne'
+  set R := (1 - 3 * δ) * ρ with hR
+  have hR0 : 0 < R := mul_pos (by linarith) hρ
+  have hsR : s < R := by rw [hR]; nlinarith
+  have hRρ : R ≤ ρ := by rw [hR]; nlinarith
+  have hball : closedBall y R ⊆ closedBall 0 ρ := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm] at hz
+    rw [mem_closedBall_zero_iff]
+    calc ‖z‖ = ‖(z - y) + y‖ := by rw [sub_add_cancel]
+      _ ≤ ‖z - y‖ + ‖y‖ := norm_add_le _ _
+      _ ≤ R + 3 * δ * ρ := add_le_add hz hy
+      _ = ρ := by rw [hR]; ring
+  -- Step 2: `B_R(y) ⊆ U`, `K(y, R) ≤ δ`, and `μ_V(B_r(y)) ≤ M` for `r < R`.
+  obtain ⟨hRU, -, hK, -⟩ :=
+    Submission.aal_allard_subball_bounds n ℓ p hp U V H δ ρ hA y R hR0 hRρ hball
+  set M := (1 + δ) * (unitBallVolume n * ρ ^ n) with hM
+  have hM0 : 0 ≤ M := mul_nonneg (by linarith) (mul_nonneg hω.le (pow_nonneg hρ.le n))
+  have hμ : ∀ r ∈ Ioo 0 R, V.weight (closedBall y r) ≤ ENNReal.ofReal M := fun r hr =>
+    (measure_mono ((closedBall_subset_closedBall hr.2.le).trans hball)).trans hA.2.2.2.2.2.1
+  -- Step 3: the monotonicity data `(M)` at `y` with radius `R`, from the tangent facts `(T)`.
+  obtain ⟨hmeas, htan, hdens⟩ := Submission.allard52_tangent_ae n ℓ hn U hU V
+  obtain ⟨F, hF, hΦ, t, -, htd, htΦ⟩ :=
+    Submission.allard52_annular_monotonicity n ℓ hn p hp U hU V H hA.2.1 y R Λ hR0 hRU
+      (htan.mono fun x hx _ => hx) hmeas.restrict hΛ0 hΛ1 (by rw [hκΛ]; exact hK)
+  -- `(r/R)^{1 − n/p} ≤ 1` on `(0, R)`, so `|F − 1| ≤ Λ` there.
+  have hα : 0 ≤ 1 - (n : ℝ) / p := sub_nonneg.2 ((div_le_one hp0).2 hp.le)
+  have hF' : ∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ := by
+    intro r hr
+    obtain ⟨h1, h2, h3⟩ := hF r hr
+    exact ⟨h1, h2, h3.trans (mul_le_of_le_one_right hΛ0.le
+      (Real.rpow_le_one (div_nonneg hr.1.le hR0.le) ((div_le_one hR0).2 hr.2.le) hα))⟩
+  -- Steps 6–8 at `y`, with `g(x) = |x − y − p_x(x − y)|²/|x − y|^{n+2}`, so `g(y) = 0`.
+  obtain ⟨hi, hii⟩ := Submission.allard52_center_density_bounds n ℓ V.weight
+    (fun x => ‖x - y - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) F y (unitBallVolume n)
+    R Λ M hR0 hΛ0 hM0 (by simp) hμ hF' hΦ s hs hsR
+  have hMR : M / R ^ n = (1 + δ) / (1 - 3 * δ) ^ n * unitBallVolume n := by
+    have h1 : (1 - 3 * δ) ^ n ≠ 0 := pow_ne_zero n (by linarith)
+    have h2 : ρ ^ n ≠ 0 := pow_ne_zero n hρ.ne'
+    rw [hM, hR, mul_pow]
+    field_simp
+  rw [hMR] at hi hii
+  have hsn : 0 ≤ s ^ n := pow_nonneg hs.le n
+  -- (P.i) is inequality (a) of `allard52_density_constants` at `t = δ`.
+  refine ⟨hi.trans (ENNReal.ofReal_le_ofReal ?_), fun hys => ?_⟩
+  · calc (Real.exp (2 * Λ) * ((1 + δ) / (1 - 3 * δ) ^ n * unitBallVolume n) +
+          2 * Real.exp Λ * Λ) * s ^ n
+        ≤ (1 + CP * δ) * unitBallVolume n * s ^ n := mul_le_mul_of_nonneg_right hia hsn
+      _ = (1 + CP * δ) * (unitBallVolume n * s ^ n) := mul_assoc _ _ _
+  -- Step 4: `|y| ≤ 3δρ < ρ`, so the density `t` of `(M.iii)` is `≥ 1` and `ω_n ≤ ω_n t ≤ Φ`.
+  have hyρ : ‖y‖ < ρ := by nlinarith
+  have ht1 : 1 ≤ t := Submission.allard52_support_density_ge_one n ℓ hn p hp U hU V H δ ρ hδ hδκ hA
+    hmeas htan hdens y ⟨hys, mem_ball_zero_iff.2 hyρ⟩ t htd
+  obtain ⟨hii1, hii2⟩ := hii fun r hr => (le_mul_of_one_le_right hω.le ht1).trans (htΦ r hr)
+  -- (P.ii) and (P.iii) are inequalities (b) and (c) of `allard52_density_constants` at `t = δ`.
+  refine ⟨le_trans (ENNReal.ofReal_le_ofReal ?_) hii1, hii2.trans (ENNReal.ofReal_le_ofReal hic)⟩
+  calc (1 - CP * δ) * (unitBallVolume n * s ^ n) = (1 - CP * δ) * unitBallVolume n * s ^ n :=
+        (mul_assoc _ _ _).symm
+    _ ≤ Real.exp (-Λ) * (unitBallVolume n - Λ) * s ^ n := mul_le_mul_of_nonneg_right hib hsn
+
 end Submission
 
 end GMT.Ch05
