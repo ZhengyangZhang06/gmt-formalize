@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8ac143f35d3be5a7531eed600b1004889b8c7ed51d5a9210f3a6231abdbc6fea",
+  "git_delta": {
+    "base_commit": "10e27a70afd4332d7150030d655f5a9256b11e41",
+    "candidate_commit": "8e5658ce050b6ba6d365db1d06d19a257a9cda3f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ptd_tl_measure_closedBall_le_of_tangent",
+    "diff_sha256": "d6019bdfdc7419c7e5bc1b1ddb7c13edcf1fcd85b38b75a88fc5b43f04964238",
+    "source_sha256": "a31d0f619d0910305405fc6e6178c80b474605a742162d4c40c472a9e9e11765",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ptd_tl_measure_closedBall_le_of_tangent",
+      "statement": "∀ (P n : ℕ) (D : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r₀ : ℝ), MeasurableSet D → 0 < r₀ → μHE[n] (D ∩ closedBall x r₀) ≠ ∞ → HasApproximateTangentSpaceAt n D x Q → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (D ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
