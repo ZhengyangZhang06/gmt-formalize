@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1.allard_subball_bounds-a1",
+  "parent_id": "root.affine_approximation-a1.pinched_density_bounds-a1",
+  "depth": 3,
+  "title": "Sub-ball consequences of the Allard hypotheses (K-monotonicity, finite curvature integral, mass bound)",
+  "statement": "Let n, l be natural numbers and p a real number with n < p. Let U be a subset of R^(n+l), V a RectifiableVarifold n l U with weight mu = V.weight, H : R^(n+l) -> R^(n+l), and delta, rho real numbers such that V.AllardHypotheses H p delta rho holds. Then for every z in R^(n+l) and every r with 0 < r <= rho and closed ball B_r(z) contained in B_rho(0): (a) B_r(z) is contained in U; (b) the lower integral of |H|^p over B_r(z) with respect to mu is finite; (c) K(z,r) := (r^(p-n) * integral^-_{B_r(z)} |H|^p dmu)^(1/p) <= delta (as an element of [0,infinity], i.e. V.scaledLpNorm H p z r <= ofReal delta); (d) mu(B_r(z)) <= (1 + delta) omega_n rho^n (as ofReal).",
+  "lean_statement": "∀ (n ℓ : ℕ) (p : ℝ), (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), V.AllardHypotheses H p δ ρ → ∀ (z : Amb n ℓ) (r : ℝ), 0 < r → r ≤ ρ → closedBall z r ⊆ closedBall 0 ρ → closedBall z r ⊆ U ∧ ∫⁻ x in closedBall z r, ‖H x‖ₑ ^ p ∂V.weight < ⊤ ∧ V.scaledLpNorm H p z r ≤ ENNReal.ofReal δ ∧ V.weight (closedBall z r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * ρ ^ n))",
+  "lean_name": "aal_allard_subball_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-pinched-density-bounds-a1-allard-subball-bounds-a1-a1"
+}
