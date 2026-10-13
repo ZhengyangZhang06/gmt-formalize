@@ -359,6 +359,49 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Radial fundamental theorem of calculus: for a smooth form `φ`,
+`∫₀¹ (t^(m+1) Dφ(t x)[x](u) + (m + 1) t^m φ(t x)(u)) dt = φ(x)(u)`, since the integrand is the
+derivative of `g(t) = t^(m+1) φ(t x)(u)` and `g(1) - g(0) = φ(x)(u)`. -/
+theorem Submission.iwl_cr_rh_radial_ftc :
+    ∀ (P n m : ℕ) (φ : DifferentialForm (Eucl P) n), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ →
+      ∀ (x : Eucl P) (u : Fin n → Eucl P),
+        ∫ t in (0 : ℝ)..1, (t ^ (m + 1) * fderiv ℝ φ (t • x) x u +
+          ((m : ℝ) + 1) * t ^ m * φ (t • x) u) = φ x u := by
+  intro P n m φ hφ x u
+  have hdiff : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hcont : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  -- `g(s) = s^(m+1) φ(s x)(u)` has the integrand as derivative at every `t`.
+  have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+      HasDerivAt (fun s : ℝ => s ^ (m + 1) * φ (s • x) u)
+        (t ^ (m + 1) * fderiv ℝ φ (t • x) x u + ((m : ℝ) + 1) * t ^ m * φ (t • x) u) t := by
+    intro t _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 : HasDerivAt (fun s : ℝ => φ (s • x)) (fderiv ℝ φ (t • x) x) t :=
+      (hdiff (t • x)).hasFDerivAt.comp_hasDerivAt t h1
+    have h3 : HasDerivAt (fun s : ℝ => φ (s • x) u) (fderiv ℝ φ (t • x) x u) t :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ u).hasFDerivAt.comp_hasDerivAt t h2
+    refine ((hasDerivAt_pow (m + 1) t).fun_mul h3).congr_deriv ?_
+    rw [Nat.add_sub_cancel]
+    push_cast
+    ring
+  -- The integrand is continuous, hence interval integrable.
+  have hint : IntervalIntegrable (fun t : ℝ => t ^ (m + 1) * fderiv ℝ φ (t • x) x u +
+      ((m : ℝ) + 1) * t ^ m * φ (t • x) u) volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    have hc1 : Continuous fun t : ℝ => fderiv ℝ φ (t • x) x u := by
+      have : Continuous fun t : ℝ => fderiv ℝ φ (t • x) x :=
+        (hcont.comp (continuous_id.smul continuous_const)).clm_apply continuous_const
+      exact (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ u).continuous.comp this
+    have hc2 : Continuous fun t : ℝ => φ (t • x) u :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ u).continuous.comp
+        (hφ.continuous.comp (continuous_id.smul continuous_const))
+    exact ((continuous_pow (m + 1)).mul hc1).add
+      ((continuous_const.mul (continuous_pow m)).mul hc2)
+  -- Fundamental theorem of calculus on `[0, 1]`: `g(1) - g(0) = φ(x)(u) - 0`.
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
