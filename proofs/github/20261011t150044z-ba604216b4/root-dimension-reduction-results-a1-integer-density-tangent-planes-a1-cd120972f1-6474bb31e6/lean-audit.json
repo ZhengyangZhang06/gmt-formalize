@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4fc83b6d2935a079c2e7e6ce8173521e60df301fa1aab67ace583ad03ad78f15",
+  "git_delta": {
+    "base_commit": "c4deec4401b3ee7e6e3d19eeee151a8c889dceb6",
+    "candidate_commit": "b0eb65dbd9d6fc439501e1727ff6d21cd29ab20a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_sqm_coord_square_volume",
+    "diff_sha256": "d63fbbad9e848b7635977e67f2615c3cf3543abf9f271c89d85bf166329753ac",
+    "source_sha256": "4ad0d6abbdb51cc07a249d56db6a11f6f13e727b882015c9e361ee70abac6e62",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_sqm_coord_square_volume",
+      "statement": "∀ r : ℝ, 0 ≤ r → volume {v : Euclid 2 | |v 0| < r ∧ |v 1| < r} = ENNReal.ofReal (4 * r ^ 2) ∧ volume {v : Euclid 2 | |v 0| ≤ r ∧ |v 1| ≤ r} = ENNReal.ofReal (4 * r ^ 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
