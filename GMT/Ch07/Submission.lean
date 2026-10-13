@@ -787,6 +787,134 @@ theorem Submission.dtc_cwv_euler_lie_annihilated : ∀ (P n : ℕ) (C : Geometri
   rw [map_add]
   exact (congrArg₂ (· + ·) h1 h2).trans (add_zero 0)
 
+/-- Dilation invariance of `R.action` (Simon Ch. 6, Lemma 2.33 for the dilations `y ↦ sy`; the
+step "`C` is a cone" in the proof of 7.3.1).  Suppose `R.action` annihilates every `L_X β`, where
+`L_X β(y) = nβ(y) + Dβ(y)[y]` is the Lie derivative of `β` along the Euler field `X(y) = y`.
+Put `β_s(y) = sⁿω(sy)` and `G(s) = R.action β_s`.  For `t > 0`, the derivative
+`G'(t) = R.action(y ↦ nt^{n−1}ω(ty) + tⁿDω(ty)[y])` (`Submission.dtc_cwv_scaled_action_hasDerivAt`)
+is `t⁻¹ R.action(L_X β_t) = 0`.  So `G` is constant on `(0, ∞)`, and
+`R.action ω' = G(λ⁻¹) = G(1) = R.action ω`. -/
+theorem Submission.dtc_cwv_action_dilation_invariant : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → R.action (γ : DifferentialForm (Euclid P) n) = 0) → ∀ lam : ℝ, 0 < lam → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) → R.action (ω' : DifferentialForm (Euclid P) n) = R.action (ω : DifferentialForm (Euclid P) n) := by
+  intro P n R hL lam hlam ω ω' hω'
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  -- `R.action` is homogeneous under constant rescaling of the form
+  have hsmul : ∀ (c : ℝ) (φ : DifferentialForm (Euclid P) n),
+      R.action (fun y => c • φ y) = c * R.action φ := by
+    intro c φ
+    unfold IMRep.action
+    rw [← integral_const_mul]
+    congr 1
+    funext x
+    rw [map_smul, smul_eq_mul]
+    ring
+  -- `β_t(y) = tⁿ ω(t y)` is a test form for `t ≠ 0`
+  have hβs : ∀ t : ℝ, ContDiff ℝ (⊤ : ℕ∞)
+      (fun y => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) := fun t =>
+    (hws.comp (contDiff_const_smul t)).const_smul (t ^ n)
+  have hβc : ∀ t : ℝ, t ≠ 0 → HasCompactSupport
+      (fun y => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) := by
+    intro t ht
+    refine (hwc.comp_smul ht).mono ?_
+    intro y hy
+    simp only [mem_support] at hy ⊢
+    intro h0
+    apply hy
+    rw [h0, smul_zero]
+  -- chain rule: `Dβ_t(y)[y] = tⁿ⁺¹ Dω(t y)[y]`
+  have hfd : ∀ (t : ℝ) (y : Euclid P),
+      fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y =
+        (t ^ n * t) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y := by
+    intro t y
+    have h1 : HasFDerivAt (fun z : Euclid P => t • z) (t • ContinuousLinearMap.id ℝ (Euclid P)) y :=
+      (hasFDerivAt_id y).const_smul t
+    have h2 : HasFDerivAt (fun z : Euclid P => (ω : DifferentialForm (Euclid P) n) (t • z))
+        ((fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y)).comp
+          (t • ContinuousLinearMap.id ℝ (Euclid P))) y :=
+      ((hws.differentiable (by simp)).differentiableAt (x := t • y)).hasFDerivAt.comp y h1
+    have h3 : HasFDerivAt (fun z : Euclid P => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z))
+        ((t ^ n) • (fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y)).comp
+          (t • ContinuousLinearMap.id ℝ (Euclid P))) y :=
+      h2.const_smul (t ^ n)
+    rw [h3.fderiv]
+    simp [smul_smul]
+  -- `γ_t(y) = nβ_t(y) + Dβ_t(y)[y]` is a test form for `t ≠ 0`
+  have hγs : ∀ t : ℝ, ContDiff ℝ (⊤ : ℕ∞)
+      (fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y) := by
+    intro t
+    have hd : ContDiff ℝ (⊤ : ℕ∞)
+        (fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z))) :=
+      (hβs t).fderiv_right (by simp)
+    exact ((hβs t).const_smul (n : ℝ)).add (hd.clm_apply contDiff_id)
+  have hγc : ∀ t : ℝ, t ≠ 0 → HasCompactSupport
+      (fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y) := by
+    intro t ht
+    have h1 : HasCompactSupport
+        (fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y))) := by
+      refine (hβc t ht).mono ?_
+      intro y hy
+      simp only [mem_support] at hy ⊢
+      intro h0
+      apply hy
+      rw [h0, smul_zero]
+    have h2 : HasCompactSupport
+        (fun y => fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y) := by
+      refine ((hβc t ht).fderiv ℝ).mono ?_
+      intro y hy
+      simp only [mem_support] at hy ⊢
+      intro h0
+      apply hy
+      rw [h0]
+      rfl
+    exact h1.add h2
+  -- `G(s) = R.action β_s` has derivative `t⁻¹ R.action γ_t = 0` at every `t > 0`
+  let G : ℝ → ℝ := fun s => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))
+  have hG : ∀ t : ℝ, 0 < t → HasDerivAt G 0 t := by
+    intro t ht
+    have hD := Submission.dtc_cwv_scaled_action_hasDerivAt P n R ω t ht
+    let β : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨fun y => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y), ⟨hβs t, hβc t ht.ne'⟩,
+        subset_univ _⟩
+    let γ : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y,
+        ⟨hγs t, hγc t ht.ne'⟩, subset_univ _⟩
+    have hγ0 : R.action (γ : DifferentialForm (Euclid P) n) = 0 := hL β γ (fun y => rfl)
+    have heq : (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) +
+        (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y) =
+        fun y => t⁻¹ • (γ : DifferentialForm (Euclid P) n) y := by
+      funext y
+      change _ = t⁻¹ • ((n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y)
+      rw [hfd t y, smul_add, smul_smul, smul_smul, smul_smul]
+      congr 2
+      · rcases Nat.eq_zero_or_pos n with hn | hn
+        · subst hn; simp
+        · obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+          field_simp
+          simp [pow_succ]
+      · field_simp
+    have h0 : R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) +
+        (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y) = 0 := by
+      rw [heq, hsmul, hγ0, mul_zero]
+    rw [h0] at hD
+    exact hD
+  -- `G` is constant on the connected open set `(0, ∞)`
+  have hconst : G lam⁻¹ = G 1 :=
+    isOpen_Ioi.is_const_of_deriv_eq_zero (convex_Ioi (0 : ℝ)).isPreconnected
+      (fun t ht => (hG t ht).differentiableAt.differentiableWithinAt)
+      (fun t ht => (hG t ht).deriv) (inv_pos.2 hlam) (show (0 : ℝ) < 1 from one_pos)
+  have hG1 : G 1 = R.action (ω : DifferentialForm (Euclid P) n) := by
+    simp [G]
+  have hGl : G lam⁻¹ = R.action (ω' : DifferentialForm (Euclid P) n) := by
+    simp only [G]
+    congr 1
+    funext y
+    rw [hω' y]
+  rw [← hGl, hconst, hG1]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
