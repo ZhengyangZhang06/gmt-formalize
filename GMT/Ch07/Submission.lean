@@ -3485,6 +3485,30 @@ theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- **Push-forward of an integer multiplicity current by a `C¹` diffeomorphism** (Simon Ch. 6,
+2.23–2.24 and 3.3–3.9; the current `φ_#T` in the proof of 7.1.2).  Let `T = τ(M, θ, ξ)` and let
+`φ` be a `C¹` bijection of `ℝᴾ` with `Dφ(x)` injective for every `x` and `φ = id` off a compact
+`K ⊆ U`.  Then `S(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ(x)⟩ dHⁿ` defines a current `S = φ_#T`
+(`Submission.dpf_pushforward_formula_current_exists`).  `φ` is bi-Lipschitz with `φ⁻¹(U) = U`
+(`Submission.dpf_c1_compact_perturbation_bilipschitz`), so by the area formula and the
+transport `T_{φ(x)}φ(M) = Dφ(x) TₓM` of approximate tangent planes, `S = τ(φ(M), θ ∘ φ⁻¹, ξ')`
+with the induced orientation `ξ'` of 3.5/3.7 (`Submission.dpf_imrep_bilipschitz_image_rep`, which
+needs `x ↦ p_{TₓM}` measurable: `Submission.imrep_approxTangent_starProjection_aesm`).  Hence `S`
+is integer multiplicity.  Finally `∂S = 0` if `∂T = 0` (2.24(1), by smooth approximation of `φ`:
+`Submission.dpf_pushforward_formula_boundaryVanishes`). -/
+theorem Submission.imrep_c1_diffeo_pushforward_im : ∀ (P n : ℕ) (U K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, IsIntegerMultiplicity S ∧ (BoundaryVanishes T → BoundaryVanishes S) ∧ ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+  intro P n U K T R φ hU hR hK hKU hφ hbij hinj hid
+  -- `φ` is bi-Lipschitz and `φ⁻¹(U) = U`
+  obtain ⟨Λ, hLip, hAnti, hpre⟩ :=
+    Submission.dpf_c1_compact_perturbation_bilipschitz P U K φ hK hKU hφ hbij hinj hid
+  -- the push-forward integral is the action of a current `S`
+  obtain ⟨S, hS⟩ := Submission.dpf_pushforward_formula_current_exists P n U K R φ hK hKU hφ hid
+  -- an integer multiplicity triple `R'` on `φ(M)` has the same action
+  obtain ⟨R', hR'⟩ := Submission.dpf_imrep_bilipschitz_image_rep P n U R φ Λ hU hφ hbij hinj
+    hLip hAnti hpre (Submission.imrep_approxTangent_starProjection_aesm P n U R)
+  exact ⟨S, ⟨R', fun ω => (hS ω).trans (hR' ω).symm⟩,
+    Submission.dpf_pushforward_formula_boundaryVanishes P n U K T S R φ hU hR hK hKU hφ hid hS, hS⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
