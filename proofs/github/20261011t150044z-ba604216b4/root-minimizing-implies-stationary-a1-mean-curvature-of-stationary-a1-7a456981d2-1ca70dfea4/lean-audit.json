@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "887b28e617e8eb416c67142c7419e026f9f887e12f9aaa69b092448857d34541",
+  "git_delta": {
+    "base_commit": "746413bca1269e387309439c20a291b01229cca6",
+    "candidate_commit": "439d62a761e2ac5bae551c3f1b8561288c4b4705",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "mcs_trace_normal_part_eq_neg_inner",
+    "diff_sha256": "db423e95d7baed41066b00ac9f206e56906b67d5b5c4890ffe673e5c36c53209",
+    "source_sha256": "f74b5f84c3d3cd8fdebfe94de03999cef187f36b6207f276794958d8ea235eb6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcs_trace_normal_part_eq_neg_inner",
+      "statement": "∀ (P : ℕ) (Q S : Submodule ℝ (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X Y : Euclid P → Euclid P) (x : Euclid P), Q ≤ S → pr x = S.starProjection → DifferentiableAt ℝ pr x → DifferentiableAt ℝ X x → Y =ᶠ[𝓝 x] (fun y => X y - pr y (X y)) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ Y x).toLinearMap) = -inner ℝ (X x) (∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (Q.starProjection (EuclideanSpace.single j 1))) (Q.starProjection (EuclideanSpace.single j 1)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
