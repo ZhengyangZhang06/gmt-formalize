@@ -530,6 +530,20 @@ theorem Submission.iwl_sp_sn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (
     simpa using hnotW
   rwa [Measure.restrict_apply hWo.measurableSet, Set.inter_comm] at hres
 
+/-- **A rectifiable representation carries no `Hⁿ`-measure off the support** (step 3 of the
+smooth push-forward argument; cf. Simon Ch. 6, 2.11 and Lemma 3.9).  If `T = τ(M, θ, ξ)` then
+`Hⁿ(M ∖ spt T) = 0`.  Testing `T` with `φ b` (`φ ∈ C_c^∞(W)`, `b` an `n`-covector) shows
+`Hⁿ(M ∩ W) = 0` for every open `W ⊂⊂ U` on which `T` vanishes (`iwl_sp_sn_local_null`).  As
+`M ⊆ U`, countably many such `W` cover `M ∖ spt T`
+(`iwl_sp_sn_null_diff_support_of_local_null`). -/
+theorem Submission.iwl_sp_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \ T.support) = 0 := by
+  intro P n U T M θ ξ hM hT
+  -- Step 8: since `M ⊆ U`, it suffices that `Hⁿ(M ∩ W) = 0` for each open `W ⊂⊂ U` on which
+  -- `T` vanishes; steps 1–7 give exactly that.
+  exact Submission.iwl_sp_sn_null_diff_support_of_local_null P n U T M
+    (μHE[n] : Measure (Eucl P)) hM.subset fun W hW hWc hWU hTW =>
+      Submission.iwl_sp_sn_local_null P n U W T M θ ξ hM hT hW hWc hWU hTW
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
