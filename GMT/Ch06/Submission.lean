@@ -359,6 +359,35 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **`Hⁿ(M ∩ K) < ∞` for integer multiplicity triples (Simon Ch. 6, 3.1).**  If
+`(M, θ, ξ)` is a rectifiable triple in `U` and `θ` is integer-valued on `M`, then `θ ≥ 1` on `M`
+(`θ > 0`), so for compact `K ⊆ U`:
+`Hⁿ(M ∩ K) = ∫⁻_{M ∩ K} 1 dHⁿ ≤ ∫⁻_{M ∩ K} |θ| dHⁿ < ∞` (`θ` is `Hⁿ`-integrable on `M ∩ K`). -/
+theorem Submission.iwl_cr_ci_ie_measure_inter_compact_lt_top : ∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → IsCompact K → K ⊆ U → (μHE[n] : Measure (Eucl P)) (M ∩ K) < ∞ := by
+  intro P n U M θ ξ K hT hint hK hKU
+  -- `θ = k ∈ ℕ` and `θ > 0` force `θ ≥ 1` on `M`.
+  have h1 : ∀ x ∈ M, 1 ≤ θ x := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hint x hx
+    have hpos := hT.pos x hx
+    rw [hk] at hpos ⊢
+    have hk0 : k ≠ 0 := by rintro rfl; simp at hpos
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk0
+  have hθ : IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P)) := hT.integrableOn K hK hKU
+  have hnm : NullMeasurableSet (M ∩ K) (μHE[n] : Measure (Eucl P)) :=
+    hT.nullMeasurableSet.inter hK.isClosed.measurableSet.nullMeasurableSet
+  -- `‖θ‖ₑ ≥ 1` a.e. on `M ∩ K`.
+  have hae : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)), (1 : ℝ≥0∞) ≤ ‖θ x‖ₑ := by
+    filter_upwards [ae_restrict_mem₀ hnm] with x hx
+    have h := h1 x hx.1
+    rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg (by linarith)]
+    exact ENNReal.one_le_ofReal.mpr h
+  -- `Hⁿ(M ∩ K) = ∫⁻_{M ∩ K} 1 ≤ ∫⁻_{M ∩ K} ‖θ‖ₑ < ∞`.
+  calc (μHE[n] : Measure (Eucl P)) (M ∩ K)
+        = ∫⁻ _ in M ∩ K, (1 : ℝ≥0∞) ∂(μHE[n] : Measure (Eucl P)) := (setLIntegral_one _).symm
+    _ ≤ ∫⁻ x in M ∩ K, ‖θ x‖ₑ ∂(μHE[n] : Measure (Eucl P)) := lintegral_mono_ae hae
+    _ < ∞ := hθ.hasFiniteIntegral
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
