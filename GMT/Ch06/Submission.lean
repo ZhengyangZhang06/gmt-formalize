@@ -1218,62 +1218,6 @@ theorem Submission.imc_mlb_exists_unit_field_integral_ge : ∀ (N : ℕ) (E : Ty
     integral_congr_ae (hgg'.mono fun x hx => by simp only [hx])
   rw [hρ_eq, hFeq, hFg]
   linarith
-/-- The coordinate wedge covectors are dual to the increasing basis tuples: the `J`-th coordinate
-of `∑_I c_I dx^I` is `c_J`, i.e. `dx^I(e_{J(0)}, …, e_{J(k-1)}) = δ_{IJ}`. -/
-theorem Submission.smr_ci_coord_sum_smul_wedge :
-    ∀ (P k : ℕ) (c : SimonMultiIndex k P → ℝ) (J : SimonMultiIndex k P),
-      euclideanCovectorCoordinate (∑ I : SimonMultiIndex k P,
-        c I • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) k) J = c J := by
-  intro P k c J
-  classical
-  -- Kronecker property: `dx^I (e_J) = δ_{IJ}`.
-  have hK : ∀ I : SimonMultiIndex k P, wedgeCovectors k (fun j => EuclideanSpace.proj (I j))
-      (fun j => EuclideanSpace.single (J j) (1 : ℝ)) = if I = J then 1 else 0 := by
-    intro I
-    rw [wedgeCovectors_apply_det]
-    split_ifs with hIJ
-    · -- the matrix `[δ_{I i, I j}]` is the identity
-      subst hIJ
-      convert Matrix.det_one (n := Fin k) (R := ℝ)
-      ext i j
-      simp [Matrix.one_apply, PiLp.single_apply, I.injective.eq_iff]
-    · -- some `I i` is not among the `J j`, so row `i` vanishes
-      obtain ⟨i, hi⟩ : ∃ i, ∀ j, I i ≠ J j := by
-        by_contra! h
-        apply hIJ
-        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
-        have hsub : Set.range I ⊆ Set.range J := by
-          rintro _ ⟨i, rfl⟩
-          obtain ⟨j, hj⟩ := h i
-          exact ⟨j, hj.symm⟩
-        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range J)
-        rw [Set.ncard_range_of_injective J.injective, Set.ncard_range_of_injective I.injective]
-      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [PiLp.single_apply, hi j]
-  -- Evaluation at `e_J` is linear, so only the term `I = J` survives.
-  rw [euclideanCovectorCoordinate, ContinuousAlternatingMap.sum_apply]
-  simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-/-- The Euclidean coefficient norm of a `k`-covector on `ℝ^P` is the `ℓ²`-norm of its coordinates
-`α(e_{I(0)}, …, e_{I(k-1)})` over the increasing multi-indices `I : Fin k ↪o Fin P`. -/
-theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
-    ∀ (P k : ℕ) (α : Covector (Eucl P) k), covectorEuclideanNorm α =
-      Real.sqrt (∑ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I ^ 2) := by
-  intro P k α
-  unfold covectorEuclideanNorm
-  congr 1
-  -- Drop the tuples that are not strictly increasing; their terms vanish.
-  rw [← Finset.sum_filter]
-  -- Reindex the strictly increasing tuples by the order embeddings, `I ↦ ⇑I`.
-  symm
-  refine Finset.sum_bij' (fun I _ => ⇑I)
-    (fun f hf => OrderEmbedding.ofStrictMono f (Finset.mem_filter.1 hf).2)
-    (fun I _ => Finset.mem_filter.2 ⟨Finset.mem_univ _, I.strictMono⟩)
-    (fun _ _ => Finset.mem_univ _) (fun I _ => ?_) (fun f _ => ?_) (fun I _ => ?_)
-  · exact RelEmbedding.ext fun _ => rfl
-  · exact OrderEmbedding.coe_ofStrictMono _
-  · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
-    simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
-
 /-- **Polar test form for a `k`-vector field** (Simon Ch. 6, 2.6–2.8).  If the coordinates
 `κ^γ = κ(dx^γ)` of `κ : ℝ^N → Λ_k(ℝ^N)` are `μ`-integrable on `B = B_R(0)`, then for every `ε > 0`
 there is a continuous `k`-form `ω` with `tsupport ω ⊆ B` and `|ω| ≤ 1` such that
