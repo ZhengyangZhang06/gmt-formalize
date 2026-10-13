@@ -468,7 +468,6 @@ piece is SimonGMT's `weighted_area_formula_lipschitz_injOn`), together with the 
 `pit_ril_three_term_bound`, specialised here to `U = N = ℝᴾ` with the explicit deformation
 `φₜ = id + tX` in place of the tangential deformation. -/
 theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → R.Represents C → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0 := by
-  -- covectorEuclideanNorm_gram_bounds
   have covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1 := by
     intro P n
     classical
@@ -1060,6 +1059,7 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact le_antisymm hupper (hlowerGen R.measure R.orient hrep hfin hmeas hH1 hH2)
   -- dpf_c1_compact_perturbation_bilipschitz
   have dpf_c1_compact_perturbation_bilipschitz : ∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ Λ : NNReal, LipschitzWith Λ φ ∧ AntilipschitzWith Λ φ ∧ φ ⁻¹' U = U := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
     intro P U K φ hK hKU hφ hbij hinj hfix
     -- Steps 1, 3 and 6: a `C¹` map `f` equal to the identity off `K` has bounded differential
     -- (`Df = I` on the open set `ℝᴾ \ K`, `‖Df‖` bounded on the compact `K`), hence is Lipschitz
@@ -1131,6 +1131,8 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       _ ≤ max C₁ C₂ * edist (e x) (e y) := by gcongr; exact le_max_right _ _
   -- dpf_jm_aestronglyMeasurable_sqrt_det_compression
   have dpf_jm_aestronglyMeasurable_sqrt_det_compression : ∀ (P : ℕ) (μ : Measure (Euclid P)) (p L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable p μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt ((p x ∘L ((L x).adjoint ∘L L x) ∘L p x + (ContinuousLinearMap.id ℝ (Euclid P) - p x)).det)) μ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz
     intro P μ p L hp hL
     -- `B ↦ B*` is a linear isometric equivalence of `End(ℝᴾ)`, hence continuous
     have hadj : Continuous fun q : (Euclid P →L[ℝ] Euclid P) × (Euclid P →L[ℝ] Euclid P) =>
@@ -1149,6 +1151,8 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact h
   -- dpf_jm_gram_det_eq_det_compression
   have dpf_jm_gram_det_eq_det_compression : ∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) {ι : Type} [Fintype ι] [DecidableEq ι] (e : OrthonormalBasis ι ℝ V) (A : Euclid P →L[ℝ] Euclid P), Matrix.det (Matrix.of fun i j : ι => inner ℝ (A (e i)) (A (e j))) = (V.starProjection ∘L (A.adjoint ∘L A) ∘L V.starProjection + (ContinuousLinearMap.id ℝ (Euclid P) - V.starProjection)).det := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
     intro P V ι _ _ e A
     set p := V.starProjection with hp_def
     set T : Euclid P →L[ℝ] Euclid P :=
@@ -1194,6 +1198,8 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       ContinuousLinearMap.adjoint_inner_right]
   -- dpf_aestronglyMeasurable_gramJacobian
   have dpf_aestronglyMeasurable_gramJacobian : ∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable (fun x => (Q x).starProjection) μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (L x (stdOrthonormalBasis ℝ (Q x) i)) (L x (stdOrthonormalBasis ℝ (Q x) j))))) μ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz
     intro P μ Q L hp hL
     -- for each `x`, `det(L(x)eₐ · L(x)e_b) = det(p L(x)* L(x) p + I − p)` with `p = p_{Q(x)}`
     simp_rw [dpf_jm_gram_det_eq_det_compression P (Q _) (stdOrthonormalBasis ℝ (Q _))
@@ -1204,6 +1210,9 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       (fun x => (Q x).starProjection) L hp hL
   -- ptd_tl_ae_excess_le
   have ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian
     intro P n U A B hU hA hB hAB hBU hfin
     -- Step 1: countably many open balls `B(y, r y)`, `y ∈ D`, with `B̄(y, r y) ⊆ U` cover `U`
     have hr : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
@@ -1309,6 +1318,9 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact ENNReal.le_of_add_le_add_right (ENNReal.mul_ne_top (by simp) hβtop) h1
   -- ptd_tl_excess_density_zero
   have ptd_tl_excess_density_zero : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ C r₁ : ℝ), 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → 0 < r₁ → (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)) → Tendsto (fun ρ : ℝ => μHE[n] ((B \ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
     intro P n A B x r₀ C r₁ hr₀ hfin hr₁ hG hE
     -- Step 1: for `ρ > 0`, `ofReal (Cρⁿ) = ofReal C · (ofReal ρ)ⁿ`
     have hA : ∀ ρ : ℝ, 0 < ρ → ρ < r₁ →
@@ -1364,6 +1376,10 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       _ = δ * ENNReal.ofReal ρ ^ n := by rw [← mul_assoc, ENNReal.div_mul_cancel hκ₀ hκ₁]
   -- ptd_tl_blowUp_measure_scaling
   have ptd_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero
     intro P n x r R S hr
     -- `‖η(z)‖ = r⁻¹‖z − x‖`, since `r > 0`
     have hnorm : ∀ z : Euclid P,
@@ -1402,6 +1418,10 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     rw [hset, hscale]
   -- ptd_tl_measure_closedBall_le_of_tangent
   have ptd_tl_measure_closedBall_le_of_tangent : ∀ (P n : ℕ) (D : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r₀ : ℝ), MeasurableSet D → 0 < r₀ → μHE[n] (D ∩ closedBall x r₀) ≠ ∞ → HasApproximateTangentSpaceAt n D x Q → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (D ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero
     intro P n D x Q r₀ _ hr₀ hfin hT
     -- Step 1: the cutoff `φ = max(0, min(1, 2 − ‖w‖)) ∈ C_c`, `1_{B̄₁(0)} ≤ φ ≤ 1_{B̄₂(0)}`
     have hout : ∀ w : Euclid P, w ∉ closedBall (0 : Euclid P) 2 → max 0 (min 1 (2 - ‖w‖)) = 0 := by
@@ -1481,6 +1501,10 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
           rw [ENNReal.ofReal_mul hC, ENNReal.ofReal_pow hρ.le, mul_comm (ENNReal.ofReal ρ ^ n)]
   -- ptd_tl_tangent_iff_of_density_zero
   have ptd_tl_tangent_iff_of_density_zero : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((B \ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_measure_closedBall_le_of_tangent
     intro P n A B x r₀ hA hB hAB hr₀ hfin hdens Q
     -- Step 1: for `ρ ≠ 0`, `η_{x,ρ}` is injective and `η_{x,ρ}(S) = (y ↦ x + ρy)⁻¹(S)` is Borel
     have hinj : ∀ ρ : ℝ, ρ ≠ 0 → Injective (Poincare.SimonGMT.Chapter03.blowUpMap x ρ) := by
@@ -1605,6 +1629,10 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact h.congr fun ρ => add_sub_cancel _ _
   -- ptd_ae_approxTangent_iff_of_subset
   have ptd_ae_approxTangent_iff_of_subset : ∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian
+      ptd_tl_blowUp_measure_scaling
     intro P n U A B hU hA hB hAB hBU hfin
     -- Steps 2–4: off one `Hⁿ⌞A`-null set, chosen before `Q`, `x ∈ A` and the excess of `B` over
     -- `A` near `x` is eventually small relative to `Hⁿ(B ∩ B̄_ρ(x))`
@@ -1640,6 +1668,12 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact (hiff C r₁ hr₁ hgrowth).2 hTA
   -- pit_setIntegral_blowUpMap_image
   have pit_setIntegral_blowUpMap_image : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (r : ℝ), 0 < r → ∀ f : Euclid P → ℝ, ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = r⁻¹ ^ n * ∫ y in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset
     intro P n M x r hr f
     -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` is a homeomorphism
     obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P,
@@ -1665,6 +1699,12 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       abs_of_pos (inv_pos.2 hr)]
   -- pit_blowUp_image_setIntegral_eq_rescaled
   have pit_blowUp_image_setIntegral_eq_rescaled : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (b : Euclid n) (r : ℝ) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in F '' B, g y ∂μHE[n] = ∫⁻ x in B, ENNReal.ofReal (J x) * g (F x) ∂volume) → 0 < r → Continuous f → ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap (F b) r '' (F '' B), f z ∂μHE[n] = ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset
     intro P n F B J b r f hF hB hJ hJ0 harea hr hf
     -- blow-up scaling: `∫_{η(F(B))} f dHⁿ = r⁻ⁿ ∫_{F(B)} f ∘ η dHⁿ`, `η = η_{F(b),r}`
     rw [pit_setIntegral_blowUpMap_image P n (F '' B) (F b) r hr f]
@@ -1705,6 +1745,13 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact hsubst.symm
   -- pit_fderiv_lower_bound_of_density
   have pit_fderiv_lower_bound_of_density : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (m : ℝ) (b : Euclid n), 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → ∀ c : Euclid n, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled
     intro P n F B m b hm hB hF hdens c
     set L := fderiv ℝ F b with hL
     have hFL : HasFDerivAt F L b := hF.hasFDerivAt
@@ -1803,6 +1850,13 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun δ hδ => key δ hδ)
   -- pit_integral_closedBall_rescale_tendsto
   have pit_integral_closedBall_rescale_tendsto : ∀ (n : ℕ) (h : Euclid n → ℝ) (b : Euclid n) (R : ℝ), 0 < R → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, h a ∂volume) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, h (b + r • c) ∂volume) (𝓝[>] 0) (𝓝 0) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
     intro n h b R hR hlim
     -- `ω = λ(B̄₁(0)) ∈ (0, ∞)` and `λ(B̄_s(z)) = sⁿ ω` for `s ≥ 0`
     set ω : ℝ := volume.real (closedBall (0 : Euclid n) 1) with hω_def
@@ -1858,6 +1912,14 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact (key r hr).symm
   -- pit_ril_compl_average_tendsto
   have pit_ril_compl_average_tendsto : ∀ (n : ℕ) (B : Set (Euclid n)) (b : Euclid n), MeasurableSet B → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, Bᶜ.indicator (fun _ => (1 : ℝ)) a ∂volume) (𝓝[>] 0) (𝓝 0) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto
     intro n B b hB hlim
     -- `q(ρ).toReal → 1` (`toReal` is continuous at `1 ≠ ∞`), so `1 - q(ρ).toReal → 0`
     have h1 : Tendsto (fun ρ : ℝ =>
@@ -1881,6 +1943,14 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     ring
   -- pit_ril_diffQuot_integral_tendsto
   have pit_ril_diffQuot_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (b : Euclid n) (f : Euclid P → ℝ) (R : ℝ), HasFDerivAt F L b → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
     intro P n F L b f R hF hfc hfs
     -- `D = B̄_R(0)` has finite measure `V`, and `‖c‖ < S = |R| + 1` on `D`
     have hDfin : (volume : Measure (Euclid n)) (closedBall 0 R) < ∞ := measure_closedBall_lt_top
@@ -1943,6 +2013,15 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
         nlinarith
   -- pit_ril_three_term_bound
   have pit_ril_three_term_bound : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ) (R M r : ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → (∀ c, m * ‖c‖ ≤ ‖L c‖) → Continuous f → (∀ w, R ≤ ‖w‖ → f w = 0) → (∀ w, ‖f w‖ ≤ M) → 0 < r → ‖(∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) - J b * (∫ c, f (L c) ∂volume)‖ ≤ K * M * (∫ c in closedBall (0 : Euclid n) (R / m), Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) ∂volume) + M * (∫ c in closedBall (0 : Euclid n) (R / m), ‖J (b + r • c) - J b‖ ∂volume) + J b * (∫ c in closedBall (0 : Euclid n) (R / m), ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto
     intro P n F L B J K m b f R M r hF hB hJ hJK hm hFB hL hf hfR hfM hr
     -- constants: `0 ≤ M`, `0 ≤ J b ≤ K`, `0 ≤ K`, and `λ(D) < ∞` for `D = B̄_{R/m}(0)`
     have hM0 : 0 ≤ M := (norm_nonneg _).trans (hfM 0)
@@ -2080,6 +2159,13 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       integral_const_mul, integral_const_mul, integral_const_mul]
   -- pit_rescaled_integral_tendsto
   have pit_rescaled_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → (∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖) → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) (𝓝[>] 0) (𝓝 (J b * ∫ c, f (fderiv ℝ F b c) ∂volume)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
     intro P n F B J K m b f hF hB hJ hJK hm hFB hdiff hL hdens hLeb hf hfc
     -- `f = 0` off `B_R(0)` and `|f| ≤ M`; the integrals live on `B̄_{R/m}(0)`
     obtain ⟨R, hR, hRf⟩ := hfc.exists_pos_le_norm
@@ -2105,6 +2191,15 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       hm hFB hL hf hRf hM hr
   -- pit_setIntegral_range_linear
   have pit_setIntegral_range_linear : ∀ (P n : ℕ) (T : Euclid n →L[ℝ] Euclid P) (j : ℝ) (f : Euclid P → ℝ), 0 ≤ j → (∀ S : Set (Euclid n), μHE[n] (T '' S) = ENNReal.ofReal j * volume S) → Continuous f → ∫ y in (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = j * ∫ c, f (T c) ∂volume := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
     intro P n T j f hj hT hf
     -- the carrier of the submodule `range T` is the set `T(ℝⁿ)`
     have hrange : (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)) = range T := by
@@ -2120,6 +2215,14 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       ENNReal.toReal_ofReal hj, smul_eq_mul]
   -- ptd_piece_image_approxTangent_ae
   have ptd_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n (F '' B) (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound
     intro P n F B L m hF hB hm hcolip hreg
     have hfin : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
     -- the area Jacobian `J = normDet DF`
@@ -2206,6 +2309,16 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
         hJmeas hJnonneg harea hr f.continuous).symm
   -- ptd_piece_image_measurable_ae_pullback
   have ptd_piece_image_measurable_ae_pullback : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → MeasurableSet (F '' B) ∧ ∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) → ∀ᵐ b ∂(volume.restrict B), p (F b) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
     intro P n F B L m hF hB hm hlow
     -- Step 1: the lower bound makes `F` injective on `B`
     have hinj : InjOn F B := fun a ha a' ha' h => by
@@ -2238,6 +2351,15 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       hinj.leftInvOn_invFunOn hbB⟩
   -- dpf_approxTangent_ae_bilipschitz_piece
   have dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y : Set (Euclid P)) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), IsOpen U → MeasurableSet Y → Y ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (Y ∩ C) ≠ ∞) → LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → F '' B ⊆ Y → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n Y (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      pit_setIntegral_blowUpMap_image pit_blowUp_image_setIntegral_eq_rescaled
+      pit_fderiv_lower_bound_of_density pit_integral_closedBall_rescale_tendsto
+      pit_ril_compl_average_tendsto pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound
+      pit_rescaled_integral_tendsto pit_setIntegral_range_linear
     intro P n U Y F B L m hU hY hYU hfin hF hB hm hbi hdiff hFBY
     -- Step 0(a)–(b): `F(B)` is Borel; `Hⁿ⌞F(B)`-a.e. properties hold at `F(b)` for a.e. `b ∈ B`
     obtain ⟨hA, hpull⟩ := ptd_piece_image_measurable_ae_pullback P n F B L m hF hB hm hbi
@@ -2249,6 +2371,17 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact (hYA _).2 hA'
   -- dpf_itt_ae_of_ae_pieces
   have dpf_itt_ae_of_ae_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (p : Euclid P → Prop), MeasurableSet M → (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) → μHE[n] (M \ ⋃ i, F i '' B i) = 0 → (∀ i, ∀ᵐ b ∂(volume.restrict (B i)), p (F i b)) → ∀ᵐ x ∂(μHE[n].restrict M), p x := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
     intro P n M F B p hM hF hcov hp
     -- `μHE[n] = c • μH[n]` with `c ≠ 0`
     have hc := Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n
@@ -2272,6 +2405,18 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     · exact Or.inl ⟨hxM, hxU⟩
   -- dpf_itt_approxTangentPlane_eq
   have dpf_itt_approxTangentPlane_eq : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n M x Q → approxTangentPlane n M x = Q := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces
     intro P n M x Q hQ
     have h : ∃ Q', HasApproximateTangentSpaceAt n M x Q' := ⟨Q, hQ⟩
     unfold approxTangentPlane
@@ -2279,6 +2424,18 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact h.choose_spec.unique hQ
   -- dpf_itt_bilipschitz_image_locfin
   have dpf_itt_bilipschitz_image_locfin : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ Λ' : NNReal), MeasurableSet M → M ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → φ ⁻¹' U = U → MeasurableSet (φ '' M) ∧ φ '' M ⊆ U ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (φ '' M ∩ C) ≠ ∞ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq
     intro P n U M φ Λ Λ' hM hMU hfin hL hA hU
     -- Step 1: `φ` is continuous (Lipschitz) and injective (antilipschitz)
     have hcont : Continuous φ := hL.continuous
@@ -2314,6 +2471,18 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
         (ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg hn ENNReal.coe_ne_top) hMK) (hle _)
   -- dpf_itt_comp_bilipschitz_piece
   have dpf_itt_comp_bilipschitz_piece : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (φ : Euclid P → Euclid P) (B : Set (Euclid n)) (L Λ Λ' : NNReal) (m : ℝ), LipschitzWith L F → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → Differentiable ℝ φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → LipschitzWith (Λ * L) (φ ∘ F) ∧ (∃ m' : ℝ, 0 < m' ∧ ∀ a ∈ B, ∀ a' ∈ B, m' * ‖a - a'‖ ≤ ‖(φ ∘ F) a - (φ ∘ F) a'‖) ∧ (∀ a ∈ B, DifferentiableAt ℝ (φ ∘ F) a ∧ Injective (fderiv ℝ (φ ∘ F) a)) ∧ ∀ a ∈ B, LinearMap.range (fderiv ℝ (φ ∘ F) a : Euclid n →ₗ[ℝ] Euclid P) = Submodule.map (fderiv ℝ φ (F a) : Euclid P →ₗ[ℝ] Euclid P) (LinearMap.range (fderiv ℝ F a : Euclid n →ₗ[ℝ] Euclid P)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
     intro P n F φ B L Λ Λ' m hF hm hlow hdiff hφ hφinj hφL hφA
     refine ⟨hφL.comp hF, ⟨m / ((Λ' : ℝ) + 1), div_pos hm (by positivity), fun a ha a' ha' => ?_⟩,
       fun a ha => ⟨(hφ (F a)).comp a (hdiff a ha).1, ?_⟩, fun a ha => ?_⟩
@@ -2327,6 +2496,19 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact LinearMap.range_comp _ _
   -- dpf_rectifiable_bilipschitz_pieces
   have dpf_rectifiable_bilipschitz_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)), MeasurableSet M → CountablyRectifiable n M → ∃ (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (m : ℕ → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, 0 < m i) ∧ (∀ i, ∀ a ∈ B i, ∀ a' ∈ B i, m i * ‖a - a'‖ ≤ ‖F i a - F i a'‖) ∧ (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (F i) a ∧ Injective (fderiv ℝ (F i) a)) ∧ (∀ i, MeasurableSet (F i '' B i)) ∧ (∀ i, F i '' B i ⊆ M) ∧ Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) ∧ μHE[n] (M \ ⋃ i, F i '' B i) = 0 := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece
     intro P n M hM hrect
     have hvol : (μHE[n] : Measure (Euclid n)) = volume :=
       EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
@@ -2611,6 +2793,17 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
         · exact Or.inr (mem_iUnion.mpr ⟨j, a, ha, rfl⟩)
   -- dpf_approxTangent_bilipschitz_image_ae
   have dpf_approxTangent_bilipschitz_image_ae : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → ∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (approxTangentPlane n M x) ∧ HasApproximateTangentSpaceAt n (φ '' M) (φ x) (Submodule.map (fderiv ℝ φ x : Euclid P →ₗ[ℝ] Euclid P) (approxTangentPlane n M x)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback
     intro P n U M φ Λ hU hM hMU hrect hloc hφ hφinj hlip hanti hpre
     -- Step 1: bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M` covering `M` up to an `Hⁿ`-null set
     obtain ⟨F, B, m, hFlip, hBmeas, hmpos, hFlow, hFdiff, -, hFM, -, hnull⟩ :=
@@ -2639,6 +2832,20 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact ⟨hb, hφb⟩
   -- dpf_raf_lintegral_image_eq_tsum_pieces
   have dpf_raf_lintegral_image_eq_tsum_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (A : ℕ → Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n] (M \ ⋃ i, A i) = 0 → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∑' i, ∫⁻ y in φ '' A i, g y ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae
     intro P n M A φ Λ hA hAM hdisj hnull hφ hinj g
     -- each `φ(Aᵢ)` is Borel: `φ` is continuous and injective (Lusin–Souslin)
     have hmeas : ∀ i, MeasurableSet (φ '' A i) := fun i =>
@@ -2666,6 +2873,20 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     rw [setLIntegral_congr hae, lintegral_iUnion hmeas hdisj' g]
   -- dpf_raf_piece_area_formula_gram
   have dpf_raf_piece_area_formula_gram : ∀ (P n : ℕ) (Q : Euclid P → Submodule ℝ (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal) (F : Euclid n → Euclid P) (L : NNReal) (B : Set (Euclid n)), Differentiable ℝ φ → LipschitzWith Λ φ → LipschitzWith L F → MeasurableSet B → InjOn F B → InjOn φ (F '' B) → (∀ᵐ b ∂(volume.restrict B), Q (F b) = LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' (F '' B), g y ∂μHE[n] = ∫⁻ x in F '' B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (φ x) ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
     intro P n Q φ Λ F L B hφd hφ hF hB hFi hφi hQ g
     -- Gram identity: `normDet (T|_W) = √det(⟨T eₐ, T e_b⟩)`, `e = stdOrthonormalBasis ℝ V`, `V = W`
     have hgram : ∀ (T : Euclid P →L[ℝ] Euclid P) (V W : Submodule ℝ (Euclid P)), V = W →
@@ -2700,6 +2921,19 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     ring
   -- dpf_area_formula_bilipschitz_rectifiable
   have dpf_area_formula_bilipschitz_rectifiable : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * g (φ x) ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq
+      dpf_itt_bilipschitz_image_locfin dpf_itt_comp_bilipschitz_piece
+      dpf_approxTangent_bilipschitz_image_ae
     intro P n U M φ Λ hU hM hMU hrect hloc hφ1 hφ hφinj g
     -- Step 1: disjoint bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M`, covering `M` up to an `Hⁿ`-null set
     obtain ⟨F, B, m, hF, hB, hm, hlow, hdiff, hFBm, hFB, hdisj, hnull⟩ :=
@@ -2734,6 +2968,21 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       (hφ1.differentiable one_ne_zero) hφ hL (hB i) (hinj i) hφinj.injOn (htan i) g
   -- dpf_det_gram_stdOrthonormalBasis_eq
   have dpf_det_gram_stdOrthonormalBasis_eq : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j))) = Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (L (τ i)) (L (τ j))) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
     intro P n Q L τ hτ hQ
     -- `L' = L ∘ ι_Q : Q → ℝᴾ` and the endomorphism `T = L'^* L'` of `Q`
     let L' : Q →ₗ[ℝ] Euclid P := (L : Euclid P →ₗ[ℝ] Euclid P) ∘ₗ Q.subtype
@@ -2767,6 +3016,22 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact (key (stdOrthonormalBasis ℝ Q)).trans h2.symm
   -- dpf_exists_orthonormal_frame_det_gram
   have dpf_exists_orthonormal_frame_det_gram : ∀ (P n : ℕ) (v : Fin n → Euclid P), LinearIndependent ℝ v → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Submodule.span ℝ (Set.range v) ∧ Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) = Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) ^ 2 ∧ Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) ≠ 0 ∧ |Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j))| ≤ ∏ i, ‖v i‖ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq
     intro P n v hv
     set W := Submodule.span ℝ (Set.range v)
     -- `v` regarded in `W` is a linearly independent spanning family `w`
@@ -2815,6 +3080,21 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
         _ = ‖v i‖ := by rw [show ‖σ i‖ = 1 from b.norm_eq_one i, one_mul]
   -- dpf_unitOrientation_map_gramNormalized
   have dpf_unitOrientation_map_gramNormalized : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n) (L : Euclid P →L[ℝ] Euclid P) (J : ℝ), IsUnitOrientationOf ξ Q → Injective L → J = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j)))) → 0 < J ∧ J ≤ ‖L‖ ^ n ∧ IsUnitOrientationOf (J⁻¹ • ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid P) Q) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
     intro P n Q ξ L J hξ hL hJ
     -- `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `Q`
     obtain ⟨τ, hτ, hτQ, hξτ⟩ := hξ
@@ -2891,6 +3171,23 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       · exact Or.inl fun α => by rw [hζ, hξτ, hατ]; linear_combination -α σ * hs
   -- dpfir_ii_countablyRectifiable_image_of_lipschitz
   have dpfir_ii_countablyRectifiable_image_of_lipschitz : ∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith Λ φ → CountablyRectifiable n M → CountablyRectifiable n (φ '' M) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized
     intro P n M φ Λ hφ hM
     -- `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)` with `Hⁿ(M₀) = 0` and each `Fⱼ` Lipschitz
     obtain ⟨M₀, hM₀, F, hF, hMsub⟩ := hM
@@ -2911,6 +3208,23 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
         exact Or.inr (mem_iUnion.2 ⟨j, v, rfl⟩)
   -- dpfir_ii_map_restrict_image_le_smul
   have dpfir_ii_map_restrict_image_le_smul : ∀ (P n : ℕ) (φ ψ : Euclid P → Euclid P) (Λ : NNReal) (S : Set (Euclid P)), LipschitzWith Λ φ → Measurable ψ → LeftInverse ψ φ → (μHE[n].restrict (φ '' S)).map ψ ≤ ((Λ : ℝ≥0∞) ^ n) • μHE[n].restrict S := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
     intro P n φ ψ Λ S hφ hψ hψφ
     refine Measure.le_iff.2 fun A hA => ?_
     -- `ψ⁻¹(A) ∩ φ(S) = φ(A ∩ S)`, as `ψ ∘ φ = id`
@@ -2928,6 +3242,23 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       hφ.lipschitzOnWith
   -- dpfir_bilipschitz_image_imrep_exists
   have dpfir_bilipschitz_image_imrep_exists : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal) (η : Euclid P → MultiVector P n), Bijective φ → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable η (μHE[n].restrict R.carrier) → (∀ᵐ x ∂(μHE[n].restrict R.carrier), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (φ '' R.carrier) (φ x) Q ∧ IsUnitOrientationOf (η x) Q) → ∃ R' : IMRep U n, R'.carrier = φ '' R.carrier ∧ ∀ x, R'.mult (φ x) = R.mult x ∧ R'.orient (φ x) = η x := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized
     intro P n U R φ Λ η hφ hφL hφA hU hη hηQ
     -- the two-sided inverse `ψ` of `φ` is `Λ`-Lipschitz, hence continuous and measurable
     obtain ⟨ψ, hleft, hright⟩ : ∃ ψ : Euclid P → Euclid P, LeftInverse ψ φ ∧ RightInverse ψ φ :=
@@ -3001,6 +3332,24 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     · exact congrArg η (hleft x)
   -- dpfir_imrep_pairing_continuous_integrable
   have dpfir_imrep_pairing_continuous_integrable : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (β : Euclid P → Covector (Euclid P) n), Continuous β → HasCompactSupport β → tsupport β ⊆ U → Integrable (fun x => (R.mult x : ℝ) * R.orient x (β x)) (μHE[n].restrict R.carrier) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
     intro P n U R β hβ hcpt hU
     set K : Set (Euclid P) := tsupport β
     /- Step 1: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal gives `|⟨α, ξ(x)⟩| = |α(τ)| ≤ ‖α‖`
@@ -3049,6 +3398,25 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact hg.mono' hF hbound
   -- dpfir_integral_eq_of_area_lintegral
   have dpfir_integral_eq_of_area_lintegral : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (φ : Euclid P → Euclid P) (J h f : Euclid P → ℝ), (∀ x, 0 ≤ J x) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y, g y ∂ν = ∫⁻ x, ENNReal.ofReal (J x) * g (φ x) ∂μ) → AEStronglyMeasurable h ν → Integrable f μ → (∀ᵐ x ∂μ, J x * h (φ x) = f x) → Integrable h ν ∧ ∫ y, h y ∂ν = ∫ x, f x ∂μ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable
     intro P μ ν φ J h f hJ harea hh hf hfh
     -- the identity for `g = |h|ₑ`, `ofReal h`, `ofReal (-h)`; the integrands agree `μ`-a.e.
     have habs : ∫⁻ y, ‖h y‖ₑ ∂ν = ∫⁻ x, ‖f x‖ₑ ∂μ := by
@@ -3071,6 +3439,21 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       integral_eq_lintegral_pos_part_sub_lintegral_neg_part hf, hpos, hneg]
   -- dpf_imrep_bilipschitz_image_rep
   have dpf_imrep_bilipschitz_image_rep : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, R'.action (ω : DifferentialForm (Euclid P) n) = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression ptd_tl_ae_excess_le ptd_tl_excess_density_zero
+      ptd_tl_blowUp_measure_scaling ptd_tl_measure_closedBall_le_of_tangent
+      ptd_tl_tangent_iff_of_density_zero ptd_ae_approxTangent_iff_of_subset
+      pit_setIntegral_blowUpMap_image pit_blowUp_image_setIntegral_eq_rescaled
+      pit_fderiv_lower_bound_of_density pit_integral_closedBall_rescale_tendsto
+      pit_ril_compl_average_tendsto pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound
+      pit_rescaled_integral_tendsto pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_raf_lintegral_image_eq_tsum_pieces dpf_raf_piece_area_formula_gram
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpfir_ii_countablyRectifiable_image_of_lipschitz dpfir_ii_map_restrict_image_le_smul
     intro P n U R φ Λ hU hφ hbij hinj hlip hanti hpre hproj
     -- Step 2: `θ ≥ 1` on `M`, so `M` has locally finite `Hⁿ`-measure in `U`
     have hfin : ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (R.carrier ∩ C) ≠ ∞ := by
@@ -3161,6 +3544,26 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       (dpfir_imrep_pairing_continuous_integrable P n U R β hβc hβcs hβU) hJh).2
   -- dpf_pb_imrep_pullback_integral_tendsto
   have dpf_pb_imrep_pullback_integral_tendsto : ∀ (P n : ℕ) (U K' : Set (Euclid P)) (R : IMRep U n) (α : DifferentialForm (Euclid P) n) (ψ : ℕ → Euclid P → Euclid P) (φ : Euclid P → Euclid P) (C : ℝ), IsCompact K' → K' ⊆ U → Continuous α → HasCompactSupport α → tsupport α ⊆ U → (∀ k, ContDiff ℝ 1 (ψ k)) → (∀ k x, x ∉ K' → ψ k x = x) → (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) → (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) → (∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x))) → Tendsto (fun k => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n])) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep
     intro P n U K' R α ψ φ C hK' hK'U hα hαc hαU hψ hψid hψC hψφ hDψ
     -- `C₀ = spt α ∪ K'` is compact, closed (hence measurable) and contained in `U`
     have hC₀ : IsCompact (tsupport α ∪ K') := hαc.isCompact.union hK'
@@ -3242,6 +3645,26 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact (isBoundedBilinearMap_apply.continuous.tendsto _).comp (h1.prodMk_nhds h2)
   -- dpf_pb_smooth_pullback_isTestForm
   have dpf_pb_smooth_pullback_isTestForm : ∀ (P d : ℕ) (K' : Set (Euclid P)) (ψ : Euclid P → Euclid P) (α : DifferentialForm (Euclid P) d), IsCompact K' → ContDiff ℝ (⊤ : ℕ∞) ψ → (∀ x, x ∉ K' → ψ x = x) → IsTestForm α → IsTestForm (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ∧ tsupport (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ⊆ tsupport α ∪ K' := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
     intro P d K' ψ α hK hψ hfix hα
     -- `α` is `C^∞` with compact support
     obtain ⟨hαs, hαc⟩ := hα
@@ -3272,6 +3695,27 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       hsupp⟩
   -- dpf_smooth_approx_compact_perturbation
   have dpf_smooth_approx_compact_perturbation : ∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ (ψ : ℕ → Euclid P → Euclid P) (K' : Set (Euclid P)) (C : ℝ), IsCompact K' ∧ K' ⊆ U ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ψ k)) ∧ (∀ k x, x ∉ K' → ψ k x = x) ∧ (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) ∧ (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) ∧ ∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm
     intro P U K φ hU hK hKU hφ hfix
     -- Step 1: a margin `δ > 0` with `K' = cthickening δ K ⊆ U`
     obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
@@ -3380,6 +3824,26 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact h2.congr fun k => ((hderiv k x).fderiv).symm
   -- dpf_pushforward_formula_boundaryVanishes
   have dpf_pushforward_formula_boundaryVanishes : ∀ (P n : ℕ) (U K : Set (Euclid P)) (T S : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]) → BoundaryVanishes T → BoundaryVanishes S := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep
     intro P n U K T S R φ hU hRT hK hKU hφ hφK hS hT
     -- Step 1: `∂ = 0` in degree `0`; for `n = m + 1` show `∂S(η) = S(dη) = 0` for every `η`
     rcases n with _ | m
@@ -3424,6 +3888,28 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr fun k => (hI k).symm)
   -- dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
   have dpf_pfc_fderiv_norm_le_of_eq_id_off_compact : ∀ (P : ℕ) (K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x, ‖fderiv ℝ φ x‖ ≤ Λ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes
     intro P K φ hK hφ hid
     -- `Dφ` is continuous, so it is bounded by some `c` on the compact set `K`
     obtain ⟨c, hc⟩ := hK.exists_bound_of_continuousOn (hφ.continuous_fderiv one_ne_zero).continuousOn
@@ -3436,6 +3922,28 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact ContinuousLinearMap.norm_id_le.trans (le_max_left _ _)
   -- dpf_pfc_imrep_orient_abs_apply_le
   have dpf_pfc_imrep_orient_abs_apply_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖ := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
     intro P n U R
     filter_upwards [R.orients] with x hx β
     -- `ξ(x)` is `±` evaluation at an orthonormal frame `τ`
@@ -3451,6 +3959,28 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact hβ
   -- dpf_pfc_imrep_pairing_integrable_abs_le
   have dpf_pfc_imrep_pairing_integrable_abs_le : ∀ (P n : ℕ) (U C : Set (Euclid P)) (R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact C → C ⊆ U → AEStronglyMeasurable F (μHE[n].restrict R.carrier) → (∀ x, x ∉ C → F x = 0) → (∀ x, ‖F x‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x (F x)) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n]| ≤ B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
     intro P n U C R F B hC hCU hF hF0 hFB
     -- Step 1: `C` is measurable; step 2: `θ` is measurable
     have hCm : MeasurableSet C := hC.isClosed.measurableSet
@@ -3494,6 +4024,29 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact norm_integral_le_of_norm_le hg hdom
   -- dpf_pfc_testFormOnConverges_zero_uniform
   have dpf_pfc_testFormOnConverges_zero_uniform : ∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
     intro P n U ωs h
     obtain ⟨C, hC, hCU, hsupp, -, hderiv⟩ := h
     have hzero : ∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0 := fun j x hx =>
@@ -3509,6 +4062,28 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       exact hε.le
   -- dpf_pushforward_formula_current_exists
   have dpf_pushforward_formula_current_exists : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_imrep_orient_abs_apply_le
     intro P n U K R φ hK hKU hφ hid
     -- step 1: `‖Dφ(x)‖ ≤ Λ` for every `x`
     obtain ⟨Λ, hΛ0, hΛ⟩ := dpf_pfc_fderiv_norm_le_of_eq_id_off_compact P K φ hK hφ hid
@@ -3595,6 +4170,30 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       _ < ε := mul_lt_of_lt_one_right hε ((div_lt_one (by linarith)).2 (lt_add_one _))
   -- imrep_approxTangent_starProjection_aesm
   have imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
     intro P n U R
     classical
     -- `ev τ = (α ↦ α(τ₁, …, τₙ))`, a continuous alternating map of `τ`
@@ -3788,6 +4387,28 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       ).congr hae.symm
   -- imrep_c1_diffeo_pushforward_im
   have imrep_c1_diffeo_pushforward_im : ∀ (P n : ℕ) (U K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, IsIntegerMultiplicity S ∧ (BoundaryVanishes T → BoundaryVanishes S) ∧ ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_jm_aestronglyMeasurable_sqrt_det_compression dpf_jm_gram_det_eq_det_compression
+      dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le ptd_tl_excess_density_zero
+      ptd_tl_blowUp_measure_scaling ptd_tl_measure_closedBall_le_of_tangent
+      ptd_tl_tangent_iff_of_density_zero ptd_ae_approxTangent_iff_of_subset
+      pit_setIntegral_blowUpMap_image pit_blowUp_image_setIntegral_eq_rescaled
+      pit_fderiv_lower_bound_of_density pit_integral_closedBall_rescale_tendsto
+      pit_ril_compl_average_tendsto pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound
+      pit_rescaled_integral_tendsto pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_pb_imrep_pullback_integral_tendsto dpf_pb_smooth_pullback_isTestForm
+      dpf_smooth_approx_compact_perturbation dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform
     intro P n U K T R φ hU hR hK hKU hφ hbij hinj hid
     -- `φ` is bi-Lipschitz and `φ⁻¹(U) = U`
     obtain ⟨Λ, hLip, hAnti, hpre⟩ :=
@@ -3801,6 +4422,31 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       dpf_pushforward_formula_boundaryVanishes P n U K T S R φ hU hR hK hKU hφ hid hS, hS⟩
   -- fvmb_imrep_ae_unitOrientation_approxTangentPlane
   have fvmb_imrep_ae_unitOrientation_approxTangentPlane : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), IsUnitOrientationOf (R.orient x) (approxTangentPlane n R.carrier x) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_approxTangent_starProjection_aesm imrep_c1_diffeo_pushforward_im
     intro P n U R
     filter_upwards [R.orients] with x hx
     obtain ⟨Q, hQ, hξ⟩ := hx
@@ -3813,6 +4459,32 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     exact hξ
   -- fvmb_gram_det_le_exp_sum_norm_sq_sub
   have fvmb_gram_det_le_exp_sum_norm_sq_sub : ∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ Real.exp (∑ a, ‖v a‖ ^ 2 - (n : ℝ)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_approxTangent_starProjection_aesm imrep_c1_diffeo_pushforward_im
+      fvmb_imrep_ae_unitOrientation_approxTangentPlane
     intro P n v
     classical
     -- `V eₐ = vₐ` and the symmetric operator `S = V*V` on `ℝⁿ`
@@ -3865,6 +4537,32 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
           simp
   -- fvmb_perturbed_frame_sum_norm_sq_sub_le
   have fvmb_perturbed_frame_sum_norm_sq_sub_le : ∀ (P n : ℕ) (A η t : ℝ) (B L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), η ≤ 1 → ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → Orthonormal ℝ τ → |∑ a, inner ℝ (τ a) (B (τ a))| ≤ (n : ℝ) * A ∧ ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ) ≤ 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_approxTangent_starProjection_aesm imrep_c1_diffeo_pushforward_im
+      fvmb_imrep_ae_unitOrientation_approxTangentPlane fvmb_gram_det_le_exp_sum_norm_sq_sub
     intro P n A η t B L τ hη hB hE hτ
     -- `E = L − I − tB`, so `‖E‖ ≤ η|t|`
     set E : Euclid P →L[ℝ] Euclid P := L - ContinuousLinearMap.id ℝ (Euclid P) - t • B with hEdef
@@ -3924,6 +4622,33 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
             ring
   -- fvmb_sqrt_le_first_order_of_le_exp
   have fvmb_sqrt_le_first_order_of_le_exp : ∀ (n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t D g : ℝ, |t| < δ → |D| ≤ (n : ℝ) * A → g ≤ Real.exp (2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2) → Real.sqrt g ≤ 1 + t * D + ε * |t| := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_approxTangent_starProjection_aesm imrep_c1_diffeo_pushforward_im
+      fvmb_imrep_ae_unitOrientation_approxTangentPlane fvmb_gram_det_le_exp_sum_norm_sq_sub
+      fvmb_perturbed_frame_sum_norm_sq_sub_le
     intro n A ε hA hε
     have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     -- Step 1: the constants `c₀`, `K`, `η`, `δ`
@@ -4007,6 +4732,32 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     linarith
   -- fvmb_orthonormal_gram_sqrt_det_le_first_order
   have fvmb_orthonormal_gram_sqrt_det_le_first_order : ∀ (P n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ B L : Euclid P →L[ℝ] Euclid P, ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (L (τ i)) (L (τ j)))) ≤ 1 + t * ∑ a, inner ℝ (τ a) (B (τ a)) + ε * |t| := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_approxTangent_starProjection_aesm imrep_c1_diffeo_pushforward_im
+      fvmb_imrep_ae_unitOrientation_approxTangentPlane
     intro P n A ε hA hε
     -- `0 < η ≤ 1` and `δ` depend only on `n`, `A` and `ε`
     obtain ⟨η, hη, hη1, δ, hδ, hsqrt⟩ := fvmb_sqrt_le_first_order_of_le_exp n A ε hA hε
@@ -4020,6 +4771,34 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       (Real.exp_le_exp.mpr htr)
   -- fvmb_trace_starProjection_comp_eq_sum_inner
   have fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a)) := by
+    clear covectorEuclideanNorm_gram_bounds imrep_represents_massOn_eq_measure
+      dpf_c1_compact_perturbation_bilipschitz dpf_jm_aestronglyMeasurable_sqrt_det_compression
+      dpf_jm_gram_det_eq_det_compression dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le
+      ptd_tl_excess_density_zero ptd_tl_blowUp_measure_scaling
+      ptd_tl_measure_closedBall_le_of_tangent ptd_tl_tangent_iff_of_density_zero
+      ptd_ae_approxTangent_iff_of_subset pit_setIntegral_blowUpMap_image
+      pit_blowUp_image_setIntegral_eq_rescaled pit_fderiv_lower_bound_of_density
+      pit_integral_closedBall_rescale_tendsto pit_ril_compl_average_tendsto
+      pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound pit_rescaled_integral_tendsto
+      pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_approxTangent_starProjection_aesm imrep_c1_diffeo_pushforward_im
+      fvmb_imrep_ae_unitOrientation_approxTangentPlane fvmb_gram_det_le_exp_sum_norm_sq_sub
+      fvmb_perturbed_frame_sum_norm_sq_sub_le fvmb_sqrt_le_first_order_of_le_exp
+      fvmb_orthonormal_gram_sqrt_det_le_first_order
     intro P n Q τ B hτ hQ
     -- `p_Q z = Σₐ ⟪τₐ, z⟫ τₐ`: the right side lies in `Q` and `z` minus it is orthogonal to `Q`
     have hproj : ∀ z : Euclid P, Q.starProjection z = ∑ a, inner ℝ (τ a) z • τ a := by
@@ -4048,6 +4827,31 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
     simp
   -- pushforward_action_massOn_le_first_variation
   have pushforward_action_massOn_le_first_variation : ∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P) (φ : ℝ → Euclid P → Euclid P), IsOpen W → R.measure W ≠ ∞ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → (∀ t, ContDiff ℝ 1 (φ t)) → (∀ t x, x ∉ tsupport X → φ t x = x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t|) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ S : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap (fderiv ℝ (φ t) x)) ∂μHE[n]) → S.massOn W ≤ ENNReal.ofReal ((R.measure W).toReal + t * R.firstVariation X + ε * |t|) := by
+    clear imrep_represents_massOn_eq_measure dpf_c1_compact_perturbation_bilipschitz
+      dpf_jm_aestronglyMeasurable_sqrt_det_compression dpf_jm_gram_det_eq_det_compression
+      dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le ptd_tl_excess_density_zero
+      ptd_tl_blowUp_measure_scaling ptd_tl_measure_closedBall_le_of_tangent
+      ptd_tl_tangent_iff_of_density_zero ptd_ae_approxTangent_iff_of_subset
+      pit_setIntegral_blowUpMap_image pit_blowUp_image_setIntegral_eq_rescaled
+      pit_fderiv_lower_bound_of_density pit_integral_closedBall_rescale_tendsto
+      pit_ril_compl_average_tendsto pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound
+      pit_rescaled_integral_tendsto pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+      ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+      dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+      dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+      dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+      dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+      dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+      dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+      dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+      dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+      dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+      dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+      dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+      dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+      dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+      imrep_c1_diffeo_pushforward_im fvmb_gram_det_le_exp_sum_norm_sq_sub
+      fvmb_perturbed_frame_sum_norm_sq_sub_le fvmb_sqrt_le_first_order_of_le_exp
     intro P n U W R X φ hWo hRW hX hXc hXW _hφ hφid hφD ε hε
     classical
     have hDXc : Continuous (fderiv ℝ X) := hX.continuous_fderiv one_ne_zero
@@ -4214,6 +5018,33 @@ theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : Geometr
       _ = m * (1 + ε' * |t|) + t * R.firstVariation X := hint_h
       _ = m + t * R.firstVariation X + m * ε' * |t| := by ring
       _ ≤ m + t * R.firstVariation X + ε * |t| := by linarith
+  clear covectorEuclideanNorm_gram_bounds dpf_c1_compact_perturbation_bilipschitz
+    dpf_jm_aestronglyMeasurable_sqrt_det_compression dpf_jm_gram_det_eq_det_compression
+    dpf_aestronglyMeasurable_gramJacobian ptd_tl_ae_excess_le ptd_tl_excess_density_zero
+    ptd_tl_blowUp_measure_scaling ptd_tl_measure_closedBall_le_of_tangent
+    ptd_tl_tangent_iff_of_density_zero ptd_ae_approxTangent_iff_of_subset
+    pit_setIntegral_blowUpMap_image pit_blowUp_image_setIntegral_eq_rescaled
+    pit_fderiv_lower_bound_of_density pit_integral_closedBall_rescale_tendsto
+    pit_ril_compl_average_tendsto pit_ril_diffQuot_integral_tendsto pit_ril_three_term_bound
+    pit_rescaled_integral_tendsto pit_setIntegral_range_linear ptd_piece_image_approxTangent_ae
+    ptd_piece_image_measurable_ae_pullback dpf_approxTangent_ae_bilipschitz_piece
+    dpf_itt_ae_of_ae_pieces dpf_itt_approxTangentPlane_eq dpf_itt_bilipschitz_image_locfin
+    dpf_itt_comp_bilipschitz_piece dpf_rectifiable_bilipschitz_pieces
+    dpf_approxTangent_bilipschitz_image_ae dpf_raf_lintegral_image_eq_tsum_pieces
+    dpf_raf_piece_area_formula_gram dpf_area_formula_bilipschitz_rectifiable
+    dpf_det_gram_stdOrthonormalBasis_eq dpf_exists_orthonormal_frame_det_gram
+    dpf_unitOrientation_map_gramNormalized dpfir_ii_countablyRectifiable_image_of_lipschitz
+    dpfir_ii_map_restrict_image_le_smul dpfir_bilipschitz_image_imrep_exists
+    dpfir_imrep_pairing_continuous_integrable dpfir_integral_eq_of_area_lintegral
+    dpf_imrep_bilipschitz_image_rep dpf_pb_imrep_pullback_integral_tendsto
+    dpf_pb_smooth_pullback_isTestForm dpf_smooth_approx_compact_perturbation
+    dpf_pushforward_formula_boundaryVanishes dpf_pfc_fderiv_norm_le_of_eq_id_off_compact
+    dpf_pfc_imrep_orient_abs_apply_le dpf_pfc_imrep_pairing_integrable_abs_le
+    dpf_pfc_testFormOnConverges_zero_uniform dpf_pushforward_formula_current_exists
+    imrep_approxTangent_starProjection_aesm fvmb_imrep_ae_unitOrientation_approxTangentPlane
+    fvmb_gram_det_le_exp_sum_norm_sq_sub fvmb_perturbed_frame_sum_norm_sq_sub_le
+    fvmb_sqrt_le_first_order_of_le_exp fvmb_orthonormal_gram_sqrt_det_le_first_order
+    fvmb_trace_starProjection_comp_eq_sum_inner
   intro P n C R hmin hbd hrep X hX hXc
   -- `∂S₁ = 0 = ∂S₂` gives `∂S₁ = ∂S₂` (vacuous in degree `0`).
   have hsame : ∀ {m : ℕ} (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) m),
