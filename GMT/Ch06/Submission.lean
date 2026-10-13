@@ -359,6 +359,72 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Integrand of the radial homotopy operator.  For a `C^∞` `(k + 1)`-form `ω` and `a ∈ ℕ`, the map
+`F(t, x) = tᵃ • (ω(t • x)).curryLeft x`, i.e. `F(t, x)(v) = tᵃ ω(tx)(x, v)`, is `C^∞` on
+`ℝ × ℝ^P`, and for fixed `t` the derivative of `F(t, ·)` at `x` is
+`w ↦ (v ↦ tᵃ (t Dω(tx)[w](x, v) + ω(tx)(w, v)))`, where `(y, v) = Fin.cons y v`. -/
+theorem Submission.iwl_cr_ro_integrand_contDiff_fderiv :
+    ∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+        ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+            (fun p : ℝ × Eucl P => p.1 ^ a • (ω (p.1 • p.2)).curryLeft p.2) ∧
+          ∀ (t : ℝ) (x w : Eucl P) (v : Fin k → Eucl P),
+            fderiv ℝ (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x w v =
+              t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v)) := by
+  intro P k a ω hω
+  -- The interior product `α ↦ α.curryLeft` as an (opaque) continuous linear map `B`.
+  obtain ⟨B, hB⟩ : ∃ B : Covector (Eucl P) (k + 1) →L[ℝ] (Eucl P →L[ℝ] Covector (Eucl P) k),
+      ∀ α, B α = α.curryLeft :=
+    ⟨(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+        (n := k)).toContinuousLinearMap, fun α => rfl⟩
+  refine ⟨?_, ?_⟩
+  · -- `F(p) = p.1ᵃ • B (ω (p.1 • p.2)) p.2` is built from `C^∞` pieces.
+    have hfun : (fun p : ℝ × Eucl P => p.1 ^ a • (ω (p.1 • p.2)).curryLeft p.2) =
+        fun p => p.1 ^ a • B (ω (p.1 • p.2)) p.2 := by
+      funext p; rw [hB]
+    rw [hfun]
+    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × Eucl P => p.1 • p.2) :=
+      contDiff_fst.smul contDiff_snd
+    -- Naming the codomain `F` lets the normed instances on `Covector` be unified with `B`'s.
+    have h1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × Eucl P => B (ω (p.1 • p.2))) := by
+      exact (ContinuousLinearMap.contDiff (F := Eucl P →L[ℝ] Covector (Eucl P) k) B).comp
+        (hω.comp hs)
+    have h2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun p : ℝ × Eucl P => B (ω (p.1 • p.2)) p.2) :=
+      h1.clm_apply contDiff_snd
+    exact (contDiff_fst.pow a).smul h2
+  · intro t x w v
+    have hfun : (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) =
+        fun z => t ^ a • B (ω (t • z)) z := by
+      funext z; rw [hB]
+    rw [hfun]
+    have hω' : HasFDerivAt ω (fderiv ℝ ω (t • x)) (t • x) :=
+      (hω.differentiable (by simp) (t • x)).hasFDerivAt
+    have hs : HasFDerivAt (fun z : Eucl P => t • z) (t • ContinuousLinearMap.id ℝ (Eucl P)) x :=
+      (hasFDerivAt_id x).const_smul t
+    -- Chain rule for `z ↦ B (ω (t • z))`.
+    have hc : HasFDerivAt (fun z : Eucl P => B (ω (t • z)))
+        (B.comp ((fderiv ℝ ω (t • x)).comp (t • ContinuousLinearMap.id ℝ (Eucl P)))) x := by
+      exact HasFDerivAt.comp (F := Covector (Eucl P) (k + 1))
+        (G := Eucl P →L[ℝ] Covector (Eucl P) k) x
+        (ContinuousLinearMap.hasFDerivAt (F := Eucl P →L[ℝ] Covector (Eucl P) k) B)
+        (hω'.comp x hs)
+    -- Product rule for `z ↦ B (ω (t • z)) z`, then scaling by `tᵃ`.
+    have happ := hc.clm_apply (hasFDerivAt_id x)
+    have hf : HasFDerivAt (fun z : Eucl P => t ^ a • B (ω (t • z)) z)
+        (t ^ a • ((B (ω (t • x))).comp (ContinuousLinearMap.id ℝ (Eucl P)) +
+          (B.comp ((fderiv ℝ ω (t • x)).comp (t • ContinuousLinearMap.id ℝ (Eucl P)))).flip x)) x :=
+      happ.const_smul (t ^ a)
+    -- Evaluate at `w` and `v`; `Matrix.vecCons` is definitionally `Fin.cons`.
+    rw [hf.fderiv]
+    simp only [_root_.smul_apply, _root_.add_apply,
+      ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply, ContinuousLinearMap.flip_apply,
+      ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.add_apply, hB,
+      ContinuousAlternatingMap.curryLeft_apply_apply, map_smul, smul_eq_mul,
+      ContinuousAlternatingMap.curryLeft_smul]
+    rw [add_comm]
+    rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
