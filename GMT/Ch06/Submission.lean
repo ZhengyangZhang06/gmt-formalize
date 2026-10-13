@@ -6461,52 +6461,6 @@ theorem Submission.polyhedral_approx_boundary_mass_cutoff : ∀ (P m : ℕ) (U�
   calc ENNReal.ofReal (X.boundary ψ) = ENNReal.ofReal (A.boundary ψ') := by rw [key]
     _ ≤ A.boundary.massOn W := A.boundary.le_massOn hψ'adm
 
-/-- Locality of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1 (‡)), the locality step in the proof of 6.3: on
-forms `ω` with `tsupport ω ⊆ V`, `V` open, `τ(M, θ, ξ)(ω)` only depends on `M ∩ V` up to
-`Hᵏ`-null sets and on `θ, ξ` up to `Hᵏ ⌞ (M ∩ V)`-null sets.  Both integrands vanish off `V`,
-so `∫_M = ∫_{M ∩ V}` and `∫_{M'} = ∫_{M' ∩ V}`; these agree since `M ∩ V`, `M' ∩ V` are
-`Hᵏ`-a.e. equal and the integrands agree a.e. on `M ∩ V`.  No integrability is needed. -/
-theorem Submission.ltg_tau_congr_on_open :
-    ∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (ξ ξ' : Eucl P → NVector (Eucl P) k)
-      (V : Set (Eucl P)), IsOpen V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 →
-      (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ x = θ' x ∧ ξ x = ξ' x) →
-      ∀ ω : DifferentialForm (Eucl P) k, tsupport ω ⊆ V →
-        tauAction k M θ ξ ω = tauAction k M' θ' ξ' ω := by
-  intro P k M M' θ θ' ξ ξ' V hV hMM' hθξ ω hω
-  -- Both integrands vanish off `V`, since `ω = 0` off `tsupport ω ⊆ V`.
-  have hvan : ∀ (η : Eucl P → ℝ) (ζ : Eucl P → NVector (Eucl P) k) (x : Eucl P), x ∉ V →
-      η x * ζ x (ω x) = 0 := by
-    intro η ζ x hx
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hω h)), map_zero, mul_zero]
-  -- Hence `∫_A = ∫_{A ∩ V}` for both integrands.
-  have hcut : ∀ (A : Set (Eucl P)) (η : Eucl P → ℝ) (ζ : Eucl P → NVector (Eucl P) k),
-      ∫ x in A, η x * ζ x (ω x) ∂(μHE[k] : Measure (Eucl P)) =
-        ∫ x in A ∩ V, η x * ζ x (ω x) ∂(μHE[k] : Measure (Eucl P)) := by
-    intro A η ζ
-    rw [inter_comm, ← Measure.restrict_restrict hV.measurableSet,
-      setIntegral_eq_integral_of_forall_compl_eq_zero (hvan η ζ)]
-  -- `M ∩ V` and `M' ∩ V` differ by subsets of the null set `(M ∆ M') ∩ V`.
-  have hset : M ∩ V =ᵐ[(μHE[k] : Measure (Eucl P))] M' ∩ V := by
-    rw [ae_eq_set]
-    constructor
-    · refine measure_mono_null ?_ hMM'
-      rintro x ⟨⟨hxM, hxV⟩, hx⟩
-      exact ⟨Or.inl ⟨hxM, fun hxM' => hx ⟨hxM', hxV⟩⟩, hxV⟩
-    · refine measure_mono_null ?_ hMM'
-      rintro x ⟨⟨hxM', hxV⟩, hx⟩
-      exact ⟨Or.inr ⟨hxM', fun hxM => hx ⟨hxM, hxV⟩⟩, hxV⟩
-  -- The integrands agree `Hᵏ ⌞ (M ∩ V)`-a.e.
-  have hae : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)),
-      θ x * ξ x (ω x) = θ' x * ξ' x (ω x) := by
-    filter_upwards [hθξ] with x hx
-    rw [hx.1, hx.2]
-  calc tauAction k M θ ξ ω
-      = ∫ x in M ∩ V, θ x * ξ x (ω x) ∂(μHE[k] : Measure (Eucl P)) := hcut M θ ξ
-    _ = ∫ x in M ∩ V, θ' x * ξ' x (ω x) ∂(μHE[k] : Measure (Eucl P)) := integral_congr_ae hae
-    _ = ∫ x in M' ∩ V, θ' x * ξ' x (ω x) ∂(μHE[k] : Measure (Eucl P)) :=
-        setIntegral_congr_set hset
-    _ = tauAction k M' θ' ξ' ω := (hcut M' θ' ξ').symm
-
 /-- **Localization of `T` with finite boundary mass (Simon Ch. 6, proof of 6.3, via slicing
 4.5–4.10 and the cut-off argument of 6.2).**  Assume the slicing theorem.  Let
 `T = τ(M, θ, ξ) ∈ 𝒟ₙ(U)` (`n = m + 1`) be integer multiplicity with `M_W(∂T) < ∞` for all
@@ -6681,6 +6635,36 @@ theorem Submission.br_local_finite_mass_extension : SlicingTheorem → ∀ (P m 
   have hXb : X.boundary.mass < ∞ := lt_of_le_of_lt hcut hbdA
   -- Step 13: conclusion.
   exact ⟨r, hr, ball_subset_closedBall.trans hclr, X, hXIM, hXmass, hXb, hagree⟩
+
+/-- **Simon Ch. 6, 6.3 (Boundary Rectifiability Theorem, p. 170).**  If `T ∈ 𝒟ₙ(U)` is integer
+multiplicity and `M_W(∂T) < ∞` for all `W ⊂⊂ U`, then `∂T` is integer multiplicity
+(`n = m + 1`).  Integer multiplicity is local, so fix `x₀ ∈ U`.  By slicing there are `r > 0` and an
+integer multiplicity `X ∈ 𝒟ₙ(ℝ^P)` with `M(X) + M(∂X) < ∞` that agrees with `T` on forms supported
+in `B_r(x₀)`.  Polyhedral approximation (deformation theorem) and compactness for cycles (8.2) make
+`∂X` integer multiplicity, hence also its restriction to `U`.  For `ω` supported in `B_r(x₀)`,
+`spt dω ⊆ spt ω`, so `∂T(ω) = T(dω) = X(dω) = ∂X(ω)`. -/
+theorem Submission.boundary_rectifiability : BoundaryRectifiability := by
+  intro P m U hU T hT hbd
+  -- Integer multiplicity is local: it suffices to match `∂T` near every `x₀ ∈ U`.
+  refine Submission.br_isIntegerMultiplicity_of_local P m U hU T.boundary fun x₀ hx₀ => ?_
+  -- Localization by slicing: `X = T` on forms supported in `B_r(x₀)`, `M(X) + M(∂X) < ∞`.
+  obtain ⟨r, hr, hrU, X, hXIM, hXmass, hXbd, hXT⟩ :=
+    Submission.br_local_finite_mass_extension Submission.slicing_theorem P m U hU T hT hbd x₀ hx₀
+  -- The finite mass case in `ℝ^P`: `∂X` is integer multiplicity.
+  have hXb : IsIntegerMultiplicity X.boundary :=
+    Submission.br_boundary_isIntegerMultiplicity_of_finite_mass Submission.deformation_theorem
+      Submission.integrality_of_weak_limits P m X hXIM hXmass hXbd
+  -- `∂T` agrees on `B_r(x₀)` with the integer multiplicity current `(∂X)|_U`.
+  refine ⟨ball x₀ r, isOpen_ball, mem_ball_self hr, hrU,
+    X.boundary.restrictDomain (subset_univ U),
+    Submission.br_restrictDomain_isIntegerMultiplicity P m univ U (subset_univ U) hU X.boundary hXb,
+    fun ω hω => ?_⟩
+  have hdω : tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m)) ⊆ ball x₀ r :=
+    (tsupport_exteriorDerivative_subset _).trans hω
+  calc T.boundary ω = T (exteriorDerivativeTestOn U m ω) := GeometricCurrentOn.boundary_apply T ω
+    _ = X (testFormOnInclusion (subset_univ U) (m + 1) (exteriorDerivativeTestOn U m ω)) :=
+        (hXT (exteriorDerivativeTestOn U m ω) hdω).symm
+    _ = X.boundary.restrictDomain (subset_univ U) ω := rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
