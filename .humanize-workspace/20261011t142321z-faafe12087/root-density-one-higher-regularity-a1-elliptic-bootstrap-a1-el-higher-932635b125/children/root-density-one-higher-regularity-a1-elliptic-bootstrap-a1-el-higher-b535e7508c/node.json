@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.rhs_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1",
+  "depth": 5,
+  "title": "Limit of the right side: difference quotients of a C^1_c map against g",
+  "statement": "Let n, l be natural numbers, U ⊆ R^n open, zeta : R^n -> R^l a C^1 map with compact support and tsupport zeta ⊆ U, g : R^n -> R^l continuous on U, and e in R^n. Then ∫_U <h^{-1}(zeta(x) - zeta(x - he)), g(x)> dx -> ∫_U <Dzeta(x)e, g(x)> dx as h -> 0 with h ≠ 0 (along 𝓝[≠] 0), where Dzeta(x)e := fderiv R zeta x e.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (ζ g : Rn n → Rn ℓ) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ContinuousOn g U → Tendsto (fun h : ℝ => ∫ x in U, inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x)) (𝓝[≠] 0) (𝓝 (∫ x in U, inner ℝ (fderiv ℝ ζ x e) (g x)))",
+  "lean_name": "dohr_eb_ehs_del_rhs_tendsto",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.diffquot_uniform-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.diffquot_uniform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-b535e7508c-a1"
+}
