@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.fderiv_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+  "depth": 4,
+  "title": "Uniform bound on Dφ for a C¹ map equal to the identity off a compact set",
+  "statement": "Let P ∈ ℕ, K ⊆ ℝ^P compact, and φ : ℝ^P → ℝ^P a C¹ map with φ(x) = x for every x ∉ K. Then there is Λ ∈ ℝ with Λ ≥ 0 and ‖Dφ(x)‖ ≤ Λ for every x ∈ ℝ^P, where Dφ(x) = fderiv ℝ φ x ∈ L(ℝ^P, ℝ^P) and ‖·‖ is the operator norm.",
+  "lean_statement": "∀ (P : ℕ) (K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x, ‖fderiv ℝ φ x‖ ≤ Λ",
+  "lean_name": "dpf_pfc_fderiv_norm_le_of_eq_id_off_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8-a1"
+}

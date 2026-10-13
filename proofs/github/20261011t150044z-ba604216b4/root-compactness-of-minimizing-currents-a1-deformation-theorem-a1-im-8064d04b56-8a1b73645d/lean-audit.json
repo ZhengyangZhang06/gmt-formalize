@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "89cc74e32b834d504236d9e7aa0d2be5c47bfa5bd616b7fcc5b40ba5e9005836",
+  "git_delta": {
+    "base_commit": "518df27d0aa5f7f43c2205a4e95a6ebb775805d6",
+    "candidate_commit": "9e9baeffcaf4d1c42b6580605c0b8faa1afb6450",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_ims_series_current",
+    "diff_sha256": "67715c1b67b2dd6204c5e40432eb9a0e180df2f639205a40b19c164ceda0fd70",
+    "source_sha256": "0c9ed03af7e0aa20df11280c6909212b91237e9f1459317b044bafe2fec4a335",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_ims_series_current",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), IsOpen U → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass ∧ Y.support ⊆ closure (⋃ r, (X r).support)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
