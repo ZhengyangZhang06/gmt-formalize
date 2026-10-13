@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'ambient_restriction|cycle_competitor|restrictDomain|pushforward' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "rg -l -F 'dtc_bc_lc_rc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition-v*.json'",
+        "git show 0c79e2ab8192c141221cbe30fcd242e4becc6f00:GMT/Ch07/Submission.lean",
+        "git show bff81d31ecb43002d1bfc77f510d3463c6be155f:GMT/Ch07/Submission.lean",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show 8f3bacb2e7f68423e88b488e5939a0d419c646fb:GMT/Ch07/Submission.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "norm_fderiv_le_of_lipschitzOn",
+        "simon_theorem_3_6|simon_remark_3_7_hausdorff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rcaudit-independent-xd0wlj67/SuppliedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-6950e06fcd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-6950e06fcd/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/rcaudit-independent-xd0wlj67/SuppliedProofs.lean"
+      ],
+      "conclusion": "The split appropriately isolates two substantive steps of the selected theorem. Both new names are unreserved; the snapshot contains neither named lemma. All six reused types exactly match their accepted declarations, whose source hashes, frozen contracts, dependency revisions, and standard-axiom comparator records were checked. All eight one-line propositions independently elaborate in generated comparator challenges and match their prose. Names are bare identifiers, and no problematic matrix-unit construction occurs. The reachable dependency graph is acyclic. Independently replaying the supplied child proofs and parent assembly succeeds with only declared prerequisites and standard axioms, without sorryAx, and establishes the exact selected parent type conditionally on those prerequisites."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ambient_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every representation, agreement, and support conclusion. Compact containment supplies ambient integrability; positivity and mass–measure equality give the required null set; support_of_vanishing gives compact support. The supplied Lean proof compiles using exactly the four declared prerequisites."
+    },
+    {
+      "key": "cycle_competitor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the integer-multiplicity competitor, verifies its boundary equality and compactly supported difference, and applies the precise minimality definition. All hypotheses and domain inclusions are accounted for. The supplied Lean proof compiles with exactly its declared prerequisites."
+    },
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The admissible forms correspond in both directions because W ⊆ V ⊆ U, preserving evaluations and coefficient bounds; hence their mass suprema coincide. The accepted declaration is reused with an identical type."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cauchy–Binet duality gives the upper bound and calibrated covectors. The detailed Lusin, extension, smoothing, cutoff, and exhaustion argument establishes the reverse inequality. The exact accepted type and reuse compatibility/axiom checks pass."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A finite cover of the compact test-form support by zero-region sets and a subordinate smooth partition of unity prove vanishing by linearity. The argument works for arbitrary U as stated, and the accepted type is identical."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The density argument proves locality uniformly in the tangent subspace. Restriction, signed cancellation on overlaps, and Cauchy–Binet then prove the remaining conjuncts without circularity, including degree zero. Exact accepted reuse and standard-axiom checks pass."
+    },
+    {
+      "key": "restrict_domain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof checks all representation fields on M ∩ V, transfers tangents using the independently accepted null-difference lemma, and identifies actions because test forms vanish outside V. The original dependency is acyclic, and the reused frozen type is identical."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Relatively compact balls show that every point of U ∖ K lies in the zero region. Consequently support equals K minus the open zero region and is compact. The proof establishes the exact statement, and accepted reuse is verified."
+    }
+  ],
+  "required_changes": []
+}

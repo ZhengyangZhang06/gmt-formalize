@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.retraction_comparison-a1.cycle_competitor-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.retraction_comparison-a1",
+  "depth": 5,
+  "title": "A current minimizing in A is not beaten by adding an integer multiplicity cycle supported in A ∩ W (Simon 7.2.4 (9))",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let U ⊆ ℝ^P be open, A ⊆ ℝ^P, W ⊆ ℝ^P open with W ⊂⊂ U (CompactlyContained W U), and K ⊆ ℝ^P compact with K ⊆ A ∩ W. Let S ∈ 𝒟_n(U) be minimizing in A (IsMinimizingIn S A), and let X ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be integer multiplicity with ∂X = 0 and spt X ⊆ K. Then M_W(S) ≤ M_W(S + X|_U). Here X|_U := X.restrictDomain (U ⊆ ℝ^P) ∈ 𝒟_n(U), so X|_U(ω) = X(ιω) with ι = testFormOnInclusion, and S + X|_U means S − (0 − X|_U).",
+  "lean_statement": "∀ (P m : ℕ) (U A W K : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsMinimizingIn S A → IsOpen W → CompactlyContained W U → IsIntegerMultiplicity X → X.boundary = 0 → IsCompact K → X.support ⊆ K → K ⊆ A ∩ W → S.massOn W ≤ (S - (0 - X.restrictDomain (subset_univ U))).massOn W",
+  "lean_name": "dtc_bc_lc_rc_cycle_competitor",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1-a1",
+      "result_commit": "8f3bacb2e7f68423e88b488e5939a0d419c646fb",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-7d6af561c9-a1"
+}

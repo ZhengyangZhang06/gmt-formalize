@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.retraction_comparison-a1.ambient_restriction-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.retraction_comparison-a1",
+  "depth": 5,
+  "title": "Restriction S⌞W of an integer multiplicity current in U, regarded as an integer multiplicity current in ℝ^P",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open and W ⊆ ℝ^P open with W ⊂⊂ U (CompactlyContained W U: closure W is compact and closure W ⊆ U). Let S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and let R = (M, θ, ξ) be an integer multiplicity representation of S in U (IMRep U n with R.Represents S). Then there are a current Q ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and an integer multiplicity representation R_Q of Q in ℝ^P (IMRep univ n with R_Q.Represents Q) with carrier M ∩ W, multiplicity θ and orientation ξ, such that: (Q1) Q(ιω) = S(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W, where ιω = testFormOnInclusion (U ⊆ ℝ^P) n ω is ω regarded as a test form on ℝ^P; and (Q2) spt Q ⊆ closure(W) ∩ spt S and spt Q is compact. (Q is S⌞W regarded as a current in ℝ^P; its weight is θHⁿ⌞(M ∩ W) = μ_S⌞W.)",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (S : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsOpen W → CompactlyContained W U → R.Represents S → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n), RQ.Represents Q ∧ RQ.carrier = R.carrier ∩ W ∧ RQ.mult = R.mult ∧ RQ.orient = R.orient ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Q (testFormOnInclusion (subset_univ U) n ω) = S ω) ∧ Q.support ⊆ closure W ∩ S.support ∧ IsCompact Q.support",
+  "lean_name": "dtc_bc_lc_rc_ambient_restriction",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-14ae52ec9c-a1"
+}
