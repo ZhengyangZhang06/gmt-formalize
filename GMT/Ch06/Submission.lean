@@ -359,6 +359,37 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **The affine homotopy restricts to its ends and is smooth** (Simon Ch. 6, (2.26), p. 140:
+`h(t, x) = f(x) + t (g(x) − f(x))`).  On `ℝ^{m+1}` write `t(y) = y₀` and `tl(y) = (y₁, …, y_m)`;
+`G = F₀ ∘ tl + t • (F₁ ∘ tl − F₀ ∘ tl)`.  For `y = cons(s, x)`, `t(y) = s` and `tl(y) = x` hold
+definitionally, so `G(cons(0, x)) = F₀(x)` and `G(cons(1, x)) = F₁(x)`.  The maps `t` and `tl` are
+coordinate projections composed with continuous linear equivalences, hence `C^∞`, so `G` is `C^∞`
+when `F₀` and `F₁` are. -/
+theorem Submission.dph_lpf_cmp_affine_homotopy : ∀ (m m' : ℕ) (F₀ F₁ : Eucl m → Eucl m') (G : Eucl (m + 1) → Eucl m'), G = (fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) → (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))) = F₀ ∧ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))) = F₁ ∧ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₀ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₁ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G) := by
+  intro m m' F₀ F₁ G hG
+  subst hG
+  refine ⟨funext fun x => ?_, funext fun x => ?_, fun h₀ h₁ => ?_⟩
+  -- `t(cons(0, x)) = 0` and `tl(cons(0, x)) = x` definitionally (`simp` does not see through
+  -- `EuclideanSpace.equiv`, so restate the goal by `change`).
+  · change F₀ x + (0 : ℝ) • (F₁ x - F₀ x) = F₀ x
+    rw [zero_smul, add_zero]
+  -- Likewise `t(cons(1, x)) = 1` and `tl(cons(1, x)) = x`.
+  · change F₀ x + (1 : ℝ) • (F₁ x - F₀ x) = F₁ x
+    rw [one_smul, add_sub_cancel]
+  -- `Fin.tail` is `C^∞`: each of its coordinates `q ↦ q i.succ` is.
+  · have htail : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Fin.tail : (Fin (m + 1) → ℝ) → Fin m → ℝ) :=
+      contDiff_pi.2 fun i => contDiff_apply ℝ ℝ i.succ
+    -- `tl` is `C^∞`: compose with the continuous linear equivalences.
+    have htl : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun y : Eucl (m + 1) =>
+        (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) :=
+      (EuclideanSpace.equiv (Fin m) ℝ).symm.contDiff.comp
+        (htail.comp (EuclideanSpace.equiv (Fin (m + 1)) ℝ).contDiff)
+    -- `t` is `C^∞`: the coordinate `q ↦ q 0` composed with a continuous linear equivalence.
+    have ht : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun y : Eucl (m + 1) =>
+        EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 :=
+      (contDiff_apply ℝ ℝ (0 : Fin (m + 1))).comp (EuclideanSpace.equiv (Fin (m + 1)) ℝ).contDiff
+    exact (h₀.comp htl).add (ht.smul ((h₁.comp htl).sub (h₀.comp htl)))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
