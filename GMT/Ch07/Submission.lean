@@ -2098,6 +2098,235 @@ theorem Submission.codim1_zsl_perimeter_compactness : ∀ (m : ℕ) (F : ℕ →
   exact ⟨c, hc.mono fun i hi =>
     Submission.codim1_zsl_pc_translation_estimate m (F i) R c (hF i) hi⟩
 
+/-- **Graph integrals under `C¹`-flattening graphs and `L¹_loc`-convergent domains** (Simon 7.5.3,
+7.5.5).  For `G_i(w) = ιw + ι'gᵢ(w)` on `B = B_R(0)` with `gᵢ → b`, `Dgᵢ → 0` uniformly on `B` and
+`Lᵐ((Aᵢ Δ A) ∩ B) → 0`, `∫_{Aᵢ∩B} β(Gᵢ)(DGᵢ e₀, …, DGᵢ e_{m−1}) → ∫_{A∩B} β(ιw + ι'b)(ιe₀, …)`.
+`β` is bounded by `M` and uniformly continuous, and `DGᵢ(w) = ι + ι' ∘ Dgᵢ(w)`, so the multilinear
+bounds `le_opNorm` and `norm_image_sub_le` give `|hᵢ − h| ≤ 2ᵐ|β(Gᵢ) − β(ιw + ι'b)| + Mm2ᵐ‖Dgᵢ‖`
+for the integrands, which therefore converge uniformly on `B`; the integrals then differ by at most
+`Lᵐ(B) sup_B |hᵢ − h| + 2M Lᵐ((Aᵢ Δ A) ∩ B) → 0`. -/
+theorem Submission.codim1_zsl_fl_graph_integral_tendsto : ∀ (m k P : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (b : Euclid k) (R : ℝ) (β : Euclid P → Covector (Euclid P) m) (gs : ℕ → Euclid m → Euclid k) (As : ℕ → Set (Euclid m)) (A : Set (Euclid m)), Continuous β → HasCompactSupport β → (∀ i, MeasurableSet (As i)) → MeasurableSet A → Tendsto (fun i => volume (symmDiff (As i) A ∩ ball (0 : Euclid m) R)) atTop (𝓝 0) → (∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, DifferentiableAt ℝ (gs i) w) → (∀ ε : ℝ, 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, ‖gs i w - b‖ < ε ∧ ‖fderiv ℝ (gs i) w‖ < ε) → Tendsto (fun i => ∫ w in As i ∩ ball 0 R, β (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w (EuclideanSpace.single j (1 : ℝ)))) atTop (𝓝 (∫ w in A ∩ ball 0 R, β (ι w + ι' b) (fun j => ι (EuclideanSpace.single j (1 : ℝ))))) := by
+  intro m k P ι ι' b R β gs As A hβc hβs hAs hA hsymm hH1 hH2
+  classical
+  set B : Set (Euclid m) := ball (0 : Euclid m) R with hB
+  have hBmeas : MeasurableSet B := measurableSet_ball
+  have hBfin : volume B < ⊤ := measure_ball_lt_top
+  obtain ⟨M, hM⟩ := hβc.bounded_above_of_compact_support hβs
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have hβu : UniformContinuous β := hβs.uniformContinuous_of_continuous hβc
+  set e : Fin m → Euclid m := fun j => EuclideanSpace.single j (1 : ℝ) with he
+  have hej : ∀ j, ‖e j‖ = 1 := by intro j; simp [he]
+  set Φ : Euclid P × (Euclid m →L[ℝ] Euclid P) → ℝ := fun p => β p.1 (fun j => p.2 (e j)) with hΦ
+  have hΦc : Continuous Φ := by
+    have h1 : Continuous fun p : Euclid P × (Euclid m →L[ℝ] Euclid P) => β p.1 :=
+      hβc.comp continuous_fst
+    have h2 : Continuous fun p : Euclid P × (Euclid m →L[ℝ] Euclid P) => (fun j => p.2 (e j)) :=
+      continuous_pi fun j => (continuous_eval_const (e j)).comp continuous_snd
+    exact continuous_eval.comp (h1.prodMk h2)
+  set G : ℕ → Euclid m → Euclid P := fun i w => ι w + ι' (gs i w) with hG
+  set H : ℕ → Euclid m → ℝ := fun i w => Φ (G i w, fderiv ℝ (G i) w) with hH
+  set H' : Euclid m → ℝ := fun w => β (ι w + ι' b) (fun j => ι (e j)) with hH'
+  change Tendsto (fun i => ∫ w in As i ∩ B, H i w) atTop (𝓝 (∫ w in A ∩ B, H' w))
+  have hD : ∀ i w, DifferentiableAt ℝ (gs i) w →
+      fderiv ℝ (G i) w = ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp (fderiv ℝ (gs i) w) := by
+    intro i w hw
+    have hι : HasFDerivAt (fun w => ι w) ι.toContinuousLinearMap w :=
+      ι.toContinuousLinearMap.hasFDerivAt
+    have hι' : HasFDerivAt (fun w => ι' (gs i w))
+        (ι'.toContinuousLinearMap.comp (fderiv ℝ (gs i) w)) w :=
+      ι'.toContinuousLinearMap.hasFDerivAt.comp w hw.hasFDerivAt
+    exact (hι.add hι').fderiv
+  have hH'b : ∀ w, ‖H' w‖ ≤ M := by
+    intro w
+    calc ‖H' w‖ ≤ ‖β (ι w + ι' b)‖ * ∏ j, ‖ι (e j)‖ := ContinuousAlternatingMap.le_opNorm _ _
+      _ = ‖β (ι w + ι' b)‖ := by simp [hej]
+      _ ≤ M := hM _
+  have hH'c : Continuous H' := by
+    have h1 : Continuous fun w : Euclid m => β (ι w + ι' b) :=
+      hβc.comp (ι.continuous.add continuous_const)
+    exact (continuous_eval_const (fun j => ι (e j))).comp h1
+  -- pointwise estimate
+  have hpt : ∀ i w, DifferentiableAt ℝ (gs i) w → ‖fderiv ℝ (gs i) w‖ ≤ 1 →
+      ‖H i w - H' w‖ ≤ 2 ^ m * ‖β (G i w) - β (ι w + ι' b)‖ +
+        M * m * 2 ^ m * ‖fderiv ℝ (gs i) w‖ := by
+    intro i w hd hL1
+    set L := fderiv ℝ (gs i) w with hL
+    set u : Fin m → Euclid P := fun j => fderiv ℝ (G i) w (e j) with hueq
+    set u' : Fin m → Euclid P := fun j => ι (e j) with hu'eq
+    have hu : ∀ j, u j = ι (e j) + ι' (L (e j)) := by
+      intro j
+      simp [u, hD i w hd, L]
+    have hunorm : ‖u‖ ≤ 2 := by
+      rw [pi_norm_le_iff_of_nonneg (by norm_num)]
+      intro j
+      rw [hu j]
+      calc ‖ι (e j) + ι' (L (e j))‖ ≤ ‖ι (e j)‖ + ‖ι' (L (e j))‖ := norm_add_le _ _
+        _ = 1 + ‖L (e j)‖ := by rw [LinearIsometry.norm_map, LinearIsometry.norm_map, hej]
+        _ ≤ 1 + ‖L‖ * ‖e j‖ := by gcongr; exact L.le_opNorm _
+        _ ≤ 2 := by rw [hej]; linarith
+    have hu'norm : ‖u'‖ ≤ 1 := by
+      rw [pi_norm_le_iff_of_nonneg zero_le_one]
+      intro j
+      simp [u', hej]
+    have hdiff : ‖u - u'‖ ≤ ‖L‖ := by
+      rw [pi_norm_le_iff_of_nonneg (norm_nonneg _)]
+      intro j
+      rw [Pi.sub_apply, hu j]
+      simp only [u', add_sub_cancel_left, LinearIsometry.norm_map]
+      calc ‖L (e j)‖ ≤ ‖L‖ * ‖e j‖ := L.le_opNorm _
+        _ = ‖L‖ := by rw [hej, mul_one]
+    have h1 : ‖β (G i w) u - β (ι w + ι' b) u‖ ≤ 2 ^ m * ‖β (G i w) - β (ι w + ι' b)‖ := by
+      rw [← ContinuousAlternatingMap.sub_apply]
+      calc _ ≤ ‖β (G i w) - β (ι w + ι' b)‖ * ∏ j, ‖u j‖ :=
+            ContinuousAlternatingMap.le_opNorm _ _
+        _ ≤ ‖β (G i w) - β (ι w + ι' b)‖ * 2 ^ m := by
+          gcongr
+          calc ∏ j, ‖u j‖ ≤ ∏ _j : Fin m, (2 : ℝ) :=
+                Finset.prod_le_prod₀ (fun j _ => norm_nonneg _)
+                  (fun j _ => (norm_le_pi_norm u j).trans hunorm)
+            _ = 2 ^ m := by simp
+        _ = _ := mul_comm _ _
+    have h2 : ‖β (ι w + ι' b) u - β (ι w + ι' b) u'‖ ≤ M * m * 2 ^ m * ‖L‖ := by
+      calc _ ≤ ‖β (ι w + ι' b)‖ * (Fintype.card (Fin m)) *
+              (max ‖u‖ ‖u'‖) ^ (Fintype.card (Fin m) - 1) * ‖u - u'‖ :=
+            ContinuousAlternatingMap.norm_image_sub_le _ _ _
+        _ ≤ M * m * 2 ^ m * ‖L‖ := by
+            rw [Fintype.card_fin]
+            have hmax : max ‖u‖ ‖u'‖ ≤ 2 := max_le hunorm (hu'norm.trans (by norm_num))
+            have hpow : (max ‖u‖ ‖u'‖) ^ (m - 1) ≤ 2 ^ m :=
+              (pow_le_pow_left₀ (le_max_of_le_left (norm_nonneg _)) hmax _).trans
+                (pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _))
+            gcongr
+            exact hM _
+    have hsplit : H i w - H' w =
+        (β (G i w) u - β (ι w + ι' b) u) + (β (ι w + ι' b) u - β (ι w + ι' b) u') := by
+      simp only [H, H', Φ, u, u']
+      ring
+    rw [hsplit]
+    exact (norm_add_le _ _).trans (add_le_add h1 h2)
+  -- uniform convergence on B
+  have hunif : ∀ ε > 0, ∀ᶠ i in atTop, ∀ w ∈ B, ‖H i w - H' w‖ ≤ ε := by
+    intro ε hε
+    obtain ⟨δ, hδ, hδβ⟩ := Metric.uniformContinuous_iff.1 hβu (ε / (2 * 2 ^ m)) (by positivity)
+    set X : ℝ := M * m * 2 ^ m with hX
+    have hX0 : 0 ≤ X := by positivity
+    set η : ℝ := min 1 (ε / (2 * (X + 1))) with hη
+    have hηpos : 0 < η := lt_min one_pos (by positivity)
+    filter_upwards [hH1, hH2 δ hδ, hH2 η hηpos] with i hi1 hi2 hi3
+    intro w hw
+    have hd := hi1 w hw
+    have hL1 : ‖fderiv ℝ (gs i) w‖ ≤ 1 := (hi3 w hw).2.le.trans (min_le_left _ _)
+    have hLη : ‖fderiv ℝ (gs i) w‖ ≤ ε / (2 * (X + 1)) :=
+      (hi3 w hw).2.le.trans (min_le_right _ _)
+    have hβd : ‖β (G i w) - β (ι w + ι' b)‖ ≤ ε / (2 * 2 ^ m) := by
+      rw [← dist_eq_norm]
+      apply le_of_lt
+      apply hδβ
+      rw [dist_eq_norm]
+      simp only [G]
+      rw [add_sub_add_left_eq_sub, ← map_sub, LinearIsometry.norm_map]
+      exact (hi2 w hw).1
+    refine (hpt i w hd hL1).trans ?_
+    have e1 : 2 ^ m * ‖β (G i w) - β (ι w + ι' b)‖ ≤ ε / 2 := by
+      calc 2 ^ m * ‖β (G i w) - β (ι w + ι' b)‖ ≤ 2 ^ m * (ε / (2 * 2 ^ m)) := by gcongr
+        _ = ε / 2 := by field_simp
+    have e2 : X * ‖fderiv ℝ (gs i) w‖ ≤ ε / 2 := by
+      calc X * ‖fderiv ℝ (gs i) w‖ ≤ X * (ε / (2 * (X + 1))) := by gcongr
+        _ ≤ ε / 2 := by
+          rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by positivity)]
+          nlinarith
+    linarith
+  -- measurability
+  have hHmeas : ∀ᶠ i in atTop, AEStronglyMeasurable (H i) (volume.restrict B) := by
+    filter_upwards [hH1] with i hi
+    have hGc : ContinuousOn (G i) B := fun w hw =>
+      (ι.continuous.continuousAt.add
+        (ι'.continuous.continuousAt.comp (hi w hw).continuousAt)).continuousWithinAt
+    have h1 : AEStronglyMeasurable (G i) (volume.restrict B) := hGc.aestronglyMeasurable hBmeas
+    have h2 : AEStronglyMeasurable (fderiv ℝ (G i)) (volume.restrict B) :=
+      (measurable_fderiv ℝ (G i)).aestronglyMeasurable
+    exact hΦc.comp_aestronglyMeasurable (h1.prodMk h2)
+  -- the symmetric differences
+  have hsymm' : Tendsto (fun i => (volume (symmDiff (As i) A ∩ B)).toReal) atTop (𝓝 0) := by
+    have := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hsymm
+    simpa [Function.comp_def] using this
+  set VB : ℝ := (volume B).toReal with hVB
+  have hVB0 : 0 ≤ VB := ENNReal.toReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  filter_upwards [hunif (ε / (2 * (VB + 1))) (by positivity), hunif 1 one_pos, hHmeas,
+    hsymm'.eventually (gt_mem_nhds (show (0 : ℝ) < ε / (4 * (M + 1)) by positivity))]
+    with i hi1 hi1' hi2 hi3
+  have hsB : As i ∩ B ⊆ B := inter_subset_right
+  have hsfin : volume (As i ∩ B) < ⊤ := (measure_mono hsB).trans_lt hBfin
+  have htfin : volume (A ∩ B) < ⊤ := (measure_mono inter_subset_right).trans_lt hBfin
+  have hsmeas : MeasurableSet (As i ∩ B) := (hAs i).inter hBmeas
+  have htmeas : MeasurableSet (A ∩ B) := hA.inter hBmeas
+  have hHi_int : IntegrableOn (H i) (As i ∩ B) := by
+    refine IntegrableOn.of_bound hsfin (hi2.mono_measure (Measure.restrict_mono hsB le_rfl)) (M + 1) ?_
+    refine (ae_restrict_iff' hsmeas).2 (Eventually.of_forall fun w hw => ?_)
+    have h := hi1' w hw.2
+    calc ‖H i w‖ = ‖(H i w - H' w) + H' w‖ := by rw [sub_add_cancel]
+      _ ≤ ‖H i w - H' w‖ + ‖H' w‖ := norm_add_le _ _
+      _ ≤ 1 + M := add_le_add h (hH'b w)
+      _ = M + 1 := add_comm _ _
+  have hH'_int : ∀ s : Set (Euclid m), volume s < ⊤ → IntegrableOn H' s := fun s hs =>
+    IntegrableOn.of_bound hs hH'c.aestronglyMeasurable M (Eventually.of_forall hH'b)
+  -- first term
+  have hT1 : ‖(∫ w in As i ∩ B, H i w) - ∫ w in As i ∩ B, H' w‖ ≤ ε / (2 * (VB + 1)) * VB := by
+    rw [← integral_sub hHi_int (hH'_int _ hsfin)]
+    refine (norm_setIntegral_le_of_norm_le_const hsfin fun w hw => hi1 w hw.2).trans ?_
+    gcongr
+    exact measureReal_mono hsB hBfin.ne
+  -- second term
+  have hT2 : ‖(∫ w in As i ∩ B, H' w) - ∫ w in A ∩ B, H' w‖ ≤
+      2 * M * (volume (symmDiff (As i) A ∩ B)).toReal := by
+    have e1 := integral_inter_add_sdiff htmeas (hH'_int _ hsfin)
+    have e2 := integral_inter_add_sdiff hsmeas (hH'_int _ htfin)
+    rw [inter_comm (A ∩ B)] at e2
+    have hsub1 : (As i ∩ B) \ (A ∩ B) ⊆ symmDiff (As i) A ∩ B := by
+      rintro w ⟨⟨hwA, hwB⟩, hw⟩
+      exact ⟨Or.inl ⟨hwA, fun h => hw ⟨h, hwB⟩⟩, hwB⟩
+    have hsub2 : (A ∩ B) \ (As i ∩ B) ⊆ symmDiff (As i) A ∩ B := by
+      rintro w ⟨⟨hwA, hwB⟩, hw⟩
+      exact ⟨Or.inr ⟨hwA, fun h => hw ⟨h, hwB⟩⟩, hwB⟩
+    have hΔfin : volume (symmDiff (As i) A ∩ B) < ⊤ :=
+      (measure_mono inter_subset_right).trans_lt hBfin
+    have b1 : ‖∫ w in (As i ∩ B) \ (A ∩ B), H' w‖ ≤ M * (volume (symmDiff (As i) A ∩ B)).toReal := by
+      refine (norm_setIntegral_le_of_norm_le_const ((measure_mono hsub1).trans_lt hΔfin)
+        fun w _ => hH'b w).trans ?_
+      gcongr
+      exact measureReal_mono hsub1 hΔfin.ne
+    have b2 : ‖∫ w in (A ∩ B) \ (As i ∩ B), H' w‖ ≤ M * (volume (symmDiff (As i) A ∩ B)).toReal := by
+      refine (norm_setIntegral_le_of_norm_le_const ((measure_mono hsub2).trans_lt hΔfin)
+        fun w _ => hH'b w).trans ?_
+      gcongr
+      exact measureReal_mono hsub2 hΔfin.ne
+    have : (∫ w in As i ∩ B, H' w) - ∫ w in A ∩ B, H' w =
+        (∫ w in (As i ∩ B) \ (A ∩ B), H' w) - ∫ w in (A ∩ B) \ (As i ∩ B), H' w := by
+      linarith
+    rw [this]
+    calc _ ≤ ‖∫ w in (As i ∩ B) \ (A ∩ B), H' w‖ + ‖∫ w in (A ∩ B) \ (As i ∩ B), H' w‖ :=
+          norm_sub_le _ _
+      _ ≤ _ := by linarith
+  rw [dist_eq_norm]
+  have hsum : (∫ w in As i ∩ B, H i w) - ∫ w in A ∩ B, H' w =
+      ((∫ w in As i ∩ B, H i w) - ∫ w in As i ∩ B, H' w) +
+        ((∫ w in As i ∩ B, H' w) - ∫ w in A ∩ B, H' w) := by ring
+  rw [hsum]
+  have hlt1 : ε / (2 * (VB + 1)) * VB < ε / 2 := by
+    rw [div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  have hlt2 : 2 * M * (volume (symmDiff (As i) A ∩ B)).toReal ≤ ε / 2 := by
+    have h3 : (volume (symmDiff (As i) A ∩ B)).toReal < ε / (4 * (M + 1)) := hi3
+    have h4 : 0 ≤ (volume (symmDiff (As i) A ∩ B)).toReal := ENNReal.toReal_nonneg
+    calc 2 * M * (volume (symmDiff (As i) A ∩ B)).toReal
+        ≤ 2 * (M + 1) * (volume (symmDiff (As i) A ∩ B)).toReal := by gcongr; linarith
+      _ ≤ 2 * (M + 1) * (ε / (4 * (M + 1))) := by gcongr
+      _ = ε / 2 := by field_simp; ring
+  calc _ ≤ _ := norm_add_le _ _
+    _ < ε := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
