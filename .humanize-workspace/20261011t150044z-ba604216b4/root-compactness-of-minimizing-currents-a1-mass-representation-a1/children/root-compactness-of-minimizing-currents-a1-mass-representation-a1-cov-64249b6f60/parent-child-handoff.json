@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical); git -C lake-packages-25730c7c/simongmt rev-parse HEAD",
+        "rg -n 'cmr_|massRepresentation' local-references/123e8435b4a2469b/project -g '*.lean' (no match); python3 scan of dag.json lean_name for prefix cmr (none) and of lean_statement for rieszMeasure|C_c|CompactlySupportedContinuousMap|rnDeriv|withDensity|cutoff|exteriorDerivative|LinearMap.trace|Matrix.det",
+        "rg -n 'theorem eLpNorm_le_eLpNorm_fderiv_one|theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem integral_rieszMeasure|theorem haveLebesgueDecomposition_add|theorem singularPart_eq_zero_of_ac|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|def toRealPositiveLinear|theorem eq_toRealPositiveLinear_toReal|theorem tendsto_measure_cthickening_of_isCompact|theorem integral_withDensity_eq_integral_toReal_smul|theorem one_of_mem_closedBall|theorem exists_contDiff_tsupport_subset' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'; rg -n 'singularPart_eq_zero_of_ac|rnDeriv_lt_top' .../Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "grep -n 'theorem simon_theorem_4_14_caratheodory|theorem simon_theorem_4_14_positive_envelope|def IsLocallyBoundedCcFunctional|vectorFunctionalEnvelopeMeasure_isRadon|radonCaratheodoryMeasure_apply|integral_radonCaratheodoryMeasure' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/*.lean; grep -rn 'NullMeasurable|caratheodory' SimonGMT; sed -n 1,120p Chapter06/Representation.lean",
+        "python3 scan of the public-import closure of the contract imports (module headers, public imports only); lake env lean /tmp/cmr-split/T1.lean T2.lean T3.lean T4.lean T5.lean T8.lean (#check availability after import GMT.Ch07.Submission)",
+        "lake env lean /tmp/cmr-split/Stmts.lean (12 frozen child types + parent_check assembly); lake env lean /tmp/cmr-split/PI.lean and /tmp/cmr-split/PII.lean (interface skeletons); lake env lean /tmp/cmr-split/T6.lean T7.lean (#synth MeasurableSpace/BorelSpace/MeasureSpace on EuclideanSpace, toLp coordinate rfl, trace = sum of partials)",
+        "read parent-child-handoff.json of dor_ims_sua_mollify_unit_field, rsd_mw_exists_testForm_approx, covectorEuclideanNorm_gram_bounds; check status accepted and candidate_commit in dag.json",
+        "sed -n 75,110p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py; grep -n 'def _existing_lean_name_problem' -A 40 runtime.py; sed -n 1800,1870p runtime.py; sed -n 555,640p verifier/gmt-compare.py; git show --stat 8abce3204fc05f00ae9a4047981f27a9f9a6ba3b"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/GeneralDifferentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/cmr-split/Stmts.lean",
+        "/tmp/cmr-split/PI.lean",
+        "/tmp/cmr-split/PII.lean",
+        "/tmp/cmr-split/T1.lean",
+        "/tmp/cmr-split/T2.lean",
+        "/tmp/cmr-split/T3.lean",
+        "/tmp/cmr-split/T4.lean",
+        "/tmp/cmr-split/T5.lean",
+        "/tmp/cmr-split/T6.lean",
+        "/tmp/cmr-split/T8.lean",
+        "/tmp/cmr-split/closure_pub.txt"
+      ],
+      "conclusion": "Pinned sources. The snapshot contract (manifest: project b4d606db, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. SimonGMT is pinned at 2b366308.\n\nNot reachable. The proof cites the vector Riesz development (SimonGMT Chapter01 RadonPolarRepresentation, VectorFunctionalEnvelope, RadonCaratheodoryIntegral), Mathlib's Sobolev inequality (SobolevInequality.lean:439) and ContDiffBump.normed. All exist in the pinned sources, but none is in the public import closure of GMT.Ch07.Submission: lake env lean reports unknown identifiers. Leaf candidates may not add imports. Chapter06/Representation.lean only packages conditional MassRepresentation data and says the existence theorem is pending.\n\nIn scope and used:\n- RealRMK.integral_rieszMeasure (RieszMarkovKakutani/Real.lean:345), with its IsFiniteMeasureOnCompacts and Regular instances;\n- toRealPositiveLinear (Topology/ContinuousMap/CompactlySupported.lean:799);\n- haveLebesgueDecomposition_add (Decomposition/Lebesgue.lean:115) and singularPart_eq_zero_of_ac (:252);\n- integral_withDensity_eq_integral_toReal_smul (Bochner/ContinuousLinearMap.lean:318);\n- IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Distribution/AEEqOfIntegralContDiff.lean:205);\n- EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187);\n- tendsto_measure_cthickening_of_isCompact (BorelSpace/Metric.lean:185);\n- ContDiffBump (BumpFunction/Basic.lean:137);\n- Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure;\n- SimonGMT exteriorDerivative_apply, GeometricCurrentOn.le_massOn and boundary_apply.\n\nReuse. Three accepted DAG theorems are reused with identical frozen types: dor_ims_sua_mollify_unit_field, rsd_mw_exists_testForm_approx and covectorEuclideanNorm_gram_bounds. No cmr_ declaration exists in dag.json or in the snapshot.\n\nLean checks. All 12 child types elaborate after `import GMT.Ch07.Submission` in the comparator child scope. The selected type follows in Lean from cmr_exists_massRepresentation_core and cmr_null_of_representation. Skeletons of both assemblies typecheck against the sibling interfaces."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1",
+  "subproblem": {
+    "key": "covector_euclidean_equiv",
+    "title": "Covectors with the coefficient norm form a Euclidean space",
+    "statement": "For all P, n ∈ ℕ there are d ∈ ℕ and a continuous linear equivalence c from the space of n-covectors on ℝ^P (Covector (Euclid P) n, with its operator-norm topology) onto ℝ^d = EuclideanSpace ℝ (Fin d) such that covectorEuclideanNorm α = ‖c(α)‖ for every n-covector α. Here covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_I)²)^{1/2}, with e_I = (e_{I(0)}, …, e_{I(n−1)}) for the standard basis e of ℝ^P.",
+    "lean_statement": "∀ (P n : ℕ), ∃ (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖",
+    "lean_name": "cmr_covector_euclidean_equiv",
+    "depends_on": [
+      "covector_gram_bounds"
+    ],
+    "natural_proof": "Source: parent proof, Notation paragraph: the coefficient map c is an isometry from |·| onto a Euclidean space. Injectivity is taken from the sibling covector_gram_bounds instead of a sorting argument.\n1. Notation. Λ := Covector (Euclid P) n; J := Fin n → Fin P, a finite type; for I ∈ J, e_I := (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)); F := EuclideanSpace ℝ J, a finite-dimensional real inner product space.\n2. Coefficient map. Define A : Λ →ₗ[ℝ] F by A α := WithLp.toLp 2 (fun I => if StrictMono I then α e_I else 0). For each fixed I, α ↦ α e_I is additive and commutes with real scalars (it is evaluation of a continuous alternating map at a fixed tuple), so A is ℝ-linear.\n3. Norm identity. By EuclideanSpace.norm_eq, ‖A α‖ = √(Σ_I ‖(A α) I‖²) = √(Σ_I (if StrictMono I then (α e_I)² else 0)). This uses ‖t‖² = t² for real t and (if p then a else 0)² = if p then a² else 0. The right-hand side is covectorEuclideanNorm α by definition.\n4. Injectivity. If A α = 0 then covectorEuclideanNorm α = 0 by step 3. By part (1) of the sibling covector_gram_bounds, |α v| ≤ 0·√(det(⟨v_i, v_j⟩)) = 0 for every v : Fin n → ℝ^P. Hence α = 0 (ContinuousAlternatingMap.ext), and A is injective.\n5. Isometric identification of the range. Let S := LinearMap.range A, a subspace of F; with the induced inner product it is a finite-dimensional real inner product space. Let d := finrank ℝ S and b := stdOrthonormalBasis ℝ S, an orthonormal basis indexed by Fin d; b.repr : S ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin d) is a linear isometric equivalence. Let e₀ := LinearEquiv.ofInjective A (using step 4), so e₀ : Λ ≃ₗ[ℝ] S and (e₀ α : F) = A α. Let c₀ := e₀.trans b.repr.toLinearEquiv. Then ‖c₀ α‖ = ‖b.repr (e₀ α)‖ = ‖e₀ α‖ = ‖A α‖ = covectorEuclideanNorm α, since the norm of an element of a subspace is its ambient norm.\n6. Continuity. Λ is finite-dimensional, being linearly equivalent to EuclideanSpace ℝ (Fin d) via c₀ (LinearEquiv.finiteDimensional applied to c₀.symm). A linear equivalence between finite-dimensional real normed spaces is a homeomorphism, so c := c₀.toContinuousLinearEquiv : Λ ≃L[ℝ] EuclideanSpace ℝ (Fin d) is a continuous linear equivalence. It satisfies ‖c α‖ = ‖c₀ α‖ = covectorEuclideanNorm α for all α.\n7. Conclusion. d and c satisfy the claim. Consequently |·| = covectorEuclideanNorm is a norm on Λ: |α + β| ≤ |α| + |β|, |tα| = |t||α|, |α| = 0 iff α = 0, and |·| is continuous.",
+    "proof_key_steps": [
+      "The coefficient map A, sending α to α(e_I) on strictly increasing I and to 0 elsewhere, into EuclideanSpace ℝ (Fin n → Fin P) satisfies ‖Aα‖ = covectorEuclideanNorm α.",
+      "A is injective by the Gram bound of covector_gram_bounds.",
+      "range A ≅ ℝ^d isometrically via an orthonormal basis; compose with LinearEquiv.ofInjective.",
+      "Finite-dimensionality upgrades the linear equivalence to a continuous linear equivalence."
+    ]
+  },
+  "audit": {
+    "key": "covector_euclidean_equiv",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The coefficient map has the required norm identity and is injective by the declared Gram-bound dependency. An orthonormal basis of its range supplies the equivalence; finite-dimensionality supplies continuity. No coordinate-spanning theorem is assumed circularly."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60/parent-supplied-natural-proof.json"
+}
