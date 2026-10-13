@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6fdf337a123b5574867452f4f4c18e7a7ad97eff336f895f1e25e98f71b5d116",
+  "git_delta": {
+    "base_commit": "6dd24d38ad12e890f25774fa790b18c8be366631",
+    "candidate_commit": "8cfed59d59685669d3ac4f27f1de03972bc5f42a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_vr_jordan_decomposition",
+    "diff_sha256": "bc4680737e17ac77e6a7cb888f11134a188940a3716684f6d006e6a92f274567",
+    "source_sha256": "fbfc581479c3debee2aed268006612dc01846d9720647ec0de31c1ad90abd6d0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_vr_jordan_decomposition",
+      "statement": "∀ (X : Type) [TopologicalSpace X] (Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M) → ∃ Λ₁ Λ₂ : CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, Λ f = Λ₁ f - Λ₂ f",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
