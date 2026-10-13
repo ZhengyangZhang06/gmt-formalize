@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1.good_radius-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1",
+  "depth": 4,
+  "title": "Good radius: a level in (ρ, ρ') with a prescribed a.e. property, a μ-null sphere and a Markov bound",
+  "statement": "Let P ∈ ℕ, let μ be a measure on (the Borel sets of) ℝ^P, y ∈ ℝ^P, and ρ < ρ' real numbers. Let g : ℝ → [0, ∞] be L¹-a.e. measurable (L¹ = Lebesgue measure on ℝ), let I ∈ [0, ∞] with ∫_ℝ g dL¹ ≤ I (lower Lebesgue integral), and let p be a property of real numbers holding for L¹-a.e. t ∈ ℝ. Assume μ(B̄_{ρ'}(y)) < ∞. Then there is t ∈ ℝ with ρ < t < ρ' such that p(t) holds, μ(∂B_t(y)) = 0, where ∂B_t(y) = {x ∈ ℝ^P : |x − y| = t} (Metric.sphere y t), and g(t) ≤ (2/(ρ' − ρ))·I, the product being computed in [0, ∞] as ENNReal.ofReal(2/(ρ' − ρ))·I.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (ρ ρ' : ℝ) (g : ℝ → ℝ≥0∞) (I : ℝ≥0∞) (p : ℝ → Prop), ρ < ρ' → μ (closedBall y ρ') ≠ ∞ → AEMeasurable g → ∫⁻ t, g t ≤ I → (∀ᵐ t, p t) → ∃ t : ℝ, ρ < t ∧ t < ρ' ∧ p t ∧ μ (sphere y t) = 0 ∧ g t ≤ ENNReal.ofReal (2 / (ρ' - ρ)) * I",
+  "lean_name": "dor_lmb_glc_good_radius",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1-c2deed446a-a1"
+}
