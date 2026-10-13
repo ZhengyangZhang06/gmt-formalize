@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -971,6 +972,99 @@ theorem Submission.pit_setIntegral_range_linear : ∀ (P n : ℕ) (T : Euclid n 
   rw [hrange, hmeas, integral_smul_measure,
     integral_map T.measurable.aemeasurable hf.aestronglyMeasurable,
     ENNReal.toReal_ofReal hj, smul_eq_mul]
+/-- **Simon Ch. 3, 1.4** (approximate tangent spaces of a bi-Lipschitz piece): let `F : ℝⁿ → ℝᴾ`
+be `L`-Lipschitz, `B ⊆ ℝⁿ` Borel and `m > 0` with `m|a − a'| ≤ |F a − F a'|` on `B`, and let `F`
+be differentiable at every point of `B` with injective derivative.  Then for a.e. `b ∈ B`,
+`F(B)` has approximate tangent space `range DF(b)` at `F b`.
+With `J := normDet DF` (Borel, `0 ≤ J ≤ Lⁿ`) the injective area formula holds on `B`.  A.e.
+`b ∈ B` is a density point of `B` and a Lebesgue point of `J`; there
+`∫_{η_{F b,r}(F(B))} f dHⁿ = ∫ 1_B J(b + rc) f(r⁻¹(F(b + rc) − F b)) dc` tends to
+`J(b) ∫ f(DF(b)c) dc = ∫_{range DF(b)} f dHⁿ` as `r ↓ 0`. -/
+theorem Submission.ptd_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n (F '' B) (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F B L m hF hB hm hcolip hreg
+  have hfin : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
+  -- the area Jacobian `J = normDet DF`
+  obtain ⟨J, hJ⟩ : ∃ J : Euclid n → ℝ, J = Poincare.SimonGMT.Chapter02.areaJacobianAt F :=
+    ⟨_, rfl⟩
+  have hJmeas : Measurable J := hJ ▸ Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt F
+  have hJnonneg : ∀ a, 0 ≤ J a := hJ ▸ Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg F
+  -- `Hⁿ(T(S)) = normDet T · λ(S)` for every linear `T`
+  have hlin : ∀ (T : Euclid n →L[ℝ] Euclid P) (S : Set (Euclid n)),
+      μHE[n] (T '' S) = ENNReal.ofReal (T : Euclid n →ₗ[ℝ] Euclid P).normDet * volume S := by
+    intro T S
+    have h := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
+      (T : Euclid n →ₗ[ℝ] Euclid P) S
+    rw [hfin] at h
+    simpa using h
+  have hJlin : ∀ a (S : Set (Euclid n)),
+      μHE[n] (fderiv ℝ F a '' S) = ENNReal.ofReal (J a) * volume S := by
+    intro a S
+    rw [hlin, hJ, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+  -- `J ≤ Lⁿ`: compare `Hⁿ(DF(a)(B̄₁(0)))` with the Lipschitz bound `‖DF(a)‖ ≤ L`
+  have hJle : ∀ a, J a ≤ (L : ℝ) ^ n := by
+    intro a
+    have hTL : ‖fderiv ℝ F a‖₊ ≤ L := by
+      have h := norm_fderiv_le_of_lipschitz ℝ (x₀ := a) hF
+      exact_mod_cast h
+    have hpos : volume (closedBall (0 : Euclid n) 1) ≠ 0 :=
+      (measure_closedBall_pos volume (0 : Euclid n) one_pos).ne'
+    have hfin' : volume (closedBall (0 : Euclid n) 1) ≠ ∞ := measure_closedBall_lt_top.ne
+    have hle : ENNReal.ofReal (J a) * volume (closedBall (0 : Euclid n) 1) ≤
+        (L : ℝ≥0∞) ^ n * volume (closedBall (0 : Euclid n) 1) := by
+      rw [← hJlin a, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume n]
+      calc μHE[n] (fderiv ℝ F a '' closedBall 0 1)
+          ≤ (‖fderiv ℝ F a‖₊ : ℝ≥0∞) ^ n * μHE[n] (closedBall (0 : Euclid n) 1) :=
+            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+              (fderiv ℝ F a).lipschitzWith.lipschitzOnWith
+        _ ≤ (L : ℝ≥0∞) ^ n * μHE[n] (closedBall (0 : Euclid n) 1) := by gcongr
+    have h2 : ENNReal.ofReal (J a) ≤ (L : ℝ≥0∞) ^ n :=
+      (ENNReal.mul_le_mul_iff_left hpos hfin').1 hle
+    rw [← ENNReal.ofReal_le_ofReal_iff (by positivity), ENNReal.ofReal_pow L.coe_nonneg,
+      ENNReal.ofReal_coe_nnreal]
+    exact h2
+  -- `F` is injective on `B`, so the area formula holds on `B` with weight `J`
+  have hinjOn : InjOn F B := by
+    intro a ha a' ha' hFa
+    have h := hcolip a ha a' ha'
+    rw [hFa, sub_self, norm_zero] at h
+    have h' : ‖a - a'‖ ≤ 0 := le_of_mul_le_mul_left (by simpa using h) hm
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+  have harea : ∀ g : Euclid P → ℝ≥0∞,
+      ∫⁻ y in F '' B, g y ∂μHE[n] = ∫⁻ x in B, ENNReal.ofReal (J x) * g (F x) ∂volume := by
+    intro g
+    have h := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hF hB hinjOn g
+    rw [hfin] at h
+    rw [h, hJ]
+  -- `J` is bounded and Borel, hence locally integrable
+  have hJloc : LocallyIntegrable J volume := by
+    rw [locallyIntegrable_iff]
+    intro k hk
+    refine Measure.integrableOn_of_bounded hk.measure_lt_top.ne hJmeas.aestronglyMeasurable
+      (M := (L : ℝ) ^ n) (Eventually.of_forall fun a => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (hJnonneg a)]
+    exact hJle a
+  -- a.e. `b ∈ B` is a density point of `B` and a Lebesgue point of `J`
+  have hleb := IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub (volume : Measure (Euclid n))
+    hJloc 1
+  filter_upwards [ae_restrict_mem hB, Besicovitch.ae_tendsto_measure_inter_div volume B,
+    ae_restrict_of_ae hleb] with b hbB hα hβ
+  have hβ' : Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) :=
+    hβ (fun _ => b) id tendsto_id (eventually_nhdsWithin_of_forall fun ρ (hρ : 0 < ρ) =>
+      mem_closedBall_self (by simpa using hρ.le))
+  obtain ⟨hdb, hinj⟩ := hreg b hbB
+  have hcolb : ∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖ := fun a ha => hcolip a ha b hbB
+  have hγ : ∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖ :=
+    Submission.pit_fderiv_lower_bound_of_density P n F B m b hm hcolb hdb hα
+  refine ⟨?_, fun f => ?_⟩
+  · rw [LinearMap.finrank_range_of_inj (by simpa using hinj), hfin]
+  · rw [Submission.pit_setIntegral_range_linear P n (fderiv ℝ F b) (J b) f (hJnonneg b)
+      (hJlin b) f.continuous]
+    refine (Submission.pit_rescaled_integral_tendsto P n F B J ((L : ℝ) ^ n) m b f hF.continuous
+      hB hJmeas (fun a => ⟨hJnonneg a, hJle a⟩) hm hcolb hdb hγ hα hβ' f.continuous
+      f.hasCompactSupport).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n F B J b r f hF.continuous hB
+      hJmeas hJnonneg harea hr f.continuous).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
