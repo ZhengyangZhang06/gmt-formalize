@@ -1,0 +1,20 @@
+{
+  "node_id": "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/996",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c2d6ad3e021de8215c1c8bde8b550eb049c1418a",
+  "integrated_commit": "",
+  "proof_base_commit": "c36d11c25906697028ef66b85732cab5268c4fa7",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.minimizing_implies_stationary-a1",
+  "requires": [
+    "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+    "root.minimizing_implies_stationary-a1.tangential_deformation-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1"
+  ]
+}

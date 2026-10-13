@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.density_derivative_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "depth": 5,
+  "title": "Co-Lipschitz bounds pass to the derivative at density points",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P, B ⊆ ℝ^n any set, m > 0 and b ∈ ℝ^n. Assume (i) m|a − b| ≤ |F(a) − F(b)| for every a ∈ B; (ii) F is differentiable at b; (iii) λ(B ∩ B̄_ρ(b))/λ(B̄_ρ(b)) → 1 as ρ → 0⁺, where λ is Lebesgue measure on ℝ^n used as an outer measure and the quotient lies in [0,∞]. Then m|c| ≤ |DF(b)c| for every c ∈ ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (m : ℝ) (b : Euclid n), 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → ∀ c : Euclid n, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖",
+  "lean_name": "pit_fderiv_lower_bound_of_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-9baba689b9-a1"
+}

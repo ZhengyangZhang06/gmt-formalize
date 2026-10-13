@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "gramSchmidt|stdOrthonormalBasis|IsUnitOrientationOf|normDet",
+        "dpf_det_gram_stdOrthonormalBasis_eq|dpf_exists_orthonormal_frame_det_gram|dgoj_covector_eq_det_mul_of_mem_span|unitOrientation.*(map|gram)|gramSchmidt",
+        "gramSchmidtOrthonormalBasis|finrank_span_eq_card|theorem adjoint_inner_right|theorem det_toMatrix|theorem is_basis_iff_det|theorem AlternatingMap.eq_smul_basis_det|theorem sum_inner_mul_inner|def mk|lemma prod_le_prod₀",
+        "compContinuousLinearMapCLM|compContinuousLinearMap_apply",
+        "isUnit_iff_isUnit_det",
+        "git show 73310ec921452a01670f397b34d1cf3cd7135598 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-orientation-audit-iwdmbkao/ProofChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-orientation-audit-iwdmbkao/IndependentChecks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/NonsingularInverse.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-f9454fcfd5/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-f9454fcfd5/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c/accepted-candidate.json",
+        "/tmp/gmt-orientation-audit-iwdmbkao/ProofChecks.lean",
+        "/tmp/gmt-orientation-audit-iwdmbkao/IndependentChecks.lean"
+      ],
+      "conclusion": "Accept the split into two new obligations and one accepted reuse. The pinned project b4d606db and Mathlib 25730c7c agree with the tested sources. Searches found no existing snapshot declarations under the proposed names. The DAG and proposal-artifact scans found no conflicting reservation of either new name. The reused declaration has a comparator-passed receipt at commit 73310ec921452a01670f397b34d1cf3cd7135598, an identical frozen type, and no dependencies.\n\nEach supplied natural proof was checked independently against the cited library hypotheses. All names are bare identifiers; all frozen types are standalone one-line propositions matching their prose. Separate Lean checks elaborated the types without child implementations, verified ordinary matrix operations for the Matrix.of constructions, and proved the exact frozen parent assuming only the three child contracts. The children yield J = |det A| > 0, the operator-norm bound, and a uniform orientation sign on the image subspace, including n = 0. Their empty dependency lists are correct and acyclic.\n\nThe proof witnesses and exact-type checks also compiled. Every child, the parent proof, and the conditional assembly depend only on propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_basis_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including the absence of an injectivity requirement. The proof constructs T = L'^* L' on Q and identifies its matrix in any orthonormal basis with the stated Gram matrix. Orthonormality and the span hypothesis make the lifted τ a basis of Q, so both determinants equal det T. This includes the empty basis and requires no circular dependency or deferred argument."
+    },
+    {
+      "key": "gram_schmidt_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type states all three claimed determinant properties and the required frame and span conditions. Linear independence supplies a basis of W = span v and the dimension needed for Gram–Schmidt. Parseval proves G(v) = AᵀA; the basis criterion proves det A ≠ 0; triangularity and Cauchy–Schwarz prove the product bound. All constructions use the intended matrix operations. The proof covers n = 0 without a hidden nonempty-index hypothesis and is complete and non-circular."
+    },
+    {
+      "key": "covector_frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The membership hypotheses justify restricting every b_j to span τ. Orthonormality supplies its basis and identifies the coordinates with the stated inner products; the alternating-form determinant identity then gives the exact conclusion, including n = 0. The supplied proof is independently complete. The bare name validly reuses the comparator-accepted declaration with a byte-identical frozen type and no dependencies."
+    }
+  ],
+  "required_changes": []
+}
