@@ -522,6 +522,93 @@ theorem Submission.dorag_tes_gv_adapted_frame : ∀ (n k : ℕ) (T : Submodule �
     exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h
   exact ⟨hadj, hpT, hι'T, hpyth, hPle⟩
 
+/-- **Graph-plane estimates at one point** (Simon Ch. 5, proof of 4.5, (7), (9), (10),
+`chapter-05.txt` lines 833–872).  `Q = {ιw + ι'(Lw)}` is the graph plane of `L`, `‖L‖ ≤ 1`, over
+`T = ι(ℝⁿ)`, and (Q1), (Q2) are the tilt bounds `|⟨p_Q a, b⟩ − ⟨a, b⟩| ≤ t|a||b|` on `T` and
+`|p_Q e|² ≤ t|e|²` on `Tᗮ`.  Let `α` be the Riesz vector of `λ = proj_j ∘ L`.  Every
+`q = ιw + ι'(Lw) ∈ Q` has `⟨q, ι'ε_j⟩ = λw = ⟨q, ια⟩`, so `p_Q(ι'ε_j) = p_Q(ια)` ((7)).  Hence
+`⟨p_Q(ια), ια⟩ = |p_Q(ια)|² = |p_Q(ι'ε_j)|² ≤ t`, and (Q1) with `a = b = ια` gives
+`‖λ‖² = |ια|² ≤ t + t|ια|² ≤ 2t`.  For `m` with Riesz vector `β`, `⟨ιβ, y⟩ = ⟨β, Py⟩`
+(`dorag_tes_gv_adapted_frame`) gives `m(P p_Q(ι'ε_j)) = ⟨p_Q(ια), ιβ⟩`, Parseval gives
+`Σᵢ λ(eᵢ)m(eᵢ) = ⟨α, β⟩ = ⟨ια, ιβ⟩`, and (Q1) bounds the difference by `t‖λ‖‖m‖ ≤ t‖m‖`. -/
+theorem Submission.dorag_tes_gv_graph_plane_pointwise : ∀ (n k : ℕ) (T Q : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n) (L : Euclid n →L[ℝ] Euclid k) (j : Fin k) (t : ℝ), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → Q = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ L.toLinearMap) → ‖L‖ ≤ 1 → 0 ≤ t → (∀ a b : Euclid (n + k), a ∈ T → b ∈ T → |inner ℝ (Q.starProjection a) b - inner ℝ a b| ≤ t * ‖a‖ * ‖b‖) → (∀ e : Euclid (n + k), e ∈ Tᗮ → ‖Q.starProjection e‖ ^ 2 ≤ t * ‖e‖ ^ 2) → ‖(EuclideanSpace.proj j).comp L‖ ^ 2 ≤ 2 * t ∧ ∀ m : Euclid n →L[ℝ] ℝ, |m (P (Q.starProjection (ι' (EuclideanSpace.single j (1 : ℝ))))) - ∑ i : Fin n, ((EuclideanSpace.proj j).comp L) (EuclideanSpace.single i (1 : ℝ)) * m (EuclideanSpace.single i (1 : ℝ))| ≤ t * ‖m‖ := by
+  intro n k T Q ι ι' P L j t hT hιι' hιT hPι hPι' hQ hL ht hQ1 hQ2
+  obtain ⟨hadj, -, hι'T, -, -⟩ :=
+    Submission.dorag_tes_gv_adapted_frame n k T ι ι' P hT hιι' hιT hPι hPι'
+  -- `λ = proj_j ∘ L` has `|λw| = |(Lw)_j| ≤ |Lw| ≤ |w|`, so `‖λ‖ ≤ 1`
+  have hlamj : ∀ w, (EuclideanSpace.proj j).comp L w = L w j := fun w => rfl
+  have hlam1 : ‖(EuclideanSpace.proj j).comp L‖ ≤ 1 := by
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun w => ?_
+    calc ‖(EuclideanSpace.proj j).comp L w‖ = ‖L w j‖ := by rw [hlamj]
+      _ ≤ ‖L w‖ := PiLp.norm_apply_le (L w) j
+      _ ≤ ‖L‖ * ‖w‖ := L.le_opNorm w
+      _ ≤ 1 * ‖w‖ := mul_le_mul_of_nonneg_right hL (norm_nonneg w)
+  generalize (EuclideanSpace.proj j).comp L = lam at hlam1 hlamj ⊢
+  -- Riesz vectors: `⟨γ, w⟩ = μ w` and `|ιγ| = ‖μ‖`
+  have riesz : ∀ μ : Euclid n →L[ℝ] ℝ,
+      ∃ γ : Euclid n, (∀ w, inner ℝ γ w = μ w) ∧ ‖ι γ‖ = ‖μ‖ := fun μ =>
+    ⟨(InnerProductSpace.toDual ℝ (Euclid n)).symm μ, fun _ => InnerProductSpace.toDual_symm_apply,
+      by rw [ι.norm_map, LinearIsometryEquiv.norm_map]⟩
+  obtain ⟨α, hα, ha⟩ := riesz lam
+  -- (7): `ι'ε_j − ια ⊥ Q`, since `⟨q, ι'ε_j⟩ = λw = ⟨q, ια⟩` for `q = ιw + ι'(Lw)`
+  have hgraph : Q.starProjection (ι' (EuclideanSpace.single j (1 : ℝ))) =
+      Q.starProjection (ι α) := by
+    have hperp : ι' (EuclideanSpace.single j (1 : ℝ)) - ι α ∈ Qᗮ := by
+      rw [Submodule.mem_orthogonal]
+      intro q hq
+      rw [hQ] at hq
+      obtain ⟨w, rfl⟩ := LinearMap.mem_range.1 hq
+      have h1 : inner ℝ (ι w) (ι' (EuclideanSpace.single j (1 : ℝ))) = 0 := hιι' _ _
+      have h2 : inner ℝ (ι' (L w)) (ι' (EuclideanSpace.single j (1 : ℝ))) = lam w := by
+        rw [LinearIsometry.inner_map_map, EuclideanSpace.inner_single_right, hlamj]
+        simp
+      have h3 : inner ℝ (ι w) (ι α) = lam w := by
+        rw [LinearIsometry.inner_map_map, real_inner_comm, hα]
+      have h4 : inner ℝ (ι' (L w)) (ι α) = 0 := by
+        rw [real_inner_comm]
+        exact hιι' _ _
+      simp only [LinearMap.add_apply, LinearMap.coe_comp, Function.comp_apply,
+        LinearIsometry.coe_toLinearMap, ContinuousLinearMap.coe_coe]
+      rw [inner_sub_right, inner_add_left, inner_add_left, h1, h2, h3, h4]
+      ring
+    have h0 := (Submodule.starProjection_apply_eq_zero_iff (K := Q)).2 hperp
+    rwa [map_sub, sub_eq_zero] at h0
+  -- (9): `⟨p_Q(ια), ια⟩ = |p_Q(ια)|² = |p_Q(ι'ε_j)|² ≤ t` by (Q2)
+  have hpa : inner ℝ (Q.starProjection (ι α)) (ι α) = ‖Q.starProjection (ι α)‖ ^ 2 := by
+    have h := Submodule.starProjection_inner_eq_zero (K := Q) (ι α) _
+      (Q.starProjection_apply_mem (ι α))
+    rw [inner_sub_left, sub_eq_zero] at h
+    rw [real_inner_comm, h, real_inner_self_eq_norm_sq]
+  have hpa_le : ‖Q.starProjection (ι α)‖ ^ 2 ≤ t := by
+    have h := hQ2 _ (hι'T (EuclideanSpace.single j (1 : ℝ)))
+    have he : ‖ι' (EuclideanSpace.single j (1 : ℝ))‖ = 1 := by simp
+    rwa [he, one_pow, mul_one, hgraph] at h
+  refine ⟨?_, fun m => ?_⟩
+  · -- (Q1) with `a = b = ια`: `|ια|² ≤ |p_Q(ια)|² + t|ια|² ≤ t + t`
+    have h := hQ1 (ι α) (ι α) (hιT α) (hιT α)
+    rw [hpa, real_inner_self_eq_norm_sq, ha] at h
+    have hsq : ‖lam‖ * ‖lam‖ ≤ 1 := by nlinarith [norm_nonneg lam]
+    nlinarith [(abs_le.1 h).1, mul_le_mul_of_nonneg_left hsq ht]
+  · -- (10): with `β` the Riesz vector of `m`, `m(P y) = ⟨β, P y⟩ = ⟨ιβ, y⟩`
+    obtain ⟨β, hβ, hb⟩ := riesz m
+    have hmP : m (P (Q.starProjection (ι' (EuclideanSpace.single j (1 : ℝ))))) =
+        inner ℝ (Q.starProjection (ι α)) (ι β) := by
+      rw [← hβ, ← hadj, hgraph, real_inner_comm]
+    -- Parseval in the basis `(eᵢ)`: `Σᵢ λ(eᵢ)m(eᵢ) = ⟨α, β⟩ = ⟨ια, ιβ⟩`
+    have hsum : ∑ i : Fin n, lam (EuclideanSpace.single i (1 : ℝ)) *
+        m (EuclideanSpace.single i (1 : ℝ)) = inner ℝ (ι α) (ι β) := by
+      rw [LinearIsometry.inner_map_map,
+        ← (EuclideanSpace.basisFun (Fin n) ℝ).sum_inner_mul_inner α β]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [EuclideanSpace.basisFun_apply, hα, real_inner_comm, hβ]
+    rw [hmP, hsum]
+    calc |inner ℝ (Q.starProjection (ι α)) (ι β) - inner ℝ (ι α) (ι β)|
+        ≤ t * ‖ι α‖ * ‖ι β‖ := hQ1 _ _ (hιT α) (hιT β)
+      _ = t * ‖lam‖ * ‖m‖ := by rw [ha, hb]
+      _ ≤ t * 1 * ‖m‖ :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hlam1 ht) (norm_nonneg m)
+      _ = t * ‖m‖ := by rw [mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
