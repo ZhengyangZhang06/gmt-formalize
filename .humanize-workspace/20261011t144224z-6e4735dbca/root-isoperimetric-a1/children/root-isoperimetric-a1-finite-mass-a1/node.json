@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.finite_mass-a1",
+  "parent_id": "root.isoperimetric-a1",
+  "depth": 2,
+  "title": "Compactly supported integer multiplicity currents have finite mass",
+  "statement": "For all P, n ∈ ℕ, every integer multiplicity current T ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) with compact support spt T has finite mass M(T) < ∞.",
+  "lean_statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n), IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞",
+  "lean_name": "isoperimetric_mass_lt_top",
+  "depends_on": [
+    "root.isoperimetric-a1.vanish_off_support-a1",
+    "root.isoperimetric-a1.covector_eval_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.covector_eval_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-finite-mass-a1-a1"
+}
