@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+  "depth": 3,
+  "title": "Lower bound μ_T(W) ≤ M_W(T) for open W ⊆ U",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and let R = (M, θ, ξ) be an IMRep in U with R.Represents T. Then for every open W ⊆ U, μ_T(W) ≤ M_W(T), i.e. R.measure W ≤ T.massOn W, where R.measure = (H^n⌞M).withDensity θ and T.massOn W = sup{ofReal T(ω) : ω ∈ 𝒟^n(U), spt ω ⊆ W, covectorEuclideanNorm (ω x) ≤ 1 ∀x}.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → R.measure W ≤ T.massOn W",
+  "lean_name": "rsd_mw_measure_le_massOn",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.unit_orientation_dual-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.unit_orientation_dual-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-a1"
+}
