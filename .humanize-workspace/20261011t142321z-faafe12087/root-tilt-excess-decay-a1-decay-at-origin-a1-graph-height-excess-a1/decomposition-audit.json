@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev (Rn|Amb)|def (graphPoint|graphOver)|structure RectifiableVarifold|def (weight|support)|namespace|open |^import|^axiom|sorry",
+        "ae_restrict_mem₀|restrict_restrict |restrict_mono |ae_eq_of_subset_of_measure_ge|addHaar_sphere_of_ne_zero|integral_eq_lintegral_of_nonneg_ae|ofReal_integral_eq_lintegral_ofReal|integrableOn_compact|toReal_le_of_le_ofReal",
+        "tdo_ghe_(ae_mem_support|setLIntegral_weight_le_mul|lintegral_closedBall_ofReal_eq)",
+        "norm_sq_eq",
+        "git show cdb88b48925591849cbb90579af1307d72e56810:GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o Independent.olean Independent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1-g-ee44f55667/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1-g-ee44f55667/isolated-comparator-result.json",
+        "/tmp/ghe-decomp/checks/Full.lean",
+        "/tmp/ghe-independent-review-235yj0jl/Independent.lean",
+        "/tmp/ghe-independent-review-235yj0jl/Independent.log"
+      ],
+      "conclusion": "The split appropriately isolates three reusable measure-theoretic obligations and one exact accepted reuse, all contributing to the selected tdo_graph_height_excess. The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected definitions and library sources match the compilation environment. No competing reservations were found for the three new names. The reused declaration has an identical frozen type and confirmed comparator acceptance at cdb88b48925591849cbb90579af1307d72e56810. Dependencies remain acyclic, including its existing graph-coordinate prerequisite.\n\nFresh isolated Lean compilation succeeded: every raw proposition elaborates before the children are declared, exact-type comparator checks pass, and all four child proofs use only propext, Classical.choice and Quot.sound. The supplied assembly proves the exact selected parent conditional only on its two declared sibling contracts. Omitting the finite-weight step is justified by the pinned nonnegative Bochner conversion theorem and the established finite lower-integral bound. Euclidean L2 norms and volume instances are appropriate; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ae_mem_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree. Each proof step is valid: conull measure support, concentration of the restricted measure on the null-measurable carrier, absolute continuity, and carrier_subset yield concentration on V.support. No measurability or openness of U is silently assumed. The fresh bare name is unreserved, and the proof is complete and non-circular."
+    },
+    {
+      "key": "weight_density_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and integral measures match the prose. The proof correctly transfers the bound only where the density is nonzero, handles zero density even for infinite g, and applies restriction monotonicity. No sign assumption on C is needed. The fresh bare name is unreserved; the complete proof establishes the exact independently elaborated proposition."
+    },
+    {
+      "key": "ball_lintegral_ofreal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The null-sphere argument applies for every n, including zero, because r is positive. Compact continuity supplies integrability without requiring global measurability of φ; nonnegativity permits the stated Bochner conversion. The proof establishes exactly the open-ball/closed-ball equality. The one-line type is independent, and the fresh bare name is unreserved."
+    },
+    {
+      "key": "graph_map_sqrt_two",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inline coordinate identities, Euclidean squared-norm calculation, norm preservation, and nonnegative square comparison prove part (a); f(0)=0 and 0∈D correctly establish part (b). The proof is complete and non-circular. The bare name reuses a comparator-accepted declaration with an identical frozen type and compatible standard axioms. Part (a) supplies the graph continuity required by this parent."
+    }
+  ],
+  "required_changes": []
+}
