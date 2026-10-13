@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "Push-forward of an integer multiplicity representation by η_{x,λ}",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P, λ > 0, η = η_{x,λ}, and let R = (M, θ, ξ) be an integer multiplicity representation (IMRep) of T in U. Then there is an IMRep R' of η_{x,λ#}T in η(U) such that μ_{R'}(B) = ofReal(λ^{−n})·μ_R(η⁻¹(B)) for every Borel B ⊆ ℝ^P, where μ_R = θHⁿ⌞M (IMRep.measure).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)",
+  "lean_name": "dtc_blowUp_imrep",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1-a1"
+}
