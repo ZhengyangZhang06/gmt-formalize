@@ -531,6 +531,44 @@ theorem Submission.cbr_ci_cp_tr_smooth_approx_of_continuous : ∀ (P : ℕ) (g :
       (fun y hy => (hgδ y ((mem_ball.1 hy).trans_le hkN |>.trans hN)).le)
     exact h.trans_lt (half_lt_self hε)
 
+/-- **Smooth test functions determine measures finite on compacts** (steps 6–7 of the
+translation-invariance argument): if `μ, ν` on `ℝᴾ` are finite on compact sets and
+`∫ φ dμ = ∫ φ dν` for every `C^∞` `φ` with compact support, then `μ = ν`.  Both measures are
+locally finite, hence regular on the `σ`-compact metric space `ℝᴾ`, so by Riesz uniqueness it
+suffices to compare `∫ f` for `f ∈ C_c(ℝᴾ, ℝ)`.  Approximate `f` by `C^∞` functions `uₖ`
+vanishing off a compact `K`, with `|uₖ| ≤ C` and `uₖ → f` pointwise
+(`cbr_ci_cp_tr_smooth_approx_of_continuous`): then `∫ uₖ dμ = ∫ uₖ dν`, and dominated
+convergence with the bound `C·1_K` gives `∫ uₖ dμ → ∫ f dμ` and `∫ uₖ dν → ∫ f dν`. -/
+theorem Submission.cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq : ∀ (P : ℕ) (μ ν : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ y ∂μ = ∫ y, φ y ∂ν) → μ = ν := by
+  intro P μ ν hμ hν hφ
+  -- step 1: `μ, ν` are finite on compacts, hence locally finite and regular on `ℝᴾ`
+  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => hμ K hK⟩
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  -- step 2: by Riesz uniqueness it suffices to compare `∫ f` for `f ∈ C_c(ℝᴾ, ℝ)`
+  refine Measure.ext_of_integral_eq_on_compactlySupported fun f => ?_
+  -- step 3: `C^∞` approximants `uₖ → f`, vanishing off a compact `K`, with `|uₖ| ≤ C`
+  obtain ⟨K, C, u, hK, hu, huK, huC, hlim⟩ :=
+    Submission.cbr_ci_cp_tr_smooth_approx_of_continuous P f f.continuous f.hasCompactSupport
+  -- step 5: dominated convergence with the bound `C·1_K`, for `m = μ` and `m = ν`
+  have hdom : ∀ m : Measure (Euclid P), m K < ∞ →
+      Tendsto (fun k => ∫ x, u k x ∂m) atTop (𝓝 (∫ x, f x ∂m)) := fun m hm =>
+    tendsto_integral_of_dominated_convergence (K.indicator fun _ => C)
+      (fun k => (hu k).continuous.aestronglyMeasurable)
+      ((integrableOn_const hm.ne).integrable_indicator hK.measurableSet)
+      (fun k => Eventually.of_forall fun x => by
+        by_cases hx : x ∈ K
+        · rw [indicator_of_mem hx, Real.norm_eq_abs]
+          exact huC k x
+        · rw [indicator_of_notMem hx, huK k x hx, norm_zero])
+      (Eventually.of_forall hlim)
+  -- step 4: each `uₖ` is a `C^∞` test function, so `∫ uₖ dμ = ∫ uₖ dν`
+  have heq : (fun k => ∫ x, u k x ∂μ) = fun k => ∫ x, u k x ∂ν :=
+    funext fun k => hφ (u k) (hu k) (HasCompactSupport.intro hK (huK k))
+  -- step 6: limits in `ℝ` are unique
+  have hlimμ := hdom μ (hμ K hK)
+  rw [heq] at hlimμ
+  exact tendsto_nhds_unique hlimμ (hdom ν (hν K hK))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
