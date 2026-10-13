@@ -458,6 +458,173 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Symmetry of the second derivative of a `C²` map `V : ℝⁿ → ℝ^ℓ` (Schwarz–Clairaut):
+`D²V(x)(v)(w) = D²V(x)(w)(v)`.  Mathlib's `ContDiffAt.isSymmSndFDerivAt` is not imported here, so
+we argue with the second difference `Δ(t) = V(x + ta + tb) − V(x + ta) − V(x + tb) + V(x)`:
+continuity of `z ↦ D²V(z)(b)` and two mean value inequalities (along `[y, y + tb]`, then along
+`[x, x + ta]`) give `‖Δ(t) − t² D²V(x)(b)(a)‖ ≤ δ t² ‖a‖` for small `t > 0`.  As `Δ` is symmetric
+in `(a, b)`, `‖D²V(x)(w)(v) − D²V(x)(v)(w)‖ ≤ δ (‖v‖ + ‖w‖)` for every `δ > 0`. -/
+theorem dohr_eb_sch_liou_snd_deriv_symm : ∀ (n ℓ : ℕ) (V : Rn n → Rn ℓ), ContDiff ℝ 2 V → ∀ x v w : Rn n, fderiv ℝ (fderiv ℝ V) x v w = fderiv ℝ (fderiv ℝ V) x w v := by
+  intro n ℓ V hV x v w
+  have hDV : ContDiff ℝ 1 (fderiv ℝ V) := hV.fderiv_right (by norm_num)
+  have hDVd : Differentiable ℝ (fderiv ℝ V) := hDV.differentiable one_ne_zero
+  have hVd : Differentiable ℝ V := hV.differentiable (by norm_num)
+  -- z ↦ D²V(z) b is continuous (values in L)
+  have hHcont : ∀ b : Rn n, Continuous (fun z => fderiv ℝ (fderiv ℝ V) z b) := fun b =>
+    (hDV.continuous_fderiv_apply one_ne_zero).comp (continuous_id.prodMk continuous_const)
+  -- inner estimate along the segment [y, y + t b], applied to a vector a
+  have inner : ∀ a b : Rn n, ∀ δ : ℝ, 0 < δ → ∃ r > 0, ∀ y : Rn n, ∀ t : ℝ, 0 ≤ t →
+      ‖y - x‖ + t * ‖b‖ < r →
+      ‖fderiv ℝ V (y + t • b) a - fderiv ℝ V y a - t • fderiv ℝ (fderiv ℝ V) x b a‖ ≤
+        δ * ‖a‖ * t := by
+    intro a b δ hδ
+    have hc : Continuous (fun z => ‖fderiv ℝ (fderiv ℝ V) z b - fderiv ℝ (fderiv ℝ V) x b‖) :=
+      ((hHcont b).sub continuous_const).norm
+    have h0 : ‖fderiv ℝ (fderiv ℝ V) x b - fderiv ℝ (fderiv ℝ V) x b‖ < δ := by
+      rw [sub_self, norm_zero]; exact hδ
+    have h1 : ∀ᶠ z in 𝓝 x, ‖fderiv ℝ (fderiv ℝ V) z b - fderiv ℝ (fderiv ℝ V) x b‖ < δ :=
+      hc.continuousAt.eventually_lt continuousAt_const h0
+    obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.mp h1
+    refine ⟨r, hr, fun y t ht hyt => ?_⟩
+    have hg : ∀ s ∈ Icc (0 : ℝ) t, HasDerivWithinAt
+        (fun s : ℝ => fderiv ℝ V (y + s • b) a - s • fderiv ℝ (fderiv ℝ V) x b a)
+        (fderiv ℝ (fderiv ℝ V) (y + s • b) b a - fderiv ℝ (fderiv ℝ V) x b a) (Icc 0 t) s := by
+      intro s _
+      have h1 : HasDerivAt (fun s : ℝ => y + s • b) b s := by
+        simpa using ((hasDerivAt_id s).smul_const b).const_add y
+      have h2 : HasDerivAt (fun s : ℝ => fderiv ℝ V (y + s • b))
+          (fderiv ℝ (fderiv ℝ V) (y + s • b) b) s :=
+        (hDVd (y + s • b)).hasFDerivAt.comp_hasDerivAt s h1
+      have h2a : HasDerivAt (fun s : ℝ => fderiv ℝ V (y + s • b) a)
+          (fderiv ℝ (fderiv ℝ V) (y + s • b) b a) s := by
+        have := h2.clm_apply (hasDerivAt_const s a)
+        simpa using this
+      have h3 : HasDerivAt (fun s : ℝ => s • fderiv ℝ (fderiv ℝ V) x b a)
+          (fderiv ℝ (fderiv ℝ V) x b a) s := by
+        simpa using (hasDerivAt_id s).smul_const (fderiv ℝ (fderiv ℝ V) x b a)
+      exact (h2a.sub h3).hasDerivWithinAt
+    have hbound : ∀ s ∈ Ico (0 : ℝ) t,
+        ‖fderiv ℝ (fderiv ℝ V) (y + s • b) b a - fderiv ℝ (fderiv ℝ V) x b a‖ ≤ δ * ‖a‖ := by
+      intro s hs
+      have hlt : ‖fderiv ℝ (fderiv ℝ V) (y + s • b) b - fderiv ℝ (fderiv ℝ V) x b‖ < δ := by
+        apply hball
+        rw [dist_eq_norm]
+        calc ‖y + s • b - x‖ = ‖(y - x) + s • b‖ := by congr 1; abel
+          _ ≤ ‖y - x‖ + ‖s • b‖ := norm_add_le _ _
+          _ = ‖y - x‖ + s * ‖b‖ := by rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hs.1]
+          _ ≤ ‖y - x‖ + t * ‖b‖ := by gcongr; exact hs.2.le
+          _ < r := hyt
+      calc ‖fderiv ℝ (fderiv ℝ V) (y + s • b) b a - fderiv ℝ (fderiv ℝ V) x b a‖
+          = ‖(fderiv ℝ (fderiv ℝ V) (y + s • b) b - fderiv ℝ (fderiv ℝ V) x b) a‖ := by simp
+        _ ≤ ‖fderiv ℝ (fderiv ℝ V) (y + s • b) b - fderiv ℝ (fderiv ℝ V) x b‖ * ‖a‖ :=
+          ContinuousLinearMap.le_opNorm _ _
+        _ ≤ δ * ‖a‖ := by gcongr
+    have h := norm_image_sub_le_of_norm_deriv_le_segment' hg hbound t ⟨ht, le_rfl⟩
+    simp only [zero_smul, add_zero, sub_zero] at h
+    calc ‖fderiv ℝ V (y + t • b) a - fderiv ℝ V y a - t • fderiv ℝ (fderiv ℝ V) x b a‖
+        = ‖fderiv ℝ V (y + t • b) a - t • fderiv ℝ (fderiv ℝ V) x b a - fderiv ℝ V y a‖ := by
+          congr 1; abel
+      _ ≤ δ * ‖a‖ * t := h
+  -- outer estimate: the second difference is ≈ t² D²V(x)(b)(a)
+  have outer : ∀ a b : Rn n, ∀ δ : ℝ, 0 < δ → ∃ r > 0, ∀ t : ℝ, 0 < t →
+      t * (‖a‖ + ‖b‖) < r →
+      ‖(V (x + t • a + t • b) - V (x + t • a) - V (x + t • b) + V x) -
+          (t * t) • fderiv ℝ (fderiv ℝ V) x b a‖ ≤ δ * t * (t * ‖a‖) := by
+    intro a b δ hδ
+    obtain ⟨r, hr, hin⟩ := inner a b δ hδ
+    refine ⟨r, hr, fun t ht htr => ?_⟩
+    have hk : ∀ s ∈ Icc (0 : ℝ) t, HasDerivWithinAt
+        (fun s : ℝ => V (x + s • a + t • b) - V (x + s • a) -
+          s • (t • fderiv ℝ (fderiv ℝ V) x b a))
+        (fderiv ℝ V (x + s • a + t • b) a - fderiv ℝ V (x + s • a) a -
+          t • fderiv ℝ (fderiv ℝ V) x b a) (Icc 0 t) s := by
+      intro s _
+      have h1 : HasDerivAt (fun s : ℝ => x + s • a + t • b) a s := by
+        simpa using (((hasDerivAt_id s).smul_const a).const_add x).add_const (t • b)
+      have h1' : HasDerivAt (fun s : ℝ => x + s • a) a s := by
+        simpa using ((hasDerivAt_id s).smul_const a).const_add x
+      have h2 := (hVd (x + s • a + t • b)).hasFDerivAt.comp_hasDerivAt s h1
+      have h3 := (hVd (x + s • a)).hasFDerivAt.comp_hasDerivAt s h1'
+      have h4 : HasDerivAt (fun s : ℝ => s • (t • fderiv ℝ (fderiv ℝ V) x b a))
+          (t • fderiv ℝ (fderiv ℝ V) x b a) s := by
+        simpa using (hasDerivAt_id s).smul_const (t • fderiv ℝ (fderiv ℝ V) x b a)
+      exact ((h2.sub h3).sub h4).hasDerivWithinAt
+    have hbound : ∀ s ∈ Ico (0 : ℝ) t,
+        ‖fderiv ℝ V (x + s • a + t • b) a - fderiv ℝ V (x + s • a) a -
+          t • fderiv ℝ (fderiv ℝ V) x b a‖ ≤ δ * t * ‖a‖ := by
+      intro s hs
+      have hy : ‖(x + s • a) - x‖ + t * ‖b‖ < r := by
+        rw [add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg hs.1]
+        have : s * ‖a‖ ≤ t * ‖a‖ := by gcongr; exact hs.2.le
+        nlinarith
+      have h := hin (x + s • a) t ht.le hy
+      calc ‖fderiv ℝ V (x + s • a + t • b) a - fderiv ℝ V (x + s • a) a -
+            t • fderiv ℝ (fderiv ℝ V) x b a‖ ≤ δ * ‖a‖ * t := h
+        _ = δ * t * ‖a‖ := by ring
+    have h := norm_image_sub_le_of_norm_deriv_le_segment' hk hbound t ⟨ht.le, le_rfl⟩
+    simp only [zero_smul, add_zero, sub_zero] at h
+    calc ‖(V (x + t • a + t • b) - V (x + t • a) - V (x + t • b) + V x) -
+          (t * t) • fderiv ℝ (fderiv ℝ V) x b a‖
+        = ‖V (x + t • a + t • b) - V (x + t • a) - t • t • fderiv ℝ (fderiv ℝ V) x b a -
+            (V (x + t • b) - V x)‖ := by
+          rw [mul_smul]; congr 1; abel
+      _ ≤ δ * t * ‖a‖ * t := h
+      _ = δ * t * (t * ‖a‖) := by ring
+  -- conclusion: compare the estimates for (v, w) and (w, v), then let δ → 0
+  have key : ∀ δ : ℝ, 0 < δ →
+      ‖fderiv ℝ (fderiv ℝ V) x w v - fderiv ℝ (fderiv ℝ V) x v w‖ ≤ δ * (‖v‖ + ‖w‖) := by
+    intro δ hδ
+    obtain ⟨r1, hr1, h1⟩ := outer v w δ hδ
+    obtain ⟨r2, hr2, h2⟩ := outer w v δ hδ
+    set r := min r1 r2
+    have hr : 0 < r := lt_min hr1 hr2
+    have hden : 0 < 2 * (‖v‖ + ‖w‖ + 1) := by positivity
+    set t : ℝ := r / (2 * (‖v‖ + ‖w‖ + 1)) with ht_def
+    have ht : 0 < t := div_pos hr hden
+    have htr : t * (‖v‖ + ‖w‖) < r := by
+      rw [ht_def, div_mul_eq_mul_div, div_lt_iff₀ hden]
+      nlinarith [norm_nonneg v, norm_nonneg w]
+    have e1 := h1 t ht (lt_of_lt_of_le htr (min_le_left _ _))
+    have e2 := h2 t ht (by
+      have : t * (‖w‖ + ‖v‖) = t * (‖v‖ + ‖w‖) := by ring
+      rw [this]; exact lt_of_lt_of_le htr (min_le_right _ _))
+    have hcomm : x + t • w + t • v = x + t • v + t • w := by abel
+    rw [hcomm] at e2
+    have hdiff : (t * t) • (fderiv ℝ (fderiv ℝ V) x w v - fderiv ℝ (fderiv ℝ V) x v w) =
+        ((V (x + t • v + t • w) - V (x + t • w) - V (x + t • v) + V x) -
+          (t * t) • fderiv ℝ (fderiv ℝ V) x v w) -
+        ((V (x + t • v + t • w) - V (x + t • v) - V (x + t • w) + V x) -
+          (t * t) • fderiv ℝ (fderiv ℝ V) x w v) := by
+      rw [smul_sub]; abel
+    have htt : 0 < t * t := mul_pos ht ht
+    have hbound : (t * t) * ‖fderiv ℝ (fderiv ℝ V) x w v - fderiv ℝ (fderiv ℝ V) x v w‖ ≤
+        (t * t) * (δ * (‖v‖ + ‖w‖)) := by
+      have hn : (t * t) * ‖fderiv ℝ (fderiv ℝ V) x w v - fderiv ℝ (fderiv ℝ V) x v w‖ =
+          ‖(t * t) • (fderiv ℝ (fderiv ℝ V) x w v - fderiv ℝ (fderiv ℝ V) x v w)‖ := by
+        rw [norm_smul, Real.norm_eq_abs, abs_of_pos htt]
+      rw [hn, hdiff]
+      calc _ ≤ ‖(V (x + t • v + t • w) - V (x + t • w) - V (x + t • v) + V x) -
+              (t * t) • fderiv ℝ (fderiv ℝ V) x v w‖ +
+            ‖(V (x + t • v + t • w) - V (x + t • v) - V (x + t • w) + V x) -
+              (t * t) • fderiv ℝ (fderiv ℝ V) x w v‖ := norm_sub_le _ _
+        _ ≤ δ * t * (t * ‖w‖) + δ * t * (t * ‖v‖) := add_le_add e2 e1
+        _ = (t * t) * (δ * (‖v‖ + ‖w‖)) := by ring
+    exact le_of_mul_le_mul_left hbound htt
+  have hle : ‖fderiv ℝ (fderiv ℝ V) x w v - fderiv ℝ (fderiv ℝ V) x v w‖ ≤ 0 := by
+    apply le_of_forall_pos_lt_add
+    intro ε hε
+    have hpos : 0 < ‖v‖ + ‖w‖ + 1 := by positivity
+    have := key (ε / (‖v‖ + ‖w‖ + 1)) (div_pos hε hpos)
+    calc _ ≤ ε / (‖v‖ + ‖w‖ + 1) * (‖v‖ + ‖w‖) := this
+      _ < 0 + ε := by
+        rw [zero_add, div_mul_eq_mul_div, div_lt_iff₀ hpos]
+        nlinarith
+  exact (sub_eq_zero.mp (norm_le_zero_iff.mp hle)).symm
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
