@@ -470,6 +470,42 @@ theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (
         refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
         intro x hx
         exact_mod_cast R.mult_pos x hx.1
+/-- **Simon Ch. 6, 3.1–3.2** (the weight `θHᵏ⌞M`): for an integer multiplicity triple
+`R = (M, θ, ξ)` in `W`, `R.measure = (Hᵏ⌞M).withDensity θ` has the same null sets as `Hᵏ⌞M`
+(`θ` is measurable and `θ ≥ 1` on `M`).  For Borel `A`, `R.measure(A) = ∫_{M ∩ A} θ dHᵏ`; hence
+`R.measure(ℝᴾ \ M) = 0`, and `R.measure(K) < ∞` for compact `K ⊆ W` by local integrability of
+`θ`.  Absolute continuity makes `ξ` a.e. strongly measurable for `R.measure`, and
+`R.action ω = ∫_M θ⟨ω, ξ⟩ dHᵏ = ∫ ⟨ω, ξ⟩ dR.measure` for every form `ω`. -/
+theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure := by
+  intro P k W R
+  -- the density `θ`, as an `ℝ≥0`-valued measurable function
+  have hθ : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+  -- (a) a measure with density is absolutely continuous w.r.t. its base measure
+  have hac : R.measure ≪ μHE[k].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- (c) `μ(A) = ∫_A θ d(Hᵏ⌞M) = ∫_{M ∩ A} θ dHᵏ` for Borel `A`
+  have happly : ∀ A : Set (Euclid P), MeasurableSet A →
+      R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k] := fun A hA => by
+    rw [IMRep.measure, withDensity_apply _ hA, Measure.restrict_restrict hA, inter_comm A]
+  refine ⟨hac, ?_, happly, ?_, fun K hK hKW => ?_, R.aestronglyMeasurable_orient.mono_ac hac,
+    fun ω => ?_⟩
+  -- (b) `θ ≠ 0` on `M`, hence `Hᵏ⌞M`-a.e.
+  · refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'
+  -- (d) `M ∩ Mᶜ = ∅`
+  · rw [happly _ R.measurableSet_carrier.compl, inter_compl_self, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- (e) local integrability of `θ`
+  · rw [happly K hK.measurableSet]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKW)
+  -- (g) `∫ ⟨ω, ξ⟩ d(θ Hᵏ⌞M) = ∫_M θ ⟨ω, ξ⟩ dHᵏ`
+  · have h := integral_withDensity_eq_integral_smul (μ := μHE[k].restrict R.carrier) hθ
+      fun x => R.orient x (ω x)
+    simp only [ENNReal.coe_natCast] at h
+    rw [IMRep.measure, h, IMRep.action]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp [NNReal.smul_def]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
