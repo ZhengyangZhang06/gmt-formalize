@@ -422,6 +422,41 @@ theorem Submission.deformation_ipl_mwc_pi_fderiv_sum_prod : ∀ (k r : ℕ) (ι 
   congr 1
   refine Finset.sum_congr rfl fun u _ => ?_
   ring
+/-- Algebraic core of the Piola identity: an alternating sum over permutations against a kernel
+`H u` symmetric in its two arguments vanishes, since `σ ↦ σ * swap 0 u.succ` reverses the sign,
+exchanges the two arguments of `H u` and fixes every other factor. -/
+theorem Submission.deformation_ipl_mwc_pi_swap_cancel : ∀ (r : ℕ) (H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ) (N : Fin r → Fin (r + 1) → ℝ), (∀ u i j, H u i j = H u j i) → ∑ σ : Equiv.Perm (Fin (r + 1)), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ u : Fin r, H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) = 0 := by
+  intro r H N hH
+  simp_rw [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_eq_zero (fun u _ => ?_)
+  -- Pair `σ` with `σ * τ`, `τ = (0 u.succ)`; the terms `T σ` and `T (σ * τ)` cancel.
+  let τ : Equiv.Perm (Fin (r + 1)) := Equiv.swap 0 u.succ
+  have hτne : (0 : Fin (r + 1)) ≠ u.succ := (Fin.succ_ne_zero u).symm
+  let T : Equiv.Perm (Fin (r + 1)) → ℝ := fun σ =>
+    ((Equiv.Perm.sign σ : ℤ) : ℝ) * (H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ))
+  have hT : ∀ σ : Equiv.Perm (Fin (r + 1)), T (σ * τ) = - T σ := by
+    intro σ
+    have h0 : (σ * τ) 0 = σ u.succ := by simp [τ, Equiv.Perm.mul_apply]
+    have h1 : (σ * τ) u.succ = σ 0 := by simp [τ, Equiv.Perm.mul_apply]
+    have hprod : ∏ t ∈ Finset.univ.erase u, N t ((σ * τ) t.succ) =
+        ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) := by
+      refine Finset.prod_congr rfl (fun t ht => ?_)
+      have htu : t ≠ u := Finset.ne_of_mem_erase ht
+      rw [Equiv.Perm.mul_apply, Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero t)
+        (fun h => htu (Fin.succ_injective _ h))]
+    have hsign : ((Equiv.Perm.sign (σ * τ) : ℤ) : ℝ) = - ((Equiv.Perm.sign σ : ℤ) : ℝ) := by
+      rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hτne]
+      push_cast
+      ring
+    simp only [T]
+    rw [h0, h1, hprod, hsign, hH u (σ u.succ) (σ 0)]
+    ring
+  have hS : ∑ σ, T σ = - ∑ σ, T σ :=
+    calc ∑ σ, T σ = ∑ σ, T (σ * τ) := (Equiv.sum_comp (Equiv.mulRight τ) T).symm
+      _ = ∑ σ, - T σ := Finset.sum_congr rfl (fun σ _ => hT σ)
+      _ = - ∑ σ, T σ := Finset.sum_neg_distrib _
+  linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
