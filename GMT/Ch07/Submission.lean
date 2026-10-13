@@ -451,6 +451,82 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gluing weak limits over a countable a.e.-partition** (Simon Ch. 6, proof of 4.5(2): the
+reduction to a single piece).  If the disjoint Borel pieces `S j ⊆ M` cover `M` up to a `μ`-null
+set, the `u k` are dominated on `M` by the integrable `D`, and `∫_{S j} u k → ∫_{S j ∩ E} v` for
+every `j`, then `∫_M u k → ∫_{M ∩ E} v`.  Countable additivity writes both sides as series over
+the pieces, the terms are bounded by the summable `∫_{S j} D`, and Tannery's theorem (the `ε/3`
+argument of Mathlib's `tendsto_tsum_of_dominated_convergence`, inlined) passes to the limit. -/
+theorem Submission.dor_lmbsf_tg_weak_limit_gluing : ∀ (P : ℕ) (μ : Measure (Euclid P)) (M E : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (u : ℕ → Euclid P → ℝ) (v D : Euclid P → ℝ), MeasurableSet M → MeasurableSet E → (∀ j, MeasurableSet (S j)) → Pairwise (fun i j => Disjoint (S i) (S j)) → (∀ j, S j ⊆ M) → μ (M \ ⋃ j, S j) = 0 → IntegrableOn D M μ → (∀ k, AEStronglyMeasurable (u k) (μ.restrict M)) → (∀ k, ∀ᵐ x ∂(μ.restrict M), ‖u k x‖ ≤ D x) → IntegrableOn v (M ∩ E) μ → (∀ j, Tendsto (fun k => ∫ x in S j, u k x ∂μ) atTop (𝓝 (∫ x in S j ∩ E, v x ∂μ))) → Tendsto (fun k => ∫ x in M, u k x ∂μ) atTop (𝓝 (∫ x in M ∩ E, v x ∂μ)) := by
+  intro P μ M E S u v D _ hE hS hdisj hSM hnull hD hum hule hv hlim
+  -- Step 1: `M =ᵐ ⋃ⱼ Sⱼ` and `M ∩ E =ᵐ ⋃ⱼ (Sⱼ ∩ E)`
+  have hUM : (⋃ j, S j) ⊆ M := iUnion_subset hSM
+  have hae : M =ᵐ[μ] ⋃ j, S j :=
+    ae_eq_set.2 ⟨hnull, by rw [Set.sdiff_eq_empty.2 hUM, measure_empty]⟩
+  have haeE : M ∩ E =ᵐ[μ] ⋃ j, S j ∩ E := by
+    rw [← iUnion_inter]
+    exact hae.inter .rfl
+  -- Steps 2–4: `∫_M u k = Σⱼ ∫_{Sⱼ} u k` and `∫_{M ∩ E} v = Σⱼ ∫_{Sⱼ ∩ E} v`
+  have hsum_u : ∀ k, HasSum (fun j => ∫ x in S j, u k x ∂μ) (∫ x in M, u k x ∂μ) := by
+    intro k
+    have hk : IntegrableOn (u k) M μ := Integrable.mono' hD (hum k) (hule k)
+    rw [Measure.restrict_congr_set hae]
+    exact hasSum_integral_iUnion hS hdisj (hk.congr_set_ae hae.symm)
+  have hsum_v : HasSum (fun j => ∫ x in S j ∩ E, v x ∂μ) (∫ x in M ∩ E, v x ∂μ) := by
+    rw [Measure.restrict_congr_set haeE]
+    exact hasSum_integral_iUnion (fun j => (hS j).inter hE)
+      (fun i j hij => (hdisj hij).mono inter_subset_left inter_subset_left)
+      (hv.congr_set_ae haeE.symm)
+  -- Step 5: `|∫_{Sⱼ} u k| ≤ ∫_{Sⱼ} D`, and `Σⱼ ∫_{Sⱼ} D` converges
+  have hsum_D : Summable fun j => ∫ x in S j, D x ∂μ :=
+    (hasSum_integral_iUnion hS hdisj (hD.mono_set hUM)).summable
+  have hbound : ∀ k j, ‖∫ x in S j, u k x ∂μ‖ ≤ ∫ x in S j, D x ∂μ := fun k j =>
+    norm_integral_le_of_norm_le (hD.mono_set (hSM j))
+      (ae_restrict_of_ae_restrict_of_subset (hSM j) (hule k))
+  -- Step 6: Tannery's theorem, by an `ε/3` argument
+  have tannery : ∀ (f : ℕ → ℕ → ℝ) (g bound : ℕ → ℝ), Summable bound →
+      (∀ j, Tendsto (fun k => f k j) atTop (𝓝 (g j))) → (∀ k j, ‖f k j‖ ≤ bound j) →
+      Tendsto (fun k => ∑' j, f k j) atTop (𝓝 (∑' j, g j)) := by
+    intro f g bound h_sum hab h_bound
+    have h_g_le (j : ℕ) : ‖g j‖ ≤ bound j :=
+      le_of_tendsto (tendsto_norm.comp (hab j)) (Eventually.of_forall fun k => h_bound k j)
+    have h_sumg : Summable (‖g ·‖) :=
+      h_sum.of_norm_bounded fun j => (norm_norm (g j)).symm ▸ h_g_le j
+    have h_suma (k : ℕ) : Summable (‖f k ·‖) :=
+      h_sum.of_norm_bounded <| by simpa only [norm_norm] using h_bound k
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨B, hB⟩ := h_sum
+    obtain ⟨T, hT⟩ : ∃ T : Finset ℕ, dist (∑ j ∈ T, bound j) B < ε / 3 := by
+      rw [HasSum, Metric.tendsto_nhds] at hB
+      exact Eventually.exists <| hB _ (by positivity)
+    -- the tail of `Σ bound` off `T` is `< ε/3`
+    have h1 : ∑' (j : (Tᶜ : Set ℕ)), bound j < ε / 3 := by
+      calc _ ≤ ‖∑' (j : (Tᶜ : Set ℕ)), bound j‖ := Real.le_norm_self _
+           _ = ‖B - ∑ j ∈ T, bound j‖ := congrArg _ ?_
+           _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
+      simpa only [hB.summable.sum_add_tsum_compl, eq_sub_iff_add_eq'] using hB.tsum_eq
+    -- the finitely many terms on `T` converge
+    have h2 : Tendsto (fun k => ∑ j ∈ T, f k j) atTop (𝓝 (∑ j ∈ T, g j)) :=
+      tendsto_finsetSum _ fun j _ => hab j
+    rw [Metric.tendsto_nhds] at h2
+    filter_upwards [h2 (ε / 3) (by positivity)] with k hk
+    rw [dist_eq_norm, ← (h_suma k).of_norm.tsum_sub h_sumg.of_norm,
+      ← ((h_suma k).of_norm.sub h_sumg.of_norm).sum_add_tsum_compl (s := T),
+      (by ring : ε = ε / 3 + (ε / 3 + ε / 3))]
+    refine (norm_add_le _ _).trans_lt (add_lt_add ?_ ?_)
+    · simpa only [dist_eq_norm, Finset.sum_sub_distrib] using hk
+    · rw [((h_suma k).subtype _).of_norm.tsum_sub (h_sumg.subtype _).of_norm]
+      refine (norm_sub_le _ _).trans_lt (add_lt_add ?_ ?_)
+      · refine ((norm_tsum_le_tsum_norm ((h_suma k).subtype _)).trans ?_).trans_lt h1
+        exact ((h_suma k).subtype _).tsum_le_tsum (h_bound k ·) (hB.summable.subtype _)
+      · refine ((norm_tsum_le_tsum_norm (h_sumg.subtype _)).trans ?_).trans_lt h1
+        exact (h_sumg.subtype _).tsum_le_tsum (h_g_le ·) (hB.summable.subtype _)
+  -- Step 7: conclusion
+  have key := tannery _ _ _ hsum_D hlim hbound
+  rw [hsum_v.tsum_eq] at key
+  exact key.congr fun k => (hsum_u k).tsum_eq
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
