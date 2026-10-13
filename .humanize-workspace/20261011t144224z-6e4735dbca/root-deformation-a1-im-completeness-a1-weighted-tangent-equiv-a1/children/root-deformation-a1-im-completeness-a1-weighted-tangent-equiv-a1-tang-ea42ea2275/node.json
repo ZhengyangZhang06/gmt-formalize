@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1.tangent_of_weighted_tangent-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1",
+  "depth": 4,
+  "title": "Converse weighted transfer: a weighted approximate tangent plane of M at y is the approximate tangent plane of the piece C ⊆ M (Simon Ch. 3, Remark 1.8(1): T_y M as in Def. 1.7 ⇒ T_y C as in Def. 1.4)",
+  "statement": "Let Q, n ∈ ℕ and μ := Hⁿ = μHE[n] on ℝ^Q. Let M, C ⊆ ℝ^Q be μ-null-measurable with C ⊆ M, let θ : ℝ^Q → ℝ satisfy θ ≥ 0 on M, let y ∈ ℝ^Q with θ(y) > 0, and let T be a linear subspace of ℝ^Q which is the approximate tangent space of M at y with respect to θ (HasWeightedApproximateTangentSpaceAt n M θ y T, Simon Ch. 3, Def. 1.7). Assume that some r > 0 has μ(C ∩ B̄_r(y)) < ∞ and θ μ-integrable on M ∩ B̄_r(y); that θ|C is continuous at y (ContinuousWithinAt θ C y); and that θHⁿ⌞(M ∖ C) has n-density 0 at y, i.e. (∫⁻_{(M∖C) ∩ B̄_ρ(y)} ofReal(θ) dμ) / ofReal(ρⁿ) → 0 as ρ → 0+. Then T is the approximate tangent space of C at y (Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T, Def. 1.4).",
+  "lean_statement": "∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∀ x ∈ M, 0 ≤ θ x) → 0 < θ y → HasWeightedApproximateTangentSpaceAt n M θ y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ContinuousWithinAt θ C y → Tendsto (fun ρ : ℝ => (∫⁻ x in (M \\ C) ∩ closedBall y ρ, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T",
+  "lean_name": "imc_wte_approxTangent_of_weightedTangent",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+    "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1.weighted_density_bound-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.blowup_integral_split-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.continuity_error_vanishes-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.remainder_vanishes-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-blow-7c8d1035a6-a1",
+      "result_commit": "8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1.weighted_density_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.blowup_integral_split-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-c5b5d534a9-a1",
+      "result_commit": "405169da3a033dcdba6c6b25bd33712204f81f49",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.continuity_error_vanishes-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-d7655a2590-a1",
+      "result_commit": "6a3a02bbf28912bda73652bbeca26662f5c70f6d",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.remainder_vanishes-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-86d7f9d6d1-a1",
+      "result_commit": "1787840307581f47dfa9029711b568ecf5a547b2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-weighted-tangent-equiv-a1-tang-ea42ea2275-a1"
+}

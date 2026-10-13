@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.density_limit-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1",
+  "depth": 3,
+  "title": "Summably L¹-Cauchy integer multiplicity densities have an integer multiplicity weak limit (Simon 3.13, printed (2)–(3))",
+  "statement": "Let N, k ∈ ℕ and H := μHE[k] on ℝ^N. For p ∈ ℕ let (M_p, θ_p, ξ_p) satisfy IsRectifiableTriple ℝ^N k M_p θ_p ξ_p, with θ_p natural-valued on M_p (∀ x ∈ M_p, ∃ m ∈ ℕ, θ_p(x) = m), and put κ_p := M_p.indicator(θ_p • ξ_p) : ℝ^N → Λ_k(ℝ^N) (NVector (Eucl N) k). Assume Σ_p ∫ |κ_{p+1} − κ_p| dH < ∞, where |w| := (Σ_γ w(dx^γ)²)^{1/2} for a k-vector w, the sum running over the strictly increasing multi-indices γ ∈ SimonMultiIndex k N (dx^γ = wedgeCovectors k (proj ∘ γ), w(dx^γ) = euclideanNVectorCoordinate w γ). Precisely: the [0, ∞]-valued series Σ_p ∫⁻ ENNReal.ofReal(|κ_{p+1}(x) − κ_p(x)|) dH(x) is ≠ ∞. Then there are M₀ ⊆ ℝ^N, θ₀ : ℝ^N → ℝ and ξ₀ : ℝ^N → Λ_k(ℝ^N) such that IsRectifiableTriple ℝ^N k M₀ θ₀ ξ₀ holds, θ₀ is natural-valued on M₀, and for every continuous compactly supported k-form ω : ℝ^N → Λ^k(ℝ^N), tauAction k M_p θ_p ξ_p ω → tauAction k M₀ θ₀ ξ₀ ω as p → ∞.",
+  "lean_statement": "∀ (N k : ℕ) (M : ℕ → Set (Eucl N)) (θ : ℕ → Eucl N → ℝ) (ξ : ℕ → Eucl N → NVector (Eucl N) k), (∀ p, IsRectifiableTriple (univ : Set (Eucl N)) k (M p) (θ p) (ξ p)) → (∀ p, ∀ x ∈ M p, ∃ m : ℕ, θ p x = m) → (∑' p, ∫⁻ x, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate ((M (p + 1)).indicator (fun y => θ (p + 1) y • ξ (p + 1) y) x - (M p).indicator (fun y => θ p y • ξ p y) x) γ) ^ 2)) ∂(μHE[k] : Measure (Eucl N))) ≠ ∞ → ∃ (M₀ : Set (Eucl N)) (θ₀ : Eucl N → ℝ) (ξ₀ : Eucl N → NVector (Eucl N) k), IsRectifiableTriple (univ : Set (Eucl N)) k M₀ θ₀ ξ₀ ∧ (∀ x ∈ M₀, ∃ m : ℕ, θ₀ x = m) ∧ ∀ ω : Eucl N → Covector (Eucl N) k, Continuous ω → HasCompactSupport ω → Tendsto (fun p => tauAction k (M p) (θ p) (ξ p) ω) atTop (𝓝 (tauAction k M₀ θ₀ ξ₀ ω))",
+  "lean_name": "imc_im_density_limit",
+  "depends_on": [
+    "root.deformation-a1.im_completeness-a1.l1_cauchy_limit-a1",
+    "root.deformation-a1.im_completeness-a1.limit_triple-a1",
+    "root.polyhedral_approximation-a1.pairing_expansion-a1",
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.l1_cauchy_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.limit_triple-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-pairing-expansion-a1-a1",
+      "result_commit": "c4c0086a7ea3389e9e961d3c9df987255f8c064a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-integrable-a1-a1",
+      "result_commit": "1d327e46e1cf94e149261ae6958c7053533007af",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-density-limit-a1-a1"
+}

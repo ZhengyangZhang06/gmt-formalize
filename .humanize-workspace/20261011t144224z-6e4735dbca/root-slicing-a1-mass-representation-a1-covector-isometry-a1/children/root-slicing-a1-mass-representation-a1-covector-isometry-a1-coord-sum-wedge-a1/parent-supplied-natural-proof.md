@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.mass_representation-a1.covector_isometry-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_sum_wedge-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions.
+- ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P).
+- For i ∈ Fin P, b_i := EuclideanSpace.single i 1 is the i-th standard basis vector; its l-th coordinate is 1 if l = i and 0 otherwise.
+- For f : Fin k → Fin P put e_f := (b_{f(0)}, …, b_{f(k−1)}) ∈ (ℝ^P)^k.
+- A k-covector is an element of Covector (Eucl P) k, a continuous alternating k-linear map (ℝ^P)^k → ℝ. Sums and real multiples of k-covectors are computed pointwise.
+- SimonMultiIndex k P = Fin k ↪o Fin P is the finite type of order embeddings, i.e. strictly increasing maps Fin k → Fin P; they are injective.
+- By definition, euclideanCovectorCoordinate γ J = γ(e_J) for a k-covector γ and J ∈ SimonMultiIndex k P.
+- For I ∈ SimonMultiIndex k P put dx^I := wedgeCovectors k (fun j ↦ EuclideanSpace.proj (I j)), where EuclideanSpace.proj i : ℝ^P →L[ℝ] ℝ is the coordinate functional x ↦ x_i.
+Source: this is step 5 together with the coordinate computation of step 6 of the supplied proof of smr_covector_coord_isometry (Simon, Introduction to GMT, Ch. 6, §1: the dx^I are dual to the increasing coordinate tuples e_I).
+
+Fix P, k ∈ ℕ, c : SimonMultiIndex k P → ℝ and J ∈ SimonMultiIndex k P. If k > P, SimonMultiIndex k P is empty and there is no J, so the statement is vacuous. The argument below needs no case distinction.
+
+1. (Determinant formula.) Let I ∈ SimonMultiIndex k P. Apply wedgeCovectors_apply_det to the one-covectors α_i := EuclideanSpace.proj (I i) and the vectors v_j := b_{J(j)}. It gives dx^I(e_J) = det M, where M is the k×k real matrix with entries M_{ij} = EuclideanSpace.proj (I i) (b_{J(j)}) = (the I(i)-th coordinate of b_{J(j)}). So M_{ij} = 1 if I(i) = J(j), and M_{ij} = 0 otherwise.
+2. (Case I = J.) Then M_{ij} = 1 iff I(i) = I(j) iff i = j, because I is injective. So M is the k×k identity matrix and dx^I(e_J) = det 1 = 1. For k = 0 the unique multi-index is the empty embedding, so I = J, and the 0×0 determinant is 1.
+3. (Case I ≠ J.) Claim: some i₀ ∈ Fin k satisfies I(i₀) ≠ J(j) for every j ∈ Fin k.
+   - Suppose not. Then every value I(i) lies in range J, i.e. range I ⊆ range J.
+   - Both ranges are finite sets with exactly k elements (I and J are injective), so the inclusion is an equality: range I = range J.
+   - An order embedding of the well-ordered Fin k into Fin P is determined by its range: its j-th value is the j-th smallest element of the range (Mathlib: OrderEmbedding.range_inj_of_wellFoundedLT). Hence I = J, contradicting I ≠ J.
+   With i₀ as in the claim, step 1 gives M_{i₀ j} = 0 for every j. So row i₀ of M is zero, det M = 0 (Matrix.det_eq_zero_of_row_eq_zero), and dx^I(e_J) = 0.
+   Steps 2–3 show: dx^I(e_J) = 1 if I = J, and dx^I(e_J) = 0 if I ≠ J.
+4. (Linearity of the coordinate.) Sums and real multiples of k-covectors are evaluated pointwise (ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply). Hence euclideanCovectorCoordinate (Σ_I c_I·dx^I) J = (Σ_I c_I·dx^I)(e_J) = Σ_I c_I·dx^I(e_J), the finite sum running over SimonMultiIndex k P.
+5. (Conclusion.) In the last sum, the term with I = J equals c_J·1 = c_J by step 2. Every term with I ≠ J equals c_I·0 = 0 by step 3 (Finset.sum_eq_single). Therefore euclideanCovectorCoordinate (Σ_I c_I·dx^I) J = c_J. ∎
+
+## Key steps
+
+1. wedgeCovectors_apply_det: dx^I(e_J) = det M with M_{ij} = 1 if I(i) = J(j), else 0.
+2. If I = J, M is the identity matrix (I injective), so dx^I(e_J) = 1.
+3. If I ≠ J, some I(i₀) ∉ range J (order embeddings Fin k ↪o Fin P with equal ranges coincide), so row i₀ of M vanishes and dx^I(e_J) = 0.
+4. Evaluation at e_J is linear, so the J-coordinate of Σ_I c_I·dx^I is Σ_I c_I·dx^I(e_J) = c_J (Finset.sum_eq_single).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/Contract.lean and project/GMT/Ch06/Submission.lean against workspace GMT/Ch06/Contract.lean and Submission.lean (identical; sha256 ea3ee0dd…)`
+- `rg -n 'covectorEuclideanNorm|euclideanCovectorCoordinate|wedgeCovectors|SimonMultiIndex' project (snapshot; only LatticeFaceIndex mentions SimonMultiIndex)`
+- `rg -n 'smr_ci_|smr_covector_coord_isometry' project (no match, rc=1)`
+- `rg -n '^structure WithLp' mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean; rg -n 'theorem EuclideanSpace.norm_eq|basisFun_apply' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n range_inj_of_wellFoundedLT mathlib/Mathlib/Order; rg -n 'theorem monotone_sort' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean; rg -n ext_alternating mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean; rg -n 'theorem det_eq_zero_of_row_eq_zero' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `grep -n covectorEuclideanNorm, wedgeCovectors_apply_det, euclideanCovectorCoordinate, SimonMultiIndex in the pinned simongmt Chapter06 (Mass.lean, FormsDuality.lean, Forms.lean)`
+- `#synth Fintype (SimonMultiIndex 2 3) (RelEmbedding.instFintype); #synth DecidableEq (SimonMultiIndex 2 3) (fails); #check Module.Basis.ext_alternating, Tuple.sort, Tuple.monotone_sort, OrderEmbedding.range_inj_of_wellFoundedLT, LinearEquiv.ofBijective(_apply), EuclideanSpace.basisFun_apply, ContinuousAlternatingMap.sum_apply, AlternatingMap.map_perm, injective_iff_map_eq_zero, Equiv.sum_comp, Finset.sum_bij', PiLp.single_apply`
+- `git show 6c6b4b2753e8214a3e45619bb0b65d8d553557a5 (kernel-checked template cmb_covector_eq_sum_coord_smul_wedge)`
+- `python3 listing of dag.json lean_name/lean_statement: covector-related nodes; exact and alpha-normalized type comparison and name lookup for the three proposed names (no matches); status/candidate_commit of polyhedral_approx_pairing_covector_ext and _wedge_kronecker (accepted, not proved)`
+- `grep -rl smr_ci_ dag.json nodes/ simongmt; git log --all -S<name> for each proposed name (no matches)`
+- `read nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v1.json and parent-child-handoff.json`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' runtime.py and 'unproved child belongs to another parent' parallel.py in /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean`
+- `python3 contract_scope/child_modules from verifier/gmt-compare.py (contract mode) to generate NodeChallenge/NodeSolution modules`
+- `lake env lean /tmp/smr-ci-split/Scratch/{Probe,Split,Split2,SolutionSim2,Inst}.lean and /tmp/smr-ci-split/Challenge/*_NodeChallenge.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/parallel.py`
+- `/tmp/smr-ci-split/Scratch/Split2.lean`
+- `/tmp/smr-ci-split/Scratch/SolutionSim2.lean`
+- `/tmp/smr-ci-split/Challenge/smr_ci_coord_sum_smul_wedge_NodeChallenge.lean`
+- `/tmp/smr-ci-split/Challenge/smr_ci_covector_eq_zero_of_coord_NodeChallenge.lean`
+- `/tmp/smr-ci-split/Challenge/smr_ci_norm_eq_sqrt_sum_coord_sq_NodeChallenge.lean`
+- `/tmp/smr-ci-split/Challenge/smr_covector_coord_isometry_NodeChallenge.lean`
+
+Snapshot manifest: mode local-project, project d8d46c95, Mathlib 25730c7c. The snapshot's project/GMT/Ch06/Contract.lean and Submission.lean are byte-identical to the workspace files (sha256 ea3ee0dd…). The frozen Submission contains no covector lemmas: rg finds SimonMultiIndex only in LatticeFaceIndex, and rg for smr_ci_/smr_covector_coord_isometry has no match. So every child must be proved from SimonGMT and Mathlib.
+
+Available in SimonGMT (pinned package):
+- covectorEuclideanNorm (Mass.lean), whose sum runs over StrictMono I : Fin k → Fin P with basisFun vectors;
+- SimonMultiIndex = Fin k ↪o Fin P, euclideanCovectorCoordinate (values on EuclideanSpace.single tuples), wedgeCovectors and wedgeCovectors_apply_det (FormsDuality.lean).
+
+Available in the snapshot Mathlib:
+- WithLp is a structure with toLp/ofLp (WithLp.lean:49);
+- EuclideanSpace.norm_eq (PiL2.lean:145) and basisFun_apply (PiL2.lean:806);
+- OrderEmbedding.range_inj_of_wellFoundedLT (Order/Hom/Set.lean:193);
+- Tuple.monotone_sort (Data/Fin/Tuple/Sort.lean:95);
+- Module.Basis.ext_alternating (LinearAlgebra/Alternating/Basic.lean:907);
+- Matrix.det_eq_zero_of_row_eq_zero (Determinant/Basic.lean:362).
+
+Fintype (SimonMultiIndex k P) is RelEmbedding.instFintype. DecidableEq (SimonMultiIndex k P) is not synthesized, hence the summed/vanishing child forms.
+
+A kernel-checked template (commit 6c6b4b27, cmb_covector_eq_sum_coord_smul_wedge) covers the Kronecker and extensionality arguments. Its name, and the accepted polyhedral_approx_pairing_* names, cannot be reused: the runtime name check rejected v1, and parallel.py rejects unproved children of another parent. So fresh smr_ci_ names are used; none occurs in the DAG, nodes/, the snapshot, SimonGMT or git history.
+
+All three child types and the parent type elaborate in the comparator child scope, and the children imply the frozen parent type in Lean with axioms [propext, Classical.choice, Quot.sound].

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.l1_density-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1",
+  "depth": 4,
+  "title": "Continuous compactly supported maps are dense in L¹ of a finite measure on ℝ^N (Step 4 of the supplied proof)",
+  "statement": "Let N ∈ ℕ, let E be a real normed space (E : Type with NormedAddCommGroup E and NormedSpace ℝ E), let ν be a finite measure on ℝ^N = Eucl N with its Borel σ-algebra (IsFiniteMeasure ν), and let f : ℝ^N → E belong to L¹(ν) (MemLp f 1 ν). Then for every ε ∈ [0, ∞] with ε ≠ 0 there is g : ℝ^N → E such that g has compact support (HasCompactSupport g), ‖f − g‖_{L¹(ν)} = eLpNorm (f − g) 1 ν ≤ ε, g is continuous and g ∈ L¹(ν) (MemLp g 1 ν).",
+  "lean_statement": "∀ (N : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (ν : Measure (Eucl N)) [IsFiniteMeasure ν] (f : Eucl N → E), MemLp f 1 ν → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ g : Eucl N → E, HasCompactSupport g ∧ eLpNorm (f - g) 1 ν ≤ ε ∧ Continuous g ∧ MemLp g 1 ν",
+  "lean_name": "imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1-l1-density-a1-a1"
+}

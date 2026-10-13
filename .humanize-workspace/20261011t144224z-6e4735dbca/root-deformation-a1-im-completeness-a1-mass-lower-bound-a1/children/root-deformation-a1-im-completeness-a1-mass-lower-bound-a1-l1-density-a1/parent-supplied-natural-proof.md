@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.im_completeness-a1.mass_lower_bound-a1`
+- Child DAG node: `root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.l1_density-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 4(b)–(c) of the supplied proof of imc_lintegral_coordNorm_le_mass (density of continuous compactly supported maps in L¹ of a finite Borel measure, proved from regularity and Urysohn's lemma), stated for a general coefficient space E. It is the case p = 1 of Mathlib's MemLp.exists_hasCompactSupport_eLpNorm_sub_le, whose file Mathlib/MeasureTheory/Function/ContinuousMapDense.lean is not in the frozen import closure; the argument below reproduces that proof. The comparator-accepted proof of fiw_im_mass_formula (commit 83e1f61809c1, local `have hdense`) contains exactly this argument in Lean for ℝ^P; with P renamed to N it proves the present statement verbatim.
+
+Notation. ‖h‖₁ := eLpNorm h 1 ν = ∫⁻ ‖h(x)‖ₑ dν(x) for h : ℝ^N → E. 1_s c denotes the function x ↦ c if x ∈ s and 0 otherwise (s.indicator fun _ => c). "Continuous compactly supported" means continuous with HasCompactSupport.
+
+1. (Regularity and small indicators.) ν is a finite measure on the Borel sets of ℝ^N, a σ-compact (proper) metric space, so ν is outer regular and inner regular with respect to compact sets: (i) for every measurable s with ν(s) < ∞ and every η > 0 there is an open V ⊇ s with ν(V) < ∞ and ν(V ∖ s) < η (MeasurableSet.exists_isOpen_sdiff_lt); (ii) for every measurable t with ν(t) < ∞ and every η > 0 there is a compact (hence closed) s ⊆ t with ν(t ∖ s) < η (MeasurableSet.exists_isCompact_isClosed_sdiff_lt). Moreover (iii) for c ∈ E and δ ∈ (0, ∞] there is a real η > 0 such that ‖1_s c‖₁ ≤ δ for every null-measurable s with ν(s) ≤ η (exists_eLpNorm_indicator_le with p = 1; indeed ‖1_s c‖₁ = ‖c‖·ν(s)).
+
+2. (Urysohn approximation of c·1_s.) Let s be closed, u open, s ⊆ u, ν(s) < ∞, c ∈ E and δ ≠ 0. Claim: there is a continuous h : ℝ^N → E with ‖h − 1_s c‖₁ ≤ δ, ‖h(x)‖ ≤ ‖c‖ for all x, support h ⊆ u, and h ∈ L¹(ν).
+ - Take η for c and δ as in 1(iii), and by 1(i) an open V ⊇ s with ν(V) < ∞ and ν(V ∖ s) < η. Put v := u ∩ V; then s ⊆ v, v is open and ν(v) < ∞.
+ - vᶜ and s are disjoint closed sets, so Urysohn's lemma (exists_continuous_zero_one_of_isClosed) gives a continuous φ : ℝ^N → [0, 1] with φ = 0 on vᶜ and φ = 1 on s. Put h(x) := φ(x)·c.
+ - h is continuous, ‖h(x)‖ = φ(x)‖c‖ ≤ ‖c‖, and h(x) = 0 off v, so support h ⊆ v ⊆ u. h ∈ L¹(ν): it is bounded by ‖c‖·1_v and ν(v) < ∞ (MemLp.smul of the L¹ function φ ≤ 1_v with the constant c).
+ - Pointwise ‖h(x) − 1_s c(x)‖ ≤ ‖1_{v∖s} c(x)‖: on s both h and 1_s c equal c; on v ∖ s the left side is ‖h(x)‖ ≤ ‖c‖; off v both vanish. Hence ‖h − 1_s c‖₁ ≤ ‖1_{v∖s} c‖₁ ≤ δ by 1(iii), because v ∖ s is measurable and ν(v ∖ s) ≤ ν(V ∖ s) < η.
+
+3. (Indicators of sets of finite measure.) Let t be measurable with ν(t) < ∞, c ∈ E and δ ≠ 0. Claim: there is g continuous, in L¹(ν), with compact support and ‖g − 1_t c‖₁ ≤ δ.
+ - Choose δ' > 0 such that ‖a‖₁ ≤ δ' and ‖b‖₁ ≤ δ' imply ‖a + b‖₁ < δ (exists_Lp_half; for p = 1 any δ' with 2δ' < δ works by the triangle inequality).
+ - Take η for c and δ' as in 1(iii), and by 1(ii) a compact closed s ⊆ t with ν(t ∖ s) < η. Then 1_s c − 1_t c = −1_{t∖s} c, so ‖1_s c − 1_t c‖₁ = ‖1_{t∖s} c‖₁ ≤ δ'.
+ - ℝ^N is locally compact, so there is a compact k with s ⊆ interior k (exists_compact_superset). Apply Step 2 to s, u := interior k (open), c and δ' (ν(s) ≤ ν(t) < ∞): a continuous h ∈ L¹(ν) with support h ⊆ interior k and ‖h − 1_s c‖₁ ≤ δ'.
+ - h − 1_t c = (h − 1_s c) + (1_s c − 1_t c), so ‖h − 1_t c‖₁ < δ. Finally h has compact support: support h ⊆ interior k ⊆ k with k compact (HasCompactSupport.intro: h vanishes off k). Take g := h.
+
+4. (Closure under addition.) Let 𝒞 be the class of g : ℝ^N → E that are continuous, belong to L¹(ν) and have compact support. If g₁, g₂ ∈ 𝒞 then g₁ + g₂ ∈ 𝒞: sums of continuous maps are continuous, L¹(ν) is closed under addition, and tsupport(g₁ + g₂) ⊆ tsupport g₁ ∪ tsupport g₂ is compact (HasCompactSupport.add).
+
+5. (Density.) Since p = 1 ≠ ∞ and f ∈ L¹(ν), MemLp.induction_dense applies with the property 𝒞: its first hypothesis is Step 3 (every indicator-constant 1_t c with t measurable and ν(t) < ∞ is within any δ ≠ 0 of an element of 𝒞), its second is Step 4. (Mathematically: simple functions in L¹(ν) are dense, MemLp.exists_simpleFunc_eLpNorm_sub_lt; a simple function in L¹(ν) is a finite sum Σ_i 1_{t_i} c_i with ν(t_i) < ∞ for c_i ≠ 0; approximating every term by Step 3 within a sufficiently small error and adding, by Step 4 and the triangle inequality for ‖·‖₁, gives an element of 𝒞 within any prescribed error of the simple function, hence of f.) It yields, for the given ε ≠ 0, some g ∈ 𝒞 with ‖f − g‖₁ = eLpNorm (f − g) 1 ν ≤ ε.
+
+6. (Conclusion.) This g satisfies HasCompactSupport g, eLpNorm (f − g) 1 ν ≤ ε, Continuous g and MemLp g 1 ν, which is the claim. ∎
+
+## Key steps
+
+1. Finite Borel measures on ℝ^N are outer regular and inner regular by compact (closed) sets; ‖c·1_s‖₁ = ‖c‖ν(s) is small when ν(s) is small (exists_eLpNorm_indicator_le).
+2. Urysohn: for closed s ⊆ open u with ν(s) < ∞, take open V ⊇ s with ν(V∖s) small and φ: continuous, 0 ≤ φ ≤ 1, φ = 1 on s, φ = 0 off u ∩ V; then φ·c is continuous, supported in u, and ‖φc − 1_s c‖₁ ≤ ‖1_{(u∩V)∖s} c‖₁ is small.
+3. For measurable t with ν(t) < ∞: compact closed s ⊆ t with ν(t∖s) small, a compact k with s ⊆ interior k, and the Urysohn function for (s, interior k) give a continuous compactly supported L¹ map within any δ of c·1_t (triangle inequality, exists_Lp_half).
+4. Continuous compactly supported L¹ maps are closed under addition; MemLp.induction_dense (density of simple functions in L¹, p = 1 ≠ ∞) extends the approximation from indicator-constants to every f ∈ L¹(ν).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp <snapshot>/project/GMT/Ch06/Submission.lean GMT/Ch06/Submission.lean (both byte-identical)`
+- `python3 -I over dag.json: all accepted nodes and lean_statements (cmb_*, smr_ci_*, smr_ufd_*, polyhedral_approx_pairing_*, fiw_*), status/candidate_commit of the four reused nodes, collision check for imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le, imc_mlb_exists_unit_field_integral_ge, imc_mlb_exists_form_lintegral_coordNorm_le (none), node count (531)`
+- `isolated-comparator-result.json and parent-child-handoff.json of root.compactness_mass_bounds-a1.repr_bound-a1, root.compactness_mass_bounds-a1.repr_bound-a1.coeff_integrable-a1, root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_sum_wedge-a1, root.slicing-a1.mass_representation-a1.covector_isometry-a1.norm_coord-a1 (all passed; accepted natural proofs copied verbatim)`
+- `git show <commit>:GMT/Ch06/Submission.lean | grep 'theorem Submission.<name>' for 5caba500 (cmb_measureRepresentation_continuous_bound), 3cd72266 (cmb_rb_measureRepresentation_integrableOn_coeff), 1b431e81 (smr_ci_coord_sum_smul_wedge), a1716c42 (smr_ci_norm_eq_sqrt_sum_coord_sq)`
+- `git show 83e1f61809c1:GMT/Ch06/Submission.lean | sed -n 374,560p (accepted hdense, hmoll, hretr helpers of fiw_im_mass_formula)`
+- `grep -n 'theorem\|lemma' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean (GeometricCurrentOn.massOn_mono, GeometricCurrentOn.le_massOn; definitions of covectorEuclideanNorm, massAdmissibleOn, massOn, mass)`
+- `rg -n 'theorem lintegral_iUnion|theorem setLIntegral_iUnion|iSup_restrict|theorem lintegral_iSup_directed' <snapshot>/mathlib/Mathlib (setLIntegral_iUnion_of_directed at MeasureTheory/Integral/Lebesgue/Basic.lean:668, no measurability hypothesis)`
+- `rg -n 'theorem MemLp.induction_dense|theorem exists_Lp_half|theorem exists_eLpNorm_indicator_le' <snapshot>/mathlib/Mathlib`
+- `rg -n 'AEStronglyMeasurable.inner|bounded_above_of_compact_support|theorem lintegral_withDensity_eq_lintegral_mul|isFiniteMeasure_withDensity|theorem tendsto_measure_iInter_atTop|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem integrableOn_iff_integrable_of_support_subset|theorem eLpNorm_one_eq_lintegral_enorm|theorem MemLp.of_bound|theorem withDensity_apply|ofReal_norm|theorem Integrable.bdd_mul' <snapshot>/mathlib/Mathlib`
+- `rg -n imc_mlb <snapshot>/project lake-packages-25730c7c/simongmt/Poincare; grep -rl --include=*.json imc_mlb runs/20261011T144224Z-6e4735dbca/nodes; git log --all --oneline -S imc_mlb (no match anywhere)`
+- `python3 -I: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') for the child challenge scope; runtime lean_contract.validate_lean_statement on all seven types; key/name regexes and topological order`
+- `sed -n 6532,6575p /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py (cross-branch reuse rule), store.py ensure (existing nodes reused unchanged), decomposition_scope.py, prompts.py DECOMPOSE/DECOMPOSITION_AUDIT, swarm-project.json (max_depth 6, max_children 12, max_nodes 1000)`
+- `lake env lean /tmp/mlb_split/lean/{Probe0,ApiC,Api2,Stmts,FinalStmts,Parent,ChildA,ChildB,ChildC,All,AllFull}.lean (FinalStmts: all seven child types elaborate in the comparator scope; AllFull: parent and all children sorry-free, #print axioms = propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1-coeff-integrable-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1-coeff-integrable-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SimpleFuncDenseLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/TriangleInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/decomposition_scope.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/swarm-project.json`
+- `/tmp/mlb_split/lean/FinalStmts.lean`
+- `/tmp/mlb_split/lean/Parent.lean`
+- `/tmp/mlb_split/lean/ChildA.lean`
+- `/tmp/mlb_split/lean/ChildB.lean`
+- `/tmp/mlb_split/lean/ChildC.lean`
+- `/tmp/mlb_split/lean/AllFull.lean`
+
+Pinned revisions confirmed; the frozen contract is byte-identical to the snapshot. Four comparator-accepted declarations cover Steps 1, 2 and the linear algebra of Step 0 of the supplied proof with exactly the needed types and are reused by name with byte-identical frozen types: cmb_rb_measureRepresentation_integrableOn_coeff (3cd72266), cmb_measureRepresentation_continuous_bound (5caba500; Remark (iii) of the supplied proof), smr_ci_coord_sum_smul_wedge (1b431e81) and smr_ci_norm_eq_sqrt_sum_coord_sq (a1716c42); all are accepted with passing isolated comparators. Mathlib's C_c-density file ContinuousMapDense.lean is outside the frozen closure, so the new child l1_density re-proves its p = 1 case; the accepted hdense of fiw_im_mass_formula (83e1f618) proves it verbatim. setLIntegral_iUnion_of_directed gives the exhaustion of Step 7 without measurability; GeometricCurrentOn.massOn_mono gives the mass comparison. MeasureTheory.AEStronglyMeasurable.inner is not in the closure (continuous_inner.comp_aestronglyMeasurable is). The three new names occur nowhere (DAG, project, SimonGMT, Mathlib, node files, git history). In the comparator scope all seven child types elaborate, and a scratch file with the reused accepted proofs, complete proofs of the three new children and the parent assembled from the children compiles sorry-free at default heartbeats with axioms propext, Classical.choice and Quot.sound only.
