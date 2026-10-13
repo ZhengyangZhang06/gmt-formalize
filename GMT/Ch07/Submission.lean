@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Componentwise McShane extension into `ℝᴾ`.**  If `ψ : ℝᴾ → ℝᴾ` is `K`-Lipschitz on `S`, then
+some `φ : ℝᴾ → ℝᴾ` is `√P·K`-Lipschitz on `ℝᴾ` and agrees with `ψ` on `S`: each coordinate
+`x ↦ ψ(x)ᵢ` is extended by McShane (`LipschitzOnWith.extend_real`). -/
+theorem Submission.cmcsd_lipschitz_extension : ∀ (P : ℕ) (S : Set (Euclid P)) (ψ : Euclid P → Euclid P) (K : NNReal), LipschitzOnWith K ψ S → ∃ φ : Euclid P → Euclid P, LipschitzWith (NNReal.sqrt P * K) φ ∧ EqOn φ ψ S := by
+  intro P S ψ K hψ
+  -- (1) each coordinate `ψᵢ = (ψ ·) i` is `K`-Lipschitz on `S`: `|vᵢ| ≤ ‖v‖`
+  have hcoord : ∀ i : Fin P, LipschitzOnWith K (fun x => ψ x i) S := fun i =>
+    LipschitzOnWith.of_dist_le_mul fun x hx y hy =>
+      (PiLp.dist_apply_le (ψ x) (ψ y) i).trans (hψ.dist_le_mul x hx y hy)
+  -- (2) McShane: a `K`-Lipschitz `gᵢ : ℝᴾ → ℝ` with `gᵢ = ψᵢ` on `S`, for every `i`
+  choose g hg using fun i => (hcoord i).extend_real
+  -- (3) `φ(x) = (gᵢ(x))ᵢ`
+  refine ⟨fun x => WithLp.toLp 2 fun i => g i x, LipschitzWith.of_dist_le_mul fun x y => ?_,
+    fun x hx => ?_⟩
+  · -- (4) `dist(φ x, φ y)² = ∑ᵢ (gᵢ x − gᵢ y)² ≤ P K² dist(x, y)²`
+    have hsum : ∑ i : Fin P, dist (g i x) (g i y) ^ 2 ≤ (P : ℝ) * ((K : ℝ) * dist x y) ^ 2 := by
+      calc ∑ i : Fin P, dist (g i x) (g i y) ^ 2 ≤ ∑ _i : Fin P, ((K : ℝ) * dist x y) ^ 2 := by
+            gcongr with i
+            exact (hg i).1.dist_le_mul x y
+        _ = (P : ℝ) * ((K : ℝ) * dist x y) ^ 2 := by simp
+    rw [EuclideanSpace.dist_eq]
+    calc √(∑ i : Fin P, dist (g i x) (g i y) ^ 2)
+        ≤ √((P : ℝ) * ((K : ℝ) * dist x y) ^ 2) := Real.sqrt_le_sqrt hsum
+      _ = ↑(NNReal.sqrt P * K) * dist x y := by
+          rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (by positivity)]
+          simp [mul_assoc]
+  · -- (5) `φ = ψ` on `S`, coordinatewise
+    ext i
+    exact ((hg i).2 hx).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
