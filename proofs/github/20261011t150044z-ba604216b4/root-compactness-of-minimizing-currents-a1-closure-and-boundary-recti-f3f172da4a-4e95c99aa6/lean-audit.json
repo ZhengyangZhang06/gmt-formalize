@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d01a0099d032a18d805b85f7770596535994c712e1045a1dbb338835978514cf",
+  "git_delta": {
+    "base_commit": "0916a631e191569320da0bbfa4b2d1b4183f18b9",
+    "candidate_commit": "a8cdb631eaee56e3d4ffeccf092606ed05d156a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_mu_translate_admissible",
+    "diff_sha256": "8c1abb5659c5296265744bc10fe3b0b081d260318543e1b60b968cc0bf02e7f7",
+    "source_sha256": "59289d1b0c315ebde884faa11496a7dfc28029074f3637edd2378807f03c1273",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_mu_translate_admissible",
+      "statement": "∀ (n : ℕ) (R s : ℝ) (φ : Euclid n → ℝ) (x : Euclid n), s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → x ∈ closedBall 0 R → ContDiff ℝ (⊤ : ℕ∞) (fun y => φ (x - y)) ∧ HasCompactSupport (fun y => φ (x - y)) ∧ tsupport (fun y => φ (x - y)) ⊆ ball 0 (2 * R) ∧ ∫ y, φ (x - y) = ∫ y, φ y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Translated test functions** (mollified weights in the closure theorem behind Simon 7.2.4):
+if `φ` is smooth with `tsupport φ ⊆ B_s(0)`, `s < R` and `x ∈ B̄_R(0)`, then `b(y) = φ(x − y)` is
+smooth with compact support in `B_{2R}(0)` and `∫ b = ∫ φ`.  `tsupport φ` is closed in the compact
+`B̄_s(0)`; `y ↦ x − y` is the homeomorphism `Homeomorph.subLeft x`, so `tsupport b` is the preimage
+of `tsupport φ`, on which `‖y‖ ≤ ‖x‖ + ‖x − y‖ < R + s < 2R`; and Lebesgue measure is invariant
+under `y ↦ x − y`. -/
+theorem Submission.cbr_ci_pw_mu_translate_admissible : ∀ (n : ℕ) (R s : ℝ) (φ : Euclid n → ℝ) (x : Euclid n), s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → x ∈ closedBall 0 R → ContDiff ℝ (⊤ : ℕ∞) (fun y => φ (x - y)) ∧ HasCompactSupport (fun y => φ (x - y)) ∧ tsupport (fun y => φ (x - y)) ⊆ ball 0 (2 * R) ∧ ∫ y, φ (x - y) = ∫ y, φ y := by
+  intro n R s φ x hsR hφ hsupp hx
+  -- `φ` has compact support: `tsupport φ` is closed in the compact `closedBall 0 s`
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : Euclid n) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hsupp.trans ball_subset_closedBall)
+  -- `b = φ ∘ e` for the homeomorphism `e = (x - ·)`
+  have hb : (fun y => φ (x - y)) = φ ∘ Homeomorph.subLeft x := rfl
+  refine ⟨hφ.comp (contDiff_const.sub contDiff_id), hb ▸ hφc.comp_homeomorph _, ?_,
+    integral_sub_left_eq_self φ volume x⟩
+  intro y hy
+  have hxy : x - y ∈ tsupport φ := by
+    rw [hb, tsupport_comp_eq_preimage] at hy
+    exact hy
+  have hxy' : ‖x - y‖ < s := mem_ball_zero_iff.mp (hsupp hxy)
+  have hxR : ‖x‖ ≤ R := mem_closedBall_zero_iff.mp hx
+  rw [mem_ball_zero_iff]
+  calc ‖y‖ = ‖x - (x - y)‖ := by rw [sub_sub_cancel]
+    _ ≤ ‖x‖ + ‖x - y‖ := norm_sub_le _ _
+    _ < 2 * R := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
