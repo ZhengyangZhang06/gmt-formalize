@@ -665,50 +665,6 @@ theorem Submission.lpf_lli_inner_compact_approx : ∀ (P : ℕ) (μ : Measure (E
     obtain ⟨j, hj⟩ := mem_iUnion.1 hxK
     exact mem_iUnion.2 ⟨Nat.pair m j, by simpa only [Nat.unpair_pair] using hj⟩
   · exact Or.inl ⟨hxA, hx⟩
-/-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
-lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
-theorem Submission.cmb_exists_compactly_contained_exhaustion :
-    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P),
-      (∀ i, CompactlyContainedOpen (W i) U) ∧
-      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i := by
-  intro P U hU
-  -- `d x = infEDist x Uᶜ` is continuous and positive exactly on `U`.
-  have hd : Continuous fun x : Eucl P => infEDist x Uᶜ := continuous_infEDist
-  have hpos : ∀ x ∈ U, 0 < infEDist x Uᶜ := fun x hx => by
-    rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq, notMem_compl_iff]
-    exact hx
-  refine ⟨fun i => {x | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}, fun i => ?_,
-    fun K hK hKU => ?_⟩
-  · -- `closure (W i) ⊆ closedBall 0 i ∩ {(i + 1)⁻¹ ≤ d}`, a compact subset of `U`.
-    have hcl : closure ({x : Eucl P | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}) ⊆
-        closedBall 0 i ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ} :=
-      closure_minimal (fun x hx => ⟨mem_closedBall_zero_iff.2 hx.1.le,
-        show ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ from hx.2.le⟩)
-        (isClosed_closedBall.inter (isClosed_le continuous_const hd))
-    refine ⟨(isOpen_lt continuous_norm continuous_const).inter (isOpen_lt continuous_const hd),
-      (isCompact_closedBall 0 _).of_isClosed_subset isClosed_closure (hcl.trans inter_subset_left),
-      fun x hx => ?_⟩
-    by_contra hxU
-    have h : ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ := (hcl hx).2
-    rw [infEDist_zero_of_mem hxU, nonpos_iff_eq_zero, ENNReal.inv_eq_zero] at h
-    exact ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩ h
-  · -- A compact `K ⊆ U` is bounded and `d` has a positive minimum on it.
-    rcases K.eq_empty_or_nonempty with rfl | hne
-    · exact ⟨0, empty_subset _⟩
-    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.1 hK.isBounded
-    obtain ⟨i₁, hi₁⟩ := exists_nat_gt R
-    obtain ⟨x₀, hx₀K, hx₀⟩ := hK.exists_isMinOn hne hd.continuousOn
-    obtain ⟨i₂, hi₂⟩ := ENNReal.exists_inv_nat_lt (hpos x₀ (hKU hx₀K)).ne'
-    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
-    · show ‖x‖ < ((max i₁ i₂ : ℕ) : ℝ)
-      calc ‖x‖ ≤ R := hR x hx
-        _ < i₁ := hi₁
-        _ ≤ (max i₁ i₂ : ℕ) := Nat.cast_le.2 (le_max_left _ _)
-    · show (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ
-      calc (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (i₂ : ℝ≥0∞)⁻¹ :=
-            ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
-        _ < infEDist x₀ Uᶜ := hi₂
-        _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
 /-- Simon Ch. 6, proof of Theorem 2.34 (p. 142): `D^β (φ ∗ g) = (D^β φ) ∗ g`, so every derivative
 of a mollification is bounded by the `L¹` norm of the mollified function.  By induction on `q`,
 for a vector-valued smooth compactly supported kernel `f` and a bilinear `L` with
@@ -2224,61 +2180,6 @@ theorem Submission.br_weightedTangent_congr :
         rw [Measure.restrict_congr_set hset]
     _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
         (hcut M' θ').symm
-/-- Compact inner approximation: a `μ`-null-measurable `A ⊆ ℝ^P` with `μ ⌞ A` σ-finite is,
-up to a `μ`-null set, the union of countably many compact subsets of `A`. -/
-theorem Submission.lpf_lli_inner_compact_approx : ∀ (P : ℕ) (μ : Measure (Eucl P)) (A : Set (Eucl P)), NullMeasurableSet A μ → SigmaFinite (μ.restrict A) → ∃ C : ℕ → Set (Eucl P), (∀ k, IsCompact (C k)) ∧ (∀ k, C k ⊆ A) ∧ μ (A \ ⋃ k, C k) = 0 := by
-  intro P μ A hA hσ
-  -- Step 1: a Borel set `A' ⊆ A` with `μ (A \ A') = 0`.
-  obtain ⟨A', hA'A, hA'm, hA'ae⟩ := hA.exists_measurable_subset_ae_eq
-  have hAA' : μ (A \ A') = 0 := (ae_eq_set.1 hA'ae).2
-  -- Step 2: the Borel pieces `B m = A' ∩ S m`, `S = spanningSets (μ ⌞ A)`, have finite measure.
-  set S := spanningSets (μ.restrict A) with hS
-  set B : ℕ → Set (Eucl P) := fun m => A' ∩ S m
-  have hBA : ∀ m, B m ⊆ A := fun m => inter_subset_left.trans hA'A
-  have hBm : ∀ m, MeasurableSet (B m) := fun m => hA'm.inter (measurableSet_spanningSets _ m)
-  have hBfin : ∀ m, μ (B m) ≠ ∞ := by
-    intro m
-    have h : μ.restrict A (B m) = μ (B m) := by
-      rw [Measure.restrict_apply (hBm m), inter_eq_left.2 (hBA m)]
-    rw [← h]
-    exact ((measure_mono inter_subset_right).trans_lt (measure_spanningSets_lt_top _ m)).ne
-  -- Step 3: the finite measure `μ ⌞ B m` on `ℝ^P` is regular, so there are compact
-  -- `K m j ⊆ B m` with `μ (B m \ K m j) < (j + 1)⁻¹`.
-  have hK : ∀ m j : ℕ, ∃ K, K ⊆ B m ∧ IsCompact K ∧ μ (B m \ K) < ((j : ℝ≥0∞) + 1)⁻¹ := by
-    intro m j
-    have : IsFiniteMeasure (μ.restrict (B m)) :=
-      ⟨by rw [Measure.restrict_apply_univ]; exact (hBfin m).lt_top⟩
-    have : (μ.restrict (B m)).Regular :=
-      Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure _
-    obtain ⟨K, hKB, hKc, hKlt⟩ := (hBm m).exists_isCompact_sdiff_lt (μ := μ.restrict (B m))
-      (measure_ne_top _ _) (ε := ((j : ℝ≥0∞) + 1)⁻¹) (by simp)
-    refine ⟨K, hKB, hKc, ?_⟩
-    rwa [Measure.restrict_apply ((hBm m).diff hKc.measurableSet),
-      inter_eq_left.2 sdiff_subset] at hKlt
-  choose K hKB hKc hKlt using hK
-  -- Step 4: `μ (B m \ ⋃ j, K m j) < (j + 1)⁻¹` for every `j`, hence it vanishes.
-  have hnull : ∀ m, μ (B m \ ⋃ j, K m j) = 0 := by
-    intro m
-    by_contra h
-    obtain ⟨n, hn⟩ := ENNReal.exists_inv_nat_lt h
-    have h1 : μ (B m \ ⋃ j, K m j) < ((n : ℝ≥0∞) + 1)⁻¹ :=
-      (measure_mono (sdiff_subset_sdiff_right (subset_iUnion _ n))).trans_lt (hKlt m n)
-    have h2 : ((n : ℝ≥0∞) + 1)⁻¹ ≤ (n : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
-    exact lt_irrefl _ ((h1.trans_le h2).trans hn)
-  -- Steps 5 and 6: re-index `K m j` along `Nat.unpair`; the rest of `A` lies in the null set
-  -- `(A \ A') ∪ ⋃ m, (B m \ ⋃ j, K m j)`.
-  refine ⟨fun k => K (Nat.unpair k).1 (Nat.unpair k).2, fun k => hKc _ _,
-    fun k => (hKB _ _).trans (hBA _), measure_mono_null ?_
-      (measure_union_null hAA' (measure_iUnion_null hnull))⟩
-  rintro x ⟨hxA, hxC⟩
-  by_cases hx : x ∈ A'
-  · have hxS : x ∈ ⋃ m, S m := by rw [hS, iUnion_spanningSets]; exact mem_univ x
-    obtain ⟨m, hm⟩ := mem_iUnion.1 hxS
-    refine Or.inr (mem_iUnion.2 ⟨m, ⟨hx, hm⟩, fun hxK => hxC ?_⟩)
-    obtain ⟨j, hj⟩ := mem_iUnion.1 hxK
-    exact mem_iUnion.2 ⟨Nat.pair m j, by simpa only [Nat.unpair_pair] using hj⟩
-  · exact Or.inl ⟨hxA, hx⟩
-
 /-- **Restriction theory, Simon Ch. 6, (2.7)–(2.9) (p. 136).**
 (R0) A current with a measure representation (2.7) has locally finite mass: `M_W(X)` is bounded by
 the `μ`-integrals of the coefficients `v(dx^I)` over `closure W`.
