@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter08.DistributionalConstancy
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -2315,5 +2316,42 @@ theorem Submission.dgcr_smooth_tests_to_C1_tests : ∀ (n : ℕ) (D : Set (Eucli
   rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan ψ hψK),
     ← setIntegral_eq_integral_of_forall_compl_eq_zero hvanD]
   exact htest ψ hψ hψc (hψK.trans hKD) i
+
+/-- **Constancy theorem for an integer multiplicity cycle carried by an `n`-plane** (Simon Ch. 6,
+Theorem 2.34, as applied to currents in a plane in the deformation theorem, Ch. 6, (26)–(27)).
+Let `τ` be orthonormal, `Q = span{τ₁, …, τₙ}`, `n ≥ 1`, and let `S ∈ 𝒟ₙ(V)` be integer
+multiplicity with `∂S = 0` in `V`, `spt S ⊆ Q` and `V ∩ Q` connected.  Then `S = c[[Q]]` in `V`
+for some `c ∈ ℤ`: `S(ω) = c ∫_{V∩Q} ω(x)(τ₁, …, τₙ) dHⁿ(x)`, and `M_W(S) = |c| Hⁿ(W ∩ Q)` for open
+`W ⊆ V`.  `S(ω) = ∫_{V∩Q} g ω(τ) dHⁿ` and `M_W(S) = ∫_{W∩Q} |g| dHⁿ` for an integer-valued,
+locally `Hⁿ`-integrable signed density `g`; `∂S = 0` kills the weak derivatives of `h = g ∘ ι`,
+`ι(s) = Σᵢ sᵢτᵢ`, on the connected open set `Ω = ι⁻¹(V)`.  By distributional constancy
+`h = c₀` a.e. on `Ω`, so `g = c ∈ ℤ` `Hⁿ`-a.e. on `V ∩ Q`. -/
+theorem Submission.idtp_planar_cycle_eq_const_mul : ∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P), 1 ≤ n → IsOpen V → Orthonormal ℝ τ → IsIntegerMultiplicity S → BoundaryVanishes S → S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → IsConnected (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → ∃ c : ℤ, (∀ ω : TestFormOn V n, S ω = (c : ℝ) * ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → S.massOn W = (c.natAbs : ℝ≥0∞) * μHE[n] (W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) := by
+  intro P n V S τ hn hV hτ hIM hbd hspt hconn
+  -- steps 1–5: the integer-valued signed density `g` on `Q`, with `S(ω) = ∫_{V∩Q} g ω(τ) dHⁿ`
+  -- and `M_W(S) = ∫_{W∩Q} |g| dHⁿ`
+  obtain ⟨g, hgm, hgZ, hgK, hSg, hmass⟩ :=
+    Submission.idtp_pc_signed_density P n V S τ hV hτ hIM hspt
+  -- step 6: `∂S = 0` gives `∫_{V∩Q} g D_{τⱼ}f dHⁿ = 0` for every `f ∈ C^∞_c(V)`
+  have hweak := Submission.idtp_pc_boundary_weak_derivative P n V S τ g hn hτ hbd hSg
+  -- `h = g ∘ ι` on `Ω = ι⁻¹(V)`: `Ω` is open and connected, `h ∈ L¹_loc(Ω)` and `∫_Ω h ∂ᵢφ = 0`
+  -- for every `φ ∈ C¹_c(Ω)`
+  obtain ⟨hΩ, hΩc, hloc, hC1, hconst⟩ :=
+    Submission.idtp_pc_constancy_reduction P n V τ g hV hτ hconn hgm hgZ hgK hweak
+  -- step 7: distributional constancy, `h = c₀` a.e. on `Ω`; so `g = c ∈ ℤ` `Hⁿ`-a.e. on `V ∩ Q`
+  obtain ⟨c₀, hc₀⟩ :=
+    Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero hloc hΩ hΩc hC1
+  obtain ⟨c, hc⟩ := hconst c₀ hc₀
+  -- step 8: `S(ω) = c ∫_{V∩Q} ω(τ) dHⁿ` and `M_W(S) = ∫_{W∩Q} |c| dHⁿ = |c| Hⁿ(W ∩ Q)`
+  refine ⟨c, fun ω => ?_, fun W hW hWV => ?_⟩
+  · rw [hSg ω, ← integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards [hc] with x hx
+    rw [hx]
+  · rw [hmass W hW hWV, ← setLIntegral_const]
+    refine lintegral_congr_ae ?_
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset (inter_subset_inter_left _ hWV) hc]
+      with x hx
+    rw [hx, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
 
 end GMT.Ch07
