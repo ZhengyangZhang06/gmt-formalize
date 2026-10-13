@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f874d71f3ac3f746afc722279c3ecd9e409ea3303f8b6a122005d15f0ce806d",
+  "git_delta": {
+    "base_commit": "8ebd0b397ae172aa7b509a44f2f8a310f281c7e9",
+    "candidate_commit": "734e454cc3d143c74375012e4aaee10059ec6d03",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "fvmb_gram_det_le_exp_sum_norm_sq_sub",
+    "diff_sha256": "2480ac147bb13ac0cc31ef56d431d4786735aa6ca5c4879a37316353556b63b4",
+    "source_sha256": "4abbde6d9c71cb0b0b231b951d2542a53e52bb16abb59c9a1cbccbd91c4bb6fd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fvmb_gram_det_le_exp_sum_norm_sq_sub",
+      "statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ Real.exp (∑ a, ‖v a‖ ^ 2 - (n : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
