@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "56762b94a38d48616f950f30ff9d3e7475106355c3d3d80cd44d681a3e927f52",
+  "git_delta": {
+    "base_commit": "9806eb1186fe088ca3c7b6f99addf5b74998b360",
+    "candidate_commit": "bf2b5c94a94438c34a5e19e247ce3d17b286cf1f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dmr_rectifiableTriple_inter",
+    "diff_sha256": "d3ff65e63549a1c302afcf242545c510bc3e723e1cb463a8e8b60d9e8eb4c7cf",
+    "source_sha256": "229cba6b226056d389708767835e4bdc6b718479c45555cd6bc4a2081e2cf89b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmr_rectifiableTriple_inter",
+      "statement": "∀ (N k : ℕ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k) (A : Set (Eucl N)), IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ → MeasurableSet A → IsRectifiableTriple (univ : Set (Eucl N)) k (M ∩ A) θ ξ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
