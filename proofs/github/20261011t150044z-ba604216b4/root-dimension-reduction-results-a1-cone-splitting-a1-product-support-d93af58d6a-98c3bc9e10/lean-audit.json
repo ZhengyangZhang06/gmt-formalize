@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "60be8c91fa51f67d4cfd0445ac3017f3f1b66ae85155c8b6da0a21791405a8f7",
+  "git_delta": {
+    "base_commit": "18127d3548c2fc1a514059e9b371778d4894fcb6",
+    "candidate_commit": "957e4fe611f90decf69e53b9c900b30a161ff9c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_psd_radial_density",
+    "diff_sha256": "e1edfa59b888f498d1ba635fb2b7d2615dc46ef105b18e5b30c68c40dfc42dde",
+    "source_sha256": "5f5586d52e9f55606e86301080b4667c9f61436c724d4451ffd5d106e8b87c23",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_psd_radial_density",
+      "statement": "∀ (d m : ℕ) (f : ℝ → ℝ≥0∞) (θ : ℝ≥0∞), f 0 = 0 → Tendsto (fun r : ℝ => f r / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => (∫⁻ σ : Euclid d, f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) / (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m)))) (𝓝[>] 0) (𝓝 θ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
