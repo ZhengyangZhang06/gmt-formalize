@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "cat GMT/Ch07/Submission.lean (IMRep, IMRep.action, IMRep.Represents, IMRep.measure, IsUnitOrientationOf, MultiVector)",
+        "cat simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean Currents.lean Forms.lean Mass.lean; sed -n 1,229p Chapter06/FormsDuality.lean; head -20 Chapter06/AffineCurrentPushforward.lean; grep -n import Chapter04/Basic.lean Chapter03/Rectifiable.lean",
+        "grep -rn 'det\\b|\\.det|Matrix.det|mkContinuous|Orthonormal' Chapter06/*.lean",
+        "sed -n 1,80p and 140,260p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "grep -rn 'def alternatization|theorem alternatization_apply|def mkPiAlgebra|theorem mkPiAlgebra_apply' Mathlib/Topology/Algebra/Module/Alternating/Basic.lean Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean; sed -n 630,660p Alternating/Basic.lean",
+        "grep -rn 'ext_multilinear|ext_alternating' Mathlib; sed -n 900,915p Mathlib/LinearAlgebra/Alternating/Basic.lean; grep -rn 'continuous_of_finiteDimensional|Module.Finite.multilinearMap'",
+        "grep -rn 'measure_eq_zero_iff_ae_notMem|ae_restrict_mem|withDensity_apply|lintegral_eq_zero_iff|withDensity_absolutelyContinuous|locallyIntegrableOn_iff|IntegrableOn.of_bound|integrable_of_forall_notMem_eq_zero|Integrable.bdd_smul|image_eq_zero_of_notMem_tsupport' mathlib/Mathlib",
+        "#synth/#check probes: NormedAddCommGroup (MultiVector P n) ok; ContinuousENorm (MultiVector P n) fails (trace: WithLp.instAddCommGroup path); FiniteDimensional/SeparableSpace (Covector (Euclid P) n) not instances; continuous_eval_const and le_opNorm ok",
+        "grep -rhoE '\"lean_name\": *\"[^\"]+\"' dag.json nodes | sort -u; grep -rIl 'imsupp_' workspaces cluster-state .swarm-worktrees (no match)",
+        "sed -n 290,310p and 755,775p book/chapter-06.txt (Simon 6.2.11-2.12, 6.3.2(3))",
+        "lake env lean /tmp/imsupp-decomp/{Stmts,Assembly,Child1,Child2s,Child2basis,Child3,FinDim2,Final}.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/imsupp-decomp/Stmts.lean",
+        "/tmp/imsupp-decomp/Assembly.lean",
+        "/tmp/imsupp-decomp/Child1.lean",
+        "/tmp/imsupp-decomp/Child2s.lean",
+        "/tmp/imsupp-decomp/Child2basis.lean",
+        "/tmp/imsupp-decomp/Child3.lean",
+        "/tmp/imsupp-decomp/FinDim2.lean",
+        "/tmp/imsupp-decomp/Final.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.\n\nRelevant definitions:\n- SimonGMT CurrentLocalEquality.lean defines GeometricCurrentOn.VanishesOn W as T ω = 0 whenever tsupport ω ⊆ W.\n- zeroRegion is ⋃₀ {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}, and support is U \\ zeroRegion.\n- Mathlib Measure.support has mem_support_iff_forall.\n\nLibrary support for the children:\n- The fundamental lemma IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (real- or Banach-valued, LocallyIntegrableOn on an open set, no local finiteness) is in AEEqOfIntegralContDiff.lean.\n- integral_withDensity_eq_integral_smul, withDensity_apply, lintegral_eq_zero_iff, measure_eq_zero_iff_ae_notMem, locallyIntegrableOn_iff and IntegrableOn.of_bound are present.\n- The determinant covector can be built from ContinuousMultilinearMap.mkPiAlgebra, compContinuousLinearMap and ContinuousMultilinearMap.alternatization. SimonGMT FormsDuality.wedgeCovectors is equivalent but not imported by GMT.Ch07.Submission.\n\nInstance findings:\n- ContinuousENorm (MultiVector P n) is not synthesized (instance path through WithLp.instAddCommGroup). NormedAddCommGroup, continuous_eval_const and le_opNorm work.\n- FiniteDimensional ℝ (Covector (Euclid P) n) is not an instance, but follows in about 12 lines from Module.Basis.ext_alternating and Module.Finite.of_injective. SeparableSpace then follows by infer_instance.\n- Hence child 2's scalar, basis-testing route.\n\nLean verification: kernel-checked scratch proofs exist for all three children (child 2 given child 1), and the parent's exact frozen type was proved from children 2 and 3. All use only propext, Classical.choice and Quot.sound. The names imsupp_unit_orientation_ne_zero_norm_le_one, imsupp_measure_eq_zero_of_vanishesOn and imsupp_vanishesOn_of_measure_eq_zero are not reserved anywhere in the DAG."
+    }
+  ],
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+  "child_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.weight_null_where_current_vanishes-a1",
+  "subproblem": {
+    "key": "weight_null_where_current_vanishes",
+    "title": "Where a represented current vanishes on an open set, its weight θH^n⌞M vanishes (fundamental lemma)",
+    "statement": "Let P, n ∈ ℕ, let U, W ⊆ ℝ^P, let T ∈ GeometricCurrentOn U n, and let R = (M, θ, ξ) ∈ IMRep U n with R.Represents T, i.e. T(ω) = R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Suppose W is open, W ⊆ U, and T vanishes on W (T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ W). Then R.measure(W) = 0, where R.measure = (H^n⌞M).withDensity θ.",
+    "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → R.measure W = 0",
+    "lean_name": "imsupp_measure_eq_zero_of_vanishesOn",
+    "depends_on": [
+      "unit_orientation_nonzero_bounded"
+    ],
+    "natural_proof": "Source: parent proof step 3, the consequence 'T vanishes on W ⇒ μ_T(W) = 0' of Simon Ch. 6, 3.2(3) (chapter-06.txt lines 763–768), which Simon states without proof. We use the parent's own alternative: test the fundamental lemma against a basis of the finite-dimensional space of n-covectors.\nUses: sibling unit_orientation_nonzero_bounded, i.e. every unit orientation ξ_0 of a subspace satisfies ξ_0 ≠ 0 and ‖ξ_0‖ ≤ 1.\nNotation: ν := H^n⌞M = μHE[n].restrict M; μ := R.measure = ν.withDensity(x ↦ θ(x)); Λ^n := Covector (Euclid P) n; Λ_n := MultiVector P n = (Λ^n)*.\n\n1. Orientation facts μ-a.e. Since μ is a withDensity measure of ν, μ ≪ ν (withDensity_absolutelyContinuous). By R.orients, for ν-a.e. x there is a subspace Q with IsUnitOrientationOf (ξ(x)) Q. By the sibling lemma, ξ(x) ≠ 0 and ‖ξ(x)‖ ≤ 1 for ν-a.e. x, hence for μ-a.e. x.\n\n2. Local finiteness. Let K ⊆ U be compact. Then K is closed, hence Borel, and\n μ(K) = ∫⁻_K θ dν = ∫⁻_{M∩K} θ dH^n < ∞\n (withDensity_apply, Measure.restrict_restrict, R.locallyIntegrable_mult).\n\n3. Scalar components. For α ∈ Λ^n put f_α(x) := ξ(x)(α) ∈ ℝ.\n (a) f_α is μ-a.e. strongly measurable. ξ is ν-a.e. strongly measurable (R.aestronglyMeasurable_orient), and the evaluation L ↦ L(α) is continuous on Λ_n (continuous_eval_const). So f_α is ν-a.e. strongly measurable (Continuous.comp_aestronglyMeasurable), hence μ-a.e. strongly measurable (mono_ac, μ ≪ ν).\n (b) |f_α(x)| ≤ ‖ξ(x)‖·‖α‖ ≤ ‖α‖ for μ-a.e. x (ContinuousLinearMap.le_opNorm and step 1).\n (c) Let K ⊆ W be compact. Then K ⊆ U, so μ(K) < ∞ by step 2, and by (a) and (b) f_α is integrable on K (IntegrableOn.of_bound). Since W is open (hence locally closed) and ℝ^P is locally compact, f_α is locally integrable on W (locallyIntegrableOn_iff).\n\n4. Distributional identity. Let g : ℝ^P → ℝ be C^∞ with compact support and tsupport g ⊆ W, and let α ∈ Λ^n.\n - The form ω(y) := g(y)·α is C^∞ (g times a constant), compactly supported (HasCompactSupport.smul_right), and tsupport ω ⊆ tsupport g ⊆ W ⊆ U. So ω ∈ TestFormOn U n with tsupport ω ⊆ W, and T(ω) = 0.\n - By the representation and linearity of ξ(y),\n 0 = T(ω) = R.action(ω) = ∫_M θ(y)·ξ(y)(g(y)α) dH^n(y) = ∫ θ(y)·(g(y)·f_α(y)) dν(y).\n - θ is ℕ-valued and measurable, so the density of μ is y ↦ ((θ(y) : ℝ≥0) : [0,∞]) with y ↦ (θ(y) : ℝ≥0) measurable. Mathlib integral_withDensity_eq_integral_smul (which has no integrability hypothesis) gives ∫ g·f_α dμ = ∫ θ(y)·(g(y)·f_α(y)) dν(y).\n Hence ∫ g(y)·f_α(y) dμ(y) = 0.\n\n5. Fundamental lemma. Apply the fundamental lemma of the calculus of variations on the open set W for the Borel measure μ on the finite-dimensional space ℝ^P (Mathlib IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, real-valued case). It needs only the local integrability on W from 3(c) and the identity of step 4; no local finiteness of μ is required. So for every α ∈ Λ^n: for μ-a.e. x, x ∈ W ⇒ ξ(x)(α) = 0.\n\n6. Λ^n is finite-dimensional. Let e_1,…,e_P be the standard basis of ℝ^P. The linear map\n α ↦ (α(e_{I(1)},…,e_{I(n)}))_{I : {1..n}→{1..P}} ∈ ℝ^{P^n}\n is injective, because an alternating n-linear map is determined by its values on tuples of basis vectors (Mathlib Module.Basis.ext_alternating). So Λ^n is linearly isomorphic to a subspace of the finite-dimensional space ℝ^{P^n}, hence finite-dimensional (Module.Finite.of_injective). Fix a basis α_1,…,α_N of Λ^n (Module.finBasis).\n\n7. Apply step 5 to the finitely many covectors α_1,…,α_N and intersect the resulting full-measure sets (ae_all_iff). For μ-a.e. x: if x ∈ W, then ξ(x)(α_k) = 0 for k = 1,…,N.\n\n8. Conclusion. Let x satisfy step 7 and step 1 (μ-a.e. x does), and suppose x ∈ W. Then the linear map ξ(x) : Λ^n → ℝ vanishes on a basis of Λ^n, so ξ(x) = 0 (Basis.ext applied to the underlying linear map). This contradicts ξ(x) ≠ 0 from step 1. Hence μ-a.e. x satisfies x ∉ W, i.e. μ(W) = 0 (measure_eq_zero_iff_ae_notMem).\n\nRemark: a countable dense subset D of the finite-dimensional normed space Λ^n works equally well in steps 6–8 (TopologicalSpace.exists_countable_dense; ξ(x) vanishes on D and hence on closure D = Λ^n by continuity). One may also apply the Banach-valued fundamental lemma once to x ↦ ξ(x) ∈ Λ_n, since (∫ gξ dμ)(α) = T(gα) = 0.\nFormalization note: in this contract Lean does not synthesize ContinuousENorm (MultiVector P n), so Integrable and LocallyIntegrableOn statements for MultiVector-valued maps do not elaborate directly. The scalar route of steps 3–8 avoids this.",
+    "proof_key_steps": [
+      "μ = (H^n⌞M).withDensity θ ≪ H^n⌞M, so by R.orients and the sibling lemma ξ ≠ 0 and ‖ξ‖ ≤ 1 hold μ-a.e.; also μ(K) < ∞ for compact K ⊆ U.",
+      "Each scalar component f_α = ξ(·)(α) is μ-a.e. strongly measurable, bounded by ‖α‖, and locally integrable on the open set W.",
+      "For g ∈ C^∞_c with tsupport g ⊆ W: ∫ g·f_α dμ = ∫_M θ·ξ(gα) dH^n = R.action(gα) = T(gα) = 0 (integral_withDensity_eq_integral_smul).",
+      "Fundamental lemma on W (IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero): f_α = 0 μ-a.e. on W, for every α.",
+      "Λ^n is finite-dimensional (injective evaluation on basis tuples); testing on a basis gives ξ(x) = 0 for μ-a.e. x ∈ W.",
+      "This contradicts ξ ≠ 0 μ-a.e., so μ-a.e. x lies outside W, i.e. μ(W) = 0."
+    ]
+  },
+  "audit": {
+    "key": "weight_null_where_current_vanishes",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Prose and type include all required hypotheses through IMRep, representation, openness of W, inclusion in U, and vanishing. Absolute continuity transfers orientation facts; compact-set finiteness establishes scalar local integrability. Smooth scalar tests and the density identity justify the fundamental lemma. The explicit finite-dimensional basis argument combines the almost-everywhere conclusions without an uncountable-intersection gap. Only the declared orientation child is needed; openness of U and compact closure of W are unnecessary."
+  },
+  "resolved_dependencies": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-a40c945682/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-a40c945682/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-a40c945682/parent-supplied-natural-proof.json"
+}

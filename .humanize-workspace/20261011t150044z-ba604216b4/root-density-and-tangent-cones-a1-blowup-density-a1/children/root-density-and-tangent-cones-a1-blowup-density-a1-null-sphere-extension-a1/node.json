@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_density-a1.null_sphere_extension-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_density-a1",
+  "depth": 3,
+  "title": "Ball-measure identity extends from μ-null-sphere radii to all radii (Simon 7.3.1 proof, after display (4))",
+  "statement": "Let P, n ∈ ℕ, let μ be a measure on the Borel sets of ℝ^P (Measure (Euclid P)) with μ(B_r(0)) < ∞ for every r > 0, and let c ∈ [0, ∞] with c ≠ ∞. Suppose μ(B_ρ(0)) = c·ofReal(ρⁿ) for every ρ > 0 such that μ(sphere(0, ρ)) = 0, where sphere(0, ρ) = {y : |y| = ρ}. Then μ(B_ρ(0)) = c·ofReal(ρⁿ) for every ρ > 0.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (c : ℝ≥0∞), c ≠ ∞ → (∀ r : ℝ, 0 < r → μ (ball 0 r) ≠ ∞) → (∀ ρ : ℝ, 0 < ρ → μ (sphere 0 ρ) = 0 → μ (ball 0 ρ) = c * ENNReal.ofReal (ρ ^ n)) → ∀ ρ : ℝ, 0 < ρ → μ (ball 0 ρ) = c * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "dtc_measure_ball_eq_of_null_sphere",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-density-a1-null-sphere-extension-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_density-a1.rescaled_ball_limit-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_density-a1",
+  "depth": 3,
+  "title": "Scaling limit of rescaled ball measures (Simon 7.3.1 proof, display (1))",
+  "statement": "Let P, n ∈ ℕ. Let μ and μ_j (j ∈ ℕ) be measures on the Borel sets of ℝ^P (Measure (Euclid P)), x ∈ ℝ^P and θ ∈ ℝ. Let λ_j ∈ ℝ with λ_j > 0 for every j and λ_j → 0. Write ω_n := unitBallVolume n (the Lebesgue measure of the open unit ball of ℝⁿ), and η_j := dilation x λ_j, η_j(y) = −λ_j⁻¹x + λ_j⁻¹y. Assume (H3) μ(B_r(x)) / (ω_n·ofReal(rⁿ)) → ofReal θ in [0, ∞] as r → 0⁺ (filter 𝓝[>] 0, division in [0, ∞]). Assume (H4) μ_j(s) = ofReal((λ_j⁻¹)ⁿ)·μ(η_j⁻¹(s)) for every j and every measurable s ⊆ ℝ^P. Then for every ρ > 0, μ_j(B_ρ(0)) → ω_n·ofReal(ρⁿ)·ofReal θ in [0, ∞] as j → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (x : Euclid P) (θ : ℝ) (lams : ℕ → ℝ), (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → Tendsto (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → (∀ (j : ℕ) (s : Set (Euclid P)), MeasurableSet s → μs j s = ENNReal.ofReal ((lams j)⁻¹ ^ n) * μ (dilation x (lams j) ⁻¹' s)) → ∀ ρ : ℝ, 0 < ρ → Tendsto (fun j => μs j (ball 0 ρ)) atTop (𝓝 (unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ))",
+  "lean_name": "dtc_rescaled_ball_measure_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-density-a1-rescaled-ball-limit-a1-a1"
+}

@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp … GMT/Ch07/Submission.lean (identical; snapshot project b4d606d, mathlib 25730c7c)",
+        "rg -n 'theorem countable_meas_level_set_pos|theorem countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top|theorem countable_meas_pos_of_disjoint_iUnion' mathlib/Mathlib",
+        "rg -n 'tendsto_measure_of_null_frontier|le_liminf_measure_open_of_tendsto|limsup_measure_closed_le_of_tendsto' mathlib/Mathlib; sed -n 180,280p mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean (tendsto_measure_of_le_liminf_measure_of_limsup_measure_le)",
+        "grep -n 'cancel|div_self|mul_div_mul' mathlib/Mathlib/Basic/ENNReal/Inv.lean (mathlib/Mathlib/Data/ENNReal/Inv.lean is a deprecated stub re-exporting Mathlib.Basic.ENNReal.Inv)",
+        "rg -n 'liminf|limsup|sphere|frontier' project/GMT",
+        "rg -n 'null_frontier|sphere.*= 0|measure_sphere|frontier.*= 0|vague|VaguelyConverges|RadonConverges|WeaklyConvergesMeasure' lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "rg -l 'dtc_rescaled_ball_measure_tendsto|dtc_tendsto_measure_ball_of_vague|dtc_measure_ball_eq_of_null_sphere' .humanize/ and git grep over all local branches (no match)",
+        "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on the three child types",
+        "lake env lean /tmp/bd-decomp-7a1/{Assembly,Print,A/ChildA,B/ChildB,C/ChildC,Combined}.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/bd-decomp-7a1/Assembly.lean",
+        "/tmp/bd-decomp-7a1/Print.lean",
+        "/tmp/bd-decomp-7a1/A/ChildA.lean",
+        "/tmp/bd-decomp-7a1/B/ChildB.lean",
+        "/tmp/bd-decomp-7a1/C/ChildC.lean",
+        "/tmp/bd-decomp-7a1/Combined.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.\n\nNo existing lemma fits. Neither the snapshot project (project/GMT) nor SimonGMT has a lemma linking vague convergence of plain Measure (Euclid P) to ball measures, or extending an identity across null-sphere radii. SimonGMT's RadonConverges (Chapter08/VarifoldConvergence.lean) concerns varifolds and does not apply. The three children are therefore new.\n\nMathlib supplies the ingredients:\n- countably many charged spheres: Measure.countable_meas_level_set_pos and countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top (SFinite.lean);\n- density of good radii: Set.Countable.measure_zero with Real.volume_Ioo;\n- the cut-off sandwich: integral_eq_lintegral_of_nonneg_ae, Monotone.measure_iUnion, Antitone.measure_iInter, tendsto_measure_iUnion_atTop, tendsto_of_le_liminf_of_limsup_le;\n- the scaling step: ENNReal.mul_div_mul_left, ENNReal.mul_comm_div, ENNReal.ofReal_div_of_pos, ENNReal.Tendsto.const_mul, ENNReal.mul_div_cancel_right (Mathlib/Basic/ENNReal/Inv.lean), Metric.measure_ball_pos, measure_ball_lt_top.\n\nThe portmanteau lemma tendsto_measure_of_le_liminf_measure_of_limsup_measure_le (Portmanteau.lean) and Set.Countable.dense_compl are not in the import closure of GMT.Ch07.Submission, so the children's proofs avoid them.\n\nLean checks:\n- All three child types elaborate in the replayed comparator scope and pass the validator.\n- Scratch proofs of all three children compile with only propext, Classical.choice and Quot.sound.\n- Combined.lean proves the exact frozen parent type from the three child types plus the frozen sibling types dtc_mass_eq_measure and dtc_blowUp_scaling. sorryAx comes only from the two sibling stubs.\n- No name collision."
+    }
+  ],
+  "proof": "Source: step 4 of the parent proof, i.e. Simon 7.3.1 proof after display (4). The book says μ_C(∂B_ρ(0)) = 0 \"is true except for at most a countable set of ρ\", and the identity is then asserted \"for each ρ > 0\" (chapter-07.txt lines 348–355). Hypotheses in the order of the Lean statement: (H1) c ≠ ∞; (H2) μ(B_r(0)) ≠ ∞ for every r > 0; (H3) μ(B_ρ(0)) = c·ofReal(ρⁿ) for every ρ > 0 with μ(sphere(0, ρ)) = 0. Call t ∈ ℝ bad if μ(sphere(0, t)) > 0, and let N be the set of bad t. By (H3), μ(B_r(0)) = c·ofReal(rⁿ) for every r > 0 with r ∉ N.\n1. N is countable. For m ∈ ℕ let ν_m := μ⌞B_{m+1}(0) (μ.restrict (ball 0 (m+1))). It is a finite measure, since ν_m(ℝ^P) = μ(B_{m+1}(0)) < ∞ by (H2). The spheres sphere(0, t) = {y : |y| = t}, t ∈ ℝ, are the level sets of the measurable map y ↦ |y|, so they are pairwise disjoint measurable sets. In the finite measure space (ℝ^P, ν_m) at most countably many of them have positive measure: for each k ≥ 1, at most k·ν_m(ℝ^P) of them have measure ≥ 1/k (Mathlib: Measure.countable_meas_level_set_pos applied to the norm, or countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top). So N_m := {t : ν_m(sphere(0, t)) > 0} is countable. Now let t ∈ N. Then t ≥ 0, since for t < 0 the sphere is empty. Choose m ∈ ℕ with t < m + 1. Then sphere(0, t) ⊆ B_{m+1}(0), so ν_m(sphere(0, t)) = μ(sphere(0, t)) > 0 and t ∈ N_m. Hence N ⊆ ⋃_m N_m is countable.\n2. Every nonempty open interval (a, b) ⊆ ℝ contains a point not in N. A countable subset of ℝ is Lebesgue-null (Set.Countable.measure_zero), whereas volume((a, b)) = b − a > 0 (Real.volume_Ioo); so (a, b) ⊄ N.\n3. Fix ρ > 0. For k ∈ ℕ put s_k := ρ − ρ/(k+1). Then 0 ≤ s_k < ρ, (s_k) is increasing, and s_k → ρ. By step 2 choose r_k ∈ (s_k, ρ) with r_k ∉ N. Then 0 < r_k < ρ, μ(B_{r_k}(0)) = c·ofReal(r_kⁿ) by (H3), and r_k → ρ (squeezed between s_k and ρ).\n4. Lower bound. B_{r_k}(0) ⊆ B_ρ(0) gives c·ofReal(r_kⁿ) ≤ μ(B_ρ(0)) for all k. Since t ↦ ofReal(tⁿ) is continuous, ofReal(r_kⁿ) → ofReal(ρⁿ). Since c ≠ ∞ (H1), multiplication by c is continuous there (ENNReal.Tendsto.const_mul), so c·ofReal(r_kⁿ) → c·ofReal(ρⁿ). Limits preserve the non-strict inequality, so c·ofReal(ρⁿ) ≤ μ(B_ρ(0)).\n5. Upper bound. Since s_k < r_k, μ(B_{s_k}(0)) ≤ μ(B_{r_k}(0)) = c·ofReal(r_kⁿ) ≤ c·ofReal(ρⁿ). The last inequality uses 0 < r_k ≤ ρ and monotonicity of t ↦ tⁿ on [0, ∞), of ofReal, and of multiplication by c. The balls B_{s_k}(0) increase, and their union is B_ρ(0): s_k < ρ, and |y| < ρ implies |y| < s_k for large k because s_k → ρ. By continuity of measure from below, μ(B_ρ(0)) = lim_k μ(B_{s_k}(0)) ≤ c·ofReal(ρⁿ).\n6. Steps 4 and 5 give μ(B_ρ(0)) = c·ofReal(ρⁿ).",
+  "key_steps": [
+    "The set N of radii t with μ(sphere(0,t)) > 0 is countable: restrict μ to B_{m+1}(0), a finite measure, whose disjoint norm level sets are the spheres.",
+    "Every open interval meets ℝ \\ N, because countable sets are Lebesgue-null and intervals are not.",
+    "Choose radii r_k ∈ (ρ − ρ/(k+1), ρ) outside N, so r_k → ρ⁻ and μ(B_{r_k}(0)) = c·ofReal(r_kⁿ).",
+    "Lower bound: c·ofReal(r_kⁿ) ≤ μ(B_ρ(0)), then pass to the limit using c ≠ ∞.",
+    "Upper bound: μ(B_{s_k}(0)) ≤ c·ofReal(ρⁿ), then continuity from below as s_k ↑ ρ."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

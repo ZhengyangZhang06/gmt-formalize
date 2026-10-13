@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "Test forms correspond under η_{x,λ}, and η_{x,λ#}T(ω) = λ^{−n}T(ω∘η)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P an arbitrary subset, x ∈ ℝ^P, λ > 0 and η = η_{x,λ} (η(y) = λ⁻¹(y − x), Contract `dilation x λ`). Then (a) for every ω ∈ 𝒟ⁿ(η(U)) there is ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y ∈ ℝ^P; (b) for every ω' ∈ 𝒟ⁿ(U) there is ω ∈ 𝒟ⁿ(η(U)) with ω'(y) = ω(η(y)) for all y; (c) for every T ∈ 𝒟_n(U) and all ω ∈ 𝒟ⁿ(η(U)), ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y, the blow-up satisfies η_{x,λ#}T(ω) = λ^{−n}·T(ω'). Here 𝒟ⁿ(V) = TestFormOn V n and η_{x,λ#}T = blowUp T x λ.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω'",
+  "lean_name": "dtc_blowUp_testForm_corr",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1"
+}
