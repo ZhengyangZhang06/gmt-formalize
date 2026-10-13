@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "finrank_orthogonal_span_singleton|det_to_matrix_orthonormalBasis_real|theorem ext_alternating|theorem det_succ_column_zero|theorem det_updateCol_smul|theorem map_linearDependent|theorem linearIndependent_finCons|theorem sign_cycleRange|theorem cycleRange_symm_zero|theorem cycleRange_symm_succ|curryLeft_apply_apply|theorem det_apply|theorem det_self",
+        "rg -n 'Covector' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "codim1_lur_no_oriented_normal_frame|codim1_lur_no_covector_eq_det_cons|codim1_lur_no_det_cons_normal_decomp",
+        "rg -n '(^|[^A-Za-z])(axiom|sorry|admit|unsafe|native_decide|implemented_by)([^A-Za-z]|$)' /tmp/no-split/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/normal-orientation-audit-5qqcrmeu/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/normal-orientation-audit-5qqcrmeu/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/no-split/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/normal-orientation-audit-5qqcrmeu/MatrixInstances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/GroupTheory/Perm/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5/decomposition-v1.json",
+        "/tmp/no-split/All.lean",
+        "/tmp/no-split/Inst.lean",
+        "/tmp/no-split/Names.lean",
+        "/tmp/normal-orientation-audit-5qqcrmeu/ChallengeTypes.lean",
+        "/tmp/normal-orientation-audit-5qqcrmeu/Assembly.lean",
+        "/tmp/normal-orientation-audit-5qqcrmeu/MatrixInstances.lean"
+      ],
+      "conclusion": "The split is appropriate: three independent linear-algebra obligations assemble into the exact selected frozen theorem, with one frame working for every β. Empty child dependency lists are correct and acyclic. Project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308 match the pinned manifests; inspected Mathlib sources match the compiler sources. The snapshot supplies the dimension, orthonormal-basis, determinant, alternating-map and permutation lemmas used. All names are bare identifiers; no proposed name or exact type occurs in the inspected 974-node DAG, and name searches across 1,734 Git ref tips found no matches. No declaration is reused. All three exact one-line propositions elaborate independently before any child implementation. A fresh assembly proves the unchanged parent using only the three child assumptions and standard foundational axioms. Recompiling the supplied complete proofs succeeds, and each child and parent has only propext, Classical.choice and Quot.sound as axioms. Matrix layout, Laplace expansion, coordinate coercions and ordinary Matrix.of multiplication were independently checked. The cited [Labbi paper](https://arxiv.org/abs/1112.1346) provides background on Laplace expansions; the supplied proofs are self-contained relative to the pinned library."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "oriented_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including n ≥ 1 and unit ν. The proof establishes dim ν⊥ = n, embeds an orthonormal basis, and obtains d² = 1 for the augmented frame determinant. Since n ≥ 1, scaling its first tangent vector by −d is valid; the supplied calculations preserve orthonormality and span and give determinant −1. The proof is complete, non-circular and ready for formalization."
+    },
+    {
+      "key": "covector_det_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree for every natural n. Multilinearity and alternation reduce equality to injective basis tuples. The missing-index/permutation construction is valid, and both maps acquire the same permutation sign. At the sorted tuple, the matching minor is the identity and every other minor has a zero column, giving (−1)^j φ_j = b_j. The empty-tuple case n = 0 is covered. Neither the frame theorem nor the parent is assumed."
+    },
+    {
+      "key": "det_normal_decomp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree; no orthonormality hypothesis is needed. The proof establishes that D(x) = det[x, σ] is linear and vanishes on span σ. Unit length gives w − ⟨w,ν⟩ν ∈ ν⊥, and the stated span equality places this residual in ker D. Linearity yields the exact conclusion, including n = 0. All steps are explicit and independent of the other children and parent."
+    }
+  ],
+  "required_changes": []
+}

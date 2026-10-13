@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1.oriented_frame-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1",
+  "depth": 6,
+  "title": "A negatively oriented orthonormal frame σ of ν^⊥: det[ν, σ] = −1",
+  "statement": "Let n ≥ 1 and ν ∈ ℝ^{n+1} with |ν| = 1. For x ∈ ℝ^{n+1} and a family a = (a_0, …, a_{n−1}) in ℝ^{n+1}, let [x, a] be the (n+1)×(n+1) real matrix whose column 0 is x and whose column l+1 is a_l (its entry in row r, column c is the r-th coordinate of the c-th column vector). Then there is an orthonormal family σ = (σ_0, …, σ_{n−1}) in ℝ^{n+1} with span{σ_0, …, σ_{n−1}} = (span{ν})^⊥ and det[ν, σ] = −1.",
+  "lean_statement": "∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r) = -1",
+  "lean_name": "codim1_lur_no_oriented_normal_frame",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-30520929a1-a1"
+}
