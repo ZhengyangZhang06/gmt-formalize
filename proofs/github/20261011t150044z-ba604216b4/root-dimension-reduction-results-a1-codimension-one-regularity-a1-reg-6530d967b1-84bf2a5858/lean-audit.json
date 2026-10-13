@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fec793f23866b0134b71e9011a22b7c3000f7ce4271e83039a2a800bc2552cf7",
+  "git_delta": {
+    "base_commit": "00d4f38969361736a347d68d5b3d634a2dece30e",
+    "candidate_commit": "1d73f0fd1ee0de51d1e9f9c0a38d7adaac14a594",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg",
+    "diff_sha256": "54abea3648d7de6b5a22025934d263936a9656e463cc68027d387289e6298ed9",
+    "source_sha256": "bbdc481bc7574d34bb063c565b49d74a2043361e499e7e7eb1cfce6d990da1d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg",
+      "statement": "∀ (n : ℕ) (f : EuclideanSpace ℝ (Fin n) → ℝ), LocallyIntegrable f volume → (∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * f x) → ∀ᵐ x ∂volume, 0 ≤ f x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
