@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Normalized smooth bump in an open interval.**  For `a < b` there is a `C^∞` function
+`η : ℝ → ℝ` with compact support, `tsupport η ⊆ (a, b)` and `∫ η = 1`: normalize the
+`ContDiffBump` `β` centred at `m = (a + b)/2` with radii `(b - a)/8 < ρ = (b - a)/4`, whose
+closed support `[m - ρ, m + ρ]` lies in `(a, b)` and whose integral is positive. -/
+theorem Submission.idtp_ccd_scsp_dbr_normalized_bump : ∀ (a b : ℝ), a < b → ∃ η : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ Ioo a b ∧ ∫ x, η x = 1 := by
+  intro a b hab
+  -- `β`: the bump centred at `m = (a + b)/2`, equal to `1` on radius `(b - a)/8` and
+  -- supported in radius `ρ = (b - a)/4`
+  let β : ContDiffBump ((a + b) / 2) := ⟨(b - a) / 8, (b - a) / 4, by linarith, by linarith⟩
+  -- `tsupport β = [m - ρ, m + ρ] ⊆ (a, b)`
+  have hsupp : tsupport β ⊆ Ioo a b := by
+    rw [β.tsupport_eq]
+    intro x hx
+    rw [mem_closedBall, Real.dist_eq, abs_le] at hx
+    change -((b - a) / 4) ≤ x - (a + b) / 2 ∧ x - (a + b) / 2 ≤ (b - a) / 4 at hx
+    constructor <;> linarith [hx.1, hx.2]
+  -- `∫ β > 0`: `β ≥ 0` is integrable and its support `ball(m, ρ)` has measure `2ρ > 0`
+  have hpos : 0 < ∫ x, β x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => β.nonneg)
+      (β.continuous.integrable_of_hasCompactSupport β.hasCompactSupport), β.support_eq,
+      Real.volume_ball, ENNReal.ofReal_pos]
+    change 0 < 2 * ((b - a) / 4)
+    linarith
+  -- `η = (∫ β)⁻¹ • β`
+  refine ⟨fun x => (∫ x, β x)⁻¹ * β x, contDiff_const.mul β.contDiff, β.hasCompactSupport.mul_left,
+    tsupport_mul_subset_right.trans hsupp, ?_⟩
+  rw [integral_const_mul, inv_mul_cancel₀ hpos.ne']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
