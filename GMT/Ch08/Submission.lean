@@ -703,14 +703,6 @@ theorem Submission.allard_tc_scf_plane_ball_mass :
     Measure.restrict_apply measurableSet_closedBall]
   -- Step 2: a linear isometry `J : ℝ^n → ℝ^N` with range `T`, from an orthonormal basis of `T`
   -- indexed by `Fin n`.
-/-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
-`T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
-`H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
-theorem Submission.allard_tc_fbl_plane_ball_measure :
-    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
-  intro N n T r hr
-  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `T.plane`, from an orthonormal basis
-  -- of `T.plane` indexed by `Fin n`.
   let b : OrthonormalBasis (Fin n) ℝ T.plane :=
     (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
   let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
@@ -730,6 +722,52 @@ theorem Submission.allard_tc_fbl_plane_ball_measure :
   -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
   rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
     finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+/-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
+`H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.allard_tc_fbl_plane_ball_measure :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `T.plane`, from an orthonormal basis
+  -- of `T.plane` indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 2: `H^n (J '' E) = vol E` for every `E ⊆ ℝ^n`.
+  have hmeas : ∀ E : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (J '' E) = volume E := by
+    intro E
+    rw [J.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `T.plane ∩ {‖w‖ ∈ A} = J '' {‖y‖ ∈ A}`, since `J` preserves norms and has range
+  -- `T.plane`.
+  have himage : ∀ A : Set ℝ,
+      (T.plane : Set (Euclidean N)) ∩ {w | ‖w‖ ∈ A} = J '' {y | ‖y‖ ∈ A} := by
+    intro A
+    ext w
+    constructor
+    · rintro ⟨hw, hwA⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · simpa using hwA
+      · simp [J]
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨by simp [J], by simpa using hy⟩
+  have hcl : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r = J '' closedBall 0 r := by
+    simpa only [Set.mem_Iic, ← mem_closedBall_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iic r)
+  have hop : (T.plane : Set (Euclidean N)) ∩ ball 0 r = J '' ball 0 r := by
+    simpa only [Set.mem_Iio, ← mem_ball_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iio r)
+  -- Steps 4–5: `vol (B_r(0)) = vol (B°_r(0)) = ω_n r^n` in `ℝ^n` (`r > 0`).
+  have hcl_vol : volume (closedBall (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  have hop_vol : volume (ball (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  -- Step 6: conclusion.
+  exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
 /-- **Simon Ch. 8, proof of 5.5, pp. 216–217: a stationary cone with density `≥ θ₀` a.e. is
 `θ₀ v(T)`.** Let `C` be a stationary `n`-varifold on `ℝ^N` with `μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every
 `ρ > 0` (printed (1)) and `Θ^n(μ_C, y) ≥ θ₀` for `μ_C`-a.e. `y` (printed (7)). By 3.4 at every
