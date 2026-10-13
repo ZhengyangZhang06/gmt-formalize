@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25ae530b3a5c57f43dbb37504e01c4951de57478e593a05ebe947b0bb35335c5",
+  "git_delta": {
+    "base_commit": "5ca4144b09d15c4827cc273b058f080029a87b84",
+    "candidate_commit": "9a707fe9c28d0546f758603c7a8f03ca191416d9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1pt_linear_range_integral",
+    "diff_sha256": "7064fd39cb94a05e468a46723a8d2033721df3572132a545ee463b231263ab63",
+    "source_sha256": "c6e21aa4a6bf6924411092ceae7970bbaa328c15c0f7e9a2bbb47903567ac68f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1pt_linear_range_integral",
+      "statement": "∀ (P n : ℕ) (L : Euclid n →L[ℝ] Euclid P) (f : Euclid P → ℝ), Injective L → ∫ y in (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = Real.sqrt ((L.adjoint ∘L L).det) * ∫ b, f (L b)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
