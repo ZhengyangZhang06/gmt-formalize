@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.eval_formula-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "depth": 4,
+  "title": "T(ω) as the integral of ⟨ω, ξ⟩ against the weight restricted to a set containing spt ω",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and let R = (M, θ, ξ) be an IMRep in U with R.Represents T, i.e. T(ω) = R.action ω = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Let μ := R.measure = (H^n⌞M).withDensity θ. Then for every set V ⊆ ℝ^P and every ω ∈ TestFormOn U n with tsupport ω ⊆ V, T(ω) = ∫ ξ(x)(ω(x)) d(μ⌞V)(x) (real Bochner integral against the restriction of μ to V).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ (V : Set (Euclid P)) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ V → T ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂(R.measure.restrict V)",
+  "lean_name": "rsd_mw_wlm_eval_eq_integral_restrict",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1-a1"
+}
