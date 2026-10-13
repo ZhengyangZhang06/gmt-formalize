@@ -400,6 +400,18 @@ theorem Submission.slicing_im_ll_twl_cie_weighted_transfer : ∀ (X Y E : Type) 
   refine integral_congr_ae (ae_of_all _ fun x => ?_)
   dsimp only
   rw [NNReal.smul_def, hcoe]
+/-- Measurability of the Gram-determinant Jacobian (step 2 of Simon Ch. 6, 3.9 in charts): for an
+arbitrary map `Φ : ℝⁿ → ℝ^P`, `w ↦ √det(⟨DΦ(w)eᵢ, DΦ(w)eⱼ⟩)` is Borel measurable, being the
+continuous map `L ↦ √det(⟨Leᵢ, Leⱼ⟩)` on `ℝⁿ →L[ℝ] ℝ^P` composed with the Borel map
+`w ↦ fderiv ℝ Φ w`. -/
+theorem Submission.slicing_im_ll_twl_cie_jacobian_measurable : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P), Measurable (fun w : Eucl n => Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) := by
+  intro P n Φ
+  -- The Gram-determinant map is continuous on `ℝⁿ →L[ℝ] ℝ^P`.
+  have hG : Continuous fun L : Eucl n →L[ℝ] Eucl P => Real.sqrt (Matrix.of fun i j =>
+      inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1))).det := by
+    fun_prop
+  -- `w ↦ fderiv ℝ Φ w` is Borel measurable for every `Φ`.
+  exact hG.measurable.comp (measurable_fderiv ℝ Φ)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
