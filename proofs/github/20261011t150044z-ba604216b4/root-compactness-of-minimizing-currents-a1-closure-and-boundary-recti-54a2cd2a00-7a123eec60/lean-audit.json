@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e4f6673a9aacb4e755dbffa540c9c4c90a5761b2937a4093e88109dd945ff0a1",
+  "git_delta": {
+    "base_commit": "89e91d2bdca5f27e218f348845217aff005e81cf",
+    "candidate_commit": "29f4fc50a1ea41a45cddb1a13425820666ada080",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_ud_lusin_of_aestronglyMeasurable",
+    "diff_sha256": "02ad2334b459be363e93ff55bbca85b0e932d56cf43fe3f35c88052b65f3b47b",
+    "source_sha256": "2d972625eae22a56f12b7da0a22f661f1f9f15d5239a8e68ecbb6afd3a829a54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_ud_lusin_of_aestronglyMeasurable",
+      "statement": "∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [TopologicalSpace.PseudoMetrizableSpace Y] [SecondCountableTopology Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (f : Euclid P → Y) (p : Euclid P → Prop), MeasurableSet A → μ A ≠ ∞ → AEStronglyMeasurable f (μ.restrict A) → (∀ᵐ x ∂(μ.restrict A), p x) → ∀ η : ℝ≥0∞, η ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \\ K) < η ∧ (∀ x ∈ K, p x) ∧ ContinuousOn f K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
