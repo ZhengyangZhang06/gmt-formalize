@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6636ad60587491f4b45bbfd043465b81ccd6df98978dc40cf7a3ebed6e169a68",
+  "git_delta": {
+    "base_commit": "ec724290e58cd17f62921da0360013c7823ab55a",
+    "candidate_commit": "1ebfef61050d90da64df918659b2c1fa5df4f610",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1a_lusin_isClosed",
+    "diff_sha256": "98cb341e3a72e04b1d47f85dd655d443f762af995680b5cc8afaf96b49c2cd1b",
+    "source_sha256": "7eedb321bf914ed98191ba133fcdba9530cbc1e9c83ac594913c148efccd7cc9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1a_lusin_isClosed",
+      "statement": "∀ (n : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (g : Euclid n → Y) (B : Set (Euclid n)), Measurable g → MeasurableSet B → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C : Set (Euclid n), C ⊆ B ∧ IsClosed C ∧ ContinuousOn g C ∧ volume (B \\ C) < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
