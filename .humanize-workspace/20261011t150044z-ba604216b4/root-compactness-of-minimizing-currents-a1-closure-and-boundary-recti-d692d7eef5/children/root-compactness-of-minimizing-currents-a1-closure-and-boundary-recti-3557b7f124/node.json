@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1.cone_cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1",
+  "depth": 5,
+  "title": "Compactly supported cutoff equal to 1 on the cone X ∩ B₁(0) and vanishing on Q outside B̄_δ(0)",
+  "statement": "Let P ∈ ℕ, let Q be a linear subspace of ℝ^P with orthogonal projection p_Q (Q.starProjection), and let δ > 0. Then there is a continuous compactly supported f : ℝ^P → ℝ (an element of CompactlySupportedContinuousMap (Euclid P) ℝ) such that 0 ≤ f ≤ 1 everywhere, f(y) = 1 whenever 2|p_Q y| < |y| and |y| < 1 (that is, on X ∩ B₁(0) with X = {y : 2|p_Q y| < |y|}), and f(y) = 0 whenever y ∈ Q and |y| > δ.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ, (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y : Euclid P, 2 * ‖Q.starProjection y‖ < ‖y‖ → ‖y‖ < 1 → f y = 1) ∧ ∀ y ∈ Q, δ < ‖y‖ → f y = 0",
+  "lean_name": "cbrr_tcd_cone_cutoff_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3557b7f124-a1"
+}

@@ -1,0 +1,75 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_to_rectifiable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, steps 6, 8 and 9 (net of planes, Lipschitz graphs, cover); Simon Ch. 3, proof of 1.6, chapter-03.txt lines 220–262. Simon covers the compact set E by finitely many balls B_{δ/4}(x₀); since only countable rectifiability is required we cover ℝ^P by countably many such balls with centres in a dense sequence, so E need not be compact.
+
+1. Net of planes (step 6). By the sibling plane_net with ε := 1/16 there are n-dimensional subspaces T₁,…,T_N such that every n-dimensional Q has some j with ‖p_Q − p_{T_j}‖ < 1/16.
+2. Dense centres. ℝ^P is separable; fix a sequence (u_q)_{q∈ℕ} with dense range.
+3. Pieces. For j ∈ {1,…,N} and q ∈ ℕ put D_{j,q} := {x ∈ E : ‖p_{Q(x)} − p_{T_j}‖ < 1/16} ∩ B_{δ/4}(u_q).
+4. Cone condition on each piece (Claim (10), step 7). Let x, y ∈ D_{j,q}. Then |y − x| ≤ |y − u_q| + |x − u_q| < δ/4 + δ/4 = δ/2, x ∈ E with ‖p_{Q(x)} − p_{T_j}‖ < 1/16 and y ∈ E. The sibling cone_claim (applied to μ, E, Q, T := T_j, a, b, δ and the two density hypotheses) gives |y − x| ≤ 4|p_{T_j}(y − x)|.
+5. Lipschitz parametrization (step 8). Since dim T_j = n, the sibling lipschitz_cover (with T := T_j, D := D_{j,q}, C := 4) gives a Lipschitz F_{j,q} : ℝⁿ → ℝ^P with D_{j,q} ⊆ F_{j,q}(ℝⁿ).
+6. The pieces cover E (step 9). Let x ∈ E. As dim Q(x) = n, step 1 gives j with ‖p_{Q(x)} − p_{T_j}‖ < 1/16; by density there is q with |x − u_q| < δ/4. Hence x ∈ D_{j,q}. So E ⊆ ⋃_{(j,q)} F_{j,q}(ℝⁿ), the union over the countable index set {1,…,N} × ℕ.
+7. Conclusion. Each F_{j,q}(ℝⁿ) is countably n-rectifiable (SimonGMT `countablyRectifiable_range`); the family {F_{j,q}(ℝⁿ)} is countable, so its union is countably n-rectifiable (SimonGMT `countablyRectifiable_sUnion`), and so is its subset E (SimonGMT `CountablyRectifiable.mono`). ∎
+
+## Key steps
+
+1. Take a 1/16-net T₁,…,T_N of n-planes (plane_net) and a dense sequence (u_q).
+2. D_{j,q} := {x ∈ E : ‖p_{Q(x)} − p_{T_j}‖ < 1/16} ∩ B_{δ/4}(u_q) has diameter < δ/2, so cone_claim gives |y − x| ≤ 4|p_{T_j}(y − x)| on it.
+3. lipschitz_cover puts each D_{j,q} into one Lipschitz image of ℝⁿ.
+4. The countably many D_{j,q} cover E; countable unions and subsets of countably n-rectifiable sets are countably n-rectifiable.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical) and Contract.lean against Submission.lean (identical); grep -n 'unitBallVolume' Contract.lean (line 143: volume (ball (0 : Euclid n) 1))`
+- `grep -rn 'μHE' <snapshot>/mathlib/Mathlib --include=*.lean (Geometry/Euclidean/Volume/Measure.lean: euclideanHausdorffMeasure_zero, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul₀, euclideanHausdorffMeasure_homothety_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep -rln 'Lusin' <snapshot>/mathlib/Mathlib (only Function/Jacobian.lean, Constructions/Polish/Basic.lean, Topology/MetricSpace/Polish.lean: no Lusin continuity theorem); grep for ContinuousOn theorems with exists/closed/compact in Mathlib/MeasureTheory (no Lusin match)`
+- `grep -rn 'starProjection_norm_le|norm_starProjection_apply_le' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; grep -rn 'theorem LipschitzOnWith.extend_pi|theorem LipschitzOnWith.extend_real|theorem finite_approx_of_totallyBounded|theorem antilipschitzWith_ofLp|theorem tendsto_measure_iUnion_atTop|theorem lintegral_liminf_le|theorem exists_measurable_superset_of_null|theorem Infinite.exists_subset_card_eq|lemma sum_measure_singleton|DenseRange.exists_dist_lt' <snapshot>/mathlib/Mathlib`
+- `sed -n 1,400p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap, countablyRectifiable_of_measure_zero/_range/_iUnion/_sUnion, CountablyRectifiable.mono, regular_euclideanHausdorffMeasure_restrict_submodule); grep -n 'theorem exists_isClosed_continuousOn_of_measurable' SimonGMT/Chapter01/Lusin.lean (exists, but outside the contract import closure: unknown identifier after import GMT.Ch07.Submission)`
+- `python3 scan of dag.json lean_statement values for HasApproximateTangentSpaceAt, CountablyRectifiable, starProjection, blowUpMap, Lipschitz, unitBallVolume; status and candidate_commit of doragm_approxTangent_lower_density (accepted, a0c1e365), rsd_cmr_ir_blowUp_image_measure (accepted, 6d5fb477), dor_ims_lusin_measurable_continuousOn (accepted, e4172a7b), types byte-identical; no lean_name starts with 'cbrr'`
+- `git show a0c1e365af06 (accepted proof of doragm_approxTangent_lower_density); git show 6d5fb477cd67 (accepted rsd_cmr_ir_blowUp_image_measure); git show 77fcc7d4ea07 (accepted precedent adding a SimonGMT Chapter01 import to Submission.lean)`
+- `sed -n 77,274p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt (Definition 1.4, Remark 1.5(3), Theorem 1.6, proof of '⇐' with (1)–(10) and the printed ε = 1/16ⁿ)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py) on all 11 types (pass); contract_scope in verifier/gmt-compare.py (replay: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end); grep -n 'def _existing_lean_name_problem' -A 40 and the accepted-reuse branch in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `lake env lean /tmp/crt-decomp-x91/lean/Types2.lean (all 10 child types and the parent elaborate), Assembly.lean (parent from dim_zero, uniform_density and uniform_to_rectifiable; uniform_to_rectifiable from plane_net, cone_claim and lipschitz_cover), NetZero.lean, ConeClaim.lean, LipCover.lean, ConeDensity.lean, LusinImport.lean, and the reviewer file /tmp/crt-review-r7/lean/UD.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f03d9c44ac/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/tmp/crt-decomp-x91/lean/Types2.lean`
+- `/tmp/crt-decomp-x91/lean/Assembly.lean`
+- `/tmp/crt-decomp-x91/lean/NetZero.lean`
+- `/tmp/crt-decomp-x91/lean/ConeClaim.lean`
+- `/tmp/crt-decomp-x91/lean/LipCover.lean`
+- `/tmp/crt-decomp-x91/lean/ConeDensity.lean`
+- `/tmp/crt-review-r7/lean/UD.lean`
+
+The snapshot contract equals the workspace Contract.lean and Submission.lean, and unitBallVolume (Contract.lean:143) supplies ωₙ. The pinned Mathlib has every lemma the child proofs cite but no Lusin continuity theorem. SimonGMT's Chapter01 Lusin lemma lies outside the contract's import closure, so uniform_density reuses the accepted DAG theorem dor_ims_lusin_measurable_continuousOn instead. SimonGMT Chapter03 provides the definitions and the union/range/mono lemmas for CountablyRectifiable but no rectifiability criterion (Simon 3.1.6), which justifies the split. Three children reuse accepted DAG declarations with byte-identical types (doragm_approxTangent_lower_density, rsd_cmr_ir_blowUp_image_measure, dor_ims_lusin_measurable_continuousOn), and the seven new cbrr_* names collide with no DAG name. All 11 types pass the verifier's lexical check and elaborate in the replayed contract scope. Hypothesis-only Lean assemblies prove the frozen parent type and uniform_to_rectifiable from their children. Scratch Lean proofs of every new child, each taking its siblings' exact types as hypotheses, compile with axioms propext, Classical.choice and Quot.sound only.

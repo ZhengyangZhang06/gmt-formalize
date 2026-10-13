@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+  "depth": 4,
+  "title": "Hausdorff measure scaling under the blow-up map",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, r ∈ ℝ with r > 0, and S ⊆ ℝ^P an arbitrary (not necessarily measurable) set. Let η_{x,r}(y) := r⁻¹(y − x) (SimonGMT blowUpMap x r) and Hⁿ := μHE[n] (Mathlib's normalized n-dimensional Euclidean Hausdorff measure). Then Hⁿ(η_{x,r}(S)) = r^{−n}·Hⁿ(S) in [0, ∞], the factor r^{−n} being written ENNReal.ofReal (r⁻¹ ^ n).",
+  "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (r : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] S",
+  "lean_name": "rsd_cmr_ir_blowUp_image_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-844f5fd455-a1"
+}
