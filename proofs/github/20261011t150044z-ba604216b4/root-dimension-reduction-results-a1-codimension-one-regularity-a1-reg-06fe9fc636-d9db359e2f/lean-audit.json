@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b1979322026f9d54b7acf12e384f12277842742bfb60fdf04fe62cc4426fe75e",
+  "git_delta": {
+    "base_commit": "2408ff2335cf5b7fcae586bcea182d8e961174a6",
+    "candidate_commit": "a9c300b689ef8598f22db93818be8ac9f8fa4795",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_rc_of_halving",
+    "diff_sha256": "51ee125afdf621b649282ed810e4c57a0380cfeb4d7ad7ec9ceb3e439227c712",
+    "source_sha256": "a4833caa1a19aa206a110924a4ae8bc69652e4528b7de0d58b61289cd52ac7ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_rc_of_halving",
+      "statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))), IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → (∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \\ Γ) ≤ μ U / 2) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
