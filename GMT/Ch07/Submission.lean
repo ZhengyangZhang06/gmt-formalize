@@ -2657,6 +2657,59 @@ theorem Submission.dimred_regular_point_density : ∀ (P n : ℕ) (U : Set (Eucl
   filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
   rw [hmass s hs, mul_div_assoc]
 
+/-- **Ball masses, vertex density and vertex support of an integer multiplicity cone** (proof of
+Simon 7.3.1, chapter-07.txt line 355: `(ωⱼρʲ)⁻¹ μ_C(B_ρ(0))` does not depend on `ρ > 0`).  Let the
+cone `C` be represented by `R = (M, θ, ξ)` in `ℝᴾ` with weight `μ = θHʲ⌞M`.  (i) For `ρ > 0`,
+`M_{B_ρ(0)}(C) = μ(ρB₁(0)) = ρʲ μ(B₁(0)) = ρʲ M_{B₁(0)}(C)`, as `M_W(C) = μ(W)` for open `W` and
+`μ(λA) = λʲ μ(A)`.  (ii) So the density quotient `M_{B_ρ(0)}(C)/(ωⱼρʲ)` is the constant
+`M_{B₁(0)}(C)/ωⱼ` with `0 < ωⱼ < ∞`.  (iii) If `θ > 0` then `μ(B_ε(0)) = εʲωⱼθ > 0` for every
+`ε > 0`, so `0 ∈ spt μ = spt C`. -/
+theorem Submission.dimred_cdg_im_cone_ball_mass : ∀ (P j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j), IsConeCurrent C → IsIntegerMultiplicity C → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = ENNReal.ofReal (ρ ^ j) * C.massOn (ball 0 1)) ∧ (∀ θ : ℝ, HasMassDensity C 0 θ ↔ 0 ≤ θ ∧ C.massOn (ball 0 1) = unitBallVolume j * ENNReal.ofReal θ) ∧ ∀ θ : ℝ, 0 < θ → HasMassDensity C 0 θ → (0 : Euclid P) ∈ C.support := by
+  intro P j C hC hIM
+  -- Step 1: a representation `R` of `C` with weight `μ = μ_R`; `M_W(C) = μ(W)` for open `W` and
+  -- `spt C = ℝᴾ ∩ spt μ`
+  obtain ⟨R, hR⟩ := hIM
+  obtain ⟨hmass, hsupp⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support P j univ C R isOpen_univ hR
+  -- Step 2: `B_ρ(0) = ρ B₁(0)` for `ρ > 0`
+  have hball : ∀ ρ : ℝ, 0 < ρ → (fun x : Euclid P => ρ • x) '' ball 0 1 = ball 0 ρ := by
+    intro ρ hρ
+    rw [image_smul, smul_ball hρ.ne', smul_zero, Real.norm_eq_abs, abs_of_pos hρ, mul_one]
+  -- Step 3 (i): `M_{B_ρ(0)}(C) = μ(ρ B₁(0)) = ρʲ μ(B₁(0)) = ρʲ M_{B₁(0)}(C)`
+  have hi : ∀ ρ : ℝ, 0 < ρ →
+      C.massOn (ball 0 ρ) = ENNReal.ofReal (ρ ^ j) * C.massOn (ball 0 1) := by
+    intro ρ hρ
+    rw [hmass _ isOpen_ball, hmass _ isOpen_ball, ← hball ρ hρ]
+    exact Submission.cone_current_imrep_measure_smul_image P j C R hC hR ρ hρ _ measurableSet_ball
+  -- Step 4: `0 < ωⱼ < ∞`
+  have hω0 : unitBallVolume j ≠ 0 := (measure_ball_pos volume (0 : Euclid j) one_pos).ne'
+  have hωtop : unitBallVolume j ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 5 (ii): for `ρ > 0` the density quotient is the constant `M_{B₁(0)}(C)/ωⱼ`
+  have hii : ∀ θ : ℝ, HasMassDensity C 0 θ ↔
+      0 ≤ θ ∧ C.massOn (ball 0 1) = unitBallVolume j * ENNReal.ofReal θ := by
+    intro θ
+    have hconst : (fun ρ : ℝ => C.massOn (ball 0 ρ) / (unitBallVolume j * ENNReal.ofReal (ρ ^ j)))
+        =ᶠ[𝓝[>] 0] fun _ => C.massOn (ball 0 1) / unitBallVolume j := by
+      filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+      rw [hi ρ hρ, mul_comm (unitBallVolume j), ENNReal.mul_div_mul_left _ _
+        (ENNReal.ofReal_ne_zero_iff.mpr (pow_pos hρ j)) ENNReal.ofReal_ne_top]
+    unfold HasMassDensity
+    rw [tendsto_congr' hconst, tendsto_const_nhds_iff, eq_comm, ENNReal.eq_div_iff hω0 hωtop,
+      eq_comm]
+  refine ⟨hi, hii, fun θ hθ hden => ?_⟩
+  -- Step 6 (iii): `M_{B₁(0)}(C) = ωⱼθ ≠ 0`, so `μ(B_ε(0)) = εʲ M_{B₁(0)}(C) > 0` for every `ε > 0`
+  -- and `0 ∈ spt μ`
+  have hM0 : C.massOn (ball 0 1) ≠ 0 := by
+    rw [((hii θ).1 hden).2]
+    exact mul_ne_zero hω0 (ENNReal.ofReal_ne_zero_iff.mpr hθ)
+  rw [hsupp, univ_inter, Measure.mem_support_iff_forall]
+  intro s hs
+  obtain ⟨ε, hε, hεs⟩ := Metric.mem_nhds_iff.1 hs
+  have hpos : R.measure (ball 0 ε) ≠ 0 := by
+    rw [← hmass _ isOpen_ball, hi ε hε]
+    exact mul_ne_zero (ENNReal.ofReal_ne_zero_iff.mpr (pow_pos hε j)) hM0
+  exact (pos_iff_ne_zero.2 hpos).trans_le (measure_mono hεs)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
