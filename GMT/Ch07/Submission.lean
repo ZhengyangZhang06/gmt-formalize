@@ -2615,6 +2615,136 @@ theorem Submission.dtc_restrictDomain_isIntegerMultiplicity : ∀ (P n : ℕ) (U
     fun h => hx.2 ⟨hx.1, ω.property.2 h⟩
   rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
 
+/-- **`S⌞W` as an integer multiplicity current in `ℝᴾ`** (Simon Ch. 6, 3.1 and 2.11; the
+restriction device of step 2 in the proof of 7.2.4 for minimizers in a submanifold).  Let `U` be
+open, `W ⊂⊂ U` open and `S = τ(M, θ, ξ)` in `U`.  Then `Q = τ(M ∩ W, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)` satisfies
+`Q(ω) = S(ω)` for `ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ W`, and `spt Q ⊆ W̄ ∩ spt S` is compact.
+* `(M ∩ W, θ, ξ)` is a triple in `U` (restriction to the Borel set `W`), and it is locally
+  integrable in all of `ℝᴾ` because `M ∩ W` lies in the compact set `W̄ ⊆ U`.
+* A form supported in `W` vanishes on `M \ W`, so its integrals over `M` and `M ∩ W` agree.
+* `S` vanishes off its support, so `M_{U \ spt S}(S) = 0`; hence `θHⁿ⌞M(U \ spt S) = 0`, and as
+  `θ ≥ 1` on `M ⊆ U`, `Hⁿ(M \ spt S) = 0`.
+* So `Q` kills every form whose support misses the compact set `W̄ ∩ spt S`. -/
+theorem Submission.dtc_bc_lc_rc_ambient_restriction : ∀ (P n : ℕ) (U W : Set (Euclid P)) (S : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsOpen W → CompactlyContained W U → R.Represents S → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n), RQ.Represents Q ∧ RQ.carrier = R.carrier ∩ W ∧ RQ.mult = R.mult ∧ RQ.orient = R.orient ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Q (testFormOnInclusion (subset_univ U) n ω) = S ω) ∧ Q.support ⊆ closure W ∩ S.support ∧ IsCompact Q.support := by
+  have hIM := Submission.cmc_imRep_locality_restrict_sub
+  have hM := Submission.dtc_mass_eq_measure
+  have hV := Submission.dtc_vanish_off_support
+  have hSV := Submission.rsd_cmr_support_subset_of_vanish
+  intro P n U W S R hU hW hWU hR
+  -- Step 1: the triple `(M ∩ W, θ, ξ)` in `U`
+  obtain ⟨A₀, R', -, hR'c, hR'm, hR'o⟩ := hIM.2.1 P n U R W hU hW.measurableSet
+  have hrect : CountablyRectifiable n (R.carrier ∩ W) := hR'c ▸ R'.rectifiable
+  have hasm : AEStronglyMeasurable R.orient (μHE[n].restrict (R.carrier ∩ W)) := by
+    rw [← hR'c, ← hR'o]; exact R'.aestronglyMeasurable_orient
+  have hor : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (R.carrier ∩ W) x Q ∧ IsUnitOrientationOf (R.orient x) Q := by
+    rw [← hR'c, ← hR'o]; exact R'.orients
+  -- Step 2: the same triple in `ℝᴾ`; for compact `K`, `(M ∩ W) ∩ K ⊆ M ∩ W̄` with `W̄ ⊆ U` compact
+  let R₀ : IMRep (univ : Set (Euclid P)) n :=
+    { carrier := R.carrier ∩ W
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := R.measurableSet_carrier.inter hW.measurableSet
+      carrier_subset := subset_univ _
+      rectifiable := hrect
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      locallyIntegrable_mult := fun K _ _ => by
+        apply ne_top_of_le_ne_top (R.locallyIntegrable_mult (closure W) hWU.1 hWU.2)
+        apply lintegral_mono_set
+        intro x hx
+        exact ⟨hx.1.1, subset_closure hx.1.2⟩
+      aestronglyMeasurable_orient := hasm
+      orients := hor }
+  -- Step 3: the current `Q = τ(M ∩ W, θ, ξ)` in `ℝᴾ`
+  obtain ⟨Q, RQ, hRQ, hRQc, hRQm, hRQo⟩ := hIM.2.1 P n univ R₀ univ isOpen_univ MeasurableSet.univ
+  have hRQc' : RQ.carrier = R.carrier ∩ W := by rw [hRQc]; exact inter_univ _
+  -- Step 5: `Hⁿ(M \ spt S) = 0`
+  have hnull : μHE[n] (R.carrier \ S.support) = 0 := by
+    -- `O = U \ spt S = U ∩ Z(S)` is open
+    have hopen : IsOpen (U \ S.support) := by
+      have : U \ S.support = U ∩ S.zeroRegion := by
+        ext x
+        simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_inter_iff, not_and, not_not]
+        constructor
+        · intro h; exact ⟨h.1, h.2 h.1⟩
+        · intro h; exact ⟨h.1, fun _ => h.2⟩
+      rw [this]
+      exact hU.inter S.isOpen_zeroRegion
+    -- `M_O(S) = 0`: every admissible form is supported off `spt S`
+    have hmass : S.massOn (U \ S.support) = 0 := by
+      apply le_zero_iff.mp
+      apply sSup_le
+      rintro r ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (S ω) ≤ 0
+      rw [hV P n U S ω (by
+        rw [← Set.subset_compl_iff_disjoint_right]
+        exact hω.1.trans (fun x hx => hx.2)), ENNReal.ofReal_zero]
+    -- `∫_{O ∩ M} θ dHⁿ = M_O(S) = 0`
+    have hmeas : R.measure (U \ S.support) = 0 := by
+      rw [← hM P n U (U \ S.support) S R hU hopen sdiff_subset hR, hmass]
+    unfold IMRep.measure at hmeas
+    rw [withDensity_apply _ hopen.measurableSet, Measure.restrict_restrict hopen.measurableSet] at hmeas
+    -- `θ ≥ 1` on `M`
+    have hle : μHE[n] ((U \ S.support) ∩ R.carrier) ≤
+        ∫⁻ x in (U \ S.support) ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+      calc μHE[n] ((U \ S.support) ∩ R.carrier)
+          = ∫⁻ x in (U \ S.support) ∩ R.carrier, (1 : ℝ≥0∞) ∂μHE[n] := by
+            rw [setLIntegral_const, one_mul]
+        _ ≤ ∫⁻ x in (U \ S.support) ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+            apply setLIntegral_mono' (hopen.measurableSet.inter R.measurableSet_carrier)
+            intro x hx
+            have := R.mult_pos x hx.2
+            exact_mod_cast this
+    have h0 : μHE[n] ((U \ S.support) ∩ R.carrier) = 0 := le_zero_iff.mp (hmeas ▸ hle)
+    -- `M ⊆ U`, so `M \ spt S ⊆ O ∩ M`
+    apply measure_mono_null _ h0
+    intro x hx
+    exact ⟨⟨R.carrier_subset hx.1, hx.2⟩, hx.1⟩
+  refine ⟨Q, RQ, hRQ, hRQc', hRQm, hRQo, ?_, ?_⟩
+  · -- Step 4 (Q1): `ω = 0` on `M \ W`, so the integrals over `M` and `M ∩ W` agree
+    intro ω hω
+    rw [hRQ, hR ω]
+    unfold IMRep.action
+    rw [hRQc', hRQm, hRQo, testFormOnInclusion_coe]
+    symm
+    apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier inter_subset_left
+    intro x hx
+    have : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      image_eq_zero_of_notMem_tsupport (fun h => hx.2 ⟨hx.1, hω h⟩)
+    simp [this]
+  · -- Step 6 (Q2): `K = W̄ ∩ spt S = W̄ ∩ Z(S)ᶜ` is compact
+    have hKcpt : IsCompact (closure W ∩ S.support) := by
+      have : closure W ∩ S.support = closure W ∩ (S.zeroRegion)ᶜ := by
+        ext x
+        simp only [GeometricCurrentOn.support, mem_inter_iff, Set.mem_sdiff, mem_compl_iff]
+        constructor
+        · intro h; exact ⟨h.1, h.2.2⟩
+        · intro h; exact ⟨h.1, hWU.2 h.1, h.2⟩
+      rw [this]
+      exact hWU.1.inter_right S.isOpen_zeroRegion.isClosed_compl
+    -- `Hⁿ`-a.e. point of `M ∩ W` lies in `K`, where a form supported off `K` vanishes
+    exact hSV P n univ (closure W ∩ S.support) Q isOpen_univ hKcpt (subset_univ _) (fun ω hω => by
+      rw [hRQ ω]
+      unfold IMRep.action
+      rw [hRQc', hRQm, hRQo]
+      apply integral_eq_zero_of_ae
+      have hn' : μHE[n] ((R.carrier ∩ W) \ S.support) = 0 :=
+        measure_mono_null (sdiff_subset_sdiff_left inter_subset_left) hnull
+      have hae : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), x ∈ S.support := by
+        rw [ae_restrict_iff' (R.measurableSet_carrier.inter hW.measurableSet)]
+        rw [ae_iff]
+        apply measure_mono_null _ hn'
+        intro x hx
+        simp only [Set.mem_ofPred_eq, not_imp] at hx
+        exact ⟨hx.1, hx.2⟩
+      filter_upwards [hae, ae_restrict_mem (R.measurableSet_carrier.inter hW.measurableSet)]
+        with x hx hxM
+      have : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h =>
+          hω.ne_of_mem h ⟨subset_closure hxM.2, hx⟩ rfl)
+      simp [this])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
