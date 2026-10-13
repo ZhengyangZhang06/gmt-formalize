@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.limit_mass_lower_bound-a1",
+  "parent_id": "root.density_semicontinuity-a1",
+  "depth": 2,
+  "title": "Mass lower bounds at nearby points pass to the Radon limit and force lower density ≥ 1",
+  "statement": "Let V_i (i ∈ ℕ) and V be n-varifolds on U ⊆ ℝ^N with V_i → V as Radon measures on G_n(U) (Varifold.RadonConverges Vi V). Let x ∈ ℝ^N, ρ₀ > 0 with B°_{ρ₀}(x) ⊆ U, Λ ∈ ℝ, q : ℕ → ℕ with q_i → ∞, and y : ℕ → ℝ^N with y_i → x. Suppose e^{-Λρ}·ω_n·ρ^n ≤ μ_{V_{q_i}}(B_ρ(y_i)) for every i and every 0 < ρ < ρ₀. Then e^{-Λρ}·ω_n·ρ^n ≤ μ_V(B_ρ(x)) for every 0 < ρ < ρ₀, and liminf_{ρ↓0} μ_V(B_ρ(x))/(ω_n ρ^n) ≥ 1 (the liminf of densityRatio n μ_V x along 𝓝[>] 0).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (x : Euclidean N) (ρ₀ Λ : ℝ) (q : ℕ → ℕ) (y : ℕ → Euclidean N), Varifold.RadonConverges Vi V → 0 < ρ₀ → ball x ρ₀ ⊆ U → Tendsto q atTop atTop → Tendsto y atTop (𝓝 x) → (∀ i, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤ (Vi (q i)).weight (closedBall (y i) ρ)) → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤ V.weight (closedBall x ρ)) ∧ 1 ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0)",
+  "lean_name": "lower_density_ge_one_of_nearby_mass_bounds",
+  "depends_on": [
+    "root.density_semicontinuity-a1.weight_portmanteau-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_semicontinuity-a1.weight_portmanteau-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-limit-mass-lower-bound-a1-a1"
+}

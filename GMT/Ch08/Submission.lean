@@ -3326,6 +3326,376 @@ where `C` is the Besicovitch number of `ℝ^N` (Ch. 1, 3.12).  The covering lemm
 of these balls covering `A` into `C` disjoint, hence countable, subfamilies; sum the ratio bound
 over each. -/
 theorem Submission.intcpt_vdb_besicovitch_cover_estimate :
+/-- **Simon Ch. 8, Remark 3.8(1), p. 211** (child `variation_lsc` of `density_semicontinuity`): if
+`V_i → V` as Radon measures on `Gₙ(U)`, every `V_i` has locally bounded first variation and
+`liminf_i ‖δV_i‖(W) < ∞` for each open `W ⊂⊂ U`, then `V` has locally bounded first variation and
+`‖δV‖(W) ≤ liminf_i ‖δV_i‖(W)` for each open `W ⊂⊂ U`.  On such `W`, `‖δX‖(W)` is the supremum of
+2.5 (`firstVariationNormOn`), which is lower semicontinuous because `δV_i(X) → δV(X)`. -/
+theorem Submission.variationMeasure_le_liminf_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U),
+      Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) →
+      (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) →
+      V.HasLocallyBoundedFirstVariation ∧ ∀ W, IsRelCompactOpenIn W U →
+        variationMeasure V W ≤ liminf (fun i ↦ variationMeasure (Vi i) W) atTop := by
+  intro N n U Vi V h hi hbound
+  -- Under local boundedness `variationMeasure` is the Riesz measure, which equals the supremum
+  -- of 2.5 on every `W ⊂⊂ U`.
+  have hnorm : ∀ X : Varifold N n U, X.HasLocallyBoundedFirstVariation →
+      ∀ W, IsRelCompactOpenIn W U → variationMeasure X W = X.firstVariationNormOn W := by
+    intro X hX W hW
+    rw [variationMeasure, dite_eq_left hX]
+    exact X.firstVariationRieszMeasure_eq_norm hX W hW.1 hW.2
+  have hlim : ∀ W, IsRelCompactOpenIn W U →
+      liminf (fun i ↦ variationMeasure (Vi i) W) atTop =
+        liminf (fun i ↦ (Vi i).firstVariationNormOn W) atTop := fun W hW ↦
+    congrArg (liminf · atTop) (funext fun i ↦ hnorm (Vi i) (hi i) W hW)
+  have hV : V.HasLocallyBoundedFirstVariation :=
+    h.hasLocallyBoundedFirstVariation fun W hW hWU ↦ by
+      rw [← hlim W ⟨hW, hWU⟩]
+      exact hbound W ⟨hW, hWU⟩
+  refine ⟨hV, fun W hW ↦ ?_⟩
+  rw [hnorm V hV W hW, hlim W hW]
+  exact h.firstVariationNormOn_le_liminf W
+/-- **Simon Ch. 8, proof of 3.7, p. 212, choice of `ρ₀` and `W̃`** (child `thickening_rel_compact`
+of `lower_density_ae`): if `W ⊂⊂ U` then `W̃ = {x : dist(x, W) < ρ₀} ⊂⊂ U` for some `ρ₀ > 0`.
+The compact set `closure W` has a closed thickening `cthickening ρ₀ (closure W) ⊆ U`; it is compact
+(`ℝ^N` is proper) and contains `closure W̃ ⊆ cthickening ρ₀ W = cthickening ρ₀ (closure W)`. -/
+theorem Submission.exists_thickening_isRelCompactOpenIn :
+    ∀ (N : ℕ) (U W : Set (Euclidean N)), IsOpen U → IsRelCompactOpenIn W U →
+      ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ IsRelCompactOpenIn (thickening ρ₀ W) U := by
+  intro N U W hU hW
+  obtain ⟨-, hWc, hWU⟩ := hW
+  -- Some closed thickening of the compact set `closure W ⊆ U` still lies in the open set `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hWc.exists_cthickening_subset_open hU hWU
+  -- `closure (thickening δ W) ⊆ cthickening δ W = cthickening δ (closure W)`.
+  have hcl : closure (thickening δ W) ⊆ cthickening δ (closure W) := by
+    rw [cthickening_closure]
+    exact closure_thickening_subset_cthickening δ W
+  exact ⟨δ, hδ, isOpen_thickening, hWc.cthickening.of_isClosed_subset isClosed_closure hcl,
+    hcl.trans hδU⟩
+/-- **Simon Ch. 8, proof of 3.7, p. 213, final step** (child `relcompact_exhaustion_ae` of
+`lower_density_ae`): the book proves the density bound on one `W ⊂⊂ U` off a `μ`-null set ((4),
+(5)); this passes to `μ`-a.e. point.  If `μ(ℝ^N ∖ U) = 0` and `P` holds on each `W ⊂⊂ U` off a
+`μ`-null set, then `P` holds `μ`-a.e.: each `x ∈ U` has a ball `W_x = B°_{r_x}(x) ⊂⊂ U`, countably
+many `W_x` cover `U` (`ℝ^N` is second countable), and `{¬P} ⊆ Uᶜ ∪ ⋃_{x ∈ T} E_x` is `μ`-null.
+No measurability of `P` or of the exceptional sets is used. -/
+theorem Submission.ae_of_forall_relCompactOpen_null_exceptional :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)) (P : Euclidean N → Prop),
+      IsOpen U → μ Uᶜ = 0 →
+      (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U →
+        ∃ E : Set (Euclidean N), μ E = 0 ∧ ∀ x ∈ W, x ∉ E → P x) →
+      ∀ᵐ x ∂μ, P x := by
+  intro N U μ P hU hUc hP
+  -- Step 1: each `x ∈ U` has a radius `r x > 0` with `B_{r x}(x) ⊆ U`.
+  have hr : ∀ x : U, ∃ r : ℝ, 0 < r ∧ closedBall (x : Euclidean N) r ⊆ U := by
+    intro x
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x x.2
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεU⟩
+  choose r hr0 hrU using hr
+  -- Step 2: `W_x = B°_{r x}(x) ⊂⊂ U`, since `closure W_x ⊆ B_{r x}(x) ⊆ U` and closed balls are
+  -- compact.
+  have hW : ∀ x : U, IsRelCompactOpenIn (ball (x : Euclidean N) (r x)) U := fun x ↦
+    ⟨isOpen_ball, (isCompact_closedBall _ _).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, closure_ball_subset_closedBall.trans (hrU x)⟩
+  -- Step 3: countably many `W_x` (`x ∈ T`) have the same union as all of them, which contains `U`.
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun x : U ↦ ball (x : Euclidean N) (r x)) fun _ ↦ isOpen_ball
+  -- Step 4: a `μ`-null exceptional set `E x` for each `W_x`.
+  choose E hE0 hEP using fun x : U ↦ hP _ (hW x)
+  -- Steps 5–7: `{¬P} ⊆ Uᶜ ∪ ⋃_{x ∈ T} E x`, which is `μ`-null.
+  rw [ae_iff]
+  refine measure_mono_null (t := Uᶜ ∪ ⋃ x ∈ T, E x) ?_
+    (measure_union_null hUc ((measure_biUnion_null_iff hTc).2 fun x _ ↦ hE0 x))
+  intro y hy
+  by_cases hyU : y ∈ U
+  · have hyT : y ∈ ⋃ x ∈ T, ball (x : Euclidean N) (r x) := by
+      rw [hTU]
+      exact mem_iUnion.2 ⟨⟨y, hyU⟩, mem_ball_self (hr0 _)⟩
+    obtain ⟨x, hxT, hyx⟩ := mem_iUnion₂.1 hyT
+    refine Or.inr (mem_iUnion₂.2 ⟨x, hxT, ?_⟩)
+    by_contra hyE
+    exact hy (hEP x y hyx hyE)
+  · exact Or.inl hyU
+/-- **Simon Ch. 8, proof of 3.7, pp. 212–213, displays (3) and (5)** (child `bad_interior_null` of
+`lower_density_ae`): suppose `μ(O) ≤ liminf_q μ_q(O)` for every open `O ⊆ W`, and the sets
+`Bad q k ⊆ W` satisfy `μ_q(Bad q k) ≤ C k⁻¹ a_q + b_q` for `k ≥ 1`, with `liminf_q a_q < ∞` and
+`b_q → 0`.  Then `⋂_{k ≥ 1} ⋃_i interior (⋂_{ℓ ≥ i} Bad ℓ k)` is `μ`-null.  The open set
+`O_{i,k} = interior (⋂_{ℓ ≥ i} Bad ℓ k)` lies in `Bad q k` for every `q ≥ i`, so
+`μ(O_{i,k}) ≤ C k⁻¹ liminf_q a_q` (printed (3)).  As `O_{i,k}` increases in `i`, the exceptional set
+has measure `≤ C k⁻¹ liminf_q a_q` for every `k ≥ 1` (printed (5)), and this bound tends to `0`. -/
+theorem Submission.measure_bad_interior_exceptional_eq_zero :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (Bad : ℕ → ℕ → Set (Euclidean N)) (C : ℕ) (a b : ℕ → ℝ≥0∞), (∀ O : Set (Euclidean N), IsOpen O → O ⊆ W → μ O ≤ liminf (fun q ↦ μs q O) atTop) → (∀ q k, Bad q k ⊆ W) → liminf a atTop ≠ ∞ → Tendsto b atTop (𝓝 0) → (∀ q k : ℕ, 1 ≤ k → μs q (Bad q k) ≤ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q + b q) → μ (⋂ k : ℕ, ⋂ (_ : 1 ≤ k), ⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) = 0 := by
+  intro N μ μs W Bad C a b hP1 hW hL hb hbad
+  -- Step 1: `O i k = interior (⋂_{ℓ ≥ i} Bad ℓ k)` is in `Bad ℓ k` for `ℓ ≥ i`, and grows with `i`.
+  have hO_sub : ∀ i k ℓ, i ≤ ℓ → interior (⋂ ℓ' : ℕ, ⋂ (_ : i ≤ ℓ'), Bad ℓ' k) ⊆ Bad ℓ k :=
+    fun i k ℓ hℓ ↦ interior_subset.trans (iInter₂_subset ℓ hℓ)
+  have hO_mono : ∀ k, Monotone fun i ↦ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k) :=
+    fun k i i' hii' ↦ interior_mono (subset_iInter₂ fun ℓ hℓ ↦ iInter₂_subset ℓ (hii'.trans hℓ))
+  -- Step 2 (printed (3)): `μ(O i k) ≤ liminf_q μ_q(O i k) ≤ liminf_q (C k⁻¹ a_q + b_q)`
+  -- `= liminf_q (C k⁻¹ a_q) = C k⁻¹ liminf_q a_q`, using `C k⁻¹ ≠ ∞` and `b_q → 0`.
+  have hstep2 : ∀ i k, 1 ≤ k →
+      μ (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) ≤
+        (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop := by
+    intro i k hk
+    have hc : (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ ≠ ∞ :=
+      ENNReal.mul_ne_top (ENNReal.natCast_ne_top C)
+        (ENNReal.inv_ne_top.2 (Nat.cast_ne_zero.2 (by omega)))
+    calc μ (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k))
+        ≤ liminf (fun q ↦ μs q (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k))) atTop :=
+          hP1 _ isOpen_interior ((hO_sub i k i le_rfl).trans (hW i k))
+      _ ≤ liminf (fun q ↦ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q + b q) atTop :=
+          liminf_le_liminf <| (eventually_ge_atTop i).mono fun q hq ↦
+            (measure_mono (hO_sub i k q hq)).trans (hbad q k hk)
+      _ = liminf (fun q ↦ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q) atTop :=
+          ENNReal.liminf_add_of_right_tendsto_zero hb _
+      _ = (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop := ENNReal.liminf_const_mul_of_ne_top hc
+  -- Step 3 (printed (5)): for `k ≥ 1` the exceptional set lies in `⋃_i O i k`, whose measure is
+  -- `⨆_i μ(O i k)` by continuity from below.
+  have hstep3 : ∀ k : ℕ, 1 ≤ k →
+      μ (⋂ k : ℕ, ⋂ (_ : 1 ≤ k), ⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) ≤
+        (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop := fun k hk ↦
+    calc _ ≤ μ (⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) :=
+          measure_mono (iInter₂_subset k hk)
+      _ = ⨆ i, μ (interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) := (hO_mono k).measure_iUnion
+      _ ≤ _ := iSup_le fun i ↦ hstep2 i k hk
+  -- Step 4: `C k⁻¹ liminf_q a_q → C · 0 · liminf_q a_q = 0`, as `C ≠ ∞` and `liminf_q a_q ≠ ∞`.
+  have hstep4 : Tendsto (fun k : ℕ ↦ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * liminf a atTop) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.mul_const (ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+      (Or.inr (ENNReal.natCast_ne_top C))) (Or.inr hL)
+    rwa [mul_zero, zero_mul] at h
+  -- Step 5: the measure is eventually below a sequence tending to `0`, so it is `0`.
+  exact nonpos_iff_eq_zero.1 (ge_of_tendsto hstep4 ((eventually_ge_atTop 1).mono hstep3))
+/-- Choice of `y_i`, `q_i` in the proof of 3.7 (Simon Ch. 8, p. 212, before (4)): if `x ∈ W` with
+`W` open and `x ∉ interior (⋂_{ℓ ≥ i} Bad ℓ)` for every `i`, then there are `y_i → x` in `W` and
+`q_i → ∞` with `y_i ∉ Bad (q_i)`. -/
+theorem Submission.exists_nearby_points_off_bad_sets :
+    ∀ (N : ℕ) (W : Set (Euclidean N)) (Bad : ℕ → Set (Euclidean N)) (x : Euclidean N), IsOpen W → x ∈ W → (∀ i : ℕ, x ∉ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ)) → ∃ (q : ℕ → ℕ) (y : ℕ → Euclidean N), Tendsto q atTop atTop ∧ Tendsto y atTop (𝓝 x) ∧ ∀ i, y i ∈ W ∧ y i ∉ Bad (q i) := by
+  intro N W Bad x hW hxW hx
+  -- Steps 1–2: for each `i`, the open neighbourhood `W ∩ B_{1/(i+1)}(x)` of `x` is not contained
+  -- in `⋂_{ℓ ≥ i} Bad ℓ` (else `x` would be in its interior), so it has a point off some `Bad ℓ`.
+  have key : ∀ i : ℕ, ∃ ℓ : ℕ, ∃ z : Euclidean N,
+      i ≤ ℓ ∧ z ∈ W ∧ dist z x < 1 / ((i : ℝ) + 1) ∧ z ∉ Bad ℓ := by
+    intro i
+    by_contra hcon
+    push Not at hcon
+    apply hx i
+    have hsub : W ∩ ball x (1 / ((i : ℝ) + 1)) ⊆ ⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ := by
+      intro z hz
+      simp only [mem_iInter]
+      intro ℓ hℓ
+      exact hcon ℓ z hℓ hz.1 (mem_ball.1 hz.2)
+    exact interior_maximal hsub (hW.inter isOpen_ball) ⟨hxW, mem_ball_self (by positivity)⟩
+  -- Step 3: choose `q i ≥ i` and `y i` for every `i`.
+  choose q y hq hyW hyx hyBad using key
+  refine ⟨q, y, ?_, ?_, fun i ↦ ⟨hyW i, hyBad i⟩⟩
+  -- Step 4: `q i ≥ i`, so `q i → ∞`.
+  · exact tendsto_atTop_mono hq tendsto_id
+  -- Step 5: `0 ≤ dist (y i) x < 1/(i+1) → 0`, so `y i → x`.
+  · rw [tendsto_iff_dist_tendsto_zero]
+    exact squeeze_zero (fun i ↦ dist_nonneg) (fun i ↦ (hyx i).le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+/-- Radon convergence of varifolds gives vague convergence of their weights on `U` (Simon Ch. 8,
+proof of 3.7): if `V_i → V` as Radon measures on `Gₙ(U)` and `g ∈ C_c(ℝ^N)` has `spt g ⊆ U`, then
+`∫ g dμ_{V_i} → ∫ g dμ_V`. -/
+theorem Submission.varifold_weight_integral_tendsto_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(Vi i).weight) atTop (𝓝 (∫ x, g x ∂V.weight)) := by
+  intro N n U Vi V hconv g hg hgc hgU
+  -- Step 1: the lift `F z = g z.1.1` of `g` to Simon's open product `Gₙ(U)`.
+  let Ω := U ×ˢ (univ : Set (Grassmannian N n))
+  -- Step 2: `F` vanishes off the compact set `ι⁻¹(spt g × G(N,n))`, so `F ∈ C_c(Gₙ(U))`.
+  let F : C_c(Ω, ℝ) :=
+    { toFun := fun z ↦ g z.1.1
+      continuous_toFun := hg.comp (continuous_fst.comp continuous_subtype_val)
+      hasCompactSupport' := by
+        have hK : IsCompact ((Subtype.val : Ω → Euclidean N × Grassmannian N n) ⁻¹'
+            (tsupport g ×ˢ (univ : Set (Grassmannian N n)))) :=
+          Topology.IsInducing.subtypeVal.isCompact_preimage' (hgc.isCompact.prod isCompact_univ)
+            (by
+              intro z hz
+              exact ⟨⟨z, hgU hz.1, mem_univ _⟩, rfl⟩)
+        refine HasCompactSupport.intro hK fun z hz ↦ ?_
+        exact image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩ }
+  -- Step 3: `∫ F dX = ∫ g(p.1) dX.measure(p) = ∫ g dμ_X` for every varifold `X` on `U`.
+  have hdom : ∀ X : Varifold N n U, ∫ z, F z ∂X.domainMeasure = ∫ x, g x ∂X.weight := by
+    intro X
+    rw [Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable,
+      ← X.map_domainMeasure, (MeasurableEmbedding.subtype_coe
+        (X.isOpen_domain.measurableSet.prod MeasurableSet.univ)).integral_map]
+    rfl
+  -- Step 4: apply `RadonConverges` to `F` and rewrite both sides with step 3.
+  simpa only [hdom] using hconv F
+/-- Urysohn sandwich (Simon Ch. 8, proof of 3.7): for compact `K` inside open `O` there is one
+continuous `g` with compact support in `O` such that `ν(K) ≤ ∫ g dν ≤ ν(O)` for every measure
+`ν` that is finite on compact subsets of `O`. -/
+theorem Submission.exists_urysohn_integral_sandwich :
+    ∀ (N : ℕ) (K O : Set (Euclidean N)), IsCompact K → IsOpen O → K ⊆ O → ∃ g : Euclidean N → ℝ, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ O ∧ ∀ ν : Measure (Euclidean N), (∀ L : Set (Euclidean N), IsCompact L → L ⊆ O → ν L ≠ ∞) → ν K ≤ ENNReal.ofReal (∫ x, g x ∂ν) ∧ ENNReal.ofReal (∫ x, g x ∂ν) ≤ ν O := by
+  intro N K O hK hO hKO
+  -- Step 1: a compact buffer `L` with `K ⊆ interior L` and `L ⊆ O`.
+  obtain ⟨L, hL, hKL, hLO⟩ := exists_compact_between hK hO hKO
+  -- Step 2: Urysohn's lemma: `g = 1` on `K`, `g = 0` off `interior L`, `0 ≤ g ≤ 1`.
+  obtain ⟨g, hg1, hg0, hgc, hg01⟩ :=
+    exists_continuous_one_zero_of_isCompact hK isOpen_interior.isClosed_compl
+      (disjoint_compl_right_iff_subset.mpr hKL)
+  -- Step 3: `tsupport g ⊆ L ⊆ O`, as `support g ⊆ interior L` and `L` is closed.
+  have hgL : tsupport g ⊆ L := by
+    refine closure_minimal (fun x hx ↦ ?_) hL.isClosed
+    by_contra hxL
+    exact hx (hg0 fun hx' ↦ hxL (interior_subset hx'))
+  refine ⟨g, g.continuous, hgc, hgL.trans hLO, fun ν hν ↦ ?_⟩
+  -- Steps 4–5: `ν L < ∞` and `|g| ≤ 1` with `support g ⊆ L`, so `g` is `ν`-integrable.
+  have hint : Integrable g ν := by
+    rw [← integrableOn_iff_integrable_of_support_subset ((subset_tsupport g).trans hgL)]
+    refine Measure.integrableOn_of_bounded (M := 1) (hν L hL hLO)
+      g.continuous.aestronglyMeasurable (Eventually.of_forall fun x ↦ ?_)
+    rw [Real.norm_eq_abs, abs_le]
+    exact ⟨by linarith [(hg01 x).1], (hg01 x).2⟩
+  -- Step 6: `g ≥ 0`, so `ofReal (∫ g dν) = ∫⁻ ofReal ∘ g dν`.
+  rw [ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun x ↦ (hg01 x).1)]
+  -- Steps 7–8: integrate `1_K ≤ ofReal ∘ g ≤ 1_O` (`K` closed and `O` open are measurable).
+  constructor
+  · rw [← lintegral_indicator_one hK.isClosed.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ K
+    · simp [hx, hg1 hx]
+    · simp [hx]
+  · rw [← lintegral_indicator_one hO.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ O
+    · simpa [hx] using (hg01 x).2
+    · simp [hx, image_eq_zero_of_notMem_tsupport fun h ↦ hx (hLO (hgL h))]
+
+/-- Portmanteau (P1) for vague convergence (Simon Ch. 8, proof of 3.7): if `∫ g dμᵢ → ∫ g dμ` for
+every continuous compactly supported `g` with support in `U`, and all measures are finite on
+compact subsets of `U`, then `μ(O) ≤ liminf μᵢ(O)` for every open `O ⊆ U`. -/
+theorem Submission.measure_open_le_liminf_of_tendsto_integral :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → μ O ≤ liminf (fun i ↦ μs i O) atTop := by
+  intro N U μs μ hμs hμ hlim O hO hOU
+  -- Step 1: closed sets `F m ⊆ O`, increasing in `m`, with union `O`.
+  obtain ⟨F, hFc, hFO, hFU, hFm⟩ := hO.exists_iUnion_isClosed
+  -- Step 2: the compact sets `K m = F m ∩ B_m(0)` are increasing and lie in `O`.
+  let K : ℕ → Set (Euclidean N) := fun m ↦ F m ∩ closedBall 0 m
+  have hKc : ∀ m, IsCompact (K m) := fun m ↦ (isCompact_closedBall 0 m).inter_left (hFc m)
+  have hKO : ∀ m, K m ⊆ O := fun m ↦ inter_subset_left.trans (hFO m)
+  have hKm : Monotone K := fun a b hab ↦
+    inter_subset_inter (hFm hab) (closedBall_subset_closedBall (Nat.cast_le.mpr hab))
+  -- Step 3: `⋃ m, K m = O`.
+  have hKU : ⋃ m, K m = O := by
+    refine Subset.antisymm (iUnion_subset hKO) fun x hx ↦ ?_
+    rw [← hFU] at hx
+    obtain ⟨a, ha⟩ := mem_iUnion.mp hx
+    obtain ⟨b, hb⟩ := exists_nat_ge ‖x‖
+    refine mem_iUnion.mpr ⟨max a b, hFm (le_max_left a b) ha, ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact hb.trans (Nat.cast_le.mpr (le_max_right a b))
+  -- Step 4: `μ(O) = ⨆ m, μ(K m)`, so it suffices to bound each `μ(K m)`.
+  have hμO : μ O = ⨆ m, μ (K m) := by
+    rw [← hKU]
+    exact hKm.measure_iUnion
+  rw [hμO]
+  refine iSup_le fun m ↦ ?_
+  -- Step 5: the Urysohn sandwich function for `K m ⊆ O`; every `μᵢ` and `μ` is admissible.
+  obtain ⟨g, hgc, hgs, hgO, hg⟩ :=
+    Submission.exists_urysohn_integral_sandwich N (K m) O (hKc m) hO (hKO m)
+  -- Step 6: `ofReal (∫ g dμᵢ) → ofReal (∫ g dμ)`.
+  have ht : Tendsto (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop
+      (𝓝 (ENNReal.ofReal (∫ x, g x ∂μ))) :=
+    ENNReal.tendsto_ofReal (hlim g hgc hgs (hgO.trans hOU))
+  -- Step 7: `μ(K m) ≤ ofReal ∫ g dμ = liminf ofReal ∫ g dμᵢ ≤ liminf μᵢ(O)`.
+  calc μ (K m) ≤ ENNReal.ofReal (∫ x, g x ∂μ) :=
+        (hg μ fun L hL hLO ↦ hμ L hL (hLO.trans hOU)).1
+    _ = liminf (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop := ht.liminf_eq.symm
+    _ ≤ liminf (fun i ↦ μs i O) atTop := liminf_le_liminf (Eventually.of_forall fun i ↦
+        (hg (μs i) fun L hL hLO ↦ hμs i L hL (hLO.trans hOU)).2)
+/-- Compact-set half of the portmanteau theorem (Simon Ch. 8, proof of 3.7): if `μ_i` and `μ` are
+finite on compact subsets of the open set `U` and `∫ g dμ_i → ∫ g dμ` for every continuous `g` with
+compact support in `U`, then `limsup_i μ_i(K) ≤ μ(K)` for every compact `K ⊆ U`. -/
+theorem Submission.limsup_measure_compact_le_of_tendsto_integral :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ μs i K) atTop ≤ μ K := by
+  intro N U μs μ hU hμs hμ hconv K hK hKU
+  -- Step 1: a closed thickening `cthickening δ K` of `K` lies in `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  -- Step 2: radii `r m = δ / (m + 1)` and neighbourhoods `O m = thickening (r m) K`.
+  set r : ℕ → ℝ := fun m ↦ δ / (m + 1)
+  have hr_pos : ∀ m, 0 < r m := fun m ↦ div_pos hδ (Nat.cast_add_one_pos m)
+  have hr_le : ∀ m, r m ≤ δ := fun m ↦
+    div_le_self hδ.le (le_add_of_nonneg_left (Nat.cast_nonneg m))
+  have hr_anti : Antitone r := fun m m' hmm' ↦
+    div_le_div_of_nonneg_left hδ.le (Nat.cast_add_one_pos m) (by gcongr)
+  set O : ℕ → Set (Euclidean N) := fun m ↦ thickening (r m) K
+  -- (a) `O m` is open and contains `K`; (b) `O m ⊆ U`; (c) `O` is decreasing.
+  have hO_open : ∀ m, IsOpen (O m) := fun m ↦ isOpen_thickening
+  have hKO : ∀ m, K ⊆ O m := fun m ↦ self_subset_thickening (hr_pos m) K
+  have hOU : ∀ m, O m ⊆ U := fun m ↦
+    (thickening_subset_cthickening_of_le (hr_le m) K).trans hδU
+  have hO_anti : Antitone O := fun m m' h ↦ thickening_mono (hr_anti h) K
+  -- (d) `⋂ m, O m = closure K = K`.
+  have hO_inter : ⋂ m, O m = K := by
+    refine Subset.antisymm (fun x hx ↦ ?_) (subset_iInter hKO)
+    rw [mem_iInter] at hx
+    have hxcl : x ∈ closure K := by
+      rw [closure_eq_iInter_thickening]
+      simp only [mem_iInter]
+      intro ε hε
+      obtain ⟨m, hm⟩ := exists_nat_gt (δ / ε)
+      have hrε : r m < ε := by
+        rw [div_lt_iff₀ hε] at hm
+        show δ / (m + 1) < ε
+        rw [div_lt_iff₀ (Nat.cast_add_one_pos m)]
+        nlinarith
+      exact thickening_mono hrε.le K (hx m)
+    rwa [hK.isClosed.closure_eq] at hxcl
+  -- (e) `μ (O 0) ≤ μ (cthickening δ K) < ∞`, since `cthickening δ K` is a compact subset of `U`.
+  have hO0 : μ (O 0) ≠ ∞ :=
+    ne_top_of_le_ne_top (hμ _ hK.cthickening hδU)
+      (measure_mono (thickening_subset_cthickening_of_le (hr_le 0) K))
+  -- Step 3: continuity from above gives `μ (O m) → μ K`.
+  have htend : Tendsto (fun m ↦ μ (O m)) atTop (𝓝 (μ K)) := by
+    have h := tendsto_measure_iInter_atTop (μ := μ)
+      (fun m ↦ (hO_open m).measurableSet.nullMeasurableSet) hO_anti ⟨0, hO0⟩
+    rwa [hO_inter] at h
+  -- Steps 4–6: `limsup_i μ_i(K) ≤ μ(O m)` for each `m`.
+  have key : ∀ m, limsup (fun i ↦ μs i K) atTop ≤ μ (O m) := by
+    intro m
+    -- Step 4: the sandwich function for `K ⊆ O m`; each `μ_i` and `μ` is admissible as `O m ⊆ U`.
+    obtain ⟨g, hgc, hgcs, hgO, hg⟩ :=
+      Submission.exists_urysohn_integral_sandwich N K (O m) hK (hO_open m) (hKO m)
+    have hfin : ∀ ν : Measure (Euclidean N), (∀ L, IsCompact L → L ⊆ U → ν L ≠ ∞) →
+        ∀ L, IsCompact L → L ⊆ O m → ν L ≠ ∞ :=
+      fun ν hν L hL hLO ↦ hν L hL (hLO.trans (hOU m))
+    -- Step 5: `tsupport g ⊆ O m ⊆ U`, so `ofReal (∫ g dμ_i) → ofReal (∫ g dμ)`.
+    have hlim := ENNReal.tendsto_ofReal (hconv g hgc hgcs (hgO.trans (hOU m)))
+    -- Step 6: `limsup_i μ_i(K) ≤ limsup_i ofReal (∫ g dμ_i) = ofReal (∫ g dμ) ≤ μ(O m)`.
+    calc limsup (fun i ↦ μs i K) atTop
+        ≤ limsup (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop :=
+          limsup_le_limsup (Eventually.of_forall fun i ↦ (hg (μs i) (hfin _ (hμs i))).1)
+      _ = ENNReal.ofReal (∫ x, g x ∂μ) := hlim.limsup_eq
+      _ ≤ μ (O m) := (hg μ (hfin μ hμ)).2
+  -- Step 7: let `m → ∞`.
+  exact ge_of_tendsto' htend key
+
+/-- Portmanteau for varifold weights (Simon Ch. 8, proof of 3.7): if `Vᵢ → V` as Radon measures on
+`Gₙ(U)`, then `μ_V(O) ≤ liminf μ_{Vᵢ}(O)` for every open `O ⊆ U` and
+`limsup μ_{Vᵢ}(K) ≤ μ_V(K)` for every compact `K ⊆ U`. -/
+theorem Submission.weight_portmanteau_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → V.weight O ≤ liminf (fun i ↦ (Vi i).weight O) atTop) ∧ ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ (Vi i).weight K) atTop ≤ V.weight K := by
+  intro N n U Vi V hconv
+  -- Step 1 (T): `∫ g dμ_{Vᵢ} → ∫ g dμ_V` for every `g ∈ C_c(ℝ^N)` with `spt g ⊆ U`.
+  have hlim := Submission.varifold_weight_integral_tendsto_of_radonConverges N n U Vi V hconv
+  -- Step 2: every weight is finite on compact subsets of `U`.
+  have hfin : ∀ (X : Varifold N n U) (K : Set (Euclidean N)), IsCompact K → K ⊆ U →
+      X.weight K ≠ ∞ := fun X ↦ X.weight_finite_on_compact
+  -- Steps 3–5: (P1) by inner exhaustion of `O`, (P2) by outer approximation of `K` inside the
+  -- open set `U`, both via Urysohn functions and (T).
+  exact ⟨Submission.measure_open_le_liminf_of_tendsto_integral N U (fun i ↦ (Vi i).weight)
+      V.weight (fun i ↦ hfin (Vi i)) (hfin V) hlim,
+    Submission.limsup_measure_compact_le_of_tendsto_integral N U (fun i ↦ (Vi i).weight)
+      V.weight V.isOpen_domain (fun i ↦ hfin (Vi i)) (hfin V) hlim⟩
+/-- **Simon Ch. 8, proof of 3.7, printed step (2)** (child `besicovitch_ratio_cover` of
+`density_semicontinuity`): if every `x ∈ A` is the centre of a closed ball `B_σ(x)`, `0 < σ < ρ₀`,
+with `μ(B_σ(x)) ≤ t ν(B_σ(x))`, then `μ(A) ≤ C t ν({dist(·, A) < ρ₀})`, where `C` is the
+Besicovitch number of `ℝ^N` (Ch. 1, 3.12).  The covering lemma splits a subfamily of these balls
+covering `A` into `C` disjoint, hence countable, subfamilies; sum the ratio bound over each. -/
+theorem Submission.besicovitch_ratio_cover_estimate :
     ∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A : Set (Euclidean N)) (ρ₀ : ℝ)
       (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧
         μ (closedBall x σ) ≤ t * ν (closedBall x σ)) →
@@ -7132,6 +7502,202 @@ theorem Submission.intcpt_flat_limit_integer_multiplicity :
     filter_upwards [Ioo_mem_nhdsGT hδbar, e₁, e₂] with δ hδ h₁ h₂
     exact hclaim δ k₀ hδ.1 hδ.2.le h₁ h₂.le
   exact le_of_mul_le_mul_right (ge_of_tendsto hF hev) hI₀
+/-- **Simon Ch. 8, 3.7, printed step (4)** (child `monotonicity_mass_lower_bound` of the density
+semicontinuity theorem): at a point where `Θ^n(μ_V, x) ≥ 1` and the ball bound 3.1 holds on
+`(0, ρ₀)`, the monotonicity formula 3.3 gives `e^{-Λρ} ω_n ρ^n ≤ μ_V(B_ρ(x))` for `0 < ρ < ρ₀`.
+The density supplied by 3.3 equals `θ` by uniqueness of limits along `𝓝[>] 0`, and
+`D = ω_n ρ^n ∈ (0, ∞)` cancels in `1 ≤ θ ≤ e^{Λρ} μ_V(B_ρ(x)) / D`. -/
+theorem Submission.weight_closedBall_lower_bound_of_density_ge_one :
+    MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U)
+      (x : Euclidean N) (ρ₀ Λ : ℝ) (θ : ℝ≥0∞), V.HasLocallyBoundedFirstVariation → 0 < ρ₀ →
+      ball x ρ₀ ⊆ U → 0 ≤ Λ →
+      (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        variationMeasure V (closedBall x ρ) ≤ ENNReal.ofReal Λ * V.weight (closedBall x ρ)) →
+      HasDensity n V.weight x θ → 1 ≤ θ → ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+        V.weight (closedBall x ρ) := by
+  intro hMF N n U V x ρ₀ Λ θ hV hρ₀ hU hΛ hδ hθ h1 ρ hρ hρρ₀
+  obtain ⟨-, θ', hθ', -, hθ'le⟩ := hMF N n U V x ρ₀ Λ hV hρ₀ hU hΛ hδ
+  have hθθ' : θ = θ' := tendsto_nhds_unique hθ hθ'
+  have hle : 1 ≤ ENNReal.ofReal (Real.exp (Λ * ρ)) * densityRatio n V.weight x ρ :=
+    h1.trans (hθθ' ▸ (hθ'le ρ ρ hρ le_rfl hρρ₀).1)
+  have hω0 : unitBallVolume n ≠ 0 := (Metric.measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hD0 : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ).ne')
+  have hDtop : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hexp : ENNReal.ofReal (Real.exp (-(Λ * ρ))) * ENNReal.ofReal (Real.exp (Λ * ρ)) = 1 := by
+    rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add, neg_add_cancel, Real.exp_zero,
+      ENNReal.ofReal_one]
+  calc ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n
+      = ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal ρ ^ n) * 1 := by
+        rw [mul_one, mul_assoc]
+    _ ≤ ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal ρ ^ n) *
+          (ENNReal.ofReal (Real.exp (Λ * ρ)) * densityRatio n V.weight x ρ) := by gcongr
+    _ = ENNReal.ofReal (Real.exp (-(Λ * ρ))) * ENNReal.ofReal (Real.exp (Λ * ρ)) *
+          ((unitBallVolume n * ENNReal.ofReal ρ ^ n) * densityRatio n V.weight x ρ) := by ring
+    _ = V.weight (closedBall x ρ) := by
+        rw [hexp, one_mul, densityRatio, ENNReal.mul_div_cancel hD0 hDtop]
+
+/-- **Simon Ch. 8, proof of 3.7, second half of printed step (4)** (child `limit_mass_lower_bound`
+of `density_semicontinuity`): let `V_i → V` as Radon measures on `Gₙ(U)`, `q_i → ∞`, `y_i → x`,
+`B°_{ρ₀}(x) ⊆ U` and `e^{-Λρ} ω_n ρ^n ≤ μ_{V_{q_i}}(B_ρ(y_i))` for all `i` and `0 < ρ < ρ₀`.  Then
+`e^{-Λρ} ω_n ρ^n ≤ μ_V(B_ρ(x))` for `0 < ρ < ρ₀`, hence `liminf_{ρ↓0} μ_V(B_ρ(x))/(ω_n ρ^n) ≥ 1`.
+For large `i`, `B_{ρ-|y_i-x|}(y_i) ⊆ B_ρ(x)`, so `e^{-Λρ} ω_n ρ^n ≤ limsup_i μ_{V_{q_i}}(B_ρ(x))
+≤ μ_V(B_ρ(x))` by (P2) of `weight_portmanteau_of_radonConverges`; then divide by `ω_n ρ^n`. -/
+theorem Submission.lower_density_ge_one_of_nearby_mass_bounds :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+      (x : Euclidean N) (ρ₀ Λ : ℝ) (q : ℕ → ℕ) (y : ℕ → Euclidean N),
+      Varifold.RadonConverges Vi V → 0 < ρ₀ → ball x ρ₀ ⊆ U → Tendsto q atTop atTop →
+      Tendsto y atTop (𝓝 x) →
+      (∀ i, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+          (Vi (q i)).weight (closedBall (y i) ρ)) →
+      (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+          V.weight (closedBall x ρ)) ∧
+      1 ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0) := by
+  intro N n U Vi V x ρ₀ Λ q y hV hρ₀ hU hq hy hmass
+  -- `ω_n ∈ (0, ∞)`, and `F(r) = e^{-Λr} ω_n r^n` is continuous with finite values.
+  have hω0 : unitBallVolume n ≠ 0 := (Metric.measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  set F : ℝ → ℝ≥0∞ := fun r ↦
+    ENNReal.ofReal (Real.exp (-(Λ * r))) * unitBallVolume n * ENNReal.ofReal r ^ n
+  have hE : Continuous fun r : ℝ ↦ ENNReal.ofReal (Real.exp (-(Λ * r))) :=
+    ENNReal.continuous_ofReal.comp (by fun_prop)
+  have hF : ∀ r : ℝ, Tendsto F (𝓝 r) (𝓝 (F r)) := fun r ↦
+    ENNReal.Tendsto.mul (ENNReal.Tendsto.mul_const (hE.tendsto r) (Or.inr hωtop))
+      (Or.inr (ENNReal.pow_ne_top ENNReal.ofReal_ne_top))
+      (ENNReal.Tendsto.pow (ENNReal.continuous_ofReal.tendsto r))
+      (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop))
+  -- The mass bound for `V`: `F(ρ - |y_i - x|) ≤ μ_{V_{q_i}}(B_ρ(x))` for large `i`, and (P2).
+  have hmassV : ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → F ρ ≤ V.weight (closedBall x ρ) := by
+    intro ρ hρ hρρ₀
+    have hP2 := (Submission.weight_portmanteau_of_radonConverges N n U Vi V hV).2
+      (closedBall x ρ) (isCompact_closedBall x ρ) ((closedBall_subset_ball hρρ₀).trans hU)
+    have hd : Tendsto (fun i ↦ dist (y i) x) atTop (𝓝 0) := tendsto_iff_dist_tendsto_zero.1 hy
+    have hr : Tendsto (fun i ↦ ρ - dist (y i) x) atTop (𝓝 ρ) := by
+      have h := (tendsto_const_nhds : Tendsto (fun _ : ℕ ↦ ρ) atTop (𝓝 ρ)).sub hd
+      rwa [sub_zero] at h
+    have hle : ∀ᶠ i in atTop, F (ρ - dist (y i) x) ≤ (Vi (q i)).weight (closedBall x ρ) := by
+      filter_upwards [hd.eventually (eventually_lt_nhds hρ)] with i hi
+      refine (hmass i _ (sub_pos.2 hi) ((sub_le_self ρ dist_nonneg).trans_lt hρρ₀)).trans
+        (measure_mono fun z hz ↦ ?_)
+      rw [mem_closedBall] at hz ⊢
+      linarith [dist_triangle z (y i) x]
+    calc F ρ = limsup (fun i ↦ F (ρ - dist (y i) x)) atTop := ((hF ρ).comp hr).limsup_eq.symm
+      _ ≤ limsup (fun i ↦ (Vi (q i)).weight (closedBall x ρ)) atTop := limsup_le_limsup hle
+      _ ≤ limsup (fun j ↦ (Vi j).weight (closedBall x ρ)) atTop :=
+          Tendsto.limsup_comp_le_limsup (u := fun j ↦ (Vi j).weight (closedBall x ρ)) hq
+      _ ≤ V.weight (closedBall x ρ) := hP2
+  refine ⟨hmassV, ?_⟩
+  -- The lower density: `e^{-Λr} ≤ densityRatio n μ_V x r` on `(0, ρ₀)`, and `e^{-Λr} → 1`.
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (Real.exp (-(Λ * r))) ≤ densityRatio n V.weight x r := by
+    filter_upwards [Ioo_mem_nhdsGT hρ₀] with r hr
+    rw [densityRatio, ENNReal.le_div_iff_mul_le
+      (Or.inl (mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hr.1).ne')))
+      (Or.inl (ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top))), ← mul_assoc]
+    exact hmassV r hr.1 hr.2
+  have hlim : Tendsto (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (-(Λ * r)))) (𝓝[>] 0) (𝓝 1) := by
+    have h := (hE.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+    rwa [mul_zero, neg_zero, Real.exp_zero, ENNReal.ofReal_one] at h
+  calc (1 : ℝ≥0∞) = liminf (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (-(Λ * r)))) (𝓝[>] 0) :=
+        hlim.liminf_eq.symm
+    _ ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0) := liminf_le_liminf hev
+
+/-- **Simon Ch. 8, 3.7, density part** (child `lower_density_ae` of `density_semicontinuity`;
+printed proof, pp. 212–213, (1)–(5), with the monotonicity formula 3.3): if `V_i → V` as Radon
+measures on `Gₙ(U)`, `liminf_i ‖δV_i‖(W) < ∞` and `Θ^n(μ_{V_i}, ·) ≥ 1` off `B_i` with
+`μ_{V_i}(B_i ∩ W) → 0` for every `W ⊂⊂ U`, then `liminf_{ρ↓0} μ_V(B_ρ(y)) / (ω_n ρ^n) ≥ 1` for
+`μ_V`-a.e. `y`.  Fix `W ⊂⊂ U` and `W̃ = {dist(·, W) < ρ₀} ⊂⊂ U`.  A point of `W ∖ B_q` is good
+for `(q, k)` if `‖δV_q‖ ≤ k μ_q` on its balls of radius `< ρ₀`; Besicovitch bounds the bad set by
+`C k⁻¹ ‖δV_q‖(W̃) + μ_q(B_q ∩ W)` (printed (2)), so the points interior to `⋂_{ℓ ≥ i}` of the bad
+sets for every `k ≥ 1` form a `μ_V`-null set (printed (3), (5)).  Each other `x ∈ W` is a limit of
+good points `y_i` of `V_{q_i}`, where 3.3 with `Λ = k` gives `μ_{q_i}(B_ρ(y_i)) ≥ e^{-kρ} ω_n ρ^n`;
+these bounds pass to `μ_V` at `x` (printed (4)).  Countably many `W ⊂⊂ U` exhaust `U`. -/
+theorem Submission.lower_density_ge_one_ae_of_radonConverges :
+    MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (B : ℕ → Set (Euclidean N)), Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) → (∀ i, ∀ y ∈ U \ B i, ∃ θ : ℝ≥0∞, HasDensity n (Vi i).weight y θ ∧ 1 ≤ θ) → (∀ W, IsRelCompactOpenIn W U → Tendsto (fun i ↦ (Vi i).weight (B i ∩ W)) atTop (𝓝 0)) → ∀ᵐ y ∂V.weight, 1 ≤ liminf (densityRatio n V.weight y) (𝓝[>] 0) := by
+  intro hMF N n U Vi V B hconv hLB hbound hdens hsmall
+  -- The Besicovitch constant `C` of `ℝ^N` and the portmanteau inequality (P1) for `V_i → V`.
+  obtain ⟨C, hC⟩ := Submission.besicovitch_ratio_cover_estimate N
+  have hP1 := (Submission.weight_portmanteau_of_radonConverges N n U Vi V hconv).1
+  have hU : IsOpen U := V.isOpen_domain
+  -- Step 2: `μ_V(Uᶜ) = 0`, so it suffices to prove the bound on each `W ⊂⊂ U` off a null set.
+  have hUc : V.weight Uᶜ = 0 := by
+    rw [V.weight_apply hU.measurableSet.compl]
+    exact V.supported
+  refine Submission.ae_of_forall_relCompactOpen_null_exceptional N U V.weight
+    (fun y ↦ 1 ≤ liminf (densityRatio n V.weight y) (𝓝[>] 0)) hU hUc fun W hW ↦ ?_
+  -- Step 1a: `W̃ = thickening ρ₀ W ⊂⊂ U`, and `B°_{ρ₀}(y) ⊆ W̃ ⊆ U` for every `y ∈ W`.
+  obtain ⟨ρ₀, hρ₀, hWt⟩ := Submission.exists_thickening_isRelCompactOpenIn N U W hU hW
+  have hWU : W ⊆ U := subset_closure.trans hW.2.2
+  have hballU : ∀ y ∈ W, ball y ρ₀ ⊆ U := fun y hy ↦
+    (ball_subset_thickening hy ρ₀).trans (subset_closure.trans hWt.2.2)
+  -- Step 1b (printed (1)): `Bad q k = W ∖ A_{q,k}`, where `A_{q,k}` is the set of `y ∉ B_q` with
+  -- `‖δV_q‖(B_ρ(y)) ≤ k μ_q(B_ρ(y))` for `0 < ρ < ρ₀`.
+  set Bad : ℕ → ℕ → Set (Euclidean N) := fun q k ↦ W \ {y | y ∉ B q ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+    variationMeasure (Vi q) (closedBall y ρ) ≤ ENNReal.ofReal k * (Vi q).weight (closedBall y ρ)}
+  -- Step 1c (printed (2)): `μ_q(Bad q k) ≤ C k⁻¹ ‖δV_q‖(W̃) + μ_q(B_q ∩ W)` for `k ≥ 1`.
+  have hcover : ∀ q k : ℕ, 1 ≤ k → (Vi q).weight (Bad q k) ≤
+      (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * variationMeasure (Vi q) (thickening ρ₀ W) +
+        (Vi q).weight (B q ∩ W) := by
+    intro q k hk
+    have hk0 : (k : ℝ≥0∞) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
+    -- Every `x ∈ Bad q k ∖ B q` centres a ball `B_σ(x)`, `σ < ρ₀`, with
+    -- `μ_q(B_σ(x)) ≤ k⁻¹ ‖δV_q‖(B_σ(x))`.
+    have hratio : ∀ x ∈ Bad q k \ B q, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧
+        (Vi q).weight (closedBall x σ) ≤
+          (k : ℝ≥0∞)⁻¹ * variationMeasure (Vi q) (closedBall x σ) := by
+      rintro x ⟨⟨-, hxA⟩, hxB⟩
+      obtain ⟨σ, hσ, hσρ₀, hlt⟩ : ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧ ENNReal.ofReal k *
+          (Vi q).weight (closedBall x σ) < variationMeasure (Vi q) (closedBall x σ) := by
+        by_contra hcon
+        push Not at hcon
+        exact hxA ⟨hxB, hcon⟩
+      rw [ENNReal.ofReal_natCast] at hlt
+      exact ⟨σ, hσ, hσρ₀, (ENNReal.mul_le_iff_le_inv hk0 (ENNReal.natCast_ne_top k)).1 hlt.le⟩
+    calc (Vi q).weight (Bad q k)
+        ≤ (Vi q).weight (Bad q k ∩ B q) + (Vi q).weight (Bad q k \ B q) :=
+          measure_le_inter_add_sdiff _ _ _
+      _ ≤ (Vi q).weight (B q ∩ W) +
+            (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * variationMeasure (Vi q) (thickening ρ₀ W) := by
+          gcongr ?_ + ?_
+          · exact measure_mono fun x hx ↦ ⟨hx.2, hx.1.1⟩
+          · refine (hC (Vi q).weight (variationMeasure (Vi q)) (Bad q k \ B q) ρ₀ (k : ℝ≥0∞)⁻¹
+              hratio).trans ?_
+            gcongr
+            exact thickening_subset_of_subset ρ₀ (sdiff_subset.trans sdiff_subset)
+      _ = _ := add_comm _ _
+  -- Steps 1d–1e (printed (3), (5)): `⋂_{k ≥ 1} ⋃_i interior (⋂_{ℓ ≥ i} Bad ℓ k)` is `μ_V`-null.
+  refine ⟨_, Submission.measure_bad_interior_exceptional_eq_zero N V.weight (fun q ↦ (Vi q).weight)
+    W Bad C (fun q ↦ variationMeasure (Vi q) (thickening ρ₀ W)) (fun q ↦ (Vi q).weight (B q ∩ W))
+    (fun O hO hOW ↦ hP1 O hO (hOW.trans hWU)) (fun _ _ ↦ sdiff_subset) (hbound _ hWt) (hsmall W hW)
+    hcover, fun x hxW hxE ↦ ?_⟩
+  -- Step 1f (printed (4)): for some `k ≥ 1`, `x` is interior to no `⋂_{ℓ ≥ i} Bad ℓ k`.
+  obtain ⟨k, -, hxk⟩ : ∃ k : ℕ, 1 ≤ k ∧
+      ∀ i : ℕ, x ∉ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k) := by
+    by_contra hcon
+    push Not at hcon
+    exact hxE (mem_iInter₂.2 fun k hk ↦ mem_iUnion.2 (hcon k hk))
+  -- Good points `y i → x` of `V_{q i}` in `W`, with `q i → ∞`.
+  obtain ⟨q, y, hq, hy, hyq⟩ :=
+    Submission.exists_nearby_points_off_bad_sets N W (fun ℓ ↦ Bad ℓ k) x hW.1 hxW hxk
+  have hgood : ∀ i, y i ∉ B (q i) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      variationMeasure (Vi (q i)) (closedBall (y i) ρ) ≤
+        ENNReal.ofReal k * (Vi (q i)).weight (closedBall (y i) ρ) := fun i ↦
+    not_not.1 fun h ↦ (hyq i).2 ⟨(hyq i).1, h⟩
+  -- Monotonicity 3.3 with `Λ = k` at `y i`, where `Θ^n(μ_{q i}, y i) ≥ 1`.
+  have hmass : ∀ i, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      ENNReal.ofReal (Real.exp (-((k : ℝ) * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+        (Vi (q i)).weight (closedBall (y i) ρ) := fun i ↦ by
+    obtain ⟨θ, hθ, h1θ⟩ := hdens (q i) (y i) ⟨hWU (hyq i).1, (hgood i).1⟩
+    exact Submission.weight_closedBall_lower_bound_of_density_ge_one hMF N n U (Vi (q i)) (y i) ρ₀
+      k θ (hLB (q i)) hρ₀ (hballU _ (hyq i).1) (Nat.cast_nonneg k) (hgood i).2 hθ h1θ
+  -- The mass bounds pass to `μ_V` at `x = lim y i`.
+  exact (Submission.lower_density_ge_one_of_nearby_mass_bounds N n U Vi V x ρ₀ k q y hconv hρ₀
+    (hballU x hxW) hq hy hmass).2
 /-- A Borel representative of the `n`-density (Step 1 of the proof of Simon Ch. 8, 1.2): for an
 s-finite `μ` on `ℝ^N`, `g(x) = liminf_k μ(B_{1/(k+1)}(x)) / (ω_n (k+1)^{-n})` is Borel and
 `g(x) = Θ^n(μ, x)` at every `x` where `Θ^n(μ, x)` exists. -/
@@ -7940,6 +8506,24 @@ theorem Submission.monotonicity_and_density_theorems :
     MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE :=
   ⟨Submission.monotonicity_formula_8_3_3, Submission.stationary_monotonicity_identity_8_3_4,
     Submission.density_exists_ae_8_3_6⟩
+
+/-- **Simon Ch. 8, 3.7** (child `density_semicontinuity` of `main_theorem`; Step 4 of its proof).
+Remark 3.8(1) (child `variation_lsc`) gives that `V` has locally bounded first variation and
+`‖δV‖(W) ≤ liminf_i ‖δV_i‖(W)`.  The printed steps (1)–(5) (child `lower_density_ae`, run with the
+monotonicity formula 3.3) give `liminf_{ρ↓0} μ_V(B_ρ(y)) / (ω_n ρ^n) ≥ 1` for `μ_V`-a.e. `y`, and
+Lemma 3.6 for `V` gives that `Θ^n(μ_V, y)` exists for `μ_V`-a.e. `y`.  Where the density exists it
+equals that `liminf`, so it is `≥ 1`. -/
+theorem Submission.density_semicontinuity_theorem : DensitySemicontinuity := by
+  intro N n U Vi V B hconv hLB hbound hdens hsmall
+  obtain ⟨hV, hle⟩ :=
+    Submission.variationMeasure_le_liminf_of_radonConverges N n U Vi V hconv hLB hbound
+  refine ⟨hV, hle, ?_⟩
+  obtain ⟨Θ, -, hΘ⟩ := Submission.monotonicity_and_density_theorems.2.2 N n U V hV
+  have hlow := Submission.lower_density_ge_one_ae_of_radonConverges
+    Submission.monotonicity_and_density_theorems.1 N n U Vi V B hconv hLB hbound hdens hsmall
+  filter_upwards [hΘ, hlow] with y hy hy'
+  have h : Tendsto (densityRatio n V.weight y) (𝓝[>] 0) (𝓝 (Θ y)) := hy.2
+  exact ⟨Θ y, hy.2, by rwa [h.liminf_eq] at hy'⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
