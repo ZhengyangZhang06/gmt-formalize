@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "594628d48f51c3fd47bec06fc2986ad7ea5650988ccbc15d15c7d192c133efaf",
+  "git_delta": {
+    "base_commit": "bad8c25dcab582ff24a7371a7381d474817cf39e",
+    "candidate_commit": "35284fd153fc5f33d9a5e68fd764401d08a33242",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_pc_orient_ae_eq_or_neg",
+    "diff_sha256": "553dbd3b14fbf638951ca9eff84d64c0544714c84dce543f07643a59397b3cb8",
+    "source_sha256": "ba0ea90528ed8156bab28929f0df888e2dd1416bee796603b3d677de510572d6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_pc_orient_ae_eq_or_neg",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → μHE[n] (R.carrier \\ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = 0 → ∀ᵐ x ∂(μHE[n].restrict R.carrier), (∀ α : Covector (Euclid P) n, R.orient x α = α τ) ∨ (∀ α : Covector (Euclid P) n, R.orient x α = -α τ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
