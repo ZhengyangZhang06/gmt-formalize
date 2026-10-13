@@ -1,0 +1,133 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.monotonicity-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.monotonicity-a1.density_usc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 5–6 of the selected node's supplied proof. These are Simon Ch. 4, 3.8–3.11 (chapter-04.txt lines 320–349) and the remark after 3.17 (lines 427–430): the density exists and is upper semicontinuous by "straightforward modifications" of the H = 0 argument. Here only the monotone set function m (not a measure) is available. So in 3.11 the passage from B_{ρ+η}(y) to B_ρ(y) is done with η proportional to ρ, instead of through closed balls.
+Notation: m(W) := T.massOn W ∈ [0, ∞]. m is nondecreasing in W (GeometricCurrentOn.massOn_mono: a form admissible for W₁ is admissible for every W₂ ⊇ W₁). ω_n := unitBallVolume n; B_t(z) := ball z t. For Λ ∈ ℝ and z ∈ ℝ^P put g_{Λ,z}(ρ) := ofReal(e^{Λρ}/ρ^n)·m(B_ρ(z)).
+1. (ω_n and two identities.) The unit ball of Euclid n is nonempty, open and bounded, and volume is an additive Haar measure on Euclid n. So 0 < ω_n < ∞ (measure_ball_pos, measure_ball_lt_top). Let ρ > 0 and a ∈ [0, ∞]. Then ofReal(1/ρ^n) = ofReal(ρ^n)^{−1} because ρ^n > 0, and (ω_n·ofReal(ρ^n))^{−1} = ω_n^{−1}·ofReal(ρ^n)^{−1} because ω_n ∈ (0, ∞). Hence:
+ (I1) ofReal(1/ρ^n)·a/ω_n = a/(ω_n·ofReal(ρ^n)).
+ (I2) ω_n·(a/(ω_n·ofReal(ρ^n))) = ofReal(1/ρ^n)·a. This follows from (I1) and ω_n^{−1}·ω_n = 1.
+2. (Existence of the density at y ∈ U.) Let y ∈ U.
+ - By (F) choose r₀ > 0 with m(B_{r₀}(y)) < ∞. As U is open, choose r₁ > 0 with B_{r₁}(y) ⊆ U.
+ - Put R := min(r₀, r₁/2) > 0. Then closedBall y R ⊆ B_{r₁}(y) ⊆ U.
+ - Apply (M) to the compact set K := closedBall y R ⊆ U and to the ball closedBall y R ⊆ K. This gives Λ such that g := g_{Λ,y} is nondecreasing on (0, R).
+ (a) g is nondecreasing on the nonempty interval (0, R), and [0, ∞] is a complete linear order whose order topology is the usual one, bounded below by 0. So g(ρ) → L := inf g((0, R)) as ρ ↓ 0 (MonotoneOn.tendsto_nhdsWithin_Ioo_right).
+ (b) L ≤ g(R/2) = ofReal(e^{ΛR/2}/(R/2)^n)·m(B_{R/2}(y)). Here m(B_{R/2}(y)) ≤ m(B_{r₀}(y)) < ∞, since R/2 ≤ r₀ and m is monotone. So L < ∞.
+ (c) ofReal(e^{−Λρ}) → ofReal(1) = 1 as ρ → 0, by continuity. By the product rule for limits in [0, ∞] (ENNReal.Tendsto.mul, applicable since 1 ≠ 0 and 1 ≠ ∞), ofReal(e^{−Λρ})·g(ρ) → L.
+ (d) For ρ > 0, ofReal(e^{−Λρ})·g(ρ) = ofReal(e^{−Λρ}·e^{Λρ}/ρ^n)·m(B_ρ(y)) = ofReal(1/ρ^n)·m(B_ρ(y)), using ofReal(a)·ofReal(b) = ofReal(ab) for a ≥ 0. Dividing by the constant ω_n ≠ 0 (ENNReal.Tendsto.div_const) and using (I1): m(B_ρ(y))/(ω_n·ofReal(ρ^n)) → L/ω_n as ρ ↓ 0.
+ (e) L/ω_n ≠ ∞ because L < ∞ and ω_n ≠ 0. Put θ_y := (L/ω_n).toReal ≥ 0. Then ofReal(θ_y) = L/ω_n, so HasMassDensity T y θ_y holds.
+ For each y ∈ U choose such a θ_y and put Θ(y) := θ_y; put Θ(y) := 0 for y ∉ U. Then HasMassDensity T y (Θ(y)) for every y ∈ U, which is the first conclusion.
+3. (Comparison with a fixed radius.) Let Λ ≥ 0, z ∈ U and R' ∈ ℝ, and suppose g_{Λ,z} is nondecreasing on (0, R'). Then ω_n·ofReal(Θ(z)) ≤ g_{Λ,z}(ρ) for every ρ ∈ (0, R').
+ - By HasMassDensity T z (Θ(z)), multiplication by the constant ω_n < ∞ (ENNReal.Tendsto.const_mul) gives ω_n·(m(B_t(z))/(ω_n·ofReal(t^n))) → ω_n·ofReal(Θ(z)) as t ↓ 0.
+ - Let t ∈ (0, ρ). By (I2), the left side equals ofReal(1/t^n)·m(B_t(z)).
+ - Since Λt ≥ 0, e^{Λt} ≥ 1, so ofReal(1/t^n)·m(B_t(z)) ≤ ofReal(e^{Λt}/t^n)·m(B_t(z)) = g_{Λ,z}(t).
+ - g_{Λ,z}(t) ≤ g_{Λ,z}(ρ), because t, ρ ∈ (0, R') and t ≤ ρ.
+ - The bound holds for all t ∈ (0, ρ), a set in the filter 𝓝[>]0, which is nontrivial. Passing to the limit (le_of_tendsto) gives the claim.
+4. (Upper semicontinuity on U; Simon 3.11.) Let y ∈ U and c ∈ ℝ with Θ(y) < c. Since Θ(y) ≥ 0, c > 0. We show that Θ(z) < c for every z in a neighbourhood of y. In particular Θ(z) < c for z ∈ U near y, so Θ is upper semicontinuous within U at y. As y ∈ U was arbitrary, UpperSemicontinuousOn Θ U follows.
+ (a) As U is open, choose r > 0 with B_r(y) ⊆ U, and put R := r/3. Then K := closedBall y (2R) ⊆ B_r(y) ⊆ U is compact. Let Λ ≥ 0 be given by (M) for K.
+ (b) δ ↦ e^δ(1 + δ)^n(Θ(y) + δ) is continuous with value Θ(y) < c at δ = 0. Choose δ ∈ (0, 1) with e^δ(1 + δ)^n(Θ(y) + δ) < c.
+ (c) Θ(y) + δ > 0 and δ > 0, so ofReal(Θ(y)) < ofReal(Θ(y) + δ). By HasMassDensity T y (Θ(y)) and the order topology of [0, ∞], there is s₀ > 0 with m(B_s(y))/(ω_n·ofReal(s^n)) < ofReal(Θ(y) + δ) for every s ∈ (0, s₀).
+ (d) (1 + δ)ρ → 0 and Λρ → 0 as ρ ↓ 0. Choose ρ > 0 with (1 + δ)ρ < min(s₀, R) and Λρ < δ. In particular ρ < R.
+ (e) Let z ∈ B_{δρ}(y). Then:
+ - dist(z, y) < δρ < (1 + δ)ρ < R, so z ∈ B_r(y) ⊆ U;
+ - closedBall z R ⊆ closedBall y (2R) = K, since dist(w, y) ≤ dist(w, z) + dist(z, y) ≤ R + R;
+ - by (M) for K and the ball closedBall z R ⊆ K, g_{Λ,z} is nondecreasing on (0, R);
+ - since ρ ∈ (0, R), step 3 gives ω_n·ofReal(Θ(z)) ≤ g_{Λ,z}(ρ).
+ (f) B_ρ(z) ⊆ B' := B_{(1+δ)ρ}(y), since dist(w, y) < ρ + δρ for w ∈ B_ρ(z). So g_{Λ,z}(ρ) ≤ ofReal(e^{Λρ}/ρ^n)·m(B'). Put D := ω_n·ofReal(((1 + δ)ρ)^n) ∈ (0, ∞) and q := m(B')/D, so that m(B') = q·D (ENNReal.div_mul_cancel). Since e^{Λρ}ρ^{−n}·((1 + δ)ρ)^n = e^{Λρ}(1 + δ)^n:
+ ofReal(e^{Λρ}/ρ^n)·m(B') = q·ω_n·ofReal(e^{Λρ}/ρ^n)·ofReal(((1 + δ)ρ)^n) = q·ω_n·ofReal(e^{Λρ}(1 + δ)^n).
+ (g) Since (1 + δ)ρ ∈ (0, s₀), (c) gives q < ofReal(Θ(y) + δ). The factor ω_n·ofReal(e^{Λρ}(1 + δ)^n) lies in (0, ∞). Hence
+ q·ω_n·ofReal(e^{Λρ}(1 + δ)^n) < ofReal(Θ(y) + δ)·ω_n·ofReal(e^{Λρ}(1 + δ)^n)
+ ≤ ofReal(Θ(y) + δ)·ω_n·ofReal(e^δ(1 + δ)^n) (since Λρ < δ)
+ = ω_n·ofReal(e^δ(1 + δ)^n(Θ(y) + δ))
+ < ω_n·ofReal(c).
+ The equality uses ofReal(a)·ofReal(b) = ofReal(ab) for a ≥ 0. The last step uses (b), c > 0, and strict monotonicity of multiplication by ω_n ∈ (0, ∞).
+ (h) By (e)–(g), ω_n·ofReal(Θ(z)) < ω_n·ofReal(c). Cancelling ω_n ∈ (0, ∞) gives ofReal(Θ(z)) < ofReal(c), and since c > 0, Θ(z) < c (ENNReal.ofReal_lt_ofReal_iff). B_{δρ}(y) is a neighbourhood of y (δρ > 0), so Θ(z) < c for all z near y, as required.
+
+## Key steps
+
+1. 0 < ω_n < ∞, and T.massOn is monotone in the set; ofReal(1/ρ^n)·a/ω_n = a/(ω_nρ^n).
+2. At y ∈ U the nondecreasing, finite g(ρ) = ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(y)}(T) tends to its infimum L < ∞ as ρ ↓ 0; multiplying by ofReal(e^{−Λρ}) → 1 gives HasMassDensity T y (L/ω_n).toReal.
+3. Monotonicity at a centre z gives ω_n·Θ(z) ≤ ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(z)}(T) for every ρ below the fixed radius.
+4. For |z − y| < δρ, B_ρ(z) ⊆ B_{(1+δ)ρ}(y) and the density limit at y give ω_nΘ(z) < ω_n e^δ(1+δ)^n(Θ(y)+δ) < ω_n c, so Θ is upper semicontinuous on U.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-dimension-reduction-results-a1-monotonicity-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json}`
+- `python3 over dag.json: monotonicity-a1 and im_mass_measure-a1 nodes (status, depends_on, lean_statement); search of all lean_statements for HasMassDensity|UpperSemicontinuousOn|MonotoneOn|unitBallVolume|Real.exp; duplicate-lean_name check; children of im_sub-a1 and support_null-a1 (reuse precedent)`
+- `cat nodes/{…mean-curvature-monotonicity-a1-ex-17c79c81ce,…-ta-ec3b44cb45,…-fi-76e995b6e5,root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1,…-closed-to-open-b-2625a8c412}/{parent-supplied-natural-proof.md,parent-child-handoff.json,isolated-comparator-result.json,accepted-candidate.json}`
+- `git show 81933e8:GMT/Ch07/Submission.lean | grep -n dsmc_exp_ball_mass_monotone`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/{mathlib,simongmt} rev-parse HEAD`
+- `rg -n over local-references/123e8435b4a2469b/mathlib/Mathlib for MonotoneOn.tendsto_nhdsWithin_Ioo_right, ENNReal.Tendsto.{mul,const_mul,div_const}, ENNReal.{mul_lt_mul_right,mul_lt_mul_iff_right,div_mul_cancel,ofReal_inv_of_pos,div_le_div_right}, withDensity_apply, ae_restrict_mem, AbsolutelyContinuous.ae_le, nhdsGT_basis, integral_withDensity_eq_integral_smul, image_eq_zero_of_notMem_tsupport`
+- `rg -n "HasLocallyBoundedMeanCurvature|def IMRep.measure|locallyIntegrable_mult|def HasMassDensity|def unitBallVolume" local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `grep -n 'def massOn|theorem massOn_mono|def support|zeroRegion|support_subset_domain' simongmt/Poincare/SimonGMT/Chapter06/{Mass,CurrentLocalEquality}.lean`
+- `sed -n 315,432p book/chapter-04.txt (Simon Ch. 4, 3.8–3.17)`
+- `grep -c / grep -rl of the four new dimred_mono_* names in dag.json, run nodes, GMT, .humanize/math-wiki, simongmt/Poincare and .swarm-worktrees/*/Submission.lean (no match)`
+- `lake env lean /tmp/mono-v2-check/Assembly.lean; lake env lean /tmp/mono-v2-check/Children.lean; lake env lean /tmp/mono-v2-check/Density.lean (#print axioms)`
+- `python3 byte comparison of the compiled theorem types with the dag.json / handoff lean_statement strings`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-fi-76e995b6e5/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/mono-v2-check/Assembly.lean`
+- `/tmp/mono-v2-check/Children.lean`
+- `/tmp/mono-v2-check/Density.lean`
+
+Pins and contract.
+- The snapshot pins project b4d606d, Mathlib 25730c7c and SimonGMT 2b36630, matching the workspace HEAD and the installed packages.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable accepted declarations (status accepted in dag.json, isolated comparator passed, frozen types byte-identical to the strings used here):
+- dsmc_exp_ball_mass_monotone (candidate 81933e8): Simon 3.17 for one ball;
+- dsmc_approxTangentPlane_starProjection_aemeasurable (7eb1db9);
+- rsd_tendsto_closedBall_density_of_approxTangent (dbef2c1);
+- rsd_tendsto_ball_density_of_closedBall (c3ca64f).
+Rejected candidates:
+- dtc_density_usc has the content of part (iii) but is not accepted, so it is neither reused nor collided with.
+- dor_imrep_massOn_eq_measure_and_support is an accepted analogue of im_mass_measure (a)/(b). The assembly keeps the declared sibling dependency dimred_im_mass_measure, as in the supplied proof.
+
+Library facts.
+- SimonGMT: massOn is an sSup and is monotone (massOn_mono); support = U \ zeroRegion ⊆ U (support_subset_domain).
+- Contract: HasLocallyBoundedMeanCurvature gives only a μ-a.e. bound on compacts, which motivates the truncation child.
+- Every Mathlib lemma used in the proofs exists at the pinned revision.
+
+Lean checks.
+- All 8 child types elaborate after import GMT.Ch07.Submission.
+- The exact parent type is proved from them plus the two prerequisites; sorryAx comes only from the stubs.
+- The four new children have complete proofs using only standard axioms, modulo the reused rsd declarations for the a.e. bound.
+
+Names and dependencies.
+- The new names are globally unique.
+- The dependencies are acyclic.
