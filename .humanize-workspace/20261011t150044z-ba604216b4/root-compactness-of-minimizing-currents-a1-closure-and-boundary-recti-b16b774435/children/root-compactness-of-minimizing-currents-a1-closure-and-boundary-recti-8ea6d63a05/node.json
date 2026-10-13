@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1",
+  "depth": 4,
+  "title": "Cone-type inequality: a finite-mass cycle in a small ball acts weakly on a fixed test form",
+  "statement": "Assume (VO), the exact frozen statement of dtc_vanish_off_support, which appears verbatim as the first hypothesis of the Lean statement: for all P, n ∈ ℕ, every U ⊆ ℝ^P, every current S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and every test form ω ∈ 𝒟^n(U) (TestFormOn U n) whose topological support is disjoint from spt S, S(ω) = 0. Then for all P, n ∈ ℕ and every test form ω ∈ 𝒟^{n+1}(ℝ^P) there is a real number c ≥ 0 such that for every current X ∈ 𝒟_{n+1}(ℝ^P) with ∂X = 0 and M(X) < ∞, every x₀ ∈ ℝ^P and every ϱ > 0 with spt X ⊆ B̄_ϱ(x₀) (closed ball), |X(ω)| ≤ c·ϱ·M(X). Here M(X) = X.mass = M_{ℝ^P}(X) (Simon 6.2.4–6.2.5, Euclidean coefficient norm), read as a real number (ENNReal.toReal).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (n + 1)), ∃ c : ℝ, 0 ≤ c ∧ ∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (x₀ : Euclid P) (ϱ : ℝ), 0 < ϱ → X.boundary = 0 → X.mass < ∞ → X.support ⊆ closedBall x₀ ϱ → |X ω| ≤ c * ϱ * X.mass.toReal",
+  "lean_name": "cbrld_cycle_eval_le_radius_mul_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8ea6d63a05-a1"
+}
