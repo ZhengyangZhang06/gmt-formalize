@@ -1106,6 +1106,150 @@ theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ
   · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
   · exact (support_mul_subset_right _ _).trans B.support_eq.subset
 
+/-- **Local `L¹` total boundedness of the indicators** (step 3 of the BV compactness argument
+behind De Giorgi's theorem, Simon 2.6 / [GT01, 7.22]).  If the `F_k ⊆ ℝ^{m+1}` have eventually
+bounded perimeter in every ball, then for `R, θ > 0` finitely many `F_i` form a `θ`-net of the
+`F_k` in `L¹(B_R)`.  From the bound `C ≥ 0` at radius `R + 1`, valid for `k ≥ k₀`, choose
+`ε ≤ 1` with `εC < θ/3` and a mollifier `ρ` supported in `B_ε`; then `1_{F_k}` is `εC`-close
+in `L¹(B_R)` to `v_k = ρ * 1_{F_k}`, the `v_k` are uniformly bounded and Lipschitz, so a finite
+sup-norm `δ`-net on `closedBall 0 R` with `δ L(B_R) < θ/3` gives the net for `k ≥ k₀`; the
+indices `k < k₀` are their own centres. -/
+theorem Submission.codim1_rdo_dg_bvc_indicator_totally_bounded : ∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ z in Fs k, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∀ R : ℝ, 0 < R → ∀ θ : ℝ, 0 < θ → ∃ S : Finset ℕ, ∀ k, ∃ i ∈ S, volume (symmDiff (Fs k) (Fs i) ∩ ball (0 : Euclid (m + 1)) R) < ENNReal.ofReal θ := by
+  intro m Fs hmeas hyp R hR θ hθ
+  -- Step 1: the bound `C` at radius `R + 1` holds for `k ≥ k₀`; `g = 0` shows `C ≥ 0`
+  obtain ⟨C, hev⟩ := hyp (R + 1) (by linarith)
+  obtain ⟨k0, hk0⟩ := Filter.eventually_atTop.1 hev
+  have hC : 0 ≤ C := by
+    simpa using hk0 k0 le_rfl (fun _ => 0) contDiff_const HasCompactSupport.zero (by simp)
+      (by simp)
+  -- Step 2: `ε = min (1/2) (θ / (3(C + 1)))`, so `ε ≤ 1` and `εC < θ/3`, and a mollifier `ρ`
+  -- supported in `B_ε`
+  set ε : ℝ := min (1 / 2) (θ / (3 * (C + 1))) with hεdef
+  have hεpos : 0 < ε := lt_min (by norm_num) (div_pos hθ (by positivity))
+  have hε1 : ε ≤ 1 := (min_le_left _ _).trans (by norm_num)
+  have hεC : ε * C < θ / 3 := by
+    have h1 : ε ≤ θ / (3 * (C + 1)) := min_le_right _ _
+    have h2 : θ / (3 * (C + 1)) * C < θ / 3 := by
+      rw [div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by norm_num)]
+      nlinarith
+    exact (mul_le_mul_of_nonneg_right h1 hC).trans_lt h2
+  obtain ⟨ρ, hρsmooth, hρcs, hρ0, hρ1, hρs⟩ :=
+    Submission.dgcr_stc_exists_normalized_mollifier (m + 1) ε hεpos
+  have hρC1 : ContDiff ℝ 1 ρ := hρsmooth.of_le (by exact_mod_cast le_top)
+  -- Step 3: `u k = 1_{F_k}` is `εC`-close to `v k = ρ * 1_{F_k}` in `L¹(B_R)` for `k ≥ k₀`
+  set u : ℕ → Euclid (m + 1) → ℝ := fun k => (Fs k).indicator (fun _ => (1 : ℝ)) with hu
+  set v : ℕ → Euclid (m + 1) → ℝ :=
+    fun k x => ∫ y, ρ y * (Fs k).indicator (fun _ => (1 : ℝ)) (x - y) with hv
+  have hmoll : ∀ k, k0 ≤ k → ∫ z in ball (0 : Euclid (m + 1)) R, |u k z - v k z| ≤ ε * C :=
+    fun k hk => Submission.codim1_rdo_dg_bvc_mollify_l1_le (m + 1) (Fs k) R C ε ρ (hmeas k) hε1
+      hρsmooth.continuous hρcs hρ0 hρ1 hρs (hk0 k hk)
+  -- Step 4: the `v k` are bounded by `L` and `L`-Lipschitz; a finite sup-norm `δ`-net of the
+  -- `v (k₀ + j)` on `closedBall 0 R`, where `δ L(B_R) < θ/3`
+  obtain ⟨L, hL⟩ := Submission.codim1_rdo_dg_bvc_mollified_lipschitz (m + 1) ρ hρC1 hρcs hρ0 hρ1
+  set V : ℝ := (volume (ball (0 : Euclid (m + 1)) R)).toReal with hV
+  have hV0 : 0 ≤ V := ENNReal.toReal_nonneg
+  set δ : ℝ := θ / (3 * (V + 1)) with hδdef
+  have hδ : 0 < δ := div_pos hθ (by positivity)
+  have hδV : δ * V < θ / 3 := by
+    rw [hδdef, div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  obtain ⟨S', hS'⟩ := Submission.dorag_ha_rb_sup_net (m + 1) (closedBall (0 : Euclid (m + 1)) R)
+      (fun j => v (k0 + j)) L (isCompact_closedBall _ _)
+      (fun j x _ => (hL (Fs (k0 + j)) (hmeas _)).1 x)
+      (fun j x _ y _ => (hL (Fs (k0 + j)) (hmeas _)).2 x y) δ hδ
+  -- measurability, bounds and integrability on `B_R` of everything involved
+  have hu_meas : ∀ k, Measurable (u k) := fun k => measurable_const.indicator (hmeas k)
+  have hu_bd : ∀ k z, |u k z| ≤ 1 := by
+    intro k z
+    simp only [hu, Set.indicator]
+    split_ifs <;> norm_num
+  have hv_cont : ∀ k, Continuous (v k) := by
+    intro k
+    refine (LipschitzWith.of_dist_le_mul (K := L.toNNReal) fun x y => ?_).continuous
+    rw [Real.dist_eq, dist_eq_norm]
+    exact ((hL (Fs k) (hmeas k)).2 x y).trans
+      (mul_le_mul_of_nonneg_right (Real.le_coe_toNNReal L) (norm_nonneg _))
+  have hv_bd : ∀ k z, |v k z| ≤ L := fun k z => (hL (Fs k) (hmeas k)).1 z
+  have hfin : volume (ball (0 : Euclid (m + 1)) R) ≠ ⊤ := measure_ball_lt_top.ne
+  have hint : ∀ f : Euclid (m + 1) → ℝ, Measurable f → ∀ M : ℝ, (∀ z, |f z| ≤ M) →
+      IntegrableOn f (ball (0 : Euclid (m + 1)) R) := by
+    intro f hf M hM
+    exact Measure.integrableOn_of_bounded (M := M) hfin hf.aestronglyMeasurable
+      (Filter.Eventually.of_forall fun z => by simpa [Real.norm_eq_abs] using hM z)
+  -- Step 5: the centres are `0, …, k₀ - 1` and `k₀ + i'`, `i' ∈ S'`
+  refine ⟨Finset.range k0 ∪ S'.image (fun i => k0 + i), fun k => ?_⟩
+  by_cases hk : k < k0
+  · refine ⟨k, Finset.mem_union_left _ (Finset.mem_range.2 hk), ?_⟩
+    simp only [symmDiff_self, Set.bot_eq_empty, Set.empty_inter, measure_empty]
+    exact ENNReal.ofReal_pos.2 hθ
+  have hk : k0 ≤ k := not_lt.1 hk
+  obtain ⟨i', hi'S, hi'⟩ := hS' (k - k0)
+  refine ⟨k0 + i', Finset.mem_union_right _ (Finset.mem_image_of_mem _ hi'S), ?_⟩
+  have hkk : k0 + (k - k0) = k := Nat.add_sub_cancel' hk
+  simp only [hkk] at hi'
+  have hi : k0 ≤ k0 + i' := Nat.le_add_right _ _
+  set i := k0 + i' with hidef
+  -- Step 6: `|u k - u i| ≤ |u k - v k| + |v k - v i| + |u i - v i|`, integrated over `B_R`
+  have htri : ∀ z, |u k z - u i z| ≤ |u k z - v k z| + |v k z - v i z| + |u i z - v i z| := by
+    intro z
+    calc |u k z - u i z| = |(u k z - v k z) + (v k z - v i z) - (u i z - v i z)| := by
+          congr 1; ring
+      _ ≤ |(u k z - v k z) + (v k z - v i z)| + |u i z - v i z| := abs_sub _ _
+      _ ≤ |u k z - v k z| + |v k z - v i z| + |u i z - v i z| := by
+          gcongr; exact abs_add_le _ _
+  have hm1 : Measurable fun z => |u k z - v k z| :=
+    continuous_abs.measurable.comp ((hu_meas k).sub (hv_cont k).measurable)
+  have hm2 : Measurable fun z => |v k z - v i z| :=
+    continuous_abs.measurable.comp ((hv_cont k).measurable.sub (hv_cont i).measurable)
+  have hm3 : Measurable fun z => |u i z - v i z| :=
+    continuous_abs.measurable.comp ((hu_meas i).sub (hv_cont i).measurable)
+  have hb : ∀ a b : ℝ, |a| ≤ 1 → |b| ≤ L → |(|a - b|)| ≤ 1 + L := by
+    intro a b ha hb
+    rw [abs_abs]
+    exact (abs_sub _ _).trans (add_le_add ha hb)
+  have hI1 := hint _ hm1 (1 + L) fun z => hb _ _ (hu_bd k z) (hv_bd k z)
+  have hI2 := hint _ hm2 (L + L) fun z => by
+    rw [abs_abs]
+    exact (abs_sub _ _).trans (add_le_add (hv_bd k z) (hv_bd i z))
+  have hI3 := hint _ hm3 (1 + L) fun z => hb _ _ (hu_bd i z) (hv_bd i z)
+  have h2 : ∫ z in ball (0 : Euclid (m + 1)) R, |v k z - v i z| ≤ δ * V := by
+    calc ∫ z in ball (0 : Euclid (m + 1)) R, |v k z - v i z|
+        ≤ ∫ z in ball (0 : Euclid (m + 1)) R, δ :=
+          setIntegral_mono_on hI2 (integrableOn_const hfin) measurableSet_ball
+            fun z hz => hi' z (ball_subset_closedBall hz)
+      _ = δ * V := by rw [setIntegral_const, smul_eq_mul, mul_comm]; rfl
+  have key : ∫ z in ball (0 : Euclid (m + 1)) R, |u k z - u i z| < θ := by
+    have hI12 : IntegrableOn (fun z => |u k z - v k z| + |v k z - v i z|)
+        (ball (0 : Euclid (m + 1)) R) := hI1.add hI2
+    calc ∫ z in ball (0 : Euclid (m + 1)) R, |u k z - u i z|
+        ≤ ∫ z in ball (0 : Euclid (m + 1)) R,
+            (|u k z - v k z| + |v k z - v i z| + |u i z - v i z|) :=
+          integral_mono_of_nonneg (Filter.Eventually.of_forall fun z => abs_nonneg _)
+            (hI12.add hI3) (Filter.Eventually.of_forall htri)
+      _ = (∫ z in ball (0 : Euclid (m + 1)) R, |u k z - v k z|) +
+            (∫ z in ball (0 : Euclid (m + 1)) R, |v k z - v i z|) +
+            ∫ z in ball (0 : Euclid (m + 1)) R, |u i z - v i z| := by
+          rw [integral_add hI12 hI3, integral_add hI1 hI2]
+      _ ≤ ε * C + δ * V + ε * C := by
+          gcongr
+          · exact hmoll k hk
+          · exact hmoll i hi
+      _ < θ := by linarith
+  -- Step 7: `|u k - u i| = 1_{F_k Δ F_i}`, so the integral is `L((F_k Δ F_i) ∩ B_R)`
+  have hsd : ∀ z, |u k z - u i z| = (symmDiff (Fs k) (Fs i)).indicator (fun _ => (1 : ℝ)) z := by
+    intro z
+    simp only [hu, Set.indicator, Set.mem_symmDiff]
+    by_cases h1 : z ∈ Fs k <;> by_cases h2 : z ∈ Fs i <;> simp [h1, h2, Set.mem_symmDiff]
+  have hA : MeasurableSet (symmDiff (Fs k) (Fs i)) := (hmeas k).symmDiff (hmeas i)
+  have hmeas_eq : volume (symmDiff (Fs k) (Fs i) ∩ ball (0 : Euclid (m + 1)) R)
+      = ENNReal.ofReal (∫ z in ball (0 : Euclid (m + 1)) R, |u k z - u i z|) := by
+    simp_rw [hsd]
+    rw [integral_indicator hA, setIntegral_const, smul_eq_mul, mul_one, Measure.real,
+      Measure.restrict_apply hA, ENNReal.ofReal_toReal]
+    exact (measure_mono Set.inter_subset_right |>.trans_lt measure_ball_lt_top).ne
+  rw [hmeas_eq]
+  exact (ENNReal.ofReal_lt_ofReal_iff hθ).2 key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
