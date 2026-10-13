@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Hausdorff measure on a hyperplane** (Simon Ch. 3, proof of Theorem 4.3 (De Giorgi),
+chapter-03.txt lines 734–746).  For `v ≠ 0` in `ℝ^{m+1}` the hyperplane `P_v = (span{v})ᗮ` has
+dimension `m`, so an orthonormal basis of `P_v` indexed by `Fin m` gives a linear isometry
+`ι : ℝ^m → ℝ^{m+1}` onto `P_v`; in particular `⟨ι x, v⟩ = 0`.  `μHE[m]` is isometry invariant
+(`ι_# μHE[m] = μHE[m]⌞range ι`) and equals Lebesgue measure on `ℝ^m`, hence
+`μHE[m]⌞P_v = ι_# Lᵐ`. -/
+theorem Submission.codim1_rdo_dg_tma_hyperplane_param : ∀ (m : ℕ) (v : Euclid (m + 1)), v ≠ 0 → ∃ ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1), (∀ x, inner ℝ (ι x) v = 0) ∧ (μHE[m] : Measure (Euclid (m + 1))).restrict ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))) = Measure.map ι volume := by
+  intro m v hv
+  set K : Submodule ℝ (Euclid (m + 1)) := (Submodule.span ℝ {v})ᗮ with hKdef
+  -- `dim P_v = m`
+  have : Fact (Module.finrank ℝ (Euclid (m + 1)) = m + 1) := ⟨by simp⟩
+  have hK : Module.finrank ℝ K = m := Submodule.finrank_orthogonal_span_singleton hv
+  -- `ι = (P_v ↪ ℝ^{m+1}) ∘ e`, `e : ℝ^m ≃ P_v` the inverse coordinates of an orthonormal basis
+  let b : OrthonormalBasis (Fin m) ℝ K := (stdOrthonormalBasis ℝ K).reindex (finCongr hK)
+  let e : Euclid m ≃ₗᵢ[ℝ] K := b.repr.symm
+  let ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1) := K.subtypeₗᵢ.comp e.toLinearIsometry
+  have hιK : ∀ x, ι x ∈ K := fun x => (e x).2
+  refine ⟨ι, ?_, ?_⟩
+  · intro x
+    have h := hιK x
+    rw [hKdef, Submodule.mem_orthogonal_singleton_iff_inner_right] at h
+    rw [real_inner_comm]
+    exact h
+  · have hrange : Set.range ι = (K : Set (Euclid (m + 1))) := by
+      ext z
+      constructor
+      · rintro ⟨x, rfl⟩
+        exact hιK x
+      · intro hz
+        refine ⟨e.symm ⟨z, hz⟩, ?_⟩
+        simp [ι]
+    -- `ι_# Lᵐ = ι_# μHE[m] = μHE[m]⌞range ι`
+    rw [← hrange, ← ι.isometry.map_euclideanHausdorffMeasure,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
