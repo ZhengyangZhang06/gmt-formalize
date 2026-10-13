@@ -463,6 +463,35 @@ theorem Submission.ind_pi_ss_restriction_massOn_le : ∀ (P k : ℕ) (U W A : Se
     _ ≤ ENNReal.ofReal (X ω') + ENNReal.ofReal ε := ENNReal.ofReal_add_le
     _ = ENNReal.ofReal (X ω') + ε := by rw [ENNReal.ofReal_coe_nnreal]
     _ ≤ X.massOn W + ε := by gcongr; exact X.le_massOn hω'
+theorem Submission.ind_pi_ss_cycle_slice_boundary : ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (t : ℝ) (S : GeometricCurrentOn U m), IsOpen U → T.boundary = 0 → IsSlice T f t S → ∃ A : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ f x < t} A ∧ A.boundary = S := by
+  intro P m U T f t S hU hT hSl
+  -- Unfold `IsSlice` (4.6): `S = ∂A − B` with `A = T ⌞ Aₜ`, `B = (∂T) ⌞ Aₜ`, where
+  -- `Aₜ = {x ∈ U : f x < t}` and `B ω = ∫_{Aₜ} ⟨ω, v⟩ dμ` for a representation `(μ, v)` of `∂T`.
+  obtain ⟨A, B, hA, ⟨hmeas, μ, v, hrep, hB⟩, hS⟩ := hSl
+  -- `B = 0`, i.e. uniqueness of restrictions for the zero current `∂T`: testing `∂T = 0` with
+  -- `g ω` (`g ∈ C_c^∞(U)`) shows that `⟨ω, v⟩` integrates to zero against every such `g`, so it
+  -- vanishes `μ`-a.e. on `U ⊇ Aₜ`.
+  have hB0 : ∀ ω : TestFormOn U m, B ω = 0 := by
+    intro ω
+    have hae : ∀ᵐ x ∂μ, x ∈ U → v x ((ω : DifferentialForm (Eucl P) m) x) = 0 := by
+      refine hU.ae_eq_zero_of_integral_contDiff_smul_eq_zero
+        ((hrep ω).1.locallyIntegrable.locallyIntegrableOn U) (fun g hg hgc hgU => ?_)
+      let gω : TestFormOn U m := ⟨fun x => g x • (ω : DifferentialForm (Eucl P) m) x,
+        ⟨hg.smul ω.property.1.1, hgc.smul_right⟩,
+        (tsupport_smul_subset_left _ _).trans hgU⟩
+      calc ∫ x, g x • v x ((ω : DifferentialForm (Eucl P) m) x) ∂μ
+          = ∫ x, v x ((gω : DifferentialForm (Eucl P) m) x) ∂μ := by
+            congr 1
+            funext x
+            exact (map_smul (v x) (g x) _).symm
+        _ = T.boundary gω := ((hrep gω).2).symm
+        _ = 0 := by rw [hT, GeometricCurrentOn.zero_apply]
+    rw [hB ω]
+    exact integral_eq_zero_of_ae
+      ((ae_restrict_iff' hmeas).2 (hae.mono fun x hx hxA => hx hxA.1))
+  -- Hence `S = ∂A − 0 = ∂A`, with `A` the restriction of `T` to `Aₜ`.
+  refine ⟨A, hA, GeometricCurrentOn.ext fun ω => ?_⟩
+  rw [hS ω, hB0 ω, sub_zero]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
