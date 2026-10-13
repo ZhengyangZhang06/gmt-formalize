@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1.testform_cutoff-a1",
+  "parent_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+  "depth": 3,
+  "title": "Smooth cutoff of a test form between two disjoint closed sets",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, and let ω ∈ D^k(U) = TestFormOn U k (a C^∞ k-form on ℝ^P with compact support and tsupport ω ⊆ U). Let C₀, C₁ ⊆ ℝ^P be disjoint closed sets. Then there is ω′ ∈ D^k(U) such that:\n(i) ω′(x) = 0 for all x in some open set N₀ ⊇ C₀;\n(ii) ω′(x) = ω(x) for all x in some open set N₁ ⊇ C₁;\n(iii) tsupport ω′ ⊆ tsupport ω;\n(iv) |ω(x) − ω′(x)| ≤ |ω(x)| for every x ∈ ℝ^P.\nHere |α| = covectorEuclideanNorm α is the Euclidean norm of the coefficients α(e_I), I strictly increasing.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U k) (C₀ C₁ : Set (Eucl P)), IsClosed C₀ → IsClosed C₁ → Disjoint C₀ C₁ → ∃ ω' : TestFormOn U k, (∃ N₀ : Set (Eucl P), IsOpen N₀ ∧ C₀ ⊆ N₀ ∧ ∀ x ∈ N₀, (ω' : DifferentialForm (Eucl P) k) x = 0) ∧ (∃ N₁ : Set (Eucl P), IsOpen N₁ ∧ C₁ ⊆ N₁ ∧ ∀ x ∈ N₁, (ω' : DifferentialForm (Eucl P) k) x = (ω : DifferentialForm (Eucl P) k) x) ∧ tsupport (ω' : DifferentialForm (Eucl P) k) ⊆ tsupport (ω : DifferentialForm (Eucl P) k) ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x - (ω' : DifferentialForm (Eucl P) k) x) ≤ covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x)",
+  "lean_name": "iwl_rl_testForm_smooth_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-restriction-limit-a1-testform-cutoff-a1-a1"
+}
