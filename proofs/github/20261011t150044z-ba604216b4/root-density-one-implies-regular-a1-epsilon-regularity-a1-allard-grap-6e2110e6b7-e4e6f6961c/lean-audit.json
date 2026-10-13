@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a2c23a777ed4a3c38cc2bfbe8ac6be64bfd46cc3af9346725d752c0ef8c21587",
+  "git_delta": {
+    "base_commit": "7263609440f11e9a4fb6f5344a2a16ec08e2050e",
+    "candidate_commit": "422e346ed7d2fe5411cb5400351e6936cc4d69fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doraggt_ae_approxTangent_transfer",
+    "diff_sha256": "76bb271a82a899b1de80fe6b5c0abc6cdb964c6ae838d5358a95a4e4a6689c55",
+    "source_sha256": "fa774b4de399874ad83777850ea32550e8aba7e29cf165b424079a7f7d12a45e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doraggt_ae_approxTangent_transfer",
+      "statement": "∀ (P n : ℕ) (W A B : Set (Euclid P)), IsOpen W → MeasurableSet A → MeasurableSet B → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[n] (A ∩ K) ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ W → x ∈ A → x ∈ B → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
