@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "33f701225d8c7270f2519e3ab6e520c3a1fb58c39f429fcffdbfb9632eb6fd52",
+  "git_delta": {
+    "base_commit": "a84d08fbcda39b13a14cb93ba30adf94e682ffe5",
+    "candidate_commit": "14ad28770cb6493c9c7a8d14f4835e52dd6bc1eb",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "a392891fd0fbe1916e6107e245d9831fe087b5954dd72909a7225075f2a6c68f",
+    "source_sha256": "cdbefd3dca135bebf27e906a85cb5ce78d29187eeb99f567364e5ce24e12fa03",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_bf_projection_null_ae",
+      "statement": "∀ (N m : ℕ) (E : Set (Eucl N)), MeasurableSet E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) E → ∀ᵐ v ∂(volume : Measure (Fin (m + 1) → Eucl N)), (volume : Measure (Eucl (m + 1))) ((fun x : Eucl N => (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1))) '' E) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
