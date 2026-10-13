@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.ae_excess-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "depth": 5,
+  "title": "Localized Besicovitch density: the excess B ∖ A is relatively small at H^n⌞A-a.e. point",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let A ⊆ B ⊆ U be Borel sets with H^n(B ∩ K) < ∞ for every compact K ⊆ U, where H^n := μHE[n]. Then for H^n⌞A-almost every x (∀ᵐ x ∂(μHE[n].restrict A)) the following holds for every extended nonnegative real ε ∈ (0, ∞]: there is ρ_ε > 0 such that H^n((B ∖ A) ∩ B̄_ρ(x)) ≤ ε · H^n(B ∩ B̄_ρ(x)) for all ρ ∈ (0, ρ_ε). Equivalently, the inequality holds eventually in the filter 𝓝[>] 0. Products are taken in [0, ∞] with 0 · ∞ = 0. The exceptional H^n⌞A-null set does not depend on ε.",
+  "lean_statement": "∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)",
+  "lean_name": "ptd_tl_ae_excess_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e62885d8ed-a1"
+}
