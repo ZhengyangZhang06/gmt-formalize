@@ -2492,6 +2492,142 @@ theorem Submission.deformation_ipl_cc_chart_orientation_sign : ∀ (P k : ℕ) (
       simp only [smul_apply, neg_apply, smul_eq_mul]
       rw [← hcoef]; ring
 
+/-- Chart representation of push-forward integrals (steps (6a)–(6d) of the chart convergence in
+the C¹ push-forward limit behind the proof of Simon Ch. 6, 5.1): let `Φ` be C¹, Lipschitz and
+`c`-antilipschitz (`c > 0`) on the open `Ω ⊆ ℝᵏ`, and let `G ⊆ M ∩ Φ(Ω)` be `Hᵏ`-null-measurable
+with `θ ∈ L¹(Hᵏ ⌞ G)`.  With `D = Ω ∩ Φ⁻¹(G)` and the chart orientation sign `σ = ±1`, the weight
+`ψ = 1_D (θ ∘ Φ) σ` is in `L¹(Ω)` (as `JΦ ≥ cᵏ` and `∫_D (θ ∘ Φ) JΦ = ∫_G θ`), and
+`∫_G θ ⟨α(f), A_# ξ⟩ dHᵏ = ∫_Ω ψ ⟨α(f(Φ)), ∂₀(f ∘ Φ) ∧ ⋯ ∧ ∂ₖ₋₁(f ∘ Φ)⟩ dLᵏ` whenever
+`D(f ∘ Φ)(w) = A(Φ w) ∘ DΦ(w)` a.e. on `D` and the left integrand is integrable: by the signed
+change of variables, `JΦ(w) ξ(Φ w) = σ(w) ∂₀Φ(w) ∧ ⋯ ∧ ∂ₖ₋₁Φ(w)` and `A(Φ w) ∂_bΦ = ∂_b(f ∘ Φ)`. -/
+theorem Submission.deformation_ipl_cc_chart_integral_representation : ∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (G : Set (Eucl P)), IsOpen U → IsRectifiableTriple U k M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → G ⊆ M → G ⊆ Φ '' Ω → NullMeasurableSet G (μHE[k] : Measure (Eucl P)) → IntegrableOn θ G (μHE[k] : Measure (Eucl P)) → ∃ ψ : Eucl k → ℝ, IntegrableOn ψ Ω (volume : Measure (Eucl k)) ∧ ∀ (f : Eucl P → Eucl Q) (A : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (α : Eucl Q → Covector (Eucl Q) k), (∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' G)), HasFDerivAt (f ∘ Φ) ((A (Φ w)).comp (fderiv ℝ Φ w)) w) → IntegrableOn (fun x => θ x * nVectorPushforward k (A x) (ξ x) (α (f x))) G (μHE[k] : Measure (Eucl P)) → ∫ x in G, θ x * nVectorPushforward k (A x) (ξ x) (α (f x)) ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω, ψ w * α (f (Φ w)) (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k)) := by
+  intro P Q k U M θ ξ Φ Ω G hU hT hΩ hΦC1 hΦLip hΦanti hGM hGΦ hGm hθG
+  obtain ⟨c, hc, hcanti⟩ := hΦanti
+  set J : Eucl k → ℝ := fun w => Real.sqrt (Matrix.of fun i j => inner ℝ
+    (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det
+    with hJdef
+  set D : Set (Eucl k) := Ω ∩ Φ ⁻¹' G with hDdef
+  have hDΩ : D ⊆ Ω := inter_subset_left
+  have hDM : D ⊆ Ω ∩ Φ ⁻¹' M := fun w hw => ⟨hw.1, hGM hw.2⟩
+  -- (6a) `c ‖s‖ ≤ ‖DΦ(w) s‖` on `Ω`, hence `cᵏ ≤ JΦ(w)` by the Gram determinant bound.
+  have hJlow : ∀ w ∈ Ω, c ^ k ≤ J w := fun w hw =>
+    Submission.deformation_ipl_cc_gram_det_lower_bound P k (fderiv ℝ Φ w) c hc.le
+      (Submission.lpf_wtc_cat_fderiv_lower_bound P k Φ Ω c w hΩ hw
+        ((hΦC1.differentiable one_ne_zero) w) hcanti)
+  -- (6c) The orientation sign `σ = ±1` with `JΦ ξ(Φ) = σ ∂₀Φ ∧ ⋯ ∧ ∂ₖ₋₁Φ`, restricted to `D`.
+  obtain ⟨σ, hσm, hσ⟩ := Submission.deformation_ipl_cc_chart_orientation_sign P k U M θ ξ Φ Ω
+    hU hT hΩ hΦC1 ⟨c, hc, hcanti⟩
+  have hσD : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict D), (σ w = 1 ∨ σ w = -1) ∧
+      J w • ξ (Φ w) = σ w • simpleNVector (fun b => fderiv ℝ Φ w (EuclideanSpace.single b 1)) :=
+    ae_restrict_of_ae_restrict_of_subset hDM hσ
+  -- (6b) Change of variables for `θ`: `D` is null-measurable, `θ ∘ Φ` is a.e.-measurable on `D`
+  -- and `∫_G θ dHᵏ = ∫_D (θ ∘ Φ) JΦ dLᵏ` (in `ℝ≥0∞`).
+  have hθae : AEMeasurable (fun x => ENNReal.ofReal (θ x))
+      ((μHE[k] : Measure (Eucl P)).restrict G) := hθG.aemeasurable.ennreal_ofReal
+  obtain ⟨hDm, hθΦm, hθCoV⟩ := Submission.lpf_raf_chart_change_of_variables P k Φ Ω G
+    (fun x => ENNReal.ofReal (θ x)) hΩ hΦLip ⟨c, hc, hcanti⟩ hGΦ hGm hθae
+  have hmemD : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict D), w ∈ D := ae_restrict_mem₀ hDm
+  have hθΦpos : ∀ w ∈ D, 0 < θ (Φ w) := fun w hw => hT.pos _ (hGM hw.2)
+  have hθΦae : AEMeasurable (fun w => θ (Φ w)) ((volume : Measure (Eucl k)).restrict D) := by
+    refine hθΦm.ennreal_toReal.congr ?_
+    filter_upwards [hmemD] with w hw
+    exact ENNReal.toReal_ofReal (hθΦpos w hw).le
+  have hσDm : AEStronglyMeasurable σ ((volume : Measure (Eucl k)).restrict D) :=
+    hσm.mono_measure (Measure.restrict_mono hDM le_rfl)
+  have hDmΩ : NullMeasurableSet D ((volume : Measure (Eucl k)).restrict Ω) :=
+    hDm.mono_ac Measure.restrict_le_self.absolutelyContinuous
+  have hrestrDΩ : ((volume : Measure (Eucl k)).restrict Ω).restrict D =
+      (volume : Measure (Eucl k)).restrict D := by
+    rw [Measure.restrict_restrict₀ hDmΩ, inter_eq_left.mpr hDΩ]
+  -- The weight `ψ = 1_D F₁`, `F₁ = (θ ∘ Φ) σ`, is a.e.-strongly measurable on `Ω`.
+  set F₁ : Eucl k → ℝ := fun w => θ (Φ w) * σ w with hF₁
+  set ψ : Eucl k → ℝ := D.indicator F₁ with hψdef
+  have hF₁m : AEStronglyMeasurable F₁ ((volume : Measure (Eucl k)).restrict D) :=
+    hθΦae.aestronglyMeasurable.mul hσDm
+  have hψm : AEStronglyMeasurable ψ ((volume : Measure (Eucl k)).restrict Ω) := by
+    rw [hψdef, aestronglyMeasurable_indicator_iff₀ hDmΩ, hrestrDΩ]
+    exact hF₁m
+  have hck : 0 < c ^ k := pow_pos hc k
+  have hck0 : ENNReal.ofReal (c ^ k) ≠ 0 := by simpa using hck
+  refine ⟨ψ, ?_, ?_⟩
+  · -- (6d) `∫_Ω |ψ| = ∫_D θ ∘ Φ ≤ c⁻ᵏ ∫_D (θ ∘ Φ) JΦ = c⁻ᵏ ∫_G θ < ∞`.
+    refine ⟨hψm, ?_⟩
+    rw [HasFiniteIntegral]
+    have h1 : ∫⁻ w in Ω, ‖ψ w‖ₑ = ∫⁻ w in D, ‖F₁ w‖ₑ := by
+      have : (fun w => ‖ψ w‖ₑ) = D.indicator (fun w => ‖F₁ w‖ₑ) := by
+        funext w
+        by_cases hw : w ∈ D
+        · simp [hψdef, hw]
+        · simp [hψdef, hw]
+      rw [this, lintegral_indicator₀ hDmΩ, hrestrDΩ]
+    rw [h1]
+    have h2 : ∫⁻ w in D, ‖F₁ w‖ₑ ≤ ∫⁻ w in D,
+        (ENNReal.ofReal (c ^ k))⁻¹ * (ENNReal.ofReal (θ (Φ w)) * ENNReal.ofReal (J w)) := by
+      refine lintegral_mono_ae ?_
+      filter_upwards [hσD, hmemD] with w hw hwD
+      have hθp := hθΦpos w hwD
+      have hσ1 : |σ w| = 1 := by rcases hw.1 with h | h <;> simp [h]
+      have hle : c ^ k ≤ J w := hJlow w hwD.1
+      calc ‖F₁ w‖ₑ = ENNReal.ofReal (θ (Φ w)) := by
+            rw [hF₁, Real.enorm_eq_ofReal_abs, abs_mul, hσ1, abs_of_pos hθp, mul_one]
+        _ = (ENNReal.ofReal (c ^ k))⁻¹ * (ENNReal.ofReal (θ (Φ w)) * ENNReal.ofReal (c ^ k)) := by
+            rw [mul_comm (ENNReal.ofReal (θ (Φ w))), ← mul_assoc,
+              ENNReal.inv_mul_cancel hck0 ENNReal.ofReal_ne_top, one_mul]
+        _ ≤ (ENNReal.ofReal (c ^ k))⁻¹ * (ENNReal.ofReal (θ (Φ w)) * ENNReal.ofReal (J w)) := by
+            gcongr
+    refine lt_of_le_of_lt h2 ?_
+    rw [lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr hck0), ← hθCoV]
+    refine ENNReal.mul_lt_top (ENNReal.inv_lt_top.mpr (by simpa using hck)) ?_
+    refine lt_of_le_of_lt ?_ hθG.2
+    refine lintegral_mono fun x => ?_
+    rw [Real.enorm_eq_ofReal_abs]
+    exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+  · -- (7) `∫_G h dHᵏ = ∫_D h(Φ) JΦ dLᵏ` by the signed change of variables, and pointwise on `D`
+    -- `h(Φ w) JΦ(w) = F₁(w) α(f(Φ w))(∂(f ∘ Φ)(w))`.
+    intro f A α hfd hint
+    obtain ⟨-, hcov⟩ := Submission.deformation_ipl_cc_signed_change_of_variables P k Φ Ω G
+      (fun x => θ x * nVectorPushforward k (A x) (ξ x) (α (f x)))
+      hΩ hΦLip ⟨c, hc, hcanti⟩ hGΦ hGm hint
+    rw [hcov]
+    have hR : ∫ w in Ω, ψ w * α (f (Φ w))
+          (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) =
+        ∫ w in D, F₁ w * α (f (Φ w))
+          (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) := by
+      have : (fun w => ψ w * α (f (Φ w))
+            (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1))) =
+          D.indicator (fun w => F₁ w * α (f (Φ w))
+            (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1))) := by
+        funext w
+        by_cases hw : w ∈ D
+        · simp [hψdef, hw]
+        · simp [hψdef, hw]
+      rw [this, integral_indicator₀ hDmΩ, hrestrDΩ]
+    rw [hR]
+    refine setIntegral_congr_ae₀ hDm ?_
+    have hgood := (ae_restrict_iff'₀ hDm).mp (hσD.and hfd)
+    filter_upwards [hgood] with w hw hwD
+    obtain ⟨⟨-, hJξ⟩, hder⟩ := hw hwD
+    set v : Fin k → Eucl P := fun b => fderiv ℝ Φ w (EuclideanSpace.single b 1) with hv
+    set β : Covector (Eucl P) k := covectorPullback k (A (Φ w)) (α (f (Φ w))) with hβ
+    -- Evaluate `JΦ ξ(Φ w) = σ v₀ ∧ ⋯ ∧ vₖ₋₁` at `β = A(Φ w)^# α(f(Φ w))`.
+    have key : ξ (Φ w) β * J w = σ w * β v := by
+      have := congrArg (fun T : NVector (Eucl P) k => T β) hJξ
+      simp only [smul_apply, smul_eq_mul, simpleNVector_apply] at this
+      linarith [this]
+    -- The chain rule: `∂_b(f ∘ Φ)(w) = A(Φ w) v_b`.
+    have hfv : (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) =
+        (A (Φ w)) ∘ v := by
+      funext b
+      rw [hder.fderiv]
+      rfl
+    have hβv : β v = α (f (Φ w)) ((A (Φ w)) ∘ v) := by
+      rw [hβ, covectorPullback_apply]
+    show θ (Φ w) * nVectorPushforward k (A (Φ w)) (ξ (Φ w)) (α (f (Φ w))) * J w =
+      F₁ w * α (f (Φ w)) (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1))
+    have hpush : nVectorPushforward k (A (Φ w)) (ξ (Φ w)) (α (f (Φ w))) = ξ (Φ w) β := rfl
+    rw [hpush, mul_assoc, key, hβv, hfv, hF₁]
+    ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
