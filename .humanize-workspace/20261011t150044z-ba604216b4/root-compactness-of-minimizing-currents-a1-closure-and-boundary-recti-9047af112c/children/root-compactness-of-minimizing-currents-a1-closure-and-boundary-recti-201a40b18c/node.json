@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.left_slope-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1",
+  "depth": 5,
+  "title": "Left difference quotients in [0, ∞] at a point of differentiability",
+  "statement": "Let F : ℝ → ℝ be differentiable at t ∈ ℝ. Then liminf_{h→0⁺} ENNReal.ofReal(h⁻¹) · ENNReal.ofReal(F(t) − F(t − h)) ≤ ENNReal.ofReal(F′(t)), with the liminf taken along the filter 𝓝[>] 0.",
+  "lean_statement": "∀ (F : ℝ → ℝ) (t : ℝ), DifferentiableAt ℝ F t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h))) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv F t)",
+  "lean_name": "cbr_smm_liminf_left_slope_le_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c-a1"
+}
