@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e3da2ea2cec2c6b3200a8267a564b78532bec90784edb32f9086e9ecccbb5b4f",
+  "git_delta": {
+    "base_commit": "757abef181b2f721d6d865e26196169cfc828380",
+    "candidate_commit": "b8f07e521719eb4e5a56fbe62f52d72d6824faa9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_tcd_cone_cutoff_exists",
+    "diff_sha256": "371b4c0664b0497d904d79282fc281d5b371290c0d974d94f3618d2bfc079e4d",
+    "source_sha256": "9157b99f22507e56989bee1eb7d3c56f830e3c2115cbbd81e9357c7570c8216d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_tcd_cone_cutoff_exists",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ, (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y : Euclid P, 2 * ‖Q.starProjection y‖ < ‖y‖ → ‖y‖ < 1 → f y = 1) ∧ ∀ y ∈ Q, δ < ‖y‖ → f y = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
