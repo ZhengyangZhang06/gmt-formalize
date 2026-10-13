@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "addHaar_smul|NullMeasurableSet.const_smul|tendsto_of_subseq_tendsto|trace_smulRight|integral_indicator₀|norm_integral_le_of_norm_le|HasCompactSupport.fderiv_apply|measure_symmDiff_le",
+        "deGiorgiHS_|blowUpMap.*volume|volume.*blowUpMap|L1loc.*transfer",
+        "Tendsto.sub|continuousAt_sub",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bhs-independent-audit-20261012/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-blowup-halfspace-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-blowup-halfspace-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/BHS_Proof_blowup_image_volume.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/BHS_Proof_l1loc_transfer.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/BHS_Proof_blowup_perimeter_bound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/BHS_Proof_blowup_flatness.lean",
+        "/tmp/bhs-independent-audit-20261012/Assembly.lean"
+      ],
+      "conclusion": "Verified pinned revisions and unchanged Contract/Submission sources. The snapshot supplies Haar scaling, null-measurable dilation, indicator-integral and domination lemmas, derivative-support facts, and the subsequence criterion; searches found no equivalent child declarations. All four comparator-generated challenges and standalone proofs compile independently. Child proofs use only propext, Classical.choice and Quot.sound. The unchanged proposed assembly compiles using exactly the four child interfaces and four frozen sibling interfaces; Euclidean measure, norm and inner-product checks pass. The split is appropriate and proves the selected parent. All names are fresh bare identifiers, all types are independently usable propositions, and dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_image_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches both clauses and their parameter ranges. Translation and dilation establish null-measurability and arbitrary-set volume scaling, including the zero-radius and zero-dimensional cases. Injectivity and the ball-image calculation prove both identities for every real R. The proof is complete and non-circular."
+    },
+    {
+      "key": "l1loc_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes all stated hypotheses. Indicator-integral identities and finite compact-support domination prove integral convergence. Outer-measure inclusions and the ENNReal squeeze argument prove both volume limits without assuming B measurable. The continuous compactly supported case suffices for the parent's directional derivatives."
+    },
+    {
+      "key": "blowup_perimeter_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the abstract mass and identity hypotheses. Localization, a.e. norm domination and the totalized Bochner-integral bound establish the conclusion without an unstated measurability assumption on ν. The max(C, 0) argument correctly handles negative C. This independently supplies the compactness bound."
+    },
+    {
+      "key": "blowup_flatness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the rank-one divergence identity, local integrability, horizontal estimate and correctly signed normal estimate. Scaling the right-neighborhood filter gives precisely the horizontal limit and eventual δ-bound stated in Lean. Every required hypothesis is explicit; the proof is complete and invokes neither itself nor the parent theorem."
+    }
+  ],
+  "required_changes": []
+}
