@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure RectifiableVarifold|def (weight|support|tangentProj|HasDensity|AllardHypotheses|LipschitzApproximationLemma|AffineApproximationLemma|scaledLpNorm|HasGeneralizedMeanCurvature|graphPoint|graphOver|hsNormSq)|abbrev (Amb|Rn)|CountablyRectifiable|Countably.*Rectif",
+        "CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|simon_theorem_3_6|ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular|exists_contDiff_one_extension_of_whitney|HasWhitneyC1Compatibility",
+        "def C1Approximation|def WhitneyExtension|def Rademacher|sorry",
+        "lip_approx_",
+        "IsUnit|Matrix|sorry|axiom|lip_approx_",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/lipapprox-independent-audit-sxbj3nx9 /tmp/lipapprox-independent-audit-sxbj3nx9/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/lipapprox-independent-audit-sxbj3nx9 /tmp/lipapprox-independent-audit-sxbj3nx9/C1A.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/lipapprox-independent-audit-sxbj3nx9 /tmp/lipapprox-independent-audit-sxbj3nx9/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1/decomposition-v2.json",
+        "/tmp/lipapprox-independent-audit-sxbj3nx9/Types.lean",
+        "/tmp/lipapprox-independent-audit-sxbj3nx9/C1A.lean",
+        "/tmp/lipapprox-independent-audit-sxbj3nx9/Axioms.lean"
+      ],
+      "conclusion": "Independently confirmed project revision ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and pinned SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. Workspace Submission and the dependency manifest match the snapshot. The contract stores primitive rectifiability, not a.e. tangent existence; Chapter02's sorry-backed main theorem is not reused. Independently rebuilt the verbatim Whitney module and supplied C1A proof; both C1 approximation theorems compile and use only propext, Classical.choice and Quot.sound. Axiom checks for the cited Whitney, Lusin, density, area, uniqueness, Rademacher, Egorov, Vitali and extension ingredients likewise passed. All eleven frozen one-line propositions elaborate independently without declaring any child. No Matrix/IsUnit construction occurs. Name searches found no reservations in the snapshot project, current DAG records, or other decomposition branches. All names are bare identifiers; dependency edges are acyclic, and the affine predecessor does not depend on this selected node. The split is appropriate: the supplied assembly establishes exactly LipschitzApproximationLemma, including constants independent of K, from these genuine analytic obligations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all four coordinate identities. Coordinatewise subtraction, the Euclidean norm sum, coordinate reconstruction and the orthogonal decomposition prove them, including zero-dimensional cases."
+    },
+    {
+      "key": "tangent_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The revised proof supplies the missing C1 approximation argument: measurable remainders, finite-shell Egorov/Lusin estimates, closed locally finite gluing, all Whitney compatibility conditions, and componentwise exceptional-measure control. Parts B–H then establish weighted tangents, uniqueness, the ENNReal density limit, a measurable projection representative and compact-set integrability. The supplied C1 proof independently compiled with permitted axioms."
+    },
+    {
+      "key": "monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Radial first variation, the corrected kappa coefficient and integrating factor give the stated inequalities. The cutoff limits correctly retain closed balls and the specified annulus. Approximation by density points supplies the support-point lower bound; local finiteness justifies Measure.real throughout."
+    },
+    {
+      "key": "pinched_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity selects a uniform positive delta_P. The enclosing radius exceeds rho/2, so monotonicity and the Allard mass bound give the upper estimate, while the support-point inequality gives the lower estimate. The ENNReal formulation matches these finite-mass bounds."
+    },
+    {
+      "key": "vitali_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The checked covering theorem provides disjoint closed balls with fivefold coverage. Separability makes the selected family countable; subadditivity and disjoint additivity prove the exact bound without requiring S or W measurable, including M equal to infinity."
+    },
+    {
+      "key": "bounded_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Componentwise McShane extension gives precisely the sqrt(l) loss. The supplied variational calculation proves radial retraction is nonexpansive, preserving prescribed values and the exact radius bound. Empty domains and radius zero are covered."
+    },
+    {
+      "key": "graph_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate identities give a sqrt(2)-Lipschitz graph parametrization. The normalized Hausdorff image inequality and Euclidean closed-ball volume yield exactly 2^(n/2) omega_n r^n, also when r is zero."
+    },
+    {
+      "key": "good_set_complement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof removes the support complement using its nullity, chooses violating half-radius balls contained in B_sigma, and applies the pinched upper bound and Vitali estimate to the tilt measure. The constants and threshold b match the type; measurability of the good set is unnecessary."
+    },
+    {
+      "key": "good_set_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "AffineApproximationLemma is an explicit hypothesis, discharged by the parent's declared predecessor. Integrated projection comparisons establish the height bound and short-pair estimate; the height bound handles long pairs. The proof establishes the stronger stated conclusion requiring only y1 to be good, with constants independent of beta and L."
+    },
+    {
+      "key": "hole_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The nearest point of the weight support lies inside U and realizes the required distance. Monotonicity across B_3s minus B_s, pinched mass bounds and the cone estimate give the claimed inequality after the explicitly quantified absorption. Closedness and local finiteness justify the measure splitting and ENNReal conversion."
+    },
+    {
+      "key": "graph_hole_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The full graph is closed and satisfies the required cone condition. The path argument reaches far holes while preserving the spatial bounds; near holes satisfy the Vitali estimate with disjoint 3s balls and 15s enlargements. The chosen 16^n constant covers both cases and gives exactly the stated graph-defect estimate used in the parent assembly."
+    }
+  ],
+  "required_changes": []
+}
