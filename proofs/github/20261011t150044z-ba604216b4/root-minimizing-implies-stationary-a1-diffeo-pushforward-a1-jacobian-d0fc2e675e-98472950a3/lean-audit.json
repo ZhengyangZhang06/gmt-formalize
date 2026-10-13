@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "75299aade755ca95c0376a87cd3069db0ee32832982cf707939e4d5f578700f5",
+  "git_delta": {
+    "base_commit": "0f4c3673bf6591b2353604b6821868e50badb377",
+    "candidate_commit": "ee75447541c236d922c9b4d0200f2dedc187a824",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c8b012f76f961591ebf2713eccc4fc08fbdf3e9bb7937c684a3a80bc1f85e4ee",
+    "source_sha256": "3469dc720f861d506875943ce8bca4222c53ef5857c17d5b99922b33d5f73c77",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_aestronglyMeasurable_gramJacobian",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable (fun x => (Q x).starProjection) μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (L x (stdOrthonormalBasis ℝ (Q x) i)) (L x (stdOrthonormalBasis ℝ (Q x) j))))) μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
