@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.wedge_vanishes-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "depth": 3,
+  "title": "Radial tangency gives x ∧ C⃗ = 0 a.e. (Simon 7.3.1 proof)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and R = (M, θ, ξ) ∈ IMRep(U, n) such that p_x(x) = x for R.measure-a.e. x, where p_x is the orthogonal projection onto approxTangentPlane n M x. Then for R.measure-a.e. x and every (n+1)-covector β on ℝ^P, ξ(x)(ι_xβ) = 0. Here ι_xβ = ContinuousAlternatingMap.curryLeft β x is the n-covector (v₁,…,vₙ) ↦ β(x, v₁, …, vₙ). This is Simon's 'x ∧ C⃗ = 0 μ_C-a.e.'.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → ∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0",
+  "lean_name": "dtc_cone_wedge_vanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-wedge-vanishes-a1-a1"
+}

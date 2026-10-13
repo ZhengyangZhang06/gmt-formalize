@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2661f3a51a70004f3a2cb3043a00fc2d7d32cdedf40d6b59f86caa0e17d79fac",
+  "git_delta": {
+    "base_commit": "e7287e4abfeefc14d94ace37b23e5141b2ac5e43",
+    "candidate_commit": "47d40434110ec18e63e3f56e10d5517a2aa7c2a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "285eb363931540dbbd7f3023195bf6bcfff39ceceeac11e0bb91bf7acb432124",
+    "source_sha256": "9e1eba65be959ffede8852599567945fa48dda06f7a9e22d3fee70680fdae0de",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cone_of_constant_density",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (θ : ℝ), 0 < n → IsIntegerMultiplicity C → BoundaryVanishes C → (∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → R.IsStationaryAlong univ) → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ) → IsConeCurrent C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
