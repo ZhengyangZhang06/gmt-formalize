@@ -1860,6 +1860,63 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Cauchy subsequence for the flat distance** (Simon Ch. 6, proof of 7.2, chapter-06.txt
+lines 2100–2114: "apply (1) with `ε = 1, 1/2, 1/4` etc. to extract a subsequence `{T_{j_r}}` …
+`d(T_{j_{r+1}}, T_{j_r}) < 2^{-r}`", so `T_{j_{r+1}} − T_{j_r} = ∂R_r + S_r`).  If for every
+`ε > 0` some finite `𝒬` has, for each `j`, a `Q ∈ 𝒬` and integer multiplicity `R, S` with
+`X_j − Q = ∂R + S` and `M(R) + M(S) < ε`, then some subsequence has
+`X_{θ(r+1)} − X_{θ(r)} = ∂R_r + S_r` with `R_r, S_r` integer multiplicity and
+`M(R_r) + M(S_r) ≤ 2^{-r}`.  For `ε_r = 2^{-r-1}`, every infinite `I ⊆ ℕ` has an infinite fibre
+`J` of `j ↦ Q_r(j)` (pigeonhole); for `j, l ∈ J` the differences `R_r(j) − R_r(l)`,
+`S_r(j) − S_r(l)` are integer multiplicity with `M(R_r(j) − R_r(l)) + M(S_r(j) − S_r(l)) < 2ε_r`,
+so the diagonal extraction applies. -/
+theorem Submission.dor_lmb_fc_cauchy_subseq : ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X j ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε) → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ r, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X (θ (r + 1)) ω - X (θ r) ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+  intro P m U X hU hnet
+  -- Step 1: for `ε_r = 2^{-r-1}`, the finite nets `𝒬_r` and decompositions
+  -- `X_j − Q_r(j) = ∂R_r(j) + S_r(j)` with `M(R_r(j)) + M(S_r(j)) < ε_r`
+  have hε : ∀ r : ℕ, (0 : ℝ≥0∞) < (2⁻¹ : ℝ≥0∞) ^ (r + 1) := fun r =>
+    ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) _
+  choose Qs hQs Q hQ R S hR hS hXQ hRS using fun r => hnet _ (hε r)
+  -- Step 2: diagonal extraction for `C r j l`: `X_j − X_l = ∂R + S`, `M(R) + M(S) ≤ 2^{-r}`
+  refine Submission.cmc_fc_cs_diagonal_subseq (fun r j l =>
+    ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)),
+      IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+      (∀ ω : TestFormOn U (m + 1), X j ω - X l ω = R.boundary ω + S ω) ∧
+      R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) fun r I hI => ?_
+  -- Step 3: pigeonhole: `j ↦ Q_r(j)` takes values in the finite `𝒬_r`, so some fibre
+  -- `I ∩ Q_r⁻¹(q)` is infinite
+  obtain ⟨q, -, hq⟩ : ∃ q ∈ Qs r, (I ∩ {j | Q r j = q}).Infinite := by
+    by_contra h
+    have hfin : (⋃ q ∈ Qs r, I ∩ {j | Q r j = q}).Finite :=
+      (hQs r).biUnion fun q hq => by
+        by_contra hinf
+        exact h ⟨q, hq, hinf⟩
+    exact hI (hfin.subset fun j hj => mem_biUnion (hQ r j) ⟨hj, rfl⟩)
+  refine ⟨I ∩ {j | Q r j = q}, inter_subset_left, hq, fun j hj l hl => ?_⟩
+  -- Step 4: subtract the two decompositions with the same `q`; the differences are integer
+  -- multiplicity and `M(R_r(j) − R_r(l)) + M(S_r(j) − S_r(l)) < 2ε_r = 2^{-r}`
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1
+  refine ⟨R r j - R r l, S r j - S r l, hsub P _ U _ _ hU (hR r j) (hR r l),
+    hsub P _ U _ _ hU (hS r j) (hS r l), fun ω => ?_, ?_⟩
+  · have hj' : Q r j = q := hj.2
+    have hl' : Q r l = q := hl.2
+    have h1 := hXQ r j ω
+    have h2 := hXQ r l ω
+    rw [hj'] at h1
+    rw [hl'] at h2
+    change X j ω - X l ω = ((R r j).boundary ω - (R r l).boundary ω) + (S r j ω - S r l ω)
+    linarith
+  · calc (R r j - R r l).mass + (S r j - S r l).mass
+        ≤ ((R r j).mass + (R r l).mass) + ((S r j).mass + (S r l).mass) :=
+          add_le_add (Submission.cmc_fc_cs_massOn_sub_le P (m + 2) U U (R r j) (R r l))
+            (Submission.cmc_fc_cs_massOn_sub_le P (m + 1) U U (S r j) (S r l))
+      _ = ((R r j).mass + (S r j).mass) + ((R r l).mass + (S r l).mass) :=
+          add_add_add_comm _ _ _ _
+      _ ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) + (2⁻¹ : ℝ≥0∞) ^ (r + 1) :=
+          add_le_add (hRS r j).le (hRS r l).le
+      _ = (2⁻¹ : ℝ≥0∞) ^ r := by
+          rw [pow_succ, ← div_eq_mul_inv, ENNReal.add_halves]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
