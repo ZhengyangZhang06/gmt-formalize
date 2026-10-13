@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3085160dc25ea3f0102bcc0633781e31c937e2f2d5548f62eb1f857df7c67959",
+  "git_delta": {
+    "base_commit": "f13fa77ec4297af3973af71cd259ac1c00b5895f",
+    "candidate_commit": "f2cdc7642b7b0b14d96aee1dc899de135ad4b674",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_c1c_immersion_local_injOn",
+    "diff_sha256": "97603236e7de0da2f28665314601554820ce558209ee1690795c9971d5749ca0",
+    "source_sha256": "ee1993d0eaf5912e353cb7a03237a9a7b58ee3ec07c05430b22f78c62b250d2f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_c1c_immersion_local_injOn",
+      "statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Set.InjOn G (Metric.closedBall x r) ∧ ∀ z ∈ Metric.closedBall x r, Function.Injective (fderiv ℝ G z)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
