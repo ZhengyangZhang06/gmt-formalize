@@ -458,6 +458,90 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): absorption by the best scale-weighted Hölder constant.  Call `(y, ρ)` admissible if
+`ρ > 0` and `|y| + ρ ≤ 1`.  Let `Q` be the supremum of `0` and of the quotients
+`ρ^{1+α} ‖g x - g x'‖ / |x - x'|^α` over admissible `(y, ρ)` and `x ≠ x'` in `B̆_{ρ/2}(y)`; it is
+finite because `ρ^{1+α} ≤ 1` and `g` is `α`-Hölder on `B̆₁(0)`.  The one-step improvement
+`dohr_eb_sch_ube_holder_improvement` for this `Q` gives `Q ≤ Q/2 + 512 M + 32 A`, so
+`Q ≤ 1024 M + 64 A`, and the admissible pair `(0, 1)` gives both bounds on `B̆_{1/2}(0)`. -/
+theorem dohr_eb_sch_ube_absorption : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (α M A : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ‖g x - g y‖ ≤ K * ‖x - y‖ ^ α) → (∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖g x - g x'‖ ≤ K * ‖x - x'‖ ^ α) → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (1 / 16 * ρ ^ (1 + α) * K + A) * ‖x - x'‖ ^ α) → (∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r → (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖g z - g z'‖ ≤ K * ‖z - z'‖ ^ α) → ‖g x‖ ≤ 2 * M / t + t ^ α * K) → (∀ x ∈ ball (0 : Rn n) (1 / 2), ‖g x‖ ≤ 1024 * M + 64 * A) ∧ ∀ x ∈ ball (0 : Rn n) (1 / 2), ∀ y ∈ ball (0 : Rn n) (1 / 2), ‖g x - g y‖ ≤ (1024 * M + 64 * A) * ‖x - y‖ ^ α := by
+  intro n ℓ g α M A hα0 hα1 hM hA hK hP2 hP3
+  obtain ⟨K0, hK0⟩ := hK
+  -- Step 1: for admissible `(y, ρ)`, `B̆_{ρ/2}(y) ⊆ B̆₁(0)`.
+  have hmem : ∀ (y : Rn n) (ρ : ℝ) (x : Rn n), 0 < ρ → ‖y‖ + ρ ≤ 1 → x ∈ ball y (ρ / 2) →
+      x ∈ ball (0 : Rn n) 1 := by
+    intro y ρ x hρ hyρ hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff]
+    calc ‖x‖ = ‖y + (x - y)‖ := by rw [add_sub_cancel]
+      _ ≤ ‖y‖ + ‖x - y‖ := norm_add_le _ _
+      _ < ‖y‖ + ρ / 2 := by linarith
+      _ ≤ 1 := by linarith
+  -- Step 2: `T` is `0` together with the scale-weighted Hölder quotients; it is bounded above
+  -- by `max K0 0`, so `Q := sup T` is a real number `≥ 0`.
+  let T : Set ℝ := {q | q = 0 ∨ ∃ (y : Rn n) (ρ : ℝ) (x x' : Rn n), 0 < ρ ∧ ‖y‖ + ρ ≤ 1 ∧
+      x ∈ ball y (ρ / 2) ∧ x' ∈ ball y (ρ / 2) ∧ x ≠ x' ∧
+      q = ρ ^ (1 + α) * ‖g x - g x'‖ / ‖x - x'‖ ^ α}
+  have hbdd : BddAbove T := by
+    refine ⟨max K0 0, ?_⟩
+    rintro q (rfl | ⟨y, ρ, x, x', hρ, hyρ, hx, hx', hne, rfl⟩)
+    · exact le_max_right _ _
+    · have hpow : 0 < ‖x - x'‖ ^ α :=
+        Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hne)) α
+      have hρa : ρ ^ (1 + α) ≤ 1 :=
+        Real.rpow_le_one hρ.le (by linarith [norm_nonneg y]) (by linarith)
+      rw [div_le_iff₀ hpow]
+      calc ρ ^ (1 + α) * ‖g x - g x'‖ ≤ 1 * ‖g x - g x'‖ :=
+            mul_le_mul_of_nonneg_right hρa (norm_nonneg _)
+        _ ≤ K0 * ‖x - x'‖ ^ α := by
+            rw [one_mul]
+            exact hK0 x (hmem y ρ x hρ hyρ hx) x' (hmem y ρ x' hρ hyρ hx')
+        _ ≤ max K0 0 * ‖x - x'‖ ^ α :=
+            mul_le_mul_of_nonneg_right (le_max_left _ _) hpow.le
+  have h0T : (0 : ℝ) ∈ T := Or.inl rfl
+  set Q := sSup T
+  have hQ0 : 0 ≤ Q := le_csSup hbdd h0T
+  -- Step 3: (P1) holds with the constant `Q`.
+  have hP1 : ∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → ∀ x ∈ ball y (ρ / 2),
+      ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ Q * ‖x - x'‖ ^ α := by
+    intro y ρ hρ hyρ x hx x' hx'
+    by_cases hne : x = x'
+    · subst hne
+      simp [Real.zero_rpow hα0.ne']
+    · have hpow : 0 < ‖x - x'‖ ^ α :=
+        Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hne)) α
+      have hq : ρ ^ (1 + α) * ‖g x - g x'‖ / ‖x - x'‖ ^ α ∈ T :=
+        Or.inr ⟨y, ρ, x, x', hρ, hyρ, hx, hx', hne, rfl⟩
+      have h := le_csSup hbdd hq
+      rwa [div_le_iff₀ hpow] at h
+  -- Step 4: the one-step improvement for this `Q`.
+  have himp := Submission.dohr_eb_sch_ube_holder_improvement n ℓ g α M A Q hα0 hα1 hM hA hQ0
+    hP1 hP2 hP3
+  -- Step 5: absorption, `Q ≤ Q/2 + 512 M + 32 A`, hence `Q ≤ 1024 M + 64 A`.
+  have hQle : Q ≤ Q / 2 + 512 * M + 32 * A := by
+    refine csSup_le ⟨0, h0T⟩ ?_
+    rintro q (rfl | ⟨y, ρ, x, x', hρ, hyρ, hx, hx', hne, rfl⟩)
+    · linarith
+    · have hpow : 0 < ‖x - x'‖ ^ α :=
+        Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hne)) α
+      rw [div_le_iff₀ hpow]
+      exact (himp y ρ hρ hyρ).2 x hx x' hx'
+  have hQC : Q ≤ 1024 * M + 64 * A := by linarith
+  -- Step 6: the admissible pair `(0, 1)`.
+  have h01 : ‖(0 : Rn n)‖ + 1 ≤ 1 := by simp
+  refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+  · have h := (himp 0 1 one_pos h01).1 x hx
+    rw [one_mul] at h
+    linarith
+  · have h := hP1 0 1 one_pos h01 x hx y hy
+    rw [Real.one_rpow, one_mul] at h
+    exact h.trans (mul_le_mul_of_nonneg_right hQC (Real.rpow_nonneg (norm_nonneg _) _))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
