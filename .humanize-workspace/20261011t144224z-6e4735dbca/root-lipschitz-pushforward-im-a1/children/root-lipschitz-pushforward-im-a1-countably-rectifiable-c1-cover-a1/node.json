@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1",
+  "depth": 2,
+  "title": "C¹ chart cover of countably n-rectifiable sets (Simon Ch. 3, Lemma 1.2)",
+  "statement": "If M ⊆ ℝ^P is countably n-rectifiable, there are C¹ maps Φ_j : ℝⁿ → ℝ^P and open sets Ω_j ⊆ ℝⁿ (j ∈ ℕ) such that each Φ_j is Lipschitz and antilipschitz on Ω_j and Hⁿ(M ∖ ⋃_j Φ_j(Ω_j)) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \\ ⋃ j, Φ j '' Ω j) = 0",
+  "lean_name": "lpf_countably_rectifiable_c1_cover",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1-a1"
+}
