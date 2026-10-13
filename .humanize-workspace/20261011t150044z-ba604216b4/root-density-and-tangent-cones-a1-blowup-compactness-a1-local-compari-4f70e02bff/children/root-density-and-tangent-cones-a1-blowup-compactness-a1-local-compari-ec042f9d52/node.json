@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.chart_gradient-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "depth": 6,
+  "title": "Continuous gradient field along a C¹ parametrisation with injective derivative (parent step 0(b))",
+  "statement": "Let P, N ∈ ℕ, let ψ : ℝ^N → ℝ^P be C¹, let V ⊆ ℝ^N be open with Dψ(y) injective for every y ∈ V, and let F : ℝ^N → ℝ be C¹. Then there is a Borel map Ĝ : ℝ^N → ℝ^P, continuous on V, such that for every y ∈ V: (a) Ĝ(y) ∈ Dψ(y)(ℝ^N); (b) ⟨Ĝ(y), Dψ(y)e⟩ = DF(y)e for every e ∈ ℝ^N; (c) every v ∈ Dψ(y)(ℝ^N) with ⟨v, Dψ(y)e⟩ = DF(y)e for all e equals Ĝ(y); (d) Ĝ(y) = 0 if and only if DF(y) = 0. Interpretation: Ĝ is a vector field along the parametrisation ψ, i.e. a function of the parameter y ∈ V, and Ĝ(y) is the unique vector of the plane Dψ(y)(ℝ^N) that represents the differential DF(y) through Dψ(y). ψ is not assumed injective, and nothing is asserted about the image set ψ(V) or about an inverse of ψ.",
+  "lean_statement": "∀ (P N : ℕ) (ψ : Euclid N → Euclid P) (V : Set (Euclid N)) (F : Euclid N → ℝ), IsOpen V → ContDiff ℝ 1 ψ → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ Gh : Euclid N → Euclid P, Measurable Gh ∧ ContinuousOn Gh V ∧ ∀ y ∈ V, Gh y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid N →ₗ[ℝ] Euclid P) ∧ (∀ e, inner ℝ (Gh y) (fderiv ℝ ψ y e) = fderiv ℝ F y e) ∧ (∀ v ∈ LinearMap.range (fderiv ℝ ψ y : Euclid N →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ y e) = fderiv ℝ F y e) → v = Gh y) ∧ (Gh y = 0 ↔ fderiv ℝ F y = 0)",
+  "lean_name": "dtc_bc_lc_sl_cc_chart_gradient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ec042f9d52-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.slice_disks-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "depth": 6,
+  "title": "Countable C¹-disk cover of the regular level sets with tangent identification (local parametrised form of Simon 6.4; parent steps 6–7)",
+  "statement": "Let P, n ∈ ℕ and t ∈ ℝ, and write Hⁿ = μHE[n]. Assume ψ : ℝ^{n+1} → ℝ^P is C¹, V ⊆ ℝ^{n+1} is open, ψ is injective on V, Dψ(y) is injective for y ∈ V, and F : ℝ^{n+1} → ℝ is C¹. Then there are open sets U_j ⊆ ℝⁿ, points a_j ∈ ℝⁿ, radii r_j ∈ ℝ and maps χ_j : ℝⁿ → ℝ^P (j ∈ ℕ) such that for every j:\n- closedBall(a_j, r_j) ⊆ U_j;\n- χ_j is C¹ on U_j and injective on U_j;\n- χ_j(U_j) is countably n-rectifiable, and Hⁿ(χ_j(closedBall(a_j, r_j))) < ∞;\n- for every w ∈ U_j, Dχ_j(w) is injective, and there is y ∈ V with ψ(y) = χ_j(w), F(y) = t and DF(y) ≠ 0 such that Dχ_j(w)(ℝⁿ) = Dψ(y)(ℝ^{n+1}) ∩ (ℝv)^⊥ for every v ∈ Dψ(y)(ℝ^{n+1}) with ⟨v, Dψ(y)e⟩ = DF(y)e for all e.\nMoreover ψ({y ∈ V : F(y) = t, DF(y) ≠ 0}) ⊆ ⋃_j χ_j(ball(a_j, r_j)).",
+  "lean_statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (t : ℝ), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ (U : ℕ → Set (Euclid n)) (a : ℕ → Euclid n) (r : ℕ → ℝ) (χ : ℕ → Euclid n → Euclid P), (∀ j, IsOpen (U j) ∧ closedBall (a j) (r j) ⊆ U j ∧ ContDiffOn ℝ 1 (χ j) (U j) ∧ InjOn (χ j) (U j) ∧ CountablyRectifiable n (χ j '' U j) ∧ μHE[n] (χ j '' closedBall (a j) (r j)) ≠ ∞ ∧ ∀ w ∈ U j, Injective (fderiv ℝ (χ j) w) ∧ ∃ y ∈ V, ψ y = χ j w ∧ F y = t ∧ fderiv ℝ F y ≠ 0 ∧ ∀ v ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ y e) = fderiv ℝ F y e) → LinearMap.range (fderiv ℝ (χ j) w : Euclid n →ₗ[ℝ] Euclid P) = LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ v)ᗮ) ∧ ψ '' {y | y ∈ V ∧ F y = t ∧ fderiv ℝ F y ≠ 0} ⊆ ⋃ j, χ j '' ball (a j) (r j)",
+  "lean_name": "dtc_bc_lc_sl_cc_slice_disks",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.flattening_atlas-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.slice_param-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.flattening_atlas-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.slice_param-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-d5d86bc8d6-a1"
+}

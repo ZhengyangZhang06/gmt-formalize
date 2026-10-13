@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "coarea|co_area|eilenberg|sard",
+        "weighted_area_formula_volume_of_injective_derivative|areaJacobianAt_eq_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn|countablyRectifiable_image_contDiffOn_open|countablyRectifiable_iUnion|def CountablyRectifiable|def HasApproximateTangentSpaceAt",
+        "measurable_fderiv|lintegral_image_eq_lintegral_abs_det_fderiv_mul|measurable_piecewise|normDet_sq|normDet_comp_of_finrank_eq|normDet_eq_abs_det|normDet_eq_norm_det_toMatrix_rangeRestrict|inverse_continuousAt",
+        "dtc_bc_lc_sl_cc_",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart_coarea_independent_audit_v2/Conditional_Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart_coarea_independent_audit_v2/InstancesAndAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4f70e02bff/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4f70e02bff/decomposition-v2.json",
+        "/tmp/chart_coarea_independent_audit_v2/Conditional_Assembly.lean",
+        "/tmp/chart_coarea_independent_audit_v2/Conditional_Edge_piece_coarea.lean",
+        "/tmp/chart_coarea_independent_audit_v2/Conditional_Edge_regular_coarea.lean",
+        "/tmp/chart_coarea_independent_audit_v2/Conditional_Edge_slice_param.lean",
+        "/tmp/chart_coarea_independent_audit_v2/Conditional_Edge_slice_disks.lean",
+        "/tmp/chart_coarea_independent_audit_v2/InstancesAndAxioms.lean",
+        "/tmp/chart_coarea_independent_audit_v2/AcceptedLocality.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected dtc_bc_lc_sl_chart_coarea contract. Snapshot revisions and package compatibility were verified. Nonlinear coarea statements found in the project are admitted specifications, not reusable proofs; the required area, inverse-function, Jacobian, measurability and rectifiability results are available. All nine one-line propositions passed validation and independent comparator-scope elaboration. All names are bare identifiers, unreserved by other active branches, and absent from their own types. Internal dependencies are acyclic, and external dependency closures do not return to the selected parent. The exact parent assembly and all four internal dependency proofs compiled after replacing stubs with explicit hypotheses; their only axioms are propext, Classical.choice and Quot.sound. The accepted locality declaration has the identical frozen type and the same permitted axioms. Explicit Lean checks confirm ordinary continuous-linear-map composition and determinants, and the intended span orthogonal complement. Public background was also checked against [Simon’s NTU notes, Chapter 2 §7](https://math.stanford.edu/~lms/ntu-gmt-text.pdf) and [Esmayli–Hajłasz](https://arxiv.org/abs/2006.00419)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean hypotheses agree. The Gram-operator inverse construction, continuity and measurable zero extension establish all four conclusions. Uniqueness and the vanishing equivalence are proved directly. The revised interpretation correctly makes no injectivity or embeddedness assumption about ψ."
+    },
+    {
+      "key": "jacobian_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate normalization forces v ≠ 0, and D⁻¹ proves the reverse range inclusion. The orthonormal block-determinant calculation gives exactly the stated Jacobian identity, including n = 0. The Lean expressions use the intended linear-map operations."
+    },
+    {
+      "key": "flattening_atlas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit flattening map has invertible derivative at each regular point. The inverse function theorem, source restriction and countable subcover prove every chart property and the coverage conclusion. The empty regular locus is handled."
+    },
+    {
+      "key": "flat_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate hypotheses determine c uniquely. The proof establishes measurability of the restricted source and density, applies injective change of variables with the stated hypotheses, and uses correctly directed volume-preserving identifications and Tonelli to prove both conclusions."
+    },
+    {
+      "key": "critical_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers arbitrary Z without a hidden measurability assumption. Bounded exhaustion, small disjoint cubes and the explicit Eilenberg hypothesis produce measurable majorants with integrals tending to zero; Fatou yields the exact a.e. nullity conclusion. The parent can discharge the Eilenberg hypothesis without circularity."
+    },
+    {
+      "key": "slice_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Affine coordinate structure and the chain rule establish regularity, injectivity and DF·DΘ = coordinate projection. This forces DF ≠ 0. Applying the declared jacobian_identity dependency proves precisely the range and Jacobian conclusions."
+    },
+    {
+      "key": "piece_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared dependencies supply the measurable source density, flattened integral and slice Jacobian. The set identity and both weighted area-formula applications are justified. The pinned area theorem permits arbitrary target weights, so no unstated global measurability of G is required."
+    },
+    {
+      "key": "regular_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared atlas and one-piece formula suffice. Borel disjointification, injectivity and Lusin–Souslin justify the measurable disjoint image decompositions. Countable additivity and integration of the series prove the exact measurability and integral assertions."
+    },
+    {
+      "key": "slice_disks",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dense-center and rational-radius construction gives the required countable cover, with valid empty-ball fallbacks. Compact convex disks have finite image measure, and the stated library result supplies rectifiability. The declared slice_param dependency supplies every derivative and range property needed for the parent’s tangent-locality argument."
+    }
+  ],
+  "required_changes": []
+}

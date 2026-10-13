@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.flat_fubini-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "depth": 6,
+  "title": "Fubini in flattened coordinates: change of variables plus Tonelli (parent step 3(a))",
+  "statement": "Let n ∈ ℕ and let c : ℝ → ℝⁿ → ℝ^{n+1} satisfy c(s,w)_0 = s and c(s,w)_{i+1} = w_i for i < n, i.e. c(s,w) = (s, w_0, …, w_{n−1}). Let Ω ⊆ ℝ^{n+1} be open and Θ : ℝ^{n+1} → ℝ^{n+1} be C¹ on Ω and injective on Ω. Let f : ℝ^{n+1} → [0,∞] be Borel and Y' ⊆ Θ(Ω) Borel. Put H(z) := 1_{Ω∩Θ⁻¹(Y')}(z)·|det DΘ(z)|·f(Θ(z)). Then t ↦ ∫_{ℝⁿ} H(c(t,w)) dLⁿ(w) is Borel on ℝ and ∫_ℝ ∫_{ℝⁿ} H(c(t,w)) dw dt = ∫_{Y'} f dL^{n+1}.",
+  "lean_statement": "∀ (n : ℕ) (c : ℝ → Euclid n → Euclid (n + 1)) (Ω Y' : Set (Euclid (n + 1))) (Θ : Euclid (n + 1) → Euclid (n + 1)) (f : Euclid (n + 1) → ℝ≥0∞), (∀ s w, c s w 0 = s ∧ ∀ i : Fin n, c s w i.succ = w i) → IsOpen Ω → ContDiffOn ℝ 1 Θ Ω → InjOn Θ Ω → Measurable f → MeasurableSet Y' → Y' ⊆ Θ '' Ω → Measurable (fun t => ∫⁻ w, (Ω ∩ Θ ⁻¹' Y').indicator (fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| * f (Θ z)) (c t w)) ∧ ∫⁻ t, ∫⁻ w, (Ω ∩ Θ ⁻¹' Y').indicator (fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| * f (Θ z)) (c t w) = ∫⁻ y in Y', f y",
+  "lean_name": "dtc_bc_lc_sl_cc_flat_fubini",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-5890810a32-a1"
+}
