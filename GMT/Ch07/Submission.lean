@@ -1739,6 +1739,68 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
+/-- Balls of a product measure `μ = Hᵈ⌞L ⊗ μ₀` (`d = dim L`, `μ₀` concentrated on `L^⊥`):
+`μ(B_ρ(t + y)) = ∫_{ℝᵈ} μ₀(B_{√(ρ² − |σ|²)}(y)) dLᵈ(σ)` for `t ∈ L`, `y ∈ L^⊥` and `ρ > 0`.  For
+`s ∈ L` and `y' ∈ L^⊥`, Pythagoras gives `s + y' ∈ B_ρ(t + y)` iff `y' ∈ B_{√(ρ² − |t − s|²)}(y)`;
+an isometric parametrization of `L` by `ℝᵈ` carries `Lᵈ` to `Hᵈ⌞L`, and a translation centres the
+integral at `t`. -/
+theorem Submission.dimred_cs_psd_ball_formula : ∀ (P : ℕ) (L : Submodule ℝ (Euclid P)) (μ μ₀ : Measure (Euclid P)), μ₀ (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → μ A = ∫⁻ t in (L : Set (Euclid P)), μ₀ ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ ρ : ℝ, 0 < ρ → μ (ball (t + y) ρ) = ∫⁻ σ : Euclid (Module.finrank ℝ L), μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) := by
+  intro P L μ μ₀ hconc hprod t ht y hy ρ hρ
+  -- concentration of `μ₀` on `Lᗮ`
+  have hconc' : ∀ X : Set (Euclid P), μ₀ X = μ₀ (X ∩ (Lᗮ : Set (Euclid P))) := by
+    intro X
+    refine le_antisymm ?_ (measure_mono inter_subset_left)
+    calc μ₀ X ≤ μ₀ (X ∩ (Lᗮ : Set (Euclid P))) + μ₀ (X \ (Lᗮ : Set (Euclid P))) :=
+          measure_le_inter_add_sdiff μ₀ X _
+      _ ≤ μ₀ (X ∩ (Lᗮ : Set (Euclid P))) + μ₀ (Lᗮ : Set (Euclid P))ᶜ := by
+          gcongr
+          exact fun z hz => hz.2
+      _ = μ₀ (X ∩ (Lᗮ : Set (Euclid P))) := by rw [hconc, add_zero]
+  -- slicing the ball over a point `s ∈ L`
+  have hslice : ∀ s ∈ L, μ₀ ((fun y' => s + y') ⁻¹' ball (t + y) ρ) =
+      μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖t - s‖ ^ 2))) := by
+    intro s hs
+    rw [hconc' ((fun y' => s + y') ⁻¹' ball (t + y) ρ), hconc' (ball y _)]
+    congr 1
+    ext y'
+    simp only [mem_inter_iff, mem_preimage, mem_ball, SetLike.mem_coe]
+    refine and_congr_left fun hy' => ?_
+    have horth : inner ℝ (s - t) (y' - y) = 0 :=
+      Submodule.inner_right_of_mem_orthogonal (L.sub_mem hs ht) (Lᗮ.sub_mem hy' hy)
+    have hpyth : ‖s + y' - (t + y)‖ ^ 2 = ‖t - s‖ ^ 2 + ‖y' - y‖ ^ 2 := by
+      have h1 : s + y' - (t + y) = (s - t) + (y' - y) := by abel
+      rw [h1, ← norm_neg (t - s), neg_sub]
+      have := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+      nlinarith [this]
+    rw [dist_eq_norm, dist_eq_norm, Real.lt_sqrt (norm_nonneg _)]
+    rw [← sq_lt_sq₀ (norm_nonneg _) hρ.le, hpyth]
+    constructor <;> intro h <;> linarith
+  rw [hprod _ measurableSet_ball,
+    setLIntegral_congr_fun (Submodule.closed_of_finiteDimensional L).measurableSet hslice]
+  -- an isometric parametrization of `L` by `ℝᵈ`
+  set d := Module.finrank ℝ L
+  let b := stdOrthonormalBasis ℝ L
+  let ι : Euclid d → Euclid P := fun σ => ((b.repr.symm σ : L) : Euclid P)
+  have hι : Isometry ι := L.subtypeₗᵢ.isometry.comp b.repr.symm.isometry
+  have hrange : range ι = (L : Set (Euclid P)) := by
+    ext z
+    constructor
+    · rintro ⟨σ, rfl⟩
+      exact (b.repr.symm σ).2
+    · intro hz
+      exact ⟨b.repr ⟨z, hz⟩, by simp [ι]⟩
+  have hmap : (volume : Measure (Euclid d)).map ι = μHE[d].restrict (L : Set (Euclid P)) := by
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hι.map_euclideanHausdorffMeasure,
+      hrange]
+  rw [← hmap, hι.isClosedEmbedding.measurableEmbedding.lintegral_map]
+  -- translate
+  set σt : Euclid d := b.repr ⟨t, ht⟩
+  have hnorm : ∀ σ : Euclid d, ‖t - ι σ‖ = ‖σ - σt‖ := by
+    intro σ
+    have ht' : t = ι σt := by simp [ι, σt]
+    rw [ht', ← dist_eq_norm, hι.dist_eq, dist_eq_norm, norm_sub_rev]
+  simp_rw [hnorm]
+  exact lintegral_sub_right_eq_self (fun σ => μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)))) σt
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

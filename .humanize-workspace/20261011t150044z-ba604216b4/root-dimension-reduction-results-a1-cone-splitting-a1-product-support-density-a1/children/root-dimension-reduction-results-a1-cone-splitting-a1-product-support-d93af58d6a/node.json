@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.radial_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1",
+  "depth": 4,
+  "title": "A radial integral of a profile with m-dimensional density θ has (d+m)-dimensional density θ",
+  "statement": "Let d, m ∈ ℕ, f : ℝ → [0, ∞] with f(0) = 0, and θ ∈ [0, ∞]; write ω_k := unitBallVolume k = L^k(B_1(0) ⊂ ℝ^k). Suppose f(r) / (ω_m · ofReal(r^m)) → θ as r ↓ 0 (division in [0, ∞], limit along 𝓝[>] 0). Then I(ρ) / (ω_{d+m} · ofReal(ρ^{d+m})) → θ as ρ ↓ 0, where I(ρ) := ∫_{ℝ^d} f(√(ρ² − ‖σ‖²)) dL^d(σ) is the lower Lebesgue integral (∫⁻) with respect to Lebesgue measure L^d on ℝ^d = Euclid d (f need not be measurable) and √ = Real.sqrt.",
+  "lean_statement": "∀ (d m : ℕ) (f : ℝ → ℝ≥0∞) (θ : ℝ≥0∞), f 0 = 0 → Tendsto (fun r : ℝ => f r / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => (∫⁻ σ : Euclid d, f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) / (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m)))) (𝓝[>] 0) (𝓝 θ)",
+  "lean_name": "dimred_cs_psd_radial_density",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.ball_volume_slice-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.ball_volume_slice-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-product-support-d93af58d6a-a1"
+}
