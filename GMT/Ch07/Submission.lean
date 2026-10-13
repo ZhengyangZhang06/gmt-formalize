@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Mollification is Lipschitz, with constant `∝ ∫_S |v|`**: for `φ ∈ C^∞_c(ℝⁿ)` there is
+`L ≥ 0` such that, for every `S ⊆ ℝⁿ`, every `v` integrable on `S` and all `x, x'`,
+`|∫_S v(y)φ(x − y) dy − ∫_S v(y)φ(x' − y) dy| ≤ L (∫_S |v|) |x − x'|`.  `φ` is `C¹` with compact
+support, hence `L`-Lipschitz, and bounded, so both integrands are integrable on `S` and the
+difference is `|∫_S v(y)(φ(x − y) − φ(x' − y)) dy| ≤ ∫_S |v(y)| L |x − x'| dy`. -/
+theorem Submission.cbr_ci_pw_mu_conv_lipschitz : ∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∃ L : ℝ, 0 ≤ L ∧ ∀ (S : Set (Euclid n)) (v : Euclid n → ℝ), IntegrableOn v S → ∀ x x' : Euclid n, |(∫ y in S, v y * φ (x - y)) - ∫ y in S, v y * φ (x' - y)| ≤ L * (∫ y in S, |v y|) * dist x x' := by
+  intro n φ hφ hφc
+  obtain ⟨C, hC⟩ := hφ.lipschitzWith_of_hasCompactSupport hφc (by simp)
+  obtain ⟨M, hM⟩ := hφ.continuous.bounded_above_of_compact_support hφc
+  refine ⟨C, C.coe_nonneg, fun S v hv x x' => ?_⟩
+  have hint : ∀ z : Euclid n, IntegrableOn (fun y => v y * φ (z - y)) S := fun z =>
+    Integrable.mul_bdd hv
+      (hφ.continuous.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+      (Eventually.of_forall fun y => hM (z - y))
+  rw [← integral_sub (hint x) (hint x'), ← Real.norm_eq_abs]
+  calc ‖∫ y in S, v y * φ (x - y) - v y * φ (x' - y)‖
+      ≤ ∫ y in S, |v y| * (C * dist x x') := by
+        refine norm_integral_le_of_norm_le (hv.abs.mul_const _) (Eventually.of_forall fun y => ?_)
+        rw [Real.norm_eq_abs, ← mul_sub, abs_mul]
+        gcongr
+        rw [← Real.dist_eq]
+        simpa [dist_sub_right] using hC.dist_le_mul (x - y) (x' - y)
+    _ = C * (∫ y in S, |v y|) * dist x x' := by
+        rw [integral_mul_const]
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
