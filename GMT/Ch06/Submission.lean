@@ -359,6 +359,48 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Bochner change of variables through a Jacobian-weighted push-forward: if
+`∫⁻ g dν = ∫⁻ g(Φ(x)) J(x) dμ(x)` for every measurable `g : Y → [0, ∞]`, then `Φ` pushes the
+measure `ρ = J μ` (density `J.toNNReal`) forward to `ν`, so for `ν`-integrable `F`, `J • F ∘ Φ` is
+`μ`-integrable and `∫ F dν = ∫ F(Φ(x)) dρ(x) = ∫ J(x) • F(Φ(x)) dμ(x)`.  No σ-finiteness is
+needed.  This passes the area formula on a chart from nonnegative to Bochner integrands. -/
+theorem Submission.slicing_im_ll_twl_cie_weighted_transfer : ∀ (X Y E : Type) [MeasurableSpace X] [MeasurableSpace Y] [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (μ : Measure X) (ν : Measure Y) (Φ : X → Y) (J : X → ℝ) (F : Y → E), AEMeasurable Φ μ → AEMeasurable J μ → (∀ x, 0 ≤ J x) → (∀ g : Y → ℝ≥0∞, Measurable g → ∫⁻ y, g y ∂ν = ∫⁻ x, g (Φ x) * ENNReal.ofReal (J x) ∂μ) → Integrable F ν → Integrable (fun x => J x • F (Φ x)) μ ∧ ∫ y, F y ∂ν = ∫ x, J x • F (Φ x) ∂μ := by
+  intro X Y E _ _ _ _ _ μ ν Φ J F hΦ hJ hJ0 hcv hF
+  -- The density `f = J.toNNReal` is a.e.-measurable, and `ρ = μ.withDensity f ≪ μ`, so `Φ` is
+  -- `ρ`-a.e.-measurable.
+  have hf : AEMeasurable (fun x => (J x).toNNReal) μ := hJ.real_toNNReal
+  have hΦρ : AEMeasurable Φ (μ.withDensity fun x => ((J x).toNNReal : ℝ≥0∞)) :=
+    hΦ.mono_ac (withDensity_absolutelyContinuous _ _)
+  -- `Φ` pushes `ρ` forward to `ν`: test the hypothesis with `g = 1_S` for measurable `S`.
+  have hmap : (μ.withDensity fun x => ((J x).toNNReal : ℝ≥0∞)).map Φ = ν := by
+    refine Measure.ext fun S hS => ?_
+    have hS' : NullMeasurableSet (Φ ⁻¹' S) μ := hΦ.nullMeasurableSet_preimage hS
+    rw [Measure.map_apply_of_aemeasurable hΦρ hS, withDensity_apply₀ _ hS',
+      ← lintegral_indicator₀ hS', ← lintegral_indicator_one (μ := ν) hS,
+      hcv _ (measurable_one.indicator hS)]
+    refine lintegral_congr fun x => ?_
+    by_cases hx : Φ x ∈ S
+    · rw [indicator_of_mem (show x ∈ Φ ⁻¹' S from hx), indicator_of_mem hx, Pi.one_apply, one_mul]
+      rfl
+    · rw [indicator_of_notMem (show x ∉ Φ ⁻¹' S from hx), indicator_of_notMem hx, zero_mul]
+  -- Transfer along `Φ`: `F ∘ Φ` is `ρ`-integrable and `∫ F dν = ∫ F ∘ Φ dρ`.
+  have hFmap : Integrable F ((μ.withDensity fun x => ((J x).toNNReal : ℝ≥0∞)).map Φ) := by
+    rw [hmap]
+    exact hF
+  have hFρ : Integrable (fun x => F (Φ x)) (μ.withDensity fun x => ((J x).toNNReal : ℝ≥0∞)) :=
+    (integrable_map_measure hFmap.aestronglyMeasurable hΦρ).mp hFmap
+  have hint : ∫ y, F y ∂ν = ∫ x, F (Φ x) ∂(μ.withDensity fun x => ((J x).toNNReal : ℝ≥0∞)) := by
+    rw [← integral_map hΦρ hFmap.aestronglyMeasurable, hmap]
+  -- Remove the density: `f(x) • v = (f(x) : ℝ) • v = J(x) • v` because `J ≥ 0`.
+  have hcoe : ∀ x, ((J x).toNNReal : ℝ) • F (Φ x) = J x • F (Φ x) := fun x => by
+    rw [Real.coe_toNNReal _ (hJ0 x)]
+  refine ⟨((integrable_withDensity_iff_integrable_coe_smul₀ hf).mp hFρ).congr
+    (ae_of_all _ hcoe), ?_⟩
+  rw [hint, integral_withDensity_eq_integral_smul₀ hf]
+  refine integral_congr_ae (ae_of_all _ fun x => ?_)
+  dsimp only
+  rw [NNReal.smul_def, hcoe]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
