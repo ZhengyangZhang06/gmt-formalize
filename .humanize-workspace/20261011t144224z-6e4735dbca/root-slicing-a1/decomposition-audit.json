@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n '^import|^open|^namespace|^def (CompactlyContainedOpen|IsMeasureRepresentation|IsRestriction|IsSlice|SlicingTheorem|IsRectifiableTriple|IsIntegerMultiplicity)|^abbrev Eucl|^end' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "theorem simon_theorem_4_14|def IsLocallyBoundedCcFunctional|def IsRadonOuterMeasure|def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable",
+        "ae_differentiableAt|intervalIntegral_deriv_mem_uIcc|intervalIntegrable_deriv",
+        "extend_real|ae_differentiableWithinAt_of_mem",
+        "rg -l 'coarea|co-area' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'slicing_mass_representation|slicing_representation_unique|slicing_exists|slicing_support_subset|slicing_mass_bound|slicing_integer_multiplicity_ae' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slicing_independent_audit_cjd0qj5l/ContractsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slicing_independent_audit_cjd0qj5l/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/slicing_independent_audit_cjd0qj5l/ContractsAndAssembly.lean",
+        "/tmp/slicing_independent_audit_cjd0qj5l/LibraryAxioms.lean"
+      ],
+      "conclusion": "Verified the frozen contract and pinned revisions. All six exact one-line propositions elaborate independently in comparator scope without implementing any child. A separately written conditional assembly proves precisely SlicingTheorem; it and the checked library results use only propext, Classical.choice and Quot.sound. All proposed names are bare identifiers, with no collisions in the current 20-node DAG or other branch JSON. Dependencies are acyclic and match actual proof use. The split appropriately separates measure infrastructure from the four slicing properties. No rectifiable-set coarea theorem was found in the searched Mathlib corpus; SimonGMT explicitly omits that theorem. Its mathematical use was cross-checked against [Simon, Chapters 3 and 6](https://web.stanford.edu/class/math285/ts-gmt.pdf). These checks validate contracts, assembly and cited library axioms, not completed Lean implementations of the analytic children."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including arbitrary degree, local finiteness, the everywhere covector bound and both restriction clauses. The proof constructs the measure on U before extending it by zero, establishes restriction continuity, and proves both mass inequalities using compact localization, Lusin approximation and mollification. It assumes no unjustified finiteness near the boundary of U and uses no child or parent conclusion."
+    },
+    {
+      "key": "representation_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact local statement is proved without assuming normalization or local finiteness of the original measures. Cutoff tests give integrable coordinate densities on a compact neighbourhood; mollification and finite-measure uniqueness give equality against bounded Borel integrands. Coordinate expansion then yields the required restricted integrals. W need not be contained in U, as correctly handled by localization in W ∩ U."
+    },
+    {
+      "key": "slice_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches every stated hypothesis. Applying mass_representation separately to T and its boundary supplies the two restriction currents on the measurable sublevel set. Their boundary difference is a current and satisfies exactly IsSlice. The sole dependency is sufficient and correctly directed."
+    },
+    {
+      "key": "slice_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger statement without explicit mass hypotheses is justified by the representations already supplied by IsSlice. Local uniqueness against the zero representation handles points outside T.support; cancellation below the level and vanishing above it handle the remaining points. The argument matches the frozen relative-support definition and uses only representation_unique."
+    },
+    {
+      "key": "slice_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean type preserves the pointwise majorization, arbitrary open W, ambient almost-everywhere derivative bound and specified restriction R. The proof identifies R using its two declared dependencies, justifies the localized mollification estimate, and handles zero constants and infinite mass separately. The lower left Dini derivative construction supplies a measurable majorant at every required t, with its integral bounded by monotone-function differentiation."
+    },
+    {
+      "key": "slice_integer_multiplicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact stronger quantifier order: almost every t, every S satisfying IsSlice. It supplies the slice triple's measurability, local integrability and weighted tangent orientation, then derives equality through mollified cutoffs and coarea. The countable C¹-dense family and local coefficient estimates make the exceptional set independent of both the test form and S. No undeclared sibling or parent theorem is required."
+    }
+  ],
+  "required_changes": []
+}
