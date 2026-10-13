@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "aal_packing_finite_net|aal_normal_sq_lintegral_le_conical|aal_good_tangent_point|aal_height_of_net_plane",
+        "abbrev Amb|def unitBallVolume|def tangentProj|def AllardHypotheses|def support|def weight",
+        "lintegral_const_mul'|lintegral_finsetSum'|setLIntegral_mono'|setLIntegral_const|lintegral_mono_set",
+        "aestronglyMeasurable_comp₂|measure_biUnion_finset|theorem sSup_mem|class HasOrthogonalProjection|starProjection_apply_mem|dist_starProjection_eq_infDist",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hb-independent-audit-ev6yf14l/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Lattice/Nat.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-height-bound-small-delta-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-height-bound-small-delta-a1/decomposition-v1.json",
+        "/tmp/claude-1000/hb-split/Check4.lean",
+        "/tmp/hb-independent-audit-ev6yf14l/Audit.lean"
+      ],
+      "conclusion": "The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the compiler context matches. None of the proposed names occurs in the searched snapshot or is reserved in the DAG. All four names are bare identifiers, and all frozen statements are self-contained one-line propositions matching their prose. The snapshot confirms finite-additivity packing, finite-constant lower-integral scaling without measurability, a.e.-measurable finite sums, and orthogonal-projection distance identities. Independent Lean verification passed standalone type elaboration, comparator-style challenges, and projection/Borel instance checks. The parent-supplied child proofs and exact selected-parent assembly, with the two frozen existing dependencies supplied as explicit hypotheses, compile using only propext, Classical.choice and Quot.sound. The split is appropriate: its four independent obligations and existing dependencies are acyclic and establish precisely the selected height bound with the supplied constants and exponent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "packing_finite_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include every required hypothesis. Measurable disjoint balls give the packing bound; bounded natural-number cardinalities attain a maximum. Inserting a point farther than 2r contradicts maximality. The proof handles empty S and requires neither compactness nor measurability of S or E. It is complete and non-circular."
+    },
+    {
+      "key": "normal_part_conical_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the lower-integral statement. Linearity makes both integrands vanish at x=y; away from y, the positive denominator and ball-radius bound give the pointwise inequality. Measurable-domain monotonicity and finite-constant scaling require no measurability of P. Every step is justified independently."
+    },
+    {
+      "key": "good_tangent_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and strict inequalities match. Continuous bilinear evaluation supplies a.e. measurability, allowing finite-sum integration. Failure of the conclusion forces the sum above ofReal(lam) almost everywhere on the smaller ball, contradicting H2. The extended-real argument covers infinite ball measure, empty F and arbitrary real K without additional assumptions or circularity."
+    },
+    {
+      "key": "height_from_net_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact proposition agree. The witness t=-T.starProjection(x₀-y) belongs to T; the stated algebraic identity and triangle inequality give infDist(x-ξ,T)≤b+2a. No extra positivity or dimension hypothesis is needed. Its specialization completes the selected parent's height estimate."
+    }
+  ],
+  "required_changes": []
+}
