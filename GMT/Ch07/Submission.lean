@@ -1564,6 +1564,42 @@ theorem Submission.dimred_rpd_massOn_eq_mult_measure : ∀ (P n : ℕ) (U : Set 
             hcast]
       _ ≤ T.massOn W := hge
 
+/-- **Density of `k[[M]]` at a point of `M`** (Simon 7.4.1: `Θᵐ(μ_T, y) = |k|` when `T = k[[M]]`
+in `B_ρ(y)` and `y ∈ M`).  For `0 < s < ρ` the ball `B_s(y)` is open, `B_s(y) ⊆ B_ρ(y) ⊆ U`, and
+`Hᵐ(M ∩ B_s(y)) ≤ Hᵐ(M ∩ B̄_s(y)) < ∞` since `B̄_s(y) ⊆ B_ρ(y)` is compact; `M` is Borel and `ξ`
+is a continuous unit orientation, so the local mass identity gives
+`M_{B_s(y)}(T) = |k| Hᵐ(M ∩ B_s(y))`.  The density ratio of `T` is thus `|k|` times that of
+`Hᵐ⌞M`, which tends to `1` as `s ↓ 0` (density one on an embedded `C¹` submanifold). -/
+theorem Submission.codim1_dolr_rep_hasMassDensity : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (y : Euclid P) (ρ : ℝ) (k : ℤ) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 0 < ρ → ball y ρ ⊆ U → y ∈ M → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → HasMassDensity T y (k.natAbs : ℝ) := by
+  intro P m U T y ρ k M ξ hρ hballU hyM hMemb hξ hfin hrep
+  -- Step 1: `M` is Borel; `ξ(x)` is a unit orientation of some subspace at every `x ∈ M`
+  obtain ⟨hMmeas, -⟩ := Submission.dimred_rpd_embedded_locally_closed P 1 m M hMemb
+  have hunit : ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ x) Q := by
+    intro x hx
+    obtain ⟨Q, -, hQ⟩ := hξ.2 x hx
+    exact ⟨Q, hQ⟩
+  -- Step 2: `M_{B_s(y)}(T) = |k| Hᵐ(M ∩ B_s(y))` for `0 < s < ρ`
+  have hmass : ∀ s : ℝ, 0 < s → s < ρ →
+      T.massOn (ball y s) = (k.natAbs : ℝ≥0∞) * μHE[m] (M ∩ ball y s) := by
+    intro s _hs hsρ
+    have hsub : ball y s ⊆ ball y ρ := ball_subset_ball hsρ.le
+    refine Submission.dimred_rpd_massOn_eq_mult_measure P m U T M (ball y s) k ξ isOpen_ball
+      (hsub.trans hballU) hMmeas hξ.1 hunit ?_ ?_
+    · exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y s) (closedBall_subset_ball hsρ))
+        (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
+    · intro ω hω
+      exact hrep ω (hω.trans hsub)
+  -- Steps 3–5: the density ratio of `T` is `|k|` times that of `Hᵐ⌞M`, which tends to `1`
+  refine ⟨Nat.cast_nonneg _, ?_⟩
+  rw [ENNReal.ofReal_natCast]
+  have hlim := ENNReal.Tendsto.const_mul (a := (k.natAbs : ℝ≥0∞))
+    (Submission.dimred_rpd_submanifold_density_one P m M y hMemb hyM)
+    (Or.inr (ENNReal.natCast_ne_top _))
+  rw [mul_one] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
+  rw [hmass s hs.1 hs.2, mul_div_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
