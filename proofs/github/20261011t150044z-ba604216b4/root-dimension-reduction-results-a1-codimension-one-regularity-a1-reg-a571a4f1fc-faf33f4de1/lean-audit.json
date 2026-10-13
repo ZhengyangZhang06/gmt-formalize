@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8f34f7b81528e8bc9387f8fe6d6fe06f5ca84c620b0eefc441536ddd92a62ff1",
+  "git_delta": {
+    "base_commit": "b1dc4b6f02becc0b116620ee6c56b590db476e00",
+    "candidate_commit": "dca3bed49f176fb930979823badb904d96ca359b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_gc_gram_unitOrientation",
+    "diff_sha256": "2a58134558a4cbbd07bc3df3f413bbf9f614c4cf61146f64ae8c8212080bcc31",
+    "source_sha256": "5ab82a27172462925826c79c91fdb315da93c4b73a59d1d390ac8264301cdc7f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_gc_gram_unitOrientation",
+      "statement": "∀ (P m : ℕ) (b : Fin m → Euclid P), LinearIndependent ℝ b → 0 < Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j)) ∧ ∀ ξ : MultiVector P m, (∀ α : Covector (Euclid P) m, ξ α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j))) = α b) → IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range b))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
