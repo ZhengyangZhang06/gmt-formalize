@@ -522,6 +522,227 @@ theorem Submission.iwl_weighted_tangent_locality :
     refine ⟨hQ, fun f => ?_⟩
     rw [hθx]
     simpa using (hf f).add (hkey f)
+/-- Localized upper density theorem (Simon Ch. 1, 3.6) for `ν = (Hⁿ ⌞ S).withDensity g`: if
+`∫⁻_{S ∩ K} g dHⁿ < ∞` for every compact `K ⊆ W`, then `ν(B̄_ρ(y)) / ρⁿ → 0` as `ρ → 0+` for
+`Hⁿ`-a.e. `y ∈ W \ S`. -/
+theorem Submission.lpf_wtc_ae_zero_density_off_set :
+    ∀ (Q n : ℕ) (W S : Set (Eucl Q)) (g : Eucl Q → ℝ≥0∞), IsOpen W →
+      NullMeasurableSet S (μHE[n] : Measure (Eucl Q)) →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ W →
+        ∫⁻ x in S ∩ K, g x ∂(μHE[n] : Measure (Eucl Q)) < ∞) →
+      ∀ᵐ y ∂(μHE[n] : Measure (Eucl Q)), y ∈ W → y ∉ S →
+        Tendsto (fun ρ : ℝ => (∫⁻ x in S ∩ closedBall y ρ, g x ∂(μHE[n] : Measure (Eucl Q))) /
+          ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+  intro Q n W S g hW hS hfin
+  set μ : Measure (Eucl Q) := μHE[n] with hμ
+  -- Step 1: `ν = (μ ⌞ S).withDensity g`, so `ν B = ∫⁻_{S ∩ B} g dμ` for Borel `B`.
+  set ν : Measure (Eucl Q) := (μ.restrict S).withDensity g with hν
+  have hνB : ∀ B : Set (Eucl Q), MeasurableSet B → ν B = ∫⁻ x in S ∩ B, g x ∂μ := by
+    intro B hB
+    rw [hν, withDensity_apply _ hB, Measure.restrict_restrict hB, inter_comm B S]
+  -- Step 2: the Borel hull `A ⊇ S` of `S`; `ν` does not charge `Aᶜ`.
+  set A : Set (Eucl Q) := toMeasurable μ S
+  have hAm : MeasurableSet A := measurableSet_toMeasurable μ S
+  have hνA : ν Aᶜ = 0 := by
+    rw [hνB _ hAm.compl,
+      (disjoint_compl_right_iff_subset.mpr (subset_toMeasurable μ S)).inter_eq,
+      Measure.restrict_empty, lintegral_zero_measure]
+  -- `diam B̄_s(c) ≤ 2s`.
+  have hdiam : ∀ (c : Eucl Q) (s : ℝ), ediam (closedBall c s) ≤ ENNReal.ofReal (2 * s) :=
+    fun c s => ediam_le_of_forall_dist_le fun y hy z hz => by
+      have := dist_triangle_right y z c
+      rw [mem_closedBall] at hy hz
+      linarith
+  -- Step 4 (Upper Density Theorem, Simon Ch. 1, 3.6): for a finite `m` with `m Aᶜ = 0`, the
+  -- points `y ∉ A` of upper density `> ε` form an `Hⁿ`-null set.  Proof: a closed `C ⊆ A`
+  -- with `m (A \ C) < k⁻¹`, then a Vitali 5r-covering by disjoint balls of radius `< 1/(k+1)`
+  -- missing `C`, whose total `ρⁿ`-cost is at most `k⁻¹ / ε`.
+  have hcore : ∀ m : Measure (Eucl Q), m univ ≠ ∞ → m Aᶜ = 0 → ∀ ε : ℝ≥0∞, ε ≠ 0 → ε ≠ ∞ →
+      μH[n] {y | y ∉ A ∧ ∀ δ > 0, ∃ ρ ∈ Ioo 0 δ,
+        ε * ENNReal.ofReal ρ ^ n < m (closedBall y ρ)} = 0 := by
+    intro m hm hmA ε hε0 hεtop
+    set Z := {y | y ∉ A ∧ ∀ δ > 0, ∃ ρ ∈ Ioo 0 δ,
+      ε * ENNReal.ofReal ρ ^ n < m (closedBall y ρ)}
+    have : IsFiniteMeasure m := ⟨lt_top_iff_ne_top.mpr hm⟩
+    have hstep : ∀ k : ℕ, ∃ u : Set (Eucl Q × ℝ), u.Countable ∧
+        (∀ b ∈ u, b.2 ∈ Ioo 0 (1 / ((k : ℝ) + 1))) ∧
+        Z ⊆ ⋃ b ∈ u, closedBall b.1 (5 * b.2) ∧
+        ε * ∑' b : u, ENNReal.ofReal b.1.2 ^ n ≤ (k : ℝ≥0∞)⁻¹ := by
+      intro k
+      obtain ⟨C, hCA, hCc, hCm⟩ := hAm.exists_isClosed_sdiff_lt (μ := m) (measure_ne_top m A)
+        (ENNReal.inv_ne_zero.mpr (ENNReal.natCast_ne_top k))
+      let t : Set (Eucl Q × ℝ) := {b | b.1 ∈ Z ∧ b.2 ∈ Ioo 0 (1 / ((k : ℝ) + 1)) ∧
+        closedBall b.1 b.2 ⊆ Cᶜ ∧ ε * ENNReal.ofReal b.2 ^ n < m (closedBall b.1 b.2)}
+      obtain ⟨u, hut, hudisj, hucov⟩ :=
+        Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall t Prod.fst Prod.snd
+          (1 / ((k : ℝ) + 1)) (fun b hb => hb.2.1.2.le) 5 (by norm_num)
+      have hucount : u.Countable := hudisj.countable_of_nonempty_interior fun b hb =>
+        (nonempty_ball.mpr (hut hb).2.1.1).mono ball_subset_interior_closedBall
+      refine ⟨u, hucount, fun b hb => (hut hb).2.1, ?_, ?_⟩
+      · -- each `y ∈ Z` lies outside the closed `C ⊆ A`, so it centers small good balls `⊆ Cᶜ`
+        intro y hy
+        obtain ⟨δ₀, hδ₀, hδ₀C⟩ := Metric.isOpen_iff.mp hCc.isOpen_compl y fun h => hy.1 (hCA h)
+        obtain ⟨ρ, hρ, hρm⟩ := hy.2 (min δ₀ (1 / ((k : ℝ) + 1))) (by positivity)
+        have hρC : closedBall y ρ ⊆ Cᶜ :=
+          (closedBall_subset_ball (hρ.2.trans_le (min_le_left _ _))).trans hδ₀C
+        obtain ⟨b, hbu, hb⟩ :=
+          hucov (y, ρ) ⟨hy, ⟨hρ.1, hρ.2.trans_le (min_le_right _ _)⟩, hρC, hρm⟩
+        exact mem_iUnion₂.mpr ⟨b, hbu, hb (mem_closedBall_self hρ.1.le)⟩
+      · have := hucount.to_subtype
+        calc ε * ∑' b : u, ENNReal.ofReal b.1.2 ^ n
+            = ∑' b : u, ε * ENNReal.ofReal b.1.2 ^ n := ENNReal.tsum_mul_left.symm
+          _ ≤ ∑' b : u, m (closedBall b.1.1 b.1.2 ∩ Cᶜ) := ENNReal.tsum_le_tsum fun b => by
+              rw [inter_eq_left.mpr (hut b.2).2.2.1]
+              exact (hut b.2).2.2.2.le
+          _ = m (⋃ b : u, closedBall b.1.1 b.1.2 ∩ Cᶜ) := (measure_iUnion
+              (fun i j hij => (hudisj i.2 j.2 (Subtype.coe_ne_coe.mpr hij)).mono
+                inter_subset_left inter_subset_left)
+              (fun _ => measurableSet_closedBall.inter hCc.isOpen_compl.measurableSet)).symm
+          _ ≤ m Cᶜ := measure_mono (iUnion_subset fun _ => inter_subset_right)
+          _ ≤ m ((A \ C) ∪ Aᶜ) := measure_mono fun x hx => by
+              by_cases h : x ∈ A
+              exacts [Or.inl ⟨h, hx⟩, Or.inr h]
+          _ ≤ m (A \ C) + m Aᶜ := measure_union_le _ _
+          _ ≤ (k : ℝ≥0∞)⁻¹ := by
+              rw [hmA, add_zero]
+              exact hCm.le
+    choose u hucount hurad hucov husum using hstep
+    have : ∀ k, Countable (u k) := fun k => (hucount k).to_subtype
+    refine le_antisymm ?_ bot_le
+    calc μH[n] Z ≤ liminf (fun k => ∑' b : u k, ediam (closedBall b.1.1 (5 * b.1.2)) ^ (n : ℝ))
+          atTop := by
+          refine Measure.hausdorffMeasure_le_liminf_tsum (n : ℝ) Z
+            (fun k : ℕ => ENNReal.ofReal (10 * (1 / ((k : ℝ) + 1)))) ?_
+            (fun k (b : u k) => closedBall b.1.1 (5 * b.1.2)) ?_ ?_
+          · simpa using ENNReal.tendsto_ofReal
+              ((tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul 10)
+          · refine Eventually.of_forall fun k b => (hdiam _ _).trans (ENNReal.ofReal_le_ofReal ?_)
+            have := (hurad k b.1 b.2).2
+            linarith
+          · refine Eventually.of_forall fun k y hy => ?_
+            obtain ⟨b, hbu, hb⟩ := mem_iUnion₂.mp (hucov k hy)
+            exact mem_iUnion.mpr ⟨⟨b, hbu⟩, hb⟩
+      _ ≤ liminf (fun k : ℕ => 10 ^ n * ((k : ℝ≥0∞)⁻¹ / ε)) atTop := by
+          refine liminf_le_liminf (Eventually.of_forall fun k => ?_)
+          calc ∑' b : u k, ediam (closedBall b.1.1 (5 * b.1.2)) ^ (n : ℝ)
+              ≤ ∑' b : u k, 10 ^ n * ENNReal.ofReal b.1.2 ^ n :=
+                ENNReal.tsum_le_tsum fun b => by
+                  rw [ENNReal.rpow_natCast, ← mul_pow]
+                  gcongr
+                  refine (hdiam _ _).trans ?_
+                  rw [← ENNReal.ofReal_ofNat 10, ← ENNReal.ofReal_mul (by norm_num)]
+                  exact ENNReal.ofReal_le_ofReal (by linarith)
+            _ = 10 ^ n * ∑' b : u k, ENNReal.ofReal b.1.2 ^ n := ENNReal.tsum_mul_left
+            _ ≤ 10 ^ n * ((k : ℝ≥0∞)⁻¹ / ε) := by
+                gcongr
+                rw [ENNReal.le_div_iff_mul_le (Or.inl hε0) (Or.inl hεtop), mul_comm]
+                exact husum k
+      _ = 0 := by
+          refine Tendsto.liminf_eq ?_
+          simpa using ENNReal.Tendsto.const_mul
+            (ENNReal.Tendsto.div_const ENNReal.tendsto_inv_nat_nhds_zero (Or.inr hε0))
+            (Or.inr (ENNReal.pow_ne_top ENNReal.ofNat_ne_top))
+  -- Steps 3 and 5: localize to balls `B̄_{2r}(x) ⊆ W` (finite `ν`-mass) around each point of
+  -- the exceptional set, and use `μHE[n] = c • μH[n]`.
+  have hmain : ∀ᵐ y ∂μ, y ∈ W → y ∉ A →
+      Tendsto (fun ρ : ℝ => ν (closedBall y ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+    rw [ae_iff]
+    apply measure_null_of_locally_null
+    intro x hx
+    simp only [mem_ofPred_eq, not_imp] at hx
+    obtain ⟨R, hR, hRW⟩ := Metric.isOpen_iff.mp hW x hx.1
+    have hr : 0 < R / 3 := by positivity
+    have hKW : closedBall x (2 * (R / 3)) ⊆ W := (closedBall_subset_ball (by linarith)).trans hRW
+    set m := ν.restrict (closedBall x (2 * (R / 3))) with hm_def
+    have hm : m univ ≠ ∞ := by
+      rw [hm_def, Measure.restrict_apply_univ, hνB _ measurableSet_closedBall]
+      exact (hfin _ (isCompact_closedBall x _) hKW).ne
+    have hmA : m Aᶜ = 0 := by
+      rw [hm_def, Measure.restrict_apply hAm.compl]
+      exact measure_mono_null inter_subset_left hνA
+    refine ⟨_ ∩ ball x (R / 3), inter_mem_nhdsWithin _ (ball_mem_nhds x hr), ?_⟩
+    rw [hμ, Measure.euclideanHausdorffMeasure_def, Measure.smul_apply]
+    refine (congrArg _ (measure_mono_null ?_ (measure_iUnion_null fun k : ℕ =>
+      hcore m hm hmA ((k : ℝ≥0∞) + 1)⁻¹ (by simp) (by simp)))).trans (smul_zero _)
+    -- a non-tending quotient exceeds some `(k + 1)⁻¹` at arbitrarily small radii
+    rintro y ⟨hy, hyx⟩
+    simp only [mem_ofPred_eq, not_imp] at hy
+    obtain ⟨-, hyA, hyT⟩ := hy
+    rw [ENNReal.tendsto_nhds_zero] at hyT
+    push Not at hyT
+    obtain ⟨ε, hε, hfreq⟩ := hyT
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
+    refine mem_iUnion.mpr ⟨k, hyA, fun δ hδ => ?_⟩
+    obtain ⟨ρ, hρf, hρ⟩ := (hfreq.and_eventually (Ioo_mem_nhdsGT (lt_min hδ hr))).exists
+    refine ⟨ρ, ⟨hρ.1, hρ.2.trans_le (min_le_left _ _)⟩, ?_⟩
+    have hsub : closedBall y ρ ⊆ closedBall x (2 * (R / 3)) := by
+      intro z hz
+      rw [mem_closedBall] at hz ⊢
+      rw [mem_ball] at hyx
+      linarith [dist_triangle z y x, hρ.2.trans_le (min_le_right δ (R / 3))]
+    rw [hm_def, Measure.restrict_apply measurableSet_closedBall, inter_eq_left.mpr hsub,
+      ← ENNReal.ofReal_pow hρ.1.le]
+    refine ENNReal.mul_lt_of_lt_div (lt_of_le_of_lt ?_ hρf)
+    exact (ENNReal.inv_le_inv.mpr (by simp)).trans hk.le
+  -- Step 6: transfer from the hull `A` back to `S` (they agree `μ`-a.e.).
+  filter_upwards [hmain, hS.toMeasurable_ae_eq] with y hy hyA hyW hyS
+  refine (hy hyW fun h => hyS (hyA ▸ h)).congr fun ρ => ?_
+  rw [hνB _ measurableSet_closedBall]
+
+/-- Locality of weighted approximate tangent spaces under passage to a subset, as in Simon
+Ch. 3, Remark 1.8(1).  For `E ⊆ M` and `θ` locally `Hᵏ`-integrable on `M`, the upper density
+theorem (Ch. 1, 3.6) gives `∫⁻_{S ∩ B̄_ρ(x)} |θ| dHᵏ = o(ρᵏ)` for `S = M \ E` at `Hᵏ`-a.e.
+`x ∈ E`.  Since `|1_M θ - 1_E θ| = 1_S |θ|`, rescaling `ρ = R r` turns this into the density
+hypothesis of the weighted tangent locality lemma for `(M, θ)` and `(E, θ)` at `x`. -/
+theorem Submission.deformation_imcomb_subset_locality :
+    ∀ (N k : ℕ) (E M : Set (Eucl N)) (θ : Eucl N → ℝ), E ⊆ M →
+      NullMeasurableSet E (μHE[k] : Measure (Eucl N)) →
+      NullMeasurableSet M (μHE[k] : Measure (Eucl N)) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N),
+        HasWeightedApproximateTangentSpaceAt k M θ x Q ↔
+          HasWeightedApproximateTangentSpaceAt k E θ x Q := by
+  intro N k E M θ hEM hE hM hθ
+  -- `S = M \ E` is null-measurable, and `|θ|` has finite integral on `S ∩ K ⊆ M ∩ K`.
+  have hS : NullMeasurableSet (M \ E) (μHE[k] : Measure (Eucl N)) := hM.diff hE
+  have hfin : ∀ K : Set (Eucl N), IsCompact K → K ⊆ univ →
+      ∫⁻ z in (M \ E) ∩ K, ‖θ z‖ₑ ∂(μHE[k] : Measure (Eucl N)) < ∞ := fun K hK _ =>
+    (lintegral_mono_set (inter_subset_inter_left K Set.sdiff_subset)).trans_lt
+      (hasFiniteIntegral_iff_enorm.mp (hθ K hK).hasFiniteIntegral)
+  -- `S` has zero `k`-density (weighted by `|θ|`) at `Hᵏ`-a.e. point off `S`, in particular
+  -- at `Hᵏ ⌞ E`-a.e. `x ∈ E`.
+  filter_upwards [ae_restrict_of_ae (Submission.lpf_wtc_ae_zero_density_off_set N k univ (M \ E)
+    (fun z => ‖θ z‖ₑ) isOpen_univ hS hfin), ae_restrict_mem₀ hE] with x hx hxE
+  have hdens := hx (mem_univ x) fun h => h.2 hxE
+  -- `E ⊆ M` gives `|1_M θ - 1_E θ| = 1_S |θ|`.
+  have hlint : ∀ ρ : ℝ, ∫⁻ z in closedBall x ρ, ‖M.indicator θ z - E.indicator θ z‖ₑ
+      ∂(μHE[k] : Measure (Eucl N)) =
+        ∫⁻ z in (M \ E) ∩ closedBall x ρ, ‖θ z‖ₑ ∂(μHE[k] : Measure (Eucl N)) := by
+    intro ρ
+    have hpt : ∀ z, ‖M.indicator θ z - E.indicator θ z‖ₑ =
+        (M \ E).indicator (fun z => ‖θ z‖ₑ) z := fun z => by
+      rw [← enorm_indicator_eq_indicator_enorm, indicator_sdiff hEM, Pi.sub_apply]
+    simp_rw [hpt]
+    exact setLIntegral_indicator₀ _ (hS.mono Measure.restrict_le_self)
+  -- Weighted tangent locality for `(M, θ)` and `(E, θ)` at `x`, with `ρ = 1`.
+  refine Submission.iwl_weighted_tangent_locality N k M E θ θ x hM hE rfl
+    ⟨1, one_pos, hθ _ (isCompact_closedBall x 1),
+      (hθ _ (isCompact_closedBall x 1)).mono_set (inter_subset_inter_left _ hEM)⟩ ?_
+  -- Rescaling `ρ = R r`: `(rᵏ)⁻¹ I(R r) = Rᵏ · I(R r) / (R r)ᵏ → 0`.
+  intro R hR
+  have hRr : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · exact ((continuous_const_mul R).tendsto' 0 0 (mul_zero R)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r) using mul_pos hR hr
+  have h0 := ENNReal.Tendsto.const_mul (hdens.comp hRr)
+    (Or.inr (ENNReal.ofReal_ne_top (r := R ^ k)))
+  rw [mul_zero] at h0
+  refine h0.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [Function.comp_apply, hlint, ENNReal.div_eq_inv_mul,
+    ← ENNReal.ofReal_inv_of_pos (by positivity), ← mul_assoc,
+    ← ENNReal.ofReal_mul (by positivity), mul_pow, mul_inv, ← mul_assoc,
+    mul_inv_cancel₀ (pow_ne_zero k hR.ne'), one_mul]
 /-- Simon Ch. 1, Theorem 3.3 (with `A₁ = A`, `A₂ = V`): if `Θ*ⁿ(ν, x) ≥ t` on `A ⊆ V`, `V` open,
 then `t Hⁿ(A) ≤ ν(V)`.  The isodiametric inequality (coordinate Steiner symmetrization)
 shows that a closed ball of radius `r` has `μHE[n]`-cost at most `ωₙ rⁿ`, and the five-times
@@ -2376,6 +2597,94 @@ theorem Submission.deformation_imcomb_weight_change : ∀ (N k : ℕ) (E : Set (
             ∫⁻ y in E ∩ closedBall x (R * r), ‖θ' y - θ' x‖ₑ ∂H := by
         rw [lintegral_add_left' hmeas, lintegral_const_mul' _ _ enorm_ne_top]
         ring
+
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) of two carriers agree on their
+overlap, for arbitrary positive multiplicities.  As in Ch. 3, Remark 1.8(1), the overlap is cut
+into pieces on which the multiplicities have a positive lower bound: a weight integrable on
+`M ∩ K` for every compact `K` is `Hᵏ⌞M`-a.e. measurable (`ℝ^N = ⋃ₘ B̄ₘ(0)`), so the sets
+`E j = M₁ ∩ {θ₁ ≥ 1/(j+1)} ∩ M₂ ∩ {θ₂ ≥ 1/(j+1)}` are `Hᵏ`-null-measurable, they exhaust
+`M₁ ∩ M₂`, and `Hᵏ(E j ∩ K) ≤ (j+1) ∫_{M₁ ∩ K} θ₁ dHᵏ < ∞` by Chebyshev.  For `Hᵏ`-a.e.
+`x ∈ E j`, a tangent space of `(M₁, θ₁)` at `x` is one of `(E j, θ₁)`
+(`deformation_imcomb_subset_locality`), hence of `(E j, θ₂)`
+(`deformation_imcomb_weight_change`), hence of `(M₂, θ₂)`; a countable union over `j` gives
+the claim. -/
+theorem Submission.deformation_imcomb_tangent_overlap :
+    ∀ (N k : ℕ) (M₁ M₂ : Set (Eucl N)) (θ₁ θ₂ : Eucl N → ℝ),
+      NullMeasurableSet M₁ (μHE[k] : Measure (Eucl N)) →
+      NullMeasurableSet M₂ (μHE[k] : Measure (Eucl N)) →
+      (∀ x ∈ M₁, 0 < θ₁ x) → (∀ x ∈ M₂, 0 < θ₂ x) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₁ (M₁ ∩ K) (μHE[k] : Measure (Eucl N))) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₂ (M₂ ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl N),
+        HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q →
+          HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q := by
+  intro N k M₁ M₂ θ₁ θ₂ hM₁ hM₂ hpos₁ hpos₂ hint₁ hint₂
+  -- Superlevel sets `M ∩ {θ ≥ t}` of a locally integrable weight are null-measurable: `θ` is
+  -- integrable on each `M ∩ B̄ₘ(0)`, hence a.e.-strongly measurable on `M`.
+  have hsup : ∀ (M : Set (Eucl N)) (θ : Eucl N → ℝ),
+      NullMeasurableSet M (μHE[k] : Measure (Eucl N)) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ t : ℝ, NullMeasurableSet (M ∩ {y | t ≤ θ y}) (μHE[k] : Measure (Eucl N)) := by
+    intro M θ hM hint t
+    have hθ : AEStronglyMeasurable θ ((μHE[k] : Measure (Eucl N)).restrict M) := by
+      rw [← iUnion_inter_closedBall_nat M 0, aestronglyMeasurable_iUnion_iff]
+      exact fun m => (hint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+    obtain ⟨g, hg, hθg⟩ := hθ
+    have hθg' : ∀ᵐ y ∂(μHE[k] : Measure (Eucl N)), y ∈ M → θ y = g y :=
+      (ae_restrict_iff'₀ hM).1 hθg
+    have hgt : NullMeasurableSet (M ∩ {y | t ≤ g y}) (μHE[k] : Measure (Eucl N)) :=
+      hM.inter (measurableSet_le measurable_const hg.measurable).nullMeasurableSet
+    refine hgt.congr (eventuallyEqSet_iff.2 ?_)
+    filter_upwards [hθg'] with y hy
+    simp only [mem_inter_iff, mem_ofPred_eq]
+    exact ⟨fun h => ⟨h.1, (hy h.1).symm ▸ h.2⟩, fun h => ⟨h.1, hy h.1 ▸ h.2⟩⟩
+  -- The truncated overlaps `E j`, on which both weights are `≥ 1/(j+1)`, exhaust `M₁ ∩ M₂`.
+  set E : ℕ → Set (Eucl N) := fun j =>
+    (M₁ ∩ {y | 1 / ((j : ℝ) + 1) ≤ θ₁ y}) ∩ (M₂ ∩ {y | 1 / ((j : ℝ) + 1) ≤ θ₂ y}) with hE
+  have hU : M₁ ∩ M₂ = ⋃ j, E j := by
+    ext y
+    simp only [hE, mem_iUnion, mem_inter_iff, mem_ofPred_eq]
+    constructor
+    · rintro ⟨h₁, h₂⟩
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt (lt_min (hpos₁ y h₁) (hpos₂ y h₂))
+      exact ⟨j, ⟨h₁, hj.le.trans (min_le_left _ _)⟩, h₂, hj.le.trans (min_le_right _ _)⟩
+    · rintro ⟨j, ⟨h₁, -⟩, h₂, -⟩
+      exact ⟨h₁, h₂⟩
+  have hsub₁ : ∀ j, E j ⊆ M₁ := fun j y hy => hy.1.1
+  have hsub₂ : ∀ j, E j ⊆ M₂ := fun j y hy => hy.2.1
+  have hEm : ∀ j, NullMeasurableSet (E j) (μHE[k] : Measure (Eucl N)) := fun j =>
+    (hsup M₁ θ₁ hM₁ hint₁ _).inter (hsup M₂ θ₂ hM₂ hint₂ _)
+  -- `Hᵏ⌞E j` is locally finite: Chebyshev's inequality for `θ₁ ≥ 1/(j+1)` on `E j ∩ K`.
+  have hfin : ∀ j, ∀ K : Set (Eucl N), IsCompact K →
+      (μHE[k] : Measure (Eucl N)) (E j ∩ K) < ∞ := by
+    intro j K hK
+    have hc : (0 : ℝ≥0∞) < ENNReal.ofReal (1 / ((j : ℝ) + 1)) :=
+      ENNReal.ofReal_pos.2 (by positivity)
+    have hsub : E j ∩ K ⊆
+        {y | ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ ‖θ₁ y‖ₑ} ∩ (M₁ ∩ K) := by
+      rintro y ⟨⟨⟨hy, hyc⟩, -⟩, hyK⟩
+      refine ⟨?_, hy, hyK⟩
+      simp only [mem_ofPred_eq] at hyc ⊢
+      rw [Real.enorm_eq_ofReal_abs]
+      exact ENNReal.ofReal_le_ofReal (hyc.trans (le_abs_self _))
+    have hcheb := mul_meas_ge_le_lintegral₀ (hint₁ K hK).aestronglyMeasurable.enorm
+      (ENNReal.ofReal (1 / ((j : ℝ) + 1)))
+    exact ((measure_mono hsub).trans (Measure.le_restrict_apply _ _)).trans_lt
+      (ENNReal.lt_top_of_mul_ne_top_right (hcheb.trans_lt (hint₁ K hK).hasFiniteIntegral).ne
+        hc.ne')
+  -- On each `E j`: `(M₁, θ₁) ⇒ (E j, θ₁) ⇒ (E j, θ₂) ⇒ (M₂, θ₂)`; then glue over `j`.
+  rw [hU, ae_restrict_iUnion_iff]
+  intro j
+  have h₁ := Submission.deformation_imcomb_subset_locality N k (E j) M₁ θ₁ (hsub₁ j) (hEm j)
+    hM₁ hint₁
+  have h₁₂ := Submission.deformation_imcomb_weight_change N k (E j) θ₁ θ₂ (hEm j) (hfin j)
+    (fun x hx => hpos₁ x (hsub₁ j hx))
+    (fun K hK => (hint₁ K hK).mono_set (inter_subset_inter_left _ (hsub₁ j)))
+    (fun K hK => (hint₂ K hK).mono_set (inter_subset_inter_left _ (hsub₂ j)))
+  have h₂ := Submission.deformation_imcomb_subset_locality N k (E j) M₂ θ₂ (hsub₂ j) (hEm j)
+    hM₂ hint₂
+  filter_upwards [h₁, h₁₂, h₂] with x hx₁ hx₁₂ hx₂ Q hQ
+  exact (hx₂ Q).2 (hx₁₂ Q ((hx₁ Q).1 hQ))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
