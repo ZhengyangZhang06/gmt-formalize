@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6ae4f08d92babcd7fbe50c73350c4e29bf9d3db305b444a6d1e381be35058789",
+  "git_delta": {
+    "base_commit": "eed0166ae396da49aafc53882ecebdff8ec1ba47",
+    "candidate_commit": "cbc2c0382c31ec5b374beecd07605fa532a491c6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_cone_eval_eq_of_eqOn_open",
+    "diff_sha256": "7a4a1c11cf01856e7dcbea86a9ab60cf1d8afceea35f0a76bd1a64f798204b43",
+    "source_sha256": "a2fdd7b5582e7ad07ddbb0aa0303a68ac8699040e70f5facc8fb0895661da159",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_cone_eval_eq_of_eqOn_open",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn U k) (φ₁ φ₂ : TestFormOn U k), IsOpen G → X.support ⊆ G → EqOn (φ₁ : DifferentialForm (Euclid P) k) (φ₂ : DifferentialForm (Euclid P) k) G → X φ₁ = X φ₂",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

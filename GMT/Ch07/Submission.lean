@@ -451,6 +451,30 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Localization to a neighbourhood of `spt X`** (Simon 6.2.11): assuming (VO), i.e. that a
+current kills every test form whose support misses its support, a current `X` takes the same
+value on test forms `φ₁`, `φ₂` that agree on an open set `G ⊇ spt X`.  The difference `φ₁ - φ₂`
+vanishes on `G`, so its topological support lies in the closed set `Gᶜ`, which misses `spt X`;
+(VO) and linearity give `X(φ₁) - X(φ₂) = X(φ₁ - φ₂) = 0`. -/
+theorem Submission.cbrld_cone_eval_eq_of_eqOn_open : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn U k) (φ₁ φ₂ : TestFormOn U k), IsOpen G → X.support ⊆ G → EqOn (φ₁ : DifferentialForm (Euclid P) k) (φ₂ : DifferentialForm (Euclid P) k) G → X φ₁ = X φ₂ := by
+  intro VO P k U G X φ₁ φ₂ hG hspt heq
+  -- `φ₁ - φ₂` vanishes on the open set `G`, so its topological support lies in `Gᶜ`
+  have hsub : tsupport ((φ₁ - φ₂ : TestFormOn U k) : DifferentialForm (Euclid P) k) ⊆ Gᶜ := by
+    apply closure_minimal _ hG.isClosed_compl
+    intro x hx hxG
+    apply hx
+    change (φ₁ : DifferentialForm (Euclid P) k) x - (φ₂ : DifferentialForm (Euclid P) k) x = 0
+    rw [heq hxG, sub_self]
+  -- hence it misses `spt X ⊆ G`, and (VO) kills it
+  have hdisj : Disjoint (tsupport ((φ₁ - φ₂ : TestFormOn U k) : DifferentialForm (Euclid P) k))
+      X.support :=
+    Disjoint.mono hsub hspt disjoint_compl_left
+  have h := VO P k U X (φ₁ - φ₂) hdisj
+  -- linearity of `X`
+  have h2 := X.toCurrent.map_sub φ₁ φ₂
+  change X (φ₁ - φ₂) = X φ₁ - X φ₂ at h2
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
