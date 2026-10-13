@@ -694,6 +694,68 @@ theorem Submission.dtc_blowUp_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : 
       Measure.restrict_smul, hme.restrict_map, lintegral_smul_measure, hme.lintegral_map]
     simp [hιη]
 
+/-- **Mass scaling of blow-ups: `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)`** for `λ > 0` and every
+`W ⊆ ℝᴾ` (scaling identity (1) in the proof of Simon 7.3.1, chapter-07.txt lines 329–331; mass
+`M_W` of 6.2.5 with the Euclidean coefficient norm).  By `Submission.dtc_blowUp_testForm_corr`,
+`ω ↦ ω ∘ η` and `ω' ↦ ω' ∘ ι` (`ι(z) = x + λz`) exchange the admissible forms for
+`M_{η(W)}(η_{x,λ#}T)` and `M_W(T)`, preserving the coefficient norm pointwise, and
+`η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`; multiplication by `λ⁻ⁿ ≥ 0` commutes with the suprema. -/
+theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (W : Set (Euclid P)), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W := by
+  intro P n U T x lam hlam W
+  obtain ⟨hA, hB, hC⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  have hc : 0 ≤ lam⁻¹ ^ n := pow_nonneg (inv_nonneg.mpr hlam.le) n
+  -- `η = η_{x,λ}` and `ι(z) = x + λz` are continuous and mutually inverse; so `η` is injective.
+  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hιη : ∀ y, x + lam • dilation x lam y = y := by
+    intro y
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hηinj : Injective (dilation x lam) := fun y y' h => by
+    rw [← hιη y, ← hιη y', h]
+  have hηcont : Continuous (dilation x lam) :=
+    continuous_const.add (dilationCLM P lam).continuous
+  have hιcont : Continuous (fun z : Euclid P => x + lam • z) :=
+    continuous_const.add (continuous_const_smul lam)
+  unfold GeometricCurrentOn.massOn
+  apply le_antisymm
+  · -- Upper bound: an admissible `ω` for `η_{x,λ#}T` on `η(W)` gives the admissible
+    -- `ω' = ω ∘ η` for `T` on `W` (`tsupport ω' ⊆ η⁻¹(η(W)) = W`), and
+    -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω')`.
+    refine sSup_le ?_
+    rintro _ ⟨ω, ⟨hωs, hωn⟩, rfl⟩
+    obtain ⟨ω', hω'⟩ := hA ω
+    dsimp only
+    rw [hC T ω ω' hω', ENNReal.ofReal_mul hc]
+    gcongr
+    refine le_sSup ⟨ω', ⟨?_, fun y => ?_⟩, rfl⟩
+    · have hcomp : (ω' : DifferentialForm (Euclid P) n) =
+          (ω : DifferentialForm (Euclid P) n) ∘ dilation x lam := funext hω'
+      rw [hcomp]
+      refine (tsupport_comp_subset_preimage _ hηcont).trans ((preimage_mono hωs).trans ?_)
+      rw [preimage_image_eq W hηinj]
+    · rw [hω' y]
+      exact hωn _
+  · -- Lower bound: an admissible `ω'` for `T` on `W` gives the admissible `ω = ω' ∘ ι` for
+    -- `η_{x,λ#}T` on `η(W)` (`tsupport ω ⊆ ι⁻¹(W) ⊆ η(W)`), and `λ⁻ⁿ T(ω') = η_{x,λ#}T(ω)`.
+    rw [ENNReal.mul_sSup]
+    refine iSup₂_le ?_
+    rintro _ ⟨ω', ⟨hωs, hωn⟩, rfl⟩
+    obtain ⟨ω, hω⟩ := hB ω'
+    dsimp only
+    rw [← ENNReal.ofReal_mul hc, ← hC T ω ω' hω]
+    refine le_sSup ⟨ω, ⟨?_, fun z => ?_⟩, rfl⟩
+    · have hcomp : (ω : DifferentialForm (Euclid P) n) =
+          (ω' : DifferentialForm (Euclid P) n) ∘ fun z => x + lam • z := by
+        funext z
+        rw [Function.comp_apply, hω, hηι]
+      rw [hcomp]
+      refine (tsupport_comp_subset_preimage _ hιcont).trans fun z hz => ?_
+      exact ⟨x + lam • z, hωs hz, hηι z⟩
+    · have h := hωn (x + lam • z)
+      rwa [hω, hηι] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
