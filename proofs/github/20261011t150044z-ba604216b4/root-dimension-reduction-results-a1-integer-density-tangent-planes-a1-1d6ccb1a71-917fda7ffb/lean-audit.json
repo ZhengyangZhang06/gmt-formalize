@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0a6655ffce128a6a509e3702e045f962c8302ac4d7dc1d68d685e9f3150efe17",
+  "git_delta": {
+    "base_commit": "e9d9b4d212f02499792f80d25a82223d4b9d7042",
+    "candidate_commit": "86b4c4f7237655b091025da5a6cde97e6c8c0a0a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_ae_eq_slice_average",
+    "diff_sha256": "ccf22c642ae066c4fabc459d54a58588c8685637d5db514b06c363c810313599",
+    "source_sha256": "f6033f3058c9ca911aca59529bdd33f1cd3415a041cad8f3d327b5f6ba8c0d5b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_ae_eq_slice_average",
+      "statement": "∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = (d - c)⁻¹ * ∫ α in Ioo c d, H (p.1, α)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
