@@ -496,6 +496,48 @@ theorem tdo_ods_ae_abs_deriv_inner_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a 
   calc |inner ℝ u (deriv W r)| ≤ ‖u‖ * ‖deriv W r‖ := abs_real_inner_le_norm u (deriv W r)
     _ ≤ 1 * ‖deriv W r‖ := mul_le_mul_of_nonneg_right hu (norm_nonneg _)
     _ = ‖deriv W r‖ := one_mul _
+namespace Submission
+
+/-- Interval integral bounded by an a.e. dominating function, for the FTC bound in the
+one-dimensional sup estimate of the tilt-excess decay (Simon Ch. 5, Theorem 4.5): if `h` is
+integrable on `(-a, a)`, `s, t ∈ [-a, a]`, `g` is interval integrable between `s` and `t` and
+`|g| ≤ h` a.e. on `(-a, a)`, then `∫_s^t g ≤ ∫_{(-a,a)} h`.  Since `uIoc s t ⊆ (-a, a]` and the
+endpoint `a` is Lebesgue-null,
+`∫_s^t g ≤ ‖∫_s^t g‖ ≤ ∫_{uIoc s t} ‖g‖ ≤ ∫_{uIoc s t} h ≤ ∫_{(-a,a]} h = ∫_{(-a,a)} h`,
+where the fourth step uses `0 ≤ |g| ≤ h` a.e. on `(-a, a]`. -/
+theorem tdo_ods_intervalIntegral_le_of_ae_abs_le : ∀ (g h : ℝ → ℝ) (a s t : ℝ), IntegrableOn h (Ioo (-a) a) → s ∈ Icc (-a) a → t ∈ Icc (-a) a → IntervalIntegrable g volume s t → (∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |g r| ≤ h r) → ∫ r in s..t, g r ≤ ∫ r in Ioo (-a) a, h r := by
+  intro g h a s t hh hs ht hg hgh
+  -- Step 1: `uIoc s t ⊆ (-a, a]`, since `s, t ∈ [-a, a]`.
+  have hsub : uIoc s t ⊆ Ioc (-a) a := by
+    intro r hr
+    rcases mem_uIoc.1 hr with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact ⟨hs.1.trans_lt h1, h2.trans ht.2⟩
+    · exact ⟨ht.1.trans_lt h1, h2.trans hs.2⟩
+  -- Step 2: `h` is integrable on `(-a, a]` (the endpoint `a` is null and `h a` is finite),
+  -- hence on `uIoc s t`.
+  have hhIoc : IntegrableOn h (Ioc (-a) a) :=
+    (integrableOn_Ioc_iff_integrableOn_Ioo enorm_ne_top).2 hh
+  have hhI : IntegrableOn h (uIoc s t) := hhIoc.mono_set hsub
+  -- Step 3: `‖g‖` is integrable on `uIoc s t`.
+  have hgI : IntegrableOn (fun r => ‖g r‖) (uIoc s t) := (intervalIntegrable_iff.1 hg).norm
+  -- Step 4: `|g| ≤ h` a.e. on `(-a, a]` (a.e. `r ≠ a`), hence `0 ≤ h` a.e. there.
+  have hdom : ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioc (-a) a → |g r| ≤ h r := by
+    filter_upwards [hgh, Measure.ae_ne volume a] with r hr hra hrI
+    exact hr ⟨hrI.1, lt_of_le_of_ne hrI.2 hra⟩
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Ioc (-a) a)] h := by
+    rw [EventuallyLE, ae_restrict_iff' measurableSet_Ioc]
+    filter_upwards [hdom] with r hr hrI
+    exact (abs_nonneg _).trans (hr hrI)
+  -- Step 5: the chain of inequalities.
+  calc ∫ r in s..t, g r ≤ ‖∫ r in s..t, g r‖ := Real.le_norm_self _
+    _ ≤ ∫ r in uIoc s t, ‖g r‖ := intervalIntegral.norm_integral_le_integral_norm_uIoc
+    _ ≤ ∫ r in uIoc s t, h r := by
+        refine setIntegral_mono_on_ae hgI hhI measurableSet_uIoc ?_
+        filter_upwards [hdom] with r hr hrI
+        rw [Real.norm_eq_abs]
+        exact hr (hsub hrI)
+    _ ≤ ∫ r in Ioc (-a) a, h r := setIntegral_mono_set hhIoc hnonneg (ae_of_all _ hsub)
+    _ = ∫ r in Ioo (-a) a, h r := integral_Ioc_eq_integral_Ioo
 
 end Submission
 
