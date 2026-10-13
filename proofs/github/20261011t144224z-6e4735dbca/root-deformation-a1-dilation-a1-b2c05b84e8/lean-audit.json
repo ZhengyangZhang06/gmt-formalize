@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9f4883c248486306c6ad308689132aac2050d3ed7078bd09899db3e875f75daa",
+  "git_delta": {
+    "base_commit": "75d8be4abbe6699ce1563cd230e908b37a18000c",
+    "candidate_commit": "c859568a287690f2f5e2553c7d61b6a15ec33ac6",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "f75f36265c64902545ff056d108cafde19c6fbc3dffd0c71af86860b3482a473",
+    "source_sha256": "c4b4cb3e7b6f3f8dc0293e145a0f2ab22df733cbb4ead3680348bc67f446c2bd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation",
+      "statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, (∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∃ η : TestFormOn (univ : Set (Eucl N)) k, ∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Eucl N)) k, ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η)) ∧ (∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass ∧ Y.support = (fun x => ρ • x) '' X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) (k + 1), (∀ ω η : TestFormOn (univ : Set (Eucl N)) (k + 1), (∀ x, (η : DifferentialForm (Eucl N) (k + 1)) x = ρ ^ (k + 1) • (ω : DifferentialForm (Eucl N) (k + 1)) (ρ • x)) → Y ω = X η) → ∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y.boundary ω = X.boundary η",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

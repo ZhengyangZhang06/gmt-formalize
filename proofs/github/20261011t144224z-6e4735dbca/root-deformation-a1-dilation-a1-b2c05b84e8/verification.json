@@ -1,0 +1,22 @@
+{
+  "node_id": "root.deformation-a1.dilation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1120",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c859568a287690f2f5e2553c7d61b6a15ec33ac6",
+  "integrated_commit": "",
+  "proof_base_commit": "1938ad3eb6c8452d5f94e253177767af4224ff8a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1",
+  "requires": [
+    "root.deformation-a1.dilation-a1.calculus-a1",
+    "root.deformation-a1.dilation-a1.hausdorff-a1",
+    "root.deformation-a1.dilation-a1.mass-a1",
+    "root.deformation-a1.dilation-a1.support-a1",
+    "root.deformation-a1.dilation-a1.integer_multiplicity-a1",
+    "root.deformation-a1.dilation-a1.lattice_chain-a1"
+  ]
+}
