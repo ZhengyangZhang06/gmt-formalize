@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The cone parametrization `G(t, α) = tγ(α)` is an injective immersion** (the regularity
+hypotheses of the area formula, Simon Ch. 2, §3, for a piece of a cone over a unit curve; this is
+used to show that 2-dimensional area minimizing cones are unions of planes in the proof of
+Simon 7.3.3(1), p. 191).  Let `γ` be `C¹` and injective on `I = (-s, s)` with `‖γ‖ = 1`,
+`γ ⊥ γ'` and `γ' ≠ 0` there, and let `R = (r₀ - s, r₀ + s) × I`, so `t > r₀ - s > 0` on `R`.
+Taking norms in `tγ(α) = t'γ(α')` gives `t = t'`, so `G` is injective on `R`.  By the product rule
+`DG(t, α)(a, b) = aγ(α) + tbγ'(α)`, which is injective: pairing with `γ(α)` forces `a = 0`, and
+then `tbγ'(α) = 0` forces `b = 0`. -/
+theorem Submission.idtp_ccd_scsp_ca_cone_map_regular : ∀ (P : ℕ) (r₀ s : ℝ) (γ : ℝ → Euclid P), 0 < s → s < r₀ → ContDiffOn ℝ 1 γ (Ioo (-s) s) → InjOn γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ inner ℝ (γ α) (deriv γ α) = 0 ∧ deriv γ α ≠ 0) → InjOn (fun q : ℝ × ℝ => q.1 • γ q.2) (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) ∧ ∀ z ∈ Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s, DifferentiableAt ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z ∧ Injective (fderiv ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z) ∧ fderiv ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z (1, 0) = γ z.2 ∧ fderiv ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z (0, 1) = z.1 • deriv γ z.2 := by
+  intro P r₀ s γ _ hsr hγ hinj hcurve
+  -- (1) `t > r₀ - s > 0` on the box
+  have hpos : ∀ t ∈ Ioo (r₀ - s) (r₀ + s), 0 < t := fun t ht => by linarith [ht.1]
+  refine ⟨?_, ?_⟩
+  · -- (2) taking norms gives `t = t'`; cancelling `t ≠ 0` and injectivity of `γ` give `α = α'`
+    rintro ⟨t, α⟩ ⟨ht, hα⟩ ⟨t', α'⟩ ⟨ht', hα'⟩ heq
+    simp only at ht hα ht' hα' heq
+    have hnorm := congrArg norm heq
+    rw [norm_smul, norm_smul, (hcurve α hα).1, (hcurve α' hα').1, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_pos (hpos t ht), abs_of_pos (hpos t' ht'), mul_one, mul_one]
+      at hnorm
+    subst hnorm
+    rw [hinj hα hα' (smul_right_injective _ (hpos t ht).ne' heq)]
+  · rintro ⟨t, α⟩ ⟨ht, hα⟩
+    simp only at ht hα ⊢
+    obtain ⟨hnorm, horth, hne⟩ := hcurve α hα
+    -- (3) `γ` is differentiable at `α`, being `C¹` on the open interval `I`
+    have hdγ : HasDerivAt γ (deriv γ α) α :=
+      ((hγ.differentiableOn (by norm_num)).differentiableAt (Ioo_mem_nhds hα.1 hα.2)).hasDerivAt
+    -- (4) product and chain rules: `DG(t, α)(a, b) = t b γ'(α) + a γ(α)`
+    have h1 : HasFDerivAt (Prod.fst : ℝ × ℝ → ℝ) (ContinuousLinearMap.fst ℝ ℝ ℝ) (t, α) :=
+      hasFDerivAt_fst
+    have h2 : HasFDerivAt (γ ∘ Prod.snd) ((ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ)
+        (deriv γ α)).comp (ContinuousLinearMap.snd ℝ ℝ ℝ)) (t, α) :=
+      hdγ.hasFDerivAt.comp (t, α) hasFDerivAt_snd
+    have hD : HasFDerivAt (fun q : ℝ × ℝ => q.1 • γ q.2) (t • ((ContinuousLinearMap.smulRight
+        (1 : ℝ →L[ℝ] ℝ) (deriv γ α)).comp (ContinuousLinearMap.snd ℝ ℝ ℝ)) +
+        (ContinuousLinearMap.fst ℝ ℝ ℝ).smulRight (γ α)) (t, α) :=
+      h1.smul h2
+    -- (5) `DG(1, 0) = γ(α)` and `DG(0, 1) = tγ'(α)`
+    rw [hD.fderiv]
+    refine ⟨hD.differentiableAt, ?_, by simp, by simp⟩
+    -- (6) pairing `DG(a, b) = 0` with `γ(α)` gives `a = 0`; then `t b γ'(α) = 0` gives `b = 0`
+    rw [injective_iff_map_eq_zero]
+    rintro ⟨a, b⟩ hab
+    simp only [add_apply, smul_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.coe_fst',
+      ContinuousLinearMap.coe_snd', one_apply_eq_self] at hab
+    have ha : a = 0 := by
+      have := congrArg (fun v => inner ℝ (γ α) v) hab
+      simpa [inner_add_right, real_inner_smul_right, real_inner_self_eq_norm_sq, hnorm, horth]
+        using this
+    subst ha
+    simp only [zero_smul, add_zero, smul_smul, smul_eq_zero, hne, or_false, mul_eq_zero,
+      (hpos t ht).ne', false_or] at hab
+    exact Prod.mk_eq_zero.2 ⟨rfl, hab⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
