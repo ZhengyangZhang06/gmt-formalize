@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.extension-a1.mollify-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.extension-a1",
+  "depth": 6,
+  "title": "Mollification: a continuous compactly supported covector field is a uniform limit of test forms",
+  "statement": "Let P, n ∈ ℕ and let h : ℝ^P → Λⁿ(ℝ^P) (Covector (Euclid P) n) be continuous with compact support. Then there is a sequence (ω_j)_{j∈ℕ} of test forms ω_j ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n: C^∞ with compact support) converging to h uniformly on ℝ^P (TendstoUniformly, for the operator norm on Λⁿ(ℝ^P)).",
+  "lean_statement": "∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop",
+  "lean_name": "dtc_bc_lc_pf_ext_mollify_tendstoUniformly",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-fad6ade501-a1"
+}

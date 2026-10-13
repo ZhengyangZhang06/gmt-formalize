@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.extension-a1.integral_limit-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.extension-a1",
+  "depth": 6,
+  "title": "Integer multiplicity integrals converge under uniform convergence on a compact set carrying the carrier",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), and K ⊆ U compact with Hⁿ(M ∖ K) = 0, where Hⁿ = μHE[n]. Let g_j (j ∈ ℕ) and g be continuous maps ℝ^P → Λⁿ(ℝ^P) (Covector (Euclid P) n) such that g_j → g uniformly on K. Then ∫_M θ(x)·ξ(x)(g_j(x)) dHⁿ(x) → ∫_M θ(x)·ξ(x)(g(x)) dHⁿ(x) as j → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (gs : ℕ → Euclid P → Covector (Euclid P) n) (g : Euclid P → Covector (Euclid P) n), IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → (∀ j, Continuous (gs j)) → Continuous g → TendstoUniformlyOn gs g atTop K → Tendsto (fun j => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (gs j x) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (g x) ∂μHE[n]))",
+  "lean_name": "dtc_bc_lc_pf_ext_imrep_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-c7a028dca6-a1"
+}
