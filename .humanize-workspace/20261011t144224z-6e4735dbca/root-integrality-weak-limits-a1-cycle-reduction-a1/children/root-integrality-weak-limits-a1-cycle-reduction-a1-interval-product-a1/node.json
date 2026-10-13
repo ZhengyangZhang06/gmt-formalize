@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Product of an integer multiplicity current with [[(0,1)]] is integer multiplicity",
+  "statement": "Let P, m ∈ ℕ and let X ∈ D_m(ℝ^P) be integer multiplicity. Then there is an integer multiplicity Z ∈ D_{m+1}(ℝ^{P+1}) (the product [[(0,1)]] × X) such that Z(η) = ∫_0^1 X(φ(s)) ds for every η ∈ D^{m+1}(ℝ^{P+1}) and every family φ : ℝ → D^m(ℝ^P) with φ(s)(x)(v) = η(Φ(s, x))(e_0, Φ(0, v_1), …, Φ(0, v_m)) for all s ∈ [0,1], x ∈ ℝ^P, v ∈ (ℝ^P)^m, where Φ(s, x) := (s, x_1, …, x_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) and e_0 := Φ(1, 0) = EuclideanSpace.single 0 1.",
+  "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m), IsIntegerMultiplicity X → ∃ Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1), IsIntegerMultiplicity Z ∧ ∀ (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P), (φ s : DifferentialForm (Eucl P) m) x v = (η : DifferentialForm (Eucl (P + 1)) (m + 1)) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)",
+  "lean_name": "iwl_cr_interval_product_im",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1-a1"
+}
