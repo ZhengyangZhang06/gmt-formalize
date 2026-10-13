@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4ba5f14f8d25555f8901c25b479b39e36329819fc8b31567f0006a379bb5eb5d",
+  "git_delta": {
+    "base_commit": "14bb892261be30c62f2d26c7c8d82f83d21c885a",
+    "candidate_commit": "95211c7af51252f838ed06136de4fed3cc96029d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_bf_limsup_sup_measurable",
+    "diff_sha256": "7d3530e6523a120847679954de2e7e01b5ed171a9adc5a3f252293ac324848fc",
+    "source_sha256": "6af9e833ffca90a8877d26bfcc2068d5fdb760166c83a457513761db3c23d90a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_bf_limsup_sup_measurable",
+      "statement": "∀ (Z Y : Type) [MeasurableSpace Z] [MeasurableSpace Y] (k : ℕ) (μ : Measure Y) (δ : ℝ) (G : ℝ → ℝ → Set (Z × Y)), SFinite μ → (∀ r s, MeasurableSet (G r s)) → (∀ r s s', s ≤ s' → G r s ⊆ G r s') → (∀ r s, 0 < r → G r s = ⋃ r' ∈ Ioo (0 : ℝ) r, G r' s) → Measurable (fun z : Z => limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {y | (z, y) ∈ G r s} / ENNReal.ofReal ((r * s) ^ k)) (𝓝[>] 0))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
