@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.minimality_localizes-a1.measure_agree_on_borel-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.minimality_localizes-a1",
+  "depth": 3,
+  "title": "Measures that agree on the open subsets of an open set O, one of them finite on compact subsets of O, agree on all Borel subsets of O",
+  "statement": "Let P ∈ ℕ, let O ⊆ ℝ^P be open, and let μ, ν be measures on the Borel σ-algebra of ℝ^P (Mathlib Measure (Euclid P)). Assume that μ(C) < ∞ for every compact C ⊆ O, and that μ(G) = ν(G) for every open G ⊆ O. Then μ(A) = ν(A) for every Borel set A ⊆ O.",
+  "lean_statement": "∀ (P : ℕ) (O : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen O → (∀ C : Set (Euclid P), IsCompact C → C ⊆ O → μ C ≠ ∞) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ O → μ G = ν G) → ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ O → μ A = ν A",
+  "lean_name": "cmc_ml_measure_eq_of_eq_on_open_subsets",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1-me-9255eab117-a1"
+}
