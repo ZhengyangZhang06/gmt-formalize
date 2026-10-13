@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b1a0b20738918180ccb721dd5d46011bc28047a862d691dc8eecd80fcf8a7f33",
+  "git_delta": {
+    "base_commit": "e638d73168366673ef3dba4c82247c4fc2ad057d",
+    "candidate_commit": "8245a8ab2bd1e5d5a3667b1aede6dd59667a6f78",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_unitOrientation_comp_eq",
+    "diff_sha256": "40a1c28492a2805599e8c428a5ee544c156524b52ab06222d4588f33dc9a2f8f",
+    "source_sha256": "c3fca137c07b268827df70cc3fd73f9911d779db91793aff79d6d6aa83a83ff6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_unitOrientation_comp_eq",
+      "statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
