@@ -1227,6 +1227,208 @@ theorem Submission.regcomp_exists_smooth_unit_form_approx : ∀ (P n : ℕ) (ν 
     _ = ENNReal.ofReal (ε / 4 + ε / 4) := (ENNReal.ofReal_add (by positivity) (by positivity)).symm
     _ < ENNReal.ofReal ε := (ENNReal.ofReal_lt_ofReal_iff hε).2 (by linarith)
 
+/-- **Lower mass bound for `T = τ(C, θ, ξ)`** (the other half of Simon Ch. 6, Remark 3.2(3);
+mass (6.2.5)).  If `R = (C, θ, ξ)` represents `T` in the open set `U`, then
+`(θ Hⁿ⌞C)(W) ≤ M_W(T)` for every open `W`.  Since `C ⊆ U`, `μ = θ Hⁿ⌞C` is carried by `U`, so it
+suffices to bound `μ(K)` for compact `K ⊆ W ∩ U` (compact exhaustion of `W ∩ U`).  Choose a compact
+`L` with `K ⊆ O := int L` and `L ⊆ W ∩ U`, so `μ(L) < ∞`.  For `η ∈ (0, 1)` take a measurable
+near-maximizing covector field `g = 1_K g₀` (`|g|_E ≤ 1`, `⟨g, ξ⟩ ≥ 1 - η` a.e. on `C ∩ K`) and
+a smooth form `h` supported in `O` with `|h|_E ≤ 1` and `∫ |h - g|_E d(μ⌞O) < η`; `h` is
+admissible for `M_W(T)`, and `T(h) = ∫ θ⟨h, ξ⟩ dHⁿ⌞C ≥ (1 - η) μ(K) - η` because
+`|⟨α, ξ⟩| ≤ |α|_E` a.e. on `C`.  Letting `η ↓ 0` gives `μ(K) ≤ M_W(T)`. -/
+theorem Submission.regcomp_imrep_measure_le_massOn : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → R.measure W ≤ T.massOn W := by
+  intro P n U T R hU hR W hW
+  -- notation: `μC = Hⁿ⌞C`, `θ`, and `μ = R.measure = θ μC`
+  set μC : Measure (Euclid P) := μHE[n].restrict R.carrier with hμC
+  set θ : Euclid P → ℝ≥0∞ := fun x => (R.mult x : ℝ≥0∞) with hθ
+  have hμ : R.measure = μC.withDensity θ := rfl
+  have hθm : Measurable θ := by
+    have := R.measurable_mult
+    fun_prop
+  have hθrm : Measurable fun x => (R.mult x : ℝ) := by
+    have := R.measurable_mult
+    fun_prop
+  -- step 1: a.e. on `C`, `|⟨α, ξ⟩| ≤ |α|_E` and `⟨β, ξ⟩ = 1` for some `|β|_E ≤ 1`
+  have hpair : ∀ᵐ x ∂μC, (∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) ∧
+      ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ R.orient x β = 1 := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact Submission.regcomp_unit_orientation_pairing P n (R.orient x) Q hQ
+  -- the Euclidean coefficient norm is continuous
+  have hnormc : Continuous fun α : Covector (Euclid P) n => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact (continuous_eval_const _).pow 2
+    · exact continuous_const
+  -- key estimate: `μ(K) ≤ M_W(T)` for every compact `K ⊆ W ∩ U`
+  have hKey : ∀ K : Set (Euclid P), IsCompact K → K ⊆ W ∩ U → R.measure K ≤ T.massOn W := by
+    intro K hK hKWU
+    obtain ⟨L, hL, hKL, hLWU⟩ := exists_compact_between hK (hW.inter hU) hKWU
+    set O := interior L
+    have hOL : O ⊆ L := interior_subset
+    have hLm : MeasurableSet L := hL.measurableSet
+    have hKm : MeasurableSet K := hK.measurableSet
+    have hLU : L ⊆ U := hLWU.trans inter_subset_right
+    have hLW : L ⊆ W := hLWU.trans inter_subset_left
+    have hKL' : K ⊆ L := hKL.trans hOL
+    have hμL : R.measure L < ∞ := by
+      rw [hμ, withDensity_apply _ hLm, hμC, Measure.restrict_restrict hLm, inter_comm]
+      exact (R.locallyIntegrable_mult L hL hLU).lt_top
+    have hνfin : IsFiniteMeasure (R.measure.restrict O) :=
+      isFiniteMeasure_restrict.2 ((measure_mono hOL).trans_lt hμL).ne
+    have hμK : R.measure K ≠ ∞ := ((measure_mono hKL').trans_lt hμL).ne
+    set m := (R.measure K).toReal with hm
+    -- integrability of functions dominated by `θ 1_L`
+    have hint : ∀ f : Euclid P → ℝ, AEStronglyMeasurable f μC →
+        (∀ᵐ x ∂μC, ‖f x‖ₑ ≤ L.indicator θ x) → Integrable f μC := by
+      intro f hf hfb
+      refine ⟨hf, ?_⟩
+      calc ∫⁻ x, ‖f x‖ₑ ∂μC ≤ ∫⁻ x, L.indicator θ x ∂μC := lintegral_mono_ae hfb
+        _ = R.measure L := by rw [lintegral_indicator hLm, hμ, withDensity_apply _ hLm]
+        _ < ∞ := hμL
+    -- pointwise domination of `θ ⟨a, ξ⟩` for `|a|_E ≤ 1`, `a = 0` off `L`
+    have hpt : ∀ x, (∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) →
+        ∀ a : Covector (Euclid P) n, covectorEuclideanNorm a ≤ 1 → (x ∉ L → a = 0) →
+        ‖(R.mult x : ℝ) * R.orient x a‖ₑ ≤ L.indicator θ x := by
+      intro x hx a ha ha0
+      by_cases hxL : x ∈ L
+      · rw [indicator_of_mem hxL, enorm_mul, Real.enorm_natCast]
+        refine mul_le_of_le_one_right zero_le ?_
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_one.2 ((hx a).trans ha)
+      · rw [indicator_of_notMem hxL, ha0 hxL, map_zero, mul_zero, enorm_zero]
+    -- `∫ θ 1_K dμC = μ(K)`
+    have hKi : Integrable (K.indicator fun x => (R.mult x : ℝ)) μC := by
+      refine hint _ (hθrm.indicator hKm).aestronglyMeasurable (Eventually.of_forall fun x => ?_)
+      by_cases hxK : x ∈ K
+      · rw [indicator_of_mem hxK, indicator_of_mem (hKL' hxK), Real.enorm_natCast]
+      · rw [indicator_of_notMem hxK, enorm_zero]
+        exact zero_le
+    have hKint : ∫ x, K.indicator (fun x => (R.mult x : ℝ)) x ∂μC = m := by
+      rw [integral_indicator hKm, integral_eq_lintegral_of_nonneg_ae
+        (Eventually.of_forall fun x => Nat.cast_nonneg _) hθrm.aestronglyMeasurable, hm, hμ,
+        withDensity_apply _ hKm]
+      simp only [ENNReal.ofReal_natCast, hθ]
+    -- step 2: for every `η ∈ (0, 1)`, `(1 - η) μ(K) - η ≤ M_W(T)`
+    have hη : ∀ η : ℝ, 0 < η → η < 1 → ENNReal.ofReal ((1 - η) * m - η) ≤ T.massOn W := by
+      intro η hη0 hη1
+      obtain ⟨g₀, hg₀m, hg₀1, hg₀η⟩ := Submission.regcomp_covector_field_near_maximizer P n μC
+        R.orient η hη0 R.aestronglyMeasurable_orient (hpair.mono fun x hx => hx.2)
+      set g : Euclid P → Covector (Euclid P) n := K.indicator g₀ with hg
+      have hgm : StronglyMeasurable g := hg₀m.indicator hKm
+      have hg0 : ∀ x, x ∉ K → g x = 0 := fun x hx => indicator_of_notMem hx _
+      have hg1 : ∀ x, covectorEuclideanNorm (g x) ≤ 1 := by
+        intro x
+        by_cases hx : x ∈ K
+        · rw [hg, indicator_of_mem hx]
+          exact hg₀1 x
+        · rw [hg0 x hx, covectorEuclideanNorm_zero]
+          exact zero_le_one
+      obtain ⟨h, hh, hhO, hh1, hhg⟩ := Submission.regcomp_exists_smooth_unit_form_approx P n
+        (R.measure.restrict O) O K g hνfin isOpen_interior hK hKL hgm.aestronglyMeasurable hg1 hg0
+        η hη0
+      have hhL : tsupport h ⊆ L := hhO.trans hOL
+      have hh0 : ∀ x, x ∉ L → h x = 0 := fun x hx =>
+        image_eq_zero_of_notMem_tsupport fun hx' => hx (hhL hx')
+      have hhc : Continuous h := hh.1.continuous
+      -- the admissible test form `ω = h`
+      let ω : TestFormOn U n := ⟨h, hh, hhL.trans hLU⟩
+      have hωadm : ω ∈ massAdmissibleOn U n W := ⟨hhL.trans hLW, hh1⟩
+      have hTω : T ω = ∫ x, (R.mult x : ℝ) * R.orient x (h x) ∂μC := hR ω
+      -- integrability of `θ ⟨h, ξ⟩` and `θ ⟨g, ξ⟩`
+      have hGi : Integrable (fun x => (R.mult x : ℝ) * R.orient x (h x)) μC := by
+        refine hint _ (hθrm.aestronglyMeasurable.mul ((continuous_fst.clm_apply
+          continuous_snd).comp_aestronglyMeasurable
+            (R.aestronglyMeasurable_orient.prodMk hhc.aestronglyMeasurable))) ?_
+        filter_upwards [hpair] with x hx
+        exact hpt x hx.1 (h x) (hh1 x) (hh0 x)
+      have hFi : Integrable (fun x => (R.mult x : ℝ) * R.orient x (g x)) μC := by
+        refine hint _ (hθrm.aestronglyMeasurable.mul ((continuous_fst.clm_apply
+          continuous_snd).comp_aestronglyMeasurable
+            (R.aestronglyMeasurable_orient.prodMk hgm.aestronglyMeasurable))) ?_
+        filter_upwards [hpair] with x hx
+        exact hpt x hx.1 (g x) (hg1 x) fun hxL => hg0 x fun hxK => hxL (hKL' hxK)
+      -- `∫ θ ⟨g, ξ⟩ dμC ≥ (1 - η) μ(K)`
+      have hFlow : (1 - η) * m ≤ ∫ x, (R.mult x : ℝ) * R.orient x (g x) ∂μC := by
+        rw [← hKint, ← integral_const_mul]
+        refine integral_mono_ae (hKi.const_mul _) hFi ?_
+        filter_upwards [hg₀η] with x hx
+        by_cases hxK : x ∈ K
+        · rw [indicator_of_mem hxK, hg, indicator_of_mem hxK, mul_comm]
+          exact mul_le_mul_of_nonneg_left hx (Nat.cast_nonneg _)
+        · rw [indicator_of_notMem hxK, hg0 x hxK, map_zero, mul_zero, mul_zero]
+      -- `|∫ θ ⟨h - g, ξ⟩ dμC| < η`
+      have hdiff : |∫ x, (R.mult x : ℝ) * R.orient x (h x) ∂μC -
+          ∫ x, (R.mult x : ℝ) * R.orient x (g x) ∂μC| < η := by
+        have hmeas : Measurable fun x => ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) :=
+          (hnormc.comp_stronglyMeasurable
+            (hhc.stronglyMeasurable.sub hgm)).measurable.ennreal_ofReal
+        rw [← integral_sub hGi hFi, ← ENNReal.ofReal_lt_ofReal_iff hη0, ← Real.enorm_eq_ofReal_abs]
+        calc ‖∫ x, ((R.mult x : ℝ) * R.orient x (h x) - (R.mult x : ℝ) * R.orient x (g x)) ∂μC‖ₑ
+            ≤ ∫⁻ x, ‖(R.mult x : ℝ) * R.orient x (h x) - (R.mult x : ℝ) * R.orient x (g x)‖ₑ ∂μC :=
+              enorm_integral_le_lintegral_enorm _
+          _ ≤ ∫⁻ x, θ x * ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂μC := by
+              refine lintegral_mono_ae ?_
+              filter_upwards [hpair] with x hx
+              rw [← mul_sub, ← map_sub, enorm_mul, Real.enorm_natCast, Real.enorm_eq_ofReal_abs]
+              gcongr
+              exact hx.1 _
+          _ = ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂R.measure := by
+              rw [hμ, lintegral_withDensity_eq_lintegral_mul _ hθm hmeas]
+              rfl
+          _ = ∫⁻ x in O, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂R.measure := by
+              refine (setLIntegral_eq_of_support_subset fun x hx => ?_).symm
+              by_contra hxO
+              refine hx ?_
+              dsimp only
+              rw [image_eq_zero_of_notMem_tsupport fun hx' => hxO (hhO hx'),
+                hg0 x fun hx' => hxO (hKL hx'), sub_zero, covectorEuclideanNorm_zero,
+                ENNReal.ofReal_zero]
+          _ < ENNReal.ofReal η := hhg
+      have hTlow : (1 - η) * m - η ≤ T ω := by
+        rw [hTω]
+        have := (abs_lt.1 hdiff).1
+        linarith
+      exact (ENNReal.ofReal_le_ofReal hTlow).trans (T.le_massOn hωadm)
+    -- step 3: let `η ↓ 0`
+    have hlim : Tendsto (fun η : ℝ => ENNReal.ofReal ((1 - η) * m - η)) (𝓝[>] 0)
+        (𝓝 (ENNReal.ofReal m)) := by
+      have : Tendsto (fun η : ℝ => (1 - η) * m - η) (𝓝 0) (𝓝 ((1 - 0) * m - 0)) :=
+        ((tendsto_const_nhds.sub tendsto_id).mul tendsto_const_nhds).sub tendsto_id
+      rw [sub_zero, sub_zero, one_mul] at this
+      exact (ENNReal.tendsto_ofReal this).mono_left nhdsWithin_le_nhds
+    have hev : ∀ᶠ η in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - η) * m - η) ≤ T.massOn W := by
+      filter_upwards [Ioo_mem_nhdsGT zero_lt_one] with η hη'
+      exact hη η hη'.1 hη'.2
+    have := le_of_tendsto hlim hev
+    rwa [hm, ENNReal.ofReal_toReal hμK] at this
+  -- compact exhaustion of `W ∩ U`
+  obtain ⟨F, hFc, hFsub, hFU, hFmono⟩ := (hW.inter hU).exists_iUnion_isClosed
+  have hWU : R.measure (W ∩ U) ≤ T.massOn W := by
+    have hexh : ⋃ j : ℕ, F j ∩ closedBall 0 j = W ∩ U := by
+      refine Subset.antisymm (iUnion_subset fun j => inter_subset_left.trans (hFsub j)) ?_
+      intro x hx
+      rw [← hFU, mem_iUnion] at hx
+      obtain ⟨i, hi⟩ := hx
+      obtain ⟨j, hj⟩ := exists_nat_ge (max (i : ℝ) ‖x‖)
+      refine mem_iUnion.2 ⟨j, hFmono (Nat.cast_le.1 ((le_max_left _ _).trans hj)) hi, ?_⟩
+      rw [mem_closedBall, dist_zero_right]
+      exact (le_max_right _ _).trans hj
+    have hmono : Monotone fun j : ℕ => F j ∩ closedBall (0 : Euclid P) j := fun i j hij =>
+      inter_subset_inter (hFmono hij) (closedBall_subset_closedBall (Nat.cast_le.2 hij))
+    rw [← hexh, hmono.measure_iUnion]
+    exact iSup_le fun j => hKey _ ((isCompact_closedBall 0 _).inter_left (hFc j))
+      (inter_subset_left.trans (hFsub j))
+  -- `μ` is carried by `U`
+  have hUc : R.measure Uᶜ = 0 := by
+    rw [hμ]
+    refine withDensity_absolutelyContinuous _ _ ?_
+    rw [hμC, Measure.restrict_apply' R.measurableSet_carrier,
+      (disjoint_compl_left_iff_subset.2 R.carrier_subset).inter_eq, measure_empty]
+  rw [← measure_inter_conull hUc]
+  exact hWU
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
