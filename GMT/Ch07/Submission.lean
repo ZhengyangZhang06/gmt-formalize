@@ -451,6 +451,137 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Polar normalization of a vector Riesz density and push-forward to `ℝᴾ`** (the normalization
+`|T⃗| = 1` `μ_T`-a.e. in `T(ω) = ∫ ⟨ω, T⃗⟩ dμ_T`, Simon Ch. 6, 2.7, via the Riesz Representation
+Theorem, Ch. 1, 4.14).  Write `ρ = ‖ν‖` and `ν̂ = ρ⁻¹ν` (with `0⁻¹ = 0`), so `ν = ρν̂`,
+`‖ν̂‖ ≤ 1`, and `‖ν̂‖ = 1` where `ρ ≠ 0`.  Let `u` be `ν̂` extended by `0` off `U`,
+`μ = val_*(ρμ₀)`, `ξ(y) = ⟨u(y), c(·)⟩` and `β = c⁻¹ ∘ u`.  Then `μ(Uᶜ) = 0`;
+`μ(K) = ∫_{val⁻¹K} ‖ν‖ dμ₀ < ∞` for compact `K ⊆ U`; `|ξ(y)(α)| ≤ ‖c α‖ = |α|` by
+Cauchy–Schwarz; `|β(y)| = ‖u(y)‖ ≤ 1`; `ξ(β) = ‖u‖² = 1` wherever the density `ρ` is nonzero;
+and `∫ ξ(ω) dμ = ∫ ρ⟨ν̂, c(ω)⟩ dμ₀ = ∫ ⟨c(ω), ν⟩ dμ₀` for every `ω`. -/
+theorem Submission.cmrc_polar_pushforward : ∀ (P n d : ℕ) (U : Set (Euclid P)) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (μ₀ : Measure U) (ν : U → EuclideanSpace ℝ (Fin d)), IsOpen U → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → Measurable ν → (∀ K : Set U, IsCompact K → IntegrableOn ν K μ₀) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ AEStronglyMeasurable β μ ∧ (∃ C : ℝ, ∀ x, ‖β x‖ ≤ C) ∧ (∀ x, covectorEuclideanNorm (β x) ≤ 1) ∧ (∀ᵐ x ∂μ, ξ x (β x) = 1) ∧ ∀ ω : DifferentialForm (Euclid P) n, ∫ x, inner ℝ (c (ω x)) (ν x) ∂μ₀ = ∫ x, ξ x (ω x) ∂μ := by
+  intro P n d U c μ₀ ν hU hc hν hloc
+  -- Step 1: polar decomposition `ν = ρ • ν̂` with `ρ = ‖ν‖`
+  set ρ : U → ℝ := fun x => ‖ν x‖ with hρ_def
+  set νh : U → EuclideanSpace ℝ (Fin d) := fun x => (ρ x)⁻¹ • ν x with hνh_def
+  have hρm : Measurable ρ := hν.norm
+  have hνhm : Measurable νh := hρm.inv.smul hν
+  have hρ0 : ∀ x, 0 ≤ ρ x := fun x => norm_nonneg _
+  have hdecomp : ∀ x, ν x = ρ x • νh x := by
+    intro x
+    by_cases h : ρ x = 0
+    · have h0 : ν x = 0 := norm_eq_zero.mp h
+      simp [hνh_def, h0]
+    · simp [hνh_def, smul_smul, mul_inv_cancel₀ h]
+  have hνh_one : ∀ x, ρ x ≠ 0 → ‖νh x‖ = 1 := by
+    intro x h
+    simp only [hνh_def]
+    rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_nonneg (hρ0 x), inv_mul_cancel₀ h]
+  have hνh_le : ∀ x, ‖νh x‖ ≤ 1 := by
+    intro x
+    by_cases h : ρ x = 0
+    · have h0 : ν x = 0 := norm_eq_zero.mp h
+      simp [hνh_def, h0]
+    · exact (hνh_one x h).le
+  -- Step 2: `val` is a measurable embedding (`U` is open) and the density `ρ` is measurable
+  have hval : MeasurableEmbedding (Subtype.val : U → Euclid P) :=
+    MeasurableEmbedding.subtype_coe hU.measurableSet
+  have hdens : Measurable fun x => ENNReal.ofReal (ρ x) := hρm.ennreal_ofReal
+  -- Step 3: the unit field `u`, i.e. `ν̂` extended by `0` off `U`
+  set u : Euclid P → EuclideanSpace ℝ (Fin d) := Function.extend Subtype.val νh 0 with hu_def
+  have hu_val : ∀ x : U, u x = νh x := fun x => Subtype.val_injective.extend_apply _ _ x
+  have hu_notin : ∀ y, y ∉ U → u y = 0 := by
+    intro y hy
+    rw [hu_def, Function.extend_apply']
+    · rfl
+    · rintro ⟨x, rfl⟩
+      exact hy x.2
+  have hum : Measurable u := hval.measurable_extend hνhm measurable_const
+  have hu_le : ∀ y, ‖u y‖ ≤ 1 := by
+    intro y
+    by_cases hy : y ∈ U
+    · have := hu_val ⟨y, hy⟩
+      simp only at this
+      rw [this]
+      exact hνh_le _
+    · rw [hu_notin y hy, norm_zero]
+      exact zero_le_one
+  -- Step 4: `μ = val_*(ρ μ₀)`, `ξ(y) = ⟨u(y), c(·)⟩` and `β = c⁻¹ ∘ u`
+  refine ⟨(μ₀.withDensity fun x => ENNReal.ofReal (ρ x)).map Subtype.val,
+    fun y => (innerSL ℝ (u y)).comp (c : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin d)),
+    fun y => c.symm (u y), ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- (a) `val⁻¹(Uᶜ) = ∅`
+    rw [hval.map_apply]
+    have hpre : (Subtype.val : U → Euclid P) ⁻¹' Uᶜ = ∅ := by
+      ext x
+      simp
+    rw [hpre, measure_empty]
+  · -- (b) `μ(K) = ∫⁻_{val⁻¹K} ‖ν‖ₑ dμ₀ < ∞`, as `val⁻¹K` is compact
+    intro K hK hKU
+    rw [hval.map_apply,
+      withDensity_apply _ (hK.isClosed.measurableSet.preimage measurable_subtype_coe)]
+    have hKc : IsCompact ((Subtype.val : U → Euclid P) ⁻¹' K) := by
+      rw [Topology.IsInducing.subtypeVal.isCompact_preimage_iff]
+      · exact hK
+      · simpa using hKU
+    have hint := hloc _ hKc
+    have heq : ∫⁻ x in Subtype.val ⁻¹' K, ENNReal.ofReal (ρ x) ∂μ₀ =
+        ∫⁻ x in Subtype.val ⁻¹' K, ‖ν x‖ₑ ∂μ₀ := by
+      congr 1
+      funext x
+      simp [hρ_def]
+    rw [heq]
+    exact hint.2
+  · -- (c) `ξ` is a continuous function of the measurable `u`
+    have hcont : Continuous (fun v : EuclideanSpace ℝ (Fin d) =>
+        (innerSL ℝ v).comp (c : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin d))) :=
+      (innerSL ℝ).continuous.clm_comp continuous_const
+    exact (hcont.comp_stronglyMeasurable hum.stronglyMeasurable).aestronglyMeasurable
+  · -- (d) Cauchy–Schwarz and `‖u‖ ≤ 1`
+    intro y α
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe, innerSL_apply_apply]
+    rw [hc]
+    calc |inner ℝ (u y) (c α)| ≤ ‖u y‖ * ‖c α‖ := abs_real_inner_le_norm _ _
+      _ ≤ 1 * ‖c α‖ := by gcongr; exact hu_le y
+      _ = ‖c α‖ := one_mul _
+  · -- (e) `β` is a continuous function of the measurable `u`
+    exact (c.symm.continuous.comp_stronglyMeasurable hum.stronglyMeasurable).aestronglyMeasurable
+  · -- (f) `‖β(y)‖ ≤ ‖c⁻¹‖ ‖u(y)‖ ≤ ‖c⁻¹‖`
+    refine ⟨‖(c.symm : EuclideanSpace ℝ (Fin d) →L[ℝ] Covector (Euclid P) n)‖, fun y => ?_⟩
+    calc ‖c.symm (u y)‖
+        ≤ ‖(c.symm : EuclideanSpace ℝ (Fin d) →L[ℝ] Covector (Euclid P) n)‖ * ‖u y‖ :=
+          (c.symm : EuclideanSpace ℝ (Fin d) →L[ℝ] Covector (Euclid P) n).le_opNorm _
+      _ ≤ ‖(c.symm : EuclideanSpace ℝ (Fin d) →L[ℝ] Covector (Euclid P) n)‖ * 1 := by
+          gcongr
+          exact hu_le y
+      _ = _ := mul_one _
+  · -- (g) `|β(y)| = ‖c(c⁻¹(u y))‖ = ‖u y‖ ≤ 1`
+    intro y
+    rw [hc, c.apply_symm_apply]
+    exact hu_le y
+  · -- (h) `ξ(β) = ‖u‖² = 1` wherever the density `ρ` is nonzero
+    rw [hval.ae_map_iff, ae_withDensity_iff hdens]
+    refine ae_of_all _ (fun x hx => ?_)
+    have hρx : ρ x ≠ 0 := by
+      intro h
+      apply hx
+      simp [h]
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply, innerSL_apply_apply]
+    rw [real_inner_self_eq_norm_sq, hu_val, hνh_one x hρx]
+    norm_num
+  · -- (i) push-forward, then the density, then `⟨c ω, ρ ν̂⟩ = ρ ⟨ν̂, c ω⟩` pointwise
+    intro ω
+    rw [hval.integral_map,
+      integral_withDensity_eq_integral_toReal_smul hdens
+        (ae_of_all _ (fun x => ENNReal.ofReal_lt_top))]
+    congr 1
+    funext x
+    rw [ENNReal.toReal_ofReal (hρ0 x), smul_eq_mul]
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe, innerSL_apply_apply,
+      hu_val]
+    rw [hdecomp x, inner_smul_right, real_inner_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
