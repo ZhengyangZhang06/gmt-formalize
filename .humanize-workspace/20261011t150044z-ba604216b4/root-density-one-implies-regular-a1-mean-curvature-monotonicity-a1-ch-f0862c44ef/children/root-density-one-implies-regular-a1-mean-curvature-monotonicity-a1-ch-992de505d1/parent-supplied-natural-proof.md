@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.tangent_subset_range-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 2, §4, the definition of T_yM and (4.3) (book/chapter-02.txt, lines 865–871). This child is step 5 of the parent proof (node chart_tangent_space). The secant estimate, conclusion (iii) of the parent, is the hypothesis here. All norms are Euclidean.
+1. L := A(ℝ^d) = Set.range A is a linear subspace of ℝ^P, being the image of a linear map. Its dimension is at most d, so it is finite-dimensional and therefore closed in ℝ^P. It contains 0, so it is nonempty. For u ∈ ℝ^P let dist(u, L) := inf_{ℓ ∈ L} |u − ℓ|. Then dist(u, L) ≥ 0, and dist(u, L) ≤ |u − ℓ| for every ℓ ∈ L. The map u ↦ dist(u, L) is continuous (indeed 1-Lipschitz). Since L is closed and nonempty, dist(u, L) = 0 implies u ∈ L.
+2. Let w ∈ tangentSpace N q, witnessed by γ : ℝ → ℝ^P. So γ maps (−1, 1) into N, γ(0) = q and γ has derivative w at 0. The C¹ property of γ is not needed. Differentiability of γ at 0 means the difference quotients s(t) := t⁻¹(γ(t) − γ(0)) = t⁻¹(γ(t) − q), for t ≠ 0, satisfy s(t) → w as t → 0 with t ≠ 0. It also implies that γ is continuous at 0.
+3. Fix ε > 0 and let δ > 0 be given by the hypothesis for this ε. γ is continuous at 0 and γ(0) = q, so there is t₁ > 0 with |γ(t) − q| < δ whenever |t| < t₁. Put t₀ := min(t₁, 1) > 0.
+4. Let 0 < |t| < t₀. Then t ∈ (−1, 1), so γ(t) ∈ N, and |γ(t) − q| < δ. The hypothesis gives a_t ∈ ℝ^d with |γ(t) − q − Aa_t| ≤ ε|γ(t) − q|. Also A(t⁻¹a_t) = t⁻¹Aa_t ∈ L. By step 1, dist(s(t), L) ≤ |s(t) − A(t⁻¹a_t)| = |t⁻¹(γ(t) − q − Aa_t)| = |t|⁻¹|γ(t) − q − Aa_t| ≤ ε|t|⁻¹|γ(t) − q| = ε|s(t)|.
+5. Let t → 0 with t ≠ 0; this punctured-neighbourhood filter on ℝ is nontrivial. By step 2 and the continuity of dist(·, L) and of the norm, dist(s(t), L) → dist(w, L) and ε|s(t)| → ε|w|. The inequality of step 4 holds whenever 0 < |t| < t₀, that is, eventually along this filter. Passing to the limit gives dist(w, L) ≤ ε|w|.
+6. Step 5 holds for every ε > 0. Given e > 0, take ε := e/(|w| + 1) > 0. Then dist(w, L) ≤ e|w|/(|w| + 1) ≤ e. Since e > 0 is arbitrary, dist(w, L) ≤ 0. Together with dist(w, L) ≥ 0, this gives dist(w, L) = 0.
+7. By step 1 (L is closed and nonempty), w ∈ L = A(ℝ^d). Since w ∈ tangentSpace N q was arbitrary, tangentSpace N q ⊆ A(ℝ^d).
+
+## Key steps
+
+1. L = A(ℝ^d) is a finite-dimensional, hence closed, nonempty subspace, and dist(·, L) is continuous.
+2. For w = γ'(0) and 0 < |t| < t₀, the secant estimate gives dist((γ(t) − q)/t, L) ≤ ε|(γ(t) − q)/t|.
+3. Letting t → 0 gives dist(w, L) ≤ ε|w| for every ε > 0, so dist(w, L) = 0.
+4. Since L is closed, w ∈ L = A(ℝ^d).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md,parent-supplied-natural-proof.json}`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `grep -n 'tangentSpace|IsEmbeddedSubmanifold|^open|^namespace' GMT/Ch07/Contract.lean`
+- `python3 -I: list the 222 dag.json nodes (id, lean_name, status, children, depends_on); collect all lean_names in dag.json and nodes/*/decomposition-v*.json (470 names)`
+- `grep -rl over dag.json, problem.json, nodes/, GMT/ and simongmt/Poincare, and rg over local-references/123e8435b4a2469b/project, for dsmc_chart_inverse_continuity|dsmc_chart_secant_estimate|dsmc_tangentSpace_subset_range_of_secant|dsmc_chart_range_subset_tangentSpace (no match)`
+- `cat nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/decomposition-v{1,2,3}.json, decomposition-audit-v{1,2,3}.json, decomposition-review-receipt-v{1,2,3}.json, decomposition-scope-v{1,2,3}.json`
+- `sed -n 845,905p book/chapter-02.txt; grep -n 'proper|homeomorphism|readily checks' book/sources/chapter-02-source.txt`
+- `rg -n in local-references mathlib/Mathlib: LinearMap.injective_iff_antilipschitz, bound_of_antilipschitz, Tendsto.isCompact_insert_range, IsCompact.tendsto_subseq, hasDerivAt_iff_tendsto_slope, IsClosed.mem_iff_infDist_zero, continuous_infDist_pt, infDist_le_dist_of_mem, Submodule.closed_of_finiteDimensional, HasFDerivAt.isLittleO, HasFDerivAt.comp_hasDerivAt, HasDerivAt.div, ContDiffOn.comp, le_of_tendsto_of_tendsto, tendsto_one_div_add_atTop_nhds_zero_nat`
+- `grep -n theorem simongmt Chapter02/SubmanifoldTopology.lean; lake env lean /tmp/dsmc-cts-split/Reach.lean (#check Poincare.SimonGMT.Chapter02.IsSimonLocalRepresentation.isEmbedding_chartMap under import GMT.Ch07.Submission)`
+- `lake env lean /tmp/dsmc-cts-split/Check1.lean (#check of the cited Mathlib lemmas under import GMT.Ch07.Submission)`
+- `lake env lean /tmp/dsmc-cts-split/Types.lean (four exact child types stubbed with sorry plus the parent assembly; #print axioms)`
+- `lake env lean /tmp/dsmc-cts-split/Full.lean (complete proofs of the four children plus the parent assembly; #print axioms)`
+- `python3 -I: compare each proposal.json lean_statement with the compiled theorem type in Full.lean (all MATCH)`
+- `independent reviewer: lake env lean on Stmts.lean, Assembly.lean and FullCheck.lean in /tmp/dsmc-cts-review-19220, with statements extracted by script from proposal.json and the parent type from dag.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/tmp/dsmc-cts-split/Types.lean`
+- `/tmp/dsmc-cts-split/Full.lean`
+- `/tmp/dsmc-cts-split/spec/proposal.json`
+
+Snapshot: project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Definitions: tangentSpace (Contract.lean:228) is exactly the set of curve velocities. It requires ContDiffOn ℝ 1 γ (Ioo (-1) 1), MapsTo γ (Ioo (-1) 1) M, γ 0 = y and HasDerivAt γ v 0. The selected type's hypotheses are the chart clauses of IsEmbeddedSubmanifold (Contract.lean:221).
+
+Source: Simon Ch. 2, §4, chapter-02.txt lines 849–871 (same numbering in sources/chapter-02-source.txt). Definition (4.1) is at 850–857. Lines 858–862 note that the definition makes the chart a homeomorphism onto M ∩ W; child 1 proves this at the point v. Simon gives (4.3), T_yM = span Dψ, without proof ('one readily checks'), so children 2–4 follow the parent's filled-in steps.
+
+Not reusable:
+- SimonGMT Chapter02/SubmanifoldTopology.lean (IsSimonLocalRepresentation.isEmbedding_chartMap) is not reachable from the contract: #check gives 'Unknown identifier'. The children are therefore self-contained.
+- The minimizing_implies_stationary branch's chart node is still decomposing. Its unaccepted proposals use other names (cts_*, chartTangent_*, chartRep_*) and only conclusion (i), so nothing is reused.
+
+Mathlib support in the snapshot:
+- LinearMap.injective_iff_antilipschitz (Analysis/Normed/Module/FiniteDimension.lean:242) and ContinuousLinearMap.bound_of_antilipschitz (ContinuousLinearMap.lean:106) give step 1.
+- Tendsto.isCompact_insert_range (Topology/Compactness/Compact.lean:639) and IsCompact.tendsto_subseq (Topology/Sequences.lean:298) give child 1.
+- HasFDerivAt.isLittleO (FDeriv/Defs.lean:230) gives child 2.
+- hasDerivAt_iff_tendsto_slope (Deriv/Slope.lean:73), IsClosed.mem_iff_infDist_zero (HausdorffDistance.lean:580), continuous_infDist_pt, Submodule.closed_of_finiteDimensional (Topology/Algebra/Module/FiniteDimension.lean:531) and le_of_tendsto_of_tendsto (Topology/Order/OrderClosed.lean:472) give child 3.
+- HasDerivAt.div (Deriv/Inv.lean:173), ContDiffOn.comp (ContDiff/Comp.lean:125) and HasFDerivAt.comp_hasDerivAt (Deriv/Comp.lean:374) give child 4.
+
+Lean checks:
+- The four exact statements elaborate.
+- The frozen parent type follows from them.
+- Complete proofs of all four children compile with only propext, Classical.choice and Quot.sound.
+
+Name check: no match for the four proposed names in dag.json, nodes/, GMT/, simongmt or the project snapshot.

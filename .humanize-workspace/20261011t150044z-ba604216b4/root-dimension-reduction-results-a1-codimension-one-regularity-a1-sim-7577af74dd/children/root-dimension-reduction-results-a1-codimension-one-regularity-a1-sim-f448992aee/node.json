@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "depth": 4,
+  "title": "Minimality of a multiplicity-one oriented C¹ piece gives area comparison under deformations (parent B5a–B5d)",
+  "statement": "Area comparison from minimality. Data: P, m ∈ ℕ with m ≥ 1; C ∈ 𝒟_m(ℝ^P); an open V ⊆ ℝ^P; M ⊆ V; ξ : ℝ^P → Λ_m(ℝ^P). Hypotheses: C is minimizing in ℝ^P (IsMinimizingIn C univ) and ∂C = 0 (BoundaryVanishes C); M is an embedded C¹ m-submanifold with orientation ξ (IsOrientation m M ξ); H^m(M ∩ K) < ∞ for every compact K ⊆ V; C(ω) = ∫_M ⟨ω(x), ξ(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(ℝ^P) with tsupport ω ⊆ V; and H^m(M ∩ W) ≤ M_W(C) (C.massOn W) for every open W ⊆ V with H^m(M ∩ W) < ∞. Conclusion: for every C^∞ map Z : ℝ^P → ℝ^P with compact support and tsupport Z ⊆ V there is t₀ > 0 such that H^m(M ∩ tsupport Z) ≤ H^m({x + tZ(x) : x ∈ M ∩ tsupport Z}) for every t with |t| < t₀. H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (V M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 1 ≤ m → IsMinimizingIn C univ → BoundaryVanishes C → IsOpen V → M ⊆ V → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ V → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → (∀ W : Set (Euclid P), IsOpen W → W ⊆ V → μHE[m] (M ∩ W) ≠ ∞ → μHE[m] (M ∩ W) ≤ C.massOn W) → ∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ V → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))",
+  "lean_name": "codim1_minimizing_piece_area_comparison",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee-a1"
+}
