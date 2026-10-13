@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcdt_cbm|poincare_ineq|BVPoincare|BVExtensionEstimate|integer_median|bv_trace|bv_poincare|integral_divergence_of_hasFDerivAt_off_countable' project/GMT mathlib/Mathlib -g '*.lean'",
+        "rg -n 'Int.exists_least_of_bdd|theorem exists_least_of_bdd|support_fderiv_subset|volume_preserving_piFinSuccAbove|volume_pi_Ioo' mathlib/Mathlib -g '*.lean'",
+        "sed -n '181,241p' mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "sed -n '41,100p' mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "sed -n '200,240p' mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "sed -n '100,142p' mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "sed -n '256,305p' mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean",
+        "/tmp/conical-work/tc/bin/lake env /tmp/conical-work/tc/bin/lean /tmp/cbm-review-2baf01cc/TypeChecks.lean",
+        "/tmp/conical-work/tc/bin/lake env /tmp/conical-work/tc/bin/lean /tmp/cbm-review-2baf01cc/ParseChecks.lean",
+        "/tmp/conical-work/tc/bin/lake env /tmp/conical-work/tc/bin/lean /tmp/cbm-review-2baf01cc/Assembly.lean",
+        "/tmp/conical-work/tc/bin/lake env /tmp/conical-work/tc/bin/lean /tmp/cbm-review-2baf01cc/LibraryChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c373840d71/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c373840d71/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/cbm-review-2baf01cc/TypeChecks.lean",
+        "/tmp/cbm-review-2baf01cc/ParseChecks.lean",
+        "/tmp/cbm-review-2baf01cc/Assembly.lean",
+        "/tmp/cbm-review-2baf01cc/LibraryChecks.lean"
+      ],
+      "conclusion": "The seven-way split is appropriate for the selected cube BV median theorem. The snapshot matches the workspace contract and pinned Mathlib revision. Searches found no cmcdt_cbm declarations; the Ch02 BV inequalities are unsolved contracts, not reusable proofs. Relevant analytic library lemmas and their standard axioms were checked. All seven literal propositions independently elaborate without child implementations. Integral parsing, C∞-to-C¹ conversion, trace coercion and operator norms were checked. Coordinate transport needs only the verified measure-preserving equivalence; norm estimates remain in Euclid. The supplied parent assembly, with hypotheses regenerated from the exact child strings and conclusion from the immutable handoff, compiles using only propext, Classical.choice and Quot.sound. Dependencies are acyclic and correctly directed. All names are bare identifiers, and scanning all fields of the 1,022-node DAG found no reservations or collisions. No previously accepted child declaration is being reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integral_div_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Compact support makes the continuous directional derivatives integrable. Integration by parts against 1 gives their zero integrals; the orthonormal-basis trace formula and support containment then give the stated cube integral. The proof is complete and independent of the parent and siblings."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all hypotheses and both approximation conclusions. Smoothing the measurable normalized gradient produces an admissible field whose topological support lies in the closed padded box inside Q₁. Testing its negative and applying the stated integrable Fubini bound gives the exact operator-norm estimate. Contraction and compactly supported continuous density establish L¹ convergence. Zero testing supplies V ≥ 0, including the empty-cube case δ ≥ 1/2."
+    },
+    {
+      "key": "smooth_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean expression is the intended iterated integral with coefficient 2^(m+1)√(m+1). The segment estimate and the two affine changes of variables yield 2ⁿ√n·s^(n+1) times the gradient integral; s ≤ 1 gives the stated bound. Integrability follows from continuity on the compact closure, and δ ≥ 1/2 is correctly handled separately."
+    },
+    {
+      "key": "bv_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Only the two declared siblings are used. The double-integral approximation error is bounded by twice the L¹ error. Dominated convergence exhausts the unit cube, and its volume 1 permits choosing c = ∫u. The resulting stronger constant implies the exact stated constant because V ≥ 0. The dependencies and proof are non-circular."
+    },
+    {
+      "key": "integer_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes global integer-valuedness, integrability, minimization over every real c and the size bound. The Borel integer-valued representative preserves all integrals. Distribution tails establish the least integer threshold; integer-valuedness gives both median inequalities. The two pointwise comparisons prove minimization, and the sign cases prove the factor-2 bound."
+    },
+    {
+      "key": "smooth_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the C¹ assumptions, global field bound and interval 0 ≤ δ ≤ 1/4. Product differentiation, coordinatewise FTC and Fubini give the boundary terms. Averaging over a side of length at least 1/2 bounds each face by 2∫|v| + ∫‖Dv‖, yielding exactly the two stated coefficients. The n = 1 case is covered, and Lean parsing preserves the sum outside the integrals."
+    },
+    {
+      "key": "bv_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly smooth_approx and smooth_trace. C¹ regularity bounds div G on the closed cube, ensuring product integrability and passage through L¹ approximation. Dominated convergence then exhausts Q₁ and preserves the stated uniform bound. Compact support of G is unnecessary. The exact Lean proposition matches the prose and supplies the parent's final estimate after subtracting the median."
+    }
+  ],
+  "required_changes": []
+}

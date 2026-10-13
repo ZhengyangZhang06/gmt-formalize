@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1",
+  "depth": 4,
+  "title": "Mollification: C¹ approximants on Q_δ with total gradient at most V converging in L¹",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := (0,1)ⁿ and Q_δ := {y : δ < y_i < 1 − δ for all i} in Euclid n (Lebesgue measure), div g := trace Dg. Let u : ℝⁿ → ℝ be integrable on Q₁ and V ∈ ℝ with ∫_{Q₁} u · div g ≤ V for every C^∞ map g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ Q₁ and |g| ≤ 1. Then for every δ > 0 there are C¹ functions v_k : ℝⁿ → ℝ (k ∈ ℕ) with ∫_{Q_δ} ‖Dv_k‖ ≤ V for all k and ∫_{Q_δ} |v_k − u| → 0 as k → ∞.",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < δ → ∃ v : ℕ → Euclid (m + 1) → ℝ, (∀ k, ContDiff ℝ 1 (v k)) ∧ (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ (v k) x‖ ≤ V) ∧ Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0)",
+  "lean_name": "cmcdt_cbm_smooth_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-458697e68e-a1"
+}
