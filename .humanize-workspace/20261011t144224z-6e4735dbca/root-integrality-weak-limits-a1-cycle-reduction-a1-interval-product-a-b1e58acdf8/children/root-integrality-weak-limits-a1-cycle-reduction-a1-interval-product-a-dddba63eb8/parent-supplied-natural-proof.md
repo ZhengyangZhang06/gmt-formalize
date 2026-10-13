@@ -1,0 +1,151 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.product_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 3(a) of the parent proof (H^{m+1}⌞M̃ = Φ′_*((L¹⌞(0,1)) ⊗ Hᵐ⌞M), from (MP) for A = M and restriction to the open slab O).
+
+Notation. E := ℝ^P = Eucl P, E′ := ℝ^{P+1} = Eucl (P+1), Hᵏ := μHE[k], L¹ := volume on ℝ. Φ(s, u) := (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u)); π(y) := (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y)); y₀ := (EuclideanSpace.equiv (Fin (P+1)) ℝ y) 0; Φ′(p) := Φ(p.1, p.2) for p ∈ ℝ × E. (MP): for every A ⊆ E that is Hᵐ-null-measurable, countably m-rectifiable and has Hᵐ(A ∩ K) < ∞ for every compact K, H^{m+1}⌞{y : π(y) ∈ A} = Φ′_*(L¹ ⊗ Hᵐ⌞A). M̃ := {y : π(y) ∈ M ∧ y₀ ∈ (0,1)}; ν := Hᵐ⌞M.
+
+1. (Φ′ is Borel.) Φ′ is continuous: p ↦ Fin.cons p.1 (EuclideanSpace.equiv p.2) is continuous (Continuous.finCons with continuous_fst and the continuous equivalence composed with continuous_snd; the motive must be given as the constant family fun _ => ℝ), and the inverse equivalence is continuous. Hence Φ′ is measurable.
+2. (The slab O.) O := {y ∈ E′ : y₀ ∈ (0,1)} is the preimage of the open interval (0,1) under the continuous map y ↦ (EuclideanSpace.equiv (Fin (P+1)) ℝ y) 0, so O is open, hence measurable. By commutativity of ∧, M̃ = O ∩ {y : π(y) ∈ M}.
+3. (Preimage of O.) Φ′(s, u)₀ = s (ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero), so Φ′⁻¹(O) = (0,1) ×ˢ E (= Ioo 0 1 ×ˢ univ).
+4. (ν is σ-finite.) For compact K ⊆ E (closed, hence Borel), ν(K) = Hᵐ(K ∩ M) = Hᵐ(M ∩ K) < ∞ (Measure.restrict_apply and the hypothesis). So ν is finite on compact sets; E is σ-compact, so ν is σ-finite, in particular s-finite.
+5. (Computation.)
+   H^{m+1}⌞M̃ = H^{m+1}⌞(O ∩ {π ∈ M}) (step 2)
+   = (H^{m+1}⌞{π ∈ M})⌞O (Measure.restrict_restrict, O measurable)
+   = (Φ′_*(L¹ ⊗ ν))⌞O ((MP) for A = M, whose three hypotheses are exactly the hypotheses on M)
+   = Φ′_*((L¹ ⊗ ν)⌞Φ′⁻¹(O)) (Measure.restrict_map: Φ′ measurable, O measurable)
+   = Φ′_*((L¹ ⊗ ν)⌞((0,1) ×ˢ E)) (step 3)
+   = Φ′_*((L¹⌞(0,1)) ⊗ (ν⌞E)) (Measure.prod_restrict; ν s-finite by step 4)
+   = Φ′_*((L¹⌞(0,1)) ⊗ Hᵐ⌞M) (Measure.restrict_univ). ∎
+
+Formalization aid. The following tactic proof, placed after `theorem Submission.iwl_cr_ip_wt_product_measure : <the frozen Lean type of this child, verbatim> := by`, was kernel-checked in the contract scope (namespace GMT.Ch06 with the contract's opens) after import GMT.Ch06.Submission at the frozen commit d8d46c9 with the pinned toolchain (Lean v4.35.0-rc3, Mathlib 25730c7c); #print axioms = [propext, Classical.choice, Quot.sound]. It uses no helper declarations and no sibling. (The σ-finiteness instance of step 4 is inferred automatically once IsFiniteMeasureOnCompacts is provided.)
+
+  intro P m hMP M hMmeas hMrect hMfin
+  have hΦc : Continuous fun p : ℝ × Eucl P =>
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)) :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  let O : Set (Eucl (P + 1)) := {y | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}
+  have hO : MeasurableSet O :=
+    (isOpen_Ioo.preimage ((continuous_apply 0).comp
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous)).measurableSet
+  have hset : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      O ∩ {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+    ext y
+    exact and_comm
+  have hpre : (fun p : ℝ × Eucl P =>
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹' O =
+      Ioo (0 : ℝ) 1 ×ˢ (univ : Set (Eucl P)) := by
+    ext p
+    simp [O]
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict M) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hMfin K hK⟩
+  rw [hset, ← Measure.restrict_restrict hO, hMP M hMmeas hMrect hMfin,
+    Measure.restrict_map hΦc.measurable hO, hpre, ← Measure.prod_restrict, Measure.restrict_univ]
+
+## Key steps
+
+1. Φ′ is continuous; O = {y₀ ∈ (0,1)} is open; M̃ = O ∩ π⁻¹(M) and Φ′⁻¹(O) = (0,1) ×ˢ ℝ^P.
+2. Hᵐ⌞M is finite on compact sets, hence σ-finite.
+3. restrict_restrict, (MP) for A = M, restrict_map, prod_restrict and restrict_univ give the identity.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; sha256sum (ea3ee0dd…853d)`
+- `python3 -I: dag.json status/lean_name/lean_statement of root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1* and of root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1; its accepted-candidate.json contract.lean_statement == dag lean_statement and audit.comparator_passed`
+- `git show 91a22d1bfc9063820dd1583526d3d097beffd0ec:GMT/Ch06/Submission.lean (accepted proof and declaration layout of Submission.fiw_tl_blowup_setIntegral)`
+- `grep -rhoE "iwl_cr_ip_[A-Za-z0-9_']+" nodes dag.json (finds the sibling product_triple proposals iwl_cr_ip_pt_slab_restrict_eq_map, iwl_cr_ip_pt_slab_transfer, iwl_cr_ip_pt_cylinder_nullMeasurableSet, iwl_cr_ip_pt_cylinder_countablyRectifiable, iwl_cr_ip_pt_frame_orthonormal); grep -rhoE 'iwl_cr_ip_wt[A-Za-z0-9_]*' nodes dag.json (no match)`
+- `python3 -I: nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1/decomposition-v1.json (parent split, blowup_cov entry) and sibling decomposition-v1.json files (measure_identity, slice_formula: no split; product_triple: split with the names above)`
+- `grep -n "theorem\|def\|abbrev" in simongmt Poincare/SimonGMT/Chapter03/Rectifiable.lean: CountablyRectifiable (l.34), countablyRectifiable_range (l.64), blowUpMap (l.96), regular_euclideanHausdorffMeasure_restrict_submodule (l.187), HasWeightedApproximateTangentSpaceAt (l.330)`
+- `grep -rn in local-references mathlib/Mathlib: tendsto_integral_filter_of_dominated_convergence, continuous_of_dominated, intervalIntegral.integral_comp_mul_add, integral_Ioc_eq_integral_Ioo, intervalIntegral.integral_of_le, Integrable.comp_snd, MeasureTheory.AEStronglyMeasurable.comp_snd, aestronglyMeasurable_iUnion_iff, integrable_indicator_iff, integral_mono_of_nonneg, norm_integral_le_integral_norm, setIntegral_indicator, Continuous.integrable_of_hasCompactSupport, Measure.prod.instIsFiniteMeasureOnCompacts, integral_prod, MeasurableEmbedding.integral_map, HasCompactMulSupport.comp_homeomorph, Fintype.range_linearCombination, LinearMap.coe_toContinuousLinearMap', EuclideanSpace.real_norm_sq_eq, EuclideanSpace.equiv, abs_le_of_sq_le_sq, le_of_sq_le_sq, Filter.Tendsto.const_mul_atTop, Filter.Tendsto.const_mul_atTop_of_neg, tendsto_inv_nhdsGT_zero, Filter.Tendsto.eventually_lt_const, Continuous.bounded_above_of_compact_support, Continuous.finCons`
+- `python3 -I /tmp/ptdec/scripts/gen.py and final.py (lean_contract.validate_lean_statement on all 7 child types; key/name regexes; dependency acyclicity)`
+- `python3 -I /tmp/ptdec/scripts/layout.py (gmt-compare.py child_modules, contract mode) and lake env lean /tmp/ptdec/layout/AllChallenges.lean (7 exact comparator challenge targets)`
+- `lake env lean /tmp/ptdec/Asm.lean (parent assembly from the 7 child stubs; sorryAx only from stubs)`
+- `lake env lean /tmp/ptdec/C1.lean … C6.lean and /tmp/ptdec/Full.lean (complete child proofs + accepted blowup_cov proof + parent assembly + solution-side exact checks; #print axioms = [propext, Classical.choice, Quot.sound])`
+- `independent reviewer subagent: re-ran Full.lean and AllChallenges.lean, compared payload statements byte-for-byte with the checked Lean files (scripts under /tmp/ptrev); verdict ACCEPT, minor wording fixes applied`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-b1e58acdf8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-b1e58acdf8/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-b1e58acdf8/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-6184ff8144/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-930be90ff5/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-ef3d70356e/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-ef3d70356e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Ring/Abs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ptdec/scripts/gen.py`
+- `/tmp/ptdec/scripts/layout.py`
+- `/tmp/ptdec/scripts/full.py`
+- `/tmp/ptdec/scripts/final.py`
+- `/tmp/ptdec/Check.lean`
+- `/tmp/ptdec/layout/AllChallenges.lean`
+- `/tmp/ptdec/Asm.lean`
+- `/tmp/ptdec/Full.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. The snapshot's GMT/Ch06/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…853d).
+
+DAG and naming:
+- No accepted declaration states any of the six new child statements, so nothing new is reused.
+- The only reuse is fiw_tl_blowup_setIntegral: accepted, comparator_passed, with an identical frozen type.
+- The sibling product_triple is concurrently proposing iwl_cr_ip_pt_* names (not accepted), two of which overlap product_measure and product_plane (a) mathematically. This node therefore uses the unreserved prefix iwl_cr_ip_wt_, with no match anywhere in the run directory.
+
+SimonGMT Chapter03/Rectifiable.lean supplies blowUpMap, HasWeightedApproximateTangentSpaceAt (Simon Ch. 3, 1.7), countablyRectifiable_range and regular_euclideanHausdorffMeasure_restrict_submodule.
+
+Mathlib supplies every tool used:
+- dominated convergence along 𝓝[>] 0 and continuity of parametric integrals (tendsto_integral_filter_of_dominated_convergence, continuous_of_dominated);
+- interval substitution (intervalIntegral.integral_comp_mul_add);
+- Fubini (integral_prod, Integrable.comp_snd, AEStronglyMeasurable.comp_snd);
+- change of variables along the homeomorphism Φ′ (MeasurableEmbedding.integral_map);
+- integrability of compactly supported continuous functions (Continuous.integrable_of_hasCompactSupport, Measure.prod.instIsFiniteMeasureOnCompacts);
+- the integral estimates integral_mono_of_nonneg and norm_integral_le_integral_norm.
+
+Lean checks:
+- All 7 child types elaborate in the exact comparator layout.
+- All 6 new children are fully proved with axioms [propext, Classical.choice, Quot.sound].
+- The frozen parent type is proved from them and the accepted blow-up lemma with the same axioms.
+- An independent reviewer re-ran these checks and accepted the split.
+
+Public sources for the mathematics: L. Simon, Introduction to Geometric Measure Theory, Ch. 3 §1 (Def. 1.7, weighted approximate tangent spaces) and Ch. 6, 3.2(2) (product with an interval); Federer, Geometric Measure Theory, 3.2.23 (product formula behind (MP)).
