@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "norm_setIntegral_le_of_norm_le_const|setIntegral_eq_integral_of_forall_compl_eq_zero|integrableOn_of_bounded|setIntegral_indicator|measureReal_inter_add_sdiff|theorem setAverage_eq",
+        "exists_pos_le_norm|bounded_above_of_compact_support|uniformContinuous_of_continuous|hasFDerivAt_iff_isLittleO_nhds_zero|theorem tendsto_toReal|measure_closedBall_pos|theorem measure_closedBall_lt_top",
+        "toReal_div",
+        "git show cad8e6c99e9ddef3000b9edde6f2c261ec0da2dc:GMT/Ch07/Submission.lean",
+        "git show 081b32498681923bdfb2393289f65737bca1aa79:GMT/Ch07/Submission.lean",
+        "git show ba63d93691ac4515b1bc9225dd00f0137babb72d:GMT/Ch07/Submission.lean",
+        "git show c219652b33929e3f0f610d3dccd642393580fcc2:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rescaled_audit_vm1j67sg/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rescaled_audit_vm1j67sg/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rescaled_audit_vm1j67sg/ReuseAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-367d726198/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-367d726198/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-bdb1848a47/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-60ae6ef3dc/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-bb5a701af1/accepted-candidate.json",
+        "/tmp/rescaled_audit_vm1j67sg/Types.lean",
+        "/tmp/rescaled_audit_vm1j67sg/Assembly.lean",
+        "/tmp/rescaled_audit_vm1j67sg/ReuseAndAssembly.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest, and the selected contract digest recomputes exactly. All three names are bare identifiers with unique accepted owners and byte-identical frozen types; acceptance records match the candidate source hashes. Their declarations introduce no context changes. All types independently elaborate as propositions in the comparator scope. A separately constructed assembly proves the exact selected parent from precisely these three children and the declared rescaling sibling. Recompiling the accepted proofs and assembly succeeds; every checked theorem depends only on propext, Classical.choice and Quot.sound. The split is appropriate and acyclic: the children isolate the three-term bound, complement averages and differential error, leaving rescaling and squeezing in the parent. The snapshot confirms that the integral norm bound requires no measurability. The toReal_div search had no match in Data/ENNReal/Inv.lean; its declaration is in Basic/ENNReal/Inv.lean."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "three_term_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and matches the standalone one-line Lean proposition. The proof derives nonnegative constants, localizes both integrands using the two lower bounds, establishes the required measurability and integrability, proves both membership cases of the pointwise estimate, and integrates it correctly. Arbitrary R, including nonpositive radii, causes no gap; b ∈ B is never assumed. This is a genuine independent obligation with a complete non-circular proof and valid identical-type reuse."
+    },
+    {
+      "key": "compl_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including the ENNReal density quotient and real Bochner average. Positive-radius balls have finite positive volume, including in dimension zero. Measurable additivity gives the exact identity average = 1 − q(s).toReal; continuity of toReal at 1 and eventual positivity of s prove the stated limit. The proof is complete, uses no parent or child conclusion, and the accepted declaration has the identical frozen type."
+    },
+    {
+      "key": "diff_quot_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose explicitly states the Bochner convention and absence of measurability assumptions, exactly matching the independently elaborated type. S = |R| + 1 handles every real radius. Uniform continuity and the derivative remainder estimate give the claimed uniform integrand bound, and the finite-measure integral bound yields εV/(V+1) < ε. The cited bound genuinely requires no measurability, so there is no hidden gap. The proof is complete and non-circular, with valid identical-type reuse."
+    }
+  ],
+  "required_changes": []
+}
