@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.carrier_support_null-a1.support_diff_carrier_null-a1",
+  "parent_id": "root.density_one_regularity-a1.carrier_support_null-a1",
+  "depth": 3,
+  "title": "Support minus carrier is H^n-null under positive density (Simon 4.10(1) with the Upper Density Theorem)",
+  "statement": "Let U be any subset of R^(n+l) and V = v(M, theta) a rectifiable n-varifold in U (contract structure) with weight mu. Suppose every x ∈ spt V = U ∩ spt mu has a positive density: there is a real t > 0 with mu(B_r(x))/(omega_n r^n) -> t as r -> 0+ (V.HasDensity x t; closed balls, quotient in [0, infinity]). Then H^n(spt V \\ M) = 0, where H^n = muHE[n].",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (∀ x ∈ V.support, ∃ t : ℝ, 0 < t ∧ V.HasDensity x t) → (μHE[n] : Measure (Amb n ℓ)) (V.support \\ V.carrier) = 0",
+  "lean_name": "hausdorff_support_diff_carrier_null",
+  "depends_on": [
+    "root.density_one_regularity-a1.carrier_support_null-a1.upper_density_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_regularity-a1.carrier_support_null-a1.upper_density_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-carrier-support-null-a1-support-diff-c-1d39650531-a1"
+}
