@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b5f3de64b99169c48394c4ff6195acf1a19ff8430d2937b8f54e8d5353c32f4",
+  "git_delta": {
+    "base_commit": "e402436da01b2f74514afe11aa446d6a1e509b06",
+    "candidate_commit": "056f1b9b0f63f29ad638c335a0b984ac1606c017",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_pfc_imrep_orient_abs_apply_le",
+    "diff_sha256": "b73466f7d8312e9352d90356691b617a0c7207569d0af1edcab9d3ffa9754af8",
+    "source_sha256": "5adc7a5136bc84884a590d24db280ded20be1f094598f8913fc4097db5f8a93c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_pfc_imrep_orient_abs_apply_le",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
