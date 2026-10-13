@@ -601,6 +601,33 @@ theorem Submission.slicing_im_st_mf_slice_orientation_aesm :
   filter_upwards [hNT (fun x => ξ x = hξ.mk ξ x) hξ.ae_eq_mk] with t ht
   exact hF.aestronglyMeasurable.congr (ht.mono fun x hx => by simp only [hx])
 
+/-- Measure-theoretic fields of the slice triple (Simon Ch. 6, §4; Steps 2, 4, 5 and 6 of the
+slice triple): under the co-area identity for `(M, f, G)`, for `L¹`-a.e. `t` the set
+`M_t = {x ∈ M : f x = t, G x ≠ 0}` is `H^m`-null-measurable, `θ` is `H^m`-integrable on
+`M_t ∩ K` for every compact `K ⊆ U`, and `ξ_t = ξ ∘ ι(|G|⁻¹ G)` is `H^m⌞M_t`-a.e. strongly
+measurable.  The null transfer moves the fields of `(M, θ, ξ)` to the whole slice
+`M ∩ f⁻¹{t}`, and `M_t = (M ∩ f⁻¹{t}) ∩ G⁻¹{0}ᶜ` inherits them. -/
+theorem Submission.slicing_im_st_measure_fields : ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → Measurable f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) → ∀ᵐ t ∂(volume : Measure ℝ), NullMeasurableSet {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} (μHE[m] : Measure (Eucl P)) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ ({x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ∩ K) (μHE[m] : Measure (Eucl P))) ∧ AEStronglyMeasurable (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ((μHE[m] : Measure (Eucl P)).restrict {x | x ∈ M ∧ f x = t ∧ G x ≠ 0}) := by
+  intro P m U M θ ξ f L G hU hT hf hG hGL hcoarea
+  -- Null transfer: `H^{m+1}⌞M`-a.e. properties hold `H^m⌞(M ∩ f⁻¹{t})`-a.e. for a.e. `t`.
+  have hNT := Submission.slicing_im_st_ae_transfer P m M f G hcoarea
+  -- The three fields on the whole slice `M ∩ f⁻¹{t}`, each for a.e. `t`.
+  have hnull := Submission.slicing_im_st_mf_slice_null_measurable P m M f hT.nullMeasurableSet
+    hf hNT
+  have hint := Submission.slicing_im_st_mf_slice_integrable P m U M θ f L G hU hT.subset
+    hT.integrableOn hGL hcoarea hNT
+  have haesm := Submission.slicing_im_st_mf_slice_orientation_aesm P m M ξ f G
+    hT.aestronglyMeasurable hG hNT
+  filter_upwards [hnull, hint, haesm] with t hnull_t hint_t haesm_t
+  -- `M_t = (M ∩ f⁻¹{t}) ∩ G⁻¹{0}ᶜ`, a subset of the slice.
+  have hMt : {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} = M ∩ f ⁻¹' {t} ∩ G ⁻¹' {0}ᶜ :=
+    Set.ext fun _ => and_assoc.symm
+  have hsub : {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ⊆ M ∩ f ⁻¹' {t} := fun x hx => ⟨hx.1, hx.2.1⟩
+  refine ⟨?_, fun K hK hKU => (hint_t K hK hKU).mono_set (inter_subset_inter_left K hsub),
+    haesm_t.mono_set hsub⟩
+  rw [hMt]
+  exact hnull_t.inter (hG (measurableSet_singleton 0).compl).nullMeasurableSet
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
