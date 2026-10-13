@@ -867,6 +867,336 @@ theorem Submission.rectifiability_bf_witness_set_measurable : (∀ (N m : ℕ) (
   exact MeasurableSet.iUnion fun n => MeasurableSet.iUnion fun l =>
     ((hCc n l).image continuous_snd).measurableSet
 
+/-- **Slice densities of the exceptional parameters** (Mattila, *Geometry of Sets and Measures in
+Euclidean Spaces*, Lemma 18.9; for transversal families, Hovila–Järvenpää–Järvenpää–Ledrappier,
+arXiv:1104.3453, Lemma 2.5).  Let `k = m + 1`, `L_u y = (⟨u_i, y⟩)_i`,
+`w ⊕ c = (w_i + c_i e_j)_i`, `K_w(C) = {x ≠ a : L_{w ⊕ c}(x − a) = 0 for some c ∈ C}` and
+`ϑ_j(u) = limsup_{t↓0} sup_{0<r<δ} μ(B(a,r) ∩ K_u(B(0,t)))/(rt)ᵏ`.  Then the set `𝔅_j` of `u`
+with `0 < ϑ_j(u) < ∞` and no `x ∈ E` with `0 < |x − a| < δ` and `L_u x = L_u a` is Lebesgue-null.
+For fixed `w`, `ψ_w(C) = sup_{0<r<δ} μ(B(a,r) ∩ K_w(C))/rᵏ` is an outer measure on `ℝᵏ`, inner
+continuous on open balls, and vanishes on the Borel set `D_w` of those `c` for which `w ⊕ c` has
+no such `x`, because `μ(ℝ^N ∖ E) = 0`.  As `K_w(B(c,t)) = K_{w ⊕ c}(B(0,t))`, the upper
+`k`-density of `ψ_w` at `c` is `ϑ_j(w ⊕ c)`, so by the Mickle–Radó theorem
+`Lᵏ{c : w ⊕ c ∈ 𝔅_j} = 0` for every `w`.  `𝔅_j` is Borel, and Tonelli for `(w, c) ↦ w ⊕ c` in both
+orders, with translation invariance, gives `𝓛(𝔅_j) · ∞ = 0`. -/
+theorem Submission.rectifiability_bf_slice_density_null : ∀ (N m : ℕ) (μ : Measure (Eucl N)) (E : Set (Eucl N)) (δ : ℝ) (a : Eucl N) (j : Fin N), SFinite μ → IsSigmaCompact E → μ Eᶜ = 0 → (volume : Measure (Fin (m + 1) → Eucl N)) {u : Fin (m + 1) → Eucl N | ¬ (∃ x ∈ E, x ≠ a ∧ dist x a < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) a) : Eucl (m + 1))) ∧ 0 < limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) ∧ limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) < ⊤} = 0 := by
+  intro N m μ E δ a j hμ hE hEc
+  let Lu : (Fin (m + 1) → Eucl N) → Eucl N → Eucl (m + 1) := fun u y =>
+    (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) y) : Eucl (m + 1))
+  let T3 : (Fin (m + 1) → Eucl N) → Prop := fun u => ∃ x ∈ E, x ≠ a ∧ dist x a < δ ∧
+    (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) x) : Eucl (m + 1)) =
+      (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) a) : Eucl (m + 1))
+  let Ks : (Fin (m + 1) → Eucl N) → ℝ → Set (Eucl N) := fun u t => {x | x ≠ a ∧
+    ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) =>
+      inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}
+  let θ : (Fin (m + 1) → Eucl N) → ℝ≥0∞ := fun u => limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ,
+    μ (ball a r ∩ Ks u t) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0)
+  let B : Set (Fin (m + 1) → Eucl N) := {u | ¬ T3 u ∧ 0 < θ u ∧ θ u < ⊤}
+  show (volume : Measure (Fin (m + 1) → Eucl N)) B = 0
+  -- step 1(a), 1(c): `L_{u ⊕ c} y = L_u y + y_j c` and `L_v (x - y) = L_v x - L_v y`
+  have hfib : ∀ (u : Fin (m + 1) → Eucl N) (c : Eucl (m + 1)) (y : Eucl N),
+      (WithLp.toLp 2 (fun i : Fin (m + 1) =>
+        inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) y) : Eucl (m + 1)) =
+          Lu u y + (y j) • c := by
+    intro u c y
+    ext i
+    simp [Lu, inner_add_left, real_inner_smul_left, EuclideanSpace.inner_single_left, mul_comm]
+  have hLsub : ∀ (v : Fin (m + 1) → Eucl N) (x y : Eucl N), Lu v (x - y) = Lu v x - Lu v y := by
+    intro v x y
+    ext i
+    simp [Lu, inner_sub_right]
+  -- step 1(f): explicit form of `K_{j,u}(t)` for `t > 0`
+  have hKs : ∀ u t, 0 < t → Ks u t = {x | ‖Lu u (x - a)‖ < t * ‖(x - a) j‖} ∪
+      {x | x ≠ a ∧ (x - a) j = 0 ∧ Lu u (x - a) = 0} := by
+    intro u t ht
+    ext x
+    simp only [Ks, mem_ofPred_eq, mem_union]
+    constructor
+    · rintro ⟨hxa, c, hc, h0⟩
+      rw [hfib] at h0
+      by_cases hyj : (x - a) j = 0
+      · right
+        refine ⟨hxa, hyj, ?_⟩
+        rw [hyj, zero_smul, add_zero] at h0
+        exact h0
+      · left
+        have hL : Lu u (x - a) = -((x - a) j • c) := eq_neg_of_add_eq_zero_left h0
+        rw [hL, norm_neg, norm_smul]
+        have hc' : ‖c‖ < t := mem_ball_zero_iff.1 hc
+        have hpos : 0 < ‖(x - a) j‖ := norm_pos_iff.2 hyj
+        calc ‖(x - a) j‖ * ‖c‖ < ‖(x - a) j‖ * t := mul_lt_mul_of_pos_left hc' hpos
+          _ = t * ‖(x - a) j‖ := mul_comm _ _
+    · rintro (h | ⟨hxa, hyj, h0⟩)
+      · have hyj : (x - a) j ≠ 0 := by
+          intro h'
+          rw [h', norm_zero, mul_zero] at h
+          exact (norm_nonneg _).not_gt h
+        have hxa : x ≠ a := by
+          intro h'
+          apply hyj
+          rw [h', sub_self]
+          rfl
+        refine ⟨hxa, (-((x - a) j)⁻¹) • Lu u (x - a), ?_, ?_⟩
+        · rw [mem_ball_zero_iff, norm_smul, norm_neg, norm_inv,
+            inv_mul_lt_iff₀ (norm_pos_iff.2 hyj)]
+          linarith [h]
+        · rw [hfib, smul_smul, mul_neg, mul_inv_cancel₀ hyj, neg_smul, one_smul, add_neg_cancel]
+      · refine ⟨hxa, 0, mem_ball_self ht, ?_⟩
+        rw [hfib, smul_zero, add_zero]
+        exact h0
+  -- step 8(a): `ϑ_j` is measurable (`limsup_sup_measurable`; `G` is Borel by step 1(f))
+  let G : ℝ → ℝ → Set ((Fin (m + 1) → Eucl N) × Eucl N) := fun r t =>
+    {q | q.2 ∈ ball a r ∩ Ks q.1 t}
+  have hc1 : Continuous fun q : (Fin (m + 1) → Eucl N) × Eucl N => Lu q.1 (q.2 - a) := by
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+    exact ((continuous_apply i).comp continuous_fst).inner (continuous_snd.sub continuous_const)
+  have hc2 : Continuous fun q : (Fin (m + 1) → Eucl N) × Eucl N => (q.2 - a) j :=
+    (PiLp.continuous_apply 2 _ j).comp (continuous_snd.sub continuous_const)
+  have hGm : ∀ r t, MeasurableSet (G r t) := by
+    intro r t
+    rcases le_or_gt t 0 with ht | ht
+    · have : G r t = ∅ := by
+        ext q
+        simp only [G, mem_ofPred_eq, mem_empty_iff_false, iff_false]
+        rintro ⟨-, -, c, hc, -⟩
+        rw [ball_eq_empty.2 ht] at hc
+        exact hc
+      rw [this]
+      exact MeasurableSet.empty
+    · have : G r t = {q | dist q.2 a < r} ∩ ({q | ‖Lu q.1 (q.2 - a)‖ < t * ‖(q.2 - a) j‖} ∪
+          ({q | q.2 ≠ a} ∩ {q | (q.2 - a) j = 0} ∩ {q | Lu q.1 (q.2 - a) = 0})) := by
+        ext q
+        simp only [G, mem_ofPred_eq, mem_inter_iff, mem_ball]
+        rw [hKs q.1 t ht]
+        simp only [mem_union, mem_ofPred_eq, mem_inter_iff, and_assoc]
+      rw [this]
+      refine (isOpen_lt (continuous_snd.dist continuous_const) continuous_const).measurableSet.inter
+        (MeasurableSet.union ?_ ?_)
+      · exact (isOpen_lt hc1.norm (continuous_const.mul hc2.norm)).measurableSet
+      · exact ((isOpen_ne_fun continuous_snd continuous_const).measurableSet.inter
+          (isClosed_eq hc2 continuous_const).measurableSet).inter
+          (isClosed_eq hc1 continuous_const).measurableSet
+  have hGmono : ∀ r t t', t ≤ t' → G r t ⊆ G r t' := by
+    rintro r t t' htt' q ⟨hq1, hxa, c, hc, h0⟩
+    exact ⟨hq1, hxa, c, ball_subset_ball htt' hc, h0⟩
+  have hGcont : ∀ r t, 0 < r → G r t = ⋃ r' ∈ Ioo (0 : ℝ) r, G r' t := by
+    intro r t hr
+    ext q
+    simp only [G, mem_iUnion, mem_ofPred_eq, mem_inter_iff, mem_ball, mem_Ioo]
+    constructor
+    · rintro ⟨h1, h2⟩
+      exact ⟨(dist q.2 a + r) / 2, ⟨by positivity, by linarith⟩, by linarith, h2⟩
+    · rintro ⟨r', ⟨-, hr'r⟩, h1, h2⟩
+      exact ⟨h1.trans hr'r, h2⟩
+  have hθm : Measurable θ :=
+    Submission.rectifiability_bf_limsup_sup_measurable (Fin (m + 1) → Eucl N) (Eucl N) (m + 1)
+      μ δ G hμ hGm hGmono hGcont
+  -- step 8(b), 8(c): `𝔅_j` is measurable (`witness_set_measurable`)
+  have hW := Submission.rectifiability_bf_witness_set_measurable N m E δ hE
+  have hT3m : MeasurableSet {u : Fin (m + 1) → Eucl N | ¬ T3 u} :=
+    (measurable_const.prodMk measurable_id) hW.compl
+  have hBm : MeasurableSet B :=
+    hT3m.inter ((measurableSet_lt measurable_const hθm).inter
+      (measurableSet_lt hθm measurable_const))
+  -- steps 2–7: `Lᵏ{c : w ⊕ c ∈ 𝔅_j} = 0` for every `w`
+  let sh : Eucl (m + 1) → (Fin (m + 1) → Eucl N) := fun c i => c i • EuclideanSpace.single j (1 : ℝ)
+  have hsh : Continuous sh :=
+    continuous_pi fun i => (PiLp.continuous_apply 2 _ i).smul continuous_const
+  have hslice : ∀ w : Fin (m + 1) → Eucl N,
+      (volume : Measure (Eucl (m + 1))) {c | w + sh c ∈ B} = 0 := by
+    intro w
+    let KC : Set (Eucl (m + 1)) → Set (Eucl N) := fun C => {x | x ≠ a ∧ ∃ c ∈ C,
+      (WithLp.toLp 2 (fun i : Fin (m + 1) =>
+        inner ℝ (w i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}
+    -- step 1(d): `K_w` is monotone and commutes with countable unions
+    have hKCmono : ∀ C₁ C₂, C₁ ⊆ C₂ → KC C₁ ⊆ KC C₂ := by
+      rintro C₁ C₂ h x ⟨hxa, c, hc, h0⟩
+      exact ⟨hxa, c, h hc, h0⟩
+    have hKCunion : ∀ (s : ℕ → Set (Eucl (m + 1))), KC (⋃ i, s i) = ⋃ i, KC (s i) := by
+      intro s
+      ext x
+      simp only [KC, mem_ofPred_eq, mem_iUnion]
+      constructor
+      · rintro ⟨hxa, c, ⟨i, hci⟩, h0⟩
+        exact ⟨i, hxa, c, hci, h0⟩
+      · rintro ⟨i, hxa, c, hci, h0⟩
+        exact ⟨hxa, c, ⟨i, hci⟩, h0⟩
+    -- step 2: the outer measure `ψ_w`
+    let ψ : OuterMeasure (Eucl (m + 1)) :=
+      { measureOf := fun C =>
+          ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ KC C) / ENNReal.ofReal (r ^ (m + 1))
+        empty := by
+          have : KC ∅ = ∅ := by
+            ext x
+            simp [KC]
+          simp [this]
+        mono := fun {s₁ s₂} h => iSup₂_mono fun r _ =>
+          ENNReal.div_le_div_right (measure_mono (inter_subset_inter_right _ (hKCmono _ _ h))) _
+        iUnion_nat := fun s _ => by
+          refine iSup₂_le fun r hr => ?_
+          rw [hKCunion, inter_iUnion]
+          calc μ (⋃ i, ball a r ∩ KC (s i)) / ENNReal.ofReal (r ^ (m + 1))
+              ≤ (∑' i, μ (ball a r ∩ KC (s i))) / ENNReal.ofReal (r ^ (m + 1)) :=
+                ENNReal.div_le_div_right (measure_iUnion_le _) _
+            _ = ∑' i, μ (ball a r ∩ KC (s i)) / ENNReal.ofReal (r ^ (m + 1)) := by
+                simp only [div_eq_mul_inv, ENNReal.tsum_mul_right]
+            _ ≤ ∑' i, ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ KC (s i)) / ENNReal.ofReal (r ^ (m + 1)) :=
+                ENNReal.tsum_le_tsum fun i => le_iSup₂ (f := fun r (_ : r ∈ Ioo (0 : ℝ) δ) =>
+                  μ (ball a r ∩ KC (s i)) / ENNReal.ofReal (r ^ (m + 1))) r hr }
+    have hψ : ∀ C, ψ C = ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ KC C) / ENNReal.ofReal (r ^ (m + 1)) :=
+      fun C => rfl
+    -- step 3: inner continuity of `ψ_w` on open balls
+    have hball : ∀ (c : Eucl (m + 1)) (τ : ℝ),
+        ψ (ball c τ) = ⨆ τ' ∈ Ioo (0 : ℝ) τ, ψ (ball c τ') := by
+      intro c τ
+      apply le_antisymm
+      · rcases le_or_gt τ 0 with hτ | hτ
+        · rw [ball_eq_empty.2 hτ, measure_empty]
+          exact zero_le
+        · rw [hψ]
+          refine iSup₂_le fun r hr => ?_
+          let τn : ℕ → ℝ := fun n => τ - τ / ((n : ℝ) + 2)
+          have hτn_mono : Monotone τn := by
+            intro n n' hnn'
+            simp only [τn]
+            have : τ / ((n' : ℝ) + 2) ≤ τ / ((n : ℝ) + 2) := by
+              apply div_le_div_of_nonneg_left hτ.le (by positivity)
+              have : (n : ℝ) ≤ n' := by exact_mod_cast hnn'
+              linarith
+            linarith
+          have hτn_mem : ∀ n, τn n ∈ Ioo 0 τ := by
+            intro n
+            have h1 : τ / ((n : ℝ) + 2) < τ := by
+              rw [div_lt_iff₀ (by positivity)]
+              have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+              nlinarith
+            have h2 : 0 < τ / ((n : ℝ) + 2) := by positivity
+            exact ⟨by simp only [τn]; linarith, by simp only [τn]; linarith⟩
+          have hballU : ball c τ = ⋃ n, ball c (τn n) := by
+            ext c'
+            simp only [mem_ball, mem_iUnion]
+            constructor
+            · intro hd
+              obtain ⟨n, hn⟩ := exists_nat_gt (τ / (τ - dist c' c))
+              refine ⟨n, ?_⟩
+              simp only [τn]
+              have hpos : 0 < τ - dist c' c := by linarith
+              have : τ / ((n : ℝ) + 2) < τ - dist c' c := by
+                rw [div_lt_iff₀ (by positivity)]
+                rw [div_lt_iff₀ hpos] at hn
+                nlinarith
+              linarith
+            · rintro ⟨n, hn⟩
+              exact hn.trans (hτn_mem n).2
+          have hmono_sets : Monotone (fun n => ball a r ∩ KC (ball c (τn n))) := by
+            intro n n' hnn'
+            exact inter_subset_inter_right _ (hKCmono _ _ (ball_subset_ball (hτn_mono hnn')))
+          have hmeas : μ (ball a r ∩ KC (ball c τ)) = ⨆ n, μ (ball a r ∩ KC (ball c (τn n))) := by
+            rw [hballU, hKCunion, inter_iUnion]
+            exact hmono_sets.measure_iUnion
+          rw [hmeas, ENNReal.iSup_div]
+          refine iSup_le fun n => ?_
+          refine le_trans ?_ (le_iSup₂ (f := fun τ' (_ : τ' ∈ Ioo (0 : ℝ) τ) => ψ (ball c τ'))
+            (τn n) (hτn_mem n))
+          rw [hψ]
+          exact le_iSup₂ (f := fun r (_ : r ∈ Ioo (0 : ℝ) δ) =>
+            μ (ball a r ∩ KC (ball c (τn n))) / ENNReal.ofReal (r ^ (m + 1))) r hr
+      · exact iSup₂_le fun τ' hτ' => ψ.mono (ball_subset_ball hτ'.2.le)
+    -- steps 4–6: `D_w` is Borel and `ψ_w`-null, so Mickle–Radó applies
+    let D : Set (Eucl (m + 1)) := {c | ¬ T3 (w + sh c)}
+    have hDm : MeasurableSet D :=
+      (measurable_const.prodMk (continuous_const.add hsh).measurable) hW.compl
+    have hψD : ψ D = 0 := by
+      rw [hψ]
+      refine le_antisymm (iSup₂_le fun r hr => ?_) zero_le
+      have : μ (ball a r ∩ KC D) = 0 := by
+        refine measure_mono_null (fun x hx => ?_) hEc
+        obtain ⟨hxr, hxa, c, hcD, hx0⟩ := hx
+        intro hxE
+        apply hcD
+        refine ⟨x, hxE, hxa, (mem_ball.1 hxr).trans hr.2, ?_⟩
+        have h0 : Lu (w + sh c) (x - a) = 0 := hx0
+        rw [hLsub] at h0
+        exact sub_eq_zero.1 h0
+      rw [this, ENNReal.zero_div]
+    have hMR := Submission.rectifiability_mickle_rado m ψ D hball hDm hψD
+    -- step 7: `K_w(B(c,t)) = K_{w ⊕ c}(B(0,t))`, so the slice density at `c` is `ϑ_j(w ⊕ c)`
+    have hKCtr : ∀ (c : Eucl (m + 1)) (t : ℝ), KC (ball c t) = Ks (w + sh c) t := by
+      intro c t
+      ext x
+      simp only [KC, Ks, mem_ofPred_eq]
+      constructor
+      · rintro ⟨hxa, c', hc', h0⟩
+        refine ⟨hxa, c' - c, ?_, ?_⟩
+        · rw [mem_ball_zero_iff, ← mem_ball_iff_norm]
+          exact hc'
+        · have hv : ∀ i, (w + sh c) i + (c' - c) i • EuclideanSpace.single j (1 : ℝ) =
+              w i + c' i • EuclideanSpace.single j (1 : ℝ) := by
+            intro i
+            simp only [sh, Pi.add_apply, PiLp.sub_apply, sub_smul]
+            abel
+          simp only [hv]
+          exact h0
+      · rintro ⟨hxa, c'', hc'', h0⟩
+        refine ⟨hxa, c + c'', ?_, ?_⟩
+        · rw [mem_ball_iff_norm, add_sub_cancel_left, ← mem_ball_zero_iff]
+          exact hc''
+        · have hv : ∀ i, w i + (c + c'') i • EuclideanSpace.single j (1 : ℝ) =
+              (w + sh c) i + c'' i • EuclideanSpace.single j (1 : ℝ) := by
+            intro i
+            simp only [sh, Pi.add_apply, PiLp.add_apply, add_smul]
+            abel
+          simp only [hv]
+          exact h0
+    have hid : ∀ c : Eucl (m + 1),
+        limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) =
+          θ (w + sh c) := by
+      intro c
+      apply limsup_congr
+      filter_upwards [self_mem_nhdsWithin] with t ht
+      have ht' : (0 : ℝ) < t := ht
+      rw [hψ, ENNReal.iSup_div]
+      refine iSup_congr fun r => ?_
+      rw [ENNReal.iSup_div]
+      refine iSup_congr fun hr => ?_
+      rw [hKCtr c t]
+      have hr0 : 0 < r := hr.1
+      have hA0 : ENNReal.ofReal (r ^ (m + 1)) ≠ 0 := (ENNReal.ofReal_pos.2 (by positivity)).ne'
+      rw [div_eq_mul_inv, div_eq_mul_inv, div_eq_mul_inv, mul_assoc,
+        ← ENNReal.mul_inv (Or.inl hA0) (Or.inl ENNReal.ofReal_ne_top),
+        ← ENNReal.ofReal_mul (by positivity), ← mul_pow]
+    refine le_antisymm (le_trans (measure_mono ?_) hMR.le) zero_le
+    intro c hc
+    refine ⟨hc.1, ?_, ?_⟩
+    · rw [hid c]; exact hc.2.1
+    · rw [hid c]; exact hc.2.2
+  -- step 9: Tonelli for `(w, c) ↦ w ⊕ c` in both orders
+  have hP : MeasurableSet ((fun p : (Fin (m + 1) → Eucl N) × Eucl (m + 1) => p.1 + sh p.2) ⁻¹' B) :=
+    (continuous_fst.add (hsh.comp continuous_snd)).measurable hBm
+  have h1 : ((volume : Measure (Fin (m + 1) → Eucl N)).prod (volume : Measure (Eucl (m + 1))))
+      ((fun p : (Fin (m + 1) → Eucl N) × Eucl (m + 1) => p.1 + sh p.2) ⁻¹' B) = 0 := by
+    rw [Measure.prod_apply hP]
+    have : ∀ w : Fin (m + 1) → Eucl N, (volume : Measure (Eucl (m + 1)))
+        (Prod.mk w ⁻¹'
+          ((fun p : (Fin (m + 1) → Eucl N) × Eucl (m + 1) => p.1 + sh p.2) ⁻¹' B)) = 0 :=
+      fun w => hslice w
+    simp [this]
+  have h2 : ((volume : Measure (Fin (m + 1) → Eucl N)).prod (volume : Measure (Eucl (m + 1))))
+      ((fun p : (Fin (m + 1) → Eucl N) × Eucl (m + 1) => p.1 + sh p.2) ⁻¹' B) =
+        (volume : Measure (Fin (m + 1) → Eucl N)) B * ⊤ := by
+    rw [Measure.prod_apply_symm hP]
+    have : ∀ c : Eucl (m + 1), (volume : Measure (Fin (m + 1) → Eucl N))
+        ((fun w => (w, c)) ⁻¹'
+          ((fun p : (Fin (m + 1) → Eucl N) × Eucl (m + 1) => p.1 + sh p.2) ⁻¹' B)) =
+            (volume : Measure (Fin (m + 1) → Eucl N)) B :=
+      fun c => measure_preimage_add_right (volume : Measure (Fin (m + 1) → Eucl N)) (sh c) B
+    simp only [this]
+    rw [lintegral_const, measure_univ_of_isAddLeftInvariant]
+  rw [h1] at h2
+  rcases mul_eq_zero.1 h2.symm with h | h
+  · exact h
+  · exact absurd h ENNReal.top_ne_zero
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
