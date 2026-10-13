@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1",
+  "depth": 4,
+  "title": "Uniform small-ball mass bound from a monotonicity hypothesis on a compact set (Simon 7.3.3(1), display (2))",
+  "statement": "For all P, n ∈ ℕ, every U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), sets K, K'' ⊆ ℝ^P and reals Λ, σ₀, θ₁, θ₂, assume:\n- K is compact, Λ ≥ 0, σ₀ > 0 and θ₁ < θ₂;\n- every y ∈ K has some θ < θ₁ with HasMassDensity T y θ;\n- closedBall y (2σ₀) ⊆ K'' for every y ∈ K;\n- for all y ∈ ℝ^P and R ∈ ℝ with closedBall y R ⊆ K'', the function ρ ↦ ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(y)}(T) is monotone on (0, R).\n\nThen there is ρ₀ > 0 such that M_{B_ρ(y)}(T) ≤ ofReal(θ₂)·ω_n·ofReal(ρ^n) for all y ∈ K and all ρ with 0 < ρ < ρ₀. Here M_W(T) = T.massOn W ∈ [0, ∞], ω_n = unitBallVolume n, ofReal = ENNReal.ofReal, products are in [0, ∞], and B_ρ(y) is the open ball.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (K K'' : Set (Euclid P)) (Λ σ₀ θ₁ θ₂ : ℝ), IsCompact K → 0 ≤ Λ → 0 < σ₀ → θ₁ < θ₂ → (∀ y ∈ K, ∃ θ : ℝ, θ < θ₁ ∧ HasMassDensity T y θ) → (∀ y ∈ K, closedBall y (2 * σ₀) ⊆ K'') → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K'' → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ∀ y ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "idod_uniform_ball_mass_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9258c7b087-a1"
+}

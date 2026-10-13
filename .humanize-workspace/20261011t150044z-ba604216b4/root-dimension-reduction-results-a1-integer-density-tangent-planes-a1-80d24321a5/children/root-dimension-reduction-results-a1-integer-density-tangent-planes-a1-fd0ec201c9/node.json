@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.local_threshold_null-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1",
+  "depth": 4,
+  "title": "Local estimate μH[n−3+α]{x ∈ B_σ(x₀) : Θ ≥ m−1+β} = 0 where Θ < m−β on closedBall x₀ (4σ) (Simon 7.3.3(1), display (5))",
+  "statement": "Let n, k, ℓ ∈ ℕ with ℓ ≤ k and n ≥ 1, U, N ⊆ ℝ^{n+k} and T ∈ 𝒟_n(U), such that U is open, N is an embedded C² (n+ℓ)-dimensional submanifold (IsEmbeddedSubmanifold 2 (n + ℓ) N), (closure N ∖ N) ∩ U = ∅, T is minimizing in U ∩ N (IsMinimizingIn T (U ∩ N)), spt T ⊆ U ∩ N and ∂T = 0 in U (BoundaryVanishes T). Let m ∈ ℕ with m ≥ 1, let β > 0 and σ > 0 be real, and let x₀ ∈ ℝ^{n+k}, such that closedBall x₀ (4σ) ⊆ U and every y ∈ closedBall x₀ (4σ) has some θ < m − β with HasMassDensity T y θ. Then for every real α > 0, μH[(n : ℝ) − 3 + α](Z) = 0 (real subtraction in the exponent), where Z := {x ∈ B_σ(x₀) : HasMassDensity T x θ for some real θ ≥ m − 1 + β} and B_σ(x₀) is the open ball.",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (m : ℕ) (β σ : ℝ) (x₀ : Euclid (n + k)), 1 ≤ m → 0 < β → 0 < σ → closedBall x₀ (4 * σ) ⊆ U → (∀ y ∈ closedBall x₀ (4 * σ), ∃ θ : ℝ, θ < (m : ℝ) - β ∧ HasMassDensity T y θ) → ∀ α : ℝ, 0 < α → μH[(n : ℝ) - 3 + α] {x | x ∈ ball x₀ σ ∧ ∃ θ : ℝ, (m : ℝ) - 1 + β ≤ θ ∧ HasMassDensity T x θ} = 0",
+  "lean_name": "idod_local_threshold_null",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.limit_density_bound-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.planar_density_integer-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.spine_density_integer-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.limit_density_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.planar_density_integer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.spine_density_integer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fd0ec201c9-a1"
+}

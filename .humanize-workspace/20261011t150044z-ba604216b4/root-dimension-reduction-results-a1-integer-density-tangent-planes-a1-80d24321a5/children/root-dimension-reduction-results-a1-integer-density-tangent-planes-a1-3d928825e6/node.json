@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.planar_density_integer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1",
+  "depth": 4,
+  "title": "A density function c'·1_Q of an integer multiplicity current forces c' ∈ ℕ (n-plane case of the dimension-reducing argument)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, let S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be integer multiplicity (IsIntegerMultiplicity S), let Q ⊆ ℝ^P be a linear subspace (Submodule ℝ ℝ^P), and let c' be a real number with c' > 0. If HasMassDensity S y (1_Q(y)·c') holds for every y ∈ ℝ^P (density c' at points of Q and density 0 off Q; 1_Q(y)·c' is Set.indicator Q (fun _ => c') y), then c' = m for some m ∈ ℕ.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (Q : Submodule ℝ (Euclid P)) (c' : ℝ), 1 ≤ n → IsIntegerMultiplicity S → 0 < c' → (∀ y : Euclid P, HasMassDensity S y (Set.indicator (Q : Set (Euclid P)) (fun _ => c') y)) → ∃ m : ℕ, c' = m",
+  "lean_name": "idod_planar_density_const_nat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3d928825e6-a1"
+}

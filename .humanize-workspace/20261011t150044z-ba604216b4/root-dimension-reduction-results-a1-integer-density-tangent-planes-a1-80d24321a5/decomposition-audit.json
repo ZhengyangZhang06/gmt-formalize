@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "idod_",
+        "measure_null_of_locally_null|eventually_forall_of_forall_eventually|upperSemicontinuousOn_iff_preimage_Iio|withDensity_zero_left|div_le_of_le_mul|ofReal_le_ofReal_iff",
+        "sed -n '54,195p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "sed -n '367,510p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/idod-independent-audit-we2osrn8/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/idod-independent-audit-we2osrn8/FromJson.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-80d24321a5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-80d24321a5/decomposition-scope-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-80d24321a5/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa48/20261012T142559Z-ch07-root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1-zz7ig5py/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa68/20261013T085829Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.weak_limit-yugseggx/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/idod-independent-audit-we2osrn8/Challenges.lean",
+        "/tmp/idod-independent-audit-we2osrn8/FromJson.lean"
+      ],
+      "conclusion": "The handoff and scope identify exactly idtp_integer_density_off_null with the supplied digest. Project and Mathlib revisions match the manifest; the frozen and workspace contracts are byte-identical. The snapshot supplies the compactness, semicontinuity, local-nullness and ENNReal lemmas used in the proofs. All five exact propositions independently elaborate without child declarations. Re-running the supplied proof checks establishes every child and the exact parent assembly conditionally on exact-type DAG prerequisites; printed axiom dependencies contain only standard axioms and the stated prerequisites, with no sorryAx or circular child dependence. Reused accepted results have matching frozen types and successful kernel-comparator records. The 201-node relevant dependency closure has no cycle or path back to the selected parent or its ancestors. No proposed name is reserved elsewhere; idod_ proposal hits are confined to this selected node. Indicators, scalar actions, casts and ENNReal arithmetic have the intended types; no matrix construction occurs. Splitting is appropriate: four substantive obligations feed local_threshold_null, and the supplied countable-cover argument then proves this selected parent, with one exceptional set valid for every positive alpha."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "uniform_density_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all prose hypotheses and the conclusion. The proof justifies positive finite normalization, both ENNReal identities, the choices of radii, shifted-ball containment, monotonicity and compactness. It also handles n = 0 and empty K. No unstated domain or minimality assumption is needed, and no DAG prerequisite or circular reliance occurs."
+    },
+    {
+      "key": "limit_density_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including positive scales and nonnegative theta2. The proof establishes eventual domain containment, the dilation image identity and mass-scaling cancellation before applying the frozen weak-limit bound. Passing the normalized inequality to the density limit proves the second conclusion. Both cited prerequisites match their accepted types."
+    },
+    {
+      "key": "planar_density_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly permits an arbitrary subspace Q. The proof derives compact-set finiteness from IMRep, applies the exact a.e. density prerequisite, excludes a null carrier using the positive density at zero, and selects a carrier point where limit uniqueness forces c' to equal positive natural multiplicity. All hypotheses are accounted for without using the selected parent."
+    },
+    {
+      "key": "spine_density_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree. Cone splitting supplies the residual minimizing cone and transfers the density at zero. The dimension inequalities give residual degree one or two; the supplied degree-transport argument permits the corresponding frozen cone results. Density uniqueness then proves the natural-number conclusion, without circular dependence."
+    },
+    {
+      "key": "local_threshold_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition includes every geometric and local hypothesis. The proof verifies the four child applications, derives the necessary nonnegative upper bound, and discharges both threshold-reduction exclusions through the integer gap. It handles n <= 2 by emptiness and n >= 3 by valid subtraction casts. Its dependencies point correctly to the first four children, and its conclusion supplies precisely the local estimate needed by the parent assembly."
+    }
+  ],
+  "required_changes": []
+}
