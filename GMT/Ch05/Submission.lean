@@ -582,6 +582,67 @@ theorem dohr_eb_sch_cacc_exists_cutoff : ∃ K : ℝ, 0 ≤ K ∧ ∀ (n : ℕ) 
         _ = 4 * cψ / ρ := by
             field_simp
             ring
+/-- Test function of the Caccioppoli inequality in the Schauder estimate of the elliptic bootstrap
+for Simon Ch. 5, Theorem 7.1, second assertion (p. 127): if `U ⊆ ℝⁿ` is open, `V ∈ C¹(U; ℝ^ℓ)`,
+`c ∈ ℝ^ℓ` and `η ∈ C¹_c(ℝⁿ)` with `spt η ⊆ U`, then `ζ = η² (V − c)` is `C¹` on `ℝⁿ` with compact
+support in `U`, and `Dζ = η² DV + 2η (V − c) ⊗ Dη` at every point of `ℝⁿ` (off `U` both sides
+vanish, whatever the junk value of `DV` there). -/
+theorem dohr_eb_sch_cacc_test_function : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (V : Rn n → Rn ℓ) (η : Rn n → ℝ) (c : Rn ℓ), IsOpen U → ContDiffOn ℝ 1 V U → ContDiff ℝ 1 η → HasCompactSupport η → tsupport η ⊆ U → ContDiff ℝ 1 (fun x => η x ^ 2 • (V x - c)) ∧ HasCompactSupport (fun x => η x ^ 2 • (V x - c)) ∧ tsupport (fun x => η x ^ 2 • (V x - c)) ⊆ U ∧ ∀ x, fderiv ℝ (fun x => η x ^ 2 • (V x - c)) x = η x ^ 2 • fderiv ℝ V x + (2 * η x) • (fderiv ℝ η x).smulRight (V x - c) := by
+  intro n ℓ U V η c hU hV hη hηc hηU
+  -- Step 1: `support ζ ⊆ support η`, so `tsupport ζ ⊆ tsupport η ⊆ U` and `ζ` has compact support.
+  -- (Bare `support` is `RectifiableVarifold.support` in this scope.)
+  have hsupp : Function.support (fun x => η x ^ 2 • (V x - c)) ⊆ Function.support η := by
+    intro x hx
+    simp only [Function.mem_support] at hx ⊢
+    intro h0
+    apply hx
+    simp [h0]
+  have htsupp : tsupport (fun x => η x ^ 2 • (V x - c)) ⊆ tsupport η := closure_mono hsupp
+  have hcs : HasCompactSupport (fun x => η x ^ 2 • (V x - c)) := hηc.mono hsupp
+  -- Step 2: `ζ` is `C¹` on `U`, as the product of `η² ∈ C¹(ℝⁿ)` and `V − c ∈ C¹(U)`.
+  have h1 : ContDiffOn ℝ 1 (fun x => η x ^ 2 • (V x - c)) U :=
+    ((hη.pow 2).contDiffOn).smul (hV.sub contDiffOn_const)
+  -- Step 3: `ζ = 0` on the open set `W = (tsupport η)ᶜ`, so `ζ` is `C¹` on `W`.
+  have h2 : ContDiffOn ℝ 1 (fun x => η x ^ 2 • (V x - c)) (tsupport η)ᶜ := by
+    have heq : EqOn (fun _ => (0 : Rn ℓ)) (fun x => η x ^ 2 • (V x - c)) (tsupport η)ᶜ := by
+      intro x hx
+      have : η x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [this]
+    exact contDiffOn_const.congr (fun x hx => (heq hx).symm)
+  -- Step 4: `U ∪ W = ℝⁿ` because `tsupport η ⊆ U`; gluing the two open pieces, `ζ ∈ C¹(ℝⁿ)`.
+  have hcover : U ∪ (tsupport η)ᶜ = univ := by
+    ext x
+    simp only [mem_union, mem_compl_iff, mem_univ, iff_true]
+    by_cases hx : x ∈ tsupport η
+    · exact Or.inl (hηU hx)
+    · exact Or.inr hx
+  have hcd : ContDiff ℝ 1 (fun x => η x ^ 2 • (V x - c)) :=
+    contDiff_of_contDiffOn_union_of_isOpen h1 h2 hcover hU (isClosed_tsupport η).isOpen_compl
+  refine ⟨hcd, hcs, htsupp.trans hηU, fun x => ?_⟩
+  by_cases hx : x ∈ U
+  -- Step 5: at `x ∈ U`, `D(η²)(x) = 2η(x) Dη(x)` and the product rule for `η² • (V − c)` give
+  -- `Dζ(x) = η(x)² DV(x) + (2η(x) Dη(x)).smulRight (V(x) − c)`.
+  · have hVd : HasFDerivAt V (fderiv ℝ V x) x :=
+      (((hV.differentiableOn one_ne_zero) x hx).differentiableAt (hU.mem_nhds hx)).hasFDerivAt
+    have hηd : HasFDerivAt η (fderiv ℝ η x) x := ((hη.differentiable one_ne_zero) x).hasFDerivAt
+    have hsq : HasFDerivAt (fun x => η x ^ 2) ((2 * η x) • fderiv ℝ η x) x := by
+      have := hηd.mul hηd
+      convert this using 1
+      · ext y; simp [sq]
+      · rw [two_mul, add_smul]
+    have hprod := hsq.smul (hVd.sub_const c)
+    rw [show (fun x => η x ^ 2 • (V x - c)) = ((fun x => η x ^ 2) • fun x => V x - c) from rfl,
+      hprod.fderiv]
+    ext v
+    simp [ContinuousLinearMap.smulRight_apply, smul_smul, mul_comm]
+  -- Step 6: at `x ∉ U`, `x ∉ tsupport η ⊇ tsupport ζ`, so `Dζ(x) = 0`, `Dη(x) = 0` and `η(x) = 0`;
+  -- both sides vanish.
+  · have hx' : x ∉ tsupport η := fun h => hx (hηU h)
+    have hxζ : x ∉ tsupport (fun x => η x ^ 2 • (V x - c)) := fun h => hx' (htsupp h)
+    rw [fderiv_of_notMem_tsupport ℝ hxζ, fderiv_of_notMem_tsupport ℝ hx',
+      image_eq_zero_of_notMem_tsupport hx']
+    ext v
+    simp
 
 end Submission
 
