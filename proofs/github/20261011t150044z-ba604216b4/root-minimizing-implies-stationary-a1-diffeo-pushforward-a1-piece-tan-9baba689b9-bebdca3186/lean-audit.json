@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "10c9913a24c9eae714191fa387ae96ab23f8fddb7650658e6cab5753c0248f2b",
+  "git_delta": {
+    "base_commit": "f85c931737747312e34496c958e3d23f8dea4786",
+    "candidate_commit": "acbacaeb16569d95c3113438ea4771416cad2632",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "pit_fderiv_lower_bound_of_density",
+    "diff_sha256": "d250bcf19c8d929cac8b1f4282a700236a1c54d7ebc40e891a402dbbf0f2cadc",
+    "source_sha256": "3fa0d6765fd9ebf44ba59ce19bbf30437b2997885f6011c57eb89eebc63246f8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pit_fderiv_lower_bound_of_density",
+      "statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (m : ℝ) (b : Euclid n), 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → ∀ c : Euclid n, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
