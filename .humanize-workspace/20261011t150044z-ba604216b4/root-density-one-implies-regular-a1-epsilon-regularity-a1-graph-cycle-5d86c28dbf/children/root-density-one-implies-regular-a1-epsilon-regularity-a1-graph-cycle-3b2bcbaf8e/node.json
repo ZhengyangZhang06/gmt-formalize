@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.graph_pullback_extderiv-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1",
+  "depth": 5,
+  "title": "The exterior derivative of the projected pull-back evaluated along the graph tangent frame",
+  "statement": "Let m, k ∈ ℕ; ι : ℝ^{m+1} → ℝ^{m+1+k} and ι' : ℝ^k → ℝ^{m+1+k} linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w; L := ι* := ContinuousLinearMap.adjoint ι.toContinuousLinearMap; z ∈ ℝ^{m+1+k}; u : ℝ^{m+1} → ℝ^k; ψ a smooth m-form on ℝ^{m+1}; v ∈ ℝ^{m+1} with u differentiable at v; Φ(v') := z + ιv' + ι'u(v'). Let P^#ψ := affinePullbackForm L (−Lz) ψ, i.e. (P^#ψ)(x)(w₁, …, w_m) = ψ(−Lz + Lx)(Lw₁, …, Lw_m). Then d(P^#ψ)(Φ(v))(DΦ(v)e₀, …, DΦ(v)e_m) = dψ(v)(e₀, …, e_m), where DΦ(v) := fderiv ℝ Φ v.",
+  "lean_statement": "∀ (m k : ℕ) (ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid (m + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + 1 + k)) (u : Euclid (m + 1) → Euclid k) (z : Euclid (m + 1 + k)) (ψ : DifferentialForm (Euclid (m + 1)) m) (v : Euclid (m + 1)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsSmoothForm ψ → DifferentiableAt ℝ u v → exteriorDerivative (affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ) (z + ι v + ι' (u v)) (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ))) = exteriorDerivative ψ v (fun i => EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "dgcr_bwd_graph_pullback_extDeriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-3b2bcbaf8e-a1"
+}
