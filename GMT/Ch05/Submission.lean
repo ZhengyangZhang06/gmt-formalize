@@ -466,6 +466,408 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- **Hilbert–Schmidt versus operator norm** (Simon, Notation p. ix), as used in the hole estimate
+of the proof of Ch. 5, Corollary 2.7 (`‖A‖ ≤ |A|`).  For `A : ℝᵐ →L ℝᵏ` the squared Hilbert–Schmidt
+norm `|A|² = Σᵢ |A eᵢ|²` is continuous in `A` (a finite sum of squared norms of the evaluations
+`A ↦ A eᵢ`) and satisfies `0 ≤ |A|² ≤ m ‖A‖²` (`|A eᵢ| ≤ ‖A‖ |eᵢ| = ‖A‖`).  Moreover
+`|A v|² ≤ |A|² |v|²`: expanding `v = Σᵢ vᵢ eᵢ` gives `|A v| ≤ Σᵢ |vᵢ| |A eᵢ|`, and Cauchy–Schwarz
+bounds the square of the right side by `(Σᵢ |vᵢ|²)(Σᵢ |A eᵢ|²) = |v|² |A|²`. -/
+theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2 := by
+  intro m k
+  refine ⟨?_, fun A => ⟨?_, ?_, fun v => ?_⟩⟩
+  · -- Continuity: a finite sum of `‖A eᵢ‖ ^ 2`, each continuous in `A`.
+    unfold hsNormSq
+    fun_prop
+  · unfold hsNormSq
+    positivity
+  · -- `‖A eᵢ‖ ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` summands.
+    unfold hsNormSq
+    calc ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1:ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = m * ‖A‖ ^ 2 := by simp
+  · unfold hsNormSq
+    set e : Fin m → Rn m := fun i => EuclideanSpace.single i 1 with he
+    -- Expand `v` in the standard basis and apply the triangle inequality.
+    have hv : v = ∑ i, v i • e i := by
+      ext j
+      simp [he, Pi.single_apply]
+    have hAv : A v = ∑ i, v i • A (e i) := by
+      conv_lhs => rw [hv]
+      simp [map_sum, map_smul]
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (e i)‖ := by
+      rw [hAv]
+      calc _ ≤ ∑ i, ‖v i • A (e i)‖ := norm_sum_le _ _
+        _ = _ := by simp [norm_smul]
+    -- Cauchy–Schwarz for the finite sums, and `‖v‖² = Σᵢ |vᵢ|²`.
+    have h2 : (∑ i, |v i| * ‖A (e i)‖) ^ 2 ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ‖v‖ ^ 2 = ∑ i, |v i| ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      simp [sq_abs]
+    have h0 : 0 ≤ ‖A v‖ := norm_nonneg _
+    calc ‖A v‖ ^ 2 ≤ (∑ i, |v i| * ‖A (e i)‖) ^ 2 := by gcongr
+      _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
+      _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
+/-- Simon Ch. 5, proof of Lemma 2.6 (p. 112) and of Corollary 2.7 (p. 113): a Lipschitz graph is
+close to its base plane. For a linear isometry `q` of `ℝ^{n+ℓ}` and `f : ℝⁿ → ℝ^ℓ` with
+`Lip f ≤ ε`, the rotated graph `F̂ = q(graph f)` is closed, and every chord of `F̂` is `ε`-close to
+`T₀ = q(ℝⁿ × {0})`: `|p_{T₀^⊥}(x − z)| = |(x − z) − p_{T₀}(x − z)| ≤ ε |x − z|` for `x, z ∈ F̂`
+(the book's `|p_{(ℝⁿ×{0})^⊥}(x − ζ)| ≤ Cβ |x − ζ|` on `F`).
+The map `u ↦ (u, f u)` is antilipschitz and Lipschitz, so its range `graph f` is closed, and `q` is a
+homeomorphism. For `x = q(u, f u)` and `z = q(v, f v)`, the point `q(u − v, 0)` lies in `T₀`, so
+`dist(x − z, T₀) ≤ |q(0, f u − f v)| = |f u − f v| ≤ ε |u − v| ≤ ε |(u − v, f u − f v)| = ε |x − z|`. -/
+theorem lgc_rotated_graph_slope : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → LipschitzWith (Real.toNNReal ε) f → IsClosed (q '' graphOver f univ) ∧ ∀ x ∈ q '' graphOver f univ, ∀ z ∈ q '' graphOver f univ, ‖(x - z) - (rotatedPlane q).starProjection (x - z)‖ ≤ ε * ‖x - z‖ := by
+  intro n ℓ q f ε hε hf
+  -- coordinates of `(a, b) = graphPoint a b`: differences, `|(a, b)|² = |a|² + |b|²`, and
+  -- `(a, 0) = Σᵢ aᵢ e_{castAdd ℓ i} ∈ ℝⁿ × {0}`
+  have gsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext i
+    refine Fin.addCases (fun i => ?_) (fun i => ?_) i <;> simp [graphPoint]
+  have gnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  have gmem : ∀ a : Rn n, graphPoint a (0 : Rn ℓ) ∈ horizontalPlane n ℓ := by
+    intro a
+    have : graphPoint a (0 : Rn ℓ) =
+        ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+      ext j
+      refine Fin.addCases (fun j => ?_) (fun j => ?_) j
+      · simp [graphPoint, Pi.single_apply]
+      · simp only [graphPoint]
+        simp only [Fin.append_right, PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul,
+          PiLp.ofLp_single, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+        symm
+        refine Finset.sum_eq_zero fun x _ => ?_
+        have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+          intro h
+          have := congrArg Fin.val h
+          simp at this
+          omega
+        rw [Pi.single_eq_of_ne hne, mul_zero]
+    rw [this]
+    refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ ?_
+    exact Submodule.subset_span ⟨i, rfl⟩
+  have gnorm_le : ∀ (a : Rn n) (b : Rn ℓ), ‖a‖ ≤ ‖graphPoint a b‖ := by
+    intro a b
+    have h := gnorm a b
+    have := sq_nonneg ‖b‖
+    nlinarith [norm_nonneg a, norm_nonneg (graphPoint a b)]
+  have gnorm0 : ∀ b : Rn ℓ, ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    intro b
+    have h := gnorm 0 b
+    rw [norm_zero] at h
+    have h' : ‖graphPoint (0 : Rn n) b‖ ^ 2 = ‖b‖ ^ 2 := by rw [h]; ring
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h'
+  have hfl : ∀ u v : Rn n, ‖f u - f v‖ ≤ ε * ‖u - v‖ := by
+    intro u v
+    have := hf.dist_le_mul u v
+    rwa [Real.coe_toNNReal ε hε, dist_eq_norm, dist_eq_norm] at this
+  constructor
+  · -- `u ↦ (u, f u)` is antilipschitz and Lipschitz, so `graph f` is closed; `q` is a homeomorphism
+    have hanti : AntilipschitzWith 1 (fun u : Rn n => graphPoint u (f u)) := by
+      refine AntilipschitzWith.of_le_mul_dist fun u v => ?_
+      simp only [NNReal.coe_one, one_mul]
+      rw [dist_eq_norm, dist_eq_norm, gsub]
+      exact gnorm_le _ _
+    have hlip : LipschitzWith (1 + Real.toNNReal ε) (fun u : Rn n => graphPoint u (f u)) := by
+      refine LipschitzWith.of_dist_le_mul fun u v => ?_
+      rw [dist_eq_norm, dist_eq_norm, gsub]
+      have h1 : ‖graphPoint (u - v) (f u - f v)‖ ≤ ‖u - v‖ + ‖f u - f v‖ := by
+        have h := gnorm (u - v) (f u - f v)
+        have hsq : ‖graphPoint (u - v) (f u - f v)‖ ^ 2 ≤ (‖u - v‖ + ‖f u - f v‖) ^ 2 := by
+          rw [h]; nlinarith [norm_nonneg (u - v), norm_nonneg (f u - f v)]
+        exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 hsq
+      push_cast
+      rw [Real.coe_toNNReal ε hε]
+      nlinarith [hfl u v]
+    have hclosed : IsClosed (graphOver f univ) := by
+      rw [graphOver, image_univ]
+      exact hanti.isClosed_range hlip.uniformContinuous
+    have := q.toHomeomorph.isClosedMap _ hclosed
+    simpa [LinearIsometryEquiv.coe_toHomeomorph] using this
+  · -- `x = q(u, f u)`, `z = q(v, f v)`; compare `x - z` with `q(u - v, 0) ∈ T₀`
+    rintro x ⟨_, ⟨u, -, rfl⟩, rfl⟩ z ⟨_, ⟨v, -, rfl⟩, rfl⟩
+    have hw : q (graphPoint (u - v) (0 : Rn ℓ)) ∈ rotatedPlane q :=
+      Submodule.mem_map_of_mem (gmem (u - v))
+    have hxz : q (graphPoint u (f u)) - q (graphPoint v (f v)) =
+        q (graphPoint (u - v) (f u - f v)) := by
+      rw [← map_sub, gsub]
+    have hsplit : q (graphPoint u (f u)) - q (graphPoint v (f v)) - q (graphPoint (u - v) 0) =
+        q (graphPoint 0 (f u - f v)) := by
+      rw [hxz, ← map_sub, gsub]
+      simp
+    calc ‖(q (graphPoint u (f u)) - q (graphPoint v (f v))) -
+          (rotatedPlane q).starProjection (q (graphPoint u (f u)) - q (graphPoint v (f v)))‖
+        = infDist (q (graphPoint u (f u)) - q (graphPoint v (f v)))
+            (rotatedPlane q : Set (Amb n ℓ)) := by
+          rw [← dist_eq_norm, Submodule.dist_starProjection_eq_infDist]
+      _ ≤ dist (q (graphPoint u (f u)) - q (graphPoint v (f v))) (q (graphPoint (u - v) 0)) :=
+          infDist_le_dist_of_mem hw
+      _ = ‖f u - f v‖ := by
+          rw [dist_eq_norm, hsplit, LinearIsometryEquiv.norm_map, gnorm0]
+      _ ≤ ε * ‖u - v‖ := hfl u v
+      _ ≤ ε * ‖graphPoint (u - v) (f u - f v)‖ := mul_le_mul_of_nonneg_left (gnorm_le _ _) hε
+      _ = ε * ‖q (graphPoint u (f u)) - q (graphPoint v (f v))‖ := by
+          rw [hxz, LinearIsometryEquiv.norm_map]
+/-- **Nearest point of `spt V` and the empty ball around it** (closest-point step of the hole
+estimate in Simon's proof of Lemma 2.6, (9)–(10), pp. 112–113, as used for Corollary 2.7).
+Let `d = dist(ζ, spt V)`.  If `0 ∈ spt V`, `B_ρ(0) ⊆ U` and `|ζ| + d ≤ ρ`, then some `y ∈ spt V`
+has `|y − ζ| = d`, and `μ_V(B̆_d(ζ)) = 0`.
+Proof: `spt μ_V` is closed and contains `spt V = U ∩ spt μ_V ∋ 0`, so (`ℝ^{n+ℓ}` being proper) it
+has a point `y` nearest to `ζ`, and `|ζ − y| = dist(ζ, spt μ_V) ≤ d`.  Then `|y| ≤ |ζ| + d ≤ ρ`, so
+`y ∈ B_ρ(0) ⊆ U`, hence `y ∈ spt V` and `|ζ − y| = d`.  Thus `B̆_d(ζ)` misses `spt μ_V`, whose
+complement is `μ_V`-null (`ℝ^{n+ℓ}` is second countable, hence hereditarily Lindelöf). -/
+theorem lgc_support_closest_point : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ρ : ℝ) (ζ : Amb n ℓ), (0 : Amb n ℓ) ∈ V.support → closedBall (0 : Amb n ℓ) ρ ⊆ U → ‖ζ‖ + infDist ζ V.support ≤ ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ V.weight (ball ζ (infDist ζ V.support)) = 0 := by
+  intro n ℓ U V ρ ζ h0 hB hsum
+  set S := V.weight.support with hS
+  -- `S = spt μ_V` is closed, and `spt V = U ∩ S ⊆ S` is nonempty
+  have hSc : IsClosed S := Measure.isClosed_support
+  have hVS : V.support ⊆ S := fun x hx => hx.2
+  have hVne : V.support.Nonempty := ⟨0, h0⟩
+  have hSne : S.Nonempty := hVne.mono hVS
+  -- a point `y ∈ S` nearest to `ζ`; `dist(ζ, S) ≤ dist(ζ, spt V)`
+  obtain ⟨y, hyS, hy⟩ := hSc.exists_infDist_eq_dist hSne ζ
+  have hle : infDist ζ S ≤ infDist ζ V.support := infDist_le_infDist_of_subset hVS hVne
+  -- `|y| ≤ |ζ| + |ζ − y| ≤ ρ`, so `y ∈ B_ρ(0) ⊆ U` and `y ∈ spt V`
+  have hyU : y ∈ U := by
+    apply hB
+    rw [mem_closedBall, dist_zero_right]
+    have : ‖y‖ ≤ ‖ζ‖ + dist ζ y := by
+      rw [dist_eq_norm]
+      calc ‖y‖ = ‖ζ - (ζ - y)‖ := by rw [sub_sub_cancel]
+        _ ≤ ‖ζ‖ + ‖ζ - y‖ := norm_sub_le _ _
+    linarith
+  have hyV : y ∈ V.support := ⟨hyU, hyS⟩
+  have hge : infDist ζ V.support ≤ dist ζ y := infDist_le_dist_of_mem hyV
+  have heq : dist ζ y = infDist ζ V.support := le_antisymm (hy ▸ hle) hge
+  refine ⟨y, hyV, by rw [dist_comm]; exact heq, ?_⟩
+  -- `B̆_d(ζ)` misses `S`, and `μ_V(Sᶜ) = 0`
+  apply measure_mono_null _ (Measure.measure_compl_support (μ := V.weight))
+  intro x hx hxS
+  rw [mem_ball] at hx
+  have : infDist ζ S ≤ dist ζ x := infDist_le_dist_of_mem hxS
+  rw [dist_comm] at hx
+  linarith
+/-- **Lower bound at a hole from annular monotonicity** (Simon Ch. 5, proof of Lemma 2.6,
+display (9), and Corollary 2.7).  Let `μ` be a measure on `ℝ^{n+ℓ}` and `p` a `μ`-a.e. strongly
+measurable field of continuous linear maps with `‖p x‖ ≤ 1`.  Let `s > 0`, `ω > 0`, and suppose
+`μ(B_s(ζ)) = 0`, `μ(B_{3s}(ζ)) < ∞`, `|y − ζ| ≤ 2s`, `ω s^n / 2 ≤ μ(B_s(y))`, `c ≤ ω/(4·3^n)` and
+the monotonicity inequality on the annulus `B_{3s}(ζ) \ B_s(ζ)`.  Then
+`s^{n+2} ≤ (4·3^n e²/ω) ∫_{B_{3s}(ζ)} |(x − ζ) − p(x)(x − ζ)|² dμ`.
+Proof: `B_s(y) ⊆ B_{3s}(ζ)` gives `ω/(2·3^n) ≤ (3s)^{-n} μ(B_{3s}(ζ))`, and the hole removes the
+`B_s(ζ)` term.  On the annulus `|x − ζ| > s`, so the annular integral is at most `s^{-(n+2)}`
+times the integral over `B_{3s}(ζ)` of the integrand, which is bounded by `36 s²` and hence
+integrable there.  Absorbing `c ≤ ω/(4·3^n)` gives the claim. -/
+theorem lgc_hole_annulus_lower : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (ζ y : Amb n ℓ) (s ω c : ℝ), 0 < s → 0 < ω → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → μ (closedBall ζ s) = 0 → μ (closedBall ζ (3 * s)) ≠ ⊤ → dist y ζ ≤ 2 * s → ENNReal.ofReal (ω * s ^ n / 2) ≤ μ (closedBall y s) → c ≤ ω / (4 * 3 ^ n) → ((3 * s) ^ n)⁻¹ * (μ (closedBall ζ (3 * s))).toReal ≤ Real.exp 2 * ((s ^ n)⁻¹ * (μ (closedBall ζ s)).toReal) + c + Real.exp 2 * ∫ x in closedBall ζ (3 * s) \ closedBall ζ s, ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ → s ^ (n + 2) ≤ 4 * 3 ^ n * Real.exp 2 / ω * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+  intro n ℓ μ p ζ y s ω c hs hω hp hpb hhole hfin hy hlow hc hmono
+  -- Step 1: `g x = ‖(x - ζ) - p x (x - ζ)‖²` is a.e. strongly measurable, since evaluation
+  -- `(L, v) ↦ L v` is continuous.
+  have hgm : AEStronglyMeasurable (fun x => ‖(x - ζ) - p x (x - ζ)‖ ^ 2) μ := by
+    have h1 : AEStronglyMeasurable (fun x => p x (x - ζ)) μ :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ) => L v)
+        (continuous_fst.clm_apply continuous_snd) hp
+        (continuous_id.sub continuous_const).aestronglyMeasurable
+    exact (((continuous_id.sub continuous_const).aestronglyMeasurable.sub h1).norm.pow 2)
+  -- Step 2: `0 ≤ g ≤ 36 s²` on `B_{3s}(ζ)`, which has finite mass, so `g` is integrable there.
+  have hgb : ∀ x ∈ closedBall ζ (3 * s), ‖‖(x - ζ) - p x (x - ζ)‖ ^ 2‖ ≤ 36 * s ^ 2 := by
+    intro x hx
+    have hxz : ‖x - ζ‖ ≤ 3 * s := by rw [← dist_eq_norm]; exact hx
+    have h1 : ‖(x - ζ) - p x (x - ζ)‖ ≤ 6 * s := by
+      calc ‖(x - ζ) - p x (x - ζ)‖ ≤ ‖x - ζ‖ + ‖p x (x - ζ)‖ := norm_sub_le _ _
+        _ ≤ ‖x - ζ‖ + ‖p x‖ * ‖x - ζ‖ := by gcongr; exact (p x).le_opNorm _
+        _ ≤ 3 * s + 1 * (3 * s) := by gcongr; exact hpb x
+        _ = 6 * s := by ring
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    calc ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ≤ (6 * s) ^ 2 := by gcongr
+      _ = 36 * s ^ 2 := by ring
+  have hgi : IntegrableOn (fun x => ‖(x - ζ) - p x (x - ζ)‖ ^ 2) (closedBall ζ (3 * s)) μ :=
+    Measure.integrableOn_of_bounded hfin hgm
+      (ae_restrict_of_forall_mem measurableSet_closedBall hgb)
+  -- Step 3: on the annulus `|x - ζ| > s`, so the annular integral is `≤ s^{-(n+2)} ∫_{B_{3s}(ζ)} g`.
+  have hAm : MeasurableSet (closedBall ζ (3 * s) \ closedBall ζ s) :=
+    measurableSet_closedBall.diff measurableSet_closedBall
+  have hpos : 0 < s ^ (n + 2) := by positivity
+  have hJ : ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+        ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ ≤
+      (s ^ (n + 2))⁻¹ * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+    calc ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+          ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ
+        ≤ ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+            (s ^ (n + 2))⁻¹ * ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+          apply integral_mono_of_nonneg
+          · exact Eventually.of_forall (fun x => by positivity)
+          · exact (hgi.mono_set sdiff_subset).const_mul _
+          · filter_upwards [ae_restrict_mem hAm] with x hx
+            have hxs : s < ‖x - ζ‖ := by
+              have := hx.2
+              rw [mem_closedBall, not_le, dist_eq_norm] at this
+              exact this
+            have hpow : s ^ (n + 2) ≤ ‖x - ζ‖ ^ (n + 2) := pow_le_pow_left₀ hs.le hxs.le _
+            rw [div_eq_inv_mul]
+            exact mul_le_mul_of_nonneg_right (inv_anti₀ hpos hpow) (by positivity)
+      _ = (s ^ (n + 2))⁻¹ * ∫ x in closedBall ζ (3 * s) \ closedBall ζ s,
+            ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := integral_const_mul _ _
+      _ ≤ (s ^ (n + 2))⁻¹ * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          exact setIntegral_mono_set hgi (Eventually.of_forall (fun x => by positivity))
+            (Eventually.of_forall sdiff_subset)
+  -- Step 4: `B_s(y) ⊆ B_{3s}(ζ)`, so `ω s^n / 2 ≤ μ(B_{3s}(ζ))`.
+  have hsub : closedBall y s ⊆ closedBall ζ (3 * s) := by
+    intro x hx
+    rw [mem_closedBall] at hx ⊢
+    calc dist x ζ ≤ dist x y + dist y ζ := dist_triangle _ _ _
+      _ ≤ s + 2 * s := add_le_add hx hy
+      _ = 3 * s := by ring
+  have hmB : ω * s ^ n / 2 ≤ (μ (closedBall ζ (3 * s))).toReal := by
+    have h1 : ENNReal.ofReal (ω * s ^ n / 2) ≤ μ (closedBall ζ (3 * s)) :=
+      hlow.trans (measure_mono hsub)
+    exact (ENNReal.ofReal_le_iff_le_toReal hfin).1 h1
+  -- Step 5: the hole `μ(B_s(ζ)) = 0` removes the first term of the monotonicity inequality.
+  rw [hhole, ENNReal.toReal_zero, mul_zero, mul_zero, zero_add] at hmono
+  have h3n : ((3 * s) ^ n)⁻¹ * (ω * s ^ n / 2) = ω / (2 * 3 ^ n) := by
+    rw [mul_pow]; field_simp
+  have hlow2 : ω / (2 * 3 ^ n) ≤ c + Real.exp 2 * ((s ^ (n + 2))⁻¹ *
+      ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ) := by
+    calc ω / (2 * 3 ^ n) = ((3 * s) ^ n)⁻¹ * (ω * s ^ n / 2) := h3n.symm
+      _ ≤ ((3 * s) ^ n)⁻¹ * (μ (closedBall ζ (3 * s))).toReal :=
+          mul_le_mul_of_nonneg_left hmB (by positivity)
+      _ ≤ _ := hmono
+      _ ≤ _ := by gcongr
+  -- Step 6: absorb `c ≤ ω/(4·3^n)` and multiply by `4·3^n s^{n+2}/ω > 0`.
+  have hkey : ω / (4 * 3 ^ n) ≤ Real.exp 2 * ((s ^ (n + 2))⁻¹ *
+      ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ) := by
+    have : ω / (2 * 3 ^ n) = ω / (4 * 3 ^ n) + ω / (4 * 3 ^ n) := by field_simp; ring
+    linarith
+  have h4 : 0 < 4 * 3 ^ n / ω := by positivity
+  calc s ^ (n + 2) = (4 * 3 ^ n / ω) * (ω / (4 * 3 ^ n)) * s ^ (n + 2) := by field_simp
+    _ ≤ (4 * 3 ^ n / ω) * (Real.exp 2 * ((s ^ (n + 2))⁻¹ *
+          ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ)) * s ^ (n + 2) := by
+        gcongr
+    _ = 4 * 3 ^ n * Real.exp 2 / ω *
+          ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ := by
+        field_simp
+
+/-- **Splitting the normal part on `B_{3s}(ζ)`** (Simon Ch. 5, proof of Lemma 2.6, the estimate
+following (9), p. 112), as used in the hole estimate of the proof of Corollary 2.7.  Write
+`v = x − ζ`, `P = p_T` and `h(x) = |p(x) − P|²`.  Since `v − p(x) v = (v − P v) − (p(x) − P) v`,
+`|v − p(x) v|² ≤ 2 |v − P v|² + 2 h(x) |v|²` (`lgc_hsNormSq_bounds`).  On `F` the slope hypothesis
+gives `|v − P v| ≤ ε |v|`; off `F`, `|v − P v| = dist(v, T) ≤ |v|` as `0 ∈ T`.  With `|v| ≤ 3s` this
+gives `|v − p(x) v|² ≤ 18 s² (ε² + 1_{Fᶜ}(x) + h(x))` on `B_{3s}(ζ)`, which integrates to the
+stated bound since `h` is measurable and bounded (`‖p(x) − P‖ ≤ 2`) and `μ(B_{3s}(ζ)) < ∞`. -/
+theorem lgc_hole_split_upper : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (T : Submodule ℝ (Amb n ℓ)) (F : Set (Amb n ℓ)) (ζ : Amb n ℓ) (s ε : ℝ), 0 < s → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → MeasurableSet F → μ (closedBall ζ (3 * s)) ≠ ⊤ → (∀ x ∈ F, ‖(x - ζ) - T.starProjection (x - ζ)‖ ≤ ε * ‖x - ζ‖) → ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ ≤ 18 * s ^ 2 * (ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal + (μ (closedBall ζ (3 * s) \ F)).toReal + ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ) := by
+  intro n ℓ μ p T F ζ s ε hs hp hpb hF hfin hslope
+  obtain ⟨hcont, hHS⟩ := lgc_hsNormSq_bounds (n + ℓ) (n + ℓ)
+  have hPn : ‖T.starProjection‖ ≤ 1 := Submodule.starProjection_norm_le T
+  -- `h(x) = |p(x) − P|²` is a.e. strongly measurable and bounded by `4 (n + ℓ)`.
+  have hhm : AEStronglyMeasurable (fun x => hsNormSq (p x - T.starProjection)) μ :=
+    hcont.comp_aestronglyMeasurable (hp.sub aestronglyMeasurable_const)
+  have hhb : ∀ x, ‖hsNormSq (p x - T.starProjection)‖ ≤ 4 * ((n + ℓ : ℕ) : ℝ) := by
+    intro x
+    obtain ⟨h0, h1, -⟩ := hHS (p x - T.starProjection)
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    have h2 : ‖p x - T.starProjection‖ ≤ 2 := by
+      calc ‖p x - T.starProjection‖ ≤ ‖p x‖ + ‖T.starProjection‖ := norm_sub_le _ _
+        _ ≤ 1 + 1 := add_le_add (hpb x) hPn
+        _ = 2 := by norm_num
+    calc hsNormSq (p x - T.starProjection) ≤ ((n + ℓ : ℕ) : ℝ) * ‖p x - T.starProjection‖ ^ 2 := h1
+      _ ≤ ((n + ℓ : ℕ) : ℝ) * 2 ^ 2 := by gcongr
+      _ = 4 * ((n + ℓ : ℕ) : ℝ) := by ring
+  have hhi : IntegrableOn (fun x => hsNormSq (p x - T.starProjection)) (closedBall ζ (3 * s)) μ :=
+    Measure.integrableOn_of_bounded hfin hhm (Eventually.of_forall hhb)
+  have hci : IntegrableOn (fun _ => (1:ℝ)) (closedBall ζ (3 * s)) μ :=
+    integrableOn_const hfin
+  have hii : IntegrableOn (Fᶜ.indicator (fun _ => (1:ℝ))) (closedBall ζ (3 * s)) μ :=
+    hci.indicator hF.compl
+  -- The pointwise bound `|v − p(x) v|² ≤ 18 s² (ε² + 1_{Fᶜ}(x) + h(x))` on `B_{3s}(ζ)`.
+  have hpt : ∀ x ∈ closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ≤
+      18 * s ^ 2 * (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x + hsNormSq (p x - T.starProjection)) := by
+    intro x hx
+    have hxz : ‖x - ζ‖ ≤ 3 * s := by rw [← dist_eq_norm]; exact hx
+    have hsplit : (x - ζ) - p x (x - ζ) =
+        ((x - ζ) - T.starProjection (x - ζ)) + (-((p x - T.starProjection) (x - ζ))) := by
+      simp only [sub_apply]
+      abel
+    have h1 : ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ≤
+        2 * ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 + 2 * ‖(p x - T.starProjection) (x - ζ)‖ ^ 2 := by
+      rw [hsplit]
+      have h := norm_add_le ((x - ζ) - T.starProjection (x - ζ)) (-((p x - T.starProjection) (x - ζ)))
+      rw [norm_neg] at h
+      have hn := norm_nonneg ((x - ζ) - T.starProjection (x - ζ) + -((p x - T.starProjection) (x - ζ)))
+      have hsq := pow_le_pow_left₀ hn h 2
+      nlinarith [sq_nonneg (‖(x - ζ) - T.starProjection (x - ζ)‖ -
+        ‖(p x - T.starProjection) (x - ζ)‖)]
+    have h2 : ‖(p x - T.starProjection) (x - ζ)‖ ^ 2 ≤ hsNormSq (p x - T.starProjection) * (9 * s ^ 2) := by
+      obtain ⟨h0, -, h3⟩ := hHS (p x - T.starProjection)
+      calc ‖(p x - T.starProjection) (x - ζ)‖ ^ 2
+          ≤ hsNormSq (p x - T.starProjection) * ‖x - ζ‖ ^ 2 := h3 (x - ζ)
+        _ ≤ hsNormSq (p x - T.starProjection) * (3 * s) ^ 2 := by gcongr
+        _ = hsNormSq (p x - T.starProjection) * (9 * s ^ 2) := by ring
+    -- Off `F`: `|v − P v| = dist(v, T) ≤ dist(v, 0) = |v|`.
+    have hQ : ‖(x - ζ) - T.starProjection (x - ζ)‖ ≤ ‖x - ζ‖ := by
+      rw [← dist_eq_norm, Submodule.dist_starProjection_eq_infDist]
+      have := infDist_le_dist_of_mem (x := x - ζ) (Submodule.zero_mem T)
+      rwa [dist_zero_right] at this
+    by_cases hxF : x ∈ F
+    · have hind : Fᶜ.indicator (fun _ => (1:ℝ)) x = 0 :=
+        indicator_of_notMem (by simpa using hxF) _
+      have h3 : ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ ε ^ 2 * (9 * s ^ 2) := by
+        have h0 : 0 ≤ ‖(x - ζ) - T.starProjection (x - ζ)‖ := norm_nonneg _
+        calc ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ (ε * ‖x - ζ‖) ^ 2 :=
+              pow_le_pow_left₀ h0 (hslope x hxF) 2
+          _ = ε ^ 2 * ‖x - ζ‖ ^ 2 := by ring
+          _ ≤ ε ^ 2 * (3 * s) ^ 2 := by gcongr
+          _ = ε ^ 2 * (9 * s ^ 2) := by ring
+      rw [hind]
+      nlinarith
+    · have hind : Fᶜ.indicator (fun _ => (1:ℝ)) x = 1 := indicator_of_mem hxF _
+      have h3 : ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ 9 * s ^ 2 := by
+        calc ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ ‖x - ζ‖ ^ 2 :=
+              pow_le_pow_left₀ (norm_nonneg _) hQ 2
+          _ ≤ (3 * s) ^ 2 := by gcongr
+          _ = 9 * s ^ 2 := by ring
+      rw [hind]
+      nlinarith [sq_nonneg ε, sq_nonneg s]
+  -- Integrate the pointwise bound and evaluate the constant and indicator integrals.
+  have hsum : IntegrableOn (fun x => ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x +
+      hsNormSq (p x - T.starProjection)) (closedBall ζ (3 * s)) μ :=
+    ((integrableOn_const hfin).add hii).add hhi
+  calc ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ
+      ≤ ∫ x in closedBall ζ (3 * s), 18 * s ^ 2 * (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x +
+          hsNormSq (p x - T.starProjection)) ∂μ := by
+        apply integral_mono_of_nonneg (Eventually.of_forall fun x => by positivity)
+          (hsum.const_mul (18 * s ^ 2))
+        filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+        exact hpt x hx
+    _ = 18 * s ^ 2 * (ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal +
+          (μ (closedBall ζ (3 * s) \ F)).toReal +
+          ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ) := by
+        have h12 : IntegrableOn (fun x => ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x)
+            (closedBall ζ (3 * s)) μ := (integrableOn_const hfin).add hii
+        have hc2 : IntegrableOn (fun _ => ε ^ 2) (closedBall ζ (3 * s)) μ := integrableOn_const hfin
+        have e1 : ∫ x in closedBall ζ (3 * s), (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x +
+              hsNormSq (p x - T.starProjection)) ∂μ =
+            ∫ x in closedBall ζ (3 * s), (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x) ∂μ +
+              ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ :=
+          integral_add h12 hhi
+        have e2 : ∫ x in closedBall ζ (3 * s), (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x) ∂μ =
+            ∫ x in closedBall ζ (3 * s), ε ^ 2 ∂μ +
+              ∫ x in closedBall ζ (3 * s), Fᶜ.indicator (fun _ => (1:ℝ)) x ∂μ :=
+          integral_add hc2 hii
+        have e3 : ∫ x in closedBall ζ (3 * s), ε ^ 2 ∂μ = ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal := by
+          rw [setIntegral_const, smul_eq_mul, measureReal_def, mul_comm]
+        have e4 : ∫ x in closedBall ζ (3 * s), Fᶜ.indicator (fun _ => (1:ℝ)) x ∂μ =
+            (μ (closedBall ζ (3 * s) \ F)).toReal := by
+          rw [integral_indicator hF.compl, setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+            Measure.restrict_apply hF.compl, inter_comm, ← sdiff_eq]
+        rw [integral_const_mul, e1, e2, e3, e4]
 /-- **Simon Ch. 3, Remark 1.8(1), first assertion** (Lusin exhaustion of a rectifiable varifold):
 the carrier `M` of `V = v(M, θ)` is, up to an `Hⁿ`-null set, a countable union of compact sets
 `K ⊆ M` of finite `Hⁿ`-measure on each of which `θ` is continuous.  Proof: pass to a Borel
@@ -3510,6 +3912,72 @@ theorem lgc_height_cone : AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ 
   -- (F1): `x ↦ p_x` is `μ_V`-a.e. strongly measurable (`lgc_tangent_plane_ae`) and `‖p_x‖ ≤ 1`.
   have hmeas := (Submission.lgc_tangent_plane_ae n ℓ hn U hU V).1
   have hpx : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+/-- **Hole estimate** (Simon Ch. 5, proof of Lemma 2.6, displays (9)–(10) in corrected form, as
+used in the proof of Corollary 2.7, pp. 112–113).  There are `δ₂, ε₂, C₂ > 0` depending only on
+`n, ℓ, p` such that, under 2.3 with `δ ≤ δ₂`, for a linear isometry `q`, `f : ℝⁿ → ℝ^ℓ` with
+`Lip f ≤ ε ≤ ε₂` and `ζ ∈ F̂ = q(graph f)` with `|ζ| ≤ 2δρ` and `0 < d = dist(ζ, spt V) ≤ δρ`, some
+`y ∈ spt V` has `|y − ζ| = d` and, with `s = d/2` and `T₀ = q(ℝⁿ × {0})`,
+`sⁿ ≤ C₂ (μ_V(B_{3s}(ζ) \ F̂) + ∫_{B_{3s}(ζ)} |p_{T_x M} − p_{T₀}|² dμ_V)`.
+Proof: the nearest point `y` empties `B_s(ζ)` (`lgc_support_closest_point`).  Annular monotonicity
+at `ζ` and the lower density bound at `y` (`lgc_density_monotonicity`) give
+`s^{n+2} ≤ 4·3ⁿ e² ω_n⁻¹ I` with `I = ∫_{B_{3s}(ζ)} |(x − ζ) − p_x(x − ζ)|² dμ_V`
+(`lgc_hole_annulus_lower`).  The slope of `F̂` relative to `T₀` (`lgc_rotated_graph_slope`) and the
+splitting `p_x^⊥ = p_{T₀}^⊥ + (p_{T₀} − p_x)` (`lgc_hole_split_upper`), with the upper density bound
+`μ_V(B_{3s}(ζ)) ≤ 2 ω_n 3ⁿ sⁿ`, give `I ≤ 18 s² (2 ω_n 3ⁿ ε² sⁿ + μ_V(B_{3s}(ζ) \ F̂) + tilt)`.
+With `δ₂ = min(δ₀, ω_n/(4·3ⁿ(C₀ + 1)))`, `ε₂ = (288·15ⁿ e²)^{-1/2}` and `C₂ = 144·3ⁿ e²/ω_n`, the
+`ε²` term is at most `sⁿ/2` and is absorbed. -/
+theorem lgc_hole_estimate : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₂ ε₂ C₂ : ℝ, 0 < δ₂ ∧ 0 < ε₂ ∧ 0 < C₂ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₂ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → ε ≤ ε₂ → LipschitzWith (Real.toNNReal ε) f → ∀ ζ ∈ q '' graphOver f univ, ‖ζ‖ ≤ 2 * (δ * ρ) → 0 < infDist ζ V.support → infDist ζ V.support ≤ δ * ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ (infDist ζ V.support / 2) ^ n ≤ C₂ * ((V.weight (closedBall ζ (3 * (infDist ζ V.support / 2)) \ q '' graphOver f univ)).toReal + ∫ x in closedBall ζ (3 * (infDist ζ V.support / 2)), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight) := by
+  intro n ℓ hn p hp
+  -- Step 1: constants.  `(D)` is the density/monotonicity package `lgc_density_monotonicity`.
+  obtain ⟨δ₀, C₀, hδ₀, hδ₀8, hC₀, hD⟩ := lgc_density_monotonicity n ℓ hn p hp
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    apply div_pos
+    · exact Real.rpow_pos_of_pos Real.pi_pos _
+    · exact Real.Gamma_pos_of_pos (by positivity)
+  set ω := unitBallVolume n with hω_def
+  have hK : 0 < Real.exp 2 := Real.exp_pos 2
+  set K := Real.exp 2 with hK_def
+  have hX : 0 < 288 * 15 ^ n * K := by positivity
+  -- `δ₂ = min(δ₀, ω/(4·3ⁿ(C₀+1)))`, `ε₂ = (288·15ⁿ e²)^{-1/2}`, `C₂ = 144·3ⁿ e²/ω`.
+  refine ⟨min δ₀ (ω / (4 * 3 ^ n * (C₀ + 1))), (Real.sqrt (288 * 15 ^ n * K))⁻¹,
+    144 * 3 ^ n * K / ω, ?_, ?_, ?_, ?_⟩
+  · exact lt_min hδ₀ (by positivity)
+  · have : 0 < Real.sqrt (288 * 15 ^ n * K) := Real.sqrt_pos.2 hX
+    positivity
+  · positivity
+  intro U hU V H δ ρ hδ hδ₂ hAH q f ε hε hε₂ hf ζ hζF hζn hd0 hdle
+  have hδ₀' : δ ≤ δ₀ := hδ₂.trans (min_le_left _ _)
+  have hδc : δ ≤ ω / (4 * 3 ^ n * (C₀ + 1)) := hδ₂.trans (min_le_right _ _)
+  obtain ⟨hDi, hDii, hDiii⟩ := hD U hU V H δ ρ hδ hδ₀' hAH
+  obtain ⟨hρ, -, -, h0, hBall, -, -⟩ := hAH
+  -- Step 2: the nearest point `y ∈ spt V` and the empty ball `B_s(ζ)`, `s = d/2`.
+  set d := infDist ζ V.support with hd_def
+  set s := d / 2 with hs_def
+  have hs : 0 < s := by positivity
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδ8 : δ ≤ 1 / 8 := hδ₀'.trans hδ₀8
+  have hρδ : δ * ρ ≤ ρ / 8 := by nlinarith
+  have hsum : ‖ζ‖ + d ≤ ρ := by linarith
+  obtain ⟨y, hyV, hyd, hball0⟩ := lgc_support_closest_point n ℓ U V ρ ζ h0 hBall hsum
+  have hhole : V.weight (closedBall ζ s) = 0 :=
+    measure_mono_null (closedBall_subset_ball (by linarith)) hball0
+  have hζ3 : ‖ζ‖ ≤ 3 * δ * ρ := by linarith
+  have hy3 : ‖y‖ ≤ 3 * δ * ρ := by
+    have h1 : ‖y‖ ≤ ‖ζ‖ + dist y ζ := by
+      rw [dist_eq_norm]
+      calc ‖y‖ = ‖ζ + (y - ζ)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖ζ‖ + ‖y - ζ‖ := norm_add_le _ _
+    linarith
+  have hs_le : s ≤ ρ / 2 := by linarith
+  have h3s_le : 3 * s ≤ ρ / 2 := by linarith
+  have hfin : V.weight (closedBall ζ (3 * s)) ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hDi ζ hζ3 (3 * s) (by positivity) h3s_le)
+  -- Steps 3–4: annular monotonicity at `ζ` and the lower density bound at `y`.
+  have hlow := hDii y hyV hy3 s hs hs_le
+  have hmono := hDiii ζ hζ3 s (3 * s) hs (by linarith) h3s_le
+  have hmeas := (lgc_tangent_plane_ae n ℓ hn U hU V).1
+  have hpb : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
     intro x
     unfold RectifiableVarifold.tangentProj
     split_ifs
@@ -3893,6 +4361,74 @@ theorem lgc_cone_graph_extension : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[�
         (by nlinarith [sq_nonneg ‖b y‖])
     · show q (graphPoint (a y) (P (h (a y)))) = y
       rw [hhA (a y) ⟨y, hy, rfl⟩, hgS y hy, hPfix _ (hgb y hy), hab, q.apply_symm_apply]
+  have hc : C₀ * δ ≤ ω / (4 * 3 ^ n) := by
+    have h4 : (0:ℝ) < 4 * 3 ^ n := by positivity
+    have hC1 : 0 < C₀ + 1 := by linarith
+    calc C₀ * δ ≤ C₀ * (ω / (4 * 3 ^ n * (C₀ + 1))) := mul_le_mul_of_nonneg_left hδc hC₀
+      _ = ω / (4 * 3 ^ n) * (C₀ / (C₀ + 1)) := by field_simp
+      _ ≤ ω / (4 * 3 ^ n) * 1 := by
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          rw [div_le_one hC1]; linarith
+      _ = ω / (4 * 3 ^ n) := mul_one _
+  have hL := lgc_hole_annulus_lower n ℓ V.weight V.tangentProj ζ y s ω (C₀ * δ) hs hω hmeas hpb
+    hhole hfin (by rw [hyd]; linarith) hlow hc hmono
+  -- Step 5: split the normal part on `B_{3s}(ζ)` using the slope of `F̂ = q(graph f)`.
+  obtain ⟨hFcl, hslope⟩ := lgc_rotated_graph_slope n ℓ q f ε hε hf
+  have hU2 := lgc_hole_split_upper n ℓ V.weight V.tangentProj (rotatedPlane q)
+    (q '' graphOver f univ) ζ s ε hs hmeas hpb hFcl.measurableSet hfin
+    (fun x hx => hslope x hx ζ hζF)
+  have hm3 : (V.weight (closedBall ζ (3 * s))).toReal ≤ 2 * ω * (3 * s) ^ n :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) (hDi ζ hζ3 (3 * s) (by positivity) h3s_le)
+  refine ⟨y, hyV, hyd, ?_⟩
+  -- Step 6: combine and absorb the `ε²` term using `ε ≤ ε₂`.
+  set m3 := (V.weight (closedBall ζ (3 * s))).toReal with hm3_def
+  set I := ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - V.tangentProj x (x - ζ)‖ ^ 2 ∂V.weight
+    with hI_def
+  set A := (V.weight (closedBall ζ (3 * s) \ q '' graphOver f univ)).toReal with hA_def
+  set B := ∫ x in closedBall ζ (3 * s),
+    hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight with hB_def
+  have hε2 : ε ^ 2 ≤ 1 / (288 * 15 ^ n * K) := by
+    have := pow_le_pow_left₀ hε hε₂ 2
+    rwa [inv_pow, Real.sq_sqrt hX.le, ← one_div] at this
+  have hK1 : 0 ≤ 4 * 3 ^ n * K / ω := by positivity
+  have h1 : s ^ n * s ^ 2 ≤ 4 * 3 ^ n * K / ω * (18 * s ^ 2 * (ε ^ 2 * m3 + A + B)) := by
+    calc s ^ n * s ^ 2 = s ^ (n + 2) := (pow_add s n 2).symm
+      _ ≤ 4 * 3 ^ n * K / ω * I := hL
+      _ ≤ _ := mul_le_mul_of_nonneg_left hU2 hK1
+  have hs2 : 0 < s ^ 2 := by positivity
+  have h2 : s ^ n ≤ 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3 + A + B) := by
+    have : s ^ n * s ^ 2 ≤ (4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3 + A + B)) * s ^ 2 := by
+      calc s ^ n * s ^ 2 ≤ _ := h1
+        _ = _ := by ring
+    exact le_of_mul_le_mul_right this hs2
+  have h3 : ε ^ 2 * m3 ≤ ε ^ 2 * (2 * ω * 3 ^ n * s ^ n) := by
+    apply mul_le_mul_of_nonneg_left _ (sq_nonneg ε)
+    calc m3 ≤ 2 * ω * (3 * s) ^ n := hm3
+      _ = 2 * ω * 3 ^ n * s ^ n := by rw [mul_pow]; ring
+  have h4 : 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * (2 * ω * 3 ^ n * s ^ n)) =
+      144 * 9 ^ n * K * ε ^ 2 * s ^ n := by
+    rw [show (9:ℝ) ^ n = 3 ^ n * 3 ^ n by rw [← mul_pow]; norm_num]
+    field_simp
+    ring
+  have h5 : 144 * 9 ^ n * K * ε ^ 2 * s ^ n ≤ s ^ n / 2 := by
+    have h9 : (9:ℝ) ^ n ≤ 15 ^ n := pow_le_pow_left₀ (by norm_num) (by norm_num) n
+    have h' : 144 * 9 ^ n * K * ε ^ 2 ≤ 1 / 2 := by
+      calc 144 * 9 ^ n * K * ε ^ 2 ≤ 144 * 15 ^ n * K * ε ^ 2 := by gcongr
+        _ ≤ 144 * 15 ^ n * K * (1 / (288 * 15 ^ n * K)) := by gcongr
+        _ = 1 / 2 := by field_simp; ring
+    calc 144 * 9 ^ n * K * ε ^ 2 * s ^ n ≤ 1 / 2 * s ^ n :=
+          mul_le_mul_of_nonneg_right h' (by positivity)
+      _ = s ^ n / 2 := by ring
+  have h6 : s ^ n ≤ s ^ n / 2 + 72 * 3 ^ n * K / ω * (A + B) := by
+    calc s ^ n ≤ 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3 + A + B) := h2
+      _ = 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * m3) + 72 * 3 ^ n * K / ω * (A + B) := by ring
+      _ ≤ 4 * 3 ^ n * K / ω * 18 * (ε ^ 2 * (2 * ω * 3 ^ n * s ^ n)) +
+            72 * 3 ^ n * K / ω * (A + B) := by gcongr
+      _ = 144 * 9 ^ n * K * ε ^ 2 * s ^ n + 72 * 3 ^ n * K / ω * (A + B) := by rw [h4]
+      _ ≤ s ^ n / 2 + 72 * 3 ^ n * K / ω * (A + B) := by gcongr
+  have e : 144 * 3 ^ n * K / ω * (A + B) = 2 * (72 * 3 ^ n * K / ω * (A + B)) := by ring
+  rw [e]
+  linarith
 
 end Submission
 

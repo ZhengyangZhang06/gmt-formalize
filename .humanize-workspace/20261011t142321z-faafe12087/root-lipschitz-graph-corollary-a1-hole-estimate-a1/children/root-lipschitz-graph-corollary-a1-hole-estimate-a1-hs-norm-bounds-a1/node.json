@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "depth": 3,
+  "title": "Hilbert-Schmidt norm: continuity and comparison with the operator norm",
+  "statement": "For all natural numbers m, k: the squared Hilbert-Schmidt norm hsNormSq(A) = sum over i < m of |A e_i|^2 (e_i = EuclideanSpace.single i 1, the standard basis of R^m) is a continuous function of A on the space of continuous linear maps R^m -> R^k with the operator-norm topology; and for every such A: 0 <= hsNormSq(A), hsNormSq(A) <= m ||A||^2 where ||A|| is the operator norm, and |A v|^2 <= hsNormSq(A) |v|^2 for every v in R^m.",
+  "lean_statement": "∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2",
+  "lean_name": "lgc_hsNormSq_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1-a1"
+}
