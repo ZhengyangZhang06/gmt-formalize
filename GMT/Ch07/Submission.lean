@@ -1143,6 +1143,38 @@ theorem Submission.codim1_zsl_pc_mollify_test_field : ∀ (m : ℕ) (F : Set (Eu
       by_cases hw : w ∈ F <;> simp [u, hw]
     exact hLHS.trans (hgT.symm.trans hRHS.symm)
 
+/-- Gradient bound for a mollified indicator (Simon Ch. 2, 2.5; step 3 of the perimeter
+compactness used for the zero-scale limit planes of 7.5).  Let `ρ ≥ 0` be `C^∞` with `∫ ρ = 1` and
+`ρ = 0` off `B̄_ε(0)`, and let `∫_F div φ ≤ c` for every `C^∞` field `φ` with compact support in
+`B_{r+ε}(0)` and `|φ| ≤ 1`.  Then `f = ρ ⋆ 1_F` is `C^∞` and `∫_{B_r(0)} |Df| ≤ c`.  As `ρ` has
+compact support and `1_F` is locally integrable, `f` is `C^∞`
+(`HasCompactSupport.contDiff_convolution_left`).  For a test field `ψ` in `B_r(0)` with
+`|ψ| ≤ 1`, `codim1_zsl_pc_mollify_test_field` gives a test field `ψ'` in `B_{r+ε}(0)` with
+`|ψ'| ≤ 1` and `∫ f div ψ = ∫_F div ψ' ≤ c`, and `codim1_zsl_pc_smooth_grad_bound` turns these
+bounds into `∫_{B_r(0)} |Df| ≤ c`. -/
+theorem Submission.codim1_zsl_pc_mollify_grad_bound : ∀ (m : ℕ) (F : Set (Euclid m)) (ρ : Euclid m → ℝ) (r ε c : ℝ), MeasurableSet F → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → (∀ z, ε < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → (∀ φ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid m) (r + ε) → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ φ v).toLinearMap ≤ c) → ContDiff ℝ (⊤ : ℕ∞) (fun v => ∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) ∧ ∫⁻ v in ball (0 : Euclid m) r, ‖fderiv ℝ (fun v => ∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) v‖ₑ ≤ ENNReal.ofReal c := by
+  intro m F ρ r ε c hF hρ hρ0 hρs hρ1 hP
+  -- `f = ρ ⋆ 1_F` is `C^∞`: `ρ` is `C^∞` with support in `B̄_ε(0)`, `1_F` is locally integrable
+  have hρc : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid m) ε) fun z hz => hρs z ?_
+    simpa [mem_closedBall, dist_zero_right, not_le] using hz
+  have hli : LocallyIntegrable (F.indicator (fun _ => (1 : ℝ))) volume :=
+    (locallyIntegrable_const (1 : ℝ)).indicator hF
+  have hconv : (fun v => ∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z))
+      = convolution ρ (F.indicator (fun _ => (1 : ℝ))) (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    funext v
+    simp [convolution_def, smul_eq_mul]
+  have hsmooth : ContDiff ℝ (⊤ : ℕ∞) (fun v => ∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) := by
+    rw [hconv]
+    exact hρc.contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hρ hli
+  refine ⟨hsmooth, Submission.codim1_zsl_pc_smooth_grad_bound m _ r c hsmooth ?_⟩
+  -- a test field `ψ` in `B_r(0)` against `f` is a test field `ψ'` in `B_{r+ε}(0)` against `1_F`
+  intro ψ hψ hψc hψs hψ1
+  obtain ⟨ψ', hψ', hψ'c, hψ's, hψ'1, heq⟩ :=
+    Submission.codim1_zsl_pc_mollify_test_field m F ρ ψ r ε hF hρ hρ0 hρs hρ1 hψ hψc hψs hψ1
+  rw [heq]
+  exact hP ψ' hψ' hψ'c hψ's hψ'1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
