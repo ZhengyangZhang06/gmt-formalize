@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp snapshot project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean; cmp snapshot Submission.lean vs Contract.lean; cmp workspace Submission.lean vs Contract.lean (all byte-identical)",
+        "python3 -I scans of dag.json: lean_name/status/candidate_commit/lean_statement of nodes matching tangent|density|weight|locality|orient|combin|triple|tau|lincomb; duplicate lean_name scan (none); reuse-closure scan of all parents with reused children",
+        "python3 -I: parent-child-handoff.json of the 9 reused nodes (key, depends_on, title/statement/lean_statement equality with dag.json) and their isolated-comparator-result.json (passed = true)",
+        "sed -n 6557,6597p and 2365,2369p /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem, _accepted_checkpoint: identical-type reuse of accepted nodes allowed, unaccepted names reserved)",
+        "rg -n 'deformation_imcomb' project lake-packages-25730c7c/simongmt dag.json (no match)",
+        "rg -n 'def HasWeightedApproximateTangentSpaceAt|def HasApproximateTangentSpaceAt|def blowUpMap' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (lines 330, 102, 96)",
+        "rg -n 'theorem hasProd_prod_of_ne_finset_one|theorem lintegral_indicator₀|theorem restrict_restrict₀ |theorem ae_restrict_mem₀|theorem ae_restrict_iUnion_iff|theorem ae_restrict_iff'₀|theorem ofReal_inv_of_pos|aestronglyMeasurable_iUnion_iff|theorem iUnion_closedBall_nat|exists_nat_one_div_lt|theorem integral_const_mul|theorem lintegral_add_left'|theorem lintegral_const_mul' ' in the snapshot mathlib/Mathlib",
+        "sed -n 750,770p book/chapter-06.txt (3.2 Remarks); sed -n 284,330p book/chapter-03.txt (1.7, 1.8(1), 1.9); sed -n 698,735p and 920,940p book/chapter-01.txt (3.6, 3.7(2), 3.17)",
+        "python3 -I scripts/challenges.py: verifier/lean_contract.validate_lean_statement and gmt-compare.child_modules (contract mode) for the 12 child types and the parent type",
+        "lake env lean (toolchain v4.35.0-rc3, frozen workspace build) on nc/NC_*.lean (13 files, exit 0, only the sorry warning), src/Assembly.lean, src/ChildA.lean, src/ChildB.lean, src/ChildC.lean and src/Integrated.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-im-combine-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-im-combine-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-lebesgue-points-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/decomposition-v2.json",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/imcomb-decomp-k7q2/src/Integrated.lean",
+        "/tmp/imcomb-decomp-k7q2/logs/integrated.log",
+        "/tmp/imcomb-decomp-k7q2/src/Assembly.lean"
+      ],
+      "conclusion": "Pinned revisions confirmed; the frozen contract is byte-identical to the snapshot and Submission = Contract. Nine needed results are already comparator-accepted with identical-type reuse allowed: fiw_ims_combine (Steps 4–8 for an integer series, hence for a·X + b·Y) with its DAG dependencies orientation_sign, frame_sign, overlap_finite, tsum_tau; iwl_weighted_tangent_locality (TL); lpf_wtc_ae_zero_density_off_set (Upper Density Theorem); and iwl_imc_normalized_lebesgue_points with its dependency rectifiability_density_comparison. All passed their isolated comparators. No accepted node gives the tangent comparison on overlaps for positive multiplicities; fiw_tangent_locality and iwl_imc_tangent_overlap are unaccepted and stay untouched. So it is supplied by three new, unreserved lemmas. The 12 child types and the parent type validate and elaborate in the exact comparator scope. Complete Lean proofs of the three new lemmas plus the parent assembly compile against stubs of the reused types, with axioms [propext, Classical.choice, Quot.sound] plus exactly the intended stubs. The Mathlib facts used (finite HasSum, null-measurable indicator integrals, countable a.e. unions, ofReal_inv_of_pos, aestronglyMeasurable_iUnion_iff) are located in the snapshot."
+    }
+  ],
+  "parent_id": "root.deformation-a1.im_combination-a1",
+  "child_id": "root.deformation-a1.im_combination-a1.subset_locality-a1",
+  "subproblem": {
+    "key": "subset_locality",
+    "title": "Weighted approximate tangent spaces pass to and from a subset at almost every point of the subset",
+    "statement": "Let N, k ∈ ℕ and H := μHE[k] on ℝ^N = Eucl N. Let E ⊆ M ⊆ ℝ^N be H-null-measurable sets and let θ : ℝ^N → ℝ be H-integrable on M ∩ K for every compact K ⊆ ℝ^N (no sign condition on θ and no local finiteness of H⌞M is assumed). Then for H-a.e. x ∈ E (that is, H⌞E-almost every x) and every linear subspace Q ⊆ ℝ^N: Q is a weighted approximate tangent space of (M, θ) at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt k M θ x Q: finrank Q = k and ∫_{η_{x,r}(M)} f(y)θ(x + ry) dH(y) → θ(x)∫_Q f dH as r ↓ 0 for every f ∈ C_c(ℝ^N), where η_{x,r}(y) = r⁻¹(y − x)) if and only if Q is a weighted approximate tangent space of (E, θ) at x.",
+    "lean_statement": "∀ (N k : ℕ) (E M : Set (Eucl N)) (θ : Eucl N → ℝ), E ⊆ M → NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → NullMeasurableSet M (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k E θ x Q",
+    "lean_name": "deformation_imcomb_subset_locality",
+    "depends_on": [
+      "tangent_locality",
+      "zero_density_off_set"
+    ],
+    "natural_proof": "Source: the weighted half of Lemma 1 (locality) of the parent proof, i.e. the Upper Density Theorem argument of Simon Ch. 1, 3.6 with Remark 3.7(2), as used in Ch. 3, Remark 1.8(1). The density statement is the reused sibling zero_density_off_set (Submission.lpf_wtc_ae_zero_density_off_set, statement (ZD) below). The passage from vanishing density to equality of the two blow-up limits is the reused sibling tangent_locality (Submission.iwl_weighted_tangent_locality, statement (TL) below). Notation: ‖t‖ₑ = |t| ∈ [0, ∞) is the extended norm of t ∈ ℝ, B̄_ρ(x) := closedBall x ρ, r^{−k} means ENNReal.ofReal((r^k)⁻¹), and ρ^k in a denominator means ENNReal.ofReal(ρ^k).\n\n(TL) [sibling tangent_locality]: for H-null-measurable M, M′ ⊆ ℝ^N, functions θ, θ′ and a point x with θ(x) = θ′(x), suppose that for some ρ > 0 θ is H-integrable on M ∩ B̄_ρ(x) and θ′ on M′ ∩ B̄_ρ(x), and that r^{−k}·∫⁻_{B̄_{Rr}(x)} ‖1_Mθ − 1_{M′}θ′‖ₑ dH → 0 as r ↓ 0 for every R > 0. Then for every linear subspace Q, HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k M′ θ′ x Q.\n(ZD) [sibling zero_density_off_set]: for W ⊆ ℝ^N open, S ⊆ ℝ^N H-null-measurable and g : ℝ^N → [0, ∞] with ∫⁻_{S∩K} g dH < ∞ for every compact K ⊆ W: for H-a.e. y with y ∈ W and y ∉ S, (∫⁻_{S∩B̄_ρ(y)} g dH)/ρ^k → 0 in [0, ∞] as ρ ↓ 0.\n\n1. (The excess set.) Put S := M ∖ E and g(z) := ‖θ(z)‖ₑ.\n   - S is H-null-measurable, as a difference of null-measurable sets.\n   - For compact K, S ∩ K ⊆ M ∩ K. So ∫⁻_{S∩K} g dH ≤ ∫⁻_{M∩K} ‖θ‖ₑ dH < ∞, because θ is H-integrable on M ∩ K (its norm has finite integral; lintegral_mono_set).\n\n2. (Zero density at almost every point of E.)\n   - Apply (ZD) with W := ℝ^N (open), S and g. Outside an H-null set, every y ∉ S has (∫⁻_{S∩B̄_ρ(y)} g dH)/ρ^k → 0 as ρ ↓ 0.\n   - An H-a.e. property also holds H⌞E-a.e. (ae_restrict_of_ae), and H⌞E-a.e. x lies in E (ae_restrict_mem₀, E null-measurable).\n   - Since E ∩ S = ∅, for H⌞E-a.e. x we have x ∈ E and, writing I(ρ) := ∫⁻_{S∩B̄_ρ(x)} g dH, I(ρ)/ρ^k → 0 as ρ ↓ 0.\n   Fix such an x for the rest of the proof.\n\n3. (Rescaling.) Let R > 0.\n   - The map r ↦ Rr sends (0, ∞) into (0, ∞) and tends to 0 as r ↓ 0. Hence I(Rr)/(Rr)^k → 0 as r ↓ 0.\n   - For r > 0, in [0, ∞]: r^{−k}·I(Rr) = R^k·(I(Rr)/(Rr)^k). Indeed ofReal(R^k)·ofReal(((Rr)^k)⁻¹) = ofReal(R^k·R^{−k}·r^{−k}) = ofReal((r^k)⁻¹) (ENNReal.ofReal_mul, ENNReal.ofReal_inv_of_pos, mul_pow).\n   - The finite constant R^k times a quantity tending to 0 tends to 0 (ENNReal.Tendsto.const_mul). Therefore r^{−k}·I(Rr) → 0 as r ↓ 0.\n\n4. (Identification of the integrand in (TL).)\n   - Because E ⊆ M, for every z: 1_M(z)θ(z) − 1_E(z)θ(z) = 1_S(z)θ(z). Hence ‖1_Mθ(z) − 1_Eθ(z)‖ₑ = 1_S(z)·g(z). (Check the cases z ∈ E, z ∈ M ∖ E and z ∉ M.)\n   - S is H-null-measurable, hence also null-measurable for H⌞B̄_ρ(x). So ∫⁻_{B̄_ρ(x)} ‖1_Mθ − 1_Eθ‖ₑ dH = ∫⁻_{B̄_ρ(x)} 1_S·g dH = ∫⁻_{S∩B̄_ρ(x)} g dH = I(ρ) (lintegral_indicator₀ and Measure.restrict_restrict₀).\n   - With ρ = Rr, step 3 gives r^{−k}·∫⁻_{B̄_{Rr}(x)} ‖1_Mθ − 1_Eθ‖ₑ dH → 0 as r ↓ 0, for every R > 0.\n\n5. (Apply (TL).) Use (TL) with (M, θ), (M′, θ′) := (E, θ) and the point x:\n   - M and E are H-null-measurable, and θ(x) = θ(x);\n   - with ρ := 1, θ is integrable on M ∩ B̄_1(x) (B̄_1(x) is compact) and on E ∩ B̄_1(x) ⊆ M ∩ B̄_1(x) (IntegrableOn.mono_set);\n   - the density hypothesis is step 4.\n   Hence HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k E θ x Q for every linear subspace Q. By step 2 this holds for H⌞E-a.e. x, which proves the lemma.\n   For k = 0 every power r^k, ρ^k equals 1 and the same argument applies verbatim. ∎",
+    "proof_key_steps": [
+      "S := M ∖ E is H-null-measurable and ‖θ‖ₑ has finite integral on S ∩ K for every compact K",
+      "zero_density_off_set with W = ℝ^N: ∫⁻_{S∩B̄_ρ(x)} ‖θ‖ₑ dH = o(ρ^k) for H⌞E-a.e. x, because E ∩ S = ∅",
+      "rescaling ρ = Rr: r^{−k}·∫⁻_{S∩B̄_{Rr}(x)} ‖θ‖ₑ dH → 0 for every R > 0",
+      "E ⊆ M gives ‖1_Mθ − 1_Eθ‖ₑ = 1_S‖θ‖ₑ, so this is the density hypothesis of tangent_locality",
+      "tangent_locality with (M, θ) and (E, θ) at x gives the equivalence for every Q"
+    ]
+  },
+  "audit": {
+    "key": "subset_locality",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Applying zero_density_off_set to M∖E with density ‖θ‖ gives the needed estimate almost everywhere on E. Rescaling and the indicator-difference identity meet every tangent_locality hypothesis, without positivity or local finiteness of H restricted to M."
+  },
+  "resolved_dependencies": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.zero_density_off_set-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1-subset-locality-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1-subset-locality-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1-subset-locality-a1/parent-supplied-natural-proof.json"
+}

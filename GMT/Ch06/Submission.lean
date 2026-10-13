@@ -2090,6 +2090,60 @@ theorem Submission.fiw_ims_combine : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen 
       exact hxM' ⟨hx, hne⟩
     change (0 : ℝ) = θh x * _
     rw [h0, zero_mul]
+/-- Locality of weighted approximate tangent spaces under passage to a subset, as in Simon
+Ch. 3, Remark 1.8(1).  For `E ⊆ M` and `θ` locally `Hᵏ`-integrable on `M`, the upper density
+theorem (Ch. 1, 3.6) gives `∫⁻_{S ∩ B̄_ρ(x)} |θ| dHᵏ = o(ρᵏ)` for `S = M \ E` at `Hᵏ`-a.e.
+`x ∈ E`.  Since `|1_M θ - 1_E θ| = 1_S |θ|`, rescaling `ρ = R r` turns this into the density
+hypothesis of the weighted tangent locality lemma for `(M, θ)` and `(E, θ)` at `x`. -/
+theorem Submission.deformation_imcomb_subset_locality :
+    ∀ (N k : ℕ) (E M : Set (Eucl N)) (θ : Eucl N → ℝ), E ⊆ M →
+      NullMeasurableSet E (μHE[k] : Measure (Eucl N)) →
+      NullMeasurableSet M (μHE[k] : Measure (Eucl N)) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N),
+        HasWeightedApproximateTangentSpaceAt k M θ x Q ↔
+          HasWeightedApproximateTangentSpaceAt k E θ x Q := by
+  intro N k E M θ hEM hE hM hθ
+  -- `S = M \ E` is null-measurable, and `|θ|` has finite integral on `S ∩ K ⊆ M ∩ K`.
+  have hS : NullMeasurableSet (M \ E) (μHE[k] : Measure (Eucl N)) := hM.diff hE
+  have hfin : ∀ K : Set (Eucl N), IsCompact K → K ⊆ univ →
+      ∫⁻ z in (M \ E) ∩ K, ‖θ z‖ₑ ∂(μHE[k] : Measure (Eucl N)) < ∞ := fun K hK _ =>
+    (lintegral_mono_set (inter_subset_inter_left K Set.sdiff_subset)).trans_lt
+      (hasFiniteIntegral_iff_enorm.mp (hθ K hK).hasFiniteIntegral)
+  -- `S` has zero `k`-density (weighted by `|θ|`) at `Hᵏ`-a.e. point off `S`, in particular
+  -- at `Hᵏ ⌞ E`-a.e. `x ∈ E`.
+  filter_upwards [ae_restrict_of_ae (Submission.lpf_wtc_ae_zero_density_off_set N k univ (M \ E)
+    (fun z => ‖θ z‖ₑ) isOpen_univ hS hfin), ae_restrict_mem₀ hE] with x hx hxE
+  have hdens := hx (mem_univ x) fun h => h.2 hxE
+  -- `E ⊆ M` gives `|1_M θ - 1_E θ| = 1_S |θ|`.
+  have hlint : ∀ ρ : ℝ, ∫⁻ z in closedBall x ρ, ‖M.indicator θ z - E.indicator θ z‖ₑ
+      ∂(μHE[k] : Measure (Eucl N)) =
+        ∫⁻ z in (M \ E) ∩ closedBall x ρ, ‖θ z‖ₑ ∂(μHE[k] : Measure (Eucl N)) := by
+    intro ρ
+    have hpt : ∀ z, ‖M.indicator θ z - E.indicator θ z‖ₑ =
+        (M \ E).indicator (fun z => ‖θ z‖ₑ) z := fun z => by
+      rw [← enorm_indicator_eq_indicator_enorm, indicator_sdiff hEM, Pi.sub_apply]
+    simp_rw [hpt]
+    exact setLIntegral_indicator₀ _ (hS.mono Measure.restrict_le_self)
+  -- Weighted tangent locality for `(M, θ)` and `(E, θ)` at `x`, with `ρ = 1`.
+  refine Submission.iwl_weighted_tangent_locality N k M E θ θ x hM hE rfl
+    ⟨1, one_pos, hθ _ (isCompact_closedBall x 1),
+      (hθ _ (isCompact_closedBall x 1)).mono_set (inter_subset_inter_left _ hEM)⟩ ?_
+  -- Rescaling `ρ = R r`: `(rᵏ)⁻¹ I(R r) = Rᵏ · I(R r) / (R r)ᵏ → 0`.
+  intro R hR
+  have hRr : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · exact ((continuous_const_mul R).tendsto' 0 0 (mul_zero R)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r) using mul_pos hR hr
+  have h0 := ENNReal.Tendsto.const_mul (hdens.comp hRr)
+    (Or.inr (ENNReal.ofReal_ne_top (r := R ^ k)))
+  rw [mul_zero] at h0
+  refine h0.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [Function.comp_apply, hlint, ENNReal.div_eq_inv_mul,
+    ← ENNReal.ofReal_inv_of_pos (by positivity), ← mul_assoc,
+    ← ENNReal.ofReal_mul (by positivity), mul_pow, mul_inv, ← mul_assoc,
+    mul_inv_cancel₀ (pow_ne_zero k hR.ne'), one_mul]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
