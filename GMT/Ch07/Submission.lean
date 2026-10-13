@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **An a.e. property on `B` transfers to a.e. points of `G(B′)`** (Step 6 of the push-forward
+representation).  Let `B′ ⊆ B ⊆ ℝᵈ` be Borel and let `G : ℝᵈ → ℝᴾ` be continuous and injective on
+`B` and satisfy the area formula `∫_{G(B)} g dHᵐ = ∫_B J⁺ · (g ∘ G) dHᵐ` for every `g ≥ 0`.  If `p`
+holds `Hᵐ`-a.e. on `B`, then `Hᵐ`-a.e. `w ∈ G(B′)` is `G v` for some `v ∈ B′` with `p v`.  The
+exceptional set lies in a Borel `Hᵐ`-null set `S ⊆ B`; `G(S)` and `G(B′)` are Borel by
+Lusin–Souslin; the area formula with `g = 1_{G(S)}` and injectivity give `Hᵐ(G(S)) = 0`; and every
+`w = G v ∈ G(B′) \ G(S)` has `v ∉ S`, hence `p v`. -/
+theorem Submission.codim1_pfr_ae_transfer_to_image : ∀ (m d P : ℕ) (B B' : Set (Euclid d)) (G : Euclid d → Euclid P) (J : Euclid d → ℝ) (p : Euclid d → Prop), MeasurableSet B → MeasurableSet B' → B' ⊆ B → ContinuousOn G B → InjOn G B → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μHE[m] = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂μHE[m]) → (∀ᵐ v ∂(μHE[m].restrict B), p v) → ∀ᵐ w ∂(μHE[m].restrict (G '' B')), ∃ v ∈ B', G v = w ∧ p v := by
+  intro m d P B B' G J p hB hB' hB'B hG hinj harea hp
+  -- Step 1: `Hᵐ({¬p} ∩ B) = 0`; enlarge it to a Borel null set `S = T ∩ B ⊆ B` containing every
+  -- `v ∈ B` with `¬p v`.
+  have h0 : (μHE[m] : Measure (Euclid d)) ({v | ¬p v} ∩ B) = 0 := by
+    rw [← Measure.restrict_apply' hB]
+    exact ae_iff.mp hp
+  obtain ⟨T, hTsub, hTmeas, hT0⟩ := exists_measurable_superset_of_null h0
+  have hSmeas : MeasurableSet (T ∩ B) := hTmeas.inter hB
+  have hSB : T ∩ B ⊆ B := inter_subset_right
+  have hS0 : (μHE[m] : Measure (Euclid d)) (T ∩ B) = 0 := measure_mono_null inter_subset_left hT0
+  have hnotp : ∀ v ∈ B, ¬p v → v ∈ T ∩ B := fun v hv hpv => ⟨hTsub ⟨hpv, hv⟩, hv⟩
+  -- Step 2: `G(S)` and `G(B′)` are Borel by Lusin–Souslin.
+  have hGS : MeasurableSet (G '' (T ∩ B)) :=
+    hSmeas.image_of_continuousOn_injOn (hG.mono hSB) (hinj.mono hSB)
+  have hGB' : MeasurableSet (G '' B') :=
+    hB'.image_of_continuousOn_injOn (hG.mono hB'B) (hinj.mono hB'B)
+  -- Step 3: the area formula with `g = 1_{G(S)}` gives `Hᵐ(G(S)) = 0`, since for `v ∈ B \ S`
+  -- injectivity gives `G v ∉ G(S)`.
+  have hGS0 : (μHE[m] : Measure (Euclid P)) (G '' (T ∩ B)) = 0 := by
+    have h := harea ((G '' (T ∩ B)).indicator 1)
+    rw [lintegral_indicator_one hGS, Measure.restrict_apply hGS,
+      inter_eq_left.mpr (image_mono hSB)] at h
+    rw [h]
+    have hae : ∀ᵐ v ∂((μHE[m] : Measure (Euclid d)).restrict B),
+        ENNReal.ofReal (J v) * (G '' (T ∩ B)).indicator 1 (G v) = 0 := by
+      filter_upwards [ae_restrict_mem hB,
+        ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.mp hS0)] with v hvB hvS
+      have hGv : G v ∉ G '' (T ∩ B) := by
+        rintro ⟨v', hv'S, hv'⟩
+        exact hvS (by rwa [← hinj (hSB hv'S) hvB hv'])
+      rw [indicator_of_notMem hGv, mul_zero]
+    rw [lintegral_congr_ae hae, lintegral_zero]
+  -- Step 4: outside the null set `G(S)`, each `w = G v ∈ G(B′)` has `v ∉ S`, hence `p v`.
+  rw [ae_restrict_iff' hGB']
+  filter_upwards [measure_eq_zero_iff_ae_notMem.mp hGS0] with w hwS hw
+  obtain ⟨v, hvB', rfl⟩ := hw
+  refine ⟨v, hvB', rfl, ?_⟩
+  by_contra hpv
+  exact hwS ⟨v, hnotp v (hB'B hvB') hpv, rfl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
