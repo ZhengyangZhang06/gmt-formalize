@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.divergence_field-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1",
+  "depth": 5,
+  "title": "The face pull-back of dγ is the divergence of a smooth field bounded by |γ|",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let γ be a C^∞ differential m-form on ℝ^P (γ : DifferentialForm (Euclid P) m with ContDiff ℝ ∞ γ, order ∞ = ↑(⊤ : ℕ∞), not analytic), let ι : Fin n → Fin P be strictly increasing and a ∈ ℝ^P. Write e_l := EuclideanSpace.single l 1 ∈ ℝ^P, Φ(y) := a + Σ_j y_j e_{ι(j)} for y ∈ ℝⁿ (= Euclid n), and E := (e_{ι(0)}, …, e_{ι(m)}). Then there is a C^∞ map G : ℝⁿ → ℝⁿ such that for every y ∈ ℝⁿ: (a) |G(y)| ≤ covectorEuclideanNorm(γ(Φ(y))) (Euclidean norm of G(y)), and (b) trace DG(y) = (dγ)(Φ(y))(E), where DG(y) = fderiv ℝ G y, trace is LinearMap.trace on ℝⁿ and dγ = exteriorDerivative γ.",
+  "lean_statement": "∀ (P m : ℕ) (γ : DifferentialForm (Euclid P) m) (ι : Fin (m + 1) → Fin P) (a : Euclid P), ContDiff ℝ (⊤ : ℕ∞) γ → StrictMono ι → ∃ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G ∧ (∀ y, ‖G y‖ ≤ covectorEuclideanNorm (γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)))) ∧ ∀ y, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) = exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ))",
+  "lean_name": "cmcdtfrfic_divergence_field",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.coeff_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.coeff_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-c5035a4b1c-a1"
+}
