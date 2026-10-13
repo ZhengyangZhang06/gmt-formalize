@@ -549,6 +549,72 @@ theorem Submission.cbr_setIntegral_eq_of_integral_eq : ∀ (P k : ℕ) (U : Set 
           (hasSum_integral_iUnion hfm hfd hi₃.integrableOn)).congr_fun fun n => hf n)
   exact hall B hB
 
+/-- Smooth cutoffs converging pointwise to the indicator of an open set (used to recover the
+measure of an open set from the integrals of `C_c^∞` test functions by dominated convergence): for
+open `V ⊆ ℝⁿ` there are smooth compactly supported `bⱼ : ℝⁿ → [0, 1]` with `spt bⱼ ⊆ V` and
+`bⱼ → 𝟙_V` pointwise.  The compact sets `Kⱼ = {y : dist(y, ℝⁿ \ V) ≥ 1/(j+1)} ∩ B̄(0, j)` lie in
+`V` and exhaust it; for `rⱼ > 0` with the closed `2rⱼ`-neighbourhood of `Kⱼ` inside `V`, the
+smooth Urysohn lemma gives `bⱼ` with support the open `2rⱼ`-neighbourhood of `Kⱼ` and equal to `1`
+exactly on the closed `rⱼ`-neighbourhood. -/
+theorem Submission.cbr_ci_pw_noi_smooth_cutoff_seq : ∀ (n : ℕ) (V : Set (Euclid n)), IsOpen V → ∃ b : ℕ → Euclid n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (b j)) ∧ (∀ j, HasCompactSupport (b j)) ∧ (∀ j, tsupport (b j) ⊆ V) ∧ (∀ j y, 0 ≤ b j y ∧ b j y ≤ 1) ∧ ∀ y, Tendsto (fun j => b j y) atTop (𝓝 (V.indicator (fun _ => (1 : ℝ)) y)) := by
+  intro n V hV
+  -- Step 1: the compact exhaustion `Kⱼ = {y : infEDist y Vᶜ ≥ 1/(j+1)} ∩ B̄(0, j)` of `V`.
+  set K : ℕ → Set (Euclid n) := fun j =>
+    {y | ((j : ℝ≥0∞) + 1)⁻¹ ≤ infEDist y Vᶜ} ∩ closedBall 0 j
+  have hKc : ∀ j, IsCompact (K j) := fun j =>
+    (isCompact_closedBall 0 (j : ℝ)).inter_left (isClosed_le continuous_const continuous_infEDist)
+  have hKV : ∀ j, K j ⊆ V := by
+    intro j y hy
+    by_contra hyV
+    have h1 : ((j : ℝ≥0∞) + 1)⁻¹ ≤ infEDist y Vᶜ := hy.1
+    rw [infEDist_zero_of_mem hyV] at h1
+    exact (ENNReal.inv_pos.mpr (by simp)).ne' (le_antisymm h1 bot_le)
+  have hKev : ∀ y ∈ V, ∀ᶠ j in atTop, y ∈ K j := by
+    intro y hy
+    have hpos : 0 < infEDist y Vᶜ := by
+      rw [infEDist_pos_iff_notMem_closure, hV.isClosed_compl.closure_eq]
+      exact fun h => h hy
+    have h1 : ∀ᶠ j : ℕ in atTop, ((j : ℝ≥0∞) + 1)⁻¹ ≤ infEDist y Vᶜ := by
+      have ht : Tendsto (fun j : ℕ => ((j : ℝ≥0∞) + 1)⁻¹) atTop (𝓝 0) :=
+        (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)).congr fun j => by simp
+      filter_upwards [ht.eventually (gt_mem_nhds hpos)] with j hj using hj.le
+    have h2 : ∀ᶠ j : ℕ in atTop, y ∈ closedBall (0 : Euclid n) j := by
+      obtain ⟨N, hN⟩ := exists_nat_ge ‖y‖
+      filter_upwards [eventually_ge_atTop N] with j hj
+      rw [mem_closedBall, dist_zero_right]
+      exact hN.trans (by exact_mod_cast hj)
+    filter_upwards [h1, h2] with j hj1 hj2 using ⟨hj1, hj2⟩
+  -- Step 2: radii `rⱼ > 0` with `cthickening (2 rⱼ) Kⱼ ⊆ V`.
+  have hr : ∀ j, ∃ r : ℝ, 0 < r ∧ cthickening (2 * r) (K j) ⊆ V := by
+    intro j
+    obtain ⟨δ, hδ, hsub⟩ := (hKc j).exists_cthickening_subset_open hV (hKV j)
+    exact ⟨δ / 2, by positivity, by rwa [mul_div_cancel₀ _ two_ne_zero]⟩
+  choose r hr0 hrV using hr
+  -- Step 3: smooth Urysohn functions, `1` exactly on `cthickening rⱼ Kⱼ`, with support
+  -- `thickening (2 rⱼ) Kⱼ`.
+  have hb : ∀ j, ∃ f : Euclid n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ range f ⊆ Icc 0 1 ∧
+      support f = thickening (2 * r j) (K j) ∧ ∀ x, x ∈ cthickening (r j) (K j) ↔ f x = 1 :=
+    fun j => exists_contDiff_support_eq_eq_one_iff isOpen_thickening isClosed_cthickening
+      (cthickening_subset_thickening' (by linarith [hr0 j]) (by linarith [hr0 j]) _)
+  choose b hbsmooth hbrange hbsupp hbone using hb
+  have htsupp : ∀ j, tsupport (b j) ⊆ cthickening (2 * r j) (K j) := by
+    intro j
+    rw [tsupport, hbsupp]
+    exact closure_thickening_subset_cthickening _ _
+  refine ⟨b, hbsmooth,
+    fun j => (hKc j).cthickening.of_isClosed_subset (isClosed_tsupport _) (htsupp j),
+    fun j => (htsupp j).trans (hrV j), fun j y => hbrange j ⟨y, rfl⟩, fun y => ?_⟩
+  -- Step 4: `bⱼ y = 1` for large `j` if `y ∈ V`, and `bⱼ y = 0` for all `j` if `y ∉ V`.
+  by_cases hy : y ∈ V
+  · rw [indicator_of_mem hy]
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hKev y hy] with j hj
+    exact ((hbone j y).mp (self_subset_cthickening _ hj)).symm
+  · rw [indicator_of_notMem hy]
+    refine tendsto_const_nhds.congr' (Eventually.of_forall fun j => ?_)
+    by_contra hne
+    exact hy ((htsupp j).trans (hrV j) (subset_tsupport _ (Ne.symm hne)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
