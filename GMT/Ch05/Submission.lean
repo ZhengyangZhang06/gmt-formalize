@@ -466,6 +466,147 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- Simon Ch. 5, proof of Lemma 2.5 (p. 109): a maximal family of centres in `S` with pairwise
+disjoint closed balls `B_r(z)` is a finite `2r`-net of `S`.  If every `B_r(y)`, `y ∈ S`, lies in `E`
+and has `μ(B_r(y)) ≥ a > 0`, while `μ(E) ≤ b`, then such a family `G` has
+`#G · a ≤ Σ_{z ∈ G} μ(B_r(z)) = μ(⋃_{z ∈ G} B_r(z)) ≤ μ(E) ≤ b`.  Take one, `F`, of maximal
+cardinality; if `dist(y, z) > 2r` for all `z ∈ F`, then `F ∪ {y}` would be a larger such family. -/
+theorem aal_packing_finite_net : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] (μ : Measure X) (S E : Set X) (r a b : ℝ), 0 < r → 0 < a → 0 ≤ b → μ E ≤ ENNReal.ofReal b → (∀ y ∈ S, closedBall y r ⊆ E ∧ ENNReal.ofReal a ≤ μ (closedBall y r)) → ∃ F : Finset X, (↑F : Set X) ⊆ S ∧ (F.card : ℝ) * a ≤ b ∧ ∀ y ∈ S, ∃ z ∈ F, dist y z ≤ 2 * r := by
+  intro X _ _ _ μ S E r a b hr ha hb hE hS
+  classical
+  -- Packing bound: if `G ⊆ S` has pairwise disjoint closed `r`-balls, then `#G · a ≤ b`.
+  have hbound : ∀ G : Finset X, (↑G : Set X) ⊆ S →
+      (↑G : Set X).PairwiseDisjoint (fun z => closedBall z r) → (G.card : ℝ) * a ≤ b := by
+    intro G hGS hGd
+    have key : (G.card : ℝ≥0∞) * ENNReal.ofReal a ≤ ENNReal.ofReal b :=
+      calc (G.card : ℝ≥0∞) * ENNReal.ofReal a = ∑ _z ∈ G, ENNReal.ofReal a := by
+            rw [Finset.sum_const, nsmul_eq_mul]
+        _ ≤ ∑ z ∈ G, μ (closedBall z r) := Finset.sum_le_sum fun z hz => (hS z (hGS hz)).2
+        _ = μ (⋃ z ∈ G, closedBall z r) :=
+            (measure_biUnion_finset hGd fun z _ => measurableSet_closedBall).symm
+        _ ≤ μ E := measure_mono (Set.iUnion₂_subset fun z hz => (hS z (hGS hz)).1)
+        _ ≤ ENNReal.ofReal b := hE
+    rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg _)] at key
+    exact (ENNReal.ofReal_le_ofReal_iff hb).1 key
+  -- The cardinalities of admissible sets form a nonempty set of naturals bounded by `⌊b / a⌋`.
+  let C : Set ℕ := {k | ∃ G : Finset X, (↑G : Set X) ⊆ S ∧
+    (↑G : Set X).PairwiseDisjoint (fun z => closedBall z r) ∧ G.card = k}
+  have hCne : C.Nonempty := ⟨0, ∅, by simp, by simp, rfl⟩
+  have hCbdd : BddAbove C := by
+    refine ⟨⌊b / a⌋₊, ?_⟩
+    rintro k ⟨G, hGS, hGd, rfl⟩
+    exact Nat.le_floor ((le_div_iff₀ ha).2 (hbound G hGS hGd))
+  -- An admissible `F` of maximal cardinality.
+  obtain ⟨F, hFS, hFd, hFcard⟩ := Nat.sSup_mem hCne hCbdd
+  refine ⟨F, hFS, hbound F hFS hFd, ?_⟩
+  -- Net property: otherwise `insert y F` would be admissible of larger cardinality.
+  intro y hy
+  by_contra! hfar
+  have hyF : y ∉ F := fun h => by
+    have := hfar y h
+    rw [dist_self] at this
+    linarith
+  have hmem : (insert y F).card ∈ C := by
+    refine ⟨insert y F, ?_, ?_, rfl⟩
+    · rw [Finset.coe_insert]
+      exact Set.insert_subset hy hFS
+    · rw [Finset.coe_insert]
+      exact hFd.insert fun z hz _ => closedBall_disjoint_closedBall (by linarith [hfar z hz])
+  have hle := le_csSup hCbdd hmem
+  rw [Finset.card_insert_of_notMem hyF, hFcard] at hle
+  omega
+/-- Simon Ch. 5, proof of Lemma 2.5 (p. 109), (1), first inequality: for any measure `μ` and any
+map `x ↦ P x`, on `B_s(y)` we have `|v(x)|² = |x - y|^{n+2} · |v(x)|² |x - y|^{-n-2}
+≤ s^{n+2} · |v(x)|² |x - y|^{-n-2}` with `v(x) = (x - y) - P x (x - y)` (both sides vanish at
+`x = y`), hence `∫_{B_s(y)} |v|² dμ ≤ s^{n+2} ∫_{B_s(y)} |v|² |x - y|^{-n-2} dμ`. -/
+theorem aal_normal_sq_lintegral_le_conical : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ) (y : Amb n ℓ) (s : ℝ), 0 < s → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal (s ^ (n + 2)) * ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ := by
+  intro n ℓ μ P y s hs
+  -- Move the finite constant `ofReal (s ^ (n + 2))` inside and compare integrands on the ball.
+  rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  refine setLIntegral_mono' measurableSet_closedBall fun x hx => ?_
+  rw [← ENNReal.ofReal_mul (pow_nonneg hs.le _)]
+  refine ENNReal.ofReal_le_ofReal ?_
+  rcases eq_or_ne x y with rfl | hxy
+  · -- At `x = y` both sides vanish, since `P x 0 = 0`.
+    simp
+  · -- For `0 < |x - y| ≤ s`: `|v|² = |x - y|^{n+2} (|v|² / |x - y|^{n+2}) ≤ s^{n+2} (|v|² / |x - y|^{n+2})`.
+    have hd : 0 < ‖x - y‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxy)
+    have hds : ‖x - y‖ ≤ s := by rwa [mem_closedBall, dist_eq_norm] at hx
+    have hpow : 0 < ‖x - y‖ ^ (n + 2) := pow_pos hd _
+    calc ‖(x - y) - P x (x - y)‖ ^ 2
+        = ‖x - y‖ ^ (n + 2) * (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) :=
+          (mul_div_cancel₀ _ hpow.ne').symm
+      _ ≤ s ^ (n + 2) * (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) :=
+          mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hd.le hds _)
+            (div_nonneg (sq_nonneg _) hpow.le)
+/-- Simon Ch. 5, proof of Lemma 2.5 (p. 109), (4)–(5): Chebyshev selection of a good point.  If
+`∫_{B_R(ξ)} |p_x^⊥(x - y)|² dμ ≤ K` for every `y ∈ F` and `#F · K < λ μ(B_s(ξ))` with `s ≤ R`,
+then some `x₀ ∈ B_s(ξ)` at which `P x₀ = p_T` for an `n`-plane `T` has `|p_T^⊥(x₀ - y)|² < λ` for
+all `y ∈ F`.  Otherwise `Σ_{y ∈ F} |p_x^⊥(x - y)|² ≥ λ` `μ`-a.e. on `B_s(ξ)`, and integrating gives
+`λ μ(B_s(ξ)) ≤ #F · K`. -/
+theorem aal_good_tangent_point : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ), AEStronglyMeasurable P μ → (∀ᵐ x ∂μ, ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ P x = T.starProjection) → ∀ (ξ : Amb n ℓ) (s R K lam : ℝ) (F : Finset (Amb n ℓ)), 0 < lam → s ≤ R → (∀ y ∈ F, ∫⁻ x in closedBall ξ R, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal K) → ENNReal.ofReal ((F.card : ℝ) * K) < ENNReal.ofReal lam * μ (closedBall ξ s) → ∃ x₀ ∈ closedBall ξ s, ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ P x₀ = T.starProjection ∧ ∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ^ 2 < lam := by
+  intro n ℓ μ P hP hT ξ s R K lam F hlam hsR hK hlt
+  by_contra! hcon
+  -- `h y x = ofReal |(x - y) - P(x)(x - y)|²`, a.e. measurable since evaluation is bilinear.
+  have hmeas : ∀ y : Amb n ℓ,
+      AEMeasurable (fun x => ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2)) μ := by
+    intro y
+    have hPy : AEStronglyMeasurable (fun x => P x (x - y)) μ :=
+      (ContinuousLinearMap.id ℝ (Amb n ℓ →L[ℝ] Amb n ℓ)).aestronglyMeasurable_comp₂ hP
+        (continuous_id.sub continuous_const).aestronglyMeasurable
+    exact ENNReal.measurable_ofReal.comp_aemeasurable
+      (((continuous_id.sub continuous_const).aestronglyMeasurable.sub hPy).norm.aemeasurable.pow_const 2)
+  -- `∫_{B_R(ξ)} Σ_y h_y dμ = Σ_y ∫_{B_R(ξ)} h_y dμ ≤ #F · K`.
+  have hsum : ∫⁻ x in closedBall ξ R, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤
+      ENNReal.ofReal ((F.card : ℝ) * K) := by
+    rw [lintegral_finsetSum' F fun y _ => (hmeas y).restrict,
+      ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast]
+    calc ∑ y ∈ F, ∫⁻ x in closedBall ξ R, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ
+        ≤ ∑ _y ∈ F, ENNReal.ofReal K := Finset.sum_le_sum hK
+      _ = F.card * ENNReal.ofReal K := by rw [Finset.sum_const, nsmul_eq_mul]
+  -- If no good point exists, then `Σ_y h_y ≥ λ` a.e. on `B_s(ξ)`.
+  have hae : ∀ᵐ x ∂μ.restrict (closedBall ξ s),
+      ENNReal.ofReal lam ≤ ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) := by
+    filter_upwards [ae_restrict_of_ae hT, ae_restrict_mem measurableSet_closedBall]
+      with x ⟨T, hTn, hPT⟩ hx
+    obtain ⟨y, hyF, hy⟩ := hcon x hx T hTn hPT
+    calc ENNReal.ofReal lam ≤ ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) := by
+          rw [hPT]; exact ENNReal.ofReal_le_ofReal hy
+      _ ≤ ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) :=
+          Finset.single_le_sum (f := fun y => ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2))
+            (fun _ _ => zero_le) hyF
+  -- Chebyshev: `λ μ(B_s(ξ)) ≤ ∫_{B_s(ξ)} Σ_y h_y ≤ ∫_{B_R(ξ)} Σ_y h_y ≤ #F · K`, contradicting (H2).
+  refine absurd hlt (not_lt.mpr ?_)
+  calc ENNReal.ofReal lam * μ (closedBall ξ s)
+      = ∫⁻ _ in closedBall ξ s, ENNReal.ofReal lam ∂μ := (setLIntegral_const _ _).symm
+    _ ≤ ∫⁻ x in closedBall ξ s, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ :=
+        lintegral_mono_ae hae
+    _ ≤ ∫⁻ x in closedBall ξ R, ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ :=
+        lintegral_mono_set (closedBall_subset_closedBall hsR)
+    _ ≤ ENNReal.ofReal ((F.card : ℝ) * K) := hsum
+/-- Simon Ch. 5, proof of Lemma 2.5 (pp. 109–110), (5)–(6): if `|x₀ − ξ| ≤ a`, every net point
+`y ∈ F` has `|p_{T⊥}(x₀ − y)| ≤ b`, and `F` is an `a`-net of `S`, then
+`dist(x − ξ, T) ≤ b + 2a` for every `x ∈ S`. -/
+theorem aal_height_of_net_plane : ∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)) (ξ x₀ : Amb n ℓ) (S : Set (Amb n ℓ)) (F : Finset (Amb n ℓ)) (a b : ℝ), ‖x₀ - ξ‖ ≤ a → (∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ≤ b) → (∀ x ∈ S, ∃ y ∈ F, dist x y ≤ a) → ∀ x ∈ S, infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ b + 2 * a := by
+  intro n ℓ T ξ x₀ S F a b hx₀ hF hS x hx
+  -- Step 1: a net point `y ∈ F` with `|x − y| ≤ a`.
+  obtain ⟨y, hyF, hxy⟩ := hS x hx
+  -- Step 2: `t = −p_T(x₀ − y) ∈ T`.
+  have ht : -T.starProjection (x₀ - y) ∈ T := T.neg_mem (T.starProjection_apply_mem _)
+  -- Step 3: `(x − ξ) − t = (x − y) + (x₀ − ξ) − ((x₀ − y) − p_T(x₀ − y))`.
+  have hid : (x - ξ) - -T.starProjection (x₀ - y) =
+      (x - y) + (x₀ - ξ) - ((x₀ - y) - T.starProjection (x₀ - y)) := by abel
+  -- Step 5: the triangle inequality and the three hypotheses.
+  have h₁ := norm_sub_le ((x - y) + (x₀ - ξ)) ((x₀ - y) - T.starProjection (x₀ - y))
+  have h₂ := norm_add_le (x - y) (x₀ - ξ)
+  rw [dist_eq_norm] at hxy
+  have h₃ := hF y hyF
+  -- Steps 4 and 6: `dist(x − ξ, T) ≤ |(x − ξ) − t| ≤ a + a + b`.
+  calc infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ dist (x - ξ) (-T.starProjection (x₀ - y)) :=
+        infDist_le_dist_of_mem ht
+    _ = ‖(x - y) + (x₀ - ξ) - ((x₀ - y) - T.starProjection (x₀ - y))‖ := by
+        rw [dist_eq_norm, hid]
+    _ ≤ b + 2 * a := by linarith
 /-- Simon Ch. 5, 2.4, the elementary inequalities (E1)–(E5) behind the pinched density bounds, with
 `κ > 0` and `ω > 0` arbitrary: put `e = exp 1`, `A = 1 + n 2^{n+4}`, `B = (9/8) 2ⁿ`,
 `C₊ = A + (2e²B + 2e/ω)/κ`, `C₋ = (1 + 1/ω)/κ`, `C_c = eA + (e²B + e/ω)/κ`,
@@ -8171,6 +8312,154 @@ theorem aal_l1_tilt_height : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n 
     _ = ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T + V.scaledLpNorm H p ξ σ := by
         rw [ENNReal.ofReal_add (by positivity) hk0, ENNReal.ofReal_mul (by positivity), hs_eq,
           hk_eq]
+/-- Simon Ch. 5, proof of Lemma 2.5, steps (1)–(6) (pp. 109–110), with `α = 1/(2n+2)`: for
+`δ ≤ δ₁ = δ_P` put `A = δ^α`.  A maximal disjoint family of balls `B_{Aσ/2}(y)` centred in
+`spt V ∩ B_σ(ξ)` gives an `Aσ`-net `F` with `#F Aⁿ ≤ 4^{n+1}`; the conical-excess bound at the net
+points and Chebyshev give `x₀ ∈ B_{Aσ}(ξ)` with tangent plane `T` and `|p_{T^⊥}(x₀ − y)| < C₆ Aσ`
+for `y ∈ F`, so `dist(x − ξ, T) ≤ (C₆ + 2) Aσ` on `spt V ∩ B_σ(ξ)`. -/
+theorem aal_height_bound_small_delta : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p →
+    ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ 0 < C₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U →
+    ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ →
+    V.AllardHypotheses H p δ ρ → ∀ ξ ∈ V.support ∩ closedBall (0 : Amb n ℓ) (δ * ρ),
+    ∀ σ : ℝ, 0 < σ → σ ≤ 2 * δ * ρ → ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧
+    ∀ x ∈ V.support ∩ closedBall ξ σ,
+      infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ C₁ * δ ^ (1 / (2 * (n : ℝ) + 2)) * σ := by
+  intro n ℓ hn p hp
+  -- Step 1: `δ₁ = δ_P`, `C₅ = 4^{n+1} 2^{n+2} C_P ω_n`, `C₆ = (4 C₅ / ω_n)^{1/2}`, `C₁ = C₆ + 2`.
+  obtain ⟨Cp, δp, hCp1, hδp, hδp8, hCpδp, hpinch⟩ :=
+    Submission.aal_pinched_density_bounds n ℓ hn p hp
+  set ω : ℝ := unitBallVolume n
+  have hω : 0 < ω :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  have hCp : 0 < Cp := by linarith
+  set C₅ : ℝ := 4 ^ (n + 1) * 2 ^ (n + 2) * Cp * ω with hC₅_def
+  have hC₅ : 0 < C₅ := by positivity
+  set C₆ : ℝ := Real.sqrt (4 * C₅ / ω)
+  have hC₆ : 0 < C₆ := Real.sqrt_pos.2 (by positivity)
+  have hC₆sq : C₆ ^ 2 = 4 * C₅ / ω := Real.sq_sqrt (by positivity)
+  refine ⟨δp, C₆ + 2, hδp, by positivity, ?_⟩
+  intro U hU V H δ ρ hδ hδδp hyp ξ hξ σ hσ hσδ
+  -- Step 2: the pinched bounds hold at centres in `B_σ(ξ)` (`|y| ≤ 3δρ`), radii `≤ 2σ ≤ ρ/2`.
+  have hρ : 0 < ρ := hyp.1
+  obtain ⟨hξS, hξB⟩ := hξ
+  have hξn : ‖ξ‖ ≤ δ * ρ := mem_closedBall_zero_iff.1 hξB
+  have hδ8 : δ ≤ 1 / 8 := hδδp.trans hδp8
+  have hCpδ : Cp * δ ≤ 1 / 2 := (mul_le_mul_of_nonneg_left hδδp hCp.le).trans hCpδp
+  have h2σ : 2 * σ ≤ ρ / 2 := by nlinarith [mul_le_mul_of_nonneg_right hδ8 hρ.le]
+  set α : ℝ := 1 / (2 * (n : ℝ) + 2) with hα_def
+  set A : ℝ := δ ^ α with hA_def
+  have hA : 0 < A := Real.rpow_pos_of_pos hδ α
+  have hA1 : A ≤ 1 := Real.rpow_le_one hδ.le (by linarith) (by positivity)
+  have hAσ : A * σ ≤ σ := mul_le_of_le_one_left hσ.le hA1
+  have hAδ : A ^ (2 * n + 2) = δ := by
+    rw [hA_def, ← Real.rpow_natCast, ← Real.rpow_mul hδ.le]
+    have : α * ((2 * n + 2 : ℕ) : ℝ) = 1 := by
+      rw [hα_def]; push_cast; field_simp
+    rw [this, Real.rpow_one]
+  set S := V.support ∩ closedBall ξ σ
+  have hball : ∀ y ∈ closedBall ξ σ, ‖y‖ ≤ 3 * δ * ρ := by
+    intro y hy
+    have hyξ : ‖y - ξ‖ ≤ σ := by rw [← dist_eq_norm]; exact mem_closedBall.1 hy
+    linarith [norm_sub_norm_le y ξ]
+  have hlow : ∀ y ∈ S, ∀ t : ℝ, 0 < t → t ≤ 2 * σ →
+      ENNReal.ofReal (1 / 2 * (ω * t ^ n)) ≤ V.weight (closedBall y t) := by
+    intro y hy t ht ht2
+    refine (ENNReal.ofReal_le_ofReal ?_).trans
+      ((hpinch U hU V H δ ρ hδ hδδp hyp y (hball y hy.2) t ht (by linarith)).2 hy.1).1
+    have : 0 ≤ ω * t ^ n := by positivity
+    nlinarith
+  have hup : V.weight (closedBall ξ (2 * σ)) ≤ ENNReal.ofReal (2 * (ω * (2 * σ) ^ n)) := by
+    refine (hpinch U hU V H δ ρ hδ hδδp hyp ξ (hball ξ (mem_closedBall_self hσ.le)) (2 * σ)
+      (by linarith) h2σ).1.trans (ENNReal.ofReal_le_ofReal ?_)
+    have : 0 ≤ ω * (2 * σ) ^ n := by positivity
+    nlinarith
+  -- Step 3: for `y ∈ S`, `B_σ(ξ) ⊆ B_{2σ}(y)` and
+  -- `∫_{B_{2σ}(y)} |p_x^⊥(x − y)|² dμ_V ≤ (2σ)^{n+2} C_P ω_n δ =: K`.
+  set K : ℝ := (2 * σ) ^ (n + 2) * (Cp * ω * δ) with hK_def
+  have hK : ∀ y ∈ S, ∫⁻ x in closedBall ξ σ,
+      ENNReal.ofReal (‖(x - y) - V.tangentProj x (x - y)‖ ^ 2) ∂V.weight ≤ ENNReal.ofReal K := by
+    intro y hy
+    have hsub : closedBall ξ σ ⊆ closedBall y (2 * σ) :=
+      closedBall_subset_closedBall' (by rw [dist_comm]; linarith [mem_closedBall.1 hy.2])
+    calc ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (‖(x - y) - V.tangentProj x (x - y)‖ ^ 2)
+          ∂V.weight
+        ≤ ∫⁻ x in closedBall y (2 * σ),
+            ENNReal.ofReal (‖(x - y) - V.tangentProj x (x - y)‖ ^ 2) ∂V.weight :=
+          lintegral_mono_set hsub
+      _ ≤ ENNReal.ofReal ((2 * σ) ^ (n + 2)) * ∫⁻ x in closedBall y (2 * σ),
+            ENNReal.ofReal (‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2))
+              ∂V.weight :=
+          Submission.aal_normal_sq_lintegral_le_conical n ℓ V.weight V.tangentProj y (2 * σ)
+            (by linarith)
+      _ ≤ ENNReal.ofReal ((2 * σ) ^ (n + 2)) * ENNReal.ofReal (Cp * ω * δ) := by
+          gcongr
+          exact ((hpinch U hU V H δ ρ hδ hδδp hyp y (hball y hy.2) (2 * σ) (by linarith)
+            h2σ).2 hy.1).2
+      _ = ENNReal.ofReal K := (ENNReal.ofReal_mul (by positivity)).symm
+  -- Step 4: a maximal disjoint family of balls `B_{Aσ/2}(y)`, `y ∈ S`, is an `Aσ`-net of `S`
+  -- with `#F (1/2) ω_n (Aσ/2)ⁿ ≤ μ_V(B_{2σ}(ξ)) ≤ 2 ω_n (2σ)ⁿ`, i.e. `#F Aⁿ ≤ 4^{n+1}`.
+  obtain ⟨F, hFS, hcard, hnet⟩ := Submission.aal_packing_finite_net (Amb n ℓ) V.weight S
+    (closedBall ξ (2 * σ)) (A * σ / 2) (1 / 2 * (ω * (A * σ / 2) ^ n)) (2 * (ω * (2 * σ) ^ n))
+    (by positivity) (by positivity) (by positivity) hup fun y hy =>
+      ⟨closedBall_subset_closedBall' (by linarith [mem_closedBall.1 hy.2]),
+        hlow y hy _ (by positivity) (by linarith)⟩
+  have hcardA : (F.card : ℝ) * A ^ n ≤ 4 ^ (n + 1) := by
+    have hc : 0 < ω * σ ^ n / (2 * 2 ^ n) := by positivity
+    refine le_of_mul_le_mul_right ?_ hc
+    calc (F.card : ℝ) * A ^ n * (ω * σ ^ n / (2 * 2 ^ n))
+        = (F.card : ℝ) * (1 / 2 * (ω * (A * σ / 2) ^ n)) := by rw [div_pow, mul_pow]; ring
+      _ ≤ 2 * (ω * (2 * σ) ^ n) := hcard
+      _ = 4 ^ (n + 1) * (ω * σ ^ n / (2 * 2 ^ n)) := by
+        rw [show (4 : ℝ) ^ (n + 1) = 2 * 2 ^ n * (2 * 2 ^ n) by
+          rw [show (4 : ℝ) = 2 * 2 by norm_num, mul_pow, pow_succ]; ring]
+        field_simp
+        ring
+  -- Step 5: Chebyshev with `λ = (C₆ Aσ)² = (4 C₅ / ω_n) δ^{1 − 2αn} σ²`, using
+  -- `#F K ≤ C₅ A^{n+2} σ^{n+2} < λ (1/2) ω_n (Aσ)ⁿ ≤ λ μ_V(B_{Aσ}(ξ))`.
+  obtain ⟨hae, hmeas, -⟩ := Submission.aal_tangent_structure n ℓ hn U hU V
+  set lam : ℝ := (C₆ * A * σ) ^ 2 with hlam_def
+  have hlam : 0 < lam := by positivity
+  have hcheb : ENNReal.ofReal ((F.card : ℝ) * K) <
+      ENNReal.ofReal lam * V.weight (closedBall ξ (A * σ)) := by
+    have hlt : (F.card : ℝ) * K < lam * (1 / 2 * (ω * (A * σ) ^ n)) := by
+      have hY : 0 < 2 ^ (n + 2) * σ ^ (n + 2) * Cp * ω * A ^ (n + 2) := by positivity
+      calc (F.card : ℝ) * K
+          = (F.card : ℝ) * A ^ n * (2 ^ (n + 2) * σ ^ (n + 2) * Cp * ω * A ^ (n + 2)) := by
+            rw [hK_def, ← hAδ]; ring
+        _ ≤ 4 ^ (n + 1) * (2 ^ (n + 2) * σ ^ (n + 2) * Cp * ω * A ^ (n + 2)) :=
+            mul_le_mul_of_nonneg_right hcardA hY.le
+        _ = C₅ * (A ^ (n + 2) * σ ^ (n + 2)) := by rw [hC₅_def]; ring
+        _ < 2 * C₅ * (A ^ (n + 2) * σ ^ (n + 2)) := by
+            have : 0 < C₅ * (A ^ (n + 2) * σ ^ (n + 2)) := by positivity
+            linarith
+        _ = lam * (1 / 2 * (ω * (A * σ) ^ n)) := by
+            rw [hlam_def, mul_pow, mul_pow, hC₆sq]
+            field_simp
+            ring
+    calc ENNReal.ofReal ((F.card : ℝ) * K)
+        < ENNReal.ofReal (lam * (1 / 2 * (ω * (A * σ) ^ n))) :=
+          (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2 hlt
+      _ = ENNReal.ofReal lam * ENNReal.ofReal (1 / 2 * (ω * (A * σ) ^ n)) :=
+          ENNReal.ofReal_mul hlam.le
+      _ ≤ ENNReal.ofReal lam * V.weight (closedBall ξ (A * σ)) := by
+          gcongr
+          exact hlow ξ ⟨hξS, mem_closedBall_self hσ.le⟩ (A * σ) (by positivity) (by linarith)
+  obtain ⟨x₀, hx₀, T, hT, -, hsmall⟩ := Submission.aal_good_tangent_point n ℓ V.weight
+    V.tangentProj hmeas hae ξ (A * σ) σ K lam F hlam hAσ (fun y hy => hK y (hFS hy)) hcheb
+  refine ⟨T, hT, ?_⟩
+  -- Steps 6–7: `|p_{T^⊥}(x₀ − y)| ≤ C₆ Aσ` on the net and `|x₀ − ξ| ≤ Aσ`, so
+  -- `dist(x − ξ, T) ≤ C₆ Aσ + 2Aσ = C₁ δ^{1/(2n+2)} σ` on `spt V ∩ B_σ(ξ)`.
+  have hb : ∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ≤ C₆ * A * σ := fun y hy =>
+    ((pow_lt_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 (hsmall y hy)).le
+  have hx₀ξ : ‖x₀ - ξ‖ ≤ A * σ := by rw [← dist_eq_norm]; exact mem_closedBall.1 hx₀
+  have hnet' : ∀ x ∈ S, ∃ y ∈ F, dist x y ≤ A * σ := fun x hx => by
+    obtain ⟨z, hz, hd⟩ := hnet x hx
+    exact ⟨z, hz, by linarith⟩
+  intro x hx
+  calc infDist (x - ξ) (T : Set (Amb n ℓ))
+      ≤ C₆ * A * σ + 2 * (A * σ) :=
+        Submission.aal_height_of_net_plane n ℓ T ξ x₀ S F (A * σ) (C₆ * A * σ) hx₀ξ hb hnet' x hx
+    _ = (C₆ + 2) * A * σ := by ring
 
 end Submission
 
