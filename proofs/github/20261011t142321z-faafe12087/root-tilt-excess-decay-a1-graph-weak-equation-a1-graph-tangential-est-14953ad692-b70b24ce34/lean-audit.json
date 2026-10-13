@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "13ea45d49e5e54169f7b4b96bc72e561237c9af9976d0d7c76acbcf437d2f8eb",
+  "git_delta": {
+    "base_commit": "bb1627f252b77f78ad9867601b77c0b1233315ac",
+    "candidate_commit": "558fc038bd55065fa16bb4381d1b2ca03fd38e37",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gte_localized_comparison",
+    "diff_sha256": "741d4f9603560c0239da8914eb275f397a8bd1869c44a65e0b1b4ce32f5edfe5",
+    "source_sha256": "77ab855020c5bbed43a9ceca1760a8254af845cc3231633953ef4fbde0854761",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gte_localized_comparison",
+      "statement": "∀ {X : Type} [MeasurableSpace X] (μ : Measure X) (B B' G G' : Set X) (Φ φ ψ : X → ℝ) (M : ℝ) (m : ℝ≥0∞), 0 ≤ M → MeasurableSet G → MeasurableSet G' → G' ⊆ B → G' ⊆ B' → IntegrableOn Φ B μ → (∀ x, |Φ x| ≤ M) → (∀ x ∈ (B \\ G') ∩ G, Φ x = 0) → μ ((B \\ G') \\ G) ≤ m → m < ⊤ → AEStronglyMeasurable φ (μ.restrict G') → IntegrableOn ψ B' μ → (∀ x, 0 ≤ ψ x) → (∀ᵐ x ∂μ, x ∈ G' → |Φ x - φ x| ≤ M * ψ x) → |∫ x in G', φ x ∂μ| ≤ |∫ x in B, Φ x ∂μ| + M * m.toReal + M * ∫ x in B', ψ x ∂μ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
