@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm|massAdmissibleOn|TestFormOnConverges|order_zero|HasSum",
+        "ne_top_of_tsum_ne_top|summable_toReal|tsum_toReal_eq|Summable.of_nonneg_of_le|norm_tsum_le_tsum_norm|theorem Summable.of_norm |tsum_mul_left|bounded_above_of_compact_support|ofReal_le_iff_le_toReal|ofReal_toReal ",
+        "^theorem norm_iteratedFDeriv_zero|^lemma norm_iteratedFDeriv_zero|theorem tendstoUniformlyOn_iff ",
+        "git diff b4d606d f492ba4 -- GMT/Ch07/Submission.lean",
+        "git diff b4d606d 7a70616 -- GMT/Ch07/Submission.lean",
+        "git diff b4d606d 4935893 -- GMT/Ch07/Submission.lean",
+        "lake env lean /tmp/dimred_sc_split/Assembly.lean",
+        "lake env lean /tmp/dimred_sc_split/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-97c5e33549/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-97c5e33549/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T190028Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1-uewbgrnd/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T190028Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1-uewbgrnd/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa16/20261013T082519Z-ch07-root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_boun-vsn3dnsz/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa16/20261013T082519Z-ch07-root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_boun-vsn3dnsz/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa15/20261013T092435Z-ch07-root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_-k4hp8_7w/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa15/20261013T092435Z-ch07-root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_-k4hp8_7w/comparator.log",
+        "/tmp/dimred_sc_split/Assembly.lean",
+        "/tmp/dimred_sc_split/EndToEnd.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected series-current theorem. The three independent obligations supply the coefficient/operator-norm comparison, evaluation estimate, and sequential continuity criterion. Their conclusions establish absolute summability, a linear sum functional, its realization as a current, HasSum for every test form, and the exact mass bound by taking the admissible supremum. No additional openness or integer-multiplicity assumption is needed. All dependency lists are empty; reuse of accepted leaves creates no cycle. Each bare name has exactly one existing holder, with an identical frozen type and passing comparator evidence. Saved compiler inputs match commits f492ba4, 7a70616 and 4935893; comparator configurations permit only propext, Quot.sound and Classical.choice. The manifest pins and inspected library files are compatible. The project-snapshot search returned no matches for the first query; imported SimonGMT definitions and pinned Mathlib lemmas support the arguments. All three one-line types pass the contract validator and contain no implementation-dependent aliases or problematic inline instances. Fresh compilation was unavailable because lake is not installed in this environment; the assembly was independently inspected, and existing comparator records were verified."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match all four conclusions. The coefficient vector explicitly uses the Euclidean norm; its linearity proves triangle inequality and homogeneity. The operator-norm estimate gives C = √card(Fin n → Fin P), and the difference estimate proves Lipschitz continuity. The argument covers all P and n without a hidden dimension restriction or circular reliance. The bare name reuses the identical comparator-accepted declaration."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes finite local mass, support containment, and the global coefficient bound. The proof derives r ≥ 0, independently establishes homogeneity, and makes both signed rescalings admissible. Finite mass permits conversion to real inequalities; letting ε decrease to zero proves the claimed bound, including r = 0. No dependency on norm_props or the parent is concealed. The bare name and frozen type match the accepted declaration."
+    },
+    {
+      "key": "order_zero_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean quantifiers agree, including arbitrary real c and M. Order-zero derivative convergence gives uniform smallness on the common compact support; vanishing outside it gives the required global bound. Choosing η = δ/(|c|+1) proves sequential continuity without assuming c is positive. Constructing S from L and this continuity proof establishes the exact evaluation equality. The proof is complete and non-circular, and reuse preserves the accepted bare name and frozen type."
+    }
+  ],
+  "required_changes": []
+}
