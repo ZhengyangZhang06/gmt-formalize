@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5b0cdb0ae689e65f4c47b56feda7a484932ea0576c65fe6b588b914455dda576",
+  "git_delta": {
+    "base_commit": "fdabd75f7a18974ef19474f309d11ccd4a04b5b8",
+    "candidate_commit": "05b86f9232cbb28a3c3d2bf14ecccd694fd03687",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_eil_liminf_cover_bound",
+    "diff_sha256": "25870dc34ee4145a74a98a10a613cc1a6c9319d74d11ee3d80e0c2d3af5ebc59",
+    "source_sha256": "b4a16f0be90cb94dcaf8484d00b0f762d45e2256185c505ed53f141e88ce810a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_eil_liminf_cover_bound",
+      "statement": "∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r : ℕ → ℝ≥0∞) (T : ℕ → ℕ → Set X), Tendsto r atTop (𝓝 0) → (∀ k i, ediam (T k i) ≤ r k) → (∀ k, s ⊆ ⋃ i, T k i) → (μH[d] : Measure X) s ≤ liminf (fun k => ∑' i, ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d) atTop",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
