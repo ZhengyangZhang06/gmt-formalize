@@ -963,6 +963,99 @@ theorem Submission.codim1_rdo_c1pt_linear_range_integral : ∀ (P n : ℕ) (L : 
       ← ContinuousLinearMap.adjoint_toLinearMap, hadj, sq]
   rw [hrange, hW, hAcv, hdet, Real.sqrt_sq_eq_abs]
   simp only [hWA]
+/-- Rescaled integrals over a `C¹` piece converge to the integral over its tangent map (proof of
+Simon Ch. 3, Theorem 1.6, with a continuous weight `h`).  With `L = Dg(z)`,
+`B_s = {b : z + s b ∈ B}` and `φ_s(b) = s⁻¹ (g(z + s b) − g(z))`:
+`∫_{B_s} h(z + s b) f(φ_s(b)) db → h(z) ∫ f(L b) db` as `s ↓ 0`.  Take `f = 0` off `B_R(0)` and
+`B̄_ρ(z) ⊆ B`.  For `0 < s < mρ/R`, `K = B̄_{R/m}(0) ⊆ B_s`, and the integrand vanishes on
+`B_s \ K` because `|φ_s(b)| ≥ m|b| > R`.  On `K` it is bounded by `sup_{B̄_ρ(z)} |h| · sup |f|` and
+tends pointwise to `h(z) f(L b)`, so dominated convergence applies.  Finally `f(L b) = 0` off `K`
+because `|L b| ≥ m|b| > R`. -/
+theorem Submission.codim1_rdo_c1pt_rescaled_integral_tendsto : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (h : Euclid n → ℝ) (B : Set (Euclid n)) (z : Euclid n) (m : ℝ) (f : Euclid P → ℝ), Continuous g → DifferentiableAt ℝ g z → Continuous h → IsOpen B → z ∈ B → 0 < m → (∀ a ∈ B, m * ‖a - z‖ ≤ ‖g a - g z‖) → (∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g z v‖) → Continuous f → HasCompactSupport f → Tendsto (fun s : ℝ => ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0) (𝓝 (h z * ∫ b, f (fderiv ℝ g z b))) := by
+  intro P n g h B z m f hg hgz hh hB hzB hm hgB hL hf hfs
+  -- Step 1: `f = 0` off `closedBall 0 R`
+  obtain ⟨R, hR, hRf⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y, R < ‖y‖ → f y = 0 := by
+    obtain ⟨R, hR, hsub⟩ := hfs.isCompact.isBounded.subset_closedBall_lt 0 0
+    refine ⟨R, hR, fun y hy => ?_⟩
+    by_contra hne
+    have hy' := hsub (subset_tsupport f hne)
+    rw [mem_closedBall, dist_zero_right] at hy'
+    linarith
+  -- Step 2: `closedBall z ρ ⊆ B`
+  obtain ⟨ρ, hρ, hρB⟩ : ∃ ρ : ℝ, 0 < ρ ∧ closedBall z ρ ⊆ B := by
+    obtain ⟨ε, hε, hεB⟩ := Metric.isOpen_iff.1 hB z hzB
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεB⟩
+  -- Step 3: `K = closedBall 0 (R / m)`, `s₀ = m ρ / R`
+  have hs₀ : 0 < m * ρ / R := div_pos (mul_pos hm hρ) hR
+  have hKB : ∀ s : ℝ, 0 < s → s ≤ m * ρ / R → ∀ b ∈ closedBall (0 : Euclid n) (R / m),
+      z + s • b ∈ closedBall z ρ := by
+    intro s hs hss b hb
+    rw [mem_closedBall, dist_zero_right] at hb
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le]
+    calc s * ‖b‖ ≤ m * ρ / R * (R / m) := mul_le_mul hss hb (norm_nonneg _) hs₀.le
+      _ = ρ := by field_simp
+  have hout : ∀ s : ℝ, 0 < s → ∀ b : Euclid n, z + s • b ∈ B →
+      b ∉ closedBall (0 : Euclid n) (R / m) → f (s⁻¹ • (g (z + s • b) - g z)) = 0 := by
+    intro s hs b hbB hbK
+    apply hRf
+    rw [mem_closedBall, dist_zero_right, not_le, div_lt_iff₀ hm] at hbK
+    have h1 := hgB _ hbB
+    rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le] at h1
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs.le)]
+    calc R < ‖b‖ * m := hbK
+      _ = s⁻¹ * (m * (s * ‖b‖)) := by field_simp
+      _ ≤ s⁻¹ * ‖g (z + s • b) - g z‖ := by gcongr
+  -- Step 4: localisation to `K`
+  have hloc : ∀ᶠ s in 𝓝[>] (0 : ℝ),
+      (∫ b in closedBall (0 : Euclid n) (R / m), h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) =
+        ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z)) := by
+    filter_upwards [Ioo_mem_nhdsGT hs₀] with s hs
+    symm
+    apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+    · exact (hB.preimage (continuous_const.add (continuous_const_smul s))).measurableSet
+    · intro b hb
+      exact hρB (hKB s hs.1 hs.2.le b hb)
+    · rintro b ⟨hbB, hbK⟩
+      rw [hout s hs.1 b hbB hbK, mul_zero]
+  -- Step 5: uniform bounds
+  obtain ⟨Λ, hΛ⟩ := (isCompact_closedBall z ρ).exists_bound_of_continuousOn hh.continuousOn
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfs
+  -- Steps 6–8: dominated convergence on `K`
+  have hdom : Tendsto (fun s : ℝ => ∫ b in closedBall (0 : Euclid n) (R / m),
+      h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0)
+      (𝓝 (∫ b in closedBall (0 : Euclid n) (R / m), h z * f (fderiv ℝ g z b))) := by
+    refine tendsto_integral_filter_of_dominated_convergence (fun _ => Λ * C) ?_ ?_ ?_ ?_
+    · refine Eventually.of_forall fun s => Continuous.aestronglyMeasurable ?_
+      have hz : Continuous fun b : Euclid n => z + s • b :=
+        continuous_const.add (continuous_const_smul s)
+      exact (hh.comp hz).mul (hf.comp (((hg.comp hz).sub continuous_const).const_smul s⁻¹))
+    · filter_upwards [Ioo_mem_nhdsGT hs₀] with s hs
+      filter_upwards [ae_restrict_mem measurableSet_closedBall] with b hb
+      have hmem := hKB s hs.1 hs.2.le b hb
+      rw [norm_mul]
+      exact mul_le_mul (hΛ _ hmem) (hC _) (norm_nonneg _) ((norm_nonneg _).trans (hΛ _ hmem))
+    · exact integrableOn_const measure_closedBall_lt_top.ne
+    · refine Eventually.of_forall fun b => Tendsto.mul ?_ ?_
+      · -- `h (z + s • b) → h z`
+        have h1 : Tendsto (fun s : ℝ => z + s • b) (𝓝 0) (𝓝 (z + (0 : ℝ) • b)) :=
+          (continuous_const.add (continuous_id.smul continuous_const)).tendsto 0
+        rw [zero_smul, add_zero] at h1
+        exact (hh.tendsto z).comp (h1.mono_left nhdsWithin_le_nhds)
+      · -- difference quotients: `s⁻¹ • (g (z + s • b) - g z) → L b`
+        have hc : Tendsto (fun s : ℝ => ‖s⁻¹‖) (𝓝[>] 0) atTop :=
+          tendsto_norm_atTop_atTop.comp tendsto_inv_nhdsGT_zero
+        have hlim := hgz.hasFDerivAt.lim b hc
+        simp only [inv_inv] at hlim
+        exact (hf.tendsto _).comp hlim
+  -- Step 9: identification of the limit
+  have hid : ∫ b in closedBall (0 : Euclid n) (R / m), h z * f (fderiv ℝ g z b) =
+      h z * ∫ b, f (fderiv ℝ g z b) := by
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero, integral_const_mul]
+    intro b hb
+    rw [mem_closedBall, dist_zero_right, not_le, div_lt_iff₀ hm] at hb
+    rw [hRf _ (hb.trans_le ((mul_comm _ _).le.trans (hL b))), mul_zero]
+  rw [← hid]
+  exact hdom.congr' hloc
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
