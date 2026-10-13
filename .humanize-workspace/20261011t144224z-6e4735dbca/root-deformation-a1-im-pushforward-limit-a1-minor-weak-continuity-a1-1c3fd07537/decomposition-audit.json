@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "deformation_ipl_mwc_mil_|tendsto_integral_mul_det|ae_fderiv_eq_proj|abs_det_le",
+        "EventuallyEq.*fderiv_eq|fderiv_eq.*EventuallyEq",
+        "theorem ae_differentiableWithinAt_of_mem|theorem Filter.EventuallyEq.fderiv_eq|protected theorem Filter.EventuallyEq.fderiv_eq|theorem EventuallyEq.fderiv_eq|theorem tendsto_integral_filter_of_dominated_convergence|lemma prod_le_prod₀|theorem det_le\\b|theorem Continuous.matrix_det",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mil_independent_audit_rha9176i/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mil_independent_audit_rha9176i/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-1c3fd07537/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-1c3fd07537/decomposition-v1.json",
+        "/tmp/mil_independent_audit_rha9176i/Children.lean",
+        "/tmp/mil_independent_audit_rha9176i/Audit.lean"
+      ],
+      "conclusion": "Pinned revisions match; Contract, Submission and snapshot Contract are byte-identical. The snapshot provides the cited determinant, dominated-convergence and Rademacher tools. Matrix.det_le exists but is unavailable under the frozen imports. No proposed declaration names matched the snapshot project or other DAG reservations. All names are bare identifiers, and the dependency graph is acyclic. Each exact one-line type validates and elaborates independently in comparator scope. Independently compiled supplied child proofs use only propext, Classical.choice and Quot.sound. The exact selected parent compiles from these children and its two inherited sibling contracts, whose types match the handoff; those siblings were assumptions solely for checking assembly. The split appropriately isolates the determinant bound, convergence argument and derivative identification without changing the target."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "abs_det_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Leibniz expansion, removal of permutation signs, nonnegative product monotonicity and permutation counting prove the stated bound. No extra assumption c ≥ 0 is needed: entry bounds suffice for nonempty products, and n = 0 gives equality. The proof is complete and independent."
+    },
+    {
+      "key": "det_dominated_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six hypotheses match the exact type. The proof establishes measurability, eventual domination by H·n!·C^n, integrability and a.e. convergence before applying dominated convergence. Missing limit-function measurability is correctly supplied by that theorem. Its sole child dependency is abs_det_le, directed correctly. Matrix.of constructions have the intended matrix meaning, and the result applies to both sides of the parent identity."
+    },
+    {
+      "key": "ae_fderiv_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including unrestricted g and the global a.e. implication on Ω. Rademacher supplies differentiability of v; openness upgrades within-differentiability and gives local equality with g. Locality and the continuous-linear projection chain rule then prove equality for every direction x. No unassumed regularity or circular dependency is used."
+    }
+  ],
+  "required_changes": []
+}
