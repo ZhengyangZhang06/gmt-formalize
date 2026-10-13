@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "01967a54cba5cce3b9fa2dbdcd83e7d3154aab83a50a662dcef3fd1e3cf63e46",
+  "git_delta": {
+    "base_commit": "0b8e0be1e3711f10a5733d52dd4bd9d162519a4f",
+    "candidate_commit": "a3af4a0bcff33471982c5870c7cf9a6c2dc2d560",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsdic_imrep_ae_orient_eq_or_eq_neg_inter",
+    "diff_sha256": "6a6c3cf0c0352d0392551b1cf3c6964f00fc4d2f9776215f7a1917fc6f3c4bfa",
+    "source_sha256": "b9a533a043a252eadf4d5e7db94b92ce718c3b89e6170c9bc2c935d66d0c99c2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsdic_imrep_ae_orient_eq_or_eq_neg_inter",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n), IsOpen U → ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
