@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "def IsUnitOrientationOf|structure IMRep|def IMRep.action|def IMRep.Represents|def IMRep.measure|def BoundaryVanishes|def currentEval|def dilationCLM|def dilation |def blowUp|def IsConeCurrent|def approxTangentPlane|dtc_cwv_|dtc_cone_|unit_orientation_norm_le_one|dimred_cs_",
+        "dtc_cwv_|dtc_cone_|unit_orientation_norm_le_one|dimred_cs_",
+        "theorem (IsOpen.is_const_of_deriv_eq_zero|hasDerivAt_integral_of_dominated_loc_of_deriv_le|ae_withDensity_iff|withDensity_absolutelyContinuous|starProjection_eq_self_iff|alternatizeUncurryFin_curryLeft|curryLeft_apply_apply|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|le_opNorm|opNorm_le_bound)|def curryLeftLI",
+        "git diff --exit-code -- GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean lake-manifest.json lean-toolchain",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radial-tangency-independent-audit-xc8ylbkr/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radial-tangency-independent-audit-xc8ylbkr/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-cone-of-radial-tangency-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-cone-of-radial-tangency-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/radial-tangency-independent-audit-xc8ylbkr/Types.lean",
+        "/tmp/radial-tangency-independent-audit-xc8ylbkr/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes the selected theorem. Project b4d606db, mathlib 25730c7c and SimonGMT 2b366308 match the pins; the frozen contract and inspected library sources match the installed sources. Searching the snapshot project found no proposed declarations, so reuse correctly comes from accepted DAG nodes. Independently checked all eight acceptance records, comparator passes, candidate declaration types and name uniqueness: each name belongs to exactly one accepted node, with an identical frozen type. Dependencies match the accepted proofs, are acyclic, and have no path back to the selected parent. Each supplied numbered natural proof matches its original handoff and was independently reviewed. All eight child propositions and the parent proposition elaborate without child implementations present. Separately extracted the accepted proofs from candidate diffs and compiled them with the verbatim proposed assembly of the exact selected parent type. All nine declarations depend only on propext, Classical.choice and Quot.sound. Names are bare identifiers; propositions contain no declarations, placeholders or implementation-dependent aliases. Scalar actions, contractions and projections have the intended types; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orientation_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Evaluating on the orthonormal family bounds both orientation signs by the covector operator norm; the dual operator-norm bound then proves the conclusion, including n = 0. Its use in dominated differentiation is valid."
+    },
+    {
+      "key": "wedge_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact almost-everywhere universal quantifier. Absolute continuity transfers orientation data, tangent uniqueness identifies the projected plane, and alternation makes contraction vanish on its spanning family and hence at x. The n = 0 case is covered without additional assumptions."
+    },
+    {
+      "key": "euler_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at y suffices for the bilinear product rule. The checked exterior-derivative convention gives the stated m + 1 coefficient, and splitting off the first alternating-sum term yields precisely the claimed cancellation and signs. No cone result is assumed."
+    },
+    {
+      "key": "cone_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypothesis and conclusion match the prose exactly. Surjectivity supplies currentEval's support condition; unfolding the proper affine pushforward constructs an actual test-form pullback. Multilinearity gives the inverse-scale power, allowing the hypothesis to prove IsConeCurrent."
+    },
+    {
+      "key": "contraction_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied continuous-linear currying construction and smooth evaluation prove smoothness. Vanishing wherever β vanishes places the contraction's topological support inside the compact support of β. This proves the exact test-form assertion."
+    },
+    {
+      "key": "scaled_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies pointwise derivatives, measurable integrands, integrability at t, and one integrable derivative bound throughout a neighborhood of t. Compact localization and locallyIntegrable_mult justify domination; orientation_norm is used in the correct direction. The natural-number exponent convention correctly handles n = 0."
+    },
+    {
+      "key": "lie_annihilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive-degree hypothesis permits n = m + 1. The declared dependencies construct both contraction test forms and prove Cartan's decomposition. BoundaryVanishes kills the boundary term, while measurable positive multiplicity transfers wedge vanishing to the representation integral. Thus the proof establishes C γ = 0 with every stated hypothesis accounted for."
+    },
+    {
+      "key": "dilation_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the scaled and Euler–Lie test forms, establishes the chain-rule identity and action homogeneity, and applies scaled_derivative to obtain zero derivative on the positive interval. Constancy then gives the exact pullback identity. The n = 0 case and positivity needed for inversion are explicitly handled."
+    }
+  ],
+  "required_changes": []
+}
