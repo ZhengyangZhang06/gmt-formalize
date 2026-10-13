@@ -3095,6 +3095,168 @@ theorem Submission.slicing_im_coarea_line_deriv : ∀ (n P : ℕ) (F : Eucl P �
   refine hsum.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
   simp
 
+/-- Pieces for the co-area formula (Steps 1–4 of `slicing_im_coarea`; Simon Ch. 2, 1.2 and 1.5,
+Ch. 3, 1.2–1.8).  Up to an `Hⁿ`-null set, `M` is the disjoint union of Borel pieces
+`W i ⊆ Φ i(Ω i)`, where the `Φ i` are `C¹` antilipschitz charts.  On `Φ i⁻¹(W i)`, `f ∘ Φ i`
+agrees with a `C¹` function `h i`, and `Dh i(w) u = ⟨G(Φ i w), DΦ i(w) u⟩`.
+
+The charts come from `slicing_im_coarea_chart_cover`.  The Lipschitz extension of `f ∘ Φ j|Ω j`
+is approximated by `slicing_im_coarea_c1_approx` off a set `ℝⁿ ∖ A' j k` of measure `< k⁻¹`.
+Off the null sets where `slicing_im_coarea_chart_tangent` or the tangential-gradient hypothesis
+fails, `range DΦ j(w)` is a tangent plane at `Φ j w`; `slicing_im_coarea_line_deriv` and
+uniqueness of derivatives then give `⟨G, DΦ j(w) u⟩ = Dh(w) u`.  The pieces disjointify
+`(B ∩ Φ j(Ω j ∩ A' j k)) ∖ (Z₁ j ∪ Z₂)`, with `B ⊆ M` a Borel kernel. -/
+theorem Submission.slicing_im_coarea_pieces :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1))
+      (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U →
+      IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f →
+      (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+          G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) →
+      ∃ (Φ : ℕ → Eucl (m + 1) → Eucl P) (Ω : ℕ → Set (Eucl (m + 1)))
+        (h : ℕ → Eucl (m + 1) → ℝ) (W : ℕ → Set (Eucl P)),
+        (∀ i, IsOpen (Ω i)) ∧ (∀ i, ContDiff ℝ 1 (Φ i)) ∧
+        (∀ i, ∃ K : ℝ≥0, LipschitzOnWith K (Φ i) (Ω i)) ∧
+        (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω i, ∀ w' ∈ Ω i, c * ‖w - w'‖ ≤ ‖Φ i w - Φ i w'‖) ∧
+        (∀ i, ContDiff ℝ 1 (h i)) ∧ (∀ i, MeasurableSet (W i)) ∧ (∀ i, W i ⊆ M) ∧
+        (∀ i, W i ⊆ Φ i '' Ω i) ∧ Pairwise (Function.onFun Disjoint W) ∧
+        (μHE[m + 1] : Measure (Eucl P)) (M \ ⋃ i, W i) = 0 ∧
+        ∀ i, ∀ w ∈ Ω i, Φ i w ∈ W i → f (Φ i w) = h i w ∧
+          G (Φ i w) ∈ LinearMap.range (fderiv ℝ (Φ i) w).toLinearMap ∧
+          ∀ u, inner ℝ (G (Φ i w)) (fderiv ℝ (Φ i) w u) = fderiv ℝ (h i) w u := by
+  intro P m U M θ ξ f L G hU hT hf hTG
+  -- Step 1: `C¹` charts `Φ j`, Lipschitz and antilipschitz (hence injective) on the open `Ω j`,
+  -- covering `M` up to an `Hⁿ`-null set.
+  obtain ⟨Φ, Ω, hΩ, hΦ, hΦK, hΦc, hcov⟩ :=
+    Submission.slicing_im_coarea_chart_cover P (m + 1) M hT.countablyRectifiable
+  choose K hK using hΦK
+  choose c hc0 hc using hΦc
+  have hinj : ∀ j, InjOn (Φ j) (Ω j) := by
+    intro j w hw w' hw' hww'
+    have h1 := hc j w hw w' hw'
+    rw [hww', sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra hne
+      exact absurd h1 (not_le.mpr (mul_pos (hc0 j) (not_le.mp hne)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  -- Step 2: the McShane extension `u j` of `f ∘ Φ j|Ω j` agrees, together with its derivative,
+  -- with a `C¹` function `H j k` on a closed `A' j k` with `Lⁿ(ℝⁿ ∖ A' j k) < k⁻¹`.
+  have hfΦ : ∀ j, LipschitzOnWith (L * K j) (f ∘ Φ j) (Ω j) := fun j =>
+    hf.comp_lipschitzOnWith (hK j)
+  choose u hu hfu using fun j => (hfΦ j).extend_real
+  choose A' H hA' hA'c hH hAH using fun j (k : ℕ) =>
+    Submission.slicing_im_coarea_c1_approx (m + 1) (u j) (L * K j) (hu j) ((k : ℝ≥0∞)⁻¹)
+      (ENNReal.inv_pos.mpr (ENNReal.natCast_ne_top k))
+  have hstep2 : ∀ j k, ∀ w ∈ Ω j, w ∈ A' j k →
+      f (Φ j w) = H j k w ∧ HasFDerivAt (f ∘ Φ j) (fderiv ℝ (H j k) w) w := by
+    intro j k w hw hwA
+    obtain ⟨huH, hder⟩ := hAH j k w hwA
+    refine ⟨(hfu j hw).trans huH, hder.congr_of_eventuallyEq ?_⟩
+    filter_upwards [(hΩ j).mem_nhds hw] with y hy using hfu j hy
+  -- Step 3: Borel `Hⁿ`-null sets `Z₁ j` (tangent planes on the chart `Φ j`) and `Z₂`
+  -- (tangential gradient) off which the a.e. statements hold, and a Borel kernel `B ⊆ M`.
+  have hnull : ∀ (S : Set (Eucl P)) (p : Eucl P → Prop),
+      (∀ᵐ y ∂((μHE[m + 1] : Measure (Eucl P)).restrict S), p y) →
+      ∃ Z : Set (Eucl P), MeasurableSet Z ∧ (μHE[m + 1] : Measure (Eucl P)) Z = 0 ∧
+        ∀ y ∈ S, y ∉ Z → p y := by
+    intro S p hp
+    refine ⟨toMeasurable (μHE[m + 1] : Measure (Eucl P)) ({y | ¬ p y} ∩ S),
+      measurableSet_toMeasurable _ _, ?_, fun y hyS hyZ => ?_⟩
+    · rw [measure_toMeasurable]
+      exact nonpos_iff_eq_zero.mp
+        ((Measure.le_restrict_apply S {y | ¬ p y}).trans (ae_iff.mp hp).le)
+    · by_contra hpy
+      exact hyZ (subset_toMeasurable _ _ ⟨hpy, hyS⟩)
+  choose Z1 hZ1m hZ1 hZ1p using fun j => hnull _ _
+    (Submission.slicing_im_coarea_chart_tangent P (m + 1) U M θ (Φ j) (Ω j) hU hT.subset
+      hT.nullMeasurableSet hT.pos hT.integrableOn (hΩ j) (hΦ j) ⟨c j, hc0 j, hc j⟩)
+  obtain ⟨Z2, hZ2m, hZ2, hZ2p⟩ := hnull _ _ hTG
+  obtain ⟨B, hBM, hBm, hBae⟩ := hT.nullMeasurableSet.exists_measurable_subset_ae_eq
+  have hMB : (μHE[m + 1] : Measure (Eucl P)) (M \ B) = 0 := (ae_eq_set.mp hBae).2
+  -- Step 4: off `Z₁ j ∪ Z₂`, `range DΦ j(w)` is a tangent plane at `Φ j w`, so it contains
+  -- `G(Φ j w)`, and the derivatives of `s ↦ f(Φ j w + s DΦ j(w) v)` at `0` give
+  -- `⟨G(Φ j w), DΦ j(w) v⟩ = DH j k(w) v`.
+  have hgrad : ∀ j k, ∀ w ∈ Ω j, w ∈ A' j k → Φ j w ∈ M → Φ j w ∉ Z1 j → Φ j w ∉ Z2 →
+      G (Φ j w) ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap ∧
+        ∀ v, inner ℝ (G (Φ j w)) (fderiv ℝ (Φ j) w v) = fderiv ℝ (H j k) w v := by
+    intro j k w hw hwA hxM hx1 hx2
+    obtain ⟨hGQ, hGd⟩ :=
+      hZ2p (Φ j w) hxM hx2 _ (hZ1p j (Φ j w) ⟨hxM, w, hw, rfl⟩ hx1 w hw rfl)
+    refine ⟨hGQ, fun v => ?_⟩
+    have hder := (hstep2 j k w hw hwA).2
+    have hline := Submission.slicing_im_coarea_line_deriv (m + 1) P f (Φ j) w
+      ⟨L, univ, univ_mem, hf.lipschitzOnWith⟩ ((hΦ j).differentiable one_ne_zero w)
+      hder.differentiableAt v
+    rw [hder.fderiv] at hline
+    exact (hGd _ (LinearMap.mem_range_self _ v)).unique hline
+  -- Step 5: the pieces are the disjointification of `V (j, k)`, enumerated by `Nat.unpair`.
+  obtain ⟨V, hV⟩ : ∃ V : ℕ → Set (Eucl P), ∀ i, V i =
+      (B ∩ Φ (Nat.unpair i).1 '' (Ω (Nat.unpair i).1 ∩ A' (Nat.unpair i).1 (Nat.unpair i).2)) \
+        (Z1 (Nat.unpair i).1 ∪ Z2) := ⟨_, fun _ => rfl⟩
+  have hVm : ∀ i, MeasurableSet (V i) := by
+    intro i
+    rw [hV]
+    refine (hBm.inter ?_).diff ((hZ1m _).union hZ2m)
+    -- Lusin–Souslin: `Φ j` is continuous and injective on the Borel set `Ω j ∩ A' j k`.
+    exact ((hΩ _).measurableSet.inter (hA' _ _).measurableSet).image_of_continuousOn_injOn
+      (hΦ _).continuous.continuousOn ((hinj _).mono inter_subset_left)
+  refine ⟨fun i => Φ (Nat.unpair i).1, fun i => Ω (Nat.unpair i).1,
+    fun i => H (Nat.unpair i).1 (Nat.unpair i).2, disjointed V,
+    fun i => hΩ _, fun i => hΦ _, fun i => ⟨K _, hK _⟩, fun i => ⟨c _, hc0 _, hc _⟩,
+    fun i => hH _ _, MeasurableSet.disjointed hVm, fun i => ?_, fun i => ?_,
+    disjoint_disjointed V, ?_, fun i w hw hwW => ?_⟩
+  · refine (disjointed_subset V i).trans fun x hx => ?_
+    rw [hV] at hx
+    exact hBM hx.1.1
+  · refine (disjointed_subset V i).trans fun x hx => ?_
+    rw [hV] at hx
+    exact image_mono inter_subset_left hx.1.2
+  · -- Step 6: `M ∖ ⋃ V` lies in a countable union of `Hⁿ`-null sets.
+    rw [iUnion_disjointed]
+    refine measure_mono_null (t := (M \ B) ∪ (M \ ⋃ j, Φ j '' Ω j) ∪
+      (⋃ j, Φ j '' (Ω j \ ⋃ k, A' j k)) ∪ (⋃ j, Z1 j) ∪ Z2) ?_ ?_
+    · rintro x ⟨hxM, hxV⟩
+      by_cases hxB : x ∈ B
+      swap
+      · exact Or.inl (Or.inl (Or.inl (Or.inl ⟨hxM, hxB⟩)))
+      by_cases hxΦ : x ∈ ⋃ j, Φ j '' Ω j
+      swap
+      · exact Or.inl (Or.inl (Or.inl (Or.inr ⟨hxM, hxΦ⟩)))
+      obtain ⟨j, w, hw, rfl⟩ := mem_iUnion.mp hxΦ
+      by_cases hwA : w ∈ ⋃ k, A' j k
+      swap
+      · exact Or.inl (Or.inl (Or.inr (mem_iUnion.mpr ⟨j, w, ⟨hw, hwA⟩, rfl⟩)))
+      obtain ⟨k, hk⟩ := mem_iUnion.mp hwA
+      by_cases hx1 : Φ j w ∈ Z1 j
+      · exact Or.inl (Or.inr (mem_iUnion.mpr ⟨j, hx1⟩))
+      by_cases hx2 : Φ j w ∈ Z2
+      · exact Or.inr hx2
+      refine absurd (mem_iUnion.mpr ⟨Nat.pair j k, ?_⟩) hxV
+      rw [hV, Nat.unpair_pair]
+      exact ⟨⟨hxB, w, ⟨hw, hk⟩, rfl⟩, fun h => h.elim hx1 hx2⟩
+    · refine measure_union_null (measure_union_null (measure_union_null
+        (measure_union_null hMB hcov) (measure_iUnion_null fun j => ?_))
+        (measure_iUnion_null hZ1)) hZ2
+      -- `Lⁿ(Ω j ∖ ⋃ k, A' j k) ≤ Lⁿ(ℝⁿ ∖ A' j k) < k⁻¹` for every `k`.
+      have hvol : (volume : Measure (Eucl (m + 1))) (Ω j \ ⋃ k, A' j k) = 0 := by
+        by_contra hne
+        obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hne
+        have hsub : Ω j \ ⋃ k, A' j k ⊆ (A' j k)ᶜ := fun w hw hwA =>
+          hw.2 (mem_iUnion.mpr ⟨k, hwA⟩)
+        exact lt_irrefl _ (((measure_mono hsub).trans_lt (hA'c j k)).trans hk)
+      -- The Lipschitz image of an `Hⁿ`-null set is `Hⁿ`-null.
+      have himg := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+        (m + 1) ((hK j).mono (Set.sdiff_subset : Ω j \ ⋃ k, A' j k ⊆ Ω j))
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume (m + 1), hvol, mul_zero] at himg
+      exact nonpos_iff_eq_zero.mp himg
+  · -- `w` is the unique preimage in `Ω j` of `Φ j w ∈ V (j, k)`, so `w ∈ A' j k`.
+    have hwV := disjointed_subset V i hwW
+    rw [hV] at hwV
+    obtain ⟨⟨hxB, w', hw'A, hw'w⟩, hZ⟩ := hwV
+    obtain rfl : w = w' := (hinj _ hw'A.1 hw hw'w).symm
+    exact ⟨(hstep2 _ _ w hw hw'A.2).1,
+      hgrad _ _ w hw hw'A.2 (hBM hxB) (fun h => hZ (Or.inl h)) (fun h => hZ (Or.inr h))⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
