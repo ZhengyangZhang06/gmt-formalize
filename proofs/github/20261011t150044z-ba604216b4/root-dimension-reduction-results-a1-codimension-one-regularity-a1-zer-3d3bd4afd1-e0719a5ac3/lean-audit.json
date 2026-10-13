@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "56728a64352a799312755026bfd6aabc571a27b47e0fdefda0b7562d5d980d60",
+  "git_delta": {
+    "base_commit": "94b4f5fb566865ef6852c0fe020f9dba84184c3a",
+    "candidate_commit": "08eb374c0252407e310ae5f82937344f8021b26a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_ga_lc_eps_choice",
+    "diff_sha256": "e6394b731e453d68d25264e81af30a1dc8acaa53d15cef5708ee7643347ce8a9",
+    "source_sha256": "90ed132a74ba2753cadf5e557995ebd71df50ae1d1344f14de337635ba649534",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_ga_lc_eps_choice",
+      "statement": "∀ (m : ℕ) (t : ℝ), 1 < t → ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1 + ε) ^ m ≤ t * (1 - ε) ∧ 1 + ε ≤ t * (1 - ε) ^ m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

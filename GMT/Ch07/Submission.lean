@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Choice of the tolerance in the local comparison for the area of a `C¹` graph (Simon 2.3.2,
+by the approximation argument from the linear case 2.3.1): for `m ∈ ℕ` and `t > 1` there is
+`ε ∈ (0, 1)` with `(1 + ε)^m ≤ t(1 - ε)` and `1 + ε ≤ t(1 - ε)^m`.  By continuity at `0`, pick
+`ε ∈ (0, 1)` with `q^{m+1} < t` for `q = (1 + ε)/(1 - ε)`; since `1 + ε ≤ q` and
+`1/(1 - ε) ≤ q`, both `(1 + ε)^m/(1 - ε)` and `(1 + ε)/(1 - ε)^m` are at most `q^{m+1}`. -/
+theorem Submission.codim1_zsl_ga_lc_eps_choice : ∀ (m : ℕ) (t : ℝ), 1 < t → ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1 + ε) ^ m ≤ t * (1 - ε) ∧ 1 + ε ≤ t * (1 - ε) ^ m := by
+  intro m t ht
+  -- (1) `φ(ε) = ((1 + ε)/(1 - ε))^{m+1}` is continuous at `0` and `φ(0) = 1 < t`
+  have hφ : ContinuousAt (fun ε : ℝ => ((1 + ε) / (1 - ε)) ^ (m + 1)) 0 :=
+    ((continuousAt_const.add continuousAt_id).div (continuousAt_const.sub continuousAt_id)
+      (by norm_num)).pow (m + 1)
+  have hφt : ∀ᶠ ε in 𝓝 (0 : ℝ), ((1 + ε) / (1 - ε)) ^ (m + 1) < t :=
+    hφ.eventually_lt continuousAt_const (by simpa using ht)
+  -- (2) `(0, 1) ∈ 𝓝[>] 0`, so some `ε ∈ (0, 1)` has `φ(ε) < t`
+  have hφt' : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ((1 + ε) / (1 - ε)) ^ (m + 1) < t :=
+    hφt.filter_mono nhdsWithin_le_nhds
+  have hIoo : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ε ∈ Ioo 0 1 := Ioo_mem_nhdsGT zero_lt_one
+  obtain ⟨ε, hεt, hε0, hε1⟩ := (hφt'.and hIoo).exists
+  have h1 : 0 < 1 - ε := by linarith
+  have h2 : 0 < 1 + ε := by linarith
+  -- (3) with `q = (1 + ε)/(1 - ε)`: `1 + ε ≤ q` and `1/(1 - ε) ≤ q`
+  have hq1 : 1 + ε ≤ (1 + ε) / (1 - ε) := by
+    rw [le_div_iff₀ h1]; nlinarith
+  have hq2 : 1 / (1 - ε) ≤ (1 + ε) / (1 - ε) := div_le_div_of_nonneg_right (by linarith) h1.le
+  have hq0 : 0 ≤ (1 + ε) / (1 - ε) := h2.le.trans hq1
+  have hinv0 : 0 ≤ 1 / (1 - ε) := (one_div_pos.mpr h1).le
+  refine ⟨ε, hε0, hε1, ?_, ?_⟩
+  -- (4) `(1 + ε)^m/(1 - ε) ≤ q^m · q = q^{m+1} < t`; multiply by `1 - ε > 0`
+  · have h : (1 + ε) ^ m * (1 / (1 - ε)) ≤ ((1 + ε) / (1 - ε)) ^ (m + 1) := by
+      rw [pow_succ]
+      exact mul_le_mul (pow_le_pow_left₀ h2.le hq1 m) hq2 hinv0 (pow_nonneg hq0 m)
+    have h' : (1 + ε) ^ m / (1 - ε) ≤ t := by
+      rw [div_eq_mul_one_div]; linarith
+    rwa [div_le_iff₀ h1] at h'
+  -- (5) `(1 + ε)/(1 - ε)^m ≤ q · q^m = q^{m+1} < t`; multiply by `(1 - ε)^m > 0`
+  · have h : (1 + ε) * (1 / (1 - ε)) ^ m ≤ ((1 + ε) / (1 - ε)) ^ (m + 1) := by
+      rw [pow_succ']
+      exact mul_le_mul hq1 (pow_le_pow_left₀ hinv0 hq2 m) (pow_nonneg hinv0 m) hq0
+    have h' : (1 + ε) / (1 - ε) ^ m ≤ t := by
+      rw [div_eq_mul_one_div, ← one_div_pow]; linarith
+    rwa [div_le_iff₀ (pow_pos h1 m)] at h'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
