@@ -451,6 +451,85 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Ch. 5, 3.3** ("applying this with `D_j u` in place of `u`"): a directional derivative
+`u_e = Dh(·) e` of a smooth harmonic `h` on an open `U ⊆ ℝⁿ` is smooth and harmonic on `U`.  With
+`G = D²h` and `H = D³h`: near `y ∈ U`, `Du_e(z) b = G z b e`, so `D²u_e(y)(a, b) = H y a b e`;
+symmetry of `D²h` on `U` and of `D²(Dh)` at `y` give `H y eᵢ eᵢ e = H y e eᵢ eᵢ`, and
+`∑ᵢ H y e eᵢ eᵢ` is the `e`-derivative at `y` of `z ↦ Δh(z)`, which vanishes near `y`. -/
+theorem Submission.dorag_ha_ie_fderiv_apply_harmonic : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (e : Euclid n), IsOpen U → (∀ m : ℕ, ContDiffOn ℝ m h U) → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiffOn ℝ m (fun y => fderiv ℝ h y e) U) ∧ ∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun z => fderiv ℝ h z e) y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+  intro n U h e hU hh hΔ
+  -- (i): `Dh` is `Cᵐ` on the open set `U`, and so is its evaluation at `e`
+  have hu : ∀ m : ℕ, ContDiffOn ℝ m (fun y => fderiv ℝ h y e) U := fun m =>
+    ((hh (m + 1)).fderiv_of_isOpen (m := m) hU (by push_cast; exact le_rfl)).clm_apply
+      contDiffOn_const
+  refine ⟨hu, fun y hy => ?_⟩
+  -- `h` is `C³` at every point of `U`, so `F = Dh` is differentiable on `U`
+  have h3 : ∀ z ∈ U, ContDiffAt ℝ 3 h z := fun z hz => (hh 3).contDiffAt (hU.mem_nhds hz)
+  have hFd : ∀ z ∈ U, DifferentiableAt ℝ (fderiv ℝ h) z := fun z hz =>
+    ((h3 z hz).fderiv_right (m := 2) (by norm_num)).differentiableAt (by norm_num)
+  -- the derivative of `z ↦ c z v` at `z` is `a ↦ Dc(z) a v`
+  have ev : ∀ {W : Type} [NormedAddCommGroup W] [NormedSpace ℝ W]
+      (c : Euclid n → Euclid n →L[ℝ] W) (v z a : Euclid n), DifferentiableAt ℝ c z →
+      fderiv ℝ (fun z' => c z' v) z a = fderiv ℝ c z a v := by
+    intro W _ _ c v z a hc
+    rw [fderiv_clm_apply hc (differentiableAt_const v)]
+    simp
+  -- `F` is `C²` at `y`, so `G = D²h` is differentiable at `y`
+  have hF2 : ContDiffAt ℝ 2 (fderiv ℝ h) y := (h3 y hy).fderiv_right (by norm_num)
+  have hGd : DifferentiableAt ℝ (fderiv ℝ (fderiv ℝ h)) y :=
+    (hF2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hGbd : ∀ b, DifferentiableAt ℝ (fun z => fderiv ℝ (fderiv ℝ h) z b) y := fun b =>
+    hGd.clm_apply (differentiableAt_const b)
+  -- (∗): `D(z ↦ G z b c)(y) a = H y a b c`
+  have hstar : ∀ a b c, fderiv ℝ (fun z => fderiv ℝ (fderiv ℝ h) z b c) y a =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b c := by
+    intro a b c
+    rw [ev (fun z => fderiv ℝ (fderiv ℝ h) z b) c y a (hGbd b), ev _ b y a hGd]
+  -- `D²u_e(y)(a, b) = H y a b e`
+  have hud : DifferentiableAt ℝ (fderiv ℝ (fun z => fderiv ℝ h z e)) y :=
+    (((hu 2).contDiffAt (hU.mem_nhds hy)).fderiv_right (m := 1) (by norm_num)).differentiableAt
+      (by norm_num)
+  have hu2 : ∀ a b, iteratedFDeriv ℝ 2 (fun z => fderiv ℝ h z e) y ![a, b] =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b e := by
+    intro a b
+    have hloc : (fun z => fderiv ℝ (fun z => fderiv ℝ h z e) z b) =ᶠ[𝓝 y]
+        fun z => fderiv ℝ (fderiv ℝ h) z b e := by
+      filter_upwards [hU.mem_nhds hy] with z hz
+      exact ev (fderiv ℝ h) e z b (hFd z hz)
+    rw [iteratedFDeriv_two_apply]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    rw [← ev _ b y a hud, hloc.fderiv_eq, hstar]
+  -- symmetry of `D²(Dh)` at `y`: `H y a b = H y b a`
+  have hsym1 : ∀ a b, fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y b a := fun a b =>
+    (hF2.isSymmSndFDerivAt (by norm_num)).eq a b
+  -- symmetry of `D²h` on `U`, differentiated at `y`: `H y a b c = H y a c b`
+  have hsym2 : ∀ a b c, fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b c =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a c b := by
+    intro a b c
+    have hloc : (fun z => fderiv ℝ (fderiv ℝ h) z b c) =ᶠ[𝓝 y]
+        fun z => fderiv ℝ (fderiv ℝ h) z c b := by
+      filter_upwards [hU.mem_nhds hy] with z hz
+      exact ((h3 z hz).isSymmSndFDerivAt (by norm_num)).eq b c
+    rw [← hstar a b c, ← hstar a c b, hloc.fderiv_eq]
+  -- the `e`-derivative of `z ↦ Δh(z) = ∑ᵢ G z eᵢ eᵢ`, which vanishes near `y`
+  have hL : ∑ i : Fin n, fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y e (EuclideanSpace.single i (1 : ℝ))
+      (EuclideanSpace.single i (1 : ℝ)) = 0 := by
+    have hloc : (fun z => ∑ i : Fin n, fderiv ℝ (fderiv ℝ h) z (EuclideanSpace.single i (1 : ℝ))
+        (EuclideanSpace.single i (1 : ℝ))) =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+      filter_upwards [hU.mem_nhds hy] with z hz
+      simpa only [iteratedFDeriv_two_apply, Matrix.cons_val_zero, Matrix.cons_val_one] using
+        hΔ z hz
+    have h0 := congrArg (fun φ : Euclid n →L[ℝ] ℝ => φ e) (hloc.fderiv_eq (𝕜 := ℝ))
+    simp only [fderiv_const_apply, zero_apply] at h0
+    rw [fderiv_fun_sum fun i _ => (hGbd _).clm_apply (differentiableAt_const _),
+      sum_apply] at h0
+    rw [← h0]
+    exact Finset.sum_congr rfl fun i _ => (hstar e _ _).symm
+  rw [← hL]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [hu2, hsym2 _ _ e, hsym1 _ e]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

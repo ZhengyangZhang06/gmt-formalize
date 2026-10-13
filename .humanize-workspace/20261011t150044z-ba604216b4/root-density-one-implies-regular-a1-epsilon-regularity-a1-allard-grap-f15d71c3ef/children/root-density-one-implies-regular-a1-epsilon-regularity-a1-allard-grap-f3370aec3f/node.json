@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.taylor_second_order-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+  "depth": 6,
+  "title": "Second-order Taylor bound along a segment from the origin",
+  "statement": "Let n ∈ ℕ, R, S ∈ ℝ, let h : ℝⁿ → ℝ (ℝⁿ = Euclid n) be C² on the open ball B̆_R(0) (ContDiffOn ℝ 2 h (ball 0 R)), and let v ∈ ℝⁿ with ‖v‖ < R. Suppose |D²h(τv)(v, v)| ≤ S for every τ ∈ [0, 1], where D²h(y)(a, b) := iteratedFDeriv ℝ 2 h y ![a, b]. Then |h(v) − h(0) − Dh(0)v| ≤ S/2, where Dh = fderiv ℝ h.",
+  "lean_statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (R S : ℝ) (v : Euclid n), ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → ‖v‖ < R → (∀ τ ∈ Icc (0 : ℝ) 1, |iteratedFDeriv ℝ 2 h (τ • v) ![v, v]| ≤ S) → |h v - h 0 - fderiv ℝ h 0 v| ≤ S / 2",
+  "lean_name": "dorag_ha_ie_taylor_two_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f3370aec3f-a1"
+}
