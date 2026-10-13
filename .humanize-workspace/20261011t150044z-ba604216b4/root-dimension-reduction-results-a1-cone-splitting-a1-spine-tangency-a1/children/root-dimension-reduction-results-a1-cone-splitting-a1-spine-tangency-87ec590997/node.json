@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1.ball_scaling-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1",
+  "depth": 4,
+  "title": "Closed-ball masses of an L-translation-invariant n-homogeneous measure at centres in L",
+  "statement": "Let P, n ∈ ℕ, let μ be a measure on (the Borel σ-algebra of) ℝ^P and L ⊆ ℝ^P a linear subspace. Assume μ((fun x => y + x)⁻¹'A) = μ(A) for every y ∈ L and every Borel A, and μ((fun x => λ • x)''A) = λ^n μ(A) (λ^n read as ENNReal.ofReal(λ^n)) for every λ > 0 and every Borel A. Then for every z ∈ L and every ρ > 0, μ(B̄_ρ(z)) = ρ^n μ(B̄_1(z)), where B̄_r(c) = closedBall c r.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (L : Submodule ℝ (Euclid P)), (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => y + x) ⁻¹' A) = μ A) → (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * μ A) → ∀ z ∈ L, ∀ ρ : ℝ, 0 < ρ → μ (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * μ (closedBall z 1)",
+  "lean_name": "dimred_cs_st_closedBall_measure_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-87ec590997-a1"
+}
