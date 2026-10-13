@@ -451,6 +451,51 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Density of a bounded field against a finite measure `μ ≪ Lⁿ`** (Radon–Nikodym, Simon
+1.3.24): if `μ(ℝⁿ) < ∞`, `μ ≪ Lⁿ` and `|h| ≤ 1` `μ`-a.e., then `u = ρ h̃`, with `ρ = dμ/dLⁿ` and
+`h̃` a strongly measurable representative of `h`, is Lebesgue integrable, `∫ |u| dy ≤ μ(ℝⁿ)`, and
+`∫ g h dμ = ∫ u g dy` for every `g`.  Here `μ = Lⁿ⌞ρ` because the singular part of `μ` vanishes. -/
+theorem Submission.cbr_ci_pw_td_finite_ac_density : ∀ (n : ℕ) (μ : Measure (Euclid n)) (h : Euclid n → ℝ), μ univ < ∞ → μ ≪ volume → AEStronglyMeasurable h μ → (∀ᵐ y ∂μ, |h y| ≤ 1) → ∃ u : Euclid n → ℝ, Integrable u ∧ ∫ y, |u y| ≤ (μ univ).toReal ∧ ∀ g : Euclid n → ℝ, ∫ y, g y * h y ∂μ = ∫ y, u y * g y := by
+  intro n μ h hfin hac hhm hhb
+  have : IsFiniteMeasure μ := ⟨hfin⟩
+  set ρ : Euclid n → ℝ≥0∞ := μ.rnDeriv volume with hρ
+  have hρm : Measurable ρ := Measure.measurable_rnDeriv μ volume
+  have hρfin : ∀ᵐ y ∂(volume : Measure (Euclid n)), ρ y < ∞ := Measure.rnDeriv_lt_top μ volume
+  have hμeq : μ = (volume : Measure (Euclid n)).withDensity ρ := by
+    conv_lhs => rw [Measure.haveLebesgueDecomposition_add μ volume]
+    rw [Measure.singularPart_eq_zero_of_ac hac, zero_add]
+  let h' := hhm.mk h
+  have hh'm : StronglyMeasurable h' := hhm.stronglyMeasurable_mk
+  have hhh' : h =ᵐ[μ] h' := hhm.ae_eq_mk
+  have hint : Integrable (fun y => (ρ y).toReal) :=
+    integrable_toReal_of_lintegral_ne_top hρm.aemeasurable (Measure.lintegral_rnDeriv_lt_top μ volume).ne
+  have h1 : ∀ᵐ y ∂μ, |h' y| ≤ 1 := (hhb.and hhh').mono fun y hy => hy.2 ▸ hy.1
+  rw [hμeq, ae_withDensity_iff hρm] at h1
+  have hbound : ∀ᵐ y ∂(volume : Measure (Euclid n)), ‖(ρ y).toReal * h' y‖ ≤ (ρ y).toReal := by
+    filter_upwards [h1] with y hy
+    by_cases h0 : ρ y = 0
+    · simp [h0]
+    · rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg ENNReal.toReal_nonneg]
+      exact mul_le_of_le_one_right ENNReal.toReal_nonneg (hy h0)
+  have hu : Integrable (fun y => (ρ y).toReal * h' y) :=
+    hint.mono' ((ENNReal.measurable_toReal.comp hρm).stronglyMeasurable.mul hh'm).aestronglyMeasurable hbound
+  refine ⟨fun y => (ρ y).toReal * h' y, hu, ?_, ?_⟩
+  · have hlin : ∫⁻ y, ρ y = μ univ := by
+      conv_rhs => rw [hμeq]
+      rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    calc ∫ y, |(ρ y).toReal * h' y| ≤ ∫ y, (ρ y).toReal :=
+          integral_mono_ae hu.abs hint (hbound.mono fun y hy => by simpa [Real.norm_eq_abs] using hy)
+      _ = (∫⁻ y, ρ y).toReal := integral_toReal hρm.aemeasurable hρfin
+      _ = (μ univ).toReal := by rw [hlin]
+  · intro g
+    calc ∫ y, g y * h y ∂μ = ∫ y, g y * h' y ∂μ :=
+          integral_congr_ae (hhh'.mono fun y hy => by simp only [hy])
+      _ = ∫ y, g y * h' y ∂((volume : Measure (Euclid n)).withDensity ρ) := by rw [← hμeq]
+      _ = ∫ y, (ρ y).toReal • (g y * h' y) :=
+          integral_withDensity_eq_integral_toReal_smul hρm hρfin _
+      _ = ∫ y, (ρ y).toReal * h' y * g y := by
+          congr 1; funext y; rw [smul_eq_mul]; ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

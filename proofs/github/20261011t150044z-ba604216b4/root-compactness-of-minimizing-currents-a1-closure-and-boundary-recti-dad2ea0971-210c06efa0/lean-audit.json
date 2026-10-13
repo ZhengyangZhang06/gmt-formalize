@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c1a8eab475a86c7ba21000a8778af320a2bf0c4e3b594a78c8a1281c1a6a800d",
+  "git_delta": {
+    "base_commit": "aea400db1c3978ff3779c28685383fa5cbd96457",
+    "candidate_commit": "4587b413e6ceaae91bad3bde719d3e084e9cba59",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_td_finite_ac_density",
+    "diff_sha256": "329b3ccef7e58e054a214129542a9f6fbcbdc4d2b0b75cca7232f6fe55783bba",
+    "source_sha256": "f534ec5d50115d1ab89390ad0cc557765c3a7cb1d0ba936ed3eb7d58789d05d7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_td_finite_ac_density",
+      "statement": "∀ (n : ℕ) (μ : Measure (Euclid n)) (h : Euclid n → ℝ), μ univ < ∞ → μ ≪ volume → AEStronglyMeasurable h μ → (∀ᵐ y ∂μ, |h y| ≤ 1) → ∃ u : Euclid n → ℝ, Integrable u ∧ ∫ y, |u y| ≤ (μ univ).toReal ∧ ∀ g : Euclid n → ℝ, ∫ y, g y * h y ∂μ = ∫ y, u y * g y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
