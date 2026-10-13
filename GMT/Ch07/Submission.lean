@@ -566,7 +566,7 @@ theorem Submission.dtc_bc_lc_fderiv_apply_eq_of_approxTangent : ∀ (P n : ℕ) 
       _ = ε / 2 := by field_simp
   have hηC : η * C = ε / 2 := by rw [hη]; field_simp
   -- Step 2: differentiability gives `δ > 0` with `|f(y) − f(x) − L(y − x)| ≤ η|y − x|` near `x`
-  obtain ⟨δ, hδ, hδf⟩ := Metric.eventually_nhds_iff.mp (hfL.isLittleO.def hηpos)
+  obtain ⟨δ, hδ, hδf⟩ := Metric.eventually_nhds_iff.mp (hfL.isLittleO.bound hηpos)
   -- Step 3: blow-up points of `A ∩ A = A` approach `v`
   obtain ⟨lam₀, hlam₀, hpts⟩ :=
     Submission.dsmc_att_blowUp_points_of_approxTangent P n A A x v Q (by simp) hQ hv s hspos
