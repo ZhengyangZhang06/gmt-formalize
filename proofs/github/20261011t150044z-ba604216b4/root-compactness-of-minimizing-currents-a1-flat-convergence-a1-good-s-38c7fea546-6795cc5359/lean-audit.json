@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6b9afde135fc426fd5e6674c299aa4aa37f84d551c22de8012c70f14c08886c",
+  "git_delta": {
+    "base_commit": "7ee8df637a5b75e412a86d19fe0757528d647361",
+    "candidate_commit": "c6ee39d65242d46030569f4f220c4baabcd23821",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_gs_aqf_window_lintegral",
+    "diff_sha256": "9031a7e9ded30e56c370f0ca6a129b864b2af9cf67436e95fe99a6e8b85be9af",
+    "source_sha256": "5b78b45c9d664a929e54f3c8f6bdbcb9cd76769a46a6e7c95bdcc967de4a643f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_gs_aqf_window_lintegral",
+      "statement": "∀ (ν : Measure ℝ) [SFinite ν] (h : ℝ), Measurable (fun t : ℝ => ν (Ioo (t - h) t)) ∧ ∫⁻ t, ν (Ioo (t - h) t) ∂volume = ENNReal.ofReal h * ν univ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
