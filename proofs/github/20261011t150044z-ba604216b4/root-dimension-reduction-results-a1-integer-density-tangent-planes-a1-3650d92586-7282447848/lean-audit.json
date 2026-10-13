@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b8f684fe7f533c0b513d14eb87753f132c60156d405da85a08eb1069f71c12e2",
+  "git_delta": {
+    "base_commit": "b0928ad5ca601c70aafa7cd15bd587f56db1e898",
+    "candidate_commit": "c2006da12e93e07081185cae4915ff42eb80c7c2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_rps_submanifold_subset_support",
+    "diff_sha256": "d54196a3a17814fb83fe4b7f9852d8a7f8e5f560b892c671b9a32e2f32c8f983",
+    "source_sha256": "4a838c24015bde8baee76bdab0adb37e8b3bc097ff35ef856763fd4afd3ddce5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_rps_submanifold_subset_support",
+      "statement": "∀ (P n : ℕ) (U G M : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen G → G ⊆ U → m ≠ 0 → IsEmbeddedSubmanifold 1 n M → IsOrientation n M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ G → μHE[n] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → M ∩ G ⊆ T.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
