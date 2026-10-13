@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "17a39715acb763ec1ae9ef5200d14fc0221f3bfe528cbd38e3c99d372d4e649e",
+  "git_delta": {
+    "base_commit": "d8e5e6531fe76afb547e5be791d31371bb8791da",
+    "candidate_commit": "f55db39d51418e017b02030eb32854a37e324412",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "ae4951dbdcce0ced6b7e770a9243263e7fb2c3e9e028cba963ac435cfcffebf7",
+    "source_sha256": "6feaa08b71ed3e07bfa52e670eb60a8329b0fbc7c819b389b500c37f416ecce1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_tangential_differential_exists",
+      "statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q), IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) ∧ AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ M ∩ K, ‖L x‖ ≤ C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
