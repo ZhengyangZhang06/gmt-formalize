@@ -851,6 +851,35 @@ theorem gwe_vfv_norm_le_first_block_add_infDist : ∀ (n ℓ : ℕ) (q : Amb n �
     two_ne_zero).1 ?_
   rw [hxn, add_sq]
   linarith [mul_nonneg (norm_nonneg a) (norm_nonneg b)]
+/-- Chain rule in rotated coordinates (step 1(ii) of the vertical first variation in Simon's proof
+of 4.5): for `a(y) = (finAddEquivProd (q⁻¹ y)).1`, a continuous linear map,
+`D(ζ ∘ a)(x) v = Dζ(a(x)) (a v) = ⟨∇ζ(a(x)), a v⟩ = ⟨graphPoint (∇ζ(a(x))) 0, q⁻¹ v⟩
+= ⟨q (graphPoint (∇ζ(a(x))) 0), v⟩`. -/
+theorem gwe_vfv_hasFDerivAt_comp_first_block : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (ζ : Rn n → ℝ) (x : Amb n ℓ), DifferentiableAt ℝ ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1 → HasFDerivAt (fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1) (innerSL ℝ (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) x := by
+  intro n ℓ q ζ x hζ
+  -- `a = fst ∘ finAddEquivProd ∘ q⁻¹` is a continuous linear map `L`.
+  let L : Amb n ℓ →L[ℝ] Rn n := (ContinuousLinearMap.fst ℝ (Rn n) (Rn ℓ)).comp
+    ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).toContinuousLinearMap.comp
+      q.symm.toContinuousLinearEquiv.toContinuousLinearMap)
+  have hL : ∀ y, L y = (EuclideanSpace.finAddEquivProd (q.symm y)).1 := fun y => rfl
+  -- `⟨graphPoint w 0, z⟩ = ⟨w, (finAddEquivProd z).1⟩`: split the sum over `Fin (n + ℓ)`.
+  have hcoord : ∀ (w : Rn n) (z : Amb n ℓ),
+      inner ℝ (graphPoint w (0 : Rn ℓ)) z = inner ℝ w (EuclideanSpace.finAddEquivProd z).1 := by
+    intro w z
+    simp only [graphPoint, WithLp.ofLp_zero, PiLp.inner_apply, RCLike.inner_apply, conj_trivial,
+      Fin.sum_univ_add, Fin.append_left, Fin.append_right, Pi.zero_apply, mul_zero,
+      Finset.sum_const_zero, add_zero, ContinuousLinearEquiv.trans_apply,
+      LinearIsometryEquiv.coe_toContinuousLinearEquiv, WithLp.prodContinuousLinearEquiv_apply,
+      PiLp.sumPiLpEquivProdLpPiLp_apply_ofLp, LinearIsometryEquiv.piLpCongrLeft_apply,
+      Equiv.piCongrLeft'_apply, Equiv.symm_symm, finSumFinEquiv_apply_left,
+      finSumFinEquiv_apply_right]
+  -- Chain rule: `D(ζ ∘ L)(x) = Dζ(L x) ∘ L`.
+  have hd : HasFDerivAt (fun y : Amb n ℓ => ζ (L y)) ((fderiv ℝ ζ (L x)).comp L) x :=
+    hζ.hasFDerivAt.comp x L.hasFDerivAt
+  -- `Dζ(L x) (L v) = ⟨∇ζ(L x), L v⟩ = ⟨graphPoint (∇ζ(L x)) 0, q⁻¹ v⟩ = ⟨q (graphPoint …), v⟩`.
+  refine hd.congr_fderiv (ContinuousLinearMap.ext fun v => ?_)
+  rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, LinearIsometryEquiv.inner_map_eq_flip,
+    hcoord, gradient, InnerProductSpace.toDual_symm_apply, hL, hL]
 
 end Submission
 
