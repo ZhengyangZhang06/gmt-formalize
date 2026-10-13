@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b39a266f690f7122de87d99109a55d89525a58bcada199b287c4e9d7eba5866a",
+  "git_delta": {
+    "base_commit": "ee7ecf990fcff199e7ad25dbc35ec5db78764ca1",
+    "candidate_commit": "993302b1126de99c73140a2a51216a844612e44a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_tr_smooth_translate_integral_eq",
+    "diff_sha256": "f1cd2104a13c00fe6e06396b51c945edd604104d8731051cc5f155eff9899670",
+    "source_sha256": "0f75bd4521146f0687987e7aa75f0e58172ba29bba2b2efc4bd8b528b80dee6b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_tr_smooth_translate_integral_eq",
+      "statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ (v + y) ∂ν = ∫ y, φ y ∂ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
