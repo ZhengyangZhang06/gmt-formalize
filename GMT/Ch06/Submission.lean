@@ -359,6 +359,48 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A `C¹` function `h` on `ℝⁿ` is `ε`-Lipschitz on each piece of a countable Borel partition of
+a Borel set `E` on which `Dh = 0`.  Continuity of `Dh` gives balls `B(w, r w)`, `w ∈ E`, with
+`‖Dh‖₊ < ε`, on which `h` is `ε`-Lipschitz by the mean value inequality; countably many of them
+cover `E` (Lindelöf), and `D k = E ∩ disjointed B k` disjointifies this cover. -/
+theorem Submission.slicing_im_coarea_cc_small_lip_partition :
+    ∀ (n : ℕ) (h : Eucl n → ℝ) (E : Set (Eucl n)) (ε : ℝ≥0), ContDiff ℝ 1 h → MeasurableSet E →
+      (∀ w ∈ E, fderiv ℝ h w = 0) → 0 < ε →
+      ∃ D : ℕ → Set (Eucl n), (∀ k, MeasurableSet (D k)) ∧ Pairwise (Function.onFun Disjoint D) ∧
+        (⋃ k, D k) = E ∧ ∀ k, LipschitzOnWith ε h (D k) := by
+  intro n h E ε hh hE hE0 hε
+  -- `h` is differentiable and `z ↦ ‖Dh z‖₊` is continuous.
+  have hdiff : Differentiable ℝ h := hh.differentiable one_ne_zero
+  have hcont : Continuous fun z => ‖fderiv ℝ h z‖₊ := (hh.continuous_fderiv one_ne_zero).nnnorm
+  -- Good radii: since `Dh w = 0`, `‖Dh‖₊ < ε` on a ball `B(w, r w)` for every `w ∈ E`.
+  have hrad : ∀ w ∈ E, ∃ r > 0, ∀ z ∈ ball w r, ‖fderiv ℝ h z‖₊ < ε := fun w hw =>
+    Metric.eventually_nhds_iff_ball.1 <|
+      (hcont.tendsto' w 0 (by simp [hE0 w hw])).eventually (gt_mem_nhds hε)
+  choose! r hr0 hr using hrad
+  -- Mean value inequality on the convex balls: `h` is `ε`-Lipschitz on each of them.
+  have hlip : ∀ w ∈ E, LipschitzOnWith ε h (ball w (r w)) := fun w hw =>
+    Convex.lipschitzOnWith_of_nnnorm_fderiv_le (fun z _ => hdiff z)
+      (fun z hz => (hr w hw z hz).le) (convex_ball w (r w))
+  -- Lindelöf: the balls centred at the points of a countable `T ⊆ E` cover `E`.
+  obtain ⟨T, hTE, hTc, hET⟩ := TopologicalSpace.countable_cover_nhdsWithin
+    (f := fun w => ball w (r w)) fun w hw => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds w (hr0 w hw))
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- No ball is needed, so `E = ∅` and `D k = ∅` works.
+    have hE' : E = ∅ := by simpa using hET
+    exact ⟨fun _ => ∅, fun _ => MeasurableSet.empty, fun _ _ _ => disjoint_bot_left,
+      by simp [hE'], fun _ => lipschitzOnWith_empty ε h⟩
+  · -- Enumerate the balls `B k = B(w k, r (w k))` and set `D k = E ∩ disjointed B k`.
+    obtain ⟨w, rfl⟩ := hTc.exists_eq_range hTne
+    rw [biUnion_range] at hET
+    refine ⟨fun k => E ∩ disjointed (fun j => ball (w j) (r (w j))) k,
+      fun k => hE.inter (MeasurableSet.disjointed (fun _ => measurableSet_ball) k),
+      (disjoint_disjointed _).mono fun _ _ hij =>
+        Disjoint.mono inter_subset_right inter_subset_right hij,
+      ?_, fun k => (hlip (w k) (hTE (mem_range_self k))).mono
+        (inter_subset_right.trans (disjointed_subset _ k))⟩
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left]
+    exact hET
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
