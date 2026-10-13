@@ -2454,20 +2454,6 @@ theorem Submission.allard_tc_tangent_point_representation :
       C.weight B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
     refine ⟨{x | x ∈ M ∧ ∃ S : Grassmannian N n,
       Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane}, fun x hx ↦ hx.1, ?_⟩
-/-- **Rectifiable tangent cones are invariant under dilations** (child `cone_rescaling_invariance`
-of `allard_tangent_cones`; Simon Ch. 8, 5.7, last sentence of the proof).  If `C = v(M, θ)` has
-tangent plane `T_x` with multiplicity `θ(x)` at every `x ∈ M`, is represented by these planes and
-`μ_C(s A) = s^n μ_C(A)`, then `η_{0,s #} C = C` for `s > 0`: on `G = {w ∈ M : s w ∈ M}` the sibling
-`tangent_plane_dilation` gives `θ(s w) = θ(w)` and the same planes, child
-`carrier_dilation_null` makes `G` of full `H^n`-measure in both representing sets, and children
-`rescaled_representation` and `setLIntegral_congr_off_null` compare the two integrals. -/
-theorem Submission.allard_tc_cone_rescaling_invariance :
-    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ → (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) → (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure := by
-  intro N n C M θ hC htan hrep hhom s hs
-  obtain ⟨-, hM, -, hθ, hint, -⟩ := hC
-  -- Step 1: `μ_C(B) = ∫⁻_{M ∩ B} ofReal θ dH^n` for Borel `B`, since every `x ∈ M` has a plane.
-  have hweight : ∀ B : Set (Euclidean N), MeasurableSet B →
-      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N)) := by
     intro B hB
     rw [C.weight_apply hB, hrep _ (hB.prod MeasurableSet.univ)]
     congr 2
@@ -2507,6 +2493,25 @@ theorem Submission.allard_tc_cone_rescaling_invariance :
     exact hTx
   · rintro ⟨hx, T, hTx, hxT⟩
     exact ⟨hx, T, (hiff x T hTx T).2 rfl, hxT⟩
+/-- **Rectifiable tangent cones are invariant under dilations** (child `cone_rescaling_invariance`
+of `allard_tangent_cones`; Simon Ch. 8, 5.7, last sentence of the proof).  If `C = v(M, θ)` has
+tangent plane `T_x` with multiplicity `θ(x)` at every `x ∈ M`, is represented by these planes and
+`μ_C(s A) = s^n μ_C(A)`, then `η_{0,s #} C = C` for `s > 0`: on `G = {w ∈ M : s w ∈ M}` the sibling
+`tangent_plane_dilation` gives `θ(s w) = θ(w)` and the same planes, child
+`carrier_dilation_null` makes `G` of full `H^n`-measure in both representing sets, and children
+`rescaled_representation` and `setLIntegral_congr_off_null` compare the two integrals. -/
+theorem Submission.allard_tc_cone_rescaling_invariance :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ → (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) → (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure := by
+  intro N n C M θ hC htan hrep hhom s hs
+  obtain ⟨-, hM, -, hθ, hint, -⟩ := hC
+  -- Step 1: `μ_C(B) = ∫⁻_{M ∩ B} ofReal θ dH^n` for Borel `B`, since every `x ∈ M` has a plane.
+  have hweight : ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N)) := by
+    intro B hB
+    rw [C.weight_apply hB, hrep _ (hB.prod MeasurableSet.univ)]
+    congr 2
+    ext x
+    simp only [mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true]
     exact ⟨fun ⟨hxM, _, _, hxB⟩ ↦ ⟨hxM, hxB⟩,
       fun ⟨hxM, hxB⟩ ↦ ⟨hxM, (htan x hxM).choose, (htan x hxM).choose_spec, hxB⟩⟩
   -- Step 2: child `carrier_dilation_null` for `μ = μ_C`: `M ∖ s⁻¹ M` and `s⁻¹ M ∖ M` are null.
