@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "feb00a8d66c0fdd72c1ed2a184cb20e589fbab0b6c1fcc88fa8332278b4cd34f",
+  "git_delta": {
+    "base_commit": "5ca4144b09d15c4827cc273b058f080029a87b84",
+    "candidate_commit": "dd15d7b50028a3284c1c01e841a7e3fec08f834c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1pt_fderiv_lower_bound",
+    "diff_sha256": "79c1ac148481bb1691e690b44456d1708a04cddfc30cc4f785c07ade29dc2bc2",
+    "source_sha256": "2189e74403fb48eec89d7e1a24066d9889f5900f537e876519137581e8216d27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1pt_fderiv_lower_bound",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (U : Set (Euclid n)) (a : Euclid n) (m : ℝ), IsOpen U → a ∈ U → DifferentiableAt ℝ g a → (∀ x ∈ U, m * ‖x - a‖ ≤ ‖g x - g a‖) → ∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g a v‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
