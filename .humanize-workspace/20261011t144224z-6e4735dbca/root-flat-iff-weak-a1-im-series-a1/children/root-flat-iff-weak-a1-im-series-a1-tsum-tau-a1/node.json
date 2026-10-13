@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1",
+  "depth": 3,
+  "title": "Termwise integration of a locally M-summable integer series of rectifiable triples",
+  "statement": "Let P, n ∈ ℕ, H := μHE[n] on ℝ^P, U ⊆ ℝ^P open, (M_r, θ_r, ξ_r) (r ∈ ℕ) triples satisfying IsRectifiableTriple U n, and c_r ∈ ℤ with Σ'_r |c_r|·∫⁻_{M_r ∩ W} ofReal θ_r dH < ∞ for every W ⊂⊂ U. Then for every ω ∈ D^n(U), writing F_r(x) := 1_{M_r}(x)·(c_r·(θ_r(x)·ξ_r(x)(ω(x)))):\nHasSum (r ↦ c_r·tauAction n M_r θ_r ξ_r ω) (∫ Σ'_r F_r(x) dH(x)).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (ξ : ℕ → Eucl P → NVector (Eucl P) n) (c : ℕ → ℤ), (∀ r, IsRectifiableTriple U n (M r) (θ r) (ξ r)) → (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) → ∀ ω : TestFormOn U n, HasSum (fun r => (c r : ℝ) * tauAction n (M r) (θ r) (ξ r) ω) (∫ x, ∑' r, (M r).indicator (fun y => (c r : ℝ) * (θ r y * ξ r y ((ω : DifferentialForm (Eucl P) n) y))) x ∂(μHE[n] : Measure (Eucl P)))",
+  "lean_name": "fiw_ims_tsum_tau",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-a1"
+}
