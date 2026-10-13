@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1.scale_limit-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+  "depth": 6,
+  "title": "Passage to the limit: a Borel majorant of Hausdorff measure from scale-wise content majorants via Fatou (Simon Ch. 2, proof of Theorem 1.9, 'Letting i → ∞')",
+  "statement": "Let P ∈ ℕ, d ∈ ℝ, and let S : ℝ → 𝒫(ℝ^P) be any family of subsets of ℝ^P. For r ∈ [0, ∞] and T ⊆ ℝ^P let μH[d]_r(T) be the infimum of Σ_{i∈ℕ} ⨆_{c_i≠∅} (diam c_i)^d over all sequences (c_i)_{i∈ℕ} of subsets of ℝ^P with T ⊆ ⋃_i c_i and diam c_i ≤ r for every i. Here diam = Metric.ediam ∈ [0, ∞]; the i-th term is (diam c_i)^d (Mathlib's real power ENNReal.rpow on [0, ∞]) if c_i ≠ ∅ and 0 if c_i = ∅; an empty infimum is ∞. This is the inner infimum of Mathlib's `hausdorffMeasure_apply`. Let ψ_k : ℝ → [0, ∞] (k ∈ ℕ) be Borel functions, let δ_k, ε_k ∈ [0, ∞] with δ_k → 0 and ε_k → 0 as k → ∞, and let B ∈ [0, ∞]. Assume μH[d]_{δ_k}(S(t)) ≤ ψ_k(t) for all k ∈ ℕ and t ∈ ℝ, and ∫_ℝ ψ_k dL¹ ≤ B + ε_k for every k. Then there is a Borel function φ : ℝ → [0, ∞] with ∫_ℝ φ dL¹ ≤ B and μH[d](S(t)) ≤ φ(t) for every t ∈ ℝ, where μH[d] is Mathlib's d-dimensional Hausdorff measure on ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (d : ℝ) (S : ℝ → Set (Euclid P)) (ψ : ℕ → ℝ → ℝ≥0∞) (δ ε : ℕ → ℝ≥0∞) (B : ℝ≥0∞), (∀ k, Measurable (ψ k)) → Tendsto δ atTop (𝓝 0) → Tendsto ε atTop (𝓝 0) → (∀ k t, (⨅ (c : ℕ → Set (Euclid P)) (_ : S t ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ k), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ d) ≤ ψ k t) → (∀ k, ∫⁻ t, ψ k t ≤ B + ε k) → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μH[d] (S t) ≤ φ t) ∧ ∫⁻ t, φ t ≤ B",
+  "lean_name": "dtc_bc_lc_sl_eil_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1d1a6b6251-a1"
+}

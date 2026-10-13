@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'hausdorffMeasure_apply|hausdorffMeasure_le_liminf_tsum|mkMetric_apply|hausdorffMeasure \\(' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n 'euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n 'theorem volume_le_diam' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "rg -n 'dtc_bc_lc_sl_eil_(scale|limit)' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT",
+        "rg -n 'eilenberg|Eilenberg' .lake/packages/simongmt/Poincare/SimonGMT -g '*.lean'",
+        "sed -n '325,415p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/eil-decomp/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/eilenberg-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/eilenberg-independent-audit/Challenge_single_scale.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/eilenberg-independent-audit/Challenge_scale_limit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-cd451b2ad3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/eil-decomp/Full.lean",
+        "/tmp/eilenberg-independent-audit/Types.lean",
+        "/tmp/eilenberg-independent-audit/Challenge_single_scale.lean",
+        "/tmp/eilenberg-independent-audit/Challenge_scale_limit.lean"
+      ],
+      "conclusion": "Pinned revisions match the manifest, and the workspace Contract and Submission match the snapshot contract byte-for-byte. The local declarations support the exact content formula, Borel constructions, Fatou argument, extension and normalization. No Eilenberg declaration was found in SimonGMT; the snapshot's Chapter 2 EilenbergInequality is a different contract, not a reusable proved result. Both proposed names are bare identifiers and unreserved in the eight local DAGs checked. Both unchanged one-line types pass validation and independently elaborate while their child declarations are absent. Regenerated comparator challenges compile. The supplied child proofs and exact parent assembly also compile, with only propext, Classical.choice and Quot.sound. The split appropriately separates the covering estimate from the limit argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "single_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen proposition agree on every hypothesis, including global Lipschitzness, arbitrary A, finite Hausdorff measure, and positive possibly infinite δ and ε. The proof supplies the near-optimal cover, closure and Borel-image arguments, fiber-content comparison, and integral estimate without gaps or circular reliance. Empty summands, d = 0, L = 0 and extended arithmetic are handled correctly. The powers infer ENNReal.rpow as intended. The independently usable type and unreserved bare name are valid; no sibling dependency is needed."
+    },
+    {
+      "key": "scale_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen proposition agree for arbitrary real d, arbitrary S, scales that may equal zero or be nonmonotone, and B = ∞. Content monotonicity supplies eventual lower bounds at every positive scale; the Hausdorff supremum formula, measurable liminf, Fatou and continuity of ENNReal addition prove the exact conclusion. No positivity assumption or measurability of S is silently introduced. The type is independent, the bare name is unreserved, and dependencies are acyclic. Applying this child to single_scale with geometric scales, followed by the supplied extension, exceptional cases and normalization, proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (local-project; project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Submission.lean (IDENTICAL)",
+        "grep -n 'theorem hausdorffMeasure_apply\\|theorem mkMetric_apply\\|hausdorffMeasure_le_liminf_tsum\\|notation \"μH\\[' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "sed mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def: μHE[d] = addHaarScalarFactor volume μH[d] • μH[d]; addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)",
+        "grep -rn 'theorem volume_le_diam\\|theorem ediam_image_le\\|ediam_closure\\|theorem LipschitzOnWith.extend_real\\|theorem lintegral_liminf_le\\|theorem Measurable.liminf\\|theorem Measurable.ennreal_tsum\\|theorem lintegral_tsum\\|IsSigmaCompact.image\\|isSigmaCompact_iUnion_of_isCompact\\|tendsto_inv_nat_nhds_zero\\|Tendsto.const_mul' mathlib/Mathlib",
+        "grep -rn 'Eilenberg\\|eilenberg\\|hausdorffMeasure_apply\\|volume_le_diam\\|IsSigmaCompact\\|lintegral_liminf_le' .lake/packages/simongmt/Poincare/SimonGMT and mathlib/Mathlib (only Eilenberg–Steenrod / Eilenberg–Schützenberger hits; SimonGMT has measurableSet_of_isSigmaCompact_borel and the upper integral, no Eilenberg inequality)",
+        "python3 -I scans of dag.json lean_statement fields for ediam|⨅ (c|∑' i, ⨆ _|⁻¹' {t}|liminf|lintegral_liminf, and grep -rli eilenberg nodes/*/decomposition-v1.json (no accepted Eilenberg or content-majorant lemma; only this node and unrelated slicing/coarea nodes such as dimred_cs_sos_spine_coarea)",
+        "grep -o 'dtc_bc_lc_sl_eil[a-z_]*' dag.json (only dtc_bc_lc_sl_eilenberg); git log --all -S 'dtc_bc_lc_sl_eil_scale' and -S 'dtc_bc_lc_sl_eil_limit' (empty); grep in workspaces/gmt-ch01..08 dag.json (0 hits)",
+        "sed -n 320,415p book/chapter-02.txt (Theorem 1.9; Remark 1.10 at lines 343–364; proof at lines 366–411: (1), g_i, (2), 'Letting i → ∞')",
+        "python3 -I /tmp/eil-scripts/gen_challenges.py (verifier lean_contract.validate_lean_statement and gmt-compare.child_modules in contract mode for both children); lake env lean /tmp/eil-decomp/Challenge_single_scale.lean and /tmp/eil-decomp/Challenge_scale_limit.lean",
+        "lake env lean /tmp/eil-decomp/Full.lean (proofs of both children at their frozen types, the parent's frozen type from them, comparator-style exact Submission.X checks, #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/UpperIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/IsodiametricBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-cd451b2ad3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/eil-decomp/Full.lean",
+        "/tmp/eil-decomp/Challenge_single_scale.lean",
+        "/tmp/eil-decomp/Challenge_scale_limit.lean",
+        "/tmp/eil-decomp/Assembly.lean"
+      ],
+      "conclusion": "Nothing can be reused: the pinned Mathlib (25730c7c) and SimonGMT contain no Eilenberg inequality, Hausdorff-content majorant lemma or coarea inequality, and no DAG node provides one. Mathlib supplies every ingredient: hausdorffMeasure_apply, Metric.ediam_closure, IsSigmaCompact.image, isSigmaCompact_iUnion_of_isCompact, Real.volume_le_diam, LipschitzWith.ediam_image_le, lintegral_tsum, lintegral_indicator_const, Measurable.liminf, lintegral_liminf_le, LipschitzOnWith.extend_real, euclideanHausdorffMeasure_def and addHaarScalarFactor_volume_hausdorffMeasure_ne_zero. The two new names dtc_bc_lc_sl_eil_scale and dtc_bc_lc_sl_eil_limit are globally unique. Both types validate and elaborate as comparator challenges. Both were proved in Lean at their exact frozen types, and the parent's exact frozen type was derived from them, with axioms propext, Classical.choice and Quot.sound only."
+    }
+  ],
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+  "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1.scale_limit-a1",
+  "subproblem": {
+    "key": "scale_limit",
+    "title": "Passage to the limit: a Borel majorant of Hausdorff measure from scale-wise content majorants via Fatou (Simon Ch. 2, proof of Theorem 1.9, 'Letting i → ∞')",
+    "statement": "Let P ∈ ℕ, d ∈ ℝ, and let S : ℝ → 𝒫(ℝ^P) be any family of subsets of ℝ^P. For r ∈ [0, ∞] and T ⊆ ℝ^P let μH[d]_r(T) be the infimum of Σ_{i∈ℕ} ⨆_{c_i≠∅} (diam c_i)^d over all sequences (c_i)_{i∈ℕ} of subsets of ℝ^P with T ⊆ ⋃_i c_i and diam c_i ≤ r for every i. Here diam = Metric.ediam ∈ [0, ∞]; the i-th term is (diam c_i)^d (Mathlib's real power ENNReal.rpow on [0, ∞]) if c_i ≠ ∅ and 0 if c_i = ∅; an empty infimum is ∞. This is the inner infimum of Mathlib's `hausdorffMeasure_apply`. Let ψ_k : ℝ → [0, ∞] (k ∈ ℕ) be Borel functions, let δ_k, ε_k ∈ [0, ∞] with δ_k → 0 and ε_k → 0 as k → ∞, and let B ∈ [0, ∞]. Assume μH[d]_{δ_k}(S(t)) ≤ ψ_k(t) for all k ∈ ℕ and t ∈ ℝ, and ∫_ℝ ψ_k dL¹ ≤ B + ε_k for every k. Then there is a Borel function φ : ℝ → [0, ∞] with ∫_ℝ φ dL¹ ≤ B and μH[d](S(t)) ≤ φ(t) for every t ∈ ℝ, where μH[d] is Mathlib's d-dimensional Hausdorff measure on ℝ^P.",
+    "lean_statement": "∀ (P : ℕ) (d : ℝ) (S : ℝ → Set (Euclid P)) (ψ : ℕ → ℝ → ℝ≥0∞) (δ ε : ℕ → ℝ≥0∞) (B : ℝ≥0∞), (∀ k, Measurable (ψ k)) → Tendsto δ atTop (𝓝 0) → Tendsto ε atTop (𝓝 0) → (∀ k t, (⨅ (c : ℕ → Set (Euclid P)) (_ : S t ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ k), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ d) ≤ ψ k t) → (∀ k, ∫⁻ t, ψ k t ≤ B + ε k) → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μH[d] (S t) ≤ φ t) ∧ ∫⁻ t, φ t ≤ B",
+    "lean_name": "dtc_bc_lc_sl_eil_limit",
+    "depends_on": [],
+    "natural_proof": "Source: Simon Ch. 2, proof of Theorem 1.9, the final step 'Letting i → ∞' (chapter-02.txt lines 407–411, printed p. 46; Remark 1.10 is lines 343–364). The upper integral of Remark 1.10 is made explicit by a Borel majorant. The parent applies this lemma in step 6 with S(t) = A ∩ f⁻¹(t) (f the McShane extension), δ_k = 2^{−k}, ε_k = L·2^{−k} and B = L·μH[n+1](A); these symbols are not used below. All arithmetic is in [0, ∞]. The positivity of δ_k and the sign of d play no role.\n\n1. The majorant. Define φ(t) := liminf_{k→∞} ψ_k(t) = sup_{j∈ℕ} inf_{k≥j} ψ_k(t) ∈ [0, ∞]. It is the liminf of a sequence of Borel [0, ∞]-valued functions, so φ is Borel (Mathlib `Measurable.liminf`).\n\n2. The content decreases as the scale grows. Let 0 ≤ r ≤ r' ≤ ∞ and T ⊆ ℝ^P. A sequence (c_i) admissible for μH[d]_r(T) covers T with diam c_i ≤ r ≤ r', so it is also admissible for μH[d]_{r'}(T). An infimum over a larger family is smaller, so μH[d]_{r'}(T) ≤ μH[d]_r(T).\n\n3. Pointwise bound. Fix t ∈ ℝ.\n - By Mathlib `hausdorffMeasure_apply`, μH[d](S(t)) = sup_{r>0} μH[d]_r(S(t)). So it suffices to show μH[d]_r(S(t)) ≤ φ(t) for each r ∈ (0, ∞].\n - Fix such r. The interval [0, r) is a neighbourhood of 0 in [0, ∞] and δ_k → 0, so there is k₀ with δ_k < r for all k ≥ k₀.\n - For every k ≥ k₀, step 2 (with δ_k ≤ r) and the hypothesis give μH[d]_r(S(t)) ≤ μH[d]_{δ_k}(S(t)) ≤ ψ_k(t).\n - A constant that is ≤ ψ_k(t) for all large k is ≤ liminf_k ψ_k(t) = φ(t). Hence μH[d]_r(S(t)) ≤ φ(t).\n Taking the supremum over r > 0 gives μH[d](S(t)) ≤ φ(t).\n\n4. Integral bound (Fatou).\n - Every ψ_k is measurable, so Fatou's lemma (Mathlib `lintegral_liminf_le`) gives ∫_ℝ φ dL¹ = ∫_ℝ liminf_k ψ_k dL¹ ≤ liminf_k ∫_ℝ ψ_k dL¹.\n - By hypothesis ∫ψ_k ≤ B + ε_k for every k, and liminf is monotone, so liminf_k ∫ψ_k ≤ liminf_k (B + ε_k).\n - Addition is continuous on [0, ∞] and ε_k → 0, so B + ε_k → B + 0 = B. The liminf of a convergent sequence is its limit, so liminf_k (B + ε_k) = B.\n Hence ∫_ℝ φ dL¹ ≤ B. ∎",
+    "proof_key_steps": [
+      "φ := liminf_k ψ_k is Borel.",
+      "μH[d]_r decreases as r grows. For r > 0, eventually δ_k < r, so μH[d]_r(S(t)) ≤ μH[d]_{δ_k}(S(t)) ≤ ψ_k(t) for all large k, hence μH[d]_r(S(t)) ≤ φ(t). By hausdorffMeasure_apply the supremum over r > 0 is μH[d](S(t)).",
+      "Fatou: ∫φ ≤ liminf_k ∫ψ_k ≤ liminf_k (B + ε_k) = B."
+    ]
+  },
+  "audit": {
+    "key": "scale_limit",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and frozen proposition agree for arbitrary real d, arbitrary S, scales that may equal zero or be nonmonotone, and B = ∞. Content monotonicity supplies eventual lower bounds at every positive scale; the Hausdorff supremum formula, measurable liminf, Fatou and continuity of ENNReal addition prove the exact conclusion. No positivity assumption or measurability of S is silently introduced. The type is independent, the bare name is unreserved, and dependencies are acyclic. Applying this child to single_scale with geometric scales, followed by the supplied extension, exceptional cases and normalization, proves the exact selected parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1d1a6b6251/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1d1a6b6251/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1d1a6b6251/parent-supplied-natural-proof.json"
+}
