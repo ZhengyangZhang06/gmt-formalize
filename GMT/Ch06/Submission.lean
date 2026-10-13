@@ -1435,6 +1435,42 @@ theorem Submission.lpf_c1_approximation_eucl :
     · rw [hG.fderiv]
       exact hu'
 
+/-- Simon Ch. 3, proof of Lemma 1.2 (p. 70), displays (1)–(2): for a Lipschitz `F : ℝⁿ → ℝ^P`
+there are `C¹` maps `G_i : ℝⁿ → ℝ^P` with `F(ℝⁿ) ⊆ F(Z) ∪ ⋃_i G_i(ℝⁿ)` and `Hⁿ(F(Z)) = 0`, where
+`F = G_i` off a set of measure `< 1/i` (C¹ Approximation Theorem) and `Lⁿ(Z) = 0`. -/
+theorem Submission.slicing_im_tg_cc_lipschitz_range_c1_cover :
+    ∀ (n P : ℕ) (F : Eucl n → Eucl P) (K : ℝ≥0), LipschitzWith K F → ∃ G : ℕ → Eucl n → Eucl P,
+      (∀ i, ContDiff ℝ 1 (G i)) ∧ (μHE[n] : Measure (Eucl P)) (range F \ ⋃ i, range (G i)) = 0 := by
+  intro n P F K hF
+  -- `ε_i = i⁻¹ ∈ (0, ∞]` (`ε_0 = ∞`).
+  have hε : ∀ i : ℕ, (0 : ℝ≥0∞) < (i : ℝ≥0∞)⁻¹ := fun i =>
+    ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i)
+  -- `C¹` approximations: closed `A_i` and `C¹` `G_i` with `F = G_i` on `A_i`, `Lⁿ(ℝⁿ ∖ A_i) < i⁻¹`.
+  choose A G hAc hAm hG hAG using fun i : ℕ =>
+    Submission.lpf_c1_approximation_eucl n P F K hF _ (hε i)
+  refine ⟨G, hG, ?_⟩
+  -- `Z = ⋂_i (ℝⁿ ∖ A_i)` is `Lⁿ`-null.
+  set Z : Set (Eucl n) := ⋂ i, (A i)ᶜ with hZdef
+  have hZ : (volume : Measure (Eucl n)) Z = 0 := by
+    refine le_antisymm ?_ bot_le
+    refine ge_of_tendsto' ENNReal.tendsto_inv_nat_nhds_zero fun i => ?_
+    exact (measure_mono (iInter_subset _ i)).trans (hAm i).le
+  -- `F(Z)` is `Hⁿ`-null: `Hⁿ(F(Z)) ≤ Kⁿ Hⁿ(Z) = Kⁿ Lⁿ(Z) = 0`.
+  have hFZ : (μHE[n] : Measure (Eucl P)) (F '' Z) = 0 := by
+    refine le_antisymm ?_ bot_le
+    calc (μHE[n] : Measure (Eucl P)) (F '' Z)
+        ≤ (K : ℝ≥0∞) ^ n * (μHE[n] : Measure (Eucl n)) Z :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            hF.lipschitzOnWith
+      _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hZ, mul_zero]
+  -- `F(ℝⁿ) ∖ ⋃_i G_i(ℝⁿ) ⊆ F(Z)`: if `F w ∉ ⋃_i G_i(ℝⁿ)`, then `w ∉ A_i` for every `i`.
+  refine measure_mono_null ?_ hFZ
+  rintro y ⟨⟨w, rfl⟩, hy⟩
+  refine ⟨w, ?_, rfl⟩
+  rw [hZdef, mem_iInter]
+  intro i hwi
+  exact hy (mem_iUnion.2 ⟨i, w, ((hAG i w hwi).1).symm⟩)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
