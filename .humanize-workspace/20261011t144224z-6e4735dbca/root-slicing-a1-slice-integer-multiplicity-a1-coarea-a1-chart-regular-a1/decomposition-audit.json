@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'slicing_im_creg_|slicing_im_coarea_chart_regular|lpf_raf_chart_change_of_variables' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "theorem measurable_fderiv_apply_const",
+        "volume_preserving_(ofLp|toLp|symm_measurableEquiv_toLp)|measurePreserving_piFinSuccAbove",
+        "^(theorem|lemma) (lintegral_iUnion|lintegral_tsum)\\b",
+        "theorem OpenPartialHomeomorph.contDiffAt_symm|protected theorem ContDiffAt.eventually|theorem isOpen_image_symm_of_subset_target",
+        "git show 9fc44225b304fca8af9dead3256575ef03818d1e:GMT/Ch06/Submission.lean",
+        "validate_lean_statement(c['lean_statement'])",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chartreg-independent-audit-xwaam3t9/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chartreg-independent-audit-xwaam3t9/IntegratedChecked.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chartreg-independent-audit-xwaam3t9/TypesModule.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa12/20261012T153904Z-ch06-root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_var-kwlppz2e/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa12/20261012T153904Z-ch06-root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_var-kwlppz2e/comparator.log",
+        "/tmp/chartreg-decomp/integrated/Integrated.lean",
+        "/tmp/chartreg-independent-audit-xwaam3t9/execution-summary.json"
+      ],
+      "conclusion": "The pinned sources support the cited analytic and algebraic steps; the project search found none of the proposed declarations. All six contracts pass lexical validation, match their prose, and use bare names. The five new names are unreserved. The area-formula reuse has an identical frozen type and source hash, compatible revisions, and archived comparator acceptance permitting only propext, Quot.sound and Classical.choice. Dependencies are acyclic and correctly directed. The supplied assembly establishes exactly the selected parent through cover, straighten and box; box uses the other three children. The split is appropriate. Fresh full compiler reruns were interrupted during import under severe memory pressure; a module-mode workaround was incompatible with the frozen legacy import. No fresh kernel acceptance is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the accepted declaration. The proof establishes null-measurability by null-set pullback, transfers a measurable representative of g, and reduces the accepted area formula's fibre sum to the indicator of A. Its accepted prerequisites have no dependency on the selected parent."
+    },
+    {
+      "key": "jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and matrix-determinant proposition agree. The singular-D case supplies a nonzero tail kernel vector; the nonsingular case uses Cramer's identity without assuming the Gram matrix invertible. Square-root factorization is valid, including m = 0. Matrix.of ensures the intended matrix constructions."
+    },
+    {
+      "key": "tonelli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ofLp, Fin.cons and toLp composition preserves the stated volume measures. Tonelli and measurable parameter integration yield both exact conjuncts, including m = 0. The argument does not confuse the ordinary product norm with the Euclidean product norm."
+    },
+    {
+      "key": "straighten",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Projection onto ker Dh gives the required contraction and an invertible straightening derivative. The inverse function theorem, finite-order locality, compact derivative bound and mean-value inequality establish every chart property. The inverse identities prove the exact slice lower bound without additional hypotheses."
+    },
+    {
+      "key": "box",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated hypotheses imply injectivity of χ and Dh∘Dχ = proj₀. Both area-formula applications, change of variables, the Jacobian identity and Tonelli satisfy their hypotheses. The measurable extension handles χ outside B. Slice images are Borel despite arbitrary f. The proof uses exactly the three declared dependencies and proves both conclusions."
+    },
+    {
+      "key": "cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is a genuine local-to-global obligation. Lindelöf and disjointification produce Borel pieces whose images are disjoint and cover W. Set-integral additivity requires no measurability of the arbitrary weights; the assumed a.e.-measurability permits lintegral_tsum. Empty sets and arbitrary μ, ν are covered without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
