@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.mult_one-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+  "depth": 5,
+  "title": "Unit multiplicity where the mass ratio stays below 2",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^P an arbitrary set, R = (M, θ, ξ) an IMRep U n with weight μ := R.measure, W ⊆ U open, S ⊆ W an arbitrary set, and c₀ < 2 a real number. Suppose that for every x ∈ S there is t₀ > 0 with μ(B_t(x)) ≤ c₀·ω_n·tⁿ for all t ∈ (0, t₀). Here ω_n = unitBallVolume n, B_t(x) is the closed ball, and c₀ and tⁿ are entered via ENNReal.ofReal. Then R.mult x = 1 for μ-almost every x ∈ S.",
+  "lean_statement": "∀ (P n : ℕ) (U W S : Set (Euclid P)) (R : IMRep U n) (c₀ : ℝ), 0 < n → IsOpen W → W ⊆ U → S ⊆ W → c₀ < 2 → (∀ x ∈ S, ∀ᶠ t in 𝓝[>] (0 : ℝ), R.measure (closedBall x t) ≤ ENNReal.ofReal c₀ * unitBallVolume n * ENNReal.ofReal (t ^ n)) → ∀ᵐ x ∂R.measure, x ∈ S → R.mult x = 1",
+  "lean_name": "dorag_dbs_mult_eq_one_of_density_lt_two",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.lower_density_mult-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.lower_density_mult-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e7b816fcb5-a1"
+}
