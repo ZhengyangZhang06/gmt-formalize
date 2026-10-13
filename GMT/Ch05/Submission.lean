@@ -458,6 +458,91 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Diagonal extraction with one glued limit** (Simon Ch. 5, proof of Theorem 7.1: Hölder
+compactness in the Schauder blow-up argument).  Let `F k : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` and `S m ⊆ ℝⁿ`.  If, for
+every `m`, every subsequence `F ∘ ψ` has a further subsequence `F ∘ ψ ∘ χ` converging uniformly on
+`S m`, then a single subsequence `F ∘ φ` converges uniformly on every `S m` to one limit `V`.
+
+Proof: iterate the extractions, `Ψ 0 = id` and `Ψ (m + 1) = Ψ m ∘ χ_m` with `F ∘ Ψ (m + 1) → g_m`
+uniformly on `S m`, and take the diagonal `φ j = Ψ (j + 1) j`; it is strictly increasing because
+`χ i ≥ i` for strictly increasing `χ`.  Since `Ψ (m + d) = Ψ m ∘ ρ` with `ρ` strictly increasing,
+for `j ≥ m` the index `φ j` is the term of `Ψ (m + 1)` at a position `τ j ≥ j`, so `F ∘ φ → g_m`
+uniformly on `S m`.  Put `V z = g_{m(z)} z` for the least `m(z)` with `z ∈ S m(z)` (and `V z = 0`
+off `⋃ S m`); uniqueness of limits gives `V = g_m` on `S m`. -/
+theorem dohr_eb_sch_bu_hds_diagonal_extract : ∀ (n ℓ : ℕ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (S : ℕ → Set (Rn n)), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧ TendstoUniformlyOn (fun j => F (ψ (χ j))) g atTop (S m)) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ ∀ m : ℕ, TendstoUniformlyOn (fun j => F (φ j)) V atTop (S m) := by
+  intro n ℓ F S h
+  -- Step 1: choose `χ m ψ` and `g m ψ` for every `ψ`; the convergence is only claimed for
+  -- strictly increasing `ψ` (otherwise take `χ = id`, `g = 0`).
+  have h' : ∀ (m : ℕ) (ψ : ℕ → ℕ), ∃ (χ : ℕ → ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)),
+      StrictMono χ ∧ (StrictMono ψ → TendstoUniformlyOn (fun j => F (ψ (χ j))) g atTop (S m)) := by
+    intro m ψ
+    by_cases hψ : StrictMono ψ
+    · obtain ⟨χ, g, hχ, hg⟩ := h m ψ hψ
+      exact ⟨χ, g, hχ, fun _ => hg⟩
+    · exact ⟨id, 0, strictMono_id, fun hψ' => absurd hψ' hψ⟩
+  choose χ g hχ hg using h'
+  -- Step 2: nested subsequences `Ψ 0 = id`, `Ψ (m + 1) = Ψ m ∘ χ m (Ψ m)`.
+  obtain ⟨Ψ, hΨ0, hΨs⟩ : ∃ Ψ : ℕ → ℕ → ℕ, Ψ 0 = id ∧ ∀ m, Ψ (m + 1) = Ψ m ∘ χ m (Ψ m) :=
+    ⟨fun m => Nat.rec (motive := fun _ => ℕ → ℕ) id (fun k ψ => ψ ∘ χ k ψ) m, rfl, fun _ => rfl⟩
+  have hΨmono : ∀ m, StrictMono (Ψ m) := by
+    intro m
+    induction m with
+    | zero => rw [hΨ0]; exact strictMono_id
+    | succ m ih => rw [hΨs]; exact ih.comp (hχ m (Ψ m))
+  have hconv : ∀ m, TendstoUniformlyOn (fun j => F (Ψ (m + 1) j)) (g m (Ψ m)) atTop (S m) := by
+    intro m
+    rw [hΨs]
+    exact hg m (Ψ m) (hΨmono m)
+  -- Step 3: later stages factor through earlier ones, `Ψ (m + d) = Ψ m ∘ ρ m d`.
+  have hfac : ∀ m d, ∃ ρ : ℕ → ℕ, StrictMono ρ ∧ Ψ (m + d) = Ψ m ∘ ρ := by
+    intro m d
+    induction d with
+    | zero => exact ⟨id, strictMono_id, rfl⟩
+    | succ d ih =>
+      obtain ⟨ρ, hρ, hρe⟩ := ih
+      refine ⟨ρ ∘ χ (m + d) (Ψ (m + d)), hρ.comp (hχ _ _), ?_⟩
+      rw [← add_assoc, hΨs, hρe]
+      rfl
+  choose ρ hρ hρe using hfac
+  -- Step 4: the diagonal `φ j = Ψ (j + 1) j` is strictly increasing.
+  have hφ : StrictMono (fun j => Ψ (j + 1) j) := by
+    apply strictMono_nat_of_lt_succ
+    intro j
+    show Ψ (j + 1) j < Ψ (j + 1 + 1) (j + 1)
+    rw [hΨs (j + 1)]
+    exact hΨmono (j + 1)
+      (lt_of_lt_of_le (Nat.lt_succ_self j) ((hχ (j + 1) (Ψ (j + 1))).id_le (j + 1)))
+  -- Step 5: for `j ≥ m`, `φ j = Ψ (m + 1) (τ j)` with `τ j = ρ (m + 1) (j - m) j ≥ j`, so
+  -- `F ∘ φ → g m (Ψ m)` uniformly on `S m`.
+  have hφconv : ∀ m, TendstoUniformlyOn (fun j => F (Ψ (j + 1) j)) (g m (Ψ m)) atTop (S m) := by
+    intro m
+    have hτ : ∀ j, m ≤ j → Ψ (j + 1) j = Ψ (m + 1) (ρ (m + 1) (j - m) j) := by
+      intro j hj
+      have hjm : j + 1 = m + 1 + (j - m) := by omega
+      rw [hjm, hρe]
+      rfl
+    have hτt : Tendsto (fun j => ρ (m + 1) (j - m) j) atTop atTop :=
+      tendsto_atTop_mono (fun j => (hρ (m + 1) (j - m)).id_le j) tendsto_id
+    have h1 : TendstoUniformlyOn (fun j => F (Ψ (m + 1) (ρ (m + 1) (j - m) j))) (g m (Ψ m))
+        atTop (S m) := fun u hu => hτt.eventually (hconv m u hu)
+    refine h1.congr ?_
+    filter_upwards [eventually_ge_atTop m] with j hj
+    intro z _
+    simp only [hτ j hj]
+  -- Step 6: glue the limits, `V z = g m(z) (Ψ m(z)) z` for the least `m(z)` with `z ∈ S m(z)`.
+  classical
+  refine ⟨fun j => Ψ (j + 1) j,
+    fun z => if hz : ∃ m, z ∈ S m then g (Nat.find hz) (Ψ (Nat.find hz)) z else 0, hφ,
+    fun m => (hφconv m).congr_right ?_⟩
+  intro z hz
+  have hex : ∃ m, z ∈ S m := ⟨m, hz⟩
+  simp only [dite_eq_left hex]
+  exact tendsto_nhds_unique ((hφconv m).tendsto_at hz) ((hφconv _).tendsto_at (Nat.find_spec hex))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
