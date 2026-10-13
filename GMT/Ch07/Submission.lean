@@ -489,6 +489,28 @@ theorem Submission.dimred_cs_ti_const_cartan : ∀ (P m : ℕ) (β : Differentia
     hrm, Fin.val_zero, Fin.val_succ, pow_zero, one_smul, pow_succ, mul_neg_one, neg_smul,
     Finset.sum_neg_distrib]
   abel
+/-- **Contraction with a constant vector preserves test forms** (Simon Ch. 6, 2.25–2.26, the
+constant-field counterpart of the Euler-field contraction used for 7.3.1).  If `β` is a test
+`(m+1)`-form and `v ∈ ℝᴾ`, then `ι_v β : z ↦ β(z).curryLeft v` is a test `m`-form: it is the
+continuous linear map `α ↦ α.curryLeft v` applied to the smooth `β`, and it vanishes wherever `β`
+does, so its support lies in the compact `tsupport β`. -/
+theorem Submission.dimred_cs_ti_const_contraction_isTestForm : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (v : Euclid P), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) v) := by
+  intro P m β v hβ
+  obtain ⟨hs, hc⟩ := hβ
+  refine ⟨?_, ?_⟩
+  · -- `z ↦ (curryLeftLI (β z)) v` is a smooth family of continuous linear maps applied to `v`
+    change ContDiff ℝ (⊤ : ℕ∞) (fun z => (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ)
+      (E := Euclid P) (F := ℝ) (n := m)).toContinuousLinearMap (β z) v)
+    exact (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+      (n := m)).toContinuousLinearMap.contDiff).comp hs).clm_apply contDiff_const
+  · -- `β z = 0` forces `β(z).curryLeft v = 0`, so the support stays inside `supp β`
+    refine hc.mono ?_
+    intro z hz
+    simp only [mem_support] at hz ⊢
+    intro h0
+    apply hz
+    rw [h0]
+    rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
