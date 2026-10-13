@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2b5e626e166267804abf6955298d2b4fe84656235153a4d91d1b1e12e0c4cd9a",
+  "git_delta": {
+    "base_commit": "922a0dd24e6fda0e1ecc3d608db041c56ea2a6bd",
+    "candidate_commit": "44468e259b770568c3b4e1a932d34426a850b47e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_ss_boundary_vanish_of_disjoint",
+    "diff_sha256": "3f6aaefb7196319b53a82ab65bec5192e1d2fe3d04c8d9b9af04fcb230d528dc",
+    "source_sha256": "2ded1ea9833192d25a36ea86e487fcfa7a785bb2023fcff1eb7614b6f9ca35b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_ss_boundary_vanish_of_disjoint",
+      "statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (S : Set (Euclid P)) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in S, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ θ : TestFormOn U k, Disjoint (tsupport (θ : DifferentialForm (Euclid P) k)) S → A.boundary θ = 0 ∧ B θ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
