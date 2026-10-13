@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1.rep_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1",
+  "depth": 5,
+  "title": "Where a current is k ≠ 0 times a relatively closed oriented C¹ submanifold, its support is that submanifold (parent step 6)",
+  "statement": "Support of a locally represented current. Data: P, m ∈ ℕ; U ⊆ ℝ^P; T ∈ 𝒟_m(U) (GeometricCurrentOn U m); W, M ⊆ ℝ^P; k ∈ ℤ; ξ : ℝ^P → Λ_m(ℝ^P) (MultiVector P m). Hypotheses: W is open and W ⊆ U; k ≠ 0; M is an embedded C¹ m-dimensional submanifold (IsEmbeddedSubmanifold 1 m M); ξ is an orientation of M (IsOrientation m M ξ); M is relatively closed in W (closure(M) ∩ W ⊆ M); H^m(M ∩ K) < ∞ for every compact K ⊆ W; and T(ω) = k ∫_M ⟨ω(x), ξ(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ W. Conclusion: spt T ∩ W = M ∩ W, where spt T = T.support = U ∖ T.zeroRegion and T.zeroRegion is the union of the open O with closure(O) compact and contained in U such that T(ω) = 0 whenever tsupport ω ⊆ O. Here H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (W M : Set (Euclid P)) (k : ℤ) (ξ : Euclid P → MultiVector P m), IsOpen W → W ⊆ U → k ≠ 0 → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → closure M ∩ W ⊆ M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ W → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → T.support ∩ W = M ∩ W",
+  "lean_name": "codim1_dolr_rep_support_inter",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.mass_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1-a1",
+      "result_commit": "e8842d90b78f15ebdbe728429ce98fccfaa6665c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.mass_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-mass-identity-a1-a1",
+      "result_commit": "5fcaddaa05c1f91fbc4bc02e501a16a8818b9724",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e5b05df4fc-a1"
+}

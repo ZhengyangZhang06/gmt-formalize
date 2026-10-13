@@ -1,0 +1,178 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1.rep_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent step 6 ("Support", parts 6a and 6b) of the supplied proof of codim1_density_one_regular_local_rep, written for an arbitrary open W ⊆ U and an arbitrary integer k ≠ 0. Book: Simon Ch. 6, 2.11 (spt T, chapter-06.txt lines 296–301), 2.5 (M_W(T), line 231); Simon 7.4.1 (T = m[[M]] near a regular point, chapter-07.txt lines 590–600).
+Departure from the parent text, stated explicitly. Part 1 below is the parent's step 6a. In step 6b the parent tested T with a bump form φ·L(ξ(w)) and used the positivity fact (F3), proved from a chart through bilipschitz_measure. Here part 2 uses the accepted mass_identity (the exact local mass |k|·H^m(M ∩ B), which the parent's handoff explicitly allowed child sessions to reuse once accepted) and derives positivity from the accepted density_one.
+
+Dependencies used (sibling subproblems; accepted declarations reused with their identical frozen types):
+- locally_closed (Submission.dimred_rpd_embedded_locally_closed): if IsEmbeddedSubmanifold r d M, then M is measurable and every y ∈ M has some ε > 0 with M ∩ closedBall(y, ε) compact.
+- density_one (Submission.dimred_rpd_submanifold_density_one): if IsEmbeddedSubmanifold 1 n M and z ∈ M, then H^n(M ∩ B_s(z))/(ω_n·ofReal(s^n)) → 1 in [0, ∞] as s → 0 within (0, ∞).
+- mass_identity (Submission.dimred_rpd_massOn_eq_mult_measure): let W be open with W ⊆ U, M measurable, ξ continuous on M with ξ(x) a unit orientation of some linear subspace for every x ∈ M (IsUnitOrientationOf), H^n(M ∩ W) < ∞, and T(ω) = m₀ ∫_M ⟨ω(x), ξ(x)⟩ dH^n(x) for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ W (m₀ ∈ ℤ). Then M_W(T) = T.massOn W = |m₀|·H^n(M ∩ W) in [0, ∞], |m₀| = m₀.natAbs.
+
+Notation. H^m := μHE[m]; B_s(x) := ball x s (open ball); ω_m := unitBallVolume m; ⟨ω(x), ξ(x)⟩ := ξ(x)(ω(x)); 𝒟^m(U) := TestFormOn U m (smooth compactly supported m-forms ω with tsupport ω ⊆ U). M_W(T) := T.massOn W = sup{ofReal(T(ω)) : ω ∈ 𝒟^m(U), tsupport ω ⊆ W, covectorEuclideanNorm(ω(x)) ≤ 1 for all x} (supremum in [0, ∞]). T vanishes on O (T.VanishesOn O) if T(ω) = 0 for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ O; T.zeroRegion is the union of all open O with closure(O) compact, closure(O) ⊆ U and T vanishing on O; spt T := T.support = U ∖ T.zeroRegion. IsOrientation m M ξ means: ξ is continuous on M, and for every x ∈ M there is a linear subspace Q with (Q : Set) = tangentSpace(M, x) and IsUnitOrientationOf (ξ(x)) Q.
+
+Proof. Fix the data and hypotheses of the statement: W open, W ⊆ U, k ≠ 0, IsEmbeddedSubmanifold 1 m M, IsOrientation m M ξ, closure(M) ∩ W ⊆ M, H^m(M ∩ K) < ∞ for compact K ⊆ W, and (R) T(ω) = k ∫_M ⟨ω(x), ξ(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ W.
+0. (Preliminaries.) By locally_closed (r = 1, d = m), M is measurable. By IsOrientation m M ξ, ξ is continuous on M and each ξ(x), x ∈ M, satisfies IsUnitOrientationOf (ξ(x)) Q for some subspace Q.
+1. (Inclusion spt T ∩ W ⊆ M ∩ W.) Let x ∈ spt T ∩ W, and suppose x ∉ M.
+ (1a) As x ∈ W and closure(M) ∩ W ⊆ M, we get x ∉ closure(M). The complement of closure(M) is open, so there is r₁ > 0 with B_{r₁}(x) ∩ closure(M) = ∅; in particular no point of M lies in B_{r₁}(x). As W is open and x ∈ W, there is r₂ > 0 with B_{r₂}(x) ⊆ W. Put r₀ := min(r₁, r₂), r := r₀/2 > 0 and O := B_r(x).
+ (1b) O is open. Its closure is closedBall(x, r) (closure of an open ball of positive radius in a normed space), which is compact because ℝ^P is proper, and closedBall(x, r) ⊆ B_{r₀}(x) ⊆ B_{r₂}(x) ⊆ W ⊆ U.
+ (1c) T vanishes on O. Let ω ∈ 𝒟^m(U) with tsupport ω ⊆ O. Then tsupport ω ⊆ closedBall(x, r) ⊆ B_{r₀}(x) ⊆ W, so (R) gives T(ω) = k ∫_M ⟨ω(z), ξ(z)⟩ dH^m(z). For every z ∈ M we have z ∉ B_{r₁}(x) ⊇ B_{r₀}(x) ⊇ tsupport ω, hence ω(z) = 0 and ⟨ω(z), ξ(z)⟩ = ξ(z)(0) = 0 because ξ(z) is linear. The integrand vanishes at every point of M, so the integral over M is 0 (setIntegral_eq_zero_of_forall_eq_zero), and T(ω) = k·0 = 0.
+ (1d) By (1b) and (1c), O is one of the sets whose union is T.zeroRegion, and x ∈ O. So x ∈ T.zeroRegion, contradicting x ∈ spt T = U ∖ T.zeroRegion. Hence x ∈ M, and x ∈ M ∩ W.
+2. (Inclusion M ∩ W ⊆ spt T ∩ W.) Let w ∈ M ∩ W. Then w ∈ U since W ⊆ U. Suppose, for a contradiction, that w ∈ T.zeroRegion: there is an open O with w ∈ O (and closure(O) compact, closure(O) ⊆ U) such that T(ω) = 0 for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ O.
+ (2a) O ∩ W is open and contains w, so there is r₁ > 0 with B_{r₁}(w) ⊆ O ∩ W. Put r := r₁/2 > 0 and B := B_r(w). Then closedBall(w, r) ⊆ B_{r₁}(w) ⊆ O ∩ W, and B ⊆ closedBall(w, r) ⊆ W.
+ (2b) (The mass of T on B vanishes.) M_B(T) is the supremum of ofReal(T(ω)) over ω ∈ 𝒟^m(U) with tsupport ω ⊆ B and covectorEuclideanNorm(ω(x)) ≤ 1 for all x. Each such ω has tsupport ω ⊆ B ⊆ O, so T(ω) = 0 and ofReal(T(ω)) = 0. A supremum of values all equal to 0 is ≤ 0, hence M_B(T) = 0.
+ (2c) (Mass identity on B.) Apply mass_identity with W := B, n := m, m₀ := k: B is open; B ⊆ W ⊆ U; M is measurable and ξ is continuous on M with unit orientations (step 0); H^m(M ∩ B) ≤ H^m(M ∩ closedBall(w, r)) < ∞ because closedBall(w, r) is compact and contained in W; and if ω ∈ 𝒟^m(U) with tsupport ω ⊆ B, then tsupport ω ⊆ W and (R) gives T(ω) = k ∫_M ⟨ω, ξ⟩ dH^m. Hence M_B(T) = |k|·H^m(M ∩ B).
+ (2d) (Positivity.) By density_one (n := m, z := w ∈ M), f(s) := H^m(M ∩ B_s(w))/(ω_m·ofReal(s^m)) → 1 as s → 0 within (0, ∞). Since 0 < 1, f(s) > 0 for all s in some member of that filter; also (0, r) belongs to it. The filter is non-trivial, so there is s ∈ (0, r) with f(s) > 0. If H^m(M ∩ B_s(w)) were 0, then f(s) = 0/(ω_m·ofReal(s^m)) = 0, a contradiction; so H^m(M ∩ B_s(w)) ≠ 0. As B_s(w) ⊆ B_r(w) = B, monotonicity gives H^m(M ∩ B) ≠ 0.
+ (2e) Since k ≠ 0, k.natAbs ≠ 0, so |k| ≠ 0 in [0, ∞]. With (2d), |k|·H^m(M ∩ B) ≠ 0 ([0, ∞] has no zero divisors). This contradicts (2b)–(2c). Therefore w ∉ T.zeroRegion, so w ∈ U ∖ T.zeroRegion = spt T, and w ∈ spt T ∩ W.
+3. (Conclusion.) Parts 1 and 2 give spt T ∩ W = M ∩ W. ∎
+
+Lean reference proof (verified). The declaration below was compiled with Lean v4.35.0-rc3 (Mathlib 25730c7c) against the workspace build of GMT.Ch07.Submission at b4d606db, after `import GMT.Ch07.Submission` with the contract's namespace GMT.Ch07 and `open`s; the dependencies locally_closed, density_one and mass_identity were stated as axioms with their exact frozen types (in the child worktree they are the accepted theorems). It exits 0 with no `sorry`, and `#print axioms` lists propext, Classical.choice, Quot.sound, Submission.dimred_rpd_embedded_locally_closed, Submission.dimred_rpd_massOn_eq_mult_measure and Submission.dimred_rpd_submanifold_density_one. It follows the numbered proof above.
+
+```lean
+theorem Submission.codim1_dolr_rep_support_inter : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (W M : Set (Euclid P)) (k : ℤ) (ξ : Euclid P → MultiVector P m), IsOpen W → W ⊆ U → k ≠ 0 → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → closure M ∩ W ⊆ M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ W → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → T.support ∩ W = M ∩ W := by
+  intro P m U T W M k ξ hW hWU hk hMemb hξ hcl hfin hrep
+  obtain ⟨hMmeas, -⟩ := Submission.dimred_rpd_embedded_locally_closed P 1 m M hMemb
+  have hunit : ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ x) Q := by
+    intro x hx
+    obtain ⟨Q, -, hQ⟩ := hξ.2 x hx
+    exact ⟨Q, hQ⟩
+  ext x
+  constructor
+  · rintro ⟨hxS, hxW⟩
+    refine ⟨?_, hxW⟩
+    by_contra hxM
+    have hxcl : x ∉ closure M := fun h => hxM (hcl ⟨h, hxW⟩)
+    obtain ⟨r₁, hr₁, hr₁s⟩ := Metric.isOpen_iff.mp isClosed_closure.isOpen_compl x hxcl
+    obtain ⟨r₂, hr₂, hr₂s⟩ := Metric.isOpen_iff.mp hW x hxW
+    have hr : 0 < min r₁ r₂ / 2 := half_pos (lt_min hr₁ hr₂)
+    have hcb : closedBall x (min r₁ r₂ / 2) ⊆ ball x (min r₁ r₂) :=
+      closedBall_subset_ball (half_lt_self (lt_min hr₁ hr₂))
+    have hb1 : ball x (min r₁ r₂) ⊆ ball x r₁ := ball_subset_ball (min_le_left _ _)
+    have hb2 : ball x (min r₁ r₂) ⊆ ball x r₂ := ball_subset_ball (min_le_right _ _)
+    apply hxS.2
+    refine Set.mem_sUnion.mpr ⟨ball x (min r₁ r₂ / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self hr⟩
+    · rw [closure_ball x hr.ne']
+      exact isCompact_closedBall x _
+    · rw [closure_ball x hr.ne']
+      exact hcb.trans (hb2.trans (hr₂s.trans hWU))
+    · intro ω hω
+      have hωb : tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball x (min r₁ r₂) :=
+        hω.trans (ball_subset_closedBall.trans hcb)
+      rw [hrep ω (hωb.trans (hb2.trans hr₂s)), setIntegral_eq_zero_of_forall_eq_zero, mul_zero]
+      intro z hz
+      have hz' : z ∉ tsupport (ω : DifferentialForm (Euclid P) m) := by
+        intro h
+        exact hr₁s (hb1 (hωb h)) (subset_closure hz)
+      rw [image_eq_zero_of_notMem_tsupport hz']
+      simp
+  · rintro ⟨hxM, hxW⟩
+    refine ⟨⟨hWU hxW, ?_⟩, hxW⟩
+    intro hz
+    obtain ⟨O, ⟨hO, -, -, hvan⟩, hxO⟩ := Set.mem_sUnion.mp hz
+    obtain ⟨r₁, hr₁, hr₁s⟩ := Metric.isOpen_iff.mp (hO.inter hW) x ⟨hxO, hxW⟩
+    have hr : 0 < r₁ / 2 := half_pos hr₁
+    have hcb : closedBall x (r₁ / 2) ⊆ O ∩ W :=
+      (closedBall_subset_ball (half_lt_self hr₁)).trans hr₁s
+    have hballW : ball x (r₁ / 2) ⊆ W := ball_subset_closedBall.trans (hcb.trans inter_subset_right)
+    have hzero : T.massOn (ball x (r₁ / 2)) = 0 := by
+      refine nonpos_iff_eq_zero.mp ?_
+      unfold GeometricCurrentOn.massOn
+      refine sSup_le ?_
+      rintro _ ⟨ω, hω, rfl⟩
+      dsimp only
+      rw [hvan ω (hω.1.trans (ball_subset_closedBall.trans (hcb.trans inter_subset_left)))]
+      simp
+    have hmass := Submission.dimred_rpd_massOn_eq_mult_measure P m U T M (ball x (r₁ / 2)) k ξ
+      isOpen_ball (hballW.trans hWU) hMmeas hξ.1 hunit
+      (ne_top_of_le_ne_top (hfin _ (isCompact_closedBall x _) (hcb.trans inter_subset_right))
+        (measure_mono (inter_subset_inter_right _ ball_subset_closedBall)))
+      (fun ω hω => hrep ω (hω.trans hballW))
+    have hpos : μHE[m] (M ∩ ball x (r₁ / 2)) ≠ 0 := by
+      have hlim := Submission.dimred_rpd_submanifold_density_one P m M x hMemb hxM
+      obtain ⟨s, hs1, hs2⟩ :=
+        ((hlim.eventually (lt_mem_nhds zero_lt_one)).and (Ioo_mem_nhdsGT hr)).exists
+      intro h0
+      have : μHE[m] (M ∩ ball x s) = 0 :=
+        measure_mono_null (inter_subset_inter_right _ (ball_subset_ball hs2.2.le)) h0
+      rw [this, ENNReal.zero_div] at hs1
+      exact lt_irrefl _ hs1
+    have hk' : (k.natAbs : ℝ≥0∞) ≠ 0 := by simpa using hk
+    rw [hmass] at hzero
+    exact mul_ne_zero hk' hpos hzero
+```
+
+## Key steps
+
+1. Points of W off M: relative closedness gives a ball B_r(x) whose closure is compact, lies in W ⊆ U and misses M; by the representation T vanishes on B_r(x), so x ∈ T.zeroRegion and x ∉ spt T.
+2. Points w of M ∩ W lie in U; if w ∈ T.zeroRegion, a small ball B with closure in O ∩ W has M_B(T) = 0 because every admissible form gives T(ω) = 0.
+3. mass_identity on B gives M_B(T) = |k|·H^m(M ∩ B) (finiteness from the compact closedBall(w, r) ⊆ W).
+4. density_one at w gives H^m(M ∩ B) > 0, and |k| ≥ 1, contradicting M_B(T) = 0; so w ∈ spt T.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, regularSet, HasMassDensity, unitBallVolume, MultiVector)`
+- `grep -n 'def support|def zeroRegion|isOpen_zeroRegion|VanishesOn|def massOn|massAdmissibleOn|structure GeometricCurrentOn|testFormOnSubmodule|abbrev Covector|def covectorEuclideanNorm' simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass,Forms}.lean`
+- `python3 scans of dag.json: lean_statement mentions IsEmbeddedSubmanifold, IsOrientation, regularSet, tangentSpace, support, massOn; children of regular_point_density-a1, simons_regular_cone-a1, imrep_mass_and_support-a1, cone_constant_density_planar-a1; status and candidate_commit of dimred_rpd_submanifold_density_one, dimred_rpd_massOn_eq_mult_measure, dimred_rpd_embedded_locally_closed, dimred_rpd_near_isometric_chart, dor_ims_unitOrientation_dual, chart_tangentSpace_eq_range_fderiv, dimred_rpd_bilipschitz_image_measure, dor_ims_support_of_massOn_eq, dimred_regular_point_density, idtp_ccd_regular_point_support, codim1_massOn_eq_lintegral_of_oriented_rep`
+- `grep -rln IsEmbeddedSubmanifold local-references/123e8435b4a2469b/project; grep -rn 'theorem.*inter_open|theorem.*tangentSpace_inter|theorem.*support_inter' local-references/123e8435b4a2469b/project; grep -rn 'theorem .*support.*rep|theorem .*mem_support' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `grep -rn 'setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_zero_of_forall_eq_zero|image_eq_zero_of_notMem_tsupport|IsOpen.closure_inter|ContinuousOn.isOpen_inter_preimage|HasDerivAt.scomp|ContDiffOn.comp|closure_ball|tendsto_nhds_unique|integral_const_mul' Mathlib`
+- `runtime.py _existing_lean_name_problem, _accepted_checkpoint, _solve_children, _install_parent_supplied_child_handoff, _overlay_accepted_children, _wait_for_accepted_dependencies; store.py ensure; models.py Subproblem/Decomposition; lean_contract.py validate_lean_statement`
+- `git for-each-ref --format='%(objectname)' | sort -u | xargs -n 100 sh -c 'git grep -l -E "codim1_dolr_(embedded_inter_open|rep_hasMassDensity|rep_support_inter)" "$@" -- GMT' _ (positive control: Submission.dimred_rpd_submanifold_density_one)`
+- `lean -DautoImplicit=false /tmp/dolr-split/check/Types2.lean, Children2.lean, Assembly2.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `book: chapter-02.txt 850-871; chapter-03.txt 290-316; chapter-06.txt 225-233 and 290-305; chapter-07.txt 588-600`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Neighborhoods.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Normed/Module/RCLike/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b47a776447/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-mass-identity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/models.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/dolr-split/check/Types2.lean`
+- `/tmp/dolr-split/check/Children2.lean`
+- `/tmp/dolr-split/check/Assembly2.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and the pinned Mathlib. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…). So the selected frozen type and the definitions it uses (regularSet, IsEmbeddedSubmanifold, tangentSpace, IsOrientation, HasMassDensity) are unchanged.
+Library.
+- SimonGMT Chapter06 defines T.support = U \ T.zeroRegion, where zeroRegion is the union of the open W with compact closure inside U on which T vanishes (CurrentLocalEquality.lean). It defines T.massOn W as a supremum of ofReal T(ω) over massAdmissibleOn (Mass.lean), and TestFormOn as the smooth compactly supported forms with tsupport in U (Currents.lean).
+- SimonGMT has no lemma relating the support or the mass to a local representation m[[M]]. The snapshot project has no embedded-submanifold lemmas beyond the contract definitions (no match).
+- The pinned Mathlib supplies every tool the child and glue proofs use (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, setIntegral_eq_zero_of_forall_eq_zero, image_eq_zero_of_notMem_tsupport, IsOpen.closure_inter, ContinuousOn.isOpen_inter_preimage, HasDerivAt.scomp, ContDiffOn.comp, closure_ball, tendsto_nhds_unique, ENNReal.Tendsto.const_mul).
+DAG.
+- The parent handoff listed dimred_rpd_submanifold_density_one and dimred_rpd_massOn_eq_mult_measure as unaccepted, reusable by child sessions once accepted. Both are now accepted (candidate commits e8842d90b78f and 5fcaddaa05c1), as is dimred_rpd_embedded_locally_closed (6da66b1edf6f). Their frozen types are copied byte-for-byte, so they are reused with no new DAG node (runtime _existing_lean_name_problem / _accepted_checkpoint).
+- idtp_ccd_regular_point_support and codim1_massOn_eq_lintegral_of_oriented_rep remain unaccepted in other branches and are not used.
+- The 3 new codim1_dolr_ names are free in dag.json (974 nodes), GMT/, SimonGMT and all 1734 ref tips (corrected git grep, positive control 6 hits).
+Lean.
+- Types2.lean elaborates all 6 child types (exit 0).
+- Assembly2.lean proves the selected frozen type from open_piece, rep_density, rep_support and locally_closed as axioms (exit 0; #print axioms: propext, Classical.choice, Quot.sound and those 4).
+- Children2.lean proves the 3 new children from the 3 accepted declarations, with no sorry (exit 0).
