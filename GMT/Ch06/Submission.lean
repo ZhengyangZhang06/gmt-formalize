@@ -359,6 +359,141 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
+`y ↦ ρ y`, `ρ > 0`: if `Q` is the approximate tangent space of `(M, θ)` at `x`, it is the
+approximate tangent space of `(ρ M, θ(ρ⁻¹ ·))` at `ρ x`.  The blow-up of `ρ M` at `ρ x` with
+ratio `s` is the blow-up of `M` at `x` with ratio `ρ⁻¹ s`, and `s ↦ ρ⁻¹ s` preserves `𝓝[>] 0`. -/
+theorem Submission.deformation_dilation_im_weightedTangent :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (x : Eucl N)
+      (Q : Submodule ℝ (Eucl N)), 0 < ρ → HasWeightedApproximateTangentSpaceAt k M θ x Q →
+        HasWeightedApproximateTangentSpaceAt k ((fun y : Eucl N => ρ • y) '' M)
+          (fun y : Eucl N => θ (ρ⁻¹ • y)) (ρ • x) Q := by
+  intro N k ρ M θ x Q hρ hQ
+  -- The new multiplicity at `ρ x` is `θ(x)`.
+  have hval : θ (ρ⁻¹ • ρ • x) = θ x := by rw [inv_smul_smul₀ hρ.ne']
+  -- Blow-ups of `ρ M` at `ρ x` with ratio `s` are blow-ups of `M` at `x` with ratio `ρ⁻¹ s`.
+  have hset : ∀ s : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap (ρ • x) s '' ((fun y : Eucl N => ρ • y) '' M) =
+        Poincare.SimonGMT.Chapter03.blowUpMap x (ρ⁻¹ * s) '' M := by
+    intro s
+    rw [Set.image_image]
+    refine Set.image_congr fun z _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+    rw [← smul_sub, smul_smul, mul_inv_rev, inv_inv]
+  have hweight : ∀ (s : ℝ) (u : Eucl N),
+      θ (ρ⁻¹ • (ρ • x + s • u)) = θ (x + (ρ⁻¹ * s) • u) := by
+    intro s u
+    rw [smul_add, inv_smul_smul₀ hρ.ne', smul_smul]
+  -- `s ↦ ρ⁻¹ s` maps `𝓝[>] 0` to itself.
+  have hlim : Tendsto (fun s : ℝ => ρ⁻¹ * s) (𝓝[>] 0) (𝓝[>] 0) := by
+    have h0 : Tendsto (fun s : ℝ => ρ⁻¹ * s) (𝓝 0) (𝓝 (ρ⁻¹ * 0)) :=
+      (continuous_const_mul ρ⁻¹).tendsto 0
+    rw [mul_zero] at h0
+    exact tendsto_nhdsWithin_iff.2 ⟨h0.mono_left nhdsWithin_le_nhds,
+      eventually_nhdsWithin_of_forall fun s hs => mul_pos (inv_pos.2 hρ) hs⟩
+  refine ⟨hQ.1, fun f => ?_⟩
+  show Tendsto _ _ (𝓝 (θ (ρ⁻¹ • ρ • x) * _))
+  rw [hval]
+  refine ((hQ.2 f).comp hlim).congr fun s => ?_
+  simp only [Function.comp_apply, hset, hweight]
+
+/-- Rectifiable triples are invariant under the dilation `φ(x) = ρ x`, `ρ > 0`:
+`(φ(M), θ ∘ φ⁻¹, ξ ∘ φ⁻¹)` is again a rectifiable triple, where `φ⁻¹(y) = ρ⁻¹ y`.
+`φ` is a measurable embedding pushing `c Hᵏ`, `c = ρᵏ`, forward to `Hᵏ`, so
+`Hᵏ(φ(S)) = c Hᵏ(S)` for every `S` and `Hᵏ ⌞ φ(M) = φ_#(c Hᵏ ⌞ M)`; an approximate tangent
+space of `(M, θ)` at `x` is one of `(φ(M), θ ∘ φ⁻¹)` at `φ(x)`. -/
+theorem Submission.deformation_dilation_im_rectifiableTriple :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k),
+      0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) →
+      MeasurePreserving (fun x : Eucl N => ρ • x)
+        (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) →
+      IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ →
+      IsRectifiableTriple (univ : Set (Eucl N)) k ((fun x : Eucl N => ρ • x) '' M)
+        (fun y : Eucl N => θ (ρ⁻¹ • y)) (fun y : Eucl N => ξ (ρ⁻¹ • y)) := by
+  intro N k ρ M θ ξ hρ hemb hmp hT
+  set φ : Eucl N → Eucl N := fun x => ρ • x
+  set c : ℝ≥0∞ := ENNReal.ofReal (ρ ^ k)
+  -- `ρ⁻¹ • φ(x) = x`, so `θ(ρ⁻¹ • ·) ∘ φ = θ` and `ξ(ρ⁻¹ • ·) ∘ φ = ξ`.
+  have hinv : ∀ x, ρ⁻¹ • φ x = x := fun x => inv_smul_smul₀ hρ.ne' x
+  -- `Hᵏ(φ(S)) = c Hᵏ(S)` for every `S`; in particular `φ` maps `Hᵏ`-null sets to null sets.
+  have hnull : ∀ S : Set (Eucl N), (μHE[k] : Measure (Eucl N)) S = 0 →
+      (μHE[k] : Measure (Eucl N)) (φ '' S) = 0 := by
+    intro S hS
+    rw [← hmp.map_eq, hemb.map_apply, preimage_image_eq _ hemb.injective, Measure.smul_apply, hS,
+      smul_zero]
+  -- `Hᵏ ⌞ φ(M) = φ_#(c Hᵏ ⌞ M)`.
+  have hres : MeasurePreserving φ (c • (μHE[k] : Measure (Eucl N)).restrict M)
+      ((μHE[k] : Measure (Eucl N)).restrict (φ '' M)) := by
+    rw [← Measure.restrict_smul]
+    exact hmp.restrict_image_emb hemb M
+  refine ⟨subset_univ _, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `φ(M) =ᵐ φ(B)` for the measurable hull `B` of `M`.
+    have hB := hT.nullMeasurableSet.toMeasurable_ae_eq
+    rw [ae_eq_set] at hB
+    refine (hemb.measurableSet_image.2
+      (measurableSet_toMeasurable (μHE[k] : Measure (Eucl N)) M)).nullMeasurableSet.congr ?_
+    rw [ae_eq_set, ← image_sdiff hemb.injective, ← image_sdiff hemb.injective]
+    exact ⟨hnull _ hB.1, hnull _ hB.2⟩
+  · -- `φ(M) ⊆ φ(M₀) ∪ ⋃ⱼ range (φ ∘ Fⱼ)` with `φ` Lipschitz.
+    obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hT.countablyRectifiable
+    have hφL : LipschitzWith ‖ρ‖₊ φ := LipschitzWith.of_dist_le_mul fun a b => by
+      show dist (ρ • a) (ρ • b) ≤ ‖ρ‖₊ * dist a b
+      rw [dist_smul₀, coe_nnnorm]
+    refine ⟨φ '' M₀, hnull M₀ hM₀, fun j => φ ∘ F j, fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖ρ‖₊ * K, hφL.comp hK⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      rcases hMF hy with hy₀ | hy₁
+      · exact Or.inl (mem_image_of_mem φ hy₀)
+      · obtain ⟨j, w, rfl⟩ := mem_iUnion.1 hy₁
+        exact Or.inr (mem_iUnion.2 ⟨j, w, rfl⟩)
+  · rintro _ ⟨y, hy, rfl⟩
+    show 0 < θ (ρ⁻¹ • φ y)
+    rw [hinv]
+    exact hT.pos y hy
+  · -- `φ(M) ∩ K = φ(M ∩ φ⁻¹(K))` with `φ⁻¹(K)` compact, and `φ_#(c Hᵏ) = Hᵏ`.
+    intro K hK _
+    have hK' : IsCompact (φ ⁻¹' K) :=
+      (Homeomorph.smulOfNeZero ρ hρ.ne').isCompact_preimage.2 hK
+    have hθ : (fun y => θ (ρ⁻¹ • y)) ∘ φ = θ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← image_inter_preimage, hmp.integrableOn_image hemb, hθ, IntegrableOn,
+      Measure.restrict_smul]
+    exact Integrable.smul_measure (hT.integrableOn _ hK' (subset_univ _)) ENNReal.ofReal_ne_top
+  · have hξ : (fun y => ξ (ρ⁻¹ • y)) ∘ φ = ξ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← hres.map_eq, hemb.aestronglyMeasurable_map_iff, hξ]
+    exact hT.aestronglyMeasurable.smul_measure c
+  · -- At `φ(x)` the frame `τ` of `(M, θ, ξ)` at `x` still orients `(φ(M), θ', ξ')`.
+    rw [← hres.map_eq, hemb.ae_map_iff]
+    filter_upwards [Measure.ae_smul_measure hT.orients c] with y hy
+    obtain ⟨τ, hτ, htan, hξy⟩ := hy
+    refine ⟨τ, hτ, Submission.deformation_dilation_im_weightedTangent N k ρ M θ y _ hρ htan, ?_⟩
+    show ξ (ρ⁻¹ • φ y) = _ ∨ ξ (ρ⁻¹ • φ y) = _
+    rw [hinv]
+    exact hξy
+/-- `τ(M, θ, ξ)` tested against `x ↦ ρᵏ ω(ρx)` equals `τ(φ(M), θ ∘ φ⁻¹, ξ ∘ φ⁻¹)` tested against
+`ω`, `φ(x) = ρx`, `ρ > 0`, when `φ` is a measurable embedding pushing `ρᵏ Hᵏ` forward to `Hᵏ`:
+change variables and pull `ρᵏ` out of the linear `ξ(x)`. -/
+theorem Submission.deformation_dilation_im_tauAction :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k)
+      (ω : DifferentialForm (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) →
+      MeasurePreserving (fun x : Eucl N => ρ • x)
+        (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) →
+      tauAction k M θ ξ (fun x : Eucl N => ρ ^ k • ω (ρ • x)) =
+        tauAction k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y))
+          (fun y : Eucl N => ξ (ρ⁻¹ • y)) ω := by
+  intro N k ρ M θ ξ ω hρ hemb hmp
+  -- Change variables `y = ρx` on the right: `∫_{φ(M)} g dHᵏ = ∫_M g ∘ φ d(ρᵏ Hᵏ)`.
+  simp only [tauAction]
+  rw [hmp.setIntegral_image_emb hemb (fun y => θ (ρ⁻¹ • y) * ξ (ρ⁻¹ • y) (ω y)) M,
+    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+    smul_eq_mul, ← integral_const_mul]
+  -- Pointwise, `ρ⁻¹ • ρx = x`, and `ξ(x)` is linear.
+  congr 1
+  funext x
+  simp only [inv_smul_smul₀ hρ.ne', map_smul, smul_eq_mul]
+  ring
 /-- Dilation calculus on `ℝ^N` for `η_ρ(x) = ρ x`, `ρ > 0` (Simon Ch. 6, 2.23, 2.24(1) and
 §1, 1.14): `η_ρ^# ω = ρ^k ω(ρ ·)` is a test form; every current `X` has the push-forward
 `Y = X ∘ η_ρ^#`, i.e. `Y(ω) = X(η_ρ^# ω)`; and push-forward commutes with `∂`, because
@@ -575,6 +710,25 @@ theorem Submission.deformation_dilation_support : ∀ (N : ℕ) (ρ : ℝ), 0 < 
     (Homeomorph.smulOfNeZero ρ hρ.ne').bijective
   rw [GeometricCurrentOn.support, GeometricCurrentOn.support, ← compl_eq_univ_sdiff,
     ← compl_eq_univ_sdiff, hzero, image_compl_eq hbij]
+/-- Dilation preserves integer multiplicity (Simon Ch. 6, 2.23 and Lemma 3.9 for the dilation
+`η_ρ(x) = ρx`, `ρ > 0`): if `X = τ(M, θ, ξ)` is integer multiplicity and `Y(ω) = X(η)` whenever
+`η(x) = ρᵏ ω(ρx)`, then `Y = τ(ρM, θ(ρ⁻¹ ·), ξ(ρ⁻¹ ·))` with natural-valued `θ(ρ⁻¹ ·)`. -/
+theorem Submission.deformation_dilation_integer_multiplicity : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y := by
+  intro N ρ hρ k X Y hXY hX
+  obtain ⟨M, θ, ξ, hT, hθ, hrep⟩ := hX
+  -- `φ(x) = ρ • x` is a measurable embedding pushing `ρᵏ Hᵏ` forward to `Hᵏ`.
+  obtain ⟨hemb, hmp⟩ := Submission.deformation_dilation_hausdorff N k ρ hρ
+  refine ⟨(fun x : Eucl N => ρ • x) '' M, fun y => θ (ρ⁻¹ • y), fun y => ξ (ρ⁻¹ • y),
+    Submission.deformation_dilation_im_rectifiableTriple N k ρ M θ ξ hρ hemb hmp hT, ?_, ?_⟩
+  · -- The multiplicity at `ρ • x` is `θ(ρ⁻¹ • ρ • x) = θ x ∈ ℕ`.
+    rintro _ ⟨x, hx, rfl⟩
+    simpa only [inv_smul_smul₀ hρ.ne'] using hθ x hx
+  · -- `Y ω = X η = τ(M, θ, ξ)(η) = τ(ρM, θ(ρ⁻¹ ·), ξ(ρ⁻¹ ·))(ω)` for the pull-back `η = ρᵏ ω(ρ ·)`.
+    intro ω
+    obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N ρ hρ k).1 ω
+    rw [hXY ω η hη, hrep η, show (η : DifferentialForm (Eucl N) k) =
+      fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x) from funext hη]
+    exact Submission.deformation_dilation_im_tauAction N k ρ M θ ξ ω hρ hemb hmp
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

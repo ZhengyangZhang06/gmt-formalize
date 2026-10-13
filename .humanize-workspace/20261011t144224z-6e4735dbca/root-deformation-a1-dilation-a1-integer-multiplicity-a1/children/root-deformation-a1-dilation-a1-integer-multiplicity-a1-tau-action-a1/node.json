@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1.tau_action-a1",
+  "parent_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1",
+  "depth": 4,
+  "title": "Change of variables for τ(M, θ, ξ) under a dilation",
+  "statement": "Let N, k ∈ ℕ, let ρ ∈ ℝ with ρ > 0, M ⊆ ℝ^N, θ : ℝ^N → ℝ, ξ : ℝ^N → NVector(ℝ^N, k), and let ω be any k-form on ℝ^N (DifferentialForm (Eucl N) k, with no regularity or support assumption). Put φ(x) := ρ • x, μ := μHE[k] and c := ENNReal.ofReal(ρ^k). Assume (H1) φ is a measurable embedding and (H2) φ is measure preserving from c • μ to μ. Then τ(M, θ, ξ) tested against x ↦ ρ^k ω(ρx) equals τ(φ(M), θ(ρ⁻¹·), ξ(ρ⁻¹·)) tested against ω: tauAction k M θ ξ (fun x => ρ ^ k • ω (ρ • x)) = tauAction k ((fun x => ρ • x) '' M) (fun y => θ (ρ⁻¹ • y)) (fun y => ξ (ρ⁻¹ • y)) ω. Here tauAction k S ϑ ζ α = ∫_{x ∈ S} ϑ(x)·ζ(x)(α(x)) dμ is a Bochner set integral, equal to 0 when the integrand is not integrable.",
+  "lean_statement": "∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k) (ω : DifferentialForm (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) → MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) → tauAction k M θ ξ (fun x : Eucl N => ρ ^ k • ω (ρ • x)) = tauAction k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y)) (fun y : Eucl N => ξ (ρ⁻¹ • y)) ω",
+  "lean_name": "deformation_dilation_im_tauAction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-dilation-a1-integer-multiplicity-a1-tau-action-a1-a1"
+}
