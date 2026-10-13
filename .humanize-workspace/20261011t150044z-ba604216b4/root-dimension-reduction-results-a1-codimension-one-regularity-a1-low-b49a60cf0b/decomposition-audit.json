@@ -1,0 +1,46 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dorag_|codim1_ldr' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "norm_sq_eq_of_L2|continuous_apply|instance.*completeSpace|theorem cauchySeq_of_le_geometric|dist_le_of_le_geometric_of_tendsto|isStarProjection_iff_eq_starProjection_range|theorem IsProj.trace|trace_eq_sum_inner|lintegral_add_left.|lintegral_add_right|setLIntegral_const|lintegral_const_mul.|AEStronglyMeasurable.restrict",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git show e3de3d35c7b0dfe1f1c365afca4657511e52ded8:GMT/Ch07/Submission.lean",
+        "git show d59b6e0460b148aa59761f2f5f46e76aa535be26:GMT/Ch07/Submission.lean",
+        "python3 /tmp/ted-independent-audit-arl6rb8s/prepare.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-b49a60cf0b/parent-child-handoff.json",
+        "/tmp/ted-independent-audit-arl6rb8s/Types.lean",
+        "/tmp/ted-independent-audit-arl6rb8s/Combined.lean",
+        "/tmp/ted-independent-audit-arl6rb8s/AssemblyContracts.lean"
+      ],
+      "conclusion": "Project and mathlib revisions match the snapshot pins. The project search found no dorag_ or codim1_ldr declarations. The inspected library supplies the completeness, projection, trace and lower-integral facts used in the proofs. Both child types independently elaborate as propositions in comparator scope. Each name has exactly one existing owner, an accepted declaration with a byte-identical frozen and candidate type; both recorded isolated comparators passed. Fresh compilation of their accepted proofs reports only propext, Classical.choice and Quot.sound. Fresh compilation of the exact selected parent from the two child contracts and three frozen sibling contracts succeeds with precisely those dependencies and no sorryAx. The relevant dependency closure is acyclic. The split appropriately isolates the limit-plane and integral-comparison obligations, and their conclusions establish the selected parent through its supplied iteration and interpolation argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "planes_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently elaborated one-line type. The proof derives a ≥ 0, obtains geometric convergence in the complete Hilbert–Schmidt product, constructs the limit operator, proves idempotence using uniform contractivity, and proves self-adjointness and rank preservation through trace. Squaring the geometric tail estimate gives exactly 4·a·q^j, including q = 0 and zero-dimensional cases. No missing assumption or circular reliance occurs. The bare name validly reuses the identical comparator-accepted declaration at e3de3d35. This supplies the selected parent's Step 4."
+    },
+    {
+      "key": "hs_integral_compare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line type agree on both inequalities, including arbitrary μ and arbitrary s. The proof correctly establishes the pointwise squared-norm inequalities, transfers AE strong measurability to μ.restrict s, and applies lower-integral additivity and finite scalar extraction. A constant summand suffices for additivity in (ii); neither measurable s nor finite integrals nor σ-finiteness is needed. The operator constructions have the stated continuous-linear-map types. The proof is complete and non-circular. The bare name validly reuses the identical comparator-accepted declaration at d59b6e04 and supplies the selected parent's integral comparisons in Steps 2 and 5."
+    }
+  ],
+  "required_changes": []
+}
