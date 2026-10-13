@@ -1910,6 +1910,84 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **A `0`-dimensional current minimizing in `A` with `spt T ⊆ A` vanishes** (Simon 7.1.1 with
+Ch. 6, 3.1).  Write `T = τ(M, θ, ξ)` and suppose `x₀ ∈ M`.  As `H⁰{x₀} = 1`,
+`μ_T(B_s(x₀)) ≥ θ(x₀) ≥ 1` for every `s > 0`, so `x₀ ∈ spt T ⊆ A`; as `M` is finite on compact
+subsets of `U`, some ball `W = B_ε(x₀) ⊂⊂ U` meets `M` only in `x₀`.  Deleting `x₀` gives the
+integer multiplicity current `S = T − X`, `X(ω) = θ(x₀)⟨ω(x₀), ξ(x₀)⟩`, with
+`spt(S − T) ⊆ spt X ⊆ {x₀} ⊆ A ∩ W` (and `∂S = ∂T`, the degree being `0`).  Minimality gives
+`1 ≤ θ(x₀) ≤ μ_T(W) = M_W(T) ≤ M_W(S) = μ_S(W) = 0`, which is absurd; so `M = ∅` and `T = 0`. -/
+theorem Submission.dimred_zero_dim_minimizing_eq_zero : ∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → T = 0 := by
+  intro P U A T hU hmin hspt
+  obtain ⟨R, hR⟩ := hmin.1
+  obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P 0 U T R hU hR
+  -- it suffices that the carrier `M` is empty: then `T(ω) = ∫_∅ θ⟨ω, ξ⟩ dH⁰ = 0`
+  suffices hM : R.carrier = ∅ by
+    ext ω
+    rw [hR ω, GeometricCurrentOn.zero_apply, IMRep.action, hM, setIntegral_empty]
+  by_contra hne
+  obtain ⟨x₀, hx₀⟩ := nonempty_iff_ne_empty.2 hne
+  have hx₀U : x₀ ∈ U := R.carrier_subset hx₀
+  -- `μ_T(V) ≥ μ_T{x₀} = θ(x₀) H⁰{x₀} = θ(x₀) ≥ 1` whenever `x₀ ∈ V`
+  have hμ : ∀ V : Set (Euclid P), x₀ ∈ V → 1 ≤ R.measure V := by
+    intro V hV
+    have hθ : R.measure {x₀} = R.mult x₀ := by
+      rw [IMRep.measure, withDensity_apply _ (measurableSet_singleton x₀), lintegral_singleton,
+        Measure.restrict_apply (measurableSet_singleton x₀), singleton_inter_of_mem hx₀,
+        Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, mul_one]
+    calc (1 : ℝ≥0∞) ≤ R.mult x₀ := Nat.one_le_cast.2 (R.mult_pos x₀ hx₀)
+      _ = R.measure {x₀} := hθ.symm
+      _ ≤ R.measure V := measure_mono (singleton_subset_iff.2 hV)
+  -- `x₀ ∈ spt T ⊆ A`, by `im_mass_measure` (b)
+  have hx₀A : x₀ ∈ A := hspt ((hsupp x₀ hx₀U).2 fun s hs =>
+    (one_pos.trans_le (hμ _ (mem_ball_self hs))).ne')
+  -- `M ∩ B̄_r(x₀)` is finite (`B̄_r(x₀) ⊆ U`), so a ball `B_ε(x₀)`, `ε ≤ r`, meets `M` only in `x₀`
+  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU x₀ hx₀U
+  have hKU : closedBall x₀ (r₀ / 2) ⊆ U := (closedBall_subset_ball (half_lt_self hr₀)).trans hr₀U
+  have hF : IsClosed ((R.carrier ∩ closedBall x₀ (r₀ / 2)) \ {x₀}) :=
+    (Submission.dimred_zdv_carrier_finite P U _ R (isCompact_closedBall x₀ _) hKU).sdiff.isClosed
+  obtain ⟨δ, hδ, hδF⟩ := Metric.isOpen_iff.1 hF.isOpen_compl x₀ fun h => h.2 (mem_singleton x₀)
+  have hε : 0 < min δ (r₀ / 2) := lt_min hδ (half_pos hr₀)
+  have hMW : ∀ y ∈ R.carrier, y ∈ ball x₀ (min δ (r₀ / 2)) → y = x₀ := fun y hy hyW => by
+    by_contra hyx
+    exact hδF (ball_subset_ball (min_le_left _ _) hyW)
+      ⟨⟨hy, ball_subset_closedBall (ball_subset_ball (min_le_right _ _) hyW)⟩, hyx⟩
+  -- `W = B_ε(x₀)` is open, and `closure W ⊆ B̄_r(x₀)` is compact and contained in `U`
+  have hWK : closure (ball x₀ (min δ (r₀ / 2))) ⊆ closedBall x₀ (r₀ / 2) :=
+    closure_ball_subset_closedBall.trans (closedBall_subset_closedBall (min_le_right _ _))
+  have hWU : ball x₀ (min δ (r₀ / 2)) ⊆ U := subset_closure.trans (hWK.trans hKU)
+  have hWcc : CompactlyContained (ball x₀ (min δ (r₀ / 2))) U :=
+    ⟨(isCompact_closedBall x₀ _).of_isClosed_subset isClosed_closure hWK, hWK.trans hKU⟩
+  -- the competitor `S = T − X`, `X(ω) = θ(x₀)⟨ω(x₀), ξ(x₀)⟩`, is represented by `(M ∖ {x₀}, θ, ξ)`
+  obtain ⟨R', hR'M, -, -, hR'⟩ := Submission.dimred_zdv_erase_point P U R x₀ hx₀
+  obtain ⟨X, hX, hXspt⟩ :=
+    Submission.dimred_zdv_point_current P 0 U x₀ ((R.mult x₀ : ℝ) • R.orient x₀) hU
+  have hS : R'.Represents (T - X) := fun ω => by
+    show T ω - X ω = _
+    rw [hR ω, hR' ω, hX ω, smul_apply, smul_eq_mul, add_sub_cancel_right]
+  -- `S − T = −X` vanishes wherever `X` does, so `spt(S − T) ⊆ spt X ⊆ {x₀} ⊆ A ∩ W`
+  have hST : (T - X - T).support ⊆ {x₀} := by
+    rintro y ⟨hyU, hyZ⟩
+    refine hXspt ⟨hyU, fun hyX => hyZ ?_⟩
+    obtain ⟨V, ⟨hVo, hVc, hVU, hXV⟩, hyV⟩ := hyX
+    refine mem_sUnion_of_mem hyV ⟨hVo, hVc, hVU, fun ω hω => ?_⟩
+    show T ω - X ω - T ω = 0
+    rw [hXV ω hω, sub_zero, sub_self]
+  have hle := hmin.2 (ball x₀ (min δ (r₀ / 2))) (T - X) isOpen_ball hWcc ⟨R', hS⟩ trivial
+    ((finite_singleton x₀).subset hST).isCompact
+    (hST.trans (singleton_subset_iff.2 ⟨hx₀A, mem_ball_self hε⟩))
+  -- `M_W(S) = μ_S(W) = 0`, as `(M ∖ {x₀}) ∩ W = ∅`
+  have hS0 : R'.measure (ball x₀ (min δ (r₀ / 2))) = 0 := by
+    have hempty : ball x₀ (min δ (r₀ / 2)) ∩ R'.carrier = ∅ := by
+      rw [hR'M]
+      exact eq_empty_of_forall_notMem fun y hy => hy.2.2 (hMW y hy.2.1 hy.1)
+    rw [IMRep.measure, withDensity_apply _ isOpen_ball.measurableSet,
+      Measure.restrict_restrict isOpen_ball.measurableSet, hempty, Measure.restrict_empty,
+      lintegral_zero_measure]
+  have h1 := (hμ _ (mem_ball_self hε)).trans ((hmass _ isOpen_ball hWU).symm.le.trans hle)
+  rw [(Submission.dimred_im_mass_measure P 0 U (T - X) R' hU hS).1 _ isOpen_ball hWU, hS0] at h1
+  exact absurd h1 (not_le.2 zero_lt_one)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
