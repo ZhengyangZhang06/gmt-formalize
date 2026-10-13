@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.restrict_eq_of_smooth_test-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1",
+  "depth": 6,
+  "title": "Finite measures with equal integrals of smooth test functions supported in U agree on U",
+  "statement": "Let n ∈ ℕ, let U ⊆ ℝⁿ be open, and let μ, ν be finite Borel measures on ℝⁿ. Suppose ∫ b dμ = ∫ b dν for every b : ℝⁿ → ℝ that is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), has compact support and satisfies tsupport b ⊆ U. Then the restrictions agree: μ⌞U = ν⌞U (μ.restrict U = ν.restrict U).",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (μ ν : Measure (Euclid n)), IsOpen U → IsFiniteMeasure μ → IsFiniteMeasure ν → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y, b y ∂μ = ∫ y, b y ∂ν) → μ.restrict U = ν.restrict U",
+  "lean_name": "cbr_ci_pw_noi_restrict_eq_of_smooth_test",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.smooth_cutoff_seq-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.smooth_cutoff_seq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c690f007e0-a1"
+}

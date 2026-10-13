@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem exists_contDiff_support_eq_eq_one_iff",
+        "cthickening_subset_thickening.|IsCompact.cthickening|closure_thickening_subset_cthickening|self_subset_cthickening|exists_cthickening_subset_open",
+        "theorem tendsto_integral_of_dominated_convergence",
+        "theorem ext_of_generate_finite",
+        "theorem integral_withDensity_eq_integral_toReal_smul₀",
+        "theorem isFiniteMeasure_withDensity_ofReal",
+        "theorem integral_eq_lintegral_pos_part_sub_lintegral_neg_part|theorem integral_map |theorem integral_add_measure|theorem integral_eq_zero_iff_of_nonneg_ae",
+        "theorem measure_toMeasurable_inter_of_sFinite",
+        "cbr_ci_pw_noi_smooth_cutoff_seq|cbr_ci_pw_noi_restrict_eq_of_smooth_test|cbr_ci_pw_noi_setIntegral_eq_preimage",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/noi-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/noi-independent-audit/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c27abc1fef/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c27abc1fef/decomposition-v1.json",
+        "/tmp/noi-decomp/Full.lean",
+        "/tmp/noi-independent-audit/Types.lean",
+        "/tmp/noi-independent-audit/Proofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, unchanged contract, handoff identity and requested digest. The library results support the supplied arguments. All three names are bare identifiers, with no reservations found in the current DAG. Each frozen statement passes validation and independently elaborates as a one-line proposition before any child declaration exists. The supplied appendices and exact parent assembly independently compile without sorry, using only propext, Classical.choice and Quot.sound. Euclidean-space and measure instances elaborate correctly; no matrix-unit construction occurs. The split is appropriate: its dependency chain is acyclic, follows the supplied proof, and establishes the selected parent's exact outer-measure inequality."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_cutoff_seq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, with every hypothesis explicit. The compact exhaustion, positive-radius thickenings and smooth Urysohn construction establish compact support, support containment, range bounds and pointwise convergence, including empty and full open sets. The complete proof uses no child or parent theorem."
+    },
+    {
+      "key": "restrict_eq_of_smooth_test",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree for arbitrary finite Borel measures. The proof uses only its declared cutoff dependency. Dominated convergence gives equality of real masses on O ∩ U; finiteness permits conversion to measure equality, and generating-open-set uniqueness proves equality of restrictions. No carried-by-U hypothesis or circular reliance is hidden."
+    },
+    {
+      "key": "setintegral_eq_preimage",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Measurable q suffices, and integrability makes all four weighted measures finite without finiteness of σ. The proof correctly handles a.e.-measurable densities, bounded test products, its declared uniqueness dependency and finite-value cancellation. The resulting set-integral identity, measurable representative and measurable-hull argument establish the exact selected parent statement without assuming A or q '' A measurable."
+    }
+  ],
+  "required_changes": []
+}

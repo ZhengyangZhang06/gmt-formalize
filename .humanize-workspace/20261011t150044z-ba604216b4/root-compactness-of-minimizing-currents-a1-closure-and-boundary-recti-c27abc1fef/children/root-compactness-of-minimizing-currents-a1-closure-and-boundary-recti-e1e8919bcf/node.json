@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.setintegral_eq_preimage-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1",
+  "depth": 6,
+  "title": "A smooth-test identity between a density and a pushed-forward measure holds on Borel subsets of U",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝⁿ open, u : ℝⁿ → ℝ Lebesgue integrable on U, σ a (Borel) measure on ℝ^P, q : ℝ^P → ℝⁿ measurable and h : ℝ^P → ℝ σ-integrable. Assume ∫_U b(y)u(y)dy = ∫ b(q(x))h(x)dσ(x) for every C^∞ (ContDiff ℝ (⊤ : ℕ∞)) compactly supported b : ℝⁿ → ℝ with tsupport b ⊆ U. Then ∫_B u(y)dy = ∫_{q⁻¹(B)} h(x)dσ(x) for every measurable B ⊆ U.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid n)) (u : Euclid n → ℝ) (σ : Measure (Euclid P)) (q : Euclid P → Euclid n) (h : Euclid P → ℝ), IsOpen U → Measurable q → IntegrableOn u U → Integrable h σ → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y in U, b y * u y = ∫ x, b (q x) * h x ∂σ) → ∀ B : Set (Euclid n), MeasurableSet B → B ⊆ U → ∫ y in B, u y = ∫ x in q ⁻¹' B, h x ∂σ",
+  "lean_name": "cbr_ci_pw_noi_setIntegral_eq_preimage",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.restrict_eq_of_smooth_test-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.restrict_eq_of_smooth_test-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e1e8919bcf-a1"
+}

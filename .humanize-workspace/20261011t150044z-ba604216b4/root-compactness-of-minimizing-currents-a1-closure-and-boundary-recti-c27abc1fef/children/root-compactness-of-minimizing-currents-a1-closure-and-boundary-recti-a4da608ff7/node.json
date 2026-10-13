@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1.smooth_cutoff_seq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1",
+  "depth": 6,
+  "title": "Smooth compactly supported cutoffs converging pointwise to the indicator of an open set",
+  "statement": "Let n ∈ ℕ and let V ⊆ ℝⁿ (= Euclid n) be open. Then there is a sequence (b_j)_{j∈ℕ} of functions b_j : ℝⁿ → ℝ with the following properties. For every j, b_j is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), b_j has compact support, tsupport b_j ⊆ V, and 0 ≤ b_j(y) ≤ 1 for all y. For every y ∈ ℝⁿ, b_j(y) → 1_V(y) as j → ∞, where 1_V is the indicator function of V.",
+  "lean_statement": "∀ (n : ℕ) (V : Set (Euclid n)), IsOpen V → ∃ b : ℕ → Euclid n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (b j)) ∧ (∀ j, HasCompactSupport (b j)) ∧ (∀ j, tsupport (b j) ⊆ V) ∧ (∀ j y, 0 ≤ b j y ∧ b j y ≤ 1) ∧ ∀ y, Tendsto (fun j => b j y) atTop (𝓝 (V.indicator (fun _ => (1 : ℝ)) y))",
+  "lean_name": "cbr_ci_pw_noi_smooth_cutoff_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a4da608ff7-a1"
+}
