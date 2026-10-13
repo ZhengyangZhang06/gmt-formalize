@@ -458,6 +458,75 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, p. 123 (smooth dependence of `p_{T G(f)}` on `Df`): the orthogonal projection
+`Π(A)` onto the graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is a `C²` function of `A ∈ L(ℝⁿ, ℝ^ℓ)`
+(operator norms).  With `Φ = finAddEquivProd⁻¹ : ℝⁿ × ℝ^ℓ → ℝ^{n+ℓ}`, `ι = Φ ∘ inl` and
+`κ = Φ ∘ inr` we have `graphPoint x y = ι x + κ y`, so `J_A = ι + κ ∘ A` parametrizes `Γ_A`.  For
+the transpose `τ` of `allard52_gps_transpose_exists`, `allard52_gps_starProjection_eq_gram` gives
+`Π(A) = J_A (τ(J_A) J_A)⁻¹ τ(J_A)` with `τ(J_A) J_A` a unit.  `A ↦ J_A` is affine, `τ` is
+continuous linear, operator composition is bounded bilinear and `Ring.inverse` is `C²` at every
+unit (`contDiffAt_ringInverse`), so this formula is `C²` in `A`. -/
+theorem allard52_gps_contDiff : ∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) := by
+  intro n ℓ
+  -- Step 1: `graphPoint x y = Φ (x, y) = ι x + κ y`.
+  let Φ : (Rn n × Rn ℓ) ≃L[ℝ] Amb n ℓ :=
+    (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm
+  let ι : Rn n →L[ℝ] Amb n ℓ :=
+    (Φ : (Rn n × Rn ℓ) →L[ℝ] Amb n ℓ).comp (ContinuousLinearMap.inl ℝ (Rn n) (Rn ℓ))
+  let κ : Rn ℓ →L[ℝ] Amb n ℓ :=
+    (Φ : (Rn n × Rn ℓ) →L[ℝ] Amb n ℓ).comp (ContinuousLinearMap.inr ℝ (Rn n) (Rn ℓ))
+  have hΦ : ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y = Φ (x, y) := by
+    intro x y
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp [graphPoint, Φ]
+    · simp [graphPoint, Φ]
+  have hgp : ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y = ι x + κ y := by
+    intro x y
+    have hxy : ((x, y) : Rn n × Rn ℓ) = (x, 0) + (0, y) := by simp
+    rw [hΦ, hxy, map_add]
+    rfl
+  -- Step 2: the transpose `τ`, for `m = n + ℓ` (`Amb n ℓ` is `Rn (n + ℓ)`).
+  obtain ⟨τ, hτ⟩ := Submission.allard52_gps_transpose_exists n (n + ℓ)
+  -- Step 3: the parametrization `J_A = ι + κ ∘ A` of `Γ_A`, and `T_A = τ(J_A)`.
+  let J : (Rn n →L[ℝ] Rn ℓ) → (Rn n →L[ℝ] Amb n ℓ) := fun A => ι + κ.comp A
+  let T : (Rn n →L[ℝ] Rn ℓ) → (Amb n ℓ →L[ℝ] Rn n) := fun A => τ (J A)
+  have hJ : ∀ (A : Rn n →L[ℝ] Rn ℓ) (v : Rn n), J A v = graphPoint v (A v) := by
+    intro A v
+    rw [hgp]
+    rfl
+  -- Step 4: `Π(A) = J_A (T_A J_A)⁻¹ T_A` with `T_A J_A` a unit, by the Gram projection child.
+  have hP : ∀ A : Rn n →L[ℝ] Rn ℓ, IsUnit (T A ∘L J A) ∧
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection =
+        J A ∘L Ring.inverse (T A ∘L J A) ∘L T A :=
+    fun A => Submission.allard52_gps_starProjection_eq_gram n ℓ A (J A) (T A) (hJ A)
+      (fun w v => hτ (J A) w v)
+  -- Step 5: `A ↦ J_A`, `A ↦ T_A` and `A ↦ G_A = T_A J_A` are `C²`.
+  have hJc : ContDiff ℝ 2 J := contDiff_const.add (contDiff_const.clm_comp contDiff_id)
+  have hTc : ContDiff ℝ 2 T := τ.contDiff.comp hJc
+  have hGc : ContDiff ℝ 2 fun A => T A ∘L J A := hTc.clm_comp hJc
+  -- Step 6: `A ↦ G_A⁻¹` is `C²`, since `Ring.inverse` is `C²` at the unit `G_A`.
+  have hIc : ContDiff ℝ 2 fun A => Ring.inverse (T A ∘L J A) := by
+    rw [contDiff_iff_contDiffAt]
+    intro A
+    obtain ⟨u, hu⟩ := (hP A).1
+    have h := contDiffAt_ringInverse ℝ (n := 2) u
+    rw [hu] at h
+    exact h.comp A hGc.contDiffAt
+  -- Step 7: `F(A) = J_A (G_A⁻¹ T_A)` is `C²`, and `Π = F`.
+  have hF : ContDiff ℝ 2 fun A => J A ∘L Ring.inverse (T A ∘L J A) ∘L T A :=
+    hJc.clm_comp (hIc.clm_comp hTc)
+  have hPF : (fun A : Rn n →L[ℝ] Rn ℓ =>
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) =
+        fun A => J A ∘L Ring.inverse (T A ∘L J A) ∘L T A :=
+    funext fun A => (hP A).2
+  rw [hPF]
+  exact hF
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
