@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Continuity of the mollification** (the "`w` is continuous" step of the BV estimate): if `u`
+is integrable on `S ⊆ ℝⁿ` and `φ` is continuous with compact support, then
+`x ↦ ∫_S u(y) φ(x - y) dy` is continuous.  `φ` is bounded, `|φ| ≤ K`, so for every `x` the
+integrand is dominated by the `x`-independent integrable function `|u| K`, and it is continuous in
+`x` for every `y`; conclude by `continuous_of_dominated`. -/
+theorem Submission.cbr_ci_pw_bv_mollify_continuous : ∀ (n : ℕ) (S : Set (Euclid n)) (φ u : Euclid n → ℝ), IntegrableOn u S → Continuous φ → HasCompactSupport φ → Continuous (fun x => ∫ y in S, u y * φ (x - y)) := by
+  intro n S φ u hu hφ hφc
+  -- `|φ| ≤ K`: `φ` is continuous with compact support
+  obtain ⟨K, hK⟩ := hφ.bounded_above_of_compact_support hφc
+  -- dominated continuity of parametric integrals, with the dominant `|u| K` integrable on `S`
+  refine continuous_of_dominated (bound := fun y => ‖u y‖ * K) (fun x => ?_) (fun x => ?_)
+    (hu.norm.mul_const K) (Eventually.of_forall fun y => ?_)
+  · -- measurability in `y`: `u` is a.e.-strongly measurable on `S`, `y ↦ φ (x - y)` is continuous
+    exact hu.aestronglyMeasurable.mul
+      (hφ.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+  · -- domination: `|u y φ (x - y)| ≤ |u y| K`
+    exact Eventually.of_forall fun y => by
+      rw [norm_mul]; exact mul_le_mul_of_nonneg_left (hK _) (norm_nonneg _)
+  · -- continuity in `x` for each fixed `y`
+    exact continuous_const.mul (hφ.comp (continuous_id.sub continuous_const))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

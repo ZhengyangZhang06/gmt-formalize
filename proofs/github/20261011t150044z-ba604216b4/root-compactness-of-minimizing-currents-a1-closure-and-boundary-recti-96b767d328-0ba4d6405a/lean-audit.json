@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b8aa776178585ce4deae9164a2d657159f31e752bbbfa6255ced01f6f6008a53",
+  "git_delta": {
+    "base_commit": "e9e712f1d56f68a583ca6150ca2616ef7edf16a5",
+    "candidate_commit": "7c37bcf9a72e81927d53078cfae6e2c3ac92c617",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_bv_mollify_continuous",
+    "diff_sha256": "7bde0467352bdb8ce83a373a19258a7c950e231bb362c73defaedc22a90c93b8",
+    "source_sha256": "cc8a21cedbfc32ffca858979a5c1244f2e726b93198b00c116eedebbe670f81c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_bv_mollify_continuous",
+      "statement": "∀ (n : ℕ) (S : Set (Euclid n)) (φ u : Euclid n → ℝ), IntegrableOn u S → Continuous φ → HasCompactSupport φ → Continuous (fun x => ∫ y in S, u y * φ (x - y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
