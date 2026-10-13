@@ -484,17 +484,6 @@ theorem allard52_am_cc_cutoff_integral_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Meas
   obtain ⟨C₀, hC₀⟩ : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → |φ u| ≤ C := by
     obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
       hφc.continuousOn
-/-- Integrability of a continuous radial profile vanishing beyond `T` (the integrability parts (a)
-and (b) of `ted_lpm_fcm_cutoff_mass_hasDerivAt`): if `μ(B_S(y)) < ∞`, `g` is continuous with
-`g = 0` on `(T, ∞)`, `t > 0` and `T t < S`, then `x ↦ g(‖x − y‖/t)` is `μ`-integrable.
-It is bounded by `K = max(max_{[0,T]} |g|, 0)`, hence integrable on `B_S(y)`, and it vanishes off
-`B_S(y)`, where `‖x − y‖/t > S/t > T`. -/
-theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ := by
-  intro n ℓ μ y g S T t hμ hg hg0 ht htS
-  -- Step 1: `|g u| ≤ K` for `u ≥ 0`.
-  obtain ⟨K, hK⟩ : ∃ K : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ K := by
-    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
-      hg.continuousOn
     refine ⟨max C 0, fun u hu => ?_⟩
     rcases le_or_gt u T with h | h
     · have h' := hC u ⟨hu, h⟩
@@ -591,6 +580,27 @@ theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb
   · refine Eventually.of_forall fun x s hs => ?_
     have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
     exact (hderiv ‖x - y‖ s hs0.ne').mul_const (f x)
+
+end Submission
+
+namespace Submission
+
+/-- Integrability of a continuous radial profile vanishing beyond `T` (the integrability parts (a)
+and (b) of `ted_lpm_fcm_cutoff_mass_hasDerivAt`): if `μ(B_S(y)) < ∞`, `g` is continuous with
+`g = 0` on `(T, ∞)`, `t > 0` and `T t < S`, then `x ↦ g(‖x − y‖/t)` is `μ`-integrable.
+It is bounded by `K = max(max_{[0,T]} |g|, 0)`, hence integrable on `B_S(y)`, and it vanishes off
+`B_S(y)`, where `‖x − y‖/t > S/t > T`. -/
+theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ := by
+  intro n ℓ μ y g S T t hμ hg hg0 ht htS
+  -- Step 1: `|g u| ≤ K` for `u ≥ 0`.
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ K := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hg.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
     · rw [hg0 u h, abs_zero]
       exact le_max_right _ _
   -- Step 2: `x ↦ g(‖x − y‖/t)` is continuous, hence a.e.-strongly measurable.
@@ -610,6 +620,8 @@ theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb
 
 end Submission
 
+namespace Submission
+
 /-- Derivative of the radial cutoff mass `I(s) = ∫ φ(‖x − y‖/s) dμ` (Simon Ch. 4, 4.3), together
 with the integrability of its two radial profiles: if `μ(B_S(y)) < ∞`, `φ` is `C¹` with `φ = 0` on
 `[T, ∞)`, `T > 0`, `t > 0` and `T t < S`, then `φ(‖x − y‖/t)` and `(‖x − y‖/t) φ'(‖x − y‖/t)` are
@@ -618,7 +630,7 @@ with the integrability of its two radial profiles: if `μ(B_S(y)) < ∞`, `φ` i
 `ted_lpm_fcm_cmd_radial_integrable` gives both integrability statements; the derivative is the
 weight-`1` case of `allard52_am_cc_cutoff_integral_hasDerivAt`, as `1` is integrable on the
 finite-measure ball `B_S(y)`. -/
-theorem Submission.ted_lpm_fcm_cutoff_mass_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → μ (closedBall y S) < ⊤ → ContDiff ℝ 1 φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → Integrable (fun x => φ (‖x - y‖ / t)) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t := by
+theorem ted_lpm_fcm_cutoff_mass_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → μ (closedBall y S) < ⊤ → ContDiff ℝ 1 φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → Integrable (fun x => φ (‖x - y‖ / t)) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t := by
   intro n ℓ μ y φ S T t hT hμ hφ hφ0 ht htS
   -- `φ' = 0` on `(T, ∞)`: near each such point `φ` is the zero function.
   have hdzero : ∀ u, T < u → deriv φ u = 0 := fun u hu => by
@@ -628,15 +640,17 @@ theorem Submission.ted_lpm_fcm_cutoff_mass_hasDerivAt : ∀ (n ℓ : ℕ) (μ : 
     exact h.deriv_eq.trans (deriv_const u 0)
   refine ⟨?_, ?_, ?_⟩
   -- (a): the continuous profile `φ` vanishes on `(T, ∞)`.
-  · exact Submission.ted_lpm_fcm_cmd_radial_integrable n ℓ μ y φ S T t hμ hφ.continuous
+  · exact ted_lpm_fcm_cmd_radial_integrable n ℓ μ y φ S T t hμ hφ.continuous
       (fun u hu => hφ0 u hu.le) ht htS
   -- (b): so does the continuous profile `u ↦ u φ'(u)`.
-  · exact Submission.ted_lpm_fcm_cmd_radial_integrable n ℓ μ y (fun u => u * deriv φ u) S T t hμ
+  · exact ted_lpm_fcm_cmd_radial_integrable n ℓ μ y (fun u => u * deriv φ u) S T t hμ
       (continuous_id.mul hφ.continuous_deriv_one) (fun u hu => by simp only [hdzero u hu, mul_zero])
       ht htS
   -- (c): the weighted cutoff derivative with weight `1`.
-  · simpa only [mul_one] using Submission.allard52_am_cc_cutoff_integral_hasDerivAt n ℓ μ y
+  · simpa only [mul_one] using allard52_am_cc_cutoff_integral_hasDerivAt n ℓ μ y
       (fun _ => 1) φ S T t (integrableOn_const hμ.ne) hφ hT hφ0 ht htS
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
