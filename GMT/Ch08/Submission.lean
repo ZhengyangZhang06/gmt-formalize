@@ -5525,6 +5525,65 @@ theorem Submission.intcpt_lipschitz_graph_fibre_bound :
           (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂μ :=
         mul_le_mul_right (lintegral_mono hfib) C
 
+/-- **Flat limits of integral varifolds have integer multiplicity** (Simon Ch. 8, 5.9, the printed
+proof "that `V` is integer multiplicity if the `V_i` are", pp. 218–219, with the repaired step B6;
+child `flat_limit_integer` of `integral_compactness`).  Let `W_k` be integral `n`-varifolds on
+`B°_5(0)` with locally bounded first variation, `‖δW_k‖(B°_5(0)) → 0` and `W_k → θ₀ v(P)` as Radon
+measures on `B°_5(0) × G(N,n)`, where `θ₀ > 0`.  Then `θ₀ ∈ ℕ`.  For `n = 0` the weights are sums of
+integer point masses (`intcpt_fli_dim_zero_integer`).  For `n ≥ 1` let `k₀ = ⌊θ₀⌋`, so
+`θ₀ < k₀ + 1`; the flat claim (`intcpt_fli_flat_claim`, fed with Allard's lemma 5.10, the integer
+densities of Remark 5.9, the canonical representation, the Lipschitz-graph fibre bound and the
+tangent-graph cover) gives `I₀ > 0` with `θ₀ I₀ ≤ c₀ δ⁴ + (1 + (4 δ⁴ / ω_n)²)^{n/2} k₀ I₀` for all
+small `δ > 0`.  Letting `δ ↓ 0` gives `θ₀ ≤ k₀ ≤ θ₀`. -/
+theorem Submission.intcpt_flat_limit_integer_multiplicity :
+    AllardRectifiabilityTheorem → FirstRectifiabilityTheorem → MonotonicityFormula → (∀ (N n : ℕ) (L : ℝ), 0 < L → L ≤ 1 → ∀ (U : Set (Euclidean N)) (V : Varifold N n U) (P : Grassmannian N n), ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i) → ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ k, (W k).HasLocallyBoundedFirstVariation) → Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ m : ℕ, θ₀ = m := by
+  intro hAllard hFirst hMF hTGC N n P θ₀ W hθ₀ hint hbfv hvar hconv
+  -- Step 1: for `n = 0` the weights are sums of integer point masses.
+  obtain rfl | hn := Nat.eq_zero_or_pos n
+  · exact Submission.intcpt_fli_dim_zero_integer N P θ₀ W hθ₀ hint hconv
+  -- Steps 2–11: for `n ≥ 1` the flat claim gives `δ̄ > 0` and `I₀ > 0` with
+  -- `θ₀ I₀ ≤ c₀ δ⁴ + (1 + (4 δ⁴ / ω_n)²)^{n/2} k₀ I₀` for every admissible `δ` and `k₀`.
+  obtain ⟨δbar, c₀, I₀, hδbar, -, hI₀, hclaim⟩ :=
+    Submission.intcpt_fli_flat_claim (Submission.intcpt_allard_integrality_lemma hMF)
+      Submission.intcpt_integral_density_integer
+      (Submission.intcpt_canonical_tangent_representation hAllard hFirst)
+      Submission.intcpt_lipschitz_graph_fibre_bound hTGC N n P θ₀ W hn hθ₀ hint hbfv hvar hconv
+  -- Step 12: `k₀ = ⌊θ₀⌋` satisfies `k₀ ≤ θ₀ < k₀ + 1`, and it remains to show `θ₀ ≤ k₀`.
+  refine ⟨⌊θ₀⌋₊, le_antisymm ?_ (Nat.floor_le hθ₀.le)⟩
+  set k₀ : ℕ := ⌊θ₀⌋₊
+  have hk₀ : θ₀ < k₀ + 1 := Nat.lt_floor_add_one θ₀
+  have hω : 0 < (unitBallVolume n).toReal :=
+    ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  -- As `δ ↓ 0` the right-hand side of the claim tends to `k₀ I₀` (`rpow` is continuous at the
+  -- base `1`) ...
+  have hF : Tendsto (fun δ : ℝ ↦ c₀ * δ ^ 4 +
+      (1 + (4 * δ ^ 4 / (unitBallVolume n).toReal) ^ 2) ^ ((n : ℝ) / 2) * k₀ * I₀)
+      (𝓝[>] 0) (𝓝 (k₀ * I₀)) := by
+    have hcont : Continuous fun δ : ℝ ↦ c₀ * δ ^ 4 +
+        (1 + (4 * δ ^ 4 / (unitBallVolume n).toReal) ^ 2) ^ ((n : ℝ) / 2) * k₀ * I₀ := by
+      refine (continuous_const.mul (continuous_pow 4)).add
+        (((Continuous.rpow_const (by fun_prop) fun _ ↦ Or.inr ?_).mul continuous_const).mul
+          continuous_const)
+      positivity
+    simpa using tendsto_nhdsWithin_of_tendsto_nhds (hcont.tendsto 0)
+  -- ... while every small `δ > 0` is admissible: `δ ≤ δ̄`, `(1 + δ)(θ₀ + δ) + δ < k₀ + 1` and
+  -- `4 δ⁴ ≤ ω_n`.
+  have hG : Tendsto (fun δ : ℝ ↦ (1 + δ) * (θ₀ + δ) + δ) (𝓝 0) (𝓝 θ₀) := by
+    have h : Continuous fun δ : ℝ ↦ (1 + δ) * (θ₀ + δ) + δ := by fun_prop
+    simpa using h.tendsto 0
+  have h4 : Tendsto (fun δ : ℝ ↦ 4 * δ ^ 4) (𝓝 0) (𝓝 0) := by
+    have h : Continuous fun δ : ℝ ↦ 4 * δ ^ 4 := by fun_prop
+    simpa using h.tendsto 0
+  have hev : ∀ᶠ δ in 𝓝[>] (0 : ℝ), θ₀ * I₀ ≤ c₀ * δ ^ 4 +
+      (1 + (4 * δ ^ 4 / (unitBallVolume n).toReal) ^ 2) ^ ((n : ℝ) / 2) * k₀ * I₀ := by
+    have e₁ : ∀ᶠ δ in 𝓝[>] (0 : ℝ), (1 + δ) * (θ₀ + δ) + δ < k₀ + 1 :=
+      nhdsWithin_le_nhds (hG.eventually_lt_const hk₀)
+    have e₂ : ∀ᶠ δ in 𝓝[>] (0 : ℝ), 4 * δ ^ 4 < (unitBallVolume n).toReal :=
+      nhdsWithin_le_nhds (h4.eventually_lt_const hω)
+    filter_upwards [Ioo_mem_nhdsGT hδbar, e₁, e₂] with δ hδ h₁ h₂
+    exact hclaim δ k₀ hδ.1 hδ.2.le h₁ h₂.le
+  exact le_of_mul_le_mul_right (ge_of_tendsto hF hev) hI₀
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
