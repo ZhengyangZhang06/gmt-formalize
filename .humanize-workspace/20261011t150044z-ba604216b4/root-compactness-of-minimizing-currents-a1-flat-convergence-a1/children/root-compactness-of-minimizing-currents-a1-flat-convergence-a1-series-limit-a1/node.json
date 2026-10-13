@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1",
+  "depth": 3,
+  "title": "Summing a flat-Cauchy subsequence against its weak limit (Simon Ch. 6, 7.2, with 3.13 replaced by the closure theorem)",
+  "statement": "Assume the following two propositions. (CL) [the first conjunct of the frozen statement of the sibling declaration cmc_closure_and_boundary_rectifiability] For all P, d ∈ ℕ, every open U ⊆ ℝ^P and T_j, T ∈ 𝒟_d(U): if every T_j is IM, sup_j (M_V(T_j) + M_V(∂T_j)) < ∞ for every open V with closure(V) compact and contained in U (the ∂-mass read as 0 when d = 0, contract boundaryMassOn), and T_j ⇀ T in U, then T is IM. (IS) [conjunct (c) of the frozen statement of cmc_imRep_locality_restrict_sub] For all P, n ∈ ℕ, every open U ⊆ ℝ^P and IM A, B ∈ 𝒟_n(U), the current A − B is IM. Let P, m ∈ ℕ, let U ⊆ ℝ^P be open, let X_r, X_lim ∈ 𝒟_{m+1}(U) (r ∈ ℕ) with X_r ⇀ X_lim in U, let Λ ∈ [0, ∞) with M(X_r) ≤ Λ and M(∂X_r) ≤ Λ for every r, and let R_r ∈ 𝒟_{m+2}(U), S_r ∈ 𝒟_{m+1}(U) be integer multiplicity with X_{r+1} − X_r − S_r = ∂R_r and M(R_r) + M(S_r) ≤ 2^{−r} for every r. Then for every ℓ ∈ ℕ there are integer multiplicity R' ∈ 𝒟_{m+2}(U), S' ∈ 𝒟_{m+1}(U) with X_lim − X_ℓ − S' = ∂R' and M(R') + M(S') ≤ 2·2^{−ℓ} (in [0, ∞]). Conventions: 𝒟_d(U) is the space of d-currents in U (SimonGMT GeometricCurrentOn U d) and 𝒟^d(U) the test d-forms in U (TestFormOn U d: smooth forms on ℝ^P with compact support contained in U); |α| is the Euclidean coefficient norm of a covector (covectorEuclideanNorm); M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (such ω are called admissible for M_G), and M(X) = X.mass = M_U(X) for X ∈ 𝒟_d(U); spt is the support of Simon 6.2.11 (GeometricCurrentOn.support); IM means integer multiplicity (contract IsIntegerMultiplicity), an IMRep R = (M, θ, ξ) is the contract structure IMRep with R.measure = θ·Hⁿ⌞M, R.action(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ (⟨ω, ξ⟩ := ξ(x)(ω(x))) and R represents X when X(ω) = R.action(ω) for all test forms ω; subtraction of currents is the contract instance Sub; X ⇀ Y is WeaklyConvergesOn.",
+  "lean_statement": "(∀ (P d : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)) (Xlim : GeometricCurrentOn U (m + 1)) (Λ : NNReal) (R : ℕ → GeometricCurrentOn U (m + 2)) (S : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → WeaklyConvergesOn X Xlim → (∀ r, (X r).mass ≤ Λ ∧ (X r).boundary.mass ≤ Λ) → (∀ r, IsIntegerMultiplicity (R r) ∧ IsIntegerMultiplicity (S r) ∧ X (r + 1) - X r - S r = (R r).boundary ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → ∀ ℓ : ℕ, ∃ (R' : GeometricCurrentOn U (m + 2)) (S' : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ Xlim - X ℓ - S' = R'.boundary ∧ R'.mass + S'.mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ",
+  "lean_name": "cmc_fc_series_limit",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-limit-a1-a1"
+}

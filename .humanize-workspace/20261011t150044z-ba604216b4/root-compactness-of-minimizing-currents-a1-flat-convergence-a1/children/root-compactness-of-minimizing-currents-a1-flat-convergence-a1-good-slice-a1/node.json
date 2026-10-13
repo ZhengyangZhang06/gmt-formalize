@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1",
+  "depth": 3,
+  "title": "Choice of a good slicing level for a mass-bounded sequence of measures on ℝ",
+  "statement": "Let μ_j (j ∈ ℕ) be Borel measures on ℝ, let a < b be real numbers and let Λ ∈ [0, ∞) with μ_j([a, b]) ≤ Λ for every j. Then there are s ∈ ℝ with a < s < b, a strictly increasing φ : ℕ → ℕ and C ∈ [0, ∞) such that (i) for every j, liminf_{h→0+} ENNReal.ofReal(h⁻¹)·μ_{φ(j)}((s − h, s)) ≤ C (limit inferior in [0, ∞] along h → 0 with h > 0, i.e. along 𝓝[>] 0); and (ii) for every ε ∈ (0, ∞] there is δ > 0 such that μ_{φ(j)}([s − δ, s]) ≤ ε for all sufficiently large j.",
+  "lean_statement": "∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (s : ℝ) (φ : ℕ → ℕ) (C : ℝ≥0∞), a < s ∧ s < b ∧ StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (φ j) (Ioo (s - h) s)) (𝓝[>] 0) ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε",
+  "lean_name": "cmc_fc_good_slice",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-slice-a1-a1"
+}
