@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.plane_subsequence_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "Compactness of n-planes: a subsequence of n-dimensional subspaces converges to the span of an orthonormal n-frame, with a uniform projection estimate",
+  "statement": "For all P, n ∈ ℕ and every sequence (Q_j)_{j∈ℕ} of linear subspaces of ℝ^P = Euclid P with dim Q_j = n (Module.finrank ℝ Q_j = n) for every j, there are a strictly increasing js : ℕ → ℕ, an orthonormal family τ = (τ_1, …, τ_n) in ℝ^P (Orthonormal ℝ τ, τ : Fin n → Euclid P) and real numbers κ_i (i ∈ ℕ) with κ_i → 0 such that, writing p_V := V.starProjection for the orthogonal projection onto a subspace V and Q := span{τ_1, …, τ_n}, |p_{Q_{js(i)}}(u) − p_Q(u)| ≤ κ_i·|u| for every i ∈ ℕ and every u ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (Qs : ℕ → Submodule ℝ (Euclid P)), (∀ j, Module.finrank ℝ (Qs j) = n) → ∃ (js : ℕ → ℕ) (τ : Fin n → Euclid P) (κ : ℕ → ℝ), StrictMono js ∧ Orthonormal ℝ τ ∧ Tendsto κ atTop (𝓝 0) ∧ ∀ (i : ℕ) (u : Euclid P), ‖(Qs (js i)).starProjection u - (Submodule.span ℝ (Set.range τ)).starProjection u‖ ≤ κ i * ‖u‖",
+  "lean_name": "idtp_tpf_plane_subseq_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-05aee7df87-a1"
+}

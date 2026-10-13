@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_domain_eventually-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "Blow-up domains η_{x,λ_i}(U) eventually contain every bounded set",
+  "statement": "For every P ∈ ℕ, every open U ⊆ ℝ^P = Euclid P, every x ∈ U, every sequence (λ_i)_{i∈ℕ} of reals with λ_i > 0 for all i and λ_i → 0, and every bounded set K ⊆ ℝ^P (Bornology.IsBounded K): for all sufficiently large i, K ⊆ η_{x,λ_i}(U), where η_{x,λ}(y) = λ^{−1}(y − x) is Simon's dilation (Lean dilation x λ y = −(λ⁻¹ • x) + λ⁻¹ • y), i.e. ∀ᶠ i in atTop, K ⊆ dilation x (λ_i) '' U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U",
+  "lean_name": "idtp_tpf_blowUp_domain_eventually",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ef3b26ef10-a1"
+}

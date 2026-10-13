@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.cone_support_dilation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "The support of a cone current is invariant under positive dilations",
+  "statement": "For all P, n ∈ ℕ and every C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, ℝ^P = Euclid P) that is a cone (IsConeCurrent C: currentEval(η_{0,λ#}C, ω) = C(ω) for every λ > 0 and every ω ∈ 𝒟^n(ℝ^P), where η_{0,λ#}C = blowUp C 0 λ): for every λ > 0 and every v ∈ spt C, also λv ∈ spt C (spt as in Simon 6.2.11, GeometricCurrentOn.support).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ lam : ℝ, 0 < lam → ∀ v ∈ C.support, lam • v ∈ C.support",
+  "lean_name": "idtp_tpf_cone_support_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7184bdb614-a1"
+}
