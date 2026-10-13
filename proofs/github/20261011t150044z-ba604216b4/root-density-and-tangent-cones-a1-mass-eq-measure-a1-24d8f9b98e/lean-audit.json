@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "381c852fa66eb4ca6ff1812ad32fafed3ea0a7e48c3d2fc29651861ad49cfe0b",
+  "git_delta": {
+    "base_commit": "a69c2754dcffa58d857141e82c9b59c62717e88f",
+    "candidate_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7d8fe9b6e2427503793ef9bfa530f494855de75ed663a750e4264f868a1a53f2",
+    "source_sha256": "6b7201527dbca4f18ef3a6d0b2b0284f9940ce0847ca98fd7f1b4784aca1f208",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_mass_eq_measure",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsOpen W → W ⊆ U → R.Represents T → T.massOn W = R.measure W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
