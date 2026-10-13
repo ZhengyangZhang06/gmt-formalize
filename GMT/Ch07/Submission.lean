@@ -451,6 +451,209 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, proof of Lemma 5.4** (centres of faces and radial retractions).  For the face
+`F = {y : b_k ≤ y_k ≤ b_k + 1 (k ∈ J), y_i = b_i (i ∉ J)}` with centre `a_F`,
+`(a_F)_k = b_k + a_k` (`|a_k − 1/2| < 1/4`), let
+`N(y) = max_{k ∈ J} max((y_k − b_k − a_k)/(1 − a_k), (b_k + a_k − y_k)/a_k)` be the gauge of
+`y − a_F` and `ψ_F(y) = a_F + (y − a_F)/N(y)`.  For `x ∈ F \ {a_F}`: `|x_k − b_k − a_k| ≤ N(x)`
+(`k ∈ J`), `0 < N(x) ≤ 1`, `ψ_F(x) ∈ ∂F`, `ψ_F(x) = x` if `x ∈ ∂F`, and
+`|ψ_F(y) − ψ_F(x)| ≤ (1 + 4√|J|)/N(x) · |y − x|` for `y ∈ F \ {a_F}`, because `N` is
+`4`-Lipschitz and `|y − a_F| ≤ √|J| N(y)`. -/
+theorem Submission.cmcdtsr_face_radial : ∀ (P : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty) (ψF : Euclid P → Euclid P), (∀ y : Euclid P, ∀ i, ψF y i = if i ∈ J then (b i : ℝ) + a i + (y i - b i - a i) / J.sup' hJ (fun k => max ((y k - b k - a k) / (1 - a k)) ((b k + a k - y k) / a k)) else y i) → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → (∃ i ∈ J, x i ≠ b i + a i) → (∀ k ∈ J, |x k - b k - a k| ≤ J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k))) ∧ 0 < J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) ∧ J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) ≤ 1 ∧ (∀ i, (i ∈ J → (b i : ℝ) ≤ ψF x i ∧ ψF x i ≤ b i + 1) ∧ (i ∉ J → ψF x i = b i)) ∧ (∃ i ∈ J, ψF x i = b i ∨ ψF x i = b i + 1) ∧ ((∃ i ∈ J, x i = b i ∨ x i = b i + 1) → ψF x = x) ∧ ∀ y : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ y i ∧ y i ≤ b i + 1) ∧ (i ∉ J → y i = b i)) → (∃ i ∈ J, y i ≠ b i + a i) → dist (ψF y) (ψF x) ≤ (1 + 4 * Real.sqrt J.card) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) * dist y x := by
+  intro P a ha b J hJ ψF hψ x hx hne
+  -- the gauge `N(u)` of `u − a_F`, kept opaque
+  obtain ⟨N, hN⟩ : ∃ N : Euclid P → ℝ, ∀ u : Euclid P,
+      J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)) = N u :=
+    ⟨fun u => J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)),
+      fun _ => rfl⟩
+  have hψN : ∀ u : Euclid P, ∀ i, ψF u i =
+      if i ∈ J then (b i : ℝ) + a i + (u i - b i - a i) / N u else u i := by
+    intro u i
+    rw [hψ u i, hN u]
+  rw [hN x]
+  -- step 0: `1/4 < a_k < 3/4`
+  have ha' : ∀ i, 1 / 4 < a i ∧ a i < 3 / 4 := by
+    intro i
+    have := abs_lt.mp (ha i)
+    constructor <;> linarith [this.1, this.2]
+  -- `N(u)` dominates each of its terms, and is the largest term
+  have hterm : ∀ u : Euclid P, ∀ k ∈ J,
+      max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k) ≤ N u := by
+    intro u k hk
+    rw [← hN u]
+    exact Finset.le_sup' (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)) hk
+  -- step 1: `|u_k − b_k − a_k| ≤ N(u)` for `k ∈ J`
+  have habs : ∀ u : Euclid P, ∀ k ∈ J, |u k - b k - a k| ≤ N u := by
+    intro u k hk
+    obtain ⟨h1, h2⟩ := ha' k
+    refine le_trans ?_ (hterm u k hk)
+    rcases le_or_gt 0 (u k - b k - a k) with ht | ht
+    · rw [abs_of_nonneg ht]
+      apply le_max_of_le_left
+      rw [le_div_iff₀ (by linarith)]
+      nlinarith [mul_nonneg ht (by linarith : (0 : ℝ) ≤ a k)]
+    · rw [abs_of_neg ht]
+      apply le_max_of_le_right
+      rw [le_div_iff₀ (by linarith)]
+      nlinarith [mul_pos (neg_pos.mpr ht) (by linarith : (0 : ℝ) < 1 - a k)]
+  -- step 2: `N ≤ 1` on `F`, and `N > 0` off the centre
+  have hle1 : ∀ u : Euclid P,
+      (∀ i, (i ∈ J → (b i : ℝ) ≤ u i ∧ u i ≤ b i + 1) ∧ (i ∉ J → u i = b i)) → N u ≤ 1 := by
+    intro u hu
+    rw [← hN u]
+    refine Finset.sup'_le hJ _ (fun k hk => ?_)
+    obtain ⟨h1, h2⟩ := ha' k
+    obtain ⟨hu1, hu2⟩ := (hu k).1 hk
+    apply max_le
+    · rw [div_le_one (by linarith)]; linarith
+    · rw [div_le_one (by linarith)]; linarith
+  have hpos : ∀ u : Euclid P, (∃ i ∈ J, u i ≠ b i + a i) → 0 < N u := by
+    rintro u ⟨i, hi, hui⟩
+    have h0 : u i - b i - a i ≠ 0 := fun h => hui (by linarith)
+    exact (abs_pos.mpr h0).trans_le (habs u i hi)
+  have hNx := hpos x hne
+  refine ⟨habs x, hNx, hle1 x hx, ?_, ?_, ?_, ?_⟩
+  · -- step 3: `ψ_F(x) ∈ F`
+    intro i
+    refine ⟨fun hi => ?_, fun hi => ?_⟩
+    · rw [hψN x i, ite_eq_left hi]
+      obtain ⟨h1, h2⟩ := ha' i
+      have hq := hterm x i hi
+      have hp1 := (le_max_left _ _).trans hq
+      have hp2 := (le_max_right _ _).trans hq
+      rw [div_le_iff₀ (by linarith)] at hp1 hp2
+      have e1 : -(a i) ≤ (x i - b i - a i) / N x := by
+        rw [le_div_iff₀ hNx]; linarith
+      have e2 : (x i - b i - a i) / N x ≤ 1 - a i := by
+        rw [div_le_iff₀ hNx]; linarith
+      constructor <;> linarith
+    · rw [hψN x i, ite_eq_right hi]
+      exact (hx i).2 hi
+  · -- step 4: a coordinate attaining the maximum is pushed to `b_i` or `b_i + 1`
+    obtain ⟨i, hi, heq⟩ := Finset.exists_mem_eq_sup' hJ
+      (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k))
+    have heq' : N x = max ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i) := by
+      rw [← hN x]; exact heq
+    refine ⟨i, hi, ?_⟩
+    rw [hψN x i, ite_eq_left hi]
+    obtain ⟨h1, h2⟩ := ha' i
+    rcases max_choice ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i) with hm | hm
+    · right
+      rw [hm] at heq'
+      have ht : x i - b i - a i = N x * (1 - a i) := by
+        rw [heq', div_mul_cancel₀ _ (by linarith : (1 : ℝ) - a i ≠ 0)]
+      have : (x i - b i - a i) / N x = 1 - a i := by
+        rw [div_eq_iff hNx.ne']; linarith
+      rw [this]; ring
+    · left
+      rw [hm] at heq'
+      have ht : b i + a i - x i = N x * a i := by
+        rw [heq', div_mul_cancel₀ _ (by linarith : a i ≠ 0)]
+      have : (x i - b i - a i) / N x = -(a i) := by
+        rw [div_eq_iff hNx.ne']; linarith
+      rw [this]; ring
+  · -- step 5: on `∂F`, `N(x) = 1` and `ψ_F(x) = x`
+    rintro ⟨i, hi, hbi⟩
+    obtain ⟨h1, h2⟩ := ha' i
+    have hq := hterm x i hi
+    have hN1 : N x = 1 := by
+      apply le_antisymm (hle1 x hx)
+      rcases hbi with h | h
+      · have : (b i + a i - x i) / a i = 1 := by
+          rw [h, div_eq_one_iff_eq (by linarith)]; ring
+        linarith [le_max_right ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i)]
+      · have : (x i - b i - a i) / (1 - a i) = 1 := by
+          rw [h, div_eq_one_iff_eq (by linarith)]; ring
+        linarith [le_max_left ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i)]
+    ext k
+    rw [hψN x k, hN1]
+    split_ifs <;> ring
+  · -- steps 6–8: the radial estimate
+    intro y hy hney
+    have hNy := hpos y hney
+    have hNx0 : N x ≠ 0 := hNx.ne'
+    have hNy0 : N y ≠ 0 := hNy.ne'
+    -- step 6: `N` is `4`-Lipschitz
+    have hlip : ∀ u v : Euclid P, N u ≤ N v + 4 * dist u v := by
+      intro u v
+      rw [← hN u]
+      refine Finset.sup'_le hJ _ (fun k hk => ?_)
+      obtain ⟨h1, h2⟩ := ha' k
+      have hd : |u k - v k| ≤ dist u v := by
+        have := PiLp.dist_apply_le u v k
+        rwa [Real.dist_eq] at this
+      have hdn : 0 ≤ dist u v := dist_nonneg
+      have hq := hterm v k hk
+      have hp1 := (le_max_left _ _).trans hq
+      have hp2 := (le_max_right _ _).trans hq
+      apply max_le
+      · have e : (u k - b k - a k) / (1 - a k) =
+            (v k - b k - a k) / (1 - a k) + (u k - v k) / (1 - a k) := by
+          rw [← add_div]; congr 1; ring
+        have : (u k - v k) / (1 - a k) ≤ 4 * dist u v := by
+          rw [div_le_iff₀ (by linarith)]
+          nlinarith [le_abs_self (u k - v k),
+            mul_nonneg hdn (by linarith : (0 : ℝ) ≤ 4 * (1 - a k) - 1)]
+        linarith
+      · have e : (b k + a k - u k) / a k = (b k + a k - v k) / a k + (v k - u k) / a k := by
+          rw [← add_div]; congr 1; ring
+        have : (v k - u k) / a k ≤ 4 * dist u v := by
+          rw [div_le_iff₀ (by linarith)]
+          have : |v k - u k| ≤ dist u v := by rw [abs_sub_comm]; exact hd
+          nlinarith [le_abs_self (v k - u k), mul_nonneg hdn (by linarith : (0 : ℝ) ≤ 4 * a k - 1)]
+        linarith
+    have hlipxy : |N x - N y| ≤ 4 * dist y x := by
+      have l1 := hlip x y
+      have l2 := hlip y x
+      rw [dist_comm] at l1
+      rw [abs_le]; constructor <;> linarith
+    -- step 7: `w = y − a_F` (supported in `J`) has `|w| ≤ √|J| N(y)`
+    let W : Euclid P := WithLp.toLp 2 (fun k => if k ∈ J then y k - b k - a k else 0)
+    have hWk : ∀ k, W k = if k ∈ J then y k - b k - a k else 0 := fun k => rfl
+    have hW : ‖W‖ ≤ Real.sqrt J.card * N y := by
+      rw [EuclideanSpace.norm_eq]
+      have h1 : ∑ k, ‖W k‖ ^ 2 = ∑ k ∈ J, ‖W k‖ ^ 2 :=
+        (Finset.sum_subset (Finset.subset_univ J)
+          (fun k _ hk => by rw [hWk k, ite_eq_right hk]; simp)).symm
+      have h2 : ∑ k ∈ J, ‖W k‖ ^ 2 ≤ J.card • N y ^ 2 := by
+        apply Finset.sum_le_card_nsmul
+        intro k hk
+        rw [hWk k, ite_eq_left hk, Real.norm_eq_abs, sq_abs]
+        have := habs y k hk
+        nlinarith [abs_nonneg (y k - b k - a k), sq_abs (y k - b k - a k)]
+      rw [nsmul_eq_mul] at h2
+      calc Real.sqrt (∑ k, ‖W k‖ ^ 2) ≤ Real.sqrt ((J.card : ℝ) * N y ^ 2) :=
+            Real.sqrt_le_sqrt (h1 ▸ h2)
+        _ = Real.sqrt J.card * N y := by
+            rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hNy.le]
+    -- step 8: `ψ_F(y) − ψ_F(x) = (y − x)/N(x) + (1/N(y) − 1/N(x)) w`
+    have hdecomp : ψF y - ψF x = (1 / N x) • (y - x) + (1 / N y - 1 / N x) • W := by
+      ext k
+      rw [PiLp.sub_apply, PiLp.add_apply, PiLp.smul_apply, PiLp.smul_apply, PiLp.sub_apply,
+        hψN x k, hψN y k, hWk k, smul_eq_mul, smul_eq_mul]
+      by_cases hk : k ∈ J
+      · rw [ite_eq_left hk, ite_eq_left hk, ite_eq_left hk]
+        field_simp
+        ring
+      · rw [ite_eq_right hk, ite_eq_right hk, ite_eq_right hk, (hx k).2 hk, (hy k).2 hk]
+        ring
+    have hfrac : |1 / N y - 1 / N x| * N y = |N x - N y| / N x := by
+      rw [div_sub_div _ _ hNy0 hNx0, abs_div, abs_of_pos (mul_pos hNy hNx)]
+      field_simp
+    rw [dist_eq_norm, hdecomp]
+    calc ‖(1 / N x) • (y - x) + (1 / N y - 1 / N x) • W‖
+        ≤ ‖(1 / N x) • (y - x)‖ + ‖(1 / N y - 1 / N x) • W‖ := norm_add_le _ _
+      _ = (1 / N x) * dist y x + |1 / N y - 1 / N x| * ‖W‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+            abs_of_pos (one_div_pos.mpr hNx), dist_eq_norm]
+      _ ≤ (1 / N x) * dist y x + |1 / N y - 1 / N x| * (Real.sqrt J.card * N y) := by
+          gcongr
+      _ = (1 / N x) * dist y x + (|N x - N y| / N x) * Real.sqrt J.card := by
+          rw [← hfrac]; ring
+      _ ≤ (1 / N x) * dist y x + (4 * dist y x / N x) * Real.sqrt J.card := by
+          gcongr
+      _ = (1 + 4 * Real.sqrt J.card) / N x * dist y x := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
