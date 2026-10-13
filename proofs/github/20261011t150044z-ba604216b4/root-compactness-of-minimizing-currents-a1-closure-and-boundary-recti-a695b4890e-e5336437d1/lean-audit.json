@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06a974171d271231f2ac3c0abcd6691e3d37c88822b815d11ce0e16842bdbf04",
+  "git_delta": {
+    "base_commit": "f4a3a481b2306a311e5fc5b6523b44beda9984d1",
+    "candidate_commit": "e4fc2696c5286cb4f4a5ab89df71eb8a9cd09927",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_cone_claim",
+    "diff_sha256": "ac76eb77b03fa2203ff8d5af879d6e72711e4dbb8d48e4da65f98df2483aa764",
+    "source_sha256": "5eb308a8889fb6b4c2c97c208f153ea3769542a86e7dede129fc3af875b77e73",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_cone_claim",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (T : Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖(Q x).starProjection - T.starProjection‖ < 1 / 16 → ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖T.starProjection (y - x)‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
