@@ -437,6 +437,145 @@ theorem Submission.slicing_im_si_coarea_null_sets : ∀ (P : ℕ) (μ ν : Measu
     refine measure_mono_null (fun x hx => ?_) ht
     exact ⟨subset_toMeasurable μ Z hx.1, hZM hx.1, hx.2⟩
 
+/-- **Borel density for `θ⟨ξ, G♭ ∧ ω⟩` (Simon Ch. 6, Remark 4.2 and proof of 4.5).**  For a
+rectifiable triple `(M, θ, ξ)`, a Borel `G`, `ν := |G|⁻¹G` and `ω ∈ 𝒟ᵐ(U)`, there is a Borel
+`Hⁿ⌞M`-integrable `g` vanishing on `{G = 0}` with `g = θ⟨ξ⌞ν, ω⟩` where `G ≠ 0` and
+`θ⟨ξ, G♭ ∧ ω⟩ = |G| g`, `Hⁿ⌞M`-a.e.: `g := 1_{K ∩ {G ≠ 0}} θ' ξ'(ν♭ ∧ ω)` with `K = tsupport ω`,
+Borel versions `θ'` of `θ` on `M ∩ K` and `ξ'` of `ξ` on `M`, dominated by
+`(m + 1) sup ‖ω‖ · |1_K θ'|` (unit bound `|ξ(α)| ≤ ‖α‖`). -/
+theorem Submission.slicing_im_si_borel_density :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (G : Eucl P → Eucl P) (ω : TestFormOn U m), IsRectifiableTriple U (m + 1) M θ ξ → Measurable G → ∃ g : Eucl P → ℝ, Measurable g ∧ Integrable g ((μHE[m + 1] : Measure (Eucl P)).restrict M) ∧ (∀ x, G x = 0 → g x = 0) ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), (G x ≠ 0 → g x = θ x * (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x)))) ((ω : DifferentialForm (Eucl P) m) x)) ∧ θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x))) = ‖G x‖ * g x := by
+  have unit_bound := Submission.fiw_ims_tt_unit_bound
+  intro P m U M θ ξ G ω hM hG
+  have hwc : Continuous (ω : DifferentialForm (Eucl P) m) := ω.2.1.1.continuous
+  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) m)) := ω.2.1.2
+  have hKU : tsupport (ω : DifferentialForm (Eucl P) m) ⊆ U := ω.2.2
+  obtain ⟨K, hK⟩ : ∃ K : Set (Eucl P), K = tsupport (ω : DifferentialForm (Eucl P) m) := ⟨_, rfl⟩
+  rw [← hK] at hKc hKU
+  have hKm : MeasurableSet K := hK ▸ (isClosed_tsupport _).measurableSet
+  have hw0 : ∀ x, x ∉ K → (ω : DifferentialForm (Eucl P) m) x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport (hK ▸ hx)
+  obtain ⟨Cw, hCw⟩ := hwc.bounded_above_of_compact_support ω.2.1.2
+  -- Borel versions of θ (on M ∩ K) and ξ (on M)
+  have hθK : IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P)) := hM.integrableOn K hKc hKU
+  obtain ⟨θ', hθ'm, hθθ'⟩ := hθK.aestronglyMeasurable
+  obtain ⟨ξ', hξ'm, hξξ'⟩ := hM.aestronglyMeasurable
+  -- the covector field β = ν♭ ∧ ω with ν = G/|G|
+  have hνm : Measurable (fun x => ‖G x‖⁻¹ • G x) := (hG.norm.inv).smul hG
+  have hνle : ∀ x, ‖‖G x‖⁻¹ • G x‖ ≤ 1 := by
+    intro x
+    rw [norm_smul, norm_inv, norm_norm]
+    by_cases h : ‖G x‖ = 0
+    · simp [h]
+    · rw [inv_mul_cancel₀ h]
+  obtain ⟨β, hβ⟩ : ∃ β : Eucl P → Covector (Eucl P) (m + 1), β = fun x =>
+      ContinuousAlternatingMap.alternatizeUncurryFin
+        ((innerSL ℝ (‖G x‖⁻¹ • G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x)) := ⟨_, rfl⟩
+  have hBc : Continuous (fun p : Eucl P × Covector (Eucl P) m =>
+      ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ p.1).smulRight p.2)) := by
+    have h2 : Continuous (fun p : Eucl P × Covector (Eucl P) m => (innerSL ℝ p.1).smulRight p.2) :=
+      (isBoundedBilinearMap_smulRight (𝕜 := ℝ) (E := Eucl P) (F := Covector (Eucl P) m)).continuous.comp
+        (((innerSL ℝ).continuous.comp continuous_fst).prodMk continuous_snd)
+    exact (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).continuous.comp h2
+  have hβm : StronglyMeasurable β := by
+    have h3 : StronglyMeasurable (fun x => ((‖G x‖⁻¹ • G x : Eucl P), (ω : DifferentialForm (Eucl P) m) x)) :=
+      hνm.stronglyMeasurable.prodMk hwc.stronglyMeasurable
+    have h4 := hBc.comp_stronglyMeasurable h3
+    beta_reduce at h4
+    rw [hβ]; exact h4
+  have hβle : ∀ x, ‖β x‖ ≤ (m + 1) * Cw := by
+    intro x
+    rw [hβ]
+    calc ‖ContinuousAlternatingMap.alternatizeUncurryFin
+            ((innerSL ℝ (‖G x‖⁻¹ • G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x))‖
+        ≤ ((m : ℝ) + 1) * ‖(innerSL ℝ (‖G x‖⁻¹ • G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x)‖ :=
+          ContinuousAlternatingMap.norm_alternatizeUncurryFin_le _
+      _ = ((m : ℝ) + 1) * (‖‖G x‖⁻¹ • G x‖ * ‖(ω : DifferentialForm (Eucl P) m) x‖) := by
+          rw [ContinuousLinearMap.norm_smulRight_apply, innerSL_apply_norm]
+      _ ≤ ((m : ℝ) + 1) * (1 * Cw) := by
+          gcongr
+          · exact hνle x
+          · exact hCw x
+      _ = (m + 1) * Cw := by ring
+  have hξβm : StronglyMeasurable (fun x => ξ' x (β x)) := by
+    have h4 := (continuous_fst.clm_apply continuous_snd).comp_stronglyMeasurable (hξ'm.prodMk hβm)
+    beta_reduce at h4
+    exact h4
+  -- the density
+  have hSm : MeasurableSet {x | x ∈ K ∧ G x ≠ 0} :=
+    hKm.inter (hG (measurableSet_singleton (0 : Eucl P))).compl
+  obtain ⟨g, hg⟩ : ∃ g : Eucl P → ℝ,
+      g = {x | x ∈ K ∧ G x ≠ 0}.indicator (fun x => θ' x * ξ' x (β x)) := ⟨_, rfl⟩
+  have hgm : Measurable g := by
+    rw [hg]
+    exact (hθ'm.measurable.mul hξβm.measurable).indicator hSm
+  -- a.e. facts on M
+  have hθae : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), x ∈ K → θ x = θ' x := by
+    have : ∀ᵐ x ∂(((μHE[m + 1] : Measure (Eucl P)).restrict M).restrict K), θ x = θ' x := by
+      rw [Measure.restrict_restrict hKm, inter_comm]; exact hθθ'
+    exact (ae_restrict_iff' hKm).1 this
+  have hunit : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) (m + 1), |ξ x α| ≤ ‖α‖ := by
+    filter_upwards [hM.orients] with x hx
+    obtain ⟨τ, hτ, -, hξx⟩ := hx
+    exact unit_bound P (m + 1) τ (ξ x) hτ hξx
+  refine ⟨g, hgm, ?_, ?_, ?_⟩
+  · -- integrability
+    have hθ'K : IntegrableOn θ' (M ∩ K) (μHE[m + 1] : Measure (Eucl P)) := hθK.congr_fun_ae hθθ'
+    have hind : Integrable (K.indicator θ') ((μHE[m + 1] : Measure (Eucl P)).restrict M) := by
+      rw [integrable_indicator_iff hKm, IntegrableOn, Measure.restrict_restrict hKm, inter_comm]
+      exact hθ'K
+    refine Integrable.mono' ((hind.norm).const_mul ((m + 1) * Cw)) hgm.aestronglyMeasurable ?_
+    filter_upwards [hξξ', hunit] with x hξx hux
+    by_cases hS : x ∈ K ∧ G x ≠ 0
+    · rw [hg, indicator_of_mem (show x ∈ {x | x ∈ K ∧ G x ≠ 0} from hS), indicator_of_mem hS.1, norm_mul]
+      have : ‖ξ' x (β x)‖ ≤ (m + 1) * Cw := by
+        rw [← hξx, Real.norm_eq_abs]; exact (hux (β x)).trans (hβle x)
+      calc ‖θ' x‖ * ‖ξ' x (β x)‖ ≤ ‖θ' x‖ * ((m + 1) * Cw) := by gcongr
+        _ = (m + 1) * Cw * ‖θ' x‖ := by ring
+    · rw [hg, indicator_of_notMem (show x ∉ {x | x ∈ K ∧ G x ≠ 0} from hS), norm_zero]
+      have hCw0 : 0 ≤ Cw := (norm_nonneg _).trans (hCw x)
+      positivity
+  · intro x hx
+    rw [hg, indicator_of_notMem (show x ∉ {x | x ∈ K ∧ G x ≠ 0} from fun h => h.2 hx)]
+  · filter_upwards [hξξ', hθae] with x hξx hθx
+    have hcomp : (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))
+          ((ω : DifferentialForm (Eucl P) m) x) = ξ x (β x) := by
+      rw [hβ]; rfl
+    have part1 : G x ≠ 0 → g x = θ x * ξ x (β x) := by
+      intro hG0
+      by_cases hxK : x ∈ K
+      · rw [hg, indicator_of_mem (show x ∈ {x | x ∈ K ∧ G x ≠ 0} from ⟨hxK, hG0⟩), hθx hxK, hξx]
+      · have hβ0 : β x = 0 := by
+          have hsr : (innerSL ℝ (‖G x‖⁻¹ • G x)).smulRight (0 : Covector (Eucl P) m) = 0 := by
+            ext y; simp
+          rw [hβ]
+          simp only [hw0 x hxK, hsr]
+          exact map_zero (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ)
+        rw [hg, indicator_of_notMem (show x ∉ {x | x ∈ K ∧ G x ≠ 0} from fun h => hxK h.1), hβ0,
+          map_zero, mul_zero]
+    refine ⟨fun hG0 => by rw [hcomp]; exact part1 hG0, ?_⟩
+    by_cases hG0 : G x = 0
+    · have h0 : ContinuousAlternatingMap.alternatizeUncurryFin (0 : Eucl P →L[ℝ] Covector (Eucl P) m) = 0 :=
+        map_zero (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ)
+      simp [hG0, h0]
+    · have hGν : G x = ‖G x‖ • (‖G x‖⁻¹ • G x) := by
+        rw [smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.2 hG0), one_smul]
+      have hlin : ∀ (c : ℝ) (v : Eucl P) (α : Covector (Eucl P) m),
+          (innerSL ℝ (c • v)).smulRight α = c • (innerSL ℝ v).smulRight α := by
+        intro c v α
+        ext y; simp [smul_smul]
+      have hsm : (innerSL ℝ (G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x) =
+          ‖G x‖ • (innerSL ℝ (‖G x‖⁻¹ • G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x) := by
+        rw [← hlin]
+        congr 2
+      have hβx : β x = ContinuousAlternatingMap.alternatizeUncurryFin
+          ((innerSL ℝ (‖G x‖⁻¹ • G x)).smulRight ((ω : DifferentialForm (Eucl P) m) x)) := by rw [hβ]
+      rw [hsm, ContinuousAlternatingMap.alternatizeUncurryFin_smul, map_smul, smul_eq_mul, ← hβx,
+        part1 hG0]
+      ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
