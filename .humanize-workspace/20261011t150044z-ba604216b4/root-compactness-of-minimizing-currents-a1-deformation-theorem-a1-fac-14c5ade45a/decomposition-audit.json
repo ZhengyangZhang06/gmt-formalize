@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcdtfrfg_|EuclideanSpace.single \\(ι|orderEmbOfFin|range_inj' project/GMT -g '*.lean'",
+        "rg -n 'cmcdtfrfg_' mathlib/Mathlib -g '*.lean'",
+        "rg -n 'cmcdtfrfg_' ../../lake-packages-25730c7c/simongmt/Poincare -g '*.lean'",
+        "volume_preserving_ofLp|volume_pi_Ioo|EuclideanSpace.dist_eq|dist_apply_le|orderEmbOfFin_unique|range_inj_of_wellFoundedLT|card_le_of_injective|lemma prod_of_injective|theorem one_le_abs",
+        "abbrev EuclideanSpace|abbrev EuclideanSpace.single|abbrev single|CoeFun|def single|lemma ofLp_sum",
+        "rg -n 'def contract_scope|def child_modules|namespace Submission|namespace Challenge|lean_statement|namespace' ../../verifier/gmt-compare.py",
+        "cmcdtfrfg_cube_volume",
+        "cmcdtfrfg_face_coord",
+        "cmcdtfrfg_face_isometry_diam",
+        "cmcdtfrfg_face_separation",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fg-independent-audit/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fg-independent-audit/ReplayParentProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Group/Unbundled/Int.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-14c5ade45a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-14c5ade45a/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/fgdecomp/lean/EndToEnd.lean",
+        "/tmp/fg-independent-audit/TypesAndAssembly.lean",
+        "/tmp/fg-independent-audit/ReplayParentProofs.lean"
+      ],
+      "conclusion": "The split is appropriate: the coordinate lemma supports two independent geometric obligations, while volume is independent. Dependencies are correctly directed and acyclic. The handoff and DAG agree on the selected frozen contract. Project and Mathlib revisions match the manifest; Submission matches the frozen Contract. All four names are bare identifiers, unreserved in the inspected 1554-node DAG, with no source matches or declaration reuse. Every frozen statement passes validation and independently elaborates in the comparator scope without child implementations. Instance checks confirm Euclid P, coordinate coercion through ofLp, the L² metric, and Euclidean volume. Fresh assembly proves exactly the selected parent proposition. Replayed supplied proofs for all children and the parent compile using only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the universally quantified volume statement. The proof identifies the measurable box preimage under the volume-preserving ofLp map and evaluates its finite product measure. It covers k = 0 and has no circular reliance or missing hypothesis."
+    },
+    {
+      "key": "face_coord",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes precisely the stated injectivity hypothesis and both coordinate conclusions. Linearity, the single-vector coordinate formula, and finite-sum evaluation prove both clauses. Injectivity isolates the unique contributing summand. This is a genuine shared obligation with no dependency on the parent."
+    },
+    {
+      "key": "face_isometry_diam",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches both claims under injectivity, which the parent obtains from StrictMono. Using only face_coord, the proof reindexes squared coordinate distances, establishes isometry, bounds each cube-coordinate gap by one, and uses k ≤ P. All hypotheses and dependency directions are correct."
+    },
+    {
+      "key": "face_separation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type retains every stated hypothesis and exactly the required disjunction. The exhaustive cases prove either the boundary-coordinate bound or range equality, equality of increasing enumerations, agreement of integer translations on that range, and a nonzero integer gap outside it. The closed endpoints and k = 0 are handled. Only face_coord is needed; the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

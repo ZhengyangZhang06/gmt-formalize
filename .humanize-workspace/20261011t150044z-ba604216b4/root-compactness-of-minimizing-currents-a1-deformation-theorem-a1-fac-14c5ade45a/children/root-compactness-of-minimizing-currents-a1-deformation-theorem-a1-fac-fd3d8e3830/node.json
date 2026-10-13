@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_separation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1",
+  "depth": 5,
+  "title": "Separation of distinct unit lattice faces",
+  "statement": "Let P, k ∈ ℕ and let p = (ι, b), q = (ι', b') ∈ (Fin k → Fin P) × (Fin P → ℤ) with ι and ι' strictly increasing and p ≠ q. Let y ∈ Euclid k with 0 < y_j < 1 for all j, and y' ∈ Euclid k with 0 ≤ y'_i ≤ 1 for all i. Put x := Φ_p(y) = toLp(b) + Σ_j y_j • e_{ι(j)} and z := Φ_q(y') = toLp(b') + Σ_j y'_j • e_{ι'(j)}, where e_i := EuclideanSpace.single i 1 and toLp(b) has coordinates (b_i : ℝ). Then 1 ≤ dist(x, z), or there is j : Fin k with min(y_j, 1 − y_j) ≤ dist(x, z).",
+  "lean_statement": "∀ (P k : ℕ) (p q : (Fin k → Fin P) × (Fin P → ℤ)), StrictMono p.1 → StrictMono q.1 → p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ))",
+  "lean_name": "cmcdtfrfg_face_separation",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_coord-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_coord-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-fd3d8e3830-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.cube_volume-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1",
+  "depth": 5,
+  "title": "The open unit cube in Euclid k has volume 1",
+  "statement": "For every k ∈ ℕ, the open unit cube Q₁^k = {y ∈ Euclid k : 0 < y_i < 1 for all i : Fin k} has Lebesgue measure 1. Here Euclid k = EuclideanSpace ℝ (Fin k) with its standard volume, and y_i is the i-th coordinate of y.",
+  "lean_statement": "∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1",
+  "lean_name": "cmcdtfrfg_cube_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-f53301754d-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_isometry_diam-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1",
+  "depth": 5,
+  "title": "The lattice face map is an isometry, with diameter at most √P on the closed unit cube",
+  "statement": "Let P, k ∈ ℕ, let ι : Fin k → Fin P be injective, let b : Fin P → ℤ, and let Φ(y) := toLp(b) + Σ_{j : Fin k} y_j • e_{ι(j)} (Euclid k → Euclid P), where e_i := EuclideanSpace.single i 1 and toLp(b) has coordinates (b_i : ℝ). Then (a) dist(Φ(y), Φ(y')) = dist(y, y') for all y, y' ∈ Euclid k; and (b) if 0 ≤ y_i ≤ 1 and 0 ≤ y'_i ≤ 1 for all i, then dist(Φ(y), Φ(y')) ≤ √P.",
+  "lean_statement": "∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ), Function.Injective ι → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) ≤ Real.sqrt P)",
+  "lean_name": "cmcdtfrfg_face_isometry_diam",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_coord-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_coord-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-a79669a7f0-a1"
+}
