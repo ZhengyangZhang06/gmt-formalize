@@ -3629,6 +3629,71 @@ theorem Submission.lpf_tde_continuous_left_inverse :
     rw [sub_add_cancel] at h
     exact (mul_self_le_mul_self_iff (norm_nonneg p) (norm_nonneg v)).2
       (by nlinarith [mul_self_nonneg ‖v - p‖])
+/-- Integrals converge if they converge on every piece of a countable measurable partition, under
+integrable domination (step 4 of the tangential weak limit argument).  As `ν` lives on `⋃ⱼ Vⱼ`,
+countable additivity gives `∫ H dν = ∑ⱼ ∫_{Vⱼ} H dν` for integrable `H`; the terms for `H = F_k`
+are bounded by the summable `∫_{Vⱼ} b dν`, so Tannery's theorem (dominated convergence for series,
+the `ε / 3` argument of Mathlib's `tendsto_tsum_of_dominated_convergence`, inlined since that file
+is not available here) passes to the limit termwise. -/
+theorem Submission.slicing_im_ll_twl_partition_tendsto :
+    ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (V : ℕ → Set X) (b : X → ℝ)
+      (F : ℕ → X → ℝ) (Flim : X → ℝ), (∀ j, MeasurableSet (V j)) →
+      Pairwise (Function.onFun Disjoint V) → ν (⋃ j, V j)ᶜ = 0 → Integrable b ν →
+      (∀ k, Integrable (F k) ν) → (∀ k, ∀ᵐ x ∂ν, ‖F k x‖ ≤ b x) → Integrable Flim ν →
+      (∀ j, Tendsto (fun k => ∫ x in V j, F k x ∂ν) atTop (𝓝 (∫ x in V j, Flim x ∂ν))) →
+      Tendsto (fun k => ∫ x, F k x ∂ν) atTop (𝓝 (∫ x, Flim x ∂ν)) := by
+  intro X _ ν V b F Flim hVm hVd hVc hb hF hFb hFlim hlim
+  -- `ν` lives on `⋃ⱼ Vⱼ`, so `∫ H dν = ∑ⱼ ∫_{Vⱼ} H dν` for integrable `H`.
+  have hν : ν.restrict (⋃ j, V j) = ν := Measure.restrict_eq_self_of_ae_mem (mem_ae_iff.2 hVc)
+  have hsum : ∀ H : X → ℝ, Integrable H ν →
+      HasSum (fun j => ∫ x in V j, H x ∂ν) (∫ x, H x ∂ν) := fun H hH => by
+    simpa only [hν] using hasSum_integral_iUnion hVm hVd hH.integrableOn
+  -- The summable majorant: `|∫_{Vⱼ} F_k dν| ≤ ∫_{Vⱼ} b dν`.
+  have hbound : ∀ k j, ‖∫ x in V j, F k x ∂ν‖ ≤ ∫ x in V j, b x ∂ν := fun k j =>
+    norm_integral_le_of_norm_le hb.integrableOn (ae_restrict_of_ae (hFb k))
+  -- Tannery's theorem along `atTop` on `ℕ` (proof of `tendsto_tsum_of_dominated_convergence`).
+  have tannery : ∀ (f : ℕ → ℕ → ℝ) (g : ℕ → ℝ) (bound : ℕ → ℝ), Summable bound →
+      (∀ j, Tendsto (f · j) atTop (𝓝 (g j))) → (∀ᶠ n in atTop, ∀ j, ‖f n j‖ ≤ bound j) →
+      Tendsto (fun n => ∑' j, f n j) atTop (𝓝 (∑' j, g j)) := by
+    intro f g bound h_sum hab h_bound
+    have h_g_le (k : ℕ) : ‖g k‖ ≤ bound k :=
+      le_of_tendsto (tendsto_norm.comp (hab k)) <| h_bound.mono (fun n h => h k)
+    have h_sumg : Summable (‖g ·‖) :=
+      h_sum.of_norm_bounded (fun k ↦ (norm_norm (g k)).symm ▸ h_g_le k)
+    have h_suma : ∀ᶠ n in atTop, Summable (‖f n ·‖) := by
+      filter_upwards [h_bound] with n h
+      exact h_sum.of_norm_bounded <| by simpa only [norm_norm] using h
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    let ⟨S, hS⟩ := h_sum
+    obtain ⟨T, hT⟩ : ∃ (T : Finset ℕ), dist (∑ i ∈ T, bound i) S < ε / 3 := by
+      rw [HasSum, Metric.tendsto_nhds] at hS
+      exact Eventually.exists <| hS _ (by positivity)
+    have h1 : ∑' (k : (Tᶜ : Set ℕ)), bound k < ε / 3 := by
+      calc _ ≤ ‖∑' (k : (Tᶜ : Set ℕ)), bound k‖ := Real.le_norm_self _
+           _ = ‖S - ∑ i ∈ T, bound i‖ := congrArg _ ?_
+           _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
+      simpa only [h_sum.sum_add_tsum_compl, eq_sub_iff_add_eq'] using hS.tsum_eq
+    have h2 : Tendsto (∑ k ∈ T, f · k) atTop (𝓝 (T.sum g)) :=
+      tendsto_finsetSum _ (fun i _ ↦ hab i)
+    rw [Metric.tendsto_nhds] at h2
+    filter_upwards [h2 (ε / 3) (by positivity), h_suma, h_bound] with n hn h_suma h_bound
+    rw [dist_eq_norm, ← h_suma.of_norm.tsum_sub h_sumg.of_norm,
+      ← (h_suma.of_norm.sub h_sumg.of_norm).sum_add_tsum_compl (s := T),
+      (by ring : ε = ε / 3 + (ε / 3 + ε / 3))]
+    refine (norm_add_le _ _).trans_lt (add_lt_add ?_ ?_)
+    · simpa only [dist_eq_norm, Finset.sum_sub_distrib] using hn
+    · rw [(h_suma.subtype _).of_norm.tsum_sub (h_sumg.subtype _).of_norm]
+      refine (norm_sub_le _ _).trans_lt (add_lt_add ?_ ?_)
+      · refine ((norm_tsum_le_tsum_norm (h_suma.subtype _)).trans ?_).trans_lt h1
+        exact (h_suma.subtype _).tsum_le_tsum (h_bound ·) (h_sum.subtype _)
+      · refine ((norm_tsum_le_tsum_norm <| h_sumg.subtype _).trans ?_).trans_lt h1
+        exact (h_sumg.subtype _).tsum_le_tsum (h_g_le ·) (h_sum.subtype _)
+  -- Pass to the limit termwise and identify both sums with the full integrals.
+  have hlim' := tannery (fun k j => ∫ x in V j, F k x ∂ν) (fun j => ∫ x in V j, Flim x ∂ν)
+    (fun j => ∫ x in V j, b x ∂ν) (hsum b hb).summable hlim (Eventually.of_forall hbound)
+  rw [← (hsum Flim hFlim).tsum_eq]
+  exact hlim'.congr fun k => (hsum (F k) (hF k)).tsum_eq
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
