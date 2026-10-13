@@ -770,6 +770,139 @@ theorem exists_smooth_cutoff_half_ball_grad_le : ∀ (m : ℕ) (ξ : Rn m) (ρ :
   · -- The profile is `3`-Lipschitz, so `|Dζ(x)| ≤ 3/ρ`.
     have h := Submission.norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφ_lip x
     rwa [NNReal.coe_ofNat] at h
+/-- **Density of the varifold weight with respect to `Hⁿ`** (Simon Ch. 4, 1.1: `μ_V = Hⁿ ⌞ θ`,
+with `θ = 0` off `M`).  Writing `g = 1_M θ`: (i) `g` has a Borel representative that is `≥ 0`
+everywhere; (ii) `∫_S φ dμ_V = ∫_S g φ dHⁿ` for every Borel `S` and every `φ ≥ 0` (not necessarily
+measurable).  `g ≥ 0` because `θ > 0` on `M`, and `g` is `Hⁿ`-a.e. measurable since `M` is
+`Hⁿ`-null-measurable and `θ` is a.e. measurable on `M`; `max(mk g, 0)` is the representative.
+For (ii), `μ_V⌞S = ((Hⁿ⌞M)⌞S) ⌞ ofReal ∘ θ`, the finite density can be multiplied in without
+measurability of `φ`, `(Hⁿ⌞M)⌞S = (Hⁿ⌞S)⌞M`, and integrating over `M` is integrating `1_M`. -/
+theorem gwe_vgt_weight_density : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∃ g : Amb n ℓ → ℝ, Measurable g ∧ (∀ y, 0 ≤ g y) ∧ g =ᵐ[(μHE[n] : Measure (Amb n ℓ))] V.carrier.indicator V.mult) ∧ ∀ S : Set (Amb n ℓ), MeasurableSet S → ∀ φ : Amb n ℓ → ℝ≥0∞, ∫⁻ y in S, φ y ∂V.weight = ∫⁻ y in S, ENNReal.ofReal (V.carrier.indicator V.mult y) * φ y ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ U V
+  have hM : NullMeasurableSet V.carrier (μHE[n] : Measure (Amb n ℓ)) :=
+    V.nullMeasurableSet_carrier
+  -- `g = 1_M θ ≥ 0` everywhere, since `θ > 0` on `M`.
+  have hg0 : ∀ y, 0 ≤ V.carrier.indicator V.mult y := by
+    intro y
+    by_cases hy : y ∈ V.carrier
+    · rw [indicator_of_mem hy]
+      exact (V.mult_pos y hy).le
+    · rw [indicator_of_notMem hy]
+  refine ⟨?_, ?_⟩
+  · -- (i) `g` is `Hⁿ`-a.e. measurable; `max(mk g, 0)` is a nonnegative Borel representative.
+    have hae : AEMeasurable (V.carrier.indicator V.mult) (μHE[n] : Measure (Amb n ℓ)) :=
+      (aemeasurable_indicator_iff₀ hM).2 V.aemeasurable_mult
+    refine ⟨fun y => max (hae.mk _ y) 0, hae.measurable_mk.max measurable_const,
+      fun y => le_max_right _ _, ?_⟩
+    filter_upwards [hae.ae_eq_mk] with y hy
+    rw [← hy]
+    exact max_eq_left (hg0 y)
+  · -- (ii) Remove the finite density `ofReal ∘ θ`, then rearrange the restrictions.
+    intro S hS φ
+    have hρ : AEMeasurable (fun x => ENNReal.ofReal (V.mult x))
+        (((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict S) :=
+      V.aemeasurable_mult.ennreal_ofReal.restrict
+    have hMS : NullMeasurableSet V.carrier ((μHE[n] : Measure (Amb n ℓ)).restrict S) :=
+      hM.mono Measure.restrict_le_self
+    rw [RectifiableVarifold.weight, restrict_withDensity hS,
+      lintegral_withDensity_eq_lintegral_mul_non_measurable₀ _ hρ
+        (ae_of_all _ fun _ => ENNReal.ofReal_lt_top),
+      Measure.restrict_restrict hS, inter_comm, ← Measure.restrict_restrict₀ hMS,
+      ← lintegral_indicator₀ hMS]
+    refine lintegral_congr fun y => ?_
+    by_cases hy : y ∈ V.carrier
+    · simp [indicator_of_mem hy]
+    · simp [indicator_of_notMem hy]
+/-- **Measurability of the graph map and of the graph Jacobian** over a closed ball `B = B_R(0)`.
+Let `F(x) = q(graphPoint x (f x))` with `f` continuous on `B`, and `J_f(x) =
+√det(Iₙ + (⟨Df(x) e_a, Df(x) e_b⟩)_{a,b})`.  (i) `F(A)` is Borel for every Borel `A ⊆ B`:
+`(a, b) ↦ graphPoint a b` is continuous coordinatewise, so `F` is continuous on `B`; `F` is
+injective, since the first `n` coordinates of `F(x)` determine `x` after undoing `q`; apply
+Lusin–Souslin.  (ii) `F` agrees on `B` with the Borel map `B.piecewise F 0` (`B` closed).
+(iii) `J_f = Φ ∘ Df` with `Φ` continuous on `ℝⁿ →L[ℝ] ℝ^ℓ` and `Df` Borel. -/
+theorem gwe_vgt_graph_measurability : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), ContinuousOn f (closedBall 0 R) → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → MeasurableSet (q '' graphOver f A)) ∧ (∃ Fh : Rn n → Amb n ℓ, Measurable Fh ∧ ∀ x ∈ closedBall (0 : Rn n) R, Fh x = q (graphPoint x (f x))) ∧ Measurable (fun x : Rn n => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ)))))) := by
+  intro n ℓ q f R hf
+  -- `(a, b) ↦ graphPoint a b` is continuous: each coordinate is a coordinate of `a` or of `b`.
+  have hgp : Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) := by
+    unfold graphPoint
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp only [Fin.append_left]
+      exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp continuous_fst)
+    · simp only [Fin.append_right]
+      exact (continuous_apply k).comp ((PiLp.continuous_ofLp 2 _).comp continuous_snd)
+  -- `F = q ∘ (x ↦ graphPoint x (f x))` is continuous on `B` and injective.
+  have hFc : ContinuousOn (fun x => q (graphPoint x (f x))) (closedBall 0 R) :=
+    q.continuous.comp_continuousOn (hgp.comp_continuousOn (continuousOn_id.prodMk hf))
+  have hFi : Function.Injective (fun x => q (graphPoint x (f x))) := by
+    intro x y hxy
+    have h := congrArg (fun (z : Amb n ℓ) (j : Fin n) => z (Fin.castAdd ℓ j)) (q.injective hxy)
+    ext j
+    simpa [graphPoint] using congrFun h j
+  refine ⟨fun A hA hAB => ?_, ?_, ?_⟩
+  · -- (i) Lusin–Souslin for the continuous injective map `F` on the Borel set `A`.
+    rw [graphOver, image_image]
+    exact hA.image_of_continuousOn_injOn (hFc.mono hAB) hFi.injOn
+  · -- (ii) `B.piecewise F 0` is Borel and equals `F` on `B`.
+    classical
+    exact ⟨(closedBall 0 R).piecewise (fun x => q (graphPoint x (f x))) fun _ => 0,
+      hFc.measurable_piecewise continuousOn_const measurableSet_closedBall,
+      fun x hx => piecewise_eq_of_mem _ _ _ hx⟩
+  · -- (iii) `J_f = Φ ∘ fderiv ℝ f` with `Φ` continuous and `fderiv ℝ f` Borel.
+    have hΦ : Continuous fun D : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det
+        ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+          inner ℝ (D (EuclideanSpace.single a (1 : ℝ)))
+            (D (EuclideanSpace.single b (1 : ℝ))))) := by
+      refine Real.continuous_sqrt.comp (Continuous.matrix_det (continuous_const.add
+        (continuous_matrix fun a b => ?_)))
+      simp only [Matrix.of_apply]
+      exact (continuous_eval_const _).inner (continuous_eval_const _)
+    exact hΦ.measurable.comp (measurable_fderiv ℝ f)
+
+end Submission
+/-- **Bochner and null-set transfer** (steps 5 and 6 of the varifold graph transfer).  The
+`lintegral` transfer identity says `μ ⌞ S = G_#((Lⁿ ⌞ A) ⌞ W)`; pushing Bochner integrals through
+`G` and the density `W ≥ 0` gives (i) for every Borel `φ`, and testing it on `φ = 1_{Z'}` for a Borel
+`μ`-null `Z' ⊇ Z` gives `W = 0` a.e. on `A ∩ G⁻¹(Z)`. -/
+theorem Submission.gwe_vgt_transfer_consequences : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (S : Set (Amb n ℓ)) (A : Set (Rn n)) (G : Rn n → Amb n ℓ) (W : Rn n → ℝ), MeasurableSet A → Measurable G → Measurable W → (∀ x, 0 ≤ W x) → (∀ φ : Amb n ℓ → ℝ≥0∞, Measurable φ → ∫⁻ y in S, φ y ∂μ = ∫⁻ x in A, ENNReal.ofReal (W x) * φ (G x)) → (∀ φ : Amb n ℓ → ℝ, Measurable φ → ∫ y in S, φ y ∂μ = ∫ x in A, W x * φ (G x)) ∧ ∀ Z : Set (Amb n ℓ), μ Z = 0 → ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ A → G x ∈ Z → W x = 0 := by
+  intro n ℓ μ S A G W hA hG hW hW0 hT
+  -- Step 1: `μ ⌞ S = G_# ν` with `ν = (Lⁿ ⌞ A).withDensity (ofReal ∘ W)`, tested on Borel `T`.
+  have hpush : μ.restrict S =
+      Measure.map G ((volume.restrict A).withDensity fun x => ENNReal.ofReal (W x)) := by
+    ext T hTm
+    calc μ.restrict S T = ∫⁻ y in S, T.indicator 1 y ∂μ := (lintegral_indicator_one hTm).symm
+      _ = ∫⁻ x in A, ENNReal.ofReal (W x) * T.indicator 1 (G x) :=
+          hT _ (measurable_one.indicator hTm)
+      _ = ∫⁻ x in A, (G ⁻¹' T).indicator (fun x => ENNReal.ofReal (W x)) x := by
+          refine lintegral_congr fun x => ?_
+          by_cases hx : G x ∈ T <;> simp [hx]
+      _ = ∫⁻ x in G ⁻¹' T, ENNReal.ofReal (W x) ∂(volume.restrict A) :=
+          lintegral_indicator (hG hTm) _
+      _ = Measure.map G ((volume.restrict A).withDensity fun x => ENNReal.ofReal (W x)) T := by
+          rw [Measure.map_apply hG hTm, withDensity_apply _ (hG hTm)]
+  refine ⟨fun φ hφ => ?_, fun Z hZ => ?_⟩
+  · -- Step 2: push the Bochner integral through `G`, then through the density `ofReal ∘ W`.
+    rw [hpush, integral_map hG.aemeasurable hφ.aestronglyMeasurable,
+      integral_withDensity_eq_integral_toReal_smul hW.ennreal_ofReal
+        (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
+    refine integral_congr_ae (ae_of_all _ fun x => ?_)
+    simp only [ENNReal.toReal_ofReal (hW0 x), smul_eq_mul]
+  · -- Steps 3–5: test the identity on `1_{Z'}` for a Borel `μ`-null `Z' ⊇ Z`.
+    obtain ⟨Z', hZZ', hZ'm, hZ'0⟩ := exists_measurable_superset_of_null hZ
+    have hmeas : Measurable fun x => ENNReal.ofReal (W x) * Z'.indicator 1 (G x) :=
+      hW.ennreal_ofReal.mul ((measurable_one.indicator hZ'm).comp hG)
+    have h0 : ∫⁻ x in A, ENNReal.ofReal (W x) * Z'.indicator 1 (G x) = 0 := by
+      rw [← hT _ (measurable_one.indicator hZ'm), lintegral_indicator_one hZ'm]
+      exact nonpos_iff_eq_zero.1 ((Measure.restrict_apply_le _ _).trans hZ'0.le)
+    filter_upwards [(ae_restrict_iff' hA).1 ((lintegral_eq_zero_iff hmeas).1 h0)]
+      with x hx hxA hGx
+    have h1 := hx hxA
+    simp only [Set.indicator_of_mem (hZZ' hGx), Pi.one_apply, mul_one, Pi.zero_apply,
+      ENNReal.ofReal_eq_zero] at h1
+    exact le_antisymm h1 (hW0 x)
+
+namespace Submission
+
 /-- **The Gram matrix of a linear map** (Simon Ch. 5, proof of Theorem 4.5, p. 119: the graph
 Jacobian `J_F = √det(δ_ij + D_i f · D_j f)`).  For `D : ℝⁿ →L[ℝ] ℝ^ℓ` let `G_ab = ⟨D e_a, D e_b⟩`.
 Then (i) `G` is symmetric, since the real inner product is; (ii) `G` is positive semidefinite:
@@ -1033,6 +1166,89 @@ theorem gwe_graph_jacobian_bounds : ∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ
     calc Real.sqrt _ ≤ Real.sqrt (Real.exp (hsNormSq D)) := Real.sqrt_le_sqrt hdet_le
       _ = Real.exp (hsNormSq D / 2) := (Real.exp_half _).symm
       _ ≤ 1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq D := Submission.gwe_gjb_exp_half_le _ _ h0 hn
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
+`ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
+`ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
+(i) `(a, b) − (a', b') = (a − a', b − b')`; (ii) `|(a, b)|² = |a|² + |b|²`; (iii) every
+`z ∈ ℝ^{n+ℓ}` is some `(a, b)`; (iv) `p_{T₀}(q(a, b)) = q(a, 0)`.
+The coordinate of `(a, b)` at `castAdd ℓ i` is `a_i` and at `natAdd n j` is `b_j`, and every index
+of `Fin (n + ℓ)` has one of these forms (`Fin.addCases`); this gives (i) and (iii), and (ii) by
+splitting `Σ_k z_k²` with `Fin.sum_univ_add`. For (iv), `(a, 0) = Σ_i a_i e_{castAdd ℓ i}` lies in
+`ℝⁿ × {0}`, `(0, b)` is orthogonal to every `e_{castAdd ℓ i}` and hence to `ℝⁿ × {0}`, and `q`
+preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, b) ⊥ T₀`, which
+characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
+theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
+  intro n ℓ q
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- (i): subtraction is coordinatewise
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  refine ⟨hsub, ?_, ?_, ?_⟩
+  -- (ii): split `‖z‖² = Σ_k ‖z_k‖²` over the two blocks of indices
+  · intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- (iii): read off `a` and `b` from the two blocks of coordinates of `z`
+  · intro z
+    refine ⟨WithLp.toLp 2 (fun i => z (Fin.castAdd ℓ i)),
+      WithLp.toLp 2 (fun j => z (Fin.natAdd n j)), ?_⟩
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · rw [hl]
+    · rw [hr]
+  -- (iv)
+  · intro a b
+    -- `graphPoint a 0 = Σ_i a_i e_{castAdd ℓ i}` lies in `ℝⁿ × {0}`
+    have hmem : graphPoint a 0 ∈ horizontalPlane n ℓ := by
+      have e : graphPoint a 0 =
+          ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+        ext k
+        refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+        · rw [hl]
+          simp only [WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single, Finset.sum_apply,
+            Pi.smul_apply, Pi.single_apply, Fin.castAdd_inj, smul_eq_mul, mul_ite, mul_one,
+            mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
+        · rw [hr]
+          simp only [PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single,
+            Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+          refine (Finset.sum_eq_zero fun x _ => ?_).symm
+          have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+            intro h
+            have h' := congrArg Fin.val h
+            simp only [Fin.val_natAdd, Fin.val_castAdd] at h'
+            have := x.isLt
+            omega
+          rw [Pi.single_eq_of_ne hne, mul_zero]
+      rw [e]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    -- `graphPoint 0 b` is orthogonal to every `e_{castAdd ℓ i}`, hence to `ℝⁿ × {0}`
+    have horth : ∀ h ∈ horizontalPlane n ℓ, inner ℝ (graphPoint 0 b) h = 0 := by
+      have hle : horizontalPlane n ℓ ≤ (ℝ ∙ graphPoint 0 b)ᗮ := by
+        refine Submodule.span_le.mpr ?_
+        rintro _ ⟨i, rfl⟩
+        rw [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right,
+          EuclideanSpace.inner_single_right, hl]
+        simp
+      intro h hh
+      exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp (hle hh)
+    -- `q(a, 0) ∈ T₀`, and `q(a, b) - q(a, 0) = q(0, b)` is orthogonal to `T₀ = q(ℝⁿ × {0})`
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Submodule.mem_map_of_mem hmem) ?_
+    intro w hw
+    obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
+    rw [← map_sub, hsub, sub_self, sub_zero]
+    exact (q.inner_map_map _ _).trans (horth h hh)
 
 /-- Simon Ch. 2, 3.5 (area formula) for a rotated Lipschitz graph, as used in the proof of Ch. 5,
 Theorem 4.5: if `f` is `K`-Lipschitz on `B_R(0)`, `A ⊆ B_R(0)` is Borel and `q` is a linear isometry
@@ -1460,6 +1676,102 @@ theorem gwe_lipschitz_graph_area_formula : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (q :
           Filter.eventuallyEq_of_mem (isOpen_ball.mem_nhds hxb) fun y hy =>
             hf'eq (ball_subset_closedBall hy)
         rw [hJ, hG, hev.fderiv_eq, hf'eq (hAR hxA)]
+/-- **Pull-back of the varifold weight to the parameter domain of a 1-Lipschitz graph** (the
+transfer step "from (12), (13) and the area formula" in the proof of Simon Ch. 5, 4.5).  With
+`F(x) = q(x, f(x))`, `J = J_f` and `B = B_R(0)`, the weight `μ_V` restricted to `F(A)` has the Borel
+density `W = J · g₂ ∘ F̂` over Borel `A ⊆ B`, where `g₂ ≥ 0` is a Borel version of `1_M θ`
+(`gwe_vgt_weight_density`) and `F̂` a Borel version of `F` (`gwe_vgt_graph_measurability`).
+
+Proof: `J ≥ 1` (`gwe_graph_jacobian_bounds`), so the area formula
+(`gwe_lipschitz_graph_area_formula`, `K = 1`, `g = 1`) gives `Lⁿ(B') ≤ Hⁿ(F(B'))` for Borel
+`B' ⊆ B`; hence `F` pulls `Hⁿ`-null sets back to `Lⁿ`-null subsets of `B`, and
+`g₂(F̂ x) = 1_M θ (F x)` for a.e. `x ∈ B`, which is (c).  For (a),
+`∫_{F(A)} φ dμ_V = ∫_{F(A)} 1_M θ φ dHⁿ = ∫_A J (1_M θ ∘ F) (φ ∘ F) dLⁿ` and the a.e. identity.
+(b) and (d) follow from (a) with `F̂ = F` on `A` (`gwe_vgt_transfer_consequences`, `G = F̂`). -/
+theorem gwe_varifold_graph_transfer : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), LipschitzOnWith 1 f (closedBall 0 R) → ∃ W : Rn n → ℝ, Measurable W ∧ (∀ x, 0 ≤ W x) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ≥0∞, ∫⁻ y in q '' graphOver f A, φ y ∂V.weight = ∫⁻ x in A, ENNReal.ofReal (W x) * φ (q (graphPoint x (f x)))) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ, Measurable φ → ∫ y in q '' graphOver f A, φ y ∂V.weight = ∫ x in A, W x * φ (q (graphPoint x (f x)))) ∧ (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 R → W x = Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))) * V.carrier.indicator V.mult (q (graphPoint x (f x)))) ∧ ∀ Z : Set (Amb n ℓ), V.weight Z = 0 → ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R → q (graphPoint x (f x)) ∈ Z → W x = 0 := by
+  intro n ℓ hn U V q f R hf
+  -- The graph Jacobian `J = J_f`; `J ≥ 1` by JB (i) with `D = Df(x)`.
+  obtain ⟨J, hJ⟩ : ∃ J : Rn n → ℝ, ∀ x, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))) = J x :=
+    ⟨_, fun _ => rfl⟩
+  have hJ1 : ∀ x, 1 ≤ J x := fun x => by
+    rw [← hJ x]
+    exact (Submission.gwe_graph_jacobian_bounds n ℓ (fderiv ℝ f x)).1
+  have hJ0 : ∀ x, 0 ≤ J x := fun x => zero_le_one.trans (hJ1 x)
+  -- (P2)-(P4): `F(A)` is Borel, `F̂` is a Borel version of `F` on `B`, and `J` is Borel.
+  obtain ⟨hFA, ⟨Fh, hFh, hFhF⟩, hJm⟩ :=
+    Submission.gwe_vgt_graph_measurability n ℓ q f R hf.continuousOn
+  simp only [hJ] at hJm
+  -- AREA with `K = 1`.
+  have harea := Submission.gwe_lipschitz_graph_area_formula n ℓ hn q f 1 R hf
+  simp only [hJ] at harea
+  -- (P5): `Lⁿ(B') ≤ Hⁿ(F(B'))` for Borel `B' ⊆ B`.
+  have hP5 : ∀ B' : Set (Rn n), MeasurableSet B' → B' ⊆ closedBall 0 R →
+      volume B' ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f B') := by
+    intro B' hB' hB'R
+    calc volume B' = ∫⁻ _ in B', 1 := (setLIntegral_one B').symm
+      _ ≤ ∫⁻ x in B', ENNReal.ofReal (J x) * 1 := setLIntegral_mono' hB' fun x _ => by
+          rw [mul_one]
+          exact ENNReal.one_le_ofReal.2 (hJ1 x)
+      _ = ∫⁻ _ in q '' graphOver f B', 1 ∂(μHE[n] : Measure (Amb n ℓ)) :=
+          (harea B' hB' hB'R fun _ => 1).symm
+      _ = (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f B') := setLIntegral_one _
+  -- (P6): `F` pulls `Hⁿ`-null sets back to `Lⁿ`-null subsets of `B`.
+  have hP6 : ∀ Y : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) Y = 0 →
+      ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R → q (graphPoint x (f x)) ∉ Y := by
+    intro Y hY
+    obtain ⟨Y', hYY', hY'm, hY'0⟩ := exists_measurable_superset_of_null hY
+    have hB'm : MeasurableSet (closedBall (0 : Rn n) R ∩ Fh ⁻¹' Y') :=
+      measurableSet_closedBall.inter (hFh hY'm)
+    have hB'0 : volume (closedBall (0 : Rn n) R ∩ Fh ⁻¹' Y') = 0 := by
+      refine le_antisymm ?_ zero_le
+      calc volume (closedBall (0 : Rn n) R ∩ Fh ⁻¹' Y')
+          ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall 0 R ∩ Fh ⁻¹' Y')) :=
+            hP5 _ hB'm inter_subset_left
+        _ ≤ (μHE[n] : Measure (Amb n ℓ)) Y' := by
+            refine measure_mono ?_
+            rintro _ ⟨_, ⟨x, ⟨hxB, hxY'⟩, rfl⟩, rfl⟩
+            rw [mem_preimage, hFhF x hxB] at hxY'
+            exact hxY'
+        _ = 0 := hY'0
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hB'0] with x hx hxB hxY
+    exact hx ⟨hxB, by rw [mem_preimage, hFhF x hxB]; exact hYY' hxY⟩
+  -- Step 1: a Borel version `g₂ ≥ 0` of `1_M θ`, and (*) `g₂ ∘ F̂ = 1_M θ ∘ F` a.e. on `B`.
+  obtain ⟨⟨g₂, hg₂m, hg₂0, hg₂⟩, hdens⟩ := Submission.gwe_vgt_weight_density n ℓ U V
+  have hstar : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R →
+      g₂ (Fh x) = V.carrier.indicator V.mult (q (graphPoint x (f x))) := by
+    filter_upwards [hP6 _ (ae_iff.1 hg₂)] with x hx hxB
+    rw [hFhF x hxB]
+    by_contra h
+    exact hx hxB h
+  -- Step 2: `W = J · g₂ ∘ F̂`.
+  have hWm : Measurable fun x => J x * g₂ (Fh x) := hJm.mul (hg₂m.comp hFh)
+  have hW0 : ∀ x, 0 ≤ J x * g₂ (Fh x) := fun x => mul_nonneg (hJ0 x) (hg₂0 _)
+  -- (a): the density of `μ_V`, AREA applied to `1_M θ φ`, and (*).
+  have ha : ∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ≥0∞,
+      ∫⁻ y in q '' graphOver f A, φ y ∂V.weight =
+        ∫⁻ x in A, ENNReal.ofReal (J x * g₂ (Fh x)) * φ (q (graphPoint x (f x))) := by
+    intro A hA hAR φ
+    rw [hdens _ (hFA A hA hAR) φ, harea A hA hAR]
+    refine setLIntegral_congr_fun_ae hA ?_
+    filter_upwards [hstar] with x hx hxA
+    rw [hx (hAR hxA), ENNReal.ofReal_mul (hJ0 x), mul_assoc]
+  -- (b) and (d): `gwe_vgt_transfer_consequences` with `G = F̂`, which equals `F` on `A ⊆ B`.
+  have htr := fun (A : Set (Rn n)) (hA : MeasurableSet A) (hAR : A ⊆ closedBall 0 R) =>
+    Submission.gwe_vgt_transfer_consequences n ℓ V.weight (q '' graphOver f A) A Fh
+      (fun x => J x * g₂ (Fh x)) hA hFh hWm hW0 fun φ _ => by
+        rw [ha A hA hAR φ]
+        exact setLIntegral_congr_fun hA fun x hx => by simp only [hFhF x (hAR hx)]
+  refine ⟨fun x => J x * g₂ (Fh x), hWm, hW0, ha, ?_, ?_, ?_⟩
+  · intro A hA hAR φ hφ
+    rw [(htr A hA hAR).1 φ hφ]
+    exact setIntegral_congr_fun hA fun x hx => by simp only [hFhF x (hAR hx)]
+  · filter_upwards [hstar] with x hx hxR
+    show J x * g₂ (Fh x) = _
+    rw [hJ x, hx (ball_subset_closedBall hxR)]
+  · intro Z hZ
+    filter_upwards [(htr (closedBall 0 R) measurableSet_closedBall subset_rfl).2 Z hZ]
+      with x hx hxB hxZ
+    exact hx hxB (by rw [hFhF x hxB]; exact hxZ)
 
 end Submission
 
