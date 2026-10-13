@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '29,155p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n 'lcmp_|rsd_imrep_compact_measure_ne_top|rsd_cmr_support_subset_of_vanish' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "rg -n 'theorem (countable_meas_level_set_pos|prod_apply_symm|measurable_measure_prodMk_left|lintegral_liminf_le|extraction_forall_of_frequently|integral_withDensity_eq_integral_smul|tendsto_measure_iInter_atTop|closure_eq_iInter_thickening|IsOpen.exists_contDiff_support_eq|IsCompact.exists_cthickening_subset_open)' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "sed -n '1,185p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "sed -n '90,140p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lcmp-independent-audit/Proofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lcmp-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/isolated-comparator-result.json",
+        "/tmp/lcmp-independent-audit/Proofs.lean",
+        "/tmp/lcmp-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "The eight-child split is appropriate for the selected local-comparison theorem. The snapshot contract matches the workspace contract and submission byte-for-byte; package revisions match the pinned Mathlib and SimonGMT revisions. The snapshot name search found no matches. Independently checked the prose proofs, elaborated all eight standalone types before declaring the children, and compiled their supplied proofs and the conditional parent assembly. Every axiom report contains only propext, Classical.choice and Quot.sound. The assembly's fourteen hypothesis types match exactly the six recorded prerequisites and eight proposed children, and its conclusion matches the immutable handoff. It preserves the corrected slice sign and chooses W, φ and e before the competitor S. All names are bare identifiers; the current DAG has no collisions for the six new names. Both reused declarations have comparator acceptance and identical frozen types. Dependency traversal found no cycles, and the child proofs justify empty depends_on lists. Current subtraction uses the frozen contract instance; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type agree. The proof handles empty K separately, then constructs the distance cutoff with a finite Lipschitz constant and verifies its bounds and compact containment. Lipschitz regularity suffices for the parent's slicing argument."
+    },
+    {
+      "key": "imrep_local_finiteness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse has the identical accepted frozen type. The withDensity identity gives finite weighted measure on K; positivity of integer multiplicity bounds the unweighted Hausdorff measure. The proof requires no openness of U and establishes both conclusions."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute continuity transfers a.e. strong measurability, and restriction commutes with the density as claimed. The pinned Bochner identity applies without integrability or regularity assumptions on ω, proving the exact universally quantified action identity."
+    },
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses the frozen Euclidean coefficient norm and admissibility of both ω and −ω. The bound |c| ≤ 1 controls the signed evaluation before taking the mass supremum. Equality only on forms supported in G is sufficient, exactly as stated."
+    },
+    {
+      "key": "mass_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The smooth cutoff construction supplies a neighbourhood of C on which χ equals one. Multiplication preserves the test-form conditions and admissibility; the remaining form has topological support disjoint from C. The argument proves the stated inequality for arbitrary G and U."
+    },
+    {
+      "key": "good_slice_level",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction and pushforward produce finite measures, supplying the needed Tonelli and countable-atom hypotheses. Two Fatou arguments provide finite majorants with zero liminf. The proof correctly establishes D_j(t) ≤ G_j(t) using the positive sequence h_k, then extracts a strictly increasing subsequence. All three conclusions match the exact type."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse has the identical accepted frozen type. Relatively compact balls in U minus K place every exterior point in the defined zero region. The resulting identity support F = K minus zeroRegion F proves compactness without assuming ambient closedness of the support."
+    },
+    {
+      "key": "compact_outer_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Decreasing positive-radius thickenings give admissible neighbourhoods with intersection E. Local finiteness of ν supplies continuity from above; no finiteness of μ is needed. Passing to the limit remains valid for every extended nonnegative c, including infinity."
+    }
+  ],
+  "required_changes": []
+}

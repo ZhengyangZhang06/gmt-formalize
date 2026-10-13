@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.good_slice_level-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "depth": 3,
+  "title": "Choice of a good slicing level and of a subsequence (step 5 of the parent proof)",
+  "statement": "Let P ∈ ℕ, let (ν_j)_{j∈ℕ} and (κ_j)_{j∈ℕ} be measures on ℝ^P, f : ℝ^P → ℝ Borel measurable, a < b real and A := {x : a < f(x) < b}. Assume ν_j(A) < ∞ for every j, ν_j(A) → 0 as j → ∞, and κ_j(A) < ∞ for every j. Then there are t ∈ (a, b) and a strictly increasing φ : ℕ → ℕ such that (i) κ_j({f = t}) = 0 for every j; (ii) D_j(t) < ∞ for every j; (iii) D_{φ(j)}(t) → 0 as j → ∞; where D_j(t) := liminf_{h → 0, h > 0} ofReal(h⁻¹)·ν_j({x : t − h < f(x) < t}) ∈ [0, ∞] (liminf along the filter 𝓝[>] 0).",
+  "lean_statement": "∀ (P : ℕ) (ν κ : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (a b : ℝ), Measurable f → a < b → (∀ j, ν j {x | a < f x ∧ f x < b} < ∞) → Tendsto (fun j => ν j {x | a < f x ∧ f x < b}) atTop (𝓝 0) → (∀ j, κ j {x | a < f x ∧ f x < b} < ∞) → ∃ t ∈ Ioo a b, ∃ φ : ℕ → ℕ, StrictMono φ ∧ (∀ j, κ j {x | f x = t} = 0) ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν j {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) < ∞) ∧ Tendsto (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (φ j) {x | t - h < f x ∧ f x < t}) (𝓝[>] 0)) atTop (𝓝 0)",
+  "lean_name": "lcmp_exists_good_slice_level",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-good-s-2d2986292d-a1"
+}

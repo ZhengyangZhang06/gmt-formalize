@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "depth": 3,
+  "title": "Triangle inequality for local mass",
+  "statement": "Let P, k ∈ ℕ, U, G ⊆ ℝ^P, X, Y, Z ∈ 𝒟_k(U) (contract GeometricCurrentOn U k) and c ∈ ℝ with |c| ≤ 1, and suppose Z(ω) = X(ω) + c·Y(ω) for every ω ∈ 𝒟^k(U) with tsupport ω ⊆ G. Then M_G(Z) ≤ M_G(X) + M_G(Y), where M_G is the SimonGMT local mass massOn (supremum in [0, ∞] of ofReal(T(ω)) over ω ∈ 𝒟^k(U) with tsupport ω ⊆ G and Euclidean coefficient norm |ω(x)| ≤ 1 for all x).",
+  "lean_statement": "∀ (P k : ℕ) (U G : Set (Euclid P)) (X Y Z : GeometricCurrentOn U k) (c : ℝ), |c| ≤ 1 → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ G → Z ω = X ω + c * Y ω) → Z.massOn G ≤ X.massOn G + Y.massOn G",
+  "lean_name": "lcmp_massOn_le_add_of_eval_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1"
+}

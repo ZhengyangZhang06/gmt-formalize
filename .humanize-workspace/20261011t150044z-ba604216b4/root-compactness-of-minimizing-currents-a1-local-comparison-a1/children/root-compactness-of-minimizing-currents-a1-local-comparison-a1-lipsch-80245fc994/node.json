@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.lipschitz_cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "depth": 3,
+  "title": "Lipschitz cut-off adapted to a compact set (step 2 of the parent proof)",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open, K ⊆ U compact and ε > 0. Then there are ψ : ℝ^P → ℝ and L ∈ [0, ∞) such that ψ is L-Lipschitz, 0 ≤ ψ(x) ≤ 1 for all x, ψ = 1 on K, the set W₀ := {x : ψ(x) > 0} is contained in thickening(ε, K) = {x : dist(x, K) < ε} (Mathlib Metric.thickening ε K), and closure(W₀) is compact and contained in U (contract CompactlyContained W₀ U).",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (ε : ℝ), IsOpen U → IsCompact K → K ⊆ U → 0 < ε → ∃ (ψ : Euclid P → ℝ) (L : NNReal), LipschitzWith L ψ ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x ∈ K, ψ x = 1) ∧ {x | 0 < ψ x} ⊆ thickening ε K ∧ CompactlyContained {x | 0 < ψ x} U",
+  "lean_name": "lcmp_exists_lipschitz_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-lipsch-80245fc994-a1"
+}
