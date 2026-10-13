@@ -451,6 +451,102 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, Lemma 1.2** ("only if", C¹ pieces of a chart), assuming the C¹ approximation
+of Lipschitz functions (Ch. 2, Theorem 1.5).  Countably many balls `B_r(c)` with
+`B̄_{2r}(c) ⊆ V` cover `V` (Lindelöf); `ψ` is Lipschitz on `B̄_{2r}(c)`, so `f ∘ ψ` has a Lipschitz
+extension `ũ` from `B̄_r(c)` (McShane), and `C¹` functions `G_k` agree with `ũ` off a set of
+measure `< (k+1)⁻¹`.  The pieces are `B̄_r(c) ∩ {ũ = G_k}` inside `C' = B̄_{2r}(c)`, enumerated
+by `ℕ` with an empty piece as padding; the remainder lies in `⋃_b ⋂_k {ũ_b ≠ G_{b,k}}`, a null
+set. -/
+theorem Submission.dor_lmbsf_cp_chart_c1_pieces : (∀ (m : ℕ) (u : Euclid m → ℝ) (K : NNReal), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧ volume {y | u y ≠ G y} < ε) → ∀ (m P : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (f : Euclid P → ℝ) (L : NNReal), IsOpen V → ContDiffOn ℝ 1 ψ V → LipschitzWith L f → ∃ (C C' : ℕ → Set (Euclid m)) (F : ℕ → Euclid m → ℝ), (∀ k, IsCompact (C k) ∧ IsCompact (C' k) ∧ Convex ℝ (C' k) ∧ C k ⊆ interior (C' k) ∧ C' k ⊆ V ∧ ContDiff ℝ 1 (F k) ∧ ∀ y ∈ C k, f (ψ y) = F k y) ∧ volume (V \ ⋃ k, C k) = 0 := by
+  classical
+  intro CA m P V ψ f L hV hψ hf
+  -- balls `B_r(c)` with `r > 0` and `B̄_{2r}(c) ⊆ V`; countably many of them cover `V`
+  let B := {p : Euclid m × ℝ // 0 < p.2 ∧ closedBall p.1 (2 * p.2) ⊆ V}
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun b : B => ball b.1.1 b.1.2) (fun _ => isOpen_ball)
+  have hcovV : V ⊆ ⋃ b ∈ T, ball b.1.1 b.1.2 := by
+    intro v hv
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hV v hv
+    have hsub : closedBall v (2 * (ε / 3)) ⊆ V :=
+      (closedBall_subset_ball (by linarith)).trans hball
+    let b : B := ⟨(v, ε / 3), by positivity, hsub⟩
+    rw [hTU]
+    exact mem_iUnion.2 ⟨b, mem_ball_self (by positivity)⟩
+  -- on each ball: a Lipschitz extension `u` of `f ∘ ψ` and `C¹` functions `G k` with
+  -- `volume {u ≠ G k} < (k+1)⁻¹`
+  have hdata : ∀ b : B, ∃ (G : ℕ → Euclid m → ℝ) (u : Euclid m → ℝ), (∀ k, ContDiff ℝ 1 (G k)) ∧
+      Continuous u ∧ (∀ y ∈ closedBall b.1.1 b.1.2, f (ψ y) = u y) ∧
+      ∀ k : ℕ, volume {y | u y ≠ G k y} < ((k : ℝ≥0∞) + 1)⁻¹ := by
+    intro b
+    obtain ⟨Λ, hΛ⟩ := (hψ.mono b.2.2).exists_lipschitzOnWith one_ne_zero (convex_closedBall _ _)
+      (isCompact_closedBall _ _)
+    have hu : LipschitzOnWith (L * Λ) (f ∘ ψ) (closedBall b.1.1 b.1.2) :=
+      (hf.comp_lipschitzOnWith hΛ).mono (closedBall_subset_closedBall (by linarith [b.2.1]))
+    obtain ⟨u, hu', hequ⟩ := hu.extend_real
+    have hk : ∀ k : ℕ, ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧
+        volume {y | u y ≠ G y} < ((k : ℝ≥0∞) + 1)⁻¹ := fun k =>
+      CA m u (L * Λ) hu' _ (ENNReal.inv_pos.2 (by simp))
+    choose G hG hGvol using hk
+    exact ⟨G, u, hG, hu'.continuous, fun y hy => hequ hy, hGvol⟩
+  choose G u hG hucont hequ hGvol using hdata
+  have : Countable T := hTc.to_subtype
+  -- the pieces indexed by `Option (T × ℕ)`, with the empty piece at `none`
+  let Cp : Option (T × ℕ) → Set (Euclid m) := fun o =>
+    match o with
+    | none => ∅
+    | some (b, k) => closedBall b.1.1.1 b.1.1.2 ∩ {y | u b.1 y = G b.1 k y}
+  let C'p : Option (T × ℕ) → Set (Euclid m) := fun o =>
+    match o with
+    | none => ∅
+    | some (b, _) => closedBall b.1.1.1 (2 * b.1.1.2)
+  let Fp : Option (T × ℕ) → Euclid m → ℝ := fun o =>
+    match o with
+    | none => 0
+    | some (b, k) => G b.1 k
+  have hprop : ∀ o, IsCompact (Cp o) ∧ IsCompact (C'p o) ∧ Convex ℝ (C'p o) ∧
+      Cp o ⊆ interior (C'p o) ∧ C'p o ⊆ V ∧ ContDiff ℝ 1 (Fp o) ∧
+      ∀ y ∈ Cp o, f (ψ y) = Fp o y := by
+    intro o
+    cases o with
+    | none => exact ⟨isCompact_empty, isCompact_empty, convex_empty, empty_subset _, empty_subset _,
+        contDiff_zero_fun, fun y hy => hy.elim⟩
+    | some bk =>
+      obtain ⟨b, k⟩ := bk
+      refine ⟨(isCompact_closedBall _ _).inter_right
+          (isClosed_eq (hucont b.1) (hG b.1 k).continuous),
+        isCompact_closedBall _ _, convex_closedBall _ _, ?_, b.1.2.2, hG b.1 k, ?_⟩
+      · intro y hy
+        apply ball_subset_interior_closedBall
+        have := hy.1
+        rw [mem_closedBall] at this
+        rw [mem_ball]
+        linarith [b.1.2.1]
+      · intro y hy
+        exact (hequ b.1 y hy.1).trans hy.2
+  obtain ⟨σ, hσ⟩ := exists_surjective_nat (Option (T × ℕ))
+  refine ⟨fun s => Cp (σ s), fun s => C'p (σ s), fun s => Fp (σ s), fun s => hprop (σ s), ?_⟩
+  -- the remainder lies in `⋃_b ⋂_k {u_b ≠ G_{b,k}}`
+  have hsub : V \ ⋃ s, Cp (σ s) ⊆ ⋃ b : T, ⋂ k : ℕ, {y | u b.1 y ≠ G b.1 k y} := by
+    rintro v ⟨hv, hvnot⟩
+    obtain ⟨b, hbT, hvb⟩ := mem_iUnion₂.1 (hcovV hv)
+    refine mem_iUnion.2 ⟨⟨b, hbT⟩, mem_iInter.2 fun k => ?_⟩
+    intro heq
+    obtain ⟨s, hs⟩ := hσ (some (⟨b, hbT⟩, k))
+    apply hvnot
+    refine mem_iUnion.2 ⟨s, ?_⟩
+    rw [hs]
+    exact ⟨ball_subset_closedBall hvb, heq⟩
+  refine measure_mono_null hsub (measure_iUnion_null fun b => ?_)
+  -- each `⋂_k {u_b ≠ G_{b,k}}` has measure `< (n+1)⁻¹ ≤ n⁻¹` for every `n`
+  by_contra hne
+  obtain ⟨n, hn⟩ := ENNReal.exists_inv_nat_lt hne
+  have h1 : volume (⋂ k : ℕ, {y | u b.1 y ≠ G b.1 k y}) ≤ ((n : ℝ≥0∞) + 1)⁻¹ :=
+    (measure_mono (iInter_subset _ n)).trans (hGvol b.1 n).le
+  have h2 : ((n : ℝ≥0∞) + 1)⁻¹ ≤ (n : ℝ≥0∞)⁻¹ :=
+    ENNReal.inv_le_inv.2 le_self_add
+  exact absurd (h1.trans h2) (not_le.2 hn)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
