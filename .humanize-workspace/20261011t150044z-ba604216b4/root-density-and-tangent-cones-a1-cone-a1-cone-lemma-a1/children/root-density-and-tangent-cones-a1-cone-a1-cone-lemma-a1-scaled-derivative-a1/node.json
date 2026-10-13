@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.scaled_derivative-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1",
+  "depth": 4,
+  "title": "Differentiation under the integral sign for the dilation family s ↦ τ(M,θ,ξ)(sⁿω(s·))",
+  "statement": "Let P, n ∈ ℕ, let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) be an integer multiplicity triple in ℝ^P (M = R.carrier, θ = R.mult, ξ = R.orient), let ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) and t > 0. For s ∈ ℝ put G(s) := R.action(y ↦ sⁿ·ω(s·y)) = ∫_M θ(y)·ξ(y)(sⁿω(sy)) dHⁿ(y). Then G has derivative at t equal to R.action(y ↦ n·t^{n−1}·ω(t·y) + tⁿ·Dω(t·y)[y]), where Dω(z)[u] = fderiv ℝ ω z u and n·t^{n−1} means (n : ℝ)·t^{n−1} with natural-number exponent n − 1 (so this coefficient is 0 when n = 0).",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (t : ℝ), 0 < t → HasDerivAt (fun s : ℝ => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))) (R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) + (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y)) t",
+  "lean_name": "dtc_cwv_scaled_action_hasDerivAt",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1",
+      "result_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1-scaled-derivative-a1-a1"
+}
