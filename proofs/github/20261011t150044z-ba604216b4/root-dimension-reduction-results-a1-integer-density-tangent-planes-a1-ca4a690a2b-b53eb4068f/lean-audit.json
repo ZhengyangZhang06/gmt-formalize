@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "03f9e82b45fe5eb6d18006c806143ce3b28c2c49e21c83352c1e5c1da116f93a",
+  "git_delta": {
+    "base_commit": "d887b6d8f7af3c989d123c78c3ffff58f78dbb41",
+    "candidate_commit": "ae1d8342b0e070140eb7cdd80292f9370a4dd8e5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_pc_plane_hausdorff_eq_map",
+    "diff_sha256": "f02bfe03664b946db92f7d85aabb2e9f5cd0030a87d3f9a3d6caa1e206defd23",
+    "source_sha256": "e5db400bc389fd427fbb34059dd8d738bce24bf2df04342f8707ee5463bd8b58",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_pc_plane_hausdorff_eq_map",
+      "statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) = Measure.map (fun s : Euclid n => ∑ i, s i • τ i) volume",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
