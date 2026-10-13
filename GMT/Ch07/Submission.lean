@@ -6,6 +6,8 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.WeightedArea
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -548,6 +550,105 @@ theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid
   · rw [tendsto_iff_norm_sub_tendsto_zero]
     exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
       tendsto_one_div_add_atTop_nhds_zero_nat
+
+/-- **Chart transfer of a tangential pairing.**  Let `ψ` be an injective `C¹` immersion of an open
+`V ⊆ ℝᵈ` into `ℝᴾ`, `Y ⊆ C ⊆ V` with `C` compact and `Y` Borel, `w ∈ L¹(Hᵈ⌞ψ(Y))`, and `W` a Borel
+field with `|W| ≤ c'` that is `Hᵈ`-a.e. tangent to `ψ(Y)`.  Then one integrable `Φ`, vanishing off
+`Y`, has `∫_{ψ(Y)} w β[W] dHᵈ = ∫ α[Φ] dLᵈ` whenever `β(ψ(y)) ∘ Dψ(y) = α(y)` on `Y`.  By the area
+formula (Simon Ch. 2, (3.5)) with Jacobian `J = Jψ > 0` on `Y`, the left side is
+`∫_Y J (w ∘ ψ) β(ψ)[W ∘ ψ] dLᵈ`, and the tangency pulls back to `Lᵈ`-a.e. `y ∈ Y`.  For a continuous
+left inverse `R` of `Dψ` on `V`, `E = R (W ∘ ψ)` is bounded on `Y` by compactness of `C` and
+`Dψ E = W ∘ ψ` a.e. on `Y`, so `Φ = 1_Y J (w ∘ ψ) E` works. -/
+theorem Submission.dor_lmbsf_pwl_chart_pairing_transfer : ∀ (P d : ℕ) (V C Y : Set (Euclid d)) (ψ : Euclid d → Euclid P) (w : Euclid P → ℝ) (W : Euclid P → Euclid P) (c' : ℝ), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → IntegrableOn w (ψ '' Y) μHE[d] → Measurable W → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[d].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → W x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P)) → ∃ Φ : Euclid d → Euclid d, Integrable Φ ∧ (∀ y, y ∉ Y → Φ y = 0) ∧ ∀ (β : Euclid P → (Euclid P →L[ℝ] ℝ)) (α : Euclid d → (Euclid d →L[ℝ] ℝ)), (∀ y ∈ Y, (β (ψ y)).comp (fderiv ℝ ψ y) = α y) → ∫ x in ψ '' Y, w x * β x (W x) ∂μHE[d] = ∫ y, α y (Φ y) := by
+  intro P d V C Y ψ w W c' hV hψ hψinj hDψ hC hCV hY hYC hw hWm hWb hWt
+  -- a continuous left inverse `R` of `Dψ` on `V`, with `‖R‖ ≤ M` on the compact `C`
+  obtain ⟨R, hRc, hRinv⟩ := Submission.dor_lmbsf_pwl_immersion_left_inverse P d V ψ hV hψ hDψ
+  obtain ⟨M, hM⟩ := hC.exists_bound_of_continuousOn (hRc.mono hCV)
+  have hYV : Y ⊆ V := hYC.trans hCV
+  -- the hypotheses of the area formula hold on `Y`
+  have hdiff : ∀ y ∈ Y, DifferentiableAt ℝ ψ y := fun y hy =>
+    (hψ.differentiableOn one_ne_zero y (hYV hy)).differentiableAt (hV.mem_nhds (hYV hy))
+  have hreg : ∀ y ∈ Y, Injective (fderiv ℝ ψ y) := fun y hy => hDψ y (hYV hy)
+  have hinjY : InjOn ψ Y := hψinj.mono hYV
+  set J : Euclid d → ℝ := Poincare.SimonGMT.Chapter02.areaJacobianAt ψ
+  -- the area formula `∫_{ψ(Y)} g dHᵈ = ∫_Y J (g ∘ ψ) dLᵈ`, for arbitrary `g`
+  have harea : ∀ g : Euclid P → ℝ, ∫ x in ψ '' Y, g x ∂μHE[d] = ∫ y in Y, J y * g (ψ y) := by
+    intro g
+    have := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+      hY hdiff hreg hinjY g
+    simp only [finrank_euclideanSpace_fin, smul_eq_mul] at this
+    rw [this, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- `J (w ∘ ψ)` is integrable on `Y`
+  have hJw : IntegrableOn (fun y => J y * w (ψ y)) Y := by
+    have := Poincare.SimonGMT.Chapter02.integrableOn_image_iff_integrableOn_areaJacobian_smul
+      hY hdiff hreg hinjY w
+    simp only [finrank_euclideanSpace_fin, smul_eq_mul] at this
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact this.1 hw
+  -- the tangency of `W` pulls back along `Hᵈ⌞ψ(Y) = ψ_#(J Lᵈ⌞Y)`, as `J > 0` on `Y`
+  have htan : ∀ᵐ y ∂(volume.restrict Y),
+      W (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P) := by
+    have hmap := Poincare.SimonGMT.Chapter02.map_withDensity_areaJacobian_eq hY hdiff hreg hinjY
+    simp only [finrank_euclideanSpace_fin] at hmap
+    have hp := hWt
+    rw [← hmap] at hp
+    have hcont : ContinuousOn ψ Y := fun x hx => (hdiff x hx).continuousAt.continuousWithinAt
+    have hae : AEMeasurable ψ ((μHE[d].restrict Y).withDensity
+        (fun x => ENNReal.ofReal (Poincare.SimonGMT.Chapter02.areaJacobianAt ψ x))) :=
+      (hcont.aemeasurable hY).mono_ac (withDensity_absolutelyContinuous _ _)
+    have h1 := ae_of_ae_map hae hp
+    rw [ae_withDensity_iff
+      (Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt ψ).ennreal_ofReal] at h1
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at h1
+    filter_upwards [h1, ae_restrict_mem hY] with y hy hyY
+    have hJ : Poincare.SimonGMT.Chapter02.areaJacobianAt ψ y ≠ 0 := by
+      rw [Ne, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_zero_iff_not_injective, not_not]
+      exact hreg y hyY
+    have hJpos : 0 < Poincare.SimonGMT.Chapter02.areaJacobianAt ψ y :=
+      lt_of_le_of_ne (Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg ψ y) (Ne.symm hJ)
+    exact hy (by simpa using hJpos) y hyY rfl
+  -- the chart field `E = R (W ∘ ψ)`: a.e.-strongly measurable on `Y`, with `|E| ≤ M c'` there
+  set E : Euclid d → Euclid d := fun y => R y (W (ψ y)) with hEdef
+  have hEm : AEStronglyMeasurable E (volume.restrict Y) := by
+    have hR : AEStronglyMeasurable R (volume.restrict Y) :=
+      (hRc.mono hYV).aestronglyMeasurable hY
+    have hWψ : AEStronglyMeasurable (fun y => W (ψ y)) (volume.restrict Y) :=
+      (hWm.comp_aemeasurable ((hψ.continuousOn.mono hYV).aemeasurable hY)).aestronglyMeasurable
+    exact (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Euclid P) (F := Euclid d)).continuous
+      |>.comp_aestronglyMeasurable (hR.prodMk hWψ)
+  have hEb : ∀ᵐ y ∂(volume.restrict Y), ‖E y‖ ≤ M * c' := by
+    filter_upwards [ae_restrict_mem hY] with y hy
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM y (hYC hy))
+    exact (ContinuousLinearMap.le_opNorm _ _).trans
+      (mul_le_mul (hM y (hYC hy)) (hWb _) (norm_nonneg _) hM0)
+  -- `Φ = 1_Y J (w ∘ ψ) E`
+  set Φ : Euclid d → Euclid d := Y.indicator (fun y => (J y * w (ψ y)) • E y) with hΦdef
+  have hΦi : Integrable Φ := by
+    rw [hΦdef, integrable_indicator_iff hY]
+    exact hJw.smul_bdd (M * c') hEm hEb
+  refine ⟨Φ, hΦi, fun y hy => by simp [hΦdef, indicator_of_notMem hy], ?_⟩
+  intro β α hβα
+  rw [harea]
+  have hcompl : ∀ y, y ∉ Y → α y (Φ y) = 0 := fun y hy => by
+    simp [hΦdef, indicator_of_notMem hy]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := volume)
+    (f := fun y => α y (Φ y)) hcompl]
+  refine setIntegral_congr_ae hY ?_
+  -- for a.e. `y ∈ Y`, `W(ψ(y)) = Dψ(y) z` gives `E(y) = R(y) Dψ(y) z = z`, so
+  -- `J w(ψ(y)) β(ψ(y))[W(ψ(y))] = J w(ψ(y)) β(ψ(y))[Dψ(y) E(y)] = α(y)[Φ(y)]`
+  filter_upwards [ae_restrict_iff' hY |>.1 htan] with y hyt hyY
+  obtain ⟨z, hz⟩ := hyt hyY
+  have hz' : fderiv ℝ ψ y z = W (ψ y) := hz
+  have hEz : E y = z := by
+    have := congrArg (fun T : Euclid d →L[ℝ] Euclid d => T z) (hRinv y (hYV hyY))
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at this
+    rw [hEdef]
+    simp only
+    rw [← hz', this]
+  have hE : fderiv ℝ ψ y (E y) = W (ψ y) := by rw [hEz, hz']
+  rw [hΦdef, indicator_of_mem hyY, map_smul, ← hβα y hyY, ContinuousLinearMap.comp_apply, hE,
+    smul_eq_mul]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
