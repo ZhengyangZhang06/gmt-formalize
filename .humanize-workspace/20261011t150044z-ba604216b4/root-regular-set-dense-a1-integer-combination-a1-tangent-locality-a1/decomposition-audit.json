@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_tendsto_measure_inter_div|instHasBesicovitchCovering|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_homothety_image",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|abbrev Euclid|rsdic_tl_|tangent_iff|ae_tangent",
+        "tendsto_nhds_zero|Tendsto.const_mul|continuousAt_toReal",
+        "div_le_of_le_mul|ofReal_mul\\x27|theorem sub_mul",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-locality-audit-7e5tnko7/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-locality-audit-7e5tnko7/Inst.lean",
+        "python3 /tmp/tangent-locality-audit-7e5tnko7/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/parent-child-handoff.json",
+        "/tmp/tangent-locality-audit-7e5tnko7/All.lean",
+        "/tmp/tangent-locality-audit-7e5tnko7/Inst.lean",
+        "/tmp/tangent-locality-audit-7e5tnko7/ae_excess_NodeChallenge.lean",
+        "/tmp/tangent-locality-audit-7e5tnko7/excess_density_NodeChallenge.lean",
+        "/tmp/tangent-locality-audit-7e5tnko7/blowup_scaling_NodeChallenge.lean",
+        "/tmp/tangent-locality-audit-7e5tnko7/pointwise_comparison_NodeChallenge.lean"
+      ],
+      "conclusion": "The split is appropriate: four distinct analytic obligations, together with the accepted tangent_growth dependency, establish the exact selected parent. Snapshot declarations and compiler sources agree. All four standalone comparator challenges elaborate without child implementations. The complete child proofs and exact parent assembly compile using only propext, Classical.choice and Quot.sound. The copied tangent_growth declaration matches its accepted implementation. Explicit elaboration confirms ENNReal arithmetic and the Euclidean PiLp-2 metric. All proposed names are fresh bare identifiers, with no reservations found in the DAG or worker registry. The sole internal dependency, pointwise_comparison on blowup_scaling, is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ae_excess",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and hypotheses. Countable compact localization supplies finite measures for Besicovitch differentiation. Restriction identities, positive finite denominators, and measurable subtraction justify the estimate; ε ≥ 1 includes ε = ∞. Quotient convergence yields every ε outside one common null set. The proof is complete and non-circular."
+    },
+    {
+      "key": "excess_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger contract for arbitrary A and B is valid: subadditivity requires neither measurability nor A ⊆ B. Local finiteness justifies cancellation of a/2, yielding growth with constant 2·ofReal(C). Choosing ε = δ/(2·ofReal(C)+1) proves the stated ENNReal limit. Nonpositive C and n = 0 are covered. Prose and exact type agree."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The norm and set identities, followed by isometry invariance and nonzero homothety scaling, prove the exact formula for arbitrary S and R. Positivity of r supplies every required nonzero condition; negative R and n = 0 cause no gap. The fresh name is unreserved, and the identical accepted cross-branch type creates no conflict."
+    },
+    {
+      "key": "pointwise_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The proof establishes Borel blow-up images and integrability before splitting the Bochner integrals. Its declared scaling dependency and the density limit make their difference tend to zero, transferring both tangent implications while preserving dimension. The argument uses no parent theorem and completes the parent assembly with a Q-independent exceptional set."
+    }
+  ],
+  "required_changes": []
+}

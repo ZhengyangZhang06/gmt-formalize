@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "A current vanishing on forms supported away from a compact set has compact support inside it",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, K ⊆ U compact, and F ∈ 𝒟_n(U) with F(ω) = 0 for every ω ∈ 𝒟^n(U) whose topological support is disjoint from K. Then spt F ⊆ K and spt F is compact. Here spt F = U ∖ Z(F) (GeometricCurrentOn.support), Z(F) being the union of all open W with closure(W) compact, closure(W) ⊆ U and F(ω) = 0 for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support",
+  "lean_name": "rsd_cmr_support_subset_of_vanish",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1"
+}
