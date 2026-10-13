@@ -359,6 +359,38 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Signed first-row cofactors as restricted Leibniz sums: `(-1)^q` times the minor of the
+`r × (r + 1)` array `N` with column `q` deleted is the sum of `sgn σ * ∏ t, N t (σ t.succ)` over
+the permutations `σ` of `Fin (r + 1)` with `σ 0 = q`.  Both sides are the determinant of the
+matrix with row `0` equal to `Pi.single q 1` and row `t.succ` equal to `N t`. -/
+theorem Submission.deformation_ipl_mwc_pi_cofactor_leibniz : ∀ (r : ℕ) (N : Fin r → Fin (r + 1) → ℝ) (q : Fin (r + 1)), (-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => N t (q.succAbove s)) = ∑ σ : Equiv.Perm (Fin (r + 1)), (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, N t (σ t.succ) := by
+  intro r N q
+  let A : Matrix (Fin (r + 1)) (Fin (r + 1)) ℝ := Matrix.of (Matrix.vecCons (Pi.single q 1) N)
+  -- Laplace expansion along row `0`: only the column `j = q` survives.
+  have h1 : A.det = (-1 : ℝ) ^ (q : ℕ) *
+      Matrix.det (Matrix.of fun t s : Fin r => N t (q.succAbove s)) := by
+    rw [Matrix.det_succ_row_zero, Finset.sum_eq_single q]
+    · have hsub : A.submatrix Fin.succ q.succAbove =
+          Matrix.of fun t s : Fin r => N t (q.succAbove s) := by
+        ext t s
+        simp [A]
+      rw [hsub]
+      simp [A]
+    · intro j _ hj
+      simp [A, hj]
+    · intro h
+      exact absurd (Finset.mem_univ q) h
+  -- Leibniz formula for `Aᵀ`: the row-`0` factor `Pi.single q 1 (σ 0)` selects `σ 0 = q`.
+  have h2 : A.det = ∑ σ : Equiv.Perm (Fin (r + 1)),
+      (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, N t (σ t.succ) := by
+    rw [← Matrix.det_transpose, Matrix.det_apply']
+    refine Finset.sum_congr rfl (fun σ _ => ?_)
+    rw [Fin.prod_univ_succ]
+    simp only [A, Matrix.transpose_apply, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_succ, Pi.single_apply]
+    split_ifs <;> ring
+  rw [← h1, h2]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
