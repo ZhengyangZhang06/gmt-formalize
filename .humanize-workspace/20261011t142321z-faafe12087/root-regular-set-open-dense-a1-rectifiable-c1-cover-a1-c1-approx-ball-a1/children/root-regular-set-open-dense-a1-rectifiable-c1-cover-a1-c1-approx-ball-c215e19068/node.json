@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.clm_lusin_closed-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1",
+  "depth": 4,
+  "title": "Lusin's theorem for Borel maps ℝⁿ → L(ℝⁿ, ℝ) on Borel sets of finite measure",
+  "statement": "Let n ∈ ℕ and ℝⁿ = EuclideanSpace ℝ (Fin n), with Lebesgue measure Lⁿ (volume). Let F : ℝⁿ → L(ℝⁿ, ℝ) be Borel measurable, where L(ℝⁿ, ℝ) is the space of continuous linear maps ℝⁿ → ℝ with the operator norm and its Borel σ-algebra. Let S ⊆ ℝⁿ be a Borel set with Lⁿ(S) < ∞ and let δ ∈ (0, ∞]. Then there is a closed set C ⊆ S with Lⁿ(S \\ C) < δ such that F is continuous on C.",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → (Rn n →L[ℝ] ℝ)), Measurable F → ∀ S : Set (Rn n), MeasurableSet S → volume S ≠ ∞ → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ C : Set (Rn n), C ⊆ S ∧ IsClosed C ∧ volume (S \\ C) < δ ∧ ContinuousOn F C",
+  "lean_name": "rsod_c1ab_clm_lusin_closed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-c215e19068-a1"
+}

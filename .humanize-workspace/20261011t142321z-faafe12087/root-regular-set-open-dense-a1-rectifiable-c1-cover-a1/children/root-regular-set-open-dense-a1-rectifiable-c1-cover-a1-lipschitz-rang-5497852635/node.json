@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.lipschitz_range_c1_cover-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1",
+  "depth": 3,
+  "title": "Lipschitz image covered by C¹ images up to an Hⁿ-null set (Simon 3.1.2, first half)",
+  "statement": "Let n, ℓ ∈ ℕ, K ∈ ℝ≥0 and F : ℝⁿ → ℝ^{n+ℓ} be K-Lipschitz. Then there are N₀ ⊆ ℝ^{n+ℓ} with Hⁿ(N₀) = 0 (Hⁿ = μHE[n]) and maps G_k : ℝⁿ → ℝ^{n+ℓ} (k ∈ ℕ), each of class C¹, such that F(ℝⁿ) ⊆ N₀ ∪ ⋃_k G_k(ℝⁿ).",
+  "lean_statement": "∀ (n ℓ : ℕ) (F : Rn n → Amb n ℓ) (K : ℝ≥0), LipschitzWith K F → ∃ (N₀ : Set (Amb n ℓ)) (G : ℕ → Rn n → Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ k, ContDiff ℝ 1 (G k)) ∧ range F ⊆ N₀ ∪ ⋃ k, range (G k)",
+  "lean_name": "rsod_lipschitz_range_subset_c1_ranges",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-lipschitz-rang-5497852635-a1"
+}
