@@ -13233,6 +13233,31 @@ theorem Submission.chart_approx_tangent_and_differential : ∀ (n ℓ p : ℕ) (
   filter_upwards [hA, hBC] with u hAu hBCu huV huM
   exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
 
+/-- **De Giorgi's theorem** (Simon Ch. 3, Theorem 4.3 and its proof, `chapter-03.txt` lines
+576–746). A Gauss–Green pair exists by the "⇒" direction of (4.1). For any pair `(μ, ν)`, (‡) and
+(‡‡) hold at every `x ∈ ∂*E`. `∂*E ⊆ U` is Borel and `μ(ℝ^{n+1} ∖ ∂*E) = 0` (line 584). As
+`μ` has unit-multiplicity tangent planes at every point of `∂*E`, the measure form of Theorem 1.6
+"⇐" and density comparison with `Hⁿ` make `∂*E` countably `n`-rectifiable with `μ = Hⁿ ⌞ ∂*E`
+(line 604, "By 1.6 and 3.6 of Ch. 1"). -/
+theorem Submission.deGiorgiTheorem_holds : DeGiorgiTheorem := by
+  intro n U E hU hE hper
+  -- A Gauss–Green pair exists: the "⇒" direction of (4.1).
+  refine ⟨((Submission.gaussGreenRepresentation_holds n U E hU hE).1).mp hper, ?_⟩
+  intro μ ν hμν
+  -- (‡) and (‡‡) at every point of `∂*E`.
+  have hT := Submission.deGiorgi_tangent_measure n U E μ ν hU hE hμν
+  have hH := Submission.deGiorgi_blowUp_tendsto_halfSpace n U E μ ν hU hE hμν
+  obtain ⟨hμU, hμK, hνm, hν1, -⟩ := hμν
+  -- `∂*E` is a Borel subset of `U` that carries `μ`.
+  have hmeas := Submission.deGiorgi_measurableSet_reducedBoundary (n + 1) U μ ν hU hμU hμK hνm hν1
+  have hfull := Submission.deGiorgi_measure_compl_reducedBoundary (n + 1) U μ ν hU hμU hμK hνm hν1
+  -- Rectifiability of `∂*E` and `μ = Hⁿ ⌞ ∂*E`, from the unit-multiplicity tangent planes (‡).
+  obtain ⟨hR, hM⟩ := Submission.deGiorgi_rectifiable_measure_eq_hausdorff
+    Submission.rectifiable_of_approx_tangent_measure
+    Submission.approximateTangentCharacterizations_hold.1 n 1 U (reducedBoundary U μ ν) μ hU hμU
+    hμK hmeas (fun x hx ↦ hx.1) hfull (fun x hx ↦ ⟨_, hT x hx⟩)
+  exact ⟨hR, hM, hT, hH⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
