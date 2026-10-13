@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (currentEval|ConvergesWeakly|dilationCLM|dilation|blowUp|IsBoundaryOfRegion)|abbrev MultiVector",
+        "ContinuousOn.measurable_piecewise|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_congr_fun|theorem IsCompact.tendsto_subseq|theorem norm_image_sub_le_of_norm_fderiv_le|continuousOn_fderiv_of_isOpen",
+        "codim1_zsl_gbl_(blowUp_mass_bound|rescaled_graph_flattening|centre_chart_offsets|blowUp_graph_representation)",
+        "git show 5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gbl-independent-audit-93bc6v4i/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gbl-independent-audit-93bc6v4i/ProofAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d752561a6/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/isolated-comparator-result.json",
+        "/tmp/gbl-independent-audit-93bc6v4i/FrozenTypes.lean",
+        "/tmp/gbl-independent-audit-93bc6v4i/FrozenTypes.log",
+        "/tmp/gbl-independent-audit-93bc6v4i/ProofAudit.lean",
+        "/tmp/gbl-independent-audit-93bc6v4i/ProofAudit.log"
+      ],
+      "conclusion": "Project, Mathlib and SimonGMT revisions match the pins; workspace Contract and Submission match the frozen Contract. Independently elaborated all five one-line propositions with autoImplicit=false, before declaring any child. Each matches its prose and contains no placeholder, alias or self-reference. All names are bare identifiers; the four new names have no matches in the DAG or searched libraries. The reused declaration has an identical frozen type and a passing comparator. Recompiled its accepted implementation together with the four supplied scratch proofs: every child uses only propext, Classical.choice and Quot.sound. The exact selected parent assembles from these children and its three existing prerequisites, with no additional axioms or circular dependency. The split is appropriate and dependencies are acyclic. Verified the integral-restriction lemma requires neither integrability nor measurability of the smaller set. The Jacobian uses continuous-linear-map adjoint/composition and a real determinant; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_corr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the comparator-accepted declaration. The affine inverse, support transport and compactness arguments prove both correspondence directions for arbitrary U. Multilinearity supplies precisely λ⁻ⁿ, including n=0, and current linearity proves the evaluation identity without circular reliance."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean quantifiers agree. The support case split correctly handles arbitrary U through currentEval. testform_corr supplies an admissible pulled-back form; the ENNReal estimate yields the valid real bound using max(C,0), and scaling cancels exactly. The eventual index is uniform over all admissible forms. Its sole dependency is correctly directed."
+    },
+    {
+      "key": "graph_flattening",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives C₀≥0, bounds the rescaled values at zero, and extracts one convergent subsequence by finite-dimensional compactness. Continuity of Du and the mean-value estimate establish both eventual differentiability and uniform value/derivative bounds on every ball. The chain-rule cancellation is valid, and no convergence assumption on t or condition u(0)=0 is silently used."
+    },
+    {
+      "key": "centre_offsets",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orthogonality and isometry give the required coordinate bounds. Spanning supplies centre coordinates, whose convergence follows by squeezing. Nearby carrier points eventually enter the chart; the chart identity and positive-scale division then produce exactly the stated offsets. No continuity or differentiability of u is assumed implicitly."
+    },
+    {
+      "key": "graph_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both external mathematical inputs are explicit hypotheses, supplied by the parent's existing prerequisites, so the empty child dependency list is sound. The proof establishes measurability, domain inclusion, support-based integral restriction, C¹ rescaling, and the exact Jacobian/orientation identity. It also covers nonpositive R through the empty-ball support condition. These conclusions provide precisely the measurable sets and H3 required by flat_limit."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1.graph_flattening-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1",
+  "depth": 5,
+  "title": "Rescalings of a C¹ map with Du(0) = 0 and bounded offsets flatten in C¹ along a subsequence (supplied steps 2–5, hypotheses (H1)–(H2) of flat_limit)",
+  "statement": "Let m, k ∈ ℕ, δ > 0, C₀ ∈ ℝ and u : ℝ^m → ℝ^k be C¹ on ball(0, δ) ⊆ ℝ^m with Du(0) = 0 (fderiv ℝ u 0 = 0). Let s_i ∈ ℝ^m, t_i ∈ ℝ^k and λ_i > 0 (i ∈ ℕ) with s_i → 0 and λ_i → 0. Assume that for all sufficiently large i there is w ∈ ℝ^m with |w| ≤ C₀, s_i + λ_iw ∈ ball(0, δ) and |u(s_i + λ_iw) − t_i| ≤ C₀λ_i. Put g_i(w) := λ_i^{−1}(u(s_i + λ_iw) − t_i). Then there are a strictly increasing σ : ℕ → ℕ and b ∈ ℝ^k such that: (H1) for every R > 0 and all sufficiently large i, g_{σ(i)} is differentiable at every w ∈ ball(0, R); (H2) for all R > 0 and ε > 0 and all sufficiently large i, every w ∈ ball(0, R) satisfies |g_{σ(i)}(w) − b| < ε and ‖Dg_{σ(i)}(w)‖ < ε (operator norm of fderiv ℝ g_{σ(i)} w).",
+  "lean_statement": "∀ (m k : ℕ) (u : Euclid m → Euclid k) (δ C₀ : ℝ) (s : ℕ → Euclid m) (t : ℕ → Euclid k) (lams : ℕ → ℝ), 0 < δ → ContDiffOn ℝ 1 u (ball 0 δ) → fderiv ℝ u 0 = 0 → (∀ i, 0 < lams i) → Tendsto s atTop (𝓝 0) → Tendsto lams atTop (𝓝 0) → (∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i) → ∃ (σ : ℕ → ℕ) (b : Euclid k), StrictMono σ ∧ (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, DifferentiableAt ℝ (fun w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i))) w) ∧ ∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, ‖(lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i)) - b‖ < ε ∧ ‖fderiv ℝ (fun w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i))) w‖ < ε",
+  "lean_name": "codim1_zsl_gbl_rescaled_graph_flattening",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-c9857d071e-a1"
+}
