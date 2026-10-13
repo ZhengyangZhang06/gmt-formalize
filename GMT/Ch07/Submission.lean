@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Squared columns of a derivative are bounded by its squared rows: for any `f : ℝⁿ → ℝᵏ` and
+`v`, `Σᵢ |Df(v)eᵢ|² ≤ Σⱼ ‖Dfʲ(v)‖²`, where `fʲ = projⱼ ∘ f`.  If `f` is not differentiable at `v`,
+then `Df(v) = 0` and the left side is `0`.  Otherwise `Dfʲ(v) = projⱼ ∘ Df(v)` by the chain rule;
+the Riesz representative `u` of a functional `ψ` on `ℝⁿ` has `|u| = ‖ψ‖` and `uᵢ = ⟨u, eᵢ⟩ = ψ(eᵢ)`,
+so `‖ψ‖² = Σᵢ ψ(eᵢ)²`, and exchanging the two finite sums gives equality. -/
+theorem Submission.dorag_tes_gt_fderiv_columns_sq_le_rows_sq : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2 := by
+  intro n k f v
+  by_cases hf : DifferentiableAt ℝ f v
+  · have hrow : ∀ ψ : Euclid n →L[ℝ] ℝ,
+        ∑ i : Fin n, ψ (EuclideanSpace.single i (1 : ℝ)) ^ 2 = ‖ψ‖ ^ 2 := by
+      intro ψ
+      rw [← LinearIsometryEquiv.norm_map (InnerProductSpace.toDual ℝ (Euclid n)).symm ψ,
+        EuclideanSpace.real_norm_sq_eq]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← InnerProductSpace.toDual_symm_apply, EuclideanSpace.inner_single_right, one_mul,
+        conj_trivial]
+    have hder : ∀ j : Fin k, fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v =
+        (EuclideanSpace.proj j : Euclid k →L[ℝ] ℝ).comp (fderiv ℝ f v) := fun j =>
+      ((EuclideanSpace.proj j : Euclid k →L[ℝ] ℝ).hasFDerivAt.comp v hf.hasFDerivAt).fderiv
+    refine le_of_eq ?_
+    calc ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+        = ∑ i : Fin n, ∑ j : Fin k, fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ)) j ^ 2 :=
+          Finset.sum_congr rfl fun i _ => EuclideanSpace.real_norm_sq_eq _
+      _ = ∑ j : Fin k, ∑ i : Fin n, fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ)) j ^ 2 :=
+          Finset.sum_comm
+      _ = ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2 :=
+          Finset.sum_congr rfl fun j _ => by rw [hder j, ← hrow]; rfl
+  · rw [fderiv_zero_of_not_differentiableAt hf]
+    simp only [zero_apply, norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
+      Finset.sum_const_zero]
+    exact Finset.sum_nonneg fun j _ => sq_nonneg _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
