@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.local_plane_tangent-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "depth": 5,
+  "title": "A set that coincides with x + V near x has approximate tangent space V at x",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P an arbitrary set, x ∈ ℝ^P, V ⊆ ℝ^P a linear subspace with dim V = n, and δ > 0. Suppose that for every z ∈ ℝ^P with |z − x| < δ, z ∈ M ⟺ z − x ∈ V. Then V is the approximate tangent space of M at x in the sense of Simon Ch. 3, 1.4 (HasApproximateTangentSpaceAt n M x V): for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,r}(M)} f dHⁿ → ∫_V f dHⁿ as r → 0⁺, where η_{x,r}(y) = r⁻¹(y − x).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (δ : ℝ), Module.finrank ℝ V = n → 0 < δ → (∀ z : Euclid P, dist z x < δ → (z ∈ M ↔ z - x ∈ V)) → HasApproximateTangentSpaceAt n M x V",
+  "lean_name": "cmcdtfrpi_local_plane_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-f8e8152751-a1"
+}

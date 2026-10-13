@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.finite_piece_imrep-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3–6 of the parent proof: the triple (C, θ, ξ), its IMRep fields, the splitting of the action integral over the disjoint pieces, and the computation of R.measure. Here they are stated for an arbitrary finite family of disjoint pieces. The parent instantiates it with the open faces F̆_p = Φ_p((0,1)^k), m_p = |β_p|, ξ_p = ±e_p and G_p = Φ_p.
+
+Notation. Hᵏ := μHE[k] on ℝ^P and C := ⋃_{q∈S} F_q.
+
+1. Carrier. C is Borel, as a finite union of Borel sets (Finset.measurableSet_biUnion). C ⊆ U because each F_q ⊆ U.
+2. Uniqueness of the piece. If p, q ∈ S, q ≠ p and x ∈ F_p, then x ∉ F_q, by the disjointness hypothesis.
+3. Multiplicity. Let θ(x) := Σ_{q∈S} 1_{F_q}(x) · m_q ∈ ℕ, the sum of the indicators of the F_q with constant values m_q.
+ - θ is measurable: each summand is the indicator of a Borel set with a constant value, and ℕ carries the discrete σ-algebra, so the finite sum is measurable (Finset.measurable_sum).
+ - By step 2, θ(x) = m_p for x ∈ F_p, p ∈ S.
+ - Hence θ > 0 on C, since every point of C lies in some F_p with m_p > 0.
+4. Orientation. List S as p₁, …, p_N (S.toList). Define ξ(x) := ξ_{p_i} for the least i with x ∈ F_{p_i}, and ξ(x) := 0 if x ∉ C. Formally, ξ(x) is the right fold over the list of (q, acc) ↦ (if x ∈ F_q then ξ_q else acc), starting from 0.
+ - By induction on the list, ξ is strongly measurable: the empty fold is constant, and each step is an if-then-else on a Borel set between a constant and a strongly measurable function (StronglyMeasurable.ite). So ξ is AE-strongly measurable for Hᵏ⌞C.
+ - By step 2 and induction on the list, ξ(x) = ξ_p whenever x ∈ F_p, p ∈ S: every entry q ≠ p has x ∉ F_q, and the entry p returns ξ_p.
+5. Countable rectifiability.
+ - With the list p₁, …, p_N, define F_j := G_{p_{j+1}} for j < N, and F_j := the constant map 0 for j ≥ N. Each F_j is Lipschitz, by hypothesis or because it is constant.
+ - Every x ∈ C lies in some F_p ⊆ range G_p with p = p_{j+1} for some j < N. So C ⊆ M₀ ∪ ⋃_j range F_j with M₀ := ∅, and Hᵏ(∅) = 0.
+ This is CountablyRectifiable k C.
+6. Total weight. The F_p (p ∈ S) are pairwise disjoint and Borel, so ∫⁻_C θ dHᵏ = Σ_{p∈S} ∫⁻_{F_p} θ dHᵏ (lintegral_biUnion_finset). On F_p, θ = m_p (step 3), so ∫⁻_{F_p} θ dHᵏ = m_p Hᵏ(F_p) (setLIntegral_congr_fun, lintegral_const). Hence ∫⁻_C θ dHᵏ = Σ_{p∈S} m_p Hᵏ(F_p), which is finite because every Hᵏ(F_p) < ∞.
+7. Local integrability. For compact K ⊆ U, ∫⁻_{C∩K} θ dHᵏ ≤ ∫⁻_C θ dHᵏ < ∞ (lintegral_mono_set).
+8. Orients. Let x ∈ C, so x ∈ F_p for some p ∈ S. The hypothesis gives Q with HasApproximateTangentSpaceAt k C x Q and IsUnitOrientationOf ξ_p Q, and ξ(x) = ξ_p by step 4. So the orients condition holds at every point of C. Since C is Borel, it holds Hᵏ⌞C-a.e. (ae_restrict_of_forall_mem).
+9. Steps 1 and 3–8 verify every field of IMRep U k for R := (C, θ, ξ).
+10. Action. Let ω ∈ 𝒟ᵏ(U), and write ω also for the underlying form, which is C^∞ (hence continuous) with compact support. By definition, R.action(ω) = ∫_C θ(x) · ξ(x)(ω(x)) dHᵏ(x).
+ - For p ∈ S let g_p(x) := m_p · ξ_p(ω(x)). g_p is continuous, since ξ_p is a continuous linear functional. It has compact support, since ξ_p(0) = 0.
+ - Hᵏ⌞F_p is a finite measure, hence finite on compact sets, so g_p is integrable for it (Continuous.integrable_of_hasCompactSupport).
+ - On F_p the integrand θ(x)ξ(x)(ω(x)) equals g_p(x) (steps 3 and 4). Since F_p is Borel, the integrand is integrable on F_p.
+ - The Bochner integral is additive over finitely many pairwise disjoint Borel sets (integral_biUnion_finset). So R.action(ω) = Σ_{p∈S} ∫_{F_p} θ ξ(ω) dHᵏ = Σ_{p∈S} ∫_{F_p} m_p ξ_p(ω(x)) dHᵏ = Σ_{p∈S} m_p ∫_{F_p} ξ_p(ω(x)) dHᵏ(x) (setIntegral_congr_fun, integral_const_mul).
+11. Mass measure. R.measure = (Hᵏ⌞C).withDensity θ. So R.measure(ℝ^P) = ∫⁻ θ d(Hᵏ⌞C) = ∫⁻_C θ dHᵏ = Σ_{p∈S} m_p Hᵏ(F_p), by withDensity_apply, Measure.restrict_univ and step 6. ∎ If S = ∅, then C = ∅, θ = 0 and ξ = 0: every field holds trivially, and both identities read 0 = 0.
+
+Lean note (checked): a Lean proof of exactly this statement compiles in the comparator scope with only standard axioms. Important pitfall: do not define ξ as a Finset sum of indicators. Finset.stronglyMeasurable_fun_sum needs ContinuousAdd (MultiVector P k), and that instance fails to synthesize in this Mathlib: the Add instance ContinuousLinearMap.add and the AddGroup-derived Add on Covector (Euclid P) k →L[ℝ] ℝ do not unify. The list-fold definition of step 4 with StronglyMeasurable.ite avoids this. The ℕ-valued θ may be a Finset sum (Finset.measurable_sum works). Rectifiability: Fn j := if h : j < S.toList.length then G (S.toList.get ⟨j, h⟩) else fun _ => 0, with List.mem_iff_get and Finset.mem_toList.
+
+## Key steps
+
+1. Carrier C = ⋃ F_p is Borel and contained in U. It is countably k-rectifiable via the Lipschitz maps G_p, padded with constant maps and M₀ = ∅.
+2. θ = Σ m_q 1_{F_q} and ξ = ξ_p on F_p (list fold of if-then-else). By disjointness θ = m_p > 0 and ξ = ξ_p on F_p; both are (strongly) measurable.
+3. The orients condition holds at every point of C by hypothesis, hence a.e. on the Borel set C.
+4. Lintegral and Bochner integral split over the disjoint pieces: ∫⁻_C θ = Σ m_p Hᵏ(F_p) < ∞ gives local integrability and R.measure(ℝ^P); action = Σ m_p ∫_{F_p} ξ_p(ω), with continuous compactly supported integrands on finite-measure pieces.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean against the workspace Contract.lean (identical) and the workspace Contract.lean against Submission.lean (identical)`
+- `rg -n 'theorem (Isometry\.euclideanHausdorffMeasure_image|Isometry\.map_euclideanHausdorffMeasure|EuclideanSpace\.euclideanHausdorffMeasure_eq_volume)|theorem isClosedEmbedding|Topology\.IsClosedEmbedding\.measurableEmbedding|theorem restrict_map \(μ|MeasurableEmbedding\.integral_map|setIntegral_eq_integral_of_forall_compl_eq_zero|theorem restrict_restrict \(hs|integral_biUnion_finset|lintegral_biUnion_finset|Submodule\.mem_span_range_iff_exists_fun|finrank_span_eq_card|theorem le_opNorm \(f : E \[⋀|Continuous\.integrable_of_hasCompactSupport|protected theorem ite|ae_restrict_of_forall_mem|Orthonormal\.comp|theorem norm_apply_le|basisFun_apply' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'IMRep|hasApproximateTangentSpaceAt|cmcdtfr|polyhedral|IsLatticeChain' project/GMT -g '*.lean'`
+- `rg -n 'cmcdtfrpi_|isometry_image_integral|local_plane_tangent|coord_plane_orientation|face_union_local_plane|finite_piece_imrep' project mathlib/Mathlib lake-packages-25730c7c/simongmt -g '*.lean' (no match)`
+- `python3 scan of dag.json: lean_name collisions with prefix cmcdtfrpi_ (none among 1619 nodes); identical or overlapping lean_statements (none; only dor_lmb_fc_dtop_isometric_pushforward_im mentions Isometry, a different statement)`
+- `grep in lake-packages-25730c7c/simongmt Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, countablyRectifiable_range, countablyRectifiable_iUnion, blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule) and Chapter06/{Forms,Currents,Mass}.lean (DifferentialForm, IsTestForm, TestFormOn, GeometricCurrentOn.ext, zero_apply, massOn, mass)`
+- `python3 verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') -> replayed scope used for all Lean checks`
+- `lake env lean /tmp/pimdecomp/lean/Types.lean (five child types elaborate); lake env lean /tmp/pimdecomp/lean/Assembly.lean (PIM.assembly: child types + frozen cmcdtfr_face_geometry type imply the selected frozen type; axioms propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/pimdecomp/lean/Small.lean and /tmp/pimdecomp/lean/Big.lean (all five children proved against their exact strings; standard axioms; instance checks); lake env lean /tmp/pimdecomp/lean/Inst*.lean (ContinuousAdd (MultiVector P k) fails to synthesize; the StronglyMeasurable.ite list fold works)`
+- `lake env lean /tmp/pimdecomp/lean/Final.lean (regenerated from the final JSON strings: five child proofs, FINAL.assembly, and FINAL.parent_from_children (frozen face_geometry type ⊢ selected frozen type); no sorry; only propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-9de237faed/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/decomposition-v1.json`
+- `/tmp/pimdecomp/lean/Types.lean`
+- `/tmp/pimdecomp/lean/Assembly.lean`
+- `/tmp/pimdecomp/lean/Small.lean`
+- `/tmp/pimdecomp/lean/Big.lean`
+- `/tmp/pimdecomp/lean/Final.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace, and Submission.lean equals the contract. Its project tree has no reusable proofs: Ch06/Contract.lean only defines lattice chains (IsLatticeChain, main_theorem := by sorry), and Ch07 only defines IMRep. Mathlib supplies every tool used by the children: isometry invariance of μHE and μHE = volume on Euclid d (Geometry/Euclidean/Volume/Measure.lean); Isometry.isClosedEmbedding; IsClosedEmbedding.measurableEmbedding; MeasurableEmbedding.restrict_map and integral_map; restrict_restrict; setIntegral_eq_integral_of_forall_compl_eq_zero; integral_biUnion_finset; lintegral_biUnion_finset; Submodule.mem_span_range_iff_exists_fun; finrank_span_eq_card; ContinuousAlternatingMap.le_opNorm; Orthonormal.comp; EuclideanSpace.basisFun_apply; PiLp.norm_apply_le; Continuous.integrable_of_hasCompactSupport; StronglyMeasurable.ite; ae_restrict_of_forall_mem. SimonGMT Chapter03/Rectifiable.lean supplies CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt and the flat model hasApproximateTangentSpaceAt_submodule, which local_plane_tangent localizes. Mathlib has no polyhedral-chain or IMRep material, and no declaration or DAG node uses the prefix cmcdtfrpi_. Lean checks in the replayed comparator scope: all five child types elaborate; the assembly derives the selected frozen type from them and the frozen cmcdtfr_face_geometry type; all five children were proved against their exact strings; Final.lean re-checks everything from the final JSON strings. Every check uses only propext, Classical.choice and Quot.sound. Instance finding: ContinuousAdd (MultiVector P k) fails to synthesize, so finite_piece_imrep's orientation is a list fold, not a Finset sum.
