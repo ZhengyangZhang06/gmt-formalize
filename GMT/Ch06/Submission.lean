@@ -623,4 +623,151 @@ theorem Submission.dgc_cylinder_volume :
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
+/-- **Choice of a good centre** (Simon Ch. 6, proof of the Deformation Theorem 5.1, printed
+(1)–(7)).  Let `d = m + 1 + ℓ`, `𝒥` the `N` index sets `J ⊆ {1, …, d}` with `|J| = m + 2`,
+`q = (1/2, …, 1/2)`, `V = L^d(B_{1/4}(q)) ∈ (0, ∞)` and `β = (2 N 10^{m+2} + 1) / V`, so that
+`2 N 10^{m+2} / β < V`; the constant is `c = N β`.  For `J ∈ 𝒥`, `p_J x = (x_i)_{i ∈ J}` and a
+finite measure `μ`, `Bad J μ` is the set of centres `g` with `|g - p_J q| < 1/4` such that some
+`σ ∈ (0, 1/4)` has `μ(T_J(g, σ)) > β σ^{m+2} μ(ℝ^d)`, where
+`T_J(g, σ) = {x : |p_J x - g - z| < σ for some z ∈ ℤ^J}`.  By `dgc_cylinder_volume` and
+`dgc_periodic_maximal`, `A J μ = {a ∈ [0,1]^d : p_J a ∈ Bad J μ}` has `L^d(A J μ) ≤ 10^{m+2} / β`,
+so the `2N` sets `A J μᵢ` miss a point `a` of `B_{1/4}(q) ⊆ [0,1]^d`.  Then
+`Σᵢ (aᵢ - 1/2)² < 1/16` and `|p_J a - p_J q| < 1/4`, hence `μᵢ(T_J(p_J a, σ)) ≤ β σ^{m+2} μᵢ(ℝ^d)`
+for every `J ∈ 𝒥` and `σ ∈ (0, 1/4)`.  By `dgc_tube_cover`,
+`{dist(·, La) < σ} ⊆ ⋃_{J ∈ 𝒥} T_J(p_J a, σ)`, and summing over the `N` sets `J` gives
+`μᵢ{dist(·, La) < σ} ≤ N β σ^{m+2} μᵢ(ℝ^d)`. -/
+theorem Submission.deformation_good_center : ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ c : ℝ≥0, ∀ μ₁ μ₂ : Measure (Eucl (m + 1 + ℓ)), IsFiniteMeasure μ₁ → IsFiniteMeasure μ₂ → ∃ a : Eucl (m + 1 + ℓ), ∑ i, (a i - 1 / 2) ^ 2 < 1 / 16 ∧ ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ σ : ℝ, 0 < σ → σ < 1 / 4 → μ₁ {x | infDist x La < σ} ≤ c * ENNReal.ofReal (σ ^ (m + 2)) * μ₁ univ ∧ μ₂ {x | infDist x La < σ} ≤ c * ENNReal.ofReal (σ ^ (m + 2)) * μ₂ univ := by
+  intro m ℓ hℓ
+  have hkd : m + 2 ≤ m + 1 + ℓ := by omega
+  generalize m + 1 + ℓ = d at hkd ⊢
+  -- `𝒥`: the `N` coordinate sets `J ⊆ {1, …, d}` with `|J| = m + 2`.
+  set 𝒥 : Finset (Finset (Fin d)) := Finset.univ.filter (fun J => J.card = m + 2)
+  set N : ℕ := 𝒥.card
+  -- `q = (1/2, …, 1/2)` and `V = L^d(B_{1/4}(q)) ∈ (0, ∞)`.
+  set q : Eucl d := WithLp.toLp 2 (fun _ => (1 / 2 : ℝ))
+  have hball_pos : 0 < volume (ball q (1 / 4 : ℝ)) := measure_ball_pos _ _ (by norm_num)
+  have hball_lt : volume (ball q (1 / 4 : ℝ)) < ∞ := measure_ball_lt_top
+  set V : ℝ := (volume (ball q (1 / 4 : ℝ))).toReal
+  have hV : 0 < V := ENNReal.toReal_pos hball_pos.ne' hball_lt.ne
+  have hVball : ENNReal.ofReal V = volume (ball q (1 / 4 : ℝ)) := ENNReal.ofReal_toReal hball_lt.ne
+  -- `β = (2 N 10^{m+2} + 1) / V`, so that `2 N 10^{m+2} / β < V`.
+  set β : ℝ := (2 * N * 10 ^ (m + 2) + 1) / V with hβ_def
+  have hβ : 0 < β := by positivity
+  have hβV : 2 * N * (10 ^ (m + 2) / β) < V := by
+    rw [hβ_def, div_div_eq_mul_div, ← mul_div_assoc, div_lt_iff₀ (by positivity)]
+    nlinarith
+  refine ⟨Real.toNNReal (N * β), ?_⟩
+  intro μ₁ μ₂ h₁ h₂
+  -- `p_J x = (x_i)_{i ∈ J}`; the bad set `Bad J μ` of centres `g` near `p_J q` and the set
+  -- `A J μ` of `a ∈ [0,1]^d` with `p_J a ∈ Bad J μ`.
+  let Bad : ∀ J : Finset (Fin d), Measure (Eucl d) → Set (EuclideanSpace ℝ J) := fun J μ =>
+    {g : EuclideanSpace ℝ J | dist g (WithLp.toLp 2 (fun i : J => q i)) < 1 / 4 ∧
+      ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧ ENNReal.ofReal (β * σ ^ Fintype.card J) * μ univ <
+        μ {x | ∃ z : J → ℤ, ∑ i, ((WithLp.toLp 2 (fun i : J => x i) : EuclideanSpace ℝ J) i -
+          g i - z i) ^ 2 < σ ^ 2}}
+  let A : Finset (Fin d) → Measure (Eucl d) → Set (Eucl d) := fun J μ =>
+    {a : Eucl d | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧ WithLp.toLp 2 (fun i : J => a i) ∈ Bad J μ}
+  -- Cylinder bound followed by the maximal estimate: `L^d(A J μ) ≤ 10^{m+2} / β`.
+  have hA : ∀ J ∈ 𝒥, ∀ μ : Measure (Eucl d), IsFiniteMeasure μ →
+      volume (A J μ) ≤ ENNReal.ofReal (10 ^ (m + 2) / β) := by
+    intro J hJ μ hμ
+    have hJc : J.card = m + 2 := (Finset.mem_filter.mp hJ).2
+    have hp : Measurable
+        (fun x : Eucl d => (WithLp.toLp 2 (fun i : J => x i) : EuclideanSpace ℝ J)) :=
+      Continuous.measurable (by fun_prop)
+    have h1 := Submission.dgc_cylinder_volume (Fin d) J (Bad J μ)
+    have h2 := Submission.dgc_periodic_maximal J (Eucl d) μ hμ
+      (fun x : Eucl d => (WithLp.toLp 2 (fun i : J => x i) : EuclideanSpace ℝ J)) hp
+      (WithLp.toLp 2 (fun i : J => q i)) β hβ
+    have h3 : ENNReal.ofReal (10 ^ Fintype.card J / β) = ENNReal.ofReal (10 ^ (m + 2) / β) := by
+      rw [Fintype.card_coe, hJc]
+    exact h1.trans (h2.trans_eq h3)
+  -- The union of the `2N` sets `A J μᵢ` has measure `< L^d(B_{1/4}(q))`.
+  have hU : volume (⋃ J ∈ 𝒥, (A J μ₁ ∪ A J μ₂)) < volume (ball q (1 / 4 : ℝ)) := by
+    calc volume (⋃ J ∈ 𝒥, (A J μ₁ ∪ A J μ₂))
+        ≤ ∑ J ∈ 𝒥, volume (A J μ₁ ∪ A J μ₂) := measure_biUnion_finset_le _ _
+      _ ≤ ∑ J ∈ 𝒥, (ENNReal.ofReal (10 ^ (m + 2) / β) + ENNReal.ofReal (10 ^ (m + 2) / β)) :=
+          Finset.sum_le_sum fun J hJ =>
+            (measure_union_le _ _).trans (add_le_add (hA J hJ μ₁ h₁) (hA J hJ μ₂ h₂))
+      _ = ENNReal.ofReal (2 * N * (10 ^ (m + 2) / β)) := by
+          rw [Finset.sum_const, nsmul_eq_mul, ← ENNReal.ofReal_add (by positivity) (by positivity),
+            ← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          ring
+      _ < ENNReal.ofReal V := (ENNReal.ofReal_lt_ofReal_iff hV).mpr hβV
+      _ = volume (ball q (1 / 4 : ℝ)) := hVball
+  -- Hence some `a ∈ B_{1/4}(q)` lies in no `A J μᵢ`.
+  obtain ⟨a, haball, haA⟩ : ∃ a ∈ ball q (1 / 4 : ℝ), a ∉ ⋃ J ∈ 𝒥, (A J μ₁ ∪ A J μ₂) := by
+    by_contra h
+    push Not at h
+    exact absurd (measure_mono (μ := volume) h) (not_le.mpr hU)
+  have hdist : dist a q < 1 / 4 := mem_ball.mp haball
+  have hqi : ∀ i, q i = 1 / 2 := fun i => rfl
+  -- `a ∈ [0,1]^d`, since `|a_i - 1/2| ≤ |a - q| < 1/4`.
+  have hcube : ∀ i, 0 ≤ a i ∧ a i ≤ 1 := by
+    intro i
+    have h := (PiLp.dist_apply_le a q i).trans_lt hdist
+    rw [Real.dist_eq, hqi] at h
+    have h' := abs_lt.mp h
+    constructor <;> linarith [h'.1, h'.2]
+  -- `|p_J a - p_J q| ≤ |a - q| < 1/4`.
+  have hdistJ : ∀ J : Finset (Fin d), dist (WithLp.toLp 2 (fun i : J => a i) : EuclideanSpace ℝ J)
+      (WithLp.toLp 2 (fun i : J => q i)) < 1 / 4 := by
+    intro J
+    refine lt_of_le_of_lt ?_ hdist
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    apply Real.sqrt_le_sqrt
+    rw [Finset.sum_coe_sort J (fun i => dist (a i) (q i) ^ 2)]
+    exact Finset.sum_le_univ_sum_of_nonneg (fun i => sq_nonneg _)
+  -- Good centres: `p_J a ∉ Bad J μ` gives the tube estimate for every `σ ∈ (0, 1/4)`.
+  have hgood : ∀ J ∈ 𝒥, ∀ μ : Measure (Eucl d), a ∉ A J μ → ∀ σ : ℝ, 0 < σ → σ < 1 / 4 →
+      μ {x | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2} ≤
+        ENNReal.ofReal (β * σ ^ (m + 2)) * μ univ := by
+    intro J hJ μ haJ σ hσ hσ'
+    have hJc : J.card = m + 2 := (Finset.mem_filter.mp hJ).2
+    by_contra hlt
+    push Not at hlt
+    apply haJ
+    refine ⟨hcube, hdistJ J, σ, hσ, hσ', ?_⟩
+    rw [Fintype.card_coe, hJc]
+    exact hlt
+  have hnot : ∀ J ∈ 𝒥, a ∉ A J μ₁ ∧ a ∉ A J μ₂ := fun J hJ =>
+    ⟨fun h => haA (mem_iUnion₂.mpr ⟨J, hJ, Or.inl h⟩),
+      fun h => haA (mem_iUnion₂.mpr ⟨J, hJ, Or.inr h⟩)⟩
+  -- Tube cover and summation over the `N` sets `J`.
+  have hfinal : ∀ μ : Measure (Eucl d), (∀ J ∈ 𝒥, a ∉ A J μ) →
+      ∀ La : Set (Eucl d), La = {y | ∃ J : Finset (Fin d), J.card = m + 2 ∧
+        ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ σ : ℝ, 0 < σ → σ < 1 / 4 →
+      μ {x | infDist x La < σ} ≤
+        (Real.toNNReal (N * β) : ℝ≥0∞) * ENNReal.ofReal (σ ^ (m + 2)) * μ univ := by
+    intro μ hμa La hLa σ hσ hσ'
+    have hsub : {x | infDist x La < σ} ⊆
+        ⋃ J ∈ 𝒥, {x : Eucl d | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2} := by
+      intro x hx
+      obtain ⟨J, hJ, z, hz⟩ := Submission.dgc_tube_cover d (m + 2) hkd a La hLa σ x hx
+      exact mem_iUnion₂.mpr ⟨J, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩, z, hz⟩
+    calc μ {x | infDist x La < σ}
+        ≤ μ (⋃ J ∈ 𝒥, {x : Eucl d | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2}) :=
+          measure_mono hsub
+      _ ≤ ∑ J ∈ 𝒥, μ {x : Eucl d | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2} :=
+          measure_biUnion_finset_le _ _
+      _ ≤ ∑ J ∈ 𝒥, ENNReal.ofReal (β * σ ^ (m + 2)) * μ univ :=
+          Finset.sum_le_sum fun J hJ => hgood J hJ μ (hμa J hJ) σ hσ hσ'
+      _ = (Real.toNNReal (N * β) : ℝ≥0∞) * ENNReal.ofReal (σ ^ (m + 2)) * μ univ := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+          change (N : ℝ≥0∞) * _ = ENNReal.ofReal (N * β) * _ * _
+          rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity),
+            ENNReal.ofReal_natCast]
+          ring
+  -- Conclusion.
+  have hsum : ∑ i, (a i - 1 / 2) ^ 2 < 1 / 16 := by
+    have h := hdist
+    rw [EuclideanSpace.dist_eq, Real.sqrt_lt' (by norm_num)] at h
+    simp only [Real.dist_eq, sq_abs, hqi] at h
+    norm_num at h ⊢
+    exact h
+  exact ⟨a, hsum, fun La hLa σ hσ hσ' =>
+    ⟨hfinal μ₁ (fun J hJ => (hnot J hJ).1) La hLa σ hσ hσ',
+      hfinal μ₂ (fun J hJ => (hnot J hJ).2) La hLa σ hσ hσ'⟩⟩
+
 end GMT.Ch06
