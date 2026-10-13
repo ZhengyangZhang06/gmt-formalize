@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65f8ee40459da799e417991dac5c9ada57e0ff66774a19aacaaa5e7b506fbc47",
+  "git_delta": {
+    "base_commit": "547d2352955a27db3c954ba9f9225fd9f94d35eb",
+    "candidate_commit": "14da046868d0d233df262173008a1912b96f87e4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_ds_fderiv_dirDeriv_eq",
+    "diff_sha256": "a92df8bb43f2e780214d736874cd3ea820b38afea4488cd662c96ca2bdf2d082",
+    "source_sha256": "d52e7957e4cc9babc59fe45d072192c832e5970895f90d6c9e43d2640b225f02",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_ds_fderiv_dirDeriv_eq",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (v : Rn n → Rn ℓ) (e : Rn n), IsOpen U → ContDiffOn ℝ 2 v U → ∀ x ∈ U, fderiv ℝ (fun z => fderiv ℝ v z e) x = fderiv ℝ (fderiv ℝ v) x e",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
