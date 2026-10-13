@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e02d05613d4ae337c068643b8f54b1769b9512e88533a91c6a3fbfb908f23ebb",
+  "git_delta": {
+    "base_commit": "d770bf91a0d09bfa19f0d7aebc171ffb97122641",
+    "candidate_commit": "79f67f54610dfc196a4b0a5e0b0dced7438957af",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_rh_integrand_identity",
+    "diff_sha256": "c2d7484e16623e9124ba86826c1d48f0c6766985eb2b1011fa8a38129bba620b",
+    "source_sha256": "bcd4f55d4ec4c410fa3f9a5d47f9f18163f8d90391fcf4bf71d713edd9e41d7e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_rh_integrand_identity",
+      "statement": "∀ (P k : ℕ) (L : Eucl P →L[ℝ] Covector (Eucl P) (k + 1)) (α : Covector (Eucl P) (k + 1)) (x : Eucl P) (u : Fin (k + 1) → Eucl P) (t : ℝ), t ^ (k + 1) * ContinuousAlternatingMap.alternatizeUncurryFin L (Fin.cons x u) + ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) * (t ^ k * (t * L (u j) (Fin.cons x (Fin.removeNth j u)) + α (Fin.cons (u j) (Fin.removeNth j u)))) = t ^ (k + 1) * L x u + ((k : ℝ) + 1) * t ^ k * α u",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
