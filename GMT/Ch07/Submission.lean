@@ -761,6 +761,88 @@ theorem Submission.regcomp_unit_orientation_pairing : ∀ (P n : ℕ) (ξ : Mult
       exact hβ₀.le
     · rw [h (-β₀), ContinuousAlternatingMap.neg_apply, hβ₀τ, neg_neg]
 
+/-- **Mass bound for an integer combination** (Simon Ch. 6, Remark 3.2(1)): if
+`1_M θ ξ = p₁ 1_{M₁} θ₁ ξ₁ + p₂ 1_{M₂} θ₂ ξ₂` holds `Hⁿ`-a.e. for integer multiplicity triples
+`R = (M, θ, ξ)`, `R₁ = (M₁, θ₁, ξ₁)`, `R₂ = (M₂, θ₂, ξ₂)`, then `μ_R ≤ |p₁| μ_{R₁} + |p₂| μ_{R₂}`.
+At a.e. `x ∈ M`, `regcomp_unit_orientation_pairing` gives `β` with `|β|_E ≤ 1` and
+`ξ(x)(β) = 1`, and `|ξᵢ(x)(β)| ≤ |β|_E ≤ 1` at a.e. `x ∈ Mᵢ`; evaluating the identity at `β`
+gives `1_M θ ≤ |p₁| 1_{M₁} θ₁ + |p₂| 1_{M₂} θ₂` a.e.  Since `μ_{R'}` has density `1_{M'} θ'` with
+respect to `Hⁿ`, this bound integrates to the claim. -/
+theorem Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure := by
+  intro P n U R₁ R₂ R p₁ p₂ h
+  -- Step 1: `Hⁿ`-a.e., `x ∈ M'` implies that `ξ'(x)` is a unit orientation
+  have hor : ∀ R' : IMRep U n, ∀ᵐ x ∂μHE[n], x ∈ R'.carrier →
+      ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (R'.orient x) Q := by
+    intro R'
+    filter_upwards [(ae_restrict_iff' R'.measurableSet_carrier).mp R'.orients] with x hx hxM
+    obtain ⟨Q, -, hQ⟩ := hx hxM
+    exact ⟨Q, hQ⟩
+  -- Step 2: at such `x`, `|(1_{M'} θ' ξ')(x)(β)| ≤ 1_{M'} θ'(x)` whenever `|β|_E ≤ 1`
+  have hone : ∀ (R' : IMRep U n) (x : Euclid P),
+      (x ∈ R'.carrier → ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (R'.orient x) Q) →
+      ∀ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 →
+        |R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x β| ≤
+          ((R'.carrier.indicator R'.mult x : ℕ) : ℝ) := by
+    intro R' x hx β hβ
+    by_cases hxM : x ∈ R'.carrier
+    · obtain ⟨Q, hQ⟩ := hx hxM
+      have hle :=
+        ((Submission.regcomp_unit_orientation_pairing P n (R'.orient x) Q hQ).1 β).trans hβ
+      rw [Set.indicator_of_mem hxM, Set.indicator_of_mem hxM, smul_apply, smul_eq_mul, abs_mul,
+        Nat.abs_cast]
+      exact mul_le_of_le_one_right (Nat.cast_nonneg _) hle
+    · rw [Set.indicator_of_notMem hxM, Set.indicator_of_notMem hxM]
+      simp
+  -- Step 3: `μ_{R'}` has the measurable density `1_{M'} θ'` with respect to `Hⁿ`
+  have hM : ∀ R' : IMRep U n,
+      R'.measure = μHE[n].withDensity (R'.carrier.indicator fun x => (R'.mult x : ℝ≥0∞)) := by
+    intro R'
+    rw [IMRep.measure, withDensity_indicator R'.measurableSet_carrier]
+  have hmeas : ∀ R' : IMRep U n, Measurable (R'.carrier.indicator fun x => (R'.mult x : ℝ≥0∞)) :=
+    fun R' => (measurable_from_nat.comp R'.measurable_mult).indicator R'.measurableSet_carrier
+  have hind : ∀ (R' : IMRep U n) (x : Euclid P), R'.carrier.indicator
+      (fun y => (R'.mult y : ℝ≥0∞)) x = ((R'.carrier.indicator R'.mult x : ℕ) : ℝ≥0∞) := by
+    intro R' x
+    by_cases hxM : x ∈ R'.carrier
+    · rw [Set.indicator_of_mem hxM, Set.indicator_of_mem hxM]
+    · rw [Set.indicator_of_notMem hxM, Set.indicator_of_notMem hxM, Nat.cast_zero]
+  -- Step 4: `|p₁| μ_{R₁} + |p₂| μ_{R₂}` has density `|p₁| 1_{M₁} θ₁ + |p₂| 1_{M₂} θ₂`, so it
+  -- suffices to compare the densities `Hⁿ`-a.e.
+  rw [hM R, hM R₁, hM R₂, ← withDensity_smul _ (hmeas R₁), ← withDensity_smul _ (hmeas R₂),
+    ← withDensity_add_left ((hmeas R₁).const_smul _)]
+  refine withDensity_mono ?_
+  -- Step 5: `1_M θ ≤ |p₁| 1_{M₁} θ₁ + |p₂| 1_{M₂} θ₂` wherever the identity and Step 1 hold
+  filter_upwards [h, hor R, hor R₁, hor R₂] with x hx h0 h1 h2
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, hind]
+  by_cases hxM : x ∈ R.carrier
+  swap
+  · rw [Set.indicator_of_notMem hxM, Nat.cast_zero]
+    exact zero_le
+  -- evaluate the identity at a `β` with `|β|_E ≤ 1` and `ξ(x)(β) = 1`
+  obtain ⟨Q, hQ⟩ := h0 hxM
+  obtain ⟨-, β, hβ, hξβ⟩ := Submission.regcomp_unit_orientation_pairing P n (R.orient x) Q hQ
+  have hev := congrArg (fun F : MultiVector P n => F β) hx
+  simp only [Set.indicator_of_mem hxM, add_apply, smul_apply, smul_eq_mul, hξβ, mul_one] at hev
+  have hreal : (R.mult x : ℝ) ≤ (p₁.natAbs : ℝ) * ((R₁.carrier.indicator R₁.mult x : ℕ) : ℝ) +
+      (p₂.natAbs : ℝ) * ((R₂.carrier.indicator R₂.mult x : ℕ) : ℝ) := by
+    rw [hev, Nat.cast_natAbs, Nat.cast_natAbs, Int.cast_abs, Int.cast_abs]
+    calc (p₁ : ℝ) * R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x β +
+          (p₂ : ℝ) * R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x β
+        ≤ |(p₁ : ℝ)| * |R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x β| +
+          |(p₂ : ℝ)| * |R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x β| := by
+          rw [← abs_mul, ← abs_mul]
+          exact add_le_add (le_abs_self _) (le_abs_self _)
+      _ ≤ _ := by
+          gcongr
+          · exact hone R₁ x h1 β hβ
+          · exact hone R₂ x h2 β hβ
+  -- a real inequality between natural numbers
+  have hnat : R.mult x ≤ p₁.natAbs * R₁.carrier.indicator R₁.mult x +
+      p₂.natAbs * R₂.carrier.indicator R₂.mult x := by
+    exact_mod_cast hreal
+  rw [Set.indicator_of_mem hxM]
+  exact_mod_cast hnat
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
