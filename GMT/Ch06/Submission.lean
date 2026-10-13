@@ -359,6 +359,79 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, Proof of Theorem 2.34 (Constancy Theorem, pp. 142–143), display (2):
+`∫ D_j a θ_ε dLⁿ = T(dω_j) = ∂T(ω_j) = 0`.  Here `u(D_j a) = 0` for every `a ∈ C_c^∞` with
+`spt a ⊆ U` plays the role of `∂T = 0`, `φ` the role of the mollifier `ϕ_ε`, and `θ` represents
+`f ↦ u(φ ∗ (1_B f))` on `B = B_ρ(x₀)` (display (1)).  For `a ∈ C_c^∞` with `spt a ⊆ B`, the
+function `d = D_j a` is continuous with `spt d ⊆ spt a ⊆ B`; `φ ∗ a` is `C^∞` with compact support
+and `spt (φ ∗ a) ⊆ B̄_{ρ+ε}(x₀) ⊆ U`; and `D_j (φ ∗ a) = φ ∗ d = φ ∗ (1_B d)`.  Hence
+`0 = u(D_j (φ ∗ a)) = ∫_B d θ = ∫ θ d`, the last step because `d θ` vanishes off `B`. -/
+theorem Submission.constancy_mdc_weak_partials_vanish :
+    ∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ),
+      (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a →
+        tsupport a ⊆ U → ∀ j : Fin n,
+          u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) = 0) →
+      ∀ (x₀ : Eucl n) (ρ ε : ℝ), closedBall x₀ (ρ + ε) ⊆ U →
+      ∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ closedBall 0 ε →
+      ∀ θ : Eucl n → ℝ,
+        (∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume →
+          u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) =
+            ∫ x in ball x₀ ρ, f x * θ x ∂volume) →
+      ∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a →
+        tsupport a ⊆ ball x₀ ρ →
+      ∀ j : Fin n, ∫ x, θ x * fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) ∂volume = 0 := by
+  intro n U u hu x₀ ρ ε hU φ hφ hφc hφs θ h1 a ha hac has j
+  have ha1 : ContDiff ℝ 1 a := ha.of_le (by exact_mod_cast le_top)
+  set v : Eucl n := EuclideanSpace.single j (1 : ℝ) with hv
+  set d : Eucl n → ℝ := fun x => fderiv ℝ a x v with hd
+  -- Step 1: `d = D_j a` is continuous with `spt d ⊆ spt a ⊆ B`, so it is integrable, vanishes
+  -- off `B`, and `1_B d = d`.
+  have hdcont : Continuous d := (ha1.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hdsupp : tsupport d ⊆ tsupport a := tsupport_fderiv_apply_subset ℝ v
+  have hdc : HasCompactSupport d := hac.fderiv_apply ℝ v
+  have hdint : Integrable d volume := hdcont.integrable_of_hasCompactSupport hdc
+  have hdzero : ∀ x, x ∉ ball x₀ ρ → d x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport (fun h => hx (has (hdsupp h)))
+  have hind : (ball x₀ ρ).indicator d = d :=
+    Set.indicator_eq_self.2 ((subset_tsupport d).trans (hdsupp.trans has))
+  -- Step 2: `φ ∗ a` is `C^∞` with compact support and `spt (φ ∗ a) ⊆ B̄_{ρ+ε}(x₀) ⊆ U`, since
+  -- `{φ ∗ a ≠ 0} ⊆ {φ ≠ 0} + {a ≠ 0} ⊆ B̄_ε(0) + B_ρ(x₀)`.
+  have hφli : LocallyIntegrable φ volume := hφ.continuous.locallyIntegrable
+  have hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (convolution φ a (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hφc.contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hφ
+      ha.continuous.locallyIntegrable
+  have hcs : HasCompactSupport (convolution φ a (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hφc.convolution (ContinuousLinearMap.lsmul ℝ ℝ) hac
+  have hts : tsupport (convolution φ a (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ U := by
+    refine (closure_minimal ?_ isClosed_closedBall).trans hU
+    intro x hx
+    obtain ⟨s, hs, t, ht, rfl⟩ :=
+      Set.mem_add.1 (support_convolution_subset (ContinuousLinearMap.lsmul ℝ ℝ) hx)
+    have hs' := hφs (subset_tsupport _ hs)
+    have ht' := has (subset_tsupport _ ht)
+    rw [mem_closedBall, dist_zero_right] at hs'
+    rw [mem_ball, dist_eq_norm] at ht'
+    rw [mem_closedBall, dist_eq_norm]
+    calc ‖s + t - x₀‖ = ‖s + (t - x₀)‖ := by rw [add_sub_assoc]
+      _ ≤ ‖s‖ + ‖t - x₀‖ := norm_add_le _ _
+      _ ≤ ρ + ε := by linarith
+  -- Step 3: the derivative falls on `a`: `D_j (φ ∗ a) = φ ∗ d = φ ∗ (1_B d)`.
+  have hderiv : (fun x => fderiv ℝ (convolution φ a (ContinuousLinearMap.lsmul ℝ ℝ) volume) x v) =
+      convolution φ ((ball x₀ ρ).indicator d) (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    rw [hind]
+    funext x
+    rw [(hac.hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hφli ha1 x).fderiv]
+    exact convolution_precompR_apply (ContinuousLinearMap.lsmul ℝ ℝ) hφli (hac.fderiv ℝ)
+      (ha1.continuous_fderiv one_ne_zero) x v
+  -- Step 4: `0 = u(D_j (φ ∗ a)) = u(φ ∗ (1_B d)) = ∫_B d θ`, and `d θ` vanishes off `B`.
+  have hu0 := hu _ hsm hcs hts j
+  rw [← hv, hderiv, h1 d hdint.integrableOn] at hu0
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := ball x₀ ρ)
+    (fun x hx => by simp only [hd] at hdzero ⊢; rw [hdzero x hx, mul_zero])]
+  simpa only [mul_comm] using hu0
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
