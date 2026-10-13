@@ -1224,6 +1224,194 @@ theorem Submission.doragm_smoothed_annular_bounds : ∀ (P n : ℕ) (U W : Set (
           ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity)]
       _ ≤ _ := by gcongr
 
+/-- **Annular monotonicity with bounded mean curvature** (Simon Ch. 4, 3.5 → 3.6 and 3.17,
+"letting `ε ↓ 0`").  Let `μ = θ Hⁿ⌞M`, `|H| ≤ κ`,
+`F_y(x) = |(x − y) − p_{TₓM}(x − y)|²/|x − y|^{n+2}` and `0 < s < t` with `B̄_t(y) ⊆ W`.  Then
+(M1) `∫_{B̄_t∖B̄_s} F_y dμ + e^{κs} s⁻ⁿ μ(B̄_s) ≤ e^{κt} t⁻ⁿ μ(B̄_t)` and
+(M2) `e^{−κt} t⁻ⁿ μ(B̄_t) ≤ e^{−κs} s⁻ⁿ μ(B̄_s) + ∫_{B̄_t∖B̄_s} F_y dμ`.
+
+Choose `δ₀ > 0` with `B̄_{t+δ₀}(y) ⊆ W` and the widths `A_m = 1 + (δ₀/t)/(m + 1) ↓ 1`, and apply
+the smoothed bounds `Submission.doragm_smoothed_annular_bounds` with `A = A_m`.  As `m → ∞`,
+`μ(B̄_{A_mρ}) → μ(B̄_ρ)` by continuity from above (`μ(B̄_{t+δ₀}) < ∞`).  For `ν = F_y μ` the inner
+annuli `B̄_t∖B̄_{A_ms}` increase to `B̄_t∖B̄_s`, and the outer annuli `B̄_{A_mt}∖B̄_s` decrease to
+it with `ν(B̄_{A_0t}∖B̄_s) ≤ s⁻ⁿ μ(B̄_{A_0t}) < ∞`, because `F_y(x) ≤ |x − y|⁻ⁿ`.  The coefficients
+converge, and `e^{κs} ≤ e^{A_mκs}` as `κ ≥ 0`; passing to the limit gives (M1) and (M2). -/
+theorem Submission.doragm_annular_monotonicity : ∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (H : Euclid P → Euclid P) (κ : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → ∀ (y : Euclid P) (s t : ℝ), 0 < s → s < t → closedBall y t ⊆ W → (∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure) + ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * R.measure (closedBall y s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) ∧ ENNReal.ofReal (Real.exp (-(κ * t)) / t ^ n) * R.measure (closedBall y t) ≤ ENNReal.ofReal (Real.exp (-(κ * s)) / s ^ n) * R.measure (closedBall y s) + ∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure := by
+  intro P n U W R H κ hW hWU hp hH hHκ hFV y s t hs hst hBt
+  have hsm := Submission.doragm_smoothed_annular_bounds P n U W R H κ hW hWU hp hH hHκ hFV y
+  have ht : 0 < t := hs.trans hst
+  -- `κ ≥ 0`, since `‖H y‖ ≤ κ`
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ y)
+  -- `μ` is finite on compact subsets of `U`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K ≠ ∞ := by
+    intro K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact R.locallyIntegrable_mult K hK hKU
+  -- Step 1: `B̄_{t+δ₀}(y) ⊆ W`, so `μ(B̄_ρ(y)) < ∞` for `ρ ≤ t + δ₀`
+  obtain ⟨δ₀, hδ₀, hδ₀W⟩ := (isCompact_closedBall y t).exists_cthickening_subset_open hW hBt
+  rw [cthickening_closedBall hδ₀.le ht.le] at hδ₀W
+  have hfinB : ∀ ρ, ρ ≤ δ₀ + t → R.measure (closedBall y ρ) ≠ ∞ := fun ρ hρ =>
+    hfin _ (isCompact_closedBall y ρ) ((closedBall_subset_closedBall hρ).trans (hδ₀W.trans hWU))
+  -- Step 2: the widths `A_m = 1 + (δ₀/t)/(m + 1)`: `A_m > 1`, `A_m ↓ 1` and `A_m t ≤ t + δ₀`
+  obtain ⟨A, hA1, hAanti, hAlim, hAt⟩ : ∃ A : ℕ → ℝ, (∀ m, 1 < A m) ∧ Antitone A ∧
+      Tendsto A atTop (𝓝 1) ∧ ∀ m, A m * t ≤ δ₀ + t := by
+    have hc : 0 < δ₀ / t := div_pos hδ₀ ht
+    have he : ∀ m : ℕ, 0 < 1 / ((m : ℝ) + 1) := fun m => by positivity
+    have he1 : ∀ m : ℕ, 1 / ((m : ℝ) + 1) ≤ 1 := fun m =>
+      (div_le_one (by positivity)).2 (by linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)])
+    refine ⟨fun m => 1 + δ₀ / t * (1 / ((m : ℝ) + 1)), fun m => ?_, fun i j hij => ?_, ?_,
+      fun m => ?_⟩
+    · dsimp only
+      linarith [mul_pos hc (he m)]
+    · have hij' : (i : ℝ) + 1 ≤ (j : ℝ) + 1 := by exact_mod_cast Nat.add_le_add_right hij 1
+      have := mul_le_mul_of_nonneg_left
+        (one_div_le_one_div_of_le (by positivity : (0 : ℝ) < (i : ℝ) + 1) hij') hc.le
+      dsimp only
+      linarith
+    · have h := (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (δ₀ / t)).const_add 1
+      rwa [mul_zero, add_zero] at h
+    · have h2 : (1 + δ₀ / t * (1 / ((m : ℝ) + 1))) * t = t + δ₀ * (1 / ((m : ℝ) + 1)) := by
+        field_simp
+      dsimp only
+      rw [h2]
+      linarith [mul_le_mul_of_nonneg_left (he1 m) hδ₀.le]
+  have hBA : ∀ m, closedBall y (A m * t) ⊆ W := fun m =>
+    (closedBall_subset_closedBall (hAt m)).trans hδ₀W
+  -- Step 3: for `0 < ρ ≤ t`, the balls `B̄_{A_mρ}` decrease to `B̄_ρ`, so
+  -- `μ(B̄_{A_mρ}) → μ(B̄_ρ)` (continuity from above)
+  have hball : ∀ ρ : ℝ, 0 < ρ → ρ ≤ t →
+      Antitone (fun m => closedBall y (A m * ρ)) ∧
+      (⋂ m, closedBall y (A m * ρ)) = closedBall y ρ ∧
+      Tendsto (fun m => R.measure (closedBall y (A m * ρ))) atTop
+        (𝓝 (R.measure (closedBall y ρ))) := by
+    intro ρ hρ hρt
+    have hanti : Antitone (fun m => closedBall y (A m * ρ)) := fun i j hij =>
+      closedBall_subset_closedBall (mul_le_mul_of_nonneg_right (hAanti hij) hρ.le)
+    have hinter : (⋂ m, closedBall y (A m * ρ)) = closedBall y ρ := by
+      ext x
+      simp only [mem_iInter, mem_closedBall]
+      refine ⟨fun h => ?_, fun h m => h.trans (le_mul_of_one_le_left hρ.le (hA1 m).le)⟩
+      have hlim : Tendsto (fun m => A m * ρ) atTop (𝓝 (1 * ρ)) := hAlim.mul_const ρ
+      rw [one_mul] at hlim
+      exact ge_of_tendsto' hlim h
+    have hfin0 : R.measure (closedBall y (A 0 * ρ)) ≠ ∞ :=
+      hfinB _ ((mul_le_mul_of_nonneg_left hρt (by linarith [hA1 0])).trans (hAt 0))
+    have h := tendsto_measure_iInter_atTop (μ := R.measure)
+      (fun m => measurableSet_closedBall.nullMeasurableSet) hanti ⟨0, hfin0⟩
+    rw [hinter] at h
+    exact ⟨hanti, hinter, h⟩
+  obtain ⟨hanti_s, hinter_s, hlim_s⟩ := hball s hs hst.le
+  obtain ⟨hanti_t, hinter_t, hlim_t⟩ := hball t ht le_rfl
+  have hfin_s : R.measure (closedBall y s) ≠ ∞ := hfinB s (by linarith)
+  have hfin_t : R.measure (closedBall y t) ≠ ∞ := hfinB t (by linarith)
+  -- `ν = F_y μ`, so that `∫⁻_S F_y dμ = ν(S)` for Borel `S`
+  obtain ⟨ν, hν⟩ : ∃ ν : Measure (Euclid P), ∀ S, MeasurableSet S →
+      ∫⁻ x in S, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection
+        (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure = ν S :=
+    ⟨_, fun S hS => (withDensity_apply _ hS).symm⟩
+  have hmeas : ∀ a b : ℝ, MeasurableSet (closedBall y a \ closedBall y b) := fun a b =>
+    measurableSet_closedBall.diff measurableSet_closedBall
+  -- the smoothed bounds (i'_m) and (ii'_m), with the annular integrals written via `ν`
+  have hbd : ∀ m, ν (closedBall y t \ closedBall y (A m * s)) +
+        ENNReal.ofReal (Real.exp (A m * κ * s) / s ^ n) * R.measure (closedBall y s) ≤
+        ENNReal.ofReal (Real.exp (A m * κ * t) / t ^ n) * R.measure (closedBall y (A m * t)) ∧
+      ENNReal.ofReal (Real.exp (-(A m * κ * t)) / t ^ n) * R.measure (closedBall y t) ≤
+        ENNReal.ofReal (Real.exp (-(A m * κ * s)) / s ^ n) * R.measure (closedBall y (A m * s)) +
+        ENNReal.ofReal (A m ^ n) * ν (closedBall y (A m * t) \ closedBall y s) := by
+    intro m
+    rw [← hν _ (hmeas _ _), ← hν _ (hmeas _ _)]
+    exact hsm (A m) s t (hA1 m) hs hst (hBA m)
+  -- Step 4(a): the inner annuli `B̄_t∖B̄_{A_ms}` increase to `B̄_t∖B̄_s`
+  have hin : Tendsto (fun m => ν (closedBall y t \ closedBall y (A m * s))) atTop
+      (𝓝 (ν (closedBall y t \ closedBall y s))) := by
+    have hmono : Monotone fun m => closedBall y t \ closedBall y (A m * s) := fun i j hij =>
+      sdiff_subset_sdiff_right (hanti_s hij)
+    have h := tendsto_measure_iUnion_atTop (μ := ν) hmono
+    rwa [← Set.sdiff_iInter, hinter_s] at h
+  -- Step 4(b): `F_y(x) ≤ |x − y|⁻ⁿ ≤ s⁻ⁿ` off `B̄_s`, as `|v − p v| ≤ |v|`
+  have hF : ∀ x : Euclid P, x ∉ closedBall y s →
+      ‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 /
+        ‖x - y‖ ^ (n + 2) ≤ 1 / s ^ n := by
+    intro x hx
+    rw [mem_closedBall, not_le, dist_eq_norm] at hx
+    have hr : 0 < ‖x - y‖ := hs.trans hx
+    have hperp : ‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ≤
+        ‖x - y‖ := by
+      rw [← Submodule.starProjection_orthogonal_val]
+      exact Submodule.norm_starProjection_apply_le _ _
+    calc ‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 /
+          ‖x - y‖ ^ (n + 2)
+        ≤ ‖x - y‖ ^ 2 / ‖x - y‖ ^ (n + 2) :=
+          div_le_div_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hperp 2) (by positivity)
+      _ = 1 / ‖x - y‖ ^ n := by
+          rw [pow_add, div_mul_eq_div_div_swap, div_self (pow_ne_zero 2 hr.ne')]
+      _ ≤ 1 / s ^ n := one_div_le_one_div_of_le (pow_pos hs n) (pow_le_pow_left₀ hs.le hx.le n)
+  -- Step 4(b): the outer annuli `B̄_{A_mt}∖B̄_s` decrease to `B̄_t∖B̄_s`, the first having
+  -- `ν(B̄_{A_0t}∖B̄_s) ≤ s⁻ⁿ μ(B̄_{A_0t}) < ∞`
+  have hout : Tendsto (fun m => ν (closedBall y (A m * t) \ closedBall y s)) atTop
+      (𝓝 (ν (closedBall y t \ closedBall y s))) := by
+    have hanti' : Antitone fun m => closedBall y (A m * t) \ closedBall y s := fun i j hij =>
+      sdiff_subset_sdiff_left (hanti_t hij)
+    have hinter' : (⋂ m, closedBall y (A m * t) \ closedBall y s) =
+        closedBall y t \ closedBall y s := by
+      rw [← hinter_t]
+      ext x
+      simp only [mem_iInter, Set.mem_sdiff]
+      exact ⟨fun h => ⟨fun m => (h m).1, (h 0).2⟩, fun h m => ⟨h.1 m, h.2⟩⟩
+    have hle : ν (closedBall y (A 0 * t) \ closedBall y s) ≤
+        ENNReal.ofReal (1 / s ^ n) * R.measure (closedBall y (A 0 * t)) := by
+      rw [← hν _ (hmeas _ _)]
+      calc ∫⁻ x in closedBall y (A 0 * t) \ closedBall y s, ENNReal.ofReal
+            (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 /
+              ‖x - y‖ ^ (n + 2)) ∂R.measure
+          ≤ ∫⁻ _ in closedBall y (A 0 * t) \ closedBall y s, ENNReal.ofReal (1 / s ^ n)
+              ∂R.measure :=
+            setLIntegral_mono' (hmeas _ _) fun x hx => ENNReal.ofReal_le_ofReal (hF x hx.2)
+        _ = ENNReal.ofReal (1 / s ^ n) * R.measure (closedBall y (A 0 * t) \ closedBall y s) :=
+            setLIntegral_const _ _
+        _ ≤ ENNReal.ofReal (1 / s ^ n) * R.measure (closedBall y (A 0 * t)) :=
+            mul_le_mul' le_rfl (measure_mono sdiff_subset)
+    have hfin' : ν (closedBall y (A 0 * t) \ closedBall y s) ≠ ∞ :=
+      ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hfinB _ (hAt 0))) hle
+    have h := tendsto_measure_iInter_atTop (μ := ν)
+      (fun m => (hmeas _ _).nullMeasurableSet) hanti' ⟨0, hfin'⟩
+    rwa [hinter'] at h
+  -- Step 5: the coefficients converge
+  have hAκ : Tendsto (fun m => A m * κ) atTop (𝓝 κ) := by
+    have h := hAlim.mul_const κ
+    rwa [one_mul] at h
+  have hexp : ∀ ρ : ℝ,
+      Tendsto (fun m => ENNReal.ofReal (Real.exp (A m * κ * ρ) / ρ ^ n)) atTop
+        (𝓝 (ENNReal.ofReal (Real.exp (κ * ρ) / ρ ^ n))) ∧
+      Tendsto (fun m => ENNReal.ofReal (Real.exp (-(A m * κ * ρ)) / ρ ^ n)) atTop
+        (𝓝 (ENNReal.ofReal (Real.exp (-(κ * ρ)) / ρ ^ n))) := fun ρ =>
+    ⟨ENNReal.tendsto_ofReal (((hAκ.mul_const ρ).rexp).div_const _),
+      ENNReal.tendsto_ofReal (((hAκ.mul_const ρ).neg.rexp).div_const _)⟩
+  have hpow : Tendsto (fun m => ENNReal.ofReal (A m ^ n)) atTop (𝓝 1) := by
+    have h := ENNReal.tendsto_ofReal (hAlim.pow n)
+    rwa [one_pow, ENNReal.ofReal_one] at h
+  rw [hν _ (hmeas _ _)]
+  constructor
+  · -- Step 6, (M1): `e^{κs} ≤ e^{A_mκs}`; pass to the limit in (i'_m)
+    refine le_of_tendsto_of_tendsto' (hin.add tendsto_const_nhds)
+      (ENNReal.Tendsto.mul (hexp t).1 (Or.inr hfin_t) hlim_t (Or.inr ENNReal.ofReal_ne_top))
+      fun m => ?_
+    have hcoef : ENNReal.ofReal (Real.exp (κ * s) / s ^ n) ≤
+        ENNReal.ofReal (Real.exp (A m * κ * s) / s ^ n) := by
+      refine ENNReal.ofReal_le_ofReal
+        (div_le_div_of_nonneg_right (Real.exp_le_exp.2 ?_) (pow_pos hs n).le)
+      rw [mul_assoc]
+      exact le_mul_of_one_le_left (mul_nonneg hκ hs.le) (hA1 m).le
+    exact le_trans (add_le_add le_rfl (mul_le_mul' hcoef le_rfl)) (hbd m).1
+  · -- Step 7, (M2): pass to the limit in (ii'_m)
+    have h := le_of_tendsto_of_tendsto'
+      (ENNReal.Tendsto.mul_const (hexp t).2 (Or.inr hfin_t))
+      ((ENNReal.Tendsto.mul (hexp s).2 (Or.inr hfin_s) hlim_s (Or.inr ENNReal.ofReal_ne_top)).add
+        (ENNReal.Tendsto.mul hpow (Or.inl one_ne_zero) hout (Or.inr ENNReal.one_ne_top)))
+      fun m => (hbd m).2
+    rwa [one_mul] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
