@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4000a1705825dd5c55323efa665968a2253042bef537fdf5feca86b0c348e889",
+  "git_delta": {
+    "base_commit": "996dc91cc54b004033ed752d7aa9d6eae83793ad",
+    "candidate_commit": "cbeda6fb55c2368955f3a9dd9e9cb2c5d473ee69",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_moc_abs_nvector_apply_le",
+    "diff_sha256": "c08457ac8482ae7962c4e08def57c62495cf98d95a35968faad5172fa214e048",
+    "source_sha256": "56aa281f8c84689319ea18e1fe57486f684735cf620a0a2ce61f564f56edf0bc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_moc_abs_nvector_apply_le",
+      "statement": "∀ (P n : ℕ) (w : NVector (Eucl P) n) (θ : Covector (Eucl P) n), ∑ β : SimonMultiIndex n P, (euclideanNVectorCoordinate w β) ^ 2 = 1 → |w θ| ≤ ∑ β : SimonMultiIndex n P, |euclideanCovectorCoordinate θ β|",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
