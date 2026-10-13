@@ -359,6 +359,25 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Ball-volume bound used in step 8 of the proof of Simon Ch. 6, 5.1 (pp. 163–164), with the
+erratum `ω_k ≤ 2^k`: a closed Euclidean ball of radius `r ≥ 0` in `ℝ^ι` has Lebesgue measure at
+most `(2r)^k`, `k = card ι`.  Each coordinate is `1`-Lipschitz, so `B̄_r(c)` lies in the preimage
+under the measure-preserving coordinate map `ofLp` of the sup-metric cube `∏_i [c_i - r, c_i + r]`,
+whose volume is `(2r)^k`. -/
+theorem Submission.dgc_pm_ball_volume_le :
+    ∀ (ι : Type) [Fintype ι] (c : EuclideanSpace ℝ ι) (r : ℝ), 0 ≤ r →
+      volume (closedBall c r) ≤ ENNReal.ofReal ((2 * r) ^ Fintype.card ι) := by
+  intro ι _ c r hr
+  -- `|w_i - c_i| ≤ |w - c| ≤ r`, so `B̄_r(c) ⊆ ofLp⁻¹(Q)`, `Q` the sup-metric ball about `ofLp c`.
+  have hsub : closedBall c r ⊆ WithLp.ofLp ⁻¹' closedBall (WithLp.ofLp c) r := fun w hw =>
+    (dist_pi_le_iff hr).2 fun i => (PiLp.dist_apply_le w c i).trans (mem_closedBall.1 hw)
+  -- `ofLp` is measure preserving and `Q` is closed, so `L^k(ofLp⁻¹(Q)) = volume(Q) = (2r)^k`.
+  calc volume (closedBall c r)
+      ≤ volume (WithLp.ofLp ⁻¹' closedBall (WithLp.ofLp c) r) := measure_mono hsub
+    _ = volume (closedBall (WithLp.ofLp c) r) :=
+        (PiLp.volume_preserving_ofLp ι).measure_preimage measurableSet_closedBall.nullMeasurableSet
+    _ = ENNReal.ofReal ((2 * r) ^ Fintype.card ι) := Real.volume_pi_closedBall _ hr
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
