@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e282950a0239d4b9cfa37c7dc6d0314d12e2ec4358c9bbe148a886077646b79",
+  "git_delta": {
+    "base_commit": "0e4a209c9fe41671c12a988e10b2ded4d11c399e",
+    "candidate_commit": "39d84b7cb10c250dea97e5320d7dd2aa5c82beea",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_vr_cd_dominating_measure",
+    "diff_sha256": "dcd1c23a8f479c93305e78db0f67e771045e3aa89facfc6c6931aea7a93cf208",
+    "source_sha256": "779b814d3cf97c18a02c282f8d3f67431215d800637edaaa7edff8bb425a5e3c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_vr_cd_dominating_measure",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [MeasurableSpace X] (m : ℕ) (a b : Fin m → Measure X), (∀ i, IsFiniteMeasureOnCompacts (a i)) → (∀ i, IsFiniteMeasureOnCompacts (b i)) → ∃ μ₀ : Measure X, IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, a i ≪ μ₀) ∧ ∀ i, b i ≪ μ₀",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
