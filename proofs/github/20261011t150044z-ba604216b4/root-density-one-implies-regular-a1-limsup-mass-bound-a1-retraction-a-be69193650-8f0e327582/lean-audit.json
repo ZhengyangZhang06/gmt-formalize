@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6b1186586581bd387c09fbd26bc48777b586a63ad5e622daee9c52e11a43210f",
+  "git_delta": {
+    "base_commit": "a59808a784efc602484977049b93727d558ebec7",
+    "candidate_commit": "39688605e0a8b891b6984ab2480129644e615ac9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_tangent_projection",
+    "diff_sha256": "f1d2e27533cb4d8224abffcb2c6e3cef0838de78ae8fa634c43e291d53e9c51d",
+    "source_sha256": "8ee360861d49a0243bd88f0497e3c0aa7a7e16b9f99fc4ddeb4373f991c584a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_tangent_projection",
+      "statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ContDiffOn ℝ 1 (fun v => (fderiv ℝ ψ v).range.starProjection) V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
