@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.frame_geometry-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1",
+  "depth": 4,
+  "title": "Coordinates, distance to the plane and the cylinder of an orthonormal frame",
+  "statement": "Let P, n ∈ ℕ, let τ = (τ_1,…,τ_n) be an orthonormal family in ℝ^P = Eucl P, Q := span τ, let p : ℝ^P → ℝⁿ be a continuous linear map with p(y)_i = ⟪τ_i, y⟫ for all y and i, and let d : ℝ^P → ℝ satisfy d(y) = ‖y − Σ_i ⟪τ_i, y⟫ τ_i‖ for all y. Put W′ := {y : ‖p(y)‖ < 1 and d(y) < 3/4}. Then: (a) d is 1-Lipschitz; (b) ‖y‖² = ‖p(y)‖² + d(y)² for all y; (c) the operator norm of p is ≤ 1; (d) p(Σ_i a_i τ_i) = a for every a ∈ ℝⁿ; (e) p(τ_i) = e_i := EuclideanSpace.single i 1 for every i; (f) d(z) = 0 for every z ∈ Q; (g) W′ ⊂⊂ B_2(0) ⊆ ℝ^P, i.e. W′ is open and closure W′ is compact and contained in B_2(0); (h) for every real γ < 3/4 and every compact K ⊆ B_1(0) ⊆ ℝⁿ, the set K′ := p⁻¹(K) ∩ {d ≤ γ} is compact and K′ ⊆ W′.",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P) (p : Eucl P →L[ℝ] Eucl n) (d : Eucl P → ℝ), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → LipschitzWith 1 d ∧ (∀ y, ‖y‖ ^ 2 = ‖p y‖ ^ 2 + d y ^ 2) ∧ ‖p‖ ≤ 1 ∧ (∀ a : Eucl n, p (∑ i, a i • τ i) = a) ∧ (∀ i, p (τ i) = EuclideanSpace.single i (1 : ℝ)) ∧ (∀ z ∈ Submodule.span ℝ (Set.range τ), d z = 0) ∧ CompactlyContainedOpen {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (ball (0 : Eucl P) 2) ∧ ∀ γ : ℝ, γ < 3 / 4 → ∀ K : Set (Eucl n), IsCompact K → K ⊆ ball (0 : Eucl n) 1 → IsCompact (p ⁻¹' K ∩ {y | d y ≤ γ}) ∧ p ⁻¹' K ∩ {y | d y ≤ γ} ⊆ {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4}",
+  "lean_name": "ind_pi_frame_geometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-f-fe9aa3c949-a1"
+}
