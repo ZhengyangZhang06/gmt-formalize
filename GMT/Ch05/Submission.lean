@@ -3491,4 +3491,78 @@ theorem dohr_eb_sch_blowup_holder_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α
 
 end Submission
 
+/-- **Interior `C^{1,α}` estimate on the unit ball** (the case `x₀ = 0`, `R = 1` of the Schauder
+estimate in the elliptic bootstrap for Simon 7.1, second assertion).  Let `w` be `C¹` on `B̆₁(0)`
+with `∫ a(x)[Dw][Dζ] = ∫ Φ(x)[Dζ]` for every `ζ ∈ C¹_c(B̆₁(0); ℝ^ℓ)`, where `a` is Legendre
+elliptic with constant `lam > 0`, `a` and `Φ` are bounded and `α`-Hölder with constant `M`,
+`|w| ≤ M`, and `Dw` is `α`-Hölder on `B̆₁(0)` with some constant.  Then `‖Dw‖ ≤ C` and
+`‖Dw(x) − Dw(y)‖ ≤ C |x − y|^α` on `B̆_{1/2}(0)`, where `C` depends only on `n, ℓ, α, lam, M`.
+Proof: take `δ = 1/16`, `C_δ` from the blow-up estimate and `C = (1024 + 128 C_δ) M`.  Rescaling
+`B̆_ρ(y) ⊆ B̆₁(0)` to `B̆₁(0)` and applying the blow-up estimate there gives
+`ρ^{1+α} ‖Dw(x) − Dw(x')‖ ≤ (ρ^{1+α} K / 16 + 2 C_δ M) |x − x'|^α` on `B̆_{ρ/2}(y)` whenever
+`Dw` is `K`-Hölder on `B̆_ρ(y)`; with the interpolation bound for `‖Dw‖`, the absorption lemma
+for the best scale-weighted Hölder constant concludes. -/
+theorem Submission.dohr_eb_sch_unit_ball_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ lam M : ℝ, 0 < lam → ∃ C : ℝ, 0 ≤ C ∧ ∀ (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ), (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ M) → ContDiffOn ℝ 1 w (ball (0 : Rn n) 1) → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) 1 → ∫ x in ball (0 : Rn n) 1, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in ball (0 : Rn n) 1, Φ x (fderiv ℝ ζ x)) → (∀ x ∈ ball (0 : Rn n) (1 / 2), ‖fderiv ℝ w x‖ ≤ C) ∧ ∀ x ∈ ball (0 : Rn n) (1 / 2), ∀ y ∈ ball (0 : Rn n) (1 / 2), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro n ℓ hn α hα hα1 lam M hlam
+  -- Step 0: `C_δ` from the blow-up estimate with `δ = 1/16`; for `M < 0`, (H5) is impossible.
+  obtain ⟨Cδ, hCδ0, hCδ⟩ := Submission.dohr_eb_sch_blowup_holder_estimate n ℓ hn α hα hα1 lam M
+    (1 / 16) hlam (by norm_num)
+  by_cases hM : 0 ≤ M
+  swap
+  · refine ⟨0, le_rfl, fun a Φ w _ _ _ _ hS _ _ _ => ?_⟩
+    exact absurd ((norm_nonneg _).trans (hS 0 (mem_ball_self one_pos))) hM
+  have hA : 0 ≤ Cδ * (M + M) := mul_nonneg hCδ0 (add_nonneg hM hM)
+  refine ⟨1024 * M + 64 * (Cδ * (M + M)),
+    add_nonneg (mul_nonneg (by norm_num) hM) (mul_nonneg (by norm_num) hA), ?_⟩
+  intro a Φ w hlg hab haH hΦH hS hw hK hweak
+  -- Step 1: the one-scale estimate on every `B̆_ρ(y) ⊆ B̆₁(0)`.  With `w̃(z) = w(y + ρz)`,
+  -- `Dw̃(z) = ρ Dw(y + ρz)` is `ρ^{1+α} K`-Hölder on `B̆₁(0)`, and the blow-up estimate for the
+  -- rescaled data on `B̆₁(0)` (with `S = G = M`) scales back to `B̆_{ρ/2}(y)`.
+  have hstep : ∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 →
+      (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖fderiv ℝ w x - fderiv ℝ w x'‖ ≤ K * ‖x - x'‖ ^ α) →
+      ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖fderiv ℝ w x - fderiv ℝ w x'‖ ≤
+        (1 / 16 * ρ ^ (1 + α) * K + Cδ * (M + M)) * ‖x - x'‖ ^ α := by
+    intro y ρ K hρ hyρ hHol
+    have hsub : ball (y + ρ • (0 : Rn n)) (ρ * 1) ⊆ ball (0 : Rn n) 1 := by
+      rw [smul_zero, add_zero, mul_one]
+      exact ball_subset_ball' (by rw [dist_zero_right]; linarith)
+    obtain ⟨hwt, hdwt, hweakt⟩ := Submission.dohr_eb_sch_weak_eq_affine_rescale n ℓ a Φ w
+      (ball (0 : Rn n) 1) y 0 ρ 1 hρ isOpen_ball hsub hw hweak
+    obtain ⟨h1, h2, h3, h4, h5⟩ := Submission.dohr_eb_sch_ube_rescaled_structure n ℓ a Φ w y ρ α
+      lam M hρ hyρ hα.le hM hlg hab haH hΦH hS
+    have hHolt : ∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1,
+        ‖fderiv ℝ (fun z => w (y + ρ • z)) z - fderiv ℝ (fun z => w (y + ρ • z)) z'‖ ≤
+          ρ ^ (1 + α) * K * ‖z - z'‖ ^ α := by
+      have h := (Submission.dohr_eb_sch_ube_holder_rescale n ℓ (fderiv ℝ w) y ρ 1 α
+        (ρ ^ (1 + α) * K) hρ).mpr fun x hx x' hx' => by
+          rw [mul_one] at hx hx'
+          rw [mul_assoc]
+          exact mul_le_mul_of_nonneg_left (hHol x hx x' hx') (Real.rpow_nonneg hρ.le _)
+      intro z hz z' hz'
+      rw [hdwt z hz, hdwt z' hz']
+      exact h z hz z' hz'
+    have hbl := hCδ (fun z => a (y + ρ • z)) (fun z => ρ • Φ (y + ρ • z))
+      (fun z => w (y + ρ • z)) (ρ ^ (1 + α) * K) M M hM h1 h2 h3 h4 h5 hwt hHolt hweakt
+    have h := (Submission.dohr_eb_sch_ube_holder_rescale n ℓ (fderiv ℝ w) y ρ (1 / 2) α
+      (1 / 16 * (ρ ^ (1 + α) * K) + Cδ * (M + M)) hρ).mp fun z hz z' hz' => by
+        rw [← hdwt z (ball_subset_ball (by norm_num) hz),
+          ← hdwt z' (ball_subset_ball (by norm_num) hz')]
+        exact hbl z hz z' hz'
+    intro x hx x' hx'
+    rw [← mul_one_div ρ 2] at hx hx'
+    rw [mul_assoc (1 / 16 : ℝ)]
+    exact h x hx x' hx'
+  -- Step 2: the interpolation bound `‖Dw(x)‖ ≤ 2M/t + t^α K` on every `B̆_r(x) ⊆ B̆₁(0)`.
+  have hint : ∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r →
+      (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖fderiv ℝ w z - fderiv ℝ w z'‖ ≤ K * ‖z - z'‖ ^ α) →
+      ‖fderiv ℝ w x‖ ≤ 2 * M / t + t ^ α * K := by
+    intro x r t K hxr hK0 ht htr hHol
+    have hsub : ball x r ⊆ ball (0 : Rn n) 1 :=
+      ball_subset_ball' (by rw [dist_zero_right]; linarith)
+    exact Submission.dohr_eb_sch_fderiv_norm_interpolation n ℓ w x r t α M K hα.le hK0 ht htr
+      (hw.mono hsub) (fun z hz => hS z (hsub hz)) hHol
+  -- Step 3: absorption with `g = Dw` and `A = 2 C_δ M`.
+  exact Submission.dohr_eb_sch_ube_absorption n ℓ (fderiv ℝ w) α M (Cδ * (M + M)) hα hα1.le hM
+    hA hK hstep hint
+
 end GMT.Ch05
