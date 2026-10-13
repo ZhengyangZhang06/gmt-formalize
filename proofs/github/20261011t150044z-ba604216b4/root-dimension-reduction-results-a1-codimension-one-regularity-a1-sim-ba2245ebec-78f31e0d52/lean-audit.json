@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6516b4e836bd4eb921758ade01767e1440ded0d3d2ed6b660a4268e3c64184db",
+  "git_delta": {
+    "base_commit": "694745fd2c2d306b62205e16c2452f00ebba09dc",
+    "candidate_commit": "ae89c6129ee45acab619d8b845d5f1ae4220def0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fv_perturbation_injective",
+    "diff_sha256": "ec79cbcae1382307c4e4f2e95a17f3638313f72d4f2314cd7dc8f89b99995413",
+    "source_sha256": "7b2ae63446dc732107abce8725325f43b3b3d0e42574ec68364f5d2c2e33f662",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fv_perturbation_injective",
+      "statement": "∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ c : ℝ, 0 < c ∧ ∀ t : ℝ, |t| < c → Injective (fun x => x + t • Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
