@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.det_dominated_convergence-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1",
+  "depth": 5,
+  "title": "Dominated convergence for integrands h_m·det A_m with uniformly bounded, a.e. convergent matrix entries",
+  "statement": "Let α be a type with a σ-algebra and μ a measure on it. Let n ∈ ℕ and C ∈ ℝ. For m ∈ ℕ and t, s ∈ Fin n let A_m(t,s,·), A₀(t,s,·) : α → ℝ, and let h_m, h₀, H : α → ℝ. Write A_m(x) := (A_m(t,s,x))_{t,s ∈ Fin n} and A₀(x) := (A₀(t,s,x))_{t,s ∈ Fin n} for the real n×n matrices (Matrix.of). Assume:\n(i) every A_m(t,s,·) and every h_m is μ-a.e. strongly measurable;\n(ii) H is μ-integrable;\n(iii) |A_m(t,s,x)| ≤ C for all m, t, s, x;\n(iv) for all sufficiently large m (eventually along atTop), |h_m(x)| ≤ H(x) for every x ∈ α;\n(v) h_m(x) → h₀(x) for μ-a.e. x;\n(vi) for μ-a.e. x, A_m(t,s,x) → A₀(t,s,x) for all t, s.\nThen ∫ h_m(x)·det A_m(x) dμ(x) → ∫ h₀(x)·det A₀(x) dμ(x) as m → ∞ (Bochner integrals). No measurability or integrability of h₀ or A₀ is assumed.",
+  "lean_statement": "∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (n : ℕ) (C : ℝ) (A : ℕ → Fin n → Fin n → α → ℝ) (A₀ : Fin n → Fin n → α → ℝ) (h : ℕ → α → ℝ) (h₀ H : α → ℝ), (∀ m t s, AEStronglyMeasurable (A m t s) μ) → (∀ m, AEStronglyMeasurable (h m) μ) → Integrable H μ → (∀ m t s x, |A m t s x| ≤ C) → (∀ᶠ m in atTop, ∀ x, |h m x| ≤ H x) → (∀ᵐ x ∂μ, Tendsto (fun m => h m x) atTop (𝓝 (h₀ x))) → (∀ᵐ x ∂μ, ∀ t s, Tendsto (fun m => A m t s x) atTop (𝓝 (A₀ t s x))) → Tendsto (fun m => ∫ x, h m x * Matrix.det (Matrix.of fun t s => A m t s x) ∂μ) atTop (𝓝 (∫ x, h₀ x * Matrix.det (Matrix.of fun t s => A₀ t s x) ∂μ))",
+  "lean_name": "deformation_ipl_mwc_mil_tendsto_integral_mul_det",
+  "depends_on": [
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.abs_det_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.abs_det_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-6f1d5bf106-a1"
+}

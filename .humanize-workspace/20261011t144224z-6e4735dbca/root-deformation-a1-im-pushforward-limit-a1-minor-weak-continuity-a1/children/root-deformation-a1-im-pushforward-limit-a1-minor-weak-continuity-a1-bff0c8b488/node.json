@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.coeff_minor_continuity-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Weak continuity of Jacobian minors with a continuous compactly supported coefficient (parent step 2)",
+  "statement": "Let k, Q, r ∈ ℕ, let Ω ⊆ ℝ^k (ℝ^k = Eucl k) be open, ψ : ℝ^k → ℝ Lebesgue-integrable on Ω, g : ℝ^Q → ℝ continuous with compact support, C ≥ 0, and let u_j : ℝ^k → ℝ^Q (j ∈ ℕ) and u₀ : ℝ^k → ℝ^Q all be C-Lipschitz on Ω with u_j → u₀ uniformly on Ω; let a : Fin r → Fin Q and b : Fin r → Fin k. With M_{a,b}(u)(w) := det(EuclideanSpace.proj (a t) (fderiv ℝ u w (EuclideanSpace.single (b s) 1)))_{t,s ∈ Fin r} (Mathlib fderiv, 0 where u is not differentiable; the empty determinant is 1): ∫_Ω ψ(w)·g(u_j(w))·M_{a,b}(u_j)(w) dw → ∫_Ω ψ(w)·g(u₀(w))·M_{a,b}(u₀)(w) dw as j → ∞ (dw = Lebesgue measure).",
+  "lean_statement": "∀ (k Q : ℕ) (Ω : Set (Eucl k)) (ψ : Eucl k → ℝ) (g : Eucl Q → ℝ) (C : ℝ≥0) (u : ℕ → Eucl k → Eucl Q) (u₀ : Eucl k → Eucl Q) (r : ℕ) (a : Fin r → Fin Q) (b : Fin r → Fin k), IsOpen Ω → IntegrableOn ψ Ω (volume : Measure (Eucl k)) → Continuous g → HasCompactSupport g → (∀ j, LipschitzOnWith C (u j) Ω) → LipschitzOnWith C u₀ Ω → TendstoUniformlyOn u u₀ atTop Ω → Tendsto (fun j => ∫ w in Ω, ψ w * g (u j w) * Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t) (fderiv ℝ (u j) w (EuclideanSpace.single (b s) 1))) ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, ψ w * g (u₀ w) * Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t) (fderiv ℝ u₀ w (EuclideanSpace.single (b s) 1))) ∂(volume : Measure (Eucl k))))",
+  "lean_name": "deformation_ipl_mwc_coeff_minor_continuity",
+  "depends_on": [
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_weak_star-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_weak_star-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-bff0c8b488-a1"
+}

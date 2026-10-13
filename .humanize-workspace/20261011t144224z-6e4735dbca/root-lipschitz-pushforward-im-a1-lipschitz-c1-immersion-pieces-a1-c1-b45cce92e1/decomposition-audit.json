@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "ae_differentiableAt|measurableSet_of_differentiableAt|measurable_fderiv|norm_fderiv_le_of_lipschitz|continuousOn_clm_apply|exists_isClosed_sdiff_lt|tendstoUniformlyOn_of_ae_tendsto|addHaar_sphere_of_ne_zero|isClosed_iUnion",
+        "rg -n -i 'lusin|luzin' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function --glob '*.lean'",
+        "lpf_c1r_|exists_contDiff_one_extension_of_whitney|WhitneyExtension",
+        "exists_disjoint_subfamily_covering_enlargement_ball|theorem contDiff_one_iff_fderiv",
+        "theorem contDiff_one_iff_fderiv|BorelSpace.*ContinuousLinearMap|borel.*instMeasurable|instMeasurableSpace",
+        "python3 -I /tmp/c1real-independent-audit-20261012/run.py GMT/Ch06/WhitneyExtension.lean",
+        "python3 -I /tmp/c1real-independent-audit-20261012/run.py Challenges.lean",
+        "python3 -I /tmp/c1real-independent-audit-20261012/run.py Assembly.lean",
+        "python3 -I /tmp/c1real-independent-audit-20261012/run.py Reuse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b45cce92e1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b45cce92e1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/c1real-independent-audit-20261012/Challenges.lean",
+        "/tmp/c1real-independent-audit-20261012/Assembly.lean",
+        "/tmp/c1real-independent-audit-20261012/Reuse.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and the selected handoff's exact contract. The searched Mathlib function directory contains only unrelated Lusin–Souslin mentions; finite-measure Lusin is supplied by pinned SimonGMT. All four one-line propositions independently elaborate in the comparator scope without child implementations, with the intended Euclidean, operator-norm Borel and volume instances. No matrix-unit construction occurs. The unchanged Whitney source and exact child wrapper compile; Whitney, Lusin, Rademacher and Egoroff use only propext, Classical.choice and Quot.sound. An independently written assembly proves the selected frozen parent type from its direct child contracts, including ε = ∞, with only those standard axioms. The four-way split is appropriate: every child contributes, and the sole dependency uniform_remainder → egoroff_closed is correctly directed and acyclic. All four lean_names are bare identifiers and unreserved in the final 210-node DAG."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone Lean proposition. Coordinate Lusin, finite-measure inner approximation, locally finite closed gluing and continuity gluing are justified. The retained F_j handles n = 0, and the geometric defect sum gives ε/4 < ε after the valid finite-ε reduction. The proof is complete and non-circular."
+    },
+    {
+      "key": "egoroff_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary Borel C, pointwise convergence, ε = ∞ and every real radius R. All finite-measure Egoroff hypotheses hold on the annuli. Closed inner approximation and locally finite gluing preserve the required measure bound; each bounded part meets only finitely many pieces, giving uniform convergence. No child or parent conclusion is assumed."
+    },
+    {
+      "key": "uniform_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches all stated hypotheses and quantifiers. The proof establishes bounded nonempty suprema, pointwise convergence and Borel measurability of η_k; both supplied measurability routes are valid. It applies precisely egoroff_closed, then obtains the compact-uniform remainder using boundedness, explicitly treating y = x. The declared dependency is sufficient and non-circular."
+    },
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean type exactly express the Whitney compatibility and extension conclusion. The supplied construction proves finite overlap, the partition derivative bound, differentiability on A and continuity of the derivative across A; its constants and empty/zero-dimensional cases are valid. Independent compilation confirms the pinned implementation proves this exact contract using only permitted axioms. No parent theorem is used."
+    }
+  ],
+  "required_changes": []
+}

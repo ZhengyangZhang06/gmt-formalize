@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.uniform_lipschitz_near_compact-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "depth": 3,
+  "title": "Uniform Lipschitz constant and radius around a compact subset of an open set",
+  "statement": "Let U ⊆ ℝ^P be open, f : ℝ^P → ℝ^Q locally Lipschitz on U, and K ⊆ U compact. Then there are C ≥ 0 and ρ > 0 such that for every x ∈ K, the open ball B_ρ(x) is contained in U and f is C-Lipschitz on B_ρ(x).",
+  "lean_statement": "∀ (P Q : ℕ) (U K : Set (Eucl P)) (f : Eucl P → Eucl Q), IsOpen U → LocallyLipschitzOn U f → IsCompact K → K ⊆ U → ∃ (C : ℝ≥0) (ρ : ℝ), 0 < ρ ∧ ∀ x ∈ K, ball x ρ ⊆ U ∧ LipschitzOnWith C f (ball x ρ)",
+  "lean_name": "lpf_tde_uniform_lipschitz_near_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-un-f5c04592aa-a1"
+}

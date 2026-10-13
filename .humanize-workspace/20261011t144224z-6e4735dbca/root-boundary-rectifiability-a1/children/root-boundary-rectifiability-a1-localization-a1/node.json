@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.localization-a1",
+  "parent_id": "root.boundary_rectifiability-a1",
+  "depth": 2,
+  "title": "Localization of T to finite-mass integer multiplicity pieces on ℝ^P",
+  "statement": "Assume SlicingTheorem (Simon §4, frozen statement). Let P, m ∈ ℕ, U ⊆ ℝ^P open, and T ∈ D_{m+1}(U) integer multiplicity with M_W(∂T) < ∞ for every open W ⊂⊂ U. Then for every x₀ ∈ U there are r > 0 with B_r(x₀) ⊆ U and an integer multiplicity current X ∈ D_{m+1}(ℝ^P) with M(X) < ∞, M(∂X) < ∞, and X(η) = T(η) for every η ∈ D^{m+1}(U) with tsupport η ⊆ B_r(x₀) (η regarded as a test form on ℝ^P via testFormOnInclusion).",
+  "lean_statement": "SlicingTheorem → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T → (∀ W, CompactlyContainedOpen W U → T.boundary.massOn W < ∞) → ∀ x₀ ∈ U, ∃ r : ℝ, 0 < r ∧ ball x₀ r ⊆ U ∧ ∃ X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), IsIntegerMultiplicity X ∧ X.mass < ∞ ∧ X.boundary.mass < ∞ ∧ ∀ η : TestFormOn U (m + 1), tsupport (η : DifferentialForm (Eucl P) (m + 1)) ⊆ ball x₀ r → X (testFormOnInclusion (subset_univ U) (m + 1) η) = T η",
+  "lean_name": "br_local_finite_mass_extension",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-localization-a1-a1"
+}
