@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1.cube_volume-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1",
+  "depth": 5,
+  "title": "The open unit cube in Euclid k has Lebesgue measure 1",
+  "statement": "For every k ∈ ℕ, the open unit cube Q₁ := {y ∈ Euclid k : 0 < y_i < 1 for all i ∈ Fin k} in Euclid k = EuclideanSpace ℝ (Fin k) has Lebesgue measure volume(Q₁) = 1 (as an element of [0, ∞]).",
+  "lean_statement": "∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1",
+  "lean_name": "cmcdt_cbm_im_cube_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-e1313aedc1-a1"
+}

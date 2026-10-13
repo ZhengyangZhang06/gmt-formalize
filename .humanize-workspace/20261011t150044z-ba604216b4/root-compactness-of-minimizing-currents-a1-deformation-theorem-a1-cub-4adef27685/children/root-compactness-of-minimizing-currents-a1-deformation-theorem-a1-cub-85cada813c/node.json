@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1.median_minimizes-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1",
+  "depth": 5,
+  "title": "A median minimizes the mean absolute deviation",
+  "statement": "Let X be a measurable space, μ a probability measure on X, u : X → ℝ μ-integrable, and β ∈ ℝ a median of u: μ{x : β ≤ u(x)} ≥ 1/2 and μ{x : u(x) ≤ β} ≥ 1/2, where μ(A) := μ.real A. Then ∫_X |u − β| dμ ≤ ∫_X |u − c| dμ for every c ∈ ℝ.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → ∀ c : ℝ, ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ",
+  "lean_name": "cmcdt_cbm_im_median_minimizes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-85cada813c-a1"
+}

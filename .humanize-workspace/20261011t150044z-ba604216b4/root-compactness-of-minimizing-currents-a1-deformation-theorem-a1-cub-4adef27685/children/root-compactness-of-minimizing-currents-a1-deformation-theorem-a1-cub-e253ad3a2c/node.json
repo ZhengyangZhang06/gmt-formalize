@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1.integer_median_exists-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1",
+  "depth": 5,
+  "title": "An integer-valued a.e.-measurable function on a probability space has an integer median",
+  "statement": "Let X be a measurable space and μ a probability measure on X. Let u : X → ℝ be μ-a.e.-measurable with u(x) ∈ ℤ for every x ∈ X. Then there is β ∈ ℤ with μ{x : β ≤ u(x)} ≥ 1/2 and μ{x : u(x) ≤ β} ≥ 1/2, where μ(A) denotes the real number μ.real A = (μ A).toReal.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ), IsProbabilityMeasure μ → AEMeasurable u μ → (∀ x, ∃ z : ℤ, u x = z) → ∃ β : ℤ, 1 / 2 ≤ μ.real {x | (β : ℝ) ≤ u x} ∧ 1 / 2 ≤ μ.real {x | u x ≤ (β : ℝ)}",
+  "lean_name": "cmcdt_cbm_im_integer_median_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-e253ad3a2c-a1"
+}
