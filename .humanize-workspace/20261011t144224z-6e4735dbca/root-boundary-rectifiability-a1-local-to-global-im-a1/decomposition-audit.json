@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|variable|SigmaFinite|IsLocallyFiniteMeasure",
+        "theorem (exists_isSubordinate|sum_eq_one)|def IsSubordinate|variable|structure SmoothPartitionOfUnity",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_congr_set|integral_indicator₀",
+        "theorem locallyIntegrableOn_iff|theorem integrableOn_indicator_iff|of_ae_sdiff_eq_zero|aestronglyMeasurable_iUnion_iff|theorem Integrable.bdd_mul|theorem Continuous.clm_apply",
+        "abbrev Covector|def Covector|abbrev NVector|def NVector|simpleNVector|wedgeCovectors_apply_det|def wedgeCovectors",
+        "isOpen_biUnion_countable|exists_eq_range|ext_multilinear",
+        "ltg_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ltg-independent-audit-20261012.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-local-to-global-im-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-local-to-global-im-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ltg-decomp/GMT/Ch06/Submission.lean",
+        "/tmp/ltg-independent-audit-20261012.lean"
+      ],
+      "conclusion": "The split appropriately decomposes the selected br_isIntegerMultiplicity_of_local contract. Verified the pinned revisions, frozen definitions, and relevant snapshot/package source compatibility. Sources confirm the fundamental lemma without σ-finiteness, null-measurable indicator operations, unrestricted integral congruence, finite-dimensional separation, and smooth partitions of unity. All seven statements pass lexical validation and elaborate before their implementations in a fresh harness containing the frozen definitions. Their supplied Lean proofs compile with only propext, Classical.choice, and Quot.sound; this also verifies the evaluation and pseudometrizability constructions. The supplied parent assembly compiles with the exact frozen tangent-locality statement as an explicit hypothesis, including the empty-domain case. Dependencies are correctly directed and acyclic. All names are bare identifiers, unreserved in the inspected 107-node DAG; the ltg_ search also found no declarations in the searched project and SimonGMT roots. No contract contains a matrix-unit construction. Child comparator gates and the existing tangent-locality obligation remain in force."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tau_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches both prose conclusions. Orientation gives the uniform covector bound, continuous evaluation supplies strong measurability, and bounded multiplication preserves integrability on compact carrier intersections. Extension by zero outside the support uses the stated null-measurability. Both parts are fully proved without integer-valued weights or circular reliance."
+    },
+    {
+      "key": "covector_separating",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses finite separation. Evaluation on basis tuples is an injective linear map into a finite-dimensional function space; a resulting covector basis separates continuous linear functionals. The argument includes zero-dimensional and empty-index cases and constructs the unavailable finite-dimensional instance without assuming the conclusion."
+    },
+    {
+      "key": "simple_unit_rigidity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All orthonormality, sign, nonnegativity, and scalar-equality hypotheses match the prose. Dual-covector evaluations give the two determinant equations; the proof handles zero coefficients before cancellation. It establishes both conclusions, including degree zero, without an unstated norm identity."
+    },
+    {
+      "key": "tau_unique_on_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scalar indicator densities are locally integrable by tau_integrable. Supported scalar tests justify the fundamental lemma for Hausdorff measure without σ-finiteness. Finite separation and rigidity then exclude the symmetric difference and identify weights and orientations on all of M₁ ∩ O almost everywhere. The stronger stated restriction is proved, and exactly the three declared children are used."
+    },
+    {
+      "key": "glue_triples",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the complete TL hypothesis and all compatibility assumptions. Least-index disjointification proves local agreement; compactness bounds the indices needed for local integrability. Countable measurable pasting and rectifiability establish the remaining fields. Tangent transfer uses both almost-everywhere weight equality and pointwise equality at x. TL exactly matches the existing sibling dependency, so its explicit use introduces no cycle."
+    },
+    {
+      "key": "tau_congr_on_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unrestricted-form contract matches the prose. Both integrands vanish outside V; openness makes the iterated restriction legitimate. Null symmetric difference identifies the restricted measures, and the supplied almost-everywhere equalities identify the integrands. The pinned integral lemmas require no additional measurability or integrability assumptions."
+    },
+    {
+      "key": "tau_local_to_global",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly permits arbitrary U and neighborhoods not contained in U. A finite smooth partition on the compact support produces test forms supported in both U and their assigned neighborhoods. Local equality, current linearity, and integrability from tau_integrable justify the finite integral sum. Empty support is covered. This establishes representation by an already supplied triple without assuming integer-multiplicity patching."
+    }
+  ],
+  "required_changes": []
+}
