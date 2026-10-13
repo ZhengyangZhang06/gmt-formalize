@@ -570,6 +570,43 @@ theorem Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable : ∀ (P m : ℕ),
           (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))) = y
       simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
         ContinuousLinearEquiv.symm_apply_apply]
+/-- Orienting frame of the product triple `(0, 1) × M` (Simon Ch. 6, 3.2(2), used in the proof
+of 8.2): if `τ₁, …, τₘ` is orthonormal in `ℝ^P`, then `(e₀, ιτ₁, …, ιτₘ)` is orthonormal in
+`ℝ^{P+1}`, `ι v = (0, v)`.  In coordinates `⟨(a, u), (b, w)⟩ = a b + ⟨u, w⟩` and `e₀ = (1, 0)`. -/
+theorem Submission.iwl_cr_ip_pt_frame_orthonormal :
+    ∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ →
+      Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1))
+        (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) := by
+  intro P m τ hτ
+  rw [orthonormal_iff_ite] at hτ ⊢
+  -- `⟨(a, u), (b, w)⟩ = a b + ⟨u, w⟩`: split off the coordinate `0` of the sum.
+  have hinner : ∀ (a b : ℝ) (u w : Eucl P),
+      inner ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons a (EuclideanSpace.equiv (Fin P) ℝ u)))
+        ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons b (EuclideanSpace.equiv (Fin P) ℝ w))) = a * b + inner ℝ u w := by
+    intro a b u w
+    rw [PiLp.inner_apply, PiLp.inner_apply, Fin.sum_univ_succ]
+    simp [mul_comm]
+  -- `e₀ = (1, 0)`, compared coordinatewise.
+  have he : (EuclideanSpace.single 0 1 : Eucl (P + 1)) =
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons 1 (EuclideanSpace.equiv (Fin P) ℝ 0)) := by
+    apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  intro i j
+  refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+  · simp only [Fin.cons_zero, he, hinner]
+    simp
+  · simp only [Fin.cons_zero, Fin.cons_succ, he, hinner]
+    simp [(Fin.succ_ne_zero j).symm]
+  · simp only [Fin.cons_zero, Fin.cons_succ, he, hinner]
+    simp [Fin.succ_ne_zero i]
+  · -- `⟨ιτᵢ, ιτⱼ⟩ = ⟨τᵢ, τⱼ⟩` and `i.succ = j.succ ↔ i = j`.
+    simp only [Fin.cons_succ, hinner, zero_mul, zero_add, Fin.succ_inj]
+    exact hτ i j
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
