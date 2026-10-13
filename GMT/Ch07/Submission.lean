@@ -1418,6 +1418,34 @@ theorem Submission.idtp_caf_paf_carrier_side : ∀ (P n : ℕ) (g : Euclid n →
       (hgd a ha), ← hFG'.fderiv_eq, stepA _ _ _ hTa, ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
   ring
 
+/-- **Area formula on one parametrized piece** (Simon Ch. 3, (2.4)–(2.5), from the Euclidean area
+formula of Ch. 2, 3.4–3.5).  Let `g : ℝⁿ → ℝᴾ` be Lipschitz, injective and differentiable on the
+Borel set `A`, let `F = G` on an open `V ⊇ g(A)` with `G` Lipschitz and `F` differentiable on
+`g(A)`, and let `T(g(a)) = range Dg(a)` for a.e. `a ∈ A`.  With `u` the standard orthonormal basis
+of `T(x)` and `J_T(x) = √det(DF(x)uᵢ · DF(x)uⱼ)`, every `Hⁿ⌞g(A)`-measurable `h ≥ 0` has an
+a.e. measurable fibre sum `Σ_h(y) = ∑_{x ∈ g(A), F(x) = y} h(x)` and
+`∫ Σ_h dLⁿ = ∫_{g(A)} J_T h dHⁿ`.  Replace `h` by a Borel `h̃ = h` `Hⁿ⌞g(A)`-a.e. (`Σ_h = Σ_h̃`
+`Lⁿ`-a.e., `G` being Lipschitz); the area formula for `Φ = G ∘ g` gives
+`∫ Σ_h̃ dLⁿ = ∫_A |det DΦ| h̃ ∘ g dLⁿ`, which the Jacobian chain rule and the area formula for `g`
+identify with `∫_{g(A)} J_T h̃ dHⁿ`. -/
+theorem Submission.idtp_caf_piece_area_formula : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → LipschitzWith LG G → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → AEMeasurable h (μHE[n].restrict (g '' A)) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n] := by
+  intro P n g A Lg V F G LG T h hg hA hgi hgd hV hgV hG hFG hFd hT hh
+  -- Borel representative `h̃ = hh.mk h` of `h`; the fibre sums of `h` and `h̃` agree `Lⁿ`-a.e.
+  have hfib := Submission.idtp_caf_paf_fiberSum_ae_congr P n (g '' A) V F G LG h (hh.mk h) hgV hG
+    hFG hh.ae_eq_mk
+  -- fibre side for the Lipschitz `Φ = G ∘ g` (`F = G` at `g(a) ∈ V`), carrier side for `h̃`
+  obtain ⟨hmeas, hint⟩ := Submission.idtp_caf_paf_fiber_side P n g A F (G ∘ g) (LG * Lg)
+    (hh.mk h) hg.continuous hA hgi (hG.comp hg) (fun a ha => hFG (hgV (mem_image_of_mem g ha)))
+    hh.measurable_mk
+  have hcar := Submission.idtp_caf_paf_carrier_side P n g A Lg V F G T (hh.mk h) hg hA hgi hgd hV
+    hgV hFG hFd hT
+  refine ⟨hmeas.congr hfib.symm, ?_⟩
+  rw [lintegral_congr_ae hfib, hint, ← hcar]
+  -- back from `h̃` to `h`, `Hⁿ⌞g(A)`-a.e.
+  refine lintegral_congr_ae ?_
+  filter_upwards [hh.ae_eq_mk] with x hx
+  rw [hx]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
