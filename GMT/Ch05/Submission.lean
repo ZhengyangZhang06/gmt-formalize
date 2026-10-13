@@ -1289,6 +1289,175 @@ theorem dohr_eb_sch_liou_dir_deriv_solution : ∀ (n ℓ : ℕ) (A : (Rn n →L[
   -- Step 5: conclusion.
   simp_rw [hsym]
   simpa [hFdef'] using hzero
+/-- Mollification of a `C^{1,α}` global weak solution: `V = φ_ε ⋆ W` is smooth, keeps the Hölder
+constant, is `Kε^α`-close in `C¹`, and is again a global weak solution. -/
+theorem dohr_eb_sch_liou_mollify : ∀ (n ℓ : ℕ) (α K ε : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → 0 ≤ K → 0 < ε → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∃ V : Rn n → Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) V ∧ (∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α) ∧ (∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0 := by
+  intro n ℓ α K ε A W hα hK hε hW hhol hsol
+  -- Step 1: mollifier φ := (∫ b)⁻¹ • b for the smooth bump b with radii ε/2 < ε
+  let b : ContDiffBump (0 : Rn n) := ⟨ε / 2, ε, by positivity, by linarith⟩
+  have hb_cont : Continuous b := b.continuous
+  have hb_nonneg : ∀ z, 0 ≤ b z := fun z => b.nonneg
+  have hb_cpt : HasCompactSupport b := b.hasCompactSupport
+  have hb_int : Integrable b := hb_cont.integrable_of_hasCompactSupport hb_cpt
+  have hb_pos : 0 < ∫ z, b z := by
+    rw [integral_pos_iff_support_of_nonneg (fun z => hb_nonneg z) hb_int, b.support_eq]
+    exact measure_ball_pos volume _ hε
+  set c : ℝ := (∫ z, b z)⁻¹ with hc_def
+  have hc_pos : 0 < c := inv_pos.mpr hb_pos
+  set φ : Rn n → ℝ := fun z => c * b z with hφ_def
+  have hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ := contDiff_const.mul b.contDiff
+  have hφ_cont : Continuous φ := hφ_smooth.continuous
+  have hφ_nonneg : ∀ z, 0 ≤ φ z := fun z => mul_nonneg hc_pos.le (hb_nonneg z)
+  have hφ_cpt : HasCompactSupport φ := hb_cpt.mul_left
+  have hφ_int1 : ∫ z, φ z = 1 := by
+    simp only [hφ_def]
+    rw [integral_const_mul, hc_def, inv_mul_cancel₀ hb_pos.ne']
+  have hφ_integrable : Integrable φ := hφ_cont.integrable_of_hasCompactSupport hφ_cpt
+  have hφ_zero : ∀ z, ε ≤ ‖z‖ → φ z = 0 := by
+    intro z hz
+    have : z ∉ Function.support b := by
+      rw [b.support_eq, mem_ball_zero_iff]
+      exact not_lt.mpr hz
+    simp only [hφ_def, Function.notMem_support.mp this, mul_zero]
+  have hint : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (g : Rn n → E),
+      Continuous g → Integrable (fun z => φ z • g z) := by
+    intro E _ _ g hg
+    exact (hφ_cont.smul hg).integrable_of_hasCompactSupport (hφ_cpt.smul_right)
+  have hDW_cont : Continuous (fderiv ℝ W) := hW.continuous_fderiv one_ne_zero
+  have hW_diff : Differentiable ℝ W := hW.differentiable one_ne_zero
+  -- Step 2: V := φ ⋆ W
+  set V : Rn n → Rn ℓ := fun x => ∫ z, φ z • W (x - z) with hV_def
+  have hVconv : V = MeasureTheory.convolution φ W (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    funext x; simp [hV_def, convolution_def]
+  -- Step 3: smoothness
+  have hV_smooth : ContDiff ℝ (⊤ : ℕ∞) V := by
+    rw [hVconv]
+    exact hφ_cpt.contDiff_convolution_left _ hφ_smooth hW.continuous.locallyIntegrable
+  -- Step 4: derivative formula DV(x) = ∫ φ(z) DW(x - z) dz
+  have hVderiv : ∀ x0 : Rn n, fderiv ℝ V x0 = ∫ z, φ z • fderiv ℝ W (x0 - z) := by
+    intro x0
+    obtain ⟨Mw, hMw⟩ : ∃ Mw, ∀ y ∈ closedBall x0 (1 + ε), ‖fderiv ℝ W y‖ ≤ Mw :=
+      (isCompact_closedBall x0 (1 + ε)).exists_bound_of_continuousOn (f := fderiv ℝ W)
+        hDW_cont.continuousOn
+    set Mw' := max Mw 0
+    have h := hasFDerivAt_integral_of_dominated_of_fderiv_le (μ := volume)
+      (F := fun x z => φ z • W (x - z)) (F' := fun x z => φ z • fderiv ℝ W (x - z))
+      (x₀ := x0) (s := ball x0 1) (bound := fun z => Mw' * ‖φ z‖)
+      (ball_mem_nhds x0 one_pos)
+      (Eventually.of_forall fun x =>
+        (hφ_cont.smul (hW.continuous.comp (continuous_const.sub continuous_id))).aestronglyMeasurable)
+      (hint _ (hW.continuous.comp (continuous_const.sub continuous_id)))
+      ((hφ_cont.smul (hDW_cont.comp (continuous_const.sub continuous_id))).aestronglyMeasurable)
+      (Eventually.of_forall fun z x hx => by
+        by_cases hz : φ z = 0
+        · simp [hz]
+        · have hz' : ‖z‖ < ε := by
+            by_contra h'
+            exact hz (hφ_zero z (not_lt.mp h'))
+          have hmem : x - z ∈ closedBall x0 (1 + ε) := by
+            rw [mem_closedBall, dist_eq_norm]
+            have hx' : ‖x - x0‖ < 1 := by rw [← dist_eq_norm]; exact hx
+            calc ‖x - z - x0‖ = ‖(x - x0) - z‖ := by congr 1; abel
+              _ ≤ ‖x - x0‖ + ‖z‖ := norm_sub_le _ _
+              _ ≤ 1 + ε := by linarith
+          rw [norm_smul, mul_comm]
+          gcongr
+          exact (hMw _ hmem).trans (le_max_left _ _))
+      ((hφ_integrable.norm).const_mul Mw')
+      (Eventually.of_forall fun z x _ => by
+        have h2 : HasFDerivAt (fun x => W (x - z)) (fderiv ℝ W (x - z)) x :=
+          (hasFDerivAt_comp_sub z).mpr (hW_diff (x - z)).hasFDerivAt
+        exact h2.const_smul (φ z))
+    exact h.fderiv
+  have hDWint : ∀ x : Rn n, Integrable (fun z => φ z • fderiv ℝ W (x - z)) := fun x =>
+    hint _ (hDW_cont.comp (continuous_const.sub continuous_id))
+  -- Step 5: Hölder bound
+  have hhol' : ∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α := by
+    intro x y
+    rw [hVderiv x, hVderiv y, ← integral_sub (hDWint x) (hDWint y)]
+    calc ‖∫ z, (φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W (y - z))‖
+        ≤ ∫ z, φ z * (K * ‖x - y‖ ^ α) := by
+          apply norm_integral_le_of_norm_le (hφ_integrable.mul_const _)
+          refine Eventually.of_forall fun z => ?_
+          have hs : φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W (y - z) =
+              φ z • (fderiv ℝ W (x - z) - fderiv ℝ W (y - z)) := (smul_sub _ _ _).symm
+          rw [hs, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφ_nonneg z)]
+          have := hhol (x - z) (y - z)
+          rw [sub_sub_sub_cancel_right] at this
+          exact mul_le_mul_of_nonneg_left this (hφ_nonneg z)
+      _ = K * ‖x - y‖ ^ α := by rw [integral_mul_const, hφ_int1, one_mul]
+  -- Step 6: approximation
+  have happrox : ∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α := by
+    intro x
+    have hconst : fderiv ℝ W x = ∫ z, φ z • fderiv ℝ W x := by
+      rw [integral_smul_const, hφ_int1, one_smul]
+    rw [hVderiv x, hconst, ← integral_sub (hDWint x) (hφ_integrable.smul_const _)]
+    calc ‖∫ z, (φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W x)‖
+        ≤ ∫ z, φ z * (K * ε ^ α) := by
+          apply norm_integral_le_of_norm_le (hφ_integrable.mul_const _)
+          refine Eventually.of_forall fun z => ?_
+          have hs : φ z • fderiv ℝ W (x - z) - φ z • fderiv ℝ W x =
+              φ z • (fderiv ℝ W (x - z) - fderiv ℝ W x) := (smul_sub _ _ _).symm
+          rw [hs, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφ_nonneg z)]
+          by_cases hz : φ z = 0
+          · simp [hz]
+          · have hz' : ‖z‖ < ε := by
+              by_contra h'
+              exact hz (hφ_zero z (not_lt.mp h'))
+            apply mul_le_mul_of_nonneg_left _ (hφ_nonneg z)
+            calc ‖fderiv ℝ W (x - z) - fderiv ℝ W x‖ ≤ K * ‖(x - z) - x‖ ^ α := hhol _ _
+              _ = K * ‖z‖ ^ α := by rw [sub_sub_cancel_left, norm_neg]
+              _ ≤ K * ε ^ α := by
+                apply mul_le_mul_of_nonneg_left _ hK
+                exact Real.rpow_le_rpow (norm_nonneg _) hz'.le hα.le
+      _ = K * ε ^ α := by rw [integral_mul_const, hφ_int1, one_mul]
+  -- Step 7: weak equation (Fubini + translated test functions)
+  have hweak : ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0 := by
+    intro ζ hζ hζc
+    have hDζcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+    have hDζc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv (𝕜 := ℝ)
+    have ha : ∀ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) =
+        ∫ z, φ z * A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) := by
+      intro x
+      rw [hVderiv x]
+      have := (A.flip (fderiv ℝ ζ x)).integral_comp_comm (hDWint x)
+      simp only [ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul] at this
+      exact this.symm
+    set H : Rn n → Rn n → ℝ := fun x z => φ z * A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) with hH
+    have hHcont : Continuous (Function.uncurry H) :=
+      (hφ_cont.comp continuous_snd).mul
+        ((A.continuous.comp (hDW_cont.comp (continuous_fst.sub continuous_snd))).clm_apply
+          (hDζcont.comp continuous_fst))
+    have hHsupp : HasCompactSupport (Function.uncurry H) := by
+      apply HasCompactSupport.intro (hDζc.prod hφ_cpt)
+      intro p hp
+      simp only [mem_prod, not_and_or] at hp
+      rcases hp with h | h
+      · simp [H, Function.uncurry, image_eq_zero_of_notMem_tsupport h]
+      · simp [H, Function.uncurry, image_eq_zero_of_notMem_tsupport h]
+    have hHint : Integrable (Function.uncurry H) ((volume : Measure (Rn n)).prod volume) :=
+      hHcont.integrable_of_hasCompactSupport (μ := (volume : Measure (Rn n)).prod volume) hHsupp
+    have hswap := integral_integral_swap hHint
+    have hinner : ∀ z, ∫ x, H x z = 0 := by
+      intro z
+      simp only [hH]
+      rw [integral_const_mul]
+      have h1 := hsol (fun x => ζ (x + z)) (hζ.comp (contDiff_id.add contDiff_const))
+        (hζc.comp_homeomorph (Homeomorph.addRight z))
+      have h2 : ∀ x, fderiv ℝ (fun x => ζ (x + z)) x = fderiv ℝ ζ (x + z) :=
+        fun x => fderiv_comp_add_right _
+      simp_rw [h2] at h1
+      have h3 : ∫ x, A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x) =
+          ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ (x + z)) := by
+        rw [← integral_add_right_eq_self (fun x => A (fderiv ℝ W (x - z)) (fderiv ℝ ζ x)) z]
+        simp
+      rw [h3, h1, mul_zero]
+    calc ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = ∫ x, ∫ z, H x z := by
+          congr 1; funext x; exact ha x
+      _ = ∫ z, ∫ x, H x z := hswap
+      _ = 0 := by simp [hinner]
+  exact ⟨V, hV_smooth, hhol', happrox, hweak⟩
 
 end Submission
 
