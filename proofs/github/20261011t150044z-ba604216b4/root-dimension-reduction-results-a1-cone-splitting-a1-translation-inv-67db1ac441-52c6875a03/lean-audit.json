@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3c5fd91d2f60bb4e0119a68de48ffde06c084bf9bc71b23d170dade0754352a2",
+  "git_delta": {
+    "base_commit": "a42d42af8789b7b1f8ed807e9ef5b96f351faac9",
+    "candidate_commit": "0070408f0706706fdb17332c5f3bd5e48bd5e1fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_ti_const_cartan",
+    "diff_sha256": "d7e5f44495903f66f9a56bcc3694523480edda396e799d56acefc67970603078",
+    "source_sha256": "50afd87a7a613b588517e6f0676c273d4793db6f4540d550e1affcfa8dd40b17",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_ti_const_cartan",
+      "statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (v y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) v) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) v = fderiv ℝ β y v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
