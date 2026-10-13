@@ -718,6 +718,101 @@ theorem Submission.codim1_rdo_dg_rc_cone_exclusion : ∀ (m : ℕ) (μ : Measure
       _ = (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by ring
   have h17 : 1 - ε ≤ ε * 16 ^ m := le_of_mul_le_mul_right h16 hpos
   nlinarith
+/-- **Simon Ch. 3, proof of 1.6 "⇐"** (Lipschitz graph step, codimension one): if `‖v‖ = 1` and
+`|⟨x' − x, v⟩| ≤ ‖x' − x‖/2` on `S`, then `S` lies in a closed countably `m`-rectifiable set.
+With `t(z) = ⟨z, v⟩` and `p(z) = z − t(z)v`, the hypothesis gives `|t(x') − t(x)| ≤ ‖p(x') − p(x)‖`
+on `S`, so `p(x) ↦ t(x)` is 1-Lipschitz on `p(S)`; its McShane extension `τ` makes
+`Γ = {z | τ(p(z)) = t(z)}` closed, and `Γ` lies in the range of the Lipschitz map
+`y ↦ ι(y) + τ(ι(y))v`, where `ι : ℝᵐ ≃ v^⊥` is a linear isometry. -/
+theorem Submission.codim1_rdo_dg_rc_closed_graph_cover : ∀ (m : ℕ) (v : Euclid (m + 1)) (S : Set (Euclid (m + 1))), ‖v‖ = 1 → (∀ x ∈ S, ∀ x' ∈ S, |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ S ⊆ Γ := by
+  intro m v S hv hS
+  -- Step 1: height `t` and orthogonal projection `p` onto `vᗮ`.
+  obtain ⟨t, ht⟩ : ∃ t : Euclid (m + 1) → ℝ, ∀ z, t z = inner ℝ z v := ⟨_, fun _ => rfl⟩
+  obtain ⟨p, hp⟩ : ∃ p : Euclid (m + 1) → Euclid (m + 1), ∀ z, p z = z - t z • v :=
+    ⟨_, fun _ => rfl⟩
+  have hvv : inner ℝ v v = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hv]; norm_num
+  have hpv : ∀ z, inner ℝ (p z) v = (0 : ℝ) := by
+    intro z
+    rw [hp, inner_sub_left, real_inner_smul_left, hvv, ht, mul_one, sub_self]
+  have hpmem : ∀ z, p z ∈ (ℝ ∙ v)ᗮ := by
+    intro z
+    rw [Submodule.mem_orthogonal_singleton_iff_inner_left]
+    exact hpv z
+  have hdecomp : ∀ z, p z + t z • v = z := by
+    intro z
+    rw [hp, sub_add_cancel]
+  -- Step 2: the key inequality `|t x' - t x| ≤ ‖p x' - p x‖` on `S`.
+  have key : ∀ x ∈ S, ∀ x' ∈ S, |t x' - t x| ≤ ‖p x' - p x‖ := by
+    intro x hx x' hx'
+    have h1 := hS x hx x' hx'
+    have h2 : inner ℝ (x' - x) v = t x' - t x := by
+      rw [inner_sub_left, ht, ht]
+    have h3 : x' - x = (p x' - p x) + (t x' - t x) • v := by
+      rw [hp, hp, sub_smul]
+      abel
+    have h4 : ‖x' - x‖ ≤ ‖p x' - p x‖ + |t x' - t x| := by
+      calc ‖x' - x‖ = ‖(p x' - p x) + (t x' - t x) • v‖ := by rw [← h3]
+        _ ≤ ‖p x' - p x‖ + ‖(t x' - t x) • v‖ := norm_add_le _ _
+        _ = ‖p x' - p x‖ + |t x' - t x| := by
+          rw [norm_smul, hv, mul_one, Real.norm_eq_abs]
+    rw [h2] at h1
+    linarith
+  -- Step 3: the height as a function of the projection, and its McShane extension.
+  obtain ⟨τ, hτ⟩ : ∃ τ : Euclid (m + 1) → ℝ, ∀ x ∈ S, τ (p x) = t x := by
+    refine ⟨fun y => t (Function.invFunOn p S y), ?_⟩
+    intro x hx
+    have hex : ∃ a ∈ S, p a = p x := ⟨x, hx, rfl⟩
+    have hmem := Function.invFunOn_mem hex
+    have heq := Function.invFunOn_eq hex
+    have h := key x hx _ hmem
+    rw [heq, sub_self, norm_zero] at h
+    have h0 : t (Function.invFunOn p S (p x)) - t x = 0 := abs_nonpos_iff.mp h
+    show t (Function.invFunOn p S (p x)) = t x
+    linarith
+  have hτLip : LipschitzOnWith 1 τ (p '' S) := by
+    apply LipschitzOnWith.mk_one
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨x', hx', rfl⟩
+    rw [hτ x hx, hτ x' hx', Real.dist_eq, dist_eq_norm]
+    exact key x' hx' x hx
+  obtain ⟨τ', hτ'Lip, hτ'eq⟩ := hτLip.extend_real
+  -- Step 4: an isometry `ι : ℝᵐ ≃ vᗮ` and the Lipschitz graph map `F`.
+  have : Fact (Module.finrank ℝ (Euclid (m + 1)) = m + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hv0 : v ≠ 0 := by
+    intro h; rw [h, norm_zero] at hv; exact zero_ne_one hv
+  let ι := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) m hv0).repr.symm
+  let F : Euclid m → Euclid (m + 1) := fun y => ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1)) +
+    τ' ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1)) • v
+  have hFLip : ∃ K, LipschitzWith K F := by
+    have h1 : LipschitzWith (1 * 1)
+        (fun y : Euclid m => ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1))) :=
+      (Submodule.subtypeₗᵢ (ℝ ∙ v)ᗮ).lipschitzWith.comp ι.lipschitzWith
+    have hsm : LipschitzWith 1 (fun r : ℝ => r • v) := by
+      apply LipschitzWith.mk_one
+      intro r s
+      rw [dist_eq_norm, ← sub_smul, norm_smul, hv, mul_one, Real.dist_eq, Real.norm_eq_abs]
+    exact ⟨_, h1.add (hsm.comp (hτ'Lip.comp h1))⟩
+  obtain ⟨K, hK⟩ := hFLip
+  -- Step 5: the closed graph `Γ = {z | τ' (p z) = t z}`.
+  have htc : Continuous t := by
+    rw [show t = fun z => inner ℝ z v from funext ht]
+    fun_prop
+  have hpc : Continuous p := by
+    rw [show p = fun z => z - t z • v from funext hp]
+    fun_prop
+  refine ⟨{z | τ' (p z) = t z}, ?_, ?_, ?_⟩
+  · exact isClosed_eq (hτ'Lip.continuous.comp hpc) htc
+  · apply (Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK).mono
+    intro z hz
+    simp only [mem_ofPred_eq] at hz
+    refine ⟨ι.symm ⟨p z, hpmem z⟩, ?_⟩
+    simp only [F, LinearIsometryEquiv.apply_symm_apply]
+    rw [hz]
+    exact hdecomp z
+  · intro x hx
+    simp only [mem_ofPred_eq]
+    rw [← hτ'eq (mem_image_of_mem p hx)]
+    exact hτ x hx
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
