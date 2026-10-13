@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86d9982f3439bdaa47f56f63a51b2281770bb2efac0fb4235f264899be462273",
+  "git_delta": {
+    "base_commit": "21dd6b4195ce694b2f7659e802280a3906231472",
+    "candidate_commit": "50d79ad7aedd510473251494683431d77e11e7ef",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_gws_pairing_bound",
+    "diff_sha256": "206b19e32878f96f1cfc8b4bc8442ffa81086857fb6eab38308d9cf14752ea88",
+    "source_sha256": "1c4597ab67a5a0a79eb69cee4dbeea594baf254d91c07756706d7aad00829ebc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_gws_pairing_bound",
+      "statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (C : ℝ≥0) (f : Eucl n → ℝ), IsOpen Ω → LipschitzOnWith C f Ω → ∀ b b' : Eucl n → Eucl n, IntegrableOn b Ω (volume : Measure (Eucl n)) → IntegrableOn b' Ω (volume : Measure (Eucl n)) → |(∫ w in Ω, fderiv ℝ f w (b w)) - ∫ w in Ω, fderiv ℝ f w (b' w)| ≤ C * ∫ w in Ω, ‖b w - b' w‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
