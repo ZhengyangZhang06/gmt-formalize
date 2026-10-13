@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "255a0c73a425693ddacdd04fb78bcd4ff715eb3b840ef4f30bb751c8a700d224",
+  "git_delta": {
+    "base_commit": "746413bca1269e387309439c20a291b01229cca6",
+    "candidate_commit": "61ad867b964f3cf3a11bf664837cb7134c221e8c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "mcs_exists_c1_field_eq_proj_near",
+    "diff_sha256": "d64225b66915f22af202369dfc1abe9f7902112b3c411354cb55fd1253a08946",
+    "source_sha256": "b6f5c0c990c6067107d4956051cd8236308ca4cb2172179c998078abcf99622f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcs_exists_c1_field_eq_proj_near",
+      "statement": "∀ (P : ℕ) (U N O : Set (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X : Euclid P → Euclid P), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \\ N) ∩ U = ∅ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∃ XT : Euclid P → Euclid P, ContDiff ℝ 1 XT ∧ HasCompactSupport XT ∧ tsupport XT ⊆ U ∧ ∀ x ∈ N, XT =ᶠ[𝓝 x] (fun y => pr y (X y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
