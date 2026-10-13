@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c58e8fed31649b6c781247b6a40847b5c169d9f718967e1f11118e4551ec91c8",
+  "git_delta": {
+    "base_commit": "3af8bcbd61d5c83f427f8086a37f24c564b8c1df",
+    "candidate_commit": "34f045f2e14477b22f7b27e4edea4286c022c19b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gv_cutoff_extension",
+    "diff_sha256": "23e6e4a45c792b2ce128bac37e5325917e5a284b701fdfb88d2feb21677d9402",
+    "source_sha256": "1c27167d62d47ea059ab6f87a6c740ef8724d1332b8d90f6bf66b9858361d611",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gv_cutoff_extension",
+      "statement": "∀ (n m : ℕ), 0 < n → ∀ (ξ : Euclid m) (r : ℝ) (P : Euclid m →L[ℝ] Euclid n) (ζ : Euclid n → ℝ) (G : ℝ), 0 < r → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) (r / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → ∃ ψ : Euclid m → ℝ, ContDiff ℝ 1 ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ closedBall ξ r ∧ (∀ x, |ψ x| ≤ G * (r / 2)) ∧ ∀ x, ‖x - ξ‖ ^ 2 ≤ ‖P (x - ξ)‖ ^ 2 + r ^ 2 / 16 → fderiv ℝ ψ x = (fderiv ℝ ζ (P (x - ξ))).comp P",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
