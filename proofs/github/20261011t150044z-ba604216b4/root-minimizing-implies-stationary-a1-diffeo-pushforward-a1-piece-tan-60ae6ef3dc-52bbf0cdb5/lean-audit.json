@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b199357ca252108b982cb9e3fc55a479f611a0bf7abfb0c4c763d1f6c73fd945",
+  "git_delta": {
+    "base_commit": "c0b849fc81619e18bffdd91ca35cefb1e7303332",
+    "candidate_commit": "081b32498681923bdfb2393289f65737bca1aa79",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "pit_ril_compl_average_tendsto",
+    "diff_sha256": "33dcb6635bc9795f5dd32d9508ccabfc1e027c73e05e50ea71e9e0bdea6dddf3",
+    "source_sha256": "87ea8b1d8201e709f91b150a19acd4134e64c005859c03a501ae7475c6bbb28e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pit_ril_compl_average_tendsto",
+      "statement": "∀ (n : ℕ) (B : Set (Euclid n)) (b : Euclid n), MeasurableSet B → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, Bᶜ.indicator (fun _ => (1 : ℝ)) a ∂volume) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
