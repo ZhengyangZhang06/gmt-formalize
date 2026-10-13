@@ -450,6 +450,25 @@ theorem Submission.deformation_dilation_calculus :
       ((ω.property.1.1.differentiable (by simp)).differentiableAt)
       L.contDiff.contDiffAt (by simp), L.fderiv, hscale]
     rfl
+/-- `Hᵏ` scaling law for the dilation `φ(x) = ρ • x`, `ρ > 0`: `φ` is a measurable embedding and
+pushes `ρᵏ Hᵏ` forward to `Hᵏ`, i.e. `Hᵏ(φ⁻¹(B)) = ρ⁻ᵏ Hᵏ(B)`. -/
+theorem Submission.deformation_dilation_hausdorff : ∀ (N k : ℕ) (ρ : ℝ), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) ∧ MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) := by
+  intro N k ρ hρ
+  -- `φ` is the homeomorphism `Homeomorph.smulOfNeZero ρ`, hence a measurable embedding.
+  have hemb : MeasurableEmbedding (fun x : Eucl N => ρ • x) :=
+    (Homeomorph.smulOfNeZero ρ hρ.ne').measurableEmbedding
+  refine ⟨hemb, hemb.measurable, ?_⟩
+  -- For measurable `B`: `φ⁻¹(B) = ρ⁻¹ • B` and `Hᵏ(ρ⁻¹ • B) = ‖ρ⁻¹‖₊ᵏ Hᵏ(B)`.
+  ext B hB
+  rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply, Set.preimage_smul₀ hρ.ne',
+    Measure.euclideanHausdorffMeasure_smul₀ k (inv_ne_zero hρ.ne') B, ENNReal.smul_def,
+    smul_eq_mul, smul_eq_mul, ← mul_assoc]
+  -- `ofReal(ρᵏ) ‖ρ⁻¹‖₊ᵏ = ofReal((ρ ρ⁻¹)ᵏ) = 1`.
+  have hc : ENNReal.ofReal (ρ ^ k) * ((‖ρ⁻¹‖₊ ^ k : ℝ≥0) : ℝ≥0∞) = 1 := by
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (pow_nonneg hρ.le k), NNReal.coe_pow,
+      coe_nnnorm, Real.norm_of_nonneg (inv_nonneg.mpr hρ.le), ← mul_pow, mul_inv_cancel₀ hρ.ne',
+      one_pow, ENNReal.ofReal_one]
+  rw [hc, one_mul]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
