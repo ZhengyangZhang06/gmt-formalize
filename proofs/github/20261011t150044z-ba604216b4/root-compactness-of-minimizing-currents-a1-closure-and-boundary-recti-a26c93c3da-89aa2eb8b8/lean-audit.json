@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf4c0f0879979d4c416399258538ad23a910dbf6101beca9db97f3e03ede384a",
+  "git_delta": {
+    "base_commit": "eb540541a774af6bfb1009ffb56924bcdb77e99a",
+    "candidate_commit": "fbf87865cc07d312d98362cf023a52367e76cdf3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_ns_eval_le_of_small_filling",
+    "diff_sha256": "dad020ee2044a42e173e77d33cde1406039501dad2fe9c3c32f79c9ac3eb3a60",
+    "source_sha256": "ef7909bd40f4eded8ec1c7763003888766a1e187ac6629945cc1f10d7a652936",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_ns_eval_le_of_small_filling",
+      "statement": "∀ (P d : ℕ) (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (ω : TestFormOn (univ : Set (Euclid P)) (d + 1)) (m : ℝ≥0∞) (x : Euclid P) (c κ R : ℝ), 0 ≤ c → 0 ≤ κ → 0 < R → m < ∞ → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (d + 1)) y) ≤ 1) → (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (x₀ : Euclid P) (ϱ : ℝ), 0 < ϱ → X.boundary = 0 → X.mass < ∞ → X.support ⊆ closedBall x₀ ϱ → |X ω| ≤ c * ϱ * X.mass.toReal) → S.boundary = A.boundary → A.mass ≤ m → S.mass ≤ ENNReal.ofReal κ * m → A.support ⊆ closedBall x R → S.support ⊆ closedBall x R → A ω ≤ (κ + c * R * (1 + κ)) * m.toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

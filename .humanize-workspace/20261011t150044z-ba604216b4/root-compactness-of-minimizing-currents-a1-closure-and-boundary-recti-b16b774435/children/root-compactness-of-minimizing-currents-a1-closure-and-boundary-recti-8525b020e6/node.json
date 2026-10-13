@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.mass_gap-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1",
+  "depth": 4,
+  "title": "Mass gap: integer multiplicity 0-currents of mass < 1 vanish",
+  "statement": "Assume (MR), the exact frozen statement of cmc_massOn_eq_imRep_measure, which appears verbatim as the hypothesis of the Lean statement: for all P, n ∈ ℕ, every open U ⊆ ℝ^P, every T ∈ 𝒟_n(U) and every integer multiplicity representation R : IMRep U n of T (R.Represents T), T.massOn W = R.measure W for every open W, where R.measure = (μHE[n] restricted to R.carrier) with density R.mult. Then for every P ∈ ℕ, every integer multiplicity current Z ∈ 𝒟_0(ℝ^P) with M(Z) = Z.mass < 1 is the zero current.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P : ℕ) (Z : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity Z → Z.mass < 1 → Z = 0",
+  "lean_name": "cbrld_im_degree_zero_eq_zero_of_mass_lt_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8525b020e6-a1"
+}
