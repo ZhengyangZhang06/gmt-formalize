@@ -546,6 +546,62 @@ theorem Submission.cbr_ci_pw_td_finite_ac_density : ∀ (n : ℕ) (μ : Measure 
       _ = ∫ y, (ρ y).toReal * h' y * g y := by
           congr 1; funext y; rw [smul_eq_mul]; ring
 
+/-- **Top-dimensional currents with finite mass and locally finite boundary mass have `L¹`
+densities.**  Assume the mass representation (REP).  If `U ⊆ ℝⁿ` is open (`n = d + 1`),
+`Y ∈ 𝒟ₙ(U)`, `M_U(Y) < ∞` and `M_W(∂Y) < ∞` for `W ⊂⊂ U`, then `Y(ω) = ∫_U u ω(e) dy` for an
+integrable `u` with `∫_U |u| ≤ M_U(Y)`, `e = (e₁, …, eₙ)` the standard basis.  (REP) gives
+`(μ, ξ)`; the boundary bound gives `μ ≪ Hⁿ = Lⁿ`, and `μ(ℝⁿ) ≤ μ(U) + μ(Uᶜ) = M_U(Y)`.  For
+`δ = dy` (`δ(e) = 1`) every top covector is `λ = λ(e) δ`, so `ξ(ω) = ω(e) ξ(δ)`; the density of
+`μ` against the field `ξ(δ)`, `|ξ(δ)| ≤ |δ| = 1`, is the required `u`. -/
+theorem Submission.cbr_ci_pw_top_current_density : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (d : ℕ) (U : Set (Euclid (d + 1))) (Y : GeometricCurrentOn U (d + 1)), IsOpen U → Y.massOn U < ∞ → (∀ W : Set (Euclid (d + 1)), IsOpen W → CompactlyContained W U → Y.boundary.massOn W < ∞) → ∃ u : Euclid (d + 1) → ℝ, IntegrableOn u U ∧ ENNReal.ofReal (∫ y in U, |u y|) ≤ Y.massOn U ∧ ∀ ω : TestFormOn U (d + 1), Y ω = ∫ y in U, u y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro REP d U Y hU hYU hbd
+  have hloc : ∀ W : Set (Euclid (d + 1)), IsOpen W → CompactlyContained W U → Y.massOn W < ∞ :=
+    fun W _ hW => lt_of_le_of_lt (Y.massOn_mono (subset_closure.trans hW.2)) hYU
+  obtain ⟨μ, ξ, hμU, -, hμW, hξm, hξb, hrep, hnull⟩ := REP (d + 1) (d + 1) U Y hU hloc
+  have hnull' : ∀ E : Set (Euclid (d + 1)), μHE[d + 1] E = 0 → μ E = 0 := hnull hbd
+  have hμuniv : μ univ ≤ Y.massOn U := by
+    calc μ univ ≤ μ U + μ Uᶜ := by
+          rw [← union_compl_self U]; exact measure_union_le _ _
+      _ = Y.massOn U := by rw [hμU, add_zero, hμW U hU]
+  have hμfin : μ univ < ∞ := lt_of_le_of_lt hμuniv hYU
+  have hac : μ ≪ volume := by
+    intro E hE
+    apply hnull' E
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact hE
+  obtain ⟨δ, hδ⟩ := Submission.dgoj_exists_det_covector (d + 1)
+  obtain ⟨hδn, hspan⟩ := Submission.cbr_ci_pw_td_top_covector_spans (d + 1) δ hδ
+  set h : Euclid (d + 1) → ℝ := fun y => ξ y δ
+  have hhm : AEStronglyMeasurable h μ :=
+    (ContinuousLinearMap.apply ℝ ℝ δ).continuous.comp_aestronglyMeasurable hξm
+  have hhb : ∀ᵐ y ∂μ, |h y| ≤ 1 :=
+    Eventually.of_forall fun y => (hξb y δ).trans hδn.le
+  obtain ⟨u, hui, hul1, hug⟩ :=
+    Submission.cbr_ci_pw_td_finite_ac_density (d + 1) μ h hμfin hac hhm hhb
+  refine ⟨u, hui.integrableOn, ?_, ?_⟩
+  · apply ENNReal.ofReal_le_of_le_toReal
+    calc ∫ y in U, |u y| ≤ ∫ y, |u y| :=
+          setIntegral_le_integral hui.abs (Eventually.of_forall fun y => abs_nonneg _)
+      _ ≤ (μ univ).toReal := hul1
+      _ ≤ (Y.massOn U).toReal := ENNReal.toReal_mono hYU.ne hμuniv
+  · intro ω
+    rw [hrep ω]
+    have hpt : ∀ y, ξ y ((ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y) =
+        (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y
+          (fun i => EuclideanSpace.single i (1 : ℝ)) * h y := by
+      intro y
+      conv_lhs => rw [hspan ((ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y)]
+      rw [map_smul, smul_eq_mul]
+    simp_rw [hpt]
+    rw [hug]
+    symm
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro y hy
+    have hy' : y ∉ tsupport (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) :=
+      fun h' => hy (ω.2.2 h')
+    rw [image_eq_zero_of_notMem_tsupport hy']
+    simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
