@@ -389,6 +389,254 @@ theorem Submission.iwl_cr_ip_restrict_preimage_eq_map : ∀ (P m : ℕ) (A : Set
   refine lintegral_congr fun s => ?_
   rw [← lintegral_indicator_one (measurable_prodMk_left (hΦ hB))]
   rfl
+/-- Measure identity on the slab over `A` (fact (D2) in the proof of the product triple): for
+`Φ(s, x) = (s, x₁, …, x_P)` and `π(y) = (y₁, …, y_P)`, the cylinder identity
+`Hᵐ⁺¹ ⌞ {π ∈ A} = Φ_#(L¹ × Hᵐ ⌞ A)` restricts to the slab `{π ∈ A, 0 < y₀ < 1}`.  Restricting
+both sides to the Borel set `{0 < y₀ < 1}`, whose `Φ`-preimage is `(0, 1) × ℝ^P`, gives
+`Φ_#((L¹ ⌞ (0, 1)) × Hᵐ ⌞ A)`; `Hᵐ ⌞ A` is finite on compact sets, hence s-finite. -/
+theorem Submission.iwl_cr_ip_pt_slab_restrict_eq_map :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} =
+        Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+          ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) →
+    ∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧
+            EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+        Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+          (((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod
+            ((μHE[m] : Measure (Eucl P)).restrict A)) := by
+  intro P m hMP A hA hArect hAfin
+  -- `Hᵐ ⌞ A` is finite on compact sets, hence σ-finite (`ℝ^P` is σ-compact).
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hAfin K hK⟩
+  -- `Φ` is continuous and `O = {0 < y₀ < 1}` is open, so both are Borel.
+  have hΦ : Measurable (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) :=
+    ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp (Continuous.finCons
+      continuous_fst ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))).measurable
+  have hO : MeasurableSet
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  -- `Φ(s, x)₀ = s`, so `Φ⁻¹(O) = (0, 1) × ℝ^P`.
+  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹'
+        {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      Ioo (0 : ℝ) 1 ×ˢ univ := by
+    ext ⟨s, x⟩
+    simp only [mem_preimage, mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply,
+      Fin.cons_zero, mem_prod, mem_univ, and_true]
+  -- The slab is `O ∩ {π ∈ A}`.
+  have hslab : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} ∩
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} := by
+    ext y
+    exact and_comm
+  rw [hslab, ← Measure.restrict_restrict hO, hMP A hA hArect hAfin, Measure.restrict_map hΦ hO,
+    hpre, ← Measure.prod_restrict, Measure.restrict_univ]
+
+/-- Integrability and a.e. strong measurability pass from `A ⊆ ℝ^P` to the slab
+`S_A = {y | π y ∈ A ∧ y₀ ∈ (0, 1)}`, `π y = (y₁, …, y_P)`.  By `slab_restrict_eq_map`,
+`H^{m+1} ⌞ S_A = Φ'_# ((L¹ ⌞ (0, 1)) ⊗ (Hᵐ ⌞ A))` for `Φ'(s, x) = (s, x₁, …, x_P)`, a
+homeomorphism (hence a measurable embedding) with `π ∘ Φ' = Prod.snd`.  So (a) is integrability
+of `f ∘ Prod.snd` for the product of the finite measure `L¹ ⌞ (0, 1)` with `Hᵐ ⌞ A`, and (b) is
+a.e. strong measurability of `g ∘ Prod.snd`, `Prod.snd` being quasi-measure-preserving onto
+`Hᵐ ⌞ A`. -/
+theorem Submission.iwl_cr_ip_pt_slab_transfer : ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (∀ f : Eucl P → ℝ, IntegrableOn f A (μHE[m] : Measure (Eucl P)) → IntegrableOn (fun y : Eucl (P + 1) => f ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (μHE[m + 1] : Measure (Eucl (P + 1)))) ∧ ∀ g : Eucl P → NVector (Eucl P) m, AEStronglyMeasurable g ((μHE[m] : Measure (Eucl P)).restrict A) → AEStronglyMeasurable (fun y : Eucl (P + 1) => g ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ((μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}) := by
+  intro P m hMP A hA hArect hAfin
+  -- `H^{m+1} ⌞ S_A = Φ'_# ((L¹ ⌞ (0, 1)) ⊗ (Hᵐ ⌞ A))`.
+  have hD := Submission.iwl_cr_ip_pt_slab_restrict_eq_map P m hMP A hA hArect hAfin
+  -- `Hᵐ ⌞ A` is finite on compact sets, hence σ-finite, as `Integrable.comp_snd` needs.
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hAfin K hK⟩
+  -- `Φ'` is a homeomorphism `ℝ × ℝ^P ≃ ℝ^{P+1}` with inverse `y ↦ (y₀, π y)`.
+  let Φh : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0,
+        (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      left_inv := fun p => by
+        rcases p with ⟨s, x⟩
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+          ContinuousLinearEquiv.symm_apply_apply]
+      continuous_toFun := by
+        refine (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp ?_
+        exact Continuous.finCons continuous_fst
+          ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+      continuous_invFun := by
+        refine Continuous.prodMk ?_ ?_
+        · exact (continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+        · refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+          exact continuous_pi fun i =>
+            (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous }
+  have hΦ : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
+  -- `π ∘ Φ' = Prod.snd`.
+  have hπΦ : ∀ p : ℝ × Eucl P, (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))))) = p.2 := by
+    intro p
+    simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  refine ⟨fun f hf => ?_, fun g hg => ?_⟩
+  · -- (a) `f ∘ Prod.snd` is integrable for the product, `L¹ ⌞ (0, 1)` being finite.
+    rw [IntegrableOn, hD, hΦ.integrable_map_iff]
+    refine (Integrable.comp_snd hf ((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1))).congr
+      (Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hπΦ]
+  · -- (b) `Prod.snd` is quasi-measure-preserving from the product onto `Hᵐ ⌞ A`.
+    rw [hD, hΦ.aestronglyMeasurable_map_iff]
+    refine (hg.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_snd).congr
+      (Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hπΦ]
+/-- Cylinders over null-measurable sets: let `π(y) = (y_1, …, y_P)` for `y ∈ ℝ^{P+1}`.  If
+`π⁻¹(N)` is `H^{m+1}`-null for every `Hᵐ`-null `N ⊆ ℝ^P`, then `π⁻¹(M)` is `H^{m+1}`-null-measurable
+for every `Hᵐ`-null-measurable `M ⊆ ℝ^P`.  `π` is continuous, hence Borel, and the hypothesis makes
+it quasi-measure-preserving from `H^{m+1}` to `Hᵐ`. -/
+theorem Submission.iwl_cr_ip_pt_cylinder_nullMeasurableSet :
+    ∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 →
+      (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) →
+      ∀ M : Set (Eucl P), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) →
+        NullMeasurableSet {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M}
+          (μHE[m + 1] : Measure (Eucl (P + 1))) := by
+  intro P m hNT M hM
+  -- `π = equiv_P⁻¹ ∘ Fin.tail ∘ equiv_{P+1}` is continuous, hence measurable.
+  have hπm : Measurable (fun y : Eucl (P + 1) =>
+      (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) := by
+    refine ((EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_).measurable
+    exact continuous_pi fun i =>
+      (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+  -- The hypothesis on measurable null sets gives `π_* H^{m+1} ≪ Hᵐ`.
+  have hq : Measure.QuasiMeasurePreserving (fun y : Eucl (P + 1) =>
+      (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      (μHE[m + 1] : Measure (Eucl (P + 1))) (μHE[m] : Measure (Eucl P)) := by
+    refine ⟨hπm, Measure.AbsolutelyContinuous.mk fun s hs hs0 => ?_⟩
+    rw [Measure.map_apply hπm hs]
+    exact hNT s hs0
+  exact hM.preimage hq
+/-- Cylinders over countably `m`-rectifiable sets: if `π(y) = (y_1, …, y_P)` pulls
+`Hᵐ`-null sets of `ℝ^P` back to `H^{m+1}`-null sets of `ℝ^{P+1}`, then for countably
+`m`-rectifiable `M ⊆ ℝ^P` the cylinder `{y : π(y) ∈ M}` is countably `(m+1)`-rectifiable,
+parametrized by `G_j(u) = (u_0, F_j(u_1, …, u_m))`. -/
+theorem Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable : ∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) → ∀ M : Set (Eucl P), CountablyRectifiable m M → CountablyRectifiable (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+  intro P m hNT M hM
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  -- Step 1: the continuous linear maps `hd u = u_0`, `tl u = (u_1, …, u_m)` and
+  -- `Ψ (a, x) = (a, x_1, …, x_P)`.
+  let hd : Eucl (m + 1) →L[ℝ] ℝ :=
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (m + 1) => ℝ) 0).comp
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap
+  let tl : Eucl (m + 1) →L[ℝ] Eucl m :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.toContinuousLinearMap.comp
+      ((ContinuousLinearMap.pi fun i : Fin m =>
+          ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (m + 1) => ℝ) i.succ).comp
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap)
+  let Ψ : ℝ × Eucl P →L[ℝ] Eucl (P + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      map_add' := by
+        intro p q
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Prod.fst_add, Prod.snd_add, map_add, ContinuousLinearEquiv.apply_symm_apply]
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := by
+        intro c p
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Prod.smul_fst, Prod.smul_snd, map_smul, ContinuousLinearEquiv.apply_symm_apply,
+          RingHom.id_apply]
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  -- Step 2: the exceptional set is the cylinder over `M₀` (null by `hNT`) and
+  -- `G_j = Ψ ∘ (hd, F_j ∘ tl)` is Lipschitz.
+  refine ⟨{y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M₀},
+    hNT M₀ hM₀, fun j u => Ψ (hd u, F j (tl u)), fun j => ?_, ?_⟩
+  · obtain ⟨K, hK⟩ := hF j
+    exact ⟨_, Ψ.lipschitzWith.comp (hd.lipschitzWith.prodMk (hK.comp tl.lipschitzWith))⟩
+  -- Step 3: if `π(y) = F_j(w)` then `G_j(y_0, w) = (y_0, π(y)) = y`.
+  · intro y hy
+    rcases hcover hy with h0 | h1
+    · exact Or.inl h0
+    · right
+      obtain ⟨j, w, hw⟩ := mem_iUnion.mp h1
+      refine mem_iUnion.mpr ⟨j, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w)), ?_⟩
+      have h1' : hd ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w))) =
+          EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 := by
+        simp [hd]
+      have h2' : tl ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w))) = w := by
+        apply (EuclideanSpace.equiv (Fin m) ℝ).injective
+        ext i
+        simp [tl]
+      show Ψ (hd _, F j (tl _)) = y
+      rw [h1', h2', hw]
+      show (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+        (EuclideanSpace.equiv (Fin P) ℝ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))) = y
+      simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+        ContinuousLinearEquiv.symm_apply_apply]
+/-- Orienting frame of the product triple `(0, 1) × M` (Simon Ch. 6, 3.2(2), used in the proof
+of 8.2): if `τ₁, …, τₘ` is orthonormal in `ℝ^P`, then `(e₀, ιτ₁, …, ιτₘ)` is orthonormal in
+`ℝ^{P+1}`, `ι v = (0, v)`.  In coordinates `⟨(a, u), (b, w)⟩ = a b + ⟨u, w⟩` and `e₀ = (1, 0)`. -/
+theorem Submission.iwl_cr_ip_pt_frame_orthonormal :
+    ∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ →
+      Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1))
+        (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) := by
+  intro P m τ hτ
+  rw [orthonormal_iff_ite] at hτ ⊢
+  -- `⟨(a, u), (b, w)⟩ = a b + ⟨u, w⟩`: split off the coordinate `0` of the sum.
+  have hinner : ∀ (a b : ℝ) (u w : Eucl P),
+      inner ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons a (EuclideanSpace.equiv (Fin P) ℝ u)))
+        ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons b (EuclideanSpace.equiv (Fin P) ℝ w))) = a * b + inner ℝ u w := by
+    intro a b u w
+    rw [PiLp.inner_apply, PiLp.inner_apply, Fin.sum_univ_succ]
+    simp [mul_comm]
+  -- `e₀ = (1, 0)`, compared coordinatewise.
+  have he : (EuclideanSpace.single 0 1 : Eucl (P + 1)) =
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons 1 (EuclideanSpace.equiv (Fin P) ℝ 0)) := by
+    apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  intro i j
+  refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+  · simp only [Fin.cons_zero, he, hinner]
+    simp
+  · simp only [Fin.cons_zero, Fin.cons_succ, he, hinner]
+    simp [(Fin.succ_ne_zero j).symm]
+  · simp only [Fin.cons_zero, Fin.cons_succ, he, hinner]
+    simp [Fin.succ_ne_zero i]
+  · -- `⟨ιτᵢ, ιτⱼ⟩ = ⟨τᵢ, τⱼ⟩` and `i.succ = j.succ ↔ i = j`.
+    simp only [Fin.cons_succ, hinner, zero_mul, zero_add, Fin.succ_inj]
+    exact hτ i j
 /-- The product frame of `(0, 1) × M` (Simon Ch. 6, Remark 3.2(2), for `[[(0, 1)]] × τ(M, θ, ξ)`).
 Write `ℝ^{P+1} = ℝ × ℝ^P` with `Φ(s, u) = (s, u₁, …, u_P)` and `π(z) = (z₁, …, z_P)`.  If `τ` is an
 orthonormal family in `ℝ^P`, then `τ̃ = (e₀, Φ(0, τ₁), …, Φ(0, τ_m))` is orthonormal, its span `Q`
@@ -1132,6 +1380,157 @@ theorem Submission.iwl_cr_ip_product_weighted_tangent :
     filter_upwards [hmem] with r hr
     refine Eq.symm ?_
     exact indicator_of_mem hr _
+
+/-- **The product triple `(0, 1) × (M, θ, ξ)` (Simon Ch. 6, 3.2(2)).**  Write
+`Φ(s, x) = (s, x)`, `π(y) = (y₁, …, y_P)`, `e₀ = (1, 0)` and `ι(v) = Φ(0, v)`, and assume the
+product formula (MP) `H^{m+1}⌞{π ∈ A} = Φ_*(L¹ ⊗ Hᵐ⌞A)` for every `Hᵐ`-measurable countably
+`m`-rectifiable `A ⊆ ℝ^P` with `Hᵐ(A ∩ K) < ∞` for compact `K`.  If `(M, θ, ξ)` is a rectifiable
+`m`-triple in `ℝ^P` with `θ ≥ 1` on `M`, then `((0, 1) × M, θ ∘ π, e₀ ∧ ξ ∘ π)` is a rectifiable
+`(m + 1)`-triple in `ℝ^{P+1}`; here `e₀ ∧ ξ ∘ π` is characterized by
+`⟨α, ξ′(Φ(s, x))⟩ = ⟨β, ξ(x)⟩` whenever `β(v) = α(e₀, ιv₁, …, ιvₘ)`. -/
+theorem Submission.iwl_cr_ip_product_triple : ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m), IsRectifiableTriple (univ : Set (Eucl P)) m M θ ξ → (∀ x ∈ M, 1 ≤ θ x) → ∃ ξ' : Eucl (P + 1) → NVector (Eucl (P + 1)) (m + 1), IsRectifiableTriple (univ : Set (Eucl (P + 1))) (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ξ' ∧ ∀ (s : ℝ) (x : Eucl P) (α : Covector (Eucl (P + 1)) (m + 1)) (β : Covector (Eucl P) m), (∀ v : Fin m → Eucl P, β v = α (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → ξ' ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) α = ξ x β := by
+  intro P m hMP M θ ξ hT hθ1
+  -- (D1): cylinders over `Hᵐ`-null sets are `H^{m+1}`-null ((MP) with `Hᵐ⌞N = 0`).
+  have hNT : ∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 →
+      (μHE[m + 1] : Measure (Eucl (P + 1)))
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0 := by
+    intro N hN
+    have h := hMP N (NullMeasurableSet.of_null hN)
+      (Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero hN)
+      (fun K _ => (measure_mono_null inter_subset_left hN).trans_lt ENNReal.zero_lt_top)
+    rw [Measure.restrict_eq_zero.mpr hN, Measure.prod_zero, Measure.map_zero] at h
+    exact Measure.restrict_eq_zero.mp h
+  -- Step 1: `Hᵐ(M ∩ K) ≤ ∫_{M ∩ K} |θ| dHᵐ < ∞` for compact `K`, since `θ ≥ 1` on `M`.
+  have hlf : ∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞ := by
+    intro K hK
+    have hI := hT.integrableOn K hK (subset_univ K)
+    have hnm : NullMeasurableSet (M ∩ K) (μHE[m] : Measure (Eucl P)) :=
+      hT.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet
+    calc (μHE[m] : Measure (Eucl P)) (M ∩ K)
+        = ∫⁻ _ in M ∩ K, 1 ∂(μHE[m] : Measure (Eucl P)) := by
+          rw [setLIntegral_const, one_mul]
+      _ ≤ ∫⁻ x in M ∩ K, ‖θ x‖ₑ ∂(μHE[m] : Measure (Eucl P)) := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀ hnm] with x hx
+          rw [← ofReal_norm, ENNReal.one_le_ofReal, Real.norm_eq_abs]
+          exact (hθ1 x hx.1).trans (le_abs_self _)
+      _ < ∞ := hI.2
+  -- Step 2: the contraction `ℒ α = α(e₀, ι ·)`, a continuous linear map `Λ^{m+1} → Λ^m`.
+  obtain ⟨L, hL⟩ : ∃ L : Covector (Eucl (P + 1)) (m + 1) →L[ℝ] Covector (Eucl P) m,
+      ∀ (α : Covector (Eucl (P + 1)) (m + 1)) (v : Fin m → Eucl P),
+        L α v = α (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) := by
+    let ι : Eucl P →L[ℝ] Eucl (P + 1) := LinearMap.toContinuousLinearMap
+      { toFun := fun v => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ v))
+        map_add' := by
+          intro v w
+          apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+          simp only [map_add, ContinuousLinearEquiv.apply_symm_apply]
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp
+        map_smul' := by
+          intro c v
+          apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+          simp only [map_smul, ContinuousLinearEquiv.apply_symm_apply, RingHom.id_apply]
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+    exact ⟨(ContinuousAlternatingMap.compContinuousLinearMapCLM ι).comp
+      ((ContinuousLinearMap.apply ℝ _ (EuclideanSpace.single 0 1 : Eucl (P + 1))).comp
+        (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl (P + 1)) (F := ℝ)
+          (n := m)).toContinuousLinearMap), fun α v => rfl⟩
+  -- `ξ′(y) := ξ(π y) ∘ ℒ`, i.e. `⟨α, ξ′(y)⟩ = ⟨ℒ α, ξ(π y)⟩`.
+  refine ⟨fun y => (ξ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))).comp L, ?_, ?_⟩
+  swap
+  · -- Step 3: `ξ′(Φ(s, x))(α) = ξ(x)(ℒ α) = ξ(x)(β)`, as `π(Φ(s, x)) = x` and `ℒ α = β`.
+    intro s x α β hβ
+    have hLβ : L α = β := by
+      ext v
+      rw [hL α v, hβ v]
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.apply_symm_apply,
+      Fin.tail_cons, ContinuousLinearEquiv.symm_apply_apply, hLβ]
+  -- The slab `O = {y₀ ∈ (0, 1)}` is Borel, `π` is continuous, and `M̃ = {π ∈ M} ∩ O` is
+  -- `H^{m+1}`-null-measurable (Step 5, child `cylinder_null_measurable`).
+  have hOm : MeasurableSet
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  have hπc : Continuous (fun y : Eucl (P + 1) => (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) := by
+    refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+    exact continuous_pi fun i =>
+      (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+  have hMt_nm : NullMeasurableSet {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}
+      (μHE[m + 1] : Measure (Eucl (P + 1))) :=
+    (Submission.iwl_cr_ip_pt_cylinder_nullMeasurableSet P m hNT M hT.nullMeasurableSet).inter
+      hOm.nullMeasurableSet
+  -- Step 4 (`subset`) and Step 5 (`nullMeasurableSet`).
+  refine ⟨subset_univ _, hMt_nm, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 6: `M̃ ⊆ {π ∈ M}`, countably `(m + 1)`-rectifiable (child `cylinder_rectifiable`).
+    exact (Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable P m hNT M
+      hT.countablyRectifiable).mono (fun y hy => hy.1)
+  · -- Step 7: `θ̃(y) = θ(π y) > 0` on `M̃`.
+    exact fun y hy => hT.pos _ hy.1
+  · -- Step 8: `M̃ ∩ K′` lies in the slab over `M ∩ π(K′)`, on which `θ ∘ π` is integrable
+    -- (child `slab_transfer` (a); `π(K′)` is compact).
+    intro K' hK' _
+    have hK : IsCompact ((fun y : Eucl (P + 1) => (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) '' K') := hK'.image hπc
+    have hA := (Submission.iwl_cr_ip_pt_slab_transfer P m hMP (M ∩ _)
+      (hT.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet)
+      (hT.countablyRectifiable.mono inter_subset_left)
+      (fun K'' hK'' => (measure_mono (inter_subset_inter_left _ inter_subset_left)).trans_lt
+        (hlf K'' hK''))).1 θ (hT.integrableOn _ hK (subset_univ _))
+    refine hA.mono_set ?_
+    rintro y ⟨⟨hyM, hy0⟩, hyK'⟩
+    exact ⟨⟨hyM, ⟨y, hyK', rfl⟩⟩, hy0⟩
+  · -- Step 9: `ξ ∘ π` is a.e. strongly measurable on `M̃` (child `slab_transfer` (b)), and
+    -- `T ↦ T ∘ ℒ` is continuous.
+    have hξ := (Submission.iwl_cr_ip_pt_slab_transfer P m hMP M hT.nullMeasurableSet
+      hT.countablyRectifiable hlf).2 ξ hT.aestronglyMeasurable
+    exact (continuous_id.clm_comp continuous_const).comp_aestronglyMeasurable hξ
+  · -- Step 10: the orientation fails at most on the cylinder over the `Hᵐ`-null set `N` of bad
+    -- points of `M`, which is `H^{m+1}`-null by (D1).
+    have hgood := hT.orients
+    rw [ae_iff, Measure.restrict_apply₀' hT.nullMeasurableSet] at hgood
+    have hNπ := hNT _ hgood
+    rw [ae_iff, Measure.restrict_apply₀' hMt_nm]
+    refine measure_mono_null ?_ hNπ
+    rintro y ⟨hyQ, hyM, hy0⟩
+    refine ⟨fun hgx => hyQ ?_, hyM⟩
+    obtain ⟨τ, hτ, htan, hsign⟩ := hgx
+    -- `y = Φ(y₀, π y)` with `y₀ ∈ (0, 1)`; the frame `τ̃ = (e₀, ιτ₁, …, ιτₘ)` is orthonormal
+    -- (child `frame_orthonormal`) and spans the weighted tangent plane of `(M̃, θ̃)` at `y`
+    -- (sibling `product_tangent`).
+    have hy : (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+          (EuclideanSpace.equiv (Fin P) ℝ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))) = y := by
+      simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+        ContinuousLinearEquiv.symm_apply_apply]
+    have htan' := Submission.iwl_cr_ip_product_weighted_tangent P m hMP M θ _ τ _
+      hT.nullMeasurableSet hT.countablyRectifiable hlf (fun z hz => (hT.pos z hz).le)
+      (fun K hK => hT.integrableOn K hK (subset_univ K)) hτ htan hy0
+    rw [hy] at htan'
+    -- `(τ₁ ∧ ⋯ ∧ τₘ) ∘ ℒ = e₀ ∧ ιτ₁ ∧ ⋯ ∧ ιτₘ`, so `ξ′(y) = ±τ̃₀ ∧ ⋯ ∧ τ̃ₘ`.
+    have hsimple : (simpleNVector τ).comp L = simpleNVector
+        (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i =>
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) := by
+      ext α
+      simp only [ContinuousLinearMap.comp_apply, simpleNVector_apply]
+      exact hL α τ
+    refine ⟨_, Submission.iwl_cr_ip_pt_frame_orthonormal P m τ hτ, htan', ?_⟩
+    rcases hsign with h | h
+    · left
+      rw [h, hsimple]
+    · right
+      rw [h, ContinuousLinearMap.neg_comp, hsimple]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
