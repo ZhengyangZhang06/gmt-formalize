@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.density_comparison-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1",
+  "depth": 5,
+  "title": "Euclidean density comparison: a lower n-density bound controls μHE[n]",
+  "statement": "Let N, n ∈ ℕ and c > 0 real. There is a constant C ∈ [0, ∞), depending only on N, n and c, with the following property. Let ν be any measure on ℝ^N = Euclid N with its Borel σ-algebra, O ⊆ ℝ^N an open set, and A ⊆ O. Suppose each x ∈ A admits t₀ > 0 such that ν(B̄_t(x)) ≥ c tⁿ for all t ∈ (0, t₀), where B̄_t(x) is the closed ball and the inequality is read in [0, ∞] as ENNReal.ofReal(c tⁿ) ≤ ν(B̄_t(x)). Then Hⁿ(A) ≤ C·ν(O), where Hⁿ = μHE[n] is Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^N, evaluated as an outer measure on the arbitrary set A.",
+  "lean_statement": "∀ (N n : ℕ) (c : ℝ), 0 < c → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ (ν : Measure (Euclid N)) (A O : Set (Euclid N)), IsOpen O → A ⊆ O → (∀ x ∈ A, ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, 0 < t → t < t₀ → ENNReal.ofReal (c * t ^ n) ≤ ν (closedBall x t)) → μHE[n] A ≤ C * ν O",
+  "lean_name": "dorag_sn_hausdorff_le_mul_of_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4410d992f1-a1"
+}
