@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "31ab13d0ab2e82a9adeb36ce5615767775e203edba83d101629ad7c7d44c43b6",
+  "git_delta": {
+    "base_commit": "07b5646dbeb99b62bfaf4e460effb065d52a8c99",
+    "candidate_commit": "21e276f0a9c3cbff32fd34038d35cba941c5a719",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_cp_disjointify",
+    "diff_sha256": "ea10c288d43de61276238d802a896bb754dc4945b5207fad7386992b7ebeddb8",
+    "source_sha256": "668d4aa75bf1f2703fc38521e5f4689bdabba114ab481c7833759c88555c8967",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_cp_disjointify",
+      "statement": "∀ (P N : ℕ) (ψ : ℕ → Euclid N → Euclid P) (Y : ℕ → Set (Euclid N)), (∀ j, Continuous (ψ j)) → (∀ j, MeasurableSet (Y j)) → (∀ j, InjOn (ψ j) (Y j)) → ∃ Y' : ℕ → Set (Euclid N), (∀ j, MeasurableSet (Y' j) ∧ Y' j ⊆ Y j) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y' i) (ψ j '' Y' j)) ∧ ⋃ j, ψ j '' Y' j = ⋃ j, ψ j '' Y j",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
