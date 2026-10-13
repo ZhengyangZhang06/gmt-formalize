@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.multilinear_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+  "depth": 4,
+  "title": "Multilinear tensor-power bound Σ_i β(Le∘i)² ≤ (‖L‖²)^j·Σ_i β(e′∘i)²",
+  "statement": "For all P, Q, j ∈ ℕ, every continuous linear map L : ℝ^P → ℝ^Q (L : Eucl P →L[ℝ] Eucl Q) and every j-multilinear map β : (ℝ^Q)^j → ℝ (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ, not necessarily alternating or continuous):\nΣ_{i : Fin j → Fin P} β(L e_{i(1)}, …, L e_{i(j)})² ≤ (‖L‖²)^j·Σ_{i : Fin j → Fin Q} β(e′_{i(1)}, …, e′_{i(j)})².\nHere:\n- e and e′ are the standard bases of ℝ^P and ℝ^Q (EuclideanSpace.basisFun);\n- ‖L‖ is the operator norm for the Euclidean norms.",
+  "lean_statement": "∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ), ∑ i : Fin j → Fin P, (β (fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k)))) ^ 2 ≤ (‖L‖ ^ 2) ^ j * ∑ i : Fin j → Fin Q, (β (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k))) ^ 2",
+  "lean_name": "iwl_sp_pn_multilinear_sum_sq_le",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.one_slot_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.one_slot_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a-a1"
+}
