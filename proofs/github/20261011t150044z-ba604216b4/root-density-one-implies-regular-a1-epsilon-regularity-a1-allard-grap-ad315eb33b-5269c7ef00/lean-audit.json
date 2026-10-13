@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b17851339c131d0d1ff148ecb99d430c6c63e966bbd2439552d6ea9dd7f91a07",
+  "git_delta": {
+    "base_commit": "3af8bcbd61d5c83f427f8086a37f24c564b8c1df",
+    "candidate_commit": "e9b4535017bcafe171a126e95a87cea99121ca9f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gv_adapted_frame",
+    "diff_sha256": "d58700c80ed5b4b620e39bc542c74780fe9b602d412e83a0bb4d389c9588d936",
+    "source_sha256": "31d6c34d149e3b2247f02f53e02bb136ee6aebb0cd41d255492d75acf501a1ff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gv_adapted_frame",
+      "statement": "∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → (∀ (u : Euclid n) (y : Euclid (n + k)), inner ℝ (ι u) y = inner ℝ u (P y)) ∧ (∀ y, T.starProjection y = ι (P y)) ∧ (∀ w, ι' w ∈ Tᗮ) ∧ (∀ y, ‖y‖ ^ 2 = ‖P y‖ ^ 2 + ‖y - T.starProjection y‖ ^ 2) ∧ (∀ y, ‖P y‖ ≤ ‖y‖)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
