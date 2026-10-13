@@ -3119,6 +3119,119 @@ theorem Submission.codim1_massOn_eq_lintegral_of_oriented_rep : ∀ (P k : ℕ) 
     (Submission.codim1_oriented_rep_lintegral_le_massOn P k U V M' T θ' ξ' hVU hθ hθ0 hξ hξQ hT W hW
       hWV hI)⟩
 
+/-- **A cone regular with density one off the vertex is a multiplicity-one oriented cone**
+(Simon 7.3.1(2), 7.4.1; Ch. 6, 2.11, 2.23, 3.1).  Let `C ∈ 𝒟ₘ(ℝᴾ)`, `m ≥ 1`, be an integer
+multiplicity cone such that every `y ∈ spt C \ {0}` lies in `reg C` with `Θᵐ(μ_C, y) = 1`.  Then
+`M = spt C \ {0}` is an embedded `C¹` submanifold, invariant under dilations, of locally finite
+`Hᵐ`-measure, with an orientation `ξ` such that `C(ω) = ∫_M ⟨ω, ξ⟩ dHᵐ` for every `ω ∈ 𝒟ᵐ(ℝᴾ)`.
+The multiplicity-one pieces `M ∩ B_y` (`y ∈ M`, radius `≤ |y|/2`) glue to an orientation of `M`;
+a partition of unity gives the representation away from `0`, and the vertex is negligible since
+`C` is integer multiplicity and `m ≥ 1`. -/
+theorem Submission.codim1_cone_offvertex_unit_multiplicity_rep : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m), 1 ≤ m → IsIntegerMultiplicity C → IsConeCurrent C → (∀ y ∈ C.support, y ≠ 0 → y ∈ regularSet C ∧ HasMassDensity C y 1) → ∃ ξ : Euclid P → MultiVector P m, IsEmbeddedSubmanifold 1 m (C.support \ {0}) ∧ IsOrientation m (C.support \ {0}) ξ ∧ (∀ t : ℝ, 0 < t → ∀ x ∈ C.support \ {0}, t • x ∈ C.support \ {0}) ∧ (∀ K : Set (Euclid P), IsCompact K → μHE[m] ((C.support \ {0}) ∩ K) ≠ ∞) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, C ω = ∫ x in C.support \ {0}, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+  intro P m C hm hIM hcone hreg
+  set M : Set (Euclid P) := C.support \ {0}
+  -- `spt C` is closed (the complement of the open zero region), so `M` is Borel
+  have hsuppC : IsClosed C.support := by
+    have h : C.support = (C.zeroRegion)ᶜ := by
+      ext x; simp [GeometricCurrentOn.support]
+    rw [h]; exact C.isOpen_zeroRegion.isClosed_compl
+  have hMmeas : MeasurableSet M := hsuppC.measurableSet.diff (measurableSet_singleton 0)
+  have h0M : (0 : Euclid P) ∉ M := fun h => h.2 (mem_singleton 0)
+  -- local multiplicity-one pieces `spt C ∩ B_y`, with radius `≤ |y|/2`
+  have hloc : ∀ y : Euclid P, ∃ (r : ℝ) (ξ : Euclid P → MultiVector P m), y ∈ M →
+      0 < r ∧ r ≤ ‖y‖ / 2 ∧ IsEmbeddedSubmanifold 1 m (C.support ∩ ball y r) ∧
+      IsOrientation m (C.support ∩ ball y r) ξ ∧ μHE[m] (C.support ∩ ball y r) ≠ ∞ ∧
+      ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y r →
+        C ω = ∫ x in C.support ∩ ball y r, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+    intro y
+    by_cases hy : y ∈ M
+    · obtain ⟨hyS, hy0⟩ := hy
+      have hy0' : y ≠ 0 := fun h => hy0 (by rw [h]; exact mem_singleton 0)
+      obtain ⟨hyreg, hyden⟩ := hreg y hyS hy0'
+      obtain ⟨ρ₀, hρ₀, -, hρ⟩ :=
+        Submission.codim1_density_one_regular_local_rep P m univ C y hm isOpen_univ hyreg hyden
+      have hny : 0 < ‖y‖ := norm_pos_iff.2 hy0'
+      have hrpos : 0 < min ρ₀ (‖y‖ / 2) := lt_min hρ₀ (by linarith)
+      obtain ⟨ξ, h1, h2, h3, h4⟩ := hρ (min ρ₀ (‖y‖ / 2)) hrpos (min_le_left _ _)
+      exact ⟨min ρ₀ (‖y‖ / 2), ξ, fun _ => ⟨hrpos, min_le_right _ _, h1, h2, h3, h4⟩⟩
+    · exact ⟨1, 0, fun h => absurd h hy⟩
+  choose ρ ξs hρξ using hloc
+  -- `0 ∉ B_y`, so `spt C ∩ B_y = M ∩ B_y`
+  have hSeq : ∀ y ∈ M, C.support ∩ ball y (ρ y) = M ∩ ball y (ρ y) := by
+    intro y hy
+    obtain ⟨hρpos, hρle, -⟩ := hρξ y hy
+    ext x
+    constructor
+    · rintro ⟨hxS, hxB⟩
+      refine ⟨⟨hxS, fun hx0 => ?_⟩, hxB⟩
+      rw [mem_singleton_iff] at hx0
+      subst hx0
+      rw [mem_ball, dist_zero_left] at hxB
+      linarith [norm_nonneg y]
+    · rintro ⟨⟨hxS, -⟩, hxB⟩
+      exact ⟨hxS, hxB⟩
+  have hlocM : ∀ y ∈ M, 0 < ρ y ∧ IsEmbeddedSubmanifold 1 m (M ∩ ball y (ρ y)) ∧
+      IsOrientation m (M ∩ ball y (ρ y)) (ξs y) ∧ μHE[m] (M ∩ ball y (ρ y)) ≠ ∞ ∧
+      ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) →
+        C ω = ∫ x in M ∩ ball y (ρ y), ξs y x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+    intro y hy
+    obtain ⟨hρpos, -, h1, h2, h3, h4⟩ := hρξ y hy
+    rw [hSeq y hy] at h1 h2 h3 h4
+    exact ⟨hρpos, h1, h2, h3, h4⟩
+  -- `M` is an embedded `C¹` submanifold
+  have hMsub : IsEmbeddedSubmanifold 1 m M :=
+    (Submission.codim1_ovr_embedded_submanifold_local P 1 m M le_rfl (fun y hy =>
+      ⟨ball y (ρ y), isOpen_ball, mem_ball_self (hlocM y hy).1, (hlocM y hy).2.1⟩)).1
+  -- a global orientation `ξ` of `M` representing `C` on every ball `B_y`
+  obtain ⟨ξ, hξor, -, hξrep⟩ := Submission.codim1_ovr_orientation_glue P m C M ρ ξs hMsub hMmeas
+    (fun y hy => ⟨(hlocM y hy).1, (hlocM y hy).2.2.1, (hlocM y hy).2.2.2.1, (hlocM y hy).2.2.2.2⟩)
+  -- `M` is invariant under dilations
+  have hconeM : ∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M := by
+    intro t ht x hx
+    refine ⟨Submission.codim1_ovr_cone_support_smul P m C hcone t ht x hx.1, fun h => hx.2 ?_⟩
+    rw [mem_singleton_iff] at h ⊢
+    exact (smul_eq_zero.1 h).resolve_left ht.ne'
+  -- `Hᵐ(M ∩ K) < ∞` for compact `K`
+  have hclos : closure M ⊆ insert 0 M := by
+    intro x hx
+    have hxS : x ∈ C.support := closure_minimal sdiff_subset hsuppC hx
+    by_cases hx0 : x = 0
+    · exact Or.inl hx0
+    · exact Or.inr ⟨hxS, fun h => hx0 (mem_singleton_iff.1 h)⟩
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞ :=
+    Submission.codim1_ovr_cone_locally_finite_measure P m M hm h0M hclos hconeM (fun y hy =>
+      ⟨ball y (ρ y), isOpen_ball, mem_ball_self (hlocM y hy).1, (hlocM y hy).2.2.2.1⟩)
+  -- `|⟨α, ξ(x)⟩| ≤ |α|` on `M`
+  obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P m
+  have hbound : ∀ x ∈ M, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α := by
+    intro x hx α
+    obtain ⟨Q, -, hQ⟩ := hξor.2 x hx
+    exact (hL (ξ x) Q hQ).1 α
+  -- the representation for test forms supported away from the vertex: near a point of `M` use
+  -- `B_y`; off `spt C` both sides vanish
+  have hoff : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      (0 : Euclid P) ∉ tsupport (ω : DifferentialForm (Euclid P) m) →
+      C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+    intro ω hω
+    refine Submission.codim1_ovr_partition_glue_rep P m C M {0}ᶜ ξ isOpen_compl_singleton hMmeas
+      hξor.1 hbound hfin ?_ ω (subset_compl_singleton_iff.2 hω)
+    intro x hx
+    by_cases hxS : x ∈ C.support
+    · have hxM : x ∈ M := ⟨hxS, hx⟩
+      exact ⟨ball x (ρ x), isOpen_ball, mem_ball_self (hlocM x hxM).1, hξrep x hxM⟩
+    · refine ⟨C.supportᶜ, hsuppC.isOpen_compl, hxS, fun η hη => ?_⟩
+      rw [Submission.dtc_vanish_off_support P m univ C η (subset_compl_iff_disjoint_right.1 hη)]
+      symm
+      refine setIntegral_eq_zero_of_forall_eq_zero fun z hz => ?_
+      have hzη : z ∉ tsupport (η : DifferentialForm (Euclid P) m) := fun h => hη h hz.1
+      rw [image_eq_zero_of_notMem_tsupport hzη, map_zero]
+  -- the vertex is negligible, so the representation holds for every test form
+  have hrep := Submission.codim1_ovr_extend_rep_across_vertex P m C M ξ hm hIM hMmeas h0M hξor.1
+    hbound hfin hoff
+  exact ⟨ξ, hMsub, hξor, hconeM, hfin, hrep⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
