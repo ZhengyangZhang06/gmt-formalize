@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "94bdcf99f9b0e85ef9b2fab12fd8d2db0503aaaddb4d3c0f8c77dbc356a13402",
+  "git_delta": {
+    "base_commit": "d47ef594c26afb9cadedda3987bbb6b67259f11b",
+    "candidate_commit": "fc55b7480dccf7e48261ad5b085ddd0c0cc9f1d6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_mi_withDensity_dilate",
+    "diff_sha256": "6525e99ce3f9127ecc0f364fadc62656be3970026f56de3946495a49a2ad9e95",
+    "source_sha256": "8586f4fc08bc8e06c6ad37c4b1824f766c1002d946f6d63697b279aa2887171c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_mi_withDensity_dilate",
+      "statement": "∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (lam : ℝ), 0 < lam → (∀ x : Euclid P, f (lam • x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * (μHE[n] : Measure (Euclid P)).withDensity f A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
