@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Simon 6.3.1: `Hⁿ`-a.e. on `M` the orientation `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` of an integer
+multiplicity triple is a unit simple `n`-vector (`τ` orthonormal), so every `n`-covector `β`
+satisfies `|⟨β, ξ(x)⟩| = |β(τ₁, …, τₙ)| ≤ ‖β‖ ∏ᵢ ‖τᵢ‖ = ‖β‖` (operator norm). -/
+theorem Submission.dpf_pfc_imrep_orient_abs_apply_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖ := by
+  intro P n U R
+  filter_upwards [R.orients] with x hx β
+  -- `ξ(x)` is `±` evaluation at an orthonormal frame `τ`
+  obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+  have hβ : |β τ| ≤ ‖β‖ :=
+    calc |β τ| = ‖β τ‖ := (Real.norm_eq_abs _).symm
+      _ ≤ ‖β‖ * ∏ i, ‖τ i‖ := β.le_opNorm τ
+      _ = ‖β‖ := by rw [Finset.prod_eq_one fun i _ => hτ.1 i, mul_one]
+  rcases hξ with h | h
+  · rw [h β]
+    exact hβ
+  · rw [h β, abs_neg]
+    exact hβ
+
+/-- **Pairing bound for `τ(M, θ, ξ)`** (the estimate behind Simon 6.2.24(2)).  If `F` is
+`Hⁿ⌞M`-a.e. strongly measurable, vanishes off the compact `C ⊆ U` and `‖F‖ ≤ B`, then
+`θ ⟨F, ξ⟩` is `Hⁿ⌞M`-integrable and `|∫_M θ ⟨F, ξ⟩ dHⁿ| ≤ B ∫_{M ∩ C} θ dHⁿ`.  By
+`dpf_pfc_imrep_orient_abs_apply_le`, `|θ ⟨F, ξ⟩| ≤ B θ 1_C` a.e., and `θ 1_C` is integrable by
+the local integrability of `θ`. -/
+theorem Submission.dpf_pfc_imrep_pairing_integrable_abs_le : ∀ (P n : ℕ) (U C : Set (Euclid P)) (R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact C → C ⊆ U → AEStronglyMeasurable F (μHE[n].restrict R.carrier) → (∀ x, x ∉ C → F x = 0) → (∀ x, ‖F x‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x (F x)) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n]| ≤ B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+  intro P n U C R F B hC hCU hF hF0 hFB
+  -- Step 1: `C` is measurable; step 2: `θ` is measurable
+  have hCm : MeasurableSet C := hC.isClosed.measurableSet
+  have hθm : Measurable fun x => (R.mult x : ℝ) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult
+  -- Step 3: `μ.restrict C = Hⁿ⌞(M ∩ C)`
+  have hres : (μHE[n].restrict R.carrier).restrict C = μHE[n].restrict (R.carrier ∩ C) := by
+    rw [Measure.restrict_restrict hCm, inter_comm]
+  -- Step 4: `θ` is integrable on `C`, so `g = B · 1_C θ` is integrable
+  have hθC : IntegrableOn (fun x => (R.mult x : ℝ)) C (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral, hres]
+    simpa using (R.locallyIntegrable_mult C hC hCU).lt_top
+  have hg : Integrable (fun x => B * C.indicator (fun y => (R.mult y : ℝ)) x)
+      (μHE[n].restrict R.carrier) :=
+    ((integrable_indicator_iff hCm).2 hθC).const_mul B
+  -- Step 5: `h = θ · ξ(F)` is a.e. strongly measurable
+  have hh : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (F x))
+      (μHE[n].restrict R.carrier) :=
+    hθm.aestronglyMeasurable.mul ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂
+      R.aestronglyMeasurable_orient hF)
+  -- Step 6: `|h| ≤ g` a.e., by `orient_bound`
+  have hdom : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x (F x)‖ ≤ B * C.indicator (fun y => (R.mult y : ℝ)) x := by
+    filter_upwards [Submission.dpf_pfc_imrep_orient_abs_apply_le P n U R] with x hx
+    by_cases hxC : x ∈ C
+    · rw [indicator_of_mem hxC, Real.norm_eq_abs, abs_mul, Nat.abs_cast, mul_comm B]
+      exact mul_le_mul_of_nonneg_left ((hx (F x)).trans (hFB x)) (Nat.cast_nonneg _)
+    · simp [indicator_of_notMem hxC, hF0 x hxC]
+  -- Step 7: integrability
+  refine ⟨hg.mono' hh hdom, ?_⟩
+  -- Step 8: `∫ g dμ = B · (∫⁻_{M ∩ C} θ dHⁿ).toReal`
+  have hgval : ∫ x, B * C.indicator (fun y => (R.mult y : ℝ)) x ∂(μHE[n].restrict R.carrier) =
+      B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+    rw [integral_const_mul, integral_indicator hCm, hres,
+      integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => Nat.cast_nonneg _)
+        hθm.aestronglyMeasurable]
+    simp
+  -- Step 9: `|∫ h dμ| ≤ ∫ g dμ`
+  rw [← Real.norm_eq_abs, ← hgval]
+  exact norm_integral_le_of_norm_le hg hdom
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
