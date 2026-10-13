@@ -1,0 +1,22 @@
+{
+  "node_id": "root.constancy-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/316",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b4bbd87115fa12fc3c955447a428b2ff9036e74e",
+  "integrated_commit": "",
+  "proof_base_commit": "e48d1bc73d07c8dc0241837af86260437b98ac5f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.constancy-a1.closed_kills_partials-a1",
+    "root.constancy-a1.riesz_l1_dual-a1",
+    "root.constancy-a1.mollifier_derivative_bound-a1",
+    "root.constancy-a1.mollifier_derivative_convergence-a1",
+    "root.constancy-a1.local_on_balls-a1",
+    "root.constancy-a1.globalize-a1"
+  ]
+}
