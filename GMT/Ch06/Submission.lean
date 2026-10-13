@@ -3356,6 +3356,111 @@ theorem Submission.slicing_im_st_weighted_tangent_on_c1_chart :
       hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
     ((hθC k).continuousWithinAt hk) (hy₃ (hMV hyMN.1) fun h => h.2 hk)
 
+/-- Simon Ch. 6, 4.1(2) and 4.4 (Step 7 of the slicing argument for `τ(M, θ, ξ)`, `n = m + 1`):
+countably many `C¹` charts `Φ j`, antilipschitz on open `Ω j ⊆ ℝⁿ`, with sets `A j ⊆ Ω j` and `C¹`
+functions `h j` such that `f ∘ Φ j = h j` on `A j`, `M ∖ ⋃ j, Φ j (A j)` is `Hⁿ`-null and, at
+`Hⁿ`-a.e. `x = Φ j w ∈ M` with `w ∈ A j`, `DΦ j (w)(ℝⁿ)` is the weighted approximate tangent plane
+of `(M, θ)` at `x`, contains the tangential gradient `G x` and `⟨G x, DΦ j (w) u⟩ = Dh j (w) u`.
+The charts `(Φ' i, Ω' i)` come from Simon Ch. 3, Lemma 1.2, the `C¹` pieces `(h' i k, A' i k)` of
+`f ∘ Φ' i` from Ch. 2, Theorem 1.5, and the index pairs `(i, k)` are merged by `Nat.unpair`. -/
+theorem Submission.slicing_im_st_chart_data :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1))
+      (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U →
+      IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f →
+      (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+          G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) →
+      ∃ (Φ : ℕ → Eucl (m + 1) → Eucl P) (Ω A : ℕ → Set (Eucl (m + 1)))
+        (h : ℕ → Eucl (m + 1) → ℝ), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧
+        (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧
+        (∀ j, A j ⊆ Ω j) ∧ (∀ j, ContDiff ℝ 1 (h j)) ∧ (∀ j, ∀ w ∈ A j, f (Φ j w) = h j w) ∧
+        (μHE[m + 1] : Measure (Eucl P)) (M \ ⋃ j, Φ j '' A j) = 0 ∧
+        ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ j, ∀ w ∈ A j, Φ j w = x →
+          HasWeightedApproximateTangentSpaceAt (m + 1) M θ x
+            (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) ∧
+          G x ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap ∧
+          ∀ u : Eucl (m + 1), inner ℝ (G x) (fderiv ℝ (Φ j) w u) = fderiv ℝ (h j) w u := by
+  intro P m U M θ ξ f L G hU hT hf hTG
+  -- Step 1: `C¹` charts `Φ' i`, Lipschitz and antilipschitz on open sets `Ω' i`, whose images
+  -- cover `M` up to an `Hⁿ`-null set.
+  obtain ⟨Φ', Ω', hΩ', hΦ', hΦ'L, hΦ'a, hcov⟩ :=
+    Submission.slicing_im_st_cd_c1_cover P (m + 1) M hT.countablyRectifiable
+  choose K hK using hΦ'L
+  -- Step 2: `f ∘ Φ' i` is Lipschitz on `Ω' i`, so it agrees, with its derivative, with `C¹`
+  -- functions `h' i k` on sets `A' i k ⊆ Ω' i` that cover `Ω' i` up to an `Lⁿ`-null set.
+  choose h' A' hh' hA'Ω hA' hA'null using fun i : ℕ =>
+    Submission.slicing_im_st_cd_c1_pieces_of_lipschitzOn (m + 1) (Ω' i) (f ∘ Φ' i) (L * K i)
+      (hΩ' i) (hf.comp_lipschitzOnWith (hK i))
+  -- Step 5: at `Hⁿ`-a.e. `y ∈ M`, `DΦ' i (w)(ℝⁿ)` is the weighted approximate tangent plane of
+  -- `(M, θ)` at `y = Φ' i w`; off the Borel chart image `Φ' i '' Ω' i` this is vacuous.
+  have htan : ∀ i, ∀ᵐ y ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ w ∈ Ω' i,
+      Φ' i w = y → HasWeightedApproximateTangentSpaceAt (m + 1) M θ y
+        (LinearMap.range (fderiv ℝ (Φ' i) w).toLinearMap) := by
+    intro i
+    -- `Φ' i` is injective on `Ω' i`, so `Φ' i '' Ω' i` is Borel by Lusin–Souslin.
+    have hS : MeasurableSet (Φ' i '' Ω' i) := by
+      obtain ⟨c, hc, hcΦ⟩ := hΦ'a i
+      refine (hΩ' i).measurableSet.image_of_continuousOn_injOn (hΦ' i).continuous.continuousOn
+        fun w hw w' hw' hww' => ?_
+      have h0 := hcΦ w hw w' hw'
+      rw [hww', sub_self, norm_zero] at h0
+      exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right h0 hc))
+    have h := Submission.slicing_im_st_weighted_tangent_on_c1_chart P (m + 1) U M θ (Φ' i)
+      (Ω' i) hU hT.subset hT.nullMeasurableSet hT.pos hT.integrableOn (hΩ' i) (hΦ' i) (hΦ'a i)
+    rw [inter_comm M, ← Measure.restrict_restrict hS, ae_restrict_iff' hS] at h
+    filter_upwards [h] with y hy w hw hwy
+    exact hy ⟨w, hw, hwy⟩ w hw hwy
+  -- Step 6 (Simon Ch. 2, 4.10): for `w ∈ A' i k`, `t ↦ f(Φ' i w + t DΦ' i (w) u)` has derivative
+  -- `Dh' i k (w) u` at `0`.  Apply the vector-valued statement to `ι ∘ f : ℝ^P → ℝ¹`, `ι r = r e₀`,
+  -- and read it off through the coordinate `π`, `π ∘ ι = id`.
+  have hline : ∀ i k, ∀ w ∈ A' i k, ∀ u : Eucl (m + 1),
+      HasDerivAt (fun t : ℝ => f (Φ' i w + t • fderiv ℝ (Φ' i) w u)) (fderiv ℝ (h' i k) w u) 0 := by
+    let ι : ℝ →L[ℝ] Eucl 1 := (ContinuousLinearMap.id ℝ ℝ).smulRight (EuclideanSpace.single 0 1)
+    let π : Eucl 1 →L[ℝ] ℝ := EuclideanSpace.proj 0
+    have hπι : ∀ r, π (ι r) = r := fun r => by simp [π, ι]
+    intro i k w hw u
+    have hD : HasFDerivAt ((ι ∘ f) ∘ Φ' i) (ι.comp (fderiv ℝ (h' i k) w)) w :=
+      ι.hasFDerivAt.comp w (hA' i k w hw).2
+    have h := π.hasFDerivAt.comp_hasDerivAt (0 : ℝ)
+      (Submission.lpf_ccr_hasDerivAt_line_of_comp (m + 1) P 1 (ι ∘ f) (Φ' i) w
+        ⟨‖ι‖₊ * L, univ, univ_mem, (ι.lipschitzWith.comp hf).lipschitzOnWith⟩
+        ((hΦ' i).differentiable one_ne_zero w) hD.differentiableAt u)
+    rw [hD.fderiv] at h
+    simpa only [Function.comp_def, ContinuousLinearMap.comp_apply, hπι] using h
+  -- Step 3: merge the index pairs `(i, k)` into `j` by `Nat.unpair`.
+  refine ⟨fun j => Φ' (Nat.unpair j).1, fun j => Ω' (Nat.unpair j).1,
+    fun j => A' (Nat.unpair j).1 (Nat.unpair j).2, fun j => h' (Nat.unpair j).1 (Nat.unpair j).2,
+    fun j => hΩ' _, fun j => hΦ' _, fun j => hΦ'a _, fun j => hA'Ω _ _, fun j => hh' _ _,
+    fun j w hw => (hA' _ _ w hw).1, ?_, ?_⟩
+  · -- Step 4: `M ∖ ⋃ j, Φ j (A j) ⊆ (M ∖ ⋃ i, Φ' i (Ω' i)) ∪ ⋃ i, Φ' i (Ω' i ∖ ⋃ k, A' i k)`;
+    -- `Φ' i` is Lipschitz on `Ω' i`, so it maps the `Lⁿ`-null `Ω' i ∖ ⋃ k, A' i k` to an
+    -- `Hⁿ`-null set.
+    have hsub : M \ ⋃ j, Φ' (Nat.unpair j).1 '' A' (Nat.unpair j).1 (Nat.unpair j).2 ⊆
+        (M \ ⋃ i, Φ' i '' Ω' i) ∪ ⋃ i, Φ' i '' (Ω' i \ ⋃ k, A' i k) := by
+      rintro x ⟨hxM, hx⟩
+      by_cases hxi : x ∈ ⋃ i, Φ' i '' Ω' i
+      · obtain ⟨i, w, hw, rfl⟩ := mem_iUnion.1 hxi
+        refine mem_union_right _ (mem_iUnion.2 ⟨i, w, ⟨hw, fun hwA => hx ?_⟩, rfl⟩)
+        obtain ⟨k, hk⟩ := mem_iUnion.1 hwA
+        exact mem_iUnion.2 ⟨Nat.pair i k, w, by simpa only [Nat.unpair_pair] using hk,
+          by simp only [Nat.unpair_pair]⟩
+      · exact mem_union_left _ ⟨hxM, hxi⟩
+    refine measure_mono_null hsub (measure_union_null hcov (measure_iUnion_null fun i => ?_))
+    have hle : (μHE[m + 1] : Measure (Eucl P)) (Φ' i '' (Ω' i \ ⋃ k, A' i k)) ≤
+        (K i : ℝ≥0∞) ^ (m + 1) * (μHE[m + 1] : Measure (Eucl (m + 1))) (Ω' i \ ⋃ k, A' i k) :=
+      Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (m + 1)
+        ((hK i).mono sdiff_subset)
+    rwa [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hA'null i, mul_zero,
+      nonpos_iff_eq_zero] at hle
+  · -- Steps 5 and 6: `G x ∈ DΦ j (w)(ℝⁿ)` and, by uniqueness of the derivative along
+    -- `DΦ j (w) u`, `⟨G x, DΦ j (w) u⟩ = Dh j (w) u`.
+    filter_upwards [ae_all_iff.2 htan, hTG] with x hx hxG j w hw hwx
+    have hwT := hx (Nat.unpair j).1 w (hA'Ω _ _ hw) hwx
+    obtain ⟨hGT, hGd⟩ := hxG _ hwT
+    refine ⟨hwT, hGT, fun u => (hGd _ (LinearMap.mem_range.2 ⟨u, rfl⟩)).unique ?_⟩
+    subst hwx
+    exact hline (Nat.unpair j).1 (Nat.unpair j).2 w hw u
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
