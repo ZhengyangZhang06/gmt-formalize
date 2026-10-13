@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmc_fc_gs_aqf_|dimred_mbl_fc_gs|ae_quotient_finite|lintegral_measure_Ioo|measure_Ioo_sub|Ioo \\(t - h\\) t' project mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'measurable_measure_prodMk_left|theorem prod_apply |theorem prod_apply_symm|theorem volume_Ioo|theorem lintegral_const |theorem lintegral_const_mul |theorem lintegral_liminf_le |theorem Measurable.liminf |theorem ae_lt_top |theorem measurableSet_lt |theorem restrict_apply |theorem restrict_apply_univ' mathlib/Mathlib/MeasureTheory",
+        "git show c6ee39d65242d46030569f4f220c4baabcd23821:GMT/Ch07/Submission.lean",
+        "git show 21abc17d8d4c65cc3c511b941d1602fe6e217eb8:GMT/Ch07/Submission.lean",
+        "git show 0c71ffcf56b44b9e0508393f6cd112dd574e7815:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/aqf-independent-audit-tf6lq4qy/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/aqf-independent-audit-tf6lq4qy/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/aqf-independent-audit-tf6lq4qy/ReusedProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-b377ee2e50/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-b377ee2e50/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-38c7fea546/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-789d4e46ea/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-dad220f236/accepted-candidate.json",
+        "/tmp/aqf-independent-audit-tf6lq4qy/Types.lean",
+        "/tmp/aqf-independent-audit-tf6lq4qy/Instances.lean",
+        "/tmp/aqf-independent-audit-tf6lq4qy/ReusedProofsAndAssembly.lean"
+      ],
+      "conclusion": "Relative file paths use the supplied workspace; rg commands ran in the snapshot root. Project b4d606db1da5 and Mathlib 25730c7c match the pins. The first search returned no matches. Inspected library signatures support measurable sections, Tonelli, both Fatou applications, restriction, and the liminf comparisons. All three bare names have unique comparator-accepted owners with byte-identical frozen types and consistent dependency certificates. The only child dependency is ae_seq_liminf_finite → window_lintegral; its closure is acyclic. Independent Lean checks passed: all frozen types elaborate without child implementations; explicit instance checks confirm real reciprocals/division, ENNReal arithmetic, Lebesgue integration and the right-neighborhood filter. Replayed accepted proofs and the exact selected-parent assembly compile using only propext, Classical.choice and Quot.sound. The split appropriately isolates three substantive analytic obligations. Restricting μ_j to [a,b], applying the sequential finiteness and comparison children, and taking the outer liminf proves the selected contract, including empty intervals. The supplied binding digest was independently recomputed and matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "window_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The independent one-line proposition exactly matches the prose, including s-finiteness and arbitrary real h. The proof establishes the measurable window set, identifies both sections correctly, applies Tonelli under the stated hypotheses, and evaluates the constant integral. It covers h ≤ 0 and infinite total mass with ENNReal multiplication. No circular reliance or omitted obligation occurs. The bare name validly reuses the identical comparator-accepted declaration."
+    },
+    {
+      "key": "ae_seq_liminf_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree on the finite uniform mass bound, quotient normalization, both sequential liminfs, and Lebesgue-a.e. conclusion. The proof derives finite measures before invoking window_lintegral, checks nonzero finite normalization factors, establishes measurability, and applies Fatou twice followed by ae_lt_top. Its sole dependency on window_lintegral is necessary, correctly directed and acyclic. The proof is complete and non-circular; identical-type accepted reuse is verified."
+    },
+    {
+      "key": "liminf_le_seq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose for arbitrary μ and a < t < b; no finiteness assumption is needed. Positive reciprocal radii converge in the specified right-neighborhood filter, giving the liminf inequality in the correct direction. Eventual interval containment justifies restriction equality, and normalization plus eventual equality identifies precisely the sequential quotient used by the other child. The proof is complete, independent and non-circular. The bare name reuses an identical accepted type."
+    }
+  ],
+  "required_changes": []
+}
