@@ -458,6 +458,75 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Energy bound behind Simon Ch. 5, 4.5 (16), with the explicit constant `C_E = (1 + n) K0`.
+Let `f : ℝⁿ → ℝ^ℓ` be `1`-Lipschitz on `closedBall 0 (σ / 2)`, `B1 = ball 0 (3σ/8)`, and `W`
+measurable with `W = 0 ∨ 1 ≤ W` a.e. on `B1`, `Lⁿ(B1 ∩ {W = 0}) ≤ K0 E σⁿ` and
+`∫⁻_{B1} |Df|² W ≤ K0 E σⁿ`.  Then `|Df|²` is integrable on `B1` and
+`∫_{B1} |Df|² ≤ (1 + n) K0 E σⁿ`.
+Since `0 ≤ |Df|² ≤ n` on `B1` (`lipschitz_fderiv_facts`), a.e. on `B1` we have
+`|Df|² ≤ |Df|² W + n 1_{B1 ∩ {W = 0}}`; integrate and use the two hypotheses. -/
+theorem gwe_wewe_energy_bound : ∀ (n ℓ : ℕ) (K0 σ E : ℝ) (f : Rn n → Rn ℓ) (W : Rn n → ℝ), 0 ≤ K0 → 0 < σ → 0 ≤ E → LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → Measurable W → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ 1 ≤ W x) → volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → ∫⁻ x in ball (0 : Rn n) (3 * σ / 8), ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → IntegrableOn (fun x => hsNormSq (fderiv ℝ f x)) (ball (0 : Rn n) (3 * σ / 8)) ∧ ∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x) ≤ (1 + n) * K0 * E * σ ^ n := by
+  intro n ℓ K0 σ E f W hK0 hσ hE hf hW hW01 hN hWE
+  -- Step 1: `lipschitz_fderiv_facts` with `r = σ / 2`; since `B1 ⊆ ball 0 (σ / 2)`,
+  -- `0 ≤ |Df|² ≤ n` on `B1`.
+  obtain ⟨hmeas, -, hnonneg, hbound, -⟩ :=
+    Submission.gwe_wewe_lipschitz_fderiv_facts n ℓ (σ / 2) f hf
+  set B1 : Set (Rn n) := ball (0 : Rn n) (3 * σ / 8)
+  have hB1meas : MeasurableSet B1 := measurableSet_ball
+  have hle : ∀ x ∈ B1, hsNormSq (fderiv ℝ f x) ≤ n := fun x hx =>
+    (hbound x (ball_subset_ball (by linarith) hx)).1
+  -- Step 2: `|Df|²` is measurable and bounded on the finite-measure ball `B1`.
+  have hint : IntegrableOn (fun x => hsNormSq (fderiv ℝ f x)) B1 := by
+    refine Measure.integrableOn_of_bounded (M := n) measure_ball_lt_top.ne
+      hmeas.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem hB1meas] with x hx
+    rw [Real.norm_eq_abs, abs_of_nonneg (hnonneg x)]
+    exact hle x hx
+  refine ⟨hint, ?_⟩
+  -- Step 3: `N = B1 ∩ {W = 0}` is a measurable subset of `B1`.
+  set N : Set (Rn n) := B1 ∩ {x | W x = 0}
+  have hNmeas : MeasurableSet N := hB1meas.inter (hW (measurableSet_singleton 0))
+  have hNsub : N ⊆ B1 := inter_subset_left
+  have ha : 0 ≤ K0 * E * σ ^ n := by positivity
+  -- Step 4: a.e. on `B1`, `ofReal |Df|² ≤ ofReal (|Df|² W) + 1_N ofReal n`;
+  -- split into the cases `W = 0` and `1 ≤ W`.
+  have hpt : ∀ᵐ x ∂(volume.restrict B1), ENNReal.ofReal (hsNormSq (fderiv ℝ f x)) ≤
+      ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) +
+        N.indicator (fun _ => ENNReal.ofReal n) x := by
+    rw [ae_restrict_iff' hB1meas]
+    filter_upwards [hW01] with x hx hxB
+    rcases hx hxB with h0 | h1
+    · rw [indicator_of_mem (show x ∈ N from ⟨hxB, h0⟩)]
+      exact le_add_left (ENNReal.ofReal_le_ofReal (hle x hxB))
+    · refine le_add_right (ENNReal.ofReal_le_ofReal ?_)
+      calc hsNormSq (fderiv ℝ f x) = hsNormSq (fderiv ℝ f x) * 1 := (mul_one _).symm
+        _ ≤ hsNormSq (fderiv ℝ f x) * W x := mul_le_mul_of_nonneg_left h1 (hnonneg x)
+  -- Step 5: integrate over `B1`; (H3) and (H2) bound the two terms.
+  have hlint : ∫⁻ x in B1, ENNReal.ofReal (hsNormSq (fderiv ℝ f x)) ≤
+      ENNReal.ofReal ((1 + n) * K0 * E * σ ^ n) := by
+    calc ∫⁻ x in B1, ENNReal.ofReal (hsNormSq (fderiv ℝ f x))
+        ≤ ∫⁻ x in B1, (ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) +
+            N.indicator (fun _ => ENNReal.ofReal n) x) := lintegral_mono_ae hpt
+      _ = (∫⁻ x in B1, ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x)) +
+            ENNReal.ofReal n * volume N := by
+          rw [lintegral_add_right _ (measurable_const.indicator hNmeas),
+            lintegral_indicator_const hNmeas, Measure.restrict_apply hNmeas,
+            inter_eq_left.mpr hNsub]
+      _ ≤ ENNReal.ofReal (K0 * E * σ ^ n) + ENNReal.ofReal n * ENNReal.ofReal (K0 * E * σ ^ n) := by
+          gcongr
+      _ = ENNReal.ofReal ((1 + n) * K0 * E * σ ^ n) := by
+          rw [← ENNReal.ofReal_mul (Nat.cast_nonneg n),
+            ← ENNReal.ofReal_add ha (mul_nonneg (Nat.cast_nonneg n) ha)]
+          congr 1
+          ring
+  -- Step 6: `∫_{B1} |Df|² = (∫⁻_{B1} ofReal |Df|²).toReal ≤ (1 + n) K0 E σⁿ`.
+  rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hnonneg) hmeas.aestronglyMeasurable]
+  exact ENNReal.toReal_le_of_le_ofReal (by positivity) hlint
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
