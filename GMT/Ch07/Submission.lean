@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Differentiated normality estimate** (step 7(b)–(e) of the parent retraction proof, with an
+abstract `Q` in place of `P̂`).  Put `v = g(x)`, `ν = x − ψ(v)`, `A = Dg(x)`, `B = Dψ(v)` and
+`C = DQ(v)`.  Differentiating `z ↦ Q(g(z))(z − ψ(g(z)))`, which vanishes on the open `O ∋ x`,
+gives `Q(v)(h − BAh) + (C(Ah))ν = 0`; as `Q(v)` fixes the range of `B`, `BAh = Q(v)h + (C(Ah))ν`.
+With `|Ah| ≤ b|BAh|` this gives `|BAh| ≤ |h| + s|BAh|` for `s = ab|ν| ≤ 1/2`, hence
+`|BAh| ≤ (1 + 2s)|h|` because `(1 + 2s)(1 − s) ≥ 1`. -/
+theorem Submission.dor_lmb_ret_derivative_estimate : ∀ (P d : ℕ) (O : Set (Euclid P)) (g : Euclid P → Euclid d) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (x : Euclid P) (a b : ℝ), IsOpen O → x ∈ O → DifferentiableAt ℝ g x → DifferentiableAt ℝ ψ (g x) → DifferentiableAt ℝ Q (g x) → (∀ z ∈ O, Q (g z) (z - ψ (g z)) = 0) → (Q (g x)).comp (fderiv ℝ ψ (g x)) = fderiv ℝ ψ (g x) → ‖Q (g x)‖ ≤ 1 → 0 ≤ a → 0 ≤ b → ‖fderiv ℝ Q (g x)‖ ≤ a → (∀ w : Euclid d, ‖w‖ ≤ b * ‖fderiv ℝ ψ (g x) w‖) → a * b * ‖x - ψ (g x)‖ ≤ 1 / 2 → ‖fderiv ℝ (ψ ∘ g) x‖ ≤ 1 + 2 * (a * b) * ‖x - ψ (g x)‖ := by
+  intro P d O g ψ Q x a b hO hx hg hψ hQ hzero hQB hQ1 ha hb hDQ hinj hs
+  set A := fderiv ℝ g x
+  set B := fderiv ℝ ψ (g x)
+  set C := fderiv ℝ Q (g x)
+  set ν := x - ψ (g x)
+  -- `F(z) = Q(g(z))(z − ψ(g(z)))` has derivative `h ↦ Q(v)(h − BAh) + (C(Ah))ν` at `x`
+  have hF : HasFDerivAt (fun z => Q (g z) (z - ψ (g z)))
+      ((Q (g x)).comp (ContinuousLinearMap.id ℝ (Euclid P) - B.comp A) + (C.comp A).flip ν) x :=
+    (hQ.hasFDerivAt.comp x hg.hasFDerivAt).clm_apply
+      ((hasFDerivAt_id x).sub (hψ.hasFDerivAt.comp x hg.hasFDerivAt))
+  -- `F` vanishes on the open neighbourhood `O` of `x`, so `DF(x) = 0`
+  have hF0 : HasFDerivAt (fun z => Q (g z) (z - ψ (g z))) (0 : Euclid P →L[ℝ] Euclid P) x :=
+    (hasFDerivAt_const (0 : Euclid P) x).congr_of_eventuallyEq
+      (Filter.eventually_of_mem (hO.mem_nhds hx) hzero)
+  have hDF := hF.unique hF0
+  have hs0 : 0 ≤ a * b * ‖ν‖ := mul_nonneg (mul_nonneg ha hb) (norm_nonneg _)
+  -- `D(ψ ∘ g)(x) = B ∘ A`; bound `|BAh|` for each `h`
+  rw [fderiv_comp x hψ hg]
+  refine ContinuousLinearMap.opNorm_le_bound _ (by linarith) fun h => ?_
+  show ‖B (A h)‖ ≤ (1 + 2 * (a * b) * ‖ν‖) * ‖h‖
+  -- `BAh = Q(v)h + (C(Ah))ν`, using `Q(v)(BAh) = BAh`
+  have h1 : Q (g x) (h - B (A h)) + C (A h) ν = 0 := by
+    simpa using DFunLike.congr_fun hDF h
+  have h2 : Q (g x) (B (A h)) = B (A h) := DFunLike.congr_fun hQB (A h)
+  have hkey : B (A h) = Q (g x) h + C (A h) ν := by
+    rw [map_sub, h2, sub_add_eq_add_sub, sub_eq_zero] at h1
+    exact h1.symm
+  -- `|Q(v)h| ≤ |h|` and `|(C(Ah))ν| ≤ a|Ah||ν| ≤ ab|ν||BAh|`
+  have hQh : ‖Q (g x) h‖ ≤ ‖h‖ :=
+    ((Q (g x)).le_opNorm h).trans (by simpa using mul_le_mul_of_nonneg_right hQ1 (norm_nonneg h))
+  have hCh : ‖C (A h) ν‖ ≤ a * b * ‖ν‖ * ‖B (A h)‖ :=
+    calc ‖C (A h) ν‖ ≤ ‖C (A h)‖ * ‖ν‖ := (C (A h)).le_opNorm ν
+      _ ≤ ‖C‖ * ‖A h‖ * ‖ν‖ := by gcongr; exact C.le_opNorm (A h)
+      _ ≤ a * (b * ‖B (A h)‖) * ‖ν‖ := by gcongr; exact hinj (A h)
+      _ = a * b * ‖ν‖ * ‖B (A h)‖ := by ring
+  have hle : ‖B (A h)‖ ≤ ‖h‖ + a * b * ‖ν‖ * ‖B (A h)‖ :=
+    calc ‖B (A h)‖ = ‖Q (g x) h + C (A h) ν‖ := by rw [← hkey]
+      _ ≤ ‖Q (g x) h‖ + ‖C (A h) ν‖ := norm_add_le _ _
+      _ ≤ ‖h‖ + a * b * ‖ν‖ * ‖B (A h)‖ := add_le_add hQh hCh
+  -- `(1 − s)|BAh| ≤ |h|` and `(1 + 2s)(1 − s) = 1 + s(1 − 2s) ≥ 1` for `0 ≤ s ≤ 1/2`
+  nlinarith [mul_nonneg (sub_nonneg.mpr hle) (by linarith : (0 : ℝ) ≤ 1 + 2 * (a * b * ‖ν‖)),
+    mul_nonneg (mul_nonneg hs0 (by linarith : (0 : ℝ) ≤ 1 - 2 * (a * b * ‖ν‖)))
+      (norm_nonneg (B (A h)))]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
