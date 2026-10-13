@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ffb4e42235d1095e6f50a326f5097b17b5adacca0ab61a6ef393128dae3f7e28",
+  "git_delta": {
+    "base_commit": "5fdc25934ccba86be934a03234ed4a4235a91ff0",
+    "candidate_commit": "31e47f0afb187a22868af49f10248b937e5edf8b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_massOn_le_of_compatible",
+    "diff_sha256": "79a3d1b07bee9142a46f7e872a5c621439c943ef4f9212ff3edde81733df49c7",
+    "source_sha256": "4ad4af312d09065675196dabb7acecb706d297415faa3042527142dbca9374d7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_massOn_le_of_compatible",
+      "statement": "∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (Y : GeometricCurrentOn V j) (Z : GeometricCurrentOn U j) (f : Eucl P → Eucl Q) (c : ℝ), IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) → (∀ (ω : TestFormOn V j) (η : TestFormOn U j), (∃ N : Set (Eucl P), IsOpen N ∧ A ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x = ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → Y ω = Z η) → 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q), Y.massOn W ≤ ENNReal.ofReal (c ^ j) * Z.massOn (f ⁻¹' W ∩ U)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
