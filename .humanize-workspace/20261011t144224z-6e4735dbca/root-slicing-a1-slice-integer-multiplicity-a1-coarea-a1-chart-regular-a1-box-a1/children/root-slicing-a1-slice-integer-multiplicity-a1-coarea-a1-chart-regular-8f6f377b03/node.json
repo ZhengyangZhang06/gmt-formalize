@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.box-a1.slice_area-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.box-a1",
+  "depth": 6,
+  "title": "Area formula on the slices {y₀ = t} of a straightened chart (B, χ)",
+  "statement": "Let P, m ∈ ℕ, Ω ⊆ ℝ^{m+1}, and Φ : ℝ^{m+1} → ℝ^P of class C¹, K-Lipschitz and c-antilipschitz on Ω (c > 0). Let B ⊆ ℝ^{m+1} be open and χ : ℝ^{m+1} → ℝ^{m+1} of class C¹ on B and Λ-Lipschitz on B, with χ(B) ⊆ Ω. Assume |v − v′| ≤ |χ([t,v]) − χ([t,v′])| whenever t ∈ ℝ, v, v′ ∈ ℝ^m and [t,v], [t,v′] ∈ B, where [t,v] := (t, v_0, …, v_{m−1}) = (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)). Let S ⊆ ℝ^{m+1} and g : ℝ^P → [0, ∞] be Borel. Put S′ := B ∩ χ⁻¹(S), 𝒥(y) := √det(⟨DΦ(χ y)(Dχ(y)e_{i+1}), DΦ(χ y)(Dχ(y)e_{j+1})⟩)_{i,j<m} and F̃ := 1_{S′}·(y ↦ g(Φ(χ y))·ofReal 𝒥(y)). Then for every t ∈ ℝ, with σ_t(v) := Φ(χ([t,v])) and S′_t := {v ∈ ℝ^m : [t,v] ∈ S′}, ∫_{σ_t(S′_t)} g dH^m = ∫_{ℝ^m} F̃([t,v]) dL^m(v), where H^m := μHE[m] on ℝ^P and L^m := volume on ℝ^m.",
+  "lean_statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)) (S : Set (Eucl (m + 1))) (g : Eucl P → ℝ≥0∞), ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → IsOpen B → ContDiffOn ℝ 1 χ B → χ '' B ⊆ Ω → (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) → (∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖) → MeasurableSet S → Measurable g → ∀ t : ℝ, ∫⁻ x in (fun v : Eucl m => Φ (χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))))) '' {v : Eucl m | (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B ∩ χ ⁻¹' S}, g x ∂(μHE[m] : Measure (Eucl P)) = ∫⁻ v : Eucl m, (B ∩ χ ⁻¹' S).indicator (fun y => g (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1))) (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1)))).det)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) ∂(volume : Measure (Eucl m))",
+  "lean_name": "slicing_im_creg_box_slice_area",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708-a1",
+      "result_commit": "9fc44225b304fca8af9dead3256575ef03818d1e",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-8f6f377b03-a1"
+}
