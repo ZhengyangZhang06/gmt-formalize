@@ -531,6 +531,68 @@ theorem Submission.rpn_pe_ray_ftc :
   simp_rw [hderiv, integral_neg, zero_smul, sub_zero] at key
   exact neg_injective key
 
+/-- **Representation formula (Gilbarg–Trudinger, §7.8, proof of Lemma 7.14).**  For `n = m + 1`,
+`ω = Lⁿ(B₁(0))` and `a ∈ C_c^∞(ℝⁿ)`, the kernels `K_j(t) = t_j / (n ω |t|ⁿ)` satisfy
+`∑_j ∫ K_j(t) ∂_j a(y - t) dt = a(y)`.  Expanding `t` in the standard basis, the sum is `∫ G` with
+`G(t) = Da(y - t) t / (n ω |t|ⁿ)`.  In polar coordinates `r^m G(rθ) = Da(y - rθ) θ / (n ω)`, so
+each ray integral is `a(y) / (n ω)` (fundamental theorem of calculus along the ray), and the unit
+sphere has measure `n ω`. -/
+theorem Submission.rpn_pe_kernel_representation : ∀ (m : ℕ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ y : Eucl (m + 1), ∑ j : Fin (m + 1), ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) = a y := by
+  intro m a ha hca y
+  -- Step 1: `ω = Lⁿ(B₁(0)) ∈ (0, ∞)`, so `c = (m + 1) ω > 0`.
+  set ω : ℝ := (volume (ball (0 : Eucl (m + 1)) 1)).toReal with hω
+  set c : ℝ := ((m : ℝ) + 1) * ω with hc
+  have hω_pos : 0 < ω :=
+    ENNReal.toReal_pos (measure_ball_pos volume 0 one_pos).ne' measure_ball_lt_top.ne
+  have hc_pos : 0 < c := by positivity
+  -- Step 2: `K_j` is locally integrable, so `t ↦ K_j(t) ∂_j a(y - t)` is integrable.
+  have hint : ∀ j : Fin (m + 1), Integrable fun t : Eucl (m + 1) =>
+      t j / (c * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) := fun j =>
+    ((Submission.rpn_pe_convolution_contDiff_fderiv (m + 1) _ a
+      (Submission.rpn_pe_kernel_locallyIntegrable m j c) ha hca).2 y _).1
+  -- Step 3: move the sum inside the integral.
+  rw [← integral_finsetSum _ fun j _ => hint j]
+  -- Step 4: `Λ v = ∑_j v_j Λ e_j`, so `∑_j K_j(t) ∂_j a(y - t) = G(t)`.
+  have hexp : ∀ (Λ : Eucl (m + 1) →L[ℝ] ℝ) (v : Eucl (m + 1)),
+      Λ v = ∑ j : Fin (m + 1), v j * Λ (EuclideanSpace.single j (1 : ℝ)) := by
+    intro Λ v
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).sum_repr v]
+    simp [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr]
+  set G : Eucl (m + 1) → ℝ := fun t => fderiv ℝ a (y - t) t / (c * ‖t‖ ^ (m + 1)) with hG
+  have hsum : (fun t : Eucl (m + 1) => ∑ j : Fin (m + 1),
+      t j / (c * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ))) = G := by
+    funext t
+    simp only [hG]
+    rw [hexp (fderiv ℝ a (y - t)) t, Finset.sum_div]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  -- Step 5: `G` is integrable and the left side is `∫ G`.
+  have hG_int : Integrable G := by
+    rw [← hsum]
+    exact integrable_finsetSum _ fun j _ => hint j
+  rw [hsum]
+  -- Step 6: polar coordinates.
+  rw [Submission.rpn_pe_integral_eq_polar m G hG_int]
+  -- Step 7: for `|θ| = 1` and `r > 0`, `r^m G(rθ) = Da(y - rθ) θ / c`; integrate along the ray.
+  have hray : ∀ θ : sphere (0 : Eucl (m + 1)) 1,
+      ∫ r in Ioi (0 : ℝ), r ^ m * G (r • (θ : Eucl (m + 1))) = a y / c := by
+    intro θ
+    calc ∫ r in Ioi (0 : ℝ), r ^ m * G (r • (θ : Eucl (m + 1)))
+        = ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • (θ : Eucl (m + 1))) θ / c := by
+          refine setIntegral_congr_fun measurableSet_Ioi fun r (hr : 0 < r) => ?_
+          simp only [hG]
+          rw [norm_smul, norm_eq_of_mem_sphere, mul_one, Real.norm_of_nonneg hr.le, map_smul,
+            smul_eq_mul]
+          field_simp
+          ring
+      _ = (∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • (θ : Eucl (m + 1))) θ) / c := integral_div c _
+      _ = a y / c := by
+          rw [Submission.rpn_pe_ray_ftc (m + 1) a (ha.of_le (by norm_cast)) hca y θ
+            (ne_zero_of_mem_unit_sphere θ)]
+  -- Step 8: the inner integral is the constant `a(y) / c`, and `σ(S) = (m + 1) ω = c`.
+  rw [integral_congr_ae (Eventually.of_forall hray), integral_const, smul_eq_mul,
+    Measure.toSphere_real_apply_univ, finrank_euclideanSpace_fin, measureReal_def, ← hω,
+    show ((m + 1 : ℕ) : ℝ) * ω = c by rw [hc]; push_cast; ring, mul_div_cancel₀ _ hc_pos.ne']
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
