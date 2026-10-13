@@ -502,6 +502,7 @@ theorem Submission.idtp_cse_rc_af_plane_projection : ∀ (P : ℕ) (Q : Submodul
     real_inner_smul_left, real_inner_smul_left, real_inner_smul_left, real_inner_smul_left,
     real_inner_smul_right, real_inner_smul_right, real_inner_smul_right, real_inner_smul_right,
     haa, hee, hae, hea]
+  ring
 /-- **Differential of the polar angle `arctan (⟨y, e⟩ / ⟨y, a⟩)`** (the calculus step of the
 rotation argument for cone sectors in Simon 7.3).  If `⟨x, a⟩ ≠ 0`, then
 `f(y) = arctan (⟨y, e⟩ / ⟨y, a⟩)` is `C¹` near `x` and, for every `v`,
