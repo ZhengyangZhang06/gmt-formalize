@@ -466,6 +466,30 @@ theorem Submission.dgcr_bwd_extDeriv_smul_const : ∀ (P m : ℕ) (a : Euclid P 
   rw [h1, fderiv_mul_const ha]
   simp [zsmul_eq_mul, mul_comm]
 
+/-- **Vanishing of `∫ Dφ[v] dν` on a set of directions extends to its span** (the linearity step
+of the constant-planes argument for the closure and boundary rectifiability in the compactness
+theorem).  If `ν` is finite on compact sets and `φ : ℝᴾ → ℝ` is `C^∞` with compact support, then
+each `y ↦ Dφ(y)[v]` is continuous with compact support, hence `ν`-integrable, so
+`v ↦ ∫ Dφ(y)[v] dν(y)` is linear; if it vanishes on `S`, it vanishes on `span S`. -/
+theorem Submission.cbr_ci_cp_dir_integral_fderiv_span : ∀ (P : ℕ) (ν : Measure (Euclid P)) (φ : Euclid P → ℝ) (S : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ v ∈ S, ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ v ∈ Submodule.span ℝ S, ∫ y, fderiv ℝ φ y v ∂ν = 0 := by
+  intro P ν φ S hν hφ hφc hS
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  have hint : ∀ v, Integrable (fun y => fderiv ℝ φ y v) ν := by
+    intro v
+    have hc : Continuous (fun y => fderiv ℝ φ y v) :=
+      (hφ.continuous_fderiv (by simp)).clm_apply continuous_const
+    exact hc.integrable_of_hasCompactSupport (hφc.fderiv_apply (𝕜 := ℝ) v)
+  intro v hv
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact hS x hx
+  | zero => simp
+  | add x y _ _ hx hy =>
+    simp only [map_add]
+    rw [integral_add (hint x) (hint y), hx, hy, add_zero]
+  | smul c x _ hx =>
+    simp only [map_smul, smul_eq_mul]
+    rw [integral_const_mul, hx, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
