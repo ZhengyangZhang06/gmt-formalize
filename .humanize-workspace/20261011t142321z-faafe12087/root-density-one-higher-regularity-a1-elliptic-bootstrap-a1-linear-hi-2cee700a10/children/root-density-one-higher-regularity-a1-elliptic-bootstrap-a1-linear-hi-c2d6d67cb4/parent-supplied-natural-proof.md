@@ -1,0 +1,62 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.linear_family_continuity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Lean setting: L := Rn n →L[ℝ] Rn ℓ is finite-dimensional over ℝ, and the linear-form type L →L[ℝ] ℝ has its usual AddCommGroup/Module/NormedSpace instances at the default maxSynthPendingDepth (checked at the pin).
+1. Basis and coordinates. Let b := Module.finBasis ℝ L, a basis (E_r) of L indexed by r ∈ Fin (Module.finrank ℝ L), E_r = b r. For each r let c_r : L → ℝ, c_r(P) := b.repr P r. Then c_r is the linear map b.coord r (Module.Basis.coord_apply), and every linear map on the finite-dimensional Hausdorff space L is continuous (LinearMap.continuous_of_finiteDimensional applied to b.coord r), so each c_r is continuous on L.
+2. Expansion. For every P ∈ L, P = Σ_r c_r(P) • E_r (Module.Basis.sum_repr: Σ_r b.repr P r • b r = P). Since Φ(y) is linear for every y, for all x we get Φ(s(x))[B(x)] = Φ(s(x))[Σ_r c_r(B(x)) • E_r] = Σ_r c_r(B(x)) · Φ(s(x))[E_r] (rewrite B x as b.sum_repr backwards, then map_sum, map_smul, smul_eq_mul). Hence, as functions of x, (x ↦ Φ(s(x))[B(x)]) = (x ↦ Σ_r c_r(B(x)) · Φ(s(x))[E_r]) (funext), and it suffices to prove that the right-hand side is continuous at x₀.
+3. Coordinate factor. For each r, x ↦ c_r(B(x)) is continuous at x₀: it is the continuous map c_r of step 1 composed with B, which is continuous at x₀ (Continuous.continuousAt composed via ContinuousAt.comp).
+4. Coefficient factor. Fix r. By hypothesis (with P := E_r) the function y ↦ Φ(y)[E_r] is continuous on U. Because U is open and s(x₀) ∈ U, U is a neighbourhood of s(x₀) (IsOpen.mem_nhds), so y ↦ Φ(y)[E_r] is continuous at s(x₀) (ContinuousOn.continuousAt). Composing with s, which is continuous at x₀, shows that x ↦ Φ(s(x))[E_r] is continuous at x₀ (ContinuousAt.comp).
+5. Products and the finite sum. By steps 3 and 4 and ContinuousAt.mul, every summand x ↦ c_r(B(x)) · Φ(s(x))[E_r] is continuous at x₀. A finite sum of functions continuous at x₀ is continuous at x₀ (ContinuousAt is the statement Tendsto f (𝓝 x₀) (𝓝 (f x₀)); apply tendsto_finsetSum over Finset.univ). By step 2 this sum is the function x ↦ Φ(s(x))[B(x)], which is therefore continuous at x₀. QED.
+
+## Key steps
+
+1. b := Module.finBasis ℝ L with continuous coordinates c_r = b.coord r (finite dimension)
+2. Φ(s x)[B x] = Σ_r c_r(B x) · Φ(s x)[E_r] by Basis.sum_repr and linearity of Φ(s x)
+3. c_r ∘ B continuous at x₀; y ↦ Φ(y)[E_r] continuous at s(x₀) ∈ U (U open) and composed with s
+4. product and finite sum (tendsto_finsetSum) of functions continuous at x₀
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean; cmp GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean`
+- `python3 scan of dag.json: selected node (status decomposing, depth 4), sibling lean_statements under linear_higher_regularity-a1, accepted nodes whose statements mention ContinuousAt/Integrable; lean_name collision check for the five dohr_eb_lhr_dqwe_* names`
+- `grep -c dqwe dag.json; grep -rl dqwe nodes/; rg -l dqwe <snapshot> (no match anywhere)`
+- `rg -n -i 'difference quotient|finBasis|translat' <snapshot>/project/GMT/Ch05 (no match)`
+- `rg -n -F in <snapshot>/mathlib/Mathlib: tendsto_finsetProd, Basis.sum_repr, finBasis, continuous_of_finiteDimensional, mulTSupport_comp_subset_preimage, HasCompactMulSupport.comp_homeomorph, image_eq_one_of_notMem_mulTSupport, HasCompactMulSupport.intro, Homeomorph.divRight, fderiv_fun_const_smul, fderiv_fun_sub, fderiv_comp_add_right, fderiv_comp_sub, tsupport_fderiv_subset, setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_congr_fun, integral_mul_right_eq_self, Continuous.integrable_of_hasCompactSupport, ContDiffOn.continuousOn_fderiv_of_isOpen, integral_const_mul, integral_sub, ContinuousAt.congr, IsAddLeftInvariant.isAddRightInvariant`
+- `lake build GMT.Ch05.Submission in scratch copy /tmp/dqwe-decomp-BMjIbb/proj (Lean 4.35.0-rc3, .lake/packages -> shared lake-packages-25730c7c)`
+- `lake env lean Checks/Names.lean (#check of every cited lemma; continuousAt_finset_sum and integral_mul_left do not exist at the pin, so tendsto_finsetSum and integral_const_mul are cited)`
+- `lake env lean Checks/Assembly.lean (five child types as axioms, exact frozen parent type proved, #print axioms)`
+- `lake env lean Checks/Children.lean and Checks/ChildrenTypes.lean (complete proofs of all five children; example : <frozen string> := Submission.<name>)`
+- `lake env lean Checks/Challenge.lean (five child types elaborated in the bare namespace GMT.Ch05 contract scope)`
+- `independent reviewer: Checks/ReviewNames, ReviewScope, ReviewInst, ReviewInst2, ReviewDepr, ReviewEndToEnd .lean and /tmp/dqwe-review-1/compare.py (byte-identity of frozen strings)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-2cee700a10/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Monoid.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Group/ContinuousDiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Continuous.lean`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean is byte-identical to the snapshot Contract, and Submission.lean is still identical to Contract. Neither the project nor any accepted DAG node provides a coefficient-continuity lemma, a translated weak identity or a difference-quotient derivative lemma: there is no 'dqwe' or difference-quotient match in the snapshot, dag.json or the node directories. The five proposed names are therefore fresh. Every Mathlib fact used exists at the pin: tendsto_finsetSum (to_additive of Topology/Algebra/Monoid.lean:941); Module.Basis.sum_repr (Basis/Defs.lean:258); Module.finBasis (Dimension/Free.lean:334); LinearMap.continuous_of_finiteDimensional (Module/FiniteDimension.lean:284); tsupport_comp_subset_preimage, image_eq_zero_of_notMem_tsupport, HasCompactSupport.intro and HasCompactSupport.comp_homeomorph (to_additive of Support.lean:99/111/232/562); Homeomorph.subRight (to_additive of Group/ContinuousDiv.lean:90); fderiv_fun_const_smul, fderiv_fun_sub, fderiv_comp_add_right and fderiv_comp_sub (FDeriv/Add.lean:124/680/855/892); tsupport_fderiv_subset (FDeriv/Const.lean:383); ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916); setIntegral_congr_fun and setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:73/486; the latter needs no measurability); integral_const_mul (Bochner/Basic.lean:290); integral_add_right_eq_self (to_additive of Group/Integral.lean:101; volume on Rn n is add-right-invariant); Continuous.integrable_of_hasCompactSupport (LocallyIntegrable.lean:622); ContinuousAt.congr (Topology/Continuous.lean:70). At the pin, ContinuousLinearMap.sub_apply, smul_apply and sum_apply are deprecated aliases of the root-level names. Lean checks on the scratch build: all five child types elaborate in the bare contract scope; each child has a complete proof using only propext, Classical.choice and Quot.sound; with the five child types as axioms, the exact frozen parent type is proved and #print axioms lists the three standard axioms plus exactly the five child axioms; an independent reviewer compiled an axiom-free end-to-end proof of the parent and confirmed byte-identity of all frozen strings and the intended instances (ContinuousLinearMap scalar action, volume on Rn n).

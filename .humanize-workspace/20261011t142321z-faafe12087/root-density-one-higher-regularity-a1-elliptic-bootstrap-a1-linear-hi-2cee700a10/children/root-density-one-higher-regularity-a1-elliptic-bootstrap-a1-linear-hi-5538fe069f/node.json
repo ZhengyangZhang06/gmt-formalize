@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.shifted_weak_identity-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1",
+  "depth": 5,
+  "title": "Translated weak identity: testing with a translated test function",
+  "statement": "Let n, ℓ be natural numbers, L := L(R^n, R^ℓ), U ⊆ R^n any set, a : R^n → L(L, L(L, R)), Φ : R^n → L(L, R), v : R^n → R^ℓ arbitrary maps, and h ∈ R^n. Assume ∫_U a(x)[Dv(x)][Dζ(x)] dx = ∫_U Φ(x)[Dζ(x)] dx for every C^1 map ζ : R^n → R^ℓ with compact support and tsupport ζ ⊆ U (Lebesgue measure; D = Fréchet derivative). Let η : R^n → R^ℓ be C^1 with compact support such that x + h ∈ U for every x ∈ tsupport η. Then ∫_{R^n} a(x + h)[Dv(x + h)][Dη(x)] dx = ∫_{R^n} Φ(x + h)[Dη(x)] dx. Here D is Mathlib's fderiv (the Fréchet derivative where it exists, 0 elsewhere) and ∫ is the Bochner integral for Lebesgue measure (0 for a non-integrable integrand); no measurability of U and no integrability or differentiability is assumed.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (h : Rn n) (η : Rn n → Rn ℓ), (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → ContDiff ℝ 1 η → HasCompactSupport η → (∀ x ∈ tsupport η, x + h ∈ U) → ∫ x, a (x + h) (fderiv ℝ v (x + h)) (fderiv ℝ η x) = ∫ x, Φ (x + h) (fderiv ℝ η x)",
+  "lean_name": "dohr_eb_lhr_dqwe_shifted_weak_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-5538fe069f-a1"
+}
