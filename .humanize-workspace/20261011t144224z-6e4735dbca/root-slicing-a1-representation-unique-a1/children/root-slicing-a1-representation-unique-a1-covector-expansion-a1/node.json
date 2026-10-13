@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.representation_unique-a1.covector_expansion-a1",
+  "parent_id": "root.slicing-a1.representation_unique-a1",
+  "depth": 3,
+  "title": "Coordinate expansion of k-covectors on ℝ^P (Fact A)",
+  "statement": "For all P, k ∈ ℕ and every k-covector α on ℝ^P (a continuous alternating k-linear map (ℝ^P)^k → ℝ, Covector (Eucl P) k): α = Σ_{β ∈ I(k,P)} α(e_{β(0)}, …, e_{β(k−1)})·dx^β. Here I(k,P) = SimonMultiIndex k P is the finite set of strictly increasing maps (order embeddings) β : Fin k → Fin P; e_i = EuclideanSpace.single i 1 is the i-th standard basis vector, so the coefficient is euclideanCovectorCoordinate α β; and dx^β = wedgeCovectors k (j ↦ EuclideanSpace.proj (β j)) is the wedge of the coordinate 1-covectors dx^{β(0)}, …, dx^{β(k−1)}.",
+  "lean_statement": "∀ (P k : ℕ) (α : Covector (Eucl P) k), α = ∑ β : SimonMultiIndex k P, euclideanCovectorCoordinate α β • wedgeCovectors k (fun j => EuclideanSpace.proj (β j))",
+  "lean_name": "slicing_ru_covector_expansion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-representation-unique-a1-covector-expansion-a1-a1"
+}

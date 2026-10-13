@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^abbrev Eucl|^def (CompactlyContainedOpen|IsIntegerMultiplicity|IsSlice|SlicingTheorem)' project/GMT/Ch06/Contract.lean",
+        "rg -n 'def cthickening|cthickening_empty|exists_cthickening_subset_open|thickening_subset_interior_cthickening' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "rg -n 'infDist_empty|lipschitz_infDist_pt|notMem_iff_infDist_pos' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "rg -n 'exists_contMDiffMap_one_nhds_of_subset_interior' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "rg -n 'polyhedral_approx_exhaustion_function|polyhedral_approx_boundary_mass_cutoff' project/GMT",
+        "polyhedral_approx_exhaustion_function|polyhedral_approx_boundary_mass_cutoff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/C2NoImport.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/truncation-independent-audit-epivo71n/Contracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1/parent-child-handoff.json",
+        "/tmp/ts_decomp_1791763526/Scratch/Full.lean",
+        "/tmp/ts_decomp_1791763526/Scratch/C2NoImport.lean",
+        "/tmp/truncation-independent-audit-epivo71n/Contracts.lean"
+      ],
+      "conclusion": "The split appropriately isolates exhaustion and boundary localization for the selected truncation-sequence theorem. Snapshot compatibility was checked against the tested sources. Both exact one-line propositions elaborate independently without child declarations; both supplied trial proofs kernel-check using only propext, Classical.choice and Quot.sound. The exact selected parent assembles using these children and precisely its three authorized sibling obligations, whose frozen types were checked. Both names are bare identifiers, absent from the snapshot and unreserved by other DAG branches. Dependencies are acyclic; no accepted DAG declaration is reused. The Euclidean PiLp-2 instance was independently verified. There are no matrix constructions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exhaustion_function",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including every hypothesis. The reciprocal-norm estimate, separate whole-space case, nonempty closed-complement distance argument, compact superlevels and positive compact minima establish all conclusions, including empty-domain and empty-compact-set cases. The proof is constructive in its mathematical steps, non-circular and sufficiently detailed. Its conclusions supply both relatively compact truncation regions and eventual containment of test-form supports."
+    },
+    {
+      "key": "boundary_mass_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree. The specified Metric.cthickening construction, including empty V, provides room for the smooth cutoff. Support control and coefficient-norm homogeneity give an admissible cutoff form; germ locality gives equality of exterior derivatives on V; hypothesis H and the mass supremum yield the stated inequality. Ambient TestFormOn definitions require no additional openness assumptions on U₁ or U₂. The proof is complete and non-circular, and the parent's integral representations establish H, making this bound sufficient for its finite-boundary-mass step."
+    }
+  ],
+  "required_changes": []
+}

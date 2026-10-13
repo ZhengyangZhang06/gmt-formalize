@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'IsIntegerMultiplicity|flatDistance' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT --glob '*.lean' --glob '!Contract.lean' --glob '!Submission.lean'",
+        "rg -n 'ae_tendsto_measure_inter_div|ae_tendsto_lintegral_enorm_sub_div|tendsto_filterAt' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/{Besicovitch,Differentiation}.lean",
+        "rg -n 'alternatizeUncurryFin_apply|def alternatizeUncurryFin' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "rg -n 'fiw_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "rg -n '7\\.2|3\\.13|\\(27\\)|\\(32\\)|\\(37\\)' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentTypeAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/AssemblyExact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/LincombExact.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/fiw_check/Scratch/IndependentTypeAudit.lean",
+        "/tmp/fiw_check/Scratch/AssemblyExact.lean",
+        "/tmp/fiw_check/Scratch/LincombExact.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected FlatConvergenceIffWeakConvergence contract. The children supply the required calculus, localization, total boundedness, and summation argument. Their dependencies, including the inherited sibling dependencies, are acyclic and correctly directed. All eight names are bare identifiers intended for Submission; none is reserved by another inspected branch. No matching integer-multiplicity or flat-distance declarations were found in the snapshot project outside Contract.lean/Submission.lean. The pinned definitions and supporting differentiation, measure-scaling, and exterior-derivative conventions agree with the proofs. All eight exact proposition strings passed the statement validator and independently elaborated in comparator scope without child implementations. The scratch project matches the frozen inputs. Rerunning the conditional parent assembly and finite-linear-combination derivation succeeded with only propext, Classical.choice, and Quot.sound. These checks certify types and assembly; the analytic proofs were reviewed separately. HasSum is unconditional, the geometric bound uses ENNReal arithmetic, and no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "flat_to_weak",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the statement for arbitrary currents. Rescaling test forms gives the required mass estimate; compact containment also covers the exterior derivative. The ENNReal infimum argument supplies decompositions whose evaluations tend to zero, without assuming integrality or mass bounds on T and Tj."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All positivity, measurability, and local integrability hypotheses appear in the type. The proof correctly transfers null sets using positive weights, obtains growth bounds from the first tangent measure, and controls the second measure through density and differentiation. Its common full-measure set is independent of Q, and the blow-up scaling is correct."
+    },
+    {
+      "key": "im_mass_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the frozen Euclidean coefficient norm and allows every open W, handled through W intersect U. The supplied Cauchy–Binet argument establishes the exact dual bound. Compact exhaustion, continuous approximation, and norm-preserving mollification prove the reverse inequality, including infinite mass."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly specifies unconditional evaluation sums and mass bounds for arbitrary sets. Local absolute summability proves current continuity. Positive integer multiplicities make overlaps finite almost everywhere; tangent locality and uniqueness align orientations, yielding the explicitly constructed integer-valued representation. No reliance on im_lincomb or the parent theorem is needed."
+    },
+    {
+      "key": "im_lincomb",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the pointwise characterization of S. The mass formula supplies local finiteness, and the two-term specialization of im_series yields S by uniqueness of sums and current extensionality. This dependency direction is non-circular; the exact conditional derivation also compiles."
+    },
+    {
+      "key": "localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both external theorem hypotheses and every required bound and convergence assumption. Restriction uniqueness is established before using IsSlice. Rational diagonal selection and Fatou provide a suitable level and subsequence; cutoff estimates prove localized weak convergence. Boundary rectifiability and the explicit remainder currents establish integrality and the exact transfer inequality."
+    },
+    {
+      "key": "total_boundedness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract includes compact support, finite uniform mass, and integrality of currents and boundaries. Extension and domain restriction preserve the needed properties. Deformation gives finitely many coefficient vectors in positive codimension; the supplied translation estimate and integer medians cover P = m + 1. Pigeonhole and integer differences then give the stated global mass bound, including the trivial-dimensional cases."
+    },
+    {
+      "key": "flat_cauchy_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the ENNReal geometric bound. Nested infinite sets yield correctly indexed, summably small consecutive decompositions. Applying im_series to their tails and evaluating at omega and d omega identifies the weak limit by telescoping, with the required sign and bound. No integrality hypothesis on the weak limit is silently used."
+    }
+  ],
+  "required_changes": []
+}
