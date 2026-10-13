@@ -2030,6 +2030,65 @@ theorem Submission.adr_dimension_bound : ∀ (P n Q : ℕ) (F : Set (Euclid P �
   -- Step 5: `C(d + 1)` contradicts the bound on `d`
   obtain ⟨ψ, hψF, S, hS, hSinv, hψpos⟩ := key (d + 1)
   have := hd ψ hψF S hSinv (hne ψ hψpos)
+
+/-- **Simon, proof of A.4 (p. 228), `sing ψ = T`.**  Let `d` bound `dim L` for every subspace `L`
+such that some `ψ ∈ F` with `sing ψ ≠ ∅` satisfies `ψ(y + λx) = ψ(x)` for `y ∈ L`, `λ > 0`.  If
+`φ ∈ F` with `sing φ ≠ ∅` is invariant in this sense under a `d`-dimensional `L`, then
+`sing φ = L`: `L ⊆ sing φ` by A.3(2), and a singular point outside `L`, rescaled to `x` with
+`‖x‖ = 1/2`, would give by A.2 a tangent function at `x` that is singular at `0` (A.3(3)) and
+invariant under the `(d + 1)`-dimensional `L + ℝx`. -/
+theorem Submission.adr_extremal_sing_eq : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ d : ℕ, (∀ ψ ∈ F, ∀ L : Submodule ℝ (Euclid P), (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → (sing ψ).Nonempty → Module.finrank ℝ L ≤ d) → ∀ φ ∈ F, ∀ L : Submodule ℝ (Euclid P), Module.finrank ℝ L = d → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, φ (y + lam • x) = φ x) → (sing φ).Nonempty → sing φ = (L : Set (Euclid P)) := by
+  intro P n Q F sing hH0 hH1 hA1 hA2 hclosed hA32 hA33 d hd φ hφ L hLdim hLinv hne
+  -- Lemma S: `y + λ ·` (`y ∈ L`, `λ > 0`) preserves `sing φ`, and `L ⊆ sing φ`
+  have hpre : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam →
+      (fun x => y + lam • x) ⁻¹' sing φ = sing φ := by
+    intro y hy lam hlam hlam1 hy1
+    rw [← hA32 φ hφ y lam hlam hlam1 hy1, funext fun x => hLinv y hy lam hlam x]
+  obtain ⟨hinv, hLsub⟩ :=
+    Submission.adr_affine_invariant_closed_set P (sing φ) L (hclosed φ hφ) hpre
+  refine Set.Subset.antisymm (fun z hz => ?_) (hLsub hne)
+  by_contra hzL
+  -- rescale a singular point `z ∉ L` to `x ∈ sing φ ∖ L` with `‖x‖ = 1/2`
+  have hz0 : 0 < ‖z‖ := norm_pos_iff.2 fun h => hzL (h ▸ L.zero_mem)
+  set c : ℝ := 1 / (2 * ‖z‖) with hc
+  have hc0 : 0 < c := by positivity
+  set x : Euclid P := c • z with hx
+  have hxs : x ∈ sing φ := by simpa using (hinv 0 L.zero_mem c hc0 z).2 hz
+  have hxn : ‖x‖ = 1 / 2 := by
+    rw [hx, norm_smul, Real.norm_of_nonneg hc0.le, hc]
+    field_simp
+  have hxL : x ∉ L := fun h => hzL <| by
+    simpa [hx, smul_smul, inv_mul_cancel₀ hc0.ne'] using L.smul_mem c⁻¹ h
+  -- A.2 at `x` along `Λ k = (1/2)/(k + 2) ≤ 1/4`: a homogeneous tangent function `ψ`
+  set Λ : ℕ → ℝ := fun k => (1 / 2) / ((k : ℝ) + 2) with hΛ
+  have hΛpos : ∀ k, 0 < Λ k := fun k => by positivity
+  have hΛanti : StrictAnti Λ := fun a b hab =>
+    div_lt_div_of_pos_left (by norm_num) (by positivity)
+      (by simpa using (Nat.cast_lt.2 hab : (a : ℝ) < b))
+  have hΛlim : Tendsto Λ atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
+  have hΛle : ∀ k, Λ k ≤ 1 / 4 := fun k => by
+    rw [hΛ, div_le_iff₀ (by positivity)]
+    linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  obtain ⟨sub, ψ, hsub, hψ, hconv, hhom⟩ :=
+    hA2 φ hφ x (by rw [hxn]; norm_num) Λ hΛpos hΛanti hΛlim
+  have hk : ∀ k, 0 < Λ (sub k) ∧ Λ (sub k) < 1 ∧ ‖x‖ ≤ 1 - Λ (sub k) := fun k =>
+    ⟨hΛpos _, by linarith [hΛle (sub k)], by linarith [hΛle (sub k)]⟩
+  have hφk : ∀ k, (fun z => φ (x + Λ (sub k) • z)) ∈ F := fun k =>
+    hA1 φ hφ x _ (hk k).1 (hk k).2.1 (hk k).2.2
+  -- Lemma T: `0 ∈ sing ψ`, since `0 ∈ B₁(0) ∩ sing φ_{x,λ_k}` by A.3(2)
+  have hψs : (0 : Euclid P) ∈ sing ψ :=
+    Submission.adr_sing_mem_of_tendsto P n Q F sing hclosed hA33 ψ hψ
+      (fun k z => φ (x + Λ (sub k) • z)) hφk hconv (fun _ => 0) 0
+      (fun k => ⟨mem_ball_self one_pos, by
+        rw [hA32 φ hφ x _ (hk k).1 (hk k).2.1 (hk k).2.2, Set.mem_preimage, smul_zero, add_zero]
+        exact hxs⟩)
+      tendsto_const_nhds
+  -- Lemma I: `ψ` is invariant under `L + ℝx`, of dimension `d + 1`, contradicting the bound `d`
+  have hdim := hd ψ hψ (L ⊔ Submodule.span ℝ {x})
+    (Submission.adr_tangent_invariance P n Q F hH0 hH1 hA1 φ hφ L hLinv x (fun k => Λ (sub k)) ψ
+      (fun k => (hk k).1) (hΛlim.comp hsub.tendsto_atTop) hφk hψ hhom hconv) ⟨0, hψs⟩
+  rw [Submodule.finrank_sup_span_singleton hxL, hLdim] at hdim
   omega
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
