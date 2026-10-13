@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.uniform_remainder-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "Whitney's remainder hypothesis 1.6(‡) on a large closed subset of the differentiability set",
+  "statement": "Let n ∈ ℕ, K ≥ 0, f : ℝⁿ → ℝ K-Lipschitz, L : ℝⁿ → L(ℝⁿ, ℝ) Borel measurable, S ⊆ ℝⁿ a Borel set, and suppose f is Fréchet differentiable at every x ∈ S with derivative L(x). Then for every ε ∈ (0, ∞] there is a closed set A ⊆ S with Lⁿ(S ∖ A) < ε such that for every compact Q ⊆ A and every ε' > 0 there is δ > 0 with |f(y) − f(x) − L(x)(y − x)| ≤ ε'|y − x| for all x ∈ Q and all y ∈ A with |x − y| < δ.",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0) (L : Rn n → (Rn n →L[ℝ] ℝ)) (S : Set (Rn n)), LipschitzWith K f → Measurable L → MeasurableSet S → (∀ x ∈ S, HasFDerivAt f (L x) x) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A ⊆ S, IsClosed A ∧ volume (S \\ A) < ε ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖f y - f x - L x (y - x)‖ ≤ ε' * ‖y - x‖",
+  "lean_name": "lipschitz_uniform_remainder_on_closed_subset",
+  "depends_on": [
+    "root.c1_approximation-a1.egorov_sigma_finite-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.c1_approximation-a1.egorov_sigma_finite-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-c1-approximation-a1-uniform-remainder-a1-a1"
+}

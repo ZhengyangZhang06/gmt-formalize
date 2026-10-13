@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 3.6 (Besicovitch-Federer): purely unrectifiable σ-finite sets have null projections for a.e. projection",
+  "statement": "For n, ℓ ∈ ℕ, N := n + ℓ: if Q ⊆ ℝ^N is purely n-unrectifiable (every countably n-rectifiable subset is Hⁿ-null) and Q = ⋃ⱼ Qⱼ with Hⁿ(Qⱼ) < ∞, then ForAlmostAllProjections N n (fun p ↦ Hⁿ(p(Q)) = 0), i.e. for Lebesgue-a.e. v ∈ (ℝ^N)ⁿ with v linearly independent, Hⁿ(p_v(Q)) = 0 where p_v = frameProjection v is the orthogonal projection onto span v.",
+  "lean_statement": "BesicovitchFedererProjectionTheorem",
+  "lean_name": "besicovitchFedererProjectionTheorem_holds",
+  "depends_on": [
+    "root.eilenberg_inequality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.eilenberg_inequality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-a1"
+}

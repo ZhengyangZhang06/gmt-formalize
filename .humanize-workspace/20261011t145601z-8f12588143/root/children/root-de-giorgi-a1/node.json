@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 4.3 (De Giorgi): structure of the reduced boundary",
+  "statement": "For n ∈ ℕ, U ⊆ ℝ^{n+1} open and E Lebesgue null-measurable with locally finite perimeter in U: a Gauss-Green pair (μ, ν) for (U, E) exists, and for every Gauss-Green pair (μ, ν), with ∂*E := reducedBoundary U μ ν (points of U where the open-ball averages μ(B_ρ(x))⁻¹∫_{B_ρ(x)}ν dμ converge as ρ ↓ 0 to a unit vector) and ν_E := reducedNormal μ ν (that limit): ∂*E is countably n-rectifiable; μ = Hⁿ⌞∂*E as measures on ℝ^{n+1}; for every x ∈ ∂*E, μ has approximate tangent plane (span{ν_E(x)})^⊥ at x with multiplicity 1 (HasApproxTangentPlaneWithMultiplicity); and for every x ∈ ∂*E and compact K, L^{n+1}(K ∩ (η_{x,r}(E) Δ {y : ⟨y, ν_E(x)⟩ > 0})) → 0 as r ↓ 0.",
+  "lean_statement": "DeGiorgiTheorem",
+  "lean_name": "deGiorgiTheorem_holds",
+  "depends_on": [
+    "root.gauss_green-a1",
+    "root.rectifiable_of_tangent_measure-a1",
+    "root.tangent_characterizations-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiable_of_tangent_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tangent_characterizations-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-a1"
+}

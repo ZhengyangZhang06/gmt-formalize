@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem tendstoUniformlyOn_of_ae_tendsto|exists_isClosed_sdiff_lt|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|theorem LipschitzWith.ae_differentiableAt|protected theorem Measurable.iSup|isClosed_iUnion|continuousOn_iUnion",
+        "lusin|c1_approximation|c¹ approximation|sigma.finite.*egor|egor.*sigma.finite",
+        "lusin_closed_subset_continuousOn_volume|egorov_closed_subset_uniformOn_compact_volume|lipschitz_uniform_remainder_on_closed_subset|lipschitz_real_c1_approximation",
+        "exists_isClosed_continuousOn_of_measurable|HasWhitneyC1Compatibility|exists_contDiff_one_extension_of_whitney|rademacher_ae_differentiableAt|sorry|axiom",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1-independent-audit-mbfeegld/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1-independent-audit-mbfeegld/LibraryCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-c1-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/c1-independent-audit-mbfeegld/Contracts.lean",
+        "/tmp/c1-independent-audit-mbfeegld/LibraryCheck.lean"
+      ],
+      "conclusion": "Confirmed the selected handoff and pinned revisions. Located the required finite-measure Lusin/Egorov, regularity, Rademacher, measurable-derivative, countable-supremum and Whitney declarations. All four exact propositions independently elaborate without child implementations in the frozen contract scope; the volume, Borel and finite-dimensional operator-space instances resolve. The pinned Whitney extension compiles, and the checked library dependencies use only propext, Classical.choice and Quot.sound. No proposed name is reserved elsewhere in the active DAG. The split is appropriate: dependencies are acyclic and correctly directed, and scalar approximation plus the supplied componentwise reduction establishes the selected frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_sigma_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and matches the standalone Lean proposition. The proof correctly reduces finite-dimensional targets to scalar coordinates, includes an additional closed subset for dimension zero, and establishes closedness and continuity through locally finite annular pasting. Summable errors give the strict measure bound, including infinite epsilon. The obligation is non-circular and its bare name is unreserved."
+    },
+    {
+      "key": "egorov_sigma_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated measurability and pointwise-convergence assumptions. Finite-measure Egorov and closed inner regularity produce the annular closed pieces with the claimed error bounds. Local finiteness proves closedness; every compact subset meets finitely many relevant pieces, giving uniform convergence. The finite error budget also handles infinite epsilon. No undeclared child dependency or name conflict occurs."
+    },
+    {
+      "key": "uniform_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean type faithfully states the derivative and compact-uniform remainder hypotheses and conclusion. The Lipschitz estimate bounds each supremum everywhere. Reduction to a countable dense subset is justified by continuity in the second variable on the open shell; Borel measurability of L suffices for measurability in the first variable. The declared Egorov dependency then yields exactly the required remainder estimate. Empty sets and coincident points are covered, and the bare name is unreserved."
+    },
+    {
+      "key": "scalar_c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Rademacher, the declared Lusin and remainder children, and the verified Whitney theorem establish both value and full Fréchet-derivative agreement on the closed good set. The two error bounds sum strictly below epsilon, also when epsilon is infinite. The supplied coordinate reduction recovers the selected vector-valued parent, with the null nondifferentiability set handled explicitly. Dependencies are non-circular and the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

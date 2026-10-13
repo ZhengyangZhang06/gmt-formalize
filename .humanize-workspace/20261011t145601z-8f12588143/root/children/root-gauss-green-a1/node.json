@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "(4.1): Gauss-Green representation of sets of locally finite perimeter, with uniqueness",
+  "statement": "For n ∈ ℕ, U ⊆ ℝ^{n+1} open and E ⊆ ℝ^{n+1} Lebesgue null-measurable: (i) E has locally finite perimeter in U (χ_E ∈ BV_loc(U) in the sense of SimonGMT IsLocallyBV) iff there are a Borel measure μ on ℝ^{n+1} and ν : ℝ^{n+1} → ℝ^{n+1} forming a Gauss-Green pair (μ(ℝ^{n+1} ∖ U) = 0, μ finite on compact subsets of U, ν μ-a.e. strongly measurable with |ν| = 1 μ-a.e., and ∫_{E∩U} div g = −∫⟨g, ν⟩dμ for every C¹ compactly supported g with tsupport g ⊆ U); (ii) any two Gauss-Green pairs (μ, ν), (μ', ν') for (U, E) satisfy μ = μ' and ν = ν' μ-a.e.",
+  "lean_statement": "GaussGreenRepresentation",
+  "lean_name": "gaussGreenRepresentation_holds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-a1"
+}

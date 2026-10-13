@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_cover-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lemma 1.2: countable rectifiability via C¹ submanifold covers",
+  "statement": "For all n, ℓ ∈ ℕ and M ⊆ ℝ^{n+ℓ}: M is countably n-rectifiable (M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ) with Hⁿ(M₀) = 0 and Fⱼ : ℝⁿ → ℝ^{n+ℓ} Lipschitz) if and only if there are N₀ ⊆ ℝ^{n+ℓ} with Hⁿ(N₀) = 0 and sets N_j (j ∈ ℕ), each an n-dimensional embedded C¹ submanifold in the sense of IsC1Submanifold n (Simon Ch. 2 (4.1): local injective C¹ parametrizations ψ : V → W with ψ(V) = W ∩ N_j, relatively proper, with injective derivative), such that M ⊆ N₀ ∪ ⋃_j N_j.",
+  "lean_statement": "SubmanifoldCoverCharacterization",
+  "lean_name": "submanifoldCoverCharacterization_holds",
+  "depends_on": [
+    "root.c1_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.c1_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-submanifold-cover-a1-a1"
+}

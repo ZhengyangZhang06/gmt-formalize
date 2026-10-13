@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_characterizations-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorems 1.6 and 1.9: rectifiability iff approximate tangent spaces exist a.e. (unweighted and weighted)",
+  "statement": "(Theorem 1.6) For all n, ℓ and every Hⁿ-measurable M ⊆ ℝ^{n+ℓ} with Hⁿ(M ∩ K) < ∞ for every compact K: M is countably n-rectifiable iff for Hⁿ-a.e. x ∈ M there is a subspace P with HasApproximateTangentSpaceAt n M x P (Simon Definition 1.4: finrank P = n and ∫_{η_{x,r}(M)} f dHⁿ → ∫_P f dHⁿ as r ↓ 0 for all f ∈ C_c). (Theorem 1.9) For all n, ℓ, every Hⁿ-measurable M ⊆ ℝ^{n+ℓ} and every positive locally integrable weight θ on M: M is countably n-rectifiable iff for Hⁿ-a.e. x ∈ M there is P with HasWeightedApproximateTangentSpaceAt n M θ x P (Definition 1.7: finrank P = n and ∫_{η_{x,r}(M)} f(y)θ(x + ry) dHⁿ(y) → θ(x)∫_P f dHⁿ for all f ∈ C_c).",
+  "lean_statement": "ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization",
+  "lean_name": "approximateTangentCharacterizations_hold",
+  "depends_on": [
+    "root.submanifold_cover-a1",
+    "root.rectifiable_of_tangent_measure-a1",
+    "root.chart_tangent_differential-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiable_of_tangent_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.chart_tangent_differential-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-tangent-characterizations-a1-a1"
+}
