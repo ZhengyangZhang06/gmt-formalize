@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1.cutoff_form-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1",
+  "depth": 6,
+  "title": "Smooth cutoff ϑ (= 1 on B_r(0), 0 ≤ ϑ ≤ 1) and the test form ϑ·β",
+  "statement": "Let P, n ∈ ℕ, r > 0 and β ∈ Covector(ℝ^P, n). Then there exist ϑ : ℝ^P → ℝ and ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) such that: ϑ is continuous with compact support; 0 ≤ ϑ(x) ≤ 1 for all x; ϑ(x) = 1 whenever ‖x‖ < r; and ω(x) = ϑ(x)·β for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (r : ℝ) (β : Covector (Euclid P) n), 0 < r → ∃ (ϑ : Euclid P → ℝ) (ω : TestFormOn (univ : Set (Euclid P)) n), Continuous ϑ ∧ HasCompactSupport ϑ ∧ (∀ x, 0 ≤ ϑ x ∧ ϑ x ≤ 1) ∧ (∀ x : Euclid P, ‖x‖ < r → ϑ x = 1) ∧ ∀ x, (ω : DifferentialForm (Euclid P) n) x = ϑ x • β",
+  "lean_name": "idtp_cse_bml_td_cutoff_test_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c8a21b22a3-a1"
+}

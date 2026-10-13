@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1.blowup_eval-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1",
+  "depth": 6,
+  "title": "Blow-up of a represented current on the form g·β: η_{a,t#}C(ω) = t^{−n}∫ g(η_{a,t}y)·ξ(y)(β) dμ",
+  "statement": "Let P, n ∈ ℕ, C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), and R an IMRep(univ, n) with R.Represents C; put μ := R.measure and ξ := R.orient. Let a ∈ ℝ^P, t > 0, g : ℝ^P → ℝ, β ∈ Covector(ℝ^P, n), and ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with ω(x) = g(x)·β for every x. Then currentEval(blowUp C a t, ω) = t^{−n}·∫ g(dilation a t y)·ξ(y)(β) dμ(y).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (a : Euclid P) (t : ℝ) (ht : 0 < t) (g : Euclid P → ℝ) (β : Covector (Euclid P) n) (ω : TestFormOn (univ : Set (Euclid P)) n), R.Represents C → (∀ x, (ω : DifferentialForm (Euclid P) n) x = g x • β) → currentEval (blowUp C a t ht.ne') (ω : DifferentialForm (Euclid P) n) = t⁻¹ ^ n * ∫ y, g (dilation a t y) * R.orient y β ∂R.measure",
+  "lean_name": "idtp_cse_bml_td_blowUp_smul_form_eval",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.imrep_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "result_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.imrep_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba-a1",
+      "result_commit": "d37eb4dfabd4fb449ac71a0682db55be0cc13023",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d84ede195c-a1"
+}
