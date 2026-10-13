@@ -461,6 +461,46 @@ theorem Submission.dpf_itt_approxTangentPlane_eq : ∀ (P n : ℕ) (M : Set (Euc
   unfold approxTangentPlane
   rw [dite_eq_left h]
   exact h.choose_spec.unique hQ
+/-- **Bi-Lipschitz images of Borel, locally `Hⁿ`-finite subsets of `U`** (Simon 6.3.7, the image
+`φ(M)` in the push-forward of `τ(M, θ, ξ)` by a diffeomorphism, used in 7.1.2).  If `M ⊆ U` is
+Borel with `Hⁿ(M ∩ C) < ∞` for every compact `C ⊆ U`, and `φ : ℝᴾ → ℝᴾ` is `Λ`-Lipschitz and
+`Λ'`-antilipschitz with `φ⁻¹(U) = U`, then `φ(M)` is Borel (Lusin–Souslin: `φ` is continuous and
+injective), `φ(M) ⊆ U`, and `Hⁿ(φ(M) ∩ C) ≤ Λⁿ Hⁿ(M ∩ φ⁻¹(C)) < ∞` for every compact `C ⊆ U`,
+because `φ⁻¹(C)` is closed and bounded, hence a compact subset of `φ⁻¹(U) = U`. -/
+theorem Submission.dpf_itt_bilipschitz_image_locfin : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ Λ' : NNReal), MeasurableSet M → M ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → φ ⁻¹' U = U → MeasurableSet (φ '' M) ∧ φ '' M ⊆ U ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (φ '' M ∩ C) ≠ ∞ := by
+  intro P n U M φ Λ Λ' hM hMU hfin hL hA hU
+  -- Step 1: `φ` is continuous (Lipschitz) and injective (antilipschitz)
+  have hcont : Continuous φ := hL.continuous
+  have hinj : Injective φ := hA.injective
+  -- Step 2: `φ(M)` is Borel by the Lusin–Souslin theorem
+  refine ⟨hM.image_of_continuousOn_injOn hcont.continuousOn hinj.injOn, ?_, ?_⟩
+  -- Step 3: `φ(M) ⊆ U`, since `M ⊆ U = φ⁻¹(U)`
+  · rintro _ ⟨x, hx, rfl⟩
+    have hx' : x ∈ φ ⁻¹' U := by
+      rw [hU]
+      exact hMU hx
+    exact hx'
+  · intro C hC hCU
+    -- Step 4: `K = φ⁻¹(C)` is closed and bounded, hence compact, and `K ⊆ φ⁻¹(U) = U`
+    have hK : IsCompact (φ ⁻¹' C) :=
+      Metric.isCompact_of_isClosed_isBounded (hC.isClosed.preimage hcont)
+        (hA.isBounded_preimage hC.isBounded)
+    have hKU : φ ⁻¹' C ⊆ U := by
+      rw [← hU]
+      exact preimage_mono hCU
+    have hMK : μHE[n] (M ∩ φ ⁻¹' C) ≠ ∞ := hfin _ hK hKU
+    -- Step 5: `Hⁿ(φ(S)) ≤ Λⁿ Hⁿ(S)`, since `μHE[n] = c • μH[n]` for a constant `c`
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have hle (S : Set (Euclid P)) : μHE[n] (φ '' S) ≤ (Λ : ℝ≥0∞) ^ (n : ℝ) * μHE[n] S := by
+      simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+        smul_eq_mul]
+      calc _ ≤ _ * ((Λ : ℝ≥0∞) ^ (n : ℝ) * μH[n] S) :=
+            mul_le_mul_right (hL.hausdorffMeasure_image_le hn S) _
+        _ = _ := by ring
+    -- Step 6: `φ(M) ∩ C = φ(M ∩ K)`, so `Hⁿ(φ(M) ∩ C) ≤ Λⁿ Hⁿ(M ∩ K) < ∞`
+    rw [← image_inter_preimage]
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg hn ENNReal.coe_ne_top) hMK) (hle _)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
