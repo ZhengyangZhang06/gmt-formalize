@@ -2058,6 +2058,33 @@ theorem Submission.codim1_zsl_perimeter_compactness : ∀ (m : ℕ) (F : ℕ →
   exact ⟨c, hc.mono fun i hi =>
     Submission.codim1_zsl_pc_translation_estimate m (F i) R c (hF i) hi⟩
 
+/-- **Integrals over the image of a measurable set under an affine isometry `ℝᵐ → ℝᴾ`** (Simon
+7.5.5 regards the limit set `F` as an `Hⁿ⁺¹`-measurable subset of the plane `TₓN` in this way).
+`G(w) = ιw + c` is an isometry of the complete space `ℝᵐ`, hence a measurable embedding, so `G(A)`
+is measurable.  `Hᵐ` is invariant under isometries and equals `Lᵐ` on `ℝᵐ`, so
+`G_#Lᵐ = Hᵐ⌞G(ℝᵐ)` and, by injectivity, `Hᵐ⌞G(A) = G_#(Lᵐ⌞A)`; hence
+`∫_{G(A)} f dHᵐ = ∫_A f(G(w)) dw` for every `f`. -/
+theorem Submission.codim1_zsl_fl_isometry_image_setIntegral : ∀ (m P : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (c : Euclid P) (A : Set (Euclid m)), MeasurableSet A → MeasurableSet ((fun w => ι w + c) '' A) ∧ ∀ f : Euclid P → ℝ, ∫ y in (fun w => ι w + c) '' A, f y ∂μHE[m] = ∫ w in A, f (ι w + c) := by
+  intro m P ι c A hA
+  -- `G` is an isometry of the complete space `ℝᵐ`, hence a measurable embedding.
+  have hiso : Isometry (fun w => ι w + c) := by
+    refine Isometry.of_dist_eq fun x y => ?_
+    rw [dist_eq_norm, dist_eq_norm, add_sub_add_right_eq_sub, ← map_sub, LinearIsometry.norm_map]
+  have hemb : MeasurableEmbedding (fun w => ι w + c) :=
+    hiso.isClosedEmbedding.measurableEmbedding
+  have hAimg : MeasurableSet ((fun w => ι w + c) '' A) := hemb.measurableSet_image' hA
+  refine ⟨hAimg, fun f => ?_⟩
+  -- `G_#Lᵐ = Hᵐ⌞G(ℝᵐ)`, hence `Hᵐ⌞G(A) = G_#(Lᵐ⌞A)`.
+  have hmap : (volume : Measure (Euclid m)).map (fun w => ι w + c) =
+      (μHE[m] : Measure (Euclid P)).restrict (range (fun w => ι w + c)) := by
+    rw [← hiso.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  have hres : (μHE[m] : Measure (Euclid P)).restrict ((fun w => ι w + c) '' A) =
+      ((volume : Measure (Euclid m)).restrict A).map (fun w => ι w + c) := by
+    rw [← preimage_image_eq A hemb.injective, ← hemb.restrict_map, hmap,
+      Measure.restrict_restrict hAimg, inter_eq_left.mpr (image_subset_range _ _),
+      preimage_image_eq A hemb.injective]
+  rw [hres, hemb.integral_map]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
