@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.point_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+  "depth": 3,
+  "title": "Point (Dirac) currents and their support",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let p ∈ ℝ^P and let ζ ∈ Λₙ(ℝ^P) (MultiVector P n, a continuous linear functional on n-covectors).\n\nThen there is a current X ∈ 𝒟ₙ(U) such that:\n- X(ω) = ζ(ω(p)) for every ω ∈ 𝒟ⁿ(U);\n- spt X ⊆ {p}.\n\nHere 𝒟ₙ(U) is GeometricCurrentOn U n: the linear functionals on TestFormOn U n that are sequentially continuous for SimonGMT's TestFormOnConverges. The support spt X = X.support = U ∖ zeroRegion X, where zeroRegion X is the union of all open W with closure W compact and contained in U on which X vanishes, i.e. X(ω) = 0 for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (p : Euclid P) (ζ : MultiVector P n), IsOpen U → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = ζ ((ω : DifferentialForm (Euclid P) n) p)) ∧ X.support ⊆ {p}",
+  "lean_name": "dimred_zdv_point_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1-a1"
+}
