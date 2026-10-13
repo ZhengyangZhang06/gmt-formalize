@@ -598,7 +598,170 @@ theorem Submission.fiw_tb_te_translation_dual :
     simp only [sub_mul]
   rw [hJ, ← h1, ← h0, ← Real.norm_eq_abs]
   exact hmvt
+/-- Smooth `±1` separation of two disjoint compact sets `K₁, K₂ ⊆ ℝ^n`: a `C^∞` function
+`g : ℝ^n → ℝ` with compact support, `|g| ≤ 1`, `g = 1` on `K₁` and `g = -1` on `K₂`.
+`Disjoint.exists_thickenings` gives `δ > 0` with disjoint open thickenings `Vᵢ ⊇ Kᵢ`; the smooth
+Urysohn lemma `exists_contDiff_support_eq_eq_one_iff` gives `gᵢ : ℝ^n → [0, 1]` with
+`support gᵢ = Vᵢ` and `gᵢ = 1` on `Kᵢ`, compactly supported since `closure Vᵢ ⊆ cthickening δ Kᵢ`.
+At each point one of `g₁, g₂` vanishes, and `g = g₁ - g₂`. -/
+theorem Submission.fiw_tb_te_l1d_smooth_sign_sep : ∀ (n : ℕ) (K₁ K₂ : Set (Eucl n)), IsCompact K₁ → IsCompact K₂ → Disjoint K₁ K₂ → ∃ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g ∧ (∀ x, |g x| ≤ 1) ∧ (∀ x ∈ K₁, g x = 1) ∧ (∀ x ∈ K₂, g x = -1) := by
+  intro n K₁ K₂ hK₁ hK₂ hd
+  -- Steps 1–2: disjoint δ-thickenings `V₁ ⊇ K₁`, `V₂ ⊇ K₂`.
+  obtain ⟨δ, hδ, hdδ⟩ := hd.exists_thickenings hK₁ hK₂.isClosed
+  -- Step 3: smooth Urysohn functions `gᵢ : ℝ^n → [0, 1]`, `support gᵢ = Vᵢ`, `gᵢ = 1` on `Kᵢ`.
+  obtain ⟨g₁, hg₁, hr₁, hs₁, he₁⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K₁)) hK₁.isClosed (self_subset_thickening hδ K₁)
+  obtain ⟨g₂, hg₂, hr₂, hs₂, he₂⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K₂)) hK₂.isClosed (self_subset_thickening hδ K₂)
+  -- Step 4: `tsupport gᵢ = closure Vᵢ ⊆ cthickening δ Kᵢ`, which is compact.
+  have hc : ∀ (K : Set (Eucl n)) (f : Eucl n → ℝ), IsCompact K →
+      Function.support f = thickening δ K → HasCompactSupport f := by
+    intro K f hK hs
+    refine (hK.cthickening (r := δ)).of_isClosed_subset (isClosed_tsupport f) ?_
+    rw [tsupport, hs]
+    exact closure_thickening_subset_cthickening δ K
+  have h01₁ : ∀ x, 0 ≤ g₁ x ∧ g₁ x ≤ 1 := fun x => hr₁ (mem_range_self x)
+  have h01₂ : ∀ x, 0 ≤ g₂ x ∧ g₂ x ≤ 1 := fun x => hr₂ (mem_range_self x)
+  -- Step 5: at every point one of `g₁, g₂` vanishes, since `V₁ ∩ V₂ = ∅`.
+  have hdis : ∀ x, g₁ x = 0 ∨ g₂ x = 0 := by
+    intro x
+    by_contra h
+    rw [not_or] at h
+    have h1 : x ∈ Function.support g₁ := h.1
+    have h2 : x ∈ Function.support g₂ := h.2
+    rw [hs₁] at h1
+    rw [hs₂] at h2
+    exact Set.disjoint_left.mp hdδ h1 h2
+  -- Steps 6–8: `g = g₁ - g₂`.
+  refine ⟨g₁ - g₂, hg₁.sub hg₂, (hc K₁ g₁ hK₁ hs₁).sub (hc K₂ g₂ hK₂ hs₂), ?_, ?_, ?_⟩
+  · intro x
+    have a := h01₁ x
+    have b := h01₂ x
+    rw [Pi.sub_apply, abs_le]
+    rcases hdis x with h | h <;> constructor <;> linarith
+  · intro x hx
+    have h1 : g₁ x = 1 := (he₁ x).1 hx
+    have h2 : g₂ x = 0 := by
+      rcases hdis x with h | h
+      · rw [h1] at h; norm_num at h
+      · exact h
+    simp [h1, h2]
+  · intro x hx
+    have h2 : g₂ x = 1 := (he₂ x).1 hx
+    have h1 : g₁ x = 0 := by
+      rcases hdis x with h | h
+      · exact h
+      · rw [h2] at h; norm_num at h
+    simp [h1, h2]
+/-- Compact approximation of the sign of an integrable `w : ℝ^n → ℝ`: for `ε > 0` there are
+disjoint compact sets `K₁, K₂` such that every a.e.-strongly measurable `g` with `|g| ≤ 1`,
+`g = 1` on `K₁` and `g = -1` on `K₂` satisfies `∫ |w| < ∫ w g + ε`.
+For a Borel representative `v` of `w`, the finite measure `ν = |v| dx` is inner regular, so there
+are compact `K₁ ⊆ {v > 0}` and `K₂ ⊆ {v < 0}` with `ν({v > 0} \ K₁), ν({v < 0} \ K₂) < ε/4`.
+Off `S = ({v > 0} \ K₁) ∪ ({v < 0} \ K₂)` we have `v g = |v|`, and on `S` we have `v g ≥ -|v|`,
+so `∫ |v| ≤ ∫ v g + 2 ν(S) < ∫ v g + ε`. -/
+theorem Submission.fiw_tb_te_l1d_compact_sign_approx : ∀ (n : ℕ) (w : Eucl n → ℝ), Integrable w → ∀ ε : ℝ, 0 < ε → ∃ K₁ K₂ : Set (Eucl n), IsCompact K₁ ∧ IsCompact K₂ ∧ Disjoint K₁ K₂ ∧ ∀ g : Eucl n → ℝ, AEStronglyMeasurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ K₁, g x = 1) → (∀ x ∈ K₂, g x = -1) → (∫ x, |w x|) < (∫ x, w x * g x) + ε := by
+  intro n w hw ε hε
+  -- A Borel representative `v` of `w` and the finite measure `ν = |v| dx`.
+  set v : Eucl n → ℝ := hw.aestronglyMeasurable.mk w with hv_def
+  have hv_meas : StronglyMeasurable v := hw.aestronglyMeasurable.stronglyMeasurable_mk
+  have hwv : w =ᵐ[volume] v := hw.aestronglyMeasurable.ae_eq_mk
+  have hvi : Integrable v := hw.congr hwv
+  set ν : Measure (Eucl n) := volume.withDensity (fun x => ENNReal.ofReal |v x|) with hν
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity_ofReal hvi.abs.hasFiniteIntegral
+  -- Inner approximation of `{v > 0}` and `{v < 0}` by compact sets.
+  set Ap : Set (Eucl n) := {x | 0 < v x} with hAp_def
+  set Am : Set (Eucl n) := {x | v x < 0} with hAm_def
+  have hAp : MeasurableSet Ap := measurableSet_lt measurable_const hv_meas.measurable
+  have hAm : MeasurableSet Am := measurableSet_lt hv_meas.measurable measurable_const
+  have hε4 : ENNReal.ofReal (ε / 4) ≠ 0 := (ENNReal.ofReal_pos.mpr (by linarith)).ne'
+  obtain ⟨Kp, hKpA, hKp, hKpν⟩ := hAp.exists_isCompact_sdiff_lt (measure_ne_top ν Ap) hε4
+  obtain ⟨Km, hKmA, hKm, hKmν⟩ := hAm.exists_isCompact_sdiff_lt (measure_ne_top ν Am) hε4
+  have hdisj : Disjoint Kp Km := by
+    rw [Set.disjoint_left]
+    intro x hp hm
+    have h1 : 0 < v x := hKpA hp
+    have h2 : v x < 0 := hKmA hm
+    linarith
+  refine ⟨Kp, Km, hKp, hKm, hdisj, ?_⟩
+  intro g hg hg1 hgp hgm
+  -- The pointwise inequality `|v| - 2·1_S|v| ≤ v g`.
+  set S : Set (Eucl n) := (Ap \ Kp) ∪ (Am \ Km) with hS_def
+  have hS : MeasurableSet S := (hAp.diff hKp.measurableSet).union (hAm.diff hKm.measurableSet)
+  have hpt : ∀ x, |v x| - 2 * S.indicator (fun y => |v y|) x ≤ v x * g x := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx]
+      have h : |v x * g x| ≤ |v x| := by
+        rw [abs_mul]
+        exact mul_le_of_le_one_right (abs_nonneg _) (hg1 x)
+      linarith [(abs_le.mp h).1]
+    · rw [indicator_of_notMem hx]
+      have hx' : (0 < v x → x ∈ Kp) ∧ (v x < 0 → x ∈ Km) := by
+        constructor
+        · intro h
+          by_contra hK
+          exact hx (Or.inl ⟨h, hK⟩)
+        · intro h
+          by_contra hK
+          exact hx (Or.inr ⟨h, hK⟩)
+      rcases lt_trichotomy (v x) 0 with h | h | h
+      · rw [hgm x (hx'.2 h), abs_of_neg h]
+        linarith
+      · rw [h]
+        simp
+      · rw [hgp x (hx'.1 h), abs_of_pos h]
+        linarith
+  -- Integrate.
+  have hvg : Integrable (fun x => v x * g x) :=
+    hvi.mul_bdd hg (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hg1 x)
+  have hind : Integrable (fun x => S.indicator (fun y => |v y|) x) := hvi.abs.indicator hS
+  have hlhs : Integrable (fun x => |v x| - 2 * S.indicator (fun y => |v y|) x) :=
+    hvi.abs.sub (hind.const_mul 2)
+  have hmono := integral_mono hlhs hvg hpt
+  rw [integral_sub hvi.abs (hind.const_mul 2), integral_const_mul, integral_indicator hS] at hmono
+  -- `∫_S |v| = (ν S).toReal < ε / 2`.
+  have hνS : ν S = ∫⁻ x in S, ENNReal.ofReal |v x| := withDensity_apply _ hS
+  have hSint : ∫ x in S, |v x| = (ν S).toReal := by
+    rw [hνS, integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => abs_nonneg _)
+      hvi.abs.aestronglyMeasurable.restrict]
+  have hνS_lt : ν S < ENNReal.ofReal (ε / 2) := by
+    calc ν S ≤ ν (Ap \ Kp) + ν (Am \ Km) := measure_union_le _ _
+      _ < ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) := ENNReal.add_lt_add hKpν hKmν
+      _ = ENNReal.ofReal (ε / 2) := by
+        rw [← ENNReal.ofReal_add (by linarith) (by linarith)]
+        ring_nf
+  have hSlt : ∫ x in S, |v x| < ε / 2 := by
+    rw [hSint]
+    exact ENNReal.toReal_lt_of_lt_ofReal hνS_lt
+  -- Transfer back from `v` to `w`.
+  have h1 : ∫ x, |w x| = ∫ x, |v x| := integral_congr_ae (hwv.fun_comp abs)
+  have h2 : ∫ x, w x * g x = ∫ x, v x * g x :=
+    integral_congr_ae (hwv.mono fun x hx => by simp only [hx])
+  rw [h1, h2]
+  linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
+
+/-- **`L¹` norm by duality with smooth test functions** (proof of the translation estimate,
+Step 4).  If `w : ℝⁿ → ℝ` is integrable and `∫ w g ≤ C` for every `C^∞` compactly supported `g`
+with `|g| ≤ 1`, then `∫ |w| ≤ C`.  Given `ε > 0`, inner regularity of the finite measure `|w| dx`
+gives disjoint compact sets `K₁, K₂`, approximating `{w > 0}` and `{w < 0}`, such that
+`∫ |w| < ∫ w g + ε` for every measurable `g` with `|g| ≤ 1`, `g = 1` on `K₁` and `g = -1` on `K₂`.
+Smooth Urysohn functions on disjoint thickenings of `K₁, K₂` give such a `g ∈ C_c^∞`, so
+`∫ |w| < C + ε`. -/
+theorem Submission.fiw_tb_te_l1_le_of_smooth_dual : ∀ (n : ℕ) (w : Eucl n → ℝ) (C : ℝ), Integrable w → (∀ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → HasCompactSupport g → (∀ x, |g x| ≤ 1) → ∫ x, w x * g x ≤ C) → ∫ x, |w x| ≤ C := by
+  intro n w C hw H
+  -- Step 8: it suffices that `∫ |w| < C + ε` for every `ε > 0`.
+  refine le_of_forall_pos_lt_add fun ε hε => ?_
+  -- Steps 1, 2, 6, 7: compact `K₁, K₂` on which a `±1`-valued `g` nearly attains `∫ |w|`.
+  obtain ⟨K₁, K₂, hK₁, hK₂, hd, hB⟩ := Submission.fiw_tb_te_l1d_compact_sign_approx n w hw ε hε
+  -- Steps 3–5: a `C^∞` compactly supported `g` with `|g| ≤ 1`, `g = 1` on `K₁`, `g = -1` on `K₂`.
+  obtain ⟨g, hg, hgc, hg1, hgK₁, hgK₂⟩ :=
+    Submission.fiw_tb_te_l1d_smooth_sign_sep n K₁ K₂ hK₁ hK₂ hd
+  -- `g` is continuous, hence a.e.-strongly measurable: `∫ |w| < ∫ w g + ε ≤ C + ε`.
+  have h1 := hB g hg.continuous.aestronglyMeasurable hg1 hgK₁ hgK₂
+  have h2 := H g hg hgc hg1
+  linarith
 
 end GMT.Ch06
