@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_isOpen_lt_of_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|class WeaklyRegular|class OuterRegular",
+        "isOpen_iUnion_countable",
+        "Countable.exists_eq_range",
+        "disjoint_disjointed|disjointed_subset|iUnion_disjointed",
+        "theorem measure_iUnion|tsum_const_eq_top_of_ne_zero|protected theorem tsum_le_tsum",
+        "idtp_tdc_nipp_local_comparison|idtp_tdc_nipp_disjoint_packing",
+        "git show 01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nipp-independent-audit-20261013/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nipp-independent-audit-20261013/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nipp-independent-audit-20261013/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nipp-independent-audit-20261013/AcceptedMassFull.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Disjointed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/accepted-candidate.json",
+        "/tmp/nipp-independent-audit-20261013/Types.lean",
+        "/tmp/nipp-independent-audit-20261013/Children.lean",
+        "/tmp/nipp-independent-audit-20261013/Assembly.lean",
+        "/tmp/nipp-independent-audit-20261013/AcceptedMassFull.lean",
+        "/tmp/nipp-independent-audit-20261013/AcceptedMassFull.log"
+      ],
+      "conclusion": "The split appropriately separates the substantive local-to-Borel comparison from the finite-mass packing contradiction. Project and Mathlib revisions match the manifest; inspected snapshot sources match the active sources. Both exact child strings independently elaborate as standalone propositions, with the intended Borel, proper-space and second-countability instances. Neither proposed name is reserved by another DAG branch, and both are bare identifiers. The children have no dependencies; the existing prerequisites have no path back to the selected node. Independent formalizations of both supplied proofs and an assembly deriving the exact selected parent type compile using only propext, Classical.choice and Quot.sound. The assembly uses the unchanged frozen types of dimred_im_mass_measure and subspace_ball_measure. The former's accepted declaration type and source hash match its acceptance record, and recompiling its retained source confirms only standard axioms. The latter remains an explicit pending sibling prerequisite."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose and includes every hypothesis. Compact finiteness makes each restricted ball measure finite, so outer regularity supplies the claimed Borel comparison without requiring ν to be finite. Positive radii give a cover; the empty case, nonempty countable enumeration, measurable disjointification and countable additivity are all justified. The supplied proof independently formalizes without additional mathematical obligations or circular reliance."
+    },
+    {
+      "key": "disjoint_packing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose. All sets lie in a compact closed ball; measurable disjointness gives countable additivity, and c ≠ 0 makes the constant ENNReal series infinite. Monotonicity contradicts compact finiteness. The argument covers arbitrary real r and c = ∞, uses the hypotheses correctly, and independently formalizes without circular reliance. This supplies the selected parent's final contradiction."
+    }
+  ],
+  "required_changes": []
+}
