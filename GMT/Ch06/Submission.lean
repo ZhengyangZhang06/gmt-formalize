@@ -1978,6 +1978,21 @@ theorem Submission.ind_md_mmb_massMeasure_balls : ∀ (P n : ℕ) (T : Geometric
       Monotone.measure_iUnion fun _ _ hk => ball_subset_ball (Nat.cast_le.2 hk)
     _ ≤ T.mass := iSup_le fun k => (hball 0 k).trans_le (T.massOn_mono (subset_univ _))
 
+/-- **Mass measure of a current of finite mass on balls** (Step 1, (1a)–(1b), of the proof of the
+mass density bound in Simon Ch. 6, 8.2, for one current).  If `T ∈ 𝒟ₙ(ℝ^P)` has `M(T) < ∞`, then
+`M_W(T) ≤ M(T) < ∞` for every `W` (`massOn_mono`), so (R2) of the restriction theory (2.7)–(2.9)
+with `U = ℝ^P` gives a mass measure `μ` of `T`.  Every mass measure satisfies
+`μ(B_r(x)) = M_{B_r(x)}(T)` for all `x, r` and `μ(ℝ^P) ≤ M(T)`. -/
+theorem Submission.ind_md_mass_measure_balls : ∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n), T.mass < ∞ → ∃ μ : Measure (Eucl P), μ univ ≤ T.mass ∧ ∀ (x : Eucl P) (r : ℝ), μ (ball x r) = T.massOn (ball x r) := by
+  intro P n T hT
+  -- Step 1: local finiteness, `M_W(T) ≤ M_{ℝ^P}(T) = M(T) < ∞`.
+  have hloc : ∀ W, CompactlyContainedOpen W (univ : Set (Eucl P)) → T.massOn W < ∞ :=
+    fun W _ => (T.massOn_mono (subset_univ W)).trans_lt hT
+  -- Step 2: (R2) with `U = ℝ^P` gives a mass measure `μ` of `T`.
+  obtain ⟨μ, hμ, -, -⟩ := Submission.iwl_restriction_theory.2.2 P n univ isOpen_univ T hloc
+  -- Steps 3–5: `μ(B_r(x)) = M_{B_r(x)}(T)` and `μ(ℝ^P) ≤ M(T)` for this mass measure.
+  exact ⟨μ, Submission.ind_md_mmb_massMeasure_balls P n T μ hμ⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
