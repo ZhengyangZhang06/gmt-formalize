@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "367a5e198a50279c6db6bba9d3c76c713ee8df62b26a8531d14bed98ef839b27",
+  "git_delta": {
+    "base_commit": "16b0900aab6ee4c5d9dedec94a1e523d361f26be",
+    "candidate_commit": "51fae6f3ab202f15028692163e58abe591b5384b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_contDiff_of_fderiv_tendsto",
+    "diff_sha256": "66c6b3cd09ecc8220768d3fd004a4b8bc5f3f411976b8c1e3d5c9a6ed24f0b1c",
+    "source_sha256": "66e492ff4d24a8b613edd91c1a774b3cc1c4208addc4c9af4a0154464a430c4c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_contDiff_of_fderiv_tendsto",
+      "statement": "∀ (n ℓ : ℕ) (W : ℕ → Rn n → Rn ℓ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), Tendsto R atTop atTop → (∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k))) → (∀ k, W k 0 = 0) → Continuous V → (∀ r : ℝ, TendstoUniformlyOn (fun k => fderiv ℝ (W k)) V atTop (closedBall (0 : Rn n) r)) → ∃ W' : Rn n → Rn ℓ, ContDiff ℝ 1 W' ∧ ∀ z, fderiv ℝ W' z = V z",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
