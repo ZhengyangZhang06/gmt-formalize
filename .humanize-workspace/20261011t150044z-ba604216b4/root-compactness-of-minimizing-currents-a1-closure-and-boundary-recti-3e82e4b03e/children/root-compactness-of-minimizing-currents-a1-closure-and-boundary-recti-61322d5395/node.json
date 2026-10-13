@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1.dilation_blowup-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1",
+  "depth": 5,
+  "title": "Dilations of currents in ℝ^P exist and agree with the blow-up η_{a,λ#}",
+  "statement": "Let P, m ∈ ℕ, a ∈ ℝ^P, λ > 0 and η := dilation a λ, η(y) = −λ⁻¹a + λ⁻¹y = λ⁻¹(y − a). For X, X' ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m) say that X' is a dilation of X if X'(ω) = λ^{−m}X(ω') for all test m-forms ω, ω' ∈ 𝒟^m(ℝ^P) with ω'(y) = ω(η(y)) for every y. Then (i) every X ∈ 𝒟_m(ℝ^P) has a dilation X'; and (ii) if X' is a dilation of X, then X'(ω) = η_{a,λ#}X(ω₁) for every ω ∈ 𝒟^m(ℝ^P) and every ω₁ ∈ 𝒟^m(η(ℝ^P)) (TestFormOn (dilation a λ '' univ) m) whose underlying differential form equals that of ω, where η_{a,λ#}X = blowUp X a λ ∈ 𝒟_m(η(ℝ^P)) is the contract's blow-up (proper affine push-forward of X by η).",
+  "lean_statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) m, ∃ X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω')) ∧ ∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → ∀ (ω : TestFormOn (univ : Set (Euclid P)) m) (ω₁ : TestFormOn (dilation a lam '' (univ : Set (Euclid P))) m), (ω₁ : DifferentialForm (Euclid P) m) = (ω : DifferentialForm (Euclid P) m) → X' ω = blowUp X a lam hlam.ne' ω₁",
+  "lean_name": "cbr_cidc_dilation_exists_eq_blowUp",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "result_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-61322d5395-a1"
+}
