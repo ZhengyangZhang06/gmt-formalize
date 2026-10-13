@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Markov bound for rescaled measures** (the measure-theoretic half of the flat-tangent
+density estimate): if `f ≥ 0` is continuous with compact support, `f ≥ 1` on `A`,
+`μ(B̄_{r₀}(y)) < ∞`, and `r⁻ᵐ ∫ f(r⁻¹(z − y)) dμ(z) → L < L'` as `r ↓ 0`, then
+`μ{z : r⁻¹(z − y) ∈ A} ≤ L' rᵐ` for all small `r > 0`.  Once `r R' < r₀`, where `f = 0` off
+`B̄_{R'}(0)`, the rescaled integrand is bounded and vanishes off `B̄_{r₀}(y)`, hence integrable,
+and Markov's inequality at level `1` bounds the (possibly non-measurable) set by its integral. -/
+theorem Submission.codim1_rdo_dg_ftd_test_upper_bound : ∀ (N m : ℕ) (μ : Measure (Euclid N)) (y : Euclid N) (f : Euclid N → ℝ) (A : Set (Euclid N)) (L L' : ℝ), (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → Continuous f → HasCompactSupport f → (∀ w, 0 ≤ f w) → (∀ w ∈ A, 1 ≤ f w) → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L) → L < L' → ∀ᶠ r in 𝓝[>] (0 : ℝ), μ {z | r⁻¹ • (z - y) ∈ A} ≤ ENNReal.ofReal (L' * r ^ m) := by
+  intro N m μ y f A L L' ⟨r₀, hr₀, hfin⟩ hf hfc hf0 hA hlim hLL'
+  -- a radius `R' > 0` outside of which `f` vanishes, and a bound `‖f‖ ≤ C`
+  obtain ⟨R, hR⟩ := hfc.isCompact.isBounded.subset_closedBall 0
+  obtain ⟨R', hR'pos, hzero⟩ : ∃ R' : ℝ, 0 < R' ∧ ∀ w : Euclid N, R' < ‖w‖ → f w = 0 := by
+    refine ⟨max R 1, lt_max_of_lt_right one_pos, fun w hw => ?_⟩
+    refine image_eq_zero_of_notMem_tsupport fun hws => ?_
+    have hwR := hR hws
+    rw [mem_closedBall, dist_zero_right] at hwR
+    linarith [le_max_left R 1]
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfc
+  -- eventually `r < r₀ / R'` and the rescaled integral is `< L'`
+  filter_upwards [hlim (Iio_mem_nhds hLL'), Ioo_mem_nhdsGT (div_pos hr₀ hR'pos)] with r hrL hr
+  have hr0 : 0 < r := hr.1
+  have hrR : r * R' < r₀ := (lt_div_iff₀ hR'pos).mp hr.2
+  -- `z ↦ f (r⁻¹ • (z - y))` is continuous, bounded, and vanishes off `closedBall y r₀`
+  have hgc : Continuous fun z => f (r⁻¹ • (z - y)) :=
+    hf.comp ((continuous_id.sub continuous_const).const_smul r⁻¹)
+  have hgint : Integrable (fun z => f (r⁻¹ • (z - y))) μ := by
+    have hball : IntegrableOn (fun z => f (r⁻¹ • (z - y))) (closedBall y r₀) μ :=
+      Measure.integrableOn_of_bounded (M := C) hfin hgc.aestronglyMeasurable
+        (Eventually.of_forall fun z => hC _)
+    refine integrableOn_univ.mp (hball.of_forall_sdiff_eq_zero MeasurableSet.univ fun z hz => ?_)
+    have hz' : r₀ < ‖z - y‖ := by
+      have hz2 := hz.2
+      rwa [mem_closedBall, dist_eq_norm, not_le] at hz2
+    apply hzero
+    rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr0, lt_inv_mul_iff₀ hr0]
+    linarith
+  -- Markov's inequality at level `1`
+  have hmarkov : μ {z | r⁻¹ • (z - y) ∈ A} ≤ ENNReal.ofReal (∫ z, f (r⁻¹ • (z - y)) ∂μ) := by
+    rw [ofReal_integral_eq_lintegral_ofReal hgint (Eventually.of_forall fun z => hf0 _)]
+    calc μ {z | r⁻¹ • (z - y) ∈ A}
+        ≤ μ {z | 1 ≤ ENNReal.ofReal (f (r⁻¹ • (z - y)))} :=
+          measure_mono fun z hz => ENNReal.one_le_ofReal.mpr (hA _ hz)
+      _ = 1 * μ {z | 1 ≤ ENNReal.ofReal (f (r⁻¹ • (z - y)))} := (one_mul _).symm
+      _ ≤ ∫⁻ z, ENNReal.ofReal (f (r⁻¹ • (z - y))) ∂μ :=
+          mul_meas_ge_le_lintegral₀ hgc.measurable.ennreal_ofReal.aemeasurable 1
+  refine hmarkov.trans (ENNReal.ofReal_le_ofReal ?_)
+  have hint := (inv_mul_lt_iff₀ (pow_pos hr0 m)).mp hrL
+  rw [mul_comm L']
+  exact hint.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
