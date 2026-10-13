@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.jordan_decomposition-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+  "depth": 4,
+  "title": "Jordan decomposition of a locally bounded functional on C_c(X, ℝ)",
+  "statement": "Let X be a topological space and let Λ : C_c(X, ℝ) → ℝ be a real linear map that is locally bounded: for every compact K ⊆ X there is M ∈ ℝ with |Λ f| ≤ M for all f ∈ C_c(X, ℝ) with tsupport f ⊆ K and |f(x)| ≤ 1 for all x. Then there are positive linear functionals Λ₁, Λ₂ on C_c(X, ℝ), that is, elements of C_c(X, ℝ) →ₚ[ℝ] ℝ (ℝ-linear and order-preserving), such that Λ f = Λ₁ f − Λ₂ f for every f ∈ C_c(X, ℝ).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] (Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M) → ∃ Λ₁ Λ₂ : CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, Λ f = Λ₁ f - Λ₂ f",
+  "lean_name": "cmr_vr_jordan_decomposition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-689458a1fc-a1"
+}
