@@ -502,6 +502,68 @@ theorem Submission.cmcs_smi_lintegral_left_dini_le : ∀ (F : ℝ → ℝ) (a b 
       = ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) := lintegral_congr_ae (ae_restrict_of_ae hae)
     _ ≤ ENNReal.ofReal (F b - F a) := Submission.cmcs_smi_lintegral_ofReal_deriv_le F a b hF
 
+/-- **Simon Ch. 6, the remark deriving 4.10 from 4.9, for a measure on `ℝ`.**  For any measure
+`ν` on `ℝ`, `∫⁻_{(a,b)} liminf_{h → 0+} h⁻¹ ν((t − h, t)) dt ≤ ν((a, b))` (Simon applies this to
+`ν((s, t)) = M_W(T ⌞ {s < f < t})`).  When `ν((a, b)) < ∞`, `F(s) = ν((a, min s b))` is finite
+and monotone, with `F a = 0` and `F b = ν((a, b))`.  For `0 < h < t − a`, additivity on
+`(a, t − h) ∪ (t − h, t) ⊆ (a, t)` gives `h⁻¹ ν((t − h, t)) ≤ (F t − F (t − h)) / h`, so the left
+density is at most the lower left Dini derivative of `F`, whose integral
+`cmcs_smi_lintegral_left_dini_le` bounds by `F b − F a`. -/
+theorem Submission.cmcs_smi_lintegral_left_density_le : ∀ (ν : Measure ℝ) (a b : ℝ), ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) ≤ ν (Ioo a b) := by
+  intro ν a b
+  by_cases hN : ν (Ioo a b) = ∞
+  · rw [hN]
+    exact le_top
+  -- the distribution function `F(s) = ν((a, min s b))` of `ν` on `(a, b)`
+  set F : ℝ → ℝ := fun s => (ν (Ioo a (min s b))).toReal with hFdef
+  have hfin : ∀ s, ν (Ioo a (min s b)) ≠ ∞ := fun s =>
+    ne_top_of_le_ne_top hN (measure_mono (Ioo_subset_Ioo_right (min_le_right s b)))
+  have hFmono : Monotone F := fun s s' hss' =>
+    ENNReal.toReal_mono (hfin s') (measure_mono (Ioo_subset_Ioo_right (min_le_min_right b hss')))
+  have hofF : ∀ s, ENNReal.ofReal (F s) = ν (Ioo a (min s b)) := fun s =>
+    ENNReal.ofReal_toReal (hfin s)
+  have hFa : F a = 0 := by
+    simp only [hFdef]
+    rw [Ioo_eq_empty (not_lt.2 (min_le_left a b)), measure_empty, ENNReal.toReal_zero]
+  have hFb : F b = (ν (Ioo a b)).toReal := by
+    simp only [hFdef, min_self]
+  -- the strip estimate: for `0 < h < t − a`, `h⁻¹ ν((t − h, t)) ≤ (F t − F (t − h)) / h`
+  have hstrip : ∀ t ∈ Ioo a b, ∀ h ∈ Ioo 0 (t - a),
+      ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t) ≤ ENNReal.ofReal ((F t - F (t - h)) / h) := by
+    intro t ht h hh
+    have hmt : min t b = t := min_eq_left ht.2.le
+    have hmth : min (t - h) b = t - h := min_eq_left (by linarith [hh.1, ht.2])
+    have hunion : ν (Ioo a (t - h)) + ν (Ioo (t - h) t) ≤ ν (Ioo a t) := by
+      rw [← measure_union _ measurableSet_Ioo]
+      · refine measure_mono (union_subset ?_ ?_)
+        · exact Ioo_subset_Ioo_right (by linarith [hh.1])
+        · exact Ioo_subset_Ioo_left (by linarith [hh.2])
+      · rw [Set.disjoint_left]
+        intro x hx1 hx2
+        linarith [hx1.2, hx2.1]
+    have hle : ν (Ioo (t - h) t) ≤ ENNReal.ofReal (F t - F (t - h)) := by
+      rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, hofF, hofF, hmt, hmth]
+      refine ENNReal.le_sub_of_add_le_left ?_ hunion
+      rw [← hmth]
+      exact hfin (t - h)
+    calc ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)
+        ≤ ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h)) := mul_le_mul_right hle _
+      _ = ENNReal.ofReal ((F t - F (t - h)) / h) := by
+        rw [← ENNReal.ofReal_mul (inv_nonneg.2 hh.1.le), div_eq_inv_mul]
+  -- `(0, t − a) ∈ 𝓝[>] 0`, so the strip estimate compares the two liminfs on `(a, b)`
+  have hpt : ∀ t ∈ Ioo a b,
+      liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) ≤
+        liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) := by
+    intro t ht
+    refine liminf_le_liminf ?_
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 ht.1)] with h hh
+    exact hstrip t ht h hh
+  calc ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0)
+      ≤ ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) :=
+        setLIntegral_mono' measurableSet_Ioo hpt
+    _ ≤ ENNReal.ofReal (F b - F a) := Submission.cmcs_smi_lintegral_left_dini_le F a b hFmono
+    _ = ν (Ioo a b) := by rw [hFb, hFa, sub_zero, ENNReal.ofReal_toReal hN]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
