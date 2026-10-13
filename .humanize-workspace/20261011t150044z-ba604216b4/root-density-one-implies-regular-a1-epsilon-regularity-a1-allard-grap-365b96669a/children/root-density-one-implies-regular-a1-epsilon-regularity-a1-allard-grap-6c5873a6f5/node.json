@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1",
+  "depth": 5,
+  "title": "Lower semicontinuity of the Dirichlet energy under L² convergence",
+  "statement": "Let n ≥ 1, R > 0, B := B̆_R(0) ⊆ ℝⁿ (ℝⁿ = Euclid n), and E ∈ ℝ. Let (u_j)_{j∈ℕ} be Lipschitz functions ℝⁿ → ℝ with ∫_B ‖Du_j‖² ≤ E for all j, (c_j)_{j∈ℕ} real numbers, W : ℝⁿ → ℝ with W ∈ L²(B) and ∫_B (u_j − c_j − W)² → 0, and h : ℝⁿ → ℝ of class C² on B with h = W Lⁿ-almost everywhere on B (D = fderiv ℝ, operator norm). Then ‖Dh‖² is integrable on B and ∫_B ‖Dh‖² ≤ E.",
+  "lean_statement": "∀ (n : ℕ) (R E : ℝ) (u : ℕ → Euclid n → ℝ) (c : ℕ → ℝ) (W h : Euclid n → ℝ), 0 < n → 0 < R → (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ E) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (u j x - c j - W x) ^ 2) atTop (𝓝 0) → ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → (∀ᵐ x ∂(volume.restrict (ball (0 : Euclid n) R)), h x = W x) → IntegrableOn (fun x => ‖fderiv ℝ h x‖ ^ 2) (ball (0 : Euclid n) R) ∧ ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ h x‖ ^ 2 ≤ E",
+  "lean_name": "dorag_ha_energy_lsc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6c5873a6f5-a1"
+}
