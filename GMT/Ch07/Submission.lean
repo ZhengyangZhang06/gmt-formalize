@@ -943,6 +943,79 @@ theorem Submission.regcomp_cop_zdr_isolated_carrier_point : ∀ (P : ℕ) (U : S
   rw [hloc ω hωr, hωy, mul_one] at h0
   exact hc h0
 
+/-- **A 0-dimensional current minimizing in `A ⊇ spt T` has no regular points** (Simon 7.1.1,
+7.4.1; `H⁰` is counting measure, Ch. 2).  Suppose `y ∈ reg T` and `T = τ(C, θ, ξ)`.  The chart
+of the `0`-dimensional `M` isolates `y`, so `T(ω) = c ω(y)` for `spt ω ⊆ B_r(y)`, `|c| ≥ 1`, and
+testing with bumps gives `y ∈ C`, `C ∩ B_r(y) = {y}`.  Erasing the atom at `y` gives the integer
+multiplicity `S = T − θ(y)ξ(y)δ_y = τ(C ∖ {y}, θ, ξ)` with `spt(S − T) = {y} ⊆ A ∩ W`,
+`W = B_{r/2}(y)`, so `M_W(T) ≤ M_W(S)`.  But `C ∖ {y}` misses `B_r(y)`, so `M_W(S) = 0`, while
+the bump `(|c|/c)φ` at `y` gives `M_W(T) ≥ |c| ≥ 1`. -/
+theorem Submission.regcomp_cop_zero_dim_regularSet_empty : ∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → regularSet T = ∅ := by
+  intro P U A T hU hmin hsptA
+  refine Set.eq_empty_iff_forall_notMem.2 fun y hy => ?_
+  -- step 2: near `y`, `T(ω) = c ω(y)()` with `|c| ≥ 1`
+  obtain ⟨r, hr, hrU, c, hc, hloc⟩ := Submission.regcomp_cop_zdr_regular_local_form P U T y hy
+  have hc0 : c ≠ 0 := fun h => by
+    rw [h, abs_zero] at hc
+    exact absurd hc (by norm_num)
+  -- steps 1, 3–5: `T = τ(C, θ, ξ)` with `y ∈ C` and `C ∩ B_r(y) ⊆ {y}`
+  obtain ⟨R, hRT⟩ := hmin.1
+  obtain ⟨hyC, hCr⟩ :=
+    Submission.regcomp_cop_zdr_isolated_carrier_point P U T R y r c hRT hr hrU hc0 hloc
+  have hyU : y ∈ U := hrU (mem_ball_self hr)
+  -- step 6: `D(ω) = θ(y)ξ(y)(ω(y))` is a current and `S = T − D` is represented by
+  -- `(C ∖ {y}, θ, ξ)`
+  obtain ⟨⟨D, hD⟩, -⟩ :=
+    Submission.dor_zdm_point_current P 0 U y ((R.mult y : ℝ) • R.orient y) hU hyU
+  obtain ⟨R', hR'C, -, hR'⟩ := Submission.dor_zdm_imrep_zero_erase_point P U R y hyC
+  have hSR' : R'.Represents (T - D) := fun ω => by
+    change T ω - D ω = _
+    rw [hRT ω, hD ω, hR' ω, smul_apply, smul_eq_mul]
+  -- step 7: `(S − T)(ω) = −θ(y)ξ(y)(ω(y))` with `θ(y)ξ(y) ≠ 0`, so `spt(S − T) = {y}`, a
+  -- compact subset of `A ∩ W` for `W = B_{r/2}(y) ⊂⊂ U`, and minimality gives `M_W(T) ≤ M_W(S)`
+  have hξ : (R.mult y : ℝ) • R.orient y ≠ 0 :=
+    smul_ne_zero (Nat.cast_ne_zero.2 (R.mult_pos y hyC).ne')
+      ((Submission.dor_zdm_imrep_zero_structure P U R).2.2.1 y hyC).2
+  have hspt : (T - D - T).support = {y} := by
+    refine (Submission.dor_zdm_point_current P 0 U y (-((R.mult y : ℝ) • R.orient y)) hU
+      hyU).2 (T - D - T) (fun ω => ?_) ((neg_ne_zero (α := MultiVector P 0)).2 hξ)
+    change T ω - D ω - T ω = _
+    rw [hD ω, neg_apply, sub_sub_cancel_left]
+  have hW : CompactlyContained (ball y (r / 2)) U :=
+    ⟨(isCompact_closedBall y (r / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall,
+      closure_ball_subset_closedBall.trans ((closedBall_subset_ball (half_lt_self hr)).trans hrU)⟩
+  have hmass : T.massOn (ball y (r / 2)) ≤ (T - D).massOn (ball y (r / 2)) := by
+    refine hmin.2 _ (T - D) isOpen_ball hW ⟨R', hSR'⟩ trivial ?_ ?_ <;> rw [hspt]
+    · exact isCompact_singleton
+    · exact Set.singleton_subset_iff.2 ⟨hsptA hy.1, mem_ball_self (half_pos hr)⟩
+  -- step 8: `M_W(S) = 0`, as `C ∖ {y}` misses `B_r(y) ⊇ spt ω` for `ω` admissible in `W`
+  have hS0 : (T - D).massOn (ball y (r / 2)) = 0 := by
+    refine nonpos_iff_eq_zero.1 (sSup_le ?_)
+    rintro _ ⟨ω, ⟨hωW, -⟩, rfl⟩
+    have h0 : ∀ z ∈ R'.carrier,
+        (R'.mult z : ℝ) * R'.orient z ((ω : DifferentialForm (Euclid P) 0) z) = 0 := by
+      intro z hz
+      rw [hR'C] at hz
+      have hzω : z ∉ tsupport (ω : DifferentialForm (Euclid P) 0) := fun h =>
+        hz.2 (hCr ⟨hz.1, ball_subset_ball (half_le_self hr.le) (hωW h)⟩)
+      rw [image_eq_zero_of_notMem_tsupport hzω, map_zero, mul_zero]
+    show ENNReal.ofReal ((T - D) ω) ≤ 0
+    rw [hSR' ω, IMRep.action, setIntegral_eq_zero_of_forall_eq_zero h0, ENNReal.ofReal_zero]
+  -- step 9: the bump form `ω = (|c|/c)φ` at `y` is admissible in `W` and `T(ω) = |c| ≥ 1`
+  have hr4 : closedBall y (r / 4) ⊆ ball y (r / 2) := closedBall_subset_ball (by linarith)
+  obtain ⟨ω, hωs, hωy, -, hωn⟩ := Submission.regcomp_cop_zdr_exists_bumpForm P U y (r / 4)
+    (|c| / c) (by positivity) (hr4.trans ((ball_subset_ball (half_le_self hr.le)).trans hrU))
+  have hadm : ω ∈ massAdmissibleOn U 0 (ball y (r / 2)) := by
+    refine ⟨hωs.trans hr4, fun x => (hωn x).trans_eq ?_⟩
+    rw [abs_div, abs_abs, div_self (abs_ne_zero.2 hc0)]
+  have hTω : T ω = |c| := by
+    rw [hloc ω (hωs.trans (hr4.trans (ball_subset_ball (half_le_self hr.le)))), hωy,
+      mul_div_cancel₀ _ hc0]
+  have h1 := (T.le_massOn hadm).trans (hmass.trans hS0.le)
+  rw [hTω, nonpos_iff_eq_zero, ENNReal.ofReal_eq_zero] at h1
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
