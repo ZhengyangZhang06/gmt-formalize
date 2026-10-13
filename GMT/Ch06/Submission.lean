@@ -2752,6 +2752,204 @@ theorem Submission.imc_weightedTangent_iff_approxTangent : ∀ (N k : ℕ) (E : 
       (Submission.lpf_wtc_tangent_transfer N k (C i) E x Q (hCm i) hE hu
         ⟨1, one_pos, hEfin _ (isCompact_closedBall x 1)⟩ h₀ (hx₁ i hxS))
       hr hθx (hx₂ i hxS)
+/-- Orthonormal frames of the same subspace have the same simple `n`-vector up to sign (Simon
+Ch. 6, 3.1: `ξ(x) = τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` is determined by `TₓM` up
+to sign).  `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q = span τ = span τ'`.  Restricted to
+`Q`, an `n`-covector `ω` is an alternating `n`-form on the `n`-dimensional space `Q`, so
+`ω(τ') = b.det(b') ω(τ)` (`AlternatingMap.eq_smul_basis_det`, as in the determinant computation
+after (3.4), p. 147), and `b.det(b') = ±1` because the change of basis between orthonormal bases
+is orthogonal (`OrthonormalBasis.det_to_matrix_orthonormalBasis_real`). -/
+theorem Submission.fiw_ims_frame_sign :
+    ∀ (P n : ℕ) (τ τ' : Fin n → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ τ' →
+      Submodule.span ℝ (range τ) = Submodule.span ℝ (range τ') →
+      simpleNVector τ' = simpleNVector τ ∨ simpleNVector τ' = -simpleNVector τ := by
+  intro P n τ τ' hτ hτ' hspan
+  set Q : Submodule ℝ (Eucl P) := Submodule.span ℝ (range τ)
+  -- Step 1: `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`.
+  let b : Module.Basis (Fin n) ℝ Q := Module.Basis.span hτ.linearIndependent
+  let b' : Module.Basis (Fin n) ℝ Q :=
+    (Module.Basis.span hτ'.linearIndependent).map (LinearEquiv.ofEq _ _ hspan.symm)
+  have hb : Q.subtype ∘ b = τ :=
+    funext fun i => Module.Basis.coe_span_apply hτ.linearIndependent i
+  have hb' : Q.subtype ∘ b' = τ' := by
+    funext i
+    simp [b']
+  have hbo : Orthonormal ℝ b := by
+    rw [← Q.subtypeₗᵢ.orthonormal_comp_iff, Submodule.coe_subtypeₗᵢ, hb]
+    exact hτ
+  have hbo' : Orthonormal ℝ b' := by
+    rw [← Q.subtypeₗᵢ.orthonormal_comp_iff, Submodule.coe_subtypeₗᵢ, hb']
+    exact hτ'
+  -- Step 2: the restriction `f = ω ∘ Q.subtype` of an `n`-covector `ω` is an alternating
+  -- `n`-form on `Q`, so `f = f b • b.det`; evaluated at `b'` this is `ω τ' = b.det b' * ω τ`.
+  have key : ∀ ω : Covector (Eucl P) n, ω τ' = b.det b' * ω τ := by
+    intro ω
+    have h := DFunLike.congr_fun
+      ((ω.toAlternatingMap.compLinearMap Q.subtype).eq_smul_basis_det b) ⇑b'
+    rw [AlternatingMap.smul_apply, smul_eq_mul] at h
+    change ω (Q.subtype ∘ b') = ω (Q.subtype ∘ b) * b.det b' at h
+    rw [hb, hb'] at h
+    rw [h, mul_comm]
+  -- Step 3: `b.det b' = ±1`, the change of basis between orthonormal bases being orthogonal.
+  have hd : b.det b' = 1 ∨ b.det b' = -1 := by
+    simpa using (b.toOrthonormalBasis hbo).det_to_matrix_orthonormalBasis_real
+      (b'.toOrthonormalBasis hbo')
+  -- Step 4: extensionality, as `simpleNVector v ω = ω v`.
+  rcases hd with hd | hd
+  · left
+    refine ContinuousLinearMap.ext fun ω => ?_
+    rw [simpleNVector_apply, simpleNVector_apply, key ω, hd, one_mul]
+  · right
+    refine ContinuousLinearMap.ext fun ω => ?_
+    rw [_root_.neg_apply, simpleNVector_apply, simpleNVector_apply, key ω, hd, neg_one_mul]
+
+/-- Pointwise eventual limits of rectifiable triples are rectifiable triples (Simon Ch. 6, 3.13,
+last paragraph of the proof: `ξ_Q(x) ∈ Λₙ(TₓM_Q)`, `TₓM₊ = TₓM_Q` up to small measure, hence
+`ξ(x) ∈ Λₙ(TₓM₊)`).  With `θⱼ, θ₀ ≥ 1` the sets `Mⱼ`, `M₀` have locally finite `Hᵏ` measure.
+`M₀` lies in `⋃ⱼ Mⱼ` up to an `Hᵏ`-null set, so it is countably rectifiable, and `ξ₀` is the
+a.e. limit of `Mⱼ.indicator ξⱼ`, so it is a.e. strongly measurable.  For a.e. `x ∈ M₀ ∩ Mⱼ` a
+weighted tangent space of `(Mⱼ, θⱼ)` at `x` is one of `(M₀, θ₀)`: weighted and unweighted
+tangent spaces agree a.e. (Ch. 3, Remark 1.8(1); `imc_weightedTangent_iff_approxTangent`), and
+the approximate tangent spaces of `Mⱼ ∩ M₀` agree a.e. with those of `Mⱼ` and of `M₀`
+(`imc_approxTangent_iff_of_subset`).  At such `x`, for `j ≥ J(x)` the frames `τʲ` orienting
+`ξⱼ(x)` all span the unique weighted tangent space of `(M₀, θ₀)` at `x`, so
+`ξⱼ(x) ∈ {s, -s}` with `s = simpleNVector τᴶ` (`fiw_ims_frame_sign`); this set is closed, hence
+contains `ξ₀(x) = lim ξⱼ(x)`. -/
+theorem Submission.imc_isRectifiableTriple_of_eventually_mem :
+    ∀ (N k : ℕ) (M : ℕ → Set (Eucl N)) (θ : ℕ → Eucl N → ℝ) (ξ : ℕ → Eucl N → NVector (Eucl N) k) (M₀ : Set (Eucl N)) (θ₀ : Eucl N → ℝ) (ξ₀ : Eucl N → NVector (Eucl N) k), (∀ j, IsRectifiableTriple (univ : Set (Eucl N)) k (M j) (θ j) (ξ j)) → (∀ j, ∀ x ∈ M j, 1 ≤ θ j x) → NullMeasurableSet M₀ (μHE[k] : Measure (Eucl N)) → (∀ x ∈ M₀, 1 ≤ θ₀ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₀ (M₀ ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict M₀), (∀ᶠ j in atTop, x ∈ M j) ∧ Tendsto (fun j => ξ j x) atTop (𝓝 (ξ₀ x))) → IsRectifiableTriple (univ : Set (Eucl N)) k M₀ θ₀ ξ₀ := by
+  have hA := Submission.imc_approxTangent_iff_of_subset
+  have hB := Submission.imc_weightedTangent_iff_approxTangent
+  have hFrame := Submission.fiw_ims_frame_sign
+  intro N k M θ ξ M₀ θ₀ ξ₀ hTri hθ1 hM₀ hθ₀1 hθ₀int hpt
+  set H : Measure (Eucl N) := (μHE[k] : Measure (Eucl N)) with hH
+  -- Step 1: `ϑ ≥ 1` on `E` and `ϑ` integrable on `E ∩ K` give `H (E ∩ K) < ∞`.
+  have hfinGen : ∀ (E : Set (Eucl N)) (ϑ : Eucl N → ℝ), NullMeasurableSet E H →
+      (∀ x ∈ E, 1 ≤ ϑ x) → ∀ K : Set (Eucl N), IsCompact K → IntegrableOn ϑ (E ∩ K) H →
+      H (E ∩ K) < ∞ := by
+    intro E ϑ hE h1 K hK hint
+    have hEK : NullMeasurableSet (E ∩ K) H := hE.inter hK.measurableSet.nullMeasurableSet
+    calc H (E ∩ K) = ∫⁻ _x in E ∩ K, 1 ∂H := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in E ∩ K, ‖ϑ x‖ₑ ∂H := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀ hEK] with x hx
+          have h := h1 x hx.1
+          rw [← ofReal_norm, Real.norm_eq_abs, abs_of_pos (by linarith)]
+          exact ENNReal.one_le_ofReal.mpr h
+      _ < ∞ := hint.hasFiniteIntegral
+  have hfin : ∀ j, ∀ K : Set (Eucl N), IsCompact K → H (M j ∩ K) < ∞ := fun j K hK =>
+    hfinGen (M j) (θ j) (hTri j).nullMeasurableSet (hθ1 j) K hK
+      ((hTri j).integrableOn K hK (subset_univ K))
+  have hfin₀ : ∀ K : Set (Eucl N), IsCompact K → H (M₀ ∩ K) < ∞ := fun K hK =>
+    hfinGen M₀ θ₀ hM₀ hθ₀1 K hK (hθ₀int K hK)
+  -- Step 5 (i)–(iv): weighted ↔ unweighted for `(Mⱼ, θⱼ)` and `(M₀, θ₀)`, and locality of
+  -- unweighted tangent spaces for `Mⱼ ∩ M₀ ⊆ Mⱼ` and `Mⱼ ∩ M₀ ⊆ M₀`.
+  have hBj : ∀ j, ∀ᵐ x ∂(H.restrict (M j)), ∀ Q : Submodule ℝ (Eucl N),
+      HasWeightedApproximateTangentSpaceAt k (M j) (θ j) x Q ↔
+        Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k (M j) x Q := fun j =>
+    hB N k (M j) (θ j) (hTri j).nullMeasurableSet (hfin j) (hTri j).pos
+      (fun K hK => (hTri j).integrableOn K hK (subset_univ K))
+  have hB₀ : ∀ᵐ x ∂(H.restrict M₀), ∀ Q : Submodule ℝ (Eucl N),
+      HasWeightedApproximateTangentSpaceAt k M₀ θ₀ x Q ↔
+        Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k M₀ x Q :=
+    hB N k M₀ θ₀ hM₀ hfin₀ (fun x hx => lt_of_lt_of_le one_pos (hθ₀1 x hx)) hθ₀int
+  have hAj : ∀ j, ∀ᵐ x ∂(H.restrict (M j ∩ M₀)), ∀ Q : Submodule ℝ (Eucl N),
+      Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k (M j ∩ M₀) x Q ↔
+        Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k (M j) x Q := fun j =>
+    hA N k (M j ∩ M₀) (M j) inter_subset_left ((hTri j).nullMeasurableSet.inter hM₀)
+      (hTri j).nullMeasurableSet (hfin j)
+  have hA₀ : ∀ j, ∀ᵐ x ∂(H.restrict (M j ∩ M₀)), ∀ Q : Submodule ℝ (Eucl N),
+      Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k (M j ∩ M₀) x Q ↔
+        Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k M₀ x Q := fun j =>
+    hA N k (M j ∩ M₀) M₀ inter_subset_right ((hTri j).nullMeasurableSet.inter hM₀) hM₀ hfin₀
+  -- Step 5 (T_j): for `H⌞M₀`-a.e. `x ∈ Mⱼ`, weighted tangent spaces of `(Mⱼ, θⱼ)` at `x` are
+  -- weighted tangent spaces of `(M₀, θ₀)`.
+  have hTj : ∀ j, ∀ᵐ x ∂(H.restrict M₀), x ∈ M j → ∀ Q : Submodule ℝ (Eucl N),
+      HasWeightedApproximateTangentSpaceAt k (M j) (θ j) x Q →
+        HasWeightedApproximateTangentSpaceAt k M₀ θ₀ x Q := by
+    intro j
+    have hjM : NullMeasurableSet (M j ∩ M₀) H := (hTri j).nullMeasurableSet.inter hM₀
+    have h1 := (ae_restrict_iff'₀ (hTri j).nullMeasurableSet).1 (hBj j)
+    have h2 := (ae_restrict_iff'₀ hjM).1 (hAj j)
+    have h3 := (ae_restrict_iff'₀ hjM).1 (hA₀ j)
+    have h4 := (ae_restrict_iff'₀ hM₀).1 hB₀
+    rw [ae_restrict_iff'₀ hM₀]
+    filter_upwards [h1, h2, h3, h4] with x h1 h2 h3 h4 hx0 hxj Q hW
+    exact (h4 hx0 Q).2 ((h3 ⟨hxj, hx0⟩ Q).1 ((h2 ⟨hxj, hx0⟩ Q).2 ((h1 hxj Q).1 hW)))
+  -- Step 6 (O_j): the orientation of `(Mⱼ, θⱼ, ξⱼ)`, read `H⌞M₀`-a.e. on `Mⱼ`.
+  have hOj : ∀ j, ∀ᵐ x ∂(H.restrict M₀), x ∈ M j → ∃ τ : Fin k → Eucl N, Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt k (M j) (θ j) x (Submodule.span ℝ (range τ)) ∧
+      (ξ j x = simpleNVector τ ∨ ξ j x = -simpleNVector τ) := fun j =>
+    ae_restrict_of_ae ((ae_restrict_iff'₀ (hTri j).nullMeasurableSet).1 (hTri j).orients)
+  -- Step 7: orientation of the limit; `ξⱼ(x) ∈ {s, -s}` for `j ≥ J`, a closed set.
+  have horients : ∀ᵐ x ∂(H.restrict M₀), ∃ τ : Fin k → Eucl N, Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt k M₀ θ₀ x (Submodule.span ℝ (range τ)) ∧
+      (ξ₀ x = simpleNVector τ ∨ ξ₀ x = -simpleNVector τ) := by
+    have hTall := ae_all_iff.2 hTj
+    have hOall := ae_all_iff.2 hOj
+    have hmem : ∀ᵐ x ∂(H.restrict M₀), x ∈ M₀ := ae_restrict_mem₀ hM₀
+    filter_upwards [hpt, hTall, hOall, hmem] with x hx hT hO hxM
+    obtain ⟨hev, hlim⟩ := hx
+    have hθx : θ₀ x ≠ 0 := (lt_of_lt_of_le one_pos (hθ₀1 x hxM)).ne'
+    obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+    choose! τ hτon hτW hτξ using hO
+    refine ⟨τ J, hτon J (hJ J le_rfl), hT J (hJ J le_rfl) _ (hτW J (hJ J le_rfl)), ?_⟩
+    set s := simpleNVector (τ J) with hs
+    have hmem' : ∀ᶠ j in atTop, ξ j x ∈ ({s, -s} : Set (NVector (Eucl N) k)) := by
+      filter_upwards [eventually_ge_atTop J] with j hj
+      have hxj : x ∈ M j := hJ j hj
+      have hspan : Submodule.span ℝ (range (τ J)) = Submodule.span ℝ (range (τ j)) :=
+        HasWeightedApproximateTangentSpaceAt.unique hθx
+          (hT J (hJ J le_rfl) _ (hτW J (hJ J le_rfl))) (hT j hxj _ (hτW j hxj))
+      have hsign := hFrame N k (τ J) (τ j) (hτon J (hJ J le_rfl)) (hτon j hxj) hspan
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff]
+      rcases hτξ j hxj with h | h <;> rcases hsign with h' | h'
+      · exact Or.inl (by rw [h, h'])
+      · exact Or.inr (by rw [h, h'])
+      · exact Or.inr (by rw [h, h'])
+      · exact Or.inl (by rw [h, h']; ext α; simp [s])
+    have hcl : IsClosed ({s, -s} : Set (NVector (Eucl N) k)) := (Set.toFinite _).isClosed
+    simpa using hcl.mem_of_tendsto hlim hmem'
+  -- Step 3: `M₀ ⊆ (M₀ \ ⋃ⱼ Mⱼ) ∪ ⋃ⱼ Mⱼ`, the first set being `H`-null.
+  have hcr : CountablyRectifiable k M₀ := by
+    have hZ : H (M₀ \ ⋃ j, M j) = 0 := by
+      have h : ∀ᵐ x ∂(H.restrict M₀), x ∈ ⋃ j, M j := by
+        filter_upwards [hpt] with x hx
+        obtain ⟨j, hj⟩ := hx.1.exists
+        exact mem_iUnion.2 ⟨j, hj⟩
+      rw [ae_restrict_iff'₀ hM₀, ae_iff] at h
+      refine measure_mono_null (fun x hx => ?_) h
+      simp only [Set.mem_ofPred_eq, not_imp]
+      exact ⟨hx.1, hx.2⟩
+    let S : ℕ → Set (Eucl N) := fun i => Nat.casesOn i (M₀ \ ⋃ j, M j) (fun j => M j)
+    have hS : ∀ i, CountablyRectifiable k (S i) := by
+      intro i
+      cases i with
+      | zero => exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero hZ
+      | succ j => exact (hTri j).countablyRectifiable
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion S hS).mono fun x hx => ?_
+    by_cases h : x ∈ ⋃ j, M j
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 h
+      exact mem_iUnion.2 ⟨j + 1, hj⟩
+    · exact mem_iUnion.2 ⟨0, ⟨hx, h⟩⟩
+  -- Step 4: `ξ₀` is the `H⌞M₀`-a.e. limit of `Mⱼ.indicator ξⱼ`.  The pseudo-metrizable
+  -- structure of `NVector (Eucl N) k` is supplied by hand: its topology is
+  -- `ContinuousLinearMap.topologicalSpace`, which is the operator-norm topology.
+  have hmeas : AEStronglyMeasurable ξ₀ (H.restrict M₀) := by
+    have : TopologicalSpace.PseudoMetrizableSpace (NVector (Eucl N) k) :=
+      ⟨⟨inferInstance, rfl, @EMetric.instIsCountablyGeneratedUniformity (NVector (Eucl N) k) _⟩⟩
+    have hg : ∀ j, AEStronglyMeasurable ((M j).indicator (ξ j)) (H.restrict M₀) := fun j =>
+      ((aestronglyMeasurable_indicator_iff₀ (hTri j).nullMeasurableSet).2
+        (hTri j).aestronglyMeasurable).restrict
+    refine aestronglyMeasurable_of_tendsto_ae atTop hg ?_
+    filter_upwards [hpt] with x hx
+    refine hx.2.congr' ?_
+    filter_upwards [hx.1] with j hj
+    rw [indicator_of_mem hj]
+  -- Step 8: assemble the fields.
+  exact { subset := subset_univ _, nullMeasurableSet := hM₀, countablyRectifiable := hcr,
+          pos := fun x hx => lt_of_lt_of_le one_pos (hθ₀1 x hx),
+          integrableOn := fun K hK _ => hθ₀int K hK,
+          aestronglyMeasurable := hmeas, orients := horients }
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
