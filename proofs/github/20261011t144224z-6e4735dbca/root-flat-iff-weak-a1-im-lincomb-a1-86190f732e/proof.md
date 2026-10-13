@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1`
+- Child DAG node: `root.flat_iff_weak-a1.im_lincomb-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, Remark 3.2(1): if T₁, T₂ are integer multiplicity then so is p₁T₁ + p₂T₂ for p₁, p₂ ∈ ℤ. It is obtained here as the finite case of the series lemma (sibling im_series); this is the parent's preliminary (P2).
+
+1. (Local finiteness of mass.) Let X ∈ D_n(U) be integer multiplicity, X = τ(M, θ, ξ) with IsRectifiableTriple U n M θ ξ, and let W ⊂⊂ U be open (CompactlyContainedOpen W U). By the sibling im_mass_formula (W is open), M_W(X) = ∫⁻_{M∩W} ofReal θ dH ≤ ∫⁻_{M∩closure W} ofReal θ dH < ∞. The last bound holds because closure W is a compact subset of U and θ is integrable on M ∩ closure W (integrableOn condition; IntegrableOn.lintegral_lt_top).
+
+2. (A two-term series.) Define T_r := T₂ if r = 1 and T_r := T₁ otherwise, and c₀ := a, c₁ := b, c_r := 0 for r ≥ 2. Every T_r is integer multiplicity. For every open W ⊂⊂ U, Σ'_r |c_r| M_W(T_r) = |a| M_W(T₁) + |b| M_W(T₂) < ∞ by step 1, since the family vanishes outside {0, 1} (tsum_eq_sum).
+
+3. (Apply im_series.) The sibling im_series gives an integer multiplicity S' ∈ D_n(U) with HasSum (fun r => c_r T_r(ω)) (S'(ω)) for every ω. The family has finite support {0, 1}, so it also has sum a T₁(ω) + b T₂(ω) (hasSum_sum_of_ne_finset_zero). By uniqueness of sums, S'(ω) = a T₁(ω) + b T₂(ω) = S(ω).
+
+4. (Conclusion.) S' and S agree on every test form, so S' = S (GeometricCurrentOn.ext), and S is integer multiplicity. ∎
+
+## Key steps
+
+1. Integer multiplicity currents have M_W < ∞ for W ⊂⊂ U (im_mass_formula and integrability of θ on M ∩ closure W).
+2. Apply im_series to the family (T₁, T₂, T₁, T₁, …) with coefficients (a, b, 0, 0, …).
+3. The resulting current equals S on every test form (finite-support HasSum, uniqueness of sums, ext), so S is integer multiplicity.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n '^def (flatDistance|FlatConvergenceIffWeakConvergence|DeformationTheorem|SlicingTheorem|BoundaryRectifiability|IsIntegerMultiplicity|IsRestriction|IsSlice|IsLatticeChain|IsMeasureRepresentation|CompactlyContainedOpen)|^structure IsRectifiableTriple' project/GMT/Ch06/Contract.lean`
+- `rg -n 'IsIntegerMultiplicity|flatDistance' project/GMT (no match outside Contract.lean/Submission.lean)`
+- `rg -n 'theorem ae_tendsto_measure_inter_div \(μ|theorem ae_tendsto_lintegral_enorm_sub_div \{|theorem exists_contMDiffMap_zero_one_of_isClosed|theorem tendsto_of_subseq_tendsto|theorem lintegral_liminf_le \{|theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem hasProd_prod_of_ne_finset_one|theorem IsometryEquiv.measurePreserving_euclideanHausdorffMeasure' mathlib/Mathlib`
+- `grep -n '^theorem|^def|^structure|^abbrev' over SimonGMT Chapter06/{Currents,Mass,CurrentLocalEquality,Forms,FormsDuality,FormSupNorm}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, massOn, massOn_mono, le_massOn, WeaklyConvergesOn.massOn_le_liminf, restrictDomain, zeroRegion/support, HasWeightedApproximateTangentSpaceAt and .unique, CountablyRectifiable.mono, simpleNVector, testFormEuclideanSupNorm)`
+- `rg -n -i 'flat (norm|distance|metric)|integer multiplicity|approximate tangent.*(local|subset)' SimonGMT Chapter06 Chapter03 (no integer-multiplicity calculus or flat-norm lemmas)`
+- `grep Cauchy–Binet / det-of-minors in Mathlib and SimonGMT (no match; proved inline in the children)`
+- `python3 listing of dag.json lean_names and nodes/*/decomposition-v1.json (no fiw_* names reserved)`
+- `lake build GMT.Ch06.Submission in /tmp/fiw_check (git archive of the frozen commit d8d46c9, .lake/packages linked to the shared tree, which was left unchanged)`
+- `gmt-compare.py contract_scope/child_modules + lean_contract.validate_lean_statement on the 8 statements; lake env lean Scratch/Ch_fiw_*.lean (0 errors)`
+- `lake env lean Scratch/AssemblyExact.lean (#print axioms assembly_exact: propext, Classical.choice, Quot.sound)`
+- `lake env lean Scratch/LincombExact.lean (#print axioms lincomb_exact: propext, Classical.choice, Quot.sound)`
+- `book/chapter-06.txt §7 (7.1–7.3, proof of 7.2), 3.1–3.2, 3.13, 4.4–4.5, 5.1 (27)–(37); chapter-03.txt 1.4–1.9; chapter-02.txt 2.6–2.9`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/fiw_check/Scratch/AssemblyExact.lean`
+- `/tmp/fiw_check/Scratch/LincombExact.lean`
+- `/tmp/fiw_check/Scratch/Ch_fiw_localization.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract. It defines flatDistance, IsIntegerMultiplicity, IsRestriction, IsSlice and IsLatticeChain, plus the three sibling Props this node uses (SlicingTheorem, DeformationTheorem, BoundaryRectifiability).
+
+Neither the project nor SimonGMT has any integer-multiplicity calculus (restriction, sums, 3.13), the mass formula 3.2(3), a flat-norm lemma, or Cauchy–Binet. These are therefore introduced as children, or proved inline (Cauchy–Binet).
+
+Mathlib in the snapshot supplies the tools cited in the child proofs:
+- Besicovitch.ae_tendsto_measure_inter_div;
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div with Besicovitch.vitaliFamily;
+- exists_contMDiffMap_zero_one_of_isClosed (smooth Urysohn);
+- tendsto_of_subseq_tendsto;
+- lintegral_liminf_le;
+- euclideanHausdorffMeasure_smul₀ and IsometryEquiv.measurePreserving_euclideanHausdorffMeasure;
+- hasSum_sum_of_ne_finset_zero (to_additive of hasProd_prod_of_ne_finset_one).
+SimonGMT supplies massOn_mono, le_massOn, restrictDomain, zeroRegion/support and HasWeightedApproximateTangentSpaceAt.unique.
+
+Scratch build of the frozen commit:
+- all 8 child types elaborate in the comparator's exact challenge text;
+- FlatConvergenceIffWeakConvergence is kernel-checked from fiw_flat_to_weak, fiw_localization, fiw_total_boundedness, fiw_flat_cauchy_limit and the three root siblings;
+- fiw_im_lincomb is kernel-checked from fiw_im_series and fiw_im_mass_formula.
+Both derivations use only [propext, Classical.choice, Quot.sound]. These checks do not certify the analytic child proofs.

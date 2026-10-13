@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b1c59c5e4c194f88aaa13db92b9041bbb35c8dc3c380cd8fd099f504f35c5c41",
+  "git_delta": {
+    "base_commit": "0064d12a838414fe4017c66e1dc12014e9e5a14a",
+    "candidate_commit": "fbf0e325eb4f5e991d1262c10c1801b9d06ae075",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_im_lincomb",
+    "diff_sha256": "b0a30e86da09353d707b4134c1befec387f6adcddbca5f77fc19eda05538edd5",
+    "source_sha256": "abc01a7afb924730d12daf1fac6d179b8fb127859bfb404f3784f77d6ee3f3a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_im_lincomb",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
