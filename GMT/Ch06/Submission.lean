@@ -418,6 +418,20 @@ theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
   simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
     ContinuousAlternatingMap.coe_toAlternatingMap]
   exact h2 v hv
+/-- A coordinate of an `n`-covector is bounded by its Euclidean coefficient norm:
+`|α(e_{β(0)}, …, e_{β(n-1)})| ≤ |α|` for every increasing multi-index `β`. -/
+theorem Submission.cmb_rb_abs_euclideanCovectorCoordinate_le :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n) (β : SimonMultiIndex n P),
+      |euclideanCovectorCoordinate α β| ≤ covectorEuclideanNorm α := by
+  intro P n α β
+  -- `|c| = √(c²)` and `√` is monotone, so it suffices to bound `c²` by the defining sum.
+  rw [covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs]
+  refine Real.sqrt_le_sqrt ?_
+  -- `c²` is the summand of the strictly increasing tuple `β`; every summand is nonnegative.
+  refine le_trans (le_of_eq ?_) (Finset.single_le_sum (fun I _ => ?_) (Finset.mem_univ ⇑β))
+  · simp only [euclideanCovectorCoordinate, β.strictMono, ↓reduceIte,
+      EuclideanSpace.basisFun_apply]
+  · exact ite_nonneg (sq_nonneg _) le_rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
