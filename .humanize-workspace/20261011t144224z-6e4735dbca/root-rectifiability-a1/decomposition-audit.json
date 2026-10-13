@@ -1,0 +1,128 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def RectifiabilityTheorem|^theorem main_theorem|^axiom|^opaque|sorry' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "rg -n 'Besicovitch.Federer|PurelyUnrectifiable|purely unrectifiable|Mickle' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "def (CountablyRectifiable|PurelyUnrectifiable|HasWeightedApproximateTangentSpaceAt)|theorem (measurable_rectifiable_purelyUnrectifiable_decomposition|simon_lemma_3_2|countablyRectifiable_range)",
+        "sed -n '218,310p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentAuditTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentAuditInputs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/V2_Names2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/C4fromC3.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/C5Check.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/V2_Glue.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/tmp/rect_a1_v2_check/Scratch/IndependentAuditTypes.lean",
+        "/tmp/rect_a1_v2_check/Scratch/IndependentAuditInputs.lean",
+        "/tmp/rect_a1_v2_check/Scratch/V2_Names2.lean",
+        "/tmp/rect_a1_v2_check/Scratch/Assembly.lean",
+        "/tmp/rect_a1_v2_check/Scratch/C4fromC3.lean",
+        "/tmp/rect_a1_v2_check/Scratch/C5Check.lean",
+        "/tmp/rect_a1_v2_check/Scratch/V2_Glue.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected contract, Submission.rectifiability_theorem : RectifiabilityTheorem. All 12 one-line propositions independently elaborate without child implementations; their hypotheses and conclusions match their prose. Dependencies are acyclic and correctly directed. All names are bare identifiers, with no collisions among the 95 current DAG nodes or other branches' proposals. The eight retained contracts are unchanged. The frozen contract matches the scratch project; Mathlib and SimonGMT package revisions match their pins and have clean tracked sources. All listed Lean checks passed in /tmp/rect_a1_v2_check. The assembly, reductions, glue and checked library inputs use only propext, Classical.choice and Quot.sound. Row-tuple volume is definitionally the product measure, and WithLp.toLp 2 supplies the intended Euclidean codomain. No matrix-unit construction occurs. The snapshot search found no existing Besicovitch–Federer or Mickle–Radó theorem; the supplied proofs establish these obligations explicitly. The analytic proof judgments below are independent mathematical reviews, not claims that all child implementations have been completed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_measure_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes both existence and representation for every mass measure. Coordinate duality, the degenerate case, mollification, the verified Riesz envelope results, measure uniqueness and the Borel modification establish both conclusions, including integrability and Euclidean coefficient normalization."
+    },
+    {
+      "key": "projection_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The potential identity and its support-volume estimate supply the required replacement for BV compactness. The boundary calculation, cutoffs near compact projected null sets, shrinking neighbourhoods and inner regularity prove the exact rotated-projection conclusion. The only sibling used is the declared representation theorem."
+    },
+    {
+      "key": "mass_measure_abs_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable hull, coordinate-projection Lipschitz bound and normalized Hausdorff/Lebesgue identity justify applying projection_null with the identity isometry. This proves absolute continuity for arbitrary null sets; the reduction also passes Lean checking."
+    },
+    {
+      "key": "density_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localization to the open set and the fine-cover argument prove the stated inequality without measurability of A or local finiteness of ν. The proof handles n = 0 and t = 0 or infinity. The exact proposition is also proved by the supplied, independently rerun library reduction."
+    },
+    {
+      "key": "bf_cone_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lipschitz inverse handles the graph part; the two-cone inclusion and disjoint projected balls give the stated uniform bound. The Hausdorff-cover argument and rational-aperture reduction then prove the exact quantified conclusion without assuming E measurable or finite. This is consistent with [Hovila et al., §2](https://arxiv.org/pdf/1104.3453)."
+    },
+    {
+      "key": "mickle_rado",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Ball continuity supplies the required Borel level sets. At a density point of a compact subset, the distance-to-set Vitali covering gives the explicit contradiction t^k/q < t^k/(2q). Only outer-measure properties are used, consistent with [Mattila, Lemma 4.14](https://arxiv.org/pdf/2112.00540)."
+    },
+    {
+      "key": "bf_trichotomy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The slice set functions satisfy both outer-measure axioms and the exact ball-continuity hypothesis of mickle_rado. Measurability, the two fibre/cone inclusions and both Fubini steps are justified. The zero-dimensional case and conversion from infinite cone ratio to infinite projected density cover the full Lean statement."
+    },
+    {
+      "key": "bf_projection_null_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact approximation preserves pure unrectifiability and changes every image only by a null set. The three declared siblings dispose of the first two alternatives. The dyadic partition argument proves the remaining fibre-counting inequality, so infinite fibres also have null image. All three dependencies are used correctly."
+    },
+    {
+      "key": "structure_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite measurable hulls remain purely unrectifiable by the verified decomposition theorem. The bad row-tuple set is Borel, null and GL(n)-invariant. Gaussian Gram–Schmidt, the explicit Haar uniqueness argument and permutation invariance justify simultaneous avoidance for all coordinate projections. P < n is handled vacuously."
+    },
+    {
+      "key": "weighted_tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localization and Lusin exhaustion supply finite compact pieces. The verified derivative partition, critical-image theorem and area formulas justify the bi-Lipschitz decomposition and blow-up calculation. Differentiation and zero density of the remaining pieces control both errors, uniformly in the choice of test function's exceptional set. The proof establishes the exact weighted tangent definition."
+    },
+    {
+      "key": "orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positivity transfers almost-everywhere statements between the weighted and restricted Hausdorff measures. The declared siblings supply tangent spaces, the boundary mass measure and finite densities. The blow-up error tends to zero, the boundary estimate is O(λ), and the adapted-frame tests force precisely ±simpleNVector, including top dimension."
+    },
+    {
+      "key": "mass_measure_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The carrier is Borel and Hausdorff-σ-finite by density comparison. Decomposition, rotated projection nullity and absolute continuity eliminate its purely unrectifiable part. The σ-finite Radon–Nikodym argument and removal of zero/infinite density values give exactly the required Borel positive real density and local integrability. Together with representation and orientation, this establishes the selected parent."
+    }
+  ],
+  "required_changes": []
+}
