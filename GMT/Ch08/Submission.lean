@@ -410,6 +410,44 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- `H^n` of the balls of an `n`-plane centred on the plane (step 0(c) of the flat-limit step of
+Simon Ch. 8, 5.9): for `T ∈ G(N,n)`, `a ∈ T` and `r > 0`, both `T ∩ B_r(a)` and `T ∩ B°_r(a)`
+have `H^n`-measure `ω_n r^n`. -/
+theorem Submission.intcpt_fli_plane_ball_measure :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (a : Euclidean N) (r : ℝ), a ∈ T.plane → 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall a r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball a r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T a r ha hr
+  -- Step 1: an orthonormal basis `B` of `T.plane` indexed by `Fin n` (`dim T.plane = n`) gives a
+  -- linear isometry `L : ℝ^n → ℝ^N` with values in `T.plane` and `L (B.repr v) = v`.
+  let B : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr (Grassmannian.finrank_plane T))
+  let L : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp B.repr.symm.toLinearIsometry
+  have hLrepr : ∀ v : T.plane, L (B.repr v) = v := fun v ↦ by simp [L]
+  -- Step 2: `ι x = a + L x` is an isometry with `ι 0 = a`.
+  let ι : EuclideanSpace ℝ (Fin n) → Euclidean N := fun x ↦ a + L x
+  have hι : Isometry ι := Isometry.of_dist_eq fun x y ↦ by
+    simp only [ι, dist_eq_norm, add_sub_add_left_eq_sub, ← map_sub, L.norm_map]
+  have hι0 : ι 0 = a := by simp [ι]
+  -- Step 3: `ι` maps onto `T.plane` (`y = ι (B.repr (y - a))` for `y ∈ T.plane`), so it maps
+  -- `B_r(0) = ι⁻¹(B_r(a))` onto `T.plane ∩ B_r(a)`, and likewise for open balls.
+  have hrange : range ι = (T.plane : Set (Euclidean N)) := by
+    ext y
+    refine ⟨?_, fun hy ↦ ⟨B.repr ⟨y - a, T.plane.sub_mem hy ha⟩, by simp [ι, hLrepr]⟩⟩
+    rintro ⟨x, rfl⟩
+    exact T.plane.add_mem ha (B.repr.symm x).2
+  -- Step 4: `μHE[n]` is isometry invariant and equals `volume` on `ℝ^n`.
+  have hvol : ∀ S : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (ι '' S) = volume S := fun S ↦ by
+    rw [hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Steps 5–6: Haar scaling of balls in `ℝ^n` (no nontriviality is needed, so `n = 0` is
+  -- included) and `ofReal (r ^ n) = (ofReal r) ^ n`.
+  constructor
+  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_closedBall,
+      hvol, Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin, unitBallVolume,
+      ENNReal.ofReal_pow hr.le, mul_comm]
+  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_ball, hvol,
+      Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin, unitBallVolume,
+      ENNReal.ofReal_pow hr.le, mul_comm]
 /-- Weight form of flat convergence (Simon Ch. 8, proof of 5.9, pp. 218–219): if
 `∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c(ℝ^N × G(N,n))` with `spt f ⊆ B°_5(0) × G(N,n)`, then
 `∫ g dμ_{W_k} → θ₀ ∫_P g dH^n` for every `g ∈ C_c(ℝ^N)` with `spt g ⊆ B°_5(0)`. -/
@@ -547,6 +585,71 @@ theorem Submission.intcpt_fli_weight_compact_eventually_lt :
       exact zero_le
   -- Step 8: combine steps 6 and 7.
   exact hev.mono fun k hk ↦ (hKg k).trans_lt hk
+
+/-- Uniform eventual mass bound on the unit disc of `P` (step 4(iv) of the flat-limit argument in the
+proof of Simon Ch. 8, 5.9, p. 219): if `W_k → θ₀ v(P)` as Radon measures on `Gₙ(B°_5(0))`, then for
+each `η > 0` and all large `k`, `μ_{W_k}(B_1(a)) ≤ (θ₀ + η) ω_n` for every `a ∈ P` with `|a| ≤ 1`.
+The compact disc `P ∩ B_1(0)` is covered by finitely many balls `B°_{η'}(a_l)`, and the eventual
+compact-set mass bound is applied at each centre. -/
+theorem Submission.intcpt_fli_unit_disc_mass_eventually :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ η : ℝ, 0 < η → ∀ᶠ k in atTop, ∀ a ∈ (P.plane : Set (Euclidean N)), ‖a‖ ≤ 1 → (W k).weight (closedBall a 1) ≤ ENNReal.ofReal ((θ₀ + η) * (unitBallVolume n).toReal) := by
+  intro N n P θ₀ W hθ₀ hconv η hη
+  -- Step 1: `ω = ω_n ∈ (0, ∞)`, so `unitBallVolume n = ofReal ω`.
+  have hωne : unitBallVolume n ≠ ∞ := by
+    rw [unitBallVolume]
+    exact measure_ball_lt_top.ne
+  have hωpos : 0 < (unitBallVolume n).toReal := by
+    refine ENNReal.toReal_pos ?_ hωne
+    rw [unitBallVolume]
+    exact (measure_ball_pos _ _ one_pos).ne'
+  set ω := (unitBallVolume n).toReal with hω
+  have hωeq : unitBallVolume n = ENNReal.ofReal ω := (ENNReal.ofReal_toReal hωne).symm
+  -- Step 2: some `η' ∈ (0,1)` has `θ₀ (1 + 2η')^n < θ₀ + η`, by continuity at `s = 0`.
+  obtain ⟨η', hη'0, hη'1, hη'b⟩ :
+      ∃ η' : ℝ, 0 < η' ∧ η' < 1 ∧ θ₀ * (1 + 2 * η') ^ n < θ₀ + η := by
+    have hcont : Continuous fun s : ℝ ↦ θ₀ * (1 + 2 * s) ^ n := by fun_prop
+    have h0 : θ₀ * (1 + 2 * 0) ^ n < θ₀ + η := by simpa using hη
+    have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), θ₀ * (1 + 2 * s) ^ n < θ₀ + η :=
+      (tendsto_nhdsWithin_of_tendsto_nhds (hcont.tendsto 0)).eventually (gt_mem_nhds h0)
+    obtain ⟨s, hs, hs01⟩ := (hev.and (Ioo_mem_nhdsGT one_pos)).exists
+    exact ⟨s, hs01.1, hs01.2, hs⟩
+  -- Step 3: the disc `D = P ∩ B_1(0)` is compact, so finitely many `B°_{η'}(a_l)`, `a_l ∈ D`,
+  -- cover it.
+  have hD : IsCompact ((P.plane : Set (Euclidean N)) ∩ closedBall 0 1) :=
+    (isCompact_closedBall 0 1).inter_left (Submodule.closed_of_finiteDimensional _)
+  obtain ⟨t, htD, htfin, hcover⟩ := finite_cover_balls_of_compact hD hη'0
+  -- Step 4: at each centre `a_l`, with `K_l = B_{1+η'}(a_l) ⊆ O_l = B°_{1+2η'}(a_l) ⊆ B°_5(0)`,
+  -- `plane_ball_measure` gives `θ₀ H^n(P ∩ O_l) = ofReal (θ₀ ω (1 + 2η')^n) < ofReal ((θ₀ + η) ω)`,
+  -- so `compact_mass_eventually` bounds `μ_k(K_l)` for all large `k`.
+  have hl : ∀ al ∈ t, ∀ᶠ k in atTop,
+      (W k).weight (closedBall al (1 + η')) < ENNReal.ofReal ((θ₀ + η) * ω) := by
+    intro al hal
+    obtain ⟨halP, hal1⟩ := htD hal
+    rw [mem_closedBall, dist_zero_right] at hal1
+    have hO5 : ball al (1 + 2 * η') ⊆ ball (0 : Euclidean N) 5 := by
+      intro z hz
+      rw [mem_ball, dist_eq_norm] at hz
+      rw [mem_ball, dist_zero_right]
+      calc ‖z‖ = ‖(z - al) + al‖ := by rw [sub_add_cancel]
+        _ ≤ ‖z - al‖ + ‖al‖ := norm_add_le _ _
+        _ < 5 := by linarith
+    have hmass : ENNReal.ofReal θ₀ * (μHE[n] : Measure (Euclidean N))
+        ((P.plane : Set (Euclidean N)) ∩ ball al (1 + 2 * η')) <
+          ENNReal.ofReal ((θ₀ + η) * ω) := by
+      rw [(Submission.intcpt_fli_plane_ball_measure N n P al (1 + 2 * η') halP (by linarith)).2,
+        hωeq, ← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_mul hωpos.le,
+        ← ENNReal.ofReal_mul hθ₀.le, ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+      calc θ₀ * (ω * (1 + 2 * η') ^ n) = θ₀ * (1 + 2 * η') ^ n * ω := by ring
+        _ < (θ₀ + η) * ω := mul_lt_mul_of_pos_right hη'b hωpos
+    exact Submission.intcpt_fli_weight_compact_eventually_lt N n P θ₀ W hθ₀ hconv _ _ _
+      (isCompact_closedBall _ _) isOpen_ball (closedBall_subset_ball (by linarith)) hO5 hmass
+  -- Step 5: `t` is finite, so these bounds hold simultaneously for all large `k`.
+  filter_upwards [(eventually_all_finite htfin).2 hl] with k hk a ha ha1
+  -- Step 6: `a ∈ D` lies in some `B°_{η'}(a_l)`, hence `B_1(a) ⊆ B_{1+η'}(a_l)`.
+  obtain ⟨al, hal, hadist⟩ :=
+    mem_iUnion₂.1 (hcover ⟨ha, by rwa [mem_closedBall, dist_zero_right]⟩)
+  rw [mem_ball] at hadist
+  exact (measure_mono (closedBall_subset_closedBall' (by linarith))).trans (hk al hal).le
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
