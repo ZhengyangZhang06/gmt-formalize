@@ -531,6 +531,78 @@ theorem Submission.cmcs_lipschitz_smoothing : ∀ (P : ℕ) (g : Euclid P → �
     rw [← hconv] at h
     exact dist_le_zero.1 h
 
+/-- **Smoothing the Lipschitz cut-off** (step 1 of the Lipschitz Leibniz rule): for an
+`L`-Lipschitz `f` on `ℝᴾ` and `a < b`, the cut-off `h = γ_{a,b} ∘ f`,
+`h(x) = min{1, max{0, (b − f(x))/(b − a)}}`, is a uniform limit of `C^∞` functions `h_k` with
+`‖Dh_k‖ ≤ c` and `|h_k| ≤ 2`.  The clamp `γ_{a,b}` is `(b − a)⁻¹`-Lipschitz, so `h` is
+`K`-Lipschitz with `K = (b − a)⁻¹L`, and `|h| ≤ 1`.  `cmcs_lipschitz_smoothing` with
+`σ_k = 1/((K + 1)(k + 1))` gives `C^∞` functions `h_k` with `‖Dh_k‖ ≤ K` and
+`|h_k − h| ≤ Kσ_k ≤ 1/(k + 1)`; take `c = K`. -/
+theorem Submission.dor_lmbsf_ll_cutoff_smooth_approx : ∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (a b : ℝ), LipschitzWith L f → a < b → ∃ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ (⊤ : ℕ∞) (hs k)) ∧ (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) ∧ (∀ k x, |hs k x| ≤ 2) ∧ TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop := by
+  intro P f L a b hf hab
+  have hba : 0 < b - a := sub_pos.mpr hab
+  set h : Euclid P → ℝ := fun x => min 1 (max 0 ((b - f x) / (b - a))) with hh_def
+  -- step 1: the clamp `γ_{a,b}` is `(b - a)⁻¹`-Lipschitz
+  have hγ : LipschitzWith (Real.toNNReal (b - a)⁻¹)
+      (fun s : ℝ => min 1 (max 0 ((b - s) / (b - a)))) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro s t
+    rw [Real.coe_toNNReal _ (inv_nonneg.mpr hba.le)]
+    simp only [Real.dist_eq]
+    calc |min 1 (max 0 ((b - s) / (b - a))) - min 1 (max 0 ((b - t) / (b - a)))|
+        ≤ |max 0 ((b - s) / (b - a)) - max 0 ((b - t) / (b - a))| :=
+          abs_min_sub_min_le_max _ _ _ _ |>.trans (by simp)
+      _ ≤ |(b - s) / (b - a) - (b - t) / (b - a)| := by
+          rw [max_comm 0, max_comm 0]; exact abs_max_sub_max_le_abs _ _ _
+      _ = (b - a)⁻¹ * |s - t| := by
+          rw [div_sub_div_same, abs_div, abs_of_pos hba, abs_sub_comm]
+          ring_nf
+  -- step 2: `h = γ_{a,b} ∘ f` is `K`-Lipschitz, `K = (b - a)⁻¹ L`
+  set K : NNReal := Real.toNNReal (b - a)⁻¹ * L with hK_def
+  have hhK : LipschitzWith K h := hγ.comp hf
+  -- steps 4–5: smooth `h` at the scales `σ_k = 1/((K + 1)(k + 1))`
+  have hσ : ∀ k : ℕ, 0 < 1 / (((K : ℝ) + 1) * ((k : ℝ) + 1)) := fun k => by positivity
+  have hex := fun k : ℕ => Submission.cmcs_lipschitz_smoothing P h K
+    (1 / (((K : ℝ) + 1) * ((k : ℝ) + 1))) hhK (hσ k)
+  choose hs hs_smooth hs_deriv hs_close _ using hex
+  -- `K σ_k ≤ 1/(k + 1)`
+  have hKσ : ∀ k : ℕ, (K : ℝ) * (1 / (((K : ℝ) + 1) * ((k : ℝ) + 1))) ≤ 1 / ((k : ℝ) + 1) := by
+    intro k
+    have hK0 : (0 : ℝ) ≤ K := K.2
+    rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  -- step 3: `|h| ≤ 1`
+  have hh01 : ∀ x, |h x| ≤ 1 := by
+    intro x
+    rw [abs_le]
+    constructor
+    · simp only [h]; exact le_trans (by norm_num) (le_min (by norm_num) (le_max_left _ _))
+    · exact min_le_left _ _
+  -- step 6: take `c = K`
+  refine ⟨hs, K, hs_smooth, hs_deriv, ?_, ?_⟩
+  · -- `|h_k| ≤ |h_k - h| + |h| ≤ 1/(k + 1) + 1 ≤ 2`
+    intro k x
+    have h1 := hs_close k x
+    have h2 := hKσ k
+    have h3 : 1 / ((k : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+    calc |hs k x| = |(hs k x - h x) + h x| := by ring_nf
+      _ ≤ |hs k x - h x| + |h x| := abs_add_le _ _
+      _ ≤ 1 + 1 := add_le_add (h1.trans (h2.trans h3)) (hh01 x)
+      _ = 2 := by norm_num
+  · -- `|h_k - h| ≤ 1/(k + 1) ≤ 1/(N + 1) < ε` for `k ≥ N`
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hε
+    filter_upwards [eventually_ge_atTop N] with k hk x
+    rw [dist_comm, Real.dist_eq]
+    calc |hs k x - h x| ≤ (K : ℝ) * (1 / (((K : ℝ) + 1) * ((k : ℝ) + 1))) := hs_close k x
+      _ ≤ 1 / ((k : ℝ) + 1) := hKσ k
+      _ ≤ 1 / ((N : ℝ) + 1) := by
+          apply one_div_le_one_div_of_le (by positivity)
+          exact_mod_cast Nat.add_le_add_right hk 1
+      _ < ε := hN
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
