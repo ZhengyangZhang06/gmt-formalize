@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1.frame_sign-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1",
+  "depth": 6,
+  "title": "A unit orientation of Q equals ± evaluation at any orthonormal frame in Q (orthonormal change of frame has determinant ±1)",
+  "statement": "Let P, m ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace, let ζ be an m-vector (ζ ∈ MultiVector P m, a continuous linear functional on m-covectors) which is a unit orientation of Q (IsUnitOrientationOf ζ Q: there is an orthonormal τ : Fin m → ℝ^P with span(range τ) = Q and either ζ(β) = β(τ) for every m-covector β or ζ(β) = −β(τ) for every m-covector β), and let ρ : Fin m → ℝ^P be an orthonormal family with ρ_j ∈ Q for every j. Then either ζ(β) = β(ρ) for every m-covector β, or ζ(β) = −β(ρ) for every m-covector β.",
+  "lean_statement": "∀ (P m : ℕ) (ζ : MultiVector P m) (Q : Submodule ℝ (Euclid P)) (ρ : Fin m → Euclid P), IsUnitOrientationOf ζ Q → Orthonormal ℝ ρ → (∀ j, ρ j ∈ Q) → (∀ β : Covector (Euclid P) m, ζ β = β ρ) ∨ ∀ β : Covector (Euclid P) m, ζ β = -β ρ",
+  "lean_name": "dor_lmbsf_io_orientation_frame_sign",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c-a1",
+      "result_commit": "73310ec921452a01670f397b34d1cf3cd7135598",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-855be436ec-a1"
+}
