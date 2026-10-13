@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsRectifiableTriple|tauAction|IsIntegerMultiplicity|intervalProduct|interval_product",
+        "CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|regular_euclideanHausdorffMeasure_restrict_submodule|def blowUpMap",
+        "curryLeftLI|curryLeft_apply_apply|def compContinuousLinearMapCLM|tendsto_integral_filter_of_dominated_convergence|theorem continuous_of_dominated",
+        "integral_map|integrable_map_iff|aestronglyMeasurable_map_iff|restrict_apply₀.|restrict_self|restrict_eq_zero|integral_comp_mul_add|integral_smul_measure",
+        "hausdorffMeasure.*prod|euclideanHausdorffMeasure.*prod|intervalProduct|interval_product|def pointProduct",
+        "iwl_cr_ip_",
+        "br_loc_tauAction_current",
+        "ltg_tau_integrable",
+        "fiw_tl_blowup_setIntegral",
+        "git show 9c856ad6531d6f4cd254db013a3e4274667e65c5:GMT/Ch06/Submission.lean",
+        "git show 1d327e46e1cf94e149261ae6958c7053533007af:GMT/Ch06/Submission.lean",
+        "git show 91a22d1bfc9063820dd1583526d3d097beffd0ec:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/SuppliedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/Accepted_tau_current.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/Accepted_tau_integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/Accepted_blowup_cov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval-product-independent-audit/Contraction.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1-tau-current-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-integrable-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1/accepted-candidate.json",
+        "/tmp/interval-product-independent-audit/Challenges.lean",
+        "/tmp/interval-product-independent-audit/SuppliedProofs.lean",
+        "/tmp/interval-product-independent-audit/Assembly.lean",
+        "/tmp/interval-product-independent-audit/Accepted_tau_current.lean",
+        "/tmp/interval-product-independent-audit/Accepted_tau_integrable.lean",
+        "/tmp/interval-product-independent-audit/Accepted_blowup_cov.lean",
+        "/tmp/interval-product-independent-audit/Contraction.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen/workspace contracts. The seven-way split appropriately separates measure transport, product tangency, triple construction and slicing, with three valid accepted reuses. All names are bare identifiers; no other DAG node or decomposition reserves the four new names. Reused types match their comparator-accepted contracts exactly, and dependency closures are acyclic. The selected handoff authorizes the Hausdorff-product sibling. All seven types independently elaborate in comparator challenge scope. The supplied measure-identity and slice proofs, contraction construction, three accepted implementations, and conditional assembly of the exact selected parent compile with only propext, Classical.choice and Quot.sound. The targeted library search found hausdorffMeasure_prod_real but no interval-product declaration. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "measure_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree. Local finiteness supplies sigma-finiteness; testing the assumed lintegral identity on Borel indicators proves measure equality. The supplied Lean proof independently compiles without additional obligations."
+    },
+    {
+      "key": "product_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the precise weighted-tangent conclusion match. The proof establishes the plane dimension, justified measure transport and Fubini, blow-up scaling, interval substitution, pointwise convergence, measurability and eventual uniform domination. Its sole child dependency, blowup_cov, is correctly directed; no parent reliance or missing analytic step remains."
+    },
+    {
+      "key": "product_triple",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type retains MP and theta >= 1 exactly as stated. The independently checked contraction constructs the required orientation and characterization. Null-set transport, the Lipschitz cover, local integrability, measurability and product_tangent establish all seven triple fields. The dependency is non-circular and its hypotheses are supplied."
+    },
+    {
+      "key": "slice_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose correctly permits arbitrary differential forms while explicitly requiring integrability. Measure transport and Fubini apply under proved sigma-finiteness; the two characterization hypotheses identify the slices, and null endpoints justify the interval integral. The supplied exact-type Lean proof independently compiles."
+    },
+    {
+      "key": "tau_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted type. The supplied self-contained proof establishes integrability, linearity and the exact sequential-continuity field, including arbitrary V. The accepted implementation recompiles against the frozen definitions with only standard axioms."
+    },
+    {
+      "key": "tau_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The orientation bound and continuous evaluation give measurable bounded factors; local integrability proves both claims on compact supports, and vanishing elsewhere proves the global claim. The accepted implementation recompiles with only standard axioms."
+    },
+    {
+      "key": "blowup_cov",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse, including arbitrary sets and functions. The homeomorphism and Hausdorff scaling establish the push-forward identity; measurable-embedding integration requires no integrability assumption. Positivity of r justifies division. The accepted implementation recompiles with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}
