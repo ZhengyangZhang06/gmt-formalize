@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 3–6 of the supplied proof (Simon Ch. 6, 8.2 (2)–(4) with the parent's corrections: the lower density replaces Θ^{*n}, and the support of the filling is controlled through the isoperimetric/deformation bound), with the same constants. Children used: slice (Step 4), radius (Steps 3, 5) and mass_gap (Step 6, n = 1).
+
+Notation: n := d + 1, ω_n := unitBallVolume n = L^n(B_1(0)) and w := ω_n read as a real number; for ρ ∈ ℝ, F(ρ) := μ(B_ρ(x₁)) read as a real number; M(·) = mass on ℝ^P read as a real number when finite.
+
+0. (ω_n.) 0 < ω_n < ∞: the unit ball of ℝ^n is bounded, so it has finite Lebesgue measure, and it is a nonempty open set, so its measure is positive. Hence w > 0 and ω_n = w (as an element of [0, ∞]).
+
+1. (Constants; they depend only on P and d.) If d = 0 (n = 1) put η₀ := 1/(4w). If d = m + 1 (n = m + 2 ≥ 2), let c ≥ 1 be the constant given by (ISO) for (P, m), put K₀ := c·(2c)^{1/(m+1)}·(2n)^{n/(m+1)} > 0 and η₀ := min{(2K₀)^{−(m+1)}/w, 1/(4cnw)} > 0; then (i) K₀·(η₀w)^{1/(m+1)} ≤ 1/2 (because η₀w ≤ (2K₀)^{−(m+1)}) and (ii) 4cnη₀w ≤ 1. In both cases put a := (η₀w)^{1/n} > 0, so that a^n = η₀w (for n = 1, a = η₀w = 1/4). η₀ and a are fixed here, before C, μ, ξ, x₁ and δ are chosen.
+
+2. (A small scale.) Fix C, μ, ξ satisfying the hypotheses, x₁ with liminf_{r↓0} μ(B_r(x₁))/(ω_n r^n) < η₀, and δ > 0. By the definition of liminf, μ(B_r(x₁))/(ω_n r^n) < η₀ holds for r in a set that is frequent along r ↓ 0 (frequently_lt_of_liminf_lt), while 0 < r < δ holds eventually; choose s ∈ (0, δ) with μ(B_s(x₁))/(ω_n s^n) < η₀. Since ω_n s^n ∈ (0, ∞), μ(B_s(x₁)) < η₀·ω_n·s^n = η₀w s^n = (as)^n (ENNReal.div_lt_iff).
+
+3. (Good radius and slice.) The child slice (with (SL), ∂C = 0, the representation (μ, ξ) and ISP) applied at x₁ gives a Lebesgue-null set N ⊆ ℝ. The child radius (with n ≥ 1, a > 0, s > 0, μ(B_s(x₁)) < (as)^n and N) gives ρ ∈ (0, s), ρ ∉ N, with μ(∂B_ρ(x₁)) = 0 and ℓ := liminf_{h↓0} h⁻¹μ({ρ − h < |x − x₁| < ρ}) ≤ b, where b := 2na·F(ρ)^{(n−1)/n} ≥ 0. Applying slice at ρ (ρ > 0, ρ ∉ N) gives A ∈ 𝒟_n(ℝ^P) with A(ω) = ∫_{B_ρ(x₁)} ξ(ω)dμ for all test forms ω, such that Z := ∂A ∈ 𝒟_d(ℝ^P) is integer multiplicity, spt Z ⊆ ∂B_ρ(x₁), and M(Z) ≤ ℓ ≤ b. In particular M(Z) < ∞ and M := M(Z) ≤ b. Moreover F(ρ) ≤ F(s) < (as)^n.
+
+4. (Case n = 1, d = 0.) Here b = 2a·F(ρ)^0 = 2a = 1/2 < 1, so Z is an integer multiplicity 0-current with M(Z) < 1, and the child mass_gap (with (MR)) gives Z = 0. Take S := 0 ∈ 𝒟_1(ℝ^P). Then ∂S = 0 = Z = ∂A; M(S) = 0 ≤ ½·μ(B_ρ(x₁)) (every value of S is 0); and spt S = ∅ ⊆ B̄_{(1+3√P)δ}(x₁), since the zero current vanishes on every ball B_1(y), an open set with compact closure, so every y lies in its zero region.
+
+5. (Case n = m + 2 ≥ 2.) Z ∈ 𝒟_{m+1}(ℝ^P) satisfies ∂Z = ∂∂A = 0 (GeometricCurrentOn.boundary_boundary), is integer multiplicity, has M(Z) < ∞, and spt Z is compact: it is closed (the complement of the open zero region) and contained in the compact sphere ∂B_ρ(x₁). By (ISO) for (P, m) there is an integer multiplicity Y ∈ 𝒟_{m+2}(ℝ^P) = 𝒟_n(ℝ^P) with ∂Y = Z, M(Y) ≤ c(2cM)^{1/(m+1)}M and spt Y ⊆ thickening(3√P(2cM)^{1/(m+1)}, spt Z). Take S := Y, so ∂S = Z = ∂A.
+(a) Mass. Since 0 ≤ M ≤ b and n/(m+1) > 0: c(2cM)^{1/(m+1)}M = c(2c)^{1/(m+1)}M^{1/(m+1)}M^1 = c(2c)^{1/(m+1)}M^{1/(m+1)+1} = c(2c)^{1/(m+1)}M^{n/(m+1)} (Real.mul_rpow for the nonnegative factors 2c and M, and Real.rpow_add', which needs only M ≥ 0 and 1/(m+1) + 1 ≠ 0, so it also covers M = 0) ≤ c(2c)^{1/(m+1)}b^{n/(m+1)} (Real.rpow_le_rpow), and b^{n/(m+1)} = (2n)^{n/(m+1)}·a^{n/(m+1)}·(F(ρ)^{(m+1)/n})^{n/(m+1)} = (2n)^{n/(m+1)}(η₀w)^{1/(m+1)}F(ρ) (a^{n/(m+1)} = ((η₀w)^{1/n})^{n/(m+1)} = (η₀w)^{1/(m+1)}). Hence c(2cM)^{1/(m+1)}M ≤ K₀(η₀w)^{1/(m+1)}F(ρ) ≤ F(ρ)/2 by (i), and M(S) ≤ ENNReal.ofReal(F(ρ)/2) = ½·μ(B_ρ(x₁)).
+(b) Support. Since F(ρ) < (as)^n and u ↦ u^{(m+1)/n} is monotone on [0, ∞), b = 2na·F(ρ)^{(m+1)/n} ≤ 2na(as)^{m+1} = 2n·a^n·s^{m+1} = 2nη₀w·s^{m+1}. Hence 2cM ≤ 4cnη₀w·s^{m+1} ≤ s^{m+1} by (ii), so (2cM)^{1/(m+1)} ≤ s. If y ∈ spt S, there is z ∈ spt Z ⊆ ∂B_ρ(x₁) with |y − z| < 3√P(2cM)^{1/(m+1)} ≤ 3√P·s (Metric.mem_thickening_iff), so |y − x₁| < ρ + 3√P·s ≤ (1 + 3√P)δ because ρ < s < δ. Thus spt S ⊆ B̄_{(1+3√P)δ}(x₁).
+
+6. (Conclusion.) In both cases 0 < ρ < s < δ, μ(∂B_ρ(x₁)) = 0, A(ω) = ∫_{B_ρ(x₁)} ξ(ω)dμ for all ω, ∂S = ∂A, M(S) ≤ ½·μ(B_ρ(x₁)) and spt S ⊆ B̄_{(1+3√P)δ}(x₁). ∎
+
+## Key steps
+
+1. Constants depending only on (P, d): η₀ = 1/(4ω_1) if n = 1; for n = m+2, η₀ with K₀(η₀ω_n)^{1/(m+1)} ≤ 1/2 and 4cnη₀ω_n ≤ 1 (c from (ISO)); a := (η₀ω_n)^{1/n}.
+2. From the liminf hypothesis pick s ∈ (0, δ) with μ(B_s(x₁)) < (as)^n.
+3. slice gives the null set N; radius gives ρ ∈ (0, s) ∖ N with μ(∂B_ρ(x₁)) = 0 and slice liminf ≤ 2naF(ρ)^{(n−1)/n}; slice at ρ gives A = C⌞B_ρ(x₁) with Z = ∂A integer multiplicity, spt Z ⊆ ∂B_ρ(x₁), M(Z) ≤ 2naF(ρ)^{(n−1)/n}.
+4. n = 1: M(Z) ≤ 1/2, so Z = 0 by mass_gap and S := 0.
+5. n ≥ 2: (ISO) gives S with ∂S = Z, M(S) ≤ K₀(η₀ω_n)^{1/(m+1)}F(ρ) ≤ F(ρ)/2 and spt S within 3√P·s of ∂B_ρ(x₁), hence in B̄_{(1+3√P)δ}(x₁).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json of the local-project snapshot (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sed of GMT/Ch07/Contract.lean (IMRep, IMRep.measure, IMRep.Represents, IsIntegerMultiplicity, Sub instance on GeometricCurrentOn, unitBallVolume, Euclid)`
+- `python3 -I scan of dag.json: frozen lean_statement of lower_density-a1 (identical to the handoff) and of the sibling isoperimetric-a1 (cbr_isoperimetric_filling); sibling statements convergence_tools-a1, restrict_unique-a1, slice_limit-a1, cycle_im-a1; accepted nodes whose statements mention sphere, unitBallVolume, 𝓝[>] 0 or (S - T).support (lcmp_exists_good_slice_level, cmc_ml_massOn_eq_of_disjoint_sub_support, dtc_measure_ball_eq_of_null_sphere, cmc_massOn_le_of_le_near_support: different statements, not reusable verbatim); lean_name collision check of the 7 cbrld_ names against 732 DAG names (none) and grep -rl over GMT/ and .lake/packages/simongmt (none)`
+- `sed/cat of SimonGMT Chapter06/{Forms,Currents,Mass,FormSupNorm,CurrentLocalEquality}.lean: GeometricCurrentOn, TestFormOn, exteriorDerivativeTestOn, boundary, boundary_boundary, massOn, massAdmissibleOn, le_massOn, mass, covectorEuclideanNorm(_neg,_nonneg), zeroRegion, VanishesOn, support, WeaklyConvergesOn.massOn_le_liminf`
+- `grep -rn in the Mathlib snapshot for: exists_disjoint_closedBall_covering_ae, MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc, Monotone.ae_differentiableAt, Monotone.deriv_nonneg, measurable_deriv, countable_meas_pos_of_disjoint_iUnion, euclideanHausdorffMeasure_zero, hausdorffMeasure_zero_singleton, def extDeriv, Filter.EventuallyEq.extDeriv_eq, extDeriv_apply, ContinuousAlternatingMap.curryLeft, alternatizeUncurryFin_curryLeft, alternatizeUncurryFin_smul, Nat.cast_smul_eq_nsmul, ContDiffBump, exists_contDiff_tsupport_subset, integral_iUnion, frequently_lt_of_liminf_lt, hasDerivAt_iff_tendsto_slope_zero, ContinuousAlternatingMap.le_opNorm, lipschitzWith_of_nnnorm_fderiv_le, norm_image_sub_le_of_norm_fderiv_le, LipschitzWith.dist_left, HasCompactSupport.fderiv, measure_iUnion_null, ae_iff, setIntegral_eq_integral_of_forall_compl_eq_zero, lintegral_singleton, withDensity_apply, thickening_mono, Real.rpow_inv_natCast_pow, Real.rpow_add', Real.mul_rpow, ContinuousLinearMap.aestronglyMeasurable_comp₂`
+- `verifier/lean_contract.py validate_lean_statement on all 7 statements (pass) and verifier/gmt-compare.py contract_scope/child_modules (scope replay: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end)`
+- `grep -n depends_on and sed -n 1850,1960p, 6520,6640p of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (child depends_on resolved only among sibling keys; _dependency_problem; _existing_lean_name_problem)`
+- `lake env lean /tmp/cbrld-decomp-x9f3/Types.lean (7 child types elaborate), /tmp/cbrld-decomp-x9f3/Assembly.lean (#print axioms CbrldCheck.assembly: propext, Classical.choice, Quot.sound), /tmp/cbrld-decomp-x9f3/LocalWiring.lean and /tmp/cbrld-decomp-x9f3/NullWiring.lean (interface skeletons typecheck)`
+- `sed -n 2280,2480p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt (Simon Ch. 6, 8.2 proof (1)–(6) and footnote 5)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b16b774435/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b16b774435/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b16b774435/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/NatInt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cbrld-decomp-x9f3/Types.lean`
+- `/tmp/cbrld-decomp-x9f3/Assembly.lean`
+- `/tmp/cbrld-decomp-x9f3/LocalWiring.lean`
+- `/tmp/cbrld-decomp-x9f3/NullWiring.lean`
+
+Nothing in the snapshot (project, SimonGMT or Mathlib) or among the accepted DAG nodes gives, in a form that can be reused, any of: the cone inequality for small cycles, the sphere slices of ISP cycles, the degree-0 mass gap, good-radius selection, or the covering inequality. SimonGMT Chapter06 supplies only the current, mass, support and boundary definitions together with le_massOn and boundary_boundary. Mathlib supplies the generic tools cited in the child proofs; every cited name was found in the pinned snapshot. Children can depend only on siblings, so (VO), (MR), (SL) and the conclusion (ISO) of cbr_isoperimetric_filling are carried verbatim as hypotheses. All 7 child statements elaborate in the replayed contract scope and pass the verifier's lexical check. A Lean proof that uses only hypotheses derives the frozen parent type from local_filling, null_set and the frozen cbr_isoperimetric_filling type, with axioms propext, Classical.choice and Quot.sound. None of the 7 cbrld_ names collides with the 732 DAG names.
