@@ -451,6 +451,158 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
+a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
+`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
+integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
+`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
+theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
+  intro n r hr
+  -- the bump `B` with `rIn = r/2`, `rOut = r`
+  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  have hBs : HasCompactSupport B := B.hasCompactSupport
+  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
+  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
+  have hI : 0 < ∫ x, B x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
+    exact measure_ball_pos volume 0 hr
+  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
+    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
+  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
+  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+/-- **Mollification preserves the Lipschitz constant** (step 4 of the Lipschitz smoothing): if
+`ψ ≥ 0` is continuous with compact support and `∫ ψ = 1`, and `g` is `K`-Lipschitz, then
+`G x = ∫ ψ(y) g(x - y) dy` is `K`-Lipschitz.  Indeed `G x - G x'` is the integral of
+`ψ(y) (g(x - y) - g(x' - y))`, whose absolute value is at most `ψ(y) K ‖x - x'‖`, and
+`∫ ψ = 1`. -/
+theorem Submission.cmcs_ls_mollify_lipschitz : ∀ (P : ℕ) (ψ g : Euclid P → ℝ) (K : NNReal), Continuous ψ → HasCompactSupport ψ → (∀ x, 0 ≤ ψ x) → ∫ x, ψ x = 1 → LipschitzWith K g → LipschitzWith K (fun x => ∫ y, ψ y * g (x - y)) := by
+  intro P ψ g K hψc hψs hψ0 hψ1 hg
+  -- step 1: `y ↦ ψ y * g (x - y)` is continuous with support in `support ψ`, hence integrable
+  have hint : ∀ x : Euclid P, Integrable (fun y => ψ y * g (x - y)) := fun x =>
+    (hψc.mul (hg.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hψs.mul_right
+  -- step 5: it suffices to show `dist (G x) (G x') ≤ K * dist x x'`
+  refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+  -- step 2: `G x - G x'` is a single integral
+  rw [Real.dist_eq, ← integral_sub (hint x) (hint x'), ← Real.norm_eq_abs]
+  calc ‖∫ y, (ψ y * g (x - y) - ψ y * g (x' - y))‖
+      ≤ ∫ y, ψ y * (K * dist x x') := by
+        -- step 4: integrate the pointwise bound of step 3 against the integrable majorant
+        refine norm_integral_le_of_norm_le
+          ((hψc.integrable_of_hasCompactSupport (μ := volume) hψs).mul_const _)
+          (Eventually.of_forall fun y => ?_)
+        -- step 3: `|ψ y (g (x - y) - g (x' - y))| = ψ y dist (g (x - y)) (g (x' - y))`
+        -- `≤ ψ y (K dist (x - y) (x' - y)) = ψ y (K dist x x')`
+        rw [← mul_sub, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψ0 y), ← Real.dist_eq,
+          ← dist_sub_right x x' y]
+        exact mul_le_mul_of_nonneg_left (hg.dist_le_mul _ _) (hψ0 y)
+    _ = K * dist x x' := by rw [integral_mul_const, hψ1, one_mul]
+
+/-- **Smoothing of Lipschitz functions** (Simon Ch. 6, 4.8–4.9: use `f^{(σ)}` in place of a
+Lipschitz `f`): a `K`-Lipschitz `g` on `ℝᴾ` and `σ > 0` give a `C^∞` function `g'` with
+`‖Dg'‖ ≤ K`, `|g' − g| ≤ Kσ`, and `g'(x) = c` whenever `g ≡ c` on `B_σ(x)`.  Take the normalized
+mollifier `ψ` (`support ψ ⊆ B_σ(0)`) and `g' = ψ ⋆ g`, `g'(x) = ∫ ψ(y) g(x − y) dy`: it is `C^∞`
+(`ψ` is smooth with compact support, `g` is continuous) and `K`-Lipschitz, so `‖Dg'‖ ≤ K`.  The
+last two claims are `dist_convolution_le` on `B_σ(x)`, with `ε = Kσ`, `z₀ = g(x)` and with
+`ε = 0`, `z₀ = c`.  (`ContDiffBump.normed` and its convolution lemmas are outside the import
+closure.) -/
+theorem Submission.cmcs_lipschitz_smoothing : ∀ (P : ℕ) (g : Euclid P → ℝ) (K : NNReal) (σ : ℝ), LipschitzWith K g → 0 < σ → ∃ g' : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g' ∧ (∀ x, ‖fderiv ℝ g' x‖ ≤ K) ∧ (∀ x, |g' x - g x| ≤ K * σ) ∧ ∀ (x : Euclid P) (c : ℝ), (∀ y ∈ ball x σ, g y = c) → g' x = c := by
+  intro P g K σ hg hσ
+  obtain ⟨ψ, hψd, hψs, hψ0, hψ1, hψb⟩ := Submission.dgcr_stc_exists_normalized_mollifier P σ hσ
+  -- `g' = ψ ⋆ g`
+  have hconv : (fun x => ∫ y, ψ y * g (x - y)) =
+      convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    funext x
+    simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+  refine ⟨fun x => ∫ y, ψ y * g (x - y), ?_, fun x => ?_, fun x => ?_, fun x c hc => ?_⟩
+  · rw [hconv]
+    exact hψs.contDiff_convolution_left _ hψd hg.continuous.locallyIntegrable
+  · exact norm_fderiv_le_of_lipschitz ℝ
+      (Submission.cmcs_ls_mollify_lipschitz P ψ g K hψd.continuous hψs hψ0 hψ1 hg)
+  · -- `dist (g y) (g x) ≤ K ‖y − x‖ ≤ Kσ` on `B_σ(x)`
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := g x)
+      (mul_nonneg K.coe_nonneg hσ.le) hψb hψ0 hψ1 hg.continuous.aestronglyMeasurable
+      (fun y hy => (hg.dist_le_mul y x).trans
+        (mul_le_mul_of_nonneg_left (mem_ball.1 hy).le K.coe_nonneg))
+    rwa [← hconv, Real.dist_eq] at h
+  · -- `g ≡ c` on `B_σ(x)`, so `dist (g' x) c ≤ 0`
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := c) le_rfl hψb hψ0 hψ1
+      hg.continuous.aestronglyMeasurable (fun y hy => by rw [hc y hy, dist_self])
+    rw [← hconv] at h
+    exact dist_le_zero.1 h
+
+/-- **Smoothing the Lipschitz cut-off** (step 1 of the Lipschitz Leibniz rule): for an
+`L`-Lipschitz `f` on `ℝᴾ` and `a < b`, the cut-off `h = γ_{a,b} ∘ f`,
+`h(x) = min{1, max{0, (b − f(x))/(b − a)}}`, is a uniform limit of `C^∞` functions `h_k` with
+`‖Dh_k‖ ≤ c` and `|h_k| ≤ 2`.  The clamp `γ_{a,b}` is `(b − a)⁻¹`-Lipschitz, so `h` is
+`K`-Lipschitz with `K = (b − a)⁻¹L`, and `|h| ≤ 1`.  `cmcs_lipschitz_smoothing` with
+`σ_k = 1/((K + 1)(k + 1))` gives `C^∞` functions `h_k` with `‖Dh_k‖ ≤ K` and
+`|h_k − h| ≤ Kσ_k ≤ 1/(k + 1)`; take `c = K`. -/
+theorem Submission.dor_lmbsf_ll_cutoff_smooth_approx : ∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (a b : ℝ), LipschitzWith L f → a < b → ∃ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ (⊤ : ℕ∞) (hs k)) ∧ (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) ∧ (∀ k x, |hs k x| ≤ 2) ∧ TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop := by
+  intro P f L a b hf hab
+  have hba : 0 < b - a := sub_pos.mpr hab
+  set h : Euclid P → ℝ := fun x => min 1 (max 0 ((b - f x) / (b - a))) with hh_def
+  -- step 1: the clamp `γ_{a,b}` is `(b - a)⁻¹`-Lipschitz
+  have hγ : LipschitzWith (Real.toNNReal (b - a)⁻¹)
+      (fun s : ℝ => min 1 (max 0 ((b - s) / (b - a)))) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro s t
+    rw [Real.coe_toNNReal _ (inv_nonneg.mpr hba.le)]
+    simp only [Real.dist_eq]
+    calc |min 1 (max 0 ((b - s) / (b - a))) - min 1 (max 0 ((b - t) / (b - a)))|
+        ≤ |max 0 ((b - s) / (b - a)) - max 0 ((b - t) / (b - a))| :=
+          abs_min_sub_min_le_max _ _ _ _ |>.trans (by simp)
+      _ ≤ |(b - s) / (b - a) - (b - t) / (b - a)| := by
+          rw [max_comm 0, max_comm 0]; exact abs_max_sub_max_le_abs _ _ _
+      _ = (b - a)⁻¹ * |s - t| := by
+          rw [div_sub_div_same, abs_div, abs_of_pos hba, abs_sub_comm]
+          ring_nf
+  -- step 2: `h = γ_{a,b} ∘ f` is `K`-Lipschitz, `K = (b - a)⁻¹ L`
+  set K : NNReal := Real.toNNReal (b - a)⁻¹ * L with hK_def
+  have hhK : LipschitzWith K h := hγ.comp hf
+  -- steps 4–5: smooth `h` at the scales `σ_k = 1/((K + 1)(k + 1))`
+  have hσ : ∀ k : ℕ, 0 < 1 / (((K : ℝ) + 1) * ((k : ℝ) + 1)) := fun k => by positivity
+  have hex := fun k : ℕ => Submission.cmcs_lipschitz_smoothing P h K
+    (1 / (((K : ℝ) + 1) * ((k : ℝ) + 1))) hhK (hσ k)
+  choose hs hs_smooth hs_deriv hs_close _ using hex
+  -- `K σ_k ≤ 1/(k + 1)`
+  have hKσ : ∀ k : ℕ, (K : ℝ) * (1 / (((K : ℝ) + 1) * ((k : ℝ) + 1))) ≤ 1 / ((k : ℝ) + 1) := by
+    intro k
+    have hK0 : (0 : ℝ) ≤ K := K.2
+    rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  -- step 3: `|h| ≤ 1`
+  have hh01 : ∀ x, |h x| ≤ 1 := by
+    intro x
+    rw [abs_le]
+    constructor
+    · simp only [h]; exact le_trans (by norm_num) (le_min (by norm_num) (le_max_left _ _))
+    · exact min_le_left _ _
+  -- step 6: take `c = K`
+  refine ⟨hs, K, hs_smooth, hs_deriv, ?_, ?_⟩
+  · -- `|h_k| ≤ |h_k - h| + |h| ≤ 1/(k + 1) + 1 ≤ 2`
+    intro k x
+    have h1 := hs_close k x
+    have h2 := hKσ k
+    have h3 : 1 / ((k : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+    calc |hs k x| = |(hs k x - h x) + h x| := by ring_nf
+      _ ≤ |hs k x - h x| + |h x| := abs_add_le _ _
+      _ ≤ 1 + 1 := add_le_add (h1.trans (h2.trans h3)) (hh01 x)
+      _ = 2 := by norm_num
+  · -- `|h_k - h| ≤ 1/(k + 1) ≤ 1/(N + 1) < ε` for `k ≥ N`
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hε
+    filter_upwards [eventually_ge_atTop N] with k hk x
+    rw [dist_comm, Real.dist_eq]
+    calc |hs k x - h x| ≤ (K : ℝ) * (1 / (((K : ℝ) + 1) * ((k : ℝ) + 1))) := hs_close k x
+      _ ≤ 1 / ((k : ℝ) + 1) := hKσ k
+      _ ≤ 1 / ((N : ℝ) + 1) := by
+          apply one_div_le_one_div_of_le (by positivity)
+          exact_mod_cast Nat.add_le_add_right hk 1
+      _ < ε := hN
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
