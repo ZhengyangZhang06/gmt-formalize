@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9b67f934ef5e8d324fcd076eb1bf146b32aa21a422fb7c1a3a141da98327f66e",
+  "git_delta": {
+    "base_commit": "acbd42d7f1cdcefbdbf0dffe69931f132d65948b",
+    "candidate_commit": "b44fe315b2d429d653bd17c161bf9be15b33f3ef",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_c1_compact_perturbation_bilipschitz",
+    "diff_sha256": "2b0aca87a13bed47b460cc801e73e252fa19453c5334f70a0a7c59892381e671",
+    "source_sha256": "29853d0be546c32eb1053a6445ed4c4da81458313a5a4ef8f163aff68f5df205",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_c1_compact_perturbation_bilipschitz",
+      "statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ Λ : NNReal, LipschitzWith Λ φ ∧ AntilipschitzWith Λ φ ∧ φ ⁻¹' U = U",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
