@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e395f397dad0e9f34a6ca526c43ab4832cf9c1c8bc7c1bb65418f2084ab750a2",
+  "git_delta": {
+    "base_commit": "bf9a589aec707b2cce6828a5186c0082b7561b19",
+    "candidate_commit": "a391aacbe027c0b0ef0e8e564f73ac24a73c946b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7cba97917e76e71f2e187092005c8d473d0ee69fa7e1e9db48b5a378735f1c10",
+    "source_sha256": "7f0a7e5a1811341200749423b8960e0a8fd6006bf9775fd361528d1550d52809",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_cone_of_radial_tangency",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents S → BoundaryVanishes S → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → IsConeCurrent S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
