@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.dq_mean_value-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1",
+  "depth": 5,
+  "title": "Mean-value bounds for difference quotients on ball(xb, 2R)",
+  "statement": "Let E and F be real normed spaces, α a real number, U ⊆ E open, g : E → F differentiable on U, xb, e ∈ E and R, S, H, d real numbers with closedBall(xb, 4R) ⊆ U, ‖e‖ ≤ 1, d ≠ 0 and |d| < R. Assume ‖Dg(z)‖ ≤ S for all z ∈ closedBall(xb, 4R) and ‖Dg(z) − Dg(w)‖ ≤ H‖z − w‖^α for all z, w ∈ closedBall(xb, 4R), where Dg = fderiv ℝ g. Then for all x, y in the open ball ball(xb, 2R): (a) ‖d⁻¹(g(x + d e) − g(x))‖ ≤ S, and (b) ‖d⁻¹(g(x + d e) − g(x)) − d⁻¹(g(y + d e) − g(y))‖ ≤ H‖x − y‖^α.",
+  "lean_statement": "∀ (E F : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] (α : ℝ) (U : Set E) (g : E → F) (xb e : E) (R S H d : ℝ), IsOpen U → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → DifferentiableOn ℝ g U → (∀ z ∈ closedBall xb (4 * R), ‖fderiv ℝ g z‖ ≤ S) → (∀ z ∈ closedBall xb (4 * R), ∀ w ∈ closedBall xb (4 * R), ‖fderiv ℝ g z - fderiv ℝ g w‖ ≤ H * ‖z - w‖ ^ α) → d ≠ 0 → |d| < R → ∀ x ∈ ball xb (2 * R), ∀ y ∈ ball xb (2 * R), ‖d⁻¹ • (g (x + d • e) - g x)‖ ≤ S ∧ ‖d⁻¹ • (g (x + d • e) - g x) - d⁻¹ • (g (y + d • e) - g y)‖ ≤ H * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_lhr_dqub_dq_mean_value",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-95dc916fc0-a1"
+}
