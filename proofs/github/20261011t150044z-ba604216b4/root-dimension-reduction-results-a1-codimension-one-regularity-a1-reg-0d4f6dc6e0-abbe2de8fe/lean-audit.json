@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74bd7650a340a4da20d9d6b50a546c993d8abe02c1f62f7ecfd522be47a407da",
+  "git_delta": {
+    "base_commit": "c41220806ce5c78b76f5f2547d6ed3bb7d972229",
+    "candidate_commit": "9557e5316a065a1ed7cbb03649392005eb275061",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lura_integral_image_of_lintegral",
+    "diff_sha256": "cc64f85680ceb6bcbf9f43ffe7acdb9e3ff976cbc2bf77b2eed76b7ad5960a15",
+    "source_sha256": "eb20988a1f9ab23e012a80bbaecc591d9a18e281266ff819f43b81422eb06122",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lura_integral_image_of_lintegral",
+      "statement": "∀ (d P : ℕ) (μ : Measure (Euclid P)) (ν : Measure (Euclid d)) (B : Set (Euclid d)) (G : Euclid d → Euclid P) (J : Euclid d → ℝ), MeasurableSet B → ContinuousOn G B → InjOn G B → Measurable J → (∀ v, 0 ≤ J v) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μ = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂ν) → ∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μ = ∫ v in B, J v * f (G v) ∂ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
