@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97c831f3862ff0a27e20722626cf8e34c78f63b5bf82297ccbe9d2dc2c376a59",
+  "git_delta": {
+    "base_commit": "a410a20ffb7bc5591f3ea3c1fce7dad716972708",
+    "candidate_commit": "e15e61d389fbaabe54cf3bf9eb9a83af68c5b531",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_tma_tangential_halfspace",
+    "diff_sha256": "4e380374b98d75535fdabcf8a79973be8b64348946d6fabba98b92f0442bab6f",
+    "source_sha256": "ce145f62453d9ff2401e14db33bd7415774982f55c134e7f311610da27ff68bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_tma_tangential_halfspace",
+      "statement": "∀ (P : ℕ) (v u : Euclid P) (h : Euclid P → ℝ), inner ℝ u v = 0 → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid P | 0 < inner ℝ w v}, fderiv ℝ h w u = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
