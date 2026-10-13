@@ -506,6 +506,31 @@ theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ
       _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
       _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
 
+/-- **Area Jacobian of a linear graph** (Simon Ch. 5, proof of Theorem 4.5, p. 119:
+`1 ≤ J_F ≤ 1 + C |∇f|²`).  For `D : ℝⁿ →L ℝ^ℓ` with Gram matrix `G = (⟨D eₐ, D e_b⟩)_{a,b}`, the
+area Jacobian of `v ↦ (v, D v)` is `J(D) = √det(I + G)`; then `1 ≤ J(D)`, and `‖D‖ ≤ 1` implies
+`J(D) ≤ 1 + (e^{n/2}/2) |D|²`.  `G` is symmetric positive semidefinite with `trace G = |D|²`, so
+`1 ≤ det(I + G) ≤ exp |D|²` and `1 ≤ J(D) ≤ exp(|D|²/2)`.  If `‖D‖ ≤ 1` then `0 ≤ |D|² ≤ n ‖D‖² ≤ n`,
+and `exp(s/2) ≤ 1 + (e^{T/2}/2) s` for `0 ≤ s ≤ T` (with `s = |D|²`, `T = n`). -/
+theorem gwe_graph_jacobian_bounds : ∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), 1 ≤ Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ))))) ∧ (‖D‖ ≤ 1 → Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ))))) ≤ 1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq D) := by
+  intro n ℓ D
+  -- Steps 1, 2, 6: the Gram matrix `G` of `D` is symmetric positive semidefinite, `trace G = |D|²`.
+  obtain ⟨hsymm, hpsd, htr⟩ := Submission.gwe_gjb_gram_symm_psd_trace n ℓ D
+  -- Steps 3, 4, 7: `1 ≤ det(I + G) ≤ exp (trace G) = exp |D|²`.
+  obtain ⟨hdet, hdet_le⟩ := Submission.gwe_gjb_det_one_add_bounds n _ hsymm hpsd
+  rw [htr] at hdet_le
+  refine ⟨?_, fun hD => ?_⟩
+  · -- Step 5: `J(D) = √det(I + G) ≥ √1 = 1`.
+    exact Real.one_le_sqrt.2 hdet
+  · -- Step 9: `0 ≤ |D|² ≤ n ‖D‖² ≤ n`, since `‖D‖ ≤ 1`.
+    obtain ⟨h0, hle, -⟩ := (Submission.lgc_hsNormSq_bounds n ℓ).2 D
+    have hn : hsNormSq D ≤ n :=
+      hle.trans (mul_le_of_le_one_right (Nat.cast_nonneg n) (pow_le_one₀ (norm_nonneg D) hD))
+    -- Steps 8, 10, 11: `J(D) ≤ √(exp |D|²) = exp (|D|²/2) ≤ 1 + (e^{n/2}/2) |D|²`.
+    calc Real.sqrt _ ≤ Real.sqrt (Real.exp (hsNormSq D)) := Real.sqrt_le_sqrt hdet_le
+      _ = Real.exp (hsNormSq D / 2) := (Real.exp_half _).symm
+      _ ≤ 1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq D := Submission.gwe_gjb_exp_half_le _ _ h0 hn
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
