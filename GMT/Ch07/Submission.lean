@@ -565,6 +565,21 @@ theorem Submission.codim1_zsl_ga_lc_local_bilipschitz : ∀ (m k : ℕ) (ι : Eu
   rw [add_sub_cancel_right] at h2
   rw [hdecomp]
   constructor <;> linarith
+/-- Continuity of the Jacobian in the local comparison for the area formula of `C¹` graphs
+(Simon Ch. 2, 3.1–3.3, used for the zero-scale limit plane of 7.5): if `F : ℝᵐ → ℝᴾ` is `C¹` on
+the open set `D`, then `w ↦ √det(DF(w)* ∘ DF(w))` is continuous on `D`, being `Φ ∘ DF` with `DF`
+continuous on `D` and `Φ(T) = √det(T* ∘ T)` continuous on `ℝᵐ →L ℝᴾ`. -/
+theorem Submission.codim1_zsl_ga_lc_jacobian_continuousOn : ∀ (m P : ℕ) (F : Euclid m → Euclid P) (D : Set (Euclid m)), IsOpen D → ContDiffOn ℝ 1 F D → ContinuousOn (fun w => Real.sqrt (((fderiv ℝ F w).adjoint ∘L fderiv ℝ F w).det)) D := by
+  intro m P F D hD hF
+  -- (1) `F` is `C¹` on the open set `D`, so `DF` is continuous on `D`
+  have hDF : ContinuousOn (fderiv ℝ F) D := hF.continuousOn_fderiv_of_isOpen hD le_rfl
+  -- (2) `Φ(T) = √det(T* ∘ T)` is continuous: the adjoint is a linear isometric equivalence,
+  -- composition is jointly continuous, `det` is continuous in finite dimension, and so is `√`
+  have hΦ : Continuous fun T : Euclid m →L[ℝ] Euclid P => Real.sqrt ((T.adjoint ∘L T).det) :=
+    Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      (ContinuousLinearMap.adjoint.continuous.clm_comp continuous_id))
+  -- (3) the Jacobian is `Φ ∘ DF`
+  exact hΦ.comp_continuousOn hDF
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
