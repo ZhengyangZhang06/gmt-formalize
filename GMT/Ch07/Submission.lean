@@ -678,6 +678,60 @@ theorem Submission.codim1_rdo_dg_hr_ae_translate_invariant : ∀ (n : ℕ) (F : 
   -- equal indicators: `z + w ∈ F ↔ z ∈ F`
   filter_upwards [hae] with z hz
   by_cases h1 : z + w ∈ F <;> by_cases h2 : z ∈ F <;> simp_all
+/-- Normal monotonicity (Simon Ch. 3, 4.3: "`H` is non-decreasing"): if `∫_F Dζ(z)(v) dz ≤ 0`
+for every nonnegative `ζ ∈ C¹_c(ℝⁿ)`, then for `t ≥ 0` and a.e. `z`, `z ∈ F` implies
+`z + t v ∈ F`.  The hypothesis for the translates `ζ(· − s v)` gives
+`g(s) = ∫_F Dζ(z − s v)(v) dz ≤ 0`, so the translation identity
+`codim1_rdo_dg_hr_translate_integral_eq` yields `∫_F ζ ≤ ∫_F ζ(· − t v)`.  Substituting
+`z = y + t v`, `f = 1_F(· + t v) − 1_F` has `∫ ζ f ≥ 0` for all such `ζ`, so `f ≥ 0` a.e. by
+`codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg`; and `z ∈ F`, `z + t v ∉ F` would give `f(z) = −1`. -/
+theorem Submission.codim1_rdo_dg_hr_ae_translate_monotone : ∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∫ z in F, fderiv ℝ ζ z v ≤ 0) → ∀ t : ℝ, 0 ≤ t → ∀ᵐ z ∂volume, z ∈ F → z + t • v ∈ F := by
+  intro n F v hF hdiv t ht
+  classical
+  -- Steps 1–2: for every admissible `ζ`, `∫_F ζ ≤ ∫_F ζ(· − t v)`
+  have hmono : ∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      (∀ z, 0 ≤ ζ z) → ∫ z in F, ζ z ≤ ∫ z in F, ζ (z - t • v) := by
+    intro ζ hζ hζc hζ0
+    -- `g(s) = ∫_F Dζ(z − s v)(v) dz ≤ 0`: the hypothesis for the translate `ζ(· − s v)`
+    have hg : ∀ s : ℝ, ∫ z in F, fderiv ℝ ζ (z - s • v) v ≤ 0 := fun s => by
+      simpa only [fderiv_comp_sub] using hdiv (fun y => ζ (y - s • v))
+        (hζ.comp (contDiff_id.sub contDiff_const))
+        (hζc.comp_homeomorph (Homeomorph.subRight (s • v))) fun z => hζ0 _
+    have hint : 0 ≤ ∫ s in (0 : ℝ)..t, -∫ z in F, fderiv ℝ ζ (z - s • v) v :=
+      intervalIntegral.integral_nonneg_of_forall ht fun s => neg_nonneg.2 (hg s)
+    rw [intervalIntegral.integral_neg] at hint
+    rw [Submission.codim1_rdo_dg_hr_translate_integral_eq n F ζ v t hF hζ hζc]
+    linarith
+  -- Step 3: with `u = 1_F`, `f = u(· + t v) − u` has `∫ g f ≥ 0` for every admissible `g`
+  set u : EuclideanSpace ℝ (Fin n) → ℝ := F.indicator fun _ => 1
+  have hFt : MeasurableSet ((· + t • v) ⁻¹' F) := hF.preimage (measurable_add_const _)
+  have htest : ∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g →
+      (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * (u (x + t • v) - u x) := by
+    intro g hg hgc hg0
+    have hgi : Integrable g := hg.continuous.integrable_of_hasCompactSupport hgc
+    -- `∫_F g(z − t v) dz = ∫ 1_F(y + t v) g(y) dy` by translation invariance
+    have e1 : ∫ z in F, g (z - t • v) = ∫ y, ((· + t • v) ⁻¹' F).indicator g y := by
+      rw [← integral_indicator hF, ← integral_add_right_eq_self _ (t • v)]
+      congr 1; ext y; simp [indicator_apply]
+    have e2 : ∫ z in F, g z = ∫ y, F.indicator g y := (integral_indicator hF).symm
+    have e3 : (fun x => g x * (u (x + t • v) - u x)) =
+        fun x => ((· + t • v) ⁻¹' F).indicator g x - F.indicator g x := by
+      ext x; simp [u, indicator_apply, mul_sub]
+    have := hmono g hg hgc hg0
+    rw [e3, integral_sub (hgi.indicator hFt) (hgi.indicator hF)]
+    linarith
+  -- `f` is bounded and Borel, hence locally integrable
+  have hli : LocallyIntegrable (fun x => u (x + t • v) - u x) volume := by
+    have hu' : (fun x => u (x + t • v)) = ((· + t • v) ⁻¹' F).indicator fun _ => 1 := by
+      ext x; simp [u, indicator_apply]
+    refine LocallyIntegrable.sub ?_ ?_
+    · rw [hu']; exact (locallyIntegrable_const 1).indicator hFt
+    · exact (locallyIntegrable_const 1).indicator hF
+  -- Steps 4–5: `f ≥ 0` a.e., while `z ∈ F`, `z + t v ∉ F` would give `f(z) = −1`
+  filter_upwards [Submission.codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg n _ hli htest]
+    with z hz hzF
+  by_contra hzt
+  norm_num [u, hzF, hzt] at hz
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
