@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3950de8747944c7ccba55d7ee8c0c36fa9299a84029ef619524cb4e327b5b6ea",
+  "git_delta": {
+    "base_commit": "508296adfde8e4ea075df48c5011b53aa062a810",
+    "candidate_commit": "67aeea92789042597ff09cbc4f055b946c0f8c07",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_pc_boundary_weak_derivative",
+    "diff_sha256": "bb7cd56870fa4b9964659f5ea7b725ad87253f550d445ddf6ca572c8ac421671",
+    "source_sha256": "9b1b5e3bdcec2359668f3f3852e72f6559886d6618c64ba4d460e42e427448bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_pc_boundary_weak_derivative",
+      "statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), 1 ≤ n → Orthonormal ℝ τ → BoundaryVanishes S → (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) → ∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
