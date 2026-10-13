@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The carrier of an integer multiplicity triple lies `Hⁿ`-a.e. in the support of its weight
+measure (step 3 of the integer-density computation for graph cycles in the ε-regularity proof of
+Simon 7.4.3): `Hⁿ(M ∖ spt μ) = 0` for `μ = θ Hⁿ⌞M`.  For Borel `S`, `θ ≥ 1` on `M` gives
+`Hⁿ(S ∩ M) ≤ ∫_{S ∩ M} θ dHⁿ = μ(S)`; take `S = (spt μ)ᶜ`, which is open and `μ`-null since
+`ℝᴾ` is second countable. -/
+theorem Submission.dgid_carrier_sdiff_measure_support_null : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), μHE[n] (R.carrier \ R.measure.support) = 0 := by
+  intro P n U R
+  -- `θ ≥ 1` on `M`, so `Hⁿ(S ∩ M) ≤ ∫⁻_{S ∩ M} θ dHⁿ = μ(S)` for Borel `S`
+  have key : ∀ S : Set (Euclid P), MeasurableSet S → μHE[n] (S ∩ R.carrier) ≤ R.measure S := by
+    intro S hS
+    rw [IMRep.measure, withDensity_apply _ hS, Measure.restrict_restrict hS, ← setLIntegral_one]
+    refine setLIntegral_mono' (hS.inter R.measurableSet_carrier) fun x hx => ?_
+    exact_mod_cast R.mult_pos x hx.2
+  -- `(spt μ)ᶜ` is open, hence Borel, and `μ`-null (`ℝᴾ` is hereditarily Lindelöf)
+  have hS : MeasurableSet R.measure.supportᶜ :=
+    R.measure.isClosed_support.isOpen_compl.measurableSet
+  have h0 : R.measure R.measure.supportᶜ = 0 := Measure.measure_compl_support
+  have hset : R.carrier \ R.measure.support = R.measure.supportᶜ ∩ R.carrier := by
+    ext x; simp [and_comm]
+  rw [hset]
+  exact nonpos_iff_eq_zero.mp ((key _ hS).trans h0.le)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
