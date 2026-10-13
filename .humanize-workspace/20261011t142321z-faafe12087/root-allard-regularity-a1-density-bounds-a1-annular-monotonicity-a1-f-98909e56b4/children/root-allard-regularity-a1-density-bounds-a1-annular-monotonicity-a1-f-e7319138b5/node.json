@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1.ball_integrable-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1",
+  "depth": 5,
+  "title": "Integrability of the test integrands on interior closed balls",
+  "statement": "Let n and l be natural numbers, mu a measure on R^(n+l), H : R^(n+l) -> R^(n+l), w : R^(n+l) -> R, y in R^(n+l), and R, S real with S < R. Assume mu(closedBall y R) < infinity, H is mu-integrable on closedBall y R, w is a.e.-strongly measurable for mu restricted to the open ball ball y R, and 0 <= w(x) <= 1 for mu-a.e. x in ball y R. Then the constant function 1, the function x -> (x - y).H(x) (real inner product) and w are all mu-integrable on closedBall y S.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R S : ℝ), S < R → μ (closedBall y R) < ⊤ → IntegrableOn H (closedBall y R) μ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → IntegrableOn (fun _ => (1 : ℝ)) (closedBall y S) μ ∧ IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y S) μ ∧ IntegrableOn w (closedBall y S) μ",
+  "lean_name": "allard52_am_fc_ball_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-e7319138b5-a1"
+}
