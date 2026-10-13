@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.interior_form-a1.coord_covector-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.interior_form-a1",
+  "depth": 6,
+  "title": "The interior-product covector ι_z(dy) with coordinates (−1)^i z_i",
+  "statement": "Let d ∈ ℕ and z ∈ ℝ^{d+1} = Euclid (d+1). Write e_l := EuclideanSpace.single l 1 (l ∈ Fin (d+1)) for the standard basis and z_i for the i-th coordinate of z. Then there is a d-covector ε ∈ Covector (Euclid (d+1)) d (a continuous alternating d-linear form ℝ^{d+1} → ℝ) such that ε(i.removeNth e) = (−1)^i z_i for every i ∈ Fin (d+1). Here i.removeNth e = (e_{i.succAbove k})_{k ∈ Fin d} is the d-tuple (e_0, …, e_d) with e_i deleted.",
+  "lean_statement": "∀ (d : ℕ) (z : Euclid (d + 1)), ∃ ε : Covector (Euclid (d + 1)) d, ∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i",
+  "lean_name": "cbr_ci_pw_ipf_coord_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f3f19bf2d5-a1"
+}
