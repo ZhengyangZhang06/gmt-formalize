@@ -458,6 +458,91 @@ theorem Submission.slicing_im_st_cd_c1c_singular_compression :
     _ = ((‖A‖₊ + t : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * (volume : Measure (Eucl n)) S) := by
       rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hvol]
 
+/-- Simon Ch. 2, 3.4 (p. 54) on the critical set, the Sard-type step of the proof of Ch. 3,
+Lemma 1.2 (p. 70): the Jacobian `Jf` vanishes where `Df` is not injective, so if `f : ℝⁿ → ℝ^P`
+is Lipschitz and `C` is the set of points where `f` is differentiable with non-injective
+derivative, then `Hⁿ(f(C)) = 0`.  Proved directly: on pieces where `f` is `t²`-close to a
+non-injective `Df(y)`, `Hⁿ(f(·)) ≤ (L + 1)ⁿ · t · Lⁿ(·)`; sum the pieces and let `t → 0`. -/
+theorem Submission.slicing_im_st_cd_c1c_critical_image_null :
+    ∀ (n P : ℕ) (f : Eucl n → Eucl P) (L : ℝ≥0), LipschitzWith L f →
+      (μHE[n] : Measure (Eucl P))
+        (f '' {w | DifferentiableAt ℝ f w ∧ ¬ Function.Injective (fderiv ℝ f w)}) = 0 := by
+  intro n P f L hf
+  -- Step 2: if `s ⊆ B(0, m)` consists of points where `f` is differentiable with non-injective
+  -- derivative, then `Hⁿ(f(s)) ≤ (L + 1)ⁿ · (t · Lⁿ(B(0, m)))` for every `0 < t ≤ 1`.
+  have hstep : ∀ (m : ℝ) (s : Set (Eucl n)), s ⊆ ball 0 m →
+      (∀ x ∈ s, DifferentiableAt ℝ f x ∧ ¬ Function.Injective (fderiv ℝ f x)) →
+      ∀ t : ℝ≥0, 0 < t → t ≤ 1 → (μHE[n] : Measure (Eucl P)) (f '' s) ≤
+        ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * volume (ball (0 : Eucl n) m)) := by
+    intro m s hsm hsC t ht0 ht1
+    rcases s.eq_empty_or_nonempty with rfl | hs
+    · simp
+    -- Disjoint measurable `T i` covering `s`, with `f` `t²`-close to `A i = Df(y i)` on `s ∩ T i`.
+    obtain ⟨T, A, hTd, hTm, hsT, hTA, hAy⟩ :=
+      exists_partition_approximatesLinearOn_of_hasFDerivWithinAt f s (fderiv ℝ f)
+        (fun x hx => (hsC x hx).1.hasFDerivAt.hasFDerivWithinAt) (fun _ => t ^ 2)
+        (fun _ => pow_ne_zero 2 ht0.ne')
+    -- `A i` is not injective and `‖A i‖ ≤ L`, so `singular_compression` bounds `Hⁿ(f(s ∩ T i))`.
+    have hpiece : ∀ i, (μHE[n] : Measure (Eucl P)) (f '' (s ∩ T i)) ≤
+        ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * volume (ball (0 : Eucl n) m ∩ T i)) := by
+      intro i
+      obtain ⟨y, hy, hAi⟩ := hAy hs i
+      have hinj : ¬ Function.Injective (A i) := hAi ▸ (hsC y hy).2
+      have hnorm : ‖A i‖₊ ≤ L := by
+        rw [hAi, ← NNReal.coe_le_coe, coe_nnnorm]
+        exact norm_fderiv_le_of_lipschitz ℝ hf
+      calc (μHE[n] : Measure (Eucl P)) (f '' (s ∩ T i))
+          ≤ ((‖A i‖₊ + t : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * volume (s ∩ T i)) :=
+            Submission.slicing_im_st_cd_c1c_singular_compression n P f (A i) (s ∩ T i) t ht0 ht1
+              hinj (hTA i)
+        _ ≤ ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * volume (ball (0 : Eucl n) m ∩ T i)) := by
+            -- `gcongr` closes its goals with `hnorm`, `ht1` and `hsm : s ⊆ B(0, m)`.
+            gcongr
+    -- Sum over the pieces, using that the sets `B(0, m) ∩ T i` are disjoint and measurable.
+    calc (μHE[n] : Measure (Eucl P)) (f '' s)
+        ≤ (μHE[n] : Measure (Eucl P)) (⋃ i, f '' (s ∩ T i)) := by
+          refine measure_mono ?_
+          rw [← image_iUnion, ← inter_iUnion]
+          exact image_mono (subset_inter subset_rfl hsT)
+      _ ≤ ∑' i, (μHE[n] : Measure (Eucl P)) (f '' (s ∩ T i)) := measure_iUnion_le _
+      _ ≤ ∑' i, ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n *
+            ((t : ℝ≥0∞) * volume (ball (0 : Eucl n) m ∩ T i)) := ENNReal.tsum_le_tsum hpiece
+      _ = ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n *
+            ((t : ℝ≥0∞) * volume (⋃ i, ball (0 : Eucl n) m ∩ T i)) := by
+          rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_left, measure_iUnion
+            (fun i j hij => (hTd hij).mono inter_subset_right inter_subset_right)
+            (fun i => measurableSet_ball.inter (hTm i))]
+      _ ≤ ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * volume (ball (0 : Eucl n) m)) := by
+          gcongr
+          exact iUnion_subset fun i => inter_subset_left
+  -- Step 3: with `t = (k + 1)⁻¹ → 0` and `Lⁿ(B(0, m)) < ∞`, `Hⁿ(f(s)) = 0` for such `s`.
+  have hnull : ∀ (m : ℝ) (s : Set (Eucl n)), s ⊆ ball 0 m →
+      (∀ x ∈ s, DifferentiableAt ℝ f x ∧ ¬ Function.Injective (fderiv ℝ f x)) →
+      (μHE[n] : Measure (Eucl P)) (f '' s) = 0 := by
+    intro m s hsm hsC
+    have hinv : Tendsto (fun k : ℕ => (((k + 1 : ℕ) : ℝ≥0∞))⁻¹) atTop (𝓝 0) :=
+      ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)
+    have hlim : Tendsto (fun k : ℕ => ((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n *
+        ((((k + 1 : ℕ) : ℝ≥0∞))⁻¹ * volume (ball (0 : Eucl n) m))) atTop
+        (𝓝 (((L + 1 : ℝ≥0) : ℝ≥0∞) ^ n * (0 * volume (ball (0 : Eucl n) m)))) :=
+      ENNReal.Tendsto.const_mul (ENNReal.Tendsto.mul_const hinv (Or.inr measure_ball_lt_top.ne))
+        (Or.inr (ENNReal.pow_ne_top ENNReal.coe_ne_top))
+    rw [zero_mul, mul_zero] at hlim
+    refine le_antisymm (ge_of_tendsto' hlim fun k => ?_) zero_le
+    have hk : ((k + 1 : ℕ) : ℝ≥0) ≠ 0 := by positivity
+    have := hstep m s hsm hsC ((k + 1 : ℕ) : ℝ≥0)⁻¹ (inv_pos.2 (by positivity))
+      (inv_le_one_of_one_le₀ (Nat.one_le_cast.2 (Nat.succ_pos k)))
+    rwa [ENNReal.coe_inv hk, ENNReal.coe_natCast] at this
+  -- Step 1: `f(C) ⊆ ⋃ₘ f(C ∩ B(0, m))`, a countable union of `Hⁿ`-null sets.
+  have hcover : f '' {w | DifferentiableAt ℝ f w ∧ ¬ Function.Injective (fderiv ℝ f w)} ⊆
+      ⋃ m : ℕ, f '' ({w | DifferentiableAt ℝ f w ∧ ¬ Function.Injective (fderiv ℝ f w)} ∩
+        ball 0 m) := by
+    rintro _ ⟨w, hw, rfl⟩
+    obtain ⟨m, hm⟩ := exists_nat_gt ‖w‖
+    exact mem_iUnion.2 ⟨m, w, ⟨hw, mem_ball_zero_iff.2 hm⟩, rfl⟩
+  exact measure_mono_null hcover
+    (measure_iUnion_null fun m => hnull m _ inter_subset_right fun x hx => hx.1)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
