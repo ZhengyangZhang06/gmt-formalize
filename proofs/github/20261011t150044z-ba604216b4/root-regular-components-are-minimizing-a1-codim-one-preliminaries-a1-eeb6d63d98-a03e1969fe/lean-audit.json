@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "904213ddbcc266bb224e3a0fe3392ae945e4ec5e486c1287a5de486b13dd1fab",
+  "git_delta": {
+    "base_commit": "eec32c409a10db4136a61af8a4fbd12a9e15e100",
+    "candidate_commit": "734d25194eafb6386fd1bc3b6d3c672452350c7b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_region_boundary_vanishes",
+    "diff_sha256": "838e33272a718f109c7ad4a342ed3eab301dd32ca6d8bf8faeb62bd5a0785be3",
+    "source_sha256": "1ca23da1f06f24dc5c89344f9454cf34d6a78f1f805be665a0fb8b769aa17354",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_region_boundary_vanishes",
+      "statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsBoundaryOfRegion T E ξN → BoundaryVanishes T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
