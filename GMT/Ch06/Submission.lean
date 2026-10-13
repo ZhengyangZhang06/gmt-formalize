@@ -9714,6 +9714,123 @@ theorem Submission.iwl_smooth_pushforward : LipschitzPushforwardIntegerMultiplic
       Submission.iwl_sp_massOn_le_of_compatible P Q k U V X.support S.boundary X.boundary f c hU
         X.support_subset_domain hf hprop h₂ hc hDf W⟩⟩
 
+/-- **Reduction to cycles** in the proof of Simon Ch. 6, Theorem 8.2 (p. 176, the paragraph
+before (2)): the general case follows from the case `∂T = 0`.  Let `T_j ⇀ T` with `T_j, ∂T_j`
+integer multiplicity, `spt T_j ⊆ K` compact and `Λ = sup_j (M(T_j) + M(∂T_j)) < ∞`.  By the
+boundary hypothesis (BLI), `∂T` is integer multiplicity.  All supports lie in a ball
+`B̄_R(0) ⊇ K`, and the cones `C_j = 0 ⨯ ∂T_j`, `C = 0 ⨯ ∂T` are integer multiplicity with
+`∂C_j = ∂T_j`, `spt C_j ⊆ B̄_R(0)`, `M(C_j) ≤ cR M(∂T_j)` and `C_j ⇀ C`.  Hence the
+`T'_j = T_j - C_j` are integer multiplicity cycles in `B̄_R(0)` with `M(T'_j) ≤ (1 + cR) Λ` and
+`T'_j ⇀ T' = T - C`, so `T'` is integer multiplicity by the cycle hypothesis (Cyc), and so is
+`T = T' + C`. -/
+theorem Submission.iwl_cycle_reduction : ∀ (P m : ℕ), LipschitzPushforwardIntegerMultiplicity → (∀ (Yj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Yj j).boundary) → (⨆ j, (Yj j).boundary.mass) < ∞ → WeaklyConvergesOn (fun j => (Yj j).boundary) Y.boundary → IsIntegerMultiplicity Y.boundary) → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T) → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegralCurrent (Tj j)) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, ((Tj j).mass + (Tj j).boundary.mass)) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T) := by
+  -- The cone lemmas (children) and the siblings `iwl_im_closure`, `iwl_smooth_pushforward`.
+  have hsupp_lem := Submission.iwl_cr_support_lemmas
+  have hcone_ex := Submission.iwl_cr_cone_exists
+  have hcone_est := Submission.iwl_cr_cone_estimates
+  have hcone_bd := Submission.iwl_cr_cone_boundary
+  have hcone_im := Submission.iwl_cr_cone_integer_multiplicity
+  have him := Submission.iwl_im_closure
+  have hpush := Submission.iwl_smooth_pushforward
+  intro P m hLip hBLI hCyc K hK Tj T hInt hsupp hmass hconv
+  set Λ := ⨆ j, ((Tj j).mass + (Tj j).boundary.mass)
+  have hTjΛ : ∀ j, (Tj j).mass ≤ Λ := fun j =>
+    le_self_add.trans (le_iSup (fun j => (Tj j).mass + (Tj j).boundary.mass) j)
+  have hTjbΛ : ∀ j, (Tj j).boundary.mass ≤ Λ := fun j =>
+    le_add_self.trans (le_iSup (fun j => (Tj j).mass + (Tj j).boundary.mass) j)
+  -- Step 6: `∂T_j ⇀ ∂T`, every `∂T_j` is integer multiplicity and `sup_j M(∂T_j) ≤ Λ < ∞`,
+  -- so (BLI) with `Y_j := T_j`, `Y := T` makes `∂T` integer multiplicity.
+  have hbconv : WeaklyConvergesOn (fun j => (Tj j).boundary) T.boundary := hconv.boundary
+  have hTb : IsIntegerMultiplicity T.boundary :=
+    hBLI Tj T (fun j => (hInt j).2) ((iSup_le hTjbΛ).trans_lt hmass) hbconv
+  -- Step 7: all supports lie in one closed ball `B̄_R(0) ⊇ K`.
+  obtain ⟨r, hr⟩ := (isBounded_iff_subset_closedBall (0 : Eucl P)).1 hK.isBounded
+  obtain ⟨R, hR0, hKR⟩ : ∃ R : ℝ, 0 ≤ R ∧ K ⊆ closedBall (0 : Eucl P) R :=
+    ⟨max r 0, le_max_right r 0, hr.trans (closedBall_subset_closedBall (le_max_left r 0))⟩
+  have hTjR : ∀ j, (Tj j).support ⊆ closedBall (0 : Eucl P) R := fun j => (hsupp j).trans hKR
+  have hTjbR : ∀ j, (Tj j).boundary.support ⊆ closedBall (0 : Eucl P) R := fun j =>
+    (hsupp_lem.1 P m univ (Tj j)).trans (hTjR j)
+  have hTR : T.support ⊆ closedBall (0 : Eucl P) R :=
+    hsupp_lem.2.1 P (m + 1) univ isOpen_univ (closedBall 0 R) Tj T isClosed_closedBall hTjR hconv
+  have hTbR : T.boundary.support ⊆ closedBall (0 : Eucl P) R :=
+    (hsupp_lem.1 P m univ T).trans hTR
+  -- Step 8: the cones `C_j := 0 ⨯ ∂T_j` and `C := 0 ⨯ ∂T`.
+  choose Cj hCj using fun j => hcone_ex P m R (Tj j).boundary (hTjbR j)
+  obtain ⟨C, hC⟩ := hcone_ex P m R T.boundary hTbR
+  -- Cones over integer multiplicity currents are integer multiplicity; the push-forward by
+  -- `h(t, x) = t x` they need is the sibling `iwl_smooth_pushforward` on `U = ℝ^{P+1}`, `V = ℝ^P`.
+  have hconeIM := hcone_im P m fun Z f hZ hf hprop => by
+    obtain ⟨S, hS, hSZ, -⟩ := hpush hLip (P + 1) P m univ univ isOpen_univ isOpen_univ Z f hZ hf
+      (mapsTo_univ f univ) fun K' hK' _ => hprop K' hK'
+    exact ⟨S, hS, hSZ⟩
+  have hCjIM : ∀ j, IsIntegerMultiplicity (Cj j) := fun j =>
+    hconeIM R (Tj j).boundary (Cj j) (hInt j).2 (hTjbR j) (hCj j)
+  have hCIM : IsIntegerMultiplicity C := hconeIM R T.boundary C hTb hTbR hC
+  -- `∂C_j = ∂T_j`.
+  have hCjbd : ∀ j, (Cj j).boundary = (Tj j).boundary := fun j =>
+    hcone_bd P m R (Tj j) (Cj j) (hTjR j) (hCj j)
+  -- Supports in `B̄_R(0)`, `M(C_j) ≤ cR · M(∂T_j)` and `C_j ⇀ C`.
+  obtain ⟨c, -, hcR⟩ := hcone_est P m
+  obtain ⟨hcone1, hconeseq⟩ := hcR R hR0
+  have hCjR : ∀ j, (Cj j).support ⊆ closedBall (0 : Eucl P) R := fun j =>
+    (hcone1 _ _ (hTjbR j) (hCj j)).1
+  have hCjmass : ∀ j, (Cj j).mass ≤ ENNReal.ofReal (c * R) * (Tj j).boundary.mass := fun j =>
+    (hcone1 _ _ (hTjbR j) (hCj j)).2 ((hTjbΛ j).trans_lt hmass)
+  have hCconv : WeaklyConvergesOn Cj C :=
+    hconeseq (fun j => (Tj j).boundary) T.boundary Cj C hTjbR hTbR hCj hC hbconv
+  -- Step 9: the cycles `T'_j := T_j - C_j` and `T' := T - C`.  Differences of currents are
+  -- currents (`T(ω_l) → 0` and `C(ω_l) → 0` whenever `ω_l → 0`).
+  have hsub : ∀ A B : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1),
+      ∃ D : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1),
+        ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), D ω = A ω - B ω := fun A B =>
+    ⟨⟨A.toCurrent - B.toCurrent, fun ωs hωs => by
+      simpa only [LinearMap.sub_apply, sub_zero] using
+        (A.continuous' ωs hωs).sub (B.continuous' ωs hωs)⟩, fun ω => rfl⟩
+  -- `M(A - B) ≤ M(A) + M(B)`, since `-ω` is mass-admissible together with `ω`.
+  have hmass_sub : ∀ A B D : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1),
+      (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), D ω = A ω - B ω) →
+        D.mass ≤ A.mass + B.mass := by
+    intro A B D hD
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    have hneg : -ω ∈ massAdmissibleOn (univ : Set (Eucl P)) (m + 1) univ :=
+      ⟨subset_univ _, fun x => by simpa using hω.2 x⟩
+    have hBneg : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    calc ENNReal.ofReal (D ω) = ENNReal.ofReal (A ω + B (-ω)) := by
+          rw [hD, hBneg, sub_eq_add_neg]
+      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ A.mass + B.mass := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
+  choose Tj' hTj' using fun j => hsub (Tj j) (Cj j)
+  obtain ⟨T', hT'⟩ := hsub T C
+  have hTj'IM : ∀ j, IsIntegerMultiplicity (Tj' j) := fun j =>
+    him.2.2 P (m + 1) univ isOpen_univ (Tj j) (Cj j) (Tj' j) 1 (-1) (hInt j).1 (hCjIM j)
+      fun ω => by rw [hTj' j ω]; push_cast; ring
+  have hTj'bd : ∀ j, (Tj' j).boundary = 0 := by
+    intro j
+    ext ω
+    have h : (Cj j).boundary ω = (Tj j).boundary ω := by rw [hCjbd j]
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply] at h
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, hTj' j, h, sub_self]
+  have hTj'R : ∀ j, (Tj' j).support ⊆ closedBall (0 : Eucl P) R := fun j =>
+    (hsupp_lem.2.2 P (m + 1) univ isOpen_univ (Tj j) (Cj j) (Tj' j) 1 (-1)
+      fun ω => by rw [hTj' j ω]; ring).trans (union_subset (hTjR j) (hCjR j))
+  have hTj'mass : (⨆ j, (Tj' j).mass) < ∞ := by
+    have hbound : ∀ j, (Tj' j).mass ≤ Λ + ENNReal.ofReal (c * R) * Λ := fun j =>
+      (hmass_sub _ _ _ (hTj' j)).trans
+        (add_le_add (hTjΛ j) ((hCjmass j).trans (mul_le_mul_right (hTjbΛ j) _)))
+    exact (iSup_le hbound).trans_lt
+      (ENNReal.add_lt_top.2 ⟨hmass, ENNReal.mul_lt_top ENNReal.ofReal_lt_top hmass⟩)
+  have hTj'conv : WeaklyConvergesOn Tj' T' := fun ω => by
+    have h := (hconv ω).sub (hCconv ω)
+    rw [← hT' ω] at h
+    exact h.congr fun j => (hTj' j ω).symm
+  -- Step 10: (Cyc) on the compact ball `B̄_R(0)` makes `T'` integer multiplicity.
+  have hT'IM : IsIntegerMultiplicity T' :=
+    hCyc (closedBall 0 R) (isCompact_closedBall 0 R) Tj' T' hTj'IM hTj'bd hTj'R hTj'mass hTj'conv
+  -- Step 11: `T = T' + C` with `T'` and `C` integer multiplicity.
+  exact him.2.2 P (m + 1) univ isOpen_univ T' C T 1 1 hT'IM hCIM fun ω => by
+    rw [hT' ω]; push_cast; ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
