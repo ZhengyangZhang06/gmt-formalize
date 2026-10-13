@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "222b3faadbb84f8c299fbb7e6efda714e90df9164e605b52fb48ed8e105b7f77",
+  "git_delta": {
+    "base_commit": "041631eea3ed97451aac5ad362bd6bab095ee545",
+    "candidate_commit": "883f2ebd12d58bfbb280860b24a9b89937c9ccad",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_wte_density_bound_of_weightedTangent",
+    "diff_sha256": "a07f622674ba72dced4992868daf4a1df568be5941263845bffaea37c8186223",
+    "source_sha256": "274f4cae62f0fa4982f289e7a572e5da3bf40f3af063cb293b322dff2c6b41ba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_wte_density_bound_of_weightedTangent",
+      "statement": "∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∀ x ∈ M, 0 ≤ θ x) → 0 < θ y → HasWeightedApproximateTangentSpaceAt n M θ y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ContinuousWithinAt θ C y → ∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
