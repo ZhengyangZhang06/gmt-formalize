@@ -1016,6 +1016,105 @@ theorem Submission.slicing_im_creg_lintegral_cons :
   exact ⟨hFe.lintegral_prod_right', by
     rw [← he.lintegral_comp hF, lintegral_prod _ hFe.aemeasurable]⟩
 
+/-- Co-area formula on one straightened box.  Let `Φ` be a `C¹` Lipschitz, antilipschitz chart on
+`Ω`, and let `(B, χ)` straighten `h`: `h (χ y) = y₀` on `B` and `‖v - v'‖ ≤ ‖χ [t, v] - χ [t, v']‖`.
+If `S ⊆ χ(B)` is Borel and on `S` we have `f ∘ Φ = h`, `G ∘ Φ ∈ range DΦ` and
+`⟪G (Φ w), DΦ(w) u⟫ = Dh(w) u`, then `t ↦ ∫_{Φ(S) ∩ f⁻¹{t}} g dHᵐ` is a.e.-measurable and
+`∫_ℝ ∫_{Φ(S) ∩ f⁻¹{t}} g dHᵐ dt = ∫_{Φ(S)} ‖G‖ g dHᵐ⁺¹`.  Both sides equal `∫ F̃ dLᵐ⁺¹`, where
+`F̃ = 1_{B ∩ χ⁻¹(S)} · g(Φ(χ y)) · 𝒥(y)`: the right side by `bulk` and the Jacobian identity, the
+left side by Tonelli along `y = [y₀, tail y]` and `slice_area`. -/
+theorem Submission.slicing_im_creg_box_coarea : ∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (f : Eucl P → ℝ) (G : Eucl P → Eucl P) (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)) (S : Set (Eucl (m + 1))), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → Measurable G → IsOpen B → ContDiffOn ℝ 1 χ B → χ '' B ⊆ Ω → (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) → (∀ y ∈ B, h (χ y) = y 0) → (∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖) → MeasurableSet S → S ⊆ χ '' B → (∀ w ∈ S, f (Φ w) = h w ∧ G (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u, inner ℝ (G (Φ w)) (fderiv ℝ Φ w u) = fderiv ℝ h w u) → ∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in Φ '' S, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P)) := by
+  intro P m Φ Ω h f G B χ S hΩ hΦ hK hc hh hG hB hχ hχΩ hΛ hχh hslice hS hSB hpt g hg
+  -- Step 1 (coordinates): `[t, v]₀ = t`, and `y = [y₀, tail y]` with `tail y = (y₁, …, y_m)`.
+  have hcons0 : ∀ (t : ℝ) (v : Eucl m),
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) 0
+        = t := fun t v => by simp
+  have hrecon : ∀ y : Eucl (m + 1), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons (y 0)
+      (EuclideanSpace.equiv (Fin m) ℝ ((EuclideanSpace.equiv (Fin m) ℝ).symm fun i => y i.succ)))
+        = y := by
+    intro y
+    ext i
+    refine Fin.cases ?_ (fun i => ?_) i <;> simp
+  -- Step 2 (injectivity): `χ y = χ y'` forces `y₀ = y'₀` (as `h ∘ χ = y₀`), and then the
+  -- slice bound gives `tail y = tail y'`.
+  have hinj : InjOn χ B := by
+    intro y hy y' hy' hyy
+    have h0 : y 0 = y' 0 := by rw [← hχh y hy, ← hχh y' hy', hyy]
+    have hy1 := hrecon y
+    have hy2 := hrecon y'
+    rw [h0] at hy1
+    have hle := hslice (y' 0) _ _ (hy1.symm ▸ hy) (hy2.symm ▸ hy')
+    rw [hy1, hy2, hyy, sub_self, norm_zero] at hle
+    rw [← hy1, sub_eq_zero.mp (norm_le_zero_iff.mp hle), hy2]
+  -- Step 3 (derivatives): `h ∘ χ = proj₀` near each `y ∈ B`, so `Dh(χ y) ∘ Dχ(y) = proj₀`.
+  have hderiv : ∀ y ∈ B, ∀ z : Eucl (m + 1), fderiv ℝ h (χ y) (fderiv ℝ χ y z) = z 0 := by
+    intro y hy z
+    have hχd : HasFDerivAt χ (fderiv ℝ χ y) y :=
+      ((hχ.differentiableOn one_ne_zero y hy).differentiableAt (hB.mem_nhds hy)).hasFDerivAt
+    have hhd : HasFDerivAt h (fderiv ℝ h (χ y)) (χ y) :=
+      (hh.differentiable one_ne_zero (χ y)).hasFDerivAt
+    have h2 : HasFDerivAt (h ∘ χ) (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin (m + 1))) y := by
+      refine (EuclideanSpace.proj (𝕜 := ℝ) _).hasFDerivAt.congr_of_eventuallyEq ?_
+      filter_upwards [hB.mem_nhds hy] with y' hy'
+      simp [hχh y' hy']
+    have h3 := congrArg (fun L : Eucl (m + 1) →L[ℝ] ℝ => L z) ((hhd.comp y hχd).unique h2)
+    simpa using h3
+  -- Step 7 (Jacobian identity): on `S' = B ∩ χ⁻¹(S)` the bulk integrand for `ψ = ‖G‖ₑ g` is
+  -- `g(Φ(χ y)) · 𝒥(y)`.
+  have hJ : ∀ y ∈ B ∩ χ ⁻¹' S, ENNReal.ofReal |(fderiv ℝ χ y).det| *
+      (‖G (Φ (χ y))‖ₑ * g (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j =>
+        inner ℝ (fderiv ℝ Φ (χ y) (EuclideanSpace.single i 1))
+          (fderiv ℝ Φ (χ y) (EuclideanSpace.single j 1))).det)) =
+      g (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j : Fin m =>
+        inner ℝ (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1)))
+          (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1)))).det) := by
+    rintro y ⟨hy, hyS⟩
+    obtain ⟨-, hγ, hdual⟩ := hpt (χ y) hyS
+    rw [Submission.slicing_im_creg_jacobian_identity P m (fderiv ℝ Φ (χ y)) (fderiv ℝ χ y)
+      (G (Φ (χ y))) hγ fun z => (hdual _).trans (hderiv y hy z),
+      ENNReal.ofReal_mul (mul_nonneg (norm_nonneg _) (Real.sqrt_nonneg _)),
+      ENNReal.ofReal_mul (norm_nonneg _), ofReal_norm]
+    ring
+  -- Step 11 (slice sets): `Φ(S) ∩ f⁻¹{t} = σ_t(S'_t)`.
+  have hset : ∀ t : ℝ, Φ '' S ∩ f ⁻¹' {t} = (fun v : Eucl m => Φ (χ
+      ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)))))
+        '' {v : Eucl m | (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B ∩ χ ⁻¹' S} := by
+    intro t
+    ext x
+    constructor
+    · rintro ⟨⟨w, hwS, rfl⟩, hft⟩
+      obtain ⟨y, hyB, rfl⟩ := hSB hwS
+      have ht : y 0 = t := by
+        rw [← hχh y hyB, ← (hpt _ hwS).1]
+        exact hft
+      refine ⟨(EuclideanSpace.equiv (Fin m) ℝ).symm fun i => y i.succ, ?_, ?_⟩
+      · rw [mem_ofPred_eq, ← ht, hrecon]
+        exact ⟨hyB, hwS⟩
+      · simp only
+        rw [← ht, hrecon]
+    · rintro ⟨v, ⟨hvB, hvS⟩, rfl⟩
+      refine ⟨⟨_, hvS, rfl⟩, ?_⟩
+      rw [mem_preimage, mem_singleton_iff, (hpt _ hvS).1, hχh _ hvB, hcons0]
+  -- Steps 8–9 (measurability and Tonelli): `τ(t) = ∫ F̃([t, v]) dv` is measurable and
+  -- `∫ F̃ = ∫ τ`.
+  obtain ⟨hτ, hsplit⟩ := Submission.slicing_im_creg_lintegral_cons m _
+    (Submission.slicing_im_creg_box_integrand_measurable P m Φ B χ S g hΦ hB hχ hS hg)
+  -- Step 10 (slices): `∫_{Φ(S) ∩ f⁻¹{t}} g dHᵐ = τ(t)` for every `t`.
+  have hslice_eq := fun t : ℝ => (hset t).symm ▸
+    Submission.slicing_im_creg_box_slice_area P m Φ Ω B χ S g hΦ hK hc hB hχ hχΩ hΛ hslice hS hg t
+  -- Steps 5–6 (bulk): with `ψ = ‖G‖ₑ g`, `∫_{Φ(S)} ψ dHᵐ⁺¹ = ∫ 1_{S'} |det Dχ| ψ(Φ ∘ χ) JΦ(χ ·)`.
+  have hbulk := Submission.slicing_im_creg_box_bulk P (m + 1) Φ Ω B χ S (fun x => ‖G x‖ₑ * g x)
+    hΩ hK hc hB hχ hinj hχΩ hS hSB (hG.enorm.mul hg)
+  refine ⟨(funext hslice_eq ▸ hτ).aemeasurable, ?_⟩
+  -- Step 12: chain the bulk, Jacobian, Tonelli and slice identities.
+  rw [lintegral_congr hslice_eq, ← hsplit, hbulk]
+  refine lintegral_congr fun y => ?_
+  by_cases hy : y ∈ B ∩ χ ⁻¹' S
+  · rw [indicator_of_mem hy, indicator_of_mem hy, hJ y hy]
+  · rw [indicator_of_notMem hy, indicator_of_notMem hy]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
