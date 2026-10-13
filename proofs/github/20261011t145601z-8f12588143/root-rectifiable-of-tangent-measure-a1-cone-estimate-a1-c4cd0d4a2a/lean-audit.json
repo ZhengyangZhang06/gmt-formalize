@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e8d02c932e193f5ec90c32db14d0cf1f7e8f31467990a64af182668b733cff7a",
+  "git_delta": {
+    "base_commit": "ad05e66cb32340410afc25531d3289f8ec2068f4",
+    "candidate_commit": "5284b819bba0caf8b8d4a27cb7510d0b2579c649",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "tangentMeasure_projection_lower_bound",
+    "diff_sha256": "af42b1db1fb5b5338d0618fee91484a857f5e4b1892d0483e6a64371f717b79c",
+    "source_sha256": "eba0e18955ba50e63773c097d6e8eb55bbc8acfc2f8b81f42b9f0041c1cf0c79",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentMeasure_projection_lower_bound",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (a b δ : ℝ), 0 < a → 32 ^ n * b < a → (∀ x ∈ E, ∀ ρ ∈ Set.Ioo 0 δ, ENNReal.ofReal (a * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧ μ ({z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖Q.starProjection (y - x)‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

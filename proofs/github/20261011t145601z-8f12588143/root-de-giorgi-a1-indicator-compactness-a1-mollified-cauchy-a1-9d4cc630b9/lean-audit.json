@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1599cea609f5ace0f2e1958d2c2866ab6ee16f736324777081ae076b3409dcea",
+  "git_delta": {
+    "base_commit": "d054c7c21b92af7b7f8f2bedd848e5ca33c43e99",
+    "candidate_commit": "151574975440e4a0a0501c8c6bb038fa8e67a389",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "14a26325d31d34899afa12b18c894c707b3286390759fb5569af404a99c38bd5",
+    "source_sha256": "1871e5b63cf7794f26607118ffc94a214fbca65c5421fa6317f050786c346384",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_local_cauchy_of_mollified_cauchy",
+      "statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)) (ρ : ℕ → Rn N → ℝ), (∀ k, NullMeasurableSet (F k) volume) → (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) → (∀ m y, 0 ≤ ρ m y) → (∀ m, ∫ y, ρ m y = 1) → (∀ m, Function.support (ρ m) ⊆ Metric.closedBall (0 : Rn N) (1 / ((m : ℝ) + 1))) → (∀ R : ℕ, ∃ C : ℝ, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F k) (F k)) ≤ ENNReal.ofReal (C * ‖h‖)) → (∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, ∀ y ∈ Metric.closedBall (0 : Rn N) m, |(∫ z in F k, ρ m (y - z)) - ∫ z in F l, ρ m (y - z)| ≤ ε) → ∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

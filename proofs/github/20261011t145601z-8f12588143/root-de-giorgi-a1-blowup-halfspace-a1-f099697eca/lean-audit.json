@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4f56e4bc1e5ca485984b5b77b4aa5ba6e59d6aa0e816373d5019257046e714df",
+  "git_delta": {
+    "base_commit": "4479b62fc1d6d66e16c9c13217090498dd864a56",
+    "candidate_commit": "33073291060c97cd622dcde1ad73ad575789ff12",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "6e1b4243aecc31a38ecb76cd168c02f817fa89812781a9f799ad6e13c8e77bc8",
+    "source_sha256": "a4169c17ee3dbe388c085f17949c1a6d609663bc73351cf13e0b47f984f66745",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_blowUp_tendsto_halfSpace",
+      "statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, ∀ K : Set (Rn (n + 1)), IsCompact K → Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E) {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

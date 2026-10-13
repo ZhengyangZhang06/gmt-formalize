@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5d4a1c71b47e29b61278cb775c93b93222c9db35f295aa355cdab339b6ca46d4",
+  "git_delta": {
+    "base_commit": "2a8d5a5ffbd66b6ddeb5b7ec43cc37ee05cea021",
+    "candidate_commit": "0ef5b7296a11f1e477c431b7af3595943d3f7b46",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiNAB_innerAverage_tendsto_one",
+    "diff_sha256": "393c7cca80a430395fa1d43c6ea30a02c051e4af80b4298ebe6590a97eda2619",
+    "source_sha256": "984f08b3ea5b8913de892dc1134caaac155b2bd893390f838f4ff37c7beae809",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiNAB_innerAverage_tendsto_one",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ∀ x ∈ reducedBoundary U μ ν, Tendsto (fun ρ : ℝ ↦ (μ (Metric.ball x ρ)).toReal⁻¹ * ∫ y in Metric.ball x ρ, inner ℝ (ν y) (reducedNormal μ ν x) ∂μ) (𝓝[>] 0) (𝓝 1)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8cf9e9bd4920eeee3ce0d5f9918b8a1e14ed52f256e5cfa77a8ffd058da272cd",
+  "git_delta": {
+    "base_commit": "438f8b53b94cda550d889a04beb0332de28b8d46",
+    "candidate_commit": "c113f662521cd0f644f7bac682114fc3a8b1677f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_transEst_volume_symmDiff_eq_integral",
+    "diff_sha256": "67a0af1407f9be82702d651213b3c351d7ae6030977f6972290a8acf655f0666",
+    "source_sha256": "ebd2885e44f9cd8fa5f6d991cb4dd0141bdb8e4497a6f7d26a498ca8c411efad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_transEst_volume_symmDiff_eq_integral",
+      "statement": "∀ (N : ℕ) (A F : Set (Rn N)) (R : ℝ), NullMeasurableSet A volume → NullMeasurableSet F volume → volume (Metric.ball (0 : Rn N) R ∩ symmDiff A F) = ENNReal.ofReal (∫ y in Metric.ball (0 : Rn N) R, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y|)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

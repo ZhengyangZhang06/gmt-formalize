@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9a8bf5e70ad1aa2ecbfbc8b2fa9e150e5c20513a4101e565aca6254be9c5dd76",
+  "git_delta": {
+    "base_commit": "113222f3de42e1255273de32e6e86bbdb275ad28",
+    "candidate_commit": "5dc0141e2f2600e837a09489aa556953c4f34d7c",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "46b27554d17044170118a898c6c47a0932cb95c2ce76b2c8b63be8aac4559a7d",
+    "source_sha256": "19b4c2014ed05a13ebc43e5ba05347188f31bf3d73bfd38a6948d36cee4d8a2e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_tangent_measure",
+      "statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, HasApproxTangentPlaneWithMultiplicity n μ x ((Submodule.span ℝ {reducedNormal μ ν x})ᗮ) 1",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

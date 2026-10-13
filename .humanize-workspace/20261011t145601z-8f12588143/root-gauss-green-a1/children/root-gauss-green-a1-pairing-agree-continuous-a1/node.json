@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.pairing_agree_continuous-a1",
+  "parent_id": "root.gauss_green-a1",
+  "depth": 2,
+  "title": "Two Gauss–Green pairs have equal pairings with every continuous compactly supported field in U",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, E ⊆ ℝ^N any set, and let (μ, ν) and (μ', ν') be Gauss–Green pairs for (U, E) (IsGaussGreenPair). Then ∫⟨g(x), ν(x)⟩ dμ(x) = ∫⟨g(x), ν'(x)⟩ dμ'(x) for every continuous g : ℝ^N → ℝ^N with compact support and tsupport g ⊆ U.",
+  "lean_statement": "∀ (N : ℕ) (U E : Set (Rn N)) (μ μ' : Measure (Rn N)) (ν ν' : Rn N → Rn N), IsOpen U → IsGaussGreenPair U E μ ν → IsGaussGreenPair U E μ' ν' → ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ x, inner ℝ (g x) (ν' x) ∂μ'",
+  "lean_name": "gaussGreenRep_pairing_eq_continuous",
+  "depends_on": [
+    "root.gauss_green-a1.c1_uniform_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.gauss_green-a1.c1_uniform_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-pairing-agree-continuous-a1-a1"
+}

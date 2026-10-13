@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.critical_slices-a1.cube_subdivision-a1",
+  "parent_id": "root.coarea_and_slices-a1.critical_slices-a1",
+  "depth": 3,
+  "title": "Subdivision of [−R, R]ⁿ into Mⁿ convex subcubes of diameter ≤ √n·2R/M covering closedBall(0, R)",
+  "statement": "Let n, M ∈ ℕ with M > 0 and let R ∈ ℝ with R ≥ 0. There is a family (Q_α) of subsets of ℝⁿ indexed by α : Fin n → Fin M (so M^n sets) such that every Q_α is convex, Q_α ⊆ closedBall(0, √n·R), |u − v| ≤ √n·(2R/M) for all u, v ∈ Q_α, and closedBall(0, R) ⊆ ⋃_α Q_α. Notation: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d) with Euclidean norm |·| and inner product ⟨·,·⟩; Lᵈ = volume on ℝ^d (applied to an arbitrary set it is the Lebesgue outer measure); Hˢ = μHE[s] (Euclidean-normalized Hausdorff outer measure) and μH[s] the unnormalized Hausdorff measure; diam = Metric.ediam (extended diameter in [0,∞]); DF(u) = fderiv ℝ F u with the operator norm ‖·‖; ofReal = ENNReal.ofReal; natural-number subtraction m − 1.",
+  "lean_statement": "∀ (n M : ℕ) (R : ℝ), 0 < M → 0 ≤ R → ∃ Q : (Fin n → Fin M) → Set (Rn n), (∀ α, Convex ℝ (Q α)) ∧ (∀ α, Q α ⊆ Metric.closedBall 0 (Real.sqrt n * R)) ∧ (∀ α, ∀ u ∈ Q α, ∀ v ∈ Q α, dist u v ≤ Real.sqrt n * (2 * R / M)) ∧ Metric.closedBall (0 : Rn n) R ⊆ ⋃ α, Q α",
+  "lean_name": "critSlices_cube_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-critical-slices-a1-cube-subdivision-a1-a1"
+}

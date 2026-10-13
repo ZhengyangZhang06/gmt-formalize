@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.blowup_halfspace-a1.blowup_flatness-a1",
+  "parent_id": "root.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 3,
+  "title": "Asymptotic horizontal invariance and vertical monotonicity of the blow-ups (Simon (8), sign-corrected)",
+  "statement": "Let N, n ∈ ℕ, E ⊆ ℝ^N, μ a measure on ℝ^N, ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e., x, e ∈ ℝ^N with |e| = 1, and ρ₁ > 0. Assume (F) μ(B_ρ(x)) < ∞ for every ρ ∈ (0, ρ₁); (X) ε(ρ) := (ρⁿ)⁻¹∫_{B_ρ(x)}|ν − e|dμ → 0 as ρ ↓ 0; and (I) for all r, R > 0 with rR < ρ₁ and every C¹ compactly supported g : ℝ^N → ℝ^N with tsupport g ⊆ B_R(0): ∫_{η_{x,r}(E)} div g dL^N = −(rⁿ)⁻¹∫⟨g(η_{x,r}(y)), ν(y)⟩dμ(y). Then (H) for every ζ ∈ C¹_c(ℝ^N, ℝ) and every v ∈ ℝ^N with ⟨v, e⟩ = 0, ∫_{η_{x,r}(E)} D_vζ dL^N → 0 as r ↓ 0; and (M) for every ζ ∈ C¹_c(ℝ^N, ℝ) with ζ ≥ 0 and every δ > 0, ∫_{η_{x,r}(E)} D_eζ dL^N ≤ δ for all sufficiently small r > 0. Here D_wζ(z) := Dζ(z)w = fderiv ℝ ζ z w.",
+  "lean_statement": "∀ (N n : ℕ) (E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x e : Rn N) (ρ₁ : ℝ), AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → 0 < ρ₁ → (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) < ∞) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - e‖ ∂μ) (𝓝[>] 0) (𝓝 0) → (∀ r R : ℝ, 0 < r → 0 < R → r * R < ρ₁ → ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z = -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ)) → (∀ (ζ : Rn N → ℝ) (v : Rn N), ContDiff ℝ 1 ζ → HasCompactSupport ζ → inner ℝ v e = 0 → Tendsto (fun r : ℝ ↦ ∫ z in blowUpMap x r '' E, fderiv ℝ ζ z v) (𝓝[>] 0) (𝓝 0)) ∧ ∀ ζ : Rn N → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → ∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), ∫ z in blowUpMap x r '' E, fderiv ℝ ζ z e ≤ δ",
+  "lean_name": "deGiorgiHS_blowUp_directional_limits",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-blowup-halfspace-a1-blowup-flatness-a1-a1"
+}

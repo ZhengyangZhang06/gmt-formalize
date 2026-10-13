@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1ccbd527817fb7498203a059a6ebab937a0871d5be9193598953a15b023a9901",
+  "git_delta": {
+    "base_commit": "67dab962008b643b53041e487ddfba490152cd84",
+    "candidate_commit": "c67f687aa118a9b2ab324c220e0029e0563aed5e",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "areaFormula_image_null_of_locallyLipschitzOn",
+    "diff_sha256": "f804d328e98d6c1f69cb7839fd63e570bebe4372c4ae06c9026eef2c148aaa1f",
+    "source_sha256": "f059966b06b3f860857c50936f10907619ff1fae03a59cb337864c6927558352",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.areaFormula_image_null_of_locallyLipschitzOn",
+      "statement": "∀ (N P n : ℕ) (U Z : Set (Rn N)) (f : Rn N → Rn P), LocallyLipschitzOn U f → Z ⊆ U → μHE[n] Z = 0 → μHE[n] (f '' Z) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

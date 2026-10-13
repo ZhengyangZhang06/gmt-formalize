@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "380455ba1c1cfd60f9b38cd80b7f68e287b4748343d89b58d7afbb733f24bf75",
+  "git_delta": {
+    "base_commit": "5af8d437a3af81d3d9ef9eba4bb8120f277c237c",
+    "candidate_commit": "1edd15c5fc884fd75248b96cb751ce2031e358c2",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_orthogonal_exists_map_eq",
+    "diff_sha256": "88569fa17e6fcbdc01445dcda0bf1fcc2f676b0c5e0a4b625644119214f9132d",
+    "source_sha256": "ae009192bc658eb177d245e51a6a27d3d9106b7a349169a98193f87a0fcc73bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_orthogonal_exists_map_eq",
+      "statement": "∀ (N : ℕ) (W₀ W : Submodule ℝ (Rn N)), finrank ℝ W₀ = finrank ℝ W → ∃ h : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint h * h = 1 ∧ W₀.map (h : Rn N →ₗ[ℝ] Rn N) = W",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

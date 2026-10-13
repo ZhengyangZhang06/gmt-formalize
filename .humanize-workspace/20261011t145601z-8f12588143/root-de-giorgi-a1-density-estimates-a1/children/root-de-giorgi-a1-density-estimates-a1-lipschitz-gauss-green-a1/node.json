@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_gauss_green-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Gauss-Green identity for a Lipschitz scalar test function times a constant vector (Simon (3); parent Step 3)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, G ⊆ ℝ^N Lebesgue null-measurable, and (μ, ν) a Gauss-Green pair for (U, G) (IsGaussGreenPair U G μ ν). Let ζ : ℝ^N → ℝ be K-Lipschitz (K ∈ ℝ≥0) with compact support and tsupport ζ ⊆ U, and let w ∈ ℝ^N. Then ∫_{G∩U} Dζ(y)w dL^N(y) = −∫ ζ(y)⟨w, ν(y)⟩ dμ(y), where Dζ(y) := fderiv ℝ ζ y (the Fréchet derivative where it exists and 0 elsewhere).",
+  "lean_statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ : Rn N → ℝ) (K : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∀ w : Rn N, ∫ y in G ∩ U, fderiv ℝ ζ y w = -∫ y, ζ y * inner ℝ w (ν y) ∂μ",
+  "lean_name": "deGiorgiDens_lipschitz_gaussGreen",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.lipschitz_smooth_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lipschitz-gauss-green-a1-a1"
+}

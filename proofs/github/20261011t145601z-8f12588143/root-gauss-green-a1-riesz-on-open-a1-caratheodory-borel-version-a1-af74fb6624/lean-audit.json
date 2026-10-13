@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14e9b1c67447881f15c408c9e12c7df430b600c021a45dbbb0768a5b007fdc73",
+  "git_delta": {
+    "base_commit": "a2340fc548447e3a7ab6da116dcb1e5acc7f79a4",
+    "candidate_commit": "0a1a0676f5745ffd3d1fe00a80259dc9ed59dca1",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_riesz_caratheodory_borel_version",
+    "diff_sha256": "7ffdb84651d55ee7a560f54b2d9a827e39476156bae32a8ead397d6dd74c2e25",
+    "source_sha256": "529b44a9c015060b55d9d764739ae935f4d09950a6808cf5a744d83d725ec1f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_riesz_caratheodory_borel_version",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (N : ℕ) (ν : X → Rn N), (∀ K : Set X, IsCompact K → μ K < ∞) → Measurable[μ.toOuterMeasure.caratheodory] ν → ∃ ν' : X → Rn N, StronglyMeasurable ν' ∧ ν =ᵐ[μ] ν'",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

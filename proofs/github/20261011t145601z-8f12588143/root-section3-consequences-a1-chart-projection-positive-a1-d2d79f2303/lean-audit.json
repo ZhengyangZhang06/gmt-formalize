@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4e433fcffaa64a63a9d5dd963db7e830b59e6b5001cc2ca4659058fc7e240d49",
+  "git_delta": {
+    "base_commit": "614e4652da86f615ad0a2b8efd640cf1cfe48d32",
+    "candidate_commit": "1026dc9989abf4902889eaf8dd77e109ff01ed0f",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "75edc0898ac65bee295672f09c0470c54c738770be3d9e2d8e63a0617c1d0762",
+    "source_sha256": "0d8ae0d1104b0bc772a26ca93c54433bfca41960ac997181cf5e91e988c839df",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_chart_coordinateProjection_pos",
+      "statement": "∀ (n ℓ : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → T ⊆ V → 0 < volume T → ∃ J : Finset (Fin (n + ℓ)), J.card = n ∧ 0 < μHE[n] (coordinateProjection J '' (ψ '' T))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

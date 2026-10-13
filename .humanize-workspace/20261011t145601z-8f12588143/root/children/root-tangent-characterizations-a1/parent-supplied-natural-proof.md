@@ -1,0 +1,87 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.tangent_characterizations-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon, Ch. 3, Theorem 1.6 (chapter-03.txt lines 109-111; proof “⇒” lines 113-143, proof “⇐” lines 145-274) and Theorem 1.9 (lines 316-323, derived from Remark 1.8(1), lines 298-306, and Theorem 1.6). The two analytic cores of Simon's proofs are supplied by siblings: the “⇒” argument (the density argument proving Remark 1.5(2), localized to C¹ charts and with multiplicity θ as in Remark 1.8(1)) is chart_tangent_differential, and the “⇐” argument (Lipschitz-graph construction, lines 145-274, which only uses properties (5), (6) of the measure) is rectifiable_of_tangent_measure, applied to μ = Hⁿ⌞M for 1.6 and to μ = θHⁿ⌞M for 1.9. Departure: Simon derives 1.9 from 1.6 via Lusin's theorem (Remark 1.8(1)); since both siblings already allow a multiplicity, we prove 1.9 directly in the same way as 1.6, which avoids the “straightforward check” of Remark 1.8(1).
+
+Notation. N = n + ℓ, ℝ^d = EuclideanSpace ℝ (Fin d), Hⁿ = μHE[n], η_{x,r}(y) = r⁻¹(y − x) (blowUpMap). (F1) For x ∈ ℝ^N, r > 0, A ⊆ ℝ^N, ∫_{η_{x,r}(A)} g dHⁿ = r^{-n}∫_A g∘η_{x,r} dHⁿ for every Borel g ≥ 0 and every g with g∘η_{x,r} ∈ L¹(Hⁿ⌞A): η_{x,r} is a similarity of ratio r⁻¹, so Hⁿ(η_{x,r}(S)) = r^{-n}Hⁿ(S) for all S (scaling and translation invariance of Hausdorff measure), i.e. (η_{x,r})_#(Hⁿ⌞A) = rⁿHⁿ⌞η_{x,r}(A). (F2) Locally Lipschitz maps on open subsets of ℝⁿ send Lⁿ-null sets to Hⁿ-null sets (cover the open set by countably many closed balls on which the map is Lipschitz; SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+
+Statement. ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization, i.e. for M ⊆ ℝ^N Hⁿ-measurable: (1.6) if Hⁿ(M ∩ K) < ∞ for all compact K, then M is countably n-rectifiable iff for Hⁿ-a.e. x ∈ M some P satisfies HasApproximateTangentSpaceAt n M x P; (1.9) if θ is a positive locally integrable weight on M (IsPositiveLocallyIntegrableWeight n M θ), then M is countably n-rectifiable iff for Hⁿ-a.e. x ∈ M some P satisfies HasWeightedApproximateTangentSpaceAt n M θ x P.
+
+Proof.
+
+1. Chart cover of a countably rectifiable set. Let M be countably n-rectifiable. By the sibling submanifold_cover (Lemma 1.2, “⇒”), M ⊆ N₀ ∪ ⋃_j N_j with Hⁿ(N₀) = 0 and IsC1Submanifold n N_j. For y ∈ N_j choose a chart (V_y, W_y, ψ_y) as in the definition (V_y ⊆ ℝⁿ open, ψ_y C¹ on V_y with injective derivative, ψ_y(V_y) = W_y ∩ N_j, y ∈ W_y). The open sets W_y cover N_j and ℝ^N is second countable, so countably many of them cover N_j; hence N_j = ⋃ᵢ ψ_{j,i}(V_{j,i}) for countably many charts (V_{j,i}, ψ_{j,i}).
+
+2. A general “⇒” lemma. Let M be Hⁿ-measurable and countably n-rectifiable and θ a positive locally integrable weight on M. Then for Hⁿ-a.e. x ∈ M there is P with HasWeightedApproximateTangentSpaceAt n M θ x P. Proof: apply the sibling chart_tangent_differential to each chart (V_{j,i}, ψ_{j,i}) of Step 1, with p := 0, f := 0, U := ℝ^N (f is Lipschitz, M ⊆ U). It yields Lⁿ-null sets Z_{j,i} ⊆ V_{j,i} such that for u ∈ V_{j,i} ∖ Z_{j,i} with ψ_{j,i}(u) ∈ M, HasWeightedApproximateTangentSpaceAt n M θ (ψ_{j,i} u) (range Dψ_{j,i}(u)). The set Z := (M ∩ N₀) ∪ ⋃_{j,i} ψ_{j,i}(Z_{j,i}) is Hⁿ-null by (F2). If x ∈ M ∖ Z then x ∉ N₀, so x = ψ_{j,i}(u) for some j, i, u ∈ V_{j,i}, and u ∉ Z_{j,i} (otherwise x ∈ Z); hence P := range Dψ_{j,i}(u) works.
+
+3. Theorem 1.6 “⇒” (Simon lines 113-143). Assume M countably n-rectifiable, Hⁿ-measurable, Hⁿ(M ∩ K) < ∞ for compact K. The constant θ ≡ 1 is a positive locally integrable weight on M: positive, measurable, and IntegrableOn 1 (M ∩ K) Hⁿ because Hⁿ(M ∩ K) < ∞. By Step 2, for Hⁿ-a.e. x ∈ M there is P with HasWeightedApproximateTangentSpaceAt n M 1 x P, which is HasApproximateTangentSpaceAt n M x P after rewriting f(y)·1 = f(y) and 1·∫_P f = ∫_P f (mul_one, one_mul).
+
+4. Theorem 1.9 “⇒”. Immediate from Step 2 with the given θ.
+
+5. From weighted tangent planes to tangent measures. Let θ be a positive locally integrable weight on the Hⁿ-measurable M, choose a Borel θ' ≥ 0 with θ' = θ Hⁿ⌞M-a.e., and let μ := (μHE[n].restrict M).withDensity (ENNReal.ofReal ∘ θ'), i.e. μ(A) = ∫_{A∩M} θ' dHⁿ, so that ∫ g dμ = ∫_M g θ' dHⁿ (Mathlib integral_withDensity_eq_integral_toReal_smul). Then μ(K) = ∫_{M∩K} θ dHⁿ < ∞ for compact K. If x ∈ M, θ(x) = θ'(x), and HasWeightedApproximateTangentSpaceAt n M θ x P, then for f ∈ C_c(ℝ^N) and r > 0, by (F1) applied to g(y) := f(y)θ'(x + ry), whose composite g∘η_{x,r}(z) = f(η_{x,r}(z))θ'(z) is integrable on M (bounded by ‖f‖_∞θ' with compact support):
+ (rⁿ)⁻¹∫ f(η_{x,r}(y)) dμ(y) = r^{-n}∫_M f(η_{x,r}(z)) θ'(z) dHⁿ(z) = ∫_{η_{x,r}(M)} f(y) θ'(x + ry) dHⁿ(y),
+ which equals ∫_{η_{x,r}(M)} f(y)θ(x + ry) dHⁿ(y) (the integrands differ only on the Hⁿ-null image of {θ ≠ θ'} ∩ M) and tends to θ(x)∫_P f dHⁿ. So HasApproxTangentPlaneWithMultiplicity n μ x P (θ x), with θ(x) > 0 because x ∈ M. A property holding for Hⁿ-a.e. x ∈ M holds μ-a.e. (μ ≪ Hⁿ⌞M, and M is null-measurable, so “Hⁿ-a.e. x, x ∈ M → …” is “Hⁿ⌞M-a.e.”). Finally, if R is Borel with μ(ℝ^N ∖ R) = 0, then ∫_{M∖R} θ dHⁿ = 0 and θ > 0 on M give Hⁿ(M ∖ R) = 0.
+
+6. Theorems 1.6 “⇐” and 1.9 “⇐” (Simon lines 145-274; 316-323). Assume the tangent condition holds for Hⁿ-a.e. x ∈ M, with weight θ (for 1.6 take θ ≡ 1, which is admissible by Step 3, and note that HasApproximateTangentSpaceAt n M x P is HasWeightedApproximateTangentSpaceAt n M 1 x P). By Step 5, μ satisfies the hypotheses of the sibling rectifiable_of_tangent_measure (finite on compacts; μ-a.e. x has an approximate tangent plane with positive multiplicity θ(x)). Hence there is a Borel countably n-rectifiable R with μ(ℝ^N ∖ R) = 0, and Step 5 gives Hⁿ(M ∖ R) = 0. Write R ⊆ R₀ ∪ ⋃_j F_j(ℝⁿ) as in Definition 1.1; then M ⊆ ((M ∖ R) ∪ R₀) ∪ ⋃_j F_j(ℝⁿ) with Hⁿ((M ∖ R) ∪ R₀) = 0, so M is countably n-rectifiable. ∎
+
+## Key steps
+
+1. Lemma 1.2 (sibling) + Lindelöf: a countably rectifiable M is covered, up to an Hⁿ-null set, by countably many C¹ chart images.
+2. '⇒' (both theorems): apply the sibling chart lemma (f = 0) in every chart; chart images of Lⁿ-null sets are Hⁿ-null; θ ≡ 1 gives Def. 1.4.
+3. '⇐': the weighted tangent condition makes μ := θHⁿ⌞M (θ ≡ 1 for 1.6) a locally finite measure with approximate tangent planes of multiplicity θ(x) > 0, via the scaling identity for η_{x,r}.
+4. The sibling measure lemma gives a Borel countably rectifiable R with μ(ℝ^N ∖ R) = 0, hence Hⁿ(M ∖ R) = 0 as θ > 0 on M.
+5. M ⊆ (M ∖ R) ∪ R is countably n-rectifiable.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def |^noncomputable def |^abbrev " project/GMT/Ch03/Contract.lean (frozen definitions: IsC1Submanifold, IsPositiveLocallyIntegrableWeight, approxTangentPlane, HasTangentialDifferentialAt, areaJacobian, coareaJacobian, HasApproxTangentPlaneWithMultiplicity, coordinateProjection, frameProjection, ForAlmostAllProjections, HasLocallyFinitePerimeter, IsGaussGreenPair, normalAverage, reducedBoundary, reducedNormal)`
+- `rg -n "theorem normDet_comp|def normDet|normDet_sq" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `rg -n "ae_tendsto_average_norm_sub|ae_tendsto_rnDeriv|def vitaliFamily" mathlib/Mathlib/MeasureTheory/Covering`
+- `rg -n "tendstoUniformlyOn_of_ae_tendsto" mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `rg -n "exists_disjoint_covering_ae" mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `rg -n "haarMeasure_unique|isHaarMeasure_haarMeasure" mathlib/Mathlib/MeasureTheory/Measure/Haar/Basic.lean`
+- `rg -n "eLpNorm_le_eLpNorm_fderiv_of_eq" mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `rg -n "euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "LipschitzWith.ae_differentiableAt" mathlib/Mathlib`
+- `rg -n -i "lusin" mathlib/Mathlib`
+- `rg -l -i "grassmannian|coarea|kirszbraun|CountablyRectifiable|whitney" mathlib/Mathlib`
+- `grep -n for simon_lemma_3_2, measurable_rectifiable_purelyUnrectifiable_decomposition, countablyRectifiable_of_submanifold_cover, IsSimonSubmanifold, simon_remark_1_3_nullMeasurable, HasWeightedApproximateTangentSpaceAt.unique, rademacher_ae_differentiableAt, exists_contDiff_one_extension_of_whitney, HasWhitneyC1Compatibility, area_formula_lipschitzOn_multiplicity, weighted_area_formula_lipschitzOn_fiberSum, areaJacobian_comp_eq_parametrization_mul_tangential, simon_theorem_3_3, simon_theorem_3_6, simon_theorem_4_14, exists_isClosed_continuousOn_of_measurable, IsLocallyBV in the pinned simongmt package Poincare/SimonGMT`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/RingTheory/Grassmannian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+
+Snapshot (project d09bc8a, Mathlib 25730c7c) plus the pinned simongmt dependency. Available and cited by the children: SimonGMT simon_lemma_3_2 and measurable_rectifiable_purelyUnrectifiable_decomposition (Lemma 3.2), countablyRectifiable_of_submanifold_cover (1.2 '⇐'; IsSimonSubmanifold (E := ℝⁿ) 1 unfolds to the contract's IsC1Submanifold), countablyRectifiable_iUnion/_range/_of_measure_zero, countablyRectifiable_image_contDiffOn_open, HasWeightedApproximateTangentSpaceAt.unique, Lipschitz area formulas on Euclidean domains (area_formula_lipschitzOn_multiplicity, weighted_area_formula_lipschitzOn_fiberSum, injective_area_formula_lipschitzOn, aemeasurable_weightedAreaFiberSum_lipschitzOn), areaJacobian_comp_eq_parametrization_mul_tangential, rademacher_ae_differentiableAt, Whitney C¹ extension (exists_contDiff_one_extension_of_whitney / HasWhitneyC1Compatibility), density theorems simon_theorem_3_3, simon_theorem_3_6, simon_remark_3_7_of_openSigmaFinite, vector Riesz representation simon_theorem_4_14, real-valued Lusin exists_isClosed_continuousOn_of_measurable, IsLocallyBV and euclideanDivergence; Mathlib LinearMap.normDet_comp, Besicovitch.vitaliFamily with VitaliFamily.ae_tendsto_average_norm_sub and Besicovitch.ae_tendsto_rnDeriv, MeasureTheory.tendstoUniformlyOn_of_ae_tendsto (Egorov), Vitali.exists_disjoint_covering_ae, Haar measure on locally compact groups, eLpNorm_le_eLpNorm_fderiv_of_eq (Gagliardo-Nirenberg-Sobolev), EuclideanSpace.euclideanHausdorffMeasure_eq_volume, ENNReal.tsum_set_one. No match (hence supplied as shared children or proved inside children): no C¹ approximation theorem and no coarea formula beyond the linear case in SimonGMT; Mathlib has no coarea formula, no countable rectifiability, no Kirszbraun theorem, no Whitney C¹ extension (only manifold embeddings), no Lusin continuity theorem (only Lusin separation/Lusin-Souslin), no measure on Grassmannians (RingTheory/Grassmannian.lean is algebraic), no BV compactness; neither library has the Besicovitch-Federer theorem or De Giorgi's theorem. SimonGMT's Chapter03 tangentialDifferential/tangentialJacobian (Differential.lean) are not used, as the README marks them unfaithful.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.blowup_halfspace-a1.blowup_image_volume-a1",
+  "parent_id": "root.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 3,
+  "title": "Blow-up images: null-measurability, Lebesgue scaling by r^{−N}, and the ball identities for η_{x,r}",
+  "statement": "Let N ∈ ℕ, x ∈ ℝ^N, r ∈ ℝ, A ⊆ ℝ^N, and let η := η_{x,r} = blowUpMap x r, η(y) = r⁻¹(y − x) (with Lean's convention 0⁻¹ = 0). Then (i) if A is L^N-null-measurable, so is η(A); (ii) if r > 0, then L^N(η(A)) = (r^N)⁻¹·L^N(A) for every A (Lebesgue outer measure; precisely volume (η '' A) = ENNReal.ofReal ((r^N)⁻¹) * volume A), and for every R ∈ ℝ: η(A) ∩ B_R(0) = η(A ∩ B_{rR}(x)) and B_R(0) ∖ η(A) = η(B_{rR}(x) ∖ A) (open balls).",
+  "lean_statement": "∀ (N : ℕ) (x : Rn N) (r : ℝ) (A : Set (Rn N)), (NullMeasurableSet A volume → NullMeasurableSet (blowUpMap x r '' A) volume) ∧ (0 < r → volume (blowUpMap x r '' A) = ENNReal.ofReal ((r ^ N)⁻¹) * volume A ∧ ∀ R : ℝ, blowUpMap x r '' A ∩ Metric.ball 0 R = blowUpMap x r '' (A ∩ Metric.ball x (r * R)) ∧ Metric.ball 0 R \\ blowUpMap x r '' A = blowUpMap x r '' (Metric.ball x (r * R) \\ A))",
+  "lean_name": "deGiorgiHS_blowUpMap_image_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-blowup-halfspace-a1-blowup-image-volume-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a442f2a84790aa7e787e68a9a33fd807a278abbade858691a503b498f7df896b",
+  "git_delta": {
+    "base_commit": "bf8efbd4c8aa3396ec8e521b47abc9f45b2888a1",
+    "candidate_commit": "dfc655f79c046765d276a5d3616a491468a856b1",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_measure_density_of_tangentPlane",
+    "diff_sha256": "f9a7166a94b96baab3ec22413566fc15d13158206ea5114858b52482934b0e54",
+    "source_sha256": "f2d0847535edbeddcc9f7adceaf657103da2b22cf27af2b5621752ddc059b058",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_measure_density_of_tangentPlane",
+      "statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μ (Metric.closedBall x δ) < ∞) → HasApproxTangentPlaneWithMultiplicity n μ x P 1 → Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

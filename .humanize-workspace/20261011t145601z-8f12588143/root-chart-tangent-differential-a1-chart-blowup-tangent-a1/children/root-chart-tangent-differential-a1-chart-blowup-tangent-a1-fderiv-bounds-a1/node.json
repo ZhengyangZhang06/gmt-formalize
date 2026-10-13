@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.fderiv_bounds-a1",
+  "parent_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1",
+  "depth": 3,
+  "title": "Derivative bounds for a C¹ map that is Lipschitz and has a lower Lipschitz bound on an open set",
+  "statement": "Let n, N ∈ ℕ, B ⊆ ℝⁿ open, ψ : ℝⁿ → ℝᴺ of class C¹ on B and K-Lipschitz on B (K ∈ ℝ≥0), and c ∈ ℝ with c|u − u'| ≤ |ψ(u) − ψ(u')| for all u, u' ∈ B. Then for every v ∈ B the derivative Dψ(v) = fderiv ℝ ψ v satisfies ‖Dψ(v)‖ ≤ K (operator norm) and c|w| ≤ |Dψ(v) w| for every w ∈ ℝⁿ.",
+  "lean_statement": "∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B → LipschitzOnWith K ψ B → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → ∀ v ∈ B, ‖fderiv ℝ ψ v‖ ≤ K ∧ ∀ w : Rn n, c * ‖w‖ ≤ ‖fderiv ℝ ψ v w‖",
+  "lean_name": "chartTD_chart_fderiv_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-blowup-tangent-a1-fderiv-bounds-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1b545a0895a4be9c33cefb305298bc9f0afd67076963b27bddfc036fa7d01a1d",
+  "git_delta": {
+    "base_commit": "97c7a95289ed7520df536a0fea780852656a5504",
+    "candidate_commit": "1e46151c49b8569affa4b1e48752fdee7f0ac407",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenVar_lusin_closed_subset_continuousOn",
+    "diff_sha256": "477128a8c34b0fd5991e16e63fd8b0b9913fcdf12af7bf6e6c5f9fd0f01b8e09",
+    "source_sha256": "db6f4407046aac04ca607eaff52df1d91336491dfe57b05fd77bedbb7de55363",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenVar_lusin_closed_subset_continuousOn",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N) (A : Set (Rn N)), Measurable f → MeasurableSet A → μ A ≠ ∞ → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ A, IsClosed C ∧ μ (A \\ C) < ε ∧ ContinuousOn f C",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

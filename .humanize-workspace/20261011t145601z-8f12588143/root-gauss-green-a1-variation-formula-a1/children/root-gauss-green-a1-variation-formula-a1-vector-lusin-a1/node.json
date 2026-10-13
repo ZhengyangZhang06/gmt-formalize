@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1.vector_lusin-a1",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "depth": 3,
+  "title": "Lusin's theorem for ℝ^N-valued Borel maps on a set of finite μ-measure",
+  "statement": "Let N ∈ ℕ, let μ be a measure on the Borel σ-algebra of ℝ^N (= EuclideanSpace ℝ (Fin N)); no local finiteness is assumed. Let f : ℝ^N → ℝ^N be Borel measurable, let A ⊆ ℝ^N be a Borel set with μ(A) < ∞, and let ε ∈ (0, ∞]. Then there is a closed set C ⊆ ℝ^N with C ⊆ A, μ(A ∖ C) < ε, and f continuous on C (i.e. the restriction f|C is continuous).",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N) (A : Set (Rn N)), Measurable f → MeasurableSet A → μ A ≠ ∞ → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ A, IsClosed C ∧ μ (A \\ C) < ε ∧ ContinuousOn f C",
+  "lean_name": "gaussGreenVar_lusin_closed_subset_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-vector-lusin-a1-a1"
+}

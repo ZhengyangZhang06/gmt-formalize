@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_integral_tendsto-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "depth": 4,
+  "title": "Convergence of the mollified test functions against μ: ∫(∫ζ(y)ρ_j(y − z)dy)dμ(z) → ∫ζ dμ (parent Step 3)",
+  "statement": "Let N ∈ ℕ, μ a measure on ℝ^N, ζ : ℝ^N → ℝ continuous with compact support, and δ ∈ ℝ with μ(cthickening(δ, tsupport ζ)) < ∞. For j ∈ ℕ let ρ_j : ℝ^N → ℝ be continuous with ρ_j ≥ 0, ∫ ρ_j dL^N = 1 and tsupport ρ_j ⊆ B̄_{r_j}(0), where r_j ∈ ℝ satisfy r_j ≤ δ for all j and r_j → 0. Then ∫ (∫ ζ(y)ρ_j(y − z) dL^N(y)) dμ(z) → ∫ ζ dμ as j → ∞.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ζ : Rn N → ℝ) (ρ : ℕ → Rn N → ℝ) (r : ℕ → ℝ) (δ : ℝ), Continuous ζ → HasCompactSupport ζ → μ (Metric.cthickening δ (tsupport ζ)) < ∞ → (∀ j, Continuous (ρ j)) → (∀ j y, 0 ≤ ρ j y) → (∀ j, ∫ y, ρ j y = 1) → (∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (r j)) → (∀ j, r j ≤ δ) → Tendsto r atTop (𝓝 0) → Tendsto (fun j ↦ ∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ) atTop (𝓝 (∫ z, ζ z ∂μ))",
+  "lean_name": "deGiorgiSobInd_mollified_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-fd3066a53a-a1"
+}

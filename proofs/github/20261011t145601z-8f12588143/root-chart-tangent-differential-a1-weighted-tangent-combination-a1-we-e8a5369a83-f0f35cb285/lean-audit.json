@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "186533a5aa62fbe7c6125b6c771f3b3969e5b2fc4d8449b287c625786d0da448",
+  "git_delta": {
+    "base_commit": "1da0c72f5673a6ba42ad86393d7aaaf083459cc1",
+    "candidate_commit": "1b866e6991723c362eebb429f878b8f3f8c494dc",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_weighted_blowup_integral_split",
+    "diff_sha256": "e6e4ce8a3610b09fdc911b0dfd0323473b5ef0659455981588666d2328957599",
+    "source_sha256": "d3942b1cb45e482c0ae12508a1a51fdf37873fa0836d4eaa66a23f5df58b6241",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_weighted_blowup_integral_split",
+      "statement": "∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (f : C_c(Rn N, ℝ)) (r : ℝ), 0 < r → NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → ∫ z in M, f (blowUpMap x r z) * θ z ∂μHE[n] = ∫ z in M \\ Γ, f (blowUpMap x r z) * θ z ∂μHE[n] + θ x * (∫ z in Γ, f (blowUpMap x r z) ∂μHE[n] - ∫ z in Γ \\ M, f (blowUpMap x r z) ∂μHE[n]) + ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n]",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

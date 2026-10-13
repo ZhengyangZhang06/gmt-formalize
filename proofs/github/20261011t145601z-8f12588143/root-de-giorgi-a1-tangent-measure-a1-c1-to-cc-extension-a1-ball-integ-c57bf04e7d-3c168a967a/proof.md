@@ -1,0 +1,128 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1`
+- Child DAG node: `root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1.ball_integral_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is the integrability-and-bound argument used in Steps 3 and 4 of the supplied proof of deGiorgiTM_blowUp_tendsto_of_contDiff.
+ - Step 3: 'Hence it is μ-integrable (Measure.integrableOn_of_bounded, integrableOn_iff_integrable_of_support_subset), and, by setIntegral_eq_integral_of_forall_compl_eq_zero and norm_setIntegral_le_of_norm_le_const, |L_r(h)| ≤ (rⁿ)⁻¹ M′ μ(B_{rR}(x))'.
+ - Step 4: 'In the same way ... h is σ-integrable (since σ(B_R(0)) < ∞) and |L(h)| ≤ M′S'.
+Here the argument is stated once, for an arbitrary measure ν and ball B_ρ(a). With σ in place of ν, it is the estimate |∫_P f dHⁿ − ∫_P φ dHⁿ| ≤ δHⁿ(P ∩ B_R(0)) of Part 4(iii) of the grandparent proof.
+
+1. Put B := B_ρ(a). B is open, hence a Borel set, and ν(B) < ∞ by hypothesis.
+
+2. g is continuous, hence Borel measurable and ν-a.e. strongly measurable (Continuous.aestronglyMeasurable).
+
+3. |g(y)| ≤ M for every y, in particular for every y ∈ B. A bounded a.e.-strongly measurable function is integrable on a set of finite measure. So g is ν-integrable on B: apply Measure.integrableOn_of_bounded with ν(B) ≠ ∞ and the bound ‖g(y)‖ = |g(y)| ≤ M. This bound holds everywhere, hence a.e. for ν restricted to B.
+
+4. By hypothesis {y : g(y) ≠ 0} ⊆ B. So integrability on B is equivalent to integrability on all of ℝ^N (integrableOn_iff_integrable_of_support_subset). Hence g is ν-integrable, which is the first claim.
+
+5. g(y) = 0 for every y ∉ B, since g(y) ≠ 0 would give y ∈ B. Therefore ∫ g dν = ∫_B g dν (setIntegral_eq_integral_of_forall_compl_eq_zero).
+
+6. Since ν(B) < ∞ and |g(y)| ≤ M for y ∈ B, |∫_B g dν| ≤ M · ν.real(B) (norm_setIntegral_le_of_norm_le_const; on ℝ the norm is the absolute value).
+
+7. Steps 5 and 6 give |∫ g dν| ≤ M · ν.real(B_ρ(a)), which is the second claim. ∎
+
+## Key steps
+
+1. B_ρ(a) is open, hence Borel, and ν(B_ρ(a)) < ∞. g is continuous, hence a.e.-strongly measurable.
+2. A bounded function is integrable on a set of finite measure, so IntegrableOn g B_ρ(a) (Measure.integrableOn_of_bounded).
+3. Since support g ⊆ B_ρ(a), Integrable g ν (integrableOn_iff_integrable_of_support_subset).
+4. g = 0 off B_ρ(a), so ∫ g dν = ∫_{B_ρ(a)} g dν (setIntegral_eq_integral_of_forall_compl_eq_zero).
+5. norm_setIntegral_le_of_norm_le_const gives |∫ g dν| ≤ M · ν.real(B_ρ(a)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; git show 04be0f6611c8d054d3d52fc7c1ee131652c23087:GMT/Ch03/Submission.lean | cmp - GMT/Ch03/Submission.lean; cmp GMT/Ch03/Submission.lean GMT/Ch03/Contract.lean`
+- `rg -n "theorem exists_contDiff_tsupport_subset|theorem dist_convolution_le|theorem Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero|theorem norm_setIntegral_le_of_norm_le_const\b|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem integrableOn_iff_integrable_of_support_subset|theorem toReal_ofReal'|theorem toReal_mono\b|theorem support_eq|theorem one_of_mem_closedBall|theorem UniformContinuous.exists_contDiff_dist_le|theorem dist_normed_convolution_le" <snapshot>/mathlib/Mathlib`
+- `rg -n "contDiff_convolution_left|theorem _root_.HasCompactSupport.convolution|uniformContinuous_of_continuous|bounded_above_of_compact_support" <snapshot>/mathlib/Mathlib`
+- `rg -n "integrableOn_of_bounded|Ioo_mem_nhdsGT\b" <snapshot>/mathlib/Mathlib`
+- `sed -n 88,96p Topology/UniformSpace/HeineCantor.lean; sed -n 810,822p Analysis/Convolution.lean; sed -n 425,432p Analysis/Calculus/ContDiff/Convolution.lean; sed -n 43,50p Analysis/Calculus/BumpFunction/FiniteDimension.lean (snapshot)`
+- `grep -n 'def blowUpMap' -A 6 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; grep -n 'Rn\b' GMT/Ch03/Contract.lean`
+- `python3 -I /tmp/c1cc-decomp-a3/scripts/mkchallenges.py <verifier> GMT/Ch03/Contract.lean /tmp/c1cc-decomp-a3/challenges children.json dag.json (gmt-compare layout+child_modules contract mode, lean_contract.validate_lean_statement, parent type == dag.json)`
+- `lake env lean /tmp/c1cc-decomp-a3/challenges/Challenge_{smooth_approx,ball_integral_bound,blowup_mass_bound,parent_c1_to_cc_extension}.lean`
+- `lake env lean /tmp/c1cc-decomp-a3/lean/Avail.lean (#check of every cited lemma; #synth MeasurableSpace (Rn 0), BorelSpace (Rn 3), IsAddHaarMeasure volume on Rn 0)`
+- `lake env lean /tmp/c1cc-decomp-a3/lean/Inst.lean (EuclideanSpace.norm_eq, ball/norm compatibility, blowUpMap = r⁻¹ • (y - x) by rfl, BorelSpace (Rn N))`
+- `lake env lean /tmp/c1cc-decomp-a3/lean/Full.lean (three child proofs + parent assembly + exact-type comparator targets + #print axioms)`
+- `python3 -I lean_name and identical-lean_statement scan over dag.json (210 nodes)`
+- `git log --no-walk --format=%T --stdin over 2420 refs (1516 unique trees) | xargs -n 100 git grep -l -w -e deGiorgiTM_cc_contDiff_approx -e deGiorgiTM_integral_bound_of_ball -e deGiorgiTM_blowUp_integral_bound -- 'GMT/*.lean' (positive control: deGiorgiTM_halfSpace_integral_fderiv found)`
+- `grep -rlw <three names> .lake/packages/simongmt GMT <snapshot>/project; rg -l -w <three names> <snapshot>/mathlib`
+- `python3 -I: dag.json record, issue-workers.json, run.json, decomposition-v1/v2.json, decomposition-audit/review-receipt-v1/v2.json for this node`
+- `sed -n 728,748p book/chapter-03.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/run.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1/decomposition-review-receipt-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/c1cc-decomp-a3/scripts/children.json`
+- `/tmp/c1cc-decomp-a3/scripts/mkchallenges.py`
+- `/tmp/c1cc-decomp-a3/challenges/Challenge_smooth_approx.lean`
+- `/tmp/c1cc-decomp-a3/challenges/Challenge_ball_integral_bound.lean`
+- `/tmp/c1cc-decomp-a3/challenges/Challenge_blowup_mass_bound.lean`
+- `/tmp/c1cc-decomp-a3/challenges/Challenge_parent_c1_to_cc_extension.lean`
+- `/tmp/c1cc-decomp-a3/lean/Avail.lean`
+- `/tmp/c1cc-decomp-a3/lean/Inst.lean`
+- `/tmp/c1cc-decomp-a3/lean/Full.lean`
+
+The snapshot Contract.lean is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c). The handoff-commit Submission.lean equals both the workspace Submission and the contract, so the child import closure is the contract's.
+
+The snapshot Mathlib provides every tool the child proofs use:
+- exists_contDiff_tsupport_subset (BumpFunction/FiniteDimension.lean:45)
+- ContDiffBump.support_eq and one_of_mem_closedBall (BumpFunction/Basic.lean:151, 137)
+- dist_convolution_le (Convolution.lean:814)
+- HasCompactSupport.convolution (Convolution.lean:568)
+- HasCompactSupport.contDiff_convolution_left (ContDiff/Convolution.lean:427)
+- Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (Bochner/Set.lean:1031)
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)
+- norm_setIntegral_le_of_norm_le_const (Bochner/Set.lean:613)
+- integrableOn_iff_integrable_of_support_subset (IntegrableOn.lean:462)
+- Measure.integrableOn_of_bounded (IntegrableOn.lean:716)
+- HasCompactSupport.uniformContinuous_of_continuous (to_additive of HeineCantor.lean:91)
+- Continuous.bounded_above_of_compact_support (Normed/Group/Bounded.lean:153)
+- ENNReal.toReal_ofReal' (ENNReal/Basic.lean:255)
+- ENNReal.toReal_mono (ENNReal/Real.lean:67)
+All of these resolve by #check after `import GMT.Ch03.Submission`.
+
+UniformContinuous.exists_contDiff_dist_le (SmoothApprox.lean:48) and ContDiffBump.dist_normed_convolution_le (BumpFunction/Convolution.lean:71) exist in the snapshot but are not in the closure (unknown constant). So the smoothing child must hand-build the mollifier. SimonGMT supplies only blowUpMap x r y = r⁻¹ • (y − x) (Rectifiable.lean:96), and Rn N is an abbrev for EuclideanSpace ℝ (Fin N) (Contract.lean:56). No snapshot, project or SimonGMT declaration provides the three child statements.
+
+All three child types:
+- pass validate_lean_statement;
+- elaborate in the generated comparator scope with WithLp.measurableSpace, PiLp.borelSpace and Haar volume;
+- use the Euclidean norm, consistent with Metric.ball.
+The full child proofs and the parent assembly compile with axioms [propext, Classical.choice, Quot.sound] only.
+
+No name collision was found:
+- 210 DAG nodes: no match;
+- 1516 unique trees from 2420 refs: no match, while the positive control matched;
+- SimonGMT, GMT and the snapshot project and Mathlib: no match.
+No identical accepted type exists to reuse.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_characterizations-a1.null_image_locally_lipschitz-a1",
+  "parent_id": "root.tangent_characterizations-a1",
+  "depth": 2,
+  "title": "Locally Lipschitz maps on open subsets of ℝⁿ send Lⁿ-null sets to Hⁿ-null sets (fact F2)",
+  "statement": "Let n, N ∈ ℕ, let V ⊆ ℝⁿ be open, and let ψ : ℝⁿ → ℝ^N be locally Lipschitz on V (every u ∈ V has a neighbourhood within V on which ψ is Lipschitz). Let Z ⊆ V have Lebesgue (outer) measure Lⁿ(Z) = 0. Then Hⁿ(ψ(Z)) = 0, where Hⁿ = μHE[n] on ℝ^N.",
+  "lean_statement": "∀ (n N : ℕ) (V Z : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → LocallyLipschitzOn V ψ → Z ⊆ V → volume Z = 0 → μHE[n] (ψ '' Z) = 0",
+  "lean_name": "hausdorffMeasure_image_null_of_locallyLipschitzOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-tangent-characterizations-a1-null-image-locally-lipschitz-a1-a1"
+}

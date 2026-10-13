@@ -1,0 +1,100 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1`
+- Child DAG node: `root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1.section_normdet-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the parent's supplied proof, steps 2–4 (parent (i) and (iv)). The parent's π_K = π∘ι_K is written here as S∘ι_K. The parent's K = ker Γ is replaced by any subspace K of dimension k that contains the range of E.
+
+Facts used (Mathlib Analysis/InnerProductSpace/NormDet.lean):
+(F1) LinearMap.normDet_comp_of_finrank_eq: if f : U → U' and g : U' → W are linear and finrank U = finrank U', then normDet(g∘f) = normDet(g)·normDet(f).
+(F2) LinearMap.normDet_id: normDet(id) = 1.
+
+1. (Corestriction.) Since E z ∈ K for every z ∈ ℝᵏ, E corestricts to a linear map E' : ℝᵏ → K (LinearMap.codRestrict K E) with ι_K(E' z) = E z for all z. Hence A∘E = (A∘ι_K)∘E', since both send z to A(E z).
+
+2. (Left inverse.) For every z ∈ ℝᵏ, (S∘ι_K)(E' z) = S(E z) = z. So (S∘ι_K)∘E' = id on ℝᵏ.
+
+3. (Equal dimensions.) finrank ℝᵏ = k (finrank_euclideanSpace_fin), and finrank K = k by hypothesis. So finrank ℝᵏ = finrank K.
+
+4. (Parent (i).) By step 1, (F1) with f = E' and g = A∘ι_K, and step 3: normDet(A∘E) = normDet((A∘ι_K)∘E') = normDet(A∘ι_K)·normDet(E').
+
+5. (Parent (iv).) By (F1) with f = E' and g = S∘ι_K, step 3, step 2 and (F2): normDet(S∘ι_K)·normDet(E') = normDet((S∘ι_K)∘E') = normDet(id) = 1.
+
+6. (Conclusion.) By steps 4 and 5:
+normDet(A∘E)·normDet(S∘ι_K) = normDet(A∘ι_K)·(normDet(S∘ι_K)·normDet(E')) = normDet(A∘ι_K)·1 = normDet(A∘ι_K). ∎
+No property of A is used and no case analysis is needed. Nothing is cancelled: normDet(E') is never divided out.
+
+## Key steps
+
+1. Corestrict E to E' : ℝᵏ → K (LinearMap.codRestrict). Then A∘E = (A∘ι_K)∘E' and (S∘ι_K)∘E' = id.
+2. finrank ℝᵏ = k = finrank K.
+3. normDet_comp_of_finrank_eq gives normDet(A∘E) = normDet(A∘ι_K)·normDet(E').
+4. normDet_comp_of_finrank_eq and normDet_id give normDet(S∘ι_K)·normDet(E') = 1.
+5. Multiply: normDet(A∘E)·normDet(S∘ι_K) = normDet(A∘ι_K)·(normDet(S∘ι_K)·normDet(E')) = normDet(A∘ι_K).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/d498d77b74ea2063/manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean <workspace>/GMT/Ch03/Contract.lean (identical)`
+- `rg -n "theorem normDet_comp_of_finrank_eq|theorem normDet_eq_norm_det_toMatrix|theorem _root_.LinearIsometry.normDet_eq_one|theorem normDet_id|theorem normDet_codRestrict" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean (lines 348, 182, 213, 220, 365)`
+- `rg -n "fromBlocks|prodMap|block" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean (no match)`
+- `rg -n "theorem det_fromBlocks_zero₁₂" mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean (line 728)`
+- `rg -n "theorem det_prodMap|theorem det_prod" mathlib/Mathlib/LinearAlgebra/Determinant.lean (line 375, det_prodMap; block-diagonal only, not used)`
+- `rg -n "fromBlocks" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean (lines 67-71: same toMatrix/fromBlocks/det technique for reflections)`
+- `rg -n "def prod |theorem prod_apply|theorem prod_inner_apply|def orthogonalDecomposition" mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean (lines 57, 71, 46, 88)`
+- `rg -n "def sndₗ|def fstₗ" mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean (lines 131, 124)`
+- `rg -n "protected theorem repr_apply_apply|protected theorem coe_toBasis_repr_apply|protected theorem coe_toBasis |theorem basisFun_repr" mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean (lines 440, 490, 482, 810)`
+- `rg -n "theorem finrank_add_finrank_orthogonal" mathlib/Mathlib/Analysis/InnerProductSpace/ (Projection/FiniteDimensional.lean:110)`
+- `rg -n "theorem LinearMap.toMatrix_apply" mathlib/Mathlib/LinearAlgebra/Matrix/ToLin.lean (line 619)`
+- `rg -n "normDet.*fromBlocks|normDet_prod|normDet_prodMap|normDet_block" mathlib/Mathlib (full-tree search timed out on this filesystem; targeted NormDet.lean search above has no match)`
+- `rg -n "pcoarea_flat|normDet_block|normDet_section" project/GMT (no match)`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean (coareaCoordinates, coareaCoordinates_symm_apply, coareaHorizontalLinear = domRestrict kerᗮ, normDet_adjoint_of_finrank_eq, coareaHorizontalLinear_normDet, coarea_kernel_finrank)`
+- `python3 -I dag.json scan of lean_name/theorems over all 166 nodes for pcoarea_flat_normDet_block / pcoarea_flat_normDet_section (no collision)`
+- `python3 -I /tmp/flatjac_split_scripts/gen_scope.py (gmt-compare.py contract_scope for GMT.Ch03.main_theorem + lean_contract.validate_lean_statement) then lake env lean GMT/Scratch/FlatJacSplitScope.lean`
+- `lake env lean GMT/Scratch/FlatJacSplitAssembly.lean (parent frozen type from sorry-stub children; #print axioms)`
+- `lake env lean GMT/Scratch/FlatJacSplitSection.lean and GMT/Scratch/FlatJacSplitBlock.lean (full child proofs)`
+- `lake env lean GMT/Scratch/FlatJacSplitFull.lean (both children + parent proved, comparator-style targets `exact Submission.X`, #print axioms)`
+- `lake env lean GMT/Scratch/FlatJacSplitInst.lean (rfl checks of L² inner product on WithLp 2 (Rn m × Rn k) and restricted inner products on ker Γ, (ker Γ)ᗮ; #synth gives WithLp.instProdInnerProductSpace)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Matrix/ToLin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1-flat-jacobian-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitScope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitAssembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitSection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitBlock.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitFull.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FlatJacSplitInst.lean`
+
+Snapshot pins: project d09bc8a, Mathlib 25730c7c, plus the pinned simongmt package. The snapshot Contract.lean is identical to the workspace one.
+
+No-match results: Mathlib NormDet.lean has no block-triangular, product or fromBlocks normDet lemma, and the project has no pcoarea_flat_* or normDet_block/section declaration. So both children are new obligations.
+
+Every cited fact exists in the snapshot and type-checks in the stated form:
+- Mathlib: normDet_comp_of_finrank_eq, normDet_eq_norm_det_toMatrix, LinearIsometry.normDet_eq_one, normDet_id, Matrix.det_fromBlocks_zero₁₂, OrthonormalBasis.prod and prod_apply, WithLp.prod_inner_apply, WithLp.sndₗ, OrthonormalBasis.repr_apply_apply and coe_toBasis_repr_apply, LinearMap.toMatrix_apply, Submodule.finrank_add_finrank_orthogonal.
+- SimonGMT: coareaCoordinates and coareaCoordinates_symm_apply, coarea_kernel_finrank, coareaHorizontalLinear_normDet.
+Projection/FiniteDimensional.lean lines 67-71 already use the same toMatrix + fromBlocks + det technique.
+
+Validation:
+(1) Both frozen child types pass validate_lean_statement and elaborate in the comparator's replayed Contract scope after `import GMT.Ch03.Submission`. Instances were checked by rfl and #synth (WithLp.instProdInnerProductSpace; restricted inner products on submodules).
+(2) With sorry-stub children, the parent assembly proves the exact frozen parent type.
+(3) Full Lean proofs of both children and the parent compile. Comparator-style targets `exact Submission.X` typecheck, and the axioms are only propext, Classical.choice and Quot.sound.
+(4) The proposed names do not collide with the 166 DAG nodes. The other branch's coarea_normDet_block_triangular has a different type and is not accepted, so it is not reused.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2cb2448c68b35b3bf428242d1959d482c1c34ea29b250db104df39d49ba6ab40",
+  "git_delta": {
+    "base_commit": "08bcb58fb79d60658a25708530e486782088eac6",
+    "candidate_commit": "a7b40855724e80a87ee9c3f79cc7ff22611c3a28",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "critSlices_slab_volume_le",
+    "diff_sha256": "8c8f3101f9a2c93459554f75a347c2ce6d9dc2a09f5a433320ce8df6cbb2b4c3",
+    "source_sha256": "a95c68bada0ec40bcdf0e13bf91c0a3ebff239798d49408c3e8601ca78db1d5e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.critSlices_slab_volume_le",
+      "statement": "∀ (m : ℕ) (ν c : Rn m) (r R : ℝ), ‖ν‖ = 1 → volume {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} ≤ ENNReal.ofReal (2 * r * (2 * R) ^ (m - 1))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

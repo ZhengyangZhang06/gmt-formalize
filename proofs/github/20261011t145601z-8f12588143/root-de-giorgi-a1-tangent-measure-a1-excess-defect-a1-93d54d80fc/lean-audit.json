@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4030d02f75b26d0774a085e762e9f867475820f5706a50ed0ad16fa50819000",
+  "git_delta": {
+    "base_commit": "04be0f6611c8d054d3d52fc7c1ee131652c23087",
+    "candidate_commit": "8b1659186fa0b8753059f11bdffcb7351feb5757",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiTM_blowUp_defect_tendsto_zero",
+    "diff_sha256": "b52eb09dd4752217a4fe10c98d1a833bef183eef51ac39ac19fee4c5a92d66b8",
+    "source_sha256": "570a903b1d1dcb87b6096264c11301e40ad65b9bcf9cf85d8e17ce64ea48fe61",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiTM_blowUp_defect_tendsto_zero",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x e : Rn N) (ρ₁ : ℝ) (φ : Rn N → ℝ), 0 < ρ₁ → μ (Metric.ball x ρ₁) < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - e‖ ∂μ) (𝓝[>] 0) (𝓝 0) → Continuous φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ - (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

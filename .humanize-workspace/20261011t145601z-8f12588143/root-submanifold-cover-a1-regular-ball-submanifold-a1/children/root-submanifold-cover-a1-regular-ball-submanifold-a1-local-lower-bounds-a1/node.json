@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_cover-a1.regular_ball_submanifold-a1.local_lower_bounds-a1",
+  "parent_id": "root.submanifold_cover-a1.regular_ball_submanifold-a1",
+  "depth": 3,
+  "title": "Quantitative local injectivity of a C¹ map near a point with injective derivative",
+  "statement": "For all n, p ∈ ℕ (ℝᵈ := EuclideanSpace ℝ (Fin d), with Euclidean norm |·|), every map G : ℝⁿ → ℝᵖ, every open set U ⊆ ℝⁿ such that G is of class C¹ on U (ContDiffOn ℝ 1 G U), and every x ∈ U at which the Fréchet derivative DG(x) = fderiv ℝ G x is injective, there are r > 0 with closed ball B̄_r(x) = Metric.closedBall x r ⊆ U and c > 0 such that (i) c|z − z'| ≤ |G(z) − G(z')| for all z, z' ∈ B̄_r(x), and (ii) c|v| ≤ |DG(z)v| for all z ∈ B̄_r(x) and all v ∈ ℝⁿ.",
+  "lean_statement": "∀ (n p : ℕ) (G : Rn n → Rn p) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 G U → ∀ x ∈ U, Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Metric.closedBall x r ⊆ U ∧ ∃ c : ℝ, 0 < c ∧ (∀ z ∈ Metric.closedBall x r, ∀ z' ∈ Metric.closedBall x r, c * ‖z - z'‖ ≤ ‖G z - G z'‖) ∧ ∀ z ∈ Metric.closedBall x r, ∀ v : Rn n, c * ‖v‖ ≤ ‖fderiv ℝ G z v‖",
+  "lean_name": "c1_injective_fderiv_local_lower_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-submanifold-cover-a1-regular-ball-submanifold-a1-local-lower-bounds-a1-a1"
+}

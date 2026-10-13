@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.first_variation_bound-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "First-variation bound ∫_{B_ρ(x)}⟨ν, w⟩dμ ≤ (d/dρ) L^N(G ∩ B_ρ(x)) at a differentiability radius (Simon (5))",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, G ⊆ ℝ^N Lebesgue null-measurable, (μ, ν) a Gauss-Green pair for (U, G), x, w ∈ ℝ^N with |w| ≤ 1, ρ > 0 with B̄_ρ(x) ⊆ U, and d ∈ ℝ such that the function V(r) := L^N(G ∩ B_r(x)).toReal has derivative d at r = ρ. Then ∫_{B_ρ(x)} ⟨ν(y), w⟩ dμ(y) ≤ d.",
+  "lean_statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x w : Rn N) (ρ d : ℝ), 0 < ρ → Metric.closedBall x ρ ⊆ U → ‖w‖ ≤ 1 → HasDerivAt (fun r : ℝ ↦ (volume (G ∩ Metric.ball x r)).toReal) d ρ → ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ ≤ d",
+  "lean_name": "deGiorgiDens_ball_normal_le_deriv",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.lipschitz_gauss_green-a1",
+    "root.de_giorgi-a1.density_estimates-a1.radial_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.radial_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-first-variation-bound-a1-a1"
+}

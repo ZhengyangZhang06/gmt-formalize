@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c11312fd0c666d6ef7ddc1e5a7a5e90b46d33adb1e31a6d4e67a986ccb276ef6",
+  "git_delta": {
+    "base_commit": "fb0a95659267905db29ce033aa3e53b4edf5f26f",
+    "candidate_commit": "b0679156008c0cff5b838d9308785a05f11e1bf5",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_sphereCap_lower_comparison",
+    "diff_sha256": "eeda18229dcb995509bf3692436c2f8699db7ca195c45fd00f838ae3b4ebf424",
+    "source_sha256": "688be73360c8f31e3839ac1eee355ccc4bcb957aad89e1aecd1f44b341e56670",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_sphereCap_lower_comparison",
+      "statement": "∀ (n N : ℕ) (H : Submodule ℝ (Rn N)), finrank ℝ H = n + 1 → ∀ ζ ∈ H, ‖ζ‖ = 1 → ∃ T : Submodule ℝ (Rn N), finrank ℝ T = n ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ 2 → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2)) ≤ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

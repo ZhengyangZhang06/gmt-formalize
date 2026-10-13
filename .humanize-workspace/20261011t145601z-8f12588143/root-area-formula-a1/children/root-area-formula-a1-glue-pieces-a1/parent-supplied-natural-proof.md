@@ -1,0 +1,166 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.area_formula-a1`
+- Child DAG node: `root.area_formula-a1.glue_pieces-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. The summation in Steps 3, 6 and 7 of the parent proof: Simon Ch. 3, chapter-03.txt lines 393-401, “We now conclude 2.4 by summing over j ≥ 1 and using the (easily checked) fact that … Hⁿ(f(B)) = 0”, and the analogous summation for 2.5. It is stated for abstract measure spaces so that it serves both (2.4) (weight h ≡ 1, M := A) and (2.5). Library: Mathlib disjointed, NullMeasurableSet.disjointed, Measure.restrict_congr_set, lintegral_iUnion₀, lintegral_tsum, ENNReal.tsum_biUnion, lintegral_congr_ae.
+
+Notation.
+- For S ⊆ X and y ∈ Y, F_S(y) := Σ_{x∈S∩f⁻¹{y}} h(x) ∈ [0, ∞], the tsum over the subtype S ∩ f⁻¹{y}. Sums of [0,∞]-valued families always exist and may be regrouped.
+- G := ⋃_α G_α and M′ := M ∩ G.
+
+Hypotheses:
+- (H1) M is μ-null-measurable.
+- (H2) Every G_α is μ-null-measurable.
+- (H3) μ(M ∖ G) = 0.
+- (H4) ν(f(M ∖ G)) = 0.
+- (H5) For every α and every μ-null-measurable S ⊆ M ∩ G_α: ∫_S g dμ = ∫ F_S dν, and F_S is AEMeasurable for ν.
+
+No measurability of g or h and no σ-finiteness is needed.
+
+Proof.
+1. Disjoint pieces. Let S_α := M ∩ (G_α ∖ ⋃_{β<α} G_β), i.e. S_α = M ∩ disjointed G α.
+ - Each S_α is μ-null-measurable, as a finite Boolean combination of null-measurable sets.
+ - S_α ⊆ M ∩ G_α.
+ - The S_α are pairwise disjoint: if β < α then S_α ∩ G_β = ∅, while S_β ⊆ G_β.
+ - ⋃_α S_α = M′: if x ∈ M ∩ G, take the least α with x ∈ G_α.
+2. Source side. M′ ⊆ M and M ∖ M′ = M ∖ G is μ-null (H3), so M′ and M are μ-a.e. equal and μ⌞M = μ⌞M′ (Measure.restrict_congr_set). The map S ↦ ∫_S g dμ is countably additive over pairwise disjoint null-measurable sets (lintegral_iUnion₀; no measurability of g needed). Hence ∫_M g dμ = ∫_{M′} g dμ = Σ_α ∫_{S_α} g dμ.
+3. Pieces and monotone convergence. By (H5) with S = S_α, ∫_{S_α} g dμ = ∫ F_{S_α} dν, and F_{S_α} is AEMeasurable for ν. By the monotone convergence theorem for series (lintegral_tsum), Σ_α ∫ F_{S_α} dν = ∫ Σ_α F_{S_α} dν.
+4. Regrouping fibre sums. For each y, the sets S_α ∩ f⁻¹{y} are pairwise disjoint with union M′ ∩ f⁻¹{y}. So Σ_α F_{S_α}(y) = F_{M′}(y) (ENNReal.tsum_biUnion).
+5. Target side. If y ∉ f(M ∖ M′), then M ∩ f⁻¹{y} = M′ ∩ f⁻¹{y}, since a point x ∈ M with f(x) = y cannot lie in M ∖ M′. Hence F_{M′}(y) = F_M(y). As f(M ∖ M′) = f(M ∖ G) is ν-null (H4), F_{M′} = F_M ν-a.e., so ∫ F_{M′} dν = ∫ F_M dν (lintegral_congr_ae).
+6. Conclusion. ∫_M g dμ = Σ_α ∫_{S_α} g dμ = Σ_α ∫ F_{S_α} dν = ∫ Σ_α F_{S_α} dν = ∫ F_{M′} dν = ∫ F_M dν. ∎
+
+Appendix: formalization aid, not part of the mathematical argument. Below is a kernel-checked scratch proof of exactly this statement. It was elaborated after `import GMT.Ch03.Submission` in the contract scope and uses only the axioms propext, Classical.choice and Quot.sound. When transplanting, rename C5check to Submission.areaFormula_glue_pieces.
+
+theorem C5check : ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (g h : X → ℝ≥0∞) (M : Set X) (G : ℕ → Set X), NullMeasurableSet M μ → (∀ α, NullMeasurableSet (G α) μ) → μ (M \ ⋃ α, G α) = 0 → ν (f '' (M \ ⋃ α, G α)) = 0 → (∀ α, ∀ S ⊆ M ∩ G α, NullMeasurableSet S μ → (∫⁻ x in S, g x ∂μ = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂ν) ∧ AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) ν) → ∫⁻ x in M, g x ∂μ = ∫⁻ y, ∑' x : ↥(M ∩ f ⁻¹' {y}), h x ∂ν := by
+  intro X Y _ _ μ ν f g h M G hM hG hnull himnull H
+  classical
+  let S : ℕ → Set X := fun α ↦ M ∩ disjointed G α
+  have hSsub : ∀ α, S α ⊆ M ∩ G α := fun α x hx ↦ ⟨hx.1, disjointed_subset G α hx.2⟩
+  have hSmeas : ∀ α, NullMeasurableSet (S α) μ := fun α ↦
+    hM.inter (NullMeasurableSet.disjointed hG α)
+  have hSdisj : Pairwise (Function.onFun Disjoint S) := fun a b hab ↦
+    (show Disjoint (disjointed G a) (disjointed G b) from disjoint_disjointed G hab).mono
+      inter_subset_right inter_subset_right
+  have hSU : ⋃ α, S α = M ∩ ⋃ α, G α := by
+    show ⋃ α, (M ∩ disjointed G α) = M ∩ ⋃ α, G α
+    rw [← inter_iUnion, iUnion_disjointed]
+  have hMae : M ∩ ⋃ α, G α =ᵐ[μ] M := by
+    rw [ae_eq_set]
+    refine ⟨?_, ?_⟩
+    · rw [diff_eq_empty.mpr inter_subset_left, measure_empty]
+    · exact measure_mono_null (show M \ (M ∩ ⋃ α, G α) ⊆ M \ ⋃ α, G α from
+        fun x hx ↦ ⟨hx.1, fun hG' ↦ hx.2 ⟨hx.1, hG'⟩⟩) hnull
+  have hE : ∀ᵐ y ∂ν, ∑' α, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x = ∑' x : ↥(M ∩ f ⁻¹' {y}), h x := by
+    rw [ae_iff]
+    refine measure_mono_null (fun y hy ↦ ?_) himnull
+    rw [mem_setOf_eq] at hy
+    by_contra hy'
+    apply hy
+    have hset : ⋃ α, (S α ∩ f ⁻¹' {y}) = M ∩ f ⁻¹' {y} := by
+      rw [← iUnion_inter, hSU]
+      ext x
+      simp only [mem_inter_iff, mem_iUnion, mem_preimage, mem_singleton_iff]
+      constructor
+      · rintro ⟨⟨hxM, _⟩, hfx⟩
+        exact ⟨hxM, hfx⟩
+      · rintro ⟨hxM, hfx⟩
+        refine ⟨⟨hxM, ?_⟩, hfx⟩
+        by_contra hxG
+        exact hy' ⟨x, ⟨hxM, by simpa [mem_iUnion] using hxG⟩, hfx⟩
+    have hdisj : (Set.univ : Set ℕ).PairwiseDisjoint (fun α ↦ S α ∩ f ⁻¹' {y}) := by
+      intro a _ b _ hab
+      exact (show Disjoint (S a) (S b) from hSdisj hab).mono inter_subset_left inter_subset_left
+    have h1 : ∑' x : ↥(⋃ α, (S α ∩ f ⁻¹' {y})), h x =
+        ∑' α, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x :=
+      ENNReal.tsum_biUnion hdisj
+    rw [← h1, hset]
+  calc ∫⁻ x in M, g x ∂μ = ∫⁻ x in ⋃ α, S α, g x ∂μ := by
+        rw [hSU, Measure.restrict_congr_set hMae]
+    _ = ∑' α, ∫⁻ x in S α, g x ∂μ := lintegral_iUnion₀ hSmeas hSdisj.aedisjoint g
+    _ = ∑' α, ∫⁻ y, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x ∂ν :=
+        tsum_congr fun α ↦ (H α (S α) (hSsub α) (hSmeas α)).1
+    _ = ∫⁻ y, ∑' α, ∑' x : ↥(S α ∩ f ⁻¹' {y}), h x ∂ν :=
+        (lintegral_tsum fun α ↦ (H α (S α) (hSsub α) (hSmeas α)).2).symm
+    _ = ∫⁻ y, ∑' x : ↥(M ∩ f ⁻¹' {y}), h x ∂ν := lintegral_congr_ae hE
+
+## Key steps
+
+1. Disjointify: S_α := M ∩ disjointed G α is null-measurable and pairwise disjoint, with union M ∩ ⋃G.
+2. μ⌞M = μ⌞(M ∩ ⋃G), and the source integral is countably additive over the S_α.
+3. Apply the piece hypothesis to each S_α, then monotone convergence for series on the target.
+4. Fibre sums over the disjoint pieces add up to the fibre sum over M ∩ ⋃G.
+5. Off the ν-null set f(M ∖ ⋃G), the fibre sums over M and over M ∩ ⋃G coincide.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def AreaFormula|^def IsC1Submanifold|^noncomputable def approxTangentPlane|^noncomputable def tangentialDifferential|^noncomputable def areaJacobian|^def HasTangentialDifferentialAt|^def IsPositiveLocallyIntegrableWeight|^abbrev Rn" project/GMT/Ch03/Contract.lean`
+- `rg -n "theorem normDet_comp|theorem normDet_codRestrict|theorem normDet_ne_zero_tfae|theorem normDet_nonneg|normDet_sq" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `rg -n "theorem lintegral_iUnion₀|theorem lintegral_tsum|theorem lintegral_indicator₀" mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/`
+- `rg -n "theorem isOpen_iUnion_countable|theorem isOpen_biUnion_countable" mathlib/Mathlib/Topology/Bases.lean`
+- `rg -n "theorem HasLineDerivAt.unique" mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `rg -n "theorem LinearMap.exists_antilipschitzWith" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `rg -n "theorem approximates_deriv_on_nhds|protected theorem lipschitzWith" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/`
+- `rg -n "theorem ContinuousOn.measurable_piecewise" mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `rg -n "theorem measurable_fderiv |theorem measurableSet_of_differentiableAt " mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `rg -n "exists_measurable_subset_ae_eq" mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `rg -n "lemma tsum_set_one|protected theorem tsum_biUnion" mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `rg -n "theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "^def LocallyLipschitzOn" mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `rg -n -l "areaFormula_|AreaFormula" mathlib/Mathlib  (no match)`
+- `rg -n -i -l "coarea|area_formula" mathlib/Mathlib  (no match)`
+- `grep -n "weighted_area_formula_lipschitzOn_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitzOn|ae_eq_of_hasFDerivWithinAt|def areaJacobianWithin|def weightedAreaFiberSum|def areaFiber|theorem continuous_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn|HasWeightedApproximateTangentSpaceAt.unique" in the pinned simongmt package lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+
+Snapshot: project d09bc8a, Mathlib 25730c7c, plus the pinned simongmt package (2b36630). The contract definitions used by the children are in Contract.lean (Rn line 56, IsC1Submanifold 68, approxTangentPlane 84, HasTangentialDifferentialAt 92, tangentialDifferential 97, areaJacobian 102, AreaFormula 218).
+
+Found and cited from Mathlib:
+- NormDet.lean: LinearMap.normDet_comp (324), normDet_comp_of_finrank_eq (348), normDet_codRestrict (365), normDet_nonneg, normDet_ne_zero_tfae / normDet_eq_zero_iff_ker_ne_bot.
+- lintegral_indicator₀ (Lebesgue/Basic.lean 518), lintegral_iUnion₀ (592), lintegral_tsum (Lebesgue/Add.lean 362).
+- TopologicalSpace.isOpen_biUnion_countable (Bases.lean 942); HasLineDerivAt.unique (LineDeriv/Basic.lean 156).
+- LinearMap.exists_antilipschitzWith (FiniteDimension.lean 231); HasStrictFDerivAt.approximates_deriv_on_nhds (InverseFunctionTheorem/FDeriv.lean 76).
+- ContinuousOn.measurable_piecewise (BorelSpace/Basic.lean 523); measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean 372, 378); NullMeasurableSet.exists_measurable_subset_ae_eq (NullMeasurable.lean 214).
+- ENNReal.tsum_set_one (636) and ENNReal.tsum_biUnion (94) in InfiniteSum/ENNReal.lean; EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Volume/Measure.lean 187); LocallyLipschitzOn (EMetricSpace/Lipschitz.lean 72).
+
+Found and cited from SimonGMT:
+- AreaDomain.lean: weighted_area_formula_lipschitzOn_fiberSum, aemeasurable_weightedAreaFiberSum_lipschitzOn, ae_eq_of_hasFDerivWithinAt, areaJacobianWithin (= normDet ∘ fderivWithin).
+- AreaMultiplicity.lean: areaFiber, weightedAreaFiberSum.
+- continuous_normDet (AreaApproximation.lean 28); euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean 216); HasWeightedApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean 345).
+
+No match: rg finds no AreaFormula or areaFormula_ declaration and no area or coarea formula in the snapshot's Mathlib. The per-piece formula therefore uses SimonGMT's area formulas for Lipschitz maps on Euclidean domains (AreaDomain.lean). That file is not in the import closure of GMT.Ch03.Submission, so Submission.lean must add `import Poincare.SimonGMT.Chapter02.AreaDomain`. Its oleans are present, and the comparator does not freeze Submission's imports.
+
+Checks run against this toolchain:
+- All five child statements elaborate after `import GMT.Ch03.Submission`.
+- A scratch proof of AreaFormula from the five children plus the two siblings compiles.
+- Scratch proofs of all five children compile with the standard axioms only.

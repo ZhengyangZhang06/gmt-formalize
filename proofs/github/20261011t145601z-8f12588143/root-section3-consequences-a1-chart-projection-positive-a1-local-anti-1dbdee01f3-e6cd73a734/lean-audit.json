@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9edd8a4de37f661fe351ac6dc2d087f77c36a871e2ea7a0512bbe7d74263ea88",
+  "git_delta": {
+    "base_commit": "13f6ddbe049b27da55a0dc04340881adf0146298",
+    "candidate_commit": "8176324e66d48cb314c915d60746ced66ca65148",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_hasStrictFDerivAt_injective_local_antilipschitz",
+    "diff_sha256": "29208c8e8c20017b0ea6b9fe4d9429d3473691488bc37942c135c3b28267ce31",
+    "source_sha256": "1351aa1a1f51f4c66bd83c923d045b2ddb7f3db730438682f1ea4ca393ba0997",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_hasStrictFDerivAt_injective_local_antilipschitz",
+      "statement": "∀ (n p : ℕ) (Φ : Rn n → Rn p) (A : Rn n →L[ℝ] Rn p) (u₀ : Rn n), HasStrictFDerivAt Φ A u₀ → Function.Injective A → ∃ s ∈ 𝓝 u₀, ∃ K : ℝ≥0, ∀ x ∈ s, ∀ y ∈ s, ‖x - y‖ ≤ K * ‖Φ x - Φ y‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

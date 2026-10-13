@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "44d4aec819ec6a96eee12f345116eb2919cb3427042967a535462ffee499f05c",
+  "git_delta": {
+    "base_commit": "fa970462a3b96aff7fb3a5d06965cba8225ae704",
+    "candidate_commit": "97bc84615a5e6d541b371b3ae62775b26b2a6556",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_lipschitz_gaussGreen",
+    "diff_sha256": "7147004793389b2addee587f626d80baff6bf6fb362330c3f06a93e393c04a8f",
+    "source_sha256": "5945bca4df20d1e407f913f517d7cce13e5bbe8769aadcfb9f73a98d64fcbb51",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_lipschitz_gaussGreen",
+      "statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ : Rn N → ℝ) (K : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∀ w : Rn N, ∫ y in G ∩ U, fderiv ℝ ζ y w = -∫ y, ζ y * inner ℝ w (ν y) ∂μ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

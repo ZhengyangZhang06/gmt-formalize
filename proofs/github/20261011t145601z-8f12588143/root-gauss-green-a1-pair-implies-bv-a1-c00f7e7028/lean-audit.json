@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "992aaa3e5bec2a975c7494e848f25ac4c1ee0d07cc0e8befeec4eb8b12075a00",
+  "git_delta": {
+    "base_commit": "cbae100144d4035b0d67385126d76792b9ddc1b3",
+    "candidate_commit": "9054a2e23fbded7274f18d91bb693d79129abb83",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_isLocallyBV_of_pair",
+    "diff_sha256": "3513de91abff00302d7dae7b9d39fba064dd4069e60943fdfdb9390674a3ec09",
+    "source_sha256": "7eda1e0aa167d6a9700ff979678ae894ebc49ea4e1dd2fb40d39a6c63402c6d1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_isLocallyBV_of_pair",
+      "statement": "∀ (N : ℕ) (U E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → HasLocallyFinitePerimeter U E",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

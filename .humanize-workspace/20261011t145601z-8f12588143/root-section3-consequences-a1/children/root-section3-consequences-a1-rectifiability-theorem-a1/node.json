@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.rectifiability_theorem-a1",
+  "parent_id": "root.section3_consequences-a1",
+  "depth": 2,
+  "title": "Theorem 3.8 (rectifiability theorem for sets), given Theorem 3.6",
+  "statement": "Assume Simon Ch. 3, Theorem 3.6 in the form BesicovitchFedererProjectionTheorem: for all n, ℓ and every purely n-unrectifiable Q ⊆ ℝ^{n+ℓ} with Q = ⋃_j Q_j and Hⁿ(Q_j) < ∞, ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(Q)) = 0). Then Theorem 3.8 (RectifiabilityTheoremForSets) holds. That is, let n, ℓ ∈ ℕ and A ⊆ ℝ^{n+ℓ} with A = ⋃_j A_j and Hⁿ(A_j) < ∞, and suppose every B ⊆ A with Hⁿ(B) > 0 satisfies ¬ForAlmostAllProjections (n+ℓ) n (p ↦ Hⁿ(p(B)) = 0). Then A is countably n-rectifiable.",
+  "lean_statement": "BesicovitchFedererProjectionTheorem → RectifiabilityTheoremForSets",
+  "lean_name": "section3_rectifiabilityTheorem_of_besicovitchFederer",
+  "depends_on": [
+    "root.section3_consequences-a1.rectifiable_decomposition-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.section3_consequences-a1.rectifiable_decomposition-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-rectifiability-theorem-a1-a1"
+}

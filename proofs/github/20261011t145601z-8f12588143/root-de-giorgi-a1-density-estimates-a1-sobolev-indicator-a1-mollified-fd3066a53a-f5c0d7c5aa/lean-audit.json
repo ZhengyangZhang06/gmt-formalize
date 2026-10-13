@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9be1f071535b7af2dc130b4ac7445561149ac33a72e3370a212bd9514f368c91",
+  "git_delta": {
+    "base_commit": "4d2a75a7a1638c19f49ce4eaede3b2a836e1c1dd",
+    "candidate_commit": "b5b278f9078f983e4c093b4bace2ac0630aa5778",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiSobInd_mollified_integral_tendsto",
+    "diff_sha256": "972414f8317c48c1f2e67e024ce8da2130b688e002deb6522f2b67a80066ceea",
+    "source_sha256": "06a37b7387a16d96741f91c602089e9b732d6155bcfcbd83a7377d77843f7223",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiSobInd_mollified_integral_tendsto",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ζ : Rn N → ℝ) (ρ : ℕ → Rn N → ℝ) (r : ℕ → ℝ) (δ : ℝ), Continuous ζ → HasCompactSupport ζ → μ (Metric.cthickening δ (tsupport ζ)) < ∞ → (∀ j, Continuous (ρ j)) → (∀ j y, 0 ≤ ρ j y) → (∀ j, ∫ y, ρ j y = 1) → (∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (r j)) → (∀ j, r j ≤ δ) → Tendsto r atTop (𝓝 0) → Tendsto (fun j ↦ ∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ) atTop (𝓝 (∫ z, ζ z ∂μ))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

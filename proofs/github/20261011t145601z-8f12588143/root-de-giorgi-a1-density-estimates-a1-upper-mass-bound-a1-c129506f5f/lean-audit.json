@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "305e270370a388fe2525d7bd8e1c3727b52430091b6132840b73e83550bb9546",
+  "git_delta": {
+    "base_commit": "17ef958fc350af9d7dfe211d24f71547ae2e50d0",
+    "candidate_commit": "908ff64a8fc03e3da9cd653dea164327404530ab",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_ball_mass_le",
+    "diff_sha256": "7a37ae410223ac9212cf0cd787793b956f513ba5f287262c16b95c78fea23b9a",
+    "source_sha256": "b323b9253fc0c3c4319c7620be73220d8456928955715cafeab939f6b72366e2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_ball_mass_le",
+      "statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ (x w : Rn (n + 1)) (ρ₁ : ℝ), ‖w‖ ≤ 1 → Metric.ball x ρ₁ ⊆ U → (∀ ρ ∈ Ioo 0 ρ₁, (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ) → ∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (2 * (n + 1) * (volume (Metric.ball (0 : Rn (n + 1)) 1)).toReal * ρ ^ n)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

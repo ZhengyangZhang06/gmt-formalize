@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "129deb6396ede609720e8596f322776c6b4b8c89c12ac694ceb0ebd5beb77dc4",
+  "git_delta": {
+    "base_commit": "97c7a95289ed7520df536a0fea780852656a5504",
+    "candidate_commit": "cd6318a3d79a63e8e466de7974b8fb179772e3cb",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenVar_exists_unit_field_eqOn_compact",
+    "diff_sha256": "7289405ef7c7a77cedef641dac4e9fb8acb2d06f97fb670fade9c664c0bbd8a3",
+    "source_sha256": "8ad751c63c737c1a70c8836b65e5b55725217943b3e7a05584598ea637207755",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenVar_exists_unit_field_eqOn_compact",
+      "statement": "∀ (N : ℕ) (C V : Set (Rn N)) (f : Rn N → Rn N), IsCompact C → IsOpen V → C ⊆ V → ContinuousOn f C → (∀ x ∈ C, ‖f x‖ ≤ 1) → ∃ g : Rn N → Rn N, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ V ∧ (∀ x, ‖g x‖ ≤ 1) ∧ ∀ x ∈ C, g x = f x",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e22a2a720ea4337680d17a23917362ff06b533f1e9216eb5b0c55b675b6fb202",
+  "git_delta": {
+    "base_commit": "bf4a323ec5745d67fa58eaf06e0e41544bab49b6",
+    "candidate_commit": "f33bed6a50088f70117748099711b57c8e5eeb67",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "c4c0aac0ef9d23bf842353e3f13c1428063afc36ec6b8d5c9e0340e982b3ccad",
+    "source_sha256": "d86b5b18514d1c874ee89f3a996d8c41e7381f7f9ec9b0201d1cc9a67f26a54e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiTheorem_holds",
+      "statement": "DeGiorgiTheorem",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

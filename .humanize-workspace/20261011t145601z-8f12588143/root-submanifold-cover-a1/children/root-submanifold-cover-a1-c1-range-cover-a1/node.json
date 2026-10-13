@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_cover-a1.c1_range_cover-a1",
+  "parent_id": "root.submanifold_cover-a1",
+  "depth": 2,
+  "title": "C¹ images are covered by an Hⁿ-null set and countably many embedded C¹ n-submanifolds",
+  "statement": "For all n, p ∈ ℕ (ℝᵈ := EuclideanSpace ℝ (Fin d)) and every map G : ℝⁿ → ℝᵖ of class C¹ (ContDiff ℝ 1 G), there are a set N₀ ⊆ ℝᵖ with Hⁿ(N₀) = 0 (Hⁿ = μHE[n], applied as an outer measure) and sets N_k ⊆ ℝᵖ (k ∈ ℕ), each an n-dimensional embedded C¹ submanifold in the sense of IsC1Submanifold n, such that the range G(ℝⁿ) ⊆ N₀ ∪ ⋃_k N_k.",
+  "lean_statement": "∀ (n p : ℕ) (G : Rn n → Rn p), ContDiff ℝ 1 G → ∃ (N₀ : Set (Rn p)) (N : ℕ → Set (Rn p)), μHE[n] N₀ = 0 ∧ (∀ k, IsC1Submanifold n (N k)) ∧ Set.range G ⊆ N₀ ∪ ⋃ k, N k",
+  "lean_name": "c1_range_null_union_submanifolds",
+  "depends_on": [
+    "root.submanifold_cover-a1.regular_ball_submanifold-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_cover-a1.regular_ball_submanifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-submanifold-cover-a1-c1-range-cover-a1-a1"
+}

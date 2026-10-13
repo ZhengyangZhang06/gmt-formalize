@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "038d825925d5ced650423ba0a880a07759dad0b0df15ace4f82e4dcd6b8ccd3d",
+  "git_delta": {
+    "base_commit": "a595314beb2f49167a43938539888563cb69837b",
+    "candidate_commit": "c282b062d043052d2f32c295c2a8c6580c8bac23",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_upper_density_zero_ae",
+    "diff_sha256": "0a3d4a57f11096c94398753c381dc840d1f03c0eef6b5c37549a4808c0ce7b49",
+    "source_sha256": "8d885b6ef313c455fa5db96ada49e9c99ebcbc0a683f27a86861c9a7f94b4041",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_upper_density_zero_ae",
+      "statement": "∀ (n N : ℕ) (A : Set (Rn N)) (w : Rn N → ℝ), NullMeasurableSet A μHE[n] → (∀ K : Set (Rn N), IsCompact K → IntegrableOn w (A ∩ K) μHE[n]) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∉ A → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in A ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,171 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.eilenberg_inequality-a1`
+- Child DAG node: `root.eilenberg_inequality-a1.eilenberg_core_finite-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source and role. This is Simon, Ch. 2, proof of Theorem 1.9 (chapter-02.txt lines 366–411, printed pp. 45–46), i.e. Steps 4–7 of the parent proof. It is specialised to Mathlib's unnormalized Hausdorff measures (all normalizing constants c_s = 1). Simon's use of the isodiametric inequality (lines 401–406) is replaced by the sibling lemma volume_diameter_bound, so the constant is ωₘ := λₘ(B₁(0)) instead of ωₘω_k/ω_{m+k}. The hypothesis μH[m+k](A) < ∞ is Simon's hypothesis H^{m+k}(A) < ∞. As in the parent (its Remark (i)), measurability of A is not used. Instead of Simon's upper integral and monotone limit (Remark 1.10, lines 407–411), the parent's Step 7 (liminf and Fatou) is used, which directly produces the required Borel majorant g.
+
+Notation. diam = extended diameter in [0, ∞]. For a set T and real s, cost_s(T) := diam(T)^s if T ≠ ∅ and cost_s(∅) := 0; this is the cost used by Mathlib's Hausdorff measure (⨆ _ : T.Nonempty, …). For n ∈ ℕ and x ∈ [0, ∞], the real power x^{(n:ℝ)} equals the ordinary power xⁿ, so x^k·x^m = x^{m+k} for every x ∈ [0, ∞], including 0 and ∞. λₘ = volume on ℝᵐ. ω := ωₘ = λₘ(B₁(0)) < ∞, because B₁(0) is bounded in the finite-dimensional space ℝᵐ. For i ∈ ℕ put ρᵢ := 1/i ∈ (0, ∞] (ρ₀ = ∞); then ρᵢ > 0, ρᵢ ≠ 0 and ρᵢ → 0.
+
+Proof.
+1. Covers (Simon (1), lines 366–370; parent Step 4). For each i, apply the sibling lemma hausdorff_near_optimal_cover with X = ℝ^N, d = m + k, s = A and r = ε = ρᵢ, using μH[m+k](A) < ∞. Choosing such a cover for every i (countable choice) gives sets C_{ij} ⊆ ℝ^N (i, j ∈ ℕ) with
+ (1a) A ⊆ ⋃ⱼ C_{ij};
+ (1b) diam C_{ij} ≤ ρᵢ for all j;
+ (1c) Σⱼ cost_{m+k}(C_{ij}) ≤ μH[m+k](A) + ρᵢ.
+2. The functions gᵢ and g (Simon lines 371–377; parent Step 4). Let K_{ij} := closure of f(C_{ij}), a closed and hence Borel subset of ℝᵐ. For y ∈ ℝᵐ set
+ gᵢ(y) := Σⱼ diam(C_{ij})^k · 1_{K_{ij}}(y) ∈ [0, ∞],  g(y) := liminf_{i→∞} gᵢ(y).
+ Each summand y ↦ diam(C_{ij})^k·1_{K_{ij}}(y) is a constant times the indicator of a Borel set, hence Borel. A countable sum of Borel [0, ∞]-valued functions is Borel, so every gᵢ is Borel. The liminf of a sequence of Borel [0, ∞]-valued functions is Borel, so g is Borel. This is the required measurability.
+3. Pointwise bound (Simon (2), lines 377–384; parent Steps 5 and 7). Fix y ∈ ℝᵐ and put S := A ∩ f⁻¹{y}. For each i let Jᵢ := {j ∈ ℕ : y ∈ f(C_{ij})}, a countable set; each C_{ij} with j ∈ Jᵢ is nonempty.
+ (3a) Cover: S ⊆ ⋃_{j∈Jᵢ} C_{ij}. If x ∈ S then x ∈ A, so x ∈ C_{ij} for some j by (1a); then y = f(x) ∈ f(C_{ij}), i.e. j ∈ Jᵢ.
+ (3b) Liminf bound: μH[k](S) ≤ liminf_i Σ_{j∈Jᵢ} diam(C_{ij})^k. By definition μH[k](S) = sup_{ρ>0} I_ρ(S), where I_ρ(S) is the infimum of Σ cost_k over countable covers of S by sets of diameter ≤ ρ. Fix ρ > 0 and choose i₀ with ρᵢ ≤ ρ for all i ≥ i₀ (possible since ρᵢ → 0). For i ≥ i₀, the family (C_{ij})_{j∈Jᵢ} covers S by (3a) and consists of sets of diameter ≤ ρ by (1b). Enumerate it as a sequence, padding with empty sets of cost 0 if Jᵢ is finite; if Jᵢ = ∅ then S = ∅ and the all-empty cover has cost 0. Since cost_k(T) ≤ diam(T)^k for every T, I_ρ(S) ≤ Σ_{j∈Jᵢ} diam(C_{ij})^k for all i ≥ i₀, hence I_ρ(S) ≤ liminf_i Σ_{j∈Jᵢ} diam(C_{ij})^k. Now take the supremum over ρ > 0. (Mathlib packages exactly this as MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum, applied with the countable index types ιᵢ := {j : ℕ // y ∈ f '' C i j}, the sets t i j := C i j, the radii r i := ρᵢ → 0 (ENNReal.tendsto_inv_nat_nhds_zero), the diameter bound (1b) and the cover (3a).)
+ (3c) Comparison with gᵢ: for every i, Σ_{j∈Jᵢ} diam(C_{ij})^k ≤ gᵢ(y). Write the left side as Σⱼ 1_{Jᵢ}(j)·diam(C_{ij})^k and compare termwise. If j ∈ Jᵢ then y ∈ f(C_{ij}) ⊆ K_{ij}, so the j-th term of gᵢ(y) is also diam(C_{ij})^k. If j ∉ Jᵢ the left term is 0.
+ (3d) By (3b), (3c) and monotonicity of liminf: μH[k](S) ≤ liminf_i Σ_{j∈Jᵢ} diam(C_{ij})^k ≤ liminf_i gᵢ(y) = g(y).
+4. Integral of gᵢ (Simon lines 385–406; parent Step 6). Fix i. Integrals and countable sums of nonnegative measurable functions commute (monotone convergence), and ∫ c·1_K dλₘ = c·λₘ(K) for Borel K. Hence
+ ∫ gᵢ dλₘ = Σⱼ diam(C_{ij})^k · λₘ(K_{ij}).
+ Each term is at most ω·L^m·cost_{m+k}(C_{ij}):
+ (4a) If C_{ij} = ∅: f(C_{ij}) = K_{ij} = ∅, the term is diam(∅)^k·0 = 0 (also for k = 0), and the bound reads 0 ≤ 0.
+ (4b) If C_{ij} ≠ ∅: by the sibling lemma volume_diameter_bound applied to f(C_{ij}) ⊆ ℝᵐ, λₘ(K_{ij}) ≤ ω·diam(f(C_{ij}))^m. Since f is L-Lipschitz, diam f(C_{ij}) ≤ L·diam C_{ij} in [0, ∞] (Mathlib: LipschitzWith.ediam_image_le). Multiplication and the m-th power are monotone on [0, ∞], so
+ diam(C_{ij})^k·λₘ(K_{ij}) ≤ diam(C_{ij})^k·ω·(L·diam C_{ij})^m = ω·L^m·diam(C_{ij})^{m+k} = ω·L^m·cost_{m+k}(C_{ij}).
+ The middle equality is commutative-semiring arithmetic in [0, ∞]: (ab)^m = a^m b^m and x^k x^m = x^{m+k}.
+ Summing over j, pulling out the constant and using (1c):
+ ∫ gᵢ dλₘ ≤ ω·L^m·Σⱼ cost_{m+k}(C_{ij}) ≤ ω·L^m·(μH[m+k](A) + ρᵢ).
+5. Fatou and the limit (Simon lines 407–411 and Remark 1.10; parent Step 7). By Fatou's lemma for the Borel functions gᵢ ≥ 0, then step 4 and monotonicity of liminf:
+ ∫ g dλₘ = ∫ liminf_i gᵢ dλₘ ≤ liminf_i ∫ gᵢ dλₘ ≤ liminf_i ω·L^m·(μH[m+k](A) + ρᵢ).
+ Since ρᵢ → 0, μH[m+k](A) + ρᵢ → μH[m+k](A) in [0, ∞]. The constant ω·L^m is finite (ω < ∞ and L < ∞), so multiplying by it is continuous on [0, ∞]. Hence ω·L^m·(μH[m+k](A) + ρᵢ) → ω·L^m·μH[m+k](A), and the liminf of a convergent sequence is its limit. Therefore ∫ g dλₘ ≤ ωₘ·L^m·μH[m+k](A).
+6. Conclusion. g is Borel (step 2), satisfies μH[k](A ∩ f⁻¹{y}) ≤ g(y) for every y (step 3), and satisfies the integral bound (step 5). ∎
+
+Edge cases. The uniform argument covers all of them, with no case split.
+- m = 0: ℝ⁰ is a point, and volume_diameter_bound holds for m = 0 with (·)⁰ = 1.
+- k = 0: μH[0] counts points. In (3b) the sets C_{ij} with j ∈ Jᵢ are nonempty, and in (4a) the indicator removes the empty C_{ij}, so the convention 0⁰ = 1 never matters.
+- L = 0: volume_diameter_bound and the Lipschitz bound hold verbatim, with the [0, ∞] convention 0·∞ = 0.
+- i = 0: ρ₀ = ∞; all inequalities above remain valid in [0, ∞], and single indices do not affect a liminf.
+
+Formalization notes.
+- Covers: choose C hCcov hCdiam hCsum on the covers from Submission.hausdorffMeasure_exists_cover_tsum_le_add with r = ε = (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos, ENNReal.inv_ne_zero, ENNReal.natCast_ne_top).
+- Functions: G i y := ∑' j, (closure (f '' C i j)).indicator (fun _ => Metric.ediam (C i j) ^ (k : ℝ)) y.
+- Measurability: Measurable.ennreal_tsum, measurable_const.indicator isClosed_closure.measurableSet, Measurable.liminf.
+- Pointwise bound: Measure.hausdorffMeasure_le_liminf_tsum with the subtype index, liminf_le_liminf, tsum_subtype, ENNReal.tsum_le_tsum, Set.indicator_of_mem, Set.indicator_of_notMem.
+- Integral bound: lintegral_tsum, lintegral_indicator_const, iSup_pos, gcongr, the sibling lemma Submission.volume_closure_le_unitBall_mul_ediam_pow, LipschitzWith.ediam_image_le, ENNReal.rpow_natCast, mul_pow, pow_add, ring, ENNReal.tsum_mul_left.
+- Limit: lintegral_liminf_le, Tendsto.liminf_eq, ENNReal.Tendsto.const_mul, ENNReal.tendsto_inv_nat_nhds_zero, measure_ball_ne_top.
+
+Appendix (non-normative formalization aid). The Lean proof below compiled with the pinned toolchain (Lean v4.35.0-rc3, Mathlib 25730c7c) in a scratch file outside the repository. The file begins with import GMT.Ch03.Submission and replays the frozen Contract scope exactly as the comparator does: open Filter MeasureTheory Module Set; open scoped CompactlySupported ENNReal NNReal Topology; namespace GMT.Ch03; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt HasWeightedApproximateTangentSpaceAt PurelyUnrectifiable blowUpMap). A scratch copy of the comparator's child target (theorem _root_.HumanizeNodeComparator.target : (frozen statement) := by exact Submission.X) accepted it, and the whole chain uses only the axioms propext, Classical.choice and Quot.sound. Measurable.ennreal_tsum emits only a deprecation warning.
+
+theorem Submission.eilenberg_hausdorff_upper_integral_of_ne_top : ∀ (N m k : ℕ) (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → μH[((m + k : ℕ) : ℝ)] A ≠ ∞ → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μH[(k : ℝ)] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ volume (Metric.ball (0 : Rn m) 1) * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A := by
+  have hA := @Submission.hausdorffMeasure_exists_cover_tsum_le_add
+  have hB := Submission.volume_closure_le_unitBall_mul_ediam_pow
+  intro N m k A f L hf hA_fin
+  set ω := volume (Metric.ball (0 : Rn m) 1) with hω
+  have hω_top : ω ≠ ∞ := measure_ball_ne_top
+  have hcov : ∀ i : ℕ, ∃ t : ℕ → Set (Rn N), A ⊆ ⋃ j, t j ∧ (∀ j, Metric.ediam (t j) ≤ (i : ℝ≥0∞)⁻¹) ∧ ∑' j, ⨆ _ : (t j).Nonempty, Metric.ediam (t j) ^ ((m + k : ℕ) : ℝ) ≤ μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹ := fun i =>
+    hA _ A _ _ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i)) (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top i)) hA_fin
+  choose C hCcov hCdiam hCsum using hcov
+  set G : ℕ → Rn m → ℝ≥0∞ := fun i y => ∑' j, (closure (f '' C i j)).indicator (fun _ => Metric.ediam (C i j) ^ (k : ℝ)) y with hG
+  have hGmeas : ∀ i, Measurable (G i) := fun i =>
+    Measurable.ennreal_tsum fun j => measurable_const.indicator isClosed_closure.measurableSet
+  refine ⟨fun y => liminf (fun i => G i y) atTop, Measurable.liminf hGmeas, ?_, ?_⟩
+  · intro y
+    have hcover : ∀ᶠ i in atTop, A ∩ f ⁻¹' {y} ⊆ ⋃ j : {j : ℕ // y ∈ f '' C i j}, C i j.1 :=
+      Eventually.of_forall fun i x hx => by
+        obtain ⟨j, hj⟩ := mem_iUnion.1 (hCcov i hx.1)
+        exact mem_iUnion.2 ⟨⟨j, x, hj, hx.2⟩, hj⟩
+    have h1 := Measure.hausdorffMeasure_le_liminf_tsum (ι := fun i : ℕ => {j : ℕ // y ∈ f '' C i j}) (k : ℝ) (A ∩ f ⁻¹' {y}) (l := atTop) (fun i : ℕ => (i : ℝ≥0∞)⁻¹) ENNReal.tendsto_inv_nat_nhds_zero (fun i j => C i j.1) (Eventually.of_forall fun i j => hCdiam i j.1) hcover
+    refine h1.trans (liminf_le_liminf (Eventually.of_forall fun i => ?_))
+    calc ∑' j : {j : ℕ // y ∈ f '' C i j}, Metric.ediam (C i j.1) ^ (k : ℝ)
+        = ∑' j, ({j | y ∈ f '' C i j} : Set ℕ).indicator (fun j => Metric.ediam (C i j) ^ (k : ℝ)) j := tsum_subtype ({j | y ∈ f '' C i j} : Set ℕ) (fun j => Metric.ediam (C i j) ^ (k : ℝ))
+      _ ≤ G i y := ENNReal.tsum_le_tsum fun j => by
+          by_cases hj : y ∈ f '' C i j
+          · rw [Set.indicator_of_mem (show j ∈ {j | y ∈ f '' C i j} from hj), Set.indicator_of_mem (subset_closure hj)]
+          · rw [Set.indicator_of_notMem (show j ∉ {j | y ∈ f '' C i j} from hj)]
+            exact bot_le
+  · have hint : ∀ i : ℕ, ∫⁻ y, G i y ≤ ω * L ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) := by
+      intro i
+      rw [hG]
+      dsimp only
+      rw [lintegral_tsum (fun j => (measurable_const.indicator isClosed_closure.measurableSet).aemeasurable)]
+      calc ∑' j, ∫⁻ y, (closure (f '' C i j)).indicator (fun _ => Metric.ediam (C i j) ^ (k : ℝ)) y
+          = ∑' j, Metric.ediam (C i j) ^ (k : ℝ) * volume (closure (f '' C i j)) := by
+            congr 1; ext j; exact lintegral_indicator_const isClosed_closure.measurableSet _
+        _ ≤ ∑' j, ω * L ^ m * ⨆ _ : (C i j).Nonempty, Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) := ENNReal.tsum_le_tsum fun j => by
+            rcases (C i j).eq_empty_or_nonempty with h | h
+            · simp [h]
+            · rw [iSup_pos h]
+              calc Metric.ediam (C i j) ^ (k : ℝ) * volume (closure (f '' C i j)) ≤ Metric.ediam (C i j) ^ (k : ℝ) * (ω * Metric.ediam (f '' C i j) ^ m) := by gcongr; exact hB m _
+                _ ≤ Metric.ediam (C i j) ^ (k : ℝ) * (ω * (L * Metric.ediam (C i j)) ^ m) := by gcongr; exact hf.ediam_image_le _
+                _ = ω * L ^ m * Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) := by
+                  rw [ENNReal.rpow_natCast, ENNReal.rpow_natCast, mul_pow, pow_add]; ring
+        _ = ω * L ^ m * ∑' j, ⨆ _ : (C i j).Nonempty, Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) := ENNReal.tsum_mul_left
+        _ ≤ ω * L ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) := by gcongr; exact hCsum i
+    calc ∫⁻ y, liminf (fun i => G i y) atTop ≤ liminf (fun i => ∫⁻ y, G i y) atTop := lintegral_liminf_le hGmeas
+      _ ≤ liminf (fun i : ℕ => ω * L ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹)) atTop := liminf_le_liminf (Eventually.of_forall hint)
+      _ = ω * L ^ m * μH[((m + k : ℕ) : ℝ)] A := by
+        apply Tendsto.liminf_eq
+        have : Tendsto (fun i : ℕ => μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) atTop (𝓝 (μH[((m + k : ℕ) : ℝ)] A + 0)) := tendsto_const_nhds.add ENNReal.tendsto_inv_nat_nhds_zero
+        rw [add_zero] at this
+        exact ENNReal.Tendsto.const_mul this (Or.inr (ENNReal.mul_ne_top hω_top (ENNReal.pow_ne_top ENNReal.coe_ne_top)))
+
+## Key steps
+
+1. For each i apply hausdorff_near_optimal_cover (d = m+k, r = ε = 1/i) to get covers C_{ij} of A with diam ≤ 1/i and Σⱼ cost_{m+k}(C_{ij}) ≤ μH[m+k](A) + 1/i.
+2. Define the Borel functions gᵢ := Σⱼ diam(C_{ij})^k·1_{closure f(C_{ij})} and g := liminf gᵢ, which is Borel.
+3. Pointwise: A ∩ f⁻¹{y} is covered by the C_{ij} with y ∈ f(C_{ij}), so μH[k](A ∩ f⁻¹{y}) ≤ liminf_i Σ_{j : y ∈ f(C_{ij})} diam(C_{ij})^k ≤ liminf gᵢ(y) = g(y) (hausdorffMeasure_le_liminf_tsum).
+4. Integral: ∫gᵢ = Σⱼ diam(C_{ij})^k·λₘ(closure f(C_{ij})) ≤ ωₘL^m·Σⱼ cost_{m+k}(C_{ij}) ≤ ωₘL^m(μH[m+k](A) + 1/i), by volume_diameter_bound and diam f(C) ≤ L·diam C.
+5. Fatou: ∫g ≤ liminf ∫gᵢ ≤ lim ωₘL^m(μH[m+k](A) + 1/i) = ωₘL^m·μH[m+k](A).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'μHE|euclideanHausdorffMeasure' mathlib/Mathlib (snapshot)`
+- `rg -n '^theorem|^lemma|^def|^noncomputable def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'def ediam|def EMetric.diam' mathlib/Mathlib/Topology/EMetricSpace mathlib/Mathlib/Topology/MetricSpace`
+- `rg -n 'theorem lintegral_liminf_le|theorem Measurable.liminf|theorem tendsto_inv_nat_nhds_zero|theorem lintegral_tsum|theorem lintegral_indicator_const|theorem addHaar_closedBall |theorem measure_closedBall_lt_top|theorem measure_closedBall_pos|theorem lintegral_const_mul |theorem Measurable.ennreal_tsum|theorem finrank_euclideanSpace_fin' mathlib/Mathlib`
+- `rg -n 'ediam_closure|diam_closure' mathlib/Mathlib/Topology`
+- `rg -n 'theorem ediam_image_le' mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `rg -n -i 'eilenberg|coarea inequality|upper integral' simongmt/Poincare mathlib/Mathlib`
+- `rg -ln for the terms 1.9, 1.8, hausdorffMeasure_image_le, μH[ in simongmt/Poincare/SimonGMT/Chapter01, Chapter02, Chapter03`
+- `rg -n '^theorem|^lemma' simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean simongmt/Poincare/SimonGMT/Chapter02/LipschitzMeasurability.lean simongmt/Poincare/SimonGMT/Chapter02/UpperIntegral.lean`
+- `grep -rl hausdorffMeasure_exists_cover_tsum_le_add / volume_closure_le_unitBall_mul_ediam_pow / eilenberg_hausdorff_upper_integral_of_ne_top over .humanize, simongmt/Poincare and mathlib/Mathlib (name-collision check)`
+- `cmp snapshot project/GMT/Ch03/Contract.lean with workspace GMT/Ch03/Contract.lean`
+- `lake env lean on scratch files replaying the Contract scope from gmt-compare.py contract_scope (elaboration and proofs of children and parent assembly)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/UpperIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/LipschitzMeasurability.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+
+Snapshot is project d09bc8a with Mathlib 25730c7c; the snapshot Contract is byte-identical to the workspace Contract.
+
+Available and used:
+- Normalization: μHE[d] = addHaarScalarFactor(volume, μH[d]) • μH[d] (euclideanHausdorffMeasure_def). So μHE[d] S = c_d·μH[d] S by rfl, and c_d ≠ 0 by addHaarScalarFactor_volume_hausdorffMeasure_ne_zero.
+- Hausdorff measure: hausdorffMeasure_apply (sup over r > 0 of inf over countable covers, with cost ⨆ _ : Nonempty, ediam^d), which gives child A; hausdorffMeasure_le_liminf_tsum with dependent countable index types, used for child C's pointwise bound.
+- Diameter: Metric.ediam lives in namespace Metric, which the Contract does not open, so the statements write Metric.ediam. Also Metric.ediam_closure, Metric.diam_closure and LipschitzWith.ediam_image_le.
+- Ball volume: Measure.addHaar_closedBall, whose right side is ofReal(r^finrank)·μ(ball 0 1); this is why Metric.ball appears in the frozen statements. Also finrank_euclideanSpace_fin, measure_ball_ne_top and Metric.measure_ball_pos.
+- Integration: lintegral_liminf_le (Fatou), lintegral_tsum, lintegral_indicator_const, lintegral_const_mul, Measurable.liminf, Measurable.ennreal_tsum (a deprecated alias) and ENNReal.tendsto_inv_nat_nhds_zero.
+
+No match: neither Mathlib nor SimonGMT has an Eilenberg/coarea inequality, a near-optimal Hausdorff cover lemma in ∃-form, or a lemma bounding volume by ωₘ·diamᵐ. SimonGMT Chapter02 has only Theorem 1.8(i) (hausdorffMeasure_image_le_of_lipschitzOn, nullMeasurableSet_image_of_lipschitzOn*) and the Remark 1.10 upper integral (UpperIntegral.lean). Neither is needed, because the frozen type asks for a measurable majorant directly.
+
+The three proposed names collide with nothing in the run's .humanize tree, SimonGMT or Mathlib.
+
+Scratch Lean checks: A and B proved; C proved from A and B; the parent proved from C; comparator-style exact Submission.X targets accepted; the parent uses only the axioms propext, Classical.choice and Quot.sound.

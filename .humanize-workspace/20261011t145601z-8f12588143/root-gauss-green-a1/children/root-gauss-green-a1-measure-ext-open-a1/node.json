@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.measure_ext_open-a1",
+  "parent_id": "root.gauss_green-a1",
+  "depth": 2,
+  "title": "Measures vanishing off U and finite on compacts of U are determined by their values on open subsets of U",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, and μ, μ' Borel measures on ℝ^N with μ(ℝ^N ∖ U) = 0, μ'(ℝ^N ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, and μ(O) = μ'(O) for every open O ⊆ U. Then μ = μ'.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ μ' : Measure (Rn N)), IsOpen U → μ Uᶜ = 0 → μ' Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → (∀ O : Set (Rn N), IsOpen O → O ⊆ U → μ O = μ' O) → μ = μ'",
+  "lean_name": "gaussGreenRep_measure_eq_of_open_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-measure-ext-open-a1-a1"
+}

@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f9a2475dd67f8a1df804f185db2ae7c99ecff4705581f63da0ebd4c9dc2a8582",
+  "git_delta": {
+    "base_commit": "48ca2beeabc27843a0944f3327ceb98eb89ba527",
+    "candidate_commit": "97b00be529fc2a1f30436f36d7ace54af2ccfb7c",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean",
+      "proofs/github/20261011t145601z-8f12588143/root-final-proof.md"
+    ],
+    "diff_sha256": "6d76b4071d7a520e9188bef9056e230fc61e1a2032c2330b72f10e3dfd7232c3",
+    "source_sha256": "52570fbc08aa2426aea30dfe5cd74b81fb93039497c9e7ae4d0c2bca3a601ebf",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch03.main_theorem",
+      "statement": "SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "75468bc4503384f80ccc532ebf86ceb659cd8dd3"
+}

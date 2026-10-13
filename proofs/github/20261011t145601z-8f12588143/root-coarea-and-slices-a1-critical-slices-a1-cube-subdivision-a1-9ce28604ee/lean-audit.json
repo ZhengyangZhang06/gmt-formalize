@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8d883d5dd8943055c17ac0a0c2b91607c24c2f43a60b59df7aae855ee068549e",
+  "git_delta": {
+    "base_commit": "08bcb58fb79d60658a25708530e486782088eac6",
+    "candidate_commit": "8407a513d55434ca3c5c0ba4318cd61b3fed6311",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "critSlices_cube_cover",
+    "diff_sha256": "001204ec4168d661b2be30b6980fd33773181574ef7440834388319cee435bde",
+    "source_sha256": "ab76b1fa4d4fe0b96f8cfea1991493e379b1f4d791ad3d2d58c1a7c424335f7a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.critSlices_cube_cover",
+      "statement": "∀ (n M : ℕ) (R : ℝ), 0 < M → 0 ≤ R → ∃ Q : (Fin n → Fin M) → Set (Rn n), (∀ α, Convex ℝ (Q α)) ∧ (∀ α, Q α ⊆ Metric.closedBall 0 (Real.sqrt n * R)) ∧ (∀ α, ∀ u ∈ Q α, ∀ v ∈ Q α, dist u v ≤ Real.sqrt n * (2 * R / M)) ∧ Metric.closedBall (0 : Rn n) R ⊆ ⋃ α, Q α",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

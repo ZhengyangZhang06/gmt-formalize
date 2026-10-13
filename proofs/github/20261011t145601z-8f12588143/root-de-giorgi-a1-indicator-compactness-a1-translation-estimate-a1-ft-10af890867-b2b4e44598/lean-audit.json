@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd98102005ab0f24e4efc321e10836e70af7a8501bf1a741888db57b65669efb",
+  "git_delta": {
+    "base_commit": "438f8b53b94cda550d889a04beb0332de28b8d46",
+    "candidate_commit": "c2ec4eefe893d9ce1bdfc725c0e74f4723926f73",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_transEst_setIntegral_shift_sub_ftc",
+    "diff_sha256": "34c1ad94db1821835b8ef8c959304ed698420ebeac74f61f6d3951a62c2d5ae8",
+    "source_sha256": "7899516b54d1394448d4f044e2b6e9b9e843e0cdfdd06e1ae8dcf64dfa0093a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_transEst_setIntegral_shift_sub_ftc",
+      "statement": "∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ z in F, (ψ (z - h) - ψ z) = -∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

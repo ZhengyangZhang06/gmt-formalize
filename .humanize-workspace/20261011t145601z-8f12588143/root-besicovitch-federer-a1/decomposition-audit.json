@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def ForAlmostAllProjections|^noncomputable def frameProjection|^def BesicovitchFedererProjectionTheorem|^abbrev Rn|^open|^namespace|^section|^end GeneralDefinitions|^import",
+        "def CountablyRectifiable|def PurelyUnrectifiable|measurable_rectifiable_purelyUnrectifiable_decomposition|theorem (CountablyRectifiable|PurelyUnrectifiable).mono|theorem countablyRectifiable_iUnion|axiom|sorry",
+        "Monotone.measure_iUnion|exists_disjoint_subfamily_covering_enlargement|theorem exists_disjoint_covering_ae|ae_tendsto_measure_inter_div|instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace|exists_isCompact_diff_lt",
+        "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero|Isometry.euclideanHausdorffMeasure_image",
+        "LipschitzOnWith.extend_real|LipschitzOnWith.extend_pi|hausdorffMeasure_zero_singleton|starProjection_norm_le|theorem finrank_span_eq_card|isMulInvariant_eq_smul_of_compactSpace",
+        "besicovitch.?federer|coneMass|coneDensity|coneTrichotomy|bf_coneFree|bf_infiniteFibre|bf_compact",
+        "orthogonalGroup.*CompactSpace|CompactSpace.*orthogonalGroup|IsTopologicalGroup \\(unitary",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bf-independent-audit-k7mjbbfk/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bf-independent-audit-k7mjbbfk/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bf-independent-audit-k7mjbbfk/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/tmp/bf-independent-audit-k7mjbbfk/Types.lean",
+        "/tmp/bf-independent-audit-k7mjbbfk/Axioms.lean",
+        "/tmp/bf-independent-audit-k7mjbbfk/Assembly.lean"
+      ],
+      "conclusion": "Reviewed the selected contract besicovitchFedererProjectionTheorem_holds : BesicovitchFedererProjectionTheorem. Splitting is appropriate: all eight obligations contribute to this theorem, and the dependency graph is acyclic and correctly directed. All names are bare identifiers, mutually distinct and unreserved in the DAG. Every exact one-line proposition independently elaborated with autoImplicit=false without child implementations. Independently replayed density, compact-case and parent assemblies compile with the exact hypotheses, including Eilenberg as an explicit assumption rather than a placeholder; the parent assembly handles n=0 and ℓ=0. Checked library lemmas and assemblies depend only on propext, Classical.choice and Quot.sound. Project/mathlib revisions match the manifest; SimonGMT matches its pinned revision. The library supports the required arbitrary-set continuity, finite-measure compact approximation, covering and measure-normalization results. Recorded searches found no matching Besicovitch–Federer/cone theorem or orthogonal-group compactness instance in the reference libraries. No IsUnit/Matrix inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_free_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary E and all natural dimensions. The small-ball cover, Lipschitz inverse, coordinatewise extension and isometric parametrization prove the exact rectifiability conclusion. The proof also handles empty pieces and zero dimensions without requiring s<1."
+    },
+    {
+      "key": "cone_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cone-free remainder is null by the declared dependency. The slab inclusion handles cone vertices explicitly, 3h<δ permits both mass estimates, and disjoint n-ball packing gives exactly 2·15^n·c·δ^n. The argument remains valid for c=0 and nonmeasurable B."
+    },
+    {
+      "key": "cone_density_positive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The increasing sets Z_i exhaust the stated exceptional set. Each satisfies cone_mass_bound at the chosen aperture. The pinned Monotone.measure_iUnion applies without measurability assumptions; letting c decrease to zero and using a countable ball cover proves the exact nullity statement."
+    },
+    {
+      "key": "cone_density_infinite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fine family of closed balls satisfies the pinned Vitali theorem on W, including for a possibly nonmeasurable projected set. The corresponding cone pieces are disjoint Borel subsets of A. Their finite total mass yields the stated projection bound, which tends to zero as K increases."
+    },
+    {
+      "key": "infinite_fibres",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit Eilenberg hypothesis matches the existing dependency's frozen type exactly. Applying it with m=n, k=0 and L=1 gives a finite-integral majorant. Infinite fibres have infinite H⁰ measure, so their images lie in its null infinite-value set; isometry invariance transfers nullity to W."
+    },
+    {
+      "key": "cone_trichotomy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complete proof supplies measurability, sphere estimates, the outer-measure density dichotomy, slab inclusions, Haar averaging and transfer to frames. It handles kernel points through the axis alternative and dependent frames through exclusion from the exceptional set. These steps prove the exact stated disjunction without assuming the parent theorem or deferring proof construction. Cross-checked against [Dall’Alba, §§4–5](https://www.math.unipd.it/~monti/tesi/DallAlba.pdf)."
+    },
+    {
+      "key": "compact_case",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four dependencies apply with their stated hypotheses. Intersecting the full-measure frame sets over 1/(i+1), the remaining axis witnesses force an infinite fibre. The resulting cover has null projection. The exact conditional Lean conclusion was independently checked by replaying the assembly with the proposed child types."
+    },
+    {
+      "key": "compact_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel hulls and the pinned measurable decomposition yield Borel purely unrectifiable parts of finite measure. Pure unrectifiability of Q makes each Q_j∩R_j null. Compact approximation, countable subadditivity and reindexing prove the exact covering conclusion. Reusing the existing library decomposition creates no DAG cycle."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0a2b8934d9fef564cdf1c9e8c56e8e396109a9b2f4c508f51628c7f7078f5783",
+  "git_delta": {
+    "base_commit": "e22f0ba8b4dd2ccff1f63017d565b31bfb6b4bd2",
+    "candidate_commit": "6de0983eb43c7440bd6a030f39f4b09bc6582a1a",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "coarea_gluing_of_pieces",
+    "diff_sha256": "2199e4214d1b4e34e625bdedaa475d14ce711a1d88e391f61a27ac4ef8024c46",
+    "source_sha256": "9c71cbb5028a1896ff874f5c830ca1cae2316bbcb2ae078acbcb81738506aae7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_gluing_of_pieces",
+      "statement": "∀ (N n m k : ℕ) (U M : Set (Rn N)) (f : Rn N → Rn m) (w : Rn N → ℝ≥0∞) (S : ℕ → Set (Rn N)), IsOpen U → M ⊆ U → ContinuousOn f U → (∀ Z ⊆ M, μHE[n] Z = 0 → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (Z ∩ f ⁻¹' {y}) = 0) → (∀ j, MeasurableSet (S j)) → μHE[n] (M \\ ⋃ j, S j) = 0 → (∀ j, ∀ B ⊆ S j, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧ ∫⁻ x in B, φ x * w x ∂μHE[n] = ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume) → ∀ A ⊆ M, NullMeasurableSet A μHE[n] → ∀ g : Rn N → ℝ≥0∞, AEMeasurable g ((μHE[n] : Measure (Rn N)).restrict A) → ∫⁻ x in A, g x * w x ∂μHE[n] = ∫⁻ y, (∫⁻ x in A ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∂volume",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

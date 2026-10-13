@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "891a9cf05232f18cde8c6c086bcbb7541317f7212375d88fecd933c31c65053c",
+  "git_delta": {
+    "base_commit": "9305473129b1605935eb357f70521be1c2e9f135",
+    "candidate_commit": "b787fdbd4fbe30edd1b91bf499b457c2c7e998c3",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_radial_cutoff",
+    "diff_sha256": "6f9118f4ef4124c773f308255d0aa215fcf153d24fba18122f369c0462a458c2",
+    "source_sha256": "1d57d7e9dfc875b9e12745ed1740ff808ab8cdc12be7eedff14f958998bf4f9a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_radial_cutoff",
+      "statement": "∀ (N : ℕ) (x : Rn N) (s ρ : ℝ), 0 < s → s < ρ → ∃ ζ : Rn N → ℝ, (∃ K : ℝ≥0, LipschitzWith K ζ) ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ Metric.closedBall x ρ ∧ (∀ y, 0 ≤ ζ y ∧ ζ y ≤ 1) ∧ (∀ y ∈ Metric.ball x s, ζ y = 1) ∧ (∀ y ∉ Metric.ball x ρ, ζ y = 0) ∧ ∀ G : Set (Rn N), NullMeasurableSet G volume → ∫ y in G, ‖fderiv ℝ ζ y‖ = ((volume (G ∩ Metric.ball x ρ)).toReal - (volume (G ∩ Metric.ball x s)).toReal) / (ρ - s)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

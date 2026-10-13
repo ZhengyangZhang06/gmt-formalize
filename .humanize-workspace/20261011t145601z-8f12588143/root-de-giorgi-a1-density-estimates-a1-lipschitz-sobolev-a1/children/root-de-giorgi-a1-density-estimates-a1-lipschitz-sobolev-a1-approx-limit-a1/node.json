@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1.approx_limit-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1",
+  "depth": 4,
+  "title": "Passage to the limit in a Sobolev bound along C¹ approximations with uniformly bounded, a.e. convergent derivatives supported in a fixed compact set",
+  "statement": "Let N ∈ ℕ, p ∈ ℝ≥0∞, c ∈ ℝ, K ∈ ℝ≥0, S ⊆ ℝ^N compact, u : ℝ^N → ℝ and v_j : ℝ^N → ℝ (j ∈ ℕ). Assume:\n- each v_j is C¹ with tsupport v_j ⊆ S;\n- ‖Dv_j(y)‖ ≤ K for all j and y;\n- v_j(y) → u(y) for L^N-a.e. y;\n- Dv_j(y) → Du(y) in ℝ^N →L[ℝ] ℝ for L^N-a.e. y;\n- eLpNorm(v_j, p, L^N) ≤ ENNReal.ofReal(c ∫ ‖Dv_j‖ dL^N) for every j.\nThen eLpNorm(u, p, L^N) ≤ ENNReal.ofReal(c ∫ ‖Du‖ dL^N). Here Dw(y) = fderiv ℝ w y and L^N = volume on ℝ^N = EuclideanSpace ℝ (Fin N).",
+  "lean_statement": "∀ (N : ℕ) (p : ℝ≥0∞) (c : ℝ) (K : ℝ≥0) (S : Set (Rn N)) (u : Rn N → ℝ) (v : ℕ → Rn N → ℝ), IsCompact S → (∀ j, ContDiff ℝ 1 (v j)) → (∀ j, tsupport (v j) ⊆ S) → (∀ j y, ‖fderiv ℝ (v j) y‖ ≤ K) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ v j y) atTop (𝓝 (u y))) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ fderiv ℝ (v j) y) atTop (𝓝 (fderiv ℝ u y))) → (∀ j, eLpNorm (v j) p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ (v j) y‖)) → eLpNorm u p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖)",
+  "lean_name": "deGiorgiDensSob_eLpNorm_le_of_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lipschitz-sobolev-a1-approx-limit-a1-a1"
+}

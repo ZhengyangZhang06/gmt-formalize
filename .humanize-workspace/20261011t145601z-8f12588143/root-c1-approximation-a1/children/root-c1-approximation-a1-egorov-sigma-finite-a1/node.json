@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.egorov_sigma_finite-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "Egoroff's theorem for Lebesgue measure on ℝⁿ with a closed good set and uniform convergence on compacta",
+  "statement": "Let n ∈ ℕ, let η_k : ℝⁿ → ℝ (k ∈ ℕ) and g : ℝⁿ → ℝ be Borel measurable, let S ⊆ ℝⁿ be a Borel set, and suppose η_k(x) → g(x) as k → ∞ for every x ∈ S. Then for every ε ∈ (0, ∞] there is a closed set A ⊆ S with Lⁿ(S ∖ A) < ε such that η_k → g uniformly on every compact set Q ⊆ A.",
+  "lean_statement": "∀ (n : ℕ) (η : ℕ → Rn n → ℝ) (g : Rn n → ℝ) (S : Set (Rn n)), (∀ k, Measurable (η k)) → Measurable g → MeasurableSet S → (∀ x ∈ S, Tendsto (fun k => η k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A ⊆ S, IsClosed A ∧ volume (S \\ A) < ε ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → TendstoUniformlyOn η g atTop Q",
+  "lean_name": "egorov_closed_subset_uniformOn_compact_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-c1-approximation-a1-egorov-sigma-finite-a1-a1"
+}

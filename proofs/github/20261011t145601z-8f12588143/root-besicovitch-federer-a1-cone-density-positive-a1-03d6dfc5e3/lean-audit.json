@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dcd56e241d65ccb54d5345015db316805b043a227175ee364a9c6beff3ca4ca2",
+  "git_delta": {
+    "base_commit": "c7ff955fab63c0d3a049adaaf24971687d870a50",
+    "candidate_commit": "9827f5e9a7274d28dd098ba9e82e3ced797406bc",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_coneDensity_zero_null",
+    "diff_sha256": "7d4c4ad010a1004cd3fc8fb4bf663bdd8b8727a2eb28d7c0bc66989203c1b3da",
+    "source_sha256": "25832a8f6d4ff99845f8dc93f1e9dba2eb771ad8f9ddb8420b8498346969f77c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_coneDensity_zero_null",
+      "statement": "∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), PurelyUnrectifiable n A → ∀ δ : ℝ, 0 < δ → μHE[n] {a | a ∈ A ∧ ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)} = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

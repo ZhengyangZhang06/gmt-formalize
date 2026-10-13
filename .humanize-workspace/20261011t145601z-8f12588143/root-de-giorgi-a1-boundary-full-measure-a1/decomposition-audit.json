@@ -1,0 +1,49 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def normalAverage|def reducedBoundary",
+        "theorem ae_tendsto_average|theorem tendsto_filterAt|protected def vitaliFamily|instance.*HasBesicovitchCovering",
+        "continuous_infEDist|mem_closure_iff_infEDist_zero",
+        "exists_inv_nat_lt|inv_le_inv",
+        "deGiorgiBFM_(normalAverage_tendsto_ae|exists_open_exhaustion)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/DeGiorgiBFMSplitCheck.lean",
+        "python3 -I /tmp/bfm-independent-audit-kl_bcsgt/run_lean.py /tmp/bfm-independent-audit-kl_bcsgt/FrozenTypes2.lean",
+        "python3 -I /tmp/bfm-independent-audit-kl_bcsgt/run_lean.py /tmp/bfm-independent-audit-kl_bcsgt/ProofReplay2.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-boundary-full-measure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DeGiorgiBFMSplitCheck.lean",
+        "/tmp/bfm-independent-audit-kl_bcsgt/FrozenTypes2.lean",
+        "/tmp/bfm-independent-audit-kl_bcsgt/ProofReplay2.lean"
+      ],
+      "conclusion": "The split is appropriate: finite-measure open-ball differentiation and open exhaustion are independent obligations that together prove the selected parent through restriction, bounded integrability, and countable almost-everywhere assembly. The snapshot contract matches the workspace; inspected library files match pinned Mathlib 25730c7c. Both exact one-line types independently elaborate without either child declaration, and required typeclasses synthesize for arbitrary N. Both supplied proofs and the exact parent assembly compile against byte-identical frozen definitions without importing Submission or the ancestor theorem; their only axioms are propext, Classical.choice, and Quot.sound. Both names are valid bare identifiers, with no reservation matches among 141 DAG nodes or Submission files across 436 Git refs. Empty sibling-dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "open_ball_differentiation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including finite measure, integrability, and the right-hand radius limit. Finite measure supplies the differentiation theorem's measure assumptions. The zero-measure case correctly uses the smaller closed ball; the positive-measure case justifies exhaustion, integral convergence, and inversion at a finite nonzero limit. The epsilon argument proves the full stated conclusion, including N = 0. The supplied proof is complete, non-circular, and directly applicable to the parent's finite restrictions."
+    },
+    {
+      "key": "open_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree with all hypotheses stated. The positive extended-distance threshold places each compact K_i inside U; continuity gives openness and closedness, properness gives compactness, and measure monotonicity gives finite measure. The explicit index choice covers every point of U, including the empty-complement case. Union equality also ensures W_i ⊆ U. The proof is complete and independent of the other child; its conclusion supplies precisely the parent's localization."
+    }
+  ],
+  "required_changes": []
+}

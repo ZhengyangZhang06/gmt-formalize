@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "dbfef592a42cd739a0df77b10cf122eef8ed714897da06fbff536662363af657",
+  "git_delta": {
+    "base_commit": "6c9bfd6bdfc7c1cc7811aab09f4aa9ae3930fd66",
+    "candidate_commit": "7ccd4e0630f6a0c27e6ca51952aadcbf56174abe",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "3dd119f72f519fcaad5024e0a5036640325c1c3ebfd2b8fd841573e913f11d07",
+    "source_sha256": "60d79c50c793513262ea7f4d6e44ca0adb54511179da4565c4c3a1b8bff9ea6d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_measure_le_two_pow_mul_hausdorff",
+      "statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (A : Set (Rn N)), (∀ x ∈ A, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μ A ≤ 2 ^ n * μHE[n] A",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

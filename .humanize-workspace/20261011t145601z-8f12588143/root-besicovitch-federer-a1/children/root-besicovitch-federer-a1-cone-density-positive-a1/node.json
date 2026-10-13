@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_density_positive-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Vanishing cone density happens only on an Hⁿ-null set (Mattila 15.15–15.16; Dall'Alba Cor. 4.7, Lemma 5.2)",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ, N := n + ℓ, W ⊆ ℝ^N an n-dimensional subspace, P := W.starProjection, X(a, r, s) := {x : |P(x − a)| < s|x − a|} ∩ B(a, r), A ⊆ ℝ^N purely n-unrectifiable and δ > 0. Then the set of a ∈ A such that for every c > 0 there is ε > 0 with Hⁿ(A ∩ X(a, r, s)) ≤ c(rs)ⁿ for all 0 < s < ε and 0 < r < δ (i.e. the cone density Φ_δ(a, W^⊥) = limsup_{s↓0} sup_{0<r<δ}(rs)^{−n}Hⁿ(A ∩ X(a, r, s)) vanishes) has Hⁿ-measure 0.",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), PurelyUnrectifiable n A → ∀ δ : ℝ, 0 < δ → μHE[n] {a | a ∈ A ∧ ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)} = 0",
+  "lean_name": "bf_coneDensity_zero_null",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-positive-a1-a1"
+}

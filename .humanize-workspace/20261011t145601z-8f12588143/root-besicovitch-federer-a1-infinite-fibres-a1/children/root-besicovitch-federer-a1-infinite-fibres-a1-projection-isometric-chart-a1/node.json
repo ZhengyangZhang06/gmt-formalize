@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.infinite_fibres-a1.projection_isometric_chart-a1",
+  "parent_id": "root.besicovitch_federer-a1.infinite_fibres-a1",
+  "depth": 3,
+  "title": "Isometric chart of the orthogonal projection onto an n-plane: a 1-Lipschitz f : ℝ^{n+ℓ} → ℝⁿ with the fibres of P and Hⁿ(P(S)) = Lⁿ(f(S))",
+  "statement": "Let n, ℓ ∈ ℕ, let W ⊆ ℝ^{n+ℓ} = EuclideanSpace ℝ (Fin (n+ℓ)) be a linear subspace with dim W = n, and let P := W.starProjection : ℝ^{n+ℓ} → ℝ^{n+ℓ} be the orthogonal projection onto W. Then there is a map f : ℝ^{n+ℓ} → ℝⁿ = EuclideanSpace ℝ (Fin n) such that:\n(i) f is 1-Lipschitz;\n(ii) for all a, b ∈ ℝ^{n+ℓ}, f(a) = f(b) ⟺ P(a) = P(b);\n(iii) for every set S ⊆ ℝ^{n+ℓ} (arbitrary), Hⁿ(P(S)) = Lⁿ(f(S)).\nHere Hⁿ := μHE[n] (outer measure) on ℝ^{n+ℓ}, and Lⁿ := volume (Lebesgue outer measure) on ℝⁿ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∃ f : Rn (n + ℓ) → Rn n, LipschitzWith 1 f ∧ (∀ a b : Rn (n + ℓ), f a = f b ↔ W.starProjection a = W.starProjection b) ∧ ∀ S : Set (Rn (n + ℓ)), μHE[n] (W.starProjection '' S) = volume (f '' S)",
+  "lean_name": "bf_starProjection_isometricChart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-infinite-fibres-a1-projection-isometric-chart-a1-a1"
+}

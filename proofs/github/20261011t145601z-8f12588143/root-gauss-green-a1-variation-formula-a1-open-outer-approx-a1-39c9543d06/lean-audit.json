@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "32f53b2b8babb1ea0908fcae44acc81a5aeb2560ed7542e83083fff4401f929d",
+  "git_delta": {
+    "base_commit": "97c7a95289ed7520df536a0fea780852656a5504",
+    "candidate_commit": "6da59a8e23d8de8f2ffb15cf5ebfe4750a4a5db3",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenVar_exists_isOpen_superset_measure_sdiff_lt",
+    "diff_sha256": "af5cc3969bd9c4cee84833490f9d6ad062810bf5b59e7430c690da1b0226fb0f",
+    "source_sha256": "120b23c301257cd9f78b607d2cf9519dacbcd9b075c54e18eb93790946418528",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenVar_exists_isOpen_superset_measure_sdiff_lt",
+      "statement": "∀ (N : ℕ) (O K : Set (Rn N)) (μ : Measure (Rn N)), IsOpen O → IsCompact K → K ⊆ O → (∀ L : Set (Rn N), IsCompact L → L ⊆ O → μ L < ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ V : Set (Rn N), IsOpen V ∧ K ⊆ V ∧ V ⊆ O ∧ μ V < ∞ ∧ μ (V \\ K) < ε",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

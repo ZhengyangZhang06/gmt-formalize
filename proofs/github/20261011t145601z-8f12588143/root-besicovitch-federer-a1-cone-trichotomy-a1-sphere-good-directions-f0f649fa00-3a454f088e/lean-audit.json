@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6ea369bd0c745d902e9677e398452ab858e56bc55ad999e05ba103bf836083ee",
+  "git_delta": {
+    "base_commit": "7dbdce1dbf62343fb0366d672afd3b79e1fc6801",
+    "candidate_commit": "753f1ecd7f499206ae8db646dade01fafcc2d14c",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_sphereGood_axisFree_measurableSet",
+    "diff_sha256": "c2966d7dfaf4a7983b794c3984f658372384692ebc2167413dbef7030eef8b14",
+    "source_sha256": "980b08cdd4a94bd392ff43153b7173840b218083bcab705d8ac2055116185491",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_sphereGood_axisFree_measurableSet",
+      "statement": "∀ (N : ℕ) (H : Submodule ℝ (Rn N)) (A : Set (Rn N)), IsCompact A → ∀ (δ : ℝ) (a : Rn N), MeasurableSet {θ : Rn N | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0}",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

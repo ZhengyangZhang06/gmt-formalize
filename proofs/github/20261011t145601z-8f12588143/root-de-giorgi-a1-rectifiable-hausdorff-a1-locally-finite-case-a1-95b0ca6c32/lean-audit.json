@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5cd09c48a6c701b64eedb17ed2b5e5e10d2d4fbb97d1d084b76a6b977fe26375",
+  "git_delta": {
+    "base_commit": "b3b0f3dfd9b5113ed7c49de09263062b5b49e6b7",
+    "candidate_commit": "cee55734f0d48e3166550b1903e18418feaa657d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_locallyFinite_case",
+    "diff_sha256": "7c8b2c3d2b9e743b24b9811d4356da9b9988d5c73aaf47764e0f2b6bc1fdcd83",
+    "source_sha256": "cc3dc0841200643a1e9cdbfa352d1f8daa6c79d80e648145b3f15f901c68dd54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_locallyFinite_case",
+      "statement": "(∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) → ApproximateTangentCharacterization → ∀ (n ℓ : ℕ) (S : Set (Rn (n + ℓ))) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → MeasurableSet S → μ Sᶜ = 0 → (∀ x ∈ S, ∃ P : Submodule ℝ (Rn (n + ℓ)), HasApproxTangentPlaneWithMultiplicity n μ x P 1) → CountablyRectifiable n S ∧ μ = (μHE[n] : Measure (Rn (n + ℓ))).restrict S",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

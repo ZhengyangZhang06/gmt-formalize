@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -l 'normDet' mathlib/Mathlib project",
+        "rg -n 'orthogonal_ker|orthogonal_range|eq_adjoint_iff|toMatrix_adjoint' mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "rg -n 'orthogonalDecomposition|def prod|prod_apply' mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "rg -n 'det_fromBlocks_zero₂₁' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "rg -n 'orthogonalProjectionOnto|sub_starProjection_mem_orthogonal|orthogonal_orthogonal|orthogonal_eq_bot_iff|finrank_add_finrank_orthogonal' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-normdet-chain-rule-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/NDCRSplit3Full.lean",
+        "/tmp/ndcr-independent-audit-cye4uin3/Contracts.lean",
+        "/tmp/ndcr-independent-audit-cye4uin3/Full.lean"
+      ],
+      "conclusion": "The split is appropriate: three independent linear-algebra obligations establish the exact selected parent through corestriction, the surjectivity case split, and multiplication of the two horizontal-factor identities. Empty child dependency lists are correct and acyclic. All proposed names are bare identifiers and unreserved in the DAG; no comparator-accepted declaration is being reused. Mathlib's normDet search matched only NormDet.lean within Mathlib; the cited determinant, adjoint, projection and dimension APIs support the proofs. The SimonGMT reuse matches its pinned revision. Contract and build inputs match the snapshot, and inspected Mathlib sources match the compiler package. Independently compiled all exact types without child implementations in the replayed Contract scope. The projection coercion equals ContinuousLinearMap.toLinearMap by rfl; no matrix-unit construction occurs. Recompiled the supplied proofs and exact parent assembly under Submission names: every theorem depends only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "normdet_adjoint_horizontal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches both prose branches and includes all hypotheses. Adjoint kernel orthogonality proves the nonsurjective case. Horizontal bijectivity, adjoint corestriction, and equal-dimensional transpose determinants prove the surjective case. Every step is justified independently of the child and parent; the supplied proof is complete and ready for formalization."
+    },
+    {
+      "key": "normdet_block_triangular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Bijectivity supplies the required equal block dimensions. The adapted orthonormal bases yield the stated upper-triangular matrix; determinant multiplication and normDet_codRestrict give precisely the claimed factors, including empty blocks. The projection construction has the intended inferred type. The proof is complete, non-circular, and requires no other proposed child."
+    },
+    {
+      "key": "normdet_horizontal_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every prose hypothesis. The projection error lies in ker L, giving the map factorization. Bijectivity identifies ker L with B(K) and proves finrank Kᗮ = finrank W, exactly the hypothesis required by normDet_comp_of_finrank_eq. Surjectivity of L is unnecessary. The supplied proof establishes the full statement without circularity or undeclared child dependencies."
+    }
+  ],
+  "required_changes": []
+}

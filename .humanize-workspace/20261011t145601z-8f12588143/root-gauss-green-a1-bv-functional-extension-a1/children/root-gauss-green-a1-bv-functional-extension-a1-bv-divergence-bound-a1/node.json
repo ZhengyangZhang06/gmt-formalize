@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.bv_functional_extension-a1.bv_divergence_bound-a1",
+  "parent_id": "root.gauss_green-a1.bv_functional_extension-a1",
+  "depth": 3,
+  "title": "Two-sided local sup-norm bound for g ↦ ∫_{E∩U} div g from locally finite perimeter",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open and E ⊆ ℝ^N Lebesgue null-measurable, and suppose E has locally finite perimeter in U (SimonGMT IsLocallyBV U χ_E). Then for every compact K ⊆ U there is a constant C ≥ 0 with the following property. For every C¹ map g : ℝ^N → ℝ^N with compact support and tsupport g ⊆ K, and every M ∈ ℝ with |g(x)| ≤ M for all x ∈ ℝ^N, we have |∫_{E∩U} div g dL^N| ≤ C · M.",
+  "lean_statement": "∀ (N : ℕ) (U E : Set (Rn N)), IsOpen U → NullMeasurableSet E volume → HasLocallyFinitePerimeter U E → ∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, 0 ≤ C ∧ ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ K → ∀ M : ℝ, (∀ x, ‖g x‖ ≤ M) → |∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x| ≤ C * M",
+  "lean_name": "gaussGreenRep_divergence_integral_local_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-bv-functional-extension-a1-bv-divergence-bound-a1-a1"
+}

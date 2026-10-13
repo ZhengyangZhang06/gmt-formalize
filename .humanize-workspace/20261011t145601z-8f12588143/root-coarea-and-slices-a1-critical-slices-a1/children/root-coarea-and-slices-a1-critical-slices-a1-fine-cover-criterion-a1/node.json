@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.critical_slices-a1.fine_cover_criterion-a1",
+  "parent_id": "root.coarea_and_slices-a1.critical_slices-a1",
+  "depth": 3,
+  "title": "Fine covers with small weighted image volume give Hᵏ-null slices for Lᵐ-a.e. y (Fatou covering criterion)",
+  "statement": "Let n, m, k ∈ ℕ with k > 0, let S ⊆ ℝⁿ be an arbitrary set and G : ℝⁿ → ℝᵐ an arbitrary map. Suppose that for every ε ∈ (0, ∞] there are a countable index type ι and sets T_i ⊆ ℝⁿ (i ∈ ι) such that S ⊆ ⋃_i T_i, diam T_i ≤ ε for every i, and Σ_i (diam T_i)^k · Lᵐ(G(T_i ∩ S)) ≤ ε (a sum in [0, ∞]; Lᵐ is applied as an outer measure to the possibly non-measurable sets G(T_i ∩ S)). Then Hᵏ(S ∩ G⁻¹{y}) = 0 for Lᵐ-a.e. y ∈ ℝᵐ. Notation: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d) with Euclidean norm |·| and inner product ⟨·,·⟩; Lᵈ = volume on ℝ^d (applied to an arbitrary set it is the Lebesgue outer measure); Hˢ = μHE[s] (Euclidean-normalized Hausdorff outer measure) and μH[s] the unnormalized Hausdorff measure; diam = Metric.ediam (extended diameter in [0,∞]); DF(u) = fderiv ℝ F u with the operator norm ‖·‖; ofReal = ENNReal.ofReal; natural-number subtraction m − 1.",
+  "lean_statement": "∀ (n m k : ℕ) (S : Set (Rn n)) (G : Rn n → Rn m), 0 < k → (∀ ε : ℝ≥0∞, 0 < ε → ∃ (ι : Type) (_ : Countable ι) (T : ι → Set (Rn n)), S ⊆ ⋃ i, T i ∧ (∀ i, Metric.ediam (T i) ≤ ε) ∧ ∑' i, Metric.ediam (T i) ^ k * volume (G '' (T i ∩ S)) ≤ ε) → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (S ∩ G ⁻¹' {y}) = 0",
+  "lean_name": "critSlices_ae_slice_null_of_covers",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-critical-slices-a1-fine-cover-criterion-a1-a1"
+}

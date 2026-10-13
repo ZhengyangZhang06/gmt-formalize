@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "normDet_comp_of_finrank_eq|normDet_eq_abs_det|theorem normDet_sq|normDet_nonneg|normDet_eq_one",
+        "lintegral_image_eq_lintegral_abs_det_fderiv_mul",
+        "theorem measurable_fderiv|variable|OpensMeasurableSpace|BorelSpace",
+        "def prodContinuousLinearEquiv|fstL|def fst|def snd",
+        "image_of_continuousOn_injOn|ContinuousOn.measurable_piecewise",
+        "pcoarea_chart_slice_lintegral|pcoarea_chart_integrand_tonelli|pcoarea_chart_change_of_variables|pcoarea_chart_pointwise_jacobian",
+        "python3 -I /tmp/chartformula-independent-audit/run_check.py Challenge.lean",
+        "python3 -I /tmp/chartformula-independent-audit/run_check.py ChildrenAndAssembly.lean",
+        "python3 -I /tmp/chartformula-independent-audit/run_check.py Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1-chart-formula-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-c1-parametric-coarea-a1-chart-formula-a1/decomposition-v1.json",
+        "/tmp/chartformula-independent-audit/Challenge.lean",
+        "/tmp/chartformula-independent-audit/ChildrenAndAssembly.lean",
+        "/tmp/chartformula-independent-audit/Instances.lean"
+      ],
+      "conclusion": "The four-part split is appropriate and establishes the exact selected chart formula. The relevant pinned sources are byte-identical to compiler-package sources. All four names are bare identifiers, with no reservation collision among the 200 DAG nodes or matching declaration in the searched project and SimonGMT sources. Dependencies are correctly directed and acyclic; AF and FJ are explicit premises discharged by the selected parent's declared siblings. Every frozen type passes validation and independently elaborates in comparator scope. I independently compiled the supplied four proofs and parent assembly, using the two exact sibling contracts as explicit assembly hypotheses: all use only propext, Classical.choice and Quot.sound. Instance checks confirm the intended Euclidean WithLp inner product and volume, product-measure transport, and j(z) = toLp(0,z). No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the one-line type, including the explicit AF premise. The proof establishes Borel chart images and slices, slice regularity and injectivity, the exact fiber-image equality, and the derivative and indicator identities. It requires neither measurable φ nor differentiable Φ. AF is used non-circularly, and the supplied proof is complete."
+    },
+    {
+      "key": "integrand_tonelli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The proof correctly separates a measurable extension of ρ's values from the measurable derivative of the original ρ, proves normDet continuity, and establishes joint measurability. The verified WithLp volume transport and Tonelli hypotheses give both conclusions without hidden differentiability assumptions."
+    },
+    {
+      "key": "change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including derivatives within B and arbitrary g. The proof constructs the required isometry, transports arbitrary integrands through a measure-preserving measurable embedding, applies the pinned Jacobian theorem, and justifies the determinant-to-normDet conversion using equal dimensions. No additional regularity or measurability assumption is needed."
+    },
+    {
+      "key": "pointwise_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including FJ. The proof derives mutually inverse chart derivatives from local inverse identities, obtains DG from local equality with fst∘Φ, verifies the vertical-section condition, and applies the chain rule and FJ with exactly the required maps. It contains no circular reliance or deferred obligation."
+    }
+  ],
+  "required_changes": []
+}

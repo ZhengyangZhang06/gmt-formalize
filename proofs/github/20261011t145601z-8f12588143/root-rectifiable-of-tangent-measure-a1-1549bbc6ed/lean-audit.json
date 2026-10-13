@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c25d5a4dfcc1f112c96f6131324dd4d9e55efc79dbe71a867e49b755e8518e14",
+  "git_delta": {
+    "base_commit": "5ac6f9b71b9a21157ff0994d5864a2204a0559d5",
+    "candidate_commit": "f0931a9d982fe6fbe0edbbd48f888b2ac8a2aa33",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "8d4be8c8032757d685b41d09c7da856787c01e9ef93955d0602fa80052746553",
+    "source_sha256": "4c4d1618fed2cb119fe6adc17e7cc5c491ade5cb48513bb105de6a2a7dbdefb4",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiable_of_approx_tangent_measure",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

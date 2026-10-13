@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.hausdorff_near_optimal_cover-a1",
+  "parent_id": "root.eilenberg_inequality-a1",
+  "depth": 2,
+  "title": "Near-optimal countable δ-covers for Hausdorff measure (Simon Ch. 2, proof of Thm 1.9, choice (1))",
+  "statement": "Let X be an extended metric space with its Borel σ-algebra, d ∈ ℝ, s ⊆ X any set (not necessarily measurable), and r, ε ∈ [0, ∞] with r > 0 and ε ≠ 0. Let μH[d] be Mathlib's unnormalized d-dimensional Hausdorff measure on X: for every set s, μH[d](s) = sup_{ρ>0} inf{ Σ_{n∈ℕ} c_d(tₙ) : s ⊆ ⋃ₙ tₙ, diam tₙ ≤ ρ for all n }, where diam is the extended diameter, c_d(t) = diam(t)^d for t ≠ ∅, and c_d(∅) = 0. If μH[d](s) < ∞, then there is a sequence (tₙ)_{n∈ℕ} of subsets of X with s ⊆ ⋃ₙ tₙ, diam tₙ ≤ r for every n, and Σₙ c_d(tₙ) ≤ μH[d](s) + ε.",
+  "lean_statement": "∀ {X : Type} [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r ε : ℝ≥0∞), 0 < r → ε ≠ 0 → μH[d] s ≠ ∞ → ∃ t : ℕ → Set X, s ⊆ ⋃ n, t n ∧ (∀ n, Metric.ediam (t n) ≤ r) ∧ ∑' n, ⨆ _ : (t n).Nonempty, Metric.ediam (t n) ^ d ≤ μH[d] s + ε",
+  "lean_name": "hausdorffMeasure_exists_cover_tsum_le_add",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-eilenberg-inequality-a1-hausdorff-near-optimal-cover-a1-a1"
+}

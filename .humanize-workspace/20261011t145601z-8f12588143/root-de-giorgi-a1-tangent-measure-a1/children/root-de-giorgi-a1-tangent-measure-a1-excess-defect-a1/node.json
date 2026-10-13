@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.excess_defect-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1",
+  "depth": 3,
+  "title": "Excess defect: replacing ν by the unit vector e in blow-up integrals costs o(rⁿ)",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N = EuclideanSpace ℝ (Fin N), and ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e. Let x, e ∈ ℝ^N with |e| = 1, and ρ₁ > 0 with μ(B_{ρ₁}(x)) < ∞, where B_ρ(x) is the open ball. Assume (ρⁿ)⁻¹∫_{B_ρ(x)} |ν(y) − e| dμ(y) → 0 as ρ ↓ 0. Then for every continuous φ : ℝ^N → ℝ with compact support,\n(rⁿ)⁻¹∫ φ(η_{x,r}(y)) dμ(y) − (rⁿ)⁻¹∫ φ(η_{x,r}(y))⟨e, ν(y)⟩ dμ(y) → 0 as r ↓ 0,\nwhere η_{x,r}(y) = r⁻¹(y − x) (blowUpMap x r).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x e : Rn N) (ρ₁ : ℝ) (φ : Rn N → ℝ), 0 < ρ₁ → μ (Metric.ball x ρ₁) < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - e‖ ∂μ) (𝓝[>] 0) (𝓝 0) → Continuous φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ - (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "deGiorgiTM_blowUp_defect_tendsto_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-excess-defect-a1-a1"
+}

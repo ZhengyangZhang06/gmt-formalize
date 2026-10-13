@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7c2cdac322440906def0b659e0f880ccd844337e5961a84eda21791748761e89",
+  "git_delta": {
+    "base_commit": "a0164982fb61f5b77696e36173ae3c5a74e3a6db",
+    "candidate_commit": "1d2e3bd1d7c276c8bb9df5d07eae62de43e2b335",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chart_coarea_jacobian_identification",
+    "diff_sha256": "7af80de3b52f37f5bdf64fcaeb73a95da301b166460ddace494db021e29cdaff",
+    "source_sha256": "7103646898901176ac4c5f29445498e0651b2a8d22c54f7d12d38a42b6160794",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chart_coarea_jacobian_identification",
+      "statement": "∀ (n N m : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N) (Γ : Rn n →L[ℝ] Rn m), θ x ≠ 0 → Function.Injective A → HasWeightedApproximateTangentSpaceAt n M θ x (LinearMap.range A.toLinearMap) → (∀ w : Rn n, HasLineDerivAt ℝ f (Γ w) x (A w)) → approxTangentPlane n M θ x = LinearMap.range A.toLinearMap ∧ (∃ L : ↥(LinearMap.range A.toLinearMap) →L[ℝ] Rn m, HasTangentialDifferentialAt (LinearMap.range A.toLinearMap) f x L) ∧ coareaJacobian (approxTangentPlane n M θ x) f x * A.toLinearMap.normDet = (A.toLinearMap ∘ₗ (LinearMap.ker Γ.toLinearMap).subtype).normDet * (LinearMap.adjoint Γ.toLinearMap).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

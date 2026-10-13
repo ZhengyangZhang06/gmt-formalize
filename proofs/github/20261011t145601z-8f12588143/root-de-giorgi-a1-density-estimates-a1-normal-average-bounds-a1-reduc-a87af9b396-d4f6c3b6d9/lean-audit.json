@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "12a30f35e3fe66e96f0c715f1228bd1523ff351a2e5a20f72174c8a513d1ffcd",
+  "git_delta": {
+    "base_commit": "7f882ddb18e0a9ebdfed83788b415edaf5e836da",
+    "candidate_commit": "fff0271f6860585da1ab50c725c91f74543c54d3",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiNAB_reducedBoundary_basic",
+    "diff_sha256": "2f69b890c57d49a7d2547fbc7c70148a593900c579a83a0e6f63909d75a2abca",
+    "source_sha256": "99d282b5d9ca0922651f8d91be3873578ab435fb0e5e4108e22407b02490048f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiNAB_reducedBoundary_basic",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), ∀ x ∈ reducedBoundary U μ ν, x ∈ U ∧ ‖reducedNormal μ ν x‖ = 1 ∧ Tendsto (normalAverage μ ν x) (𝓝[>] 0) (𝓝 (reducedNormal μ ν x)) ∧ ∀ ρ : ℝ, 0 < ρ → 0 < μ (Metric.ball x ρ)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

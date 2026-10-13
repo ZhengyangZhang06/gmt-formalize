@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+  "depth": 3,
+  "title": "Averaging over O(N) and transfer to Lebesgue-a.e. frames (Steps 0.2, 4 and 5; Dall'Alba Lemma 5.6)",
+  "statement": "Let n ≥ 1, ℓ ≥ 1, N := n + ℓ, E := ℝ^N = EuclideanSpace ℝ (Fin N), and 𝓛 := E →L[ℝ] E with the Borel σ-algebra of the norm topology. Let μ be a finite measure on E, and let Exc ⊆ E × 𝓛 and Bad ⊆ E × 𝓛 × E be measurable sets. Assume (h1): for every a ∈ E and every (n+1)-dimensional subspace H ⊆ E, Hⁿ({θ ∈ H : |θ| = 1, (a, P_H, θ) ∈ Bad}) = 0, where P_H := H.starProjection and Hⁿ = μHE[n]. Assume (h2): for every a ∈ E, every n-dimensional subspace W with (a, P_W) ∈ Exc, and every orthonormal family u_1, …, u_ℓ of vectors in W^⊥, there is j with (a, P_{W ⊔ span{u_j}}, u_j) ∈ Bad. Then for Lebesgue-a.e. v ∈ Eⁿ, if v is linearly independent then μ({a : (a, frameProjection v) ∈ Exc}) = 0. In other words, ForAlmostAllProjections N n (fun p ↦ μ{a | (a, p) ∈ Exc} = 0).",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ μ : Measure (Rn (n + ℓ)), IsFiniteMeasure μ → ∀ (Exc : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)))) (Bad : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) × Rn (n + ℓ))), MeasurableSet Exc → MeasurableSet Bad → (∀ (a : Rn (n + ℓ)) (H : Submodule ℝ (Rn (n + ℓ))), finrank ℝ H = n + 1 → μHE[n] {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ (a, H.starProjection, θ) ∈ Bad} = 0) → (∀ (a : Rn (n + ℓ)) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → (a, W.starProjection) ∈ Exc → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∃ j, (a, (W ⊔ Submodule.span ℝ {u j}).starProjection, u j) ∈ Bad) → ForAlmostAllProjections (n + ℓ) n (fun p ↦ μ {a | (a, p) ∈ Exc} = 0)",
+  "lean_name": "bf_frameAveraging_null",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_projection_continuous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_projection_continuous-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-a1"
+}

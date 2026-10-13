@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1a3f69555c6ea7f53ea60d43236949dce0409cb015e9d8c4db1305aa11db8217",
+  "git_delta": {
+    "base_commit": "5af8d437a3af81d3d9ef9eba4bb8120f277c237c",
+    "candidate_commit": "abe37c27891779d51b8ee5f051c9fbf3a8da8d0a",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_orthStabilizer_haar_exists",
+    "diff_sha256": "9cb1f0d92a11c2ea8f98f0ef83e43510cd4e59971115cd419ba824eef1802f96",
+    "source_sha256": "6421762a60a2f58a3a3389b99da5a232e700202c64571606c790841815284a63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_orthStabilizer_haar_exists",
+      "statement": "∀ (N : ℕ) (U : Submodule ℝ (Rn N)), ∃ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ ∧ (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ U, g x = x) ∧ ∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ U, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

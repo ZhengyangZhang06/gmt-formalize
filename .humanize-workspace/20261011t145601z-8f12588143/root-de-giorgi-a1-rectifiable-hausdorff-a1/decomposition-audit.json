@@ -1,0 +1,109 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def HasApproxTangentPlaneWithMultiplicity|def ApproximateTangentCharacterization|abbrev Rn|^import|^open",
+        "tendsto_measure_iUnion_atTop|measure_iUnion_eq_iSup",
+        "ae_tendsto_rnDeriv|tendsto_filterAt|IsLocallyFiniteMeasure",
+        "withDensity_rnDeriv_eq",
+        "restrict_iUnion_congr|theorem restrict_apply ",
+        "boundedBy.*iInf|boundedBy_apply|def boundedBy|lemma.*boundedBy",
+        "deGiorgiRH_|closedBall_tendsto_of_vague_plane|measure_density_of_tangentPlane|hausdorff_density_of_approxTangent|measure_le_two_pow_mul_hausdorff",
+        "sed -n '28,81p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "sed -n '288,302p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "sed -n '286,396p' GMT/Scratch/RectifiableHausdorffSplitDecision.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/RectifiableHausdorffSplitDecision.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rectifiable-hausdorff-audit-xihb4ga2/AuditAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/OfFunction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-rectifiable-hausdorff-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-rectifiable-hausdorff-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/RectifiableHausdorffSplitDecision.lean",
+        "/tmp/rectifiable-hausdorff-audit-xihb4ga2/AuditAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected frozen parent. Contract and Submission match the snapshot; Mathlib and SimonGMT revisions match the pinned manifest. No proposed declaration names were found in the searched reference sources, current DAG, or other decomposition plans. All ten names are bare identifiers, and all ten types pass lexical validation and independently elaborate as comparator-generated challenges without child implementations. Dependencies are acyclic and correctly directed. The supplied assembly compiles; replacing its two admitted analytic children with explicit named assumptions confirms that the exact parent depends only on those assumptions and standard axioms. Five completed child proofs use standard axioms only. The library confirms arbitrary-set continuity from below, arbitrary-set Hausdorff scaling, Borel-ball restriction formulas, and gluing without monotonicity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "open_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The extended-distance construction proves openness, compact closure, containment and coverage, including empty complements and index zero. Monotonicity is unnecessary because the parent uses restrict_iUnion_congr."
+    },
+    {
+      "key": "tangent_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Compact support makes each rescaled test function vanish outside W eventually, giving equality of the totalized integrals without extra integrability assumptions. This transfers the exact tangent predicate for arbitrary θ."
+    },
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension and positive-radius hypotheses are explicit. Isometric parametrization, Hausdorff invariance, Euclidean normalization and Haar scaling prove the stated ENNReal equality, including n = 0."
+    },
+    {
+      "key": "vague_unit_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff functions have the required support and inequalities. Eventual finiteness on the radius-two ball supplies integrability; plane_ball_measure bounds the limiting integrals. The epsilon squeeze and finite-real-to-ENNReal conversion establish the exact limit."
+    },
+    {
+      "key": "measure_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized pushforward construction is well typed. Its ball preimages, eventual finite mass and integral identities discharge every hypothesis of vague_unit_ball using precisely the stated local finiteness and tangent assumptions."
+    },
+    {
+      "key": "hausdorff_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof remains valid for arbitrary M: Hausdorff scaling holds on arbitrary sets, and restriction evaluates correctly on Borel closed balls without measurability of M. Both hypotheses of vague_unit_ball are explicitly established."
+    },
+    {
+      "key": "hausdorff_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalization agrees with the pinned Simon theorem, including dimension zero. Density relative to each open superset gives Hⁿ(A) ≤ μ(O); compact finiteness supplies outer regularity and measurable hulls, yielding the claim for arbitrary A."
+    },
+    {
+      "key": "measure_le_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering argument proves the exact bound without global finiteness. It handles zero-diameter sets and dimension zero; discarding empty covering sets agrees with boundedBy's zero empty-set cost. The pinned continuity theorem justifies passage through the possibly nonmeasurable increasing A_j."
+    },
+    {
+      "key": "measure_eq_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact finiteness supplies the local and sigma-finiteness requirements. Besicovitch differentiation and cancellation of the finite positive radius factor identify the derivative as one; absolute continuity then gives equality by Radon–Nikodym."
+    },
+    {
+      "key": "locally_finite_case",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "RT and AT exactly match the selected parent's assumptions. The five declared siblings establish both comparisons, rectifiability, absolute continuity and equal densities without invoking the parent. Applying this child to μ⌞W_i and S∩W_i and gluing proves both conclusions of the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

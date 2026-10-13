@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ccbea826aa8b3e74ba1f661eb45e2ab1bc06a9c43c5e9138389cc6a2896607d2",
+  "git_delta": {
+    "base_commit": "e90a854b1b20ac64feb9a3f7830f5f6018f9ad69",
+    "candidate_commit": "7b8045880f5060d0962b474c9df0f1379486d21c",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "dd6f50d26008decebc091567e86a468d8c84905ceec1828a17d2545cd0bf7919",
+    "source_sha256": "3ecd1719c9804e6fdf9c22b96496c0187bd46c595fb13cd7e9b69e6d21e4b569",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_density_estimates",
+      "statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ Metric.ball x ρ₁ ⊆ U ∧ ∃ C c : ℝ, 0 < c ∧ (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n) ∧ ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (E ∩ Metric.ball x ρ) ∧ ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (Metric.ball x ρ \\ E)) ∧ Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - reducedNormal μ ν x‖ ∂μ) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

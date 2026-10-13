@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.riesz_on_open-a1.riesz_sigma_compact-a1",
+  "parent_id": "root.gauss_green-a1.riesz_on_open-a1",
+  "depth": 3,
+  "title": "Riesz representation with a Borel unit field on a σ-compact locally compact Hausdorff space",
+  "statement": "Let X be a Hausdorff, locally compact, σ-compact topological space with its Borel σ-algebra, N ∈ ℕ, and L : C_c(X; ℝ^N) → ℝ an ℝ-linear map such that for every compact K ⊆ X there is C ∈ ℝ with L(f) ≤ C for every f ∈ C_c(X; ℝ^N) with |f(x)| ≤ 1 for all x ∈ X and tsupport f ⊆ K. Then there are a Borel measure μ on X with μ(K) < ∞ for every compact K ⊆ X and a strongly measurable ν : X → ℝ^N with |ν(x)| = 1 for μ-a.e. x and L(f) = ∫_X ⟨f(x), ν(x)⟩ dμ(x) for every f ∈ C_c(X; ℝ^N).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] (N : ℕ) (L : C_c(X, Rn N) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ C : ℝ, ∀ f : C_c(X, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) → ∃ (μ : Measure X) (ν : X → Rn N), (∀ K : Set X, IsCompact K → μ K < ∞) ∧ StronglyMeasurable ν ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ f : C_c(X, Rn N), L f = ∫ x, inner ℝ (f x) (ν x) ∂μ",
+  "lean_name": "gaussGreenRep_riesz_sigmaCompact_borel",
+  "depends_on": [
+    "root.gauss_green-a1.riesz_on_open-a1.caratheodory_borel_version-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.gauss_green-a1.riesz_on_open-a1.caratheodory_borel_version-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-riesz-on-open-a1-riesz-sigma-compact-a1-a1"
+}

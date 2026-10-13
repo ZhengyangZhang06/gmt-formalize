@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasLocallyFinitePerimeter|abbrev Rn|namespace|open scoped|^open ",
+        "theorem exists_open_between_and_isCompact_closure|theorem integral_indicator₀|theorem integral_indicator |theorem integral_const_mul|theorem integral_add|theorem Continuous.integrable_of_hasCompactSupport",
+        "theorem fderiv_neg\\b|theorem fderiv_add\\b|theorem fderiv_const_smul\\b|theorem ContDiff.continuous_fderiv\\b|theorem ContDiff.differentiable\\b|cauchySeq_iff.|theorem CauchySeq.tendsto_limUnder|theorem cauchySeq_tendsto_of_complete|theorem tendstoUniformly_iff",
+        "lemma Integrable.restrict\\b|theorem Integrable.restrict\\b|cauchySeq_iff.|support_const_smul_subset|HasCompactSupport.mono.",
+        "sed -n '1,230p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "rg -n -F -e gaussGreenRep_setIntegral_divergence_linear -e gaussGreenRep_divergence_integral_local_bound -e gaussGreenRep_extend_C1_functional .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bvext_decomp/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bvext_independent_audit_3aea4761/ContractsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Cauchy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-bv-functional-extension-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-bv-functional-extension-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-c1-uniform-approx-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/tmp/bvext_decomp/Full.lean",
+        "/tmp/bvext_independent_audit_3aea4761/ContractsAndAssembly.lean"
+      ],
+      "conclusion": "The pinned definitions and library lemmas support the supplied arguments; the inspected compiler sources match the snapshot. No proposed name occurs in the current 113-node DAG. All three frozen propositions elaborate before any child implementation, and the supplied proofs compile under their exact Submission identifiers. Pointwise addition and real scalar action were independently checked. The assembly uses the sibling's exact approximation contract and concludes the selected parent's byte-identical frozen type. Axiom checks report only propext, Classical.choice and Quot.sound. The split appropriately separates integral linearity, the BV estimate and the abstract extension; its dependencies are acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "divergence_integral_linear",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches both prose clauses, including arbitrary S and no compact-support requirement for homogeneity. The proof establishes continuity and compact support of divergence, integrability under arbitrary restriction, derivative/trace linearity, and the required integral identities. Unconditional integral_const_mul justifies clause (ii). The argument is complete and independent; its bare declaration name is unreserved."
+    },
+    {
+      "key": "bv_divergence_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves all hypotheses and quantifiers, choosing C before g and M. The proof obtains a relatively compact open neighborhood from compactness, applies the exact IsLocallyBV definition, and justifies the indicator identity using divergence support and null-measurability of E ∩ U. The supremum estimate and application to −g yield the stated absolute bound without relying on another child. The bare name is unreserved."
+    },
+    {
+      "key": "c1_functional_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states H_app, linearity, local bounds and conclusions (a)–(d). Every construction is justified: the difference estimate, Cauchy convergence, independence across compact-support sets, choice of sequences, agreement on C¹ fields, addition and scaling. For (c), the constant is chosen from closure W before g, so the bound is uniform. H_app matches the declared sibling dependency at fixed N; it is an explicit hypothesis, not circular reliance. This child combines with the first two and that sibling to prove the exact selected parent. Its bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

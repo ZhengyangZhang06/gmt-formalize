@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a92edcc37253d9519af826b6b142adb22f945b5a1f734e88a0d763fc173cb26a",
+  "git_delta": {
+    "base_commit": "52afcf0735069b8f0033fe5880dca58bcf2ca4cc",
+    "candidate_commit": "19cc01d471060ad9f303fd58e9bde06af2fc6867",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "hausdorffMeasure_exists_cover_tsum_le_add",
+    "diff_sha256": "9c8d2b95f8a6cc00cd9ab7b351be40401c9435182a78b3972f8478e9861668c4",
+    "source_sha256": "bd4eb992e78813aae6640ba62f79f9fa472d54abd37a29553cec9c11a4185c54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hausdorffMeasure_exists_cover_tsum_le_add",
+      "statement": "∀ {X : Type} [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r ε : ℝ≥0∞), 0 < r → ε ≠ 0 → μH[d] s ≠ ∞ → ∃ t : ℕ → Set X, s ⊆ ⋃ n, t n ∧ (∀ n, Metric.ediam (t n) ≤ r) ∧ ∑' n, ⨆ _ : (t n).Nonempty, Metric.ediam (t n) ^ d ≤ μH[d] s + ε",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "673c1c162b58eaa20d974af7d9f7a20a2764778f61dde20db3a5e539f3d7b7ee",
+  "git_delta": {
+    "base_commit": "97c7a95289ed7520df536a0fea780852656a5504",
+    "candidate_commit": "fccdc894edaff4e1eb5931cc8374fac7008ad924",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenVar_measure_le_ofReal_integral_inner_add",
+    "diff_sha256": "7a58dfbf38c71274aae7e01abd56ca9523a029514fd6b820f41e590073a52641",
+    "source_sha256": "f0d06b4dd06e294e18f29c34d540b9ddce09ea7cbf42e4e05fcb60ceebae60d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenVar_measure_le_ofReal_integral_inner_add",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ν g : Rn N → Rn N) (C V : Set (Rn N)), MeasurableSet C → MeasurableSet V → C ⊆ V → μ V ≠ ∞ → AEStronglyMeasurable ν μ → Continuous g → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → (∀ x, ‖g x‖ ≤ 1) → (∀ x, x ∉ V → g x = 0) → (∀ᵐ x ∂μ, x ∈ C → inner ℝ (g x) (ν x) = 1) → μ C ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \\ C)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

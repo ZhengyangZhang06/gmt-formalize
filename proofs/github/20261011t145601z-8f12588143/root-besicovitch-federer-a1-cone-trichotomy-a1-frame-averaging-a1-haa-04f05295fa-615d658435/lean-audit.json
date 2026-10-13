@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f48748c4cc4733eeaf1535178132349d7bcbdfaef724c1fa01e7770b79fb6bb",
+  "git_delta": {
+    "base_commit": "b1bd08cb460493b39fa80db84af97aeed92ddc67",
+    "candidate_commit": "018546f028895a0b9f38ed08fc9f3a95271fc876",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_haar_null_to_frames",
+    "diff_sha256": "3731facb1e5a01632a995f776e80bea8afb8bd6ef5816be17be7494f789505bd",
+    "source_sha256": "4967d5c7092527c843d9fd408155f367f67c9d557e15afc7d5f719302b21f0e3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_haar_null_to_frames",
+      "statement": "∀ (N n : ℕ), ContinuousOn (fun v : Fin n → Rn N ↦ frameProjection v) {v | LinearIndependent ℝ v} → ∀ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → Measure.map (fun g ↦ g * k) θ = θ) → ∀ W₀ : Submodule ℝ (Rn N), finrank ℝ W₀ = n → ∀ Q : Set (Rn N →L[ℝ] Rn N), MeasurableSet Q → θ {g | g * W₀.starProjection * ContinuousLinearMap.adjoint g ∈ Q} = 0 → ForAlmostAllProjections N n (fun p ↦ p ∉ Q)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

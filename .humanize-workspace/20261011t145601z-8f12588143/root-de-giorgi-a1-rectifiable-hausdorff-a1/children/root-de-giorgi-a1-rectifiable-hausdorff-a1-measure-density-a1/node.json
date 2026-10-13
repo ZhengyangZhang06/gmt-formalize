@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_density-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Unit-multiplicity tangent plane implies μ(B̄_ρ(x))/ρⁿ → ω_n (parent Step 3)",
+  "statement": "Let n, N ∈ ℕ, let μ be a Borel measure on ℝ^N, x ∈ ℝ^N and P ⊆ ℝ^N a linear subspace. Assume μ(B̄_δ(x)) < ∞ for some δ > 0, and HasApproxTangentPlaneWithMultiplicity n μ x P 1: dim P = n and (rⁿ)⁻¹∫ f(η_{x,r}(y)) dμ(y) → ∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^N, ℝ), where η_{x,r}(y) = r⁻¹(y − x) and Hⁿ = μHE[n]. Then μ(B̄_ρ(x))/ρⁿ → ω_n := Lⁿ(B_1(0)) in [0, ∞] as ρ ↓ 0, the quotient being taken in [0, ∞] with denominator ofReal(ρⁿ).",
+  "lean_statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μ (Metric.closedBall x δ) < ∞) → HasApproxTangentPlaneWithMultiplicity n μ x P 1 → Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))",
+  "lean_name": "deGiorgiRH_measure_density_of_tangentPlane",
+  "depends_on": [
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.vague_unit_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.vague_unit_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-measure-density-a1-a1"
+}

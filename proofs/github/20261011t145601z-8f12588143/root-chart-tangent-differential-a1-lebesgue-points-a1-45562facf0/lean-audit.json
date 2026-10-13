@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dcf653f8d7c9c1b88ddbc8d209502fa5b56d3df7d4cb0e1bef56084ef06ce10b",
+  "git_delta": {
+    "base_commit": "a595314beb2f49167a43938539888563cb69837b",
+    "candidate_commit": "b024fb9bed2ed96046ba3a1caaf15b52b43a8a05",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_lebesgue_point_ae",
+    "diff_sha256": "1e6049577c8a54b4d396343b8dddd6f90c3fbac88add28ab49feeabc6f9f4840",
+    "source_sha256": "d836bb046ad187c202d1fb7d4082cf7b3c38f171ef25fc84f781d52a567d96db",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_lebesgue_point_ae",
+      "statement": "∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (C : ℝ), NullMeasurableSet S μHE[n] → μHE[n] S < ∞ → IntegrableOn w S μHE[n] → (∀ x ∈ S, ∀ ρ : ℝ, 0 < ρ → μHE[n] (S ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ S → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z - w x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f9837b5cc1a2542d08499c1ed103e9c8eed21859406aa4222009b0fb357823b",
+  "git_delta": {
+    "base_commit": "2c2428f36c8f3bdaac44dc6032cfddd1a1693dd7",
+    "candidate_commit": "9d0f3e9a3bca7d0bc512075f28fad08f3bc1d4cd",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_setIntegral_divergence_linear",
+    "diff_sha256": "020c6185e94c9d1e6c9fe747b143a1d59baf551d949200f41b818d894b6cd299",
+    "source_sha256": "c2f51f9dda20b41542c26013ee422babf6bcaafdae84d4e4ca42a359d5a2a13d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_setIntegral_divergence_linear",
+      "statement": "∀ (N : ℕ) (S : Set (Rn N)), (∀ g h : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → ContDiff ℝ 1 h → HasCompactSupport h → ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence (g + h) x = (∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence g x) + ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence h x) ∧ ∀ (c : ℝ) (g : Rn N → Rn N), ContDiff ℝ 1 g → ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence (c • g) x = c * ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence g x",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

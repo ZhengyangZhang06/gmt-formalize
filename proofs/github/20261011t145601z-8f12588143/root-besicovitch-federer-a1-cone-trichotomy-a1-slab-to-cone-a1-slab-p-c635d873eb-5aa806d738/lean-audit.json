@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8cdde31f6722174cd89137cc9b0509682510a4c52b59b1da5c38c480f466517f",
+  "git_delta": {
+    "base_commit": "6d314cd926ad736b23940f775af346fb0b9c13c4",
+    "candidate_commit": "14254a6444c00a74df049355f0f145b8a9a37ff5",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_starProjection_sup_span_unit",
+    "diff_sha256": "7d4b6836f3f5e3bdbb5c24efd339fe5d4c2d4f94964ddc03f8cf991dc45cdc4f",
+    "source_sha256": "6676509947b0e3ac88eec0e6aa518ed25a3f5a2b90260576a0d296fe6dd300a8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_starProjection_sup_span_unit",
+      "statement": "∀ (N : ℕ) (W : Submodule ℝ (Rn N)) (u : Rn N), u ∈ Wᗮ → ‖u‖ = 1 → ∀ y : Rn N, (W ⊔ Submodule.span ℝ {u}).starProjection y = W.starProjection y + inner ℝ y u • u",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

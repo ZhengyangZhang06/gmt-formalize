@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8cc695aca6ec87b3326bd4d4c1cc8027cd33cc027cdecc90004d1a4b30de33fb",
+  "git_delta": {
+    "base_commit": "092b2618702cd2a48c460b4d9dce2e2cf4625a57",
+    "candidate_commit": "ec4a734ce6774ba7e02fcd7669fdb75234e8d079",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "lipschitzOn_open_c1_first_order_agreement",
+    "diff_sha256": "9e32be7695056f7c122d58d0ec5254bb84e98be73c8c138575cf53184d6c78c5",
+    "source_sha256": "6e53703be857ebf17bb1e9e41eeece14125d2c12aa4c0093640c0b11a72284f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitzOn_open_c1_first_order_agreement",
+      "statement": "∀ (n m : ℕ), (∀ (F : Rn n → Rn m) (K : ℝ≥0), LipschitzWith K F → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn m, ContDiff ℝ 1 g ∧ volume {x | F x ≠ g x ∨ fderiv ℝ F x ≠ fderiv ℝ g x} < ε) → ∀ (D : Set (Rn n)) (h : Rn n → Rn m), IsOpen D → (∃ K, LipschitzOnWith K h D) → ∃ (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ i, ContDiff ℝ 1 (G i)) ∧ (∀ i, MeasurableSet (E i)) ∧ (∀ i, E i ⊆ D) ∧ (∀ i, ∀ u ∈ E i, h u = G i u ∧ HasFDerivAt h (fderiv ℝ (G i) u) u) ∧ volume (D \\ ⋃ i, E i) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

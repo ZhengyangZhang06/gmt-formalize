@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3ebadfb51696aee3cfa96943a3377c33d436c3a82ee7e6341efbbfa1b1363540",
+  "git_delta": {
+    "base_commit": "251040a878e3bcdcfdbf3bc4ece0a0eec060ffda",
+    "candidate_commit": "b4bab21008b31eacffe986d1f0affb091e7c06c3",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiTM_integral_bound_of_ball",
+    "diff_sha256": "a2501d7477e6dd39f04519802bacbf3dca0e67fdec9aca733db9f361b893ed3e",
+    "source_sha256": "621820372991beb47d05214e5ae02009543397f1d6527f0ebcacca1336f78caa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiTM_integral_bound_of_ball",
+      "statement": "∀ (N : ℕ) (ν : Measure (Rn N)) (a : Rn N) (ρ M : ℝ) (g : Rn N → ℝ), ν (Metric.ball a ρ) < ∞ → Continuous g → (∀ y, |g y| ≤ M) → (∀ y, g y ≠ 0 → y ∈ Metric.ball a ρ) → Integrable g ν ∧ |∫ y, g y ∂ν| ≤ M * ν.real (Metric.ball a ρ)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
