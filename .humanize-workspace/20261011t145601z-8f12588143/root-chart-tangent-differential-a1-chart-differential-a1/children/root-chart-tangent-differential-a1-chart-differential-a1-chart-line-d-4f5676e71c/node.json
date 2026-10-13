@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_differential-a1.chart_line_derivative-a1",
+  "parent_id": "root.chart_tangent_differential-a1.chart_differential-a1",
+  "depth": 3,
+  "title": "Ambient line derivative of a locally Lipschitz map along a differentiable chart (Simon Ch. 2, (4.7), (4.10); parent Step 5)",
+  "statement": "Let n, N, p ∈ ℕ, U ⊆ ℝᴺ open, f : ℝᴺ → ℝᵖ locally Lipschitz on U, ψ : ℝⁿ → ℝᴺ and u ∈ ℝⁿ, with ψ(u) ∈ U, ψ differentiable at u and f∘ψ differentiable at u. Then for every w ∈ ℝⁿ the map t ↦ f(ψ(u) + t·Dψ(u)w) has derivative D(f∘ψ)(u)w at t = 0, i.e. HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w).",
+  "lean_statement": "∀ (n N p : ℕ) (U : Set (Rn N)) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), IsOpen U → LocallyLipschitzOn U f → ψ u ∈ U → DifferentiableAt ℝ ψ u → DifferentiableAt ℝ (f ∘ ψ) u → ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)",
+  "lean_name": "chartTD_hasLineDerivAt_of_comp_differentiableAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-differential-a1-chart-line-d-4f5676e71c-a1"
+}
