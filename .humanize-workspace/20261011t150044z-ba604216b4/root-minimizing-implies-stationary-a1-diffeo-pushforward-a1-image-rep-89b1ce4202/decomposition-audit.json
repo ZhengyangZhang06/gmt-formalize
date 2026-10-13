@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IsUnitOrientationOf|abbrev MultiVector|def approxTangentPlane|def action|dpfir_",
+        "absolutelyContinuous_of_le_smul|comp_quasiMeasurePreserving|integral_eq_lintegral_pos_part_sub_lintegral_neg_part|theorem to_rightInverse|def compContinuousLinearMapCLM|continuous_compContinuousLinearMapCLM|bounded_above_of_compact_support",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|euclideanHausdorffMeasure_image_le_of_lipschitzOn|abbrev Covector|abbrev DifferentialForm|def IsTestForm",
+        "dpfir_bilipschitz_image_imrep_exists|dpfir_imrep_pairing_continuous_integrable|dpfir_integral_eq_of_area_lintegral",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpfir-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpfir-independent-audit/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/dpfir-independent-audit/Types.lean",
+        "/tmp/dpfir-independent-audit/Proofs.lean"
+      ],
+      "conclusion": "The split appropriately isolates three substantive obligations from the selected image-representation proof. Pinned definitions and library hypotheses support every supplied argument. Current contract and submission sources match the snapshot byte-for-byte; dependency revisions match their pins. All child types elaborate independently in the comparator's replayed scope. Rechecked child proofs and conditional parent assembly compile using only propext, Classical.choice and Quot.sound. The assembly's four sibling hypotheses and parent conclusion match their frozen types byte-for-byte. All proposed names are bare identifiers, absent from the 518 DAG nodes and other branches' stored proposals; project searches also found no declarations with these names. Dependencies are correctly directed and acyclic. No child type contains an inline matrix construction; the sibling Gram expressions use Matrix.of."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes every prose hypothesis and the global multiplicity/orientation identities. The proof correctly establishes the inverse's Lipschitz continuity, the measure comparison for arbitrary restricted sets, and quasi-measure-preservation in the required direction. It then verifies every IMRep field, including local integrability over compact inverse images and transport of a.e. orientation. The argument is complete, independent of the parent and other children, and supplies exactly the representation needed by the parent."
+    },
+    {
+      "key": "pairing_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches continuous compact support, support containment, and restricted-measure integrability. The orthonormal-frame estimate follows from the frozen orientation definition, including degree zero. Local integrability of multiplicity makes the compactly supported majorant integrable; continuity of evaluation supplies the required a.e. strong measurability. Domination proves the exact conclusion without circularity. Both applications in the parent satisfy the support and continuity hypotheses."
+    },
+    {
+      "key": "area_integral_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all hypotheses and both conclusions. Nonnegativity of J yields the absolute-value and positive/negative-part identities a.e. Applying the assumed lintegral identity first proves integrability of h, then equality of its positive and negative lintegrals with those of f. The real-integral decomposition gives the claimed equality. No additional measurability of J or φ is required because the area identity quantifies over every weight. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
