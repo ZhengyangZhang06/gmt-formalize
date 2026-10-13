@@ -492,6 +492,90 @@ theorem tdo_exists_isometry_rotatedPlane : ∀ (n ℓ : ℕ) (T : Submodule ℝ 
     b.repr.symm (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ))) = T
   rw [hq, show u = T.subtype ∘ bT from rfl, Set.range_comp, Submodule.span_image,
     ← bT.coe_toBasis, bT.toBasis.span_eq, Submodule.map_subtype_top]
+/-- Simon Ch. 5, proof of Theorem 4.5, step (1a): the weight `μ_V = (Hⁿ ⌞ M) ⌞ θ` of a
+rectifiable varifold is concentrated on `spt V = U ∩ spt μ_V`. The support of a measure on the
+second countable space `ℝ^{n+ℓ}` is conull (`Measure.support_mem_ae`), and `μ_V ≪ Hⁿ ⌞ M`
+(`withDensity_absolutelyContinuous`), where `Hⁿ ⌞ M` is concentrated on the `Hⁿ`-null-measurable
+carrier `M ⊆ U` (`ae_restrict_mem₀`). -/
+theorem tdo_ghe_ae_mem_support : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∀ᵐ x ∂V.weight, x ∈ V.support := by
+  intro n ℓ U V
+  -- `μ_V`-a.e. point lies in `spt μ_V`
+  have h1 : ∀ᵐ x ∂V.weight, x ∈ V.weight.support := Measure.support_mem_ae
+  -- `μ_V`-a.e. point lies in `M`, since `Hⁿ ⌞ M`-a.e. point does and `μ_V ≪ Hⁿ ⌞ M`
+  have h2 : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  filter_upwards [h1, h2] with x hx1 hx2
+  exact ⟨V.carrier_subset hx2, hx1⟩
+/-- Simon Ch. 5, proof of Theorem 4.5 (p. 120), the step "keeping in mind `θ(x) ≤ 1 + Cδ ≤ 2`"
+comparing `μ_V` with `Hⁿ` on `B_{ησ}(τ) ∩ graph f`: if `θ ≤ C` holds `μ_V`-a.e. on a measurable set
+`E`, then `∫_E g dμ_V ≤ C ∫_E g dHⁿ` for every measurable `g ≥ 0` (no sign condition on `C`, since
+`ofReal C = 0` for `C < 0`). Write `μ_V = ν ⌞ ρ` with `ν = Hⁿ ⌞ M` and `ρ = ofReal ∘ θ`, which is
+`ν`-a.e. measurable. Then `∫_E g dμ_V = ∫ ρ g d(ν ⌞ E)`; the hypothesis gives `θ(x) ≤ C` for
+`ν`-a.e. `x ∈ E` with `ρ(x) ≠ 0`, so `ρ g ≤ ofReal(C) g` `(ν ⌞ E)`-a.e.; and
+`ν ⌞ E = Hⁿ ⌞ (E ∩ M) ≤ Hⁿ ⌞ E`. -/
+theorem tdo_ghe_setLIntegral_weight_le_mul : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (E : Set (Amb n ℓ)) (C : ℝ) (g : Amb n ℓ → ℝ≥0∞), MeasurableSet E → Measurable g → (∀ᵐ x ∂V.weight, x ∈ E → V.mult x ≤ C) → ∫⁻ x in E, g x ∂V.weight ≤ ENNReal.ofReal C * ∫⁻ x in E, g x ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ U V E C g hE hg hC
+  -- `μ_V = ν.withDensity ρ` with `ν = Hⁿ ⌞ M` and `ρ = ofReal ∘ θ`; `ρ` is a.e.-measurable for `ν`
+  have hρ : AEMeasurable (fun x => ENNReal.ofReal (V.mult x))
+      ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier) :=
+    V.aemeasurable_mult.ennreal_ofReal
+  -- the bound `θ ≤ C` on `E` holds `ν`-a.e. where `ρ ≠ 0`
+  have hCν : ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict V.carrier,
+      ENNReal.ofReal (V.mult x) ≠ 0 → x ∈ E → V.mult x ≤ C :=
+    (ae_withDensity_iff' hρ).mp hC
+  -- hence `ρ g ≤ ofReal C · g` a.e. for `ν ⌞ E`
+  have hle : ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E,
+      ENNReal.ofReal (V.mult x) * g x ≤ ENNReal.ofReal C * g x := by
+    filter_upwards [ae_restrict_of_ae hCν, ae_restrict_mem hE] with x hx hxE
+    rcases eq_or_ne (ENNReal.ofReal (V.mult x)) 0 with h0 | h0
+    · rw [h0, zero_mul]
+      exact zero_le
+    · gcongr
+      exact hx h0 hxE
+  -- `ν ⌞ E = Hⁿ ⌞ (E ∩ M) ≤ Hⁿ ⌞ E`
+  have hνE : ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E ≤
+      (μHE[n] : Measure (Amb n ℓ)).restrict E := by
+    rw [Measure.restrict_restrict hE]
+    exact Measure.restrict_mono inter_subset_left le_rfl
+  calc ∫⁻ x in E, g x ∂V.weight
+      = ∫⁻ x, ENNReal.ofReal (V.mult x) * g x
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E := by
+        rw [RectifiableVarifold.weight, restrict_withDensity hE,
+          lintegral_withDensity_eq_lintegral_mul₀ hρ.restrict hg.aemeasurable]
+        rfl
+    _ ≤ ∫⁻ x, ENNReal.ofReal C * g x
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E := lintegral_mono_ae hle
+    _ = ENNReal.ofReal C * ∫⁻ x, g x
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict E := lintegral_const_mul _ hg
+    _ ≤ ENNReal.ofReal C * ∫⁻ x in E, g x ∂(μHE[n] : Measure (Amb n ℓ)) := by
+        gcongr ENNReal.ofReal C * ?_
+        exact lintegral_mono' hνE le_rfl
+/-- Simon Ch. 5, proof of Theorem 4.5, between (19) and (20): for `r > 0` and `φ` continuous and
+nonnegative on the closed ball `B_r(0) ⊆ ℝⁿ`,
+`∫⁻_{B_r(0)} ofReal(φ) dLⁿ = ofReal(∫_{B̆_r(0)} φ dLⁿ)`, with a Bochner integral over the open
+ball on the right.  The sphere `∂B_r(0)` is `Lⁿ`-null since `r ≠ 0`, so the two balls agree up to
+a null set; `φ` is integrable on the compact `B_r(0)`, hence on `B̆_r(0)`, and nonnegative there. -/
+theorem tdo_ghe_lintegral_closedBall_ofReal_eq : ∀ (n : ℕ) (φ : Rn n → ℝ) (r : ℝ), 0 < r → ContinuousOn φ (closedBall 0 r) → (∀ x ∈ closedBall (0 : Rn n) r, 0 ≤ φ x) → ∫⁻ x in closedBall (0 : Rn n) r, ENNReal.ofReal (φ x) = ENNReal.ofReal (∫ x in ball (0 : Rn n) r, φ x) := by
+  intro n φ r hr hφ hφ0
+  -- Steps 1–2: `Lⁿ(∂B_r(0)) = 0`, so `Lⁿ(B_r(0)) ≤ Lⁿ(B̆_r(0)) + Lⁿ(∂B_r(0)) = Lⁿ(B̆_r(0))` and
+  -- the open and closed balls agree a.e.
+  have hae : ball (0 : Rn n) r =ᵐ[volume] closedBall (0 : Rn n) r := by
+    refine ae_eq_of_subset_of_measure_ge ball_subset_closedBall ?_
+      measurableSet_ball.nullMeasurableSet measure_closedBall_lt_top.ne
+    calc volume (closedBall (0 : Rn n) r)
+        = volume (ball (0 : Rn n) r ∪ sphere 0 r) := by rw [ball_union_sphere]
+      _ ≤ volume (ball (0 : Rn n) r) + volume (sphere (0 : Rn n) r) := measure_union_le _ _
+      _ = volume (ball (0 : Rn n) r) := by
+        rw [Measure.addHaar_sphere_of_ne_zero volume 0 hr.ne', add_zero]
+  rw [← setLIntegral_congr hae]
+  -- Step 3: `φ` is integrable on the compact closed ball, hence on the open ball.
+  have hint : IntegrableOn φ (ball (0 : Rn n) r) :=
+    (hφ.integrableOn_compact (isCompact_closedBall 0 r)).mono_set ball_subset_closedBall
+  -- Step 4: `φ ≥ 0` on the open ball.
+  have hnn : 0 ≤ᵐ[volume.restrict (ball (0 : Rn n) r)] φ :=
+    ae_restrict_of_forall_mem measurableSet_ball fun x hx => hφ0 x (ball_subset_closedBall hx)
+  -- Steps 5–6: convert the Bochner integral of the integrable nonnegative `φ`.
+  exact (ofReal_integral_eq_lintegral_ofReal hint hnn).symm
 /-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
 `ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
 `ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
@@ -809,6 +893,72 @@ theorem tdo_graph_plane_dist : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] A
     exact hle x' (y - c)
   -- (v)
   · rw [LinearIsometryEquiv.norm_map, hzero]
+
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11): for `f` `1`-Lipschitz on `D ⊆ ℝⁿ` and a linear
+isometry `q` of `ℝ^{n+ℓ}`, the graph map `F(x) = q(x, f(x))` is `√2`-Lipschitz on `D`, and
+`|F(x)| ≤ √2 |x|` on `D` when `f(0) = 0` and `0 ∈ D`. By the graph coordinates
+(`lip_approx_graph_coordinates` (i), (ii)) and since `q` is a linear isometry,
+`|F(x) − F(x')|² = |x − x'|² + |f(x) − f(x')|² ≤ 2 |x − x'|²`; and `F(0) = q(0, 0) = 0`. -/
+theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖) := by
+  intro n ℓ q f D hf
+  obtain ⟨hsub, hnorm, -, -⟩ := lip_approx_graph_coordinates n ℓ q
+  have hlip : ∀ x ∈ D, ∀ x' ∈ D,
+      ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖ := by
+    intro x hx x' hx'
+    -- `|f(x) − f(x')| ≤ |x − x'|`
+    have hf' : ‖f x - f x'‖ ≤ ‖x - x'‖ := by
+      have h := hf.dist_le_mul x hx x' hx'
+      rwa [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at h
+    -- `|F(x) − F(x')| = |(x − x', f(x) − f(x'))|`, whose square is at most `2 |x − x'|²`
+    rw [← map_sub, q.norm_map, hsub]
+    have hsq : ‖graphPoint (x - x') (f x - f x')‖ ^ 2 ≤ (Real.sqrt 2 * ‖x - x'‖) ^ 2 := by
+      rw [hnorm, mul_pow, Real.sq_sqrt zero_le_two, two_mul]
+      exact add_le_add le_rfl (pow_le_pow_left₀ (norm_nonneg _) hf' 2)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _)
+      (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) two_ne_zero).mp hsq
+  refine ⟨hlip, fun hf0 h0 x hx => ?_⟩
+  -- `(0, 0) = (0, 0) − (0, 0) = 0`, so `F(0) = 0`; compare `F(x)` with `F(0)`
+  have hzero : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    have h := hsub 0 0 0 0
+    rw [sub_self, sub_self, sub_self] at h
+    exact h.symm
+  have h := hlip x hx 0 h0
+  rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
+
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over the Lipschitz graph: for a
+linear isometry `q` of `ℝ^{n+ℓ}` and `f : ℝⁿ → ℝ^ℓ` that is `L`-Lipschitz on `D`, the map
+`F(x) = q(x, f(x))` is `√(1 + L²)`-Lipschitz on `D`.  Since `q` preserves distances and
+`|(x, f x) − (y, f y)|² = |x − y|² + |f(x) − f(y)|²` (split the sum `Σ_k w_k²` over the indices
+`castAdd ℓ i` and `natAdd n j` of `Fin (n + ℓ)` with `Fin.sum_univ_add`), the hypothesis gives
+`|F(x) − F(y)|² ≤ (1 + L²)|x − y|² = (√(1 + L²) |x − y|)²` for `x, y ∈ D`; take square roots. -/
+theorem tdo_gl_graph_map_lipschitzOn : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), LipschitzOnWith L f D → LipschitzOnWith (NNReal.sqrt (1 + L ^ 2)) (fun x => q (graphPoint x (f x))) D := by
+  intro n ℓ q f D L hf
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `|(a, b) − (a', b')|² = |a − a'|² + |b − b'|²`, splitting `Σ_k w_k²` over the two blocks
+  have hsq : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      ‖graphPoint a b - graphPoint a' b'‖ ^ 2 = ‖a - a'‖ ^ 2 + ‖b - b'‖ ^ 2 := by
+    intro a a' b b'
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [PiLp.sub_apply, hl, hr]
+  -- `q` preserves distances, so it suffices to bound `|(x, f x) − (y, f y)|` by
+  -- `√(1 + L²) |x − y|` for `x, y ∈ D`
+  refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+  rw [LinearIsometryEquiv.dist_map, dist_eq_norm, dist_eq_norm, Real.coe_sqrt, NNReal.coe_add,
+    NNReal.coe_one, NNReal.coe_pow]
+  -- `|f x − f y|² ≤ L² |x − y|²` on `D`
+  have hfxy : ‖f x - f y‖ ^ 2 ≤ (L * ‖x - y‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) (hf.norm_sub_le hx hy) 2
+  refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp ?_
+  rw [hsq, mul_pow, Real.sq_sqrt (by positivity)]
+  rw [mul_pow] at hfxy
+  linarith
 /-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over a Lipschitz image: if
 `F : ℝⁿ → ℝ^N` is `K`-Lipschitz on the measurable set `D`, then for measurable `g ≥ 0`
 `∫_{F(D)} g dHⁿ ≤ Kⁿ ∫_D g(F(x')) dx'`.  For `E ⊆ D` the image bound gives
@@ -1674,6 +1824,137 @@ theorem tdo_small_tilt_plane : AffineApproximationLemma → ∀ n ℓ : ℕ, 1 �
           add_le_add (hH₁ x hx)
             (mul_le_mul hDn (mem_closedBall_zero_iff.1 hx.2) (norm_nonneg x) (mul_nonneg hC₁0 hg0))
       _ = (C₀ + 2 * C₁) * g * (δ * ρ) := by ring
+
+/-- **Simon Ch. 5, proof of Theorem 4.5, the height bound before (20)** (pp. 119–120).  Let `q` be a
+linear isometry of `ℝ^{n+ℓ}`, `f` `1`-Lipschitz on `B̄ⁿ_R(0)`, `λ(x') = c + A x'`,
+`τ = q(0, c)`, `S = q{(v, A v)}` and `Γ = q(graph f|B̄ⁿ_R(0))`.  If `B̄_r(τ) ⊆ B̄_R(0)`,
+`θ ≤ 2` `μ_V`-a.e. on `B̄_r(τ)`, `dist(x − τ, S) ≤ h` on `spt V ∩ B̄_r(τ)` and
+`μ_V(B̄_R(0) ∩ (spt V \ Γ)) ≤ β`, then
+`∫_{B̄_r(τ)} dist(x − τ, S)² dμ_V ≤ 2 · 2^{n/2} ∫_{Bⁿ_r(0)} |f − λ|² dLⁿ + h² β`.
+Split `B̄_r(τ)` along the compact set `Γ` (compact as `x' ↦ q(x', f x')` is `√2`-Lipschitz,
+`allard52_cft_graph_map_sqrt_two`).  On `Γ`, `θ ≤ 2` turns `μ_V` into `2 Hⁿ`
+(`tdo_ghe_setLIntegral_weight_le_mul`), the area bound `tdo_graph_lintegral_le` with `L = 1` gives
+the factor `√2ⁿ`, and at `x = q(x', f x') ∈ B̄_r(τ)` one has `|x'| ≤ r` and
+`dist(x − τ, S) ≤ |f(x') − λ(x')|` (`tdo_graph_plane_dist` (iv), (iii)); the closed ball is then
+traded for the open one (`tdo_ghe_lintegral_closedBall_ofReal_eq`).  Off `Γ`, `μ_V`-a.e. point
+lies in `spt V` (`tdo_ghe_ae_mem_support`), where `dist(x − τ, S)² ≤ h²`, and these points have
+weight at most `β`. -/
+theorem tdo_graph_height_excess : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (c : Rn ℓ) (A : Rn n →L[ℝ] Rn ℓ) (R r h β : ℝ), 0 < r → r ≤ R → closedBall 0 R ⊆ U → LipschitzOnWith 1 f (closedBall (0 : Rn n) R) → closedBall (q (graphPoint (0 : Rn n) c)) r ⊆ closedBall 0 R → 0 ≤ β → (∀ᵐ x ∂V.weight, x ∈ closedBall (q (graphPoint (0 : Rn n) c)) r → V.mult x ≤ 2) → (∀ x ∈ V.support ∩ closedBall (q (graphPoint (0 : Rn n) c)) r, infDist (x - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ h) → V.weight (closedBall 0 R ∩ (V.support \ q '' graphOver f (closedBall 0 R))) ≤ ENNReal.ofReal β → ∫ x in closedBall (q (graphPoint (0 : Rn n) c)) r, infDist (x - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ^ 2 ∂V.weight ≤ 2 * Real.sqrt 2 ^ n * (∫ x' in ball (0 : Rn n) r, ‖f x' - (c + A x')‖ ^ 2) + h ^ 2 * β := by
+  intro n ℓ U V q f c A R r h β hr hrR _hRU hf hBR hβ hθ hh hweight
+  set τ : Amb n ℓ := q (graphPoint (0 : Rn n) c)
+  set S : Submodule ℝ (Amb n ℓ) :=
+    Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))
+  set B : Set (Amb n ℓ) := closedBall τ r
+  set Γ : Set (Amb n ℓ) := q '' graphOver f (closedBall 0 R) with hΓ
+  set X : ℝ := ∫ x' in ball (0 : Rn n) r, ‖f x' - (c + A x')‖ ^ 2
+  -- `d(x) = dist(x − τ, S)` is continuous, so `ofReal (d²)` is measurable
+  have hd : Continuous fun x : Amb n ℓ => infDist (x - τ) (S : Set (Amb n ℓ)) :=
+    (continuous_infDist_pt _).comp (continuous_id.sub continuous_const)
+  have hdm : Measurable fun x : Amb n ℓ =>
+      ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) :=
+    ENNReal.measurable_ofReal.comp (hd.pow 2).measurable
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  -- `Γ` is the image of the compact `B̄ⁿ_R(0)` under the `√2`-Lipschitz map `x' ↦ q(x', f x')`
+  have hF : ContinuousOn (fun x' => q (graphPoint x' (f x'))) (closedBall (0 : Rn n) R) := by
+    have h2 := (allard52_cft_graph_map_sqrt_two n ℓ q f (closedBall 0 R) hf).1
+    refine (LipschitzOnWith.of_dist_le_mul (K := (Real.sqrt 2).toNNReal)
+      fun x hx y hy => ?_).continuousOn
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (Real.sqrt_nonneg _)]
+    exact h2 x hx y hy
+  have hΓm : MeasurableSet Γ := by
+    have hΓF : Γ = (fun x' => q (graphPoint x' (f x'))) '' closedBall (0 : Rn n) R := by
+      rw [hΓ, graphOver, Set.image_image]
+    rw [hΓF]
+    exact ((isCompact_closedBall _ _).image_of_continuousOn hF).isClosed.measurableSet
+  have hX0 : 0 ≤ 2 * Real.sqrt 2 ^ n * X :=
+    mul_nonneg (by positivity) (setIntegral_nonneg measurableSet_ball fun _ _ => sq_nonneg _)
+  have hhβ : 0 ≤ h ^ 2 * β := mul_nonneg (sq_nonneg h) hβ
+  -- at `x = q(x', f x') ∈ B̄_r(τ)`: `|x'| ≤ r` and `d(x) ≤ |f(x') − λ(x')|`
+  have hpt : ∀ x' ∈ closedBall (0 : Rn n) R,
+      B.indicator (fun x => ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2))
+          (q (graphPoint x' (f x'))) ≤
+        (closedBall (0 : Rn n) r).indicator
+          (fun x' => ENNReal.ofReal (‖f x' - (c + A x')‖ ^ 2)) x' := by
+    intro x' _
+    obtain ⟨-, -, hdist, hnorm, -⟩ := tdo_graph_plane_dist n ℓ q A
+    by_cases hx : q (graphPoint x' (f x')) ∈ B
+    · have hx' : x' ∈ closedBall (0 : Rn n) r := by
+        rw [mem_closedBall, dist_zero_right]
+        exact (hnorm x' (f x') c).trans (by rw [← dist_eq_norm]; exact hx)
+      rw [indicator_of_mem hx, indicator_of_mem hx']
+      exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ infDist_nonneg (hdist x' (f x') c) 2)
+    · rw [indicator_of_notMem hx]
+      exact zero_le
+  -- the part on `Γ`: `θ ≤ 2`, the area bound with `L = 1`, the pointwise bound, `B̄ⁿ_r ⊆ B̄ⁿ_R`
+  have hφ : ContinuousOn (fun x' => ‖f x' - (c + A x')‖ ^ 2) (closedBall (0 : Rn n) r) :=
+    (((hf.continuousOn.mono (closedBall_subset_closedBall hrR)).sub
+      (continuousOn_const.add A.continuous.continuousOn)).norm).pow 2
+  have hon : ∫⁻ x in B ∩ Γ, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) ∂V.weight ≤
+      ENNReal.ofReal (2 * Real.sqrt 2 ^ n * X) := by
+    calc ∫⁻ x in B ∩ Γ, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) ∂V.weight
+        ≤ ENNReal.ofReal 2 * ∫⁻ x in B ∩ Γ, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2)
+            ∂(μHE[n] : Measure (Amb n ℓ)) :=
+          Submission.tdo_ghe_setLIntegral_weight_le_mul n ℓ U V (B ∩ Γ) 2 _ (hBm.inter hΓm) hdm
+            (hθ.mono fun x hx hxE => hx hxE.1)
+      _ = ENNReal.ofReal 2 * ∫⁻ x in Γ, B.indicator
+            (fun x => ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2)) x
+            ∂(μHE[n] : Measure (Amb n ℓ)) := by
+          rw [setLIntegral_indicator hBm]
+      _ ≤ ENNReal.ofReal 2 * (ENNReal.ofReal (Real.sqrt (1 + ((1 : ℝ≥0) : ℝ) ^ 2) ^ n) *
+            ∫⁻ x' in closedBall (0 : Rn n) R, B.indicator
+              (fun x => ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2))
+              (q (graphPoint x' (f x')))) := by
+          gcongr
+          exact tdo_graph_lintegral_le n ℓ q f (closedBall 0 R) 1 measurableSet_closedBall hf _
+            (hdm.indicator hBm)
+      _ ≤ ENNReal.ofReal 2 * (ENNReal.ofReal (Real.sqrt 2 ^ n) *
+            ∫⁻ x' in closedBall (0 : Rn n) r, ENNReal.ofReal (‖f x' - (c + A x')‖ ^ 2)) := by
+          have h12 : Real.sqrt (1 + ((1 : ℝ≥0) : ℝ) ^ 2) = Real.sqrt 2 := by norm_num
+          rw [h12]
+          gcongr ENNReal.ofReal 2 * (ENNReal.ofReal (Real.sqrt 2 ^ n) * ?_)
+          calc ∫⁻ x' in closedBall (0 : Rn n) R, B.indicator
+                (fun x => ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2))
+                (q (graphPoint x' (f x')))
+              ≤ ∫⁻ x' in closedBall (0 : Rn n) R, (closedBall (0 : Rn n) r).indicator
+                (fun x' => ENNReal.ofReal (‖f x' - (c + A x')‖ ^ 2)) x' :=
+                setLIntegral_mono' measurableSet_closedBall hpt
+            _ ≤ ∫⁻ x', (closedBall (0 : Rn n) r).indicator
+                (fun x' => ENNReal.ofReal (‖f x' - (c + A x')‖ ^ 2)) x' :=
+                setLIntegral_le_lintegral _ _
+            _ = ∫⁻ x' in closedBall (0 : Rn n) r, ENNReal.ofReal (‖f x' - (c + A x')‖ ^ 2) :=
+                lintegral_indicator measurableSet_closedBall _
+      _ = ENNReal.ofReal (2 * Real.sqrt 2 ^ n * X) := by
+          rw [Submission.tdo_ghe_lintegral_closedBall_ofReal_eq n
+              (fun x' => ‖f x' - (c + A x')‖ ^ 2) r hr hφ fun _ _ => sq_nonneg _,
+            ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by norm_num), mul_assoc]
+  -- the part off `Γ`: `μ_V`-a.e. such point lies in `spt V ∩ B̄_r(τ)`, where `d ≤ h`
+  have hae := Submission.tdo_ghe_ae_mem_support n ℓ U V
+  have hoff : ∫⁻ x in B \ Γ, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) ∂V.weight ≤
+      ENNReal.ofReal (h ^ 2 * β) := by
+    calc ∫⁻ x in B \ Γ, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) ∂V.weight
+        ≤ ∫⁻ _ in B \ Γ, ENNReal.ofReal (h ^ 2) ∂V.weight := by
+          refine setLIntegral_mono_ae' (hBm.diff hΓm) ?_
+          filter_upwards [hae] with x hxV hx
+          exact ENNReal.ofReal_le_ofReal
+            (pow_le_pow_left₀ infDist_nonneg (hh x ⟨hxV, hx.1⟩) 2)
+      _ = ENNReal.ofReal (h ^ 2) * V.weight (B \ Γ) := setLIntegral_const _ _
+      _ ≤ ENNReal.ofReal (h ^ 2) * ENNReal.ofReal β := by
+          gcongr
+          refine (measure_mono_ae ?_).trans hweight
+          filter_upwards [hae] with x hxV hx
+          exact ⟨hBR hx.1, hxV, hx.2⟩
+      _ = ENNReal.ofReal (h ^ 2 * β) := (ENNReal.ofReal_mul (sq_nonneg h)).symm
+  -- add the two parts and return to the Bochner integral
+  have htot : ∫⁻ x in B, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) ∂V.weight ≤
+      ENNReal.ofReal (2 * Real.sqrt 2 ^ n * X + h ^ 2 * β) := by
+    rw [← lintegral_inter_add_sdiff _ B hΓm, ENNReal.ofReal_add hX0 hhβ]
+    exact add_le_add hon hoff
+  have hint : ∫ x in B, infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2 ∂V.weight =
+      (∫⁻ x in B, ENNReal.ofReal (infDist (x - τ) (S : Set (Amb n ℓ)) ^ 2) ∂V.weight).toReal :=
+    integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun _ => sq_nonneg _)
+      (hd.pow 2).aestronglyMeasurable
+  rw [hint]
+  exact ENNReal.toReal_le_of_le_ofReal (add_nonneg hX0 hhβ) htot
 
 end Submission
 

@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "tiltExcess|graphPoint|hsNormSq",
+        "theorem integrableOn_of_bounded|theorem ofReal_integral_eq_lintegral_ofReal|theorem setLIntegral_congr_fun|theorem setLIntegral_le_lintegral|theorem lintegral_indicator|theorem starProjection_norm_le|theorem withDensity_apply |theorem restrict_restrict |theorem ae_restrict_mem₀|theorem Continuous.comp_aestronglyMeasurable",
+        "allard52_cft_tilt_lintegral_eq|allard52_cft_graph_map_sqrt_two",
+        "git show 02c3706f8b397dd9abf13122f4a7824d7bf445d3:GMT/Ch05/Submission.lean",
+        "git show e2915745b92c2117161b0d9eaeb226a1f6c30d1b:GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean check/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean check/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-weight-ba-26a0dc4b42/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/lean-audit-v1.json",
+        "/tmp/cft-independent-audit-_k7nsge6/check/ChallengeTypes.lean",
+        "/tmp/cft-independent-audit-_k7nsge6/check/Full.lean"
+      ],
+      "conclusion": "Verified pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot supplies the stated definitions and required integration/projection lemmas; the project search found no additional relevant lemmas outside Contract.lean/Submission.lean. Both reused declarations have comparator-passing records and byte-identical frozen types; their accepted proof bodies were also checked. Both new names are unreserved. All names are bare identifiers. The only child dependency is graph_sqrt_two on graph_coordinates, and the proposed dependency closure is acyclic. All four one-line types independently elaborate as Prop without child implementations; no matrix-unit construction occurs. Fresh compilation against the frozen source verifies all four children and the exact selected parent, with only propext, Classical.choice and Quot.sound as axioms. The split is appropriate: its geometric and measure-theoretic conclusions supply the containments, finite weight and tilt identity needed by the parent's indicator-comparison argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_ball_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including arbitrary real radius and compact containment. The proof establishes integrability, correctly handles the null-measurable carrier to obtain a.e. nonnegativity, and applies the density/restriction identities and Bochner–lintegral conversion. This is an exact comparator-accepted reuse with no circular dependence; its equality supplies finite ball weight."
+    },
+    {
+      "key": "graph_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted type matches all four prose conclusions. Coordinate calculations prove subtraction, squared norm and surjectivity; the horizontal/orthogonal decomposition proves the rotated projection formula. Every conjunct has a complete independent proof, including zero-dimensional cases. Reusing the full frozen conjunction is valid although graph_sqrt_two needs only its first two parts."
+    },
+    {
+      "key": "tilt_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose explicitly includes a.e. strong measurability, positive radius and finite ball weight, exactly as the Lean type does. The proof derives the bound 4(n+ℓ), establishes integrability before converting the integral, and cancels s^n using positivity. No dimension assumption on T, hidden containment hypothesis, or parent theorem is needed."
+    },
+    {
+      "key": "graph_sqrt_two",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses both estimates with Lipschitz control only on D. The proof correctly combines the declared graph_coordinates dependency with norm preservation and nonnegative square comparison, then derives F(0)=0 for the second estimate. Both additional hypotheses there are explicit and correctly used. The dependency is correctly directed and non-circular."
+    }
+  ],
+  "required_changes": []
+}
