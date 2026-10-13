@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b019239ec607d64d11b0eb4a630d307ad94e0b01a4db1a1c0c7b5cbd33d7830f",
+  "git_delta": {
+    "base_commit": "f6b3417063857b2a5b3fdfa41ab6ffbd9a4e43a9",
+    "candidate_commit": "35cfba72bb1922ec388cf00347dadf10f5ca66de",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_scsp_tf_cutoff",
+    "diff_sha256": "f2ba13aa05f2f87d1ed1929194f4ed749e8f438436709e5a19fcccdd49823d84",
+    "source_sha256": "3e7f06e3ffb973890a29b8833f87362a549996441a6147561937adeeaf113f94",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_scsp_tf_cutoff",
+      "statement": "∀ (P : ℕ) (K N : Set (Euclid P)), IsCompact K → IsOpen N → K ⊆ N → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ N ∧ ∃ V : Set (Euclid P), IsOpen V ∧ K ⊆ V ∧ ∀ y ∈ V, ζ y = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
