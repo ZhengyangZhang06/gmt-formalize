@@ -359,6 +359,142 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The `dt`-slice of `dψ` (`e₀ = EuclideanSpace.single 0 1`, `ι(w) = (0, w)`, `(s, x)` the point
+of `ℝ^{m+1}` with first coordinate `s`): for a `0`-form `ψ`, `dψ(y)(e₀) = Dψ(y)(e₀)`; for a
+`(j+1)`-form `ψ` whose slice at `s` is `φ(x)(w) = ψ(s, x)(e₀, ι ∘ w)`,
+`dψ(s, x)(e₀, ι ∘ v) = Dψ(s, x)(e₀)(ι ∘ v) − dφ(x)(v)`.
+Both exterior derivatives are alternating sums of directional derivatives; by the chain rule
+along `x ↦ (s, x)` (derivative `ι`), the `l`-th term of `dφ(x)(v)` is the `(l+1)`-st term of
+`dψ(s, x)(e₀, ι ∘ v)` with the opposite sign, and the `0`-th term is `Dψ(s, x)(e₀)(ι ∘ v)`. -/
+theorem Submission.dph_iprod_slice_extDeriv :
+    (∀ (m : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0) (y : Eucl (m + 1))
+      (v : Fin 0 → Eucl m),
+      ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) 0 ψ :
+        TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1)) : DifferentialForm (Eucl (m + 1)) (0 + 1))
+        y (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+          (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) =
+      fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) 0) y (EuclideanSpace.single 0 1)
+        (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧
+    (∀ (m j : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1))
+      (φ : TestFormOn (univ : Set (Eucl m)) j) (s : ℝ),
+      (∀ (x : Eucl m) (w : Fin j → Eucl m), (φ : DifferentialForm (Eucl m) j) x w =
+        (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+          ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+          (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+            (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (w i))))) →
+      ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+        ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) (j + 1) ψ :
+          TestFormOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)) :
+            DifferentialForm (Eucl (m + 1)) (j + 1 + 1))
+          ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+          (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+            (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) =
+        fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+          ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+          (EuclideanSpace.single 0 1)
+          (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) -
+        ((exteriorDerivativeTestOn (univ : Set (Eucl m)) j φ :
+          TestFormOn (univ : Set (Eucl m)) (j + 1)) : DifferentialForm (Eucl m) (j + 1)) x v) := by
+  refine ⟨?_, ?_⟩
+  · -- `dψ(y)(e₀)` is the one-term alternating sum `Dψ(y)(e₀)`.
+    intro m ψ y v
+    have hd : DifferentiableAt ℝ (ψ : DifferentialForm (Eucl (m + 1)) 0) y :=
+      ψ.property.1.1.differentiable (by simp) y
+    show exteriorDerivative (ψ : DifferentialForm (Eucl (m + 1)) 0) y _ = _
+    rw [exteriorDerivative_apply hd, Fin.sum_univ_one]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero]
+    rw [fderiv_continuousAlternatingMap_apply_const_apply hd]
+    congr 1
+  · intro m j ψ φ s hφ x v
+    -- `ι(w) = (0, w)` is a continuous linear map `ℝ^m → ℝ^{m+1}`.
+    obtain ⟨ι, hιv⟩ : ∃ ι : Eucl m →L[ℝ] Eucl (m + 1), ∀ w : Eucl m,
+        ι w = (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ w)) := by
+      let L : (Fin m → ℝ) →ₗ[ℝ] (Fin (m + 1) → ℝ) :=
+        { toFun := fun w => Fin.cons 0 w
+          map_add' := by
+            intro a b; funext i; refine Fin.cases ?_ (fun i => ?_) i <;> simp
+          map_smul' := by
+            intro c a; funext i; refine Fin.cases ?_ (fun i => ?_) i <;> simp }
+      exact ⟨(EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.toContinuousLinearMap ∘L
+        LinearMap.toContinuousLinearMap L ∘L
+          (EuclideanSpace.equiv (Fin m) ℝ).toContinuousLinearMap, fun w => rfl⟩
+    -- The slice `x ↦ (s, x) = (s, 0) + ι x` has derivative `ι`.
+    have hslice : HasFDerivAt (fun x : Eucl m => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) ι x := by
+      have heq : (fun x : Eucl m => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) =
+          fun x => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s 0) + ι x := by
+        funext x
+        rw [hιv]
+        apply (EuclideanSpace.equiv (Fin (m + 1)) ℝ).injective
+        simp only [map_add, ContinuousLinearEquiv.apply_symm_apply]
+        funext i
+        refine Fin.cases ?_ (fun i => ?_) i <;> simp
+      rw [heq]
+      exact ι.hasFDerivAt.const_add _
+    have hd : DifferentiableAt ℝ (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+        ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) :=
+      ψ.property.1.1.differentiable (by simp) _
+    have hdφ : DifferentiableAt ℝ (φ : DifferentialForm (Eucl m) j) x :=
+      φ.property.1.1.differentiable (by simp) x
+    -- Chain rule: `D(φ(·)(w))(x) = D(ψ(·)(e₀, ι ∘ w))(s, x) ∘ ι`.
+    have hchain : ∀ w : Fin j → Eucl m,
+        fderiv ℝ (fun x' => (φ : DifferentialForm (Eucl m) j) x' w) x =
+          (fderiv ℝ (fun z => (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) z
+            (Fin.cons (EuclideanSpace.single 0 1) fun i => ι (w i)))
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))).comp ι := by
+      intro w
+      have hfun : (fun x' => (φ : DifferentialForm (Eucl m) j) x' w) =
+          (fun z => (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) z
+            (Fin.cons (EuclideanSpace.single 0 1) fun i => ι (w i))) ∘
+          (fun x : Eucl m => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) := by
+        funext x'
+        simp only [Function.comp_apply, hφ x' w, hιv]
+      rw [hfun]
+      exact ((hd.continuousAlternatingMap_apply_const _).hasFDerivAt.comp x hslice).fderiv
+    show exteriorDerivative (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) _ _ =
+      _ - exteriorDerivative (φ : DifferentialForm (Eucl m) j) x v
+    -- Split off the `0`-th term of `dψ`; the remaining terms are those of `-dφ`.
+    rw [exteriorDerivative_apply hd, exteriorDerivative_apply hdφ, Fin.sum_univ_succ]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero, Fin.removeNth_zero,
+      Fin.tail_cons]
+    rw [fderiv_continuousAlternatingMap_apply_const_apply hd, sub_eq_add_neg,
+      ← Finset.sum_neg_distrib]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro l _
+    rw [hchain, ContinuousLinearMap.comp_apply,
+      fderiv_continuousAlternatingMap_apply_const_apply hd,
+      fderiv_continuousAlternatingMap_apply_const_apply hd]
+    -- Removing the `(l+1)`-st entry of `(e₀, ι ∘ v)` gives `(e₀, ι ∘ removeNth l v)`.
+    have hrm : Fin.removeNth l.succ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (m + 1))
+        (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) :
+            Fin (j + 1 + 1) → Eucl (m + 1)) =
+        (Fin.cons (EuclideanSpace.single 0 1 : Eucl (m + 1)) (fun i => ι (Fin.removeNth l v i)) :
+          Fin (j + 1) → Eucl (m + 1)) := by
+      show (Fin.cons (EuclideanSpace.single 0 1 : Eucl (m + 1))
+        (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) :
+            Fin (j + 1 + 1) → Eucl (m + 1)) ∘ (l.succ).succAbove = _
+      rw [Fin.cons_comp_succ_succAbove]
+      congr 1
+      funext i
+      simp only [Fin.removeNth, hιv]
+    rw [hrm, Fin.cons_succ, hιv, Fin.val_succ, pow_succ, mul_neg_one, neg_smul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
