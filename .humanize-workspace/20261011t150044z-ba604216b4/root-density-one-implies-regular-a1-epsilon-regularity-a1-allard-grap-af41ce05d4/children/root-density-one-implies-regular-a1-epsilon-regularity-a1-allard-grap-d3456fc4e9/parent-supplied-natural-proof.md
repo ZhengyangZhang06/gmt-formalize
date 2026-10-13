@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.translation_l2-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof steps 1 and (2a): the translation estimate inside the mollification estimate (cf. Gilbarg–Trudinger Lemma 7.23, Evans §5.8.2 Thm 3).
+
+1. (Notation.) Let G(y) := ‖Du(y)‖². G is measurable ((measurable_fderiv ℝ u).norm.pow_const 2) and 0 ≤ G ≤ L² (norm_fderiv_le_of_lipschitz). Let G_R := 1_{B_R}·G (Set.indicator).
+- G_R is measurable and 0 ≤ G_R ≤ L².
+- G_R is integrable on ℝⁿ: it is bounded and supported in B_R, which has finite measure (integrable_indicator_iff, Integrable.of_bound).
+- ∫_{B_R} G = ∫_{ℝⁿ} G_R (integral_indicator).
+
+2. (A.e. FTC.) By Submission.dorag_ha_rb_segment_ftc with z = w: for a.e. p, u(p + w) − u(p) = ∫_0^1 Du(p + τw)w dτ. Pull this back along the measure-preserving map x ↦ x − w ((measurePreserving_sub_right volume w).quasiMeasurePreserving.ae) and use (x − w) + w = x. So for a.e. x:
+u(x) − u(x − w) = ∫_0^1 Du(x − w + τw)w dτ = ∫_{(0,1]} Du(x − w + τw)w dτ (intervalIntegral.integral_of_le).
+
+3. (Cauchy–Schwarz on (0,1].) Let h be integrable together with h² on the probability space ((0,1], dτ), and put c := ∫h. Then 0 ≤ ∫(h − c)² = ∫h² − 2c² + c² = ∫h² − c², so (∫h)² ≤ ∫h².
+Apply this to h(τ) := Du(x − w + τw)w. It is measurable and bounded by L‖w‖, since |Du(y)w| ≤ ‖Du(y)‖‖w‖ (ContinuousLinearMap.le_opNorm). For x as in step 2:
+(u(x) − u(x − w))² ≤ ∫_{(0,1]} h² ≤ ∫_{(0,1]} ‖w‖²G(x − w + τw) dτ.
+
+4. (Localization.) Let x ∈ B_r and τ ∈ (0,1]. Then x − w + τw = x − (1 − τ)w has norm ≤ ‖x‖ + |1 − τ|‖w‖ < r + ‖w‖ ≤ R. So G(x − w + τw) = G_R(x − w + τw). Hence for a.e. x ∈ B_r:
+(u(x) − u(x − w))² ≤ ‖w‖²Φ(x), where Φ(x) := ∫_{(0,1]} G_R(x − w + τw) dτ.
+
+5. (Integrability and integration.) F(x, τ) := G_R(x − w + τw) is measurable and bounded by L² on the finite measure space B_r × (0,1], hence integrable there (Integrable.of_bound). So Φ is integrable on B_r (Integrable.integral_prod_left). By integral_mono_of_nonneg, using ae_restrict_iff' for the a.e. bound on B_r:
+∫_{B_r} (u(x) − u(x − w))² ≤ ‖w‖² ∫_{B_r} Φ.
+
+6. (Fubini and translation invariance.) By integral_integral_swap, ∫_{B_r} Φ = ∫_{(0,1]} ∫_{B_r} G_R(x + (τw − w)) dx dτ. For each τ:
+∫_{B_r} G_R(x + (τw − w)) dx ≤ ∫_{ℝⁿ} G_R(x + (τw − w)) dx (setIntegral_le_integral; G_R ≥ 0, and the translate is integrable by Integrable.comp_add_right)
+= ∫_{ℝⁿ} G_R (integral_add_right_eq_self).
+Hence ∫_{B_r} Φ ≤ ∫_{(0,1]} (∫ G_R) dτ = ∫ G_R = ∫_{B_R} ‖Du‖².
+
+7. Combining steps 5 and 6: ∫_{B_r} (u(x) − u(x − w))² ≤ ‖w‖² ∫_{B_R} ‖Du‖². No separate case is needed when r ≤ 0 or R < 0. ∎
+
+Validation note (not part of the argument): a kernel-checked Lean proof of this exact frozen statement from dorag_ha_rb_segment_ftc was compiled during decomposition review as Submission.dorag_ha_rb_translation_l2 in /tmp/rellich-validate/Full/Full.lean (axioms propext, Classical.choice, Quot.sound). That scratch file may not persist.
+
+## Key steps
+
+1. Transport dorag_ha_rb_segment_ftc by x ↦ x − w: for a.e. x, u(x) − u(x − w) = ∫_0^1 Du(x − w + τw)w dτ.
+2. Cauchy–Schwarz on (0,1] (variance trick) gives (u(x) − u(x − w))² ≤ ‖w‖²∫_0^1 ‖Du(x − w + τw)‖² dτ.
+3. For x ∈ B_r the segment lies in B_R, so ‖Du‖² may be replaced by its truncation G_R = 1_{B_R}‖Du‖².
+4. Integrate over B_r, swap integrals (Fubini on B_r × (0,1]), and use translation invariance: ∫_{B_r} G_R(x − (1 − τ)w) dx ≤ ∫ G_R = ∫_{B_R} ‖Du‖².
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `grep -n 'absolutelyContinuousOnInterval\|integral_deriv_eq_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `lake env lean /tmp/rellich-decomp/Names.lean (#check after import GMT.Ch07.Submission of LipschitzWith.ae_differentiableAt, measurableSet_of_differentiableAt, Measure.ae_ae_comm, Measure.addHaar_preimage_smul, Measure.integral_comp_smul_of_nonneg, Measure.setIntegral_comp_smul_of_pos, TotallyBounded.isCompact_of_isClosed, IsCompact.tendsto_subseq, Lp.instCompleteSpace, measurable_fderiv, norm_fderiv_le_of_lipschitz, integral_sub_left_eq_self, finite_approx_of_totallyBounded, MemLp.toLp, intervalIntegral.integral_congr_ae, LipschitzOnWith.absolutelyContinuousOnInterval, AbsolutelyContinuousOnInterval.integral_deriv_eq_sub, BoundedContinuousFunction.arzela_ascoli, L2.inner_def, ContDiffBump.integral_normed)`
+- `grep -n 'theorem arzela_ascoli' lake-packages-25730c7c/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean; grep -rn 'theorem integral_comp_smul_of_nonneg\|theorem MemLp.eLpNorm_eq_integral_rpow_norm\|theorem map_addHaar_smul\|theorem finite_approx_of_totallyBounded' (same Mathlib commit)`
+- `grep -rli -E 'rellich|kondrachov|arzela|mollif|absolutelyContinuousOnInterval' lake-packages-25730c7c/simongmt/Poincare <snapshot>/project/GMT`
+- `python3 -I scan of dag.json lean_name/theorems (323 names) and nodes/*/*.json (2900 files) for dorag_ha_rb_* and for accepted LipschitzWith/fderiv/MemLp/Finset-net statements`
+- `python3 -I scan of accepted candidate commits for extra imports in GMT/Ch07/Submission.lean`
+- `lake env lean /tmp/rellich-decomp/Children.lean (12 child statements + parent assembly), /tmp/rellich-decomp/Elab2.lean, /tmp/rellich-decomp/LineFTC.lean, /tmp/rellich-decomp/SegRay.lean, /tmp/rellich-validate/{A,B,C,D,E}/*.lean, /tmp/rellich-validate/Full/Full.lean (#print axioms of all 13 declarations)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af41ce05d4/parent-child-handoff.json`
+- `/tmp/rellich-decomp/Children.lean`
+- `/tmp/rellich-decomp/Elab2.lean`
+- `/tmp/rellich-decomp/LineFTC.lean`
+- `/tmp/rellich-decomp/SegRay.lean`
+- `/tmp/rellich-validate/AllStatements.lean`
+- `/tmp/rellich-validate/Full/Full.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. The children are declared as theorem Submission.X inside namespace GMT.Ch07 of Submission.lean, which is byte-identical to the contract.
+
+What the pinned code lacks:
+- No Rellich/Kondrachov theorem, no Lipschitz-on-lines FTC lemma and no finite-net Arzelà–Ascoli exist in the pinned project or SimonGMT. The SimonGMT matches are only a ContDiffBump mollifier for Ch08 distributional constancy (Chapter08/DistributionalConstancy.lean) and BV L¹ compactness notes (Chapter02/BV.lean); neither has the needed types.
+- No accepted DAG declaration has a reusable identical type, and the 12 dorag_ha_rb_* names are unreserved.
+
+Mathlib under import GMT.Ch07.Submission:
+- Available: Rademacher (LipschitzWith.ae_differentiableAt), measurableSet_of_differentiableAt, Measure.ae_ae_comm, Haar scaling (addHaar_preimage_smul, map_addHaar_smul, integral_comp_smul), Lp completeness, IsCompact.tendsto_subseq, TotallyBounded.isCompact_of_isClosed, finite_approx_of_totallyBounded.
+- Not imported: AbsolutelyContinuousOnInterval.integral_deriv_eq_sub and LipschitzOnWith.absolutelyContinuousOnInterval. They exist in the snapshot (AbsolutelyContinuousFun.lean:225, AbsolutelyContinuous.lean:309), so line_ftc adds import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun; an accepted child already added an import.
+- BoundedContinuousFunction.arzela_ascoli and L2.inner_def are not imported either and are not needed: the sup_net and l2_subseq proofs use only imported lemmas.
+
+Lean checks:
+- All 12 child types elaborate in comparator scope.
+- Each child was proved in Lean, and together with the exact frozen parent type they compile in /tmp/rellich-validate/Full/Full.lean with axioms [propext, Classical.choice, Quot.sound] only.
