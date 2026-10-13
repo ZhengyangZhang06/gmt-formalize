@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "db1e74e653cbf4ab9da699664a1b09495e28470cd9fa420ce3baa64f3860550f",
+  "git_delta": {
+    "base_commit": "24a2a6411824d8c5ad3d261bd952b9c8ffa06bb1",
+    "candidate_commit": "442303c623e9f9d396af1778a1fce6bea82ac667",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_io_adapted_frame",
+    "diff_sha256": "b9f8e660101ffa41a99303d016c6b390bad7903c7b1fd1e8c93a22e630fca273",
+    "source_sha256": "fc75fa08c1de599c6be6a22cb450bcc84bddb21fa4521d614890b21ebad1057b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_io_adapted_frame",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), Module.finrank ℝ Q = n + 1 → ν ∈ Q → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Q ⊓ (ℝ ∙ ν)ᗮ ∧ Orthonormal ℝ (Fin.cons ν σ : Fin (n + 1) → Euclid P) ∧ (∀ i, σ i ∈ Q) ∧ ∀ i, inner ℝ ν (σ i) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
