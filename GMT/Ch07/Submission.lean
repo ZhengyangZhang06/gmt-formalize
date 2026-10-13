@@ -580,6 +580,36 @@ theorem Submission.dor_lmbsf_io_wedge_eval_cons : ∀ (P n : ℕ) (ν : Euclid P
   -- `⟨ν, ν⟩ = ‖ν‖² = 1`, `v` without `v₀` is `σ`, and `⟨ν, vⱼ₊₁⟩ = ⟨ν, σⱼ⟩ = 0`
   simp [Fin.removeNth_zero, Fin.tail_cons, innerSL_apply_apply, hνσ, hν]
 
+/-- Orientation of a slice (Simon Ch. 6, 4.3: `⟨v⌞w, a⟩ = ⟨v, w ∧ a⟩`, and `ξ⌞ν` orients
+`TₓM ∩ ν^⊥`): if the `(n+1)`-vector `ζ` orients `Q`, `ν ∈ Q` is a unit vector and
+`⟨α, ζ'⟩ = ⟨ν♭ ∧ α, ζ⟩` for every `n`-covector `α`, then `ζ'` orients `Q ∩ ν^⊥`.  In an
+orthonormal frame `(ν, σ)` of `Q` adapted to `ν`, `ζ` is `±` evaluation at `(ν, σ)` and
+`(ν♭ ∧ α)(ν, σ) = α(σ)`, so `ζ'(α) = ±α(σ)`. -/
+theorem Submission.dor_lmbsf_interior_product_orientation : ∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (ζ' : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), IsUnitOrientationOf ζ Q → ν ∈ Q → ‖ν‖ = 1 → (∀ α : Covector (Euclid P) n, ζ' α = ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α))) → IsUnitOrientationOf ζ' (Q ⊓ (ℝ ∙ ν)ᗮ) := by
+  intro P n ζ ζ' Q ν hζ hνQ hν hζ'
+  -- `dim Q = n + 1`, read off the orthonormal frame `τ` oriented by `ζ`
+  have hdim : Module.finrank ℝ Q = n + 1 := by
+    obtain ⟨τ, hτ, hτQ, -⟩ := hζ
+    rw [← hτQ, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- an orthonormal frame `(ν, σ)` of `Q`, with `σ` an orthonormal basis of `Q ∩ ν^⊥`
+  obtain ⟨σ, hσ, hσspan, hνσo, hσQ, hνσ⟩ :=
+    Submission.dor_lmbsf_io_adapted_frame P n Q ν hdim hνQ hν
+  have hνσQ : ∀ j, (Fin.cons ν σ : Fin (n + 1) → Euclid P) j ∈ Q := by
+    intro j
+    refine Fin.cases ?_ (fun i => ?_) j
+    · simpa using hνQ
+    · simpa using hσQ i
+  -- `(ν♭ ∧ α)(ν, σ) = α(σ)`
+  have hwedge : ∀ α : Covector (Euclid P) n,
+      ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α)
+        (Fin.cons ν σ : Fin (n + 1) → Euclid P) = α σ := fun α =>
+    Submission.dor_lmbsf_io_wedge_eval_cons P n ν σ α hν hνσ
+  -- `ζ` is `±` evaluation at `(ν, σ)`, so `ζ'` is `±` evaluation at `σ`
+  refine ⟨σ, hσ, hσspan, ?_⟩
+  rcases Submission.dor_lmbsf_io_orientation_frame_sign P (n + 1) ζ Q _ hζ hνσo hνσQ with h | h
+  · exact Or.inl fun α => by rw [hζ' α, h, hwedge]
+  · exact Or.inr fun α => by rw [hζ' α, h, hwedge]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
