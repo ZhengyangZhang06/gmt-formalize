@@ -598,6 +598,53 @@ theorem Submission.cbr_ct_vs_compact_piece_subseq : ∀ (P : ℕ) (K : Set (Eucl
             dist (v (θ n) k) (∫ x, f x ∂(μs (θ n))) := dist_triangle4 _ _ _ _
       _ < ε := by rw [dist_comm (v (θ n) k)]; linarith
   exact cauchySeq_tendsto_of_complete hcauchy
+/-- **Diagonal subsequence** (Simon Ch. 1, proof of 4.16, chapter-01.txt lines 1767–1768: "By
+choosing the subsequences successively and taking a diagonal sequence, we then get a subsequence
+`μ_{k'}` …").  If every strictly increasing `ψ` has a strictly increasing refinement `ψ ∘ θ` along
+which `s i` converges for all `i ∈ F m`, then one strictly increasing `φ` makes `s i ∘ φ` converge
+for every `m` and every `i ∈ F m`.  Successive refinements `ψ₀ = Θ 0 id`,
+`ψ_{m+1} = ψ_m ∘ Θ (m + 1) ψ_m` give the diagonal `φ j = ψ_j j`, whose tail
+`φ (m + k) = ψ_m (τ_k (m + k))` is a subsequence of `ψ_m`. -/
+theorem Submission.cbr_ct_vs_diagonal_subseq : ∀ (ι : Type) (F : ℕ → Set ι) (s : ι → ℕ → ℝ), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i (ψ (θ j))) atTop (𝓝 c)) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ m : ℕ, ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i (φ j)) atTop (𝓝 c) := by
+  intro ι F s h
+  -- Step 2: choice `Θ m ψ` of a strictly increasing refinement of `ψ` convergent on `F m`
+  choose Θ hΘ hΘconv using h
+  -- Step 3: `ψ₀ = Θ 0 id`, `ψ_{m+1} = ψ_m ∘ Θ (m + 1) ψ_m`, carried with `StrictMono`
+  let ψ : ℕ → {f : ℕ → ℕ // StrictMono f} := fun m =>
+    Nat.rec ⟨Θ 0 id strictMono_id, hΘ 0 id strictMono_id⟩
+      (fun m p => ⟨p.1 ∘ Θ (m + 1) p.1 p.2, p.2.comp (hΘ (m + 1) p.1 p.2)⟩) m
+  have hgood : ∀ m, ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i ((ψ m).1 j)) atTop (𝓝 c) := by
+    intro m
+    cases m with
+    | zero => exact hΘconv 0 id strictMono_id
+    | succ m => exact hΘconv (m + 1) (ψ m).1 (ψ m).2
+  -- Step 4: `ψ_{m+k} = ψ_m ∘ τ` with `τ` strictly increasing
+  have hfac : ∀ m k, ∃ τ : ℕ → ℕ, StrictMono τ ∧ ∀ n, (ψ (m + k)).1 n = (ψ m).1 (τ n) := by
+    intro m k
+    induction k with
+    | zero => exact ⟨id, strictMono_id, fun n => rfl⟩
+    | succ k ih =>
+      obtain ⟨τ, hτ, hτeq⟩ := ih
+      exact ⟨τ ∘ Θ (m + k + 1) (ψ (m + k)).1 (ψ (m + k)).2, hτ.comp (hΘ _ _ _),
+        fun n => hτeq (Θ (m + k + 1) (ψ (m + k)).1 (ψ (m + k)).2 n)⟩
+  -- Step 5: the diagonal `φ j = ψ_j j`; `ψ_{j+1} (j + 1) = ψ_j (Θ _ _ _ (j + 1)) ≥ ψ_j (j + 1)`
+  let φ : ℕ → ℕ := fun j => (ψ j).1 j
+  have hφ : StrictMono φ := strictMono_nat_of_lt_succ fun j =>
+    ((ψ j).2 (Nat.lt_add_one j)).trans_le
+      ((ψ j).2.monotone (hΘ (j + 1) (ψ j).1 (ψ j).2).le_apply)
+  refine ⟨φ, hφ, fun m i hi => ?_⟩
+  -- Step 6: `φ (m + k) = ψ_m (σ k)` with `σ k = τ_k (m + k)` strictly increasing
+  choose τ hτ hτeq using hfac m
+  have hφτ : ∀ k, φ (m + k) = (ψ m).1 (τ k (m + k)) := fun k => hτeq k (m + k)
+  have hσ : StrictMono fun k => τ k (m + k) := strictMono_nat_of_lt_succ fun k => by
+    have h1 : φ (m + k) < φ (m + (k + 1)) := hφ (Nat.lt_add_one (m + k))
+    rw [hφτ, hφτ] at h1
+    exact (ψ m).2.lt_iff_lt.mp h1
+  -- Step 7: compose with `σ → ∞` and undo the index shift by `m`
+  obtain ⟨c, hc⟩ := hgood m i hi
+  refine ⟨c, (tendsto_add_atTop_iff_nat m).mp ((hc.comp hσ.tendsto_atTop).congr fun k => ?_)⟩
+  show s i ((ψ m).1 (τ k (m + k))) = s i (φ (k + m))
+  rw [add_comm k m, hφτ]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
