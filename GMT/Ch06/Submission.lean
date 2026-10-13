@@ -795,51 +795,6 @@ theorem Submission.dph_lpf_cmp_core_estimate : (∀ (m k : ℕ) (X : GeometricCu
     calc |Z η' + Z' θ'| ≤ |Z η'| + |Z' θ'| := abs_add_le _ _
       _ ≤ c * s * L ^ (j + 1) * B * C₁ + c' * s * L ^ j * B' * C₂ := add_le_add hest hest'
       _ = (c * L ^ (j + 1) * B * C₁ + c' * L ^ j * B' * C₂) * s := by ring
-/-- Properness transfer (fact (P)); "proper on `F`" means `f⁻¹(K) ∩ F` is compact for every
-compact `K`.  (a) If `G` is proper on the closed set `F` and the continuous map `g` is `d`-close
-to `G` on `F`, then `g⁻¹(K) ∩ F` is a closed subset of the compact set
-`G⁻¹(cthickening d K) ∩ F`.  (b) The affine homotopy `H(y) = F₀(x) + s • (F₁(x) − F₀(x))`,
-`y = (s, x)`, of two such maps stays in the closed `d`-ball about `G(x)` by convexity, so
-`H⁻¹(K) ∩ ([0,1] × F)` is a closed subset of the image of the compact set
-`[0,1] × (G⁻¹(cthickening d K) ∩ F)` under the continuous chart `(s, x) ↦ y`. -/
-theorem Submission.dph_lpf_proper_transfer :
-    (∀ (m m' : ℕ) (G g : Eucl m → Eucl m') (F : Set (Eucl m)) (d : ℝ), IsClosed F → Continuous g → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) → (∀ x ∈ F, dist (g x) (G x) ≤ d) → ∀ K : Set (Eucl m'), IsCompact K → IsCompact (g ⁻¹' K ∩ F)) ∧ (∀ (m m' : ℕ) (G F₀ F₁ : Eucl m → Eucl m') (F : Set (Eucl m)) (d : ℝ), IsClosed F → Continuous F₀ → Continuous F₁ → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) → (∀ x ∈ F, dist (F₀ x) (G x) ≤ d) → (∀ x ∈ F, dist (F₁ x) (G x) ≤ d) → ∀ K : Set (Eucl m'), IsCompact K → IsCompact ((fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) ⁻¹' K ∩ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ F})) := by
-  refine ⟨?_, ?_⟩
-  · intro m m' G g F d hF hg hG hd K hK
-    refine (hG _ (hK.cthickening (r := d))).of_isClosed_subset
-      ((hK.isClosed.preimage hg).inter hF) ?_
-    rintro x ⟨hxK, hxF⟩
-    exact ⟨mem_cthickening_of_dist_le (G x) (g x) d K hxK ((dist_comm _ _).trans_le (hd x hxF)),
-      hxF⟩
-  · intro m m' G F₀ F₁ F d hF hF₀ hF₁ hG hd₀ hd₁ K hK
-    set e := EuclideanSpace.equiv (Fin (m + 1)) ℝ
-    set e' := EuclideanSpace.equiv (Fin m) ℝ
-    -- The coordinates `s = t(y)`, `x = tl(y)` and the homotopy `H` are continuous.
-    have ht : Continuous fun y : Eucl (m + 1) => e y 0 := (continuous_apply 0).comp e.continuous
-    have htl : Continuous fun y : Eucl (m + 1) => e'.symm (Fin.tail (e y)) :=
-      e'.symm.continuous.comp (continuous_pi fun i => (continuous_apply i.succ).comp e.continuous)
-    have hH : Continuous fun y : Eucl (m + 1) => F₀ (e'.symm (Fin.tail (e y))) +
-        e y 0 • (F₁ (e'.symm (Fin.tail (e y))) - F₀ (e'.symm (Fin.tail (e y)))) :=
-      (hF₀.comp htl).add (ht.smul ((hF₁.comp htl).sub (hF₀.comp htl)))
-    -- The inverse chart `(s, x) ↦ y` is continuous.
-    have hc : Continuous fun p : ℝ × Eucl m => e.symm (Fin.cons p.1 (e' p.2) : Fin (m + 1) → ℝ) :=
-      e.symm.continuous.comp
-        (continuous_fst.finCons (A := fun _ => ℝ) (e'.continuous.comp continuous_snd))
-    -- `H⁻¹(K) ∩ cyl(F)` is closed and lies in the chart image of
-    -- `[0,1] × (G⁻¹(cthickening d K) ∩ F)`, which is compact.
-    refine (((isCompact_Icc (a := (0 : ℝ)) (b := 1)).prod
-        (hG _ (hK.cthickening (r := d)))).image hc).of_isClosed_subset
-      ((hK.isClosed.preimage hH).inter ((isClosed_Icc.preimage ht).inter (hF.preimage htl))) ?_
-    rintro y ⟨hyK, hyt, hyF⟩
-    refine ⟨(e y 0, e'.symm (Fin.tail (e y))), ⟨hyt, ?_, hyF⟩, ?_⟩
-    · -- `H(y)` lies in the closed `d`-ball about `G(x)`, so `G(x) ∈ cthickening d K`.
-      have hmem := (convex_closedBall (G (e'.symm (Fin.tail (e y)))) d).add_smul_sub_mem
-        (mem_closedBall.2 (hd₀ _ hyF)) (mem_closedBall.2 (hd₁ _ hyF)) hyt
-      exact mem_cthickening_of_dist_le _ _ d K hyK
-        ((dist_comm _ _).trans_le (mem_closedBall.1 hmem))
-    · show e.symm (Fin.cons (e y 0) (e' (e'.symm (Fin.tail (e y))))) = y
-      rw [e'.apply_symm_apply, Fin.cons_self_tail, e.symm_apply_apply]
-
 /-- Comparison lemma (Step 1 of the Lipschitz push-forward): if `C^∞` maps `Gₙ`, `G'ₙ` with
 eventual derivative bounds `L`, `L'` near `spt X` both converge uniformly to a map `G` proper on
 `spt X`, then pull-backs `ηₙ`, `η'ₙ` of `ω` compatible with `Gₙ`, `G'ₙ` near `spt X` satisfy
