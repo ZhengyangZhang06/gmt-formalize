@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The dilation `η_{x,σ}` rescales slab flatness at scale `σ` about `x` to scale `1` about `0`**
+(Simon 7.3.3(2), chapter-07.txt lines 512–537: the height
+`h(spt S, L, ρ, x) = sup_{y ∈ spt S ∩ B_ρ(x)} |q(y − x)|`, `q = p_{L⊥}`, of (3) and the scaling
+`η_{x,λ}R_β(S) = R_β(η_{x,λ#}S)` of (5)).  Let `σ > 0` and `p = p_Q`.  If
+`|(y − x) − p(y − x)| < βσ` for every `y ∈ S` with `|y − x| < σ`, then `|u − p(u)| < β` for every
+`u ∈ η_{x,σ}(S)` with `|u| < 1`: writing `u = η_{x,σ}(y)`, `σu = y − x`, so `|y − x| = σ|u| < σ`,
+and `(y − x) − p(y − x) = σ(u − p(u))` by linearity of `p`. -/
+theorem Submission.idtp_tpf_bss_dilation_image_slab : ∀ (P : ℕ) (S : Set (Euclid P)) (x : Euclid P) (σ β : ℝ), 0 < σ → ∀ (Q : Submodule ℝ (Euclid P)), (∀ y ∈ S, dist y x < σ → ‖(y - x) - Q.starProjection (y - x)‖ < β * σ) → ∀ u ∈ dilation x σ '' S, ‖u‖ < 1 → ‖u - Q.starProjection u‖ < β := by
+  intro P S x σ β hσ Q hS u hu hu1
+  -- Step 1: `u = η_{x,σ}(y)` with `y ∈ S`.
+  obtain ⟨y, hyS, rfl⟩ := hu
+  -- Step 2: `σ η_{x,σ}(y) = σ(−σ⁻¹x + σ⁻¹y) = y − x`, as `σσ⁻¹ = 1`.
+  have hyx : y - x = σ • dilation x σ y := by
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+    rw [smul_add, smul_neg, smul_smul, smul_smul, mul_inv_cancel₀ hσ.ne', one_smul, one_smul]
+    abel
+  -- Step 3: `|y − x| = σ|u| < σ`, so the flatness hypothesis applies to `y`.
+  have hdist : dist y x < σ := by
+    rw [dist_eq_norm, hyx, norm_smul, Real.norm_of_nonneg hσ.le]
+    calc σ * ‖dilation x σ y‖ < σ * 1 := mul_lt_mul_of_pos_left hu1 hσ
+      _ = σ := mul_one σ
+  -- Step 4: `(y − x) − p(y − x) = σ(u − p(u))` by linearity of `p`; divide by `σ > 0`.
+  have h := hS y hyS hdist
+  rw [hyx, map_smul, ← smul_sub, norm_smul, Real.norm_of_nonneg hσ.le, mul_comm β σ] at h
+  exact lt_of_mul_lt_mul_left h hσ.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
