@@ -451,6 +451,90 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A uniform lower Lipschitz bound for an injective `C¹` immersion on a compact set (step 2,
+"Lower", of the `C¹`-tangent argument): if `U` is open, `K ⊆ U` is compact, `g` is `C¹` on `U`,
+injective on `K`, and `Dg(z)` is injective for every `z ∈ K`, then `m|a − b| ≤ |g(a) − g(b)|` on
+`K` for some `m > 0`.  Otherwise `|g(a_k) − g(b_k)| < (k + 1)⁻¹|a_k − b_k|` for some `a_k ≠ b_k`
+in `K`; along a subsequence `a_k → a`, `b_k → b` and the unit vectors `e_k ∥ a_k − b_k` converge
+to some `e`.  If `a ≠ b` then `g(a) = g(b)`; if `a = b` then strict differentiability of `g` at `a`
+gives `Dg(a)e = 0` with `|e| = 1`. -/
+theorem Submission.dtc_bc_lc_sl_c1t_lower_lipschitz : ∀ (P d : ℕ) (g : Euclid d → Euclid P) (U K : Set (Euclid d)), IsOpen U → IsCompact K → K ⊆ U → ContDiffOn ℝ 1 g U → InjOn g K → (∀ z ∈ K, Injective (fderiv ℝ g z)) → ∃ m : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖g a - g b‖ := by
+  intro P d g U K hU hK hKU hg hinj hDinj
+  by_contra hcon
+  push Not at hcon
+  -- for each `k` there are `a_k, b_k ∈ K` with `|g a_k - g b_k| < (k + 1)⁻¹ |a_k - b_k|`
+  choose a ha b hb hab using fun k : ℕ => hcon (1 / ((k : ℝ) + 1)) (by positivity)
+  -- so `a_k ≠ b_k`
+  have hpos : ∀ k, 0 < ‖a k - b k‖ := by
+    intro k
+    have h1 := hab k
+    have h2 := norm_nonneg (g (a k) - g (b k))
+    by_contra hle
+    push Not at hle
+    have h0 : ‖a k - b k‖ = 0 := le_antisymm hle (norm_nonneg _)
+    rw [h0, mul_zero] at h1
+    linarith
+  -- the unit vectors `e_k = |a_k - b_k|⁻¹ (a_k - b_k)`
+  set e : ℕ → Euclid d := fun k => ‖a k - b k‖⁻¹ • (a k - b k) with he_def
+  have he : ∀ k, e k ∈ sphere (0 : Euclid d) 1 := by
+    intro k
+    rw [mem_sphere_zero_iff_norm, he_def]
+    simp only [norm_smul, norm_inv, norm_norm]
+    exact inv_mul_cancel₀ (hpos k).ne'
+  -- a subsequence of `(a_k, b_k, e_k)` converges in the compact set `K × K × S`
+  obtain ⟨⟨a0, b0, e0⟩, ⟨ha0, hb0, he0⟩, φ, hφ, hlim⟩ :=
+    (hK.prod (hK.prod (isCompact_sphere (0 : Euclid d) 1))).tendsto_subseq
+      (x := fun k => (a k, b k, e k)) (fun k => ⟨ha k, hb k, he k⟩)
+  have hla : Tendsto (fun k => a (φ k)) atTop (𝓝 a0) := (continuous_fst.tendsto _).comp hlim
+  have hlb : Tendsto (fun k => b (φ k)) atTop (𝓝 b0) :=
+    ((continuous_fst.comp continuous_snd).tendsto _).comp hlim
+  have hle : Tendsto (fun k => e (φ k)) atTop (𝓝 e0) :=
+    ((continuous_snd.comp continuous_snd).tendsto _).comp hlim
+  have hinvk : Tendsto (fun k : ℕ => 1 / ((φ k : ℝ) + 1)) atTop (𝓝 0) :=
+    (tendsto_one_div_add_atTop_nhds_zero_nat).comp hφ.tendsto_atTop
+  by_cases hab0 : a0 = b0
+  · -- `a = b`: strict differentiability of `g` at `a` forces `Dg(a) e = 0`
+    subst hab0
+    have hstrict : HasStrictFDerivAt g (fderiv ℝ g a0) a0 :=
+      (hg.contDiffAt (hU.mem_nhds (hKU ha0))).hasStrictFDerivAt one_ne_zero
+    have hpair : Tendsto (fun k => (a (φ k), b (φ k))) atTop (𝓝 (a0, a0)) := hla.prodMk_nhds hlb
+    have ho := (hstrict.isLittleO.comp_tendsto hpair).norm_norm.tendsto_div_nhds_zero
+    -- `|Dg(a) e_k| ≤ |g a_k - g b_k| / |a_k - b_k| + o(1) → 0`
+    have hbound : ∀ k, ‖fderiv ℝ g a0 (e (φ k))‖ ≤ 1 / ((φ k : ℝ) + 1) +
+        ‖g (a (φ k)) - g (b (φ k)) - fderiv ℝ g a0 (a (φ k) - b (φ k))‖ / ‖a (φ k) - b (φ k)‖ := by
+      intro k
+      have hk := hpos (φ k)
+      have hdec : fderiv ℝ g a0 (e (φ k)) = ‖a (φ k) - b (φ k)‖⁻¹ • (g (a (φ k)) - g (b (φ k))) -
+          ‖a (φ k) - b (φ k)‖⁻¹ • (g (a (φ k)) - g (b (φ k)) - fderiv ℝ g a0 (a (φ k) - b (φ k))) := by
+        rw [he_def, map_smul, ← smul_sub, sub_sub_cancel]
+      rw [hdec]
+      refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
+      · rw [norm_smul, norm_inv, norm_norm, inv_mul_le_iff₀ hk]
+        have := (hab (φ k)).le
+        linarith [mul_comm (1 / ((φ k : ℝ) + 1)) ‖a (φ k) - b (φ k)‖]
+      · rw [norm_smul, norm_inv, norm_norm, div_eq_inv_mul]
+    have htend : Tendsto (fun k => ‖fderiv ℝ g a0 (e (φ k))‖) atTop (𝓝 0) := by
+      refine squeeze_zero (fun k => norm_nonneg _) hbound ?_
+      simpa using hinvk.add ho
+    have hL : Tendsto (fun k => ‖fderiv ℝ g a0 (e (φ k))‖) atTop (𝓝 ‖fderiv ℝ g a0 e0‖) :=
+      (((fderiv ℝ g a0).continuous.tendsto _).comp hle).norm
+    have hL0 : fderiv ℝ g a0 e0 = 0 := norm_eq_zero.1 (tendsto_nhds_unique hL htend)
+    have he00 : e0 = 0 := hDinj a0 ha0 (by rw [hL0, map_zero])
+    rw [he00, mem_sphere_zero_iff_norm, norm_zero] at he0
+    exact zero_ne_one he0
+  · -- `a ≠ b`: continuity of `g` at `a` and `b` forces `g a = g b`
+    have hcont : ∀ x ∈ K, ContinuousAt g x := fun x hx =>
+      (hg.contDiffAt (hU.mem_nhds (hKU hx))).continuousAt
+    have hga : Tendsto (fun k => g (a (φ k))) atTop (𝓝 (g a0)) := (hcont a0 ha0).tendsto.comp hla
+    have hgb : Tendsto (fun k => g (b (φ k))) atTop (𝓝 (g b0)) := (hcont b0 hb0).tendsto.comp hlb
+    have hdiff : Tendsto (fun k => g (a (φ k)) - g (b (φ k))) atTop (𝓝 0) := by
+      rw [tendsto_zero_iff_norm_tendsto_zero]
+      have hbd : Tendsto (fun k => 1 / ((φ k : ℝ) + 1) * ‖a (φ k) - b (φ k)‖) atTop (𝓝 0) := by
+        simpa using hinvk.mul (hla.sub hlb).norm
+      exact squeeze_zero (fun k => norm_nonneg _) (fun k => (hab (φ k)).le) hbd
+    have hzero : g a0 - g b0 = 0 := tendsto_nhds_unique (hga.sub hgb) hdiff
+    exact hab0 (hinj ha0 hb0 (sub_eq_zero.1 hzero))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
