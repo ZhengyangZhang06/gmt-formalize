@@ -2754,6 +2754,122 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Simon Ch. 6, Deformation Theorem 5.1 (unit scale), display (38) and the end of its proof.**
+Let `n = m + 1 < P`, `K` compact and `T ∈ 𝒟ₙ(ℝᴾ)` integer multiplicity, with `∂T` integer
+multiplicity and `T` vanishing off `K`.  By 3.2(3), `μ_T` and `μ_{∂T}` are carried by `K`, where
+the multiplicities are integrable, so `M(T), M(∂T) < ∞`.  The skeleton deformation gives
+`T − Q = ∂R₁ + S₁` with `Q` carried by the `n`-skeleton in `K_Q = cthickening(√P, K)`; face
+replacement gives the unit lattice chain `Pc = Σ_{p ∈ s} β_p [[F_p]]` with `M(Q − Pc) ≤ c_f M(∂Q)`
+and `Σ_p |β_p| ≤ c_f M(Q)`.  Then `R = R₁` and `S = S₁ + (Q − Pc)` give `T − Pc = ∂R + S` with
+`c = c_s(1 + c_f)`, and `cthickening(√P, K_Q) ⊆ cthickening(2√P, K)`. -/
+theorem Submission.dor_lmb_fcd_unit_deformation : ((∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (K : Set (Euclid P)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K) → T ω = 0) → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Pc ω = R.boundary ω + S ω) ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) ≤ ENNReal.ofReal c * T.mass ∧ R.mass ≤ ENNReal.ofReal c * T.mass ∧ S.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ⊆ cthickening (2 * Real.sqrt P) K) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (cthickening (2 * Real.sqrt P) K) → R ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (2 * Real.sqrt P) K) → S ω = 0 := by
+  intro hSL hIMS P m hmP
+  -- Step 1: the constants `c_s` (skeleton deformation) and `c_f` (face replacement)
+  obtain ⟨cs, hcs, hSD⟩ := Submission.dor_lmb_fcd_skeleton_deformation hSL hIMS P m hmP
+  obtain ⟨cf, hcf, hFR⟩ := Submission.dor_lmb_fcd_face_replacement P m hmP
+  refine ⟨cs * (1 + cf), mul_nonneg hcs (by linarith), ?_⟩
+  intro K T hK hT hbT hTK
+  -- `(A − B)(ω) = A(ω) − B(ω)` and `M(A − B) ≤ M(A) + M(B)` (with `ω` admissible, so is `−ω`)
+  have hsub : ∀ {d : ℕ} (A B : GeometricCurrentOn (univ : Set (Euclid P)) d)
+      (ω : TestFormOn (univ : Set (Euclid P)) d), (A - B) ω = A ω - B ω := fun _ _ _ => rfl
+  have hmass_sub : ∀ {d : ℕ} (A B : GeometricCurrentOn (univ : Set (Euclid P)) d),
+      (A - B).mass ≤ A.mass + B.mass := by
+    intro d A B
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    have hω' : -ω ∈ massAdmissibleOn (univ : Set (Euclid P)) d univ :=
+      ⟨subset_univ _, fun x => by simpa using hω.2 x⟩
+    have h : (A - B) ω = A ω + B (-ω) := by
+      show A.toCurrent ω - B.toCurrent ω = A.toCurrent ω + B.toCurrent (-ω)
+      rw [B.toCurrent.map_neg ω, sub_eq_add_neg]
+    calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [h]
+      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ A.mass + B.mass := add_le_add (A.le_massOn hω) (B.le_massOn hω')
+  -- Step 2: an integer multiplicity current vanishing off the compact `K` has finite mass:
+  -- `M(X) = μ_X(ℝᴾ) = μ_X(K) < ∞`, as `μ_X(ℝᴾ ∖ K) = M_{ℝᴾ∖K}(X) = 0` (3.2(3))
+  have hfin : ∀ {d : ℕ} (X : GeometricCurrentOn (univ : Set (Euclid P)) d),
+      IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) d,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → X ω = 0) → X.mass ≠ ∞ := by
+    intro d X ⟨RX, hRX⟩ hXK
+    have hmass := (Submission.dor_imrep_massOn_eq_measure_and_support P d univ X RX isOpen_univ
+      hRX).1
+    have hKc : RX.measure Kᶜ = 0 := by
+      rw [← hmass Kᶜ hK.isClosed.isOpen_compl]
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (X ω) ≤ 0
+      rw [hXK ω (disjoint_compl_left.mono_left hω.1), ENNReal.ofReal_zero]
+    have hKfin : RX.measure K ≠ ∞ := by
+      rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+        Measure.restrict_restrict hK.measurableSet, inter_comm]
+      exact RX.locallyIntegrable_mult K hK (subset_univ K)
+    show X.massOn univ ≠ ∞
+    rw [hmass univ isOpen_univ]
+    exact ne_top_of_le_ne_top (by rw [hKc, add_zero]; exact hKfin) (measure_univ_le_add_compl K)
+  -- `∂T` vanishes off `K` too, since `spt dω ⊆ spt ω`
+  have hbTK : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → T.boundary ω = 0 := fun ω hω =>
+    hTK _ (hω.mono_left (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) m)))
+  have hTfin : T.mass ≠ ∞ := hfin T hT hTK
+  have hbTfin : T.boundary.mass ≠ ∞ := hfin T.boundary hbT hbTK
+  -- Step 3: `T − Q = ∂R₁ + S₁`, `Q` carried by the `n`-skeleton in `K_Q = cthickening(√P, K)`
+  obtain ⟨Q, R₁, S₁, hQ, hR₁, hS₁, hTQ, hQmass, hbQmass, hR₁mass, hS₁mass, hQK, hR₁K, hS₁K⟩ :=
+    hSD K T hK hT hbT hTK hTfin hbTfin
+  -- Step 4: the unit lattice chain `Pc` replacing `Q`, with `M(∂Q) ≤ c_s M(∂T) < ∞`
+  have hbQfin : Q.boundary.mass ≠ ∞ :=
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hbTfin) hbQmass
+  obtain ⟨s, β, Pc, hmono, hPc, hQPc, hQPcmass, hβ, hface, hQPcK⟩ :=
+    hFR (cthickening (Real.sqrt P) K) Q hK.cthickening hQ hQK hbQfin
+  -- Step 7: `cthickening(√P, K) ⊆ cthickening(2√P, K)` and
+  -- `cthickening(√P, cthickening(√P, K)) ⊆ cthickening(2√P, K)`
+  have hsq : 0 ≤ Real.sqrt P := Real.sqrt_nonneg _
+  have hK₁ : cthickening (Real.sqrt P) K ⊆ cthickening (2 * Real.sqrt P) K :=
+    cthickening_mono (by linarith) K
+  have hK₂ : cthickening (Real.sqrt P) (cthickening (Real.sqrt P) K) ⊆
+      cthickening (2 * Real.sqrt P) K := by
+    rw [two_mul]
+    exact cthickening_cthickening_subset hsq hsq K
+  -- Step 5, (38): `R = R₁`, `S = S₁ + (Q − Pc) = S₁ − ((Q − Q) − (Q − Pc))`, integer multiplicity
+  have hIMsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) univ
+  refine ⟨s, β, Pc, R₁, S₁ - ((Q - Q) - (Q - Pc)), hmono, hPc, hR₁,
+    hIMsub _ _ isOpen_univ hS₁ (hIMsub _ _ isOpen_univ (hIMsub _ _ isOpen_univ hQ hQ) hQPc),
+    fun ω => ?_, ?_, ?_, ?_, fun p hp => (hface p hp).trans hK₂,
+    fun ω hω => hR₁K ω (hω.mono_right hK₁), fun ω hω => ?_⟩
+  · -- `T − Pc = (T − Q) + (Q − Pc) = ∂R₁ + S₁ + (Q − Pc)`
+    simp only [hsub]
+    linarith [hTQ ω]
+  · -- Step 6: `Σ|β_p| ≤ c_f M(Q) ≤ c_f c_s M(T)`
+    calc (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) ≤ ENNReal.ofReal cf * Q.mass := hβ
+      _ ≤ ENNReal.ofReal cf * (ENNReal.ofReal cs * T.mass) := by gcongr
+      _ = ENNReal.ofReal (cf * cs) * T.mass := by rw [← mul_assoc, ← ENNReal.ofReal_mul hcf]
+      _ ≤ ENNReal.ofReal (cs * (1 + cf)) * T.mass := by gcongr ENNReal.ofReal ?_ * _; nlinarith
+  · -- `M(R) = M(R₁) ≤ c_s M(T)`
+    calc R₁.mass ≤ ENNReal.ofReal cs * T.mass := hR₁mass
+      _ ≤ ENNReal.ofReal (cs * (1 + cf)) * T.mass := by gcongr ENNReal.ofReal ?_ * _; nlinarith
+  · -- `M(S) ≤ M(S₁) + M(Q − Q) + M(Q − Pc) ≤ c_s M(∂T) + c_f c_s M(∂T)`, as `Q − Q = 0`
+    have hQQ : (Q - Q).mass = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, -, rfl⟩
+      show ENNReal.ofReal (Q ω - Q ω) ≤ 0
+      rw [sub_self, ENNReal.ofReal_zero]
+    calc (S₁ - ((Q - Q) - (Q - Pc))).mass ≤ S₁.mass + ((Q - Q).mass + (Q - Pc).mass) :=
+          (hmass_sub _ _).trans (add_le_add le_rfl (hmass_sub _ _))
+      _ = S₁.mass + (Q - Pc).mass := by rw [hQQ, zero_add]
+      _ ≤ ENNReal.ofReal cs * T.boundary.mass + ENNReal.ofReal cf * Q.boundary.mass :=
+          add_le_add hS₁mass hQPcmass
+      _ ≤ ENNReal.ofReal cs * T.boundary.mass +
+            ENNReal.ofReal cf * (ENNReal.ofReal cs * T.boundary.mass) := by gcongr
+      _ = ENNReal.ofReal (cs * (1 + cf)) * T.boundary.mass := by
+          rw [← mul_assoc, ← add_mul, ← ENNReal.ofReal_mul hcf,
+            ← ENNReal.ofReal_add hcs (mul_nonneg hcf hcs)]
+          congr 2
+          ring
+  · -- `S` vanishes off `cthickening(2√P, K)`: so do `S₁` and `Q − Pc`
+    have h₁ := hS₁K ω (hω.mono_right hK₁)
+    have h₂ := hQPcK ω (hω.mono_right hK₂)
+    simp only [hsub] at h₂ ⊢
+    linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
