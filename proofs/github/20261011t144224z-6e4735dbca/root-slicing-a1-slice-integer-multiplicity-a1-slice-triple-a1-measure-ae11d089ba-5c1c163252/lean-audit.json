@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b2c77a27383ae5fb75f15c06e83304b0ab4cabee02ab9995c46ff8dcaab6559",
+  "git_delta": {
+    "base_commit": "913508402318c58c05f875952a60e4f5c5a6b542",
+    "candidate_commit": "9defddc28bf96b6cc6d72cf3a7582333f9828bee",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_mf_slice_orientation_aesm",
+    "diff_sha256": "c468f2a4dc80e3bccb7b68b5f0bd4fe9021b4aaa5a78d603b3a98b0e14dfc8bf",
+    "source_sha256": "1d888f84fdb99d57583469b6115cb8f4a8bcd28d22b726c2fa9a49f3b69e27fc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_mf_slice_orientation_aesm",
+      "statement": "∀ (P m : ℕ) (M : Set (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P), AEStronglyMeasurable ξ ((μHE[m + 1] : Measure (Eucl P)).restrict M) → Measurable G → (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) → ∀ᵐ t ∂(volume : Measure ℝ), AEStronglyMeasurable (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t}))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
