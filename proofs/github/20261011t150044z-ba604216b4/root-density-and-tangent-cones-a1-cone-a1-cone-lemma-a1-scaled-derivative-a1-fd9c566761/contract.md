@@ -1,0 +1,790 @@
+<!-- theorem-id: gmt-ch07/root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.scaled_derivative-a1 -->
+
+## Theorem `Submission.dtc_cwv_scaled_action_hasDerivAt`
+
+Let P, n ∈ ℕ, let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) be an integer multiplicity triple in ℝ^P (M = R.carrier, θ = R.mult, ξ = R.orient), let ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) and t > 0. For s ∈ ℝ put G(s) := R.action(y ↦ sⁿ·ω(s·y)) = ∫_M θ(y)·ξ(y)(sⁿω(sy)) dHⁿ(y). Then G has derivative at t equal to R.action(y ↦ n·t^{n−1}·ω(t·y) + tⁿ·Dω(t·y)[y]), where Dω(z)[u] = fderiv ℝ ω z u and n·t^{n−1} means (n : ℝ)·t^{n−1} with natural-number exponent n − 1 (so this coefficient is 0 when n = 0).
+
+Node: `root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.scaled_derivative-a1`
+
+Root: https://github.com/ZhengyangZhang06/gmt-formalize/issues/8
+
+Parent: https://github.com/ZhengyangZhang06/gmt-formalize/issues/1814
+
+Prerequisites: https://github.com/ZhengyangZhang06/gmt-formalize/issues/1062
+
+Decomposition children: None
+
+## Lean problem
+
+Declaration: `Submission.dtc_cwv_scaled_action_hasDerivAt`
+
+```lean
+∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (t : ℝ), 0 < t → HasDerivAt (fun s : ℝ => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))) (R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) + (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y)) t
+```
+
+### Frozen project context
+
+`GMT/Ch07/Contract.lean` at `b4d606db1da5da8fa2c0292ad4924d97de8b3c4b` supplies the original imports, definitions and root contract. Child hypotheses are stated above; prerequisite declarations are linked in their issues.
+
+```lean
+import Mathlib.MeasureTheory.Measure.Hausdorff
+import Mathlib.Topology.Connected.Basic
+import Mathlib.Topology.Semicontinuity.Basic
+import Mathlib.LinearAlgebra.Trace
+import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter06.Mass
+import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+open Filter Function Set MeasureTheory Metric
+open scoped ENNReal Topology
+
+namespace GMT.Ch07
+
+open Poincare.SimonGMT.Chapter06
+open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt)
+
+noncomputable section
+
+/-- Euclidean space `ℝᴾ`. -/
+abbrev Euclid (P : ℕ) := EuclideanSpace ℝ (Fin P)
+
+variable {P : ℕ}
+
+/-! ## Multivectors and integer multiplicity currents (Simon Ch. 6, §1 and 3.1) -/
+
+/-- `n`-vectors `Λₙ(ℝᴾ)`, realized as the dual of `n`-covectors (Simon 6.1, `Λₙ ≅ (Λⁿ)*`);
+`ξ α` is the pairing `⟨α, ξ⟩` of Simon (6.1.7). -/
+abbrev MultiVector (P n : ℕ) := Covector (Euclid P) n →L[ℝ] ℝ
+
+/-- `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of the subspace `Q`, i.e.
+`⟨α, ξ⟩ = ±α(τ₁, …, τₙ)` (Simon 6.1.1, 6.1.7; 6.2.2).  The sign matters only for `n = 0`. -/
+def IsUnitOrientationOf {n : ℕ} (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) : Prop :=
+  ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧ Submodule.span ℝ (range τ) = Q ∧
+    ((∀ α : Covector (Euclid P) n, ξ α = α τ) ∨ ∀ α : Covector (Euclid P) n, ξ α = -α τ)
+
+/-- Simon Ch. 6, Definition 3.1 (p. 146): a triple `(M, θ, ξ)` in `U`.  `M ⊆ U` is
+`Hⁿ`-measurable (taken Borel; this loses nothing, `Hⁿ⌞M` being σ-finite) and countably
+`n`-rectifiable; `θ` is positive integer-valued on `M` and locally `Hⁿ`-integrable in `U`; `ξ` is
+`Hⁿ`-measurable and, `Hⁿ`-a.e. on `M`, orients the approximate tangent space `TₓM`
+(Ch. 3, 1.4). -/
+structure IMRep (U : Set (Euclid P)) (n : ℕ) where
+  carrier : Set (Euclid P)
+  mult : Euclid P → ℕ
+  orient : Euclid P → MultiVector P n
+  measurableSet_carrier : MeasurableSet carrier
+  carrier_subset : carrier ⊆ U
+  rectifiable : CountablyRectifiable n carrier
+  measurable_mult : Measurable mult
+  mult_pos : ∀ x ∈ carrier, 0 < mult x
+  locallyIntegrable_mult : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+    ∫⁻ x in carrier ∩ K, (mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞
+  aestronglyMeasurable_orient : AEStronglyMeasurable orient (μHE[n].restrict carrier)
+  orients : ∀ᵐ x ∂(μHE[n].restrict carrier), ∃ Q : Submodule ℝ (Euclid P),
+    HasApproximateTangentSpaceAt n carrier x Q ∧ IsUnitOrientationOf (orient x) Q
+
+variable {U : Set (Euclid P)} {n : ℕ}
+
+/-- `τ(M, θ, ξ)(ω) = ∫_M ⟨ω(x), ξ(x)⟩ θ(x) dHⁿ(x)` (Simon 6.3.1 (‡)). -/
+def IMRep.action (R : IMRep U n) (ω : DifferentialForm (Euclid P) n) : ℝ :=
+  ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n]
+
+/-- `T = τ(M, θ, ξ)` in `U`. -/
+def IMRep.Represents (R : IMRep U n) (T : GeometricCurrentOn U n) : Prop :=
+  ∀ ω : TestFormOn U n, T ω = R.action (ω : DifferentialForm (Euclid P) n)
+
+/-- The weight `μ_V = θ Hⁿ⌞M` of the associated varifold `V = v(M, θ)`; it equals the mass
+measure `μ_T` of `T = τ(M, θ, ξ)` (Simon 6.3.2(3), 4.1.1). -/
+def IMRep.measure (R : IMRep U n) : Measure (Euclid P) :=
+  (μHE[n].restrict R.carrier).withDensity fun x => (R.mult x : ℝ≥0∞)
+
+/-- Simon 6.3.1: `T` is an integer multiplicity (rectifiable) current. -/
+def IsIntegerMultiplicity (T : GeometricCurrentOn U n) : Prop :=
+  ∃ R : IMRep U n, R.Represents T
+
+/-- Difference of currents (needed for `spt(S − T)` in 7.1.1). -/
+instance : Sub (GeometricCurrentOn U n) where
+  sub S T :=
+    { toCurrent := S.toCurrent - T.toCurrent
+      continuous' := fun ωs h => by
+        simpa using (S.continuous' ωs h).sub (T.continuous' ωs h) }
+
+/-! ## Boundary conventions in arbitrary degree -/
+
+/-- `∂S = ∂T` in `U` (vacuous for `n = 0`, where `∂ = 0`). -/
+def SameBoundary : {n : ℕ} → GeometricCurrentOn U n → GeometricCurrentOn U n → Prop
+  | 0, _, _ => True
+  | _ + 1, S, T => S.boundary = T.boundary
+
+/-- `∂T = 0` in `U`. -/
+def BoundaryVanishes : {n : ℕ} → GeometricCurrentOn U n → Prop
+  | 0, _ => True
+  | _ + 1, T => T.boundary = 0
+
+/-- `spt ∂T` (empty for `n = 0`). -/
+def boundarySupport : {n : ℕ} → GeometricCurrentOn U n → Set (Euclid P)
+  | 0, _ => ∅
+  | _ + 1, T => T.boundary.support
+
+/-- `M_W(∂T)` (zero for `n = 0`). -/
+def boundaryMassOn : {n : ℕ} → GeometricCurrentOn U n → Set (Euclid P) → ℝ≥0∞
+  | 0, _, _ => 0
+  | _ + 1, T, W => T.boundary.massOn W
+
+/-! ## Minimizing currents (Simon 7.1.1) -/
+
+/-- `W ⊂⊂ U`: `closure W` is a compact subset of `U`. -/
+def CompactlyContained (W U : Set (Euclid P)) : Prop :=
+  IsCompact (closure W) ∧ closure W ⊆ U
+
+/-- **Simon 7.1.1 (p. 181).**  The integer multiplicity `T ∈ 𝒟ₙ(U)` is *minimizing in `A`*
+(`A ⊆ U`): `M_W(T) ≤ M_W(S)` whenever `W ⊂⊂ U` is open, `S ∈ 𝒟ₙ(U)` is integer multiplicity,
+`∂S = ∂T` in `U` and `spt(S − T)` is a compact subset of `A ∩ W`.  Competitors are integer
+multiplicity, as required by Remark 7.2.2(1) and the proofs of 7.1.4 and 7.2.4. -/
+def IsMinimizingIn (T : GeometricCurrentOn U n) (A : Set (Euclid P)) : Prop :=
+  IsIntegerMultiplicity T ∧
+    ∀ (W : Set (Euclid P)) (S : GeometricCurrentOn U n), IsOpen W → CompactlyContained W U →
+      IsIntegerMultiplicity S → SameBoundary S T → IsCompact (S - T).support →
+        (S - T).support ⊆ A ∩ W → T.massOn W ≤ S.massOn W
+
+/-! ## Densities, blow-ups, tangent cones (Simon 7.3) -/
+
+/-- `ωₙ`, the Lebesgue measure of the unit ball of `ℝⁿ`. -/
+def unitBallVolume (n : ℕ) : ℝ≥0∞ := volume (ball (0 : Euclid n) 1)
+
+/-- `Θⁿ(μ_T, x) = θ`: `(ωₙρⁿ)⁻¹ μ_T(B_ρ(x)) → θ` as `ρ ↓ 0`, with `μ_T(B_ρ(x)) = M_{B_ρ(x)}(T)`
+for small `ρ` (Simon 6.2.8; open and closed balls give the same limit). -/
+def HasMassDensity (T : GeometricCurrentOn U n) (x : Euclid P) (θ : ℝ) : Prop :=
+  0 ≤ θ ∧ Tendsto (fun ρ : ℝ => T.massOn (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+    (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ))
+
+/-- Value of a current in `U` on an ambient form: `T(ω)` if `ω ∈ 𝒟ⁿ(U)`, else `0`.  Used for
+convergence of currents on varying domains (Simon: "`η_{x,λⱼ#}T ⇀ C` in `ℝ^{n+ℓ}`"). -/
+def currentEval (T : GeometricCurrentOn U n) (ω : DifferentialForm (Euclid P) n) : ℝ := by
+  classical
+  exact if h : IsTestForm ω ∧ tsupport ω ⊆ U then T ⟨ω, h⟩ else 0
+
+/-- `Tⱼ ⇀ T` in `V`, for currents `Tⱼ ∈ 𝒟ₙ(Uⱼ)` whose domains eventually contain every compact
+subset of `V` (as for blow-ups): `Tⱼ(ω) → T(ω)` for every `ω ∈ 𝒟ⁿ(V)` (Simon 6.2.13). -/
+def ConvergesWeakly {Us : ℕ → Set (Euclid P)} (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n)
+    {V : Set (Euclid P)} (T : GeometricCurrentOn V n) : Prop :=
+  ∀ ω : TestFormOn V n,
+    Tendsto (fun j => currentEval (Ts j) (ω : DifferentialForm (Euclid P) n)) atTop (𝓝 (T ω))
+
+/-- `μ_{Tⱼ} → μ_T` as Radon measures in `V` (Simon 7.2.4, Remark 7.2.5(1)): for all integer
+multiplicity representations of the `Tⱼ` and of `T`, `∫ f dμ_{Tⱼ} → ∫ f dμ_T` for every
+continuous `f` with compact support in `V`. -/
+def MassMeasuresConverge {Us : ℕ → Set (Euclid P)} (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n)
+    {V : Set (Euclid P)} (T : GeometricCurrentOn V n) : Prop :=
+  ∀ Rs : (j : ℕ) → IMRep (Us j) n, (∀ j, (Rs j).Represents (Ts j)) →
+    ∀ R : IMRep V n, R.Represents T →
+      ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ V →
+        Tendsto (fun j => ∫ x, f x ∂(Rs j).measure) atTop (𝓝 (∫ x, f x ∂R.measure))
+
+/-- The linear part `y ↦ λ⁻¹y` of the dilation `η_{x,λ}`. -/
+def dilationCLM (P : ℕ) (lam : ℝ) : Euclid P →L[ℝ] Euclid P :=
+  lam⁻¹ • ContinuousLinearMap.id ℝ (Euclid P)
+
+/-- Simon's dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, written `y ↦ −λ⁻¹x + λ⁻¹y`. -/
+def dilation (x : Euclid P) (lam : ℝ) : Euclid P → Euclid P :=
+  fun y => -(lam⁻¹ • x) + dilationCLM P lam y
+
+/-- The blow-up `η_{x,λ#}T ∈ 𝒟ₙ(η_{x,λ}(U))`, `η_{x,λ#}T(ω) = T(η_{x,λ}^# ω)` (Simon 6.2.23 for
+the proper affine diffeomorphism `η_{x,λ}`, `λ ≠ 0`). -/
+def blowUp (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : lam ≠ 0) :
+    GeometricCurrentOn (dilation x lam '' U) n :=
+  (T.restrictDomain (show (fun y => -(lam⁻¹ • x) + dilationCLM P lam y) ⁻¹'
+      (dilation x lam '' U) ⊆ U by
+    rintro y ⟨z, hz, hzy⟩
+    have hzy' : lam⁻¹ • z = lam⁻¹ • y := by
+      simpa [dilation, dilationCLM] using hzy
+    rwa [← smul_right_injective (Euclid P) (inv_ne_zero hlam) hzy'])).affinePushforward
+    (dilationCLM P lam) (-(lam⁻¹ • x)) (by
+      convert ((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam)).trans
+        (Homeomorph.addLeft (-(lam⁻¹ • x)))).isProperMap using 1
+      funext y
+      simp [dilationCLM])
+
+/-- `C ∈ 𝒟ₙ(ℝᴾ)` is a cone: `η_{0,λ#}C = C` for every `λ > 0` (Simon 7.3.1(2)). -/
+def IsConeCurrent (C : GeometricCurrentOn (univ : Set (Euclid P)) n) : Prop :=
+  ∀ (lam : ℝ) (hlam : 0 < lam) (ω : TestFormOn (univ : Set (Euclid P)) n),
+    currentEval (blowUp C 0 lam hlam.ne') (ω : DifferentialForm (Euclid P) n) = C ω
+
+/-- Simon 7.3.2(1): `C` is a tangent cone of `T` at `x`, i.e. `η_{x,λⱼ#}T ⇀ C` in `ℝᴾ` for some
+sequence `λⱼ > 0`, `λⱼ → 0`. -/
+def IsTangentConeAt (T : GeometricCurrentOn U n) (x : Euclid P)
+    (C : GeometricCurrentOn (univ : Set (Euclid P)) n) : Prop :=
+  ∃ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) ∧
+    ConvergesWeakly (fun j => blowUp T x (lams j) (hlams j).ne') C
+
+/-- Simon 7.3.2(1): `T` has a (multiplicity `m`) tangent plane at `x`: some tangent cone has
+support an `n`-dimensional subspace. -/
+def HasTangentPlaneAt (T : GeometricCurrentOn U n) (x : Euclid P) : Prop :=
+  ∃ C : GeometricCurrentOn (univ : Set (Euclid P)) n, IsTangentConeAt T x C ∧
+    ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ C.support = (Q : Set (Euclid P))
+
+/-! ## Submanifolds, `reg T`, `sing T` (Simon Ch. 2, §4 and 7.4.1) -/
+
+/-- Simon Ch. 2, §4, (4.1) (p. 55): `M ⊂ ℝᴾ` is a `d`-dimensional (embedded) `Cʳ` submanifold:
+each `y ∈ M` has an open `W ∋ y` and a 1:1 `Cʳ` map `ψ : V → W`, `V ⊆ ℝᵈ` open, with
+`ψ(V) = W ∩ M`, `ψ` proper, and `Dψ` of rank `d` on `V`. -/
+def IsEmbeddedSubmanifold (r d : ℕ) (M : Set (Euclid P)) : Prop :=
+  ∀ y ∈ M, ∃ (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P),
+    IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ r ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ M ∧
+      (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧
+      ∀ z ∈ V, Injective (fderiv ℝ ψ z)
+
+/-- Simon Ch. 2, §4 (p. 55): `T_yM = {γ'(0) : γ ∈ C¹((−1,1); ℝᴾ), γ((−1,1)) ⊆ M, γ(0) = y}`. -/
+def tangentSpace (M : Set (Euclid P)) (y : Euclid P) : Set (Euclid P) :=
+  {v | ∃ γ : ℝ → Euclid P, ContDiffOn ℝ 1 γ (Ioo (-1) 1) ∧ MapsTo γ (Ioo (-1) 1) M ∧
+    γ 0 = y ∧ HasDerivAt γ v 0}
+
+/-- An orientation of the `d`-dimensional submanifold `M` (Simon 6.2.2): `ξ` is continuous on
+`M` and `ξ(y) = ±τ₁ ∧ ⋯ ∧ τ_d` for an orthonormal basis `τ` of `T_yM`, for every `y ∈ M`. -/
+def IsOrientation (d : ℕ) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P d) : Prop :=
+  ContinuousOn ξ M ∧ ∀ y ∈ M, ∃ Q : Submodule ℝ (Euclid P),
+    (Q : Set (Euclid P)) = tangentSpace M y ∧ IsUnitOrientationOf (ξ y) Q
+
+/-- **Simon 7.4.1 (p. 193)**: `reg T` is the set of `y ∈ spt T` such that, for some `ρ > 0`
+(with `B_ρ(y) ⊆ U`), `m ∈ ℤ \ {0}` and embedded `n`-dimensional oriented `C¹` submanifold `M`
+(of locally finite `Hⁿ`-measure in `B_ρ(y)`, as `[[M]]` requires, 6.2.2), `T = m[[M]]` in
+`B_ρ(y)` (6.2.16), i.e. `T(ω) = m ∫_M ⟨ω, ξ_M⟩ dHⁿ` whenever `spt ω ⊆ B_ρ(y)`.
+The point `y` itself must lie on `M` (as in 4.4(8) and the proof of 5.8): otherwise a singular
+point could be declared regular by deleting it from `M`, e.g. the vertex of the Simons cone. -/
+def regularSet (T : GeometricCurrentOn U n) : Set (Euclid P) :=
+  {y | y ∈ T.support ∧ ∃ ρ : ℝ, 0 < ρ ∧ ball y ρ ⊆ U ∧
+    ∃ (m : ℤ) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P n), m ≠ 0 ∧ y ∈ M ∧
+      IsEmbeddedSubmanifold 1 n M ∧ IsOrientation n M ξ ∧
+      (∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[n] (M ∩ K) ≠ ∞) ∧
+      ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y ρ →
+        T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]}
+
+/-- **Simon 7.4.1**: `sing T = spt T \ reg T`. -/
+def singularSet (T : GeometricCurrentOn U n) : Set (Euclid P) :=
+  T.support \ regularSet T
+
+/-! ## The associated varifold `V = v(M, θ)` (Simon Ch. 4, 2.3–2.7 and 3.14) -/
+
+/-- The approximate tangent plane `TₓM` (Ch. 3, 1.4; unique when it exists), `⊥` otherwise. -/
+def approxTangentPlane (n : ℕ) (M : Set (Euclid P)) (x : Euclid P) :
+    Submodule ℝ (Euclid P) := by
+  classical
+  exact if h : ∃ Q, HasApproximateTangentSpaceAt n M x Q then h.choose else ⊥
+
+/-- `div_M X(x) = Σⱼ eⱼ · ∇^M Xʲ = trace(p_{TₓM} ∘ DX(x))` (Simon Ch. 4, 2.3). -/
+def tangentialDivergence (n : ℕ) (M : Set (Euclid P)) (X : Euclid P → Euclid P)
+    (x : Euclid P) : ℝ :=
+  LinearMap.trace ℝ (Euclid P)
+    ((approxTangentPlane n M x).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap)
+
+/-- First variation `δV(X) = ∫_M div_M X dμ_V` of `V = v(M, θ)` (Simon Ch. 4, 2.2). -/
+def IMRep.firstVariation (R : IMRep U n) (X : Euclid P → Euclid P) : ℝ :=
+  ∫ x in R.carrier, (R.mult x : ℝ) * tangentialDivergence n R.carrier X x ∂μHE[n]
+
+/-- Simon Ch. 4, 2.6 (computed form, p. 88): `V` is stationary in `U ∩ N`: `δV(X) = 0` for all
+`X ∈ C¹_c(U; ℝᴾ)` with `X(x) ∈ TₓN` for every `x ∈ N ∩ U`. -/
+def IMRep.IsStationaryAlong (R : IMRep U n) (N : Set (Euclid P)) : Prop :=
+  ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U →
+    (∀ x ∈ N ∩ U, X x ∈ tangentSpace N x) → R.firstVariation X = 0
+
+/-- Simon Ch. 4, 3.14: `V` has generalized mean curvature `H` in `U`
+(`∫ div_M X dμ_V = −∫ X · H dμ_V`, `X ∈ C¹_c(U; ℝᴾ)`), with `H` bounded on compact subsets. -/
+def IMRep.HasLocallyBoundedMeanCurvature (R : IMRep U n) : Prop :=
+  ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧
+    (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, ∀ᵐ x ∂R.measure, x ∈ K → ‖H x‖ ≤ Λ) ∧
+    ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U →
+      R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure
+
+/-! ## Codimension one (Simon 7.5) -/
+
+/-- Simon 7.5 (p. 197): `N ∈ 𝒪`, an oriented embedded `C²` submanifold of dimension `n + 1` with
+`(N̄ \ N) ∩ U = ∅` and `N ∩ U ≠ ∅`, with chosen orientation `ξN`. -/
+def InClassO (n : ℕ) (U N : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) : Prop :=
+  IsEmbeddedSubmanifold 2 (n + 1) N ∧ IsOrientation (n + 1) N ξN ∧ (closure N \ N) ∩ U = ∅ ∧
+    (N ∩ U).Nonempty
+
+/-- Simon 7.5.1: `T = ∂[[E]]` in `U`, where `[[E]](ω) = ∫_E ⟨ω, ξ_N⟩ dH^{n+1}`. -/
+def IsBoundaryOfRegion (T : GeometricCurrentOn U n) (E : Set (Euclid P))
+    (ξN : Euclid P → MultiVector P (n + 1)) : Prop :=
+  ∀ ω : TestFormOn U n,
+    T ω = ∫ x in E, ξN x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]
+
+/-! ## Headline results -/
+
+/-- **Simon 7.1.2 (Lemma, pp. 181–182).**  Let `N` be an embedded `C²` `(n+ℓ)`-dimensional
+submanifold of `ℝ^{n+k}`, `(N̄ \ N) ∩ U = ∅`.  If `T ∈ 𝒟ₙ(U)` is minimizing in `N ∩ U`,
+`spt T ⊆ N` and `∂T = 0` in `U`, then the associated varifold `V = v(M, θ)` (for any
+representation `T = τ(M, θ, ξ)`) is stationary in `N ∩ U` (Ch. 4, 2.6) and has locally bounded
+generalized mean curvature in `U` (Ch. 4, 3.14).
+*Correction*: `spt T ⊆ N` and `(N̄ \ N) ∩ U = ∅` are implicit in the book (they are part of the
+setting of Ch. 4, 2.5–2.6 and of §3); without `spt T ⊆ N` the lemma is false. -/
+def MinimizingImpliesStationary : Prop :=
+  ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n),
+    IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ →
+    T.support ⊆ N → IsMinimizingIn T (N ∩ U) → BoundaryVanishes T →
+    ∀ R : IMRep U n, R.Represents T → R.IsStationaryAlong N ∧ R.HasLocallyBoundedMeanCurvature
+
+/-- **Simon 7.2.1 (Lemma, p. 183).**  Let `S ∈ 𝒟_{n−1}(ℝ^{n+ℓ})` be integer multiplicity with
+`spt S` compact and `∂S = 0`.  Then there is an integer multiplicity `T ∈ 𝒟ₙ(ℝ^{n+ℓ})` with
+`spt T` compact, `∂T = S`, and `M(T) ≤ M(R)` for every integer multiplicity `R` with `spt R`
+compact and `∂R = S`.  Here `n = m + 2`: integer multiplicity currents have dimension `≥ 1`
+(Ch. 6, §3).  *Correction*: the printed statement omits the conclusion `∂T = S` (proved: `T ∈ 𝓘_S`);
+without it `T = 0` would do. -/
+def ExistenceOfMinimizingFilling : Prop :=
+  ∀ (m ℓ : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid (m + 2 + ℓ))) (m + 1)),
+    IsIntegerMultiplicity S → IsCompact S.support → S.boundary = 0 →
+    ∃ T : GeometricCurrentOn (univ : Set (Euclid (m + 2 + ℓ))) (m + 2),
+      IsIntegerMultiplicity T ∧ IsCompact T.support ∧ T.boundary = S ∧
+      ∀ R : GeometricCurrentOn (univ : Set (Euclid (m + 2 + ℓ))) (m + 2),
+        IsIntegerMultiplicity R → IsCompact R.support → R.boundary = S → T.mass ≤ R.mass
+
+/-- **Simon 7.2.4 (Theorem, p. 184).**  If `Tⱼ` are minimizing in `U`,
+`supⱼ (M_W(Tⱼ) + M_W(∂Tⱼ)) < ∞` for each open `W ⊂⊂ U`, and `Tⱼ ⇀ T ∈ 𝒟ₙ(U)`, then `T` is
+(integer multiplicity, Remark 7.2.5(1), and) minimizing in `U`, and `μ_{Tⱼ} → μ_T` as Radon
+measures in `U`. -/
+def CompactnessOfMinimizingCurrents : Prop :=
+  ∀ (n k : ℕ) (U : Set (Euclid (n + k))) (Ts : ℕ → GeometricCurrentOn U n)
+      (T : GeometricCurrentOn U n),
+    IsOpen U → (∀ j, IsMinimizingIn (Ts j) U) →
+    (∀ W : Set (Euclid (n + k)), IsOpen W → CompactlyContained W U →
+      ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) →
+    WeaklyConvergesOn Ts T → IsMinimizingIn T U ∧ MassMeasuresConverge (Us := fun _ => U) Ts T
+
+/-- **Simon 7.3.1 (Theorem, p. 187).**  `N` as in 7.1.2 (`C²`).  If `T ∈ 𝒟ₙ(U)` is minimizing in
+`U ∩ N` and `spt T ⊆ U ∩ N`, then (1) `Θⁿ(μ_T, x)` exists at every `x ∈ U \ spt ∂T` and is upper
+semicontinuous there; (2) for `x ∈ spt T \ spt ∂T` and `λⱼ ↓ 0` (any `λⱼ > 0`, `λⱼ → 0`) there
+are a subsequence `λⱼ'` and an integer multiplicity `C ∈ 𝒟ₙ(ℝ^{n+k})`, minimizing in `ℝ^{n+k}`,
+with `η_{x,λⱼ'#}T ⇀ C`, `μ_{η_{x,λⱼ'#}T} → μ_C`, `η_{0,λ#}C = C` (`λ > 0`) and
+`Θⁿ(μ_C, 0) = Θⁿ(μ_T, x)`.
+*Correction*: the printed hypothesis "`x ∈ spt T \ spt ∂T`" and "(1) … everywhere in `U`" are
+garbled; the monotonicity proof gives (1) on `U \ spt ∂T`, which is what is stated. -/
+def DensityAndTangentCones : Prop :=
+  ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n),
+    IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ →
+    IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N →
+    (∃ Θ : Euclid (n + k) → ℝ, (∀ x ∈ U \ boundarySupport T, HasMassDensity T x (Θ x)) ∧
+        UpperSemicontinuousOn Θ (U \ boundarySupport T)) ∧
+    ∀ x ∈ T.support \ boundarySupport T, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j),
+      Tendsto lams atTop (𝓝 0) →
+      ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧
+        ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧
+        MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧
+        IsMinimizingIn C univ ∧ IsConeCurrent C ∧
+        ∃ θ : ℝ, HasMassDensity T x θ ∧ HasMassDensity C 0 θ
+
+/-- **Simon 7.3.3 (Theorem, p. 189).**  `N` as in 7.3.1.  If `T` is minimizing in `U ∩ N`,
+`spt T ⊆ U ∩ N` and `∂T = 0` in `U`, then (1) `Θⁿ(μ_T, x) ∈ ℤ` for all `x ∈ U \ E`, where
+`H^{n−3+α}(E) = 0` for all `α > 0`; (2) there is `F ⊇ E` with `H^{n−2+α}(F) = 0` for all `α > 0`
+such that `T` has a tangent plane at each `x ∈ spt T \ F`.
+*Correction*: printed "`F ⊂ E`" must read `F ⊃ E` (non-integer density excludes tangent planes). -/
+def IntegerDensityAndTangentPlanes : Prop :=
+  ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n),
+    IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ →
+    IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T →
+    ∃ E F : Set (Euclid (n + k)), E ⊆ F ∧
+      (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 3 + α] E = 0) ∧
+      (∀ x ∈ U \ E, ∃ m : ℤ, HasMassDensity T x m) ∧
+      (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 2 + α] F = 0) ∧
+      ∀ x ∈ T.support \ F, HasTangentPlaneAt T x
+
+/-- **Simon 7.4.2 (Theorem, p. 194).**  If `T ∈ 𝒟ₙ(U)` is integer multiplicity and minimizing in
+`U ∩ N` (`N` an embedded `C²` `(n+ℓ)`-submanifold, `(N̄ \ N) ∩ U = ∅`), `spt T ⊆ U ∩ N` and
+`∂T = 0` in `U`, then `reg T` is dense in `spt T`. -/
+def RegularSetDense : Prop :=
+  ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n),
+    IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ →
+    IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T →
+    T.support ⊆ closure (regularSet T)
+
+/-- **Simon 7.4.3 (Theorem, p. 194)**, for a fixed `N` (`Nᵢ = N`).  Let `Tᵢ, T` be minimizing in
+`U ∩ N`, `spt Tᵢ, spt T ⊆ N`, `∂Tᵢ = ∂T = 0` in `U`, `Tᵢ ⇀ T`, with
+`supᵢ M_W(Tᵢ) < ∞` for `W ⊂⊂ U`.  If `y ∈ N ∩ U`, `Θⁿ(μ_T, y) = 1`, `y = lim yⱼ`, `yⱼ ∈ spt Tⱼ`,
+then `y ∈ reg T` and `yⱼ ∈ reg Tⱼ` for all large `j`.
+*Deviations*: the book allows `Nᵢ → N` "in the `C²` sense" (not defined at this point of the
+book); we take `Nᵢ = N`.  The local mass bound is the hypothesis of 7.2.4, which the proof uses
+for `μ_{Tⱼ} → μ_T`; it is added explicitly. -/
+def DensityOneImpliesRegular : Prop :=
+  ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (Ts : ℕ → GeometricCurrentOn U n)
+      (T : GeometricCurrentOn U n) (ys : ℕ → Euclid (n + k)) (y : Euclid (n + k)),
+    IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ →
+    (∀ j, IsMinimizingIn (Ts j) (U ∩ N)) → IsMinimizingIn T (U ∩ N) →
+    (∀ j, (Ts j).support ⊆ N) → T.support ⊆ N →
+    (∀ j, BoundaryVanishes (Ts j)) → BoundaryVanishes T →
+    (∀ W : Set (Euclid (n + k)), IsOpen W → CompactlyContained W U → ⨆ j, (Ts j).massOn W < ∞) →
+    WeaklyConvergesOn Ts T → y ∈ N ∩ U → HasMassDensity T y 1 →
+    Tendsto ys atTop (𝓝 y) → (∀ j, ys j ∈ (Ts j).support) →
+    y ∈ regularSet T ∧ ∀ᶠ j in atTop, ys j ∈ regularSet (Ts j)
+
+/-- **Simon 7.4.4 (Theorem, p. 194).**  If `T` is as in 7.4.2 and `ξ ∈ spt T` has
+`Θⁿ(μ_T, ξ) < 2`, then there is `ρ > 0` with `H^{n−2+α}(sing T ∩ B_ρ(ξ)) = 0` for all `α > 0`. -/
+def SingularSetSmallWhereDensityBelowTwo : Prop :=
+  ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n),
+    IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ →
+    IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T →
+    ∀ ξ ∈ T.support, ∀ θ : ℝ, HasMassDensity T ξ θ → θ < 2 →
+      ∃ ρ : ℝ, 0 < ρ ∧ ∀ α : ℝ, 0 < α → μH[(n : ℝ) - 2 + α] (singularSet T ∩ ball ξ ρ) = 0
+
+/-- **Simon 7.4.5 (Theorem, p. 195).**  If `C ∈ 𝒟ₙ(ℝ^{n+k})` is minimizing in `ℝ^{n+k}`, `∂C = 0`,
+`C` is a cone, and `spt C ⊆ H̄` for an open half-space `H = {x : v · x > 0}` (`v ≠ 0`, so
+`0 ∈ ∂H`), then `spt C ⊆ ∂H`. -/
+def HalfSpaceConeLiesInBoundary : Prop :=
+  ∀ (n k : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (v : Euclid (n + k)),
+    IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → v ≠ 0 →
+    C.support ⊆ closure {x | 0 < inner ℝ v x} → C.support ⊆ frontier {x | 0 < inner ℝ v x}
+
+/-- **Simon 7.5.8 (Theorem, p. 200).**  Let `N ∈ 𝒪` (oriented by `ξN`), `E ⊆ N ∩ U`
+`H^{n+1}`-measurable, `T = ∂[[E]] ∈ 𝒟ₙ(U)` integer multiplicity and minimizing in `N ∩ U`.  Then
+`sing T = ∅` if `n ≤ 6`; `sing T` is locally finite in `U` (finite on compact subsets of `U`) if
+`n = 7`; `H^{n−7+α}(sing T) = 0` for all `α > 0` if `n > 7`.  (`N = ℝ^{n+1}` is the case `k = 1`.)
+-/
+def CodimensionOneRegularity : Prop :=
+  ∀ (n k : ℕ) (U N E : Set (Euclid (n + k))) (ξN : Euclid (n + k) → MultiVector (n + k) (n + 1))
+      (T : GeometricCurrentOn U n),
+    IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN →
+    IsMinimizingIn T (N ∩ U) →
+    (n ≤ 6 → singularSet T = ∅) ∧
+    (n = 7 → ∀ K : Set (Euclid (n + k)), IsCompact K → K ⊆ U → (singularSet T ∩ K).Finite) ∧
+    (7 < n → ∀ α : ℝ, 0 < α → μH[(n : ℝ) - 7 + α] (singularSet T) = 0)
+
+/-- **Simon 7.5.11 (Corollary, p. 202).**  If `T` is as in 7.5.8, `T = τ(M, θ, ξ)`, and
+`T₁ ∈ 𝒟ₙ(U)` is obtained by equipping a connected component `M₁` of `reg T` with multiplicity
+`1` and the orientation `ξ` of `T`, then `∂T₁ = 0` in `U` and `T₁` is minimizing in `U ∩ N`. -/
+def RegularComponentsAreMinimizing : Prop :=
+  ∀ (n k : ℕ) (U N E : Set (Euclid (n + k))) (ξN : Euclid (n + k) → MultiVector (n + k) (n + 1))
+      (T : GeometricCurrentOn U n),
+    IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN →
+    IsMinimizingIn T (N ∩ U) →
+    ∀ R : IMRep U n, R.Represents T → ∀ y ∈ regularSet T, ∀ T₁ : GeometricCurrentOn U n,
+      (∀ ω : TestFormOn U n, T₁ ω = ∫ x in connectedComponentIn (regularSet T) y,
+        R.orient x ((ω : DifferentialForm (Euclid (n + k)) n) x) ∂μHE[n]) →
+      BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
+
+end
+
+/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
+theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+
+end GMT.Ch07
+```
+
+## Natural-language proof
+
+Reviewed mathematical argument; formal verification state: `accepted`.
+
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.scaled_derivative-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Steps 0(a), 0(b), 2 and 3 of the parent proof (Simon Ch. 6, Lemma 2.33 via the homotopy formula 2.25–2.27, chapter-06.txt lines 441–478 and 557–567).
+- Specialization: the identity parametrization c(s) = s on J = (0, ∞), i.e. β_s(y) = sⁿω(sy) = h_s^#ω for h_s(y) = sy. The parent's Remark records that any smooth positive parametrization works verbatim; here c' ≡ 1.
+- Notation: M = R.carrier, θ = R.mult, ξ = R.orient, ν := Hⁿ⌞M = μHE[n].restrict M. Thus R.action φ = ∫ θ(y)·ξ(y)(φ(y)) dν(y) for every form φ.
+- Dω(z) = fderiv ℝ ω z; norms on Covector (Euclid P) n and MultiVector P n are operator norms.
+
+1. Orientation bound (parent 0(a)). By R.orients, for ν-a.e. y there is a subspace Q with IsUnitOrientationOf (ξ(y)) Q; by the sibling orientation_norm, ‖ξ(y)‖ ≤ 1. Hence for ν-a.e. y and every covector α: |ξ(y)(α)| ≤ ‖ξ(y)‖·‖α‖ ≤ ‖α‖.
+2. Data from ω. ω ∈ TestFormOn univ n is C^∞ with compact support.
+- ω and Dω are continuous.
+- ω(z) = 0 and Dω(z) = 0 whenever z ∉ tsupport ω, since tsupport(Dω) ⊆ tsupport ω (Mathlib tsupport_fderiv_subset).
+- Choose r ∈ ℝ with tsupport ω ⊆ B̄_r(0) (a compact set is bounded).
+- Choose K₀ with ‖ω(z)‖ ≤ K₀ for all z (continuous with compact support); then K₀ ≥ ‖ω(0)‖ ≥ 0.
+3. Integrands. For s ∈ ℝ and y ∈ ℝ^P put
+- Φ(s, y) := n·s^{n−1}·ω(sy) + sⁿ·Dω(sy)[y],
+- F(s, y) := θ(y)·ξ(y)(sⁿω(sy)),
+- F'(s, y) := θ(y)·ξ(y)(Φ(s, y)).
+Then G(s) = ∫ F(s, ·) dν, and the claimed derivative is ∫ F'(t, ·) dν = R.action(y ↦ Φ(t, y)).
+4. Pointwise derivative (parent step 2 with c(s) = s). Fix y.
+- s ↦ sy has derivative y.
+- By the chain rule, s ↦ ω(sy) has derivative Dω(sy)[y] (ω is differentiable).
+- s ↦ sⁿ has derivative n·s^{n−1} (Mathlib hasDerivAt_pow, coefficient (n : ℝ)·s^{n−1}).
+- By the product rule, s ↦ sⁿω(sy) has derivative sⁿ·Dω(sy)[y] + n·s^{n−1}·ω(sy) = Φ(s, y).
+Composing with the continuous linear functional ξ(y) and multiplying by the constant θ(y), s ↦ F(s, y) has derivative F'(s, y) at every s, for every y.
+5. Measurability.
+- θ is measurable (R.measurable_mult composed with ℕ → ℝ), and ξ is AEStronglyMeasurable for ν (R.aestronglyMeasurable_orient).
+- (s, y) ↦ Φ(s, y) is jointly continuous: ω, Dω, the evaluation (A, u) ↦ A u, scalar multiplication and powers are continuous. Also y ↦ sⁿω(sy) is continuous.
+- The evaluation (ζ, α) ↦ ζ(α) is continuous on MultiVector P n × Covector (Euclid P) n, so y ↦ ξ(y)(φ(y)) is AEStronglyMeasurable for every continuous φ.
+- Multiplying by θ(y), F(s, ·) (each s) and F'(t, ·) are AEStronglyMeasurable for ν.
+6. Localization. Let I := (t/2, 2t), an open neighbourhood of t, ρ := 2r/t and B := B̄_ρ(0) (compact, measurable).
+- If s ∈ I and sy ∈ tsupport ω, then s‖y‖ = ‖sy‖ ≤ r, so r ≥ 0 and ‖y‖ ≤ r/s ≤ 2r/t = ρ, i.e. y ∈ B.
+- If sy ∉ tsupport ω, then ω(sy) = 0 and Dω(sy) = 0 by step 2, so sⁿω(sy) = 0, Φ(s, y) = 0 and F(s, y) = F'(s, y) = 0.
+7. Uniform bound (parent step 3). Φ is continuous on the compact set [t/2, 2t] × B, so there is K with ‖Φ(s, y)‖ ≤ K for (s, y) ∈ [t/2, 2t] × B. One may take the parent's explicit constant K = n(2t)^{n−1}K₀ + (2t)ⁿ·sup‖Dω‖·ρ (i.e. M₀ = 2t, m₀ = t/2, |c'| = 1).
+Let g(y) := K·θ(y)·1_B(y). For ν-a.e. y (those of step 1) and every s ∈ I:
+- if sy ∈ tsupport ω, then y ∈ B by step 6 and |F'(s, y)| ≤ θ(y)·‖ξ(y)‖·‖Φ(s, y)‖ ≤ θ(y)·1·K = g(y);
+- otherwise F'(s, y) = 0 ≤ g(y): g(y) = 0 if y ∉ B, and if y ∈ B then K ≥ ‖Φ(t, y)‖ ≥ 0 since (t, y) ∈ [t/2, 2t] × B.
+8. Integrability (parent 0(b)).
+- B is compact and B ⊆ univ, so R.locallyIntegrable_mult gives ∫_{M∩B} θ dHⁿ < ∞. As θ is measurable, θ·1_B is ν-integrable, hence so is g.
+- By step 6 with s = t ∈ I and step 1, |F(t, y)| ≤ tⁿK₀·θ(y)·1_B(y) for ν-a.e. y. Indeed, if ty ∈ tsupport ω then y ∈ B and |F(t, y)| ≤ θ(y)·‖tⁿω(ty)‖ ≤ tⁿK₀θ(y); otherwise F(t, y) = 0 and the right side is ≥ 0. So F(t, ·) is ν-integrable.
+9. Conclusion. The dominated differentiation theorem (Mathlib hasDerivAt_integral_of_dominated_loc_of_deriv_le) applies with the neighbourhood I of t:
+- F(s, ·) is AEStronglyMeasurable for s near t (step 5);
+- F(t, ·) is integrable (step 8);
+- F'(t, ·) is AEStronglyMeasurable (step 5);
+- |F'(s, y)| ≤ g(y) for ν-a.e. y and all s ∈ I, with g integrable (steps 7–8);
+- s ↦ F(s, y) has derivative F'(s, y) on I for every y (step 4).
+Hence G(s) = ∫ F(s, ·) dν has derivative ∫ F'(t, ·) dν = R.action(y ↦ n·t^{n−1}·ω(ty) + tⁿ·Dω(ty)[y]) at t. ∎
+
+Implementation note (not part of the numbered proof).
+- The Lean proof below of exactly this frozen type was kernel-checked during this decomposition: Lean v4.35.0-rc3, Mathlib 25730c7c, after `import GMT.Ch07.Submission`, placed inside `namespace GMT.Ch07` with the contract's opens, like the accepted Submission theorems. #print axioms gives propext, Classical.choice, Quot.sound.
+- Do not put `open scoped ContDiff` in front of this declaration: that scope makes `ω` a reserved token and breaks the binder `ω`.
+- Write the smoothness order as `(⊤ : ℕ∞)` instead of `∞`: with `open scoped ENNReal`, `∞` is the ENNReal top.
+- Bound the jointly continuous map Φ on the compact set as in step 7. `Continuous.bounded_above_of_compact_support` applied to the CLM-valued `fderiv ℝ ω` hits a deterministic whnf timeout (operator-norm instance unification); the covector-valued Φ is fine.
+- The sibling `orientation_norm` is `Submission.unit_orientation_norm_le_one`.
+theorem Submission.dtc_cwv_scaled_action_hasDerivAt : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (t : ℝ), 0 < t → HasDerivAt (fun s : ℝ => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))) (R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) + (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y)) t := by
+  intro P n R ω t ht
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n) with hw_def
+  -- Step 1: ‖ξ(x)‖ ≤ 1 for Hⁿ⌞M-a.e. x (sibling `orientation_norm`).
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ‖R.orient x‖ ≤ 1 := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact Submission.unit_orientation_norm_le_one P n Q _ hQ
+  -- Step 2: a support radius, a bound for ω; ω and Dω vanish off spt ω.
+  have hwcont : Continuous w := hws.continuous
+  have hDw : Continuous (fderiv ℝ w) := hws.continuous_fderiv (by simp)
+  obtain ⟨K0, hK0⟩ := hwcont.bounded_above_of_compact_support hwc
+  obtain ⟨r, hr⟩ : ∃ r, tsupport w ⊆ closedBall (0 : Euclid P) r :=
+    hwc.isCompact.isBounded.subset_closedBall 0
+  have hvan : ∀ z, z ∉ tsupport w → w z = 0 ∧ fderiv ℝ w z = 0 := fun z hz =>
+    ⟨image_eq_zero_of_notMem_tsupport hz,
+      image_eq_zero_of_notMem_tsupport (fun h => hz (tsupport_fderiv_subset ℝ h))⟩
+  -- Step 5: measurability of the integrands (Φ jointly continuous).
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hmeas : ∀ φ : Euclid P → Covector (Euclid P) n, Continuous φ →
+      AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y (φ y)) (μHE[n].restrict R.carrier) :=
+    fun φ hφ => hθm.aestronglyMeasurable.mul
+      (happly.comp_aestronglyMeasurable (R.aestronglyMeasurable_orient.prodMk hφ.aestronglyMeasurable))
+  have hcF : ∀ s : ℝ, Continuous (fun y => (s ^ n) • w (s • y)) := by
+    intro s
+    have h1 : Continuous (fun y : Euclid P => w (s • y)) := hwcont.comp (continuous_const_smul s)
+    exact h1.const_smul (s ^ n)
+  have hΦ : Continuous (fun p : ℝ × Euclid P => ((n : ℝ) * p.1 ^ (n - 1)) • w (p.1 • p.2) +
+      (p.1 ^ n) • fderiv ℝ w (p.1 • p.2) p.2) := by
+    have hsy : Continuous (fun p : ℝ × Euclid P => p.1 • p.2) := continuous_fst.smul continuous_snd
+    exact (((continuous_const.mul (continuous_fst.pow _))).smul (hwcont.comp hsy)).add
+      ((continuous_fst.pow _).smul ((hDw.comp hsy).clm_apply continuous_snd))
+  have hcF' : ∀ s : ℝ, Continuous (fun y => ((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+      (s ^ n) • fderiv ℝ w (s • y) y) := fun s =>
+    hΦ.comp (continuous_const.prodMk continuous_id)
+  -- Steps 6–8: localization in B = B̄_ρ(0), the bound K for Φ on [t/2, 2t] × B, integrability.
+  set ρ : ℝ := 2 * r / t with hρ
+  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  obtain ⟨K, hK⟩ := (isCompact_Icc (a := t / 2) (b := 2 * t)).prod (isCompact_closedBall (0 : Euclid P) ρ)
+    |>.exists_bound_of_continuousOn hΦ.continuousOn
+  have hθB : IntegrableOn (fun x => (R.mult x : ℝ)) B (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
+    simpa only [Real.enorm_natCast] using
+      (R.locallyIntegrable_mult B (isCompact_closedBall 0 ρ) (subset_univ _)).lt_top
+  -- membership: if s • y ∈ spt ω with s > t/2 then y ∈ B
+  have hmemB : ∀ s : ℝ, t / 2 < s → ∀ y : Euclid P, s • y ∈ tsupport w → y ∈ B := by
+    intro s hs y hy
+    have h1 : ‖s • y‖ ≤ r := by simpa using hr hy
+    have hs0 : 0 < s := by linarith
+    rw [norm_smul, Real.norm_of_nonneg hs0.le] at h1
+    simp only [hB, mem_closedBall, dist_zero_right, hρ]
+    rw [le_div_iff₀ ht]
+    nlinarith [norm_nonneg y]
+  -- Steps 7–9: hypotheses of the dominated differentiation theorem (step 4 is `h_diff`).
+  have hs : Ioo (t / 2) (2 * t) ∈ 𝓝 t := Ioo_mem_nhds (by linarith) (by linarith)
+  have hF_meas : ∀ᶠ s in 𝓝 t, AEStronglyMeasurable
+      (fun y => (R.mult y : ℝ) * R.orient y ((s ^ n) • w (s • y))) (μHE[n].restrict R.carrier) :=
+    Eventually.of_forall fun s => hmeas _ (hcF s)
+  have hF'_meas : AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y
+      (((n : ℝ) * t ^ (n - 1)) • w (t • y) + (t ^ n) • fderiv ℝ w (t • y) y))
+      (μHE[n].restrict R.carrier) := hmeas _ (hcF' t)
+  have hF_int : Integrable (fun y => (R.mult y : ℝ) * R.orient y ((t ^ n) • w (t • y)))
+      (μHE[n].restrict R.carrier) := by
+    refine ((hθB.integrable_indicator hBm).const_mul (t ^ n * K0)).mono' (hmeas _ (hcF t)) ?_
+    filter_upwards [hξ] with y hy
+    by_cases hty : t • y ∈ tsupport w
+    · have hyB := hmemB t (by linarith) y hty
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      calc (R.mult y : ℝ) * ‖R.orient y ((t ^ n) • w (t • y))‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖(t ^ n) • w (t • y)‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * (t ^ n * K0)) := by
+            gcongr
+            rw [norm_smul, Real.norm_of_nonneg (by positivity)]
+            gcongr
+            exact hK0 _
+        _ = t ^ n * K0 * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hty).1, smul_zero, map_zero, mul_zero, norm_zero]
+      have hK0n : 0 ≤ K0 := le_trans (norm_nonneg _) (hK0 0)
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]; positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_bound : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t / 2) (2 * t),
+      ‖(R.mult y : ℝ) * R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+        (s ^ n) • fderiv ℝ w (s • y) y)‖ ≤ K * B.indicator (fun x => (R.mult x : ℝ)) y := by
+    filter_upwards [hξ] with y hy s hs
+    obtain ⟨hs1, hs2⟩ := hs
+    by_cases hsy : s • y ∈ tsupport w
+    · have hyB := hmemB s hs1 y hsy
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      have hnorm := hK (s, y) ⟨⟨hs1.le, hs2.le⟩, hyB⟩
+      calc (R.mult y : ℝ) * ‖R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+            (s ^ n) • fderiv ℝ w (s • y) y)‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+            (s ^ n) • fderiv ℝ w (s • y) y‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * K) := by gcongr
+        _ = K * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hsy).1, (hvan _ hsy).2, smul_zero, zero_apply, smul_zero,
+        add_zero, map_zero, mul_zero, norm_zero]
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]
+        have hKn : 0 ≤ K := le_trans (norm_nonneg _)
+          (hK (t, y) ⟨⟨by linarith, by linarith⟩, hyB⟩)
+        positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_diff : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t / 2) (2 * t),
+      HasDerivAt (fun s => (R.mult y : ℝ) * R.orient y ((s ^ n) • w (s • y)))
+        ((R.mult y : ℝ) * R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+          (s ^ n) • fderiv ℝ w (s • y) y)) s := by
+    refine Eventually.of_forall fun y s _ => ?_
+    have h1 : HasDerivAt (fun s : ℝ => s • y) y s := by
+      simpa using (hasDerivAt_id s).smul_const y
+    have h2 : HasDerivAt (fun s : ℝ => w (s • y)) (fderiv ℝ w (s • y) y) s :=
+      ((hws.differentiable (by simp)).differentiableAt (x := s • y)).hasFDerivAt.comp_hasDerivAt s h1
+    have h3 : HasDerivAt (fun s : ℝ => (s ^ n) • w (s • y))
+        ((s ^ n) • fderiv ℝ w (s • y) y + ((n : ℝ) * s ^ (n - 1)) • w (s • y)) s :=
+      (hasDerivAt_pow n s).smul h2
+    have h4 := ((R.orient y).hasFDerivAt.comp_hasDerivAt s h3).const_mul (R.mult y : ℝ)
+    rw [add_comm] at h4
+    exact h4
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound
+    ((hθB.integrable_indicator hBm).const_mul K) h_diff
+  exact key.2
+
+## Key steps
+
+1. ‖ξ(y)‖ ≤ 1 for Hⁿ⌞M-a.e. y (orientation_norm via R.orients).
+2. For every y, s ↦ θ(y)ξ(y)(sⁿω(sy)) has derivative θ(y)ξ(y)(n s^{n−1}ω(sy) + sⁿDω(sy)[y]) (product and chain rules).
+3. For s ∈ (t/2, 2t) the integrands vanish unless y ∈ B̄_{2r/t}(0) (tsupport ω ⊆ B̄_r(0)), and are bounded by Kθ(y)1_B(y) with K the maximum of the continuous Φ on [t/2, 2t] × B.
+4. θ1_B is integrable by locallyIntegrable_mult; the integrands are AEStronglyMeasurable.
+5. hasDerivAt_integral_of_dominated_loc_of_deriv_le gives G'(t) = R.action(n t^{n−1}ω(t·) + tⁿDω(t·)[·]).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp … GMT/Ch07/Submission.lean (identical); cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); git -C lake-packages-25730c7c/simongmt rev-parse HEAD (2b366308)`
+- `cat simongmt/Poincare/SimonGMT/Chapter06/Forms.lean and Chapter06/AffineCurrentPushforward.lean; sed -n 1,260p Chapter06/Currents.lean; grep -n boundary Chapter06/Currents.lean; sed -n 1,80p Chapter06/CurrentLocalEquality.lean (IsTestForm, TestFormOn, exteriorDerivative_isTestForm, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply, affinePullbackForm, affinePullbackTestOn, affinePushforward_apply, restrictDomain_apply, testFormOnInclusion)`
+- `rg -n 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le' Mathlib/Analysis/Calculus/ParametricIntegral.lean; rg -n 'is_const_of_deriv' Mathlib/Analysis/Calculus/MeanValue.lean; rg -n 'HasCompactSupport.comp_smul' Mathlib/Topology/Algebra/ConstMulAction.lean; rg -n 'ae_withDensity_iff' Mathlib/MeasureTheory/Measure/WithDensity.lean; rg -n 'bounded_above_of_compact_support' Mathlib/Analysis/Normed/Group/Bounded.lean; rg -n 'aestronglyMeasurable_comp₂|apply_continuousLinearMap' Mathlib/MeasureTheory; rg -n 'integrable_indicator_iff|Integrable.mono' Mathlib/MeasureTheory`
+- `python3 census of lean_name/lean_statement in dag.json and nodes/*/decomposition-v*.json (patterns IsConeCurrent, R.action with HasDerivAt, curryLeft (β z) z, ‖R.orient x‖, IsUnitOrientationOf with ≤); rg -l -F for each of the five new names in dag.json, nodes, GMT, the project snapshot and simongmt/Poincare (0 hits)`
+- `git show 52115c22:GMT/Ch07/Submission.lean (Submission.cone_current_apply_dilation_pullback); git show 77ba6718 (Submission.dtc_cone_euler_cartan); git show f1339f96 (Submission.regcomp_rim_action_integrable); git log/show d90c7c52 (implementation base merging a reused cross-branch child)`
+- `sed -n 430,480p and 540,580p book/chapter-06.txt (2.25–2.27, Lemma 2.33); sed -n 340,365p book/chapter-07.txt (7.3.1 proof, 'apply Lemma 2.33 to deduce that C is a cone')`
+- `grep -n '_existing_lean_name_problem|_solve_children|_install_parent_supplied_child_handoff|_accepted_checkpoint' /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py; store.py ensure; .humanize/swarm-configs/be41fd7aece94f7eb83ed6e064a802a0.json (max_nodes 1000); dag.json node count 417`
+- `python3 -I /tmp/conelemma-scripts/gen.py (gmt-compare.child_modules mode=contract, lean_contract.validate_lean_statement) then lake env lean gen/Ch_*.lean; lake env lean Assembly.lean, Trial1.lean, Trial2.lean, Trial3.lean, final/Final.lean, final/FinalSol.lean, final/FromJson.lean, each with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-one-dim-cones-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-tangent-projection-measurable-a1/parent-implementation-base.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/be41fd7aece94f7eb83ed6e064a802a0.json`
+- `/tmp/conelemma-decomp/children.json`
+- `/tmp/conelemma-decomp/Assembly.lean`
+- `/tmp/conelemma-decomp/Trial1.lean`
+- `/tmp/conelemma-decomp/Trial2.lean`
+- `/tmp/conelemma-decomp/Trial3.lean`
+- `/tmp/conelemma-decomp/final/Final.lean`
+- `/tmp/conelemma-decomp/final/FinalSol.lean`
+- `/tmp/conelemma-decomp/final/FromJson.lean`
+- `/tmp/conelemma-scripts/gen.py`
+- `/tmp/conelemma-scripts/build.py`
+
+The snapshot contract (project b4d606d, Mathlib 25730c7c, simongmt 2b36630) is byte-identical to the workspace Contract.lean and Submission.lean. All seven child types therefore elaborate after `import GMT.Ch07.Submission` in the comparator's contract scope (namespace GMT.Ch07 with the contract's opens).
+
+SimonGMT supplies what the children need about forms and currents:
+- IsTestForm, TestFormOn, exteriorDerivative_isTestForm and exteriorDerivativeTestOn;
+- GeometricCurrentOn.boundary_apply (C.boundary ψ = C(dψ));
+- affinePullbackForm, affinePullbackTestOn, affinePushforward_apply and restrictDomain_apply, which make η_{0,λ#}C(ω) = C(ω(λ⁻¹·)∘λ⁻¹) definitional.
+
+The Mathlib snapshot supplies hasDerivAt_integral_of_dominated_loc_of_deriv_le, IsOpen.is_const_of_deriv_eq_zero, HasCompactSupport.comp_smul/fderiv/mono, ae_withDensity_iff, ContinuousAlternatingMap.curryLeftLI/map_smul_univ and ContDiff.clm_apply/fderiv_right. Mathlib has no Lie-derivative or Cartan API; the Euler-field Cartan identity is the accepted Submission.dtc_cone_euler_cartan.
+
+Reuse:
+- Submission.unit_orientation_norm_le_one (commit 0325970d) and Submission.dtc_cone_euler_cartan (commit 77ba6718) passed their isolated comparators and have byte-identical frozen types.
+- runtime.py maps accepted names with identical types to the existing nodes and skips their handoffs, and implementation bases merge reused commits (d90c7c52).
+- The five new dtc_cwv_* names occur nowhere in the run, the project or SimonGMT.
+- dag.json has 417 nodes against max_nodes 1000.
+
+Lean checks:
+- Kernel-checked proofs of all five new children, the accepted proofs of the two reused declarations and the 8-line parent assembly compile together with axioms propext, Classical.choice and Quot.sound only.
+- The comparator solution side `exact Submission.X` elaborates against every frozen type.
+- The code embedded in the natural proofs was re-extracted from the final JSON and recompiled.
+
+Pitfalls found:
+- `open scoped ContDiff` makes ω a token;
+- Continuous.bounded_above_of_compact_support on the CLM-valued fderiv times out.
+
+
+## Acceptance
+
+The exact contract must pass deterministic Git identity checks and the machine comparator, without a Lean agent review, changed assumptions or proof holes. Every node delivers an immutable accepted candidate after its original proof checks. Parents compose dependencies in isolated worktrees. Only the root integrates and validates the final target tree. Every child retains its issue and review PR.
+
+Solution PR: Pending
+
+After proof acceptance and exact solution PR publication, close this theorem issue. Issue closure does not assert Git merge or final root delivery.
+
+Child PRs remain review records; only confirmed root delivery closes those PRs without merging them.
+
+Proof status (`accepted` / `merged`) and GitHub PR state are separate.
