@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c910f206cb473334145f8be453e8a6cb3973f945864469c8afdf9fed0b92640",
+  "git_delta": {
+    "base_commit": "18fb8e827c2da9f731e53683a61a38c0dde8282a",
+    "candidate_commit": "63289e938b297b810240bc2fd0bc5f3418066206",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pullback_top_form_bound",
+    "diff_sha256": "33df0954ec640ce4121e9748be1337126f0bc3d468f9001812587aa0a920edd4",
+    "source_sha256": "1844065318d205bae72138afe4e5a60d4b1cf01799838d33ad941c70d47ea64a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pullback_top_form_bound",
+      "statement": "∀ (P m : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)), W ⊆ U → T.massOn W < ∞ → T.boundary.massOn W < ∞ → ∀ f : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ W → ∀ L : Eucl P →L[ℝ] Eucl (m + 1), ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ φ : TestFormOn U (m + 1), (∀ x, (φ : DifferentialForm (Eucl P) (m + 1)) x = (f x * a (L x)) • wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) → |T φ| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
