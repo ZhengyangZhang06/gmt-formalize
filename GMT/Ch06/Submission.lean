@@ -359,6 +359,146 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Integer `L¹` density of a top-dimensional integer multiplicity current (Simon Ch. 6, proof
+of 5.1, (27)–(28)).  Let `X ∈ 𝒟ₙ(ℝⁿ)` be integer multiplicity with `M(X) < ∞` such that (H) every
+representation `X = τ(M, θ, ξ)` has `M(X) = ∫_M θ dHⁿ` and `Hⁿ(M ∖ spt X) = 0`.  Then
+`X(ω) = ∫ u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` for a Borel integer-valued `u ∈ L¹(ℝⁿ)` with `∫ |u| = M(X)` and
+`u = 0` a.e. off `spt X`.  With `Δ = dx¹ ∧ ⋯ ∧ dxⁿ`, every `n`-covector is `α = α(e) Δ` and
+`Δ(τ) = ±1` for orthonormal `τ`, so `⟨ω, ξ⟩ = ω_e s` with `s = ⟨Δ, ξ⟩ = ±1` `Hⁿ`-a.e. on `M`;
+`u` is a Borel integer-valued version of `1_{M'} θ s`, `M' ⊆ M` a measurable core of `M`. -/
+theorem Submission.fiw_tb_tda_density : ∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → (∀ (M : Set (Eucl (m + 1))) (θ : Eucl (m + 1) → ℝ) (ξ : Eucl (m + 1) → NVector (Eucl (m + 1)) (m + 1)), IsRectifiableTriple (univ : Set (Eucl (m + 1))) (m + 1) M θ ξ → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = tauAction (m + 1) M θ ξ ω) → X.mass = ∫⁻ x in M, ENNReal.ofReal (θ x) ∂(μHE[m + 1] : Measure (Eucl (m + 1))) ∧ (μHE[m + 1] : Measure (Eucl (m + 1))) (M \ X.support) = 0) → ∃ u : Eucl (m + 1) → ℝ, Measurable u ∧ (∀ x, ∃ k : ℤ, u x = k) ∧ Integrable u ∧ ∫⁻ x, ENNReal.ofReal |u x| = X.mass ∧ (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∉ X.support → u x = 0) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = ∫ x, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  classical
+  intro m X hX hXm hH
+  let _ : MeasureSpace (Eucl (m + 1)) := measureSpaceOfInnerProductSpace
+  have hvol : (μHE[m + 1] : Measure (Eucl (m + 1))) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume (m + 1)
+  -- Step 1: the integer multiplicity triple, with (H) giving `M(X) = ∫_M θ` and
+  -- `Hⁿ(M ∖ spt X) = 0`.
+  obtain ⟨M, θ, ξ, hT, hθ, hXT⟩ := hX
+  obtain ⟨hmass, hsupp⟩ := hH M θ ξ hT hXT
+  -- Step 2: a measurable core `M' ⊆ M` with `M' = M` a.e.
+  obtain ⟨M', hM'M, hM'm, hM'ae⟩ :=
+    (hvol ▸ hT.nullMeasurableSet : NullMeasurableSet M volume).exists_measurable_subset_ae_eq
+  have hrM : volume.restrict M' = volume.restrict M := Measure.restrict_congr_set hM'ae
+  -- Step 3: the determinant covector `Δ = dx¹ ∧ ⋯ ∧ dxⁿ`: every `n`-covector is `α(e) Δ`, and
+  -- `Δ(τ) = ±1` for orthonormal `τ`.
+  obtain ⟨Δ, hΔ, hΔτ⟩ : ∃ Δ : Covector (Eucl (m + 1)) (m + 1),
+      (∀ (α : Covector (Eucl (m + 1)) (m + 1)) v,
+        α v = α (fun i => EuclideanSpace.single i (1 : ℝ)) * Δ v) ∧
+      ∀ τ : Fin (m + 1) → Eucl (m + 1), Orthonormal ℝ τ → Δ τ = 1 ∨ Δ τ = -1 := by
+    have hdet : ∀ v, wedgeCovectors (m + 1) (fun j => EuclideanSpace.proj j) v =
+        (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis.det v := by
+      intro v
+      rw [wedgeCovectors_apply_det, Module.Basis.det_apply]
+      congr 1
+    have hb : ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis =
+        fun i => EuclideanSpace.single i (1 : ℝ) := by
+      funext i; simp
+    refine ⟨wedgeCovectors (m + 1) (fun j => EuclideanSpace.proj j), fun α v => ?_,
+      fun τ hτ => ?_⟩
+    · have := congrArg (fun f => f v) (AlternatingMap.eq_smul_basis_det
+        (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis α.toAlternatingMap)
+      simp only [AlternatingMap.smul_apply, ContinuousAlternatingMap.coe_toAlternatingMap,
+        smul_eq_mul, hb] at this
+      rw [hdet]; exact this
+    · rw [hdet]
+      have hsp := hτ.linearIndependent.span_eq_top_of_card_eq_finrank (by simp)
+      have := OrthonormalBasis.det_to_matrix_orthonormalBasis_real
+        (EuclideanSpace.basisFun (Fin (m + 1)) ℝ) (OrthonormalBasis.mk hτ hsp.ge)
+      rwa [OrthonormalBasis.coe_mk] at this
+  -- Step 4: `s = ξ(·)(Δ) = ±1` a.e. on `M`.
+  have hor : ∀ᵐ x ∂(volume.restrict M'), ξ x Δ = 1 ∨ ξ x Δ = -1 := by
+    have h := hT.orients
+    rw [hvol, ← hrM] at h
+    filter_upwards [h] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    rcases hξ with h | h <;> rw [h]
+    · exact hΔτ τ hτ
+    · rcases hΔτ τ hτ with h' | h' <;> simp [h']
+  -- Step 5: measurability of `θ`, `s` and `u₀ = 1_{M'} θ s`.
+  have hθm : AEStronglyMeasurable θ (volume.restrict M') := by
+    have hU : M' = ⋃ k : ℕ, M' ∩ closedBall 0 k := by
+      rw [← inter_iUnion, iUnion_closedBall_nat, inter_univ]
+    rw [hU, aestronglyMeasurable_iUnion_iff]
+    intro k
+    have h := hT.integrableOn _ (isCompact_closedBall 0 k) (subset_univ _)
+    rw [hvol] at h
+    exact (h.mono_set (inter_subset_inter_left _ hM'M)).1
+  have hsm : AEStronglyMeasurable (fun x => ξ x Δ) (volume.restrict M') := by
+    have h := hT.aestronglyMeasurable
+    rw [hvol, ← hrM] at h
+    exact (ContinuousLinearMap.apply ℝ ℝ Δ).continuous.comp_aestronglyMeasurable h
+  have hu₀m : AEStronglyMeasurable (M'.indicator (fun x => θ x * ξ x Δ)) volume :=
+    (aestronglyMeasurable_indicator_iff hM'm).2 (hθm.mul hsm)
+  -- Step 6: `u₀` is integer valued a.e.
+  have hu₀Z : ∀ᵐ x ∂volume, M'.indicator (fun x => θ x * ξ x Δ) x ∈
+      Set.range (Int.cast : ℤ → ℝ) := by
+    filter_upwards [(ae_restrict_iff' hM'm).1 hor] with x hx
+    by_cases hxM : x ∈ M'
+    · rw [indicator_of_mem hxM]
+      obtain ⟨k, hk⟩ := hθ x (hM'M hxM)
+      rcases hx hxM with h1 | h1 <;> rw [h1, hk]
+      · exact ⟨k, by simp⟩
+      · exact ⟨-k, by simp⟩
+    · rw [indicator_of_notMem hxM]; exact ⟨0, by simp⟩
+  -- Step 7: the Borel integer-valued representative `u`.
+  have hũm : Measurable (hu₀m.mk _) := hu₀m.stronglyMeasurable_mk.measurable
+  obtain ⟨u, hu⟩ : ∃ u : Eucl (m + 1) → ℝ, u = fun x =>
+      if hu₀m.mk _ x ∈ Set.range (Int.cast : ℤ → ℝ) then hu₀m.mk _ x else 0 := ⟨_, rfl⟩
+  have hu_meas : Measurable u := by
+    rw [hu]
+    exact Measurable.ite (hũm (Set.countable_range _).measurableSet) hũm measurable_const
+  have hu_Z : ∀ x, ∃ k : ℤ, u x = k := by
+    intro x
+    rw [hu]; dsimp only; split_ifs with h
+    · obtain ⟨k, hk⟩ := h; exact ⟨k, hk.symm⟩
+    · exact ⟨0, by simp⟩
+  have hu_ae : u =ᵐ[volume] M'.indicator (fun x => θ x * ξ x Δ) := by
+    filter_upwards [hu₀m.ae_eq_mk, hu₀Z] with x h1 h2
+    rw [hu]; dsimp only; rw [← h1]; simp only [h2, ite_true]
+  -- Step 8: `|u| = 1_{M'} θ` a.e., hence `∫ |u| = M(X)`.
+  have habs : (fun x => ENNReal.ofReal |u x|) =ᵐ[volume]
+      M'.indicator (fun x => ENNReal.ofReal (θ x)) := by
+    filter_upwards [hu_ae, (ae_restrict_iff' hM'm).1 hor] with x h1 h2
+    rw [h1]
+    by_cases hxM : x ∈ M'
+    · rw [indicator_of_mem hxM, indicator_of_mem hxM]
+      rcases h2 hxM with h | h <;> rw [h]
+      · rw [mul_one, abs_of_pos (hT.pos x (hM'M hxM))]
+      · rw [mul_neg_one, abs_neg, abs_of_pos (hT.pos x (hM'M hxM))]
+    · rw [indicator_of_notMem hxM, indicator_of_notMem hxM, abs_zero, ENNReal.ofReal_zero]
+  have hlint : ∫⁻ x, ENNReal.ofReal |u x| = X.mass := by
+    rw [lintegral_congr_ae habs, lintegral_indicator hM'm, hrM, hmass, hvol]
+  -- Step 9: integrability.
+  have hu_int : Integrable u := by
+    refine ⟨hu_meas.aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral]
+    simp_rw [Real.enorm_eq_ofReal_abs]
+    rw [hlint]
+    exact hXm
+  -- Step 10: `u = 0` a.e. off `spt X`.
+  have hsupp' : ∀ᵐ x ∂volume, x ∉ X.support → u x = 0 := by
+    have h0 : volume (M \ X.support) = 0 := hvol ▸ hsupp
+    filter_upwards [hu_ae, measure_eq_zero_iff_ae_notMem.1 h0] with x hx1 hx2 hxs
+    rw [hx1, indicator_of_notMem fun h => hx2 ⟨hM'M h, hxs⟩]
+  refine ⟨u, hu_meas, hu_Z, hu_int, hlint, hsupp', fun ω => ?_⟩
+  -- Step 11: the representation `X(ω) = ∫ u ω_e`, as `⟨ω, ξ⟩ = ω_e s` (Step 4).
+  rw [hXT ω]
+  unfold tauAction
+  rw [hvol, ← hrM, ← integral_indicator hM'm]
+  refine integral_congr_ae ?_
+  filter_upwards [hu_ae] with x hx
+  rw [hx]
+  by_cases hxM : x ∈ M'
+  · rw [indicator_of_mem hxM, indicator_of_mem hxM]
+    have h : ξ x ((ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x) =
+        (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) * ξ x Δ := by
+      rw [← smul_eq_mul, ← map_smul]; congr 1; ext v
+      rw [hΔ ((ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x) v]; rfl
+    rw [h]; ring
+  · rw [indicator_of_notMem hxM, indicator_of_notMem hxM, zero_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

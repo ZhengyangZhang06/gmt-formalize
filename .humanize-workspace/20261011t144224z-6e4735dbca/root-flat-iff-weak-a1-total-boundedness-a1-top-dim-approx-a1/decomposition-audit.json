@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (TestFormOnConverges|covectorEuclideanNorm|massAdmissibleOn|GeometricCurrentOn.massOn|GeometricCurrentOn.mass|GeometricCurrentOn.support|HasWeightedApproximateTangentSpaceAt|blowUpMap)|structure GeometricCurrentOn|abbrev SimonMultiIndex",
+        "lintegral_iUnion₀|integral_iUnion_ae|setIntegral_eq_integral_of_forall_compl_eq_zero|aestronglyMeasurable_iUnion_iff|exists_measurable_subset_ae_eq",
+        "euclideanHausdorffMeasure_eq_volume|volume_preserving_ofLp|theorem volume_Icc_pi|StrictMono.eq_id|eq_smul_basis_det|det_to_matrix_orthonormalBasis_real",
+        "tendsto_measure_iUnion_atTop|tendsto_measure_iInter_atTop|lintegral_mul_left_eq_self|lintegral_lintegral_swap|lintegral_const_mul.|ofReal_integral_eq_lintegral_ofReal",
+        "fiw_tb_tda_",
+        "\\bsorry\\b|\\baxiom\\b"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/tda-independent-audit-3ubihhdr/Types.lean",
+        "/tmp/tda-independent-audit-3ubihhdr/Assembly.lean",
+        "/tmp/tda-independent-audit-3ubihhdr/Instances.lean",
+        "/tmp/tda-independent-audit-3ubihhdr/Proto.lean",
+        "/tmp/tda-independent-audit-3ubihhdr/Proto2.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and definitions. Splitting is appropriate: the eight obligations isolate substantial analytic and current-construction steps of this selected theorem. Every name is bare and fresh in the inspected 362-node DAG; dependencies are correctly directed and acyclic, including the authorized sibling prerequisites. All eight exact one-line propositions elaborate using only the frozen contract and imports. Recompiled the supplied parent assembly with child and sibling statements as explicit hypotheses; it proves the exact frozen parent type with only propext, Classical.choice and Quot.sound. Additional compiler checks confirm implicit volume measures, inverse parsing, the top-degree norm identity, cube-boundary nullity, and the weighted tangent calculation. No prohibited matrix IsUnit construction occurs; the determinant formula uses Matrix.of. Optional adaptation pointers are not needed for the supplied proofs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including hypothesis H. The determinant-sign argument, measurable core, integer-valued representative, and H prove all density, mass, support and representation conclusions without circular reliance."
+    },
+    {
+      "key": "integer_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite positive measure and measurability hypotheses justify the least integer median. The supplied measure inequalities, minimization argument and mean comparison establish M1, M2 and M4 for the exact arbitrary-measure-space contract."
+    },
+    {
+      "key": "lattice_cubes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all eight stated properties through order-embedding uniqueness, box geometry, null hyperplanes and the countable almost-disjoint cover. The pinned lintegral_iUnion₀ theorem supports conclusion (g) without measurability of g."
+    },
+    {
+      "key": "locally_constant_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The open nonzero locus, positive natural-valued absolute density and measurable signed orientation satisfy every rectifiable-triple condition. Local constancy makes the exact weighted blow-up integral eventually constant, and the representation proves integer multiplicity."
+    },
+    {
+      "key": "density_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Integrability of v suffices because test-form coefficients are bounded and continuous. The proof establishes linearity and the required sequential continuity from zero-order uniform convergence, giving the exact current representation."
+    },
+    {
+      "key": "lattice_chain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable floor construction gives an integer density locally constant wherever nonzero, with the required almost-everywhere cube values. Summability proves integrability; exactly the three declared dependencies then supply the current, integer multiplicity and lattice-chain identity."
+    },
+    {
+      "key": "sub_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly constructs subtraction through the underlying linear maps and continuity fields. The top-degree Euclidean norm identity bounds admissible evaluations, and the mass supremum gives precisely the stated lintegral bound."
+    },
+    {
+      "key": "poincare_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cube enlargement and decomposition, translation invariance, measurable Tonelli interchange and the box-volume bound yield c = (2√n)^n√n. The extended-nonnegative-integral argument remains valid for infinite Λ and requires no unstated integrability assumption."
+    }
+  ],
+  "required_changes": []
+}

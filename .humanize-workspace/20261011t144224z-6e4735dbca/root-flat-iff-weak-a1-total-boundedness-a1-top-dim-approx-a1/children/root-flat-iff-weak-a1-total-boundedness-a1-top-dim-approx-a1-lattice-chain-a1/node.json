@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_chain-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "Top-dimensional integral lattice chain with summable coefficients: current, density and integer multiplicity (Simon 5.1, (29), (34))",
+  "statement": "Let m ∈ ℕ, n := m + 1, ρ > 0, and β : LatticeFaceIndex n n → ℝ with β_F ∈ ℤ for every F and Σ'_F ofReal(|β_F| ρ^n) < ∞. Then there are Pc ∈ D_n(ℝ^n) and v : ℝ^n → ℝ such that:\n- IsLatticeChain ρ β Pc holds, i.e. Pc(ω) = Σ'_F β_F · latticeFaceAction ρ F ω for all ω;\n- Pc is integer multiplicity;\n- v is Lebesgue integrable;\n- for every F, v = β_F a.e. on latticeFace ρ F;\n- Pc(ω) = ∫ v(x) ω(x)(e_0, …, e_m) dx for every ω ∈ D^n(ℝ^n), where e_i = EuclideanSpace.single i 1.",
+  "lean_statement": "∀ (m : ℕ) (ρ : ℝ), 0 < ρ → ∀ β : LatticeFaceIndex (m + 1) (m + 1) → ℝ, (∀ F, ∃ k : ℤ, β F = k) → (∑' F, ENNReal.ofReal (|β F| * ρ ^ (m + 1))) < ∞ → ∃ (Pc : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (v : Eucl (m + 1) → ℝ), IsLatticeChain ρ β Pc ∧ IsIntegerMultiplicity Pc ∧ Integrable v ∧ (∀ F, ∀ᵐ x ∂((volume : Measure (Eucl (m + 1))).restrict (latticeFace ρ F)), v x = β F) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), Pc ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "fiw_tb_tda_lattice_chain",
+  "depends_on": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_cubes-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.density_current-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.locally_constant_im-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_cubes-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.density_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.locally_constant_im-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-lattice-chain-a1-a1"
+}
