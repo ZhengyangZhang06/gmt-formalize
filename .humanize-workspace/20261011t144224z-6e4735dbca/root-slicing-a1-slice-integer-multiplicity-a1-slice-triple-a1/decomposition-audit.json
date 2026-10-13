@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsRectifiableTriple|namespace GMT|open scoped|^open |^import",
+        "def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique|def blowUpMap",
+        "simon_theorem_3_6|area_image_compl_regularSet_eq_zero|injective_area_formula_lipschitzOn|Lusin",
+        "alternatizeUncurryFin_apply|norm_alternatizeUncurryFin_le|alternatizeUncurryFinCLM",
+        "implicitFunction|contDiffAt_implicitFunction|eventually_apply_eq_iff_implicitFunction",
+        "slicing_im_st_|fiw_ims_frame_sign|c1_approximation|c¹ approximation|c\\^1 approximation|weighted.*tangent.*chart",
+        "git show c90a40505abdbff33b9174acf9b20037eb2cb2a1:GMT/Ch06/Submission.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/Types.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/ParentAssembly.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/GeometryAssembly.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/FrameReuse.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/AETransfer.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/Sign.lean",
+        "lean /tmp/slice-triple-independent-audit-nv239w73/Contraction.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ImplicitContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-frame-sign-a1/accepted-candidate.json",
+        "/tmp/slice-triple-independent-audit-nv239w73/Types.lean",
+        "/tmp/slice-triple-independent-audit-nv239w73/ParentAssembly.lean",
+        "/tmp/slice-triple-independent-audit-nv239w73/GeometryAssembly.lean",
+        "/tmp/slice-triple-independent-audit-nv239w73/FrameReuse.lean",
+        "/tmp/slice-triple-independent-audit-nv239w73/AETransfer.lean",
+        "/tmp/slice-triple-independent-audit-nv239w73/Sign.lean",
+        "/tmp/slice-triple-independent-audit-nv239w73/Contraction.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected slice-triple theorem. Every child contributes, and dependencies are acyclic and correctly directed. All eight exact one-line propositions pass validation and elaborate independently in the verified comparator scope, without child implementations. The seven fresh names have no conflicting reservations; frame_sign is permitted reuse with an identical accepted frozen type. Conditional assembly proves the exact selected parent from the supplied coarea dependency and children; slice_geometry likewise follows from its five dependencies. These assemblies, ae_transfer, the contraction sign computation and the recompiled accepted frame theorem use only propext, Classical.choice and Quot.sound. The contraction measurability probe also compiles. Snapshot searches found no existing declarations under the proposed names. The analytic proofs were checked separately from these interface checks. Public mathematical cross-check: [Simon, Chapter 6, 4.1–4.3](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary M, f, G and predicates. Taking the measurable hull for the restricted measure makes the indicator argument valid without additional measurability assumptions. Coarea, zero integral and monotonicity prove the exact conclusion. The supplied Lean proof independently recompiles."
+    },
+    {
+      "key": "measure_fields",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and three conclusions match. Compact exhaustion, nonnegative measurable modifications, null transfer and finite coarea integrals establish the measure fields. The proof correctly handles restriction to initially nonmeasurable slices. The explicit contraction continuity and strong-measurability construction was independently checked in Lean."
+    },
+    {
+      "key": "weighted_tangent_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes the required openness, positivity, local integrability and lower Lipschitz bound. Global C¹ regularity supplies upper bounds on bounded domains. The area-formula blow-up, Lusin pieces, zero-density estimates and three-term weighted limit establish the conclusion without rectifiability of M. The dimension-zero case is valid. No pending declaration is assumed."
+    },
+    {
+      "key": "chart_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree; measurability or boundedness of G is unnecessary here. The specified C¹ approximation theorem, null critical images and local lower Lipschitz estimates produce the charts and coverage. The declared tangent-chart dependency and the explicit directional-derivative comparison establish every tangential identity. The proof supplies an argument rather than deferring discovery to another branch."
+    },
+    {
+      "key": "level_set_charts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact global-C¹ chart contract: implicit graphs are globalized with a bump, orthogonality supplies the lower Lipschitz bound, compact derivative bounds supply the upper bound, and the chain rule and dimension count identify tangent ranges. Second countability gives the required enumeration. Empty regular sets and m = 0 are covered."
+    },
+    {
+      "key": "slice_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All assumptions and conclusions match. Null transfer gives simultaneous chart properties on slices; nonzero G forces a regular level point. Injectivity identifies chart preimages, and positivity permits weighted-tangent uniqueness for every Q. Lipschitz extensions give rectifiability, and the tangent-chart dependency gives the stated weighted plane, including m = 0. Assembly from the five exact dependency types recompiles."
+    },
+    {
+      "key": "interior_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inline continuous-linear-map expression has the intended alternating contraction. Rank–nullity gives the m-dimensional orthogonal slice plane; an adapted orthonormal frame and the declared frame_sign dependency reduce evaluation to the coefficient (−1)^m. The sign computation independently compiles, and the empty-frame case is included."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The reserved name is valid reuse: its frozen type is identical to the comparator-accepted declaration. The supplied proof agrees with the retained handoff proof after the provenance note. Restriction to the common span, determinant evaluation and orthogonality prove the sign alternative, including n = 0. The accepted implementation recompiles with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}
