@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "42a0de3e053016a9bb091f8d68210fd2b38daaa6606a9a4e6eba90b8763cbd98",
+  "git_delta": {
+    "base_commit": "21b3c5306a04869707b871577e83b4995980fe27",
+    "candidate_commit": "5b6fb6a1a34b034d20cac806d6076da3c6a84c21",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "df2147bb700d5e6c2180878e714dd5f443c900450ecf427125e9dcdeb5fb32c1",
+    "source_sha256": "5b2151dd10896761c2326708e7bc6e1ed2a2da5195c3b81703ab5732e6268c72",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tendsto_integral_of_limsup_liminf",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
