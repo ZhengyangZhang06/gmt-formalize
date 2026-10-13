@@ -641,6 +641,155 @@ theorem Submission.rectifiability_mickle_rado : ∀ (m : ℕ) (ψ : OuterMeasure
     exact (ENNReal.not_lt_zero h3).elim
   exact measure_mono_null hsub (measure_iUnion_null hS_null)
 
+/-- For an s-finite `μ` and measurable sets `G r s ⊆ Z × Y`, increasing in `s` and with
+`G r s = ⋃_{0<r'<r} G r' s` for `r > 0`, the map
+`z ↦ limsup_{s→0⁺} sup_{0<r<δ} μ{y | (z, y) ∈ G r s} / (r s)ᵏ` is measurable.  Each section
+measure is measurable in `z` (Tonelli).  By continuity from below along rational `r' < r` the
+supremum over `r` may be taken over rational `r`, and since `F(s) ≤ (s'/s)ᵏ F(s')` for
+`0 < s ≤ s'`, the supremum over `s ∈ (0, ε)` may be taken over rational `s`.  Computing the upper
+limit along the radii `1/(n+1)` then gives a countable `inf`–`sup` of measurable functions. -/
+theorem Submission.rectifiability_bf_limsup_sup_measurable :
+    ∀ (Z Y : Type) [MeasurableSpace Z] [MeasurableSpace Y] (k : ℕ) (μ : Measure Y) (δ : ℝ)
+      (G : ℝ → ℝ → Set (Z × Y)), SFinite μ → (∀ r s, MeasurableSet (G r s)) →
+      (∀ r s s', s ≤ s' → G r s ⊆ G r s') →
+      (∀ r s, 0 < r → G r s = ⋃ r' ∈ Ioo (0 : ℝ) r, G r' s) →
+      Measurable (fun z : Z => limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ,
+        μ {y | (z, y) ∈ G r s} / ENNReal.ofReal ((r * s) ^ k)) (𝓝[>] 0)) := by
+  intro Z Y _ _ k μ δ G hμ hG hmono hcont
+  -- `g z r s` is the section measure and `F z s` the supremum over `r ∈ (0, δ)`
+  let g : Z → ℝ → ℝ → ℝ≥0∞ := fun z r s => μ {y | (z, y) ∈ G r s}
+  let F : Z → ℝ → ℝ≥0∞ := fun z s => ⨆ r ∈ Ioo (0 : ℝ) δ, g z r s / ENNReal.ofReal ((r * s) ^ k)
+  show Measurable fun z => limsup (F z) (𝓝[>] 0)
+  have hgm : ∀ r s, Measurable fun z => g z r s := fun r s =>
+    measurable_measure_prodMk_left (hG r s)
+  -- `G` is monotone in `r` on `(0, ∞)`
+  have hGr : ∀ s r₁ r₂, 0 < r₁ → r₁ ≤ r₂ → G r₁ s ⊆ G r₂ s := by
+    intro s r₁ r₂ h1 h12
+    rcases h12.lt_or_eq with h | rfl
+    · rw [hcont r₂ s (h1.trans h)]
+      exact subset_biUnion_of_mem (u := fun r' => G r' s) ⟨h1, h⟩
+    · exact le_rfl
+  -- the supremum over `r` is a supremum over rational `r`
+  have hFq : ∀ z s, 0 < s → F z s = ⨆ q : ℚ, ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) δ),
+      g z q s / ENNReal.ofReal (((q : ℝ) * s) ^ k) := by
+    intro z s hs
+    apply le_antisymm
+    · refine iSup₂_le fun r hr => ?_
+      have hU : {y | (z, y) ∈ G r s} =
+          ⋃ q : {q : ℚ // 0 < (q : ℝ) ∧ (q : ℝ) < r}, {y | (z, y) ∈ G (q.1 : ℝ) s} := by
+        ext y
+        simp only [mem_iUnion, mem_ofPred_eq]
+        constructor
+        · intro hy
+          rw [hcont r s hr.1] at hy
+          simp only [mem_iUnion] at hy
+          obtain ⟨r', hr', hy'⟩ := hy
+          obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn hr'.2
+          exact ⟨⟨q, hr'.1.trans hq1, hq2⟩, hGr s r' q hr'.1 hq1.le hy'⟩
+        · rintro ⟨q, hy⟩
+          exact hGr s q r q.2.1 q.2.2.le hy
+      have hdir : Directed (· ⊆ ·)
+          (fun q : {q : ℚ // 0 < (q : ℝ) ∧ (q : ℝ) < r} => {y | (z, y) ∈ G (q.1 : ℝ) s}) := by
+        intro q₁ q₂
+        refine ⟨⟨max q₁.1 q₂.1, ?_, ?_⟩, ?_, ?_⟩
+        · exact lt_of_lt_of_le q₁.2.1 (by exact_mod_cast le_max_left q₁.1 q₂.1)
+        · rw [Rat.cast_max]; exact max_lt q₁.2.2 q₂.2.2
+        · intro y hy
+          exact hGr s q₁.1 _ q₁.2.1 (by exact_mod_cast le_max_left q₁.1 q₂.1) hy
+        · intro y hy
+          exact hGr s q₂.1 _ q₂.2.1 (by exact_mod_cast le_max_right q₁.1 q₂.1) hy
+      have hgr : g z r s = ⨆ q : {q : ℚ // 0 < (q : ℝ) ∧ (q : ℝ) < r}, g z (q.1 : ℝ) s := by
+        show μ {y | (z, y) ∈ G r s} = _
+        rw [hU]
+        exact hdir.measure_iUnion
+      rw [hgr, ENNReal.iSup_div]
+      refine iSup_le fun q => ?_
+      refine le_trans ?_ (le_iSup₂ (f := fun (q : ℚ) (_ : (q : ℝ) ∈ Ioo (0 : ℝ) δ) =>
+        g z q s / ENNReal.ofReal (((q : ℝ) * s) ^ k)) q.1 ⟨q.2.1, q.2.2.trans hr.2⟩)
+      apply ENNReal.div_le_div_left
+      apply ENNReal.ofReal_le_ofReal
+      apply pow_le_pow_left₀ (mul_pos q.2.1 hs).le
+      exact mul_le_mul_of_nonneg_right q.2.2.le hs.le
+    · refine iSup_le fun q => iSup_le fun hq => ?_
+      exact le_iSup₂ (f := fun r (_ : r ∈ Ioo (0 : ℝ) δ) => g z r s / ENNReal.ofReal ((r * s) ^ k))
+        (q : ℝ) hq
+  have hFm : ∀ s, 0 < s → Measurable fun z => F z s := by
+    intro s hs
+    have : (fun z => F z s) = fun z => ⨆ q : ℚ, ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) δ),
+        g z q s / ENNReal.ofReal (((q : ℝ) * s) ^ k) := funext fun z => hFq z s hs
+    rw [this]
+    exact Measurable.iSup fun q => Measurable.iSup fun _ => (hgm q s).div_const _
+  -- scaling in `s`: `F z s ≤ (s'/s)ᵏ F z s'` for `0 < s ≤ s'`
+  have hscale : ∀ z s s', 0 < s → s ≤ s' → F z s ≤ ENNReal.ofReal ((s' / s) ^ k) * F z s' := by
+    intro z s s' hs hss'
+    refine iSup₂_le fun r hr => ?_
+    have hs' : 0 < s' := hs.trans_le hss'
+    have h1 : g z r s ≤ g z r s' := measure_mono (fun y hy => hmono r s s' hss' hy)
+    have hA : ENNReal.ofReal ((r * s') ^ k) =
+        ENNReal.ofReal ((s' / s) ^ k) * ENNReal.ofReal ((r * s) ^ k) := by
+      rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow]
+      congr 2
+      field_simp
+    have hc0 : ENNReal.ofReal ((s' / s) ^ k) ≠ 0 := (ENNReal.ofReal_pos.2 (by positivity)).ne'
+    calc g z r s / ENNReal.ofReal ((r * s) ^ k)
+        ≤ g z r s' / ENNReal.ofReal ((r * s) ^ k) := ENNReal.div_le_div_right h1 _
+      _ = ENNReal.ofReal ((s' / s) ^ k) * (g z r s' / ENNReal.ofReal ((r * s') ^ k)) := by
+          rw [hA, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hc0 ENNReal.ofReal_ne_top]
+      _ ≤ ENNReal.ofReal ((s' / s) ^ k) * F z s' := by
+          gcongr
+          exact le_iSup₂ (f := fun r (_ : r ∈ Ioo (0 : ℝ) δ) =>
+            g z r s' / ENNReal.ofReal ((r * s') ^ k)) r hr
+  -- the supremum over `s ∈ (0, ε)` is a supremum over rational `s`
+  have hsupq : ∀ z (ε : ℝ), 0 < ε → ⨆ s ∈ Ioo (0 : ℝ) ε, F z s =
+      ⨆ q : ℚ, ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) ε), F z q := by
+    intro z ε hε
+    apply le_antisymm
+    · refine iSup₂_le fun s hs => ?_
+      have hn : ∀ n : ℕ, F z s ≤ ENNReal.ofReal ((1 + 1 / ((n : ℝ) + 1)) ^ k) *
+          ⨆ q : ℚ, ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) ε), F z q := by
+        intro n
+        have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+        have hlt : s < min ε (s * (1 + 1 / ((n : ℝ) + 1))) := by
+          refine lt_min hs.2 ?_
+          have := mul_pos hs.1 hpos
+          nlinarith
+        obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn hlt
+        have hqε : (q : ℝ) < ε := hq2.trans_le (min_le_left _ _)
+        have hq0 : 0 < (q : ℝ) := hs.1.trans hq1
+        calc F z s ≤ ENNReal.ofReal (((q : ℝ) / s) ^ k) * F z q := hscale z s q hs.1 hq1.le
+          _ ≤ ENNReal.ofReal ((1 + 1 / ((n : ℝ) + 1)) ^ k) *
+              ⨆ q : ℚ, ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) ε), F z q := by
+            gcongr ?_ * ?_
+            · apply ENNReal.ofReal_le_ofReal
+              apply pow_le_pow_left₀ (div_pos hq0 hs.1).le
+              rw [div_le_iff₀ hs.1]
+              have := hq2.trans_le (min_le_right _ _)
+              linarith
+            · exact le_iSup₂ (f := fun (q : ℚ) (_ : (q : ℝ) ∈ Ioo (0 : ℝ) ε) => F z q) q
+                ⟨hq0, hqε⟩
+      have h1 : Tendsto (fun n : ℕ => ENNReal.ofReal ((1 + 1 / ((n : ℝ) + 1)) ^ k)) atTop
+          (𝓝 1) := by
+        rw [← ENNReal.ofReal_one]
+        apply ENNReal.tendsto_ofReal
+        have := ((tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_add 1).pow k
+        simpa using this
+      have htend := ENNReal.Tendsto.mul_const h1
+        (Or.inl one_ne_zero) (b := ⨆ q : ℚ, ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) ε), F z q)
+      rw [one_mul] at htend
+      exact ge_of_tendsto' htend hn
+    · refine iSup_le fun q => iSup_le fun hq => ?_
+      exact le_iSup₂ (f := fun s (_ : s ∈ Ioo (0 : ℝ) ε) => F z s) (q : ℝ) hq
+  -- the upper limit along the radii `1/(n+1)`, with rational `s`
+  have hform : ∀ z, limsup (F z) (𝓝[>] 0) = ⨅ n : ℕ, ⨆ q : ℚ,
+      ⨆ (_ : (q : ℝ) ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1))), F z q := by
+    intro z
+    rw [Submission.rectifiability_mickle_rado_limsup_eq_iInf (F z)]
+    congr 1
+    funext n
+    exact hsupq z _ (by positivity)
+  rw [funext hform]
+  exact Measurable.iInf fun n => Measurable.iSup fun q => Measurable.iSup fun hq => hFm q hq.1
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
