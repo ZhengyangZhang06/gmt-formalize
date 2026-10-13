@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ae611fa4e2347a779238ccaf78e3f2bd148e8fa10180967c2fc224c141e0547f",
+  "git_delta": {
+    "base_commit": "37c18a54ad2af4f4a97d7aea208d9d9291f4574d",
+    "candidate_commit": "9e4623f7949b6e8a31421369c9b6bcbc190d2c41",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_smm_liminf_left_slope_le_deriv",
+    "diff_sha256": "281aa18a274e5e4eb9a69d32a1b3215d0e7fb66dd1b5bbb129ba89878b154a22",
+    "source_sha256": "abd2e13a38ea40e48f357c974244af195e13f458ef1f9798303dcf5572d2774a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_smm_liminf_left_slope_le_deriv",
+      "statement": "∀ (F : ℝ → ℝ) (t : ℝ), DifferentiableAt ℝ F t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h))) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv F t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
