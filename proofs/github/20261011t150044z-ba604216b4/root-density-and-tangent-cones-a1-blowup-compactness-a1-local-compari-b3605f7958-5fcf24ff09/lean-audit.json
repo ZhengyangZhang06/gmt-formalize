@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1b4c9b53c7f68f00e5301b4e9d4aa25d8c6581ba88e9521c078b78631db306b1",
+  "git_delta": {
+    "base_commit": "bbb523f98abf4c3695ca2f14fd784d30388d07a2",
+    "candidate_commit": "37efd61e011058d76dc75e9e171503060c00ec44",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "d833fc091f48f0f25cb84e1a439c041f30df4eb42c280f022f53f5abad1e19c5",
+    "source_sha256": "7c17e578142623de5156b800535485ff11b46c7b79db44514c500ae065cf7e64",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_orient_fixed",
+      "statement": "∀ (P n : ℕ) (U O : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsOpen O → R.Represents T → DifferentiableOn ℝ f O → (∀ y ∈ T.support ∩ O, f y = y) → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), f x = x ∧ ∀ α : Covector (Euclid P) n, R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
