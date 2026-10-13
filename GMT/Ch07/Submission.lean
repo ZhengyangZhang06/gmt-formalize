@@ -451,6 +451,89 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Orthogonal Fubini: `(x, s) ↦ ι x + s v` preserves Lebesgue measure** (Simon Ch. 3, 4.3 (†),
+step 2 of the proof).  Let `ι : ℝᵐ → ℝᵐ⁺¹` be a linear isometry and `v` a unit vector orthogonal
+to its range.  The vectors `b_j = ι(e_j)` (`j < m`) and `b_m = v` are orthonormal, so they form an
+orthonormal basis `B` of `ℝᵐ⁺¹`, and `B.repr⁻¹ : c ↦ Σⱼ cⱼ bⱼ` preserves Lebesgue measure.  The
+coordinate map `S(x, s) = (x₀, …, x_{m-1}, s)` sends `Lᵐ ⊗ L¹` to `Lᵐ⁺¹` (`ofLp × id`, swap, the
+inverse of `piFinSuccAbove` at the last index, `toLp`).  Finally `B.repr⁻¹ (S(x, s)) =
+Σ_{j<m} xⱼ ι(eⱼ) + s v = ι x + s v`, so the map is the composition `B.repr⁻¹ ∘ S`. -/
+theorem Submission.codim1_rdo_dg_tma_orthogonal_fubini : ∀ (m : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1)) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ x, inner ℝ (ι x) v = 0) → MeasurePreserving (fun p : Euclid m × ℝ => ι p.1 + p.2 • v) volume volume := by
+  intro m ι v hv hιv
+  -- Step 1: the adapted orthonormal basis `(ι e₀, …, ι e_{m-1}, v)`
+  let b : Fin (m + 1) → Euclid (m + 1) :=
+    Fin.lastCases v (fun i => ι (EuclideanSpace.single i (1 : ℝ)))
+  have hb_last : b (Fin.last m) = v := by simp [b]
+  have hb_cs : ∀ i : Fin m, b (Fin.castSucc i) = ι (EuclideanSpace.single i (1 : ℝ)) := by
+    intro i
+    simp [b]
+  have hb : Orthonormal ℝ b := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    induction i using Fin.lastCases with
+    | last =>
+      induction j using Fin.lastCases with
+      | last => simp [hb_last, hv]
+      | cast j =>
+        rw [hb_last, hb_cs, real_inner_comm, hιv]
+        simp only [Fin.ext_iff, Fin.val_last, Fin.val_castSucc]
+        have := j.isLt
+        simp
+        omega
+    | cast i =>
+      induction j using Fin.lastCases with
+      | last =>
+        rw [hb_last, hb_cs, hιv]
+        simp only [Fin.ext_iff, Fin.val_last, Fin.val_castSucc]
+        have := i.isLt
+        simp
+        omega
+      | cast j =>
+        rw [hb_cs, hb_cs, LinearIsometry.inner_map_map, EuclideanSpace.inner_single_left]
+        by_cases hij : i = j
+        · subst hij
+          simp
+        · simp [hij, Fin.castSucc_inj]
+  have hcard : Fintype.card (Fin (m + 1)) = Module.finrank ℝ (Euclid (m + 1)) := by simp
+  have hsp : ⊤ ≤ Submodule.span ℝ (Set.range b) := by
+    rw [← coe_basisOfOrthonormalOfCardEqFinrank hb hcard,
+      (basisOfOrthonormalOfCardEqFinrank hb hcard).span_eq]
+  let B : OrthonormalBasis (Fin (m + 1)) ℝ (Euclid (m + 1)) := OrthonormalBasis.mk hb hsp
+  have hB : ∀ i, B i = b i := by
+    intro i
+    simp [B]
+  -- Step 2: the coordinate map `S(x, s) = (x₀, …, x_{m-1}, s)` preserves Lebesgue measure
+  let S : Euclid m × ℝ → EuclideanSpace ℝ (Fin (m + 1)) :=
+    fun p => WithLp.toLp 2 (Fin.snoc (WithLp.ofLp p.1) p.2)
+  have hS : MeasurePreserving S volume volume := by
+    have h1 : MeasurePreserving (fun p : Euclid m × ℝ => (WithLp.ofLp p.1, p.2))
+        ((volume : Measure (Euclid m)).prod (volume : Measure ℝ))
+        ((volume : Measure (Fin m → ℝ)).prod (volume : Measure ℝ)) :=
+      (PiLp.volume_preserving_ofLp (Fin m)).prod (MeasurePreserving.id volume)
+    have h2 : MeasurePreserving (Prod.swap : (Fin m → ℝ) × ℝ → ℝ × (Fin m → ℝ))
+        ((volume : Measure (Fin m → ℝ)).prod (volume : Measure ℝ))
+        ((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))) :=
+      Measure.measurePreserving_swap
+    have h3 := (volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) (Fin.last m)).symm
+    have h4 := PiLp.volume_preserving_toLp (Fin (m + 1))
+    have := h4.comp (h3.comp (h2.comp h1))
+    convert this using 1
+    funext p
+    simp [S, MeasurableEquiv.piFinSuccAbove]
+    rfl
+  -- Step 3: `B.repr⁻¹` preserves Lebesgue measure and `B.repr⁻¹ ∘ S = (x, s) ↦ ι x + s v`
+  have hΦ : MeasurePreserving (B.repr.symm : EuclideanSpace ℝ (Fin (m + 1)) → Euclid (m + 1))
+      volume volume := B.measurePreserving_repr_symm
+  have := hΦ.comp hS
+  convert this using 1
+  funext p
+  simp only [comp_apply, S]
+  rw [← OrthonormalBasis.sum_repr_symm, Fin.sum_univ_castSucc]
+  simp only [hB, hb_last, hb_cs, Fin.snoc_castSucc, Fin.snoc_last]
+  congr 1
+  conv_lhs => rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr p.1]
+  simp [map_sum, map_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
