@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.offset_zero-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "Two-sided positive density at 0 forces the limit half-space through 0 (Simon 3.4.3: (10),(11) ⇒ λ = 0)",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, F₀ ⊆ E and v ∈ E with |v| = 1. Suppose L^{m+1}(F₀ ∩ B_s(0)) > 0 and L^{m+1}(B_s(0) ∖ F₀) > 0 for every s > 0, and that L^{m+1}(F₀) = 0, or L^{m+1}(E ∖ F₀) = 0, or L^{m+1}(F₀ Δ {z : ⟨z, v⟩ > c}) = 0 for some c ∈ ℝ. Then L^{m+1}(F₀ Δ {z : ⟨z, v⟩ > 0}) = 0.",
+  "lean_statement": "∀ (m : ℕ) (F₀ : Set (Euclid (m + 1))) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ s : ℝ, 0 < s → 0 < volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ∧ 0 < volume (ball (0 : Euclid (m + 1)) s \\ F₀)) → (volume F₀ = 0 ∨ volume F₀ᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F₀ {z | c < inner ℝ z v}) = 0) → volume (symmDiff F₀ {z | 0 < inner ℝ z v}) = 0",
+  "lean_name": "codim1_rdo_dg_bh_offset_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c631ba592f-a1"
+}
