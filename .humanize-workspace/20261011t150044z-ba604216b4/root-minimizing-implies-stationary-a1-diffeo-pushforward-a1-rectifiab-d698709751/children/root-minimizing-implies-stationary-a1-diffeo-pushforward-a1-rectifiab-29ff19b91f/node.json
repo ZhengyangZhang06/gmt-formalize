@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1.image_split-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1",
+  "depth": 4,
+  "title": "Lower integrals over a Lipschitz injective image split along an a.e.-disjoint Borel decomposition",
+  "statement": "Let P, n ∈ ℕ, E := ℝ^P and H^n := μHE[n]. Let M ⊆ E and A_i ⊆ E (i ∈ ℕ) be sets such that every A_i is Borel, A_i ⊆ M for every i, A_i ∩ A_j = ∅ for i ≠ j, and H^n(M ∖ ⋃_i A_i) = 0. Let φ : E → E be Λ-Lipschitz (Λ ≥ 0) and injective. Then for every g : E → [0, ∞] (no measurability required), ∫⁻_{φ(M)} g dH^n = Σ_{i∈ℕ} ∫⁻_{φ(A_i)} g dH^n.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (A : ℕ → Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n] (M \\ ⋃ i, A i) = 0 → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∑' i, ∫⁻ y in φ '' A i, g y ∂μHE[n]",
+  "lean_name": "dpf_raf_lintegral_image_eq_tsum_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-29ff19b91f-a1"
+}

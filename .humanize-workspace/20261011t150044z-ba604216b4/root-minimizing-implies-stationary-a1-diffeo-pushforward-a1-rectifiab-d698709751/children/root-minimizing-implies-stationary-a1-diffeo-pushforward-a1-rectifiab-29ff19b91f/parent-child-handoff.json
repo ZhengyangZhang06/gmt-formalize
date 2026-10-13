@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)",
+        "diff -q local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical; Submission.lean == Contract.lean)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-d698709751/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}; compare nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v2.json vs decomposition-v3.json (sibling contracts identical)",
+        "python3 -I: dag.json scan of 509 nodes for lean_name collisions with dpf_raf_lintegral_image_eq_tsum_pieces / dpf_raf_piece_area_formula_gram (none) and for lean_statements stating approxTangentPlane equalities or tsums of lintegrals (no reusable lemma)",
+        "grep -l dpf_raf nodes/*/*.json (no match)",
+        "rg -n 'dpf_raf|piece_area|lintegral_image_eq_tsum|approxTangentPlane_eq|normDet' project/GMT --glob '*.lean' (only Ch03 contract normDet comments/defs; no reusable lemma)",
+        "rg -n 'theorem normDet_comp |theorem normDet_sq_eq_det_gram|theorem normDet_nonneg' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "rg -n 'theorem lintegral_iUnion |theorem setLIntegral_congr ' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/; rg MeasurableSet.image_of_continuousOn_injOn (Constructions/Polish/Basic.lean), fderiv_comp (FDeriv/Comp.lean), toLinearMap_comp (ContinuousLinearMap/Basic.lean), ae_differentiableAt (Calculus/Rademacher.lean), disjoint_image_iff (Data/Set/Image.lean), ae_eq_set (OuterMeasure/AE.lean)",
+        "grep -n in lake-packages-25730c7c/simongmt (2b366308): weighted_area_formula_lipschitz_injOn, areaJacobianAt_eq_normDet, def HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique, euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "python3 -I gmt-compare.py contract_scope(GMT.Ch07.main_theorem) and child_modules(...,'contract') -> /tmp/raf-split-check/gen/{image_split,piece_area}_Challenge.lean; lake env lean on each",
+        "lake env lean /tmp/raf-split-check/Avail.lean",
+        "lake env lean /tmp/raf-split-check/Types.lean",
+        "lake env lean /tmp/raf-split-check/Assembly.lean (#print axioms assembly_conditional)",
+        "lake env lean /tmp/raf-split-check/Children.lean (#print axioms proto_image_split, proto_piece_area)",
+        "lake env lean /tmp/raf-split-check/EndToEnd.lean (GMT.Ch07.Submission.<name> declarations + exact-solution targets; #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-d698709751/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json",
+        "/tmp/raf-split-check/Avail.lean",
+        "/tmp/raf-split-check/Types.lean",
+        "/tmp/raf-split-check/Assembly.lean",
+        "/tmp/raf-split-check/Children.lean",
+        "/tmp/raf-split-check/EndToEnd.lean",
+        "/tmp/raf-split-check/gen/image_split_Challenge.lean",
+        "/tmp/raf-split-check/gen/piece_area_Challenge.lean"
+      ],
+      "conclusion": "The pinned snapshot proves neither child nor the selected statement; the only related project text is Ch03's normDet-based Jacobian definitions. The snapshot's Ch07 Contract.lean is byte-identical to the workspace Contract and Submission. After `import GMT.Ch07.Submission`, LinearMap.normDet, Matrix.gram, areaJacobianAt and weighted_area_formula_lipschitz_injOn are not in scope (Avail.lean reports unknown identifiers). That is why both child statements avoid normDet and use the Matrix.of Gram form of the frozen parent. The following are in scope: MeasurableSet.image_of_continuousOn_injOn, lintegral_iUnion, setLIntegral_congr, ae_eq_set, LipschitzWith.ae_differentiableAt, SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn, HasApproximateTangentSpaceAt.unique and approxTangentPlane. The pinned Mathlib (NormDet.lean) provides normDet_sq_eq_det_gram, normDet_comp and normDet_nonneg. Pinned SimonGMT (2b366308) provides weighted_area_formula_lipschitz_injOn, which takes an arbitrary weight and has no rank hypothesis, and areaJacobianAt_eq_normDet. Lean verification: both frozen child types and the parent type elaborate in the comparator's own generated challenge modules. The conditional parent assembly from the two children plus the two sibling frozen types compiles with only propext, Classical.choice and Quot.sound. Full prototype proofs of both children compile as GMT.Ch07.Submission.<name> with the extra imports, and `exact Submission.<name>` closes each frozen type, with the same axioms. A Lean check also confirmed that the Matrix.of Gram expression equals normDet of the domain-restricted map. No proposed name collides with the 509 DAG nodes or with stored proposals."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1.image_split-a1",
+  "subproblem": {
+    "key": "image_split",
+    "title": "Lower integrals over a Lipschitz injective image split along an a.e.-disjoint Borel decomposition",
+    "statement": "Let P, n ∈ ℕ, E := ℝ^P and H^n := μHE[n]. Let M ⊆ E and A_i ⊆ E (i ∈ ℕ) be sets such that every A_i is Borel, A_i ⊆ M for every i, A_i ∩ A_j = ∅ for i ≠ j, and H^n(M ∖ ⋃_i A_i) = 0. Let φ : E → E be Λ-Lipschitz (Λ ≥ 0) and injective. Then for every g : E → [0, ∞] (no measurability required), ∫⁻_{φ(M)} g dH^n = Σ_{i∈ℕ} ∫⁻_{φ(A_i)} g dH^n.",
+    "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (A : ℕ → Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n] (M \\ ⋃ i, A i) = 0 → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∑' i, ∫⁻ y in φ '' A i, g y ∂μHE[n]",
+    "lean_name": "dpf_raf_lintegral_image_eq_tsum_pieces",
+    "depends_on": [],
+    "natural_proof": "Source: step 4 of the parent proof (dpf_area_formula_bilipschitz_rectifiable), isolated and with details filled in. Notation: E := ℝ^P (Euclid P), H^n := μHE[n]. Hypotheses: every A_i is Borel; A_i ⊆ M; A_i ∩ A_j = ∅ for i ≠ j; H^n(M ∖ ⋃_i A_i) = 0; φ is Λ-Lipschitz and injective; g : E → [0, ∞] is arbitrary.\n1. Each φ(A_i) is Borel. φ is Lipschitz, hence continuous, hence continuous on A_i, and φ is injective on A_i. E is a Polish space and A_i is Borel, so the Lusin–Souslin theorem (Mathlib MeasurableSet.image_of_continuousOn_injOn) shows that φ(A_i) is Borel.\n2. The sets φ(A_i) are pairwise disjoint. Let i ≠ j. If y ∈ φ(A_i) ∩ φ(A_j), then y = φ(a) = φ(a') with a ∈ A_i and a' ∈ A_j. Injectivity gives a = a' ∈ A_i ∩ A_j = ∅, a contradiction. (In Lean: (Set.disjoint_image_iff hφinj).mpr applied to the disjointness of A_i and A_j.)\n3. ⋃_i φ(A_i) ⊆ φ(M), since A_i ⊆ M gives φ(A_i) ⊆ φ(M) for each i (Set.image_mono). Hence (⋃_i φ(A_i)) ∖ φ(M) = ∅, which has H^n-measure 0.\n4. φ(M) ∖ ⋃_i φ(A_i) is H^n-null. Let y ∈ φ(M) ∖ ⋃_i φ(A_i) and write y = φ(x) with x ∈ M. If x ∈ A_i for some i, then y = φ(x) ∈ φ(A_i), contradicting y ∉ ⋃_i φ(A_i). So x ∈ M ∖ ⋃_i A_i, and therefore φ(M) ∖ ⋃_i φ(A_i) ⊆ φ(M ∖ ⋃_i A_i). φ is Λ-Lipschitz on M ∖ ⋃_i A_i, so the Lipschitz image bound for the Euclidean Hausdorff measure (SimonGMT Chapter02 euclideanHausdorffMeasure_image_le_of_lipschitzOn n) gives H^n(φ(M ∖ ⋃_i A_i)) ≤ Λ^n · H^n(M ∖ ⋃_i A_i) = Λ^n · 0 = 0. By monotonicity of measure, H^n(φ(M) ∖ ⋃_i φ(A_i)) = 0.\n5. Replacing φ(M) by the union. By 3 and 4, both set differences between φ(M) and ⋃_i φ(A_i) are H^n-null. So φ(M) = ⋃_i φ(A_i) H^n-almost everywhere (Mathlib ae_eq_set). Restricting a measure to two a.e.-equal sets gives the same measure (Measure.restrict_congr_set). Hence ∫⁻_{φ(M)} g dH^n = ∫⁻_{⋃_i φ(A_i)} g dH^n for the arbitrary function g (Mathlib setLIntegral_congr; no measurability of g is used).\n6. Countable additivity. By 1 and 2 the sets φ(A_i), i ∈ ℕ, are measurable and pairwise disjoint. The lower Lebesgue integral is countably additive over measurable disjoint pieces for an arbitrary function g : E → [0, ∞] (Mathlib lintegral_iUnion). So ∫⁻_{⋃_i φ(A_i)} g dH^n = Σ_i ∫⁻_{φ(A_i)} g dH^n.\n7. Combining 5 and 6 gives ∫⁻_{φ(M)} g dH^n = Σ_i ∫⁻_{φ(A_i)} g dH^n. The argument works for every n ≥ 0 and needs no imports beyond GMT.Ch07.Submission.",
+    "proof_key_steps": [
+      "Each φ(A_i) is Borel by Lusin–Souslin, since φ is continuous and injective.",
+      "The sets φ(A_i) are pairwise disjoint because φ is injective.",
+      "φ(M) = ⋃_i φ(A_i) up to an H^n-null set: ⋃_i φ(A_i) ⊆ φ(M), and φ(M) ∖ ⋃_i φ(A_i) ⊆ φ(M ∖ ⋃_i A_i), which has measure at most Λ^n · 0.",
+      "setLIntegral_congr replaces φ(M) by ⋃_i φ(A_i) for an arbitrary g.",
+      "lintegral_iUnion over the measurable disjoint φ(A_i) gives the sum."
+    ]
+  },
+  "audit": {
+    "key": "image_split",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line proposition exactly matches the prose and includes every required hypothesis. The supplied proof establishes Borel images, disjointness, both null set differences, equality of restricted measures, and countable integral additivity. The pinned lemmas require neither measurability of g nor measurability of M. No step invokes either child or the parent conclusion. Its empty dependency list is correct, and dpf_raf_lintegral_image_eq_tsum_pieces is an unreserved bare identifier. Applying this child with φ and with id supplies both parent decompositions."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-29ff19b91f/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-29ff19b91f/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-29ff19b91f/parent-supplied-natural-proof.json"
+}
