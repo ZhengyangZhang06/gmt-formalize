@@ -2301,6 +2301,72 @@ theorem Submission.deformation_imcomb_tangent_overlap :
   filter_upwards [h₁, h₁₂, h₂] with x hx₁ hx₁₂ hx₂ Q hQ
   exact (hx₂ Q).2 (hx₁₂ Q ((hx₁ Q).1 hQ))
 
+/-- **Integer combinations of integer multiplicity currents, Simon Ch. 6, Remark 3.2(1)
+(p. 146).**  If `X = τ(M₁, θ₁, ξ₁)` and `Y = τ(M₂, θ₂, ξ₂)` are integer multiplicity and
+`Z = a X + b Y` with `a, b ∈ ℤ`, then `Z` is integer multiplicity.  Write `a X + b Y` as the
+integer series with terms `(M₁, θ₁, ξ₁)` (`r = 0`), `(M₂, θ₂, ξ₂)` (`r ≥ 1`) and coefficients
+`c = (a, b, 0, 0, …)`; it converges absolutely, since only two terms are nonzero and `θᵢ` is
+integrable on `Mᵢ ∩ W̄`.  The series theorem (Simon 3.13) combines it into one integer
+multiplicity triple `τ(M', θ', ξ')` whose action is the sum `a X(ω) + b Y(ω) = Z(ω)`.  That
+theorem needs weighted approximate tangent planes of two carriers to agree `Hᵏ`-a.e. on their
+overlap; on `ℝ^N` this is the tangent comparison (Simon Ch. 3, 1.8(1)). -/
+theorem Submission.deformation_im_combination : ∀ (N k : ℕ) (X Y Z : GeometricCurrentOn (univ : Set (Eucl N)) k) (a b : ℤ), IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω, Z ω = a * X ω + b * Y ω) → IsIntegerMultiplicity Z := by
+  intro N k X Y Z a b hX hY hZ
+  obtain ⟨M₁, θ₁, ξ₁, hT₁, hθ₁, hX⟩ := hX
+  obtain ⟨M₂, θ₂, ξ₂, hT₂, hθ₂, hY⟩ := hY
+  -- The two-term series `a τ(M₁, θ₁, ξ₁) + b τ(M₂, θ₂, ξ₂)`.
+  let Ms : ℕ → Set (Eucl N) := fun r => if r = 0 then M₁ else M₂
+  let θs : ℕ → Eucl N → ℝ := fun r => if r = 0 then θ₁ else θ₂
+  let ξs : ℕ → Eucl N → NVector (Eucl N) k := fun r => if r = 0 then ξ₁ else ξ₂
+  let c : ℕ → ℤ := fun r => if r = 0 then a else if r = 1 then b else 0
+  have hc : ∀ r ∉ ({0, 1} : Finset ℕ), c r = 0 := by
+    intro r hr
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hr
+    simp only [c, hr.1, hr.2, ↓reduceIte]
+  have hTs : ∀ r, IsRectifiableTriple univ k (Ms r) (θs r) (ξs r) := by
+    intro r
+    by_cases hr : r = 0
+    · simpa only [Ms, θs, ξs, hr, ↓reduceIte] using hT₁
+    · simpa only [Ms, θs, ξs, hr, ↓reduceIte] using hT₂
+  have hθs : ∀ r, ∀ x ∈ Ms r, ∃ m : ℕ, θs r x = m := by
+    intro r
+    by_cases hr : r = 0
+    · simpa only [Ms, θs, hr, ↓reduceIte] using hθ₁
+    · simpa only [Ms, θs, hr, ↓reduceIte] using hθ₂
+  -- `∫_{M ∩ W} θ dHᵏ < ∞` for `W ⊂⊂ ℝ^N`, since `θ` is integrable on `M ∩ W̄`.
+  have hfin : ∀ (A : Set (Eucl N)) (ϑ : Eucl N → ℝ) (ζ : Eucl N → NVector (Eucl N) k),
+      IsRectifiableTriple univ k A ϑ ζ → ∀ W, CompactlyContainedOpen W (univ : Set (Eucl N)) →
+        ∫⁻ x in A ∩ W, ENNReal.ofReal (ϑ x) ∂(μHE[k] : Measure (Eucl N)) < ∞ := by
+    intro A ϑ ζ hT W hW
+    exact (lintegral_mono_set (inter_subset_inter_right A subset_closure)).trans_lt
+      (Integrable.lintegral_lt_top (hT.integrableOn _ hW.2.1 (subset_univ _)))
+  have hsum : ∀ W, CompactlyContainedOpen W (univ : Set (Eucl N)) →
+      (∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in Ms r ∩ W, ENNReal.ofReal (θs r x)
+        ∂(μHE[k] : Measure (Eucl N))) < ∞ := by
+    intro W hW
+    have h0 : ∀ r ∉ ({0, 1} : Finset ℕ), ((c r).natAbs : ℝ≥0∞) *
+        ∫⁻ x in Ms r ∩ W, ENNReal.ofReal (θs r x) ∂(μHE[k] : Measure (Eucl N)) = 0 := by
+      intro r hr
+      rw [hc r hr, Int.natAbs_zero, Nat.cast_zero, zero_mul]
+    rw [tsum_eq_sum (L := SummationFilter.unconditional ℕ) h0, Finset.sum_pair zero_ne_one]
+    exact ENNReal.add_lt_top.2 ⟨ENNReal.mul_lt_top (ENNReal.natCast_lt_top _)
+      (hfin M₁ θ₁ ξ₁ hT₁ W hW), ENNReal.mul_lt_top (ENNReal.natCast_lt_top _)
+      (hfin M₂ θ₂ ξ₂ hT₂ W hW)⟩
+  -- Simon 3.13 for the series, with the tangent comparison on overlaps in `U = ℝ^N`.
+  obtain ⟨M', θ', ξ', hT', hθ', hS⟩ := Submission.fiw_ims_combine N k univ isOpen_univ
+    (fun A₁ A₂ ϑ₁ ϑ₂ _ _ hm₁ hm₂ hp₁ hp₂ hi₁ hi₂ =>
+      Submission.deformation_imcomb_tangent_overlap N k A₁ A₂ ϑ₁ ϑ₂ hm₁ hm₂ hp₁ hp₂
+        (fun K hK => hi₁ K hK (subset_univ K)) (fun K hK => hi₂ K hK (subset_univ K)))
+    Ms θs ξs c hTs hθs hsum
+  refine ⟨M', θ', ξ', hT', hθ', fun ω => ?_⟩
+  -- The series has only the terms `r = 0, 1`, whose sum is `a X(ω) + b Y(ω) = Z(ω)`.
+  have hfs := hasSum_sum_of_ne_finset_zero (L := SummationFilter.unconditional ℕ)
+    (f := fun r => (c r : ℝ) * tauAction k (Ms r) (θs r) (ξs r) ω) (s := {0, 1})
+    fun r hr => by simp only [hc r hr, Int.cast_zero, zero_mul]
+  rw [Finset.sum_pair zero_ne_one] at hfs
+  rw [hZ ω, hX ω, hY ω]
+  exact hfs.unique (hS ω)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
