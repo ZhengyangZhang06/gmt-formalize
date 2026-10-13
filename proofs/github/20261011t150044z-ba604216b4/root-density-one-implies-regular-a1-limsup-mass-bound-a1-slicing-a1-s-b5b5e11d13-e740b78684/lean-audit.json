@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "841e774593d7487e4175fc538b5f9d5ef67933c8ec66c55ef4aafa419bfd16e2",
+  "git_delta": {
+    "base_commit": "db6c51321d5a5a872aad26a89eaf2289ef35ce1c",
+    "candidate_commit": "4ed89748dd05651b189f4aca70e1e919e9966843",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_ll_cutoff_smooth_approx",
+    "diff_sha256": "4f1d33d49d61c03a3850ad1c42f9d94725cec274158b1809cc711953bb72a143",
+    "source_sha256": "30519b4426c4489ef44472a3dc8503ecca1f82acfe2a85b5e9ee739502f077af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_ll_cutoff_smooth_approx",
+      "statement": "∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (a b : ℝ), LipschitzWith L f → a < b → ∃ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ (⊤ : ℕ∞) (hs k)) ∧ (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) ∧ (∀ k x, |hs k x| ≤ 2) ∧ TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
