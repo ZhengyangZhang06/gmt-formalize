@@ -519,6 +519,118 @@ theorem Submission.dph_sa_covector_comp_eq_zero :
   rw [show ⇑T ∘ v = fun p => S fun q => T (v p) (α q) from funext fun p => hfac (v p)]
   exact AlternatingMap.congr_fun h0 fun p q => T (v p) (α q)
 
+/-- The smoothings `f_σ = f ∗ φ_σ` of Simon Ch. 6, 2.29 (p. 141), for the Lipschitz push-forward
+homotopy of the deformation theorem (§5): extend `G` from `A_δ = thickening δ A` to a Lipschitz
+`G'` on `ℝ^m` (McShane) and mollify it at the scales `σ_j = (δ / 8) / (j + 1)`.  The
+`2σ_j`-balls about points of `A_{δ/2}` stay in `A_δ`, where `G' = G` is `Λ`-Lipschitz, so
+`‖D(Gj j)‖ ≤ Λ` there.  Near `A`, wherever `Gj j` meets `spt ω` the normal coordinates
+`i ∉ range α` of `G` equal `z i` on a `2σ_j`-ball, so those of `Gj j` are locally constant,
+`D(Gj j)` maps into `span e_α`, and `ω` without `e_α`-component pulls back to `0`. -/
+theorem Submission.dph_lipschitz_smooth_approx :
+    ∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (A : Set (Eucl m)) (δ : ℝ), 0 < δ →
+      LipschitzOnWith Λ G (thickening δ A) →
+      ∃ (G' : Eucl m → Eucl m') (Gj : ℕ → Eucl m → Eucl m') (L : ℝ≥0),
+        LipschitzWith L G' ∧ EqOn G' G (thickening δ A) ∧
+        (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj j)) ∧ (∀ j, LipschitzWith L (Gj j)) ∧
+        TendstoUniformly Gj G' atTop ∧
+        (∀ j, ∀ x ∈ thickening (δ / 2) A, ‖fderiv ℝ (Gj j) x‖ ≤ Λ) ∧
+        ∀ (k : ℕ) (α : SimonMultiIndex k m') (z : Eucl m')
+          (ω : TestFormOn (univ : Set (Eucl m')) k) (ε : ℝ), 0 < ε →
+          (∀ x ∈ thickening ε A,
+            G x ∈ thickening ε (tsupport (ω : DifferentialForm (Eucl m') k)) →
+              ∀ i, i ∉ range α → G x i = z i) →
+          (∀ y, (ω : DifferentialForm (Eucl m') k) y
+            (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0) →
+          ∃ r : ℝ, 0 < r ∧ ∀ᶠ j in atTop, ∀ x ∈ thickening r A,
+            ((ω : DifferentialForm (Eucl m') k) (Gj j x)).compContinuousLinearMap
+              (fderiv ℝ (Gj j) x) = 0 := by
+  intro m m' G Λ A δ hδ hG
+  -- Step 1 (McShane): a global Lipschitz extension `G'` of `G|A_δ`.
+  obtain ⟨G', L, hG'L, hG'⟩ : ∃ (G' : Eucl m → Eucl m') (L : ℝ≥0),
+      LipschitzWith L G' ∧ EqOn G' G (thickening δ A) :=
+    let ⟨G', hG'L, hGG'⟩ := hG.extend_finite_dimension
+    ⟨G', _, hG'L, hGG'.symm⟩
+  -- The scales `σ_j = (δ / 8) / (j + 1)`: positive, at most `δ / 8`, tending to `0`.
+  obtain ⟨σ, hσ, hσδ, hσ0⟩ : ∃ σ : ℕ → ℝ, (∀ j, 0 < σ j) ∧ (∀ j, σ j ≤ δ / 8) ∧
+      Tendsto σ atTop (𝓝 0) := by
+    refine ⟨fun j => δ / 8 * (1 / ((j : ℝ) + 1)), fun j => by positivity, fun j => ?_, ?_⟩
+    · dsimp only
+      rw [mul_one_div]
+      exact div_le_self (by positivity) (by linarith [j.cast_nonneg (α := ℝ)])
+    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (δ / 8)
+  -- Step 2: `Gj j` is the mollification of `G'` at scale `σ j`.
+  choose Gj hGj hGjL hGjG' hGjloc hGjc using fun j =>
+    Submission.dph_sa_mollify_lipschitz m m' G' L hG'L (σ j) (hσ j)
+  -- For `x ∈ A_{δ/2}` the ball `B(x, 2σ_j)` lies in `A_δ`, where `G' = G` is `Λ`-Lipschitz.
+  have hball : ∀ j, ∀ x ∈ thickening (δ / 2) A, ball x (2 * σ j) ⊆ thickening δ A :=
+    fun j x hx => (ball_subset_thickening hx (2 * σ j)).trans
+      ((thickening_thickening_subset (2 * σ j) (δ / 2) A).trans
+        (thickening_mono (by linarith [hσδ j]) A))
+  have hlocal : ∀ j, ∀ x ∈ thickening (δ / 2) A, LipschitzOnWith Λ G' (ball x (2 * σ j)) :=
+    fun j x hx => LipschitzOnWith.of_dist_le_mul fun y hy y' hy' => by
+      rw [hG' (hball j x hx hy), hG' (hball j x hx hy')]
+      exact hG.dist_le_mul y (hball j x hx hy) y' (hball j x hx hy')
+  refine ⟨G', Gj, L, hG'L, hG', hGj, hGjL, ?_,
+    fun j x hx => (hGjloc j x Λ (hlocal j x hx)).2.1, ?_⟩
+  · -- Step 3: `‖Gj j - G'‖ ≤ L σ_j → 0`.
+    rw [Metric.tendstoUniformly_iff]
+    intro η hη
+    have hL := hσ0.const_mul (L : ℝ)
+    rw [mul_zero] at hL
+    filter_upwards [hL.eventually_lt_const hη] with j hj x
+    rw [dist_comm, dist_eq_norm]
+    exact (hGjG' j x).trans_lt hj
+  -- Step 4 (tangential vanishing) on `A_{μ/4}`, `μ = min ε δ`, once `σ_j < μ / 8` and
+  -- `(4Λ + 4) σ_j < ε`.
+  intro k α z ω ε hε hH1 hH2
+  obtain ⟨μ, hμ, hμε, hμδ⟩ : ∃ μ : ℝ, 0 < μ ∧ μ ≤ ε ∧ μ ≤ δ :=
+    ⟨min ε δ, lt_min hε hδ, min_le_left _ _, min_le_right _ _⟩
+  have hΛ : (0 : ℝ) ≤ Λ := Λ.2
+  refine ⟨μ / 4, by positivity, ?_⟩
+  have hc : 0 < min (μ / 8) (ε / (4 * Λ + 4)) := lt_min (by positivity) (by positivity)
+  filter_upwards [hσ0.eventually_lt_const hc] with j hj x hx
+  have hj1 : σ j < μ / 8 := hj.trans_le (min_le_left _ _)
+  have hj2 : σ j * (4 * Λ + 4) < ε :=
+    (lt_div_iff₀ (by positivity)).1 (hj.trans_le (min_le_right _ _))
+  have hx2 : x ∈ thickening (δ / 2) A := thickening_mono (by linarith) A hx
+  have hxδ : x ∈ thickening δ A := thickening_mono (by linarith) A hx
+  by_cases hsupp : Gj j x ∈ tsupport (ω : DifferentialForm (Eucl m') k)
+  · refine Submission.dph_sa_covector_comp_eq_zero m m' k α _ _ (hH2 _) fun v i hi => ?_
+    -- On `B(x, 2σ_j)` the normal coordinates of `G' = G` are those of `z`: such `y` lie in
+    -- `A_ε ∩ A_δ`, and `|G y - Gj j x| ≤ 2Λσ_j + Λσ_j < ε` with `Gj j x ∈ spt ω`.
+    have hnormal : ∀ y ∈ ball x (2 * σ j), G' y i = z i := by
+      intro y hy
+      have hyA : y ∈ thickening (2 * σ j + μ / 4) A :=
+        thickening_thickening_subset (2 * σ j) (μ / 4) A (ball_subset_thickening hx _ hy)
+      have hyδ : y ∈ thickening δ A := thickening_mono (by linarith) A hyA
+      rw [hG' hyδ]
+      refine hH1 y (thickening_mono (by linarith) A hyA) ?_ i hi
+      refine mem_thickening_iff.2 ⟨Gj j x, hsupp, ?_⟩
+      have h1 : dist (G y) (G x) ≤ Λ * dist y x := hG.dist_le_mul y hyδ x hxδ
+      have h2 : ‖Gj j x - G' x‖ ≤ Λ * σ j := (hGjloc j x Λ (hlocal j x hx2)).2.2
+      rw [hG' hxδ, ← dist_eq_norm] at h2
+      have h3 : dist y x < 2 * σ j := hy
+      calc dist (G y) (Gj j x) ≤ dist (G y) (G x) + dist (Gj j x) (G x) :=
+            dist_triangle_right _ _ _
+        _ ≤ Λ * (2 * σ j) + Λ * σ j :=
+            add_le_add (h1.trans (mul_le_mul_of_nonneg_left h3.le hΛ)) h2
+        _ < ε := by nlinarith [mul_nonneg hΛ (hσ j).le, hσ j]
+    -- Hence the `i`-th coordinate of `Gj j` is `z i` on `B(x, σ_j)` and `D(Gj j)(x)` has
+    -- vanishing `i`-th coordinate.
+    have hconst : (EuclideanSpace.proj i : Eucl m' →L[ℝ] ℝ) ∘ Gj j =ᶠ[𝓝 x] fun _ => z i :=
+      Filter.mem_of_superset (ball_mem_nhds x (hσ j)) fun x' hx' =>
+        hGjc j x' i (z i) fun y hy => hnormal y (by
+          rw [mem_ball] at hx' hy ⊢
+          linarith [dist_triangle y x' x])
+    have hD := ((EuclideanSpace.proj i : Eucl m' →L[ℝ] ℝ).hasFDerivAt.comp x
+      (((hGj j).differentiable (by simp)).differentiableAt.hasFDerivAt)).unique
+      ((hasFDerivAt_const (z i) x).congr_of_eventuallyEq hconst)
+    simpa using congrArg (fun T : Eucl m →L[ℝ] ℝ => T v) hD
+  · -- Off `spt ω` the covector `ω (Gj j x)` is already `0`.
+    rw [image_eq_zero_of_notMem_tsupport hsupp]
+    ext v
+    simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
