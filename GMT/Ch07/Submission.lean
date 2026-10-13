@@ -451,6 +451,221 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- An approximate tangent plane forces unit `Hⁿ`-density on closed balls (Simon Ch. 3,
+Remark 1.5(3), with Definition 1.4).  If `Hⁿ(M ∩ B̄_s(x)) < ∞` and `Q` is an approximate tangent
+space of `M` at `x`, then `Hⁿ(M ∩ B̄_ρ(x)) / (ωₙρⁿ) → 1` as `ρ ↓ 0`.  Since
+`Hⁿ(η_{x,r}(M) ∩ B̄_1(0)) = r⁻ⁿHⁿ(M ∩ B̄_r(x))` and `Hⁿ(Q ∩ B̄_t(0)) = ωₙtⁿ`, the radial cut-offs
+`g_{1-ε,1} ≤ 1_{B̄_1(0)} ≤ g_{1,1+ε}` in `C_c` squeeze `r⁻ⁿHⁿ(M ∩ B̄_r(x))` between blow-up integrals
+whose limits lie within `ωₙ(1 ∓ ε)ⁿ`. -/
+theorem Submission.rsd_tendsto_closedBall_density_of_approxTangent : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), 0 < s → μHE[n] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → Tendsto (fun ρ : ℝ => μHE[n] (M ∩ closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1) := by
+  intro P n M x Q s hs hfin hT
+  obtain ⟨hQ, hconv⟩ := hT
+  -- Step 1: `ωₙ ∈ (0, ∞)`
+  set ω := unitBallVolume n with hωdef
+  have hω0 : ω ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : ω ≠ ∞ := measure_ball_lt_top.ne
+  set w := ω.toReal with hwdef
+  have hw : 0 < w := ENNReal.toReal_pos hω0 hωtop
+  -- Step 2: `Hⁿ(Q ∩ B̄_t(0)) = ωₙ tⁿ`, via a linear isometry `ℝⁿ ≅ Q`
+  have hplane0 : ∀ t : ℝ, 0 ≤ t →
+      μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 t) = ω * ENNReal.ofReal (t ^ n) := by
+    intro t ht
+    let b : OrthonormalBasis (Fin n) ℝ Q := (stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)
+    let ι : Euclid n →ₗᵢ[ℝ] Euclid P := Q.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+    have himage : ι '' closedBall 0 t = (Q : Set (Euclid P)) ∩ closedBall 0 t := by
+      ext y
+      constructor
+      · rintro ⟨v, hv, rfl⟩
+        refine ⟨(b.repr.symm v).2, ?_⟩
+        rw [mem_closedBall, dist_zero_right] at hv ⊢
+        have : ‖((b.repr.symm v : Q) : Euclid P)‖ = ‖v‖ := b.repr.symm.norm_map v
+        simpa [ι, this] using hv
+      · rintro ⟨hyQ, hy⟩
+        refine ⟨b.repr ⟨y, hyQ⟩, ?_, ?_⟩
+        · rw [mem_closedBall, dist_zero_right] at hy ⊢
+          simpa using hy
+        · simp [ι]
+    rw [← himage, ι.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      Measure.addHaar_closedBall _ _ ht, finrank_euclideanSpace_fin, hωdef, unitBallVolume, mul_comm]
+  -- Step 3: scaling `Hⁿ(η_{x,r}(A)) = r⁻ⁿ Hⁿ(A)` and `η_{x,r}(M) ∩ B̄_t(0) = η_{x,r}(M ∩ B̄_{tr}(x))`
+  have hscale : ∀ r : ℝ, 0 < r → ∀ A : Set (Euclid P),
+      μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' A) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] A := by
+    intro r hr A
+    have h1 : Poincare.SimonGMT.Chapter03.blowUpMap x r '' A =
+        (fun y => r⁻¹ • y) '' ((fun y => y - x) '' A) := by
+      rw [image_image]
+      rfl
+    have hiso : Isometry (fun y : Euclid P => y - x) :=
+      Isometry.of_dist_eq (fun a c => by simp [dist_eq_norm])
+    rw [h1, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+      hiso.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul]
+    congr 1
+    rw [← ENNReal.ofReal_coe_nnreal]
+    congr 1
+    simp [abs_of_pos hr]
+  have himg : ∀ r : ℝ, 0 < r → ∀ t : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ∩ closedBall 0 t =
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M ∩ closedBall x (t * r)) := by
+    intro r hr t
+    have key : ∀ z : Euclid P,
+        ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ ≤ t ↔ dist z x ≤ t * r := by
+      intro z
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
+        abs_of_pos hr, dist_eq_norm]
+      rw [inv_mul_le_iff₀ hr, mul_comm r t]
+    ext y
+    constructor
+    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
+      rw [mem_closedBall, dist_zero_right, key] at hy
+      exact ⟨z, ⟨hz, hy⟩, rfl⟩
+    · rintro ⟨z, ⟨hz, hzb⟩, rfl⟩
+      refine ⟨⟨z, hz, rfl⟩, ?_⟩
+      rw [mem_closedBall, dist_zero_right, key]
+      exact hzb
+  have hνball : ∀ r : ℝ, 0 < r → ∀ t : ℝ,
+      (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)) (closedBall 0 t) =
+        ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] (M ∩ closedBall x (t * r)) := by
+    intro r hr t
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm, himg r hr t, hscale r hr]
+  have hmfin : ∀ r : ℝ, r ≤ s → μHE[n] (M ∩ closedBall x r) ≠ ∞ := fun r hr =>
+    ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_right _ (closedBall_subset_closedBall hr)))
+  have hνfin : ∀ r : ℝ, 0 < r → ∀ t : ℝ, t * r ≤ s →
+      (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)) (closedBall 0 t) ≠ ∞ := by
+    intro r hr t ht
+    rw [hνball r hr t]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hmfin _ ht)
+  -- Step 4: radial cut-off functions `g_{a,b}` in `C_c`
+  have hbump : ∀ a b : ℝ, 0 < a → a < b →
+      ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Continuous f ∧ (0 ≤ ⇑f) ∧
+        (closedBall (0 : Euclid P) a).indicator 1 ≤ ⇑f ∧ ⇑f ≤ (closedBall (0 : Euclid P) b).indicator 1 := by
+    intro a b ha hab
+    have hcont : Continuous (fun y : Euclid P => max 0 (min 1 ((b - ‖y‖) / (b - a)))) :=
+      continuous_const.max (continuous_const.min ((continuous_const.sub continuous_norm).div_const _))
+    have hzero : ∀ y : Euclid P, b ≤ ‖y‖ → max 0 (min 1 ((b - ‖y‖) / (b - a))) = 0 := by
+      intro y hy
+      have h1 : (b - ‖y‖) / (b - a) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith)
+      rw [max_eq_left ((min_le_right _ _).trans h1)]
+    let f : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+      { toFun := fun y => max 0 (min 1 ((b - ‖y‖) / (b - a)))
+        continuous_toFun := hcont
+        hasCompactSupport' := by
+          refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) b) ?_
+          intro y hy
+          rw [mem_closedBall, dist_zero_right, not_le] at hy
+          exact hzero y hy.le }
+    have hf : ∀ y, f y = max 0 (min 1 ((b - ‖y‖) / (b - a))) := fun y => rfl
+    refine ⟨f, f.continuous, fun y => by rw [hf]; exact le_max_left _ _, ?_, ?_⟩
+    · intro y
+      by_cases hy : y ∈ closedBall (0 : Euclid P) a
+      · rw [indicator_of_mem hy, Pi.one_apply, hf]
+        rw [mem_closedBall, dist_zero_right] at hy
+        have : 1 ≤ (b - ‖y‖) / (b - a) := by
+          rw [le_div_iff₀ (by linarith)]; linarith
+        rw [min_eq_left this, max_eq_right zero_le_one]
+      · rw [indicator_of_notMem hy, hf]; exact le_max_left _ _
+    · intro y
+      by_cases hy : y ∈ closedBall (0 : Euclid P) b
+      · rw [indicator_of_mem hy, Pi.one_apply, hf]
+        exact max_le zero_le_one (min_le_left _ _)
+      · rw [indicator_of_notMem hy, hf, hzero]
+        rw [mem_closedBall, dist_zero_right, not_le] at hy
+        exact hy.le
+  -- Step 5: integrability of functions dominated by the indicator of a finite-measure closed ball
+  have hindint : ∀ (ν : Measure (Euclid P)) (t : ℝ), ν (closedBall 0 t) ≠ ∞ →
+      Integrable ((closedBall (0 : Euclid P) t).indicator (1 : Euclid P → ℝ)) ν := fun ν t h =>
+    (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const h)
+  have hdomint : ∀ (ν : Measure (Euclid P)) (f : Euclid P → ℝ) (t : ℝ), Continuous f →
+      ν (closedBall 0 t) ≠ ∞ → 0 ≤ f → f ≤ (closedBall (0 : Euclid P) t).indicator 1 →
+      Integrable f ν := by
+    intro ν f t hf hfin' h0 hle
+    refine (hindint ν t hfin').mono' hf.aestronglyMeasurable (Eventually.of_forall fun y => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (h0 y)]
+    exact hle y
+  -- Step 6: the normalised mass `a(r) = r⁻ⁿ Hⁿ(M ∩ B̄_r(x))` and the plane-ball values
+  set a : ℝ → ℝ := fun r => (r⁻¹) ^ n * (μHE[n] (M ∩ closedBall x r)).toReal with hadef
+  have hareal : ∀ r : ℝ, 0 < r →
+      (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)).real (closedBall 0 1) = a r := by
+    intro r hr
+    rw [measureReal_def, hνball r hr 1, one_mul, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (by positivity)]
+  have hplane : ∀ t : ℝ, 0 ≤ t →
+      (μHE[n].restrict (Q : Set (Euclid P))) (closedBall 0 t) = ω * ENNReal.ofReal (t ^ n) := by
+    intro t ht
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm, hplane0 t ht]
+  have hplanefin : ∀ t : ℝ, 0 ≤ t → (μHE[n].restrict (Q : Set (Euclid P))) (closedBall 0 t) ≠ ∞ := by
+    intro t ht
+    rw [hplane t ht]
+    exact ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+  have hplanereal : ∀ t : ℝ, 0 ≤ t →
+      (μHE[n].restrict (Q : Set (Euclid P))).real (closedBall 0 t) = w * t ^ n := by
+    intro t ht
+    rw [measureReal_def, hplane t ht, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
+  -- Step 7: `a r → ωₙ`
+  have ha : Tendsto a (𝓝[>] 0) (𝓝 w) := by
+    rw [tendsto_order]
+    constructor
+    · intro c hc
+      have hcont : Tendsto (fun ε : ℝ => w * (1 - ε) ^ n) (𝓝[>] 0) (𝓝 w) := by
+        have : Continuous (fun ε : ℝ => w * (1 - ε) ^ n) := by fun_prop
+        simpa using (this.tendsto 0).mono_left nhdsWithin_le_nhds
+      obtain ⟨ε, hcε, hε⟩ :=
+        ((hcont.eventually (lt_mem_nhds hc)).and (Ioo_mem_nhdsGT one_pos)).exists
+      obtain ⟨f, hfc, hf0, hfge, hfle⟩ := hbump (1 - ε) 1 (by linarith [hε.2]) (by linarith [hε.1])
+      -- `∫_Q f ≥ ωₙ (1-ε)ⁿ`
+      have hQ1 : w * (1 - ε) ^ n ≤ ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] := by
+        rw [← hplanereal (1 - ε) (by linarith [hε.2]), ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hindint _ _ (hplanefin _ (by linarith [hε.2])))
+          (hdomint _ _ 1 hfc (hplanefin _ zero_le_one) hf0 hfle) hfge
+      filter_upwards [(tendsto_order.1 (hconv f)).1 c (hcε.trans_le hQ1),
+        Ioc_mem_nhdsGT (half_pos hs)] with r hr1 hr2
+      -- `∫_{η(M)} f ≤ a r`
+      have h1 : (1 : ℝ) * r ≤ s := by linarith [hr2.2]
+      have hle : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] ≤ a r := by
+        rw [← hareal r hr2.1, ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hdomint _ _ 1 hfc (hνfin r hr2.1 1 h1) hf0 hfle)
+          (hindint _ _ (hνfin r hr2.1 1 h1)) hfle
+      exact hr1.trans_le hle
+    · intro c hc
+      have hcont : Tendsto (fun ε : ℝ => w * (1 + ε) ^ n) (𝓝[>] 0) (𝓝 w) := by
+        have : Continuous (fun ε : ℝ => w * (1 + ε) ^ n) := by fun_prop
+        simpa using (this.tendsto 0).mono_left nhdsWithin_le_nhds
+      obtain ⟨ε, hcε, hε⟩ :=
+        ((hcont.eventually (gt_mem_nhds hc)).and (Ioo_mem_nhdsGT one_pos)).exists
+      obtain ⟨f, hfc, hf0, hfge, hfle⟩ := hbump 1 (1 + ε) one_pos (by linarith [hε.1])
+      -- `∫_Q f ≤ ωₙ (1+ε)ⁿ`
+      have hQ2 : ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] ≤ w * (1 + ε) ^ n := by
+        rw [← hplanereal (1 + ε) (by linarith [hε.1]), ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hdomint _ _ (1 + ε) hfc (hplanefin _ (by linarith [hε.1])) hf0 hfle)
+          (hindint _ _ (hplanefin _ (by linarith [hε.1]))) hfle
+      filter_upwards [(tendsto_order.1 (hconv f)).2 c (hQ2.trans_lt hcε),
+        Ioc_mem_nhdsGT (half_pos hs)] with r hr1 hr2
+      -- `a r ≤ ∫_{η(M)} f`
+      have h1 : (1 : ℝ) * r ≤ s := by linarith [hr2.2]
+      have h2 : (1 + ε) * r ≤ s := by nlinarith [hr2.1, hr2.2, hε.2]
+      have hge : a r ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] := by
+        rw [← hareal r hr2.1, ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hindint _ _ (hνfin r hr2.1 1 h1))
+          (hdomint _ _ (1 + ε) hfc (hνfin r hr2.1 _ h2) hf0 hfle) hfge
+      exact hge.trans_lt hr1
+  -- Step 8: back to the `ℝ≥0∞` quotient
+  have hconvert : ∀ ρ : ℝ, 0 < ρ → ρ ≤ s →
+      μHE[n] (M ∩ closedBall x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) = ENNReal.ofReal (a ρ / w) := by
+    intro ρ hρ hρs
+    have hρn : 0 < ρ ^ n := pow_pos hρ n
+    rw [← ENNReal.ofReal_toReal (hmfin ρ hρs), ← ENNReal.ofReal_toReal hωtop,
+      ← ENNReal.ofReal_mul ENNReal.toReal_nonneg,
+      ← ENNReal.ofReal_div_of_pos (mul_pos hw hρn)]
+    congr 1
+    simp only [hadef, inv_pow]
+    field_simp
+  have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (a ρ / w)) (𝓝[>] 0) (𝓝 1) := by
+    have := ENNReal.tendsto_ofReal (ha.div_const w)
+    rwa [div_self hw.ne', ENNReal.ofReal_one] at this
+  refine hlim.congr' ?_
+  filter_upwards [Ioc_mem_nhdsGT hs] with ρ hρ
+  exact (hconvert ρ hρ.1 hρ.2).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
