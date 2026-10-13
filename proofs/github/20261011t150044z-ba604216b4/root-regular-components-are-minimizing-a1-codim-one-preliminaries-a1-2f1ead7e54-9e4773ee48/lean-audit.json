@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b733ba14fe55daa476acc361d96c85ed5fe128c06308c3eac61859bd422ac953",
+  "git_delta": {
+    "base_commit": "d50fd376a4e07f0afc4357c907f3bede679ee3fe",
+    "candidate_commit": "782a54bffa24b9f97e2798c42daa2958ed4d5437",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_zdr_regular_local_form",
+    "diff_sha256": "f10eb8b67c92d4d1c8024ec628ab43423fcfb579b0eb159dbc8bf32687496624",
+    "source_sha256": "91000ed6272673961d8a43d83d7446933f1c975822535a88586facb46cf79edb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_zdr_regular_local_form",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0) (y : Euclid P), y ∈ regularSet T → ∃ r : ℝ, 0 < r ∧ ball y r ⊆ U ∧ ∃ c : ℝ, 1 ≤ |c| ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r → T ω = c * (ω : DifferentialForm (Euclid P) 0) y (fun i => i.elim0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

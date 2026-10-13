@@ -451,6 +451,82 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Degree-0 unit orientations** (Simon 6.1.1, 6.1.7; 6.2.2).  If `ξ ∈ Λ₀(ℝᴾ)` orients `Q`,
+i.e. `⟨α, ξ⟩ = ±α(τ)` for every `0`-covector `α`, with `τ : Fin 0 → ℝᴾ` orthonormal spanning `Q`,
+then `⟨α, ξ⟩ = s α(())` with `s = ±1`, since `τ` is the empty family `()`. -/
+theorem Submission.regcomp_cop_zdr_unitOrientation_zero : ∀ (P : ℕ) (ξ : MultiVector P 0) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ s : ℝ, |s| = 1 ∧ ∀ α : Covector (Euclid P) 0, ξ α = s * α (fun i => i.elim0) := by
+  intro P ξ Q hξ
+  obtain ⟨τ, -, -, h | h⟩ := hξ
+  -- `Fin 0 → ℝᴾ` has exactly one element, so `τ = ()`
+  · exact ⟨1, abs_one, fun α => by rw [h α, one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
+  · exact ⟨-1, by rw [abs_neg, abs_one],
+      fun α => by rw [h α, neg_one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
+/-- **`H⁰`-integral over a set meeting `K` in at most one point** (`H⁰ = μH[0]` is counting
+measure, Simon Ch. 2).  If `F` vanishes off the measurable set `K` and `C ∩ K ⊆ {x}`, then
+`∫_C F dH⁰ = 1_C(x) F(x)` for an arbitrary (possibly non-measurable) set `C`: `F = 1_K F`, so
+`∫_C F dH⁰ = ∫_{C ∩ K} F dH⁰` by measurability of `K` alone, and `C ∩ K` is either `{x}`, of
+`H⁰`-measure `1`, or empty, in which case `x ∈ C` forces `x ∉ K` and `F(x) = 0`. -/
+theorem Submission.regcomp_cop_zdr_setIntegral_eq_indicator : ∀ (P : ℕ) (C K : Set (Euclid P)) (x : Euclid P) (F : Euclid P → ℝ), MeasurableSet K → (∀ z, z ∉ K → F z = 0) → C ∩ K ⊆ {x} → ∫ z in C, F z ∂μHE[0] = C.indicator F x := by
+  intro P C K x F hK hF hCK
+  -- `F = 1_K F`, and `∫_C 1_K F dH⁰ = ∫_{C ∩ K} F dH⁰` as `K` is measurable
+  have hFK : K.indicator F = F := Set.indicator_eq_self.2 fun z hz => by
+    by_contra hzK
+    exact hz (hF z hzK)
+  rw [← hFK, setIntegral_indicator hK]
+  by_cases hx : x ∈ C ∩ K
+  · -- `C ∩ K = {x}` and `H⁰{x} = 1`
+    rw [Set.Subset.antisymm hCK (Set.singleton_subset_iff.2 hx), integral_singleton,
+      measureReal_def, Measure.euclideanHausdorffMeasure_zero,
+      Measure.hausdorffMeasure_zero_singleton, ENNReal.toReal_one, one_smul,
+      Set.indicator_of_mem hx.1, Set.indicator_of_mem hx.2]
+  · -- `C ∩ K = ∅`, and `1_C 1_K F` vanishes at `x`, since `x ∈ C` forces `x ∉ K`
+    rw [Set.eq_empty_of_subset_empty fun z hz => hx (Set.mem_singleton_iff.1 (hCK hz) ▸ hz),
+      setIntegral_empty]
+    by_cases hxC : x ∈ C
+    · rw [Set.indicator_of_mem hxC, Set.indicator_of_notMem fun hxK => hx ⟨hxC, hxK⟩]
+    · rw [Set.indicator_of_notMem hxC]
+
+/-- **Local form of a `0`-current at a regular point** (Simon 7.4.1 with `n = 0`; Ch. 2, §4).
+If `y ∈ reg T`, `T ∈ 𝒟₀(U)`, then `T(ω) = c ω(y)()` with `|c| ≥ 1` whenever `spt ω ⊆ B_r(y)`.
+Write `T = m[[M]]` in `B_ρ(y)`.  A chart `ψ : V → W` of the `0`-dimensional `M` at `y` has
+domain `V ⊆ ℝ⁰ = {0}`, so `W ∩ M = ψ(V) = {y}`.  For `B_r(y) ⊆ W ∩ B_ρ(y)`, the integrand
+`⟨ω, ξ⟩` vanishes off `spt ω`, which meets `M` at most in `y`; hence
+`T(ω) = m ⟨ω(y), ξ(y)⟩ = m s ω(y)()`, where `⟨α, ξ(y)⟩ = s α()` with `|s| = 1`, and `c = ms`
+has `|c| = |m| ≥ 1`. -/
+theorem Submission.regcomp_cop_zdr_regular_local_form : ∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0) (y : Euclid P), y ∈ regularSet T → ∃ r : ℝ, 0 < r ∧ ball y r ⊆ U ∧ ∃ c : ℝ, 1 ≤ |c| ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r → T ω = c * (ω : DifferentialForm (Euclid P) 0) y (fun i => i.elim0) := by
+  intro P U T y hy
+  -- step 1: `T = m[[M]]` in `B_ρ(y)`, with `m ≠ 0` and `y ∈ M`, `M` oriented by `ξ`
+  obtain ⟨-, ρ, hρ, hρU, m, M, ξ, hm, hyM, hM, hξ, -, hT⟩ := hy
+  -- step 2a: a chart `ψ : V → W` at `y` has `V ⊆ ℝ⁰`, a subsingleton, so `W ∩ M ⊆ {y}`
+  obtain ⟨V, W, ψ, -, hW, hyW, -, -, hψ, -, -⟩ := hM y hyM
+  have hyψ : y ∈ ψ '' V := by
+    rw [hψ]
+    exact ⟨hyW, hyM⟩
+  obtain ⟨z₀, -, hz₀⟩ := hyψ
+  have hWM : W ∩ M ⊆ {y} := by
+    rw [← hψ]
+    rintro _ ⟨z, -, rfl⟩
+    rw [Subsingleton.elim z z₀, hz₀]
+    exact mem_singleton y
+  -- step 2b: `r = min(r₀, ρ)` with `B_{r₀}(y) ⊆ W`, so `M ∩ B_r(y) ⊆ {y}`
+  obtain ⟨r₀, hr₀, hr₀W⟩ := Metric.isOpen_iff.mp hW y hyW
+  have hrρ : ball y (min r₀ ρ) ⊆ ball y ρ := ball_subset_ball (min_le_right _ _)
+  have hMr : M ∩ ball y (min r₀ ρ) ⊆ {y} := fun x hx =>
+    hWM ⟨hr₀W (ball_subset_ball (min_le_left _ _) hx.2), hx.1⟩
+  -- step 2c: `ξ(y)(α) = s α()` with `|s| = 1`, and `c = ms` has `|c| = |m| ≥ 1`
+  obtain ⟨Q, -, hQ⟩ := hξ.2 y hyM
+  obtain ⟨s, hs, hξs⟩ := Submission.regcomp_cop_zdr_unitOrientation_zero P (ξ y) Q hQ
+  refine ⟨min r₀ ρ, lt_min hr₀ hρ, hrρ.trans hρU, m * s, ?_, fun ω hω => ?_⟩
+  · rw [abs_mul, hs, mul_one]
+    exact_mod_cast Int.one_le_abs hm
+  -- step 2d: `⟨ω, ξ⟩` vanishes off `spt ω`, which meets `M` at most in `y`
+  rw [hT ω (hω.trans hrρ), Submission.regcomp_cop_zdr_setIntegral_eq_indicator P M
+      (tsupport (ω : DifferentialForm (Euclid P) 0)) y
+      (fun x => ξ x ((ω : DifferentialForm (Euclid P) 0) x)) (isClosed_tsupport _).measurableSet
+      (fun z hz => by simp only [image_eq_zero_of_notMem_tsupport hz, map_zero])
+      ((inter_subset_inter_right M hω).trans hMr),
+    indicator_of_mem hyM, hξs, mul_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
