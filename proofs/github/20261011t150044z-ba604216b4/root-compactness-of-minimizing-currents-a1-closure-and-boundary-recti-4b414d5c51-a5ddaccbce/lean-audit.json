@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9793450e890152baba69ce65b60a3a670e156cb83d43fc4487fe70e3b9d73a2a",
+  "git_delta": {
+    "base_commit": "6eae2b83b8699e40d4a7389cbe1ffdd78b5f162c",
+    "candidate_commit": "1eb2ee70097f3f5dfba884115642b69e3ad583a3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_svol_volume_eq_of_slice_volume_eq",
+    "diff_sha256": "653f9e78d221eaa75dc925a42c23b45ce83102b516faad10397c0a4684b43cba",
+    "source_sha256": "9e1644243b7221f2d2848f454e132fc1651a7c008c5a85a1087a4d1034e69a86",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq",
+      "statement": "∀ (d : ℕ) (j : Fin d) (S A : Set (Euclid d)), MeasurableSet S → MeasurableSet A → (∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ S} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}) → volume S = volume A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
