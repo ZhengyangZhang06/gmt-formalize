@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "codim1_zsl_pc_",
+        "BVCompactness|BoundedVariation|[Cc]ompactness|TendstoLocallyInL1On",
+        "kolmogorov|rellich|perimeter|caccioppoli",
+        "isCompact_univ_pi|theorem IsCompact.tendsto_subseq|theorem ae_eventually_notMem|theorem tendsto_measure_iInter_atTop|theorem addHaar_closedBall|theorem volume_pi_Ico|theorem _root_.HasCompactSupport.(hasFDerivAt_convolution_right|contDiff_convolution_left)|theorem.*exists_lt_subset_ball|theorem.*exists_pos_lt_subset_ball",
+        "git show 46877ce9502b:GMT/Ch07/Submission.lean",
+        "git -C .lake/packages/mathlib diff --name-only",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/bvc-independent-audit/IndependentTypes.lean > /tmp/bvc-independent-audit/IndependentTypes.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/bvc-independent-audit/SuppliedProofs.lean > /tmp/bvc-independent-audit/SuppliedProofs.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/BorelCantelli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-0b4bc9c57a/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-bdf7011976/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0548399d02/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0548399d02/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/bvc-independent-audit/IndependentTypes.lean",
+        "/tmp/bvc-independent-audit/IndependentTypes.log",
+        "/tmp/bvc-independent-audit/SuppliedProofs.lean",
+        "/tmp/bvc-independent-audit/SuppliedProofs.log"
+      ],
+      "conclusion": "The split is appropriate for the selected BV compactness theorem. Project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308 match the pins. Searches found no reusable perimeter compactness theorem; Ch02.BVCompactness is only a proposition definition. The inspected library results support regularity, convolution, strict support margins, Euclidean volume normalization, subsequence extraction and Borel–Cantelli. All twelve frozen types independently elaborate as Prop before any child declaration, match their prose, and are byte-identical to their appendix headers. All names are bare identifiers; the eleven new names have no other reservations. The reused IBP theorem and its inherited Lipschitz dependency are comparator-accepted, with the reused frozen type identical. Dependencies are acyclic and agree with actual proof references. Independently reconstructed, unmodified supplied proofs and the exact selected-parent assembly compile successfully with autoImplicit=false; every checked declaration uses only propext, Classical.choice and Quot.sound. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ibp_c1_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and an accepted inherited Lipschitz dependency. The cutoff makes h globally C¹ and Lipschitz; localization preserves both integrands. Nonpositive radii are handled."
+    },
+    {
+      "key": "translate_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-measure localization, compact/open regularity approximations, thickening argument and four-set inclusion prove the exact translation limit. Translation invariance supplies the stated error bound without additional hypotheses."
+    },
+    {
+      "key": "mollify_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The radius is chosen before the mollifier, as required. Compact support ensures integrability; normalization, the pointwise integral bound and Tonelli establish the uniform estimate, with the reflected translation sign correctly handled."
+    },
+    {
+      "key": "smooth_translate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The segment FTC identity, operator-norm bound, Tonelli and translation invariance yield precisely the radius R + ‖h‖ and coefficient ‖h‖. No missing restriction on R or h is used."
+    },
+    {
+      "key": "smooth_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinate IBP correctly becomes the trace identity. The negative normalized-gradient tests are smooth and supported strictly inside the ball; their norm bounds and pointwise convergence justify Fatou's lemma and the exact ENNReal bound."
+    },
+    {
+      "key": "mollify_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reflection gives the correct adjoint convolution identity without assuming evenness. The smaller support radius ensures tsupport lies in the required open ball. Differentiation, trace interchange and Fubini have the necessary integrability justifications."
+    },
+    {
+      "key": "mollified_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactly supported smooth convolution gives smoothness. The test-field child transfers the perimeter hypothesis to exactly the hypothesis of smooth_variation, proving both conclusions with the declared dependencies."
+    },
+    {
+      "key": "translation_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Testing with zero establishes c ≥ 0. The normalized bump, radius inclusions, smooth translation estimate and two controlled approximation errors prove the stated measure inequality as the error tends to zero, including dimension zero."
+    },
+    {
+      "key": "cube_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cube volume and diameter are correctly computed using Euclidean volume. The pointwise averaging bound and Tonelli require translation control only on B_R; the constant calculation also handles m = 0. The method agrees with [Hanche-Olsen–Holden, Theorem 5](https://arxiv.org/pdf/0906.4883)."
+    },
+    {
+      "key": "diagonal_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded coordinate product is compact and first countable because the index type is countable. Sequential compactness and continuous evaluation give exactly one strictly increasing subsequence for every coordinate."
+    },
+    {
+      "key": "cauchy_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit increasing extraction dominates all required thresholds. Summable expanding-ball transition sets imply almost-everywhere eventual constancy by Borel–Cantelli. The measurable liminf set and continuity from above give convergence on every real-radius ball."
+    },
+    {
+      "key": "translation_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Countable cube-average extraction, measurable floor maps and dominated convergence establish local Cauchy control. Replacing C by max(C,0) handles its unrestricted sign. The Cauchy-limit child and subsequence composition finish the claim; combined with translation_estimate at R + 2, it proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
