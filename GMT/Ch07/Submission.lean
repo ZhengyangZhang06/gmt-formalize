@@ -451,6 +451,116 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Exceptional parameter set for the multiplicity-one graph measure.  Let `μ = θ Hⁿ⌞M` be the
+weight of `R = (M, θ, ·)`, `Φ(v) = ξ + ιv + ι'f(v)` with `|f(v) - f(w)| ≤ |v - w|`,
+`|f| ≤ r/4`, `P ∘ ι = id`, `P ∘ ι' = 0`, and `D = B_{r/2}(0)`.  If `θ = 1` `μ`-a.e. on
+`B̄_r(ξ) ⊆ W ⊆ U`, `Hⁿ((spt μ ∩ W) \ M) = 0` and `Hⁿ((range Φ \ spt μ) ∩ B̄_r(ξ)) ≤ a`, then
+`μ(Φ(D)) < ∞`, and `Z = D ∩ Φ⁻¹(Mᶜ ∪ {θ ≠ 1})` is a Borel set with `Hⁿ(Φ(Z)) ≤ a` and
+`∫_{Φ(D)} h dμ = ∫_{Φ(D \ Z)} h dHⁿ`.  As `P(Φ(v) - ξ) = v`, `Φ` is a continuous injection, so
+`Φ(D)` is Borel; `Φ(D) ⊆ B̄_r(ξ)` by the triangle inequality, so `μ(Φ(D)) ≤ μ(B̄_r(ξ)) < ∞` by
+local integrability of `θ`.  As `θ > 0` on `M`, `θ = 1` `Hⁿ`-a.e. on `M ∩ B̄_r(ξ)`; hence
+`μ⌞Φ(D) = θ Hⁿ⌞(Φ(D) ∩ M) = Hⁿ⌞(Φ(D) ∩ M) = Hⁿ⌞Φ(D \ Z)`, and `Φ(Z)` lies in the union of
+`(range Φ \ spt μ) ∩ B̄_r(ξ)`, `(spt μ ∩ W) \ M` and the null set `M ∩ B̄_r(ξ) ∩ {θ ≠ 1}`. -/
+theorem Submission.dorag_tes_gt_graph_measure_exceptional_set : ∀ (n k : ℕ) (U W : Set (Euclid (n + k))) (R : IMRep U n) (ξ : Euclid (n + k)) (r a : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n) (f : Euclid n → Euclid k), W ⊆ U → 0 < r → closedBall ξ r ⊆ W → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → (∀ v, ‖f v‖ ≤ r / 4) → (∀ᵐ x ∂R.measure, x ∈ closedBall ξ r → R.mult x = 1) → μHE[n] ((R.measure.support ∩ W) \ R.carrier) = 0 → μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \ R.measure.support) ∩ closedBall ξ r) ≤ ENNReal.ofReal a → R.measure ((fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2)) ≠ ∞ ∧ ∃ Z : Set (Euclid n), MeasurableSet Z ∧ μHE[n] ((fun v => ξ + ι v + ι' (f v)) '' Z) ≤ ENNReal.ofReal a ∧ ∀ h : Euclid (n + k) → ℝ≥0∞, Measurable h → ∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), h x ∂R.measure = ∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' (ball (0 : Euclid n) (r / 2) \ Z), h x ∂μHE[n] := by
+  intro n k U W R ξ r a ι ι' P f hWU _ hBW hPι hPι' hf hfr H1 H2 H3
+  set Φ : Euclid n → Euclid (n + k) := fun v => ξ + ι v + ι' (f v) with hΦ
+  set D : Set (Euclid n) := ball 0 (r / 2)
+  have hμ : R.measure = (μHE[n].restrict R.carrier).withDensity fun x => (R.mult x : ℝ≥0∞) :=
+    rfl
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  -- `Φ` is continuous and injective (`P (Φ v - ξ) = v`), so `Φ '' D` is Borel.
+  have hfc : Continuous f :=
+    (LipschitzWith.mk_one fun v w => by simpa only [dist_eq_norm] using hf v w).continuous
+  have hΦc : Continuous Φ := (continuous_const.add ι.continuous).add (ι'.continuous.comp hfc)
+  have hΦξ : ∀ v, Φ v - ξ = ι v + ι' (f v) := fun v => by
+    simp only [hΦ]
+    abel
+  have hPΦ : ∀ v, P (Φ v - ξ) = v := fun v => by rw [hΦξ, map_add, hPι, hPι', add_zero]
+  have hΦD : MeasurableSet (Φ '' D) :=
+    measurableSet_ball.image_of_continuousOn_injOn hΦc.continuousOn
+      fun v _ w _ hvw => by rw [← hPΦ v, ← hPΦ w, hvw]
+  -- `Φ` maps `D` into `closedBall ξ r`.
+  have hΦB : ∀ v ∈ D, Φ v ∈ closedBall ξ r := by
+    intro v hv
+    rw [mem_closedBall, dist_eq_norm, hΦξ]
+    have hv' : ‖v‖ < r / 2 := mem_ball_zero_iff.1 hv
+    calc ‖ι v + ι' (f v)‖ ≤ ‖ι v‖ + ‖ι' (f v)‖ := norm_add_le _ _
+      _ = ‖v‖ + ‖f v‖ := by rw [LinearIsometry.norm_map, LinearIsometry.norm_map]
+      _ ≤ r := by linarith [hfr v]
+  -- `θ = 1` holds `Hⁿ`-a.e. on `M ∩ closedBall ξ r`, as `θ ≠ 0` on `M`.
+  have H1' : ∀ᵐ x ∂μHE[n], x ∈ R.carrier → x ∈ closedBall ξ r → R.mult x = 1 := by
+    rw [hμ, ae_withDensity_iff hθ, ae_restrict_iff' R.measurableSet_carrier] at H1
+    filter_upwards [H1] with x hx hxM
+    exact hx hxM (Nat.cast_ne_zero.2 (R.mult_pos x hxM).ne')
+  set N := {x | x ∈ R.carrier ∧ x ∈ closedBall ξ r ∧ R.mult x ≠ 1}
+  have hN : μHE[n] N = 0 := by
+    refine measure_mono_null ?_ (ae_iff.1 H1')
+    intro x hx
+    simp only [mem_ofPred_eq, not_imp]
+    exact hx
+  set Z := D ∩ Φ ⁻¹' (R.carrierᶜ ∪ {x | R.mult x ≠ 1})
+  refine ⟨?_, Z, ?_, ?_, ?_⟩
+  · -- `μ (Φ '' D) ≤ μ (closedBall ξ r) < ∞`.
+    have hB : R.measure (closedBall ξ r) ≠ ∞ := by
+      rw [hμ, withDensity_apply _ measurableSet_closedBall,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact R.locallyIntegrable_mult _ (isCompact_closedBall ξ r) (hBW.trans hWU)
+    refine ne_top_of_le_ne_top hB (measure_mono ?_)
+    rintro _ ⟨v, hv, rfl⟩
+    exact hΦB v hv
+  · have hne : MeasurableSet {x | R.mult x ≠ 1} :=
+      R.measurable_mult (measurableSet_singleton 1).compl
+    exact measurableSet_ball.inter (hΦc.measurable (R.measurableSet_carrier.compl.union hne))
+  · -- `Φ '' Z` lies in the off-support part, `(spt μ ∩ W) \ M`, or `N`.
+    have hsub : Φ '' Z ⊆ (range Φ \ R.measure.support) ∩ closedBall ξ r ∪
+        ((R.measure.support ∩ W) \ R.carrier ∪ N) := by
+      rintro _ ⟨v, ⟨hvD, hvZ⟩, rfl⟩
+      have hxB := hΦB v hvD
+      by_cases hxM : Φ v ∈ R.carrier
+      · have h1 : R.mult (Φ v) ≠ 1 := by
+          rcases hvZ with h | h
+          · exact absurd hxM h
+          · exact h
+        exact Or.inr (Or.inr ⟨hxM, hxB, h1⟩)
+      · by_cases hxs : Φ v ∈ R.measure.support
+        · exact Or.inr (Or.inl ⟨⟨hxs, hBW hxB⟩, hxM⟩)
+        · exact Or.inl ⟨⟨mem_range_self v, hxs⟩, hxB⟩
+    calc μHE[n] (Φ '' Z)
+        ≤ μHE[n] ((range Φ \ R.measure.support) ∩ closedBall ξ r ∪
+          ((R.measure.support ∩ W) \ R.carrier ∪ N)) := measure_mono hsub
+      _ ≤ μHE[n] ((range Φ \ R.measure.support) ∩ closedBall ξ r) +
+          μHE[n] ((R.measure.support ∩ W) \ R.carrier ∪ N) := measure_union_le _ _
+      _ = μHE[n] ((range Φ \ R.measure.support) ∩ closedBall ξ r) := by
+        rw [measure_union_null H2 hN, add_zero]
+      _ ≤ ENNReal.ofReal a := H3
+  · -- `μ⌞Φ(D) = θ Hⁿ⌞(Φ(D) ∩ M) = Hⁿ⌞(Φ(D) ∩ M) = Hⁿ⌞Φ(D \ Z)`.
+    have hae : (Φ '' D ∩ R.carrier : Set (Euclid (n + k))) =ᵐ[μHE[n]] Φ '' (D \ Z) := by
+      refine Filter.eventuallyEqSet_iff.2 ?_
+      filter_upwards [H1'] with x hx
+      constructor
+      · rintro ⟨⟨v, hvD, rfl⟩, hxM⟩
+        refine ⟨v, ⟨hvD, fun hvZ => ?_⟩, rfl⟩
+        rcases hvZ.2 with h | h
+        · exact h hxM
+        · exact h (hx hxM (hΦB v hvD))
+      · rintro ⟨v, ⟨hvD, hvZ⟩, rfl⟩
+        refine ⟨⟨v, hvD, rfl⟩, ?_⟩
+        by_contra hxM
+        exact hvZ ⟨hvD, Or.inl hxM⟩
+    have hmeas : R.measure.restrict (Φ '' D) = μHE[n].restrict (Φ '' (D \ Z)) := by
+      rw [hμ, restrict_withDensity hΦD, Measure.restrict_restrict hΦD]
+      calc (μHE[n].restrict (Φ '' D ∩ R.carrier)).withDensity (fun x => (R.mult x : ℝ≥0∞))
+          = (μHE[n].restrict (Φ '' D ∩ R.carrier)).withDensity 1 := by
+            refine withDensity_congr_ae ?_
+            rw [Filter.EventuallyEq, ae_restrict_iff' (hΦD.inter R.measurableSet_carrier)]
+            filter_upwards [H1'] with x hx hxs
+            obtain ⟨⟨v, hvD, rfl⟩, hxM⟩ := hxs
+            simp [hx hxM (hΦB v hvD)]
+        _ = μHE[n].restrict (Φ '' D ∩ R.carrier) := withDensity_one
+        _ = μHE[n].restrict (Φ '' (D \ Z)) := Measure.restrict_congr_set hae
+    intro h _
+    rw [hmeas]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
