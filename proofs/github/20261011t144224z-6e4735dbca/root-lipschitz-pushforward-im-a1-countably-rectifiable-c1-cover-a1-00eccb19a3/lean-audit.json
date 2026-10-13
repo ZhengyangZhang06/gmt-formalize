@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c7b5003c3800b3af2ea498886604bae63a237c1607a1fb8ce7f7626fc438dfb",
+  "git_delta": {
+    "base_commit": "875971dedc87b75d9191eed931e19dc7a260b133",
+    "candidate_commit": "4f96ac6781102d9a8ef81672a6a983280054017e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_countably_rectifiable_c1_cover",
+    "diff_sha256": "5aa00fb971959405b651a766550ad252b74c9d74f2d1be213ec16d51fe77bbd5",
+    "source_sha256": "0a97c68b985d167a77fc00f4bcd22750857d93f7185469af87aca6c91aef0af8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_countably_rectifiable_c1_cover",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \\ ⋃ j, Φ j '' Ω j) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
