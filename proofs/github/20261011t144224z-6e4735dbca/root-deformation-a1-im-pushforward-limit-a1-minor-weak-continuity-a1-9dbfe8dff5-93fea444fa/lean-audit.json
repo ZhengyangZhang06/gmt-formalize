@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4417796aef56958890ae94a27754f895c53c399b9a3c038d10bade9b4de671ce",
+  "git_delta": {
+    "base_commit": "bfbd849e73baa1bd37bc97df9e6770419f6e6ade",
+    "candidate_commit": "250d1c58c63be5c0d6ac3418682963614cef57f1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_pi_swap_cancel",
+    "diff_sha256": "f46786441a4510a96d6e854b9bccf9dd4d91228e5e1e3590a2119e9b645307c4",
+    "source_sha256": "8081f8b95f6ed8c6ad5e71d80d89a51044762cafdfebc945d76149cdc66f4371",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_pi_swap_cancel",
+      "statement": "∀ (r : ℕ) (H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ) (N : Fin r → Fin (r + 1) → ℝ), (∀ u i j, H u i j = H u j i) → ∑ σ : Equiv.Perm (Fin (r + 1)), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ u : Fin r, H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
