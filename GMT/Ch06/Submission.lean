@@ -581,6 +581,160 @@ theorem Submission.iwl_cr_ip_wt_product_measure :
   -- Restrict `(MP)` for `A = M` to `O`, pull back along `Φ′` and split the restricted product.
   rw [hset, ← Measure.restrict_restrict hO, hMP M hMmeas hMrect hMfin,
     Measure.restrict_map hΦc.measurable hO, hpre, ← Measure.prod_restrict, Measure.restrict_univ]
+/-- Change of variables under Simon's blow-up `η = η_{x,r}`, `η(z) = r⁻¹(z − x)` (Ch. 3, §1, p. 71),
+as used for the locality of approximate tangent spaces (Ch. 3, Remarks 1.5(2), 1.8(1)): for
+`r > 0`, every set `S` and every real function `g`, `∫_{η(S)} g dHⁿ = r⁻ⁿ ∫_S g ∘ η dHⁿ`.
+`η` is a homeomorphism (inverse `w ↦ x + r w`) and `η⁻¹(F) = x + r F`, so `Hⁿ(η⁻¹ F) = rⁿ Hⁿ(F)`
+by translation invariance and `n`-homogeneity of `Hⁿ`.  Hence `η_# Hⁿ = rⁿ Hⁿ`, and the change of
+variables along the measurable embedding `η` needs no integrability. -/
+theorem Submission.fiw_tl_blowup_setIntegral :
+    ∀ (P n : ℕ) (x : Eucl P) (r : ℝ) (S : Set (Eucl P)) (g : Eucl P → ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) = (r ^ n)⁻¹ * ∫ z in S, g (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n x r S g hr
+  set η : Eucl P → Eucl P := Poincare.SimonGMT.Chapter03.blowUpMap x r
+  have hηapp : ∀ z, η z = r⁻¹ • (z - x) := fun _ => rfl
+  -- `η` is a homeomorphism with inverse `w ↦ x + r • w`.
+  let e : Eucl P ≃ₜ Eucl P :=
+    { toFun := η
+      invFun := fun w => x + r • w
+      left_inv := fun z => by simp [hηapp, smul_smul, hr.ne']
+      right_inv := fun w => by simp [hηapp, smul_smul, hr.ne']
+      continuous_toFun := by
+        show Continuous fun z : Eucl P => r⁻¹ • (z - x)
+        fun_prop
+      continuous_invFun := by fun_prop }
+  have hemb : MeasurableEmbedding η := e.measurableEmbedding
+  have hinj : Function.Injective η := e.injective
+  -- `η⁻¹(F) = x + r • F`, so `Hⁿ(η⁻¹ F) = ‖r‖₊ⁿ Hⁿ(F)` for every set `F`.
+  have hpre : ∀ F : Set (Eucl P), (μHE[n] : Measure (Eucl P)) (η ⁻¹' F) =
+      ‖r‖₊ ^ n • (μHE[n] : Measure (Eucl P)) F := by
+    intro F
+    have hF : η ⁻¹' F = (fun z => z + -x) ⁻¹' ((fun w => r⁻¹ • w) ⁻¹' F) := by
+      ext z
+      simp only [mem_preimage, hηapp, sub_eq_add_neg]
+    rw [hF, measure_preimage_add_right, preimage_smul_inv₀ hr.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne']
+  -- Push-forward: `η_# Hⁿ = ‖r‖₊ⁿ Hⁿ`.
+  have hmap : Measure.map η (μHE[n] : Measure (Eucl P)) =
+      (‖r‖₊ ^ n) • (μHE[n] : Measure (Eucl P)) := by
+    ext F hF
+    rw [Measure.map_apply hemb.measurable hF, Measure.smul_apply, hpre]
+  -- Change of variables along the measurable embedding `η` (no integrability needed).
+  have h := hemb.setIntegral_map (μ := (μHE[n] : Measure (Eucl P))) g (η '' S)
+  rw [hmap, Measure.restrict_smul, integral_smul_nnreal_measure, preimage_image_eq S hinj,
+    NNReal.smul_def, smul_eq_mul] at h
+  have hc : ((‖r‖₊ ^ n : ℝ≥0) : ℝ) = r ^ n := by
+    rw [NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le]
+  rw [hc] at h
+  rw [← h, inv_mul_cancel_left₀ (pow_ne_zero n hr.ne')]
+
+/-- Uniform mass bound for the blow-ups `η_r(M)`, `η_r = η_{x,r}` (Ch. 3, §1, p. 71), at a point `x`
+with a weighted approximate tangent plane `T` (Ch. 3, 1.7), as used for the product with an interval
+(Ch. 6, 3.2(2)): for every `R` there is `B` such that for all small `r > 0`, every `g` with `|g| ≤ C`
+vanishing off `B̄(0, R)` satisfies `|∫_{η_r(M)} g(w) θ(x + r w) dHᵐ(w)| ≤ C B`.  Compare with the
+cut-off `g₀ = max(0, min(1, R + 1 − ‖w‖)) ∈ C_c`: `|g| ≤ C g₀`, `θ ≥ 0` on `M`, and by the change of
+variables `fiw_tl_blowup_setIntegral` the `g₀`-integral tends to `θ(x) ∫_T g₀ dHᵐ < B`. -/
+theorem Submission.iwl_cr_ip_wt_blowup_mass_bound :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (T : Submodule ℝ (Eucl P)), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → (∀ z ∈ M, 0 ≤ θ z) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → HasWeightedApproximateTangentSpaceAt m M θ x T → ∀ R : ℝ, ∃ B : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ (C : ℝ) (g : Eucl P → ℝ), (∀ w, |g w| ≤ C) → (∀ w, R < ‖w‖ → g w = 0) → |∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))| ≤ C * B := by
+  intro P m M θ x T hMmeas hθnn hθint hTan R
+  -- The cut-off `g₀ = max 0 (min 1 (R + 1 - ‖w‖))`.
+  let g₀ : Eucl P → ℝ := fun w => max 0 (min 1 (R + 1 - ‖w‖))
+  have hg₀c : Continuous g₀ :=
+    continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))
+  have hg₀0 : ∀ w, R + 1 < ‖w‖ → g₀ w = 0 := by
+    intro w hw
+    exact max_eq_left ((min_le_right _ _).trans (by linarith))
+  have hg₀cs : HasCompactSupport g₀ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Eucl P) (R + 1)) (fun w hw => ?_)
+    rw [mem_closedBall, dist_zero_right, not_le] at hw
+    exact hg₀0 w hw
+  have hg₀nn : ∀ w, 0 ≤ g₀ w := fun w => le_max_left _ _
+  have hg₀le : ∀ w, g₀ w ≤ 1 := fun w => max_le zero_le_one (min_le_left _ _)
+  have hg₀1 : ∀ w, ‖w‖ ≤ R → g₀ w = 1 := by
+    intro w hw
+    show max 0 (min 1 (R + 1 - ‖w‖)) = 1
+    rw [min_eq_left (by linarith)]
+    exact max_eq_right zero_le_one
+  let G₀ : CompactlySupportedContinuousMap (Eucl P) ℝ := ⟨⟨g₀, hg₀c⟩, hg₀cs⟩
+  have hlim := hTan.2 G₀
+  refine ⟨θ x * ∫ y in (T : Set (Eucl P)), g₀ y ∂(μHE[m] : Measure (Eucl P)) + 1, ?_⟩
+  filter_upwards [hlim.eventually_lt_const (lt_add_one _), self_mem_nhdsWithin] with r hrB hr C g hgC hg0
+  have hr0 : (0 : ℝ) < r := hr
+  -- `θ` is a.e. strongly measurable and a.e. nonnegative for `Hᵐ ⌞ M`.
+  have hθae : AEStronglyMeasurable θ ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ n : ℕ, M ∩ closedBall (0 : Eucl P) n := by
+      ext u
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hu => ⟨⌈‖u‖⌉₊, hu, Nat.le_ceil _⟩, fun ⟨_, hu, _⟩ => hu⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  have hθpos : ∀ᵐ u ∂((μHE[m] : Measure (Eucl P)).restrict M), 0 ≤ θ u :=
+    (ae_restrict_mem₀ hMmeas).mono fun u hu => hθnn u hu
+  -- Undo the blow-up for any integrand.
+  have hcov : ∀ h : Eucl P → ℝ, ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+      h w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P)) = (r ^ m)⁻¹ * ∫ u in M,
+        h (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u ∂(μHE[m] : Measure (Eucl P)) := by
+    intro h
+    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => h w * θ (x + r • w)) hr0]
+    congr 1
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul,
+      add_sub_cancel]
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    show Continuous fun u : Eucl P => r⁻¹ • (u - x)
+    fun_prop
+  have hηnorm : ∀ u, ‖Poincare.SimonGMT.Chapter03.blowUpMap x r u‖ = r⁻¹ * ‖u - x‖ := by
+    intro u
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hr0]
+  -- Integrability of `u ↦ g₀(η u) θ(u)` on `M`.
+  have hint₀ : Integrable (fun u => g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u)
+      ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    refine Integrable.mono' (g := (closedBall x (r * (R + 1))).indicator fun u => |θ u|) ?_
+      ((hg₀c.comp hηc).aestronglyMeasurable.mul hθae) (Filter.Eventually.of_forall fun u => ?_)
+    · rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact (hθint _ (isCompact_closedBall x (r * (R + 1)))).norm.congr
+        (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
+    · by_cases hu : u ∈ closedBall x (r * (R + 1))
+      · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ u), Real.norm_eq_abs]
+        exact mul_le_of_le_one_left (abs_nonneg _)
+          ((abs_of_nonneg (hg₀nn _)).trans_le (hg₀le _))
+      · rw [indicator_of_notMem hu, hg₀0, zero_mul, norm_zero]
+        rw [mem_closedBall, dist_eq_norm, not_le] at hu
+        rw [hηnorm, lt_inv_mul_iff₀ hr0]
+        exact hu
+  -- `C ≥ 0`, and `|g(η u)| θ(u) ≤ C g₀(η u) θ(u)` on `M`.
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hgC 0)
+  have hpt : ∀ w, |g w| ≤ C * g₀ w := by
+    intro w
+    by_cases hw : ‖w‖ ≤ R
+    · rw [hg₀1 w hw, mul_one]
+      exact hgC w
+    · rw [hg0 w (not_le.1 hw), abs_zero]
+      exact mul_nonneg hC (hg₀nn w)
+  have hkey : |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+      ∂(μHE[m] : Measure (Eucl P))| ≤
+      C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P)) := by
+    rw [← integral_const_mul]
+    refine (Real.norm_eq_abs _ ▸ norm_integral_le_integral_norm _).trans ?_
+    refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun u => norm_nonneg _)
+      (hint₀.const_mul C) ?_
+    filter_upwards [hθpos] with u hu
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hu, ← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (hpt _) hu
+  rw [hcov g, abs_mul, abs_of_pos (inv_pos.2 (pow_pos hr0 m))]
+  have hb := hcov g₀
+  calc (r ^ m)⁻¹ * |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P))|
+      ≤ (r ^ m)⁻¹ * (C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P))) :=
+        mul_le_mul_of_nonneg_left hkey (inv_nonneg.2 (pow_nonneg hr0.le m))
+    _ = C * ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g₀ w * θ (x + r • w)
+        ∂(μHE[m] : Measure (Eucl P)) := by rw [hb]; ring
+    _ ≤ C * (θ x * ∫ y in (T : Set (Eucl P)), g₀ y ∂(μHE[m] : Measure (Eucl P)) + 1) :=
+        mul_le_mul_of_nonneg_left hrB.le hC
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
