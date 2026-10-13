@@ -1996,6 +1996,138 @@ theorem Submission.lpf_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl
     ((hM.integrableOn _ hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure))
     hM.aestronglyMeasurable hξ hT
 
+/-- Simon Ch. 6, 2.17–2.22 (pp. 138–139): the product `[[0,1]] × X` of a finite-mass current
+`X ∈ 𝒟ₖ(ℝ^m)`, `([[0,1]] × X)(η) = ∫₀¹ X(φ_s) ds`, where `φ_s(x) = η(s, x)(e₀, ι ·)` is the
+`dt`-slice of `η` at time `s` (`e₀ = (1, 0)`, `ι w = (0, w)`).  (I) It exists and is the unique
+current with this formula, `M([[0,1]] × X) ≤ M(X)`, `spt([[0,1]] × X) ⊆ [0,1] × spt X`, the
+integrand `s ↦ X(φ_s)` is continuous on `[0,1]`, and `[[0,1]] × X` is normal when `X` is.
+(II), (III) Every current `Z` with this formula satisfies the boundary formula
+`∂Z = {1} × X − {0} × X − [[0,1]] × ∂X` (without the last term for `0`-currents). -/
+theorem Submission.dph_interval_product :
+    (∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k), X.mass < ∞ →
+      ∃ Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1),
+        (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+            (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+          (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+            (φ s : DifferentialForm (Eucl m) k) x v =
+              (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                  (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          Z η = ∫ s in (0 : ℝ)..1, X (φ s)) ∧
+        (∀ Z' : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1),
+          (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+              (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+            (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+              (φ s : DifferentialForm (Eucl m) k) x v =
+                (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+                  ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                  (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+            Z' η = ∫ s in (0 : ℝ)..1, X (φ s)) → Z' = Z) ∧
+        Z.mass ≤ X.mass ∧
+        Z.support ⊆ {y : Eucl (m + 1) |
+          EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+            (EuclideanSpace.equiv (Fin m) ℝ).symm
+                (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ∧
+        (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+            (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+          (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+            (φ s : DifferentialForm (Eucl m) k) x v =
+              (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                  (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          ContinuousOn (fun s => X (φ s)) (Icc (0 : ℝ) 1)) ∧
+        ((∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1)), k = j + 1 →
+            HEq Y X → Y.boundary.mass < ∞) →
+          Z.boundary.mass < ∞)) ∧
+    (∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) 0)
+        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (0 + 1)), X.mass < ∞ →
+      (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1))
+          (φ : ℝ → TestFormOn (univ : Set (Eucl m)) 0),
+        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+          (φ s : DifferentialForm (Eucl m) 0) x v =
+            (η : DifferentialForm (Eucl (m + 1)) (0 + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+      ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0)
+        (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) 0),
+        (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+          (ψ₀ : DifferentialForm (Eucl m) 0) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) 0)
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+          (ψ₁ : DifferentialForm (Eucl m) 0) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) 0)
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z.boundary ψ = X ψ₁ - X ψ₀) ∧
+    (∀ (m j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1))
+        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)), X.mass < ∞ →
+      (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) ((j + 1) + 1))
+          (φ : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1)),
+        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+          (φ s : DifferentialForm (Eucl m) (j + 1)) x v =
+            (η : DifferentialForm (Eucl (m + 1)) ((j + 1) + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+      ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1))
+        (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) (j + 1))
+        (φ : ℝ → TestFormOn (univ : Set (Eucl m)) j),
+        (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+          (ψ₀ : DifferentialForm (Eucl m) (j + 1)) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+          (ψ₁ : DifferentialForm (Eucl m) (j + 1)) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin j → Eucl m),
+          (φ s : DifferentialForm (Eucl m) j) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z.boundary ψ = X ψ₁ - X ψ₀ - ∫ s in (0 : ℝ)..1, X.boundary (φ s)) := by
+  -- (II) and (III) are the first two conjuncts of `product_boundary`.
+  refine ⟨?_, Submission.dph_iprod_boundary.1, Submission.dph_iprod_boundary.2.1⟩
+  -- (I): `product_exists` gives the characterization, uniqueness, mass bound and support of `Z`;
+  -- continuity of `s ↦ X(φ_s)` is the first half of (D1) in `slice_continuity`, and normality
+  -- is the conjunct (N) of `product_boundary`, applied to this `Z` and its characterization.
+  intro m k X hX
+  obtain ⟨Z, hZ, huniq, hmass, hsupp⟩ := Submission.dph_iprod_exists m k X hX
+  exact ⟨Z, hZ, huniq, hmass, hsupp,
+    fun η φ hφ => (Submission.dph_iprod_slice_continuity.1 m k X hX η φ hφ).1,
+    Submission.dph_iprod_boundary.2.2 m k X Z hX hZ⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
