@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weighted_approx_tangent-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "The tangent planes of V are exactly the approximate tangent planes of (M, θ) (Ch. 3, Def. 1.7)",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, M ⊆ ℝ^N H^n-null-measurable, θ : ℝ^N → ℝ with θ > 0 on M, θ H^n-integrable on M ∩ K for every compact K ⊆ U, and μ_V(B) = ∫_{B ∩ M} θ dH^n for every Borel B. If HasTangentPlane V x T (θ(x)), then for every S ∈ G(N,n): M has approximate tangent space S.plane at x with respect to θ in the sense of Simon Ch. 3, Def. 1.7 (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane) if and only if S = T.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T",
+  "lean_name": "frt_weighted_approx_tangent",
+  "depends_on": [
+    "root.first_rectifiability-a1.weight_blowup-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.weight_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weighted-approx-tangent-a1-a1"
+}

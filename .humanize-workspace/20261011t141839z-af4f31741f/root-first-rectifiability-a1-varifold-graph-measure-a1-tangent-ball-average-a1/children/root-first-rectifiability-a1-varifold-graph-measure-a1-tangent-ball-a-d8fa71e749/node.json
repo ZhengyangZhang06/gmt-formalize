@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_cutoff_bounds-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1",
+  "depth": 4,
+  "title": "Plane integrals of the radial cut-offs: ω_n(1−κ)^n ≤ ∫_T χ_{1−κ,1} dH^n and ∫_T χ_{1,1+κ} dH^n ≤ ω_n(1+κ)^n",
+  "statement": "Let N, n ∈ ℕ, T ∈ G(N,n) (Grassmannian N n) and κ ∈ ℝ with 0 < κ < 1. Let H^n = μHE[n] on ℝ^N = Euclidean N and ω_n = (unitBallVolume n).toReal, and for y ∈ ℝ^N let χ⁻(y) = max(0, min(1, (1 − |y|)/κ)) and χ⁺(y) = max(0, min(1, (1 + κ − |y|)/κ)) (the cut-offs χ_{1−κ,1} and χ_{1,1+κ} of the parent proof, χ_{a,b}(y) = max(0, min(1, (b − |y|)/(b − a)))). Then ω_n(1 − κ)^n ≤ ∫_{T.plane} χ⁻ dH^n and ∫_{T.plane} χ⁺ dH^n ≤ ω_n(1 + κ)^n, the integrals being real Bochner integrals with respect to H^n restricted to T.plane.",
+  "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n) (κ : ℝ), 0 < κ → κ < 1 → (unitBallVolume n).toReal * (1 - κ) ^ n ≤ ∫ y in (T.plane : Set (Euclidean N)), max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n] ∧ ∫ y in (T.plane : Set (Euclidean N)), max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n] ≤ (unitBallVolume n).toReal * (1 + κ) ^ n",
+  "lean_name": "frt_vgm_tba_plane_cutoff_bounds",
+  "depends_on": [
+    "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-a-d8fa71e749-a1"
+}

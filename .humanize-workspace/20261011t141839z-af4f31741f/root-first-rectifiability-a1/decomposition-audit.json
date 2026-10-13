@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "ae_tendsto_measure_inter_div|ae_tendsto_rnDeriv",
+        "def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt.unique|regular_euclideanHausdorffMeasure_restrict_submodule|support_euclideanHausdorffMeasure_restrict_submodule|def blowUpMap",
+        "mul_simonHausdorff_le_of_le_dimensionalUpperDensity|dimensionalDensityRatio|dimensionalUpperDensity|volume_euclidean_ball_eq|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure",
+        "Monotone.measure_iUnion",
+        "rg -l -i 'varifold' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/frt-independent-audit-ckemr2nu/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/frt-independent-audit-ckemr2nu/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/frt-independent-audit-ckemr2nu/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1/parent-child-handoff.json",
+        "/tmp/frt-independent-audit-ckemr2nu/Contracts.lean",
+        "/tmp/frt-independent-audit-ckemr2nu/Assembly.lean",
+        "/tmp/frt-independent-audit-ckemr2nu/Axioms.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected FirstRectifiabilityTheorem. The snapshot contract matches the workspace byte-for-byte; checked dependency revisions match their pins. Mathlib contains no varifold search matches. Relevant library statements support arbitrary-set differentiation, Hausdorff comparison, homothety transport and monotone unions as used. All twelve exact propositions independently elaborate without child implementations. A separately constructed conditional assembly from their exact types and the two frozen sibling contracts proves FirstRectifiabilityTheorem and uses only propext, Classical.choice and Quot.sound. The eleven checked reused library results likewise have only those standard axioms. Every child name is a fresh bare identifier, with no collision in the 45-node DAG; dependencies are correctly directed and acyclic. No self-referential types, placeholders, post-hoc aliases or inline matrix-unit constructions occur. Child proof acceptance rests on the individual step-by-step prose audits below."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the prose. Compactness of the Grassmannian supplies the product test function; the map and scalar integral identities legitimately require no integrability assumption. Eventual equality for positive scales proves the stated limit without circularity."
+    },
+    {
+      "key": "tangent_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness justifies the cutoff inequalities and real-valued masses. Plane-ball normalization, including dimension zero, and the two-sided squeeze give exactly the ENNReal density limit. The sole child dependency is correctly declared."
+    },
+    {
+      "key": "tangent_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density-limit uniqueness identifies the positive multiplicities. Weight blow-ups then identify the regular plane measures; their supports and projection uniqueness identify the planes. Both dependencies are necessary, correctly directed, and sufficient."
+    },
+    {
+      "key": "tangent_graph_cover_all",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit per-plane hypothesis matches the frozen sibling conclusion. Continuity of the projection operators and a countable dense family supply the required approximation and countable graph cover, including the empty Grassmannian case. No parent conclusion is assumed."
+    },
+    {
+      "key": "rectifiable_of_graph_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orthogonal projection gives an injective parametrization with Lipschitz inverse on each graph. Coordinatewise extension supplies global Euclidean parametrizations, and countable enumeration proves the exact CountablyRectifiable definition. Empty families and degenerate dimensions cause no gap."
+    },
+    {
+      "key": "density_one_flat_covers",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The graph distortion estimates, arbitrary-set Lebesgue density theorem, and Lipschitz transport of exceptional null sets establish the two-sided density bounds. Differentiation for the finite restricted measure and the countable small-slope limit yield density one. Dimension zero is explicitly covered."
+    },
+    {
+      "key": "weight_null_of_hausdorff_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite densities give the stated countable decomposition with uniform ball bounds. Hausdorff-null covers and summation force zero measure, with zero-diameter covering sets handled for both zero and positive dimensions. No unstated regularity or sigma-finiteness is needed."
+    },
+    {
+      "key": "hausdorff_null_of_weight_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact localization supplies finite outer-regular measures. Small open neighborhoods preserve the local upper densities, allowing the pinned sharp comparison theorem with the verified normalization. The separate dimension-zero argument proves the remaining case."
+    },
+    {
+      "key": "carrier_null_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uniform positive lower-density pieces cover the carrier, and their bounds pass to compact closures. The declared comparison dependency makes each closure defect Hausdorff-null. Countable union then proves precisely null-measurability, without presupposing carrier measurability."
+    },
+    {
+      "key": "weight_eq_theta_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel multiplicity representative, finite carrier pieces, null-set comparisons and density-one dependency justify Radon–Nikodym differentiation. Exceptional sets are transferred correctly. Monotone passage and null-measurable representatives prove the full stated set identity and local integrability, including dimension zero."
+    },
+    {
+      "key": "weighted_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact localization justifies the weighted integral identity. Homothety transport has the correct scaling and yields exactly the Chapter 3 blow-up integrals. The declared weight-limit dependency and verified uniqueness theorem prove both directions; membership of x in M is not secretly required."
+    },
+    {
+      "key": "varifold_graph_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The corrected cutoff squeeze gives the normalized limit β(T), so the disintegration measures are Dirac almost everywhere. Matrix-entry averages provide a Borel plane representative. Finite-localization rectangle uniqueness proves the graph-measure identity, and tangent uniqueness gives the stated null-measurable existential set. The empty Grassmannian case is handled."
+    }
+  ],
+  "required_changes": []
+}

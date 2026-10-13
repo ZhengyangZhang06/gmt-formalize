@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "rg -n 'def HasTangentPlane|def rescaledMeasure|def planeVarifoldMeasure|def unitBallVolume|frt_vgm_tba' project/GMT/Ch08/Contract.lean project/GMT/Ch08/Submission.lean",
+        "rg -n 'Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n '480,525p' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "sed -n '1038,1105p' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "rg -n 'integrableOn_of_bounded|integrable_of_forall_notMem_eq_zero|integrable_indicator_iff|theorem integrableOn_const' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "sed -n '518,542p' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "rg -n 'frt_vgm_tba' project",
+        "frt_vgm_tba",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tba_independent_audit_b5epmwz0/Contracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/GroupWithZero.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1/decomposition-v2.json",
+        "/tmp/tba_independent_audit_b5epmwz0/Contracts.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected tangent-ball-average theorem. The manifest pins project 63436ae6 and Mathlib 25730c7c; inspected Mathlib sources match the compiler packages. Contract definitions confirm the stated tangent-plane hypothesis, rescaling, plane measure, and unit-ball normalization. The pinned Haar closed-ball formula permits n = 0 and r = 0. Integral transformation and bounded-integrability lemmas have the hypotheses used in the supplied proofs. Fresh Lean elaboration of all five exact child types and the selected parent type succeeded using only frozen definitions and imports, without child implementations. Printed types confirm the intended integral scopes and conjunctions; checked types and library lemmas depend only on propext, Classical.choice, and Quot.sound. All types pass the one-line statement validator and contain no self-reference, placeholder, declaration, or problematic matrix construction. All five names are bare identifiers; no proposed name occurs in the snapshot project or the eight chapter DAGs scanned. Dependencies are exactly plane_ball → plane_cutoff_bounds → nonneg_ball_limit, together with product_blowup → nonneg_ball_limit and ball_cutoff_sandwich → nonneg_ball_limit. The parent’s signed-function reduction, constant-one denominator limit, and cancellation establish its exact frozen conclusion. The author’s unavailable temporary proof files were not relied upon."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the prose, including r ≥ 0 and the ENNReal-valued normalization. Each step is justified: the reindexed orthonormal basis supplies an isometry onto the plane, its ball image is proved in both directions, Hausdorff measure is preserved, and Haar scaling gives the formula. The argument includes n = 0 and r = 0 without extra hypotheses or circular reliance."
+    },
+    {
+      "key": "plane_cutoff_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both inequalities and 0 < κ < 1 match the exact Lean type. The proof obtains finite restricted ball measures from plane_ball, proves the cutoff bounds and support properties, establishes integrability, and only then applies integral monotonicity. Indicator integrals and ENNReal-to-real conversion give precisely the asserted bounds. Its only child dependency is correctly declared."
+    },
+    {
+      "key": "product_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary compactly supported continuous g and continuous β in the prose. Compactness of the Grassmannian makes the product test function compactly supported. Applying HasTangentPlane and evaluating both mapped measures yields exactly the stated limit. The pinned integral_map and integral_smul_measure lemmas require no omitted integrability assumption; positivity of t justifies the scalar conversion. No child or parent conclusion is assumed."
+    },
+    {
+      "key": "ball_cutoff_sandwich",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including closedBall x (2*t) ⊆ U and β ≥ 0, appear in both contracts. The proof derives finite mass on the supporting cylinder, bounds β using compactness, and establishes integrability of both cutoffs and the indicator integrand. The scaled-norm calculation handles the closed-ball boundary correctly. Multiplication by nonnegative β and integral monotonicity prove both conjuncts without undeclared dependencies."
+    },
+    {
+      "key": "nonneg_ball_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly states the supplied nonnegative ball-integral limit. The proof establishes eventual domain containment, constructs the required compactly supported cutoffs, and uses precisely its three declared dependencies. Both order-limit arguments choose κ using continuity and a nontrivial right-neighborhood filter, preserve inequality directions, and combine eventual bounds correctly. The argument also covers β(T) = 0 and n = 0. Together with the parent’s integrable positive/negative decomposition and positive constant-one limit, it proves the selected normalized-average statement."
+    }
+  ],
+  "required_changes": []
+}
