@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "705bf487c4fe2654878e16bb0ffad240ff05b2c1d1c57d6f22ab080b74cbfb0c",
+  "git_delta": {
+    "base_commit": "be10957092f36e71de65d0e91ce6e78a46049029",
+    "candidate_commit": "8392d5e440a207ab7268700ccee7406473ecc712",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "6b008a8d0bfdf7c9dc47bbf57d1de43d515b93616bc8d105cd0c32099122e4c7",
+    "source_sha256": "79329449c873828bcc85aa7083e9124f35a3a4819c757b0650705e4e05a25dd5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_testform_determining",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ E : Set (TestFormOn U k), E.Countable ∧ ∀ S R : GeometricCurrentOn U k, (∀ e ∈ E, S e = R e) → S = R",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
