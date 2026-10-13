@@ -451,6 +451,361 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- An open `U ⊆ ℝᴾ` is exhausted by the compact sets
+`Kᵢ = B̄(0, i + 1) ∩ {x : 1 / (i + 1) ≤ dist(x, y) for all y ∉ U}`: each `Kᵢ ⊆ U` (take `y = x`),
+and a compact `C ⊆ U` has a margin `δ > 0` with `thickening δ C ⊆ U` and a radius `R` with
+`C ⊆ B̄(0, R)`, so `C ⊆ Kᵢ` once `1 / (i + 1) < δ` and `R ≤ i + 1`. -/
+theorem Submission.dor_lmbs_tfa_compact_exhaustion : ∀ (P : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ K : ℕ → Set (Euclid P), (∀ i, IsCompact (K i)) ∧ (∀ i, K i ⊆ U) ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ∃ i, C ⊆ K i := by
+  intro P U hU
+  refine ⟨fun i => closedBall (0 : Euclid P) ((i : ℝ) + 1) ∩ ⋂ y ∈ Uᶜ, {x | 1 / ((i : ℝ) + 1) ≤ dist x y},
+    fun i => ?_, fun i => ?_, fun C hC hCU => ?_⟩
+  · exact (isCompact_closedBall _ _).inter_right
+      (isClosed_biInter fun y _ => isClosed_le continuous_const (continuous_id.dist continuous_const))
+  · -- `x ∉ U` would give `1 / (i + 1) ≤ dist x x = 0`
+    intro x hx
+    by_contra hxU
+    have h : 1 / ((i : ℝ) + 1) ≤ dist x x := mem_iInter₂.1 hx.2 x hxU
+    rw [dist_self] at h
+    have : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
+    linarith
+  · obtain ⟨δ, hδ, hδU⟩ := hC.exists_thickening_subset_open hU hCU
+    obtain ⟨R, hR⟩ := hC.isBounded.subset_closedBall (0 : Euclid P)
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨M, hM⟩ := exists_nat_ge R
+    have hNi : (N : ℝ) ≤ (max N M : ℕ) := by exact_mod_cast le_max_left N M
+    have hMi : (M : ℝ) ≤ (max N M : ℕ) := by exact_mod_cast le_max_right N M
+    refine ⟨max N M, fun x hx => ⟨?_, mem_iInter₂.2 fun y hy => ?_⟩⟩
+    · have hxR := mem_closedBall.1 (hR hx)
+      rw [mem_closedBall]
+      linarith
+    · -- `y ∉ thickening δ C` gives `δ ≤ dist x y`
+      have hxy : δ ≤ dist x y := by
+        by_contra h
+        exact hy (hδU (mem_thickening_iff.2 ⟨x, hx, by rw [dist_comm]; linarith⟩))
+      have hle : 1 / (((max N M : ℕ) : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) :=
+        one_div_le_one_div_of_le (by positivity) (by linarith)
+      show 1 / (((max N M : ℕ) : ℝ) + 1) ≤ dist x y
+      linarith
+/-- `Λⁿ(ℝᴾ)` is finite-dimensional: `α ↦ (α(e_{I(1)}, …, e_{I(n)}))_{I : Fin n → Fin P}` is a linear
+map into the finite-dimensional space `(Fin n → Fin P) → ℝ`, injective because an alternating map
+is determined by its values on tuples of basis vectors. -/
+theorem Submission.dor_lmbs_tfa_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+  intro P n
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `L α = (α(e ∘ I))_I`
+  let L : Covector (Euclid P) n →ₗ[ℝ] (Fin n → Fin P) → ℝ :=
+    { toFun := fun α I => α fun k => e (I k)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  refine FiniteDimensional.of_injective L fun α β h => ?_
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  exact e.ext_alternating fun v _ => congrFun h v
+
+/-- Test forms supported in a fixed compact `K` have a countable subfamily `D` approximating every
+such `ω` together with `dω`, uniformly on `ℝᴾ`.  The covector spaces are finite-dimensional
+(`dor_lmbs_tfa_covector_finiteDimensional`), so `C(K, Λⁿ × Λⁿ⁺¹)` is second countable; pull back
+a countable dense subset of the image of `X = {ω : spt ω ⊆ K}` under `Φ ω = (ω, dω)|_K`.  On `K`
+the pointwise distances are at most the uniform distance; off `K` all four values vanish. -/
+theorem Submission.dor_lmbs_tfa_fixed_support_dense : ∀ (P n : ℕ) (U K : Set (Euclid P)), IsCompact K → ∃ D : Set (TestFormOn U n), D.Countable ∧ (∀ η ∈ D, tsupport (η : DifferentialForm (Euclid P) n) ⊆ K) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → ∀ ε : ℝ, 0 < ε → ∃ η ∈ D, (∀ x, dist ((ω : DifferentialForm (Euclid P) n) x) ((η : DifferentialForm (Euclid P) n) x) < ε) ∧ ∀ x, dist (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) (exteriorDerivative (η : DifferentialForm (Euclid P) n) x) < ε := by
+  intro P n U K hK
+  -- Step 1: a form supported in `K` vanishes off `K`, and so does its exterior derivative
+  have hzero : ∀ η : TestFormOn U n, tsupport (η : DifferentialForm (Euclid P) n) ⊆ K →
+      ∀ x ∉ K, (η : DifferentialForm (Euclid P) n) x = 0 ∧
+        exteriorDerivative (η : DifferentialForm (Euclid P) n) x = 0 := fun η hη x hx =>
+    ⟨image_eq_zero_of_notMem_tsupport fun h => hx (hη h),
+      image_eq_zero_of_notMem_tsupport fun h => hx (hη (tsupport_exteriorDerivative_subset _ h))⟩
+  -- Step 2: `Λⁿ` and `Λⁿ⁺¹` are finite-dimensional, hence proper and second countable
+  have := Submission.dor_lmbs_tfa_covector_finiteDimensional P n
+  have := Submission.dor_lmbs_tfa_covector_finiteDimensional P (n + 1)
+  have : ProperSpace (Covector (Euclid P) n) := FiniteDimensional.proper_real _
+  have : ProperSpace (Covector (Euclid P) (n + 1)) := FiniteDimensional.proper_real _
+  have : SecondCountableTopology (Covector (Euclid P) n) := secondCountable_of_proper
+  have : SecondCountableTopology (Covector (Euclid P) (n + 1)) := secondCountable_of_proper
+  -- Step 3: `K` is compact, so `C(K, Λⁿ × Λⁿ⁺¹)` carries the sup metric, and it is second
+  -- countable: up to `ε`, `f` is determined by a modulus `j` of uniform continuity at scale `ε / 4`
+  -- and by the indices, in a dense sequence `s`, of `ε / 4`-approximations of its values on a
+  -- finite `1 / (j + 1)`-net `t j` of `K`
+  have : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  have : SecondCountableTopology C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)) := by
+    refine Metric.secondCountable_of_countable_discretization
+      (α := C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1))) fun ε hε => ?_
+    obtain ⟨s, hs⟩ := TopologicalSpace.exists_dense_seq
+      (Covector (Euclid P) n × Covector (Euclid P) (n + 1))
+    choose r hr using fun y : Covector (Euclid P) n × Covector (Euclid P) (n + 1) =>
+      hs.exists_dist_lt y (by positivity : (0 : ℝ) < ε / 4)
+    have hnet : ∀ j : ℕ, ∃ t : Finset K, ∀ x : K, ∃ p ∈ t, dist x p < 1 / ((j : ℝ) + 1) := by
+      intro j
+      obtain ⟨t, -, ht⟩ := (isCompact_univ : IsCompact (univ : Set K)).elim_nhds_subcover
+        (fun x => ball x (1 / ((j : ℝ) + 1))) fun x _ => ball_mem_nhds x (by positivity)
+      exact ⟨t, fun x => by simpa using ht (mem_univ x)⟩
+    choose t ht using hnet
+    have hmod : ∀ f : C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)), ∃ j : ℕ,
+        ∀ x y : K, dist x y < 1 / ((j : ℝ) + 1) → dist (f x) (f y) < ε / 4 := by
+      intro f
+      obtain ⟨δ, hδ, hfδ⟩ := Metric.uniformContinuous_iff.1
+        (CompactSpace.uniformContinuous_of_continuous f.continuous) (ε / 4) (by positivity)
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+      exact ⟨j, fun x y hxy => hfδ (hxy.trans hj)⟩
+    choose J hJ using hmod
+    refine ⟨ℕ × List ℕ, inferInstance, fun f => (J f, (t (J f)).toList.map fun p => r (f p)),
+      fun f g hfg => (ContinuousMap.dist_le hε.le).2 fun x => ?_⟩
+    obtain ⟨hj, hl⟩ := Prod.mk.inj hfg
+    rw [← hj] at hl
+    -- `x` is `1 / (j + 1)`-close to a net point `p`, where `f p` and `g p` have a common index
+    obtain ⟨p, hp, hxp⟩ := ht (J f) x
+    have hrp : r (f p) = r (g p) := List.map_inj_left.1 hl p (Finset.mem_toList.2 hp)
+    have h₁ := hJ f x p hxp
+    have h₂ := hr (f p)
+    have h₃ := hr (g p)
+    have h₄ := hJ g x p (hj ▸ hxp)
+    rw [hrp] at h₂
+    rw [dist_comm] at h₃ h₄
+    linarith [dist_triangle4 (f x) (f p) (s (r (g p))) (g x),
+      dist_triangle (s (r (g p))) (g p) (g x)]
+  -- Step 4: `Φ ω = (ω, dω)|_K`
+  let Φ : TestFormOn U n → C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)) := fun ω =>
+    ⟨fun x => ((ω : DifferentialForm (Euclid P) n) x,
+        exteriorDerivative (ω : DifferentialForm (Euclid P) n) x),
+      (ω.property.1.1.continuous.prodMk
+        (exteriorDerivative_isTestForm ω.property.1).1.continuous).comp continuous_subtype_val⟩
+  let X : Set (TestFormOn U n) := {ω | tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K}
+  -- Step 5: a countable `T ⊆ Φ(X)` dense in `Φ(X)`, and a choice `σ` of preimages in `X`
+  obtain ⟨T, hTc, hTX, hXT⟩ := TopologicalSpace.exists_countable_dense_subset (Φ '' X)
+  have hT : ∀ t ∈ T, ∃ η, η ∈ X ∧ Φ η = t := fun t ht => hTX ht
+  choose! σ hσX hσΦ using hT
+  -- Step 6: `D = σ(T)` is countable and supported in `K`
+  refine ⟨σ '' T, hTc.image σ, ?_, ?_⟩
+  · rintro _ ⟨t, ht, rfl⟩
+    exact hσX t ht
+  -- Step 7: pick `t ∈ T` with `dist (Φ ω) t < ε` and put `η = σ t`
+  intro ω hω ε hε
+  obtain ⟨t, ht, hdist⟩ := (Metric.mem_closure_iff
+    (α := C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)))).1 (hXT ⟨ω, hω, rfl⟩) ε hε
+  rw [← hσΦ t ht] at hdist
+  have key : ∀ x, dist ((ω : DifferentialForm (Euclid P) n) x)
+      ((σ t : DifferentialForm (Euclid P) n) x) < ε ∧
+      dist (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x)
+        (exteriorDerivative (σ t : DifferentialForm (Euclid P) n) x) < ε := by
+    intro x
+    by_cases hx : x ∈ K
+    · -- (a) on `K`: both distances are at most `dist (Φ ω) (Φ η) < ε`
+      have h := (ContinuousMap.dist_apply_le_dist (f := Φ ω) (g := Φ (σ t)) ⟨x, hx⟩).trans_lt hdist
+      rw [Prod.dist_eq] at h
+      exact ⟨(le_max_left _ _).trans_lt h, (le_max_right _ _).trans_lt h⟩
+    · -- (b) off `K`: all four values vanish
+      obtain ⟨h₁, h₂⟩ := hzero ω hω x hx
+      obtain ⟨h₃, h₄⟩ := hzero (σ t) (hσX t ht) x hx
+      rw [h₁, h₂, h₃, h₄, dist_self, dist_self]
+      exact ⟨hε, hε⟩
+  exact ⟨σ t, ⟨t, ht, rfl⟩, fun x => (key x).1, fun x => (key x).2⟩
+
+/-- **A countable family of test forms, dense for `ω` and `dω` with common compact supports**
+(Simon Ch. 6, proof of 4.5(2), p. 157: "a countable dense set of `ω ∈ 𝒟ⁿ(U)`").  Take the
+compact exhaustion `Kᵢ` of `U` (`dor_lmbs_tfa_compact_exhaustion`) and, for each `i`, a
+countable `Dᵢ` approximating every `ω` with `spt ω ⊆ Kᵢ` uniformly together with `dω`
+(`dor_lmbs_tfa_fixed_support_dense`); then `D = ⋃ᵢ Dᵢ`.  Given `ω`, `spt ω ⊆ Kᵢ` for some `i`,
+and `ωₖ ∈ Dᵢ` within `1/(k+1)` of `ω` and of `dω` gives `ωₖ → ω`, `dωₖ → dω` uniformly. -/
+theorem Submission.dor_lmbs_testForm_countable_approx : ∀ (P n : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ D : Set (TestFormOn U n), D.Countable ∧ ∀ ω : TestFormOn U n, ∃ (K : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), IsCompact K ∧ K ⊆ U ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K ∧ (∀ k, ωs k ∈ D) ∧ (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ K) ∧ TendstoUniformly (fun k x => (ωs k : DifferentialForm (Euclid P) n) x) (ω : DifferentialForm (Euclid P) n) atTop ∧ TendstoUniformly (fun k x => exteriorDerivative (ωs k : DifferentialForm (Euclid P) n) x) (exteriorDerivative (ω : DifferentialForm (Euclid P) n)) atTop := by
+  intro P n U hU
+  -- step 1: the compact exhaustion `Kᵢ` of `U`
+  obtain ⟨K, hKc, hKU, hKex⟩ := Submission.dor_lmbs_tfa_compact_exhaustion P U hU
+  -- steps 2–4: a countable `Dᵢ` for the test forms supported in `Kᵢ`
+  choose D hDc hDK hDω using fun i =>
+    Submission.dor_lmbs_tfa_fixed_support_dense P n U (K i) (hKc i)
+  -- step 5: `D = ⋃ᵢ Dᵢ`
+  refine ⟨⋃ i, D i, Set.countable_iUnion hDc, fun ω => ?_⟩
+  -- step 6: `spt ω` is a compact subset of `U`, so it lies in some `Kᵢ`
+  obtain ⟨i, hi⟩ :=
+    hKex (tsupport (ω : DifferentialForm (Euclid P) n)) ω.property.1.2 ω.property.2
+  -- `ωₖ ∈ Dᵢ` within `1/(k+1)` of `ω` and of `dω`
+  choose ωs hωsD hωs using fun k : ℕ =>
+    hDω i ω hi (1 / ((k : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hsmall : ∀ ε : ℝ, 0 < ε → ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < ε := fun ε hε => by
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hε
+    filter_upwards [Filter.eventually_ge_atTop N] with k hk
+    exact (Nat.one_div_le_one_div hk).trans_lt hN
+  refine ⟨K i, ωs, hKc i, hKU i, hi, fun k => Set.mem_iUnion.2 ⟨i, hωsD k⟩,
+    fun k => hDK i (ωs k) (hωsD k), ?_, ?_⟩
+  · rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [hsmall ε hε] with k hk x
+    exact ((hωs k).1 x).trans hk
+  · rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [hsmall ε hε] with k hk x
+    exact ((hωs k).2 x).trans hk
+
+/-- **From averaged slice identities to the pointwise slice identity** (Simon Ch. 6, end of the
+proof of 4.5(2), with Remark 4.2).  If `s ↦ τ(R_s)(ω)` is locally integrable and its averages over
+`[a, b]` are the cut-off integrals `∫_M θ γ_{a,b}(f) ⟨dω, ξ⟩ − ∫_{M'} θ' γ_{a,b}(f) ⟨ω, ξ'⟩`, then
+for a.e. `t` and every `ω`, `τ(R_t)(ω) = ∫_{M ∩ {f < t}} θ ⟨dω, ξ⟩ − ∫_{M' ∩ {f < t}} θ' ⟨ω, ξ'⟩`.
+For a fixed `ω` this follows from the Lebesgue differentiation theorem (left averages over
+`[y, t]`, `y ↑ t`) and dominated convergence of the cut-offs `γ_{y,t}(f) → 1_{f < t}`; the null set
+is made independent of `ω` with the countable family of `dor_lmbs_testForm_countable_approx`, and
+the identity passes to all `ω` by dominated convergence along `ω_k → ω`, `dω_k → dω` uniformly with
+supports in a common compact set. -/
+theorem Submission.dor_lmbs_slice_identity_of_averages : ∀ (P n : ℕ) (U : Set (Euclid P)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (Rs : ℝ → IMRep U n) (f : Euclid P → ℝ), IsOpen U → Measurable f → (∀ ω : TestFormOn U n, LocallyIntegrable (fun s => (Rs s).action (ω : DifferentialForm (Euclid P) n))) → (∀ (ω : TestFormOn U n) (a b : ℝ), a < b → ∫ s in a..b, (Rs s).action (ω : DifferentialForm (Euclid P) n) = (b - a) * ((∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n])) → ∀ᵐ t, ∀ ω : TestFormOn U n, (Rs t).action (ω : DifferentialForm (Euclid P) n) = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+  intro P n U RT RB Rs f hU hf hloc havg
+  -- Step 1: pairings with a triple `R = (N, φ, ζ)`.  A unit orientation has norm at most `1`, so
+  -- `|φ ζ(β)| ≤ C φ 1_K` when `‖β‖ ≤ C` and `β = 0` off the compact `K ⊆ U`.
+  have horient : ∀ (k : ℕ) (R : IMRep U k), ∀ᵐ x ∂(μHE[k].restrict R.carrier),
+      ∀ α : Covector (Euclid P) k, ‖R.orient x α‖ ≤ ‖α‖ := by
+    intro k R
+    filter_upwards [R.orients] with x hx α
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    have hα : ‖α τ‖ ≤ ‖α‖ := by simpa [hτ.1] using α.le_opNorm τ
+    rcases hξ with hξ | hξ <;> simpa [hξ α] using hα
+  have hmult : ∀ (k : ℕ) (R : IMRep U k), Measurable fun x => (R.mult x : ℝ) :=
+    fun k R => measurable_from_nat.comp R.measurable_mult
+  have hmultK : ∀ (k : ℕ) (R : IMRep U k) (K : Set (Euclid P)), IsCompact K → K ⊆ U →
+      Integrable (K.indicator fun x => (R.mult x : ℝ)) (μHE[k].restrict R.carrier) := by
+    intro k R K hK hKU
+    rw [integrable_indicator_iff hK.measurableSet, IntegrableOn,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    refine ⟨(hmult k R).aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_ofReal (Eventually.of_forall fun x => Nat.cast_nonneg _)]
+    simpa only [ENNReal.ofReal_natCast] using
+      lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKU)
+  have hmeas : ∀ (k : ℕ) (R : IMRep U k) (β : Euclid P → Covector (Euclid P) k), Continuous β →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (β x))
+        (μHE[k].restrict R.carrier) :=
+    fun k R β hβ => (hmult k R).aestronglyMeasurable.mul
+      (Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : MultiVector P k) (v : Covector (Euclid P) k) => L v)
+        (continuous_fst.clm_apply continuous_snd) R.aestronglyMeasurable_orient
+        hβ.aestronglyMeasurable)
+  have hbound : ∀ (k : ℕ) (R : IMRep U k) (K : Set (Euclid P))
+      (β : Euclid P → Covector (Euclid P) k) (C : ℝ), (∀ x, ‖β x‖ ≤ C) →
+      (∀ x, x ∉ K → β x = 0) → ∀ᵐ x ∂(μHE[k].restrict R.carrier),
+        ‖(R.mult x : ℝ) * R.orient x (β x)‖ ≤ C * K.indicator (fun x => (R.mult x : ℝ)) x := by
+    intro k R K β C hC hK
+    filter_upwards [horient k R] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, mul_comm C]
+      exact mul_le_mul_of_nonneg_left ((hx _).trans (hC x)) (Nat.cast_nonneg _)
+    · rw [indicator_of_notMem hxK, hK x hxK, map_zero, mul_zero, norm_zero, mul_zero]
+  have hint : ∀ (k : ℕ) (R : IMRep U k) (K : Set (Euclid P))
+      (β : Euclid P → Covector (Euclid P) k), IsCompact K → K ⊆ U → Continuous β →
+      (∀ x, x ∉ K → β x = 0) →
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x (β x)) (μHE[k].restrict R.carrier) := by
+    intro k R K β hK hKU hβ hβK
+    obtain ⟨C, hC⟩ := hβ.bounded_above_of_compact_support (HasCompactSupport.intro hK hβK)
+    exact ((hmultK k R K hK hKU).const_mul C).mono' (hmeas k R β hβ) (hbound k R K β C hC hβK)
+  -- dominated convergence along `β_j → β` uniformly, with supports in a common compact `K`
+  have hlim : ∀ (k : ℕ) (R : IMRep U k) (ν : Measure (Euclid P)) (K : Set (Euclid P))
+      (βs : ℕ → Euclid P → Covector (Euclid P) k) (β : Euclid P → Covector (Euclid P) k),
+      ν ≤ μHE[k].restrict R.carrier → IsCompact K → K ⊆ U → Continuous β →
+      (∀ j, Continuous (βs j)) → (∀ x, x ∉ K → β x = 0) → (∀ j x, x ∉ K → βs j x = 0) →
+      TendstoUniformly βs β atTop →
+      Tendsto (fun j => ∫ x, (R.mult x : ℝ) * R.orient x (βs j x) ∂ν) atTop
+        (𝓝 (∫ x, (R.mult x : ℝ) * R.orient x (β x) ∂ν)) := by
+    intro k R ν K βs β hν hK hKU hβ hβs hβK hβsK hconv
+    obtain ⟨C, hC⟩ := hβ.bounded_above_of_compact_support (HasCompactSupport.intro hK hβK)
+    refine tendsto_integral_filter_of_dominated_convergence
+      (fun x => (C + 1) * K.indicator (fun x => (R.mult x : ℝ)) x)
+      (Eventually.of_forall fun j => (hmeas k R (βs j) (hβs j)).mono_measure hν) ?_
+      (((hmultK k R K hK hKU).const_mul (C + 1)).mono_measure hν)
+      (Eventually.of_forall fun x => tendsto_const_nhds.mul
+        (((R.orient x).continuous.tendsto (β x)).comp (hconv.tendsto_at x)))
+    filter_upwards [Metric.tendstoUniformly_iff.1 hconv 1 one_pos] with j hj
+    refine ae_mono hν (hbound k R K (βs j) (C + 1) (fun x => ?_) (hβsK j))
+    have hjx : ‖β x - βs j x‖ < 1 := by simpa [dist_eq_norm] using hj x
+    calc ‖βs j x‖ = ‖β x - (β x - βs j x)‖ := by rw [sub_sub_cancel]
+      _ ≤ ‖β x‖ + ‖β x - βs j x‖ := norm_sub_le _ _
+      _ ≤ C + 1 := add_le_add (hC x) hjx.le
+  -- Step 2: the cut-offs `γ_{y,t}(f) = min 1 (max 0 ((t - f) / (t - y)))` lie in `[0, 1]` and
+  -- tend to `1_{f < t}` as `y ↑ t`.
+  have hcut : ∀ (k : ℕ) (R : IMRep U k) (K : Set (Euclid P))
+      (β : Euclid P → Covector (Euclid P) k) (t : ℝ), IsCompact K → K ⊆ U → Continuous β →
+      (∀ x, x ∉ K → β x = 0) →
+      Tendsto (fun y => ∫ x in R.carrier,
+          (R.mult x : ℝ) * min 1 (max 0 ((t - f x) / (t - y))) * R.orient x (β x) ∂μHE[k])
+        (𝓝[<] t)
+        (𝓝 (∫ x in R.carrier ∩ {x | f x < t}, (R.mult x : ℝ) * R.orient x (β x) ∂μHE[k])) := by
+    intro k R K β t hK hKU hβ hβK
+    rw [← setIntegral_indicator
+      (measurableSet_lt hf measurable_const : MeasurableSet {x | f x < t})]
+    refine tendsto_integral_filter_of_dominated_convergence
+      (fun x => ‖(R.mult x : ℝ) * R.orient x (β x)‖) (Eventually.of_forall fun y => ?_)
+      (Eventually.of_forall fun y => Eventually.of_forall fun x => ?_)
+      (hint k R K β hK hKU hβ hβK).norm (Eventually.of_forall fun x => ?_)
+    · have hγ : Measurable fun x => min (1 : ℝ) (max 0 ((t - f x) / (t - y))) :=
+        measurable_const.min (measurable_const.max ((measurable_const.sub hf).div_const _))
+      have h := (hmeas k R β hβ).mul hγ.aestronglyMeasurable
+      refine h.congr (Eventually.of_forall fun x => ?_)
+      simp only [Pi.mul_apply]
+      ring
+    · have h0 : 0 ≤ min (1 : ℝ) (max 0 ((t - f x) / (t - y))) :=
+        le_min zero_le_one (le_max_left _ _)
+      rw [mul_right_comm, norm_mul, Real.norm_of_nonneg h0]
+      exact mul_le_of_le_one_right (norm_nonneg _) (min_le_left _ _)
+    · by_cases hx : f x < t
+      · rw [indicator_of_mem (show x ∈ {x | f x < t} from hx)]
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [Ioo_mem_nhdsLT hx] with y hy
+        have h1 : 1 ≤ (t - f x) / (t - y) :=
+          (one_le_div (sub_pos.2 hy.2)).2 (by linarith [hy.1])
+        rw [max_eq_right (zero_le_one.trans h1), min_eq_left h1, mul_one]
+      · rw [indicator_of_notMem (show x ∉ {x | f x < t} from hx)]
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with y hy
+        have h1 : (t - f x) / (t - y) ≤ 0 :=
+          div_nonpos_of_nonpos_of_nonneg (by linarith [not_lt.1 hx]) (sub_pos.2 hy).le
+        rw [max_eq_left h1, min_eq_right zero_le_one, mul_zero, zero_mul]
+  -- Step 3: for a fixed `ω`, Lebesgue differentiation on `[y, t]`, `y ↑ t`, with (ii) for
+  -- `(a, b) = (y, t)` identifies `τ(R_t)(ω)` with the limit of Step 2 off a null set.
+  have hpt : ∀ ω : TestFormOn U n, ∀ᵐ t, (Rs t).action (ω : DifferentialForm (Euclid P) n) =
+      (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) *
+          RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) -
+        ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) *
+          RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+    intro ω
+    have hω : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+        tsupport (ω : DifferentialForm (Euclid P) n) ⊆ U := ω.2
+    have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := hω.1.2
+    filter_upwards
+      [(IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure ℝ) 1).ae_tendsto_average (hloc ω)]
+      with t ht
+    refine tendsto_nhds_unique ((ht.comp (Real.tendsto_Icc_vitaliFamily_left t)).congr' ?_)
+      ((hcut (n + 1) RT _ _ t hK hω.2
+        (ContDiff.continuous (exteriorDerivative_isTestForm hω.1).1)
+        fun x hx => image_eq_zero_of_notMem_tsupport fun h =>
+          hx (tsupport_exteriorDerivative_subset _ h)).sub
+      (hcut n RB _ _ t hK hω.2 (ContDiff.continuous hω.1.1)
+        fun x hx => image_eq_zero_of_notMem_tsupport hx))
+    filter_upwards [self_mem_nhdsWithin] with y (hy : y < t)
+    simp only [Function.comp_apply]
+    rw [setAverage_eq, measureReal_def, Real.volume_Icc, ENNReal.toReal_ofReal (sub_pos.2 hy).le,
+      integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hy.le, havg ω y t hy,
+      smul_eq_mul, inv_mul_cancel_left₀ (sub_pos.2 hy).ne']
+  -- Steps 4–6: one null set for the countable family `D`; every `ω` is a limit of forms in `D`
+  -- with `ω_k → ω`, `dω_k → dω` uniformly and supports in one compact `K ⊆ U`.
+  obtain ⟨D, hDc, hD⟩ := Submission.dor_lmbs_testForm_countable_approx P n U hU
+  filter_upwards [(ae_ball_iff hDc).2 fun η _ => hpt η] with t ht ω
+  obtain ⟨K, ωs, hK, hKU, hωK, hωsD, hωsK, hconv, hdconv⟩ := hD ω
+  have hω : IsTestForm (ω : DifferentialForm (Euclid P) n) := ω.2.1
+  have hωs : ∀ j, IsTestForm (ωs j : DifferentialForm (Euclid P) n) := fun j => (ωs j).2.1
+  have hA := hlim n (Rs t) _ K (fun j => (ωs j : DifferentialForm (Euclid P) n)) _ le_rfl hK hKU
+    (ContDiff.continuous hω.1) (fun j => ContDiff.continuous (hωs j).1)
+    (fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωK h))
+    (fun j x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωsK j h)) hconv
+  have hB := (hlim (n + 1) RT (μHE[n + 1].restrict (RT.carrier ∩ {x | f x < t})) K
+      (fun j => exteriorDerivative (ωs j : DifferentialForm (Euclid P) n)) _
+      (Measure.restrict_mono inter_subset_left le_rfl) hK hKU
+      (ContDiff.continuous (exteriorDerivative_isTestForm hω).1)
+      (fun j => ContDiff.continuous (exteriorDerivative_isTestForm (hωs j)).1)
+      (fun x hx => image_eq_zero_of_notMem_tsupport fun h =>
+        hx (hωK (tsupport_exteriorDerivative_subset _ h)))
+      (fun j x hx => image_eq_zero_of_notMem_tsupport fun h =>
+        hx (hωsK j (tsupport_exteriorDerivative_subset _ h))) hdconv).sub
+    (hlim n RB (μHE[n].restrict (RB.carrier ∩ {x | f x < t})) K
+      (fun j => (ωs j : DifferentialForm (Euclid P) n)) _
+      (Measure.restrict_mono inter_subset_left le_rfl) hK hKU (ContDiff.continuous hω.1)
+      (fun j => ContDiff.continuous (hωs j).1)
+      (fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωK h))
+      (fun j x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωsK j h)) hconv)
+  exact tendsto_nhds_unique hA (hB.congr fun j => (ht (ωs j) (hωsD j)).symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
