@@ -359,6 +359,90 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Densities of top-degree test-form functionals on an open set are unique a.e. (Simon Ch. 6, end
+of the Proof of 8.2, p. 179: `θ ≡ θ(x)` in `B₁ⁿ(0)`, top-dimensional currents acting by
+`ω = a dx¹ ∧ ⋯ ∧ dxⁿ ↦ ∫ a θ dLⁿ` as in 2.35 (∗)).  For `a ∈ C_c^∞(U)`, the form `ω = a • vol`
+with `vol = dx¹ ∧ ⋯ ∧ dxⁿ` is a test form on `U` with `ω(x)(e₁, …, eₙ) = a(x)`
+(`wedgeCovectors_apply_det`: `vol(e) = det 1 = 1`), so the hypothesis gives
+`∫ a (u - v) = ∫_U u a - ∫_U v a = 0`.  As `u - v` is locally integrable on the open set `U`, the
+fundamental lemma of the calculus of variations
+(`IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) gives `u = v` a.e. on `U`. -/
+theorem Submission.ind_top_form_density_ae_unique :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (u v : Eucl (m + 1) → ℝ), IsOpen U →
+      (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) →
+      (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn v K volume) →
+      (∀ ω : TestFormOn U (m + 1),
+        ∫ x in U, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume =
+        ∫ x in U, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) →
+      ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → u x = v x := by
+  intro m U u v hU hu hv h
+  -- Step 1: the volume covector `vol = dx¹ ∧ ⋯ ∧ dxⁿ` has `vol(e) = det 1 = 1`.
+  obtain ⟨vol, hvol⟩ : ∃ vol : Covector (Eucl (m + 1)) (m + 1),
+      vol (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+    refine ⟨wedgeCovectors (m + 1) (fun j => EuclideanSpace.proj j), ?_⟩
+    rw [wedgeCovectors_apply_det]
+    have hI : (Matrix.of fun i j =>
+        (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ) (EuclideanSpace.single j (1 : ℝ))) = 1 := by
+      ext i j
+      simp [Matrix.one_apply]
+    rw [hI, Matrix.det_one]
+  -- Step 2: `u - v` is integrable on compact subsets of the open set `U`, so it is locally
+  -- integrable on `U`.
+  have hloc : LocallyIntegrableOn (fun x => u x - v x) U volume := by
+    rw [locallyIntegrableOn_iff hU.isLocallyClosed]
+    intro K hKU hK
+    exact (hu K hK hKU).sub (hv K hK hKU)
+  -- Step 3: the fundamental lemma; it remains to show `∫ a • (u - v) = 0` for `a ∈ C_c^∞(U)`.
+  have key : ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → u x - v x = 0 := by
+    refine hU.ae_eq_zero_of_integral_contDiff_smul_eq_zero hloc fun a ha ha_cs ha_sub => ?_
+    -- Step 4: `ω = a • vol` is a test form on `U` with `ω(x)(e) = a(x)`.
+    let ω : TestFormOn U (m + 1) :=
+      ⟨fun x => a x • vol,
+        ⟨⟨ha.smul contDiff_const, ha_cs.smul_right⟩,
+          (tsupport_smul_subset_left _ _).trans ha_sub⟩⟩
+    have hω : ∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) = a x := by
+      intro x
+      simp [ω, hvol]
+    -- Step 5: the hypothesis for `ω` reads `∫_U u a = ∫_U v a`.
+    have hua := h ω
+    simp only [hω] at hua
+    -- Step 6: `w a` is integrable for `w ∈ {u, v}`: it is integrable on the compact set
+    -- `tsupport a ⊆ U` and vanishes outside it.
+    have hK : IsCompact (tsupport a) := ha_cs
+    have hint : ∀ w : Eucl (m + 1) → ℝ,
+        (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn w K volume) →
+        IntegrableOn (fun x => w x * a x) U volume := by
+      intro w hw
+      have h1 : IntegrableOn (fun x => w x * a x) (tsupport a) volume :=
+        (hw _ hK ha_sub).mul_continuousOn ha.continuous.continuousOn hK
+      have h2 : Integrable (fun x => w x * a x) volume := by
+        rw [← integrableOn_iff_integrable_of_support_subset]
+        · exact h1
+        · intro x hx
+          apply subset_tsupport
+          intro hax
+          apply hx
+          simp [hax]
+      exact h2.integrableOn
+    -- Step 7: `a = 0` off `U`, so `∫ a • (u - v) = ∫_U u a - ∫_U v a = 0`.
+    have hzero : ∀ x, x ∉ U → a x • (u x - v x) = 0 := by
+      intro x hx
+      have : a x = 0 := image_eq_zero_of_notMem_tsupport (fun hx' => hx (ha_sub hx'))
+      simp [this]
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+    have hsplit : ∀ x, a x • (u x - v x) = u x * a x - v x * a x := by
+      intro x
+      simp only [smul_eq_mul]
+      ring
+    simp only [hsplit]
+    rw [integral_sub (hint u hu) (hint v hv), hua, sub_self]
+  -- Step 8: conclusion.
+  filter_upwards [key] with x hx hxU
+  exact sub_eq_zero.mp (hx hxU)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
