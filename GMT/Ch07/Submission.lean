@@ -4066,6 +4066,31 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **Countably `n`-rectifiable sets of finite measure have density one a.e.** (general fact
+(G7); Simon Ch. 3, Lemma 1.2, Remark 1.3, the proof of Theorem 1.6 "⇒" and Remark 1.5(3),
+chapter-03.txt lines 25–144).  Let `M ⊆ ℝᴾ` be Borel and countably `n`-rectifiable with
+`Hⁿ(M) < ∞`.  Then `Hⁿ(M ∩ K) ≤ Hⁿ(M) < ∞` for every compact `K`, so by Theorem 1.6 "⇒" the
+approximate tangent space `T_wM` exists for `Hⁿ`-a.e. `w ∈ M`.  At such `w`, `Hⁿ(M ∩ B̄_1(w))` is
+finite, so `Hⁿ(M ∩ B̄_t(w)) / (ωₙtⁿ) → 1` by Remark 1.5(3); for the measure `Hⁿ⌞M` this
+closed-ball limit gives the open-ball limit `Hⁿ(M ∩ B_t(w)) / (ωₙtⁿ) → 1` as `t ↓ 0`. -/
+theorem Submission.codim1_rdo_rectifiable_ae_density_one : ∀ (P n : ℕ) (M : Set (Euclid P)), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → ∀ᵐ w ∂(μHE[n].restrict M), Tendsto (fun t : ℝ => μHE[n] (M ∩ ball w t) / (unitBallVolume n * ENNReal.ofReal (t ^ n))) (𝓝[>] 0) (𝓝 1) := by
+  intro P n M _ hM hrect hfin
+  -- Step 1: `Hⁿ(M ∩ K) ≤ Hⁿ(M) < ∞` for every `K`
+  have hloc : ∀ K : Set (Euclid P), μHE[n] (M ∩ K) ≠ ∞ := fun K =>
+    ne_top_of_le_ne_top hfin (measure_mono inter_subset_left)
+  -- Step 2 (Lemma 1.2, Remark 1.3, Theorem 1.6 "⇒"): approximate tangent spaces `Hⁿ`-a.e. on `M`
+  have htan := Submission.codim1_rdo_rectifiable_ae_approxTangent P n M hM hrect fun K _ => hloc K
+  -- Step 3: `Hⁿ⌞M` evaluates as `Hⁿ(M ∩ ·)`
+  have hν : ∀ s : Set (Euclid P), μHE[n].restrict M s = μHE[n] (M ∩ s) := fun s => by
+    rw [Measure.restrict_apply' hM, inter_comm]
+  filter_upwards [htan] with w ⟨Q, hQ⟩
+  -- Step 4 (Remark 1.5(3)): closed-ball density one at `w`, as `Hⁿ(M ∩ B̄_1(w)) < ∞`
+  have hclosed := Submission.rsd_tendsto_closedBall_density_of_approxTangent P n M w Q 1 one_pos
+    (hloc _) hQ
+  -- Step 5: from closed to open balls, for the measure `Hⁿ⌞M`
+  exact (Submission.rsd_tendsto_ball_density_of_closedBall P n (μHE[n].restrict M) w 1
+    (hclosed.congr fun ρ => by rw [hν])).congr fun ρ => by rw [hν]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
