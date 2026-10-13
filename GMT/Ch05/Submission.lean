@@ -458,6 +458,47 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+/-- **Bochner and null-set transfer** (steps 5 and 6 of the varifold graph transfer).  The
+`lintegral` transfer identity says `μ ⌞ S = G_#((Lⁿ ⌞ A) ⌞ W)`; pushing Bochner integrals through
+`G` and the density `W ≥ 0` gives (i) for every Borel `φ`, and testing it on `φ = 1_{Z'}` for a Borel
+`μ`-null `Z' ⊇ Z` gives `W = 0` a.e. on `A ∩ G⁻¹(Z)`. -/
+theorem Submission.gwe_vgt_transfer_consequences : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (S : Set (Amb n ℓ)) (A : Set (Rn n)) (G : Rn n → Amb n ℓ) (W : Rn n → ℝ), MeasurableSet A → Measurable G → Measurable W → (∀ x, 0 ≤ W x) → (∀ φ : Amb n ℓ → ℝ≥0∞, Measurable φ → ∫⁻ y in S, φ y ∂μ = ∫⁻ x in A, ENNReal.ofReal (W x) * φ (G x)) → (∀ φ : Amb n ℓ → ℝ, Measurable φ → ∫ y in S, φ y ∂μ = ∫ x in A, W x * φ (G x)) ∧ ∀ Z : Set (Amb n ℓ), μ Z = 0 → ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ A → G x ∈ Z → W x = 0 := by
+  intro n ℓ μ S A G W hA hG hW hW0 hT
+  -- Step 1: `μ ⌞ S = G_# ν` with `ν = (Lⁿ ⌞ A).withDensity (ofReal ∘ W)`, tested on Borel `T`.
+  have hpush : μ.restrict S =
+      Measure.map G ((volume.restrict A).withDensity fun x => ENNReal.ofReal (W x)) := by
+    ext T hTm
+    calc μ.restrict S T = ∫⁻ y in S, T.indicator 1 y ∂μ := (lintegral_indicator_one hTm).symm
+      _ = ∫⁻ x in A, ENNReal.ofReal (W x) * T.indicator 1 (G x) :=
+          hT _ (measurable_one.indicator hTm)
+      _ = ∫⁻ x in A, (G ⁻¹' T).indicator (fun x => ENNReal.ofReal (W x)) x := by
+          refine lintegral_congr fun x => ?_
+          by_cases hx : G x ∈ T <;> simp [hx]
+      _ = ∫⁻ x in G ⁻¹' T, ENNReal.ofReal (W x) ∂(volume.restrict A) :=
+          lintegral_indicator (hG hTm) _
+      _ = Measure.map G ((volume.restrict A).withDensity fun x => ENNReal.ofReal (W x)) T := by
+          rw [Measure.map_apply hG hTm, withDensity_apply _ (hG hTm)]
+  refine ⟨fun φ hφ => ?_, fun Z hZ => ?_⟩
+  · -- Step 2: push the Bochner integral through `G`, then through the density `ofReal ∘ W`.
+    rw [hpush, integral_map hG.aemeasurable hφ.aestronglyMeasurable,
+      integral_withDensity_eq_integral_toReal_smul hW.ennreal_ofReal
+        (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
+    refine integral_congr_ae (ae_of_all _ fun x => ?_)
+    simp only [ENNReal.toReal_ofReal (hW0 x), smul_eq_mul]
+  · -- Steps 3–5: test the identity on `1_{Z'}` for a Borel `μ`-null `Z' ⊇ Z`.
+    obtain ⟨Z', hZZ', hZ'm, hZ'0⟩ := exists_measurable_superset_of_null hZ
+    have hmeas : Measurable fun x => ENNReal.ofReal (W x) * Z'.indicator 1 (G x) :=
+      hW.ennreal_ofReal.mul ((measurable_one.indicator hZ'm).comp hG)
+    have h0 : ∫⁻ x in A, ENNReal.ofReal (W x) * Z'.indicator 1 (G x) = 0 := by
+      rw [← hT _ (measurable_one.indicator hZ'm), lintegral_indicator_one hZ'm]
+      exact nonpos_iff_eq_zero.1 ((Measure.restrict_apply_le _ _).trans hZ'0.le)
+    filter_upwards [(ae_restrict_iff' hA).1 ((lintegral_eq_zero_iff hmeas).1 h0)]
+      with x hx hxA hGx
+    have h1 := hx hxA
+    simp only [Set.indicator_of_mem (hZZ' hGx), Pi.one_apply, mul_one, Pi.zero_apply,
+      ENNReal.ofReal_eq_zero] at h1
+    exact le_antisymm h1 (hW0 x)
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
