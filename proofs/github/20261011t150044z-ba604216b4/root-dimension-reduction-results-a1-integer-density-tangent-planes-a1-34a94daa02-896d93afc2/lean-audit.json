@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "49028e350ff095e98a2dccb98dd2dea479ed60118dd751383ebbf1fd48718149",
+  "git_delta": {
+    "base_commit": "099bdac27bad87b7ffdaf529b7627f37a1840111",
+    "candidate_commit": "f498a8efc56f20a419c00b83bd2efcfe9a10712c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tpf_blowUp_limit_boundaryVanishes",
+    "diff_sha256": "dfa55d162aeddf47212da83c0500472216fc0d1ba6c9663796a50a01931ecac1",
+    "source_sha256": "37df27a28002fcf8af6237ef9112778230b03cea110826731e768b3f1d442dfa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_blowUp_limit_boundaryVanishes",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → BoundaryVanishes T → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T x (lams i) (hlams i).ne') C → BoundaryVanishes C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
