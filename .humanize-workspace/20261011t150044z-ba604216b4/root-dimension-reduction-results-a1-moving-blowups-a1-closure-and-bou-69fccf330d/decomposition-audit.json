@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cbrld_ns_|dmcbrld_|massOn_sub|mass_sub_le|support_sub|sub_support' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "norm_setIntegral_le_of_norm_le_const_ae|setIntegral_eq_zero_of_forall_eq_zero|setIntegral_congr_set|setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "ofReal_add_le|ofReal_le_iff_le_toReal|toReal_add|toReal_mono|toReal_ofReal",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/null_set_independent_audit_ndwmn8g2/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/null_set_independent_audit_ndwmn8g2/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/null_set_independent_audit_ndwmn8g2/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-69fccf330d/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-69fccf330d/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d68cf7ac00/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d4899385da/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-89bdcb09ef/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-705a9842fc/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a26c93c3da/accepted-candidate.json",
+        "/tmp/null_set_independent_audit_ndwmn8g2/Types.lean",
+        "/tmp/null_set_independent_audit_ndwmn8g2/Reuse.lean",
+        "/tmp/null_set_independent_audit_ndwmn8g2/Assembly.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match their pins; Submission matches the frozen contract. The snapshot search found no relevant current-difference lemma. All five propositions elaborate independently before child implementations and pass the one-line validator. Each bare lean_name has exactly one existing owner, comparator-accepted with a byte-identical frozen type. Independently recompiled accepted implementations and the assembly use only propext, Classical.choice and Quot.sound. Subtraction resolves to the frozen current instance; no matrix construction occurs. The split is appropriate: comparison depends on support_sub and mass_sub; the ball lemmas supply its remaining current estimates. The reachable graph is acyclic. Together with the selected node's exact cone and covering dependencies, these estimates support the supplied admissible-form argument, mass supremum and bounded-set exhaustion proving precisely the selected null-set theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree for arbitrary U and degree n. Starting with a point in U outside both supports correctly supplies two zero-region neighborhoods. Their intersection has compact closure contained in U, and subtraction vanishes there. This proves the inclusion directly without VO or circular reliance."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches local ENNReal mass for arbitrary U and W. Negation preserves admissibility, linearity rewrites the difference evaluation, and ofReal_add_le followed by le_massOn bounds every supremum term. No openness or finiteness hypothesis is missing."
+    },
+    {
+      "key": "ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement requires neither local finiteness nor measurability of ξ. The proof handles infinite ball measure separately; otherwise the restricted a.e. bound and the verified norm_setIntegral lemma give the finite estimate without an integrability premise. Conversion to ENNReal and the mass supremum complete the proof."
+    },
+    {
+      "key": "ball_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes precisely the representation hypothesis in the Lean type. The chosen neighborhood outside the closed ball has compact closure, and every supported test form vanishes on the integration ball. Linearity of ξ and the zero-integral identity establish membership in the zero region. The argument also covers nonpositive radii."
+    },
+    {
+      "key": "comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and constants match the Lean proposition. The proof establishes zero boundary by extensionality, finite mass using mass_sub, and support containment using support_sub. It justifies each toReal conversion and uses c ≥ 0 and R > 0 when multiplying inequalities. The explicit cone hypothesis and admissible evaluation bound then prove the stated estimate. Its two dependency edges are genuine and correctly directed."
+    }
+  ],
+  "required_changes": []
+}
