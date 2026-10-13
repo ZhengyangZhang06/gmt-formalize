@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d7176e53a7f084bccd2a76f19763ff39fae8964ec6b1a751470eccec19c00079",
+  "git_delta": {
+    "base_commit": "dcbfd274e87df32440bd82b780d852101cce6024",
+    "candidate_commit": "67e7ae12c9c7378998998286bb0abfa78927e81c",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c8959a8e74debf694bc3c94297470fcabdc2646016defc2215b6c6f6f228b3cd",
+    "source_sha256": "98bfd6424e094d27fb9a36739e37a5836116494eceb1a2e1e7ea808fb2718ea1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_normal_coordinates",
+      "statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (δ : ℝ) (O : Set (Euclid P)) (g : Euclid P → Euclid d), 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ IsOpen O ∧ ContDiffOn ℝ 1 g O ∧ ∀ v ∈ ball v₀ δ, ∀ n : Euclid P, (fderiv ℝ ψ v).range.starProjection n = 0 → ‖n‖ < δ → ψ v + n ∈ O ∧ g (ψ v + n) = v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
