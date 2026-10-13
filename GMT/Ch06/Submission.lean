@@ -359,6 +359,426 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Polar coordinates for an integrable `g` on `ℝ^{m+1}`, with `σ = (Lᵐ⁺¹).toSphere`:
+`∫ g = ∫_{S^m} ∫_0^∞ r^m g(rθ) dr dσ(θ)`.  As in Mathlib's `integral_fun_norm_addHaar`,
+`homeomorphUnitSphereProd` carries Lebesgue measure on `ℝ^{m+1} ∖ {0}` to `σ ⊗ volumeIoiPow m`,
+Fubini splits the product, and `volumeIoiPow m` is `r^m dr` on `(0, ∞)`. -/
+theorem Submission.rpn_pe_integral_eq_polar :
+    ∀ (m : ℕ) (g : Eucl (m + 1) → ℝ), Integrable g → ∫ x, g x =
+      ∫ θ : sphere (0 : Eucl (m + 1)) 1, (∫ r in Ioi (0 : ℝ), r ^ m * g (r • (θ : Eucl (m + 1))))
+        ∂(volume : Measure (Eucl (m + 1))).toSphere := by
+  intro m g hg
+  -- `Φ = homeomorphUnitSphereProd` is measure preserving onto `σ ⊗ volumeIoiPow m`.
+  have hdim : Module.finrank ℝ (Eucl (m + 1)) - 1 = m := by simp
+  have hmp : MeasurePreserving (homeomorphUnitSphereProd (Eucl (m + 1)))
+      ((volume : Measure (Eucl (m + 1))).comap (↑))
+      ((volume : Measure (Eucl (m + 1))).toSphere.prod (Measure.volumeIoiPow m)) := by
+    have := (volume : Measure (Eucl (m + 1))).measurePreserving_homeomorphUnitSphereProd
+    rwa [hdim] at this
+  -- `G(θ, r) = g(rθ)` satisfies `G ∘ Φ = g` on `ℝ^{m+1} ∖ {0}`.
+  set G : sphere (0 : Eucl (m + 1)) 1 × Ioi (0 : ℝ) → ℝ :=
+    fun p => g ((p.2 : ℝ) • (p.1 : Eucl (m + 1))) with hG
+  have hGΦ : ∀ x : ({0}ᶜ : Set (Eucl (m + 1))), G (homeomorphUnitSphereProd _ x) = g x := by
+    intro x
+    have hx : ‖(x : Eucl (m + 1))‖ ≠ 0 := norm_ne_zero_iff.2 x.2
+    simp only [hG, homeomorphUnitSphereProd_apply_snd_coe, homeomorphUnitSphereProd_apply_fst_coe]
+    rw [smul_smul, mul_inv_cancel₀ hx, one_smul]
+  -- Remove the null point `0`, then change variables along `Φ`.
+  have h3 : ∫ x, g x = ∫ x : ({0}ᶜ : Set (Eucl (m + 1))), g x
+      ∂((volume : Measure (Eucl (m + 1))).comap (↑)) := by
+    rw [integral_subtype_comap (measurableSet_singleton _).compl g, restrict_compl_singleton]
+  have h4 : ∫ x : ({0}ᶜ : Set (Eucl (m + 1))), g x
+      ∂((volume : Measure (Eucl (m + 1))).comap (↑)) =
+      ∫ p, G p ∂((volume : Measure (Eucl (m + 1))).toSphere.prod (Measure.volumeIoiPow m)) := by
+    rw [← hmp.integral_comp (Homeomorph.measurableEmbedding _) G]
+    simp only [hGΦ]
+  have h5 : Integrable G
+      ((volume : Measure (Eucl (m + 1))).toSphere.prod (Measure.volumeIoiPow m)) := by
+    rw [← hmp.integrable_comp_emb (Homeomorph.measurableEmbedding _)]
+    have : G ∘ homeomorphUnitSphereProd (Eucl (m + 1)) = g ∘ Subtype.val := funext hGΦ
+    rw [this, ← integrableOn_iff_comap_subtypeVal (measurableSet_singleton _).compl]
+    exact hg.integrableOn
+  -- Fubini, then unfold `volumeIoiPow m = r^m dr` on `(0, ∞)` for each `θ`.
+  rw [h3, h4, integral_prod G h5]
+  congr 1
+  funext θ
+  simp only [hG, Measure.volumeIoiPow, ENNReal.ofReal]
+  rw [integral_withDensity_eq_integral_smul,
+    integral_subtype_comap measurableSet_Ioi
+      (fun a => Real.toNNReal (a ^ m) • g (a • (θ : Eucl (m + 1)))),
+    setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_]
+  · rw [NNReal.smul_def, Real.coe_toNNReal _ (pow_nonneg hx.out.le _), smul_eq_mul]
+  · exact (measurable_subtype_coe.pow_const _).real_toNNReal
+/-- The radial integral `∫_{B_ρ(0)} |w|^{1-n} dw = n ω_n ρ` in `ℝⁿ`, `n = m + 1`, `ρ > 0`,
+`ω_n = Lⁿ(B_1(0))` (formula (R) of the potential estimate in the proof of Simon Ch. 6, 8.1);
+`|w|^{1-n}` is written `(‖w‖ ^ m)⁻¹`.  In polar coordinates (`integrableOn_fun_norm_addHaar`,
+`integral_fun_norm_addHaar`) the radial profile `r^{n-1} (r^{n-1})⁻¹` is `1` on `(0, ρ)`: this
+gives integrability, and with `1_{B_ρ(0)}(w) = 1_{(-∞, ρ)}(|w|)` the value `n ω_n ρ`. -/
+theorem Submission.rpn_pe_inv_norm_pow_ball :
+    ∀ (m : ℕ) (ρ : ℝ), 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (ball (0 : Eucl (m + 1)) ρ) ∧ ∫ t in ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ = ((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ρ := by
+  intro m ρ hρ
+  have hdim : Module.finrank ℝ (Eucl (m + 1)) - 1 = m := by
+    rw [finrank_euclideanSpace_fin, Nat.add_sub_cancel]
+  constructor
+  · -- Integrability: `r ^ m • (r ^ m)⁻¹ = 1` is integrable on `(0, ρ)`.
+    rw [integrableOn_fun_norm_addHaar (volume : Measure (Eucl (m + 1)))
+      (f := fun r : ℝ => (r ^ m)⁻¹), hdim]
+    refine (integrableOn_congr_fun (g := fun _ => (1 : ℝ)) (fun r hr => ?_) measurableSet_Ioo).2
+      (integrableOn_const measure_Ioo_lt_top.ne)
+    exact mul_inv_cancel₀ (pow_ne_zero _ (ne_of_gt hr.1))
+  · -- `h = 1_{(-∞, ρ)} · (r ↦ (r ^ m)⁻¹)`, so `1_{B_ρ(0)}(w) (‖w‖ ^ m)⁻¹ = h ‖w‖`.
+    set h : ℝ → ℝ := (Iio ρ).indicator fun r => (r ^ m)⁻¹ with hh
+    have hind : (ball (0 : Eucl (m + 1)) ρ).indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) =
+        fun t => h ‖t‖ := by
+      ext t
+      simp [hh, indicator]
+    -- For `r > 0`, `r ^ m • h r = 1_{(-∞, ρ)}(r)`, so the radial integral is `L¹((0, ρ)) = ρ`.
+    have hrad : ∫ y in Ioi (0 : ℝ), y ^ (Module.finrank ℝ (Eucl (m + 1)) - 1) • h y = ρ := by
+      rw [hdim, setIntegral_congr_fun measurableSet_Ioi
+        (g := (Iio ρ).indicator fun _ => (1 : ℝ)) (fun y hy => ?_)]
+      · rw [integral_indicator measurableSet_Iio, Measure.restrict_restrict measurableSet_Iio,
+          setIntegral_const, Iio_inter_Ioi, measureReal_def, Real.volume_Ioo,
+          ENNReal.toReal_ofReal (by linarith), smul_eq_mul, mul_one, sub_zero]
+      · by_cases hy' : y < ρ
+        · simp [hh, indicator, hy', mul_inv_cancel₀ (pow_ne_zero m (ne_of_gt (mem_Ioi.1 hy)))]
+        · simp [hh, indicator, hy']
+    rw [← integral_indicator measurableSet_ball, hind,
+      integral_fun_norm_addHaar (volume : Measure (Eucl (m + 1))) h, hrad,
+      finrank_euclideanSpace_fin, measureReal_def, smul_eq_mul, nsmul_eq_mul]
+    push_cast
+    ring
+
+/-- Potential estimate over a set of finite measure (Gilbarg–Trudinger, proof of Lemma 7.12, with
+the cruder constant `n + 1`): for measurable `S ⊆ ℝⁿ`, `n = m + 1`, with `Lⁿ(S) < ∞`, the kernel
+`|w|^{1-n} = (|w|^m)⁻¹` is integrable on `S` and
+`∫_S |w|^{1-n} dw ≤ (n + 1) ω^{(n-1)/n} Lⁿ(S)^{1/n}`, `ω = Lⁿ(B_1(0))`.  Split `S` at the radius
+`ρ = (Lⁿ(S)/ω)^{1/n}`: the part inside `B_ρ(0)` contributes at most `∫_{B_ρ(0)} |w|^{1-n} = nωρ`,
+the part outside at most `ρ^{1-n} Lⁿ(S) = ωρ`. -/
+theorem Submission.rpn_pe_inv_norm_pow_set_bound : ∀ (m : ℕ) (S : Set (Eucl (m + 1))), MeasurableSet S → volume S ≠ ⊤ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S ∧ ∫ t in S, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 2) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal ^ ((m : ℝ) / ((m : ℝ) + 1)) * (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  intro m S hS hSfin
+  -- Step 1: `f = (‖·‖ ^ m)⁻¹` is measurable and nonnegative.
+  have hf_meas : Measurable (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) :=
+    (measurable_norm.pow_const m).inv
+  have hf_nonneg : ∀ t : Eucl (m + 1), 0 ≤ (‖t‖ ^ m)⁻¹ := fun t => by positivity
+  -- Step 2: off `B_ρ(0)`, `f ≤ (ρ ^ m)⁻¹`; as `Lⁿ(S \ B_ρ(0)) < ∞`, `f` is integrable there.
+  have hfar_le : ∀ ρ : ℝ, 0 < ρ → ∀ t ∈ S \ ball (0 : Eucl (m + 1)) ρ,
+      (‖t‖ ^ m)⁻¹ ≤ (ρ ^ m)⁻¹ := by
+    intro ρ hρ t ht
+    have hρt : ρ ≤ ‖t‖ := by simpa using ht.2
+    exact inv_anti₀ (pow_pos hρ m) (pow_le_pow_left₀ hρ.le hρt m)
+  have hfar_fin : ∀ ρ : ℝ, volume (S \ ball (0 : Eucl (m + 1)) ρ) ≠ ⊤ := fun ρ =>
+    ne_top_of_le_ne_top hSfin (measure_mono sdiff_subset)
+  have hfar_int : ∀ ρ : ℝ, 0 < ρ →
+      IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (S \ ball (0 : Eucl (m + 1)) ρ) := by
+    intro ρ hρ
+    refine Measure.integrableOn_of_bounded (M := (ρ ^ m)⁻¹) (hfar_fin ρ)
+      hf_meas.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem (hS.diff measurableSet_ball)] with t ht
+    rw [Real.norm_of_nonneg (hf_nonneg t)]
+    exact hfar_le ρ hρ t ht
+  -- Step 3: with the ball integral, `f` is integrable on `S = (S ∩ B_ρ(0)) ∪ (S \ B_ρ(0))`.
+  have hint : ∀ ρ : ℝ, 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S := by
+    intro ρ hρ
+    have h : IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹)
+        (S ∩ ball (0 : Eucl (m + 1)) ρ ∪ S \ ball (0 : Eucl (m + 1)) ρ) :=
+      ((Submission.rpn_pe_inv_norm_pow_ball m ρ hρ).1.mono_set inter_subset_right).union
+        (hfar_int ρ hρ)
+    rwa [inter_union_sdiff] at h
+  refine ⟨hint 1 one_pos, ?_⟩
+  set ω := (volume (ball (0 : Eucl (m + 1)) 1)).toReal
+  set L := (volume S).toReal
+  have hω_pos : 0 < ω :=
+    ENNReal.toReal_pos (measure_ball_pos volume 0 one_pos).ne' measure_ball_lt_top.ne
+  have hL_nonneg : 0 ≤ L := ENNReal.toReal_nonneg
+  rcases hL_nonneg.eq_or_lt with hL0 | hL_pos
+  · -- Step 4: if `Lⁿ(S) = 0`, both sides vanish.
+    have hS0 : volume S = 0 :=
+      ((ENNReal.toReal_eq_zero_iff _).1 hL0.symm).resolve_right hSfin
+    rw [Measure.restrict_eq_zero.2 hS0, integral_zero_measure, ← hL0,
+      Real.zero_rpow (by positivity), mul_zero]
+  · -- Step 5: the radius `ρ = (L / ω) ^ (1/(m+1))`, so that `L = ω ρ ^ (m + 1)`.
+    set p : ℝ := 1 / ((m : ℝ) + 1) with hp
+    set ρ : ℝ := (L / ω) ^ p with hρ
+    have hLω : 0 < L / ω := div_pos hL_pos hω_pos
+    have hρ_pos : 0 < ρ := Real.rpow_pos_of_pos hLω p
+    have hL_eq : L = ω * ρ ^ (m + 1) := by
+      rw [hρ, ← Real.rpow_natCast, ← Real.rpow_mul hLω.le,
+        show p * ((m + 1 : ℕ) : ℝ) = 1 by rw [hp]; push_cast; field_simp, Real.rpow_one]
+      field_simp
+    obtain ⟨hball_int, hball_eq⟩ := Submission.rpn_pe_inv_norm_pow_ball m ρ hρ_pos
+    -- Step 6: split `∫_S f` along `B_ρ(0)`.
+    rw [← integral_inter_add_sdiff (measurableSet_ball : MeasurableSet (ball (0 : Eucl (m + 1)) ρ))
+      (hint ρ hρ_pos)]
+    -- Step 7: the near part is at most `∫_{B_ρ(0)} f = (m + 1) ω ρ`.
+    have hnear : ∫ t in S ∩ ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 1) * ω * ρ := by
+      rw [← hball_eq]
+      exact setIntegral_mono_set hball_int (ae_of_all _ hf_nonneg)
+        (ae_of_all _ fun t ht => ht.2)
+    -- Step 8: the far part is at most `Lⁿ(S \ B_ρ(0)) (ρ ^ m)⁻¹ ≤ L (ρ ^ m)⁻¹ = ω ρ`.
+    have hfar : ∫ t in S \ ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ ≤ ω * ρ := by
+      calc ∫ t in S \ ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹
+          ≤ ∫ _ in S \ ball (0 : Eucl (m + 1)) ρ, (ρ ^ m)⁻¹ :=
+            setIntegral_mono_on (hfar_int ρ hρ_pos) (integrableOn_const (hfar_fin ρ))
+              (hS.diff measurableSet_ball) (hfar_le ρ hρ_pos)
+        _ = volume.real (S \ ball (0 : Eucl (m + 1)) ρ) * (ρ ^ m)⁻¹ := by
+            rw [setIntegral_const, smul_eq_mul]
+        _ ≤ L * (ρ ^ m)⁻¹ := by
+            gcongr
+            exact measureReal_mono sdiff_subset hSfin
+        _ = ω * ρ := by
+            rw [hL_eq, pow_succ]
+            field_simp
+    -- Steps 9–10: the sum is `(m + 2) ω ρ = (m + 2) ω ^ (m/(m+1)) L ^ (1/(m+1))`.
+    have hωρ : ω * ρ = ω ^ ((m : ℝ) / ((m : ℝ) + 1)) * L ^ p := by
+      rw [hρ, Real.div_rpow hL_pos.le hω_pos.le,
+        show (m : ℝ) / ((m : ℝ) + 1) = 1 - p by rw [hp]; field_simp; ring,
+        Real.rpow_sub hω_pos, Real.rpow_one]
+      ring
+    calc _ ≤ ((m : ℝ) + 1) * ω * ρ + ω * ρ := add_le_add hnear hfar
+      _ = ((m : ℝ) + 2) * (ω * ρ) := by ring
+      _ = ((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) * L ^ p := by
+        rw [hωρ, mul_assoc]
+/-- The kernels `K(w) = w_j / (c|w|^{m+1})` on `ℝ^{m+1}` are locally integrable. This is Step 2 of
+the potential estimate (Gilbarg–Trudinger §7.8) that replaces the BV argument of Simon Ch. 6,
+Remark 2.35 in the proof of 8.1; there `c = nωₙ`. With `x / 0 = 0`, `|K(w)| ≤ |c|⁻¹ (|w|^m)⁻¹`
+everywhere, and `(|w|^m)⁻¹` is integrable on every ball about `0`
+(`Submission.rpn_pe_inv_norm_pow_ball`). -/
+theorem Submission.rpn_pe_kernel_locallyIntegrable : ∀ (m : ℕ) (j : Fin (m + 1)) (c : ℝ), LocallyIntegrable (fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1))) := by
+  intro m j c
+  -- Step 1: `K` is Borel measurable.
+  have hmeas : Measurable fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1)) := by fun_prop
+  -- Step 2: `|K(w)| ≤ |c|⁻¹ (|w|^m)⁻¹`. If `c = 0` or `w = 0` the left side is `0`; otherwise
+  -- `|w_j| ≤ |w|`.
+  have hbound : ∀ t : Eucl (m + 1), ‖t j / (c * ‖t‖ ^ (m + 1))‖ ≤ |c|⁻¹ * (‖t‖ ^ m)⁻¹ := by
+    intro t
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp
+    rcases eq_or_ne t 0 with rfl | ht
+    · simp only [PiLp.zero_apply, zero_div, norm_zero]
+      positivity
+    have htpos : 0 < ‖t‖ := norm_pos_iff.2 ht
+    rw [norm_div, norm_mul, norm_pow, norm_norm, Real.norm_eq_abs c]
+    calc ‖t j‖ / (|c| * ‖t‖ ^ (m + 1)) ≤ ‖t‖ / (|c| * ‖t‖ ^ (m + 1)) := by
+          gcongr
+          exact PiLp.norm_apply_le t j
+      _ = |c|⁻¹ * (‖t‖ ^ m)⁻¹ := by
+          field_simp
+          ring
+  -- Step 3: around `x` use the ball `B_{|x|+1}(0)`, where `(|w|^m)⁻¹` is integrable.
+  intro x
+  refine ⟨ball (0 : Eucl (m + 1)) (‖x‖ + 1), isOpen_ball.mem_nhds (by simp), ?_⟩
+  exact ((Submission.rpn_pe_inv_norm_pow_ball m (‖x‖ + 1) (by positivity)).1.const_mul |c|⁻¹).mono'
+    hmeas.aestronglyMeasurable (ae_of_all _ hbound)
+/-- Convolution of a locally integrable kernel with a `C^∞` compactly supported function:
+`ψ(y) = ∫ K(t) a(y - t) dt` is `C^∞`, and for all `y, v`, `t ↦ K(t) Da(y - t)v` is integrable with
+`Dψ(y)v = ∫ K(t) Da(y - t)v dt`.  Here `ψ = K ⋆ a` for the pairing `lsmul ℝ ℝ`, so
+`HasCompactSupport.contDiff_convolution_right` gives smoothness, `convolutionExists_right`
+applied to the continuous compactly supported `z ↦ Da(z)v` gives integrability, and
+`hasFDerivAt_convolution_right` with `convolution_precompR_apply` gives the derivative. -/
+theorem Submission.rpn_pe_convolution_contDiff_fderiv :
+    ∀ (n : ℕ) (K a : Eucl n → ℝ), LocallyIntegrable K → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a →
+      HasCompactSupport a → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y => ∫ t, K t * a (y - t)) ∧
+      ∀ y v : Eucl n, Integrable (fun t => K t * fderiv ℝ a (y - t) v) ∧
+        fderiv ℝ (fun y => ∫ t, K t * a (y - t)) y v = ∫ t, K t * fderiv ℝ a (y - t) v := by
+  intro n K a hK ha hsupp
+  -- `ψ = K ⋆ a` for the scalar multiplication pairing (`convolution_lsmul`).
+  have hψ : (fun y => ∫ t, K t * a (y - t)) =
+      convolution K a (ContinuousLinearMap.lsmul ℝ ℝ) volume := rfl
+  -- `a` is `C¹`, so `Da` is continuous.
+  have ha1 : ContDiff ℝ 1 a := ha.of_le (by exact_mod_cast le_top)
+  have hDa : Continuous (fderiv ℝ a) := ha.continuous_fderiv (by simp)
+  refine ⟨hψ ▸ hsupp.contDiff_convolution_right _ hK ha, fun y v => ⟨?_, ?_⟩⟩
+  · -- `z ↦ Da(z)v` is continuous with compact support, so the convolution integrand is integrable.
+    exact (hsupp.fderiv_apply (𝕜 := ℝ) v).convolutionExists_right
+      (ContinuousLinearMap.lsmul ℝ ℝ) hK (hDa.clm_apply continuous_const) y
+  · -- `Dψ(y) = (K ⋆[precompR] Da)(y)`, evaluated at `v` by `convolution_precompR_apply`.
+    rw [hψ, (hsupp.hasFDerivAt_convolution_right _ hK ha1 y).fderiv,
+      convolution_precompR_apply _ hK (hsupp.fderiv (𝕜 := ℝ)) hDa]
+    rfl
+/-- The fundamental theorem of calculus along a ray: for `a` of class `C¹` with compact support
+and `θ ≠ 0`, `∫_{(0,∞)} Da(y - rθ)θ dr = a(y)`.  The function `h(r) = a(y - rθ)` is `C¹` with
+`h'(r) = -Da(y - rθ)θ`.  It has compact support because `r ↦ y - rθ` is a closed embedding.
+So `HasCompactSupport.integral_Ioi_deriv_eq` gives `∫_{(0,∞)} h' = -h(0) = -a(y)`. -/
+theorem Submission.rpn_pe_ray_ftc :
+    ∀ (n : ℕ) (a : Eucl n → ℝ), ContDiff ℝ 1 a → HasCompactSupport a → ∀ y θ : Eucl n, θ ≠ 0 →
+      ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • θ) θ = a y := by
+  intro n a ha hsupp y θ hθ
+  -- `h(r) = a(y - rθ)` is `C¹` and compactly supported (the line is a closed embedding as `θ ≠ 0`).
+  have hh : ContDiff ℝ 1 (fun r : ℝ => a (y - r • θ)) :=
+    ha.comp (contDiff_const.sub (contDiff_id.smul contDiff_const))
+  have hhsupp : HasCompactSupport (fun r : ℝ => a (y - r • θ)) :=
+    hsupp.comp_isClosedEmbedding
+      ((Homeomorph.subLeft y).isClosedEmbedding.comp (isClosedEmbedding_smul_left hθ))
+  -- Chain rule: `h'(r) = Da(y - rθ)(-θ)`.
+  have hderiv : ∀ r : ℝ, deriv (fun r : ℝ => a (y - r • θ)) r = -fderiv ℝ a (y - r • θ) θ := by
+    intro r
+    have hline : HasDerivAt (fun r : ℝ => y - r • θ) (-θ) r := by
+      simpa using ((hasDerivAt_id r).smul_const θ).const_sub y
+    exact (((ha.differentiable one_ne_zero) (y - r • θ)).hasFDerivAt.comp_hasDerivAt r
+      hline).deriv.trans (map_neg _ _)
+  -- FTC on `(0, ∞)`: `∫_{(0,∞)} h' = -h(0) = -a(y)`.
+  have key := HasCompactSupport.integral_Ioi_deriv_eq hh hhsupp 0
+  simp_rw [hderiv, integral_neg, zero_smul, sub_zero] at key
+  exact neg_injective key
+
+/-- **Representation formula (Gilbarg–Trudinger, §7.8, proof of Lemma 7.14).**  For `n = m + 1`,
+`ω = Lⁿ(B₁(0))` and `a ∈ C_c^∞(ℝⁿ)`, the kernels `K_j(t) = t_j / (n ω |t|ⁿ)` satisfy
+`∑_j ∫ K_j(t) ∂_j a(y - t) dt = a(y)`.  Expanding `t` in the standard basis, the sum is `∫ G` with
+`G(t) = Da(y - t) t / (n ω |t|ⁿ)`.  In polar coordinates `r^m G(rθ) = Da(y - rθ) θ / (n ω)`, so
+each ray integral is `a(y) / (n ω)` (fundamental theorem of calculus along the ray), and the unit
+sphere has measure `n ω`. -/
+theorem Submission.rpn_pe_kernel_representation : ∀ (m : ℕ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ y : Eucl (m + 1), ∑ j : Fin (m + 1), ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) = a y := by
+  intro m a ha hca y
+  -- Step 1: `ω = Lⁿ(B₁(0)) ∈ (0, ∞)`, so `c = (m + 1) ω > 0`.
+  set ω : ℝ := (volume (ball (0 : Eucl (m + 1)) 1)).toReal with hω
+  set c : ℝ := ((m : ℝ) + 1) * ω with hc
+  have hω_pos : 0 < ω :=
+    ENNReal.toReal_pos (measure_ball_pos volume 0 one_pos).ne' measure_ball_lt_top.ne
+  have hc_pos : 0 < c := by positivity
+  -- Step 2: `K_j` is locally integrable, so `t ↦ K_j(t) ∂_j a(y - t)` is integrable.
+  have hint : ∀ j : Fin (m + 1), Integrable fun t : Eucl (m + 1) =>
+      t j / (c * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) := fun j =>
+    ((Submission.rpn_pe_convolution_contDiff_fderiv (m + 1) _ a
+      (Submission.rpn_pe_kernel_locallyIntegrable m j c) ha hca).2 y _).1
+  -- Step 3: move the sum inside the integral.
+  rw [← integral_finsetSum _ fun j _ => hint j]
+  -- Step 4: `Λ v = ∑_j v_j Λ e_j`, so `∑_j K_j(t) ∂_j a(y - t) = G(t)`.
+  have hexp : ∀ (Λ : Eucl (m + 1) →L[ℝ] ℝ) (v : Eucl (m + 1)),
+      Λ v = ∑ j : Fin (m + 1), v j * Λ (EuclideanSpace.single j (1 : ℝ)) := by
+    intro Λ v
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).sum_repr v]
+    simp [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr]
+  set G : Eucl (m + 1) → ℝ := fun t => fderiv ℝ a (y - t) t / (c * ‖t‖ ^ (m + 1)) with hG
+  have hsum : (fun t : Eucl (m + 1) => ∑ j : Fin (m + 1),
+      t j / (c * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ))) = G := by
+    funext t
+    simp only [hG]
+    rw [hexp (fderiv ℝ a (y - t)) t, Finset.sum_div]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  -- Step 5: `G` is integrable and the left side is `∫ G`.
+  have hG_int : Integrable G := by
+    rw [← hsum]
+    exact integrable_finsetSum _ fun j _ => hint j
+  rw [hsum]
+  -- Step 6: polar coordinates.
+  rw [Submission.rpn_pe_integral_eq_polar m G hG_int]
+  -- Step 7: for `|θ| = 1` and `r > 0`, `r^m G(rθ) = Da(y - rθ) θ / c`; integrate along the ray.
+  have hray : ∀ θ : sphere (0 : Eucl (m + 1)) 1,
+      ∫ r in Ioi (0 : ℝ), r ^ m * G (r • (θ : Eucl (m + 1))) = a y / c := by
+    intro θ
+    calc ∫ r in Ioi (0 : ℝ), r ^ m * G (r • (θ : Eucl (m + 1)))
+        = ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • (θ : Eucl (m + 1))) θ / c := by
+          refine setIntegral_congr_fun measurableSet_Ioi fun r (hr : 0 < r) => ?_
+          simp only [hG]
+          rw [norm_smul, norm_eq_of_mem_sphere, mul_one, Real.norm_of_nonneg hr.le, map_smul,
+            smul_eq_mul]
+          field_simp
+          ring
+      _ = (∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • (θ : Eucl (m + 1))) θ) / c := integral_div c _
+      _ = a y / c := by
+          rw [Submission.rpn_pe_ray_ftc (m + 1) a (ha.of_le (by norm_cast)) hca y θ
+            (ne_zero_of_mem_unit_sphere θ)]
+  -- Step 8: the inner integral is the constant `a(y) / c`, and `σ(S) = (m + 1) ω = c`.
+  rw [integral_congr_ae (Eventually.of_forall hray), integral_const, smul_eq_mul,
+    Measure.toSphere_real_apply_univ, finrank_euclideanSpace_fin, measureReal_def, ← hω,
+    show ((m + 1 : ℕ) : ℝ) * ω = c by rw [hc]; push_cast; ring, mul_div_cancel₀ _ hc_pos.ne']
+
+/-- Sup bound for the kernel potentials (Step 5 of the potential estimate).  With
+`ω = Lⁿ(B₁(0))`, `c = (m + 1) ω` and `K_j(t) = t_j / (c |t|^{m+1})`, every compactly supported
+`a` with `|a| ≤ M` satisfies `|∫ K_j(t) a(y - t) dt| ≤ C M Lⁿ(spt a)^{1/(m+1)}` with
+`C = (m + 2) ω^{m/(m+1)} / c`.  Proof: `|K_j(t) a(y - t)| ≤ (M / c) 1_{S_y}(t) |t|^{-m}` on
+`S_y = {t : y - t ∈ spt a}`, a translate of `spt a`; integrate and apply
+`rpn_pe_inv_norm_pow_set_bound` to `S_y`.  No measurability of `a` is needed. -/
+theorem Submission.rpn_pe_kernel_sup_bound : ∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ (j : Fin (m + 1)) (y : Eucl (m + 1)), |∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * a (y - t)| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  intro m
+  set ω : ℝ := (volume (ball (0 : Eucl (m + 1)) 1)).toReal
+  set c : ℝ := ((m : ℝ) + 1) * ω
+  have hω_pos : 0 < ω :=
+    ENNReal.toReal_pos (measure_ball_pos volume (0 : Eucl (m + 1)) one_pos).ne'
+      measure_ball_lt_top.ne
+  have hc_pos : 0 < c := mul_pos (by positivity) hω_pos
+  refine ⟨((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) / c, ?_⟩
+  intro a ha M hM j y
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- The translated support `S_y = {t : y - t ∈ spt a}` has the measure of `spt a`.
+  set S : Set (Eucl (m + 1)) := tsupport a
+  set Sy : Set (Eucl (m + 1)) := (fun t => y - t) ⁻¹' S
+  have hSy_meas : MeasurableSet Sy :=
+    ((isClosed_tsupport a).preimage (continuous_const.sub continuous_id)).measurableSet
+  have hvol : volume Sy = volume S :=
+    (Measure.measurePreserving_sub_left volume y).measure_preimage
+      (isClosed_tsupport a).measurableSet.nullMeasurableSet
+  have hSy_fin : volume Sy ≠ ⊤ := by
+    rw [hvol]
+    exact (IsCompact.measure_lt_top ha).ne
+  obtain ⟨hint, hbound⟩ := Submission.rpn_pe_inv_norm_pow_set_bound m Sy hSy_meas hSy_fin
+  rw [hvol] at hbound
+  -- Pointwise domination by `(M / c) 1_{S_y}(t) |t|^{-m}`.
+  have hg_int : Integrable (fun t => M / c * Sy.indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) t) :=
+    ((integrable_indicator_iff hSy_meas).2 hint).const_mul (M / c)
+  have hdom : ∀ t : Eucl (m + 1), ‖t j / (c * ‖t‖ ^ (m + 1)) * a (y - t)‖ ≤
+      M / c * Sy.indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) t := by
+    intro t
+    by_cases ht : t ∈ Sy
+    · rw [indicator_of_mem ht, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      have hK : |t j / (c * ‖t‖ ^ (m + 1))| ≤ (‖t‖ ^ m)⁻¹ / c := by
+        rw [abs_div, abs_of_nonneg (by positivity : (0 : ℝ) ≤ c * ‖t‖ ^ (m + 1))]
+        rcases (norm_nonneg t).eq_or_lt with h0 | hpos
+        · rw [← h0, zero_pow (Nat.succ_ne_zero m), mul_zero, div_zero]
+          positivity
+        · rw [div_le_iff₀ (by positivity)]
+          calc |t j| = ‖t j‖ := (Real.norm_eq_abs _).symm
+            _ ≤ ‖t‖ := PiLp.norm_apply_le t j
+            _ = (‖t‖ ^ m)⁻¹ / c * (c * ‖t‖ ^ (m + 1)) := by
+              field_simp
+              ring
+      calc |t j / (c * ‖t‖ ^ (m + 1))| * |a (y - t)| ≤ (‖t‖ ^ m)⁻¹ / c * M :=
+            mul_le_mul hK (hM _) (abs_nonneg _) (by positivity)
+        _ = M / c * (‖t‖ ^ m)⁻¹ := by ring
+    · have hyt : y - t ∉ tsupport a := ht
+      rw [indicator_of_notMem ht, image_eq_zero_of_notMem_tsupport hyt]
+      simp
+  calc |∫ t, t j / (c * ‖t‖ ^ (m + 1)) * a (y - t)|
+      = ‖∫ t, t j / (c * ‖t‖ ^ (m + 1)) * a (y - t)‖ := (Real.norm_eq_abs _).symm
+    _ ≤ ∫ t, M / c * Sy.indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) t :=
+        norm_integral_le_of_norm_le hg_int (Eventually.of_forall hdom)
+    _ = M / c * ∫ t in Sy, (‖t‖ ^ m)⁻¹ := by
+        rw [integral_const_mul, integral_indicator hSy_meas]
+    _ ≤ M / c * (((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) *
+          (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1))) :=
+        mul_le_mul_of_nonneg_left hbound (div_nonneg hM0 hc_pos.le)
+    _ = ((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) / c * M *
+          (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+        ring
+
+/-- **Potential estimate (replaces Simon Ch. 6, Remark 2.35; Gilbarg–Trudinger, Lemma 7.14 and
+§7.8).**  For `n = m + 1`, `ω_n = Lⁿ(B₁(0))` and `a ∈ C_c^∞(ℝⁿ)` with `|a| ≤ M`, the potentials
+`ψ_j(y) = ∫ K_j(t) a(y - t) dt` of the kernels `K_j(t) = t_j / (n ω_n |t|ⁿ)` are `C^∞`, satisfy
+`∑_j ∂_j ψ_j = a` and `|ψ_j| ≤ C M Lⁿ(spt a)^{1/n}` with `C` depending only on `m`.  The kernels
+are locally integrable, so `ψ_j` is smooth with `∂_k ψ_j = K_j ⋆ ∂_k a`; summing `∂_j ψ_j` over
+`j` gives `a` by the representation formula, and the bound is the kernel sup estimate. -/
+theorem Submission.rpn_potential_estimate : ∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∃ ψ : Fin (m + 1) → Eucl (m + 1) → ℝ, (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ j)) ∧ (∀ y, ∑ j : Fin (m + 1), fderiv ℝ (ψ j) y (EuclideanSpace.single j (1 : ℝ)) = a y) ∧ ∀ j y, |ψ j y| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  have hli := @Submission.rpn_pe_kernel_locallyIntegrable
+  have hconv := @Submission.rpn_pe_convolution_contDiff_fderiv
+  have hrep := @Submission.rpn_pe_kernel_representation
+  have hsup := @Submission.rpn_pe_kernel_sup_bound
+  intro m
+  -- Step 1: the constant `C` of the kernel sup bound, chosen before `a` and `M`.
+  obtain ⟨C, hC⟩ := hsup m
+  refine ⟨C, fun a ha hca M hM => ?_⟩
+  -- Steps 2–3: `K_j(t) = t_j / (n ω_n |t|ⁿ)` is locally integrable, so `ψ_j = K_j ⋆ a` is `C^∞`
+  -- and `Dψ_j(y) v = ∫ K_j(t) Da(y - t) v dt`.
+  have hψ := fun j : Fin (m + 1) => hconv (m + 1)
+    (fun t : Eucl (m + 1) =>
+      t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1))) a
+    (hli m j (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal)) ha hca
+  -- Step 5: `|ψ_j(y)| ≤ C M Lⁿ(spt a)^{1/n}` is the kernel sup bound.
+  refine ⟨fun j y => ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal *
+      ‖t‖ ^ (m + 1)) * a (y - t), fun j => (hψ j).1, fun y => ?_, fun j y => hC a hca M hM j y⟩
+  -- Step 4: `∑_j ∂_j ψ_j(y) = ∑_j ∫ K_j(t) ∂_j a(y - t) dt = a(y)` (representation formula).
+  rw [← hrep m a ha hca y]
+  exact Finset.sum_congr rfl fun j _ => ((hψ j).2 y (EuclideanSpace.single j 1)).2
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

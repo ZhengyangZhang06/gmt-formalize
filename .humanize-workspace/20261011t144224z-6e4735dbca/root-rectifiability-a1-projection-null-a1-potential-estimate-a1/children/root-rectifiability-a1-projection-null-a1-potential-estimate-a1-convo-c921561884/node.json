@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.convolution_smooth-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "Convolution of a locally integrable kernel with a C_c^∞ function: smoothness and D(K⋆a)v = K⋆(Da·v) (Step 3)",
+  "statement": "Let n ∈ ℕ, let K : ℝⁿ → ℝ be locally integrable for Lebesgue measure on ℝⁿ = Eucl n, and let a : ℝⁿ → ℝ be C^∞ with compact support. Put ψ(y) := ∫ K(t)·a(y − t) dt. Then ψ is C^∞. Moreover, for all y, v ∈ ℝⁿ the function t ↦ K(t)·Da(y − t)v is integrable and Dψ(y)v = ∫ K(t)·Da(y − t)v dt.",
+  "lean_statement": "∀ (n : ℕ) (K a : Eucl n → ℝ), LocallyIntegrable K → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y => ∫ t, K t * a (y - t)) ∧ ∀ y v : Eucl n, Integrable (fun t => K t * fderiv ℝ a (y - t) v) ∧ fderiv ℝ (fun y => ∫ t, K t * a (y - t)) y v = ∫ t, K t * fderiv ℝ a (y - t) v",
+  "lean_name": "rpn_pe_convolution_contDiff_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884-a1"
+}
