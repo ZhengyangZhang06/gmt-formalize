@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "Summed cubewise Poincaré bound from the translation estimate (Simon 5.1, (32))",
+  "statement": "For every m ∈ ℕ (with n := m + 1) there is c ∈ [0, ∞) with the following property. Let ρ > 0, let u : ℝ^n → ℝ be measurable, and let Λ ∈ [0, ∞] satisfy ∫⁻ |u(x + h) − u(x)| dx ≤ ‖h‖·Λ for all h ∈ ℝ^n. Then\nΣ'_{F ∈ LatticeFaceIndex n n} ρ^{−n} ∫⁻_{latticeFace ρ F} ∫⁻_{latticeFace ρ F} |u(x) − u(y)| dy dx ≤ c·ρ·Λ\nin [0, ∞], where ρ^{−n} is written ENNReal.ofReal (ρ^n)⁻¹.",
+  "lean_statement": "∀ m : ℕ, ∃ c : ℝ≥0, ∀ (ρ : ℝ), 0 < ρ → ∀ (u : Eucl (m + 1) → ℝ) (Λ : ℝ≥0∞), Measurable u → (∀ h : Eucl (m + 1), ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) → ∑' F : LatticeFaceIndex (m + 1) (m + 1), ENNReal.ofReal (ρ ^ (m + 1))⁻¹ * ∫⁻ x in latticeFace ρ F, ∫⁻ y in latticeFace ρ F, ENNReal.ofReal |u x - u y| ≤ c * ENNReal.ofReal ρ * Λ",
+  "lean_name": "fiw_tb_tda_poincare_sum",
+  "depends_on": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_cubes-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_cubes-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-poincare-sum-a1-a1"
+}

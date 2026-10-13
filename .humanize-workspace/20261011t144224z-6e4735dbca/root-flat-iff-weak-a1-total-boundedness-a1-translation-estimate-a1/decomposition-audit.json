@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm_smul|fiw_tb_te_",
+        "exists_contDiff_support_eq_eq_one_iff|exists_thickenings|closure_thickening_subset_cthickening|theorem IsCompact.cthickening|exists_isCompact_sdiff_lt|isFiniteMeasure_withDensity_ofReal",
+        "integral_add_right_eq_self|comp_add_right|integral_integral_swap|lemma Integrable.comp_fst|theorem Integrable.comp_fst|integral_eq_sub_of_hasDerivAt|norm_integral_le_of_norm_le_const|ofReal_integral_eq_lintegral_ofReal|fderiv_comp_sub",
+        "git show d771ac3ae563701d45563ad2e197624b3f42977f:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/te-audit-6928db51-e4zodih3/ParentGlue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/te-audit-6928db51-e4zodih3/AnalyticChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/tmp/te-audit-6928db51-e4zodih3/ParentGlue.lean",
+        "/tmp/te-audit-6928db51-e4zodih3/Child1Proto.lean",
+        "/tmp/te-audit-6928db51-e4zodih3/Child2Proto.lean",
+        "/tmp/te-audit-6928db51-e4zodih3/Child4Cutoff.lean",
+        "/tmp/te-audit-6928db51-e4zodih3/AnalyticChecks.lean"
+      ],
+      "conclusion": "Verified the pinned project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Searches found no fiw_tb_te_ declarations or covectorEuclideanNorm_smul lemma in the searched project/library sources. The final 362-node DAG scan found no reservations for the proposed names. All four names are bare identifiers, and all four exact one-line propositions pass validation and independently elaborate in generated comparator challenges. Their empty sibling dependencies are justified and acyclic. Independently reran the supplied mass-bound, directional-form and cutoff proofs; each uses only propext, Classical.choice and Quot.sound. Typeclass checks confirmed the smoothness coercion, translation-invariant volume, finite-product measurability and compact inner regularity. A sorry-free conditional Lean proof establishes the exact selected parent from the four frozen child propositions, including zero translation, infinite boundary mass and ENNReal conversion. Thus the split is appropriate and targets this selected node."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U, positive c and finite mass. Homogeneity, admissibility of the rescaled form, conversion to mass.toReal and application to both signs prove the exact bound. No openness hypothesis or parent theorem is needed. The adapted proof independently compiled against the frozen type with only standard axioms."
+    },
+    {
+      "key": "directional_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction supplies precisely the asserted test form. Determinant evaluations and the classification of increasing multi-indices give its coefficient norm; the alternating derivative signs cancel to yield Dφ(h). Smoothness and compact support are established explicitly, including m = 0 and h = 0. The exact proof independently compiled with only standard axioms."
+    },
+    {
+      "key": "translation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen proposition match. Translation invariance and FTC give the stated integral identity; compact support and continuity of Dg supply domination sufficient for Fubini. Translated tests satisfy every premise. Product measurability follows from the proof's existing Integrable.comp_fst argument via aestronglyMeasurable; the cited AEStronglyMeasurable.fst alone is an output-projection lemma. This requires no additional mathematical argument. No positivity assumption on B is missing."
+    },
+    {
+      "key": "l1_duality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree. The Borel representative defines a finite, compact-inner-regular measure. Disjoint thickenings and smooth Urysohn functions provide the required compactly supported test. The pointwise estimate controls the entire error by 2ν(S) < 4ε, so outer approximation is unnecessary. Integrability and the ε-limit justify the conclusion without circularity or additional hypotheses."
+    }
+  ],
+  "required_changes": []
+}

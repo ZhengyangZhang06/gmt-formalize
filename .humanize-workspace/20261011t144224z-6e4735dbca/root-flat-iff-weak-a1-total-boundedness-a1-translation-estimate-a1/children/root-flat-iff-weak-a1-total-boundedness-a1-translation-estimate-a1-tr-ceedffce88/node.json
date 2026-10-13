@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.translation_dual-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "Weak translation estimate from a bound on ∫ u·Dφ(h)",
+  "statement": "Let n ∈ ℕ, u : ℝ^n → ℝ Lebesgue integrable, h ∈ ℝ^n and B ∈ ℝ. Assume |∫ u(x)·Dφ(x)(h) dx| ≤ B for every C^∞ compactly supported φ : ℝ^n → ℝ with |φ(x)| ≤ 1 for all x, where Dφ(x) = fderiv ℝ φ x. Then |∫ (u(x + h) − u(x))·g(x) dx| ≤ B for every C^∞ compactly supported g : ℝ^n → ℝ with |g(x)| ≤ 1 for all x.",
+  "lean_statement": "∀ (n : ℕ) (u : Eucl n → ℝ) (h : Eucl n) (B : ℝ), Integrable u → (∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → (∀ x, |φ x| ≤ 1) → |∫ x, u x * fderiv ℝ φ x h| ≤ B) → ∀ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → HasCompactSupport g → (∀ x, |g x| ≤ 1) → |∫ x, (u (x + h) - u x) * g x| ≤ B",
+  "lean_name": "fiw_tb_te_translation_dual",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-tr-ceedffce88-a1"
+}

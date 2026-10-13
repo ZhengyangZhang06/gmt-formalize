@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean && cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (IDENTICAL; HEAD d8d46c95)",
+        "rg -n -i median mathlib/Mathlib -l (single hit: Mathlib/LinearAlgebra/AffineSpace/Simplex/Centroid.lean, geometric median of a simplex, irrelevant)",
+        "rg -n -i median project -l (no match); rg -n -i median lake-packages-25730c7c/simongmt/Poincare -l (no match)",
+        "rg -n -F over mathlib/Mathlib: 'theorem tendsto_measure_iUnion_atTop', 'theorem tendsto_measure_iInter_atTop', 'theorem exists_least_of_bdd', 'theorem ofReal_integral_eq_lintegral_ofReal', \"theorem lintegral_const_mul'\", 'theorem setLIntegral_const ', 'theorem lintegral_mono_set ', \"theorem setLIntegral_mono' \", 'theorem integral_indicator_const ', 'theorem measureReal_restrict_apply ', 'theorem measureReal_union ', 'theorem integrableOn_const', 'theorem ofReal_le_iff_le_toReal', 'theorem measure_mono_null ', 'theorem setIntegral_const ', 'theorem measure_union_le ', 'theorem le_ceil ', 'theorem floor_le ', 'theorem measurableSet_le ' (all found)",
+        "rg -n abs_integral_le_integral_abs / '^lemma integral_mono ' / norm_integral_le_integral_norm / 'theorem integral_add |theorem integral_sub |theorem integral_const_mul ' in mathlib/Mathlib/MeasureTheory/Integral/Bochner (found)",
+        "rg -n 'ofReal_mul |theorem ofReal_add |theorem ofReal_le_ofReal |theorem ofReal_lt_ofReal_iff |theorem ofReal_pos |theorem toReal_ofReal |theorem ofReal_ofNat|protected theorem add_lt_add' mathlib/Mathlib (found under Mathlib/Basic/ENNReal at this revision)",
+        "rg -n 'lemma isFiniteMeasure_restrict|theorem measure_ne_top_of_subset|lemma cast_ne_zero|lemma add_halves' mathlib/Mathlib (found); Int.self_le_toNat found in Lean core Init/Data/Int/Order.lean:697",
+        "sed -n 190,235p mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean; rg -n 'theorem exists_least_of_bdd' -A 6 mathlib/Mathlib/Order/Int/LeastGreatest.lean",
+        "python3 scan of dag.json (476 nodes): lean_names with prefix fiw_tb_tda_ (8 existing, none fiw_tb_tda_im_*); selected node depth 4, status decomposing, frozen lean_statement identical to handoff",
+        "python3 -I /tmp/im-tools/scope.py (verifier gmt-compare.py contract_scope on Contract.lean: namespace GMT.Ch06 plus replayed open/noncomputable section/end commands)",
+        "python3 -I /tmp/im-tools/check.py (runtime lean_contract.validate_lean_statement on the 4 child types: all PASS, unchanged by normalization)",
+        "lean /tmp/im-decomp/{Smoke,Stmts,Proto,Proto2,Full}.lean with LEAN_PATH = workspace .lake/build/lib/lean (Submission at d8d46c95) + lake-packages-25730c7c/*/.lake/build/lib/lean (0 errors; Full.lean proves all 4 children and the frozen parent; #print axioms = propext, Classical.choice, Quot.sound)",
+        "sed -n 1860,1925p book/chapter-06.txt (Simon 5.1 proof: (31) median choice of beta_F, integer if theta_F is; (35) |beta_F| <= 2 int |theta_F|)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/AffineSpace/Simplex/Centroid.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Int/LeastGreatest.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Floor/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Int/Cast/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Field/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-median-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-median-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/im-decomp/Stmts.lean",
+        "/tmp/im-decomp/Proto.lean",
+        "/tmp/im-decomp/Proto2.lean",
+        "/tmp/im-decomp/Full.lean"
+      ],
+      "conclusion": "No reusable median result exists locally. The only 'median' match in the pinned Mathlib (25730c7c) is the geometric median of a simplex in LinearAlgebra/AffineSpace/Simplex/Centroid.lean. There is none in the frozen Ch06 project (snapshot Contract.lean = workspace Contract.lean = Submission.lean at d8d46c95, so there are no accepted helpers) and none in SimonGMT. So the four median obligations of the supplied proof become new children.\n\nEvery Mathlib lemma cited in the child proofs exists at the pinned revision:\n- continuity and least elements: tendsto_measure_iUnion_atTop and tendsto_measure_iInter_atTop (Measure/Continuity.lean:198, 220); Int.exists_least_of_bdd (Order/Int/LeastGreatest.lean:69);\n- Bochner integral: ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739); abs_integral_le_integral_abs (Bochner/Basic.lean:982); integral_mono, integral_add, integral_sub, integral_const_mul (Bochner/Basic.lean); integral_indicator_const and setIntegral_const (Bochner/Set.lean:528, 524);\n- lower integral: lintegral_const_mul' (Lebesgue/Add.lean:420); setLIntegral_const, lintegral_mono_set, setLIntegral_mono' (Lebesgue/Basic.lean:121, 98, 254);\n- measures: measureReal_restrict_apply and measureReal_union (Measure/Real.lean:102, 227); integrableOn_const (IntegrableOn.lean:119); isFiniteMeasure_restrict; measure_ne_top_of_subset; measure_mono_null; measure_union_le; measurableSet_le;\n- integers: Int.le_ceil and Int.floor_le (Floor/Defs.lean); Int.cast_ne_zero;\n- ENNReal (under Mathlib/Basic/ENNReal at this revision): ofReal_le_iff_le_toReal, ofReal_mul, ofReal_add, ofReal_pos, ofReal_lt_ofReal_iff, toReal_ofReal, add_lt_add.\n\nLean checks:\n- In the comparator's replayed contract scope after import GMT.Ch06.Submission, all four child types elaborate and pass validate_lean_statement.\n- The frozen parent type follows from them by a five-line assembly.\n- Complete prototype proofs of all four children compile under default heartbeats (/tmp/im-decomp/Full.lean, 263 lines), with axioms [propext, Classical.choice, Quot.sound] for each child and for the parent.\n- No dag.json lean_name begins with fiw_tb_tda_im_, so the names do not collide."
+    }
+  ],
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1",
+  "child_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1.median_bounds-a1",
+  "subproblem": {
+    "key": "median_bounds",
+    "title": "Size and support bounds for a median (Simon 5.1, (35))",
+    "statement": "Let α be a type with a σ-algebra and μ a measure on it. Let F ⊆ α be measurable, let a > 0 be real, let u : α → ℝ be measurable, and let c ∈ ℝ be a median of u on F in the sense that ofReal(a/2) ≤ μ(F ∩ {x : u(x) ≤ c}) and ofReal(a/2) ≤ μ(F ∩ {x : c ≤ u(x)}). Then (M1) ofReal(|c|·a) ≤ 2 ∫⁻_F ofReal|u| dμ, and (M2) c ≠ 0 implies μ(F ∩ {x : u(x) ≠ 0}) ≠ 0.",
+    "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → Measurable u → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c}) → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c ≤ u x}) → ENNReal.ofReal (|c| * a) ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ ∧ (c ≠ 0 → μ (F ∩ {x | u x ≠ 0}) ≠ 0)",
+    "lean_name": "fiw_tb_tda_im_median_bounds",
+    "depends_on": [],
+    "natural_proof": "Source: steps 3–4 of the parent proof (Simon Ch. 6, (35): |β_F| ≤ 2∫_{F_M}|θ_F|). Here they are stated for an arbitrary real median c, i.e. a real c satisfying both half-measure inequalities of Simon's (31).\n- For c < 0 the argument uses the set F ∩ {u ≤ c} (the parent's (i)).\n- For c > 0 it uses the set F ∩ {u ≥ c} (the parent's (iii)). This replaces the parent's appeal in step 4 to the minimality of β, which is not available for a general median.\n\n1. (A set of half measure on which |u| ≥ |c|.) If c ≥ 0 put S := F ∩ {x : c ≤ u(x)}; if c < 0 put S := F ∩ {x : u(x) ≤ c}. In both cases S is measurable (F and u are measurable), S ⊆ F, and ofReal(a/2) ≤ μ(S) by the corresponding hypothesis. Moreover:\n   (a) |c| ≤ |u(x)| for every x ∈ S. If c ≥ 0: |c| = c ≤ u(x) ≤ |u(x)|. If c < 0: |c| = −c ≤ −u(x) ≤ |u(x)|.\n   (b) If c ≠ 0 then u(x) ≠ 0 for every x ∈ S. If c > 0: u(x) ≥ c > 0. If c < 0: u(x) ≤ c < 0.\n\n2. (M1.) Use setLIntegral_const, then setLIntegral_mono' (S is measurable, and ofReal|c| ≤ ofReal|u(x)| for x ∈ S by 1(a) and monotonicity of ofReal), then lintegral_mono_set (S ⊆ F):\n   ofReal|c| · μ(S) = ∫⁻_S ofReal|c| dμ ≤ ∫⁻_S ofReal|u| dμ ≤ ∫⁻_F ofReal|u| dμ.\n   Since ofReal(a/2) ≤ μ(S), monotonicity of multiplication in [0, ∞] gives ofReal|c| · ofReal(a/2) ≤ ∫⁻_F ofReal|u| dμ. Since |c| ≥ 0 and 2 ≥ 0, ENNReal.ofReal_mul and ofReal 2 = 2 give\n   ofReal(|c| · a) = ofReal(2 · (|c| · (a/2))) = 2 · (ofReal|c| · ofReal(a/2)) ≤ 2 · ∫⁻_F ofReal|u| dμ.\n   (For c = 0 the left side is ofReal 0 = 0, so the bound is also trivial.)\n\n3. (M2.) Assume c ≠ 0 and, for contradiction, μ(F ∩ {x : u(x) ≠ 0}) = 0.\n   - By 1(b) and S ⊆ F, S ⊆ F ∩ {x : u(x) ≠ 0}, so μ(S) = 0 (measure_mono_null).\n   - But μ(S) ≥ ofReal(a/2) > 0 because a > 0 (ENNReal.ofReal_pos). This is a contradiction.\n   - Hence c ≠ 0 implies μ(F ∩ {x : u(x) ≠ 0}) ≠ 0.\n\n4. Steps 2 and 3 are the two conjuncts. ∎",
+    "proof_key_steps": [
+      "Take S := F ∩ {u ≥ c} if c ≥ 0 and S := F ∩ {u ≤ c} if c < 0: S is measurable, S ⊆ F, and μ(S) ≥ ofReal(a/2) by the median hypotheses.",
+      "On S, |u| ≥ |c|, and u ≠ 0 when c ≠ 0.",
+      "(M1) ofReal|c|·ofReal(a/2) ≤ ofReal|c|·μ(S) = ∫⁻_S ofReal|c| ≤ ∫⁻_S ofReal|u| ≤ ∫⁻_F ofReal|u|; multiply by 2 and use ofReal_mul to get ofReal(|c|·a).",
+      "(M2) If c ≠ 0 and μ(F ∩ {u ≠ 0}) = 0, then S ⊆ F ∩ {u ≠ 0} forces μ(S) = 0 < ofReal(a/2) ≤ μ(S), a contradiction."
+    ]
+  },
+  "audit": {
+    "key": "median_bounds",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Prose and Lean type match. The sign-selected measurable set has sufficient measure and satisfies |u| ≥ |c|, proving M1 by lower-integral monotonicity. For c ≠ 0 it lies in {u ≠ 0}, proving M2. Neither total-mass equality nor integrability is needed, including when measures or lower integrals are infinite. No circular reliance occurs."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-a1ff4a20a6/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-a1ff4a20a6/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-a1ff4a20a6/parent-supplied-natural-proof.json"
+}

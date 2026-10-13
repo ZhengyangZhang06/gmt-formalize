@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "theorem exists_contDiff_support_eq_eq_one_iff",
+        "exists_thickenings|closure_thickening_subset_cthickening|IsCompact.cthickening|^def thickening|^def cthickening|self_subset_thickening|isOpen_thickening",
+        "exists_isCompact_sdiff_lt|instance.*InnerRegular|IsFiniteMeasure|SecondCountableTopology|ProperSpace",
+        "isFiniteMeasure_withDensity_ofReal|theorem Integrable.mul_bdd|theorem withDensity_apply|theorem integral_eq_lintegral_of_nonneg_ae|theorem integral_indicator|toReal_lt_of_lt_ofReal",
+        "fiw_tb_te_l1d_smooth_sign_sep|fiw_tb_te_l1d_compact_sign_approx",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1d-independent-audit-ga9oi8yq/Proof_smooth_sign_sep.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1d-independent-audit-ga9oi8yq/Proof_compact_sign_approx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1d-independent-audit-ga9oi8yq/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1d-independent-audit-ga9oi8yq/TypeSemantics.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-l1-duality-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-l1-duality-a1/decomposition-v1.json",
+        "/tmp/l1d-independent-audit-ga9oi8yq/Proof_smooth_sign_sep.lean",
+        "/tmp/l1d-independent-audit-ga9oi8yq/Proof_compact_sign_approx.lean",
+        "/tmp/l1d-independent-audit-ga9oi8yq/Assembly.lean",
+        "/tmp/l1d-independent-audit-ga9oi8yq/TypeSemantics.lean"
+      ],
+      "conclusion": "The pinned project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d match the compilation environment. The inspected declarations support the supplied arguments. Neither proposed name is reserved in the 464-node DAG; searches of project, Mathlib and SimonGMT Lean sources found no name matches. Both names are valid bare identifiers. Both one-line propositions validate and elaborate independently before either child is declared. Explicit type equalities confirm volume as the measure and ε outside the integral; the required Euclidean and finite-measure instances synthesize. Each supplied appendix compiled independently, and the supplied assembly proved the exact selected parent type in comparator scope. All resulting proofs use only propext, Classical.choice and Quot.sound. The split is appropriate: two independent obligations feed the parent without dependency cycles or ancestor reliance. The parent contract digest was independently recomputed and matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_sign_sep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree on all hypotheses and conclusions. Steps 1–4 correctly obtain disjoint open thickenings, smooth Urysohn functions and compact supports. Steps 5–9 establish the bound and both prescribed signs for their difference. Empty compact sets and dimension zero require no extra assumptions. The proof is complete, independently compiled, and uses neither the sibling nor the parent; the empty dependency list is correct."
+    },
+    {
+      "key": "compact_sign_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including the universal quantifier over a.e.-strongly measurable g. The representative and density-measure arguments are valid; inner approximation gives disjoint compact sets with each error below ε/4. The pointwise cases, product integrability, indicator integration and conversion from ENNReal yield the required strict error below ε. Transfer back to w is justified by a.e. equality. The proof independently compiles without sibling or parent reliance. Combining it with smooth_sign_sep proves precisely the selected parent by the supplied ε-limit argument."
+    }
+  ],
+  "required_changes": []
+}
