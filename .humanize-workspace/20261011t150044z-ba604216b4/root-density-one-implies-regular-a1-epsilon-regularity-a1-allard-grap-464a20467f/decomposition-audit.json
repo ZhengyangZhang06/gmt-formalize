@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dorag_lip_' project/GMT",
+        "rg -n -i 'dorag_lip_|LipschitzApproximationLemma|LipschitzGraphCorollary|sorry' project/GMT/Ch05/Contract.lean project/GMT/Ch05/Submission.lean project/GMT/Ch07/Contract.lean",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall|withDensity_apply|measure_compl_support|isClosed_support|measure_toMeasurable",
+        "theorem restrict_apply|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lipapx-independent-audit-c9fj_ym0/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lipapx-independent-audit-c9fj_ym0/ChallengeTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-464a20467f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-464a20467f/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/lipapx-independent-audit-c9fj_ym0/All.lean",
+        "/tmp/lipapx-independent-audit-c9fj_ym0/All.log",
+        "/tmp/lipapx-independent-audit-c9fj_ym0/ChallengeTypes.lean",
+        "/tmp/lipapx-independent-audit-c9fj_ym0/source_record.json"
+      ],
+      "conclusion": "The split is appropriate for the selected Lipschitz approximation theorem. The pinned Ch07 contract matches the workspace compiler context, and package revisions match the manifest. No dorag_lip_* declaration occurs in the snapshot project; Ch05 supplies related Prop definitions, not reusable proofs. The inspected measure APIs justify the stated absence of measurability assumptions. Independently regenerated all eight supplied formal proofs: each compiles in isolation with only its declared dependency and uses only propext, Classical.choice and Quot.sound. All frozen types also elaborate independently before implementation. The parent assembly compiles and establishes the exact selected frozen type from the four exact frozen prerequisites and these children, including both 5A and 5B. Names are bare identifiers, with no collisions found across eight workspace DAGs. Dependencies are acyclic and correctly directed; vitali_bound is used through bad_set and hole_measure. No prohibited matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Complementary dimension, orthonormal coordinate maps, orthogonality, spanning and the projection identity are all proved. The argument covers zero-dimensional factors and has no undeclared dependency."
+    },
+    {
+      "key": "vitali_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact outer-measure statement follows from the bounded-radius Vitali selection, countability of disjoint positive-radius balls, subadditivity and measurable disjoint-ball summation. Neither measurability of A, B or r nor finiteness of either measure is silently assumed."
+    },
+    {
+      "key": "graph_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the Lean type. Spanning and projection identities yield coordinates; the cone condition proves the 2λ horizontal Lipschitz bound and well-definedness. Coordinatewise extension and truncation establish both global bounds and graph containment, including empty G and k = 0."
+    },
+    {
+      "key": "graph_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both exact conclusions. Orthogonality gives Pythagoras and horizontal distance control; the projection identity gives the cone estimate. The √2-Lipschitz parametrization, localization and normalized Hausdorff image inequality give precisely the stated closed-ball bound."
+    },
+    {
+      "key": "cone_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Constant dependence and every hypothesis match the quantifier order. The proof supplies Hilbert–Schmidt estimates, the required AE measurability and valid ENNReal integration. The short-distance case uses H1 and H2; the long-distance case uses H3. Only y₁ needs the good-point hypothesis, as stated."
+    },
+    {
+      "key": "off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The corrected uniformity claim matches the type. Nearest-point selection, radius bounds, vanishing small-ball mass, M2 and the exponential estimate are justified. A measurable superset handles arbitrary F without assuming measurability of τ. The explicit λ₀ permits absorption and yields exactly C₉ = 144·3ⁿ/ω."
+    },
+    {
+      "key": "bad_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The global G′ and localized complement match the Lean proposition. Reduction to the support, selection of bad radii and the density estimate verify every vitali_bound hypothesis. The comparison measure is valid for arbitrary e, and the coefficient is exactly 2(5/2)ⁿω_n/a."
+    },
+    {
+      "key": "hole_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses of the frozen type. On measurable balls and B, the comparison measure equals the required mass defect plus tilt integral, even for nonmeasurable F. Applying vitali_bound at radii 3s gives the exact factor K·ofReal(15ⁿC₉). No additional dependency is used."
+    }
+  ],
+  "required_changes": []
+}
