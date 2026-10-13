@@ -884,6 +884,64 @@ theorem Submission.smr_covector_coord_isometry :
     EuclideanSpace.norm_eq, ← σ.sum_comp]
   simp only [hJ, Real.norm_eq_abs, sq_abs]
 
+/-- Simon Ch. 6, 2.8–2.9 (pp. 136–137), the step `μ(W ∩ A) ≤ M_W(T ⌞ A)` of the mass formula
+for a restriction: continuous unit forms supported in an open `W ⊆ U` detect `μ(W ∩ A)`.  Write
+`v(x)(α) = ⟨Jα, u(x)⟩` for an isometry `J` of `(Λᵏ, |·|)` onto `ℝ^N`, so `‖u‖ ≤ 1` and `‖u‖ = 1`
+`μ`-a.e.  Take a compact Lusin set `C ⊆ W ∩ A ∩ {‖u‖ = 1}` of `u` with `c < μ(C)`, a continuous
+extension `w` of `u|C` with `‖w‖ ≤ 1` (Tietze) and a cutoff `ψ ∈ [0, 1]`, `ψ = 1` on `C`, with
+`tsupport ψ ⊆ W` and `μ(support ψ ∖ C) < μ(C) − c` (Urysohn).  Then `φ = J⁻¹(ψ w)` has `|φ| ≤ 1`,
+and `⟨φ, v⟩ = ⟨ψ w, u⟩` is `1` on `C` and `0` off `support ψ`, so `∫_A ⟨φ, v⟩ dμ > c`. -/
+theorem Submission.smr_exists_unit_form_gt : ∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) → (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < μ (W ∩ A) → ∃ φ : Eucl P → Covector (Eucl P) k, Continuous φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ W ∧ (∀ x, covectorEuclideanNorm (φ x) ≤ 1) ∧ c < ENNReal.ofReal (∫ x in A, v x (φ x) ∂μ) := by
+  intro P k U μ v hμK hv hvm hunit A hA W hW hWU c hc
+  -- Coordinates `u` of `v` in an isometric chart `J`: `v(x)(α) = ⟨Jα, u(x)⟩`, `‖u‖ = 1` a.e.
+  obtain ⟨N, J, hJ⟩ := Submission.smr_covector_coord_isometry P k
+  obtain ⟨u, hum, hu1, hu_ae, hvu⟩ :=
+    Submission.smr_ufd_unit_coord_field P k N μ v J hJ hv hvm hunit
+  -- `{‖u‖ = 1}` is conull, so it does not change `μ(W ∩ A)`; take a compact Lusin set `C` of `u`
+  -- inside `W ∩ A ∩ {‖u‖ = 1}` with `c < μ(C)`.
+  have hWAG : μ (W ∩ (A ∩ {x | ‖u x‖ = 1})) = μ (W ∩ A) := by
+    rw [← Set.inter_assoc]
+    exact measure_inter_conull (mem_ae_iff.1 hu_ae)
+  obtain ⟨C, hCc, hCsub, hcC, huC⟩ := Submission.smr_ufd_compact_lusin_set P N U μ u hμK hum
+    (A ∩ {x | ‖u x‖ = 1}) (hA.inter (measurableSet_eq_fun hum.norm measurable_const)) W hW hWU c
+    (by rw [hWAG]; exact hc)
+  have hCW : C ⊆ W := hCsub.trans Set.inter_subset_left
+  -- Tietze: a continuous `w` with `‖w‖ ≤ 1` and `w = u` on `C`.
+  obtain ⟨w, hwc, hw1, hwu⟩ :=
+    Submission.smr_ufd_ball_tietze P N C u hCc.isClosed huC fun x _ => hu1 x
+  -- Urysohn: `ψ ∈ [0, 1]`, `ψ = 1` on `C`, `tsupport ψ ⊆ W` and `μ(support ψ ∖ C) < μ(C) − c`.
+  obtain ⟨ψ, hψc, hψcs, hψW, hψ01, hψC, hψS⟩ := Submission.smr_ufd_small_cutoff P U μ hμK C W hCc
+    hW hCW hWU (μ C - c) (tsub_pos_of_lt hcC).ne'
+  have hψw : ∀ x, ‖ψ x • w x‖ ≤ 1 := fun x => by
+    rw [norm_smul, Real.norm_of_nonneg (hψ01 x).1]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (hψ01 x).2).trans (hw1 x)
+  -- The form `φ = J⁻¹(ψ w)`; `J⁻¹` is continuous since `ℝ^N` is finite-dimensional.
+  refine ⟨fun x => J.symm (ψ x • w x),
+    (LinearMap.continuous_of_finiteDimensional J.symm.toLinearMap).comp (hψc.smul hwc),
+    (hψcs.smul_right (f' := w)).comp_left (map_zero J.symm),
+    (tsupport_comp_subset (map_zero J.symm) _).trans ((tsupport_smul_subset_left ψ w).trans hψW),
+    fun x => ?_, ?_⟩
+  · -- `|φ(x)| = ‖ψ(x) w(x)‖ ≤ 1`.
+    change covectorEuclideanNorm (J.symm (ψ x • w x)) ≤ 1
+    rw [hJ, LinearEquiv.apply_symm_apply]
+    exact hψw x
+  · -- `⟨φ, v⟩ = ⟨ψ w, u⟩` is `1` on `C ⊆ {‖u‖ = 1}` and `0` off `support ψ`.
+    have hg : ∀ x, v x (J.symm (ψ x • w x)) = inner ℝ (ψ x • w x) (u x) := fun x => by
+      rw [hvu, LinearEquiv.apply_symm_apply]
+    simp only [hg]
+    refine Submission.smr_ufd_integral_lower_bound P μ (fun x => inner ℝ (ψ x • w x) (u x)) A C
+      (Function.support ψ) c hA hCc.isClosed.measurableSet hψc.isOpen_support.measurableSet
+      (fun x hx => (hCsub hx).2.1)
+      ((measure_mono (subset_tsupport ψ)).trans_lt (hμK (tsupport ψ) hψcs (hψW.trans hWU)))
+      ((continuous_inner (𝕜 := ℝ) (E := EuclideanSpace ℝ (Fin N))).measurable.comp
+        ((hψc.smul hwc).measurable.prodMk hum))
+      (fun x => (abs_real_inner_le_norm _ _).trans
+        ((mul_le_of_le_one_left (norm_nonneg _) (hψw x)).trans (hu1 x)))
+      (fun x hx => ?_) (fun x hx => ?_) (lt_tsub_iff_left.1 hψS)
+    · have hx1 : ‖u x‖ = 1 := (hCsub hx).2.2
+      simp only [hψC x hx, one_smul, hwu x hx, real_inner_self_eq_norm_sq, hx1, one_pow]
+    · simp only [Function.notMem_support.1 hx, zero_smul, inner_zero_left]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
