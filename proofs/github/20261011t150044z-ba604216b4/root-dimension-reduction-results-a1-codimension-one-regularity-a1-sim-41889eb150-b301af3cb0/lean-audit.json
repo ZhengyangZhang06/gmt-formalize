@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8369b14a4f086f98e7e02ac4113cfb6e574cd96cfa3a6ef7bd443921587c22ee",
+  "git_delta": {
+    "base_commit": "00754b48f71c8e11ca6722be1d1816c1cfa71cc3",
+    "candidate_commit": "6fadc8dee96813453b955575959d9c9099a3d8d1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_subspace_ball_euclideanHausdorff",
+    "diff_sha256": "4214a913c8a8cc1b3e28b9fba2501074bd8d95b2947f5efffabd715c2d92e940",
+    "source_sha256": "5694571c8845f6854cdf611fba50f98f6ff9615717e3d0dabdc5d9a9e7a534ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_subspace_ball_euclideanHausdorff",
+      "statement": "∀ (P m : ℕ) (H₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ H₀ = m → ∀ ρ : ℝ, 0 < ρ → μHE[m] ((H₀ : Set (Euclid P)) ∩ ball 0 ρ) = unitBallVolume m * ENNReal.ofReal (ρ ^ m)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
