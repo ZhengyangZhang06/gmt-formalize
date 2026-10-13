@@ -823,6 +823,288 @@ theorem Submission.dorag_ha_ie_taylor_two_le : ∀ (n : ℕ) (h : Euclid n → �
     (right_mem_Icc.2 zero_le_one)
   -- Step 6: at `τ = 1`, `ψ 1 = h v - h 0 - Dh 0 v`
   simpa using hcmp
+/-- **Radial mollifier** (step 0 of the Weyl lemma used in Simon Ch. 5, proof of Lemma 3.1; cf. the
+standard mollifier of Evans, *PDE*, App. C.5).  With `θ = Real.smoothTransition`,
+`k(y) = θ(1 − ‖y‖²)` is continuous, nonnegative, vanishes off `B̄₁(0)` and has `k(0) = 1`, so
+`c = ∫ k > 0`.  Then `C = c⁻¹` and `g ε t = θ(1 − t/ε²)/(c εⁿ)` work: `g ε` is continuous, vanishes
+for `t ≥ ε²`, satisfies `0 ≤ g ε t ≤ C/εⁿ`, `y ↦ g ε (‖y‖²)` is `C^∞`, and the substitution
+`y = εu` gives `∫ θ(1 − ‖y‖²/ε²) dy = εⁿ c`, so `∫ g ε (‖y‖²) dy = 1`. -/
+theorem Submission.dorag_ha_weyl_radial_mollifier : ∀ n : ℕ, 0 < n → ∃ C : ℝ, ∃ g : ℝ → ℝ → ℝ, ∀ ε : ℝ, 0 < ε → Continuous (g ε) ∧ (∀ t : ℝ, ε ^ 2 ≤ t → g ε t = 0) ∧ (∀ t : ℝ, |g ε t| ≤ C / ε ^ n) ∧ (∀ m : ℕ, ContDiff ℝ m (fun y : Euclid n => g ε (‖y‖ ^ 2))) ∧ ∫ y : Euclid n, g ε (‖y‖ ^ 2) = 1 := by
+  intro n _hn
+  -- the unscaled bump `k y = θ (1 - ‖y‖²)`, `θ = Real.smoothTransition`
+  obtain ⟨k, hk⟩ : ∃ k : Euclid n → ℝ, ∀ y, k y = Real.smoothTransition (1 - ‖y‖ ^ 2) :=
+    ⟨_, fun _ => rfl⟩
+  have hk_cont : Continuous k := by
+    rw [show k = fun y => Real.smoothTransition (1 - ‖y‖ ^ 2) from funext hk]
+    exact Real.smoothTransition.continuous.comp (continuous_const.sub (continuous_norm.pow 2))
+  have hk_supp : HasCompactSupport k := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) 1) fun y hy => ?_
+    have h1 : 1 < ‖y‖ := by simpa using hy
+    rw [hk]
+    exact Real.smoothTransition.zero_of_nonpos (by nlinarith)
+  have hk_nonneg : 0 ≤ k := fun y => by rw [hk]; exact Real.smoothTransition.nonneg _
+  have hk0 : k 0 ≠ 0 := by rw [hk]; simp
+  have hcpos : 0 < ∫ y, k y :=
+    hk_cont.integral_pos_of_hasCompactSupport_nonneg_nonzero hk_supp hk_nonneg hk0
+  -- change of variables `y = ε u`
+  have hscale : ∀ ε : ℝ, 0 < ε →
+      ∫ y : Euclid n, Real.smoothTransition (1 - ‖y‖ ^ 2 / ε ^ 2) = ε ^ n * ∫ y, k y := by
+    intro ε hε
+    have h := Measure.integral_comp_inv_smul_of_nonneg volume k hε.le
+    rw [finrank_euclideanSpace_fin, smul_eq_mul] at h
+    rw [← h]
+    congr 1
+    ext y
+    rw [hk, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hε, mul_pow, inv_pow, inv_mul_eq_div]
+  generalize ∫ y, k y = c at hcpos hscale
+  refine ⟨c⁻¹, fun ε t => Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n), fun ε hε => ?_⟩
+  have hεn : 0 < ε ^ n := pow_pos hε n
+  have hden : 0 < c * ε ^ n := mul_pos hcpos hεn
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · -- (a) continuity
+    exact (Real.smoothTransition.continuous.comp
+      (continuous_const.sub (continuous_id.div_const _))).div_const _
+  · -- (b) vanishing for `t ≥ ε²`
+    intro t ht
+    have h1 : 1 ≤ t / ε ^ 2 := (one_le_div (pow_pos hε 2)).mpr ht
+    show Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n) = 0
+    rw [Real.smoothTransition.zero_of_nonpos (by linarith), zero_div]
+  · -- (c) sup bound
+    intro t
+    show |Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n)| ≤ c⁻¹ / ε ^ n
+    rw [abs_of_nonneg (div_nonneg (Real.smoothTransition.nonneg _) hden.le)]
+    calc Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n) ≤ 1 / (c * ε ^ n) :=
+          div_le_div_of_nonneg_right (Real.smoothTransition.le_one _) hden.le
+      _ = c⁻¹ / ε ^ n := by rw [one_div, mul_inv, div_eq_mul_inv]
+  · -- (d) smoothness
+    intro m
+    have h : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun y : Euclid n =>
+        Real.smoothTransition (1 - ‖y‖ ^ 2 / ε ^ 2) / (c * ε ^ n) :=
+      (Real.smoothTransition.contDiff.comp
+        (contDiff_const.sub ((contDiff_norm_sq ℝ).div_const _))).div_const _
+    exact contDiff_infty.mp h m
+  · -- (e) normalization
+    show ∫ y : Euclid n, Real.smoothTransition (1 - ‖y‖ ^ 2 / ε ^ 2) / (c * ε ^ n) = 1
+    rw [integral_div, hscale ε hε, mul_comm]
+    exact div_self hden.ne'
+namespace Submission
+
+/-- Weyl's lemma, convolution step: for locally integrable `f` and `φ` smooth with compact
+support, `F(x) = ∫ f(y) φ(x − y) dy` is `C^m` for every `m` and `ΔF(x) = ∫ f(y) Δφ(x − y) dy`,
+`Δψ(z) = Σᵢ D²ψ(z)(eᵢ, eᵢ)` (Evans, PDE, App. C, Thm 7(i)).  `F = f ⋆[L] φ` for multiplication
+`L`; differentiating under the integral twice gives `D(DF) = f ⋆ D²φ`, and evaluation at
+`(v, w)` commutes with the integral (`convolution_precompR_apply`). -/
+theorem dorag_ha_weyl_conv_laplacian : ∀ (n : ℕ) (f φ : Euclid n → ℝ), LocallyIntegrable f → (∀ m : ℕ, ContDiff ℝ m φ) → HasCompactSupport φ → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, f y * φ (x - y))) ∧ ∀ x : Euclid n, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, f y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = ∫ y, f y * ∑ i : Fin n, iteratedFDeriv ℝ 2 φ (x - y) ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n f φ hf hφ hφc
+  -- `F = f ⋆[L] φ` for the multiplication bilinear map `L a b = a * b`.
+  set L : ℝ →L[ℝ] ℝ →L[ℝ] ℝ := ContinuousLinearMap.mul ℝ ℝ with hL
+  have hF : (fun x => ∫ y, f y * φ (x - y)) = convolution f φ L volume := by
+    funext x
+    rw [hL, convolution_mul]
+  have hφ1 : ContDiff ℝ 1 φ := by exact_mod_cast hφ 1
+  have hφ2 : ContDiff ℝ 2 φ := by exact_mod_cast hφ 2
+  have hdφ : ContDiff ℝ 1 (fderiv ℝ φ) := hφ2.fderiv_right one_add_one_eq_two.le
+  refine ⟨fun m => ?_, fun x => ?_⟩
+  · rw [hF]
+    exact hφc.contDiff_convolution_right L hf (hφ m)
+  -- `DF = f ⋆[L.precompR] Dφ` and `D(DF)(x) v w = ∫ f(y) D²φ(x − y) v w dy`.
+  have hD : fderiv ℝ (convolution f φ L volume) =
+      convolution f (fderiv ℝ φ) (L.precompR (Euclid n)) volume := by
+    ext1 x₀
+    exact (hφc.hasFDerivAt_convolution_right L hf hφ1 x₀).fderiv
+  have hc2 : Continuous (fderiv ℝ (fderiv ℝ φ)) := hdφ.continuous_fderiv one_ne_zero
+  have hs2 : HasCompactSupport (fderiv ℝ (fderiv ℝ φ)) := (hφc.fderiv ℝ).fderiv ℝ
+  have hD2 : ∀ v w : Euclid n, fderiv ℝ (fderiv ℝ (convolution f φ L volume)) x v w =
+      ∫ y, f y * fderiv ℝ (fderiv ℝ φ) (x - y) v w := by
+    intro v w
+    have hc3 : Continuous fun a => fderiv ℝ (fderiv ℝ φ) a v := hc2.clm_apply continuous_const
+    have hs3 : HasCompactSupport fun a => fderiv ℝ (fderiv ℝ φ) a v :=
+      hs2.comp_left (g := fun A : Euclid n →L[ℝ] Euclid n →L[ℝ] ℝ => A v) rfl
+    rw [hD, ((hφc.fderiv ℝ).hasFDerivAt_convolution_right (L.precompR (Euclid n)) hf hdφ x).fderiv,
+      convolution_precompR_apply (L.precompR (Euclid n)) hf hs2 hc2 x v,
+      convolution_precompR_apply L hf hs3 hc3 x w, hL, convolution_mul]
+  -- Each integrand `f(y) D²φ(x − y) v w` is integrable, so the sum over `i` commutes with `∫`.
+  have hint : ∀ v w : Euclid n, Integrable fun y => f y * fderiv ℝ (fderiv ℝ φ) (x - y) v w := by
+    intro v w
+    have hc4 : Continuous fun a => fderiv ℝ (fderiv ℝ φ) a v w :=
+      (hc2.clm_apply continuous_const).clm_apply continuous_const
+    have hs4 : HasCompactSupport fun a => fderiv ℝ (fderiv ℝ φ) a v w :=
+      hs2.comp_left (g := fun A : Euclid n →L[ℝ] Euclid n →L[ℝ] ℝ => A v w) rfl
+    exact hs4.convolutionExists_right L hf hc4 x
+  simp only [iteratedFDeriv_two_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [hF]
+  simp_rw [hD2, Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint _ _]
+/-- Weyl's lemma, mollification step: if `W ∈ L¹(B)`, `B = B_R(0)`, is weakly harmonic in `B`
+and `φ` is smooth and vanishes for `‖y‖ ≥ ε`, then `F = (1_B W) ⋆ φ` is `C^m` for every `m` and
+`ΔF = 0` on `B_{R−ε}(0)`.  By `dorag_ha_weyl_conv_laplacian`, `ΔF(x) = ∫ (1_B W)(y) Δφ(x − y) dy`;
+for `‖x‖ < R − ε` the test function `ζ(y) = φ(x − y)` has `spt ζ ⊆ B̄_ε(x) ⊆ B` and
+`Δζ(y) = Δφ(x − y)`, so this is `∫_B W Δζ = 0`. -/
+theorem dorag_ha_weyl_mollify_harmonic : ∀ (n : ℕ) (R ε : ℝ) (W φ : Euclid n → ℝ), 0 < ε → IntegrableOn W (ball (0 : Euclid n) R) → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiff ℝ m φ) → (∀ y : Euclid n, ε ≤ ‖y‖ → φ y = 0) → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, (ball (0 : Euclid n) R).indicator W y * φ (x - y))) ∧ ∀ x ∈ ball (0 : Euclid n) (R - ε), ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, (ball (0 : Euclid n) R).indicator W y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+  intro n R ε W φ hε hW hharm hφ hφ0
+  -- `1_B W` is integrable, and `φ` vanishes off the compact ball `B̄_ε(0)`.
+  have hWB : Integrable ((ball (0 : Euclid n) R).indicator W) :=
+    hW.integrable_indicator measurableSet_ball
+  have hφc : HasCompactSupport φ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) ε) fun y hy =>
+      hφ0 y (by rw [mem_closedBall, dist_zero_right, not_le] at hy; exact hy.le)
+  obtain ⟨hsmooth, hlap⟩ := Submission.dorag_ha_weyl_conv_laplacian n
+    ((ball (0 : Euclid n) R).indicator W) φ hWB.locallyIntegrable hφ hφc
+  refine ⟨hsmooth, fun x hx => ?_⟩
+  rw [hlap x]
+  -- The test function `ζ(y) = φ(x − y)`, supported in `B̄_ε(x) ⊆ B`.
+  obtain ⟨ζ, hζ⟩ : ∃ ζ : Euclid n → ℝ, ζ = fun y => φ (x - y) := ⟨_, rfl⟩
+  have hζ2 : ContDiff ℝ 2 ζ := by
+    rw [hζ]
+    exact (hφ 2).comp (contDiff_const.sub contDiff_id)
+  have hζspt : tsupport ζ ⊆ closedBall x ε := by
+    refine closure_minimal (fun y hy => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_comm, dist_eq_norm]
+    by_contra h
+    exact hy (by rw [hζ]; exact hφ0 _ (not_le.1 h).le)
+  have hball : closedBall x ε ⊆ ball (0 : Euclid n) R := by
+    intro y hy
+    rw [mem_closedBall] at hy
+    rw [mem_ball] at hx ⊢
+    linarith [dist_triangle y x 0]
+  -- `D²ζ(y)(v, v) = D²φ(x − y)(v, v)`: write `ζ = φ(x + ·) ∘ (−id)`.
+  have hD2 : ∀ y v : Euclid n,
+      iteratedFDeriv ℝ 2 ζ y ![v, v] = iteratedFDeriv ℝ 2 φ (x - y) ![v, v] := by
+    intro y v
+    have hψ : ContDiff ℝ (2 : ℕ) fun z => φ (x + z) :=
+      (hφ 2).comp (contDiff_const.add contDiff_id)
+    have hζψ : ζ = (fun z => φ (x + z)) ∘ ⇑(-ContinuousLinearMap.id ℝ (Euclid n)) := by
+      rw [hζ]
+      funext z
+      simp [sub_eq_add_neg]
+    rw [hζψ, ContinuousLinearMap.iteratedFDeriv_comp_right _ hψ y le_rfl,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply, iteratedFDeriv_comp_add_left,
+      iteratedFDeriv_two_apply, iteratedFDeriv_two_apply]
+    simp [sub_eq_add_neg]
+  -- `∫ 1_B W Δφ(x − ·) = ∫_B W Δζ = 0` by weak harmonicity.
+  have hζW := hharm ζ hζ2
+    ((isCompact_closedBall x ε).of_isClosed_subset (isClosed_tsupport ζ) hζspt) (hζspt.trans hball)
+  rw [← integral_indicator measurableSet_ball] at hζW
+  simpa only [Set.indicator_mul_left, hD2] using hζW
+
+end Submission
+/-- **Fubini symmetry of iterated convolutions** (step 4 of the proof of Weyl's lemma, which gives
+"Thus w is harmonic in B" in the proof of Simon Ch. 5, Lemma 3.1): for `f ∈ L¹(ℝⁿ)` and continuous
+compactly supported kernels `φ, ψ`, `((f ⋆ φ) ⋆ ψ)(x) = ((f ⋆ ψ) ⋆ φ)(x)`.  For continuous
+compactly supported `a, b` the kernel `f(y) a(x − z − y) b(z)` is integrable on `ℝⁿ × ℝⁿ`
+(dominated by `sup |a| · |b(z)| · |f(y)|`), so Fubini and the substitution `z ↦ (x − y) − z` give
+`∫_z (∫_y f(y) a(x − z − y)) b(z) = ∫_y f(y) ∫_z a(z) b(x − y − z)`; the inner kernel integrals
+for `(a, b) = (φ, ψ)` and `(ψ, φ)` agree by the same substitution. -/
+theorem Submission.dorag_ha_weyl_conv_swap : ∀ (n : ℕ) (f φ ψ : Euclid n → ℝ) (x : Euclid n), Integrable f → Continuous φ → HasCompactSupport φ → Continuous ψ → HasCompactSupport ψ → ∫ z, (∫ y, f y * φ (x - z - y)) * ψ z = ∫ z, (∫ y, f y * ψ (x - z - y)) * φ z := by
+  intro n f φ ψ x hf hφ hφs hψ hψs
+  -- reflection invariance: `∫ a(w − z) b(z) dz = ∫ a(z) b(w − z) dz`, via `z ↦ w − z`
+  have refl : ∀ (a b : Euclid n → ℝ) (w : Euclid n),
+      ∫ z, a (w - z) * b z = ∫ z, a z * b (w - z) := by
+    intro a b w
+    rw [← integral_sub_left_eq_self (fun z => a z * b (w - z)) volume w]
+    simp only [sub_sub_cancel]
+  -- (★): for continuous compactly supported `a, b`,
+  -- `∫_z (∫_y f(y) a(x − z − y)) b(z) = ∫_y f(y) ∫_z a(z) b(x − y − z)`
+  have gen : ∀ a b : Euclid n → ℝ, Continuous a → HasCompactSupport a → Continuous b →
+      HasCompactSupport b →
+      ∫ z, (∫ y, f y * a (x - z - y)) * b z = ∫ y, f y * ∫ z, a z * b (x - y - z) := by
+    intro a b ha has hb hbs
+    obtain ⟨M, hM⟩ := has.exists_bound_of_continuous ha
+    have hbi : Integrable b := hb.integrable_of_hasCompactSupport hbs
+    -- `K(z, y) = f(y) a(x − z − y) b(z)` is integrable on `ℝⁿ × ℝⁿ`, being a.e.-strongly
+    -- measurable and dominated by `M |b(z)| |f(y)|`
+    have hK : Integrable (uncurry fun z y => f y * a (x - z - y) * b z)
+        (volume.prod (volume : Measure (Euclid n))) := by
+      refine ((hbi.norm.mul_prod hf.norm).const_mul M).mono' ?_ (Eventually.of_forall fun p => ?_)
+      · have ha' : Continuous fun p : Euclid n × Euclid n => a (x - p.1 - p.2) := by fun_prop
+        have hb' : Continuous fun p : Euclid n × Euclid n => b p.1 := by fun_prop
+        exact (hf.aestronglyMeasurable.comp_snd.mul ha'.aestronglyMeasurable).mul
+          hb'.aestronglyMeasurable
+      · simp only [uncurry, norm_mul]
+        calc ‖f p.2‖ * ‖a (x - p.1 - p.2)‖ * ‖b p.1‖ ≤ ‖f p.2‖ * M * ‖b p.1‖ := by
+              gcongr
+              exact hM _
+          _ = M * (‖b p.1‖ * ‖f p.2‖) := by ring
+    calc ∫ z, (∫ y, f y * a (x - z - y)) * b z
+        = ∫ z, ∫ y, f y * a (x - z - y) * b z := by
+          simp only [integral_mul_const]
+      _ = ∫ y, ∫ z, f y * a (x - z - y) * b z := integral_integral_swap hK
+      _ = ∫ y, f y * ∫ z, a z * b (x - y - z) := by
+          refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+          simp only [sub_right_comm x _ y, mul_assoc, integral_const_mul, refl a b (x - y)]
+  rw [gen φ ψ hφ hφs hψ hψs, gen ψ φ hψ hψs hφ hφs]
+  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+  simp only [← refl ψ φ (x - y), mul_comm]
+/-- Patching step of Weyl's lemma (step 5 of its proof).  If each `F ε` is smooth and harmonic on
+`B_{R-ε}(0)` and `F ε x = F δ x` whenever `‖x‖ + ε + δ < R`, then `h(x) = F ((R - ‖x‖) / 3) x` is
+smooth and harmonic on `B_R(0)`, and `F ε x = h x` for all small `ε > 0`.  The point is that on
+`B_r(0)`, `r < R`, `h` coincides with the single function `F ((R - r) / 3)`. -/
+theorem Submission.dorag_ha_weyl_glue : ∀ (n : ℕ) (R : ℝ) (F : ℝ → Euclid n → ℝ), 0 < R → (∀ ε : ℝ, 0 < ε → ε < R → ∀ m : ℕ, ContDiffOn ℝ m (F ε) (ball (0 : Euclid n) (R - ε))) → (∀ ε : ℝ, 0 < ε → ε < R → ∀ y ∈ ball (0 : Euclid n) (R - ε), ∑ i : Fin n, iteratedFDeriv ℝ 2 (F ε) y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ (ε δ : ℝ) (x : Euclid n), 0 < ε → 0 < δ → ‖x‖ + ε + δ < R → F ε x = F δ x) → ∃ h : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R)) ∧ (∀ y ∈ ball (0 : Euclid n) R, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ ∀ x ∈ ball (0 : Euclid n) R, ∀ᶠ ε in 𝓝[>] (0 : ℝ), F ε x = h x := by
+  intro n R F hR hsmooth hharm hcons
+  -- Step 2: for `r < R`, `F ((R - r) / 3) = h` on `B_r(0)`, by (iii) with `ε = (R - r) / 3` and
+  -- `δ = (R - ‖x‖) / 3`, as `‖x‖ + ε + δ < (2R + r) / 3 < R`
+  have key : ∀ r : ℝ, r < R → ∀ x : Euclid n, ‖x‖ < r →
+      F ((R - r) / 3) x = F ((R - ‖x‖) / 3) x := fun r hr x hx =>
+    hcons ((R - r) / 3) ((R - ‖x‖) / 3) x (by linarith) (by linarith) (by linarith)
+  -- each `x ∈ B_R(0)` lies in a smaller ball `B_r(0)`, `r < R` (take `r = (‖x‖ + R) / 2`)
+  have mid : ∀ x ∈ ball (0 : Euclid n) R, ∃ r, ‖x‖ < r ∧ r < R := fun x hx =>
+    ⟨(‖x‖ + R) / 2, by linarith [mem_ball_zero_iff.1 hx], by linarith [mem_ball_zero_iff.1 hx]⟩
+  refine ⟨fun x => F ((R - ‖x‖) / 3) x, fun m => ?_, fun y hy => ?_, fun x hx => ?_⟩
+  · -- Step 3: on `B_R(0) ∩ B_r(0)`, `h` is the `C^m` function `F ((R - r) / 3)`, as
+    -- `B_r(0) ⊆ B_{R - (R - r) / 3}(0)`; `C^m` is a local property
+    refine contDiffOn_of_locally_contDiffOn fun x hx => ?_
+    obtain ⟨r, hxr, hrR⟩ := mid x hx
+    refine ⟨ball 0 r, isOpen_ball, mem_ball_zero_iff.2 hxr, ?_⟩
+    have hF : ContDiffOn ℝ m (F ((R - r) / 3)) (ball 0 R ∩ ball 0 r) :=
+      (hsmooth ((R - r) / 3) (by linarith) (by linarith [norm_nonneg x]) m).mono fun z hz =>
+        mem_ball_zero_iff.2 (by linarith [mem_ball_zero_iff.1 hz.2])
+    exact hF.congr fun z hz => (key r hrR z (mem_ball_zero_iff.1 hz.2)).symm
+  · -- Step 4: `h = F ((R - r) / 3)` near `y`, so both have the same second derivative at `y`,
+    -- and (ii) applies to `F ((R - r) / 3)` at `y ∈ B_r(0) ⊆ B_{R - (R - r) / 3}(0)`
+    obtain ⟨r, hyr, hrR⟩ := mid y hy
+    have heq : (fun x => F ((R - ‖x‖) / 3) x) =ᶠ[𝓝 y] F ((R - r) / 3) := by
+      filter_upwards [isOpen_ball.mem_nhds (mem_ball_zero_iff.2 hyr)] with z hz
+      exact (key r hrR z (mem_ball_zero_iff.1 hz)).symm
+    rw [(heq.iteratedFDeriv ℝ 2).eq_of_nhds]
+    exact hharm ((R - r) / 3) (by linarith) (by linarith [norm_nonneg y]) y
+      (mem_ball_zero_iff.2 (by linarith))
+  · -- Step 5: for `0 < ε < 2 (R - ‖x‖) / 3`, (iii) with `δ = (R - ‖x‖) / 3` gives `F ε x = h x`
+    have hxR := mem_ball_zero_iff.1 hx
+    filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 2 * (R - ‖x‖) / 3 by linarith)] with ε hε
+    exact hcons ε ((R - ‖x‖) / 3) x hε.1 (by linarith) (by linarith [hε.2])
+/-- **Weyl's lemma, a.e. convergence of approximate identities** (Lebesgue differentiation; cf.
+Evans, *PDE*, App. C, Thm. 7(ii)).  If `f ∈ L¹(ℝⁿ)` and for every `ε > 0` the kernel `φ ε` is
+continuous, vanishes on `{|y| ≥ ε}`, satisfies `|φ ε| ≤ C ε⁻ⁿ` and has integral `1`, then
+`∫ f(y) φ ε(x − y) dy → f(x)` as `ε → 0⁺` for `Lⁿ`-a.e. `x`.  At a Lebesgue point `x₀` the
+kernels `y ↦ φ ε(x₀ − y)` have integral `1`, support in `B_ε(x₀)` and sup `≤ C c₁ / Lⁿ(B_ε(x₀))`,
+`c₁ = Lⁿ(B₁(0))`, so `|∫ f φ ε(x₀ − ·) − f(x₀)| ≤ C c₁ ⨍_{B_ε(x₀)} |f − f(x₀)| → 0`. -/
+theorem Submission.dorag_ha_weyl_ae_tendsto : ∀ (n : ℕ) (f : Euclid n → ℝ) (C : ℝ) (φ : ℝ → Euclid n → ℝ), 0 < n → Integrable f → (∀ ε : ℝ, 0 < ε → Continuous (φ ε)) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, ε ≤ ‖y‖ → φ ε y = 0) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, |φ ε y| ≤ C / ε ^ n) → (∀ ε : ℝ, 0 < ε → ∫ y, φ ε y = 1) → ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun ε => ∫ y, f y * φ ε (x - y)) (𝓝[>] (0 : ℝ)) (𝓝 (f x)) := by
+  intro n f C φ _hn hf _hcont hsupp hbound hint
+  -- Lebesgue differentiation: `⨍_{B_r(x₀)} |f - f x₀| → 0` as `r → 0⁺` for a.e. `x₀`
+  filter_upwards [VitaliFamily.ae_tendsto_average_norm_sub
+    (Besicovitch.vitaliFamily (volume : Measure (Euclid n))) hf.locallyIntegrable] with x₀ h₀
+  -- `c₁ = Lⁿ(B₁(0)) > 0`, and `Lⁿ(B_ε(x₀)) = εⁿ c₁`
+  have hc₁ : 0 < (volume : Measure (Euclid n)).real (closedBall 0 1) :=
+    ENNReal.toReal_pos (measure_closedBall_pos _ _ one_pos).ne' measure_closedBall_lt_top.ne
+  -- `y ↦ φ ε (x₀ - y)` has integral `1`, support in `B_ε(x₀)` and sup `≤ C c₁ / Lⁿ(B_ε(x₀))`
+  have key : Tendsto (fun ε => ∫ y, φ ε (x₀ - y) • f y) (𝓝[>] (0 : ℝ)) (𝓝 (f x₀)) := by
+    apply tendsto_integral_smul_of_tendsto_average_norm_sub
+      (C * (volume : Measure (Euclid n)).real (closedBall 0 1))
+      (h₀.comp (Besicovitch.tendsto_filterAt _ x₀))
+    · exact Eventually.of_forall fun _ => hf.integrableOn
+    · apply tendsto_const_nhds.congr'
+      filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε)
+      rw [integral_sub_left_eq_self (φ ε) volume x₀, hint ε hε]
+    · filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε) y hy
+      rw [mem_closedBall, dist_eq_norm, norm_sub_rev]
+      by_contra! h
+      exact hy (hsupp ε hε _ h.le)
+    · filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε) y
+      rw [Measure.addHaar_real_closedBall' _ x₀ hε.le, finrank_euclideanSpace_fin,
+        mul_div_mul_right _ _ hc₁.ne']
+      exact hbound ε hε (x₀ - y)
+  refine key.congr fun ε => ?_
+  simp_rw [smul_eq_mul, mul_comm]
 /-- The radial potential of the mean value property (Simon Ch. 5, 3.2–3.4).  For continuous `g`
 vanishing on `[r², ∞)`, `Ψ(y) = P(|y|²)` with `P(t) = ½∫_{r²}^t g` is `C¹` with
 `DΨ(y)v = P'(|y|²)·2⟨y, v⟩ = g(|y|²)⟨y, v⟩` (FTC and the chain rule), and `Ψ(y) = 0` for
@@ -1548,6 +1830,62 @@ theorem Submission.dorag_ha_interior_estimates : ∀ n : ℕ, 0 < n → ∃ CH :
       exact (mul_le_of_le_one_left (norm_nonneg v) hτ.2).trans hv)
   calc |h v - h 0 - fderiv ℝ h 0 v| ≤ 2 * n * (K₁ * ‖v‖) / (R / 4) * ‖v‖ / 2 := hT
     _ = 4 * n * K₁ * ‖v‖ ^ 2 / R := by field_simp
+/-- **Weyl's lemma** (used without proof in Simon Ch. 5, Lemma 3.1: "thus `w` is harmonic in
+`B`").  If `W` is integrable on `B = B̆_R(0)` and weakly harmonic there (`∫_B W Δζ = 0` for every
+`C²` function `ζ` with compact support in `B`), then `W` agrees a.e. on `B` with a function `h`
+that is `C^m` on `B` for every `m` and harmonic in `B`.  Mollify `W̃ = 1_B W` with the radial
+kernels `φ_ε(y) = g_ε(|y|²)`: `F_ε = φ_ε ⋆ W̃` is smooth and harmonic on `B̆_{R−ε}(0)`, the mean
+value property and `φ_ε ⋆ φ_δ = φ_δ ⋆ φ_ε` give `F_ε = F_δ` on `B̆_{R−ε−δ}(0)`, the `F_ε` patch to
+`h`, and `F_ε → W̃` a.e. by Lebesgue differentiation. -/
+theorem Submission.dorag_ha_weyl_lemma : ∀ (n : ℕ) (R : ℝ) (W : Euclid n → ℝ), 0 < n → 0 < R → IntegrableOn W (ball (0 : Euclid n) R) → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∃ h : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R)) ∧ (∀ y ∈ ball (0 : Euclid n) R, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ ∀ᵐ y ∂(volume.restrict (ball (0 : Euclid n) R)), h y = W y := by
+  intro n R W hn hR hW hweak
+  -- the radial mollifiers `φ_ε(y) = g ε (|y|²)`: smooth, `spt φ_ε ⊆ B̄_ε(0)`, `∫ φ_ε = 1`
+  obtain ⟨C, g, hg⟩ := Submission.dorag_ha_weyl_radial_mollifier n hn
+  have hφ0 : ∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, ε ≤ ‖y‖ → g ε (‖y‖ ^ 2) = 0 := fun ε hε y hy =>
+    (hg ε hε).2.1 _ (pow_le_pow_left₀ hε.le hy 2)
+  have hφc : ∀ ε : ℝ, 0 < ε → Continuous fun y : Euclid n => g ε (‖y‖ ^ 2) := fun ε hε =>
+    ((hg ε hε).2.2.2.1 0).continuous
+  have hφs : ∀ ε : ℝ, 0 < ε → HasCompactSupport fun y : Euclid n => g ε (‖y‖ ^ 2) :=
+    fun ε hε => HasCompactSupport.intro (isCompact_closedBall 0 ε) fun y hy =>
+      hφ0 ε hε y (not_le.1 (mt mem_closedBall_zero_iff.2 hy)).le
+  -- the mollifications `F ε = φ_ε ⋆ W̃` of `W̃ = 1_B W ∈ L¹(ℝⁿ)`
+  have hWt : Integrable ((ball (0 : Euclid n) R).indicator W) :=
+    hW.integrable_indicator measurableSet_ball
+  set F : ℝ → Euclid n → ℝ :=
+    fun ε x => ∫ y, (ball (0 : Euclid n) R).indicator W y * g ε (‖x - y‖ ^ 2)
+  -- `F ε` is smooth, and harmonic on `B̆_{R−ε}(0)`
+  have hmoll : ∀ ε : ℝ, 0 < ε → (∀ m : ℕ, ContDiff ℝ m (F ε)) ∧
+      ∀ x ∈ ball (0 : Euclid n) (R - ε), ∑ i : Fin n, iteratedFDeriv ℝ 2 (F ε) x
+        ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := fun ε hε =>
+    Submission.dorag_ha_weyl_mollify_harmonic n R ε W (fun y => g ε (‖y‖ ^ 2)) hε hW hweak
+      (hg ε hε).2.2.2.1 (hφ0 ε hε)
+  -- mean value property of the harmonic `F a`: `∫ F a (x − z) φ_b(z) dz = F a x`
+  have hmv : ∀ a b : ℝ, 0 < a → 0 < b → ∀ x : Euclid n, ‖x‖ + a + b < R →
+      ∫ z, F a (x - z) * g b (‖z‖ ^ 2) = F a x := by
+    intro a b ha hb x hx
+    have hsub : closedBall x b ⊆ ball (0 : Euclid n) (R - a) :=
+      closedBall_subset_ball' (by rw [dist_zero_right]; linarith)
+    rw [(Submission.dorag_ha_mean_value n _ (F a) hn isOpen_ball ((hmoll a ha).1 2).contDiffOn
+      (hmoll a ha).2 x b hb hsub).1 (g b) (hg b hb).1 (hg b hb).2.1, (hg b hb).2.2.2.2, mul_one]
+  -- hence `F ε = F δ` on `B̆_{R−ε−δ}(0)`, since `(F ε ⋆ φ_δ)(x)` is symmetric in `ε, δ`
+  have hcons : ∀ (ε δ : ℝ) (x : Euclid n), 0 < ε → 0 < δ → ‖x‖ + ε + δ < R → F ε x = F δ x := by
+    intro ε δ x hε hδ hx
+    rw [← hmv ε δ hε hδ x hx, ← hmv δ ε hδ hε x (by linarith)]
+    exact Submission.dorag_ha_weyl_conv_swap n ((ball (0 : Euclid n) R).indicator W)
+      (fun y => g ε (‖y‖ ^ 2)) (fun y => g δ (‖y‖ ^ 2)) x hWt (hφc ε hε) (hφs ε hε) (hφc δ hδ)
+      (hφs δ hδ)
+  -- patch the `F ε` into `h`
+  obtain ⟨h, hh, hΔh, hFh⟩ := Submission.dorag_ha_weyl_glue n R F hR
+    (fun ε hε _ m => ((hmoll ε hε).1 m).contDiffOn) (fun ε hε _ => (hmoll ε hε).2) hcons
+  refine ⟨h, hh, hΔh, ?_⟩
+  -- `F ε → W̃` a.e. (Lebesgue differentiation), and on `B` also `F ε x = h x` for small `ε`
+  have hlim := Submission.dorag_ha_weyl_ae_tendsto n _ C (fun ε y => g ε (‖y‖ ^ 2)) hn hWt hφc
+    hφ0 (fun ε hε y => (hg ε hε).2.2.1 _) fun ε hε => (hg ε hε).2.2.2.2
+  rw [ae_restrict_iff' measurableSet_ball]
+  filter_upwards [hlim] with x hx hxB
+  have hxh : Tendsto (fun ε => F ε x) (𝓝[>] 0) (𝓝 (h x)) :=
+    tendsto_const_nhds.congr' ((hFh x hxB).mono fun ε hε => hε.symm)
+  rw [tendsto_nhds_unique hxh hx, indicator_of_mem hxB]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
