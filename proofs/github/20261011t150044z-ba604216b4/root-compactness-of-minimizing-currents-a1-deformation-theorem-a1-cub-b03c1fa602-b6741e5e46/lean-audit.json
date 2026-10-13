@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c7a0d0ccbd0559203665c682941e245d7a2df261a9f583eab797ef5889e0945",
+  "git_delta": {
+    "base_commit": "928be6d1df1e312edba524c8fd76720db6eee7eb",
+    "candidate_commit": "2d9a7bcefd74ac3f13bda2367d95d51c1e81c041",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_integral_div_eq_zero",
+    "diff_sha256": "ad9acf471f0cb283770d20a96680813cc9d5f62e03e816df90219da8ee88af2e",
+    "source_sha256": "ebcf1785bbc314d93df4a99f93e498bd73f8c3c7be8d247471c8cf4d8ec1947e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_integral_div_eq_zero",
+      "statement": "∀ (m : ℕ) (g : Euclid (m + 1) → Euclid (m + 1)), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
