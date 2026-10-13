@@ -747,6 +747,82 @@ theorem Submission.codim1_zsl_pc_mollify_indicator_l1 : ∀ (m : ℕ) (F : Set (
         rw [← ofReal_integral_norm_eq_lintegral_enorm hρ_int]
         have : (fun x => ‖ρ x‖) = ρ := funext fun x => Real.norm_of_nonneg (hρ0 x)
         rw [this, hρ1, ENNReal.ofReal_one, one_mul]
+/-- `L¹` translation estimate for a `C¹` function `f : ℝᵐ → ℝ`:
+`∫_{B_R(0)} |f(v + h) − f(v)| dv ≤ |h| ∫_{B_{R+|h|}(0)} ‖Df(w)‖ dw`.  By the fundamental theorem
+of calculus along `t ↦ v + t h`, `|f(v + h) − f(v)| ≤ |h| ∫₀¹ ‖Df(v + t h)‖ dt`; integrate over
+`B_R(0)`, exchange the order of integration (Tonelli) and use, for `t ∈ (0, 1]`, the inclusion
+`B_R(0) + t h ⊆ B_{R+|h|}(0)` and the translation invariance of Lebesgue measure. -/
+theorem Submission.codim1_zsl_pc_smooth_translate_l1 : ∀ (m : ℕ) (f : Euclid m → ℝ) (h : Euclid m) (R : ℝ), ContDiff ℝ 1 f → ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ ≤ ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := by
+  intro m f h R hf
+  have hcont : Continuous (fderiv ℝ f) := hf.continuous_fderiv one_ne_zero
+  have hdiff : Differentiable ℝ f := hf.differentiable one_ne_zero
+  have hGc : Continuous (fun w : Euclid m => ‖fderiv ℝ f w‖ₑ) := hcont.enorm
+  have hGm : Measurable (fun w : Euclid m => ‖fderiv ℝ f w‖ₑ) := hGc.measurable
+  have hshift : Continuous (fun p : Euclid m × ℝ => p.1 + p.2 • h) :=
+    continuous_fst.add (continuous_snd.smul continuous_const)
+  have hmeas2 : Measurable (uncurry fun (v : Euclid m) (t : ℝ) => ‖fderiv ℝ f (v + t • h)‖ₑ) :=
+    (hGc.comp hshift).measurable
+  -- Steps 1–2: pointwise bound via the fundamental theorem of calculus along `t ↦ v + t • h`
+  have key : ∀ v : Euclid m, ‖f (v + h) - f v‖ₑ ≤
+      ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ := by
+    intro v
+    have hseg : Continuous (fun t : ℝ => v + t • h) :=
+      continuous_const.add (continuous_id.smul continuous_const)
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => f (v + s • h))
+        (fderiv ℝ f (v + t • h) h) t := by
+      intro t
+      have h1 : HasDerivAt (fun s : ℝ => v + s • h) h t :=
+        (((hasDerivAt_id' t).smul_const h).const_add v).congr_deriv (one_smul ℝ h)
+      exact (hdiff (v + t • h)).hasFDerivAt.comp_hasDerivAt t h1
+    have hc1 : Continuous (fun t : ℝ => fderiv ℝ f (v + t • h) h) :=
+      (hcont.comp hseg).clm_apply continuous_const
+    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      (hc1.intervalIntegrable 0 1)
+    simp only [one_smul, zero_smul, add_zero] at hFTC
+    rw [← hFTC, intervalIntegral.integral_of_le zero_le_one]
+    calc ‖∫ t in Ioc (0 : ℝ) 1, fderiv ℝ f (v + t • h) h‖ₑ
+        ≤ ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h) h‖ₑ :=
+          enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ t in Ioc (0 : ℝ) 1, ‖h‖ₑ * ‖fderiv ℝ f (v + t • h)‖ₑ :=
+          lintegral_mono fun t =>
+            (ContinuousLinearMap.le_opENorm (fderiv ℝ f (v + t • h)) h).trans_eq (mul_comm _ _)
+      _ = ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ :=
+          lintegral_const_mul _ (hGc.comp hseg).measurable
+  have hmeasv : Measurable
+      (fun v : Euclid m => ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ) :=
+    hmeas2.lintegral_prod_right
+  -- Step 4: translation invariance of Lebesgue measure and inclusion of balls
+  have hball : ∀ t ∈ Ioc (0 : ℝ) 1, ∫⁻ v in ball (0 : Euclid m) R, ‖fderiv ℝ f (v + t • h)‖ₑ ≤
+      ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := by
+    intro t ht
+    have ht' : ‖t • h‖ ≤ ‖h‖ := by
+      rw [norm_smul, Real.norm_of_nonneg ht.1.le]
+      exact mul_le_of_le_one_left (norm_nonneg h) ht.2
+    have hsub : ball (0 : Euclid m) R ⊆
+        (fun v => v + t • h) ⁻¹' ball (0 : Euclid m) (R + ‖h‖) := by
+      intro v hv
+      rw [mem_preimage, mem_ball_zero_iff]
+      exact (norm_add_le _ _).trans_lt (add_lt_add_of_lt_of_le (mem_ball_zero_iff.mp hv) ht')
+    calc ∫⁻ v in ball (0 : Euclid m) R, ‖fderiv ℝ f (v + t • h)‖ₑ
+        ≤ ∫⁻ v in (fun v => v + t • h) ⁻¹' ball (0 : Euclid m) (R + ‖h‖),
+            ‖fderiv ℝ f (v + t • h)‖ₑ := lintegral_mono_set hsub
+      _ = ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ :=
+          (measurePreserving_add_right volume (t • h)).setLIntegral_comp_preimage
+            measurableSet_ball hGm
+  -- Steps 3 and 5: integrate, exchange the order of integration (Tonelli), and conclude
+  calc ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ
+      ≤ ∫⁻ v in ball (0 : Euclid m) R,
+          ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ := lintegral_mono key
+    _ = ‖h‖ₑ * ∫⁻ v in ball (0 : Euclid m) R,
+          ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ := lintegral_const_mul _ hmeasv
+    _ = ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1,
+          ∫⁻ v in ball (0 : Euclid m) R, ‖fderiv ℝ f (v + t • h)‖ₑ :=
+        congrArg (‖h‖ₑ * ·) (lintegral_lintegral_swap hmeas2.aemeasurable)
+    _ ≤ ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1,
+          ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ :=
+        mul_le_mul_right (setLIntegral_mono' measurableSet_Ioc hball) _
+    _ = ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := by
+        rw [setLIntegral_const, Real.volume_Ioc, sub_zero, ENNReal.ofReal_one, mul_one]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
