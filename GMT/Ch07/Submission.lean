@@ -451,6 +451,172 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 2 of the Lipschitz approximation lemma (Simon Ch. 5, Lemma 2.6, in Allard's theorem as used
+for 7.4.3): orthonormal graph coordinates adapted to an `n`-plane `T₀ ⊆ ℝ^{n+k}`.  With orthonormal
+bases `a` of `T₀` and `b` of `T₀ᗮ` (`dim T₀ᗮ = k`), `ι v = Σ vᵢaᵢ` and `ι' w = Σ wⱼbⱼ` are linear
+isometries onto `T₀` and `T₀ᗮ`; hence `⟪ι v, ι' w⟫ = 0`, every `x = p_{T₀} x + (x − p_{T₀} x)` is
+`ι v + ι' w`, and `p_{T₀}(ι v + ι' w) = ι v`. -/
+theorem Submission.dorag_lip_orthonormal_coordinates : ∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))), Module.finrank ℝ T₀ = n → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ v, ι v ∈ T₀) ∧ (∀ x, ∃ v w, x = ι v + ι' w) ∧ (∀ v w, T₀.starProjection (ι v + ι' w) = ι v) := by
+  intro n k T₀ hT₀
+  -- `dim T₀ᗮ = k`, since `dim T₀ + dim T₀ᗮ = n + k`
+  have hTo : Module.finrank ℝ T₀ᗮ = k := by
+    have h := Submodule.finrank_add_finrank_orthogonal T₀
+    rw [finrank_euclideanSpace_fin, hT₀] at h
+    omega
+  -- orthonormal bases of `T₀` and `T₀ᗮ` indexed by `Fin n` and `Fin k`
+  let b := (stdOrthonormalBasis ℝ T₀).reindex (finCongr hT₀)
+  let b' := (stdOrthonormalBasis ℝ T₀ᗮ).reindex (finCongr hTo)
+  -- inverse coordinate maps followed by the inclusions of `T₀` and `T₀ᗮ`
+  let ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k) := T₀.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  let ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k) := T₀ᗮ.subtypeₗᵢ.comp b'.repr.symm.toLinearIsometry
+  have hιmem : ∀ v, ι v ∈ T₀ := fun v => (b.repr.symm v).2
+  have hι'mem : ∀ w, ι' w ∈ T₀ᗮ := fun w => (b'.repr.symm w).2
+  refine ⟨ι, ι', fun v w => Submodule.inner_right_of_mem_orthogonal (hιmem v) (hι'mem w), hιmem,
+    ?_, ?_⟩
+  · -- `x = p_{T₀} x + (x − p_{T₀} x)` with `p_{T₀} x ∈ T₀` and `x − p_{T₀} x ∈ T₀ᗮ`
+    intro x
+    refine ⟨b.repr ⟨T₀.starProjection x, Submodule.starProjection_apply_mem _ _⟩,
+      b'.repr ⟨x - T₀.starProjection x, Submodule.sub_starProjection_mem_orthogonal x⟩, ?_⟩
+    simp [ι, ι']
+  · -- `p_{T₀}` fixes `ι v ∈ T₀` and kills `ι' w ∈ T₀ᗮ`
+    intro v w
+    rw [map_add, Submodule.starProjection_eq_self_iff.mpr (hιmem v),
+      (Submodule.starProjection_apply_eq_zero_iff T₀).mpr (hι'mem w), add_zero]
+/-- **Simon Ch. 6, Remark 3.2(1)**, step 3 (orientations `±τ₁ ∧ ⋯ ∧ τₙ` as in 2.1–2.2): two unit
+orientations `v = ±τ₁ ∧ ⋯ ∧ τₙ`, `w = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` differ by a sign.
+`τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`; every alternating `n`-form on `Q` is a
+multiple of `det_b`, so `α(τ') = det_b(b') α(τ)` for every `n`-covector `α`, and
+`det_b(b') = ±1`, the change of orthonormal basis being orthogonal. -/
+theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf v Q → IsUnitOrientationOf w Q → w = v ∨ w = -v := by
+  rintro P n v w Q ⟨τ, hτ, hspan, hv⟩ ⟨τ', hτ', hspan', hw⟩
+  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
+  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
+      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
+    intro σ hσ hσspan
+    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
+    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
+    have hu : Orthonormal ℝ u := by
+      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
+      exact hσ
+    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
+      rintro ⟨y, hy⟩ -
+      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
+      obtain ⟨c, hc⟩ := hy
+      rw [Submodule.mem_span_range_iff_exists_fun]
+      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
+    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
+  obtain ⟨b, hb⟩ := frame τ hτ hspan
+  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
+  -- `det_b(b') = ±1`
+  have hd := b.det_to_matrix_orthonormalBasis_real b'
+  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
+  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
+    intro α
+    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
+    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
+        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
+      intro c σ hc
+      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
+      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
+    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
+    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
+    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
+  -- `w = ±v`
+  rcases hd with hd | hd <;> rcases hv with hv | hv <;> rcases hw with hw | hw
+  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul, neg_neg]
+  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul]
+  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+
+/-- Steps 1–3 of the oriented graph chart of an oriented `(n+1)`-submanifold `N` at a point (proof
+of Simon 7.5.3–7.5.5; orientations as in Ch. 6, 2.1–2.2): orthonormal coordinates adapted to a unit
+orientation `ξ` of a plane `Q ⊆ ℝ^{n+1+k}`.  The orthonormal frame of `ξ` gives `dim Q = n + 1`;
+orthonormal coordinates `ι₀`, `ι'` adapted to `Q` have `range ι₀ = Q`; `ζ₀ = ι₀e₀ ∧ ⋯ ∧ ι₀eₙ` is a
+unit orientation of `Q`, so `ξ = ±ζ₀`; if `ξ = -ζ₀`, then `ι := ι₀ ∘ ρ`, `ρ` the reflection with
+`ρ e₀ = -e₀` and `ρ eⱼ = eⱼ` for `j ≠ 0`, has `α(ιe₀, …, ιeₙ) = -α(ι₀e₀, …, ι₀eₙ)`. -/
+theorem Submission.codim1_zsl_gc_oriented_frame : ∀ (n k : ℕ) (Q : Submodule ℝ (Euclid (n + 1 + k))) (ξ : MultiVector (n + 1 + k) (n + 1)), IsUnitOrientationOf ξ Q → ∃ (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) ∧ Set.range ι = (Q : Set (Euclid (n + 1 + k))) ∧ ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξ α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ))) := by
+  intro n k Q ξ hξ
+  -- `dim Q = n + 1`: the orthonormal frame `τ` of `ξ` spans `Q`
+  have hfin : Module.finrank ℝ Q = n + 1 := by
+    obtain ⟨τ, hτ, hspan, -⟩ := hξ
+    rw [← hspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- orthonormal coordinates `ι₀`, `ι'` adapted to `Q`
+  obtain ⟨ι₀, ι', h_orth, h_mem, h_span, h_proj⟩ :=
+    Submission.dorag_lip_orthonormal_coordinates (n + 1) k Q hfin
+  -- `range ι₀ = Q`: for `q = ι₀ v + ι' w ∈ Q`, `q = p_Q q = ι₀ v`
+  have h_range : Set.range ι₀ = (Q : Set (Euclid (n + 1 + k))) := by
+    ext q
+    constructor
+    · rintro ⟨v, rfl⟩
+      exact h_mem v
+    · intro hq
+      obtain ⟨v, w, rfl⟩ := h_span q
+      refine ⟨v, ?_⟩
+      have h1 := h_proj v w
+      rw [Submodule.starProjection_eq_self_iff.mpr hq] at h1
+      exact h1.symm
+  -- `τ₀ = (ι₀e₀, …, ι₀eₙ)` is an orthonormal frame spanning `Q`
+  have h_on : Orthonormal ℝ (fun j : Fin (n + 1) => ι₀ (EuclideanSpace.single j (1 : ℝ))) :=
+    (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin (n + 1))).comp_linearIsometry ι₀
+  have h_spanQ :
+      Submodule.span ℝ (Set.range (fun j : Fin (n + 1) => ι₀ (EuclideanSpace.single j (1 : ℝ)))) = Q := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rw [Submodule.span_le]
+      rintro _ ⟨j, rfl⟩
+      exact h_mem _
+    · rw [finrank_span_eq_card h_on.linearIndependent, Fintype.card_fin, hfin]
+  -- `ζ₀ = τ₀(0) ∧ ⋯ ∧ τ₀(n)` is a unit orientation of `Q`, so `ξ = ±ζ₀`
+  let ζ₀ : MultiVector (n + 1 + k) (n + 1) :=
+    ContinuousAlternatingMap.apply ℝ (Euclid (n + 1 + k)) ℝ
+      (fun j : Fin (n + 1) => ι₀ (EuclideanSpace.single j (1 : ℝ)))
+  have hζ₀ : IsUnitOrientationOf ζ₀ Q :=
+    ⟨fun j : Fin (n + 1) => ι₀ (EuclideanSpace.single j (1 : ℝ)), h_on, h_spanQ,
+      Or.inl fun α => rfl⟩
+  rcases Submission.rsdic_unitOrientation_eq_or_eq_neg (n + 1 + k) (n + 1) ζ₀ ξ Q hζ₀ hξ with h | h
+  · -- `ξ = ζ₀`: take `ι := ι₀`
+    refine ⟨ι₀, ι', h_orth, h_span, h_range, fun α => ?_⟩
+    rw [h]
+    rfl
+  · -- `ξ = -ζ₀`: take `ι := ι₀ ∘ ρ`, `ρ` the reflection in `e₀ᗮ`
+    let ρ : Euclid (n + 1) ≃ₗᵢ[ℝ] Euclid (n + 1) :=
+      (ℝ ∙ EuclideanSpace.single (0 : Fin (n + 1)) (1 : ℝ))ᗮ.reflection
+    have hρρ : ∀ v, ρ (ρ v) = v := fun v => Submodule.reflection_reflection _ v
+    have hρ0 : ρ (EuclideanSpace.single (0 : Fin (n + 1)) (1 : ℝ)) =
+        -EuclideanSpace.single (0 : Fin (n + 1)) (1 : ℝ) :=
+      Submodule.reflection_orthogonalComplement_singleton_eq_neg _
+    have hρj : ∀ j : Fin (n + 1), j ≠ 0 →
+        ρ (EuclideanSpace.single j (1 : ℝ)) = EuclideanSpace.single j (1 : ℝ) := by
+      intro j hj
+      apply Submodule.reflection_mem_subspace_eq_self
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right, EuclideanSpace.inner_single_left]
+      simp [Ne.symm hj]
+    refine ⟨ι₀.comp ρ.toLinearIsometry, ι', fun v w => h_orth (ρ v) w, fun y => ?_, ?_,
+      fun α => ?_⟩
+    · -- `y = ι₀ v + ι' w = ι (ρ v) + ι' w`
+      obtain ⟨v, w, rfl⟩ := h_span y
+      exact ⟨ρ v, w, by simp [hρρ]⟩
+    · -- `ρ` is onto
+      rw [LinearIsometry.coe_comp, LinearIsometryEquiv.coe_toLinearIsometry,
+        ρ.surjective.range_comp, h_range]
+    · -- `(ιe₀, …, ιeₙ)` is `τ₀` with `τ₀(0)` replaced by `(-1) • τ₀(0)`
+      have hfun : (fun j : Fin (n + 1) =>
+            (ι₀.comp ρ.toLinearIsometry) (EuclideanSpace.single j (1 : ℝ))) =
+          Function.update (fun j : Fin (n + 1) => ι₀ (EuclideanSpace.single j (1 : ℝ))) 0
+            ((-1 : ℝ) • ι₀ (EuclideanSpace.single (0 : Fin (n + 1)) (1 : ℝ))) := by
+        funext j
+        by_cases hj : j = 0
+        · subst hj
+          rw [Function.update_self, LinearIsometry.coe_comp, Function.comp_apply,
+            LinearIsometryEquiv.coe_toLinearIsometry, hρ0, map_neg, neg_one_smul]
+        · rw [Function.update_of_ne hj, LinearIsometry.coe_comp, Function.comp_apply,
+            LinearIsometryEquiv.coe_toLinearIsometry, hρj j hj]
+      rw [hfun, ContinuousAlternatingMap.map_update_smul, Function.update_eq_self, h]
+      simp [ζ₀]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
