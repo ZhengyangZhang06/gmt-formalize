@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9fb19b22366b6c32c9005ee3a83fa528f129b6ed4a5be0074ea7e463c9b76898",
+  "git_delta": {
+    "base_commit": "7da8f43d5b6888af31e81437b66b97ad28bee27a",
+    "candidate_commit": "4fdf17e7b54265f03cabd4aa5413e9d4ef3e5c37",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_pfr_normal_multivector_measurable",
+    "diff_sha256": "0091d3dd3b8d10b61caf8adc8a5d3292e727fe0fd687ce5c792c9666607266ef",
+    "source_sha256": "c233e71f1cdda1f2440258268de639ba1782d91fa6b5bb80fa4af101341562e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_pfr_normal_multivector_measurable",
+      "statement": "∀ (P n : ℕ) (G : Euclid (n + 1) → Euclid P) (ν : Euclid (n + 1) → Euclid (n + 1)), Measurable ν → ∃ ξ : Euclid (n + 1) → MultiVector P n, StronglyMeasurable ξ ∧ ∀ (v : Euclid (n + 1)) (α : Covector (Euclid P) n), ξ v α = -∑ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * α (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) (1 : ℝ))) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) (ν v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

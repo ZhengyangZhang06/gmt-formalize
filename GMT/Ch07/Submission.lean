@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The normal multivector field of a parametrization is strongly measurable** (Simon 7.5, the
+push-forward representation of `∂[[E]]`).  Let `G : ℝⁿ⁺¹ → ℝᴾ` be any map, `DG(v) = fderiv ℝ G v`
+(`0` where `G` is not differentiable), and let `ν : ℝⁿ⁺¹ → ℝⁿ⁺¹` be Borel.  Then
+`ξ̃(v)(α) = −Σⱼ (−1)ʲ α(DG(v)e_{j.succAbove 0}, …, DG(v)e_{j.succAbove (n−1)}) ⟨eⱼ, ν(v)⟩` defines a
+strongly measurable field `ξ̃ : ℝⁿ⁺¹ → Λₙ(ℝᴾ)`: the evaluation `ev(b)(α) = α(b)` is a continuous
+alternating map `(ℝᴾ)ⁿ → Λₙ(ℝᴾ)`, the frames `v ↦ (DG(v)e_{j.succAbove k})ₖ` are Borel for every
+`G`, and so are the coefficients `(−1)ʲ ⟨eⱼ, ν(v)⟩`. -/
+theorem Submission.codim1_pfr_normal_multivector_measurable : ∀ (P n : ℕ) (G : Euclid (n + 1) → Euclid P) (ν : Euclid (n + 1) → Euclid (n + 1)), Measurable ν → ∃ ξ : Euclid (n + 1) → MultiVector P n, StronglyMeasurable ξ ∧ ∀ (v : Euclid (n + 1)) (α : Covector (Euclid P) n), ξ v α = -∑ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * α (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) (1 : ℝ))) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) (ν v) := by
+  intro P n G ν hν
+  -- Step 1: the evaluation `ev(b)(α) = α(b)`, a continuous alternating map `(ℝᴾ)ⁿ → Λₙ(ℝᴾ)`.
+  let ev : Euclid P [⋀^Fin n]→L[ℝ] MultiVector P n :=
+    (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
+  -- Step 2: the frames `b_j(v) = (DG(v)e_{j.succAbove k})ₖ` are Borel, hence strongly measurable.
+  let b : Fin (n + 1) → Euclid (n + 1) → Fin n → Euclid P := fun j v k =>
+    fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) (1 : ℝ))
+  have hb : ∀ j, StronglyMeasurable (b j) := fun j =>
+    (measurable_pi_iff.mpr fun k => measurable_fderiv_apply_const ℝ G _).stronglyMeasurable
+  -- Step 3: the coefficients `c_j(v) = (−1)ʲ ⟨eⱼ, ν(v)⟩` are Borel.
+  let c : Fin (n + 1) → Euclid (n + 1) → ℝ := fun j v =>
+    (-1 : ℝ) ^ (j : ℕ) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) (ν v)
+  have hc : ∀ j, StronglyMeasurable (c j) := fun j =>
+    (measurable_const.mul
+      ((continuous_const.inner continuous_id).measurable.comp hν)).stronglyMeasurable
+  -- Step 4: `ξ̃ = −Σⱼ c_j • ev ∘ b_j` is strongly measurable.  Instance search does not find
+  -- `ContinuousAdd`/`ContinuousNeg` on `Λₙ(ℝᴾ)`; both come from its topological group structure.
+  have : ContinuousAdd (MultiVector P n) :=
+    (inferInstance : IsTopologicalAddGroup (MultiVector P n)).toContinuousAdd
+  have : ContinuousNeg (MultiVector P n) :=
+    (inferInstance : IsTopologicalAddGroup (MultiVector P n)).toContinuousNeg
+  refine ⟨fun v => -∑ j : Fin (n + 1), c j v • ev (b j v), ?_, fun v α => ?_⟩
+  · exact (Finset.stronglyMeasurable_fun_sum _ fun j _ =>
+      (hc j).smul (ev.coe_continuous.comp_stronglyMeasurable (hb j))).neg
+  -- Step 5: evaluating at `α` (`ev(b)(α) = α(b)` by definition) and commuting the real factors
+  -- gives the formula.
+  · simp only [neg_apply, sum_apply, smul_apply, smul_eq_mul]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    show c j v * α (b j v) = _
+    simp only [c, b]
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
