@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`Hⁿ⌞Q = ι_#(Lⁿ)` for the plane of an orthonormal frame** (step 3 of the planar constancy
+argument, Simon Ch. 6, 2.34, in the proof of Simon 7.3.3).  For `τ` orthonormal in `ℝᴾ`,
+`ι(s) = Σᵢ sᵢτᵢ` is linear with `|ι(s)|² = Σᵢ sᵢ² = |s|²`, so it is an isometry `ℝⁿ → ℝᴾ` with
+range `Q = span{τ₁, …, τₙ}`; `Hⁿ` is preserved by isometries (`ι_#(Hⁿ) = Hⁿ⌞range ι`) and
+`Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) = Measure.map (fun s : Euclid n => ∑ i, s i • τ i) volume := by
+  intro P n τ hτ
+  -- `ι(s) = Σᵢ sᵢτᵢ` is linear
+  let L : Euclid n →ₗ[ℝ] Euclid P :=
+    { toFun := fun s => ∑ i, s i • τ i
+      map_add' := fun s t => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
+  have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
+  -- `|ι(s)|² = ⟨ι(s), ι(s)⟩ = Σᵢ sᵢ² = |s|²`, so `ι` is an isometry
+  have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
+    intro s
+    have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
+      rw [hLapp, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.norm_eq,
+        Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
+  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
+  -- `range ι = Q`: `ι(s) ∈ Q`, and each `y ∈ Q` is `Σᵢ cᵢτᵢ = ι(c)`
+  have hrange : Set.range L = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+    ext y
+    constructor
+    · rintro ⟨s, rfl⟩
+      rw [hLapp]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · intro hy
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (SetLike.mem_coe.mp hy)
+      exact ⟨(WithLp.equiv 2 (Fin n → ℝ)).symm c, by rw [hLapp]; rfl⟩
+  -- `ι_#(Hⁿ) = Hⁿ⌞range ι = Hⁿ⌞Q`, and `Hⁿ = Lⁿ` on `ℝⁿ`
+  have h := hiso.map_euclideanHausdorffMeasure (d := n)
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
+  exact h.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
