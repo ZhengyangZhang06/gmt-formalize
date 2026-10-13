@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-boundary-rectifiability-a1-lattice-approximation-a1",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.low_degree_vanish-a1",
+      "key": "low_degree_vanish",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean; cmp Contract.lean Submission.lean; cmp with snapshot project/GMT/Ch06/Contract.lean (all byte-identical)",
+              "cat -n GMT/Ch06/Contract.lean (DeformationTheorem, IsLatticeChain, LatticeFaceIndex, IsIntegerMultiplicity, Eucl)",
+              "cat simongmt Chapter06/Mass.lean, Currents.lean, Forms.lean, FormSupNorm.lean (covectorEuclideanNorm{_zero,_nonneg,_neg}, massAdmissibleOn, massOn, mass, le_massOn, GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn, WeaklyConvergesOn, TestFormOn, testFormEuclideanSupNorm)",
+              "grep -rn 'covectorEuclideanNorm_smul|covectorEuclideanNorm_continuous|continuous_covectorEuclideanNorm|abs_apply_le|le_mass_mul|mass_mul_sup' simongmt/Poincare/SimonGMT (only Chapter01 abs_apply_le_integral_vectorFunctionalEnvelopeMeasure; no mass inequality, homogeneity or continuity lemma for covectorEuclideanNorm)",
+              "rg -n 'theorem map_linearDependent' mathlib/Mathlib",
+              "rg -n 'theorem fintype_card_le_finrank' mathlib/Mathlib",
+              "rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib",
+              "rg -n 'bounded_above_of_compact_support' mathlib/Mathlib",
+              "rg -n 'ContinuousEvalConst' mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n \"theorem mono'\" mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "rg -n 'theorem eventually_ne_nhds' mathlib/Mathlib/Topology/Separation",
+              "rg -n 'theorem tendsto_toReal|theorem tendsto_ofReal|protected theorem Tendsto.const_mul' mathlib/Mathlib/Topology/Instances/ENNReal",
+              "rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat' mathlib/Mathlib/Analysis/SpecificLimits",
+              "lake env lean Scratch/Probe.lean (#check ENNReal.ofReal_le_iff_le_toReal, squeeze_zero_norm', ENNReal.Tendsto.mul_const, ContinuousAlternatingMap.ext, AlternatingMap.map_linearDependent, continuous_eval_const on Covector (Eucl P) n)",
+              "python3 gmt-compare.py contract_scope replay (open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)",
+              "lake build GMT.Ch06.Submission (scratch /tmp/la-decomp-0Vm2C2/proj at frozen commit d8d46c9, pinned shared packages, no package rebuild)",
+              "lake env lean Scratch/Split.lean -o Split.olean (4 children fully proved; parent br_lattice_approximation and literal variant br_lattice_approximation_v0 from the children plus a stand-in for br_top_dim_lattice_approximation; #print axioms)",
+              "gmt-compare.py child_modules -> Checks/Challenge_{0..3}.lean (sorry) and Checks/Solution_{0..3}.lean (exact Submission.X); lake env lean on each (0 errors; solutions use only propext, Classical.choice, Quot.sound)",
+              "python3 scan of dag.json lean_name values (155 nodes; no br_la_* collision)",
+              "grep -n 'Evidently (1), (2)|^2.4|^2.5' book/sources/chapter-06-source.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Probe.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Split.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/C2c.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Challenge_0.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Solution_0.lean"
+            ],
+            "conclusion": "Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Ch06 contract is byte-identical to Submission.lean at the frozen commit.\n\nWhat the libraries do and do not provide:\n- SimonGMT has covectorEuclideanNorm with only _zero, _nonneg and _neg lemmas. It has massAdmissibleOn, massOn and mass with le_massOn, massOn_mono and lower semicontinuity. It has boundary_apply and exteriorDerivativeTestOn.\n- SimonGMT has no mass inequality, no homogeneity or continuity lemma for covectorEuclideanNorm, and no vanishing lemma for degree > P.\n- FormSupNorm.lean defines testFormEuclideanSupNorm (a sup over U only, with no boundedness lemma), so it is not used.\n- Mathlib supplies AlternatingMap.map_linearDependent, LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin, ContinuousAlternatingMap.instContinuousEvalConst, HasCompactSupport.mono', Continuous.bounded_above_of_compact_support, ENNReal.ofReal_le_iff_le_toReal, ENNReal.tendsto_toReal, eventually_ne_nhds, squeeze_zero_norm', ENNReal.Tendsto.const_mul/mul_const, ENNReal.tendsto_ofReal and tendsto_one_div_add_atTop_nhds_zero_nat.\n- Using these, all four children were proved in scratch with axioms [propext, Classical.choice, Quot.sound]. HasCompactSupport.comp_left caused a whnf heartbeat timeout; mono' works, and the testform_bounded proof says so.\n\nComparator checks: with the exact comparator child scope, the four NodeChallenge modules elaborate and the four NodeSolution modules close. The parent typechecks from the children plus the sibling br_top_dim_lattice_approximation, with sorryAx only from that sibling's stand-in.\n\nNames: no br_la_* name occurs in dag.json or SimonGMT.\n\nThese checks do not certify the sibling br_top_dim_lattice_approximation or DeformationTheorem; both are separate DAG nodes."
+          }
+        ],
+        "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+        "child_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.low_degree_vanish-a1",
+        "subproblem": {
+          "key": "low_degree_vanish",
+          "title": "Currents of degree exceeding the ambient dimension vanish",
+          "statement": "Let P, n ∈ ℕ with P < n, let U ⊆ ℝ^P be an arbitrary set and let X ∈ D_n(U) (a GeometricCurrentOn U n). Then X(ω) = 0 for every ω ∈ Dⁿ(U) (TestFormOn U n).",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U n), P < n → ∀ ω : TestFormOn U n, X ω = 0",
+          "lean_name": "br_la_apply_eq_zero_of_lt_degree",
+          "depends_on": [],
+          "natural_proof": "Source: step 1 of the parent proof (Case P < m + 1: any m+1 vectors of ℝ^P are linearly dependent, so every (m+1)-covector vanishes, every test form is 0, and X(ω) = X(0) = 0), written for a general degree n > P and domain U.\n\n1. (Linear dependence.) Let x ∈ ℝ^P and v = (v_0, …, v_{n−1}) ∈ (ℝ^P)ⁿ. If v were linearly independent, then n = #Fin n ≤ dim ℝ^P = P (LinearIndependent.fintype_card_le_finrank, Fintype.card_fin, finrank_euclideanSpace_fin), contradicting P < n. So v is linearly dependent.\n2. (Vanishing covectors.) ω(x) is a continuous alternating n-linear map, and an alternating map vanishes on every linearly dependent family. Lean: AlternatingMap.map_linearDependent applied to the underlying alternating map (ω x).toAlternatingMap; this is applicable because ℝ is a field, so it is a domain and ℝ is torsion-free over itself. Hence ω(x)(v) = 0 for every v ∈ (ℝ^P)ⁿ, so ω(x) = 0 (ContinuousAlternatingMap.ext).\n3. (Vanishing form.) Since x was arbitrary, ω = 0 as a function ℝ^P → Λⁿ(ℝ^P). Hence ω = 0 as an element of the submodule Dⁿ(U) (Subtype.ext and funext).\n4. (Conclusion.) X is linear (its underlying functional is a linear map), so X(ω) = X(0) = 0 (map_zero). ∎",
+          "proof_key_steps": [
+            "Any n vectors in ℝ^P with P < n are linearly dependent (n = #Fin n ≤ finrank ℝ^P = P would fail).",
+            "Alternating maps vanish on linearly dependent families, so ω(x) = 0 for every x and ω = 0 in Dⁿ(U).",
+            "X(ω) = X(0) = 0 by linearity."
+          ]
+        },
+        "audit": {
+          "key": "low_degree_vanish",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition exactly states evaluation vanishing when P < n. The dimension bound forces every n-tuple to be linearly dependent; the alternating-map vanishing theorem applies over ℝ. Extensionality makes the test form zero, and current linearity finishes. This supplies the parent's lower-ambient-dimension case without additional assumptions."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+      "key": "mass_estimate",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean; cmp Contract.lean Submission.lean; cmp with snapshot project/GMT/Ch06/Contract.lean (all byte-identical)",
+              "cat -n GMT/Ch06/Contract.lean (DeformationTheorem, IsLatticeChain, LatticeFaceIndex, IsIntegerMultiplicity, Eucl)",
+              "cat simongmt Chapter06/Mass.lean, Currents.lean, Forms.lean, FormSupNorm.lean (covectorEuclideanNorm{_zero,_nonneg,_neg}, massAdmissibleOn, massOn, mass, le_massOn, GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn, WeaklyConvergesOn, TestFormOn, testFormEuclideanSupNorm)",
+              "grep -rn 'covectorEuclideanNorm_smul|covectorEuclideanNorm_continuous|continuous_covectorEuclideanNorm|abs_apply_le|le_mass_mul|mass_mul_sup' simongmt/Poincare/SimonGMT (only Chapter01 abs_apply_le_integral_vectorFunctionalEnvelopeMeasure; no mass inequality, homogeneity or continuity lemma for covectorEuclideanNorm)",
+              "rg -n 'theorem map_linearDependent' mathlib/Mathlib",
+              "rg -n 'theorem fintype_card_le_finrank' mathlib/Mathlib",
+              "rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib",
+              "rg -n 'bounded_above_of_compact_support' mathlib/Mathlib",
+              "rg -n 'ContinuousEvalConst' mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n \"theorem mono'\" mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "rg -n 'theorem eventually_ne_nhds' mathlib/Mathlib/Topology/Separation",
+              "rg -n 'theorem tendsto_toReal|theorem tendsto_ofReal|protected theorem Tendsto.const_mul' mathlib/Mathlib/Topology/Instances/ENNReal",
+              "rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat' mathlib/Mathlib/Analysis/SpecificLimits",
+              "lake env lean Scratch/Probe.lean (#check ENNReal.ofReal_le_iff_le_toReal, squeeze_zero_norm', ENNReal.Tendsto.mul_const, ContinuousAlternatingMap.ext, AlternatingMap.map_linearDependent, continuous_eval_const on Covector (Eucl P) n)",
+              "python3 gmt-compare.py contract_scope replay (open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)",
+              "lake build GMT.Ch06.Submission (scratch /tmp/la-decomp-0Vm2C2/proj at frozen commit d8d46c9, pinned shared packages, no package rebuild)",
+              "lake env lean Scratch/Split.lean -o Split.olean (4 children fully proved; parent br_lattice_approximation and literal variant br_lattice_approximation_v0 from the children plus a stand-in for br_top_dim_lattice_approximation; #print axioms)",
+              "gmt-compare.py child_modules -> Checks/Challenge_{0..3}.lean (sorry) and Checks/Solution_{0..3}.lean (exact Submission.X); lake env lean on each (0 errors; solutions use only propext, Classical.choice, Quot.sound)",
+              "python3 scan of dag.json lean_name values (155 nodes; no br_la_* collision)",
+              "grep -n 'Evidently (1), (2)|^2.4|^2.5' book/sources/chapter-06-source.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Probe.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Split.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/C2c.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Challenge_0.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Solution_0.lean"
+            ],
+            "conclusion": "Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Ch06 contract is byte-identical to Submission.lean at the frozen commit.\n\nWhat the libraries do and do not provide:\n- SimonGMT has covectorEuclideanNorm with only _zero, _nonneg and _neg lemmas. It has massAdmissibleOn, massOn and mass with le_massOn, massOn_mono and lower semicontinuity. It has boundary_apply and exteriorDerivativeTestOn.\n- SimonGMT has no mass inequality, no homogeneity or continuity lemma for covectorEuclideanNorm, and no vanishing lemma for degree > P.\n- FormSupNorm.lean defines testFormEuclideanSupNorm (a sup over U only, with no boundedness lemma), so it is not used.\n- Mathlib supplies AlternatingMap.map_linearDependent, LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin, ContinuousAlternatingMap.instContinuousEvalConst, HasCompactSupport.mono', Continuous.bounded_above_of_compact_support, ENNReal.ofReal_le_iff_le_toReal, ENNReal.tendsto_toReal, eventually_ne_nhds, squeeze_zero_norm', ENNReal.Tendsto.const_mul/mul_const, ENNReal.tendsto_ofReal and tendsto_one_div_add_atTop_nhds_zero_nat.\n- Using these, all four children were proved in scratch with axioms [propext, Classical.choice, Quot.sound]. HasCompactSupport.comp_left caused a whnf heartbeat timeout; mono' works, and the testform_bounded proof says so.\n\nComparator checks: with the exact comparator child scope, the four NodeChallenge modules elaborate and the four NodeSolution modules close. The parent typechecks from the children plus the sibling br_top_dim_lattice_approximation, with sorryAx only from that sibling's stand-in.\n\nNames: no br_la_* name occurs in dag.json or SimonGMT.\n\nThese checks do not certify the sibling br_top_dim_lattice_approximation or DeformationTheorem; both are separate DAG nodes."
+          }
+        ],
+        "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+        "child_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+        "subproblem": {
+          "key": "mass_estimate",
+          "title": "Mass inequality |Y(ω)| ≤ C·M(Y) under a pointwise bound |ω| ≤ C",
+          "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, let Y ∈ D_n(U) (a GeometricCurrentOn U n) and ω ∈ Dⁿ(U) (a TestFormOn U n, i.e. a smooth compactly supported n-form on ℝ^P with tsupport ω ⊆ U), and let C ∈ ℝ with C > 0 and |ω(x)| ≤ C for every x ∈ ℝ^P, where |α| = covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} is Simon's Euclidean coefficient norm. Assume the mass M(Y) = Y.mass = M_U(Y) is finite. Then |Y(ω)| ≤ C·M(Y), where M(Y) ∈ [0, ∞) is read as a real number (ENNReal.toReal).",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U n) (ω : TestFormOn U n) (C : ℝ), 0 < C → (∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → Y.mass ≠ ∞ → |Y ω| ≤ C * Y.mass.toReal",
+          "lean_name": "br_la_abs_apply_le_mul_mass",
+          "depends_on": [],
+          "natural_proof": "Source: Simon Ch. 6, 2.4–2.5 (M(T) = sup over ω ∈ Dⁿ(U) with |ω| ≤ 1 of T(ω), the inner-product norm of Remark 2.6), and step 0 (Mass estimate) of the parent proof. Here the bound C > 0 plays the role of ‖ω‖ = sup|ω|.\n\nNotation. |α| = covectorEuclideanNorm α. By definition Y.mass = Y.massOn U is the supremum in [0, ∞] of ENNReal.ofReal(Y(η)) over η ∈ massAdmissibleOn U n U. That set consists of the η ∈ Dⁿ(U) with tsupport η ⊆ U and |η(x)| ≤ 1 for all x ∈ ℝ^P. In particular (GeometricCurrentOn.le_massOn), every such η satisfies ENNReal.ofReal(Y(η)) ≤ Y.mass.\n\n1. (Homogeneity of |·|.) For c ∈ ℝ and α ∈ Λⁿ(ℝ^P) we have |cα| = |c|·|α|.\n  - For every strictly increasing I, (cα)(e_I) = c·α(e_I), so ((cα)(e_I))² = c²·α(e_I)². For I not strictly increasing, both summands are 0 = c²·0.\n  - So the sum of squares for cα is c² times the sum s ≥ 0 for α: factor c² out of the finite sum.\n  - Hence |cα| = √(c²·s) = √(c²)·√s = |c|·√s = |c|·|α|.\n  (Lean: unfold covectorEuclideanNorm; use (c • α) v = c * α v, mul_pow, Finset.mul_sum, Real.sqrt_mul (sq_nonneg c) and Real.sqrt_sq_eq_abs.)\n  The library also gives |−α| = |α| (covectorEuclideanNorm_neg).\n2. (Admissibility.) Let η ∈ Dⁿ(U) with |η(x)| ≤ C for all x ∈ ℝ^P, and put η′ := C⁻¹·η.\n  - η′ ∈ Dⁿ(U), since Dⁿ(U) is a real submodule; hence tsupport η′ ⊆ U.\n  - η′(x) = C⁻¹·η(x), so by step 1 and C⁻¹ > 0: |η′(x)| = C⁻¹·|η(x)| ≤ C⁻¹·C = 1 for every x.\n  - So η′ ∈ massAdmissibleOn U n U, and ENNReal.ofReal(Y(η′)) ≤ Y.mass.\n3. (One-sided bound.) Since Y.mass ≠ ∞, ENNReal.ofReal(a) ≤ Y.mass is equivalent to a ≤ (Y.mass).toReal (ENNReal.ofReal_le_iff_le_toReal). Y is linear, so Y(η′) = C⁻¹·Y(η). Hence C⁻¹·Y(η) ≤ (Y.mass).toReal. Multiplying by C > 0 gives Y(η) ≤ C·(Y.mass).toReal.\n4. Apply steps 2–3 to η := ω, which satisfies |ω(x)| ≤ C by hypothesis: Y(ω) ≤ C·(Y.mass).toReal.\n   Apply them to η := −ω, which satisfies |(−ω)(x)| = |−ω(x)| = |ω(x)| ≤ C by step 1: Y(−ω) = −Y(ω) ≤ C·(Y.mass).toReal.\n5. Together, |Y(ω)| = max(Y(ω), −Y(ω)) ≤ C·(Y.mass).toReal. ∎",
+          "proof_key_steps": [
+            "|cα| = |c|·|α| for the Euclidean coefficient norm (factor c² out of the sum of squares, √(c²s) = |c|√s).",
+            "If |η| ≤ C pointwise then C⁻¹η is mass-admissible, so ENNReal.ofReal(C⁻¹·Y(η)) ≤ M(Y).",
+            "Because M(Y) ≠ ∞ this gives Y(η) ≤ C·M(Y).toReal.",
+            "Apply to η = ω and η = −ω to obtain |Y(ω)| ≤ C·M(Y).toReal."
+          ]
+        },
+        "audit": {
+          "key": "mass_estimate",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition exactly matches the stated positive pointwise bound and finite mass assumption. The proof establishes homogeneity of the actual coefficient norm, preserves test-form support under scaling, derives the one-sided estimate using finite-mass toReal conversion, and applies it to both signs. It works for arbitrary U and contains no circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1",
+      "key": "testform_bounded",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean; cmp Contract.lean Submission.lean; cmp with snapshot project/GMT/Ch06/Contract.lean (all byte-identical)",
+              "cat -n GMT/Ch06/Contract.lean (DeformationTheorem, IsLatticeChain, LatticeFaceIndex, IsIntegerMultiplicity, Eucl)",
+              "cat simongmt Chapter06/Mass.lean, Currents.lean, Forms.lean, FormSupNorm.lean (covectorEuclideanNorm{_zero,_nonneg,_neg}, massAdmissibleOn, massOn, mass, le_massOn, GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn, WeaklyConvergesOn, TestFormOn, testFormEuclideanSupNorm)",
+              "grep -rn 'covectorEuclideanNorm_smul|covectorEuclideanNorm_continuous|continuous_covectorEuclideanNorm|abs_apply_le|le_mass_mul|mass_mul_sup' simongmt/Poincare/SimonGMT (only Chapter01 abs_apply_le_integral_vectorFunctionalEnvelopeMeasure; no mass inequality, homogeneity or continuity lemma for covectorEuclideanNorm)",
+              "rg -n 'theorem map_linearDependent' mathlib/Mathlib",
+              "rg -n 'theorem fintype_card_le_finrank' mathlib/Mathlib",
+              "rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib",
+              "rg -n 'bounded_above_of_compact_support' mathlib/Mathlib",
+              "rg -n 'ContinuousEvalConst' mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n \"theorem mono'\" mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "rg -n 'theorem eventually_ne_nhds' mathlib/Mathlib/Topology/Separation",
+              "rg -n 'theorem tendsto_toReal|theorem tendsto_ofReal|protected theorem Tendsto.const_mul' mathlib/Mathlib/Topology/Instances/ENNReal",
+              "rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat' mathlib/Mathlib/Analysis/SpecificLimits",
+              "lake env lean Scratch/Probe.lean (#check ENNReal.ofReal_le_iff_le_toReal, squeeze_zero_norm', ENNReal.Tendsto.mul_const, ContinuousAlternatingMap.ext, AlternatingMap.map_linearDependent, continuous_eval_const on Covector (Eucl P) n)",
+              "python3 gmt-compare.py contract_scope replay (open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)",
+              "lake build GMT.Ch06.Submission (scratch /tmp/la-decomp-0Vm2C2/proj at frozen commit d8d46c9, pinned shared packages, no package rebuild)",
+              "lake env lean Scratch/Split.lean -o Split.olean (4 children fully proved; parent br_lattice_approximation and literal variant br_lattice_approximation_v0 from the children plus a stand-in for br_top_dim_lattice_approximation; #print axioms)",
+              "gmt-compare.py child_modules -> Checks/Challenge_{0..3}.lean (sorry) and Checks/Solution_{0..3}.lean (exact Submission.X); lake env lean on each (0 errors; solutions use only propext, Classical.choice, Quot.sound)",
+              "python3 scan of dag.json lean_name values (155 nodes; no br_la_* collision)",
+              "grep -n 'Evidently (1), (2)|^2.4|^2.5' book/sources/chapter-06-source.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Probe.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Split.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/C2c.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Challenge_0.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Solution_0.lean"
+            ],
+            "conclusion": "Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Ch06 contract is byte-identical to Submission.lean at the frozen commit.\n\nWhat the libraries do and do not provide:\n- SimonGMT has covectorEuclideanNorm with only _zero, _nonneg and _neg lemmas. It has massAdmissibleOn, massOn and mass with le_massOn, massOn_mono and lower semicontinuity. It has boundary_apply and exteriorDerivativeTestOn.\n- SimonGMT has no mass inequality, no homogeneity or continuity lemma for covectorEuclideanNorm, and no vanishing lemma for degree > P.\n- FormSupNorm.lean defines testFormEuclideanSupNorm (a sup over U only, with no boundedness lemma), so it is not used.\n- Mathlib supplies AlternatingMap.map_linearDependent, LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin, ContinuousAlternatingMap.instContinuousEvalConst, HasCompactSupport.mono', Continuous.bounded_above_of_compact_support, ENNReal.ofReal_le_iff_le_toReal, ENNReal.tendsto_toReal, eventually_ne_nhds, squeeze_zero_norm', ENNReal.Tendsto.const_mul/mul_const, ENNReal.tendsto_ofReal and tendsto_one_div_add_atTop_nhds_zero_nat.\n- Using these, all four children were proved in scratch with axioms [propext, Classical.choice, Quot.sound]. HasCompactSupport.comp_left caused a whnf heartbeat timeout; mono' works, and the testform_bounded proof says so.\n\nComparator checks: with the exact comparator child scope, the four NodeChallenge modules elaborate and the four NodeSolution modules close. The parent typechecks from the children plus the sibling br_top_dim_lattice_approximation, with sorryAx only from that sibling's stand-in.\n\nNames: no br_la_* name occurs in dag.json or SimonGMT.\n\nThese checks do not certify the sibling br_top_dim_lattice_approximation or DeformationTheorem; both are separate DAG nodes."
+          }
+        ],
+        "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+        "child_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1",
+        "subproblem": {
+          "key": "testform_bounded",
+          "title": "Test forms have bounded Euclidean coefficient norm",
+          "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set and let ω ∈ Dⁿ(U) (a TestFormOn U n: a smooth, compactly supported n-form on ℝ^P with tsupport ω ⊆ U). Then there is C ∈ ℝ with C > 0 such that |ω(x)| ≤ C for every x ∈ ℝ^P, where |α| = covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2}.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C",
+          "lean_name": "br_la_testForm_covectorNorm_bounded",
+          "depends_on": [],
+          "natural_proof": "Source: the Notation paragraph of the parent proof (‖ω‖ := sup_x|ω(x)| is finite for test forms because they are continuous with compact support). Here that finiteness is proved in the form of an explicit positive bound.\n\n1. (|·| is continuous on Λⁿ(ℝ^P).)\n  - For each fixed v ∈ (ℝ^P)ⁿ, the evaluation α ↦ α(v) is continuous on the space of continuous alternating maps (continuous_eval_const; the instance is ContinuousAlternatingMap.instContinuousEvalConst).\n  - Hence, for each I : Fin n → Fin P, the map α ↦ (if I is strictly increasing then α(e_{I(0)}, …, e_{I(n−1)})² else 0) is continuous: it is either the square of a continuous function or the constant 0.\n  - The finite sum over I is continuous (continuous_finsetSum), and composing with the continuous square root (Real.continuous_sqrt) shows that α ↦ |α| is continuous.\n2. (Continuity of f.) ω is smooth (ContDiff ℝ ∞; this is the first component of the test-form property of ω), hence continuous. So f(x) := |ω(x)| is continuous on ℝ^P, as a composition of continuous maps.\n3. (Compact support of f.) If ω(x) = 0 then f(x) = |0| = 0 (covectorEuclideanNorm_zero). Hence support f ⊆ support ω ⊆ tsupport ω. Since ω has compact support, f has compact support (HasCompactSupport.mono'). (Lean remark: in this environment use mono' here; HasCompactSupport.comp_left produced a whnf heartbeat timeout in a scratch check, while mono' compiled.)\n4. (Boundedness.) A continuous, compactly supported real function is bounded (Continuous.bounded_above_of_compact_support): there is C₀ ∈ ℝ with |f(x)| ≤ C₀ for all x ∈ ℝ^P. In particular C₀ ≥ |f(0)| ≥ 0.\n5. Put C := C₀ + 1. Then C ≥ 1 > 0, and for every x, f(x) ≤ |f(x)| ≤ C₀ < C. ∎",
+          "proof_key_steps": [
+            "α ↦ |α| is continuous: evaluations of continuous alternating maps are continuous, then a finite sum of squares and a square root.",
+            "x ↦ |ω(x)| is continuous and has compact support, because ω is smooth with compact support and |0| = 0.",
+            "A continuous compactly supported real function is bounded by some C₀ ≥ 0; take C := C₀ + 1 > 0."
+          ]
+        },
+        "audit": {
+          "key": "testform_bounded",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition matches all stated quantifiers and hypotheses. Continuous alternating-map evaluation gives continuity of the finite sum of squares and its square root. The support inclusion gives compact support; boundedness followed by C₀ + 1 supplies the required positive global bound. The relevant instances and proof steps were independently checked."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.flat_to_weak-a1",
+      "key": "flat_to_weak",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean; cmp Contract.lean Submission.lean; cmp with snapshot project/GMT/Ch06/Contract.lean (all byte-identical)",
+              "cat -n GMT/Ch06/Contract.lean (DeformationTheorem, IsLatticeChain, LatticeFaceIndex, IsIntegerMultiplicity, Eucl)",
+              "cat simongmt Chapter06/Mass.lean, Currents.lean, Forms.lean, FormSupNorm.lean (covectorEuclideanNorm{_zero,_nonneg,_neg}, massAdmissibleOn, massOn, mass, le_massOn, GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn, WeaklyConvergesOn, TestFormOn, testFormEuclideanSupNorm)",
+              "grep -rn 'covectorEuclideanNorm_smul|covectorEuclideanNorm_continuous|continuous_covectorEuclideanNorm|abs_apply_le|le_mass_mul|mass_mul_sup' simongmt/Poincare/SimonGMT (only Chapter01 abs_apply_le_integral_vectorFunctionalEnvelopeMeasure; no mass inequality, homogeneity or continuity lemma for covectorEuclideanNorm)",
+              "rg -n 'theorem map_linearDependent' mathlib/Mathlib",
+              "rg -n 'theorem fintype_card_le_finrank' mathlib/Mathlib",
+              "rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib",
+              "rg -n 'bounded_above_of_compact_support' mathlib/Mathlib",
+              "rg -n 'ContinuousEvalConst' mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n \"theorem mono'\" mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "rg -n 'theorem eventually_ne_nhds' mathlib/Mathlib/Topology/Separation",
+              "rg -n 'theorem tendsto_toReal|theorem tendsto_ofReal|protected theorem Tendsto.const_mul' mathlib/Mathlib/Topology/Instances/ENNReal",
+              "rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat' mathlib/Mathlib/Analysis/SpecificLimits",
+              "lake env lean Scratch/Probe.lean (#check ENNReal.ofReal_le_iff_le_toReal, squeeze_zero_norm', ENNReal.Tendsto.mul_const, ContinuousAlternatingMap.ext, AlternatingMap.map_linearDependent, continuous_eval_const on Covector (Eucl P) n)",
+              "python3 gmt-compare.py contract_scope replay (open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)",
+              "lake build GMT.Ch06.Submission (scratch /tmp/la-decomp-0Vm2C2/proj at frozen commit d8d46c9, pinned shared packages, no package rebuild)",
+              "lake env lean Scratch/Split.lean -o Split.olean (4 children fully proved; parent br_lattice_approximation and literal variant br_lattice_approximation_v0 from the children plus a stand-in for br_top_dim_lattice_approximation; #print axioms)",
+              "gmt-compare.py child_modules -> Checks/Challenge_{0..3}.lean (sorry) and Checks/Solution_{0..3}.lean (exact Submission.X); lake env lean on each (0 errors; solutions use only propext, Classical.choice, Quot.sound)",
+              "python3 scan of dag.json lean_name values (155 nodes; no br_la_* collision)",
+              "grep -n 'Evidently (1), (2)|^2.4|^2.5' book/sources/chapter-06-source.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Probe.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/Split.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Scratch/C2c.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Challenge_0.lean",
+              "/tmp/la-decomp-0Vm2C2/proj/Checks/Solution_0.lean"
+            ],
+            "conclusion": "Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Ch06 contract is byte-identical to Submission.lean at the frozen commit.\n\nWhat the libraries do and do not provide:\n- SimonGMT has covectorEuclideanNorm with only _zero, _nonneg and _neg lemmas. It has massAdmissibleOn, massOn and mass with le_massOn, massOn_mono and lower semicontinuity. It has boundary_apply and exteriorDerivativeTestOn.\n- SimonGMT has no mass inequality, no homogeneity or continuity lemma for covectorEuclideanNorm, and no vanishing lemma for degree > P.\n- FormSupNorm.lean defines testFormEuclideanSupNorm (a sup over U only, with no boundedness lemma), so it is not used.\n- Mathlib supplies AlternatingMap.map_linearDependent, LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin, ContinuousAlternatingMap.instContinuousEvalConst, HasCompactSupport.mono', Continuous.bounded_above_of_compact_support, ENNReal.ofReal_le_iff_le_toReal, ENNReal.tendsto_toReal, eventually_ne_nhds, squeeze_zero_norm', ENNReal.Tendsto.const_mul/mul_const, ENNReal.tendsto_ofReal and tendsto_one_div_add_atTop_nhds_zero_nat.\n- Using these, all four children were proved in scratch with axioms [propext, Classical.choice, Quot.sound]. HasCompactSupport.comp_left caused a whnf heartbeat timeout; mono' works, and the testform_bounded proof says so.\n\nComparator checks: with the exact comparator child scope, the four NodeChallenge modules elaborate and the four NodeSolution modules close. The parent typechecks from the children plus the sibling br_top_dim_lattice_approximation, with sorryAx only from that sibling's stand-in.\n\nNames: no br_la_* name occurs in dag.json or SimonGMT.\n\nThese checks do not certify the sibling br_top_dim_lattice_approximation or DeformationTheorem; both are separate DAG nodes."
+          }
+        ],
+        "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+        "child_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.flat_to_weak-a1",
+        "subproblem": {
+          "key": "flat_to_weak",
+          "title": "Decompositions X − P_k = ∂R_k + S_k with vanishing masses imply weak convergence",
+          "statement": "Let P, m ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set and let X ∈ D_{m+1}(U). For k ∈ ℕ let P_k, S_k ∈ D_{m+1}(U) and R_k ∈ D_{m+2}(U) (GeometricCurrentOn) satisfy X(ω) − P_k(ω) = ∂R_k(ω) + S_k(ω) for every k and every ω ∈ D^{m+1}(U), where ∂R_k(ω) = R_k(dω). Suppose M(R_k) → 0 and M(S_k) → 0 in [0, ∞] as k → ∞, where M = mass = M_U. Then P_k ⇀ X, i.e. P_k(ω) → X(ω) for every ω ∈ D^{m+1}(U) (WeaklyConvergesOn P_k X).",
+          "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (Pk S : ℕ → GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)), (∀ (k : ℕ) (ω : TestFormOn U (m + 1)), X ω - Pk k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → WeaklyConvergesOn Pk X",
+          "lean_name": "br_la_weaklyConvergesOn_of_flat_decomposition",
+          "depends_on": [
+            "mass_estimate",
+            "testform_bounded"
+          ],
+          "natural_proof": "Sources:\n- The printed proof of Simon 6.2: (1) T − P_k = ∂R_k + S_k; (2) M(R_k) ≤ cρ_kM(T) → 0 and M(S_k) ≤ cρ_kM(∂T) → 0; and 'Evidently (1), (2) give P_k(ω) → T(ω)'.\n- Step 3(a) of the parent proof.\n- The sibling lemmas mass_estimate (the estimate of step 0) and testform_bounded (finiteness of sup|ω|).\n\nNotation: M = mass, |α| = covectorEuclideanNorm α.\n\n1. Fix ω ∈ D^{m+1}(U) and put dω := exteriorDerivativeTestOn U (m+1) ω ∈ D^{m+2}(U). By the definition of the boundary (GeometricCurrentOn.boundary_apply), ∂R_k(ω) = R_k(dω) for every k.\n2. By testform_bounded, choose C₁ > 0 with |ω(x)| ≤ C₁ for all x ∈ ℝ^P, and C₂ > 0 with |dω(x)| ≤ C₂ for all x ∈ ℝ^P.\n3. (Finiteness and real limits.)\n  - Since M(R_k) → 0 and 0 ≠ ∞, the neighbourhood {a ∈ [0, ∞] : a ≠ ∞} of 0 eventually contains M(R_k) (eventually_ne_nhds). So there is k₀ with M(R_k) ≠ ∞ for all k ≥ k₀. Likewise there is k₁ with M(S_k) ≠ ∞ for all k ≥ k₁.\n  - ENNReal.toReal is continuous at 0 ≠ ∞ (ENNReal.tendsto_toReal), so M(R_k).toReal → 0 and M(S_k).toReal → 0 in ℝ.\n4. (Estimate.) Let k ≥ max(k₀, k₁). Apply mass_estimate to Y = R_k, the form dω and C = C₂ (M(R_k) ≠ ∞), and to Y = S_k, the form ω and C = C₁ (M(S_k) ≠ ∞). Together with the hypothesis this gives\n   |X(ω) − P_k(ω)| = |R_k(dω) + S_k(ω)| ≤ |R_k(dω)| + |S_k(ω)| ≤ C₂·M(R_k).toReal + C₁·M(S_k).toReal.\n5. (Squeeze.) By step 3 the right-hand side tends to C₂·0 + C₁·0 = 0. Since the bound holds for all large k, the squeeze theorem (squeeze_zero_norm') gives X(ω) − P_k(ω) → 0.\n6. Hence P_k(ω) = X(ω) − (X(ω) − P_k(ω)) → X(ω) − 0 = X(ω). Since ω ∈ D^{m+1}(U) was arbitrary, P_k ⇀ X. ∎",
+          "proof_key_steps": [
+            "Fix ω; ∂R_k(ω) = R_k(dω) with dω = exteriorDerivativeTestOn U (m+1) ω ∈ D^{m+2}(U).",
+            "Choose C₁, C₂ > 0 bounding |ω| and |dω| (testform_bounded).",
+            "M(R_k), M(S_k) are eventually finite and their real values tend to 0.",
+            "|X(ω) − P_k(ω)| ≤ C₂·M(R_k) + C₁·M(S_k) → 0 by mass_estimate; hence P_k(ω) → X(ω)."
+          ]
+        },
+        "audit": {
+          "key": "flat_to_weak",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact degrees, decomposition identity, ENNReal limits, and weak-convergence conclusion match the prose. Exterior differentiation preserves the required test-form space. Convergence to zero gives eventual finiteness and convergence of real masses; the two declared dependencies then provide the eventual estimate and squeeze argument. These dependencies are sufficient and non-circular."
+        },
+        "resolved_dependencies": [
+          "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+          "root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/decomposition.json": "4ae53bddca1b49544b1e387a74abcb4f7b436867ffc37cede631bc207c7fb6bc",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/decomposition-audit.json": "fcfebc181afdad73f3dbce460ccac27c538c1e2308c2d7102c8bd8dfb62a18bd",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-child-handoff.json": "c546e9f77cd50922d58424dacc063e6542e3776ce81bd3253cf4b73d710ae1f7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-supplied-plan.md": "8275e492b28bdd699d478e81b804b4a30274dc60566c01b1aa5168cb7122a67f",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-supplied-natural-proof.md": "efc3757a137cb0f5cbc2e11e1f778907f1c3b385026be682352738b8eb1eb994",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/parent-supplied-natural-proof.json": "cf056f6221430eeff1cf5615b178fdc4059814a7b79f0508085652c8042b7d05",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1/node.json": "46f55c53aa44a7f6276df47b5b81fda74767e7ccab8ed660ccbe082ead18418f",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-child-handoff.json": "f44b90714cbb8f39fab1720152a7828d8286bf69d56e79649edf20068dd4c99c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-plan.md": "8f0504411b8697b6858615025c58ef86032cbff89c1f18cae93f6034ae3defdb",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-natural-proof.md": "385a116481fe89fd1a6c3a35e10b5d1ea6371260e3b048b52ff86a1dcbe9ded4",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-natural-proof.json": "c34cb36f0589c6787edd0d4c4ddd3978226a571783a2672827baed597864ccef",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/node.json": "75dfd5eac5041da05778009d62e5b3828bd7d83572aacd631d58a7f1caf5d01a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-child-handoff.json": "b735a3f19b337037a0b6359f101590a93e0ec3acef011a8d19abad6d5aab69e2",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-supplied-plan.md": "59bee0b191467e008e63a76c5008b7be7432c4a4bcdb04da106caa30baa6bc2e",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-supplied-natural-proof.md": "37eb1bbd18da1e3291cfa3cb988c4535b701702abe43a8b8ef9692da16c731b7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/parent-supplied-natural-proof.json": "afca096c896e7f88766d7f0952678ab4f0930a659b3150025dd255866d017c55",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/node.json": "38092905a50cc183d173a10c9ff98463b581714697b556a3ab4a5636ce24f97a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-child-handoff.json": "a2e0fa8fe9d81cc51215dd6315473c61b1e9c7cf7f1f864f6833c6c10819bcd0",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-supplied-plan.md": "193efae697706eea8764902a14e077e6d8516e5ea1ee51d0362151d969b57a8a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-supplied-natural-proof.md": "cbebcff04c68ef978c24e728e7ff8344602f76e2ccce99d469ea25a935b588c6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-supplied-natural-proof.json": "01bf12188bab3e27f0d074daaffcfaa84332f6eba53f53da3cace08ee68cd6aa",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1/children/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/node.json": "1ea2c068bb49fb2a7118801f4705895d0301b6edd593d83c1b0cb465746a00d3"
+  }
+}
