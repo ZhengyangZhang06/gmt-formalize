@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "Evaluation on an orthonormal n-frame is bounded by the Euclidean coefficient norm: |α(τ)| ≤ |α|_E",
+  "statement": "Let P, n ∈ ℕ, let α be an n-covector on ℝ^P (Covector (Euclid P) n) and let τ = (τ_0, …, τ_{n−1}) be an orthonormal family in ℝ^P. Then |α(τ_0, …, τ_{n−1})| ≤ |α|_E = covectorEuclideanNorm α.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α",
+  "lean_name": "regcomp_covector_eval_orthonormal_le",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904-a1"
+}
