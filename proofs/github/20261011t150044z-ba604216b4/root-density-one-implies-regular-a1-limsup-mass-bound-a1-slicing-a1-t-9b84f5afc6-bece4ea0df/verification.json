@@ -1,0 +1,19 @@
+{
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5170",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b7ecbda9150d7985c7094c40f6aebfb81c4ec24b",
+  "integrated_commit": "",
+  "proof_base_commit": "7d35af49cf9db73d2a07a3a849f7ed21363765f8",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1",
+  "requires": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.compact_exhaustion-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.covector_findim-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.fixed_support_dense-a1"
+  ]
+}

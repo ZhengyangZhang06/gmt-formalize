@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.compact_exhaustion-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+  "depth": 5,
+  "title": "Compact exhaustion of an open subset of ℝ^P",
+  "statement": "Let P ∈ ℕ and let U ⊆ ℝ^P (Euclid P = EuclideanSpace ℝ (Fin P)) be open. Then there is a sequence (K_i)_{i∈ℕ} of compact subsets of ℝ^P such that K_i ⊆ U for every i ∈ ℕ, and every compact set C ⊆ ℝ^P with C ⊆ U is contained in K_i for some i ∈ ℕ.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ K : ℕ → Set (Euclid P), (∀ i, IsCompact (K i)) ∧ (∀ i, K i ⊆ U) ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ∃ i, C ⊆ K i",
+  "lean_name": "dor_lmbs_tfa_compact_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-86c8782c4f-a1"
+}
