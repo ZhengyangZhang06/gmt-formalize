@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.varifold_tangents-a1.limit_ball_mass-a1`
+- Child DAG node: `root.varifold_tangents-a1.limit_ball_mass-a1.cylinder_cutoff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–3 of the parent proof (the cut-off functions behind Simon Ch. 8, 5.2), for arbitrary real a < b; the parent proof only needs 0 < a < b.
+
+Notation:
+- G := Grassmannian N n is a compact space (SimonGMT Grassmannian.instCompactSpace) and second countable (Grassmannian.instSecondCountableTopology). So the product σ-algebra on ℝ^N × G is the Borel σ-algebra of the product topology.
+- K_r := closedBall (0 : ℝ^N) r ×ˢ univ.
+- d := b − a > 0.
+
+1. (The cut-off.) Define h : ℝ^N × G → ℝ by h(y, S) := min(1, max(0, (b − ‖y‖)/d)). It is continuous: (y, S) ↦ ‖y‖ is the norm composed with the continuous first projection; subtracting from the constant b and dividing by the nonzero constant d are continuous; and min/max with constants are continuous.
+2. (Pointwise values.) For every z, 0 ≤ h z because max(0, ·) ≥ 0 and 1 ≥ 0, and h z ≤ 1 because of the min with 1.
+   - If z = (y, S) ∈ K_a, i.e. ‖y‖ ≤ a, then b − ‖y‖ ≥ b − a = d, so (b − ‖y‖)/d ≥ 1 (as d > 0). Hence max(0, (b − ‖y‖)/d) = (b − ‖y‖)/d ≥ 1 and h z = 1.
+   - If z = (y, S) ∉ K_b, i.e. ‖y‖ > b, then b − ‖y‖ < 0 and d > 0, so (b − ‖y‖)/d ≤ 0. Hence max(0, (b − ‖y‖)/d) = 0 and h z = min(1, 0) = 0.
+3. (Compact support; definition of F.) closedBall 0 b is compact in the finite-dimensional normed space ℝ^N (a proper space), and univ is compact in the compact space G, so K_b is compact as a product of compact sets. By step 2, h z = 0 for every z ∉ K_b, so h has compact support (HasCompactSupport.intro: a function vanishing outside a compact subset of a Hausdorff space has compact support). Let F ∈ C_c(ℝ^N × G, ℝ) be the bundled compactly supported continuous map with underlying function h, so F z = h z for all z. F is chosen once and for all, independently of any measure.
+4. (Measurability and integrability.) Now let ν be any measure on ℝ^N × G with ν(K_b) ≠ ∞.
+   - K_a and K_b are measurable: closed balls are closed, hence Borel, and the product with univ is measurable.
+   - F is continuous, hence (a.e.-)strongly measurable for the Borel product σ-algebra.
+   - For every z, |F z| ≤ 1_{K_b}(z): if z ∈ K_b then |F z| = F z ≤ 1 by step 2; if z ∉ K_b then F z = 0 by step 2.
+   - The indicator 1_{K_b} of the constant 1 is ν-integrable because K_b is measurable and ν(K_b) < ∞ (integrable_indicator_iff and integrableOn_const).
+   - By domination (Integrable.mono'), F is ν-integrable.
+5. (Bochner to Lebesgue.) Since F is ν-integrable and F ≥ 0 everywhere, ofReal(∫ F dν) = ∫⁻ ofReal(F z) dν(z) (ofReal_integral_eq_lintegral_ofReal).
+6. (Lower bound.) For every z, 1_{K_a}(z) ≤ ofReal(F z): if z ∈ K_a, then F z = 1 by step 2 and ofReal 1 = 1; otherwise the left side is 0. Since K_a is measurable, ∫⁻ 1_{K_a} dν = ν(K_a) (lintegral_indicator_one). By monotonicity of the lower integral and step 5, ν(K_a) ≤ ∫⁻ ofReal(F) dν = ofReal(∫ F dν).
+7. (Upper bound.) For every z, ofReal(F z) ≤ 1_{K_b}(z): if z ∈ K_b, then ofReal(F z) ≤ ofReal 1 = 1 since F z ≤ 1 and ofReal is monotone; if z ∉ K_b, then F z = 0 and ofReal 0 = 0. Since K_b is measurable, ∫⁻ 1_{K_b} dν = ν(K_b). By monotonicity and step 5, ofReal(∫ F dν) = ∫⁻ ofReal(F) dν ≤ ν(K_b).
+8. (Conclusion.) The single F of step 3 satisfies ν(K_a) ≤ ofReal(∫ F dν) ≤ ν(K_b) for every measure ν with ν(K_b) ≠ ∞, which is the claim. No positivity of a or b is needed: for example, if a < 0 then K_a = ∅ and step 6 is trivially true, but steps 1–7 hold uniformly.
+
+## Key steps
+
+1. Define F(y,S) := min(1, max(0, (b − ‖y‖)/(b − a))). It is continuous, 0 ≤ F ≤ 1, F = 1 on K_a and F = 0 off K_b.
+2. K_b = closedBall 0 b × G is compact (ℝ^N is proper, G is compact), so F vanishing off K_b makes it an element of C_c(ℝ^N × G, ℝ).
+3. For ν(K_b) < ∞: |F| ≤ 1_{K_b} gives ν-integrability, and ofReal(∫F dν) = ∫⁻ ofReal(F) dν.
+4. Pointwise 1_{K_a} ≤ ofReal ∘ F ≤ 1_{K_b} and monotonicity of the lower integral give ν(K_a) ≤ ofReal(∫F dν) ≤ ν(K_b).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (identical)`
+- `grep -rn 'theorem tendsto_measure_biInter_gt|theorem lintegral_indicator_one|theorem integrableOn_const|theorem ofReal_integral_eq_lintegral_ofReal|theorem le_of_forall_gt_imp_ge_of_dense|theorem continuous_const_mul|theorem indicator_of_notMem' mathlib/Mathlib`
+- `grep -rn 'mulIndicator_of_notMem' mathlib/Mathlib/Algebra/Notation/Indicator.lean; grep -rn 'theorem intro' mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `grep -n 'structure Varifold|finite_on_compact|theorem weight_apply|def weight' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `grep -rn 'instance.*Grassmannian|CompactSpace (Grassmannian|SecondCountable' simongmt Poincare/SimonGMT`
+- `python3 scan of dag.json lean_name/lean_statement for urysohn_sandwich, compact_set_limsup, open_set_liminf, rescaled_sandwich, plane_cutoff_limits, filter_squeeze, tangent_density upper_bound/lower_bound`
+- `grep -rl 'varifold_tangents_lbm|exists_cylinder_cutoff|vague_cylinder_bounds' over .humanize, every git ref (git grep *.lean), .lake/packages/simongmt, the mathlib snapshot and cluster-state (no match)`
+- `git show 783517dd1122a966bf786624d782cd8027adbe22:GMT/Ch08/Submission.lean (accepted sibling varifold_tangents_rescaled_ball_mass_tendsto)`
+- `python3 -I replay.py: verifier gmt-compare.py contract_scope(Contract.lean, GMT.Ch08.main_theorem) + lean_contract.validate_lean_statement on both child types and the parent type`
+- `lake env lean /tmp/lbm-decomp/FullReplay.lean (full proofs of both children + parent glue + sibling, replayed comparator scope with exact Submission.X targets, #print axioms)`
+- `sed -n 495,545p book/sources/chapter-08-source.txt (Simon 5.1–5.4; 5.2 stated without proof)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Notation/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-limit-ball-mass-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-ball-mass-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-08-source.txt`
+
+Snapshot = project 63436ae6 + Mathlib 25730c7c. The workspace Contract.lean and Submission.lean are identical.
+
+Mathlib supplies everything the children need:
+- tendsto_measure_biInter_gt (Measure/Continuity.lean:266)
+- lintegral_indicator_one (Lebesgue/Basic.lean:572)
+- integrableOn_const (IntegrableOn.lean:119)
+- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)
+- le_of_forall_gt_imp_ge_of_dense (Order/Basic.lean:1017)
+- ENNReal.continuous_const_mul (ENNReal/Lemmas.lean:390)
+- HasCompactSupport.intro (Topology/Algebra/Support.lean:232, generated via to_additive)
+- Set.indicator_of_notMem (Algebra/Notation/Indicator.lean:70)
+
+SimonGMT supplies:
+- the Varifold structure with finite_on_compact (Varifold.lean:335);
+- Varifold.weight_apply (:565);
+- Grassmannian.instCompactSpace (:271) and instSecondCountableTopology (:275).
+
+Neither library has the cylinder cut-off sandwich or the vague-limit cylinder bounds; hence the two children. No accepted DAG declaration has these types: exists_urysohn_integral_sandwich is on Euclidean N and still decomposing, and allard_tc_fbl_rescaled_sandwich is a different statement. The proposed names varifold_tangents_lbm_exists_cylinder_cutoff and varifold_tangents_lbm_vague_cylinder_bounds are unreserved everywhere.
+
+In a scratch file importing GMT.Ch08.Submission:
+- complete proofs of both children compile;
+- so does the exact frozen parent type, from the children plus the accepted sibling (verbatim from 783517dd);
+- all of them use only propext, Classical.choice and Quot.sound;
+- the replayed comparator scope with exact Submission.X targets passes, and both child statements pass validate_lean_statement.
+
+Simon's 5.2 has no printed proof.

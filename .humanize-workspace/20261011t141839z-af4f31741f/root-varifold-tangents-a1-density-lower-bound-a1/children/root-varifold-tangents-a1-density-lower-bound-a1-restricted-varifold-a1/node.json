@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.restricted_varifold-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "A scaled restriction of a locally finite measure to Ω × G is a varifold on Ω",
+  "statement": "Let Ω ⊆ ℝ^N be open, μ a measure on ℝ^N × G(N,n), and c ∈ [0,∞] with c ≠ ∞. Assume μ(K × G(N,n)) ≠ ∞ for every compact K ⊆ Ω. Then there is an n-varifold W on Ω (W : Varifold N n Ω) whose measure is W.measure = c • μ⌞(Ω × G(N,n)).",
+  "lean_statement": "∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μ : Measure (Euclidean N × Grassmannian N n)) (c : ℝ≥0∞), IsOpen Ω → c ≠ ∞ → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ Ω → μ (K ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞) → ∃ W : Varifold N n Ω, W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n)))",
+  "lean_name": "varifold_tangents_dlb_exists_restricted_varifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-restricted-varifold-a1-a1"
+}
