@@ -1,0 +1,48 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_cdg_harmonic_affine_approximation|dorag_ha_interior_estimates|dorag_ha_approximation|dorag_harmonic_affine_approximation",
+        "def HarmonicAt|def HarmonicOnNhd|circleAverage_eq|theorem addHaar_ball_of_pos|theorem finrank_euclideanSpace_fin|theorem setIntegral_mono_set|theorem integral_lineDeriv_mul_eq|theorem ae_differentiableAt|iteratedFDeriv_two_apply|theorem measurable_fderiv",
+        "hasFDerivAt_convolution_left|contDiff_convolution_left|ae_tendsto_average_norm_sub|theorem arzela_ascoli",
+        "git show 3853ad1ff1a11a7855f6e8df2d2f252bc76c23a4:GMT/Ch07/Submission.lean",
+        "git show ddd06d0b6e7e9d371d11f9507e610d81aa4f2896:GMT/Ch07/Submission.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/independent_harmonic_audit/Conclusion.lean > /tmp/independent_harmonic_audit/Conclusion.log 2>&1",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/independent_harmonic_audit/Reuse.lean > /tmp/independent_harmonic_audit/Reuse.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-harmonic-affine-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-harmonic-affine-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f15d71c3ef/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/accepted-candidate.json",
+        "/tmp/independent_harmonic_audit/Conclusion.lean",
+        "/tmp/independent_harmonic_audit/Reuse.lean"
+      ],
+      "conclusion": "Verified pinned project b4d606db and Mathlib 25730c7c. The four searched DAG declaration names have no match in the pinned project sources; the inspected Mathlib files supply the cited differentiation, integration-by-parts and convolution primitives. Both reused declarations have unique DAG records, successful comparator checkpoints, matching candidate source hashes, and character-identical frozen types. Their transitive dependency closures are accepted and acyclic, with no dependency on this parent or on each other. Fresh Lean checks compiled the standalone propositions, the unchanged candidate proof blocks, and the exact conditional parent assembly. All audited proof constants use only propext, Classical.choice and Quot.sound. The two-child split is appropriate and sufficient for the selected contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "interior_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition matches every prose hypothesis and conclusion, including both integrability assumptions and the closed radius-R/4 estimate. The bare name validly reuses comparator-accepted candidate 3853ad1f with the identical frozen type. Independently checked: the included mean-value proof supplies localization, domination and integration by parts; harmonic directional derivatives and Cauchy–Schwarz give the value and gradient bounds; shifted-ball comparison and Taylor integration give the quadratic remainder with the stated dimension-dependent constant. The proof is complete and invokes neither this child nor the parent."
+    },
+    {
+      "key": "harmonic_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly preserves the test-function hypotheses, quantifier order, energy bound, integrability conclusions and epsilon times R₀^(n+2) error. The bare name validly reuses comparator-accepted candidate ddd06d0b with the identical frozen type. Independently checked the included MV, Weyl, Poincaré, Rellich and energy arguments, including boundary-layer control, total boundedness and exhaustion. Mean subtraction, the unit-ball contradiction and rescaling establish the exact child without circular reliance or deferred proof search. Together with interior_estimates, the supplied Conclusion yields C depending only on n, δh depending only on n and ε′, and one affine pair satisfying every permitted θ′ estimate."
+    }
+  ],
+  "required_changes": []
+}
