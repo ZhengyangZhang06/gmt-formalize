@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8d3127beca900f9ee22bb6c435f9c99d7dbefc77d2d3cf28e739d7af87f23f75",
+  "git_delta": {
+    "base_commit": "d709bf9e84928e96ed028db36e141d686eb6e5ed",
+    "candidate_commit": "836f8d7444ec9986cbc131889811279ade9bd413",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_dil_mass_eq",
+    "diff_sha256": "a7208726dd9080a175f339d4413c397b74ff94f5a7f4aa39157c2d9c3c8bcf19",
+    "source_sha256": "7a347fcf512484aa989e708d2f95a86a9867f5103f94e10408419e42df3bf607",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_dil_mass_eq",
+      "statement": "∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → Y.mass = ENNReal.ofReal (lam ^ k) * X.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
