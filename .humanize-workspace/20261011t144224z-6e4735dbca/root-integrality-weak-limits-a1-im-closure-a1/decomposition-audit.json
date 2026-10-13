@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsRectifiableTriple|def IsIntegerMultiplicity|def IsMeasureRepresentation|def IsRestriction|iwl_imc_|rectifiability_density_comparison|fiw_ims_",
+        "def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique|def blowUpMap|CountablyRectifiable.mono|countablyRectifiable_iUnion",
+        "theorem withDensity_apply|def withDensity|ae_tendsto_lintegral_enorm_sub_div|theorem tendsto_filterAt|protected def vitaliFamily|nullMeasurableSet_eq_fun|measure_eq_iInf_isOpen|setLIntegral_measure_zero",
+        "def NVector|abbrev NVector|def simpleNVector|simpleNVector_apply|def Covector|abbrev Covector|def IsTestForm|def TestFormOn|abbrev TestFormOn|def massOn",
+        "python3 /tmp/imc-independent-audit-83d1k265/audit_metadata.py",
+        "python3 /tmp/imc-independent-audit-83d1k265/run_checks.py",
+        "cat /tmp/imc-independent-audit-83d1k265/proved-build.log"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/imc-decomp-v2/src3/Submission.lean",
+        "/tmp/imc-independent-audit-83d1k265/audit_metadata.py",
+        "/tmp/imc-independent-audit-83d1k265/run_checks.py",
+        "/tmp/imc-independent-audit-83d1k265/proved-build.log"
+      ],
+      "conclusion": "The split appropriately factors shared analytic obligations and establishes all three conjuncts of the selected iwl_im_closure contract. The supplied proofs are complete and non-circular. All eleven types are standalone one-line propositions matching their prose; each independently elaborated against a fresh frozen-only build. All six new proofs and the exact parent assembly independently recompiled, and all twelve solution wrappers passed. Their axiom footprints contain only standard Lean axioms and the explicitly intended dependency stubs, with no sorryAx. The five reused declarations have identical accepted frozen types; their comparator evidence uses the pinned project, Mathlib and SimonGMT revisions and permits only propext, Classical.choice and Quot.sound. The six new names remain unreserved, every name is a bare identifier, and the selected dependency graph is acyclic. TL and T are explicit hypotheses discharged by the parent assembly. Scalar multiplication acts on continuous linear functionals as intended; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse. Localization, the fine covering argument and convergent-tail estimate prove the stated normalized Hausdorff comparison, including the infinite-threshold and zero-dimensional cases."
+    },
+    {
+      "key": "representation_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Cutoffs produce integrable scalar components; smoothing and finite-measure uniqueness extend agreement to bounded Borel integrands. The proof requires no unassumed local finiteness of the original measures."
+    },
+    {
+      "key": "tau_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Orthonormal orientations give the operator-norm bound, continuous evaluation supplies measurability, and compact-support domination proves both integrability conclusions. Openness of U is unnecessary."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The two frames give orthonormal bases of their common span; alternating multilinearity and determinant ±1 prove the exact disjunction, including n = 0."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type and correctly directed frame_sign dependency. Positivity makes θ₂ nonzero at almost every overlap point, enabling tangent uniqueness; frame_sign and the two orientation signs then yield the conclusion."
+    },
+    {
+      "key": "density_zero_off_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes exactly the stated hypotheses. Finite localized withDensity measures are valid even for nonmeasurable g. Outer regularity and density comparison give zero upper density off S; rescaling yields every R > 0 outside one exceptional null set."
+    },
+    {
+      "key": "tau_repr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof directly establishes both fields of IsMeasureRepresentation using tau_integrable and the pointwise identity (θ • ξ)(ω) = θ·ξ(ω). No existence, openness or measurability hypothesis is silently added."
+    },
+    {
+      "key": "lebesgue_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite localization justifies Besicovitch differentiation. Density comparison removes points of infinite upper density, and the resulting bound converts averages to r⁻ᵏ-normalized integrals. Zero-measure balls and all scaled radii are handled."
+    },
+    {
+      "key": "tangent_overlap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "TL is fully stated as a hypothesis. The proof verifies local finiteness, localized measurability and the normalized indicator-difference estimate before applying TL. Nonzero constant scaling completes the transfer without assuming either carrier is already oriented."
+    },
+    {
+      "key": "restriction_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "T is explicit and matches tangent_overlap's conclusion. Representation uniqueness identifies S with the restricted τ-action; inherited triple fields and tangent transfer prove integer multiplicity. Measurability of A correctly comes from IsRestriction."
+    },
+    {
+      "key": "lincomb_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The signed integer multiplicity, measurable nonzero carrier and integral representation are established explicitly. Positivity and local integrability precede applications of T to the new carrier, avoiding circularity in its orientation proof. Cancellation and zero coefficients are covered."
+    }
+  ],
+  "required_changes": []
+}
