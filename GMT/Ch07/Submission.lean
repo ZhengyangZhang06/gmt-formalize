@@ -748,6 +748,78 @@ theorem Submission.dpf_itt_ae_of_ae_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)
   · obtain ⟨i, b, hb, rfl⟩ := mem_iUnion.mp hxU
     exact Or.inr (mem_iUnion.mpr ⟨i, b, fun h => hpx (h hb), rfl⟩)
   · exact Or.inl ⟨hxM, hxU⟩
+/-- **Splitting `∫_{φ(M)}` along a Borel decomposition of `M`.**  Let `Aᵢ ⊆ M` (`i ∈ ℕ`) be
+pairwise disjoint Borel sets with `Hⁿ(M \ ⋃ᵢ Aᵢ) = 0`, and let `φ : ℝᴾ → ℝᴾ` be injective and
+`Λ`-Lipschitz.  Then `∫_{φ(M)} g dHⁿ = Σᵢ ∫_{φ(Aᵢ)} g dHⁿ` for every `g : ℝᴾ → [0, ∞]`.  The
+`φ(Aᵢ)` are Borel (Lusin–Souslin) and pairwise disjoint, `⋃ᵢ φ(Aᵢ) ⊆ φ(M)`, and
+`φ(M) \ ⋃ᵢ φ(Aᵢ) ⊆ φ(M \ ⋃ᵢ Aᵢ)` has `Hⁿ`-measure `≤ Λⁿ · 0` (Simon Ch. 2, 1.8(i)). -/
+theorem Submission.dpf_raf_lintegral_image_eq_tsum_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (A : ℕ → Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n] (M \ ⋃ i, A i) = 0 → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∑' i, ∫⁻ y in φ '' A i, g y ∂μHE[n] := by
+  intro P n M A φ Λ hA hAM hdisj hnull hφ hinj g
+  -- each `φ(Aᵢ)` is Borel: `φ` is continuous and injective (Lusin–Souslin)
+  have hmeas : ∀ i, MeasurableSet (φ '' A i) := fun i =>
+    (hA i).image_of_continuousOn_injOn hφ.continuous.continuousOn hinj.injOn
+  -- the `φ(Aᵢ)` are pairwise disjoint, as `φ` is injective
+  have hdisj' : Pairwise (Disjoint on fun i => φ '' A i) := fun i j hij =>
+    (disjoint_image_iff hinj).mpr (hdisj hij)
+  -- `⋃ᵢ φ(Aᵢ) ⊆ φ(M)`
+  have hsub : (⋃ i, φ '' A i) ⊆ φ '' M := iUnion_subset fun i => image_mono (hAM i)
+  -- `φ(M) \ ⋃ᵢ φ(Aᵢ) ⊆ φ(M \ ⋃ᵢ Aᵢ)`, which is `Hⁿ`-null by the Lipschitz image bound
+  have hdiff : φ '' M \ ⋃ i, φ '' A i ⊆ φ '' (M \ ⋃ i, A i) := by
+    rintro y ⟨⟨x, hxM, rfl⟩, hy⟩
+    refine ⟨x, ⟨hxM, fun hx => hy ?_⟩, rfl⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+    exact mem_iUnion.mpr ⟨i, mem_image_of_mem φ hi⟩
+  have hnull' : μHE[n] (φ '' M \ ⋃ i, φ '' A i) = 0 := by
+    refine measure_mono_null hdiff (le_antisymm ?_ zero_le)
+    calc μHE[n] (φ '' (M \ ⋃ i, A i)) ≤ (Λ : ℝ≥0∞) ^ n * μHE[n] (M \ ⋃ i, A i) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            hφ.lipschitzOnWith
+      _ = 0 := by rw [hnull, mul_zero]
+  -- so `φ(M) = ⋃ᵢ φ(Aᵢ)` `Hⁿ`-a.e., and the integral is countably additive over the `φ(Aᵢ)`
+  have hae : φ '' M =ᵐ[μHE[n]] ⋃ i, φ '' A i :=
+    ae_eq_set.mpr ⟨hnull', by rw [sdiff_eq_empty.mpr hsub, measure_empty]⟩
+  rw [setLIntegral_congr hae, lintegral_iUnion hmeas hdisj' g]
+/-- **Area formula on one injective Lipschitz piece** (Simon Ch. 3, 2.3–2.6, used for the
+diffeomorphism push-forward in 7.1.2).  Let `F : ℝⁿ → ℝᴾ` be Lipschitz and injective on the Borel
+set `B`, let `φ : ℝᴾ → ℝᴾ` be differentiable, Lipschitz and injective on `F(B)`, and let
+`Q(F(b)) = range DF(b)` for a.e. `b ∈ B`.  With `e` the standard orthonormal basis of `Q(x)` and
+`J(x) = √det(Dφ(x)eₐ · Dφ(x)e_b)`, every `g ≥ 0` has
+`∫_{φ(F(B))} g dHⁿ = ∫_{F(B)} J(x) g(φ(x)) dHⁿ(x)`.  Apply the Lipschitz area formula to `φ ∘ F`
+and to `F`; a.e. on `B` the chain rule and `normDet (S ∘ T) = normDet (S|_{range T}) · normDet T`
+give `J_{φ∘F}(b) = J(F(b)) J_F(b)`, and `normDet (S|_V)² = det(S eₐ · S e_b)` (Gram). -/
+theorem Submission.dpf_raf_piece_area_formula_gram : ∀ (P n : ℕ) (Q : Euclid P → Submodule ℝ (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal) (F : Euclid n → Euclid P) (L : NNReal) (B : Set (Euclid n)), Differentiable ℝ φ → LipschitzWith Λ φ → LipschitzWith L F → MeasurableSet B → InjOn F B → InjOn φ (F '' B) → (∀ᵐ b ∂(volume.restrict B), Q (F b) = LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' (F '' B), g y ∂μHE[n] = ∫⁻ x in F '' B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (φ x) ∂μHE[n] := by
+  intro P n Q φ Λ F L B hφd hφ hF hB hFi hφi hQ g
+  -- Gram identity: `normDet (T|_W) = √det(⟨T eₐ, T e_b⟩)`, `e = stdOrthonormalBasis ℝ V`, `V = W`
+  have hgram : ∀ (T : Euclid P →L[ℝ] Euclid P) (V W : Submodule ℝ (Euclid P)), V = W →
+      Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ V) =>
+        inner ℝ (T (stdOrthonormalBasis ℝ V i)) (T (stdOrthonormalBasis ℝ V j)))) =
+        ((T : Euclid P →ₗ[ℝ] Euclid P).domRestrict W).normDet := by
+    rintro T V W rfl
+    have h := ((T : Euclid P →ₗ[ℝ] Euclid P).domRestrict V).normDet_sq_eq_det_gram
+      (stdOrthonormalBasis ℝ V)
+    rw [RCLike.ofReal_real_eq_id, id] at h
+    rw [← Real.sqrt_sq (LinearMap.normDet_nonneg _), h]
+    rfl
+  -- area formula for `φ ∘ F` (injective on `B`, `φ(F(B)) = (φ ∘ F)(B)`) and for `F`
+  have hn : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
+  have hleft := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn (hφ.comp hF) hB
+    (hφi.comp hFi (mapsTo_image F B)) g
+  have hright := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hF hB hFi
+    (fun x => ENNReal.ofReal (Real.sqrt (Matrix.det
+      (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) =>
+        inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) i))
+          (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (φ x))
+  rw [hn] at hleft hright
+  rw [← image_comp, hleft, hright]
+  -- the integrands agree `λ⌞B`-a.e. (Rademacher and the hypothesis on `Q`)
+  refine lintegral_congr_ae ?_
+  filter_upwards [ae_restrict_of_ae hF.ae_differentiableAt, hQ] with b hb hQb
+  rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+    Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet, fderiv_comp b (hφd (F b)) hb,
+    ContinuousLinearMap.toLinearMap_comp, LinearMap.normDet_comp,
+    ← hgram (fderiv ℝ φ (F b)) (Q (F b)) _ hQb,
+    ENNReal.ofReal_mul (Real.sqrt_nonneg _), comp_apply]
+  ring
 /-- **Simon Ch. 3, Lemma 1.2 and Remark 1.3**, with bi-Lipschitz Borel pieces in place of `C¹`
 submanifolds: a Borel countably `n`-rectifiable `M ⊆ ℝᴾ` is, up to an `Hⁿ`-null set, the disjoint
 union of Borel sets `Fᵢ(Bᵢ) ⊆ M`, where `Fᵢ : ℝⁿ → ℝᴾ` is Lipschitz, `Bᵢ` is Borel,
@@ -2226,6 +2298,46 @@ theorem Submission.dpf_approxTangent_bilipschitz_image_ae : ∀ (P n : ℕ) (U M
   filter_upwards [hM_ae, hφM_ae, ae_restrict_mem (hBmeas i)] with b hb hφb hbB
   rw [Submission.dpf_itt_approxTangentPlane_eq P n M (F i b) _ hb, ← hrange b hbB]
   exact ⟨hb, hφb⟩
+/-- **Simon Ch. 3, 2.3–2.6 (area formula, 2.6)** for an injective Lipschitz `C¹` map `φ` on a
+countably `n`-rectifiable `M`, with the tangential Jacobian
+`J(x) = (det(Dφ(x)eₐ · Dφ(x)e_b))^{1/2}`, `e` the standard orthonormal basis of `TₓM`:
+`∫_{φ(M)} g dHⁿ = ∫_M J (g ∘ φ) dHⁿ` for every `g ≥ 0`.  Decompose `M` into disjoint bi-Lipschitz
+pieces `Pᵢ = Fᵢ(Bᵢ)` up to an `Hⁿ`-null set.  For a.e. `b ∈ Bᵢ`, `T_{Fᵢ b}M = range DFᵢ(b)`
+(density lemma and uniqueness of approximate tangent planes).  Both sides split along the pieces
+(for `φ`, and for `id`), and on each piece the per-piece area identity applies. -/
+theorem Submission.dpf_area_formula_bilipschitz_rectifiable : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * g (φ x) ∂μHE[n] := by
+  intro P n U M φ Λ hU hM hMU hrect hloc hφ1 hφ hφinj g
+  -- Step 1: disjoint bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M`, covering `M` up to an `Hⁿ`-null set
+  obtain ⟨F, B, m, hF, hB, hm, hlow, hdiff, hFBm, hFB, hdisj, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  -- `Fᵢ` is injective on `Bᵢ`: `mᵢ‖a - a'‖ ≤ ‖Fᵢ a - Fᵢ a'‖` with `mᵢ > 0`
+  have hinj : ∀ i, InjOn (F i) (B i) := by
+    intro i a ha a' ha' h
+    have h1 := hlow i a ha a' ha'
+    rw [h, sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp (nonpos_of_mul_nonpos_right h1 (hm i)))
+  -- Step 2: `T_{Fᵢ b}M = range DFᵢ(b)` for a.e. `b ∈ Bᵢ`
+  have htan : ∀ i, ∀ᵐ b ∂(volume.restrict (B i)), approxTangentPlane n M (F i b) =
+      LinearMap.range (fderiv ℝ (F i) b : Euclid n →ₗ[ℝ] Euclid P) := by
+    intro i
+    obtain ⟨L, hL⟩ := hF i
+    filter_upwards [Submission.dpf_approxTangent_ae_bilipschitz_piece P n U M (F i) (B i) L (m i)
+      hU hM hMU hloc hL (hB i) (hm i) (hlow i) (hdiff i) (hFB i)] with b hb
+    have hex : ∃ Q, HasApproximateTangentSpaceAt n M (F i b) Q := ⟨_, hb⟩
+    rw [approxTangentPlane, dite_eq_left hex]
+    exact hex.choose_spec.unique hb
+  -- Step 3: split both sides along the pieces (`φ`, resp. `id`, is Lipschitz and injective)
+  have hsplit : ∀ w : Euclid P → ℝ≥0∞,
+      ∫⁻ x in M, w x ∂μHE[n] = ∑' i, ∫⁻ x in F i '' B i, w x ∂μHE[n] := fun w => by
+    simpa only [image_id] using Submission.dpf_raf_lintegral_image_eq_tsum_pieces P n M
+      (fun i => F i '' B i) id 1 hFBm hFB hdisj hnull LipschitzWith.id injective_id w
+  rw [Submission.dpf_raf_lintegral_image_eq_tsum_pieces P n M (fun i => F i '' B i) φ Λ hFBm hFB
+    hdisj hnull hφ hφinj g, hsplit]
+  -- Step 4: the area identity on each piece, with `Q = approxTangentPlane n M`
+  refine tsum_congr fun i => ?_
+  obtain ⟨L, hL⟩ := hF i
+  exact Submission.dpf_raf_piece_area_formula_gram P n (approxTangentPlane n M) φ Λ (F i) L (B i)
+    (hφ1.differentiable one_ne_zero) hφ hL (hB i) (hinj i) hφinj.injOn (htan i) g
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
