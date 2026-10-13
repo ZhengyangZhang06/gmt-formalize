@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.sharp_ratio-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+  "depth": 5,
+  "title": "Sharp normalized mass bound at nearby centres from the monotonicity inequality",
+  "statement": "Let P, n ∈ ℕ, μ a Borel measure on ℝ^P, W ⊆ ℝ^P, κ, δ, ρ ∈ ℝ and z ∈ ℝ^P. Assume ρ > 0, 0 ≤ δ ≤ 1/8, κ ≥ 0, κρ ≤ δ, B_ρ(z) ⊆ W and μ(B_ρ(z)) ≤ (1 + δ)ω_nρⁿ, where ω_n = unitBallVolume n and B_t(y) is the closed ball. Assume the monotonicity inequality e^{κs}s^{−n}μ(B_s(y)) ≤ e^{κt}t^{−n}μ(B_t(y)) for all y ∈ ℝ^P and 0 < s < t with B_t(y) ⊆ W. Put K(δ) := e^δ(1 + δ)/(1 − 4δ)ⁿ. Then for every y ∈ B_{4δρ}(z) and every t with 0 < t ≤ (1 − 4δ)ρ: (i) e^{κt}t^{−n}μ(B_t(y)) ≤ K(δ)ω_n, and (ii) μ(B_t(y)) ≤ K(δ)ω_ntⁿ. All products are in [0, ∞], with the real factors entered via ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (W : Set (Euclid P)) (κ δ ρ : ℝ) (z : Euclid P), 0 < ρ → 0 ≤ δ → δ ≤ 1 / 8 → 0 ≤ κ → κ * ρ ≤ δ → closedBall z ρ ⊆ W → μ (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → (∀ (y : Euclid P) (s t : ℝ), 0 < s → s < t → closedBall y t ⊆ W → ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * μ (closedBall y s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * μ (closedBall y t)) → ∀ y ∈ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n ∧ μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n * ENNReal.ofReal (t ^ n)",
+  "lean_name": "dorag_dbs_sharp_mass_ratio",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ae4460e5a4-a1"
+}

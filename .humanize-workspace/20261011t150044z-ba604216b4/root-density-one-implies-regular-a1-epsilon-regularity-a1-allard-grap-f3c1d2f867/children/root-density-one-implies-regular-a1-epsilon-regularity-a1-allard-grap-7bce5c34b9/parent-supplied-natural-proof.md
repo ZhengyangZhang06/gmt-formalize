@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1.profile-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof (Simon Ch. 4, 3.3: a C¹ profile with φ ≡ 1 on (−∞, 1], φ ≡ 0 on [1 + ε, ∞) and φ' ≤ 0; here 1 + ε = A). Text: book/chapter-04.txt lines 215–300.
+Setting (the Lean statement): A ∈ ℝ with A > 1. Goal: some φ : ℝ → ℝ with, in this order, (P1) ContDiff ℝ 1 φ; (P2) φ antitone; (P3) 0 ≤ φ(u) ≤ 1 for all u; (P4) φ(u) = 1 for u ≤ 1; (P5) φ(u) = 0 for u ≥ A; (P6) deriv φ u ≤ 0 for all u; (P7) deriv φ u ≠ 0 implies 1 < u < A.
+Notation: Ψ := Real.smoothTransition; a := A − 1 > 0; φ' := deriv φ.
+1. (Facts about Ψ.) Ψ is C^∞, in particular ContDiff ℝ 1 (Real.smoothTransition.contDiff). Ψ is monotone (Real.smoothTransition.monotone). 0 ≤ Ψ ≤ 1 (Real.smoothTransition.nonneg, Real.smoothTransition.le_one). Ψ(x) = 0 for x ≤ 0 (Real.smoothTransition.zero_of_nonpos) and Ψ(x) = 1 for x ≥ 1 (Real.smoothTransition.one_of_one_le).
+2. (Definition and smoothness.) Put φ(u) := Ψ((A − u)/a). The map u ↦ (A − u)/a is affine, hence C^∞ (contDiff_const.sub contDiff_id, then div_const). So φ is C¹ as a composition of C¹ maps (ContDiff.comp).
+3. (φ is antitone.) Let u ≤ v. Then A − v ≤ A − u, and dividing by a > 0 preserves the order (div_le_div_of_nonneg_right): (A − v)/a ≤ (A − u)/a. Monotonicity of Ψ gives φ(v) ≤ φ(u).
+4. (Bounds.) 0 ≤ φ(u) ≤ 1 for all u, by the bounds of Ψ in step 1.
+5. (Plateaus.) If u ≤ 1, then A − u ≥ A − 1 = a, so (A − u)/a ≥ 1 (le_div_iff₀, a > 0) and φ(u) = 1. If u ≥ A, then A − u ≤ 0 and a ≥ 0, so (A − u)/a ≤ 0 (div_nonpos_of_nonpos_of_nonneg) and φ(u) = 0.
+6. (Sign of φ'.) φ is antitone, so deriv φ u ≤ 0 for every u (Antitone.deriv_nonpos). No differentiability hypothesis is needed: at points of non-differentiability deriv φ u = 0.
+7. (Where φ' can be nonzero.) Let φ'(u) ≠ 0 and suppose, for a contradiction, that 1 < u < A fails. Then u ≤ 1, or u > 1 and u ≥ A.
+   (a) If u ≤ 1, then φ(u) = 1 by step 5, and φ(v) ≤ 1 = φ(u) for every v by step 4. So φ has a local maximum at u (the eventual inequality holds for all v), and IsLocalMax.deriv_eq_zero gives φ'(u) = 0, a contradiction.
+   (b) If u ≥ A, then φ(u) = 0 by step 5, and φ(v) ≥ 0 = φ(u) for every v. So φ has a local minimum at u, and IsLocalMin.deriv_eq_zero gives φ'(u) = 0, a contradiction.
+   Hence 1 < u < A.
+8. By steps 2–7, φ has all seven required properties. ∎
+
+## Key steps
+
+1. Take φ(u) = smoothTransition((A − u)/(A − 1)); it is C¹ by composition with an affine map.
+2. φ is antitone, bounded in [0, 1], equal to 1 on (−∞, 1] and to 0 on [A, ∞), by the corresponding facts for smoothTransition.
+3. deriv φ ≤ 0 everywhere by Antitone.deriv_nonpos.
+4. For u ≤ 1 (resp. u ≥ A), u is a global maximum (resp. minimum) of φ, so deriv φ u = 0; hence deriv φ u ≠ 0 forces 1 < u < A.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project; project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean workspace GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scan of dag.json: frozen lean_statement of this node and of uncles monotonicity-a1.cutoff_deriv-a1 / radial_variation-a1; non-sibling dependency pattern; accepted lean_statements matching closedBall|smoothTransition|HasDerivAt|Real.exp|withDensity|lintegral (no reusable accepted match)`
+- `git show 5b94acf2:GMT/Ch07/Submission.lean (accepted declarations are `theorem Submission.X` inside namespace GMT.Ch07; IMRep.measure finiteness via withDensity_apply / Measure.restrict_restrict / locallyIntegrable_mult)`
+- `grep -n in snapshot mathlib: ContinuousLinearMap.aestronglyMeasurable_comp₂, Antitone.deriv_nonpos, monotoneOn_of_hasDerivWithinAt_nonneg, lintegral_indicator_one, lintegral_indicator, setLIntegral_congr_fun, setLIntegral_le_lintegral, integral_div, ofReal_integral_eq_lintegral_ofReal, norm_integral_le_of_norm_le, withDensity_apply, IsCompact.exists_cthickening_subset_open, cthickening_closedBall, starProjection_orthogonal_val, norm_starProjection_apply_le, Real.smoothTransition.{one_of_one_le,zero_of_nonpos,monotone}`
+- `lean #check in contract scope: MeasureTheory.AEStronglyMeasurable.clm_apply (unknown constant), monotoneOn_of_deriv_nonneg, Real.smoothTransition.contDiff/nonneg/le_one, IsLocalMax.deriv_eq_zero, ENNReal.ofReal_add / ofReal_mul / ofReal_add_le`
+- `sed -n 215,420p book/chapter-04.txt (Simon Ch. 4, 3.1–3.5 and 3.14–3.17)`
+- `lake env lean /tmp/sab-decomp/{Probe,Stmts,Children,Assembly,E2E}.lean with #print axioms; independent reviewer re-run of /tmp/sab-review/E2E.lean`
+- `grep -l doragm_sab_ over workspaces/*/.humanize/github-theorem-prover/runs/*/dag.json (8 chapters), ch07 run nodes/, workspaces/*/GMT and lake-packages-25730c7c/simongmt *.lean; git log --all -S doragm_sab_ (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f3c1d2f867/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/sab-decomp/E2E.lean`
+- `/tmp/sab-review/E2E.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace Submission.lean, the compiler context of every child type.
+
+Nothing in the snapshot or the DAG already proves any proposed child:
+- No doragm_sab_* declaration exists.
+- The closest nodes, dsmc_em_exp_monotoneOn_of_deriv_ineq and dsmc_em_cutoff_integral_hasDerivAt, are not accepted and have different types.
+- The uncles cutoff_deriv and radial_variation are still decomposing, so children cannot use them; the parent keeps them.
+
+Every Mathlib lemma cited in the child proofs exists at the pinned revision and is in contract scope. Locations:
+- aestronglyMeasurable_comp₂: Lemmas.lean:79
+- Antitone.deriv_nonpos: Slope.lean:214
+- monotoneOn_of_hasDerivWithinAt_nonneg: MeanValue.lean:428
+- lintegral_indicator_one: Lebesgue/Basic.lean:572
+- lintegral_indicator: Lebesgue/Basic.lean:510
+- setLIntegral_congr_fun: Lebesgue/Basic.lean:298
+- setLIntegral_le_lintegral: Lebesgue/Basic.lean:258
+- integral_div: Bochner/Basic.lean:297
+- ofReal_integral_eq_lintegral_ofReal: Bochner/Basic.lean:739
+- norm_integral_le_of_norm_le: Bochner/Basic.lean:985
+- withDensity_apply: WithDensity.lean:44
+- IsCompact.exists_cthickening_subset_open: Thickening.lean:426
+- cthickening_closedBall: Pointwise.lean:318
+- starProjection_orthogonal_val: Projection/Basic.lean:203
+- norm_starProjection_apply_le: Projection/Basic.lean:411
+- smoothTransition lemmas: SmoothTransition.lean:161, 168, 222
+
+AEStronglyMeasurable.clm_apply does not exist, so the parent proves measurability of p_x(x − y) with aestronglyMeasurable_comp₂.
+
+Simon's chapter-04.txt 3.3–3.5 and 3.16–3.17 fix each child's route.
+
+Lean checks:
+- All six child types elaborate and are fully proved.
+- The exact frozen parent type follows from the six children plus the two exact uncle types.
+- Axioms are only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced these results.
