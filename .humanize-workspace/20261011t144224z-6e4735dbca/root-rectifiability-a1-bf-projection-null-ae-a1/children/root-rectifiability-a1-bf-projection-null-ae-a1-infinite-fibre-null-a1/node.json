@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_projection_null_ae-a1.infinite_fibre_null-a1",
+  "parent_id": "root.rectifiability-a1.bf_projection_null_ae-a1",
+  "depth": 3,
+  "title": "Eilenberg finiteness: infinite fibres of a Lipschitz map on a finite-Hᵏ Borel set lie over a Lebesgue-null set",
+  "statement": "Let N, m ∈ ℕ and k := m + 1. Let ℝ^N = Eucl N carry Hᵏ := μHE[k], the normalized Euclidean k-dimensional Hausdorff measure, and let ℝᵏ = Eucl k carry Lebesgue measure Lᵏ (volume). Let E ⊆ ℝ^N be a Borel set with Hᵏ(E) < ∞. Let f : ℝ^N → ℝᵏ be Lipschitz with constant K ∈ [0, ∞), i.e. |f(x) − f(x′)| ≤ K|x − x′| for all x, x′. Then the set {y ∈ ℝᵏ : E ∩ f⁻¹({y}) is infinite} has Lebesgue measure zero.",
+  "lean_statement": "∀ (N m : ℕ) (E : Set (Eucl N)) (f : Eucl N → Eucl (m + 1)) (K : ℝ≥0), MeasurableSet E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → LipschitzWith K f → (volume : Measure (Eucl (m + 1))) {y : Eucl (m + 1) | (E ∩ f ⁻¹' {y}).Infinite} = 0",
+  "lean_name": "rectifiability_bf_infinite_fibre_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-projection-null-ae-a1-infinite-fibre-null-a1-a1"
+}

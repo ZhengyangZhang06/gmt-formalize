@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_trichotomy-a1.cone_ratio_measurable-a1",
+  "parent_id": "root.rectifiability-a1.bf_trichotomy-a1",
+  "depth": 3,
+  "title": "Borel measurability of the cone-ratio upper density Φ(a,v)",
+  "statement": "Let N, m ∈ ℕ, k := m + 1, μ an s-finite measure on ℝ^N (= Eucl N) and δ ∈ ℝ. For a ∈ ℝ^N, v = (v₁, …, v_k) ∈ (ℝ^N)^k and r, s ∈ ℝ let L_v(y) := (⟨v₁,y⟩, …, ⟨v_k,y⟩) ∈ ℝᵏ, X_v(a,r,s) := {x ∈ ℝ^N : |x − a| < r, |L_v(x − a)| < s|x − a|} (Euclidean norms) and Φ(a,v) := limsup_{s→0⁺} sup_{0<r<δ} μ(X_v(a,r,s))/(rs)ᵏ ∈ [0,∞], with (rs)ᵏ := ENNReal.ofReal((rs)ᵏ), quotients in [0,∞] and the limsup along 𝓝[>]0. Then (a,v) ↦ Φ(a,v) is measurable on ℝ^N × (ℝ^N)^k.",
+  "lean_statement": "∀ (N m : ℕ) (μ : Measure (Eucl N)) (δ : ℝ), SFinite μ → Measurable (fun p : Eucl N × (Fin (m + 1) → Eucl N) => limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x p.1 < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) (x - p.1)) : Eucl (m + 1))‖ < s * ‖x - p.1‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0))",
+  "lean_name": "rectifiability_bf_cone_ratio_measurable",
+  "depends_on": [
+    "root.rectifiability-a1.bf_trichotomy-a1.limsup_sup_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.bf_trichotomy-a1.limsup_sup_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-trichotomy-a1-cone-ratio-measurable-a1-a1"
+}
