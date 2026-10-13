@@ -745,6 +745,291 @@ theorem Submission.ind_pi_restriction_open_im :
     with x hx hxA
   obtain ⟨τ, hτ, hτL, hξ⟩ := hx
   exact ⟨τ, hτ, htan x hxA _ hτL, hξ⟩
+theorem Submission.ind_pi_ss_cycle_slice_boundary : ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (t : ℝ) (S : GeometricCurrentOn U m), IsOpen U → T.boundary = 0 → IsSlice T f t S → ∃ A : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ f x < t} A ∧ A.boundary = S := by
+  intro P m U T f t S hU hT hSl
+  -- Unfold `IsSlice` (4.6): `S = ∂A − B` with `A = T ⌞ Aₜ`, `B = (∂T) ⌞ Aₜ`, where
+  -- `Aₜ = {x ∈ U : f x < t}` and `B ω = ∫_{Aₜ} ⟨ω, v⟩ dμ` for a representation `(μ, v)` of `∂T`.
+  obtain ⟨A, B, hA, ⟨hmeas, μ, v, hrep, hB⟩, hS⟩ := hSl
+  -- `B = 0`, i.e. uniqueness of restrictions for the zero current `∂T`: testing `∂T = 0` with
+  -- `g ω` (`g ∈ C_c^∞(U)`) shows that `⟨ω, v⟩` integrates to zero against every such `g`, so it
+  -- vanishes `μ`-a.e. on `U ⊇ Aₜ`.
+  have hB0 : ∀ ω : TestFormOn U m, B ω = 0 := by
+    intro ω
+    have hae : ∀ᵐ x ∂μ, x ∈ U → v x ((ω : DifferentialForm (Eucl P) m) x) = 0 := by
+      refine hU.ae_eq_zero_of_integral_contDiff_smul_eq_zero
+        ((hrep ω).1.locallyIntegrable.locallyIntegrableOn U) (fun g hg hgc hgU => ?_)
+      let gω : TestFormOn U m := ⟨fun x => g x • (ω : DifferentialForm (Eucl P) m) x,
+        ⟨hg.smul ω.property.1.1, hgc.smul_right⟩,
+        (tsupport_smul_subset_left _ _).trans hgU⟩
+      calc ∫ x, g x • v x ((ω : DifferentialForm (Eucl P) m) x) ∂μ
+          = ∫ x, v x ((gω : DifferentialForm (Eucl P) m) x) ∂μ := by
+            congr 1
+            funext x
+            exact (map_smul (v x) (g x) _).symm
+        _ = T.boundary gω := ((hrep gω).2).symm
+        _ = 0 := by rw [hT, GeometricCurrentOn.zero_apply]
+    rw [hB ω]
+    exact integral_eq_zero_of_ae
+      ((ae_restrict_iff' hmeas).2 (hae.mono fun x hx hxA => hx hxA.1))
+  -- Hence `S = ∂A − 0 = ∂A`, with `A` the restriction of `T` to `Aₜ`.
+  refine ⟨A, hA, GeometricCurrentOn.ext fun ω => ?_⟩
+  rw [hS ω, hB0 ω, sub_zero]
+/-- Simon Ch. 6, (2.8)–(2.9): for `W ⊂⊂ U` and `S = X ⌞ A`, `M_W(S) ≤ M_W(X)`.  For an
+admissible `ω`, `S(ω) = ∫_A ⟨ω, v⟩ dμ`.  By regularity of the finite measure `|⟨ω, v⟩| μ` there
+are a closed `F ⊆ A` and an open `G ⊇ A` with `∫_{G \ F} |⟨ω, v⟩| dμ < ε`; a smooth
+`ψ : ℝ^P → [0, 1]` equal to `1` on `F` with support `G` makes `ψ ω` admissible and
+`S(ω) ≤ X(ψ ω) + ε ≤ M_W(X) + ε`. -/
+theorem Submission.ind_pi_ss_restriction_massOn_le : ∀ (P k : ℕ) (U W A : Set (Eucl P)) (X S : GeometricCurrentOn U k), IsOpen U → CompactlyContainedOpen W U → IsRestriction X A S → S.massOn W ≤ X.massOn W := by
+  intro P k U W A X S _ _ hR
+  obtain ⟨hA, μ, v, hrep, hS⟩ := hR
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) k),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  set f : Eucl P → ℝ := fun x => v x ((ω : DifferentialForm (Eucl P) k) x)
+  have hfi : Integrable f μ := (hrep ω).1
+  -- The finite measure `ν = |f| μ`.
+  set ν : Measure (Eucl P) := μ.withDensity (fun x => ‖f x‖ₑ) with hν_def
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity hfi.2.ne
+  refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+  have hε2 : (ε : ℝ≥0∞) / 2 ≠ 0 := by simp [hε.ne']
+  obtain ⟨F, hFA, hFc, hνF⟩ := hA.exists_isClosed_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
+  obtain ⟨G, hAG, hGo, -, hνG⟩ := hA.exists_isOpen_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
+  obtain ⟨ψ, hψs, hψr, hψsupp, hψ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hGo hFc (hFA.trans hAG)
+  -- The cut-off test form `ψ ω`.
+  have hω_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) :=
+    ω.2.1.1
+  have hω_cpt : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
+  let ω' : TestFormOn U k := ⟨fun x => ψ x • (ω : DifferentialForm (Eucl P) k) x,
+    ⟨hψs.smul hω_smooth, HasCompactSupport.smul_left (f := ψ) hω_cpt⟩,
+    (tsupport_smul_subset_right _ _).trans ω.2.2⟩
+  have hω' : ω' ∈ massAdmissibleOn U k W := by
+    refine ⟨(tsupport_smul_subset_right _ _).trans hω.1, fun x => ?_⟩
+    change covectorEuclideanNorm (ψ x • (ω : DifferentialForm (Eucl P) k) x) ≤ 1
+    have h0 := hψr ⟨x, rfl⟩
+    rw [hsmul, abs_of_nonneg h0.1]
+    calc ψ x * covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x) ≤ 1 * 1 :=
+          mul_le_mul h0.2 (hω.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have hω'f : ∀ x, v x ((ω' : DifferentialForm (Eucl P) k) x) = ψ x * f x := by
+    intro x
+    change v x (ψ x • (ω : DifferentialForm (Eucl P) k) x) = ψ x * f x
+    rw [map_smul, smul_eq_mul]
+  have hψf : Integrable (fun x => ψ x * f x) μ := by
+    simpa only [hω'f] using (hrep ω').1
+  have hXω' : X ω' = ∫ x, ψ x * f x ∂μ := by
+    simpa only [hω'f] using (hrep ω').2
+  have hGF : MeasurableSet (G \ F) := hGo.measurableSet.diff hFc.measurableSet
+  -- Pointwise: `1_A f - ψ f ≤ 1_{G \ F} |f|`.
+  have hpt : ∀ x, A.indicator f x - ψ x * f x ≤ (G \ F).indicator (fun x => |f x|) x := by
+    intro x
+    have h0 := hψr ⟨x, rfl⟩
+    have hnn : 0 ≤ (G \ F).indicator (fun x => |f x|) x :=
+      Set.indicator_nonneg (fun _ _ => abs_nonneg _) x
+    by_cases hxF : x ∈ F
+    · rw [Set.indicator_of_mem (hFA hxF), (hψ1 x).1 hxF, one_mul, sub_self]
+      exact hnn
+    · by_cases hxG : x ∈ G
+      · rw [Set.indicator_of_mem (show x ∈ G \ F from ⟨hxG, hxF⟩)]
+        by_cases hxA : x ∈ A
+        · rw [Set.indicator_of_mem hxA]
+          nlinarith [le_abs_self (f x), abs_nonneg (f x), h0.1, h0.2]
+        · rw [Set.indicator_of_notMem hxA]
+          nlinarith [neg_abs_le (f x), abs_nonneg (f x), h0.1, h0.2]
+      · have hψ0 : ψ x = 0 := by
+          by_contra h
+          exact hxG (hψsupp ▸ (Function.mem_support.mpr h))
+        rw [Set.indicator_of_notMem (fun h => hxG (hAG h)), hψ0, zero_mul, sub_zero]
+        exact hnn
+  have hνGF : ν (G \ F) < ε := by
+    calc ν (G \ F) ≤ ν ((G \ A) ∪ (A \ F)) := measure_mono fun x hx => by
+          by_cases hxA : x ∈ A
+          · exact Or.inr ⟨hxA, hx.2⟩
+          · exact Or.inl ⟨hx.1, hxA⟩
+      _ ≤ ν (G \ A) + ν (A \ F) := measure_union_le _ _
+      _ < (ε : ℝ≥0∞) / 2 + (ε : ℝ≥0∞) / 2 := ENNReal.add_lt_add hνG hνF
+      _ = ε := ENNReal.add_halves _
+  have hint : ∫ x in G \ F, |f x| ∂μ ≤ ε := by
+    have h1 : ∫ x in G \ F, |f x| ∂μ = (ν (G \ F)).toReal := by
+      rw [hν_def, withDensity_apply _ hGF]
+      simp_rw [← Real.norm_eq_abs]
+      exact integral_norm_eq_lintegral_enorm hfi.aestronglyMeasurable.restrict
+    rw [h1]
+    simpa using ENNReal.toReal_mono ENNReal.coe_ne_top hνGF.le
+  have hest : S ω ≤ X ω' + ε := by
+    have hdiff : S ω - X ω' = ∫ x, (A.indicator f x - ψ x * f x) ∂μ := by
+      rw [hS ω, hXω', integral_sub (hfi.indicator hA) hψf, integral_indicator hA]
+    have hle : ∫ x, (A.indicator f x - ψ x * f x) ∂μ ≤
+        ∫ x, (G \ F).indicator (fun x => |f x|) x ∂μ :=
+      integral_mono ((hfi.indicator hA).sub hψf) (hfi.abs.indicator hGF) hpt
+    rw [integral_indicator hGF] at hle
+    linarith
+  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal (X ω' + ε) := ENNReal.ofReal_le_ofReal hest
+    _ ≤ ENNReal.ofReal (X ω') + ENNReal.ofReal ε := ENNReal.ofReal_add_le
+    _ = ENNReal.ofReal (X ω') + ε := by rw [ENNReal.ofReal_coe_nnreal]
+    _ ≤ X.massOn W + ε := by gcongr; exact X.le_massOn hω'
+/-- **Slices of a cycle (Simon Ch. 6, 4.5(1)–(2), 4.6, 4.10).**  For `X ∈ 𝒟_{m+1}(U)` with
+`∂X = 0` and locally finite mass, `d` `L`-Lipschitz and `a < b`, there are restrictions
+`A_t = X ⌞ {d < t}` and a measurable `g` with `M_W(∂A_t) ≤ g(t)` on `(a, b)` and
+`∫⁻_{(a,b)} g ≤ L · M_W(X)`.  As `M_V(∂X) = M_V(0) = 0`, `SlicingTheorem` gives slices
+`S_t = ⟨X, d, t⟩`, and `∂A_t = S_t` by `ind_pi_ss_cycle_slice_boundary`.  The band
+`{a < d < b} = {|d - (a + b)/2| < (b - a)/2}` is a sublevel set of an `L`-Lipschitz function, so
+the same lemma gives the restriction `R = X ⌞ {a < d < b}` used by the mass clause of 4.10
+(`‖Dd‖ ≤ L`); finally `M_W(R) ≤ M_W(X)` by `ind_pi_ss_restriction_massOn_le`. -/
+theorem Submission.ind_pi_ss_cycle_slice_family : SlicingTheorem → ∀ (P m : ℕ) (U W : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ), IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b → X.boundary = 0 → (∀ V, CompactlyContainedOpen V U → X.massOn V < ∞) → ∃ (A : ℝ → GeometricCurrentOn U (m + 1)) (g : ℝ → ℝ≥0∞), Measurable g ∧ (∀ t, IsRestriction X {x | x ∈ U ∧ d x < t} (A t)) ∧ (∀ t ∈ Ioo a b, (A t).boundary.massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * X.massOn W := by
+  intro hST P m U W X d L a b hU hW hd hab hX0 hXfin
+  -- Step 1: `M_V(∂X) = M_V(0) = 0`, so `X` satisfies the hypotheses of `SlicingTheorem`.
+  have hfin : ∀ V, CompactlyContainedOpen V U →
+      X.massOn V < ∞ ∧ X.boundary.massOn V < ∞ := by
+    intro V hV
+    have h0 : (0 : GeometricCurrentOn U m).massOn V = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, -, rfl⟩
+      simp
+    rw [hX0, h0]
+    exact ⟨hXfin V hV, ENNReal.zero_lt_top⟩
+  -- Step 2: the slices `S_t = ⟨X, d, t⟩` and the mass clause of 4.10 for `d`.
+  obtain ⟨S, hS, -, -, hSmass⟩ := hST P m U hU X hfin d L hd.lipschitzOnWith
+  -- Step 3: `A_t = X ⌞ {d < t}` with `∂A_t = S_t`.
+  choose A hAres hAbd using fun t =>
+    Submission.ind_pi_ss_cycle_slice_boundary P m U X d t (S t) hU hX0 (hS t)
+  -- Step 4: `R = X ⌞ {a < d < b}`, as the band is the sublevel set `{|d - c| < r}` of the
+  -- `L`-Lipschitz function `|d - c|`, `c = (a + b)/2`, `r = (b - a)/2`.
+  have hc : LipschitzWith L fun x => |d x - (a + b) / 2| := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    calc dist |d x - (a + b) / 2| |d y - (a + b) / 2|
+        = |(|d x - (a + b) / 2| - |d y - (a + b) / 2|)| := Real.dist_eq _ _
+      _ ≤ |(d x - (a + b) / 2) - (d y - (a + b) / 2)| := abs_abs_sub_abs_le_abs_sub _ _
+      _ = dist (d x) (d y) := by rw [sub_sub_sub_cancel_right, Real.dist_eq]
+      _ ≤ L * dist x y := hd.dist_le_mul x y
+  obtain ⟨S', hS', -⟩ := hST P m U hU X hfin (fun x => |d x - (a + b) / 2|) L hc.lipschitzOnWith
+  obtain ⟨R, hR, -⟩ := Submission.ind_pi_ss_cycle_slice_boundary P m U X
+    (fun x => |d x - (a + b) / 2|) ((b - a) / 2) (S' ((b - a) / 2)) hU hX0 (hS' _)
+  have hRband : IsRestriction X {x | x ∈ U ∧ a < d x ∧ d x < b} R := by
+    have hband : {x | x ∈ U ∧ a < d x ∧ d x < b} =
+        {x | x ∈ U ∧ |d x - (a + b) / 2| < (b - a) / 2} := by
+      ext x
+      simp only [mem_ofPred_eq, abs_sub_lt_iff]
+      constructor
+      · rintro ⟨hx, h₁, h₂⟩
+        exact ⟨hx, by linarith, by linarith⟩
+      · rintro ⟨hx, h₁, h₂⟩
+        exact ⟨hx, by linarith, by linarith⟩
+    rw [hband]
+    exact hR
+  -- Step 5: the mass clause of 4.10 on `W`, with `‖Dd‖ ≤ L` everywhere.
+  have hDd : ∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ d x‖₊ ≤ L :=
+    ae_of_all _ fun x _ => by
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact norm_fderiv_le_of_lipschitz ℝ hd
+  obtain ⟨g, hg, hgS, hgint⟩ :=
+    hSmass W hW.1 (subset_closure.trans hW.2.2) L hDd a b hab R hRband
+  -- Step 6: `M_W(∂A_t) = M_W(S_t) ≤ g(t)` and `∫⁻ g ≤ L · M_W(R) ≤ L · M_W(X)`.
+  refine ⟨A, g, hg, hAres, fun t ht => ?_, ?_⟩
+  · rw [hAbd t]
+    exact hgS t ht
+  · calc ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * R.massOn W := hgint
+      _ ≤ (L : ℝ≥0∞) * X.massOn W := by
+        gcongr
+        exact Submission.ind_pi_ss_restriction_massOn_le P (m + 1) U W _ X R hU hW hRband
+/-- Fatou selection of a good level (the "selection argument as in 6.7(2) of Ch. 2" in the proof
+of Simon Ch. 6, 8.2): if `∫⁻_{(a,b)} g_k ≤ C < ∞` for all `k` and `E` is countable, there are
+`γ ∈ (a, b) \ E`, a subsequence `σ` and `G < ∞` with `g_{σ(k)}(γ) ≤ G` for all `k`.  By Fatou,
+`∫⁻_{(a,b)} liminf_k g_k ≤ C`, so `liminf_k g_k(γ) < ∞` for some `γ ∈ (a, b) \ E` (`E` is
+Lebesgue-null); with `G = liminf_k g_k(γ) + 1`, `g_k(γ) < G` for infinitely many `k`. -/
+theorem Submission.ind_pi_ss_fatou_level_selection :
+    ∀ (g : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (C : ℝ≥0∞) (E : Set ℝ), a < b → (∀ k, Measurable (g k)) →
+      C < ∞ → (∀ k, ∫⁻ t in Ioo a b, g k t ≤ C) → E.Countable →
+      ∃ (γ : ℝ) (σ : ℕ → ℕ) (G : ℝ≥0∞), γ ∈ Ioo a b ∧ γ ∉ E ∧ StrictMono σ ∧ G < ∞ ∧
+        ∀ k, g (σ k) γ ≤ G := by
+  intro g a b C E hab hg hC hgC hE
+  -- Fatou: `F = liminf_k g_k` is measurable and `∫⁻_{(a,b)} F ≤ liminf_k ∫⁻_{(a,b)} g_k ≤ C`.
+  have hF : Measurable fun t => liminf (fun k => g k t) atTop := Measurable.liminf hg
+  have hFC : ∫⁻ t in Ioo a b, liminf (fun k => g k t) atTop ≤ C :=
+    (lintegral_liminf_le hg).trans (liminf_le_of_frequently_le' (Frequently.of_forall hgC))
+  -- For a.e. `t` w.r.t. `volume⌞(a, b)`: `F t < ∞`, `t ∉ E` (`E` is Lebesgue-null), `t ∈ (a, b)`.
+  have h₁ : ∀ᵐ t ∂(volume.restrict (Ioo a b)), liminf (fun k => g k t) atTop < ∞ :=
+    ae_lt_top hF (hFC.trans_lt hC).ne
+  have h₂ : ∀ᵐ t ∂(volume.restrict (Ioo a b)), t ∉ E :=
+    ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 (hE.measure_zero volume))
+  have h₃ : ∀ᵐ t ∂(volume.restrict (Ioo a b)), t ∈ Ioo a b := ae_restrict_mem measurableSet_Ioo
+  -- `volume (a, b) = b - a > 0`, so the a.e. filter is nontrivial and a good `γ` exists.
+  have hne : (ae (volume.restrict (Ioo a b))).NeBot := by
+    rw [ae_neBot, Ne, Measure.restrict_eq_zero, Real.volume_Ioo, ENNReal.ofReal_eq_zero, not_le]
+    exact sub_pos.2 hab
+  obtain ⟨γ, hγF, hγE, hγ⟩ := (h₁.and (h₂.and h₃)).exists
+  -- `G = F(γ) + 1 > liminf_k g_k(γ)`, so `g_k(γ) < G` frequently: extract `σ`.
+  have hG : liminf (fun k => g k γ) atTop < liminf (fun k => g k γ) atTop + 1 :=
+    ENNReal.lt_add_right hγF.ne one_ne_zero
+  obtain ⟨σ, hσ, hσG⟩ := extraction_of_frequently_atTop (frequently_lt_of_liminf_lt (h := hG))
+  exact ⟨γ, σ, _, hγ, hγE, hσ, ENNReal.add_lt_top.2 ⟨hγF, ENNReal.one_lt_top⟩,
+    fun k => (hσG k).le⟩
+
+/-- Simon Ch. 6, proof of 8.2, display (8) ("by 4.5(1) and a selection argument as in 6.7(2) of
+Ch. 2"): for cycles `X_k ⇀ X` with `sup_k M_W(X_k) < ∞` there are a level `γ ∈ (a, b)` and a
+subsequence `κ` such that the restrictions `R_k = X_{κ(k)} ⌞ {d < γ}` satisfy
+`M_W(R_k) ≤ M_W(X_{κ(k)})`, `sup_k M_W(∂R_k) < ∞` and `R_k(ω) → (X ⌞ {d < γ})(ω)` for
+`spt ω ⊆ W`. -/
+theorem Submission.ind_pi_good_slice_selection :
+    SlicingTheorem → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U →
+      ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P))
+        (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U →
+        (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U →
+        ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E,
+          ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k),
+            (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) →
+            IsRestriction X {x | x ∈ U ∧ φ x < s} R →
+            (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W →
+              Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧
+            (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K →
+              WeaklyConvergesOn Rj R)) →
+    ∀ (P m : ℕ) (U W : Set (Eucl P)) (Xk : ℕ → GeometricCurrentOn U (m + 1))
+      (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ),
+      IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b →
+      (∀ k, (Xk k).boundary = 0) →
+      (∀ k V, CompactlyContainedOpen V U → (Xk k).massOn V < ∞) →
+      (⨆ k, (Xk k).massOn W) < ∞ → WeaklyConvergesOn Xk X →
+      ∃ (γ : ℝ) (κ : ℕ → ℕ) (Rk : ℕ → GeometricCurrentOn U (m + 1)) (G : ℝ≥0∞),
+        γ ∈ Ioo a b ∧ StrictMono κ ∧ G < ∞ ∧
+        (∀ k, IsRestriction (Xk (κ k)) {x | x ∈ U ∧ d x < γ} (Rk k)) ∧
+        (∀ k, (Rk k).massOn W ≤ (Xk (κ k)).massOn W) ∧
+        (∀ k, (Rk k).boundary.massOn W ≤ G) ∧
+        ∀ R : GeometricCurrentOn U (m + 1), IsRestriction X {x | x ∈ U ∧ d x < γ} R →
+          ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ W →
+            Tendsto (fun k => Rk k ω) atTop (𝓝 (R ω)) := by
+  intro hSlice hRWL P m U W Xk X d L a b hU hW hd hab hcycle hmass hsup hconv
+  -- Steps 1–4 for each cycle `X_k`: restrictions `A k t` of `X_k` to `{d < t}` with
+  -- `M_W(∂(A k t)) ≤ g k t` for `t ∈ (a, b)` and `∫⁻_{(a,b)} g k ≤ L · M_W(X_k)`.
+  choose A g hg hA hAg hgi using fun k =>
+    Submission.ind_pi_ss_cycle_slice_family hSlice P m U W (Xk k) d L a b hU hW hd hab
+      (hcycle k) (hmass k)
+  -- Step 5: (RWL) with `φ := d` gives `ψ` and a countable exceptional set `E` of levels.
+  obtain ⟨ψ, E, hψ, hE, hlim⟩ := hRWL P (m + 1) U hU Xk X W d hconv hW.1
+    (subset_closure.trans hW.2.2) hsup hd.continuous.continuousOn
+  -- `∫⁻_{(a,b)} g (ψ k) ≤ L · M_W(X_{ψ k}) ≤ L · sup_j M_W(X_j) < ∞`.
+  have hgψ : ∀ k, ∫⁻ t in Ioo a b, g (ψ k) t ≤ (L : ℝ≥0∞) * ⨆ j, (Xk j).massOn W := fun k =>
+    (hgi (ψ k)).trans (mul_le_mul_right (le_iSup (fun j => (Xk j).massOn W) (ψ k)) _)
+  -- Steps 6–8: a level `γ ∈ (a, b) \ E` and a subsequence `σ` with `g (ψ (σ k)) γ ≤ G`.
+  obtain ⟨γ, σ, G, hγ, hγE, hσ, hG, hgG⟩ :=
+    Submission.ind_pi_ss_fatou_level_selection (fun k => g (ψ k)) a b
+      ((L : ℝ≥0∞) * ⨆ j, (Xk j).massOn W) E hab (fun k => hg (ψ k))
+      (ENNReal.mul_lt_top ENNReal.coe_lt_top hsup) hgψ hE
+  -- Step 9: `κ := ψ ∘ σ` and `R_k := A (κ k) γ`; convergence passes to the subsequence `σ`.
+  refine ⟨γ, ψ ∘ σ, fun k => A (ψ (σ k)) γ, G, hγ, hψ.comp hσ, hG, fun k => hA (ψ (σ k)) γ,
+    fun k => Submission.ind_pi_ss_restriction_massOn_le P (m + 1) U W _ _ _ hU hW
+      (hA (ψ (σ k)) γ), fun k => (hAg (ψ (σ k)) γ hγ).trans (hgG k), fun R hR ω hω => ?_⟩
+  exact ((hlim γ hγE (fun j => A (ψ j) γ) R (fun j => hA (ψ j) γ) hR).1 ω hω).comp
+    hσ.tendsto_atTop
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

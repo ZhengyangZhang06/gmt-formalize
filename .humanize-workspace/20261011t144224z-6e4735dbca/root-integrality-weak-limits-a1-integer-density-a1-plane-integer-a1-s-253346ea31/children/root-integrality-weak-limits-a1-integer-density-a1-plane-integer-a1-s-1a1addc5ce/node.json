@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.fatou_level_selection-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+  "depth": 5,
+  "title": "Fatou selection of a good level and a bounded subsequence",
+  "statement": "Let g_k : ℝ → [0, ∞] (k ∈ ℕ) be measurable functions, a < b real numbers, C ∈ [0, ∞] with C < ∞ and ∫⁻_{(a,b)} g_k(t) dt ≤ C for every k, and E ⊆ ℝ countable. Then there are γ ∈ (a, b) with γ ∉ E, a strictly increasing σ : ℕ → ℕ and G ∈ [0, ∞] with G < ∞ such that g_{σ(k)}(γ) ≤ G for every k.",
+  "lean_statement": "∀ (g : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (C : ℝ≥0∞) (E : Set ℝ), a < b → (∀ k, Measurable (g k)) → C < ∞ → (∀ k, ∫⁻ t in Ioo a b, g k t ≤ C) → E.Countable → ∃ (γ : ℝ) (σ : ℕ → ℕ) (G : ℝ≥0∞), γ ∈ Ioo a b ∧ γ ∉ E ∧ StrictMono σ ∧ G < ∞ ∧ ∀ k, g (σ k) γ ≤ G",
+  "lean_name": "ind_pi_ss_fatou_level_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce-a1"
+}
