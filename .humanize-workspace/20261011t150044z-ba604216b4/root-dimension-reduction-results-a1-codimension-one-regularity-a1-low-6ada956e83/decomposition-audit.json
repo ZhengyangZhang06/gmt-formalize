@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def approxTangentPlane",
+        "def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique",
+        "ae_imp_of_ae_restrict|ae_restrict_iff'|ae_restrict_mem",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_eq_volume",
+        "theorem hausdorffMeasure_image_le",
+        "image_of_continuousOn_injOn",
+        "theorem range_comp",
+        "le_mul_dist|toLinearMap_comp|theorem fderiv_comp|theorem isCompact_of_isClosed_isBounded",
+        "dpf_itt_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/independent-itt-audit-odjy7p0n/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/independent-itt-audit-odjy7p0n/Reuse.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-6ada956e83/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-6ada956e83/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-cd2837f661/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-922eb3137e/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-6af99da77d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-6d6197c93d/accepted-candidate.json",
+        "/tmp/independent-itt-audit-odjy7p0n/TypesAndAssembly.lean",
+        "/tmp/independent-itt-audit-odjy7p0n/Reuse.lean"
+      ],
+      "conclusion": "The split is appropriate. Project, Mathlib and SimonGMT revisions match the pins; consulted snapshot sources match the compiler sources. All four bare names uniquely identify comparator-accepted leaves with byte-identical frozen types, empty dependencies and matching handoffs. The prerequisite graph is acyclic. Fresh Lean checks independently elaborated every child contract before implementation and proved the exact selected parent from the four child contracts and its two existing dependency contracts. Separately, all four accepted proofs compiled against the frozen definitions. Both checks exited 0; reported axioms were only propext, Classical.choice and Quot.sound. Volume and derivative-coercion probes passed. No problematic matrix construction occurs. The assembly uses neither the selected parent nor its twin theorem. The supplied contract digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chosen_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree. The supplied hypothesis establishes the existential choice branch; choose_spec supplies its tangent-space property, and the pinned uniqueness theorem identifies it with Q without additional hypotheses. This is complete, non-circular, and supplies the parent's required identification."
+    },
+    {
+      "key": "image_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. Continuous injectivity gives Borel measurability; preimage invariance gives containment in U. Compact preimages follow from closedness and the antilipschitz boundedness estimate. The normalized Hausdorff Lipschitz bound then proves local finiteness. No openness, surjectivity or differentiability assumption is silently required."
+    },
+    {
+      "key": "composed_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type expresses all four prose conclusions. The proof establishes the Lipschitz constant, the positive lower constant m/(Λ′+1), differentiability and derivative injectivity by composition, and the range identity using the correct underlying linear maps. It covers Λ′=0 and requires no unstated measurability or regularity of B."
+    },
+    {
+      "key": "ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type correctly allow arbitrary parameter sets and predicates. The pinned ae_imp_of_ae_restrict requires neither to be measurable. The proof obtains null exceptional parameter sets, transfers nullity through Lipschitz maps using the nonzero Hausdorff normalization, covers every exceptional point, and uses Borel measurability of M for the final restriction equivalence. No injectivity, disjointness or image-containment hypothesis is missing."
+    }
+  ],
+  "required_changes": []
+}
