@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dimred_mbl_fnd|cmr_tdn|cmr_null_of_div_bound' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "trace_smulRight|intervalIntegral_integral_swap|integral_integral_swap|tendsto_measure_cthickening_of_isCompact|finite_cover_balls|exists_contDiff_support_eq_eq_one_iff|norm_integral_le_of_norm_le_const|continuous_fderiv|HasCompactSupport.fderiv|integral_add_left_eq_self|tendsto_integral_of_dominated_convergence|measure_ball_pos|measure_ball_lt_top|closure_eq_iInter_cthickening",
+        "AEStronglyMeasurable.(snd|fst|comp_snd|comp_fst)",
+        "git show fe723c8975487a9ebf5318ad9ab0cede92a5eb1e:GMT/Ch07/Submission.lean",
+        "git show 6625935760aa852ce62f825f5464380aa5d94c9f:GMT/Ch07/Submission.lean",
+        "git show 6c1beed6b7a07bb316d4759ef071c8c81b06ec7e:GMT/Ch07/Submission.lean",
+        "git show a74b428bb36948640a1ac200ad64946c36a93da3:GMT/Ch07/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tdn-independent-audit-695c8c7c/ReuseAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-5dd4fde4c2/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-5dd4fde4c2/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-b3432083f5/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-af5e2dc451/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-f9f7bc952a/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-7f3f68faf9/isolated-comparator-result.json",
+        "/tmp/tdn-independent-audit-695c8c7c/ReuseAndAssembly.lean"
+      ],
+      "conclusion": "The pinned revisions match the compiler environment; snapshot Contract.lean and Submission.lean match the workspace byte-for-byte. The project search found no relevant declarations. The inspected mathlib sources support the analytic steps. Each proposed bare name has exactly one accepted DAG owner, a passing comparator, and a byte-identical frozen type. Independently compiled all four types before declaring the children, then compiled their accepted proof bodies and an assembly proving the exact selected parent type. All five proofs use only propext, Classical.choice and Quot.sound. Relevant Euclidean, Haar-measure and finite-dimensional instances also compiled, including ball positivity in dimension zero. The split is appropriate: the sole child dependency is null_of_average_bound → null_set_cutoffs; the parent supplies Λ ≥ 0 and the small-radius choice. The handoff digest matches the requested binding."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "directional_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the prose. The admissible translated fields, rank-one trace identity, FTC and integrable majorant M‖z‖|h| justify Fubini and the bound; z = 0 is handled separately. No parent conclusion is assumed. The product-lifting citation should read AEStronglyMeasurable.comp_snd; this minor API-name slip leaves the complete mathematical argument intact."
+    },
+    {
+      "key": "ball_average_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type agree, including continuity, Λ ≥ 0, and the assumed translation bound. Positive finite ball volume normalizes the averaging kernel; the supplied product majorants justify splitting and Fubini. Translation invariance gives the second bound. No dependency on directional_bound is needed because its conclusion is an explicit hypothesis. The product-lifting citation is AEStronglyMeasurable.comp_fst, a nonblocking API-name correction."
+    },
+    {
+      "key": "null_set_cutoffs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type states exactly the requested cutoff properties. The finite bump-product construction proves smoothness, range bounds, equality on K and compact support. Shrinking closed thickenings give eventual vanishing off K and squeeze the integrals to zero; conversion from ENNReal is justified at the finite limit zero. Empty K and dimension zero cause no gap. This obligation is independent and non-circular."
+    },
+    {
+      "key": "null_of_average_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches the prose for arbitrary ν. Its declared dependency supplies every required cutoff property. Measurability of q⁻¹(K) and domination by |h| justify convergence to the restricted integral. Fixing ε and C before taking limits works for either sign of C; then arbitrary ε > 0 forces vanishing. The dependency is correctly directed and acyclic."
+    }
+  ],
+  "required_changes": []
+}
