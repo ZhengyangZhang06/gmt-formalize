@@ -1380,6 +1380,70 @@ theorem Submission.regcomp_integer_multiplicity_sub : ∀ (P n : ℕ) (U : Set (
       push_cast
       ring
 
+/-- **Simon 7.1.4**, competitor form.  A competitor `S` for `T₁` gives the competitor
+`S' = S − (T₁ − T)` for `T`, with `S' − T = S − T₁` and `∂S' = ∂T`; then
+`M_W(T₁) + M_W(T − T₁) ≤ M_W(T) ≤ M_W(S') ≤ M_W(S) + M_W(T − T₁)`, and `M_W(T − T₁) < ∞`
+cancels. -/
+theorem Submission.regcomp_minimizing_summand : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T T₁ : GeometricCurrentOn U n), IsOpen U → IsMinimizingIn T A → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity (T - T₁) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T₁.massOn W + (T - T₁).massOn W ≤ T.massOn W) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → (T - T₁).massOn W ≠ ∞) → IsMinimizingIn T₁ A := by
+  intro P n U A T T₁ hU hmin hT₁ _hT₂ hadd hfin
+  -- `ω ↦ −ω` preserves the admissible forms for `M_W`.
+  have hneg : ∀ (W : Set (Euclid P)) (ω : TestFormOn U n),
+      ω ∈ massAdmissibleOn U n W → -ω ∈ massAdmissibleOn U n W := fun W ω hω =>
+    ⟨by simpa only [Submodule.coe_neg, tsupport_neg] using hω.1, fun x => by
+      simpa only [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg] using hω.2 x⟩
+  -- `M_W(X − Y) ≤ M_W(X) + M_W(Y)`.
+  have hsub : ∀ (W : Set (Euclid P)) (X Y : GeometricCurrentOn U n),
+      (X - Y).massOn W ≤ X.massOn W + Y.massOn W := by
+    intro W X Y
+    apply sSup_le
+    rintro r ⟨ω, hω, rfl⟩
+    calc ENNReal.ofReal ((X - Y) ω) = ENNReal.ofReal (X ω + Y (-ω)) := by
+          rw [map_neg Y.toCurrent ω]; rfl
+      _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal (Y (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ X.massOn W + Y.massOn W := add_le_add (X.le_massOn hω) (Y.le_massOn (hneg W ω hω))
+  -- `M_W(X − Y) ≤ M_W(Y − X)`.
+  have hswap : ∀ (W : Set (Euclid P)) (X Y : GeometricCurrentOn U n),
+      (X - Y).massOn W ≤ (Y - X).massOn W := by
+    intro W X Y
+    apply sSup_le
+    rintro r ⟨ω, hω, rfl⟩
+    calc ENNReal.ofReal ((X - Y) ω) = ENNReal.ofReal ((Y - X) (-ω)) := by
+          congr 1
+          change X ω - Y ω = Y.toCurrent (-ω) - X.toCurrent (-ω)
+          rw [map_neg Y.toCurrent ω, map_neg X.toCurrent ω]
+          ring
+      _ ≤ (Y - X).massOn W := (Y - X).le_massOn (hneg W ω hω)
+  refine ⟨hT₁, fun W S hW hWU hS hbd hcpt hspt => ?_⟩
+  -- The competitor `S' = S − (T₁ − T)` for `T`.
+  have hIM : IsIntegerMultiplicity (S - (T₁ - T)) :=
+    Submission.regcomp_integer_multiplicity_sub P n U S (T₁ - T) hU hS
+      (Submission.regcomp_integer_multiplicity_sub P n U T₁ T hU hT₁ hmin.1)
+  have hdiff : S - (T₁ - T) - T = S - T₁ := by
+    ext ω
+    change S ω - (T₁ ω - T ω) - T ω = S ω - T₁ ω
+    ring
+  have hbd' : SameBoundary (S - (T₁ - T)) T := by
+    cases n with
+    | zero => trivial
+    | succ k =>
+      change S.boundary = T₁.boundary at hbd
+      change (S - (T₁ - T)).boundary = T.boundary
+      ext φ
+      have h := congrArg (fun R : GeometricCurrentOn U k => R φ) hbd
+      simp only [GeometricCurrentOn.boundary_apply] at h ⊢
+      change S _ - (T₁ _ - T _) = T _
+      rw [h]
+      ring
+  have hle : T.massOn W ≤ (S - (T₁ - T)).massOn W :=
+    hmin.2 W (S - (T₁ - T)) hW hWU hIM hbd' (by rw [hdiff]; exact hcpt)
+      (by rw [hdiff]; exact hspt)
+  have hchain : T₁.massOn W + (T - T₁).massOn W ≤ S.massOn W + (T - T₁).massOn W :=
+    calc T₁.massOn W + (T - T₁).massOn W ≤ T.massOn W := hadd W hW hWU
+      _ ≤ (S - (T₁ - T)).massOn W := hle
+      _ ≤ S.massOn W + (T₁ - T).massOn W := hsub W S (T₁ - T)
+      _ ≤ S.massOn W + (T - T₁).massOn W := add_le_add le_rfl (hswap W T₁ T)
+  exact (ENNReal.add_le_add_iff_right (hfin W hW hWU)).mp hchain
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
