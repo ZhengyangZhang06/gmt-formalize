@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "class HasOrthogonalProjection|ofCompleteSpace|def starProjection|starProjection_apply_mem|starProjection_eq",
+        "lt_of_mul_lt_mul_left|mul_inv_cancel₀",
+        "norm_smul|norm_of_nonneg",
+        "def GeometricCurrentOn\\.(support|zeroRegion|VanishesOn)|boundary_affinePushforward|exteriorDerivative_affinePullbackForm|def GeometricCurrentOn.restrictDomain|tsupport_comp_subset_preimage",
+        "idtp_tpf_bss_dilation_image_slab",
+        "python3 /tmp/bss_independent_audit_uosuuqpb/audit_metadata.py",
+        "python3 /tmp/bss_independent_audit_uosuuqpb/generate_checks.py",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/dtc_blowUp_algebra_NodeChallenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/idtp_tpf_bss_dilation_image_slab_NodeChallenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/idtp_tpf_blowUp_support_slab_NodeChallenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/NewChild.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/Assembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/EndToEnd.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bss_independent_audit_uosuuqpb/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/GroupWithZero/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/MulAction.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eb5594b08c/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eb5594b08c/decomposition-scope-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eb5594b08c/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/accepted-candidate.json",
+        "/tmp/bss_independent_audit_uosuuqpb/AcceptedSource.lean",
+        "/tmp/bss_independent_audit_uosuuqpb/audit_metadata.py",
+        "/tmp/bss_independent_audit_uosuuqpb/generate_checks.py",
+        "/tmp/bss_independent_audit_uosuuqpb/NewChild.lean",
+        "/tmp/bss_independent_audit_uosuuqpb/Assembly.lean",
+        "/tmp/bss_independent_audit_uosuuqpb/EndToEnd.lean",
+        "/tmp/bss_independent_audit_uosuuqpb/Instances.lean"
+      ],
+      "conclusion": "Verified project, mathlib and SimonGMT compatibility with the pinned snapshot. Contract.lean defines the stated dilation and blow-up; SimonGMT support and affine-boundary identities match the proof. Both child types pass lexical validation and elaborate independently in comparator scope. The new name has no reservation in the DAG or another node's artifacts; snapshot search found no declaration. The reused declaration has a byte-identical accepted frozen type, and its source hash matches the acceptance record. Its existing test-form dependency is retained, and adding the proposed children creates no dependency cycle. The split is appropriate: the selected proof base lacks the accepted support-transport theorem, while the other child isolates set-level scaling. The supplied assembly proves precisely the selected frozen parent type. Independent compilation of the accepted implementation, new child and parent reports only propext, Classical.choice and Quot.sound. Instance checks confirm that Q.starProjection is the ordinary continuous linear orthogonal projection, supplied by HasOrthogonalProjection.ofCompleteSpace."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse of accepted dtc_blowUp_algebra; its bare identifier and retained prerequisite are sound. Prose and Lean agree, including arbitrary U and all degrees. Independently checked each proof component: common pullback gives subtraction; test-form correspondence and nonzero λ⁻ⁿ give injectivity; both directions transport relatively compact open zero regions under the affine homeomorphism, yielding support equality; exterior differentiation commutes with affine pullback, giving the boundary identity. These arguments are complete and non-circular. Conjunct (iii) supplies exactly the selected parent's support-transport step."
+    },
+    {
+      "key": "dilation_image_slab",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare identifier and standalone one-line proposition match the prose exactly. Image membership supplies y ∈ S; positivity gives y − x = σu and dist y x = σ‖u‖ < σ. Applying flatness, linearity of starProjection and norm scaling gives σ‖u − Q.starProjection u‖ < σβ; cancellation yields the conclusion without any sign assumption on β. The projection instance exists for every finite-dimensional Q. The supplied steps compile directly, require no further proof planning, and use neither the parent nor this child circularly."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_support_slab-a1.dilation_image_slab-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_support_slab-a1",
+  "depth": 5,
+  "title": "Dilation rescales slab flatness: η_{x,σ} maps a set β-flat at scale σ about x onto a set β-flat at scale 1 about 0",
+  "statement": "For all P ∈ ℕ, every set S ⊆ ℝ^P = Euclid P, every x ∈ ℝ^P, all reals σ > 0 and β, and every linear subspace Q ⊆ ℝ^P (Submodule ℝ (Euclid P)), with p_Q = Q.starProjection the orthogonal projection onto Q and η_{x,σ}(y) = σ⁻¹(y − x) (Contract dilation x σ, y ↦ −(σ⁻¹ • x) + σ⁻¹ • y): if |(y − x) − p_Q(y − x)| < β·σ for every y ∈ S with |y − x| < σ (dist y x < σ), then every u ∈ η_{x,σ}(S) (dilation x σ '' S) with |u| < 1 satisfies |u − p_Q(u)| < β.",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (x : Euclid P) (σ β : ℝ), 0 < σ → ∀ (Q : Submodule ℝ (Euclid P)), (∀ y ∈ S, dist y x < σ → ‖(y - x) - Q.starProjection (y - x)‖ < β * σ) → ∀ u ∈ dilation x σ '' S, ‖u‖ < 1 → ‖u - Q.starProjection u‖ < β",
+  "lean_name": "idtp_tpf_bss_dilation_image_slab",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a89367cea1-a1"
+}
