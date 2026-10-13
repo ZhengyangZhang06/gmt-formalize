@@ -2532,6 +2532,85 @@ theorem Submission.dtc_mass_eq_measure : ∀ (P n : ℕ) (U W : Set (Euclid P)) 
       _ ≤ T.massOn W := iSup_le fun m => hcompact _
           ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
 
+/-- **Cauchy subsequence for the flat decomposition** (Simon Ch. 6, proof of 7.2,
+chapter-06.txt lines 2101–2118: "apply (1) with `ε = 1, 1/2, 1/4` etc. to extract a subsequence
+`{T_{j_r}}` … `T_{j_{r+1}} − T_{j_r} = ∂R_r + S_r` … `M(R_r) + M(S_r) ≤ 1/2^r`"; the errors `S`
+need not be integer multiplicity).  If for every `ε > 0` a finite `𝒬` gives decompositions
+`X_j − Q − S = ∂R` with `Q ∈ 𝒬`, `R` integer multiplicity, `spt R ⊆ L` and `M(R) + M(S) ≤ ε`,
+then some subsequence has `X_{φ(r+1)} − X_{φ(r)} − S = ∂R` of the same kind with
+`M(R) + M(S) ≤ 2^{-r}`.  For the `2^{-(r+1)}`-net `𝒬_r` every infinite index set contains an
+infinite fibre of `j ↦ Q_r(j)`; for `j, l` in it, `R_{r,j} − R_{r,l}` and `S_{r,j} − S_{r,l}`
+decompose `X_j − X_l` (`M(A − B) ≤ M(A) + M(B)`, `spt (R_{r,j} − R_{r,l}) ⊆ L`).  The diagonal
+lemma `cmc_fc_cs_diagonal_subseq` then extracts `φ`. -/
+theorem Submission.dtc_bc_lc_fd_cauchy_subseq : ∀ (P m : ℕ) (L : Set (Euclid P)) (X : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact L → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X j - Q - S = R.boundary ∧ R.mass + S.mass ≤ ε) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X (φ (r + 1)) - X (φ r) - S = R.boundary ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+  intro P m L X hL hnet
+  -- the contract's difference acts pointwise
+  have hsub : ∀ {k : ℕ} (A B : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (ω : TestFormOn (univ : Set (Euclid P)) k), (A - B) ω = A ω - B ω := fun _ _ _ => rfl
+  -- Step 4(d): `M(A − B) ≤ M(A) + M(B)`, since `−ω` is admissible along with `ω`
+  have hmass : ∀ {k : ℕ} (A B : GeometricCurrentOn (univ : Set (Euclid P)) k),
+      (A - B).mass ≤ A.mass + B.mass := by
+    intro k A B
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    have hω' : -ω ∈ massAdmissibleOn (univ : Set (Euclid P)) k univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      change covectorEuclideanNorm (-(ω : DifferentialForm (Euclid P) k) x) ≤ 1
+      rw [covectorEuclideanNorm_neg]
+      exact hω.2 x
+    calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by
+          rw [hsub, sub_eq_add_neg]
+          congr 2
+          exact (map_neg B.toCurrent ω).symm
+      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ A.mass + B.mass := add_le_add (A.le_massOn hω) (B.le_massOn hω')
+  -- Step 1: `2^{-(r+1)}`-nets `𝒬_r` and decompositions `X_j − Q_r(j) − S_{r,j} = ∂R_{r,j}`
+  choose 𝒬 h𝒬 hdec using fun r : ℕ =>
+    hnet ((2⁻¹ : ℝ≥0∞) ^ (r + 1)) (ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) _)
+  choose Q hQ R S hR hRL hXRS hRS using hdec
+  -- Step 5: the diagonal lemma for the relation `C(r, j, l)` of step 2
+  refine Submission.cmc_fc_cs_diagonal_subseq (fun r j l =>
+    ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2))
+      (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)),
+      IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X j - X l - S = R.boundary ∧
+        R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) fun r I hI => ?_
+  -- Step 3: some fibre `J = {j ∈ I | Q_r(j) = Q₀}` over the finite net `𝒬_r` is infinite
+  obtain ⟨Q₀, -, hJ⟩ : ∃ Q₀ ∈ 𝒬 r, {j ∈ I | Q r j = Q₀}.Infinite := by
+    by_contra hcon
+    exact hI (((h𝒬 r).biUnion fun Q₀ hQ₀ =>
+      Set.not_infinite.1 fun h => hcon ⟨Q₀, hQ₀, h⟩).subset
+        fun j hj => Set.mem_biUnion (hQ r j) ⟨hj, rfl⟩)
+  refine ⟨{j ∈ I | Q r j = Q₀}, sep_subset _ _, hJ, ?_⟩
+  -- Step 4: for `j, l ∈ J` take `R_{r,j} − R_{r,l}` and `S_{r,j} − S_{r,l}`
+  rintro j ⟨-, hj⟩ l ⟨-, hl⟩
+  refine ⟨R r j - R r l, S r j - S r l, ?_, ?_, ?_, ?_⟩
+  · -- (a) integer multiplicity, by (IC)(c)
+    exact Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 2) univ (R r j) (R r l)
+      isOpen_univ (hR r j) (hR r l)
+  · -- (c) `spt (R_{r,j} − R_{r,l}) ⊆ L`: both vanish on forms supported away from `L`
+    refine (Submission.rsd_cmr_support_subset_of_vanish P (m + 2) univ L (R r j - R r l)
+      isOpen_univ hL (subset_univ L) fun ω hω => ?_).1
+    rw [hsub, Submission.dtc_vanish_off_support P (m + 2) univ (R r j) ω
+      (hω.mono_right (hRL r j)), Submission.dtc_vanish_off_support P (m + 2) univ (R r l) ω
+      (hω.mono_right (hRL r l)), sub_zero]
+  · -- (b) subtract the two decompositions, using `Q_r(j) = Q₀ = Q_r(l)`
+    ext ω
+    have h₁ := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) => T ω)
+      (hXRS r j)
+    have h₂ := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) => T ω)
+      (hXRS r l)
+    simp only [hsub, GeometricCurrentOn.boundary_apply, hj, hl] at h₁ h₂ ⊢
+    linarith
+  · -- (d) `M(R) + M(S) ≤ 2 · 2^{-(r+1)} = 2^{-r}`
+    calc (R r j - R r l).mass + (S r j - S r l).mass
+        ≤ ((R r j).mass + (R r l).mass) + ((S r j).mass + (S r l).mass) :=
+          add_le_add (hmass _ _) (hmass _ _)
+      _ = ((R r j).mass + (S r j).mass) + ((R r l).mass + (S r l).mass) :=
+          add_add_add_comm _ _ _ _
+      _ ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) + (2⁻¹ : ℝ≥0∞) ^ (r + 1) := add_le_add (hRS r j) (hRS r l)
+      _ = (2⁻¹ : ℝ≥0∞) ^ r := by
+          rw [pow_succ, ← mul_add, ENNReal.inv_two_add_inv_two, mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
