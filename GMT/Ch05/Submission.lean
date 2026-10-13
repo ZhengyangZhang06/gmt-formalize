@@ -458,6 +458,81 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Interpolation bound for the derivative (step 3 of `dohr_eb_difference_quotient_limit`): if `h`
+is differentiable on `B_{2r}(x)`, `Dh` is `α`-Hölder there with constant `L ≥ 0` and `‖h‖ ≤ S` on
+`B_{2r}(x)`, then `‖Dh(y)‖ ≤ 2S/t + L t^α` for all `y ∈ B_r(x)` and `0 < t ≤ r`.
+For `v ≠ 0` put `u = (t/‖v‖) v` and `z = y + u`; the mean value inequality on `[y, z] ⊆ B_{2r}(x)`
+with the fixed map `Dh(y)` gives `‖h(z) − h(y) − Dh(y)u‖ ≤ L t^α · t`, so `‖Dh(y)u‖ ≤ 2S + L t^α t`,
+and rescaling by `‖v‖/t` gives `‖Dh(y)v‖ ≤ (2S/t + L t^α)‖v‖`. -/
+theorem dohr_eb_dql_interpolation_fderiv_bound : ∀ (n ℓ : ℕ) (h : Rn n → Rn ℓ) (x : Rn n) (r t α L S : ℝ), 0 < t → t ≤ r → 0 < α → 0 ≤ L → (∀ y ∈ closedBall x (2 * r), DifferentiableAt ℝ h y) → (∀ y ∈ closedBall x (2 * r), ∀ y' ∈ closedBall x (2 * r), ‖fderiv ℝ h y - fderiv ℝ h y'‖ ≤ L * ‖y - y'‖ ^ α) → (∀ y ∈ closedBall x (2 * r), ‖h y‖ ≤ S) → ∀ y ∈ closedBall x r, ‖fderiv ℝ h y‖ ≤ 2 * S / t + L * t ^ α := by
+  intro n ℓ h x r t α L S ht htr hα hL hdiff hhol hS y hy
+  -- Step 1: `S ≥ 0`, the bound is nonnegative, and it suffices to bound `‖Dh(y)v‖` for `v ≠ 0`.
+  have hr : 0 < r := ht.trans_le htr
+  have hxB : x ∈ closedBall x (2 * r) := mem_closedBall_self (by linarith)
+  have hS0 : 0 ≤ S := (norm_nonneg _).trans (hS x hxB)
+  have hyB : y ∈ closedBall x (2 * r) := closedBall_subset_closedBall (by linarith) hy
+  have hbound0 : 0 ≤ 2 * S / t + L * t ^ α := by positivity
+  refine ContinuousLinearMap.opNorm_le_bound _ hbound0 (fun v => ?_)
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  have hvpos : 0 < ‖v‖ := norm_pos_iff.2 hv
+  -- Step 2: the test point `z = y + u`, `u = (t/‖v‖) v`, and the segment `[y, z]`.
+  set c : ℝ := t / ‖v‖ with hc
+  have hcpos : 0 < c := div_pos ht hvpos
+  set u : Rn n := c • v with hu
+  have hunorm : ‖u‖ = t := by
+    rw [hu, norm_smul, Real.norm_eq_abs, abs_of_pos hcpos, hc, div_mul_cancel₀ _ hvpos.ne']
+  set z := y + u with hz
+  have hzy : z - y = u := by rw [hz]; abel
+  have hzB : z ∈ closedBall x (2 * r) := by
+    rw [mem_closedBall] at hy ⊢
+    calc dist z x = ‖(y - x) + u‖ := by rw [dist_eq_norm]; congr 1; rw [hz]; abel
+      _ ≤ ‖y - x‖ + ‖u‖ := norm_add_le _ _
+      _ ≤ r + t := by rw [← dist_eq_norm, hunorm]; linarith
+      _ ≤ 2 * r := by linarith
+  have hseg : segment ℝ y z ⊆ closedBall x (2 * r) :=
+    (convex_closedBall x (2 * r)).segment_subset hyB hzB
+  have hseg' : segment ℝ y z ⊆ closedBall y t := by
+    refine (convex_closedBall y t).segment_subset (mem_closedBall_self ht.le) ?_
+    rw [mem_closedBall, dist_eq_norm, hzy, hunorm]
+  -- Steps 3–4: `‖Dh(w) − Dh(y)‖ ≤ L t^α` on `[y, z]`, and the mean value inequality.
+  have hmvt : ‖h z - h y - fderiv ℝ h y (z - y)‖ ≤ (L * t ^ α) * ‖z - y‖ := by
+    refine (convex_segment y z).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw => hdiff w (hseg hw)) (fun w hw => ?_) (left_mem_segment ℝ y z)
+      (right_mem_segment ℝ y z)
+    have hwy : ‖w - y‖ ≤ t := by
+      have := hseg' hw
+      rwa [mem_closedBall, dist_eq_norm] at this
+    calc ‖fderiv ℝ h w - fderiv ℝ h y‖ ≤ L * ‖w - y‖ ^ α := hhol w (hseg hw) y hyB
+      _ ≤ L * t ^ α := by
+        gcongr
+  rw [hzy, hunorm] at hmvt
+  -- Step 5: `‖Dh(y)u‖ ≤ 2S + L t^α t`.
+  have hhzy : ‖h z - h y‖ ≤ 2 * S := by
+    calc ‖h z - h y‖ ≤ ‖h z‖ + ‖h y‖ := norm_sub_le _ _
+      _ ≤ S + S := add_le_add (hS z hzB) (hS y hyB)
+      _ = 2 * S := by ring
+  have hfu : ‖fderiv ℝ h y u‖ ≤ L * t ^ α * t + 2 * S := by
+    have : fderiv ℝ h y u = (h z - h y) - (h z - h y - fderiv ℝ h y u) := by abel
+    rw [this]
+    calc ‖(h z - h y) - (h z - h y - fderiv ℝ h y u)‖
+        ≤ ‖h z - h y‖ + ‖h z - h y - fderiv ℝ h y u‖ := norm_sub_le _ _
+      _ ≤ 2 * S + L * t ^ α * t := add_le_add hhzy hmvt
+      _ = L * t ^ α * t + 2 * S := by ring
+  -- Step 6: rescale by `c = t/‖v‖`.
+  have hfu' : ‖fderiv ℝ h y u‖ = c * ‖fderiv ℝ h y v‖ := by
+    rw [hu, map_smul, norm_smul, Real.norm_eq_abs, abs_of_pos hcpos]
+  rw [hfu'] at hfu
+  have key : ‖fderiv ℝ h y v‖ ≤ (L * t ^ α * t + 2 * S) / c := by
+    rw [le_div_iff₀ hcpos]; linarith
+  calc ‖fderiv ℝ h y v‖ ≤ (L * t ^ α * t + 2 * S) / c := key
+    _ = (2 * S / t + L * t ^ α) * ‖v‖ := by
+      rw [hc]; field_simp; ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
