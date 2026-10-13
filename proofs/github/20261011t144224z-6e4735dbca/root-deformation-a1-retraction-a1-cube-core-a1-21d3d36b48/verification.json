@@ -1,0 +1,23 @@
+{
+  "node_id": "root.deformation-a1.retraction-a1.cube_core-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2515",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "8d2377f428a0ef94db24f2dd5ab9ade9525be044",
+  "integrated_commit": "",
+  "proof_base_commit": "1c7e200dff092722755720170476c45d64949d57",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.retraction-a1",
+  "requires": [
+    "root.deformation-a1.retraction-a1.cube_core-a1.lip_at_comp-a1",
+    "root.deformation-a1.retraction-a1.cube_core-a1.lip_at_union-a1",
+    "root.deformation-a1.retraction-a1.cube_core-a1.skeleton_facts-a1",
+    "root.deformation-a1.retraction-a1.cube_core-a1.similarity_bound-a1",
+    "root.deformation-a1.retraction-a1.cube_core-a1.radial_map-a1",
+    "root.deformation-a1.retraction-a1.cube_core-a1.construction-a1",
+    "root.deformation-a1.retraction-a1.cube_core-a1.pointwise_lip-a1"
+  ]
+}
