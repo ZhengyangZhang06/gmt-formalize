@@ -2225,6 +2225,75 @@ theorem allard52_am_cutoff_limit : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (
     exact hann.trans (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right
       (Real.exp_le_exp.2 (by linarith)) (sub_nonneg.2 hmono)))
 
+/-- **Simon Ch. 4, 4.1–4.9 with the conical term (annular monotonicity; Ch. 5, 2.4).**  Let
+`1 ≤ n < p`, let `V` have generalized mean curvature `H` in the open set `U`, let `R > 0` with
+`B_R(y) ⊆ U`, and assume that `μ_V`-a.e. on `B̆_R(y)` the tangent projection `p_x` is the orthogonal
+projection onto an `n`-plane, that `x ↦ p_x` is a.e. strongly measurable on `B̆_R(y)`, `0 < Λ ≤ 1`
+and `(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ_V)^{1/p} ≤ κΛ` with `κ = (p − n)/(4p)`.  Then there is `F` with
+`e^{−Λ} ≤ F ≤ e^Λ` and `|F(r) − 1| ≤ Λ (r/R)^{1−n/p}` on `(0, R)` such that
+`Φ(r) = F(r) r⁻ⁿ μ_V(B_r(y)) + F(r) − 1` is nondecreasing on `(0, R)`,
+`∫_{B_r(y) \ B_s(y)} |x − y − p_x(x − y)|² / |x − y|^{n+2} dμ_V ≤ e^Λ (Φ(r) − Φ(s))`, and the
+density `Θⁿ(μ_V, y) = t` exists with `ω_n t ≤ Φ(r)` for every `r ∈ (0, R)`.
+Proof: `μ_V(B_R(y)) < ∞` and `H ∈ L¹(μ_V⌞B_R(y))` because `B_R(y) ⊆ U` is compact.  The conical
+weight `ν(x) = |x − y − p_x(x − y)|² / |x − y|²` is a.e. strongly measurable on `B̆_R(y)`, and
+`0 ≤ ν ≤ 1` there since `v − p_P v = p_{P^⊥} v`.  The radial first-variation identity
+`allard52_am_radial_identity` is then the hypothesis of the cutoff limit
+`allard52_am_cutoff_limit` for `μ = μ_V` and `w = ν`, which gives (i) and (ii) because
+`ν(x) |x − y|⁻ⁿ = |x − y − p_x(x − y)|² / |x − y|^{n+2}`; `allard52_am_center_density` with
+`α = 1 − n/p > 0` gives (iii). -/
+theorem allard52_annular_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R Λ : ℝ), 0 < R → closedBall y R ⊆ U → (∀ᵐ x ∂V.weight, x ∈ ball y R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → AEStronglyMeasurable (fun x => V.tangentProj x) (V.weight.restrict (ball y R)) → 0 < Λ → Λ ≤ 1 → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ F : ℝ → ℝ, (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p)) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (V.weight (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1 ∧ ∫⁻ x in closedBall y r \ closedBall y s, ENNReal.ofReal (‖x - y - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (Real.exp Λ * ((F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1) - (F s * (s ^ n)⁻¹ * (V.weight (closedBall y s)).toReal + F s - 1)))) ∧ ∃ t : ℝ, 0 ≤ t ∧ V.HasDensity y t ∧ ∀ r ∈ Ioo 0 R, unitBallVolume n * t ≤ F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1 := by
+  intro n ℓ hn p hp U _hU V H hH y R Λ hR hBR hrank hmeas hΛ hΛ1 hsmall
+  -- Step 0(a): `μ_V(B_R(y)) < ∞`, since `B_R(y)` is a compact subset of `U` and `θ` is integrable
+  -- on `M ∩ B_R(y)`.
+  have hfin : V.weight (closedBall y R) < ⊤ := by
+    rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+    exact (V.integrableOn_mult _ (isCompact_closedBall y R) hBR).setLIntegral_lt_top
+  -- Step 0(b): `H` is `μ_V`-integrable on the compact set `B_R(y) ⊆ U`.
+  have hHint : IntegrableOn H (closedBall y R) V.weight :=
+    hH.1.integrableOn_compact_subset hBR (isCompact_closedBall y R)
+  -- The conical weight `ν(x) = |x − y − p_x(x − y)|² / |x − y|²` (with `ν(y) = 0`).
+  set w : Amb n ℓ → ℝ := fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2 with hw
+  -- Step 0(e): `ν` is a.e. strongly measurable on `B̆_R(y)`, because `x ↦ p_x` is.
+  have hwm : AEStronglyMeasurable w (V.weight.restrict (ball y R)) := by
+    have hd : AEStronglyMeasurable (fun x : Amb n ℓ => x - y) (V.weight.restrict (ball y R)) :=
+      (continuous_sub_right y).aestronglyMeasurable
+    have hpx : AEStronglyMeasurable (fun x => V.tangentProj x (x - y))
+        (V.weight.restrict (ball y R)) :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (A : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ) => A v)
+        isBoundedBilinearMap_apply.continuous hmeas hd
+    exact ((hd.sub hpx).norm.pow 2).div₀ (hd.norm.pow 2)
+  -- Step 0(d): `0 ≤ ν ≤ 1` a.e. on `B̆_R(y)`: where `p_x = p_P`, `v − p_P v = p_{P^⊥} v` has
+  -- `|p_{P^⊥} v| ≤ |v|`.
+  have hw01 : ∀ᵐ x ∂V.weight, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1 := by
+    filter_upwards [hrank] with x hx hxB
+    obtain ⟨P, -, hP⟩ := hx hxB
+    have hle : ‖(x - y) - V.tangentProj x (x - y)‖ ≤ ‖x - y‖ := by
+      rw [hP, ← Submodule.starProjection_orthogonal_val]
+      exact Pᗮ.norm_starProjection_apply_le _
+    refine ⟨by positivity, div_le_one_of_le₀ ?_ (by positivity)⟩
+    exact pow_le_pow_left₀ (norm_nonneg _) hle 2
+  -- Steps 1–8: the cutoff limit, fed with the radial first-variation identity of step 2.
+  obtain ⟨F, hF, hΦ⟩ := Submission.allard52_am_cutoff_limit n ℓ hn p hp V.weight H w y R Λ hR hΛ
+    hΛ1 hfin hHint hsmall hwm hw01
+    (Submission.allard52_am_radial_identity n ℓ U V H hH y R hBR hrank)
+  -- Step 9: the density at the centre, with the decay exponent `α = 1 − n/p > 0`.
+  have hα : 0 < 1 - (n : ℝ) / p := by
+    have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+    rw [sub_pos, div_lt_one hp0]
+    exact hp
+  obtain ⟨t, ht0, hdens, htΦ⟩ := Submission.allard52_am_center_density n ℓ V.weight y F R Λ
+    (1 - (n : ℝ) / p) hR hα hfin hF fun s r hs hsr hr => (hΦ s r hs hsr hr).1
+  refine ⟨F, hF, fun s r hs hsr hr => ⟨(hΦ s r hs hsr hr).1, ?_⟩, t, ht0, hdens, htΦ⟩
+  -- Step 8: the integrands agree, `ν(x) |x − y|⁻ⁿ = |x − y − p_x(x − y)|² / |x − y|^{n+2}`
+  -- (both sides vanish at `x = y`).
+  have hg : ∀ x, ‖x - y - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) =
+      w x / ‖x - y‖ ^ n := fun x => by
+    rw [hw, div_div, ← pow_add, add_comm 2 n]
+  simp_rw [hg]
+  exact (hΦ s r hs hsr hr).2
+
 end Submission
 
 end GMT.Ch05
