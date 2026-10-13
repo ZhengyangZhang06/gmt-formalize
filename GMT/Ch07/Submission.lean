@@ -710,6 +710,21 @@ theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ)
   -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
   rw [hdecomp, map_sum]
   simp
+/-- **Simon 6.3.1, Ch. 3 Remark 1.5(1)**: for `Hⁿ`-a.e. `x ∈ M`, the orientation `ξ(x)` of an
+integer multiplicity triple `(M, θ, ξ)` orients the chosen approximate tangent plane `TₓM`.
+`R.orients` gives, a.e. on `M`, an approximate tangent plane `Q` at `x` oriented by `ξ(x)`; the
+chosen witness `approxTangentPlane n M x` is then `Q`, approximate tangent planes being unique. -/
+theorem Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), IsUnitOrientationOf (R.orient x) (approxTangentPlane n R.carrier x) := by
+  intro P n U R
+  filter_upwards [R.orients] with x hx
+  obtain ⟨Q, hQ, hξ⟩ := hx
+  -- the chosen witness of `∃ Q', HasApproximateTangentSpaceAt n M x Q'` is `Q`
+  have h : ∃ Q', HasApproximateTangentSpaceAt n R.carrier x Q' := ⟨Q, hQ⟩
+  have hT : approxTangentPlane n R.carrier x = Q := by
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec.unique hQ
+  rw [hT]
+  exact hξ
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
