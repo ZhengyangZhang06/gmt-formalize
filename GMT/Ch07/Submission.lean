@@ -457,7 +457,7 @@ basis `σ = (σ₁, …, σₙ)`, so that `(ν, σ₁, …, σₙ)` is an orthon
 count is `dim (ℝν) + dim (ν^⊥ ∩ Q) = dim Q`. -/
 theorem Submission.dor_lmbsf_io_adapted_frame : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), Module.finrank ℝ Q = n + 1 → ν ∈ Q → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Q ⊓ (ℝ ∙ ν)ᗮ ∧ Orthonormal ℝ (Fin.cons ν σ : Fin (n + 1) → Euclid P) ∧ (∀ i, σ i ∈ Q) ∧ ∀ i, inner ℝ ν (σ i) = 0 := by
   intro P n Q ν hQ hνQ hν
-  set Q' : Submodule ℝ (Euclid P) := Q ⊓ (ℝ ∙ ν)ᗮ with hQ'def
+  set Q' : Submodule ℝ (Euclid P) := Q ⊓ (ℝ ∙ ν)ᗮ
   have hν0 : ν ≠ 0 := by
     intro h; rw [h, norm_zero] at hν; exact zero_ne_one hν
   have hle : (ℝ ∙ ν) ≤ Q := (Submodule.span_singleton_le_iff_mem ν Q).2 hνQ
