@@ -1229,6 +1229,79 @@ theorem Submission.slicing_im_creg_box_coarea : ∀ (P m : ℕ) (Φ : Eucl (m + 
   by_cases hy : y ∈ B ∩ χ ⁻¹' S
   · rw [indicator_of_mem hy, indicator_of_mem hy, hJ y hy]
   · rw [indicator_of_notMem hy, indicator_of_notMem hy]
+/-- Local-to-global gluing of co-area identities through an injective continuous chart (used for
+the co-area formula of Simon Ch. 6, Lemma 4.1, p. 153): if every point of `Ω ∩ Φ⁻¹(W)` has an open
+neighbourhood `O` such that for all Borel `S ⊆ O ∩ Ω ∩ Φ⁻¹(W)` the slice function
+`t ↦ ∫_{Φ(S) ∩ f⁻¹{t}} g dν` is a.e.-measurable and
+`∫ ∫_{Φ(S) ∩ f⁻¹{t}} g dν dt = ∫_{Φ(S)} J g dμ`, then the same holds with `Φ(S)` replaced by `W`
+(Lindelöf, disjointification, Lusin–Souslin and countable additivity). -/
+theorem Submission.slicing_im_creg_local_to_global : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (W : Set (Eucl P)) (f : Eucl P → ℝ) (J g : Eucl P → ℝ≥0∞) (μ ν : Measure (Eucl P)), IsOpen Ω → Continuous Φ → InjOn Φ Ω → Measurable f → MeasurableSet W → W ⊆ Φ '' Ω → (∀ w₀ ∈ Ω, Φ w₀ ∈ W → ∃ O : Set (Eucl n), IsOpen O ∧ w₀ ∈ O ∧ ∀ S : Set (Eucl n), MeasurableSet S → S ⊆ O ∩ (Ω ∩ Φ ⁻¹' W) → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in Φ '' S, J x * g x ∂μ) → AEMeasurable (fun t : ℝ => ∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in W, J x * g x ∂μ := by
+  intro P n Φ Ω W f J g μ ν hΩ hΦ hinj hf hW hWΦ hloc
+  -- Step 1: `E = Ω ∩ Φ⁻¹(W)` is Borel and `Φ(E) = W`.
+  have hEm : MeasurableSet (Ω ∩ Φ ⁻¹' W) := hΩ.measurableSet.inter (hΦ.measurable hW)
+  have hΦE : Φ '' (Ω ∩ Φ ⁻¹' W) = W := by
+    refine Subset.antisymm (image_subset_iff.2 inter_subset_right) fun x hx => ?_
+    obtain ⟨w, hwΩ, rfl⟩ := hWΦ hx
+    exact ⟨w, ⟨hwΩ, hx⟩, rfl⟩
+  -- Step 2: an open `O w` for every `w` (empty off `E`) such that the identity holds on every
+  -- Borel `S ⊆ O w ∩ E`; for `w ∉ E` only `S = ∅` occurs, where both sides vanish.
+  have hloc' : ∀ w : Eucl n, ∃ O : Set (Eucl n), IsOpen O ∧ (w ∈ Ω ∩ Φ ⁻¹' W → w ∈ O) ∧
+      ∀ S : Set (Eucl n), MeasurableSet S → S ⊆ O ∩ (Ω ∩ Φ ⁻¹' W) →
+        AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧
+        ∫⁻ t, (∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) =
+          ∫⁻ x in Φ '' S, J x * g x ∂μ := by
+    intro w
+    by_cases hw : w ∈ Ω ∩ Φ ⁻¹' W
+    · obtain ⟨O, hO, hwO, hS⟩ := hloc w hw.1 hw.2
+      exact ⟨O, hO, fun _ => hwO, hS⟩
+    · refine ⟨∅, isOpen_empty, fun h => absurd h hw, fun S _ hS => ?_⟩
+      rw [empty_inter, subset_empty_iff] at hS
+      subst hS
+      simp
+  choose O hO hwO hOS using hloc'
+  -- Step 3: Lindelöf: `E ⊆ ⋃ w, O w` is covered by countably many `O (e k)`.
+  obtain ⟨T, hTc, hTO⟩ := TopologicalSpace.isOpen_iUnion_countable O hO
+  obtain ⟨e, hTe⟩ := Set.countable_iff_exists_subset_range.1 hTc
+  obtain ⟨A, hA⟩ : ∃ A : ℕ → Set (Eucl n), ∀ k, A k = (Ω ∩ Φ ⁻¹' W) ∩ O (e k) :=
+    ⟨_, fun _ => rfl⟩
+  have hAm : ∀ k, MeasurableSet (A k) := fun k => by
+    rw [hA k]
+    exact hEm.inter (hO (e k)).measurableSet
+  have hAU : ⋃ k, A k = Ω ∩ Φ ⁻¹' W := by
+    refine Subset.antisymm (iUnion_subset fun k => (hA k).symm ▸ inter_subset_left) fun w hw => ?_
+    have hwT : w ∈ ⋃ i ∈ T, O i := by
+      rw [hTO]
+      exact mem_iUnion.2 ⟨w, hwO w hw⟩
+    obtain ⟨i, hiT, hwi⟩ := mem_iUnion₂.1 hwT
+    obtain ⟨k, rfl⟩ := hTe hiT
+    exact mem_iUnion.2 ⟨k, (hA k).symm ▸ ⟨hw, hwi⟩⟩
+  -- Step 4: disjointification `D k = disjointed A k`; each `D k ⊆ O (e k) ∩ E` is Borel.
+  have hDm : ∀ k, MeasurableSet (disjointed A k) := MeasurableSet.disjointed hAm
+  have hDE : ∀ k, disjointed A k ⊆ O (e k) ∩ (Ω ∩ Φ ⁻¹' W) := fun k w hw => by
+    have h := disjointed_subset A k hw
+    rw [hA k] at h
+    exact ⟨h.2, h.1⟩
+  have hDΩ : ∀ k, disjointed A k ⊆ Ω := fun k =>
+    (hDE k).trans (inter_subset_right.trans inter_subset_left)
+  have hDU : ⋃ k, disjointed A k = Ω ∩ Φ ⁻¹' W := by rw [iUnion_disjointed, hAU]
+  have hLP := fun k => hOS (e k) (disjointed A k) (hDm k) (hDE k)
+  -- Step 5: the images `Φ(D k)` are Borel (Lusin–Souslin), pairwise disjoint and cover `W`.
+  have hWm : ∀ k, MeasurableSet (Φ '' disjointed A k) := fun k =>
+    (hDm k).image_of_continuousOn_injOn hΦ.continuousOn (hinj.mono (hDΩ k))
+  have hWd : Pairwise (Function.onFun Disjoint fun k => Φ '' disjointed A k) := fun i j hij =>
+    Disjoint.image (disjoint_disjointed A hij) hinj (hDΩ i) (hDΩ j)
+  have hWU : ⋃ k, Φ '' disjointed A k = W := by rw [← image_iUnion, hDU, hΦE]
+  -- Step 6: countable additivity on every slice `W ∩ f⁻¹{t} = ⋃ k, Φ(D k) ∩ f⁻¹{t}`.
+  have hslice : (fun t : ℝ => ∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂ν) =
+      fun t => ∑' k, ∫⁻ x in Φ '' disjointed A k ∩ f ⁻¹' {t}, g x ∂ν := by
+    funext t
+    rw [← hWU, iUnion_inter]
+    exact lintegral_iUnion (fun k => (hWm k).inter (hf (measurableSet_singleton t)))
+      (fun i j hij => (hWd hij).mono inter_subset_left inter_subset_left) _
+  -- Steps 7–8: a.e.-measurability of the sum, and the identity by `lintegral_tsum`.
+  refine ⟨by rw [hslice]; exact AEMeasurable.tsum fun k => (hLP k).1, ?_⟩
+  rw [hslice, lintegral_tsum fun k => (hLP k).1, ← hWU, lintegral_iUnion hWm hWd]
+  exact tsum_congr fun k => (hLP k).2
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
