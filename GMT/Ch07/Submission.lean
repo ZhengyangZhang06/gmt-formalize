@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lipschitz (`C¹`) images of Lebesgue-null sets are `Hᵐ`-null** (Simon Ch. 3, §2, discussion
+after 2.4; Ch. 2, Theorem 1.8(i)).  If `ψ` is `C¹` on an open `V ⊆ ℝᵐ` and `Z ⊆ V` is `Lᵐ`-null,
+then `Hᵐ(ψ(Z)) = 0`: `ψ` is Lipschitz near each point of `V`, countably many such neighbourhoods
+cover `V` (Lindelöf), and on each the Lipschitz image bound gives `Hᵐ(ψ(Z ∩ t)) ≤ Kᵐ Lᵐ(Z ∩ t) = 0`.
+-/
+theorem Submission.dor_lmbsf_cp_c1_image_null : ∀ (m P : ℕ) (V Z : Set (Euclid m)) (ψ : Euclid m → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → Z ⊆ V → volume Z = 0 → μHE[m] (ψ '' Z) = 0 := by
+  intro m P V Z ψ hV hψ hZV hZ
+  -- Step 1: every `y ∈ V` has an open neighbourhood on which `ψ` is Lipschitz
+  have hloc : ∀ y : V, ∃ K : NNReal, ∃ t : Set (Euclid m), IsOpen t ∧ (y : Euclid m) ∈ t ∧
+      LipschitzOnWith K ψ t := by
+    intro y
+    obtain ⟨K, t, ht, hK⟩ := (hψ.contDiffAt (hV.mem_nhds y.2)).exists_lipschitzOnWith
+    obtain ⟨u, hut, hu, hyu⟩ := _root_.mem_nhds_iff.1 ht
+    exact ⟨K, u, hu, hyu, hK.mono hut⟩
+  choose K t ht hyt hK using hloc
+  -- Step 2: Lindelöf gives a countable subfamily covering `V ⊇ Z`
+  obtain ⟨T, hTc, hT⟩ := TopologicalSpace.isOpen_iUnion_countable t ht
+  have hcov : Z ⊆ ⋃ y ∈ T, t y := by
+    intro z hz
+    have : z ∈ ⋃ y, t y := mem_iUnion.2 ⟨⟨z, hZV hz⟩, hyt _⟩
+    rw [← hT] at this
+    exact this
+  -- Step 3: `ψ(Z) ⊆ ⋃_{y ∈ T} ψ(Z ∩ t y)`
+  have hsub : ψ '' Z ⊆ ⋃ y ∈ T, ψ '' (Z ∩ t y) := by
+    rintro _ ⟨z, hz, rfl⟩
+    obtain ⟨y, hyT, hzy⟩ := mem_iUnion₂.1 (hcov hz)
+    exact mem_iUnion₂.2 ⟨y, hyT, z, ⟨hz, hzy⟩, rfl⟩
+  -- Steps 4 and 5: each piece is null by the Lipschitz image bound and `μHE[m] = volume`
+  refine measure_mono_null hsub ((measure_biUnion_null_iff hTc).2 fun y _ => ?_)
+  refine le_antisymm ?_ zero_le
+  calc μHE[m] (ψ '' (Z ∩ t y)) ≤ (K y : ℝ≥0∞) ^ m * μHE[m] (Z ∩ t y) :=
+        Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m
+          ((hK y).mono inter_subset_right)
+    _ = 0 := by
+        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+          measure_mono_null inter_subset_left hZ, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
