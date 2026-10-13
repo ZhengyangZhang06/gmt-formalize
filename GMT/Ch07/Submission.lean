@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial retraction onto the closed unit ball is nonexpansive towards the ball** (step 0(d)
+of `regcomp_exists_smooth_unit_form_approx`).  If `‖y‖ ≤ 1`, then
+`‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖`: for `‖x‖ ≤ 1` the retraction fixes `x`; for `s = ‖x‖ > 1`,
+`‖x - y‖² - ‖s⁻¹ • x - y‖² = s² - 1 - 2(1 - s⁻¹)⟨x, y⟩ ≥ (s - 1)²` by Cauchy–Schwarz. -/
+theorem Submission.regcomp_norm_radial_retraction_sub_le : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (x y : E), ‖y‖ ≤ 1 → ‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖ := by
+  intro E _ _ x y hy
+  rcases le_or_gt ‖x‖ 1 with hx | hx
+  · -- Step 1: if `‖x‖ ≤ 1`, the retraction fixes `x`.
+    rw [max_eq_left hx, inv_one, one_smul]
+  · -- Steps 2–5: `s = ‖x‖ > 1`; compare the squared distances.
+    rw [max_eq_right hx.le]
+    have hs : 0 < ‖x‖ := one_pos.trans hx
+    -- Cauchy–Schwarz with `‖y‖ ≤ 1`: `⟨x, y⟩ ≤ s`; and `s⁻¹ < 1`, `s⁻¹ s = 1`.
+    have hxy : inner ℝ x y ≤ ‖x‖ :=
+      (real_inner_le_norm x y).trans (mul_le_of_le_one_right hs.le hy)
+    have hinv : ‖x‖⁻¹ < 1 := inv_lt_one_of_one_lt₀ hx
+    have hcancel : ‖x‖⁻¹ * ‖x‖ = 1 := inv_mul_cancel₀ hs.ne'
+    -- `‖s⁻¹ • x - y‖² = 1 - 2s⁻¹⟨x, y⟩ + ‖y‖²`.
+    have h2 : ‖‖x‖⁻¹ • x - y‖ ^ 2 = 1 - 2 * (‖x‖⁻¹ * inner ℝ x y) + ‖y‖ ^ 2 := by
+      rw [norm_sub_sq_real, norm_smul, real_inner_smul_left, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 hs), hcancel, one_pow]
+    -- The difference of the squares is at least `(s - 1)² ≥ 0`.
+    have key : ‖‖x‖⁻¹ • x - y‖ ^ 2 ≤ ‖x - y‖ ^ 2 := by
+      rw [h2, norm_sub_sq_real]
+      nlinarith [mul_nonneg (sub_nonneg.2 hinv.le) (sub_nonneg.2 hxy), sq_nonneg (‖x‖ - 1)]
+    exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
