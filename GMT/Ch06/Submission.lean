@@ -768,6 +768,393 @@ theorem Submission.dr_cc_radial_map : ∀ (D : ℕ) (a : Eucl D), (∀ i, 1 / 4 
     exact key (N (x - c)) (N (x' - c)) (dist x' x) ε (x - c) ((x' - c) - (x - c)) hν hwv hμν hR5
       (hx'.trans_le (min_le_left _ _)) (hx'.trans_le (min_le_right _ _))
 
+/-- Simon Ch. 6, Lemma 5.4, printed proof p. 161 (book `n = m + 1`), in the one-step form
+`ψ₀ = R^ℓ`.  A point `y ∈ C ∖ La` whose carrier `J(y) = {i : 0 < yᵢ < 1}` has at least `m + 2`
+elements is pushed radially from the centre `a_F` of its carrier face `F` onto `∂F`,
+`R(y)ᵢ = aᵢ + (yᵢ - aᵢ) / N(y)` on `J(y)`, with the gauge
+`N(y) = max_{i ∈ J(y)} max ((yᵢ - aᵢ) / (1 - aᵢ), (aᵢ - yᵢ) / aᵢ)`; `R` fixes every other point.
+Each step stays in `C ∖ La` (cone property of `dr_cc_skeleton_facts`) and lowers `|J(y)|`, so
+`R^ℓ` maps `C ∖ La` into the `(m+1)`-skeleton (α) and fixes the `(m+1)`-skeleton (S1); `R`
+commutes with integer translations (β); and the exit point `y` of the ray from `a_F` through
+`x ∈ F ∖ La` is `R(x)` or `x` itself (S2). -/
+theorem Submission.dr_cc_construction :
+    ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ a : Eucl (m + 1 + ℓ), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) →
+      ∀ La : Set (Eucl (m + 1 + ℓ)),
+        La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧
+          ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} →
+        ∃ ψ₀ : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
+          (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+            (∀ i, 0 ≤ ψ₀ x i ∧ ψ₀ x i ≤ 1) ∧
+              ∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ψ₀ x i = 0 ∨ ψ₀ x i = 1) ∧
+          (∀ x x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+            (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La → (∀ i, ∃ k : ℤ, x' i - x i = k) →
+              ∀ i, ψ₀ x' i - ψ₀ x i = x' i - x i) ∧
+          (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+            (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, x i = 0 ∨ x i = 1) →
+              ψ₀ x = x) ∧
+          ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), m + 2 ≤ J.card →
+            (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i, 0 ≤ x i ∧ x i ≤ 1) →
+            x ∉ La → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s →
+            (∀ i, y i - c i = s * (x i - c i)) → (∃ i ∈ J, y i = 0 ∨ y i = 1) → ψ₀ y = ψ₀ x := by
+  intro m ℓ _ a ha La hLa
+  classical
+  -- Cone property: if `y ∈ C ∩ La` lies on the ray from the face centre `c` through `x`
+  -- (`y - c = s • (x - c)`, `s > 0`), then `x ∈ La`.
+  obtain ⟨-, -, hcone⟩ := Submission.dr_cc_skeleton_facts m ℓ a ha La hLa
+  have ha1 : ∀ i, 0 < a i := fun i => by linarith [(ha i).1]
+  have ha2 : ∀ i, 0 < 1 - a i := fun i => by linarith [(ha i).2]
+  -- The carrier `J(y) = {i : 0 < yᵢ < 1}`.
+  obtain ⟨Jx, hJx⟩ : ∃ Jx : Eucl (m + 1 + ℓ) → Finset (Fin (m + 1 + ℓ)),
+      ∀ y i, i ∈ Jx y ↔ (0 < y i ∧ y i < 1) :=
+    ⟨fun y => Finset.univ.filter (fun i => 0 < y i ∧ y i < 1), fun y i => by simp⟩
+  have hoff01 : ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → ∀ i, i ∉ Jx y →
+      y i = 0 ∨ y i = 1 := by
+    intro y hy i hi
+    rw [hJx] at hi
+    rcases (hy i).1.lt_or_eq with h0 | h0
+    · exact Or.inr (le_antisymm (hy i).2 (not_lt.1 fun h1 => hi ⟨h0, h1⟩))
+    · exact Or.inl h0.symm
+  -- The gauge `N(y) = max_{i ∈ J(y)} max ((yᵢ - aᵢ) / (1 - aᵢ), (aᵢ - yᵢ) / aᵢ)`.
+  obtain ⟨N, hNle, hNex⟩ : ∃ N : Eucl (m + 1 + ℓ) → ℝ,
+      (∀ y, ∀ i ∈ Jx y, max ((y i - a i) / (1 - a i)) ((a i - y i) / a i) ≤ N y) ∧
+      (∀ y, (Jx y).Nonempty → ∃ i ∈ Jx y,
+        N y = max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) := by
+    refine ⟨fun y => if h : (Jx y).Nonempty then
+      (Jx y).sup' h (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) else 0, ?_, ?_⟩
+    · intro y i hi
+      have h : (Jx y).Nonempty := ⟨i, hi⟩
+      simp only [dite_eq_left h]
+      exact Finset.le_sup' (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) hi
+    · intro y h
+      obtain ⟨i, hi, he⟩ := Finset.exists_mem_eq_sup' h
+        (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i))
+      exact ⟨i, hi, by simp only [dite_eq_left h]; exact he⟩
+  -- `y` is *active* if `y ∈ C ∖ La` and `|J(y)| ≥ m + 2`.  `R` retracts an active `y` radially
+  -- from the centre of its carrier face onto the boundary of that face and fixes all other points.
+  obtain ⟨R, hRa, hRn⟩ : ∃ R : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
+      (∀ y, ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) →
+        ∀ i, R y i = if i ∈ Jx y then a i + (y i - a i) / N y else y i) ∧
+      (∀ y, ¬((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) → R y = y) := by
+    refine ⟨fun y => if ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) then
+      WithLp.toLp 2 (fun i => if i ∈ Jx y then a i + (y i - a i) / N y else y i) else y, ?_, ?_⟩
+    · intro y hy i
+      dsimp only
+      rw [ite_eq_left hy]
+    · intro y hy
+      dsimp only
+      rw [ite_eq_right hy]
+  -- One step: for active `y`, `N(y) > 0`, `R(y) ∈ C ∖ La` and `|J(R y)| < |J(y)|`.
+  have step : ∀ y, ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) →
+      0 < N y ∧ (∀ i, 0 ≤ R y i ∧ R y i ≤ 1) ∧ R y ∉ La ∧ (Jx (R y)).card + 1 ≤ (Jx y).card := by
+    intro y hact
+    have hRi := hRa y hact
+    obtain ⟨hyC, hyL, hyJ⟩ := hact
+    -- `N(y) ≤ 0` would force `y = a` on `J(y)`, hence `y ∈ La`.
+    have hNpos : 0 < N y := by
+      by_contra hle
+      rw [not_lt] at hle
+      apply hyL
+      rw [hLa]
+      obtain ⟨J', hJ'sub, hJ'card⟩ := Finset.exists_subset_card_eq hyJ
+      refine ⟨J', hJ'card, fun i hi => ⟨0, ?_⟩⟩
+      have hi' := hJ'sub hi
+      have h := (hNle y i hi').trans hle
+      have h1 : (y i - a i) / (1 - a i) ≤ 0 := (le_max_left _ _).trans h
+      have h2 : (a i - y i) / a i ≤ 0 := (le_max_right _ _).trans h
+      rw [div_le_iff₀ (ha2 i), zero_mul] at h1
+      rw [div_le_iff₀ (ha1 i), zero_mul] at h2
+      simp only [Int.cast_zero]
+      linarith
+    have hbd : ∀ i ∈ Jx y, 0 ≤ a i + (y i - a i) / N y ∧ a i + (y i - a i) / N y ≤ 1 := by
+      intro i hi
+      have h := hNle y i hi
+      have h1 : (y i - a i) / (1 - a i) ≤ N y := (le_max_left _ _).trans h
+      have h2 : (a i - y i) / a i ≤ N y := (le_max_right _ _).trans h
+      rw [div_le_iff₀ (ha2 i)] at h1
+      rw [div_le_iff₀ (ha1 i)] at h2
+      constructor
+      · have h3 : (a i - y i) / N y ≤ a i := by rw [div_le_iff₀ hNpos]; linarith
+        have e : (y i - a i) / N y = -((a i - y i) / N y) := by ring
+        linarith
+      · have h3 : (y i - a i) / N y ≤ 1 - a i := by rw [div_le_iff₀ hNpos]; linarith
+        linarith
+    have hRC : ∀ i, 0 ≤ R y i ∧ R y i ≤ 1 := by
+      intro i
+      rw [hRi]
+      split_ifs with hi
+      · exact hbd i hi
+      · exact hyC i
+    -- A maximising coordinate `i₀` of the gauge is sent to `0` or `1`.
+    have hne : (Jx y).Nonempty := Finset.card_pos.1 (by omega)
+    obtain ⟨i₀, hi₀, hNi₀⟩ := hNex y hne
+    have hext : R y i₀ = 0 ∨ R y i₀ = 1 := by
+      rw [hRi, ite_eq_left hi₀]
+      rcases max_cases ((y i₀ - a i₀) / (1 - a i₀)) ((a i₀ - y i₀) / a i₀) with ⟨hm, _⟩ | ⟨hm, _⟩
+      · right
+        rw [hm] at hNi₀
+        have h4 : (y i₀ - a i₀) / N y = 1 - a i₀ := by
+          rw [div_eq_iff hNpos.ne', hNi₀, mul_comm, div_mul_cancel₀ _ (ha2 i₀).ne']
+        linarith
+      · left
+        rw [hm] at hNi₀
+        have h4 : (a i₀ - y i₀) / N y = a i₀ := by
+          rw [div_eq_iff hNpos.ne', hNi₀, mul_comm, div_mul_cancel₀ _ (ha1 i₀).ne']
+        have e : (y i₀ - a i₀) / N y = -((a i₀ - y i₀) / N y) := by ring
+        linarith
+    have hsub : Jx (R y) ⊆ (Jx y).erase i₀ := by
+      intro i hi
+      rw [hJx] at hi
+      rw [Finset.mem_erase]
+      constructor
+      · rintro rfl
+        rcases hext with h | h <;> rw [h] at hi <;> linarith [hi.1, hi.2]
+      · by_contra hni
+        rw [hRi, ite_eq_right hni] at hi
+        exact hni ((hJx y i).2 hi)
+    have hcard : (Jx (R y)).card + 1 ≤ (Jx y).card := by
+      have h5 := Finset.card_le_card hsub
+      rw [Finset.card_erase_of_mem hi₀] at h5
+      have : 0 < (Jx y).card := Finset.card_pos.2 hne
+      omega
+    -- `R(y) - c = N(y)⁻¹ (y - c)` for the centre `c` of the carrier face, so `R(y) ∉ La`.
+    have hRL : R y ∉ La := by
+      intro hRyL
+      apply hyL
+      let c : Eucl (m + 1 + ℓ) := WithLp.toLp 2 (fun i => if i ∈ Jx y then a i else y i)
+      have hc : ∀ i, c i = if i ∈ Jx y then a i else y i := fun i => rfl
+      refine hcone (Jx y) c y (R y) (N y)⁻¹ (fun i hi => by rw [hc, ite_eq_left hi])
+        (fun i hi => by rw [hc, ite_eq_right hi]; exact hoff01 y hyC i hi)
+        (fun i hi => by rw [hc, ite_eq_right hi]) hRC (inv_pos.2 hNpos) (fun i => ?_) hRyL
+      rw [hRi, hc]
+      split_ifs with hi
+      · ring
+      · ring
+    exact ⟨hNpos, hRC, hRL, hcard⟩
+  -- Iteration: `R^k` stays in `C ∖ La`, and `|J(R^k y)| ≤ m + 1` or `|J(R^k y)| + k ≤ |J(y)|`.
+  have iter : ∀ k : ℕ, ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
+      (∀ i, 0 ≤ R^[k] y i ∧ R^[k] y i ≤ 1) ∧ R^[k] y ∉ La ∧
+        ((Jx (R^[k] y)).card ≤ m + 1 ∨ (Jx (R^[k] y)).card + k ≤ (Jx y).card) := by
+    intro k
+    induction k with
+    | zero => intro y hyC hyL; exact ⟨hyC, hyL, Or.inr (by simp)⟩
+    | succ k ih =>
+      intro y hyC hyL
+      obtain ⟨hzC, hzL, hzJ⟩ := ih y hyC hyL
+      rw [Function.iterate_succ_apply']
+      by_cases hact : ((∀ i, 0 ≤ R^[k] y i ∧ R^[k] y i ≤ 1) ∧ R^[k] y ∉ La ∧
+          m + 2 ≤ (Jx (R^[k] y)).card)
+      · obtain ⟨-, hC', hL', hJ'⟩ := step _ hact
+        refine ⟨hC', hL', ?_⟩
+        have := hact.2.2
+        omega
+      · rw [hRn _ hact]
+        refine ⟨hzC, hzL, Or.inl ?_⟩
+        by_contra h
+        exact hact ⟨hzC, hzL, by omega⟩
+  -- After `ℓ` steps the carrier has at most `m + 1` elements, as `|J(y)| ≤ m + 1 + ℓ`.
+  have hfinal : ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
+      (Jx (R^[ℓ] y)).card ≤ m + 1 := by
+    intro y hyC hyL
+    obtain ⟨-, -, h⟩ := iter ℓ y hyC hyL
+    have := Finset.card_le_univ (Jx y)
+    rw [Fintype.card_fin] at this
+    omega
+  refine ⟨R^[ℓ], ?_, ?_, ?_, ?_⟩
+  · -- (α): at least `ℓ` coordinates of `R^ℓ x` lie outside the carrier, i.e. in `{0, 1}`.
+    intro x hx hxL
+    obtain ⟨hC, -, -⟩ := iter ℓ x hx hxL
+    have hc := hfinal x hx hxL
+    refine ⟨hC, ?_⟩
+    have hcompl : ℓ ≤ (Finset.univ \ Jx (R^[ℓ] x)).card := by
+      rw [Finset.card_univ_sdiff, Fintype.card_fin]; omega
+    obtain ⟨I, hIsub, hIcard⟩ := Finset.exists_subset_card_eq hcompl
+    exact ⟨I, hIcard, fun i hi => hoff01 _ hC i (Finset.mem_sdiff.1 (hIsub hi)).2⟩
+  · -- (β): `R` commutes with integer translations inside `C ∖ La` (same carrier, same gauge).
+    have stepT : ∀ y y' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
+        (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → y' ∉ La → (∀ i, ∃ k : ℤ, y' i - y i = k) →
+        ∀ i, R y' i - R y i = y' i - y i := by
+      intro y y' hyC hyL hy'C hy'L hz
+      have hsame : ∀ i, (0 < y i ∧ y i < 1) ∨ (0 < y' i ∧ y' i < 1) → y' i = y i := by
+        intro i hi
+        obtain ⟨k, hk⟩ := hz i
+        have hk0 : k = 0 := by
+          have hb : (-1 : ℝ) < k ∧ (k : ℝ) < 1 := by
+            rcases hi with ⟨h1, h2⟩ | ⟨h1, h2⟩
+            · constructor <;> linarith [(hy'C i).1, (hy'C i).2]
+            · constructor <;> linarith [(hyC i).1, (hyC i).2]
+          have h1 : (-1 : ℤ) < k := by exact_mod_cast hb.1
+          have h2 : k < 1 := by exact_mod_cast hb.2
+          omega
+        rw [hk0, Int.cast_zero] at hk
+        linarith
+      have hJeq : Jx y' = Jx y := by
+        ext i
+        rw [hJx, hJx]
+        constructor
+        · intro h; rw [← hsame i (Or.inr h)]; exact h
+        · intro h; rw [hsame i (Or.inl h)]; exact h
+      by_cases hact : ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card)
+      · have hact' : ((∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ y' ∉ La ∧ m + 2 ≤ (Jx y').card) :=
+          ⟨hy'C, hy'L, by rw [hJeq]; exact hact.2.2⟩
+        have hterm : ∀ i ∈ Jx y, max ((y' i - a i) / (1 - a i)) ((a i - y' i) / a i) =
+            max ((y i - a i) / (1 - a i)) ((a i - y i) / a i) := by
+          intro i hi
+          rw [hsame i (Or.inl ((hJx y i).1 hi))]
+        have hNeq : N y' = N y := by
+          have hne : (Jx y).Nonempty := Finset.card_pos.1 (by have := hact.2.2; omega)
+          obtain ⟨i₀, hi₀, h₀⟩ := hNex y hne
+          obtain ⟨i₁, hi₁, h₁⟩ := hNex y' (by rw [hJeq]; exact hne)
+          rw [hJeq] at hi₁
+          apply le_antisymm
+          · rw [h₁, hterm i₁ hi₁]; exact hNle y i₁ hi₁
+          · rw [h₀, ← hterm i₀ hi₀]; exact hNle y' i₀ (by rw [hJeq]; exact hi₀)
+        intro i
+        rw [hRa y' hact' i, hRa y hact i, hJeq, hNeq]
+        split_ifs with hi
+        · rw [hsame i (Or.inl ((hJx y i).1 hi))]; ring
+        · ring
+      · have hact' : ¬((∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ y' ∉ La ∧ m + 2 ≤ (Jx y').card) := by
+          rintro ⟨-, -, h⟩
+          exact hact ⟨hyC, hyL, by rw [← hJeq]; exact h⟩
+        intro i
+        rw [hRn y hact, hRn y' hact']
+    intro x x' hx hxL hx' hx'L hz
+    have hk : ∀ k : ℕ, ∀ i, R^[k] x' i - R^[k] x i = x' i - x i := by
+      intro k
+      induction k with
+      | zero => intro i; rfl
+      | succ k ih =>
+        intro i
+        obtain ⟨hC, hL, -⟩ := iter k x hx hxL
+        obtain ⟨hC', hL', -⟩ := iter k x' hx' hx'L
+        rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+        have hz' : ∀ j, ∃ k' : ℤ, R^[k] x' j - R^[k] x j = k' := fun j => by
+          rw [ih j]; exact hz j
+        rw [stepT _ _ hC hL hC' hL' hz' i, ih i]
+    exact hk ℓ
+  · -- (S1): `ℓ` coordinates in `{0, 1}` leave a carrier of size `≤ m + 1`, so `R` fixes `x`.
+    rintro x hx hxL ⟨I, hIcard, hI⟩
+    have hsub : Jx x ⊆ Finset.univ \ I := by
+      intro i hi
+      rw [hJx] at hi
+      rw [Finset.mem_sdiff]
+      refine ⟨Finset.mem_univ _, fun hiI => ?_⟩
+      rcases hI i hiI with h | h <;> rw [h] at hi <;> linarith [hi.1, hi.2]
+    have hc : (Jx x).card ≤ m + 1 := by
+      have h5 := Finset.card_le_card hsub
+      rw [Finset.card_univ_sdiff, Fintype.card_fin, hIcard] at h5
+      omega
+    have hR : R x = x := hRn x (fun h => by have := h.2.2; omega)
+    exact Function.iterate_fixed hR ℓ
+  · -- (S2): the exit point `y` of the ray from the face centre `c` through `x` is `R(x)` or `x`.
+    intro J c x y s hJ hcJ hc01 hx hxL hxc hy hs hray hext
+    have hyoff : ∀ i ∉ J, y i = c i := fun i hi => by
+      have := hray i
+      rw [hxc i hi, sub_self, mul_zero] at this
+      linarith
+    by_cases hint : ∀ i ∈ J, 0 < x i ∧ x i < 1
+    · -- Case A: `x` lies in the relative interior of the face, so `J(x) = J`, `N(x) = s⁻¹` and
+      -- `y = R(x)`; then `R^ℓ y = R (R^ℓ x) = R^ℓ x`.
+      have hJeq : Jx x = J := by
+        ext i
+        rw [hJx]
+        constructor
+        · intro h
+          by_contra hiJ
+          rw [hxc i hiJ] at h
+          rcases hc01 i hiJ with h0 | h0 <;> rw [h0] at h <;> linarith [h.1, h.2]
+        · exact hint i
+      have hact : ((∀ i, 0 ≤ x i ∧ x i ≤ 1) ∧ x ∉ La ∧ m + 2 ≤ (Jx x).card) :=
+        ⟨hx, hxL, by rw [hJeq]; exact hJ⟩
+      have hterm_le : ∀ i ∈ J, max ((x i - a i) / (1 - a i)) ((a i - x i) / a i) ≤ s⁻¹ := by
+        intro i hi
+        have hyi := hy i
+        have hr := hray i
+        rw [hcJ i hi] at hr
+        apply max_le
+        · rw [div_le_iff₀ (ha2 i)]
+          have h6 : s * (x i - a i) ≤ 1 - a i := by linarith [hyi.2]
+          calc x i - a i = s⁻¹ * (s * (x i - a i)) := by field_simp
+            _ ≤ s⁻¹ * (1 - a i) := mul_le_mul_of_nonneg_left h6 (inv_nonneg.2 hs.le)
+        · rw [div_le_iff₀ (ha1 i)]
+          have h6 : s * (a i - x i) ≤ a i := by linarith [hyi.1]
+          calc a i - x i = s⁻¹ * (s * (a i - x i)) := by field_simp
+            _ ≤ s⁻¹ * a i := mul_le_mul_of_nonneg_left h6 (inv_nonneg.2 hs.le)
+      have hNx : N x = s⁻¹ := by
+        apply le_antisymm
+        · obtain ⟨i₀, hi₀, h₀⟩ := hNex x (Finset.card_pos.1 (by rw [hJeq]; omega))
+          rw [h₀]
+          rw [hJeq] at hi₀
+          exact hterm_le i₀ hi₀
+        · obtain ⟨i₁, hi₁J, hi₁⟩ := hext
+          have hle := hNle x i₁ (by rw [hJeq]; exact hi₁J)
+          have hr := hray i₁
+          rw [hcJ i₁ hi₁J] at hr
+          rcases hi₁ with h0 | h1
+          · have h7 : (a i₁ - x i₁) / a i₁ = s⁻¹ := by
+              rw [div_eq_iff (ha1 i₁).ne']
+              rw [h0] at hr
+              field_simp
+              linarith
+            rw [← h7]
+            exact (le_max_right _ _).trans hle
+          · have h7 : (x i₁ - a i₁) / (1 - a i₁) = s⁻¹ := by
+              rw [div_eq_iff (ha2 i₁).ne']
+              rw [h1] at hr
+              field_simp
+              linarith
+            rw [← h7]
+            exact (le_max_left _ _).trans hle
+      have hRx : R x = y := by
+        ext i
+        rw [hRa x hact i, hJeq]
+        split_ifs with hi
+        · rw [hNx]
+          have hr := hray i
+          rw [hcJ i hi] at hr
+          rw [div_inv_eq_mul]
+          linarith
+        · rw [hyoff i hi, hxc i hi]
+      rw [← hRx, ← Function.iterate_succ_apply, Function.iterate_succ_apply']
+      have hc := hfinal x hx hxL
+      exact hRn _ (fun h => by have := h.2.2; omega)
+    · -- Case B: `x` lies on the relative boundary of the face; then `s = 1` and `y = x`.
+      push Not at hint
+      obtain ⟨i₂, hi₂J, hi₂⟩ := hint
+      have hx01 : x i₂ = 0 ∨ x i₂ = 1 := by
+        rcases (hx i₂).1.lt_or_eq with h0 | h0
+        · right; exact le_antisymm (hx i₂).2 (hi₂ h0)
+        · left; exact h0.symm
+      have hs1 : s ≤ 1 := by
+        have hr := hray i₂
+        rw [hcJ i₂ hi₂J] at hr
+        have hyi := hy i₂
+        have hai1 := ha1 i₂
+        have hai2 := ha2 i₂
+        rcases hx01 with h0 | h1
+        · rw [h0] at hr
+          nlinarith
+        · rw [h1] at hr
+          nlinarith
+      have hs1' : 1 ≤ s := by
+        obtain ⟨i₁, hi₁J, hi₁⟩ := hext
+        have hr := hray i₁
+        rw [hcJ i₁ hi₁J] at hr
+        have hxi := hx i₁
+        have hai1 := ha1 i₁
+        have hai2 := ha2 i₁
+        rcases hi₁ with h0 | h1
+        · rw [h0] at hr
+          nlinarith [mul_nonneg hs.le hxi.1]
+        · rw [h1] at hr
+          nlinarith [mul_le_mul_of_nonneg_left hxi.2 hs.le]
+      have hyx : y = x := by
+        ext i
+        have := hray i
+        rw [le_antisymm hs1 hs1', one_mul] at this
+        linarith
+      rw [hyx]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
