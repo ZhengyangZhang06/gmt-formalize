@@ -1273,7 +1273,6 @@ theorem dohr_eb_sch_integral_clm_fderiv_eq_zero : ∀ (n ℓ : ℕ) (c : (Rn n �
       (Eventually.of_forall fun y => integral_add_right_eq_self ζ y)
   simpa using hderiv.unique hzero
 
-end Submission
 /-- **Interpolation bound for `Dw`** (step (1b) of the Schauder estimate in the elliptic bootstrap
 for Simon 7.1).  If `w` is `C¹` on `B̆_ρ(x)` with `|w| ≤ S` there and
 `‖Dw(y) − Dw(z)‖ ≤ K |y − z|^α` for `y, z ∈ B̆_ρ(x)`, then `‖Dw(x)‖ ≤ 2S/t + t^α K` for every
