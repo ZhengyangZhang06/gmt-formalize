@@ -451,6 +451,66 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 3.1** (linear area formula): for an injective linear `L : ℝⁿ → ℝᴾ`,
+`det(L*L) > 0` and `Hⁿ(L(S)) = √det(L*L) · Lⁿ(S)` for every `S ⊆ ℝⁿ`.  An orthonormal basis of
+`range L` gives a linear isometry `κ : ℝⁿ → ℝᴾ` onto `range L`.  Then `L = κ ∘ M` with
+`M = κ* ∘ L`, so `L*L = M*M`, `det(L*L) = (det M)² > 0` and
+`Hⁿ(L(S)) = Hⁿ(κ(M(S))) = Lⁿ(M(S)) = |det M| Lⁿ(S)`.  No measurability of `S` is needed. -/
+theorem Submission.codim1_zsl_ga_linear_area : ∀ (n P : ℕ) (L : Euclid n →L[ℝ] Euclid P), Function.Injective L → 0 < (L.adjoint ∘L L).det ∧ ∀ S : Set (Euclid n), μHE[n] (L '' S) = ENNReal.ofReal (Real.sqrt ((L.adjoint ∘L L).det)) * volume S := by
+  intro n P L hL
+  -- step 1: a linear isometry `κ` of `ℝⁿ` onto `V = range L`
+  set V : Submodule ℝ (Euclid P) := LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) with hV
+  have hdim : Module.finrank ℝ V = n := by
+    rw [hV, LinearMap.finrank_range_of_inj hL]; simp
+  let b : OrthonormalBasis (Fin n) ℝ V := (stdOrthonormalBasis ℝ V).reindex (finCongr hdim)
+  let κ : Euclid n →ₗᵢ[ℝ] Euclid P := V.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  let K : Euclid n →L[ℝ] Euclid P := κ.toContinuousLinearMap
+  have hKK : K.adjoint ∘L K = 1 := LinearIsometry.adjoint_comp_self κ
+  have hrange : ∀ h, ∃ u, K u = L h := by
+    intro h
+    refine ⟨b.repr ⟨L h, LinearMap.mem_range_self _ h⟩, ?_⟩
+    simp [K, κ]
+  -- step 2: `L = κ ∘ M` with `M = κ* ∘ L` injective, so `det M ≠ 0`
+  let M : Euclid n →L[ℝ] Euclid n := K.adjoint ∘L L
+  have hKM : K ∘L M = L := by
+    ext1 h
+    obtain ⟨u, hu⟩ := hrange h
+    have : K.adjoint (K u) = u := by
+      simpa using congrArg (fun T : Euclid n →L[ℝ] Euclid n => T u) hKK
+    simp only [M, ContinuousLinearMap.comp_apply, ← hu, this]
+  have hMinj : Function.Injective M := by
+    intro x y hxy
+    apply hL
+    rw [← hKM]
+    simp [hxy]
+  have hdetM : M.det ≠ 0 := by
+    intro h0
+    rw [ContinuousLinearMap.det, LinearMap.det_eq_zero_iff_ker_ne_bot] at h0
+    exact h0 (LinearMap.ker_eq_bot.mpr hMinj)
+  -- step 3: `L*L = M*M` and `det M* = det M`, so `det(L*L) = (det M)²`
+  have hLL : L.adjoint ∘L L = M.adjoint ∘L M := by
+    conv_lhs => rw [← hKM]
+    rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.comp_assoc,
+      ← ContinuousLinearMap.comp_assoc K.adjoint K M, hKK]
+    rfl
+  have hdetadj : M.adjoint.det = M.det := by
+    let e := EuclideanSpace.basisFun (Fin n) ℝ
+    have h2 := congrArg Matrix.det (LinearMap.toMatrix_adjoint e e (M : Euclid n →ₗ[ℝ] Euclid n))
+    rw [Matrix.det_conjTranspose, LinearMap.det_toMatrix, LinearMap.det_toMatrix] at h2
+    simpa [ContinuousLinearMap.det, ContinuousLinearMap.adjoint_toLinearMap] using h2
+  have hdetLL : (L.adjoint ∘L L).det = M.det ^ 2 := by
+    rw [hLL, ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_comp, LinearMap.det_comp]
+    rw [show LinearMap.det (M.adjoint : Euclid n →ₗ[ℝ] Euclid n) = M.adjoint.det from rfl, hdetadj]
+    ring
+  refine ⟨by rw [hdetLL]; positivity, fun S => ?_⟩
+  -- step 4: `Hⁿ(L(S)) = Hⁿ(κ(M(S))) = Lⁿ(M(S)) = |det M| Lⁿ(S)`
+  have himg : L '' S = K '' (M '' S) := by
+    rw [← hKM, ContinuousLinearMap.coe_comp, Set.image_comp]
+  have hiso : Isometry K := κ.isometry
+  rw [himg, Isometry.euclideanHausdorffMeasure_image hiso,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_image_continuousLinearMap, hdetLL, Real.sqrt_sq_eq_abs]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
