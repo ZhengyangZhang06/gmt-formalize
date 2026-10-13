@@ -720,6 +720,60 @@ theorem Submission.constancy_mdc_smooth_approx_identity_ae_tendsto :
   refine squeeze_zero (fun k => norm_nonneg _) hbound ?_
   simpa using havg.const_mul C
 
+/-- Smooth test functions suffice (step (3.0) of the proof of `minor_weak_continuity`): if
+`Ω ⊆ ℝᵏ` is open, `|f_j|, |f₀| ≤ B` on `Ω` and `∫_Ω φ f_j → ∫_Ω φ f₀` for every `φ ∈ C¹_c(Ω)`, then
+`∫_Ω η f_j → ∫_Ω η f₀` for every `η ∈ L¹(Ω)`.  Given `δ > 0`, choose `ε > 0` with
+`2 |B| ε ≤ δ / 2` and, by `scalar_smooth_dense`, `φ ∈ C_c^∞(Ω)` with `∫_Ω |η − φ| < ε`.  Then
+`|∫_Ω η g − ∫_Ω φ g| ≤ |B| ∫_Ω |η − φ| ≤ |B| ε` for `g = f_j, f₀`, so for large `j`
+`|∫_Ω η f_j − ∫_Ω η f₀| ≤ |B| ε + |∫_Ω φ f_j − ∫_Ω φ f₀| + |B| ε < δ`. -/
+theorem Submission.deformation_ipl_mwc_test_density : ∀ (k : ℕ) (Ω : Set (Eucl k)) (B : ℝ) (f : ℕ → Eucl k → ℝ) (f₀ : Eucl k → ℝ), IsOpen Ω → (∀ j, AEStronglyMeasurable (f j) ((volume : Measure (Eucl k)).restrict Ω)) → AEStronglyMeasurable f₀ ((volume : Measure (Eucl k)).restrict Ω) → (∀ j, ∀ w ∈ Ω, |f j w| ≤ B) → (∀ w ∈ Ω, |f₀ w| ≤ B) → (∀ φ : Eucl k → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ω → Tendsto (fun j => ∫ w in Ω, φ w * f j w ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, φ w * f₀ w ∂(volume : Measure (Eucl k))))) → ∀ η : Eucl k → ℝ, IntegrableOn η Ω (volume : Measure (Eucl k)) → Tendsto (fun j => ∫ w in Ω, η w * f j w ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, η w * f₀ w ∂(volume : Measure (Eucl k)))) := by
+  intro k Ω B f f₀ hΩ hfm hf₀m hfB hf₀B hφ η hη
+  -- Step 2: `ζ g ∈ L¹(Ω)` for `ζ ∈ L¹(Ω)` and `g` bounded by `B` (hence by `|B|`) on `Ω`.
+  have hint : ∀ ζ g : Eucl k → ℝ, IntegrableOn ζ Ω (volume : Measure (Eucl k)) →
+      AEStronglyMeasurable g ((volume : Measure (Eucl k)).restrict Ω) → (∀ w ∈ Ω, |g w| ≤ B) →
+      IntegrableOn (fun w => ζ w * g w) Ω (volume : Measure (Eucl k)) := fun ζ g hζ hg hgB =>
+    Integrable.mul_bdd hζ hg (ae_restrict_of_forall_mem hΩ.measurableSet fun w hw =>
+      (hgB w hw).trans (le_abs_self B))
+  rw [Metric.tendsto_atTop]
+  intro δ hδ
+  -- Step 3: `ε > 0` with `2 |B| ε ≤ δ / 2` (`|B|` avoids the case split `Ω = ∅`).
+  obtain ⟨ε, hε0, hBε⟩ : ∃ ε : ℝ, 0 < ε ∧ |B| * ε ≤ δ / 4 := by
+    refine ⟨δ / (4 * (|B| + 1)), by positivity, ?_⟩
+    rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [abs_nonneg B]
+  -- Step 1 (the sibling `scalar_smooth_dense`): `φ ∈ C_c^∞(Ω)` with `∫_Ω |η − φ| < ε`.
+  obtain ⟨φ, hφs, hφc, hφΩ, hηφ⟩ :=
+    Submission.deformation_ipl_mwc_td_scalar_smooth_dense k Ω η hΩ hη ε hε0
+  have hφi : IntegrableOn φ Ω (volume : Measure (Eucl k)) :=
+    (hφs.continuous.integrable_of_hasCompactSupport hφc).integrableOn
+  -- `|∫_Ω η g − ∫_Ω φ g| ≤ |B| ∫_Ω |η − φ| ≤ |B| ε` for `g` bounded by `B` on `Ω`.
+  have happrox : ∀ g : Eucl k → ℝ,
+      AEStronglyMeasurable g ((volume : Measure (Eucl k)).restrict Ω) → (∀ w ∈ Ω, |g w| ≤ B) →
+      dist (∫ w in Ω, η w * g w ∂(volume : Measure (Eucl k)))
+        (∫ w in Ω, φ w * g w ∂(volume : Measure (Eucl k))) ≤ |B| * ε := by
+    intro g hg hgB
+    rw [dist_eq_norm, ← integral_sub (hint η g hη hg hgB) (hint φ g hφi hg hgB)]
+    calc ‖∫ w in Ω, η w * g w - φ w * g w ∂(volume : Measure (Eucl k))‖
+        ≤ ∫ w in Ω, |B| * |η w - φ w| ∂(volume : Measure (Eucl k)) := by
+          refine norm_integral_le_of_norm_le ((hη.sub hφi).abs.const_mul |B|)
+            (ae_restrict_of_forall_mem hΩ.measurableSet fun w hw => ?_)
+          rw [← sub_mul, Real.norm_eq_abs, abs_mul, mul_comm]
+          exact mul_le_mul_of_nonneg_right ((hgB w hw).trans (le_abs_self B)) (abs_nonneg _)
+      _ = |B| * ∫ w in Ω, |η w - φ w| ∂(volume : Measure (Eucl k)) := integral_const_mul _ _
+      _ ≤ |B| * ε := mul_le_mul_of_nonneg_left hηφ.le (abs_nonneg B)
+  -- The hypothesis for `φ ∈ C¹_c(Ω)`, then the `ε/3` estimate.
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1
+    (hφ φ (hφs.of_le (WithTop.coe_le_coe.2 le_top)) hφc hφΩ) (δ / 2) (half_pos hδ)
+  refine ⟨N, fun j hj => ?_⟩
+  have h₁ := happrox (f j) (hfm j) (hfB j)
+  have h₂ := hN j hj
+  have h₃ := happrox f₀ hf₀m hf₀B
+  rw [dist_comm] at h₃
+  linarith [dist_triangle4 (∫ w in Ω, η w * f j w ∂(volume : Measure (Eucl k)))
+    (∫ w in Ω, φ w * f j w ∂(volume : Measure (Eucl k)))
+    (∫ w in Ω, φ w * f₀ w ∂(volume : Measure (Eucl k)))
+    (∫ w in Ω, η w * f₀ w ∂(volume : Measure (Eucl k)))]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
