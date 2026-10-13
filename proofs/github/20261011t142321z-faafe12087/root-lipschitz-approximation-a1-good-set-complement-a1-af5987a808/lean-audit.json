@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2a66f135383ca23129c06e400f31240362af37ad257f6a0792ee9691ff5223e1",
+  "git_delta": {
+    "base_commit": "5625658e333526739c7554b34a0b27ea52ee3377",
+    "candidate_commit": "f8ad59f77686dd52c988e9e6fa53566c4672a056",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_good_set_complement",
+    "diff_sha256": "981bac2cfbdc0ce7e5cf369d6509dc1546357ada6d8ad152c2090be2f42d07de",
+    "source_sha256": "ca1d92fffd47496e0010dbd771868a330acdbf9fa1bd732fc7d620a3f765c88d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_good_set_complement",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₀ C₀ : ℝ, 0 < δ₀ ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → ∀ (T : Submodule ℝ (Amb n ℓ)) (b : ℝ), 0 < b → V.weight (closedBall 0 (3 * (δ * ρ) / 4) \\ {y | y ∈ V.support ∧ ∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 → ∫ x in closedBall y (s / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ b * s ^ n}) ≤ ENNReal.ofReal (C₀ / b * ∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
