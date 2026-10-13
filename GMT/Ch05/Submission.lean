@@ -540,6 +540,62 @@ theorem dohr_eb_sch_bu_hds_diagonal_extract : ∀ (n ℓ : ℕ) (F : ℕ → Rn 
   have hex : ∃ m, z ∈ S m := ⟨m, hz⟩
   simp only [dite_eq_left hex]
   exact tendsto_nhds_unique ((hφconv m).tendsto_at hz) ((hφconv _).tendsto_at (Nat.find_spec hex))
+/-- Uniformly Hölder maps `F j : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` that converge on a dense subset `D` of a compact
+set `S` converge uniformly on `S`.  Given `ε > 0`, pick `η > 0` with `K η^α < ε/3`; finitely many
+balls `B̆_η(d)`, `d ∈ T ⊆ D`, cover `S`; from some `N` on all `F j d`, `d ∈ T`, are `ε/6`-close to
+their limits; the Hölder bound and the triangle inequality then make `(F j)` uniformly Cauchy on
+`S`, and completeness of `L` supplies the uniform limit. -/
+theorem dohr_eb_sch_bu_hds_unif_of_dense : ∀ (n ℓ : ℕ) (α K : ℝ) (S D : Set (Rn n)) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → IsCompact S → D ⊆ S → S ⊆ closure D → (∀ d ∈ D, ∃ v : Rn n →L[ℝ] Rn ℓ, Tendsto (fun j => F j d) atTop (𝓝 v)) → (∀ j, ∀ z ∈ S, ∀ z' ∈ S, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ G : Rn n → (Rn n →L[ℝ] Rn ℓ), TendstoUniformlyOn F G atTop S := by
+  intro n ℓ α K S D F hα hK hS hDS hSD hconv hHol
+  -- Step 1: the limits `v d` on `D`.
+  choose! v hv using hconv
+  -- Steps 2–5: `(F j)` is uniformly Cauchy on `S`.
+  have hU : UniformCauchySeqOn F atTop S := by
+    refine Metric.uniformCauchySeqOn_iff.2 fun ε hε => ?_
+    -- Step 2: a Hölder scale `η > 0` with `K η^α < ε/3`.
+    have h0 : Tendsto (fun t : ℝ => K * t ^ α) (𝓝 0) (𝓝 0) := by
+      have h := ((Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).const_mul K).tendsto
+      simpa [Real.zero_rpow hα.ne'] using h
+    obtain ⟨η, hηε, hη⟩ : ∃ η : ℝ, K * η ^ α < ε / 3 ∧ 0 < η :=
+      (((h0.eventually (gt_mem_nhds (div_pos hε three_pos))).filter_mono
+        nhdsWithin_le_nhds).and (self_mem_nhdsWithin : ∀ᶠ t in 𝓝[>] (0 : ℝ), 0 < t)).exists
+    -- Step 3: finitely many balls `B̆_η(d)`, `d ∈ T ⊆ D`, cover `S`.
+    obtain ⟨T, hTD, hTfin, hST⟩ := hS.elim_finite_subcover_image (b := D)
+      (c := fun d => Metric.ball d η) (fun d _ => Metric.isOpen_ball) fun z hz => by
+        obtain ⟨d, hd, hzd⟩ := Metric.mem_closure_iff.1 (hSD hz) η hη
+        exact Set.mem_biUnion hd (Metric.mem_ball.2 hzd)
+    -- Step 4: from some `N` on, `F j d` is `ε/6`-close to `v d` for every `d ∈ T`.
+    have hev : ∀ᶠ j in atTop, ∀ d ∈ T, dist (F j d) (v d) < ε / 6 :=
+      hTfin.eventually_all.2 fun d hd =>
+        (hv d (hTD hd)).eventually (Metric.ball_mem_nhds _ (div_pos hε (by norm_num)))
+    obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 hev
+    refine ⟨N, fun m hm m' hm' z hz => ?_⟩
+    -- Step 5: the Hölder bound and the triangle inequality.
+    obtain ⟨d, hdT, hzd⟩ := Set.mem_iUnion₂.1 (hST hz)
+    have hdS : d ∈ S := hDS (hTD hdT)
+    have hzd' : ‖z - d‖ ^ α ≤ η ^ α :=
+      Real.rpow_le_rpow (norm_nonneg _) (by rw [← dist_eq_norm]; exact (Metric.mem_ball.1 hzd).le)
+        hα.le
+    have hHol' : ∀ j, dist (F j z) (F j d) < ε / 3 := fun j => by
+      rw [dist_eq_norm]
+      calc ‖F j z - F j d‖ ≤ K * ‖z - d‖ ^ α := hHol j z hz d hdS
+        _ ≤ K * η ^ α := mul_le_mul_of_nonneg_left hzd' hK
+        _ < ε / 3 := hηε
+    have h1 := hHol' m
+    have h2 := hHol' m'
+    have h3 := hN m hm d hdT
+    have h4 := hN m' hm' d hdT
+    have h5 := dist_triangle4 (F m z) (F m d) (F m' d) (F m' z)
+    have h6 := dist_triangle (F m d) (v d) (F m' d)
+    rw [dist_comm (F m' d) (F m' z)] at h5
+    rw [dist_comm (v d) (F m' d)] at h6
+    linarith
+  -- Step 6: pointwise limits on `S`, by completeness of `L`.
+  have hlim : ∀ z ∈ S, ∃ w, Tendsto (fun j => F j z) atTop (𝓝 w) := fun z hz =>
+    cauchySeq_tendsto_of_complete (hU.cauchySeq hz)
+  -- Step 7: uniformly Cauchy plus pointwise convergence gives uniform convergence.
+  exact ⟨fun z => limUnder atTop (fun j => F j z),
+    hU.tendstoUniformlyOn_of_tendsto fun z hz => tendsto_nhds_limUnder (hlim z hz)⟩
 
 end Submission
 
