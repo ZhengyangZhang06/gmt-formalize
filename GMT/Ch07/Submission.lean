@@ -549,6 +549,22 @@ theorem Submission.cmc_fc_gs_aqf_liminf_le_seq : ∀ (μ : Measure ℝ) (a b t :
   rw [Measure.restrict_apply measurableSet_Ioo, Set.inter_eq_left.2 hsub, one_div, inv_inv,
     ENNReal.ofReal_add (Nat.cast_nonneg n) zero_le_one, ENNReal.ofReal_natCast, ENNReal.ofReal_one]
 
+/-- Lower left difference quotients have a.e. finite `liminf` over `j` (the Fatou/Tonelli
+ingredient of the choice of the slicing level in the proof of Simon 6.7.2, "an argument as in
+6.7(2) of Ch. 2"): if `μⱼ([a, b]) ≤ Λ < ∞`, then for a.e. `t ∈ (a, b)`,
+`liminf_j liminf_{h ↓ 0} h⁻¹ μⱼ((t - h, t)) < ∞`.  For `νⱼ = μⱼ⌞[a, b]`, so `νⱼ(ℝ) ≤ Λ`, Tonelli
+and Fatou (twice) make the iterated `liminf` of `(n + 1) νⱼ((t - 1/(n + 1), t))` finite off a null
+set, and for `t ∈ (a, b)` it bounds the `liminf` along `h ↓ 0` for every `j`. -/
+theorem Submission.cmc_fc_gs_ae_quotient_finite : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ j (Ioo (t - h) t)) (𝓝[>] 0)) atTop ≠ ∞ := by
+  intro μ a b Λ hΛ hμ
+  -- `νⱼ = μⱼ⌞[a, b]` has `νⱼ(ℝ) = μⱼ([a, b]) ≤ Λ`, so off a null set the iterated `liminf` of its
+  -- sequential quotients is finite
+  filter_upwards [Submission.cmc_fc_gs_aqf_ae_seq_liminf_finite (fun j => (μ j).restrict (Icc a b))
+    Λ hΛ fun j => (Measure.restrict_apply_univ _).trans_le (hμ j)] with t ht hat
+  -- for `t ∈ (a, b)` and every `j`, the `liminf` along `h ↓ 0` is at most that of `νⱼ`
+  exact ne_top_of_le_ne_top ht <| liminf_le_liminf <| Eventually.of_forall fun j =>
+    Submission.cmc_fc_gs_aqf_liminf_le_seq (μ j) a b t hat
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
