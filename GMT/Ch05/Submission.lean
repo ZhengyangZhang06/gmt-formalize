@@ -540,6 +540,103 @@ theorem dohr_eb_ehs_del_diffquot_uniform : ∀ (n : ℕ) (E : Type) [NormedAddCo
       gcongr
       rw [div_lt_one he1]; linarith
     _ = η := mul_one η
+equation): limit of the right side.**
+If `ζ : ℝⁿ → ℝ^ℓ` is `C¹` with compact support, `tsupport ζ ⊆ U` for an open `U`, and `g` is
+continuous on `U`, then for every direction `e`, with `φ_h = h⁻¹ (ζ − ζ(· − h e))`,
+`∫_U ⟨φ_h(x), g(x)⟩ dx → ∫_U ⟨Dζ(x) e, g(x)⟩ dx` as `h → 0`, `h ≠ 0`.
+Proof: some `K' = cthickening δ (tsupport ζ)` is a compact subset of `U`, on which `‖g‖ ≤ C_g`
+and `‖Dζ(·) e‖ ≤ C_ζ`.  Since `x − h e = x + h (−e)`, the uniform convergence of difference
+quotients in the direction `−e` (`dohr_eb_ehs_del_diffquot_uniform`) gives `φ_h → Dζ(·) e`
+uniformly on `K'` and pointwise everywhere.  For `0 < |h| < δ/(‖e‖ + 1)`, `φ_h` vanishes off `K'`,
+so eventually `|⟨φ_h, g⟩| ≤ (C_ζ + 1) C_g 1_{K'}`, which is integrable; the integrands are
+continuous on `U`, and dominated convergence along `𝓝[≠] 0` concludes. -/
+theorem dohr_eb_ehs_del_rhs_tendsto : ∀ n ℓ : ℕ, ∀ (ζ g : Rn n → Rn ℓ) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ContinuousOn g U → Tendsto (fun h : ℝ => ∫ x in U, inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x)) (𝓝[≠] 0) (𝓝 (∫ x in U, inner ℝ (fderiv ℝ ζ x e) (g x))) := by
+  intro n ℓ ζ g U e hU hζ hζc hζU hg
+  -- Step 1: a compact margin `K' = cthickening δ (tsupport ζ) ⊆ U`, and bounds on `K'` for
+  -- `‖g‖` and `‖Dζ(·) e‖`.
+  obtain ⟨δ, hδ, hδU⟩ := hζc.isCompact.exists_cthickening_subset_open hU hζU
+  have hK' : IsCompact (cthickening δ (tsupport ζ)) := hζc.isCompact.cthickening
+  obtain ⟨Cg, hCg⟩ := hK'.exists_bound_of_continuousOn (hg.mono hδU)
+  have hDζc : Continuous (fun x => fderiv ℝ ζ x e) :=
+    (hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  obtain ⟨Cz, hCz⟩ := hK'.exists_bound_of_continuousOn hDζc.continuousOn
+  -- Step 2: uniform convergence of the difference quotients on `K'` in the direction `-e`,
+  -- rewritten via `φ_h(x) = -(h⁻¹ (ζ(x + h (-e)) - ζ(x)))` and `Dζ(x) e = -(Dζ(x) (-e))`.
+  have hUC := Submission.dohr_eb_ehs_del_diffquot_uniform n (Rn ℓ) ζ univ
+    (cthickening δ (tsupport ζ)) (-e) isOpen_univ hζ.contDiffOn hK' (subset_univ _)
+  have hφ : ∀ (h : ℝ) (x : Rn n), h⁻¹ • (ζ x - ζ (x - h • e)) =
+      -(h⁻¹ • (ζ (x + h • (-e)) - ζ x)) := by
+    intro h x
+    rw [smul_neg, ← sub_eq_add_neg, ← smul_neg, neg_sub]
+  have hDneg : ∀ x, fderiv ℝ ζ x e = -(fderiv ℝ ζ x (-e)) := by
+    intro x; simp
+  -- Step 3: eventually `|h| < δ/(‖e‖ + 1)` and `‖φ_h - Dζ(·) e‖ < 1` on `K'`.
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hpos : 0 < δ / (‖e‖ + 1) := div_pos hδ he1
+  have hev : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < δ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with h hh
+    simpa [Real.dist_eq] using hh
+  have hev1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), ∀ x ∈ cthickening δ (tsupport ζ),
+      ‖h⁻¹ • (ζ x - ζ (x - h • e)) - fderiv ℝ ζ x e‖ < 1 := by
+    filter_upwards [(Metric.tendstoUniformlyOn_iff.mp hUC) 1 one_pos] with h hh x hx
+    have := hh x hx
+    rw [dist_eq_norm] at this
+    rw [hφ, hDneg, neg_sub_neg]
+    exact this
+  -- Step 4: dominated convergence along `𝓝[≠] 0` with the bound `(C_ζ + 1) C_g 1_{K'}`.
+  apply tendsto_integral_filter_of_dominated_convergence
+    ((cthickening δ (tsupport ζ)).indicator (fun _ => (Cz + 1) * Cg))
+  · -- The integrands are continuous on `U`.
+    filter_upwards with h
+    apply ContinuousOn.aestronglyMeasurable _ hU.measurableSet
+    apply ContinuousOn.inner _ hg
+    have hζ0 := hζ.continuous
+    exact Continuous.continuousOn (by fun_prop)
+  · -- Domination: on `K'` by the uniform estimate, off `K'` the difference quotient vanishes.
+    filter_upwards [hev, hev1] with h hh hh1
+    filter_upwards with x
+    by_cases hx : x ∈ cthickening δ (tsupport ζ)
+    · rw [indicator_of_mem hx]
+      have h1 : ‖h⁻¹ • (ζ x - ζ (x - h • e))‖ ≤ Cz + 1 := by
+        have := hh1 x hx
+        calc ‖h⁻¹ • (ζ x - ζ (x - h • e))‖
+            = ‖(h⁻¹ • (ζ x - ζ (x - h • e)) - fderiv ℝ ζ x e) + fderiv ℝ ζ x e‖ := by
+              rw [sub_add_cancel]
+          _ ≤ ‖h⁻¹ • (ζ x - ζ (x - h • e)) - fderiv ℝ ζ x e‖ + ‖fderiv ℝ ζ x e‖ :=
+              norm_add_le _ _
+          _ ≤ 1 + Cz := by linarith [hCz x hx]
+          _ = Cz + 1 := by ring
+      calc ‖inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x)‖
+          ≤ ‖h⁻¹ • (ζ x - ζ (x - h • e))‖ * ‖g x‖ := norm_inner_le_norm _ _
+        _ ≤ (Cz + 1) * Cg := by
+            gcongr
+            · linarith [norm_nonneg (fderiv ℝ ζ x e), hCz x hx]
+            · exact hCg x hx
+    · rw [indicator_of_notMem hx]
+      have h1 : ζ x = 0 := by
+        by_contra h1
+        exact hx (self_subset_cthickening _ (subset_tsupport _ h1))
+      have h2 : ζ (x - h • e) = 0 := by
+        by_contra h2
+        apply hx
+        apply mem_cthickening_of_dist_le x (x - h • e) δ (tsupport ζ) (subset_tsupport _ h2)
+        rw [dist_eq_norm, sub_sub_cancel, norm_smul, Real.norm_eq_abs]
+        calc |h| * ‖e‖ ≤ |h| * (‖e‖ + 1) := by gcongr; linarith
+          _ ≤ δ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+          _ = δ := div_mul_cancel₀ _ he1.ne'
+      simp [h1, h2]
+  · -- The bound is integrable: a constant on the compact set `K'`.
+    rw [integrable_indicator_iff hK'.isClosed.measurableSet]
+    exact integrableOn_const (ne_of_lt (lt_of_le_of_lt
+      (Measure.restrict_apply_le _ _) hK'.measure_lt_top))
+  · -- Pointwise convergence, from the sibling applied to the compact set `{x}`.
+    filter_upwards with x
+    apply Tendsto.inner _ tendsto_const_nhds
+    have hx := (Submission.dohr_eb_ehs_del_diffquot_uniform n (Rn ℓ) ζ univ {x} (-e) isOpen_univ
+      hζ.contDiffOn isCompact_singleton (subset_univ _)).tendsto_at (mem_singleton x)
+    simp only [hφ, hDneg]
+    exact hx.neg
 
 end Submission
 
