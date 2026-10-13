@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '1,300p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "rg -n 'stationaryAlong_of_minimizing_in_submanifold|dsmc_exp_ball_mass_monotone|dsmc_approxTangentPlane_starProjection_aemeasurable|dimred_im_mass_measure|dimred_mono_density_usc_of_monotone|dimred_mono_ae_ball_density_ge_one|dimred_mono_support_density_ge_one_of_usc|idtp_cse_mlb_univ_monotonicity_density' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "diff -q .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean",
+        "rg -n 'idtp_cse_mlb_univ_monotonicity_density' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "rg -n 'theorem upperSemicontinuousOn_univ_iff|theorem le_of_tendsto|protected theorem Tendsto.mul_const|theorem measure_ball_pos|theorem measure_ball_lt_top|protected theorem mul_inv|protected theorem inv_mul_cancel|theorem withDensity_apply|theorem restrict_restrict|theorem integral_eq_lintegral_of_nonneg_ae' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mlb_v5/Final.lean",
+        "sed -n '6671,6718p' /runtime/flows/gmt-claude-dc9e2bf24a42/_recursive_lean/runtime.py",
+        "sed -n '220,318p' /runtime/flows/gmt-claude-dc9e2bf24a42/_recursive_lean/store.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fa8e8e2b27/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fa8e8e2b27/decomposition-v5.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1-density-usc-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1-ae-density-lower-bound-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1-support-density-l-69839965cf/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-dc9e2bf24a42/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-dc9e2bf24a42/_recursive_lean/store.py",
+        "/tmp/mlb_v5/Final.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected mass-bound contract. The project and mathlib pins match, and the workspace Submission.lean is identical to the snapshot. No proposed declaration occurs in the snapshot; seven are valid exact-type reuses of accepted candidates. I verified their acceptance records, comparator results, source hashes, and frozen types. Their dependency/child closures are acyclic, entirely accepted, and avoid the selected node and its ancestors; reuse preserves those dependencies. The new name is unreserved in the DAG. All eight lean_statement strings are standalone, one-line propositions matching their prose, with bare lean_name identifiers and no problematic matrix constructions. I independently reran Final.lean after checking its eight input types against the proposal: A–G imply H, and H implies the exact selected parent type, using only propext, Classical.choice, and Quot.sound. The pinned ENNReal lemmas justify the limit and cancellation steps."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "stationarity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The proof handles degree zero and zero local mass, constructs admissible competitors with compact support in N, and uses the two-sided first-variation estimate to force stationarity. Its cited prerequisites are registered, accepted, and non-circular."
+    },
+    {
+      "key": "exp_ball_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include all measurability, curvature, support, and radius hypotheses. Finite ball measure justifies differentiation and dominated convergence; radial cutoffs give the required derivative inequality and the open-ball limit, including the endpoint rho = r. Exact accepted-type reuse."
+    },
+    {
+      "key": "tangent_projection_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof treats n = 0, establishes sigma-finiteness of the restricted Hausdorff measure, obtains measurable quadratic projection norms through blow-up limits, and reconstructs the projection by polarization. Absolute continuity transfers the result to R.measure. Exact accepted-type reuse."
+    },
+    {
+      "key": "mass_equals_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches all three Lean conjuncts. Pointwise duality and the Lusin–mollification argument establish mass equality; the zero-region argument gives the support characterization; agreement on relatively compact open sets gives representation independence. The proof is non-circular and the frozen type is identical to the accepted declaration."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness bounds the monotone ratio's limit, and removing the exponential factor gives the stated real density. The proportional-radius comparison proves upper semicontinuity using only monotonicity of massOn, without assuming it is a measure. ENNReal positivity and finiteness requirements are supplied."
+    },
+    {
+      "key": "ae_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive integer multiplicity gives the unweighted measure bound and local finiteness needed by the accepted tangent-density lemmas. Comparing density limits yields 1 ≤ ofReal theta, hence 1 ≤ theta, without an omitted nonnegativity hypothesis. Absolute continuity correctly transfers the almost-everywhere conclusion."
+    },
+    {
+      "key": "support_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density nonnegativity and uniqueness identify theta with Theta(y). Upper semicontinuity would make a density below one persist on a ball inside U; local mass equality and the almost-everywhere hypothesis force that ball to have zero measure, contradicting the support hypothesis."
+    },
+    {
+      "key": "univ_monotonicity_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The identity chart and affine tangent curves discharge stationarity hypotheses. The seven declared dependencies then establish monotonicity, local finiteness, density existence, upper semicontinuity, and the support bound exactly as stated. Dependency direction is correct and acyclic. Specialization to n = 2 followed by the supplied limit and cancellation argument proves the selected parent; both assembly steps were independently Lean-checked."
+    }
+  ],
+  "required_changes": []
+}

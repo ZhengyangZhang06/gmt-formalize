@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.mass_lower_bound-a1.univ_monotonicity_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.mass_lower_bound-a1",
+  "depth": 5,
+  "title": "Monotone mass ratio, upper semicontinuous density and density at least one for minimizing cycles in ℝ^P",
+  "statement": "Let P, n ∈ ℕ and let C ∈ 𝒟_n(ℝ^P) (C : GeometricCurrentOn univ n, ℝ^P = Euclid P) be minimizing in ℝ^P (IsMinimizingIn C univ: C is integer multiplicity and M_W(C) ≤ M_W(S) for all admissible competitors) with ∂C = 0 (BoundaryVanishes C). Then: (ii) for every y ∈ ℝ^P the function ρ ↦ ρ^{−n}·M_{B_ρ(y)}(C), written ENNReal.ofReal(1/ρ^n)·C.massOn(ball y ρ) ∈ [0, ∞], is nondecreasing on (0, ∞); (iii) there is an upper semicontinuous Θ : ℝ^P → ℝ with HasMassDensity C y (Θ(y)) for every y ∈ ℝ^P, i.e. Θ(y) ≥ 0 and M_{B_ρ(y)}(C)/(ω_n·ofReal(ρ^n)) → ofReal(Θ(y)) in [0, ∞] as ρ ↓ 0, where ω_n = unitBallVolume n; and (iv) θ ≥ 1 whenever y ∈ spt C and HasMassDensity C y θ.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → (∀ y : Euclid P, MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * C.massOn (ball y ρ)) (Ioi 0)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y : Euclid P, HasMassDensity C y (Θ y)) ∧ UpperSemicontinuous Θ) ∧ ∀ y ∈ C.support, ∀ θ : ℝ, HasMassDensity C y θ → 1 ≤ θ",
+  "lean_name": "idtp_cse_mlb_univ_monotonicity_density",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.density_usc-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.ae_density_lower_bound-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.support_density_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1-a1",
+      "result_commit": "c2d6ad3e021de8215c1c8bde8b550eb049c1418a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce-a1",
+      "result_commit": "81933e86452288df671b543eecd65974ff9b8f2e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45-a1",
+      "result_commit": "7eb1db9119b0681b1c3ca8fec039b64826e2874c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.density_usc-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-density-usc-a1-a1",
+      "result_commit": "c6671eb413dceb5ec3c6494e999fe075cdb5a407",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.ae_density_lower_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-ae-density-lower-bound-a1-a1",
+      "result_commit": "b59dbf93abbab37e4d13519ae2ffc6f0ad71f4c9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.support_density_lower_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-support-density-l-69839965cf-a1",
+      "result_commit": "61b1b7b2cd0e6f17346553079e883e960ad602ce",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6b9e25a71f-a1"
+}
