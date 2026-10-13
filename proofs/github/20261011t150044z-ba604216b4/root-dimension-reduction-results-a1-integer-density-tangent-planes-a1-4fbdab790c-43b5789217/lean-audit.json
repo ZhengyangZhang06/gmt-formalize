@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a98dc7d5660d5827f1902efbebb9bce9fb7a9cd445518fa0a615cacef0ec4b26",
+  "git_delta": {
+    "base_commit": "45260ea50992ee61816ffca9d491ad24216be11e",
+    "candidate_commit": "0892ece3b2467fbaf913b32497d6ca14f6df1190",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_csfp_subspace_eq_of_inter_ball",
+    "diff_sha256": "ffa0b732a52dd160db1c9431861a26b24402db8d579f339776c186c97d644130",
+    "source_sha256": "cbd274964fe44dabdd989b1d30ad35d78a5a7dc3acc68182059db6b973ceee39",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball",
+      "statement": "∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
