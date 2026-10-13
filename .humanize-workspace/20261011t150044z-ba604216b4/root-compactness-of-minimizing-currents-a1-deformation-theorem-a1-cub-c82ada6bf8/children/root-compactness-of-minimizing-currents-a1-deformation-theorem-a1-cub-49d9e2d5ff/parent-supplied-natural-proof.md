@@ -1,0 +1,82 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.osc_exhaustion-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 of the parent proof (δ_j := 1/(j + 3) ↓ 0 and dominated convergence), carried out on the product space Q₁ × Q₁, where it becomes continuity of the integral along an increasing union.
+
+Notation. n := m + 1, Euclid n with Lebesgue measure vol, Q(δ) := {z : δ < z_i < 1 − δ for all i}, Q₁ := {y : 0 < y_i < 1 for all i}. λ := vol ⊗ vol is the product measure on Euclid n × Euclid n. F(x, y) := |u(x) − u(y)| ≥ 0. Sibling used: unit_cube_volume (vol(Q₁) = 1).
+
+1. Measurability. For every δ, Q(δ) = ⋂_{i ∈ Fin n} ({z : δ < z_i} ∩ {z : z_i < 1 − δ}). Each coordinate map z ↦ z_i is continuous, hence measurable, so each set in this finite intersection is measurable (measurableSet_lt) and Q(δ) is measurable. Products Q(δ) × Q(δ') are then λ-measurable.
+2. Integrability on Q₁ × Q₁. By unit_cube_volume, vol(Q₁) = 1 < ∞, so ν := vol restricted to Q₁ is a finite measure, and u ∈ L¹(ν) by hypothesis. The restriction of λ to Q₁ × Q₁ is ν ⊗ ν (Measure.prod_restrict). On ν ⊗ ν the functions (x, y) ↦ u(x) and (x, y) ↦ u(y) are integrable (Integrable.comp_fst / Integrable.comp_snd, ν finite: by Tonelli ∫∫|u(x)| dν(y) dν(x) = ν(univ)·∫|u| dν < ∞, and both are a.e.-strongly measurable as compositions with coordinate projections). Hence F = |u(x) − u(y)| is integrable on Q₁ × Q₁ with respect to λ, and therefore also on every subset of Q₁ × Q₁.
+3. The sequence of cubes. Let δ_j := 1/(j + 3) for j ∈ ℕ. Then 0 < δ_j ≤ 1/3 < 1/2, δ_j is nonincreasing in j, and δ_j → 0 (1/(j + 3) → 0). Put Q_j := Q(δ_j). If j ≤ k then δ_k ≤ δ_j, so z ∈ Q_j implies δ_k ≤ δ_j < z_i and z_i < 1 − δ_j ≤ 1 − δ_k for all i, i.e. Q_j ⊆ Q_k: the Q_j increase. Since δ_j > 0, also Q_j ⊆ Q₁.
+4. ⋃_j Q_j = Q₁. The inclusion ⊆ is step 3. Conversely let x ∈ Q₁. For each i, x_i > 0 and 1 − x_i > 0; since δ_j → 0, eventually δ_j < x_i and eventually δ_j < 1 − x_i (i.e. x_i < 1 − δ_j). Because Fin n is finite, eventually these 2n conditions hold simultaneously (Filter.eventually_all), so x ∈ Q_j for some j.
+5. Increasing product sets. Let s_j := Q_j × Q_j. By step 3, (s_j) is increasing, and each s_j is measurable (step 1). Since (Q_j) is increasing, ⋃_j (Q_j × Q_j) = (⋃_j Q_j) × (⋃_j Q_j) (a pair with x ∈ Q_a and y ∈ Q_b lies in Q_{max(a,b)} × Q_{max(a,b)}; Set.iUnion_prod_of_monotone), which equals Q₁ × Q₁ by step 4.
+6. Fubini identification. For each j, F is λ-integrable on s_j ⊆ Q₁ × Q₁ (step 2), so Fubini's theorem for set integrals (setIntegral_prod) gives ∫_{s_j} F dλ = ∫_{x∈Q_j}∫_{y∈Q_j}|u(x) − u(y)| dy dx =: D_j. Likewise, F being λ-integrable on Q₁ × Q₁, ∫_{Q₁×Q₁} F dλ = ∫_{x∈Q₁}∫_{y∈Q₁}|u(x) − u(y)| dy dx =: D.
+7. Convergence. F is λ-integrable on ⋃_j s_j = Q₁ × Q₁ and the s_j are measurable and increasing, so ∫_{s_j} F dλ → ∫_{⋃_j s_j} F dλ (tendsto_setIntegral_of_monotone; equivalently dominated convergence, since 1_{s_j}F → 1_{Q₁×Q₁}F pointwise by step 5 with the integrable dominating function 1_{Q₁×Q₁}|F|). By steps 5 and 6 this says D_j → D.
+8. Conclusion. Each δ_j lies in (0, 1/2) (step 3), so the hypothesis gives D_j ≤ K for every j. A limit of real numbers that are all ≤ K is ≤ K (le_of_tendsto'), hence D ≤ K, which is the claim. ∎
+
+## Key steps
+
+1. Q_δ is measurable for every δ; by unit_cube_volume vol(Q₁) = 1, so |u(x) − u(y)| is integrable on Q₁ × Q₁ for the product measure.
+2. With δ_j = 1/(j+3) ∈ (0, 1/2), the cubes Q_{δ_j} increase and their union is Q₁, so the products Q_{δ_j} × Q_{δ_j} increase to Q₁ × Q₁.
+3. Fubini (setIntegral_prod) identifies D(δ_j) and D(Q₁) with set integrals over these product sets; continuity along increasing unions (tendsto_setIntegral_of_monotone) gives D(δ_j) → D(Q₁).
+4. D(δ_j) ≤ K for all j, so the limit D(Q₁) ≤ K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -l 'cmcdt_cbm_bvp' local-references/123e8435b4a2469b/ (no match); rg -n 'cmcdt_cbm_bvp|osc_le_of_l1_approx|mean_dev_le_osc|unit_cube_volume|osc_le_of_inner_cubes' project mathlib/Mathlib -g '*.lean' (no match); python3 scan of dag.json (1582 nodes) lean_name and theorems fields for the four proposed names (no collision)`
+- `rg -n -i 'BVPoincare|poincar[eé] inequality|poincare_ineq' project -g '*.lean'`
+- `rg -n -i 'integral.*\|.* - .*\|.*≤.*∫.*∫|abs_sub_average|integral_abs_sub_average|average_le_integral|norm_sub_average' mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'theorem tendsto_setIntegral_of_monotone$|theorem setIntegral_prod |theorem PiLp.volume_preserving_ofLp|theorem volume_pi_Ioo |lemma Integrable.comp_fst|lemma Integrable.comp_snd|theorem Integrable.integral_prod_left|lemma integral_mono_of_nonneg|lemma abs_integral_le_integral_abs|theorem ContinuousOn.integrableOn_compact |theorem EuclideanSpace.norm_eq|theorem iUnion_prod_of_monotone|theorem prod_restrict' mathlib/Mathlib`
+- `python3 scan of dag.json lean_statement fields for 'volume \{y : Euclid', '\|u x - u y\|', '\|v x - v y\|', 'δ < z i ∧ z i < 1 - δ' (hits only in sibling or unaccepted nodes)`
+- `lake env lean /tmp/bvp-decomp/final/FinalCheck.lean (generated from the exact lean_statement strings: four children fully proved, parent frozen type derived from children + sorry'd siblings); lake env lean /tmp/bvp-decomp/final/FinalCheckAx.lean (siblings as axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Lattice/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/parent-child-handoff.json`
+- `/tmp/bvp-decomp/final/FinalCheck.lean`
+- `/tmp/bvp-decomp/final/FinalCheckAx.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace Contract.lean and Submission.lean.
+
+Nothing in it can be reused for this node:
+- The only BV Poincaré statement is the Ch02 contract def BVPoincare (Simon 2.7). It is unproved (main_theorem := by sorry) and belongs to another chapter.
+- Ch04 5.6 is a different, varifold Poincaré inequality.
+- Mathlib has no mean-oscillation or Poincaré lemma of this form.
+- No DAG node has an identical type. cmcdtfr_face_geometry contains vol(Q₁) = 1 only as one conjunct of a different, unaccepted type.
+
+Mathlib supplies every tool the child proofs cite, all already inside the GMT.Ch07.Submission import closure, so no new imports are needed:
+- PiLp.volume_preserving_ofLp, MeasurePreserving.measure_preimage, Real.volume_pi_Ioo;
+- Integrable.comp_fst, Integrable.comp_snd, Integrable.integral_prod_left, Measure.prod_restrict, setIntegral_prod;
+- tendsto_setIntegral_of_monotone, Set.iUnion_prod_of_monotone;
+- integral_mono_of_nonneg, abs_integral_le_integral_abs;
+- ContinuousOn.integrableOn_compact, EuclideanSpace.norm_eq.
+
+The four proposed names are fresh.
+
+After import GMT.Ch07.Submission, in the contract namespace and opens:
+- All four child types elaborate, and all four children were fully proved with axioms propext, Classical.choice and Quot.sound only.
+- The selected node's exact frozen type was derived from the children plus the two sibling contracts.
+- With the siblings as axioms, the parent depends only on standard axioms plus Submission.cmcdt_cbm_smooth_approx and Submission.cmcdt_cbm_smooth_poincare.

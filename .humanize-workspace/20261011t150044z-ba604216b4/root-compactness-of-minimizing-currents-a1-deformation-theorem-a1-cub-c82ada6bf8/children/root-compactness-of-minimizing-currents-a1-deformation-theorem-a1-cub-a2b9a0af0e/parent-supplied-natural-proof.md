@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.osc_l1_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof ("D(δ) ≤ D_k + 2ε_k, let k → ∞"), with the outputs of the sibling results smooth_approx/smooth_poincare replaced by the hypotheses on v_k, and with the integrability facts of step 1 of the parent proof written out.
+
+Notation. n := m + 1, Euclid n with Lebesgue measure vol, S := Q_δ = {z : δ < z_i < 1 − δ for all i}, Q₁ = {y : 0 < y_i < 1 for all i}. All integrals are Bochner integrals; every integrand below is shown to be integrable, so they are genuine Lebesgue integrals.
+
+1. S ⊆ Q₁. If z ∈ S then for each i, 0 ≤ δ < z_i and z_i < 1 − δ ≤ 1, using δ ≥ 0.
+2. Boundedness. For y ∈ Q₁ each |y_i| < 1, so ‖y‖² = Σ_{i ∈ Fin n} y_i² ≤ Σ_{i ∈ Fin n} 1 = n (EuclideanSpace.norm_eq) and ‖y‖ ≤ √n. Hence S ⊆ Q₁ ⊆ B̄ := closedBall(0, √n). B̄ is compact (Euclid n is finite dimensional, hence proper), so vol(B̄) < ∞ and vol(S) ≤ vol(B̄) < ∞.
+3. The measure μ. Let μ := vol restricted to S. By step 2, μ is a finite measure; put a := μ(univ) = vol(S), a real number ≥ 0. Since u is integrable on Q₁ ⊇ S, u ∈ L¹(μ). Each v_k is continuous, hence continuous on the compact set B̄ and therefore integrable on B̄ (ContinuousOn.integrableOn_compact); as S ⊆ B̄, v_k ∈ L¹(μ). Consequently, for every k, v_k − u ∈ L¹(μ), and ε_k := ∫ |v_k − u| dμ = ∫_{Q_δ}|v_k − u| is the quantity in the hypothesis, so ε_k → 0.
+4. Fubini integrability. Fix k. On the finite product measure μ ⊗ μ, the functions (x, y) ↦ v_k(x) and (x, y) ↦ v_k(y) are integrable (Integrable.comp_fst / Integrable.comp_snd, using that μ is finite: by Tonelli ∫∫|v_k(x)| dμ(y) dμ(x) = a·∫|v_k| dμ < ∞, and both are a.e.-strongly measurable as compositions with coordinate projections). Hence G_k(x, y) := |v_k(x) − v_k(y)| is μ⊗μ-integrable, and by Fubini (Integrable.integral_prod_left) the function x ↦ ∫ |v_k(x) − v_k(y)| dμ(y) is μ-integrable. Also x ↦ |u(x) − v_k(x)| is μ-integrable (step 3).
+5. Pointwise triangle inequality. For all x, y: u(x) − u(y) = (v_k(x) − v_k(y)) + (u(x) − v_k(x)) + (v_k(y) − u(y)), hence |u(x) − u(y)| ≤ |v_k(x) − v_k(y)| + |u(x) − v_k(x)| + |v_k(y) − u(y)|.
+6. Inner integral. Fix x. The three functions of y on the right side of step 5 are μ-integrable: y ↦ |v_k(x) − v_k(y)| (constant minus an integrable function, μ finite), the constant y ↦ |u(x) − v_k(x)| (μ finite), and y ↦ |v_k(y) − u(y)| (step 3). The left side y ↦ |u(x) − u(y)| is nonnegative. By monotonicity of the integral (integral_mono_of_nonneg: nonnegative left side, integrable right side, pointwise inequality) and linearity,
+   ∫ |u(x) − u(y)| dμ(y) ≤ ∫ |v_k(x) − v_k(y)| dμ(y) + a·|u(x) − v_k(x)| + ε_k,
+   where the integral of the constant |u(x) − v_k(x)| equals μ(univ)·|u(x) − v_k(x)| = a·|u(x) − v_k(x)|.
+7. Outer integral. The right side of step 6, as a function of x, is μ-integrable (step 4 plus a constant multiple of an integrable function plus a constant); the left side x ↦ ∫ |u(x) − u(y)| dμ(y) is nonnegative. Integrating step 6 over x with the same monotonicity and linearity, and using ∫ |u − v_k| dμ = ∫ |v_k − u| dμ = ε_k and ∫ ε_k dμ = a·ε_k:
+   D(u) := ∫_{x∈S}∫_{y∈S}|u(x) − u(y)| dy dx ≤ ∫_{x∈S}∫_{y∈S}|v_k(x) − v_k(y)| dy dx + a·ε_k + a·ε_k ≤ K + 2a·ε_k,
+   the last step by the hypothesis on v_k.
+8. Limit. Since ε_k → 0, K + 2a·ε_k → K + 2a·0 = K. As D(u) ≤ K + 2a·ε_k for every k, passing to the limit (ge_of_tendsto') gives D(u) ≤ K. ∎
+
+## Key steps
+
+1. δ ≥ 0 gives Q_δ ⊆ Q₁ ⊆ closedBall(0, √(m+1)); hence vol(Q_δ) < ∞, u is integrable on Q_δ, and each continuous v_k is integrable on Q_δ.
+2. Fubini: (x, y) ↦ |v_k(x) − v_k(y)| is integrable on Q_δ × Q_δ, so its inner integral is integrable in x.
+3. Pointwise |u(x) − u(y)| ≤ |v_k(x) − v_k(y)| + |u(x) − v_k(x)| + |v_k(y) − u(y)|; integrating twice gives D(u) ≤ D(v_k) + 2 vol(Q_δ) ε_k ≤ K + 2 vol(Q_δ) ε_k.
+4. Since ε_k = ∫_{Q_δ}|v_k − u| → 0, letting k → ∞ gives D(u) ≤ K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -l 'cmcdt_cbm_bvp' local-references/123e8435b4a2469b/ (no match); rg -n 'cmcdt_cbm_bvp|osc_le_of_l1_approx|mean_dev_le_osc|unit_cube_volume|osc_le_of_inner_cubes' project mathlib/Mathlib -g '*.lean' (no match); python3 scan of dag.json (1582 nodes) lean_name and theorems fields for the four proposed names (no collision)`
+- `rg -n -i 'BVPoincare|poincar[eé] inequality|poincare_ineq' project -g '*.lean'`
+- `rg -n -i 'integral.*\|.* - .*\|.*≤.*∫.*∫|abs_sub_average|integral_abs_sub_average|average_le_integral|norm_sub_average' mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'theorem tendsto_setIntegral_of_monotone$|theorem setIntegral_prod |theorem PiLp.volume_preserving_ofLp|theorem volume_pi_Ioo |lemma Integrable.comp_fst|lemma Integrable.comp_snd|theorem Integrable.integral_prod_left|lemma integral_mono_of_nonneg|lemma abs_integral_le_integral_abs|theorem ContinuousOn.integrableOn_compact |theorem EuclideanSpace.norm_eq|theorem iUnion_prod_of_monotone|theorem prod_restrict' mathlib/Mathlib`
+- `python3 scan of dag.json lean_statement fields for 'volume \{y : Euclid', '\|u x - u y\|', '\|v x - v y\|', 'δ < z i ∧ z i < 1 - δ' (hits only in sibling or unaccepted nodes)`
+- `lake env lean /tmp/bvp-decomp/final/FinalCheck.lean (generated from the exact lean_statement strings: four children fully proved, parent frozen type derived from children + sorry'd siblings); lake env lean /tmp/bvp-decomp/final/FinalCheckAx.lean (siblings as axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Lattice/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/parent-child-handoff.json`
+- `/tmp/bvp-decomp/final/FinalCheck.lean`
+- `/tmp/bvp-decomp/final/FinalCheckAx.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace Contract.lean and Submission.lean.
+
+Nothing in it can be reused for this node:
+- The only BV Poincaré statement is the Ch02 contract def BVPoincare (Simon 2.7). It is unproved (main_theorem := by sorry) and belongs to another chapter.
+- Ch04 5.6 is a different, varifold Poincaré inequality.
+- Mathlib has no mean-oscillation or Poincaré lemma of this form.
+- No DAG node has an identical type. cmcdtfr_face_geometry contains vol(Q₁) = 1 only as one conjunct of a different, unaccepted type.
+
+Mathlib supplies every tool the child proofs cite, all already inside the GMT.Ch07.Submission import closure, so no new imports are needed:
+- PiLp.volume_preserving_ofLp, MeasurePreserving.measure_preimage, Real.volume_pi_Ioo;
+- Integrable.comp_fst, Integrable.comp_snd, Integrable.integral_prod_left, Measure.prod_restrict, setIntegral_prod;
+- tendsto_setIntegral_of_monotone, Set.iUnion_prod_of_monotone;
+- integral_mono_of_nonneg, abs_integral_le_integral_abs;
+- ContinuousOn.integrableOn_compact, EuclideanSpace.norm_eq.
+
+The four proposed names are fresh.
+
+After import GMT.Ch07.Submission, in the contract namespace and opens:
+- All four child types elaborate, and all four children were fully proved with axioms propext, Classical.choice and Quot.sound only.
+- The selected node's exact frozen type was derived from the children plus the two sibling contracts.
+- With the siblings as axioms, the parent depends only on standard axioms plus Submission.cmcdt_cbm_smooth_approx and Submission.cmcdt_cbm_smooth_poincare.

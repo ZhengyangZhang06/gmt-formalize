@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.osc_exhaustion-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1",
+  "depth": 5,
+  "title": "Exhausting the unit cube by the inner cubes Q_δ in the double-integral oscillation",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := {y ∈ Euclid n : 0 < y_i < 1 for all i} and Q_δ := {z : δ < z_i < 1 − δ for all i} (Lebesgue measure). Let u : ℝⁿ → ℝ be integrable on Q₁ and K ∈ ℝ with ∫_{x∈Q_δ}∫_{y∈Q_δ}|u(x) − u(y)| dy dx ≤ K for every δ ∈ (0, 1/2). Then ∫_{x∈Q₁}∫_{y∈Q₁}|u(x) − u(y)| dy dx ≤ K.",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ δ : ℝ, 0 < δ → δ < 1 / 2 → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K) → ∫ x in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u x - u y| ≤ K",
+  "lean_name": "cmcdt_cbm_bvp_osc_le_of_inner_cubes",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.unit_cube_volume-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.unit_cube_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-49d9e2d5ff-a1"
+}
