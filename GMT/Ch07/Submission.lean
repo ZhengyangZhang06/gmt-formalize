@@ -2940,6 +2940,30 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Approximate tangent planes of `M` along one bi-Lipschitz `C¹` chart, off a Borel null set**
+(Simon Ch. 3, Remark 1.5(2) and the proof of Theorem 1.6 "⇒", chapter-03.txt lines 86–90 and
+113–146: `TₓM = TₓNⱼ` for `Hⁿ`-a.e. `x ∈ Mⱼ`).  Let `M ⊆ ℝᴾ` be Borel with `Hᴺ(M ∩ K) < ∞` for
+compact `K`, let `g` be `C¹` with `m|a − b| ≤ |g(a) − g(b)|` on `B = B_r(c)`, `m > 0`, and let
+`S = g(B)` be Borel with `Hᴺ(S) < ∞`.  Tangent locality with `W = ℝᴾ` gives, for `Hᴺ`-a.e.
+`x ∈ S ∩ M`, the same approximate tangent spaces for `S` and `M` at `x`; the exceptional set lies
+in a Borel `Hᴺ`-null set `E`.  For `y ∈ B` with `g(y) ∈ M ∖ E`, `S` has approximate tangent space
+`Dg(y)(ℝᴺ)` at `g(y)` (the `C¹` piece), hence so does `M`. -/
+theorem Submission.dtc_bc_lc_sl_cp_chart_tangent : ∀ (P N : ℕ) (M : Set (Euclid P)) (g : Euclid N → Euclid P) (c : Euclid N) (r m : ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[N] (M ∩ K) ≠ ∞) → ContDiff ℝ 1 g → 0 < m → (∀ a ∈ ball c r, ∀ b ∈ ball c r, m * ‖a - b‖ ≤ ‖g a - g b‖) → MeasurableSet (g '' ball c r) → μHE[N] (g '' ball c r) ≠ ∞ → ∃ E : Set (Euclid P), MeasurableSet E ∧ μHE[N] E = 0 ∧ ∀ y ∈ ball c r, g y ∈ M → g y ∉ E → HasApproximateTangentSpaceAt N M (g y) (LinearMap.range (fderiv ℝ g y : Euclid N →ₗ[ℝ] Euclid P)) := by
+  intro P N M g c r m hM hMfin hg hm hlip hS hSfin
+  -- Steps 1–2, `S = g(B)` and `M` are locally `Hᴺ`-finite, so tangent locality with `W = ℝᴾ`
+  -- gives `TₓS = TₓM` for `Hᴺ`-a.e. `x ∈ S ∩ M`.
+  have htr := Submission.doraggt_ae_approxTangent_transfer P N univ (g '' ball c r) M isOpen_univ
+    hS hM (fun K _ _ => ne_top_of_le_ne_top hSfin (measure_mono inter_subset_left))
+    fun K hK _ => hMfin K hK
+  -- Step 3, the exceptional set of the transfer lies in a Borel `Hᴺ`-null set `E`.
+  obtain ⟨E, hE₀E, hE, hE0⟩ := exists_measurable_superset_of_null (ae_iff.1 htr)
+  refine ⟨E, hE, hE0, fun y hy hyM hyE => ?_⟩
+  -- Step 4, at `x = g(y) ∉ E` the transfer holds, and `S` has tangent space `Dg(y)(ℝᴺ)` at `x`.
+  by_contra hfail
+  refine hyE (hE₀E fun hx => hfail ?_)
+  exact (hx (mem_univ _) (mem_image_of_mem g hy) hyM _).1
+    (Submission.codim1_rdo_c1_piece_approxTangent P N g c r m hg hm hlip y hy)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
