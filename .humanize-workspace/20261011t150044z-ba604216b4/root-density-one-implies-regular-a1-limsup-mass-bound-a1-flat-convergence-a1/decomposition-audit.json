@@ -1,0 +1,104 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def (IsIntegerMultiplicity|BoundaryVanishes|CompactlyContained|IsUnitOrientationOf)|IMRep\\.(Represents|measure)",
+        "deformation theorem|cubical|radial retract|latticeFace|lemma 5\\.4|skeleton",
+        "ae_differentiableWithinAt_of_mem|ae_differentiableAt",
+        "lipschitz_infDist_pt|infDist_le_dist_of_mem|exists_cthickening_subset_open",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "summable.*mass|IMRep|IsIntegerMultiplicity|mass.*complete",
+        "sed -n '780,935p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "sed -n '1690,1845p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "sed -n '1840,1965p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa4/20261012T034712Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_d-qz1b10wo/comparator-config.json",
+        "/tmp/fc-independent-audit-iaizwe1u/AllProps.lean",
+        "/tmp/fc-decomp-v2/lean/Assembly.lean",
+        "/tmp/fc-decomp-v2/lean/Slim.lean"
+      ],
+      "conclusion": "Verified project b4d606db and mathlib 25730c7c; the snapshot Ch07 contract equals the workspace contract and submission. The searches found the required basic analytic declarations, but no proved cubical deformation theorem or IM mass-completeness theorem; Ch06 supplies only frozen contracts for these results. All ten supplied types independently elaborate as standalone comparator challenges in the replayed contract scope. The exact conditional parent assembly and series_limit derivation compile with only propext, Classical.choice and Quot.sound. The split appropriately separates the selected flat-convergence argument, and its conclusions imply that exact parent statement using the existing slicing dependency. Dependencies are correctly directed and acyclic. Final reservation checking against the 849-node DAG found seven fresh names and three accepted, byte-identical reuses; retained comparator evidence confirms compatibility and the standard axiom allowlist. Every name is a bare identifier. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the absence of an openness requirement on W. Rational-level extraction, Fatou, simultaneous good slices and the cutoff estimate establish every conclusion, particularly weak convergence of the localized currents. The slicing antecedent is exactly the existing dependency's frozen type."
+    },
+    {
+      "key": "total_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-net contract matches its prose. The proof covers n>P, n=P and n<P; verifies extension by zero and its boundary identity; bounds the finite cell and coefficient choices; and restricts the decomposition back to U without increasing mass. Its dependencies supply precisely the deformation results used."
+    },
+    {
+      "key": "deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit cell formula, dimensions, coefficients, mass bounds and support clauses match the proposition. Independently checking the order-statistic formula, Claims A–C and periodic gluing confirms the corrected retraction estimate. Center selection, slicing, homotopy, IM summation, facewise BV medians and rescaling establish the remaining conclusions without relying on the selected parent or the rejected similarity identity."
+    },
+    {
+      "key": "deformation_top",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The top-dimensional contract is exact. The isometric embedding preserves IM representations and masses. The compact cutoff makes projection testing legitimate; vertical faces contribute zero and horizontal faces yield the stated cube chain. Defining S=T−Π establishes integer multiplicity, while the cutoff evaluation gives its mass and support bounds."
+    },
+    {
+      "key": "cauchy_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-net hypothesis and dyadic conclusion match exactly. Nested infinite fibres yield a strictly increasing diagonal sequence. Subtracting decompositions with a common center produces IM differences and the required mass bound; neither the parent theorem nor integer multiplicity of the centers is assumed."
+    },
+    {
+      "key": "series_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two applications of im_series have the correct degrees. Their HasSum conclusions, the finite telescoping identity and weak convergence identify the required boundary decomposition. Summing the joint mass bounds gives exactly 2·(2⁻¹)^ℓ. The conditional Lean derivation independently compiles."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mass summability defines a sequentially continuous current with the asserted HasSum and mass bound. The fundamental lemma identifies partial-sum densities; their integer norms stabilize pointwise, and tangent locality identifies the limiting orientation. The supplied measurable carrier, multiplicity and orientation satisfy the IMRep requirements. No weak-compactness or flat-convergence conclusion is assumed."
+    },
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified identical frozen type and accepted comparator checkpoint for Submission.dor_imrep_massOn_eq_measure_and_support, with compatible definitions and permitted axioms. This is valid non-circular reuse and supplies exactly C1."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four prose clauses match the frozen conjunction. Verified identical accepted comparator checkpoint for Submission.cmc_imRep_locality_restrict_sub and standard permitted axioms. Its reuse supplies the restriction, subtraction, tangent-locality and orientation facts used downstream."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuous linear map and all three orientation conclusions match the prose. Verified byte-identical accepted comparator reuse with the standard permitted axioms. Its norm-one consequence is used correctly in im_series."
+    }
+  ],
+  "required_changes": []
+}

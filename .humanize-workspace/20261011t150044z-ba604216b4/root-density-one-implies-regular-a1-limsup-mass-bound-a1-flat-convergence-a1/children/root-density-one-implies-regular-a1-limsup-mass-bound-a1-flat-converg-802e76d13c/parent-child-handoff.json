@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)",
+        "rg -n \"^theorem\" local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean (LipschitzOnWith.ae_differentiableWithinAt_of_mem, LipschitzWith.ae_differentiableAt)",
+        "rg -n \"theorem lipschitz_infDist_pt|theorem infDist_le_dist_of_mem\" local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "rg -l -i \"retraction|skeleton|cubical|radial retract|latticeFace|deformation theorem\" .lake/packages/simongmt/Poincare/SimonGMT local-references/123e8435b4a2469b/project -g \"*.lean\" (only GMT/Ch06 Contract/Submission; SimonGMT hits are unrelated: \"cubically small\" remainders in Chapter05, a local chart retraction in Chapter08/ConstancyNormalCharts.lean, a unit-ball retraction in Chapter08/PolarNorm.lean)",
+        "rg -n -i \"latticeFace|DeformationTheorem|def IsLatticeChain\" local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean (sorry-frozen Ch06 statements, not imported by GMT.Ch07.Submission)",
+        "sed -n 1400,1935p book/chapter-06.txt (Deformation Theorem 5.1-5.3, Lemma 5.4 with the printed induction for (3), proof (1)-(38))",
+        "python3 -I scans of dag.json (818 nodes, updated 2026-10-13T09:07Z): statuses and byte-identical frozen types of dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub, dor_ims_unitOrientation_dual (accepted); dor_lmb_slicing_lipschitz (decomposing; frozen type equals the (SL) antecedent of localize/total_bounded/deformation/deformation_top); no collision for the seven dor_lmb_fc_* names; child dependency graph acyclic",
+        "python3 -I parse of nodes/.../decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json (only deformation step 1 rejected)",
+        "python3 -I /tmp/fc-decomp-v2/scripts/check_retraction.py 1 and 7; python3 -I /tmp/fc-decomp-v2/scripts/check_global2.py 3 and 11 (numerical checks of Claims A, B, C and the global Lipschitz bound; audit counterexample ratio 62/69)",
+        "python3 -I /tmp/fc-decomp-v2/gen_types.py (gmt-compare.py contract_scope replay; exact comparator challenge file per child) and lean_contract.validate_lean_statement on all ten lean_statement strings",
+        "lake env lean /tmp/fc-decomp-v2/lean/Challenge_*.lean and AllProps.lean (0 errors; #check of the cited Mathlib lemmas)",
+        "python3 -I /tmp/fc-decomp-v2/check_assembly_types.py; lake env lean /tmp/fc-decomp-v2/lean/Assembly.lean and Slim.lean (#print axioms: [propext, Classical.choice, Quot.sound])"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/PolarNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/ScalarAreaRemainder.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-review-receipt-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/fc-decomp-v2/lean/AllProps.lean",
+        "/tmp/fc-decomp-v2/lean/Assembly.lean",
+        "/tmp/fc-decomp-v2/lean/Slim.lean",
+        "/tmp/fc-decomp-v2/scripts/check_retraction.py",
+        "/tmp/fc-decomp-v2/scripts/check_global2.py"
+      ],
+      "conclusion": "Snapshot: project b4d606db and mathlib 25730c7c. The snapshot Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\nNeither SimonGMT nor the snapshot contains a cubical-skeleton retraction, Lemma 5.4, or a proved Deformation Theorem. The skeleton/retraction keyword hits are unrelated (Chapter05 \"cubically small\" remainders, a local chart retraction in Chapter08/ConstancyNormalCharts.lean, a unit-ball retraction in Chapter08/PolarNorm.lean). The Ch06 contract has only sorry-frozen latticeFace/DeformationTheorem statements, not imported by GMT.Ch07.Submission. So the corrected Lemma 5.4 argument is written out in deformation step 1 and cites only Mathlib basics present in the snapshot: Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem, LipschitzWith.ae_differentiableAt) and lipschitz_infDist_pt.\nDAG state: the reused declarations dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub and dor_ims_unitOrientation_dual are accepted with byte-identical frozen types. dor_lmb_slicing_lipschitz is still decomposing, and its frozen type equals the (SL) antecedent. The seven dor_lmb_fc_* names are fresh.\nLean: all ten child types compile as exact comparator challenges in the replayed contract scope with 0 errors. The conditional assembly of the exact parent type and the derivation of series_limit from im_series compile with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1",
+  "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.series_limit-a1",
+  "subproblem": {
+    "key": "series_limit",
+    "title": "Summation of a 2^{−r}-telescoping flat decomposition against the weak limit (parent step 4)",
+    "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω)); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. X vanishes off a set K if X(ω) = 0 for every ω whose tsupport is disjoint from K. X_j ⇀ Y (WeaklyConvergesOn) means X_j(ω) → Y(ω) for every ω. V ⊂⊂ U (CompactlyContained V U) means that closure V is compact and contained in U. Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, X_r, X_∞ ∈ 𝒟_n(U) (r ∈ ℕ) with X_r ⇀ X_∞ in U, and let R_r ∈ 𝒟_{n+1}(U), S_r ∈ 𝒟_n(U) be IM with X_{r+1}(ω) − X_r(ω) = ∂R_r(ω) + S_r(ω) for all ω ∈ 𝒟ⁿ(U) and M(R_r) + M(S_r) ≤ 2^{−r} for every r. Then for every ℓ ∈ ℕ there are IM R' ∈ 𝒟_{n+1}(U), S' ∈ 𝒟_n(U) with X_∞(ω) − X_ℓ(ω) = ∂R'(ω) + S'(ω) for all ω ∈ 𝒟ⁿ(U) and M(R') + M(S') ≤ 2·2^{−ℓ} (in [0, ∞]).",
+    "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)) (Xlim : GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)) (S : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → WeaklyConvergesOn X Xlim → (∀ r, IsIntegerMultiplicity (R r) ∧ IsIntegerMultiplicity (S r) ∧ (∀ ω : TestFormOn U (m + 1), X (r + 1) ω - X r ω = (R r).boundary ω + S r ω) ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → ∀ ℓ : ℕ, ∃ (R' : GeometricCurrentOn U (m + 2)) (S' : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ (∀ ω : TestFormOn U (m + 1), Xlim ω - X ℓ ω = R'.boundary ω + S' ω) ∧ R'.mass + S'.mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ",
+    "lean_name": "dor_lmb_fc_series_limit",
+    "depends_on": [
+      "im_series"
+    ],
+    "natural_proof": "Source: step 4 of the parent-supplied proof (Simon Ch. 6, proof of 7.2: 'by 3.13 we can define integer multiplicity R^{(ℓ)}, S^{(ℓ)} by the M-absolutely convergent series ... then M(R^{(ℓ)}) + M(S^{(ℓ)}) ≤ 2^{−ℓ+1} and (from (5)) T − T_{j_ℓ} = ∂R^{(ℓ)} + S^{(ℓ)}', chapter-06.txt lines 2118–2128). Tool: the sibling im_series (sibling dor_lmb_fc_im_series): if U ⊆ ℝ^P is open, k ≥ 1 and X_r ∈ 𝒟_k(U) (r ∈ ℕ) are IM with Σ_r M(X_r) < ∞, then there is an IM Y ∈ 𝒟_k(U) with Σ_r X_r(ω) = Y(ω) (a convergent series) for every ω ∈ 𝒟^k(U) and M(Y) ≤ Σ_r M(X_r).\n1. Tails. Fix ℓ. For every r, M(R_{ℓ+r}) ≤ 2^{−ℓ−r} and M(S_{ℓ+r}) ≤ 2^{−ℓ−r}, so Σ_r M(R_{ℓ+r}) ≤ Σ_r 2^{−ℓ−r} = 2·2^{−ℓ} < ∞ and likewise Σ_r M(S_{ℓ+r}) < ∞ (ENNReal.tsum_geometric).\n2. Sums. By im_series in degree n + 1 = (m + 1) + 1 applied to (R_{ℓ+r})_r and in degree n applied to (S_{ℓ+r})_r, there are IM R' ∈ 𝒟_{n+1}(U) and S' ∈ 𝒟_n(U) with Σ_r R_{ℓ+r}(η) = R'(η) for every η ∈ 𝒟^{n+1}(U), Σ_r S_{ℓ+r}(ω) = S'(ω) for every ω ∈ 𝒟ⁿ(U), M(R') ≤ Σ_r M(R_{ℓ+r}) and M(S') ≤ Σ_r M(S_{ℓ+r}).\n3. Telescoping. For ω ∈ 𝒟ⁿ(U) and N ∈ ℕ, by induction on N from X_{r+1}(ω) − X_r(ω) = R_r(dω) + S_r(ω): X_{ℓ+N}(ω) − X_ℓ(ω) = Σ_{r<N}(R_{ℓ+r}(dω) + S_{ℓ+r}(ω)).\n4. Limit. As N → ∞ the left side tends to X_∞(ω) − X_ℓ(ω) (X_r ⇀ X_∞, and N ↦ ℓ + N tends to ∞), and the right side tends to R'(dω) + S'(ω) = ∂R'(ω) + S'(ω) (step 2 with η := dω; partial sums of a HasSum series converge). By uniqueness of limits, X_∞(ω) − X_ℓ(ω) = ∂R'(ω) + S'(ω).\n5. Masses. M(R') + M(S') ≤ Σ_r M(R_{ℓ+r}) + Σ_r M(S_{ℓ+r}) = Σ_r (M(R_{ℓ+r}) + M(S_{ℓ+r})) ≤ Σ_r 2^{−ℓ−r} = 2·2^{−ℓ} (ENNReal.tsum_add, ENNReal.tsum_le_tsum). ∎ (This derivation was compiled in Lean from the frozen type of im_series, with only the standard axioms.)",
+    "proof_key_steps": [
+      "The tails (R_{ℓ+r}), (S_{ℓ+r}) have total mass ≤ 2·2^{−ℓ}.",
+      "im_series sums them to IM R', S' with M(R') + M(S') ≤ 2·2^{−ℓ}.",
+      "Telescoping gives X_{ℓ+N} − X_ℓ = Σ_{r<N}(∂R_{ℓ+r} + S_{ℓ+r}); letting N → ∞ with X_r ⇀ X_∞ yields X_∞ − X_ℓ = ∂R' + S'."
+    ]
+  },
+  "audit": {
+    "key": "series_limit",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The two applications of im_series have the correct degrees. Their HasSum conclusions, the finite telescoping identity and weak convergence identify the required boundary decomposition. Summing the joint mass bounds gives exactly 2·(2⁻¹)^ℓ. The conditional Lean derivation independently compiles."
+  },
+  "resolved_dependencies": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-802e76d13c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-802e76d13c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-802e76d13c/parent-supplied-natural-proof.json"
+}
