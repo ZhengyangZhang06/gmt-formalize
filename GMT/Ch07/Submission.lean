@@ -451,6 +451,80 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Mass subadditivity from an evaluation identity (step 1 of the series-limit part of the flat
+convergence argument for Simon 7.2.4): if `|c| ≤ 1` and `Z(ω) = X(ω) + c Y(ω)` for every
+`ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ G`, then `M_G(Z) ≤ M_G(X) + M_G(Y)`.  The coefficient norm is
+homogeneous, `|c α| = |c| |α|`, so `c ω` is admissible for `M_G` whenever `ω` is, and then
+`Z(ω) = X(ω) + Y(c ω) ≤ M_G(X) + M_G(Y)`; take the supremum over admissible `ω`. -/
+theorem Submission.cmc_fc_sl_massOn_le_add_of_eval_eq : ∀ (P n : ℕ) (U G : Set (Euclid P)) (X Y Z : GeometricCurrentOn U n) (c : ℝ), |c| ≤ 1 → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → Z ω = X ω + c * Y ω) → Z.massOn G ≤ X.massOn G + Y.massOn G := by
+  intro P n U G X Y Z c hc hZ
+  -- `|c α| = |c| |α|` for the Euclidean coefficient norm
+  have hnorm : ∀ α : Covector (Euclid P) n,
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro α
+    rw [covectorEuclideanNorm, covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs,
+      ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- `c ω` is admissible for `M_G` together with `ω`
+  have hcω : c • ω ∈ massAdmissibleOn U n G := by
+    refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hω.1, fun x => ?_⟩
+    change covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+    rw [hnorm]
+    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) hc).trans (hω.2 x)
+  have hY : Y (c • ω) = c * Y ω := by
+    rw [map_smul, smul_eq_mul]
+  calc ENNReal.ofReal (Z ω) = ENNReal.ofReal (X ω + Y (c • ω)) := by rw [hZ ω hω.1, hY]
+    _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal (Y (c • ω)) := ENNReal.ofReal_add_le
+    _ ≤ X.massOn G + Y.massOn G := add_le_add (X.le_massOn hω) (Y.le_massOn hcω)
+
+/-- **Finite partial sums of integer multiplicity currents** (the partial sums of the series
+`R^{(ℓ)} = Σ_{r ≥ ℓ} R_r` in the proof of Simon Ch. 6, 7.2, p. 172).  If differences of integer
+multiplicity currents in `U` are integer multiplicity and the `Yᵢ ∈ 𝒟ₙ(U)` are integer
+multiplicity, then every partial sum `Σ_{i ≤ N} Yᵢ` is an integer multiplicity `Z ∈ 𝒟ₙ(U)` with
+`M_G(Z) ≤ Σ_{i ≤ N} M_G(Yᵢ)` for every `G`.  Induction on `N`: `Z = Y₀` for `N = 0`; then, with
+`B = Y_{N+1}`, `Z' = Z − ((B − B) − B)` is integer multiplicity by three uses of the hypothesis,
+acts as `Z + B`, and has `M_G(Z') ≤ M_G(Z) + M_G(B)` by the mass triangle inequality with
+`c = 1`. -/
+theorem Submission.cmc_fc_sl_im_partial_sum : ∀ (P n : ℕ) (U : Set (Euclid P)) (Y : ℕ → GeometricCurrentOn U n), (∀ A B : GeometricCurrentOn U n, IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ i, IsIntegerMultiplicity (Y i)) → ∀ N : ℕ, ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ (∀ ω : TestFormOn U n, Z ω = ∑ i ∈ Finset.range (N + 1), Y i ω) ∧ ∀ G : Set (Euclid P), Z.massOn G ≤ ∑ i ∈ Finset.range (N + 1), (Y i).massOn G := by
+  intro P n U Y hIS hY N
+  -- the contract subtraction acts pointwise: `(A − B)(ω) = A(ω) − B(ω)`
+  have hsub : ∀ (A B : GeometricCurrentOn U n) (ω : TestFormOn U n), (A - B) ω = A ω - B ω :=
+    fun _ _ _ => rfl
+  induction N with
+  | zero =>
+    -- step 1: `Z = Y₀`
+    refine ⟨Y 0, hY 0, fun ω => ?_, fun G => ?_⟩
+    · rw [Finset.sum_range_one]
+    · rw [Finset.sum_range_one]
+  | succ N ih =>
+    obtain ⟨Z, hZ, hZω, hZG⟩ := ih
+    -- step 3: `B − B`, `(B − B) − B` and `Z' = Z − ((B − B) − B)` are integer multiplicity
+    have hBB : IsIntegerMultiplicity (Y (N + 1) - Y (N + 1)) := hIS _ _ (hY _) (hY _)
+    have hBBB : IsIntegerMultiplicity ((Y (N + 1) - Y (N + 1)) - Y (N + 1)) := hIS _ _ hBB (hY _)
+    -- step 4: `Z'(ω) = Z(ω) + 1 · B(ω)`
+    have hZ' : ∀ ω : TestFormOn U n,
+        (Z - ((Y (N + 1) - Y (N + 1)) - Y (N + 1))) ω = Z ω + 1 * Y (N + 1) ω := by
+      intro ω
+      rw [hsub, hsub, hsub]
+      ring
+    refine ⟨Z - ((Y (N + 1) - Y (N + 1)) - Y (N + 1)), hIS _ _ hZ hBBB, fun ω => ?_, fun G => ?_⟩
+    · rw [hZ', one_mul, hZω, Finset.sum_range_succ _ (N + 1)]
+    -- step 5: mass triangle inequality with `c = 1`, then the induction hypothesis
+    · calc (Z - ((Y (N + 1) - Y (N + 1)) - Y (N + 1))).massOn G
+          ≤ Z.massOn G + (Y (N + 1)).massOn G :=
+            Submission.cmc_fc_sl_massOn_le_add_of_eval_eq P n U G Z (Y (N + 1)) _ 1 abs_one.le
+              fun ω _ => hZ' ω
+        _ ≤ ∑ i ∈ Finset.range (N + 1), (Y i).massOn G + (Y (N + 1)).massOn G :=
+            add_le_add (hZG G) le_rfl
+        _ = ∑ i ∈ Finset.range (N + 1 + 1), (Y i).massOn G :=
+            (Finset.sum_range_succ _ (N + 1)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
