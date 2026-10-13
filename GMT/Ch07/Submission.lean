@@ -1277,6 +1277,73 @@ theorem Submission.rsd_massOn_eq_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) 
   exact le_antisymm (Submission.rsd_mw_massOn_le_measure P n U T R hT W)
     (Submission.rsd_mw_measure_le_massOn P n U T R hT W hW hWU)
 
+/-- **Simon 6.2.11–2.12** for an integer multiplicity current (`spt T = spt μ_T`, where
+`μ_T = θHⁿ⌞M` by 6.3.2(3)).  If `μ_T(B_r(x)) = 0`, then `Hⁿ(M ∩ B_r(x)) = 0` because `θ ≥ 1` on
+`M`, so `T(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ = 0` whenever `spt ω ⊆ B_t(x)` (`t < r`); the relatively compact
+ball `B_t(x)` then puts `x` in the zero region.  Conversely, if `x` lies in the zero region, then
+`M_{B_r(x)}(T) = 0` for a small ball `B_r(x)`, and `Submission.rsd_massOn_eq_measure` (6.3.2(3))
+gives `μ_T(B_r(x)) = M_{B_r(x)}(T) = 0`. -/
+theorem Submission.rsd_mem_support_iff_measure_ball_pos : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ x : Euclid P, x ∈ T.support ↔ x ∈ U ∧ ∀ r : ℝ, 0 < r → 0 < R.measure (ball x r) := by
+  intro P n U T R hU hR x
+  constructor
+  · -- (⇒) a ball of zero weight about `x` would put `x` in the zero region
+    intro hx
+    have hxU : x ∈ U := T.support_subset_domain hx
+    refine ⟨hxU, fun r hr => pos_iff_ne_zero.mpr fun h0 => ?_⟩
+    obtain ⟨s, hs, hsU⟩ := Metric.isOpen_iff.mp hU x hxU
+    obtain ⟨t, ht, hts, htr⟩ : ∃ t : ℝ, 0 < t ∧ t < s ∧ t < r :=
+      ⟨min s r / 2, by positivity, by linarith [min_le_left s r], by linarith [min_le_right s r]⟩
+    -- `Hⁿ(M ∩ B_r(x)) ≤ ∫_{M ∩ B_r(x)} θ dHⁿ = μ_T(B_r(x)) = 0`, since `θ ≥ 1` on `M`
+    have hnull : μHE[n] (R.carrier ∩ ball x r) = 0 := by
+      rw [IMRep.measure, withDensity_apply _ measurableSet_ball,
+        Measure.restrict_restrict measurableSet_ball] at h0
+      apply nonpos_iff_eq_zero.mp
+      calc μHE[n] (R.carrier ∩ ball x r)
+          = ∫⁻ _ in ball x r ∩ R.carrier, (1 : ℝ≥0∞) ∂μHE[n] := by
+            rw [setLIntegral_const, one_mul, inter_comm]
+        _ ≤ ∫⁻ y in ball x r ∩ R.carrier, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+            refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) fun y hy => ?_
+            have h1 : 1 ≤ R.mult y := R.mult_pos y hy.2
+            show (1 : ℝ≥0∞) ≤ (R.mult y : ℝ≥0∞)
+            exact_mod_cast h1
+        _ = 0 := h0
+    -- `T` vanishes on `B_t(x)`: the integrand of `T(ω)` vanishes `Hⁿ`-a.e. on `M`
+    have hvan : T.VanishesOn (ball x t) := by
+      intro ω hω
+      rw [hR ω, IMRep.action]
+      apply integral_eq_zero_of_ae
+      have hae : ∀ᵐ y ∂(μHE[n].restrict R.carrier), y ∉ ball x r := by
+        rw [ae_restrict_iff' R.measurableSet_carrier]
+        filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with y hy hyM hyr
+        exact hy ⟨hyM, hyr⟩
+      filter_upwards [hae] with y hy
+      have hω0 : (ω : DifferentialForm (Euclid P) n) y = 0 :=
+        image_eq_zero_of_notMem_tsupport fun h => hy (ball_subset_ball htr.le (hω h))
+      simp [hω0]
+    -- `B_t(x)` is open with compact closure `⊆ B̄_t(x) ⊆ B_s(x) ⊆ U`
+    have hcl : closure (ball x t) ⊆ closedBall x t := closure_ball_subset_closedBall
+    exact hx.2 ⟨ball x t, ⟨isOpen_ball,
+      (isCompact_closedBall x t).of_isClosed_subset isClosed_closure hcl,
+      hcl.trans ((closedBall_subset_ball hts).trans hsU), hvan⟩, mem_ball_self ht⟩
+  · -- (⇐) if `x` lay in the zero region, a small ball about `x` would have zero mass
+    rintro ⟨hxU, hpos⟩
+    refine ⟨hxU, fun hxZ => ?_⟩
+    obtain ⟨W, ⟨hWo, -, hWU, hWv⟩, hxW⟩ := hxZ
+    obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.mp hWo x hxW
+    -- every form admissible for `M_{B_r(x)}(T)` is supported in `W`, so `T` kills it
+    have hm0 : T.massOn (ball x r) = 0 := by
+      apply nonpos_iff_eq_zero.mp
+      apply sSup_le
+      rintro _ ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (T ω) ≤ 0
+      rw [hWv ω (hω.1.trans hrW)]
+      simp
+    -- `μ_T(B_r(x)) = M_{B_r(x)}(T) = 0` (6.3.2(3)), contradicting `μ_T(B_r(x)) > 0`
+    have heq : T.massOn (ball x r) = R.measure (ball x r) :=
+      Submission.rsd_massOn_eq_measure P n U T R hU hR (ball x r) isOpen_ball
+        (hrW.trans (subset_closure.trans hWU))
+    exact (hpos r hr).ne' (heq.symm.trans hm0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
