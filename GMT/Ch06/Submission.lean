@@ -462,6 +462,84 @@ theorem Submission.iwl_cr_ip_wt_product_plane :
             Submodule.smul_mem _ _ (Submodule.subset_span ⟨i.succ, rfl⟩))
     rw [hspan]
     rfl
+/-- Fubini on the product plane `π⁻¹(T)`, `T = span τ`, for compactly supported continuous `f`
+(Simon Ch. 6, 3.2(2), product with an interval).  Write `Φ′(s, u) = (s, u) ∈ ℝ^{P+1}` and
+`π(y) = (y₁, …, y_P)`, and assume the product formula (MP) `H^{m+1} ⌞ π⁻¹(A) = Φ′_#(L¹ × Hᵐ ⌞ A)`
+for every `Hᵐ`-measurable, countably `m`-rectifiable, locally `Hᵐ`-finite `A ⊆ ℝ^P`.  Then for an
+orthonormal `τ`, `∫_{π⁻¹(T)} f dH^{m+1} = ∫_ℝ ∫_T f(Φ′(σ, w)) dHᵐ(w) dσ`.
+`T` is closed, has dimension `m`, is the range of the Lipschitz map `u ↦ ∑ uᵢ τᵢ`, and `Hᵐ ⌞ T` is
+regular, so (MP) applies to `A = T`.  Change variables along the homeomorphism
+`Φ′ : ℝ × ℝ^P ≃ ℝ^{P+1}` and apply Fubini to the compactly supported continuous `f ∘ Φ′`. -/
+theorem Submission.iwl_cr_ip_wt_plane_fubini :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ τ : Fin m → Eucl P, Orthonormal ℝ τ → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∫ z in {z : Eucl (P + 1) | ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z))) ∈ Submodule.span ℝ (range τ)}, f z ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫ σ : ℝ, ∫ w in (Submodule.span ℝ (range τ) : Set (Eucl P)), f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) ∂(μHE[m] : Measure (Eucl P)) := by
+  intro P m hMP τ hτ f hfc hfcs
+  -- Coordinates `Φ(s, u) = (s, u)` and `π(y) = (y₁, …, y_P)`.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  let π : Eucl (P + 1) → Eucl P := fun y =>
+    (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))
+  have hΦc : Continuous fun p : ℝ × Eucl P => Φ p.1 p.2 :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  -- `Φ′ = Φ.uncurry` is a homeomorphism `ℝ × ℝ^P ≃ ℝ^{P+1}` with inverse `y ↦ (y₀, π y)`.
+  let e : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => Φ p.1 p.2
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0, π y)
+      left_inv := fun p => by
+        simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply]
+        exact Fin.cons_self_tail _
+      continuous_toFun := hΦc
+      continuous_invFun := by
+        refine Continuous.prodMk ((continuous_apply 0).comp
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous) ?_
+        exact (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp
+          (continuous_pi fun i : Fin P => (continuous_apply i.succ).comp
+            (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous) }
+  have hemb : MeasurableEmbedding (fun p : ℝ × Eucl P => Φ p.1 p.2) := e.measurableEmbedding
+  -- The plane `T = span τ` is `Hᵐ`-measurable, countably `m`-rectifiable and locally `Hᵐ`-finite.
+  set T : Submodule ℝ (Eucl P) := Submodule.span ℝ (range τ) with hT
+  have hfinT : Module.finrank ℝ T = m := by
+    rw [hT, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  have hTmeas : MeasurableSet (T : Set (Eucl P)) := T.closed_of_finiteDimensional.measurableSet
+  have hTrect : CountablyRectifiable m (T : Set (Eucl P)) := by
+    let Λₗ : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Eucl P :=
+      Fintype.linearCombination ℝ τ ∘ₗ (EuclideanSpace.equiv (Fin m) ℝ).toLinearMap
+    let Λ : EuclideanSpace ℝ (Fin m) →L[ℝ] Eucl P := LinearMap.toContinuousLinearMap Λₗ
+    have hrange : range Λ = (T : Set (Eucl P)) := by
+      ext v
+      simp only [Λ, LinearMap.coe_toContinuousLinearMap', mem_range, SetLike.mem_coe, hT,
+        Submodule.mem_span_range_iff_exists_fun]
+      constructor
+      · rintro ⟨u, rfl⟩
+        exact ⟨fun i => u i, by simp [Λₗ, Fintype.linearCombination_apply]⟩
+      · rintro ⟨c, rfl⟩
+        exact ⟨(EuclideanSpace.equiv (Fin m) ℝ).symm c, by
+          simp [Λₗ, Fintype.linearCombination_apply]⟩
+    rw [← hrange]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range Λ.lipschitzWith
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Eucl P) hfinT
+  have hTfin : ∀ K : Set (Eucl P), IsCompact K →
+      (μHE[m] : Measure (Eucl P)) ((T : Set (Eucl P)) ∩ K) < ∞ := by
+    intro K hK
+    rw [inter_comm, ← Measure.restrict_apply hK.measurableSet]
+    exact hK.measure_lt_top
+  -- (MP) for `A = T`.
+  have hMPT : (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {z | π z ∈ T} =
+      Measure.map (fun p : ℝ × Eucl P => Φ p.1 p.2)
+        ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict (T : Set (Eucl P)))) :=
+    hMP (T : Set (Eucl P)) hTmeas.nullMeasurableSet hTrect hTfin
+  -- Change of variables along `Φ′`, then Fubini for the integrable `f ∘ Φ′`.
+  have hint : Integrable (fun p : ℝ × Eucl P => f (Φ p.1 p.2))
+      ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict (T : Set (Eucl P)))) :=
+    (hfc.comp e.continuous).integrable_of_hasCompactSupport (hfcs.comp_homeomorph e)
+  show ∫ z, f z ∂((μHE[m + 1] : Measure (Eucl (P + 1))).restrict {z | π z ∈ T}) = _
+  rw [hMPT, hemb.integral_map, integral_prod _ hint]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
