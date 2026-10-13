@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.holder_rigid_transport-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Rigid motions preserve openness and the local C^{q,alpha} class",
+  "statement": "Let n, l be natural numbers, U an open subset of R^(n+l), h : R^(n+l) -> R^(n+l), q a natural number, alpha real, xi in R^(n+l) and Q a linear isometry equivalence of R^(n+l). Put T(y) := Q(y - xi), O := T(U) and F(z) := Q(h(xi + Q^{-1} z)). If h is locally C^{q,alpha} in U (IsLocallyHolderCkα q alpha h U: h is C^q on U and for every compact K contained in U there is C with |D^q h(a) - D^q h(b)| <= C |a - b|^alpha for a, b in K), then O is open and F is locally C^{q,alpha} in O.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (h : Amb n ℓ → Amb n ℓ) (q : ℕ) (α : ℝ) (ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), IsLocallyHolderCkα q α h U → IsOpen ((fun y => Q (y - ξ)) '' U) ∧ IsLocallyHolderCkα q α (fun z => Q (h (ξ + Q.symm z))) ((fun y => Q (y - ξ)) '' U)",
+  "lean_name": "dohr_vel_holder_rigid_transport",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-holder-rigid-a2b532fca9-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.graph_area_formula-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Area formula for the graph of a C^1 map (import-free)",
+  "statement": "Let n, l be natural numbers, D an open subset of R^n and u : R^n -> R^l of class C^1 on D. For a linear P let J(P) := sqrt(det(I_n + (<P e_a, P e_b>)_{a,b})) (e_a = EuclideanSpace.single a 1) and let G(x) := graphPoint x (u x) = (x, u(x)). Then for every measurable A contained in D, H^n(G(A)) = integral over A of J(Du(x)) dx in [0, infinity] (lower Lebesgue integral of ENNReal.ofReal (J (fderiv u x)) with respect to Lebesgue measure), where H^n = muHE[n] on R^(n+l).",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (D : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen D → ContDiffOn ℝ 1 u D → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ D → (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' A) = ∫⁻ x in A, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))))",
+  "lean_name": "dohr_vel_graph_area_formula",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-graph-area-formula-a1-a1"
+}

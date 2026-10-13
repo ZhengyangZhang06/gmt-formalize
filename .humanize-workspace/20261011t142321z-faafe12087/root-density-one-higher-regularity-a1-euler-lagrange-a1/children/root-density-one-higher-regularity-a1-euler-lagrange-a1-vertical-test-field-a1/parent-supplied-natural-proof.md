@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.euler_lagrange-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.euler_lagrange-a1.vertical_test_field-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 4 and 5 of the parent proof (the test field X(y) = Q^{-1}(psi(T y) (0, phi(pi(T y)))) and the computation of DX on the graph, in both cases x in tsupport phi and x not in tsupport phi).
+
+Notation: G(x) := graphPoint x (u x); T(y) := Q(y - xi); pi : R^(n+l) -> R^n, pi(z) := (z_{Fin.castAdd l j})_{j < n}, the projection onto the first n coordinates, a continuous linear map with pi(graphPoint v w) = v (Fin.append_left); iota : R^l -> R^(n+l), iota(w) := graphPoint 0 w. The pairing Gamma(v, w) := graphPoint v w = toLp (Fin.append (ofLp v) (ofLp w)) is R-linear in the pair (v, w) (by Fin.addCases every coordinate of Fin (n+l) is Fin.castAdd l j or Fin.natAdd n k, where Fin.append_left / Fin.append_right give v_j resp. w_k, which are additive and homogeneous), hence continuous since R^n x R^l is finite-dimensional; so iota = Gamma(0, .) is a continuous linear map with iota(0) = 0, and x -> G(x) = Gamma(x, u x) is continuous wherever u is.
+1. The compact set K := G(tsupport phi). tsupport phi is compact (HasCompactSupport) and contained in Bo^n_r(0), where G is continuous (u is continuous there and graphPoint is continuous); hence K is compact (IsCompact.image_of_continuousOn), and K is contained in Bo_s(0) by the hypothesis |G(x)| < s on Bo^n_r(0). K is closed, so by exists_lt_subset_ball there is s1 < s with K contained in Bo_{s1}(0). Put s' := max(s1, s/2) and s'' := (s' + s)/2; then 0 < s' < s'' < s and K is contained in Bo_{s'}(0).
+2. Cutoff. Let psi be the smooth bump function (ContDiffBump) centered at 0 with inner radius s' and outer radius s'': psi is C^infinity (ContDiffBump.contDiff), psi = 1 on the closed ball B_{s'}(0) (ContDiffBump.one_of_mem_closedBall), and the support of psi is the open ball Bo_{s''}(0) (ContDiffBump.support_eq).
+3. Definition. Xt(z) := psi(z) * iota(phi(pi z)) and X(y) := Q^{-1}(Xt(T y)).
+4. Regularity and support. pi, iota, Q^{-1} and T (Q composed with a translation) are C^infinity, phi is C^1 and psi is C^infinity, so X is C^1 (ContDiff.smul, ContDiff.comp; psi is C^1 since C^infinity implies C^1). If X(y) != 0 then psi(T y) != 0, so |T y| = |y - xi| < s''. Hence the support of X is contained in Bo_{s''}(xi), its closure tsupport X is contained in the closed ball B_{s''}(xi), which is contained in Bo_s(xi) because s'' < s, and X has compact support because B_{s''}(xi) is compact (proper space; a closed subset of a compact set is compact).
+5. Value on the graph. Let x in R^n and y0 := xi + Q^{-1}(G x). Then T y0 = Q(Q^{-1} G x) = G x and pi(G x) = x, so X(y0) = Q^{-1}(psi(G x) * iota(phi x)). If x is in tsupport phi, then G x is in K, contained in B_{s'}(0), so psi(G x) = 1 and X(y0) = Q^{-1}(iota(phi x)). If x is not in tsupport phi, then phi(x) = 0 (image_eq_zero_of_notMem_tsupport), so X(y0) = Q^{-1}(psi(G x) iota 0) = 0 = Q^{-1}(iota(phi x)). In both cases X(y0) = Q^{-1}(graphPoint 0 (phi x)).
+6. Derivative of Xt at G x. Case x in tsupport phi: G x lies in K, contained in the open ball Bo_{s'}(0), on which psi = 1, so Xt agrees with Xh := iota o phi o pi on a neighbourhood of G x and DXt(G x) = DXh(G x) (Filter.EventuallyEq.fderiv_eq) = iota o Dphi(pi(G x)) o pi = iota o Dphi(x) o pi (chain rule; phi is differentiable, being C^1). Case x not in tsupport phi: the set N := pi^{-1}(R^n minus tsupport phi) is open (pi continuous, tsupport phi closed) and contains G x (pi(G x) = x); on N, phi(pi z) = 0, so Xt(z) = psi(z) iota(0) = 0; hence Xt = 0 near G x and DXt(G x) = 0. Moreover Dphi(x) = 0 because x is not in tsupport phi (support_fderiv_subset), so again DXt(G x) = 0 = iota o Dphi(x) o pi. Thus DXt(G x) = iota o Dphi(x) o pi in all cases; Xt is differentiable at G x since it is C^1.
+7. Chain rule. X = Q^{-1} o Xt o T, where T is affine with linear part Q and T y0 = G x. Hence DX(y0) = Q^{-1} o DXt(G x) o Q = Q^{-1} o iota o Dphi(x) o pi o Q, and for v in R^n, w in R^l: DX(y0)[Q^{-1}(graphPoint v w)] = Q^{-1}(iota(Dphi(x)(pi(graphPoint v w)))) = Q^{-1}(graphPoint 0 (Dphi(x) v)). Together with steps 4 and 5 this gives all the asserted properties of X.
+
+Supplementary machine check (not needed for the argument above). A kernel-checked Lean proof of exactly this frozen declaration, the formal counterpart of the numbered steps above, is stored verbatim at /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_vertical_test_field.lean.txt (SHA-256 74f27ff7b4bbfa671716c5efbd664f24e5edf6975388aa2d21229b0a6351cde6). It uses no other theorem of this split. On 2026-10-12, with the pinned toolchain (Lean v4.35.0-rc3, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d), the eight children of this split were inserted unchanged, one at a time in the order dohr_vel_linear_graph_area, dohr_vel_graph_fderiv, dohr_vel_holder_rigid_transport, dohr_vel_area_integrand_fderiv, dohr_vel_graph_projection_trace, dohr_vel_graph_area_formula, dohr_vel_graph_area_transport, dohr_vel_vertical_test_field, into the frozen GMT/Ch05/Submission.lean inside `namespace Submission ... end Submission` immediately before `theorem main_theorem` (so the contract's `open` commands are in effect). The workflow's leaf_verification.check_source_delta accepted each insertion as a single theorem; the file compiled with no errors (only deprecation and unused-simp-argument linter warnings, which the comparator ignores); this declaration used 31753 heartbeats (default limit 200000); `#print axioms` reports only propext, Classical.choice and Quot.sound; and the configured child comparator's own challenge and solution modules (verifier/gmt-compare.py child_modules, solution `exact Submission.dohr_vel_vertical_test_field`) compiled without diagnostics.
+
+## Key steps
+
+1. K = G(tsupport phi) is compact inside Bo_s(0); choose radii 0 < s' < s'' < s with K in Bo_{s'}(0)
+2. smooth bump psi = 1 on B_{s'}(0) with support Bo_{s''}(0)
+3. X(y) = Q^{-1}(psi(T y) (0, phi(pi(T y)))) is C^1 with compact support in Bo_s(xi)
+4. value on the graph: psi = 1 on K and phi = 0 off tsupport phi
+5. DXt(G x) = (0, Dphi(x) o pi) in both cases x in / not in tsupport phi; chain rule through T and Q^{-1}
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean; cmp GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `rg -l 'dohr_vel_' <snapshot> (no match); rg -l 'dohr_vel_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes dag.json .humanize/math-wiki GMT/Ch05 .lake/packages/simongmt/Poincare (matches only this node's decomposition-v1/v2 and their audit/receipt files)`
+- `python3 scan of dag.json: lean_name values containing 'dohr', status/children/depends_on of root.density_one_higher_regularity-a1.* nodes, frozen type of dohr_graph_tangent_planes`
+- `sha256sum -c GMT/Scratch/dohr_vel/SHA256SUMS`
+- `lake env lean -o /tmp/elv3/build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/elv3/build lean /tmp/elv3/SplitAll.lean' (copy of GMT/Scratch/dohr_vel/dohr_vel_split_all.lean.txt)`
+- `python3 GMT/Scratch/dohr_vel/v3/leaf_insertion_check.py.txt (runs _recursive_lean.leaf_verification.check_source_delta on each one-theorem insertion)`
+- `lake env lean --root=/tmp/elv3/srcall -o /tmp/elv3/buildall/GMT/Ch05/Submission.olean /tmp/elv3/srcall/GMT/Ch05/Submission.lean (frozen Submission.lean plus all 8 children)`
+- `python3 -I GMT/Scratch/dohr_vel/v3/comparator_modules.py.txt (verifier/gmt-compare.py child_modules in contract mode after validate_lean_statement), then lean on every <key>_Challenge.lean and <key>_Solution.lean`
+- `#count_heartbeats in (import Mathlib.Util.CountHeartbeats) on each child and on the parent assembly`
+- `#check @Poincare.SimonGMT.Chapter02.injective_area_formula_lipschitzOn, @LinearMap.normDet, @Matrix.PosDef, @Matrix.det_one_add_smul, @MeasureTheory.Measure.addHaar_image_linearMap, @Isometry.euclideanHausdorffMeasure_image, @LipschitzOnWith.hausdorffMeasure_image_le, @ContDiffBump after import GMT.Ch05.Submission`
+- `example : (1 + Matrix.of Gram)⁻¹ = Ring.inverse (det ..) • adjugate .. := Matrix.inv_def _; example : (1 : Matrix (Fin 2) (Fin 2) ℝ) 0 1 = 0 := by simp`
+- `rg -n 'theorem addHaar_image_linearMap|theorem (Isometry\.)?euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|theorem hausdorffMeasure_image_le|lemma det_one_add_smul|theorem inv_def|theorem MeasurableSet.image_of_continuousOn_injOn|theorem ContinuousOn.measurableEmbedding|iteratedFDeriv_comp_add_left|theorem ContinuousLinearEquiv.iteratedFDerivWithin_comp_right|theorem ContinuousLinearEquiv.iteratedFDeriv_comp_left|norm_compContinuous_linearIsometryEquiv|norm_compContinuousMultilinearMap|theorem starProjection_map_apply|theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem one_of_mem_closedBall|theorem support_eq|trace_smulRight|theorem measurable_fderiv|lemma measure_compl_support|setIntegral_withDensity_eq_setIntegral_smul|MeasurableEmbedding.integral_map' <snapshot>/mathlib/Mathlib`
+- `grep -n 'theorem injective_area_formula_lipschitzOn|^namespace' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean; grep -n '^import' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n -i 'area formula' book/chapter-02.txt; sed -n 743,800p book/chapter-02.txt; sed -n 20,130p book/chapter-05.txt; sed -n 1312,1345p book/chapter-05.txt`
+- `grep -n 'def check_source_delta|def _solve_children|def _existing_lean_name_problem|def _leaf_author_task' /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/{leaf_verification,runtime}.py; grep -n 'def lean_diagnostics|def child_modules' verifier/gmt-compare.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/NonsingularInverse.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/dohr_vel_split_all.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/SHA256SUMS`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/SHA256SUMS`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/SubmissionAll.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/parent_assembly_dohr_vertical_euler_lagrange.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_linear_graph_area.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_fderiv.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_holder_rigid_transport.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_area_integrand_fderiv.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_projection_trace.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_area_formula.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_area_transport.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_vertical_test_field.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/decomposition-review-receipt-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+
+Pinned snapshot (manifest.json): project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies and to each other.
+
+Reachability under `import GMT.Ch05.Submission`:
+- Not reachable (Lean reports unknown identifiers): simongmt's Chapter02.injective_area_formula_lipschitzOn (it exists in AreaDomain.lean:147 but is not imported; the contract imports only Chapter03.Rectifiable from simongmt), LinearMap.normDet and Matrix.PosDef.
+- Reachable, so the children use them: det_one_add_smul (Charpoly/Coeff.lean:207), Measure.addHaar_image_linearMap (EqHaar.lean:297), Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Volume/Measure.lean:131,187), LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean:733), Matrix.inv_def (NonsingularInverse.lean:170), MeasurableSet.image_of_continuousOn_injOn and ContinuousOn.measurableEmbedding (Polish/Basic.lean:821,865), iteratedFDeriv_comp_add_left (FTaylorSeries.lean:958), ContinuousLinearEquiv.iteratedFDeriv_comp_left and iteratedFDerivWithin_comp_right (ContDiff/Basic.lean:283,436), norm_compContinuous_linearIsometryEquiv (Multilinear/Basic.lean:1038), starProjection_map_apply and eq_starProjection_of_mem_of_inner_eq_zero (Projection/Basic.lean:358,180), ContDiffBump.one_of_mem_closedBall and support_eq, LinearMap.trace_smulRight (Trace.lean:272), measurable_fderiv (FDeriv/Measurable.lean:378), Measure.measure_compl_support (Support.lean:202), setIntegral_withDensity_eq_setIntegral_smul, and MeasurableEmbedding.integral_map (Bochner/Basic.lean:1093).
+
+Therefore the (Area) fact is proved by two new children. The rest of the attempt-2 split is reused unchanged.
+
+Re-verification on 2026-10-12 with the pinned toolchain (record in GMT/Scratch/dohr_vel/v3/):
+- dohr_vel_split_all.lean.txt still compiles: the 8 children use only propext, Classical.choice and Quot.sound, and the parent uses these plus the sibling stub.
+- Each child passes check_source_delta as a one-theorem leaf insertion.
+- The frozen Submission.lean with all 8 children compiles; the only warning is the inherited main_theorem sorry.
+- The comparator-generated challenge modules elaborate, and the solution modules (`exact Submission.X`) compile with no diagnostics.
+- Per-child heartbeats are at most 58,759; the parent assembly uses 34,734.
+- The inline matrix `⁻¹` is the ordinary nonsingular inverse.
+
+No snapshot, simongmt, wiki or DAG entry uses any dohr_vel_ name; the only matches are this node's own decomposition-v1/v2 records. The names are therefore free.
