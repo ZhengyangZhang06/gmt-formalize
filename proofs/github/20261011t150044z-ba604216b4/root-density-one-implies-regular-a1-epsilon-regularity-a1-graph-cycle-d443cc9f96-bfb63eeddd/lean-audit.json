@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea5f17b11bd6249dda493e15e334b4d064c65a8631c6079209539bd8f77ed295",
+  "git_delta": {
+    "base_commit": "57139bfc4ab469a3609a8fa749a0a88ef6c80d35",
+    "candidate_commit": "bb4ef845af20b840ed2198f59dfe0c87d66b11fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_bwd_coordinate_form",
+    "diff_sha256": "7d956d25c75804ef38fa6795cdcef8ecd241ec74366df8631e4616229e00da93",
+    "source_sha256": "e6cc344f658a257193c2b93ea14b37d46566f7dfe8769f749cddfce26198700e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_bwd_coordinate_form",
+      "statement": "∀ (m : ℕ) (a : Euclid (m + 1) → ℝ) (j : Fin (m + 1)), ContDiff ℝ (⊤ : ℕ∞) a → ∃ ψ : DifferentialForm (Euclid (m + 1)) m, IsSmoothForm ψ ∧ tsupport ψ ⊆ tsupport a ∧ ∀ x : Euclid (m + 1), exteriorDerivative ψ x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
