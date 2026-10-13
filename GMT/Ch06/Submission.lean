@@ -539,6 +539,27 @@ theorem Submission.slicing_im_td_current_tendsto :
   refine hlim.congr fun l => ?_
   rw [S.toCurrent.map_sub (e l) ω, sub_add_cancel]
 
+/-- A countable family of test forms determines currents (the "countable dense set of
+`ω ∈ 𝒟ⁿ(U)`" in the proof of Simon Ch. 6, 4.5(2)): for open `U ⊆ ℝ^P` there is a countable
+`E ⊆ 𝒟ᵏ(U)` such that two currents in `𝒟ₖ(U)` agreeing on `E` are equal. -/
+theorem Submission.slicing_im_testform_determining :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ E : Set (TestFormOn U k), E.Countable ∧
+      ∀ S R : GeometricCurrentOn U k, (∀ e ∈ E, S e = R e) → S = R := by
+  intro P k U hU
+  -- Exhaust `U` by the compact sets `closure (W i) ⊆ U` and take, for each `i`, a countable
+  -- family `E i` approximating every form supported in `closure (W i)`.
+  obtain ⟨W, hW, hWK⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  choose E hE hEω using fun i => Submission.slicing_im_td_countable_seq_dense P k U
+    (closure (W i)) (hW i).2.1 (hW i).2.2
+  refine ⟨⋃ i, E i, countable_iUnion hE, fun S R hSR => GeometricCurrentOn.ext fun ω => ?_⟩
+  -- `tsupport ω` is a compact subset of `U`, hence lies in some `W i`.
+  obtain ⟨i, hi⟩ := hWK _ ω.2.1.2 ω.2.2
+  obtain ⟨e, heE, he⟩ := hEω i ω (hi.trans subset_closure)
+  -- `S (e l) = R (e l)` for every `l`, while `S (e l) → S ω` and `R (e l) → R ω`.
+  refine tendsto_nhds_unique (Submission.slicing_im_td_current_tendsto P k U S e ω he) ?_
+  exact (Submission.slicing_im_td_current_tendsto P k U R e ω he).congr fun l =>
+    (hSR (e l) (mem_iUnion.2 ⟨i, heE l⟩)).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
