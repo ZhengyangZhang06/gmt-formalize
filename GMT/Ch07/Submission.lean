@@ -683,6 +683,54 @@ theorem Submission.codim1_rdo_dg_bh_normal_defect_small : ∀ (m : ℕ) (μ : Me
       _ = δ * ‖w‖ * M := by
           field_simp
           ring
+/-- **Uniform perimeter bound for the blow-ups** (Simon Ch. 3, 4.3 (6)–(8): the bound that lets
+the compactness theorem Ch. 2, 2.6 select an `L¹_loc`-convergent sequence of blow-ups).  Let
+`∫_F div φ = -∫ ⟨φ, ν⟩ dμ` for `φ ∈ C¹_c` with `spt φ ⊆ D`, where `|ν| = 1`, and let
+`B̄_{ρ₁}(y) ⊆ D` and `μ(B̄_ρ(y)) ≤ C₁ρᵐ` for `0 < ρ < ρ₁`.  If `rR < ρ₁`, `g ∈ C¹_c(B_R(0))` and
+`|g| ≤ 1`, then `∫_{F_{y,r}} div g ≤ C₁Rᵐ`, where `F_{y,r} = {w : y + rw ∈ F}`.  As
+`B̄_{rR}(y) ⊆ D`, the rescaled Gauss–Green identity gives `∫_{F_{y,r}} div g = -r⁻ᵐ ∫ h dμ` with
+`h(z) = ⟨g(r⁻¹(z - y)), ν(z)⟩`; `|h| ≤ 1` and `h` vanishes off `K = B̄_{rR}(y)`, so
+`|∫ h dμ| ≤ μ(K) ≤ C₁(rR)ᵐ` and `-r⁻ᵐ ∫ h dμ ≤ C₁Rᵐ`. -/
+theorem Submission.codim1_rdo_dg_bh_perimeter_bound : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ R r : ℝ, 0 < R → 0 < r → r * R < ρ₁ → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C₁ * R ^ m := by
+  intro m D F μ ν y ρ₁ C₁ hF hν hν1 hGG hρ₁ hC₁ hball hmass R r hR hr hrR g hg hgc hgs hg1
+  -- Step 1: `B̄_{rR}(y) ⊆ B̄_{ρ₁}(y) ⊆ D`, so the rescaled Gauss–Green identity applies to `g`
+  have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall hrR.le).trans hball
+  rw [Submission.codim1_rdo_dg_bh_rescaled_gauss_green m D F μ ν y r R hF hGG hr hsub g hg hgc hgs]
+  -- Step 2: `h(z) = ⟨g(r⁻¹(z - y)), ν(z)⟩` vanishes off `B̄_{rR}(y)`, as `spt g ⊆ B_R(0)`
+  have hzero : ∀ z, z ∉ closedBall y (r * R) → inner ℝ (g (r⁻¹ • (z - y))) (ν z) = 0 := by
+    intro z hz
+    have hgz : g (r⁻¹ • (z - y)) = 0 := by
+      by_contra hne
+      apply hz
+      have hmem : r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) R := hgs (subset_tsupport _ hne)
+      rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+        inv_mul_lt_iff₀ hr] at hmem
+      rw [mem_closedBall, dist_eq_norm]
+      exact hmem.le
+    rw [hgz, inner_zero_left]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+  -- Step 3: `μ(B̄_{rR}(y)) ≤ C₁(rR)ᵐ < ∞` and `|h| ≤ |g| |ν| ≤ 1`, so `|∫ h dμ| ≤ C₁(rR)ᵐ`
+  have hK : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) :=
+    hmass _ (mul_pos hr hR) hrR
+  have hbound : ‖∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ‖ ≤
+      1 * μ.real (closedBall y (r * R)) := by
+    refine norm_setIntegral_le_of_norm_le_const (hK.trans_lt ENNReal.ofReal_lt_top) fun z _ => ?_
+    calc ‖inner ℝ (g (r⁻¹ • (z - y))) (ν z)‖ = |inner ℝ (g (r⁻¹ • (z - y))) (ν z)| :=
+          Real.norm_eq_abs _
+      _ ≤ ‖g (r⁻¹ • (z - y))‖ * ‖ν z‖ := abs_real_inner_le_norm _ _
+      _ ≤ 1 := by rw [hν1, mul_one]; exact hg1 _
+  have hμK : μ.real (closedBall y (r * R)) ≤ C₁ * (r * R) ^ m :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hK
+  rw [Real.norm_eq_abs, one_mul] at hbound
+  have hneg := (abs_le.mp hbound).1
+  -- Step 4: `-r⁻ᵐ ∫ h dμ ≤ r⁻ᵐ C₁(rR)ᵐ = C₁Rᵐ`
+  have hrm : 0 < r ^ m := pow_pos hr m
+  calc -(r ^ m)⁻¹ * ∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ
+      = (r ^ m)⁻¹ * -∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by
+        ring
+    _ ≤ (r ^ m)⁻¹ * (C₁ * (r * R) ^ m) :=
+        mul_le_mul_of_nonneg_left (by linarith) (inv_nonneg.mpr hrm.le)
+    _ = C₁ * R ^ m := by rw [mul_pow]; field_simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
