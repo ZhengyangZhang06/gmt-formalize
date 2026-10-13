@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65f6430411bf18ba2b578a62f242cf0adc98294e4155fb8b6625fe8a54e703b6",
+  "git_delta": {
+    "base_commit": "71d1223139012c519f0d3cc1f041d331fbd65f7c",
+    "candidate_commit": "4a9e2c44a4539fcff309ef2bee97af5cfb5f79f3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sr_campanato_lemmas",
+    "diff_sha256": "ed8a52a59fa31ba1f6d6b79a4e50fd1d3a25e0632dbb35bf7015ff2b2f372db5",
+    "source_sha256": "25981ff6429c6c9cfc295d273bfc7c3653d9d85c683664687b1e9b40ecc32d8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sr_campanato_lemmas",
+      "statement": "(∀ (A a b : ℝ), 0 ≤ A → 0 < b → b < a → ∃ ε₀ C : ℝ, 0 < ε₀ ∧ 0 < C ∧ ∀ (φ : ℝ → ℝ) (R₀ ε B : ℝ), 0 ≤ ε → ε ≤ ε₀ → 0 ≤ B → (∀ r : ℝ, 0 < r → r ≤ R₀ → 0 ≤ φ r) → (∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ φ ρ) → (∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ A * ((r / ρ) ^ a + ε) * φ ρ + B * ρ ^ b) → ∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ C * ((r / ρ) ^ b * φ ρ + B * r ^ b)) ∧ (∀ (m k : ℕ) (α : ℝ), 1 ≤ m → 0 < α → α ≤ 1 → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (f : Euclid m → (Euclid m →L[ℝ] Euclid k)) (x₀ : Euclid m) (R ρ₁ K : ℝ), 0 < R → 0 < ρ₁ → 0 ≤ K → ContinuousOn f (closedBall x₀ (R + ρ₁)) → (∀ x ∈ ball x₀ R, ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ → ∫ z in ball x ρ, ‖f z - ⨍ z' in ball x ρ, f z'‖ ^ 2 ≤ K * ρ ^ ((m : ℝ) + 2 * α)) → ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖x - y‖ ≤ ρ₁ / 2 → ‖f x - f y‖ ≤ C₀ * Real.sqrt K * ‖x - y‖ ^ α)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
