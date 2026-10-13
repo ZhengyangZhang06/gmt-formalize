@@ -451,6 +451,186 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Finite `ε`-net of `n`-planes in the projection operator norm (Simon Ch. 3, proof of 1.6, the
+choice of `π₁, …, π_N`): there are `n`-dimensional subspaces `T₁, …, T_N` of `ℝᴾ` such that every
+`n`-dimensional `Q` has `‖p_Q − p_{T_j}‖ < ε` for some `j`.  The rank-`n` orthogonal projections
+lie in the closed unit ball of the finite-dimensional space `L(ℝᴾ)`, so they are totally bounded
+and finitely many of them are `ε`-dense among them; write those as `p_{T_j}`. -/
+theorem Submission.cbrr_projection_net : ∀ (P n : ℕ) (ε : ℝ), 0 < ε → ∃ (N : ℕ) (T : Fin N → Submodule ℝ (Euclid P)), (∀ j, Module.finrank ℝ (T j) = n) ∧ ∀ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n → ∃ j, ‖Q.starProjection - (T j).starProjection‖ < ε := by
+  intro P n ε hε
+  -- the rank-`n` orthogonal projections lie in the closed unit ball, so they form a totally
+  -- bounded set
+  have hS : TotallyBounded ((fun Q : Submodule ℝ (Euclid P) => Q.starProjection) ''
+      {Q | Module.finrank ℝ Q = n}) :=
+    (isCompact_closedBall (0 : Euclid P →L[ℝ] Euclid P) 1).totallyBounded.subset (by
+      rintro _ ⟨Q, -, rfl⟩
+      simpa using Q.starProjection_norm_le)
+  -- finitely many of them are `ε`-dense among them
+  obtain ⟨t, htS, htfin, hcover⟩ := finite_approx_of_totallyBounded hS ε hε
+  have ht : ∀ L ∈ t, ∃ T : Submodule ℝ (Euclid P), Module.finrank ℝ T = n ∧ T.starProjection = L :=
+    fun L hL => htS hL
+  choose! T hT using ht
+  -- enumerate them
+  obtain ⟨N, ⟨e⟩⟩ := @Finite.exists_equiv_fin t htfin.to_subtype
+  refine ⟨N, fun j => T (e.symm j), fun j => (hT _ (e.symm j).2).1, fun Q hQ => ?_⟩
+  obtain ⟨L, hL, hQL⟩ := mem_iUnion₂.1 (hcover ⟨Q, hQ, rfl⟩)
+  refine ⟨e ⟨L, hL⟩, ?_⟩
+  simp only [Equiv.symm_apply_apply]
+  rw [(hT L hL).2, ← dist_eq_norm]
+  exact hQL
+/-- **Cone claim (10) in the proof of Simon Ch. 3, Theorem 1.6 "⇐"**, with the corrected constant
+`b·16ⁿ < a`.  Suppose `μ(B̄_ρ(y)) ≥ aρⁿ` for `y ∈ E` and `μ(X(x) ∩ B_ρ(x)) ≤ bρⁿ` for `x ∈ E`,
+`0 < ρ < δ`, where `X(x) = {z : 2|p_{Q(x)}(z − x)| < |z − x|}`.  If `x, y ∈ E`,
+`‖p_{Q(x)} − p_T‖ < 1/16` and `|y − x| < δ/2`, then `|y − x| ≤ 4|p_T(y − x)|`.  Otherwise
+`σ = |y − x|` has `B̄_{σ/8}(y) ⊆ X(x) ∩ B_{2σ}(x)`, so `a(σ/8)ⁿ ≤ b(2σ)ⁿ = b·16ⁿ(σ/8)ⁿ`. -/
+theorem Submission.cbrr_cone_claim : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (T : Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖(Q x).starProjection - T.starProjection‖ < 1 / 16 → ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖T.starProjection (y - x)‖ := by
+  intro P n μ E Q T a b δ ha hab hlow hup x hx y hy hQT hyx
+  -- Step 1: suppose `4|p_T(y − x)| < σ := |y − x|`; then `0 < σ < δ/2`.
+  refine not_lt.mp fun hcon => ?_
+  set σ := ‖y - x‖
+  have hσ0 : 0 < σ := lt_of_le_of_lt (by positivity) hcon
+  -- `|p_{Q(x)}(y − x)| ≤ |p_T(y − x)| + ‖p_{Q(x)} − p_T‖σ < σ/4 + σ/16`.
+  have hQy : ‖(Q x).starProjection (y - x)‖ < σ / 4 + σ / 16 := by
+    have hsplit : (Q x).starProjection (y - x) =
+        T.starProjection (y - x) + ((Q x).starProjection - T.starProjection) (y - x) := by
+      simp
+    have hop : ‖((Q x).starProjection - T.starProjection) (y - x)‖ < σ / 16 := by
+      calc ‖((Q x).starProjection - T.starProjection) (y - x)‖
+          ≤ ‖(Q x).starProjection - T.starProjection‖ * σ := ContinuousLinearMap.le_opNorm _ _
+        _ < 1 / 16 * σ := by gcongr
+        _ = σ / 16 := by ring
+    rw [hsplit]
+    calc ‖T.starProjection (y - x) + ((Q x).starProjection - T.starProjection) (y - x)‖
+        ≤ ‖T.starProjection (y - x)‖ + ‖((Q x).starProjection - T.starProjection) (y - x)‖ :=
+          norm_add_le _ _
+      _ < σ / 4 + σ / 16 := by linarith
+  -- Step 2: `B̄_{σ/8}(y) ⊆ X(x) ∩ B_{2σ}(x)`.
+  have hsub : closedBall y (σ / 8) ⊆
+      {z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x (2 * σ) := by
+    intro z hz
+    have hzy : ‖z - y‖ ≤ σ / 8 := by rwa [mem_closedBall, dist_eq_norm] at hz
+    have hdecomp : z - x = (y - x) + (z - y) := by abel
+    -- `|p_{Q(x)}(z − x)| ≤ |p_{Q(x)}(y − x)| + |z − y| < 7σ/16`.
+    have hQz : ‖(Q x).starProjection (z - x)‖ < 7 * σ / 16 := by
+      calc ‖(Q x).starProjection (z - x)‖
+          = ‖(Q x).starProjection (y - x) + (Q x).starProjection (z - y)‖ := by
+            rw [hdecomp, map_add]
+        _ ≤ ‖(Q x).starProjection (y - x)‖ + ‖(Q x).starProjection (z - y)‖ := norm_add_le _ _
+        _ ≤ ‖(Q x).starProjection (y - x)‖ + ‖z - y‖ := by
+            gcongr; exact (Q x).norm_starProjection_apply_le _
+        _ < 7 * σ / 16 := by linarith
+    -- `7σ/8 ≤ |z − x| ≤ 9σ/8 < 2σ`.
+    have hlow' : σ - ‖z - y‖ ≤ ‖z - x‖ := by
+      have := norm_sub_le (z - x) (z - y)
+      have h' : (z - x) - (z - y) = y - x := by abel
+      rw [h'] at this
+      linarith
+    have hup' : ‖z - x‖ ≤ σ + ‖z - y‖ := by
+      rw [hdecomp]; exact norm_add_le _ _
+    refine ⟨?_, ?_⟩
+    · show 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖
+      linarith
+    · rw [mem_ball, dist_eq_norm]
+      linarith
+  -- Step 3: the density bounds at `y` (radius `σ/8`) and at `x` (radius `2σ`).
+  have key : ENNReal.ofReal (a * (σ / 8) ^ n) ≤ ENNReal.ofReal (b * (2 * σ) ^ n) :=
+    (hlow y hy (σ / 8) (by positivity) (by linarith)).trans
+      ((measure_mono hsub).trans (hup x hx (2 * σ) (by positivity) (by linarith)))
+  -- Step 4: `a(σ/8)ⁿ > 0` forces `a(σ/8)ⁿ ≤ b(2σ)ⁿ = b·16ⁿ(σ/8)ⁿ`, so `a ≤ b·16ⁿ`.
+  have hs : 0 < (σ / 8) ^ n := by positivity
+  have key' : a * (σ / 8) ^ n ≤ b * (2 * σ) ^ n :=
+    (ENNReal.ofReal_le_ofReal_iff'.mp key).resolve_right (not_le.mpr (by positivity))
+  have h16 : b * (2 * σ) ^ n = b * 16 ^ n * (σ / 8) ^ n := by
+    rw [mul_assoc, ← mul_pow]
+    congr 2
+    ring
+  rw [h16] at key'
+  have : a ≤ b * 16 ^ n := le_of_mul_le_mul_right key' hs
+  linarith
+/-- Lipschitz cover under the cone condition (Simon Ch. 3, proof of 1.6, with the extension
+theorem Ch. 2, 1.2): if `T ⊆ ℝᴾ` is an `n`-dimensional subspace and `|y − x| ≤ C |p_T(y − x)|` for
+all `x, y ∈ D`, then `D ⊆ F(ℝⁿ)` for a Lipschitz `F : ℝⁿ → ℝᴾ`.  With a linear isometry
+`ι : T ≅ ℝⁿ` put `L = ι ∘ p_T`, so `|Lv − Lw| = |p_T(v − w)|`; `L` is injective on `D` and its
+inverse on `L(D)` is `max C 0`-Lipschitz.  Extend this inverse (McShane, coordinatewise) to a
+Lipschitz `F : ℝⁿ → ℝᴾ`; then `F(Lx) = x` for `x ∈ D`. -/
+theorem Submission.cbrr_lipschitz_cover_of_cone_condition : ∀ (P n : ℕ) (T : Submodule ℝ (Euclid P)) (D : Set (Euclid P)) (C : ℝ), Module.finrank ℝ T = n → (∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ C * ‖T.starProjection (y - x)‖) → ∃ F : Euclid n → Euclid P, (∃ K : NNReal, LipschitzWith K F) ∧ D ⊆ range F := by
+  intro P n T D C hT hD
+  -- Step 1: the cone condition with the constant `K = max C 0 ≥ 0`
+  obtain ⟨K, hK⟩ : ∃ K : NNReal, ∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ K * ‖T.starProjection (y - x)‖ :=
+    ⟨C.toNNReal, fun x hx y hy => (hD x hx y hy).trans <| by
+      rw [Real.coe_toNNReal']
+      exact mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _)⟩
+  -- Step 2: the chart `L = ι ∘ p_T : ℝᴾ → ℝⁿ`, `ι : T ≅ ℝⁿ` a linear isometry
+  let ι : T ≃ₗᵢ[ℝ] Euclid n := ((stdOrthonormalBasis ℝ T).reindex (finCongr hT)).repr
+  let L : Euclid P → Euclid n := fun v => ι (T.orthogonalProjectionOnto v)
+  have hL : ∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ K * ‖L y - L x‖ := by
+    intro x hx y hy
+    have h : ‖L y - L x‖ = ‖T.starProjection (y - x)‖ := by
+      simp only [L, ← map_sub, LinearIsometryEquiv.norm_map, Submodule.starProjection_apply,
+        Submodule.norm_coe]
+    rw [h]
+    exact hK x hx y hy
+  -- Step 3: `L` is injective on `D`, with a `K`-Lipschitz inverse `g` on `L(D)`
+  have hinj : InjOn L D := by
+    intro x hx y hy hxy
+    have h := hL x hx y hy
+    rw [hxy, sub_self, norm_zero, mul_zero] at h
+    exact (sub_eq_zero.mp (norm_le_zero_iff.mp h)).symm
+  let g : Euclid n → Euclid P := invFunOn L D
+  have hgL : ∀ x ∈ D, g (L x) = x := fun x hx => hinj.leftInvOn_invFunOn hx
+  have hg : LipschitzOnWith K g (L '' D) := by
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+    rw [hgL x hx, hgL y hy, dist_eq_norm, dist_eq_norm]
+    exact hL y hy x hx
+  -- Step 4: extend `g` to a Lipschitz `F : ℝⁿ → ℝᴾ` (McShane in each coordinate)
+  obtain ⟨F, hF, hFg⟩ := hg.extend_finite_dimension
+  -- Step 5: `F (L x) = g (L x) = x` for `x ∈ D`
+  refine ⟨F, ⟨_, hF⟩, fun x hx => ⟨L x, ?_⟩⟩
+  rw [← hFg (mem_image_of_mem L hx), hgL x hx]
+
+/-- Rectifiability from uniform density bounds (Simon Ch. 3, proof of Theorem 1.6, steps
+(6)–(10) and the final cover).  Take a `1/16`-net `T₁, …, T_N` of `n`-planes and a dense sequence
+`(u_q)` in `ℝᴾ`, and cut `E` into the countably many pieces
+`D_{j,q} = {x ∈ E : ‖p_{Q(x)} − p_{T_j}‖ < 1/16} ∩ B_{δ/4}(u_q)`.  Two points of `D_{j,q}` are
+closer than `δ/2`, so the cone claim gives `|y − x| ≤ 4 |p_{T_j}(y − x)|` on `D_{j,q}`, and
+`D_{j,q}` lies in a single Lipschitz image `F_{j,q}(ℝⁿ)`.  The pieces cover `E`, so `E` lies in a
+countable union of Lipschitz images of `ℝⁿ`.  (Simon covers a compact `E` by finitely many balls
+`B_{δ/4}(x₀)`; centres from a dense sequence make compactness unnecessary.) -/
+theorem Submission.cbrr_rectifiable_of_uniform_density : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → 0 < δ → (∀ x ∈ E, Module.finrank ℝ (Q x) = n) → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → CountablyRectifiable n E := by
+  intro P n μ E Q a b δ ha hab hδ hQ hlow hup
+  -- Step 1: a `1/16`-net `T₁, …, T_N` of `n`-planes
+  obtain ⟨N, T, hT, hnet⟩ := Submission.cbrr_projection_net P n (1 / 16) (by norm_num)
+  -- Step 2: a dense sequence `(u_q)` of centres
+  obtain ⟨u, hu⟩ := TopologicalSpace.exists_dense_seq (Euclid P)
+  -- Step 3: the pieces `D_{j,q}`
+  let D : Fin N × ℕ → Set (Euclid P) := fun p =>
+    {x | x ∈ E ∧ ‖(Q x).starProjection - (T p.1).starProjection‖ < 1 / 16} ∩ ball (u p.2) (δ / 4)
+  -- Step 4: the cone condition on each piece, whose points are less than `δ / 2` apart
+  have hcone : ∀ p, ∀ x ∈ D p, ∀ y ∈ D p, ‖y - x‖ ≤ 4 * ‖(T p.1).starProjection (y - x)‖ := by
+    rintro ⟨j, q⟩ x ⟨⟨hxE, hxj⟩, hxq⟩ y ⟨⟨hyE, -⟩, hyq⟩
+    refine Submission.cbrr_cone_claim P n μ E Q (T j) a b δ ha hab hlow hup x hxE y hyE hxj ?_
+    rw [mem_ball] at hxq hyq
+    calc ‖y - x‖ = dist y x := (dist_eq_norm y x).symm
+      _ ≤ dist y (u q) + dist x (u q) := dist_triangle_right y x (u q)
+      _ < δ / 4 + δ / 4 := add_lt_add hyq hxq
+      _ = δ / 2 := by ring
+  -- Step 5: each piece lies in one Lipschitz image `F_{j,q}(ℝⁿ)`
+  choose F hF hDF using fun p : Fin N × ℕ =>
+    Submission.cbrr_lipschitz_cover_of_cone_condition P n (T p.1) (D p) 4 (hT p.1) (hcone p)
+  -- Step 6: the pieces cover `E`
+  have hcover : E ⊆ ⋃₀ range fun p => range (F p) := by
+    intro x hx
+    obtain ⟨j, hj⟩ := hnet (Q x) (hQ x hx)
+    obtain ⟨q, hq⟩ := hu.exists_dist_lt x (by positivity : (0 : ℝ) < δ / 4)
+    exact mem_sUnion.2 ⟨range (F (j, q)), mem_range_self _, hDF (j, q) ⟨⟨hx, hj⟩, mem_ball.2 hq⟩⟩
+  -- Step 7: the countably many Lipschitz images are countably `n`-rectifiable, hence so is `E`
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+    (countable_range fun p => range (F p)) ?_).mono hcover
+  rintro _ ⟨p, rfl⟩
+  obtain ⟨K, hK⟩ := hF p
+  exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

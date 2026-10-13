@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "befb179282798fea3ac4b5954e027f71301d46d0c2fc2b7a52485d7b0fb1681f",
+  "git_delta": {
+    "base_commit": "2e80aa3a6ac3657e80377be84ecbdd3270f67af8",
+    "candidate_commit": "15d1af75effb8b2ec1095347205aa50d0f23f911",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_rectifiable_of_uniform_density",
+    "diff_sha256": "9975f2a351f5bbdd86432e55db39767038dd8201e9cdb017562b8f3df0caf046",
+    "source_sha256": "999ab817e9f333eaded40f31f6714b2f4ffbe4d476ad65a1f54e5245a95a3e32",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_rectifiable_of_uniform_density",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → 0 < δ → (∀ x ∈ E, Module.finrank ℝ (Q x) = n) → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → CountablyRectifiable n E",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
