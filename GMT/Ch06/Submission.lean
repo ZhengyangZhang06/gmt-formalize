@@ -359,6 +359,136 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The radial integral `∫_{B_ρ(0)} |w|^{1-n} dw = n ω_n ρ` in `ℝⁿ`, `n = m + 1`, `ρ > 0`,
+`ω_n = Lⁿ(B_1(0))` (formula (R) of the potential estimate in the proof of Simon Ch. 6, 8.1);
+`|w|^{1-n}` is written `(‖w‖ ^ m)⁻¹`.  In polar coordinates (`integrableOn_fun_norm_addHaar`,
+`integral_fun_norm_addHaar`) the radial profile `r^{n-1} (r^{n-1})⁻¹` is `1` on `(0, ρ)`: this
+gives integrability, and with `1_{B_ρ(0)}(w) = 1_{(-∞, ρ)}(|w|)` the value `n ω_n ρ`. -/
+theorem Submission.rpn_pe_inv_norm_pow_ball :
+    ∀ (m : ℕ) (ρ : ℝ), 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (ball (0 : Eucl (m + 1)) ρ) ∧ ∫ t in ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ = ((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ρ := by
+  intro m ρ hρ
+  have hdim : Module.finrank ℝ (Eucl (m + 1)) - 1 = m := by
+    rw [finrank_euclideanSpace_fin, Nat.add_sub_cancel]
+  constructor
+  · -- Integrability: `r ^ m • (r ^ m)⁻¹ = 1` is integrable on `(0, ρ)`.
+    rw [integrableOn_fun_norm_addHaar (volume : Measure (Eucl (m + 1)))
+      (f := fun r : ℝ => (r ^ m)⁻¹), hdim]
+    refine (integrableOn_congr_fun (g := fun _ => (1 : ℝ)) (fun r hr => ?_) measurableSet_Ioo).2
+      (integrableOn_const measure_Ioo_lt_top.ne)
+    exact mul_inv_cancel₀ (pow_ne_zero _ (ne_of_gt hr.1))
+  · -- `h = 1_{(-∞, ρ)} · (r ↦ (r ^ m)⁻¹)`, so `1_{B_ρ(0)}(w) (‖w‖ ^ m)⁻¹ = h ‖w‖`.
+    set h : ℝ → ℝ := (Iio ρ).indicator fun r => (r ^ m)⁻¹ with hh
+    have hind : (ball (0 : Eucl (m + 1)) ρ).indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) =
+        fun t => h ‖t‖ := by
+      ext t
+      simp [hh, indicator]
+    -- For `r > 0`, `r ^ m • h r = 1_{(-∞, ρ)}(r)`, so the radial integral is `L¹((0, ρ)) = ρ`.
+    have hrad : ∫ y in Ioi (0 : ℝ), y ^ (Module.finrank ℝ (Eucl (m + 1)) - 1) • h y = ρ := by
+      rw [hdim, setIntegral_congr_fun measurableSet_Ioi
+        (g := (Iio ρ).indicator fun _ => (1 : ℝ)) (fun y hy => ?_)]
+      · rw [integral_indicator measurableSet_Iio, Measure.restrict_restrict measurableSet_Iio,
+          setIntegral_const, Iio_inter_Ioi, measureReal_def, Real.volume_Ioo,
+          ENNReal.toReal_ofReal (by linarith), smul_eq_mul, mul_one, sub_zero]
+      · by_cases hy' : y < ρ
+        · simp [hh, indicator, hy', mul_inv_cancel₀ (pow_ne_zero m (ne_of_gt (mem_Ioi.1 hy)))]
+        · simp [hh, indicator, hy']
+    rw [← integral_indicator measurableSet_ball, hind,
+      integral_fun_norm_addHaar (volume : Measure (Eucl (m + 1))) h, hrad,
+      finrank_euclideanSpace_fin, measureReal_def, smul_eq_mul, nsmul_eq_mul]
+    push_cast
+    ring
+
+/-- Potential estimate over a set of finite measure (Gilbarg–Trudinger, proof of Lemma 7.12, with
+the cruder constant `n + 1`): for measurable `S ⊆ ℝⁿ`, `n = m + 1`, with `Lⁿ(S) < ∞`, the kernel
+`|w|^{1-n} = (|w|^m)⁻¹` is integrable on `S` and
+`∫_S |w|^{1-n} dw ≤ (n + 1) ω^{(n-1)/n} Lⁿ(S)^{1/n}`, `ω = Lⁿ(B_1(0))`.  Split `S` at the radius
+`ρ = (Lⁿ(S)/ω)^{1/n}`: the part inside `B_ρ(0)` contributes at most `∫_{B_ρ(0)} |w|^{1-n} = nωρ`,
+the part outside at most `ρ^{1-n} Lⁿ(S) = ωρ`. -/
+theorem Submission.rpn_pe_inv_norm_pow_set_bound : ∀ (m : ℕ) (S : Set (Eucl (m + 1))), MeasurableSet S → volume S ≠ ⊤ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S ∧ ∫ t in S, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 2) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal ^ ((m : ℝ) / ((m : ℝ) + 1)) * (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  intro m S hS hSfin
+  -- Step 1: `f = (‖·‖ ^ m)⁻¹` is measurable and nonnegative.
+  have hf_meas : Measurable (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) :=
+    (measurable_norm.pow_const m).inv
+  have hf_nonneg : ∀ t : Eucl (m + 1), 0 ≤ (‖t‖ ^ m)⁻¹ := fun t => by positivity
+  -- Step 2: off `B_ρ(0)`, `f ≤ (ρ ^ m)⁻¹`; as `Lⁿ(S \ B_ρ(0)) < ∞`, `f` is integrable there.
+  have hfar_le : ∀ ρ : ℝ, 0 < ρ → ∀ t ∈ S \ ball (0 : Eucl (m + 1)) ρ,
+      (‖t‖ ^ m)⁻¹ ≤ (ρ ^ m)⁻¹ := by
+    intro ρ hρ t ht
+    have hρt : ρ ≤ ‖t‖ := by simpa using ht.2
+    exact inv_anti₀ (pow_pos hρ m) (pow_le_pow_left₀ hρ.le hρt m)
+  have hfar_fin : ∀ ρ : ℝ, volume (S \ ball (0 : Eucl (m + 1)) ρ) ≠ ⊤ := fun ρ =>
+    ne_top_of_le_ne_top hSfin (measure_mono sdiff_subset)
+  have hfar_int : ∀ ρ : ℝ, 0 < ρ →
+      IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (S \ ball (0 : Eucl (m + 1)) ρ) := by
+    intro ρ hρ
+    refine Measure.integrableOn_of_bounded (M := (ρ ^ m)⁻¹) (hfar_fin ρ)
+      hf_meas.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem (hS.diff measurableSet_ball)] with t ht
+    rw [Real.norm_of_nonneg (hf_nonneg t)]
+    exact hfar_le ρ hρ t ht
+  -- Step 3: with the ball integral, `f` is integrable on `S = (S ∩ B_ρ(0)) ∪ (S \ B_ρ(0))`.
+  have hint : ∀ ρ : ℝ, 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S := by
+    intro ρ hρ
+    have h : IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹)
+        (S ∩ ball (0 : Eucl (m + 1)) ρ ∪ S \ ball (0 : Eucl (m + 1)) ρ) :=
+      ((Submission.rpn_pe_inv_norm_pow_ball m ρ hρ).1.mono_set inter_subset_right).union
+        (hfar_int ρ hρ)
+    rwa [inter_union_sdiff] at h
+  refine ⟨hint 1 one_pos, ?_⟩
+  set ω := (volume (ball (0 : Eucl (m + 1)) 1)).toReal
+  set L := (volume S).toReal
+  have hω_pos : 0 < ω :=
+    ENNReal.toReal_pos (measure_ball_pos volume 0 one_pos).ne' measure_ball_lt_top.ne
+  have hL_nonneg : 0 ≤ L := ENNReal.toReal_nonneg
+  rcases hL_nonneg.eq_or_lt with hL0 | hL_pos
+  · -- Step 4: if `Lⁿ(S) = 0`, both sides vanish.
+    have hS0 : volume S = 0 :=
+      ((ENNReal.toReal_eq_zero_iff _).1 hL0.symm).resolve_right hSfin
+    rw [Measure.restrict_eq_zero.2 hS0, integral_zero_measure, ← hL0,
+      Real.zero_rpow (by positivity), mul_zero]
+  · -- Step 5: the radius `ρ = (L / ω) ^ (1/(m+1))`, so that `L = ω ρ ^ (m + 1)`.
+    set p : ℝ := 1 / ((m : ℝ) + 1) with hp
+    set ρ : ℝ := (L / ω) ^ p with hρ
+    have hLω : 0 < L / ω := div_pos hL_pos hω_pos
+    have hρ_pos : 0 < ρ := Real.rpow_pos_of_pos hLω p
+    have hL_eq : L = ω * ρ ^ (m + 1) := by
+      rw [hρ, ← Real.rpow_natCast, ← Real.rpow_mul hLω.le,
+        show p * ((m + 1 : ℕ) : ℝ) = 1 by rw [hp]; push_cast; field_simp, Real.rpow_one]
+      field_simp
+    obtain ⟨hball_int, hball_eq⟩ := Submission.rpn_pe_inv_norm_pow_ball m ρ hρ_pos
+    -- Step 6: split `∫_S f` along `B_ρ(0)`.
+    rw [← integral_inter_add_sdiff (measurableSet_ball : MeasurableSet (ball (0 : Eucl (m + 1)) ρ))
+      (hint ρ hρ_pos)]
+    -- Step 7: the near part is at most `∫_{B_ρ(0)} f = (m + 1) ω ρ`.
+    have hnear : ∫ t in S ∩ ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 1) * ω * ρ := by
+      rw [← hball_eq]
+      exact setIntegral_mono_set hball_int (ae_of_all _ hf_nonneg)
+        (ae_of_all _ fun t ht => ht.2)
+    -- Step 8: the far part is at most `Lⁿ(S \ B_ρ(0)) (ρ ^ m)⁻¹ ≤ L (ρ ^ m)⁻¹ = ω ρ`.
+    have hfar : ∫ t in S \ ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ ≤ ω * ρ := by
+      calc ∫ t in S \ ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹
+          ≤ ∫ _ in S \ ball (0 : Eucl (m + 1)) ρ, (ρ ^ m)⁻¹ :=
+            setIntegral_mono_on (hfar_int ρ hρ_pos) (integrableOn_const (hfar_fin ρ))
+              (hS.diff measurableSet_ball) (hfar_le ρ hρ_pos)
+        _ = volume.real (S \ ball (0 : Eucl (m + 1)) ρ) * (ρ ^ m)⁻¹ := by
+            rw [setIntegral_const, smul_eq_mul]
+        _ ≤ L * (ρ ^ m)⁻¹ := by
+            gcongr
+            exact measureReal_mono sdiff_subset hSfin
+        _ = ω * ρ := by
+            rw [hL_eq, pow_succ]
+            field_simp
+    -- Steps 9–10: the sum is `(m + 2) ω ρ = (m + 2) ω ^ (m/(m+1)) L ^ (1/(m+1))`.
+    have hωρ : ω * ρ = ω ^ ((m : ℝ) / ((m : ℝ) + 1)) * L ^ p := by
+      rw [hρ, Real.div_rpow hL_pos.le hω_pos.le,
+        show (m : ℝ) / ((m : ℝ) + 1) = 1 - p by rw [hp]; field_simp; ring,
+        Real.rpow_sub hω_pos, Real.rpow_one]
+      ring
+    calc _ ≤ ((m : ℝ) + 1) * ω * ρ + ω * ρ := add_le_add hnear hfar
+      _ = ((m : ℝ) + 2) * (ω * ρ) := by ring
+      _ = ((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) * L ^ p := by
+        rw [hωρ, mul_assoc]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
