@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7f162ba52bbabfecf6796afe5c5a2fffe9551d2190ee334342070e6e3069c188",
+  "git_delta": {
+    "base_commit": "3613a0cceebaef20e4c4a3746220d1db59039087",
+    "candidate_commit": "0bf24d86502a942f8170d34debf4c5d1244e20e7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_mm_massOn_le_liminf",
+    "diff_sha256": "acae5e0c60012deda5d5b13aa5c3ccf9dac0763473d2b2c32b3181abcd5ca51e",
+    "source_sha256": "271ca1420b293dfe9aec5540ede900a6a2dadcf2621bdef72f79e2fcb2f27ccf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_mm_massOn_le_liminf",
+      "statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
