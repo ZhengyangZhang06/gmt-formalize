@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1.low_height_point-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1",
+  "depth": 5,
+  "title": "Chebyshev selection of a point with small heights over a finite family (Simon Ch. 5, proof of Lemma 2.5, (1), (4), (5))",
+  "statement": "Let P, m ∈ ℕ and let μ be a measure on ℝ^P. Let T be a map from ℝ^P to linear subspaces of ℝ^P such that x ↦ p_{T(x)} is μ-a.e. strongly measurable; here p_{T(x)} is the orthogonal projection onto T(x), viewed as a continuous linear endomorphism of ℝ^P (Lean (T x).starProjection). Let Q be a property of points of ℝ^P that holds for μ-a.e. x, F ⊆ ℝ^P a finite set, ξ ∈ ℝ^P, and r, s, c, λ real numbers with r > 0 and s ≤ r.\nConventions: B̄_t(y) is the closed ball; ofReal = ENNReal.ofReal; integrals of [0, ∞]-valued functions are lower Lebesgue integrals; the quotient below is 0 at x = y (Lean's convention a/0 = 0); #F is the cardinality of F.\nSuppose:\n(i) dist(y, ξ) ≤ r for every y ∈ F;\n(ii) for every y ∈ F, ∫_{B̄_{2r}(y)} ofReal(|(x − y) − p_{T(x)}(x − y)|² / |x − y|^m) dμ(x) ≤ ofReal(c);\n(iii) (#F)·ofReal((2r)^m·c) < ofReal(λ)·μ(B̄_s(ξ)) in [0, ∞].\nThen there is x₀ ∈ B̄_s(ξ) with Q(x₀) such that |(y − x₀) − p_{T(x₀)}(y − x₀)|² ≤ λ for every y ∈ F.",
+  "lean_statement": "∀ (P m : ℕ) (μ : Measure (Euclid P)) (T : Euclid P → Submodule ℝ (Euclid P)) (Q : Euclid P → Prop) (F : Finset (Euclid P)) (ξ : Euclid P) (r s c lam : ℝ), AEStronglyMeasurable (fun x => (T x).starProjection) μ → (∀ᵐ x ∂μ, Q x) → 0 < r → s ≤ r → (∀ y ∈ F, dist y ξ ≤ r) → (∀ y ∈ F, ∫⁻ x in closedBall y (2 * r), ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) ∂μ ≤ ENNReal.ofReal c) → (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ m * c) < ENNReal.ofReal lam * μ (closedBall ξ s) → ∃ x₀ ∈ closedBall ξ s, Q x₀ ∧ ∀ y ∈ F, ‖(y - x₀) - (T x₀).starProjection (y - x₀)‖ ^ 2 ≤ lam",
+  "lean_name": "dorag_aa_exists_low_height_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-7d8a9852d2-a1"
+}
