@@ -451,6 +451,77 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Orthogonal frame adapted to an `n`-plane** (Step 0 of the graph first-variation estimate in
+the tilt-excess step of Allard's theorem, used for Simon 7.4.3).  Let `T ⊆ ℝⁿ⁺ᵏ` have dimension
+`n`, let `ι : ℝⁿ → ℝⁿ⁺ᵏ`, `ι' : ℝᵏ → ℝⁿ⁺ᵏ` be linear isometries with orthogonal ranges and
+`ι(ℝⁿ) ⊆ T`, and let `P : ℝⁿ⁺ᵏ → ℝⁿ` satisfy `P ∘ ι = id` and `P ∘ ι' = 0`.  Then `range ι = T`
+(both have dimension `n`), so `ι'w ∈ Tᗮ`, and `range ι' = Tᗮ` (both have dimension `k`).  Every
+`y` splits as `y = p_T y + (y − p_T y) = ιu + ι'w` with `Py = u`.  This gives `⟪ιu', y⟫ = ⟪u', Py⟫`,
+`p_T y = ι(Py)`, Pythagoras `|y|² = |Py|² + |y − p_T y|²`, and `|Py| ≤ |y|`. -/
+theorem Submission.dorag_tes_gv_adapted_frame : ∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → (∀ (u : Euclid n) (y : Euclid (n + k)), inner ℝ (ι u) y = inner ℝ u (P y)) ∧ (∀ y, T.starProjection y = ι (P y)) ∧ (∀ w, ι' w ∈ Tᗮ) ∧ (∀ y, ‖y‖ ^ 2 = ‖P y‖ ^ 2 + ‖y - T.starProjection y‖ ^ 2) ∧ (∀ y, ‖P y‖ ≤ ‖y‖) := by
+  intro n k T ι ι' P hT hιι' hιT hPι hPι'
+  -- `range ι ⊆ T`, and both have dimension `n`, so `range ι = T`
+  have hrange : LinearMap.range ι.toLinearMap = T := by
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rintro _ ⟨v, rfl⟩
+      exact hιT v
+    · rw [LinearMap.finrank_range_of_inj ι.injective, finrank_euclideanSpace_fin, hT]
+  -- (c): `ι'w` is orthogonal to every `ιv`, hence to `T`
+  have hι'T : ∀ w, ι' w ∈ Tᗮ := by
+    intro w
+    rw [← hrange, Submodule.mem_orthogonal]
+    rintro _ ⟨v, rfl⟩
+    exact hιι' v w
+  -- `range ι' ⊆ Tᗮ`, and both have dimension `(n + k) − n = k`, so `range ι' = Tᗮ`
+  have hrange' : LinearMap.range ι'.toLinearMap = Tᗮ := by
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rintro _ ⟨w, rfl⟩
+      exact hι'T w
+    · have h := Submodule.finrank_add_finrank_orthogonal T
+      rw [finrank_euclideanSpace_fin, hT] at h
+      rw [LinearMap.finrank_range_of_inj ι'.injective, finrank_euclideanSpace_fin]
+      omega
+  -- `y = p_T y + (y − p_T y) = ιu + ι'w`
+  have hdecomp : ∀ y, ∃ u w, y = ι u + ι' w := by
+    intro y
+    obtain ⟨u, hu⟩ : T.starProjection y ∈ LinearMap.range ι.toLinearMap :=
+      hrange ▸ T.starProjection_apply_mem y
+    obtain ⟨w, hw⟩ : y - T.starProjection y ∈ LinearMap.range ι'.toLinearMap :=
+      hrange' ▸ T.sub_starProjection_mem_orthogonal y
+    rw [LinearIsometry.coe_toLinearMap] at hu hw
+    exact ⟨u, w, by rw [hu, hw, add_sub_cancel]⟩
+  -- `P(ιu + ι'w) = u`
+  have hP : ∀ u w, P (ι u + ι' w) = u := fun u w => by rw [map_add, hPι, hPι', add_zero]
+  -- (a): `⟪ιu, ιu₀ + ι'w⟫ = ⟪u, u₀⟫ = ⟪u, P(ιu₀ + ι'w)⟫`
+  have hadj : ∀ (u : Euclid n) (y : Euclid (n + k)), inner ℝ (ι u) y = inner ℝ u (P y) := by
+    intro u y
+    obtain ⟨u₀, w, rfl⟩ := hdecomp y
+    rw [hP, inner_add_right, hιι', add_zero, LinearIsometry.inner_map_map]
+  -- (b): `p_T(ιu₀ + ι'w) = ιu₀ + 0 = ι(P(ιu₀ + ι'w))`
+  have hpT : ∀ y, T.starProjection y = ι (P y) := by
+    intro y
+    obtain ⟨u₀, w, rfl⟩ := hdecomp y
+    rw [hP, map_add, Submodule.starProjection_eq_self_iff.mpr (hιT u₀),
+      (T.starProjection_apply_eq_zero_iff).mpr (hι'T w), add_zero]
+  -- (d): Pythagoras for `y = p_T y + (y − p_T y)`, with `|p_T y| = |ι(Py)| = |Py|`
+  have hpyth : ∀ y, ‖y‖ ^ 2 = ‖P y‖ ^ 2 + ‖y - T.starProjection y‖ ^ 2 := by
+    intro y
+    have h0 : inner ℝ (T.starProjection y) (y - T.starProjection y) = 0 := by
+      rw [real_inner_comm]
+      exact T.starProjection_inner_eq_zero y _ (T.starProjection_apply_mem y)
+    have h1 : ‖T.starProjection y‖ = ‖P y‖ := by rw [hpT, LinearIsometry.norm_map]
+    have h2 := norm_add_sq_real (T.starProjection y) (y - T.starProjection y)
+    rw [add_sub_cancel, h0, h1] at h2
+    linarith
+  -- (e): `|Py|² ≤ |y|²` by (d)
+  have hPle : ∀ y, ‖P y‖ ≤ ‖y‖ := by
+    intro y
+    have h : ‖P y‖ ^ 2 ≤ ‖y‖ ^ 2 := by
+      rw [hpyth y]
+      exact le_add_of_nonneg_right (sq_nonneg _)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h
+  exact ⟨hadj, hpT, hι'T, hpyth, hPle⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
