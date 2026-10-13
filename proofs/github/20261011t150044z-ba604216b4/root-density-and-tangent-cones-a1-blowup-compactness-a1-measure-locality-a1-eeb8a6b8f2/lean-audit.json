@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "38feb16d41f4319e91be88146cd8ac6356ef4ab20c5c5a9fd4cafadf9cc27c1f",
+  "git_delta": {
+    "base_commit": "950f8e2e7a7cf0778b501bc65d6632a24d32d0aa",
+    "candidate_commit": "a5574668255ba38b9de4279b329e0253d043ffd5",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "39a8dbe60e6addc194bc2efc0c3261cbf5f2be40ff6ec7c88e4a57ec54dc43b3",
+    "source_sha256": "b92ef6a07a1c1c7684abd182bcce91b1c2028d821fe06d9f33e9f7815f2b7d1e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_measure_restrict_eq_of_eqOn",
+      "statement": "∀ (P n : ℕ) (U₁ U₂ W : Set (Euclid P)) (T₁ : GeometricCurrentOn U₁ n) (T₂ : GeometricCurrentOn U₂ n) (R₁ : IMRep U₁ n) (R₂ : IMRep U₂ n), IsOpen U₁ → IsOpen U₂ → IsOpen W → W ⊆ U₁ → W ⊆ U₂ → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn W n, currentEval T₁ (ω : DifferentialForm (Euclid P) n) = currentEval T₂ (ω : DifferentialForm (Euclid P) n)) → R₁.measure.restrict W = R₂.measure.restrict W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
