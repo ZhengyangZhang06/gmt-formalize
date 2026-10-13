@@ -1,0 +1,22 @@
+{
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5192",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "fba5d30a5b028b173e2bfb1aa9d44a720b51342e",
+  "integrated_commit": "",
+  "proof_base_commit": "420f27456e0c58469221307ef20a70904b19f062",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1",
+  "requires": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.pullback_testform-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.mass-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.support-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.integer_multiplicity-a1"
+  ]
+}
