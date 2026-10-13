@@ -519,6 +519,41 @@ theorem Submission.slicing_im_coarea_eil_unnormalized : ∀ (X : Type) [EMetricS
           liminf_le_liminf (.of_forall fun k => (hφi k).trans (by gcongr; exact hSsum k))
       _ = 2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A := hlim.liminf_eq
 
+/-- Eilenberg's inequality for a real-valued Lipschitz function (Federer 2.10.25 with target `ℝ`),
+for the normalized `Hᵏ = μHE[k]`: if `f` is `L`-Lipschitz on `A ⊆ ℝ^P`, some Borel `φ` majorizes
+`t ↦ Hᵐ(A ∩ f⁻¹{t})` with `∫ φ ≤ C(m) L Hᵐ⁺¹(A)`.  With `κ_d` the scalar of
+`μHE[d] = κ_d • μH[d]` (`euclideanHausdorffMeasure_def`; it does not depend on the space and
+`κ_{m+1} ≠ 0`), take `C = 2 κ_m / κ_{m+1}` and `φ = κ_m ψ`, where `ψ` is the majorant for the
+unnormalized `μH` with constant `2` (`slicing_im_coarea_eil_unnormalized`). -/
+theorem Submission.slicing_im_coarea_eilenberg : ∀ m : ℕ, ∃ C : ℝ≥0, ∀ (P : ℕ) (f : Eucl P → ℝ) (L : ℝ≥0) (A : Set (Eucl P)), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t : ℝ, (μHE[m] : Measure (Eucl P)) (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * (μHE[m + 1] : Measure (Eucl P)) A := by
+  intro m
+  -- `μHE[d] = κ_d • μH[d]` on every space, with `κ_d ∈ ℝ≥0` independent of the space.
+  obtain ⟨κ₀, hκ₀⟩ : ∃ κ₀ : ℝ≥0, ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X],
+      (μHE[m] : Measure X) = κ₀ • μH[(m : ℝ)] :=
+    ⟨_, fun X _ _ _ => Measure.euclideanHausdorffMeasure_def m⟩
+  obtain ⟨κ₁, hκ₁0, hκ₁⟩ : ∃ κ₁ : ℝ≥0, κ₁ ≠ 0 ∧
+      ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X],
+        (μHE[m + 1] : Measure X) = κ₁ • μH[((m + 1 : ℕ) : ℝ)] :=
+    ⟨_, Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (m + 1),
+      fun X _ _ _ => Measure.euclideanHausdorffMeasure_def (m + 1)⟩
+  refine ⟨2 * κ₀ / κ₁, fun P f L A hf => ?_⟩
+  -- The unnormalized inequality on `ℝ^P`, rescaled by `κ_m`.
+  obtain ⟨ψ, hψm, hψt, hψi⟩ := Submission.slicing_im_coarea_eil_unnormalized (Eucl P) m f L A hf
+  refine ⟨fun t => (κ₀ : ℝ≥0∞) * ψ t, hψm.const_mul _, fun t => ?_, ?_⟩
+  · rw [hκ₀, Measure.smul_apply, Measure.nnreal_smul_coe_apply]
+    dsimp only
+    gcongr
+    exact hψt t
+  · rw [lintegral_const_mul _ hψm, hκ₁, Measure.smul_apply, Measure.nnreal_smul_coe_apply]
+    have hC : ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * κ₁ = 2 * κ₀ := by
+      rw [← ENNReal.coe_mul, div_mul_cancel₀ _ hκ₁0, ENNReal.coe_mul, ENNReal.coe_ofNat]
+    calc (κ₀ : ℝ≥0∞) * ∫⁻ t, ψ t
+        ≤ κ₀ * (2 * L * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A) := by gcongr
+      _ = ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * κ₁ * L * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A := by
+        rw [hC]; ring
+      _ = ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * L * (κ₁ * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A) := by
+        ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
