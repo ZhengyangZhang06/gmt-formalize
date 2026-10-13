@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of a bi-Lipschitz image of a subset of ℝⁿ",
+  "statement": "Let P, n ∈ ℕ, χ : ℝ^n → ℝ^P, E ⊆ ℝ^n and real numbers c₁ > 0, c₂ ≥ 0 such that c₁|a − b| ≤ |χ(a) − χ(b)| ≤ c₂|a − b| for all a, b ∈ E. Then c₁ⁿ·Lⁿ(E) ≤ Hⁿ(χ(E)) ≤ c₂ⁿ·Lⁿ(E), where Lⁿ is Lebesgue measure (volume) on ℝ^n = Euclid n and Hⁿ = μHE[n] on ℝ^P (all quantities in [0, ∞]).",
+  "lean_statement": "∀ (P n : ℕ) (χ : Euclid n → Euclid P) (E : Set (Euclid n)) (c₁ c₂ : ℝ), 0 < c₁ → 0 ≤ c₂ → (∀ a ∈ E, ∀ b ∈ E, c₁ * ‖a - b‖ ≤ ‖χ a - χ b‖ ∧ ‖χ a - χ b‖ ≤ c₂ * ‖a - b‖) → ENNReal.ofReal (c₁ ^ n) * volume E ≤ μHE[n] (χ '' E) ∧ μHE[n] (χ '' E) ≤ ENNReal.ofReal (c₂ ^ n) * volume E",
+  "lean_name": "dimred_rpd_bilipschitz_image_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f-a1"
+}
