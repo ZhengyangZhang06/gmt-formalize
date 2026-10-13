@@ -750,6 +750,133 @@ theorem dohr_eb_lhr_ds_translate_weak_eq : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (�
   -- Step 6: combine with the weak identity for `φ`.
   rw [← key ω₁, ← key ω₂]
   exact hweak φ hφC hφc hφU
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): differentiating a weak identity.**
+Let `ω₁, ω₂ : ℝⁿ → L*` (`L = L(ℝⁿ, ℝ^ℓ)`) be `C¹` on the open set `U` and satisfy
+`∫_U ω₁[Dφ] = ∫_U ω₂[Dφ]` for every `φ ∈ C¹_c(U; ℝ^ℓ)`.  Then for every direction `e` and every
+`ζ ∈ C¹_c(U; ℝ^ℓ)` the functions `F_i = (Dω_i e)[Dζ]` are integrable on `U` and
+`∫_U F₁ = ∫_U F₂`.
+Proof: `K = spt ζ` has a compact thickening `K₁ = cthickening δ K ⊆ U`, and `y + s e ∈ K₁` for
+`y ∈ K`, `|s| < ε = δ/(|e| + 1)`.  The translated integrands `ω_i(y + s e)[Dζ(y)]` and
+`(Dω_i(y + s e) e)[Dζ(y)]` are continuous with support in `K`.  By the translated weak identity
+(`dohr_eb_lhr_ds_translate_weak_eq`), `I_i(s) = ∫ ω_i(y + s e)[Dζ(y)] dy` satisfy `I₁ = I₂` for
+`|s| < ε`.  Differentiating under the integral sign, with the integrable bound `C_i |Dζ|` where
+`C_i` bounds `|Dω_i(z) e|` on `K₁`, gives `I_i'(0) = ∫ F_i` and the integrability of `F_i`;
+hence `∫ F₁ = ∫ F₂`.  The `F_i` vanish off `K ⊆ U`, so the integrals over `U` agree. -/
+theorem dohr_eb_lhr_ds_weak_eq_fderiv : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 ω₁ U → ContDiffOn ℝ 1 ω₂ U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → IntegrableOn (fun x => fderiv ℝ ω₁ x e (fderiv ℝ ζ x)) U ∧ IntegrableOn (fun x => fderiv ℝ ω₂ x e (fderiv ℝ ζ x)) U ∧ ∫ x in U, fderiv ℝ ω₁ x e (fderiv ℝ ζ x) = ∫ x in U, fderiv ℝ ω₂ x e (fderiv ℝ ζ x) := by
+  intro n ℓ U ω₁ ω₂ e hU hω₁ hω₂ hweak ζ hζ hζc hζU
+  -- Step 1: a compact thickening `K₁ = cthickening δ K` of `K = tsupport ζ` inside `U`, and
+  -- `ε = δ / (‖e‖ + 1)`, so that `y + s • e ∈ K₁` for `y ∈ K` and `|s| < ε`.
+  have hK : IsCompact (tsupport ζ) := hζc
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hζU
+  have hK₁ : IsCompact (cthickening δ (tsupport ζ)) := hK.cthickening
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  obtain ⟨ε, hε, hεδ⟩ : ∃ ε : ℝ, 0 < ε ∧ ε * (‖e‖ + 1) = δ :=
+    ⟨δ / (‖e‖ + 1), div_pos hδ he1, div_mul_cancel₀ δ he1.ne'⟩
+  have hmemK₁ : ∀ y ∈ tsupport ζ, ∀ s ∈ ball (0 : ℝ) ε,
+      y + s • e ∈ cthickening δ (tsupport ζ) := by
+    intro y hy s hs
+    refine mem_cthickening_of_dist_le _ y δ _ hy ?_
+    rw [mem_ball, Real.dist_eq, sub_zero] at hs
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, ← hεδ]
+    exact mul_le_mul hs.le (by linarith) (norm_nonneg e) hε.le
+  have hmemU : ∀ y ∈ tsupport ζ, ∀ s ∈ ball (0 : ℝ) ε, y + s • e ∈ U :=
+    fun y hy s hs => hδU (hmemK₁ y hy s hs)
+  -- `Dζ` is continuous, vanishes off `K`, and `‖Dζ‖` is integrable.
+  have hDζc : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζ0 : ∀ y, y ∉ tsupport ζ → fderiv ℝ ζ y = 0 := fun y hy => fderiv_of_notMem_tsupport ℝ hy
+  have hDζint : Integrable (fun y => ‖fderiv ℝ ζ y‖) :=
+    (hDζc.integrable_of_hasCompactSupport (hζc.fderiv ℝ)).norm
+  -- Integrands `y ↦ G y (Dζ y)` are supported in `K`.
+  have hsupp : ∀ G : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ,
+      Function.support (fun y => G y (fderiv ℝ ζ y)) ⊆ tsupport ζ := by
+    intro G y hy
+    by_contra hyK
+    exact hy (by simp only [hDζ0 y hyK, ContinuousLinearMap.map_zero])
+  -- Step 3: for `|s| < ε` the translated integrands are continuous (with support in `K`).
+  have hcont : ∀ s ∈ ball (0 : ℝ) ε, ∀ g : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ContinuousOn g U →
+      Continuous (fun y => g (y + s • e) (fderiv ℝ ζ y)) := by
+    intro s hs g hg
+    have htr : Continuous (fun y : Rn n => y + s • e) := continuous_id.add continuous_const
+    refine ContinuousOn.continuous_of_tsupport_subset (s := (fun y => y + s • e) ⁻¹' U)
+      ((hg.comp htr.continuousOn (fun y hy => hy)).clm_apply hDζc.continuousOn)
+      (hU.preimage htr) ?_
+    exact (closure_minimal (hsupp (fun y => g (y + s • e))) (isClosed_tsupport ζ)).trans
+      (fun y hy => hmemU y hy s hs)
+  -- Steps 2 and 5, for a single `ω`: `I(s) = ∫ ω(y + s • e)[Dζ y] dy` has derivative
+  -- `∫ (Dω(y) e)[Dζ y] dy` at `0`, and this integrand is integrable.
+  have key : ∀ ω : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ContDiffOn ℝ 1 ω U →
+      Integrable (fun y => fderiv ℝ ω y e (fderiv ℝ ζ y)) ∧
+      HasDerivAt (fun s : ℝ => ∫ y, ω (y + s • e) (fderiv ℝ ζ y))
+        (∫ y, fderiv ℝ ω y e (fderiv ℝ ζ y)) 0 := by
+    intro ω hω
+    -- Step 2: `ω` and `z ↦ Dω(z) e` are continuous on `U`; `‖Dω(z) e‖ ≤ C` on `K₁`.
+    have hωc : ContinuousOn ω U := hω.continuousOn
+    have hDωe : ContinuousOn (fun z => fderiv ℝ ω z e) U :=
+      (hω.continuousOn_fderiv_of_isOpen hU le_rfl).clm_apply continuousOn_const
+    obtain ⟨C, hC⟩ := hK₁.exists_bound_of_continuousOn (E := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+      (hDωe.mono hδU)
+    have hball : ball (0 : ℝ) ε ∈ 𝓝 (0 : ℝ) := ball_mem_nhds 0 hε
+    have h0 : (0 : ℝ) ∈ ball (0 : ℝ) ε := mem_ball_self hε
+    -- (a) the pointwise derivative in `s` (chain rule, then evaluation at the constant `Dζ y`)
+    have hderiv : ∀ y : Rn n, ∀ s ∈ ball (0 : ℝ) ε,
+        HasDerivAt (fun σ : ℝ => ω (y + σ • e) (fderiv ℝ ζ y))
+          (fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y)) s := by
+      intro y s hs
+      by_cases hy : y ∈ tsupport ζ
+      · have hz := ((hω.differentiableOn one_ne_zero _ (hmemU y hy s hs)).differentiableAt
+          (hU.mem_nhds (hmemU y hy s hs))).hasFDerivAt
+        have hline : HasDerivAt (fun σ : ℝ => y + σ • e) e s :=
+          (((hasDerivAt_id' s).smul_const e).const_add y).congr_deriv (one_smul ℝ e)
+        refine (HasDerivAt.clm_apply (c := fun σ : ℝ => ω (y + σ • e))
+          (u := fun _ : ℝ => fderiv ℝ ζ y) (hz.comp_hasDerivAt s hline)
+          (hasDerivAt_const s (fderiv ℝ ζ y))).congr_deriv ?_
+        simp only [ContinuousLinearMap.map_zero, add_zero]
+      · simp only [hDζ0 y hy, ContinuousLinearMap.map_zero]
+        exact hasDerivAt_const s 0
+    -- (b) domination by the integrable bound `C ‖Dζ‖`
+    have hbound : ∀ y : Rn n, ∀ s ∈ ball (0 : ℝ) ε,
+        ‖fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y)‖ ≤ C * ‖fderiv ℝ ζ y‖ := by
+      intro y s hs
+      by_cases hy : y ∈ tsupport ζ
+      · have h1 := hC (y + s • e) (hmemK₁ y hy s hs)
+        calc ‖fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y)‖
+            ≤ ‖fderiv ℝ ω (y + s • e) e‖ * ‖fderiv ℝ ζ y‖ :=
+              (fderiv ℝ ω (y + s • e) e).le_opNorm _
+          _ ≤ C * ‖fderiv ℝ ζ y‖ := mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+      · rw [hDζ0 y hy, ContinuousLinearMap.map_zero, norm_zero, norm_zero, mul_zero]
+    -- (c) differentiation under the integral sign
+    obtain ⟨hint, hder⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+      (F := fun (s : ℝ) (y : Rn n) => ω (y + s • e) (fderiv ℝ ζ y))
+      (F' := fun (s : ℝ) (y : Rn n) => fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y))
+      (bound := fun y => C * ‖fderiv ℝ ζ y‖) hball
+      (Filter.eventually_of_mem hball fun s hs => (hcont s hs ω hωc).aestronglyMeasurable)
+      ((hcont 0 h0 ω hωc).integrable_of_hasCompactSupport (hζc.mono' (hsupp _)))
+      (hcont 0 h0 _ hDωe).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun y s hs => hbound y s hs)
+      (hDζint.const_mul C)
+      (Filter.Eventually.of_forall fun y s hs => hderiv y s hs)
+    simp only [zero_smul, add_zero] at hint hder
+    exact ⟨hint, hder⟩
+  obtain ⟨hint₁, hder₁⟩ := key ω₁ hω₁
+  obtain ⟨hint₂, hder₂⟩ := key ω₂ hω₂
+  -- Step 4: the translated weak identity gives `I₁ = I₂` near `0`.
+  have heq : (fun s : ℝ => ∫ y, ω₁ (y + s • e) (fderiv ℝ ζ y)) =ᶠ[𝓝 0]
+      (fun s : ℝ => ∫ y, ω₂ (y + s • e) (fderiv ℝ ζ y)) := by
+    filter_upwards [ball_mem_nhds (0 : ℝ) hε] with s hs
+    exact Submission.dohr_eb_lhr_ds_translate_weak_eq n ℓ U ω₁ ω₂ e s ζ hweak hζ hζc
+      (fun y hy => hmemU y hy s hs)
+  -- Step 6: hence the derivatives at `0` agree.
+  have hD : ∫ y, fderiv ℝ ω₁ y e (fderiv ℝ ζ y) = ∫ y, fderiv ℝ ω₂ y e (fderiv ℝ ζ y) :=
+    (hder₁.congr_of_eventuallyEq heq.symm).unique hder₂
+  -- Step 7: the integrands vanish off `U`.
+  have hzero : ∀ (ω : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (x : Rn n), x ∉ U →
+      fderiv ℝ ω x e (fderiv ℝ ζ x) = 0 := by
+    intro ω x hx
+    rw [hDζ0 x (fun hxK => hx (hζU hxK)), ContinuousLinearMap.map_zero]
+  refine ⟨hint₁.integrableOn, hint₂.integrableOn, ?_⟩
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hzero ω₁),
+    setIntegral_eq_integral_of_forall_compl_eq_zero (hzero ω₂)]
+  exact hD
 
 end Submission
 
