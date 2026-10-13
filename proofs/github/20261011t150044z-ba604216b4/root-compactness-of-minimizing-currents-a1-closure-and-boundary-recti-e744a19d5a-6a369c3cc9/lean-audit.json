@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22ba765122464769b7b568b6c46475308b50e11450d302c3acf75fd99cf973a6",
+  "git_delta": {
+    "base_commit": "af69c54e5dfdc5cf17b9271e2fdef9d57e28d311",
+    "candidate_commit": "413eb6b2b2cfad4f3741718acb8a6ca0d984c63f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_prod_subspace_haar",
+    "diff_sha256": "4c9a9a02dadea1a88e6bd1d610bd2514db174b1da46db0aec74a76e29805a6be",
+    "source_sha256": "3dbb46596b44ee485ce05fcc72e550b46c095d1759993d3df8d738dad156d06c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_prod_subspace_haar",
+      "statement": "∀ (P n : ℕ) (m : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → m (V : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → m K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → m ((fun x => v + x) ⁻¹' A) = m A) → ∃ c : ℝ≥0∞, m = c • (μHE[n]).restrict (V : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
