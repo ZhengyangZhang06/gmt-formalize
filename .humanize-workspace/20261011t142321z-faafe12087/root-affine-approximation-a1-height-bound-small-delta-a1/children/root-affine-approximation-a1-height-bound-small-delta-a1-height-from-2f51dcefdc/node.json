@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.height_bound_small_delta-a1.height_from_net_plane-a1",
+  "parent_id": "root.affine_approximation-a1.height_bound_small_delta-a1",
+  "depth": 3,
+  "title": "Height bound from a net and a plane close to the net points (book (5)-(6))",
+  "statement": "Let n, l be natural numbers, T a linear subspace of R^(n+l) with orthogonal projection p_T (T.starProjection), xi, x_0 in R^(n+l), S a subset of R^(n+l), F a finite subset of R^(n+l), and a, b real numbers. Assume |x_0 - xi| <= a, assume |(x_0 - y) - p_T(x_0 - y)| <= b for every y in F, and assume every x in S has some y in F with dist(x, y) <= a. Then dist(x - xi, T) = inf{|x - xi - t| : t in T} <= b + 2a for every x in S.",
+  "lean_statement": "∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)) (ξ x₀ : Amb n ℓ) (S : Set (Amb n ℓ)) (F : Finset (Amb n ℓ)) (a b : ℝ), ‖x₀ - ξ‖ ≤ a → (∀ y ∈ F, ‖(x₀ - y) - T.starProjection (x₀ - y)‖ ≤ b) → (∀ x ∈ S, ∃ y ∈ F, dist x y ≤ a) → ∀ x ∈ S, infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ b + 2 * a",
+  "lean_name": "aal_height_of_net_plane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-height-bound-small-delta-a1-height-from-2f51dcefdc-a1"
+}
