@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ce3138874a5d0162b0e7d04ba5cb248fdd50878b41692cae823d80b05c7a8736",
+  "git_delta": {
+    "base_commit": "5b3a7476fede3a3a67cf8ef24d098e51304e435c",
+    "candidate_commit": "66f3fce3f4686c38defb405057d0eb32c9f30c4d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_minimizing_summand",
+    "diff_sha256": "82e4a6d742c1bfd644d9f0b004d52905f60fc777236fbba009163c0213f4e5e9",
+    "source_sha256": "c50bc16f266197ac8ac9c7ca68078606f95a2c6cf2670afb16488ea923742355",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_minimizing_summand",
+      "statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T T₁ : GeometricCurrentOn U n), IsOpen U → IsMinimizingIn T A → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity (T - T₁) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T₁.massOn W + (T - T₁).massOn W ≤ T.massOn W) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → (T - T₁).massOn W ≠ ∞) → IsMinimizingIn T₁ A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
