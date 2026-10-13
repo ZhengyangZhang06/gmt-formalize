@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsUnitOrientationOf|structure IMRep|def IMRep.Represents|abbrev MultiVector|def HasApproximateTangentSpaceAt|def blowUpMap|support_euclideanHausdorffMeasure_restrict_submodule|abbrev Covector|compContinuousLinearMap_apply|HasFDerivAt.isLittleO",
+        "fderiv.*approxTangent|approxTangent.*fderiv|dtc_bc_lc_fderiv_apply_eq_of_approxTangent|dtc_bc_lc_unitOrientation_comp_eq",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "git show d15b5cf486116871dce9295932632b12f0af96e0:GMT/Ch07/Submission.lean",
+        "git show 022bd01bf7500f65a1cfbba033ecf91be9652452:GMT/Ch07/Submission.lean",
+        "git show cb667a61bedac01a38adc25c5277e01b9c79d4d4:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 1 /tmp/orientation_contract_audit_lrj0d8sk/CombinedAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-b3605f7958/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-b3605f7958/decomposition-v1.json",
+        "/tmp/orientation_contract_audit_lrj0d8sk/CombinedAudit.lean",
+        "/tmp/orientation_contract_audit_lrj0d8sk/CombinedAudit.log"
+      ],
+      "conclusion": "The five-child split is appropriate and establishes exactly dtc_bc_lc_orient_fixed. Verified pinned definitions and dependency revisions. The derivative search found only tangential-divergence definitions, with no applicable derivative-fixing lemma. All three reused declarations have identical frozen types, unchanged contract definitions, comparator acceptance records, and accepted dependency closures. Both new names are unreserved in the DAG and other proposed decompositions. Dependencies are acyclic and correctly directed. All five statements are standalone one-line propositions with bare names. The combined audit elaborated their types before their implementations and kernel-checked all five conclusions and the exact parent assembly; every axiom report contains only propext, Classical.choice, and Quot.sound. Continuous-linear-map and alternating-map constructions have the intended types; no matrix-unit ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match the accepted declaration exactly. Countable reduction, local integrability, smooth testing, the fundamental lemma, and a finite covector basis prove carrier-nullity outside support. Positive multiplicity and nonzero unit orientations are used correctly. The complete supplied proof is non-circular."
+    },
+    {
+      "key": "tangent_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type matches all stated hypotheses, including arbitrary sets. The Borel cutoff localizes each integral, Lipschitz blow-ups preserve nullity, and equality of restricted measures gives eventual equality of integrals. No unstated measurability assumption or circular dependency is needed."
+    },
+    {
+      "key": "blowup_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The identical accepted type states the required all-small-scales conclusion. The tent function has positive integral on the plane; convergence forces the blow-up to charge its supporting ball, and removing the null exceptional image leaves a point in M ∩ N. Both cited prerequisites are accepted and independent, including in degree zero."
+    },
+    {
+      "key": "fderiv_fixes_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact type. The positive constants and chosen scale ensure the selected point lies within the differentiability neighborhood. Fixed-point identities and division by the positive scale give the stated error bound; the operator-norm estimate proves equality for every tangent vector. Its dependency on blowup_points is sufficient and correctly directed."
+    },
+    {
+      "key": "orientation_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the orientation and linear-map hypotheses. Every frame vector lies in Q, so L fixes the frame. The pinned compContinuousLinearMap_apply identity then proves the pairing equality with either fixed sign, including the empty frame when n = 0. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}
