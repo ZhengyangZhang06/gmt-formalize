@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gradient length of a linear functional on `ℝⁿ`** (the identities `‖Du‖ = |∇u|` and
+`|∇u · Φ| ≤ ‖Du‖ |Φ|` behind the energy bound in Simon Ch. 5, 3.1, p. 114):
+`‖L‖² = Σᵢ L(eᵢ)²` and `|Σᵢ L(eᵢ) aᵢ| ≤ ‖L‖ √(Σᵢ aᵢ²)`.  The Riesz representative
+`g = toDual⁻¹ L` has `‖g‖ = ‖L‖` and coordinates `gᵢ = ⟪eᵢ, g⟫ = L(eᵢ)`; the bound is the
+finite Cauchy–Schwarz inequality applied to `a` and to `-a`. -/
+theorem Submission.dorag_ha_lsc_grad_norm_sq : ∀ (n : ℕ) (L : Euclid n →L[ℝ] ℝ), ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 ∧ ∀ a : Fin n → ℝ, |∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) * a i| ≤ ‖L‖ * Real.sqrt (∑ i : Fin n, a i ^ 2) := by
+  intro n L
+  -- the Riesz representative `g` of `L`: `⟪g, v⟫ = L v` and `‖g‖ = ‖L‖`
+  set g : Euclid n := (InnerProductSpace.toDual ℝ (Euclid n)).symm L with hg
+  have hgL : ∀ v, inner ℝ g v = L v := fun v => InnerProductSpace.toDual_symm_apply
+  have hnorm : ‖g‖ = ‖L‖ := by simp [hg]
+  -- `L(eᵢ) = ⟪eᵢ, g⟫ = gᵢ`
+  have hcoord : ∀ i, L (EuclideanSpace.single i (1 : ℝ)) = g i := by
+    intro i
+    rw [← hgL, real_inner_comm, EuclideanSpace.inner_single_left]; simp
+  -- (i) `‖L‖² = ‖g‖² = Σᵢ gᵢ²`
+  have hid : ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 := by
+    rw [← hnorm, EuclideanSpace.real_norm_sq_eq]; simp_rw [hcoord]
+  refine ⟨hid, fun a => ?_⟩
+  -- (ii) `‖L‖ = √(Σᵢ L(eᵢ)²)`; Cauchy–Schwarz for `-a` gives the lower bound, for `a` the upper
+  have hL : ‖L‖ = Real.sqrt (∑ i, L (EuclideanSpace.single i (1 : ℝ)) ^ 2) := by
+    rw [← hid, Real.sqrt_sq (norm_nonneg _)]
+  rw [hL, abs_le]
+  constructor
+  · have := Real.sum_mul_le_sqrt_mul_sqrt Finset.univ
+      (fun i => L (EuclideanSpace.single i (1 : ℝ))) (fun i => -a i)
+    simp only [neg_sq, mul_neg, Finset.sum_neg_distrib] at this
+    linarith
+  · exact Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
