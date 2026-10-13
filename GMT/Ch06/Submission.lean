@@ -15579,6 +15579,725 @@ theorem Submission.deformation_im_pushforward_limit : LipschitzPushforwardIntege
   rw [← hlim]
   exact hconv
 
+/-- **Push-forward operators and the straight-line homotopy (Simon Ch. 6, 2.17–2.29, 3.2(2)).**
+Assume (S5′), the conclusion of `deformation_im_pushforward_limit`.  For every `D` there are
+constants `c_k = max(1, c₀(D, k))` (`c₀` the constant of the affine estimate 2.27) such that every
+`f : ℝ^D → ℝ^D` has operators `P_k X = f_# X` and `H_k X = h_# ([[0,1]] × X)`, the Lipschitz
+push-forwards characterized in `dph_lipschitz_pushforward`, where
+`h(t, x) = f(x) + t (x − f(x))` is the straight-line homotopy from `f` to the identity.  On currents
+with admissible data `(E, Λ, δ, b)` they satisfy the mass, support, integrality, tangential
+vanishing and linearity clauses, `∂ P = P ∂` and the homotopy formula `X − P X = ∂ H X + H ∂X`
+(Simon 2.25), the latter as the limit of the smooth homotopy formula for the mollified homotopies
+`ĥ_n(t, x) = f_n(x) + t (x − f_n(x))`. -/
+theorem Submission.deformation_pushforward_homotopy : (∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))) → ∀ D : ℕ, ∃ c : ℕ → ℝ≥0, ∀ f : Eucl D → Eucl D, ∃ (Pf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k → GeometricCurrentOn (univ : Set (Eucl D)) k) (Hf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k → GeometricCurrentOn (univ : Set (Eucl D)) (k + 1)), (∀ (k : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl D)) k), IsClosed E → 0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → X.mass < ∞ → (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq Y X → Y.boundary.mass < ∞) → X.support ⊆ E → (Pf k X).mass ≤ (c k : ℝ≥0∞) * (Λ : ℝ≥0∞) ^ k * X.mass ∧ (Hf k X).mass ≤ (c k : ℝ≥0∞) * ENNReal.ofReal b * (1 + (Λ : ℝ≥0∞)) ^ k * X.mass ∧ (Pf k X).support ⊆ closure (f '' X.support) ∧ (Hf k X).support ⊆ cthickening b X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity (Pf k X) ∧ IsIntegerMultiplicity (Hf k X)) ∧ (∀ (α : SimonMultiIndex k D) (z : Eucl D) (ω : TestFormOn (univ : Set (Eucl D)) k) (ε : ℝ), 0 < ε → (∀ x ∈ thickening ε X.support, f x ∈ thickening ε (tsupport (ω : DifferentialForm (Eucl D) k)) → ∀ i, i ∉ range α → f x i = z i) → (∀ y, (ω : DifferentialForm (Eucl D) k) y (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0) → Pf k X ω = 0) ∧ ∀ (X₁ X₂ : GeometricCurrentOn (univ : Set (Eucl D)) k) (a a₁ : ℝ), X₁.mass < ∞ → (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq Y X₁ → Y.boundary.mass < ∞) → X₁.support ⊆ E → (∀ ω, X₂ ω = a * X ω + a₁ * X₁ ω) → (∀ ω, Pf k X₂ ω = a * Pf k X ω + a₁ * Pf k X₁ ω) ∧ ∀ ω, Hf k X₂ ω = a * Hf k X ω + a₁ * Hf k X₁ ω) ∧ ∀ (j : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), IsClosed E → 0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → X.mass < ∞ → X.boundary.mass < ∞ → X.support ⊆ E → (Pf (j + 1) X).boundary = Pf j X.boundary ∧ ∀ ω, X ω - Pf (j + 1) X ω = (Hf (j + 1) X).boundary ω + Hf j X.boundary ω := by
+  have hSA := Submission.dph_lipschitz_smooth_approx
+  have hIP := Submission.dph_interval_product
+  have hIPIM := Submission.dph_interval_product_im
+  have hSH := Submission.dph_smooth_homotopy
+  have hLPF := Submission.dph_lipschitz_pushforward
+  have hLPFIM := Submission.dph_lipschitz_pushforward_im
+  intro hS5 D
+  classical
+  /- Part 0.  Coordinates on `ℝ^{D+1} = ℝ × ℝ^D` (time first, via `Fin.cons`): `tm y = y₀` and
+  `tl y = (y₁, …, y_D)`, with `‖y‖² = tm y² + ‖tl y‖²`. -/
+  obtain ⟨tl, htl⟩ : ∃ tl : Eucl (D + 1) →L[ℝ] Eucl D, ∀ y, tl y =
+      (EuclideanSpace.equiv (Fin D) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (D + 1)) ℝ y)) := by
+    let tlₗ : Eucl (D + 1) →ₗ[ℝ] Eucl D :=
+      { toFun := fun y => (EuclideanSpace.equiv (Fin D) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (D + 1)) ℝ y))
+        map_add' := fun a b => by ext i; simp [Fin.tail]
+        map_smul' := fun c a => by ext i; simp [Fin.tail] }
+    exact ⟨LinearMap.toContinuousLinearMap tlₗ, fun y => rfl⟩
+  obtain ⟨tm, htm⟩ : ∃ tm : Eucl (D + 1) →L[ℝ] ℝ, ∀ y,
+      tm y = EuclideanSpace.equiv (Fin (D + 1)) ℝ y 0 := by
+    let tmₗ : Eucl (D + 1) →ₗ[ℝ] ℝ :=
+      { toFun := fun y => EuclideanSpace.equiv (Fin (D + 1)) ℝ y 0
+        map_add' := fun a b => by simp
+        map_smul' := fun c a => by simp }
+    exact ⟨LinearMap.toContinuousLinearMap tmₗ, fun y => rfl⟩
+  have hnorm2 : ∀ y : Eucl (D + 1), ‖y‖ ^ 2 = tm y ^ 2 + ‖tl y‖ ^ 2 := by
+    intro y
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ, htm, htl]
+    simp [Fin.tail]
+  have htl_le : ∀ y, ‖tl y‖ ≤ ‖y‖ := fun y => by
+    have := hnorm2 y
+    nlinarith [sq_nonneg (tm y), norm_nonneg y, norm_nonneg (tl y)]
+  have htm_le : ∀ y, |tm y| ≤ ‖y‖ := fun y => by
+    have := hnorm2 y
+    rw [← sq_abs (tm y)] at this
+    nlinarith [abs_nonneg (tm y), norm_nonneg y, norm_nonneg (tl y), sq_nonneg ‖tl y‖]
+  have hy_le : ∀ y, ‖y‖ ≤ |tm y| + ‖tl y‖ := fun y => by
+    have := hnorm2 y
+    rw [← sq_abs (tm y)] at this
+    nlinarith [abs_nonneg (tm y), norm_nonneg y, norm_nonneg (tl y)]
+  have htl_cons : ∀ (s : ℝ) (x : Eucl D), tl ((EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+      (Fin.cons s (EuclideanSpace.equiv (Fin D) ℝ x))) = x := by
+    intro s x
+    rw [htl, ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  have htm_cons : ∀ (s : ℝ) (x : Eucl D), tm ((EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+      (Fin.cons s (EuclideanSpace.equiv (Fin D) ℝ x))) = s := by
+    intro s x
+    rw [htm, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero]
+  -- The cylinder `[0, 1] × S` of the children, in these coordinates.
+  have hcyl : ∀ S : Set (Eucl D), {y : Eucl (D + 1) | EuclideanSpace.equiv (Fin (D + 1)) ℝ y 0 ∈
+      Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin D) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (D + 1)) ℝ y)) ∈ S} =
+      {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ S} := by
+    intro S
+    ext y
+    simp only [Set.mem_ofPred_eq, htl, htm]
+  have hcyl_closed : ∀ S : Set (Eucl D), IsClosed S →
+      IsClosed {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ S} := fun S hS =>
+    (isClosed_Icc.preimage tm.continuous).inter (hS.preimage tl.continuous)
+  have hcyl_compact : ∀ K : Set (Eucl D), IsCompact K →
+      IsCompact {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ K} := by
+    intro K hK
+    obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
+    refine Metric.isCompact_of_isClosed_isBounded (hcyl_closed K hK.isClosed)
+      ((isBounded_closedBall (x := (0 : Eucl (D + 1))) (r := 1 + R)).subset ?_)
+    rintro y ⟨ht, hx⟩
+    rw [mem_closedBall, dist_zero_right]
+    have h1 : |tm y| ≤ 1 := abs_le.2 ⟨by linarith [ht.1], ht.2⟩
+    have h2 : ‖tl y‖ ≤ R := by simpa [mem_closedBall, dist_zero_right] using hR hx
+    linarith [hy_le y]
+  /- Standing facts on currents: supports are closed, a current with empty support vanishes,
+  mass bounds through mass-admissible forms (`cmb_abs_apply_le_of_massOn_le`). -/
+  have hsupp_closed : ∀ (m n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl m)) n),
+      IsClosed T.support := by
+    intro m n T
+    show IsClosed (univ \ T.zeroRegion)
+    rw [← compl_eq_univ_sdiff]
+    exact T.isOpen_zeroRegion.isClosed_compl
+  have hzero_of_supp : ∀ (m n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl m)) n),
+      T.support ⊆ ∅ → ∀ ω, T ω = 0 := fun m n T hT ω =>
+    Submission.isoperimetric_apply_eq_zero_of_disjoint_support m n univ T ω
+      (Set.disjoint_left.2 fun x _ hx => hT hx)
+  have hmass_le : ∀ (m n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl m)) n) (C : ℝ),
+      (∀ ω ∈ massAdmissibleOn (univ : Set (Eucl m)) n univ, T ω ≤ C) →
+      T.mass ≤ ENNReal.ofReal C := by
+    intro m n T C hC
+    unfold GeometricCurrentOn.mass GeometricCurrentOn.massOn
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    exact ENNReal.ofReal_le_ofReal (hC ω hω)
+  have hmass_zero : ∀ (m n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl m)) n),
+      (∀ ω, T ω = 0) → T.mass = 0 := fun m n T hT =>
+    le_antisymm ((hmass_le m n T 0 fun ω _ => (hT ω).le).trans_eq ENNReal.ofReal_zero) zero_le
+  have habs_le : ∀ (m n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl m)) n), T.mass < ∞ →
+      ∀ ω ∈ massAdmissibleOn (univ : Set (Eucl m)) n univ, |T ω| ≤ T.mass.toReal := by
+    intro m n T hT ω hω
+    have := Submission.cmb_abs_apply_le_of_massOn_le m n univ univ T ω T.mass.toReal 1
+      ENNReal.toReal_nonneg (by rw [ENNReal.ofReal_toReal hT.ne]; exact le_rfl) (subset_univ _) hω.2
+    simpa using this
+  have hmass_lin : ∀ (m n : ℕ) (T T₁ T₂ : GeometricCurrentOn (univ : Set (Eucl m)) n) (a a₁ : ℝ),
+      T.mass < ∞ → T₁.mass < ∞ → (∀ ω, T₂ ω = a * T ω + a₁ * T₁ ω) → T₂.mass < ∞ := by
+    intro m n T T₁ T₂ a a₁ hT hT₁ h₂
+    refine lt_of_le_of_lt (hmass_le m n T₂ (|a| * T.mass.toReal + |a₁| * T₁.mass.toReal) ?_)
+      ENNReal.ofReal_lt_top
+    intro ω hω
+    rw [h₂ ω]
+    have e1 := habs_le m n T hT ω hω
+    have e2 := habs_le m n T₁ hT₁ ω hω
+    calc a * T ω + a₁ * T₁ ω ≤ |a * T ω| + |a₁ * T₁ ω| := add_le_add (le_abs_self _) (le_abs_self _)
+      _ = |a| * |T ω| + |a₁| * |T₁ ω| := by rw [abs_mul, abs_mul]
+      _ ≤ |a| * T.mass.toReal + |a₁| * T₁.mass.toReal :=
+        add_le_add (mul_le_mul_of_nonneg_left e1 (abs_nonneg _))
+          (mul_le_mul_of_nonneg_left e2 (abs_nonneg _))
+  /- The characterizations used by the children: `LipPF m m' k X G S` (the Lipschitz push-forward
+  `S = G_# X` is the limit of `X(η_n)` along every locally admissible smooth approximation of `G`
+  and every eventually compatible `η_n`) and `PC m k X Z` (`Z = [[0,1]] × X`). -/
+  obtain ⟨LipPF, hLipPF⟩ : ∃ LipPF : (m m' k : ℕ) → GeometricCurrentOn (univ : Set (Eucl m)) k →
+      (Eucl m → Eucl m') → GeometricCurrentOn (univ : Set (Eucl m')) k → Prop,
+      ∀ m m' k X G S, LipPF m m' k X G S ↔ ∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ),
+        IsOpen O → X.support ⊆ O → (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+        (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+        ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+        (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+          (ηj n : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k)
+            (Gj n x)).compContinuousLinearMap (fderiv ℝ (Gj n) x)) →
+        Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω)) :=
+    ⟨_, fun _ _ _ _ _ _ => Iff.rfl⟩
+  obtain ⟨PC, hPC⟩ : ∃ PC : (m k : ℕ) → GeometricCurrentOn (univ : Set (Eucl m)) k →
+      GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1) → Prop,
+      ∀ m k X Z, PC m k X Z ↔ ∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+        (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m)
+          (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v =
+            (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z η = ∫ s in (0 : ℝ)..1, X (φ s) :=
+    ⟨_, fun _ _ _ _ => Iff.rfl⟩
+  /- Part 6.  The constants `c_k = max(1, c₀(D, k))`, `c₀` the constant of the affine estimate. -/
+  choose c₀ hc₀ hc₀aff using fun k => hSH.2.2 D D k
+  obtain ⟨c, hc1, hcc₀⟩ : ∃ c : ℕ → ℝ≥0, (∀ k, (1 : ℝ≥0∞) ≤ c k) ∧
+      ∀ k, ENNReal.ofReal (c₀ k) ≤ c k :=
+    ⟨fun k => Real.toNNReal (max 1 (c₀ k)), fun k => by
+      rw [← ENNReal.ofReal_one]; exact ENNReal.ofReal_le_ofReal (le_max_left _ _),
+      fun k => ENNReal.ofReal_le_ofReal (le_max_right _ _)⟩
+  refine ⟨c, fun f => ?_⟩
+  -- The straight-line homotopy from `f` (`t = 0`) to the identity (`t = 1`).
+  obtain ⟨h, hh⟩ : ∃ h : Eucl (D + 1) → Eucl D, ∀ y, h y = f (tl y) + tm y • (tl y - f (tl y)) :=
+    ⟨_, fun y => rfl⟩
+  -- The operators (6.1): classical choices of the characterized push-forwards.
+  obtain ⟨Pf, hPf⟩ : ∃ Pf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k →
+      GeometricCurrentOn (univ : Set (Eucl D)) k, ∀ k X S, LipPF D D k X f S →
+        (∀ S', LipPF D D k X f S' → S' = S) → Pf k X = S := by
+    refine ⟨fun k X => if hX : ∃ S, LipPF D D k X f S then Classical.choose hX else 0,
+      fun k X S hS hu => ?_⟩
+    have hex : ∃ S, LipPF D D k X f S := ⟨S, hS⟩
+    dsimp only
+    rw [dite_eq_left hex]
+    exact hu _ (Classical.choose_spec hex)
+  obtain ⟨Hf, hHf⟩ : ∃ Hf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k →
+      GeometricCurrentOn (univ : Set (Eucl D)) (k + 1), ∀ k X S Z, PC D k X Z →
+        LipPF (D + 1) D (k + 1) Z h S → (∀ Z', PC D k X Z' → Z' = Z) →
+        (∀ S', LipPF (D + 1) D (k + 1) Z h S' → S' = S) → Hf k X = S := by
+    refine ⟨fun k X => if hX : ∃ S Z, PC D k X Z ∧ LipPF (D + 1) D (k + 1) Z h S then
+      Classical.choose hX else 0, fun k X S Z hZ hS huZ huS => ?_⟩
+    have hex : ∃ S Z, PC D k X Z ∧ LipPF (D + 1) D (k + 1) Z h S := ⟨S, Z, hZ, hS⟩
+    dsimp only
+    rw [dite_eq_left hex]
+    obtain ⟨Z₀, hZ₀, hS₀⟩ := Classical.choose_spec hex
+    rw [huZ Z₀ hZ₀] at hS₀
+    exact huS _ hS₀
+  /- Lipschitz bound for straight-line homotopies `y ↦ g(tl y) + tm y (tl y − g(tl y))`
+  (computation of 6.4): if `g` is `Λg`-Lipschitz on `U` and `|x − g x| ≤ bg` there, the homotopy is
+  `(3Λg + 2 + bg)`-Lipschitz on `[−2, 2] × U`. -/
+  have hLemH : ∀ (g : Eucl D → Eucl D) (Λg bg : ℝ≥0) (U : Set (Eucl D)), LipschitzOnWith Λg g U →
+      (∀ x ∈ U, dist x (g x) ≤ bg) →
+      LipschitzOnWith (3 * Λg + 2 + bg) (fun y => g (tl y) + tm y • (tl y - g (tl y)))
+        {y : Eucl (D + 1) | tm y ∈ Icc (-2 : ℝ) 2 ∧ tl y ∈ U} := by
+    intro g Λg bg U hg hgb
+    refine LipschitzOnWith.of_dist_le_mul fun y hy y' hy' => ?_
+    have hx := hg.dist_le_mul _ hy.2 _ hy'.2
+    have hb' := hgb _ hy'.2
+    have ht : |tm y| ≤ 2 := abs_le.2 ⟨hy.1.1, hy.1.2⟩
+    have hd1 : ‖tl y - tl y'‖ ≤ ‖y - y'‖ := by rw [← map_sub]; exact htl_le _
+    have hd2 : |tm y - tm y'| ≤ ‖y - y'‖ := by rw [← map_sub]; exact htm_le _
+    rw [dist_eq_norm] at hx hb' ⊢
+    have key : g (tl y) + tm y • (tl y - g (tl y)) - (g (tl y') + tm y' • (tl y' - g (tl y'))) =
+        (g (tl y) - g (tl y')) + tm y • ((tl y - tl y') - (g (tl y) - g (tl y'))) +
+          (tm y - tm y') • (tl y' - g (tl y')) := by
+      simp only [smul_sub, sub_smul]; abel
+    rw [key, dist_eq_norm]
+    have hA : ‖g (tl y) - g (tl y')‖ ≤ Λg * ‖y - y'‖ :=
+      hx.trans (mul_le_mul_of_nonneg_left hd1 Λg.coe_nonneg)
+    have hV : ‖(tl y - tl y') - (g (tl y) - g (tl y'))‖ ≤ ‖y - y'‖ + Λg * ‖y - y'‖ :=
+      (norm_sub_le _ _).trans (add_le_add hd1 hA)
+    have hTV : ‖tm y • ((tl y - tl y') - (g (tl y) - g (tl y')))‖ ≤
+        2 * (‖y - y'‖ + Λg * ‖y - y'‖) := by
+      rw [norm_smul, Real.norm_eq_abs]
+      exact mul_le_mul ht hV (norm_nonneg _) zero_le_two
+    have hdW : ‖(tm y - tm y') • (tl y' - g (tl y'))‖ ≤ ‖y - y'‖ * bg := by
+      rw [norm_smul, Real.norm_eq_abs]
+      exact mul_le_mul hd2 hb' (norm_nonneg _) (norm_nonneg _)
+    have h3 := norm_add₃_le (a := g (tl y) - g (tl y'))
+      (b := tm y • ((tl y - tl y') - (g (tl y) - g (tl y'))))
+      (c := (tm y - tm y') • (tl y' - g (tl y')))
+    push_cast
+    nlinarith [norm_nonneg (y - y')]
+  /- `|x − f x| ≤ b + (1 + Λ) ε` on `E_ε` (`ε ≤ δ`), from the Lipschitz bound on `E_δ`. -/
+  have hfdist : ∀ (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ), LipschitzOnWith Λ f (thickening δ E) →
+      (∀ x ∈ E, dist (f x) x ≤ b) → ∀ ε, 0 < ε → ε ≤ δ → ∀ x ∈ thickening ε E,
+        dist x (f x) ≤ b + (1 + Λ) * ε := by
+    intro E Λ δ b hLip hb ε hε hεδ x hx
+    obtain ⟨y, hyE, hxy⟩ := mem_thickening_iff.1 hx
+    have hxδ : x ∈ thickening δ E := thickening_mono hεδ E hx
+    have hyδ : y ∈ thickening δ E := self_subset_thickening (hε.trans_le hεδ) E hyE
+    have h1 := hLip.dist_le_mul y hyδ x hxδ
+    have h2 := hb y hyE
+    have h3 : dist x (f x) ≤ dist x y + dist y (f y) + dist (f y) (f x) := dist_triangle4 _ _ _ _
+    rw [dist_comm y (f y)] at h3
+    rw [dist_comm y x] at h1
+    have h4 : (Λ : ℝ) * dist x y ≤ Λ * ε := mul_le_mul_of_nonneg_left hxy.le Λ.coe_nonneg
+    linarith
+  /- Properness of `f` on closed subsets of `E` (6.1): `f⁻¹(K) ∩ S ⊆ cthickening b K`. -/
+  have hfprop : ∀ (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (S : Set (Eucl D)), IsClosed S → S ⊆ E →
+      0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) →
+      ∀ K : Set (Eucl D), IsCompact K → IsCompact (f ⁻¹' K ∩ S) := by
+    intro E Λ δ b S hS hSE hδ hLip hb K hK
+    have hcont : ContinuousOn f S := hLip.continuousOn.mono
+      ((self_subset_thickening hδ S).trans (thickening_subset_of_subset δ hSE))
+    have hcl : IsClosed (f ⁻¹' K ∩ S) := by
+      rw [inter_comm]; exact hcont.preimage_isClosed_of_isClosed hS hK.isClosed
+    refine (hK.cthickening (r := b)).of_isClosed_subset hcl fun x hx => ?_
+    exact mem_cthickening_of_dist_le x (f x) b K hx.1 (by rw [dist_comm]; exact hb x (hSE hx.2))
+  /- `h` is Lipschitz near `[0, 1] × E` (6, computation of `L_h`). -/
+  have hhLip : ∀ (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ), 0 < δ →
+      LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) →
+      LipschitzOnWith (3 * Λ + 2 + Real.toNNReal (b + (1 + Λ) * δ)) h
+        (thickening (min 1 δ / 2) {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ E}) := by
+    intro E Λ δ b hδ hLip hb
+    have hsub : thickening (min 1 δ / 2) {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ E} ⊆
+        {y | tm y ∈ Icc (-2 : ℝ) 2 ∧ tl y ∈ thickening δ E} := by
+      intro y hy
+      obtain ⟨y₀, ⟨ht₀, hx₀⟩, hyy₀⟩ := mem_thickening_iff.1 hy
+      have hm1 : min 1 δ ≤ 1 := min_le_left _ _
+      have hm2 : min 1 δ ≤ δ := min_le_right _ _
+      have h1 : |tm y - tm y₀| ≤ dist y y₀ := by rw [dist_eq_norm, ← map_sub]; exact htm_le _
+      have h2 : dist (tl y) (tl y₀) ≤ dist y y₀ := by
+        rw [dist_eq_norm, dist_eq_norm, ← map_sub]; exact htl_le _
+      have h1' := abs_le.1 h1
+      refine ⟨⟨by linarith [ht₀.1, h1'.1], by linarith [ht₀.2, h1'.2]⟩,
+        mem_thickening_iff.2 ⟨tl y₀, hx₀, by linarith⟩⟩
+    rw [show h = fun y => f (tl y) + tm y • (tl y - f (tl y)) from funext hh]
+    exact (hLemH f Λ _ (thickening δ E) hLip fun x hx =>
+      (hfdist E Λ δ b hLip hb δ hδ le_rfl x hx).trans (Real.le_coe_toNNReal _)).mono hsub
+  /- `|h(t, x) − x| = (1 − t)|f x − x| ≤ b` on `[0, 1] × E` (6.6). -/
+  have hhdist : ∀ (E : Set (Eucl D)) (b : ℝ), (∀ x ∈ E, dist (f x) x ≤ b) → ∀ y,
+      tm y ∈ Icc (0 : ℝ) 1 → tl y ∈ E → dist (h y) (tl y) ≤ b := by
+    intro E b hb y ht hx
+    have e : h y - tl y = (1 - tm y) • (f (tl y) - tl y) := by
+      rw [hh]; simp only [smul_sub, sub_smul, one_smul]; abel
+    rw [dist_eq_norm, e, norm_smul, Real.norm_eq_abs, abs_of_nonneg (by linarith [ht.2]),
+      ← dist_eq_norm]
+    have h1 := hb _ hx
+    have h0 : 0 ≤ dist (f (tl y)) (tl y) := dist_nonneg
+    nlinarith [ht.1]
+  /- Properness of `h` on closed subsets of `[0, 1] × E`. -/
+  have hhprop : ∀ (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (C : Set (Eucl (D + 1))), IsClosed C →
+      C ⊆ {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ E} → 0 < δ → LipschitzOnWith Λ f (thickening δ E) →
+      (∀ x ∈ E, dist (f x) x ≤ b) → ∀ K : Set (Eucl D), IsCompact K → IsCompact (h ⁻¹' K ∩ C) := by
+    intro E Λ δ b C hC hCE hδ hLip hb K hK
+    have hr : 0 < min 1 δ / 2 := by have := lt_min one_pos hδ; linarith
+    have hcont : ContinuousOn h C := (hhLip E Λ δ b hδ hLip hb).continuousOn.mono
+      (hCE.trans (self_subset_thickening hr _))
+    have hcl : IsClosed (h ⁻¹' K ∩ C) := by
+      rw [inter_comm]; exact hcont.preimage_isClosed_of_isClosed hC hK.isClosed
+    refine (hcyl_compact _ (hK.cthickening (r := b))).of_isClosed_subset hcl ?_
+    rintro y ⟨hyK, hyC⟩
+    obtain ⟨ht, hx⟩ := hCE hyC
+    exact ⟨ht, mem_cthickening_of_dist_le (tl y) (h y) b K hyK
+      (by rw [dist_comm]; exact hhdist E b hb y ht hx)⟩
+  /- Admissible approximations (Part 1, 5.5, 6.4, 6.11): from `smooth_approx`, `C^∞` maps
+  `f_n → f` uniformly on `S_{δ/2}` with `‖Df_n‖ ≤ Λ` there, and the straight-line homotopies
+  `ĥ_n(t, x) = f_n(x) + t (x − f_n(x))`, `C^∞`, converging uniformly to `h` near `[0, 1] × S` with
+  eventually bounded derivatives; both are eventually proper. -/
+  have hAPX : ∀ (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (S : Set (Eucl D)), IsClosed S → S ⊆ E →
+      0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) →
+      ∃ (fn : ℕ → Eucl D → Eucl D) (hn : ℕ → Eucl (D + 1) → Eucl D) (L₂ : ℝ),
+        (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fn n)) ∧
+        (∀ n, ∀ x ∈ thickening (δ / 2) S, ‖fderiv ℝ (fn n) x‖ ≤ Λ) ∧
+        TendstoUniformlyOn fn f atTop (thickening (δ / 2) S) ∧
+        (∀ᶠ n in atTop, ∀ K : Set (Eucl D), IsCompact K → IsCompact (fn n ⁻¹' K ∩ S)) ∧
+        (∀ n y, hn n y = fn n (tl y) + tm y • (tl y - fn n (tl y))) ∧
+        (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (hn n)) ∧
+        (∀ᶠ n in atTop, ∀ y ∈ {y : Eucl (D + 1) | tm y ∈ Ioo (-1 : ℝ) 2 ∧
+          tl y ∈ thickening (δ / 2) S}, ‖fderiv ℝ (hn n) y‖ ≤ L₂) ∧
+        TendstoUniformlyOn hn h atTop
+          {y : Eucl (D + 1) | tm y ∈ Ioo (-1 : ℝ) 2 ∧ tl y ∈ thickening (δ / 2) S} ∧
+        (∀ᶠ n in atTop, ∀ K : Set (Eucl D), IsCompact K →
+          IsCompact (hn n ⁻¹' K ∩ {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ S})) := by
+    intro E Λ δ b S hS hSE hδ hLip hb
+    obtain ⟨fh, fn, L, -, hhGeq, hfns, -, hfnu, hfnd, -⟩ :=
+      hSA D D f Λ S δ hδ (hLip.mono (thickening_subset_of_subset δ hSE))
+    have hδ2 : 0 < δ / 2 := half_pos hδ
+    have hunif : TendstoUniformlyOn fn f atTop (thickening (δ / 2) S) :=
+      hfnu.tendstoUniformlyOn.congr_right (hhGeq.mono (thickening_mono (half_le_self hδ.le) S))
+    have hS2E : thickening (δ / 2) S ⊆ thickening (δ / 2) E := thickening_subset_of_subset _ hSE
+    have hxf : ∀ x ∈ thickening (δ / 2) S, dist x (f x) ≤ Real.toNNReal (b + (1 + Λ) * δ) :=
+      fun x hx => (hfdist E Λ δ b hLip hb (δ / 2) hδ2 (half_le_self hδ.le) x (hS2E hx)).trans
+        ((by nlinarith [Λ.coe_nonneg] : b + (1 + Λ) * (δ / 2) ≤ b + (1 + Λ) * δ).trans
+          (Real.le_coe_toNNReal _))
+    have hev1 : ∀ᶠ n in atTop, ∀ x ∈ thickening (δ / 2) S, dist (f x) (fn n x) < 1 :=
+      Metric.tendstoUniformlyOn_iff.1 hunif 1 one_pos
+    have hhns : ∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun y => fn n (tl y) + tm y • (tl y - fn n (tl y))) := fun n =>
+      ((hfns n).comp tl.contDiff).add
+        (tm.contDiff.smul (tl.contDiff.sub ((hfns n).comp tl.contDiff)))
+    refine ⟨fn, fun n y => fn n (tl y) + tm y • (tl y - fn n (tl y)),
+      ((3 * Λ + 2 + (Real.toNNReal (b + (1 + Λ) * δ) + 1) : ℝ≥0) : ℝ), hfns, hfnd, hunif, ?_,
+      fun n y => rfl, hhns, ?_, ?_, ?_⟩
+    · -- `f_n` is eventually proper on `S`
+      filter_upwards [hev1] with n hn K hK
+      have hcl : IsClosed (fn n ⁻¹' K ∩ S) := (hK.isClosed.preimage (hfns n).continuous).inter hS
+      refine (hfprop E Λ δ b S hS hSE hδ hLip hb _ (hK.cthickening (r := 1))).of_isClosed_subset
+        hcl ?_
+      rintro x ⟨hxK, hxS⟩
+      exact ⟨mem_cthickening_of_dist_le (f x) (fn n x) 1 K hxK
+        (hn x (self_subset_thickening hδ2 S hxS)).le, hxS⟩
+    · -- eventual derivative bound for `ĥ_n` near `[0, 1] × S`
+      filter_upwards [hev1] with n hn y hy
+      obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.1 isOpen_thickening (tl y) hy.2
+      have hLipU : LipschitzOnWith Λ (fn n) (ball (tl y) ρ) :=
+        (convex_ball _ _).lipschitzOnWith_of_nnnorm_fderiv_le (𝕜 := ℝ)
+          (fun x _ => ((hfns n).differentiable (by simp)).differentiableAt)
+          (fun x hx => by rw [← NNReal.coe_le_coe, coe_nnnorm]; exact hfnd n x (hball hx))
+      have hbU : ∀ x ∈ ball (tl y) ρ, dist x (fn n x) ≤
+          ((Real.toNNReal (b + (1 + Λ) * δ) + 1 : ℝ≥0) : ℝ) := fun x hx => by
+        have h1 := hxf x (hball hx)
+        have h2 := (hn x (hball hx)).le
+        push_cast
+        linarith [dist_triangle x (f x) (fn n x)]
+      have hL := hLemH (fn n) Λ (Real.toNNReal (b + (1 + Λ) * δ) + 1) _ hLipU hbU
+      have hnhds : {y' : Eucl (D + 1) | tm y' ∈ Icc (-2 : ℝ) 2 ∧ tl y' ∈ ball (tl y) ρ} ∈ 𝓝 y := by
+        refine Filter.mem_of_superset ((((isOpen_Ioo (a := (-2 : ℝ)) (b := 2)).preimage
+          tm.continuous).inter (isOpen_ball.preimage tl.continuous)).mem_nhds
+            ⟨⟨by linarith [hy.1.1], hy.1.2⟩, mem_ball_self hρ⟩) ?_
+        exact fun y' hy' => ⟨Ioo_subset_Icc_self hy'.1, hy'.2⟩
+      exact norm_fderiv_le_of_lipschitzOn ℝ hnhds hL
+    · -- `ĥ_n → h` uniformly near `[0, 1] × S`: `h − ĥ_n = (1 − t)(f − f_n)`
+      rw [Metric.tendstoUniformlyOn_iff]
+      intro ε hε
+      filter_upwards [Metric.tendstoUniformlyOn_iff.1 hunif (ε / 2) (half_pos hε)] with n hn y hy
+      have e : h y - (fn n (tl y) + tm y • (tl y - fn n (tl y))) =
+          (1 - tm y) • (f (tl y) - fn n (tl y)) := by
+        rw [hh]; simp only [smul_sub, sub_smul, one_smul]; abel
+      rw [dist_eq_norm, e, norm_smul, Real.norm_eq_abs, ← dist_eq_norm]
+      have h1 : |1 - tm y| ≤ 2 := abs_le.2 ⟨by linarith [hy.1.2], by linarith [hy.1.1]⟩
+      have h2 := hn (tl y) hy.2
+      nlinarith [dist_nonneg (x := f (tl y)) (y := fn n (tl y)), abs_nonneg (1 - tm y)]
+    · -- `ĥ_n` is eventually proper on `[0, 1] × S`
+      filter_upwards [hev1] with n hn K hK
+      have hcl : IsClosed ((fun y => fn n (tl y) + tm y • (tl y - fn n (tl y))) ⁻¹' K ∩
+          {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ S}) :=
+        (hK.isClosed.preimage (hhns n).continuous).inter (hcyl_closed S hS)
+      refine (hcyl_compact _ (hK.cthickening (r := b + 1))).of_isClosed_subset hcl ?_
+      rintro y ⟨hyK, ht, hx⟩
+      refine ⟨ht, mem_cthickening_of_dist_le (tl y) _ (b + 1) K hyK ?_⟩
+      have e : tl y - (fn n (tl y) + tm y • (tl y - fn n (tl y))) =
+          (1 - tm y) • (tl y - fn n (tl y)) := by
+        simp only [smul_sub, sub_smul, one_smul]; abel
+      rw [dist_eq_norm, e, norm_smul, Real.norm_eq_abs, abs_of_nonneg (by linarith [ht.2]),
+        ← dist_eq_norm]
+      have h1 : dist (tl y) (fn n (tl y)) ≤ b + 1 := by
+        have h3 := hb (tl y) (hSE hx)
+        have h4 := (hn (tl y) (self_subset_thickening hδ2 S hx)).le
+        linarith [dist_triangle (tl y) (f (tl y)) (fn n (tl y)), dist_comm (f (tl y)) (tl y)]
+      nlinarith [ht.1, ht.2, dist_nonneg (x := tl y) (y := fn n (tl y))]
+  /- Compatible forms along a sequence of eventually proper smooth maps (2.1, `compatible_form`). -/
+  have hCF : ∀ (m m' k : ℕ) (A : Set (Eucl m)) (G : ℕ → Eucl m → Eucl m')
+      (ω : TestFormOn (univ : Set (Eucl m')) k), (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (G n)) →
+      (∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K → IsCompact (G n ⁻¹' K ∩ A)) →
+      ∃ ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k, ∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧
+        A ⊆ N ∧ ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x =
+          ((ω : DifferentialForm (Eucl m') k) (G n x)).compContinuousLinearMap
+            (fderiv ℝ (G n) x) := by
+    intro m m' k A G ω hG hprop
+    have hex : ∀ n, ∃ η : TestFormOn (univ : Set (Eucl m)) k,
+        (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G n ⁻¹' K ∩ A)) →
+        ∃ N : Set (Eucl m), IsOpen N ∧ A ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl m) k) x =
+          ((ω : DifferentialForm (Eucl m') k) (G n x)).compContinuousLinearMap
+            (fderiv ℝ (G n) x) := by
+      intro n
+      by_cases hn : ∀ K : Set (Eucl m'), IsCompact K → IsCompact (G n ⁻¹' K ∩ A)
+      · obtain ⟨η, -, N, hN, hAN, -, -, hηN, -⟩ :=
+          Submission.iwl_sp_exists_compatible_testForm m m' k univ univ A (G n) isOpen_univ
+            (subset_univ A) (hG n) (fun K hK _ => hn K hK) ω
+        exact ⟨η, fun _ => ⟨N, hN, hAN, hηN⟩⟩
+      · exact ⟨0, fun h' => absurd h' hn⟩
+    choose ηj hηj using hex
+    exact ⟨ηj, hprop.mono fun n hn => hηj n hn⟩
+  /- The push-forwards of a current `Y` with admissible data (6.1–6.2): `P_k Y` is the Lipschitz
+  push-forward of `Y` by `f`, `H_k Y` that of the product `Z = [[0,1]] × Y` by `h`. -/
+  have key : ∀ (k : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ)
+      (Y : GeometricCurrentOn (univ : Set (Eucl D)) k), IsClosed E → 0 < δ →
+      LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → Y.mass < ∞ →
+      (∀ (j : ℕ) (W : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq W Y →
+        W.boundary.mass < ∞) → Y.support ⊆ E →
+      LipPF D D k Y f (Pf k Y) ∧ (∀ S', LipPF D D k Y f S' → S' = Pf k Y) ∧
+      (Pf k Y).mass ≤ (Λ : ℝ≥0∞) ^ k * Y.mass ∧ (Pf k Y).support ⊆ closure (f '' Y.support) ∧
+      ∃ Z : GeometricCurrentOn (univ : Set (Eucl (D + 1))) (k + 1), PC D k Y Z ∧
+        (∀ Z', PC D k Y Z' → Z' = Z) ∧
+        Z.support ⊆ {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ Y.support} ∧
+        (∀ (η : TestFormOn (univ : Set (Eucl (D + 1))) (k + 1))
+          (φ : ℝ → TestFormOn (univ : Set (Eucl D)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl D)
+            (v : Fin k → Eucl D), (φ s : DifferentialForm (Eucl D) k) x v =
+              (η : DifferentialForm (Eucl (D + 1)) (k + 1))
+                ((EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+                  (Fin.cons s (EuclideanSpace.equiv (Fin D) ℝ x)))
+                (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                  (EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+                    (Fin.cons 0 (EuclideanSpace.equiv (Fin D) ℝ (v i))))) →
+          ContinuousOn (fun s => Y (φ s)) (Icc (0 : ℝ) 1)) ∧
+        LipPF (D + 1) D (k + 1) Z h (Hf k Y) ∧
+        (∀ S', LipPF (D + 1) D (k + 1) Z h S' → S' = Hf k Y) ∧
+        (Hf k Y).support ⊆ closure (h '' Z.support) := by
+    intro k E Λ δ b Y hE hδ hLip hb hYm hYn hYE
+    have hYcl := hsupp_closed D k Y
+    obtain ⟨SP, hSP, hSPu, hSPm, hSPs⟩ := hLPF.1 D D k Y f Λ δ hYm hYn hδ
+      (hLip.mono (thickening_subset_of_subset δ hYE)) (hfprop E Λ δ b Y.support hYcl hYE hδ hLip hb)
+    have hPY : Pf k Y = SP := hPf k Y SP ((hLipPF _ _ _ _ _ _).2 hSP)
+      (fun S' hS' => hSPu S' ((hLipPF _ _ _ _ _ _).1 hS'))
+    obtain ⟨Z, hZ, hZu, hZm, hZs, hZc, hZn⟩ := hIP.1 D k Y hYm
+    have hZm' : Z.mass < ∞ := lt_of_le_of_lt hZm hYm
+    have hZn' : ∀ (j : ℕ) (W : GeometricCurrentOn (univ : Set (Eucl (D + 1))) (j + 1)),
+        k + 1 = j + 1 → HEq W Z → W.boundary.mass < ∞ := by
+      intro j W hj hW
+      obtain rfl : k = j := Nat.succ.inj hj
+      rw [eq_of_heq hW]
+      exact hZn hYn
+    have hZcyl : Z.support ⊆ {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ Y.support} := by
+      rw [← hcyl]; exact hZs
+    have hZE : Z.support ⊆ {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ E} :=
+      hZcyl.trans fun y hy => ⟨hy.1, hYE hy.2⟩
+    have hr : 0 < min 1 δ / 2 := by have := lt_min one_pos hδ; linarith
+    obtain ⟨SH, hSH, hSHu, -, hSHs⟩ := hLPF.1 (D + 1) D (k + 1) Z h _ _ hZm' hZn' hr
+      ((hhLip E Λ δ b hδ hLip hb).mono (thickening_subset_of_subset _ hZE))
+      (hhprop E Λ δ b Z.support (hsupp_closed _ _ Z) hZE hδ hLip hb)
+    have hHY : Hf k Y = SH := hHf k Y SH Z ((hPC _ _ _ _).2 hZ) ((hLipPF _ _ _ _ _ _).2 hSH)
+      (fun Z' hZ' => hZu Z' ((hPC _ _ _ _).1 hZ'))
+      (fun S' hS' => hSHu S' ((hLipPF _ _ _ _ _ _).1 hS'))
+    rw [hPY, hHY]
+    exact ⟨(hLipPF _ _ _ _ _ _).2 hSP, fun S' hS' => hSPu S' ((hLipPF _ _ _ _ _ _).1 hS'), hSPm,
+      hSPs, Z, (hPC _ _ _ _).2 hZ, fun Z' hZ' => hZu Z' ((hPC _ _ _ _).1 hZ'), hZcyl, hZc,
+      (hLipPF _ _ _ _ _ _).2 hSH, fun S' hS' => hSHu S' ((hLipPF _ _ _ _ _ _).1 hS'), hSHs⟩
+  refine ⟨Pf, Hf, ?_, ?_⟩
+  · /- Clause (I): the seven conjuncts for a current `X` with admissible data `(E, Λ, δ, b)`. -/
+    intro k E Λ δ b X hE hδ hLip hb hXm hXn hXE
+    obtain ⟨hPX, -, hPXm, hPXs, Z, hZ, -, hZcyl, hZc, hHX, -, hHXs⟩ :=
+      key k E Λ δ b X hE hδ hLip hb hXm hXn hXE
+    have hXcl := hsupp_closed D k X
+    have hr : 0 < min 1 δ / 2 := by have := lt_min one_pos hδ; linarith
+    have hZE : Z.support ⊆ {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ E} :=
+      hZcyl.trans fun y hy => ⟨hy.1, hXE hy.2⟩
+    refine ⟨?_, ?_, hPXs, ?_, ?_, ?_, ?_⟩
+    · -- (1) `M(P_k X) ≤ Λ^k M(X) ≤ c_k Λ^k M(X)` (6.3)
+      refine hPXm.trans ?_
+      rw [mul_assoc]
+      exact le_mul_of_one_le_left zero_le (hc1 k)
+    · -- (2) `M(H_k X) ≤ c_k b (1 + Λ)^k M(X)` (6.4), via the affine estimate of `smooth_homotopy`
+      by_cases hb0 : 0 ≤ b
+      · obtain ⟨fn, hn, L₂, hfns, hfnd, hfnu, hfnp, hhn, hhns, hhnd, hhnu, hhnp⟩ :=
+          hAPX E Λ δ b X.support hXcl hXE hδ hLip hb
+        have hOo : IsOpen {y : Eucl (D + 1) | tm y ∈ Ioo (-1 : ℝ) 2 ∧
+            tl y ∈ thickening (δ / 2) X.support} :=
+          (isOpen_Ioo.preimage tm.continuous).inter (isOpen_thickening.preimage tl.continuous)
+        have hcylO : {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ X.support} ⊆
+            {y : Eucl (D + 1) | tm y ∈ Ioo (-1 : ℝ) 2 ∧ tl y ∈ thickening (δ / 2) X.support} :=
+          fun y hy => ⟨⟨by linarith [hy.1.1], by linarith [hy.1.2]⟩,
+            self_subset_thickening (half_pos hδ) _ hy.2⟩
+        have hXB : X.mass ≤ ENNReal.ofReal X.mass.toReal := (ENNReal.ofReal_toReal hXm.ne).ge
+        have hΛ0 : (0 : ℝ) ≤ Λ := Λ.coe_nonneg
+        have hc0k := hc₀ k
+        -- for `0 < t ≤ δ/2`: `|H_k X(ψ)| ≤ c₀ (b + (1 + Λ) t + t) (1 + Λ)^k M(X)`
+        have hbound : ∀ ψ ∈ massAdmissibleOn (univ : Set (Eucl D)) (k + 1) univ, ∀ t, 0 < t →
+            t ≤ δ / 2 →
+              |Hf k X ψ| ≤ c₀ k * (b + (1 + Λ) * t + t) * (1 + Λ) ^ k * X.mass.toReal := by
+          intro ψ hψ t ht htδ
+          obtain ⟨η', hη'⟩ := hCF (D + 1) D (k + 1)
+            {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ X.support} hn ψ hhns hhnp
+          have hlim := (hLipPF _ _ _ _ _ _).1 hHX hn _ L₂ hOo (hZcyl.trans hcylO) hhns hhnd hhnu
+            ψ η'
+            (hη'.mono fun n ⟨N, hN, hcN, hηN⟩ => ⟨N, hN, hZcyl.trans hcN, hηN⟩)
+          refine le_of_tendsto hlim.abs ?_
+          filter_upwards [hη', hfnp, Metric.tendstoUniformlyOn_iff.1 hfnu t ht] with n hηn hpn hdn
+          obtain ⟨N, hN, hcN, hηN⟩ := hηn
+          have hGa : (fun y : Eucl (D + 1) => fn n ((EuclideanSpace.equiv (Fin D) ℝ).symm
+              (Fin.tail (EuclideanSpace.equiv (Fin (D + 1)) ℝ y))) +
+                (EuclideanSpace.equiv (Fin (D + 1)) ℝ y 0) •
+                  (id ((EuclideanSpace.equiv (Fin D) ℝ).symm
+                    (Fin.tail (EuclideanSpace.equiv (Fin (D + 1)) ℝ y))) -
+                    fn n ((EuclideanSpace.equiv (Fin D) ℝ).symm
+                      (Fin.tail (EuclideanSpace.equiv (Fin (D + 1)) ℝ y))))) = hn n :=
+            funext fun y => by rw [hhn, htl, htm]; rfl
+          have hO2 : thickening t X.support ⊆ thickening (δ / 2) X.support := thickening_mono htδ _
+          have := hc₀aff k X Z (fn n) id (thickening t X.support) (b + (1 + Λ) * t + t) (1 + Λ)
+            X.mass.toReal (by nlinarith) (by linarith) ENNReal.toReal_nonneg hXB
+            ((hPC _ _ _ _).1 hZ) (hfns n) contDiff_id isOpen_thickening
+            (self_subset_thickening ht _)
+            (fun x hx => by
+              have h1 := hfdist E Λ δ b hLip hb t ht (htδ.trans (half_le_self hδ.le)) x
+                (thickening_subset_of_subset t hXE hx)
+              have h2 := (hdn x (hO2 hx)).le
+              rw [id]
+              linarith [dist_triangle x (f x) (fn n x)])
+            (fun x hx => (hfnd n x (hO2 hx)).trans (by linarith))
+            (fun x _ => by rw [fderiv_id]; exact ContinuousLinearMap.norm_id_le.trans (by linarith))
+            hpn ψ 1 (η' n) hψ.2 ⟨N, hN, by rw [hcyl]; exact hcN, by rw [hGa]; exact hηN⟩
+          simpa using this
+        -- let `t → 0⁺`
+        have hbound0 : ∀ ψ ∈ massAdmissibleOn (univ : Set (Eucl D)) (k + 1) univ,
+            |Hf k X ψ| ≤ c₀ k * b * (1 + Λ) ^ k * X.mass.toReal := by
+          intro ψ hψ
+          have hcont : Tendsto (fun t : ℝ => c₀ k * (b + (1 + Λ) * t + t) * (1 + Λ) ^ k *
+              X.mass.toReal) (𝓝[>] 0) (𝓝 (c₀ k * (b + (1 + Λ) * 0 + 0) * (1 + Λ) ^ k *
+                X.mass.toReal)) :=
+            ((by fun_prop : Continuous fun t : ℝ => c₀ k * (b + (1 + Λ) * t + t) * (1 + Λ) ^ k *
+              X.mass.toReal).tendsto 0).mono_left nhdsWithin_le_nhds
+          have := ge_of_tendsto hcont (by
+            filter_upwards [Ioo_mem_nhdsGT (half_pos hδ)] with t ht using
+              hbound ψ hψ t ht.1 ht.2.le)
+          simpa using this
+        refine (hmass_le D (k + 1) (Hf k X) _ fun ψ hψ =>
+          (le_abs_self _).trans (hbound0 ψ hψ)).trans ?_
+        have hp1 : 0 ≤ c₀ k * b := mul_nonneg hc0k hb0
+        have hp2 : 0 ≤ c₀ k * b * (1 + (Λ : ℝ)) ^ k := mul_nonneg hp1 (pow_nonneg (by linarith) k)
+        rw [ENNReal.ofReal_mul hp2, ENNReal.ofReal_mul hp1, ENNReal.ofReal_mul hc0k,
+          ENNReal.ofReal_pow (by linarith), ENNReal.ofReal_add zero_le_one hΛ0, ENNReal.ofReal_one,
+          ENNReal.ofReal_coe_nnreal, ENNReal.ofReal_toReal hXm.ne]
+        gcongr
+        exact hcc₀ k
+      · -- `b < 0`: then `E = ∅`, all supports are empty and `H_k X = 0`
+        have hE0 : E ⊆ ∅ := fun x hx => by
+          have h1 := hb x hx
+          have h2 : 0 ≤ dist (f x) x := dist_nonneg
+          exact absurd (h2.trans h1) hb0
+        have hZe : Z.support ⊆ ∅ := fun y hy => hE0 (hXE (hZcyl hy).2)
+        have hHe : (Hf k X).support ⊆ ∅ := by
+          refine hHXs.trans ?_
+          rw [subset_empty_iff.1 hZe, image_empty, closure_empty]
+        rw [hmass_zero D (k + 1) (Hf k X) (hzero_of_supp D (k + 1) (Hf k X) hHe)]
+        exact zero_le
+    · -- (4) `spt H_k X ⊆ closure h([0, 1] × spt X) ⊆ cthickening b (spt X)` (6.6)
+      refine hHXs.trans (closure_minimal ?_ isClosed_cthickening)
+      rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨ht, hx⟩ := hZcyl hy
+      exact mem_cthickening_of_dist_le (h y) (tl y) b X.support hx (hhdist E b hb y ht (hXE hx))
+    · -- (5) integrality (6.7): `lipschitz_pushforward_im` with (S5′), `interval_product_im`
+      intro hXim
+      refine ⟨hLPFIM hS5 D D k X f Λ δ (Pf k X) hXim hδ
+        (hLip.mono (thickening_subset_of_subset δ hXE))
+        (hfprop E Λ δ b X.support hXcl hXE hδ hLip hb) ((hLipPF _ _ _ _ _ _).1 hPX), ?_⟩
+      exact hLPFIM hS5 (D + 1) D (k + 1) Z h _ _ (Hf k X) (hIPIM D k X Z hXim ((hPC _ _ _ _).1 hZ))
+        hr ((hhLip E Λ δ b hδ hLip hb).mono (thickening_subset_of_subset _ hZE))
+        (hhprop E Λ δ b Z.support (hsupp_closed _ _ Z) hZE hδ hLip hb) ((hLipPF _ _ _ _ _ _).1 hHX)
+    · -- (6) tangential vanishing (6.8): the mollified `f_n` kill `ω` near `spt X`
+      intro α z ω ε hε hfz hωα
+      obtain ⟨fh, fn, L, -, hhGeq, hfns, -, hfnu, hfnd, hfntan⟩ :=
+        hSA D D f Λ X.support δ hδ (hLip.mono (thickening_subset_of_subset δ hXE))
+      obtain ⟨r, hr0, hev⟩ := hfntan k α z ω ε hε hfz hωα
+      have hunif : TendstoUniformlyOn fn f atTop (thickening (δ / 2) X.support) :=
+        hfnu.tendstoUniformlyOn.congr_right (hhGeq.mono (thickening_mono (half_le_self hδ.le) _))
+      have hlim := (hLipPF _ _ _ _ _ _).1 hPX fn (thickening (δ / 2) X.support) Λ isOpen_thickening
+        (self_subset_thickening (half_pos hδ) _) hfns
+        (Eventually.of_forall fun n x hx => hfnd n x hx) hunif ω (fun _ => 0)
+        (hev.mono fun n hn => ⟨thickening r X.support, isOpen_thickening,
+          self_subset_thickening hr0 _, fun x hx => by rw [hn x hx]; rfl⟩)
+      have h0 : (fun _ : ℕ => X (0 : TestFormOn (univ : Set (Eucl D)) k)) = fun _ => 0 :=
+        funext fun _ => map_zero X.toCurrent
+      rw [h0] at hlim
+      exact tendsto_nhds_unique hlim tendsto_const_nhds
+    · -- (7) linearity (6.9): `lipschitz_pushforward` (III), products are linear in `X`
+      intro X₁ X₂ a a₁ hX₁m hX₁n hX₁E hX₂
+      have hX₂s : X₂.support ⊆ X.support ∪ X₁.support :=
+        Submission.iwl_cr_support_lemmas.2.2 D k univ isOpen_univ X X₁ X₂ a a₁ hX₂
+      have hX₂m : X₂.mass < ∞ := hmass_lin D k X X₁ X₂ a a₁ hXm hX₁m hX₂
+      have hX₂n : ∀ (j : ℕ) (W : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 →
+          HEq W X₂ → W.boundary.mass < ∞ := by
+        intro j W hj hW
+        subst hj
+        rw [eq_of_heq hW]
+        refine hmass_lin D j X.boundary X₁.boundary X₂.boundary a a₁ (hXn j X rfl HEq.rfl)
+          (hX₁n j X₁ rfl HEq.rfl) fun ω => ?_
+        rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply,
+          GeometricCurrentOn.boundary_apply]
+        exact hX₂ _
+      have hUE : X.support ∪ X₁.support ⊆ E := union_subset hXE hX₁E
+      obtain ⟨hP1, -, -, -, Z₁, hZ₁, -, hZ₁cyl, hZ₁c, hH1, -, -⟩ :=
+        key k E Λ δ b X₁ hE hδ hLip hb hX₁m hX₁n hX₁E
+      obtain ⟨hP2, -, -, -, Z₂, hZ₂, -, -, -, hH2, -, -⟩ :=
+        key k E Λ δ b X₂ hE hδ hLip hb hX₂m hX₂n (hX₂s.trans hUE)
+      refine ⟨hLPF.2.2 D D k X X₁ X₂ f Λ δ (Pf k X) (Pf k X₁) (Pf k X₂) a a₁ hδ
+        (hLip.mono (thickening_subset_of_subset δ hUE))
+        (hfprop E Λ δ b _ ((hsupp_closed D k X).union (hsupp_closed D k X₁)) hUE hδ hLip hb) hX₂
+        ((hLipPF _ _ _ _ _ _).1 hPX) ((hLipPF _ _ _ _ _ _).1 hP1) ((hLipPF _ _ _ _ _ _).1 hP2), ?_⟩
+      -- `[[0,1]] × X₂ = a [[0,1]] × X + a₁ [[0,1]] × X₁`
+      have hZlin : ∀ η, Z₂ η = a * Z η + a₁ * Z₁ η := by
+        intro η
+        obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm D k η
+        have hφ' : ∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl D) (v : Fin k → Eucl D),
+            (φ s : DifferentialForm (Eucl D) k) x v =
+              (η : DifferentialForm (Eucl (D + 1)) (k + 1))
+                ((EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+                  (Fin.cons s (EuclideanSpace.equiv (Fin D) ℝ x)))
+                (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                  (EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+                    (Fin.cons 0 (EuclideanSpace.equiv (Fin D) ℝ (v i)))) :=
+          fun s _ x v => hφ s x v
+        rw [(hPC _ _ _ _).1 hZ₂ η φ hφ', (hPC _ _ _ _).1 hZ η φ hφ', (hPC _ _ _ _).1 hZ₁ η φ hφ']
+        have hi : IntervalIntegrable (fun s => X (φ s)) volume 0 1 :=
+          (hZc η φ hφ').intervalIntegrable_of_Icc zero_le_one
+        have hi₁ : IntervalIntegrable (fun s => X₁ (φ s)) volume 0 1 :=
+          (hZ₁c η φ hφ').intervalIntegrable_of_Icc zero_le_one
+        simp only [hX₂]
+        rw [intervalIntegral.integral_add (hi.const_mul a) (hi₁.const_mul a₁),
+          intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+      have hCE : Z.support ∪ Z₁.support ⊆ {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ E} :=
+        union_subset hZE (hZ₁cyl.trans fun y hy => ⟨hy.1, hX₁E hy.2⟩)
+      exact hLPF.2.2 (D + 1) D (k + 1) Z Z₁ Z₂ h _ _ (Hf k X) (Hf k X₁) (Hf k X₂) a a₁ hr
+        ((hhLip E Λ δ b hδ hLip hb).mono (thickening_subset_of_subset _ hCE))
+        (hhprop E Λ δ b _ ((hsupp_closed _ _ Z).union (hsupp_closed _ _ Z₁)) hCE hδ hLip hb) hZlin
+        ((hLipPF _ _ _ _ _ _).1 hHX) ((hLipPF _ _ _ _ _ _).1 hH1) ((hLipPF _ _ _ _ _ _).1 hH2)
+  · /- Clause (II): boundary commutation and the homotopy formula in degree `j + 1`. -/
+    intro j E Λ δ b X hE hδ hLip hb hXm hXbm hXE
+    have hXn : ∀ (i : ℕ) (W : GeometricCurrentOn (univ : Set (Eucl D)) (i + 1)), j + 1 = i + 1 →
+        HEq W X → W.boundary.mass < ∞ := by
+      intro i W hi hW
+      obtain rfl : j = i := Nat.succ.inj hi
+      rw [eq_of_heq hW]
+      exact hXbm
+    have hXbs : X.boundary.support ⊆ X.support := Submission.iwl_cr_support_lemmas.1 D j univ X
+    have hXbn : ∀ (i : ℕ) (W : GeometricCurrentOn (univ : Set (Eucl D)) (i + 1)), j = i + 1 →
+        HEq W X.boundary → W.boundary.mass < ∞ := by
+      intro i W hi hW
+      subst hi
+      rw [eq_of_heq hW, GeometricCurrentOn.boundary_boundary,
+        hmass_zero D i 0 fun ω => GeometricCurrentOn.zero_apply ω]
+      exact ENNReal.zero_lt_top
+    obtain ⟨hPX, -, -, -, Z, hZ, -, hZcyl, -, hHX, -, -⟩ :=
+      key (j + 1) E Λ δ b X hE hδ hLip hb hXm hXn hXE
+    obtain ⟨-, hPXbu, -, -, Z', hZ', -, hZ'cyl, -, hHXb, -, -⟩ :=
+      key j E Λ δ b X.boundary hE hδ hLip hb hXbm hXbn (hXbs.trans hXE)
+    refine ⟨?_, ?_⟩
+    · -- (8) `∂ P_{j+1} X = P_j ∂X` (6.10): `lipschitz_pushforward` (II) and uniqueness
+      exact hPXbu _ ((hLipPF _ _ _ _ _ _).2 (hLPF.2.1 D D j X f Λ δ (Pf (j + 1) X) hXm hXbm hδ
+        (hLip.mono (thickening_subset_of_subset δ hXE))
+        (hfprop E Λ δ b X.support (hsupp_closed D (j + 1) X) hXE hδ hLip hb)
+        ((hLipPF _ _ _ _ _ _).1 hPX)))
+    · -- (9) `X − P_{j+1} X = ∂ H_{j+1} X + H_j ∂X` (6.11): the smooth homotopy formula for the
+      -- straight-line homotopies `ĥ_n` from `f_n` to the identity, in the limit `n → ∞`
+      intro ω
+      obtain ⟨fn, hn, L₂, hfns, hfnd, hfnu, hfnp, hhn, hhns, hhnd, hhnu, hhnp⟩ :=
+        hAPX E Λ δ b X.support (hsupp_closed D (j + 1) X) hXE hδ hLip hb
+      have hOo : IsOpen {y : Eucl (D + 1) | tm y ∈ Ioo (-1 : ℝ) 2 ∧
+          tl y ∈ thickening (δ / 2) X.support} :=
+        (isOpen_Ioo.preimage tm.continuous).inter (isOpen_thickening.preimage tl.continuous)
+      have hcylO : {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ X.support} ⊆
+          {y : Eucl (D + 1) | tm y ∈ Ioo (-1 : ℝ) 2 ∧ tl y ∈ thickening (δ / 2) X.support} :=
+        fun y hy => ⟨⟨by linarith [hy.1.1], by linarith [hy.1.2]⟩,
+          self_subset_thickening (half_pos hδ) _ hy.2⟩
+      have hZ'X : Z'.support ⊆ {y : Eucl (D + 1) | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ X.support} :=
+        hZ'cyl.trans fun y hy => ⟨hy.1, hXbs hy.2⟩
+      obtain ⟨η₀, hη₀⟩ := hCF D D (j + 1) X.support fn ω hfns hfnp
+      obtain ⟨η', hη'⟩ := hCF (D + 1) D (j + 1 + 1)
+        {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ X.support} hn (exteriorDerivativeTestOn univ (j + 1) ω)
+          hhns hhnp
+      obtain ⟨θ', hθ'⟩ := hCF (D + 1) D (j + 1)
+        {y | tm y ∈ Icc (0 : ℝ) 1 ∧ tl y ∈ X.support} hn ω hhns hhnp
+      have l1 := (hLipPF _ _ _ _ _ _).1 hPX fn _ Λ isOpen_thickening
+        (self_subset_thickening (half_pos hδ) _) hfns
+        (Eventually.of_forall fun n x hx => hfnd n x hx) hfnu ω η₀ hη₀
+      have l2 := (hLipPF _ _ _ _ _ _).1 hHX hn _ L₂ hOo (hZcyl.trans hcylO) hhns hhnd hhnu
+        (exteriorDerivativeTestOn univ (j + 1) ω) η'
+        (hη'.mono fun n ⟨N, hN, hcN, hηN⟩ => ⟨N, hN, hZcyl.trans hcN, hηN⟩)
+      have l3 := (hLipPF _ _ _ _ _ _).1 hHXb hn _ L₂ hOo (hZ'X.trans hcylO) hhns hhnd hhnu ω θ'
+        (hθ'.mono fun n ⟨N, hN, hcN, hθN⟩ => ⟨N, hN, hZ'X.trans hcN, hθN⟩)
+      have heq : (fun n => X ω - X (η₀ n)) =ᶠ[atTop] fun n => Z (η' n) + Z' (θ' n) := by
+        filter_upwards [hη₀, hη', hθ', hhnp] with n h0 h1 h2 hp
+        have hj0 : (fun x => hn n ((EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin D) ℝ x)))) = fn n :=
+          funext fun x => by rw [hhn, htl_cons, htm_cons, zero_smul, add_zero]
+        have hj1 : (fun x => hn n ((EuclideanSpace.equiv (Fin (D + 1)) ℝ).symm
+            (Fin.cons 1 (EuclideanSpace.equiv (Fin D) ℝ x)))) = fun x => x :=
+          funext fun x => by rw [hhn, htl_cons, htm_cons, one_smul, add_sub_cancel]
+        obtain ⟨N₀, hN₀, hXN₀, hη₀N⟩ := h0
+        obtain ⟨N₁, hN₁, hcN₁, hη'N⟩ := h1
+        obtain ⟨N₂, hN₂, hcN₂, hθN⟩ := h2
+        refine hSH.2.1 D D j X Z Z' (hn n) hXm ((hPC _ _ _ _).1 hZ) ((hPC _ _ _ _).1 hZ') (hhns n)
+          (by rw [hcyl]; exact hp) ω (η₀ n) ω (η' n) (θ' n)
+          ⟨N₀, hN₀, hXN₀, fun x hx => by rw [hj0]; exact hη₀N x hx⟩
+          ⟨univ, isOpen_univ, subset_univ _, fun x _ => by
+            rw [hj1, fderiv_fun_id]; exact (ContinuousAlternatingMap.ext fun v => rfl)⟩
+          ⟨N₁, hN₁, by rw [hcyl]; exact hcN₁, hη'N⟩ ⟨N₂, hN₂, by rw [hcyl]; exact hcN₂, hθN⟩
+      rw [GeometricCurrentOn.boundary_apply]
+      exact tendsto_nhds_unique_of_eventuallyEq (tendsto_const_nhds.sub l1) (l2.add l3) heq
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
