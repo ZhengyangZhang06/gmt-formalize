@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "629d794237273877a141ed71bfbf639f9bace3c1fc8ffe1f5cc7013f8eb1ce2d",
+  "git_delta": {
+    "base_commit": "020e84028b24a7b28def78d0995f2430b68b68cd",
+    "candidate_commit": "55e0df8042b9fff90ee8e56cc72c02a0e8fbcc48",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "deaf12afa407d932ff1ec7de7e5bb56b2f95ba87f72752a9a7bbbf27a99e0d78",
+    "source_sha256": "8f4ee804e21b5c7a9e1d969c9199b1b6d61fca17334bc1252b125668302b6526",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_integer_multiplicity",
+      "statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
