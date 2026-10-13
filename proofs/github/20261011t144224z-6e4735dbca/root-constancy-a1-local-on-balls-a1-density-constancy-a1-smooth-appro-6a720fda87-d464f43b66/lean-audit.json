@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "88a63a2e9b18ae5d08715e50c79aed17419e9bacc661123f754ba2fb3273a9bb",
+  "git_delta": {
+    "base_commit": "fb50a54712b47586ecd8d0e5f08669ff2c8ff932",
+    "candidate_commit": "2219dd324b47f4276f090e8ece62441b2f58fb58",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_mdc_smooth_approx_identity_ae_tendsto",
+    "diff_sha256": "5d7d3bc68daab1998312bef710f5bf4f3c508a639e5450573058d486950d02ee",
+    "source_sha256": "6c75cd97692f01f79fc46e407be0bbecb26ed44ec0c86f630b30be5282f4d0b9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_mdc_smooth_approx_identity_ae_tendsto",
+      "statement": "∀ n : ℕ, ∃ ψ : ℕ → Eucl n → ℝ, (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ k)) ∧ (∀ k, HasCompactSupport (ψ k)) ∧ (∀ k : ℕ, tsupport (ψ k) ⊆ closedBall 0 (1 / ((k : ℝ) + 1))) ∧ (∀ k y, 0 ≤ ψ k y) ∧ (∀ k, ∫ y, ψ k y ∂volume = 1) ∧ ∀ g : Eucl n → ℝ, LocallyIntegrable g volume → ∀ᵐ x ∂volume, Tendsto (fun k => convolution g (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume x) atTop (𝓝 (g x))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
