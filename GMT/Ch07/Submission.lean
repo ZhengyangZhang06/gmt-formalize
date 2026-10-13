@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter03.SubmanifoldCover
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,85 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Slices of one `C¹` chart piece** (Simon Ch. 6, Lemma 4.1(1),(2) for one piece; Ch. 2, 6.4
+and Remark 4.4; Ch. 3, Lemma 1.2 "if").  For `y ∈ Y`, `G(ψ(y)) ≠ 0 ⇔ DF(y) ≠ 0`, so
+`S_t = ψ(Y ∩ Γ_t)` with `Γ_t = {DF ≠ 0} ∩ F⁻¹(t)`, a Borel set by Lusin–Souslin.  Countably many
+`C¹` graph charts `Λ_k` cover `Γ_t ∩ V`, and `χ_k := ψ ∘ Λ_k` is `C¹` with `Dχ_k(z)` injective of
+range `Dψ(y)(ker DF(y)) = Dψ(y)(ℝ^{n+1}) ∩ G(ψ(y))^⊥`, `y = Λ_k(z)`.  (i) `S_t ⊆ ⋃_k χ_k(D_k)`.
+(ii) The compact patch `χ_k(B̄_{ρ_k}(c_k))` has approximate tangent space `Dχ_k(z)(ℝⁿ)` at
+`χ_k(z)`, `z ∈ B_{ρ_k}(c_k)`, and (TL) transfers it to `S_t`, `Hⁿ`-a.e. on `S_t`. -/
+theorem Submission.dor_lmbsf_piece_slice_approxTangent : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ t : ℝ, CountablyRectifiable n (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) ∧ (μHE[n] (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) ≠ ∞ → ∀ᵐ x ∂(μHE[n].restrict (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t})), ∀ y ∈ Y, ψ y = x → HasApproximateTangentSpaceAt n (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) x (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ G x)ᗮ)) := by
+  intro hTL P n V C Y ψ F f G hV hψ hψinj hDψ hC hCV hY hYC hF hfF hG t
+  have hYV : Y ⊆ V := hYC.trans hCV
+  -- Step 1, for `y ∈ Y`: `G(ψ(y)) = 0 ⇔ DF(y) = 0`, and
+  -- `Dψ(y)(ℝ^{n+1}) ∩ G(ψ(y))^⊥ = Dψ(y)(ker DF(y))`
+  have halg := fun y (hy : y ∈ Y) => Submission.dor_lmbsf_pst_slice_plane_algebra (n + 1) P
+    (fderiv ℝ ψ y) (fderiv ℝ F y) (G (ψ y)) (hG y hy).1 (hG y hy).2
+  set S := ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}
+  have hlevel : ∀ y ∈ Y, ψ y ∈ S → fderiv ℝ F y ≠ 0 ∧ F y = t := by
+    rintro y hy ⟨⟨-, hGy⟩, hfy⟩
+    exact ⟨fun h => hGy ((halg y hy).1.2 h), (hfF y hy).symm.trans hfy⟩
+  -- so `S_t = ψ(Y ∩ Γ_t)`
+  have hSeq : S = ψ '' (Y ∩ {y | fderiv ℝ F y ≠ 0} ∩ F ⁻¹' {t}) := by
+    refine Subset.antisymm (fun x hx => ?_) ?_
+    · obtain ⟨y, hy, rfl⟩ := hx.1.1
+      exact ⟨y, ⟨⟨hy, (hlevel y hy hx).1⟩, (hlevel y hy hx).2⟩, rfl⟩
+    · rintro x ⟨y, ⟨⟨hy, hDF⟩, hFy⟩, rfl⟩
+      exact ⟨⟨mem_image_of_mem ψ hy, fun h => hDF ((halg y hy).1.1 h)⟩, (hfF y hy).trans hFy⟩
+  -- Step 2, countably many `C¹` graph charts `Λ_k : D_k → Γ_t ∩ V` with
+  -- `Γ_t ∩ V = ⋃_k Λ_k(B_{ρ_k}(c_k))`; `χ_k := ψ ∘ Λ_k` is `C¹` on `D_k` and injective on
+  -- `B̄_{ρ_k}(c_k)`
+  obtain ⟨D, Λ, c, ρ, hDo, hΛ, hΛinj, hΛD, hball, hcover⟩ :=
+    Submission.dor_lmbsf_pst_level_set_chart_cover n V F t hV hF
+  have hΛV : ∀ k, MapsTo (Λ k) (D k) V := fun k z hz => (hΛD k z hz).1
+  have hχ : ∀ k, ContDiffOn ℝ 1 (ψ ∘ Λ k) (D k) := fun k => hψ.comp (hΛ k) (hΛV k)
+  have hχinj : ∀ k, InjOn (ψ ∘ Λ k) (closedBall (c k) (ρ k)) := fun k =>
+    (hψinj.comp (hΛinj k) (hΛV k)).mono (hball k)
+  have hchart : ∀ y ∈ Y, ψ y ∈ S → ∃ k, ∃ z ∈ ball (c k) (ρ k), Λ k z = y := fun y hy hyS =>
+    hcover y (hYV hy) (hlevel y hy hyS).1 (hlevel y hy hyS).2
+  refine ⟨?_, fun hfin => ?_⟩
+  · -- Step 3, (i): `S_t ⊆ ⋃_k χ_k(D_k)`, a countable union of `C¹` images of open sets
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun k => (ψ ∘ Λ k) '' D k)
+      fun k => Poincare.SimonGMT.Chapter03.countablyRectifiable_image_contDiffOn_open (hDo k)
+        (hχ k)).mono fun x hx => ?_
+    obtain ⟨y, hy, rfl⟩ := hx.1.1
+    obtain ⟨k, z, hz, rfl⟩ := hchart y hy hx
+    exact mem_iUnion.2 ⟨k, z, hball k (ball_subset_closedBall hz), rfl⟩
+  -- Step 4, (ii): `S_t` is Borel, so (TL) transfers the tangent planes of the compact patches
+  -- `χ_k(B̄_{ρ_k}(c_k))` to `S_t` at `Hⁿ`-a.e. `x ∈ S_t`
+  have hSmeas : MeasurableSet S := by
+    have hΓ : MeasurableSet (Y ∩ {y | fderiv ℝ F y ≠ 0} ∩ F ⁻¹' {t}) :=
+      (hY.inter (isOpen_ne_fun (hF.continuous_fderiv one_ne_zero)
+        continuous_const).measurableSet).inter
+        (hF.continuous.measurable (measurableSet_singleton t))
+    rw [hSeq]
+    exact hΓ.image_of_continuousOn_injOn (hψ.continuousOn.mono fun y hy => hYV hy.1.1)
+      (hψinj.mono fun y hy => hYV hy.1.1)
+  filter_upwards [Submission.dor_lmbsf_pst_patch_tangent_transfer hTL P n S D (fun k => ψ ∘ Λ k)
+    c ρ hSmeas hfin hDo hχ hball hχinj, ae_restrict_mem hSmeas] with x hx hxS
+  rintro y hy rfl
+  obtain ⟨k, z, hz, rfl⟩ := hchart y hy hxS
+  -- Step 5, `Dχ_k(z) = Dψ(Λ_k z) ∘ DΛ_k(z)` is injective, with range
+  -- `Dψ(Λ_k z)(ker DF(Λ_k z)) = Dψ(Λ_k z)(ℝ^{n+1}) ∩ G(χ_k z)^⊥`
+  have hzD : z ∈ D k := hball k (ball_subset_closedBall hz)
+  obtain ⟨-, -, hDΛ, hrangeΛ⟩ := hΛD k z hzD
+  have hderiv : fderiv ℝ (ψ ∘ Λ k) z = (fderiv ℝ ψ (Λ k z)).comp (fderiv ℝ (Λ k) z) :=
+    fderiv_comp z ((hψ.contDiffAt (hV.mem_nhds (hΛV k hzD))).differentiableAt one_ne_zero)
+      (((hΛ k).contDiffAt ((hDo k).mem_nhds hzD)).differentiableAt one_ne_zero)
+  have hrange : LinearMap.range (fderiv ℝ (ψ ∘ Λ k) z : Euclid n →ₗ[ℝ] Euclid P) =
+      LinearMap.range (fderiv ℝ ψ (Λ k z) : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓
+        (ℝ ∙ G (ψ (Λ k z)))ᗮ := by
+    rw [(halg _ hy).2, hderiv, ContinuousLinearMap.toLinearMap_comp, LinearMap.range_comp,
+      hrangeΛ]
+  -- `image_tangent`: the patch `χ_k(B̄_{ρ_k}(c_k))` has approximate tangent space
+  -- `Dχ_k(z)(ℝⁿ)` at `χ_k(z)`, since `z ∈ B_{ρ_k}(c_k) ⊆ int B̄_{ρ_k}(c_k)`
+  have himage := Submission.dor_lmbsf_c1_image_approxTangent n P (D k) (closedBall (c k) (ρ k))
+    (ψ ∘ Λ k) z (hDo k) (hχ k) (isCompact_closedBall _ _) (hball k) (hχinj k)
+    (ball_subset_interior_closedBall hz)
+    (by rw [hderiv, ContinuousLinearMap.coe_comp]; exact (hDψ _ (hYV hy)).comp hDΛ)
+  rw [hrange] at himage
+  exact hx k z hz rfl _ himage
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
