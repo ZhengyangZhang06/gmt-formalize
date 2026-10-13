@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1.set_mass-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1",
+  "depth": 6,
+  "title": "Weighted Hausdorff measure of a Borel set under a pointwise weight bound",
+  "statement": "Let P, n ∈ ℕ and let Hⁿ = μHE[n] on ℝ^P. Let M, B, B' ⊆ ℝ^P with M and B Borel and B ⊆ B'. Let θ : ℝ^P → ℝ and g : ℝ^P → [0,∞], and let c, K ∈ [0,∞] with K ≠ ∞. Let μ = (Hⁿ⌞M).withDensity(x ↦ ofReal θ(x)), and assume ofReal θ(x) ≤ c + K·g(x) for every x ∈ M. Then μ(B) ≤ c·Hⁿ(M ∩ B) + K·∫⁻_{M∩B'} g dHⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (M B B' : Set (Euclid P)) (θ : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞) (c K : ℝ≥0∞), MeasurableSet M → MeasurableSet B → B ⊆ B' → K ≠ ∞ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, ENNReal.ofReal (θ x) ≤ c + K * g x) → μ B ≤ c * μHE[n] (M ∩ B) + K * ∫⁻ x in M ∩ B', g x ∂μHE[n]",
+  "lean_name": "cbr_ci_bl_db_withDensity_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4564635bc9-a1"
+}

@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "cbr_ci_bl_db_weight_le_enorm|cbr_ci_bl_db_withDensity_le|cbr_ci_bl_db_eventual_bounds",
+        "withDensity_apply|theorem restrict_restrict|setLIntegral_mono\\x27|lintegral_add_left|lintegral_const_mul\\x27|lintegral_mono_set|setLIntegral_const",
+        "eventually_lt_of_lt_liminf|eventually_lt_of_limsup_lt|mem_nhdsGT_iff_exists_Ioo_subset|theorem Tendsto.const_mul|theorem lt_div_iff_mul_lt|theorem div_lt_iff|add_le_add_iff_right|theorem inv_mul_cancel|ofReal_inv_of_pos",
+        "python3 -I /tmp/gmt_db_independent_audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_db_independent_contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/db-decomp/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd/decomposition-v1.json",
+        "/tmp/db-decomp/EndToEnd.lean",
+        "/tmp/gmt_db_independent_audit.py",
+        "/tmp/gmt_db_independent_contracts.lean"
+      ],
+      "conclusion": "The split appropriately separates the pointwise estimate, integration, and asymptotic argument. The snapshot contract and 13 inspected Mathlib files match compiler sources byte-for-byte. All three exact types independently elaborate as Prop before any child implementation; operator-norm and ENorm instances were verified. The names are bare identifiers with no collisions in the DAG, snapshot project, or SimonGMT search. Dependency edges are acyclic: the children have no dependencies, and the selected parent supplies its registered covector_norm prerequisite. Independently rerunning the supplied Lean proofs and assembly succeeded. The assembly conclusion exactly matches the frozen selected parent, with precisely the registered prerequisite as its extra argument. Axiom reports contain only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line proposition. Evaluating the difference at the norming covector, using t₀,C ≥ 0, and applying the operator-norm bound gives t ≤ t₀ + C‖d‖. The stated ofReal conversions prove the exact conclusion even for negative t. The proof is complete and non-circular; its fresh bare name is valid."
+    },
+    {
+      "key": "set_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. The pinned lemmas justify the withDensity formula on B, restriction intersection, pointwise integral comparison, splitting off the measurable constant, and factoring finite K without measurability of g. Integral monotonicity requires only B ⊆ B', so no hypothesis on B' is missing. Every proof step is justified, independent, and sufficient for formalization; the bare name is fresh."
+    },
+    {
+      "key": "eventual_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and constants match the exact one-line type. The proof establishes positive finite V(r), extracts simultaneous eventual inequalities on one interval, clears denominators, cancels a finite quarter-volume term, and divides by positive finite ofReal θ₀. These operations remain valid without finiteness assumptions on the radius functions. The complete, non-circular proof supplies precisely the selected parent's concluding step; the bare name is fresh."
+    }
+  ],
+  "required_changes": []
+}

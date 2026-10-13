@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1.weight_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1",
+  "depth": 6,
+  "title": "Scalar weight controlled by the multivector difference via a norming covector",
+  "statement": "Let P, n ∈ ℕ. For an n-covector α on ℝ^P (an element of Covector (Euclid P) n, i.e. a continuous alternating map), let ‖α‖ be its operator norm and |α| = covectorEuclideanNorm α its Euclidean coefficient norm. MultiVector P n = Λ_n(ℝ^P) is the space of continuous linear functionals on n-covectors, with operator norm ‖·‖ and [0,∞]-valued norm ‖·‖ₑ. Let ζx, ζa ∈ MultiVector P n and t, t₀, C ∈ ℝ with t₀ ≥ 0 and C ≥ 0. Assume ‖α‖ ≤ C·|α| and |ζa(α)| ≤ |α| for every n-covector α, and that there is an n-covector β with |β| ≤ 1 and ζx(β) = 1. Then, in [0,∞], ofReal t ≤ ofReal t₀ + ofReal C · ‖t•ζx − t₀•ζa‖ₑ.",
+  "lean_statement": "∀ (P n : ℕ) (ζx ζa : MultiVector P n) (t t₀ C : ℝ), 0 ≤ t₀ → 0 ≤ C → (∀ α : Covector (Euclid P) n, ‖α‖ ≤ C * covectorEuclideanNorm α) → (∀ α : Covector (Euclid P) n, |ζa α| ≤ covectorEuclideanNorm α) → (∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζx β = 1) → ENNReal.ofReal t ≤ ENNReal.ofReal t₀ + ENNReal.ofReal C * ‖t • ζx - t₀ • ζa‖ₑ",
+  "lean_name": "cbr_ci_bl_db_weight_le_enorm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4299718967-a1"
+}
