@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5b0f1e3f48761f06126621d04d88311c8a5a5641ef4e408dddc8817ce7fdb6a3",
+  "git_delta": {
+    "base_commit": "0ae66d749a8ac236d45e8ad53ef871722a24803b",
+    "candidate_commit": "f2442e7a03c52ad95168ac745ef147e9645c87af",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mono_truncated_mean_curvature",
+    "diff_sha256": "f7eeee124facfd45850eb5c821b1b1d968da7659cfcb9299939b2724d40921c4",
+    "source_sha256": "a7cad310807c16e0666ad1683976df5f4c92ccef23a9fb289351112cf9c2ad14",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mono_truncated_mean_curvature",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), R.HasLocallyBoundedMeanCurvature → ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ Λ) ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ K → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

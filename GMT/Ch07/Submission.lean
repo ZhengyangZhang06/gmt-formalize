@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 3.14–3.15**: if `V = v(M, θ)` has generalized mean curvature `H₀` in `U`,
+bounded `μ_V`-a.e. on compact subsets, then for a compact `K ⊆ U` there are `Λ ≥ 0` and a
+`μ_V`-measurable `H` with `|H| ≤ Λ` everywhere and `δV(X) = −∫ X · H dμ_V` for every `C¹` field `X`
+with compact support in `K`.  Take a strongly measurable version `H₁` of `H₀` and set
+`H = 1_{|H₁| ≤ Λ} H₁` with `Λ = max(Λ_K, 0)`: then `H = H₀` `μ_V`-a.e. on `K`, and `X = 0` off
+`K`, so `X · H = X · H₀` `μ_V`-a.e. -/
+theorem Submission.dimred_mono_truncated_mean_curvature : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), R.HasLocallyBoundedMeanCurvature → ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ Λ) ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ K → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure := by
+  intro P n U R hR K hK hKU
+  obtain ⟨H₀, hH₀m, hH₀b, hH₀fv⟩ := hR
+  obtain ⟨Λ₀, hΛ₀⟩ := hH₀b K hK hKU
+  -- `H₁` is a strongly measurable version of `H₀`; `S = {|H₁| ≤ Λ}` is measurable
+  obtain ⟨H₁, hH₁, hH₀₁⟩ : ∃ H₁ : Euclid P → Euclid P, StronglyMeasurable H₁ ∧
+      H₀ =ᵐ[R.measure] H₁ :=
+    ⟨hH₀m.mk H₀, hH₀m.stronglyMeasurable_mk, hH₀m.ae_eq_mk⟩
+  set S : Set (Euclid P) := {x | ‖H₁ x‖ ≤ max Λ₀ 0}
+  have hS : MeasurableSet S := measurableSet_le hH₁.norm.measurable measurable_const
+  refine ⟨max Λ₀ 0, le_max_right _ _, S.indicator H₁, (hH₁.indicator hS).aestronglyMeasurable,
+    fun x => ?_, fun X hX hXc hXK => ?_⟩
+  · by_cases hx : x ∈ S
+    · rw [Set.indicator_of_mem hx]
+      exact hx
+    · rw [Set.indicator_of_notMem hx, norm_zero]
+      exact le_max_right _ _
+  -- `X · H₀ = X · H` `μ_V`-a.e.: on `K`, `H = H₁ = H₀` a.e.; off `K`, `X = 0`
+  rw [hH₀fv X hX hXc (hXK.trans hKU)]
+  congr 1
+  refine integral_congr_ae ?_
+  filter_upwards [hH₀₁, hΛ₀] with x hx₁ hx₂
+  by_cases hxK : x ∈ K
+  · have hxS : x ∈ S := by
+      change ‖H₁ x‖ ≤ max Λ₀ 0
+      rw [← hx₁]
+      exact (hx₂ hxK).trans (le_max_left _ _)
+    rw [Set.indicator_of_mem hxS, hx₁]
+  · rw [image_eq_zero_of_notMem_tsupport fun h => hxK (hXK h), inner_zero_left, inner_zero_left]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
