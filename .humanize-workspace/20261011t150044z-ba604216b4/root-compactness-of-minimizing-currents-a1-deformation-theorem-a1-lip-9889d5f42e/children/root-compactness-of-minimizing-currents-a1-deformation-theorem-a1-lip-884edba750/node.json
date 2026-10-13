@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1",
+  "depth": 4,
+  "title": "Euclidean coefficient norm of covectors: pull-back, interior-product and orthonormal-evaluation bounds (parent (L0)–(L3))",
+  "statement": "For all N, N', k ∈ ℕ, writing |α| for covectorEuclideanNorm α (the Euclidean norm of the values of a covector α on the strictly increasing tuples of standard basis vectors) and ‖·‖ for the Euclidean norm of vectors and the operator norm of linear maps: (L1) for every continuous linear map A : ℝ^N → ℝ^{N'} and every k-covector β on ℝ^{N'}, the pull-back A^#β(w_1, …, w_k) := β(Aw_1, …, Aw_k) (Lean β.compContinuousLinearMap A) satisfies |A^#β| ≤ ‖A‖^k·|β|; (L2) for every v ∈ ℝ^N and every (k+1)-covector β on ℝ^N, the interior product ι_vβ(w_1, …, w_k) := β(v, w_1, …, w_k) (Lean β.curryLeft v) satisfies |ι_vβ| ≤ |v|·|β|; (L3) for every k-covector α on ℝ^N and every orthonormal family τ_1, …, τ_k in ℝ^N, |α(τ_1, …, τ_k)| ≤ |α|.",
+  "lean_statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α",
+  "lean_name": "cmcdt_lp_covector_norm_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-884edba750-a1"
+}

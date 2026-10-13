@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lp_|lipschitz.*push|LipschitzPushforward|homotopy",
+        "covectorEuclideanNorm|def support|def massOn|massOn_le_liminf",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|exists_orthonormalBasis_extension_of_card_eq|curryLeft_apply_apply|volume_preserving_piFinSuccAbove|integral_lineDeriv_mul_eq|ae_convolution_tendsto_right_of_locallyIntegrable",
+        "theorem (injective_area_formula_lipschitzOn|weighted_area_formula_lipschitzOn_fiberSum|area_image_criticalSet_eq_zero)|def euclideanJacobian|def.*critical",
+        "rg -n '\\bsorry\\b|\\badmit\\b|^axiom ' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT -g '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lp-independent-audit-q8hcur8j/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lpdecomp/lean/AssemblyFull.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9889d5f42e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9889d5f42e/decomposition-v1.json",
+        "/tmp/lpdecomp/lean/AssemblyFull.lean",
+        "/tmp/lpdecomp/lean/Interface.lean",
+        "/tmp/lp-independent-audit-q8hcur8j/Types.lean",
+        "/tmp/lp-independent-audit-q8hcur8j/Sources.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and equality of the workspace contract with the snapshot. The cited definitions and analytic tools support the supplied arguments; Chapter 6 offers no reusable completed push-forward theorem. No cmcdt_lp_ declaration or DAG reservation was found. All child types are standalone one-line propositions with bare, unreserved names. The assembly contains the exact operators, integrality and IMS types and the exact selected conclusion. Its dependency graph is acyclic. The split is appropriate and establishes this selected node. Public corroboration: [Simon, Chapter 6, §§2.25–2.29 and 3.9](https://web.stanford.edu/class/math285/ts-gmt). Source scanning found no executable sorry, admit or axiom declaration in SimonGMT. Fresh Lean and axiom-printing runs stalled on shared-filesystem reads and were terminated; their earlier reported success was not independently reproduced. Acceptance rests on independent source, type and mathematical-proof inspection."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches all three bounds and their hypotheses. The proof establishes basis invariance, the factorial coefficient identity, the one-slot adjoint estimate and the contraction counting argument without circularity. Degree zero, zero-dimensional spaces and degrees exceeding ambient dimension cause no missing cases. This is a genuine algebraic prerequisite for both other children."
+    },
+    {
+      "key": "operators",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The VO/REP antecedents and twelve conclusions match the prose. Cut-off smooth push-forward, the cylinder boundary calculation, the mollifier Cauchy estimate and the uniformly Lipschitz cut-off homotopy prove the stated properties and both interfaces. Normality supplies precisely the required boundary estimates; degree zero and negative displacement bounds are handled. Coordinate insertion, curryLeft, interval integration and boundary indices have the intended meanings. The proof uses covector_bounds without relying on integrality or the selected parent."
+    },
+    {
+      "key": "integrality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both interface-based conclusions exactly match the prose, including the absence of a boundary-mass assumption on X. Normalization, compact bi-Lipschitz parametrization, tangent identification, measurable integer pieces, IMS, weak continuity of minors and the product measure identity provide complete arguments. The IMS antecedent is identical to the declared dependency type, whose dependency closure does not reach this node. No operators dependency is needed because the two interfaces are explicit hypotheses. Together with operators, these conclusions supply exactly the parent's positive-degree integrality clauses."
+    }
+  ],
+  "required_changes": []
+}
