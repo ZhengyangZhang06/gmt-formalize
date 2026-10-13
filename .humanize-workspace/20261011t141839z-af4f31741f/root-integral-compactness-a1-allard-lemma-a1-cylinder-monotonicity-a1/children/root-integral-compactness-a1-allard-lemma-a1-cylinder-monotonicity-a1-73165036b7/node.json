@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1.cylinder_weight-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+  "depth": 4,
+  "title": "C¹ cylindrical weight with tangential gradient bound (steps 0 and 2 of the cylinder-monotonicity proof, Simon 8.5.10 (7))",
+  "statement": "There is a constant M₀ ≥ 0 such that for all N, n ∈ ℕ, every P ∈ G(N,n), every y ∈ ℝ^N and every τ > 0 there is a function h : ℝ^N → ℝ with: (i) h is C¹; (ii) 0 ≤ h(z) ≤ 1 for all z; (iii) h(z) = 1 whenever |q(z − y)| < τ; (iv) h(z) = 0 whenever |q(z − y)| ≥ 2τ; (v) |Dh(z)[p_S(z − y)]| ≤ (M₀/τ)·t_P(S)·|z − y| for all z ∈ ℝ^N and S ∈ G(N,n). Here ℝ^N = Euclidean N, G(N,n) = Grassmannian N n, p_S = Grassmannian.project S is the orthogonal projection onto S (the linear map projectionLinearMap S), q(v) := v − p_P(v), Dh = fderiv ℝ h, and t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖ is the operator norm of p_S − p_P.",
+  "lean_statement": "∃ M₀ : ℝ, 0 ≤ M₀ ∧ ∀ (N n : ℕ) (P : Grassmannian N n) (y : Euclidean N) (τ : ℝ), 0 < τ → ∃ h : Euclidean N → ℝ, ContDiff ℝ 1 h ∧ (∀ z, 0 ≤ h z ∧ h z ≤ 1) ∧ (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) ∧ (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) ∧ ∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M₀ / τ * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖",
+  "lean_name": "intcpt_allard_cm_cylinder_weight",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-monotonicity-a1-73165036b7-a1"
+}

@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_image_le|euclideanHausdorffMeasure_def|image_of_continuousOn_injOn|exists_measurable_subset_ae_eq",
+        "lintegral_iUnion₀|le_lintegral_add|lintegral_finsetSum.|lintegral_indicator_const₀|irreducible_def lintegral|theorem lintegral_indicator",
+        "tsum_sigma|tsum_comp_le_tsum_of_injective|tsum_eq_iSup_nat",
+        "le_lintegral_tsum|tsum_lintegral_le|lintegral_tsum_le",
+        "intcpt_graph_hausdorff_le_projection|intcpt_graph_projection_nullMeasurableSet|intcpt_graph_piece_lintegral_le_fibre_sum",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean Test/Full.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/gfb-independent-audit-1jmi0hb9/IndependentTypes.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-graph-fibre-bound-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-graph-fibre-bound-a1/decomposition-v1.json",
+        "/tmp/gfb-decomp-McRQeP/Test/Full.lean",
+        "/tmp/gfb-independent-audit-1jmi0hb9/IndependentTypes.lean"
+      ],
+      "conclusion": "Verified pinned revisions and compatibility of the inspected compiler sources with the snapshot. The cited measure, projection, Lusin–Souslin and lower-integral results have the required hypotheses. No matches occurred for the three searched countable-superadditivity lemma names; the supplied finite-partial-sum argument proves the needed inequality. All child types independently elaborate without child implementations, pass lexical validation, and exactly match their proof-file declarations. All names are bare and unreserved by another branch. Independently rerunning Full.lean succeeds, including comparator-form replays; all four proofs use only propext, Classical.choice and Quot.sound. The split is appropriate: the independent geometry and measurability obligations feed the single-piece bound, which establishes the exact selected parent through disjointification, lower-integral superadditivity and the injective fibre-sum comparison. No circular dependency or target substitution occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_hausdorff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition agree, including arbitrary nonmeasurable A. Pythagoras gives the inverse Lipschitz estimate and injectivity; the Hausdorff image bound and normalization give the exact constant. The proof needs neither closedness nor measurability and has no circular reliance."
+    },
+    {
+      "key": "graph_projection_null_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean hypotheses match. The proof establishes injectivity and continuity, decomposes A into a Borel subset and null remainder, applies Lusin–Souslin, and transfers nullity using the projection's Lipschitz bound. No closedness or sigma-finiteness is missing; the redundant nonnegativity hypothesis is harmless."
+    },
+    {
+      "key": "graph_piece_fibre_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract includes arbitrary ENNReal-valued g. The proof correctly applies both declared siblings to simple-function level sets, integrates their null-measurable projected indicators, compares pointwise with the subtype fibre sum, and takes the defining lower-integral supremum. Infinite values are allowed, and no measurability of g or circular reliance is introduced."
+    }
+  ],
+  "required_changes": []
+}

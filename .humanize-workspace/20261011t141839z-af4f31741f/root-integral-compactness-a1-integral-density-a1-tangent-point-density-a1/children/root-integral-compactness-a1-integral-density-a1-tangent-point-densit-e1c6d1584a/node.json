@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.density_squeeze-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "depth": 4,
+  "title": "Two-sided eventual ball-mass bounds ⇒ Θ^n(μ, x) = a",
+  "statement": "Let N, n ∈ ℕ, μ a measure on Euclidean N, x ∈ Euclidean N and a ∈ [0, ∞]; write ω_n = unitBallVolume n. Assume (i) for every c ∈ [0, ∞] with c < a · ω_n, eventually as t → 0⁺, c · ENNReal.ofReal(t)^n ≤ μ(closedBall x t); and (ii) for every c ∈ [0, ∞] with a · ω_n < c, eventually as t → 0⁺, μ(closedBall x t) ≤ c · ENNReal.ofReal(t)^n. Then HasDensity n μ x a, i.e. μ(B̄_t(x))/(ω_n t^n) → a as t ↓ 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (a : ℝ≥0∞), (∀ c : ℝ≥0∞, c < a * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) → (∀ c : ℝ≥0∞, a * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n) → HasDensity n μ x a",
+  "lean_name": "intcpt_id_tpd_hasDensity_of_ball_mass_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-e1c6d1584a-a1"
+}

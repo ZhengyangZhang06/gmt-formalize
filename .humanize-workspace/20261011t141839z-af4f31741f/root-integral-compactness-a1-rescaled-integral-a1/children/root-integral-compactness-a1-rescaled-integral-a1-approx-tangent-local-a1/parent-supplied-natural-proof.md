@@ -1,0 +1,111 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.rescaled_integral-a1`
+- Child DAG node: `root.integral_compactness-a1.rescaled_integral-a1.approx_tangent_local-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation.
+- H^n := μHE[n] on ℝ^N = Euclidean N, and blowUpMap x r z := r^{-1}·(z − x).
+- For an arbitrary set A, the set integral ∫_A g dH^n means ∫ g d(H^n⌞A).
+- By definition, Chapter03.HasWeightedApproximateTangentSpaceAt n S θ x P holds iff finrank P = n and, for every f ∈ C_c(ℝ^N, ℝ), ∫_{blowUpMap x r '' S} f(v)·θ(x + r·v) dH^n(v) → θ(x)·∫_P f dH^n as r → 0 along 𝓝[>] 0.
+
+1. Reduction. Both predicates contain the same conjunct finrank P = n, and for each f the same prescribed limit θ(y)·∫_P f dH^n. For f ∈ C_c(ℝ^N, ℝ) put
+   F_1(r) := ∫_{blowUpMap y r '' (O ∩ M)} f(v)·θ(y + r·v) dH^n(v),
+   F_2(r) := ∫_{blowUpMap y r '' M} f(v)·θ(y + r·v) dH^n(v).
+It suffices to show, for every f, that F_1(r) = F_2(r) for all r in some interval (0, δ) with δ > 0. Then F_1 =ᶠ[𝓝[>]0] F_2 because (0, δ) ∈ 𝓝[>]0 (Ioo_mem_nhdsGT). Filter.tendsto_congr' then turns each limit statement into the other, which gives both directions of the equivalence.
+
+2. Choice of radii. Fix f.
+   - tsupport f is compact, hence bounded. So tsupport f ⊆ closedBall(0, R₀) for some R₀ (HasCompactSupport.isBounded, Bornology.IsBounded.subset_closedBall).
+   - Put R := max(R₀, 1) > 0 and B := closedBall(0, R). Then tsupport f ⊆ B.
+   - Since O is open and y ∈ O, there is ε > 0 with ball(y, ε) ⊆ O (Metric.isOpen_iff).
+   - Let δ := ε/R > 0 and fix r with 0 < r < δ.
+
+3. Cut-off identity. Put h(v) := f(v)·θ(y + r·v). If v ∉ B, then v ∉ tsupport f, so f(v) = 0 (image_eq_zero_of_notMem_tsupport) and h(v) = 0. Hence, for every set A ⊆ ℝ^N,
+   ∫_A h dH^n = ∫ h d(H^n⌞A) = ∫_B h d(H^n⌞A) = ∫ h d(H^n⌞(B ∩ A)).
+   - The first equality is the notation.
+   - The second is setIntegral_eq_integral_of_forall_compl_eq_zero, applied to the measure H^n⌞A and the set B. It has no integrability or measurability hypothesis.
+   - The third rewrites the measure (H^n⌞A)⌞B = H^n⌞(B ∩ A) by Measure.restrict_restrict (B is closed, hence measurable).
+   So no integrability of h is needed.
+
+4. Set identity: B ∩ blowUpMap y r '' (O ∩ M) = B ∩ blowUpMap y r '' M.
+   - ⊆ holds because O ∩ M ⊆ M.
+   - For ⊇, let v ∈ B with v = r^{-1}·(z − y) for some z ∈ M. Then r^{-1}·‖z − y‖ = ‖v‖ ≤ R (norm_smul, r > 0). So ‖z − y‖ ≤ r·R < (ε/R)·R = ε.
+   - Thus z ∈ ball(y, ε) ⊆ O, so z ∈ O ∩ M and v = blowUpMap y r z ∈ blowUpMap y r '' (O ∩ M).
+
+5. Apply step 3 to the two image sets and use step 4: for every r ∈ (0, δ),
+   F_1(r) = ∫ h d(H^n⌞(B ∩ blowUpMap y r '' (O ∩ M))) = ∫ h d(H^n⌞(B ∩ blowUpMap y r '' M)) = F_2(r).
+
+6. By step 1, Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ M) θ y P ↔ Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P. ∎
+
+## Key steps
+
+1. Both predicates have the same finrank condition and the same prescribed limits. So it suffices that the blow-up integrals for O ∩ M and for M agree for all small r > 0.
+2. Choose R > 0 with tsupport f ⊆ closedBall(0,R) and ε > 0 with ball(y,ε) ⊆ O. Take 0 < r < ε/R.
+3. Since f vanishes off closedBall(0,R), ∫_A f(v)θ(y+rv) dH^n = ∫ … d(H^n⌞(closedBall(0,R) ∩ A)) for every set A.
+4. closedBall(0,R) ∩ blowUpMap y r '' (O ∩ M) = closedBall(0,R) ∩ blowUpMap y r '' M, because ‖z − y‖ ≤ rR < ε forces z ∈ O.
+5. Eventually equal functions have the same limits along 𝓝[>]0 (tendsto_congr').
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum snapshot project/GMT/Ch08/Contract.lean vs workspace Contract.lean/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg/grep 'euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|notation.*μHE' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep 'MeasurableEmbedding.lintegral_map|lintegral_map_equiv|MeasurableEmbedding.integrable_map_iff|integrable_smul_measure|ae_of_ae_map|absolutelyContinuous_smul|NullMeasurableSet.preimage|restrict_restrict|ae_restrict_of_ae_restrict_of_subset|setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory`
+- `grep 'comap_mulLeft_nhdsGT_zero|map_comap_of_surjective|tendsto_map'_iff|image_inter_preimage|image_smul' mathlib/Mathlib/{Topology/Algebra/Order/Field.lean,Order/Filter/Map.lean,Order/Filter/Tendsto.lean,Data/Set/Image.lean,Algebra/Group/Pointwise/Set/Scalar.lean}`
+- `grep 'def CountablyRectifiable|CountablyRectifiable.mono|def blowUpMap|def HasWeightedApproximateTangentSpaceAt' simongmt Chapter03/Rectifiable.lean; grep 'structure Varifold' Chapter08/Varifold.lean`
+- `grep -rn 'blowUpMap|HasWeightedApproximateTangentSpaceAt' simongmt (found Chapter04/WeightedBlowUp.lean map_inverse_blowUp_carrier, Chapter04/TangentDensity.lean hausdorff_blowUp_image / blowUp_image_inter_closedBall; #check shows they are NOT in GMT.Ch08.Submission's import closure)`
+- `python dag.json scan of lean_statement/lean_name for blowUpMap/HasWeightedApproximateTangentSpaceAt/CountablyRectifiable/rescaledMeasure; grep -rl 'intcpt_ri_' run nodes + dag.json (no match)`
+- `lake env lean Test/Assembly.lean (4 child stubs + comparator-form targets + parent proof, no sorry in parent); lake env lean Test/Children.lean and Test/Full.lean (#print axioms: propext, Classical.choice, Quot.sound only)`
+- `python3 -I lean_contract.validate_lean_statement on all 4 lean_statements (all OK)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Tendsto.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/tmp/ri-decomp-1xT8jT/Test/Assembly.lean`
+- `/tmp/ri-decomp-1xT8jT/Test/Children.lean`
+- `/tmp/ri-decomp-1xT8jT/Test/Full.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract is byte-identical to the workspace Contract and Submission.
+
+Every Mathlib lemma the children and the parent assembly need exists in the snapshot and is in the import closure of GMT.Ch08.Submission:
+- euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image, which hold for arbitrary sets;
+- Measure.restrict_apply/map_apply/restrict_restrict;
+- setIntegral_eq_integral_of_forall_compl_eq_zero, which has no integrability hypothesis;
+- MeasurableEmbedding.lintegral_map/integrable_map_iff, integrable_smul_measure, absolutelyContinuous_smul, ae_of_ae_map, NullMeasurableSet.preimage;
+- comap_mulLeft_nhdsGT_zero, map_comap_of_surjective, tendsto_map'_iff, image_inter_preimage, image_smul.
+
+SimonGMT supplies CountablyRectifiable (with .mono), blowUpMap and HasWeightedApproximateTangentSpaceAt (Chapter03/Rectifiable.lean). The analogous Chapter04 blow-up scaling lemmas are not imported by Submission, so the child proofs avoid them. No accepted DAG declaration has a matching frozen type, so nothing is reused. The new intcpt_ri_* names are unreserved.
+
+In the scratch copy:
+- all 4 child types elaborate in comparator form;
+- the parent assembles from them with no sorry of its own;
+- full Lean proofs of all 4 children compile;
+- every declaration depends only on propext, Classical.choice and Quot.sound.

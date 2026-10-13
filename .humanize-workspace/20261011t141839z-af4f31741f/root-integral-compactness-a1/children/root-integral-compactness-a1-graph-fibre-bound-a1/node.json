@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.graph_fibre_bound-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Hausdorff measure on small-slope Lipschitz graphs is bounded by fibre sums over the base plane",
+  "statement": "Let N, n ∈ ℕ, P ∈ G(N,n) with orthogonal projection p and q := id − p, L ≥ 0, Γ_i ⊆ ℝ^N (i ∈ ℕ) closed sets each an L-Lipschitz graph over P (|q(y − z)| ≤ L|p(y − z)| for y, z ∈ Γ_i), G ⊆ ⋃_i Γ_i an H^n-null-measurable set and g : ℝ^N → [0,∞] arbitrary. Then ∫⁻_G g dH^n ≤ (1 + L²)^{n/2} ∫⁻_{P} (Σ_{y∈G, p(y)=a} g(y)) dH^n(a), the inner sum being the [0,∞]-valued sum over the fibre {y ∈ G : p(y) = a}.",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (Γ : ℕ → Set (Euclidean N)) (G : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ i, IsClosed (Γ i)) → (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → G ⊆ ⋃ i, Γ i → NullMeasurableSet G (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in G, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N))",
+  "lean_name": "intcpt_lipschitz_graph_fibre_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-graph-fibre-bound-a1-a1"
+}

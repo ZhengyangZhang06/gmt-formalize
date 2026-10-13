@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "rg -l -i varifold .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        "theorem exist_disjoint_covering_families",
+        "exists_measurable_subset_ae_eq|theorem measure_inter_add_sdiff₀|theorem eventually_lt_of_lt_liminf|exists_cthickening_subset_open",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 /tmp/ic-independent-audit-shyu054b/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1/parent-child-handoff.json",
+        "/tmp/ic-independent-audit-shyu054b/Types.lean",
+        "/tmp/ic-independent-audit-shyu054b/AssemblyAxioms.lean",
+        "/tmp/ic-independent-audit-shyu054b/AssemblyAxioms.lean.log"
+      ],
+      "conclusion": "The eight-way split appropriately establishes the selected IntegralCompactnessTheorem. Snapshot and compiler revisions match; inspected Mathlib files and the frozen contract match byte-for-byte. Mathlib search found no varifold theory. The cited covering, measurable-hull, continuity, scaling and Hausdorff-measure lemmas support their stated applications. Fresh checks successfully elaborated all eight one-line propositions without child implementations. Conditional assembly with identical frozen child/sibling stubs checks both parent conjuncts, including the subsequence liminf; its parent body contains no sorry. The eleven checked SimonGMT library lemmas use only propext, Classical.choice and Quot.sound. All proposed names are fresh bare identifiers, dependencies are correctly directed and acyclic, and projection differences use continuous-linear-map operator norms. No unsafe matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integral_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated almost-everywhere integer-density conclusion. The sigma-finite hull construction, approximate-tangent cutoff limit, upper-density theorem and measurable exceptional-set argument establish it without assuming measurability or full measure of the approximate-tangent set."
+    },
+    {
+      "key": "canonical_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both sibling results are explicit hypotheses. They supply the canonical representation; cutoff tests establish density at every carrier point, and density comparison on finite open restrictions proves null-set transfer for arbitrary subsets. All three conclusions match the Lean type."
+    },
+    {
+      "key": "variation_density_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Besicovitch argument correctly combines eventual inequalities on selected balls with uniform local bounds. The pinned continuity-from-below lemma permits nonmeasurable exceptional sets. Exhaustion and finite density then give precisely the quantified cρ^n bound."
+    },
+    {
+      "key": "rescaled_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive homothety scaling, local integrability, locality of weighted approximate tangents and the representation identity prove integrality of the specified restricted rescaling. Integer multiplicity transfers through Hausdorff-null sets. The domain hypotheses and measure equality match the prose exactly."
+    },
+    {
+      "key": "diagonal_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Scale and index selection simultaneously provide test-integral accuracy, mass bounds and variation control. Rescaled integrality is the declared dependency. The polar representation and exhaustion control variation on the entire fixed ball; the dense test family proves the exact convergence conclusion."
+    },
+    {
+      "key": "allard_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The corrected bad-set and finite-fibre statements match the Lean proposition. Compactly supported weighted radial tests justify the cylinder estimate; clustering genuinely reduces the number of points, and the cardinality argument makes the constants uniform. Integrality is unnecessary and is not silently used."
+    },
+    {
+      "key": "graph_fibre_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse projection on each closed graph has the stated Lipschitz constant and preserves the needed measurability properties. Disjointification identifies the fibre sums. The simple-function argument and lower-integral supremum justify the stronger conclusion for arbitrary ENNReal-valued g, including infinity."
+    },
+    {
+      "key": "flat_limit_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles dimension zero separately and correctly uses all declared dependencies and explicit sibling hypotheses. In positive dimension, integer good-fibre bounds and the graph inequality control good mass, while bad mass is bounded directly. Taking k→∞ and then δ→0 forces integer multiplicity without the printed concentration gap or circular reliance on compactness."
+    }
+  ],
+  "required_changes": []
+}

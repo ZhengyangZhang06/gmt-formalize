@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum snapshot project/GMT/Ch08/Contract.lean vs workspace Contract.lean/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+        "rg/grep 'euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|notation.*μHE' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep 'MeasurableEmbedding.lintegral_map|lintegral_map_equiv|MeasurableEmbedding.integrable_map_iff|integrable_smul_measure|ae_of_ae_map|absolutelyContinuous_smul|NullMeasurableSet.preimage|restrict_restrict|ae_restrict_of_ae_restrict_of_subset|setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory",
+        "grep 'comap_mulLeft_nhdsGT_zero|map_comap_of_surjective|tendsto_map'_iff|image_inter_preimage|image_smul' mathlib/Mathlib/{Topology/Algebra/Order/Field.lean,Order/Filter/Map.lean,Order/Filter/Tendsto.lean,Data/Set/Image.lean,Algebra/Group/Pointwise/Set/Scalar.lean}",
+        "grep 'def CountablyRectifiable|CountablyRectifiable.mono|def blowUpMap|def HasWeightedApproximateTangentSpaceAt' simongmt Chapter03/Rectifiable.lean; grep 'structure Varifold' Chapter08/Varifold.lean",
+        "grep -rn 'blowUpMap|HasWeightedApproximateTangentSpaceAt' simongmt (found Chapter04/WeightedBlowUp.lean map_inverse_blowUp_carrier, Chapter04/TangentDensity.lean hausdorff_blowUp_image / blowUp_image_inter_closedBall; #check shows they are NOT in GMT.Ch08.Submission's import closure)",
+        "python dag.json scan of lean_statement/lean_name for blowUpMap/HasWeightedApproximateTangentSpaceAt/CountablyRectifiable/rescaledMeasure; grep -rl 'intcpt_ri_' run nodes + dag.json (no match)",
+        "lake env lean Test/Assembly.lean (4 child stubs + comparator-form targets + parent proof, no sorry in parent); lake env lean Test/Children.lean and Test/Full.lean (#print axioms: propext, Classical.choice, Quot.sound only)",
+        "python3 -I lean_contract.validate_lean_statement on all 4 lean_statements (all OK)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Order/Field.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Tendsto.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/tmp/ri-decomp-1xT8jT/Test/Assembly.lean",
+        "/tmp/ri-decomp-1xT8jT/Test/Children.lean",
+        "/tmp/ri-decomp-1xT8jT/Test/Full.lean"
+      ],
+      "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract is byte-identical to the workspace Contract and Submission.\n\nEvery Mathlib lemma the children and the parent assembly need exists in the snapshot and is in the import closure of GMT.Ch08.Submission:\n- euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image, which hold for arbitrary sets;\n- Measure.restrict_apply/map_apply/restrict_restrict;\n- setIntegral_eq_integral_of_forall_compl_eq_zero, which has no integrability hypothesis;\n- MeasurableEmbedding.lintegral_map/integrable_map_iff, integrable_smul_measure, absolutelyContinuous_smul, ae_of_ae_map, NullMeasurableSet.preimage;\n- comap_mulLeft_nhdsGT_zero, map_comap_of_surjective, tendsto_map'_iff, image_inter_preimage, image_smul.\n\nSimonGMT supplies CountablyRectifiable (with .mono), blowUpMap and HasWeightedApproximateTangentSpaceAt (Chapter03/Rectifiable.lean). The analogous Chapter04 blow-up scaling lemmas are not imported by Submission, so the child proofs avoid them. No accepted DAG declaration has a matching frozen type, so nothing is reused. The new intcpt_ri_* names are unreserved.\n\nIn the scratch copy:\n- all 4 child types elaborate in comparator form;\n- the parent assembles from them with no sorry of its own;\n- full Lean proofs of all 4 children compile;\n- every declaration depends only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.integral_compactness-a1.rescaled_integral-a1",
+  "child_id": "root.integral_compactness-a1.rescaled_integral-a1.approx_tangent_similarity-a1",
+  "subproblem": {
+    "key": "approx_tangent_similarity",
+    "title": "Weighted approximate tangent planes are invariant under the similarity y ↦ ξ + t·y",
+    "statement": "Let N, n ∈ ℕ, M ⊆ ℝ^N, θ : ℝ^N → ℝ, ξ, y ∈ ℝ^N, t > 0, P ≤ ℝ^N a linear subspace, and σ(w) := ξ + t·w. Then σ^{-1}(M) has weighted approximate tangent space P at y with respect to θ∘σ if and only if M has weighted approximate tangent space P at σ(y) = ξ + t·y with respect to θ (both in the sense of Chapter03.HasWeightedApproximateTangentSpaceAt n).",
+    "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (ξ y : Euclidean N) (t : ℝ) (P : Submodule ℝ (Euclidean N)), 0 < t → (Chapter03.HasWeightedApproximateTangentSpaceAt n ((fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M) (fun w : Euclidean N ↦ θ (ξ + t • w)) y P ↔ Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t • y) P)",
+    "lean_name": "intcpt_ri_weightedApproxTangent_similarity_iff",
+    "depends_on": [],
+    "natural_proof": "Notation.\n- H^n := μHE[n] on ℝ^N = Euclidean N, and blowUpMap x r z := r^{-1}·(z − x).\n- For an arbitrary set A, ∫_A g dH^n means ∫ g d(H^n⌞A).\n- By definition, Chapter03.HasWeightedApproximateTangentSpaceAt n S θ' x P holds iff finrank P = n and, for every f ∈ C_c(ℝ^N, ℝ), ∫_{blowUpMap x r '' S} f(v)·θ'(x + r·v) dH^n(v) → θ'(x)·∫_P f dH^n along 𝓝[>] 0.\n- Put σ(w) := ξ + t·w, x := σ(y) = ξ + t·y, and m(r) := t·r.\n\n1. Reduction. Both predicates contain the conjunct finrank P = n. For f ∈ C_c(ℝ^N, ℝ) put\n   F_1(r) := ∫_{blowUpMap y r '' σ^{-1}(M)} f(v)·θ(σ(y + r·v)) dH^n(v),\n   F_2(s) := ∫_{blowUpMap x s '' M} f(v)·θ(x + s·v) dH^n(v).\nThe prescribed limits (θ∘σ)(y)·∫_P f dH^n and θ(x)·∫_P f dH^n are the same number L_f. So it suffices to show, for every f, that F_1 → L_f along 𝓝[>]0 if and only if F_2 → L_f along 𝓝[>]0.\n\n2. Equality of blow-up sets: for every r ∈ ℝ, blowUpMap y r '' σ^{-1}(M) = blowUpMap x (t·r) '' M.\n   - (⊆) Let v = r^{-1}·(w − y) with σ(w) ∈ M, and put z := σ(w) ∈ M. Then z − x = (ξ + t·w) − (ξ + t·y) = t·(w − y). So blowUpMap x (t·r) z = ((t·r)^{-1}·t)·(w − y) = (t^{-1}·r^{-1}·t)·(w − y) = r^{-1}·(w − y) = v. Here (t·r)^{-1} = t^{-1}·r^{-1} holds in ℝ even for r = 0, since 0^{-1} = 0, and t^{-1}·t = 1.\n   - (⊇) Let v = (t·r)^{-1}·(z − x) with z ∈ M, and put w := t^{-1}·(z − ξ). Then σ(w) = ξ + t·t^{-1}·(z − ξ) = z ∈ M, so w ∈ σ^{-1}(M). Moreover blowUpMap y r w = r^{-1}·(t^{-1}·(z − ξ) − y) = (r^{-1}·t^{-1})·(z − ξ − t·y) = (t·r)^{-1}·(z − (ξ + t·y)) = v.\n\n3. Equality of integrands: for all r and v, σ(y + r·v) = ξ + t·y + (t·r)·v = x + (t·r)·v (smul_add, smul_smul, add_assoc). With step 2 this gives F_1(r) = F_2(t·r) for every r ∈ ℝ, i.e. F_1 = F_2 ∘ m.\n\n4. Reparametrization of the filter.\n   - Since t > 0, comap m (𝓝[>]0) = 𝓝[>]0 (comap_mulLeft_nhdsGT_zero).\n   - m is surjective (m(t^{-1}·s) = s). So map m (𝓝[>]0) = map m (comap m (𝓝[>]0)) = 𝓝[>]0 (Filter.map_comap_of_surjective).\n   - Hence, for every filter L on ℝ: Tendsto (F_2 ∘ m) (𝓝[>]0) L ↔ Tendsto F_2 (map m (𝓝[>]0)) L ↔ Tendsto F_2 (𝓝[>]0) L (Filter.tendsto_map'_iff).\n\n5. By steps 3 and 4 with L := 𝓝 L_f, for every f: Tendsto F_1 (𝓝[>]0) (𝓝 L_f) ↔ Tendsto F_2 (𝓝[>]0) (𝓝 L_f). Together with the common conjunct finrank P = n (step 1), this proves Chapter03.HasWeightedApproximateTangentSpaceAt n (σ^{-1}(M)) (θ∘σ) y P ↔ Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t·y) P. ∎",
+    "proof_key_steps": [
+      "Both predicates have the same finrank condition. The prescribed limits coincide because (θ∘σ)(y) = θ(σ(y)).",
+      "For every r, blowUpMap y r '' σ^{-1}(M) = blowUpMap σ(y) (t·r) '' M.",
+      "σ(y + r·v) = σ(y) + (t·r)·v, hence F_1(r) = F_2(t·r) for all r.",
+      "r ↦ t·r maps 𝓝[>]0 onto 𝓝[>]0 (comap_mulLeft_nhdsGT_zero and map_comap_of_surjective). So F_1 and F_2 have the same limits along 𝓝[>]0."
+    ]
+  },
+  "audit": {
+    "key": "approx_tangent_similarity",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact type matches the prose. The inverse-similarity calculations establish equality of blow-up sets, including r = 0, and the integrands and prescribed limits coincide. Positive multiplication maps the right-neighborhood filter onto itself, proving both convergence directions. The supplied argument is complete, self-contained and non-circular."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1-approx-tangent-similarity-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1-approx-tangent-similarity-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1-approx-tangent-similarity-a1/parent-supplied-natural-proof.json"
+}

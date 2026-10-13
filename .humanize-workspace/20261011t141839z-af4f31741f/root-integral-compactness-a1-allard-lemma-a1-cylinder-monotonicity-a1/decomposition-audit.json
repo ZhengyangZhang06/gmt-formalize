@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cylinder|smoothTransition|intcpt_allard_cm_' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT",
+        "theorem (ofReal_div_of_pos|ofReal_pow|ofReal_toReal|ofReal_add_le)",
+        "theorem (integral_inter_add_sdiff|setIntegral_mono_set|setIntegral_eq_zero_of_forall_eq_zero|integral_indicator|Measure.integrableOn_of_bounded|integrableOn_const)",
+        "abs_real_inner_le_norm|theorem le_opNorm ",
+        "rg -n --files-with-matches 'intcpt_allard_cm_' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-cylinder-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-weighted-radial-monotonicity-a1/parent-child-handoff.json",
+        "/tmp/cm-decomp-v1/Full.lean",
+        "/tmp/cm-decomp-v1/Assembly.lean",
+        "/tmp/cm-independent-audit-xc7mk0ur/Challenge0.lean",
+        "/tmp/cm-independent-audit-xc7mk0ur/Challenge1.lean",
+        "/tmp/cm-independent-audit-xc7mk0ur/Challenge2.lean",
+        "/tmp/cm-independent-audit-xc7mk0ur/Challenge3.lean"
+      ],
+      "conclusion": "Verified the pinned project/mathlib revisions and byte compatibility of the contract and relevant runtime sources. The project search found no existing cylinder lemma; its sole match was an unrelated README entry. The inspected libraries supply the stated smooth-transition, differentiation, dominated-convergence, finite-measure integration and ENNReal facts. Independently reran Lean: all four child proofs compile with only propext, Classical.choice and Quot.sound; all four freshly generated comparator challenges elaborate without child implementations. Exact types match the proposed contracts, and the parent assembly matches the immutable selected handoff. Its remaining sorryAx in Full.lean comes solely from the existing weighted-radial sibling stub. The split is appropriate: the four independent analytic obligations, together with that correctly directed sibling dependency, establish the selected parent using C = 2^(n+1)(M₀+1). Dependency paths are acyclic. All names are bare identifiers, with no reservation conflicts in the DAG or declarations across 286 distinct git ref tips. Euclidean and continuous-linear-map norms have the intended instances; no Matrix IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cylinder_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean type agree, including the dimension-independent constant and all derivative bounds. The proof constructs a globally bounded smooth-transition derivative, sets M₀ = 4L, and verifies smoothness and both plateaux. Self-adjointness and idempotence give the required inner-product identity; the nonzero-derivative case gives ‖q(z−y)‖ ≤ 2τ and the exact M₀/τ estimate. Every step is justified without circular reliance."
+    },
+    {
+      "key": "radial_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches every stated property. A > 1 ensures A²−1 > 0; the explicit smooth-transition composition is C¹, antitone, bounded between zero and one, and satisfies both endpoint-inclusive plateau conditions. This is a complete independent construction."
+    },
+    {
+      "key": "cutoff_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the Bochner-integral conclusion match the Lean proposition. The proof establishes measurability, domination by the integrable indicator of B_R, and pointwise convergence. Boundary points of B_t retain cutoff value one; outside B_t, A_j² → 1 gives eventual vanishing. Dominated convergence requires no additional global finiteness or measure assumptions."
+    },
+    {
+      "key": "cylinder_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including unrestricted τ and E. Measurability, finite cylinder masses and integrability are established before the integral comparisons. Positive σ and ρ justify division. The conversion uses ofReal_add_le, so it remains valid for negative E without an unstated positivity hypothesis. The supplied argument proves the exact conclusion independently."
+    }
+  ],
+  "required_changes": []
+}

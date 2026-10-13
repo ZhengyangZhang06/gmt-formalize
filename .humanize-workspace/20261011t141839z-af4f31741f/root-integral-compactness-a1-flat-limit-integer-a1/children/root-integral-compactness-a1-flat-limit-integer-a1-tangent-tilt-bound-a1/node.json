@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.tangent_tilt_bound-a1",
+  "parent_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "depth": 3,
+  "title": "Tangent planes at points with small tilt excess are close to P (step 7)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, W an n-varifold on U, P, T ∈ G(N,n), y ∈ ℝ^N, θ ≥ 1 and ε ≥ 0. Suppose W has tangent plane T with multiplicity θ at y (HasTangentPlane W y T θ) and ∫⁻_{B_ρ(y)×G(N,n)} ofReal(t_P(S)) dW ≤ ofReal(ερ^n) for every ρ ∈ (0,1). Then |p_T v − p_P v| ≤ (ε/ω)|v| for every v ∈ ℝ^N, with ω := (unitBallVolume n).toReal. Notation: H^n := μHE[n]; G(N,n) := Grassmannian N n; p_S := Grassmannian.project S (orthogonal projection onto S.plane); t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖ (operator norm of p_S − p_P); μ_W := W.weight; ‖δW‖ := variationMeasure W; v(T) := planeVarifoldMeasure T; B_ρ(y) := closedBall y ρ, B°_ρ(y) := ball y ρ; unitBallVolume n is the extended-real volume of the open unit ball of ℝ^n; ofReal := ENNReal.ofReal.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P T : Grassmannian N n) (y : Euclidean N) (θ ε : ℝ), HasTangentPlane W y T θ → 1 ≤ θ → 0 ≤ ε → (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) → ∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ ε / (unitBallVolume n).toReal * ‖v‖",
+  "lean_name": "intcpt_fli_tangent_tilt_bound",
+  "depends_on": [
+    "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.tilt_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.tilt_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-tangent-tilt-bound-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.first_variation_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "First-variation bound |δW(X)| ≤ sup|X|·‖δW‖(K) for C¹ fields supported in a compact K ⊆ U",
+  "statement": "Let W be an n-varifold on U ⊆ ℝ^N with locally bounded first variation, K ⊆ U compact, X : ℝ^N → ℝ^N a C¹ vector field with tsupport X ⊆ K, and B ∈ ℝ with |X(z)| ≤ B for all z. Then |δW(X)| ≤ B·‖δW‖(K), i.e. ofReal|W.firstVariation X| ≤ ofReal B · variationMeasure W K in [0,∞].",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (X : Euclidean N → Euclidean N) (K : Set (Euclidean N)) (B : ℝ), W.HasLocallyBoundedFirstVariation → ContDiff ℝ 1 X → IsCompact K → K ⊆ U → tsupport X ⊆ K → (∀ z, ‖X z‖ ≤ B) → ENNReal.ofReal |W.firstVariation X| ≤ ENNReal.ofReal B * variationMeasure W K",
+  "lean_name": "intcpt_allard_first_variation_le_sup_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-first-variation-bound-a1-a1"
+}

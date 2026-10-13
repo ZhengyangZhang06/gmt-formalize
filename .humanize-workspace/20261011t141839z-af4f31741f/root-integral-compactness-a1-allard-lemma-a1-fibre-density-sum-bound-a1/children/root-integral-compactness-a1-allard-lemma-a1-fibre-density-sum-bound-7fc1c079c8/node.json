@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.separated_sum_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1",
+  "depth": 4,
+  "title": "Density sum over a fibre with at least two points (Simon Ch. 8, 5.11(∗) from (8))",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N, P ∈ G(N,n), x ∈ ℝ^N, s ⊆ ℝ^N finite, Θ : ℝ^N → [0,∞], K, c, δ, ε ∈ ℝ and M ∈ ℕ, with K ≥ 0, c ≥ 0, 0 < δ ≤ 1/2, 0 < ε ≤ δ⁴. Let ω_n := unitBallVolume n, ω := ω_n.toReal, A := 2 + 2c + 2c/ω + 2MK/ω, and assume Aδ ≤ 1 and 2 ≤ #s ≤ M. With U^t_r(y) := B_r(y) ∩ {z : |(z − y) − p_P(z − y)| < t} (closed balls), assume: for every y ∈ s, |y − x| < ε and Θ(y) ≤ (e^ε·μ(U^{4τ}_σ(y))/σ^n + Kεσ/τ)/ω_n for all τ ∈ (0,1/4], σ ∈ (0,1); and (CB) for all σ, τ ∈ ℝ with 0 < σ ≤ δ², 2δ²σ ≤ τ and 4τ ≤ |y − y'| for all distinct y, y' ∈ s: Σ_{y∈s} μ(U^τ_σ(y))/σ^n ≤ (1 + cδ²)μ(B_1(x)) + cδ². Then Σ_{y∈s} Θ(y) ≤ (1 + δ)μ(B_1(x))/ω_n + δ in [0,∞].",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞) (K c δ ε : ℝ) (M : ℕ), 0 ≤ K → 0 ≤ c → 0 < δ → δ ≤ 1 / 2 → 0 < ε → ε ≤ δ ^ 4 → (2 + 2 * c + 2 * c / (unitBallVolume n).toReal + 2 * (M : ℝ) * K / (unitBallVolume n).toReal) * δ ≤ 1 → 2 ≤ s.card → s.card ≤ M → (∀ y ∈ s, ‖y - x‖ < ε ∧ ∀ τ σ : ℝ, 0 < τ → τ ≤ 1 / 4 → 0 < σ → σ < 1 → Θ y ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) + ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n) → (∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) + ENNReal.ofReal (c * δ ^ 2)) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ",
+  "lean_name": "intcpt_allard_fdsb_separated_sum_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-7fc1c079c8-a1"
+}

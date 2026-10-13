@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Integral varifolds have integer density ≥ 1 almost everywhere (step B0)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N and V an n-varifold on U (so U is open). If V is integral (IsIntegral V: IsVarifoldOf V M θ for some M, θ with θ(x) ∈ ℕ for H^n-a.e. x ∈ M), then for μ_V-almost every x there is an integer k ≥ 1 such that the n-dimensional density Θ^n(μ_V, x) exists and equals k (HasDensity n μ_V x k).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), IsIntegral V → ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞)",
+  "lean_name": "intcpt_integral_density_integer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-a1"
+}
