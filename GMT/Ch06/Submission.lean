@@ -1557,6 +1557,94 @@ theorem Submission.deformation_imcomb_weight_change : ∀ (N k : ℕ) (E : Set (
         rw [lintegral_add_left' hmeas, lintegral_const_mul' _ _ enorm_ne_top]
         ring
 
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) of two carriers agree on their
+overlap, for arbitrary positive multiplicities.  As in Ch. 3, Remark 1.8(1), the overlap is cut
+into pieces on which the multiplicities have a positive lower bound: a weight integrable on
+`M ∩ K` for every compact `K` is `Hᵏ⌞M`-a.e. measurable (`ℝ^N = ⋃ₘ B̄ₘ(0)`), so the sets
+`E j = M₁ ∩ {θ₁ ≥ 1/(j+1)} ∩ M₂ ∩ {θ₂ ≥ 1/(j+1)}` are `Hᵏ`-null-measurable, they exhaust
+`M₁ ∩ M₂`, and `Hᵏ(E j ∩ K) ≤ (j+1) ∫_{M₁ ∩ K} θ₁ dHᵏ < ∞` by Chebyshev.  For `Hᵏ`-a.e.
+`x ∈ E j`, a tangent space of `(M₁, θ₁)` at `x` is one of `(E j, θ₁)`
+(`deformation_imcomb_subset_locality`), hence of `(E j, θ₂)`
+(`deformation_imcomb_weight_change`), hence of `(M₂, θ₂)`; a countable union over `j` gives
+the claim. -/
+theorem Submission.deformation_imcomb_tangent_overlap :
+    ∀ (N k : ℕ) (M₁ M₂ : Set (Eucl N)) (θ₁ θ₂ : Eucl N → ℝ),
+      NullMeasurableSet M₁ (μHE[k] : Measure (Eucl N)) →
+      NullMeasurableSet M₂ (μHE[k] : Measure (Eucl N)) →
+      (∀ x ∈ M₁, 0 < θ₁ x) → (∀ x ∈ M₂, 0 < θ₂ x) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₁ (M₁ ∩ K) (μHE[k] : Measure (Eucl N))) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₂ (M₂ ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl N),
+        HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q →
+          HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q := by
+  intro N k M₁ M₂ θ₁ θ₂ hM₁ hM₂ hpos₁ hpos₂ hint₁ hint₂
+  -- Superlevel sets `M ∩ {θ ≥ t}` of a locally integrable weight are null-measurable: `θ` is
+  -- integrable on each `M ∩ B̄ₘ(0)`, hence a.e.-strongly measurable on `M`.
+  have hsup : ∀ (M : Set (Eucl N)) (θ : Eucl N → ℝ),
+      NullMeasurableSet M (μHE[k] : Measure (Eucl N)) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ t : ℝ, NullMeasurableSet (M ∩ {y | t ≤ θ y}) (μHE[k] : Measure (Eucl N)) := by
+    intro M θ hM hint t
+    have hθ : AEStronglyMeasurable θ ((μHE[k] : Measure (Eucl N)).restrict M) := by
+      rw [← iUnion_inter_closedBall_nat M 0, aestronglyMeasurable_iUnion_iff]
+      exact fun m => (hint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+    obtain ⟨g, hg, hθg⟩ := hθ
+    have hθg' : ∀ᵐ y ∂(μHE[k] : Measure (Eucl N)), y ∈ M → θ y = g y :=
+      (ae_restrict_iff'₀ hM).1 hθg
+    have hgt : NullMeasurableSet (M ∩ {y | t ≤ g y}) (μHE[k] : Measure (Eucl N)) :=
+      hM.inter (measurableSet_le measurable_const hg.measurable).nullMeasurableSet
+    refine hgt.congr (eventuallyEqSet_iff.2 ?_)
+    filter_upwards [hθg'] with y hy
+    simp only [mem_inter_iff, mem_ofPred_eq]
+    exact ⟨fun h => ⟨h.1, (hy h.1).symm ▸ h.2⟩, fun h => ⟨h.1, hy h.1 ▸ h.2⟩⟩
+  -- The truncated overlaps `E j`, on which both weights are `≥ 1/(j+1)`, exhaust `M₁ ∩ M₂`.
+  set E : ℕ → Set (Eucl N) := fun j =>
+    (M₁ ∩ {y | 1 / ((j : ℝ) + 1) ≤ θ₁ y}) ∩ (M₂ ∩ {y | 1 / ((j : ℝ) + 1) ≤ θ₂ y}) with hE
+  have hU : M₁ ∩ M₂ = ⋃ j, E j := by
+    ext y
+    simp only [hE, mem_iUnion, mem_inter_iff, mem_ofPred_eq]
+    constructor
+    · rintro ⟨h₁, h₂⟩
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt (lt_min (hpos₁ y h₁) (hpos₂ y h₂))
+      exact ⟨j, ⟨h₁, hj.le.trans (min_le_left _ _)⟩, h₂, hj.le.trans (min_le_right _ _)⟩
+    · rintro ⟨j, ⟨h₁, -⟩, h₂, -⟩
+      exact ⟨h₁, h₂⟩
+  have hsub₁ : ∀ j, E j ⊆ M₁ := fun j y hy => hy.1.1
+  have hsub₂ : ∀ j, E j ⊆ M₂ := fun j y hy => hy.2.1
+  have hEm : ∀ j, NullMeasurableSet (E j) (μHE[k] : Measure (Eucl N)) := fun j =>
+    (hsup M₁ θ₁ hM₁ hint₁ _).inter (hsup M₂ θ₂ hM₂ hint₂ _)
+  -- `Hᵏ⌞E j` is locally finite: Chebyshev's inequality for `θ₁ ≥ 1/(j+1)` on `E j ∩ K`.
+  have hfin : ∀ j, ∀ K : Set (Eucl N), IsCompact K →
+      (μHE[k] : Measure (Eucl N)) (E j ∩ K) < ∞ := by
+    intro j K hK
+    have hc : (0 : ℝ≥0∞) < ENNReal.ofReal (1 / ((j : ℝ) + 1)) :=
+      ENNReal.ofReal_pos.2 (by positivity)
+    have hsub : E j ∩ K ⊆
+        {y | ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ ‖θ₁ y‖ₑ} ∩ (M₁ ∩ K) := by
+      rintro y ⟨⟨⟨hy, hyc⟩, -⟩, hyK⟩
+      refine ⟨?_, hy, hyK⟩
+      simp only [mem_ofPred_eq] at hyc ⊢
+      rw [Real.enorm_eq_ofReal_abs]
+      exact ENNReal.ofReal_le_ofReal (hyc.trans (le_abs_self _))
+    have hcheb := mul_meas_ge_le_lintegral₀ (hint₁ K hK).aestronglyMeasurable.enorm
+      (ENNReal.ofReal (1 / ((j : ℝ) + 1)))
+    exact ((measure_mono hsub).trans (Measure.le_restrict_apply _ _)).trans_lt
+      (ENNReal.lt_top_of_mul_ne_top_right (hcheb.trans_lt (hint₁ K hK).hasFiniteIntegral).ne
+        hc.ne')
+  -- On each `E j`: `(M₁, θ₁) ⇒ (E j, θ₁) ⇒ (E j, θ₂) ⇒ (M₂, θ₂)`; then glue over `j`.
+  rw [hU, ae_restrict_iUnion_iff]
+  intro j
+  have h₁ := Submission.deformation_imcomb_subset_locality N k (E j) M₁ θ₁ (hsub₁ j) (hEm j)
+    hM₁ hint₁
+  have h₁₂ := Submission.deformation_imcomb_weight_change N k (E j) θ₁ θ₂ (hEm j) (hfin j)
+    (fun x hx => hpos₁ x (hsub₁ j hx))
+    (fun K hK => (hint₁ K hK).mono_set (inter_subset_inter_left _ (hsub₁ j)))
+    (fun K hK => (hint₂ K hK).mono_set (inter_subset_inter_left _ (hsub₂ j)))
+  have h₂ := Submission.deformation_imcomb_subset_locality N k (E j) M₂ θ₂ (hsub₂ j) (hEm j)
+    hM₂ hint₂
+  filter_upwards [h₁, h₁₂, h₂] with x hx₁ hx₁₂ hx₂ Q hQ
+  exact (hx₂ Q).2 (hx₁₂ Q ((hx₁ Q).1 hQ))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
