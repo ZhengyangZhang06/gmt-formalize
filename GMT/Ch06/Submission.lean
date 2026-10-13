@@ -501,6 +501,18 @@ theorem Submission.slicing_mb_wn_norm_sq_eq_onb_sum :
   · exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr k.factorial_ne_zero) key
   · exact Finset.sum_nonneg fun I _ => by split_ifs <;> positivity
 
+/-- Full tuple sum of squared coefficients in the standard basis `e` of `ℝ^m`: for a `j`-covector
+`γ`, `∑_i γ(e_{i 0}, …, e_{i (j-1)})² = j! |γ|²`, the sum over all index maps `i : Fin j → Fin m`.
+The counting identity turns the left side into `j! ∑_{I increasing} γ(e_I)²`, and the
+orthonormal-basis formula for `|γ|²`, applied to `e` itself, identifies that sum with `|γ|²`. -/
+theorem Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul :
+    ∀ (m j : ℕ) (γ : Covector (Eucl m) j),
+      ∑ i : Fin j → Fin m, (γ (fun k => EuclideanSpace.basisFun (Fin m) ℝ (i k))) ^ 2 =
+        (j.factorial : ℝ) * covectorEuclideanNorm γ ^ 2 := by
+  intro m j γ
+  rw [Submission.slicing_mb_wn_norm_sq_eq_onb_sum m j (EuclideanSpace.basisFun (Fin m) ℝ) γ]
+  exact Submission.slicing_mb_wn_sq_sum_eq_factorial_mul m j (EuclideanSpace.basisFun (Fin m) ℝ) γ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
