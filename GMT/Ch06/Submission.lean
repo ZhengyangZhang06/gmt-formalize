@@ -1780,6 +1780,47 @@ theorem Submission.ind_const_multiple_integer :
     exact hc ⟨k, (hx hxU).trans hk⟩
   exact (hU.measure_pos volume hne).ne' hnull
 
+/-- **Integrality of a planar weak limit of integer multiplicity cycles** (Simon Ch. 6, Proof of
+8.2, displays (8)–(10), and Remark 3.12).  Let `Q = span τ` be the `(m + 1)`-plane spanned by an
+orthonormal `τ`, and let `Y_k` be integer multiplicity cycles with `sup_k M_{B_2(0)}(Y_k) < ∞` and
+`Y_k ⇀ c[[Q]]` on forms supported in `B_2(0)`.  Then `c ∈ ℤ`.  Take the coordinates
+`p(y) = (⟪τ_i, y⟫)_i` and the distance `d` to `Q`.  Slicing by `d` localizes the `Y_k` to integer
+multiplicity currents `Z_k` with bounded mass and boundary mass on the cylinder
+`{|p| < 1, d < 3/4}` (`ind_pi_localized_cycles`).  Their push-forwards by `p` converge weakly to
+`c[[B_1(0)]]` in `ℝ^{m+1}` (`ind_pi_projected_limit`).  So `c[[B_1(0)]]` is integer multiplicity by
+the top-dimensional case of 8.2, and `c ∈ ℤ` (`ind_const_multiple_integer`). -/
+theorem Submission.ind_plane_multiplicity_integer : SlicingTheorem → LipschitzPushforwardIntegerMultiplicity → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R)) → (LipschitzPushforwardIntegerMultiplicity → ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (X : GeometricCurrentOn U (k + 1)) (f : Eucl P → Eucl Q), IsIntegerMultiplicity X → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → MapsTo f U V → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn V (k + 1), IsIntegerMultiplicity S ∧ (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) ∧ (∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η) ∧ ∀ c : ℝ, 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q), S.massOn W ≤ ENNReal.ofReal (c ^ (k + 1)) * X.massOn (f ⁻¹' W ∩ U) ∧ S.boundary.massOn W ≤ ENNReal.ofReal (c ^ k) * X.boundary.massOn (f ⁻¹' W ∩ U)) → (∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T) → ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (c : ℝ) (Y : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), Orthonormal ℝ τ → (∀ k, IsIntegerMultiplicity (Y k)) → (∀ k, (Y k).boundary = 0) → (⨆ k, (Y k).massOn (ball (0 : Eucl P) 2)) < ∞ → (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ ball (0 : Eucl P) 2 → Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))) → ∃ k : ℤ, c = k := by
+  intro hST hLPF hRWL hSPF hTOP P m τ c Y hτ hYim hYbd hYmass hYlim
+  -- Coordinates `p(y) = (⟪τ_i, y⟫)_i` with respect to `τ`, and the distance `d` to `Q = span τ`.
+  obtain ⟨p, hp⟩ : ∃ p : Eucl P →L[ℝ] Eucl (m + 1), ∀ y i, p y i = inner ℝ (τ i) y :=
+    ⟨(EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.toContinuousLinearMap ∘L
+      ContinuousLinearMap.pi fun i => innerSL ℝ (τ i), fun y i => by simp⟩
+  obtain ⟨d, hd⟩ : ∃ d : Eucl P → ℝ, ∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖ :=
+    ⟨_, fun _ => rfl⟩
+  -- Steps 1–7 (printed (8)–(9)): slicing by `d` localizes the `Y_k` to the cylinder.
+  obtain ⟨γ, Z, hγ0, hγ, hZim, hZsupp, hZmass, hZlim⟩ :=
+    Submission.ind_pi_localized_cycles hST hRWL P m τ c Y p d hτ hp hd hYim hYbd hYmass hYlim
+  -- The current `S = c[[B_1(0)]]` in `ℝ^{m+1}`, represented by `(Lᵐ⁺¹ ⌞ B_1(0), c e₁ ∧ ⋯ ∧ eₘ₊₁)`.
+  obtain ⟨S, hS⟩ := Submission.ind_pi_constant_vector_current (m + 1) (m + 1)
+    (ball (0 : Eucl (m + 1)) 1) (volume.restrict (ball (0 : Eucl (m + 1)) 1))
+    (c • simpleNVector fun i => EuclideanSpace.single i (1 : ℝ))
+    fun K hK => (Measure.restrict_apply_le _ _).trans_lt hK.measure_lt_top
+  have hSval : ∀ ω : TestFormOn (ball (0 : Eucl (m + 1)) 1) (m + 1), S ω =
+      c * ∫ x in ball (0 : Eucl (m + 1)) 1, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume := by
+    intro ω
+    rw [(hS ω).2, ← integral_const_mul]
+    simp only [smul_apply, simpleNVector_apply, smul_eq_mul]
+  -- Steps 8–9 (printed (10)): the push-forwards `p_# Z_k` converge weakly to `S`.
+  obtain ⟨S', hS'im, hS'mass, hS'conv⟩ := Submission.ind_pi_projected_limit hLPF hSPF P m τ c γ
+    p d Z S hτ hp hd hγ0 hγ hZim hZsupp hZmass hZlim hSval
+  -- Step 10 (Remark 3.12): by the top-dimensional case of 8.2, `S` is integer multiplicity.
+  have hSim : IsIntegerMultiplicity S :=
+    hTOP m (ball (0 : Eucl (m + 1)) 1) isOpen_ball S' S hS'im hS'mass hS'conv
+  -- Step 11: an integer multiplicity `c[[B_1(0)]]` has `c ∈ ℤ`.
+  exact Submission.ind_const_multiple_integer m (ball (0 : Eucl (m + 1)) 1) c S isOpen_ball
+    ⟨0, mem_ball_self one_pos⟩ hSim hSval
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
