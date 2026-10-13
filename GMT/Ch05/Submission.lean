@@ -458,6 +458,66 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Uniform bounds for a `C¹` scalar function on a compact convex set** (the scalar step of the
+coefficient bounds in the linear higher-regularity part of Simon 7.1).  Let `0 < α ≤ 1`, `U ⊆ ℝⁿ`
+open, `K ⊆ U` compact and convex, and `f` be `C¹` on `U`.  Then some `S ≥ 0` has `|f(x)| ≤ S` and
+`|f(x) − f(y)| ≤ S |x − y|^α` for all `x, y ∈ K`.
+Proof: `f` and `Df` are continuous, hence bounded, on the compact `K`; the mean value inequality
+on the convex `K` gives `|f(x) − f(y)| ≤ S₁ |x − y|`; and with `D = diam K`,
+`t = t^α t^{1−α} ≤ D^{1−α} t^α` for `0 ≤ t ≤ D`. -/
+theorem dohr_eb_lhr_cub_scalar_c1_bounds : ∀ (n : ℕ) (α : ℝ) (U K : Set (Rn n)) (f : Rn n → ℝ), 0 < α → α ≤ 1 → IsOpen U → IsCompact K → Convex ℝ K → K ⊆ U → ContDiffOn ℝ 1 f U → ∃ S : ℝ, 0 ≤ S ∧ ∀ x ∈ K, ∀ y ∈ K, |f x| ≤ S ∧ |f x - f y| ≤ S * ‖x - y‖ ^ α := by
+  intro n α U K f hα0 hα1 hU hK hKc hKU hf
+  -- Step 1: `f` and `Df` are continuous on `K`, and `f` is differentiable at every point of `K`.
+  have hfc : ContinuousOn f K := hf.continuousOn.mono hKU
+  have hdfc : ContinuousOn (fderiv ℝ f) K := (hf.continuousOn_fderiv_of_isOpen hU le_rfl).mono hKU
+  have hfd : ∀ x ∈ K, DifferentiableAt ℝ f x := fun x hx =>
+    (hf.differentiableOn one_ne_zero x (hKU hx)).differentiableAt (hU.mem_nhds (hKU hx))
+  -- Step 2: `|f| ≤ S0` and `‖Df‖ ≤ S1` on the compact set `K`.
+  obtain ⟨S0, hS0⟩ := hK.exists_bound_of_continuousOn hfc
+  obtain ⟨S1, hS1⟩ := hK.exists_bound_of_continuousOn hdfc
+  -- Step 3: mean value inequality on the convex set `K`.
+  have hlip : ∀ x ∈ K, ∀ y ∈ K, |f x - f y| ≤ max S1 0 * ‖x - y‖ := by
+    intro x hx y hy
+    have h := hKc.norm_image_sub_le_of_norm_fderiv_le (C := max S1 0) hfd
+      (fun z hz => (hS1 z hz).trans (le_max_left _ _)) hy hx
+    rwa [Real.norm_eq_abs] at h
+  -- Step 4: `‖x - y‖ ≤ D := diam K` on `K`.
+  have hdist : ∀ x ∈ K, ∀ y ∈ K, ‖x - y‖ ≤ Metric.diam K := fun x hx y hy => by
+    rw [← dist_eq_norm]
+    exact Metric.dist_le_diam_of_mem hK.isBounded hx hy
+  -- Step 5: `t ≤ D^(1-α) t^α` for `0 ≤ t ≤ D`.
+  have helem : ∀ t : ℝ, 0 ≤ t → t ≤ Metric.diam K →
+      t ≤ Metric.diam K ^ (1 - α) * t ^ α := by
+    intro t ht0 htD
+    rcases ht0.eq_or_lt with rfl | htpos
+    · rw [Real.zero_rpow hα0.ne', mul_zero]
+    · have h1 : t ^ α * t ^ (1 - α) = t := by
+        rw [← Real.rpow_add htpos, show α + (1 - α) = 1 by ring, Real.rpow_one]
+      have h2 : t ^ (1 - α) ≤ Metric.diam K ^ (1 - α) :=
+        Real.rpow_le_rpow ht0 htD (by linarith)
+      calc t = t ^ α * t ^ (1 - α) := h1.symm
+        _ ≤ t ^ α * Metric.diam K ^ (1 - α) :=
+          mul_le_mul_of_nonneg_left h2 (Real.rpow_nonneg ht0 _)
+        _ = Metric.diam K ^ (1 - α) * t ^ α := mul_comm _ _
+  -- Steps 6-7: `S := max (max S0 0) (max S1 0 * D^(1-α))`.
+  refine ⟨max (max S0 0) (max S1 0 * Metric.diam K ^ (1 - α)),
+    (le_max_right _ _).trans (le_max_left _ _), ?_⟩
+  intro x hx y hy
+  constructor
+  · calc |f x| = ‖f x‖ := (Real.norm_eq_abs _).symm
+      _ ≤ S0 := hS0 x hx
+      _ ≤ max S0 0 := le_max_left _ _
+      _ ≤ _ := le_max_left _ _
+  · calc |f x - f y| ≤ max S1 0 * ‖x - y‖ := hlip x hx y hy
+      _ ≤ max S1 0 * (Metric.diam K ^ (1 - α) * ‖x - y‖ ^ α) :=
+        mul_le_mul_of_nonneg_left (helem _ (norm_nonneg _) (hdist x hx y hy)) (le_max_right _ _)
+      _ = (max S1 0 * Metric.diam K ^ (1 - α)) * ‖x - y‖ ^ α := (mul_assoc _ _ _).symm
+      _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.rpow_nonneg (norm_nonneg _) _)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
