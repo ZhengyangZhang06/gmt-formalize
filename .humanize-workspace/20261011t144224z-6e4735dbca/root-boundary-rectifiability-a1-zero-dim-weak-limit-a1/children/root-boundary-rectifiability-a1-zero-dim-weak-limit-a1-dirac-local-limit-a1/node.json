@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1.dirac_local_limit-a1",
+  "parent_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1",
+  "depth": 3,
+  "title": "Weak limits of bounded integer Dirac sums are local Dirac sums",
+  "statement": "Let P ∈ ℕ and U, W ⊆ ℝ^P = Eucl P with closure W compact. Let X_j (j ∈ ℕ), X ∈ D_0(U) (GeometricCurrentOn U 0) with X_j ⇀ X weakly (WeaklyConvergesOn Xj X). Let N_j ⊆ ℝ^P and c_j : ℝ^P → ℤ (j ∈ ℕ), and Λ ∈ ℝ. Assume, for every j: (1) c_j(x) ≠ 0 for x ∈ N_j; (2) N_j ∩ W is finite; (3) Σ_{x∈S}|c_j(x)| ≤ Λ for every finite S ⊆ N_j ∩ W; (4) X_j(ω) = ∑ᶠ_{x∈N_j} c_j(x)·ω(x)(![]) for every ω ∈ D⁰(U) (TestFormOn U 0) with tsupport ω ⊆ W. Then there are a finite set D ⊆ W (a Finset) and a : ℝ^P → ℤ with X(ω) = Σ_{x∈D} a(x)·ω(x)(![]) for every ω ∈ D⁰(U) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P : ℕ) (U W : Set (Eucl P)) (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0) (N : ℕ → Set (Eucl P)) (c : ℕ → Eucl P → ℤ) (Λ : ℝ), IsCompact (closure W) → WeaklyConvergesOn Xj X → (∀ j, ∀ x ∈ N j, c j x ≠ 0) → (∀ j, (N j ∩ W).Finite) → (∀ j (S : Finset (Eucl P)), (↑S : Set (Eucl P)) ⊆ N j ∩ W → ∑ x ∈ S, |(c j x : ℝ)| ≤ Λ) → (∀ j (ω : TestFormOn U 0), tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W → Xj j ω = ∑ᶠ x ∈ N j, (c j x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]) → ∃ (D : Finset (Eucl P)) (a : Eucl P → ℤ), (↑D : Set (Eucl P)) ⊆ W ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W → X ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]",
+  "lean_name": "br_zd_dirac_local_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-zero-dim-weak-limit-a1-dirac-local-limit-a1-a1"
+}

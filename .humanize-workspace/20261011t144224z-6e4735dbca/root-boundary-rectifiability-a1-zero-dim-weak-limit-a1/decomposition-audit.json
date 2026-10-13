@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (TestFormOnConverges|WeaklyConvergesOn)|structure GeometricCurrentOn|def (massAdmissibleOn|covectorEuclideanNorm|massOn|simpleNVector|HasWeightedApproximateTangentSpaceAt|CountablyRectifiable)|theorem (le_massOn|tsupport_eq|euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton)|def blowUpMap",
+        "theorem (le_restrict_apply|setIntegral_finset|integrableOn_singleton|integrableOn_finite_biUnion|IsCompact.tendsto_subseq)|finprod_mem_eq_prod_of_subset|countable_iff_exists_subset_range|isCompact_univ_pi|norm_iteratedFDeriv_zero",
+        "theorem isCompact_univ_pi",
+        "^def (validate_lean_statement|contract_scope|child_modules)|NodeChallenge|extra_import|namespace Submission",
+        "br_zd_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/zd_independent_audit_mqwgt7wf/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/zd_independent_audit_mqwgt7wf/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/BigOperators/Finprod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-zero-dim-weak-limit-a1/parent-child-handoff.json",
+        "/tmp/zd_independent_audit_mqwgt7wf/Types.lean",
+        "/tmp/zd_independent_audit_mqwgt7wf/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "Verified pinned project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d and SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. The imported Submission source matches the frozen contract. Relevant definitions and counting-measure, integration, bump-function and compactness facts support the supplied arguments. All four exact one-line propositions passed lexical validation and fresh independent elaboration in comparator scope without child implementations. Fresh compilation of the supplied child proofs and comparator targets reported only propext, Classical.choice and Quot.sound. Conditional assembly also compiled with the exact frozen patching statement supplied as an explicit hypothesis. The split appropriately establishes this selected parent: representation and mass bounds feed local extraction, finite Dirac integrality supplies local witnesses, and the existing patching dependency concludes. Dependencies are correctly directed and acyclic. All four names are bare identifiers with no reservations found in other DAG branches. No implementation-dependent alias or matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dirac_repr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean type exactly matches the prose for arbitrary U. The proof establishes local finiteness from positive integer multiplicities and integrability, upgrades almost-everywhere orientation to pointwise orientation using the absence of nonempty H⁰-null sets, constructs nonzero integer coefficients, and justifies both integral and finsum reduction to the finite supported set. It is complete and non-circular."
+    },
+    {
+      "key": "dirac_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely the stated hypotheses; openness of U and N ⊆ U are unnecessary. Local finiteness supplies isolating balls, and disjoint signed bumps produce an admissible test form whose evaluation is the required sum of absolute coefficients. The zero-dimensional coefficient norm is correctly identified with absolute evaluation. Empty S, zero coefficients and P = 0 are covered."
+    },
+    {
+      "key": "finite_dirac_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the finite-sum existence statement, including arbitrary U and potentially zero coefficients. The proof constructs the sequentially continuous current, removes zero coefficients, and verifies every rectifiable-triple condition. The piecewise orientation is measurable, and the explicit eventually-constant blow-up integral proves the weighted tangent condition. No parent or sibling result is needed."
+    },
+    {
+      "key": "dirac_local_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the prose without additional openness or containment assumptions. The empty-set bound gives Λ ≥ 0; nonzero integer coefficients bound atom counts. Padding and compact-product extraction provide one subsequence independent of the test form. Weak convergence identifies the limit, points outside W vanish, and grouping collisions produces integer coefficients, including cancellation. The supplied proof is complete and independent of the other children."
+    }
+  ],
+  "required_changes": []
+}
