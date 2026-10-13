@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec7b14497399f019cfb834862063cf1cae0649f9490d281a67367eb23cc15765",
+  "git_delta": {
+    "base_commit": "c0b849fc81619e18bffdd91ca35cefb1e7303332",
+    "candidate_commit": "ba63d93691ac4515b1bc9225dd00f0137babb72d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "pit_ril_diffQuot_integral_tendsto",
+    "diff_sha256": "9b6fe5fd5cb57343bd928f90aedab97144a48324b459250a5b02cd7b1c28655b",
+    "source_sha256": "b2bb6163a47f63f0431101e9feed87a0c804a36e11d527dd3316ceb5bd6cf711",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pit_ril_diffQuot_integral_tendsto",
+      "statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (b : Euclid n) (f : Euclid P → ℝ) (R : ℝ), HasFDerivAt F L b → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
