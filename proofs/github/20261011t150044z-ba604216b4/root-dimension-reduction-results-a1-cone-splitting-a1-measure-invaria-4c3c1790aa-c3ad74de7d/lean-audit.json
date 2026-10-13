@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ad8d38c6ac854ec282edbd63f89e82327527bb9c22dd7410d23ebc25371e46e7",
+  "git_delta": {
+    "base_commit": "a4985b8f096fbe795a55747ca612d1cd13796ce7",
+    "candidate_commit": "a243c05352fb1eff492fec6420918b29098095d8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_mi_hasMassDensity_unique",
+    "diff_sha256": "66b3dc0694af9ad45e3da28ade2712e1f7987478783e35040a6d6947631ab38b",
+    "source_sha256": "57c72417a7b01c5e58ef9841d8806a06cff7bf3cd16f735dd66f3c0af3a33cf1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_mi_hasMassDensity_unique",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ θ' : ℝ), HasMassDensity T x θ → HasMassDensity T x θ' → θ = θ'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
