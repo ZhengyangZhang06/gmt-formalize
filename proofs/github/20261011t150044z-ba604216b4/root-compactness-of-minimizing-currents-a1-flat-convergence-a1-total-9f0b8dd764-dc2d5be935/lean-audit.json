@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "db7e943db80b3d37811b6470de289df23bac52d1a2aeb473b056efaede54ff28",
+  "git_delta": {
+    "base_commit": "9b70dc53250d82917115326ac43464d2945c7a1b",
+    "candidate_commit": "fd91c138534d0e78d1c7ee76bfc745bd35d967c4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_tb_massOn_sub_le",
+    "diff_sha256": "b9b06fa028c4d13853ec446f2b7ffb8576d59fa55b385782f9491da06222fe16",
+    "source_sha256": "5980c388cd2c27f69170bdccc3d327fb5421be791fb455638168ca32ead47714",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_tb_massOn_sub_le",
+      "statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
