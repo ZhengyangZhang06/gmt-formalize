@@ -520,6 +520,62 @@ theorem Submission.deformation_dilation_mass : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ 
         rw [← mul_assoc, ← ENNReal.ofReal_mul (pow_nonneg hρ.le k), ← mul_pow,
           mul_inv_cancel₀ hρ.ne', one_pow, ENNReal.ofReal_one, one_mul]
 
+/-- Support scaling under dilation (Simon Ch. 6, 2.11, for the change of scale `x ↦ ρx` used
+to pass from 5.1 to 5.3).  Call `(A, B)` a `σ`-pair if `B(ω) = A(η)` whenever
+`η(x) = σᵏ ω(σx)`.  If `(A, B)` is a `σ`-pair and `A` vanishes on an open `W` with compact
+closure, then `B` vanishes on `σW`: the pull-back `η` of `ω` (first conjunct of
+`Submission.deformation_dilation_calculus`) has `tsupport η ⊆ σ⁻¹ tsupport ω ⊆ W`.
+Hence `σ zeroRegion(A) ⊆ zeroRegion(B)`.  Since `(Y, X)` is a `ρ⁻¹`-pair,
+`zeroRegion(Y) = ρ zeroRegion(X)`, and complements commute with the bijection `x ↦ ρx`. -/
+theorem Submission.deformation_dilation_support : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.support = (fun x => ρ • x) '' X.support := by
+  intro N ρ hρ k X Y hXY
+  -- Step 1: for a `σ`-pair `(A, B)`, `σ zeroRegion(A) ⊆ zeroRegion(B)`.
+  have hzero_image : ∀ σ : ℝ, 0 < σ → ∀ A B : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+        (∀ x, (η : DifferentialForm (Eucl N) k) x =
+          σ ^ k • (ω : DifferentialForm (Eucl N) k) (σ • x)) → B ω = A η) →
+      (fun x => σ • x) '' A.zeroRegion ⊆ B.zeroRegion := by
+    intro σ hσ A B hAB
+    let φ : Eucl N ≃ₜ Eucl N := Homeomorph.smulOfNeZero σ hσ.ne'
+    rintro _ ⟨x, ⟨W, ⟨hWo, hWc, -, hWv⟩, hxW⟩, rfl⟩
+    refine ⟨φ '' W, ⟨φ.isOpenMap W hWo, ?_, subset_univ _, ?_⟩, mem_image_of_mem φ hxW⟩
+    · rw [← φ.image_closure]
+      exact hWc.image φ.continuous
+    · -- `B(ω) = A(η)` for the pull-back `η = σᵏ ω(σ ·)`, and `tsupport η ⊆ σ⁻¹ tsupport ω ⊆ W`.
+      intro ω hω
+      obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N σ hσ k).1 ω
+      rw [hAB ω η hη]
+      apply hWv η
+      have hηω : (η : DifferentialForm (Eucl N) k) =
+          fun x => σ ^ k • ((ω : DifferentialForm (Eucl N) k) ∘ φ) x := funext hη
+      calc tsupport (η : DifferentialForm (Eucl N) k)
+          ⊆ tsupport ((ω : DifferentialForm (Eucl N) k) ∘ φ) := by
+            rw [hηω]
+            exact tsupport_smul_subset_right (fun _ => σ ^ k) _
+        _ ⊆ φ ⁻¹' tsupport (ω : DifferentialForm (Eucl N) k) :=
+            tsupport_comp_subset_preimage _ φ.continuous
+        _ ⊆ φ ⁻¹' (φ '' W) := preimage_mono hω
+        _ = W := preimage_image_eq W φ.injective
+  -- Step 2: `(Y, X)` is a `ρ⁻¹`-pair.
+  have hYX : ∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+      (∀ x, (η : DifferentialForm (Eucl N) k) x =
+        ρ⁻¹ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ⁻¹ • x)) → X ω = Y η := by
+    intro ω η hη
+    refine (hXY η ω fun x => ?_).symm
+    rw [hη, inv_smul_smul₀ hρ.ne', smul_smul, ← mul_pow, mul_inv_cancel₀ hρ.ne', one_pow,
+      one_smul]
+  -- Step 3: `zeroRegion(Y) = ρ zeroRegion(X)`.
+  have hzero : Y.zeroRegion = (fun x => ρ • x) '' X.zeroRegion :=
+    Subset.antisymm
+      (fun y hy => ⟨ρ⁻¹ • y, hzero_image ρ⁻¹ (inv_pos.2 hρ) Y X hYX (mem_image_of_mem _ hy),
+        smul_inv_smul₀ hρ.ne' y⟩)
+      (hzero_image ρ hρ X Y hXY)
+  -- Step 4: `x ↦ ρx` is bijective, so it maps `univ \ zeroRegion(X)` onto `univ \ zeroRegion(Y)`.
+  have hbij : Function.Bijective fun x : Eucl N => ρ • x :=
+    (Homeomorph.smulOfNeZero ρ hρ.ne').bijective
+  rw [GeometricCurrentOn.support, GeometricCurrentOn.support, ← compl_eq_univ_sdiff,
+    ← compl_eq_univ_sdiff, hzero, image_compl_eq hbij]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
