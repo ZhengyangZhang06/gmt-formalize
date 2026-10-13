@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.linear_area-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon Ch. 2, 3.1 and the printed argument before it (chapter-02.txt lines 743–759). Simon chooses an orthogonal q of ℝ^{n+k} with q(range ℓ) = ℝ^n × {0} and p(x, y) = x, so that p∘q∘ℓ : ℝ^n → ℝ^n, (p∘q∘ℓ)*(p∘q∘ℓ) = ℓ*ℓ and H^n(q(B)) = H^n(B). Below, κ is the isometry of ℝ^n onto range L (κ* plays the role of p∘q on range L) and M := κ*∘L plays the role of p∘q∘ℓ. This is also step 2 of the supplied proof of the parent node. Mathlib's LinearMap.hausdorffMeasure_image (Mathlib/Analysis/InnerProductSpace/NormDet.lean) uses the same argument but is not in the import closure of GMT.Ch07.Submission.
+
+Notation. ℝ^d = Euclid d; |·| is the Euclidean norm; T* is the Hilbert adjoint (ContinuousLinearMap.adjoint); det is the determinant of an endomorphism; H^n = μHE[n]; L^n = volume.
+
+1. (An isometry onto the range.) Let V := range L ⊆ ℝ^P. Since L is injective, dim V = n (LinearMap.finrank_range_of_inj). Fix an orthonormal basis τ_1, …, τ_n of V (stdOrthonormalBasis ℝ V reindexed by Fin n along dim V = n). Let κ : ℝ^n → ℝ^P, κ(x) := Σ_i x_i τ_i. This is the inclusion V ⊆ ℝ^P composed with the inverse of the coordinate isometry of the basis, so κ is a linear isometry with range κ = V. For every h ∈ ℝ^n, Lh ∈ V, so Lh = κ(u_h), where u_h ∈ ℝ^n is the coordinate vector of Lh in the basis τ.
+
+2. (Factorization L = κ∘M.) Since κ is a linear isometry, κ*∘κ = id_{ℝ^n} (LinearIsometry.adjoint_comp_self). Put M := κ*∘L : ℝ^n → ℝ^n. For h ∈ ℝ^n, κ(Mh) = κ(κ*(κ u_h)) = κ(u_h) = Lh, so κ∘M = L. If Mx = My, then Lx = κMx = κMy = Ly, hence x = y. Thus M is injective, ker M = 0, and det M ≠ 0 (LinearMap.det_eq_zero_iff_ker_ne_bot).
+
+3. (Gram determinant.) By ContinuousLinearMap.adjoint_comp, L*∘L = (κ∘M)*∘(κ∘M) = M*∘(κ*∘κ)∘M = M*∘M. In the standard orthonormal basis of ℝ^n, the matrix of M* is the conjugate transpose of the matrix of M (LinearMap.toMatrix_adjoint). Over ℝ this is the transpose, so det M* = det M (LinearMap.det_toMatrix, Matrix.det_conjTranspose). By multiplicativity of det (LinearMap.det_comp), det(L*∘L) = det(M*)·det(M) = (det M)². Since det M ≠ 0, det(L*∘L) > 0, which is (i). Moreover √det(L*∘L) = √((det M)²) = |det M| (Real.sqrt_sq_eq_abs).
+
+4. (Measure of the image.) Let S ⊆ ℝ^n be arbitrary. By step 2, L(S) = κ(M(S)). Since κ is an isometry, H^n(κ(X)) = H^n(X) for every X ⊆ ℝ^n, where H^n on the right is μHE[n] of ℝ^n (Isometry.euclideanHausdorffMeasure_image applied to LinearIsometry.isometry). On ℝ^n, μHE[n] = L^n (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). For the linear endomorphism M of ℝ^n, L^n(M(S)) = |det M|·L^n(S) for every S, with no measurability needed (Measure.addHaar_image_continuousLinearMap). Hence
+ H^n(L(S)) = H^n(κ(M(S))) = L^n(M(S)) = |det M|·L^n(S) = √det(L*∘L)·L^n(S),
+using |det M| = √det(L*∘L) from step 3 (as ENNReal.ofReal factors). This is (ii).
+
+For n = 0 every step remains valid: ℝ^0 is a point and all the determinants equal 1. ∎
+
+## Key steps
+
+1. Since L is injective, range L has dimension n; an orthonormal basis of range L gives a linear isometry κ : ℝ^n → ℝ^P with range κ = range L.
+2. M := κ*∘L satisfies κ∘M = L because κ*κ = id, so M is injective and det M ≠ 0.
+3. L*L = M*κ*κM = M*M and det M* = det M (matrix of the adjoint is the transpose), so det(L*L) = (det M)² > 0 and √det(L*L) = |det M|.
+4. H^n(L S) = H^n(κ(M S)) = L^n(M S) = |det M|·L^n(S) by isometry invariance of μHE[n], μHE[n] = volume on ℝ^n and Measure.addHaar_image_continuousLinearMap.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cat lakefile.toml lean-toolchain`
+- `rg -n 'euclideanHausdorffMeasure|μHE' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'det_adjoint|adjoint.*det|det.*adjoint' and rg -n 'theorem toMatrix_adjoint|toEuclideanLin_conjTranspose|toMatrixOrthonormal_adjoint' in local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 1,80p, 260,300p, 385,450p Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `lake env lean /tmp/ga-dec/Check2.lean (#check LinearMap.normDet, LinearMap.hausdorffMeasure_image, ContinuousLinearMap.normDet_sq after import GMT.Ch07.Submission)`
+- `python3 import-closure walk of .lake/packages/simongmt from Chapter03.Rectifiable, Chapter06.Mass, Chapter06.CurrentLocalEquality, Chapter06.AffineCurrentPushforward; grep -n '^theorem\|^lemma\|^def' on Chapter01/Basic, Chapter01/Hausdorff, Chapter01/MetricCriterion, Chapter02/Lipschitz, Chapter04/Basic; sed -n 186,260p Chapter02/Lipschitz.lean`
+- `python3 scans of dag.json: regex 'area|Lipschitz|Jacobian|adjoint|graph' over titles, statements and lean_statements; lean_statements containing adjoint+μHE, Real.sqrt+volume/μHE, LinearMap.det, InjOn+'ofReal (J', 'linear' titles with μHE/volume; lean_name prefix codim1_zsl; membership of the five new names; byte comparison of the selected lean_statement with dag.json and the handoff`
+- `grep -n 'def check_source_delta' -A40 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py; git show 434bc6d3dbb2f6ea9b32f146b1997dfa769d1cd5 -- GMT/Ch07/Submission.lean`
+- `rg -n 'theorem map_comap_subtype_coe|countable_cover_nhdsWithin|theorem restrict_withDensity|MeasurableSet.subtype_image' local-references/123e8435b4a2469b/mathlib/Mathlib; grep -n 'theorem integral_image_eq_integral_abs_det_fderiv_smul' -A40 and 'theorem restrict_map_withDensity_abs_det_fderiv_eq_addHaar' -A40 Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `lake env lean /tmp/ga-dec/Check0.lean, Check1.lean, Check3.lean (#check of about 80 Mathlib/SimonGMT names, including Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_image_continuousLinearMap, MeasurableSet.image_of_continuousOn_injOn, MeasurableEmbedding.integral_map, measurable_fderiv, Convex.norm_image_sub_le_of_norm_fderiv_le, LinearIsometry.adjoint_comp_self)`
+- `lake env lean /tmp/ga-dec/Types1.lean, C1.lean, Cbilip.lean, C2.lean, C3.lean, C4.lean, Full.lean with #print axioms`
+- `sed -n 268,300p and 735,790p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-df95e3f55f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-df95e3f55f/parent-supplied-plan.md`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/ga-dec/Types1.lean`
+- `/tmp/ga-dec/C1.lean`
+- `/tmp/ga-dec/Cbilip.lean`
+- `/tmp/ga-dec/C2.lean`
+- `/tmp/ga-dec/C3.lean`
+- `/tmp/ga-dec/C4.lean`
+- `/tmp/ga-dec/Full.lean`
+
+Pins and contract. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to the workspace. GMT/Ch07/Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Not importable. Mathlib's linear Hausdorff area formula LinearMap.hausdorffMeasure_image / normDet (Analysis/InnerProductSpace/NormDet.lean) exists in the snapshot but is NOT in the import closure of GMT.Ch07.Submission (#check reports unknown constants). SimonGMT Chapter02.AreaFormula is also outside the closure. Hence linear_area re-proves Simon 3.1 with the same isometry-onto-range argument.
+
+Available in the closure:
+- Mathlib Volume/Measure.lean (μHE[d], Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, euclideanHausdorffMeasure_def).
+- SimonGMT Chapter02/Lipschitz.lean:216, euclideanHausdorffMeasure_image_le_of_lipschitzOn (the μHE form of Simon 1.8(i)), reached via Chapter03.Rectifiable.
+- Every other Mathlib lemma cited in the children, e.g. Measure.addHaar_image_continuousLinearMap, MeasurableSet.image_of_continuousOn_injOn, MeasurableEmbedding.integral_map, map_comap_subtype_coe (Restrict.lean:934), restrict_withDensity (WithDensity.lean:215), TopologicalSpace.countable_cover_nhdsWithin (Bases.lean:964), LinearMap.toMatrix_adjoint (Adjoint.lean:1029), measurable_fderiv, Convex.norm_image_sub_le_of_norm_fderiv_le, LinearIsometry.adjoint_comp_self. Recent renames: ContDiffOn.differentiableOn takes 1 ≠ 0; the lambda form uses fderiv_fun_sub; Set.restrict/ContinuousOn.restrict are deprecated in favour of domRestrict.
+
+DAG. No accepted node has the type of any proposed child. Related accepted nodes have other types: dimred_rpd_bilipschitz_image_measure (bi-Lipschitz relative to the identity), dorag_tes_lipschitz_graph_area_bounds (inequalities only), dgoj_unitOrientation_of_injective (needs an extra MultiVector conjunct). The area-formula nodes dpf_raf_piece_area_formula_gram, codim1_lur_rectifiable_area_formula and idtp_carrier_area_formula are unaccepted and have different types. The five new names codim1_zsl_ga_* have no match in dag.json.
+
+Leaf rule. check_source_delta allows only the single selected theorem per leaf (no helper declarations, imports or set_option). This motivates the split; none of the scratch proofs uses a forbidden token.
+
+Lean checks.
+- The children's types and the parent assembly elaborate.
+- Full.lean proves the whole chain, and #print axioms gives only propext, Classical.choice and Quot.sound.
+
+Book. chapter-02.txt lines 743–776 give 3.1 with its proof and state 3.2–3.3 'by an approximation argument based on the linear case 3.1'. Lines 270–296 give Theorem 1.8(i), valid for non-measurable A.

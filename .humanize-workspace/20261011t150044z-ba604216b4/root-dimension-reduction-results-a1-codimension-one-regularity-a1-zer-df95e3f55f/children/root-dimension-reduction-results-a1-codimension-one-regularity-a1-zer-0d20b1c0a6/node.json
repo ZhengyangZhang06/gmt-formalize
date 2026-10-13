@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.integral_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+  "depth": 5,
+  "title": "Bochner integrals over an injective continuous image from a weighted set identity (supplied steps 5–6)",
+  "statement": "Let m, P ∈ ℕ, μ a measure on ℝ^P (Borel σ-algebra), G : ℝ^m → ℝ^P, J : ℝ^m → ℝ measurable and A ⊆ ℝ^m measurable (ℝ^d = Euclid d). Assume G is continuous on A and injective on A, J(w) ≥ 0 for w ∈ A, and μ(G(B)) = ∫_B J dL^m for every measurable B ⊆ A, where the right side is the lower Lebesgue integral of ENNReal.ofReal∘J with respect to L^m = volume. Then for every f : ℝ^P → ℝ (no measurability or integrability assumed), ∫_{G(A)} f dμ = ∫_A J(w)·f(G(w)) dw. Both sides are Bochner integrals, so a non-integrable function has integral 0.",
+  "lean_statement": "∀ (m P : ℕ) (μ : Measure (Euclid P)) (G : Euclid m → Euclid P) (J : Euclid m → ℝ) (A : Set (Euclid m)) (f : Euclid P → ℝ), MeasurableSet A → ContinuousOn G A → InjOn G A → Measurable J → (∀ w ∈ A, 0 ≤ J w) → (∀ B : Set (Euclid m), MeasurableSet B → B ⊆ A → μ (G '' B) = ∫⁻ w in B, ENNReal.ofReal (J w)) → ∫ y in G '' A, f y ∂μ = ∫ w in A, J w * f (G w)",
+  "lean_name": "codim1_zsl_ga_integral_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d20b1c0a6-a1"
+}

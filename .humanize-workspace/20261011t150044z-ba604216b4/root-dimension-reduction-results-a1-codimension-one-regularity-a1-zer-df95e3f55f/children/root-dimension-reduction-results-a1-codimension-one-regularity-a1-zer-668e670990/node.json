@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.relative_lipschitz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+  "depth": 5,
+  "title": "Hausdorff measure of an image under a map bi-Lipschitz relative to a reference map (Simon Ch. 2, 1.8(i))",
+  "statement": "Let n, P ∈ ℕ, let F, L : ℝ^n → ℝ^P be arbitrary maps (ℝ^d = Euclid d), let S ⊆ ℝ^n be an arbitrary set and let a, b ∈ ℝ with a > 0 and b ≥ 0. Suppose a·|L(x) − L(y)| ≤ |F(x) − F(y)| ≤ b·|L(x) − L(y)| for all x, y ∈ S. Then a^n·H^n(L(S)) ≤ H^n(F(S)) ≤ b^n·H^n(L(S)) in [0, ∞], where H^n = μHE[n] on ℝ^P and the factors are ENNReal.ofReal(a^n) and ENNReal.ofReal(b^n).",
+  "lean_statement": "∀ (n P : ℕ) (F L : Euclid n → Euclid P) (S : Set (Euclid n)) (a b : ℝ), 0 < a → 0 ≤ b → (∀ x ∈ S, ∀ y ∈ S, a * ‖L x - L y‖ ≤ ‖F x - F y‖ ∧ ‖F x - F y‖ ≤ b * ‖L x - L y‖) → ENNReal.ofReal (a ^ n) * μHE[n] (L '' S) ≤ μHE[n] (F '' S) ∧ μHE[n] (F '' S) ≤ ENNReal.ofReal (b ^ n) * μHE[n] (L '' S)",
+  "lean_name": "codim1_zsl_ga_relative_lipschitz_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-668e670990-a1"
+}
