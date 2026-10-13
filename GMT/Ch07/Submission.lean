@@ -2334,4 +2334,50 @@ theorem Submission.codim1_zsl_fl_divergence_lift : ∀ (n k : ℕ) (ι : Euclid 
     rw [← mul_assoc, ← pow_add, ← two_mul, pow_mul]
     simp
 
+theorem Submission.codim1_zsl_fl_perimeter_bound : ∀ (n k : ℕ) (Us : ℕ → Set (Euclid (n + 1 + k))) (Ss : (i : ℕ) → GeometricCurrentOn (Us i) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (b : Euclid k) (gs : ℕ → Euclid (n + 1) → Euclid k) (Fs : ℕ → Set (Euclid (n + 1))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → (∀ i, MeasurableSet (Fs i)) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, DifferentiableAt ℝ (gs i) w) → (∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, ‖gs i w - b‖ < ε ∧ ‖fderiv ℝ (gs i) w‖ < ε) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) = ∫ w in Fs i ∩ ball 0 R, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w (EuclideanSpace.single j (1 : ℝ)))) → (∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (n + 1 + k)) n) y) ≤ 1) → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) ≤ c) → ∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 R → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in Fs i, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ v).toLinearMap ≤ c := by
+  intro n k Us Ss ι ι' b gs Fs hperp hspan hFs hH1 hH2 hH3 hH4 R hR
+  -- Constants: `K` from the divergence lift, `h := ‖b‖ + 1`, `R₂ := R + 2h`, `c := K c₂`.
+  obtain ⟨K, hK, hlift⟩ := Submission.codim1_zsl_fl_divergence_lift n k ι ι' hperp hspan
+  set h : ℝ := ‖b‖ + 1 with hh
+  have hhpos : 0 < h := by positivity
+  set R₂ : ℝ := R + 2 * h with hR₂
+  have hR₂pos : 0 < R₂ := by positivity
+  obtain ⟨c₂, hc₂⟩ := hH4 R₂ hR₂pos
+  refine ⟨K * c₂, ?_⟩
+  -- (H1)–(H4) at radius `R₂` (with `ε = 1` in (H2)) hold simultaneously for all large `i`.
+  filter_upwards [hH1 R₂ hR₂pos, hH2 R₂ 1 hR₂pos one_pos, hH3 R₂ hR₂pos, hc₂] with i hi1 hi2 hi3 hi4
+  intro φ hφ hφc hφs hφn
+  -- The lifted test form is admissible in (H4) and represented by (H3).
+  obtain ⟨ω, hωs, hωn, hωd⟩ := hlift h R hhpos φ hφ hφc hφs hφn
+  have hle := hi4 ω hωs hωn
+  rw [hi3 ω hωs] at hle
+  -- On `B_{R₂}`, `gs i` is differentiable with `‖gs i w‖ < h`, so the integrand is `K⁻¹ div φ`.
+  have hcongr : ∫ w in Fs i ∩ ball 0 R₂, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n)
+        (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w
+          (EuclideanSpace.single j (1 : ℝ))) =
+      ∫ w in Fs i ∩ ball 0 R₂, K⁻¹ * LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ w).toLinearMap := by
+    apply setIntegral_congr_fun ((hFs i).inter measurableSet_ball)
+    intro w hw
+    apply hωd (gs i) w (hi1 w hw.2)
+    have := (hi2 w hw.2).1
+    calc ‖gs i w‖ = ‖(gs i w - b) + b‖ := by rw [sub_add_cancel]
+      _ ≤ ‖gs i w - b‖ + ‖b‖ := norm_add_le _ _
+      _ < 1 + ‖b‖ := by linarith
+      _ = h := by ring
+  rw [hcongr, integral_const_mul] at hle
+  -- `div φ` vanishes off `tsupport φ ⊆ B_R ⊆ B_{R₂}`, so the ball can be dropped.
+  have hdiv : ∫ w in Fs i ∩ ball 0 R₂, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ w).toLinearMap =
+      ∫ w in Fs i, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ w).toLinearMap := by
+    refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hFs i) inter_subset_left ?_).symm
+    intro w hw
+    have hwnot : w ∉ tsupport φ := fun hmem =>
+      hw.2 ⟨hw.1, ball_subset_ball (by linarith) (hφs hmem)⟩
+    have h0 : fderiv ℝ φ w = 0 :=
+      image_eq_zero_of_notMem_tsupport (fun hmem => hwnot (tsupport_fderiv_subset ℝ hmem))
+    simp [h0]
+  rw [hdiv] at hle
+  -- Multiply `K⁻¹ ∫_{Fs i} div φ ≤ c₂` by `K > 0`.
+  have := mul_le_mul_of_nonneg_left hle hK.le
+  rwa [← mul_assoc, mul_inv_cancel₀ hK.ne', one_mul] at this
+
 end GMT.Ch07
