@@ -7870,6 +7870,94 @@ theorem Submission.stationary_radial_imrep_weighted_moment_eq_zero : ∀ (P n : 
   rw [hfv, integral_congr_ae hae, integral_const_mul] at h0
   linarith
 
+/-- **Simon 7.4.5**, following its proof.  Fix `C = τ(M, θ, ξ)` with weight `μ = θHⁿ⌞M`.  By 7.1.2
+(`U = N = ℝ^{n+k}`) the varifold of `C` is stationary; the cone property gives
+`μ(B̄_ρ(0)) = ρⁿ μ(B̄_1(0))`, hence `x ∈ TₓM` for `μ`-a.e. `x` (monotonicity identity, Ch. 4, 3.6),
+and the first variation along `(ρ² − |x|²)₊² v` then gives `∫ (ρ² − |x|²)₊ ⟨v, x⟩ dμ = 0` for all
+`ρ`.  As `⟨v, ·⟩ ≥ 0` on `spt C = spt μ`, the open half-space `H` has `μ(H) = 0`, so it misses
+`spt C ⊆ H̄`. -/
+theorem Submission.half_space_cone_lies_in_boundary : HalfSpaceConeLiesInBoundary := by
+  intro n k C v hmin hbdry hcone _ hsupp
+  obtain ⟨R, hR⟩ := hmin.1
+  -- `ℝ^{n+k}` is an embedded `C²` submanifold of itself (identity chart), every vector is tangent
+  -- to it, so by 7.1.2 the first variation of `v(M, θ)` vanishes on all `C¹` compactly supported
+  -- vector fields.
+  have hsub : IsEmbeddedSubmanifold 2 (n + k) (univ : Set (Euclid (n + k))) := by
+    intro y _
+    refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiff_id.contDiffOn,
+      injective_id.injOn, by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+    rw [fderiv_id, ContinuousLinearMap.coe_id']
+    exact injective_id
+  have htan : ∀ x w : Euclid (n + k), w ∈ tangentSpace (univ : Set (Euclid (n + k))) x := by
+    intro x w
+    refine ⟨fun t => x + t • w, by fun_prop, fun _ _ => mem_univ _, by simp, ?_⟩
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const w).const_add x
+  have hstat : ∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X →
+      R.firstVariation X = 0 := fun X hX hXc =>
+    (Submission.minimizing_implies_stationary n k k le_rfl univ univ C isOpen_univ hsub (by simp)
+      (subset_univ _) (by rwa [inter_self]) hbdry R hR).1 X hX hXc (subset_univ _)
+      fun x _ => htan x (X x)
+  -- The cone property makes `ρ⁻ⁿ μ(B̄_ρ(0))` constant; hence radial tangency and the vanishing of
+  -- the weighted moments of `⟨v, ·⟩`.
+  have hratio : ∀ ρ : ℝ, 0 < ρ → R.measure (closedBall (0 : Euclid (n + k)) ρ) =
+      ENNReal.ofReal (ρ ^ n) * R.measure (closedBall (0 : Euclid (n + k)) 1) := by
+    intro ρ hρ
+    have himg : (fun x => ρ • x) '' closedBall (0 : Euclid (n + k)) 1 = closedBall 0 ρ := by
+      rw [image_smul, smul_closedBall ρ (0 : Euclid (n + k)) zero_le_one, smul_zero,
+        Real.norm_of_nonneg hρ.le, mul_one]
+    rw [← himg]
+    exact Submission.cone_current_imrep_measure_smul_image (n + k) n C R hcone hR ρ hρ _
+      measurableSet_closedBall
+  have hrad := Submission.stationary_imrep_radial_tangency_of_ball_ratio (n + k) n R hstat
+    (Submission.imrep_univ_tangent_starProjection_aemeasurable (n + k) n R) hratio
+  have hspt : C.support = R.measure.support :=
+    (Submission.imrep_represents_support_eq_inter_measure_support (n + k) n univ C R isOpen_univ
+      hR).trans (univ_inter _)
+  -- `⟨v, ·⟩ ≥ 0` on `spt C = spt μ`, which carries `μ`.
+  have hnonneg : ∀ᵐ x ∂R.measure, 0 ≤ inner ℝ v x := by
+    have hclosed : closure {x : Euclid (n + k) | 0 < inner ℝ v x} ⊆ {x | 0 ≤ inner ℝ v x} :=
+      closure_minimal (fun x (hx : 0 < inner ℝ v x) => show 0 ≤ inner ℝ v x from hx.le)
+        (isClosed_le continuous_const (continuous_const.inner continuous_id))
+    filter_upwards [Measure.support_mem_ae (μ := R.measure)] with x hx
+    have hxC : x ∈ C.support := hspt ▸ hx
+    exact hclosed (hsupp hxC)
+  have : IsFiniteMeasureOnCompacts R.measure := by
+    refine ⟨fun K hK => ?_⟩
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK (subset_univ K))
+  -- Each `(m² − |x|²)₊ ⟨v, x⟩` is continuous, compactly supported, `≥ 0` a.e. and of integral `0`.
+  have hzero : ∀ m : ℕ, ∀ᵐ x ∂R.measure, max ((m : ℝ) ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ v x = 0 := by
+    intro m
+    have hcont : Continuous fun x : Euclid (n + k) => max ((m : ℝ) ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ v x :=
+      ((continuous_const.sub (continuous_norm.pow 2)).max continuous_const).mul
+        (continuous_const.inner continuous_id)
+    have hcs : HasCompactSupport fun x : Euclid (n + k) =>
+        max ((m : ℝ) ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ v x := by
+      refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (n + k)) m) fun x hx => ?_
+      rw [mem_closedBall_zero_iff, not_le] at hx
+      have hm : (m : ℝ) ^ 2 - ‖x‖ ^ 2 ≤ 0 := by nlinarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+      rw [max_eq_right hm, zero_mul]
+    have hnn : 0 ≤ᵐ[R.measure] fun x : Euclid (n + k) =>
+        max ((m : ℝ) ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ v x :=
+      hnonneg.mono fun x hx => mul_nonneg (le_max_right _ _) hx
+    exact (integral_eq_zero_iff_of_nonneg_ae hnn (hcont.integrable_of_hasCompactSupport hcs)).1
+      (Submission.stationary_radial_imrep_weighted_moment_eq_zero (n + k) n R hstat hrad v m)
+  -- Taking `m > |x|` gives `⟨v, x⟩ = 0` for `μ`-a.e. `x`, so the open half-space is `μ`-null.
+  have hH : R.measure {x | 0 < inner ℝ v x} = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [ae_all_iff.2 hzero] with x hx
+    have hlt : ‖x‖ < ((⌈‖x‖⌉₊ + 1 : ℕ) : ℝ) := by push_cast; linarith [Nat.le_ceil ‖x‖]
+    have hpos : 0 < max (((⌈‖x‖⌉₊ + 1 : ℕ) : ℝ) ^ 2 - ‖x‖ ^ 2) 0 :=
+      lt_max_of_lt_left (by nlinarith [norm_nonneg x])
+    simp [(mul_eq_zero.1 (hx (⌈‖x‖⌉₊ + 1))).resolve_left hpos.ne']
+  have hopen : IsOpen {x : Euclid (n + k) | 0 < inner ℝ v x} :=
+    isOpen_lt continuous_const (continuous_const.inner continuous_id)
+  intro x hx
+  have hxμ : x ∈ R.measure.support := hspt ▸ hx
+  rw [frontier, hopen.interior_eq]
+  exact ⟨hsupp hx, fun hxH => Measure.subset_compl_support_of_isOpen hopen hH hxH hxμ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
