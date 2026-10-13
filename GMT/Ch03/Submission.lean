@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Topology.EMetricSpace.Lipschitz
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter03.SubmanifoldCover
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 3 "Countably n-Rectifiable Sets" (pp. 69–84): contract
@@ -335,6 +336,342 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Quantitative local injectivity of a `C¹` map with injective derivative** (Simon Ch. 3,
+proof of Lemma 1.2, `chapter-03.txt` lines 61–64: where the Jacobian of `Gᵢⱼ` is non-zero at
+`x`, `Gᵢⱼ(B_σ(x))` is an `n`-dimensional `C¹` submanifold). If `G : ℝⁿ → ℝᵖ` is `C¹` on an open
+`U` and `L = DG(x)` is injective at `x ∈ U`, then for some closed ball `B̄_r(x) ⊆ U` and `c > 0`,
+`c |z - z'| ≤ |G z - G z'|` and `c |v| ≤ |DG(z) v|` for all `z, z' ∈ B̄_r(x)` and `v`. In finite
+dimension `L` is anti-Lipschitz, so `c₀ |v| ≤ |L v|`; `DG` is continuous, so `‖DG - L‖ ≤ c₀ / 2`
+on a small ball; the mean value inequality for `G - L` and the triangle inequality then give
+both bounds with `c = c₀ / 2`. -/
+theorem Submission.c1_injective_fderiv_local_lower_bounds : ∀ (n p : ℕ) (G : Rn n → Rn p)
+    (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 G U → ∀ x ∈ U,
+    Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Metric.closedBall x r ⊆ U ∧
+      ∃ c : ℝ, 0 < c ∧ (∀ z ∈ Metric.closedBall x r, ∀ z' ∈ Metric.closedBall x r,
+        c * ‖z - z'‖ ≤ ‖G z - G z'‖) ∧
+        ∀ z ∈ Metric.closedBall x r, ∀ v : Rn n, c * ‖v‖ ≤ ‖fderiv ℝ G z v‖ := by
+  intro n p G U hU hG x hx hinj
+  -- Step 1: `G` is differentiable at every point of the open set `U`, and `DG` is continuous on
+  -- `U`.
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ G z := fun z hz ↦
+    (hG.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hcont : ContinuousOn (fderiv ℝ G) U := hG.continuousOn_fderiv_of_isOpen hU le_rfl
+  -- Step 2: `L = DG(x)` is `K`-anti-Lipschitz, so `c₀ |v| ≤ |L v|` with `c₀ = K⁻¹`.
+  obtain ⟨K, hK, hKL⟩ := (fderiv ℝ G x).injective_iff_antilipschitz.mp hinj
+  have hKpos : (0 : ℝ) < K := NNReal.coe_pos.mpr hK
+  have hc₀ : 0 < (K : ℝ)⁻¹ := inv_pos.mpr hKpos
+  have hL : ∀ v, (K : ℝ)⁻¹ * ‖v‖ ≤ ‖fderiv ℝ G x v‖ := fun v ↦
+    (inv_mul_le_iff₀ hKpos).mpr ((fderiv ℝ G x).bound_of_antilipschitz hKL v)
+  -- Step 3: `r = min δ₁ δ₂ / 2`, where `B_{δ₁}(x) ⊆ U` and `‖DG(z) - L‖ < c₀ / 2` for `z ∈ U`
+  -- with `|z - x| < δ₂`; then `B̄_r(x) ⊆ U` and `‖DG - L‖ ≤ c₀ / 2` on `B̄_r(x)`.
+  obtain ⟨δ₁, hδ₁, hball⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨δ₂, hδ₂, hnear⟩ :=
+    Metric.continuousOn_iff.mp hcont x hx ((K : ℝ)⁻¹ / 2) (half_pos hc₀)
+  have hδ : 0 < min δ₁ δ₂ := lt_min hδ₁ hδ₂
+  have hr : ∀ z ∈ Metric.closedBall x (min δ₁ δ₂ / 2), dist z x < min δ₁ δ₂ := fun z hz ↦
+    (Metric.mem_closedBall.mp hz).trans_lt (half_lt_self hδ)
+  have hsub : Metric.closedBall x (min δ₁ δ₂ / 2) ⊆ U := fun z hz ↦
+    hball (Metric.mem_ball.mpr ((hr z hz).trans_le (min_le_left _ _)))
+  have hDG : ∀ z ∈ Metric.closedBall x (min δ₁ δ₂ / 2),
+      ‖fderiv ℝ G z - fderiv ℝ G x‖ ≤ (K : ℝ)⁻¹ / 2 := fun z hz ↦ by
+    have h := hnear z (hsub hz) ((hr z hz).trans_le (min_le_right _ _))
+    rw [dist_eq_norm] at h
+    exact h.le
+  refine ⟨min δ₁ δ₂ / 2, half_pos hδ, hsub, (K : ℝ)⁻¹ / 2, half_pos hc₀, ?_, ?_⟩
+  · -- Step 4: the mean value inequality for `w ↦ G w - L w` on the convex ball `B̄_r(x)`.
+    intro z hz z' hz'
+    have hmvt := (convex_closedBall x (min δ₁ δ₂ / 2)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw ↦ hdiff w (hsub hw)) hDG hz' hz
+    have htri : ‖fderiv ℝ G x (z - z')‖ ≤
+        ‖G z - G z'‖ + ‖G z - G z' - fderiv ℝ G x (z - z')‖ := by
+      calc ‖fderiv ℝ G x (z - z')‖
+          = ‖(G z - G z') - (G z - G z' - fderiv ℝ G x (z - z'))‖ := by rw [sub_sub_cancel]
+        _ ≤ _ := norm_sub_le _ _
+    linarith [hL (z - z')]
+  · -- Step 5: the operator-norm perturbation `|(DG(z) - L) v| ≤ (c₀ / 2) |v|`.
+    intro z hz v
+    have hop : ‖(fderiv ℝ G z - fderiv ℝ G x) v‖ ≤ (K : ℝ)⁻¹ / 2 * ‖v‖ :=
+      ((fderiv ℝ G z - fderiv ℝ G x).le_opNorm v).trans
+        (mul_le_mul_of_nonneg_right (hDG z hz) (norm_nonneg v))
+    have htri : ‖fderiv ℝ G x v‖ ≤ ‖fderiv ℝ G z v‖ + ‖(fderiv ℝ G z - fderiv ℝ G x) v‖ := by
+      calc ‖fderiv ℝ G x v‖ = ‖fderiv ℝ G z v - (fderiv ℝ G z - fderiv ℝ G x) v‖ := by
+            rw [sub_apply, sub_sub_cancel]
+        _ ≤ _ := norm_sub_le _ _
+    linarith [hL v]
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70)** (`chapter-03.txt` lines 61–64), with the
+submanifold notion of Ch. 2 (4.1): if `G` is `C¹` and injective on `B̄_r(x)` and `DG(z)` is
+injective for `z ∈ B_r(x)`, then `G(B_r(x))` is an embedded `C¹` submanifold, with the single
+local representation `(V, W, ψ) = (B_r(x), ℝᵖ ∖ G(A), G)`, `A = B̄_r(x) ∖ B_r(x)`. `G(A)` is
+compact, so `W` is open; injectivity on `B̄_r(x)` gives `G(B_r(x)) ⊆ W`; and for compact `K ⊆ W`,
+`B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K)` is a closed subset of the compact `B̄_r(x)`. -/
+theorem Submission.isC1Submanifold_image_ball_of_injOn_closedBall : ∀ (n p : ℕ)
+    (G : Rn n → Rn p) (x : Rn n) (r : ℝ), ContDiffOn ℝ 1 G (Metric.closedBall x r) →
+    Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective
+    (fderiv ℝ G z)) → IsC1Submanifold n (G '' Metric.ball x r) := by
+  intro n p G x r hG hinj hD
+  have hGc : ContinuousOn G (Metric.closedBall x r) := hG.continuousOn
+  -- `A` is compact, so `G(A)` is closed and `W = G(A)ᶜ` is open.
+  have hW : IsOpen (G '' (Metric.closedBall x r \ Metric.ball x r))ᶜ :=
+    (((isCompact_closedBall x r).diff Metric.isOpen_ball).image_of_continuousOn
+      (hGc.mono sdiff_subset)).isClosed.isOpen_compl
+  -- Injectivity on `B̄_r(x)` keeps `G(B_r(x))` off `G(A)`.
+  have hsub : G '' Metric.ball x r ⊆ (G '' (Metric.closedBall x r \ Metric.ball x r))ᶜ := by
+    rintro _ ⟨z, hz, rfl⟩ ⟨a, ha, hGa⟩
+    exact ha.2 ((hinj ha.1 (Metric.ball_subset_closedBall hz) hGa).symm ▸ hz)
+  intro y hy
+  refine ⟨Metric.ball x r, (G '' (Metric.closedBall x r \ Metric.ball x r))ᶜ, G,
+    Metric.isOpen_ball, hW, hsub hy, hG.mono Metric.ball_subset_closedBall,
+    hinj.mono Metric.ball_subset_closedBall, (inter_eq_right.2 hsub).symm, fun K hK hKW ↦ ?_, hD⟩
+  -- `B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K)` since `K ⊆ W` misses `G(A)`.
+  have heq : Metric.ball x r ∩ G ⁻¹' K = Metric.closedBall x r ∩ G ⁻¹' K := by
+    refine Subset.antisymm (inter_subset_inter_left _ Metric.ball_subset_closedBall) ?_
+    rintro z ⟨hz, hzK⟩
+    refine ⟨?_, hzK⟩
+    by_contra hzb
+    exact hKW hzK ⟨z, ⟨hz, hzb⟩, rfl⟩
+  rw [heq]
+  exact (isCompact_closedBall x r).of_isClosed_subset
+    (hGc.preimage_isClosed_of_isClosed Metric.isClosed_closedBall hK.isClosed) inter_subset_left
+
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70)** (`chapter-03.txt` lines 61–64): if `G : ℝⁿ → ℝᵖ`
+is `C¹` and `DG(x)` is injective, then `G(B_σ(x))` is an `n`-dimensional embedded `C¹` submanifold
+for some `σ > 0` (erratum: "of `ℝⁿ`" should read "of `ℝᵖ`"). The lower bounds
+`c|z - z'| ≤ |G(z) - G(z')|` and `c|v| ≤ |DG(z)v|` on a closed ball `B̄_σ(x)`
+(`c1_injective_fderiv_local_lower_bounds`) make `G` injective on `B̄_σ(x)`, as properness in
+Ch. 2, (4.1) requires, and `DG` injective on `B_σ(x)`. Then the single chart
+`(B_σ(x), ℝᵖ ∖ G(B̄_σ(x) ∖ B_σ(x)), G)` works (`isC1Submanifold_image_ball_of_injOn_closedBall`). -/
+theorem Submission.c1_regular_point_ball_image_isC1Submanifold : ∀ (n p : ℕ) (G : Rn n → Rn p),
+    ContDiff ℝ 1 G → ∀ x : Rn n, Function.Injective (fderiv ℝ G x) →
+      ∃ σ : ℝ, 0 < σ ∧ IsC1Submanifold n (G '' Metric.ball x σ) := by
+  intro n p G hG x hx
+  obtain ⟨σ, hσ, -, c, hc, hG_lower, hDG_lower⟩ :=
+    Submission.c1_injective_fderiv_local_lower_bounds n p G univ isOpen_univ hG.contDiffOn x
+      (mem_univ x) hx
+  refine ⟨σ, hσ, Submission.isC1Submanifold_image_ball_of_injOn_closedBall n p G x σ
+    hG.contDiffOn (fun z hz z' hz' hzz' ↦ ?_) fun z hz ↦ ?_⟩
+  -- `G(z) = G(z')` with `z, z' ∈ B̄_σ(x)` gives `c|z - z'| ≤ 0`.
+  · have h := hG_lower z hz z' hz'
+    rw [hzz', sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right h hc))
+  -- `DG(z)v = 0` with `z ∈ B_σ(x) ⊆ B̄_σ(x)` gives `c|v| ≤ 0`.
+  · refine (injective_iff_map_eq_zero (fderiv ℝ G z)).2 fun v hv ↦ ?_
+    have h := hDG_lower z (Metric.ball_subset_closedBall hz) v
+    rw [hv, norm_zero] at h
+    exact norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right h hc)
+
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70)** (`chapter-03.txt` lines 61–65), for one `C¹` map
+`G : ℝⁿ → ℝᵖ`: `G(ℝⁿ)` lies in an `Hⁿ`-null set together with countably many embedded `C¹`
+`n`-submanifolds. The critical image `N₀ = G({x : DG(x) not injective})` is `Hⁿ`-null (Simon's
+area-formula step `Hⁿ(G({J_G = 0})) = 0`): Mathlib's
+`exists_partition_approximatesLinearOn_of_hasFDerivWithinAt` cuts the critical points in `B_m(0)`
+by disjoint measurable sets into countably many pieces `P`, on each of which `G` is `δ`-close to
+a non-injective `A = DG(y)`. For a unit `u ∈ ker A`, the stretch `S_a` by the factor `a` along
+`u` has `det S_a = a`, and `G ∘ S_{1/δ}` is `(‖A‖ + 1)`-Lipschitz on `S_δ(P)`, so
+`Hⁿ(G(P)) ≤ (‖A‖ + 1)ⁿ δ Lⁿ(P)`; with `δ = ε / (‖A‖ + 1)ⁿ` the total is at most `ε Lⁿ(B_m(0))`.
+Every regular point `x` has a ball `B_σ(x)` with `G(B_σ(x))` a submanifold
+(`c1_regular_point_ball_image_isC1Submanifold`). Countably many of these balls cover the regular
+points (Lindelöf), and padding with `∅`, which is vacuously a submanifold, indexes their images
+by `ℕ`. -/
+theorem Submission.c1_range_null_union_submanifolds : ∀ (n p : ℕ) (G : Rn n → Rn p),
+    ContDiff ℝ 1 G → ∃ (N₀ : Set (Rn p)) (N : ℕ → Set (Rn p)), μHE[n] N₀ = 0 ∧
+      (∀ k, IsC1Submanifold n (N k)) ∧ Set.range G ⊆ N₀ ∪ ⋃ k, N k := by
+  intro n p G hG
+  -- Local estimate: if `G` is `δ`-close on `P` to a non-injective `A` (`0 < δ ≤ 1`), then
+  -- `Hⁿ(G(P)) ≤ (‖A‖ + 1)ⁿ δ Lⁿ(P)`.
+  have hlocal : ∀ (A : Rn n →L[ℝ] Rn p) (δ : ℝ≥0) (P : Set (Rn n)), ¬ Function.Injective A →
+      0 < δ → δ ≤ 1 → ApproximatesLinearOn G A P δ →
+      μHE[n] (G '' P) ≤ (((‖A‖₊ + 1) ^ n * δ : ℝ≥0) : ℝ≥0∞) * volume P := by
+    intro A δ P hA hδ hδ1 hGA
+    -- A unit vector `u` in the kernel of `A`.
+    obtain ⟨v, hv, hv0⟩ : ∃ v, A v = 0 ∧ v ≠ 0 := by
+      by_contra! h
+      exact hA ((injective_iff_map_eq_zero A).2 h)
+    have hu : ‖‖v‖⁻¹ • v‖ = 1 := norm_smul_inv_norm hv0
+    have hAu : A (‖v‖⁻¹ • v) = 0 := by rw [map_smul, hv, smul_zero]
+    generalize ‖v‖⁻¹ • v = u at hu hAu
+    have huu : inner ℝ u u = 1 := by rw [real_inner_self_eq_norm_sq, hu, one_pow]
+    -- The stretch `S a` by the factor `a` along `u`; its matrix is `1 + (a - 1) u uᵀ`, so
+    -- `det (S a) = 1 + (a - 1) |u|² = a`.
+    have hstretch : ∀ a : ℝ, ∃ S : Rn n →L[ℝ] Rn n,
+        (∀ w, S w = w + ((a - 1) * inner ℝ u w) • u) ∧
+          LinearMap.det (S : Rn n →ₗ[ℝ] Rn n) = a := by
+      intro a
+      classical
+      refine ⟨ContinuousLinearMap.id ℝ (Rn n) + (a - 1) • (innerSL ℝ u).smulRight u,
+        fun w ↦ by simp [mul_smul], ?_⟩
+      rw [← LinearMap.det_toMatrix (EuclideanSpace.basisFun (Fin n) ℝ).toBasis]
+      have h : LinearMap.toMatrix (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+          (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+          ((ContinuousLinearMap.id ℝ (Rn n) + (a - 1) • (innerSL ℝ u).smulRight u :
+            Rn n →L[ℝ] Rn n) : Rn n →ₗ[ℝ] Rn n) =
+          1 + Matrix.replicateCol Unit (fun i ↦ (a - 1) * u i) *
+            Matrix.replicateRow Unit (fun j ↦ u j) := by
+        ext i j
+        simp [LinearMap.toMatrix_apply, Matrix.one_apply, Matrix.mul_apply,
+          EuclideanSpace.inner_single_right]
+        ring
+      have h1 : ∑ i, u i ^ 2 = 1 := by
+        have h2 := real_inner_self_eq_norm_sq u
+        rw [hu, PiLp.inner_apply] at h2
+        simpa using h2
+      rw [h, Matrix.det_one_add_replicateCol_mul_replicateRow, dotProduct]
+      simp_rw [mul_left_comm _ (a - 1), ← sq, ← Finset.mul_sum, h1]
+      ring
+    choose S hS hdet using hstretch
+    have hSS : ∀ a b w, S a (S b w) = S (a * b) w := by
+      intro a b w
+      simp only [hS, inner_add_right, inner_smul_right, huu]
+      rw [add_assoc, ← add_smul]
+      congr 2
+      ring
+    have hS1 : ∀ w, S 1 w = w := by intro w; simp [hS]
+    have hAS : ∀ a w, A (S a w) = A w := by
+      intro a w; rw [hS, map_add, map_smul, hAu, smul_zero, add_zero]
+    have hSle : ∀ a, 1 ≤ a → ∀ w, ‖S a w‖ ≤ a * ‖w‖ := by
+      intro a ha w
+      rw [hS]
+      calc ‖w + ((a - 1) * inner ℝ u w) • u‖ ≤ ‖w‖ + ‖((a - 1) * inner ℝ u w) • u‖ :=
+            norm_add_le _ _
+        _ = ‖w‖ + |a - 1| * |inner ℝ u w| := by
+            rw [norm_smul, hu, mul_one, Real.norm_eq_abs, abs_mul]
+        _ ≤ ‖w‖ + (a - 1) * ‖w‖ := by
+            rw [abs_of_nonneg (by linarith)]
+            gcongr
+            exact (abs_real_inner_le_norm u w).trans (by rw [hu, one_mul])
+        _ = a * ‖w‖ := by ring
+    -- `G ∘ S δ⁻¹` maps `S δ (P)` onto `G (P)` and is `(‖A‖ + 1)`-Lipschitz there, since
+    -- `A ∘ S δ⁻¹ = A` and `‖S δ⁻¹ w‖ ≤ δ⁻¹ ‖w‖`.
+    have hδ0 : (δ : ℝ) ≠ 0 := by exact_mod_cast hδ.ne'
+    have hinv : ∀ z, S (δ : ℝ)⁻¹ (S δ z) = z := by
+      intro z; rw [hSS, inv_mul_cancel₀ hδ0, hS1]
+    have hlip : LipschitzOnWith (‖A‖₊ + 1) (G ∘ S (δ : ℝ)⁻¹) (S δ '' P) := by
+      refine LipschitzOnWith.of_dist_le_mul fun w hw w' hw' ↦ ?_
+      obtain ⟨z, hz, rfl⟩ := hw
+      obtain ⟨z', hz', rfl⟩ := hw'
+      simp only [Function.comp_apply, hinv, dist_eq_norm]
+      have hzz : z - z' = S (δ : ℝ)⁻¹ (S δ z - S δ z') := by rw [map_sub, hinv, hinv]
+      have h1 : ‖A (z - z')‖ ≤ ‖A‖ * ‖S δ z - S δ z'‖ := by
+        rw [hzz, hAS]; exact A.le_opNorm _
+      have h2 : (δ : ℝ) * ‖z - z'‖ ≤ ‖S δ z - S δ z'‖ := by
+        rw [hzz]
+        calc (δ : ℝ) * ‖S (δ : ℝ)⁻¹ (S δ z - S δ z')‖
+            ≤ δ * ((δ : ℝ)⁻¹ * ‖S δ z - S δ z'‖) := by
+              gcongr
+              exact hSle _ (one_le_inv₀ (by exact_mod_cast hδ) |>.2 (by exact_mod_cast hδ1)) _
+          _ = ‖S δ z - S δ z'‖ := by rw [← mul_assoc, mul_inv_cancel₀ hδ0, one_mul]
+      calc ‖G z - G z'‖ ≤ ‖A (z - z')‖ + ‖G z - G z' - A (z - z')‖ := norm_le_insert' _ _
+        _ ≤ ‖A‖ * ‖S δ z - S δ z'‖ + δ * ‖z - z'‖ := add_le_add h1 (hGA z hz z' hz')
+        _ ≤ ‖A‖ * ‖S δ z - S δ z'‖ + ‖S δ z - S δ z'‖ := by linarith
+        _ = ((‖A‖₊ + 1 : ℝ≥0) : ℝ) * ‖S δ z - S δ z'‖ := by push_cast; ring
+    have himage : (G ∘ S (δ : ℝ)⁻¹) '' (S δ '' P) = G '' P := by
+      rw [image_image]; simp only [Function.comp_apply, hinv]
+    -- `Hⁿ = Lⁿ` on `ℝⁿ` and `Lⁿ(S δ (P)) = |det (S δ)| Lⁿ(P) = δ Lⁿ(P)`.
+    calc μHE[n] (G '' P) = μHE[n] ((G ∘ S (δ : ℝ)⁻¹) '' (S δ '' P)) := by rw [himage]
+      _ ≤ ((‖A‖₊ + 1 : ℝ≥0) : ℝ≥0∞) ^ n * μHE[n] (S δ '' P) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hlip
+      _ = ((‖A‖₊ + 1 : ℝ≥0) : ℝ≥0∞) ^ n * (ENNReal.ofReal |(δ : ℝ)| * volume P) := by
+          rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+            Measure.addHaar_image_continuousLinearMap, hdet]
+      _ = _ := by
+          rw [abs_of_nonneg δ.coe_nonneg, ENNReal.ofReal_coe_nnreal]; push_cast; ring
+  -- The critical image is `Hⁿ`-null: its part over `B_m(0)` has measure `≤ ε Lⁿ(B_m(0))` for
+  -- every `ε ∈ (0, 1]`.
+  have hN₀ : μHE[n] (G '' {x | ¬ Function.Injective (fderiv ℝ G x)}) = 0 := by
+    set C : Set (Rn n) := {x | ¬ Function.Injective (fderiv ℝ G x)}
+    have hball : ∀ m : ℕ, μHE[n] (G '' (C ∩ Metric.ball 0 m)) = 0 := by
+      intro m
+      have hbound : ∀ ε : ℝ≥0, 0 < ε → ε ≤ 1 →
+          μHE[n] (G '' (C ∩ Metric.ball 0 m)) ≤ ε * volume (Metric.ball (0 : Rn n) m) := by
+        intro ε hε hε1
+        -- Pieces `C ∩ B_m(0) ∩ t k` on which `G` is `ε / (‖A k‖ + 1)ⁿ`-close to `A k = DG(y)`.
+        obtain ⟨t, A, t_disj, t_meas, t_cover, ht, hAf⟩ :=
+          exists_partition_approximatesLinearOn_of_hasFDerivWithinAt G (C ∩ Metric.ball 0 m)
+            (fderiv ℝ G)
+            (fun x _ ↦ (hG.differentiable one_ne_zero x).hasFDerivAt.hasFDerivWithinAt)
+            (fun A ↦ ε / (‖A‖₊ + 1) ^ n) fun A ↦ (div_pos hε (by positivity)).ne'
+        have hpiece : ∀ k, μHE[n] (G '' (C ∩ Metric.ball 0 m ∩ t k)) ≤
+            ε * volume (Metric.ball (0 : Rn n) m ∩ t k) := by
+          intro k
+          rcases (C ∩ Metric.ball (0 : Rn n) m).eq_empty_or_nonempty with h | h
+          · simp [h]
+          obtain ⟨y, hy, hAy⟩ := hAf h k
+          have hc : (1 : ℝ≥0) ≤ (‖A k‖₊ + 1) ^ n := one_le_pow₀ (le_add_of_nonneg_left zero_le)
+          calc μHE[n] (G '' (C ∩ Metric.ball 0 m ∩ t k))
+              ≤ (((‖A k‖₊ + 1) ^ n * (ε / (‖A k‖₊ + 1) ^ n) : ℝ≥0) : ℝ≥0∞) *
+                  volume (C ∩ Metric.ball 0 m ∩ t k) :=
+                hlocal (A k) _ _ (hAy ▸ hy.1) (div_pos hε (zero_lt_one.trans_le hc))
+                  (div_le_one_of_le₀ (hε1.trans hc) zero_le) (ht k)
+            _ ≤ ε * volume (Metric.ball (0 : Rn n) m ∩ t k) := by
+                rw [mul_div_cancel₀ _ (zero_lt_one.trans_le hc).ne']
+                gcongr
+                exact inter_subset_right
+        -- Summing over the disjoint measurable `t k`.
+        calc μHE[n] (G '' (C ∩ Metric.ball 0 m))
+            ≤ μHE[n] (⋃ k, G '' (C ∩ Metric.ball 0 m ∩ t k)) := by
+              refine measure_mono ?_
+              rw [← image_iUnion, ← inter_iUnion]
+              exact image_mono (subset_inter subset_rfl t_cover)
+          _ ≤ ∑' k, μHE[n] (G '' (C ∩ Metric.ball 0 m ∩ t k)) := measure_iUnion_le _
+          _ ≤ ∑' k, (ε : ℝ≥0∞) * volume (Metric.ball (0 : Rn n) m ∩ t k) :=
+              ENNReal.tsum_le_tsum hpiece
+          _ = ε * volume (⋃ k, Metric.ball (0 : Rn n) m ∩ t k) := by
+              rw [ENNReal.tsum_mul_left, measure_iUnion
+                (fun i j hij ↦ (t_disj hij).mono inter_subset_right inter_subset_right)
+                fun k ↦ measurableSet_ball.inter (t_meas k)]
+          _ ≤ ε * volume (Metric.ball (0 : Rn n) m) := by
+              gcongr
+              exact iUnion_subset fun k ↦ inter_subset_left
+      -- Let `ε ↓ 0`; `Lⁿ(B_m(0)) < ∞`.
+      have hlim : Tendsto (fun ε : ℝ≥0 ↦ (ε : ℝ≥0∞) * volume (Metric.ball (0 : Rn n) m))
+          (𝓝[>] 0) (𝓝 0) := by
+        have h1 : Tendsto (fun ε : ℝ≥0 ↦ (ε : ℝ≥0∞)) (𝓝[>] 0) (𝓝 0) := by
+          simpa using (ENNReal.continuous_coe.tendsto (0 : ℝ≥0)).mono_left nhdsWithin_le_nhds
+        simpa using ENNReal.Tendsto.mul_const h1
+          (Or.inr (measure_ball_lt_top (μ := (volume : Measure (Rn n))) (x := 0) (r := m)).ne)
+      refine le_antisymm (ge_of_tendsto hlim ?_) zero_le
+      filter_upwards [Ioc_mem_nhdsGT one_pos] with ε hε
+      exact hbound ε hε.1 hε.2
+    have hU : G '' C = ⋃ m : ℕ, G '' (C ∩ Metric.ball 0 m) := by
+      rw [← image_iUnion, ← inter_iUnion, Metric.iUnion_ball_nat, inter_univ]
+    rw [hU]
+    exact measure_iUnion_null hball
+  -- A radius `σ x > 0` at every `x`, with `G(B_{σ x}(x))` a submanifold when `DG(x)` is injective.
+  have hradius : ∀ x : Rn n, ∃ σ : ℝ, 0 < σ ∧
+      (Function.Injective (fderiv ℝ G x) → IsC1Submanifold n (G '' Metric.ball x σ)) := by
+    intro x
+    by_cases hx : Function.Injective (fderiv ℝ G x)
+    · obtain ⟨σ, hσ, hS⟩ := Submission.c1_regular_point_ball_image_isC1Submanifold n p G hG x hx
+      exact ⟨σ, hσ, fun _ ↦ hS⟩
+    · exact ⟨1, one_pos, fun h ↦ absurd h hx⟩
+  choose σ hσ hS using hradius
+  -- Lindelöf: the balls around the points of a countable `T` cover all regular points.
+  obtain ⟨T, hTR, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable
+    {x | Function.Injective (fderiv ℝ G x)} (fun x ↦ Metric.ball x (σ x))
+    fun x _ ↦ Metric.isOpen_ball
+  -- Enumerate `{∅} ∪ {G(B_{σ x}(x)) : x ∈ T}` by `ℕ`.
+  obtain ⟨N, hN⟩ := ((hTc.image fun x ↦ G '' Metric.ball x (σ x)).insert ∅).exists_eq_range
+    (insert_nonempty _ _)
+  refine ⟨G '' {x | ¬ Function.Injective (fderiv ℝ G x)}, N, hN₀, fun k ↦ ?_, ?_⟩
+  · have hk : N k ∈ insert ∅ ((fun x ↦ G '' Metric.ball x (σ x)) '' T) := by
+      rw [hN]
+      exact mem_range_self k
+    rcases hk with hk | ⟨x, hxT, hx⟩
+    · rw [hk]
+      exact fun y hy ↦ absurd hy (notMem_empty y)
+    · rw [← hx]
+      exact hS x (hTR hxT)
+  · rintro _ ⟨z, rfl⟩
+    by_cases hz : Function.Injective (fderiv ℝ G z)
+    · have hzT : z ∈ ⋃ x ∈ {x | Function.Injective (fderiv ℝ G x)}, Metric.ball x (σ x) :=
+        mem_biUnion hz (Metric.mem_ball_self (hσ z))
+      rw [← hTU] at hzT
+      obtain ⟨x, hxT, hzx⟩ := mem_iUnion₂.1 hzT
+      have hx : G '' Metric.ball x (σ x) ∈ range N := by
+        rw [← hN]
+        exact mem_insert_of_mem _ (mem_image_of_mem _ hxT)
+      obtain ⟨k, hk⟩ := hx
+      exact Or.inr (mem_iUnion.2 ⟨k, by rw [hk]; exact mem_image_of_mem G hzx⟩)
+    · exact Or.inl ⟨z, hz, rfl⟩
 /-- **Lusin's theorem for `Lⁿ` with closed sets and finite-dimensional targets** (Simon Ch. 2,
 proof of Theorem 1.5, `chapter-02.txt` lines 248–251: Lusin's theorem "applies to sets of
 infinite measure for `Lⁿ`"; cf. Ch. 1, Theorems 1.15 and 1.17): for a Borel `u : ℝⁿ → F`, `F`
@@ -3853,5 +4190,58 @@ theorem Submission.lipschitz_c1_approximation : ∀ (n p : ℕ) (f : Rn n → Rn
             _ = p * (ε / p) := by
               rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
             _ ≤ ε := ENNReal.mul_div_le
+
+/-- **Simon Ch. 3, Lemma 1.2 (pp. 69–70)** (`chapter-03.txt` lines 25–65).
+"If": SimonGMT's `countablyRectifiable_of_submanifold_cover`, since `IsC1Submanifold n` is
+`Chapter02.IsSimonSubmanifold 1` with the conditions reordered. "Only if": `C¹` approximation
+(Ch. 2, 1.5) gives `C¹` maps `Gⱼᵢ` with `Lⁿ{Fⱼ ≠ Gⱼᵢ} < 1/i`; with `Zⱼ = ℝⁿ ∖ ⋃ᵢ {Fⱼ = Gⱼᵢ}`,
+`Fⱼ(ℝⁿ) ⊆ Fⱼ(Zⱼ) ∪ ⋃ᵢ Gⱼᵢ(ℝⁿ)` (erratum: (1) is printed as `graph Fⱼ ⊂ Eⱼ ∩ …`) and
+`Hⁿ(Fⱼ(Zⱼ)) = 0`; each `Gⱼᵢ(ℝⁿ)` is an `Hⁿ`-null set plus countably many embedded `C¹`
+submanifolds. The case `n = 0` needs no separate treatment. -/
+theorem Submission.submanifoldCoverCharacterization_holds : SubmanifoldCoverCharacterization := by
+  intro n ℓ M
+  constructor
+  · rintro ⟨M₀, hM₀, F, hF, hM⟩
+    choose K hK using hF
+    choose G hG hGF using fun j (i : ℕ) ↦ Submission.lipschitz_c1_approximation n (n + ℓ) (F j)
+      (K j) (hK j) (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
+    -- `Zⱼ` has measure `< 1/i` for every `i`, so `Lⁿ(Zⱼ) = 0` and `Hⁿ(Fⱼ(Zⱼ)) = 0`.
+    have hZ : ∀ j, volume {x | ∀ i, F j x ≠ G j i x} = 0 := fun j ↦ by
+      by_contra h
+      obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt h
+      have hsub : {x | ∀ i, F j x ≠ G j i x} ⊆
+          {x | F j x ≠ G j i x ∨ fderiv ℝ (F j) x ≠ fderiv ℝ (G j i) x} :=
+        fun x hx ↦ Or.inl (hx i)
+      exact lt_irrefl _ (((measure_mono hsub).trans_lt (hGF j i)).trans hi)
+    have hE : ∀ j, μHE[n] (F j '' {x | ∀ i, F j x ≠ G j i x}) = 0 := fun j ↦ by
+      refine le_antisymm ?_ zero_le
+      calc _ ≤ (K j : ℝ≥0∞) ^ n * μHE[n] {x | ∀ i, F j x ≠ G j i x} :=
+            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+              (hK j).lipschitzOnWith
+        _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hZ j, mul_zero]
+    -- Each `Gⱼᵢ(ℝⁿ)` is covered by an `Hⁿ`-null set `Cⱼᵢ` and submanifolds `Sⱼᵢₖ`.
+    choose C S hC hS hGS using fun j i ↦
+      Submission.c1_range_null_union_submanifolds n (n + ℓ) (G j i) (hG j i)
+    refine ⟨M₀ ∪ (⋃ j, F j '' {x | ∀ i, F j x ≠ G j i x}) ∪ ⋃ j, ⋃ i, C j i,
+      fun k ↦ S k.unpair.1 k.unpair.2.unpair.1 k.unpair.2.unpair.2,
+      measure_union_null (measure_union_null hM₀ (measure_iUnion_null hE))
+        (measure_iUnion_null fun j ↦ measure_iUnion_null (hC j)),
+      fun k ↦ hS _ _ _, fun y hy ↦ ?_⟩
+    rcases hM hy with hy | hy
+    · exact Or.inl (Or.inl (Or.inl hy))
+    obtain ⟨j, z, rfl⟩ := mem_iUnion.1 hy
+    rcases em (∃ i, F j z = G j i z) with ⟨i, hi⟩ | hz
+    · rw [hi]
+      rcases hGS j i (mem_range_self z) with h | h
+      · exact Or.inl (Or.inr (mem_iUnion₂.2 ⟨j, i, h⟩))
+      obtain ⟨k, hk⟩ := mem_iUnion.1 h
+      exact Or.inr (mem_iUnion.2
+        ⟨Nat.pair j (Nat.pair i k), by simpa only [Nat.unpair_pair] using hk⟩)
+    · exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨j, z, fun i hi ↦ hz ⟨i, hi⟩, rfl⟩)))
+  · rintro ⟨N₀, N, hN₀, hN, hM⟩
+    refine Poincare.SimonGMT.Chapter03.countablyRectifiable_of_submanifold_cover hN₀
+      (fun j ↦ ⟨le_rfl, fun y hy ↦ ?_⟩) hM
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himage, hproper, hD⟩ := hN j y hy
+    exact ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himage, hproper, hD⟩
 
 end GMT.Ch03
