@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b3796f22107035b4e493249d4660459f789da9a67c027b56dfb4673f6b6284dd",
+  "git_delta": {
+    "base_commit": "b1f7ad57dc2d4b5bf68702805f4f51beebe5d575",
+    "candidate_commit": "f6358e3d52d54faa63a8cbf3a4230ed7905df8da",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_plane_map_volume",
+    "diff_sha256": "e16695e10a51b806d95b10fe641c3d289ab4ec858fedd8f8b7b71e2746d1bffd",
+    "source_sha256": "ffe952e84ee4cb18228c2bf0ecfa1f3fbed663107ea10667c15b7ee4ce4feb7a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_plane_map_volume",
+      "statement": "∀ (P n : ℕ) (v : Fin n → Euclid P) (w : Euclid P) (pL : Euclid P →L[ℝ] Euclid n), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → Measure.map pL ((μHE[n]).restrict {y : Euclid P | y - w ∈ Submodule.span ℝ (Set.range v)}) = (volume : Measure (Euclid n))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
