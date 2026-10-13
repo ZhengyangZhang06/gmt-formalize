@@ -1402,6 +1402,24 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Change of variables along an isometry** (the Jacobian-one case of the area formula behind
+Simon Ch. 6, 2.24(3) and 3.3–3.9).  An isometry `f : ℝᴾ → ℝ^Q`, not necessarily linear, is a
+closed and hence measurable embedding, and `f_#Hᵈ = Hᵈ⌞f(ℝᴾ)`; so `f_#(Hᵈ⌞A) = Hᵈ⌞f(A)` for every
+`A ⊆ ℝᴾ`, and `∫_{f(A)} g dHᵈ = ∫_A g ∘ f dHᵈ` for every real or `[0, ∞]`-valued `g`, with no
+measurability or integrability assumptions. -/
+theorem Submission.dor_lmb_fc_dtop_ip_isometry_change_of_variables : ∀ (P Q d : ℕ) (f : Euclid P → Euclid Q), Isometry f → MeasurableEmbedding f ∧ (∀ A : Set (Euclid P), Measure.map f ((μHE[d] : Measure (Euclid P)).restrict A) = (μHE[d] : Measure (Euclid Q)).restrict (f '' A)) ∧ (∀ (A : Set (Euclid P)) (g : Euclid Q → ℝ), ∫ y in f '' A, g y ∂μHE[d] = ∫ x in A, g (f x) ∂μHE[d]) ∧ ∀ (A : Set (Euclid P)) (g : Euclid Q → ℝ≥0∞), ∫⁻ y in f '' A, g y ∂μHE[d] = ∫⁻ x in A, g (f x) ∂μHE[d] := by
+  intro P Q d f hf
+  have hfe : MeasurableEmbedding f := hf.isClosedEmbedding.measurableEmbedding
+  -- `f_#(Hᵈ⌞A) = (f_#Hᵈ)⌞f(A) = (Hᵈ⌞range f)⌞f(A) = Hᵈ⌞f(A)`, using `f⁻¹(f(A)) = A`
+  have hmap : ∀ A : Set (Euclid P), Measure.map f ((μHE[d] : Measure (Euclid P)).restrict A) =
+      (μHE[d] : Measure (Euclid Q)).restrict (f '' A) := by
+    intro A
+    rw [← Measure.restrict_restrict_of_subset (image_subset_range f A),
+      ← hf.map_euclideanHausdorffMeasure, hfe.restrict_map, hf.injective.preimage_image]
+  refine ⟨hfe, hmap, fun A g => ?_, fun A g => ?_⟩
+  · rw [← hmap A, hfe.integral_map]
+  · rw [← hmap A, hfe.lintegral_map]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
