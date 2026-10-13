@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1a4e132f6cc2a5a00dd09c438e16af4ebd0fb8d8875c058ee11e1e70069a4e16",
+  "git_delta": {
+    "base_commit": "27c003d1da814acdd91b6a9eded81cb8256dca2f",
+    "candidate_commit": "b289dab3990a2ea6e3a0b81f5c794450aa3af23a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bh_l1loc_transfer",
+    "diff_sha256": "e33d06839fb85613904c80e3f08b4a4737923a19b6b20b8ebefd3fb05421192a",
+    "source_sha256": "1930b94f96edc9b357f68d1f1fea28d807303d9cc76c61d351839a42fb8753bd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bh_l1loc_transfer",
+      "statement": "∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))) (F₀ : Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → MeasurableSet F₀ → (∀ R : ℝ, Tendsto (fun k => volume (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) R)) atTop (𝓝 0)) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z in Fs k, f z) atTop (𝓝 (∫ z in F₀, f z))) ∧ (∀ s : ℝ, Tendsto (fun k => volume (Fs k ∩ ball (0 : Euclid (m + 1)) s)) atTop (𝓝 (volume (F₀ ∩ ball (0 : Euclid (m + 1)) s)))) ∧ ∀ s : ℝ, Tendsto (fun k => volume (ball (0 : Euclid (m + 1)) s \\ Fs k)) atTop (𝓝 (volume (ball (0 : Euclid (m + 1)) s \\ F₀)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
