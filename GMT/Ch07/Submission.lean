@@ -2892,6 +2892,43 @@ theorem Submission.doraggt_ae_approxTangent_transfer : ∀ (P n : ℕ) (W A B : 
     (hBfin _ (isCompact_closedBall x (ε / 2)) hsub) (hxAB hxW fun h => h.2 hxB)
     (hxBA hxW fun h => h.2 hxA)
 
+/-- **A countably `n`-rectifiable set has approximate tangent planes `Hⁿ`-a.e.** (Simon Ch. 3,
+Theorem 1.6 "⇒", chapter-03.txt lines 109–143, with Lemma 1.2 and Remark 1.3, lines 25–76).  Let
+`M ⊆ ℝᴾ` be Borel and countably `n`-rectifiable with `Hⁿ(M ∩ K) < ∞` for every compact `K`.  Up to
+an `Hⁿ`-null set, `M` is covered by Borel pieces `N_k = g_k(B_{r_k}(c_k))` of finite measure, with
+`g_k` of class `C¹` and `m_k|a − b| ≤ |g_k(a) − g_k(b)|` on the ball (Lemma 1.2).  `N_k` has the
+approximate tangent plane `Dg_k(z)(ℝⁿ)` at each `g_k(z)`, and by the upper density theorem `M` and
+`N_k` have the same approximate tangent planes at `Hⁿ`-a.e. point of `M ∩ N_k`.  The countably many
+exceptional null sets combine, so `T_w M` exists for `Hⁿ`-a.e. `w ∈ M`.  The pieces need not be
+disjoint (Remark 1.3). -/
+theorem Submission.codim1_rdo_rectifiable_ae_approxTangent : ∀ (P n : ℕ) (M : Set (Euclid P)), MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → ∀ᵐ w ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M w Q := by
+  intro P n M hM hrect hloc
+  -- Step 1, `M` is covered up to an `Hⁿ`-null set by the `C¹` pieces `N_k = g_k(B_{r_k}(c_k))`.
+  obtain ⟨g, c, r, m, hg, hm, hlow, hmeas, hfin, hnull⟩ :=
+    Submission.codim1_rdo_rectifiable_c1_cover P n M hrect
+  -- Step 2, `M` and `N_k` have the same approximate tangent planes `Hⁿ`-a.e. on `M ∩ N_k`.
+  have hpiece : ∀ k, ∀ᵐ w ∂(μHE[n] : Measure (Euclid P)), w ∈ (univ : Set (Euclid P)) → w ∈ M →
+      w ∈ g k '' ball (c k) (r k) → ∀ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n M w Q ↔
+          HasApproximateTangentSpaceAt n (g k '' ball (c k) (r k)) w Q :=
+    fun k => Submission.doraggt_ae_approxTangent_transfer P n univ M (g k '' ball (c k) (r k))
+      isOpen_univ hM (hmeas k) (fun K hK _ => hloc K hK)
+      (fun K _ _ => ne_top_of_le_ne_top (hfin k) (measure_mono inter_subset_left))
+  -- Step 3, the exceptional sets of Steps 1 and 2 form countably many `Hⁿ`-null sets.
+  have hall := ae_all_iff.2 hpiece
+  have hcov : ∀ᵐ w ∂(μHE[n] : Measure (Euclid P)), w ∉ M \ ⋃ k, g k '' ball (c k) (r k) :=
+    measure_eq_zero_iff_ae_notMem.1 hnull
+  -- Step 4, off them, `w = g_k(z) ∈ M ∩ N_k` for some `k`, and `T_w M = T_w N_k = Dg_k(z)(ℝⁿ)`.
+  rw [ae_restrict_iff' hM]
+  filter_upwards [hall, hcov] with w hw hw' hwM
+  have hU : w ∈ ⋃ k, g k '' ball (c k) (r k) := by
+    by_contra h
+    exact hw' ⟨hwM, h⟩
+  obtain ⟨k, z, hz, rfl⟩ := mem_iUnion.1 hU
+  exact ⟨_, (hw k (mem_univ _) hwM ⟨z, hz, rfl⟩ _).2
+    (Submission.codim1_rdo_c1_piece_approxTangent P n (g k) (c k) (r k) (m k) (hg k) (hm k)
+      (hlow k) z hz)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
