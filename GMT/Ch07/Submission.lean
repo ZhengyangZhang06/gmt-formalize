@@ -721,6 +721,105 @@ theorem Submission.dorag_tes_gv_cutoff_extension : ∀ (n m : ℕ), 0 < n → �
       rw [hev.fderiv_eq, fderiv_of_notMem_tsupport ℝ hns]
       simp
 
+/-- **First-variation bound for vertical cutoff fields** (Simon Ch. 5, proof of 4.5: the
+first-variation identity (6) tested with the vertical field `X = ζ̃ e`).  Let `R` satisfy
+`δV(X) = −∫ X · H dμ` for `X ∈ C¹_c` with `spt X ⊆ W ⊆ U`, where `|H| ≤ κ`, `μ = μ_V`, and
+`x ↦ p_{TₓM}` is `μ`-measurable.  Let `B_r(ξ) ⊆ W`, `|Py| ≤ |y|`, and
+`|x − ξ|² ≤ |P(x − ξ)|² + r²/16` on `spt μ ∩ B_r(ξ)`.  If `ζ ∈ C¹_c(ℝⁿ)`,
+`spt ζ ⊆ B̆ⁿ_{r/2}(0)`, `‖Dζ‖ ≤ G` and `|e| ≤ 1`, then `u(x) = Dζ(P(x − ξ))(P(p_{TₓM} e))` is
+`μ`-integrable on `B_r(ξ)` and `|∫_{B_r(ξ)} u dμ| ≤ G (κr/2) μ(B_r(ξ))`.
+Proof: extend `ζ` to the cutoff `ψ` of `dorag_tes_gv_cutoff_extension`, test with `X = ψ e`,
+compute `δV(X) = ∫ Dψ(p_{TₓM} e) dμ` by `dorag_tes_gv_vertical_field_first_variation`, localize
+to `B_r(ξ)` (where `Dψ = Dζ(P(· − ξ)) ∘ P` on the conull set `spt μ`), and bound
+`|ψ e · H| ≤ (Gr/2) κ 1_{B_r(ξ)}`. -/
+theorem Submission.dorag_tes_gv_vertical_variation_bound : ∀ (n m : ℕ), 0 < n → ∀ (U W : Set (Euclid m)) (R : IMRep U n) (H : Euclid m → Euclid m) (κ : ℝ) (ξ : Euclid m) (r : ℝ) (P : Euclid m →L[ℝ] Euclid n) (ζ : Euclid n → ℝ) (G : ℝ) (e : Euclid m), W ⊆ U → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid m → Euclid m, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → 0 < r → closedBall ξ r ⊆ W → (∀ y, ‖P y‖ ≤ ‖y‖) → (∀ x ∈ R.measure.support ∩ closedBall ξ r, ‖x - ξ‖ ^ 2 ≤ ‖P (x - ξ)‖ ^ 2 + r ^ 2 / 16) → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) (r / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → ‖e‖ ≤ 1 → IntegrableOn (fun x => fderiv ℝ ζ (P (x - ξ)) (P ((approxTangentPlane n R.carrier x).starProjection e))) (closedBall ξ r) R.measure ∧ ENNReal.ofReal |∫ x in closedBall ξ r, fderiv ℝ ζ (P (x - ξ)) (P ((approxTangentPlane n R.carrier x).starProjection e)) ∂R.measure| ≤ ENNReal.ofReal G * (ENNReal.ofReal (κ * r / 2) * R.measure (closedBall ξ r)) := by
+  intro n m hn U W R H κ ξ r P ζ G e hWU hHκ hFV hp hr hBW hPle hspt hζ hζc hζs hζG he
+  -- Step 1: `G, κ ≥ 0`.
+  have hG : 0 ≤ G := (norm_nonneg _).trans (hζG 0)
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  -- Step 2: `μ(B_r(ξ)) < ∞`, since `B_r(ξ)` is a compact subset of `U`.
+  have hfin : R.measure (closedBall ξ r) ≠ ∞ := by
+    unfold IMRep.measure
+    rw [withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall ξ r) (hBW.trans hWU)
+  -- Step 3: the cutoff `ψ` extending `ζ ∘ P(· − ξ)`.
+  obtain ⟨ψ, hψ, hψc, hψs, hψb, hψd⟩ :=
+    Submission.dorag_tes_gv_cutoff_extension n m hn ξ r P ζ G hr hζ hζc hζs hζG
+  have hψ0 : ∀ x, x ∉ closedBall ξ r → ψ x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (hψs h)
+  -- Step 4: `X = ψ e` is an admissible test field.
+  have hX : ContDiff ℝ 1 (fun x => ψ x • e) := hψ.smul contDiff_const
+  have hXc : HasCompactSupport (fun x => ψ x • e) := hψc.smul_right
+  have hXs : tsupport (fun x => ψ x • e) ⊆ W :=
+    (tsupport_smul_subset_left _ _).trans (hψs.trans hBW)
+  have hfv : R.firstVariation (fun x => ψ x • e) =
+      -∫ x, inner ℝ (ψ x • e) (H x) ∂R.measure := hFV _ hX hXc hXs
+  -- Step 5: `δV(ψ e) = ∫ Dψ(x)(p_{TₓM} e) dμ`.
+  rw [Submission.dorag_tes_gv_vertical_field_first_variation m n U R ψ e
+    (hψ.differentiable one_ne_zero)] at hfv
+  -- Step 6: localization to `B_r(ξ)`, where `Dψ = Dζ(P(· − ξ)) ∘ P` on `spt μ`.
+  have hloc : ∫ x, fderiv ℝ ψ x ((approxTangentPlane n R.carrier x).starProjection e) ∂R.measure =
+      ∫ x in closedBall ξ r, fderiv ℝ ζ (P (x - ξ))
+        (P ((approxTangentPlane n R.carrier x).starProjection e)) ∂R.measure := by
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := closedBall ξ r)]
+    · refine setIntegral_congr_ae measurableSet_closedBall ?_
+      filter_upwards [Measure.support_mem_ae (μ := R.measure)] with x hxs hxB
+      rw [hψd x (hspt x ⟨hxs, hxB⟩), ContinuousLinearMap.comp_apply]
+    · intro x hx
+      rw [fderiv_of_notMem_tsupport ℝ (fun h => hx (hψs h)), zero_apply]
+  -- Step 8: `|ψ e · H| ≤ (Gr/2) κ 1_{B_r(ξ)}`, hence the bound on `∫ ψ e · H dμ`.
+  have hpt : ∀ x, ‖inner ℝ (ψ x • e) (H x)‖ ≤
+      (closedBall ξ r).indicator (fun _ => G * (r / 2) * κ) x := by
+    intro x
+    by_cases hx : x ∈ closedBall ξ r
+    · rw [indicator_of_mem hx, real_inner_smul_left, norm_mul, Real.norm_eq_abs,
+        Real.norm_eq_abs]
+      have heH : |inner ℝ e (H x)| ≤ κ :=
+        calc |inner ℝ e (H x)| ≤ ‖e‖ * ‖H x‖ := abs_real_inner_le_norm _ _
+          _ ≤ 1 * κ := mul_le_mul he (hHκ x) (norm_nonneg _) zero_le_one
+          _ = κ := one_mul κ
+      exact mul_le_mul (hψb x) heH (abs_nonneg _) (by positivity)
+    · rw [indicator_of_notMem hx, hψ0 x hx, zero_smul, inner_zero_left, norm_zero]
+  have hbd : |∫ x, inner ℝ (ψ x • e) (H x) ∂R.measure| ≤
+      G * (r / 2) * κ * R.measure.real (closedBall ξ r) := by
+    rw [← Real.norm_eq_abs]
+    calc ‖∫ x, inner ℝ (ψ x • e) (H x) ∂R.measure‖
+        ≤ ∫ x, (closedBall ξ r).indicator (fun _ => G * (r / 2) * κ) x ∂R.measure :=
+          norm_integral_le_of_norm_le
+            ((integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hfin))
+            (Eventually.of_forall hpt)
+      _ = G * (r / 2) * κ * R.measure.real (closedBall ξ r) := by
+          rw [integral_indicator_const _ measurableSet_closedBall, smul_eq_mul, mul_comm]
+  -- Step 10: `u` is a.e. strongly measurable and bounded by `G`, hence integrable on `B_r(ξ)`.
+  have hmeas : AEStronglyMeasurable (fun x => fderiv ℝ ζ (P (x - ξ))
+      (P ((approxTangentPlane n R.carrier x).starProjection e))) R.measure := by
+    have hDζ : Continuous fun x : Euclid m => fderiv ℝ ζ (P (x - ξ)) :=
+      (hζ.continuous_fderiv one_ne_zero).comp
+        (P.continuous.comp (continuous_id.sub continuous_const))
+    exact isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+      (hDζ.aestronglyMeasurable.prodMk
+        (P.continuous.comp_aestronglyMeasurable (hp.apply_continuousLinearMap e)))
+  have hint : IntegrableOn (fun x => fderiv ℝ ζ (P (x - ξ))
+      (P ((approxTangentPlane n R.carrier x).starProjection e))) (closedBall ξ r) R.measure := by
+    refine Measure.integrableOn_of_bounded (M := G) hfin hmeas (Eventually.of_forall fun x => ?_)
+    calc ‖fderiv ℝ ζ (P (x - ξ)) (P ((approxTangentPlane n R.carrier x).starProjection e))‖
+        ≤ ‖fderiv ℝ ζ (P (x - ξ))‖ *
+            ‖P ((approxTangentPlane n R.carrier x).starProjection e)‖ :=
+          ContinuousLinearMap.le_opNorm _ _
+      _ ≤ G * 1 := mul_le_mul (hζG _)
+          ((hPle _).trans ((Submodule.norm_starProjection_apply_le _ _).trans he))
+          (norm_nonneg _) hG
+      _ = G := mul_one G
+  -- Steps 7 and 9: `∫_{B_r(ξ)} u dμ = −∫ ψ e · H dμ`, then pass to `ℝ≥0∞`.
+  refine ⟨hint, ?_⟩
+  rw [← hloc, hfv, abs_neg]
+  calc ENNReal.ofReal |∫ x, inner ℝ (ψ x • e) (H x) ∂R.measure|
+      ≤ ENNReal.ofReal (G * (κ * r / 2 * R.measure.real (closedBall ξ r))) :=
+        ENNReal.ofReal_le_ofReal (hbd.trans_eq (by ring))
+    _ = ENNReal.ofReal G * (ENNReal.ofReal (κ * r / 2) * R.measure (closedBall ξ r)) := by
+        rw [ENNReal.ofReal_mul hG, ENNReal.ofReal_mul (by positivity), ofReal_measureReal hfin]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
