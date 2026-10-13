@@ -493,6 +493,7 @@ theorem allard52_lad_segment_null : ∀ (n : ℕ) (N : Set (Rn n)), volume N = 0
   rw [Measure.measure_prod_null hEm] at hprod
   filter_upwards [hprod] with w hw
   exact measure_mono_null (fun t ht => hNN' ht) hw
+
 /-- Fundamental theorem of calculus for a Lipschitz curve with an a.e. derivative (node
 `lipschitz_ftc` of `lipschitz_ae_derivative`): if `φ : ℝ → ℝ^ℓ` is `L`-Lipschitz on `[a, b]`, `k`
 is continuous on `[a, b]` and `φ` has derivative `k(t)` at a.e. `t ∈ (a, b)`, then
@@ -563,6 +564,8 @@ theorem allard52_lad_lipschitz_ftc : ∀ (ℓ : ℕ) (φ k : ℝ → Rn ℓ) (a 
     exact (hGd b).tendsto_slope_zero_right.sub (hGd a).tendsto_slope_zero_right
   rw [← hψa, ← hψb]
   exact tendsto_nhds_unique hlim2 hlim1
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
 `f ∈ C^{1,1−n/p}`"): continuity of the segment integral `I(a, b) = ∫₀¹ g(a + τ(b − a))(b − a) dτ`
 on `U × U` for an operator field `g` continuous on an open convex `U`.  At `(a₀, b₀) ∈ U × U` the
 segment `[a₀, b₀] ⊆ U` is compact, so a closed `δ`-thickening of it is a compact subset of `U` on
@@ -725,6 +728,8 @@ theorem allard52_lad_line_integral_rep : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ)
   have hF0 : F 0 = 0 :=
     Measure.eqOn_open_of_ae_eq hFae isOpen_ball hFc continuousOn_const (mem_ball_self hρ)
   simpa only [F, I, add_zero, sub_eq_zero] using hF0
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
 `f ∈ C^{1,1−n/p}`"): Fréchet differentiability from the integral mean-value formula.  If `g` is
 continuous on an open `U ∋ x` and `f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `y ∈ U`,
 then `Df(x) = g(x)`.  Given `ε > 0`, pick `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` on
@@ -775,6 +780,7 @@ theorem allard52_lad_hasFDerivAt_of_line_integral : ∀ (n ℓ : ℕ) (f : Rn n 
   calc ‖∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h)‖ ≤ ε * ‖h‖ * |(1 : ℝ) - 0| :=
         intervalIntegral.norm_integral_le_of_norm_le_const hbound
     _ = ε * ‖h‖ := by rw [sub_zero, abs_one, mul_one]
+
 /-- Simon Ch. 5, proof of Theorem 5.2 (p. 124: "Since `f` is Lipschitz it follows from this that
 `f ∈ C^{1,1−n/p}`"), for an arbitrary continuous a.e. derivative: if `f` is `K`-Lipschitz on the
 open ball `B̆_r(c)`, `g` is continuous on `B̆_r(c)` and `Df(x) = g(x)` for `Lⁿ`-a.e.
