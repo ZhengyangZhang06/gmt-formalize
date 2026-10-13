@@ -416,6 +416,57 @@ theorem Submission.dr_cc_lip_at_union : ∀ (X Y : Type) [PseudoMetricSpace X] [
   refine ⟨δ, hδ, fun y' hy' hdist => ?_⟩
   obtain ⟨k, hk⟩ := Set.mem_iUnion.1 (hB hy')
   exact hrb k y' ⟨hk, hy'⟩ (hdist.trans_le (hδr k))
+/-- Simon Ch. 6, Lemma 5.4, proof p. 161, displays (1) and (2): elementary facts on the dual
+skeleton `La = {y : y_i − a_i ∈ ℤ for m + 2 indices i}` of a point `a ∈ (1/4, 3/4)^d`.
+`La` is a finite union of finite intersections of the closed sets `{y : y_i − a_i ∈ ℤ}`, hence
+closed; a point agreeing with `a` on `m + 2` coordinates lies in `La`; and if `y ∈ La ∩ [0,1]^d`
+lies on the ray from the centre `c` of a face of `[0,1]^d` (free coordinates `J`) through `x`,
+then each witness coordinate `i` of `y` has `y_i − a_i ∈ (−1, 1) ∩ ℤ = {0}`, so `i ∈ J` (else
+`a_i = y_i = c_i ∈ {0, 1}`) and `x_i = a_i` as `s > 0`. -/
+theorem Submission.dr_cc_skeleton_facts :
+    ∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → IsClosed La ∧ (∀ (J : Finset (Fin (m + 1 + ℓ))) (c : Eucl (m + 1 + ℓ)), m + 2 ≤ J.card → (∀ i ∈ J, c i = a i) → c ∈ La) ∧ ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → y ∈ La → x ∈ La := by
+  intro m ℓ a ha La hLa
+  refine ⟨?_, ?_, ?_⟩
+  · -- `La = ⋃_{|J| = m+2} ⋂_{i ∈ J} {y : y_i − a_i ∈ ℤ}`, a finite union of closed sets.
+    have hLa' : La = ⋃ J ∈ {J : Finset (Fin (m + 1 + ℓ)) | J.card = m + 2},
+        ⋂ i ∈ J, (fun y : Eucl (m + 1 + ℓ) => y i - a i) ⁻¹' range ((↑) : ℤ → ℝ) := by
+      rw [hLa]
+      ext y
+      simp only [mem_ofPred_eq, mem_iUnion, mem_iInter, mem_preimage, mem_range, exists_prop]
+      exact exists_congr fun J => and_congr_right fun _ =>
+        forall₂_congr fun i _ => exists_congr fun k => eq_comm
+    rw [hLa']
+    refine (toFinite _).isClosed_biUnion fun J _ => isClosed_biInter fun i _ => ?_
+    exact Real.isClosed_range_intCast.preimage (by fun_prop)
+  · -- Face centres: any `m + 2` of the coordinates where `c = a` witness `c ∈ La`.
+    intro J c hJ hc
+    obtain ⟨J', hJ'J, hJ'⟩ := Finset.exists_subset_card_eq hJ
+    rw [hLa]
+    exact ⟨J', hJ', fun i hi => ⟨0, by rw [hc i (hJ'J hi), sub_self, Int.cast_zero]⟩⟩
+  · -- Cone property: every witness coordinate of `y` is free and has `x_i = y_i = a_i`.
+    intro J c x y s hcJ hc01 hxc hy hs hyx hyLa
+    rw [hLa] at hyLa ⊢
+    obtain ⟨J', hJ', hyJ'⟩ := hyLa
+    refine ⟨J', hJ', fun i hi => ⟨0, ?_⟩⟩
+    obtain ⟨k, hk⟩ := hyJ' i hi
+    obtain ⟨ha1, ha2⟩ := ha i
+    obtain ⟨hy0, hy1⟩ := hy i
+    -- `y_i − a_i ∈ (−1, 1)` is an integer, hence `0`.
+    have hk0 : k = 0 := by
+      have h1 : (-1 : ℝ) < k := by linarith
+      have h2 : (k : ℝ) < 1 := by linarith
+      have h1' : -1 < k := by exact_mod_cast h1
+      have h2' : k < 1 := by exact_mod_cast h2
+      omega
+    rw [hk0, Int.cast_zero] at hk
+    rw [Int.cast_zero]
+    have h := hyx i
+    by_cases hiJ : i ∈ J
+    · rw [hcJ i hiJ, hk] at h
+      exact (mul_eq_zero.1 h.symm).resolve_left hs.ne'
+    · -- A fixed coordinate would give `a_i = y_i = c_i ∈ {0, 1}`.
+      rw [hxc i hiJ, sub_self, mul_zero] at h
+      rcases hc01 i hiJ with h0 | h0 <;> linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
