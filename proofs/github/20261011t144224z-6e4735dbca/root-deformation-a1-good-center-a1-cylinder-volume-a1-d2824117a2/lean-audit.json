@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86a47b3ed5c73d22465c430690423280a3dacbdcfd538f938381c1318c023b58",
+  "git_delta": {
+    "base_commit": "61481d2ad4b886ffbf2ef016eb90ed38eea9c0cb",
+    "candidate_commit": "750a384555a8b7eb4dd4c3bfd8c2dc3d4a7a34b5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dgc_cylinder_volume",
+    "diff_sha256": "cf5eacb369978388c2c00a539cb17b06251714317cd1c43f9a227def09dd5220",
+    "source_sha256": "6757de214f7e689c2b2c79724197262c47e4185a6a5725428f104c1abb326b3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgc_cylinder_volume",
+      "statement": "∀ (ι : Type) [Fintype ι] (J : Finset ι) (B : Set (EuclideanSpace ℝ J)), volume {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧ WithLp.toLp 2 (fun i : J => a i) ∈ B} ≤ volume B",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
