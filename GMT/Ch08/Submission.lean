@@ -5450,6 +5450,36 @@ theorem Submission.dea_ae_variationMeasure_ball_bound :
     ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∃ R Λ : ℝ, 0 < R ∧ 0 ≤ Λ ∧ closedBall x R ⊆ U ∧ ∀ r : ℝ, 0 < r → r < R → variationMeasure V (closedBall x r) ≤ ENNReal.ofReal Λ * V.weight (closedBall x r) := by
   intro N n U V hV
   -- Step 1: `μ_V` is carried by `U`, since `μ_V(Uᶜ) = V(Uᶜ × G(N,n)) = 0`.
+  have hU : ∀ᵐ x ∂V.weight, x ∈ U := by
+    rw [ae_iff]
+    change V.weight Uᶜ = 0
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  -- Step 2: under `hV`, `‖δV‖` is the Riesz measure `ν`.
+  have hvar : variationMeasure V = V.firstVariationRieszMeasure hV := dite_eq_left hV
+  -- Step 3: by the differentiation theorem (Simon 2.7), for `μ_V`-a.e. `x` the ratio
+  -- `ν(B_r(x)) / μ_V(B_r(x))` tends to a finite `D(x)` as `r ↓ 0`.
+  filter_upwards [(V.firstVariationRiesz_symmetricDensity_spec hV).2, hU] with x hx hxU
+  obtain ⟨ht, hD⟩ := hx
+  -- Step 4: `Λ = D(x) + 1 > 0` satisfies `D(x) < Λ`.
+  set D := V.symmetricFirstVariationDensity (V.firstVariationRieszMeasure hV) x
+  set Λ : ℝ := D.toReal + 1
+  have hΛ : 0 < Λ := by positivity
+  have hlt : D < ENNReal.ofReal Λ := by
+    rw [← ENNReal.ofReal_toReal hD]
+    exact (ENNReal.ofReal_lt_ofReal_iff hΛ).mpr (lt_add_one _)
+  -- Step 5: the ratio is `< Λ` for all `r ∈ (0, r₁)`.
+  obtain ⟨r₁, hr₁, hsmall⟩ :=
+    mem_nhdsGT_iff_exists_Ioo_subset.mp (ht.eventually (gt_mem_nhds hlt))
+  -- Step 7: `B_{r₂}(x) ⊆ U` (open ball), and `R = min r₁ (r₂ / 2)`.
+  obtain ⟨r₂, hr₂, hball⟩ := Metric.isOpen_iff.mp V.isOpen_domain x hxU
+  refine ⟨min r₁ (r₂ / 2), Λ, lt_min hr₁ (half_pos hr₂), hΛ.le, ?_, fun r hr hrR ↦ ?_⟩
+  · exact (closedBall_subset_ball ((min_le_right _ _).trans_lt (half_lt_self hr₂))).trans hball
+  -- Step 6: `ν(B_r(x)) / μ_V(B_r(x)) ≤ Λ` gives `ν(B_r(x)) ≤ Λ μ_V(B_r(x))`, as `Λ ≠ 0, ∞`.
+  · rw [hvar]
+    exact (ENNReal.div_le_iff_le_mul (Or.inr ENNReal.ofReal_ne_top)
+      (Or.inr (ENNReal.ofReal_pos.mpr hΛ).ne')).mp
+      (hsmall ⟨hr, hrR.trans_le (min_le_left _ _)⟩).le
 /-- **Simon Ch. 8, Lemma 1.3, printed (1)–(2)** (child `slice_density` of `plane_disintegration`):
 for continuous `β ≥ 0` on `G(N,n)`, the `β`-weighted slices `γ(B) = ∫_{Gₙ(B)} β(S) dV(y,S)` of `V`
 are differentiated by `μ_V`: the ratio `γ(B_ρ(x)) / μ_V(B_ρ(x))` tends to a Borel `e(x)` for
@@ -5665,31 +5695,49 @@ theorem Submission.plane_disint_pointwise_measure :
     change V.weight Uᶜ = 0
     rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
     exact V.supported
-  -- Step 2: under `hV`, `‖δV‖` is the Riesz measure `ν`.
-  have hvar : variationMeasure V = V.firstVariationRieszMeasure hV := dite_eq_left hV
-  -- Step 3: by the differentiation theorem (Simon 2.7), for `μ_V`-a.e. `x` the ratio
-  -- `ν(B_r(x)) / μ_V(B_r(x))` tends to a finite `D(x)` as `r ↓ 0`.
-  filter_upwards [(V.firstVariationRiesz_symmetricDensity_spec hV).2, hU] with x hx hxU
-  obtain ⟨ht, hD⟩ := hx
-  -- Step 4: `Λ = D(x) + 1 > 0` satisfies `D(x) < Λ`.
-  set D := V.symmetricFirstVariationDensity (V.firstVariationRieszMeasure hV) x
-  set Λ : ℝ := D.toReal + 1
-  have hΛ : 0 < Λ := by positivity
-  have hlt : D < ENNReal.ofReal Λ := by
-    rw [← ENNReal.ofReal_toReal hD]
-    exact (ENNReal.ofReal_lt_ofReal_iff hΛ).mpr (lt_add_one _)
-  -- Step 5: the ratio is `< Λ` for all `r ∈ (0, r₁)`.
-  obtain ⟨r₁, hr₁, hsmall⟩ :=
-    mem_nhdsGT_iff_exists_Ioo_subset.mp (ht.eventually (gt_mem_nhds hlt))
-  -- Step 7: `B_{r₂}(x) ⊆ U` (open ball), and `R = min r₁ (r₂ / 2)`.
-  obtain ⟨r₂, hr₂, hball⟩ := Metric.isOpen_iff.mp V.isOpen_domain x hxU
-  refine ⟨min r₁ (r₂ / 2), Λ, lt_min hr₁ (half_pos hr₂), hΛ.le, ?_, fun r hr hrR ↦ ?_⟩
-  · exact (closedBall_subset_ball ((min_le_right _ _).trans_lt (half_lt_self hr₂))).trans hball
-  -- Step 6: `ν(B_r(x)) / μ_V(B_r(x)) ≤ Λ` gives `ν(B_r(x)) ≤ Λ μ_V(B_r(x))`, as `Λ ≠ 0, ∞`.
-  · rw [hvar]
-    exact (ENNReal.div_le_iff_le_mul (Or.inr ENNReal.ofReal_ne_top)
-      (Or.inr (ENNReal.ofReal_pos.mpr hΛ).ne')).mp
-      (hsmall ⟨hr, hrR.trans_le (min_le_left _ _)⟩).le
+  filter_upwards [hU, Measure.support_mem_ae (μ := V.weight), ae_all_iff.2 he]
+    with x hxU hxspt hxlim
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
+  -- The slice measures `m_ρ = μ_V(B_ρ(x))⁻¹ σ_#(V ⌞ (B_ρ(x) × G(N,n)))`, `σ(y, S) = S`.
+  obtain ⟨m, hm⟩ : ∃ m : ℝ → Measure (Grassmannian N n), ∀ ρ, m ρ =
+      (V.weight (closedBall x ρ))⁻¹ •
+        (V.measure.restrict (closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)))).map Prod.snd :=
+    ⟨_, fun _ ↦ rfl⟩
+  -- `∫ f dm_ρ` is the quotient of the statement, for every `ρ`.
+  have hm_int : ∀ (ρ : ℝ) (g : C(Grassmannian N n, ℝ)), ∫ S, g S ∂(m ρ) =
+      (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), g z.2 ∂V.measure) /
+        (V.weight (closedBall x ρ)).toReal := by
+    intro ρ g
+    rw [hm, integral_smul_measure, integral_map measurable_snd.aemeasurable
+      g.continuous.aestronglyMeasurable, ENNReal.toReal_inv, smul_eq_mul, div_eq_inv_mul]
+  -- For `0 < ρ < r`, `0 < μ_V(B_ρ(x)) < ∞` (`x ∈ spt μ_V`, `B_ρ(x) ⊆ U` compact), so `m_ρ(G) = 1`.
+  have hm_prob : ∀ ρ ∈ Ioo 0 r, IsProbabilityMeasure (m ρ) := by
+    intro ρ hρ
+    have hpos : 0 < V.weight (closedBall x ρ) :=
+      (Measure.mem_support_iff_forall x).1 hxspt _ (closedBall_mem_nhds x hρ.1)
+    have hfin : V.weight (closedBall x ρ) ≠ ∞ :=
+      V.weight_finite_on_compact _ (isCompact_closedBall x ρ)
+        ((closedBall_subset_ball hρ.2).trans hrU)
+    constructor
+    rw [hm, Measure.smul_apply, Measure.map_apply measurable_snd MeasurableSet.univ,
+      preimage_univ, Measure.restrict_apply_univ, ← V.weight_apply measurableSet_closedBall,
+      smul_eq_mul]
+    exact ENNReal.inv_mul_cancel hpos.ne' hfin
+  -- Printed (4) on the dense family: `∫ f_j dm_ρ = ∫ β_j dm_ρ - ‖f_j‖ → e_j(x) - ‖f_j‖`.
+  have hm_lim : ∀ g ∈ range f, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, g S ∂(m ρ)) (𝓝[>] 0) (𝓝 c) := by
+    rintro _ ⟨j, rfl⟩
+    refine ⟨e j x - ‖f j‖, ((hxlim j).sub_const ‖f j‖).congr' ?_⟩
+    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+    have := hm_prob ρ hρ
+    rw [← hm_int]
+    simp only [hβ]
+    rw [integral_add ((f j).continuous.integrable_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _)) (integrable_const _), integral_const,
+      probReal_univ, one_smul, add_sub_cancel_right]
+  -- Printed (3), (4) and the Riesz representation.
+  obtain ⟨η, hη, hηlim⟩ := Submission.plane_disint_riesz_limit N n (𝓝[>] 0) m (range f)
+    inferInstance (by filter_upwards [Ioo_mem_nhdsGT hr] using hm_prob) hf hm_lim
+  exact ⟨η, hη, fun g ↦ (hηlim g).congr fun ρ ↦ hm_int ρ g⟩
 
 /-- **At a tangent point the density equals the multiplicity** (child `tangent_plane_density` of
 `allard_tangent_cones`; Simon Ch. 8, 1.1 with Ch. 1, 3.1): if `V` has tangent plane `T` with
@@ -6933,49 +6981,6 @@ theorem Submission.constancy_theorem : ConstancyTheorem := by
     congr 1
     exact SetLike.coe_injective (hS.trans (hplane hc0 x hx).symm)
   exact hxS
-  filter_upwards [hU, Measure.support_mem_ae (μ := V.weight), ae_all_iff.2 he]
-    with x hxU hxspt hxlim
-  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
-  -- The slice measures `m_ρ = μ_V(B_ρ(x))⁻¹ σ_#(V ⌞ (B_ρ(x) × G(N,n)))`, `σ(y, S) = S`.
-  obtain ⟨m, hm⟩ : ∃ m : ℝ → Measure (Grassmannian N n), ∀ ρ, m ρ =
-      (V.weight (closedBall x ρ))⁻¹ •
-        (V.measure.restrict (closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)))).map Prod.snd :=
-    ⟨_, fun _ ↦ rfl⟩
-  -- `∫ f dm_ρ` is the quotient of the statement, for every `ρ`.
-  have hm_int : ∀ (ρ : ℝ) (g : C(Grassmannian N n, ℝ)), ∫ S, g S ∂(m ρ) =
-      (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), g z.2 ∂V.measure) /
-        (V.weight (closedBall x ρ)).toReal := by
-    intro ρ g
-    rw [hm, integral_smul_measure, integral_map measurable_snd.aemeasurable
-      g.continuous.aestronglyMeasurable, ENNReal.toReal_inv, smul_eq_mul, div_eq_inv_mul]
-  -- For `0 < ρ < r`, `0 < μ_V(B_ρ(x)) < ∞` (`x ∈ spt μ_V`, `B_ρ(x) ⊆ U` compact), so `m_ρ(G) = 1`.
-  have hm_prob : ∀ ρ ∈ Ioo 0 r, IsProbabilityMeasure (m ρ) := by
-    intro ρ hρ
-    have hpos : 0 < V.weight (closedBall x ρ) :=
-      (Measure.mem_support_iff_forall x).1 hxspt _ (closedBall_mem_nhds x hρ.1)
-    have hfin : V.weight (closedBall x ρ) ≠ ∞ :=
-      V.weight_finite_on_compact _ (isCompact_closedBall x ρ)
-        ((closedBall_subset_ball hρ.2).trans hrU)
-    constructor
-    rw [hm, Measure.smul_apply, Measure.map_apply measurable_snd MeasurableSet.univ,
-      preimage_univ, Measure.restrict_apply_univ, ← V.weight_apply measurableSet_closedBall,
-      smul_eq_mul]
-    exact ENNReal.inv_mul_cancel hpos.ne' hfin
-  -- Printed (4) on the dense family: `∫ f_j dm_ρ = ∫ β_j dm_ρ - ‖f_j‖ → e_j(x) - ‖f_j‖`.
-  have hm_lim : ∀ g ∈ range f, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, g S ∂(m ρ)) (𝓝[>] 0) (𝓝 c) := by
-    rintro _ ⟨j, rfl⟩
-    refine ⟨e j x - ‖f j‖, ((hxlim j).sub_const ‖f j‖).congr' ?_⟩
-    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
-    have := hm_prob ρ hρ
-    rw [← hm_int]
-    simp only [hβ]
-    rw [integral_add ((f j).continuous.integrable_of_hasCompactSupport
-        (HasCompactSupport.of_compactSpace _)) (integrable_const _), integral_const,
-      probReal_univ, one_smul, add_sub_cancel_right]
-  -- Printed (3), (4) and the Riesz representation.
-  obtain ⟨η, hη, hηlim⟩ := Submission.plane_disint_riesz_limit N n (𝓝[>] 0) m (range f)
-    inferInstance (by filter_upwards [Ioo_mem_nhdsGT hr] using hm_prob) hf hm_lim
-  exact ⟨η, hη, fun g ↦ (hηlim g).congr fun ρ ↦ hm_int ρ g⟩
 
 /-- **Simon Ch. 8, Lemma 1.3, last part** (child `identity_of_limits` of `plane_disintegration`):
 if for `μ_V`-a.e. `x` the measure `η(x)` on `G(N,n)` is a probability measure and the slice ratios
