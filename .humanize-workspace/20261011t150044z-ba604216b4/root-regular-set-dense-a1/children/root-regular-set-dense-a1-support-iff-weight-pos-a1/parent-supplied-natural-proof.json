@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n 'IMRep|IsIntegerMultiplicity|regularSet|HasMassDensity' local-references/123e8435b4a2469b/project -t lean -c",
+        "rg -n 'IMRep|IsIntegerMultiplicity|^def |^theorem |^structure ' local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "grep -n '^def \\|^theorem \\|^structure ' simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Representation}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n '^theorem [a-zA-Z_.]*(density|Density|ball|Ball)' simongmt/Poincare/SimonGMT/Chapter01 Chapter03 Chapter04",
+        "grep -n 'ae_tendsto_rnDeriv\\|ae_tendsto_measure_inter_div\\|ae_tendsto_average' -r local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/",
+        "grep -n 'μHE\\[' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep -rl 'rsd_' runs/20261011T150044Z-ba604216b4; grep -rn 'rsd_massOn_eq_measure|...|rsd_constant_multiplicity_reduction' GMT .humanize",
+        "lake env lean /tmp/rsd-a1-check/Test/Children.lean (five child types in the comparator's replayed Contract scope)",
+        "lake env lean /tmp/rsd-a1-check/Test/Assembly.lean (RegularSetDense from children 1,2,3,5 + DensityAndTangentCones + DensityOneImpliesRegular; #print axioms)",
+        "lake env lean /tmp/rsd-a1-check/Test/Axioms.lean; lake env lean /tmp/rsd-a1-review/Child5Literal.lean; lake env lean /tmp/rsd-a1-review/CompetitorSupport.lean (#print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/rsd-a1-check/Test/Children.lean",
+        "/tmp/rsd-a1-check/Test/Assembly.lean",
+        "/tmp/rsd-a1-check/Test/Axioms.lean",
+        "/tmp/rsd-a1-review/Child5Literal.lean",
+        "/tmp/rsd-a1-review/CompetitorSupport.lean"
+      ],
+      "conclusion": "The snapshot's Ch07 contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.\n\nNo match for the structural facts the parent proof cites:\n- GMT/Ch06/Contract.lean has its own unproved integer-multiplicity notions; they have different types and live in a separate module that Ch07 does not import.\n- The simongmt Chapter06 files provide massOn, support/zeroRegion and restrictDomain, but no mass = weight, density = multiplicity, spt T = spt mu_T, or integer-combination lemma for IMRep.\n- Representation.lean leaves the mass-representation bridge pending.\n\nReusable tools, each checked to depend only on propext, Classical.choice and Quot.sound:\n- Chapter06: GeometricCurrentOn.le_massOn, massOn_mono, support_subset_domain.\n- Chapter03: HasApproximateTangentSpaceAt.unique, CountablyRectifiable.mono, countablyRectifiable_iUnion.\n- Chapter01: ae_dimensionalUpperDensity_eq_zero_outside (Simon 1.3.6, stated for simonHausdorffMeasureReal).\n- Mathlib: Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div_of_measurableSet.\n- Mathlib muHE scaling and isometry lemmas (euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image); these two were located by grep but their axioms were not printed.\n\nThe five child types elaborate in the comparator's replayed scope. The conditional assembly of RegularSetDense from children 1, 2, 3 and 5 plus DensityAndTangentCones and DensityOneImpliesRegular depends only on propext, Classical.choice and Quot.sound. No rsd_ name occurs in the run directory or workspace, so the proposed names do not collide."
+    }
+  ],
+  "proof": "Source: Simon Ch. 6, 2.11–2.12 (chapter-06.txt lines 296–306: spt T = spt μ_T for currents of locally finite mass), with μ_T = θH^n⌞M by Ch. 6, 3.2(3) (the sibling mass_eq_weight, Submission.rsd_massOn_eq_measure). This is the fact used in steps 2–3 of the parent proof: x ∈ spt T gives μ_T(B_r(x)) > 0, and positive density gives membership in spt T.\n\n1. (⇒) Let x ∈ spt T. Then x ∈ U by the definition spt T = U ∖ (zero region).\nSuppose, for a contradiction, that μ_T(B_r(x)) = 0 for some r > 0. Choose s ∈ (0, r) with B̄_s(x) ⊆ U (U is open) and put W := B_{s/2}(x). Then W is open, and W̄ = B̄_{s/2}(x) is compact and contained in U.\nSince θ ≥ 1 on M, H^n(M ∩ B_r(x)) ≤ ∫_{M∩B_r(x)} θ dH^n = μ_T(B_r(x)) = 0.\nLet ω ∈ 𝒟^n(U) with spt ω ⊆ W. The integrand θ⟨ω, ξ⟩ of T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n vanishes on M ∖ W, and M ∩ W ⊆ M ∩ B_r(x) is H^n-null, so T(ω) = 0.\nHence W is one of the open sets whose union is the zero region, and x ∈ W. So x ∉ spt T, a contradiction. Thus μ_T(B_r(x)) > 0 for every r > 0.\n\n2. (⇐) Let x ∈ U with μ_T(B_r(x)) > 0 for all r > 0, and suppose x ∉ spt T. Then x lies in the zero region: x ∈ W₀ for an open W₀ with W̄₀ compact, W̄₀ ⊆ U, and T(ω) = 0 whenever ω ∈ 𝒟^n(U) and spt ω ⊆ W₀.\nChoose r > 0 with B_r(x) ⊆ W₀. Every ω admissible for M_{B_r(x)}(T) (spt ω ⊆ B_r(x), |ω| ≤ 1) satisfies spt ω ⊆ W₀, hence T(ω) = 0. The zero form is admissible, so M_{B_r(x)}(T) = 0.\nB_r(x) is open and contained in U, so the sibling mass_eq_weight gives μ_T(B_r(x)) = M_{B_r(x)}(T) = 0, a contradiction. Hence x ∈ spt T.",
+  "key_steps": [
+    "If μ_T(B_r(x)) = 0 then H^n(M ∩ B_r(x)) = 0, so T vanishes on forms supported in the relatively compact ball B_{s/2}(x), and x ∉ spt T.",
+    "If T vanishes near x then M_{B_r(x)}(T) = 0, and mass_eq_weight gives μ_T(B_r(x)) = 0."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
