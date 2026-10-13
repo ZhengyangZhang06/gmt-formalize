@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Steiner symmetrization of a compact set is compact** (Simon Ch. 1, the Note after the proof
+of 2.10: `S_j(A)` is compact because the slice length is upper semicontinuous).  Let `A ⊆ ℝ^d` be
+compact, `A^j_y = {t : y[j ↦ t] ∈ A}` and `λ(y) = L¹(A^j_y)`.  If `λ` is upper semicontinuous,
+then `S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ λ(y)/2}` is compact: `{y : A^j_y ≠ ∅} = π⁻¹(π(A))` for
+`π z = z[j ↦ 0]`, `{y : |y_j| ≤ λ(y)/2}` is a superlevel set of the upper semicontinuous
+`λ − 2|y_j|`, and `S_j(A) ⊆ closedBall(0, 3R)` whenever `A ⊆ closedBall(0, R)`. -/
+theorem Submission.cbr_ci_iso_steiner_isCompact : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal) → IsCompact {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} := by
+  intro d j A hA hlen
+  -- Step 1: `π z = z[j ↦ 0]` is continuous, and `π z = π y` forces `y[j ↦ z_j] = z`
+  let π : Euclid d → Euclid d := fun z => WithLp.toLp 2 (Function.update z.ofLp j 0)
+  have hπ : Continuous π :=
+    (PiLp.continuous_toLp 2 _).comp ((PiLp.continuous_ofLp 2 _).update j continuous_const)
+  have hπ_eq : ∀ y z : Euclid d, π z = π y →
+      WithLp.toLp 2 (Function.update y.ofLp j (z j)) = z := by
+    intro y z h
+    ext i
+    by_cases hi : i = j
+    · subst hi
+      simp
+    · have := congrArg (fun w : Euclid d => w i) h
+      simp only [π, Function.update_of_ne hi] at this ⊢
+      exact this.symm
+  -- Step 2: `{y : A^j_y ≠ ∅} = π⁻¹(π(A))` is closed, `π(A)` being compact
+  have hN : IsClosed
+      {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty} := by
+    convert (hA.image hπ).isClosed.preimage hπ using 1
+    ext y
+    constructor
+    · rintro ⟨t, ht⟩
+      exact ⟨_, ht, by simp [π]⟩
+    · rintro ⟨z, hz, h⟩
+      exact ⟨z j, by rw [mem_ofPred_eq, hπ_eq y z h]; exact hz⟩
+  -- Step 3: `{y : 0 ≤ λ(y) − 2|y_j|}` is closed, `λ − 2|y_j|` being upper semicontinuous
+  have hM : IsClosed {y : Euclid d | 0 ≤
+      (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal + -(2 * |y j|)} :=
+    (hlen.add ((PiLp.continuous_apply 2 _ j).abs.const_mul 2).neg.upperSemicontinuous)
+      |>.isClosed_preimage 0
+  -- Step 4: `S_j(A)` is the intersection of these two closed sets
+  have hS : IsClosed {y : Euclid d |
+      {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧
+        |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} := by
+    convert hN.inter hM using 1
+    ext y
+    simp only [mem_ofPred_eq, mem_inter_iff]
+    exact and_congr Iff.rfl ⟨fun h => by linarith, fun h => by linarith⟩
+  -- Step 5: `S_j(A) ⊆ closedBall(0, 3R)` when `A ⊆ closedBall(0, R)`
+  obtain ⟨R, hR⟩ := hA.isBounded.subset_closedBall 0
+  refine Metric.isCompact_of_isClosed_isBounded hS
+    ((isBounded_closedBall (x := (0 : Euclid d)) (r := 3 * R)).subset ?_)
+  rintro y ⟨⟨t, ht⟩, hy⟩
+  rw [mem_closedBall_zero_iff]
+  -- every `s ∈ A^j_y` has `|s| ≤ ‖y[j ↦ s]‖ ≤ R`
+  have hnorm : ∀ s : ℝ, WithLp.toLp 2 (Function.update y.ofLp j s) ∈ A → |s| ≤ R := by
+    intro s hs
+    have h1 := PiLp.norm_apply_le (WithLp.toLp 2 (Function.update y.ofLp j s)) j
+    have h2 := mem_closedBall_zero_iff.1 (hR hs)
+    simp only [Function.update_self, Real.norm_eq_abs] at h1
+    linarith
+  -- hence `A^j_y ⊆ [−R, R]` and `λ(y) ≤ 2R`
+  have hR0 : 0 ≤ R := (abs_nonneg t).trans (hnorm t ht)
+  have hvol : (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal ≤ 2 * R := by
+    refine ENNReal.toReal_le_of_le_ofReal (by linarith) ?_
+    calc volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}
+        ≤ volume (Icc (-R) R) := measure_mono fun s hs => abs_le.1 (hnorm s hs)
+      _ = ENNReal.ofReal (2 * R) := by rw [Real.volume_Icc]; ring_nf
+  -- `y − y[j ↦ t] = (y_j − t) e_j`
+  have hdiff : ‖y - WithLp.toLp 2 (Function.update y.ofLp j t)‖ = |y j - t| := by
+    have : y - WithLp.toLp 2 (Function.update y.ofLp j t) = EuclideanSpace.single j (y j - t) := by
+      ext i
+      by_cases hi : i = j
+      · subst hi
+        simp
+      · simp [hi]
+    rw [this, PiLp.norm_single, Real.norm_eq_abs]
+  have hz : ‖WithLp.toLp 2 (Function.update y.ofLp j t)‖ ≤ R := mem_closedBall_zero_iff.1 (hR ht)
+  -- Step 6: `‖y‖ ≤ ‖y[j ↦ t]‖ + |y_j − t| ≤ R + |y_j| + |t| ≤ 3R`, using `|y_j| ≤ λ(y)/2 ≤ R`
+  calc ‖y‖ = ‖WithLp.toLp 2 (Function.update y.ofLp j t) +
+        (y - WithLp.toLp 2 (Function.update y.ofLp j t))‖ := by rw [add_sub_cancel]
+    _ ≤ ‖WithLp.toLp 2 (Function.update y.ofLp j t)‖ +
+        ‖y - WithLp.toLp 2 (Function.update y.ofLp j t)‖ := norm_add_le _ _
+    _ ≤ R + (|y j| + |t|) := by
+        rw [hdiff]
+        gcongr
+        exact abs_sub _ _
+    _ ≤ 3 * R := by linarith [hnorm t ht]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

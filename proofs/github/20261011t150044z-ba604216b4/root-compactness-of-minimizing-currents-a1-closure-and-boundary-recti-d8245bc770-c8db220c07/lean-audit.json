@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "125a8fd471fd9d609718523a47b7824a301c5b4e095e0d9d73f00d9b38283691",
+  "git_delta": {
+    "base_commit": "55741579b3715c4bd4288711333cabeebf86e3c4",
+    "candidate_commit": "c7b07ef2d61f58f54b2b2c6d0695ab75bb916784",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_steiner_isCompact",
+    "diff_sha256": "459d903f5206c4c7e871819ae26c2622e27bb2fbda2f91f33acb56367e5b3cb2",
+    "source_sha256": "00011b7d94dafa00a47eaa83299a5e70235422d46b9d705bb51de494a299dd5f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_steiner_isCompact",
+      "statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal) → IsCompact {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
