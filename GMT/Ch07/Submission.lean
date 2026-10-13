@@ -2806,6 +2806,157 @@ theorem Submission.rsd_isIntegerMultiplicity_int_combination : ∀ (P n : ℕ) (
   rw [hS ω, hR₁ ω, hR₂ ω,
     Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R p₁ p₂ hR ω]
 
+/-- **Reduction to multiplicity one**, a step of **Simon 7.4.2** (chapter-07.txt lines 605–610),
+as in the proof of Ch. 5, Corollary 7.3 (chapter-05.txt lines 1389–1394, `Ṽ = v(M, N⁻¹θ)⌞B_ρ(ξ)`).
+Let `T = τ(M, θ, ξ)` be minimizing in `U ∩ N` with `spt T ⊆ N` and `∂T = 0`, let `z₀ ∈ spt T` and
+`B = B_r(z₀) ⊆ U`, and let `θ = N₀ ≥ 1` `μ_T`-a.e. on `B` with `Θⁿ(μ_T, z₀) = N₀`.  Then
+`T₀ = N₀⁻¹ T` in `B` is minimizing in `B ∩ N`, `spt T₀ ⊆ N`, `∂T₀ = 0`, `M_W(T₀) < ∞` for `W ⊂⊂ B`,
+`z₀ ∈ spt T₀`, `Θⁿ(μ_{T₀}, z₀) = 1`, and `z₀ ∈ reg T₀` implies `z₀ ∈ reg T`.  Since
+`T(ι ω) = N₀ T₀(ω)`: `T₀ = τ(M ∩ B, 1, ξ)`, `spt T₀ = spt T ∩ B`, `M_W(T) = N₀ M_W(T₀)` for `W ⊆ B`
+(so `M_W(T₀) ≤ μ_T(W̄) < ∞` and the densities differ by the factor `N₀`), and `T₀ = m[[M']]` near
+`z₀` gives `T = (N₀ m)[[M']]` there.  For minimality let `S₀` compete with `T₀` in `W`, and
+`K = spt(S₀ − T₀)`.  The weight of `X = S₀ − T₀` vanishes on `B \ K`, so `X` extends by zero to
+`E ∈ 𝒟ₙ(U)`, and `S = T + N₀E` competes with `T` in `W`: it is integer multiplicity, `∂S = ∂T`
+because `∂E = 0`, and `spt(S − T) ⊆ K`.  Hence `N₀ M_W(T₀) = M_W(T) ≤ M_W(S) = N₀ M_W(S₀)`. -/
+theorem Submission.rsd_constant_multiplicity_reduction : ∀ (P n : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (z₀ : Euclid P) (r : ℝ) (N₀ : ℕ), IsOpen U → IsMinimizingIn T (U ∩ N) → T.support ⊆ N → BoundaryVanishes T → R.Represents T → 0 < r → ball z₀ r ⊆ U → 0 < N₀ → (∀ᵐ x ∂R.measure, x ∈ ball z₀ r → R.mult x = N₀) → z₀ ∈ T.support → HasMassDensity T z₀ N₀ → ∃ T₀ : GeometricCurrentOn (ball z₀ r) n, IsMinimizingIn T₀ (ball z₀ r ∩ N) ∧ T₀.support ⊆ N ∧ BoundaryVanishes T₀ ∧ (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W (ball z₀ r) → T₀.massOn W < ∞) ∧ z₀ ∈ T₀.support ∧ HasMassDensity T₀ z₀ 1 ∧ (z₀ ∈ regularSet T₀ → z₀ ∈ regularSet T) := by
+  intro P n U N T R z₀ r N₀ hU hmin hTN hbdry hRT hr hBU hN₀ hconst hz₀ hdens
+  have hc : (N₀ : ℝ) ≠ 0 := Nat.cast_ne_zero.2 hN₀.ne'
+  have hc0 : (0 : ℝ) ≤ N₀ := Nat.cast_nonneg N₀
+  have hN0 : ENNReal.ofReal N₀ ≠ 0 := (ENNReal.ofReal_pos.2 (Nat.cast_pos.2 hN₀)).ne'
+  have hNtop : ENNReal.ofReal N₀ ≠ ∞ := ENNReal.ofReal_ne_top
+  -- Step 1: `T₀ = N₀⁻¹ T` in `B = B_r(z₀)`, i.e. `T(ι ω) = N₀ T₀(ω)` for `ω ∈ 𝒟ⁿ(B)`.
+  obtain ⟨T₀, hT₀⟩ : ∃ T₀ : GeometricCurrentOn (ball z₀ r) n, ∀ ω : TestFormOn (ball z₀ r) n,
+      T (testFormOnInclusion hBU n ω) = (N₀ : ℝ) * T₀ ω :=
+    ⟨⟨(N₀ : ℝ)⁻¹ • (T.restrictDomain hBU).toCurrent, fun ωs h => by
+        simpa using ((T.restrictDomain hBU).continuous' ωs h).const_mul (N₀ : ℝ)⁻¹⟩,
+      fun ω => (mul_inv_cancel_left₀ hc _).symm⟩
+  -- Step 2: `T₀ = τ(M ∩ B, 1, ξ)` is integer multiplicity.
+  have hT₀im : IsIntegerMultiplicity T₀ :=
+    Submission.rsd_cmr_isIntegerMultiplicity_of_const_mult P n U (ball z₀ r) hBU T R T₀ N₀
+      isOpen_ball hN₀ hRT hconst hT₀
+  -- Steps 4–5: `spt T₀ = spt T ∩ B`, and `M_W(T) = N₀ M_W(T₀)` for `W ⊆ B`.
+  have hspt : T₀.support = T.support ∩ ball z₀ r :=
+    Submission.rsd_cmr_support_eq_inter P n U (ball z₀ r) hBU T T₀ N₀ isOpen_ball hc hT₀
+  have hmass : ∀ W ⊆ ball z₀ r, T.massOn W = ENNReal.ofReal N₀ * T₀.massOn W :=
+    Submission.rsd_cmr_massOn_eq_ofReal_mul P n U (ball z₀ r) hBU T T₀ N₀ hc0 hT₀
+  refine ⟨T₀, ⟨hT₀im, ?_⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 6: `T₀` is minimizing in `B ∩ N`.  Let `S₀` compete with `T₀` in `W`.
+    intro W S₀ hW hWB hS₀ hbS₀ hK hKW
+    have hKB : (S₀ - T₀).support ⊆ ball z₀ r := (S₀ - T₀).support_subset_domain
+    have hWsub : W ⊆ ball z₀ r := subset_closure.trans hWB.2
+    have hX : ∀ ω, (S₀ - T₀) ω = S₀ ω - T₀ ω := fun _ => rfl
+    -- Step 6(a): `X = S₀ − T₀ = τ(M_X, θ_X, ξ_X)` is integer multiplicity.
+    obtain ⟨RX, hRX⟩ := Submission.rsd_isIntegerMultiplicity_int_combination P n (ball z₀ r) S₀
+      T₀ (S₀ - T₀) 1 (-1) isOpen_ball hS₀ hT₀im fun ω => by
+        rw [hX]
+        push_cast
+        ring
+    -- Step 6(b): `μ_X` vanishes on a ball about each point of `B \ K`.
+    have hnull : ∀ y ∈ ball z₀ r, y ∉ (S₀ - T₀).support →
+        ∃ ρ : ℝ, 0 < ρ ∧ RX.measure (ball y ρ) = 0 := by
+      intro y hy hyK
+      have h := mt (Submission.rsd_mem_support_iff_measure_ball_pos P n (ball z₀ r) (S₀ - T₀) RX
+        isOpen_ball hRX y).2 hyK
+      push Not at h
+      obtain ⟨ρ, hρ, hμ⟩ := h hy
+      exact ⟨ρ, hρ, nonpos_iff_eq_zero.1 hμ⟩
+    -- Step 6(c): the extension `E ∈ 𝒟ₙ(U)` of `X` by zero.
+    obtain ⟨E, hE, hEX, hEK⟩ := Submission.rsd_cmr_zero_extension P n U (ball z₀ r)
+      (S₀ - T₀).support hBU (S₀ - T₀) RX isOpen_ball hK hKB hRX hnull
+    -- Step 6(d): the competitor `S = T + N₀E` is integer multiplicity.
+    obtain ⟨S, hS⟩ : ∃ S : GeometricCurrentOn U n, ∀ ω, S ω = T ω + (N₀ : ℝ) * E ω :=
+      ⟨⟨T.toCurrent + (N₀ : ℝ) • E.toCurrent, fun ωs h => by
+          simpa using (T.continuous' ωs h).add ((E.continuous' ωs h).const_mul (N₀ : ℝ))⟩,
+        fun _ => rfl⟩
+    have hSim : IsIntegerMultiplicity S :=
+      Submission.rsd_isIntegerMultiplicity_int_combination P n U T E S 1 N₀ hU hmin.1 hE
+        fun ω => by
+          rw [hS]
+          push_cast
+          ring
+    -- Step 6(f): `S − T = N₀E` vanishes on forms missing `K`, so `spt(S − T) ⊆ K` is compact.
+    have hST : ∀ ω, (S - T) ω = S ω - T ω := fun _ => rfl
+    obtain ⟨hSTK, hSTc⟩ := Submission.rsd_cmr_support_subset_of_vanish P n U (S₀ - T₀).support
+      (S - T) hU hK (hKB.trans hBU) fun ω hω => by
+        rw [hST, hS, hEK ω hω, mul_zero, add_zero, sub_self]
+    -- Step 6(e): `∂S = ∂T`: `∂E` vanishes on forms missing `K` and on `ι(𝒟ⁿ⁻¹(B))`, where
+    -- `∂E(ι ψ) = X(dψ) = ∂S₀(ψ) − ∂T₀(ψ) = 0`; hence `∂E = 0`.
+    have hbS : SameBoundary S T := by
+      cases n with
+      | zero => trivial
+      | succ m =>
+        have hb₀ : S₀.boundary = T₀.boundary := hbS₀
+        have hEb := Submission.rsd_cmr_eq_zero_of_vanish_off_compact P m U (ball z₀ r)
+          (S₀ - T₀).support hBU E.boundary isOpen_ball hK hKB
+          (fun ω hω => by
+            rw [GeometricCurrentOn.boundary_apply]
+            exact hEK _ (hω.mono_left
+              (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) m))))
+          fun ψ => by
+            have hι : exteriorDerivativeTestOn U m (testFormOnInclusion hBU m ψ) =
+                testFormOnInclusion hBU (m + 1) (exteriorDerivativeTestOn (ball z₀ r) m ψ) :=
+              Subtype.ext rfl
+            have hψ : S₀.boundary ψ = T₀.boundary ψ := by rw [hb₀]
+            rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply] at hψ
+            rw [GeometricCurrentOn.boundary_apply, hι, hEX, hX, hψ, sub_self]
+        change S.boundary = T.boundary
+        ext ω
+        have h0 := hEb ω
+        rw [GeometricCurrentOn.boundary_apply] at h0
+        rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hS, h0, mul_zero,
+          add_zero]
+    -- Step 6(g): `N₀ M_W(T₀) = M_W(T) ≤ M_W(S) = N₀ M_W(S₀)`, since `S(ι ω) = N₀ S₀(ω)`.
+    have hle := hmin.2 W S hW ⟨hWB.1, hWB.2.trans hBU⟩ hSim hbS hSTc fun x hx =>
+      ⟨⟨hBU (hKW (hSTK hx)).1.1, (hKW (hSTK hx)).1.2⟩, (hKW (hSTK hx)).2⟩
+    rwa [hmass W hWsub, Submission.rsd_cmr_massOn_eq_ofReal_mul P n U (ball z₀ r) hBU S S₀ N₀ hc0
+      (fun ω => by
+        rw [hS, hT₀, hEX, hX]
+        ring) W hWsub, ENNReal.mul_le_mul_iff_right hN0 hNtop] at hle
+  · -- Step 4(a): `spt T₀ ⊆ spt T ⊆ N`.
+    rw [hspt]
+    exact inter_subset_left.trans hTN
+  · -- Step 3: `∂T₀ = 0`, as `N₀ ∂T₀(ω) = ∂T(ι ω) = 0`.
+    cases n with
+    | zero => trivial
+    | succ m =>
+      have hb : T.boundary = 0 := hbdry
+      change T₀.boundary = 0
+      ext ω
+      have hι : testFormOnInclusion hBU (m + 1) (exteriorDerivativeTestOn (ball z₀ r) m ω) =
+          exteriorDerivativeTestOn U m (testFormOnInclusion hBU m ω) := Subtype.ext rfl
+      have h0 : T (exteriorDerivativeTestOn U m (testFormOnInclusion hBU m ω)) = 0 := by
+        rw [← GeometricCurrentOn.boundary_apply, hb, GeometricCurrentOn.zero_apply]
+      have h := hT₀ (exteriorDerivativeTestOn (ball z₀ r) m ω)
+      rw [hι, h0] at h
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+      exact (mul_eq_zero.1 h.symm).resolve_left hc
+  · -- Step 5(a): `M_W(T₀) ≤ N₀ M_W(T₀) = M_W(T) = μ_T(W) ≤ μ_T(W̄) < ∞`.
+    intro W hW hWB
+    have hWsub : W ⊆ ball z₀ r := subset_closure.trans hWB.2
+    have hcl : MeasurableSet (closure W) := isClosed_closure.measurableSet
+    calc T₀.massOn W ≤ ENNReal.ofReal N₀ * T₀.massOn W :=
+          le_mul_of_one_le_left' (ENNReal.one_le_ofReal.2 (Nat.one_le_cast.2 hN₀))
+      _ = R.measure W := by
+          rw [← hmass W hWsub,
+            Submission.rsd_massOn_eq_measure P n U T R hU hRT W hW (hWsub.trans hBU)]
+      _ ≤ R.measure (closure W) := measure_mono subset_closure
+      _ = ∫⁻ x in R.carrier ∩ closure W, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+          rw [IMRep.measure, withDensity_apply _ hcl, Measure.restrict_restrict hcl, inter_comm]
+      _ < ∞ := (R.locallyIntegrable_mult _ hWB.1 (hWB.2.trans hBU)).lt_top
+  · -- Step 4(b): `z₀ ∈ spt T ∩ B = spt T₀`.
+    rw [hspt]
+    exact ⟨hz₀, mem_ball_self hr⟩
+  · -- Step 5(b): `M_{B_ρ(z₀)}(T₀) = N₀⁻¹ M_{B_ρ(z₀)}(T)` for `ρ < r`; the density is `N₀⁻¹N₀ = 1`.
+    refine ⟨zero_le_one, ?_⟩
+    have h := ENNReal.Tendsto.const_mul hdens.2 (Or.inr (ENNReal.inv_ne_top.2 hN0))
+    rw [ENNReal.inv_mul_cancel hN0 hNtop, ← ENNReal.ofReal_one] at h
+    refine h.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+    rw [hmass _ (ball_subset_ball hρ.2.le), mul_div_assoc, ENNReal.inv_mul_cancel_left hN0 hNtop]
+  · -- Step 7: `T₀ = m[[M']]` near `z₀` gives `T = (N₀ m)[[M']]` there.
+    exact Submission.rsd_cmr_regularSet_transfer P n U (ball z₀ r) hBU T T₀ N₀ z₀
+      (Nat.cast_ne_zero.2 hN₀.ne') (fun ω => by rw [Int.cast_natCast]; exact hT₀ ω) hz₀
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
