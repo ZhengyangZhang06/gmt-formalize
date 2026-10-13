@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.testform_separable-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Countable sup-norm-dense families of test forms supported in a relatively compact set",
+  "statement": "For all P, n ∈ ℕ and all U, W ⊆ ℝ^P with closure(W) compact, there is a countable set E ⊆ TestFormOn U n such that:\n- tsupport η ⊆ W for every η ∈ E;\n- for every ω ∈ TestFormOn U n with tsupport ω ⊆ W and every ε > 0, there is η ∈ E with |ω(x) − η(x)| ≤ ε for every x ∈ ℝ^P (|·| = covectorEuclideanNorm).",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Eucl P)), IsCompact (closure W) → ∃ E : Set (TestFormOn U n), E.Countable ∧ (∀ η ∈ E, tsupport (η : DifferentialForm (Eucl P) n) ⊆ W) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → ∀ ε : ℝ, 0 < ε → ∃ η ∈ E, ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x) ≤ ε",
+  "lean_name": "cmb_exists_countable_dense_testForms",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-testform-separable-a1-a1"
+}
