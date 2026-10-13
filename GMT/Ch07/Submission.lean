@@ -1333,6 +1333,47 @@ theorem Submission.codim1_rdo_c1a_whitney_extension : ∀ (n : ℕ) (A : Set (Eu
   · by_cases hx : x ∈ A
     · exact hgcont x hx
     · exact (hgc x hx).continuousAt_fderiv one_ne_zero
+/-- **`C¹` approximation of Lipschitz functions** (Simon Ch. 2, Theorem 1.5).  If `f : ℝⁿ → ℝ` is
+Lipschitz and `ε > 0`, some `g ∈ C¹(ℝⁿ)` has `Lⁿ({f ≠ g} ∪ {Df ≠ Dg}) < ε`.  By Rademacher, `f`
+is differentiable off the null Borel set `Bᶜ`, and `Df` is Borel.  Lusin gives a closed `C ⊆ B`
+with `Lⁿ(B \ C) < ε/2` on which `Df` is continuous; the remainder suprema and Egorov give a closed
+`A ⊆ C` with `Lⁿ(C \ A) < ε/2` satisfying Whitney's hypothesis 1.6(∗) for `h = f`, `D = Df`; and
+Whitney's extension gives `g ∈ C¹` with `g = f`, `Dg = Df` on `A`, so the bad set lies in
+`Aᶜ ⊆ Bᶜ ∪ (B \ C) ∪ (C \ A)`. -/
+theorem Submission.dtc_bc_lc_sl_c1_approx : ∀ (n : ℕ) (f : Euclid n → ℝ) (K : NNReal), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε := by
+  intro n f K hf ε hε
+  have hε2 : 0 < ε / 2 := ENNReal.half_pos hε.ne'
+  -- Rademacher: `f` is differentiable on the Borel set `B` with `Lⁿ(Bᶜ) = 0`, and `Df` is Borel
+  set B : Set (Euclid n) := {x | DifferentiableAt ℝ f x}
+  have hBc : volume Bᶜ = 0 := ae_iff.mp (hf.ae_differentiableAt (μ := volume))
+  -- Lusin: a closed `C ⊆ B` with `Lⁿ(B \ C) < ε/2` on which `Df` is continuous
+  obtain ⟨C, hCB, hC, hDfC, hBC⟩ := Submission.codim1_rdo_c1a_lusin_isClosed n (fderiv ℝ f) B
+    (measurable_fderiv ℝ f) (measurableSet_of_differentiableAt ℝ f) (ε / 2) hε2
+  -- Whitney's hypothesis 1.6(∗) for `h = f`, `D = Df` on a closed `A ⊆ C` with `Lⁿ(C \ A) < ε/2`
+  obtain ⟨A, hAC, hA, hCA, hrem⟩ :=
+    Submission.codim1_rdo_c1a_whitney_remainder n f K C hf hC (fun x hx => hCB hx) hDfC (ε / 2) hε2
+  -- Whitney's extension: `g ∈ C¹` with `g = f` and `Dg = Df` on `A`
+  obtain ⟨g, hg, hgf, hgD⟩ := Submission.codim1_rdo_c1a_whitney_extension n A f (fderiv ℝ f) hA
+    hf.continuous.continuousOn (hDfC.mono hAC) hrem
+  refine ⟨g, hg, ?_⟩
+  -- the bad set lies in `Aᶜ ⊆ Bᶜ ∪ (B \ C) ∪ (C \ A)`
+  calc volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x}
+      ≤ volume (Bᶜ ∪ (B \ C) ∪ (C \ A)) := by
+        refine measure_mono fun x hx => ?_
+        by_cases hxA : x ∈ A
+        · rcases hx with hx | hx
+          · exact absurd (hgf hxA).symm hx
+          · exact absurd (hgD x hxA).fderiv.symm hx
+        by_cases hxC : x ∈ C
+        · exact Or.inr ⟨hxC, hxA⟩
+        by_cases hxB : x ∈ B
+        · exact Or.inl (Or.inr ⟨hxB, hxC⟩)
+        · exact Or.inl (Or.inl hxB)
+    _ ≤ volume Bᶜ + volume (B \ C) + volume (C \ A) :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+    _ = volume (B \ C) + volume (C \ A) := by rw [hBc, zero_add]
+    _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBC hCA
+    _ = ε := ENNReal.add_halves ε
 /-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
 `Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
 `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
