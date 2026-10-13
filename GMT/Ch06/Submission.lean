@@ -503,6 +503,57 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
   intro P n U W T ω B C hB hM hW hC
   -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
   have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+  have key : ∀ c, C < c → |T ω| ≤ B * c := by
+    intro c hc
+    have hc0 : 0 < c := hC0.trans_lt hc
+    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+        exact (hC x).trans hc.le
+      have hle := (T.le_massOn hadm).trans hM
+      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+      have hlin : T (s • ω) = s * T ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at hle
+    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+    rw [abs_le]
+    constructor
+    · have := mul_le_mul_of_nonneg_left h2 hc0.le
+      rw [e2] at this
+      linarith
+    · have := mul_le_mul_of_nonneg_left h1 hc0.le
+      rw [e1] at this
+      linarith
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
 /-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), the locality step in the
 proof of Ch. 6, 6.3: the tangent spaces of `(M, θ)` at `x` only depend on `M ∩ V` up to
 `Hᵏ`-null sets and on `θ` up to `Hᵏ ⌞ (M ∩ V)`-null sets, `V ∋ x` open.  If `B_δ(x) ⊆ V` and
@@ -1246,48 +1297,91 @@ theorem Submission.ind_pi_ss_restriction_massOn_le : ∀ (P k : ℕ) (U W A : Se
     split_ifs
     · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
     · simp
-  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
-  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
-  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
-  have key : ∀ c, C < c → |T ω| ≤ B * c := by
-    intro c hc
-    have hc0 : 0 < c := hC0.trans_lt hc
-    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
-      intro s hs
-      have hadm : s • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
-        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
-        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
-        exact (hC x).trans hc.le
-      have hle := (T.le_massOn hadm).trans hM
-      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
-      have hlin : T (s • ω) = s * T ω := by
-        rw [map_smul, smul_eq_mul]
-      rwa [hlin] at hle
-    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
-    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
-    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
-    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
-    rw [abs_le]
-    constructor
-    · have := mul_le_mul_of_nonneg_left h2 hc0.le
-      rw [e2] at this
-      linarith
-    · have := mul_le_mul_of_nonneg_left h1 hc0.le
-      rw [e1] at this
-      linarith
-  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  have hB1 : 0 < B + 1 := by linarith
-  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
-  have hBδ : B * (ε / (B + 1)) ≤ ε := by
-    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
-          mul_le_mul_of_nonneg_right (by linarith) hδ.le
-      _ = ε := by field_simp
-  have := key (C + ε / (B + 1)) (by linarith)
-  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
-    _ = B * C + B * (ε / (B + 1)) := by ring
-    _ ≤ B * C + ε := by linarith
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  set f : Eucl P → ℝ := fun x => v x ((ω : DifferentialForm (Eucl P) k) x)
+  have hfi : Integrable f μ := (hrep ω).1
+  -- The finite measure `ν = |f| μ`.
+  set ν : Measure (Eucl P) := μ.withDensity (fun x => ‖f x‖ₑ) with hν_def
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity hfi.2.ne
+  refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+  have hε2 : (ε : ℝ≥0∞) / 2 ≠ 0 := by simp [hε.ne']
+  obtain ⟨F, hFA, hFc, hνF⟩ := hA.exists_isClosed_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
+  obtain ⟨G, hAG, hGo, -, hνG⟩ := hA.exists_isOpen_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
+  obtain ⟨ψ, hψs, hψr, hψsupp, hψ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hGo hFc (hFA.trans hAG)
+  -- The cut-off test form `ψ ω`.
+  have hω_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) :=
+    ω.2.1.1
+  have hω_cpt : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
+  let ω' : TestFormOn U k := ⟨fun x => ψ x • (ω : DifferentialForm (Eucl P) k) x,
+    ⟨hψs.smul hω_smooth, HasCompactSupport.smul_left (f := ψ) hω_cpt⟩,
+    (tsupport_smul_subset_right _ _).trans ω.2.2⟩
+  have hω' : ω' ∈ massAdmissibleOn U k W := by
+    refine ⟨(tsupport_smul_subset_right _ _).trans hω.1, fun x => ?_⟩
+    change covectorEuclideanNorm (ψ x • (ω : DifferentialForm (Eucl P) k) x) ≤ 1
+    have h0 := hψr ⟨x, rfl⟩
+    rw [hsmul, abs_of_nonneg h0.1]
+    calc ψ x * covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x) ≤ 1 * 1 :=
+          mul_le_mul h0.2 (hω.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have hω'f : ∀ x, v x ((ω' : DifferentialForm (Eucl P) k) x) = ψ x * f x := by
+    intro x
+    change v x (ψ x • (ω : DifferentialForm (Eucl P) k) x) = ψ x * f x
+    rw [map_smul, smul_eq_mul]
+  have hψf : Integrable (fun x => ψ x * f x) μ := by
+    simpa only [hω'f] using (hrep ω').1
+  have hXω' : X ω' = ∫ x, ψ x * f x ∂μ := by
+    simpa only [hω'f] using (hrep ω').2
+  have hGF : MeasurableSet (G \ F) := hGo.measurableSet.diff hFc.measurableSet
+  -- Pointwise: `1_A f - ψ f ≤ 1_{G \ F} |f|`.
+  have hpt : ∀ x, A.indicator f x - ψ x * f x ≤ (G \ F).indicator (fun x => |f x|) x := by
+    intro x
+    have h0 := hψr ⟨x, rfl⟩
+    have hnn : 0 ≤ (G \ F).indicator (fun x => |f x|) x :=
+      Set.indicator_nonneg (fun _ _ => abs_nonneg _) x
+    by_cases hxF : x ∈ F
+    · rw [Set.indicator_of_mem (hFA hxF), (hψ1 x).1 hxF, one_mul, sub_self]
+      exact hnn
+    · by_cases hxG : x ∈ G
+      · rw [Set.indicator_of_mem (show x ∈ G \ F from ⟨hxG, hxF⟩)]
+        by_cases hxA : x ∈ A
+        · rw [Set.indicator_of_mem hxA]
+          nlinarith [le_abs_self (f x), abs_nonneg (f x), h0.1, h0.2]
+        · rw [Set.indicator_of_notMem hxA]
+          nlinarith [neg_abs_le (f x), abs_nonneg (f x), h0.1, h0.2]
+      · have hψ0 : ψ x = 0 := by
+          by_contra h
+          exact hxG (hψsupp ▸ (Function.mem_support.mpr h))
+        rw [Set.indicator_of_notMem (fun h => hxG (hAG h)), hψ0, zero_mul, sub_zero]
+        exact hnn
+  have hνGF : ν (G \ F) < ε := by
+    calc ν (G \ F) ≤ ν ((G \ A) ∪ (A \ F)) := measure_mono fun x hx => by
+          by_cases hxA : x ∈ A
+          · exact Or.inr ⟨hxA, hx.2⟩
+          · exact Or.inl ⟨hx.1, hxA⟩
+      _ ≤ ν (G \ A) + ν (A \ F) := measure_union_le _ _
+      _ < (ε : ℝ≥0∞) / 2 + (ε : ℝ≥0∞) / 2 := ENNReal.add_lt_add hνG hνF
+      _ = ε := ENNReal.add_halves _
+  have hint : ∫ x in G \ F, |f x| ∂μ ≤ ε := by
+    have h1 : ∫ x in G \ F, |f x| ∂μ = (ν (G \ F)).toReal := by
+      rw [hν_def, withDensity_apply _ hGF]
+      simp_rw [← Real.norm_eq_abs]
+      exact integral_norm_eq_lintegral_enorm hfi.aestronglyMeasurable.restrict
+    rw [h1]
+    simpa using ENNReal.toReal_mono ENNReal.coe_ne_top hνGF.le
+  have hest : S ω ≤ X ω' + ε := by
+    have hdiff : S ω - X ω' = ∫ x, (A.indicator f x - ψ x * f x) ∂μ := by
+      rw [hS ω, hXω', integral_sub (hfi.indicator hA) hψf, integral_indicator hA]
+    have hle : ∫ x, (A.indicator f x - ψ x * f x) ∂μ ≤
+        ∫ x, (G \ F).indicator (fun x => |f x|) x ∂μ :=
+      integral_mono ((hfi.indicator hA).sub hψf) (hfi.abs.indicator hGF) hpt
+    rw [integral_indicator hGF] at hle
+    linarith
+  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal (X ω' + ε) := ENNReal.ofReal_le_ofReal hest
+    _ ≤ ENNReal.ofReal (X ω') + ENNReal.ofReal ε := ENNReal.ofReal_add_le
+    _ = ENNReal.ofReal (X ω') + ε := by rw [ENNReal.ofReal_coe_nnreal]
+    _ ≤ X.massOn W + ε := by gcongr; exact X.le_massOn hω'
 /-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
 `α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
 theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
@@ -4175,91 +4269,6 @@ theorem Submission.ind_diagonal_weak_limit : ∀ (P n : ℕ) (U W : Set (Eucl P)
   have h4' := abs_le.1 hL
   rw [abs_lt]
   constructor <;> linarith
-  apply sSup_le
-  rintro r ⟨ω, hω, rfl⟩
-  set f : Eucl P → ℝ := fun x => v x ((ω : DifferentialForm (Eucl P) k) x)
-  have hfi : Integrable f μ := (hrep ω).1
-  -- The finite measure `ν = |f| μ`.
-  set ν : Measure (Eucl P) := μ.withDensity (fun x => ‖f x‖ₑ) with hν_def
-  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity hfi.2.ne
-  refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
-  have hε2 : (ε : ℝ≥0∞) / 2 ≠ 0 := by simp [hε.ne']
-  obtain ⟨F, hFA, hFc, hνF⟩ := hA.exists_isClosed_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
-  obtain ⟨G, hAG, hGo, -, hνG⟩ := hA.exists_isOpen_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
-  obtain ⟨ψ, hψs, hψr, hψsupp, hψ1⟩ :=
-    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hGo hFc (hFA.trans hAG)
-  -- The cut-off test form `ψ ω`.
-  have hω_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) :=
-    ω.2.1.1
-  have hω_cpt : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
-  let ω' : TestFormOn U k := ⟨fun x => ψ x • (ω : DifferentialForm (Eucl P) k) x,
-    ⟨hψs.smul hω_smooth, HasCompactSupport.smul_left (f := ψ) hω_cpt⟩,
-    (tsupport_smul_subset_right _ _).trans ω.2.2⟩
-  have hω' : ω' ∈ massAdmissibleOn U k W := by
-    refine ⟨(tsupport_smul_subset_right _ _).trans hω.1, fun x => ?_⟩
-    change covectorEuclideanNorm (ψ x • (ω : DifferentialForm (Eucl P) k) x) ≤ 1
-    have h0 := hψr ⟨x, rfl⟩
-    rw [hsmul, abs_of_nonneg h0.1]
-    calc ψ x * covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x) ≤ 1 * 1 :=
-          mul_le_mul h0.2 (hω.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
-      _ = 1 := one_mul 1
-  have hω'f : ∀ x, v x ((ω' : DifferentialForm (Eucl P) k) x) = ψ x * f x := by
-    intro x
-    change v x (ψ x • (ω : DifferentialForm (Eucl P) k) x) = ψ x * f x
-    rw [map_smul, smul_eq_mul]
-  have hψf : Integrable (fun x => ψ x * f x) μ := by
-    simpa only [hω'f] using (hrep ω').1
-  have hXω' : X ω' = ∫ x, ψ x * f x ∂μ := by
-    simpa only [hω'f] using (hrep ω').2
-  have hGF : MeasurableSet (G \ F) := hGo.measurableSet.diff hFc.measurableSet
-  -- Pointwise: `1_A f - ψ f ≤ 1_{G \ F} |f|`.
-  have hpt : ∀ x, A.indicator f x - ψ x * f x ≤ (G \ F).indicator (fun x => |f x|) x := by
-    intro x
-    have h0 := hψr ⟨x, rfl⟩
-    have hnn : 0 ≤ (G \ F).indicator (fun x => |f x|) x :=
-      Set.indicator_nonneg (fun _ _ => abs_nonneg _) x
-    by_cases hxF : x ∈ F
-    · rw [Set.indicator_of_mem (hFA hxF), (hψ1 x).1 hxF, one_mul, sub_self]
-      exact hnn
-    · by_cases hxG : x ∈ G
-      · rw [Set.indicator_of_mem (show x ∈ G \ F from ⟨hxG, hxF⟩)]
-        by_cases hxA : x ∈ A
-        · rw [Set.indicator_of_mem hxA]
-          nlinarith [le_abs_self (f x), abs_nonneg (f x), h0.1, h0.2]
-        · rw [Set.indicator_of_notMem hxA]
-          nlinarith [neg_abs_le (f x), abs_nonneg (f x), h0.1, h0.2]
-      · have hψ0 : ψ x = 0 := by
-          by_contra h
-          exact hxG (hψsupp ▸ (Function.mem_support.mpr h))
-        rw [Set.indicator_of_notMem (fun h => hxG (hAG h)), hψ0, zero_mul, sub_zero]
-        exact hnn
-  have hνGF : ν (G \ F) < ε := by
-    calc ν (G \ F) ≤ ν ((G \ A) ∪ (A \ F)) := measure_mono fun x hx => by
-          by_cases hxA : x ∈ A
-          · exact Or.inr ⟨hxA, hx.2⟩
-          · exact Or.inl ⟨hx.1, hxA⟩
-      _ ≤ ν (G \ A) + ν (A \ F) := measure_union_le _ _
-      _ < (ε : ℝ≥0∞) / 2 + (ε : ℝ≥0∞) / 2 := ENNReal.add_lt_add hνG hνF
-      _ = ε := ENNReal.add_halves _
-  have hint : ∫ x in G \ F, |f x| ∂μ ≤ ε := by
-    have h1 : ∫ x in G \ F, |f x| ∂μ = (ν (G \ F)).toReal := by
-      rw [hν_def, withDensity_apply _ hGF]
-      simp_rw [← Real.norm_eq_abs]
-      exact integral_norm_eq_lintegral_enorm hfi.aestronglyMeasurable.restrict
-    rw [h1]
-    simpa using ENNReal.toReal_mono ENNReal.coe_ne_top hνGF.le
-  have hest : S ω ≤ X ω' + ε := by
-    have hdiff : S ω - X ω' = ∫ x, (A.indicator f x - ψ x * f x) ∂μ := by
-      rw [hS ω, hXω', integral_sub (hfi.indicator hA) hψf, integral_indicator hA]
-    have hle : ∫ x, (A.indicator f x - ψ x * f x) ∂μ ≤
-        ∫ x, (G \ F).indicator (fun x => |f x|) x ∂μ :=
-      integral_mono ((hfi.indicator hA).sub hψf) (hfi.abs.indicator hGF) hpt
-    rw [integral_indicator hGF] at hle
-    linarith
-  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal (X ω' + ε) := ENNReal.ofReal_le_ofReal hest
-    _ ≤ ENNReal.ofReal (X ω') + ENNReal.ofReal ε := ENNReal.ofReal_add_le
-    _ = ENNReal.ofReal (X ω') + ε := by rw [ENNReal.ofReal_coe_nnreal]
-    _ ≤ X.massOn W + ε := by gcongr; exact X.le_massOn hω'
 /-- **Slices of a cycle (Simon Ch. 6, 4.5(1)–(2), 4.6, 4.10).**  For `X ∈ 𝒟_{m+1}(U)` with
 `∂X = 0` and locally finite mass, `d` `L`-Lipschitz and `a < b`, there are restrictions
 `A_t = X ⌞ {d < t}` and a measurable `g` with `M_W(∂A_t) ≤ g(t)` on `(a, b)` and
