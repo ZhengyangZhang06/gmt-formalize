@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.uniform_injectivity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "Uniform left-inverse bound for a continuous family of injective linear maps on a compact set",
+  "statement": "Let P, d ∈ ℕ, K ⊆ ℝ^d compact, and L : ℝ^d → L(ℝ^d, ℝ^P) continuous on K with L(v) injective for every v ∈ K. Then there is b ≥ 0 with |w| ≤ b|L(v)w| for all v ∈ K and w ∈ ℝ^d.",
+  "lean_statement": "∀ (P d : ℕ) (K : Set (Euclid d)) (L : Euclid d → (Euclid d →L[ℝ] Euclid P)), IsCompact K → ContinuousOn L K → (∀ v ∈ K, Injective (L v)) → ∃ b : ℝ, 0 ≤ b ∧ ∀ v ∈ K, ∀ w : Euclid d, ‖w‖ ≤ b * ‖L v w‖",
+  "lean_name": "dor_lmb_ret_uniform_injectivity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-79e1930825-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.chart_localization-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "Chart localization: N ∩ B̄_ρ(ψ(v₀)) ⊆ ψ(V ∩ B_ε(v₀)) and is compact, for a proper injective chart",
+  "statement": "Let P, d ∈ ℕ, N, W ⊆ ℝ^P, V ⊆ ℝ^d, ψ : ℝ^d → ℝ^P and v₀ ∈ V. Assume W is open, ψ is continuous on V and injective on V, ψ(V) = W ∩ N, and V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W. Then for every ε > 0 there is ρ > 0 such that B̄_ρ(ψ(v₀)) ⊆ W, N ∩ B̄_ρ(ψ(v₀)) ⊆ ψ(V ∩ B_ε(v₀)), and N ∩ B̄_ρ(ψ(v₀)) is compact.",
+  "lean_statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ closedBall (ψ v₀) ρ ⊆ W ∧ N ∩ closedBall (ψ v₀) ρ ⊆ ψ '' (V ∩ ball v₀ ε) ∧ IsCompact (N ∩ closedBall (ψ v₀) ρ)",
+  "lean_name": "dor_lmb_ret_chart_localization",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-534d529818-a1"
+}

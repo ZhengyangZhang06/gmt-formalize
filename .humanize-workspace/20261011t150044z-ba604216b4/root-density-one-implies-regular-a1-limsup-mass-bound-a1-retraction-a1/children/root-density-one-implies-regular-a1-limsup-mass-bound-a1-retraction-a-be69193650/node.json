@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.tangent_projection-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "The tangent projection v ↦ P̂(v) of a C² immersion is C¹",
+  "statement": "Let P, d ∈ ℕ, V ⊆ ℝ^d open, and ψ : ℝ^d → ℝ^P C² on V with Dψ(v) injective for every v ∈ V. For v ∈ ℝ^d let P̂(v) ∈ L(ℝ^P, ℝ^P) be the orthogonal projection of ℝ^P onto the subspace range Dψ(v), where Dψ(v) = fderiv ℝ ψ v (Lean: (fderiv ℝ ψ v).range.starProjection). Then v ↦ P̂(v) is C¹ on V.",
+  "lean_statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ContDiffOn ℝ 1 (fun v => (fderiv ℝ ψ v).range.starProjection) V",
+  "lean_name": "dor_lmb_ret_tangent_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-be69193650-a1"
+}

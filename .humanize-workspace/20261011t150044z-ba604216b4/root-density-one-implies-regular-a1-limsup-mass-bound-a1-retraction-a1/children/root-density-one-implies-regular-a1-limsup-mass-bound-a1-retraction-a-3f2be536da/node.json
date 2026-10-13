@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.tangent_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "A map fixing N near x has derivative equal to the identity on tangentSpace N x",
+  "statement": "Let P ∈ ℕ, N, O ⊆ ℝ^P with O open, π : ℝ^P → ℝ^P and x ∈ O. Assume π is (Fréchet) differentiable at x and π(z) = z for all z ∈ N ∩ O. Then Dπ(x)v = v for every v ∈ tangentSpace N x, i.e. for every v = γ′(0) where γ : ℝ → ℝ^P is C¹ on (−1, 1), γ((−1, 1)) ⊆ N and γ(0) = x.",
+  "lean_statement": "∀ (P : ℕ) (N O : Set (Euclid P)) (proj : Euclid P → Euclid P) (x : Euclid P), IsOpen O → x ∈ O → DifferentiableAt ℝ proj x → (∀ z ∈ N ∩ O, proj z = z) → ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v",
+  "lean_name": "dor_lmb_ret_fderiv_tangent_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-3f2be536da-a1"
+}

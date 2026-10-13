@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.derivative_estimate-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "Differentiated normality estimate ‖D(ψ∘g)(x)‖ ≤ 1 + 2ab|x − ψ(g(x))|",
+  "statement": "Let P, d ∈ ℕ, O ⊆ ℝ^P open, x ∈ O, g : ℝ^P → ℝ^d, ψ : ℝ^d → ℝ^P, Q : ℝ^d → L(ℝ^P, ℝ^P) and a, b ∈ ℝ; put v := g(x). Assume:\n- g is differentiable at x, and ψ and Q are differentiable at v;\n- Q(g(z))(z − ψ(g(z))) = 0 for all z ∈ O;\n- Q(v)∘Dψ(v) = Dψ(v) and ‖Q(v)‖ ≤ 1;\n- a ≥ 0, b ≥ 0 and ‖DQ(v)‖ ≤ a;\n- |w| ≤ b|Dψ(v)w| for all w ∈ ℝ^d;\n- ab|x − ψ(v)| ≤ 1/2.\nThen ‖D(ψ∘g)(x)‖ ≤ 1 + 2ab|x − ψ(v)| (operator norm).",
+  "lean_statement": "∀ (P d : ℕ) (O : Set (Euclid P)) (g : Euclid P → Euclid d) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (x : Euclid P) (a b : ℝ), IsOpen O → x ∈ O → DifferentiableAt ℝ g x → DifferentiableAt ℝ ψ (g x) → DifferentiableAt ℝ Q (g x) → (∀ z ∈ O, Q (g z) (z - ψ (g z)) = 0) → (Q (g x)).comp (fderiv ℝ ψ (g x)) = fderiv ℝ ψ (g x) → ‖Q (g x)‖ ≤ 1 → 0 ≤ a → 0 ≤ b → ‖fderiv ℝ Q (g x)‖ ≤ a → (∀ w : Euclid d, ‖w‖ ≤ b * ‖fderiv ℝ ψ (g x) w‖) → a * b * ‖x - ψ (g x)‖ ≤ 1 / 2 → ‖fderiv ℝ (ψ ∘ g) x‖ ≤ 1 + 2 * (a * b) * ‖x - ψ (g x)‖",
+  "lean_name": "dor_lmb_ret_derivative_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-d2de0f35b0-a1"
+}
