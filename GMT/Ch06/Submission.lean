@@ -2888,6 +2888,110 @@ theorem Submission.rectifiability_density_comparison : ∀ (P n : ℕ) (ν : Mea
       gcongr
     _ ≤ ν V := hsum
 
+/-- **Besicovitch–Federer projection theorem, finite-measure case** (Mattila, *Geometry of Sets
+and Measures in Euclidean Spaces*, Theorem 18.1; Hovila–Järvenpää–Järvenpää–Ledrappier,
+arXiv:1104.3453, Theorem 1.2).  Let `k = m + 1` and `L_v x = (⟨v₁, x⟩, …, ⟨v_k, x⟩) ∈ ℝᵏ`.  If
+`E ⊆ ℝ^N` is Borel and purely `k`-unrectifiable with `Hᵏ(E) < ∞`, then `Lᵏ(L_v(E)) = 0` for
+Lebesgue-a.e. `v ∈ (ℝ^N)ᵏ`.  After passing to a σ-compact core of `E`, the trichotomy splits `E`,
+up to an `Hᵏ`-null set, into the cone-density sets (`Hᵏ`-null), the points over which
+`(L_v)_# (Hᵏ ⌞ E)` has infinite density (Lebesgue-null image by density comparison) and the
+points with infinite `L_v`-fibres (Lebesgue-null image by Eilenberg finiteness). -/
+theorem Submission.rectifiability_bf_projection_null_ae : ∀ (N m : ℕ) (E : Set (Eucl N)), MeasurableSet E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) E → ∀ᵐ v ∂(volume : Measure (Fin (m + 1) → Eucl N)), (volume : Measure (Eucl (m + 1))) ((fun x : Eucl N => (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1))) '' E) = 0 := by
+  intro N m E hE hEfin hPU
+  -- Step 1: a σ-compact Borel core `E' ⊆ E` with `Hᵏ(E \ E') = 0` (`k = m + 1`).
+  have : IsFiniteMeasure ((μHE[m + 1] : Measure (Eucl N)).restrict E) :=
+    isFiniteMeasure_restrict.2 hEfin.ne
+  obtain ⟨C, hCc, hCE, hCnull⟩ := Submission.lpf_lli_inner_compact_approx N
+    (μHE[m + 1] : Measure (Eucl N)) E hE.nullMeasurableSet inferInstance
+  set E' := ⋃ k, C k
+  have hE'E : E' ⊆ E := iUnion_subset hCE
+  have hE'm : MeasurableSet E' := MeasurableSet.iUnion fun k => (hCc k).measurableSet
+  have hE'fin : (μHE[m + 1] : Measure (Eucl N)) E' < ∞ := (measure_mono hE'E).trans_lt hEfin
+  -- Step 2: the trichotomy at every scale `δ_l = 1/(l+1)`, for a.e. `v` simultaneously.
+  have htri := fun l : ℕ => Submission.rectifiability_bf_trichotomy N m E' (1 / ((l : ℝ) + 1))
+    (isSigmaCompact_iUnion_of_isCompact C hCc) hE'fin (by positivity)
+  filter_upwards [ae_all_iff.2 htri] with v hv
+  -- Fix `v` and write `L x = (⟨v₁, x⟩, …, ⟨v_k, x⟩)`; `L` is linear, hence Lipschitz.
+  set L : Eucl N → Eucl (m + 1) :=
+    fun x => WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) with hL
+  obtain ⟨K, hK⟩ : ∃ K : ℝ≥0, LipschitzWith K L := by
+    let ℓ : Eucl N →ₗ[ℝ] Eucl (m + 1) :=
+      { toFun := L
+        map_add' := fun x y => by ext i; simp [hL, inner_add_right]
+        map_smul' := fun c x => by ext i; simp [hL, inner_smul_right] }
+    exact ⟨_, (LinearMap.toContinuousLinearMap ℓ).lipschitzWith⟩
+  -- `L` maps `Hᵏ`-null sets to Lebesgue-null sets, as `μHE[k] = volume` on `ℝᵏ`.
+  have himage : ∀ S : Set (Eucl N), (μHE[m + 1] : Measure (Eucl N)) S = 0 →
+      (volume : Measure (Eucl (m + 1))) (L '' S) = 0 := by
+    intro S hS
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (m + 1) (hK.lipschitzOnWith (s := S))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hS, mul_zero] at h
+    exact nonpos_iff_eq_zero.1 h
+  -- The image of `E \ E'` is null, so it suffices to treat `E'`.
+  rw [← union_sdiff_cancel hE'E, image_union]
+  refine measure_union_null ?_ (himage _ hCnull)
+  -- A full-measure set `G` of points of `E'` at which the trichotomy holds at every scale.
+  obtain ⟨G, hG, hGP⟩ :=
+    eventually_iff_exists_mem.1 ((ae_restrict_iff' hE'm).1 (ae_all_iff.2 hv))
+  -- (T1) The cone-density sets `E₁ l` are `Hᵏ`-null (`bf_cone_density` with `δ = 1/(l+1)`).
+  set E₁ : ℕ → Set (Eucl N) := fun l => {a | a ∈ E' ∧ ∀ η : ℝ, 0 < η → ∃ s ∈ Ioo (0 : ℝ) 1,
+    ∀ r ∈ Ioo (0 : ℝ) (1 / ((l : ℝ) + 1)), (μHE[m + 1] : Measure (Eucl N))
+      (E' ∩ {x | dist x a < r ∧ ‖L (x - a)‖ < s * ‖x - a‖}) ≤
+        ENNReal.ofReal (η * (r * s) ^ (m + 1))}
+  have hE₁null : ∀ l, (μHE[m + 1] : Measure (Eucl N)) (E₁ l) = 0 := fun l =>
+    Submission.rectifiability_bf_cone_density N m E' v (1 / ((l : ℝ) + 1)) (hPU.mono hE'E)
+      (by positivity)
+  -- (T2) The set `Y₂` where `ν = L_# (Hᵏ ⌞ E')` has infinite upper density is null: density
+  -- comparison with `t = ∞` and `V = ℝᵏ` gives `∞ · Lᵏ(Y₂) ≤ ν(ℝᵏ) = Hᵏ(E') < ∞`.
+  set Y₂ : Set (Eucl (m + 1)) := {y | dimensionalUpperDensity
+    (Measure.map L ((μHE[m + 1] : Measure (Eucl N)).restrict E')).toOuterMeasure
+      ((m + 1 : ℕ) : ℝ) univ y = ⊤}
+  have hY₂null : (volume : Measure (Eucl (m + 1))) Y₂ = 0 := by
+    have h := Submission.rectifiability_density_comparison (m + 1) (m + 1)
+      (Measure.map L ((μHE[m + 1] : Measure (Eucl N)).restrict E')) Y₂ univ ⊤ isOpen_univ
+      (subset_univ _) fun y hy => ge_of_eq hy
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      Measure.map_apply hK.continuous.measurable MeasurableSet.univ, preimage_univ,
+      Measure.restrict_apply_univ] at h
+    by_contra hne
+    rw [ENNReal.top_mul hne] at h
+    exact lt_irrefl _ (h.trans_lt hE'fin)
+  -- (T3) The set `Y₃` of points with infinite `L`-fibre in `E'` is null (Eilenberg finiteness),
+  -- and a point with fibre partners at every scale `δ_l` has an infinite fibre.
+  set Y₃ : Set (Eucl (m + 1)) := {y | (E' ∩ L ⁻¹' {y}).Infinite}
+  have hY₃null : (volume : Measure (Eucl (m + 1))) Y₃ = 0 :=
+    Submission.rectifiability_bf_infinite_fibre_null N m E' L K hE'm hE'fin hK
+  have hinf : ∀ a ∈ E', (∀ l : ℕ, ∃ x ∈ E', x ≠ a ∧ dist x a < 1 / ((l : ℝ) + 1) ∧
+      L x = L a) → L a ∈ Y₃ := by
+    intro a ha h3 hfin
+    have hcl : IsClosed ((E' ∩ L ⁻¹' {L a}) \ {a}) := hfin.sdiff.isClosed
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hcl.isOpen_compl a fun h => h.2 rfl
+    obtain ⟨l, hl⟩ := exists_nat_one_div_lt hε
+    obtain ⟨x, hxE, hxa, hdist, hLx⟩ := h3 l
+    exact hball (mem_ball.2 (hdist.trans hl)) ⟨⟨hxE, hLx⟩, hxa⟩
+  -- Step 3: `L(E') ⊆ L(Gᶜ) ∪ ⋃ₗ L(E₁ l) ∪ Y₂ ∪ Y₃`, and every piece is Lebesgue-null.
+  refine measure_mono_null (t := ((L '' Gᶜ ∪ ⋃ l, L '' E₁ l) ∪ Y₂) ∪ Y₃) ?_
+    (measure_union_null (measure_union_null (measure_union_null (himage _ (mem_ae_iff.1 hG))
+      (measure_iUnion_null fun l => himage _ (hE₁null l))) hY₂null) hY₃null)
+  rintro _ ⟨a, ha, rfl⟩
+  by_cases haG : a ∈ G
+  swap
+  · exact Or.inl (Or.inl (Or.inl ⟨a, haG, rfl⟩))
+  by_cases h2 : L a ∈ Y₂
+  · exact Or.inl (Or.inr h2)
+  by_cases h3 : L a ∈ Y₃
+  · exact Or.inr h3
+  -- Otherwise (T3) fails at some scale `δ_l`, where (T1) must then hold.
+  obtain ⟨l, hl⟩ : ∃ l, a ∈ E₁ l := by
+    by_contra hno
+    refine h3 (hinf a ha fun l => ?_)
+    rcases hGP a haG ha l with h1 | h2' | h3'
+    · exact (hno ⟨l, ha, h1⟩).elim
+    · exact (h2 h2').elim
+    · exact h3'
+  exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨l, a, hl, rfl⟩)))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
