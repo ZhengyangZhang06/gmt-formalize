@@ -679,6 +679,80 @@ theorem Submission.dgoj_graph_fderiv_left_inverse : ∀ (n k : ℕ) (ι : Euclid
     rw [hder.fderiv]
     exact hadj w _
 
+/-- **Continuous unit orientation of a `C¹` graph and the Jacobian identity** (Simon 7.4.3, via
+Allard's theorem; steps 3 and 7 of the graph-cycle argument).  Let `Φ(v) = z + ιv + ι'u(v)` on
+`D = B_s(0)`, `F(v) = DΦ(v)`, `b(v) = (F(v)e₁, …, F(v)eₙ)`, `J(v) = √det(F(v)* ∘ F(v))` and
+`Pr(x) = ι*(x - z)`, so that `Pr ∘ Φ = id` and `ι* ∘ F(v) = id` (hence `F(v)` is injective and
+`J > 0` on `D`).  With `ev` the evaluation of `n`-covectors at `n`-families and `δ` the normalized
+determinant covector of `ℝⁿ`, take `ξ(x) = J(Pr x)⁻¹ ev(b(Pr x))` and `β(x) = J(Pr x) (δ ∘ ι*)`.
+Both are continuous on `Σ = Φ(D)` because `Pr` maps `Σ` into `D`; `ξ(β) = δ(ι* b) = δ(e) = 1` on
+`Σ`; `J(v) ξ(Φ v)(α) = α(b(v))` is the Jacobian identity, and with it the pointwise frame argument
+for injective `F(v)` makes `ξ(Φ v)` a unit orientation of `range F(v)`. -/
+theorem Submission.dgcr_graph_orientation_jacobian : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), 0 < n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → ContDiffOn ℝ 1 u (ball 0 s) → ∃ (ξ : Euclid (n + k) → MultiVector (n + k) n) (β : Euclid (n + k) → Covector (Euclid (n + k)) n), ContinuousOn ξ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∧ ContinuousOn β ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∧ (∀ x ∈ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ x (β x) = 1) ∧ (∀ v ∈ ball (0 : Euclid n) s, IsUnitOrientationOf (ξ (z + ι v + ι' (u v))) (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v : Euclid n →ₗ[ℝ] Euclid (n + k)))) ∧ ∀ v ∈ ball (0 : Euclid n) s, ∀ α : Covector (Euclid (n + k)) n, α (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => z + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => z + ι v + ι' (u v)) v).det) * ξ (z + ι v + ι' (u v)) α := by
+  intro n k ι ι' u z s _hn horth _hs hu
+  obtain ⟨hadj, hFc, hFinv⟩ := Submission.dgoj_graph_fderiv_left_inverse n k ι ι' u z s horth hu
+  obtain ⟨ev, hevc, hev⟩ := Submission.dgoj_exists_continuous_covector_eval (n + k) n
+  obtain ⟨δ, hδ⟩ := Submission.dgoj_exists_det_covector n
+  -- `ι*`, the projection `Pr`, the derivative `F`, the frame `b`, the Jacobian `J` and `δ ∘ ι*`
+  let ιs : Euclid (n + k) →L[ℝ] Euclid n := ι.toContinuousLinearMap.adjoint
+  let Pr : Euclid (n + k) → Euclid n := fun x => ιs (x - z)
+  let F : Euclid n → Euclid n →L[ℝ] Euclid (n + k) := fderiv ℝ (fun v => z + ι v + ι' (u v))
+  let b : Euclid n → Fin n → Euclid (n + k) := fun v i => F v (EuclideanSpace.single i (1 : ℝ))
+  let J : Euclid n → ℝ := fun v => Real.sqrt (((F v).adjoint ∘L F v).det)
+  let β₀ : Covector (Euclid (n + k)) n := δ.compContinuousLinearMap ιs
+  -- `Pr ∘ Φ = id`, so `Pr` maps `Σ = Φ(D)` into `D`
+  have hPrΦ : ∀ v, Pr (z + ι v + ι' (u v)) = v := by
+    intro v
+    show ιs (z + ι v + ι' (u v) - z) = v
+    rw [show z + ι v + ι' (u v) - z = ι v + ι' (u v) by abel]
+    exact hadj v (u v)
+  have hPrc : Continuous Pr := ιs.continuous.comp (continuous_id.sub continuous_const)
+  have hmaps : MapsTo Pr ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) (ball 0 s) := by
+    rintro _ ⟨v, hv, rfl⟩
+    rw [hPrΦ]
+    exact hv
+  -- `ι* ∘ F(v) = id` on `D`: `F(v)` is injective, so `J(v) > 0`
+  have hinj : ∀ v ∈ ball (0 : Euclid n) s, Injective (F v) := by
+    intro v hv x y hxy
+    have h := congrArg ιs hxy
+    rwa [hFinv v hv x, hFinv v hv y] at h
+  have hpos : ∀ v ∈ ball (0 : Euclid n) s, 0 < J v := fun v hv =>
+    Real.sqrt_pos.2 (Submission.dgoj_unitOrientation_of_injective (n + k) n (F v) (hinj v hv)).1
+  -- continuity of `J` and of `b` on `D`
+  have hJc : ContinuousOn J (ball 0 s) := by
+    have h1 : ContinuousOn (fun v => (F v).adjoint ∘L F v) (ball 0 s) :=
+      ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid n)
+        (F := Euclid (n + k))).continuous.comp_continuousOn hFc).clm_comp hFc
+    exact Real.continuous_sqrt.comp_continuousOn
+      (ContinuousLinearMap.continuous_det.comp_continuousOn h1)
+  have hbc : ContinuousOn b (ball 0 s) :=
+    continuousOn_pi.2 fun i => hFc.clm_apply continuousOn_const
+  -- `(δ ∘ ι*)(b(v)) = δ(e₁, …, eₙ) = 1`
+  have hβ₀ : ∀ v ∈ ball (0 : Euclid n) s, β₀ (b v) = 1 := by
+    intro v hv
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    convert hδ using 2
+    funext i
+    exact hFinv v hv _
+  refine ⟨fun x => (J (Pr x))⁻¹ • ev (b (Pr x)), fun x => J (Pr x) • β₀, ?_, ?_, ?_, ?_, ?_⟩
+  · exact ((hJc.comp hPrc.continuousOn hmaps).inv₀ fun x hx => (hpos _ (hmaps hx)).ne').smul
+      (hevc.comp_continuousOn (hbc.comp hPrc.continuousOn hmaps))
+  · exact (hJc.comp hPrc.continuousOn hmaps).smul continuousOn_const
+  · rintro _ ⟨v, hv, rfl⟩
+    simp only [hPrΦ]
+    rw [smul_apply, hev, ContinuousAlternatingMap.smul_apply, hβ₀ v hv,
+      smul_eq_mul, smul_eq_mul, mul_one, inv_mul_cancel₀ (hpos v hv).ne']
+  · intro v hv
+    refine (Submission.dgoj_unitOrientation_of_injective (n + k) n (F v) (hinj v hv)).2 _
+      fun α => ?_
+    simp only [hPrΦ]
+    rw [smul_apply, hev, smul_eq_mul, ← mul_assoc,
+      mul_inv_cancel₀ (hpos v hv).ne', one_mul]
+  · intro v hv α
+    simp only [hPrΦ]
+    rw [smul_apply, hev, smul_eq_mul, ← mul_assoc,
+      mul_inv_cancel₀ (hpos v hv).ne', one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
