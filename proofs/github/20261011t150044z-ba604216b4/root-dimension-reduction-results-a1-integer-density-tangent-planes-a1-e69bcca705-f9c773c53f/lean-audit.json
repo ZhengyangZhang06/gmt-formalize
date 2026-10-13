@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6a8b4dbab247c1b309fb4dca2bf5cafea62529ec8c0b20e25cde54d50acfce54",
+  "git_delta": {
+    "base_commit": "903a216839e6546fcf8bcc2b3e4db40856e63c6e",
+    "candidate_commit": "a693a35e03529bb02970cb847c4ad5f098d6f447",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "771c4d05399b2b7a8bb61399e8e19b044a88d2b185dbf376fc0cd2827d13fe73",
+    "source_sha256": "879b1df0f9af4198ab42c613b95a70b6bf4dee34096995d5406830fc0c530cfb",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idod_blowUp_limit_mass_density_le",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (z : Euclid P) (r θ₂ ρ₀ : ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), 0 < r → 0 ≤ θ₂ → 0 < ρ₀ → ball z (2 * r) ⊆ U → (∀ y ∈ ball z (3 * r / 2), ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) → (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ (w : Euclid P) (ρ : ℝ), 0 < ρ → S.massOn (ball w ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ∧ ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → θ ≤ θ₂",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
