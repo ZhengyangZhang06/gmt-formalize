@@ -3188,6 +3188,150 @@ theorem ted_tangent_plane_facts : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
       funext v
       rw [ContinuousLinearMap.coe_coe, hDGv]
     rw [hfun, ← LinearMap.coe_range, Submodule.span_eq]
+/-- **Simon Ch. 1, Upper Density Theorem 3.6** (cited fact (H2) of the a.e. tangent-plane proof),
+in Mathlib's normalization `Hⁿ = μHE[n]`: if `A ⊆ ℝ^{n+ℓ}` is Borel and `ν(A) < ∞`, then
+`ν(A ∩ B_r(x)) / rⁿ → 0` as `r ↓ 0` for `Hⁿ`-a.e. `x ∉ A`.
+
+Simon's proof, inline (SimonGMT's `Chapter01.ae_dimensionalUpperDensity_eq_zero_outside` is outside
+the frozen import closure).  Fix `k` and let `Bad k` be the set of `x ∉ A` with
+`ν(A ∩ B_r(x)) / rⁿ > k⁻¹` for arbitrarily small `r > 0`.  Given a closed `F ⊆ A` (closed inner
+regularity of the finite measure `ν ⌞ A`) and a scale `ρ > 0`, each `x ∈ Bad k` has a radius
+`r_x ∈ (0, ρ]` with `B_{r_x}(x) ∩ F = ∅` and `r_xⁿ ≤ k ν((A \ F) ∩ B_{r_x}(x))`.  The Vitali
+covering lemma gives a disjoint, hence countable, subfamily `{B_{r_b}(b)}_{b ∈ u}` with
+`Bad k ⊆ ⋃_{b ∈ u} B_{5 r_b}(b)`, so `Σ_b diam(B_{5 r_b}(b))ⁿ ≤ 10ⁿ k ν(A \ F)`.  Letting
+`ρ → 0` and `ν(A \ F) → 0` gives `μH[n](Bad k) = 0`, hence `Hⁿ(Bad k) = 0`, and outside
+`⋃_k Bad k` the quotient tends to `0`. -/
+theorem aetp_upper_density_zero_ae : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), MeasurableSet A → ν A < ⊤ → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ A → Tendsto (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ ν A hA hνA
+  -- `Bad k`: points outside `A` whose density quotient exceeds `k⁻¹` at arbitrarily small radii.
+  set Bad : ℕ → Set (Amb n ℓ) := fun k => {x | x ∉ A ∧ ∃ᶠ r in 𝓝[>] (0 : ℝ),
+    (k : ℝ≥0∞)⁻¹ < ν (A ∩ closedBall x r) / ENNReal.ofReal (r ^ n)}
+  -- Closed inner regularity of the finite measure `ν ⌞ A`.
+  have : IsFiniteMeasure (ν.restrict A) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+  have hF : ∀ j : ℕ, ∃ F ⊆ A, IsClosed F ∧ ν (A \ F) < (j : ℝ≥0∞)⁻¹ := by
+    intro j
+    obtain ⟨F, hFA, hFc, hFlt⟩ := hA.exists_isClosed_sdiff_lt (μ := ν.restrict A)
+      (measure_ne_top _ _) (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top j))
+    refine ⟨F, hFA, hFc, ?_⟩
+    rwa [Measure.restrict_apply (hA.diff hFc.measurableSet), inter_eq_left.2 sdiff_subset] at hFlt
+  choose F hFA hFc hFν using hF
+  -- Vitali covering of `Bad k` at scale `ρ`, avoiding a closed `G ⊆ A`.
+  have hcover : ∀ (k : ℕ) (G : Set (Amb n ℓ)), G ⊆ A → IsClosed G → ∀ ρ : ℝ, 0 < ρ →
+      ∃ (u : Set (Amb n ℓ)) (r : Amb n ℓ → ℝ), u.Countable ∧ (∀ b ∈ u, 0 < r b ∧ r b ≤ ρ) ∧
+        Bad k ⊆ ⋃ b ∈ u, closedBall b (5 * r b) ∧
+        ∑' b : u, ENNReal.ofReal (r b) ^ n ≤ k * ν (A \ G) := by
+    intro k G hGA hGc ρ hρ
+    have hpick : ∀ x ∈ Bad k, ∃ r : ℝ, 0 < r ∧ r ≤ ρ ∧
+        ENNReal.ofReal r ^ n ≤ k * ν ((A \ G) ∩ closedBall x r) := by
+      rintro x ⟨hxA, hfreq⟩
+      have hxG : x ∈ Gᶜ := fun hx => hxA (hGA hx)
+      obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hGc.isOpen_compl x hxG
+      obtain ⟨r, hlt, hr⟩ := (hfreq.and_eventually (Ioo_mem_nhdsGT (lt_min hδ hρ))).exists
+      refine ⟨r, hr.1, (hr.2.trans_le (min_le_right _ _)).le, ?_⟩
+      have hsub : A ∩ closedBall x r = (A \ G) ∩ closedBall x r := by
+        ext y
+        constructor
+        · rintro ⟨hyA, hyr⟩
+          exact ⟨⟨hyA, fun hyG =>
+            hball (closedBall_subset_ball (hr.2.trans_le (min_le_left _ _)) hyr) hyG⟩, hyr⟩
+        · rintro ⟨⟨hyA, -⟩, hyr⟩
+          exact ⟨hyA, hyr⟩
+      rw [hsub] at hlt
+      have hpos : ENNReal.ofReal (r ^ n) ≠ 0 := by
+        rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+        exact pow_pos hr.1 n
+      rw [ENNReal.lt_div_iff_mul_lt (Or.inl hpos) (Or.inl ENNReal.ofReal_ne_top)] at hlt
+      rw [← ENNReal.ofReal_pow hr.1.le]
+      rcases Nat.eq_zero_or_pos k with rfl | hk
+      · rw [Nat.cast_zero, ENNReal.inv_zero, ENNReal.top_mul hpos] at hlt
+        exact absurd hlt not_top_lt
+      · have hk0 : (k : ℝ≥0∞) ≠ 0 := by exact_mod_cast hk.ne'
+        calc ENNReal.ofReal (r ^ n) = k * ((k : ℝ≥0∞)⁻¹ * ENNReal.ofReal (r ^ n)) := by
+              rw [← mul_assoc, ENNReal.mul_inv_cancel hk0 (ENNReal.natCast_ne_top k), one_mul]
+          _ ≤ k * ν ((A \ G) ∩ closedBall x r) := mul_le_mul_right hlt.le _
+    choose! r hr0 hrρ hrν using hpick
+    obtain ⟨u, huB, hudisj, hucov⟩ :=
+      Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (Bad k) (fun x => x) r ρ
+        hrρ 5 (by norm_num)
+    have hucount : u.Countable := hudisj.countable_of_nonempty_interior fun b hb =>
+      ⟨b, Metric.ball_subset_interior_closedBall (mem_ball_self (hr0 b (huB hb)))⟩
+    refine ⟨u, r, hucount, fun b hb => ⟨hr0 b (huB hb), hrρ b (huB hb)⟩, ?_, ?_⟩
+    · intro a ha
+      obtain ⟨b, hbu, hab⟩ := hucov a ha
+      exact mem_biUnion hbu (hab (mem_closedBall_self (hr0 a ha).le))
+    · calc ∑' b : u, ENNReal.ofReal (r b) ^ n
+          ≤ ∑' b : u, (k : ℝ≥0∞) * ν ((A \ G) ∩ closedBall (b : Amb n ℓ) (r b)) :=
+            ENNReal.tsum_le_tsum fun b => hrν b (huB b.2)
+        _ = k * ∑' b : u, ν ((A \ G) ∩ closedBall (b : Amb n ℓ) (r b)) := ENNReal.tsum_mul_left
+        _ = k * ν (⋃ b ∈ u, (A \ G) ∩ closedBall b (r b)) := by
+            rw [measure_biUnion hucount (hudisj.mono fun b => inter_subset_right)
+              fun b _ => (hA.diff hGc.measurableSet).inter measurableSet_closedBall]
+        _ ≤ k * ν (A \ G) :=
+            mul_le_mul_right (measure_mono (iUnion₂_subset fun b _ => inter_subset_left)) _
+  -- `μH[n] (Bad k) = 0`: covers at scales `1/(j+1)` avoiding `F j`.
+  have hnull : ∀ k : ℕ, (μH[n] : Measure (Amb n ℓ)) (Bad k) = 0 := by
+    intro k
+    choose u r hucount hur hcov hsum using fun j : ℕ =>
+      hcover k (F j) (hFA j) (hFc j) (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
+    have hle := Measure.hausdorffMeasure_le_liminf_tsum (n : ℝ) (Bad k) (l := atTop)
+      (fun j : ℕ => ENNReal.ofReal (10 * (1 / ((j : ℝ) + 1)))) ?_
+      (fun j (b : u j) => closedBall (b : Amb n ℓ) (5 * r j b)) ?_ ?_
+    · have h1 : Tendsto (fun j : ℕ => (k : ℝ≥0∞) * (j : ℝ≥0∞)⁻¹) atTop (𝓝 0) := by
+        have := ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+          (Or.inr (ENNReal.natCast_ne_top k))
+        rwa [mul_zero] at this
+      have h2 : Tendsto (fun j : ℕ => (10 : ℝ≥0∞) ^ n * ((k : ℝ≥0∞) * (j : ℝ≥0∞)⁻¹)) atTop
+          (𝓝 0) := by
+        have h10 : (10 : ℝ≥0∞) ^ n ≠ ⊤ := ENNReal.pow_ne_top (by norm_num)
+        have := ENNReal.Tendsto.const_mul h1 (Or.inr h10)
+        rwa [mul_zero] at this
+      refine nonpos_iff_eq_zero.1 (hle.trans ((liminf_le_liminf
+        (Eventually.of_forall fun j => ?_)).trans h2.liminf_eq.le))
+      calc ∑' b : u j, ediam (closedBall (b : Amb n ℓ) (5 * r j b)) ^ (n : ℝ)
+          ≤ ∑' b : u j, (10 : ℝ≥0∞) ^ n * ENNReal.ofReal (r j b) ^ n := by
+            refine ENNReal.tsum_le_tsum fun b => ?_
+            calc ediam (closedBall (b : Amb n ℓ) (5 * r j b)) ^ (n : ℝ)
+                ≤ ENNReal.ofReal (10 * r j b) ^ (n : ℝ) := by
+                  refine ENNReal.rpow_le_rpow
+                    (Metric.ediam_le_of_forall_dist_le fun x hx y hy => ?_) (Nat.cast_nonneg n)
+                  have := dist_triangle_right x y b
+                  rw [mem_closedBall] at hx hy
+                  linarith
+              _ = (10 : ℝ≥0∞) ^ n * ENNReal.ofReal (r j b) ^ n := by
+                  rw [ENNReal.rpow_natCast, ENNReal.ofReal_mul (by norm_num), mul_pow,
+                    ENNReal.ofReal_ofNat]
+        _ = (10 : ℝ≥0∞) ^ n * ∑' b : u j, ENNReal.ofReal (r j b) ^ n := ENNReal.tsum_mul_left
+        _ ≤ (10 : ℝ≥0∞) ^ n * ((k : ℝ≥0∞) * (j : ℝ≥0∞)⁻¹) := by
+            gcongr
+            exact (hsum j).trans (mul_le_mul_right (hFν j).le _)
+    · have h0 := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul 10
+      rw [mul_zero] at h0
+      have h1 := ENNReal.tendsto_ofReal h0
+      rwa [ENNReal.ofReal_zero] at h1
+    · refine Eventually.of_forall fun j b => Metric.ediam_le_of_forall_dist_le fun x hx y hy => ?_
+      have := dist_triangle_right x y b
+      have hb := (hur j b b.2).2
+      rw [mem_closedBall] at hx hy
+      linarith
+    · refine Eventually.of_forall fun j x hx => ?_
+      obtain ⟨b, hb, hxb⟩ := mem_iUnion₂.1 (hcov j hx)
+      exact mem_iUnion.2 ⟨⟨b, hb⟩, hxb⟩
+  -- `μHE[n] = c • μH[n]`, so `μH[n]`-null sets are `Hⁿ`-null.
+  have hHE : ∀ s : Set (Amb n ℓ), (μH[n] : Measure (Amb n ℓ)) s = 0 →
+      (μHE[n] : Measure (Amb n ℓ)) s = 0 := by
+    intro s hs
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hs, smul_zero]
+  rw [ae_iff]
+  refine hHE _ (measure_mono_null ?_ (measure_iUnion_null hnull))
+  intro x hx
+  simp only [mem_ofPred_eq, not_imp] at hx
+  obtain ⟨hxA, hnt⟩ := hx
+  rw [ENNReal.tendsto_nhds_zero] at hnt
+  push Not at hnt
+  obtain ⟨ε, hε, hfreq⟩ := hnt
+  obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
+  exact mem_iUnion.2 ⟨k, hxA, hfreq.mono fun r hr => hk.trans hr⟩
 /-- **Simon Ch. 2, Theorem 1.5 (C¹ approximation of Lipschitz functions).**  A Lipschitz
 `f : ℝⁿ → ℝ` agrees with a `C¹` function outside a set of arbitrarily small Lebesgue measure.
 Proof, following Simon's printed argument: by Rademacher `f` is differentiable off a Borel null
@@ -3362,6 +3506,152 @@ theorem aetp_lipschitz_c1_approximation : ∀ (n : ℕ), 1 ≤ n → ∀ (f : Rn
       exact ⟨fun hc => ⟨Classical.byContradiction fun h' => hc.2 (hψF x hx y hy c hc.1 h'), hc.2⟩,
         fun hc => ⟨(((hF x hx).1 c).1 hc.1).1, hc.2⟩⟩
     have hS1 : ∀ x, x ∉ A → 1 ≤ S x := by
+      intro x hx
+      obtain ⟨c, hc, hxc⟩ := hCscov x hx
+      have hcF : c ∈ F x := ((hF x hx).1 c).2 ⟨hc, by linarith [hr0 x, hr0 c]⟩
+      rw [hSloc x hx x (by rw [dist_self]; exact hrpos x hx)]
+      calc (1 : ℝ) = ψ c x := (hψone c x (hrpos c (hCsA hc)) hxc.le).symm
+        _ ≤ ∑ c ∈ F x, ψ c x := Finset.single_le_sum (fun c _ => hψ0 c x) hcF
+    have hSc : ∀ x, x ∉ A → ContDiffAt ℝ 1 S x := by
+      intro x hx
+      refine (ContDiff.contDiffAt (ContDiff.sum (s := F x) fun c _ => hψs c)).congr_of_eventuallyEq ?_
+      filter_upwards [ball_mem_nhds x (hrpos x hx)] with y hy
+      exact hSloc x hx y hy
+    have hnotA : ∀ x, x ∉ A → ∀ y, dist y x < r x → y ∉ A := by
+      intro x hx y hy hyA
+      have h1 := infDist_le_dist_of_mem (x := x) hyA
+      rw [dist_comm] at h1
+      linarith [hrd x, hr0 x]
+    -- The partition of unity `φ c = ψ c / S` on `Aᶜ`.
+    obtain ⟨φ, hφ⟩ : ∃ φ : Rn n → Rn n → ℝ, ∀ c y, φ c y = ψ c y / S y := ⟨_, fun _ _ => rfl⟩
+    have hφcd : ∀ c x, x ∉ A → ContDiffAt ℝ 1 (φ c) x := by
+      intro c x hx
+      rw [show φ c = ψ c / S from funext (hφ c)]
+      exact (hψs c).contDiffAt.div (hSc x hx) (ne_of_gt (lt_of_lt_of_le one_pos (hS1 x hx)))
+    have hφ0 : ∀ c y, y ∉ A → 0 ≤ φ c y := fun c y hy => by
+      rw [hφ]; exact div_nonneg (hψ0 c y) (le_trans zero_le_one (hS1 y hy))
+    have hφsum : ∀ x, x ∉ A → ∀ y, dist y x < r x → ∑ c ∈ F x, φ c y = 1 := by
+      intro x hx y hy
+      simp only [hφ]
+      rw [← Finset.sum_div, ← hSloc x hx y hy]
+      exact div_self (ne_of_gt (lt_of_lt_of_le one_pos (hS1 y (hnotA x hx y hy))))
+    have hφF : ∀ x, x ∉ A → ∀ y, dist y x < r x → ∀ c ∈ Cs, c ∉ F x → φ c y = 0 := by
+      intro x hx y hy c hc hcF
+      rw [hφ, hψF x hx y hy c hc hcF, zero_div]
+    have hφdsum : ∀ x, x ∉ A → ∑ c ∈ F x, fderiv ℝ (φ c) x = 0 := by
+      intro x hx
+      have heq : (fun y => ∑ c ∈ F x, φ c y) =ᶠ[𝓝 x] fun _ => (1 : ℝ) := by
+        filter_upwards [ball_mem_nhds x (hrpos x hx)] with y hy
+        exact hφsum x hx y hy
+      have h1 := heq.fderiv_eq (𝕜 := ℝ)
+      rwa [fderiv_fun_const, Pi.zero_apply, fderiv_fun_sum fun c _ =>
+        (hφcd c x hx).differentiableAt one_ne_zero] at h1
+    -- `‖Dφ_c‖ ≤ ‖Dψ_c‖ + ‖DS‖` off `A` (quotient rule, `S ≥ 1`, `0 ≤ ψ_c ≤ 1`).
+    have hφd : ∀ c x, x ∉ A → ‖fderiv ℝ (φ c) x‖ ≤ ‖fderiv ℝ (ψ c) x‖ + ‖fderiv ℝ S x‖ := by
+      intro c x hx
+      have hS1x := hS1 x hx
+      have hSpos : 0 < S x := lt_of_lt_of_le one_pos hS1x
+      have hb := ((hψs c).differentiable one_ne_zero x).hasFDerivAt
+      have hd := ((hSc x hx).differentiableAt one_ne_zero).hasFDerivAt
+      have hi := (hasDerivAt_inv hSpos.ne').comp_hasFDerivAt x hd
+      have hder : fderiv ℝ (φ c) x =
+          ψ c x • (-(S x ^ 2)⁻¹ • fderiv ℝ S x) + (S x)⁻¹ • fderiv ℝ (ψ c) x := by
+        rw [show φ c = fun y => ψ c y * ((fun t : ℝ => t⁻¹) ∘ S) y from
+          funext fun y => by rw [hφ, div_eq_mul_inv]; rfl]
+        exact (hb.fun_mul hi).fderiv
+      have hp0 := hψ0 c x
+      have hp1 : ψ c x ≤ 1 := by rw [hψ]; exact hβ1 _
+      have hsi : (S x)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hS1x
+      have hsi2 : (S x ^ 2)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (one_le_pow₀ hS1x)
+      rw [hder]
+      refine (norm_add_le _ _).trans ?_
+      rw [norm_smul, norm_smul, norm_smul, norm_neg, Real.norm_of_nonneg hp0,
+        Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (by positivity), add_comm]
+      exact add_le_add (mul_le_of_le_one_left (norm_nonneg _) hsi)
+        (mul_le_of_le_one_left (by positivity) hp1 |>.trans (mul_le_of_le_one_left (norm_nonneg _) hsi2))
+    obtain ⟨M, hM0, hM⟩ : ∃ M : ℝ, 0 ≤ M ∧
+        ∀ x, x ∉ A → ∑ c ∈ F x, ‖fderiv ℝ (φ c) x‖ ≤ M / r x := by
+      refine ⟨(N + 1) * (N * (2 * L)), by positivity, fun x hx => ?_⟩
+      have hrx := hrpos x hx
+      have hb : ∀ c ∈ F x, ‖fderiv ℝ (ψ c) x‖ ≤ 2 * L / r x := by
+        intro c hc
+        have hc' := ((hF x hx).1 c).1 hc
+        have hrc := hrpos c (hCsA hc'.1)
+        refine (hψd c x hrc).trans ?_
+        rw [div_le_div_iff₀ hrc hrx]
+        calc (L : ℝ) * r x ≤ L * (2 * r c) :=
+              mul_le_mul_of_nonneg_left (by linarith [(hcomp x c hc'.2).1]) L.2
+          _ = 2 * L * r c := by ring
+      have hN' : ((F x).card : ℝ) ≤ N := by exact_mod_cast (hF x hx).2
+      have hb0 : (0 : ℝ) ≤ 2 * L / r x := div_nonneg (by positivity) hrx.le
+      have hSd : ‖fderiv ℝ S x‖ ≤ N * (2 * L / r x) := by
+        have heq : S =ᶠ[𝓝 x] fun y => ∑ c ∈ F x, ψ c y := by
+          filter_upwards [ball_mem_nhds x hrx] with y hy
+          exact hSloc x hx y hy
+        rw [heq.fderiv_eq, fderiv_fun_sum fun c _ => (hψs c).differentiable one_ne_zero x]
+        refine (norm_sum_le _ _).trans ((Finset.sum_le_sum hb).trans ?_)
+        rw [Finset.sum_const, nsmul_eq_mul]
+        exact mul_le_mul_of_nonneg_right hN' hb0
+      calc ∑ c ∈ F x, ‖fderiv ℝ (φ c) x‖ ≤ ∑ c ∈ F x, (2 * L / r x + N * (2 * L / r x)) :=
+            Finset.sum_le_sum fun c hc => (hφd c x hx).trans (add_le_add (hb c hc) hSd)
+        _ = (F x).card * ((N + 1) * (2 * L / r x)) := by rw [Finset.sum_const, nsmul_eq_mul]; ring
+        _ ≤ N * ((N + 1) * (2 * L / r x)) := mul_le_mul_of_nonneg_right hN' (by positivity)
+        _ = (N + 1) * (N * (2 * L)) / r x := by ring
+    -- Nearest-point anchors and the affine jets `Q a y = h a + D a (y - a)`.
+    obtain ⟨anc, hancA, hancd⟩ : ∃ anc : Rn n → Rn n, (∀ x, anc x ∈ A) ∧
+        ∀ x, dist x (anc x) = infDist x A := by
+      choose anc hanc using fun x => hA.exists_infDist_eq_dist hne x
+      exact ⟨anc, fun x => (hanc x).1, fun x => (hanc x).2.symm⟩
+    obtain ⟨Q, hQ⟩ : ∃ Q : Rn n → Rn n → ℝ, ∀ a y, Q a y = h a + (D a y - D a a) :=
+      ⟨_, fun _ _ => rfl⟩
+    have hQs : ∀ a, ContDiff ℝ 1 (Q a) := by
+      intro a
+      rw [show Q a = fun y => h a + (D a y - D a a) from funext (hQ a)]
+      exact contDiff_const.add ((D a).contDiff.sub contDiff_const)
+    have hQd : ∀ a y, HasFDerivAt (Q a) (D a) y := by
+      intro a y
+      rw [show Q a = fun y => h a + (D a y - D a a) from funext (hQ a)]
+      exact ((D a).hasFDerivAt.sub_const _).const_add _
+    have hQsub : ∀ a b y,
+        |Q b y - Q a y| ≤ |h b - h a - D a (b - a)| + ‖D b - D a‖ * ‖y - b‖ := by
+      intro a b y
+      have e1 : Q b y - Q a y = (h b - h a - D a (b - a)) + (D b - D a) (y - b) := by
+        rw [hQ, hQ]; simp only [map_sub, sub_apply]; ring
+      rw [e1]
+      refine (abs_add_le _ _).trans (add_le_add le_rfl ?_)
+      have := (D b - D a).le_opNorm (y - b)
+      rwa [Real.norm_eq_abs] at this
+    have hancF : ∀ x, x ∉ A → ∀ c ∈ F x, dist x (anc c) ≤ 2 * infDist x A := by
+      intro x hx c hc
+      have h1 := (hcomp x c (((hF x hx).1 c).1 hc).2).2.2
+      have h2 := hrd x
+      have h3 := infDist_le_infDist_add_dist (s := A) (x := c) (y := x)
+      have h4 := dist_triangle x c (anc c)
+      rw [hancd c] at h4
+      rw [dist_comm c x] at h3
+      linarith [hr0 x]
+    have hancP : ∀ x, x ∉ A → ∀ a ∈ A, ∀ c ∈ F x, dist (anc c) a ≤ 3 * dist x a := by
+      intro x hx a ha c hc
+      have h1 := hancF x hx c hc
+      have h2 := infDist_le_dist_of_mem (x := x) ha
+      have h3 := dist_triangle (anc c) x a
+      rw [dist_comm (anc c) x] at h3
+      linarith
+    -- The Whitney extension `g`.
+    obtain ⟨g, hg⟩ : ∃ g : Rn n → ℝ, ∀ y,
+        g y = if y ∈ A then h y else ∑ᶠ c ∈ Cs, φ c y * Q (anc c) y := ⟨_, fun _ => rfl⟩
+    have hgA : ∀ a ∈ A, g a = h a := fun a ha => by rw [hg, ite_eq_left ha]
+    have hgloc : ∀ x, x ∉ A → ∀ y, dist y x < r x → g y = ∑ c ∈ F x, φ c y * Q (anc c) y := by
+      intro x hx y hy
+      rw [hg, ite_eq_right (hnotA x hx y hy)]
+      apply finsum_mem_eq_sum_of_inter_support_eq
+      ext c
+      simp only [mem_inter_iff, Function.mem_support, Finset.mem_coe]
+      refine ⟨fun hc => ⟨Classical.byContradiction fun h' => hc.2 ?_, hc.2⟩,
+        fun hc => ⟨(((hF x hx).1 c).1 hc.1).1, hc.2⟩⟩
+      rw [hφF x hx y hy c hc.1 h', zero_mul]
+    have hgev : ∀ x, x ∉ A → g =ᶠ[𝓝 x] fun y => ∑ c ∈ F x, φ c y * Q (anc c) y := by
+      intro x hx
       intro x hx
       obtain ⟨c, hc, hxc⟩ := hCscov x hx
       have hcF : c ∈ F x := ((hF x hx).1 c).2 ⟨hc, by linarith [hr0 x, hr0 c]⟩
@@ -3793,6 +4083,47 @@ theorem aetp_lipschitz_c1_approximation : ∀ (n : ℕ), 1 ≤ n → ∀ (f : Rn
   refine ⟨g, hg, (measure_mono fun x hx => ?_).trans_lt hUε⟩
   by_contra hxU
   exact hx (hgA x hxU).symm
+/-- **Blow-up change of variables** (Simon Ch. 3, Remark 1.8(2)).  For `η = η_{x,r}`,
+`η(z) = r⁻¹(z − x)`, with `r > 0`, any set `M` and any `f, θ`:
+`∫_{η(M)} f(y) θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η z) θ(z) dHⁿ(z)`.  As `η` is a homeomorphism and
+`Hⁿ(η(S)) = r⁻ⁿ Hⁿ(S)` for every `S`, `Hⁿ ⌞ η(M) = r⁻ⁿ η_#(Hⁿ ⌞ M)`; no integrability is needed. -/
+theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f θ : Amb n ℓ → ℝ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) = (r ^ n)⁻¹ * ∫ z in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * θ z ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ M f θ x r hr
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
+  -- `η` is the homeomorphism `z ↦ r⁻¹ • (z - x)`, hence a measurable embedding.
+  let e : Amb n ℓ ≃ₜ Amb n ℓ :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : ⇑e = η := rfl
+  have hemb : MeasurableEmbedding η := he ▸ e.toMeasurableEquiv.measurableEmbedding
+  have hinj : Function.Injective η := he ▸ e.injective
+  have hsurj : Function.Surjective η := he ▸ e.surjective
+  -- `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for every set `S`: a translation followed by a homothety.
+  have hscale : ∀ S : Set (Amb n ℓ), μ (η '' S) = ENNReal.ofReal r⁻¹ ^ n * μ S := by
+    intro S
+    have hshift : Isometry (fun y : Amb n ℓ => y - x) :=
+      Isometry.of_dist_eq fun a b => by simp only [dist_eq_norm, sub_sub_sub_cancel_right]
+    have himage : η '' S = AffineMap.homothety (0 : Amb n ℓ) r⁻¹ '' ((fun y => y - x) '' S) := by
+      rw [← image_comp]
+      congr 1
+      funext y
+      simp [hη, Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Amb n ℓ) (inv_ne_zero hr.ne'),
+      hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow,
+      ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
+  -- `Hⁿ ⌞ η(M) = (r⁻¹)ⁿ η_#(Hⁿ ⌞ M)`, checked on measurable `A` via `A ∩ η(M) = η(η⁻¹(A) ∩ M)`.
+  have hmeas : μ.restrict (η '' M) = (ENNReal.ofReal r⁻¹ ^ n) • (μ.restrict M).map η := by
+    ext A hA
+    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply hemb.measurable hA,
+      Measure.restrict_apply (hemb.measurable hA), smul_eq_mul, ← hscale, image_inter hinj,
+      image_preimage_eq A hsurj]
+  -- Transfer the integral and simplify `x + r • η z = z`.
+  rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_pow,
+    ENNReal.toReal_ofReal (inv_pos.mpr hr).le, inv_pow, smul_eq_mul]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
+  simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
+    one_smul, add_sub_cancel]
 /-- **Simon Ch. 3, Remark 1.8(1)** (with the boundedness of Remark 1.5(3)).  Let `V = v(M, θ)` be a
 rectifiable `n`-varifold in the open set `U`, `K ⊆ M` compact with `θ|K` continuous, `x ∈ K`, and
 `P` the approximate tangent space of `K` at `x` (Ch. 3, 1.4).  If
@@ -4085,6 +4416,78 @@ theorem aetp_weightedTangent_of_lusin_compact : ∀ (n ℓ : ℕ) (U : Set (Amb 
   have hsum := (hT1.add hT2).add hT3
   rw [add_zero, add_zero] at hsum
   exact hsum.congr' (hdecomp.mono fun r hr => hr.symm)
+/-- Simon Ch. 3, Theorem 1.9 (measurability of `x ↦ p_{T_x M}`, used for Ch. 5, Lemma 2.1): for
+injective `L : ℝⁿ → ℝ^{n+ℓ}` the orthogonal projection onto `L(ℝⁿ)` is `L (Lᵀ L)⁻¹ Lᵀ`, hence it
+depends continuously on `L`.  Here `Lᵀ w = Σᵢ ⟨L eᵢ, w⟩ eᵢ` is the transpose, `Lᵀ L` is a unit of
+`End(ℝⁿ)` because `⟨Lᵀ L v, v⟩ = |L v|²`, inversion is continuous at units, and
+`w − L (Lᵀ L)⁻¹ Lᵀ w ⊥ L(ℝⁿ)` identifies the formula with `p_{L(ℝⁿ)}`. -/
+theorem aetp_starProjection_range_continuousOn : ∀ (n ℓ : ℕ), ContinuousOn (fun L : Rn n →L[ℝ] Amb n ℓ => (LinearMap.range L.toLinearMap).starProjection) {L : Rn n →L[ℝ] Amb n ℓ | Function.Injective L} := by
+  intro n ℓ
+  -- The transpose `T L = Lᵀ`, built from the standard basis `e i` of `ℝⁿ`.
+  let e : Fin n → Rn n := fun i => EuclideanSpace.single i (1 : ℝ)
+  let T : (Rn n →L[ℝ] Amb n ℓ) → (Amb n ℓ →L[ℝ] Rn n) :=
+    fun L => ∑ i, (innerSL ℝ (L (e i))).smulRight (e i)
+  have hT : ∀ L (w : Amb n ℓ) (v : Rn n), inner ℝ (T L w) v = inner ℝ w (L v) := by
+    intro L w v
+    have hv : v = ∑ i, v i • e i := by
+      simpa [e] using ((EuclideanSpace.basisFun (Fin n) ℝ).sum_repr v).symm
+    have hTw : T L w = ∑ i, inner ℝ (L (e i)) w • e i := by
+      simp [T]
+    rw [hTw]
+    conv_rhs => rw [hv]
+    simp only [sum_inner, inner_sum, map_sum, map_smul, real_inner_smul_left,
+      real_inner_smul_right, e, EuclideanSpace.inner_single_left, one_mul, map_one]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [real_inner_comm]
+    ring
+  have hTc : Continuous T := by
+    refine continuous_finsetSum _ fun i _ => ?_
+    have h1 : Continuous fun L : Rn n →L[ℝ] Amb n ℓ => innerSL ℝ (L (e i)) :=
+      (innerSL ℝ).continuous.comp (continuous_id.clm_apply continuous_const)
+    exact ((ContinuousLinearMap.smulRightL ℝ (Amb n ℓ) (Rn n)).continuous.comp h1).clm_apply
+      continuous_const
+  -- The Gram operator `A L = Lᵀ L` and the candidate projection `Q L = L (Lᵀ L)⁻¹ Lᵀ`.
+  let A : (Rn n →L[ℝ] Amb n ℓ) → (Rn n →L[ℝ] Rn n) := fun L => (T L).comp L
+  let Q : (Rn n →L[ℝ] Amb n ℓ) → (Amb n ℓ →L[ℝ] Amb n ℓ) :=
+    fun L => L.comp ((Ring.inverse (A L)).comp (T L))
+  -- `A L` is a unit for injective `L`: `A L v = 0` gives `|L v|² = ⟨A L v, v⟩ = 0`.
+  have hA : ∀ L : Rn n →L[ℝ] Amb n ℓ, Function.Injective L → IsUnit (A L) := by
+    intro L hL
+    rw [ContinuousLinearMap.isUnit_iff_isUnit_toLinearMap, LinearMap.isUnit_iff_ker_eq_bot,
+      LinearMap.ker_eq_bot']
+    intro v hv
+    have h0 : T L (L v) = 0 := hv
+    have h1 : inner ℝ (L v) (L v) = 0 := by
+      rw [← hT, h0, inner_zero_left]
+    exact hL (by rw [inner_self_eq_zero.mp h1, map_zero])
+  -- `Q L = p_{L(ℝⁿ)}` for injective `L`: `Q L w ∈ L(ℝⁿ)` and `Lᵀ (w − Q L w) = 0`.
+  have hQ : ∀ L : Rn n →L[ℝ] Amb n ℓ, Function.Injective L →
+      (LinearMap.range L.toLinearMap).starProjection = Q L := by
+    intro L hL
+    ext1 w
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact ⟨_, rfl⟩
+    · rintro _ ⟨v, rfl⟩
+      have h1 : T L (L (Ring.inverse (A L) (T L w))) = T L w := by
+        have h2 := congrArg (fun S : Rn n →L[ℝ] Rn n => S (T L w))
+          (Ring.mul_inverse_cancel _ (hA L hL))
+        simpa [A] using h2
+      rw [inner_sub_left, ContinuousLinearMap.coe_coe, ← hT, ← hT]
+      simp only [Q, ContinuousLinearMap.coe_comp, Function.comp_apply]
+      rw [h1, sub_self]
+  -- `Q` is continuous at every injective `L`, since inversion is continuous at units.
+  have hQc : ∀ L : Rn n →L[ℝ] Amb n ℓ, Function.Injective L → ContinuousAt Q L := by
+    intro L hL
+    have hAc : Continuous A := hTc.clm_comp continuous_id
+    obtain ⟨u, hu⟩ := hA L hL
+    have hinv : ContinuousAt (fun L => Ring.inverse (A L)) L := by
+      have h1 := NormedRing.inverse_continuousAt u
+      rw [hu] at h1
+      exact h1.comp hAc.continuousAt
+    exact continuous_id.continuousAt.clm_comp (hinv.clm_comp hTc.continuousAt)
+  intro L hL
+  exact (hQc L hL).continuousWithinAt.congr (fun L' hL' => hQ L' hL') (hQ L hL)
+
 set_option maxHeartbeats 10000000 in
 /-- **Simon Ch. 3, Theorem 1.9 (⇒) with Remark 1.8(1)** (fact (F1) of the proof of Corollary 2.7):
 for a rectifiable varifold `V = v(M, θ)`, `V.tangentProj` is `μ_V`-a.e. strongly measurable, and at
@@ -4820,6 +5223,145 @@ theorem lgc_tangent_plane_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb 
     obtain ⟨m, j, k, i, -, hex, -⟩ := hx
     refine ⟨Classical.choose hex, Classical.choose_spec hex, ?_⟩
     rw [RectifiableVarifold.tangentProj, dite_eq_left hex]
+/-- **Simon Ch. 1, Theorem 3.6 (Upper Density Theorem)** in the contract normalization: for a
+`ν`-null-measurable `A` with `ν A < ∞`, the upper density `Θ*ⁿ(ν, A, x)` vanishes for
+`Hⁿ`-a.e. `x ∉ A`.  Simon's printed proof: on the level set `S_t = {x ∉ A : Θ*ⁿ > t}` and for
+closed `C ⊆ A`, Vitali's covering lemma gives the comparison bound 3.3 for `ν ⌞ (A \ C)` (with
+the non-sharp constant `8ⁿ / ω_n`, enough for null sets); `ν (A \ C)` is small by 1.15(2).  The
+levels `t = 1/(k+1)` exhaust `Θ*ⁿ ≠ 0`, and `μHE[n]` is a multiple of `μH[n]`. -/
+theorem upperDensity_ne_zero_outside_hausdorff_null : ∀ {n ℓ : ℕ} (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), NullMeasurableSet A ν → ν A < ∞ → (μHE[n] : Measure (Amb n ℓ)) {x | x ∉ A ∧ limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) ≠ 0} = 0 := by
+  intro n ℓ ν A hA hAfin
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- Simon 1.15(2): `A` contains closed sets `C` with `ν (A \ C)` arbitrarily small.
+  have hreg : ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ C ⊆ A, IsClosed C ∧ ν (A \ C) < ε := by
+    intro ε hε
+    obtain ⟨A', hA'A, hA'm, hA'eq⟩ := hA.exists_measurable_subset_ae_eq
+    have : IsFiniteMeasure (ν.restrict A') :=
+      isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hAfin.ne (measure_mono hA'A))
+    obtain ⟨C, hCA', hC, hCε⟩ :=
+      hA'm.exists_isClosed_sdiff_lt (μ := ν.restrict A') (measure_ne_top _ _) hε
+    refine ⟨C, hCA'.trans hA'A, hC, ?_⟩
+    rw [Measure.restrict_apply (hA'm.diff hC.measurableSet), inter_eq_left.2 sdiff_subset] at hCε
+    rwa [measure_congr (hA'eq.symm.diff (EventuallyEq.refl _ C))]
+  -- The level set `S_t` is `μH[n]`-null for every `t > 0`.
+  have hlevel : ∀ t : ℝ, 0 < t → μH[(n : ℝ)] {x : Amb n ℓ | x ∉ A ∧ ENNReal.ofReal t <
+      limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n))
+        (𝓝[>] 0)} = 0 := by
+    intro t ht
+    set S := {x : Amb n ℓ | x ∉ A ∧ ENNReal.ofReal t <
+      limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n))
+        (𝓝[>] 0)} with hS
+    have hKnn : (0 : ℝ) ≤ 8 ^ n / unitBallVolume n / t :=
+      div_nonneg (div_nonneg (by positivity) hω.le) ht.le
+    set K : ℝ≥0∞ := ENNReal.ofReal (8 ^ n / unitBallVolume n / t) with hK
+    -- Simon 3.3 for `ν ⌞ (A \ C)`, `C ⊆ A` closed, via Vitali's covering lemma.
+    have hcomp : ∀ C ⊆ A, IsClosed C → μH[(n : ℝ)] S ≤ K * ν (A \ C) := by
+      intro C hCA hC
+      have hcov : ∀ R : ℝ, 0 < R → ∃ u : Set (Amb n ℓ × ℝ), u.Countable ∧
+          u.PairwiseDisjoint (fun b => closedBall b.1 b.2) ∧
+          (∀ b ∈ u, 0 < b.2 ∧ b.2 ≤ R ∧
+            ENNReal.ofReal t * ENNReal.ofReal (unitBallVolume n * b.2 ^ n) ≤
+              ν.restrict (A \ C) (closedBall b.1 b.2)) ∧
+          S ⊆ ⋃ b ∈ u, closedBall b.1 (4 * b.2) := by
+        intro R hR
+        obtain ⟨u, huT, hud, hucov⟩ :=
+          Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+            {b : Amb n ℓ × ℝ | b.1 ∈ S ∧ 0 < b.2 ∧ b.2 ≤ R ∧
+              ENNReal.ofReal t * ENNReal.ofReal (unitBallVolume n * b.2 ^ n) ≤
+                ν.restrict (A \ C) (closedBall b.1 b.2)}
+            Prod.fst Prod.snd R (fun b hb => hb.2.2.1) 4 (by norm_num)
+        refine ⟨u, hud.countable_of_nonempty_interior fun b hb =>
+          ⟨b.1, ball_subset_interior_closedBall (mem_ball_self (huT hb).2.1)⟩, hud,
+          fun b hb => (huT hb).2, fun x hx => ?_⟩
+        -- A small ball around `x ∉ C` on which the density quotient exceeds `t`.
+        obtain ⟨ρ, hρ, hρC⟩ := nhds_basis_closedBall.mem_iff.1
+          (hC.isOpen_compl.mem_nhds fun h => hx.1 (hCA h))
+        obtain ⟨r, hr, hrI⟩ := ((frequently_lt_of_lt_limsup (by isBoundedDefault) hx.2).and_eventually
+          (Ioo_mem_nhdsGT (lt_min hR hρ))).exists
+        have hr0 : 0 < r := hrI.1
+        have hmass : ENNReal.ofReal t * ENNReal.ofReal (unitBallVolume n * r ^ n) ≤
+            ν.restrict (A \ C) (closedBall x r) := by
+          rw [Measure.restrict_apply measurableSet_closedBall]
+          have hset : closedBall x r ∩ (A \ C) = A ∩ closedBall x r := by
+            ext y
+            constructor
+            · rintro ⟨hy1, hy2, -⟩
+              exact ⟨hy2, hy1⟩
+            · rintro ⟨hy1, hy2⟩
+              exact ⟨hy2, hy1,
+                hρC (closedBall_subset_closedBall (hrI.2.le.trans (min_le_right _ _)) hy2)⟩
+          rw [hset]
+          exact ((ENNReal.lt_div_iff_mul_lt
+            (Or.inl (ENNReal.ofReal_pos.2 (mul_pos hω (pow_pos hr0 n))).ne')
+            (Or.inl ENNReal.ofReal_ne_top)).1 hr).le
+        obtain ⟨b, hbu, hsub⟩ := hucov (x, r) ⟨hx, hr0, hrI.2.le.trans (min_le_left _ _), hmass⟩
+        exact mem_biUnion hbu (hsub (mem_closedBall_self hr0.le))
+      -- Covers by the enlarged balls at scales `1/(k+1) → 0`.
+      choose u hu using fun k : ℕ => hcov (1 / ((k : ℝ) + 1)) (by positivity)
+      have : ∀ k, Countable (u k) := fun k => (hu k).1.to_subtype
+      have hH := Measure.hausdorffMeasure_le_liminf_tsum (n : ℝ) S (l := atTop)
+        (fun k : ℕ => ENNReal.ofReal (8 * (1 / ((k : ℝ) + 1))))
+        (by simpa using ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul 8))
+        (fun k (b : u k) => closedBall (b : Amb n ℓ × ℝ).1 (4 * (b : Amb n ℓ × ℝ).2))
+        (Eventually.of_forall fun k b => ediam_le_of_forall_dist_le fun y hy z hz => by
+          have h1 := dist_triangle_right y z (b : Amb n ℓ × ℝ).1
+          have h2 := ((hu k).2.2.1 b b.2).2.1
+          rw [mem_closedBall] at hy hz
+          linarith)
+        (Eventually.of_forall fun k x hx => by
+          obtain ⟨b, hb, hxb⟩ := mem_iUnion₂.1 ((hu k).2.2.2 hx)
+          exact mem_iUnion.2 ⟨⟨b, hb⟩, hxb⟩)
+      refine hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall fun k => ?_))
+      calc ∑' b : u k, ediam (closedBall (b : Amb n ℓ × ℝ).1 (4 * (b : Amb n ℓ × ℝ).2)) ^ (n : ℝ)
+          ≤ ∑' b : u k,
+              K * ν.restrict (A \ C) (closedBall (b : Amb n ℓ × ℝ).1 (b : Amb n ℓ × ℝ).2) := by
+            refine ENNReal.tsum_le_tsum fun b => ?_
+            obtain ⟨hb0, -, hbm⟩ := (hu k).2.2.1 b b.2
+            calc ediam (closedBall (b : Amb n ℓ × ℝ).1 (4 * (b : Amb n ℓ × ℝ).2)) ^ (n : ℝ)
+                ≤ ENNReal.ofReal (8 * (b : Amb n ℓ × ℝ).2) ^ (n : ℝ) := by
+                  gcongr
+                  exact ediam_le_of_forall_dist_le fun y hy z hz => by
+                    have h1 := dist_triangle_right y z (b : Amb n ℓ × ℝ).1
+                    rw [mem_closedBall] at hy hz
+                    linarith
+              _ = K * (ENNReal.ofReal t *
+                    ENNReal.ofReal (unitBallVolume n * (b : Amb n ℓ × ℝ).2 ^ n)) := by
+                  rw [hK, ← ENNReal.ofReal_mul ht.le, ← ENNReal.ofReal_mul hKnn,
+                    ENNReal.rpow_natCast,
+                    ← ENNReal.ofReal_pow (by linarith : (0 : ℝ) ≤ 8 * (b : Amb n ℓ × ℝ).2)]
+                  congr 1
+                  field_simp
+                  ring
+              _ ≤ K * ν.restrict (A \ C) (closedBall (b : Amb n ℓ × ℝ).1 (b : Amb n ℓ × ℝ).2) := by
+                  gcongr
+        _ = K * ν.restrict (A \ C) (⋃ b ∈ u k, closedBall b.1 b.2) := by
+            rw [ENNReal.tsum_mul_left,
+              measure_biUnion (hu k).1 (hu k).2.1 fun b _ => measurableSet_closedBall]
+        _ ≤ K * ν (A \ C) := by
+            refine mul_le_mul_right ?_ K
+            exact (measure_mono (subset_univ _)).trans_eq (Measure.restrict_apply_univ _)
+    -- Letting `ν (A \ C) → 0`.
+    have hKtop : K ≠ ∞ := ENNReal.ofReal_ne_top
+    refine le_antisymm (le_of_forall_gt_imp_ge_of_dense fun c hc => ?_) bot_le
+    obtain ⟨ε, hε0, hεc⟩ := ENNReal.exists_nnreal_pos_mul_lt hKtop hc.ne'
+    obtain ⟨C, hCA, hC, hCε⟩ := hreg ε (by exact_mod_cast hε0.ne')
+    calc μH[(n : ℝ)] S ≤ K * ν (A \ C) := hcomp C hCA hC
+      _ ≤ K * ε := by gcongr
+      _ = ε * K := mul_comm _ _
+      _ ≤ c := hεc.le
+  -- The levels `t = 1/(k+1)` exhaust the positive upper densities.
+  have hE : μH[(n : ℝ)] {x : Amb n ℓ | x ∉ A ∧ limsup (fun r : ℝ => ν (A ∩ closedBall x r) /
+      ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) ≠ 0} = 0 := by
+    refine measure_mono_null (fun x hx => ?_)
+      (measure_iUnion_null fun k : ℕ => hlevel (1 / ((k : ℝ) + 1)) (by positivity))
+    obtain ⟨s, -, hs0, hs⟩ := ENNReal.lt_iff_exists_real_btwn.1 (pos_iff_ne_zero.2 hx.2)
+    have hs0' : 0 < s := ENNReal.ofReal_pos.1 hs0
+    obtain ⟨k, hk⟩ := exists_nat_one_div_lt hs0'
+    exact mem_iUnion.2 ⟨k, hx.1, ((ENNReal.ofReal_lt_ofReal_iff hs0').2 hk).trans hs⟩
+  -- `μHE[n]` is a scalar multiple of `μH[n]`.
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hE, smul_zero]
+
 set_option maxHeartbeats 10000000 in
 open scoped CompactlySupported in
 /-- **Simon Ch. 3, 1.6–1.9 and Rem. 1.8** for a rectifiable varifold `V = v(M, θ)`: the weighted
@@ -6795,6 +7337,7 @@ theorem any_radius_tangent_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb
   exact ⟨T, hP, hT, hTx⟩
 set_option maxHeartbeats 10000000 in
 open scoped CompactlySupported in
+
 /-- **Monotonicity consequences of 2.3** (Simon Ch. 4, 4.1–4.10, with the coefficient
 `κ = (p-n)/(4p)` in 4.2).  With `Λ = 4pδ/(p-n) ≤ 1`, `A = ‖H‖_{Lᵖ(B_ρ(0))}` (so `A ρ^α ≤ δ`,
 `α = 1 - n/p`) and smooth cutoffs `χ_b` (`1` on `(-∞, 1]`, `0` on `[b, ∞)`), the first variation
@@ -10737,6 +11280,526 @@ theorem any_radius_patching : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (S : Set (Amb n
     husub⟩
   rintro _ ⟨p, ⟨x, hx, rfl⟩, rfl⟩
   exact humem x hx
+/-- **Thin-cone propagation from small to large radii** (step 5 of the proof of
+`AllardRegularityAnyRadius`, Simon Remark 5.3, via the conical approximation Theorem 6.1).
+Assume 6.1.  If `dist(x, T) ≤ (κ/2)|x|` on `spt V ∩ B_{c₀ρ}(0)`, then `dist(y, T) ≤ κ|y|` on
+`spt V ∩ B_{(1+γ)ρ/2}(0)`, as soon as `δ ≤ δ_C(n, ℓ, p, γ, κ, c₀)`.
+
+From `any_radius_monotonicity_bounds`: `|ω_n⁻¹ t⁻ⁿ μ_V(B_t(0)) - 1| ≤ C₁δ` for `0 < t < ρ` (1a),
+`∫_{B_t(0)} |H| dμ_V ≤ (1 + 2ω_n) δ t^{n-1}` (1b, by Young's inequality
+`|H| ≤ a^{1-p}|H|^p + a` with `a = δ/t`), and `μ_V(B_s(z)) ≥ ω_n sⁿ/2` at support points (1d).
+For `|y| > c₀ρ` rescale by `R = |y|/(1 - θ₀)`, `θ₀ = (1-γ)/8` (`any_radius_rescaled_varifold`),
+apply 6.1 with `Λ = 2ω_n`, `λ = δ`, `θ = θ₀`, `δ' = 3C₁δ`, `ρ̃ = κ/8`, `τ = c₀ρ/(2R)`; the
+lower density at `y` forces a point `z ∈ spt V` with `|z - τy| ≤ τκR/8` and `|z| ≤ c₀ρ/2`, and
+homogeneity plus the 1-Lipschitz property of `dist(·, T)` give
+`dist(y, T) ≤ (5/8)κR ≤ κ|y|`. -/
+theorem any_radius_cone : ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ κ c₀ : ℝ, 0 < γ → γ < 1 → 0 < κ → κ ≤ (1 - γ) / 8 → 0 < c₀ → c₀ ≤ 1 / 4 → ∃ δC : ℝ, 0 < δC ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δC → V.AllardHypotheses H p δ ρ → ∀ T : Submodule ℝ (Amb n ℓ), (∀ x ∈ V.support ∩ closedBall 0 (c₀ * ρ), infDist x (T : Set (Amb n ℓ)) ≤ κ / 2 * ‖x‖) → ∀ y ∈ V.support ∩ closedBall 0 ((1 + γ) / 2 * ρ), infDist y (T : Set (Amb n ℓ)) ≤ κ * ‖y‖ := by
+  -- Two elementary real inequalities, proved before any hypothesis is introduced.
+  -- Young-type bound `x ≤ a^{1-q} x^q + a` (`q ≥ 1`, `a > 0`, `x ≥ 0`).
+  have young : ∀ q a x : ℝ, 1 ≤ q → 0 < a → 0 ≤ x → x ≤ a ^ (1 - q) * x ^ q + a := by
+    intro q a x hq ha hx
+    rcases le_or_gt x a with hxa | hxa
+    · have : 0 ≤ a ^ (1 - q) * x ^ q := by positivity
+      linarith
+    · have hx0 : 0 < x := ha.trans hxa
+      have h1 : a ^ (q - 1) ≤ x ^ (q - 1) := Real.rpow_le_rpow ha.le hxa.le (by linarith)
+      have h2 : x ^ q = x ^ (q - 1) * x := by
+        rw [← Real.rpow_add_one hx0.ne', sub_add_cancel]
+      have h3 : a ^ (1 - q) * a ^ (q - 1) = 1 := by
+        rw [← Real.rpow_add ha, show (1 - q) + (q - 1) = (0 : ℝ) by ring, Real.rpow_zero]
+      have h4 : 0 ≤ a ^ (1 - q) := by positivity
+      calc x = a ^ (1 - q) * a ^ (q - 1) * x := by rw [h3, one_mul]
+        _ ≤ a ^ (1 - q) * x ^ (q - 1) * x := by gcongr
+        _ = a ^ (1 - q) * x ^ q := by rw [h2]; ring
+        _ ≤ a ^ (1 - q) * x ^ q + a := by linarith
+  -- Exponential bounds for `0 ≤ L ≤ 1/4`, from `1 - x ≤ e^{-x}`.
+  have hexp : ∀ L : ℝ, 0 ≤ L → L ≤ 1 / 4 →
+      Real.exp L ≤ 3 ∧ Real.exp (2 * L) ≤ 1 + 6 * L ∧ 1 - L ≤ Real.exp (-L) := by
+    intro L hL0 hL1
+    have aux : ∀ x : ℝ, Real.exp x * (1 - x) ≤ 1 := by
+      intro x
+      have h1 := Real.add_one_le_exp (-x)
+      have h2 : Real.exp x * Real.exp (-x) = 1 := by
+        rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+      have h3 := mul_le_mul_of_nonneg_left h1 (Real.exp_pos x).le
+      linarith
+    have h1 := aux L
+    have h2 := mul_le_mul_of_nonneg_left (show (3 : ℝ) / 4 ≤ 1 - L by linarith) (Real.exp_pos L).le
+    have e1 : Real.exp L ≤ 3 := by linarith
+    have h3 := aux (2 * L)
+    have h4 := mul_le_mul_of_nonneg_left (show (1 : ℝ) / 2 ≤ 1 - 2 * L by linarith)
+      (Real.exp_pos (2 * L)).le
+    have h5 : Real.exp (2 * L) ≤ 3 := by linarith
+    have h6 := mul_le_mul_of_nonneg_left h5 hL0
+    exact ⟨e1, by linarith, by linarith [Real.add_one_le_exp (-L)]⟩
+  intro hCAT n ℓ hn p hp γ κ c₀ hγ0 hγ1 hκ0 hκ hc0 hc1
+  -- Constants depending only on `n, ℓ, p, γ, κ, c₀`.
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp1 : 1 ≤ p := hn1.trans hp.le
+  have hp0 : 0 < p := zero_lt_one.trans_le hp1
+  have hpn : 0 < p - n := sub_pos.2 hp
+  set ω : ℝ := unitBallVolume n with hω_def
+  have hω : 0 < ω := by
+    rw [hω_def, unitBallVolume]
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- `b = 4p/(p-n) = κ_m⁻¹`, so that `Λ = 4pδ/(p-n) = bδ`.
+  set b : ℝ := 4 * p / (p - n) with hb_def
+  have hb : 0 < b := div_pos (mul_pos four_pos hp0) hpn
+  set C1 : ℝ := 2 + 2 * ω + 13 * b + 7 * b / ω with hC1_def
+  have hC1 : 0 < C1 := by positivity
+  have hC1ω : C1 * ω = 2 * ω + 2 * ω ^ 2 + 13 * b * ω + 7 * b := by
+    rw [hC1_def, add_mul, div_mul_cancel₀ _ hω.ne']; ring
+  have hC1big : 1 + 2 * ω ≤ C1 := by
+    have : 0 ≤ 13 * b + 7 * b / ω := by positivity
+    rw [hC1_def]; linarith only [this]
+  obtain ⟨C9, hC9⟩ := hCAT n ℓ hn (2 * ω) (by positivity)
+  set C9' : ℝ := max C9 0
+  have hC9' : 0 ≤ C9' := le_max_right _ _
+  set target : ℝ := ω * (κ / 16) ^ n / 2 with htarget_def
+  have htarget : 0 < target := by positivity
+  -- Step 7: the threshold making `C₉' (3 C₁ δ)^{1/4} |log δ|` smaller than `ω (κ/16)ⁿ/2`.
+  obtain ⟨δ5, hδ5, hδ5'⟩ : ∃ δ5 : ℝ, 0 < δ5 ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ5 →
+      C9' * (3 * C1 * δ) ^ (1 / 4 : ℝ) * |Real.log δ| < target := by
+    have hlim : Tendsto (fun x : ℝ => C9' * (3 * C1) ^ (1 / 4 : ℝ) * |Real.log x * x ^ (1 / 4 : ℝ)|)
+        (𝓝[>] 0) (𝓝 0) := by
+      have h := ((tendsto_log_mul_rpow_nhdsGT_zero (r := 1 / 4) (by norm_num)).abs).const_mul
+        (C9' * (3 * C1) ^ (1 / 4 : ℝ))
+      simpa using h
+    obtain ⟨u, hu, hsub⟩ :=
+      mem_nhdsGT_iff_exists_Ioc_subset.1 ((tendsto_order.1 hlim).2 target htarget)
+    refine ⟨u, hu, fun δ hδ hδu => ?_⟩
+    have h : C9' * (3 * C1) ^ (1 / 4 : ℝ) * |Real.log δ * δ ^ (1 / 4 : ℝ)| < target :=
+      hsub ⟨hδ, hδu⟩
+    calc C9' * (3 * C1 * δ) ^ (1 / 4 : ℝ) * |Real.log δ|
+        = C9' * (3 * C1) ^ (1 / 4 : ℝ) * |Real.log δ * δ ^ (1 / 4 : ℝ)| := by
+          rw [Real.mul_rpow (by positivity) hδ.le, abs_mul,
+            abs_of_nonneg (Real.rpow_nonneg hδ.le _)]
+          ring
+      _ < target := h
+  refine ⟨min (1 / (4 * b)) (min (ω / (3 * b)) (min (1 / (48 * C1)) (min (1 / 8)
+    (min (c₀ / 4) δ5)))), by positivity, ?_⟩
+  intro U hU V H δ ρ hδ hδC hA T hT y hy
+  simp only [le_min_iff] at hδC
+  obtain ⟨hδb, hδω, hδC1, hδ8, hδc₀, hδδ5⟩ := hδC
+  have hA' := hA
+  obtain ⟨hρ, hGMC, -, -, hBU, -, -⟩ := hA'
+  have hδ1 : δ ≤ 1 := hδ8.trans (by norm_num)
+  have hC1δ : 3 * C1 * δ ≤ 1 / 16 := by
+    rw [le_div_iff₀ (mul_pos (by norm_num) hC1)] at hδC1; linarith only [hδC1]
+  have hC1δ1 : C1 * δ ≤ 1 := by linarith only [hC1δ]
+  -- Step 1: density facts (1a), (1b), (1d) from `any_radius_monotonicity_bounds`.
+  obtain ⟨hm1, hup2, h1b, h1d⟩ :
+      (∀ t, 0 < t → t < ρ → |(V.weight (closedBall 0 t)).toReal / (ω * t ^ n) - 1| ≤ C1 * δ) ∧
+      (∀ t, 0 < t → t < ρ → V.weight (closedBall 0 t) ≤ ENNReal.ofReal (2 * ω * t ^ n)) ∧
+      (∀ t, 0 < t → t < ρ → ∫⁻ x in closedBall (0 : Amb n ℓ) t, ‖H x‖ₑ ∂V.weight ≤
+        ENNReal.ofReal ((1 + 2 * ω) * δ * t ^ (n - 1))) ∧
+      (∀ z ∈ V.support, ∀ s : ℝ, 0 < s → ‖z‖ + 2 * s ≤ ρ →
+        ENNReal.ofReal (ω * s ^ n / 2) ≤ V.weight (closedBall z s)) := by
+    have hbδ : b * δ ≤ 1 / 4 := by
+      rw [le_div_iff₀ (mul_pos four_pos hb)] at hδb; linarith only [hδb]
+    have hbδω : b * δ ≤ ω / 3 := by
+      rw [le_div_iff₀ (mul_pos three_pos hb)] at hδω; linarith only [hδω]
+    have hbpn : b * (p - n) = 4 * p := by rw [hb_def, div_mul_cancel₀ _ hpn.ne']
+    have hδm : δ ≤ (p - n) / (4 * p) := by
+      rw [le_div_iff₀ (mul_pos four_pos hp0), ← hbpn]
+      calc δ * (b * (p - n)) = (b * δ) * (p - n) := by ring
+        _ ≤ (1 / 4) * (p - n) := mul_le_mul_of_nonneg_right hbδ hpn.le
+        _ ≤ p - n := by linarith only [hpn]
+    obtain ⟨hM1, hM2, -⟩ :=
+      Submission.any_radius_monotonicity_bounds n ℓ hn p hp U hU V H δ ρ hδ hδm hA
+    obtain ⟨-, -, -, h0V, -, hmass, hLp⟩ := hA
+    set Λ : ℝ := 4 * p * δ / (p - n) with hΛ_def
+    have hΛb : Λ = b * δ := by rw [hΛ_def, hb_def]; ring
+    have hΛ0 : 0 ≤ Λ := hΛb ▸ (mul_pos hb hδ).le
+    have hΛ1 : Λ ≤ 1 / 4 := hΛb ▸ hbδ
+    have hΛω : Λ ≤ ω / 3 := hΛb ▸ hbδω
+    obtain ⟨hexpΛ, hexp2Λ, hexpneg⟩ := hexp Λ hΛ0 hΛ1
+    have hμρ : V.weight (closedBall 0 ρ) ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hmass
+    have hωΛ : 0 ≤ ω - Λ := by linarith only [hΛω, hω]
+    -- (1a), lower bound.
+    have hlowc : (1 - C1 * δ) * ω ≤ Real.exp (-Λ) * (ω - Λ) := by
+      have hid : (1 - Λ) * (ω - Λ) - (1 - C1 * δ) * ω =
+          2 * δ * ω + 2 * δ * ω ^ 2 + 12 * (b * δ) * ω + 6 * (b * δ) + Λ ^ 2 := by
+        linear_combination δ * hC1ω - (1 + ω) * hΛb
+      have hnn : 0 ≤ 2 * δ * ω + 2 * δ * ω ^ 2 + 12 * (b * δ) * ω + 6 * (b * δ) + Λ ^ 2 := by
+        positivity
+      calc (1 - C1 * δ) * ω ≤ (1 - Λ) * (ω - Λ) := by linarith only [hid, hnn]
+        _ ≤ Real.exp (-Λ) * (ω - Λ) := mul_le_mul_of_nonneg_right hexpneg hωΛ
+    have hlow : ∀ t, 0 < t → t < ρ →
+        (1 - C1 * δ) * (ω * t ^ n) ≤ (V.weight (closedBall 0 t)).toReal := by
+      intro t ht htρ
+      rw [← mul_assoc]
+      exact (mul_le_mul_of_nonneg_right hlowc (pow_pos ht n).le).trans
+        (hM2 0 h0V ρ t ht htρ subset_rfl)
+    -- (1a), upper bound (let `r ↑ ρ` in (M1)).
+    have hupc : Real.exp (2 * Λ) * ((1 + δ) * ω) + 2 * Real.exp Λ * Λ ≤ (1 + C1 * δ) * ω := by
+      have h1 : Real.exp (2 * Λ) * ((1 + δ) * ω) ≤ (1 + 6 * Λ) * ((1 + δ) * ω) :=
+        mul_le_mul_of_nonneg_right hexp2Λ (mul_pos (add_pos one_pos hδ) hω).le
+      have h2 : Real.exp Λ * Λ ≤ 3 * Λ := mul_le_mul_of_nonneg_right hexpΛ hΛ0
+      have h3 : Λ * ω * δ ≤ Λ * ω * 1 := mul_le_mul_of_nonneg_left hδ1 (mul_nonneg hΛ0 hω.le)
+      have hC1δω : C1 * δ * ω = 2 * δ * ω + 2 * δ * ω ^ 2 + 13 * Λ * ω + 7 * Λ := by
+        linear_combination δ * hC1ω - (13 * ω + 7) * hΛb
+      have h4 : 0 ≤ δ * ω := (mul_pos hδ hω).le
+      have h5 : 0 ≤ δ * ω ^ 2 := (mul_pos hδ (pow_pos hω 2)).le
+      have h6 : 0 ≤ Λ * ω := mul_nonneg hΛ0 hω.le
+      linarith only [h1, h2, h3, hC1δω, h4, h5, h6, hΛ0]
+    have hup : ∀ t, 0 < t → t < ρ →
+        (V.weight (closedBall 0 t)).toReal ≤ (1 + C1 * δ) * (ω * t ^ n) := by
+      intro t ht htρ
+      have hlim : (V.weight (closedBall 0 t)).toReal / t ^ n ≤
+          Real.exp (2 * Λ) * ((1 + δ) * ω) + 2 * Real.exp Λ * Λ := by
+        have hcont : ContinuousAt (fun r : ℝ =>
+            Real.exp (2 * Λ) * ((1 + δ) * (ω * ρ ^ n) / r ^ n) + 2 * Real.exp Λ * Λ) ρ := by
+          apply ContinuousAt.add _ continuousAt_const
+          apply ContinuousAt.mul continuousAt_const
+          exact continuousAt_const.div (continuousAt_id.pow n) (pow_ne_zero n hρ.ne')
+        have hval : Real.exp (2 * Λ) * ((1 + δ) * (ω * ρ ^ n) / ρ ^ n) + 2 * Real.exp Λ * Λ =
+            Real.exp (2 * Λ) * ((1 + δ) * ω) + 2 * Real.exp Λ * Λ := by
+          rw [← mul_assoc, mul_div_assoc, div_self (pow_ne_zero n hρ.ne'), mul_one]
+        rw [← hval]
+        refine ge_of_tendsto (hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Iio ρ))) ?_
+        filter_upwards [Ioo_mem_nhdsLT htρ] with r hr
+        have hr0 : 0 < r := ht.trans hr.1
+        have h2 : (V.weight (closedBall 0 r)).toReal ≤ (1 + δ) * (ω * ρ ^ n) :=
+          ENNReal.toReal_le_of_le_ofReal
+            (mul_pos (add_pos one_pos hδ) (mul_pos hω (pow_pos hρ n))).le
+            ((measure_mono (closedBall_subset_closedBall hr.2.le)).trans hmass)
+        exact (hM1 0 ρ t r ht hr.1.le hr.2 subset_rfl).trans (add_le_add
+          (mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right h2 (pow_pos hr0 n).le)
+            (Real.exp_pos _).le) le_rfl)
+      exact ((div_le_iff₀ (pow_pos ht n)).1 (hlim.trans hupc)).trans_eq (mul_assoc _ _ _)
+    -- (1a) as stated: `|ω⁻¹ t⁻ⁿ μ(B_t(0)) - 1| ≤ C₁ δ`.
+    have hm1 : ∀ t, 0 < t → t < ρ →
+        |(V.weight (closedBall 0 t)).toReal / (ω * t ^ n) - 1| ≤ C1 * δ := by
+      intro t ht htρ
+      have hpos : 0 < ω * t ^ n := mul_pos hω (pow_pos ht n)
+      have h1 := (le_div_iff₀ hpos).2 (hlow t ht htρ)
+      have h2 := (div_le_iff₀ hpos).2 (hup t ht htρ)
+      rw [abs_le]
+      constructor <;> linarith only [h1, h2]
+    have hup2 : ∀ t, 0 < t → t < ρ →
+        V.weight (closedBall 0 t) ≤ ENNReal.ofReal (2 * ω * t ^ n) := by
+      intro t ht htρ
+      have hfinB : V.weight (closedBall 0 t) ≠ ⊤ :=
+        ne_top_of_le_ne_top hμρ (measure_mono (closedBall_subset_closedBall htρ.le))
+      rw [ENNReal.le_ofReal_iff_toReal_le hfinB (mul_pos (mul_pos two_pos hω) (pow_pos ht n)).le]
+      have h := mul_le_mul_of_nonneg_right (show 1 + C1 * δ ≤ 2 by linarith only [hC1δ1])
+        (mul_pos hω (pow_pos ht n)).le
+      linarith only [h, hup t ht htρ]
+    -- (1b): `∫_{B_t(0)} |H| dμ ≤ (1 + 2ω) δ t^{n-1}` (Young's inequality in place of Hölder).
+    have hJ : ENNReal.ofReal (ρ ^ (p - n)) *
+        ∫⁻ x in closedBall (0 : Amb n ℓ) ρ, ‖H x‖ₑ ^ p ∂V.weight ≤ ENNReal.ofReal (δ ^ p) := by
+      have h := ENNReal.rpow_le_rpow hLp hp0.le
+      simp only [RectifiableVarifold.scaledLpNorm] at h
+      rwa [one_div, ENNReal.rpow_inv_rpow hp0.ne', ENNReal.ofReal_rpow_of_nonneg hδ.le hp0.le] at h
+    set J := ∫⁻ x in closedBall (0 : Amb n ℓ) ρ, ‖H x‖ₑ ^ p ∂V.weight
+    have hρpn : 0 < ρ ^ (p - n) := Real.rpow_pos_of_pos hρ _
+    have hJfin : J ≠ ⊤ := by
+      intro hJtop
+      rw [hJtop, ENNReal.mul_top (ENNReal.ofReal_pos.2 hρpn).ne'] at hJ
+      exact ENNReal.ofReal_ne_top (top_le_iff.1 hJ)
+    have hJreal : ρ ^ (p - n) * J.toReal ≤ δ ^ p := by
+      have h := ENNReal.toReal_mono ENNReal.ofReal_ne_top hJ
+      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal hρpn.le,
+        ENNReal.toReal_ofReal (Real.rpow_nonneg hδ.le _)] at h
+    have hj0 : 0 ≤ J.toReal := ENNReal.toReal_nonneg
+    have hδp : δ ^ (1 - p) * δ ^ p = δ := by
+      rw [← Real.rpow_add hδ, sub_add_cancel, Real.rpow_one]
+    have h1b : ∀ t, 0 < t → t < ρ → ∫⁻ x in closedBall (0 : Amb n ℓ) t, ‖H x‖ₑ ∂V.weight ≤
+        ENNReal.ofReal ((1 + 2 * ω) * δ * t ^ (n - 1)) := by
+      intro t ht htρ
+      set a : ℝ := δ / t with ha_def
+      have ha : 0 < a := div_pos hδ ht
+      have hfinB : V.weight (closedBall 0 t) ≠ ⊤ :=
+        ne_top_of_le_ne_top hμρ (measure_mono (closedBall_subset_closedBall htρ.le))
+      have hm : (V.weight (closedBall 0 t)).toReal ≤ 2 * ω * t ^ n :=
+        ENNReal.toReal_le_of_le_ofReal (mul_pos (mul_pos two_pos hω) (pow_pos ht n)).le
+          (hup2 t ht htρ)
+      have hA : a ^ (1 - p) = δ ^ (1 - p) * t ^ (p - n) * t ^ (n - 1) := by
+        rw [ha_def, Real.div_rpow hδ.le ht.le, div_eq_mul_inv, ← Real.rpow_neg ht.le, mul_assoc,
+          ← Real.rpow_natCast, ← Real.rpow_add ht]
+        congr 2
+        rw [Nat.cast_sub hn, Nat.cast_one]
+        ring
+      have htρp : t ^ (p - n) ≤ ρ ^ (p - n) := Real.rpow_le_rpow ht.le htρ.le hpn.le
+      have htn : t ^ n = t ^ (n - 1) * t :=
+        (pow_sub_one_mul (Nat.one_le_iff_ne_zero.mp hn) t).symm
+      have ha1p : 0 ≤ a ^ (1 - p) := Real.rpow_nonneg ha.le _
+      have hreal : a ^ (1 - p) * J.toReal + a * (V.weight (closedBall 0 t)).toReal ≤
+          (1 + 2 * ω) * δ * t ^ (n - 1) := by
+        have h1 : a ^ (1 - p) * J.toReal ≤ δ * t ^ (n - 1) := by
+          have hk : t ^ (p - n) * J.toReal ≤ δ ^ p :=
+            (mul_le_mul_of_nonneg_right htρp hj0).trans hJreal
+          calc a ^ (1 - p) * J.toReal = δ ^ (1 - p) * t ^ (n - 1) * (t ^ (p - n) * J.toReal) := by
+                rw [hA]; ring
+            _ ≤ δ ^ (1 - p) * t ^ (n - 1) * δ ^ p := mul_le_mul_of_nonneg_left hk
+                (mul_nonneg (Real.rpow_nonneg hδ.le _) (pow_nonneg ht.le _))
+            _ = δ * t ^ (n - 1) := by rw [mul_right_comm, hδp]
+        have h2 : a * (V.weight (closedBall 0 t)).toReal ≤ 2 * ω * δ * t ^ (n - 1) := by
+          calc a * (V.weight (closedBall 0 t)).toReal ≤ a * (2 * ω * t ^ n) :=
+                mul_le_mul_of_nonneg_left hm ha.le
+            _ = 2 * ω * δ * t ^ (n - 1) := by
+                rw [ha_def, htn, div_mul_eq_mul_div, div_eq_iff ht.ne']; ring
+        linarith only [h1, h2]
+      calc ∫⁻ x in closedBall (0 : Amb n ℓ) t, ‖H x‖ₑ ∂V.weight
+          ≤ ∫⁻ x in closedBall (0 : Amb n ℓ) t,
+              (ENNReal.ofReal (a ^ (1 - p)) * ‖H x‖ₑ ^ p + ENNReal.ofReal a) ∂V.weight := by
+            apply lintegral_mono
+            intro x
+            dsimp only
+            rw [← ofReal_norm, ENNReal.ofReal_rpow_of_nonneg (norm_nonneg _) hp0.le,
+              ← ENNReal.ofReal_mul ha1p, ← ENNReal.ofReal_add
+                (mul_nonneg ha1p (Real.rpow_nonneg (norm_nonneg _) _)) ha.le]
+            exact ENNReal.ofReal_le_ofReal (young p a ‖H x‖ hp1 ha (norm_nonneg _))
+        _ = ENNReal.ofReal (a ^ (1 - p)) *
+              ∫⁻ x in closedBall (0 : Amb n ℓ) t, ‖H x‖ₑ ^ p ∂V.weight +
+              ENNReal.ofReal a * V.weight (closedBall 0 t) := by
+            rw [lintegral_add_right _ measurable_const,
+              lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, setLIntegral_const]
+        _ ≤ ENNReal.ofReal (a ^ (1 - p)) * J + ENNReal.ofReal a * V.weight (closedBall 0 t) :=
+            add_le_add (mul_le_mul_of_nonneg_left
+              (lintegral_mono_set (closedBall_subset_closedBall htρ.le)) zero_le) le_rfl
+        _ = ENNReal.ofReal (a ^ (1 - p) * J.toReal + a * (V.weight (closedBall 0 t)).toReal) := by
+            rw [ENNReal.ofReal_add (mul_nonneg ha1p hj0) (mul_nonneg ha.le ENNReal.toReal_nonneg),
+              ENNReal.ofReal_mul ha1p, ENNReal.ofReal_mul ha.le, ENNReal.ofReal_toReal hJfin,
+              ENNReal.ofReal_toReal hfinB]
+        _ ≤ ENNReal.ofReal ((1 + 2 * ω) * δ * t ^ (n - 1)) := ENNReal.ofReal_le_ofReal hreal
+    -- (1d): lower density bound at support points.
+    have h1dc : ω / 2 ≤ Real.exp (-Λ) * (ω - Λ) := by
+      have hωΛ' : 2 * ω / 3 ≤ ω - Λ := by linarith only [hΛω]
+      have he : 3 / 4 ≤ Real.exp (-Λ) := by linarith only [hexpneg, hΛ1]
+      calc ω / 2 = (3 / 4) * (2 * ω / 3) := by ring
+        _ ≤ Real.exp (-Λ) * (ω - Λ) :=
+          mul_le_mul he hωΛ' (div_pos (mul_pos two_pos hω) three_pos).le (Real.exp_pos _).le
+    have h1d : ∀ z ∈ V.support, ∀ s : ℝ, 0 < s → ‖z‖ + 2 * s ≤ ρ →
+        ENNReal.ofReal (ω * s ^ n / 2) ≤ V.weight (closedBall z s) := by
+      intro z hz s hs hzs
+      have hsub : closedBall z (2 * s) ⊆ closedBall 0 ρ :=
+        closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith only [hzs])
+      apply ENNReal.ofReal_le_of_le_toReal
+      rw [mul_div_right_comm]
+      exact (mul_le_mul_of_nonneg_right h1dc (pow_pos hs n).le).trans
+        (hM2 z hz (2 * s) s hs (by linarith only [hs]) hsub)
+    exact ⟨hm1, hup2, h1b, h1d⟩
+  -- Step 2: small `|y|`.
+  obtain ⟨hyV, hyB⟩ := hy
+  rw [mem_closedBall, dist_zero_right] at hyB
+  by_cases hsmall : ‖y‖ ≤ c₀ * ρ
+  · have h := hT y ⟨hyV, by rwa [mem_closedBall, dist_zero_right]⟩
+    linarith only [h, mul_nonneg hκ0.le (norm_nonneg y)]
+  replace hsmall : c₀ * ρ < ‖y‖ := lt_of_not_ge hsmall
+  -- Step 3: rescaling by `R = |y|/(1 - θ₀)`.
+  set θ₀ : ℝ := (1 - γ) / 8 with hθ₀_def
+  have hθ₀ : 0 < θ₀ := by rw [hθ₀_def]; linarith only [hγ1]
+  have hθ₀8 : θ₀ ≤ 1 / 8 := by rw [hθ₀_def]; linarith only [hγ0]
+  have hcρ : 0 < c₀ * ρ := mul_pos hc0 hρ
+  have hy0 : 0 < ‖y‖ := hcρ.trans hsmall
+  have h1θ : 0 < 1 - θ₀ := by linarith only [hθ₀8]
+  set R : ℝ := ‖y‖ / (1 - θ₀) with hR_def
+  have hR : 0 < R := div_pos hy0 h1θ
+  have hRne : R ≠ 0 := hR.ne'
+  have hyR : ‖y‖ = (1 - θ₀) * R := by rw [hR_def, mul_div_cancel₀ _ h1θ.ne']
+  have hRρ : R < ρ := by
+    rw [hR_def, div_lt_iff₀ h1θ, hθ₀_def]
+    linarith only [hyB, mul_pos (sub_pos.2 hγ1) hρ]
+  have hyleR : ‖y‖ ≤ R := by linarith only [hyR, mul_nonneg hθ₀.le hR.le]
+  obtain ⟨V', -, -, hwV', -, -, hHV'⟩ :=
+    Submission.any_radius_rescaled_varifold n ℓ U hU V 0 R hR
+  have hemb : MeasurableEmbedding (fun x : Amb n ℓ => R⁻¹ • (x - 0)) := by
+    simpa only [sub_zero] using measurableEmbedding_const_smul₀ (α := Amb n ℓ) (inv_ne_zero hRne)
+  have hpre : ∀ (c : Amb n ℓ) (t : ℝ),
+      (fun x : Amb n ℓ => R⁻¹ • (x - 0)) ⁻¹' closedBall c t = closedBall (R • c) (R * t) := by
+    intro c t
+    ext z
+    simp only [mem_preimage, mem_closedBall, dist_eq_norm, sub_zero]
+    rw [show R⁻¹ • z - c = R⁻¹ • (z - R • c) by rw [smul_sub, inv_smul_smul₀ hRne], norm_smul,
+      Real.norm_eq_abs, abs_of_pos (inv_pos.2 hR), inv_mul_le_iff₀ hR]
+  have hball : ∀ (c : Amb n ℓ) (t : ℝ), V'.weight (closedBall c t) =
+      (ENNReal.ofReal (R ^ n))⁻¹ * V.weight (closedBall (R • c) (R * t)) := by
+    intro c t
+    rw [hwV', Measure.smul_apply, hemb.map_apply, hpre, smul_eq_mul]
+  have hint : ∀ r : ℝ, ∫⁻ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ₑ ∂V'.weight =
+      (ENNReal.ofReal (R ^ n))⁻¹ *
+        (ENNReal.ofReal R * ∫⁻ x in closedBall (0 : Amb n ℓ) (R * r), ‖H x‖ₑ ∂V.weight) := by
+    intro r
+    rw [hwV', Measure.restrict_smul, lintegral_smul_measure, hemb.restrict_map, hemb.lintegral_map,
+      hpre, smul_zero, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, smul_eq_mul]
+    congr 1
+    apply lintegral_congr
+    intro x
+    simp only [sub_zero, zero_add, smul_inv_smul₀ hRne]
+    rw [enorm_smul, Real.enorm_of_nonneg hR.le]
+  -- Hypotheses of 6.1 for `V'` with `Λ = 2ω`, `λ = δ`, `θ = θ₀`, `δ' = 3 C₁ δ`.
+  have hU' : IsOpen ((fun x : Amb n ℓ => 0 + R • x) ⁻¹' U) :=
+    hU.preimage (continuous_const.add (continuous_id.const_smul R))
+  have hB1 : closedBall (0 : Amb n ℓ) 1 ⊆ (fun x : Amb n ℓ => 0 + R • x) ⁻¹' U := by
+    intro x hx
+    rw [mem_closedBall, dist_zero_right] at hx
+    apply hBU
+    show (0 : Amb n ℓ) + R • x ∈ closedBall 0 ρ
+    rw [mem_closedBall, dist_zero_right, zero_add, norm_smul, Real.norm_eq_abs, abs_of_pos hR]
+    linarith only [mul_le_mul_of_nonneg_left hx hR.le, hRρ]
+  have hGMC' := hHV' H hGMC
+  set ξ : Amb n ℓ := R⁻¹ • y with hξ_def
+  have hξ : ‖ξ‖ = 1 - θ₀ := by
+    rw [hξ_def, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.2 hR), hyR,
+      mul_comm (1 - θ₀) R, inv_mul_cancel_left₀ hRne]
+  have hRξ : R • ξ = y := by rw [hξ_def, smul_inv_smul₀ hRne]
+  set τ : ℝ := c₀ * ρ / (2 * R) with hτ_def
+  have hτ0 : 0 < τ := div_pos hcρ (mul_pos two_pos hR)
+  have hτR : τ * R = c₀ * ρ / 2 := by
+    rw [hτ_def, div_mul_eq_mul_div, mul_div_mul_right _ _ hRne]
+  have hτ1 : τ ≤ 1 := by
+    rw [hτ_def, div_le_one (mul_pos two_pos hR)]
+    linarith only [hsmall, hyleR, hR]
+  have hτ2 : 2 * δ ≤ τ := by
+    rw [hτ_def, le_div_iff₀ (mul_pos two_pos hR)]
+    linarith only [mul_le_mul_of_nonneg_right hδc₀ hR.le, mul_lt_mul_of_pos_left hRρ hc0]
+  set δ' : ℝ := 3 * C1 * δ with hδ'_def
+  have hδ'0 : 0 < δ' := mul_pos (mul_pos three_pos hC1) hδ
+  have hδ'14 : δ' ^ (1 / 4 : ℝ) ≤ 1 / 2 := by
+    have h16 : ((1 / 2 : ℝ) ^ (4 : ℕ)) ^ (1 / 4 : ℝ) = 1 / 2 := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; norm_num
+    rw [← h16]
+    exact Real.rpow_le_rpow hδ'0.le (hC1δ.trans_eq (by norm_num)) (by norm_num)
+  have hpinch : ∀ r ∈ Icc δ 1,
+      |(V'.weight (closedBall 0 1)).toReal / ω -
+          (V'.weight (closedBall 0 δ)).toReal / (ω * δ ^ n)| +
+        r ^ (1 - (n : ℝ)) * ∫ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ ∂V'.weight ≤
+        δ' := by
+    have hterm1 : |(V'.weight (closedBall 0 1)).toReal / ω -
+        (V'.weight (closedBall 0 δ)).toReal / (ω * δ ^ n)| ≤ 2 * (C1 * δ) := by
+      have hRδρ : R * δ < ρ := by
+        linarith only [mul_le_mul_of_nonneg_left hδ1 hR.le, hRρ]
+      have e1 : (V'.weight (closedBall 0 1)).toReal / ω =
+          (V.weight (closedBall 0 R)).toReal / (ω * R ^ n) := by
+        rw [hball, smul_zero, mul_one, ENNReal.toReal_mul, ENNReal.toReal_inv,
+          ENNReal.toReal_ofReal (pow_pos hR n).le, inv_mul_eq_div, div_div, mul_comm (R ^ n)]
+      have e2 : (V'.weight (closedBall 0 δ)).toReal / (ω * δ ^ n) =
+          (V.weight (closedBall 0 (R * δ))).toReal / (ω * (R * δ) ^ n) := by
+        rw [hball, smul_zero, ENNReal.toReal_mul, ENNReal.toReal_inv,
+          ENNReal.toReal_ofReal (pow_pos hR n).le, mul_pow R δ, inv_mul_eq_div, div_div,
+          mul_left_comm (R ^ n)]
+      rw [e1, e2]
+      have h1 := hm1 R hR hRρ
+      have h2 := hm1 (R * δ) (mul_pos hR hδ) hRδρ
+      rw [abs_le] at h1 h2 ⊢
+      constructor <;> linarith only [h1.1, h1.2, h2.1, h2.2]
+    intro r hr
+    have hr0 : 0 < r := hδ.trans_le hr.1
+    have hRr : 0 < R * r := mul_pos hR hr0
+    have hRrρ : R * r < ρ := by linarith only [mul_le_mul_of_nonneg_left hr.2 hR.le, hRρ]
+    have hint2 : ∫ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ ∂V'.weight ≤
+        (1 + 2 * ω) * δ * r ^ (n - 1) := by
+      have hlint : ∫⁻ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ₑ ∂V'.weight ≤
+          ENNReal.ofReal ((1 + 2 * ω) * δ * r ^ (n - 1)) := by
+        rw [hint r]
+        calc (ENNReal.ofReal (R ^ n))⁻¹ *
+              (ENNReal.ofReal R * ∫⁻ x in closedBall (0 : Amb n ℓ) (R * r), ‖H x‖ₑ ∂V.weight)
+            ≤ (ENNReal.ofReal (R ^ n))⁻¹ *
+              (ENNReal.ofReal R * ENNReal.ofReal ((1 + 2 * ω) * δ * (R * r) ^ (n - 1))) :=
+              mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (h1b (R * r) hRr hRrρ)
+                zero_le) zero_le
+          _ = ENNReal.ofReal ((1 + 2 * ω) * δ * r ^ (n - 1)) := by
+              rw [← ENNReal.ofReal_inv_of_pos (pow_pos hR n), ← ENNReal.ofReal_mul hR.le,
+                ← ENNReal.ofReal_mul (inv_pos.2 (pow_pos hR n)).le]
+              congr 1
+              rw [mul_pow R r, ← pow_sub_one_mul (Nat.one_le_iff_ne_zero.mp hn) R]
+              field_simp
+      calc ∫ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ ∂V'.weight
+          ≤ (∫⁻ x in closedBall (0 : Amb n ℓ) r,
+              ENNReal.ofReal ‖‖R • H (0 + R • x)‖‖ ∂V'.weight).toReal :=
+            (Real.le_norm_self _).trans (norm_integral_le_lintegral_norm _)
+        _ = (∫⁻ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ₑ ∂V'.weight).toReal := by
+            simp_rw [norm_norm, ofReal_norm]
+        _ ≤ (1 + 2 * ω) * δ * r ^ (n - 1) :=
+            ENNReal.toReal_le_of_le_ofReal (by positivity) hlint
+    have hrr : r ^ (1 - (n : ℝ)) * r ^ (n - 1) = 1 := by
+      rw [← Real.rpow_natCast, ← Real.rpow_add hr0, Nat.cast_sub hn, Nat.cast_one,
+        show (1 - (n : ℝ)) + ((n : ℝ) - 1) = 0 by ring, Real.rpow_zero]
+    have hterm2 : r ^ (1 - (n : ℝ)) *
+        ∫ x in closedBall (0 : Amb n ℓ) r, ‖R • H (0 + R • x)‖ ∂V'.weight ≤ (1 + 2 * ω) * δ := by
+      calc _ ≤ r ^ (1 - (n : ℝ)) * ((1 + 2 * ω) * δ * r ^ (n - 1)) :=
+            mul_le_mul_of_nonneg_left hint2 (Real.rpow_nonneg hr0.le _)
+        _ = (1 + 2 * ω) * δ := by rw [mul_left_comm, hrr, mul_one]
+    calc _ ≤ 2 * (C1 * δ) + (1 + 2 * ω) * δ := add_le_add hterm1 hterm2
+      _ ≤ δ' := by linarith only [mul_le_mul_of_nonneg_right hC1big hδ.le, hδ'_def]
+  have hmass' : V'.weight (closedBall 0 1) ≤ ENNReal.ofReal (2 * ω) := by
+    rw [hball, smul_zero, mul_one]
+    calc (ENNReal.ofReal (R ^ n))⁻¹ * V.weight (closedBall 0 R)
+        ≤ (ENNReal.ofReal (R ^ n))⁻¹ * ENNReal.ofReal (2 * ω * R ^ n) :=
+          mul_le_mul_of_nonneg_left (hup2 R hR hRρ) zero_le
+      _ = ENNReal.ofReal (2 * ω) := by
+          rw [ENNReal.ofReal_mul (mul_pos two_pos hω).le, mul_left_comm,
+            ENNReal.inv_mul_cancel (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne' ENNReal.ofReal_ne_top,
+            mul_one]
+  have hκ8 : κ / 8 ∈ Ioc 0 θ₀ := ⟨by positivity, by linarith only [hκ, hκ0]⟩
+  obtain ⟨hcon, -⟩ := hC9 δ θ₀ δ' hδ (by linarith only [hδ8]) hθ₀ (by linarith only [hθ₀8])
+    hδ'0 (by linarith only [hC1δ]) ξ hξ _ hU' hB1 V' _ hGMC' hpinch hmass' (κ / 8) hκ8 τ
+    ⟨hτ2, hτ1⟩
+  -- Step 4: lower bound for the left side.
+  have hs0 : 0 < R * (κ / 16) := mul_pos hR (by positivity)
+  have hLHS : ENNReal.ofReal target ≤
+      V'.weight (closedBall ξ ((1 - δ' ^ (1 / 4 : ℝ)) * (κ / 8))) := by
+    have hs : ‖y‖ + 2 * (R * (κ / 16)) ≤ ρ := by
+      rw [hyR]; linarith only [mul_le_mul_of_nonneg_left hκ hR.le, mul_nonneg hθ₀.le hR.le, hRρ]
+    calc ENNReal.ofReal target
+        = (ENNReal.ofReal (R ^ n))⁻¹ * ENNReal.ofReal (ω * (R * (κ / 16)) ^ n / 2) := by
+          rw [← ENNReal.ofReal_inv_of_pos (pow_pos hR n),
+            ← ENNReal.ofReal_mul (inv_pos.2 (pow_pos hR n)).le]
+          congr 1
+          rw [htarget_def, mul_pow R, mul_left_comm ω, mul_div_assoc (R ^ n),
+            inv_mul_cancel_left₀ (pow_ne_zero n hRne)]
+      _ ≤ (ENNReal.ofReal (R ^ n))⁻¹ * V.weight (closedBall y (R * (κ / 16))) :=
+          mul_le_mul_of_nonneg_left (h1d y hyV _ hs0 hs) zero_le
+      _ = V'.weight (closedBall ξ (κ / 16)) := by rw [hball, hRξ]
+      _ ≤ V'.weight (closedBall ξ ((1 - δ' ^ (1 / 4 : ℝ)) * (κ / 8))) := by
+          apply measure_mono
+          apply closedBall_subset_closedBall
+          linarith only [mul_le_mul_of_nonneg_right hδ'14 (by positivity : (0 : ℝ) ≤ κ / 8)]
+  -- Step 5: a support point near `τ y`.
+  have hpos : V.weight (closedBall (τ • y) (R * (τ * (κ / 8)))) ≠ 0 := by
+    intro h0
+    have hzero : V'.weight (closedBall (τ • ξ) (τ * (κ / 8))) = 0 := by
+      rw [hball, smul_comm, hRξ, h0, mul_zero]
+    rw [hzero, mul_zero, zero_add] at hcon
+    have herr : C9 * δ' ^ (1 / 4 : ℝ) * |Real.log δ| < target :=
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left C9 0)
+        (Real.rpow_nonneg hδ'0.le _)) (abs_nonneg _)).trans_lt (hδ5' δ hδ hδδ5)
+    have h := hLHS.trans hcon
+    rw [ENNReal.ofReal_le_ofReal_iff'] at h
+    rcases h with h | h <;> linarith only [h, herr, htarget]
+  obtain ⟨z, hzB, hzμ⟩ := Measure.nonempty_inter_support_of_pos (pos_iff_ne_zero.2 hpos)
+  rw [mem_closedBall, dist_eq_norm] at hzB
+  have hzn : ‖z‖ ≤ τ * R := by
+    have h1 : ‖z‖ ≤ ‖z - τ • y‖ + ‖τ • y‖ := by
+      calc ‖z‖ = ‖(z - τ • y) + τ • y‖ := by rw [sub_add_cancel]
+        _ ≤ ‖z - τ • y‖ + ‖τ • y‖ := norm_add_le _ _
+    rw [norm_smul, Real.norm_of_nonneg hτ0.le, hyR] at h1
+    linarith only [h1, hzB, mul_le_mul_of_nonneg_left (show κ / 8 ≤ θ₀ by linarith only [hκ, hκ0])
+      (mul_nonneg hτ0.le hR.le)]
+  have hzV : z ∈ V.support := by
+    refine ⟨hBU ?_, hzμ⟩
+    rw [mem_closedBall, dist_zero_right]
+    linarith only [hzn, hτR, mul_le_mul_of_nonneg_right hc1 hρ.le, hρ]
+  have hzT := hT z ⟨hzV, by rw [mem_closedBall, dist_zero_right]; linarith only [hzn, hτR, hcρ]⟩
+  -- Step 6: conclusion from homogeneity and the 1-Lipschitz property of `dist(·, T)`.
+  have hhom : τ * infDist y (T : Set (Amb n ℓ)) ≤ infDist (τ • y) (T : Set (Amb n ℓ)) := by
+    rw [le_infDist ⟨0, T.zero_mem⟩]
+    intro w hw
+    have hw' : τ⁻¹ • w ∈ (T : Set (Amb n ℓ)) := T.smul_mem τ⁻¹ hw
+    calc τ * infDist y (T : Set (Amb n ℓ)) ≤ τ * dist y (τ⁻¹ • w) :=
+          mul_le_mul_of_nonneg_left (infDist_le_dist_of_mem hw') hτ0.le
+      _ = dist (τ • y) (τ • (τ⁻¹ • w)) := by rw [dist_smul₀, Real.norm_of_nonneg hτ0.le]
+      _ = dist (τ • y) w := by rw [smul_inv_smul₀ hτ0.ne']
+  have htri : infDist (τ • y) (T : Set (Amb n ℓ)) ≤
+      infDist z (T : Set (Amb n ℓ)) + dist (τ • y) z := infDist_le_infDist_add_dist
+  rw [dist_comm, dist_eq_norm] at htri
+  have hD : τ * infDist y (T : Set (Amb n ℓ)) ≤ τ * (5 / 8 * κ * R) := by
+    linarith only [hhom, htri, hzT, hzB, mul_le_mul_of_nonneg_left hzn (half_pos hκ0).le]
+  have hD' : infDist y (T : Set (Amb n ℓ)) ≤ 5 / 8 * κ * R := le_of_mul_le_mul_left hD hτ0
+  rw [hyR]
+  linarith only [hD', mul_le_mul_of_nonneg_left hθ₀8 (mul_pos hκ0 hR).le, mul_pos hκ0 hR]
 
 end Submission
 
