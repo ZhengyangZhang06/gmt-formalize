@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15199334fe483e2768c59ee3837f23e3631bcc2db0a292d44c5929de1b838f9d",
+  "git_delta": {
+    "base_commit": "3740b39bb48bfa04547e4b6c721210a8882816e4",
+    "candidate_commit": "f935cd0e258f52e39dd4395b740ff5363ebd2839",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dgc_pm_ball_volume_le",
+    "diff_sha256": "6cd47257b373e1976e2ed7a65c6b563d5d0a875dc730d3b2c017c0a0282e4ce6",
+    "source_sha256": "ead2c0c18e7f6a33cbb4cc93cd5647093f4357097c55d39a74bf544c8833444a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgc_pm_ball_volume_le",
+      "statement": "∀ (ι : Type) [Fintype ι] (c : EuclideanSpace ℝ ι) (r : ℝ), 0 ≤ r → volume (closedBall c r) ≤ ENNReal.ofReal ((2 * r) ^ Fintype.card ι)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
