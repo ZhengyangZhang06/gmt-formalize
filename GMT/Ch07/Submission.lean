@@ -451,6 +451,66 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Coefficient bound for a determinant covector (Simon 7.5, the test form of the chart
+perimeter estimate).  If `α(a₁, …, aₙ) = det[p, Aa₁, …, Aaₙ]` with `‖A‖ ≤ 1` and `|p| ≤ 1`, then
+every entry of the matrix `[p, Ae_{I(1)}, …, Ae_{I(n)}]` has absolute value `≤ 1`, so the Leibniz
+formula gives `|α(e_I)| ≤ (n+1)!`; summing over the `Pⁿ` index tuples `I` yields
+`|α| ≤ (Pⁿ ((n+1)!)²)^{1/2} = (n+1)! √(Pⁿ)`. -/
+theorem Submission.codim1_lur_det_covector_norm_le : ∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)) (p : Euclid (n + 1)) (α : Covector (Euclid P) n), ‖A‖ ≤ 1 → ‖p‖ ≤ 1 → (∀ a : Fin n → Euclid P, α a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r)) → covectorEuclideanNorm α ≤ ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n) := by
+  intro P n A p α hA hp hα
+  -- Leibniz: a real `m × m` matrix with entries of absolute value `≤ 1` has `|det| ≤ m!`
+  have hleib : ∀ (m : ℕ) (M : Matrix (Fin m) (Fin m) ℝ), (∀ r c, |M r c| ≤ 1) →
+      |M.det| ≤ (m.factorial : ℝ) := by
+    intro m M hM
+    rw [Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin m), Equiv.Perm.sign σ • ∏ i, M (σ i) i|
+        ≤ ∑ σ : Equiv.Perm (Fin m), |Equiv.Perm.sign σ • ∏ i, M (σ i) i| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin m), (1 : ℝ) := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          rw [Units.smul_def, zsmul_eq_mul, abs_mul]
+          have hs : |((Equiv.Perm.sign σ : ℤ) : ℝ)| = 1 := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+          rw [hs, one_mul, Finset.abs_prod]
+          exact Finset.prod_le_one₀ (fun i _ => abs_nonneg _) (fun i _ => hM _ _)
+      _ = (m.factorial : ℝ) := by
+          simp [Finset.card_univ, Fintype.card_perm]
+  -- every coefficient `α(e_I) = det[p, Ae_{I(1)}, …, Ae_{I(n)}]` is bounded by `(n+1)!`
+  have hcoef : ∀ I : Fin n → Fin P,
+      |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ((n + 1).factorial : ℝ) := by
+    intro I
+    rw [hα]
+    apply hleib
+    intro r c
+    refine Fin.cases ?_ (fun k => ?_) c
+    · simpa [Real.norm_eq_abs] using (PiLp.norm_apply_le p r).trans hp
+    · simp only [Matrix.of_apply, Fin.cons_succ]
+      have h1 := PiLp.norm_apply_le (A (EuclideanSpace.basisFun (Fin P) ℝ (I k))) r
+      have h2 : ‖A (EuclideanSpace.basisFun (Fin P) ℝ (I k))‖ ≤ 1 := by
+        calc ‖A (EuclideanSpace.basisFun (Fin P) ℝ (I k))‖
+            ≤ ‖A‖ * ‖EuclideanSpace.basisFun (Fin P) ℝ (I k)‖ := A.le_opNorm _
+          _ = ‖A‖ := by simp
+          _ ≤ 1 := hA
+      rw [← Real.norm_eq_abs]
+      exact h1.trans h2
+  -- sum the squared coefficients over the `Pⁿ` index tuples
+  unfold covectorEuclideanNorm
+  have hF : (0 : ℝ) ≤ ((n + 1).factorial : ℝ) := by positivity
+  calc Real.sqrt (∑ I : Fin n → Fin P, if StrictMono I then
+        (α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+      ≤ Real.sqrt (∑ _I : Fin n → Fin P, ((n + 1).factorial : ℝ) ^ 2) := by
+        apply Real.sqrt_le_sqrt
+        refine Finset.sum_le_sum fun I _ => ?_
+        split_ifs
+        · exact sq_le_sq' (abs_le.1 (hcoef I)).1 (abs_le.1 (hcoef I)).2
+        · positivity
+    _ = ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n) := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+          Fintype.card_fin, nsmul_eq_mul, Real.sqrt_mul (by positivity), Real.sqrt_sq hF,
+          mul_comm]
+        push_cast
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
