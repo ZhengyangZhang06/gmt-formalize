@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/2087 | this PR | root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_projection-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_pushforward-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.decay_plane-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_tangent_ae-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.slope_campanato-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.campanato_continuous-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.c1_criterion-a1 |
