@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "293916e3a4e77749886cbdd61309d0b63aa8bd4fc5b0a806fd8ea9a84ee675c6",
+  "git_delta": {
+    "base_commit": "59f319254262309892637079aa3c5208d796f5b3",
+    "candidate_commit": "73c37ed8dcb71c993d088a072deecc6e7972e450",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "atsm_chart_image_flat",
+    "diff_sha256": "29572719a343eccf341d1fde7919a94cf65226f161474a1332481279a072cb8f",
+    "source_sha256": "f004e18196ca3e5bc1b76c36205cc5fa5fbb3ae86d324b10dbc720df15f70e9b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.atsm_chart_image_flat",
+      "statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → Injective (fderiv ℝ ψ v) → v ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z (ψ v) < ρ → ∃ h : Euclid d, ‖z - ψ v - fderiv ℝ ψ v h‖ ≤ ε * ‖z - ψ v‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
