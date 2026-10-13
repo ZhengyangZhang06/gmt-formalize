@@ -542,6 +542,38 @@ theorem Submission.dgid_imrep_signed_density_representation : ∀ (P n : ℕ) (U
       have hxM : x ∉ R.carrier := fun hxM => hx.2 ⟨hxM, hx.1⟩
       rw [indicator_of_notMem hxM, zero_mul]
     rw [IMRep.action, e1, e2, e3]
+/-- **Pull-back along a parametrization dominated by `Hⁿ`** (step 6 of the graph integer-density
+argument): if `Φ` is continuous on the open set `D ⊆ ℝⁿ` and `∫⁻_A f ∘ Φ dLⁿ ≤ ∫⁻_{Φ(A)} f dHⁿ`
+for Borel `A ⊆ D` and Borel `f ≥ 0`, then `Φ_#(Lⁿ⌞D) ≤ Hⁿ⌞Φ(D)`.  So an `Hⁿ⌞Φ(D)`-a.e.
+integer-valued `g` with `‖g‖ₑ ≤ F` pulls back to `g ∘ Φ`, which is `Lⁿ⌞D`-a.e. integer valued and,
+as `∫⁻_K ‖g ∘ Φ‖ₑ ≤ ∫⁻_{Φ(K)} F dHⁿ < ∞` for compact `K ⊆ D`, locally integrable on `D`. -/
+theorem Submission.dgid_dominated_pullback_integer_locallyIntegrable : ∀ (n P : ℕ) (Φ : Euclid n → Euclid P) (D : Set (Euclid n)) (g : Euclid P → ℝ) (F : Euclid P → ℝ≥0∞), IsOpen D → ContinuousOn Φ D → (∀ (A : Set (Euclid n)) (f : Euclid P → ℝ≥0∞), MeasurableSet A → A ⊆ D → Measurable f → ∫⁻ v in A, f (Φ v) ≤ ∫⁻ x in Φ '' A, f x ∂μHE[n]) → Measurable F → (∀ K : Set (Euclid n), IsCompact K → K ⊆ D → ∫⁻ x in Φ '' K, F x ∂μHE[n] ≠ ∞) → AEStronglyMeasurable g (μHE[n].restrict (Φ '' D)) → (∀ᵐ x ∂(μHE[n].restrict (Φ '' D)), (∃ m : ℤ, g x = m) ∧ ‖g x‖ₑ ≤ F x) → LocallyIntegrableOn (fun v => g (Φ v)) D volume ∧ ∀ᵐ v ∂(volume.restrict D), ∃ m : ℤ, g (Φ v) = m := by
+  intro n P Φ D g F hD hΦ hMB hF hfin hg hae
+  have hDm : MeasurableSet D := hD.measurableSet
+  have hΦae : AEMeasurable Φ (volume.restrict D) := hΦ.aemeasurable hDm
+  -- `Φ_#(Lⁿ⌞D)(B) = ∫⁻_D 1_B ∘ Φ dLⁿ ≤ ∫⁻_{Φ(D)} 1_B dHⁿ = (Hⁿ⌞Φ(D))(B)` for Borel `B`
+  have hle : Measure.map Φ (volume.restrict D) ≤ μHE[n].restrict (Φ '' D) := by
+    rw [Measure.le_iff]
+    intro B hB
+    have hind : Measurable (B.indicator (1 : Euclid P → ℝ≥0∞)) := measurable_one.indicator hB
+    rw [← lintegral_indicator_one hB, ← lintegral_indicator_one hB,
+      lintegral_map' hind.aemeasurable hΦae]
+    exact hMB D _ hDm subset_rfl hind
+  -- transfer the a.e. properties of `g` and its measurability from `Hⁿ⌞Φ(D)` to `g ∘ Φ`
+  have hae' : ∀ᵐ v ∂(volume.restrict D), (∃ m : ℤ, g (Φ v) = m) ∧ ‖g (Φ v)‖ₑ ≤ F (Φ v) :=
+    ae_of_ae_map hΦae (ae_mono hle hae)
+  have hGm : AEStronglyMeasurable (fun v => g (Φ v)) (volume.restrict D) :=
+    (hg.mono_measure hle).comp_aemeasurable hΦae
+  refine ⟨?_, hae'.mono fun v hv => hv.1⟩
+  -- on compact `K ⊆ D`: `∫⁻_K ‖g ∘ Φ‖ₑ ≤ ∫⁻_K F ∘ Φ ≤ ∫⁻_{Φ(K)} F dHⁿ < ∞`
+  rw [locallyIntegrableOn_iff hD.isLocallyClosed]
+  intro K hKD hK
+  refine ⟨hGm.mono_set hKD, ?_⟩
+  rw [hasFiniteIntegral_iff_enorm]
+  calc ∫⁻ v in K, ‖g (Φ v)‖ₑ ≤ ∫⁻ v in K, F (Φ v) :=
+        lintegral_mono_ae (ae_restrict_of_ae_restrict_of_subset hKD (hae'.mono fun v hv => hv.2))
+    _ ≤ ∫⁻ x in Φ '' K, F x ∂μHE[n] := hMB K F hK.isClosed.measurableSet hKD hF
+    _ < ∞ := lt_top_iff_ne_top.mpr (hfin K hK hKD)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
