@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'abbrev Euclid|abbrev MultiVector|def IsUnitOrientationOf|dgoj_|covector.*eval|det_adjoint|orthonormal_frame' project/GMT --glob '*.lean'",
+        "rg -n -A 9 -B 3 'theorem AlternatingMap.eq_smul_basis_det|theorem det_eq_zero_iff_ker_ne_bot|theorem det_toMatrix' mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "rg -n -A 7 -B 3 'theorem le_opNorm|theorem norm_image_sub_le|theorem volumeForm_robust|theorem abs_volumeForm_apply_le|def mkContinuous' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean",
+        "rg -n -A 5 -B 2 'theorem finrank_range_of_inj|theorem Orthonormal.inner_right_fintype|theorem Orthonormal.comp_linearIsometry|theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem ContinuousLinearMap.continuous_det|theorem adjoint_inner_right|theorem adjoint_inner_left' mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dgoj-independent-audit-p1h9f1st/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dgoj-independent-audit-p1h9f1st/SuppliedProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7b72550114/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7b72550114/decomposition-v1.json",
+        "GMT/Scratch/graph_orientation_jacobian_decomposition/OrientationJacobianFull.lean",
+        "/tmp/dgoj-independent-audit-p1h9f1st/ChallengeTypes.lean",
+        "/tmp/dgoj-independent-audit-p1h9f1st/SuppliedProofsAndAssembly.lean",
+        "/tmp/dgoj-independent-audit-p1h9f1st/SuppliedProofsAndAssembly.log"
+      ],
+      "conclusion": "The split is appropriate for the selected graph-orientation theorem. Workspace sources match the frozen snapshot, with project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. All seven types independently elaborate before child implementation with autoImplicit disabled. Proofs extracted unchanged from each natural_proof compile, pass the single-theorem source-delta check, and assemble into the exact frozen parent type. Every child and the assembly use only propext, Classical.choice and Quot.sound. Actual sibling references exactly match the acyclic dependency lists. All lean_names are bare identifiers; no conflicting reservation or declaration was found in the DAG, other handoffs/decompositions, or 422 git-ref tips. Matrix.of and Matrix.mul_apply verify ordinary matrix operations. The requested parent contract digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type include orthonormality and every span hypothesis. Restriction to the span, basis-determinant uniqueness, and recovery of coordinates by inner products prove the stated identity, including n = 0. No circular dependency occurs."
+    },
+    {
+      "key": "adjoint_det_frame_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frame expansion proves the Gram matrix equals AᵀA; the adjoint identity identifies it with the matrix of F*F. Determinant invariance then proves the exact square identity. Injectivity is unnecessary, and Matrix.of selects the intended matrix construction."
+    },
+    {
+      "key": "orthonormal_frame_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Injectivity gives finrank(range F) = n. Reindexing its orthonormal basis, applying the subtype isometry, and transporting the spanning equality prove both conclusions. The proof and type agree for every natural dimension."
+    },
+    {
+      "key": "injective_unit_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly its three declared siblings. Triviality of ker(F*F) gives a nonzero determinant; the square identity gives positivity. A single sign case for the frame determinant yields the required equality for all covectors, proving both conjuncts without relying on the parent."
+    },
+    {
+      "key": "continuous_covector_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Bounded evaluation defines the required continuous linear functionals. The supplied operator-norm difference estimate and squeeze argument establish continuity into MultiVector, including n = 0. The evaluation identity holds by construction."
+    },
+    {
+      "key": "det_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Hadamard's bound makes the standard orientation's volume form continuous. volumeForm_robust and det_self give the exact normalization for every n, including zero. The proof supplies the required dimension instance and uses no unavailable automatic-continuity result."
+    },
+    {
+      "key": "graph_fderiv_left_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Adjoint identities, orthogonality and isometry prove the first conjunct. C¹ regularity on the open ball gives derivative continuity, and the chain rule followed by the first conjunct proves the derivative left inverse. Arbitrary s is valid; no positivity hypothesis is missing."
+    }
+  ],
+  "required_changes": []
+}

@@ -451,6 +451,308 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
+`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
+`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
+the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
+theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
+  intro P n τ b hτ hb α
+  set L := Submodule.span ℝ (Set.range τ)
+  -- `τ` is a basis `e` of `L`
+  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
+  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
+    rw [Module.Basis.span_apply hτ.linearIndependent i]
+  -- the restriction `α_L` of `α` to `L`
+  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
+  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
+  have h1 : α b = αL b' := rfl
+  have h2 : α τ = αL e := by
+    show α τ = α (fun i => (e i : Euclid P))
+    congr 1
+    funext i
+    exact (he i).symm
+  -- coordinates of `b'` in `e` are the inner products with `τ`
+  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
+    intro i j
+    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
+      have := congrArg (Subtype.val) (e.sum_repr (b' j))
+      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
+      exact this.symm
+    rw [hs, hτ.inner_right_fintype]
+  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
+    ext i j
+    rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
+  -- `α_L = α_L(e) • det_e`
+  have h3 : αL b' = αL e * e.det b' := by
+    conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
+    rfl
+  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+/-- Steps 3(ii)–(iii) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3,
+via Allard's theorem): if `τ` is an orthonormal `n`-frame whose span contains every `F eⱼ`, then
+`det(F* ∘ F) = (det 𝒜)²` with `𝒜ᵢⱼ = ⟨τᵢ, F eⱼ⟩`.  Expanding `F eⱼ = Σₗ 𝒜ₗⱼ τₗ` gives the Gram
+identity `⟨F eᵢ, F eⱼ⟩ = (𝒜ᵀ𝒜)ᵢⱼ`, and the Gram matrix is the matrix of `F* ∘ F` in the standard
+basis of `ℝⁿ`. -/
+theorem Submission.dgoj_det_adjoint_comp_eq_det_sq : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ)) → (F.adjoint ∘L F).det = (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det ^ 2 := by
+  intro P n F τ hτ hb
+  set A : Matrix (Fin n) (Fin n) ℝ :=
+    Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ))) with hA
+  -- `F eⱼ = Σₗ 𝒜ₗⱼ τₗ`: the coordinates of a vector of `span τ` are its inner products with `τ`
+  have hexp : ∀ j, F (EuclideanSpace.single j (1 : ℝ)) = ∑ l, A l j • τ l := by
+    intro j
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 (hb j)
+    have hcA : ∀ l, A l j = c l := by
+      intro l
+      rw [hA, Matrix.of_apply, ← hc, hτ.inner_right_fintype]
+    rw [← hc]
+    simp only [hcA]
+  -- the Gram identity `⟨F eᵢ, F eⱼ⟩ = (𝒜ᵀ𝒜)ᵢⱼ`
+  have hgram : ∀ i j, inner ℝ (F (EuclideanSpace.single i (1 : ℝ)))
+      (F (EuclideanSpace.single j (1 : ℝ))) = (A.transpose * A) i j := by
+    intro i j
+    rw [Matrix.mul_apply]
+    conv_lhs => rw [hexp i]
+    rw [sum_inner]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [inner_smul_left, Matrix.transpose_apply]
+    simp [hA]
+  -- the matrix of `F* ∘ F` in the standard basis has entries `⟨eᵢ, F* F eⱼ⟩ = ⟨F eᵢ, F eⱼ⟩`
+  let B := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have hmat : LinearMap.toMatrix B B ((F.adjoint ∘L F : Euclid n →L[ℝ] Euclid n) : Euclid n →ₗ[ℝ] Euclid n)
+      = A.transpose * A := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, ← hgram i j]
+    simp only [B, OrthonormalBasis.coe_toBasis, OrthonormalBasis.coe_toBasis_repr_apply,
+      EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe,
+      ContinuousLinearMap.coe_comp, Function.comp_apply]
+    rw [← ContinuousLinearMap.adjoint_inner_right, EuclideanSpace.inner_single_left]
+    simp
+  rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix B, hmat, Matrix.det_mul,
+    Matrix.det_transpose, sq]
+/-- Step 3 of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem): if `F : ℝⁿ → ℝᴾ` is injective, its range `L` has an orthonormal basis
+`τ = (τ₁, …, τₙ)`, regarded as an orthonormal `n`-frame in `ℝᴾ` spanning `L`.  Since
+`dim L = n`, reindex `stdOrthonormalBasis ℝ L` along `Fin (dim L) ≃ Fin n` and include it into
+`ℝᴾ` by the linear isometry `L → ℝᴾ`. -/
+theorem Submission.dgoj_exists_orthonormal_frame_range : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧ Submodule.span ℝ (Set.range τ) = LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P) := by
+  intro P n F hF
+  set L := LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P) with hLdef
+  -- `dim L = dim ℝⁿ = n`, since `F` is injective
+  have hL : Module.finrank ℝ L = n := by
+    rw [hLdef, LinearMap.finrank_range_of_inj hF, finrank_euclideanSpace_fin]
+  let T : OrthonormalBasis (Fin n) ℝ L := (stdOrthonormalBasis ℝ L).reindex (finCongr hL)
+  refine ⟨fun i => (T i : Euclid P), ?_, ?_⟩
+  · -- the inclusion `L → ℝᴾ` is a linear isometry
+    exact T.orthonormal.comp_linearIsometry L.subtypeₗᵢ
+  · -- `span (ι '' range T) = ι '' span (range T) = ι '' L = L`
+    have h1 : (fun i => (T i : Euclid P)) = L.subtype ∘ T := rfl
+    rw [h1, Set.range_comp, Submodule.span_image, ← T.coe_toBasis, T.toBasis.span_eq,
+      Submodule.map_top, Submodule.range_subtype]
+
+/-- **The normalized evaluation at `F e` is a unit orientation of `range F`** (Simon 6.1.1,
+6.1.7; `√det(F* ∘ F)` is the area Jacobian of Ch. 2, 3.1/3.3).  For injective `F : ℝⁿ → ℝᴾ`,
+`det(F* ∘ F) > 0`, and if `α(F e₁, …, F eₙ) = √det(F* ∘ F) ξ(α)` for every `n`-covector `α` then
+`ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal frame `τ` of `range F`: with `d = det(⟨τᵢ, F eⱼ⟩)` one has
+`det(F* ∘ F) = d² ≠ 0` and `α(F e) = d α(τ)`, so `|d| ξ(α) = d α(τ)` and the sign is that of `d`. -/
+theorem Submission.dgoj_unitOrientation_of_injective : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → 0 < (F.adjoint ∘L F).det ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, α (fun i => F (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt ((F.adjoint ∘L F).det) * ξ α) → IsUnitOrientationOf ξ (LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F hF
+  -- an orthonormal frame `τ` of `range F`; every `F eⱼ` lies in its span
+  obtain ⟨τ, hτo, hτs⟩ := Submission.dgoj_exists_orthonormal_frame_range P n F hF
+  have hb : ∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ) := by
+    intro j
+    rw [hτs]
+    exact LinearMap.mem_range_self _ _
+  -- `det(F* ∘ F) = d²` for `d = det(⟨τᵢ, F eⱼ⟩)`
+  set d := (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det
+  have hdet : (F.adjoint ∘L F).det = d ^ 2 :=
+    Submission.dgoj_det_adjoint_comp_eq_det_sq P n F τ hτo hb
+  -- `ker(F* ∘ F) = ker F = 0`, so `det(F* ∘ F) ≠ 0` and hence `d ≠ 0`
+  have hd : d ≠ 0 := by
+    intro h
+    have h0 : (F.adjoint ∘L F).det = 0 := by rw [hdet, h, zero_pow two_ne_zero]
+    apply LinearMap.det_eq_zero_iff_ker_ne_bot.1 h0
+    rw [F.ker_adjoint_comp_self, LinearMap.ker_eq_bot]
+    exact hF
+  -- (i): `det(F* ∘ F) = d² > 0`
+  refine ⟨by rw [hdet]; positivity, fun ξ hξ => ⟨τ, hτo, hτs, ?_⟩⟩
+  -- (ii): `|d| ξ(α) = √det(F* ∘ F) ξ(α) = α(F e) = d α(τ)` for every `α`
+  have key : ∀ α : Covector (Euclid P) n, |d| * ξ α = d * α τ := by
+    intro α
+    rw [← Real.sqrt_sq_eq_abs, ← hdet, ← hξ α]
+    exact Submission.dgoj_covector_eq_det_mul_of_mem_span P n τ _ hτo hb α
+  -- the sign of `d` decides between `ξ(α) = -α(τ)` and `ξ(α) = α(τ)`
+  rcases hd.lt_or_gt with hneg | hpos
+  · right
+    intro α
+    have h := key α
+    rw [abs_of_neg hneg] at h
+    apply mul_left_cancel₀ hd
+    linarith
+  · left
+    intro α
+    have h := key α
+    rw [abs_of_pos hpos] at h
+    exact mul_left_cancel₀ hd h
+/-- Evaluation of `n`-covectors at an `n`-family `c`, `ev c = (α ↦ α c)`, is a continuous map
+into `n`-vectors: `‖ev c - ev c'‖ ≤ n · max(‖c‖, ‖c'‖)ⁿ⁻¹ · ‖c - c'‖`. -/
+theorem Submission.dgoj_exists_continuous_covector_eval : ∀ (P n : ℕ), ∃ ev : (Fin n → Euclid P) → MultiVector P n, Continuous ev ∧ ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c := by
+  intro P n
+  let ev : (Fin n → Euclid P) → MultiVector P n := fun c =>
+    LinearMap.mkContinuous
+      { toFun := fun α => α c
+        map_add' := fun α β => rfl
+        map_smul' := fun r α => rfl }
+      (∏ i, ‖c i‖) fun α => by
+        simp only [LinearMap.coe_mk, AddHom.coe_mk]
+        calc ‖α c‖ ≤ ‖α‖ * ∏ i, ‖c i‖ := α.le_opNorm c
+          _ = (∏ i, ‖c i‖) * ‖α‖ := mul_comm _ _
+  have hev : ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c := fun c α => rfl
+  refine ⟨ev, ?_, hev⟩
+  have key : ∀ c c' : Fin n → Euclid P,
+      ‖ev c - ev c'‖ ≤ (n : ℝ) * max ‖c‖ ‖c'‖ ^ (n - 1) * ‖c - c'‖ := by
+    intro c c'
+    refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun α => ?_
+    rw [sub_apply, hev, hev]
+    have h := α.norm_image_sub_le c c'
+    rw [Fintype.card_fin] at h
+    calc ‖α c - α c'‖ ≤ ‖α‖ * n * max ‖c‖ ‖c'‖ ^ (n - 1) * ‖c - c'‖ := h
+      _ = (n : ℝ) * max ‖c‖ ‖c'‖ ^ (n - 1) * ‖c - c'‖ * ‖α‖ := by ring
+  rw [continuous_iff_continuousAt]
+  intro c₀
+  have hcont : Continuous fun c : Fin n → Euclid P => (n : ℝ) * max ‖c‖ ‖c₀‖ ^ (n - 1) * ‖c - c₀‖ := by
+    fun_prop
+  have h0 := hcont.tendsto c₀
+  simp only [sub_self, norm_zero, mul_zero] at h0
+  have h1 : Tendsto (fun c => ‖ev c - ev c₀‖) (𝓝 c₀) (𝓝 0) :=
+    squeeze_zero (fun c => norm_nonneg (ev c - ev c₀)) (fun c => key c c₀) h0
+  exact (tendsto_iff_norm_sub_tendsto_zero (E := MultiVector P n) (f := ev) (b := ev c₀)).2 h1
+/-- **A continuous determinant `n`-covector on `ℝⁿ`**: some `δ ∈ Λⁿ(ℝⁿ)` (a continuous
+alternating `n`-form) has `δ(e₁, …, eₙ) = 1` for the standard basis `eᵢ`.  Take the volume form
+`ω` of the orientation of the standard orthonormal basis `B`; Hadamard's inequality
+`|ω(v)| ≤ ∏ᵢ ‖vᵢ‖` makes it continuous, and `ω = det_B` gives `δ(e₁, …, eₙ) = det_B(B) = 1`. -/
+theorem Submission.dgoj_exists_det_covector : ∀ n : ℕ, ∃ δ : Covector (Euclid n) n, δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+  intro n
+  have : Fact (Module.finrank ℝ (Euclid n) = n) := ⟨finrank_euclideanSpace_fin⟩
+  let b := EuclideanSpace.basisFun (Fin n) ℝ
+  let o : Orientation ℝ (Euclid n) (Fin n) := b.toBasis.orientation
+  refine ⟨o.volumeForm.mkContinuous 1 fun m => ?_, ?_⟩
+  · rw [one_mul, Real.norm_eq_abs]
+    exact o.abs_volumeForm_apply_le m
+  · rw [AlternatingMap.coe_mkContinuous, o.volumeForm_robust b rfl]
+    have h : (fun i => EuclideanSpace.single i (1 : ℝ)) = ⇑b.toBasis := by
+      funext i; simp [b]
+    rw [h, Module.Basis.det_self]
+/-- Steps 1–2 of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem): for linear isometries `ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}` with
+`⟨ιv, ι'w⟩ = 0` and `u` of class `C¹` on `D = B_s(0)`, the adjoint `ι*` is a left inverse of
+`ι + ι'`, the derivative of the graph map `Φ(v) = z + ιv + ι'u(v)` is continuous on `D`, and
+`ι* ∘ DΦ(v) = id` on `D`, because `DΦ(v) = ι + ι' ∘ Du(v)`. -/
+theorem Submission.dgoj_graph_fderiv_left_inverse : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → (∀ (v : Euclid n) (w : Euclid k), ι.toContinuousLinearMap.adjoint (ι v + ι' w) = v) ∧ ContinuousOn (fderiv ℝ (fun v => z + ι v + ι' (u v))) (ball (0 : Euclid n) s) ∧ ∀ v ∈ ball (0 : Euclid n) s, ∀ w : Euclid n, ι.toContinuousLinearMap.adjoint (fderiv ℝ (fun v => z + ι v + ι' (u v)) v w) = w := by
+  intro n k ι ι' u z s horth hu
+  -- (i) `⟨ι*(ιv + ι'w), v'⟩ = ⟨ιv, ιv'⟩ + ⟨ι'w, ιv'⟩ = ⟨v, v'⟩ + 0` for every `v'`
+  have hadj : ∀ (v : Euclid n) (w : Euclid k), ι.toContinuousLinearMap.adjoint (ι v + ι' w) = v := by
+    intro v w
+    apply ext_inner_right ℝ
+    intro v'
+    rw [ContinuousLinearMap.adjoint_inner_left, inner_add_left]
+    have h1 : inner ℝ (ι' w) (ι.toContinuousLinearMap v') = 0 := by
+      rw [real_inner_comm]; exact horth v' w
+    rw [h1, add_zero]
+    exact ι.inner_map_map v v'
+  refine ⟨hadj, ?_, ?_⟩
+  -- (ii) `Φ = (z + ι·) + ι' ∘ u` is `C¹` on the open ball, so `DΦ` is continuous there
+  · have hΦ : ContDiffOn ℝ 1 (fun v => z + ι v + ι' (u v)) (ball 0 s) :=
+      (contDiffOn_const.add ι.toContinuousLinearMap.contDiff.contDiffOn).add
+        (ι'.toContinuousLinearMap.contDiff.comp_contDiffOn hu)
+    exact hΦ.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  -- (iii) `DΦ(v) = ι + ι' ∘ Du(v)`, so `ι*(DΦ(v)w) = ι*(ιw + ι'(Du(v)w)) = w` by (i)
+  · intro v hv w
+    have hdu : DifferentiableAt ℝ u v :=
+      (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hv)
+    have hder : HasFDerivAt (fun v => z + ι v + ι' (u v))
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp (fderiv ℝ u v)) v := by
+      have h1 : HasFDerivAt (fun v => z + ι v) ι.toContinuousLinearMap v :=
+        ι.toContinuousLinearMap.hasFDerivAt.const_add z
+      have h2 : HasFDerivAt (fun v => ι' (u v)) (ι'.toContinuousLinearMap.comp (fderiv ℝ u v)) v :=
+        ι'.toContinuousLinearMap.hasFDerivAt.comp v hdu.hasFDerivAt
+      exact h1.add h2
+    rw [hder.fderiv]
+    exact hadj w _
+
+/-- **Continuous unit orientation of a `C¹` graph and the Jacobian identity** (Simon 7.4.3, via
+Allard's theorem; steps 3 and 7 of the graph-cycle argument).  Let `Φ(v) = z + ιv + ι'u(v)` on
+`D = B_s(0)`, `F(v) = DΦ(v)`, `b(v) = (F(v)e₁, …, F(v)eₙ)`, `J(v) = √det(F(v)* ∘ F(v))` and
+`Pr(x) = ι*(x - z)`, so that `Pr ∘ Φ = id` and `ι* ∘ F(v) = id` (hence `F(v)` is injective and
+`J > 0` on `D`).  With `ev` the evaluation of `n`-covectors at `n`-families and `δ` the normalized
+determinant covector of `ℝⁿ`, take `ξ(x) = J(Pr x)⁻¹ ev(b(Pr x))` and `β(x) = J(Pr x) (δ ∘ ι*)`.
+Both are continuous on `Σ = Φ(D)` because `Pr` maps `Σ` into `D`; `ξ(β) = δ(ι* b) = δ(e) = 1` on
+`Σ`; `J(v) ξ(Φ v)(α) = α(b(v))` is the Jacobian identity, and with it the pointwise frame argument
+for injective `F(v)` makes `ξ(Φ v)` a unit orientation of `range F(v)`. -/
+theorem Submission.dgcr_graph_orientation_jacobian : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), 0 < n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → ContDiffOn ℝ 1 u (ball 0 s) → ∃ (ξ : Euclid (n + k) → MultiVector (n + k) n) (β : Euclid (n + k) → Covector (Euclid (n + k)) n), ContinuousOn ξ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∧ ContinuousOn β ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∧ (∀ x ∈ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ x (β x) = 1) ∧ (∀ v ∈ ball (0 : Euclid n) s, IsUnitOrientationOf (ξ (z + ι v + ι' (u v))) (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v : Euclid n →ₗ[ℝ] Euclid (n + k)))) ∧ ∀ v ∈ ball (0 : Euclid n) s, ∀ α : Covector (Euclid (n + k)) n, α (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => z + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => z + ι v + ι' (u v)) v).det) * ξ (z + ι v + ι' (u v)) α := by
+  intro n k ι ι' u z s _hn horth _hs hu
+  obtain ⟨hadj, hFc, hFinv⟩ := Submission.dgoj_graph_fderiv_left_inverse n k ι ι' u z s horth hu
+  obtain ⟨ev, hevc, hev⟩ := Submission.dgoj_exists_continuous_covector_eval (n + k) n
+  obtain ⟨δ, hδ⟩ := Submission.dgoj_exists_det_covector n
+  -- `ι*`, the projection `Pr`, the derivative `F`, the frame `b`, the Jacobian `J` and `δ ∘ ι*`
+  let ιs : Euclid (n + k) →L[ℝ] Euclid n := ι.toContinuousLinearMap.adjoint
+  let Pr : Euclid (n + k) → Euclid n := fun x => ιs (x - z)
+  let F : Euclid n → Euclid n →L[ℝ] Euclid (n + k) := fderiv ℝ (fun v => z + ι v + ι' (u v))
+  let b : Euclid n → Fin n → Euclid (n + k) := fun v i => F v (EuclideanSpace.single i (1 : ℝ))
+  let J : Euclid n → ℝ := fun v => Real.sqrt (((F v).adjoint ∘L F v).det)
+  let β₀ : Covector (Euclid (n + k)) n := δ.compContinuousLinearMap ιs
+  -- `Pr ∘ Φ = id`, so `Pr` maps `Σ = Φ(D)` into `D`
+  have hPrΦ : ∀ v, Pr (z + ι v + ι' (u v)) = v := by
+    intro v
+    show ιs (z + ι v + ι' (u v) - z) = v
+    rw [show z + ι v + ι' (u v) - z = ι v + ι' (u v) by abel]
+    exact hadj v (u v)
+  have hPrc : Continuous Pr := ιs.continuous.comp (continuous_id.sub continuous_const)
+  have hmaps : MapsTo Pr ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) (ball 0 s) := by
+    rintro _ ⟨v, hv, rfl⟩
+    rw [hPrΦ]
+    exact hv
+  -- `ι* ∘ F(v) = id` on `D`: `F(v)` is injective, so `J(v) > 0`
+  have hinj : ∀ v ∈ ball (0 : Euclid n) s, Injective (F v) := by
+    intro v hv x y hxy
+    have h := congrArg ιs hxy
+    rwa [hFinv v hv x, hFinv v hv y] at h
+  have hpos : ∀ v ∈ ball (0 : Euclid n) s, 0 < J v := fun v hv =>
+    Real.sqrt_pos.2 (Submission.dgoj_unitOrientation_of_injective (n + k) n (F v) (hinj v hv)).1
+  -- continuity of `J` and of `b` on `D`
+  have hJc : ContinuousOn J (ball 0 s) := by
+    have h1 : ContinuousOn (fun v => (F v).adjoint ∘L F v) (ball 0 s) :=
+      ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid n)
+        (F := Euclid (n + k))).continuous.comp_continuousOn hFc).clm_comp hFc
+    exact Real.continuous_sqrt.comp_continuousOn
+      (ContinuousLinearMap.continuous_det.comp_continuousOn h1)
+  have hbc : ContinuousOn b (ball 0 s) :=
+    continuousOn_pi.2 fun i => hFc.clm_apply continuousOn_const
+  -- `(δ ∘ ι*)(b(v)) = δ(e₁, …, eₙ) = 1`
+  have hβ₀ : ∀ v ∈ ball (0 : Euclid n) s, β₀ (b v) = 1 := by
+    intro v hv
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    convert hδ using 2
+    funext i
+    exact hFinv v hv _
+  refine ⟨fun x => (J (Pr x))⁻¹ • ev (b (Pr x)), fun x => J (Pr x) • β₀, ?_, ?_, ?_, ?_, ?_⟩
+  · exact ((hJc.comp hPrc.continuousOn hmaps).inv₀ fun x hx => (hpos _ (hmaps hx)).ne').smul
+      (hevc.comp_continuousOn (hbc.comp hPrc.continuousOn hmaps))
+  · exact (hJc.comp hPrc.continuousOn hmaps).smul continuousOn_const
+  · rintro _ ⟨v, hv, rfl⟩
+    simp only [hPrΦ]
+    rw [smul_apply, hev, ContinuousAlternatingMap.smul_apply, hβ₀ v hv,
+      smul_eq_mul, smul_eq_mul, mul_one, inv_mul_cancel₀ (hpos v hv).ne']
+  · intro v hv
+    refine (Submission.dgoj_unitOrientation_of_injective (n + k) n (F v) (hinj v hv)).2 _
+      fun α => ?_
+    simp only [hPrΦ]
+    rw [smul_apply, hev, smul_eq_mul, ← mul_assoc,
+      mul_inv_cancel₀ (hpos v hv).ne', one_mul]
+  · intro v hv α
+    simp only [hPrΦ]
+    rw [smul_apply, hev, smul_eq_mul, ← mul_assoc,
+      mul_inv_cancel₀ (hpos v hv).ne', one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
