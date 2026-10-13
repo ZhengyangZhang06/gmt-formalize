@@ -1,0 +1,124 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1`
+- Child DAG node: `root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1.gram_fderiv_zero-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 3 (the identities for pi := tau(iota)) and step 5 (derivatives at 0), carried out for an abstract triple (iota, kappa, tau) satisfying (T), (I), (O). Nondegeneracy below means ext_inner_right: if <a, u> = <b, u> for all u, then a = b.
+
+1. Algebraic facts. Put pi := tau(iota).
+ (a) pi o iota = 1 (the identity of R^n): for v, u in R^n, <pi(iota v), u> = <iota v, iota u> = <v, u> by (T) and (I); nondegeneracy gives pi(iota v) = v.
+ (b) pi(kappa z) = 0 for every z in R^l: for all u, <pi(kappa z), u> = <kappa z, iota u> = <iota u, kappa z> = 0 = <0, u> by (T), symmetry of the real inner product (real_inner_comm) and (O).
+ (c) tau(kappa o H')(iota v) = 0 for all H' in L(R^n, R^l) and v in R^n: for all u, <tau(kappa o H')(iota v), u> = <iota v, kappa(H' u)> = 0 = <0, u> by (T) and (O).
+
+2. The map J. Let K := ContinuousLinearMap.compL R (Rn n) (Rn l) (Amb n l) kappa, the continuous linear map L(R^n, R^l) -> L(R^n, R^(n+l)) with K(A) = kappa o A (definitionally). J_A = iota + K(A) is a constant plus a continuous linear map, so A |-> J_A has derivative K at 0 (K.hasFDerivAt and HasFDerivAt.const_add). Also J_0 = iota + kappa o 0 = iota.
+
+3. The map tau(J). Since tau is continuous linear, the chain rule (tau.hasFDerivAt.comp) shows that A |-> tau(J_A) has derivative tau o K at 0, i.e. H' |-> tau(kappa o H').
+
+4. The Gram map G_A := tau(J_A) o J_A has derivative 0 at 0. By the product rule for compositions of operator-valued maps (HasFDerivAt.clm_comp: if c has derivative c' and d has derivative d' at 0, then A |-> c(A) o d(A) has derivative H' |-> c(0) o d'(H') + c'(H') o d(0) at 0), G has at 0 the derivative H' |-> tau(J_0) o (kappa o H') + tau(kappa o H') o J_0 = pi o kappa o H' + tau(kappa o H') o iota. Evaluated at any v in R^n this is pi(kappa(H' v)) + tau(kappa o H')(iota v) = 0 + 0 by 1(b) and 1(c). Hence this derivative is the zero map, and G has derivative 0 at 0. (In Lean: convert (hT.clm_comp hJ) using 1, then ext H' v and simp using 1(b), 1(c) and K(A) = kappa o A.)
+
+5. G_0 = tau(J_0) o J_0 = pi o iota = 1 by step 2 and 1(a).
+
+6. The inverse. L(R^n, R^n) is a complete normed ring, so the instance HasSummableGeomSeries holds and hasFDerivAt_ringInverse, applied to the unit 1, shows that Ring.inverse has a derivative D at 1 = G_0 (step 5). By the chain rule (HasFDerivAt.comp) the map A |-> R_A := Ring.inverse(G_A) has derivative D o 0 = 0 at 0 (ContinuousLinearMap.comp_zero). Moreover R_0 = Ring.inverse 1 = 1 (Ring.inverse_one).
+
+7. The map F. F(A) = J_A o (R_A o tau(J_A)). Applying HasFDerivAt.clm_comp first to R and tau(J) (steps 6 and 3) and then to J (step 2) and that product, F has at 0 the derivative
+ H |-> J_0 o (R_0 o tau(kappa o H) + 0 o tau(J_0)) + (kappa o H) o (R_0 o tau(J_0)),
+ and HasFDerivAt.fderiv identifies it with fderiv R F 0. Substituting J_0 = iota (so tau(J_0) = tau(iota)) and R_0 = 1 (the identity map: ContinuousLinearMap.one_def, id_comp), dropping the zero term, and using K(H) = kappa o H and associativity of composition (comp_assoc), we get (fderiv R F 0) H = iota o tau(kappa o H) + kappa o H o tau(iota).
+
+## Key steps
+
+1. pi := tau(iota) satisfies pi o iota = 1, pi o kappa = 0 and tau(kappa o H') o iota = 0, by (T), (I), (O) and nondegeneracy
+2. A |-> J_A = iota + kappa o A has derivative K = compL kappa at 0, and A |-> tau(J_A) has derivative tau o K
+3. Product rule: G_A = tau(J_A) o J_A has derivative pi o kappa o H' + tau(kappa o H') o iota = 0 at 0, and G_0 = 1
+4. hasFDerivAt_ringInverse at the unit 1 with the chain rule: R_A = Ring.inverse(G_A) has derivative 0 at 0, and R_0 = 1
+5. Product rule twice on F(A) = J_A o (R_A o tau(J_A)), then simplify: fderiv F 0 H = iota o tau(kappa o H) + kappa o H o tau(iota)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; diff -q GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; diff -q GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean (identical)`
+- `git show 6f3e09432a4729ab700be0e23e98a86bfb2cbd27:GMT/Ch05/Submission.lean (proof base = frozen copy, no extra declarations)`
+- `rg -c 'allard52_gfz' <snapshot>/project (exit 1, no match)`
+- `rg -c 'allard52_gfz|graphPoint_split|gram_fderiv_zero|transpose_eq_sum' <snapshot>/mathlib/Mathlib (exit 1, no match)`
+- `rg -n 'theorem hasFDerivAt_ringInverse' Mathlib/Analysis/Calculus/FDeriv/Mul.lean; rg -n 'theorem HasFDerivAt.clm_comp' FDeriv/CompCLM.lean; rg -n 'HasFDerivAt.const_add|hasFDerivAt_const_add_iff' FDeriv/Add.lean`
+- `rg -n 'theorem ext_inner_right' InnerProductSpace/Basic.lean; rg -n 'finAddEquivProd|def basisFun|theorem sum_repr|basisFun_apply|basisFun_repr|inner_single_left|PiLp.inner_apply' InnerProductSpace/PiL2.lean`
+- `rg -n 'theorem prod_univ_add' Algebra/BigOperators/Fin.lean; rg -n 'theorem inverse_one' Algebra/GroupWithZero/Units/Basic.lean; rg -n 'def compL' Analysis/Normed/Operator/Bilinear.lean`
+- `grep -rn 'theorem one_def|theorem id_comp|theorem mul_def|theorem comp_zero|theorem comp_assoc|instance monoidWithZero' Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `python3 -I over dag.json: 486 lean_names, none contains 'gfz'; all graphPoint lean_statements listed (accepted rsod_graphPoint_eq_finAddEquivProd_symm, any_radius_gr_la_graphPoint_algebra, rsod_norm_graphPoint_sq: types differ from every proposed child)`
+- `git grep -l -E 'allard52_gfz' <2437 refs> -- GMT/Ch05/Submission.lean (0 hits; control rsod_graphPoint_eq_finAddEquivProd_symm: 86 hits)`
+- `git show 18a457c4 -- GMT/Ch05/Submission.lean; git show 9f89be4c -- GMT/Ch05/Submission.lean (accepted precedents: graphPoint = finAddEquivProd.symm; hand-built transpose + Gram projection)`
+- `lake build GMT.Ch05.Submission (scratch copy of frozen project); lake env lean Probe.lean (#check of every cited lemma; HasSummableGeomSeries (Rn n →L[ℝ] Rn n); Amb n ℓ = Rn (n+ℓ) by rfl; ∘L right-associative by rfl)`
+- `lake env lean Stmts.lean / Leaves.lean / Analytic.lean / Full.lean (#print axioms) / Inst.lean (Ring.inverse instance = ContinuousLinearMap.monoidWithZero, f * g = f ∘L g by rfl)`
+- `python3 -I: lean_contract.validate_lean_statement on all 4 statements; gmt-compare.child_modules(contract mode) -> NodeChallenge/NodeSolution; lake env lean on all 8 against scratch proj2 Submission with the 4 children`
+- `sed -n 1105,1135p book/sources/chapter-05-source.txt (Simon p. 123: P = [[I, Df],[Df^t, O]] + F(Df), F(0) = 0, DF(0) = 0)`
+- `WebSearch: Golub Pereyra 1973 differentiation of pseudo-inverses derivative of orthogonal projector (cross-check citation only)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/BigOperators/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-29d2ac9c30/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-29d2ac9c30/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-05-source.txt`
+- `/tmp/gfz-decomp-0gZz8u/check/Probe.lean`
+- `/tmp/gfz-decomp-0gZz8u/check/Stmts.lean`
+- `/tmp/gfz-decomp-0gZz8u/check/Leaves.lean`
+- `/tmp/gfz-decomp-0gZz8u/check/Analytic.lean`
+- `/tmp/gfz-decomp-0gZz8u/check/Full.lean`
+- `/tmp/gfz-decomp-0gZz8u/check/Inst.lean`
+- `/tmp/gfz-decomp-0gZz8u/proj2/GMT/Ch05/Submission.lean`
+- `/tmp/gfz-decomp-0gZz8u/cmp/allard52_gfz_gram_fderiv_zero/NodeSolution.lean`
+- `/tmp/gfz-decomp-0gZz8u/draft/subproblems.json`
+- `/tmp/gfz-review-MvEFEG/Implication.lean`
+
+Snapshot and base
+- The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies.
+- The proof base 6f3e0943 contains only the frozen Submission, so the children must be self-contained; none uses the uncles.
+
+Names
+- 'allard52_gfz' has no match in the snapshot project, the snapshot Mathlib, the 486 DAG lean_names, or 2437 local refs (the control name appears in 86 refs).
+- No accepted declaration has a type identical to any child, so nothing is reused.
+
+Mathlib lemmas used by the child proofs (all in the import closure)
+- hasFDerivAt_ringInverse (FDeriv/Mul.lean:661)
+- HasFDerivAt.clm_comp (FDeriv/CompCLM.lean:61)
+- HasFDerivAt.const_add (FDeriv/Add.lean:348)
+- ext_inner_right (InnerProductSpace/Basic.lean:330)
+- In PiL2.lean: EuclideanSpace.finAddEquivProd (:378), PiLp.inner_apply (:101), EuclideanSpace.inner_single_left (:318), OrthonormalBasis.sum_repr (:494), EuclideanSpace.basisFun / basisFun_apply / basisFun_repr (:802/806/810)
+- Fin.sum_univ_add, the additive form of prod_univ_add (BigOperators/Fin.lean:159)
+- Ring.inverse_one (GroupWithZero/Units/Basic.lean:129)
+- ContinuousLinearMap.compL (Normed/Operator/Bilinear.lean:355)
+- In ContinuousLinearMap/Basic.lean: one_def (:374), id_comp (:492), comp_zero (:514), comp_assoc (:551), mul_def (:571), monoidWithZero instance (:584)
+
+Instances
+- HasSummableGeomSeries (Rn n →L[ℝ] Rn n) is inferred.
+- Ring.inverse uses ContinuousLinearMap.monoidWithZero, i.e. composition.
+
+Lean results
+- The scratch files prove all four children with only propext, Classical.choice and Quot.sound.
+- They also prove the exact frozen parent type from the children plus the two uncles.
+- All comparator-style modules compile, and all four statements validate.
+
+Sources
+- Simon p. 123 is the printed source. Golub & Pereyra, SIAM J. Numer. Anal. 10 (1973) 413-432, doi:10.1137/0710036 (https://ui.adsabs.harvard.edu/abs/1973SJNA...10..413G/abstract), is consulted only as a cross-check on the projector-derivative formula; no proof depends on it.
