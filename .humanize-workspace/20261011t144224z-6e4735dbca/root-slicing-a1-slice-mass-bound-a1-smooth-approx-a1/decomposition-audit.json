@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'slicing_mb_sa_|mollify_lipschitz|mollifier_exists' project",
+        "rg -n 'hasFDerivAt_integral_of_dominated_loc_of_lip|theorem LipschitzWith.ae_differentiableAt|contDiff_convolution_left|measurable_fderiv|structure ContDiffBump|theorem support_eq|theorem measure_ball_pos|exists_cthickening_subset_open|theorem LipschitzOnWith.extend_real' mathlib/Mathlib/Analysis/Calculus mathlib/Mathlib/Topology/MetricSpace mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "sed -n '150,181p' mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "slicing_mb_sa_mollifier_exists",
+        "slicing_mb_sa_mollify_lipschitz_close",
+        "slicing_mb_sa_mollify_lipschitz_hasFDerivAt",
+        "python3 /tmp/smooth_approx_independent_audit_1nk4ebjd/run_check.py TypeChecks.lean",
+        "python3 /tmp/smooth_approx_independent_audit_1nk4ebjd/run_check.py Instances.lean",
+        "python3 /tmp/smooth_approx_independent_audit_1nk4ebjd/run_check.py Assembly.lean",
+        "python3 /tmp/smooth_approx_independent_audit_1nk4ebjd/run_check.py EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1/decomposition-v1.json",
+        "/tmp/smooth_approx_independent_audit_1nk4ebjd/TypeChecks.lean",
+        "/tmp/smooth_approx_independent_audit_1nk4ebjd/Instances.lean",
+        "/tmp/smooth_approx_independent_audit_1nk4ebjd/Assembly.lean",
+        "/tmp/smooth_approx_independent_audit_1nk4ebjd/EndToEnd.lean"
+      ],
+      "conclusion": "The pinned sources support the cited analytic steps and match the compiler dependencies inspected. No proposed declaration was found in the snapshot project, the 226-node DAG, or 234 other decomposition files. All names are bare identifiers. The three one-line propositions elaborate independently before implementation; volume, continuous-linear-map scalar multiplication, and the C∞ index were checked. Fresh compilation of the supplied proof witnesses and comparator-style applications succeeds, using only propext, Classical.choice and Quot.sound. The split is appropriate: its independent children have no cyclic dependencies, and their conclusions establish the exact selected parent through the supplied assembly, including the sharp LW bound. No previously accepted declaration is reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match every hypothesis and conclusion. The supplied proof establishes positive bump mass, then verifies smoothness, compact support, nonnegativity, vanishing and normalization individually. It covers P = 0 and is complete and non-circular."
+    },
+    {
+      "key": "mollify_close",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract allows arbitrary real σ, as does the proof. Integrability justifies subtraction under the integral; the zero/nonzero-kernel cases establish the pointwise bound, and normalization yields Lσ. No additional positivity hypothesis or child dependency is needed."
+    },
+    {
+      "key": "mollify_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the stated Fréchet derivative and continuous-linear-map-valued Bochner integral. Translated Rademacher, strong measurability, the integrable bound L|ρ|, and the almost-everywhere chain rule satisfy all hypotheses of dominated differentiation. The proof handles signed kernels and every x without circular reliance or deferred proof construction."
+    }
+  ],
+  "required_changes": []
+}
