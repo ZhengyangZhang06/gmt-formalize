@@ -589,6 +589,29 @@ theorem Submission.cbr_smm_monotone_majorant : ∀ (F : ℕ → ℝ → ℝ) (Z 
           exact liminf_le_liminf (Eventually.of_forall fun j =>
             Submission.cbr_smm_lintegral_ofReal_deriv_le (F j) a b (hF j))
 
+/-- **Measurable majorant for slice masses** (Simon Ch. 6, 4.9–4.10 and the sentence between
+them, in the sequence form used for Remark 8.3(1)).  For each `j` let `F_j` be the distribution
+function of the strip masses of `G` (`cbr_smm_strip_distribution_function`): `F_j` is monotone,
+`F_j(b) − F_j(a) = μ_j(G ∩ {a < f < b})` and `μ_j(G ∩ {t − h < f < t}) ≤ F_j(t) − F_j(t − h)` for
+`0 < h < t − a`, i.e. eventually as `h ↓ 0`.  So the bound on `Z_j` passes to the left difference
+quotients of `F_j`, and `cbr_smm_monotone_majorant` gives `g`. -/
+theorem Submission.cbr_slice_mass_majorant : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop := by
+  intro P μs f G a b L Z hf hfin hZ
+  -- the distribution functions `F_j` of the strip masses
+  choose F hFmono hFab hFstrip using fun j =>
+    Submission.cbr_smm_strip_distribution_function P (μs j) f G a b hf (hfin j)
+  -- for `0 < h < t − a` (a neighbourhood of `0⁺`) the strip mass is at most `F_j(t) − F_j(t − h)`
+  have hZF : ∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) *
+      liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F j t - F j (t - h))) (𝓝[>] 0) := by
+    intro j t ht
+    refine (hZ j t ht).trans (mul_le_mul_right (liminf_le_liminf ?_) _)
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 ht.1)] with h hh
+    exact mul_le_mul_right (hFstrip j t ht h hh) _
+  obtain ⟨g, hg, hgae, hgint⟩ := Submission.cbr_smm_monotone_majorant F Z a b L hFmono hZF
+  -- `F_j(b) − F_j(a) = μ_j(G ∩ {a < f < b})`
+  refine ⟨g, hg, hgae, hgint.trans_eq ?_⟩
+  simp only [hFab]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
