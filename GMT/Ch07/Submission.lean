@@ -605,6 +605,170 @@ theorem Submission.codim1_rdo_dg_vdl_annular_cutoff : ∃ C₀ : ℝ, 0 < C₀ �
       rw [zero_smul] at hD
       exact hD.fderiv
 
+/-- **Finite-difference form of De Giorgi's volume estimate** (Simon Ch. 3, 4.3, the first
+displays of (10); used for 7.5.8).  Let `G ⊆ ℝ^{m+1}` (`m ≥ 1`) be Borel and
+`V(r) = L^{m+1}(G ∩ B̄_r(y))`.  Suppose `(∫_G ζ^{(m+1)/m})^{m/(m+1)} ≤ c (∫ ζ dμ + ∫_G |Dζ|)`
+for every `C¹` function `ζ ≥ 0` with compact support in `D ⊇ B̄_{ρ₁}(y)` (`μ(B̄_{ρ₁}(y)) < ∞`), and
+`δ μ(B̄_ρ(y)) ≤ C₁ L^{m+1}(G ∩ (B_{ρ+δ}(y) \ B̄_ρ(y)))` whenever `ρ, δ > 0`, `ρ + δ < ρ₁`.  Then
+`V(ρ)^{m/(m+1)} ≤ (K/δ)(V(ρ+δ) − V(ρ))` for such `ρ, δ`, with `K = 2c(C₁ + C₀)`, `C₀` the constant
+of `Submission.codim1_rdo_dg_vdl_annular_cutoff`.  Test the Sobolev inequality with that cut-off
+`ζ` for the radii `ρ` and `η = δ/2`: the left side is at least `V(ρ)^{m/(m+1)}`, since `ζ = 1` on
+`B̄_ρ(y)`; `∫ ζ dμ ≤ μ(B̄_{ρ+η}(y)) ≤ (C₁/η) L^{m+1}(G ∩ A₂)`, `A₂ = B_{ρ+δ}(y) \ B̄_{ρ+η}(y)`, by
+the second hypothesis at radius `ρ + η`; and `∫_G |Dζ| ≤ (C₀/η) L^{m+1}(G ∩ A₁)`,
+`A₁ = B_{ρ+η}(y) \ B̄_ρ(y)`.  The sets `G ∩ B̄_ρ(y)`, `G ∩ A₁` and `G ∩ A₂` are disjoint subsets of
+`G ∩ B̄_{ρ+δ}(y)`. -/
+theorem Submission.codim1_rdo_dg_vdl_finite_difference : ∀ (m : ℕ) (D G : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (y : Euclid (m + 1)) (ρ₁ C₁ c : ℝ), 1 ≤ m → MeasurableSet G → 0 < c → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → μ (closedBall y ρ₁) ≠ ∞ → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → (∫ z in G, ζ z ^ ((m + 1 : ℝ) / m)) ^ ((m : ℝ) / (m + 1)) ≤ c * (∫ z, ζ z ∂μ + ∫ z in G, ‖fderiv ℝ ζ z‖)) → (∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → ENNReal.ofReal δ * μ (closedBall y ρ) ≤ ENNReal.ofReal C₁ * volume (G ∩ (ball y (ρ + δ) \ closedBall y ρ))) → ∃ K : ℝ, 0 < K ∧ ∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → (volume (G ∩ closedBall y ρ)).toReal ^ ((m : ℝ) / (m + 1)) ≤ K / δ * ((volume (G ∩ closedBall y (ρ + δ))).toReal - (volume (G ∩ closedBall y ρ)).toReal) := by
+  intro m D G μ y ρ₁ C₁ c hm hG hc hC₁ hD hμ hS hA
+  obtain ⟨C₀, hC₀, hcut⟩ := Submission.codim1_rdo_dg_vdl_annular_cutoff
+  refine ⟨2 * c * (C₁ + C₀), mul_pos (mul_pos two_pos hc) (by linarith), ?_⟩
+  intro ρ δ hρ hδ hρδ
+  -- Step 0: the exponents, the half width `η = δ/2` and the two annuli `A₁`, `A₂`.
+  have hm0 : (0 : ℝ) < m := Nat.cast_pos.2 (by omega)
+  have hp : (0 : ℝ) < (m + 1 : ℝ) / m := div_pos (by positivity) hm0
+  have hq : (0 : ℝ) ≤ (m : ℝ) / (m + 1) := by positivity
+  obtain ⟨η, hη_def⟩ : ∃ η : ℝ, η = δ / 2 := ⟨_, rfl⟩
+  have hη : 0 < η := by rw [hη_def]; exact half_pos hδ
+  set A₁ := ball y (ρ + η) \ closedBall y ρ
+  set A₂ := ball y (ρ + δ) \ closedBall y (ρ + η)
+  have hA₁m : MeasurableSet A₁ := measurableSet_ball.diff measurableSet_closedBall
+  have hA₂m : MeasurableSet A₂ := measurableSet_ball.diff measurableSet_closedBall
+  have hA₁fin : volume A₁ ≠ ∞ :=
+    ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono sdiff_subset)
+  have hA₂fin : volume A₂ ≠ ∞ :=
+    ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono sdiff_subset)
+  have hGA₁fin : volume (G ∩ A₁) ≠ ∞ := ne_top_of_le_ne_top hA₁fin (measure_mono inter_subset_right)
+  have hGA₂fin : volume (G ∩ A₂) ≠ ∞ := ne_top_of_le_ne_top hA₂fin (measure_mono inter_subset_right)
+  have hGB : ∀ r : ℝ, volume (G ∩ closedBall y r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top measure_closedBall_lt_top.ne (measure_mono inter_subset_right)
+  -- `∫_G 𝟙_s a dL^{m+1} = a L^{m+1}(G ∩ s)`
+  have hind : ∀ s : Set (Euclid (m + 1)), MeasurableSet s → ∀ a : ℝ,
+      ∫ z in G, s.indicator (fun _ => a) z = a * (volume (G ∩ s)).toReal := by
+    intro s hs a
+    rw [integral_indicator_const a hs, measureReal_restrict_apply hs, smul_eq_mul, mul_comm,
+      inter_comm s G, measureReal_def]
+  -- Step 1: the cut-off `ζ` for the radii `ρ` and `η`; it is admissible in the Sobolev inequality.
+  obtain ⟨ζ, hζC, hζc, hζsupp, hζ01, hζ1, hζgrad, hζzero⟩ := hcut (m + 1) y ρ η hρ hη
+  have hsub : closedBall y (ρ + η) ⊆ closedBall y ρ₁ := closedBall_subset_closedBall (by linarith)
+  have hSob := hS ζ hζC hζc (hζsupp.trans (hsub.trans hD)) fun z => (hζ01 z).1
+  -- Step 2: `V(ρ) ≤ ∫_G ζ^{(m+1)/m}`, as `ζ^{(m+1)/m} ≥ 𝟙_{B̄_ρ}`.
+  have hleft : (volume (G ∩ closedBall y ρ)).toReal ≤ ∫ z in G, ζ z ^ ((m + 1 : ℝ) / m) := by
+    have hcont : Continuous fun z => ζ z ^ ((m + 1 : ℝ) / m) :=
+      hζC.continuous.rpow_const fun _ => Or.inr hp.le
+    have hcpt : HasCompactSupport fun z => ζ z ^ ((m + 1 : ℝ) / m) :=
+      hζc.comp_left (g := fun t : ℝ => t ^ ((m + 1 : ℝ) / m)) (Real.zero_rpow hp.ne')
+    have hint : Integrable (fun z => ζ z ^ ((m + 1 : ℝ) / m)) (volume.restrict G) :=
+      (hcont.integrable_of_hasCompactSupport hcpt).integrableOn
+    calc (volume (G ∩ closedBall y ρ)).toReal
+        = ∫ z in G, (closedBall y ρ).indicator (fun _ => (1 : ℝ)) z := by
+          rw [hind _ measurableSet_closedBall, one_mul]
+      _ ≤ ∫ z in G, ζ z ^ ((m + 1 : ℝ) / m) := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun z => ?_) hint
+            (Eventually.of_forall fun z => ?_)
+          · exact indicator_nonneg (fun _ _ => zero_le_one) z
+          · dsimp only
+            by_cases hz : z ∈ closedBall y ρ
+            · rw [indicator_of_mem hz, hζ1 z hz, Real.one_rpow]
+            · rw [indicator_of_notMem hz]
+              exact Real.rpow_nonneg (hζ01 z).1 _
+  -- Step 3: `η ∫ ζ dμ ≤ η μ(B̄_{ρ+η}) ≤ C₁ L^{m+1}(G ∩ A₂)`, by the annular bound at `ρ + η`.
+  have hμfin : μ (closedBall y (ρ + η)) ≠ ∞ := ne_top_of_le_ne_top hμ (measure_mono hsub)
+  have hIμ : ∫ z, ζ z ∂μ ≤ (μ (closedBall y (ρ + η))).toReal := by
+    have hint : Integrable ((closedBall y (ρ + η)).indicator fun _ => (1 : ℝ)) μ :=
+      (integrableOn_const hμfin).integrable_indicator measurableSet_closedBall
+    calc ∫ z, ζ z ∂μ ≤ ∫ z, (closedBall y (ρ + η)).indicator (fun _ => (1 : ℝ)) z ∂μ := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun z => (hζ01 z).1) hint
+            (Eventually.of_forall fun z => ?_)
+          by_cases hz : z ∈ closedBall y (ρ + η)
+          · rw [indicator_of_mem hz]
+            exact (hζ01 z).2
+          · rw [indicator_of_notMem hz, image_eq_zero_of_notMem_tsupport fun h => hz (hζsupp h)]
+      _ = (μ (closedBall y (ρ + η))).toReal := by
+          rw [integral_indicator_const _ measurableSet_closedBall, smul_eq_mul, mul_one,
+            measureReal_def]
+  have hAη : ENNReal.ofReal η * μ (closedBall y (ρ + η)) ≤
+      ENNReal.ofReal C₁ * volume (G ∩ A₂) := by
+    have h := hA (ρ + η) η (by linarith) hη (by linarith)
+    rwa [show ρ + η + η = ρ + δ by linarith] at h
+  have hμterm : η * ∫ z, ζ z ∂μ ≤ C₁ * (volume (G ∩ A₂)).toReal := by
+    have h := ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hGA₂fin) hAη
+    rw [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal hη.le,
+      ENNReal.toReal_ofReal hC₁] at h
+    exact (mul_le_mul_of_nonneg_left hIμ hη.le).trans h
+  -- Step 4: `η ∫_G |Dζ| ≤ C₀ L^{m+1}(G ∩ A₁)`, as `|Dζ| ≤ (C₀/η) 𝟙_{A₁}`.
+  have hgrad : ∫ z in G, ‖fderiv ℝ ζ z‖ ≤ C₀ / η * (volume (G ∩ A₁)).toReal := by
+    have hint : Integrable (A₁.indicator fun _ => C₀ / η) (volume.restrict G) :=
+      ((integrableOn_const hA₁fin).integrable_indicator hA₁m).integrableOn
+    calc ∫ z in G, ‖fderiv ℝ ζ z‖ ≤ ∫ z in G, A₁.indicator (fun _ => C₀ / η) z := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun z => norm_nonneg _) hint
+            (Eventually.of_forall fun z => ?_)
+          dsimp only
+          by_cases hz : z ∈ A₁
+          · rw [indicator_of_mem hz]
+            exact hζgrad z
+          · rw [indicator_of_notMem hz, hζzero z hz, norm_zero]
+      _ = C₀ / η * (volume (G ∩ A₁)).toReal := hind A₁ hA₁m _
+  have hgradterm : η * ∫ z in G, ‖fderiv ℝ ζ z‖ ≤ C₀ * (volume (G ∩ A₁)).toReal := by
+    calc η * ∫ z in G, ‖fderiv ℝ ζ z‖ ≤ η * (C₀ / η * (volume (G ∩ A₁)).toReal) :=
+          mul_le_mul_of_nonneg_left hgrad hη.le
+      _ = C₀ * (volume (G ∩ A₁)).toReal := by field_simp
+  -- Step 5: `G ∩ B̄_ρ`, `G ∩ A₁`, `G ∩ A₂` are disjoint subsets of `G ∩ B̄_{ρ+δ}`.
+  have hpieces : (volume (G ∩ closedBall y ρ)).toReal + (volume (G ∩ A₁)).toReal +
+      (volume (G ∩ A₂)).toReal ≤ (volume (G ∩ closedBall y (ρ + δ))).toReal := by
+    have hd₁ : Disjoint (G ∩ closedBall y ρ) (G ∩ A₁) := by
+      rw [Set.disjoint_left]
+      rintro z ⟨-, hz⟩ ⟨-, -, hz'⟩
+      exact hz' hz
+    have hd₂ : Disjoint (G ∩ closedBall y ρ ∪ G ∩ A₁) (G ∩ A₂) := by
+      rw [Set.disjoint_left]
+      rintro z hz ⟨-, -, hz'⟩
+      apply hz'
+      rcases hz with ⟨-, hz⟩ | ⟨-, hz, -⟩
+      · exact closedBall_subset_closedBall (by linarith) hz
+      · exact ball_subset_closedBall hz
+    have hsub' : G ∩ closedBall y ρ ∪ G ∩ A₁ ∪ G ∩ A₂ ⊆ G ∩ closedBall y (ρ + δ) := by
+      rintro z ((⟨hzG, hz⟩ | ⟨hzG, hz, -⟩) | ⟨hzG, hz, -⟩)
+      · exact ⟨hzG, closedBall_subset_closedBall (by linarith) hz⟩
+      · exact ⟨hzG, closedBall_subset_closedBall (by linarith) (ball_subset_closedBall hz)⟩
+      · exact ⟨hzG, ball_subset_closedBall hz⟩
+    have hle : volume (G ∩ closedBall y ρ) + volume (G ∩ A₁) + volume (G ∩ A₂) ≤
+        volume (G ∩ closedBall y (ρ + δ)) := by
+      rw [← measure_union hd₁ (hG.inter hA₁m), ← measure_union hd₂ (hG.inter hA₂m)]
+      exact measure_mono hsub'
+    rw [← ENNReal.toReal_add (hGB ρ) hGA₁fin,
+      ← ENNReal.toReal_add (ENNReal.add_ne_top.2 ⟨hGB ρ, hGA₁fin⟩) hGA₂fin]
+    exact ENNReal.toReal_mono (hGB (ρ + δ)) hle
+  -- Step 6: combine, with `δ = 2η` and `K = 2c(C₁ + C₀)`.
+  have ha₁ : 0 ≤ (volume (G ∩ A₁)).toReal := ENNReal.toReal_nonneg
+  have ha₂ : 0 ≤ (volume (G ∩ A₂)).toReal := ENNReal.toReal_nonneg
+  have hlhs : (volume (G ∩ closedBall y ρ)).toReal ^ ((m : ℝ) / (m + 1)) ≤
+      c * (∫ z, ζ z ∂μ + ∫ z in G, ‖fderiv ℝ ζ z‖) :=
+    (Real.rpow_le_rpow ENNReal.toReal_nonneg hleft hq).trans hSob
+  have hann : C₁ * (volume (G ∩ A₂)).toReal + C₀ * (volume (G ∩ A₁)).toReal ≤
+      (C₁ + C₀) * ((volume (G ∩ closedBall y (ρ + δ))).toReal -
+        (volume (G ∩ closedBall y ρ)).toReal) := by
+    nlinarith [mul_nonneg hC₁ ha₁, mul_nonneg hC₀.le ha₂]
+  have key : η * (volume (G ∩ closedBall y ρ)).toReal ^ ((m : ℝ) / (m + 1)) ≤
+      c * (C₁ + C₀) * ((volume (G ∩ closedBall y (ρ + δ))).toReal -
+        (volume (G ∩ closedBall y ρ)).toReal) := by
+    calc η * (volume (G ∩ closedBall y ρ)).toReal ^ ((m : ℝ) / (m + 1))
+        ≤ η * (c * (∫ z, ζ z ∂μ + ∫ z in G, ‖fderiv ℝ ζ z‖)) :=
+          mul_le_mul_of_nonneg_left hlhs hη.le
+      _ = c * (η * ∫ z, ζ z ∂μ + η * ∫ z in G, ‖fderiv ℝ ζ z‖) := by ring
+      _ ≤ c * (C₁ * (volume (G ∩ A₂)).toReal + C₀ * (volume (G ∩ A₁)).toReal) :=
+          mul_le_mul_of_nonneg_left (add_le_add hμterm hgradterm) hc.le
+      _ ≤ c * ((C₁ + C₀) * ((volume (G ∩ closedBall y (ρ + δ))).toReal -
+            (volume (G ∩ closedBall y ρ)).toReal)) :=
+          mul_le_mul_of_nonneg_left hann hc.le
+      _ = c * (C₁ + C₀) * ((volume (G ∩ closedBall y (ρ + δ))).toReal -
+            (volume (G ∩ closedBall y ρ)).toReal) := by ring
+  rw [div_mul_eq_mul_div, le_div_iff₀ hδ]
+  have hδη : (volume (G ∩ closedBall y ρ)).toReal ^ ((m : ℝ) / (m + 1)) * δ =
+      2 * (η * (volume (G ∩ closedBall y ρ)).toReal ^ ((m : ℝ) / (m + 1))) := by
+    rw [hη_def]
+    ring
+  rw [hδη]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
