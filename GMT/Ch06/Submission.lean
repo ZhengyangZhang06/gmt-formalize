@@ -1537,6 +1537,254 @@ theorem Submission.deformation_ipl_mwc_test_density : ∀ (k : ℕ) (Ω : Set (E
     (∫ w in Ω, φ w * f₀ w ∂(volume : Measure (Eucl k)))
     (∫ w in Ω, η w * f₀ w ∂(volume : Measure (Eucl k)))]
 
+/-- Weak-* continuity of the Jacobian minors (step 3 of the proof of `minor_weak_continuity`;
+J. M. Ball, ARMA 63 (1977); Fonseca–Leoni–Malý, ARMA 178 (2005)).  Let `v_j, v₀` be
+`C`-Lipschitz on the open set `Ω` with `v_j → v₀` uniformly on `Ω`, and let
+`M_{a,b}(u) = det (⟨e_{a t}, Du (e_{b s})⟩)_{t,s}` be the `r × r` minor with rows `a` and
+columns `b`.  Then `∫_Ω η M_{a,b}(v_j) → ∫_Ω η M_{a,b}(v₀)` for every `η ∈ L¹(Ω)`.
+
+Induction on `r`; for `r = 0` both sides equal `∫_Ω η`.  For `r + 1`, `‖Du‖ ≤ C` on `Ω` gives
+`|M_{a,b}(u)| ≤ (r+1)! C^{r+1}` there, so by `test_density` it suffices to test against
+`φ ∈ C¹_c(Ω)`.  By `minor_ibp_lipschitz`,
+`∫_Ω φ M_{a,b}(u) = -∑_q ∫_Ω u^{a 0} (-1)^q M_{a',b^{(q)}}(u) ∂_{b q} φ` with `a' = a ∘ succ`,
+`b^{(q)} = b ∘ q.succAbove`.  In each term the part carrying `v_j^{a 0} - v₀^{a 0} → 0`
+(uniformly on `Ω`, while `|M_{a',b^{(q)}}| ≤ r! C^r`) tends to `0`, and the induction hypothesis
+applies to the rest, tested against `η_q = v₀^{a 0} ∂_{b q} φ ∈ L¹(Ω)`. -/
+theorem Submission.deformation_ipl_mwc_minor_weak_star :
+    ∀ (k Q : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (v : ℕ → Eucl k → Eucl Q) (v₀ : Eucl k → Eucl Q),
+      IsOpen Ω → (∀ j, LipschitzOnWith C (v j) Ω) → LipschitzOnWith C v₀ Ω →
+      TendstoUniformlyOn v v₀ atTop Ω → ∀ (r : ℕ) (a : Fin r → Fin Q) (b : Fin r → Fin k)
+      (η : Eucl k → ℝ), IntegrableOn η Ω (volume : Measure (Eucl k)) →
+      Tendsto (fun j => ∫ w in Ω, η w * Matrix.det (Matrix.of fun t s : Fin r =>
+          EuclideanSpace.proj (a t) (fderiv ℝ (v j) w (EuclideanSpace.single (b s) 1)))
+            ∂(volume : Measure (Eucl k))) atTop
+        (𝓝 (∫ w in Ω, η w * Matrix.det (Matrix.of fun t s : Fin r =>
+          EuclideanSpace.proj (a t) (fderiv ℝ v₀ w (EuclideanSpace.single (b s) 1)))
+            ∂(volume : Measure (Eucl k)))) := by
+  intro k Q Ω C v v₀ hΩ hv hv₀ hconv r
+  /- Step 0: bounds and measurability.  Leibniz formula: `|det A| ≤ n! c^n` if all
+  `|A t s| ≤ c` (`Matrix.det_le` is not imported). -/
+  have abs_det_le : ∀ {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ) (c : ℝ),
+      (∀ t s, |A t s| ≤ c) → |A.det| ≤ (Nat.factorial n : ℝ) * c ^ n := by
+    intro n A c hA
+    rw [Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ i, A (σ i) i|
+        ≤ ∑ σ : Equiv.Perm (Fin n), |Equiv.Perm.sign σ • ∏ i, A (σ i) i| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin n), c ^ n := by
+          gcongr with σ
+          have hσ : |Equiv.Perm.sign σ • ∏ i, A (σ i) i| = |∏ i, A (σ i) i| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+          rw [hσ, Finset.abs_prod]
+          calc ∏ i, |A (σ i) i| ≤ ∏ _i : Fin n, c := by
+                gcongr with i
+                exact hA _ _
+            _ = c ^ n := by simp
+      _ = (Nat.factorial n : ℝ) * c ^ n := by simp [Fintype.card_perm]
+  -- If `u` is `C`-Lipschitz on `Ω`, then `‖Du‖ ≤ C` on `Ω`, so every entry of a minor is
+  -- bounded by `C` and `|M_{a,b}(u)| ≤ n! C^n` on `Ω`; every minor is Borel measurable.
+  have minor_facts : ∀ {n : ℕ} (a : Fin n → Fin Q) (b : Fin n → Fin k) (u : Eucl k → Eucl Q),
+      LipschitzOnWith C u Ω →
+      (∀ w ∈ Ω, |Matrix.det (Matrix.of fun t s : Fin n => EuclideanSpace.proj (a t)
+          (fderiv ℝ u w (EuclideanSpace.single (b s) 1)))| ≤ (Nat.factorial n : ℝ) * (C : ℝ) ^ n) ∧
+      Measurable (fun w => Matrix.det (Matrix.of fun t s : Fin n => EuclideanSpace.proj (a t)
+          (fderiv ℝ u w (EuclideanSpace.single (b s) 1)))) := by
+    intro n a b u hu
+    constructor
+    · intro w hw
+      refine abs_det_le _ C fun t s => ?_
+      have hDu : ‖fderiv ℝ u w‖ ≤ C := norm_fderiv_le_of_lipschitzOn ℝ (hΩ.mem_nhds hw) hu
+      calc |EuclideanSpace.proj (a t) (fderiv ℝ u w (EuclideanSpace.single (b s) 1))|
+          = ‖fderiv ℝ u w (EuclideanSpace.single (b s) 1) (a t)‖ := by simp [Real.norm_eq_abs]
+        _ ≤ ‖fderiv ℝ u w (EuclideanSpace.single (b s) 1)‖ := PiLp.norm_apply_le _ _
+        _ ≤ ‖fderiv ℝ u w‖ * ‖EuclideanSpace.single (b s) (1 : ℝ)‖ :=
+          (fderiv ℝ u w).le_opNorm _
+        _ ≤ C := by simpa using hDu
+    · have hdet : Continuous fun A : Fin n → Fin n → ℝ => (Matrix.of A).det :=
+        Continuous.matrix_det continuous_id
+      have hent : ∀ t s : Fin n, Measurable fun w =>
+          EuclideanSpace.proj (a t) (fderiv ℝ u w (EuclideanSpace.single (b s) 1)) := fun t s =>
+        (EuclideanSpace.proj (a t)).continuous.measurable.comp
+          (measurable_fderiv_apply_const ℝ u _)
+      exact hdet.measurable.comp
+        (measurable_pi_iff.2 fun t => measurable_pi_iff.2 fun s => hent t s)
+  induction r with
+  | zero =>
+    -- Step 1: a `0 × 0` determinant is `1`, so the sequence is constant.
+    intro a b η hη
+    simp only [Matrix.det_isEmpty, mul_one]
+    exact tendsto_const_nhds
+  | succ r ih =>
+    intro a b η hη
+    -- `M u = M_{a,b}(u)`, the `(r + 1) × (r + 1)` minor.
+    let M : (Eucl k → Eucl Q) → Eucl k → ℝ := fun u w =>
+      Matrix.det (Matrix.of fun t s : Fin (r + 1) =>
+        EuclideanSpace.proj (a t) (fderiv ℝ u w (EuclideanSpace.single (b s) 1)))
+    -- Step 2: by `test_density` (bound `(r+1)! C^{r+1}`) it suffices to test against
+    -- `φ ∈ C¹_c(Ω)`.
+    refine Submission.deformation_ipl_mwc_test_density k Ω
+      ((Nat.factorial (r + 1) : ℝ) * (C : ℝ) ^ (r + 1)) (fun j => M (v j)) (M v₀) hΩ
+      (fun j => (minor_facts a b (v j) (hv j)).2.aestronglyMeasurable)
+      (minor_facts a b v₀ hv₀).2.aestronglyMeasurable
+      (fun j => (minor_facts a b (v j) (hv j)).1) (minor_facts a b v₀ hv₀).1 ?_ η hη
+    intro φ hφ hφc hφΩ
+    -- `M' q u = M_{a',b^{(q)}}(u)`, `dφ q = ∂_{b q} φ` and `p u = u^{a 0}`.
+    let M' : Fin (r + 1) → (Eucl k → Eucl Q) → Eucl k → ℝ := fun q u w =>
+      Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t.succ)
+        (fderiv ℝ u w (EuclideanSpace.single (b (q.succAbove s)) 1)))
+    let dφ : Fin (r + 1) → Eucl k → ℝ := fun q w => fderiv ℝ φ w (EuclideanSpace.single (b q) 1)
+    let p : (Eucl k → Eucl Q) → Eucl k → ℝ := fun u w => EuclideanSpace.proj (a 0) (u w)
+    -- Step 3: integration by parts (`minor_ibp_lipschitz`) for `u = v_j` and `u = v₀`.
+    have hDu : ∀ u, LipschitzOnWith C u Ω →
+        ∫ w in Ω, φ w * M u w ∂(volume : Measure (Eucl k)) =
+          -∑ q : Fin (r + 1), ∫ w in Ω, p u w * ((-1 : ℝ) ^ (q : ℕ) * M' q u w) * dφ q w
+            ∂(volume : Measure (Eucl k)) := fun u hu =>
+      Submission.deformation_ipl_mwc_minor_ibp_lipschitz k Q r Ω C a b u φ hΩ hu hφ hφc hφΩ
+    have hfun : (fun j => ∫ w in Ω, φ w * M (v j) w ∂(volume : Measure (Eucl k))) = fun j =>
+        -∑ q : Fin (r + 1), ∫ w in Ω, p (v j) w * ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w
+          ∂(volume : Measure (Eucl k)) := funext fun j => hDu _ (hv j)
+    rw [hfun, hDu v₀ hv₀]
+    refine (tendsto_finsetSum _ fun q _ => ?_).neg
+    -- `dφ q` is continuous, vanishes off the compact `K = tsupport φ ⊆ Ω` and is integrable.
+    set K := tsupport φ with hK
+    have hKc : IsCompact K := hφc
+    have hdφc : Continuous (dφ q) :=
+      (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+    have hdφ0 : ∀ w, w ∉ K → dφ q w = 0 := by
+      intro w hw
+      have : fderiv ℝ φ w = 0 := by
+        by_contra h
+        exact hw (support_fderiv_subset ℝ (Function.mem_support.2 h))
+      simp [dφ, this]
+    have hdφsupp : HasCompactSupport (dφ q) :=
+      HasCompactSupport.of_support_subset_isCompact hKc fun w hw => by
+        by_contra h; exact hw (hdφ0 w h)
+    have hdφint : Integrable (dφ q) (volume : Measure (Eucl k)) :=
+      hdφc.integrable_of_hasCompactSupport hdφsupp
+    -- `p u` is bounded on `K` and measurable on `Ω`; `|M' q u| ≤ B' = r! C^r` on `Ω`.
+    have hpbd : ∀ u, LipschitzOnWith C u Ω → ∃ P : ℝ, 0 ≤ P ∧ ∀ w ∈ K, |p u w| ≤ P := by
+      intro u hu
+      obtain ⟨P, hP⟩ := hKc.exists_bound_of_continuousOn
+        (((EuclideanSpace.proj (a 0)).continuous.comp_continuousOn hu.continuousOn).mono hφΩ)
+      refine ⟨max P 0, le_max_right _ _, fun w hw => le_trans ?_ (le_max_left _ _)⟩
+      have := hP w hw
+      simp only [Function.comp_apply, Real.norm_eq_abs] at this
+      exact this
+    have hpm : ∀ u, LipschitzOnWith C u Ω →
+        AEStronglyMeasurable (p u) ((volume : Measure (Eucl k)).restrict Ω) := fun u hu =>
+      ((EuclideanSpace.proj (a 0)).continuous.comp_continuousOn
+        hu.continuousOn).aestronglyMeasurable hΩ.measurableSet
+    have hM'b : ∀ u, LipschitzOnWith C u Ω →
+        ∀ w ∈ Ω, |M' q u w| ≤ (Nat.factorial r : ℝ) * (C : ℝ) ^ r :=
+      fun u hu => (minor_facts (fun t => a t.succ) (fun s => b (q.succAbove s)) u hu).1
+    have hM'm : ∀ u, LipschitzOnWith C u Ω → Measurable (M' q u) :=
+      fun u hu => (minor_facts (fun t => a t.succ) (fun s => b (q.succAbove s)) u hu).2
+    set B' : ℝ := (Nat.factorial r : ℝ) * (C : ℝ) ^ r with hB'
+    have hB'0 : 0 ≤ B' := by positivity
+    -- Step 4: anything a.e.-measurable on `Ω` and bounded by `c |dφ q|` there is integrable.
+    have hint : ∀ (F : Eucl k → ℝ) (c : ℝ),
+        AEStronglyMeasurable F ((volume : Measure (Eucl k)).restrict Ω) →
+        (∀ w ∈ Ω, |F w| ≤ c * |dφ q w|) → IntegrableOn F Ω (volume : Measure (Eucl k)) := by
+      intro F c hFm hFb
+      refine Integrable.mono' ((hdφint.abs.const_mul c).integrableOn) hFm ?_
+      exact (ae_restrict_iff' hΩ.measurableSet).2 (ae_of_all _ fun w hw => by
+        simpa [Real.norm_eq_abs] using hFb w hw)
+    let ηq : Eucl k → ℝ := fun w => p v₀ w * dφ q w
+    obtain ⟨P0, hP00, hP0⟩ := hpbd v₀ hv₀
+    have hηq : IntegrableOn ηq Ω (volume : Measure (Eucl k)) := by
+      refine hint ηq P0 ((hpm v₀ hv₀).mul hdφc.aestronglyMeasurable.restrict) fun w hw => ?_
+      by_cases hwK : w ∈ K
+      · rw [abs_mul]; exact mul_le_mul_of_nonneg_right (hP0 w hwK) (abs_nonneg _)
+      · simp [ηq, hdφ0 w hwK]
+    have hI1 : ∀ j, IntegrableOn (fun w => (p (v j) w - p v₀ w) *
+        ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w) Ω (volume : Measure (Eucl k)) := by
+      intro j
+      obtain ⟨Pj, hPj0, hPj⟩ := hpbd (v j) (hv j)
+      refine hint _ ((Pj + P0) * B') ((((hpm _ (hv j)).sub (hpm _ hv₀)).mul
+        ((hM'm _ (hv j)).aestronglyMeasurable.const_mul _)).mul
+          hdφc.aestronglyMeasurable.restrict) ?_
+      intro w hw
+      by_cases hwK : w ∈ K
+      · rw [abs_mul, abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul]
+        gcongr
+        · exact (abs_sub _ _).trans (add_le_add (hPj w hwK) (hP0 w hwK))
+        · exact hM'b _ (hv j) w hw
+      · simp [hdφ0 w hwK]
+    have hI2 : ∀ u, LipschitzOnWith C u Ω →
+        IntegrableOn (fun w => ηq w * M' q u w) Ω (volume : Measure (Eucl k)) := by
+      intro u hu
+      refine hint _ (P0 * B') ((hpm v₀ hv₀).mul hdφc.aestronglyMeasurable.restrict
+        |>.mul (hM'm _ hu).aestronglyMeasurable) ?_
+      intro w hw
+      by_cases hwK : w ∈ K
+      · simp only [ηq, abs_mul]
+        calc |p v₀ w| * |dφ q w| * |M' q u w| ≤ P0 * |dφ q w| * B' := by
+              gcongr
+              · exact hP0 w hwK
+              · exact hM'b _ hu w hw
+          _ = P0 * B' * |dφ q w| := by ring
+      · simp [ηq, hdφ0 w hwK]
+    -- Step 5: `I_j = ∫_Ω (v_j^{a 0} - v₀^{a 0}) (-1)^q M'_j dφ + (-1)^q ∫_Ω η_q M'_j`.
+    have hsplit : ∀ j, ∫ w in Ω, p (v j) w * ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w
+        ∂(volume : Measure (Eucl k)) =
+        (∫ w in Ω, (p (v j) w - p v₀ w) * ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w
+          ∂(volume : Measure (Eucl k))) +
+          (-1 : ℝ) ^ (q : ℕ) * ∫ w in Ω, ηq w * M' q (v j) w ∂(volume : Measure (Eucl k)) := by
+      intro j
+      rw [← integral_const_mul, ← integral_add (hI1 j) ((hI2 _ (hv j)).const_mul _)]
+      congr 1; funext w; simp only [ηq]; ring
+    have hlim : ∫ w in Ω, p v₀ w * ((-1 : ℝ) ^ (q : ℕ) * M' q v₀ w) * dφ q w
+        ∂(volume : Measure (Eucl k)) =
+        0 + (-1 : ℝ) ^ (q : ℕ) * ∫ w in Ω, ηq w * M' q v₀ w ∂(volume : Measure (Eucl k)) := by
+      rw [zero_add, ← integral_const_mul]
+      congr 1; funext w; simp only [ηq]; ring
+    -- Step 6: the first term tends to `0`, as `p (v j) → p v₀` uniformly on `Ω`.
+    have h1 : Tendsto (fun j => ∫ w in Ω, (p (v j) w - p v₀ w) *
+        ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w ∂(volume : Measure (Eucl k))) atTop
+        (𝓝 0) := by
+      rw [Metric.tendsto_atTop]
+      intro ε hε
+      set I := ∫ w, |dφ q w| ∂(volume : Measure (Eucl k)) with hI
+      have hI0 : 0 ≤ I := integral_nonneg fun w => abs_nonneg _
+      set δ := ε / (2 * (B' * I + 1)) with hδ
+      have hδ0 : 0 < δ := by positivity
+      obtain ⟨N, hN⟩ := eventually_atTop.1 (Metric.tendstoUniformlyOn_iff.1 hconv δ hδ0)
+      refine ⟨N, fun j hj => ?_⟩
+      rw [dist_zero_right]
+      have hbound : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict Ω),
+          ‖(p (v j) w - p v₀ w) * ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w‖ ≤
+            δ * B' * |dφ q w| := by
+        refine (ae_restrict_iff' hΩ.measurableSet).2 (ae_of_all _ fun w hw => ?_)
+        have e1 : |p (v j) w - p v₀ w| ≤ δ := by
+          have h' := (hN j hj w hw).le
+          rw [dist_comm, dist_eq_norm] at h'
+          calc |p (v j) w - p v₀ w| = |EuclideanSpace.proj (a 0) (v j w - v₀ w)| := by
+                simp [p]
+            _ = ‖(v j w - v₀ w) (a 0)‖ := by simp [Real.norm_eq_abs]
+            _ ≤ ‖v j w - v₀ w‖ := PiLp.norm_apply_le _ _
+            _ ≤ δ := h'
+        have e2 := hM'b _ (hv j) w hw
+        rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow,
+          one_mul]
+        gcongr
+      calc ‖∫ w in Ω, (p (v j) w - p v₀ w) * ((-1 : ℝ) ^ (q : ℕ) * M' q (v j) w) * dφ q w
+            ∂(volume : Measure (Eucl k))‖
+          ≤ ∫ w in Ω, δ * B' * |dφ q w| ∂(volume : Measure (Eucl k)) :=
+            norm_integral_le_of_norm_le ((hdφint.abs.const_mul _).integrableOn) hbound
+        _ ≤ ∫ w, δ * B' * |dφ q w| ∂(volume : Measure (Eucl k)) :=
+            setIntegral_le_integral (hdφint.abs.const_mul _) (ae_of_all _ fun w => by positivity)
+        _ = δ * (B' * I) := by rw [integral_const_mul, hI]; ring
+        _ < ε := by
+            rw [hδ]
+            have : 0 < B' * I + 1 := by positivity
+            rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+            nlinarith
+    -- Steps 7–8: the induction hypothesis, tested against `η_q ∈ L¹(Ω)`, handles the second
+    -- term; multiplying by `(-1)^q` and adding the first term gives `I_j → I_0`.
+    have hih := ih (fun t => a t.succ) (fun s => b (q.succAbove s)) ηq hηq
+    rw [hlim]
+    exact (h1.add (hih.const_mul _)).congr fun j => (hsplit j).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
