@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "depth": 3,
+  "title": "Mass inequality |Y(ω)| ≤ C·M(Y) under a pointwise bound |ω| ≤ C",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, let Y ∈ D_n(U) (a GeometricCurrentOn U n) and ω ∈ Dⁿ(U) (a TestFormOn U n, i.e. a smooth compactly supported n-form on ℝ^P with tsupport ω ⊆ U), and let C ∈ ℝ with C > 0 and |ω(x)| ≤ C for every x ∈ ℝ^P, where |α| = covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} is Simon's Euclidean coefficient norm. Assume the mass M(Y) = Y.mass = M_U(Y) is finite. Then |Y(ω)| ≤ C·M(Y), where M(Y) ∈ [0, ∞) is read as a real number (ENNReal.toReal).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U n) (ω : TestFormOn U n) (C : ℝ), 0 < C → (∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → Y.mass ≠ ∞ → |Y ω| ≤ C * Y.mass.toReal",
+  "lean_name": "br_la_abs_apply_le_mul_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1-a1"
+}

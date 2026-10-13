@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.testform_bounded-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "depth": 4,
+  "title": "Test forms have bounded Euclidean coefficient norm",
+  "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P and every test form ω ∈ TestFormOn U n, there is C ∈ ℝ with C > 0 and covectorEuclideanNorm(ω(x)) ≤ C for every x ∈ ℝ^P. Here a test form is a ContDiff ℝ ∞ (smooth), compactly supported n-form x ↦ ω(x) ∈ Covector (Eucl P) n on ℝ^P with tsupport ω ⊆ U.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C",
+  "lean_name": "fiw_ims_sc_testForm_bounded",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.series_current-a1.covector_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.covector_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-testform-bounded-a1-a1"
+}

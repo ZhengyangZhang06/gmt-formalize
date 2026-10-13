@@ -1,0 +1,78 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1`
+- Child DAG node: `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1.index_cauchy-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Cauchy argument at the end of Step 6 of the parent proof, stated for an arbitrary real sequence. The parent text reads: '(a_n) is a Cauchy sequence: otherwise there is ε > 0 such that for every i there are p(i), q(i) ≥ i with |a_{q(i)} − a_{p(i)}| ≥ ε; then p and q tend to ∞ while a_{q(i)} − a_{p(i)} does not tend to 0, contradicting the claim. Since ℝ is complete, (a_n) converges.' The parent applies it to a_n := X(η_n(ω)); the hypothesis is the claim of Step 6, which (CL) supplies for the reindexed approximations (G_{p(i)})_i and (G_{q(i)})_i.
+
+1. (Cauchy criterion.) We show that a is a Cauchy sequence. By Metric.cauchySeq_iff, this means: for every ε > 0 there is N such that dist(a_i, a_j) = |a_i − a_j| < ε for all i, j ≥ N. Suppose not. Then there is ε > 0 such that for every N ∈ ℕ there are i, j ≥ N with |a_i − a_j| ≥ ε.
+2. (Index maps.) By choice, pick for every N ∈ ℕ such indices p(N) ≥ N and q(N) ≥ N, so |a_{p(N)} − a_{q(N)}| ≥ ε. The identity map tends to ∞ and p(N) ≥ N, q(N) ≥ N for all N, so p and q tend to ∞ (tendsto_atTop_mono).
+3. (Contradiction.) By the hypothesis applied to p and q, a(q(i)) − a(p(i)) → 0. By Metric.tendsto_nhds, eventually |a(q(i)) − a(p(i)) − 0| < ε; take one such i. Then |a_{p(i)} − a_{q(i)}| = |a_{q(i)} − a_{p(i)}| < ε. This contradicts |a_{p(i)} − a_{q(i)}| ≥ ε from step 2. Hence a is Cauchy.
+4. (Completeness.) ℝ is complete, so the Cauchy sequence a converges to some s ∈ ℝ (cauchySeq_tendsto_of_complete). ∎
+
+## Key steps
+
+1. If a is not Cauchy, there are ε > 0 and, for every N, indices p(N), q(N) ≥ N with |a_{p(N)} − a_{q(N)}| ≥ ε.
+2. Since p(N), q(N) ≥ N, both p and q tend to ∞, so the hypothesis gives a(q(i)) − a(p(i)) → 0, which contradicts the ε-gap at some i.
+3. ℝ is complete, so the Cauchy sequence a converges.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff -q of the snapshot's project/GMT/Ch06/Contract.lean against the workspace contract (identical)`
+- `python3 over dag.json (687 nodes): status, lean_name and lean_statement of the 4 resolved dependencies (current_criterion: unaccepted, owned by lipschitz_pushforward; compatible_form, mass_bound, pullback_norm: accepted, isolated-comparator-result.json passed = True). Also a search for related accepted lemmas: found fiw_tb_ext_covectorNorm_smul; no match for an index-map convergence criterion, a bounded compatible form or a push-forward support bound`
+- `grep -n '^def|^structure|^theorem|^abbrev' over .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,CurrentLocalEquality,Mass}.lean: IsSmoothForm, IsTestForm, testFormOnSubmodule (IsTestForm ∧ tsupport ⊆ U), GeometricCurrentOn (+ ext, Zero instance), VanishesOn, zeroRegion, support, isOpen_zeroRegion, covectorEuclideanNorm(_zero/_nonneg), massOn, mass`
+- `git show fd5f1e29719e3bfa62df774678e3c6879599f8f9:GMT/Ch06/Submission.lean and git show 3e52d3e816fb507ab732d7ad15590fb7280bc981:GMT/Ch06/Submission.lean (accepted proofs of compatible_form and of pullback_norm with its prerequisites; layout `theorem Submission.X` inside namespace GMT.Ch06)`
+- `rg -n over the snapshot's mathlib/Mathlib for Metric.cauchySeq_iff, cauchySeq_tendsto_of_complete, tendsto_atTop_mono, Metric.tendsto_nhds, Metric.tendstoUniformlyOn_iff, Metric.isOpen_iff, image_eq_one_of_notMem_mulTSupport (additive form image_eq_zero_of_notMem_tsupport), ProperSpace isCompact_closedBall, closure_ball_subset_closedBall, Finset.mul_sum, Real.sqrt_mul, Real.sqrt_sq_eq_abs, pow_le_pow_left₀, le_of_tendsto', tendsto_nhds_unique, ENNReal.ofReal_toReal/ofReal_coe_nnreal/ofReal_pow, isOpen_thickening, self_subset_thickening (all found)`
+- `grep 'dph_lpfex' over dag.json, nodes/, GMT/ and SimonGMT, and git log --all -S'dph_lpfex' over 4135 refs: no match`
+- `python3 -I with verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch06.main_theorem) and child_modules (contract mode); verifier/lean_contract.py validate_lean_statement on all child statements`
+- `lake env lean on /tmp/dph-lpfex-decomp/lean/{AllStmts,Iface,C1,C2,C3,C1Real,Combined}.lean and /tmp/dph-lpfex-decomp/challenge/*_Challenge.lean: no errors`
+- `read /runtime/flows/gmt-claude-0135a42af877/_recursive_lean/runtime.py: _decompose depth gate (depth 5 < max_depth 6), _existing_lean_name_problem, reuse-by-name id mapping, _overlay_accepted_children over children ∪ depends_on, _install_parent_supplied_child_handoff skipping accepted nodes`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/BigOperators/Ring/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-41deb81aa5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-30886ea76d/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-0135a42af877/_recursive_lean/runtime.py`
+- `/tmp/dph-lpfex-decomp/lean/AllStmts.lean`
+- `/tmp/dph-lpfex-decomp/lean/Iface.lean`
+- `/tmp/dph-lpfex-decomp/lean/C1.lean`
+- `/tmp/dph-lpfex-decomp/lean/C1Real.lean`
+- `/tmp/dph-lpfex-decomp/lean/C2.lean`
+- `/tmp/dph-lpfex-decomp/lean/C3.lean`
+- `/tmp/dph-lpfex-decomp/lean/Combined.lean`
+
+Neither the pinned project nor SimonGMT nor the snapshot Mathlib contains the Lipschitz push-forward, a bounded compatible pull-back test form, an index-map convergence criterion for real sequences, or the push-forward support bound. The three new children are therefore new obligations, taken from Steps 2–3, 6 and 11 of the supplied proof. Two accepted declarations are reused by name with byte-identical types, titles and statements: iwl_sp_exists_compatible_testForm (compatible forms) and iwl_sp_covectorEuclideanNorm_pullback_le (pull-back norm bound). Both are prerequisites of bounded_compatible and both passed isolated comparators. The parent's other resolved dependencies, mass_bound and the unaccepted current_criterion, are used only in the parent assembly. The accepted fiw_tb_ext_covectorNorm_smul has the same content as the inline homogeneity step; it was found but deliberately not added as a dependency. Every Mathlib lemma cited in the child proofs exists in the pinned snapshot. All statements elaborate in the exact comparator scope. The parent follows from the children and its resolved dependencies by a checked 149-line Lean assembly. Each new child has a complete Lean proof using only the standard axioms. The names dph_lpfex_* are globally unused.
