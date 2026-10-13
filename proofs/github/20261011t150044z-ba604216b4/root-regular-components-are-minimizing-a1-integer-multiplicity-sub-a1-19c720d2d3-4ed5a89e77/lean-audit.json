@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "01246f2640c8609c5f07d2e71a41501986f81a6dae2b5eb0c14281be8c5d4b13",
+  "git_delta": {
+    "base_commit": "b107710fd4b894a25ed443cababa1f693164abe1",
+    "candidate_commit": "a6e9a9d8034f0780126a38fdbbcb5ef50f4a9c7d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_ims_difference_data",
+    "diff_sha256": "b49c388025f159f9d00180f31cb8d5eaf92c4a64fcdfbbf624c4dde7d0740ef4",
+    "source_sha256": "9ee6d26389030e45bc2a3f173cfaadd7eea0d07c4d1b654a4f4165076666b419",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_ims_difference_data",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n), (∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x) → ∃ (C : Set (Euclid P)) (θ : Euclid P → ℕ) (ξ : Euclid P → MultiVector P n), MeasurableSet C ∧ C ⊆ R₁.carrier ∪ R₂.carrier ∧ Measurable θ ∧ (∀ x ∈ C, 0 < θ x) ∧ (∀ x ∈ C, θ x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) ∧ AEStronglyMeasurable ξ (μHE[n].restrict C) ∧ (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ξ x = R₁.orient x ∨ ξ x = -R₁.orient x) ∧ (∀ᵐ x ∂(μHE[n].restrict (C \\ R₁.carrier)), ξ x = R₂.orient x ∨ ξ x = -R₂.orient x) ∧ ∀ᵐ x ∂μHE[n], C.indicator (fun y => (θ y : ℝ) • ξ y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x - R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
