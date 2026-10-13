@@ -740,6 +740,59 @@ theorem Submission.codim1_rdo_dg_ce_signed_layer_cake : ∀ (X : Type) [Measurab
         exact Eventually.of_forall hlow
     _ = ∫ x, ∫ t, H x t ∂ν ∂(μ.restrict S) := (integral_integral_swap hHint).symm
     _ = ∫ x, ζ x * g x ∂μ := hleft.symm
+/-- The divergence theorem for compactly supported fields (step 6 of the cut-off estimates in the
+De Giorgi argument, cf. Simon Ch. 3, 4.3): if `φ : ℝᴾ → ℝᴾ` is `C¹` with compact support, then
+`div φ = trace Dφ = ∑ᵢ ∂ᵢφⁱ` is integrable and `∫ div φ dLᴾ = ∑ᵢ ∫ ∂ᵢφⁱ dLᴾ = 0`. -/
+theorem Submission.codim1_rdo_dg_ce_integral_div_eq_zero : ∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → Integrable (fun z => LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P)) ∧ ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0 := by
+  intro P φ hφ hφc
+  set b := EuclideanSpace.basisFun (Fin P) ℝ with hb
+  have hdiff : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  -- the coordinate functions `φⁱ = ⟪bᵢ, φ⟫` are `C¹` with compact support
+  set f : Fin P → Euclid P → ℝ := fun i w => innerSL ℝ (b i) (φ w) with hf
+  have hfC : ∀ i, ContDiff ℝ 1 (f i) := fun i => (innerSL ℝ (b i)).contDiff.comp hφ
+  have hfcs : ∀ i, HasCompactSupport (f i) := fun i => hφc.comp_left (map_zero _)
+  have hfder : ∀ i z, fderiv ℝ (f i) z = (innerSL ℝ (b i)).comp (fderiv ℝ φ z) := by
+    intro i z
+    exact ((innerSL ℝ (b i)).hasFDerivAt.comp z (hdiff z).hasFDerivAt).fderiv
+  -- `trace Dφ(z) = ∑ᵢ ⟪bᵢ, Dφ(z) bᵢ⟫ = ∑ᵢ ∂ᵢφⁱ(z)`
+  have hcoord : ∀ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) =
+      ∑ i, fderiv ℝ (f i) z (b i) := by
+    intro z
+    rw [LinearMap.trace_eq_sum_inner _ b]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hfder]
+    simp [innerSL_apply_apply]
+  -- each `∂ᵢφⁱ` is continuous and vanishes off `tsupport φⁱ`, hence integrable
+  have hint_i : ∀ i, Integrable (fun z => fderiv ℝ (f i) z (b i)) := by
+    intro i
+    apply Continuous.integrable_of_hasCompactSupport
+    · exact ((hfC i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+    · refine (hfcs i).mono' ?_
+      intro z hz
+      refine support_fderiv_subset ℝ ?_
+      intro h0
+      exact hz (by simp [h0])
+  -- `∫ ∂ᵢφⁱ = 0`: integrate by parts against the constant function `1`
+  have hzero_i : ∀ i, ∫ z, fderiv ℝ (f i) z (b i) = 0 := by
+    intro i
+    obtain ⟨C, hC⟩ := (hfC i).lipschitzWith_of_hasCompactSupport (hfcs i) one_ne_zero
+    have h1 := (LipschitzWith.const (1 : ℝ) : LipschitzWith 0 (fun _ : Euclid P => (1 : ℝ))).integral_lineDeriv_mul_eq
+      (μ := (volume : Measure (Euclid P))) hC (hfcs i) (b i)
+    have hl : ∀ x, lineDeriv ℝ (f i) x (-b i) = -fderiv ℝ (f i) x (b i) := by
+      intro x
+      rw [(((hfC i).differentiable one_ne_zero) x).lineDeriv_eq_fderiv, map_neg]
+    have hc : ∀ x, lineDeriv ℝ (fun _ : Euclid P => (1 : ℝ)) x (b i) = 0 := by
+      intro x
+      simp [lineDeriv]
+    simp only [hc, zero_mul, integral_zero, mul_one, hl, integral_neg] at h1
+    linarith
+  have hint : Integrable (fun z => LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P)) := by
+    simp_rw [hcoord]
+    exact integrable_finsetSum _ fun i _ => hint_i i
+  refine ⟨hint, ?_⟩
+  simp_rw [hcoord]
+  rw [integral_finsetSum _ fun i _ => hint_i i]
+  exact Finset.sum_eq_zero fun i _ => hzero_i i
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
