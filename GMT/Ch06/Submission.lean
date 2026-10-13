@@ -2950,6 +2950,588 @@ theorem Submission.imc_isRectifiableTriple_of_eventually_mem :
           pos := fun x hx => lt_of_lt_of_le one_pos (hθ₀1 x hx),
           integrableOn := fun K hK _ => hθ₀int K hK,
           aestronglyMeasurable := hmeas, orients := horients }
+/-- **Kronecker duality of coordinate wedges (Simon Ch. 6, 1.1–1.2).**  For an increasing
+multi-index `I`, `dx^I = dx^{I₁} ∧ ⋯ ∧ dx^{Iₙ}` has coordinate `1` at `I` and `0` at every
+increasing `J ≠ I`: by (1.1), `dx^I(e_{J₁}, …, e_{Jₙ}) = det [I i = J j]`.  For `J = I` this matrix
+is the identity, as `I` is injective.  For `J ≠ I` some `I i ∉ range J` (otherwise the finite
+ranges, of equal cardinality, coincide, and increasing enumerations with equal ranges are equal),
+so row `i` vanishes. -/
+theorem Submission.polyhedral_approx_pairing_wedge_kronecker : ∀ (P n : ℕ) (I : SimonMultiIndex n P), euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) I = 1 ∧ ∀ J : SimonMultiIndex n P, J ≠ I → euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J = 0 := by
+  intro P n I
+  -- (1)–(2) The coordinate at `J` is the determinant of the matrix `[I i = J j]`.
+  have hdet : ∀ J : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J =
+        Matrix.det (Matrix.of fun i j => if I i = J j then (1 : ℝ) else 0) := by
+    intro J
+    rw [euclideanCovectorCoordinate, wedgeCovectors_apply_det]
+    congr 1
+    ext i j
+    simp [PiLp.single_apply]
+  refine ⟨?_, fun J hJ => ?_⟩
+  · -- (3) For `J = I` the matrix is the identity, as `I` is injective.
+    have hone : (Matrix.of fun i j => if I i = I j then (1 : ℝ) else 0) = 1 := by
+      ext i j
+      simp [Matrix.one_apply, I.injective.eq_iff]
+    rw [hdet, hone, Matrix.det_one]
+  · -- (4) Some `I i` lies outside `range J`: otherwise `range I = range J` and `I = J`.
+    obtain ⟨i, hi⟩ : ∃ i, ∀ j, I i ≠ J j := by
+      by_contra h
+      have hsub : range I ⊆ range J := by
+        rintro _ ⟨i, rfl⟩
+        by_contra hi
+        exact h ⟨i, fun j hj => hi ⟨j, hj.symm⟩⟩
+      have hrange : range I = range J :=
+        Set.eq_of_subset_of_ncard_le hsub (by
+          rw [Set.ncard_range_of_injective I.injective, Set.ncard_range_of_injective J.injective])
+      exact hJ (OrderEmbedding.range_inj_of_wellFoundedLT.mp hrange).symm
+    -- (5) Row `i` of the matrix vanishes, so the determinant is `0`.
+    rw [hdet]
+    exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [hi j]
+/-- An `n`-covector on `ℝ^P` is determined by its coordinates on increasing multi-indices
+(Simon Ch. 6, 1.2): if `α(e_{I(0)}, …, e_{I(n-1)}) = β(e_{I(0)}, …, e_{I(n-1)})` for every
+increasing `I`, then `α = β`.  Alternating maps agreeing on injective tuples of basis vectors are
+equal; sorting an injective tuple `v` by `σ = Tuple.sort v` gives the increasing `I = v ∘ σ`, and
+`e_v = e_I ∘ σ⁻¹` gives `γ(e_v) = sign(σ⁻¹) γ(e_I)` for `γ = α, β`. -/
+theorem Submission.polyhedral_approx_pairing_covector_ext : ∀ (P n : ℕ) (α β : Covector (Eucl P) n), (∀ I : SimonMultiIndex n P, euclideanCovectorCoordinate α I = euclideanCovectorCoordinate β I) → α = β := by
+  intro P n α β h
+  -- Reduce to the underlying alternating maps on injective tuples of standard basis vectors.
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+  -- Sorting `v` by `σ = Tuple.sort v` gives the increasing multi-index `I = v ∘ σ`.
+  have hsm : StrictMono (v ∘ Tuple.sort v) :=
+    (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+  let I : SimonMultiIndex n P := OrderEmbedding.ofStrictMono _ hsm
+  -- `e_v = e_I ∘ σ⁻¹`.
+  have he : (fun i => EuclideanSpace.single (v i) (1 : ℝ)) =
+      (fun j => EuclideanSpace.single (I j) (1 : ℝ)) ∘ ⇑(Tuple.sort v)⁻¹ := by
+    funext i
+    simp [I]
+  -- `γ(e_v) = sign(σ⁻¹) • γ(e_I)` for `γ = α, β`, and `α(e_I) = β(e_I)`.
+  rw [he, AlternatingMap.map_perm, AlternatingMap.map_perm]
+  congr 1
+  exact h I
+/-- **Coordinate bound** (for the pairing expansion in the proof of Simon Ch. 6, 6.2, p. 169).
+Each increasing coordinate `c_I = c(e_{I(1)}, …, e_{I(n)})` of an `n`-covector `c` is bounded in
+absolute value by the Euclidean coefficient norm `|c|` of Remark 2.6.  Here `|c|² = ∑_J t_J`, with
+`t_J = c(e_{J(1)}, …, e_{J(n)})²` for strictly increasing `J : Fin n → Fin P` and `t_J = 0`
+otherwise.  Every `t_J ≥ 0` and `t_I = c_I²`, so `c_I² ≤ |c|²`. -/
+theorem Submission.polyhedral_approx_pairing_coordinate_bound : ∀ (P n : ℕ) (c : Covector (Eucl P) n) (I : SimonMultiIndex n P), |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c := by
+  intro P n c I
+  -- `|c| = √(∑_J t_J)`, the sum over all `J : Fin n → Fin P`.
+  set t : (Fin n → Fin P) → ℝ := fun J =>
+    if StrictMono J then (c fun i => EuclideanSpace.basisFun (Fin P) ℝ (J i)) ^ 2 else 0 with ht
+  -- Each `t_J` is a square or `0`.
+  have ht0 : ∀ J ∈ Finset.univ, 0 ≤ t J := fun J _ => by
+    simp only [ht]
+    split_ifs <;> positivity
+  -- `⇑I` is strictly increasing and `basisFun (I i) = e_{I(i)}`, so `t_I = c_I²`.
+  have htI : t I = euclideanCovectorCoordinate c I ^ 2 := by
+    simp only [ht, I.strictMono, ite_true, EuclideanSpace.basisFun_apply, euclideanCovectorCoordinate]
+  -- `|c_I| = √(c_I²) = √(t_I) ≤ √(∑_J t_J) = |c|`.
+  calc |euclideanCovectorCoordinate c I| = √(euclideanCovectorCoordinate c I ^ 2) :=
+        (Real.sqrt_sq_eq_abs _).symm
+    _ ≤ √(∑ J, t J) := by
+        rw [← htI]
+        exact Real.sqrt_le_sqrt (Finset.single_le_sum ht0 (Finset.mem_univ _))
+    _ = covectorEuclideanNorm c := rfl
+
+/-- **Pairing expansion** (Simon Ch. 6, 1.2 and 1.7, pp. 132–133; used for 6.2, p. 169).  For an
+`n`-vector `w` and an `n`-covector `c` on `ℝ^P`, `w(c) = ∑_I c_I · w(dx^I)`, the sum over the
+increasing multi-indices `I`, where `c_I = c(e_{I(1)}, …, e_{I(n)})` and
+`dx^I = dx^{I(1)} ∧ ⋯ ∧ dx^{I(n)}`; moreover `|c_I| ≤ |c|`.  Since `dx^I(e_J) = δ_{IJ}` on
+increasing multi-indices, `c` and `∑_I c_I dx^I` have the same increasing coordinates, hence are
+equal (1.2), and `w` is linear. -/
+theorem Submission.polyhedral_approx_pairing_expansion : ∀ (P n : ℕ) (w : NVector (Eucl P) n) (c : Covector (Eucl P) n), w c = ∑ I : SimonMultiIndex n P, euclideanCovectorCoordinate c I * w (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∧ ∀ I : SimonMultiIndex n P, |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c := by
+  intro P n w c
+  refine ⟨?_, Submission.polyhedral_approx_pairing_coordinate_bound P n c⟩
+  -- `c = ∑_I c_I • dx^I`: both sides have the same increasing coordinates.
+  have hc : c = ∑ I : SimonMultiIndex n P,
+      euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) := by
+    refine Submission.polyhedral_approx_pairing_covector_ext P n _ _ fun J => ?_
+    -- The `J`-th coordinate of the sum is `∑_I c_I · dx^I(e_J)`.
+    have hsum : euclideanCovectorCoordinate (∑ I : SimonMultiIndex n P,
+          euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J =
+        ∑ I : SimonMultiIndex n P, euclideanCovectorCoordinate c I *
+          euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J := by
+      simp only [euclideanCovectorCoordinate, ContinuousAlternatingMap.sum_apply,
+        ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    -- Only `I = J` contributes, since `dx^I(e_J) = δ_{IJ}`.
+    rw [hsum, Finset.sum_eq_single J]
+    · rw [(Submission.polyhedral_approx_pairing_wedge_kronecker P n J).1, mul_one]
+    · intro I _ hIJ
+      rw [(Submission.polyhedral_approx_pairing_wedge_kronecker P n I).2 J (Ne.symm hIJ), mul_zero]
+    · intro hJ
+      exact absurd (Finset.mem_univ J) hJ
+  -- `w(∑_I c_I • dx^I) = ∑_I c_I · w(dx^I)` by linearity.
+  calc w c = w (∑ I : SimonMultiIndex n P,
+        euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) :=
+        congrArg w hc
+    _ = _ := by simp only [map_sum, map_smul, smul_eq_mul]
+/-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
+rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
+every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
+for every continuous compactly supported `ω` with `spt ω ⊆ U`.  Since `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ`
+orthonormal, `|⟨α, ξ⟩| ≤ ‖α‖` `Hᵏ⌞M`-a.e.; `θ` is integrable on `M ∩ K`, and the integrand of
+(b) vanishes on `M \ spt ω`. -/
+theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P)) := by
+  intro P k U M θ ξ hT
+  -- Step 1: for `Hᵏ⌞M`-a.e. `x`, `|ξ(x)(α)| ≤ ‖α‖` for every covector `α`
+  -- (`|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`; the empty product for `k = 0`).
+  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) k, ‖ξ x α‖ ≤ ‖α‖ := by
+    filter_upwards [hT.orients] with x hx α
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ α‖ ≤ ‖α‖ :=
+      calc ‖simpleNVector τ α‖ = ‖α τ‖ := rfl
+        _ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by simp [hτ.norm_eq_one]
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- Step 2: `x ↦ ξ(x)(ω(x))` is a.e.-strongly measurable for `Hᵏ⌞M` whenever `ω` is
+  -- (continuous evaluation `(w, α) ↦ w(α)` composed with `(ξ, ω)`).
+  have hmeas : ∀ ω : Eucl P → Covector (Eucl P) k,
+      AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      AEStronglyMeasurable (fun x => ξ x (ω x)) ((μHE[k] : Measure (Eucl P)).restrict M) := by
+    intro ω hω
+    have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    exact hev.comp_aestronglyMeasurable (hT.aestronglyMeasurable.prodMk hω)
+  -- Steps 3–4: for compact `K ⊆ U` and `‖ω‖ ≤ C`, `θ` is integrable on `M ∩ K` and
+  -- `ξ(·)(ω(·))` is measurable and a.e. bounded by `C` there, so the product is integrable.
+  have hK : ∀ (K : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) k) (C : ℝ), IsCompact K →
+      K ⊆ U → AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      (∀ x, ‖ω x‖ ≤ C) →
+      IntegrableOn (fun x => θ x * ξ x (ω x)) (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
+    intro K ω C hKc hKU hω hC
+    have hle : (μHE[k] : Measure (Eucl P)).restrict (M ∩ K) ≤
+        (μHE[k] : Measure (Eucl P)).restrict M :=
+      Measure.restrict_mono Set.inter_subset_left le_rfl
+    have hθ : Integrable θ ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
+      hT.integrableOn K hKc hKU
+    refine hθ.mul_bdd (c := C) ((hmeas ω hω).mono_measure hle) ?_
+    filter_upwards [ae_mono hle hunit] with x hx
+    exact (hx (ω x)).trans (hC x)
+  -- Part (a): the constant field `b`, bounded by `‖b‖`.
+  refine ⟨fun K b hKc hKU => hK K (fun _ => b) ‖b‖ hKc hKU aestronglyMeasurable_const
+    (fun _ => le_rfl), ?_⟩
+  -- Part (b): integrable on `M ∩ spt ω` (Step 4) and zero on `M \ spt ω` (Step 5), with `M`
+  -- null-measurable.
+  intro ω hωc hωs hωU
+  obtain ⟨C, hC⟩ := hωc.bounded_above_of_compact_support hωs
+  refine (hK (tsupport ω) ω C hωs hωU hωc.aestronglyMeasurable hC).of_ae_sdiff_eq_zero
+    hT.nullMeasurableSet (Filter.Eventually.of_forall fun x hx => ?_)
+  have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
+  rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+
+/-- **Integer multiplicity limit of summably `L¹`-Cauchy densities (Simon Ch. 6, 3.13, printed
+(2)–(3), pp. 149–150).**  Let `(M_p, θ_p, ξ_p)` be rectifiable triples in `ℝ^N` with
+natural-valued multiplicities and densities `κ_p = 1_{M_p} θ_p ξ_p`, and suppose
+`∑_p ∫ |κ_{p+1} - κ_p| dHᵏ < ∞`, where `|w|² = ∑_γ w(dx^γ)²`.  Then some rectifiable triple
+`(M₀, θ₀, ξ₀)` with natural-valued multiplicity has `τ(M_p, θ_p, ξ_p)(ω) → τ(M₀, θ₀, ξ₀)(ω)` for
+every continuous compactly supported `ω`.  The coordinates `f_p = (κ_p(dx^γ))_γ` converge a.e. and
+in `L¹` to some `g`.  As `|ξ_p| = 1`, `‖f_p‖ = 1_{M_p} θ_p` a.e. is natural-valued, hence
+eventually constant, so `θ₀ = ‖g‖` is natural-valued.  Take `M₀ = {θ₀ ≥ 1}` and
+`ξ₀ = θ₀⁻¹ L(g)`, where `L(a) = ∑_γ a_γ e^γ` inverts the coordinates. -/
+theorem Submission.imc_im_density_limit : ∀ (N k : ℕ) (M : ℕ → Set (Eucl N)) (θ : ℕ → Eucl N → ℝ) (ξ : ℕ → Eucl N → NVector (Eucl N) k), (∀ p, IsRectifiableTriple (univ : Set (Eucl N)) k (M p) (θ p) (ξ p)) → (∀ p, ∀ x ∈ M p, ∃ m : ℕ, θ p x = m) → (∑' p, ∫⁻ x, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate ((M (p + 1)).indicator (fun y => θ (p + 1) y • ξ (p + 1) y) x - (M p).indicator (fun y => θ p y • ξ p y) x) γ) ^ 2)) ∂(μHE[k] : Measure (Eucl N))) ≠ ∞ → ∃ (M₀ : Set (Eucl N)) (θ₀ : Eucl N → ℝ) (ξ₀ : Eucl N → NVector (Eucl N) k), IsRectifiableTriple (univ : Set (Eucl N)) k M₀ θ₀ ξ₀ ∧ (∀ x ∈ M₀, ∃ m : ℕ, θ₀ x = m) ∧ ∀ ω : Eucl N → Covector (Eucl N) k, Continuous ω → HasCompactSupport ω → Tendsto (fun p => tauAction k (M p) (θ p) (ξ p) ω) atTop (𝓝 (tauAction k M₀ θ₀ ξ₀ ω)) := by
+  have hC2 := Submission.imc_ae_tendsto_of_summable_lintegral
+  have hOrient := Submission.imc_isRectifiableTriple_of_eventually_mem
+  have hPair := Submission.polyhedral_approx_pairing_expansion
+  have hTau := Submission.ltg_tau_integrable
+  intro N k M θ ξ hTri hNat hsum
+  set H : Measure (Eucl N) := (μHE[k] : Measure (Eucl N)) with hH
+  -- Step 1(a): `θ_p ≥ 1` on `M_p`, as `θ_p` is natural-valued and positive there.
+  have hθ1 : ∀ p, ∀ x ∈ M p, 1 ≤ θ p x := by
+    intro p x hx
+    obtain ⟨m, hm⟩ := hNat p x hx
+    have hpos := (hTri p).pos x hx
+    rw [hm] at hpos ⊢
+    have : m ≠ 0 := by rintro rfl; simp at hpos
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr this
+  -- Step 1: the densities `κ_p = 1_{M_p} θ_p ξ_p` and their coordinates `f_p = c(κ_p) ∈ ℝ^I`,
+  -- where `c(w) = (w(dx^γ))_γ` is additive with `‖c(w)‖ = |w|` (Step 0(a)).
+  set κ : ℕ → Eucl N → NVector (Eucl N) k :=
+    fun p => (M p).indicator (fun y => θ p y • ξ p y) with hκ
+  set c : NVector (Eucl N) k → EuclideanSpace ℝ (SimonMultiIndex k N) :=
+    fun w => WithLp.toLp 2 (fun γ => euclideanNVectorCoordinate w γ) with hc
+  set f : ℕ → Eucl N → EuclideanSpace ℝ (SimonMultiIndex k N) := fun p x => c (κ p x) with hf
+  have hnormc : ∀ w : NVector (Eucl N) k,
+      ‖c w‖ₑ = ENNReal.ofReal
+        (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate w γ) ^ 2)) := by
+    intro w
+    rw [← ofReal_norm, EuclideanSpace.norm_eq]
+    simp [hc, Real.norm_eq_abs, sq_abs]
+  have hcsub : ∀ w w' : NVector (Eucl N) k, c (w - w') = c w - c w' := by
+    intro w w'
+    ext γ
+    simp [hc, euclideanNVectorCoordinate]
+  -- Step 1(b): `f_p` is a.e. strongly measurable.  Its `γ`-coordinate `1_{M_p} θ_p ξ_p(dx^γ)` is
+  -- integrable on each `M_p ∩ closedBall 0 n` (tau_integrable (a)), and these cover `M_p`.
+  have hcoord : ∀ p (γ : SimonMultiIndex k N),
+      AEStronglyMeasurable (fun x => euclideanNVectorCoordinate (κ p x) γ) H := by
+    intro p γ
+    have heq : (fun x => euclideanNVectorCoordinate (κ p x) γ) =
+        (M p).indicator
+          (fun x => θ p x * ξ p x (wedgeCovectors k (fun j => EuclideanSpace.proj (γ j)))) := by
+      funext x
+      by_cases hx : x ∈ M p
+      · simp [hκ, hx, euclideanNVectorCoordinate]
+      · simp [hκ, hx, euclideanNVectorCoordinate]
+    rw [heq, aestronglyMeasurable_indicator_iff₀ (hTri p).nullMeasurableSet]
+    have hU : (⋃ n : ℕ, M p ∩ closedBall (0 : Eucl N) n) = M p := by
+      ext x
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      constructor
+      · rintro ⟨n, hx, -⟩
+        exact hx
+      · intro hx
+        obtain ⟨n, hn⟩ := exists_nat_ge ‖x‖
+        exact ⟨n, hx, hn⟩
+    rw [← hU, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact ((hTau N k univ (M p) (θ p) (ξ p) (hTri p)).1 _ _ (isCompact_closedBall 0 n)
+      (subset_univ _)).aestronglyMeasurable
+  have hfmeas : ∀ p, AEStronglyMeasurable (f p) H := by
+    intro p
+    have hpi : AEStronglyMeasurable
+        (fun x => (fun γ => euclideanNVectorCoordinate (κ p x) γ : SimonMultiIndex k N → ℝ)) H :=
+      (aemeasurable_pi_iff.2 fun γ => (hcoord p γ).aemeasurable).aestronglyMeasurable
+    exact (PiLp.continuous_toLp 2 _).comp_aestronglyMeasurable hpi
+  -- Step 1(c): `‖f_{p+1} - f_p‖ = |κ_{p+1} - κ_p|`, so the series is the hypothesis.
+  have hsum' : (∑' p, ∫⁻ x, ‖f (p + 1) x - f p x‖ₑ ∂H) ≠ ∞ := by
+    convert hsum using 4 with p x
+    simp only [hf, ← hcsub, hnormc]
+    rfl
+  -- Step 2: `f_p → g` a.e. and in `L¹` (l1_cauchy_limit).
+  obtain ⟨g, hgmeas, hgae, hgL1⟩ :=
+    hC2 (Eucl N) H (EuclideanSpace ℝ (SimonMultiIndex k N)) f hfmeas hsum'
+  -- Step 0(d): `|τ₁ ∧ ⋯ ∧ τ_k| = 1` for orthonormal `τ`.  The covector
+  -- `α₀ = ⟨τ₁, ·⟩ ∧ ⋯ ∧ ⟨τ_k, ·⟩` has `α₀(τ) = det 1 = 1` and the same coordinates as
+  -- `simpleNVector τ` (transposed determinants); expand `α₀(τ)` by the pairing expansion.
+  have hunitfact : ∀ τ : Fin k → Eucl N, Orthonormal ℝ τ →
+      ∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (simpleNVector τ) γ) ^ 2 = 1 := by
+    intro τ hτ
+    set α₀ : Covector (Eucl N) k := wedgeCovectors k (fun i => innerSL ℝ (τ i)) with hα₀
+    have h1 : simpleNVector τ α₀ = 1 := by
+      rw [simpleNVector_apply, hα₀, wedgeCovectors_apply_det]
+      have : (Matrix.of fun i j => (innerSL ℝ (τ i)) (τ j)) = 1 := by
+        ext i j
+        rw [Matrix.of_apply, innerSL_apply_apply, Matrix.one_apply]
+        exact orthonormal_iff_ite.mp hτ i j
+      rw [this, Matrix.det_one]
+    have h2 : ∀ γ : SimonMultiIndex k N, euclideanCovectorCoordinate α₀ γ =
+        euclideanNVectorCoordinate (simpleNVector τ) γ := by
+      intro γ
+      simp only [euclideanCovectorCoordinate, euclideanNVectorCoordinate, simpleNVector_apply, hα₀]
+      rw [wedgeCovectors_apply_det, wedgeCovectors_apply_det, ← Matrix.det_transpose]
+      congr 1
+      ext i j
+      simp [Matrix.transpose_apply, EuclideanSpace.inner_single_right]
+    have h3 := (hPair N k (simpleNVector τ) α₀).1
+    rw [h1] at h3
+    rw [h3]
+    refine Finset.sum_congr rfl fun γ _ => ?_
+    rw [h2, sq]
+    rfl
+  -- Step 1(d): `‖f_p‖ = 1_{M_p} θ_p` a.e., as `ξ_p = ±simpleNVector τ` a.e. on `M_p`.
+  have hunit : ∀ p, ∀ᵐ x ∂H, ‖f p x‖ = (M p).indicator (θ p) x := by
+    intro p
+    have hor := (hTri p).orients
+    rw [ae_restrict_iff'₀ (hTri p).nullMeasurableSet] at hor
+    filter_upwards [hor] with x hx
+    by_cases hxM : x ∈ M p
+    · obtain ⟨τ, hτ, -, hξ⟩ := hx hxM
+      rw [indicator_of_mem hxM]
+      have hθpos := (hTri p).pos x hxM
+      have hfx : f p x = θ p x • c (ξ p x) := by
+        ext γ
+        simp [hf, hc, hκ, hxM, euclideanNVectorCoordinate]
+      rw [hfx, norm_smul, Real.norm_eq_abs, abs_of_pos hθpos]
+      have hc1 : ‖c (ξ p x)‖ = 1 := by
+        rw [EuclideanSpace.norm_eq]
+        have hs : ∑ γ : SimonMultiIndex k N, ‖(c (ξ p x)) γ‖ ^ 2 = 1 := by
+          rw [← hunitfact τ hτ]
+          refine Finset.sum_congr rfl fun γ _ => ?_
+          rcases hξ with h | h
+          · simp [hc, h, Real.norm_eq_abs, sq_abs]
+          · simp [hc, h, Real.norm_eq_abs, sq_abs, euclideanNVectorCoordinate]
+        rw [hs, Real.sqrt_one]
+      rw [hc1, mul_one]
+    · rw [indicator_of_notMem hxM]
+      have : κ p x = 0 := by simp [hκ, hxM]
+      simp [hf, this, hc, euclideanNVectorCoordinate]
+      rfl
+  -- Step 3: a.e., the natural numbers `1_{M_p} θ_p(x) = ‖f_p(x)‖ → ‖g(x)‖` are eventually
+  -- constant, so `‖g(x)‖` is a natural number, attained for all large `p`.
+  have hnatlim : ∀ᵐ x ∂H, ∃ m : ℕ, ‖g x‖ = m ∧ ∀ᶠ p in atTop, (M p).indicator (θ p) x = m := by
+    filter_upwards [hgae, ae_all_iff.2 hunit] with x hx hu
+    have hnat : ∀ p, ∃ n : ℕ, (M p).indicator (θ p) x = n := by
+      intro p
+      by_cases hxM : x ∈ M p
+      · rw [indicator_of_mem hxM]
+        exact hNat p x hxM
+      · exact ⟨0, by simp [indicator_of_notMem hxM]⟩
+    choose n hn using hnat
+    have hlim : Tendsto (fun p => (n p : ℝ)) atTop (𝓝 ‖g x‖) := by
+      refine hx.norm.congr fun p => ?_
+      rw [hu p, hn p]
+    obtain ⟨P, hP⟩ := (Metric.tendsto_atTop.1 hlim) (1 / 2) (by norm_num)
+    have hconst : ∀ p ≥ P, n p = n P := by
+      intro p hp
+      have h1 := hP p hp
+      have h2 := hP P le_rfl
+      rw [Real.dist_eq] at h1 h2
+      have hlt : |(n p : ℝ) - n P| < 1 := by
+        have := abs_sub_le (n p : ℝ) ‖g x‖ (n P)
+        rw [abs_sub_comm ‖g x‖ (n P : ℝ)] at this
+        linarith
+      have hlt' : |((n p : ℤ) - n P : ℤ)| < 1 := by exact_mod_cast hlt
+      have : ((n p : ℤ) - n P : ℤ) = 0 := Int.abs_lt_one_iff.mp hlt'
+      omega
+    refine ⟨n P, ?_, ?_⟩
+    · refine tendsto_nhds_unique hlim (tendsto_const_nhds.congr' ?_)
+      exact eventually_atTop.2 ⟨P, fun p hp => by
+        show (n P : ℝ) = n p
+        rw [hconst p hp]⟩
+    · exact eventually_atTop.2 ⟨P, fun p hp => by rw [hn p, hconst p hp]⟩
+  -- Step 4: the limit data `θ₀ = ⌊‖g‖ + 1/2⌋₊`, `M₀ = {θ₀ ≥ 1}` and `ξ₀ = θ₀⁻¹ L(g)`, where
+  -- `L(a) = ∑_γ a_γ e^γ` and `e^γ = e_{γ(0)} ∧ ⋯ ∧ e_{γ(k-1)}`.
+  set θ₀ : Eucl N → ℝ := fun x => ((Nat.floor (‖g x‖ + 1 / 2) : ℕ) : ℝ) with hθ₀
+  set M₀ : Set (Eucl N) := {x | 1 ≤ θ₀ x} with hM₀
+  set e : SimonMultiIndex k N → NVector (Eucl N) k :=
+    fun γ => simpleNVector (fun j => EuclideanSpace.single (γ j) (1 : ℝ)) with he
+  set L : EuclideanSpace ℝ (SimonMultiIndex k N) → NVector (Eucl N) k :=
+    fun a => ∑ γ, a γ • e γ with hL
+  set ξ₀ : Eucl N → NVector (Eucl N) k := fun x => (θ₀ x)⁻¹ • L (g x) with hξ₀
+  -- Step 0(b): `L(c(w)) = w`, by the pairing expansion.
+  have hLc : ∀ w : NVector (Eucl N) k, L (c w) = w := by
+    intro w
+    ext α
+    have h := (hPair N k w α).1
+    rw [h]
+    simp only [hL, hc, he, FunLike.coe_sum, Finset.sum_apply,
+      FunLike.coe_smul, Pi.smul_apply, simpleNVector_apply, smul_eq_mul]
+    refine Finset.sum_congr rfl fun γ _ => ?_
+    simp [euclideanCovectorCoordinate, mul_comm]
+    left; rfl
+  -- Step 3: `θ₀ = ‖g‖` a.e., as `⌊m + 1/2⌋₊ = m`.
+  have hθ₀g : ∀ᵐ x ∂H, θ₀ x = ‖g x‖ := by
+    filter_upwards [hnatlim] with x hx
+    obtain ⟨m, hm, -⟩ := hx
+    simp only [hθ₀, hm]
+    have : Nat.floor ((m : ℝ) + 1 / 2) = m := by
+      rw [Nat.floor_eq_iff (by positivity)]
+      constructor <;> norm_num
+    rw [this]
+  -- Step 4(a)–(b): `θ₀` is natural-valued, `θ₀ ≥ 1` on `M₀`, and `θ₀` is a.e. measurable
+  -- (`t ↦ ⌊t⌋₊` is monotone), so `M₀` is null-measurable.
+  have hfloor : Measurable (fun t : ℝ => ((Nat.floor t : ℕ) : ℝ)) := by
+    have hm : Monotone (fun t : ℝ => ((Nat.floor t : ℕ) : ℝ)) := fun a b hab => by
+      show ((Nat.floor a : ℕ) : ℝ) ≤ ((Nat.floor b : ℕ) : ℝ)
+      exact_mod_cast Nat.floor_mono hab
+    exact hm.measurable
+  have hθ₀meas : AEMeasurable θ₀ H :=
+    hfloor.comp_aemeasurable (hgmeas.norm.aemeasurable.add_const _)
+  have hM₀meas : NullMeasurableSet M₀ H :=
+    hθ₀meas.nullMeasurableSet_preimage measurableSet_Ici
+  have hθ₀1 : ∀ x ∈ M₀, 1 ≤ θ₀ x := fun x hx => hx
+  -- Step 4(c): `θ₀` is integrable on `M₀ ∩ K`.  Pick `p` with `∫ ‖f_p - g‖ < ∞`; then a.e.
+  -- `θ₀ = ‖g‖ ≤ ‖f_p‖ + ‖f_p - g‖`, and `∫_K ‖f_p‖ = ∫_{M_p ∩ K} θ_p < ∞` by Step 1(d).
+  have hθ₀int : ∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₀ (M₀ ∩ K) H := by
+    intro K hK
+    obtain ⟨p, hp⟩ : ∃ p, ∫⁻ x, ‖f p x - g x‖ₑ ∂H < ∞ := by
+      obtain ⟨p, hp⟩ := (hgL1.eventually (gt_mem_nhds (show (0 : ℝ≥0∞) < 1 by norm_num))).exists
+      exact ⟨p, hp.trans ENNReal.one_lt_top⟩
+    have hfpK : ∫⁻ x in K, ‖f p x‖ₑ ∂H < ∞ := by
+      have hint : IntegrableOn (θ p) (M p ∩ K) H := (hTri p).integrableOn K hK (subset_univ K)
+      have hae : ∀ᵐ x ∂(H.restrict K), ‖f p x‖ₑ = (M p).indicator (fun y => ‖θ p y‖ₑ) x := by
+        filter_upwards [ae_restrict_of_ae (hunit p)] with x hx
+        rw [← ofReal_norm, hx, ← enorm_indicator_eq_indicator_enorm, ← ofReal_norm]
+        congr 1
+        rw [Real.norm_eq_abs, abs_of_nonneg]
+        by_cases hxM : x ∈ M p
+        · rw [indicator_of_mem hxM]
+          exact ((hTri p).pos x hxM).le
+        · rw [indicator_of_notMem hxM]
+      rw [lintegral_congr_ae hae, lintegral_indicator₀
+        ((hTri p).nullMeasurableSet.mono Measure.restrict_le_self),
+        Measure.restrict_restrict₀ ((hTri p).nullMeasurableSet.mono Measure.restrict_le_self)]
+      exact hint.hasFiniteIntegral
+    have hθ₀ae : ∀ᵐ x ∂(H.restrict (M₀ ∩ K)), ‖θ₀ x‖ₑ ≤ ‖g x‖ₑ := by
+      filter_upwards [ae_restrict_of_ae hθ₀g] with x hx
+      rw [hx]
+      simp
+    refine ⟨hθ₀meas.aestronglyMeasurable.restrict, ?_⟩
+    calc ∫⁻ x in M₀ ∩ K, ‖θ₀ x‖ₑ ∂H ≤ ∫⁻ x in M₀ ∩ K, ‖g x‖ₑ ∂H := lintegral_mono_ae hθ₀ae
+      _ ≤ ∫⁻ x in K, ‖g x‖ₑ ∂H := lintegral_mono_set inter_subset_right
+      _ ≤ ∫⁻ x in K, (‖f p x‖ₑ + ‖f p x - g x‖ₑ) ∂H := lintegral_mono fun x => by
+            calc ‖g x‖ₑ = ‖f p x - (f p x - g x)‖ₑ := by rw [sub_sub_cancel]
+              _ ≤ ‖f p x‖ₑ + ‖f p x - g x‖ₑ := enorm_sub_le
+      _ = ∫⁻ x in K, ‖f p x‖ₑ ∂H + ∫⁻ x in K, ‖f p x - g x‖ₑ ∂H :=
+            lintegral_add_left' (hfmeas p).enorm.restrict _
+      _ < ∞ := ENNReal.add_lt_top.2 ⟨hfpK, (setLIntegral_le_lintegral _ _).trans_lt hp⟩
+  -- Step 4(d): for a.e. `x ∈ M₀`, eventually `x ∈ M_p` and `θ_p(x) = θ₀(x)`, so
+  -- `ξ_p(x) = θ₀(x)⁻¹ L(f_p(x)) → θ₀(x)⁻¹ L(g(x)) = ξ₀(x)`, as `L` is continuous.
+  have hLcont : Continuous L := by
+    have : ContinuousAdd (NVector (Eucl N) k) :=
+      ⟨(inferInstance : IsTopologicalAddGroup (NVector (Eucl N) k)).continuous_add⟩
+    simp only [hL]
+    fun_prop
+  have hpt : ∀ᵐ x ∂(H.restrict M₀), (∀ᶠ p in atTop, x ∈ M p) ∧
+      Tendsto (fun p => ξ p x) atTop (𝓝 (ξ₀ x)) := by
+    have hmem : ∀ᵐ x ∂(H.restrict M₀), x ∈ M₀ := ae_restrict_mem₀ hM₀meas
+    filter_upwards [hmem, ae_restrict_of_ae hnatlim, ae_restrict_of_ae hgae,
+      ae_restrict_of_ae hθ₀g] with x hxM₀ hnx hgx hθx
+    obtain ⟨m, hm, hev⟩ := hnx
+    have hθ₀m : θ₀ x = m := by rw [hθx, hm]
+    have hm1 : (1 : ℝ) ≤ m := hθ₀m ▸ hxM₀
+    have hev' : ∀ᶠ p in atTop, x ∈ M p ∧ θ p x = θ₀ x := by
+      filter_upwards [hev] with p hp
+      have hne : (M p).indicator (θ p) x ≠ 0 := by
+        rw [hp]
+        exact (lt_of_lt_of_le one_pos hm1).ne'
+      have hxp : x ∈ M p := by
+        by_contra h
+        exact hne (indicator_of_notMem h _)
+      exact ⟨hxp, by rw [← indicator_of_mem hxp (θ p), hp, hθ₀m]⟩
+    refine ⟨hev'.mono fun p hp => hp.1, ?_⟩
+    have hθ₀ne : θ₀ x ≠ 0 := by
+      rw [hθ₀m]
+      exact (lt_of_lt_of_le one_pos hm1).ne'
+    have hconv : Tendsto (fun p => (θ₀ x)⁻¹ • L (f p x)) atTop (𝓝 ((θ₀ x)⁻¹ • L (g x))) :=
+      ((hLcont.tendsto _).comp hgx).const_smul _
+    refine hconv.congr' ?_
+    filter_upwards [hev'] with p hp
+    have hκx : κ p x = θ₀ x • ξ p x := by
+      simp only [hκ, indicator_of_mem hp.1, hp.2]
+    show (θ₀ x)⁻¹ • L (c (κ p x)) = ξ p x
+    rw [hLc, hκx, smul_smul, inv_mul_cancel₀ hθ₀ne, one_smul]
+  -- Step 5: `(M₀, θ₀, ξ₀)` is a rectifiable triple (limit_triple), natural-valued by Step 4(a).
+  have hTri₀ : IsRectifiableTriple (univ : Set (Eucl N)) k M₀ θ₀ ξ₀ :=
+    hOrient N k M θ ξ M₀ θ₀ ξ₀ hTri hθ1 hM₀meas hθ₀1 hθ₀int hpt
+  refine ⟨M₀, θ₀, ξ₀, hTri₀, fun x _ => ⟨_, rfl⟩, fun ω hωc hωs => ?_⟩
+  -- Step 6: convergence of the τ-actions.  The integrands are integrable (tau_integrable (b)).
+  have hint : ∀ p, IntegrableOn (fun x => θ p x * ξ p x (ω x)) (M p) H := fun p =>
+    (hTau N k univ (M p) (θ p) (ξ p) (hTri p)).2 ω hωc hωs (subset_univ _)
+  have hint₀ : IntegrableOn (fun x => θ₀ x * ξ₀ x (ω x)) M₀ H :=
+    (hTau N k univ M₀ θ₀ ξ₀ hTri₀).2 ω hωc hωs (subset_univ _)
+  -- A uniform bound `|ω| ≤ C`: `x ↦ |ω(x)|` is continuous with compact support.
+  have hωnorm : Continuous fun x => covectorEuclideanNorm (ω x) := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((continuous_eval_const _).comp hωc).pow 2
+    · exact continuous_const
+  have hsupp : HasCompactSupport (fun x => covectorEuclideanNorm (ω x)) := by
+    refine hωs.mono fun x hx => ?_
+    rw [Function.mem_support] at hx ⊢
+    intro h
+    apply hx
+    rw [h]
+    exact covectorEuclideanNorm_zero N k
+  obtain ⟨C₀, hC₀⟩ := hωnorm.bddAbove_range_of_hasCompactSupport hsupp
+  set C : ℝ := max C₀ 0 with hCdef
+  have hC0 : 0 ≤ C := le_max_right _ _
+  have hCb : ∀ x, covectorEuclideanNorm (ω x) ≤ C := fun x =>
+    (hC₀ ⟨x, rfl⟩).trans (le_max_left _ _)
+  -- Step 6(a)–(b): `τ(M_p, θ_p, ξ_p)(ω) = ∫ κ_p(ω)` and `τ(M₀, θ₀, ξ₀)(ω) = ∫ κ₀(ω)`, with
+  -- integrable integrands.
+  have hκapp : ∀ p x, κ p x (ω x) = (M p).indicator (fun y => θ p y * ξ p y (ω y)) x := by
+    intro p x
+    by_cases hx : x ∈ M p
+    · simp [hκ, hx]
+    · simp [hκ, hx]
+  set κ₀ : Eucl N → NVector (Eucl N) k := M₀.indicator (fun y => θ₀ y • ξ₀ y) with hκ₀
+  have hκ₀app : ∀ x, κ₀ x (ω x) = M₀.indicator (fun y => θ₀ y * ξ₀ y (ω y)) x := by
+    intro x
+    by_cases hx : x ∈ M₀
+    · simp [hκ₀, hx]
+    · simp [hκ₀, hx]
+  have htau : ∀ p, tauAction k (M p) (θ p) (ξ p) ω = ∫ x, κ p x (ω x) ∂H := by
+    intro p
+    simp_rw [hκapp]
+    rw [integral_indicator₀ (hTri p).nullMeasurableSet]
+    rfl
+  have htau₀ : tauAction k M₀ θ₀ ξ₀ ω = ∫ x, κ₀ x (ω x) ∂H := by
+    simp_rw [hκ₀app]
+    rw [integral_indicator₀ hM₀meas]
+    rfl
+  have hintp : ∀ p, Integrable (fun x => κ p x (ω x)) H := by
+    intro p
+    simp_rw [hκapp]
+    exact (hint p).integrable_indicator₀ (hTri p).nullMeasurableSet
+  have hint₀' : Integrable (fun x => κ₀ x (ω x)) H := by
+    simp_rw [hκ₀app]
+    exact hint₀.integrable_indicator₀ hM₀meas
+  -- Step 6(c): `κ₀ = L(g)` a.e.; off `M₀`, `θ₀ = 0 = ‖g‖`.
+  have hκ₀L : ∀ᵐ x ∂H, κ₀ x = L (g x) := by
+    filter_upwards [hθ₀g] with x hx
+    by_cases hxM : x ∈ M₀
+    · have hne : θ₀ x ≠ 0 := (lt_of_lt_of_le one_pos (show (1 : ℝ) ≤ θ₀ x from hxM)).ne'
+      simp only [hκ₀, indicator_of_mem hxM, hξ₀, smul_smul, mul_inv_cancel₀ hne, one_smul]
+    · have hlt : θ₀ x < 1 := not_le.mp hxM
+      have h0 : θ₀ x = 0 := by
+        have hfl : Nat.floor (‖g x‖ + 1 / 2) < 1 := by
+          have : ((Nat.floor (‖g x‖ + 1 / 2) : ℕ) : ℝ) < 1 := hlt
+          exact_mod_cast this
+        simp only [hθ₀, Nat.lt_one_iff.mp hfl, Nat.cast_zero]
+      have hg0 : g x = 0 := by
+        rw [h0] at hx
+        exact norm_eq_zero.mp hx.symm
+      simp only [hκ₀, indicator_of_notMem hxM, hg0, hL]
+      simp
+  -- Step 0(a), (c): `L` is additive and `|L(a)(α)| ≤ m ‖a‖ |α|`, where `m = #I`.
+  have hLsub : ∀ a b : EuclideanSpace ℝ (SimonMultiIndex k N), L (a - b) = L a - L b := by
+    intro a b
+    ext α
+    simp [hL, sub_mul, Finset.sum_sub_distrib]
+  have hLbound : ∀ (a : EuclideanSpace ℝ (SimonMultiIndex k N)) (α : Covector (Eucl N) k),
+      |L a α| ≤ (Fintype.card (SimonMultiIndex k N) : ℝ) * ‖a‖ * covectorEuclideanNorm α := by
+    intro a α
+    have hexp : L a α = ∑ γ, a γ * euclideanCovectorCoordinate α γ := by
+      simp [hL, he, euclideanCovectorCoordinate]
+    rw [hexp]
+    calc |∑ γ, a γ * euclideanCovectorCoordinate α γ|
+        ≤ ∑ γ, |a γ * euclideanCovectorCoordinate α γ| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _γ : SimonMultiIndex k N, ‖a‖ * covectorEuclideanNorm α := by
+          refine Finset.sum_le_sum fun γ _ => ?_
+          rw [abs_mul]
+          exact mul_le_mul (by simpa [Real.norm_eq_abs] using PiLp.norm_apply_le a γ)
+            ((hPair N k 0 α).2 γ) (abs_nonneg _) (norm_nonneg _)
+      _ = (Fintype.card (SimonMultiIndex k N) : ℝ) * ‖a‖ * covectorEuclideanNorm α := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+          ring
+  -- Step 6(d)–(e): `∫ |κ_p(ω) - κ₀(ω)| ≤ m C ∫ ‖f_p - g‖ → 0`, hence `∫ κ_p(ω) → ∫ κ₀(ω)`.
+  set m : ℝ := (Fintype.card (SimonMultiIndex k N) : ℝ) with hm
+  have hL1 : Tendsto (fun p => ∫⁻ x, ‖κ p x (ω x) - κ₀ x (ω x)‖ₑ ∂H) atTop (𝓝 0) := by
+    have hb : ∀ p, ∫⁻ x, ‖κ p x (ω x) - κ₀ x (ω x)‖ₑ ∂H ≤
+        ENNReal.ofReal (m * C) * ∫⁻ x, ‖f p x - g x‖ₑ ∂H := by
+      intro p
+      rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+      refine lintegral_mono_ae ?_
+      filter_upwards [hκ₀L] with x hx
+      have hdiff : κ p x (ω x) - κ₀ x (ω x) = L (f p x - g x) (ω x) := by
+        rw [hx, hLsub]
+        show κ p x (ω x) - L (g x) (ω x) = (L (c (κ p x)) - L (g x)) (ω x)
+        rw [hLc]
+        rfl
+      rw [hdiff, ← ofReal_norm, ← ofReal_norm, ← ENNReal.ofReal_mul (by positivity)]
+      refine ENNReal.ofReal_le_ofReal ?_
+      rw [Real.norm_eq_abs]
+      calc |L (f p x - g x) (ω x)| ≤ m * ‖f p x - g x‖ * covectorEuclideanNorm (ω x) :=
+            hLbound _ _
+        _ ≤ m * ‖f p x - g x‖ * C := by
+            gcongr
+            exact hCb x
+        _ = m * C * ‖f p x - g x‖ := by ring
+    have hlim : Tendsto (fun p => ENNReal.ofReal (m * C) * ∫⁻ x, ‖f p x - g x‖ₑ ∂H) atTop
+        (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_mul hgL1 (Or.inr ENNReal.ofReal_ne_top)
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun p => bot_le) hb
+  rw [htau₀]
+  simp_rw [htau]
+  exact tendsto_integral_of_L1 _ hint₀'.aestronglyMeasurable (Eventually.of_forall hintp) hL1
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
