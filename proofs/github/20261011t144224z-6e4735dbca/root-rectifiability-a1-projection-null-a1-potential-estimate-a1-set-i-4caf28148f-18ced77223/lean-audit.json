@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c2672e67eb524e77699ab2658345d7a6ddd2ee6f40f21b0d565f5954d2b0503a",
+  "git_delta": {
+    "base_commit": "4468c92d267468e0ede40e4672685d1c28a1f912",
+    "candidate_commit": "40d791a916ac216bcc1c2cf510ba95366843c0fb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_inv_norm_pow_set_bound",
+    "diff_sha256": "2eac1b1176df13d222c570d32537ed06cad715d36c8eca376a2f9af90a5f6d97",
+    "source_sha256": "6283de9f008ab8a40d1ff44e8bda50f00fa0419acd6580d73bd9e388fd9b044d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_inv_norm_pow_set_bound",
+      "statement": "∀ (m : ℕ) (S : Set (Eucl (m + 1))), MeasurableSet S → volume S ≠ ⊤ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S ∧ ∫ t in S, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 2) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal ^ ((m : ℝ) / ((m : ℝ) + 1)) * (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
