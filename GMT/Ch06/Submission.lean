@@ -522,6 +522,152 @@ theorem Submission.fiw_tb_ext_support_subset : ∀ (P q : ℕ) (V K : Set (Eucl 
     rw [Set.disjoint_left]
     intro y hy hyK
     exact (hball (ball_subset_ball (half_le_self hε.le) (hω hy))).2 hyK
+/-- Simon Ch. 6, 2.23 (p. 139), cut-off construction: if `f` is `C^∞` and proper on `A ⊆ U`, every
+`ω ∈ 𝒟ʲ(V)` has a pull-back `η = ζ f^#ω ∈ 𝒟ʲ(U)` with `0 ≤ ζ ≤ 1`, `η = f^#ω` on an open
+`N ⊇ A`, and `spt η ⊆ f⁻¹(spt ω)`. -/
+theorem Submission.iwl_sp_exists_compatible_testForm :
+    ∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (f : Eucl P → Eucl Q),
+      IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) →
+      ∀ ω : TestFormOn V j, ∃ (η : TestFormOn U j) (ζ : Eucl P → ℝ) (N : Set (Eucl P)),
+        IsOpen N ∧ A ⊆ N ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧
+        (∀ x, (η : DifferentialForm (Eucl P) j) x =
+          ζ x • ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap
+            (fderiv ℝ f x)) ∧
+        (∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x =
+          ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧
+        tsupport (η : DifferentialForm (Eucl P) j) ⊆
+          f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) := by
+  intro P Q j U V A f hU hAU hf hprop ω
+  obtain ⟨⟨hωs, hωc⟩, hωV⟩ := ω.property
+  have hωs' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl Q) j) := hωs
+  -- 1. `K = f⁻¹(spt ω) ∩ A` is compact, by properness.
+  have hK : IsCompact (f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A) :=
+    hprop _ hωc.isCompact hωV
+  set K := f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A
+  -- 2. A closed `δ`-thickening of `K` lies in `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU fun x hx => hAU hx.2
+  -- 3. Smooth Urysohn: `support ζ = thickening δ K`, and `ζ = 1` exactly on `cthickening (δ/2) K`.
+  obtain ⟨ζ, hζs, hζr, hζsupp, hζone⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K)) (isClosed_cthickening (δ := δ / 2) (E := K))
+    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  have hζt : tsupport ζ ⊆ cthickening δ K := by
+    rw [tsupport, hζsupp]
+    exact closure_thickening_subset_cthickening δ K
+  -- 4. The pull-back `p = f^# ω` is smooth, since `B ↦ B^#` is analytic.
+  set p : DifferentialForm (Eucl P) j := fun x =>
+    ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)
+  have hp : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p := by
+    have hD : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right (by simp)
+    have hC : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun x => ContinuousAlternatingMap.compContinuousLinearMapCLM (ι := Fin j) (F := ℝ)
+          (fderiv ℝ f x)) :=
+      (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff.comp hD
+    exact hC.clm_apply (hωs'.comp hf)
+  -- `p` vanishes wherever `ω ∘ f` does.
+  have hp0 : ∀ x, f x ∉ tsupport (ω : DifferentialForm (Eucl Q) j) → p x = 0 := by
+    intro x hx
+    show ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x) = 0
+    rw [image_eq_zero_of_notMem_tsupport hx,
+      ← ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, map_zero]
+  -- 5. The test form `η = ζ p`.
+  have hηs : IsSmoothForm (fun x => ζ x • p x) := hζs.smul hp
+  have hηt : tsupport (fun x => ζ x • p x) ⊆ U :=
+    (tsupport_smul_subset_left ζ p).trans (hζt.trans hδU)
+  have hηc : HasCompactSupport (fun x => ζ x • p x) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport _)
+      ((tsupport_smul_subset_left ζ p).trans hζt)
+  let η : TestFormOn U j := ⟨fun x => ζ x • p x, ⟨hηs, hηc⟩, hηt⟩
+  refine ⟨η, ζ, thickening (δ / 2) K ∪ f ⁻¹' (tsupport (ω : DifferentialForm (Eucl Q) j))ᶜ,
+    isOpen_thickening.union ((isClosed_tsupport _).isOpen_compl.preimage hf.continuous), ?_,
+    fun x => hζr (mem_range_self x), fun x => rfl, ?_, ?_⟩
+  · -- 7. `A ⊆ N`.
+    intro x hx
+    by_cases hfx : f x ∈ tsupport (ω : DifferentialForm (Eucl Q) j)
+    · exact Or.inl (self_subset_thickening (half_pos hδ) K ⟨hfx, hx⟩)
+    · exact Or.inr hfx
+  · -- 8. `η = p` on `N`.
+    rintro x (hx | hx)
+    · have h1 : ζ x = 1 := (hζone x).1 (thickening_subset_cthickening _ _ hx)
+      show ζ x • p x = p x
+      rw [h1, one_smul]
+    · show ζ x • p x = p x
+      rw [hp0 x hx, smul_zero]
+  · -- 6. `spt η ⊆ f⁻¹(spt ω)`, a closed set.
+    refine closure_minimal ?_ ((isClosed_tsupport _).preimage hf.continuous)
+    intro x hx
+    by_contra hfx
+    exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+/-- Simon Ch. 6, proof of 8.2 (p. 179), `p_# S̃_j` and display (10): if `p` is linear with
+`‖p‖ ≤ 1` and proper on `F`, integer multiplicity `X_k ∈ 𝒟_{m+1}(U)` with `spt X_k ⊆ F` push
+forward (by the smooth push-forward, `f := p`) to integer multiplicity `S_k ∈ 𝒟_{m+1}(V)` with
+`S_k(ω) = X_k(p^#ω)`, `M_W(S_k) ≤ M(X_k)` and `M_W(∂S_k) ≤ M(∂X_k)`. -/
+theorem Submission.ind_pi_pl_linear_pushforward_family :
+    LipschitzPushforwardIntegerMultiplicity →
+    (LipschitzPushforwardIntegerMultiplicity →
+      ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V →
+      ∀ (X : GeometricCurrentOn U (k + 1)) (f : Eucl P → Eucl Q),
+        IsIntegerMultiplicity X → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → MapsTo f U V →
+        (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ X.support)) →
+        ∃ S : GeometricCurrentOn V (k + 1), IsIntegerMultiplicity S ∧
+          (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)),
+            (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+              (η : DifferentialForm (Eucl P) (k + 1)) x =
+                ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap
+                  (fderiv ℝ f x)) →
+            S ω = X η) ∧
+          (∀ (ω : TestFormOn V k) (η : TestFormOn U k),
+            (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+              (η : DifferentialForm (Eucl P) k) x =
+                ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap
+                  (fderiv ℝ f x)) →
+            S.boundary ω = X.boundary η) ∧
+          ∀ c : ℝ, 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q),
+            S.massOn W ≤ ENNReal.ofReal (c ^ (k + 1)) * X.massOn (f ⁻¹' W ∩ U) ∧
+            S.boundary.massOn W ≤ ENNReal.ofReal (c ^ k) * X.boundary.massOn (f ⁻¹' W ∩ U)) →
+    ∀ (P Q m : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (F : Set (Eucl P))
+      (p : Eucl P →L[ℝ] Eucl Q) (X : ℕ → GeometricCurrentOn U (m + 1)),
+      IsOpen U → IsOpen V → ‖p‖ ≤ 1 → MapsTo p U V →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (p ⁻¹' K ∩ F) ∧ p ⁻¹' K ∩ F ⊆ U) →
+      (∀ k, IsIntegerMultiplicity (X k)) → (∀ k, (X k).support ⊆ F) →
+      ∃ S : ℕ → GeometricCurrentOn V (m + 1), (∀ k, IsIntegerMultiplicity (S k)) ∧
+        (∀ (k : ℕ) (ω : TestFormOn V (m + 1)) (η : TestFormOn U (m + 1)),
+          (∃ N : Set (Eucl P), IsOpen N ∧ (X k).support ⊆ N ∧ ∀ x ∈ N,
+            (η : DifferentialForm (Eucl P) (m + 1)) x =
+              ((ω : DifferentialForm (Eucl Q) (m + 1)) (p x)).compContinuousLinearMap p) →
+          S k ω = X k η) ∧
+        ∀ (k : ℕ) (W : Set (Eucl Q)),
+          (S k).massOn W ≤ (X k).mass ∧ (S k).boundary.massOn W ≤ (X k).boundary.mass := by
+  intro hLPF hSPF P Q m U V F p X hU hV hp hpUV hprop hX hXF
+  -- 1. `p` is `C^∞` and `fderiv ℝ p x = p`, so `‖fderiv ℝ p x‖ ≤ 1`.
+  have hpd : ∀ x, fderiv ℝ p x = p := fun x => p.fderiv
+  have hps : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p := p.contDiff
+  -- 2. `p` is proper on `spt X_k`: `p⁻¹(K) ∩ spt X_k = (p⁻¹(K) ∩ F) \ zeroRegion X_k`.
+  have hpk : ∀ k, ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V →
+      IsCompact (p ⁻¹' K ∩ (X k).support) := by
+    intro k K hK hKV
+    obtain ⟨hKc, hKU⟩ := hprop K hK hKV
+    have heq : p ⁻¹' K ∩ (X k).support = (p ⁻¹' K ∩ F) \ (X k).zeroRegion := by
+      ext y
+      constructor
+      · rintro ⟨hy, hys⟩
+        exact ⟨⟨hy, hXF k hys⟩, hys.2⟩
+      · rintro ⟨hyF, hyZ⟩
+        exact ⟨hyF.1, hKU hyF, hyZ⟩
+    rw [heq]
+    exact hKc.diff (X k).isOpen_zeroRegion
+  -- 3. The smooth push-forward by `p` of each `X_k`; choose `S_k`.
+  choose S hSi hSa _ hSm using fun k => hSPF hLPF P Q m U V hU hV (X k) p (hX k) hps hpUV (hpk k)
+  refine ⟨S, hSi, ?_, ?_⟩
+  · -- 4. `S_k(ω) = X_k(η)` when `η = p^#ω` near `spt X_k`, as `fderiv ℝ p x = p`.
+    rintro k ω η ⟨N, hN, hXN, hη⟩
+    exact hSa k ω η ⟨N, hN, hXN, fun x hx => by rw [hpd x]; exact hη x hx⟩
+  · -- 5. The mass bounds at `c = 1`, then `M_{p⁻¹(W) ∩ U} ≤ M_U = M`.
+    intro k W
+    obtain ⟨hm, hbm⟩ := hSm k 1 zero_le_one (fun x => by rw [hpd x]; exact hp) W
+    simp only [one_pow, ENNReal.ofReal_one, one_mul] at hm hbm
+    exact ⟨hm.trans ((X k).massOn_mono inter_subset_right),
+      hbm.trans ((X k).boundary.massOn_mono inter_subset_right)⟩
 /-- Geometry of an orthonormal frame `τ` in `ℝ^P`: with `π y = ∑ ⟪τᵢ, y⟫ τᵢ`, `p y = (⟪τᵢ, y⟫)ᵢ`
 and `d y = ‖y − π y‖`, Pythagoras gives `‖y‖² = ‖p y‖² + d(y)²`; hence `‖p‖ ≤ 1`, `d` is
 `1`-Lipschitz, `p` inverts `a ↦ ∑ aᵢ τᵢ`, `d = 0` on `span τ`, the cylinder
@@ -1306,6 +1452,81 @@ theorem Submission.ind_pi_localized_cycles :
     have h := hRlim X hXX (testFormOnInclusion hW'B (m + 1) ω) ω.property.2
     rw [hXω] at h
     exact h
+
+/-- Simon Ch. 6, proof of 8.2 (display (10) and `p_# S̃_j ⇀ θ [[ℝⁿ]]`): push the localized
+currents `Z_k ⇀ c [[Q]]` (`Q = span τ`) in the cylinder `W′ = {‖p‖ < 1, d < 3/4}` forward by
+the frame coordinates `p`.  The push-forwards `S′_k = p_# Z_k` are integer multiplicity currents in
+`B₁(0) ⊆ ℝⁿ` with `M_W(S′_k) ≤ M(Z_k)` and `M_W(∂S′_k) ≤ M(∂Z_k)`, and `S′_k(ω) = Z_k(η)` for a
+cut-off pull-back `η = ζ p^#ω ∈ 𝒟ⁿ(W′)` independent of `k`.  On `Q`, `η(τ) = ω(p ·)(e)`, so
+`S′_k(ω) → c ∫_Q ω(p z)(e) dHⁿ(z) = c ∫_{B₁(0)} ω(e) dx = S(ω)`. -/
+theorem Submission.ind_pi_projected_limit : LipschitzPushforwardIntegerMultiplicity → (LipschitzPushforwardIntegerMultiplicity → ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (X : GeometricCurrentOn U (k + 1)) (f : Eucl P → Eucl Q), IsIntegerMultiplicity X → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → MapsTo f U V → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn V (k + 1), IsIntegerMultiplicity S ∧ (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) ∧ (∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η) ∧ ∀ c : ℝ, 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q), S.massOn W ≤ ENNReal.ofReal (c ^ (k + 1)) * X.massOn (f ⁻¹' W ∩ U) ∧ S.boundary.massOn W ≤ ENNReal.ofReal (c ^ k) * X.boundary.massOn (f ⁻¹' W ∩ U)) → ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (c γ : ℝ) (p : Eucl P →L[ℝ] Eucl (m + 1)) (d : Eucl P → ℝ) (Z : ℕ → GeometricCurrentOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1)) (S : GeometricCurrentOn (ball (0 : Eucl (m + 1)) 1) (m + 1)), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → 0 ≤ γ → γ < 3 / 4 → (∀ k, IsIntegerMultiplicity (Z k)) → (∀ k, (Z k).support ⊆ {y | d y ≤ γ}) → (⨆ k, ((Z k).mass + (Z k).boundary.mass)) < ∞ → (∀ ω : TestFormOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1), Tendsto (fun k => Z k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))) → (∀ ω : TestFormOn (ball (0 : Eucl (m + 1)) 1) (m + 1), S ω = c * ∫ x in ball (0 : Eucl (m + 1)) 1, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ S' : ℕ → GeometricCurrentOn (ball (0 : Eucl (m + 1)) 1) (m + 1), (∀ k, IsIntegerMultiplicity (S' k)) ∧ (∀ W, CompactlyContainedOpen W (ball (0 : Eucl (m + 1)) 1) → (⨆ k, ((S' k).massOn W + (S' k).boundary.massOn W)) < ∞) ∧ WeaklyConvergesOn S' S := by
+  intro hLPF hSPF P m τ c γ p d Z S hτ hp hd hγ0 hγ hZim hZspt hZmass hZlim hS
+  -- 0. Frame geometry: `W′` is open, `‖p‖ ≤ 1`, `p (∑ aᵢ τᵢ) = a`, `p τᵢ = eᵢ`, `d = 0` on `Q`,
+  -- and `p⁻¹(K) ∩ {d ≤ γ}` is a compact subset of `W′` for every compact `K ⊆ B₁(0)`.
+  obtain ⟨-, -, hpn, hpι, hpτ, hdQ, hW', hprop⟩ :=
+    Submission.ind_pi_frame_geometry P (m + 1) τ p d hτ hp hd
+  -- 1–3. The push-forwards `S′_k = p_# Z_k`, with `M_W(S′_k) ≤ M(Z_k)`, `M_W(∂S′_k) ≤ M(∂Z_k)`.
+  obtain ⟨S', hS'im, hS'act, hS'mass⟩ :=
+    Submission.ind_pi_pl_linear_pushforward_family hLPF hSPF P (m + 1) m _
+      (ball (0 : Eucl (m + 1)) 1) {y | d y ≤ γ} p Z hW'.1 isOpen_ball hpn
+      (fun y hy => mem_ball_zero_iff.mpr hy.1) (hprop γ hγ) hZim hZspt
+  refine ⟨S', hS'im, fun W _ => lt_of_le_of_lt (iSup_mono fun k =>
+    add_le_add (hS'mass k W).1 (hS'mass k W).2) hZmass, fun ω => ?_⟩
+  obtain ⟨-, hωV⟩ := ω.property
+  -- 4–6. A cut-off pull-back `η = ζ p^#ω ∈ 𝒟ⁿ(W′)` equal to `p^#ω` on an open `N ⊇ W′ ∩ {d ≤ γ}`;
+  -- as `spt Z_k ⊆ W′ ∩ {d ≤ γ}`, `S′_k(ω) = Z_k(η)` for every `k`.
+  obtain ⟨η, -, N, hN, hAN, -, -, hηN, hηt⟩ :=
+    Submission.iwl_sp_exists_compatible_testForm P (m + 1) (m + 1) _ (ball (0 : Eucl (m + 1)) 1)
+      ({y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} ∩ {y | d y ≤ γ}) p hW'.1 inter_subset_left
+      p.contDiff (fun K hK hKV => by
+        obtain ⟨hKc, hKW⟩ := hprop γ hγ K hK hKV
+        rwa [inter_left_comm, inter_eq_right.mpr hKW]) ω
+  have hact : ∀ k, S' k ω = Z k η := fun k => hS'act k ω η ⟨N, hN,
+    fun y hy => hAN ⟨(Z k).support_subset_domain hy, hZspt k hy⟩,
+    fun x hx => by rw [hηN x hx, p.fderiv]⟩
+  -- 7. On `Q`: `η(∑ aᵢ τᵢ)(τ) = ω(a)(e)`, since `ζ = 1` there when `a ∈ spt ω`, and both sides
+  -- vanish otherwise.
+  have hηQ : ∀ a : Eucl (m + 1), (η : DifferentialForm (Eucl P) (m + 1)) (∑ i, a i • τ i) τ =
+      (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) a
+        (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+    intro a
+    by_cases ha : a ∈ tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1))
+    · have hdz : d (∑ i, a i • τ i) = 0 :=
+        hdQ _ ((Submodule.mem_span_range_iff_exists_fun ℝ).mpr ⟨fun i => a i, rfl⟩)
+      have hz : ∑ i, a i • τ i ∈ {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} ∩ {y | d y ≤ γ} := by
+        refine ⟨⟨?_, ?_⟩, ?_⟩
+        · rw [hpι]
+          exact mem_ball_zero_iff.mp (hωV ha)
+        · rw [hdz]
+          norm_num
+        · show d (∑ i, a i • τ i) ≤ γ
+          rw [hdz]
+          exact hγ0
+      rw [hηN _ (hAN hz), p.fderiv, ContinuousAlternatingMap.compContinuousLinearMap_apply, hpι]
+      congr 1
+      funext i
+      exact hpτ i
+    · have hz : ∑ i, a i • τ i ∉ tsupport (η : DifferentialForm (Eucl P) (m + 1)) := fun hz =>
+        ha (by simpa only [mem_preimage, hpι] using hηt hz)
+      simp only [image_eq_zero_of_notMem_tsupport hz, image_eq_zero_of_notMem_tsupport ha,
+        ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+  -- `c ∫_Q η(τ) dHⁿ = c ∫ η(∑ aᵢ τᵢ)(τ) da = c ∫ ω(a)(e) da = c ∫_{B₁(0)} ω(e) dx = S(ω)`.
+  have hV : ∫ x in ball (0 : Eucl (m + 1)) 1, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+      (fun i => EuclideanSpace.single i (1 : ℝ)) =
+      ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    have hx' : x ∉ tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) := fun h => hx (hωV h)
+    simp only [image_eq_zero_of_notMem_tsupport hx', ContinuousAlternatingMap.coe_zero,
+      Pi.zero_apply]
+  have hlim : c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)),
+      (η : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P)) = S ω := by
+    rw [hS ω, hV, (Submission.ind_pi_span_integral P (m + 1) τ hτ).1]
+    simp only [hηQ]
+  -- 8. `S′_k(ω) = Z_k(η) → S(ω)`.
+  have h := hZlim η
+  rw [hlim] at h
+  exact h.congr fun k => (hact k).symm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
