@@ -1381,6 +1381,30 @@ theorem Submission.lpf_c1_approximation_real :
     rw [hDhx.fderiv]
     exact ⟨hhx.symm, DifferentiableAt.hasFDerivAt (hCD (hAC hx))⟩
 
+/-- Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem), localized to a real function that is
+Lipschitz on an open set `Ω`: McShane-extend `u|Ω` to a Lipschitz `g : ℝⁿ → ℝ`, apply the C¹
+approximation theorem to `g` with `ε_k = 1 / (k + 1)` (sets `C_k`, `C¹` functions `h_k`) and take
+`A_k = Ω ∩ C_k`.  Since `u = g` on the open set `Ω`, `u` has derivative `Dh_k` on `A_k`, and
+`Lⁿ(Ω ∖ ⋃ A_l) ≤ Lⁿ(ℝⁿ ∖ C_k) < 1 / (k + 1)` for every `k`. -/
+theorem Submission.slicing_im_st_cd_c1_pieces_of_lipschitzOn : ∀ (n : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → ℝ) (K : ℝ≥0), IsOpen Ω → LipschitzOnWith K u Ω → ∃ (h : ℕ → Eucl n → ℝ) (A : ℕ → Set (Eucl n)), (∀ k, ContDiff ℝ 1 (h k)) ∧ (∀ k, A k ⊆ Ω) ∧ (∀ k, ∀ w ∈ A k, u w = h k w ∧ HasFDerivAt u (fderiv ℝ (h k) w) w) ∧ (volume : Measure (Eucl n)) (Ω \ ⋃ k, A k) = 0 := by
+  intro n Ω u K hΩ hu
+  -- McShane: a `K`-Lipschitz `g : ℝⁿ → ℝ` with `u = g` on `Ω`.
+  obtain ⟨g, hg, hug⟩ := hu.extend_real
+  -- C¹ approximation of `g` with `ε_k = 1 / (k + 1)`: sets `C k` with `Lⁿ(ℝⁿ ∖ C k) < ε_k` and
+  -- `C¹` functions `h k` with `g = h k` and `Dg = D(h k)` on `C k`.
+  choose C h _ hC hh hgh using fun k : ℕ => Submission.lpf_c1_approximation_real n g K hg
+    ((k + 1 : ℕ) : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top _))
+  refine ⟨h, fun k => Ω ∩ C k, hh, fun k => inter_subset_left, fun k w hw => ?_, ?_⟩
+  · -- On `A k = Ω ∩ C k`, `u = g = h k`; `u = g` near `w` since `Ω` is open, so `Du(w) = Dh_k(w)`.
+    obtain ⟨hgw, hDw⟩ := hgh k w hw.2
+    exact ⟨(hug hw.1).trans hgw,
+      hDw.congr_of_eventuallyEq (hug.eventuallyEq_of_mem (hΩ.mem_nhds hw.1))⟩
+  · -- `Ω ∖ ⋃ A ⊆ ℝⁿ ∖ C k`, so `Lⁿ(Ω ∖ ⋃ A) < 1 / (k + 1)` for every `k`; let `k → ∞`.
+    refine nonpos_iff_eq_zero.1 (ge_of_tendsto'
+      (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)) fun k => ?_)
+    have hsub : Ω \ ⋃ l, Ω ∩ C l ⊆ (C k)ᶜ := fun w hw hwC => hw.2 (mem_iUnion.2 ⟨k, hw.1, hwC⟩)
+    exact (measure_mono hsub).trans (hC k).le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
