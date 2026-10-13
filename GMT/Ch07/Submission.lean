@@ -2277,6 +2277,28 @@ theorem Submission.dtc_bc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (μs
   filter_upwards [eventually_ge_atTop j₁] with j hj
   exact (hsplit (μs j) (hj₁ j hj)).symm
 
+/-- **Simon 7.2.4** (proof, pp. 186–187: (8) and its localization, (12)–(14) and the closing
+"standard approximation argument").  Let `Sⱼ ∈ 𝒟ₙ(Uⱼ)`, the open `Uⱼ` exhausting `ℝᴾ`, converge
+weakly to the integer multiplicity `C ∈ 𝒟ₙ(ℝᴾ)`, and assume the local comparison: for compact `K`,
+`ε > 0` and every subsequence `ψ` there are an open `W`, `K ⊆ W ⊆ K_ε`, and a further subsequence
+`φ'` with `limsup_i M_W(S_{ψ(φ'(i))}) ≤ M_W(S)` for every integer multiplicity `S` with `∂S = ∂C`
+and `spt(S − C) ⊆ K`.  Then `C` is minimizing in `ℝᴾ` (`dtc_bc_mm_isMinimizingIn_univ`), and
+`μ_{Sⱼ} → μ_C` for all representations: the weights satisfy the compact/open semicontinuity
+bounds (`dtc_bc_mm_measure_bounds`), so the Radon criterion
+`dtc_bc_tendsto_integral_of_limsup_liminf` gives `∫ f dμ_{Sⱼ} → ∫ f dμ_C`. -/
+theorem Submission.dtc_bc_minimizing_of_local_comparison : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ ∧ MassMeasuresConverge Ss C := by
+  intro P n Us Ss C hU hex hC hconv hloc
+  -- step 1: `C` is minimizing in `ℝᴾ` (book (8) and its localization)
+  refine ⟨Submission.dtc_bc_mm_isMinimizingIn_univ P n Us Ss C hex hC hconv hloc, ?_⟩
+  -- step 2: for representations `Rⱼ` of `Sⱼ` and `R` of `C`, `μ = μ_R` is finite on compacts,
+  -- `limsup_j μⱼ(K) ≤ μ(K)` for compact `K` (13) and `μ(G) ≤ liminf_j μⱼ(G)` for bounded open
+  -- `G` (14); the condition `tsupport f ⊆ ℝᴾ` is vacuous
+  intro Rs hRs R hR f hf hfc _
+  obtain ⟨ha, hb, hc⟩ :=
+    Submission.dtc_bc_mm_measure_bounds P n Us Ss C hU hex hconv hloc Rs hRs R hR
+  exact Submission.dtc_bc_tendsto_integral_of_limsup_liminf P (fun j => (Rs j).measure)
+    R.measure ha hb hc f hf hfc
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
