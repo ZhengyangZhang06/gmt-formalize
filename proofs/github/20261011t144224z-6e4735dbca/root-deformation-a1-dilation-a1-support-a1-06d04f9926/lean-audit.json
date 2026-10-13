@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "533fd3560eb02729b2bf6d554521c0b628fa4303714f8ee5269dfa74e5a3a574",
+  "git_delta": {
+    "base_commit": "30b80ae25bbe4909f030d29774c1c691bd8f2ce7",
+    "candidate_commit": "dccf6342d5d1527d38253bbeb9df6f2a98837aad",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_support",
+    "diff_sha256": "c4095b50db7e893cf237dcbab39701cb9043c08d0bc67a5c6119fcf9cefc1794",
+    "source_sha256": "215e5fcabf18e2cfd8500da590c5a256189e7b713957d97c9b07b0a842d1b723",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_support",
+      "statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.support = (fun x => ρ • x) '' X.support",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

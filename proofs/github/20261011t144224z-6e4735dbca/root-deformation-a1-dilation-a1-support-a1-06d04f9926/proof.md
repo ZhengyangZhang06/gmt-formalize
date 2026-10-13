@@ -1,0 +1,108 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.dilation-a1`
+- Child DAG node: `root.deformation-a1.dilation-a1.support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Steps 3 and 5.
+Sibling used: deformation_dilation_calculus, first conjunct (existence of the pull-back test form, for any positive scale).
+
+Conventions and definitions.
+- ℝ^N := Eucl N; test forms are elements of TestFormOn univ k.
+- SimonGMT Chapter06.CurrentLocalEquality: T.VanishesOn W iff T(ω) = 0 for every test form ω with tsupport ω ⊆ W.
+- T.zeroRegion = ⋃₀ {W : IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ univ ∧ T.VanishesOn W}.
+- T.support = univ ∖ T.zeroRegion.
+- For σ > 0, φ_σ(x) := σ • x is a homeomorphism of ℝ^N (Homeomorph.smulOfNeZero σ, whose coercion is fun x => σ • x by rfl).
+- σ-pair: for A, B ∈ GeometricCurrentOn univ k, (A, B) is a σ-pair if B(ω) = A(η) for all test forms ω, η with η(x) = σ^k • ω(σ • x) for all x.
+- By hypothesis, (X, Y) is a ρ-pair.
+
+1. General inclusion. If σ > 0 and (A, B) is a σ-pair, then φ_σ(A.zeroRegion) ⊆ B.zeroRegion. Let x ∈ A.zeroRegion. Choose W with W open, closure W compact, A.VanishesOn W and x ∈ W. Put W′ := φ_σ(W).
+(a) W′ is open, since homeomorphisms are open maps (Homeomorph.isOpenMap). closure W′ = φ_σ(closure W) (Homeomorph.image_closure) is compact, as a continuous image of a compact set. Also closure W′ ⊆ univ and σ • x ∈ W′.
+(b) B vanishes on W′. Let ω be a test form with tsupport ω ⊆ W′.
+- By deformation_dilation_calculus N σ hσ k (first conjunct), there is a test form η with η(y) = σ^k • ω(σ • y) for all y. So η = σ^k • (ω ∘ φ_σ) as forms (funext).
+- tsupport η ⊆ tsupport(ω ∘ φ_σ) (tsupport_smul_subset_right).
+- tsupport(ω ∘ φ_σ) ⊆ φ_σ⁻¹(tsupport ω) (tsupport_comp_subset_preimage, φ_σ continuous): if ω vanishes near σ • y, then ω ∘ φ_σ vanishes near y.
+- φ_σ⁻¹(tsupport ω) ⊆ φ_σ⁻¹(φ_σ(W)) = W, since φ_σ is injective (Function.Injective.mem_set_image).
+- A vanishes on W, so A(η) = 0, and B(ω) = A(η) = 0 by the σ-pair property.
+By (a) and (b), W′ belongs to the family whose union is B.zeroRegion. Hence σ • x ∈ B.zeroRegion.
+
+2. Inverse pair. (Y, X) is a ρ⁻¹-pair. Take test forms ω′, η′ with η′(x) = (ρ⁻¹)^k • ω′(ρ⁻¹ • x) for all x. Then ρ^k • η′(ρ • x) = ω′(x) for all x (smul_smul, mul_pow, mul_inv_cancel₀, one_pow, one_smul, inv_smul_smul₀). The ρ-pair hypothesis applied to (ω, η) := (η′, ω′) gives Y(η′) = X(ω′).
+
+3. Zero regions.
+- Step 1 for (σ, A, B) := (ρ, X, Y) gives φ_ρ(X.zeroRegion) ⊆ Y.zeroRegion.
+- Step 1 for (σ, A, B) := (ρ⁻¹, Y, X) is legitimate by step 2, with deformation_dilation_calculus N ρ⁻¹ (inv_pos.2 hρ) k. It gives φ_{ρ⁻¹}(Y.zeroRegion) ⊆ X.zeroRegion.
+- So for y ∈ Y.zeroRegion, ρ⁻¹ • y ∈ X.zeroRegion and y = ρ • (ρ⁻¹ • y) (smul_inv_smul₀) ∈ φ_ρ(X.zeroRegion).
+- Hence Y.zeroRegion = φ_ρ(X.zeroRegion) (Subset.antisymm).
+
+4. Supports. φ_ρ is bijective (a homeomorphism), so images commute with complements: φ_ρ(Zᶜ) = (φ_ρ(Z))ᶜ (Set.image_compl_eq). Since univ ∖ Z = Zᶜ (Set.compl_eq_univ_sdiff):
+Y.support = univ ∖ Y.zeroRegion = (φ_ρ(X.zeroRegion))ᶜ = φ_ρ((X.zeroRegion)ᶜ) = φ_ρ(univ ∖ X.zeroRegion) = (fun x => ρ • x) '' X.support. ∎
+
+## Key steps
+
+1. For a σ-pair (A, B): if A vanishes on an open W with compact closure, then B vanishes on σW. The σ-pull-back η of ω (sibling calculus) has tsupport η ⊆ σ⁻¹·tsupport ω ⊆ W. Hence σ·zeroRegion(A) ⊆ zeroRegion(B).
+2. (X, Y) a ρ-pair implies (Y, X) is a ρ⁻¹-pair; the two inclusions give zeroRegion(Y) = ρ·zeroRegion(X).
+3. x ↦ ρx is bijective, so image commutes with complement (Set.image_compl_eq), giving spt Y = ρ·spt X.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git rev-parse HEAD in lake-packages-25730c7c/simongmt and .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197 = lakefile.toml rev)`
+- `cmp GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (byte-identical)`
+- `python3 -I over dag.json: lean_statement of root.deformation-a1.dilation-a1 == selected frozen type == handoff lean_statement (True); six proposed names vs all 554 lean_names (no collision)`
+- `rg -n 'deformation_dilation_(calculus|hausdorff|mass|support|integer_multiplicity|lattice_chain)' local-references/197bdd4b88278494/project lake-packages-25730c7c/simongmt (no match, exit 1); git grep -l 'deformation_dilation_' -- '*.lean' over all 2352 refs (no match)`
+- `grep -n '^theorem|^def' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean (affinePullbackForm:35, affinePullbackTestOn:65, iteratedFDeriv_affinePullbackForm:109, TestFormOnConverges.affinePullback:127, exteriorDerivative_affinePullbackForm:147, GeometricCurrentOn.affinePushforward:172, boundary_affinePushforward:188)`
+- `cat simongmt Chapter06/Currents.lean, Mass.lean, CurrentLocalEquality.lean, FormsDuality.lean, Forms.lean; grep -n 'def blowUpMap|def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable' Chapter03/Rectifiable.lean (lines 96, 330, 34)`
+- `rg -n 'euclideanHausdorffMeasure_smul₀|def MeasureTheory.Measure.euclideanHausdorffMeasure' mathlib/Mathlib (Geometry/Euclidean/Volume/Measure.lean:152, :67)`
+- `rg -n 'theorem (MeasurePreserving\.)?(setIntegral_image_emb|integrableOn_image|restrict_image_emb)|aestronglyMeasurable_map_iff|theorem ae_map_iff|theorem extDeriv_pullback|theorem map_smul_univ|theorem image_compl_eq|theorem ae_smul_measure|theorem integral_smul_measure' mathlib/Mathlib (Integral/Bochner/Set.lean:576, Integral/IntegrableOn.lean:324, Dynamics/Ergodic/MeasurePreserving.lean:86, StronglyMeasurable/AEStronglyMeasurable.lean:668, Measure/Restrict.lean:887, Calculus/DifferentialForm/Basic.lean:259, Topology/Algebra/Module/Alternating/Basic.lean:518, Data/Set/Image.lean:372, Measure/Module.lean:191, Integral/Bochner/Basic.lean:1052)`
+- `python3 over dag.json for integrality_weak_limits-a1.integer_density-a1.rescale-a1 children (ind_rs_dilation_measurePreserving, ind_rs_massOn_dilation_le, ind_rs_tauAction_dilation, ind_rs_weightedTangent_dilation accepted; ind_rs_rectifiableTriple_dilation comparing; all for y ↦ r⁻¹(y − x), different frozen types); git show <triple-image and tau-action branches>:GMT/Ch06/Submission.lean (proof templates)`
+- `header imports of GMT/Ch06/Submission.lean on all theorems/solutions/* branches (accepted solutions add imports, e.g. Poincare.SimonGMT.Chapter02.AreaDomain x7); sed -n 334,372p verifier/gmt-compare.py (candidate_inputs byte-checks only frozen files other than Submission.lean)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py) on the six child statements and the parent (all valid, returned unchanged)`
+- `lake env lean /tmp/dil-decomp-6e47/Scratch/NC_<key>.lean for the six keys in the exact comparator scope (all exit 0, only the expected sorry warning); Assembly.lean (dilation_assembly: [propext, Classical.choice, Quot.sound]); Proto_calculus, Proto_hmass, Proto_support, Proto_im, Proto_lattice and EndToEnd.lean (sha256 3f159720…; exit 0, 0 errors; all seven Submission declarations [propext, Classical.choice, Quot.sound])`
+- `sed -n '385,440p;1450,1475p' book/chapter-06.txt (2.23 f_#T(ω) = T(ζ f^#ω), 2.24(1) ∂f_#T = f_#∂T, ‘scaled version … changing scale … then changing scale back by x → ρx’)`
+- `web search: scaling of Hausdorff measure H^s(λA) = λ^s H^s(A) (Wikipedia ‘Hausdorff measure’; Imperial College M345PA46 notes ch. 2, similarity scaling via δ-covers); Evans–Gariepy theorem number could not be verified, so not cited`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-dilation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dil-decomp-6e47/stmts.json`
+- `/tmp/dil-decomp-6e47/Scratch/Assembly.lean`
+- `/tmp/dil-decomp-6e47/Scratch/EndToEnd.lean`
+- `/tmp/dil-decomp-6e47/logs/EndToEnd.log`
+- `/tmp/dil-decomp-6e47/logs/Assembly.log`
+- `/tmp/dil-decomp-6e47/logs/NC_calculus.log`
+- `/tmp/dil-decomp-6e47/logs/NC_hausdorff.log`
+- `/tmp/dil-decomp-6e47/logs/NC_mass.log`
+- `/tmp/dil-decomp-6e47/logs/NC_support.log`
+- `/tmp/dil-decomp-6e47/logs/NC_integer_multiplicity.log`
+- `/tmp/dil-decomp-6e47/logs/NC_lattice_chain.log`
+
+The pinned revisions are confirmed, and Contract = Submission = the snapshot Contract byte for byte. No project, SimonGMT or Mathlib declaration already proves the selected statement. The pinned simongmt module Poincare.SimonGMT.Chapter06.AffineCurrentPushforward supplies all of the push-forward calculus for proper affine maps: the pull-back test-form map, its sequential continuity, the push-forward current, and commutation with d. It is not in the frozen import closure, but Submission.lean may add the import, since only the other frozen files are byte-checked and accepted solutions already add imports. Mathlib supplies Measure.euclideanHausdorffMeasure_smul₀ (μHE[k](r•S) = ‖r‖₊^k μHE[k] S) and the measure-preserving-embedding toolkit used by the children. The accepted ind_rs_* dilation lemmas concern y ↦ r⁻¹(y − x), have different frozen types and belong to another branch, so they are only optional templates. The six child names are globally unused. All six statements validate and elaborate in the comparator scope. The parent's exact type follows from them with standard axioms only, and a complete end-to-end prototype of every child plus the parent compiles with [propext, Classical.choice, Quot.sound].
