@@ -553,6 +553,425 @@ theorem Submission.isoperimetric_abs_covector_apply_le : ∀ (P n : ℕ) (α : C
     _ = (P : ℝ) ^ n * covectorEuclideanNorm α := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
           Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
+/-- Smoothness of a parametric interval integral, with all derivatives under the integral sign:
+for `G : ℝ × ℝ^P → V` of class `C^∞` (`V` complete), `g x = ∫_a^b G(t, x) dt` is `C^∞`, every
+`x`-derivative `(t, x) ↦ ∂_x^j G(t, x)` is continuous, and `D^j g(x) = ∫_a^b ∂_x^j G(t, x) dt`.
+
+Proof.  For smooth `H : ℝ × ℝ^P → W` the `x`-derivative `H'(t, x) = DH(t, x) ∘ inr` is smooth with
+values in the complete space `ℝ^P →L W`.  Bounding `‖H'‖` on the compact set
+`[[a, b]] × closedBall x₀ 1` and differentiating under the integral sign gives
+`D(∫_a^b H(t, ·) dt) = ∫_a^b H'(t, ·) dt`.  Induction on `j`, over all complete codomains at once,
+identifies `D^{j+1}` with `D^j ∘ D` through the currying isometry, which commutes with the
+interval integral; `C^j` for every `j` is `C^∞`. -/
+theorem Submission.iwl_cr_ro_intervalIntegral_contDiff :
+    ∀ (P : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (G : ℝ × Eucl P → V) (a b : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x : Eucl P => ∫ t in a..b, G (t, x)) ∧ (∀ j : ℕ, Continuous (fun p : ℝ × Eucl P => iteratedFDeriv ℝ j (fun z : Eucl P => G (p.1, z)) p.2)) ∧ ∀ (j : ℕ) (x : Eucl P), iteratedFDeriv ℝ j (fun y : Eucl P => ∫ t in a..b, G (t, y)) x = ∫ t in a..b, iteratedFDeriv ℝ j (fun z : Eucl P => G (t, z)) x := by
+  intro P V _ _ _ G a b hG
+  -- The partial derivative of a smooth `H` in `x` is `H'(t, x) = DH(t, x) ∘ inr` (chain rule).
+  have hderiv : ∀ (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] (H : ℝ × Eucl P → W),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H → ∀ (t : ℝ) (x : Eucl P),
+      HasFDerivAt (fun z : Eucl P => H (t, z))
+        ((fderiv ℝ H (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P))) x := by
+    intro W _ _ H hH t x
+    exact (hH.differentiable (by simp) (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)
+  -- One differentiation under the integral sign: `‖H'‖ ≤ K` on `[[a, b]] × closedBall x₀ 1`.
+  have hstep : ∀ (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+      (H : ℝ × Eucl P → W), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H → ∀ x₀ : Eucl P,
+      HasFDerivAt (fun x : Eucl P => ∫ t in a..b, H (t, x))
+        (∫ t in a..b, (fderiv ℝ H (t, x₀)).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P))) x₀ := by
+    intro W _ _ _ H hH x₀
+    have hHc : Continuous H := hH.continuous
+    have hH'c : Continuous fun p : ℝ × Eucl P =>
+        (fderiv ℝ H p).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P)) :=
+      (hH.continuous_fderiv (by simp)).clm_comp continuous_const
+    obtain ⟨K, hK⟩ := (isCompact_uIcc.prod (isCompact_closedBall x₀ 1)).exists_bound_of_continuousOn
+      hH'c.continuousOn
+    exact hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume)
+      (F := fun x t => H (t, x))
+      (F' := fun x t => (fderiv ℝ H (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P)))
+      (bound := fun _ => K) (ball_mem_nhds x₀ one_pos)
+      (Eventually.of_forall fun x =>
+        (hHc.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable)
+      ((hHc.comp (continuous_id.prodMk continuous_const)).intervalIntegrable a b)
+      ((hH'c.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable)
+      (ae_restrict_of_forall_mem measurableSet_uIoc fun t ht x hx =>
+        hK (t, x) ⟨uIoc_subset_uIcc ht, ball_subset_closedBall hx⟩)
+      intervalIntegrable_const
+      (Eventually.of_forall fun t x _ => hderiv W H hH t x)
+  -- Induction on `j` over all complete codomains: `C^j`, continuity of `∂_x^j H`, and
+  -- `D^j (∫_a^b H(t, ·) dt) = ∫_a^b ∂_x^j H(t, ·) dt`.
+  have claim : ∀ j : ℕ, ∀ (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+      (H : ℝ × Eucl P → W), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H →
+      ContDiff ℝ j (fun x : Eucl P => ∫ t in a..b, H (t, x)) ∧
+      Continuous (fun p : ℝ × Eucl P => iteratedFDeriv ℝ j (fun z : Eucl P => H (p.1, z)) p.2) ∧
+      ∀ x : Eucl P, iteratedFDeriv ℝ j (fun y : Eucl P => ∫ t in a..b, H (t, y)) x =
+        ∫ t in a..b, iteratedFDeriv ℝ j (fun z : Eucl P => H (t, z)) x := by
+    intro j
+    induction j with
+    | zero =>
+      intro W _ _ _ H hH
+      have hHc : Continuous H := hH.continuous
+      refine ⟨?_, ?_, ?_⟩
+      · rw [Nat.cast_zero, contDiff_zero]
+        exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+          (f := fun x t => H (t, x)) (hHc.comp continuous_swap) a b
+      · simp only [iteratedFDeriv_zero_eq_comp, Function.comp_def]
+        exact (continuousMultilinearCurryFin0 ℝ (Eucl P) W).symm.continuous.comp hHc
+      · intro x
+        simp only [iteratedFDeriv_zero_eq_comp, Function.comp_apply]
+        exact (LinearIsometry.intervalIntegral_comp_comm
+          (continuousMultilinearCurryFin0 ℝ (Eucl P) W).symm.toLinearIsometry
+          (fun t => H (t, x))).symm
+    | succ j ih =>
+      intro W _ _ _ H hH
+      set H' : ℝ × Eucl P → (Eucl P →L[ℝ] W) :=
+        fun p => (fderiv ℝ H p).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P)) with hH'
+      have hH'smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H' :=
+        (hH.fderiv_right (m := ((⊤ : ℕ∞) : WithTop ℕ∞)) (by simp)).clm_comp contDiff_const
+      obtain ⟨ih1, ih2, ih3⟩ := ih (Eucl P →L[ℝ] W) H' hH'smooth
+      have hg : fderiv ℝ (fun x : Eucl P => ∫ t in a..b, H (t, x)) =
+          fun x => ∫ t in a..b, H' (t, x) := by
+        funext x
+        exact (hstep W H hH x).fderiv
+      have hgd : Differentiable ℝ (fun x : Eucl P => ∫ t in a..b, H (t, x)) :=
+        fun x => (hstep W H hH x).differentiableAt
+      have hpart : ∀ t : ℝ, fderiv ℝ (fun z : Eucl P => H (t, z)) = fun z => H' (t, z) :=
+        fun t => funext fun z => (hderiv W H hH t z).fderiv
+      refine ⟨?_, ?_, ?_⟩
+      · rw [Nat.cast_succ, contDiff_succ_iff_fderiv]
+        refine ⟨hgd, fun h => absurd h (by simp), ?_⟩
+        rw [hg]
+        exact ih1
+      · have : (fun p : ℝ × Eucl P => iteratedFDeriv ℝ (j + 1) (fun z : Eucl P => H (p.1, z)) p.2) =
+            fun p => (continuousMultilinearCurryRightEquiv' ℝ j (Eucl P) W).symm
+              (iteratedFDeriv ℝ j (fun z : Eucl P => H' (p.1, z)) p.2) := by
+          funext p
+          rw [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply]
+          congr 2
+          exact hpart p.1
+        rw [this]
+        exact (continuousMultilinearCurryRightEquiv' ℝ j (Eucl P) W).symm.continuous.comp ih2
+      · intro x
+        rw [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply]
+        have : (fun y => fderiv ℝ (fun x : Eucl P => ∫ t in a..b, H (t, x)) y) =
+            fun x => ∫ t in a..b, H' (t, x) := hg
+        rw [this, ih3 x]
+        have hint : IntervalIntegrable
+            (fun t : ℝ => iteratedFDeriv ℝ j (fun z : Eucl P => H' (t, z)) x) volume a b :=
+          (ih2.comp (continuous_id.prodMk continuous_const)).intervalIntegrable a b
+        have e := ContinuousLinearMap.intervalIntegral_comp_comm
+          ((continuousMultilinearCurryRightEquiv' ℝ j (Eucl P) W).symm :
+            (Eucl P [×j]→L[ℝ] (Eucl P →L[ℝ] W)) →L[ℝ] (Eucl P [×(j + 1)]→L[ℝ] W)) hint
+        simp only [LinearIsometryEquiv.coe_toContinuousLinearEquiv,
+          ContinuousLinearEquiv.coe_coe] at e
+        rw [← e]
+        refine intervalIntegral.integral_congr (fun t _ => ?_)
+        rw [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply]
+        congr 2
+        exact (hpart t).symm
+  exact ⟨contDiff_infty.2 fun n => (claim n V G hG).1,
+    fun j => (claim j V G hG).2.1,
+    fun j x => (claim j V G hG).2.2 x⟩
+/-- Integrand of the radial homotopy operator.  For a `C^∞` `(k + 1)`-form `ω` and `a ∈ ℕ`, the map
+`F(t, x) = tᵃ • (ω(t • x)).curryLeft x`, i.e. `F(t, x)(v) = tᵃ ω(tx)(x, v)`, is `C^∞` on
+`ℝ × ℝ^P`, and for fixed `t` the derivative of `F(t, ·)` at `x` is
+`w ↦ (v ↦ tᵃ (t Dω(tx)[w](x, v) + ω(tx)(w, v)))`, where `(y, v) = Fin.cons y v`. -/
+theorem Submission.iwl_cr_ro_integrand_contDiff_fderiv :
+    ∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+        ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+            (fun p : ℝ × Eucl P => p.1 ^ a • (ω (p.1 • p.2)).curryLeft p.2) ∧
+          ∀ (t : ℝ) (x w : Eucl P) (v : Fin k → Eucl P),
+            fderiv ℝ (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x w v =
+              t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v)) := by
+  intro P k a ω hω
+  -- The interior product `α ↦ α.curryLeft` as an (opaque) continuous linear map `B`.
+  obtain ⟨B, hB⟩ : ∃ B : Covector (Eucl P) (k + 1) →L[ℝ] (Eucl P →L[ℝ] Covector (Eucl P) k),
+      ∀ α, B α = α.curryLeft :=
+    ⟨(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+        (n := k)).toContinuousLinearMap, fun α => rfl⟩
+  refine ⟨?_, ?_⟩
+  · -- `F(p) = p.1ᵃ • B (ω (p.1 • p.2)) p.2` is built from `C^∞` pieces.
+    have hfun : (fun p : ℝ × Eucl P => p.1 ^ a • (ω (p.1 • p.2)).curryLeft p.2) =
+        fun p => p.1 ^ a • B (ω (p.1 • p.2)) p.2 := by
+      funext p; rw [hB]
+    rw [hfun]
+    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × Eucl P => p.1 • p.2) :=
+      contDiff_fst.smul contDiff_snd
+    -- Naming the codomain `F` lets the normed instances on `Covector` be unified with `B`'s.
+    have h1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × Eucl P => B (ω (p.1 • p.2))) := by
+      exact (ContinuousLinearMap.contDiff (F := Eucl P →L[ℝ] Covector (Eucl P) k) B).comp
+        (hω.comp hs)
+    have h2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun p : ℝ × Eucl P => B (ω (p.1 • p.2)) p.2) :=
+      h1.clm_apply contDiff_snd
+    exact (contDiff_fst.pow a).smul h2
+  · intro t x w v
+    have hfun : (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) =
+        fun z => t ^ a • B (ω (t • z)) z := by
+      funext z; rw [hB]
+    rw [hfun]
+    have hω' : HasFDerivAt ω (fderiv ℝ ω (t • x)) (t • x) :=
+      (hω.differentiable (by simp) (t • x)).hasFDerivAt
+    have hs : HasFDerivAt (fun z : Eucl P => t • z) (t • ContinuousLinearMap.id ℝ (Eucl P)) x :=
+      (hasFDerivAt_id x).const_smul t
+    -- Chain rule for `z ↦ B (ω (t • z))`.
+    have hc : HasFDerivAt (fun z : Eucl P => B (ω (t • z)))
+        (B.comp ((fderiv ℝ ω (t • x)).comp (t • ContinuousLinearMap.id ℝ (Eucl P)))) x := by
+      exact HasFDerivAt.comp (F := Covector (Eucl P) (k + 1))
+        (G := Eucl P →L[ℝ] Covector (Eucl P) k) x
+        (ContinuousLinearMap.hasFDerivAt (F := Eucl P →L[ℝ] Covector (Eucl P) k) B)
+        (hω'.comp x hs)
+    -- Product rule for `z ↦ B (ω (t • z)) z`, then scaling by `tᵃ`.
+    have happ := hc.clm_apply (hasFDerivAt_id x)
+    have hf : HasFDerivAt (fun z : Eucl P => t ^ a • B (ω (t • z)) z)
+        (t ^ a • ((B (ω (t • x))).comp (ContinuousLinearMap.id ℝ (Eucl P)) +
+          (B.comp ((fderiv ℝ ω (t • x)).comp (t • ContinuousLinearMap.id ℝ (Eucl P)))).flip x)) x :=
+      happ.const_smul (t ^ a)
+    -- Evaluate at `w` and `v`; `Matrix.vecCons` is definitionally `Fin.cons`.
+    rw [hf.fderiv]
+    simp only [_root_.smul_apply, _root_.add_apply,
+      ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply, ContinuousLinearMap.flip_apply,
+      ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.add_apply, hB,
+      ContinuousAlternatingMap.curryLeft_apply_apply, map_smul, smul_eq_mul,
+      ContinuousAlternatingMap.curryLeft_smul]
+    rw [add_comm]
+    rfl
+/-- Bound on the `j`-th derivative of the radial-homotopy integrand: for `t ∈ [0, 1]` and
+`‖x‖ ≤ R`, `‖D^j (z ↦ t^a • ι_z ω(t z))(x)‖ ≤ (R + j) D` when `‖D^i ω‖ ≤ D` on `closedBall 0 R`
+for all `i ≤ j`.  Writing the integrand as `t^a • B (g z) z` with `g z = ω (t • z)` and `B` the
+interior product (`‖B u v‖ ≤ ‖u‖ ‖v‖`), the Leibniz rule for `z ↦ B (g z) z`, proved below by
+induction on the order, gives `‖D^j (B (g ·) ·)(x)‖ ≤ ‖x‖ ‖D^j g(x)‖ + j ‖D^(j-1) g(x)‖`, and
+`‖D^i g(x)‖ ≤ ‖D^i ω(t x)‖ ≤ D` since `‖t x‖ ≤ R`. -/
+theorem Submission.iwl_cr_ro_integrand_iteratedFDeriv_le :
+    ∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+      ∀ (j : ℕ) (R D : ℝ), 0 ≤ D →
+        (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) →
+        ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ closedBall (0 : Eucl P) R,
+          ‖iteratedFDeriv ℝ j (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x‖ ≤
+            (R + j) * D := by
+  intro P k a ω hω j R D hD hbound t ht x hx
+  -- Leibniz bound for `z ↦ B (g z) z`.  Since `D (B (g ·) ·)(z) = B (g z) + B' (Dg z) z` with
+  -- `B' A z h = B (A h) z`, again of the same shape, induction on the order gives
+  -- `‖D^n (B (g ·) ·)(y)‖ ≤ ‖y‖ ‖D^n g(y)‖ + n ‖D^(n-1) g(y)‖`.
+  have leibniz : ∀ (n : ℕ) (F G : Type) [NormedAddCommGroup F] [NormedSpace ℝ F]
+      [NormedAddCommGroup G] [NormedSpace ℝ G] (B : F →L[ℝ] Eucl P →L[ℝ] G),
+      (∀ u v, ‖B u v‖ ≤ ‖u‖ * ‖v‖) →
+      ∀ g : Eucl P → F, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → ∀ y : Eucl P,
+        ‖iteratedFDeriv ℝ n (fun z => B (g z) z) y‖ ≤
+          ‖y‖ * ‖iteratedFDeriv ℝ n g y‖ + n * ‖iteratedFDeriv ℝ (n - 1) g y‖ := by
+    intro n
+    induction n with
+    | zero =>
+      intro F G _ _ _ _ B hB g hg y
+      rw [norm_iteratedFDeriv_zero, norm_iteratedFDeriv_zero, Nat.cast_zero, zero_mul, add_zero,
+        mul_comm]
+      exact hB (g y) y
+    | succ n ih =>
+      intro F G _ _ _ _ B hB g hg y
+      obtain ⟨B', hB'apply, hB'bound⟩ :
+          ∃ B' : (Eucl P →L[ℝ] F) →L[ℝ] Eucl P →L[ℝ] Eucl P →L[ℝ] G,
+            (∀ A z h, B' A z h = B (A h) z) ∧ ∀ A z, ‖B' A z‖ ≤ ‖A‖ * ‖z‖ := by
+        refine ⟨((ContinuousLinearMap.compL ℝ (Eucl P) F G).comp B.flip).flip,
+          fun A z h => rfl, fun A z => ?_⟩
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun h => ?_
+        show ‖B (A h) z‖ ≤ ‖A‖ * ‖z‖ * ‖h‖
+        calc ‖B (A h) z‖ ≤ ‖A h‖ * ‖z‖ := hB (A h) z
+          _ ≤ ‖A‖ * ‖h‖ * ‖z‖ := by gcongr; exact A.le_opNorm h
+          _ = ‖A‖ * ‖z‖ * ‖h‖ := by ring
+      have hBnorm : ‖B‖ ≤ 1 := by
+        refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun u => ?_
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun v => ?_
+        rw [one_mul]
+        exact hB u v
+      have hgd : Differentiable ℝ g := (contDiff_infty_iff_fderiv.1 hg).1
+      have hdg : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ g) :=
+        (contDiff_infty_iff_fderiv.1 hg).2
+      have hderiv : fderiv ℝ (fun z => B (g z) z) = fun z => B (g z) + B' (fderiv ℝ g z) z := by
+        funext z
+        have h1 : HasFDerivAt (fun z => B (g z)) (B.comp (fderiv ℝ g z)) z :=
+          B.hasFDerivAt.comp z (hgd z).hasFDerivAt
+        have h2 : HasFDerivAt (fun z => B (g z) z)
+            ((B (g z)).comp (ContinuousLinearMap.id ℝ (Eucl P)) +
+              (B.comp (fderiv ℝ g z)).flip z) z :=
+          h1.clm_apply (hasFDerivAt_id z)
+        rw [h2.fderiv]
+        ext h
+        simp [hB'apply]
+      have hc1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => B (g z)) := B.contDiff.comp hg
+      have hc2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => B' (fderiv ℝ g z) z) :=
+        B'.isBoundedBilinearMap.contDiff.comp (hdg.prodMk contDiff_id)
+      have hle : ((n : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by exact_mod_cast le_top
+      have hadd : iteratedFDeriv ℝ n (fun z => B (g z) + B' (fderiv ℝ g z) z) y =
+          iteratedFDeriv ℝ n (fun z => B (g z)) y +
+            iteratedFDeriv ℝ n (fun z => B' (fderiv ℝ g z) z) y :=
+        iteratedFDeriv_add_apply (hc1.contDiffAt.of_le hle) (hc2.contDiffAt.of_le hle)
+      have hcomp : iteratedFDeriv ℝ n (fun z => B (g z)) y =
+          B.compContinuousMultilinearMap (iteratedFDeriv ℝ n g y) :=
+        B.iteratedFDeriv_comp_left hg.contDiffAt hle
+      have e1 : ‖iteratedFDeriv ℝ n (fun z => B (g z)) y‖ ≤ ‖iteratedFDeriv ℝ n g y‖ := by
+        rw [hcomp]
+        calc ‖B.compContinuousMultilinearMap (iteratedFDeriv ℝ n g y)‖
+            ≤ ‖B‖ * ‖iteratedFDeriv ℝ n g y‖ := B.norm_compContinuousMultilinearMap_le _
+          _ ≤ 1 * ‖iteratedFDeriv ℝ n g y‖ := by gcongr
+          _ = ‖iteratedFDeriv ℝ n g y‖ := one_mul _
+      have e2 := ih (Eucl P →L[ℝ] F) (Eucl P →L[ℝ] G) B' hB'bound (fderiv ℝ g) hdg y
+      rw [norm_iteratedFDeriv_fderiv] at e2
+      have e3 : (n : ℝ) * ‖iteratedFDeriv ℝ (n - 1) (fderiv ℝ g) y‖ =
+          n * ‖iteratedFDeriv ℝ n g y‖ := by
+        rcases n with _ | m
+        · simp
+        · rw [norm_iteratedFDeriv_fderiv, Nat.add_sub_cancel]
+      rw [e3] at e2
+      rw [← norm_iteratedFDeriv_fderiv, hderiv, hadd, Nat.add_sub_cancel]
+      calc ‖iteratedFDeriv ℝ n (fun z => B (g z)) y +
+            iteratedFDeriv ℝ n (fun z => B' (fderiv ℝ g z) z) y‖
+          ≤ ‖iteratedFDeriv ℝ n (fun z => B (g z)) y‖ +
+            ‖iteratedFDeriv ℝ n (fun z => B' (fderiv ℝ g z) z) y‖ := norm_add_le _ _
+        _ ≤ ‖iteratedFDeriv ℝ n g y‖ +
+            (‖y‖ * ‖iteratedFDeriv ℝ (n + 1) g y‖ + n * ‖iteratedFDeriv ℝ n g y‖) :=
+              add_le_add e1 e2
+        _ = ‖y‖ * ‖iteratedFDeriv ℝ (n + 1) g y‖ +
+            ((n + 1 : ℕ) : ℝ) * ‖iteratedFDeriv ℝ n g y‖ := by push_cast; ring
+  -- The interior product `B α = α.curryLeft`, a linear isometry, so `‖B u v‖ ≤ ‖u‖ ‖v‖`.
+  obtain ⟨B, hB, hBbound⟩ :
+      ∃ B : Covector (Eucl P) (k + 1) →L[ℝ] Eucl P →L[ℝ] Covector (Eucl P) k,
+        (∀ α, B α = α.curryLeft) ∧ ∀ u v, ‖B u v‖ ≤ ‖u‖ * ‖v‖ := by
+    refine ⟨(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+      (n := k)).toContinuousLinearMap, fun α => rfl, fun u v => ?_⟩
+    calc ‖(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+          (n := k)).toContinuousLinearMap u v‖
+        ≤ ‖(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+          (n := k)).toContinuousLinearMap u‖ * ‖v‖ := ContinuousLinearMap.le_opNorm _ _
+      _ = ‖u‖ * ‖v‖ := by
+          rw [LinearIsometry.coe_toContinuousLinearMap, LinearIsometry.norm_map]
+  have hx' : ‖x‖ ≤ R := by simpa using hx
+  have hR : 0 ≤ R := (norm_nonneg x).trans hx'
+  have ht0 : 0 ≤ t := ht.1
+  have ht1 : t ≤ 1 := ht.2
+  have hfun : (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) =
+      fun z => t ^ a • B (ω (t • z)) z := by
+    funext z; rw [hB]
+  rw [hfun]
+  -- `g z = ω (L z)` with `L = t • id`, `‖L‖ ≤ 1`, so `‖D^i g(x)‖ ≤ ‖D^i ω(t x)‖ ≤ D` for `i ≤ j`.
+  set L : Eucl P →L[ℝ] Eucl P := t • ContinuousLinearMap.id ℝ (Eucl P) with hL
+  have hLnorm : ‖L‖ ≤ 1 := by
+    rw [hL, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht0]
+    calc t * ‖ContinuousLinearMap.id ℝ (Eucl P)‖ ≤ 1 * 1 :=
+          mul_le_mul ht1 ContinuousLinearMap.norm_id_le (norm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have hgfun : (fun z : Eucl P => ω (t • z)) = ω ∘ L := by
+    funext z; simp [hL]
+  have hg : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Eucl P => ω (t • z)) := by
+    rw [hgfun]; exact hω.comp L.contDiff
+  have hgnorm : ∀ i ≤ j, ‖iteratedFDeriv ℝ i (fun z : Eucl P => ω (t • z)) x‖ ≤ D := by
+    intro i hi
+    rw [hgfun, L.iteratedFDeriv_comp_right hω x (by exact_mod_cast le_top)]
+    have hLx : L x ∈ closedBall (0 : Eucl P) R := by
+      rw [mem_closedBall, dist_zero_right]
+      calc ‖L x‖ ≤ ‖L‖ * ‖x‖ := L.le_opNorm x
+        _ ≤ 1 * R := mul_le_mul hLnorm hx' (norm_nonneg x) zero_le_one
+        _ = R := one_mul R
+    calc ‖(iteratedFDeriv ℝ i ω (L x)).compContinuousLinearMap fun _ => L‖
+        ≤ ‖iteratedFDeriv ℝ i ω (L x)‖ * ∏ _ : Fin i, ‖L‖ :=
+          ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _
+      _ ≤ D * 1 := by
+          apply mul_le_mul (hbound i hi _ hLx) _ (Finset.prod_nonneg fun _ _ => norm_nonneg _) hD
+          exact Finset.prod_le_one₀ (fun _ _ => norm_nonneg _) (fun _ _ => hLnorm)
+      _ = D := mul_one D
+  -- Pull out `t^a` (`0 ≤ t^a ≤ 1`) and apply the Leibniz bound.
+  have hH : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Eucl P => B (ω (t • z)) z) :=
+    B.isBoundedBilinearMap.contDiff.comp (hg.prodMk contDiff_id)
+  have hsmul : iteratedFDeriv ℝ j (fun z : Eucl P => t ^ a • B (ω (t • z)) z) x =
+      t ^ a • iteratedFDeriv ℝ j (fun z : Eucl P => B (ω (t • z)) z) x :=
+    iteratedFDeriv_const_smul_apply' (hH.contDiffAt.of_le (by exact_mod_cast le_top))
+  rw [hsmul, norm_smul]
+  have hta : ‖t ^ a‖ ≤ 1 := by
+    rw [norm_pow, Real.norm_eq_abs, abs_of_nonneg ht0]
+    exact pow_le_one₀ ht0 ht1
+  have key := leibniz j _ _ B hBbound (fun z => ω (t • z)) hg x
+  have hsum : ‖x‖ * ‖iteratedFDeriv ℝ j (fun z => ω (t • z)) x‖ +
+      j * ‖iteratedFDeriv ℝ (j - 1) (fun z => ω (t • z)) x‖ ≤ (R + j) * D := by
+    have e1 : ‖x‖ * ‖iteratedFDeriv ℝ j (fun z => ω (t • z)) x‖ ≤ R * D :=
+      mul_le_mul hx' (hgnorm j le_rfl) (norm_nonneg _) hR
+    have e2 : (j : ℝ) * ‖iteratedFDeriv ℝ (j - 1) (fun z => ω (t • z)) x‖ ≤ j * D :=
+      mul_le_mul_of_nonneg_left (hgnorm (j - 1) (Nat.sub_le j 1)) (Nat.cast_nonneg j)
+    linarith
+  calc ‖t ^ a‖ * ‖iteratedFDeriv ℝ j (fun z : Eucl P => B (ω (t • z)) z) x‖
+      ≤ 1 * ((R + j) * D) := mul_le_mul hta (key.trans hsum) (norm_nonneg _) zero_le_one
+    _ = (R + j) * D := one_mul _
+
+/-- The radial homotopy operator `ψ(x) = ∫₀¹ tᵃ x ⌟ ω(t x) dt` (proof of Simon Ch. 6, 8.2,
+Part I): for a smooth `(k + 1)`-form `ω`, `ψ` is a smooth `k`-form with
+(i) `ψ(x)(v) = ∫₀¹ tᵃ ω(t x)(x, v) dt`,
+(ii) `Dψ(x)[w](v) = ∫₀¹ tᵃ (t Dω(t x)[w](x, v) + ω(t x)(w, v)) dt`, and
+(iii) `‖Dʲψ(x)‖ ≤ (R + j) D` on `B̄_R(0)` whenever `‖Dⁱω‖ ≤ D` there for all `i ≤ j`.
+The integrand `F(t, x) = tᵃ • (ω(t x)).curryLeft x` is jointly smooth, so `ψ = ∫₀¹ F(t, ·) dt`
+is smooth with `Dʲψ = ∫₀¹ Dʲ_x F dt`; evaluation commutes with the integral. -/
+theorem Submission.iwl_cr_radial_operator :
+    ∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+      ∃ ψ : DifferentialForm (Eucl P) k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ ∧
+        (∀ (x : Eucl P) (v : Fin k → Eucl P),
+          ψ x v = ∫ t in (0 : ℝ)..1, t ^ a * ω (t • x) (Fin.cons x v)) ∧
+        (∀ (x w : Eucl P) (v : Fin k → Eucl P),
+          fderiv ℝ ψ x w v = ∫ t in (0 : ℝ)..1,
+            t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v))) ∧
+        ∀ (j : ℕ) (R D : ℝ), 0 ≤ D →
+          (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) →
+          ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j ψ x‖ ≤ (R + j) * D := by
+  intro P k a ω hω
+  -- `F(t, x) = tᵃ • (ω(t x)).curryLeft x` is smooth; `ψ = ∫₀¹ F(t, ·) dt` and
+  -- `Dʲψ(x) = ∫₀¹ Dʲ(F(t, ·))(x) dt`, with `(t, x) ↦ Dʲ(F(t, ·))(x)` continuous.
+  obtain ⟨hGsmooth, hGderiv⟩ := Submission.iwl_cr_ro_integrand_contDiff_fderiv P k a ω hω
+  obtain ⟨hψsmooth, hGcont, hψiter⟩ :=
+    Submission.iwl_cr_ro_intervalIntegral_contDiff P (Covector (Eucl P) k) _ 0 1 hGsmooth
+  dsimp only at hψsmooth hGcont hψiter
+  refine ⟨fun x => ∫ t in (0 : ℝ)..1, t ^ a • (ω (t • x)).curryLeft x, hψsmooth, ?_, ?_, ?_⟩
+  · -- (i): evaluation at `v` is a continuous linear map, so it commutes with the integral.
+    intro x v
+    have hc : Continuous fun t : ℝ => t ^ a • (ω (t • x)).curryLeft x :=
+      hGsmooth.continuous.comp (continuous_id.prodMk continuous_const)
+    have e := (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).intervalIntegral_comp_comm
+      (hc.intervalIntegrable (μ := volume) 0 1)
+    simp only [ContinuousAlternatingMap.apply_apply] at e
+    beta_reduce
+    rw [← e]
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    simp only [ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+      smul_eq_mul]
+    rfl
+  · -- (ii): `Dψ(x)[w] = D¹ψ(x)(w)`; evaluate `∫₀¹ D¹(F(t, ·))(x) dt` at `w`, then at `v`.
+    intro x w v
+    have hc₁ : Continuous fun t : ℝ =>
+        iteratedFDeriv ℝ 1 (fun z => t ^ a • (ω (t • z)).curryLeft z) x :=
+      (hGcont 1).comp (continuous_id.prodMk continuous_const)
+    have hc₂ : Continuous fun t : ℝ =>
+        iteratedFDeriv ℝ 1 (fun z => t ^ a • (ω (t • z)).curryLeft z) x (fun _ => w) :=
+      (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => Eucl P) (Covector (Eucl P) k)
+        (fun _ => w)).continuous.comp hc₁
+    have e₁ := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => Eucl P) (Covector (Eucl P) k)
+      (fun _ => w)).intervalIntegral_comp_comm (hc₁.intervalIntegrable (μ := volume) 0 1)
+    have e₂ := (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).intervalIntegral_comp_comm
+      (hc₂.intervalIntegrable (μ := volume) 0 1)
+    simp only [ContinuousMultilinearMap.apply_apply, ContinuousAlternatingMap.apply_apply] at e₁ e₂
+    have e₀ : ∀ f : Eucl P → Covector (Eucl P) k,
+        fderiv ℝ f x w = iteratedFDeriv ℝ 1 f x (fun _ => w) :=
+      fun f => (iteratedFDeriv_one_apply (fun _ : Fin 1 => w)).symm
+    rw [e₀, hψiter 1 x, ← e₁, ← e₂]
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    simp only [iteratedFDeriv_one_apply]
+    exact hGderiv t x w v
+  · -- (iii): `‖Dʲψ(x)‖ ≤ ∫₀¹ ‖Dʲ(F(t, ·))(x)‖ dt ≤ (R + j) D`.
+    intro j R D hD hω_le x hx
+    rw [hψiter j x]
+    have hle : ∀ t ∈ Set.uIoc (0 : ℝ) 1,
+        ‖iteratedFDeriv ℝ j (fun z => t ^ a • (ω (t • z)).curryLeft z) x‖ ≤ (R + j) * D := by
+      intro t ht
+      rw [Set.uIoc_of_le zero_le_one] at ht
+      exact Submission.iwl_cr_ro_integrand_iteratedFDeriv_le P k a ω hω j R D hD hω_le t
+        ⟨ht.1.le, ht.2⟩ x hx
+    have h := intervalIntegral.norm_integral_le_of_norm_le_const hle
+    rwa [sub_zero, abs_one, mul_one] at h
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

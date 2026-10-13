@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1.integrand_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+  "depth": 4,
+  "title": "Radial integrand: derivative bound on balls",
+  "statement": "Let P, k, a ∈ ℕ and let ω : ℝ^P → Λ_{k+1} be a C^∞ (k+1)-form. Let j ∈ ℕ and R, D ∈ ℝ with D ≥ 0, and assume ‖D^iω(y)‖ ≤ D for every i ≤ j and every y with ‖y‖ ≤ R. Then for every t ∈ [0,1] and every x with ‖x‖ ≤ R, the j-th iterated Fréchet derivative at x of z ↦ t^a • (ω(t•z)).curryLeft z has operator norm at most (R + j)·D.",
+  "lean_statement": "∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∀ (j : ℕ) (R D : ℝ), 0 ≤ D → (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) → ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x‖ ≤ (R + j) * D",
+  "lean_name": "iwl_cr_ro_integrand_iteratedFDeriv_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-operator-a1-9cae75a529-a1"
+}
