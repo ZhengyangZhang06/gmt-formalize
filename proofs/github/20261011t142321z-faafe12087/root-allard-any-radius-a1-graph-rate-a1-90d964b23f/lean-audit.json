@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fc5396baf67c05cdb9ce52fdacbdb18e6dab2158da80bbc8deee4ba9460796f7",
+  "git_delta": {
+    "base_commit": "58f12f31b9316690fb9fe445bd76b38af8a2e5eb",
+    "candidate_commit": "7a828a070c2d584b8ed242cfe88130b114021203",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "87fc68b884496ff5a92cfd4617bc1cb9062272c4a666e04e255d601473c44023",
+    "source_sha256": "dcf6d4ad6ad661b2a0fdef0a0ee82800d707c065b8d71707f17b86ca5070af16",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_graph_rate",
+      "statement": "TiltExcessDecayTheorem → ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ₁ γ₂ c₁ C₀ : ℝ, 0 < γ₁ → γ₁ < γ₂ → γ₂ < 1 → 0 < c₁ → c₁ < γ₂ → 0 ≤ C₀ → ∃ δR CR : ℝ, 0 < δR ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δR → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 (γ₂ * ρ)) → u 0 = 0 → (∀ x ∈ ball (0 : Rn n) (γ₂ * ρ), ‖fderiv ℝ u x‖ ≤ 1 / 7) → q '' graphOver u (ball 0 (γ₂ * ρ)) ⊆ V.support ∩ ball 0 ρ → V.support ∩ ball 0 (γ₂ * ρ) ⊆ q '' graphOver u (ball 0 (γ₂ * ρ)) → (∀ x ∈ ball (0 : Rn n) (c₁ * ρ), ‖u x‖ ≤ C₀ * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖) → (∀ x ∈ closedBall (0 : Rn n) (γ₁ * ρ), ‖u x‖ ≤ CR * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖) ∧ (∀ x ∈ closedBall (0 : Rn n) (γ₁ * ρ), hsNorm (fderiv ℝ u x) ≤ CR * δ ^ (1 / (2 * (n : ℝ) + 2))) ∧ ∀ x ∈ closedBall (0 : Rn n) (γ₁ * ρ), ∀ y ∈ closedBall (0 : Rn n) (γ₁ * ρ), hsNorm (fderiv ℝ u x - fderiv ℝ u y) ≤ CR * δ ^ (1 / (2 * (n : ℝ) + 2)) * (‖x - y‖ / ρ) ^ (1 - (n : ℝ) / p)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
