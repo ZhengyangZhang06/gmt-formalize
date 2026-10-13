@@ -377,6 +377,56 @@ theorem Submission.dgc_pm_ball_volume_le :
     _ = volume (closedBall (WithLp.ofLp c) r) :=
         (PiLp.volume_preserving_ofLp ι).measure_preimage measurableSet_closedBall.nullMeasurableSet
     _ = ENNReal.ofReal ((2 * r) ^ Fintype.card ι) := Real.volume_pi_closedBall _ hr
+/-- Simon Ch. 6, proof of 5.1 (p. 164): `{p_j⁻¹ B_{σ_ℓ}(b_ℓ + z)}_{ℓ = 1, 2, …, z ∈ ℤ^{n+ℓ} ∩ S_j}`
+is a pairwise disjoint collection.  Stated for the periodic open sets before pulling back by `p_j`:
+if `|b - g₀|, |b' - g₀| < 1/4`, `0 < σ, σ' < 1/4` and `B̄_σ(b) ∩ B̄_σ'(b') = ∅`, then
+`⋃_{z ∈ ℤ^ι} B_σ(b + z)` and `⋃_{z ∈ ℤ^ι} B_σ'(b' + z)` are disjoint. -/
+theorem Submission.dgc_pm_lattice_tubes_disjoint :
+    ∀ (ι : Type) [Fintype ι] (g₀ b b' : EuclideanSpace ℝ ι) (σ σ' : ℝ), dist b g₀ < 1 / 4 → dist b' g₀ < 1 / 4 → 0 < σ → σ < 1 / 4 → 0 < σ' → σ' < 1 / 4 → Disjoint (closedBall b σ) (closedBall b' σ') → Disjoint {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - b i - z i) ^ 2 < σ ^ 2} {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - b' i - z i) ^ 2 < σ' ^ 2} := by
+  intro ι _ g₀ b b' σ σ' hb hb' hσ hσ4 hσ' hσ'4 hbb'
+  rw [Set.disjoint_left]
+  rintro y ⟨z, hz⟩ ⟨z', hz'⟩
+  -- The translate `w z = y - z` of `y` by a lattice point `z ∈ ℤ^ι`.
+  obtain ⟨w, hw⟩ : ∃ w : (ι → ℤ) → EuclideanSpace ℝ ι, ∀ z i, w z i = y i - z i :=
+    ⟨fun z => WithLp.toLp 2 fun i => y i - z i, fun _ _ => rfl⟩
+  -- `|(y - z) - c|² = ∑ᵢ (yᵢ - cᵢ - zᵢ)²`, so the defining inequality gives `|(y - z) - c| < τ`.
+  have hdist : ∀ (c : EuclideanSpace ℝ ι) (z : ι → ℤ) (τ : ℝ), 0 < τ →
+      ∑ i, (y i - c i - z i) ^ 2 < τ ^ 2 → dist (w z) c < τ := by
+    intro c z τ hτ h
+    refine lt_of_pow_lt_pow_left₀ 2 hτ.le ?_
+    rw [EuclideanSpace.dist_sq_eq]
+    refine lt_of_eq_of_lt (Finset.sum_congr rfl fun i _ => ?_) h
+    rw [Real.dist_eq, sq_abs, hw]
+    ring
+  have h1 := hdist b z σ hσ hz
+  have h2 := hdist b' z' σ' hσ' hz'
+  by_cases hzz : z = z'
+  · -- If `z = z'`, then `y - z ∈ B̄_σ(b) ∩ B̄_σ'(b')`.
+    subst hzz
+    exact Set.disjoint_left.1 hbb' (mem_closedBall.2 h1.le) (mem_closedBall.2 h2.le)
+  · -- If `z ≠ z'`, then `|z - z'| < 1` (both `y - z` and `y - z'` are `1/2`-close to `g₀`),
+    -- while `|zⱼ - z'ⱼ| ≥ 1` for some `j`.
+    obtain ⟨j, hj⟩ := Function.ne_iff.1 hzz
+    have hint : (1 : ℝ) ≤ |(z j : ℝ) - z' j| := by
+      exact_mod_cast Int.one_le_abs (sub_ne_zero.2 hj)
+    have hcoord : |(z j : ℝ) - z' j| ≤ dist (w z') (w z) := by
+      have h := PiLp.dist_apply_le (w z') (w z) j
+      rw [Real.dist_eq, hw, hw] at h
+      convert h using 2
+      ring
+    have hg : dist (w z) g₀ < 1 / 2 := by
+      calc dist (w z) g₀ ≤ dist (w z) b + dist b g₀ := dist_triangle _ _ _
+        _ < 1 / 4 + 1 / 4 := add_lt_add (h1.trans hσ4) hb
+        _ = 1 / 2 := by norm_num
+    have hg' : dist (w z') g₀ < 1 / 2 := by
+      calc dist (w z') g₀ ≤ dist (w z') b' + dist b' g₀ := dist_triangle _ _ _
+        _ < 1 / 4 + 1 / 4 := add_lt_add (h2.trans hσ'4) hb'
+        _ = 1 / 2 := by norm_num
+    have hzz' : dist (w z') (w z) < 1 := by
+      calc dist (w z') (w z) ≤ dist (w z') g₀ + dist (w z) g₀ := dist_triangle_right _ _ _
+        _ < 1 / 2 + 1 / 2 := add_lt_add hg' hg
+        _ = 1 := by norm_num
+    linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
