@@ -661,6 +661,60 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **Simon Ch. 2, §4, (4.1)**: being an embedded `d`-dimensional `Cʳ` submanifold is a local
+property, and an open piece `M ∩ O` has the tangent spaces of `M`.  A chart `ψ : V → W` of
+`M ∩ O` at `y` (`O ∋ y` open) is a chart `ψ : V → W ∩ O` of `M` at `y`.  A chart `ψ : V → W` of
+`M` at `w ∈ O` restricts to the chart `ψ : V ∩ ψ⁻¹(O) → W ∩ O` of `M ∩ O` at `w`: `V ∩ ψ⁻¹(O)`
+is open as `ψ` is continuous on `V`, and `V ∩ ψ⁻¹(O) ∩ ψ⁻¹(K) = V ∩ ψ⁻¹(K)` for `K ⊆ W ∩ O`.
+Both charts contain `v = ψ⁻¹(w)`, so for `r ≥ 1`, (4.3) gives `T_w(M ∩ O) = Dψ(v)(ℝᵈ) = T_wM`. -/
+theorem Submission.codim1_ovr_embedded_submanifold_local : ∀ (P r d : ℕ) (M : Set (Euclid P)), 1 ≤ r → (∀ y ∈ M, ∃ O : Set (Euclid P), IsOpen O ∧ y ∈ O ∧ IsEmbeddedSubmanifold r d (M ∩ O)) → IsEmbeddedSubmanifold r d M ∧ ∀ O : Set (Euclid P), IsOpen O → IsEmbeddedSubmanifold r d (M ∩ O) ∧ ∀ w ∈ M ∩ O, tangentSpace (M ∩ O) w = tangentSpace M w := by
+  intro P r d M hr hloc
+  -- Step 1: a chart `ψ : V → W` of `M ∩ O` at `y` is a chart `ψ : V → W ∩ O` of `M` at `y`
+  have hM : IsEmbeddedSubmanifold r d M := by
+    intro y hy
+    obtain ⟨O, hO, hyO, hMO⟩ := hloc y hy
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hder⟩ := hMO y ⟨hy, hyO⟩
+    refine ⟨V, W ∩ O, ψ, hV, hW.inter hO, ⟨hyW, hyO⟩, hψ, hinj, ?_, ?_, hder⟩
+    · -- `ψ(V) = W ∩ (M ∩ O) = (W ∩ O) ∩ M`
+      rw [himg]; ext z; simp only [mem_inter_iff]; tauto
+    · -- a compact `K ⊆ W ∩ O` lies in `W`
+      intro K hK hKc; exact hprop K (hK.trans inter_subset_left) hKc
+  -- Step 2: a chart `ψ : V → W` of `M` at `w ∈ O` restricts to the chart `ψ : V ∩ ψ⁻¹(O) → W ∩ O`
+  -- of `M ∩ O` at `w`, through `v = ψ⁻¹(w)`; (4.3) for `M` gives `T_wM = Dψ(v)(ℝᵈ)`
+  have hres : ∀ O : Set (Euclid P), IsOpen O → ∀ w ∈ M ∩ O, ∃ (V : Set (Euclid d))
+      (W : Set (Euclid P)) (ψ : Euclid d → Euclid P) (v : Euclid d),
+      IsOpen V ∧ IsOpen W ∧ w ∈ W ∧ ContDiffOn ℝ r ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ (M ∩ O) ∧
+      (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧ (∀ z ∈ V, Injective (fderiv ℝ ψ z)) ∧
+      v ∈ V ∧ ψ v = w ∧ tangentSpace M w = Set.range (fderiv ℝ ψ v) := by
+    intro O hO w hw
+    obtain ⟨V, W, ψ, hV, hW, hwW, hψ, hinj, himg, hprop, hder⟩ := hM w hw.1
+    obtain ⟨v, hvV, hvw⟩ : w ∈ ψ '' V := by rw [himg]; exact ⟨hwW, hw.1⟩
+    have hTM := Submission.chart_tangentSpace_eq_range_fderiv P d r M W V ψ v hr hV hW hψ hinj
+      himg hprop hder hvV
+    rw [hvw] at hTM
+    refine ⟨V ∩ ψ ⁻¹' O, W ∩ O, ψ, v, hψ.continuousOn.isOpen_inter_preimage hV hO, hW.inter hO,
+      ⟨hwW, hw.2⟩, hψ.mono inter_subset_left, hinj.mono inter_subset_left, ?_, ?_,
+      fun z hz => hder z hz.1, ⟨hvV, by rw [mem_preimage, hvw]; exact hw.2⟩, hvw, hTM⟩
+    · -- `ψ(V ∩ ψ⁻¹(O)) = ψ(V) ∩ O = (W ∩ M) ∩ O = (W ∩ O) ∩ (M ∩ O)`
+      rw [image_inter_preimage, himg]; ext z; simp only [mem_inter_iff]; tauto
+    · -- for compact `K ⊆ W ∩ O`, `V ∩ ψ⁻¹(O) ∩ ψ⁻¹(K) = V ∩ ψ⁻¹(K)`, compact as `K ⊆ W`
+      intro K hK hKc
+      have heq : (V ∩ ψ ⁻¹' O) ∩ ψ ⁻¹' K = V ∩ ψ ⁻¹' K := by
+        ext z; simp only [mem_inter_iff, mem_preimage]
+        constructor
+        · rintro ⟨⟨h1, -⟩, h3⟩; exact ⟨h1, h3⟩
+        · rintro ⟨h1, h3⟩; exact ⟨⟨h1, (hK h3).2⟩, h3⟩
+      rw [heq]; exact hprop K (hK.trans inter_subset_left) hKc
+  refine ⟨hM, fun O hO => ⟨fun w hw => ?_, fun w hw => ?_⟩⟩
+  · -- Step 2: the restricted charts show that `M ∩ O` is an embedded submanifold
+    obtain ⟨V, W, ψ, v, hV, hW, hwW, hψ, hinj, himg, hprop, hder, -⟩ := hres O hO w hw
+    exact ⟨V, W, ψ, hV, hW, hwW, hψ, hinj, himg, hprop, hder⟩
+  · -- Step 3: (4.3) for `M ∩ O` and the restricted chart, `T_w(M ∩ O) = Dψ(v)(ℝᵈ) = T_wM`
+    obtain ⟨V, W, ψ, v, hV, hW, hwW, hψ, hinj, himg, hprop, hder, hvV, hvw, hTM⟩ := hres O hO w hw
+    have hTMO := Submission.chart_tangentSpace_eq_range_fderiv P d r (M ∩ O) W V ψ v hr hV hW hψ
+      hinj himg hprop hder hvV
+    rw [hvw] at hTMO
+    rw [hTMO, hTM]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
