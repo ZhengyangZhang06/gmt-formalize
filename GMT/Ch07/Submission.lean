@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lower bound for rescaled measures from a test function** (the lower half of the
+flat-tangent density estimate): if `f` is continuous, `0 ≤ f ≤ 1`, `f = 0` off `A`, and
+`r⁻ᵐ ∫ f(r⁻¹(z − y)) dμ(z) → L > L'` as `r ↓ 0`, then `L' rᵐ ≤ μ{z : r⁻¹(z − y) ∈ A}` for all
+small `r > 0`.  The rescaled integrand is dominated by the indicator of the (possibly
+non-measurable) set, and a non-integrable integrand has Bochner integral `0`. -/
+theorem Submission.codim1_rdo_dg_ftd_test_lower_bound : ∀ (N m : ℕ) (μ : Measure (Euclid N)) (y : Euclid N) (f : Euclid N → ℝ) (A : Set (Euclid N)) (L L' : ℝ), Continuous f → (∀ w, 0 ≤ f w) → (∀ w, f w ≤ 1) → (∀ w, w ∉ A → f w = 0) → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L) → L' < L → ∀ᶠ r in 𝓝[>] (0 : ℝ), ENNReal.ofReal (L' * r ^ m) ≤ μ {z | r⁻¹ • (z - y) ∈ A} := by
+  intro N m μ y f A L L' hf hf0 hf1 hfA hlim hLL'
+  -- eventually `r > 0` and the rescaled integral exceeds `L'`
+  filter_upwards [hlim (Ioi_mem_nhds hLL'), self_mem_nhdsWithin] with r hrL hr
+  have hint : L' * r ^ m < ∫ z, f (r⁻¹ • (z - y)) ∂μ :=
+    (lt_inv_mul_iff₀' (pow_pos hr m)).mp hrL
+  -- `ofReal (∫ g) ≤ ∫⁻ ofReal g`: equality if `g` is integrable, otherwise `∫ g = 0`
+  have hlint : ENNReal.ofReal (∫ z, f (r⁻¹ • (z - y)) ∂μ) ≤
+      ∫⁻ z, ENNReal.ofReal (f (r⁻¹ • (z - y))) ∂μ := by
+    by_cases hg : Integrable (fun z => f (r⁻¹ • (z - y))) μ
+    · exact (ofReal_integral_eq_lintegral_ofReal hg (Eventually.of_forall fun z => hf0 _)).le
+    · rw [integral_undef hg, ENNReal.ofReal_zero]
+      exact zero_le
+  -- `ofReal g ≤ 1_{S_r}` pointwise, and `∫⁻ 1_{S_r} dμ ≤ μ S_r` for any set `S_r`
+  have hind : ∫⁻ z, ENNReal.ofReal (f (r⁻¹ • (z - y))) ∂μ ≤
+      ∫⁻ z, {z | r⁻¹ • (z - y) ∈ A}.indicator 1 z ∂μ := by
+    refine lintegral_mono fun z => ?_
+    show ENNReal.ofReal (f (r⁻¹ • (z - y))) ≤ {z | r⁻¹ • (z - y) ∈ A}.indicator 1 z
+    by_cases hz : r⁻¹ • (z - y) ∈ A
+    · rw [indicator_of_mem (show z ∈ {z | r⁻¹ • (z - y) ∈ A} from hz), Pi.one_apply]
+      exact ENNReal.ofReal_le_one.mpr (hf1 _)
+    · rw [hfA _ hz, ENNReal.ofReal_zero]
+      exact zero_le
+  exact (ENNReal.ofReal_le_ofReal hint.le).trans
+    (hlint.trans (hind.trans (lintegral_indicator_one_le _)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

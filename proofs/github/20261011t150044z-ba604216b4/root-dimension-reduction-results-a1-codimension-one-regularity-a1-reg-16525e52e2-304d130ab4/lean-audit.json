@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf563587e7b03059782f3203e774145b9b3e3ff09d720900ef9134d1d5b5f538",
+  "git_delta": {
+    "base_commit": "a51a69af98a60d185cf39853f0c7f29822d21c71",
+    "candidate_commit": "2135dcdd3f8cdd4c3785270e0440e2c07bec44d0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_ftd_test_lower_bound",
+    "diff_sha256": "1436039656cf06c977605bb521c365b866d00cf0af51e8a20b9062abadd9b8d3",
+    "source_sha256": "eb0c98d948b5443c1e7d6296eeca2b77bd15a6285c95b9874faf1d8cb4fde39b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_ftd_test_lower_bound",
+      "statement": "∀ (N m : ℕ) (μ : Measure (Euclid N)) (y : Euclid N) (f : Euclid N → ℝ) (A : Set (Euclid N)) (L L' : ℝ), Continuous f → (∀ w, 0 ≤ f w) → (∀ w, f w ≤ 1) → (∀ w, w ∉ A → f w = 0) → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L) → L' < L → ∀ᶠ r in 𝓝[>] (0 : ℝ), ENNReal.ofReal (L' * r ^ m) ≤ μ {z | r⁻¹ • (z - y) ∈ A}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
