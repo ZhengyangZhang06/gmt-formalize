@@ -1,0 +1,978 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-abstract-dimension-reduction-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.affine_invariant_closed_set-a1",
+      "key": "affine_invariant_closed_set",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.affine_invariant_closed_set-a1",
+        "subproblem": {
+          "key": "affine_invariant_closed_set",
+          "title": "Lemma S: closed sets invariant under small affine maps along a subspace",
+          "statement": "Let P ∈ ℕ, let S ⊆ ℝ^P be closed and let L ⊆ ℝ^P be a linear subspace such that {x : y + λx ∈ S} = S whenever y ∈ L, 0 < λ < 1 and |y| ≤ 1 − λ. Then (i) y + λz ∈ S ⇔ z ∈ S for all y ∈ L, all λ > 0 and all z ∈ ℝ^P; and (ii) if S ≠ ∅ then L ⊆ S.",
+          "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (L : Submodule ℝ (Euclid P)), IsClosed S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => y + lam • x) ⁻¹' S = S) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ z, y + lam • z ∈ S ↔ z ∈ S) ∧ (S.Nonempty → (L : Set (Euclid P)) ⊆ S)",
+          "lean_name": "adr_affine_invariant_closed_set",
+          "depends_on": [],
+          "natural_proof": "Source: Lemma S of the parent proof (step 2), i.e. the uses of A.3(2) in Simon's proof of A.4: chapter-A.txt lines 135–136 ('hence sing ψ ⊇ T by A.3(2)') and lines 150–152 ('together with A.3(2) gives L ⊆ sing ψ'). Here they are stated for a closed set S invariant under the small affine maps x ↦ y + λx with y ∈ L.\nNotation: for y ∈ ℝ^P and λ > 0 let T_{y,λ}(z) := y + λz. Let G be the set of pairs (y, λ) with y ∈ L, λ > 0 and T_{y,λ}(z) ∈ S ⇔ z ∈ S for every z ∈ ℝ^P. The hypothesis says exactly that (y, λ) ∈ G whenever y ∈ L, 0 < λ < 1 and |y| ≤ 1 − λ.\n1. Composition. If (y₁, λ₁) and (y₂, λ₂) are in G, then (y₁ + λ₁y₂, λ₁λ₂) ∈ G. Indeed y₁ + λ₁y₂ ∈ L, λ₁λ₂ > 0, and T_{y₁,λ₁}∘T_{y₂,λ₂} = T_{y₁+λ₁y₂, λ₁λ₂}. Hence T_{y₁+λ₁y₂,λ₁λ₂}(z) ∈ S ⇔ T_{y₂,λ₂}(z) ∈ S ⇔ z ∈ S.\n2. Inverses. If (y, λ) ∈ G then (−λ⁻¹y, λ⁻¹) ∈ G. Indeed −λ⁻¹y ∈ L, and for z ∈ ℝ^P the point w := −λ⁻¹y + λ⁻¹z satisfies T_{y,λ}(w) = z, so w ∈ S ⇔ z ∈ S.\n3. Dilations. For 0 < λ < 1, (0, λ) ∈ G by hypothesis, since |0| = 0 ≤ 1 − λ. (0, 1) ∈ G trivially. For λ > 1, (0, λ⁻¹) ∈ G, and step 2 gives (0, λ) ∈ G.\n4. Short translations. Let a ∈ L with |a| ≤ 1/2. Then (a, 1/2) ∈ G by hypothesis and (0, 2) ∈ G by step 3. Step 1 gives (a + (1/2)·0, (1/2)·2) = (a, 1) ∈ G.\n5. All translations. Let y ∈ L and choose an integer m ≥ 1 with |y|/m ≤ 1/2. By step 4, (y/m, 1) ∈ G. If (jy/m, 1) ∈ G, step 1 applied to (jy/m, 1) and (y/m, 1) gives ((j+1)y/m, 1) ∈ G. By induction, (y, 1) ∈ G.\n6. Part (i). Let y ∈ L and λ > 0. Then (y, 1) ∈ G by step 5 and (0, λ) ∈ G by step 3, so step 1 gives (y + 1·0, 1·λ) = (y, λ) ∈ G. That is, y + λz ∈ S ⇔ z ∈ S for every z.\n7. Part (ii). Let z ∈ S and y ∈ L. For 0 < λ < 1, part (i) gives y + λz ∈ S. As λ ↓ 0, y + λz → y, so y lies in the closure of S, which is S. Hence L ⊆ S. ∎",
+          "proof_key_steps": [
+            "the admissible pairs (y,λ) are closed under composition and inversion of the affine maps z ↦ y+λz",
+            "this generates every dilation λ>0 and every translation by a short vector of L",
+            "translations by arbitrary y ∈ L are compositions of short ones, which gives (i)",
+            "letting λ↓0 in y+λz ∈ S and using closedness gives L ⊆ S"
+          ]
+        },
+        "audit": {
+          "key": "affine_invariant_closed_set",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition exactly expresses both conclusions. Composition and inversion generate all positive dilations and subspace translations from the permitted maps. Closedness then gives L ⊆ S by letting the dilation tend to zero."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.content_density-a1",
+      "key": "content_density",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-content-density-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-content-density-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.content_density-a1",
+        "subproblem": {
+          "key": "content_density",
+          "title": "Upper density of Hausdorff content (Simon Ch. 1, 3.26(2)) in cover form",
+          "statement": "Let P ∈ ℕ, ℓ > 0 and let A ⊆ ℝ^P be a bounded Borel set. Then the set of x ∈ A for which the following property fails has μH[ℓ] outer measure 0: for every δ > 0 there is ρ ∈ (0, δ) such that every countable cover {C_j}_{j∈ℕ} of A ∩ B_ρ(x) satisfies ρ^ℓ ≤ 2·Σ_j (diam C_j)^ℓ, with diameters in [0, ∞] and diam ∅ = 0.",
+          "lean_statement": "∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)), 0 < ℓ → MeasurableSet A → Bornology.IsBounded A → μH[ℓ] {x | x ∈ A ∧ ¬ ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ ∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ} = 0",
+          "lean_name": "adr_content_density",
+          "depends_on": [],
+          "natural_proof": "Source: Simon Ch. 1, Theorem 3.26(2) (chapter-01.txt lines 1197–1240): Θ^{*n}(H^n_∞, A, x) ≥ 2^{−n} for H^n-a.e. x ∈ A. This is the bound Simon cites as '3.6(2) of Ch. 1' at chapter-A.txt line 72, and it is used in step 0(d) and step 5 of the parent. Here it is stated in unnormalized cover form.\nThe pinned library proves it as Poincare.SimonGMT.Chapter01.simon_theorem_3_26_ii_of_totallyBounded (axioms propext, Classical.choice, Quot.sound). That lemma needs Carathéodory measurability, which follows from MeasurableSet A, and its normalized outer measure has the same null sets as μH[ℓ] by simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure. A self-contained proof follows.\nNotation: for E ⊆ ℝ^P and τ ∈ (0, ∞] let h_τ(E) := inf{Σ_j (diam C_j)^ℓ : E ⊆ ∪_{j∈ℕ} C_j, diam C_j < τ for all j}. Here diam ∅ = 0 and 0^ℓ = 0 since ℓ > 0.\nFacts:\n(a) h_τ is monotone and countably subadditive.\n(b) h_∞ ≤ h_τ.\n(c) If diam E < τ then h_τ(E) = h_∞(E): any cover {D_i} of E can be replaced by {D_i ∩ E}, whose diameters are ≤ diam E < τ and whose sum is no larger.\n(d) μH[ℓ](E) = sup_{τ>0} h_τ(E). Mathlib's definition uses diam ≤ τ, which gives the same supremum, because the families with diam < τ lie between those with diam ≤ τ/2 and those with diam ≤ τ.\n(e) For bounded A, h_τ(A) < ∞ for every τ > 0: cover the compact closure of A by finitely many balls of radius τ/3.\n1. A point x ∈ A fails the property iff there is δ > 0 with h_∞(A ∩ B_ρ(x)) < ρ^ℓ/2 for every ρ ∈ (0, δ). (A cover with 2Σ(diam C_j)^ℓ < ρ^ℓ exists iff h_∞ < ρ^ℓ/2.) For m ≥ 1 let N_m := {x ∈ A : h_∞(A ∩ B_ρ(x)) < ρ^ℓ/2 for all ρ ∈ (0, 1/m)}. The exceptional set is ∪_m N_m, so it suffices to show μH[ℓ](N_m) = 0 for every m.\n2. Fix m, put δ := 1/m, and fix τ ∈ (0, δ). By (e), h_τ(N_m) ≤ h_τ(A) < ∞. Let ε > 0. Choose a cover {C_j} of N_m with diam C_j < τ and Σ_j (diam C_j)^ℓ ≤ h_τ(N_m) + ε. Drop the C_j that do not meet N_m, and pick x_j ∈ C_j ∩ N_m. Let d_j := diam C_j ∈ [0, τ).\n3. By continuity of t ↦ t^ℓ, choose ρ_j ∈ (d_j, δ) with ρ_j^ℓ ≤ d_j^ℓ + ε2^{−j−1}. Then E_j := C_j ∩ N_m ⊆ B̄_{d_j}(x_j) ∩ A ⊆ A ∩ B_{ρ_j}(x_j).\n4. Since x_j ∈ N_m and 0 < ρ_j < δ, h_∞(A ∩ B_{ρ_j}(x_j)) < ρ_j^ℓ/2. As diam E_j ≤ d_j < τ, fact (c) and monotonicity give h_τ(E_j) = h_∞(E_j) ≤ h_∞(A ∩ B_{ρ_j}(x_j)) < ρ_j^ℓ/2 ≤ (d_j^ℓ + ε2^{−j−1})/2.\n5. N_m = ∪_j E_j, so by (a), h_τ(N_m) ≤ Σ_j h_τ(E_j) ≤ (1/2)Σ_j d_j^ℓ + ε/2 ≤ (1/2)(h_τ(N_m) + ε) + ε/2. Since h_τ(N_m) < ∞, this gives h_τ(N_m) ≤ 2ε. As ε is arbitrary, h_τ(N_m) = 0.\n6. This holds for every τ ∈ (0, δ), and h_τ increases as τ decreases. So by (d), μH[ℓ](N_m) = sup_{0<τ<δ} h_τ(N_m) = 0. By countable subadditivity, the exceptional set ∪_m N_m is μH[ℓ]-null. ∎",
+          "proof_key_steps": [
+            "exceptional points satisfy h_∞(A∩B_ρ(x)) < ρ^ℓ/2 for all small ρ; group them by the scale 1/m into sets N_m",
+            "cover N_m by sets C_j of diameter < τ that meet N_m, and enlarge each to a ball B_{ρ_j}(x_j) with ρ_j^ℓ ≈ (diam C_j)^ℓ",
+            "for sets of diameter < τ, h_τ = h_∞; hence h_τ(N_m) ≤ ½(h_τ(N_m)+ε)+ε/2, which forces h_τ(N_m)=0",
+            "taking the supremum over τ gives μH[ℓ](N_m)=0"
+          ]
+        },
+        "audit": {
+          "key": "content_density",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The Lean proposition faithfully uses extended diameters, real powers and outer-null exceptional sets. The self-contained covering argument is complete: boundedness gives finite fixed-scale content, intersection with small-diameter sets identifies the two contents, and the contraction estimate forces each exceptional set N_m to be Hausdorff-null. No finite Hausdorff-measure assumption is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.invariant_eq_indicator-a1",
+      "key": "invariant_eq_indicator",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.invariant_eq_indicator-a1",
+        "subproblem": {
+          "key": "invariant_eq_indicator",
+          "title": "Remark A.5: invariance under a subspace of dimension ≥ n forces a plane indicator",
+          "statement": "Let P, n, Q ∈ ℕ, let ψ : ℝ^P → ℝ^Q be locally μH[n]-integrable, and let L ⊆ ℝ^P be a linear subspace with dim L ≥ n such that ψ(y + λx) = ψ(x) for all y ∈ L, λ > 0 and x ∈ ℝ^P. Then there is an n-dimensional linear subspace L' ⊆ ℝ^P with ψ = ψ(0)·1_{L'} everywhere on ℝ^P.",
+          "lean_statement": "∀ (P n Q : ℕ) (ψ : Euclid P → Euclid Q) (L : Submodule ℝ (Euclid P)), LocallyIntegrable ψ μH[(n : ℝ)] → n ≤ Module.finrank ℝ L → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → ∃ L' : Submodule ℝ (Euclid P), Module.finrank ℝ L' = n ∧ ψ = Set.indicator (L' : Set (Euclid P)) (fun _ => ψ 0)",
+          "lean_name": "adr_invariant_eq_indicator",
+          "depends_on": [],
+          "natural_proof": "Source: Simon, Remark A.5 (chapter-A.txt lines 46–50), as expanded in step 3 of the parent proof. Write μ := μH[n] on ℝ^P.\n1. Since dim L ≥ n, choose n linearly independent vectors in L and let L' be their span. Then L' is an n-dimensional linear subspace with L' ⊆ L.\n2. For y ∈ L', invariance with x = 0 and λ = 1 gives ψ(y) = ψ(y + 1·0) = ψ(0). So ψ = ψ(0) on L', and it remains to show ψ(x) = 0 for every x ∉ L'.\n3. Fix x ∉ L'. Then V := L' + ℝx is a linear subspace of dimension n + 1. Every v ∈ V can be written uniquely as v = y + tx with y ∈ L' and t ∈ ℝ, and τ(v) := t is a linear functional on V. Let H := {v ∈ V : τ(v) > 0} = {y + λx : y ∈ L', λ > 0}. For y ∈ L' ⊆ L and λ > 0, invariance gives ψ(y + λx) = ψ(x). Hence ψ ≡ ψ(x) on H.\n4. Suppose ψ(x) ≠ 0. Local integrability at the point x gives r > 0 with ∫_{B_r(x)} |ψ| dμ < ∞.\n5. τ is continuous on the finite-dimensional space V and τ(x) = 1 > 0. So H is relatively open in V and contains x, and we can choose r' ∈ (0, r] with E := V ∩ B_{r'}(x) ⊆ H. E is Borel (a closed subspace intersected with an open ball), nonempty, convex and open relative to V. Its affine span is therefore V, so its Hausdorff dimension is dim V = n + 1 (Mathlib Convex.dimH_eq_finrank_vectorSpan). Since n < n + 1 = dim_H E, μH[n](E) = ∞ (Mathlib hausdorffMeasure_of_lt_dimH).\n6. E ⊆ H ∩ B_r(x) and ψ ≡ ψ(x) on E, so ∫_{B_r(x)} |ψ| dμ ≥ ∫_E |ψ| dμ = |ψ(x)|·μ(E) = ∞. This contradicts step 4, hence ψ(x) = 0.\n7. By steps 2 and 6, ψ(x) = ψ(0) for x ∈ L' and ψ(x) = 0 for x ∉ L'. That is, ψ = ψ(0)·1_{L'} everywhere, with dim L' = n. If L' = ℝ^P, step 3 is vacuous. ∎",
+          "proof_key_steps": [
+            "choose an n-dimensional L' ⊆ L; invariance makes ψ ≡ ψ(0) on L'",
+            "for x ∉ L', invariance makes ψ ≡ ψ(x) on the half (n+1)-plane {y+λx : y∈L', λ>0}, which is relatively open in L'+ℝx",
+            "a nonempty relatively open piece of an (n+1)-plane has dimH = n+1, so its μH[n] measure is infinite",
+            "local integrability at x forces ψ(x)=0, so ψ = ψ(0)·1_{L'}"
+          ]
+        },
+        "audit": {
+          "key": "invariant_eq_indicator",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type matches the pointwise indicator conclusion. The proof constructs an n-dimensional subspace inside L and shows that any nonzero value outside it would persist on a relatively open (n+1)-dimensional piece of infinite μH[n] measure, contradicting local integrability. The zero-dimensional and full-subspace cases are covered."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.sing_mem_of_tendsto-a1",
+      "key": "sing_mem_of_tendsto",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.sing_mem_of_tendsto-a1",
+        "subproblem": {
+          "key": "sing_mem_of_tendsto",
+          "title": "Lemma T: limits of singular points are singular for the weak limit",
+          "statement": "Let P, n, Q ∈ ℕ, let F be a set of functions ℝ^P → ℝ^Q and let sing map functions ℝ^P → ℝ^Q to subsets of ℝ^P. Write φ_k ⇀ φ if ∫ f·φ_k dμH[n] → ∫ f·φ dμH[n] for every continuous compactly supported f : ℝ^P → ℝ. Assume (A.3c) sing φ is closed for every φ ∈ F, and (A.3(3)) whenever φ ∈ F, φ_k ∈ F and φ_k ⇀ φ, for every ε > 0 there is k₀ with B_1(0) ∩ sing φ_k ⊆ {x : ∃ z ∈ sing φ, |x − z| < ε} for all k ≥ k₀. If ψ ∈ F, φ_k ∈ F for all k, φ_k ⇀ ψ, z_k ∈ B_1(0) ∩ sing φ_k for every k and z_k → z, then z ∈ sing ψ.",
+          "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ ψ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) → ∀ (zs : ℕ → Euclid P) (z : Euclid P), (∀ k, zs k ∈ ball (0 : Euclid P) 1 ∩ sing (φs k)) → Tendsto zs atTop (𝓝 z) → z ∈ sing ψ",
+          "lean_name": "adr_sing_mem_of_tendsto",
+          "depends_on": [],
+          "natural_proof": "Source: Lemma T of the parent proof (step 1), in the general form used in parent steps 4, 8 and 9. Simon, proof of A.4, chapter-A.txt line 135 ('sing ψ ≠ ∅ (by A.3(3))') and lines 150–151 ('{ξ/2} ⊆ sing ψ by A.3(2), (3)').\n1. Let ε > 0. Apply A.3(3) to ψ ∈ F, the sequence φ_k ∈ F (which converges weakly to ψ) and ε/2. This gives k₀ such that for all k ≥ k₀, B_1(0) ∩ sing φ_k ⊆ {w : ∃ v ∈ sing ψ, |w − v| < ε/2}.\n2. Since z_k ∈ B_1(0) ∩ sing φ_k, step 1 gives for every k ≥ k₀ a point v_k ∈ sing ψ with |z_k − v_k| < ε/2.\n3. Since z_k → z, there is k₁ with |z_k − z| < ε/2 for all k ≥ k₁. For k := max(k₀, k₁), |z − v_k| ≤ |z − z_k| + |z_k − v_k| < ε. So for every ε > 0 the ball B_ε(z) meets sing ψ, i.e. z lies in the closure of sing ψ.\n4. sing ψ is closed because ψ ∈ F (A.3c), so z ∈ sing ψ. ∎",
+          "proof_key_steps": [
+            "A.3(3) with ε/2 places each z_k (k large) within ε/2 of a point of sing ψ",
+            "z_k → z places z within ε of sing ψ for every ε > 0",
+            "sing ψ is closed, hence z ∈ sing ψ"
+          ]
+        },
+        "audit": {
+          "key": "sing_mem_of_tendsto",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type matches all stated hypotheses. Upper semicontinuity with ε/2 and convergence of the singular points place the limit in the closure of sing ψ; closedness proves membership. The argument also correctly excludes an empty limiting singular set."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+      "key": "weak_tendsto_comp_affine",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+        "subproblem": {
+          "key": "weak_tendsto_comp_affine",
+          "title": "Weak convergence survives translations and dilations with factors tending to 1",
+          "statement": "Let P, n, Q ∈ ℕ and μ := μH[n] on ℝ^P. Let g_k : ℝ^P → ℝ^Q (k ∈ ℕ) be locally μ-integrable, let g : ℝ^P → ℝ^Q be arbitrary, let y ∈ ℝ^P, and let c_k > 0 with c_k → 1. Suppose ∫ f g_k dμ → ∫ f g dμ for every continuous compactly supported f : ℝ^P → ℝ. Then for every such f, ∫ f(x) g_k(y + c_k x) dμ(x) → ∫ f(x) g(y + x) dμ(x).",
+          "lean_statement": "∀ (P n Q : ℕ) (gs : ℕ → Euclid P → Euclid Q) (g : Euclid P → Euclid Q) (y : Euclid P) (mus : ℕ → ℝ), (∀ k, LocallyIntegrable (gs k) μH[(n : ℝ)]) → (∀ k, 0 < mus k) → Tendsto mus atTop (𝓝 1) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • g x ∂μH[(n : ℝ)]))) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k (y + mus k • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • g (y + x) ∂μH[(n : ℝ)]))",
+          "lean_name": "adr_weak_tendsto_comp_affine",
+          "depends_on": [],
+          "natural_proof": "Source: facts (b) and (c) of the parent proof (step 0) and its departure [D2]. The weak limits in Simon's chapter-A.txt lines 125–133 ('ψ_{βx,1} = lim φ_{x+λ_jβx,λ_j} = ψ') need the uniform bound proved below. Write μ := μH[n] and c_k := mus k.\n1. Change of variables. Let c > 0, y ∈ ℝ^P and T(x) := y + cx. Hausdorff measure is translation invariant and satisfies μH[n](cA) = c^n μH[n](A) (Mathlib hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure). So μ(T⁻¹B) = μ(c⁻¹(B − y)) = c^{−n}μ(B) for Borel B, i.e. T_#μ = c^{−n}μ. Since T is a measurable embedding, ∫ h(y + cx) dμ(x) = ∫ h d(T_#μ) = c^{−n}∫ h dμ for every h : ℝ^P → ℝ^Q. If h is not integrable, then neither is h∘T, and both sides are 0.\n2. Fix f continuous with spt f ⊆ B̄_R(0), R > 0. Put f_k(w) := f((w − y)/c_k) and f_∞(w) := f(w − y). Step 1 gives ∫ f(x) g_k(y + c_k x) dμ(x) = c_k^{−n} ∫ f_k g_k dμ and ∫ f(x) g(y + x) dμ(x) = ∫ f_∞ g dμ.\n3. Since c_k → 1, there is k₁ with 1/2 ≤ c_k ≤ 2 for k ≥ k₁. For such k, f_k and f_∞ vanish outside the compact ball K := B̄_{2R}(y). Moreover ‖f_k − f_∞‖_∞ → 0. Outside K both functions vanish. On K, |(w − y)/c_k − (w − y)| ≤ 2R|c_k⁻¹ − 1| → 0, and f is uniformly continuous.\n4. Uniform bound (Banach–Steinhaus). Let X_K be the space of bounded continuous h : ℝ^P → ℝ with h = 0 outside K, with the sup norm. It is a closed subspace of the Banach space of bounded continuous functions, hence complete. For each k, Λ_k(h) := ∫ h g_k dμ is a linear map X_K → ℝ^Q with |Λ_k(h)| ≤ ‖h‖_∞ ∫_K |g_k| dμ < ∞, because g_k is locally integrable and K is compact. So Λ_k is a bounded operator. Every h ∈ X_K is continuous with compact support (spt h ⊆ K), so (Λ_k h)_k converges by hypothesis and is bounded. By the uniform boundedness principle (Mathlib banach_steinhaus) there is M < ∞ with ‖Λ_k‖ ≤ M for all k.\n5. For k ≥ k₁, f_k − f_∞ ∈ X_K, and both f_k g_k and f_∞ g_k are integrable. So |∫ f_k g_k dμ − ∫ f_∞ g_k dμ| = |Λ_k(f_k − f_∞)| ≤ M‖f_k − f_∞‖_∞ → 0 by step 3.\n6. f_∞ is continuous with compact support, so ∫ f_∞ g_k dμ → ∫ f_∞ g dμ by hypothesis. With step 5, ∫ f_k g_k dμ → ∫ f_∞ g dμ. Since c_k^{−n} → 1, step 2 gives ∫ f(x) g_k(y + c_k x) dμ(x) = c_k^{−n}∫ f_k g_k dμ → ∫ f_∞ g dμ = ∫ f(x) g(y + x) dμ(x). ∎",
+          "proof_key_steps": [
+            "affine change of variables: ∫h(y+cx)dμH[n] = c^{-n}∫h dμH[n] for every h",
+            "the rescaled test functions f((w−y)/c_k) converge uniformly to f(w−y), with supports in a fixed compact K",
+            "Banach–Steinhaus on the complete space of bounded continuous functions vanishing off K bounds h ↦ ∫h g_k uniformly in k",
+            "combine with weak convergence tested against the fixed function f(·−y), and with c_k^{-n} → 1"
+          ]
+        },
+        "audit": {
+          "key": "weak_tendsto_comp_affine",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact contract permits arbitrary g, as does the proof: affine change of variables remains valid for totalized Bochner integrals. Local integrability of each g_k supplies bounded operators on the complete fixed-support test-function space; Banach–Steinhaus and uniform convergence of the moving tests establish the claimed limit without an unstated local-finiteness assumption."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1",
+      "key": "finite_of_dim_zero",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1",
+        "subproblem": {
+          "key": "finite_of_dim_zero",
+          "title": "Step 9: when d = 0 the singular sets are locally finite in B_1(0)",
+          "statement": "Let P, n, Q ∈ ℕ, F and sing satisfy A.1, A.2, A.3c, A.3(2) and A.3(3) as in the parent theorem (weak convergence taken with respect to μH[n]). Suppose μH[1](sing φ ∩ B_1(0)) = 0 for every φ ∈ F. Then sing φ ∩ B_σ(0) is finite for every φ ∈ F and every real σ < 1.",
+          "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → (∀ φ ∈ F, μH[1] (sing φ ∩ ball (0 : Euclid P) 1) = 0) → ∀ φ ∈ F, ∀ σ : ℝ, σ < 1 → (sing φ ∩ ball (0 : Euclid P) σ).Finite",
+          "lean_name": "adr_finite_of_dim_zero",
+          "depends_on": [
+            "sing_mem_of_tendsto",
+            "affine_invariant_closed_set"
+          ],
+          "natural_proof": "Source: Simon, proof of A.4, last paragraph, chapter-A.txt lines 142–153, i.e. step 9 of the parent proof. The hypothesis μH[1](sing φ ∩ B_1(0)) = 0 is Simon's (5) with α = 1.\n1. Let φ ∈ F and σ < 1, and suppose Σ := sing φ ∩ B_σ(0) is infinite (so σ > 0). Choose pairwise distinct points p_k ∈ Σ, k ∈ ℕ.\n2. Accumulation point. The p_k lie in the compact ball B̄_σ(0), so a subsequence converges to some x with |x| ≤ σ < 1, and x ∈ sing φ because sing φ is closed. Since the p_k are distinct, at most one of them equals x. Deleting it gives a sequence q_k ∈ sing φ with q_k ≠ x and q_k → x.\n3. Normalization. Let a_k := 2|q_k − x|; then a_k > 0 and a_k → 0. Choose indices inductively, each larger than the previous one, with a strictly smaller value of a that does not exceed (1 − |x|)/2; this is possible because a_k → 0 and a_k > 0. Along the resulting subsequence, a_k is strictly decreasing and a_k ≤ (1 − |x|)/2. The unit vectors u_k := (q_k − x)/|q_k − x| lie in the compact unit sphere, so we can pass to a further subsequence with u_k → ξ, |ξ| = 1. Strict decrease and the bound persist along subsequences; keep the names q_k, a_k, u_k.\n4. Tangent function. Apply (A.2) with y = x (|x| < 1) to the sequence a_k. This gives a strictly increasing sub and ψ ∈ F, homogeneous of degree zero, with φ_{x,λ_k} ⇀ ψ, where λ_k := a_{sub(k)}. Since 0 < λ_k ≤ (1 − |x|)/2 < 1 and |x| ≤ 1 − λ_k, (A.1) gives φ_k := φ_{x,λ_k} ∈ F, and (A.3(2)) gives sing φ_k = {z : x + λ_k z ∈ sing φ}.\n5. A singular point of ψ. Let z_k := (q_{sub(k)} − x)/λ_k = u_{sub(k)}/2. Then |z_k| = 1/2, so z_k ∈ B_1(0). Also x + λ_k z_k = q_{sub(k)} ∈ sing φ, so z_k ∈ sing φ_k. As z_k → ξ/2, the sibling lemma adr_sing_mem_of_tendsto gives ξ/2 ∈ sing ψ.\n6. A singular ray. By homogeneity ψ_{0,λ} = ψ for λ > 0, so (A.3(2)) gives sing ψ = {z : λz ∈ sing ψ} for 0 < λ < 1, and sing ψ is closed. The sibling lemma adr_affine_invariant_closed_set with L = {0} gives λz ∈ sing ψ ⇔ z ∈ sing ψ for all λ > 0. Hence tξ ∈ sing ψ for all t > 0.\n7. Contradiction. The segment {tξ : 1/4 ≤ t ≤ 1/2} lies in sing ψ ∩ B_1(0), since |tξ| = t < 1. Its μH[1]-measure equals its length 1/4 (Mathlib hausdorffMeasure_segment). So μH[1](sing ψ ∩ B_1(0)) ≥ 1/4 > 0, contradicting the hypothesis for ψ ∈ F. Hence Σ is finite. ∎",
+          "proof_key_steps": [
+            "an infinite singular set in B_σ(0) has an accumulation point x ∈ sing φ with |x| < 1, approached by distinct singular points",
+            "pass to subsequences with strictly decreasing scales λ = 2|q−x| and convergent directions ξ; A.2 gives a homogeneous tangent function ψ",
+            "the rescaled points (q−x)/λ (norm 1/2) are singular for the blow-ups, so ξ/2 ∈ sing ψ (sibling Lemma T)",
+            "Lemma S (sibling, L={0}) gives the whole ray in sing ψ; a segment of μH[1]-measure 1/4 contradicts the hypothesis"
+          ]
+        },
+        "audit": {
+          "key": "finite_of_dim_zero",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The contract matches the sufficient hypothesis that every unit-ball singular set is μH[1]-null. The proof obtains an interior accumulation point, admissible strictly decreasing scales and convergent directions. The declared lemmas produce a singular ray containing a segment of measure 1/4, contradicting nullity. For σ ≤ 0 the ball is empty."
+        },
+        "resolved_dependencies": [
+          "root.abstract_dimension_reduction-a1.sing_mem_of_tendsto-a1",
+          "root.abstract_dimension_reduction-a1.affine_invariant_closed_set-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.tangent_invariance-a1",
+      "key": "tangent_invariance",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-invariance-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-invariance-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.tangent_invariance-a1",
+        "subproblem": {
+          "key": "tangent_invariance",
+          "title": "Lemma I: tangent functions inherit invariance plus the blow-up direction",
+          "statement": "Let P, n, Q ∈ ℕ and let F be a set of functions ℝ^P → ℝ^Q. Write φ_{y,λ}(x) := φ(y + λx), and let ⇀ denote convergence of ∫ f·(·) dμH[n] for every continuous compactly supported f : ℝ^P → ℝ. Assume (H0) two members of F agreeing μH[n]-a.e. are equal; (H1) every member of F is locally μH[n]-integrable; (A.1) φ_{y,λ} ∈ F whenever φ ∈ F, 0 < λ < 1 and |y| ≤ 1 − λ. Let φ ∈ F and let S be a linear subspace with φ(y + λx) = φ(x) for all y ∈ S, λ > 0 and x. Let x ∈ ℝ^P, and let λ_k > 0 with λ_k → 0 and φ_{x,λ_k} ∈ F for all k. Let ψ ∈ F with ψ(λz) = ψ(z) for all λ > 0 and z, and φ_{x,λ_k} ⇀ ψ. Then ψ(y + λz) = ψ(z) for all y ∈ S + ℝx, all λ > 0 and all z.",
+          "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → ∀ φ ∈ F, ∀ S : Submodule ℝ (Euclid P), (∀ y ∈ S, ∀ lam : ℝ, 0 < lam → ∀ x, φ (y + lam • x) = φ x) → ∀ (x : Euclid P) (lams : ℕ → ℝ) (ψ : Euclid P → Euclid Q), (∀ k, 0 < lams k) → Tendsto lams atTop (𝓝 0) → (∀ k, (fun z => φ (x + lams k • z)) ∈ F) → ψ ∈ F → (∀ lam : ℝ, 0 < lam → ∀ z, ψ (lam • z) = ψ z) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z, f z • φ (x + lams k • z) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ z, f z • ψ z ∂μH[(n : ℝ)]))) → ∀ y ∈ S ⊔ Submodule.span ℝ {x}, ∀ lam : ℝ, 0 < lam → ∀ z, ψ (y + lam • z) = ψ z",
+          "lean_name": "adr_tangent_invariance",
+          "depends_on": [
+            "weak_tendsto_comp_affine"
+          ],
+          "natural_proof": "Source: Simon, proof of A.4, chapter-A.txt lines 125–134: ψ_{y,1} = ψ for y ∈ S and ψ_{βx,1} = ψ for β ∈ ℝ, hence invariance under the span of S and x. This is Lemma I (step 6) of the parent proof, with its departure [D2]. The parent's hypotheses x ∈ B_1(0) and λ_k decreasing are replaced by the only consequence used, φ_{x,λ_k} ∈ F. Write μ := μH[n] and g_k(z) := φ(x + λ_k z), so g_k ∈ F and g_k ⇀ ψ.\n1. Uniqueness of weak limits in F. Let g ∈ F with ∫ f g dμ = ∫ f ψ dμ for every continuous compactly supported f; then g = ψ. Indeed, g and ψ are locally μ-integrable by (H1), and the identity holds in particular for all smooth compactly supported f. So g = ψ μ-a.e. by the fundamental lemma of the calculus of variations, which holds for any Borel measure on a finite-dimensional real space and locally integrable functions (Mathlib ae_eq_of_integral_contDiff_smul_eq). Parent fact (a) gives the classical argument: on a ball B, |g − ψ|μ⌞B is a finite Borel measure; in it, the bounded sign field of each coordinate of g − ψ is an L¹-limit of continuous fields with compact support in B, which forces ∫_B |g − ψ| dμ = 0. Then g = ψ by (H0).\n2. Translates of ψ lie in F. Let w ∈ ℝ^P and θ := 1/(2 + |w|). Then 0 < θ ≤ 1/2 < 1 and |θw| = θ|w| ≤ 1 − θ, since θ(1 + |w|) ≤ 1. So z ↦ ψ(θw + θz) belongs to F by (A.1). By homogeneity ψ(θw + θz) = ψ(θ(w + z)) = ψ(w + z). Hence ψ_{w,1} : z ↦ ψ(w + z) belongs to F.\n3. Key step. Let w ∈ ℝ^P and c_k > 0 with c_k → 1, and suppose that for all sufficiently large k, g_k(w + z) = g_k(c_k z) for every z. Then ψ(w + z) = ψ(z) for all z. Proof: the g_k are locally integrable by (H1). Let f be continuous with compact support. The sibling lemma adr_weak_tendsto_comp_affine, with translation w and factors 1, gives ∫ f(z) g_k(w + z) dμ → ∫ f(z) ψ(w + z) dμ. With translation 0 and factors c_k, it gives ∫ f(z) g_k(c_k z) dμ → ∫ f(z) ψ(z) dμ. The two sequences of integrals agree for large k, so their limits agree: ∫ f ψ_{w,1} dμ = ∫ f ψ dμ for all such f. By steps 1 and 2, ψ_{w,1} = ψ.\n4. Translations in S. Let s ∈ S. For every k and z, λ_k s ∈ S, and S-invariance of φ with λ = 1 gives g_k(s + z) = φ(λ_k s + 1·(x + λ_k z)) = φ(x + λ_k z) = g_k(1·z). Step 3 with w = s and c_k = 1 gives ψ(s + z) = ψ(z) for all z.\n5. Translations along x. Let β ∈ ℝ. Since λ_k → 0, there is k₁ with a_k := 1 + βλ_k > 0 for k ≥ k₁. Put c_k := 1/a_k for k ≥ k₁ and c_k := 1 for k < k₁; then c_k > 0 and c_k → 1. For k ≥ k₁ and all z, S-invariance of φ with y = 0 ∈ S and dilation factor a_k > 0 gives g_k(βx + z) = φ(a_k x + λ_k z) = φ(a_k(x + λ_k c_k z)) = φ(x + λ_k c_k z) = g_k(c_k z). Step 3 with w = βx gives ψ(βx + z) = ψ(z) for all z.\n6. Conclusion. Let y ∈ S + ℝx, say y = s + βx with s ∈ S and β ∈ ℝ, and let λ > 0 and z ∈ ℝ^P. By steps 4 and 5 and the homogeneity of ψ, ψ(y + λz) = ψ(s + (βx + λz)) = ψ(βx + λz) = ψ(λz) = ψ(z). ∎",
+          "proof_key_steps": [
+            "weak limits in F are unique: fundamental lemma plus (H0)",
+            "translates ψ(w+·) of the homogeneous ψ belong to F by A.1 with θ = 1/(2+|w|)",
+            "if a translate of the blow-up sequence eventually equals a dilation of it with factors c_k → 1, then ψ is invariant under that translation (sibling adr_weak_tendsto_comp_affine twice)",
+            "S-translations commute with blow-ups, and translation by βx equals dilation by 1/(1+βλ_k) via homogeneity of φ; combine with homogeneity of ψ"
+          ]
+        },
+        "audit": {
+          "key": "tangent_invariance",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The hypotheses and conclusion match exactly. Homogeneity and A.1 put all translates of ψ in F; H1 and the fundamental lemma give a.e. uniqueness, and H0 upgrades it to equality. The eventual positive factors 1/(1+βλ_k), together with the declared affine-convergence dependency, justify the added direction without circularity."
+        },
+        "resolved_dependencies": [
+          "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+      "key": "tangent_keeps_measure",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+        "subproblem": {
+          "key": "tangent_keeps_measure",
+          "title": "Book (1): tangent functions at H^ℓ-a.e. singular point keep positive H^ℓ measure",
+          "statement": "Let P, n, Q ∈ ℕ, let F be a set of functions ℝ^P → ℝ^Q, and let sing map functions to subsets of ℝ^P. Write φ_{y,λ}(x) := φ(y + λx), and φ_k ⇀ φ for convergence of ∫ f·φ_k dμH[n] to ∫ f·φ dμH[n] for every continuous compactly supported f. Assume:\n(A.1) φ_{y,λ} ∈ F for φ ∈ F, 0 < λ < 1, |y| ≤ 1 − λ;\n(A.2) for φ ∈ F, |y| < 1 and every strictly decreasing λ_k > 0 with λ_k → 0, there are a strictly increasing sequence of indices sub and ψ ∈ F with φ_{y,λ_{sub(k)}} ⇀ ψ and ψ(λx) = ψ(x) for all λ > 0 and x;\n(A.3c) sing φ is closed for φ ∈ F;\n(A.3(2)) sing φ_{y,λ} = {x : y + λx ∈ sing φ} for φ ∈ F, 0 < λ < 1, |y| ≤ 1 − λ;\n(A.3(3)) if φ, φ_k ∈ F and φ_k ⇀ φ, then for each ε > 0 there is k₀ with B_1(0) ∩ sing φ_k ⊆ {x : ∃ z ∈ sing φ, |x − z| < ε} for all k ≥ k₀.\nLet ℓ > 0 and φ ∈ F. Then the set of x ∈ sing φ ∩ B_1(0) for which the following fails is μH[ℓ]-null: there are λ_k (k ∈ ℕ) and ψ with 0 < λ_k < 1 and |x| ≤ 1 − λ_k for all k, λ_k → 0, ψ ∈ F, φ_{x,λ_k} ⇀ ψ, ψ(λz) = ψ(z) for all λ > 0 and z, and μH[ℓ](sing ψ ∩ B_1(0)) > 0.",
+          "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ ℓ : ℝ, 0 < ℓ → ∀ φ ∈ F, μH[ℓ] {x | x ∈ sing φ ∩ ball (0 : Euclid P) 1 ∧ ¬ ∃ (lams : ℕ → ℝ) (ψ : Euclid P → Euclid Q), (∀ k, 0 < lams k) ∧ (∀ k, lams k < 1) ∧ (∀ k, ‖x‖ ≤ 1 - lams k) ∧ Tendsto lams atTop (𝓝 0) ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z, f z • φ (x + lams k • z) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ z, f z • ψ z ∂μH[(n : ℝ)]))) ∧ (∀ lam : ℝ, 0 < lam → ∀ z, ψ (lam • z) = ψ z) ∧ 0 < μH[ℓ] (sing ψ ∩ ball (0 : Euclid P) 1)} = 0",
+          "lean_name": "adr_tangent_keeps_measure",
+          "depends_on": [
+            "content_density"
+          ],
+          "natural_proof": "Source: Simon, proof of A.4, implication (1) (chapter-A.txt lines 58–112), i.e. step 5 of the parent proof. Notation is as in the statement. Let A := sing φ ∩ B_1(0). Diameters take values in [0, ∞] and 0^ℓ = 0 since ℓ > 0.\n1. A is Borel (closed ∩ open, by A.3c) and bounded. By the sibling lemma adr_content_density there is a μH[ℓ]-null set N ⊆ A such that every x ∈ A ∖ N has property (D): for every δ > 0 there is ρ ∈ (0, δ) such that every countable cover {C_j} of A ∩ B_ρ(x) satisfies ρ^ℓ ≤ 2Σ_j (diam C_j)^ℓ. It suffices to show that every x ∈ A ∖ N has the required property; then the exceptional set of the statement is contained in N.\n2. Fix x ∈ A ∖ N, so |x| < 1, and put δ₀ := (1 − |x|)/4. Using (D), choose ρ_0 ∈ (0, δ₀), and inductively ρ_{k+1} ∈ (0, min(ρ_k, 1/(k+1))), each satisfying the cover inequality of (D). Then ρ_k > 0, (ρ_k) is strictly decreasing, ρ_k → 0 and ρ_k < δ₀. Every countable cover {C_j} of A ∩ B_{ρ_k}(x) has ρ_k^ℓ ≤ 2Σ_j (diam C_j)^ℓ.\n3. Let Λ_k := 2ρ_k. This sequence is positive, strictly decreasing, tends to 0, and Λ_k < (1 − |x|)/2. By (A.2) with y = x there are a strictly increasing sub and ψ ∈ F, homogeneous of degree zero, with φ_{x,Λ_{sub(k)}} ⇀ ψ. Put λ_k := Λ_{sub(k)}. Then λ_k > 0, λ_k < (1 − |x|)/2 ≤ 1/2 < 1, |x| ≤ 1 − λ_k, λ_k → 0, ψ ∈ F, φ_{x,λ_k} ⇀ ψ, and ψ is homogeneous. It remains to show μH[ℓ](sing ψ ∩ B_1(0)) > 0. Suppose instead that it is 0.\n4. φ_k := φ_{x,λ_k} ∈ F by (A.1), and sing φ_k = {z : x + λ_k z ∈ sing φ} by (A.3(2)).\n5. Small open cover. Let ε' := 2^{−ℓ}/8. The set E := sing ψ ∩ B̄_{1/2}(0) ⊆ sing ψ ∩ B_1(0) is μH[ℓ]-null. So by the definition of Hausdorff measure there are sets D_j (j ∈ ℕ) covering E with Σ_j (diam D_j)^ℓ < 2^{−ℓ−1}ε'. For nonempty D_j pick p_j ∈ D_j and r_j > diam D_j with (2r_j)^ℓ ≤ 2^ℓ(diam D_j)^ℓ + ε'2^{−j−2}, and let U_j := B_{r_j}(p_j) ⊇ D_j; let U_j := ∅ if D_j = ∅. The U_j are open, E ⊆ U := ∪_j U_j, and Σ_j (diam U_j)^ℓ ≤ Σ_j (2r_j)^ℓ < ε'. (The library lemma Poincare.SimonGMT.Chapter01.exists_isOpen_superset_ediam_rpow_lt provides such enlargements.)\n6. Localization by (A.3(3)). K := B̄_{1/2}(0) ∖ U is compact. It is disjoint from sing ψ, since sing ψ ∩ B̄_{1/2}(0) = E ⊆ U. If K and sing ψ are both nonempty, let η := min_{w∈K} dist(w, sing ψ). This is positive, as the minimum over a compact set of a positive continuous function (sing ψ is closed). Otherwise let η := 1. By (A.3(3)) for φ_k ⇀ ψ and η, there is k₀ such that for k ≥ k₀ every z ∈ B_1(0) ∩ sing φ_k has some v ∈ sing ψ with |z − v| < η, so z ∉ K. Hence B_{1/2}(0) ∩ sing φ_k ⊆ B̄_{1/2}(0) ∖ K ⊆ U for k ≥ k₀.\n7. Rescaling. Fix k ≥ k₀ and let ρ := ρ_{sub(k)} = λ_k/2. For w ∈ A ∩ B_ρ(x) put z := (w − x)/λ_k. Then |z| < ρ/λ_k = 1/2 and x + λ_k z = w ∈ sing φ, so z ∈ B_{1/2}(0) ∩ sing φ_k ⊆ U by steps 4 and 6. Hence A ∩ B_ρ(x) ⊆ ∪_j C_j with C_j := x + λ_k U_j, and diam C_j = λ_k diam U_j.\n8. Step 2 at radius ρ = ρ_{sub(k)} gives ρ^ℓ ≤ 2Σ_j (diam C_j)^ℓ = 2λ_k^ℓ Σ_j (diam U_j)^ℓ < 2(2ρ)^ℓ ε' = ρ^ℓ/4. This is impossible since ρ > 0. Hence μH[ℓ](sing ψ ∩ B_1(0)) > 0. ∎\nRemark: the parent proof (and Simon) cover all of sing ψ, using that sing ψ is a cone, and blow up at radius λ_k. Covering only sing ψ ∩ B̄_{1/2}(0) and using the density radius λ_k/2 removes the need for the cone property; the argument is otherwise identical.",
+          "proof_key_steps": [
+            "at a density point x (sibling adr_content_density) choose strictly decreasing radii ρ_k with the content lower bound, and blow up with λ_k = 2ρ_k via A.2",
+            "if μH[ℓ](sing ψ ∩ B_1) = 0, cover sing ψ ∩ B̄_{1/2}(0) by open sets with Σ diam^ℓ < 2^{−ℓ}/8",
+            "A.3(3) and compactness of B̄_{1/2} ∖ U put B_{1/2} ∩ sing φ_{x,λ_k} inside the cover for large k",
+            "rescaling by A.3(2) covers A ∩ B_{ρ}(x) with Σ diam^ℓ < ρ^ℓ/8, contradicting the density lower bound"
+          ]
+        },
+        "audit": {
+          "key": "tangent_keeps_measure",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exceptional-set formulation and every scale condition match the prose. Choosing λ_k = 2ρ_sub(k), covering the null limiting singular set inside the closed half-unit ball, and using compact separation correctly localize A.3(3). Rescaling gives ρ^ℓ ≤ 2Σ diam(C_j)^ℓ < ρ^ℓ/4, a contradiction. Empty-set cases are handled and no undeclared cone lemma is required."
+        },
+        "resolved_dependencies": [
+          "root.abstract_dimension_reduction-a1.content_density-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.dimension_bound-a1",
+      "key": "dimension_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-dimension-bound-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-dimension-bound-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.dimension_bound-a1",
+        "subproblem": {
+          "key": "dimension_bound",
+          "title": "Step 7: H^{d+α}(sing φ ∩ B_1(0)) = 0 for the maximal invariance dimension d",
+          "statement": "Let P, n, Q ∈ ℕ, let F be a set of functions ℝ^P → ℝ^Q, and let sing map functions to subsets of ℝ^P, with φ_{y,λ} and ⇀ as above. Assume (H0) two members of F agreeing μH[n]-a.e. are equal, (H1) members of F are locally μH[n]-integrable, and A.1, A.2, A.3c, A.3(2), A.3(3) exactly as in the parent theorem. Call ψ L-invariant (L a linear subspace) if ψ(y + λx) = ψ(x) for all y ∈ L, λ > 0 and x. Let d ∈ ℕ be such that every L-invariant ψ ∈ F with sing ψ ≠ ∅ has dim L ≤ d. Then μH[d+α](sing φ ∩ B_1(0)) = 0 for every φ ∈ F and every real α > 0.",
+          "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ d : ℕ, (∀ ψ ∈ F, ∀ L : Submodule ℝ (Euclid P), (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → (sing ψ).Nonempty → Module.finrank ℝ L ≤ d) → ∀ φ ∈ F, ∀ α : ℝ, 0 < α → μH[(d : ℝ) + α] (sing φ ∩ ball (0 : Euclid P) 1) = 0",
+          "lean_name": "adr_dimension_bound",
+          "depends_on": [
+            "tangent_invariance",
+            "tangent_keeps_measure"
+          ],
+          "natural_proof": "Source: Simon, proof of A.4, chapter-A.txt lines 113–141. This is the induction on the dimension k of the invariance subspace, together with 'if ℓ > d then the above induction works up to k = d'. It is step 7 of the parent proof with departure [D3]: the new point x is taken in the full-measure set of implication (1).\n1. Fix α > 0 and put ℓ := d + α > d. Every linear subspace S with dim S ≤ d is μH[ℓ]-null: S is isometric to ℝ^{dim S} and ℓ > dim S (Mathlib Real.hausdorffMeasure_of_finrank_lt applied in S, transported by the isometric inclusion S → ℝ^P).\n2. Suppose some φ ∈ F has μH[ℓ](sing φ ∩ B_1(0)) > 0. We prove by induction on j = 0, 1, …, d + 1 the claim C(j): there are ψ_j ∈ F and a j-dimensional linear subspace S_j such that ψ_j is S_j-invariant and μH[ℓ](sing ψ_j ∩ B_1(0)) > 0.\n3. C(0). Apply the sibling lemma adr_tangent_keeps_measure to φ and ℓ. The points of A := sing φ ∩ B_1(0) without the property stated there form a μH[ℓ]-null set. Since μH[ℓ](A) > 0, some x ∈ A has the property, which yields ψ ∈ F, homogeneous of degree zero, with μH[ℓ](sing ψ ∩ B_1(0)) > 0. Homogeneity is {0}-invariance, so C(0) holds with S_0 := {0}.\n4. C(j) ⇒ C(j+1) for j ≤ d. Let A_j := sing ψ_j ∩ B_1(0). The sibling lemma adr_tangent_keeps_measure applied to ψ_j gives a μH[ℓ]-null set B_j ⊆ A_j off which its property holds. Also μH[ℓ](S_j) = 0 by step 1, since dim S_j = j ≤ d. As A_j ⊆ B_j ∪ S_j ∪ (A_j ∖ (B_j ∪ S_j)) and μH[ℓ](A_j) > 0, there is x ∈ A_j ∖ (B_j ∪ S_j). Thus x ∉ S_j, and there are λ_k with 0 < λ_k < 1, |x| ≤ 1 − λ_k and λ_k → 0, and ψ ∈ F homogeneous of degree zero, with (ψ_j)_{x,λ_k} ⇀ ψ and μH[ℓ](sing ψ ∩ B_1(0)) > 0. By (A.1), (ψ_j)_{x,λ_k} ∈ F for every k. The sibling lemma adr_tangent_invariance (with φ := ψ_j, S := S_j and this x, λ_k, ψ) shows that ψ is (S_j + ℝx)-invariant. dim(S_j + ℝx) = j + 1 because x ∉ S_j. So C(j+1) holds with ψ_{j+1} := ψ and S_{j+1} := S_j + ℝx.\n5. C(d+1) gives ψ ∈ F invariant under a (d+1)-dimensional subspace with μH[ℓ](sing ψ ∩ B_1(0)) > 0, so sing ψ ≠ ∅. The hypothesis on d then gives d + 1 ≤ d, a contradiction. Hence μH[d+α](sing φ ∩ B_1(0)) = 0 for every φ ∈ F. ∎",
+          "proof_key_steps": [
+            "ℓ = d+α exceeds the dimension of every subspace of dimension ≤ d, so such subspaces are μH[ℓ]-null",
+            "assuming positive μH[ℓ] measure, the sibling adr_tangent_keeps_measure yields a homogeneous member of F with positive measure (dimension 0)",
+            "at each stage choose a good point x outside the current subspace S_j (possible since μH[ℓ](S_j)=0); the sibling adr_tangent_invariance adds the direction x",
+            "after d+1 steps a member with nonempty singular set is invariant under a (d+1)-dimensional space, contradicting the bound on d"
+          ]
+        },
+        "audit": {
+          "key": "dimension_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The statement correctly assumes only a uniform upper bound d on invariance dimensions. At each induction step, both the exceptional set and the current subspace are μH[d+α]-null, so a good point outside that subspace exists. The two declared dependencies produce a tangent with positive measure and one additional invariance direction, contradicting the bound at d+1."
+        },
+        "resolved_dependencies": [
+          "root.abstract_dimension_reduction-a1.tangent_invariance-a1",
+          "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.extremal_sing_eq-a1",
+      "key": "extremal_sing_eq",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+              "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+              "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+              "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+              "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+              "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+              "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+              "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+              "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+              "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+              "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+              "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+              "/tmp/adr-decomp/Check.lean",
+              "/tmp/adr-decomp/Check2.lean",
+              "/tmp/adr-decomp/Check3.lean",
+              "/tmp/adr-decomp/Check4.lean",
+              "/tmp/adr-decomp/Lib.lean"
+            ],
+            "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+          }
+        ],
+        "parent_id": "root.abstract_dimension_reduction-a1",
+        "child_id": "root.abstract_dimension_reduction-a1.extremal_sing_eq-a1",
+        "subproblem": {
+          "key": "extremal_sing_eq",
+          "title": "Step 8: an extremal invariant member has singular set equal to its invariance subspace",
+          "statement": "Let P, n, Q ∈ ℕ, F and sing satisfy (H0), (H1), A.1, A.2, A.3c, A.3(2) and A.3(3) as in the parent theorem. Let d ∈ ℕ be such that every L-invariant ψ ∈ F (ψ(y + λx) = ψ(x) for y ∈ L, λ > 0, x) with sing ψ ≠ ∅ has dim L ≤ d. If φ ∈ F is L-invariant for a d-dimensional linear subspace L and sing φ ≠ ∅, then sing φ = L.",
+          "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ d : ℕ, (∀ ψ ∈ F, ∀ L : Submodule ℝ (Euclid P), (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → (sing ψ).Nonempty → Module.finrank ℝ L ≤ d) → ∀ φ ∈ F, ∀ L : Submodule ℝ (Euclid P), Module.finrank ℝ L = d → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, φ (y + lam • x) = φ x) → (sing φ).Nonempty → sing φ = (L : Set (Euclid P))",
+          "lean_name": "adr_extremal_sing_eq",
+          "depends_on": [
+            "sing_mem_of_tendsto",
+            "affine_invariant_closed_set",
+            "tangent_invariance"
+          ],
+          "natural_proof": "Source: Simon, proof of A.4, chapter-A.txt lines 133–139 ('sing ψ ⊇ T by A.3(2) … if there is x̃ ∈ sing ψ ∖ T … contradicting the definition of d. Therefore sing ψ = T'). This is step 8 of the parent proof.\n1. For y ∈ L and λ > 0, L-invariance gives φ_{y,λ} = φ. So (A.3(2)) gives sing φ = {x : y + λx ∈ sing φ} whenever y ∈ L, 0 < λ < 1 and |y| ≤ 1 − λ, and sing φ is closed (A.3c). The sibling lemma adr_affine_invariant_closed_set with S := sing φ yields (i) y + λz ∈ sing φ ⇔ z ∈ sing φ for all y ∈ L, λ > 0 and z; and (ii) L ⊆ sing φ, since sing φ ≠ ∅.\n2. Suppose some z ∈ sing φ ∖ L. Then z ≠ 0, since 0 ∈ L. Put x := z/(2|z|). By (i) with y = 0 and λ = 1/(2|z|), x ∈ sing φ. Also |x| = 1/2, and x ∉ L, since otherwise z = 2|z|x ∈ L.\n3. Let Λ_k := (1/2)/(k + 2). This is a strictly decreasing positive sequence with Λ_k → 0 and Λ_k ≤ 1/4. (A.2) with y = x (|x| < 1) gives a strictly increasing sub and ψ ∈ F, homogeneous of degree zero, with φ_{x,λ_k} ⇀ ψ, where λ_k := Λ_{sub(k)}. Here 0 < λ_k ≤ 1/4 < 1, |x| = 1/2 ≤ 1 − λ_k and λ_k → 0.\n4. By (A.1), φ_k := φ_{x,λ_k} ∈ F. By (A.3(2)), 0 ∈ sing φ_k because x + λ_k·0 = x ∈ sing φ, and 0 ∈ B_1(0). The sibling lemma adr_sing_mem_of_tendsto with z_k := 0 → 0 gives 0 ∈ sing ψ, so sing ψ ≠ ∅.\n5. The sibling lemma adr_tangent_invariance with S := L shows that ψ is (L + ℝx)-invariant, and dim(L + ℝx) = d + 1 because x ∉ L. The hypothesis on d then gives d + 1 ≤ d, a contradiction. Hence sing φ ⊆ L, and with (ii), sing φ = L. ∎",
+          "proof_key_steps": [
+            "Lemma S (sibling) gives L ⊆ sing φ and invariance of sing φ under y+λ·, y∈L, λ>0",
+            "a singular point outside L rescales to x ∈ sing φ with |x| = 1/2 and x ∉ L",
+            "A.2 at x gives a homogeneous tangent function ψ; Lemma T (sibling) gives 0 ∈ sing ψ",
+            "Lemma I (sibling) makes ψ invariant under the (d+1)-dimensional space L+ℝx, contradicting maximality of d; so sing φ = L"
+          ]
+        },
+        "audit": {
+          "key": "extremal_sing_eq",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type includes the rank equality, invariance, nonempty singular set and uniform dimension bound required by the proof. The closed-set lemma gives L ⊆ sing φ. Any singular point outside L rescales to norm 1/2 and yields a singular homogeneous tangent invariant under L + ℝx, contradicting the bound. All sibling uses are declared."
+        },
+        "resolved_dependencies": [
+          "root.abstract_dimension_reduction-a1.sing_mem_of_tendsto-a1",
+          "root.abstract_dimension_reduction-a1.affine_invariant_closed_set-a1",
+          "root.abstract_dimension_reduction-a1.tangent_invariance-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/decomposition.json": "a88cc1d6beeb9dff6cf54cbf281fc5a3aa1c7e7cf6d2757700920dd1a31354c7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/decomposition-audit.json": "fa35df5faca86a68f078d182cdd90fe8c1204af18b49b17e28570f36596e9797",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-child-handoff.json": "a225734c870c5ff7988bea3d31f4227c72f6de9c37bd0fe48e28e01c7e9483b6",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-supplied-plan.md": "d332080e71bc9f88d65620f0c024783fc2c67d732ef50e4ed069de98579af9f8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-supplied-natural-proof.md": "73f6a6ae43f1d6c4178e192c71817025345b9f925ef5fac6807a84c85bf195b5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/parent-supplied-natural-proof.json": "18dbd2bfa6eca9a60d6f01e77e97257298f2e4fab255da639dc5232c082bf1a0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1/node.json": "c55da02fa26388c641e63e3a6a378703c969c4007e4cc7900f678a069b1f935c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-content-density-a1/parent-child-handoff.json": "3c5cbba13a4da867b4c0654edca39b91f4a5c4acab9cd44ccf73b7336e2da0c1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-plan.md": "1b70d71df3bd1e6a4b270f2bcfe744212408c5966ab43935637efe2ac4ff1817",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-natural-proof.md": "3a4ad180a81e02d71881222cd281609833b1edccb351c580343a8d578beb4c59",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-content-density-a1/parent-supplied-natural-proof.json": "6999d925e8464764058b65f06e7e8715de4018bdbc176ad0088caf0fdd200535",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-content-density-a1/node.json": "cc62b11e7167a2a4d61a962b07a2c38de8e5d5869f65ab1453b15a3962d18c70",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-child-handoff.json": "2616383ddcbab8da452a58f3182b41fde19c63702713d2986f4fe35a5afd8838",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-supplied-plan.md": "0c6193274b9146e0d8349d28fa1bdc721670bce438967b9e873f60549bdd7ed7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-supplied-natural-proof.md": "784546901d0a00bd8b3c84b773eb5bd9dbf6112bb77583f01fc27540c66d57f1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/parent-supplied-natural-proof.json": "19ff1e1fe720c57820a0f6f447244fe422e26db797ad8ff9a622759f77d33187",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1/node.json": "a8cc0c67b404527aea34a7b7b239e26ee703d2af8e03e526b338438234031448",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-child-handoff.json": "583faa8022cf43c970bd6f67d2c2a6bafdb84ebd956e7932f42b45c00ad0c542",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-supplied-plan.md": "90f516a76afe45485ae200eeb1f63b95f70b864f69c12db6f6b06a6fbe2ebe07",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-supplied-natural-proof.md": "d23da967fd87409d795299e41c961ba8d8608d79d20f5c63a0f711e9a764df1c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/parent-supplied-natural-proof.json": "3daaa55278022a0b5090c3cabe12466756ee086f73b6cb425f703cb8b0274575",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1/node.json": "96efe6a82fc21002b9f552423571fa2b9f1e75db54b924ca499c0a43b4dec077",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-child-handoff.json": "94a75bc051c98cef0795bc98669c0a954c6c8c9cc8bb1485480f9d994ebb613e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-plan.md": "8ee362d95523a8f22c34cd16d79fe650cdc2b886a0317e79fce2ce2c918e60a6",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-natural-proof.md": "e303166f9ea4413135541eca9f99373fdc4aef61b22390d4310010407b8a54ca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-natural-proof.json": "7cadec796f35868031394fac8eada27ea25843d8f0d149c72cfb2cb4495a092d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/node.json": "c57d7d12aa6f2ea9ff85d035d2c29c74a8e7b307a405d09ba7ffbf3e8d7f8ee8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-child-handoff.json": "b8da72d7e4a6c6e9830b732d4b059019a3a9fa3cadfdba32119dd027a7e802d7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-plan.md": "73a50db0076af997286f42cfb75ea9e53384a0dc571fb85fc8623ecabca3cd1f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-natural-proof.md": "0a3ece2dffaad04162d657010d978636b922d9ca6fb37dc5546e7ef7cffa06aa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-natural-proof.json": "67b2455e53fec534c0e8229852198181c0fd40b657c3acfc58697b35b784f869",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/node.json": "8eee7e8a7c972c509ad4bad914114eea98d845d099c11749b5075465a33f82be",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-child-handoff.json": "9cf5fb6e7f039b47576d1470eee592209e7f6568aa9bb346faef3893a8db41b9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-supplied-plan.md": "eeb8782f50d47657ba5598624dfd2dd733d09ec8331dd52f9f94ee2291f57cb0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-supplied-natural-proof.md": "63f3ca0d25a84f97755bb2ad63e05fb9f196f351762165b346fcaa960795b31c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-invariance-a1/parent-supplied-natural-proof.json": "88823a7f6fb37e8d639bf70859aa8c255d1ae4ca9e9db4446a0a9caa8d9836ac",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-invariance-a1/node.json": "0f6aaeb718b2a397387e8aad463de6514e7eabb0f3153ed65d972f4bc18f02ae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-child-handoff.json": "6748246797f9295fcee284f2799fa69a6ecd2da57cb6e3346c81f9b046b397a4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-plan.md": "3d93b3c1af1aed1b047d7e22bba322765921aaf2855ace4fed56299960533fc6",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-natural-proof.md": "269ebe59605e06c8695a41409fca8389bf920b7fafcebe77e645337a0562e56d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/parent-supplied-natural-proof.json": "7ce0670afe6e7d3bfcec11c8ac367079d8315c2edded92e8aeaddd705147ddb1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1/node.json": "0787edc18283c86b7f2a2062b405d26b0e3eaad3bbd15dec932031bbee9050de",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-child-handoff.json": "7ff593966113781b2e68e4900bf43ba2ec0e3d6b60c90a2dd9442380676aed30",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-supplied-plan.md": "b9473c63e4d0d8449395b5ffbc68b334a0dc303998cd9b8047f3b99c6656b5bd",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-supplied-natural-proof.md": "6d448353bccf62b2f0ef742f42ac493ea4ad4bd764f4765c0cf5e10602e217dd",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-dimension-bound-a1/parent-supplied-natural-proof.json": "de973402af1efeb5195537d19d1fdb3ff8e2d31eacd06928f3029bd61638cff5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-dimension-bound-a1/node.json": "7198ae405699da994c16c6aab25c70d5c11886b59c174e367d26e139bfef3da0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-child-handoff.json": "261bca184925c2c84f34893652c893a3cc87a44a8fa50f64c5951e5dea015036",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-supplied-plan.md": "ef6faa8802d7711d59e1468400963a07730d5d451735e24d1523a18e40cb308c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-supplied-natural-proof.md": "ad30b0c0070611dadf32bb4b93d4fffe1bc7b6a0013c810a71102ea5df0e64db",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/parent-supplied-natural-proof.json": "b6f4fc3e19ab89767dac5204a3ad09ae0e84353e84788a3ef2ab95b70b1c3e1c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1/children/root-abstract-dimension-reduction-a1-extremal-sing-eq-a1/node.json": "9d0bc71a6b12f2637ccc8652f6f00782f4cfbe7abbb918105c056a222e12969b"
+  }
+}

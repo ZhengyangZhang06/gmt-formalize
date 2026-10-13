@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.content_density-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Upper density of Hausdorff content (Simon Ch. 1, 3.26(2)) in cover form",
+  "statement": "Let P ∈ ℕ, ℓ > 0 and let A ⊆ ℝ^P be a bounded Borel set. Then the set of x ∈ A for which the following property fails has μH[ℓ] outer measure 0: for every δ > 0 there is ρ ∈ (0, δ) such that every countable cover {C_j}_{j∈ℕ} of A ∩ B_ρ(x) satisfies ρ^ℓ ≤ 2·Σ_j (diam C_j)^ℓ, with diameters in [0, ∞] and diam ∅ = 0.",
+  "lean_statement": "∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)), 0 < ℓ → MeasurableSet A → Bornology.IsBounded A → μH[ℓ] {x | x ∈ A ∧ ¬ ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ ∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ} = 0",
+  "lean_name": "adr_content_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-content-density-a1-a1"
+}

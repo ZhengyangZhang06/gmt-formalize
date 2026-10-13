@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_invariance-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Lemma I: tangent functions inherit invariance plus the blow-up direction",
+  "statement": "Let P, n, Q ∈ ℕ and let F be a set of functions ℝ^P → ℝ^Q. Write φ_{y,λ}(x) := φ(y + λx), and let ⇀ denote convergence of ∫ f·(·) dμH[n] for every continuous compactly supported f : ℝ^P → ℝ. Assume (H0) two members of F agreeing μH[n]-a.e. are equal; (H1) every member of F is locally μH[n]-integrable; (A.1) φ_{y,λ} ∈ F whenever φ ∈ F, 0 < λ < 1 and |y| ≤ 1 − λ. Let φ ∈ F and let S be a linear subspace with φ(y + λx) = φ(x) for all y ∈ S, λ > 0 and x. Let x ∈ ℝ^P, and let λ_k > 0 with λ_k → 0 and φ_{x,λ_k} ∈ F for all k. Let ψ ∈ F with ψ(λz) = ψ(z) for all λ > 0 and z, and φ_{x,λ_k} ⇀ ψ. Then ψ(y + λz) = ψ(z) for all y ∈ S + ℝx, all λ > 0 and all z.",
+  "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → ∀ φ ∈ F, ∀ S : Submodule ℝ (Euclid P), (∀ y ∈ S, ∀ lam : ℝ, 0 < lam → ∀ x, φ (y + lam • x) = φ x) → ∀ (x : Euclid P) (lams : ℕ → ℝ) (ψ : Euclid P → Euclid Q), (∀ k, 0 < lams k) → Tendsto lams atTop (𝓝 0) → (∀ k, (fun z => φ (x + lams k • z)) ∈ F) → ψ ∈ F → (∀ lam : ℝ, 0 < lam → ∀ z, ψ (lam • z) = ψ z) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z, f z • φ (x + lams k • z) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ z, f z • ψ z ∂μH[(n : ℝ)]))) → ∀ y ∈ S ⊔ Submodule.span ℝ {x}, ∀ lam : ℝ, 0 < lam → ∀ z, ψ (y + lam • z) = ψ z",
+  "lean_name": "adr_tangent_invariance",
+  "depends_on": [
+    "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-invariance-a1-a1"
+}

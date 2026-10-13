@@ -1,0 +1,69 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.abstract_dimension_reduction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Appendix A, A.1–A.5 and the proof of A.4 (chapter-A.txt lines 8–153 = chapter-07-source.txt lines 1099–1255). Departures: [D1] (H0) is added: the book treats members of F modulo H^n-null sets (its identities ψ_{y,1} = ψ are identities of weak limits) while sing acts on functions; (H0) makes this rigorous and holds for the canonical density functions of the applications. [D2] the book's "evidently" for ψ_{βx,1} = ψ needs the uniform bound (c) below. [D3] in the induction the point x must be taken in the H^ℓ-full set of step 5 (so that ψ ∈ F^ℓ). [D4] "3.6(2) of Ch. 1" means Ch. 1, 3.26(2).
+0. Facts. (a) If u is locally H^n-integrable and ∫ fu dH^n = 0 for all f ∈ C_c then u = 0 H^n-a.e. (on each ball B with compact closure, |u|H^n⌞B is a finite Borel measure, so u/|u| is an L¹(|u|H^n⌞B)-limit of continuous compactly supported fields); with (H0), two members of F that are weak limits of one sequence coincide. (b) H^n is translation invariant and H^n(μA) = μ^nH^n(A); so g_k ⇀ g implies (g_k)_{y,1} ⇀ g_{y,1}, and ∫f(x)g(μx)dH^n = μ^{−n}∫f(w/μ)g(w)dH^n. (c) If g_k ⇀ g, Banach–Steinhaus on {f ∈ C(ℝ^P) : spt f ⊆ K} (K compact, sup norm) bounds the functionals f ↦ ∫fg_k dH^n uniformly in k; hence μ_k → 1 implies (g_k)_{0,μ_k} ⇀ g, since ‖f(·/μ_k) − f‖_∞ → 0. (d) With h^ℓ_∞(A) := inf{Σ(diam C_j)^ℓ : A ⊆ ∪C_j}: H^ℓ(A) = 0 ⇔ h^ℓ_∞(A) = 0; h^ℓ_∞(y+λA) = λ^ℓh^ℓ_∞(A); for bounded Borel A, limsup_{ρ↓0} ρ^{−ℓ}h^ℓ_∞(A ∩ B_ρ(x)) ≥ c_ℓ > 0 for H^ℓ-a.e. x ∈ A (Ch. 1, 3.26(2)). Say ψ is L-invariant if ψ(y+λx) = ψ(x) for y ∈ L, λ > 0.
+1. Lemma T. If φ ∈ F, x ∈ sing φ ∩ B_1(0), λ_k ↓ 0 with λ_k ≤ (1−|x|)/2 and φ_{x,λ_k} ⇀ ψ ∈ F along a subsequence, then 0 ∈ sing ψ: 0 ∈ sing φ_{x,λ_k} by A.3(2), the φ_{x,λ_k} lie in F (A.1), so A.3(3) puts points of sing ψ arbitrarily close to 0, and sing ψ is closed.
+2. Lemma S. If ψ ∈ F is L-invariant, A.3(2) gives z ∈ sing ψ ⇔ y+λz ∈ sing ψ for 0<λ<1, |y| ≤ 1−λ, hence (composing) for all y ∈ L, λ > 0; if sing ψ ≠ ∅ then L ⊆ sing ψ (dilate z+L to 0, closedness). Homogeneous ψ have conical sing ψ.
+3. A.5. If ψ ∈ F is L-invariant with dim L ≥ n, then ψ = ψ(0)·1_{L'} for an n-dimensional L' ⊆ L and sing ψ = ∅: for x ∉ L', ψ ≡ ψ(x) on the relatively open half {y+λx : y ∈ L', λ>0} of an (n+1)-plane, which has infinite H^n-measure near each of its points, so local integrability forces ψ(x) = 0; ψ(y) = ψ(0) on L'. If dim L > n, ψ(0) = 0 as well.
+4. If some sing φ meets B_1(0), let 𝒟 := {dim L : some L-invariant ψ ∈ F has sing ψ ≠ ∅}. Lemma T with A.2 gives a homogeneous ψ with 0 ∈ sing ψ, so 0 ∈ 𝒟; by step 3 elements of 𝒟 are ≤ n−1. Put d := max 𝒟 (so n ≥ 1; if n = 0 the first alternative holds).
+5. Book (1). Let ℓ ≥ 0, F^ℓ := {φ ∈ F : H^ℓ(sing φ ∩ B_1(0)) > 0}, φ ∈ F^ℓ, A := sing φ ∩ B_1(0). For H^ℓ-a.e. x ∈ A there are λ_k ↓ 0 and a homogeneous ψ ∈ F^ℓ with φ_{x,λ_k} ⇀ ψ. Proof: by (d) choose λ_k ↓ 0, λ_k ≤ (1−|x|)/2, with h^ℓ_∞(A ∩ B_{λ_k}(x)) ≥ (c_ℓ/2)λ_k^ℓ, and ψ by A.2. If H^ℓ(sing ψ ∩ B_1(0)) = 0 then, sing ψ being a cone, h^ℓ_∞(sing ψ) = 0; cover sing ψ by open balls B_{ρ_j}(x_j) with Σ(2ρ_j)^ℓ < ε. K := B̄_1(0) ∖ ∪B_{ρ_j}(x_j) is compact and disjoint from the closed set sing ψ; by A.3(3), for large k, B_1(0) ∩ sing φ_{x,λ_k} ⊆ ∪B_{ρ_j}(x_j), so h^ℓ_∞(B_1(0) ∩ sing φ_{x,λ_k}) < ε. By A.3(2) this set is λ_k^{−1}(A ∩ B_{λ_k}(x) − x), so h^ℓ_∞(A ∩ B_{λ_k}(x)) < ελ_k^ℓ: a contradiction for ε < c_ℓ/2.
+6. Lemma I (book lines 125–134). Let φ ∈ F be S-invariant, x ∈ B_1(0) ∖ S, λ_k ↓ 0, φ_{x,λ_k} ⇀ ψ ∈ F, ψ homogeneous. Then ψ is (S+ℝx)-invariant. Proof: homogeneous ψ has ψ_{w,1} = ψ_{θw,θ} ∈ F for θ = 1/(2+|w|) (A.1). For y ∈ S, (φ_{x,λ_k})_{y,1} = φ_{x,λ_k}, so ψ_{y,1} = ψ by (b), (a). For β ∈ ℝ, homogeneity of φ gives (φ_{x,λ_k})_{βx,1} = (φ_{x,λ_k})_{0,μ_k}, μ_k = (1+βλ_k)^{−1} → 1, so by (b), (c), (a) ψ_{βx,1} = ψ. Combine with homogeneity.
+7. Dimension bound (book lines 113–141). For real ℓ > d, F^ℓ = ∅, i.e. H^{d+α}(sing φ ∩ B_1(0)) = 0 for all φ, α > 0. Otherwise step 5 gives a homogeneous φ¹ ∈ F^ℓ; given φ ∈ F^ℓ invariant under a j-dimensional S, j ≤ d < ℓ, H^ℓ(S) = 0 lets us pick x ∉ S in the good set of step 5, and Lemma I gives ψ ∈ F^ℓ invariant under S+ℝx. At j = d+1 this contradicts the maximality of d.
+8. Existence of ψ (book lines 134–139). Take φ ∈ F, L-invariant, dim L = d, sing φ ≠ ∅, so L ⊆ sing φ. If z ∈ sing φ ∖ L, x := z/(2|z|) ∈ sing φ ∩ B_1(0) ∖ L; A.2 with λ_k = (1−|x|)/(k+2) gives ψ with 0 ∈ sing ψ (Lemma T) invariant under L+ℝx (Lemma I), contradicting d = max 𝒟. So sing φ = L.
+9. d = 0 (book lines 142–153). Suppose sing φ ∩ B_σ(0) is infinite, σ < 1: distinct x_k ∈ sing φ ∩ B_σ(0) converge to some x (∈ sing φ, |x| ≤ σ); pass to subsequences with λ_k := 2|x_k−x| strictly decreasing, (x_k−x)/|x_k−x| → ξ, and φ_{x,λ_k} ⇀ ψ homogeneous (A.2). z_k := (x_k−x)/λ_k ∈ sing φ_{x,λ_k} ∩ B_1(0) (|z_k| = 1/2), so ξ/2 ∈ sing ψ by A.3(3), and the ray ℝ_{>0}ξ ⊆ sing ψ (Lemma S): H^1(sing ψ ∩ B_1(0)) > 0, contradicting step 7 with α = 1.
+
+## Key steps
+
+1. Weak limits are unique in F (H0); Banach–Steinhaus controls moving dilations.
+2. Singular points pass to tangent functions and invariance passes to sing; A.5 gives d ≤ n−1.
+3. Tangent functions at H^ℓ-a.e. singular point keep positive H^ℓ; induction on invariance gives F^ℓ = ∅ for ℓ > d.
+4. Maximality of d gives sing ψ = L; for d = 0 an accumulation point yields a singular ray, a contradiction.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n sorry local-references/123e8435b4a2469b/project/GMT -t lean -c`
+- `rg -n 'μHE\[' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|structure) ' simongmt/Poincare/SimonGMT/{Chapter06/Product.lean,Chapter02/BV.lean,Chapter03/FinitePerimeter.lean,AppendixA/Foundations.lean,Chapter07/Basic.lean}`
+- `rg -n -i 'allard|federer|fleming|compactness theorem|open obligation|slice' simongmt/Poincare/SimonGMT`
+- `lake env lean /tmp/ch07-attempt3/Check.lean (ten child types + conditional root assembly + #print axioms)`
+- `lake env lean /tmp/ch07-attempt3/Lib.lean (#print axioms of minimizing_summands_source, cone_simonsDefect_lower_bound, bvVariationOn_le_liminf_of_locallyL1)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-audit-v2.json`
+- `/tmp/ch07-attempt3/Check.lean`
+- `/tmp/ch07-attempt3/Lib.lean`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; each snapshot chapter contract has only its frozen final sorry. All ten child Lean types elaborate after the contract's definitions in namespace GMT.Ch07 with its opens (only the stub sorry warnings), and the conditional assembly of the eleven-conjunct root depends only on propext, Classical.choice and Quot.sound. Reusable library lemmas, each using only standard axioms: Chapter06.WeaklyConvergesOn.massOn_le_liminf (lower semicontinuity of mass), Chapter07.minimizing_summands_source (Lemma 1.4), AppendixB.cone_simonsDefect_lower_bound (B.11) and Chapter02.bvVariationOn_le_liminf_of_locallyL1 (lower semicontinuity of variation). The library proves none of the following, so they are cited from Simon: Appendix A.4 (Foundations.lean calls the dimension-reduction proof an open obligation), Allard regularity (Chapter05/Basic.lean has only analytic foundations), Federer–Fleming compactness (Currents.lean: separate obligation), BV compactness (BV.lean does not claim subsequence compactness), and products [[ℝ^m]] × S₀ (Product.lean has only point products). μHE[n] is a nonzero finite multiple of μH[n] (Measure.lean), so H^n and μH[n] have the same null sets. The DAG contains only root, so no reserved names collide.
