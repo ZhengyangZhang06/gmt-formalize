@@ -535,6 +535,43 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
+/-- **Test forms are Lipschitz in the Euclidean coefficient norm** (the constant `c` of the cone
+inequality, Simon Ch. 6, 2.27/2.30 as used in 8.2(4)–(6)).  `ω` is `C^∞` with compact support, so
+`Dω` is continuous with compact support and `‖Dω(z)‖ ≤ L₀` for some `L₀ ≥ 0`; the mean value
+inequality on the convex set `ℝᴾ` gives `‖ω(x) - ω(y)‖ ≤ L₀ ‖x - y‖`.  With the bound
+`covectorEuclideanNorm β ≤ C ‖β‖` of `Submission.rsd_mw_tfa_norm_props`, `c = C L₀` works. -/
+theorem Submission.cbrld_cone_testForm_coeff_lipschitz : ∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k), ∃ c : ℝ, 0 ≤ c ∧ ∀ x y : Euclid P, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x - (ω : DifferentialForm (Euclid P) k) y) ≤ c * dist x y := by
+  intro P k U ω
+  -- Step 1: the coefficient norm is dominated by the operator norm, `|β| ≤ C ‖β‖`
+  obtain ⟨C, hC0, hC⟩ := (Submission.rsd_mw_tfa_norm_props P k).2.2.1
+  -- Step 2: `ω` is smooth with compact support, so `Dω` is continuous with compact support
+  have hsm : IsSmoothForm (ω : DifferentialForm (Euclid P) k) := ω.property.1.1
+  have hcs : HasCompactSupport (ω : DifferentialForm (Euclid P) k) := ω.property.1.2
+  have hcont : Continuous (fderiv ℝ (ω : DifferentialForm (Euclid P) k)) :=
+    hsm.continuous_fderiv (by simp)
+  have hcs' : HasCompactSupport (fderiv ℝ (ω : DifferentialForm (Euclid P) k)) := hcs.fderiv ℝ
+  -- Step 3: `Dω` is bounded, `‖Dω(z)‖ ≤ L ≤ max L 0`
+  obtain ⟨L, hL⟩ : ∃ L : ℝ, ∀ z, ‖fderiv ℝ (ω : DifferentialForm (Euclid P) k) z‖ ≤ L :=
+    Continuous.bounded_above_of_compact_support
+      (f := fderiv ℝ (ω : DifferentialForm (Euclid P) k)) hcont hcs'
+  -- Step 4: the mean value inequality on the convex set `ℝᴾ`
+  have hdiff : Differentiable ℝ (ω : DifferentialForm (Euclid P) k) :=
+    hsm.differentiable (by simp)
+  have hmv : ∀ x y : Euclid P, ‖(ω : DifferentialForm (Euclid P) k) x -
+      (ω : DifferentialForm (Euclid P) k) y‖ ≤ max L 0 * ‖x - y‖ := fun x y =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun z _ => hdiff z)
+      (fun z _ => (hL z).trans (le_max_left _ _)) (mem_univ y) (mem_univ x)
+  -- Step 5: `c = C · max L 0`
+  refine ⟨C * max L 0, mul_nonneg hC0 (le_max_right _ _), fun x y => ?_⟩
+  have h1 := hC ((ω : DifferentialForm (Euclid P) k) x - (ω : DifferentialForm (Euclid P) k) y)
+  have h2 := mul_le_mul_of_nonneg_left (hmv x y) hC0
+  rw [dist_eq_norm]
+  calc covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x -
+        (ω : DifferentialForm (Euclid P) k) y)
+      ≤ C * ‖(ω : DifferentialForm (Euclid P) k) x - (ω : DifferentialForm (Euclid P) k) y‖ := h1
+    _ ≤ C * (max L 0 * ‖x - y‖) := h2
+    _ = C * max L 0 * ‖x - y‖ := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
