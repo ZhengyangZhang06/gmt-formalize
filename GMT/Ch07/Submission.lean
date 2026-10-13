@@ -13247,6 +13247,278 @@ theorem Submission.dorag_tilt_excess_one_step_decay : ∀ (n k : ℕ), 0 < n →
     hθ'4 hθ'C hε' hε'1 hε'C hD hD1 hD7 hD11 hD14 hD15 hD16a hD16b hδ hδD hI0 hE₀p hIE hκE hE₀le hκσE
   exact ⟨S, hSn, le_trans (max_le hS hsecond) hRHS⟩
 
+/-- **Tilt-excess decay at all scales** (Simon Ch. 5, Remark 4.6 and the proof of Theorem 5.2,
+(1)–(8), at a general scale `σ ∈ (0, δρ]` and for a general initial `n`-plane `T`).  Iterating the
+one-step decay `E_*(θ₀r, S') ≤ θ₀E_*(r, S)` at the scales `θ₀ʲσ` from `S₀ = T` gives `n`-planes `Sⱼ`
+with `E_*(θ₀ʲσ, Sⱼ) ≤ θ₀ʲE_*`.  With the density bounds `½ωₙtⁿ ≤ μ(B_t(ξ)) ≤ 2ωₙtⁿ` this gives
+`|p_{Sⱼ₊₁} − p_{Sⱼ}|² ≤ aθ₀ʲ`, `a = 8E_*/(ωₙθ₀ⁿ)`, so the `Sⱼ` converge to an `n`-plane `S` with
+`|p_S − p_{Sⱼ}|² ≤ 4aθ₀ʲ` (`j = 0` is the tilt bound), and comparing with `Sⱼ` for
+`θ₀ʲ⁺¹σ < s ≤ θ₀ʲσ` gives `∫_{B_s(ξ)} |p_x − p_S|² dμ ≤ C(s/σ)sⁿE_*`. -/
+theorem Submission.dorag_tilt_excess_decay : ∀ (n k : ℕ), 0 < n → ∃ δ₂ C : ℝ, 0 < δ₂ ∧ δ₂ ≤ 1 / 8 ∧ 0 < C ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₂ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (δ * ρ), ∀ (σ : ℝ) (T : Submodule ℝ (Euclid (n + k))), 0 < σ → σ ≤ δ * ρ → Module.finrank ℝ T = n → ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ (∀ s : ℝ, 0 < s → s ≤ σ → ∫⁻ x in closedBall ξ s, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (C * (s / σ) * s ^ n) * max (ENNReal.ofReal (1 / σ ^ n) * ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure) (ENNReal.ofReal (κ ^ 2 * σ ^ 2 / δ))) ∧ ENNReal.ofReal (∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal C * max (ENNReal.ofReal (1 / σ ^ n) * ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure) (ENNReal.ofReal (κ ^ 2 * σ ^ 2 / δ)) := by
+  intro n k hn
+  -- Step 0: `θ₀ ∈ (0, 1/4]` and `δₛ` from the one-step decay, `δ₁` from the density bounds,
+  -- `ω = ωₙ ∈ (0, ∞)`, `δ₂ = min δₛ δ₁`, and `C = 4C₁₀θ₀⁻ⁿ + (2 + 16ωC₁₀)θ₀⁻ⁿ⁻¹` with
+  -- `C₁₀ = 8/ω`, i.e. `C = 32/(ωθ₀ⁿ) + 130/θ₀ⁿ⁺¹`.
+  obtain ⟨θ₀, δs, hθ₀, hθ₀le, hδs, hδsle, hstep⟩ :=
+    Submission.dorag_tilt_excess_one_step_decay n k hn
+  obtain ⟨δ₁, C₂, hδ₁, hδ₁le, -, hdens⟩ := Submission.dorag_standing_density_bounds n k hn
+  obtain ⟨ω, hω_pos, hω⟩ : ∃ ω : ℝ, 0 < ω ∧ unitBallVolume n = ENNReal.ofReal ω := by
+    have h0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+    have htop : unitBallVolume n ≠ ⊤ :=
+      (measure_ball_lt_top (μ := (volume : Measure (Euclid n))) (x := 0) (r := 1)).ne
+    exact ⟨(unitBallVolume n).toReal, ENNReal.toReal_pos h0 htop,
+      (ENNReal.ofReal_toReal htop).symm⟩
+  have hθ₀1 : θ₀ < 1 := by linarith
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, C = 32 / (ω * θ₀ ^ n) + 130 / θ₀ ^ (n + 1) := ⟨_, rfl⟩
+  have hC1 : 32 / (ω * θ₀ ^ n) ≤ C := by rw [hC]; exact le_add_of_nonneg_right (by positivity)
+  have hC2 : 130 / θ₀ ^ (n + 1) ≤ C := by rw [hC]; exact le_add_of_nonneg_left (by positivity)
+  have hCpos : 0 < C := by rw [hC]; positivity
+  refine ⟨min δs δ₁, C, lt_min hδs hδ₁, (min_le_left _ _).trans hδsle, hCpos, ?_⟩
+  intro δ hδ hδ₂ U W R H κ ρ z hW hWU hρ hball hHm hHκ hfv hz hmass hκρ ξ hξ σ T hσ hσle hT
+  have hδs' : δ ≤ δs := hδ₂.trans (min_le_left _ _)
+  have hδ₁' : δ ≤ δ₁ := hδ₂.trans (min_le_right _ _)
+  -- Abbreviations: `I r S = ∫_{B_r(ξ)} |p_x − p_S|² dμ`, `E r S = E_*(ξ, r, S)` and
+  -- `d S S' = |p_S − p_{S'}|²`.
+  obtain ⟨I, hI⟩ : ∃ I : ℝ → Submodule ℝ (Euclid (n + k)) → ℝ≥0∞, ∀ r S, I r S =
+      ∫⁻ x in closedBall ξ r, ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨E, hE⟩ : ∃ E : ℝ → Submodule ℝ (Euclid (n + k)) → ℝ≥0∞, ∀ r S,
+      E r S = max (ENNReal.ofReal (1 / r ^ n) * I r S) (ENNReal.ofReal (κ ^ 2 * r ^ 2 / δ)) :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨d, hd⟩ : ∃ d : Submodule ℝ (Euclid (n + k)) → Submodule ℝ (Euclid (n + k)) → ℝ,
+      ∀ S S', d S S' = ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        S'.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+    ⟨_, fun _ _ => rfl⟩
+  suffices key : ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧
+      (∀ s : ℝ, 0 < s → s ≤ σ → I s S ≤ ENNReal.ofReal (C * (s / σ) * s ^ n) * E σ T) ∧
+      ENNReal.ofReal (d S T) ≤ ENNReal.ofReal C * E σ T by
+    simpa only [hE, hI, hd] using key
+  -- Step 1: the density bounds `½ωtⁿ ≤ μ(B_t(ξ)) ≤ 2ωtⁿ` for `0 < t ≤ δρ`.
+  obtain ⟨hDa, hDb, -, -⟩ :=
+    hdens δ hδ hδ₁' U W R H κ ρ z hW hWU hρ hball hHm hHκ hfv hz hmass hκρ
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hξ4 : ξ ∈ closedBall z (4 * δ * ρ) := closedBall_subset_closedBall (by linarith) hξ.2
+  have ht4 : ∀ t : ℝ, t ≤ δ * ρ → t ≤ (1 - 4 * δ) * ρ := fun t ht =>
+    ht.trans (by nlinarith [mul_le_mul_of_nonneg_right (hδ₁'.trans hδ₁le) hρ.le])
+  have hDup : ∀ t : ℝ, 0 < t → t ≤ δ * ρ →
+      R.measure (closedBall ξ t) ≤ 2 * ENNReal.ofReal ω * ENNReal.ofReal (t ^ n) := by
+    intro t ht htle
+    rw [← hω]
+    exact hDa ξ hξ4 t ht (ht4 t htle)
+  have hDlo : ∀ t : ℝ, 0 < t → t ≤ δ * ρ →
+      ENNReal.ofReal ω * ENNReal.ofReal (t ^ n) ≤ 2 * R.measure (closedBall ξ t) := by
+    intro t ht htle
+    rw [← hω]
+    exact hDb ξ ⟨hξ.1, hξ4⟩ t ht (ht4 t htle)
+  -- (P4): the integrated Hilbert–Schmidt triangle inequalities on the balls `B_r(ξ)`.
+  have hcmp : ∀ (A B : Submodule ℝ (Euclid (n + k))) (r : ℝ),
+      ENNReal.ofReal (d A B) * R.measure (closedBall ξ r) ≤ 2 * I r A + 2 * I r B ∧
+        I r A ≤ 2 * I r B + 2 * ENNReal.ofReal (d A B) * R.measure (closedBall ξ r) := by
+    intro A B r
+    simp only [hI, hd]
+    exact Submission.dorag_ted_hs_integral_compare (n + k) R.measure
+      (fun x => (approxTangentPlane n R.carrier x).starProjection) A.starProjection
+      B.starProjection (closedBall ξ r)
+      (Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R)
+  have hImono : ∀ (S : Submodule ℝ (Euclid (n + k))) (r r' : ℝ), r ≤ r' → I r S ≤ I r' S := by
+    intro S r r' hrr'
+    rw [hI, hI]
+    exact lintegral_mono_set (closedBall_subset_closedBall hrr')
+  have hIE : ∀ (S : Submodule ℝ (Euclid (n + k))) (r : ℝ), 0 < r →
+      I r S ≤ ENNReal.ofReal (r ^ n) * E r S := by
+    intro S r hr
+    have hrn : 0 < r ^ n := pow_pos hr n
+    calc I r S = ENNReal.ofReal (r ^ n) * (ENNReal.ofReal (1 / r ^ n) * I r S) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul hrn.le, mul_one_div_cancel hrn.ne',
+            ENNReal.ofReal_one, one_mul]
+      _ ≤ ENNReal.ofReal (r ^ n) * E r S := by
+          rw [hE]
+          exact mul_le_mul_of_nonneg_left (le_max_left _ _) zero_le
+  -- Step 3: iterate the one-step decay at the scales `θ₀ʲσ`, starting from `S₀ = T`.
+  have hstep' : ∀ (r : ℝ) (S : Submodule ℝ (Euclid (n + k))), 0 < r → r ≤ δ * ρ →
+      Module.finrank ℝ S = n → ∃ S' : Submodule ℝ (Euclid (n + k)),
+        Module.finrank ℝ S' = n ∧ E (θ₀ * r) S' ≤ ENNReal.ofReal θ₀ * E r S := by
+    intro r S hr hrle hS
+    obtain ⟨S', hS', hdec⟩ := hstep δ hδ hδs' U W R H κ ρ z hW hWU hρ hball hHm hHκ hfv hz
+      hmass hκρ ξ hξ r S hr hrle hS
+    refine ⟨S', hS', ?_⟩
+    simp only [hE, hI]
+    exact hdec
+  choose! next hnext_rank hnext_dec using hstep'
+  obtain ⟨Sq, hSq0, hSqs⟩ : ∃ Sq : ℕ → Submodule ℝ (Euclid (n + k)),
+      Sq 0 = T ∧ ∀ j, Sq (j + 1) = next (θ₀ ^ j * σ) (Sq j) :=
+    ⟨fun j => Nat.rec (motive := fun _ => Submodule ℝ (Euclid (n + k))) T
+      (fun j Sj => next (θ₀ ^ j * σ) Sj) j, rfl, fun _ => rfl⟩
+  have hscale : ∀ j : ℕ, 0 < θ₀ ^ j * σ ∧ θ₀ ^ j * σ ≤ δ * ρ := fun j =>
+    ⟨by positivity, (mul_le_of_le_one_left hσ.le (pow_le_one₀ hθ₀.le hθ₀1.le)).trans hσle⟩
+  have hiter : ∀ j : ℕ, Module.finrank ℝ (Sq j) = n ∧
+      E (θ₀ ^ j * σ) (Sq j) ≤ ENNReal.ofReal (θ₀ ^ j) * E σ T := by
+    intro j
+    induction j with
+    | zero =>
+      rw [hSq0]
+      refine ⟨hT, le_of_eq ?_⟩
+      rw [pow_zero, one_mul, ENNReal.ofReal_one, one_mul]
+    | succ j ih =>
+      rw [hSqs]
+      refine ⟨hnext_rank _ _ (hscale j).1 (hscale j).2 ih.1, ?_⟩
+      have h := hnext_dec _ _ (hscale j).1 (hscale j).2 ih.1
+      rw [show θ₀ * (θ₀ ^ j * σ) = θ₀ ^ (j + 1) * σ by ring] at h
+      calc E (θ₀ ^ (j + 1) * σ) (next (θ₀ ^ j * σ) (Sq j))
+          ≤ ENNReal.ofReal θ₀ * E (θ₀ ^ j * σ) (Sq j) := h
+        _ ≤ ENNReal.ofReal θ₀ * (ENNReal.ofReal (θ₀ ^ j) * E σ T) :=
+          mul_le_mul_of_nonneg_left ih.2 zero_le
+        _ = ENNReal.ofReal (θ₀ ^ (j + 1)) * E σ T := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul hθ₀.le, pow_succ, mul_comm θ₀]
+  -- If `E_* = ∞` there is nothing to prove: take `S = T`.
+  by_cases hfin : E σ T = ⊤
+  · refine ⟨T, hT, fun s hs _ => ?_, ?_⟩
+    · rw [hfin, ENNReal.mul_top (ENNReal.ofReal_pos.2 (by positivity)).ne']
+      exact le_top
+    · rw [hfin, ENNReal.mul_top (ENNReal.ofReal_pos.2 hCpos).ne']
+      exact le_top
+  obtain ⟨E₀, hE₀, hE₀eq⟩ : ∃ E₀ : ℝ, 0 ≤ E₀ ∧ E σ T = ENNReal.ofReal E₀ :=
+    ⟨(E σ T).toReal, ENNReal.toReal_nonneg, (ENNReal.ofReal_toReal hfin).symm⟩
+  -- `∫_{B_r(ξ)} |p_x − p_{Sⱼ}|² ≤ (θ₀ʲσ)ⁿθ₀ʲE_*` for `r ≤ θ₀ʲσ` (Step 3).
+  have hIq : ∀ (j : ℕ) (r : ℝ), r ≤ θ₀ ^ j * σ →
+      I r (Sq j) ≤ ENNReal.ofReal ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)) := by
+    intro j r hr
+    calc I r (Sq j) ≤ I (θ₀ ^ j * σ) (Sq j) := hImono _ _ _ hr
+      _ ≤ ENNReal.ofReal ((θ₀ ^ j * σ) ^ n) * E (θ₀ ^ j * σ) (Sq j) := hIE _ _ (hscale j).1
+      _ ≤ ENNReal.ofReal ((θ₀ ^ j * σ) ^ n) * (ENNReal.ofReal (θ₀ ^ j) * E σ T) :=
+          mul_le_mul_of_nonneg_left (hiter j).2 zero_le
+      _ = ENNReal.ofReal ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)) := by
+          rw [hE₀eq, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity)]
+  have hcmb : ∀ a b : ℝ, 0 ≤ a → 0 ≤ b →
+      2 * (2 * ENNReal.ofReal a + 2 * ENNReal.ofReal b) =
+        ENNReal.ofReal (2 * (2 * a + 2 * b)) := by
+    intro a b ha hb
+    rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_add (by positivity) (by positivity),
+      ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity),
+      ENNReal.ofReal_ofNat]
+  have hcmb' : ∀ a b w v : ℝ, 0 ≤ a → 0 ≤ b → 0 ≤ w → 0 ≤ v →
+      2 * ENNReal.ofReal a + 2 * ENNReal.ofReal b * (2 * ENNReal.ofReal w * ENNReal.ofReal v) =
+        ENNReal.ofReal (2 * a + 2 * b * (2 * w * v)) := by
+    intro a b w v ha hb hw hv
+    rw [ENNReal.ofReal_add (by positivity) (by positivity), ENNReal.ofReal_mul (by positivity),
+      ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity),
+      ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity),
+      ENNReal.ofReal_ofNat]
+  -- Step 2 (one-step tilt bound): `|p_{Sⱼ₊₁} − p_{Sⱼ}|² ≤ aθ₀ʲ` with `a = C₁₀θ₀⁻ⁿE_*`.
+  have hB : ∀ j : ℕ, d (Sq (j + 1)) (Sq j) ≤ 8 * E₀ / (ω * θ₀ ^ n) * θ₀ ^ j := by
+    intro j
+    obtain ⟨hrpos, hrle⟩ := hscale (j + 1)
+    have hrr' : θ₀ ^ (j + 1) * σ ≤ θ₀ ^ j * σ := by
+      rw [pow_succ]
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_of_le_one_right (pow_nonneg hθ₀.le j) hθ₀1.le) hσ.le
+    have hdnn : 0 ≤ d (Sq (j + 1)) (Sq j) := by rw [hd]; positivity
+    have key : ENNReal.ofReal (d (Sq (j + 1)) (Sq j) * (ω * (θ₀ ^ (j + 1) * σ) ^ n)) ≤
+        ENNReal.ofReal (2 * (2 * ((θ₀ ^ (j + 1) * σ) ^ n * (θ₀ ^ (j + 1) * E₀)) +
+          2 * ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)))) :=
+      calc ENNReal.ofReal (d (Sq (j + 1)) (Sq j) * (ω * (θ₀ ^ (j + 1) * σ) ^ n))
+          = ENNReal.ofReal (d (Sq (j + 1)) (Sq j)) *
+              (ENNReal.ofReal ω * ENNReal.ofReal ((θ₀ ^ (j + 1) * σ) ^ n)) := by
+            rw [ENNReal.ofReal_mul hdnn, ENNReal.ofReal_mul hω_pos.le]
+        _ ≤ ENNReal.ofReal (d (Sq (j + 1)) (Sq j)) *
+              (2 * R.measure (closedBall ξ (θ₀ ^ (j + 1) * σ))) :=
+            mul_le_mul_of_nonneg_left (hDlo _ hrpos hrle) zero_le
+        _ = 2 * (ENNReal.ofReal (d (Sq (j + 1)) (Sq j)) *
+              R.measure (closedBall ξ (θ₀ ^ (j + 1) * σ))) := by ring
+        _ ≤ 2 * (2 * I (θ₀ ^ (j + 1) * σ) (Sq (j + 1)) + 2 * I (θ₀ ^ (j + 1) * σ) (Sq j)) :=
+            mul_le_mul_of_nonneg_left (hcmp _ _ _).1 zero_le
+        _ ≤ 2 * (2 * ENNReal.ofReal ((θ₀ ^ (j + 1) * σ) ^ n * (θ₀ ^ (j + 1) * E₀)) +
+              2 * ENNReal.ofReal ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀))) := by
+            have h1 := hIq (j + 1) _ le_rfl
+            have h2 := hIq j _ hrr'
+            gcongr
+        _ = ENNReal.ofReal (2 * (2 * ((θ₀ ^ (j + 1) * σ) ^ n * (θ₀ ^ (j + 1) * E₀)) +
+              2 * ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)))) :=
+            hcmb _ _ (by positivity) (by positivity)
+    rw [ENNReal.ofReal_le_ofReal_iff (by positivity)] at key
+    -- Divide by `ω(θ₀ʲ⁺¹σ)ⁿ = ωθ₀ⁿ(θ₀ʲσ)ⁿ`, using `θ₀ⁿ⁺¹ ≤ 1`.
+    have hu : 0 < (θ₀ ^ j * σ) ^ n := pow_pos (hscale j).1 n
+    have e1 : (θ₀ ^ (j + 1) * σ) ^ n = θ₀ ^ n * (θ₀ ^ j * σ) ^ n := by
+      rw [pow_succ, mul_comm (θ₀ ^ j) θ₀, mul_assoc, mul_pow]
+    have hY : θ₀ ^ n * θ₀ ≤ 1 :=
+      (mul_le_of_le_one_left hθ₀.le (pow_le_one₀ hθ₀.le hθ₀1.le)).trans hθ₀1.le
+    have h3 : d (Sq (j + 1)) (Sq j) * (ω * θ₀ ^ n) * (θ₀ ^ j * σ) ^ n ≤
+        8 * E₀ * θ₀ ^ j * (θ₀ ^ j * σ) ^ n :=
+      calc d (Sq (j + 1)) (Sq j) * (ω * θ₀ ^ n) * (θ₀ ^ j * σ) ^ n
+          = d (Sq (j + 1)) (Sq j) * (ω * (θ₀ ^ (j + 1) * σ) ^ n) := by rw [e1]; ring
+        _ ≤ 2 * (2 * ((θ₀ ^ (j + 1) * σ) ^ n * (θ₀ ^ (j + 1) * E₀)) +
+              2 * ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀))) := key
+        _ = 4 * (θ₀ ^ n * θ₀) * ((θ₀ ^ j * σ) ^ n * θ₀ ^ j * E₀) +
+              4 * ((θ₀ ^ j * σ) ^ n * θ₀ ^ j * E₀) := by rw [e1, pow_succ]; ring
+        _ ≤ 4 * 1 * ((θ₀ ^ j * σ) ^ n * θ₀ ^ j * E₀) + 4 * ((θ₀ ^ j * σ) ^ n * θ₀ ^ j * E₀) :=
+            add_le_add (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hY (by norm_num : (0 : ℝ) ≤ 4)) (by positivity)) le_rfl
+        _ = 8 * E₀ * θ₀ ^ j * (θ₀ ^ j * σ) ^ n := by ring
+    rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+    exact le_of_mul_le_mul_right h3 hu
+  -- Step 4: the limit plane `S`, with `|p_S − p_{Sⱼ}|² ≤ 4aθ₀ʲ`.
+  obtain ⟨S', hS'rank, hS'd⟩ := Submission.dorag_ted_planes_limit (n + k) n Sq
+    (8 * E₀ / (ω * θ₀ ^ n)) θ₀ (fun j => (hiter j).1) hθ₀.le hθ₀le
+    (fun j => by have h := hB j; rwa [hd] at h)
+  have hS'd' : ∀ j, d S' (Sq j) ≤ 4 * (8 * E₀ / (ω * θ₀ ^ n)) * θ₀ ^ j := fun j => by
+    rw [hd]; exact hS'd j
+  refine ⟨S', hS'rank, fun s hs hsσ => ?_, ?_⟩
+  · -- Step 5: interpolation between the scales `θ₀ʲ⁺¹σ < s ≤ θ₀ʲσ`.
+    obtain ⟨j, hj1, hj2⟩ :=
+      exists_nat_pow_near_of_lt_one (div_pos hs hσ) ((div_le_one hσ).2 hsσ) hθ₀ hθ₀1
+    have hsj : s ≤ θ₀ ^ j * σ := by rwa [div_le_iff₀ hσ] at hj2
+    have hjσ : θ₀ ^ j * σ ≤ s / θ₀ := by
+      rw [le_div_iff₀ hθ₀]
+      calc θ₀ ^ j * σ * θ₀ = θ₀ ^ (j + 1) * σ := by ring
+        _ ≤ s := ((lt_div_iff₀ hσ).1 hj1).le
+    have hpow : (θ₀ ^ j * σ) ^ n ≤ s ^ n / θ₀ ^ n := by
+      rw [← div_pow]
+      exact pow_le_pow_left₀ (hscale j).1.le hjσ n
+    have ht : θ₀ ^ j ≤ s / σ / θ₀ := by
+      rw [le_div_iff₀ hθ₀, ← pow_succ]
+      exact hj1.le
+    have hω0 : ω ≠ 0 := hω_pos.ne'
+    have hθn : θ₀ ^ n ≠ 0 := (pow_pos hθ₀ n).ne'
+    calc I s S' ≤ 2 * I s (Sq j) + 2 * ENNReal.ofReal (d S' (Sq j)) *
+          R.measure (closedBall ξ s) := (hcmp _ _ _).2
+      _ ≤ 2 * ENNReal.ofReal ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)) +
+          2 * ENNReal.ofReal (4 * (8 * E₀ / (ω * θ₀ ^ n)) * θ₀ ^ j) *
+            (2 * ENNReal.ofReal ω * ENNReal.ofReal (s ^ n)) := by
+          have h1 := hIq j s hsj
+          have h2 : ENNReal.ofReal (d S' (Sq j)) ≤
+              ENNReal.ofReal (4 * (8 * E₀ / (ω * θ₀ ^ n)) * θ₀ ^ j) :=
+            ENNReal.ofReal_le_ofReal (hS'd' j)
+          have h3 := hDup s hs (hsσ.trans hσle)
+          gcongr
+      _ = ENNReal.ofReal (2 * ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)) +
+          2 * (4 * (8 * E₀ / (ω * θ₀ ^ n)) * θ₀ ^ j) * (2 * ω * s ^ n)) :=
+          hcmb' _ _ _ _ (by positivity) (by positivity) hω_pos.le (by positivity)
+      _ ≤ ENNReal.ofReal (C * (s / σ) * s ^ n * E₀) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          calc 2 * ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)) +
+                2 * (4 * (8 * E₀ / (ω * θ₀ ^ n)) * θ₀ ^ j) * (2 * ω * s ^ n)
+              = 2 * ((θ₀ ^ j * σ) ^ n * (θ₀ ^ j * E₀)) +
+                128 * (s ^ n / θ₀ ^ n) * (θ₀ ^ j * E₀) := by
+                field_simp
+                ring
+            _ ≤ 2 * (s ^ n / θ₀ ^ n * (θ₀ ^ j * E₀)) + 128 * (s ^ n / θ₀ ^ n) * (θ₀ ^ j * E₀) := by
+                gcongr
+            _ = 130 * (s ^ n / θ₀ ^ n) * E₀ * θ₀ ^ j := by ring
+            _ ≤ 130 * (s ^ n / θ₀ ^ n) * E₀ * (s / σ / θ₀) := by gcongr
+            _ = 130 / θ₀ ^ (n + 1) * (s / σ) * s ^ n * E₀ := by ring
+            _ ≤ C * (s / σ) * s ^ n * E₀ := by gcongr
+      _ = ENNReal.ofReal (C * (s / σ) * s ^ n) * E σ T := by
+          rw [hE₀eq, ENNReal.ofReal_mul (by positivity)]
+  · -- Step 4 with `j = 0` (`S₀ = T`): `|p_S − p_T|² ≤ 4a = 4C₁₀θ₀⁻ⁿE_* ≤ CE_*`.
+    have h0 := hS'd' 0
+    rw [hSq0, pow_zero, mul_one] at h0
+    rw [hE₀eq, ← ENNReal.ofReal_mul hCpos.le]
+    refine ENNReal.ofReal_le_ofReal (h0.trans ?_)
+    calc 4 * (8 * E₀ / (ω * θ₀ ^ n)) = 32 / (ω * θ₀ ^ n) * E₀ := by ring
+      _ ≤ C * E₀ := mul_le_mul_of_nonneg_right hC1 hE₀
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
