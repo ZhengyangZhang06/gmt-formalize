@@ -538,6 +538,37 @@ theorem Submission.rpn_pe_inv_norm_pow_set_bound : ∀ (m : ℕ) (S : Set (Eucl 
       _ = ((m : ℝ) + 2) * (ω * ρ) := by ring
       _ = ((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) * L ^ p := by
         rw [hωρ, mul_assoc]
+/-- The kernels `K(w) = w_j / (c|w|^{m+1})` on `ℝ^{m+1}` are locally integrable. This is Step 2 of
+the potential estimate (Gilbarg–Trudinger §7.8) that replaces the BV argument of Simon Ch. 6,
+Remark 2.35 in the proof of 8.1; there `c = nωₙ`. With `x / 0 = 0`, `|K(w)| ≤ |c|⁻¹ (|w|^m)⁻¹`
+everywhere, and `(|w|^m)⁻¹` is integrable on every ball about `0`
+(`Submission.rpn_pe_inv_norm_pow_ball`). -/
+theorem Submission.rpn_pe_kernel_locallyIntegrable : ∀ (m : ℕ) (j : Fin (m + 1)) (c : ℝ), LocallyIntegrable (fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1))) := by
+  intro m j c
+  -- Step 1: `K` is Borel measurable.
+  have hmeas : Measurable fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1)) := by fun_prop
+  -- Step 2: `|K(w)| ≤ |c|⁻¹ (|w|^m)⁻¹`. If `c = 0` or `w = 0` the left side is `0`; otherwise
+  -- `|w_j| ≤ |w|`.
+  have hbound : ∀ t : Eucl (m + 1), ‖t j / (c * ‖t‖ ^ (m + 1))‖ ≤ |c|⁻¹ * (‖t‖ ^ m)⁻¹ := by
+    intro t
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp
+    rcases eq_or_ne t 0 with rfl | ht
+    · simp only [PiLp.zero_apply, zero_div, norm_zero]
+      positivity
+    have htpos : 0 < ‖t‖ := norm_pos_iff.2 ht
+    rw [norm_div, norm_mul, norm_pow, norm_norm, Real.norm_eq_abs c]
+    calc ‖t j‖ / (|c| * ‖t‖ ^ (m + 1)) ≤ ‖t‖ / (|c| * ‖t‖ ^ (m + 1)) := by
+          gcongr
+          exact PiLp.norm_apply_le t j
+      _ = |c|⁻¹ * (‖t‖ ^ m)⁻¹ := by
+          field_simp
+          ring
+  -- Step 3: around `x` use the ball `B_{|x|+1}(0)`, where `(|w|^m)⁻¹` is integrable.
+  intro x
+  refine ⟨ball (0 : Eucl (m + 1)) (‖x‖ + 1), isOpen_ball.mem_nhds (by simp), ?_⟩
+  exact ((Submission.rpn_pe_inv_norm_pow_ball m (‖x‖ + 1) (by positivity)).1.const_mul |c|⁻¹).mono'
+    hmeas.aestronglyMeasurable (ae_of_all _ hbound)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
