@@ -380,6 +380,32 @@ theorem Submission.slicing_mb_lb_smul_testForm :
   obtain ⟨⟨hφ, hφc⟩, hφU⟩ := φ.2
   exact ⟨⟨ψ • (φ : DifferentialForm (Eucl P) k), ⟨hψ.smul hφ, hφc.smul_left⟩,
     (tsupport_smul_subset_right ψ _).trans hφU⟩, fun _ => rfl⟩
+/-- The wedge `α ∧ ω` of a `C^∞` field `α` of covectors with a test form `ω ∈ 𝒟ᵐ(U)` is a test
+form in `𝒟ᵐ⁺¹(U)`, given pointwise by `alternatizeUncurryFin ((α x).smulRight (ω x))`. -/
+theorem Submission.slicing_mb_lb_wedge_testForm :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U m) (α : Eucl P → (Eucl P →L[ℝ] ℝ)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) α →
+      ∃ η : TestFormOn U (m + 1), ∀ x, (η : DifferentialForm (Eucl P) (m + 1)) x =
+        ContinuousAlternatingMap.alternatizeUncurryFin
+          ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x)) := by
+  intro P m U ω α hα
+  obtain ⟨⟨hωs, hωc⟩, hωU⟩ := ω.2
+  -- `η` vanishes wherever `ω` does: `(α x).smulRight 0 = 0` and `alternatizeUncurryFin` is linear.
+  have hsupp : Function.support (fun x => ContinuousAlternatingMap.alternatizeUncurryFin
+      ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x))) ⊆
+      Function.support (ω : DifferentialForm (Eucl P) m) := by
+    intro x hx h0
+    apply hx
+    simp only [h0, ContinuousLinearMap.smulRight_zero]
+    exact map_zero (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ)
+  -- Hence `η` has compact support and `tsupport η ⊆ tsupport ω ⊆ U`; the formula holds by `rfl`.
+  refine ⟨⟨fun x => ContinuousAlternatingMap.alternatizeUncurryFin
+      ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x)),
+    ⟨?_, hωc.mono hsupp⟩, (closure_mono hsupp).trans hωU⟩, fun x => rfl⟩
+  -- Smoothness: `x ↦ (α x).smulRight (ω x)` is `C^∞` (bounded bilinear in `(α x, ω x)`), and
+  -- `alternatizeUncurryFin` is the continuous linear map `alternatizeUncurryFinCLM`.
+  exact (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).contDiff.comp
+    (hα.smulRight hωs)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
