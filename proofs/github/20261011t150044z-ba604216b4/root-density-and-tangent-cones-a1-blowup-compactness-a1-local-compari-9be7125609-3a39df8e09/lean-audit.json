@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "be6760308573e6730e8e2f2ec6decf3e356945537d8f7d3c92c6cf027108ca91",
+  "git_delta": {
+    "base_commit": "3744cc3bfff22b563af6cb078e2016615d78c091",
+    "candidate_commit": "901aa385c77b3abdf3c16b00272ba72e694e67e4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "cd0ace84ca8968cd56418d647d8ac9dce9e60f51ca21bbd1c195d202844f8de8",
+    "source_sha256": "94060b5de50b87cce35e424f2983a581ceba766840cb15db95e19ee0cff54609",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_series",
+      "statement": "∀ (P k : ℕ) (X : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (X i).mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => X i ω) (Y ω)) ∧ Y.mass ≤ ∑' i, (X i).mass ∧ Y.support ⊆ closure (⋃ i, (X i).support) ∧ ((∀ i, IsIntegerMultiplicity (X i)) → IsIntegerMultiplicity Y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
