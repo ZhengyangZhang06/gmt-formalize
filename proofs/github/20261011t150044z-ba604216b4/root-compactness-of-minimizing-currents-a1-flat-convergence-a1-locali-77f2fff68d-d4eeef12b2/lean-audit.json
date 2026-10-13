@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "178a565bd774307be5f441f47342193229dd5863a17615d945f7460fc2e27168",
+  "git_delta": {
+    "base_commit": "b91e0c1538ec9d10d4275f36593251683d51732a",
+    "candidate_commit": "c7acb7a3231a6165f2a7fd9eb42d34821e43f479",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fcl_dist_sublevel_compact",
+    "diff_sha256": "3be15618d60b151337d0e83caffac7bae7182f6ed307bf415270c6fbb5de6a6f",
+    "source_sha256": "a03ba69be72c8994f47253bca215182aa1f29d93e2d9f959a712f4cd8668e1ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fcl_dist_sublevel_compact",
+      "statement": "∀ (P : ℕ) (U C : Set (Euclid P)), IsOpen U → IsCompact C → C ⊆ U → C.Nonempty → ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ r : ℝ, r ≤ δ₀ → IsCompact {x | infDist x C ≤ r} ∧ {x | infDist x C ≤ r} ⊆ U",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
