@@ -336,6 +336,205 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Change of variables under the blow-up map** (Simon Ch. 3, fact (F1) behind Definitions 1.4
+and 1.7 and the proof of Theorem 1.6, `chapter-03.txt` lines 113–143, 290–296): for `r > 0`, every
+set `A` and every `g`, `∫_{η_{x,r}(A)} g dHⁿ = (rⁿ)⁻¹ ∫_A g ∘ η_{x,r} dHⁿ`. The blow-up
+`η = η_{x,r}` is a homeomorphism with inverse `y ↦ x + r y`, and `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for
+every `S` (a translation isometry followed by a homothety), so `(η⁻¹)_#(Hⁿ⌞η(A)) = (r⁻¹)ⁿ Hⁿ⌞A`;
+conclude by `MeasurableEmbedding.integral_map` and `integral_smul_measure`. -/
+theorem Submission.setIntegral_blowUpMap_image : ∀ (n N : ℕ) (x : Rn N) (r : ℝ) (A : Set (Rn N)) (g : Rn N → ℝ), 0 < r → ∫ y in blowUpMap x r '' A, g y ∂μHE[n] = (r ^ n)⁻¹ * ∫ z in A, g (blowUpMap x r z) ∂μHE[n] := by
+  intro n N x r A g hr
+  -- Step 1: `η = η_{x,r}` is a homeomorphism of `ℝᴺ` with inverse `y ↦ x + r • y`.
+  let η : Rn N ≃ₜ Rn N :=
+    { toFun := blowUpMap x r
+      invFun := fun y ↦ x + r • y
+      left_inv := fun y ↦ by simp [blowUpMap, smul_smul, hr.ne']
+      right_inv := fun y ↦ by simp [blowUpMap, smul_smul, hr.ne']
+      continuous_toFun := by unfold blowUpMap; fun_prop
+      continuous_invFun := by fun_prop }
+  have hη : ⇑η = blowUpMap x r := rfl
+  -- Step 2: `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for every set `S`, as `η` is the isometry `· - x`
+  -- followed by the homothety with centre `0` and ratio `r⁻¹`.
+  have hscale : ∀ S : Set (Rn N),
+      μHE[n] (blowUpMap x r '' S) = ENNReal.ofReal r⁻¹ ^ n * μHE[n] S := by
+    intro S
+    have hτ : Isometry fun y : Rn N ↦ y - x := (IsometryEquiv.subRight x).isometry
+    have himage : blowUpMap x r '' S =
+        AffineMap.homothety (0 : Rn N) r⁻¹ '' ((fun y : Rn N ↦ y - x) '' S) := by
+      rw [← image_comp]
+      congr 1
+      funext y
+      simp [blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Rn N) (inv_ne_zero hr.ne'),
+      hτ.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow,
+      ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
+  -- Step 3: `(η⁻¹)_#(Hⁿ⌞η(A)) = (r⁻¹)ⁿ Hⁿ⌞A`, checked on Borel sets.
+  have hmap : ((μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' A)).map η.symm =
+      ENNReal.ofReal r⁻¹ ^ n • (μHE[n] : Measure (Rn N)).restrict A := by
+    ext B hB
+    rw [Measure.map_apply η.symm.continuous.measurable hB,
+      Measure.restrict_apply (η.symm.continuous.measurable hB), Measure.smul_apply,
+      Measure.restrict_apply hB, smul_eq_mul, ← hη, η.preimage_symm, ← image_inter η.injective,
+      hη, hscale]
+  -- Steps 4–5: change of variables along the measurable embedding `η⁻¹`, then scaling.
+  have hi := η.symm.measurableEmbedding.integral_map
+    (μ := (μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' A)) (fun z ↦ g (η z))
+  simp only [Homeomorph.apply_symm_apply] at hi
+  rw [hmap, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal (inv_pos.mpr hr).le,
+    smul_eq_mul, hη] at hi
+  -- Step 6: `(r⁻¹)ⁿ = (rⁿ)⁻¹`.
+  rw [← hi, inv_pow]
+
+/-- **The measure `θ Hⁿ ⌞ M`** (Simon Ch. 3, Definition 1.7, Remark 1.8(1) and Theorem 1.9,
+`chapter-03.txt` lines 284–323). Let `M` be `Hⁿ`-measurable, `θ` a positive locally
+`Hⁿ`-integrable weight on `M`, and `μ = (Hⁿ ⌞ M).withDensity (ofReal ∘ θ)`. Then
+(a) `μ(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K`;
+(b) `μ(S) = 0 ↔ Hⁿ({θ ≠ 0} ∩ S ∩ M) = 0 ↔ Hⁿ(M ∩ S) = 0`, since `θ > 0` on `M`;
+(c) a weighted approximate tangent space `P` of `M` at `x` (Def. 1.7) is an approximate tangent
+plane of `μ` at `x` with multiplicity `θ(x)`: for `r > 0` the blow-up change of variables
+`setIntegral_blowUpMap_image` and `x + r η_{x,r}(z) = z` give
+`∫_{η_{x,r}(M)} f(y) θ(x + r y) dHⁿ(y) = (rⁿ)⁻¹ ∫_M f(η_{x,r}(z)) θ(z) dHⁿ(z)
+= (rⁿ)⁻¹ ∫ f(η_{x,r}(y)) dμ(y)`, so both sides have the same limit as `r ↓ 0`. -/
+theorem Submission.weightedMeasure_finite_null_tangent :
+    ∀ (n N : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (μ : Measure (Rn N)), NullMeasurableSet M μHE[n] →
+      IsPositiveLocallyIntegrableWeight n M θ →
+      μ = ((μHE[n] : Measure (Rn N)).restrict M).withDensity (fun z ↦ ENNReal.ofReal (θ z)) →
+      (∀ K : Set (Rn N), IsCompact K → μ K < ∞) ∧ (∀ S : Set (Rn N), μ S = 0 ↔ μHE[n] (M ∩ S) = 0) ∧
+      ∀ (x : Rn N) (P : Submodule ℝ (Rn N)), HasWeightedApproximateTangentSpaceAt n M θ x P →
+        HasApproxTangentPlaneWithMultiplicity n μ x P (θ x) := by
+  intro n N M θ μ hM hθ hμ
+  obtain ⟨hpos, hθmeas, hθint⟩ := hθ
+  subst hμ
+  -- Step 0: the density `w = ofReal ∘ θ` is `Hⁿ ⌞ M`-a.e. measurable.
+  have hw : AEMeasurable (fun z ↦ ENNReal.ofReal (θ z)) ((μHE[n] : Measure (Rn N)).restrict M) :=
+    hθmeas.ennreal_ofReal
+  refine ⟨fun K hK ↦ ?_, fun S ↦ ?_, fun x P hP ↦ ?_⟩
+  · -- (a) `μ(K) = ∫_{M ∩ K} ofReal θ dHⁿ < ∞`, as `θ` is `Hⁿ`-integrable on `M ∩ K`.
+    rw [withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+      inter_comm]
+    exact Integrable.lintegral_lt_top (hθint K hK)
+  · -- (b) `μ(S) = 0 ↔ Hⁿ({w ≠ 0} ∩ S ∩ M) = 0`, and `{w ≠ 0} ∩ S ∩ M = M ∩ S` as `θ > 0` on `M`.
+    have hset : {z | ENNReal.ofReal (θ z) ≠ 0} ∩ S ∩ M = M ∩ S := by
+      ext z
+      exact ⟨fun hz ↦ ⟨hz.2, hz.1.2⟩,
+        fun hz ↦ ⟨⟨(ENNReal.ofReal_pos.2 (hpos z hz.1)).ne', hz.2⟩, hz.1⟩⟩
+    rw [withDensity_apply_eq_zero' hw, Measure.restrict_apply₀' hM, hset]
+  · -- (c) The rank conditions agree, and for `r > 0` the two blow-up integrals agree.
+    refine ⟨hP.1, fun f ↦ (hP.2 f).congr' ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hr : 0 < r := hr
+    -- `∫ f ∘ η_{x,r} dμ = ∫_M (f ∘ η_{x,r}) θ dHⁿ`, since `(ofReal θ).toReal = θ` on `M`.
+    have hdens : ∫ y, f (blowUpMap x r y) ∂((μHE[n] : Measure (Rn N)).restrict M).withDensity
+        (fun z ↦ ENNReal.ofReal (θ z)) = ∫ z in M, f (blowUpMap x r z) * θ z ∂μHE[n] := by
+      rw [integral_withDensity_eq_integral_toReal_smul₀ hw
+        (Eventually.of_forall fun _ ↦ ENNReal.ofReal_lt_top)]
+      refine integral_congr_ae ?_
+      filter_upwards [ae_restrict_mem₀ hM] with z hz
+      rw [ENNReal.toReal_ofReal (hpos z hz).le, smul_eq_mul, mul_comm]
+    -- The blow-up change of variables, with `x + r η_{x,r}(z) = z`.
+    have hη : ∀ z, x + r • blowUpMap x r z = z := fun z ↦ by
+      rw [blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+    rw [hdens, Submission.setIntegral_blowUpMap_image n N x r M
+      (fun y ↦ f y * θ (x + r • y)) hr]
+    simp only [hη]
+/-- **Locally Lipschitz maps on open subsets of `ℝⁿ` send `Lⁿ`-null sets to `Hⁿ`-null sets**:
+the null-set case of Simon Ch. 2, Thm. 1.8(i) (`Hⁿ(f(A)) ≤ (Lip f)ⁿ Hⁿ(A)`, `chapter-02.txt`
+lines 270–274), applied to chart images in Ch. 3, Remark 1.3 and the proof of Thm. 1.6 "⇒"
+(`chapter-03.txt` lines 67–72, 113–143). As `V` is open, each `u ∈ V` has an open `O u ∋ u` on
+which `ψ` is `K u`-Lipschitz; by Lindelöf countably many `O u`, `u ∈ T ⊆ V`, cover `V ⊇ Z`. Then
+`Hⁿ(ψ(Z ∩ O u)) ≤ (K u)ⁿ Hⁿ(Z ∩ O u) = (K u)ⁿ Lⁿ(Z ∩ O u) = 0`, and countable subadditivity gives
+`Hⁿ(ψ(Z)) = 0`. No measurability of `Z` is needed: all estimates are for outer measures. -/
+theorem Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn : ∀ (n N : ℕ)
+    (V Z : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → LocallyLipschitzOn V ψ → Z ⊆ V →
+    volume Z = 0 → μHE[n] (ψ '' Z) = 0 := by
+  intro n N V Z ψ hV hψ hZV hZ
+  -- Step 1: each `u ∈ V` has an open neighbourhood `O u` on which `ψ` is `K u`-Lipschitz.
+  have hloc : ∀ u ∈ V, ∃ O : Set (Rn n), IsOpen O ∧ u ∈ O ∧ ∃ K : ℝ≥0, LipschitzOnWith K ψ O := by
+    intro u hu
+    obtain ⟨K, t, ht, hK⟩ := hψ hu
+    rw [hV.nhdsWithin_eq hu] at ht
+    obtain ⟨O, hOt, hO, huO⟩ := mem_nhds_iff.mp ht
+    exact ⟨O, hO, huO, K, hK.mono hOt⟩
+  choose! O hO huO K hK using hloc
+  -- Step 2 (Lindelöf): countably many `O u`, `u ∈ T ⊆ V`, cover `V ⊇ Z`.
+  obtain ⟨T, hTV, hTc, hTO⟩ := TopologicalSpace.isOpen_biUnion_countable V O hO
+  have hcover : ψ '' Z ⊆ ⋃ u ∈ T, ψ '' (Z ∩ O u) := by
+    rintro _ ⟨z, hz, rfl⟩
+    have hzT : z ∈ ⋃ u ∈ T, O u := by
+      rw [hTO]
+      exact mem_biUnion (hZV hz) (huO z (hZV hz))
+    obtain ⟨u, huT, hzu⟩ := mem_iUnion₂.mp hzT
+    exact mem_iUnion₂.mpr ⟨u, huT, z, ⟨hz, hzu⟩, rfl⟩
+  -- Steps 3–4: `Hⁿ(ψ(Z ∩ O u)) ≤ (K u)ⁿ Hⁿ(Z ∩ O u) = (K u)ⁿ Lⁿ(Z ∩ O u) = 0`.
+  have hpiece : ∀ u ∈ T, μHE[n] (ψ '' (Z ∩ O u)) = 0 := by
+    intro u hu
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      ((hK u (hTV hu)).mono (inter_subset_right (s := Z)))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      measure_mono_null inter_subset_left hZ, mul_zero] at h
+    exact nonpos_iff_eq_zero.mp h
+  -- Step 5: countable subadditivity.
+  exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
+
+/-- **Chartwise a.e. transfer** (Simon Ch. 3, Remark 1.3 and the localisation to the `C¹`
+submanifolds `N_j` in the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 67–72 and 113–143):
+let `M ⊆ N₀ ∪ ⋃ⱼ Sⱼ` with `Hⁿ(N₀) = 0` and each `Sⱼ` an `n`-dimensional embedded `C¹`
+submanifold. If, for every `ψ` that is `C¹` with injective derivative on an open `V ⊆ ℝⁿ`,
+`Q(ψ(u))` holds for `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ M`, then `Q` holds `Hⁿ`-a.e. on `M`. By
+Lindelöf, countably many charts `ψ_{j,y} : V_{j,y} → W_{j,y} ∩ Sⱼ` cover each `Sⱼ`. The bad
+parameters `Z_{j,y} = {u ∈ V_{j,y} : ψ_{j,y}(u) ∈ M, ¬Q(ψ_{j,y}(u))}` are `Lⁿ`-null, so their
+images are `Hⁿ`-null (`ψ_{j,y}` is locally Lipschitz on `V_{j,y}`), and `{x ∈ M : ¬Q(x)}` lies in
+the `Hⁿ`-null set `N₀ ∪ ⋃_{j,y} ψ_{j,y}(Z_{j,y})`. -/
+theorem Submission.ae_of_ae_on_submanifold_charts : ∀ (n N : ℕ) (M N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (Q : Rn N → Prop), μHE[n] N₀ = 0 → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → (∀ (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → Q (ψ u)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ M → Q x := by
+  intro n N M N₀ S Q hN₀ hS hM hQ
+  -- Step 1: a chart `ψ j y : V j y → W j y ∩ S j` for every `y ∈ S j` (the empty chart otherwise).
+  have hchart : ∀ (j : ℕ) (y : Rn N), ∃ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N),
+      IsOpen V ∧ IsOpen W ∧ (y ∈ S j → y ∈ W) ∧ ContDiffOn ℝ 1 ψ V ∧ W ∩ S j ⊆ ψ '' V ∧
+        ∀ u ∈ V, Function.Injective (fderiv ℝ ψ u) := by
+    intro j y
+    by_cases hy : y ∈ S j
+    · obtain ⟨V, W, ψ, hV, hW, hyW, hψ, -, himg, -, hD⟩ := hS j y hy
+      exact ⟨V, W, ψ, hV, hW, fun _ ↦ hyW, hψ, himg.symm.subset, hD⟩
+    · exact ⟨∅, ∅, 0, isOpen_empty, isOpen_empty, fun h ↦ absurd h hy, contDiffOn_empty,
+        by simp, by simp⟩
+  choose V W ψ hV hW hyW hψ himg hD using hchart
+  -- Step 2: countably many of the open sets `W j y` cover `S j` (Lindelöf).
+  have hcover : ∀ j, ∃ T : Set (Rn N), T.Countable ∧ S j ⊆ ⋃ y ∈ T, W j y := by
+    intro j
+    obtain ⟨T, -, hTc, hTW⟩ :=
+      TopologicalSpace.isOpen_biUnion_countable (S j) (W j) fun y _ ↦ hW j y
+    exact ⟨T, hTc, fun x hx ↦ hTW ▸ mem_biUnion hx (hyW j x hx)⟩
+  choose T hTc hTS using hcover
+  -- Step 3: the bad parameters `Z j y` of each chart form an `Lⁿ`-null set.
+  let Z : ℕ → Rn N → Set (Rn n) := fun j y ↦ {u | u ∈ V j y ∧ ψ j y u ∈ M ∧ ¬Q (ψ j y u)}
+  have hZ : ∀ j y, volume (Z j y) = 0 := by
+    intro j y
+    refine measure_mono_null ?_ (ae_iff.1 (hQ (V j y) (ψ j y) (hV j y) (hψ j y) (hD j y)))
+    rintro u ⟨hu, huM, huQ⟩ h
+    exact huQ (h hu huM)
+  -- Step 4: `C¹` on an open set is locally Lipschitz, so the images `ψ j y '' Z j y` are
+  -- `Hⁿ`-null.
+  have hψZ : ∀ j y, μHE[n] (ψ j y '' Z j y) = 0 := by
+    intro j y
+    refine Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn n N (V j y) (Z j y)
+      (ψ j y) (hV j y) ?_ (fun u hu ↦ hu.1) (hZ j y)
+    intro u hu
+    obtain ⟨K, t, ht, hK⟩ := ((hψ j y).contDiffAt ((hV j y).mem_nhds hu)).exists_lipschitzOnWith
+    exact ⟨K, t, mem_nhdsWithin_of_mem_nhds ht, hK⟩
+  -- Step 5: the exceptional set `N₀ ∪ ⋃ⱼ ⋃_{y ∈ T j} ψ j y '' Z j y` is `Hⁿ`-null.
+  have hE : μHE[n] (N₀ ∪ ⋃ j, ⋃ y ∈ T j, ψ j y '' Z j y) = 0 :=
+    measure_union_null hN₀ <| measure_iUnion_null fun j ↦
+      (measure_biUnion_null_iff (hTc j)).2 fun y _ ↦ hψZ j y
+  -- Steps 6–7: every `x ∈ M` with `¬Q x` lies in the exceptional set.
+  refine ae_iff.2 (measure_mono_null ?_ hE)
+  intro x hx
+  obtain ⟨hxM, hxQ⟩ := not_imp.1 hx
+  rcases hM hxM with hx₀ | hxS
+  · exact mem_union_left _ hx₀
+  · obtain ⟨j, hj⟩ := mem_iUnion.1 hxS
+    obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.1 (hTS j hj)
+    obtain ⟨u, hu, rfl⟩ := himg j y ⟨hxy, hj⟩
+    exact mem_union_right _ (mem_iUnion.2 ⟨j, mem_biUnion hy ⟨u, ⟨hu, hxM, hxQ⟩, rfl⟩⟩)
 /-- **Quantitative local injectivity of a `C¹` map with injective derivative** (Simon Ch. 3,
 proof of Lemma 1.2, `chapter-03.txt` lines 61–64: where the Jacobian of `Gᵢⱼ` is non-zero at
 `x`, `Gᵢⱼ(B_σ(x))` is an `n`-dimensional `C¹` submanifold). If `G : ℝⁿ → ℝᵖ` is `C¹` on an open
@@ -4243,5 +4442,72 @@ theorem Submission.submanifoldCoverCharacterization_holds : SubmanifoldCoverChar
       (fun j ↦ ⟨le_rfl, fun y hy ↦ ?_⟩) hM
     obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himage, hproper, hD⟩ := hN j y hy
     exact ⟨V, W, ψ, hyW, hV, hW, hψ, hinj, himage, hproper, hD⟩
+
+/-- **Simon Ch. 3, Theorems 1.6 and 1.9 (pp. 71, 75; chapter-03.txt ll. 109–274, 316–323).**
+An `Hⁿ`-measurable `M ⊆ ℝ^{n+ℓ}` is countably `n`-rectifiable iff it has an approximate tangent
+space at `Hⁿ`-a.e. point: with respect to every positive locally `Hⁿ`-integrable weight `θ`
+(Def. 1.7), and without weight (Def. 1.4) when `Hⁿ(M ∩ K) < ∞` for compact `K`.
+
+Theorem 1.9 is proved first, directly rather than from 1.6 via Remark 1.8(1) (Lusin).
+"⇒" (ll. 113–143): by Lemma 1.2, `M ⊆ N₀ ∪ ⋃ⱼ Nⱼ` with `Hⁿ(N₀) = 0` and `C¹` submanifolds `Nⱼ`;
+in every `C¹` chart `ψ` the weighted tangent plane at `ψ(u)` is `range Dψ(u)` for a.e. `u` (chart
+lemma with `f = 0`), and the chartwise transfer makes this `Hⁿ`-a.e. on `M`.
+"⇐" (ll. 145–274): `μ = θ Hⁿ ⌞ M` is finite on compacts, has the null sets `{S : Hⁿ(M ∩ S) = 0}`,
+and has approximate tangent plane `P` with multiplicity `θ(x)` wherever `M` has weighted tangent
+plane `P`, where `θ(x) > 0` for `x ∈ M`; so some Borel countably rectifiable `R` has `μ(Rᶜ) = 0`,
+i.e. `Hⁿ(M ∖ R) = 0`, and `M ⊆ ((M ∖ R) ∪ R₀) ∪ ⋃ⱼ Fⱼ(ℝⁿ)` for a Def. 1.1 cover
+`R ⊆ R₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)`.
+Theorem 1.6 is the case `θ ≡ 1`, admissible as `Hⁿ(M ∩ K) < ∞`, for which Def. 1.7 is Def. 1.4. -/
+theorem Submission.approximateTangentCharacterizations_hold :
+    ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization := by
+  have hweighted : WeightedApproximateTangentCharacterization := by
+    intro n ℓ M θ hM hθ
+    constructor
+    · -- "⇒": cover `M` by `C¹` submanifolds and read off the tangent plane in every chart.
+      intro hrect
+      obtain ⟨N₀, S, hN₀, hS, hcover⟩ :=
+        (Submission.submanifoldCoverCharacterization_holds n ℓ M).1 hrect
+      refine Submission.ae_of_ae_on_submanifold_charts n (n + ℓ) M N₀ S
+        (fun x ↦ ∃ P : Submodule ℝ (Rn (n + ℓ)), HasWeightedApproximateTangentSpaceAt n M θ x P)
+        hN₀ hS hcover fun V ψ hV hψ hDψ ↦ ?_
+      filter_upwards [Submission.chart_approx_tangent_and_differential n ℓ 0 M univ θ
+        (fun _ ↦ 0) V ψ hM hθ isOpen_univ (subset_univ M)
+        (LocallyLipschitz.const _).locallyLipschitzOn hV hψ hDψ] with u hu huV huM
+      exact ⟨_, (hu huV huM).1⟩
+    · -- "⇐": the measure `μ = θ Hⁿ ⌞ M` is carried by a countably rectifiable set.
+      intro hae
+      obtain ⟨μ, hμ⟩ : ∃ μ : Measure (Rn (n + ℓ)),
+          μ = ((μHE[n] : Measure (Rn (n + ℓ))).restrict M).withDensity
+            fun z ↦ ENNReal.ofReal (θ z) := ⟨_, rfl⟩
+      obtain ⟨hfin, hnull, htan⟩ :=
+        Submission.weightedMeasure_finite_null_tangent n (n + ℓ) M θ μ hM hθ hμ
+      -- `μ`-a.e. `x` has an approximate tangent plane with multiplicity `θ(x) > 0`.
+      have hμae : ∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (c : ℝ), 0 < c ∧
+          HasApproxTangentPlaneWithMultiplicity n μ x P c := by
+        rw [ae_iff, hnull]
+        refine measure_mono_null ?_ (ae_iff.1 hae)
+        rintro x ⟨hxM, hx⟩ hxP
+        obtain ⟨P, hP⟩ := hxP hxM
+        exact hx ⟨P, θ x, hθ.1 x hxM, htan x P hP⟩
+      obtain ⟨R, -, ⟨R₀, hR₀, F, hF, hRcover⟩, hRc⟩ :=
+        Submission.rectifiable_of_approx_tangent_measure n ℓ μ hfin hμae
+      -- `Hⁿ(M ∖ R) = 0`, so `M ∖ R` joins the exceptional set of the cover of `R`.
+      refine ⟨(M ∩ Rᶜ) ∪ R₀, measure_union_null ((hnull Rᶜ).1 hRc) hR₀, F, hF, fun x hxM ↦ ?_⟩
+      by_cases hxR : x ∈ R
+      · rcases hRcover hxR with hx | hx
+        · exact Or.inl (Or.inr hx)
+        · exact Or.inr hx
+      · exact Or.inl (Or.inl ⟨hxM, hxR⟩)
+  -- Theorem 1.6: the weight `θ ≡ 1`.
+  refine ⟨fun n ℓ M hM hfin ↦ ?_, hweighted⟩
+  have hone : IsPositiveLocallyIntegrableWeight n M fun _ : Rn (n + ℓ) ↦ (1 : ℝ) :=
+    ⟨fun _ _ ↦ one_pos, aemeasurable_const, fun K hK ↦ integrableOn_const (hfin K hK).ne⟩
+  have hiff : ∀ (x : Rn (n + ℓ)) (P : Submodule ℝ (Rn (n + ℓ))),
+      HasWeightedApproximateTangentSpaceAt n M (fun _ ↦ (1 : ℝ)) x P ↔
+        HasApproximateTangentSpaceAt n M x P := by
+    intro x P
+    simp only [HasWeightedApproximateTangentSpaceAt, HasApproximateTangentSpaceAt, mul_one,
+      one_mul]
+  simpa only [hiff] using hweighted n ℓ M (fun _ ↦ 1) hM hone
 
 end GMT.Ch03

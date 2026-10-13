@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_characterizations-a1.chartwise_ae_transfer-a1",
+  "parent_id": "root.tangent_characterizations-a1",
+  "depth": 2,
+  "title": "A property holding a.e. in every C¹ chart holds Hⁿ-a.e. on a set covered by C¹ submanifolds up to a null set",
+  "statement": "Let n, N ∈ ℕ, let M, N₀ ⊆ ℝ^N, let (S_j)_{j∈ℕ} be subsets of ℝ^N, and let Q be a property of points of ℝ^N. Assume:\n- Hⁿ(N₀) = 0;\n- every S_j is an n-dimensional embedded C¹ submanifold (IsC1Submanifold n S_j);\n- M ⊆ N₀ ∪ ⋃_j S_j;\n- for every open V ⊆ ℝⁿ and every ψ : ℝⁿ → ℝ^N that is C¹ on V with injective derivative Dψ(u) at every u ∈ V, Q(ψ(u)) holds for Lⁿ-a.e. u ∈ V with ψ(u) ∈ M.\nThen Q(x) holds for Hⁿ-a.e. x ∈ M, i.e. ∀ᵐ x ∂μHE[n], x ∈ M → Q x.",
+  "lean_statement": "∀ (n N : ℕ) (M N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (Q : Rn N → Prop), μHE[n] N₀ = 0 → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → (∀ (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → Q (ψ u)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ M → Q x",
+  "lean_name": "ae_of_ae_on_submanifold_charts",
+  "depends_on": [
+    "root.tangent_characterizations-a1.null_image_locally_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_characterizations-a1.null_image_locally_lipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-tangent-characterizations-a1-chartwise-ae-transfer-a1-a1"
+}
