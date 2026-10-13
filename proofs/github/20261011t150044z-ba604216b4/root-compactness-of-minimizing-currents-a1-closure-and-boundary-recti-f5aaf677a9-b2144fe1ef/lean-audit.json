@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dc86fe6e7bb50bb575ff2165cb229ab081ca68d61422c9e53e1be3a9b62fb7b5",
+  "git_delta": {
+    "base_commit": "4803e675baa01c3fe36fb7d49e46bc81fdeb6eb6",
+    "candidate_commit": "8dd8dd9fc5e78c17bf83ed4f55959f85d26f6740",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrz_point_sum_limit",
+    "diff_sha256": "f16e2398ac685ed996f8193ea5f7c94b2a54a6dd8ce5a5ddf9f7afc432163093",
+    "source_sha256": "29d0e830895bd6d6bd3797450e72efe938a5dd7afc2d0a818899fedbf721d36f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrz_point_sum_limit",
+      "statement": "∀ (P : ℕ) (K : Set (Euclid P)) (C : ℕ) (N : ℕ → ℕ) (w : ℕ → ℕ → ℤ) (x : ℕ → ℕ → Euclid P) (ι : Type) (g : ι → Euclid P → ℝ) (t : ι → ℝ), IsCompact K → (∀ j l, l < N j → x j l ∈ K) → (∀ j l, l < N j → w j l ≠ 0) → (∀ j, (∑ l ∈ Finset.range (N j), (w j l).natAbs) ≤ C) → (∀ k, Continuous (g k)) → (∀ k, Tendsto (fun j => ∑ l ∈ Finset.range (N j), (w j l : ℝ) * g k (x j l)) atTop (𝓝 (t k))) → ∃ (M : ℕ) (v : ℕ → ℤ) (y : ℕ → Euclid P), (∀ l < M, y l ∈ K) ∧ ∀ k, t k = ∑ l ∈ Finset.range M, (v l : ℝ) * g k (y l)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
