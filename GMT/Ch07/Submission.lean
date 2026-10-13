@@ -913,6 +913,55 @@ theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Ty
     · exact (hCA k hxC).2
     · exact absurd hxD' hxD
 
+/-- **Upper semicontinuity of closed-ball mass** (for Egoroff's theorem in Simon Ch. 3, proof of
+Theorem 1.6, (7)–(8)): for a finite measure `μ` on `ℝᴾ`, `ρ ∈ ℝ` and `s ∈ [0, ∞]`, the set
+`{y : s ≤ μ(B̄_ρ(y))}` is closed.  If `yᵢ → y` and `s ≤ μ(B̄_ρ(yᵢ))` for all `i`, the open
+complements `U = B̄_ρ(y)ᶜ` and `Uᵢ = B̄_ρ(yᵢ)ᶜ` satisfy `1_U ≤ liminf 1_{Uᵢ}`, so Fatou's lemma
+gives `μ(U) ≤ liminf μ(Uᵢ) ≤ μ(ℝᴾ) − s`; as `μ` is finite and `s ≤ μ(ℝᴾ)`,
+`μ(B̄_ρ(y)) = μ(ℝᴾ) − μ(U) ≥ s`. -/
+theorem Submission.cbrr_ud_isClosed_closedBall_mass_ge : ∀ (P : ℕ) (μ : Measure (Euclid P)) [IsFiniteMeasure μ] (ρ : ℝ) (s : ℝ≥0∞), IsClosed {y : Euclid P | s ≤ μ (closedBall y ρ)} := by
+  intro P μ _ ρ s
+  -- Step 1: `ℝᴾ` is a sequential space; let `yᵢ → y` with `s ≤ μ(B̄_ρ(yᵢ))` for all `i`
+  refine IsSeqClosed.isClosed fun ys y hys hlim => ?_
+  replace hys : ∀ i, s ≤ μ (closedBall (ys i) ρ) := hys
+  show s ≤ μ (closedBall y ρ)
+  -- Step 2: the complements `U = B̄_ρ(y)ᶜ` and `Uᵢ = B̄_ρ(yᵢ)ᶜ` are open, hence Borel
+  have hU : ∀ x : Euclid P, MeasurableSet (closedBall x ρ)ᶜ :=
+    fun x => measurableSet_closedBall.compl
+  -- Step 3: `1_U ≤ liminf 1_{Uᵢ}`: if `|z − y| > ρ`, then `|z − yᵢ| > ρ` for all large `i`
+  have hpt : ∀ z, (closedBall y ρ)ᶜ.indicator 1 z ≤
+      liminf (fun i => (closedBall (ys i) ρ)ᶜ.indicator (1 : Euclid P → ℝ≥0∞) z) atTop := by
+    intro z
+    by_cases hz : z ∈ closedBall y ρ
+    · rw [indicator_of_notMem (not_not.mpr hz)]
+      exact zero_le
+    · rw [mem_closedBall, not_le] at hz
+      refine le_liminf_of_le (by isBoundedDefault) ?_
+      filter_upwards [(tendsto_const_nhds.dist hlim).eventually (lt_mem_nhds hz)] with i hi
+      rw [indicator_of_mem (not_le.mpr hz), indicator_of_mem (not_le.mpr hi)]
+  -- Step 4: Fatou's lemma gives `μ(U) ≤ liminf μ(Uᵢ)`
+  have hfatou : μ (closedBall y ρ)ᶜ ≤ liminf (fun i => μ (closedBall (ys i) ρ)ᶜ) atTop :=
+    calc μ (closedBall y ρ)ᶜ = ∫⁻ z, (closedBall y ρ)ᶜ.indicator 1 z ∂μ :=
+          (lintegral_indicator_one (hU y)).symm
+      _ ≤ ∫⁻ z, liminf (fun i => (closedBall (ys i) ρ)ᶜ.indicator 1 z) atTop ∂μ :=
+          lintegral_mono hpt
+      _ ≤ liminf (fun i => ∫⁻ z, (closedBall (ys i) ρ)ᶜ.indicator 1 z ∂μ) atTop :=
+          lintegral_liminf_le fun i => measurable_one.indicator (hU (ys i))
+      _ = liminf (fun i => μ (closedBall (ys i) ρ)ᶜ) atTop := by
+          simp_rw [lintegral_indicator_one (hU _)]
+  -- Step 5: `μ(Uᵢ) = μ(ℝᴾ) − μ(B̄_ρ(yᵢ)) ≤ μ(ℝᴾ) − s` for every `i`, so `μ(U) ≤ μ(ℝᴾ) − s`
+  have hUle : μ (closedBall y ρ)ᶜ ≤ μ univ - s := by
+    refine hfatou.trans (liminf_le_of_frequently_le' (Frequently.of_forall fun i => ?_))
+    rw [measure_compl measurableSet_closedBall (measure_ne_top _ _)]
+    exact tsub_le_tsub_left (hys i) _
+  -- Step 6: `s ≤ μ(B̄_ρ(y₀)) ≤ μ(ℝᴾ) < ∞`, so
+  -- `μ(B̄_ρ(y)) = μ(ℝᴾ) − μ(U) ≥ μ(ℝᴾ) − (μ(ℝᴾ) − s) = s`
+  have hs : s ≤ μ univ := (hys 0).trans (measure_mono (subset_univ _))
+  calc s = μ univ - (μ univ - s) := (ENNReal.sub_sub_cancel (measure_ne_top _ _) hs).symm
+    _ ≤ μ univ - μ (closedBall y ρ)ᶜ := tsub_le_tsub_left hUle _
+    _ = μ (closedBall y ρ) := by
+        rw [← measure_compl (hU y) (measure_ne_top _ _), compl_compl]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
