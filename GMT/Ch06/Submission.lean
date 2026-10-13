@@ -706,6 +706,79 @@ theorem Submission.iwl_cr_ro_integrand_iteratedFDeriv_le :
       ≤ 1 * ((R + j) * D) := mul_le_mul hta (key.trans hsum) (norm_nonneg _) zero_le_one
     _ = (R + j) * D := one_mul _
 
+/-- The radial homotopy operator `ψ(x) = ∫₀¹ tᵃ x ⌟ ω(t x) dt` (proof of Simon Ch. 6, 8.2,
+Part I): for a smooth `(k + 1)`-form `ω`, `ψ` is a smooth `k`-form with
+(i) `ψ(x)(v) = ∫₀¹ tᵃ ω(t x)(x, v) dt`,
+(ii) `Dψ(x)[w](v) = ∫₀¹ tᵃ (t Dω(t x)[w](x, v) + ω(t x)(w, v)) dt`, and
+(iii) `‖Dʲψ(x)‖ ≤ (R + j) D` on `B̄_R(0)` whenever `‖Dⁱω‖ ≤ D` there for all `i ≤ j`.
+The integrand `F(t, x) = tᵃ • (ω(t x)).curryLeft x` is jointly smooth, so `ψ = ∫₀¹ F(t, ·) dt`
+is smooth with `Dʲψ = ∫₀¹ Dʲ_x F dt`; evaluation commutes with the integral. -/
+theorem Submission.iwl_cr_radial_operator :
+    ∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+      ∃ ψ : DifferentialForm (Eucl P) k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ ∧
+        (∀ (x : Eucl P) (v : Fin k → Eucl P),
+          ψ x v = ∫ t in (0 : ℝ)..1, t ^ a * ω (t • x) (Fin.cons x v)) ∧
+        (∀ (x w : Eucl P) (v : Fin k → Eucl P),
+          fderiv ℝ ψ x w v = ∫ t in (0 : ℝ)..1,
+            t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v))) ∧
+        ∀ (j : ℕ) (R D : ℝ), 0 ≤ D →
+          (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) →
+          ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j ψ x‖ ≤ (R + j) * D := by
+  intro P k a ω hω
+  -- `F(t, x) = tᵃ • (ω(t x)).curryLeft x` is smooth; `ψ = ∫₀¹ F(t, ·) dt` and
+  -- `Dʲψ(x) = ∫₀¹ Dʲ(F(t, ·))(x) dt`, with `(t, x) ↦ Dʲ(F(t, ·))(x)` continuous.
+  obtain ⟨hGsmooth, hGderiv⟩ := Submission.iwl_cr_ro_integrand_contDiff_fderiv P k a ω hω
+  obtain ⟨hψsmooth, hGcont, hψiter⟩ :=
+    Submission.iwl_cr_ro_intervalIntegral_contDiff P (Covector (Eucl P) k) _ 0 1 hGsmooth
+  dsimp only at hψsmooth hGcont hψiter
+  refine ⟨fun x => ∫ t in (0 : ℝ)..1, t ^ a • (ω (t • x)).curryLeft x, hψsmooth, ?_, ?_, ?_⟩
+  · -- (i): evaluation at `v` is a continuous linear map, so it commutes with the integral.
+    intro x v
+    have hc : Continuous fun t : ℝ => t ^ a • (ω (t • x)).curryLeft x :=
+      hGsmooth.continuous.comp (continuous_id.prodMk continuous_const)
+    have e := (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).intervalIntegral_comp_comm
+      (hc.intervalIntegrable (μ := volume) 0 1)
+    simp only [ContinuousAlternatingMap.apply_apply] at e
+    beta_reduce
+    rw [← e]
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    simp only [ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+      smul_eq_mul]
+    rfl
+  · -- (ii): `Dψ(x)[w] = D¹ψ(x)(w)`; evaluate `∫₀¹ D¹(F(t, ·))(x) dt` at `w`, then at `v`.
+    intro x w v
+    have hc₁ : Continuous fun t : ℝ =>
+        iteratedFDeriv ℝ 1 (fun z => t ^ a • (ω (t • z)).curryLeft z) x :=
+      (hGcont 1).comp (continuous_id.prodMk continuous_const)
+    have hc₂ : Continuous fun t : ℝ =>
+        iteratedFDeriv ℝ 1 (fun z => t ^ a • (ω (t • z)).curryLeft z) x (fun _ => w) :=
+      (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => Eucl P) (Covector (Eucl P) k)
+        (fun _ => w)).continuous.comp hc₁
+    have e₁ := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => Eucl P) (Covector (Eucl P) k)
+      (fun _ => w)).intervalIntegral_comp_comm (hc₁.intervalIntegrable (μ := volume) 0 1)
+    have e₂ := (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).intervalIntegral_comp_comm
+      (hc₂.intervalIntegrable (μ := volume) 0 1)
+    simp only [ContinuousMultilinearMap.apply_apply, ContinuousAlternatingMap.apply_apply] at e₁ e₂
+    have e₀ : ∀ f : Eucl P → Covector (Eucl P) k,
+        fderiv ℝ f x w = iteratedFDeriv ℝ 1 f x (fun _ => w) :=
+      fun f => (iteratedFDeriv_one_apply (fun _ : Fin 1 => w)).symm
+    rw [e₀, hψiter 1 x, ← e₁, ← e₂]
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    simp only [iteratedFDeriv_one_apply]
+    exact hGderiv t x w v
+  · -- (iii): `‖Dʲψ(x)‖ ≤ ∫₀¹ ‖Dʲ(F(t, ·))(x)‖ dt ≤ (R + j) D`.
+    intro j R D hD hω_le x hx
+    rw [hψiter j x]
+    have hle : ∀ t ∈ Set.uIoc (0 : ℝ) 1,
+        ‖iteratedFDeriv ℝ j (fun z => t ^ a • (ω (t • z)).curryLeft z) x‖ ≤ (R + j) * D := by
+      intro t ht
+      rw [Set.uIoc_of_le zero_le_one] at ht
+      exact Submission.iwl_cr_ro_integrand_iteratedFDeriv_le P k a ω hω j R D hD hω_le t
+        ⟨ht.1.le, ht.2⟩ x hx
+    have h := intervalIntegral.norm_integral_le_of_norm_le_const hle
+    rwa [sub_zero, abs_one, mul_one] at h
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
