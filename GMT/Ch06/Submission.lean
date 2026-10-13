@@ -3991,6 +3991,46 @@ theorem Submission.dmr_rectifiableTriple_inter :
   obtain ⟨τ, hτ, hM, hξ⟩ := hx
   exact ⟨τ, hτ, hL _ hM, hξ⟩
 
+/-- **Mass measure, representation and restriction, Simon Ch. 6, (2.7)–(2.9), 2.12 and 3.1
+(pp. 136–137, 146).**  Let `X ∈ 𝒟_k(ℝ^N)` with `M(X) < ∞`.  Then `M_W(X) ≤ M(X) < ∞` for every
+`W`, so (R2) of `iwl_restriction_theory` gives the mass measure `μ`, a restriction `Y = X ⌞ A` to
+every Borel set `A` and `M_W(Y) = μ(W ∩ A)`, and `rectifiability_mass_measure_representation`
+gives a representation `(μ, v)` of `X`.  `μ` is finite and vanishes off `spt X`
+(`dmr_massMeasure_support_finite`).  Any two representations of `X` have the same vector measure
+on Borel sets (`dmr_measureRepresentation_unique`); this is the uniqueness conjunct and gives
+`Y(ω) = ∫_A ⟨ω, v⟩ dμ`, while restrictions are unique by (R1).  If `X = τ(M, θ, ξ)` is integer
+multiplicity, then `Y = τ(M ∩ A, θ, ξ)` (`polyhedral_approx_restriction_tau`), `(M ∩ A, θ, ξ)` is a
+rectifiable triple (`dmr_rectifiableTriple_inter`) and `θ` is still integer-valued on `M ∩ A`. -/
+theorem Submission.deformation_mass_restriction : ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k), X.mass < ∞ → ∃ (μ : Measure (Eucl N)) (v : Eucl N → NVector (Eucl N) k), IsFiniteMeasure μ ∧ IsMeasureRepresentation X μ v ∧ μ X.supportᶜ = 0 ∧ (∀ (μ' : Measure (Eucl N)) (v' : Eucl N → NVector (Eucl N) k), IsMeasureRepresentation X μ' v' → ∀ A : Set (Eucl N), MeasurableSet A → Bornology.IsBounded A → ∀ α : Covector (Eucl N) k, ∫ x in A, v' x α ∂μ' = ∫ x in A, v x α ∂μ) ∧ ∀ A : Set (Eucl N), MeasurableSet A → ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, IsRestriction X A Y ∧ (∀ ω : TestFormOn (univ : Set (Eucl N)) k, Y ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl N) k) x) ∂μ) ∧ (∀ W : Set (Eucl N), IsOpen W → Y.massOn W = μ (W ∩ A)) ∧ (∀ Y' : GeometricCurrentOn (univ : Set (Eucl N)) k, IsRestriction X A Y' → Y' = Y) ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) := by
+  intro N k X hX
+  -- `M_W(X) ≤ M(X) < ∞` for every `W ⊂⊂ ℝ^N`.
+  have hloc : ∀ W, CompactlyContainedOpen W (univ : Set (Eucl N)) → X.massOn W < ∞ :=
+    fun W _ => (X.massOn_mono (subset_univ W)).trans_lt hX
+  -- (R2) on `U = ℝ^N`: the mass measure `μ`, restrictions to Borel sets and their masses.
+  obtain ⟨μ, hμ, hres, hmass⟩ :=
+    Submission.iwl_restriction_theory.2.2 N k univ isOpen_univ X hloc
+  -- A representation `(μ, v)` of `X` with respect to its mass measure (2.7).
+  obtain ⟨v, -, -, hrep⟩ :=
+    (Submission.rectifiability_mass_measure_representation N k univ isOpen_univ X hloc).2 μ hμ
+  obtain ⟨hsupp, hfin⟩ := Submission.dmr_massMeasure_support_finite N k X μ hμ
+  -- Every representation `(μ', v')` of `X` has the vector measure of `(μ, v)` on Borel sets.
+  have huniq := fun (μ' : Measure (Eucl N)) (v' : Eucl N → NVector (Eucl N) k)
+      (hrep' : IsMeasureRepresentation X μ' v') =>
+    Submission.dmr_measureRepresentation_unique N k X μ' μ v' v hrep' hrep
+  refine ⟨μ, v, hfin hX, hrep, hsupp, fun μ' v' hrep' => (huniq μ' v' hrep').2, fun A hA => ?_⟩
+  obtain ⟨Y, hY⟩ := hres A hA
+  refine ⟨Y, hY, ?_, fun W hW => hmass A Y hY W hW (subset_univ W),
+    fun Y' hY' => Submission.iwl_restriction_theory.2.1 N k univ isOpen_univ X A Y' Y hY' hY, ?_⟩
+  · -- `Y` is defined through some representation `(μ', v')` of `X`, whose integrals over `A`
+    -- agree with those of `(μ, v)`.
+    obtain ⟨-, μ', v', hrep', hYω⟩ := hY
+    exact fun ω => (hYω ω).trans ((huniq μ' v' hrep').1 A hA ω)
+  · -- Simon 3.1: `X ⌞ A = τ(M ∩ A, θ, ξ)`, and `θ` is still integer-valued on `M ∩ A`.
+    rintro ⟨M, θ, ξ, hMθξ, hθ, hXτ⟩
+    exact ⟨M ∩ A, θ, ξ, Submission.dmr_rectifiableTriple_inter N k M θ ξ A hMθξ hA,
+      fun x hx => hθ x hx.1,
+      Submission.polyhedral_approx_restriction_tau N k univ isOpen_univ X M θ ξ hMθξ hXτ A Y hY⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
