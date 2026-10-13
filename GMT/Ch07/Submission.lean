@@ -454,4 +454,37 @@ end
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+namespace Submission
+
+/-- The tangent space of the translate `{z | z + a ∈ Q} = Q − a` at any of its points `y` is `Q`:
+slopes `t⁻¹(γ t − γ 0)` of a curve in the translate lie in the closed subspace `Q` and tend to
+`γ'(0)`, and the line `t ↦ y + t • v` realizes each `v ∈ Q` as a velocity. -/
+theorem codim1_zsl_op_translate_tangentSpace_eq : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a y : Euclid P), y + a ∈ Q → tangentSpace {z | z + a ∈ Q} y = (Q : Set (Euclid P)) := by
+  intro P Q a y hy
+  -- Step 1: `Q` is finite-dimensional, hence closed.
+  have hQ : IsClosed (Q : Set (Euclid P)) := Q.closed_of_finiteDimensional
+  ext v
+  constructor
+  · -- Step 2: the slopes `t⁻¹(γ t − γ 0)` lie in `Q` for `t ∈ (−1, 1)` and tend to `v`.
+    rintro ⟨γ, -, hγA, hγ0, hγv⟩
+    have hIoo : Ioo (-1 : ℝ) 1 ∈ 𝓝[≠] (0 : ℝ) :=
+      nhdsWithin_le_nhds (Ioo_mem_nhds (by norm_num) (by norm_num))
+    refine hQ.mem_of_tendsto (hasDerivAt_iff_tendsto_slope.mp hγv) ?_
+    filter_upwards [hIoo] with t ht
+    have h1 : γ t + a ∈ Q := hγA ht
+    have h2 : γ 0 + a ∈ Q := hγ0 ▸ hy
+    rw [slope_def_module]
+    exact Q.smul_mem _ (by simpa using Q.sub_mem h1 h2)
+  · -- Step 3: the line `t ↦ y + t • v` witnesses `v ∈ tangentSpace {z | z + a ∈ Q} y`.
+    intro hv
+    refine ⟨fun t => y + t • v, ?_, ?_, by simp, ?_⟩
+    · exact (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn
+    · intro t _
+      show y + t • v + a ∈ Q
+      rw [add_right_comm]
+      exact Q.add_mem hy (Q.smul_mem t hv)
+    · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const v).const_add y
+
+end Submission
+
 end GMT.Ch07
