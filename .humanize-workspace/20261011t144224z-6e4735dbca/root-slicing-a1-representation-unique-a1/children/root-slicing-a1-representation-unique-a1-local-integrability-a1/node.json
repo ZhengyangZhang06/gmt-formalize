@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.representation_unique-a1.local_integrability-a1",
+  "parent_id": "root.slicing-a1.representation_unique-a1",
+  "depth": 3,
+  "title": "Test-form integrability gives integrability of x ↦ v(x)(c) on compact subsets of U",
+  "statement": "For all P, k ∈ ℕ and every open U ⊆ ℝ^P: let μ be a Borel measure on ℝ^P and v : ℝ^P → Λ_k(ℝ^P) (NVector (Eucl P) k, i.e. each v(x) is a continuous linear functional on k-covectors) be such that x ↦ v(x)(ω(x)) is μ-integrable for every test form ω ∈ D^k(U) (TestFormOn U k: smooth of every finite order, compact support, tsupport ω ⊆ U). Then for every compact L ⊆ U and every k-covector c ∈ Λ^k(ℝ^P) (Covector (Eucl P) k), the function x ↦ v(x)(c) is μ-integrable on L.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → ∀ L : Set (Eucl P), IsCompact L → L ⊆ U → ∀ c : Covector (Eucl P) k, IntegrableOn (fun x => v x c) L μ",
+  "lean_name": "slicing_ru_integrableOn_apply",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-representation-unique-a1-local-integrability-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.restrict_domain_im-a1",
+  "parent_id": "root.boundary_rectifiability-a1",
+  "depth": 2,
+  "title": "Domain restriction preserves integer multiplicity",
+  "statement": "Let P, k ∈ ℕ and U, W ⊆ ℝ^P with W ⊆ U and W open. If Y ∈ D_k(U) is an integer multiplicity current, then its restriction Y|_W ∈ D_k(W), Y|_W(ω) := Y(ω) for ω ∈ D^k(W) ⊆ D^k(U) (SimonGMT GeometricCurrentOn.restrictDomain), is an integer multiplicity current.",
+  "lean_statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W → ∀ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y → IsIntegerMultiplicity (Y.restrictDomain hWU)",
+  "lean_name": "br_restrictDomain_isIntegerMultiplicity",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-restrict-domain-im-a1-a1"
+}
