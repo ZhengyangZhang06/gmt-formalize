@@ -590,6 +590,9 @@ theorem Submission.gwe_vgt_transfer_consequences : ∀ (n ℓ : ℕ) (μ : Measu
     simp only [Set.indicator_of_mem (hZZ' hGx), Pi.one_apply, mul_one, Pi.zero_apply,
       ENNReal.ofReal_eq_zero] at h1
     exact le_antisymm h1 (hW0 x)
+
+namespace Submission
+
 /-- **The Gram matrix of a linear map** (Simon Ch. 5, proof of Theorem 4.5, p. 119: the graph
 Jacobian `J_F = √det(δ_ij + D_i f · D_j f)`).  For `D : ℝⁿ →L[ℝ] ℝ^ℓ` let `G_ab = ⟨D e_a, D e_b⟩`.
 Then (i) `G` is symmetric, since the real inner product is; (ii) `G` is positive semidefinite:
