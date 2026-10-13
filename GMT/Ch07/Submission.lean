@@ -487,6 +487,46 @@ theorem Submission.cmcs_smp_pairing_integrable : ∀ (P n : ℕ) (U : Set (Eucli
     exact (hx (w x)).trans ((Real.le_norm_self _).trans (hM x))
   · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK]
     simp
+/-- **Dominated convergence for level cut-offs** (step 5 of the slice mass bound in the proof of
+Simon 7.2.4, cut-offs `g_h` of the level set `{f < t}`).  If `F` is `μ`-integrable, `f` is
+measurable and, for `0 < h < 1`, `g_h` is a.e. strongly measurable with `|g_h| ≤ C`, `g_h = 1` on
+`{f ≤ t − h}` and `g_h = 0` on `{t ≤ f}`, then `∫ g_h F dμ → ∫_{f < t} F dμ` as `h → 0+`.
+Along `𝓝[>] 0` eventually `0 < h < 1`, so `|g_h F| ≤ C|F|` (integrable); for each `x`,
+`g_h(x)F(x)` is eventually `1_{f<t}(x)F(x)` (for `h < min (t − f x) 1` if `f x < t`, for all
+`h ∈ (0, 1)` if `t ≤ f x`); dominated convergence along the countably generated `𝓝[>] 0`. -/
+theorem Submission.cmcs_smp_cutoff_integral_tendsto : ∀ (P : ℕ) (μ : Measure (Euclid P)) (F f : Euclid P → ℝ) (t C : ℝ) (g : ℝ → Euclid P → ℝ), Integrable F μ → Measurable f → (∀ h : ℝ, 0 < h → h < 1 → AEStronglyMeasurable (g h) μ) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, |g h x| ≤ C) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, f x ≤ t - h → g h x = 1) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, t ≤ f x → g h x = 0) → Tendsto (fun h : ℝ => ∫ x, g h x * F x ∂μ) (𝓝[>] 0) (𝓝 (∫ x in {x | f x < t}, F x ∂μ)) := by
+  intro P μ F f t C g hF hf hgm hgC hg1 hg0
+  -- Step 2: eventually along `𝓝[>] 0`, `h ∈ (0, 1)`
+  have hev : ∀ᶠ h in 𝓝[>] (0 : ℝ), h ∈ Ioo (0 : ℝ) 1 := Ioo_mem_nhdsGT one_pos
+  -- Step 1: `{f < t}` is measurable, so the limit is `∫ 1_{f<t} F dμ`
+  have hs : MeasurableSet {x | f x < t} := measurableSet_lt hf measurable_const
+  rw [← integral_indicator hs]
+  -- Step 6: dominated convergence with the integrable bound `C‖F‖`
+  refine tendsto_integral_filter_of_dominated_convergence (fun x => C * ‖F x‖) ?_ ?_ ?_ ?_
+  · -- Step 3: `g_h F` is a.e. strongly measurable for `h ∈ (0, 1)`
+    filter_upwards [hev] with h hh
+    exact (hgm h hh.1 hh.2).mul hF.aestronglyMeasurable
+  · -- Step 4: `|g_h F| ≤ C|F|` for `h ∈ (0, 1)`
+    filter_upwards [hev] with h hh
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_right (hgC h hh.1 hh.2 x) (norm_nonneg _)
+  · exact hF.norm.const_mul C
+  · -- Step 5: `g_h(x)F(x)` is eventually equal to `1_{f<t}(x)F(x)`
+    refine Eventually.of_forall fun x => ?_
+    by_cases hx : f x < t
+    · rw [indicator_of_mem (show x ∈ {x | f x < t} from hx)]
+      have hpos : 0 < min (t - f x) 1 := lt_min (by linarith) one_pos
+      apply tendsto_const_nhds.congr'
+      filter_upwards [Ioo_mem_nhdsGT hpos] with h hh
+      obtain ⟨h0, h1⟩ := hh
+      have h1' : h < 1 := lt_of_lt_of_le h1 (min_le_right _ _)
+      have h2 : h < t - f x := lt_of_lt_of_le h1 (min_le_left _ _)
+      rw [hg1 h h0 h1' x (by linarith), one_mul]
+    · rw [indicator_of_notMem (show x ∉ {x | f x < t} from hx)]
+      apply tendsto_const_nhds.congr'
+      filter_upwards [hev] with h hh
+      rw [hg0 h hh.1 hh.2 x (not_lt.1 hx), zero_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
