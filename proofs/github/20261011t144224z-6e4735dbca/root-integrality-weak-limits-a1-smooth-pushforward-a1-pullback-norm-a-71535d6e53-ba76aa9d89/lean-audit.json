@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "145298bb5b87bf523fbfbece9e56f2d30ceb4e77d93f9441ed378bc87ae7b854",
+  "git_delta": {
+    "base_commit": "3da37681acfebeb461faa1b5f033d10a0b3434e4",
+    "candidate_commit": "5d1a7f344e2f451f9ba86a77653fa6071726ad71",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "bb6d29577845fd05c4856563b9729dea9798629c376d9e22567cd8a0f96715fb",
+    "source_sha256": "47fd7b180b49bb6af614d4aef9940ca7da6fad28e6ab8e3a051c43b8f67e3c8a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul",
+      "statement": "∀ (m j : ℕ) (γ : Covector (Eucl m) j), ∑ i : Fin j → Fin m, (γ (fun k => EuclideanSpace.basisFun (Fin m) ℝ (i k))) ^ 2 = (j.factorial : ℝ) * covectorEuclideanNorm γ ^ 2",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
