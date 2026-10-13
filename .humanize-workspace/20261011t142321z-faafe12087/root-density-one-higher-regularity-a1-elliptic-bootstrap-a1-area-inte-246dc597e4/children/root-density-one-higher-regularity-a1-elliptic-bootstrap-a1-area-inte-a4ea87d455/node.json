@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.hessian_local_unif-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "depth": 4,
+  "title": "Local uniform continuity of the second derivative of a C^2 function",
+  "statement": "Let E be a real normed space (E : Type with NormedAddCommGroup E and NormedSpace ℝ E) and F : E -> R of class C^2 (ContDiff ℝ 2 F). For every x0 in E and every delta > 0 there is eps > 0 such that, for all x in E with ||x - x0|| <= eps and all Q, Q' in E, |D^2F(x)[Q][Q'] - D^2F(x0)[Q][Q']| <= delta (||Q|| ||Q'||), where D^2F(x)[Q][Q'] = fderiv ℝ (fderiv ℝ F) x Q Q'.",
+  "lean_statement": "∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x₀ : E, ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ x : E, ‖x - x₀‖ ≤ ε → ∀ Q Q' : E, |fderiv ℝ (fderiv ℝ F) x Q Q' - fderiv ℝ (fderiv ℝ F) x₀ Q Q'| ≤ δ * (‖Q‖ * ‖Q'‖)",
+  "lean_name": "dohr_eb_ail_hessian_local_unif",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-a4ea87d455-a1"
+}
