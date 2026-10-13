@@ -567,6 +567,28 @@ theorem Submission.dtc_cwv_isConeCurrent_of_pullback_invariant : ∀ (P n : ℕ)
     ContinuousLinearMap.id_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
   rw [ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
     Fintype.card_fin, smul_eq_mul]
+/-- **Contraction with the Euler field preserves test forms** (Simon Ch. 6, 2.25–2.26 and 2.33,
+as used in the proof of 7.3.1).  If `β` is a test `(m+1)`-form, then so is
+`ι_X β : z ↦ β(z).curryLeft z` for `X(z) = z`: it is the smooth family of continuous linear maps
+`z ↦ curryLeftLI (β z)` applied to the smooth vector `z`, and it vanishes wherever `β` does, so
+its support lies in the compact `tsupport β`. -/
+theorem Submission.dtc_cwv_euler_contraction_isTestForm : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) z) := by
+  intro P m β hβ
+  obtain ⟨hs, hc⟩ := hβ
+  refine ⟨?_, ?_⟩
+  · -- `z ↦ (curryLeftLI (β z)) z` is a smooth family of continuous linear maps applied to `z`
+    change ContDiff ℝ (⊤ : ℕ∞) (fun z => (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ)
+      (E := Euclid P) (F := ℝ) (n := m)).toContinuousLinearMap (β z) z)
+    exact (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+      (n := m)).toContinuousLinearMap.contDiff).comp hs).clm_apply contDiff_id
+  · -- `β z = 0` forces `β(z).curryLeft z = 0`, so the support stays inside `supp β`
+    refine hc.mono ?_
+    intro z hz
+    simp only [mem_support] at hz ⊢
+    intro h0
+    apply hz
+    rw [h0]
+    rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
