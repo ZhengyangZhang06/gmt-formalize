@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1.oriented_mass_lower-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+  "depth": 4,
+  "title": "Lower mass bound for a current given on V by an oriented weighted set (Simon 6.2.5, 6.3.2(3), '≥')",
+  "statement": "Let P, k ∈ ℕ, U, V, M' ⊆ ℝ^P (Euclid P), T ∈ 𝒟_k(U) (GeometricCurrentOn U k), θ' : ℝ^P → ℝ and ξ' : ℝ^P → Λ_k(ℝ^P) (MultiVector P k). Assume: V ⊆ U; θ' is Borel measurable with θ'(x) ≥ 0 for every x; ξ' is a.e. strongly measurable for H^k⌞M' (H^k = μHE[k]; M' is an arbitrary set and H^k⌞M' is the restriction of H^k to M'); for H^k⌞M'-a.e. x there is a linear subspace Q of ℝ^P with IsUnitOrientationOf (ξ'(x)) Q (ξ'(x)(α) = ±α(τ_1, …, τ_k) for an orthonormal basis τ of Q); and T(ω) = ∫_{M'} θ'(x)·ξ'(x)(ω(x)) dH^k(x) for every ω ∈ 𝒟^k(U) with tsupport ω ⊆ V. Then for every open W ⊆ V with I(W) := ∫⁻_{M'∩W} ofReal(θ'(x)) dH^k(x) < ∞ we have I(W) ≤ M_W(T) in [0, ∞]. Here M_W(T) = T.massOn W is the supremum of ofReal(T(ω)) over ω ∈ 𝒟^k(U) with tsupport ω ⊆ W and Euclidean coefficient norm |ω(x)| = covectorEuclideanNorm(ω(x)) ≤ 1 for every x.",
+  "lean_statement": "∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), V ⊆ U → Measurable θ' → (∀ x, 0 ≤ θ' x) → AEStronglyMeasurable ξ' (μHE[k].restrict M') → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≠ ∞ → ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≤ T.massOn W",
+  "lean_name": "codim1_oriented_rep_lintegral_le_massOn",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1-a1",
+      "result_commit": "83274ea8a2c789b573c5627b217349b67c52a1de",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-49478a38c9-a1",
+      "result_commit": "89e4c45cd3c15de46c24c98367597d7521664cb3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-ori-74933f09f6-a1"
+}

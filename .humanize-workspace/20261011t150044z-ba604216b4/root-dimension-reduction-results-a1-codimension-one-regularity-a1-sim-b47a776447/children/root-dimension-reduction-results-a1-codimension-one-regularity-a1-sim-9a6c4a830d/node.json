@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1.open_piece-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1",
+  "depth": 5,
+  "title": "Open pieces of an embedded submanifold are embedded submanifolds with the same tangent spaces (parent fact F2)",
+  "statement": "Open pieces of embedded submanifolds. Data: P, r, d ∈ ℕ; N, O ⊆ ℝ^P. Hypotheses: N is an embedded C^r d-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold r d N: every y ∈ N has open V ⊆ ℝ^d, open W ⊆ ℝ^P with y ∈ W, and ψ : ℝ^d → ℝ^P that is C^r on V and injective on V, with ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W, and Dψ(z) injective for every z ∈ V); O is open. Conclusion: (a) N ∩ O is an embedded C^r d-dimensional submanifold (IsEmbeddedSubmanifold r d (N ∩ O)); (b) for every w ∈ O, tangentSpace(N ∩ O, w) = tangentSpace(N, w), where tangentSpace(M, w) is the set of v such that some γ : ℝ → ℝ^P is C¹ on (−1, 1), maps (−1, 1) into M, has γ(0) = w and has derivative v at 0.",
+  "lean_statement": "∀ (P r d : ℕ) (N O : Set (Euclid P)), IsEmbeddedSubmanifold r d N → IsOpen O → IsEmbeddedSubmanifold r d (N ∩ O) ∧ ∀ w ∈ O, tangentSpace (N ∩ O) w = tangentSpace N w",
+  "lean_name": "codim1_dolr_embedded_inter_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9a6c4a830d-a1"
+}
