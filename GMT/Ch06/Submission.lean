@@ -668,6 +668,7 @@ theorem Submission.lpf_wtc_wtt_continuity_error_vanishes :
       rw [hε₁]
       field_simp
     _ < ε := by linarith
+
 /-- Zero `θ`-weighted `n`-density of `D` at `y` kills the blow-up integrals (Simon Ch. 3,
 Remark 1.8(1)): if `(∫⁻_{D ∩ B̄_ρ(y)} θ dHⁿ) / ρⁿ → 0` as `ρ ↓ 0`, then for every `φ ∈ C_c(ℝ^Q)`,
 `(tⁿ)⁻¹ ∫_D φ(η_{y,t}(x)) θ(x) dHⁿ(x) → 0` as `t ↓ 0`.  No integrability of `θ` is assumed. -/
@@ -753,6 +754,46 @@ theorem Submission.lpf_wtc_wtt_remainder_vanishes : ∀ (Q n : ℕ) (D : Set (Eu
       ≤ (t ^ n)⁻¹ * (A * L.toReal) := mul_le_mul_of_nonneg_left hint (inv_nonneg.2 htn.le)
     _ = A * R ^ n * (L.toReal / (t ^ n * R ^ n)) := by
       field_simp [htn.ne', hRn.ne']
+
+/-- Converse weighted transfer (Simon Ch. 3, Remark 1.8(1)): if `T` is the approximate tangent
+space of `M` at `y` with respect to `θ` (Def. 1.7), `C ⊆ M`, `θ|C` is continuous at `y` and
+`θ Hⁿ⌞(M ∖ C)` has `n`-density `0` at `y`, then `T` is the approximate tangent space of `C` at `y`
+(Def. 1.4).  For `φ ∈ C_c(ℝ^Q)` and small `t > 0`,
+`θ(y) t⁻ⁿ ∫_C φ(η_t) = t⁻ⁿ ∫_M φ(η_t) θ - t⁻ⁿ ∫_C φ(η_t) (θ - θ(y)) - t⁻ⁿ ∫_{M∖C} φ(η_t) θ`,
+where the first term tends to `θ(y) ∫_T φ` and the other two tend to `0`. -/
+theorem Submission.imc_wte_approxTangent_of_weightedTangent : ∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∀ x ∈ M, 0 ≤ θ x) → 0 < θ y → HasWeightedApproximateTangentSpaceAt n M θ y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ContinuousWithinAt θ C y → Tendsto (fun ρ : ℝ => (∫⁻ x in (M \ C) ∩ closedBall y ρ, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T := by
+  intro Q n M C θ y T hM hC hCM hθ hθy hW hr hθC hdens
+  -- Step 2: `Hⁿ(C ∩ B̄_ρ(y)) ≤ K ρⁿ` for all small `ρ > 0`.
+  have hK := Submission.imc_wte_density_bound_of_weightedTangent Q n M C θ y T hM hC hCM hθ hθy
+    hW hr hθC
+  -- Step 1: `dim T = n`; fix `φ ∈ C_c(ℝ^Q)`.
+  refine ⟨hW.1, fun φ => ?_⟩
+  -- Step 3: `a(t) = t⁻ⁿ ∫_M φ(η_t) θ → θ(y) ∫_T φ`, since `y + t η_t(x) = x`.
+  have ha : Tendsto (fun t : ℝ => (t ^ n)⁻¹ * ∫ x in M,
+      φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q)))
+      (𝓝[>] 0) (𝓝 (θ y * ∫ z in (T : Set (Eucl Q)), φ z ∂(μHE[n] : Measure (Eucl Q)))) := by
+    refine (hW.2 φ).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    have hη : ∀ x, y + t • Poincare.SimonGMT.Chapter03.blowUpMap y t x = x := fun x => by
+      rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_inv_smul₀ (ne_of_gt ht), add_sub_cancel]
+    have h := Submission.lpf_wtc_blowup_setIntegral_image Q n y t M
+      (fun z => φ z * θ (y + t • z)) ht
+    simp only [hη] at h
+    exact h
+  -- Steps 4–5: the continuity error on `C` and the remainder on `M ∖ C` vanish.
+  have hb := Submission.lpf_wtc_wtt_continuity_error_vanishes Q n C θ y φ hC hθC hK
+  have hc := Submission.lpf_wtc_wtt_remainder_vanishes Q n (M \ C) θ y φ (hM.diff hC)
+    (fun x hx => hθ x hx.1) hdens
+  -- Steps 6–7: `t⁻ⁿ ∫_C φ(η_t) = θ(y)⁻¹ (a(t) - b(t) - c(t)) → ∫_T φ`.
+  have hm := ((ha.sub hb).sub hc).const_mul (θ y)⁻¹
+  rw [sub_zero, sub_zero, ← mul_assoc, inv_mul_cancel₀ hθy.ne', one_mul] at hm
+  -- Step 8: back to the blow-ups `η_t(C)`.
+  refine hm.congr' ?_
+  filter_upwards [Submission.lpf_wtc_wtt_blowup_integral_split Q n M C θ y φ hM hC hCM hr,
+    self_mem_nhdsWithin] with t hsplit ht
+  rw [Submission.lpf_wtc_blowup_setIntegral_image Q n y t C φ ht, hsplit]
+  field_simp
+  ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
