@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.polar_field-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1",
+  "depth": 4,
+  "title": "Polar approximation on a ball: ∫_B ‖g‖ dμ ≤ ∫⟨F, g⟩ dμ + ε for a continuous F with ‖F‖ ≤ 1 and tsupport F ⊆ B (Steps 3, 5, 6 of the supplied proof)",
+  "statement": "Let N ∈ ℕ, let E be a real inner product space (E : Type with NormedAddCommGroup E and InnerProductSpace ℝ E), let μ be a measure on ℝ^N = Eucl N, let R ∈ ℝ, B := ball(0, R) (the open ball), and let g : ℝ^N → E be μ-integrable on B (IntegrableOn g B μ). Then for every real ε > 0 there is F : ℝ^N → E such that F is continuous, tsupport F ⊆ B, ‖F(x)‖ ≤ 1 for every x, the function x ↦ ⟨F(x), g(x)⟩ (inner ℝ) is μ-integrable on ℝ^N, and ∫_B ‖g(x)‖ dμ(x) ≤ ∫ ⟨F(x), g(x)⟩ dμ(x) + ε.",
+  "lean_statement": "∀ (N : ℕ) (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (μ : Measure (Eucl N)) (R : ℝ) (g : Eucl N → E), IntegrableOn g (ball (0 : Eucl N) R) μ → ∀ ε : ℝ, 0 < ε → ∃ F : Eucl N → E, Continuous F ∧ tsupport F ⊆ ball (0 : Eucl N) R ∧ (∀ x, ‖F x‖ ≤ 1) ∧ Integrable (fun x => inner ℝ (F x) (g x)) μ ∧ ∫ x in ball (0 : Eucl N) R, ‖g x‖ ∂μ ≤ ∫ x, inner ℝ (F x) (g x) ∂μ + ε",
+  "lean_name": "imc_mlb_exists_unit_field_integral_ge",
+  "depends_on": [
+    "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.l1_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.l1_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1-polar-field-a1-a1"
+}

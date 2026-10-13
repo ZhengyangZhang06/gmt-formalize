@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.polar_form-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1",
+  "depth": 4,
+  "title": "Polar test form for a k-vector field: ∫⁻_B |κ| dμ ≤ ∫ κ(ω) dμ + ε with ω continuous, |ω| ≤ 1, tsupport ω ⊆ B",
+  "statement": "Let N, k ∈ ℕ, let μ be a measure on ℝ^N = Eucl N, κ : ℝ^N → Λ_k(ℝ^N) a field of k-vectors (NVector (Eucl N) k), R ∈ ℝ and B := ball(0, R). For γ ∈ SimonMultiIndex k N let κ^γ(x) := euclideanNVectorCoordinate (κ x) γ = κ(x)(dx^γ), where dx^γ := wedgeCovectors k (fun j ↦ EuclideanSpace.proj (γ j)), and assume that every κ^γ is μ-integrable on B. Then for every real ε > 0 there is ω : ℝ^N → Λ^k(ℝ^N) (Covector (Eucl N) k) such that ω is continuous, tsupport ω ⊆ B, covectorEuclideanNorm (ω x) ≤ 1 for every x, x ↦ κ(x)(ω(x)) is μ-integrable, and ∫⁻_B ENNReal.ofReal(√(Σ_γ κ^γ(x)²)) dμ(x) ≤ ENNReal.ofReal(∫ κ(x)(ω(x)) dμ(x) + ε).",
+  "lean_statement": "∀ (N k : ℕ) (μ : Measure (Eucl N)) (κ : Eucl N → NVector (Eucl N) k) (R : ℝ), (∀ γ : SimonMultiIndex k N, IntegrableOn (fun x => euclideanNVectorCoordinate (κ x) γ) (ball (0 : Eucl N) R) μ) → ∀ ε : ℝ, 0 < ε → ∃ ω : Eucl N → Covector (Eucl N) k, Continuous ω ∧ tsupport ω ⊆ ball (0 : Eucl N) R ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ Integrable (fun x => κ x (ω x)) μ ∧ ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ ≤ ENNReal.ofReal (∫ x, κ x (ω x) ∂μ + ε)",
+  "lean_name": "imc_mlb_exists_form_lintegral_coordNorm_le",
+  "depends_on": [
+    "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.polar_field-a1",
+    "root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_sum_wedge-a1",
+    "root.slicing-a1.mass_representation-a1.covector_isometry-a1.norm_coord-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.polar_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_sum_wedge-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1-a1",
+      "result_commit": "1b431e814455a6f8f989a42a9eeadf656a7073fa",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1.norm_coord-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1-a1",
+      "result_commit": "a1716c42aeab9df87edfc4f71e693c99790858a0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1-polar-form-a1-a1"
+}
