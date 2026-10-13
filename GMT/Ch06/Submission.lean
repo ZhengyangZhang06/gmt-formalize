@@ -2419,6 +2419,34 @@ theorem Submission.slicing_mb_leibniz_bound :
             ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x)) ∂μ := by
   intro P m U T μ v hrep hnorm ω ψ hψ
   -- The test forms `η₁ = ψ ω`, `η₂ = ψ dω` and `η₃ = Dψ ∧ ω` in `U`.
+  obtain ⟨η₁, hη₁⟩ := Submission.slicing_mb_lb_smul_testForm P m U ω ψ hψ
+  obtain ⟨η₂, hη₂⟩ :=
+    Submission.slicing_mb_lb_smul_testForm P (m + 1) U (exteriorDerivativeTestOn U m ω) ψ hψ
+  obtain ⟨η₃, hη₃⟩ :=
+    Submission.slicing_mb_lb_wedge_testForm P m U ω (fderiv ℝ ψ) (hψ.fderiv_right (by simp))
+  have hη₂' : ∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x =
+      ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x := hη₂
+  refine ⟨η₁, η₂, hη₁, hη₂', ?_⟩
+  -- Leibniz rule: `dη₁ = ψ dω + Dψ ∧ ω = η₂ + η₃`.
+  have hd : exteriorDerivativeTestOn U m η₁ = η₂ + η₃ := by
+    apply Subtype.ext
+    funext x
+    have h₁ : (η₁ : DifferentialForm (Eucl P) m) =
+        fun y => ψ y • (ω : DifferentialForm (Eucl P) m) y := funext hη₁
+    change exteriorDerivative (η₁ : DifferentialForm (Eucl P) m) x =
+      (η₂ : DifferentialForm (Eucl P) (m + 1)) x + (η₃ : DifferentialForm (Eucl P) (m + 1)) x
+    rw [h₁, hη₂', hη₃, Submission.slicing_mb_lb_extDeriv_smul P m ψ
+      (ω : DifferentialForm (Eucl P) m) x (hψ.differentiable (by simp) x)
+      (ω.2.1.1.differentiable (by simp) x)]
+  -- Hence `∂T(η₁) − T(η₂) = T(η₃)`.
+  have hb : T.boundary η₁ - T η₂ = T η₃ := by
+    rw [GeometricCurrentOn.boundary_apply, hd, map_add, add_sub_cancel_left]
+  -- The representation bound for `T(η₃)`, then `|Dψ ∧ ω| ≤ ‖Dψ‖ |ω|` pointwise.
+  rw [hb]
+  refine (Submission.slicing_mb_lb_repr_bound P (m + 1) U T μ v hrep hnorm η₃).trans
+    (lintegral_mono fun x => ?_)
+  rw [hη₃, ← enorm_eq_nnnorm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+  exact ENNReal.ofReal_le_ofReal (Submission.slicing_mb_wedge_norm_le P m _ _)
 /-- Global smooth approximation of a Lipschitz function by mollification: `g k = ρ_k ⋆ h` with a
 normalized smooth bump `ρ_k ≥ 0`, `∫ ρ_k = 1`, supported in `B(0, 1/(k+1))`.  Each `g k` is `C^∞`,
 `L`-Lipschitz, and `|g k - h| ≤ L/(k+1)` uniformly. -/
@@ -2937,29 +2965,33 @@ theorem Submission.slicing_im_ll_smooth_leibniz :
     Submission.slicing_mb_lb_smul_testForm P (m + 1) U (exteriorDerivativeTestOn U m ω) ψ hψ
   obtain ⟨η₃, hη₃⟩ :=
     Submission.slicing_mb_lb_wedge_testForm P m U ω (fderiv ℝ ψ) (hψ.fderiv_right (by simp))
-  have hη₂' : ∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x =
-      ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x := hη₂
-  refine ⟨η₁, η₂, hη₁, hη₂', ?_⟩
-  -- Leibniz rule: `dη₁ = ψ dω + Dψ ∧ ω = η₂ + η₃`.
+  -- Leibniz rule `d(ψ ω) = ψ dω + Dψ ∧ ω`: the exterior derivative of `η₁` is `η₂ + η₃`.
   have hd : exteriorDerivativeTestOn U m η₁ = η₂ + η₃ := by
-    apply Subtype.ext
-    funext x
+    have hω : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) m) := ω.2.1.1
     have h₁ : (η₁ : DifferentialForm (Eucl P) m) =
         fun y => ψ y • (ω : DifferentialForm (Eucl P) m) y := funext hη₁
+    apply Subtype.ext
+    funext x
     change exteriorDerivative (η₁ : DifferentialForm (Eucl P) m) x =
       (η₂ : DifferentialForm (Eucl P) (m + 1)) x + (η₃ : DifferentialForm (Eucl P) (m + 1)) x
-    rw [h₁, hη₂', hη₃, Submission.slicing_mb_lb_extDeriv_smul P m ψ
-      (ω : DifferentialForm (Eucl P) m) x (hψ.differentiable (by simp) x)
-      (ω.2.1.1.differentiable (by simp) x)]
-  -- Hence `∂T(η₁) − T(η₂) = T(η₃)`.
-  have hb : T.boundary η₁ - T η₂ = T η₃ := by
-    rw [GeometricCurrentOn.boundary_apply, hd, map_add, add_sub_cancel_left]
-  -- The representation bound for `T(η₃)`, then `|Dψ ∧ ω| ≤ ‖Dψ‖ |ω|` pointwise.
-  rw [hb]
-  refine (Submission.slicing_mb_lb_repr_bound P (m + 1) U T μ v hrep hnorm η₃).trans
-    (lintegral_mono fun x => ?_)
-  rw [hη₃, ← enorm_eq_nnnorm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
-  exact ENNReal.ofReal_le_ofReal (Submission.slicing_mb_wedge_norm_le P m _ _)
+    rw [h₁, hη₂, hη₃, hdω, Submission.slicing_mb_lb_extDeriv_smul P m ψ _ x
+      (hψ.differentiable (by simp) x) (hω.differentiable (by simp) x)]
+  -- Hence `∂T(η₁) = T(dη₁) = T(η₂) + T(η₃)`.
+  have hb : T.boundary η₁ = T η₂ + T η₃ := by
+    rw [GeometricCurrentOn.boundary_apply, hd]
+    exact map_add T.toCurrent η₂ η₃
+  -- `∂T(η₁)` and `T(η₂)` through the measure representations, `T(η₃)` through `τ(M, θ, ξ)`.
+  have h₁ : T.boundary η₁ = ∫ x, ψ x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ' := by
+    simp only [(hv' η₁).2, hη₁, map_smul, smul_eq_mul]
+  have h₂ : T η₂ =
+      ∫ x, ψ x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ := by
+    simp only [(hv η₂).2, hη₂, hdω, map_smul, smul_eq_mul]
+  have h₃ : T η₃ = ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin
+      ((fderiv ℝ ψ x).smulRight ((ω : DifferentialForm (Eucl P) m) x)))
+      ∂(μHE[m + 1] : Measure (Eucl P)) := by
+    simp only [hT η₃, tauAction, hη₃]
+  rw [← h₁, ← h₂, ← h₃, hb]
+  ring
 
 /-- The cut-off defect bound in the proof of Simon Ch. 6, 4.9 for Lipschitz `f` (4.11 and the
 bound of its right side, p. 158, with `f^{(σ)}` in place of `f`, then `σ ↓ 0`).  Let
@@ -3501,50 +3533,6 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
   calc |T ω| ≤ B * (C + ε / (B + 1)) := this
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
-/-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
-lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
-theorem Submission.cmb_exists_compactly_contained_exhaustion :
-    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P),
-      (∀ i, CompactlyContainedOpen (W i) U) ∧
-      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i := by
-  intro P U hU
-  -- `d x = infEDist x Uᶜ` is continuous and positive exactly on `U`.
-  have hd : Continuous fun x : Eucl P => infEDist x Uᶜ := continuous_infEDist
-  have hpos : ∀ x ∈ U, 0 < infEDist x Uᶜ := fun x hx => by
-    rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq, notMem_compl_iff]
-    exact hx
-  refine ⟨fun i => {x | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}, fun i => ?_,
-    fun K hK hKU => ?_⟩
-  · -- `closure (W i) ⊆ closedBall 0 i ∩ {(i + 1)⁻¹ ≤ d}`, a compact subset of `U`.
-    have hcl : closure ({x : Eucl P | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}) ⊆
-        closedBall 0 i ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ} :=
-      closure_minimal (fun x hx => ⟨mem_closedBall_zero_iff.2 hx.1.le,
-        show ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ from hx.2.le⟩)
-        (isClosed_closedBall.inter (isClosed_le continuous_const hd))
-    refine ⟨(isOpen_lt continuous_norm continuous_const).inter (isOpen_lt continuous_const hd),
-      (isCompact_closedBall 0 _).of_isClosed_subset isClosed_closure (hcl.trans inter_subset_left),
-      fun x hx => ?_⟩
-    by_contra hxU
-    have h : ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ := (hcl hx).2
-    rw [infEDist_zero_of_mem hxU, nonpos_iff_eq_zero, ENNReal.inv_eq_zero] at h
-    exact ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩ h
-  · -- A compact `K ⊆ U` is bounded and `d` has a positive minimum on it.
-    rcases K.eq_empty_or_nonempty with rfl | hne
-    · exact ⟨0, empty_subset _⟩
-    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.1 hK.isBounded
-    obtain ⟨i₁, hi₁⟩ := exists_nat_gt R
-    obtain ⟨x₀, hx₀K, hx₀⟩ := hK.exists_isMinOn hne hd.continuousOn
-    obtain ⟨i₂, hi₂⟩ := ENNReal.exists_inv_nat_lt (hpos x₀ (hKU hx₀K)).ne'
-    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
-    · show ‖x‖ < ((max i₁ i₂ : ℕ) : ℝ)
-      calc ‖x‖ ≤ R := hR x hx
-        _ < i₁ := hi₁
-        _ ≤ (max i₁ i₂ : ℕ) := Nat.cast_le.2 (le_max_left _ _)
-    · show (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ
-      calc (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (i₂ : ℝ≥0∞)⁻¹ :=
-            ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
-        _ < infEDist x₀ Uᶜ := hi₂
-        _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
 /-- Coordinates of a Borel `k`-vector field in an isometric chart `J` of the `k`-covectors:
 `u(x) = (v(x)(J⁻¹eᵢ))ᵢ` is Borel, `‖u‖ ≤ 1`, `‖u‖ = 1` `μ`-a.e. and `v(x)(α) = ⟨Jα, u(x)⟩`. -/
 theorem Submission.smr_ufd_unit_coord_field :
@@ -5861,33 +5849,6 @@ theorem Submission.slicing_mass_bound : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOp
       _ ≤ (LW : ℝ≥0∞) * (μ.restrict W).map f (Ioo a b) := mul_le_mul_right hg₀int _
       _ = (LW : ℝ≥0∞) * R.massOn W := by
           rw [hν _ measurableSet_Ioo, hWab, hRmass]
-  -- Leibniz rule `d(ψ ω) = ψ dω + Dψ ∧ ω`: the exterior derivative of `η₁` is `η₂ + η₃`.
-  have hd : exteriorDerivativeTestOn U m η₁ = η₂ + η₃ := by
-    have hω : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) m) := ω.2.1.1
-    have h₁ : (η₁ : DifferentialForm (Eucl P) m) =
-        fun y => ψ y • (ω : DifferentialForm (Eucl P) m) y := funext hη₁
-    apply Subtype.ext
-    funext x
-    change exteriorDerivative (η₁ : DifferentialForm (Eucl P) m) x =
-      (η₂ : DifferentialForm (Eucl P) (m + 1)) x + (η₃ : DifferentialForm (Eucl P) (m + 1)) x
-    rw [h₁, hη₂, hη₃, hdω, Submission.slicing_mb_lb_extDeriv_smul P m ψ _ x
-      (hψ.differentiable (by simp) x) (hω.differentiable (by simp) x)]
-  -- Hence `∂T(η₁) = T(dη₁) = T(η₂) + T(η₃)`.
-  have hb : T.boundary η₁ = T η₂ + T η₃ := by
-    rw [GeometricCurrentOn.boundary_apply, hd]
-    exact map_add T.toCurrent η₂ η₃
-  -- `∂T(η₁)` and `T(η₂)` through the measure representations, `T(η₃)` through `τ(M, θ, ξ)`.
-  have h₁ : T.boundary η₁ = ∫ x, ψ x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ' := by
-    simp only [(hv' η₁).2, hη₁, map_smul, smul_eq_mul]
-  have h₂ : T η₂ =
-      ∫ x, ψ x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ := by
-    simp only [(hv η₂).2, hη₂, hdω, map_smul, smul_eq_mul]
-  have h₃ : T η₃ = ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin
-      ((fderiv ℝ ψ x).smulRight ((ω : DifferentialForm (Eucl P) m) x)))
-      ∂(μHE[m + 1] : Measure (Eucl P)) := by
-    simp only [hT η₃, tauAction, hη₃]
-  rw [← h₁, ← h₂, ← h₃, hb]
-  ring
 /-- The tangent vector field dual to `θ ⟨· ∧ ω, ξ⟩` (Simon Ch. 6, proof of Lemma 4.5(2),
 (1)–(3)): for a rectifiable triple `(M, θ, ξ)` of dimension `n = m + 1` and `ω ∈ 𝒟ᵐ(U)` there is
 `Y : ℝ^P → ℝ^P` with `φ(Y(x)) = θ(x) ⟨φ ∧ ω(x), ξ(x)⟩` for all `x` and all functionals `φ`,
