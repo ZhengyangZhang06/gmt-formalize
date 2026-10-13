@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.clm_family-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1",
+  "depth": 5,
+  "title": "Componentwise C^1 families of linear forms on L are C^1, and evaluation commutes with differentiation",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) (finite-dimensional), U an open subset of R^n and Φ : R^n -> L* = L(L, R) such that for every P ∈ L the scalar function x ↦ Φ(x)[P] is C^1 on U. Then Φ is C^1 on U as a map into the normed space L*, and for every x ∈ U, e ∈ R^n and P ∈ L: (DΦ(x) e)[P] = D(Φ(·)[P])(x) e.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U) → ContDiffOn ℝ 1 Φ U ∧ ∀ x ∈ U, ∀ (e : Rn n) (P : Rn n →L[ℝ] Rn ℓ), fderiv ℝ Φ x e P = fderiv ℝ (fun z => Φ z P) x e",
+  "lean_name": "dohr_eb_lhr_ds_clm_family",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-7bba63a429-a1"
+}

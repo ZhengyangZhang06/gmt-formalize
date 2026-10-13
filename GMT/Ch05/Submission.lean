@@ -1349,6 +1349,482 @@ theorem dohr_eb_lhr_dq_uniform_bounds : ∀ (n ℓ : ℕ) (α : ℝ) (U : Set (R
     fun x hx y hy P => (hM' d hd hdR x hx y hy P).trans ?_⟩
   exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_right S M')
     (Real.rpow_nonneg (norm_nonneg (x - y)) α)) (norm_nonneg P)
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): difference quotients of a `C¹` map
+into a normed space.**
+If `g : ℝⁿ → E` is `C¹` on an open `U` and `K ⊆ U` is compact, then for every direction `e` the
+difference quotients `d⁻¹ (g(x + d e) − g(x))` converge to `Dg(x) e` uniformly on `K` as `d → 0`,
+`d ≠ 0`.  The codomain `E` is an arbitrary real normed space (e.g. `L(ℝⁿ, ℝ^ℓ)` for `g = Dv`).
+Proof: `K` has a compact closed thickening `K_ε ⊆ U`, on which `Dg` is uniformly continuous
+(Heine–Cantor).  Given `η > 0`, pick `θ > 0` with `‖Dg(w) − Dg(x)‖ < η/(|e| + 1)` whenever
+`w, x ∈ K_ε` and `|w − x| < θ`.  For `0 < |d| < min(ε, θ)/(|e| + 1)` and `x ∈ K`, the segment
+`[x, x + d e]` lies in `B_{|d e|}(x) ⊆ K_ε`, so the mean value inequality with the fixed linear map
+`Dg(x)` gives `‖g(x + d e) − g(x) − Dg(x)(d e)‖ ≤ η |d| |e|/(|e| + 1)`; dividing by `|d|`,
+`‖Dg(x) e − d⁻¹ (g(x + d e) − g(x))‖ ≤ η |e|/(|e| + 1) < η`. -/
+theorem dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (g : Rn n → E) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 g U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (d : ℝ) (x : Rn n) => d⁻¹ • (g (x + d • e) - g x)) (fun x => fderiv ℝ g x e) (𝓝[≠] 0) K := by
+  intro n E _ _ g U K e hU hg hK hKU
+  -- Step 1: a compact closed thickening `K_ε = cthickening ε K` of `K` inside `U`.
+  obtain ⟨ε, hε, hεU⟩ := hK.exists_cthickening_subset_open hU hKU
+  have hK' : IsCompact (cthickening ε K) := hK.cthickening
+  -- Step 2: `g` is differentiable on `U` and `Dg` is uniformly continuous on `K_ε`.
+  have hcont : ContinuousOn (fderiv ℝ g) U := hg.continuousOn_fderiv_of_isOpen hU le_rfl
+  have huc : UniformContinuousOn (fderiv ℝ g) (cthickening ε K) :=
+    hK'.uniformContinuousOn_of_continuous (hcont.mono hεU)
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ g z := fun z hz =>
+    (hg.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  -- Step 3: given `η > 0`, choose `θ` and restrict to `0 < |d| < min ε θ / (‖e‖ + 1)`.
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro η hη
+  rw [Metric.uniformContinuousOn_iff] at huc
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  obtain ⟨θ, hθ, hθK⟩ := huc (η / (‖e‖ + 1)) (div_pos hη he1)
+  have hpos : 0 < min ε θ / (‖e‖ + 1) := div_pos (lt_min hε hθ) he1
+  have hev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < min ε θ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with d hd
+    simpa [Real.dist_eq] using hd
+  filter_upwards [hev, self_mem_nhdsWithin] with d hd hd0
+  have hd0' : d ≠ 0 := hd0
+  intro x hx
+  -- Step 4: the segment `[x, x + d • e]` lies in `closedBall x ‖d • e‖ ⊆ K_ε ⊆ U`.
+  have hde : ‖d • e‖ < min ε θ := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |d| * ‖e‖ ≤ |d| * (‖e‖ + 1) := by gcongr; linarith
+      _ < min ε θ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = min ε θ := div_mul_cancel₀ _ he1.ne'
+  have hball : closedBall x ‖d • e‖ ⊆ cthickening ε K :=
+    (closedBall_subset_closedBall (hde.le.trans (min_le_left _ _))).trans
+      (closedBall_subset_cthickening hx ε)
+  have hxde : x + d • e ∈ closedBall x ‖d • e‖ := by
+    rw [mem_closedBall, dist_eq_norm]; simp
+  have hseg : segment ℝ x (x + d • e) ⊆ closedBall x ‖d • e‖ :=
+    (convex_closedBall x _).segment_subset (mem_closedBall_self (norm_nonneg _)) hxde
+  have hxK' : x ∈ cthickening ε K := self_subset_cthickening K hx
+  -- Step 5: the mean value inequality with the fixed linear map `Dg(x)`.
+  have hmvt : ‖g (x + d • e) - g x - fderiv ℝ g x ((x + d • e) - x)‖ ≤
+      η / (‖e‖ + 1) * ‖(x + d • e) - x‖ := by
+    refine (convex_segment x (x + d • e)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw => hdiff w (hεU (hball (hseg hw)))) (fun w hw => ?_) (left_mem_segment ℝ _ _)
+      (right_mem_segment ℝ _ _)
+    have hw := hseg hw
+    have hwx : dist w x < θ := by
+      rw [mem_closedBall] at hw
+      exact hw.trans_lt (hde.trans_le (min_le_right _ _))
+    have := hθK w (hball hw) x hxK' hwx
+    rw [dist_eq_norm] at this
+    exact this.le
+  have hsub : (x + d • e) - x = d • e := by abel
+  rw [hsub] at hmvt
+  -- Step 6: divide by `d ≠ 0`.
+  rw [dist_eq_norm]
+  have hrw : fderiv ℝ g x e - d⁻¹ • (g (x + d • e) - g x) =
+      -(d⁻¹ • (g (x + d • e) - g x - fderiv ℝ g x (d • e))) := by
+    rw [map_smul, smul_sub d⁻¹ (g (x + d • e) - g x) (d • fderiv ℝ g x e), smul_smul,
+      inv_mul_cancel₀ hd0', one_smul]; abel
+  rw [hrw, norm_neg, norm_smul, norm_inv, Real.norm_eq_abs]
+  calc |d|⁻¹ * ‖g (x + d • e) - g x - fderiv ℝ g x (d • e)‖
+      ≤ |d|⁻¹ * (η / (‖e‖ + 1) * ‖d • e‖) := by gcongr
+    _ = η * (‖e‖ / (‖e‖ + 1)) := by
+      rw [norm_smul, Real.norm_eq_abs]; field_simp
+    _ < η * 1 := by
+      gcongr
+      rw [div_lt_one he1]; linarith
+    _ = η := mul_one η
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): the derivative of a directional
+derivative of a `C²` map.**
+If `v : ℝⁿ → ℝ^ℓ` is `C²` on an open `U` and `e ∈ ℝⁿ`, then at every `x ∈ U` the directional
+derivative `v_e(z) = Dv(z) e` has derivative `D(v_e)(x) = D(Dv)(x) e` (symmetry of the second
+derivative, proved here by difference quotients since `FDeriv.Symmetric` is not imported).
+Proof: choose `r > 0` with `B_r(x) ⊆ U`.  By `dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn` for the
+`C¹` map `Dv`, `T_d = d⁻¹ (Dv(· + d e) − Dv) → D(Dv)(·) e` uniformly on `B_r(x)` as `d → 0`,
+`d ≠ 0`.  For `|d| < (r/2)/(‖e‖ + 1)` and `z ∈ B̆_{r/2}(x)` the points `z`, `z + d e` lie in `U`, so
+`w_d = d⁻¹ (v(· + d e) − v)` has derivative `T_d(z)` at `z`.  For `y ∈ U`, `w_d(y) → Dv(y) e` (slope
+of `t ↦ v(y + t e)` at `0`).  The theorem on uniform limits of derivatives
+(`hasFDerivAt_of_tendstoUniformlyOnFilter`) gives `D(v_e)(x) = D(Dv)(x) e`. -/
+theorem dohr_eb_lhr_ds_fderiv_dirDeriv_eq : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (v : Rn n → Rn ℓ) (e : Rn n), IsOpen U → ContDiffOn ℝ 2 v U → ∀ x ∈ U, fderiv ℝ (fun z => fderiv ℝ v z e) x = fderiv ℝ (fderiv ℝ v) x e := by
+  intro n ℓ U v e hU hv x hx
+  -- Step 1: a closed ball `B_r(x) ⊆ U`; `v` is differentiable on `U` and `Dv` is `C¹` on `U`.
+  obtain ⟨r, hr, hrU⟩ := Metric.nhds_basis_closedBall.mem_iff.mp (hU.mem_nhds hx)
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ v z := fun z hz =>
+    (hv.differentiableOn two_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hDv : ContDiffOn ℝ 1 (fderiv ℝ v) U := hv.fderiv_of_isOpen hU (by norm_num)
+  -- Steps 2–3: `T_d → D(Dv)(·) e` uniformly on `B_r(x)`, hence uniformly on the filter `𝓝 x`.
+  have hunif : TendstoUniformlyOn
+      (fun (d : ℝ) (z : Rn n) => d⁻¹ • (fderiv ℝ v (z + d • e) - fderiv ℝ v z))
+      (fun z => fderiv ℝ (fderiv ℝ v) z e) (𝓝[≠] 0) (closedBall x r) :=
+    Submission.dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn n (Rn n →L[ℝ] Rn ℓ) (fderiv ℝ v) U
+      (closedBall x r) e hU hDv (isCompact_closedBall x r) hrU
+  have hunif' : TendstoUniformlyOnFilter
+      (fun (d : ℝ) (z : Rn n) => d⁻¹ • (fderiv ℝ v (z + d • e) - fderiv ℝ v z))
+      (fun z => fderiv ℝ (fderiv ℝ v) z e) (𝓝[≠] 0) (𝓝 x) :=
+    hunif.tendstoUniformlyOnFilter.mono_right (le_principal_iff.mpr (closedBall_mem_nhds x hr))
+  -- Step 4: `w_d` has derivative `T_d(z)` at `z` for `|d| < (r/2)/(‖e‖ + 1)`, `z ∈ B̆_{r/2}(x)`.
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hρ : 0 < r / 2 / (‖e‖ + 1) := by positivity
+  have hdev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < r / 2 / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hρ] with d hd
+    simpa [Real.dist_eq] using hd
+  have hzev : ∀ᶠ z in 𝓝 x, z ∈ ball x (r / 2) := Metric.ball_mem_nhds x (half_pos hr)
+  have hderiv : ∀ᶠ p : ℝ × Rn n in 𝓝[≠] 0 ×ˢ 𝓝 x,
+      HasFDerivAt (fun z => p.1⁻¹ • (v (z + p.1 • e) - v z))
+        (p.1⁻¹ • (fderiv ℝ v (p.2 + p.1 • e) - fderiv ℝ v p.2)) p.2 := by
+    filter_upwards [hdev.prod_mk hzev] with p hp
+    obtain ⟨d, z⟩ := p
+    obtain ⟨hd, hz⟩ := hp
+    have hzr : dist z x < r / 2 := hz
+    have hzU : z ∈ U := hrU (mem_closedBall.mpr (hzr.le.trans (half_le_self hr.le)))
+    have hde : ‖d • e‖ < r / 2 := by
+      rw [norm_smul, Real.norm_eq_abs]
+      calc |d| * ‖e‖ ≤ |d| * (‖e‖ + 1) := by gcongr; linarith
+        _ < r / 2 / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+        _ = r / 2 := div_mul_cancel₀ _ he1.ne'
+    have hzdU : z + d • e ∈ U := by
+      refine hrU (mem_closedBall.mpr ?_)
+      calc dist (z + d • e) x = ‖(z - x) + d • e‖ := by rw [dist_eq_norm, add_sub_right_comm]
+        _ ≤ ‖z - x‖ + ‖d • e‖ := norm_add_le _ _
+        _ ≤ r := by rw [← dist_eq_norm]; linarith
+    -- chain rule for the translation `z ↦ z + d e`, then difference and constant multiple rules
+    have htr : HasFDerivAt (fun z => v (z + d • e)) (fderiv ℝ v (z + d • e)) z :=
+      (hasFDerivAt_comp_add_right (d • e)).mpr (hdiff _ hzdU).hasFDerivAt
+    exact (htr.sub (hdiff z hzU).hasFDerivAt).const_smul d⁻¹
+  -- Step 5: `w_d(y) → Dv(y) e` for every `y ∈ U`: slopes of `t ↦ v(y + t e)` at `t = 0`.
+  have hpt : ∀ᶠ y in 𝓝 x,
+      Tendsto (fun d : ℝ => d⁻¹ • (v (y + d • e) - v y)) (𝓝[≠] 0) (𝓝 (fderiv ℝ v y e)) := by
+    filter_upwards [hU.mem_nhds hx] with y hy
+    have hline : HasDerivAt (fun t : ℝ => y + t • e) e 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const e).const_add y
+    have hvy : HasFDerivAt v (fderiv ℝ v y) (y + (0 : ℝ) • e) := by
+      rw [zero_smul, add_zero]
+      exact (hdiff y hy).hasFDerivAt
+    have hcomp : HasDerivAt (fun t : ℝ => v (y + t • e)) (fderiv ℝ v y e) 0 :=
+      hvy.comp_hasDerivAt (0 : ℝ) hline
+    simpa using hcomp.tendsto_slope_zero
+  -- Step 6: uniform limits of derivatives (`f d = w_d`, `f' d = T_d`, `g = v_e`).
+  exact (hasFDerivAt_of_tendstoUniformlyOnFilter
+    (f := fun (d : ℝ) (z : Rn n) => d⁻¹ • (v (z + d • e) - v z))
+    (f' := fun (d : ℝ) (z : Rn n) => d⁻¹ • (fderiv ℝ v (z + d • e) - fderiv ℝ v z))
+    (g := fun z => fderiv ℝ v z e) (g' := fun z => fderiv ℝ (fderiv ℝ v) z e)
+    hunif' hderiv hpt).fderiv
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): families of linear forms.**
+Let `L = L(ℝⁿ, ℝ^ℓ)` and let `Φ : ℝⁿ → L* = L(L, ℝ)` be such that `x ↦ Φ(x)[P]` is `C¹` on an
+open `U` for every `P ∈ L`.  Then `Φ` is `C¹` on `U` as an `L*`-valued map, and
+`(DΦ(x) e)[P] = D(Φ(·)[P])(x) e` for all `x ∈ U`, `e ∈ ℝⁿ` and `P ∈ L`.
+Proof: `L` is finite-dimensional; with a basis `E_r` of `L` and its continuous coordinate forms
+`π_r`, linearity gives `Φ(x)[P] = Σ_r π_r(P) Φ(x)[E_r]`, so `Φ(x) = Σ_r Φ(x)[E_r] π_r` is a finite
+sum of the constant forms `π_r` times `C¹` scalar functions, and `Φ` is `C¹` on `U`.  For `x ∈ U`,
+`Φ` is differentiable at `x`, and the product rule for evaluation at the constant `P` gives
+`D(Φ(·)[P])(x) = (DΦ(x)).flip P`. -/
+theorem dohr_eb_lhr_ds_clm_family : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U) → ContDiffOn ℝ 1 Φ U ∧ ∀ x ∈ U, ∀ (e : Rn n) (P : Rn n →L[ℝ] Rn ℓ), fderiv ℝ Φ x e P = fderiv ℝ (fun z => Φ z P) x e := by
+  intro n ℓ U Φ hU hΦ
+  -- Step 1: a basis `b` of `L` and its continuous coordinate forms `π r`.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  let π : Fin (Module.finrank ℝ (Rn n →L[ℝ] Rn ℓ)) → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ :=
+    fun r => LinearMap.toContinuousLinearMap (b.coord r)
+  -- Step 2: `Φ(x) = Σ_r Φ(x)[b r] π r` in `L*`, by linearity of `Φ(x)`; the summand is written
+  -- `(π r).smulRight (Φ x (b r)) : P ↦ π r P • Φ x (b r)`, so no scalar action on `L*` is needed.
+  have hexp : ∀ x, Φ x = ∑ r, (π r).smulRight (Φ x (b r)) := by
+    intro x
+    ext P
+    have hP : Φ x P = Φ x (∑ r, b.repr P r • b r) := by rw [b.sum_repr]
+    rw [hP, map_sum]
+    simp [map_smul, π]
+  -- Step 3: each summand is `C¹` (constant form, `C¹` coefficient), hence so are the sum and `Φ`.
+  have hC1 : ContDiffOn ℝ 1 Φ U := by
+    have h : ContDiffOn ℝ 1 (fun x => ∑ r, (π r).smulRight (Φ x (b r))) U :=
+      ContDiffOn.sum fun r _ => contDiffOn_const.smulRight (hΦ (b r))
+    exact h.congr fun x _ => hexp x
+  refine ⟨hC1, fun x hx e P => ?_⟩
+  -- Step 4: differentiate the evaluation `z ↦ Φ(z)[P]` at the constant `P`.
+  have hd : DifferentiableAt ℝ Φ x :=
+    (hC1.differentiableOn one_ne_zero x hx).differentiableAt (hU.mem_nhds hx)
+  rw [fderiv_clm_apply hd (differentiableAt_const P)]
+  simp
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): Leibniz rule for a family of bilinear
+forms.**
+Let `L = L(ℝⁿ, ℝ^ℓ)`, let `a : ℝⁿ → L(L, L*)` be such that `x ↦ a(x)[P][Q]` is `C¹` on an open `U`
+for all `P, Q ∈ L`, and let `w : ℝⁿ → L` be `C¹` on `U`.  Then `x ↦ a(x)[w(x)]` is `C¹` on `U` as an
+`L*`-valued map, and for `x ∈ U`, `P ∈ L` and `e ∈ ℝⁿ`,
+`(D(a(·)[w(·)])(x) e)[P] = a(x)[Dw(x) e][P] + D(a(·)[w(x)][P])(x) e`, with `w(x)` frozen in the
+last term.
+Proof: with a basis `E_r` of `L` and its continuous coordinate forms `π_r`, linearity gives
+`a(z)[Q][P] = Σ_r π_r(Q) · a(z)[E_r][P]`.  So each evaluation `z ↦ a(z)[w(z)][P]` is a finite sum of
+products of `C¹` functions, and `dohr_eb_lhr_ds_clm_family` makes `z ↦ a(z)[w(z)]` a `C¹` map
+with `(D(a(·)[w(·)])(x) e)[P] = D(a(·)[w(·)][P])(x) e`.  The product and sum rules give
+`D(a(·)[w(·)][P])(x) e = Σ_r π_r(w(x)) · D(a(·)[E_r][P])(x) e + Σ_r π_r(Dw(x) e) · a(x)[E_r][P]`;
+by the expansion the second sum is `a(x)[Dw(x) e][P]`, and the first is `D(a(·)[w(x)][P])(x) e`. -/
+theorem dohr_eb_lhr_ds_bilin_leibniz : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → (Rn n →L[ℝ] Rn ℓ)) (e : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → ContDiffOn ℝ 1 w U → ContDiffOn ℝ 1 (fun x => a x (w x)) U ∧ ∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun z => a z (w z)) x e P = a x (fderiv ℝ w x e) P + fderiv ℝ (fun z => a z (w x) P) x e := by
+  intro n ℓ U a w e hU ha hw
+  -- Step 1: a basis `E_r = b r` of `L` with continuous coordinate forms `π r`, and the expansion
+  -- `a(z)[Q][P] = Σ_r π_r(Q) · a(z)[E_r][P]`.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  let π : Fin (Module.finrank ℝ (Rn n →L[ℝ] Rn ℓ)) → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ :=
+    fun r => LinearMap.toContinuousLinearMap (b.coord r)
+  have hexp : ∀ z Q P, a z Q P = ∑ r, π r Q * a z (b r) P := by
+    intro z Q P
+    have hQ : a z Q = a z (∑ r, b.repr Q r • b r) := by rw [b.sum_repr]
+    rw [hQ, map_sum, sum_apply]
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    rfl
+  -- Step 2: each evaluation `z ↦ a(z)[w(z)][P] = Σ_r π_r(w(z)) · a(z)[E_r][P]` is `C¹` on `U`, so
+  -- `clm_family` makes `z ↦ a(z)[w(z)]` a `C¹` map into `L*` and reduces the derivative identity
+  -- to the evaluation at `P`.
+  have hπw : ∀ r, ContDiffOn ℝ 1 (fun z => π r (w z)) U := fun r =>
+    (π r).contDiff.comp_contDiffOn hw
+  have hC1P : ∀ P, ContDiffOn ℝ 1 (fun z => a z (w z) P) U := fun P =>
+    (ContDiffOn.sum fun r _ => (hπw r).mul (ha (b r) P)).congr fun z _ => hexp z (w z) P
+  obtain ⟨hC1, hcf⟩ := Submission.dohr_eb_lhr_ds_clm_family n ℓ U (fun z => a z (w z)) hU hC1P
+  refine ⟨hC1, fun x hx P => ?_⟩
+  rw [hcf x hx e P]
+  -- Step 3: product and sum rules for the expansion of `z ↦ a(z)[w(z)][P]`.
+  have hxU : U ∈ 𝓝 x := hU.mem_nhds hx
+  have hdw : HasFDerivAt w (fderiv ℝ w x) x :=
+    ((hw.differentiableOn one_ne_zero x hx).differentiableAt hxU).hasFDerivAt
+  have hdA : ∀ r, HasFDerivAt (fun z => a z (b r) P) (fderiv ℝ (fun z => a z (b r) P) x) x :=
+    fun r => (((ha (b r) P).differentiableOn one_ne_zero x hx).differentiableAt hxU).hasFDerivAt
+  have hD : HasFDerivAt (fun z => a z (w z) P)
+      (∑ r, (π r (w x) • fderiv ℝ (fun z => a z (b r) P) x
+        + a x (b r) P • (π r).comp (fderiv ℝ w x))) x := by
+    rw [show (fun z => a z (w z) P) = fun z => ∑ r, π r (w z) * a z (b r) P from
+      funext fun z => hexp z (w z) P]
+    exact HasFDerivAt.fun_sum fun r _ => ((π r).hasFDerivAt.comp x hdw).mul (hdA r)
+  -- Step 4: the derivative of `z ↦ a(z)[w(x)][P]`, with `w(x)` frozen.
+  have hF : HasFDerivAt (fun z => a z (w x) P)
+      (∑ r, π r (w x) • fderiv ℝ (fun z => a z (b r) P) x) x := by
+    rw [show (fun z => a z (w x) P) = fun z => ∑ r, π r (w x) * a z (b r) P from
+      funext fun z => hexp z (w x) P]
+    exact HasFDerivAt.fun_sum fun r _ => (hdA r).const_mul (π r (w x))
+  -- Step 5: by the expansion, the two sums are `a(x)[Dw(x) e][P]` and `D(a(·)[w(x)][P])(x) e`.
+  rw [hD.fderiv, hF.fderiv, hexp x (fderiv ℝ w x e) P]
+  simp only [sum_apply, add_apply, smul_apply, smul_eq_mul, ContinuousLinearMap.comp_apply,
+    Finset.sum_add_distrib, mul_comm (a x (b _) P)]
+  ring
+/-- Differentiated system in the linear higher-regularity step of the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1, second assertion (p. 127): translating the test functions of a weak
+identity.  If `∫_U ω₁(x)[Dφ(x)] dx = ∫_U ω₂(x)[Dφ(x)] dx` for every `C¹` compactly supported
+`φ` with `spt φ ⊆ U`, and `ζ` is `C¹` with compact support and `spt ζ + s e ⊆ U`, then
+`∫ ω₁(y + s e)[Dζ(y)] dy = ∫ ω₂(y + s e)[Dζ(y)] dy`.
+Proof: test with `φ(x) = ζ(x − s e)`, which is `C¹` with compact support,
+`spt φ = spt ζ + s e ⊆ U` and `Dφ(x) = Dζ(x − s e)`.  The integrands `ω_i(x)[Dφ(x)]` vanish off
+`U`, so the integrals over `U` are whole-space integrals, and the substitution `x = y + s e`
+(translation invariance of Lebesgue measure) turns them into `∫ ω_i(y + s e)[Dζ(y)] dy`.  No
+integrability or measurability is needed. -/
+theorem dohr_eb_lhr_ds_translate_weak_eq : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n) (s : ℝ) (ζ : Rn n → Rn ℓ), (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y ∈ tsupport ζ, y + s • e ∈ U) → ∫ y, ω₁ (y + s • e) (fderiv ℝ ζ y) = ∫ y, ω₂ (y + s • e) (fderiv ℝ ζ y) := by
+  intro n ℓ U ω₁ ω₂ e s ζ hweak hζ hζc hζU
+  -- Step 1: the translated test function `φ = ζ ∘ τ`, `τ x = x − s e`, is `C¹` with compact
+  -- support.
+  let φ : Rn n → Rn ℓ := ζ ∘ Homeomorph.subRight (s • e)
+  have hφC : ContDiff ℝ 1 φ := hζ.comp (contDiff_id.sub contDiff_const)
+  have hφc : HasCompactSupport φ := hζc.comp_homeomorph _
+  -- Step 2: `tsupport φ = τ⁻¹(tsupport ζ) ⊆ U`.
+  have hφU : tsupport φ ⊆ U := by
+    intro x hx
+    rw [tsupport_comp_eq_preimage] at hx
+    simpa using hζU _ hx
+  -- Step 3: `Dφ(x) = Dζ(x − s e)`.
+  have hDφ : ∀ x, fderiv ℝ φ x = fderiv ℝ ζ (x - s • e) := fun x =>
+    fderiv_comp_sub (f := ζ) (s • e)
+  -- Steps 4–5: the integrand vanishes off `U`, and `x = y + s e` turns the whole-space integral
+  -- into the translated one.
+  have key : ∀ ω : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ,
+      ∫ x in U, ω x (fderiv ℝ φ x) = ∫ y, ω (y + s • e) (fderiv ℝ ζ y) := by
+    intro ω
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+    · rw [← integral_add_right_eq_self (fun x => ω x (fderiv ℝ φ x)) (s • e)]
+      congr 1
+      funext y
+      rw [hDφ, add_sub_cancel_right]
+    · intro x hx
+      have hx' : x - s • e ∉ tsupport ζ := fun h => hx (by simpa using hζU _ h)
+      rw [hDφ, fderiv_of_notMem_tsupport ℝ hx', map_zero]
+  -- Step 6: combine with the weak identity for `φ`.
+  rw [← key ω₁, ← key ω₂]
+  exact hweak φ hφC hφc hφU
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): differentiating a weak identity.**
+Let `ω₁, ω₂ : ℝⁿ → L*` (`L = L(ℝⁿ, ℝ^ℓ)`) be `C¹` on the open set `U` and satisfy
+`∫_U ω₁[Dφ] = ∫_U ω₂[Dφ]` for every `φ ∈ C¹_c(U; ℝ^ℓ)`.  Then for every direction `e` and every
+`ζ ∈ C¹_c(U; ℝ^ℓ)` the functions `F_i = (Dω_i e)[Dζ]` are integrable on `U` and
+`∫_U F₁ = ∫_U F₂`.
+Proof: `K = spt ζ` has a compact thickening `K₁ = cthickening δ K ⊆ U`, and `y + s e ∈ K₁` for
+`y ∈ K`, `|s| < ε = δ/(|e| + 1)`.  The translated integrands `ω_i(y + s e)[Dζ(y)]` and
+`(Dω_i(y + s e) e)[Dζ(y)]` are continuous with support in `K`.  By the translated weak identity
+(`dohr_eb_lhr_ds_translate_weak_eq`), `I_i(s) = ∫ ω_i(y + s e)[Dζ(y)] dy` satisfy `I₁ = I₂` for
+`|s| < ε`.  Differentiating under the integral sign, with the integrable bound `C_i |Dζ|` where
+`C_i` bounds `|Dω_i(z) e|` on `K₁`, gives `I_i'(0) = ∫ F_i` and the integrability of `F_i`;
+hence `∫ F₁ = ∫ F₂`.  The `F_i` vanish off `K ⊆ U`, so the integrals over `U` agree. -/
+theorem dohr_eb_lhr_ds_weak_eq_fderiv : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 ω₁ U → ContDiffOn ℝ 1 ω₂ U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → IntegrableOn (fun x => fderiv ℝ ω₁ x e (fderiv ℝ ζ x)) U ∧ IntegrableOn (fun x => fderiv ℝ ω₂ x e (fderiv ℝ ζ x)) U ∧ ∫ x in U, fderiv ℝ ω₁ x e (fderiv ℝ ζ x) = ∫ x in U, fderiv ℝ ω₂ x e (fderiv ℝ ζ x) := by
+  intro n ℓ U ω₁ ω₂ e hU hω₁ hω₂ hweak ζ hζ hζc hζU
+  -- Step 1: a compact thickening `K₁ = cthickening δ K` of `K = tsupport ζ` inside `U`, and
+  -- `ε = δ / (‖e‖ + 1)`, so that `y + s • e ∈ K₁` for `y ∈ K` and `|s| < ε`.
+  have hK : IsCompact (tsupport ζ) := hζc
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hζU
+  have hK₁ : IsCompact (cthickening δ (tsupport ζ)) := hK.cthickening
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  obtain ⟨ε, hε, hεδ⟩ : ∃ ε : ℝ, 0 < ε ∧ ε * (‖e‖ + 1) = δ :=
+    ⟨δ / (‖e‖ + 1), div_pos hδ he1, div_mul_cancel₀ δ he1.ne'⟩
+  have hmemK₁ : ∀ y ∈ tsupport ζ, ∀ s ∈ ball (0 : ℝ) ε,
+      y + s • e ∈ cthickening δ (tsupport ζ) := by
+    intro y hy s hs
+    refine mem_cthickening_of_dist_le _ y δ _ hy ?_
+    rw [mem_ball, Real.dist_eq, sub_zero] at hs
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, ← hεδ]
+    exact mul_le_mul hs.le (by linarith) (norm_nonneg e) hε.le
+  have hmemU : ∀ y ∈ tsupport ζ, ∀ s ∈ ball (0 : ℝ) ε, y + s • e ∈ U :=
+    fun y hy s hs => hδU (hmemK₁ y hy s hs)
+  -- `Dζ` is continuous, vanishes off `K`, and `‖Dζ‖` is integrable.
+  have hDζc : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζ0 : ∀ y, y ∉ tsupport ζ → fderiv ℝ ζ y = 0 := fun y hy => fderiv_of_notMem_tsupport ℝ hy
+  have hDζint : Integrable (fun y => ‖fderiv ℝ ζ y‖) :=
+    (hDζc.integrable_of_hasCompactSupport (hζc.fderiv ℝ)).norm
+  -- Integrands `y ↦ G y (Dζ y)` are supported in `K`.
+  have hsupp : ∀ G : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ,
+      Function.support (fun y => G y (fderiv ℝ ζ y)) ⊆ tsupport ζ := by
+    intro G y hy
+    by_contra hyK
+    exact hy (by simp only [hDζ0 y hyK, ContinuousLinearMap.map_zero])
+  -- Step 3: for `|s| < ε` the translated integrands are continuous (with support in `K`).
+  have hcont : ∀ s ∈ ball (0 : ℝ) ε, ∀ g : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ContinuousOn g U →
+      Continuous (fun y => g (y + s • e) (fderiv ℝ ζ y)) := by
+    intro s hs g hg
+    have htr : Continuous (fun y : Rn n => y + s • e) := continuous_id.add continuous_const
+    refine ContinuousOn.continuous_of_tsupport_subset (s := (fun y => y + s • e) ⁻¹' U)
+      ((hg.comp htr.continuousOn (fun y hy => hy)).clm_apply hDζc.continuousOn)
+      (hU.preimage htr) ?_
+    exact (closure_minimal (hsupp (fun y => g (y + s • e))) (isClosed_tsupport ζ)).trans
+      (fun y hy => hmemU y hy s hs)
+  -- Steps 2 and 5, for a single `ω`: `I(s) = ∫ ω(y + s • e)[Dζ y] dy` has derivative
+  -- `∫ (Dω(y) e)[Dζ y] dy` at `0`, and this integrand is integrable.
+  have key : ∀ ω : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ContDiffOn ℝ 1 ω U →
+      Integrable (fun y => fderiv ℝ ω y e (fderiv ℝ ζ y)) ∧
+      HasDerivAt (fun s : ℝ => ∫ y, ω (y + s • e) (fderiv ℝ ζ y))
+        (∫ y, fderiv ℝ ω y e (fderiv ℝ ζ y)) 0 := by
+    intro ω hω
+    -- Step 2: `ω` and `z ↦ Dω(z) e` are continuous on `U`; `‖Dω(z) e‖ ≤ C` on `K₁`.
+    have hωc : ContinuousOn ω U := hω.continuousOn
+    have hDωe : ContinuousOn (fun z => fderiv ℝ ω z e) U :=
+      (hω.continuousOn_fderiv_of_isOpen hU le_rfl).clm_apply continuousOn_const
+    obtain ⟨C, hC⟩ := hK₁.exists_bound_of_continuousOn (E := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+      (hDωe.mono hδU)
+    have hball : ball (0 : ℝ) ε ∈ 𝓝 (0 : ℝ) := ball_mem_nhds 0 hε
+    have h0 : (0 : ℝ) ∈ ball (0 : ℝ) ε := mem_ball_self hε
+    -- (a) the pointwise derivative in `s` (chain rule, then evaluation at the constant `Dζ y`)
+    have hderiv : ∀ y : Rn n, ∀ s ∈ ball (0 : ℝ) ε,
+        HasDerivAt (fun σ : ℝ => ω (y + σ • e) (fderiv ℝ ζ y))
+          (fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y)) s := by
+      intro y s hs
+      by_cases hy : y ∈ tsupport ζ
+      · have hz := ((hω.differentiableOn one_ne_zero _ (hmemU y hy s hs)).differentiableAt
+          (hU.mem_nhds (hmemU y hy s hs))).hasFDerivAt
+        have hline : HasDerivAt (fun σ : ℝ => y + σ • e) e s :=
+          (((hasDerivAt_id' s).smul_const e).const_add y).congr_deriv (one_smul ℝ e)
+        refine (HasDerivAt.clm_apply (c := fun σ : ℝ => ω (y + σ • e))
+          (u := fun _ : ℝ => fderiv ℝ ζ y) (hz.comp_hasDerivAt s hline)
+          (hasDerivAt_const s (fderiv ℝ ζ y))).congr_deriv ?_
+        simp only [ContinuousLinearMap.map_zero, add_zero]
+      · simp only [hDζ0 y hy, ContinuousLinearMap.map_zero]
+        exact hasDerivAt_const s 0
+    -- (b) domination by the integrable bound `C ‖Dζ‖`
+    have hbound : ∀ y : Rn n, ∀ s ∈ ball (0 : ℝ) ε,
+        ‖fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y)‖ ≤ C * ‖fderiv ℝ ζ y‖ := by
+      intro y s hs
+      by_cases hy : y ∈ tsupport ζ
+      · have h1 := hC (y + s • e) (hmemK₁ y hy s hs)
+        calc ‖fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y)‖
+            ≤ ‖fderiv ℝ ω (y + s • e) e‖ * ‖fderiv ℝ ζ y‖ :=
+              (fderiv ℝ ω (y + s • e) e).le_opNorm _
+          _ ≤ C * ‖fderiv ℝ ζ y‖ := mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+      · rw [hDζ0 y hy, ContinuousLinearMap.map_zero, norm_zero, norm_zero, mul_zero]
+    -- (c) differentiation under the integral sign
+    obtain ⟨hint, hder⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+      (F := fun (s : ℝ) (y : Rn n) => ω (y + s • e) (fderiv ℝ ζ y))
+      (F' := fun (s : ℝ) (y : Rn n) => fderiv ℝ ω (y + s • e) e (fderiv ℝ ζ y))
+      (bound := fun y => C * ‖fderiv ℝ ζ y‖) hball
+      (Filter.eventually_of_mem hball fun s hs => (hcont s hs ω hωc).aestronglyMeasurable)
+      ((hcont 0 h0 ω hωc).integrable_of_hasCompactSupport (hζc.mono' (hsupp _)))
+      (hcont 0 h0 _ hDωe).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun y s hs => hbound y s hs)
+      (hDζint.const_mul C)
+      (Filter.Eventually.of_forall fun y s hs => hderiv y s hs)
+    simp only [zero_smul, add_zero] at hint hder
+    exact ⟨hint, hder⟩
+  obtain ⟨hint₁, hder₁⟩ := key ω₁ hω₁
+  obtain ⟨hint₂, hder₂⟩ := key ω₂ hω₂
+  -- Step 4: the translated weak identity gives `I₁ = I₂` near `0`.
+  have heq : (fun s : ℝ => ∫ y, ω₁ (y + s • e) (fderiv ℝ ζ y)) =ᶠ[𝓝 0]
+      (fun s : ℝ => ∫ y, ω₂ (y + s • e) (fderiv ℝ ζ y)) := by
+    filter_upwards [ball_mem_nhds (0 : ℝ) hε] with s hs
+    exact Submission.dohr_eb_lhr_ds_translate_weak_eq n ℓ U ω₁ ω₂ e s ζ hweak hζ hζc
+      (fun y hy => hmemU y hy s hs)
+  -- Step 6: hence the derivatives at `0` agree.
+  have hD : ∫ y, fderiv ℝ ω₁ y e (fderiv ℝ ζ y) = ∫ y, fderiv ℝ ω₂ y e (fderiv ℝ ζ y) :=
+    (hder₁.congr_of_eventuallyEq heq.symm).unique hder₂
+  -- Step 7: the integrands vanish off `U`.
+  have hzero : ∀ (ω : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (x : Rn n), x ∉ U →
+      fderiv ℝ ω x e (fderiv ℝ ζ x) = 0 := by
+    intro ω x hx
+    rw [hDζ0 x (fun hxK => hx (hζU hxK)), ContinuousLinearMap.map_zero]
+  refine ⟨hint₁.integrableOn, hint₂.integrableOn, ?_⟩
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hzero ω₁),
+    setIntegral_eq_integral_of_forall_compl_eq_zero (hzero ω₂)]
+  exact hD
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): the differentiated system.**
+Let `a(x)` be bilinear forms and `Φ(x)` linear forms on `L = L(ℝⁿ, ℝ^ℓ)`, componentwise `C¹` on
+the open set `U`, and let `v ∈ C²(U)` solve `∫_U a(x)[Dv(x)][Dζ(x)] = ∫_U Φ(x)[Dζ(x)]` for all
+`ζ ∈ C¹_c(U)`.  Then `v_e = Dv(·) e` solves `∫_U a(x)[Dv_e(x)][Dζ(x)] = ∫_U Ψ(x)[Dζ(x)]` with
+`Ψ(x)[P] = D(Φ(·)[P])(x) e − D(a(·)[Dv(x)][P])(x) e` on `U`.
+Proof: put `ω₁ = a(·)[Dv(·)]`, `ω₂ = Φ` (both `C¹` into `L*`) and
+`Ψ(x) = DΦ(x) e − D(a(·)[Dv(x)])(x) e`, which has the stated values since evaluation commutes with
+differentiation.  Differentiating the weak identity `∫_U ω₁[Dζ] = ∫_U ω₂[Dζ]` in the direction
+`e` gives `∫_U (Dω₁ e)[Dζ] = ∫_U (DΦ e)[Dζ]`, both integrands integrable on `U`.  On `U` the
+Leibniz rule and `D v_e = D(Dv) e` give `(Dω₁ e)[Dζ] = a[Dv_e][Dζ] + c` and
+`(DΦ e)[Dζ] = Ψ[Dζ] + c` with `c(x) = D(a(·)[Dv(x)][Dζ(x)])(x) e`.  If `c` is integrable on `U`,
+subtract `∫_U c`; otherwise neither `a[Dv_e][Dζ]` nor `Ψ[Dζ]` is integrable on `U` and both
+integrals vanish. -/
+theorem dohr_eb_lhr_differentiated_system : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (e : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U) → ContDiffOn ℝ 2 v U → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → ∃ Ψ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, Ψ x P = fderiv ℝ (fun z => Φ z P) x e - fderiv ℝ (fun z => a z (fderiv ℝ v x) P) x e) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ (fun z => fderiv ℝ v z e) x) (fderiv ℝ ζ x) = ∫ x in U, Ψ x (fderiv ℝ ζ x) := by
+  intro n ℓ U a Φ v e hU ha hΦ hv hweak
+  -- Step 1: `Φ` is `C¹` into `L*`, and so is the frozen family `z ↦ a(z)[Dv(x)]`; for both,
+  -- evaluation at `P` commutes with differentiation.
+  obtain ⟨hΦ1, hΦd⟩ := Submission.dohr_eb_lhr_ds_clm_family n ℓ U Φ hU hΦ
+  have hfrozen : ∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ,
+      fderiv ℝ (fun z => a z (fderiv ℝ v x)) x e P =
+        fderiv ℝ (fun z => a z (fderiv ℝ v x) P) x e := fun x hx P =>
+    (Submission.dohr_eb_lhr_ds_clm_family n ℓ U (fun z => a z (fderiv ℝ v x)) hU
+      (fun Q => ha (fderiv ℝ v x) Q)).2 x hx e P
+  -- Step 2: `Dv` is `C¹` on `U`, so `ω₁ = a(·)[Dv(·)]` is `C¹` and obeys the Leibniz rule.
+  have hDv : ContDiffOn ℝ 1 (fderiv ℝ v) U := hv.fderiv_of_isOpen hU (by norm_num)
+  obtain ⟨hω₁, hω₁d⟩ := Submission.dohr_eb_lhr_ds_bilin_leibniz n ℓ U a (fderiv ℝ v) e hU ha hDv
+  -- Step 3: `Ψ(x) = DΦ(x) e − D(a(·)[Dv(x)])(x) e` has the stated values on `U`.
+  refine ⟨fun x => fderiv ℝ Φ x e - fderiv ℝ (fun z => a z (fderiv ℝ v x)) x e, ?_, ?_⟩
+  · intro x hx P
+    rw [sub_apply, hΦd x hx e P, hfrozen x hx P]
+  intro ζ hζ hζc hζU
+  -- Step 4: differentiate the weak identity for `(ω₁, Φ)` in the direction `e`.
+  obtain ⟨hF₁, hF₂, hF⟩ := Submission.dohr_eb_lhr_ds_weak_eq_fderiv n ℓ U
+    (fun x => a x (fderiv ℝ v x)) Φ e hU hω₁ hΦ1 hweak ζ hζ hζc hζU
+  -- Step 5: on `U`, both integrands differ from the derivatives by the same term `c`.
+  obtain ⟨c, hc⟩ : ∃ c : Rn n → ℝ,
+      c = fun x => fderiv ℝ (fun z => a z (fderiv ℝ v x) (fderiv ℝ ζ x)) x e := ⟨_, rfl⟩
+  have hU' : MeasurableSet U := hU.measurableSet
+  have h₁ : EqOn (fun x => a x (fderiv ℝ (fun z => fderiv ℝ v z e) x) (fderiv ℝ ζ x))
+      (fun x => fderiv ℝ (fun x => a x (fderiv ℝ v x)) x e (fderiv ℝ ζ x) - c x) U := by
+    intro x hx
+    simp only [hc]
+    rw [hω₁d x hx (fderiv ℝ ζ x), Submission.dohr_eb_lhr_ds_fderiv_dirDeriv_eq n ℓ U v e hU hv x hx,
+      add_sub_cancel_right]
+  have h₂ : EqOn (fun x => (fderiv ℝ Φ x e - fderiv ℝ (fun z => a z (fderiv ℝ v x)) x e)
+      (fderiv ℝ ζ x)) (fun x => fderiv ℝ Φ x e (fderiv ℝ ζ x) - c x) U := by
+    intro x hx
+    simp only [hc]
+    rw [sub_apply, hfrozen x hx (fderiv ℝ ζ x)]
+  rw [setIntegral_congr_fun hU' h₁, setIntegral_congr_fun hU' h₂]
+  -- Step 6: subtract `∫_U c` if `c` is integrable on `U`; otherwise both sides are `0`.
+  by_cases hcI : IntegrableOn c U
+  · rw [integral_sub hF₁ hcI, integral_sub hF₂ hcI, hF]
+  · have hn₁ : ¬ IntegrableOn
+        (fun x => fderiv ℝ (fun x => a x (fderiv ℝ v x)) x e (fderiv ℝ ζ x) - c x) U :=
+      fun h => hcI ((hF₁.sub h).congr_fun (fun x _ => sub_sub_cancel _ _) hU')
+    have hn₂ : ¬ IntegrableOn (fun x => fderiv ℝ Φ x e (fderiv ℝ ζ x) - c x) U :=
+      fun h => hcI ((hF₂.sub h).congr_fun (fun x _ => sub_sub_cancel _ _) hU')
+    rw [integral_undef hn₁, integral_undef hn₂]
 
 end Submission
 
