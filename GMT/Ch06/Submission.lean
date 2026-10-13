@@ -359,6 +359,54 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Support of a push-forward (Simon Ch. 6, 2.23 and 3.6, pp. 139, 147): if `S ω` is the limit of
+`X` on forms equal to the pull-back of `ω` by continuous `G_n` near `spt X`, and `G_n → G`
+uniformly on `spt X`, then `spt S ⊆ closure (G(spt X))`. -/
+theorem Submission.dph_lpfex_support_subset_closure_image :
+    ∀ (m m' k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k)
+      (S : GeometricCurrentOn (univ : Set (Eucl m')) k) (G : Eucl m → Eucl m')
+      (Gj : ℕ → Eucl m → Eucl m'),
+      (∀ n, Continuous (Gj n)) → TendstoUniformlyOn Gj G atTop X.support →
+      (∀ (ω : TestFormOn (univ : Set (Eucl m')) k)
+          (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+        (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧
+          ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x =
+            ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+              (fderiv ℝ (Gj n) x)) →
+        Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) →
+      S.support ⊆ closure (G '' X.support) := by
+  intro m m' k X S G Gj hGj hunif hchar y hy
+  by_contra hyc
+  -- 1. A ball `B(y, ε)` misses `closure (G(spt X))`, so `ε ≤ dist (G x) y` on `spt X`.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp isClosed_closure.isOpen_compl y hyc
+  have hfar : ∀ x ∈ X.support, ε ≤ dist (G x) y := by
+    intro x hx
+    by_contra hlt
+    exact hball (mem_ball.mpr (not_le.mp hlt)) (subset_closure (mem_image_of_mem G hx))
+  have hρ : 0 < ε / 3 := by positivity
+  -- 2. `S` vanishes on `B(y, ε/3)`: the zero forms are eventually compatible with `ω`.
+  have hvan : S.VanishesOn (ball y (ε / 3)) := by
+    intro ω hω
+    have hT := hchar ω (fun _ => 0) <| by
+      filter_upwards [Metric.tendstoUniformlyOn_iff.mp hunif (ε / 3) hρ] with n hn
+      refine ⟨Gj n ⁻¹' (tsupport (ω : DifferentialForm (Eucl m') k))ᶜ,
+        (isClosed_tsupport _).isOpen_compl.preimage (hGj n), ?_, ?_⟩
+      · -- `spt X ⊆ G_n⁻¹((spt ω)ᶜ)`, by the triangle inequality.
+        intro x hx hmem
+        have h1 : dist (Gj n x) y < ε / 3 := mem_ball.mp (hω hmem)
+        linarith [hfar x hx, hn x hx, dist_triangle (G x) (Gj n x) y]
+      · -- There `ω(G_n x) = 0`, so its pull-back is `0`.
+        intro x hx
+        rw [image_eq_zero_of_notMem_tsupport hx]
+        ext v
+        simp
+    simp only [map_zero] at hT
+    exact (tendsto_nhds_unique tendsto_const_nhds hT).symm
+  -- 3. `B(y, ε/3)` is open with compact closure, so `y ∈ S.zeroRegion`, i.e. `y ∉ spt S`.
+  exact hy.2 (mem_sUnion.mpr ⟨ball y (ε / 3), ⟨isOpen_ball,
+    (isCompact_closedBall y (ε / 3)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, subset_univ _, hvan⟩, mem_ball_self hρ⟩)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
