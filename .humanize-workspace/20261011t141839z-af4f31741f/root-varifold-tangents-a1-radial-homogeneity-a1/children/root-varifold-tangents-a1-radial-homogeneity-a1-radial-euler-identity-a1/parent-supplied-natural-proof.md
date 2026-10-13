@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.varifold_tangents-a1.radial_homogeneity-a1`
+- Child DAG node: `root.varifold_tangents-a1.radial_homogeneity-a1.radial_euler_identity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent proof (identity (H)); this is Simon Ch. 8, 3.5 specialised to V = C, x = 0 and a profile identically 1 on spt g, whose normal-defect term vanishes because y ∈ S for C-a.e. (y,S) and δC = 0.
+Notation: μ := C.weight = (C.measure).map Prod.fst (Varifold.weight); for S : Grassmannian N n, S.1 is its projection matrix and p_S := Grassmannian.project S; Dg(y) := fderiv ℝ g y; for a vector field X, div_S X(y) := Varifold.tangentialDivergence X y S = trace(S.1 · jacobian X y), where jacobian X y = clmToMatrix (fderiv ℝ X y) is the coordinate matrix of DX(y); C.firstVariation X = ∫ div_S X(y) dC.measure(y,S); C.Stationary means C.firstVariation X = 0 for every X : Varifold.TestVectorField univ (a C¹ field with compact support and tsupport ⊆ univ).
+Fix g : ℝ^N → ℝ which is C¹ with compact support.
+1. (The radial test field.) Put X(y) := g(y)•y. X is C¹ as the product of the C¹ function g with the smooth identity map (ContDiff.smul with contDiff_id). If X(y) ≠ 0 then g(y) ≠ 0, so support X ⊆ support g, tsupport X ⊆ tsupport g, and X has compact support (HasCompactSupport.smul_right); trivially tsupport X ⊆ univ. Hence X (with these three facts) is an element of Varifold.TestVectorField univ, and stationarity gives C.firstVariation X = 0, i.e. ∫ div_S X(y) dC.measure(y,S) = 0.
+2. (Divergence of the identity field.) For every y and S, div_S(id)(y) = n. Indeed fderiv ℝ (fun z ↦ z) y is the identity continuous linear map (fderiv_fun_id), whose coordinate matrix is the identity matrix (LinearMap.toMatrix_id), so div_S(id)(y) = trace(S.1 · 1) = trace(S.1) = n by Grassmannian.trace_eq (the trace condition defining the Grassmannian subtype).
+3. (Pointwise divergence of X.) g is differentiable at y (it is C¹) and so is the identity. The weighted product rule SimonGMT Varifold.tangentialDivergence_smul (Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean:257), applied with h = g and the identity field, gives for every (y,S)
+   div_S X(y) = g(y)·div_S(id)(y) + Dg(y)(p_S(y)) = n·g(y) + Dg(y)(p_S y)   (by step 2).
+   (Mathematically: DX(y)v = g(y)v + (Dg(y)v)·y, so trace(P_S ∘ DX(y)) = g(y)·trace(P_S) + trace(v ↦ (Dg(y)v)·P_S y) = n·g(y) + Dg(y)(P_S y), because the trace of the rank-one map v ↦ ℓ(v)w is ℓ(w). The module Poincare.SimonGMT.Chapter08.RadialFirstVariation is not in the import closure of GMT.Ch08.Submission; the formalisation may add the line `import Poincare.SimonGMT.Chapter08.RadialFirstVariation` to GMT/Ch08/Submission.lean (extra imports of the pinned packages are permitted by the comparator), or re-derive this product rule exactly as in this parenthesis.)
+4. (The radial hypothesis.) By hypothesis p_S(y) = y for C.measure-a.e. (y,S). Hence div_S X(y) = n·g(y) + Dg(y)(y) for C.measure-a.e. (y,S), and by integral_congr_ae and step 1,
+   ∫ (n·g(z.1) + Dg(z.1)(z.1)) dC.measure(z) = ∫ div_S X dC.measure = C.firstVariation X = 0.
+5. (Transfer to the weight.) φ(y) := n·g(y) + Dg(y)(y) is continuous: g is continuous, y ↦ Dg(y) is continuous because g is C¹ (ContDiff.continuous_fderiv), and evaluation (L, v) ↦ L v of continuous linear maps is jointly continuous (Continuous.clm_apply). So φ is strongly measurable and Prod.fst is measurable, and the change-of-variables formula for image measures (integral_map) gives ∫ φ dμ = ∫ φ d((C.measure).map Prod.fst) = ∫ φ(z.1) dC.measure(z). By step 4 this equals 0, i.e. ∫ ((n : ℝ)·g(y) + Dg(y)(y)) dC.weight(y) = 0. ∎
+
+## Key steps
+
+1. X(y) = g(y)•y is C¹ with compact support, hence a test field in K(ℝ^N;ℝ^N), so C.firstVariation X = 0 by stationarity.
+2. div_S(id) = trace(S.1·1) = trace S.1 = n (Grassmannian.trace_eq), and tangentialDivergence_smul gives div_S X(y) = n·g(y) + Dg(y)(p_S y) for all (y,S).
+3. p_S y = y for C-a.e. (y,S) turns 0 = ∫ div_S X dC into ∫ (n·g(y) + Dg(y)(y)) dC(y,S) = 0 (integral_congr_ae).
+4. The integrand is continuous and depends on y only, so integral_map along Prod.fst rewrites it as ∫ (n·g + Dg(y)(y)) dC.weight = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git rev-parse HEAD in snapshot mathlib and .lake/packages/mathlib (both 25730c7c759d108ef87ab70af2342a196760f79d) and .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197)`
+- `sha256sum snapshot project/GMT/Ch08/Contract.lean, workspace GMT/Ch08/Contract.lean, GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `grep -n 'ext_of_integral_eq_on_compactlySupported' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean (:412, requires [μ.Regular] [ν.Regular], X T2 locally compact Borel)`
+- `grep -n 'Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|protected theorem map [BorelSpace α]|protected theorem smul [Regular μ]' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean (:1183, :1125, :1156); grep -n isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts MeasureTheory/Measure/Typeclasses/Finite.lean (:401)`
+- `grep -n 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le' mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean (:286, neighbourhood form hs : s ∈ 𝓝 x₀)`
+- `grep -n 'dist_normed_convolution_le' Analysis/Calculus/BumpFunction/Convolution.lean (:71); 'support_normed_eq|contDiff_normed|hasCompactSupport_normed' BumpFunction/Normed.lean (:72, :40, :79); 'contDiff_convolution_left' Analysis/Calculus/ContDiff/Convolution.lean (:427); 'support_convolution_subset' Analysis/Convolution.lean (:670)`
+- `grep -n 'IsOpen.is_const_of_deriv_eq_zero' Analysis/Calculus/MeanValue.lean (:766); 'hasDerivAt_pow' Analysis/Calculus/Deriv/Pow.lean (:137); 'HasDerivAt.div|hasDerivAt_inv' Analysis/Calculus/Deriv/Inv.lean (:173, :55)`
+- `grep -n 'norm_setIntegral_le_of_norm_le_const|setIntegral_eq_integral_of_forall_compl_eq_zero' MeasureTheory/Integral/Bochner/Set.lean (:613, :486); 'integral_map_equiv|integral_map|integral_smul_measure' Integral/Bochner/Basic.lean (:1105, :1081, :1052); 'HasCompactSupport.comp_smul|Homeomorph.smulOfNeZero' Topology/Algebra/ConstMulAction.lean (:466, :394); 'preimage_smul_inv₀' Algebra/GroupWithZero/Action/Pointwise/Set.lean (:139)`
+- `grep -n 'fderiv_of_notMem_tsupport|HasCompactSupport.fderiv' Analysis/Calculus/FDeriv/Const.lean (:375, :389); 'bounded_above_of_compact_support' Analysis/Normed/Group/Bounded.lean (:153); 'HasCompactMulSupport.uniformContinuous_of_continuous' Topology/UniformSpace/HeineCantor.lean (:91); 'Continuous.integrable_of_hasCompactSupport' MeasureTheory/Function/LocallyIntegrable.lean (:622)`
+- `#check @MeasurableEquiv.map_apply + Lean.findDeclarationRanges? (Mathlib.MeasureTheory.Measure.Map, line 304; exact on arbitrary sets)`
+- `grep -n '^theorem|^def|^noncomputable def|^structure' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean (Grassmannian.trace_eq :72, project :105, weight :557, weight_finite_on_compact :576, jacobian :654, tangentialDivergence :1041, firstVariation :1147, TestVectorField :1178, Stationary :1281)`
+- `sed -n 160,330p simongmt Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean (tangentialDivergence_eq_trace :168, tangentialDivergence_smul :257); module outside Submission's import closure (reviewer: #check fails without the import)`
+- `grep -rln 'homogen|Euler|dilation|ext_of_integral_eq_on_compactlySupported|dist_normed_convolution_le' simongmt Poincare/SimonGMT (only TangentScalingCounterexample.corrected_image_homogeneity_fullLine :131 for the line varifold and Chapter01/Radon.radon_ext_of_integral_eq :86; no general homogeneity/Euler/mollifier lemma)`
+- `python3 -I verifier/gmt-compare.py contract_scope(GMT/Ch08/Contract.lean, GMT.Ch08.main_theorem) -> open Set Filter MeasureTheory Metric; open scoped Topology ENNReal CompactlySupported Pointwise; namespace GMT.Ch08; open Poincare.SimonGMT; open Poincare.SimonGMT.Chapter08; section/end Definitions`
+- `python3 -I verifier/lean_contract.validate_lean_statement on the four child statements and the parent frozen type (all accepted unchanged)`
+- `lake env lean /tmp/rh-decomp/Final.lean (4 children fully proved, frozen parent type from children, comparator-shaped 'exact Submission.X' replays; #print axioms = [propext, Classical.choice, Quot.sound] for all five)`
+- `lake env lean /tmp/rh-decomp/Stub.lean (import GMT.Ch08.Submission only; children sorry; parent glue compiles with no sorry of its own)`
+- `python dag.json lean_name set (130 nodes at final check) and grep -rhoE 'varifold_tangents_rh_[A-Za-z0-9_]*' over the run dir (no match: the four names are free)`
+- `independent reviewer subagent replay of Final.lean and Stub.lean in /tmp/rh-review (verdict ACCEPT, minor wording fixes applied)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/GroupWithZero/Action/Pointwise/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentScalingCounterexample.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Radon.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-divergence-bound-a1/decomposition-v1.json`
+
+The snapshot is project 63436ae6 plus Mathlib 25730c7c, the same Mathlib checked out in .lake/packages/mathlib. The snapshot's Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Mathlib supplies every tool the children need:
+- Riesz uniqueness: ext_of_integral_eq_on_compactlySupported (Real.lean:412).
+- Regularity of locally finite measures on ℝ^N: Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure (Regular.lean:1183), with Regular.map and Regular.smul (:1125, :1156).
+- Dominated differentiation: hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286).
+- Mollifiers: dist_normed_convolution_le, contDiff_convolution_left, support_convolution_subset.
+- Zero derivative implies constant: IsOpen.is_const_of_deriv_eq_zero (MeanValue.lean:766).
+- Exact image-measure evaluation on arbitrary sets: MeasurableEquiv.map_apply (Measure/Map.lean:304).
+
+SimonGMT supplies Varifold.weight, weight_finite_on_compact, firstVariation, TestVectorField, Stationary and Grassmannian.trace_eq (Varifold.lean). It also supplies the product rule tangentialDivergence_smul (RadialFirstVariation.lean:257); that module is not in Submission's import closure, so child 1 may import it.
+
+Neither library has a general homogeneity, Euler-identity or mollification result for these obligations. SimonGMT only has the line-varifold special case corrected_image_homogeneity_fullLine and a Riesz-uniqueness wrapper, radon_ext_of_integral_eq.
+
+Lean checks, in the comparator's replayed scope:
+- All four child statements elaborate and validate.
+- The parent glue compiles against sorry'd children.
+- All four children were fully proved in scratch, with only standard axioms.
+
+None of the names varifold_tangents_rh_* is reserved in the DAG.

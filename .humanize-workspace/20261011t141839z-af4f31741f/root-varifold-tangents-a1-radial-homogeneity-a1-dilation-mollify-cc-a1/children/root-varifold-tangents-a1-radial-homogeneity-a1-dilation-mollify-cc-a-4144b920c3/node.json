@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1.mollifier_c1_approx-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1",
+  "depth": 4,
+  "title": "Continuous compactly supported functions are uniform limits of C¹ functions supported in one fixed compact set (mollification)",
+  "statement": "Let g : ℝ^N → ℝ be continuous with compact support. Then there exist a compact set K ⊆ ℝ^N and functions φ_k : ℝ^N → ℝ (k ∈ ℕ) such that:\n- g(y) = 0 for every y ∉ K;\n- every φ_k is C¹;\n- φ_k(y) = 0 for every k and every y ∉ K;\n- for every ε > 0 there is k₀ ∈ ℕ with |φ_k(y) − g(y)| ≤ ε for all k ≥ k₀ and all y ∈ ℝ^N.",
+  "lean_statement": "∀ (N : ℕ) (g : Euclidean N → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclidean N)) (φ : ℕ → Euclidean N → ℝ), IsCompact K ∧ (∀ y ∉ K, g y = 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, ∀ y ∉ K, φ k y = 0) ∧ (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |φ k y - g y| ≤ ε)",
+  "lean_name": "varifold_tangents_rh_mc_exists_c1_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-dilation-mollify-cc-a-4144b920c3-a1"
+}

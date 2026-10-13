@@ -781,6 +781,389 @@ theorem Submission.varifold_tangents_limit_ball_mass :
   have hev : ∀ᶠ ρ' in 𝓝[>] ρ, ρ < ρ' := self_mem_nhdsWithin
   exact le_antisymm (ge_of_tendsto hLlim (hev.mono fun ρ' h ↦ (hbd ρ' h).1))
     (ge_of_tendsto hClim (hev.mono fun ρ' h ↦ (hbd ρ' h).2))
+/-- Radial Euler identity for a stationary varifold `C` on `ℝ^N` with `y ∈ S` for `C`-a.e.
+`(y, S)` (Simon Ch. 8, 3.5 at `x = 0` with vanishing normal defect): testing `δC = 0` against the
+radial field `X(y) = g(y) y` gives `∫ (n g(y) + Dg(y)(y)) dμ_C(y) = 0` for every compactly
+supported `C¹` function `g`. -/
+theorem Submission.varifold_tangents_rh_radial_euler_identity :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂C.weight = 0 := by
+  intro N n C hC hrad g hg hgc
+  -- Step 1: the radial test field `X(y) = g(y) • y` lies in `K(ℝ^N; ℝ^N)`, so `δC(X) = 0`.
+  have hX : C.firstVariation (fun y ↦ g y • y) = 0 :=
+    hC ⟨fun y ↦ g y • y, hg.smul contDiff_id, hgc.smul_right, subset_univ _⟩
+  -- Steps 2–3: `div_S X(y) = n g(y) + Dg(y)(p_S y)` for every `(y, S)`, since
+  -- `P_S ∘ DX(y) = g(y) P_S + Dg(y)(·) p_S y` and `trace P_S = n`.
+  have hdiv : ∀ (y : Euclidean N) (S : Grassmannian N n),
+      Varifold.tangentialDivergence (fun y ↦ g y • y) y S =
+        n * g y + fderiv ℝ g y (S.project y) := by
+    intro y S
+    let b := (Grassmannian.coordinateBasis (N := N)).toBasis
+    have hcomp : S.projectionLinearMap ∘ₗ
+        (fderiv ℝ (fun y ↦ g y • y) y : Euclidean N →ₗ[ℝ] Euclidean N) =
+        g y • S.projectionLinearMap +
+          (fderiv ℝ g y : Euclidean N →ₗ[ℝ] ℝ).smulRight (S.project y) := by
+      rw [fderiv_fun_smul (f := fun y : Euclidean N ↦ y) (hg.differentiable_one y)
+        differentiableAt_id, fderiv_fun_id]
+      refine LinearMap.ext fun v ↦ ?_
+      simp [Grassmannian.project]
+    rw [Varifold.tangentialDivergence, Varifold.jacobian_eq_toMatrix,
+      ← Grassmannian.toMatrix_projectionLinearMap S, ← LinearMap.toMatrix_comp,
+      ← LinearMap.trace_eq_matrix_trace ℝ b, hcomp, map_add, map_smul,
+      LinearMap.trace_smulRight, LinearMap.trace_eq_matrix_trace ℝ b,
+      Grassmannian.toMatrix_projectionLinearMap, Grassmannian.trace_eq, smul_eq_mul, mul_comm]
+    rfl
+  -- Step 4: by the radial hypothesis, `div_S X(y) = n g(y) + Dg(y)(y)` for `C`-a.e. `(y, S)`.
+  have hae : (fun z : Euclidean N × Grassmannian N n ↦
+      Varifold.tangentialDivergence (fun y ↦ g y • y) z.1 z.2) =ᵐ[C.measure]
+      fun z ↦ (n : ℝ) * g z.1 + fderiv ℝ g z.1 z.1 := by
+    filter_upwards [hrad] with z hz
+    rw [hdiv, hz]
+  -- Step 5: the integrand is continuous, so it transfers to `μ_C = π_# C` (`integral_map`).
+  have hcont : Continuous (fun y ↦ (n : ℝ) * g y + fderiv ℝ g y y) :=
+    (continuous_const.mul hg.continuous).add
+      ((hg.continuous_fderiv one_ne_zero).clm_apply continuous_id)
+  rw [Varifold.weight, integral_map measurable_fst.aemeasurable hcont.aestronglyMeasurable,
+    ← integral_congr_ae hae]
+  exact hX
+/-- Integration of Euler's ODE (used for the radial homogeneity of tangent cones, Simon Ch. 8,
+5.3): if `F'(t) = n F(t) / t` for every `t > 0`, then `F(s) = sⁿ F(1)` for every `s > 0`. -/
+theorem Submission.varifold_tangents_rh_edc_pow_of_hasDerivAt :
+    ∀ (n : ℕ) (F : ℝ → ℝ), (∀ t : ℝ, 0 < t → HasDerivAt F ((n : ℝ) * F t / t) t) → ∀ s : ℝ, 0 < s → F s = s ^ n * F 1 := by
+  intro n F hF s hs
+  -- Steps 1–3: `G(r) = F(r) / rⁿ` has derivative `0` at every `t > 0` (quotient rule, `tⁿ ≠ 0`).
+  have hG : ∀ t : ℝ, 0 < t → HasDerivAt (fun r : ℝ ↦ F r / r ^ n) 0 t := by
+    intro t ht
+    have ht0 : t ≠ 0 := ht.ne'
+    refine ((hF t ht).fun_div (hasDerivAt_pow n t) (pow_ne_zero n ht0)).congr_deriv ?_
+    rcases n with _ | m
+    · simp
+    · rw [Nat.add_sub_cancel]
+      field_simp
+      ring
+  -- Step 4: `G` is constant on the open preconnected set `(0, ∞)`, so `G(s) = G(1)`.
+  have hconst : F s / s ^ n = F 1 / 1 ^ n :=
+    (isOpen_Ioi (a := (0 : ℝ))).is_const_of_deriv_eq_zero (f := fun r : ℝ ↦ F r / r ^ n)
+      isPreconnected_Ioi (fun t ht ↦ (hG t ht).differentiableAt.differentiableWithinAt)
+      (fun t ht ↦ (hG t ht).deriv) hs (Set.mem_Ioi.mpr one_pos)
+  -- Step 5: `G(1) = F(1)`; clear the denominator `sⁿ ≠ 0`.
+  rw [one_pow, div_one, div_eq_iff (pow_ne_zero n hs.ne')] at hconst
+  exact hconst.trans (mul_comm _ _)
+/-- Euler's identity on the dilates (used for the radial homogeneity of tangent cones, Simon
+Ch. 8, 5.3): if `∫ (n h + Dh(y) y) dμ = 0` for every compactly supported `C¹` function `h`, then
+`n ∫ g(t⁻¹ y) dμ + ∫ Dg(t⁻¹ y)(t⁻¹ y) dμ = 0` for every such `g` and every `t > 0`. -/
+theorem Submission.varifold_tangents_rh_edc_euler_dilate :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂μ = 0) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ t : ℝ, 0 < t → (n : ℝ) * (∫ y, g (t⁻¹ • y) ∂μ) + ∫ y, fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) ∂μ = 0 := by
+  intro N n μ hμ H g hg hgc t ht
+  have hc : t⁻¹ ≠ 0 := inv_ne_zero ht.ne'
+  -- Step 2: the dilate `y ↦ g (t⁻¹ • y)` is `C¹` with compact support.
+  have hdil : ContDiff ℝ 1 (fun y : Euclidean N ↦ g (t⁻¹ • y)) :=
+    hg.comp (contDiff_id.const_smul t⁻¹)
+  have hdilc : HasCompactSupport (fun y : Euclidean N ↦ g (t⁻¹ • y)) := hgc.comp_smul hc
+  -- Step 3: chain rule, `D(g(t⁻¹ •))(y) y = Dg(t⁻¹ • y)(t⁻¹ • y)`.
+  have hchain : ∀ y : Euclidean N,
+      fderiv ℝ (fun z : Euclidean N ↦ g (t⁻¹ • z)) y y = fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) := by
+    intro y
+    have hy : HasFDerivAt (fun z : Euclidean N ↦ g (t⁻¹ • z))
+        ((fderiv ℝ g (t⁻¹ • y)).comp (t⁻¹ • ContinuousLinearMap.id ℝ (Euclidean N))) y :=
+      ((hg.differentiable one_ne_zero) (t⁻¹ • y)).hasFDerivAt.comp y
+        ((hasFDerivAt_id y).const_smul t⁻¹)
+    rw [hy.fderiv, ContinuousLinearMap.comp_apply, smul_apply,
+      ContinuousLinearMap.id_apply]
+  -- Step 4: both summands are continuous with compact support, hence `μ`-integrable.
+  have hi₁ : Integrable (fun y : Euclidean N ↦ (n : ℝ) * g (t⁻¹ • y)) μ :=
+    (hdil.continuous.integrable_of_hasCompactSupport hdilc).const_mul _
+  have hDc : Continuous (fun x : Euclidean N ↦ fderiv ℝ g x x) :=
+    (hg.continuous_fderiv one_ne_zero).clm_apply continuous_id
+  -- `Dg(x) = 0` off `tsupport g`, so `x ↦ Dg(x) x` is supported in the compact `tsupport g`.
+  have hDs : HasCompactSupport (fun x : Euclidean N ↦ fderiv ℝ g x x) := by
+    refine hgc.mono' fun x hx ↦ ?_
+    by_contra hxg
+    exact hx (by simp only [fderiv_of_notMem_tsupport ℝ hxg, zero_apply])
+  have hi₂ : Integrable (fun y : Euclidean N ↦ fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y)) μ :=
+    (hDc.comp (continuous_const_smul t⁻¹)).integrable_of_hasCompactSupport (hDs.comp_smul hc)
+  -- Step 5: apply the hypothesis to the dilate, rewrite by the chain rule and split the integral.
+  have hH := H _ hdil hdilc
+  simp only [hchain] at hH
+  rwa [integral_add hi₁ hi₂, integral_const_mul] at hH
+/-- Differentiation under the integral sign for dilates (used for the homogeneity 5.3 in Simon
+Ch. 8): if `μ` is finite on compact sets and `g` is `C¹` with compact support, then for `t > 0` the
+function `r ↦ ∫ g(r⁻¹y) dμ(y)` has derivative `-(t⁻¹ ∫ Dg(t⁻¹y)(t⁻¹y) dμ(y))` at `t`. -/
+theorem Submission.varifold_tangents_rh_edc_hasDerivAt_dilate_integral :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ t : ℝ, 0 < t → HasDerivAt (fun r : ℝ => ∫ y, g (r⁻¹ • y) ∂μ) (-(t⁻¹ * ∫ y, fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) ∂μ)) t := by
+  intro N μ hμ g hg hgc t ht
+  -- Step 2: `tsupport g ⊆ B_R(0)` with `R > 0`, and `‖Dg‖ ≤ L` everywhere with `L ≥ 0`.
+  have hdiff : Differentiable ℝ g := hg.differentiable one_ne_zero
+  have hDcont : Continuous (fderiv ℝ g) := hg.continuous_fderiv one_ne_zero
+  obtain ⟨R₀, hR₀⟩ := hgc.isCompact.isBounded.subset_closedBall (0 : Euclidean N)
+  set R := max R₀ 1
+  have hR : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hsuppR : tsupport g ⊆ closedBall 0 R :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  obtain ⟨L, hL⟩ := hDcont.bounded_above_of_compact_support (hgc.fderiv ℝ)
+  have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
+  -- Step 3: for `r > 0`, `ρ ↦ g(ρ⁻¹y)` has derivative `Φ(r,y) = -(r⁻¹ Dg(r⁻¹y)(r⁻¹y))` at `r`.
+  have hpt : ∀ y : Euclidean N, ∀ r : ℝ, 0 < r →
+      HasDerivAt (fun ρ : ℝ => g (ρ⁻¹ • y)) (-(r⁻¹ * fderiv ℝ g (r⁻¹ • y) (r⁻¹ • y))) r := by
+    intro y r hr
+    have h := (hdiff (r⁻¹ • y)).hasFDerivAt.comp_hasDerivAt r
+      ((hasDerivAt_inv hr.ne').smul_const y)
+    refine h.congr_deriv ?_
+    simp only [map_smul, smul_eq_mul]
+    ring
+  -- Step 4: the neighbourhood `(t/2, 2t)` of `t` and the bound `b = (2LR/t) 1_{B_{2tR}(0)}`.
+  have hI : Ioo (t / 2) (2 * t) ∈ 𝓝 t := Ioo_mem_nhds (by linarith) (by linarith)
+  set b : Euclidean N → ℝ :=
+    (closedBall (0 : Euclidean N) (2 * t * R)).indicator fun _ => 2 * L * R / t with hb
+  -- Step 5: `|Φ(r,y)| ≤ b(y)` for every `y` and every `r ∈ (t/2, 2t)`.
+  have hbound : ∀ y : Euclidean N, ∀ r ∈ Ioo (t / 2) (2 * t),
+      ‖-(r⁻¹ * fderiv ℝ g (r⁻¹ • y) (r⁻¹ • y))‖ ≤ b y := by
+    intro y r hr
+    have hr0 : 0 < r := by linarith [hr.1]
+    by_cases hy : r⁻¹ • y ∈ tsupport g
+    · have hyR : ‖r⁻¹ • y‖ ≤ R := mem_closedBall_zero_iff.1 (hsuppR hy)
+      have hyb : y ∈ closedBall (0 : Euclidean N) (2 * t * R) := by
+        rw [mem_closedBall_zero_iff]
+        calc ‖y‖ = r * ‖r⁻¹ • y‖ := by
+              rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr0.le), ← mul_assoc,
+                mul_inv_cancel₀ hr0.ne', one_mul]
+          _ ≤ 2 * t * R := mul_le_mul hr.2.le hyR (norm_nonneg _) (by linarith)
+      have hD : |fderiv ℝ g (r⁻¹ • y) (r⁻¹ • y)| ≤ L * R :=
+        ((fderiv ℝ g (r⁻¹ • y)).le_opNorm _).trans (mul_le_mul (hL _) hyR (norm_nonneg _) hL0)
+      have hinv : r⁻¹ ≤ 2 / t := by
+        rw [inv_le_comm₀ hr0 (by positivity), inv_div]
+        exact hr.1.le
+      rw [hb, indicator_of_mem hyb, norm_neg, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 hr0)]
+      calc r⁻¹ * |fderiv ℝ g (r⁻¹ • y) (r⁻¹ • y)| ≤ 2 / t * (L * R) :=
+            mul_le_mul hinv hD (abs_nonneg _) (by positivity)
+        _ = 2 * L * R / t := by ring
+    · rw [fderiv_of_notMem_tsupport ℝ hy, zero_apply, mul_zero, neg_zero, norm_zero]
+      exact indicator_nonneg (fun _ _ => by positivity) y
+  -- Step 6: integrability of `b` and of `F(t,·)`, measurability of `F(r,·)` and `Φ(t,·)`.
+  have hb_int : Integrable b μ :=
+    (integrableOn_const (isCompact_closedBall 0 _).measure_lt_top.ne).integrable_indicator
+      measurableSet_closedBall
+  have hF_meas : ∀ᶠ r in 𝓝 t, AEStronglyMeasurable (fun y : Euclidean N => g (r⁻¹ • y)) μ :=
+    Eventually.of_forall fun r =>
+      (hg.continuous.comp (continuous_const_smul r⁻¹)).aestronglyMeasurable
+  have hF_int : Integrable (fun y : Euclidean N => g (t⁻¹ • y)) μ :=
+    (hg.continuous.comp (continuous_const_smul t⁻¹)).integrable_of_hasCompactSupport
+      (hgc.comp_smul (inv_ne_zero ht.ne'))
+  have hF'_meas : AEStronglyMeasurable
+      (fun y : Euclidean N => -(t⁻¹ * fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y))) μ :=
+    (((hDcont.comp (continuous_const_smul t⁻¹)).clm_apply
+      (continuous_const_smul t⁻¹)).const_mul t⁻¹).neg.aestronglyMeasurable
+  -- Step 7: differentiation under the integral sign.
+  have key := (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ)
+    (F := fun r (y : Euclidean N) => g (r⁻¹ • y))
+    (F' := fun r (y : Euclidean N) => -(r⁻¹ * fderiv ℝ g (r⁻¹ • y) (r⁻¹ • y)))
+    hI hF_meas hF_int hF'_meas (Eventually.of_forall fun y r hr => hbound y r hr) hb_int
+    (Eventually.of_forall fun y r hr => hpt y r (by linarith [hr.1]))).2
+  -- Step 8: `∫ Φ(t,y) dμ = -(t⁻¹ ∫ Dg(t⁻¹y)(t⁻¹y) dμ)`.
+  rwa [integral_neg, integral_const_mul] at key
+
+/-- **Simon Ch. 8, 5.3 (p. 215), from Euler's identity to dilation homogeneity** (child
+`euler_dilation_c1` of the radial homogeneity step for varifold tangents).  If `μ` is finite on
+compact sets and `∫ (n h + Dh(y) y) dμ = 0` for every compactly supported `C¹` function `h`, then
+`∫ g(s⁻¹ y) dμ(y) = sⁿ ∫ g dμ` for every such `g` and every `s > 0`: `F(t) = ∫ g(t⁻¹ y) dμ(y)` has
+derivative `-t⁻¹ ∫ Dg(t⁻¹ y)(t⁻¹ y) dμ(y)` (differentiation under the integral sign), Euler's
+identity on the dilates turns this into `n F(t) / t`, and that ODE forces `F(s) = sⁿ F(1)`. -/
+theorem Submission.varifold_tangents_rh_scaling_of_euler_identity :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂μ = 0) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ s : ℝ, 0 < s → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ := by
+  intro N n μ hμ H g hg hgc s hs
+  -- Steps 3, 5 and 6: for `t > 0`, `F'(t) = -t⁻¹ J(t)` and `n F(t) + J(t) = 0`, so
+  -- `F'(t) = n F(t) / t`, where `F(t) = ∫ g(t⁻¹ y) dμ` and `J(t) = ∫ Dg(t⁻¹ y)(t⁻¹ y) dμ`.
+  have hF : ∀ t : ℝ, 0 < t → HasDerivAt (fun r : ℝ ↦ ∫ y, g (r⁻¹ • y) ∂μ)
+      ((n : ℝ) * (∫ y, g (t⁻¹ • y) ∂μ) / t) t := by
+    intro t ht
+    have hE := Submission.varifold_tangents_rh_edc_euler_dilate N n μ hμ H g hg hgc t ht
+    refine (Submission.varifold_tangents_rh_edc_hasDerivAt_dilate_integral N μ hμ g hg hgc t
+      ht).congr_deriv ?_
+    linear_combination (-t⁻¹) * hE
+  -- Step 7: the ODE forces `F(s) = sⁿ F(1)`, and `F(1) = ∫ g dμ`.
+  simpa only [inv_one, one_smul] using
+    Submission.varifold_tangents_rh_edc_pow_of_hasDerivAt n
+      (fun r : ℝ ↦ ∫ y, g (r⁻¹ • y) ∂μ) hF s hs
+/-- Uniform convergence with a common compact support gives convergence of integrals: if `μ` is
+finite on compacts, `K` is compact, `F k = G` off `K` for every `k` and `F k → G` uniformly, then
+`∫ F k dμ → ∫ G dμ` (the limit step of the mollification argument for Simon Ch. 8, 5.3). -/
+theorem Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (K : Set (Euclidean N)) (F : ℕ → Euclidean N → ℝ) (G : Euclidean N → ℝ), IsFiniteMeasureOnCompacts μ → IsCompact K → (∀ k, Integrable (F k) μ) → Integrable G μ → (∀ k, ∀ y ∉ K, F k y = G y) → (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |F k y - G y| ≤ ε) → Tendsto (fun k => ∫ y, F k y ∂μ) atTop (𝓝 (∫ y, G y ∂μ)) := by
+  intro N μ K F G hμ hK hF hG hV hU
+  -- Step 1: `μ K < ∞`, and `c := μ.real K` satisfies `0 < c + 1`.
+  have hKfin : μ K < ∞ := hμ.lt_top_of_isCompact hK
+  have hc1 : 0 < μ.real K + 1 := by linarith [measureReal_nonneg (μ := μ) (s := K)]
+  -- Step 5: by `Metric.tendsto_atTop` it suffices to find `k₀` for each `ε > 0`.
+  refine Metric.tendsto_atTop.2 fun ε hε ↦ ?_
+  -- Step 3: `η := ε / (c + 1) > 0`, and `k₀` from the uniform hypothesis for `η`.
+  have hη : 0 < ε / (μ.real K + 1) := div_pos hε hc1
+  obtain ⟨k₀, hk₀⟩ := hU _ hη
+  refine ⟨k₀, fun k hk ↦ ?_⟩
+  -- Step 4: `F k - G` vanishes off `K`, so its integral is its integral over `K` (step 2).
+  have hint : ∫ y in K, F k y - G y ∂μ = ∫ y, F k y - G y ∂μ :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy ↦ by rw [hV k y hy, sub_self]
+  -- Step 2: `|F k - G| ≤ η` on `K` and `μ K < ∞`, so `|∫_K (F k - G) dμ| ≤ η c < ε`.
+  rw [Real.dist_eq, ← integral_sub (hF k) hG, ← hint, ← Real.norm_eq_abs]
+  calc ‖∫ y in K, F k y - G y ∂μ‖ ≤ ε / (μ.real K + 1) * μ.real K :=
+        norm_setIntegral_le_of_norm_le_const hKfin fun y _ ↦ by
+          rw [Real.norm_eq_abs]; exact hk₀ k hk y
+    _ < ε / (μ.real K + 1) * (μ.real K + 1) := mul_lt_mul_of_pos_left (lt_add_one _) hη
+    _ = ε := div_mul_cancel₀ ε hc1.ne'
+/-- Uniform `C¹` approximation by mollification (step 3 of extending the dilation law for varifold
+tangents, Simon Ch. 8, 5.3, from `C¹_c` to `C_c`): a continuous compactly supported `g` on `ℝ^N`
+is the uniform limit of the `C¹` functions `φ_k = ψ_k ⋆ g`, where `ψ_k` is a normalized smooth
+bump supported in `B(0, 1/(k+1))`, and `g` and every `φ_k` vanish off the compact set
+`K = closedBall 0 1 + tsupport g`. -/
+theorem Submission.varifold_tangents_rh_mc_exists_c1_approx :
+    ∀ (N : ℕ) (g : Euclidean N → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclidean N)) (φ : ℕ → Euclidean N → ℝ), IsCompact K ∧ (∀ y ∉ K, g y = 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, ∀ y ∉ K, φ k y = 0) ∧ (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |φ k y - g y| ≤ ε) := by
+  intro N g hg hgc
+  -- Step 1: smooth bumps `b k` at `0` with radii `1 / (2 (k + 1)) < r_k = 1 / (k + 1)`.
+  have hr : ∀ k : ℕ, 0 < 1 / (2 * ((k : ℝ) + 1)) ∧ 1 / (2 * ((k : ℝ) + 1)) < 1 / ((k : ℝ) + 1) :=
+    fun k ↦ ⟨by positivity,
+      one_div_lt_one_div_of_lt (by positivity) (by linarith [k.cast_nonneg (α := ℝ)])⟩
+  obtain ⟨b, hb⟩ : ∃ b : ℕ → ContDiffBump (0 : Euclidean N), ∀ k, (b k).rOut = 1 / ((k : ℝ) + 1) :=
+    ⟨fun k ↦ ⟨_, _, (hr k).1, (hr k).2⟩, fun k ↦ rfl⟩
+  -- The normalizations `ψ k = b k / ∫ b k` (i.e. `(b k).normed volume`): `ψ k ≥ 0`, `∫ ψ k = 1`,
+  -- `support (ψ k) ⊆ B(0, r_k)`, and `ψ k` is `C¹` with compact support.
+  obtain ⟨ψ, hψ0, hψ1, hψs, hψd, hψc⟩ : ∃ ψ : ℕ → Euclidean N → ℝ, (∀ k x, 0 ≤ ψ k x) ∧
+      (∀ k, ∫ x, ψ k x = 1) ∧ (∀ k, Function.support (ψ k) ⊆ ball 0 (1 / ((k : ℝ) + 1))) ∧
+      (∀ k, ContDiff ℝ (1 : ℕ∞) (ψ k)) ∧ (∀ k, HasCompactSupport (ψ k)) := by
+    have hpos : ∀ k, 0 < ∫ y, b k y := fun k ↦ by
+      refine (integral_pos_iff_support_of_nonneg (fun x ↦ (b k).nonneg)
+        ((b k).continuous.integrable_of_hasCompactSupport (b k).hasCompactSupport)).2 ?_
+      rw [(b k).support_eq]
+      exact measure_ball_pos _ _ (b k).rOut_pos
+    have hsupp : ∀ k, Function.support (fun x ↦ b k x / ∫ y, b k y) ⊆ Function.support (b k) :=
+      fun k x hx h ↦ hx (by simp only [h, zero_div])
+    refine ⟨fun k x ↦ b k x / ∫ y, b k y, fun k x ↦ div_nonneg (b k).nonneg (hpos k).le,
+      fun k ↦ ?_, fun k ↦ ?_, fun k ↦ (b k).contDiff.div_const _,
+      fun k ↦ (b k).hasCompactSupport.mono' ((hsupp k).trans (subset_tsupport _))⟩
+    · rw [integral_div, div_self (hpos k).ne']
+    · rw [← hb k, ← (b k).support_eq]
+      exact hsupp k
+  -- Step 2: `K = closedBall 0 1 + tsupport g` is compact; `φ k = ψ k ⋆ g` (Lebesgue convolution).
+  refine ⟨closedBall 0 1 + tsupport g,
+    fun k ↦ convolution (ψ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+    (isCompact_closedBall 0 1).add hgc, ?_, ?_, ?_, ?_⟩
+  -- Step 3: `g` vanishes off `K`, since `y = 0 + y` with `0 ∈ closedBall 0 1`.
+  · intro y hy
+    by_contra h
+    refine hy ?_
+    simpa only [zero_add] using
+      Set.add_mem_add (mem_closedBall_self zero_le_one : (0 : Euclidean N) ∈ closedBall 0 1)
+        (subset_tsupport g h)
+  -- Step 4: each `φ k` is `C¹` (`ψ k` is `C¹` with compact support, `g` is locally integrable).
+  · intro k
+    exact (hψc k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hψd k)
+      hg.locallyIntegrable
+  -- Step 5: each `φ k` vanishes off `K`: `support (ψ k ⋆ g) ⊆ support (ψ k) + support g ⊆ K`,
+  -- as `support (ψ k) ⊆ B(0, r_k)` and `r_k ≤ 1`.
+  · intro k y hy
+    by_contra h
+    obtain ⟨a, ha, c, hc, rfl⟩ := support_convolution_subset (ContinuousLinearMap.lsmul ℝ ℝ) h
+    refine hy (Set.add_mem_add ?_ (subset_tsupport g hc))
+    refine ball_subset_closedBall (ball_subset_ball ?_ (hψs k ha))
+    rw [div_le_one (by positivity)]
+    linarith [k.cast_nonneg (α := ℝ)]
+  -- Step 6: uniform estimate. `g` is uniformly continuous; for `‖x - y‖ < δ` we have
+  -- `|g x - g y| < ε`, and `r_k ≤ r_{k₀} < δ` for `k ≥ k₀`, so `|φ k y - g y| ≤ ε`, as `ψ k ≥ 0`
+  -- has integral `1` and support in `B(0, r_k)`.
+  · intro ε hε
+    obtain ⟨δ, hδ, hδg⟩ :=
+      Metric.uniformContinuous_iff.1 (hgc.uniformContinuous_of_continuous hg) ε hε
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hδ
+    refine ⟨k₀, fun k hk y ↦ ?_⟩
+    rw [← Real.dist_eq]
+    refine dist_convolution_le hε.le (hψs k) (hψ0 k) (hψ1 k) hg.aestronglyMeasurable
+      fun x hx ↦ (hδg ?_).le
+    calc dist x y < 1 / ((k : ℝ) + 1) := hx
+      _ ≤ 1 / ((k₀ : ℝ) + 1) := by gcongr
+      _ < δ := hk₀
+
+/-- Extension of the dilation law from `C¹_c` to `C_c` by mollification (step 3 of the proof of
+the corrected Simon Ch. 8, 5.3): if `μ` is finite on compact sets, `s > 0` and
+`∫ h(s⁻¹ y) dμ(y) = sⁿ ∫ h dμ` for every compactly supported `C¹` function `h`, then the same
+identity holds for every continuous compactly supported `g`.  The `C¹` approximants `φ_k → g`
+(uniformly, all vanishing off one compact `K`) satisfy the identity, and both sides pass to the
+limit because the integrands converge uniformly and agree with their limits off the fixed compact
+sets `s • K` and `K`. -/
+theorem Submission.varifold_tangents_rh_scaling_continuous :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ := by
+  intro N n μ s hμ hs hS g hg hgc
+  -- Step 3: `C¹` functions `φ k → g` uniformly, with `g` and every `φ k` vanishing off `K`.
+  obtain ⟨K, φ, hK, hgK, hφ, hφK, hunif⟩ :=
+    Submission.varifold_tangents_rh_mc_exists_c1_approx N g hg hgc
+  have hφc : ∀ k, HasCompactSupport (φ k) := fun k ↦ HasCompactSupport.intro hK (hφK k)
+  -- Step 4: the hypothesis applies to every `φ k`.
+  have h4 : ∀ k, ∫ y, φ k (s⁻¹ • y) ∂μ = s ^ n * ∫ y, φ k y ∂μ :=
+    fun k ↦ hS (φ k) (hφ k) (hφc k)
+  -- Step 5(i): `∫ φ k dμ → ∫ g dμ`, the differences vanishing off `K`.
+  have hlim1 : Tendsto (fun k ↦ ∫ y, φ k y ∂μ) atTop (𝓝 (∫ y, g y ∂μ)) :=
+    Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform N μ K φ g hμ hK
+      (fun k ↦ (hφ k).continuous.integrable_of_hasCompactSupport (hφc k))
+      (hg.integrable_of_hasCompactSupport hgc)
+      (fun k y hy ↦ (hφK k y hy).trans (hgK y hy).symm) hunif
+  -- Step 5(ii): `∫ φ k (s⁻¹ y) dμ(y) → ∫ g (s⁻¹ y) dμ(y)`, the differences vanishing off `s • K`
+  -- since `y ∉ s • K` gives `s⁻¹ • y ∉ K`.
+  have hs' : s⁻¹ ≠ 0 := inv_ne_zero hs.ne'
+  have hsK : ∀ y ∉ s • K, s⁻¹ • y ∉ K := fun y hy h ↦
+    hy ((mem_smul_set_iff_inv_smul_mem₀ hs.ne' K y).2 h)
+  have hlim2 : Tendsto (fun k ↦ ∫ y, φ k (s⁻¹ • y) ∂μ) atTop (𝓝 (∫ y, g (s⁻¹ • y) ∂μ)) :=
+    Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform N μ (s • K)
+      (fun k y ↦ φ k (s⁻¹ • y)) (fun y ↦ g (s⁻¹ • y)) hμ (hK.smul s)
+      (fun k ↦ ((hφ k).continuous.comp (continuous_const_smul s⁻¹)).integrable_of_hasCompactSupport
+        ((hφc k).comp_smul hs'))
+      ((hg.comp (continuous_const_smul s⁻¹)).integrable_of_hasCompactSupport (hgc.comp_smul hs'))
+      (fun k y hy ↦ (hφK k _ (hsK y hy)).trans (hgK _ (hsK y hy)).symm)
+      (fun ε hε ↦ (hunif ε hε).imp fun k₀ hk₀ k hk y ↦ hk₀ k hk (s⁻¹ • y))
+  -- Step 6: by step 4 both limits are limits of the same sequence.
+  exact tendsto_nhds_unique hlim2 ((hlim1.const_mul (s ^ n)).congr fun k ↦ (h4 k).symm)
+/-- **Simon Ch. 8, 5.3 (p. 215), from integrals to sets** (child `dilation_riesz_sets` of the radial
+homogeneity step for varifold tangents).  If `μ` is finite on compact sets, `s > 0` and
+`∫ g(s⁻¹ y) dμ(y) = sⁿ ∫ g dμ` for every `g ∈ C_c(ℝ^N)`, then `μ(s A) = sⁿ μ(A)` for every set `A`:
+the image of `μ` under `T y = s⁻¹ y` and `sⁿ μ` are regular and agree on `C_c`, so they are equal
+by uniqueness in the Riesz representation theorem, and an image under a measurable equivalence is
+evaluated exactly on every set, with `T⁻¹(A) = s A`. -/
+theorem Submission.varifold_tangents_rh_measure_homogeneous :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ A : Set (Euclidean N), μ (s • A) = ENNReal.ofReal s ^ n * μ A := by
+  intro N n μ s hμ hs hg A
+  -- Step 1: `T y = s⁻¹ • y` is a homeomorphism, hence a measurable equivalence.
+  have hs₀ : s⁻¹ ≠ 0 := inv_ne_zero hs.ne'
+  let T : Euclidean N ≃ᵐ Euclidean N := (Homeomorph.smulOfNeZero s⁻¹ hs₀).toMeasurableEquiv
+  -- Step 2: `μ` is regular (locally finite on `ℝ^N`), hence so are `μ.map T` and `sⁿ μ`.
+  have hc : ENNReal.ofReal s ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have h₁ : (μ.map T).Regular := Measure.Regular.map (Homeomorph.smulOfNeZero s⁻¹ hs₀)
+  have h₂ : (ENNReal.ofReal s ^ n • μ).Regular := Measure.Regular.smul hc
+  -- Steps 3–4: both measures give `∫ f(s⁻¹ y) dμ = sⁿ ∫ f dμ` to every `f ∈ C_c`, so they are equal.
+  have hν : μ.map T = ENNReal.ofReal s ^ n • μ := by
+    refine Measure.ext_of_integral_eq_on_compactlySupported fun f ↦ ?_
+    rw [integral_map_equiv, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal hs.le,
+      smul_eq_mul]
+    exact hg f f.continuous f.hasCompactSupport
+  -- Step 5: `s • A = T⁻¹(A)` and `(μ.map T)(A) = μ(T⁻¹(A))` for every set `A`.
+  have hA : s • A = T ⁻¹' A := (Set.preimage_smul_inv₀ hs.ne' A).symm
+  rw [hA, ← MeasurableEquiv.map_apply T A, hν, Measure.smul_apply, smul_eq_mul]
+
+/-- **Simon Ch. 8, 5.3 (p. 215), corrected**: radial homogeneity of a stationary varifold `C` on
+`ℝ^N` with `y ∈ S` for `C`-a.e. `(y, S)`, namely `μ_C(s A) = sⁿ μ_C(A)` for every `s > 0` and
+every set `A ⊆ ℝ^N` (the printed `λ^{-n} μ_C(η_{0,λ}(A)) = μ_C(A)` has the wrong power).  Testing
+`δC = 0` against `g(y) y` gives Euler's identity `∫ (n g + Dg(y)(y)) dμ_C = 0`; this yields the
+dilation law `∫ g(s⁻¹ y) dμ_C(y) = sⁿ ∫ g dμ_C` for `C¹_c` functions, mollification extends it to
+`C_c`, and Riesz uniqueness turns it into the stated identity on all sets. -/
+theorem Submission.varifold_tangents_radial_stationary_homogeneous :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A := by
+  intro N n C hC hrad s A hs
+  -- `μ_C` is finite on compact sets, since every compact set lies in the domain `ℝ^N`.
+  have hfin : IsFiniteMeasureOnCompacts C.weight :=
+    ⟨fun K hK ↦ lt_top_iff_ne_top.2 (C.weight_finite_on_compact K hK (subset_univ K))⟩
+  -- Step 1: Euler's identity `∫ (n g + Dg(y)(y)) dμ_C = 0` for `g ∈ C¹_c`.
+  have hH := Submission.varifold_tangents_rh_radial_euler_identity N n C hC hrad
+  -- Step 2: the dilation law `∫ g(s⁻¹ y) dμ_C(y) = sⁿ ∫ g dμ_C` for `g ∈ C¹_c`.
+  have hS1 := Submission.varifold_tangents_rh_scaling_of_euler_identity N n C.weight hfin hH
+  -- Step 3: mollification extends the law to `C_c`; steps 4–5: Riesz uniqueness gives it on sets.
+  exact Submission.varifold_tangents_rh_measure_homogeneous N n C.weight s hfin hs
+    (Submission.varifold_tangents_rh_scaling_continuous N n C.weight s hfin hs
+      fun g hg hgc ↦ hS1 g hg hgc s hs) A
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
