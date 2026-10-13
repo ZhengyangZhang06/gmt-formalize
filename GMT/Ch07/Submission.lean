@@ -482,6 +482,125 @@ theorem Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball : ∀ (P : ℕ) (Q₁
   -- Step 3: `Q₁ ≤ Q₂` and `Q₂ ≤ Q₁`
   exact le_antisymm (key Q₁ Q₂ hx hx₂ h) (key Q₂ Q₁ hx₂ hx h.symm)
 
+/-- Propagation along the great circle in the proof of Simon 7.3.3(1) (p. 191: `spt S₀` lies in
+finitely many 2-planes `Pᵢ` with `Pᵢ ∩ Pⱼ = {0}`): if a closed set `S ⊆ ℝᴾ` is a 2-plane near each
+of its nonzero points and agrees with the 2-plane `Q` near one unit vector `x₀ ∈ Q`, then `S`
+agrees with `Q` near every unit vector of `Q`.  The great circle `K = Q ∩ 𝕊` is preconnected: two
+non-antipodal points of `K` lie on the radial projection of the segment joining them, which
+avoids `0`, and antipodal points are joined through a third unit vector of `Q` (`dim Q = 2`).  The
+set `A` of points near which `S` agrees with `Q` is open, contains `x₀`, and `A ∩ Q ⊆ S`.  A point
+of `K` outside `A` has a ball free of `A ∩ Q`: off `S` because `S` is closed, and on `S` because
+its local plane `Q' ≠ Q` would agree with `Q` near a point of `A ∩ Q`
+(`idtp_tdc_csfp_subspace_eq_of_inter_ball`).  So the open sets `A` and `(closure (A ∩ Q))ᶜ`
+would separate `K` unless `K ⊆ A`. -/
+theorem Submission.idtp_tdc_csfp_great_circle_local_plane : ∀ (P : ℕ) (S : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)) (x₀ : Euclid P) (ε₀ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q' : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q' = 2 ∧ S ∩ ball p δ = (Q' : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q = 2 → x₀ ∈ Q → ‖x₀‖ = 1 → 0 < ε₀ → S ∩ ball x₀ ε₀ = (Q : Set (Euclid P)) ∩ ball x₀ ε₀ → ∀ x : Euclid P, x ∈ Q → ‖x‖ = 1 → ∃ ε : ℝ, 0 < ε ∧ S ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε := by
+  intro P S Q x₀ ε₀ hS hloc hQ hx₀Q hx₀ hε₀ hx₀ε₀
+  -- Agreement of two sets on a set `U` persists on every `V ⊆ U`
+  have hres : ∀ {T₁ T₂ U V : Set (Euclid P)}, V ⊆ U → T₁ ∩ U = T₂ ∩ U → T₁ ∩ V = T₂ ∩ V := by
+    intro T₁ T₂ U V hVU h
+    rw [← inter_eq_right.2 hVU, ← inter_assoc, h, inter_assoc]
+  -- Step 1: the great circle `K = Q ∩ 𝕊` is preconnected
+  set K : Set (Euclid P) := (Q : Set (Euclid P)) ∩ sphere 0 1
+  have hx₀K : x₀ ∈ K := ⟨hx₀Q, mem_sphere_zero_iff_norm.2 hx₀⟩
+  have hKconn : IsPreconnected K := by
+    -- (i) `a, b ∈ K` with `a + b ≠ 0` lie on the arc `z ↦ z / |z|` of the segment `[a, b] ∌ 0`
+    have harc : ∀ a ∈ K, ∀ b ∈ K, a + b ≠ 0 → ∃ t ⊆ K, a ∈ t ∧ b ∈ t ∧ IsPreconnected t := by
+      rintro a ⟨haQ, ha⟩ b ⟨hbQ, hb⟩ hab
+      rw [mem_sphere_zero_iff_norm] at ha hb
+      -- `s a + t b = 0` with `s, t ≥ 0`, `s + t = 1` forces `s = t = 1 / 2` and `a + b = 0`
+      have h0 : ∀ z ∈ segment ℝ a b, z ≠ 0 := by
+        rintro _ ⟨s, t, hs, ht, hst, rfl⟩ h0
+        have hts : s = t := by
+          have h := congrArg norm (eq_neg_of_add_eq_zero_left h0)
+          rwa [norm_neg, norm_smul, norm_smul, ha, hb, Real.norm_of_nonneg hs,
+            Real.norm_of_nonneg ht, mul_one, mul_one] at h
+        subst hts
+        rw [← smul_add] at h0
+        exact hab ((smul_eq_zero.1 h0).resolve_left (by linarith))
+      refine ⟨(fun z => ‖z‖⁻¹ • z) '' segment ℝ a b, ?_,
+        ⟨a, left_mem_segment ℝ a b, by simp [ha]⟩, ⟨b, right_mem_segment ℝ a b, by simp [hb]⟩,
+        (convex_segment a b).isPreconnected.image _ ?_⟩
+      · rintro _ ⟨z, hz, rfl⟩
+        refine ⟨Q.smul_mem _ (Q.convex.segment_subset haQ hbQ hz), ?_⟩
+        rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm,
+          inv_mul_cancel₀ (norm_ne_zero_iff.2 (h0 z hz))]
+      · exact (continuous_norm.continuousOn.inv₀ fun z hz => norm_ne_zero_iff.2 (h0 z hz)).smul
+          continuousOn_id
+    -- (ii) as `dim Q = 2 > 1 = dim ℝx₀`, some unit vector `w ∈ Q` is neither `x₀` nor `-x₀`
+    obtain ⟨w, hwK, hw₁, hw₂⟩ : ∃ w ∈ K, x₀ + w ≠ 0 ∧ w + -x₀ ≠ 0 := by
+      have hx₀0 : x₀ ≠ 0 := norm_ne_zero_iff.1 (by rw [hx₀]; exact one_ne_zero)
+      obtain ⟨q, hqQ, hq⟩ : ∃ q ∈ Q, q ∉ Submodule.span ℝ {x₀} := by
+        by_contra! h
+        have h' := Submodule.finrank_mono (show Q ≤ Submodule.span ℝ {x₀} from h)
+        rw [hQ, finrank_span_singleton hx₀0] at h'
+        norm_num at h'
+      have hq0 : ‖q‖ ≠ 0 := norm_ne_zero_iff.2 fun h => hq (h ▸ Submodule.zero_mem _)
+      have hw : ∀ c : ℝ, ‖q‖⁻¹ • q ≠ c • x₀ := fun c h => hq <| by
+        rw [← smul_inv_smul₀ hq0 q, h]
+        exact Submodule.smul_mem _ _ (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self x₀))
+      refine ⟨‖q‖⁻¹ • q, ⟨Q.smul_mem _ hqQ, ?_⟩, fun h => hw (-1) ?_, fun h => hw 1 ?_⟩
+      · rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hq0]
+      · rw [neg_one_smul]
+        exact eq_neg_of_add_eq_zero_right h
+      · rw [one_smul]
+        exact add_neg_eq_zero.1 h
+    -- (iii) each `y ∈ K` is joined to `x₀` by one arc, or by two arcs through `w` if `y = -x₀`
+    refine isPreconnected_of_forall x₀ fun y hy => ?_
+    by_cases hxy : x₀ + y = 0
+    · obtain ⟨t₁, ht₁K, hx₀t₁, hwt₁, ht₁⟩ := harc x₀ hx₀K w hwK hw₁
+      obtain ⟨t₂, ht₂K, hwt₂, hyt₂, ht₂⟩ :=
+        harc w hwK y hy (by rwa [eq_neg_of_add_eq_zero_right hxy])
+      exact ⟨t₁ ∪ t₂, union_subset ht₁K ht₂K, Or.inl hx₀t₁, Or.inr hyt₂,
+        IsPreconnected.union w hwt₁ hwt₂ ht₁ ht₂⟩
+    · exact harc x₀ hx₀K y hy hxy
+  -- Step 2: the set `A` of points near which `S` agrees with `Q` is open
+  set A : Set (Euclid P) :=
+    {y | ∃ ε : ℝ, 0 < ε ∧ S ∩ ball y ε = (Q : Set (Euclid P)) ∩ ball y ε}
+  have hAopen : IsOpen A := by
+    refine Metric.isOpen_iff.2 fun y hy => ?_
+    obtain ⟨ε, hε, hyε⟩ := hy
+    refine ⟨ε, hε, fun y' hy' => ⟨ε - dist y' y, sub_pos.2 (mem_ball.1 hy'), ?_⟩⟩
+    exact hres (ball_subset_ball' (sub_add_cancel _ _).le) hyε
+  -- Step 3: `A ∩ Q ⊆ S`
+  have hAQS : ∀ y ∈ A, y ∈ Q → y ∈ S := by
+    rintro y ⟨ε, hε, hyε⟩ hyQ
+    exact (hyε.ge ⟨hyQ, mem_ball_self hε⟩).1
+  -- Step 4: a point of `K` outside `A` is not in `closure (A ∩ Q)`
+  have hfar : ∀ x ∈ K, x ∉ A → x ∉ closure (A ∩ (Q : Set (Euclid P))) := by
+    intro x hxK hxA hxcl
+    rw [Metric.mem_closure_iff] at hxcl
+    by_cases hxS : x ∈ S
+    · -- (b) `S` is a plane `Q' ≠ Q` on `B_δ(x)`; for `y ∈ A ∩ Q` with `|x - y| < δ / 2`, `Q`
+      -- and `Q'` agree with `S` on `B_τ(y)`, `τ = min(ε_y, δ / 2)`, so `Q = Q'`
+      have hx0 : x ≠ 0 :=
+        norm_ne_zero_iff.1 (by rw [mem_sphere_zero_iff_norm.1 hxK.2]; exact one_ne_zero)
+      obtain ⟨δ, Q', hδ, -, hxδ⟩ := hloc x hxS hx0
+      have hQ' : Q' ≠ Q := by
+        rintro rfl
+        exact hxA ⟨δ, hδ, hxδ⟩
+      obtain ⟨y, ⟨⟨εy, hεy, hyεy⟩, hyQ⟩, hxy⟩ := hxcl (δ / 2) (half_pos hδ)
+      obtain ⟨τ, hτ, hτy, hτδ⟩ : ∃ τ : ℝ, 0 < τ ∧ τ ≤ εy ∧ τ ≤ δ / 2 :=
+        ⟨min εy (δ / 2), lt_min hεy (half_pos hδ), min_le_left _ _, min_le_right _ _⟩
+      have hτx : ball y τ ⊆ ball x δ := ball_subset_ball' (by rw [dist_comm]; linarith)
+      exact hQ' (Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball P Q Q' y τ hyQ hτ
+        ((hres (ball_subset_ball hτy) hyεy).symm.trans (hres hτx hxδ))).symm
+    · -- (a) a ball around `x` misses the closed set `S ⊇ A ∩ Q`
+      obtain ⟨r, hr, hrS⟩ := Metric.isOpen_iff.1 hS.isOpen_compl x hxS
+      obtain ⟨y, ⟨hyA, hyQ⟩, hxy⟩ := hxcl r hr
+      exact hrS (mem_ball'.2 hxy) (hAQS y hyA hyQ)
+  -- Step 5: `A` and `(closure (A ∩ Q))ᶜ` are open and cover `K` (Step 4); both meet `K` if
+  -- `K ⊄ A`, but no point of `K ∩ A ⊆ A ∩ Q` lies outside `closure (A ∩ Q)`
+  have hKA : K ⊆ A := by
+    intro x hxK
+    by_contra hxA
+    obtain ⟨z, hzK, hzA, hzv⟩ := hKconn A (closure (A ∩ (Q : Set (Euclid P))))ᶜ hAopen
+      isClosed_closure.isOpen_compl (fun y hy => (em (y ∈ A)).imp id (hfar y hy))
+      ⟨x₀, hx₀K, ε₀, hε₀, hx₀ε₀⟩ ⟨x, hxK, hfar x hxK hxA⟩
+    exact hzv (subset_closure ⟨hzA, hzK.1⟩)
+  -- Step 6: every unit vector of `Q` lies in `K ⊆ A`
+  intro x hxQ hx
+  exact hKA ⟨hxQ, mem_sphere_zero_iff_norm.2 hx⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
