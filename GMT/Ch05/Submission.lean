@@ -500,6 +500,31 @@ theorem dohr_eb_lhr_dqub_dq_mean_value : ∀ (E F : Type) [NormedAddCommGroup E]
   have hdpos : 0 < |d| := abs_pos.mpr hd
   -- Step 2: for `z ∈ ball xb (2 * R)` and `|s| ≤ |d|`, `z + s • e ∈ closedBall xb (4 * R)`.
   have hgeo : ∀ z ∈ ball xb (2 * R), ∀ s : ℝ, |s| ≤ |d| → z + s • e ∈ closedBall xb (4 * R) := by
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): difference quotients of a locally
+`C^{1,α}` map.**  Let `v` be locally `C^{1,α}` on the open set `U ⊇ B_{4R}(xb)` and `‖e‖ ≤ 1`.
+There is `S` such that for every `0 < |d| < R` the difference quotient
+`w_d(z) = d⁻¹ (v(z + d e) − v(z))` satisfies the following on `B̆_{2R}(xb)`: `‖w_d‖ ≤ S`, `w_d` is
+`C¹`, `Dw_d(x) = d⁻¹ (Dv(x + d e) − Dv(x))`, and `Dw_d` is `α`-Hölder.
+Proof: `dohr_eb_lhr_dqub_fderiv_consts` on the compact set `K₀ = B_{4R}(xb)` gives a bound `S_v`
+and a Hölder constant `H_v` for `Dv` on `K₀`; put `S = S_v`.  For `z ∈ B̆_{2R}(xb)` and `|s| ≤ |d|`,
+`‖z + s e − xb‖ < 2R + R ≤ 4R`, so `z` and `z + d e` lie in `K₀ ⊆ U`.  The bound on `w_d` is part
+(a) of `dohr_eb_lhr_dqub_dq_mean_value`.  The `C¹` property and the derivative formula follow from
+the chain rule for the translation `z ↦ z + d e`.  Finally
+`Dw_d(x) − Dw_d(y) = d⁻¹ ((Dv(x + d e) − Dv(y + d e)) − (Dv(x) − Dv(y)))` has norm at most
+`2 H_v |d|⁻¹ ‖x − y‖^α`. -/
+theorem dohr_eb_lhr_dqub_wd_props : ∀ (n ℓ : ℕ) (α : ℝ) (U : Set (Rn n)) (v : Rn n → Rn ℓ) (xb e : Rn n) (R : ℝ), IsOpen U → 0 < R → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → IsLocallyHolderCkα 1 α v U → ∃ S : ℝ, ∀ d : ℝ, d ≠ 0 → |d| < R → (∀ x ∈ ball xb (2 * R), ‖d⁻¹ • (v (x + d • e) - v x)‖ ≤ S) ∧ ContDiffOn ℝ 1 (fun z => d⁻¹ • (v (z + d • e) - v z)) (ball xb (2 * R)) ∧ (∀ x ∈ ball xb (2 * R), fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x = d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x)) ∧ ∃ K : ℝ, ∀ x ∈ ball xb (2 * R), ∀ y ∈ ball xb (2 * R), ‖fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x - fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) y‖ ≤ K * ‖x - y‖ ^ α := by
+  intro n ℓ α U v xb e R hU hR hsub he hv
+  -- Step 1: `v` is `C¹` on `U`, and `D¹v` is `α`-Hölder on the compact set `K₀ = B_{4R}(xb) ⊆ U`.
+  have hC1 : ContDiffOn ℝ 1 v U := by simpa using hv.1
+  have hK0 : IsCompact (closedBall xb (4 * R)) := isCompact_closedBall xb (4 * R)
+  -- Step 2: `‖Dv‖ ≤ S_v` and `‖Dv(z) − Dv(w)‖ ≤ H_v ‖z − w‖^α` on `K₀`.  The constant
+  -- `S := S_v` does not depend on `d`.
+  obtain ⟨Sv, Hv, -, -, hSv, hHv⟩ :=
+    Submission.dohr_eb_lhr_dqub_fderiv_consts (Rn n) (Rn ℓ) α U (closedBall xb (4 * R)) v hU hK0
+      hsub hC1 (hv.2 _ hK0 hsub)
+  refine ⟨Sv, fun d hd hdR => ?_⟩
+  -- Step 3: `z + s e ∈ K₀` for `z ∈ B̆_{2R}(xb)` and `|s| ≤ |d|`; in particular `z, z + d e ∈ K₀`.
+  have hgeom : ∀ z ∈ ball xb (2 * R), ∀ s : ℝ, |s| ≤ |d| → z + s • e ∈ closedBall xb (4 * R) := by
     intro z hz s hs
     rw [mem_ball, dist_eq_norm] at hz
     rw [mem_closedBall, dist_eq_norm]
@@ -567,6 +592,59 @@ theorem dohr_eb_lhr_dqub_dq_mean_value : ∀ (E F : Type) [NormedAddCommGroup E]
     rw [hrw, norm_smul, norm_inv, Real.norm_eq_abs, inv_mul_le_iff₀ hdpos]
     calc ‖(g (x + d • e) - g (y + d • e)) - (g x - g y)‖ ≤ H * ‖x - y‖ ^ α * |d| := hmv
       _ = |d| * (H * ‖x - y‖ ^ α) := mul_comm _ _
+      exact (mul_le_of_le_one_right (abs_nonneg s) he).trans hs
+    calc ‖z + s • e - xb‖ = ‖(z - xb) + s • e‖ := by rw [sub_add_eq_add_sub]
+      _ ≤ ‖z - xb‖ + ‖s • e‖ := norm_add_le _ _
+      _ ≤ 4 * R := by linarith
+  have hz0 : ∀ z ∈ ball xb (2 * R), z ∈ closedBall xb (4 * R) := fun z hz => by
+    simpa using hgeom z hz 0 (by simp)
+  have hzd : ∀ z ∈ ball xb (2 * R), z + d • e ∈ closedBall xb (4 * R) := fun z hz =>
+    hgeom z hz d le_rfl
+  -- Step 4: claim (i) is part (a) of `dohr_eb_lhr_dqub_dq_mean_value` (taking `y = x`).
+  have hdiff : DifferentiableOn ℝ v U := hC1.differentiableOn one_ne_zero
+  have hmv := Submission.dohr_eb_lhr_dqub_dq_mean_value (Rn n) (Rn ℓ) α U v xb e R Sv Hv d hU hsub
+    he hdiff hSv hHv hd hdR
+  -- Step 6: `w_d` has derivative `d⁻¹ (Dv(x + d e) − Dv(x))` at every `x ∈ B̆_{2R}(xb)`.
+  have hderiv : ∀ x ∈ ball xb (2 * R), HasFDerivAt (fun z => d⁻¹ • (v (z + d • e) - v z))
+      (d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x)) x := by
+    intro x hx
+    have hxU : x ∈ U := hsub (hz0 x hx)
+    have hxdU : x + d • e ∈ U := hsub (hzd x hx)
+    have hv0 : DifferentiableAt ℝ v x := (hdiff x hxU).differentiableAt (hU.mem_nhds hxU)
+    have hv1 : DifferentiableAt ℝ v (x + d • e) :=
+      (hdiff _ hxdU).differentiableAt (hU.mem_nhds hxdU)
+    have hcomp : HasFDerivAt (fun z => v (z + d • e)) (fderiv ℝ v (x + d • e)) x := by
+      simpa [Function.comp_def] using
+        hv1.hasFDerivAt.comp x ((hasFDerivAt_id x).add_const (d • e))
+    exact (hcomp.sub hv0.hasFDerivAt).const_smul d⁻¹
+  refine ⟨fun x hx => (hmv x hx x hx).1, ?_, fun x hx => (hderiv x hx).fderiv, ?_⟩
+  · -- Step 5: claim (ii), since `w_d = d⁻¹ • (v ∘ τ − v)` for the translation `τ z = z + d e`.
+    have hτ : ContDiffOn ℝ 1 (fun z : Rn n => z + d • e) (ball xb (2 * R)) :=
+      (contDiff_id.add contDiff_const).contDiffOn
+    have hτU : MapsTo (fun z : Rn n => z + d • e) (ball xb (2 * R)) U := fun z hz =>
+      hsub (hzd z hz)
+    have h1 : ContDiffOn ℝ 1 (fun z => v (z + d • e)) (ball xb (2 * R)) := hC1.comp hτ hτU
+    have h2 : ContDiffOn ℝ 1 v (ball xb (2 * R)) := hC1.mono fun z hz => hsub (hz0 z hz)
+    exact (h1.sub h2).const_smul d⁻¹
+  · -- Step 7: claim (iv) with `K = 2 H_v |d|⁻¹`, using the Hölder bound of `Dv` at the four points
+    -- `x, y, x + d e, y + d e ∈ K₀`.
+    refine ⟨2 * Hv * |d|⁻¹, fun x hx y hy => ?_⟩
+    rw [(hderiv x hx).fderiv, (hderiv y hy).fderiv]
+    have heq : d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x) -
+        d⁻¹ • (fderiv ℝ v (y + d • e) - fderiv ℝ v y) =
+        d⁻¹ • ((fderiv ℝ v (x + d • e) - fderiv ℝ v (y + d • e)) -
+          (fderiv ℝ v x - fderiv ℝ v y)) :=
+      (smul_sub _ _ _).symm.trans (by rw [sub_sub_sub_comm])
+    have h1 := hHv _ (hzd x hx) _ (hzd y hy)
+    rw [add_sub_add_right_eq_sub] at h1
+    have h2 := hHv _ (hz0 x hx) _ (hz0 y hy)
+    rw [heq, norm_smul, norm_inv, Real.norm_eq_abs]
+    calc |d|⁻¹ * ‖(fderiv ℝ v (x + d • e) - fderiv ℝ v (y + d • e)) -
+          (fderiv ℝ v x - fderiv ℝ v y)‖
+        ≤ |d|⁻¹ * (Hv * ‖x - y‖ ^ α + Hv * ‖x - y‖ ^ α) :=
+          mul_le_mul_of_nonneg_left ((norm_sub_le _ _).trans (add_le_add h1 h2))
+            (inv_nonneg.2 (abs_nonneg d))
+      _ = 2 * Hv * |d|⁻¹ * ‖x - y‖ ^ α := by ring
 
 end Submission
 
