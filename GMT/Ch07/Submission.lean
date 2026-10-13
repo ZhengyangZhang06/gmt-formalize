@@ -694,6 +694,29 @@ theorem Submission.dtc_blowUp_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : 
       Measure.restrict_smul, hme.restrict_map, lintegral_smul_measure, hme.lintegral_map]
     simp [hιη]
 
+/-- **Dilations of currents in `ℝᴾ` exist and agree with the blow-up `η_{a,λ#}`** (Simon Ch. 3,
+1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt lines 403–413).  Call
+`X' ∈ 𝒟ₘ(ℝᴾ)` a dilation of `X` if `X'(ω) = λ⁻ᵐ X(ω')` whenever `ω' = ω ∘ η`, `η = η_{a,λ}`.
+Since `η(a + λy) = y`, `η(ℝᴾ) = ℝᴾ`, so `η_{a,λ#}X ∈ 𝒟ₘ(η(ℝᴾ))` restricts to `ℝᴾ`.  (i) This
+restriction is a dilation of `X`; (ii) every dilation `X'` of `X` agrees with `η_{a,λ#}X`:
+`X'(ω) = η_{a,λ#}X(ω₁)` whenever `ω₁ ∈ 𝒟ᵐ(η(ℝᴾ))` has the underlying form of `ω`.  Both follow
+from `Submission.dtc_blowUp_testForm_corr` with `U = ℝᴾ`. -/
+theorem Submission.cbr_cidc_dilation_exists_eq_blowUp : ∀ (P m : ℕ) (a : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) m, ∃ X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω')) ∧ ∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → ∀ (ω : TestFormOn (univ : Set (Euclid P)) m) (ω₁ : TestFormOn (dilation a lam '' (univ : Set (Euclid P))) m), (ω₁ : DifferentialForm (Euclid P) m) = (ω : DifferentialForm (Euclid P) m) → X' ω = blowUp X a lam hlam.ne' ω₁ := by
+  intro P m a lam hlam
+  obtain ⟨hA, -, hC⟩ := Submission.dtc_blowUp_testForm_corr P m univ a lam hlam
+  -- Step 1: `η` maps `ℝᴾ` onto `ℝᴾ`, since `η(a + λy) = y`.
+  have hsurj : (univ : Set (Euclid P)) ⊆ dilation a lam '' univ := fun y _ =>
+    ⟨a + lam • y, mem_univ _, by
+      simp [dilation, dilationCLM, smul_add, smul_smul, inv_mul_cancel₀ hlam.ne']⟩
+  refine ⟨fun X => ?_, fun X X' hX' ω ω₁ hω => ?_⟩
+  · -- Step 2, (i): the restriction of `η_{a,λ#}X` to `ℝᴾ` is a dilation of `X`, by part (c).
+    refine ⟨(blowUp X a lam hlam.ne').restrictDomain hsurj, fun ω ω' hωω' => ?_⟩
+    rw [GeometricCurrentOn.restrictDomain_apply]
+    exact hC X _ ω' (by simpa using hωω')
+  · -- Steps 3–4, (ii): part (a) gives `ω' = ω₁ ∘ η = ω ∘ η`, and part (c) and the dilation
+    -- property give `η_{a,λ#}X(ω₁) = λ⁻ᵐ X(ω') = X'(ω)`.
+    obtain ⟨ω', hω'⟩ := hA ω₁
+    rw [hC X ω₁ ω' hω', hX' ω ω' (fun y => by rw [hω', hω])]
 /-- **Mass scaling of blow-ups: `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)`** for `λ > 0` and every
 `W ⊆ ℝᴾ` (scaling identity (1) in the proof of Simon 7.3.1, chapter-07.txt lines 329–331; mass
 `M_W` of 6.2.5 with the Euclidean coefficient norm).  By `Submission.dtc_blowUp_testForm_corr`,
@@ -959,6 +982,36 @@ theorem Submission.cbr_cidc_dilation_integral_rep : ∀ (P m : ℕ) (a : Euclid 
   refine integral_congr_ae (Eventually.of_forall fun x => ?_)
   dsimp only
   rw [hιη x, hω' x, testFormOnInclusion_coe]
+/-- **Mass scaling for dilations: `M_{η(W)}(X') = λ⁻ᵐ M_W(X)`** for `η = η_{a,λ}`, `λ > 0`, a
+dilation `X' ∈ 𝒟ₘ(ℝᴾ)` of `X ∈ 𝒟ₘ(ℝᴾ)` (`X'(ω) = λ⁻ᵐ X(ω')` whenever `ω' = ω ∘ η`) and every
+`W ⊆ ℝᴾ` (item (5) of the dilation calculus for the integer-multiplicity criterion for cycles;
+`η_{x,λ}` of Simon Ch. 3, 1.4, chapter-03.txt line 85; mass `M_W` of 6.2.5, chapter-06.txt
+lines 221–233, with the Euclidean coefficient norm).  `η(a + λy) = y`, so `η(ℝᴾ) = ℝᴾ` and
+`𝒟ᵐ(ℝᴾ)`, `𝒟ᵐ(η(ℝᴾ))` consist of the same forms, with the same admissible forms for `M_{η(W)}`.
+By `Submission.cbr_cidc_dilation_exists_eq_blowUp`, `X'(ω) = η_{a,λ#}X(ω)` on equal forms, so
+`M_{η(W)}(X') = M_{η(W)}(η_{a,λ#}X)`, which is `λ⁻ᵐ M_W(X)` by
+`Submission.dtc_blowUp_massOn_image`. -/
+theorem Submission.cbr_cidc_dilation_massOn_image : ∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → ∀ W : Set (Euclid P), X'.massOn (dilation a lam '' W) = ENNReal.ofReal (lam⁻¹ ^ m) * X.massOn W := by
+  intro P m a lam hlam X X' hX W
+  -- `η = η_{a,λ}` is onto (`η(a + λy) = y`), so `ℝᴾ` and `η(ℝᴾ)` have the same test forms.
+  have hsurj : (univ : Set (Euclid P)) ⊆ dilation a lam '' univ := fun y _ =>
+    ⟨a + lam • y, mem_univ _, by simp [dilation, dilationCLM, smul_add, smul_smul, hlam.ne']⟩
+  have hsub : dilation a lam '' (univ : Set (Euclid P)) ⊆ univ := subset_univ _
+  -- `X'(ω) = η_{a,λ#}X(ω₁)` whenever `ω` and `ω₁` have the same underlying form.
+  have hblow := (Submission.cbr_cidc_dilation_exists_eq_blowUp P m a lam hlam).2 X X' hX
+  refine Eq.trans ?_ (Submission.dtc_blowUp_massOn_image P m univ X a lam hlam W)
+  -- The admissible forms for `M_{η(W)}(X')` and `M_{η(W)}(η_{a,λ#}X)` are the same forms, on
+  -- which `X'` and `η_{a,λ#}X` agree.
+  unfold GeometricCurrentOn.massOn
+  congr 1
+  ext r
+  constructor
+  · rintro ⟨φ, hφ, rfl⟩
+    exact ⟨testFormOnInclusion hsurj m φ, hφ,
+      congrArg ENNReal.ofReal (hblow φ (testFormOnInclusion hsurj m φ) rfl).symm⟩
+  · rintro ⟨φ₁, hφ₁, rfl⟩
+    exact ⟨testFormOnInclusion hsub m φ₁, hφ₁,
+      congrArg ENNReal.ofReal (hblow (testFormOnInclusion hsub m φ₁) φ₁ rfl)⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
