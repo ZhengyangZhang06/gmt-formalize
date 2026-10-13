@@ -451,6 +451,81 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Sobolev inequality in the limit of symmetric mollifications** (Simon Ch. 3, proof of
+Theorem 4.3 (De Giorgi), Sobolev step, chapter-03.txt lines 689–712, with the mollification
+Lemma Ch. 2, 2.5, chapter-02.txt lines 543–596).  Assume the Sobolev inequality
+`(∫ |w|^p)^{1/p} ≤ c ∫ |Dw|` for `C¹` compactly supported `w`, let `u` be integrable with compact
+support and `|∫ u div g| ≤ M` for `C¹_c` fields `|g| ≤ 1`, and let `η_k` be even, nonnegative,
+`C¹`, compactly supported with `∫ η_k = 1` and `η_k * u → u` a.e.  Then `(∫ |u|^p)^{1/p} ≤ c M`:
+`g = 0` gives `M ≥ 0`; each `w_k = η_k * u` is `C¹` with compact support and
+`∫ |Dw_k| ≤ M` (`codim1_rdo_dg_sp_mollify_variation`), so `∫⁻ ‖w_k‖ₑ^p ≤ (cM)^p` by the Sobolev
+inequality; Fatou's lemma along `w_k → u` a.e. gives `∫⁻ ‖u‖ₑ^p ≤ (cM)^p`, and taking `toReal`
+and the `1/p` power concludes. -/
+theorem Submission.codim1_rdo_dg_sp_sobolev_limit : ∀ (P : ℕ) (p c : ℝ), 0 < p → 0 ≤ c → (∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → (∫ z, |w z| ^ p) ^ p⁻¹ ≤ c * ∫ z, ‖fderiv ℝ w z‖) → ∀ (u : Euclid P → ℝ) (M : ℝ), Integrable u → HasCompactSupport u → (∀ g : Euclid P → Euclid P, ContDiff ℝ 1 g → HasCompactSupport g → (∀ z, ‖g z‖ ≤ 1) → |∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)| ≤ M) → ∀ η : ℕ → Euclid P → ℝ, (∀ k, ContDiff ℝ 1 (η k)) → (∀ k, HasCompactSupport (η k)) → (∀ k z, 0 ≤ η k z) → (∀ k z, η k (-z) = η k z) → (∀ k, ∫ z, η k z = 1) → (∀ᵐ x, Tendsto (fun k => convolution (η k) u (ContinuousLinearMap.lsmul ℝ ℝ) volume x) atTop (𝓝 (u x))) → (∫ z, |u z| ^ p) ^ p⁻¹ ≤ c * M := by
+  intro P p c hp hc hS u M hu hcu hM η hη hηc hη0 hηs hη1 hae
+  -- Step 1: testing the variation bound with `g = 0` gives `M ≥ 0`, hence `c M ≥ 0`
+  have hM0 : 0 ≤ M := by
+    simpa using hM (fun _ => 0) contDiff_const HasCompactSupport.zero fun _ => by simp
+  have hcM : 0 ≤ c * M := mul_nonneg hc hM0
+  -- Step 2: the mollifications `w_k = η_k * u` are `C¹` with compact support
+  set w : ℕ → Euclid P → ℝ :=
+    fun k => convolution (η k) u (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hwC : ∀ k, ContDiff ℝ 1 (w k) := fun k =>
+    (hηc k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hη k) hu.locallyIntegrable
+  have hwcs : ∀ k, HasCompactSupport (w k) := fun k =>
+    (hηc k).convolution (ContinuousLinearMap.lsmul ℝ ℝ) hcu
+  -- `ofReal (|t|^p) = ‖t‖ₑ^p`
+  have henorm : ∀ t : ℝ, ENNReal.ofReal (|t| ^ p) = ‖t‖ₑ ^ p := fun t => by
+    rw [Real.enorm_eq_ofReal_abs, ENNReal.ofReal_rpow_of_nonneg (abs_nonneg t) hp.le]
+  -- Step 3: `∫ |Dw_k| ≤ M` and the Sobolev inequality give `∫ |w_k|^p ≤ (c M)^p`
+  have hbound : ∀ k, ∫ z, |w k z| ^ p ≤ (c * M) ^ p := by
+    intro k
+    have hvar : ∫ z, ‖fderiv ℝ (w k) z‖ ≤ M :=
+      Submission.codim1_rdo_dg_sp_mollify_variation P u M hu hcu hM (η k) (hη k) (hηc k)
+        (hη0 k) (hηs k) (hη1 k)
+    have h1 : (∫ z, |w k z| ^ p) ^ p⁻¹ ≤ c * M :=
+      (hS (w k) (hwC k) (hwcs k)).trans (mul_le_mul_of_nonneg_left hvar hc)
+    have ha : 0 ≤ ∫ z, |w k z| ^ p :=
+      integral_nonneg fun z => Real.rpow_nonneg (abs_nonneg _) p
+    calc ∫ z, |w k z| ^ p = ((∫ z, |w k z| ^ p) ^ p⁻¹) ^ p :=
+          (Real.rpow_inv_rpow ha hp.ne').symm
+      _ ≤ (c * M) ^ p := Real.rpow_le_rpow (Real.rpow_nonneg ha _) h1 hp.le
+  -- Step 4: `|w_k|^p` is continuous with compact support, so `∫⁻ ‖w_k‖ₑ^p ≤ ofReal ((c M)^p)`
+  have hlow : ∀ k, ∫⁻ x, ‖w k x‖ₑ ^ p ≤ ENNReal.ofReal ((c * M) ^ p) := by
+    intro k
+    have hint : Integrable fun z => |w k z| ^ p :=
+      ((hwC k).continuous.abs.rpow_const fun _ => Or.inr hp.le).integrable_of_hasCompactSupport
+        ((hwcs k).abs.rpow_const hp.ne')
+    calc ∫⁻ x, ‖w k x‖ₑ ^ p = ∫⁻ x, ENNReal.ofReal (|w k x| ^ p) :=
+          lintegral_congr fun x => (henorm (w k x)).symm
+      _ = ENNReal.ofReal (∫ z, |w k z| ^ p) :=
+          (ofReal_integral_eq_lintegral_ofReal hint
+            (Eventually.of_forall fun z => Real.rpow_nonneg (abs_nonneg _) p)).symm
+      _ ≤ ENNReal.ofReal ((c * M) ^ p) := ENNReal.ofReal_le_ofReal (hbound k)
+  -- Step 5: Fatou's lemma along `w_k → u` a.e.
+  have hfatou : ∫⁻ x, ‖u x‖ₑ ^ p ≤ ENNReal.ofReal ((c * M) ^ p) :=
+    calc ∫⁻ x, ‖u x‖ₑ ^ p = ∫⁻ x, liminf (fun k => ‖w k x‖ₑ ^ p) atTop := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hae] with x hx
+          exact ((hx.enorm.ennrpow_const p).liminf_eq).symm
+      _ ≤ liminf (fun k => ∫⁻ x, ‖w k x‖ₑ ^ p) atTop :=
+          lintegral_liminf_le fun k => (hwC k).continuous.measurable.enorm.pow_const p
+      _ ≤ ENNReal.ofReal ((c * M) ^ p) := liminf_le_of_frequently_le' (Frequently.of_forall hlow)
+  -- Step 6: `∫ |u|^p = (∫⁻ ‖u‖ₑ^p).toReal ≤ (c M)^p`; take the `1/p` power
+  have hup : 0 ≤ ∫ z, |u z| ^ p := integral_nonneg fun z => Real.rpow_nonneg (abs_nonneg _) p
+  have hU : ∫ z, |u z| ^ p ≤ (c * M) ^ p := by
+    rw [integral_eq_lintegral_of_nonneg_ae
+      (Eventually.of_forall fun z => Real.rpow_nonneg (abs_nonneg (u z)) p)
+      ((continuous_abs.rpow_const fun _ => Or.inr hp.le).comp_aestronglyMeasurable
+        hu.aestronglyMeasurable)]
+    refine ENNReal.toReal_le_of_le_ofReal (Real.rpow_nonneg hcM p) ?_
+    calc ∫⁻ x, ENNReal.ofReal (|u x| ^ p) = ∫⁻ x, ‖u x‖ₑ ^ p :=
+          lintegral_congr fun x => henorm (u x)
+      _ ≤ ENNReal.ofReal ((c * M) ^ p) := hfatou
+  calc (∫ z, |u z| ^ p) ^ p⁻¹ ≤ ((c * M) ^ p) ^ p⁻¹ :=
+        Real.rpow_le_rpow hup hU (inv_nonneg.2 hp.le)
+    _ = c * M := Real.rpow_rpow_inv hcM hp.ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
