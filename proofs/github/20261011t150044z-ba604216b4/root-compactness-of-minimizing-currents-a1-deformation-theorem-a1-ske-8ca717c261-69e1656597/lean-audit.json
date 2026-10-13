@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4105b53ea7f0b6c49a942dc40c90326e47933450b5eece41d73ff5e81807a4e1",
+  "git_delta": {
+    "base_commit": "248ba11c23407ff1f1c9ea39a689b1a17482f0cc",
+    "candidate_commit": "8290fd606dfc2685cf87a162105f7ca90d574c75",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtsr_cube_cover",
+    "diff_sha256": "0b65b3fd51a2646602ce710eb14fecf92a4384fe465ba7e5b0f04522efa47623",
+    "source_sha256": "3098db277d9426b3456d9be95b626f3a604a8a71001383dd79e610f28a5db29e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtsr_cube_cover",
+      "statement": "∀ (P : ℕ) (x : Euclid P), ∃ Z : Finset (Fin P → ℤ), (∀ z ∈ Z, ∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) ∧ ∀ᶠ y : Euclid P in 𝓝 x, ∃ z ∈ Z, ∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
