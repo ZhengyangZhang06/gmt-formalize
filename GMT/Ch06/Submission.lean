@@ -913,6 +913,57 @@ theorem Submission.slicing_im_ll_twl_coefficient_field : ∀ (P n : ℕ) (Φ : E
   filter_upwards [hpull, ae_restrict_mem₀ hDm] with w hw hwD
   exact Submodule.smul_mem _ _ (hw w hwD.1 rfl)
 
+/-- Chain rule on a `C¹` chart for a Lipschitz function with a tangential gradient (used for
+Simon Ch. 6, §4): if `h` is `L`-Lipschitz and, for `Hⁿ`-a.e. `x ∈ A`, `s ↦ h(x + s u)` has
+derivative `⟨G(x), u⟩` at `0` for all `u ∈ range DΦ(w)` with `Φ(w) = x`, then Rademacher's theorem
+on `Ω` and uniqueness of derivatives give `D(h ∘ Φ)(w) = ⟨G(Φ(w)), DΦ(w) ·⟩` for `Lⁿ`-a.e.
+`w ∈ Ω ∩ Φ⁻¹(A)`. -/
+theorem Submission.slicing_im_ll_twl_chart_hasFDerivAt : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (h : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → LipschitzWith L h → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), HasFDerivAt (h ∘ Φ) ((innerSL ℝ (G (Φ w))).comp (fderiv ℝ Φ w)) w := by
+  intro P n Φ Ω A h L G hΩ hΦ ⟨K, hK⟩ hanti hA hh hG
+  -- The tangential hypothesis at `Φ w` holds for `Lⁿ`-a.e. `w ∈ Ω ∩ Φ⁻¹(A)`.
+  obtain ⟨hD, hpull⟩ := Submission.lpf_ccr_ae_pullback P n A Φ Ω
+    (fun x => ∀ w ∈ Ω, Φ w = x → ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap,
+      HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0)
+    hΩ.measurableSet hΦ.continuous.measurable hanti hA
+    (ae_restrict_of_ae_restrict_of_subset inter_subset_left hG)
+  -- Rademacher: `h ∘ Φ` is Lipschitz on the open set `Ω`, so differentiable a.e. in `Ω`.
+  have hrad : ∀ᵐ w ∂(volume : Measure (Eucl n)), w ∈ Ω → DifferentiableWithinAt ℝ (h ∘ Φ) Ω w :=
+    (hh.comp_lipschitzOnWith hK).ae_differentiableWithinAt_of_mem
+  filter_upwards [hpull, ae_restrict_of_ae hrad, ae_restrict_mem₀ hD] with w hpw hdw hwD
+  have hdiff : DifferentiableAt ℝ (h ∘ Φ) w := (hdw hwD.1).differentiableAt (hΩ.mem_nhds hwD.1)
+  -- Identify `D(h ∘ Φ)(w) s` with `⟨G(Φ w), DΦ(w) s⟩` for every direction `s`.
+  have key : fderiv ℝ (h ∘ Φ) w = (innerSL ℝ (G (Φ w))).comp (fderiv ℝ Φ w) := by
+    refine ContinuousLinearMap.ext fun s => ?_
+    rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply]
+    have hline : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+    have hΦline : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (fderiv ℝ Φ w s) 0 :=
+      ((hΦ.differentiable one_ne_zero) w).hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hline
+        (by simp)
+    have hφ₁ : HasDerivAt (fun t : ℝ => h (Φ (w + t • s))) (fderiv ℝ (h ∘ Φ) w s) 0 :=
+      hdiff.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hline (by simp)
+    -- The tangential hypothesis, applied at `w` itself in the direction `DΦ(w) s`.
+    have h₁ : HasDerivAt (fun t : ℝ => h (Φ w + t • fderiv ℝ Φ w s))
+        (inner ℝ (G (Φ w)) (fderiv ℝ Φ w s)) 0 :=
+      hpw w hwD.1 rfl _ ⟨s, rfl⟩
+    -- `h(Φ w + t DΦ(w) s)` and `h(Φ(w + t s))` differ by at most `L · o(t)`.
+    have h₂ : HasDerivAt (fun t : ℝ => h (Φ w + t • fderiv ℝ Φ w s)) (fderiv ℝ (h ∘ Φ) w s) 0 := by
+      rw [hasDerivAt_iff_isLittleO] at hΦline hφ₁ ⊢
+      have hO : (fun t : ℝ => h (Φ w + t • fderiv ℝ Φ w s) - h (Φ (w + t • s))) =O[𝓝 0]
+          (fun t : ℝ => Φ (w + t • s) - Φ (w + (0 : ℝ) • s) - (t - 0) • fderiv ℝ Φ w s) := by
+        refine Asymptotics.IsBigO.of_bound (L : ℝ) (Eventually.of_forall fun t => ?_)
+        refine (hh.norm_sub_le _ _).trans_eq ?_
+        rw [← norm_neg (Φ w + t • fderiv ℝ Φ w s - Φ (w + t • s))]
+        congr 2
+        simp only [zero_smul, add_zero, sub_zero]
+        abel
+      refine (hφ₁.add (hO.trans_isLittleO hΦline)).congr_left fun t => ?_
+      simp only [zero_smul, add_zero, sub_zero]
+      abel
+    exact h₂.unique h₁
+  rw [← key]
+  exact hdiff.hasFDerivAt
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
