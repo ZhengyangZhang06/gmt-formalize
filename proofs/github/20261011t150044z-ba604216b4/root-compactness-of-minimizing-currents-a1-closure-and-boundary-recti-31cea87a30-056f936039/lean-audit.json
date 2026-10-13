@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ba9bc23a9801ce4ac0812dd3d3d00929b137483791da91a03fecfcb381bbd96d",
+  "git_delta": {
+    "base_commit": "4a8db080ba24b9e4f6e1d5e7d0b12e085ee96659",
+    "candidate_commit": "ad9732676296445437738d9564a35a56cc16acbc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cc_seg_open_segment_tangent",
+    "diff_sha256": "4fb5443ffa6060fcd2be51eda13fd1b78701a9aa914e52a87ac81b4aae0dc956",
+    "source_sha256": "8b39b38fc25babd772501e69b7669ef3d87fdc1b8986a7c4ad5c8582b9d6ec7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cc_seg_open_segment_tangent",
+      "statement": "∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → ∀ x ∈ (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ, HasApproximateTangentSpaceAt 1 ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) x (Submodule.span ℝ {τ})",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
