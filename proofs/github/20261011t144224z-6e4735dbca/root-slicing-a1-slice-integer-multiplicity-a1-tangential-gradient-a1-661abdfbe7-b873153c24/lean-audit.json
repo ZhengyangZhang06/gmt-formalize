@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c11c9df72997a6e72465051788c86744974f5a94375d82f86cfd54e7ae5c607f",
+  "git_delta": {
+    "base_commit": "4dd9fe205b493eac98fdbd43cd5b3dcec4b47593",
+    "candidate_commit": "a51770cbdc26b3623a0694e84e19aeb9c7f5332f",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "957a51acd4017910ad8937cf99c85b5b60eebffcd7c50751d92c9a99104257e3",
+    "source_sha256": "68defecb75829a3ea7e77fb3ea373d5c98279ea9a224f197bdbc40087df4a958",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_tg_chart_gradient",
+      "statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (f : Eucl P → ℝ) (L : ℝ≥0), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → LipschitzWith L f → ∃ g : Eucl P → Eucl P, Measurable g ∧ (∀ x, ‖g x‖ ≤ L) ∧ ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict (Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → g y ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ v ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => f (y + s • v)) (inner ℝ (g y) v) 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

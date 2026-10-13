@@ -1,0 +1,21 @@
+{
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3351",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "a51770cbdc26b3623a0694e84e19aeb9c7f5332f",
+  "integrated_commit": "",
+  "proof_base_commit": "fe5ecf7a6849dd0ef1e06b8dc02871a2084becf9",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1",
+  "requires": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.line_deriv-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+    "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.chart_nondiff_image_null-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1.gram_field-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1.borel_transfer-a1"
+  ]
+}
