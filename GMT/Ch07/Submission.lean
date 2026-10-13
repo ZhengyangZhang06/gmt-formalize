@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Exterior derivative of a function times a contracted covector** (used for the divergence
+form in the mass-representation step of Simon 7.2.4).  If `b : ℝᴾ → ℝ` and `G : ℝᴾ → ℝᴾ` are
+differentiable at `x` and `θ` is a fixed `(m+1)`-covector, then `η(y) = b(y) θ(G(y), ·)` has
+`dη(x)(w₀, …, w_m) = Σᵢ (−1)ⁱ (Db(x)wᵢ · θ(G(x), ŵᵢ) + b(x) · θ(DG(x)wᵢ, ŵᵢ))`, where `ŵᵢ` is
+`(w₀, …, w_m)` with `wᵢ` removed: each term of the alternating sum differentiates
+`y ↦ b(y) θ(G(y), ŵᵢ)` by the product and chain rules. -/
+theorem Submission.cmr_df_extDeriv_smul_curryLeft : ∀ (P m : ℕ) (θ : Covector (Euclid P) (m + 1)) (b : Euclid P → ℝ) (G : Euclid P → Euclid P) (x : Euclid P), DifferentiableAt ℝ b x → DifferentiableAt ℝ G x → ∀ w : Fin (m + 1) → Euclid P, exteriorDerivative (fun y => b y • ContinuousAlternatingMap.curryLeft θ (G y)) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w)) + b x * θ (Fin.cons (fderiv ℝ G x (w i)) (i.removeNth w))) := by
+  intro P m θ b G x hb hG w
+  have hc : DifferentiableAt ℝ (fun y => ContinuousAlternatingMap.curryLeft θ (G y)) x :=
+    (ContinuousAlternatingMap.curryLeft θ).differentiableAt.comp x hG
+  have hη : DifferentiableAt ℝ (fun y => b y • ContinuousAlternatingMap.curryLeft θ (G y)) x :=
+    hb.smul hc
+  rw [exteriorDerivative_apply hη w]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [fderiv_continuousAlternatingMap_apply_const_apply hη, fderiv_fun_smul hb hc,
+    fderiv_fun_comp x (ContinuousAlternatingMap.curryLeft θ).differentiableAt hG,
+    ContinuousLinearMap.fderiv]
+  simp only [add_apply, smul_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+    ContinuousLinearMap.smulRight_apply, ContinuousAlternatingMap.add_apply,
+    ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+    smul_eq_mul, zsmul_eq_mul]
+  simp only [Matrix.vecCons]
+  push_cast
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
