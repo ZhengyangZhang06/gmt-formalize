@@ -1302,6 +1302,157 @@ theorem Submission.dorag_ha_rb_sup_net : ∀ (n : ℕ) (K : Set (Euclid n)) (g :
       exact abs_sub_le _ _ _
     _ ≤ δ := by linarith
 
+/-- **Rellich on `B̆₁(0)`, total boundedness** (parent proof, step 4).  Let the `uⱼ` be Lipschitz
+on `ℝⁿ` with `∫_B uⱼ² ≤ M` and `∫_B ‖Duⱼ‖² ≤ M`, `B = B̆₁(0)`.  Then for every `η > 0` finitely
+many `uₖ` form an `η`-net for `∫_B (uⱼ − uₖ)²`.  Choose `s`, `ε ≤ s/2`, `δ` with `2^{n+6}sM`,
+`6ε²M`, `3δ²Lⁿ(B) ≤ η/3` and mollify, `vⱼ(x) = ∫ uⱼ(x − εz)ρ(z) dz` with the kernel of
+`dorag_ha_rb_kernel`.  As `∫_B |uⱼ| ≤ (Lⁿ(B) + M)/2` (`|a| ≤ (1 + a²)/2`), the `vⱼ` are uniformly
+bounded and uniformly Lipschitz on `B_{1−s}(0)` (`dorag_ha_rb_mollify_bounds`), so finitely many
+`vₖ` are a `δ`-net in the sup norm there (`dorag_ha_rb_sup_net`).  On `B \ B̆_{1−s}(0)` use
+`(a − b)² ≤ 2a² + 2b²` and `dorag_ha_rb_boundary_layer`; on `B̆_{1−s}(0)` use
+`(a + b + c)² ≤ 3(a² + b² + c²)` and `dorag_ha_rb_mollify_l2`. -/
+theorem Submission.dorag_ha_rb_total_bounded : ∀ (n : ℕ) (M : ℝ) (u : ℕ → Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) 1, u j x ^ 2 ≤ M) → (∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ M) → ∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x in ball (0 : Euclid n) 1, (u j x - u k x) ^ 2 ≤ η := by
+  intro n M u hLip hu hDu η hη
+  choose L hL using hLip
+  have hc : ∀ j, Continuous (u j) := fun j => (hL j).continuous
+  -- a function continuous on `B_r(0)` is integrable on `B̆_r(0)`
+  have hint : ∀ (f : Euclid n → ℝ) (r : ℝ), ContinuousOn f (closedBall 0 r) →
+      IntegrableOn f (ball 0 r) := fun f r hf =>
+    (hf.integrableOn_compact (isCompact_closedBall 0 r)).mono_set ball_subset_closedBall
+  have hM : 0 ≤ M := (integral_nonneg fun x => sq_nonneg (u 0 x)).trans (hu 0)
+  obtain ⟨ω, hω⟩ : ∃ ω : ℝ, ω = volume.real (ball (0 : Euclid n) 1) := ⟨_, rfl⟩
+  have hω0 : 0 ≤ ω := by rw [hω]; exact measureReal_nonneg
+  -- Step 1: the constants `s`, `ε ≤ s/2` and `δ`
+  obtain ⟨s, hs0, hs1, hsη⟩ : ∃ s : ℝ, 0 < s ∧ s ≤ 1 / 2 ∧ s * (3 * 2 ^ (n + 6) * (M + 1)) ≤ η :=
+    ⟨min (1 / 2) (η / (3 * 2 ^ (n + 6) * (M + 1))), lt_min (by norm_num) (by positivity),
+      min_le_left _ _, (le_div_iff₀ (by positivity)).mp (min_le_right _ _)⟩
+  obtain ⟨ε, hε0, hεs2, hεη⟩ : ∃ ε : ℝ, 0 < ε ∧ ε ≤ s / 2 ∧ ε * (18 * (M + 1)) ≤ η :=
+    ⟨min (s / 2) (η / (18 * (M + 1))), lt_min (by positivity) (by positivity), min_le_left _ _,
+      (le_div_iff₀ (by positivity)).mp (min_le_right _ _)⟩
+  obtain ⟨δ, hδ0, hδ1, hδη⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ δ * (9 * (ω + 1)) ≤ η :=
+    ⟨min 1 (η / (9 * (ω + 1))), lt_min one_pos (by positivity), min_le_left _ _,
+      (le_div_iff₀ (by positivity)).mp (min_le_right _ _)⟩
+  have hεs : ε ≤ s := by linarith
+  have hε2 : ε ^ 2 ≤ ε := by rw [sq]; exact mul_le_of_le_one_left hε0.le (by linarith)
+  have hδ2 : δ ^ 2 ≤ δ := by rw [sq]; exact mul_le_of_le_one_left hδ0.le hδ1
+  -- Step 2: the mollifications `vⱼ(x) = ∫ uⱼ(x − εz)ρ(z) dz`
+  obtain ⟨ρ, C, hρc, hρ0, hρ1, hρint, hρC, hρL⟩ := Submission.dorag_ha_rb_kernel n
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hρC 0)
+  set v : ℕ → Euclid n → ℝ := fun j x => ∫ z, u j (x - ε • z) * ρ z
+  -- Step 3: `∫_B |uⱼ| ≤ (Lⁿ(B) + M)/2`
+  have hL1 : ∀ j, ∫ x in ball (0 : Euclid n) 1, |u j x| ≤ (ω + M) / 2 := by
+    intro j
+    have i1 : IntegrableOn (fun _ => (1 / 2 : ℝ)) (ball (0 : Euclid n) 1) := integrableOn_const
+    have i2 : IntegrableOn (fun x => u j x ^ 2 / 2) (ball (0 : Euclid n) 1) :=
+      (hint _ 1 ((hc j).pow 2).continuousOn).div_const 2
+    have i12 : IntegrableOn (fun x => 1 / 2 + u j x ^ 2 / 2) (ball (0 : Euclid n) 1) := i1.add i2
+    calc ∫ x in ball (0 : Euclid n) 1, |u j x|
+        ≤ ∫ x in ball (0 : Euclid n) 1, (1 / 2 + u j x ^ 2 / 2) :=
+          setIntegral_mono_on (hint _ 1 (hc j).abs.continuousOn) i12 measurableSet_ball
+            fun x _ => by linarith [sq_abs (u j x), sq_nonneg (|u j x| - 1)]
+      _ = ω / 2 + (∫ x in ball (0 : Euclid n) 1, u j x ^ 2) / 2 := by
+          rw [integral_add i1 i2, setIntegral_const, integral_div, smul_eq_mul, hω]
+          ring
+      _ ≤ (ω + M) / 2 := by linarith [hu j]
+  -- Step 4: the `vⱼ` are uniformly bounded and uniformly Lipschitz on `B_{1−s}(0)`
+  set D : ℝ := (ε ^ n)⁻¹ * C * ((ω + M) / 2) + (ε ^ (n + 1))⁻¹ * C * ((ω + M) / 2)
+  have hvb : ∀ j, ∀ x ∈ closedBall (0 : Euclid n) (1 - s), |v j x| ≤ D := by
+    intro j x hx
+    calc |v j x| ≤ (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u j y| :=
+          (Submission.dorag_ha_rb_mollify_bounds n (u j) ρ C ε s (hc j) hρc hρ1 hρC hρL hε0
+            hεs2).1 x hx
+      _ ≤ (ε ^ n)⁻¹ * C * ((ω + M) / 2) := mul_le_mul_of_nonneg_left (hL1 j) (by positivity)
+      _ ≤ D := le_add_of_nonneg_right (by positivity)
+  have hvl : ∀ j, ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ x' ∈ closedBall (0 : Euclid n) (1 - s),
+      |v j x - v j x'| ≤ D * ‖x - x'‖ := by
+    intro j x hx x' hx'
+    calc |v j x - v j x'|
+        ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u j y| :=
+          (Submission.dorag_ha_rb_mollify_bounds n (u j) ρ C ε s (hc j) hρc hρ1 hρC hρL hε0
+            hεs2).2 x hx x' hx'
+      _ ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ((ω + M) / 2) :=
+          mul_le_mul_of_nonneg_left (hL1 j) (by positivity)
+      _ = (ε ^ (n + 1))⁻¹ * C * ((ω + M) / 2) * ‖x - x'‖ := by ring
+      _ ≤ D * ‖x - x'‖ :=
+          mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (by positivity)) (norm_nonneg _)
+  have hvc : ∀ j, ContinuousOn (v j) (closedBall (0 : Euclid n) (1 - s)) := by
+    intro j
+    refine (LipschitzOnWith.of_dist_le' (f := v j) (s := closedBall (0 : Euclid n) (1 - s))
+      (K := D) fun x hx x' hx' => ?_).continuousOn
+    rw [Real.dist_eq, dist_eq_norm]
+    exact hvl j x hx x' hx'
+  -- Step 5: finitely many `vₖ` form a `δ`-net in the sup norm on `B_{1−s}(0)`
+  obtain ⟨S, hS⟩ := Submission.dorag_ha_rb_sup_net n (closedBall (0 : Euclid n) (1 - s)) v D
+    (isCompact_closedBall 0 (1 - s)) hvb hvl δ hδ0
+  refine ⟨S, fun j => ?_⟩
+  obtain ⟨k, hkS, hjk⟩ := hS j
+  refine ⟨k, hkS, ?_⟩
+  -- Step 6: split `B` into `B̆_{1−s}(0)` and the annulus `B \ B̆_{1−s}(0)`
+  have hsub : ball (0 : Euclid n) (1 - s) ⊆ ball 0 1 := ball_subset_ball (by linarith)
+  have ijk : IntegrableOn (fun x => (u j x - u k x) ^ 2) (ball (0 : Euclid n) 1) :=
+    hint _ 1 (((hc j).sub (hc k)).pow 2).continuousOn
+  have hsplit := setIntegral_sdiff measurableSet_ball ijk hsub
+  -- Step 7: the annulus, by `dorag_ha_rb_boundary_layer`
+  have hann : ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), (u j x - u k x) ^ 2 ≤ η / 3 := by
+    have iA : ∀ i, IntegrableOn (fun x => 2 * u i x ^ 2) (ball (0 : Euclid n) 1 \ ball 0 (1 - s)) :=
+      fun i => ((hint _ 1 ((hc i).pow 2).continuousOn).mono_set sdiff_subset).const_mul 2
+    have iAA : IntegrableOn (fun x => 2 * u j x ^ 2 + 2 * u k x ^ 2)
+        (ball (0 : Euclid n) 1 \ ball 0 (1 - s)) := (iA j).add (iA k)
+    have hbl : ∀ i, ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), u i x ^ 2 ≤
+        2 ^ (n + 3) * s * (M + M) := fun i =>
+      (Submission.dorag_ha_rb_boundary_layer n (u i) (L i) s (hL i) hs0 hs1).trans
+        (mul_le_mul_of_nonneg_left (add_le_add (hu i) (hDu i)) (by positivity))
+    calc ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), (u j x - u k x) ^ 2
+        ≤ ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), (2 * u j x ^ 2 + 2 * u k x ^ 2) :=
+          setIntegral_mono_on (ijk.mono_set sdiff_subset) iAA
+            (measurableSet_ball.diff measurableSet_ball) fun x _ => by
+              linarith [sq_nonneg (u j x + u k x)]
+      _ = 2 * (∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), u j x ^ 2) +
+            2 * ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), u k x ^ 2 := by
+          rw [integral_add (iA j) (iA k), integral_const_mul, integral_const_mul]
+      _ ≤ 2 * (2 ^ (n + 3) * s * (M + M)) + 2 * (2 ^ (n + 3) * s * (M + M)) := by
+          linarith [hbl j, hbl k]
+      _ = 2 ^ (n + 6) * s * M := by ring
+      _ ≤ η / 3 := by
+          have : 0 < 2 ^ (n + 6) * s := by positivity
+          linarith
+  -- Step 8: the interior, by `dorag_ha_rb_mollify_l2` and the sup-net
+  have hin : ∫ x in ball (0 : Euclid n) (1 - s), (u j x - u k x) ^ 2 ≤ 2 * η / 3 := by
+    have i1 : ∀ i, IntegrableOn (fun x => 3 * (u i x - v i x) ^ 2) (ball (0 : Euclid n) (1 - s)) :=
+      fun i => (hint _ _ (((hc i).continuousOn.sub (hvc i)).pow 2)).const_mul 3
+    have i2 : IntegrableOn (fun _ => 3 * δ ^ 2) (ball (0 : Euclid n) (1 - s)) := integrableOn_const
+    have i12 : IntegrableOn (fun x => 3 * (u j x - v j x) ^ 2 + 3 * δ ^ 2)
+        (ball (0 : Euclid n) (1 - s)) := (i1 j).add i2
+    have i123 : IntegrableOn
+        (fun x => 3 * (u j x - v j x) ^ 2 + 3 * δ ^ 2 + 3 * (u k x - v k x) ^ 2)
+        (ball (0 : Euclid n) (1 - s)) := i12.add (i1 k)
+    have hl2 : ∀ i, ∫ x in ball (0 : Euclid n) (1 - s), (u i x - v i x) ^ 2 ≤ ε ^ 2 * M := fun i =>
+      (Submission.dorag_ha_rb_mollify_l2 n (u i) ρ (L i) ε s (hL i) hρc hρ0 hρ1 hρint hε0
+        hεs).trans (mul_le_mul_of_nonneg_left (hDu i) (sq_nonneg ε))
+    have hvol : volume.real (ball (0 : Euclid n) (1 - s)) ≤ ω := by
+      rw [hω]; exact measureReal_mono hsub
+    calc ∫ x in ball (0 : Euclid n) (1 - s), (u j x - u k x) ^ 2
+        ≤ ∫ x in ball (0 : Euclid n) (1 - s),
+            (3 * (u j x - v j x) ^ 2 + 3 * δ ^ 2 + 3 * (u k x - v k x) ^ 2) := by
+          refine setIntegral_mono_on (ijk.mono_set hsub) i123 measurableSet_ball fun x hx => ?_
+          have h1 := abs_le.mp (hjk x (ball_subset_closedBall hx))
+          have h2 : (v j x - v k x) ^ 2 ≤ δ ^ 2 := sq_le_sq' h1.1 h1.2
+          linarith [sq_nonneg (u j x - v j x - (v j x - v k x)),
+            sq_nonneg (v j x - v k x - (v k x - u k x)),
+            sq_nonneg (u j x - v j x - (v k x - u k x))]
+      _ = 3 * (∫ x in ball (0 : Euclid n) (1 - s), (u j x - v j x) ^ 2) +
+            3 * δ ^ 2 * volume.real (ball (0 : Euclid n) (1 - s)) +
+            3 * ∫ x in ball (0 : Euclid n) (1 - s), (u k x - v k x) ^ 2 := by
+          rw [integral_add i12 (i1 k), integral_add (i1 j) i2, setIntegral_const,
+            integral_const_mul, integral_const_mul, smul_eq_mul]
+          ring
+      _ ≤ 3 * (ε ^ 2 * M) + 3 * δ ^ 2 * ω + 3 * (ε ^ 2 * M) := by
+          have := mul_le_mul_of_nonneg_left hvol (by positivity : (0 : ℝ) ≤ 3 * δ ^ 2)
+          linarith [hl2 j, hl2 k]
+      _ ≤ 2 * η / 3 := by
+          linarith [mul_le_mul_of_nonneg_right hε2 hM, mul_le_mul_of_nonneg_right hδ2 hω0]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
