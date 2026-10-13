@@ -451,6 +451,88 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform `C¹` approximation with support control** (Simon Ch. 3, proof of Theorem 4.3
+(De Giorgi): "mollifying, there is `f_θ ∈ C_c^∞` with `spt f_θ ⊆ B_{R+1}(0)` and
+`‖f − f_θ‖_∞ ≤ θ`").  `f` has compact support, so it is uniformly continuous; pick a modulus
+`δ ≤ 1` for `θ`.  Convolving `f` with a nonnegative `C¹` bump `ψ`, `∫ ψ = 1`,
+`spt ψ ⊆ B_δ(0)`, gives a `C¹` function `g` with `spt g ⊆ B_δ(0) + B̄_R(0) ⊆ B̄_{R+1}(0)` and
+`|g(x) − f(x)| ≤ ∫ ψ(t) |f(x − t) − f(x)| dt ≤ θ`. -/
+theorem Submission.codim1_rdo_dg_tma_smooth_approx : ∀ (P : ℕ) (f : Euclid P → ℝ) (R θ : ℝ), Continuous f → tsupport f ⊆ closedBall (0 : Euclid P) R → 0 < θ → ∃ g : Euclid P → ℝ, ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ tsupport g ⊆ closedBall (0 : Euclid P) (R + 1) ∧ ∀ x, |f x - g x| ≤ θ := by
+  intro P f R θ hf hR hθ
+  -- `f` is uniformly continuous; `δ = min δ₀ 1` is a modulus for `θ`
+  have hfc : HasCompactSupport f :=
+    (isCompact_closedBall (0 : Euclid P) R).of_isClosed_subset (isClosed_tsupport f) hR
+  have huc : UniformContinuous f := hfc.uniformContinuous_of_continuous hf
+  obtain ⟨δ₀, hδ₀, hδ⟩ := Metric.uniformContinuous_iff.1 huc θ hθ
+  set δ := min δ₀ 1 with hδdef
+  have hδpos : 0 < δ := lt_min hδ₀ one_pos
+  -- the normalized bump `ψ = c⁻¹ ψ₀`, `c = ∫ ψ₀ > 0`
+  obtain ⟨ψ₀, hψ₀ts, hψ₀c, hψ₀s, hψ₀r, hψ₀0⟩ :=
+    exists_contDiff_tsupport_subset (E := Euclid P) (s := ball (0 : Euclid P) δ) (x := 0)
+      (n := 1) (ball_mem_nhds 0 hδpos)
+  have hψ₀nn : ∀ x, 0 ≤ ψ₀ x := fun x => (hψ₀r ⟨x, rfl⟩).1
+  set c := ∫ x, ψ₀ x with hcdef
+  have hc : 0 < c :=
+    hψ₀s.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hψ₀c hψ₀nn
+      (by rw [hψ₀0]; norm_num)
+  set ψ : Euclid P → ℝ := fun x => c⁻¹ * ψ₀ x with hψdef
+  have hψs : ContDiff ℝ 1 ψ := contDiff_const.mul hψ₀s
+  have hψc : HasCompactSupport ψ := hψ₀c.mul_left
+  have hψnn : ∀ x, 0 ≤ ψ x := fun x => mul_nonneg (inv_nonneg.2 hc.le) (hψ₀nn x)
+  have hψint : ∫ x, ψ x = 1 := by
+    rw [hψdef, integral_const_mul, ← hcdef, inv_mul_cancel₀ hc.ne']
+  have hψsupp : ∀ t, ψ t ≠ 0 → ‖t‖ < δ := by
+    intro t ht
+    have : t ∈ tsupport ψ₀ := subset_tsupport ψ₀ (fun h0 => ht (by simp [hψdef, h0]))
+    simpa using hψ₀ts this
+  -- `g = ψ ⋆ f` is `C¹`
+  set g : Euclid P → ℝ := convolution ψ f (ContinuousLinearMap.lsmul ℝ ℝ) volume with hgdef
+  have hg : ContDiff ℝ 1 g :=
+    hψc.contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hψs hf.locallyIntegrable
+  have hgval : ∀ x, g x = ∫ t, ψ t * f (x - t) := by
+    intro x
+    rw [hgdef, convolution_def]
+    simp
+  -- `spt g ⊆ spt ψ + spt f ⊆ B̄_{R+1}(0)`
+  have hgsupp : support g ⊆ closedBall (0 : Euclid P) (R + 1) := by
+    refine (support_convolution_subset _).trans ?_
+    rintro _ ⟨a, ha, b, hb, rfl⟩
+    have ha' : ‖a‖ < δ := hψsupp a ha
+    have hb' : ‖b‖ ≤ R := by simpa using hR (subset_tsupport f hb)
+    rw [mem_closedBall, dist_zero_right]
+    calc ‖a + b‖ ≤ ‖a‖ + ‖b‖ := norm_add_le _ _
+      _ ≤ R + 1 := by
+          have : δ ≤ 1 := min_le_right _ _
+          linarith
+  have hgts : tsupport g ⊆ closedBall (0 : Euclid P) (R + 1) :=
+    closure_minimal hgsupp isClosed_closedBall
+  refine ⟨g, hg, (isCompact_closedBall _ _).of_isClosed_subset (isClosed_tsupport g) hgts,
+    hgts, fun x => ?_⟩
+  -- `g x − f x = ∫ ψ(t) (f(x − t) − f(x)) dt`, and the integrand is at most `ψ(t) θ`
+  have hint1 : Integrable (fun t => ψ t * f (x - t)) :=
+    (hψs.continuous.mul (hf.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hψc.mul_right
+  have hint2 : Integrable (fun t => ψ t * f x) :=
+    (hψs.continuous.integrable_of_hasCompactSupport hψc).mul_const _
+  have hdiff : g x - f x = ∫ t, ψ t * (f (x - t) - f x) := by
+    simp_rw [hgval, mul_sub]
+    rw [integral_sub hint1 hint2, integral_mul_const, hψint, one_mul]
+  rw [abs_sub_comm, hdiff]
+  calc |∫ t, ψ t * (f (x - t) - f x)| ≤ ∫ t, ψ t * θ := by
+        rw [← Real.norm_eq_abs]
+        refine norm_integral_le_of_norm_le
+          ((hψs.continuous.integrable_of_hasCompactSupport hψc).mul_const _)
+          (Eventually.of_forall fun t => ?_)
+        rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψnn t)]
+        by_cases ht : ψ t = 0
+        · simp [ht]
+        · refine mul_le_mul_of_nonneg_left ?_ (hψnn t)
+          have h1 : dist (x - t) x < δ₀ := by
+            rw [dist_eq_norm, sub_sub_cancel_left, norm_neg]
+            exact (hψsupp t ht).trans_le (min_le_left _ _)
+          exact (by simpa [Real.dist_eq] using (hδ h1).le)
+    _ = θ := by rw [integral_mul_const, hψint, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
