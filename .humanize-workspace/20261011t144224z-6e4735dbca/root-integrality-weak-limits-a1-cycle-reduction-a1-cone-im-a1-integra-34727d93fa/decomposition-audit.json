@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "IsRectifiableTriple|IsIntegerMultiplicity|tauAction|simpleNVector|abbrev (Covector|NVector|Eucl)|def (Covector|NVector)|namespace|^import|^open",
+        "theorem integral_integral_swap|theorem Integrable.mul_prod|AEStronglyMeasurable.comp_snd|theorem quasiMeasurePreserving_fst|theorem quasiMeasurePreserving_snd|intervalIntegral_comp_comm|toContinuousMultilinearMapCLM|instCompleteSpace",
+        "Continuous.aestronglyMeasurable|comp_aestronglyMeasurable₂|ae_restrict_mem₀|ae_restrict_of_ae_restrict_of_subset|setIntegral_indicator",
+        "iwl_cr_ci_ie_|fiw_ims_tt_unit_bound|iwl_cr_ci_integral_exchange",
+        "git show 27af9b191b732eae73e3d693d8903e52f89962ce:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent-ie-audit/SuppliedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent-ie-audit/AssemblyFromTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-integra-34727d93fa/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-integra-34727d93fa/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-unit-bound-a1/accepted-candidate.json",
+        "/tmp/independent-ie-audit/SuppliedProofs.lean",
+        "/tmp/independent-ie-audit/AssemblyFromTypes.lean",
+        "/tmp/independent-ie-audit/finite_measure_NodeChallenge.lean",
+        "/tmp/independent-ie-audit/unit_bound_NodeChallenge.lean",
+        "/tmp/independent-ie-audit/nvector_integral_NodeChallenge.lean",
+        "/tmp/independent-ie-audit/param_fubini_NodeChallenge.lean"
+      ],
+      "conclusion": "Verified the project and Mathlib pins, contract byte identity, and the relevant measure, covector, norm and integration APIs. The declaration-name search found no matches in the frozen Contract/Submission; the DAG and other decompositions reserve none of the three new names. The reused unit bound has a byte-identical comparator-accepted type. All names are bare identifiers. All four one-line propositions independently elaborate in comparator-generated challenge modules without child implementations. Freshly extracted supplied proofs, the accepted unit proof, and the exact selected-parent assembly compile; their axiom dependencies are only propext, Classical.choice and Quot.sound. The parent also compiles from the frozen child types as hypotheses alone. The split appropriately separates finite localization, the orientation bound, continuous-linear integral commutation and dominated Fubini. Every child contributes to this selected theorem; the sole child dependency, param_fubini on nvector_integral, is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "finite_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include the same hypotheses. Positive natural-valued multiplicity gives θ ≥ 1 on M; null-measurability justifies restricted-a.e. membership, and compact-local integrability supplies the finite norm integral. The lower-integral comparison proves exactly the stated measure bound, without circular reliance."
+    },
+    {
+      "key": "unit_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted frozen type. Independently, orthonormality makes the product of vector norms equal to one, including degree zero; simpleNVector evaluation, the operator-norm inequality and absolute-value invariance under negation prove the exact conclusion. The proof is complete and non-circular."
+    },
+    {
+      "key": "nvector_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact prose/type agreement for arbitrary interval endpoints. Continuity provides interval integrability in the complete covector space. The explicitly constructed continuous-linear evaluations identify the Bochner integral with c; commuting w with that integral proves the conclusion. The required instances and evaluation construction check at the pin."
+    },
+    {
+      "key": "param_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. The proof establishes product-a.e. strong measurability, integrable domination by B|θ|, and Fubini for the s-finite factors, then evaluates the inner integral using its declared dependency nvector_integral. No extra positivity or Ψ-measurability hypothesis is needed. All steps are supplied and non-circular."
+    }
+  ],
+  "required_changes": []
+}
