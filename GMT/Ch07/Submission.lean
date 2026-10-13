@@ -1888,6 +1888,76 @@ theorem Submission.dorag_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- **Monotonicity inequalities and the unit density lower bound** for bounded generalized mean
+curvature (Simon Ch. 4, 3.16–3.17 with `‖H‖ ≤ κ`, and 4.10(1)).  Let `μ = θ Hⁿ⌞M` have generalized
+mean curvature `H` in `W`, and let `F_y(x) = |p_x^⊥(x − y)|² / |x − y|^{n+2}`.
+(1) The annular inequalities (M1) and (M2) are `Submission.doragm_annular_monotonicity` at
+`P = n + k`.  The map `x ↦ p_x` is `μ`-measurable by
+`Submission.dorag_approxTangent_starProjection_aesm`.
+(2) Let `y ∈ spt μ`.  Since `κ ≥ ‖H 0‖ ≥ 0` and (M1) makes `ρ ↦ e^{κρ} ρ^{−n} μ(B_ρ(z))`
+nondecreasing, `Submission.doragm_support_ball_ratio_ge` gives `e^{κs} s^{−n} μ(B_s(y)) ≥ ωₙ`.
+With (M1) this yields `∫_{B_t(y) \ B_s(y)} F_y dμ + ωₙ ≤ e^{κt} t^{−n} μ(B_t(y))` for `0 < s < t`.
+For `s = t/(m + 2)` the annuli increase to `B_t(y) \ {y}`, and `F_y(y) = 0`.  Monotone convergence
+for the measure `F_y μ` therefore gives (D). -/
+theorem Submission.dorag_monotonicity_density : ∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → (∀ (y : Euclid (n + k)) (s t : ℝ), 0 < s → s < t → closedBall y t ⊆ W → (∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure) + ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * R.measure (closedBall y s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) ∧ ENNReal.ofReal (Real.exp (-(κ * t)) / t ^ n) * R.measure (closedBall y t) ≤ ENNReal.ofReal (Real.exp (-(κ * s)) / s ^ n) * R.measure (closedBall y s) + ∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure) ∧ ∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → (∫⁻ x in closedBall y t, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure) + unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) := by
+  intro n k hn U W R H κ hW hWU hH hHκ hFV
+  -- (1) is the annular monotonicity, with `x ↦ p_x` measurable by the sibling lemma
+  have hann := Submission.doragm_annular_monotonicity (n + k) n U W R H κ hW hWU
+    (Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R) hH hHκ hFV
+  refine ⟨hann, fun y hy t ht hyt => ?_⟩
+  -- `κ ≥ ‖H 0‖ ≥ 0`, and dropping the annular term of (M1) makes `ρ ↦ e^{κρ} ρ^{-n} μ(B_ρ(z))`
+  -- nondecreasing, so this ratio is at least `ωₙ` at the support point `y`
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  have hratio := Submission.doragm_support_ball_ratio_ge (n + k) n U W R κ hn hW hWU hκ
+    (fun z s t hs hst hzt => le_add_self.trans (hann z s t hs hst hzt).1) y hy
+  -- the integrand `F_y`, which vanishes at `y` because `‖0‖ ^ (n + 2) = 0`
+  set F : Euclid (n + k) → ℝ≥0∞ := fun x => ENNReal.ofReal
+    (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 /
+      ‖x - y‖ ^ (n + 2)) with hF
+  have hFy : F y = 0 := by simp [hF]
+  -- for `0 < s < t`: `∫_{B_t(y) \ B_s(y)} F_y dμ + ωₙ ≤ e^{κt} t^{-n} μ(B_t(y))`
+  have hannulus : ∀ s, 0 < s → s < t →
+      (∫⁻ x in closedBall y t \ closedBall y s, F x ∂R.measure) + unitBallVolume n ≤
+        ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) :=
+    fun s hs hst => (add_le_add le_rfl
+      (hratio s hs ((closedBall_subset_closedBall hst.le).trans hyt))).trans
+        (hann y s t hs hst hyt).1
+  -- the annuli `B_t(y) \ B_{t/(m+2)}(y)` increase and cover `B_t(y) \ {y}`
+  let A : ℕ → Set (Euclid (n + k)) := fun m => closedBall y t \ closedBall y (t / (m + 2))
+  have hA : Monotone A := fun m m' hmm' => Set.sdiff_subset_sdiff_right
+    (closedBall_subset_closedBall (div_le_div_of_nonneg_left ht.le (by positivity) (by gcongr)))
+  have hcover : closedBall y t ⊆ (⋃ m, A m) ∪ {y} := by
+    intro x hx
+    by_cases hxy : x = y
+    · exact Or.inr hxy
+    have hd : 0 < dist x y := dist_pos.mpr hxy
+    obtain ⟨m, hm⟩ := exists_nat_gt (t / dist x y)
+    refine Or.inl (mem_iUnion.mpr ⟨m, hx, fun hxm => ?_⟩)
+    rw [mem_closedBall, le_div_iff₀ (by positivity)] at hxm
+    rw [div_lt_iff₀ hd] at hm
+    nlinarith
+  -- monotone convergence for the measure `F_y μ`
+  have hν : ∀ s, MeasurableSet s → R.measure.withDensity F s = ∫⁻ x in s, F x ∂R.measure :=
+    fun s hs => withDensity_apply F hs
+  calc (∫⁻ x in closedBall y t, F x ∂R.measure) + unitBallVolume n
+      = R.measure.withDensity F (closedBall y t) + unitBallVolume n := by
+        rw [hν _ measurableSet_closedBall]
+    _ ≤ (⨆ m, R.measure.withDensity F (A m)) + unitBallVolume n := by
+        refine add_le_add ?_ le_rfl
+        calc R.measure.withDensity F (closedBall y t)
+            ≤ R.measure.withDensity F ((⋃ m, A m) ∪ {y}) := measure_mono hcover
+          _ ≤ R.measure.withDensity F (⋃ m, A m) + R.measure.withDensity F {y} :=
+            measure_union_le _ _
+          _ = ⨆ m, R.measure.withDensity F (A m) := by
+            rw [hA.measure_iUnion, hν _ (measurableSet_singleton y), lintegral_singleton, hFy,
+              zero_mul, add_zero]
+    _ = ⨆ m, (R.measure.withDensity F (A m) + unitBallVolume n) := ENNReal.iSup_add _
+    _ ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) := by
+        refine iSup_le fun m => ?_
+        have hm : (1 : ℝ) < m + 2 := by linarith [Nat.cast_nonneg (α := ℝ) m]
+        rw [hν (A m) (measurableSet_closedBall.diff measurableSet_closedBall)]
+        exact hannulus _ (div_pos ht (by linarith)) (div_lt_self ht hm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
