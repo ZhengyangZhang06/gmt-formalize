@@ -970,6 +970,27 @@ theorem Submission.cbrld_exists_good_slice_radius : ∀ (P n : ℕ) (μ : Measur
   calc (n : ℝ) * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) * deriv G ρ
       ≤ n * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) * (2 * a) := by gcongr
     _ = 2 * n * a * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) := by ring
+/-- **Degree-zero mass gap** (Simon Ch. 6, footnote 5 to 8.2, the case `n = 1`), assuming the
+mass representation `(MR)` `M_W(T) = μ_T(W)` for open `U`, `W`: an integer multiplicity
+`0`-current `Z` in `ℝᴾ` with `M(Z) < 1` is zero.  If `Z = τ(M, θ, ξ)` and `x ∈ M`, then
+`M(Z) = μ_Z(ℝᴾ) ≥ μ_Z({x}) = θ(x) H⁰({x}) = θ(x) ≥ 1`; hence `M = ∅` and every `Z(ω)` is an
+integral over `∅`. -/
+theorem Submission.cbrld_im_degree_zero_eq_zero_of_mass_lt_one : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P : ℕ) (Z : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity Z → Z.mass < 1 → Z = 0 := by
+  rintro hMR P Z ⟨R, hR⟩ hZ
+  -- `(MR)` with `U = W = ℝᴾ`: `M(Z) = μ_Z(ℝᴾ)`
+  have hmass : Z.mass = R.measure univ := hMR P 0 univ Z R isOpen_univ hR univ isOpen_univ
+  -- a point `x ∈ M` would carry `μ_Z({x}) = θ(x) H⁰({x}) = θ(x) ≥ 1 > M(Z)`
+  have hempty : R.carrier = ∅ := by
+    refine eq_empty_of_forall_notMem fun x hx => ?_
+    have hx1 : R.measure {x} = (R.mult x : ℝ≥0∞) := by
+      rw [IMRep.measure, withDensity_apply _ (measurableSet_singleton x), lintegral_singleton,
+        Measure.restrict_apply (measurableSet_singleton x), singleton_inter_of_mem hx,
+        Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, mul_one]
+    have h1 : (1 : ℝ≥0∞) ≤ R.measure {x} := hx1 ▸ Nat.one_le_cast.2 (R.mult_pos x hx)
+    exact not_le.2 hZ (h1.trans ((measure_mono (subset_univ _)).trans hmass.ge))
+  -- every `Z(ω)` is an integral over `M = ∅`
+  ext ω
+  rw [hR ω, GeometricCurrentOn.zero_apply, IMRep.action, hempty, setIntegral_empty]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
