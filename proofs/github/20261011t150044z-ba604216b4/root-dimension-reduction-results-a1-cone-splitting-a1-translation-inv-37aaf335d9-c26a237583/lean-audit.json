@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65daf76e31202e6597ad2d103ed9a16db9a37fb5e01b6002cc144f7901d58cf3",
+  "git_delta": {
+    "base_commit": "63e307b880e6c8930a772f533e0cfacb61692203",
+    "candidate_commit": "f899c748944f69ea21ca50d63f20848568c2a2d6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_ti_translate_action_hasDerivAt",
+    "diff_sha256": "844117581398065ba7297aabe64d3b50708e490ba9cebdb73aefcc6dec72f266",
+    "source_sha256": "63f044aacef5cfadcb37261d5ef83366ac03e73f43f289c63cceb6156e3ecf87",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_ti_translate_action_hasDerivAt",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (v : Euclid P) (t : ℝ), HasDerivAt (fun s : ℝ => R.action (fun y => (ω : DifferentialForm (Euclid P) n) (s • v + y))) (R.action (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v)) t",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
