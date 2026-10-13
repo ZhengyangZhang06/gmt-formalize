@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Tangent projections of a `C²` immersion** (step 2(a) of the nearest point retraction onto `N`
+used for Simon 7.4.3): if `ψ` is `C²` on the open set `V ⊆ ℝᵈ` and `D(v) = Dψ(v)` is injective for
+`v ∈ V`, then `v ↦ P̂(v)`, the orthogonal projection of `ℝᴾ` onto `range D(v)`, is `C¹` on `V`.
+The Gram operator `G = DᵀD` is `C¹` on `V` and invertible there (`⟪G w, w⟫ = |D w|²`); inversion
+is smooth at units, so `R = D G⁻¹ Dᵀ` is `C¹`.  For `h ∈ ℝᴾ`, `R(v) h = D(v) y` with
+`G(v) y = D(v)ᵀ h`, so `⟪h − R(v) h, D(v) x⟫ = ⟪D(v)ᵀ h − G(v) y, x⟫ = 0` and `R(v) = P̂(v)`. -/
+theorem Submission.dor_lmb_ret_tangent_projection : ∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ContDiffOn ℝ 1 (fun v => (fderiv ℝ ψ v).range.starProjection) V := by
+  intro P d V ψ hV hψ hinj
+  -- `D(v) = Dψ(v)` is `C¹` on the open set `V`
+  have hD : ContDiffOn ℝ 1 (fun v => fderiv ℝ ψ v) V := hψ.fderiv_of_isOpen hV (by norm_num)
+  -- transposition `A ↦ Aᵀ` is a bounded real-linear map, so `v ↦ D(v)ᵀ` is `C¹`
+  have hadj : IsBoundedLinearMap ℝ
+      (fun A : Euclid d →L[ℝ] Euclid P => ContinuousLinearMap.adjoint A) :=
+    ⟨⟨fun A B => map_add _ A B, fun c A => by
+      rw [LinearIsometryEquiv.map_smulₛₗ]; rfl⟩,
+      ⟨1, one_pos, fun A => by rw [LinearIsometryEquiv.norm_map, one_mul]⟩⟩
+  have hDt : ContDiffOn ℝ 1 (fun v => ContinuousLinearMap.adjoint (fderiv ℝ ψ v)) V :=
+    hadj.contDiff.comp_contDiffOn hD
+  -- the Gram operator `G(v) = D(v)ᵀ D(v)` is `C¹` on `V`
+  set G : Euclid d → Euclid d →L[ℝ] Euclid d :=
+    fun v => ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L fderiv ℝ ψ v with hG_def
+  have hG : ContDiffOn ℝ 1 G V := hDt.clm_comp hD
+  -- `G(v)` is invertible: `⟪G(v) w, w⟫ = |D(v) w|²` and `D(v)` is injective
+  have hGunit : ∀ v ∈ V, IsUnit (G v) := by
+    intro v hv
+    have hGinj : Injective (G v) := by
+      rw [injective_iff_map_eq_zero]
+      intro w hw
+      apply hinj v hv
+      rw [map_zero]
+      have hnorm : ‖fderiv ℝ ψ v w‖ ^ 2 = 0 := by
+        rw [← real_inner_self_eq_norm_sq, ← ContinuousLinearMap.adjoint_inner_left]
+        change inner ℝ (G v w) w = 0
+        rw [hw, inner_zero_left]
+      exact norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp hnorm)
+    exact ContinuousLinearMap.isUnit_iff_bijective.mpr
+      ⟨hGinj, (LinearMap.injective_iff_surjective (f := (G v : Euclid d →ₗ[ℝ] Euclid d))).mp hGinj⟩
+  -- inversion is smooth at units, so `v ↦ G(v)⁻¹` is `C¹` on `V`
+  have hGinv : ContDiffOn ℝ 1 (fun v => Ring.inverse (G v)) V := by
+    intro v hv
+    obtain ⟨u, hu⟩ := hGunit v hv
+    have hinv := contDiffAt_ringInverse ℝ (n := 1) u
+    rw [hu] at hinv
+    exact hinv.comp_contDiffWithinAt v (hG v hv)
+  -- `R(v) = D(v) G(v)⁻¹ D(v)ᵀ` is `C¹` on `V`
+  have hR : ContDiffOn ℝ 1 (fun v => fderiv ℝ ψ v ∘L
+      (Ring.inverse (G v) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ v))) V :=
+    hD.clm_comp (hGinv.clm_comp hDt)
+  refine hR.congr fun v hv => ?_
+  -- `R(v) h = D(v) y ∈ range D(v)` with `G(v) y = D(v)ᵀ h`, so `h - R(v) h ⊥ range D(v)`
+  ext1 h
+  set y := Ring.inverse (G v) (ContinuousLinearMap.adjoint (fderiv ℝ ψ v) h)
+  have hGy : G v y = ContinuousLinearMap.adjoint (fderiv ℝ ψ v) h := by
+    rw [← mul_apply_eq_comp, Ring.mul_inverse_cancel _ (hGunit v hv), one_apply_eq_self]
+  change _ = fderiv ℝ ψ v y
+  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    (LinearMap.mem_range_self (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P) y) ?_
+  rintro _ ⟨x, rfl⟩
+  rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left, map_sub]
+  change inner ℝ (_ - G v y) x = 0
+  rw [hGy, sub_self, inner_zero_left]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
