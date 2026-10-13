@@ -593,7 +593,6 @@ theorem tdo_ods_norm_sub_le_integral_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ
       Submission.tdo_ods_intervalIntegral_le_of_ae_abs_le (deriv φ) (fun r => ‖deriv W r‖) a s t
         (Submission.tdo_ods_integrableOn_norm_deriv ℓ W a K hW) hs ht hac.intervalIntegrable_deriv
         (Submission.tdo_ods_ae_abs_deriv_inner_le ℓ W a K u hW hu)
-namespace Submission
 
 /-- Cauchy–Schwarz on `(-a, a)`: `∫_{(-a,a)} g ≤ √(2a ∫_{(-a,a)} g²)`.  If `g` is not integrable on
 `(-a, a)`, the left side is `0` (`integral_undef`).  Otherwise put `I := ∫ g²`, `J := ∫ |g|` and
