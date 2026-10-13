@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2a50b2a50bafddbe3bb71ea9697d1b219b99d752fb56f9075fddd8cb6c9a9953",
+  "git_delta": {
+    "base_commit": "7edc29c730bc48171f75a05ae05706a93dafc049",
+    "candidate_commit": "b5ee262f659eda14aaa64f4c968852b47a8a1904",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "0acf02b4b6aecab58e3960a165296284a4486311cf6b8ca0aaf631b652727fd0",
+    "source_sha256": "996143709dcb0e8a8f71cbad896371fd600d4bbb7b34b9e81099e18e7ccdff2b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_allard_density_bounds",
+      "statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C δP : ℝ, 1 ≤ C ∧ 0 < δP ∧ δP ≤ 1 / 8 ∧ C * δP ≤ 1 / 2 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → (∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + C * δ) * (unitBallVolume n * s ^ n))) ∧ (∀ y ∈ V.support, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → ENNReal.ofReal ((1 - C * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)) ∧ (∀ᵐ x ∂V.weight, ‖x‖ ≤ 3 * δ * ρ → V.mult x ≤ 1 + C * δ) ∧ (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ ball 0 ρ) \\ V.carrier) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
