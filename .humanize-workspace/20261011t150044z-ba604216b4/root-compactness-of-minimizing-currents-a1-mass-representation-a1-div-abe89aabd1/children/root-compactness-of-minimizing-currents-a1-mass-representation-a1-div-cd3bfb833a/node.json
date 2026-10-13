@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1.contraction_extderiv-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1",
+  "depth": 4,
+  "title": "Exterior derivative of b·(θ contracted with a vector field G) (parent step 2)",
+  "statement": "Let P, m ∈ ℕ, let θ be an (m+1)-covector on ℝ^P, let b : ℝ^P → ℝ and G : ℝ^P → ℝ^P, and let x ∈ ℝ^P be a point where b and G are differentiable. Let η be the m-form η(y) := b(y)•θ.curryLeft(G y), i.e. η(y)(v) = b(y)·θ(Fin.cons (G y) v). Then for every w : Fin (m+1) → ℝ^P the exterior derivative (exteriorDerivative) satisfies dη(x)(w) = Σ_{i ∈ Fin (m+1)} (−1)^i·[Db(x)(w i)·θ(Fin.cons (G x) (i.removeNth w)) + b(x)·θ(Fin.cons (DG(x)(w i)) (i.removeNth w))].",
+  "lean_statement": "∀ (P m : ℕ) (θ : Covector (Euclid P) (m + 1)) (b : Euclid P → ℝ) (G : Euclid P → Euclid P) (x : Euclid P), DifferentiableAt ℝ b x → DifferentiableAt ℝ G x → ∀ w : Fin (m + 1) → Euclid P, exteriorDerivative (fun y => b y • ContinuousAlternatingMap.curryLeft θ (G y)) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w)) + b x * θ (Fin.cons (fderiv ℝ G x (w i)) (i.removeNth w)))",
+  "lean_name": "cmr_df_extDeriv_smul_curryLeft",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-cd3bfb833a-a1"
+}
