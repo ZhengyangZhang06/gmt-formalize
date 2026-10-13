@@ -458,6 +458,133 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Cutoff for the Caccioppoli inequality in the Schauder estimate of the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1, second assertion (p. 127): there is `K ≥ 0` such that for every `n`,
+`y ∈ ℝⁿ` and `ρ > 0` some `C¹` function `η : ℝⁿ → [0, 1]` equals `1` on `B̆_ρ(y)`, has compact
+support with `tsupport η ⊆ B̆_{2ρ}(y)`, and satisfies `‖Dη(x)‖ ≤ K/ρ`.  Here
+`η(x) = ψ(‖x − y‖²/ρ²)` with `ψ(s) = S((3 − s)/2)`, `S = Real.smoothTransition`, and
+`K = 4 sup |ψ'|`. -/
+theorem dohr_eb_sch_cacc_exists_cutoff : ∃ K : ℝ, 0 ≤ K ∧ ∀ (n : ℕ) (y : Rn n) (ρ : ℝ), 0 < ρ → ∃ η : Rn n → ℝ, ContDiff ℝ 1 η ∧ (∀ x, 0 ≤ η x ∧ η x ≤ 1) ∧ (∀ x ∈ ball y ρ, η x = 1) ∧ HasCompactSupport η ∧ tsupport η ⊆ ball y (2 * ρ) ∧ ∀ x, ‖fderiv ℝ η x‖ ≤ K / ρ := by
+  -- Step 1: the profile `ψ(s) = S((3 − s)/2)` is `C¹`; `ψ = 1` for `s ≤ 1`, `ψ = 0` for `s ≥ 3`.
+  set ψ : ℝ → ℝ := fun s => Real.smoothTransition ((3 - s) / 2) with hψ
+  have hψc : ContDiff ℝ 1 ψ :=
+    (Real.smoothTransition.contDiff (n := 1)).comp ((contDiff_const.sub contDiff_id).div_const _)
+  -- Step 2: `ψ'` is continuous and vanishes off `[1, 3]`, so `|ψ'| ≤ cψ` with `cψ ≥ 0`;
+  -- `K = 4 cψ`.
+  have hψ'c : Continuous (deriv ψ) := hψc.continuous_deriv le_rfl
+  have hψ'0 : ∀ s, s ∉ Icc (1 : ℝ) 3 → deriv ψ s = 0 := by
+    intro s hs
+    rw [mem_Icc, not_and_or, not_le, not_le] at hs
+    rcases hs with h | h
+    · have hev : ψ =ᶠ[𝓝 s] fun _ => 1 := by
+        filter_upwards [Iio_mem_nhds h] with t ht
+        simp only [hψ]
+        exact Real.smoothTransition.one_of_one_le (by linarith [mem_Iio.mp ht])
+      rw [hev.deriv_eq, deriv_const]
+    · have hev : ψ =ᶠ[𝓝 s] fun _ => 0 := by
+        filter_upwards [Ioi_mem_nhds h] with t ht
+        simp only [hψ]
+        exact Real.smoothTransition.zero_of_nonpos (by linarith [mem_Ioi.mp ht])
+      rw [hev.deriv_eq, deriv_const]
+  obtain ⟨cψ, hcψ⟩ : ∃ cψ, ∀ s, ‖deriv ψ s‖ ≤ cψ := by
+    obtain ⟨C, hC⟩ :=
+      isCompact_Icc.exists_bound_of_continuousOn (hψ'c.continuousOn (s := Icc (1 : ℝ) 3))
+    refine ⟨max C 0, fun s => ?_⟩
+    by_cases hs : s ∈ Icc (1 : ℝ) 3
+    · exact (hC s hs).trans (le_max_left _ _)
+    · rw [hψ'0 s hs, norm_zero]
+      exact le_max_right _ _
+  have hcψ0 : 0 ≤ cψ := (norm_nonneg _).trans (hcψ 0)
+  refine ⟨4 * cψ, by positivity, ?_⟩
+  -- Step 3: for `n`, `y` and `ρ > 0` take `η(x) = ψ(‖x − y‖²/ρ²)`.
+  intro n y ρ hρ
+  have hρ2 : 0 < ρ ^ 2 := by positivity
+  -- Step 4: `η(x) ≠ 0` forces `‖x − y‖² < 3ρ²`, so `tsupport η ⊆ B_{7ρ/4}(y)` (closed ball).
+  have hsupp : Function.support (fun x : Rn n => ψ (‖x - y‖ ^ 2 / ρ ^ 2)) ⊆
+      closedBall y (7 / 4 * ρ) := by
+    intro x hx
+    rw [Function.mem_support] at hx
+    rw [mem_closedBall, dist_eq_norm]
+    by_contra hlt
+    push Not at hlt
+    apply hx
+    simp only [hψ]
+    apply Real.smoothTransition.zero_of_nonpos
+    have h1 : 3 * ρ ^ 2 ≤ ‖x - y‖ ^ 2 := by nlinarith
+    have h2 : 3 ≤ ‖x - y‖ ^ 2 / ρ ^ 2 := by
+      rw [le_div_iff₀ hρ2]
+      linarith
+    linarith
+  have htsupp : tsupport (fun x : Rn n => ψ (‖x - y‖ ^ 2 / ρ ^ 2)) ⊆ closedBall y (7 / 4 * ρ) :=
+    closure_minimal hsupp isClosed_closedBall
+  refine ⟨fun x => ψ (‖x - y‖ ^ 2 / ρ ^ 2), ?_, ?_, ?_, ?_, ?_, ?_⟩
+  -- `η` is `C¹`: `ψ` composed with the smooth map `x ↦ ‖x − y‖²/ρ²`.
+  · exact hψc.comp (((contDiff_norm_sq ℝ).comp (contDiff_id.sub contDiff_const)).div_const _)
+  -- `0 ≤ η ≤ 1` since `0 ≤ S ≤ 1`.
+  · intro x
+    exact ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  -- `η = 1` on `B̆_ρ(y)`: there `‖x − y‖²/ρ² < 1`.
+  · intro x hx
+    have hx' : ‖x - y‖ < ρ := by
+      rw [← dist_eq_norm]
+      exact mem_ball.mp hx
+    have h1 : ‖x - y‖ ^ 2 < ρ ^ 2 := by nlinarith [norm_nonneg (x - y)]
+    have h2 : ‖x - y‖ ^ 2 / ρ ^ 2 < 1 := by
+      rw [div_lt_one hρ2]
+      exact h1
+    simp only [hψ]
+    exact Real.smoothTransition.one_of_one_le (by linarith)
+  -- Compact support: `tsupport η` is a closed subset of the compact `B_{7ρ/4}(y)`.
+  · exact (isCompact_closedBall y (7 / 4 * ρ)).of_isClosed_subset (isClosed_tsupport _) htsupp
+  -- `tsupport η ⊆ B_{7ρ/4}(y) ⊆ B̆_{2ρ}(y)`.
+  · refine htsupp.trans (closedBall_subset_ball ?_)
+    linarith
+  -- Step 5: by the chain rule `Dη(x) = ψ'(s) (2/ρ²) ⟨x − y, ·⟩` with `s = ‖x − y‖²/ρ²`, so
+  -- `‖Dη(x)‖ = |ψ'(s)| (2/ρ²) ‖x − y‖`; this is `0` if `s > 3`, and if `s ≤ 3` then
+  -- `‖x − y‖ ≤ 2ρ` and `‖Dη(x)‖ ≤ cψ (2/ρ²) (2ρ) = 4 cψ/ρ`.
+  · intro x
+    set s := ‖x - y‖ ^ 2 / ρ ^ 2 with hs
+    have hf : HasFDerivAt (fun x : Rn n => ‖x - y‖ ^ 2 / ρ ^ 2)
+        (((ρ ^ 2)⁻¹ * 2) • innerSL ℝ (x - y)) x := by
+      have h0 : HasFDerivAt (fun x : Rn n => x - y) (ContinuousLinearMap.id ℝ (Rn n)) x :=
+        (hasFDerivAt_id x).sub_const y
+      have := h0.norm_sq.mul_const ((ρ ^ 2)⁻¹)
+      simp only [div_eq_mul_inv]
+      convert this using 1
+      ext v
+      simp
+      ring
+    have hψd : HasDerivAt ψ (deriv ψ s) s :=
+      ((hψc.differentiable one_ne_zero) s).hasDerivAt
+    have hη := hψd.comp_hasFDerivAt x hf
+    rw [show (fun x : Rn n => ψ (‖x - y‖ ^ 2 / ρ ^ 2)) =
+        ψ ∘ (fun x : Rn n => ‖x - y‖ ^ 2 / ρ ^ 2) from rfl, hη.fderiv]
+    by_cases h3 : 3 < s
+    · rw [hψ'0 s (fun h => by linarith [h.2]), zero_smul, norm_zero]
+      positivity
+    · push Not at h3
+      have hxy : ‖x - y‖ ≤ 2 * ρ := by
+        have : ‖x - y‖ ^ 2 ≤ 3 * ρ ^ 2 := by
+          have := (div_le_iff₀ hρ2).mp h3
+          linarith
+        nlinarith [norm_nonneg (x - y)]
+      have hnorm : ‖deriv ψ s • (((ρ ^ 2)⁻¹ * 2) • innerSL ℝ (x - y))‖ =
+          ‖deriv ψ s‖ * (((ρ ^ 2)⁻¹ * 2) * ‖x - y‖) := by
+        rw [norm_smul, norm_smul, innerSL_apply_norm,
+          Real.norm_of_nonneg (by positivity : (0 : ℝ) ≤ (ρ ^ 2)⁻¹ * 2)]
+      rw [hnorm]
+      calc ‖deriv ψ s‖ * (((ρ ^ 2)⁻¹ * 2) * ‖x - y‖)
+          ≤ cψ * (((ρ ^ 2)⁻¹ * 2) * (2 * ρ)) := by
+            gcongr
+            exact hcψ s
+        _ = 4 * cψ / ρ := by
+            field_simp
+            ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
