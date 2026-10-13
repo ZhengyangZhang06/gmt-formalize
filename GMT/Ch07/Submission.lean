@@ -451,6 +451,19 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integrability of `χ κ`.**  If `κ` is continuous on `(a, b)` and `χ` is continuous with
+compact support `tsupport χ ⊆ (a, b)`, then `x ↦ χ x * κ x` is integrable on `ℝ`: it is
+continuous on the compact set `K = tsupport χ`, hence integrable on `K`, and it vanishes
+off `K`. -/
+theorem Submission.idtp_ccd_scsp_dbr_integrable : ∀ (a b : ℝ) (κ χ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → Continuous χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → Integrable (fun x => χ x * κ x) := by
+  intro a b κ χ hκ hχ hχc hsupp
+  -- `χ κ` is continuous on the compact set `K = tsupport χ ⊆ (a, b)`, so integrable on `K`
+  have hK : IntegrableOn (fun x => χ x * κ x) (tsupport χ) :=
+    (hχ.continuousOn.mul (hκ.mono hsupp)).integrableOn_compact hχc.isCompact
+  -- off `K` we have `χ x = 0`, so `χ x * κ x = 0`
+  exact hK.integrable_of_forall_notMem_eq_zero fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport hx, zero_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
