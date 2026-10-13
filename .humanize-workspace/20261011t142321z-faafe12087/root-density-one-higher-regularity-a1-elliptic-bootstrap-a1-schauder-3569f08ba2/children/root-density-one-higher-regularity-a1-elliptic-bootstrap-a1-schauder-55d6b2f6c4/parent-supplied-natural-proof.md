@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.abstract_liouville-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the parent proof (DW_eps is constant), in directional-derivative form: restrict to the line t -> t x and differentiate along x instead of along the coordinate directions. Uses the sibling lemmas chain_vanish and poly_const.
+Notation: d_u g := (z -> Dg(z)u).
+
+1. Fix x in R^n. It suffices to show DW(x)w = DW(0)w for every w in R^n, because continuous linear maps that agree on every vector are equal. Fix w.
+
+2. Put U_0 := d_w W and U_{j+1} := d_x U_j, i.e. U_j = (d_x)^j (d_w W). By (S2) and induction, every U_j lies in S, hence is C^1 by (S1).
+
+3. For j in N and t in R put G_j(t) := U_j(t x). For every j and t, G_j has derivative G_{j+1}(t) at t.
+ Indeed, t -> t x has derivative x, and U_j is differentiable at t x with derivative DU_j(t x).
+ By the chain rule, t -> U_j(t x) has derivative DU_j(t x)x = (d_x U_j)(t x) = U_{j+1}(t x).
+
+4. G_{n+1}(t) = U_{n+1}(t x) = DU_n(t x)x = 0 for every t, because DU_n vanishes identically by the sibling lemma chain_vanish (applied with u := x and the fixed w).
+
+5. Growth: |G_0(t) - G_0(0)| = |DW(t x)w - DW(0)w| = |(DW(t x) - DW(0))w| <= ||DW(t x) - DW(0)|| |w| <= K |t x|^alpha |w| = (K |x|^alpha |w|) |t|^alpha.
+
+6. Apply the sibling lemma poly_const with m := n + 1, the sequence G, the exponent alpha < 1 and the constant K |x|^alpha |w|. It gives G_0(t) = G_0(0) for every t. At t = 1 this reads DW(x)w = DW(0)w. QED
+
+Lean implementation note: a kernel-checked single-declaration proof of exactly this frozen type is at /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_eb_sch_liou/dohr_eb_sch_liou_abstract.lean.txt (sha256 98b765ec2cc68363bd80f8f4d184a3631ad563ebe9660020ce8698f899c17b2c). It cites Submission.dohr_eb_sch_liou_chain_vanish and Submission.dohr_eb_sch_liou_poly_sublinear_const, and uses ext1 w, Function.iterate_succ_apply', HasFDerivAt.comp_hasDerivAt and Real.mul_rpow. It compiles at the frozen proof base imports without set_option, uses only the axioms propext, Classical.choice and Quot.sound, and passes check_source_delta.
+
+## Key steps
+
+1. reduce to DW(x)w = DW(0)w for fixed x and w
+2. chain U_j = (d_x)^j (d_w W) in S; G_j(t) := U_j(t x) satisfies G_j' = G_{j+1} by the chain rule
+3. G_{n+1}(t) = DU_n(t x)x = 0 by chain_vanish
+4. |G_0(t) - G_0(0)| <= K|x|^alpha |w| |t|^alpha, so poly_const gives G_0(1) = G_0(0)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `git show e821d88672aa1de5d3985dce6544d905efe7420d:GMT/Ch05/Submission.lean (frozen proof base of this node; identical to the contract, 463 lines)`
+- `rg -l -i 'liouville|caccioppoli|mollif|convolution' <snapshot>/project and the pinned simongmt package; rg -n -i 'theorem .*liouville' <snapshot>/mathlib/Mathlib`
+- `grep pinned Mathlib for ContDiffBump.normed/integral_normed/support_normed_eq, HasCompactSupport.contDiff_convolution_left, convolution_def, hasFDerivAt_integral_of_dominated_of_fderiv_le, hasDerivAt_integral_of_dominated_loc_of_deriv_le, ContinuousLinearMap.integral_comp_comm, integral_integral_swap, Continuous.integrable_of_hasCompactSupport, integral_add_right_eq_self, fderiv_comp_add_right, hasFDerivAt_comp_sub, support_fderiv_subset, ContDiffAt.isSymmSndFDerivAt, is_const_of_deriv_eq_zero, Measure.addHaar_ball_of_pos, lintegral_eq_zero_iff, Measure.eqOn_open_of_ae_eq, norm_image_sub_le_of_norm_deriv_le_segment', Convex.norm_image_sub_le_of_norm_fderiv_le', ContDiff.continuous_fderiv_apply, ContinuousLinearMap.le_opENorm`
+- `lake env lean Checks/Avail.lean (#check of those names under the frozen contract imports only)`
+- `python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem')`
+- `python3 scan of dag.json and issue-workers.json for dohr_eb_sch_liou* names and for mollifier, convolution, Liouville, difference-quotient and Caccioppoli nodes`
+- `ast extraction of check_source_delta from /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py and replay on every insertion (leafsim.py)`
+- `lake build GMT.Ch05.Submission (scratch with the six children, a Caccioppoli stand-in and the parent assembly); lake env lean Checks/Sol_<name>.lean for the six children and the parent; lake env lean Checks/AssemblyParent.lean and Checks/AssemblyAbstract.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/NNNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/NumberTheory/ArithmeticFunction/Liouville.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+
+PIN AND BASE. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean is byte-identical to the workspace Submission.lean and to the node's frozen proof base e821d886.
+
+NO MATCH FOR THE THEOREM. Neither the project nor simongmt contains a Liouville or Caccioppoli theorem for elliptic systems or a mollification lemma for weak solutions. Mathlib's 'Liouville' hits are number theory and complex analysis only. simongmt's DistributionalConstancy.lean only handles scalar functions with zero weak derivative. So the Liouville theorem must be proved, as in the children.
+
+TOOLS AVAILABLE AT THE FROZEN IMPORTS (checked with #check):
+- ContDiffBump basics, HasCompactSupport.contDiff_convolution_left, convolution;
+- hasFDerivAt_integral_of_dominated_of_fderiv_le and hasDerivAt_integral_of_dominated_loc_of_deriv_le;
+- integral_integral_swap, ContinuousLinearMap.integral_comp_comm, integral_add_right_eq_self, fderiv_comp_add_right;
+- Measure.addHaar_ball_of_pos, Measure.eqOn_open_of_ae_eq, lintegral_eq_zero_iff;
+- norm_image_sub_le_of_norm_deriv_le_segment', ContDiff.continuous_fderiv_apply, is_const_of_deriv_eq_zero.
+
+NOT IMPORTED: IsSymmSndFDerivAt, ContDiffAt.isSymmSndFDerivAt, ContDiffBump.normed and integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable.
+
+LEAF RULE. leaf_verification.py's check_source_delta requires one contiguous single-theorem insertion and rejects import, set_option, and other declarations. Because of the missing imports and this rule, symmetry of D^2V is its own child, and the mollifier is normalized by hand.
+
+INSTANCE-DEPTH PITFALLS (set_option maxSynthPendingDepth 3 is not allowed):
+- ‖A‖ and A.hasFDerivAt on the bilinear-form type fail; (A P).le_opNorm Q and (A.flip q).hasFDerivAt work.
+- ContinuousSub and sub_self fail on L(R^n, L).
+- rw [← smul_sub] fails on L inside goals.
+The stored proofs work around all of these.
+
+RESULT. All six children are proved outright as single theorems at the frozen base, with only the standard axioms, and they pass the leaf rule. The frozen parent type follows from them plus the Caccioppoli type. No DAG node carries any proposed name, and no DAG node has an identical type, so nothing is reused.
