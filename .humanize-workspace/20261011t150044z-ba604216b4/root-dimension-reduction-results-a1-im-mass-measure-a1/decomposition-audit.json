@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def measure|def Represents|IsUnitOrientationOf|covectorEuclideanNorm|namespace|^import|sorry|axiom",
+        "dor_ims_massOn_le_measure|dor_ims_measure_le_massOn|dor_ims_support_of_massOn_eq|imrep_measure_eq_of_represents_same_current|dimred_im_mass_measure",
+        "mem_support_iff_forall|notMem_support_iff_exists",
+        "theorem withDensity_apply|theorem withDensity_absolutelyContinuous",
+        "tendsto_measure_iUnion_atTop|tendsto_measure_iInter_atTop",
+        "exists_measurable_superset_of_null",
+        "exists_restrict_eq|instTietzeExtensionTVS",
+        "git rev-parse HEAD",
+        "git show fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2:GMT/Ch07/Submission.lean",
+        "git show 57cebee2fbae5e013e3b0e4191cd38bc03b89473:GMT/Ch07/Submission.lean",
+        "git show abdba550516fcd54258a165b3c33730b7a6287a0:GMT/Ch07/Submission.lean",
+        "git show 6907c2cb07a30284981f3f56aad0d3daf62d6314:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-imm-independent-audit/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred-imm-check/Composed.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-up-4048586780/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-lo-f48857d288/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-support-4f5a0b7736/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/accepted-candidate.json",
+        "/tmp/gmt-imm-independent-audit/TypesAndAssembly.lean",
+        "/tmp/dimred-imm-check/Composed.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest, and the workspace definitions match the frozen snapshot. The searched snapshot contains none of the four reused declaration names or the selected parent name. Each proposed name instead uniquely identifies a comparator-accepted DAG declaration with a byte-identical frozen type. Their 18-node dependency closure is accepted, acyclic, and contains no dependency on the selected parent. The empty sibling dependency lists are justified by the supplied self-contained proofs; existing accepted prerequisites remain attached to the reused nodes. All names are bare identifiers, and all four statements are standalone one-line propositions. No matrix-unit construction occurs. Independent Lean checks successfully elaborate the exact child types and prove the exact selected parent from them. The combined accepted proofs also compile against unchanged frozen definitions; all four children and the parent depend only on propext, Classical.choice, and Quot.sound. The sole sorry is the unrelated frozen main_theorem placeholder. The split appropriately establishes the selected mass, support, and uniqueness conclusions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including arbitrary U and possibly nonmeasurable W. The determinant expansion and Cauchy–Binet argument establish the required orientation bound. Comparing each admissible evaluation with the measure of its compact Borel support, then using monotonicity and taking the supremum, proves the claim. The Bochner nonintegrability convention is handled correctly. No openness assumption or circular reliance is hidden."
+    },
+    {
+      "key": "mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type correctly require U and W open without requiring W ⊆ U. The reduction to W ∩ U is justified by concentration of the representing measure on U. The proof supplies the equality case of duality, a Borel representative and exceptional null set, compact approximations, an explicit Lusin argument, extension, cutoff, mollification, and an integrable dominating function. The final real-threshold argument also covers infinite measure. These steps prove the exact statement without invoking the parent or another child."
+    },
+    {
+      "key": "support_from_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the arbitrary-measure type and its mass identity on every ambient open set. Scaling a test form by both signs of a positive normalizing factor correctly proves zero mass implies vanishing; the converse follows directly from the supremum. Relatively compact ball neighborhoods and the frozen zeroRegion definition then establish precisely T.support = U ∩ μ.support. No representation or measure regularity assumption is missing."
+    },
+    {
+      "key": "measure_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the exact type. Steps 1–6 independently prove the mass identity for each representation rather than assume the selected parent. The proposed π-system is closed under intersections, generates the ambient Borel σ-algebra, and has the explicitly indexed countable finite-measure cover. Agreement on its members therefore yields equality of measures. The supplied analytic proof is complete; the disclosed alternative implementation route does not introduce circularity."
+    }
+  ],
+  "required_changes": []
+}
