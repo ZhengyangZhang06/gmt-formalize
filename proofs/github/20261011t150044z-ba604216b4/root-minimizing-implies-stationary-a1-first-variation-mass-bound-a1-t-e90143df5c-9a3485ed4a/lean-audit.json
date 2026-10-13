@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "60c0bba9d36bb4a2a5013bafa93851c9785cafa67b9e773853799a3c4476d395",
+  "git_delta": {
+    "base_commit": "8ebd0b397ae172aa7b509a44f2f8a310f281c7e9",
+    "candidate_commit": "56e107017393dc93d7e61087e6b2c2ef320f68b4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "fvmb_trace_starProjection_comp_eq_sum_inner",
+    "diff_sha256": "60bf337f81e25ea73792a96d4714a242631a1418b7e47cac5287a923d3496639",
+    "source_sha256": "c6446d3e0422c094f24fa98cef9abdd0b2351a694b072af6b44cb7944a375bd4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fvmb_trace_starProjection_comp_eq_sum_inner",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
