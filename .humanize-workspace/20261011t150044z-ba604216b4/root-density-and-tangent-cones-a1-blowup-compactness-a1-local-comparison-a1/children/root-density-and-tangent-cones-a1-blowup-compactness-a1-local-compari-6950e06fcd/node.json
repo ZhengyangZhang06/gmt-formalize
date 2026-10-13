@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.retraction_comparison-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Comparison of a minimizer in A with a cycle pushed into A by a near-isometric C¹ retraction (Simon 7.2.4 (9) with Remark 7.2.5(2))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, A ⊆ ℝ^P, and S ∈ 𝒟_n(U) minimizing in A (IsMinimizingIn S A) with spt S ⊆ A. Let G > 0 with closedBall(0, G) ⊆ U, and L ≥ 0. Let π : ℝ^P → ℝ^P be C¹ on B_{2G}(0), with π(B_{2G}(0)) ⊆ A, π(y) = y for y ∈ A ∩ B_{2G}(0), and |π(y)| ≤ 2|y| and |π(y) − π(z)| ≤ L|y − z| for y, z ∈ B_{2G}(0). Let Y ∈ 𝒟_n(ℝ^P) be integer multiplicity with ∂Y = 0, spt Y compact and spt Y ⊆ B_{G/2}(0). Then M_{B_G(0)}(S) ≤ Lⁿ·M_{B_G(0)}(S + Y). Here S + Y ∈ 𝒟_n(U) means S − (0 − Y|_U), with Y|_U := Y.restrictDomain (U ⊆ ℝ^P), and Lⁿ is read as ENNReal.ofReal (L^n).",
+  "lean_statement": "∀ (P m : ℕ) (U A : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (π : Euclid P → Euclid P) (G L : ℝ), IsOpen U → IsMinimizingIn S A → S.support ⊆ A → 0 < G → closedBall (0 : Euclid P) G ⊆ U → 0 ≤ L → ContDiffOn ℝ 1 π (ball 0 (2 * G)) → MapsTo π (ball 0 (2 * G)) A → (∀ y ∈ A ∩ ball 0 (2 * G), π y = y) → (∀ y ∈ ball 0 (2 * G), ‖π y‖ ≤ 2 * ‖y‖) → (∀ y ∈ ball 0 (2 * G), ∀ z ∈ ball 0 (2 * G), ‖π y - π z‖ ≤ L * ‖y - z‖) → IsIntegerMultiplicity Y → Y.boundary = 0 → IsCompact Y.support → Y.support ⊆ ball 0 (G / 2) → S.massOn (ball 0 G) ≤ ENNReal.ofReal (L ^ (m + 1)) * (S - (0 - Y.restrictDomain (subset_univ U))).massOn (ball 0 G)",
+  "lean_name": "dtc_bc_lc_retraction_comparison",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.measure_subadditive-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.measure_subadditive-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1-a1",
+      "result_commit": "8f3bacb2e7f68423e88b488e5939a0d419c646fb",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-6950e06fcd-a1"
+}

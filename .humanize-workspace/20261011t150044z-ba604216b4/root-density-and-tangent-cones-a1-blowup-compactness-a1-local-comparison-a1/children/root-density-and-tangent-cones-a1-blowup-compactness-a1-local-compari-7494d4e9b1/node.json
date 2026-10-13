@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.good_level-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Choice of a common good level for countably many a.e. properties, a summable family of slice masses and countably many measures",
+  "statement": "Let P ∈ ℕ and a < b real numbers. Let g_i : ℝ → [0, ∞] (i ∈ ℕ) be a.e.-measurable for Lebesgue measure restricted to (a, b), with Σ_i ∫_{(a,b)} g_i dt < ∞. Let μ_i (i ∈ ℕ) be measures on ℝ^P and h : ℝ^P → ℝ a measurable function with μ_i({a < h < b}) < ∞ for every i. Let good_i (i ∈ ℕ) be predicates on ℝ, each holding for L¹-a.e. t. Then there is t ∈ (a, b) such that good_i(t) holds for every i, Σ_i g_i(t) < ∞, and μ_i({h = t}) = 0 for every i.",
+  "lean_statement": "∀ (P : ℕ) (g : ℕ → ℝ → ℝ≥0∞) (μ : ℕ → Measure (Euclid P)) (h : Euclid P → ℝ) (good : ℕ → ℝ → Prop) (a b : ℝ), a < b → Measurable h → (∀ i, AEMeasurable (g i) (volume.restrict (Ioo a b))) → (∑' i, ∫⁻ t in Ioo a b, g i t) ≠ ∞ → (∀ i, μ i {x | a < h x ∧ h x < b} ≠ ∞) → (∀ i, ∀ᵐ t, good i t) → ∃ t ∈ Ioo a b, (∀ i, good i t) ∧ (∑' i, g i t) ≠ ∞ ∧ ∀ i, μ i {x | h x = t} = 0",
+  "lean_name": "dtc_bc_lc_good_level",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-7494d4e9b1-a1"
+}

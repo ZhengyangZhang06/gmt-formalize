@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7(a)–(c) of the parent proof ("π fixes S_i near B_G"). It is stated here for a general integer multiplicity current T, open set O and map f in place of S_i⌞B_G, B_{2G} and π_i. The good set M' := M ∩ O ∩ spt T replaces M_i ∩ B_G ∩ A_i; the parent applies the result with spt S_i ⊆ A_i.
+
+Notation. Hⁿ := μHE[n]. For x ∈ ℝ^P and r > 0, η_{x,r}(y) := r⁻¹(y − x) (SimonGMT blowUpMap). HasApproximateTangentSpaceAt n E x Q means finrank Q = n and ∫_{η_{x,r}(E)} φ dHⁿ → ∫_Q φ dHⁿ as r ↓ 0, for every φ ∈ C_c(ℝ^P) (Simon Ch. 3, 1.4).
+
+1. (Hⁿ(M ∖ spt T) = 0.) spt T = U ∖ Z_T with Z_T open (SimonGMT isOpen_zeroRegion), so V := U ∖ spt T = U ∩ Z_T is open and V ⊆ U.
+ (a) Every form ω admissible for M_V(T) has tsupport ω ⊆ V, which is disjoint from spt T, so T(ω) = 0 by the sibling vanish_off_support. Hence M_V(T) = 0.
+ (b) By the sibling mass_eq_measure, μ_R(V) = M_V(T) = 0, where μ_R = θHⁿ⌞M.
+ (c) Since θ ≥ 1 on M (field mult_pos), Hⁿ(M ∩ V) ≤ μ_R(V) = 0. As M ⊆ U, M ∖ spt T = M ∩ V.
+
+2. (The good set.) Put M' := M ∩ O ∩ spt T. It is Borel, since spt T = U ∩ (ℝ^P ∖ Z_T). Moreover M' ⊆ M ∩ O and Hⁿ((M ∩ O) ∖ M') ≤ Hⁿ(M ∖ spt T) = 0 by step 1.
+
+3. (Locality of approximate tangent spaces; parent 7(a).) Let x ∈ O and Q be a subspace with HasApproximateTangentSpaceAt n M x Q. Then HasApproximateTangentSpaceAt n M' x Q.
+ (a) Let φ ∈ C_c(ℝ^P) with spt φ ⊆ B_ρ(0), and d := dist(x, ℝ^P ∖ O) > 0 (d := ∞ if O = ℝ^P). For 0 < r < d/ρ, η_{x,r}(y) ∈ B_ρ(0) implies |y − x| < rρ < d, i.e. y ∈ O. So φ = 0 on η_{x,r}(M ∖ O), and since η_{x,r} is injective, ∫_{η_{x,r}(M)} φ dHⁿ = ∫_{η_{x,r}(M∩O)} φ dHⁿ.
+ (b) η_{x,r}(M ∩ O) is the disjoint union of η_{x,r}(M') and η_{x,r}((M ∩ O) ∖ M'). Since η_{x,r} is a similarity with ratio r⁻¹, Hⁿ(η_{x,r}(E)) = r^{−n}Hⁿ(E) for every E, so the second set is Hⁿ-null by step 2.
+ (c) Therefore ∫_{η_{x,r}(M)} φ dHⁿ = ∫_{η_{x,r}(M')} φ dHⁿ for all r ∈ (0, d/ρ), and both families have the same limit ∫_Q φ dHⁿ.
+
+4. (Good points.)
+ (a) By the field orients of R, for Hⁿ-a.e. x ∈ M there is a subspace Q_x with HasApproximateTangentSpaceAt n M x Q_x and IsUnitOrientationOf (ξ(x)) Q_x. That is, there are an orthonormal basis τ₁, …, τₙ of Q_x and a sign s ∈ {1, −1} with ⟨α, ξ(x)⟩ = s·α(τ₁, …, τₙ) for all α.
+ (b) By step 2, Hⁿ-a.e. x ∈ M ∩ O also lies in M'. Fix x ∈ M ∩ O with both properties.
+ (c) Then x ∈ spt T ∩ O, so f(x) = x; and by step 3, HasApproximateTangentSpaceAt n M' x Q_x.
+ (d) If n = 0, then α ∘ Λ⁰Df(x) = α for every 0-covector and there is nothing more to prove. Assume n ≥ 1.
+
+5. (Secant directions; parent 7(b).) Every unit vector v ∈ Q_x is the limit of (z_k − x)/|z_k − x| for some z_k ∈ M' ∖ {x} with z_k → x.
+ (a) Suppose not. Then there are ε', r' > 0 such that |(z − x)/|z − x| − v| ≥ ε' for all z ∈ M' with 0 < |z − x| < r'.
+ (b) Let Ω := {w : 1/2 < |w| < 1, |w/|w| − v| < ε'}, an open set containing w₀ := (3/4)v. For 0 < r < r', η_{x,r}(M') ∩ Ω = ∅: if w = (z − x)/r ∈ Ω with z ∈ M', then 0 < |z − x| = r|w| < r' and (z − x)/|z − x| = w/|w|, contradicting (a).
+ (c) Choose φ ∈ C_c(ℝ^P) with 0 ≤ φ ≤ 1, spt φ ⊆ Ω and φ(w₀) = 1. Then ∫_{η_{x,r}(M')} φ dHⁿ = 0 for 0 < r < r', so by step 4(c) ∫_{Q_x} φ dHⁿ = 0.
+ (d) But w₀ ∈ Q_x, φ > 1/2 on a neighbourhood N of w₀, and Hⁿ(N ∩ Q_x) > 0, because the support of Hⁿ⌞Q_x is Q_x (SimonGMT support_euclideanHausdorffMeasure_restrict_submodule; Hⁿ⌞Q_x is Lebesgue measure on the n-plane Q_x). Hence ∫_{Q_x} φ dHⁿ > 0, a contradiction.
+
+6. (Df(x) = id on Q_x; parent 7(c).) Since x ∈ O and O is open, f is differentiable at x: f(z) − f(x) − Df(x)(z − x) = o(|z − x|) as z → x.
+ (a) For z_k as in step 5, z_k ∈ M' ⊆ spt T ∩ O, so f(z_k) = z_k; and f(x) = x.
+ (b) Hence (I − Df(x))(z_k − x) = o(|z_k − x|), i.e. (I − Df(x))u_k → 0 for u_k := (z_k − x)/|z_k − x| → v.
+ (c) By continuity of the linear map I − Df(x), (I − Df(x))v = 0. By linearity, Df(x)w = w for every w ∈ Q_x.
+
+7. (Conclusion.) For every n-covector α, ⟨α ∘ ΛⁿDf(x), ξ(x)⟩ = s·(α ∘ ΛⁿDf(x))(τ₁, …, τₙ) = s·α(Df(x)τ₁, …, Df(x)τₙ) = s·α(τ₁, …, τₙ) = ⟨α, ξ(x)⟩, and f(x) = x. The points x of step 4 form a set of full Hⁿ⌞(M ∩ O)-measure, so the conclusion holds for Hⁿ-a.e. x ∈ M ∩ O. ∎
+
+## Key steps
+
+1. Hⁿ(M ∖ spt T) = 0 (vanish_off_support and mass_eq_measure), so the good set M' = M ∩ O ∩ spt T has full measure in M ∩ O.
+2. At points of O the approximate tangent space of M' equals that of M, because the blow-ups differ by null sets.
+3. Every unit v in T_xM is a limit of secant directions from M'; otherwise a test function supported in a cone contradicts ∫_{T_xM} φ > 0.
+4. f fixes M' and is differentiable at x, so Df(x)v = v on T_xM. Hence ΛⁿDf(x) fixes the orientation ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ, and f(x) = x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; read workspace GMT/Ch07/Contract.lean, GMT/Ch07/README.md (contract unchanged; Submission.lean byte copy)`
+- `rg/grep 'def GeometricCurrentOn.massOn|massAdmissibleOn|covectorEuclideanNorm_neg|le_massOn|massOn_mono|massOn_le_liminf' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `grep 'structure GeometricCurrentOn|instance .*Zero|def GeometricCurrentOn.boundary|boundary_boundary|exteriorDerivativeTestOn|tsupport_exteriorDerivative_subset|WeaklyConvergesOn' simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; grep 'abbrev Covector|abbrev DifferentialForm|abbrev exteriorDerivative' Chapter06/Forms.lean`
+- `grep 'restrictDomain|testFormOnInclusion|VanishesOn|zeroRegion|def GeometricCurrentOn.support|isOpen_zeroRegion' simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `grep 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|blowUpMap|HasApproximateTangentSpaceAt.unique|support_euclideanHausdorffMeasure_restrict_submodule' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (no slicing, flat-norm, deformation theorem or non-affine push-forward in Chapter06)`
+- `python3 -I scans of dag.json (673 nodes at the first scan, 783 at the final re-check): related nodes cmc_flat_convergence, cmc_slice_mass_bounds, dimred_mbl_pushforward, dimred_mbl_local_comparison, imrep_c1_diffeo_pushforward_im (not accepted, not reusable); accepted candidates dtc_mass_eq_measure, dtc_vanish_off_support, cmc_imRep_locality_restrict_sub, dtc_restrictDomain_isIntegerMultiplicity, rsd_cmr_support_subset_of_vanish, dtc_approxTangent_of_null_diff, lcmp_massOn_le_add_of_eval_eq, dpf_pushforward_formula_current_exists, dpf_pushforward_formula_boundaryVanishes; collision check of the seven new dtc_bc_lc_ names (none)`
+- `git grep 'theorem Submission.<name> ' <accepted commit> -- GMT for the five reused declarations; whitespace-normalised type comparison (all IDENTICAL); git show e34a71c (dispatch commit contains only the contract)`
+- `#check of Mathlib names at the pin: Filter.extraction_forall_of_eventually, ENNReal.tendsto_atTop_zero_of_tsum_ne_top, Metric.mem_thickening_iff_infDist_lt, IsCompact.cthickening, Measure.countable_meas_level_set_pos, norm_fderiv_le_of_lipschitzOn, ENNReal.tsum_geometric, restrict_withDensity, Measure.le_iff, image_eq_zero_of_notMem_tsupport`
+- `lake env lean /tmp/dtcbclc/check/Types.lean; challenge modules /tmp/dtcbclc/check/challenges/Challenge_<key>.lean (12, generated by verifier gmt-compare.py child_modules, contract mode); lake env lean /tmp/dtcbclc/out/Assembly.lean with #print axioms for assembly and ret_assembly`
+- `sed book/chapter-07.txt lines 150-300 (Simon 7.2.4 proof (1)-(14), Remark 7.2.5); book/chapter-06.txt lines 395-540, 700-1000, 1140-1500, 1990-2120 (2.23-2.29, 3.1-3.14, 4.1-4.11, 5.1-5.4, 6.3, 7.1-7.2); book/chapter-03.txt lines 100-160, 327-445 (1.6, 2.1-2.10)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/dtcbclc/out/Assembly.lean`
+- `/tmp/dtcbclc/check/Types.lean`
+- `/tmp/dtcbclc/stmts/children.py`
+
+The pinned SimonGMT library provides currents, boundary, massOn with the Euclidean coefficient norm, support/zeroRegion, restrictDomain, testFormOnInclusion, lower semicontinuity of mass, CountablyRectifiable and HasApproximateTangentSpaceAt. It has no flat-norm theorem, deformation theorem, slicing, C¹ push-forward of currents or area/coarea formula on rectifiable sets. These are the three Simon Ch. 6 results (C1)–(C3) cited by the supplied proof, so they become the children flat_decomposition, slicing and pushforward. Related DAG nodes in other branches (cmc_flat_convergence, cmc_slice_mass_bounds, dimred_mbl_pushforward) are not accepted, so they cannot be reused and the new names are unique. Five accepted declarations are reused with identical types: dtc_mass_eq_measure, dtc_vanish_off_support, cmc_imRep_locality_restrict_sub, dtc_restrictDomain_isIntegerMultiplicity and rsd_cmr_support_subset_of_vanish. All Mathlib lemmas used in the Lean assembly exist at the pin. All 12 child types elaborate in the comparator scope. The Lean assembly proves the exact frozen type of dtc_bc_local_comparison from the 12 child types and the sibling measure_locality type, and proves retraction_comparison from its declared siblings, using only propext, Classical.choice and Quot.sound.
