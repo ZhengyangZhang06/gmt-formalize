@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b74abcddb9a21eec302c1008beb12ab68f0365eb757490738966f39734f02287",
+  "git_delta": {
+    "base_commit": "a378516e2822c79085176c9533cbcb55621f2817",
+    "candidate_commit": "4973ce59c47eee20e0b2c216a92423a038e9e8c2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_tma_continuous_extension",
+    "diff_sha256": "dba7662c6bff5767d5e159bcf74eb150f0226dbfd5b0c543fb4bd2fb01979b97",
+    "source_sha256": "674756067149b9c058f364b05b884dac1613acd6ce96dabdf4b607e535737961",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_tma_continuous_extension",
+      "statement": "∀ (P n : ℕ) (μ τ : Measure (Euclid P)) (y : Euclid P) (ρ₁ C : ℝ), 0 < ρ₁ → 0 ≤ C → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ R : ℝ, τ (closedBall (0 : Euclid P) R) ≠ ∞) → (∀ g : Euclid P → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z, g z ∂τ))) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z, f z ∂τ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
