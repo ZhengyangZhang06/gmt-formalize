@@ -458,6 +458,87 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 4, (4.3)–(4.4), in abstract form (`P = I'`, and `Q` plays the role of `J'`): if on
+`(0, R)` we have `I' = P`, `L` continuous, `I ≥ 0`, `nI − tP + tQ = −L`,
+`a = (L/t^{n+1})/(1 + I/tⁿ)` and `|a| ≤ M t^{−β}` with `β < 1`, then
+`Ψ(s) = exp(−∫₀ˢ a)(1 + I(s)/sⁿ)` satisfies `Ψ'(t) = exp(−∫₀ᵗ a) Q(t)/tⁿ`, and
+`exp(−∫₀^ρ |a|) ≤ exp(−∫₀ᵗ a) ≤ exp(∫₀^ρ |a|)` for `0 < t ≤ ρ < R`. -/
+theorem aal_cfs_integrating_factor_deriv : ∀ (n : ℕ) (I L a P Q : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t : ℝ, 0 < t → t < R → HasDerivAt I (P t) t) → (∀ t : ℝ, 0 < t → t < R → ContinuousAt L t) → (∀ t : ℝ, 0 < t → t < R → 0 ≤ I t) → (∀ t : ℝ, 0 < t → t < R → (n : ℝ) * I t - t * P t + t * Q t = -L t) → (∀ t : ℝ, 0 < t → t < R → a t = L t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → t < R → |a t| ≤ M * t ^ (-β)) → (∀ t : ℝ, 0 < t → t < R → HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n)) (Real.exp (-∫ u in (0)..t, a u) * (Q t / t ^ n)) t) ∧ (∀ t ρ : ℝ, 0 < t → t ≤ ρ → ρ < R → Real.exp (-∫ u in (0)..ρ, |a u|) ≤ Real.exp (-∫ u in (0)..t, a u) ∧ Real.exp (-∫ u in (0)..t, a u) ≤ Real.exp (∫ u in (0)..ρ, |a u|)) := by
+  intro n I L a P Q R M β hβ hIder hLc hInn hid ha hab
+  have hden : ∀ t, 0 < t → t < R → 1 ≤ 1 + I t / t ^ n := fun t ht htR => by
+    have := div_nonneg (hInn t ht htR) (pow_pos ht n).le
+    linarith
+  -- `a` is continuous on `(0, R)`
+  have hacontAt : ∀ t, 0 < t → t < R → ContinuousAt a t := by
+    intro t ht htR
+    have hev : (fun s => L s / s ^ (n + 1) / (1 + I s / s ^ n)) =ᶠ[𝓝 t] a := by
+      filter_upwards [Ioo_mem_nhds ht htR] with s hs
+      exact (ha s hs.1 hs.2).symm
+    refine ContinuousAt.congr ?_ hev
+    exact ((hLc t ht htR).div ((continuous_pow (n + 1)).continuousAt)
+      (pow_ne_zero _ ht.ne')).div
+      (continuousAt_const.add ((hIder t ht htR).continuousAt.div
+        ((continuous_pow n).continuousAt) (pow_ne_zero _ ht.ne')))
+      (by linarith [hden t ht htR])
+  have hacont : ContinuousOn a (Ioo 0 R) := fun t ht =>
+    (hacontAt t ht.1 ht.2).continuousWithinAt
+  -- `a` is integrable on `[0, t]`, by the bound `|a s| ≤ M s^(-β)` with `β < 1`
+  have haint : ∀ t, 0 < t → t < R → IntervalIntegrable a volume 0 t := by
+    intro t ht htR
+    refine IntervalIntegrable.mono_fun' (g := fun s => M * s ^ (-β)) ?_ ?_ ?_
+    · exact (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul M
+    · rw [uIoc_of_le ht.le]
+      exact (hacont.mono (Ioc_subset_Ioo_right htR)).aestronglyMeasurable measurableSet_Ioc
+    · rw [uIoc_of_le ht.le]
+      refine (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun s hs => ?_)
+      show ‖a s‖ ≤ M * s ^ (-β)
+      rw [Real.norm_eq_abs]
+      exact hab s hs.1 (lt_of_le_of_lt hs.2 htR)
+  -- the fundamental theorem of calculus for `∫₀ᵗ a`
+  have hGderiv : ∀ t, 0 < t → t < R → HasDerivAt (fun u => ∫ s in (0)..u, a s) (a t) t := by
+    intro t ht htR
+    exact intervalIntegral.integral_hasDerivAt_right (haint t ht htR)
+      (hacont.stronglyMeasurableAtFilter isOpen_Ioo t ⟨ht, htR⟩) (hacontAt t ht htR)
+  refine ⟨fun t ht htR => ?_, fun t ρ ht htρ hρR => ?_⟩
+  · have hd := ((hGderiv t ht htR).neg.exp).mul ((hasDerivAt_const t (1 : ℝ)).add
+      ((hIder t ht htR).div (hasDerivAt_pow n t) (pow_ne_zero n ht.ne')))
+    have hd' : HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n))
+        (Real.exp (-∫ u in (0)..t, a u) * -a t * (1 + I t / t ^ n) +
+          Real.exp (-∫ u in (0)..t, a u) *
+            (0 + (P t * t ^ n - I t * ((n : ℝ) * t ^ (n - 1))) / (t ^ n) ^ 2)) t := hd
+    convert hd' using 1
+    set E := Real.exp (-∫ u in (0)..t, a u) with hEdef
+    have hP : 0 < t ^ n := pow_pos ht n
+    have hden' : 1 + I t / t ^ n ≠ 0 := by linarith [hden t ht htR]
+    have haL : a t * (1 + I t / t ^ n) = L t / (t ^ n * t) := by
+      rw [ha t ht htR, div_mul_cancel₀ _ hden', pow_succ]
+    have hnpow : (n : ℝ) * t ^ (n - 1) = n * t ^ n / t := by
+      rcases Nat.eq_zero_or_pos n with hn | hn
+      · subst hn
+        simp
+      · rw [eq_div_iff ht.ne', mul_assoc, ← pow_succ, Nat.sub_add_cancel hn]
+    have hq : (P t * t ^ n - I t * ((n : ℝ) * t ^ (n - 1))) / (t ^ n) ^ 2 =
+        (t * P t - n * I t) / (t ^ n * t) := by
+      rw [hnpow]
+      field_simp
+    have hidt : t * P t - n * I t = t * Q t + L t := by linarith [hid t ht htR]
+    have hQ : (t * Q t + L t) / (t ^ n * t) = Q t / t ^ n + L t / (t ^ n * t) := by
+      field_simp
+    rw [hq, hidt, hQ]
+    linear_combination E * haL
+  · have hiρ := haint ρ (ht.trans_le htρ) hρR
+    have h1 : |∫ u in (0)..t, a u| ≤ ∫ u in (0)..t, |a u| :=
+      intervalIntegral.abs_integral_le_integral_abs ht.le
+    have h2 : ∫ u in (0)..t, |a u| ≤ ∫ u in (0)..ρ, |a u| :=
+      intervalIntegral.integral_mono_interval le_rfl ht.le htρ
+        (Eventually.of_forall fun u => abs_nonneg _) hiρ.abs
+    have h3 := abs_le.mp (h1.trans h2)
+    exact ⟨Real.exp_le_exp.mpr (by linarith [h3.2]), Real.exp_le_exp.mpr (by linarith [h3.1])⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
