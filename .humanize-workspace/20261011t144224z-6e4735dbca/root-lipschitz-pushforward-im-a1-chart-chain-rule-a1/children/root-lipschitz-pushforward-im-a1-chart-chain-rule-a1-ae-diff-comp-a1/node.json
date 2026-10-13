@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_diff_comp-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+  "depth": 3,
+  "title": "Rademacher for f∘Φ: a.e. differentiability of a locally Lipschitz map composed with a C¹ map",
+  "statement": "Let P, Q, n ∈ ℕ, let U ⊆ ℝ^P be open, let f : ℝ^P → ℝ^Q be locally Lipschitz on U, and let Φ : ℝⁿ → ℝ^P be of class C¹. Then for Lⁿ-a.e. w ∈ ℝⁿ (Lⁿ = volume): if Φ(w) ∈ U, then f∘Φ is (Fréchet) differentiable at w.",
+  "lean_statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P), IsOpen U → LocallyLipschitzOn U f → ContDiff ℝ 1 Φ → ∀ᵐ w ∂(volume : Measure (Eucl n)), Φ w ∈ U → DifferentiableAt ℝ (f ∘ Φ) w",
+  "lean_name": "lpf_ccr_ae_differentiableAt_comp",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.countable_lipschitz_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.countable_lipschitz_cover-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60-a1",
+      "result_commit": "6941b70febfeca396a5e8105097428578fe61416",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-ae-diff-comp-a1-a1"
+}
