@@ -570,6 +570,119 @@ theorem Submission.codim1_rdo_dg_bh_directional_gauss_green : ∀ (m : ℕ) (D F
     (fun z => ζ z • w) hg hgc hgs
   simp_rw [h1, h2] at key
   exact key
+/-- **Small normal defect** (Simon Ch. 3, proof of Theorem 4.3 (De Giorgi), printed (1)–(2),
+chapter-03.txt lines 609–619).  Let `ν` be a measurable unit vector field and `v` a unit vector,
+let `μ(B̄_ρ₀(y)) < ∞` for some `ρ₀ > 0`, and let the averages `A(ρ) = μ(B̄_ρ(y))⁻¹ ∫_{B̄_ρ(y)} ν dμ`
+tend to `v` as `ρ ↓ 0`.  Then for every `δ > 0` and all small `ρ > 0`,
+`∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ δ μ(B̄_ρ(y))` and `∫_{B̄_ρ(y)} |⟨ν, w⟩| dμ ≤ δ |w| μ(B̄_ρ(y))` for
+every `w ⊥ v`.  The first bound is `∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ = μ(B̄_ρ(y)) (1 - ⟨A(ρ), v⟩)`; the
+second integrates `|⟨ν, w⟩| ≤ |w| |ν - v| ≤ |w| (δ/2 + (1 - ⟨ν, v⟩)/δ)`, where
+`|ν - v|² = 2 (1 - ⟨ν, v⟩)`. -/
+theorem Submission.codim1_rdo_dg_bh_normal_defect_small : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), Measurable ν → (∀ z, ‖ν z‖ = 1) → ‖v‖ = 1 → (∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞) → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ δ : ℝ, 0 < δ → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∫ z in closedBall y ρ, (1 - inner ℝ (ν z) v) ∂μ ≤ δ * (μ (closedBall y ρ)).toReal ∧ ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in closedBall y ρ, |inner ℝ (ν z) w| ∂μ ≤ δ * ‖w‖ * (μ (closedBall y ρ)).toReal := by
+  intro m μ ν y v hν hν1 hv ⟨ρ₀, hρ₀, hfin⟩ hA δ hδ
+  -- `⟨A(ρ), v⟩ → ⟨v, v⟩ = 1`
+  have hε : Tendsto (fun ρ : ℝ => inner ℝ ((μ (closedBall y ρ)).toReal⁻¹ •
+      ∫ z in closedBall y ρ, ν z ∂μ) v) (𝓝[>] 0) (𝓝 1) := by
+    have hcont : Continuous (fun x : Euclid (m + 1) => inner ℝ x v) :=
+      continuous_id.inner continuous_const
+    have := (hcont.tendsto v).comp hA
+    rwa [real_inner_self_eq_norm_sq, hv, one_pow] at this
+  -- eventually `ρ < ρ₀` and `1 - ⟨A(ρ), v⟩ < η = min δ (δ² / 2)`
+  set η := min δ (δ ^ 2 / 2) with hη_def
+  have hη : 0 < η := lt_min hδ (by positivity)
+  have hηδ : η ≤ δ := min_le_left _ _
+  have hηδ2 : η ≤ δ ^ 2 / 2 := min_le_right _ _
+  have hev1 : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), 1 - η < inner ℝ ((μ (closedBall y ρ)).toReal⁻¹ •
+      ∫ z in closedBall y ρ, ν z ∂μ) v :=
+    hε.eventually (lt_mem_nhds (by linarith))
+  have hev2 : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 ρ₀ := Ioo_mem_nhdsGT hρ₀
+  filter_upwards [hev1, hev2] with ρ h1 h2
+  -- `μ(B̄_ρ(y)) < ∞`, so the bounded measurable integrands are integrable
+  set B := closedBall y ρ with hB
+  have hfinρ : μ B ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono (closedBall_subset_closedBall h2.2.le))
+  have : IsFiniteMeasure (μ.restrict B) := isFiniteMeasure_restrict.mpr hfinρ
+  set M := (μ B).toReal with hM
+  have hM0 : 0 ≤ M := ENNReal.toReal_nonneg
+  have hνint : Integrable ν (μ.restrict B) :=
+    Integrable.of_bound hν.aestronglyMeasurable 1 (Eventually.of_forall fun z => (hν1 z).le)
+  have hνv_meas : Measurable (fun z => inner ℝ (ν z) v) :=
+    (continuous_id.inner continuous_const).measurable.comp hν
+  have hνv : Integrable (fun z => inner ℝ (ν z) v) (μ.restrict B) := by
+    refine Integrable.of_bound hνv_meas.aestronglyMeasurable 1 (Eventually.of_forall fun z => ?_)
+    calc ‖inner ℝ (ν z) v‖ = |inner ℝ (ν z) v| := Real.norm_eq_abs _
+      _ ≤ ‖ν z‖ * ‖v‖ := abs_real_inner_le_norm _ _
+      _ = 1 := by rw [hν1, hv, one_mul]
+  have hdefint : Integrable (fun z => 1 - inner ℝ (ν z) v) (μ.restrict B) :=
+    (integrable_const 1).sub hνv
+  -- `∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ = M (1 - ⟨A(ρ), v⟩) ≤ M η`
+  have hdef : ∫ z in B, (1 - inner ℝ (ν z) v) ∂μ ≤ M * η := by
+    rcases eq_or_ne M 0 with hM0' | hMne
+    · have hμB : μ B = 0 := by
+        rcases (ENNReal.toReal_eq_zero_iff _).mp hM0' with h | h
+        · exact h
+        · exact absurd h hfinρ
+      rw [Measure.restrict_eq_zero.mpr hμB, integral_zero_measure, hM0', zero_mul]
+    · have hinner : ∫ z in B, inner ℝ (ν z) v ∂μ = inner ℝ (∫ z in B, ν z ∂μ) v := by
+        simp_rw [real_inner_comm v]
+        have := (innerSL ℝ v).integral_comp_comm hνint
+        simpa using this
+      rw [integral_sub (integrable_const 1) hνv, hinner, integral_const, smul_eq_mul, mul_one]
+      simp only [Measure.real, Measure.restrict_apply_univ]
+      have hA' : inner ℝ (∫ z in B, ν z ∂μ) v = M * inner ℝ (M⁻¹ • ∫ z in B, ν z ∂μ) v := by
+        rw [real_inner_smul_left, ← mul_assoc, mul_inv_cancel₀ hMne, one_mul]
+      rw [hA']
+      have : 1 - inner ℝ (M⁻¹ • ∫ z in B, ν z ∂μ) v ≤ η := by linarith
+      nlinarith
+  refine ⟨?_, ?_⟩
+  · calc ∫ z in B, (1 - inner ℝ (ν z) v) ∂μ ≤ M * η := hdef
+      _ ≤ M * δ := mul_le_mul_of_nonneg_left hηδ hM0
+      _ = δ * M := mul_comm _ _
+  · intro w hw
+    -- pointwise `|⟨ν, w⟩| ≤ |w| |ν - v| ≤ |w| (δ/2 + (1 - ⟨ν, v⟩)/δ)` for `w ⊥ v`
+    have hpt : ∀ z, |inner ℝ (ν z) w| ≤ ‖w‖ * (δ / 2 + (1 - inner ℝ (ν z) v) / δ) := by
+      intro z
+      have e1 : inner ℝ (ν z) w = inner ℝ (ν z - v) w := by
+        rw [inner_sub_left, real_inner_comm w v, hw, sub_zero]
+      have e2 : ‖ν z - v‖ ^ 2 = 2 - 2 * inner ℝ (ν z) v := by
+        rw [norm_sub_sq_real, hν1, hv]; ring
+      have e3 : ‖ν z - v‖ ≤ δ / 2 + (1 - inner ℝ (ν z) v) / δ := by
+        have ht := sq_nonneg (‖ν z - v‖ - δ)
+        have : (1 - inner ℝ (ν z) v) / δ = ‖ν z - v‖ ^ 2 / (2 * δ) := by
+          rw [e2]; field_simp
+        rw [this, div_add_div _ _ (two_ne_zero) (by positivity), le_div_iff₀ (by positivity)]
+        nlinarith
+      rw [e1]
+      calc |inner ℝ (ν z - v) w| ≤ ‖ν z - v‖ * ‖w‖ := abs_real_inner_le_norm _ _
+        _ ≤ (δ / 2 + (1 - inner ℝ (ν z) v) / δ) * ‖w‖ :=
+            mul_le_mul_of_nonneg_right e3 (norm_nonneg _)
+        _ = _ := mul_comm _ _
+    have hint1 : Integrable (fun z => |inner ℝ (ν z) w|) (μ.restrict B) := by
+      refine Integrable.of_bound
+        ((continuous_abs.comp (continuous_id.inner continuous_const)).measurable.comp
+          hν).aestronglyMeasurable ‖w‖
+        (Eventually.of_forall fun z => ?_)
+      rw [Real.norm_eq_abs, abs_abs]
+      calc |inner ℝ (ν z) w| ≤ ‖ν z‖ * ‖w‖ := abs_real_inner_le_norm _ _
+        _ = ‖w‖ := by rw [hν1, one_mul]
+    have hint2 : Integrable (fun z => ‖w‖ * (δ / 2 + (1 - inner ℝ (ν z) v) / δ)) (μ.restrict B) :=
+      ((integrable_const (δ / 2)).add (hdefint.div_const δ)).const_mul ‖w‖
+    -- integrate, then use `∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ M η ≤ M δ² / 2`
+    calc ∫ z in B, |inner ℝ (ν z) w| ∂μ
+        ≤ ∫ z in B, ‖w‖ * (δ / 2 + (1 - inner ℝ (ν z) v) / δ) ∂μ :=
+          integral_mono hint1 hint2 hpt
+      _ = ‖w‖ * (δ / 2 * M + (∫ z in B, (1 - inner ℝ (ν z) v) ∂μ) / δ) := by
+          rw [integral_const_mul, integral_add (integrable_const _) (hdefint.div_const δ),
+            integral_const, integral_div, smul_eq_mul]
+          simp only [Measure.real, Measure.restrict_apply_univ]
+          ring
+      _ ≤ ‖w‖ * (δ / 2 * M + M * η / δ) := by
+          gcongr
+      _ ≤ ‖w‖ * (δ / 2 * M + M * (δ ^ 2 / 2) / δ) := by
+          gcongr
+      _ = δ * ‖w‖ * M := by
+          field_simp
+          ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
