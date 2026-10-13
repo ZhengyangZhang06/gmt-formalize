@@ -763,6 +763,193 @@ theorem Submission.iwl_cr_ci_product_cutoff :
   rw [mem_closedBall_zero_iff, Real.norm_eq_abs] at h0
   rw [mem_closedBall_zero_iff] at hπy
   exact hy (mem_closedBall_zero_iff.2 ((hnorm y).trans (add_le_add h0 hπy)))
+/-- **`Hⁿ(M ∩ K) < ∞` for integer multiplicity triples (Simon Ch. 6, 3.1).**  If
+`(M, θ, ξ)` is a rectifiable triple in `U` and `θ` is integer-valued on `M`, then `θ ≥ 1` on `M`
+(`θ > 0`), so for compact `K ⊆ U`:
+`Hⁿ(M ∩ K) = ∫⁻_{M ∩ K} 1 dHⁿ ≤ ∫⁻_{M ∩ K} |θ| dHⁿ < ∞` (`θ` is `Hⁿ`-integrable on `M ∩ K`). -/
+theorem Submission.iwl_cr_ci_ie_measure_inter_compact_lt_top : ∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → IsCompact K → K ⊆ U → (μHE[n] : Measure (Eucl P)) (M ∩ K) < ∞ := by
+  intro P n U M θ ξ K hT hint hK hKU
+  -- `θ = k ∈ ℕ` and `θ > 0` force `θ ≥ 1` on `M`.
+  have h1 : ∀ x ∈ M, 1 ≤ θ x := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hint x hx
+    have hpos := hT.pos x hx
+    rw [hk] at hpos ⊢
+    have hk0 : k ≠ 0 := by rintro rfl; simp at hpos
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk0
+  have hθ : IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P)) := hT.integrableOn K hK hKU
+  have hnm : NullMeasurableSet (M ∩ K) (μHE[n] : Measure (Eucl P)) :=
+    hT.nullMeasurableSet.inter hK.isClosed.measurableSet.nullMeasurableSet
+  -- `‖θ‖ₑ ≥ 1` a.e. on `M ∩ K`.
+  have hae : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)), (1 : ℝ≥0∞) ≤ ‖θ x‖ₑ := by
+    filter_upwards [ae_restrict_mem₀ hnm] with x hx
+    have h := h1 x hx.1
+    rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg (by linarith)]
+    exact ENNReal.one_le_ofReal.mpr h
+  -- `Hⁿ(M ∩ K) = ∫⁻_{M ∩ K} 1 ≤ ∫⁻_{M ∩ K} ‖θ‖ₑ < ∞`.
+  calc (μHE[n] : Measure (Eucl P)) (M ∩ K)
+        = ∫⁻ _ in M ∩ K, (1 : ℝ≥0∞) ∂(μHE[n] : Measure (Eucl P)) := (setLIntegral_one _).symm
+    _ ≤ ∫⁻ x in M ∩ K, ‖θ x‖ₑ ∂(μHE[n] : Measure (Eucl P)) := lintegral_mono_ae hae
+    _ < ∞ := hθ.hasFiniteIntegral
+/-- **Unit bound for the orientation `±τ₁ ∧ ⋯ ∧ τₙ` (Simon Ch. 6, 3.1).**  If `τ` is an
+orthonormal family in `ℝ^P` and `w = ±simpleNVector τ`, then `|w(α)| ≤ ‖α‖` for every
+`n`-covector `α`: `simpleNVector τ α = α(τ₁, …, τₙ)` and `‖α(τ)‖ ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+(`ContinuousAlternatingMap.le_opNorm`, each `τᵢ` a unit vector). -/
+theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∀ α : Covector (Eucl P) n, |w α| ≤ ‖α‖ := by
+  intro P n τ w hτ hw α
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`.
+  have h1 : |simpleNVector τ α| ≤ ‖α‖ := by
+    rw [simpleNVector_apply, ← Real.norm_eq_abs]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+      _ = ‖α‖ := by simp [hτ.1]
+  -- `w = ±simpleNVector τ`, and `|-a| = |a|`.
+  rcases hw with rfl | rfl
+  · exact h1
+  · simpa [abs_neg] using h1
+/-- **An `n`-vector commutes with the interval integral of a continuous covector family.**  If
+`f : ℝ → Λᵐ(ℝ^P)` is continuous and `c(v) = ∫_a^b f(s)(v) ds` for every `v`, then
+`∫_a^b w(f(s)) ds = w(c)` for every `w ∈ Λₘ(ℝ^P)`: evaluation at `v` is a continuous linear
+functional, so `(∫_a^b f)(v) = ∫_a^b f(s)(v) ds = c(v)` and `∫_a^b f = c`; then `w` commutes with
+the integral (`ContinuousLinearMap.intervalIntegral_comp_comm`). -/
+theorem Submission.iwl_cr_ci_ie_nvector_intervalIntegral : ∀ (P m : ℕ) (a b : ℝ) (f : ℝ → Covector (Eucl P) m) (c : Covector (Eucl P) m) (w : NVector (Eucl P) m), Continuous f → (∀ v : Fin m → Eucl P, c v = ∫ s in a..b, f s v) → ∫ s in a..b, w (f s) = w c := by
+  intro P m a b f c w hf hc
+  have hfi : IntervalIntegrable f volume a b := hf.intervalIntegrable a b
+  -- `∫_a^b f = c`: both agree at every `v`, via the evaluation functional `α ↦ α v`.
+  have hI : (∫ s in a..b, f s) = c := by
+    ext v
+    rw [hc v]
+    let L : Covector (Eucl P) m →L[ℝ] ℝ :=
+      (ContinuousMultilinearMap.apply ℝ (fun _ : Fin m => Eucl P) ℝ v).comp
+        (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ)
+    have hL : ∀ α : Covector (Eucl P) m, L α = α v := fun α => rfl
+    have h := L.intervalIntegral_comp_comm hfi
+    simp only [hL] at h
+    exact h.symm
+  -- `w` commutes with the integral.
+  rw [w.intervalIntegral_comp_comm hfi, hI]
+
+/-- **Fubini for `∫ θ ⟨Φ(s), ξ⟩ dμ` over `s ∈ [0, 1]`.**  Let `μ` be s-finite, `θ ∈ L¹(μ)` and
+`|ξ(x)(α)| ≤ ‖α‖` for `μ`-a.e. `x`, let `(s, x) ↦ Φ(s)(x)` be continuous with `‖Φ(s)(x)‖ ≤ B` on
+`[0, 1] × ℝ^P`, and `Ψ(x) = ∫₀¹ Φ(s)(x) ds`.  Then `∫₀¹ ∫ θ ξ(Φ(s)) dμ ds = ∫ θ ξ(Ψ) dμ`: the
+integrand is dominated by `B |θ(x)|` for `𝓛¹ ⌞ (0, 1] × μ`-a.e. `(s, x)`, so Fubini applies
+(`integral_integral_swap`), and the inner integral is
+`θ(x) ∫₀¹ ξ(x)(Φ(s)(x)) ds = θ(x) ξ(x)(Ψ(x))` (`iwl_cr_ci_ie_nvector_intervalIntegral`). -/
+theorem Submission.iwl_cr_ci_ie_param_fubini : ∀ (P m : ℕ) (μ : Measure (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m) (Φ : ℝ → Eucl P → Covector (Eucl P) m) (Ψ : Eucl P → Covector (Eucl P) m) (B : ℝ), SFinite μ → Integrable θ μ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖) → Continuous (fun p : ℝ × Eucl P => Φ p.1 p.2) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ x, ‖Φ s x‖ ≤ B) → (∀ (x : Eucl P) (v : Fin m → Eucl P), Ψ x v = ∫ s in (0 : ℝ)..1, Φ s x v) → ∫ s in (0 : ℝ)..1, ∫ x, θ x * ξ x (Φ s x) ∂μ = ∫ x, θ x * ξ x (Ψ x) ∂μ := by
+  intro P m μ θ ξ Φ Ψ B hμ hθ hξ hbd hΦ hB hΨ
+  -- `ν = 𝓛¹ ⌞ (0, 1]` is finite, and `F(s, x) = θ(x) ξ(x)(Φ(s)(x))` on `ℝ × ℝ^P`.
+  set ν : Measure ℝ := volume.restrict (Ioc (0 : ℝ) 1) with hν
+  have _instν : IsFiniteMeasure ν := ⟨by simp [hν]⟩
+  set F : ℝ → Eucl P → ℝ := fun s x => θ x * ξ x (Φ s x) with hF
+  -- `F` is a.e. strongly measurable for `ν × μ`: `θ`, `ξ` only depend on `x`, `Φ` is jointly
+  -- continuous and the evaluation `(w, α) ↦ w(α)` is continuous.
+  have hmeas : AEStronglyMeasurable (Function.uncurry F) (ν.prod μ) := by
+    have h1 : AEStronglyMeasurable (fun p : ℝ × Eucl P => θ p.2) (ν.prod μ) :=
+      hθ.aestronglyMeasurable.comp_snd
+    have h2 : AEStronglyMeasurable (fun p : ℝ × Eucl P => ξ p.2) (ν.prod μ) := hξ.comp_snd
+    have h3 : AEStronglyMeasurable (fun p : ℝ × Eucl P => Φ p.1 p.2) (ν.prod μ) :=
+      hΦ.aestronglyMeasurable
+    exact h1.mul ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂ h2 h3)
+  -- `ν × μ`-a.e. `s ∈ (0, 1]` and `|ξ(x)(α)| ≤ ‖α‖`, so `|F(s, x)| ≤ |θ(x)| ‖Φ(s)(x)‖ ≤ B |θ(x)|`.
+  have hbound : ∀ᵐ p ∂(ν.prod μ), ‖Function.uncurry F p‖ ≤ B * ‖θ p.2‖ := by
+    have hs : ∀ᵐ p ∂(ν.prod μ), p.1 ∈ Ioc (0 : ℝ) 1 :=
+      Measure.quasiMeasurePreserving_fst.ae (ae_restrict_mem measurableSet_Ioc)
+    have hx : ∀ᵐ p ∂(ν.prod μ), ∀ α : Covector (Eucl P) m, |ξ p.2 α| ≤ ‖α‖ :=
+      Measure.quasiMeasurePreserving_snd.ae hbd
+    filter_upwards [hs, hx] with p hp1 hp2
+    simp only [Function.uncurry, hF, norm_mul, Real.norm_eq_abs]
+    calc |θ p.2| * |ξ p.2 (Φ p.1 p.2)| ≤ |θ p.2| * B := by
+          gcongr
+          exact (hp2 _).trans (hB p.1 (Ioc_subset_Icc_self hp1) p.2)
+      _ = B * |θ p.2| := mul_comm _ _
+  -- `B |θ|` is `ν × μ`-integrable (`ν` finite), hence so is `F`.
+  have hG : Integrable (fun p : ℝ × Eucl P => B * ‖θ p.2‖) (ν.prod μ) :=
+    (integrable_const B).mul_prod hθ.norm
+  have hint : Integrable (Function.uncurry F) (ν.prod μ) := hG.mono' hmeas hbound
+  -- Fubini, with `∫₀¹ = ∫ dν` since `0 ≤ 1`.
+  rw [intervalIntegral.integral_of_le zero_le_one]
+  change ∫ s, ∫ x, F s x ∂μ ∂ν = _
+  rw [integral_integral_swap hint]
+  congr 1
+  funext x
+  -- The inner integral: `∫₀¹ θ(x) ξ(x)(Φ(s)(x)) ds = θ(x) ξ(x)(Ψ(x))`.
+  change ∫ s in Ioc (0 : ℝ) 1, θ x * ξ x (Φ s x) = _
+  rw [← intervalIntegral.integral_of_le zero_le_one, intervalIntegral.integral_const_mul]
+  congr 1
+  exact Submission.iwl_cr_ci_ie_nvector_intervalIntegral P m 0 1 (fun s => Φ s x) (Ψ x) (ξ x)
+    (hΦ.comp (continuous_id.prodMk continuous_const)) (hΨ x)
+
+/-- **Exchange of an integer multiplicity current with `∫₀¹ ds` (Simon Ch. 6, 8.2, cone
+construction).**  Let `X = τ(M, θ, ξ)` be integer multiplicity, `(s, x) ↦ φ(s)(x)` continuous with
+`spt φ(s) ⊆ K` (`K` compact) for `s ∈ [0, 1]`, and `ψ(x)(v) = ∫₀¹ φ(s)(x)(v) ds`.  Then
+`∫₀¹ X(φ(s)) ds = X(ψ)`: `μ_K := Hᵐ⌞(M ∩ K)` is finite (`θ ≥ 1` on `M`), every `φ(s)` and `ψ`
+vanish off `K`, so `X(φ(s))` and `X(ψ)` are `μ_K`-integrals, and Fubini applies to
+`θ(x) ξ(x)(φ(s)(x))`, dominated by `B |θ(x)|` with `B = sup_{[0,1] × K} ‖φ‖` and `|ξ(x)(α)| ≤ ‖α‖`. -/
+theorem Submission.iwl_cr_ci_integral_exchange : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (K : Set (Eucl P)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m) (ψ : TestFormOn (univ : Set (Eucl P)) m), IsIntegerMultiplicity X → IsCompact K → Continuous (fun p : ℝ × Eucl P => (φ p.1 : DifferentialForm (Eucl P) m) p.2) → (∀ s ∈ Icc (0 : ℝ) 1, tsupport (φ s : DifferentialForm (Eucl P) m) ⊆ K) → (∀ (x : Eucl P) (v : Fin m → Eucl P), (ψ : DifferentialForm (Eucl P) m) x v = ∫ s in (0 : ℝ)..1, (φ s : DifferentialForm (Eucl P) m) x v) → ∫ s in (0 : ℝ)..1, X (φ s) = X ψ := by
+  intro P m X K φ ψ hX hK hφc hsupp hψ
+  -- `X = τ(M, θ, ξ)` with `θ` integer valued on `M`.
+  obtain ⟨M, θ, ξ, hT, hint, hXτ⟩ := hX
+  -- `μ_K := Hᵐ⌞(M ∩ K)` is finite; `θ` is `μ_K`-integrable and `ξ` is `μ_K`-measurable.
+  have hfin : (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞ :=
+    Submission.iwl_cr_ci_ie_measure_inter_compact_lt_top P m univ M θ ξ K hT hint hK
+      (subset_univ K)
+  have _instK : IsFiniteMeasure ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hfin⟩
+  have hθ : Integrable θ ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    hT.integrableOn K hK (subset_univ K)
+  have hξ : AEStronglyMeasurable ξ ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    hT.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+  -- `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ` for an orthonormal `τ`, so `|ξ(x)(α)| ≤ ‖α‖` `μ_K`-a.e.
+  have hbd : ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)),
+      ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖ := by
+    have h : ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict M),
+        ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖ :=
+      hT.orients.mono fun x ⟨τ, hτ, _, hξx⟩ => Submission.fiw_ims_tt_unit_bound P m τ (ξ x) hτ hξx
+    exact ae_restrict_of_ae_restrict_of_subset inter_subset_left h
+  -- Every `φ(s)`, `s ∈ [0, 1]`, and `ψ` vanish off `K`.
+  have hφ0 : ∀ s ∈ Icc (0 : ℝ) 1, ∀ x ∉ K, (φ s : DifferentialForm (Eucl P) m) x = 0 :=
+    fun s hs x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hsupp s hs h)
+  have hψ0 : ∀ x ∉ K, (ψ : DifferentialForm (Eucl P) m) x = 0 := by
+    intro x hx
+    ext v
+    rw [hψ x v]
+    have h : ∫ s in (0 : ℝ)..1, (φ s : DifferentialForm (Eucl P) m) x v
+        = ∫ s in (0 : ℝ)..1, (0 : ℝ) := by
+      apply intervalIntegral.integral_congr
+      intro s hs
+      rw [uIcc_of_le zero_le_one] at hs
+      simp [hφ0 s hs x hx]
+    rw [h]
+    simp
+  -- `‖φ(s)(x)‖ ≤ B` on the compact set `[0, 1] × K`, hence for all `x` when `s ∈ [0, 1]`.
+  obtain ⟨B, hBd⟩ : ∃ B : ℝ, ∀ s ∈ Icc (0 : ℝ) 1, ∀ x,
+      ‖(φ s : DifferentialForm (Eucl P) m) x‖ ≤ B := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn hφc.continuousOn
+    refine ⟨max C 0, fun s hs x => ?_⟩
+    by_cases hx : x ∈ K
+    · exact (hC (s, x) ⟨hs, hx⟩).trans (le_max_left _ _)
+    · rw [hφ0 s hs x hx, norm_zero]
+      exact le_max_right _ _
+  -- For `ω` vanishing off `K`, `X(ω) = ∫ θ ξ(ω) dμ_K`.
+  have hXK : ∀ ω : TestFormOn (univ : Set (Eucl P)) m,
+      (∀ x ∉ K, (ω : DifferentialForm (Eucl P) m) x = 0) →
+      X ω = ∫ x, θ x * ξ x ((ω : DifferentialForm (Eucl P) m) x)
+        ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) := by
+    intro ω hω
+    rw [hXτ ω, tauAction, ← setIntegral_indicator hK.isClosed.measurableSet]
+    congr 1
+    funext x
+    by_cases hx : x ∈ K
+    · simp [hx]
+    · simp [hx, hω x hx]
+  -- Fubini on `[0, 1] × (M ∩ K)`: `∫₀¹ ∫ θ ξ(φ(s)) dμ_K ds = ∫ θ ξ(ψ) dμ_K`.
+  have hmain := Submission.iwl_cr_ci_ie_param_fubini P m
+    ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) θ ξ
+    (fun s => (φ s : DifferentialForm (Eucl P) m)) ψ B inferInstance hθ hξ hbd hφc hBd hψ
+  rw [hXK ψ hψ0, ← hmain]
+  apply intervalIntegral.integral_congr
+  intro s hs
+  rw [uIcc_of_le zero_le_one] at hs
+  exact hXK (φ s) (hφ0 s hs)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
