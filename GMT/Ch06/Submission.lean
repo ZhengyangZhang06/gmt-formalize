@@ -1071,6 +1071,30 @@ theorem Submission.iwl_cr_radial_operator :
     have h := intervalIntegral.norm_integral_le_of_norm_le_const hle
     rwa [sub_zero, abs_one, mul_one] at h
 
+/-- The cone `0 ⨯ X` over `X ∈ 𝒟ₘ(ℝ^P)` with `spt X ⊆ B̄_R(0)` (**Simon Ch. 6, 2.23, 2.30**):
+`C(ω) := X(Φ ω)` for the cut-off radial operator `Φ ω = ζ · Hω`, which satisfies
+`Hω(x)(v) = ∫₀¹ tᵐ ω(tx)(x, v) dt` on `B_r(0)`, `r = max R 0 + 1`.  `Φ` maps null sequences to
+null sequences, so `C` is a current; a test form `ψ` with the `Hω`-formula on an open `N ⊇ spt X`
+agrees with `Φ ω` on the open `N ∩ B_r(0) ⊇ spt X`, so `X ψ = X (Φ ω) = C ω` by locality. -/
+theorem Submission.iwl_cr_cone_exists : ∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m), X.support ⊆ closedBall 0 R → ∃ C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) := by
+  intro P m R X hX
+  -- The cut-off radial operator on `B_r(0)`, `r = max R 0 + 1`: its hypothesis is the radial
+  -- operator with `k = a = m`, without the derivative formula.
+  obtain ⟨Φ, hΦ, hΦH⟩ := Submission.iwl_cr_ce_cutoff_radial_operator P m (max R 0 + 1)
+    fun ω hω => by
+      obtain ⟨ψ, hψ, hψH, -, hψD⟩ := Submission.iwl_cr_radial_operator P m m ω hω
+      exact ⟨ψ, hψ, hψH, hψD⟩
+  -- `C = X ∘ Φ` is a current, since `Φ` maps null sequences to null sequences.
+  refine ⟨⟨X.toCurrent ∘ₗ Φ, fun ωs hωs => X.continuous' (fun l => Φ (ωs l)) (hΦ ωs hωs)⟩, ?_⟩
+  rintro ω ψ ⟨N, hN, hXN, hψN⟩
+  -- `Φ ω = ψ` on the open set `N ∩ B_r(0) ⊇ spt X`, so `X (Φ ω) = X ψ` by locality.
+  have hXr : X.support ⊆ ball 0 (max R 0 + 1) :=
+    hX.trans (closedBall_subset_ball ((le_max_left R 0).trans_lt (lt_add_one _)))
+  exact Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support P m univ X (Φ ω) ψ
+    (N ∩ ball 0 (max R 0 + 1)) (hN.inter isOpen_ball) (subset_inter hXN hXr)
+    fun x hx => ContinuousAlternatingMap.ext fun v =>
+      (hΦH ω x hx.2 v).trans (hψN x hx.1 v).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
