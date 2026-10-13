@@ -919,6 +919,228 @@ theorem Submission.imrep_carrier_sdiff_support_null : ∀ (P n : ℕ) (U : Set (
   refine measure_mono_null hsub ((measure_biUnion_null_iff h𝒮c).mpr fun W hW => ?_)
   obtain ⟨hWo, hWc, hWU, hTW⟩ := h𝒮W hW
   exact Submission.imrep_carrier_inter_null_of_vanishesOn P n U W T R hRT hWo hWc hWU hTW
+/-- **Simon Ch. 2, 5.9; Ch. 4, 2.7**: the tangential divergence of the normal part of `X`.  If
+`Q ≤ S`, `pr(x) = P_S`, `pr` and `X` are differentiable at `x` and `Y = X − pr·X` near `x`, then
+`trace(p_Q ∘ DY(x)) = −X(x) · Σⱼ (Dpr(x)(p_Q eⱼ))^* (p_Q eⱼ)`: by the product rule
+`DY(x) = DX(x) − P_S DX(x) − (Dpr(x)·)X(x)`, `trace(p_Q ∘ C) = Σⱼ ⟨p_Q eⱼ, C (p_Q eⱼ)⟩`, and `P_S`
+fixes `p_Q eⱼ ∈ Q ⊆ S`. -/
+theorem Submission.mcs_trace_normal_part_eq_neg_inner : ∀ (P : ℕ) (Q S : Submodule ℝ (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X Y : Euclid P → Euclid P) (x : Euclid P), Q ≤ S → pr x = S.starProjection → DifferentiableAt ℝ pr x → DifferentiableAt ℝ X x → Y =ᶠ[𝓝 x] (fun y => X y - pr y (X y)) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ Y x).toLinearMap) = -inner ℝ (X x) (∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (Q.starProjection (EuclideanSpace.single j 1))) (Q.starProjection (EuclideanSpace.single j 1))) := by
+  intro P Q S pr X Y x hQS hprx hpr hX hY
+  -- Step 1: `DY(x)h = DX(x)h − P_S(DX(x)h) − (Dpr(x)h)(X(x))`
+  have hDY : ∀ h, fderiv ℝ Y x h =
+      fderiv ℝ X x h - S.starProjection (fderiv ℝ X x h) - fderiv ℝ pr x h (X x) := by
+    intro h
+    rw [hY.fderiv_eq, fderiv_fun_sub hX (hpr.clm_apply hX), fderiv_clm_apply hpr hX, hprx]
+    simp only [sub_add_eq_sub_sub, sub_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.flip_apply]
+  -- Step 2: `trace(p ∘ C) = Σⱼ ⟨p eⱼ, C (p eⱼ)⟩`
+  have htr : ∀ C : Euclid P →L[ℝ] Euclid P,
+      LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ C.toLinearMap) =
+        ∑ j : Fin P, inner ℝ (Q.starProjection (EuclideanSpace.single j 1))
+          (C (Q.starProjection (EuclideanSpace.single j 1))) := by
+    intro C
+    have hpp : Q.starProjection.toLinearMap ∘ₗ C.toLinearMap =
+        Q.starProjection.toLinearMap ∘ₗ (Q.starProjection.toLinearMap ∘ₗ C.toLinearMap) := by
+      refine LinearMap.ext fun w => ?_
+      simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
+      exact (Submodule.starProjection_eq_self_iff.mpr (Q.starProjection_apply_mem (C w))).symm
+    rw [hpp, LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [EuclideanSpace.basisFun_apply, LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
+    exact (Submodule.inner_starProjection_left_eq_right Q _ _).symm
+  -- Steps 3 and 4: each term is `−⟨X(x), (Dpr(x)u)^* u⟩`, `u = p eⱼ ∈ Q ⊆ S`
+  rw [htr, inner_sum, ← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  set u := Q.starProjection (EuclideanSpace.single j 1)
+  have huS : S.starProjection u = u :=
+    Submodule.starProjection_eq_self_iff.mpr (hQS (Submodule.starProjection_apply_mem _ _))
+  rw [hDY, inner_sub_right, inner_sub_right, ← Submodule.inner_starProjection_left_eq_right, huS,
+    sub_self, zero_sub, ← ContinuousLinearMap.adjoint_inner_left (fderiv ℝ pr x u) (X x) u,
+    real_inner_comm]
+/-- **Simon Ch. 4, 2.7** (the tangential part `Xᵀ = χ · pr · X`): let `U, O ⊆ ℝᴾ` be open,
+`N ⊆ O` with `(N̄ \ N) ∩ U = ∅`, `pr` of class `C¹` on `O` and `X ∈ C¹_c(U; ℝᴾ)`.  Then some
+`Xᵀ ∈ C¹_c(U; ℝᴾ)` equals `y ↦ pr(y) X(y)` near every point of `N`.  The compact set
+`K = spt X ∩ N̄` lies in `N` (as `(N̄ \ N) ∩ U = ∅`), hence in `O ∩ U`; take a `C¹` cutoff `χ` with
+compact support in `O ∩ U` and `χ = 1` near `K`.  Near `x ∈ N`, `χ = 1` if `x ∈ spt X`, and
+`X = 0` otherwise. -/
+theorem Submission.mcs_exists_c1_field_eq_proj_near : ∀ (P : ℕ) (U N O : Set (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X : Euclid P → Euclid P), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \ N) ∩ U = ∅ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∃ XT : Euclid P → Euclid P, ContDiff ℝ 1 XT ∧ HasCompactSupport XT ∧ tsupport XT ⊆ U ∧ ∀ x ∈ N, XT =ᶠ[𝓝 x] (fun y => pr y (X y)) := by
+  intro P U N O pr X hU hO hNO hpr hN hX hXc hXU
+  -- Step 1: `K = spt X ∩ N̄` is compact and `K ⊆ N`, hence `K ⊆ W = O ∩ U`
+  have hKc : IsCompact (tsupport X ∩ closure N) := hXc.isCompact.inter_right isClosed_closure
+  have hKW : tsupport X ∩ closure N ⊆ O ∩ U := by
+    rintro z ⟨hzX, hzN⟩
+    have hz : z ∈ N := by
+      by_contra hz
+      exact eq_empty_iff_forall_notMem.1 hN z ⟨⟨hzN, hz⟩, hXU hzX⟩
+    exact ⟨hNO hz, hXU hzX⟩
+  -- Step 2: a `C¹` cutoff `χ` with `spt χ = V̄ ⊆ W` compact and `χ = 1` on `L`, `K ⊆ int L`
+  obtain ⟨L, hLc, hLcl, hKL, hLW⟩ := exists_compact_closed_between hKc (hO.inter hU) hKW
+  obtain ⟨V, hVo, hLV, hVW, hVc⟩ :=
+    exists_open_between_and_isCompact_closure hLc (hO.inter hU) hLW
+  obtain ⟨χ, hχ, -, hχV, hχL⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1) hVo hLcl hLV
+  have hχ1 : ContDiff ℝ 1 χ := by exact_mod_cast hχ
+  have hχt : tsupport χ = closure V := by rw [tsupport, hχV]
+  -- Step 3: `Xᵀ = χ · pr · X`
+  refine ⟨fun y => χ y • pr y (X y), ?_, ?_, ?_, ?_⟩
+  -- Step 4: `Xᵀ` is `C¹`: product rule at points of `O`; `Xᵀ = 0` near `y ∉ O`, as `spt χ ⊆ O`
+  · rw [contDiff_iff_contDiffAt]
+    intro y
+    by_cases hy : y ∈ O
+    · exact hχ1.contDiffAt.smul ((hpr.contDiffAt (hO.mem_nhds hy)).clm_apply hX.contDiffAt)
+    · have hyχ : χ =ᶠ[𝓝 y] 0 := by
+        rw [← notMem_tsupport_iff_eventuallyEq, hχt]
+        exact fun h => hy (hVW h).1
+      refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+      filter_upwards [hyχ] with z hz
+      simp [hz]
+  -- Step 5: `Xᵀ` vanishes off the compact set `V̄`, and `spt Xᵀ ⊆ spt χ = V̄ ⊆ W ⊆ U`
+  · refine HasCompactSupport.intro' hVc isClosed_closure fun y hy => ?_
+    have hχy : χ y = 0 := by
+      rw [← notMem_support, hχV]
+      exact fun h => hy (subset_closure h)
+    simp [hχy]
+  · refine (tsupport_smul_subset_left χ fun y => pr y (X y)).trans ?_
+    rw [hχt]
+    exact fun z hz => (hVW hz).2
+  -- Step 6: `Xᵀ = pr · X` near `x ∈ N`: `χ = 1` near `x` if `x ∈ spt X`, else `X = 0` near `x`
+  · intro x hx
+    by_cases hxX : x ∈ tsupport X
+    · filter_upwards [isOpen_interior.mem_nhds (hKL ⟨hxX, subset_closure hx⟩)] with y hy
+      rw [(hχL y).1 (interior_subset hy), one_smul]
+    · filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxX] with y hy
+      simp [hy]
+/-- **Simon Ch. 4, 2.2–2.3** (additivity of the first variation of `V = v(M, θ)`): if
+`x ↦ p_{TₓM}` is `Hⁿ⌞M`-measurable and `X, Y ∈ C¹_c(U; ℝᴾ)`, then `δV(X + Y) = δV(X) + δV(Y)`.
+For `Z ∈ C¹_c(U; ℝᴾ)`, `θ div_M Z` is `Hⁿ⌞M`-integrable: `div_M Z(x) = tr(pₓ ∘ DZ(x))` is
+measurable, `|div_M Z| ≤ ‖tr‖ sup ‖DZ‖` on `spt Z` and `div_M Z = 0` off `spt Z`, and `θ` is
+integrable on the compact `spt Z ⊆ U`.  Pointwise `D(X + Y) = DX + DY` and the trace is linear, so
+`div_M (X + Y) = div_M X + div_M Y`; integrate. -/
+theorem Submission.mcs_firstVariation_add : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (X Y : Euclid P → Euclid P), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ContDiff ℝ 1 Y → HasCompactSupport Y → tsupport Y ⊆ U → R.firstVariation (X + Y) = R.firstVariation X + R.firstVariation Y := by
+  intro P n U R X Y hp hX hXc hXU hY hYc hYU
+  -- Step 1: the trace is a continuous linear functional on `L(ℝᴾ, ℝᴾ)`, and
+  -- `div_M Z(x) = tr(pₓ ∘ DZ(x))`
+  let tr : (Euclid P →L[ℝ] Euclid P) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+    ((LinearMap.trace ℝ (Euclid P)).comp (ContinuousLinearMap.coeLM ℝ))
+  have hdiv : ∀ (Z : Euclid P → Euclid P) (x : Euclid P), tangentialDivergence n R.carrier Z x =
+      tr ((approxTangentPlane n R.carrier x).starProjection ∘L fderiv ℝ Z x) := fun _ _ => rfl
+  have hθ : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have hθ' : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  -- Step 2: `θ div_M Z` is `Hⁿ⌞M`-integrable for `Z ∈ C¹_c(U; ℝᴾ)`
+  have hint : ∀ Z : Euclid P → Euclid P, ContDiff ℝ 1 Z → HasCompactSupport Z → tsupport Z ⊆ U →
+      Integrable (fun x => (R.mult x : ℝ) * tangentialDivergence n R.carrier Z x)
+        (μHE[n].restrict R.carrier) := by
+    intro Z hZ hZc hZU
+    have hD : Continuous (fderiv ℝ Z) := hZ.continuous_fderiv one_ne_zero
+    -- Step 2(a): `div_M Z` is a.e. strongly measurable (`p` measurable, `DZ` continuous)
+    have hmeas : AEStronglyMeasurable (fun x => tangentialDivergence n R.carrier Z x)
+        (μHE[n].restrict R.carrier) :=
+      (tr.continuous.comp isBoundedBilinearMap_comp.continuous).comp_aestronglyMeasurable₂
+        (g := fun p D : Euclid P →L[ℝ] Euclid P => tr (p ∘L D)) hp hD.aestronglyMeasurable
+    -- Step 2(b): `|θ div_M Z| ≤ ‖tr‖ C θ 1_K`, `K = spt Z`, `C = sup ‖DZ‖`
+    obtain ⟨C, hC⟩ := hD.bounded_above_of_compact_support (hZc.fderiv ℝ)
+    have hKm : MeasurableSet (tsupport Z) := (isClosed_tsupport Z).measurableSet
+    have hbound : ∀ x, ‖(R.mult x : ℝ) * tangentialDivergence n R.carrier Z x‖ ≤
+        (tsupport Z).indicator (fun x => ‖tr‖ * C * (R.mult x : ℝ)) x := by
+      intro x
+      rw [norm_mul, Real.norm_natCast, hdiv]
+      by_cases hxK : x ∈ tsupport Z
+      · rw [Set.indicator_of_mem hxK, mul_comm (R.mult x : ℝ)]
+        refine mul_le_mul_of_nonneg_right ?_ (Nat.cast_nonneg _)
+        refine (tr.le_opNorm _).trans (mul_le_mul_of_nonneg_left ?_ (norm_nonneg tr))
+        refine (ContinuousLinearMap.opNorm_comp_le _ _).trans ?_
+        simpa using mul_le_mul (Submodule.starProjection_norm_le _) (hC x) (norm_nonneg _)
+          zero_le_one
+      · rw [Set.indicator_of_notMem hxK, fderiv_of_notMem_tsupport ℝ hxK,
+          ContinuousLinearMap.comp_zero, map_zero, norm_zero, mul_zero]
+    -- Step 2(c): `θ` is `Hⁿ⌞M`-integrable on `K`, since `∫_{M ∩ K} θ dHⁿ < ∞`
+    have hθK : IntegrableOn (fun x => (R.mult x : ℝ)) (tsupport Z) (μHE[n].restrict R.carrier) := by
+      rw [IntegrableOn, Measure.restrict_restrict hKm, Set.inter_comm]
+      simpa using integrable_toReal_of_lintegral_ne_top hθ'.aemeasurable
+        (R.locallyIntegrable_mult _ hZc hZU)
+    exact ((integrable_indicator_iff hKm).2 (Integrable.const_mul hθK (‖tr‖ * C))).mono'
+      (hθ.aestronglyMeasurable.mul hmeas) (ae_of_all _ hbound)
+  -- Step 3: `div_M (X + Y) = div_M X + div_M Y` pointwise
+  have hadd : ∀ x, tangentialDivergence n R.carrier (X + Y) x =
+      tangentialDivergence n R.carrier X x + tangentialDivergence n R.carrier Y x := by
+    intro x
+    rw [hdiv, hdiv, hdiv, fderiv_add (hX.differentiable one_ne_zero x)
+      (hY.differentiable one_ne_zero x), ContinuousLinearMap.comp_add, map_add]
+  -- Step 4: integrate, by `integral_add`
+  simp only [IMRep.firstVariation, hadd, mul_add]
+  exact integral_add (hint X hX hXc hXU) (hint Y hY hYc hYU)
+/-- **Simon Ch. 4, 3.14–3.15**: the mean curvature field `H(x) = Σⱼ (Dpr(x)[p(x)eⱼ])^*(p(x)eⱼ)`
+on `N ∩ U`, `H = 0` elsewhere, is `μ`-a.e. strongly measurable and bounded on compact `K ⊆ U`.
+`N ∩ U = N̄ ∩ U` is Borel, `x ↦ (Dpr(x), p(x))` is a.e. strongly measurable and
+`(B, q) ↦ Σⱼ (B(qeⱼ))^*(qeⱼ)` is continuous; for compact `K ⊆ U`, `K ∩ N̄ ⊆ N ⊆ O` is compact and
+`Dpr` is continuous on the open `O`, so `‖H‖ ≤ P max(sup_{K ∩ N̄} ‖Dpr‖, 0)` on `K`. -/
+theorem Submission.mcs_exists_meanCurvature_field : ∀ (P : ℕ) (μ : Measure (Euclid P)) (U N O : Set (Euclid P)) (pr p : Euclid P → (Euclid P →L[ℝ] Euclid P)), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \ N) ∩ U = ∅ → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H μ ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, ∀ x ∈ K, ‖H x‖ ≤ Λ) ∧ ∀ x ∈ N ∩ U, H x = ∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1)) := by
+  intro P μ U N O pr p hU hO hNO hpr hNU hp hp1
+  -- `F(B, q) = Σⱼ (B(qeⱼ))^*(qeⱼ)`, `eⱼ` the standard basis of `ℝᴾ`, is continuous
+  let F : (Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)) × (Euclid P →L[ℝ] Euclid P) → Euclid P :=
+    fun q => ∑ j : Fin P, ContinuousLinearMap.adjoint (q.1 (q.2 (EuclideanSpace.single j 1)))
+      (q.2 (EuclideanSpace.single j 1))
+  have hF : Continuous F := by
+    refine continuous_finsetSum _ fun j _ => ?_
+    have hq : Continuous fun q : (Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)) ×
+        (Euclid P →L[ℝ] Euclid P) => q.2 (EuclideanSpace.single j 1) :=
+      continuous_snd.clm_apply continuous_const
+    exact (ContinuousLinearMap.adjoint.continuous.comp (continuous_fst.clm_apply hq)).clm_apply hq
+  -- `N ∩ U = N̄ ∩ U` is Borel
+  have hG : N ∩ U = closure N ∩ U := by
+    refine Subset.antisymm (inter_subset_inter_left _ subset_closure) fun z hz => ⟨?_, hz.2⟩
+    by_contra hzN
+    have hz' : z ∈ (closure N \ N) ∩ U := ⟨⟨hz.1, hzN⟩, hz.2⟩
+    rw [hNU] at hz'
+    exact hz'
+  have hGm : MeasurableSet (N ∩ U) := by
+    rw [hG]
+    exact isClosed_closure.measurableSet.inter hU.measurableSet
+  -- `H = 1_{N ∩ U} F(Dpr, p)`
+  refine ⟨(N ∩ U).indicator fun x => F (fderiv ℝ pr x, p x), ?_, ?_,
+    fun x hx => indicator_of_mem hx _⟩
+  · exact (hF.comp_aestronglyMeasurable
+      ((measurable_fderiv ℝ pr).aestronglyMeasurable.prodMk hp)).indicator hGm
+  -- `‖Dpr‖ ≤ C` on the compact `K ∩ N̄ ⊆ N ⊆ O`, so `‖H‖ ≤ P max(C, 0)` on `K`
+  intro K hK hKU
+  have hKN : K ∩ closure N ⊆ N ∩ U := fun x hx => by
+    rw [hG]
+    exact ⟨hx.2, hKU hx.1⟩
+  obtain ⟨C, hC⟩ := (hK.inter_right isClosed_closure).exists_bound_of_continuousOn
+    ((hpr.continuousOn_fderiv_of_isOpen hO le_rfl).mono fun x hx => hNO (hKN hx).1)
+  refine ⟨P * max C 0, fun x hxK => ?_⟩
+  by_cases hx : x ∈ N ∩ U
+  · rw [indicator_of_mem hx]
+    have hDx : ‖fderiv ℝ pr x‖ ≤ max C 0 :=
+      (hC x ⟨hxK, subset_closure hx.1⟩).trans (le_max_left _ _)
+    have hj : ∀ j : Fin P, ‖ContinuousLinearMap.adjoint
+        (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1))‖ ≤
+        max C 0 := by
+      intro j
+      have hu : ‖p x (EuclideanSpace.single j 1)‖ ≤ 1 :=
+        calc ‖p x (EuclideanSpace.single j 1)‖
+            ≤ ‖p x‖ * ‖(EuclideanSpace.single j 1 : Euclid P)‖ := (p x).le_opNorm _
+          _ = ‖p x‖ := by simp
+          _ ≤ 1 := hp1 x
+      calc ‖ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1)))
+              (p x (EuclideanSpace.single j 1))‖
+          ≤ ‖ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1)))‖ *
+              ‖p x (EuclideanSpace.single j 1)‖ := ContinuousLinearMap.le_opNorm _ _
+        _ = ‖fderiv ℝ pr x (p x (EuclideanSpace.single j 1))‖ *
+              ‖p x (EuclideanSpace.single j 1)‖ := by rw [LinearIsometryEquiv.norm_map]
+        _ ≤ ‖fderiv ℝ pr x‖ * ‖p x (EuclideanSpace.single j 1)‖ *
+              ‖p x (EuclideanSpace.single j 1)‖ :=
+            mul_le_mul_of_nonneg_right (ContinuousLinearMap.le_opNorm _ _) (norm_nonneg _)
+        _ ≤ max C 0 * 1 * 1 := by gcongr
+        _ = max C 0 := by ring
+    calc ‖F (fderiv ℝ pr x, p x)‖
+        ≤ ∑ j : Fin P, ‖ContinuousLinearMap.adjoint
+            (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1))‖ :=
+          norm_sum_le _ _
+      _ ≤ ∑ _j : Fin P, max C 0 := Finset.sum_le_sum fun j _ => hj j
+      _ = P * max C 0 := by simp
+  · rw [indicator_of_notMem hx, norm_zero]
+    exact mul_nonneg (Nat.cast_nonneg _) (le_max_right _ _)
 /-- **Flatness of a submanifold at a chart point** (step 2 of the approximate-tangent-space
 argument; Simon Ch. 2, 4.1–4.3).  Let `ψ : V → W` be a 1:1 `C¹` map with `ψ(V) = W ∩ N`, proper
 into `W`, and `Dψ(v)` injective.  Then near `ψ(v)` every `z ∈ N` lies within `ε|z − ψ(v)|` of
@@ -5896,6 +6118,239 @@ theorem Submission.approxTangent_le_submanifold_tangentSpace : ∀ (P n d : ℕ)
   intro w hw
   exact LinearMap.mem_range.1 (hQA hw)
 
+/-- **The approximate tangent projection of an integer multiplicity triple is measurable**
+(Simon Ch. 3, 1.4 and 1.5(1); Ch. 6, 3.1).  For `R = (M, θ, ξ)`, `x ↦ p_{TₓM}` is
+`Hⁿ⌞M`-a.e. strongly measurable.  By uniqueness of approximate tangent planes, `TₓM` is a.e. the
+plane oriented by `ξ(x)`.  A unit simple `n`-vector `ζ = ±τ₁ ∧ ⋯ ∧ τₙ` determines its plane: if
+also `ζ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` and `y ⊥ span τ'`, the `n`-covector `α(u) = det(⟨cₖ, uⱼ⟩)`, where `c` is
+`τ` with `τᵢ` replaced by `y`, gives `±⟨y, τᵢ⟩ = ±α(τ) = ζ(α) = ±α(τ') = 0`, so `τᵢ ∈ span τ'`.
+Hence `p_{TₓM} = G(ξ(x))` a.e., where `G(ζ)` is the projection onto the plane of `ζ` (`0` if there
+is none).  `G` is Borel: `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` is continuous on the compact set `Ω` of
+orthonormal frames and signs, and `G(Φ(τ, s)) = Σₖ ⟨τₖ, ·⟩ τₖ` is continuous, so for closed `t`,
+`G⁻¹(t) = Φ(Ω ∩ (G ∘ Φ)⁻¹(t)) ∪ (Φ(Ω)ᶜ ∩ {0 ∈ t})` is Borel. -/
+theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) := by
+  intro P n U R
+  classical
+  -- `ev τ = (α ↦ α(τ₁, …, τₙ))`, a continuous alternating map of `τ`
+  let ev : Euclid P [⋀^Fin n]→L[ℝ] MultiVector P n :=
+    (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
+  have hev : ∀ (τ : Fin n → Euclid P) (α : Covector (Euclid P) n), ev τ α = α τ :=
+    fun τ α => rfl
+  -- `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` on the compact set `Ω` of orthonormal frames and signs `s = ±1`
+  let Φ : (Fin n → Euclid P) × ℝ → MultiVector P n := fun ω => ω.2 • ev ω.1
+  have hΦc : Continuous Φ := continuous_snd.smul (ev.coe_continuous.comp continuous_fst)
+  let Ω : Set ((Fin n → Euclid P) × ℝ) := {τ | Orthonormal ℝ τ} ×ˢ {1, -1}
+  have hΩ : IsCompact Ω := by
+    refine IsCompact.prod (isCompact_of_isClosed_isBounded ?_ ?_) (Set.toFinite _).isCompact
+    · have hset : {τ : Fin n → Euclid P | Orthonormal ℝ τ} =
+          ⋂ i, ⋂ j, {τ | inner ℝ (τ i) (τ j) = if i = j then (1 : ℝ) else 0} := by
+        ext τ
+        simp [orthonormal_iff_ite]
+      rw [hset]
+      exact isClosed_iInter fun i => isClosed_iInter fun j =>
+        isClosed_eq ((continuous_apply i).inner (continuous_apply j)) continuous_const
+    · refine (isBounded_iff_subset_closedBall 0).mpr ⟨1, fun τ hτ => ?_⟩
+      rw [mem_closedBall_zero_iff]
+      exact (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun i => (hτ.1 i).le
+  -- `ζ` orients `Q` iff `ζ = Φ(τ, s)` for a point `(τ, s)` of `Ω` with `span τ = Q`
+  have horient : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q ↔ ∃ ω ∈ Ω, Φ ω = ζ ∧ Submodule.span ℝ (range ω.1) = Q := by
+    intro ζ Q
+    constructor
+    · rintro ⟨τ, hτ, hQ, h | h⟩
+      · refine ⟨(τ, 1), ⟨hτ, Or.inl rfl⟩, ?_, hQ⟩
+        ext α
+        simp [Φ, hev, h]
+      · refine ⟨(τ, -1), ⟨hτ, Or.inr rfl⟩, ?_, hQ⟩
+        ext α
+        simp [Φ, hev, h]
+    · rintro ⟨⟨τ, s⟩, ⟨hτ, hs⟩, rfl, hQ⟩
+      refine ⟨τ, hτ, hQ, ?_⟩
+      rcases hs with rfl | rfl
+      · left
+        intro α
+        simp [Φ, hev]
+      · right
+        intro α
+        simp [Φ, hev]
+  -- the `n`-covector `u ↦ det(⟨cₖ, uⱼ⟩)ₖⱼ`
+  have hdet : ∀ c : Fin n → Euclid P, ∃ α : Covector (Euclid P) n,
+      ∀ u : Fin n → Euclid P, α u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
+    intro c
+    let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) := LinearMap.pi fun k => (innerSL ℝ (c k)).toLinearMap
+    let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
+    have hA : ∀ u : Fin n → Euclid P, A u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
+      intro u
+      rw [← Matrix.det_transpose]
+      rfl
+    have hAc : Continuous fun u : Fin n → Euclid P => A u := by
+      simp only [hA]
+      exact Continuous.matrix_det (continuous_matrix fun k j => by
+        simp only [Matrix.of_apply]
+        exact continuous_const.inner (continuous_apply j))
+    exact ⟨{ A with cont := hAc }, hA⟩
+  -- a unit simple `n`-vector determines its plane: if `ζ` orients `span τ` and `span τ'`, then
+  -- each `τᵢ` is orthogonal to `(span τ')ᗮ`
+  have hle : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q ≤ Q' := by
+    rintro ζ Q Q' ⟨τ, hτ, rfl, hζ⟩ ⟨τ', hτ', rfl, hζ'⟩
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    rw [SetLike.mem_coe, ← Submodule.orthogonal_orthogonal (Submodule.span ℝ (range τ')),
+      Submodule.mem_orthogonal]
+    intro y hy
+    obtain ⟨α, hα⟩ := hdet (Function.update τ i y)
+    -- `α(τ)` is the determinant of the identity matrix with row `i` replaced by `(⟨y, τⱼ⟩)ⱼ`
+    have h1 : α τ = inner ℝ y (τ i) := by
+      rw [hα]
+      have hM : (Matrix.of fun k j => inner ℝ (Function.update τ i y k) (τ j)) =
+          (1 : Matrix (Fin n) (Fin n) ℝ).updateRow i (fun j => inner ℝ y (τ j)) := by
+        ext k j
+        by_cases hk : k = i
+        · subst hk
+          simp
+        · simp [hk, Matrix.one_apply, orthonormal_iff_ite.mp hτ k j]
+      rw [hM, ← Matrix.det_transpose, ← Matrix.updateCol_transpose, Matrix.transpose_one,
+        ← Matrix.cramer_apply, Matrix.cramer_one]
+      rfl
+    -- row `i` of the matrix of `α(τ')` is `(⟨y, τ'ⱼ⟩)ⱼ = 0`
+    have h2 : α τ' = 0 := by
+      rw [hα]
+      refine Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
+      simp only [Matrix.of_apply, Function.update_self]
+      rw [real_inner_comm]
+      exact hy _ (Submodule.subset_span ⟨j, rfl⟩)
+    have h3 : ζ α = 0 := by
+      rcases hζ' with h | h <;> simp [h, h2]
+    rcases hζ with h | h
+    · rw [← h1, ← h, h3]
+    · have h4 := h α
+      rw [h3] at h4
+      rw [← h1]
+      linarith
+  have huniq : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q = Q' :=
+    fun ζ Q Q' h h' => le_antisymm (hle ζ Q Q' h h') (hle ζ Q' Q h' h)
+  -- the projection onto the span of an orthonormal frame `τ` is `Σₖ ⟨τₖ, ·⟩ τₖ`, continuous in `τ`
+  let F : (Fin n → Euclid P) × ℝ → (Euclid P →L[ℝ] Euclid P) :=
+    fun ω => ∑ k, (innerSL ℝ (ω.1 k)).smulRight (ω.1 k)
+  have hFapply : ∀ ω v, F ω v = ∑ k, inner ℝ (ω.1 k) v • ω.1 k := by
+    intro ω v
+    simp [F]
+  have hFc : Continuous F := by
+    refine continuous_clm_apply.mpr fun v => ?_
+    simp only [hFapply]
+    exact continuous_finsetSum _ fun k _ => by fun_prop
+  have hFproj : ∀ ω ∈ Ω, (Submodule.span ℝ (range ω.1)).starProjection = F ω := by
+    rintro ⟨τ, s⟩ ⟨hτ, -⟩
+    refine ContinuousLinearMap.ext fun v => ?_
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
+    · rw [hFapply]
+      exact Submodule.sum_mem _ fun k _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
+    · intro w hw
+      refine Submodule.span_induction ?_ ?_ ?_ ?_ hw
+      · rintro _ ⟨j, rfl⟩
+        rw [hFapply, inner_sub_left, sum_inner]
+        simp [inner_smul_left, orthonormal_iff_ite.mp hτ, real_inner_comm]
+      · simp
+      · intro x y _ _ hx hy
+        rw [inner_add_right, hx, hy, add_zero]
+      · intro a x _ hx
+        rw [inner_smul_right, hx, mul_zero]
+  -- `G ζ` is the projection onto the plane oriented by `ζ` (`0` if there is none)
+  let G : MultiVector P n → (Euclid P →L[ℝ] Euclid P) := fun ζ =>
+    if h : ∃ Q, IsUnitOrientationOf ζ Q then h.choose.starProjection else 0
+  have hGQ : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q → G ζ = Q.starProjection := by
+    intro ζ Q hQ
+    have hex : ∃ Q, IsUnitOrientationOf ζ Q := ⟨Q, hQ⟩
+    simp only [G, dite_eq_left hex]
+    rw [huniq _ _ _ hex.choose_spec hQ]
+  have hGΦ : ∀ ω ∈ Ω, G (Φ ω) = F ω := fun ω hω => by
+    rw [hGQ _ _ ((horient _ _).mpr ⟨ω, hω, rfl, rfl⟩), hFproj ω hω]
+  -- `G` is Borel: for closed `t`, `G⁻¹(t)` is a compact set `Φ(Ω ∩ F⁻¹(t))` together with the
+  -- complement of the compact set `Φ(Ω)` (if `0 ∈ t`)
+  have hG : Measurable G := by
+    refine measurable_of_isClosed fun t ht => ?_
+    have hset : G ⁻¹' t = Φ '' (Ω ∩ F ⁻¹' t) ∪
+        ((Φ '' Ω)ᶜ ∩ {_ζ | (0 : Euclid P →L[ℝ] Euclid P) ∈ t}) := by
+      ext ζ
+      simp only [Set.mem_preimage, Set.mem_union, Set.mem_image, Set.mem_inter_iff,
+        Set.mem_compl_iff]
+      by_cases h : ∃ Q, IsUnitOrientationOf ζ Q
+      · obtain ⟨Q, hQ⟩ := h
+        obtain ⟨ω, hω, hΦω, -⟩ := (horient ζ Q).mp hQ
+        have hGζ : G ζ = F ω := by
+          rw [← hΦω]
+          exact hGΦ ω hω
+        constructor
+        · intro hζt
+          exact Or.inl ⟨ω, ⟨hω, by rwa [← hGζ]⟩, hΦω⟩
+        · rintro (⟨ω', ⟨hω', hω't⟩, hΦω'⟩ | ⟨hn, -⟩)
+          · rw [← hΦω', hGΦ ω' hω']
+            exact hω't
+          · exact absurd ⟨ω, hω, hΦω⟩ hn
+      · have hGζ : G ζ = 0 := dite_eq_right h
+        have hn : ¬∃ ω, ω ∈ Ω ∧ Φ ω = ζ := fun ⟨ω, hω, hΦω⟩ =>
+          h ⟨_, (horient ζ _).mpr ⟨ω, hω, hΦω, rfl⟩⟩
+        rw [hGζ]
+        constructor
+        · intro h0
+          exact Or.inr ⟨hn, h0⟩
+        · rintro (⟨ω', ⟨hω', -⟩, hΦω'⟩ | ⟨-, h0⟩)
+          · exact absurd ⟨ω', hω', hΦω'⟩ hn
+          · exact h0
+    rw [hset]
+    exact ((hΩ.inter_right (ht.preimage hFc)).image hΦc).isClosed.measurableSet.union
+      ((hΩ.image hΦc).isClosed.measurableSet.compl.inter (MeasurableSet.const _))
+  -- a.e. `TₓM` is the plane oriented by `ξ(x)` (uniqueness of approximate tangent planes), so
+  -- `p_{TₓM} = G(ξ(x))`
+  have hae : (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      =ᵐ[μHE[n].restrict R.carrier] G ∘ R.orient := by
+    filter_upwards [R.orients] with x ⟨Q, hQ, hor⟩
+    have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    have h1 : approxTangentPlane n R.carrier x = Q := by
+      rw [approxTangentPlane, dite_eq_left hex]
+      exact hex.choose_spec.unique hQ
+    rw [Function.comp_apply, hGQ _ _ hor, h1]
+  -- `G ∘ ξ` is a.e. measurable, with values in the finite-dimensional space `End(ℝᴾ)`
+  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
+    @PseudoEMetricSpace.pseudoMetrizableSpace _
+      (inferInstance : PseudoEMetricSpace (MultiVector P n))
+  exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
+    ).congr hae.symm
+
+/-- **`TₓM ⊆ TₓN`** (Simon Ch. 3, 1.4 and Ch. 2, §4, (4.1)–(4.3); used in Ch. 4, 2.6–2.7).  Let
+`N` be an embedded `C¹` `d`-dimensional submanifold, `Hⁿ(M \ N) = 0` and `x ∈ N`.  Then every
+approximate tangent plane `Q` of `M` at `x` lies in `TₓN`.  Write `x = ψ(v)` for a chart `ψ` of
+`N` and `A = Dψ(v)`: `N` is flat at `x` along `A(ℝᵈ)` (`atsm_chart_image_flat`), hence
+`Q ⊆ A(ℝᵈ)` (`atsm_approxTangent_le_of_flat`), and `A(ℝᵈ) = TₓN`
+(`chart_tangentSpace_eq_range_fderiv`). -/
+theorem Submission.approxTangent_le_submanifold_tangentSpace : ∀ (P n d : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), IsEmbeddedSubmanifold 1 d N → x ∈ N → μHE[n] (M \ N) = 0 → HasApproximateTangentSpaceAt n M x Q → (Q : Set (Euclid P)) ⊆ tangentSpace N x := by
+  intro P n d N M x Q hN hxN hnull hQ
+  -- a chart `ψ : V → W ∩ N` of `N` around `x`, and `v ∈ V` with `ψ v = x`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hDψ⟩ := hN x hxN
+  obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := by
+    rw [himg]
+    exact ⟨hxW, hxN⟩
+  -- `N` is flat at `ψ v` along `A(ℝᵈ)`, `A = Dψ(v)`
+  have hflat : ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z (ψ v) < ρ →
+      ∃ t ∈ LinearMap.range (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P),
+        ‖z - ψ v - t‖ ≤ ε * ‖z - ψ v‖ := by
+    intro ε hε
+    obtain ⟨ρ, hρ, hρN⟩ := Submission.atsm_chart_image_flat P d N W V ψ v hV hW
+      (by exact_mod_cast hψ) hinj himg hprop (hDψ v hv) hv ε hε
+    refine ⟨ρ, hρ, fun z hz hzρ => ?_⟩
+    obtain ⟨h, hh⟩ := hρN z hz hzρ
+    exact ⟨_, LinearMap.mem_range_self (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P) h, hh⟩
+  -- hence `Q ⊆ A(ℝᵈ)`, and `A(ℝᵈ) = T_{ψ v}N`
+  have hQA := Submission.atsm_approxTangent_le_of_flat P n N M (ψ v) Q _ hnull hflat hQ
+  rw [Submission.chart_tangentSpace_eq_range_fderiv P d 1 N W V ψ v le_rfl hV hW hψ hinj himg
+    hprop hDψ hv]
+  intro w hw
+  exact LinearMap.mem_range.1 (hQA hw)
+
 /-- **Simon Ch. 2, §4** (4.1–4.3 and the definition of `Cˡ` functions on `M`): the tangent
 projection `z ↦ P_{T_zN}` of an embedded `C²` submanifold `N ⊆ ℝᴾ` is `C¹` on `N`, i.e. it is the
 restriction to `N` of a map that is `C¹` on an open `O ⊇ N`.  Along a chart `ψ`,
@@ -6133,6 +6588,91 @@ theorem Submission.submanifold_tangentProjection_c1_extension : ∀ (P d : ℕ) 
     show (if hy : z ∈ O then g ⟨z, hy⟩ else 0) = _
     rw [dite_eq_left (hNO hz)]
     exact h1
+
+/-- **Simon Ch. 4, 2.7 and 3.14** (with Ch. 2, 5.9): if `V = v(M, θ)` is stationary in `N ∩ U`,
+where `N` is an embedded `C²` submanifold with `(N̄ \ N) ∩ U = ∅` and `Hⁿ(M \ N) = 0`, then `V`
+has generalized mean curvature `H` in `U`, bounded on compact subsets of `U`.  Extend
+`z ↦ P_{T_zN}` to a `C¹` field `pr` on an open `O ⊇ N` and take `H` with
+`H(x) = Σⱼ (Dpr(x)[p eⱼ])*(p eⱼ)` on `N ∩ U`, `p = p_{TₓM}`.  For `X ∈ C¹_c(U)`, the tangential
+part `X^T` (equal to `pr·X` near `N`) is tangent to `N` on `N ∩ U`, so `δV(X^T) = 0` and
+`δV(X) = δV(X − X^T)`.  At `Hⁿ`-a.e. `x ∈ M`, `x ∈ N` and `TₓM ⊆ TₓN`, so
+`div_M(X − X^T)(x) = −X(x)·H(x)`; integrating against `θ` gives `δV(X) = −∫ X·H dμ_V`. -/
+theorem Submission.meanCurvature_bounded_of_stationaryAlong : ∀ (P n d : ℕ) (U N : Set (Euclid P)) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → μHE[n] (R.carrier \ N) = 0 → R.IsStationaryAlong N → R.HasLocallyBoundedMeanCurvature := by
+  intro P n d U N R hU hN hNU hMN hstat
+  -- the `C¹` extension `pr` of `z ↦ P_{T_zN}` to an open set `O ⊇ N`
+  obtain ⟨O, pr, hO, hNO, hpr, hprN⟩ :=
+    Submission.submanifold_tangentProjection_c1_extension P d N hN
+  -- `p(x) = p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable, and `‖p(x)‖ ≤ 1`
+  have hp : AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      (μHE[n].restrict R.carrier) := Submission.imrep_approxTangent_starProjection_aesm P n U R
+  -- `H` with `H(x) = Σⱼ (Dpr(x)[p eⱼ])*(p eⱼ)` on `N ∩ U`, measurable and bounded on compact
+  -- subsets of `U`
+  obtain ⟨H, hHm, hHb, hH⟩ := Submission.mcs_exists_meanCurvature_field P
+    (μHE[n].restrict R.carrier) U N O pr _ hU hO hNO hpr hNU hp
+    fun x => Submodule.starProjection_norm_le _
+  -- `T_zN` is a linear subspace for `z ∈ N`, the range of `Dψ` in a chart
+  have hTN : ∀ z ∈ N, ∃ T : Submodule ℝ (Euclid P), tangentSpace N z = T := by
+    intro z hz
+    obtain ⟨V, W, ψ, hV, hW, hzW, hψ, hinj, hψV, hproper, hDψ⟩ := hN z hz
+    obtain ⟨v, hv, rfl⟩ : z ∈ ψ '' V := hψV ▸ ⟨hzW, hz⟩
+    exact ⟨LinearMap.range (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P),
+      Submission.chart_tangentSpace_eq_range_fderiv P d 2 N W V ψ v one_le_two hV hW hψ hinj hψV
+        hproper hDψ hv⟩
+  -- `C²` charts are `C¹` charts
+  have hN1 : IsEmbeddedSubmanifold 1 d N := fun y hy => by
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, h⟩ := hN y hy
+    exact ⟨V, W, ψ, hV, hW, hyW, hψ.of_le (by norm_num), h⟩
+  -- `Hⁿ⌞M`-a.e. point lies in `N`, as `Hⁿ(M \ N) = 0`
+  have hMN' : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ N := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hMN] with x hx hxM
+    by_contra hxN
+    exact hx ⟨hxM, hxN⟩
+  refine ⟨H, hHm.mono_ac (withDensity_absolutelyContinuous _ _),
+    fun K hK hKU => (hHb K hK hKU).imp fun Λ hΛ => ae_of_all _ hΛ, fun X hX hXc hXU => ?_⟩
+  -- the tangential part `X^T ∈ C¹_c(U)`, equal to `pr·X` near every point of `N`
+  obtain ⟨XT, hXT, hXTc, hXTU, hXTN⟩ :=
+    Submission.mcs_exists_c1_field_eq_proj_near P U N O pr X hU hO hNO hpr hNU hX hXc hXU
+  -- `X^T(z) = P_{T_zN} X(z) ∈ T_zN` on `N ∩ U`, so `δV(X^T) = 0` by stationarity
+  have hXT0 : R.firstVariation XT = 0 := by
+    refine hstat XT hXT hXTc hXTU fun z hz => ?_
+    obtain ⟨T, hT⟩ := hTN z hz.1
+    have hmem : XT z ∈ Submodule.span ℝ (tangentSpace N z) := by
+      rw [(hXTN z hz.1).eq_of_nhds, hprN z hz.1]
+      exact Submodule.starProjection_apply_mem _ _
+    rw [hT, Submodule.span_eq] at hmem
+    rwa [hT]
+  -- `δV(X) = δV(X^T) + δV(X − X^T) = δV(X − X^T)`
+  have hsplit : R.firstVariation X = R.firstVariation (X - XT) := by
+    have h := Submission.mcs_firstVariation_add P n U R XT (X - XT) hp hXT hXTc hXTU (hX.sub hXT)
+      (hXc.sub hXTc) ((tsupport_sub X XT).trans (union_subset hXU hXTU))
+    rwa [add_sub_cancel, hXT0, zero_add] at h
+  -- at `Hⁿ⌞M`-a.e. `x`: `x ∈ M ∩ N` and `TₓM ⊆ TₓN`, so `div_M(X − X^T)(x) = −X(x)·H(x)`
+  have hdiv : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      tangentialDivergence n R.carrier (X - XT) x = -inner ℝ (X x) (H x) := by
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier, hMN', R.orients]
+      with x hxM hxN ⟨Q, hQ, _⟩
+    have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    have hTx : HasApproximateTangentSpaceAt n R.carrier x (approxTangentPlane n R.carrier x) := by
+      rw [approxTangentPlane, dite_eq_left hex]
+      exact hex.choose_spec
+    have hQS : approxTangentPlane n R.carrier x ≤ Submodule.span ℝ (tangentSpace N x) :=
+      fun u hu => Submodule.subset_span (Submission.approxTangent_le_submanifold_tangentSpace P n d
+        N R.carrier x _ hN1 hxN hMN hTx hu)
+    have hY : (X - XT) =ᶠ[𝓝 x] fun y => X y - pr y (X y) :=
+      (hXTN x hxN).mono fun y hy => by rw [Pi.sub_apply, hy]
+    have hprx : DifferentiableAt ℝ pr x :=
+      (hpr.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds (hNO hxN))
+    rw [tangentialDivergence, Submission.mcs_trace_normal_part_eq_neg_inner P _ _ pr X (X - XT) x
+      hQS (hprN x hxN) hprx (hX.differentiable one_ne_zero x) hY, hH x ⟨hxN, R.carrier_subset hxM⟩]
+  -- integrate against `θ`: `∫_M θ div_M(X − X^T) dHⁿ = −∫ X·H dμ_V`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  rw [hsplit, IMRep.firstVariation, IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
+    (ae_of_all _ fun x => ENNReal.natCast_lt_top _), ← integral_neg]
+  refine integral_congr_ae ?_
+  filter_upwards [hdiv] with x hx
+  rw [hx, ENNReal.toReal_natCast, smul_eq_mul, mul_neg]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
