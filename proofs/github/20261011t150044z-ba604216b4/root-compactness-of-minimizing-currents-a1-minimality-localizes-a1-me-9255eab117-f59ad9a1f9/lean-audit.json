@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6cd692f5d7384cf19897df5385fdcd5b81040b7e886c4afb0154d18d488153ed",
+  "git_delta": {
+    "base_commit": "ec7afac3a985b8324fff3058f04fc660affd8696",
+    "candidate_commit": "9adc8b20a486bc0e31782b03829041145baea564",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_ml_measure_eq_of_eq_on_open_subsets",
+    "diff_sha256": "cfc8ff16a2b78b3d73f8dec11bc83b9b71c941159b31245ec4675ed10c560bc8",
+    "source_sha256": "ad7fc084df0d84f8cd10489afb9f72f86bfa3859f31624a61e710b59c9068583",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_ml_measure_eq_of_eq_on_open_subsets",
+      "statement": "∀ (P : ℕ) (O : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen O → (∀ C : Set (Euclid P), IsCompact C → C ⊆ O → μ C ≠ ∞) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ O → μ G = ν G) → ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ O → μ A = ν A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
