@@ -361,6 +361,91 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A `C¹` function `h` on `ℝⁿ` is `ε`-Lipschitz on each piece of a countable Borel partition of
+a Borel set `E` on which `Dh = 0`.  Continuity of `Dh` gives balls `B(w, r w)`, `w ∈ E`, with
+`‖Dh‖₊ < ε`, on which `h` is `ε`-Lipschitz by the mean value inequality; countably many of them
+cover `E` (Lindelöf), and `D k = E ∩ disjointed B k` disjointifies this cover. -/
+theorem Submission.slicing_im_coarea_cc_small_lip_partition :
+    ∀ (n : ℕ) (h : Eucl n → ℝ) (E : Set (Eucl n)) (ε : ℝ≥0), ContDiff ℝ 1 h → MeasurableSet E →
+      (∀ w ∈ E, fderiv ℝ h w = 0) → 0 < ε →
+      ∃ D : ℕ → Set (Eucl n), (∀ k, MeasurableSet (D k)) ∧ Pairwise (Function.onFun Disjoint D) ∧
+        (⋃ k, D k) = E ∧ ∀ k, LipschitzOnWith ε h (D k) := by
+  intro n h E ε hh hE hE0 hε
+  -- `h` is differentiable and `z ↦ ‖Dh z‖₊` is continuous.
+  have hdiff : Differentiable ℝ h := hh.differentiable one_ne_zero
+  have hcont : Continuous fun z => ‖fderiv ℝ h z‖₊ := (hh.continuous_fderiv one_ne_zero).nnnorm
+  -- Good radii: since `Dh w = 0`, `‖Dh‖₊ < ε` on a ball `B(w, r w)` for every `w ∈ E`.
+  have hrad : ∀ w ∈ E, ∃ r > 0, ∀ z ∈ ball w r, ‖fderiv ℝ h z‖₊ < ε := fun w hw =>
+    Metric.eventually_nhds_iff_ball.1 <|
+      (hcont.tendsto' w 0 (by simp [hE0 w hw])).eventually (gt_mem_nhds hε)
+  choose! r hr0 hr using hrad
+  -- Mean value inequality on the convex balls: `h` is `ε`-Lipschitz on each of them.
+  have hlip : ∀ w ∈ E, LipschitzOnWith ε h (ball w (r w)) := fun w hw =>
+    Convex.lipschitzOnWith_of_nnnorm_fderiv_le (fun z _ => hdiff z)
+      (fun z hz => (hr w hw z hz).le) (convex_ball w (r w))
+  -- Lindelöf: the balls centred at the points of a countable `T ⊆ E` cover `E`.
+  obtain ⟨T, hTE, hTc, hET⟩ := TopologicalSpace.countable_cover_nhdsWithin
+    (f := fun w => ball w (r w)) fun w hw => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds w (hr0 w hw))
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- No ball is needed, so `E = ∅` and `D k = ∅` works.
+    have hE' : E = ∅ := by simpa using hET
+    exact ⟨fun _ => ∅, fun _ => MeasurableSet.empty, fun _ _ _ => disjoint_bot_left,
+      by simp [hE'], fun _ => lipschitzOnWith_empty ε h⟩
+  · -- Enumerate the balls `B k = B(w k, r (w k))` and set `D k = E ∩ disjointed B k`.
+    obtain ⟨w, rfl⟩ := hTc.exists_eq_range hTne
+    rw [biUnion_range] at hET
+    refine ⟨fun k => E ∩ disjointed (fun j => ball (w j) (r (w j))) k,
+      fun k => hE.inter (MeasurableSet.disjointed (fun _ => measurableSet_ball) k),
+      (disjoint_disjointed _).mono fun _ _ hij =>
+        Disjoint.mono inter_subset_right inter_subset_right hij,
+      ?_, fun k => (hlip (w k) (hTE (mem_range_self k))).mono
+        (inter_subset_right.trans (disjointed_subset _ k))⟩
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left]
+    exact hET
+/-- Slices of `S` are `ν`-null for a.e. level if `S` admits countable covers with measurable
+majorants of arbitrarily small total integral: if for every `ε > 0` there are `A k` covering `S`
+and measurable `φ k` with `ν (A k ∩ f ⁻¹' {t}) ≤ φ k t` and `∑' k, ∫⁻ φ k ≤ ε * M` (`M ≠ ∞`), then
+`ν (S ∩ f ⁻¹' {t}) = 0` for a.e. `t`.  For `ε_j = 1 / (j + 1)`, `g = ⨅ j, ∑' k, φ_j k` is a
+measurable majorant of `t ↦ ν (S ∩ f ⁻¹' {t})` with `∫⁻ g ≤ ε_j * M → 0`, so `g = 0` a.e. -/
+theorem Submission.slicing_im_coarea_cc_null_of_small_majorants :
+    ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (f : X → ℝ) (S : Set X) (M : ℝ≥0∞),
+      M ≠ ∞ → (∀ ε : ℝ≥0, 0 < ε → ∃ (A : ℕ → Set X) (φ : ℕ → ℝ → ℝ≥0∞),
+        S ⊆ ⋃ k, A k ∧ (∀ k, Measurable (φ k)) ∧ (∀ k t, ν (A k ∩ f ⁻¹' {t}) ≤ φ k t) ∧
+          ∑' k, ∫⁻ t, φ k t ≤ (ε : ℝ≥0∞) * M) →
+      ∀ᵐ t ∂(volume : Measure ℝ), ν (S ∩ f ⁻¹' {t}) = 0 := by
+  intro X _ ν f S M hM h
+  -- For `ε_j = 1 / (j + 1)` choose covers `A j k` of `S` and majorants `φ j k`.
+  choose A φ hSA hφ hle hsum using fun j : ℕ => h (1 / ((j : ℝ≥0) + 1)) (by positivity)
+  -- `ψ_j = ∑' k, φ j k` is measurable and majorizes `t ↦ ν (S ∩ f ⁻¹' {t})` by countable
+  -- subadditivity, since `S ∩ f ⁻¹' {t} ⊆ ⋃ k, A j k ∩ f ⁻¹' {t}`.
+  have hψ : ∀ j, Measurable fun t => ∑' k, φ j k t := fun j => Measurable.tsum (hφ j)
+  have hFψ : ∀ j t, ν (S ∩ f ⁻¹' {t}) ≤ ∑' k, φ j k t := by
+    intro j t
+    calc ν (S ∩ f ⁻¹' {t}) ≤ ν (⋃ k, A j k ∩ f ⁻¹' {t}) := by
+          refine measure_mono fun x hx => ?_
+          obtain ⟨k, hk⟩ := mem_iUnion.1 (hSA j hx.1)
+          exact mem_iUnion.2 ⟨k, hk, hx.2⟩
+      _ ≤ ∑' k, ν (A j k ∩ f ⁻¹' {t}) := measure_iUnion_le _
+      _ ≤ ∑' k, φ j k t := ENNReal.tsum_le_tsum fun k => hle j k t
+  -- Monotone convergence: `∫⁻ ψ_j = ∑' k, ∫⁻ φ j k ≤ ε_j * M`.
+  have hψint : ∀ j, ∫⁻ t, ∑' k, φ j k t ≤ ((1 / ((j : ℝ≥0) + 1) : ℝ≥0) : ℝ≥0∞) * M := by
+    intro j
+    rw [lintegral_tsum fun k => (hφ j k).aemeasurable]
+    exact hsum j
+  -- `g = ⨅ j, ψ_j` is a measurable majorant with `∫⁻ g ≤ ε_j * M` for every `j`.
+  have hg : Measurable fun t => ⨅ i, ∑' k, φ i k t := Measurable.iInf hψ
+  have hgint : ∀ j : ℕ, ∫⁻ t, ⨅ i, ∑' k, φ i k t ≤ ((1 / ((j : ℝ≥0) + 1) : ℝ≥0) : ℝ≥0∞) * M :=
+    fun j => (lintegral_mono fun t => iInf_le _ j).trans (hψint j)
+  -- `ε_j * M → 0` because `M ≠ ∞`, so `∫⁻ g = 0`.
+  have htend : Tendsto (fun j : ℕ => ((1 / ((j : ℝ≥0) + 1) : ℝ≥0) : ℝ≥0∞) * M) atTop (𝓝 0) := by
+    have h0 : Tendsto (fun j : ℕ => ((1 / ((j : ℝ≥0) + 1) : ℝ≥0) : ℝ≥0∞)) atTop (𝓝 0) := by
+      rw [← ENNReal.coe_zero]
+      exact ENNReal.tendsto_coe.2 tendsto_one_div_add_atTop_nhds_zero_nat
+    simpa only [zero_mul] using ENNReal.Tendsto.mul_const h0 (Or.inr hM)
+  have hg0 : ∫⁻ t, ⨅ i, ∑' k, φ i k t = 0 := le_antisymm (ge_of_tendsto' htend hgint) bot_le
+  -- Hence `g = 0` a.e., and `ν (S ∩ f ⁻¹' {t}) ≤ g t` gives the claim.
+  filter_upwards [(lintegral_eq_zero_iff hg).1 hg0] with t ht
+  exact le_antisymm ((le_iInf fun j => hFψ j t).trans_eq ht) bot_le
 /-- Near-optimal covers for `μH[d]` (`d ≥ 0`, `μH[d] A < ∞`): for `r, ε > 0`, `A` is covered by
 sets `S i ⊆ A` of diameter `≤ r` with `∑ᵢ (diam S i)^d ≤ μH[d] A + ε`, empty pieces counting `0`.
 By `hausdorffMeasure_apply` the `r`-content of `A` is `≤ μH[d] A < μH[d] A + ε`, so some cover
@@ -4720,6 +4805,91 @@ theorem Submission.slicing_im_coarea_pieces :
     obtain rfl : w = w' := (hinj _ hw'A.1 hw hw'w).symm
     exact ⟨(hstep2 _ _ w hw hw'A.2).1,
       hgrad _ _ w hw hw'A.2 (hBM hxB) (fun h => hZ (Or.inl h)) (fun h => hZ (Or.inr h))⟩
+
+/-- Slices of the critical part of a `C¹` chart piece are `Hᵐ`-null for a.e. level (Simon Ch. 2,
+6.3–6.4, via Eilenberg's inequality).  Put `E₀ = Ω ∩ Φ⁻¹(W)`, so that `W = Φ(E₀)` and `Dh = 0` on
+`E₀`.  For `R ∈ ℕ` and `ε > 0`, `slicing_im_coarea_cc_small_lip_partition` splits
+`E₀ ∩ B(0, R)` into disjoint Borel pieces `D k` on which `h` is `ε`-Lipschitz.  As `f ∘ Φ = h` on
+`E₀` and `c |w - w'| ≤ |Φ w - Φ w'|`, `f` is `ε c⁻¹`-Lipschitz on `Φ(D k)`, so Eilenberg's
+inequality `slicing_im_coarea_eilenberg` dominates the slices of `Φ(D k)` by `φ k` with
+`∫ φ k ≤ C ε c⁻¹ Hⁿ(Φ(D k)) ≤ C ε c⁻¹ Kⁿ Lⁿ(D k)`; these sum to at most
+`ε · C c⁻¹ Kⁿ Lⁿ(B(0, R))`.  Hence `slicing_im_coarea_cc_null_of_small_majorants` makes the
+slices of `Φ(E₀ ∩ B(0, R))` null for a.e. level, and `W = ⋃_R Φ(E₀ ∩ B(0, R))`. -/
+theorem Submission.slicing_im_coarea_chart_critical :
+    ∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ)
+      (f : Eucl P → ℝ) (W : Set (Eucl P)), IsOpen Ω → ContDiff ℝ 1 Φ →
+      (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) →
+      (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      ContDiff ℝ 1 h → MeasurableSet W → W ⊆ Φ '' Ω →
+      (∀ w ∈ Ω, Φ w ∈ W → f (Φ w) = h w ∧ fderiv ℝ h w = 0) →
+      ∀ᵐ t ∂(volume : Measure ℝ), (μHE[m] : Measure (Eucl P)) (W ∩ f ⁻¹' {t}) = 0 := by
+  rintro P m Φ Ω h f W hΩ hΦ ⟨K, hK⟩ ⟨c, hc0, hc⟩ hh hW hWΦ hfh
+  lift c to ℝ≥0 using hc0.le
+  obtain ⟨C, hC⟩ := Submission.slicing_im_coarea_eilenberg m
+  -- For each radius `R`, the slices of `Φ(E₀ ∩ B(0, R))` are null for a.e. level.
+  have hR : ∀ R : ℕ, ∀ᵐ t ∂(volume : Measure ℝ),
+      (μHE[m] : Measure (Eucl P)) (Φ '' (Ω ∩ Φ ⁻¹' W ∩ ball 0 R) ∩ f ⁻¹' {t}) = 0 := by
+    intro R
+    refine Submission.slicing_im_coarea_cc_null_of_small_majorants (Eucl P) μHE[m] f
+      (Φ '' (Ω ∩ Φ ⁻¹' W ∩ ball 0 R))
+      (((C * c⁻¹ * K ^ (m + 1) : ℝ≥0) : ℝ≥0∞) * volume (ball (0 : Eucl (m + 1)) R))
+      (ENNReal.mul_ne_top ENNReal.coe_ne_top measure_ball_lt_top.ne) fun ε hε => ?_
+    -- Disjoint Borel pieces `D k` of `E₀ ∩ B(0, R)` on which `h` is `ε`-Lipschitz.
+    obtain ⟨D, hDm, hDdisj, hDU, hDlip⟩ :=
+      Submission.slicing_im_coarea_cc_small_lip_partition (m + 1) h (Ω ∩ Φ ⁻¹' W ∩ ball 0 R) ε hh
+        ((hΩ.measurableSet.inter (hW.preimage hΦ.continuous.measurable)).inter measurableSet_ball)
+        (fun w hw => (hfh w hw.1.1 hw.1.2).2) hε
+    have hDE : ∀ k, D k ⊆ Ω ∩ Φ ⁻¹' W ∩ ball 0 R := fun k => hDU ▸ subset_iUnion D k
+    -- `f = h ∘ Φ⁻¹` is `ε c⁻¹`-Lipschitz on `Φ(D k)`.
+    have hflip : ∀ k, LipschitzOnWith (ε * c⁻¹) f (Φ '' D k) := by
+      intro k
+      refine LipschitzOnWith.of_dist_le_mul ?_
+      rintro _ ⟨w, hw, rfl⟩ _ ⟨w', hw', rfl⟩
+      obtain ⟨⟨hwΩ, hwW⟩, -⟩ := hDE k hw
+      obtain ⟨⟨hw'Ω, hw'W⟩, -⟩ := hDE k hw'
+      rw [(hfh w hwΩ hwW).1, (hfh w' hw'Ω hw'W).1]
+      have hcw : (c : ℝ) * dist w w' ≤ dist (Φ w) (Φ w') := by
+        simpa only [dist_eq_norm] using hc w hwΩ w' hw'Ω
+      calc dist (h w) (h w') ≤ ε * dist w w' := (hDlip k).dist_le_mul w hw w' hw'
+        _ ≤ ε * ((c : ℝ)⁻¹ * dist (Φ w) (Φ w')) := by
+          gcongr
+          rw [inv_mul_eq_div, le_div_iff₀ hc0, mul_comm]
+          exact hcw
+        _ = ((ε * c⁻¹ : ℝ≥0) : ℝ) * dist (Φ w) (Φ w') := by push_cast; ring
+    -- Eilenberg's inequality on each `Φ(D k)`, and `Hⁿ(Φ(D k)) ≤ Kⁿ Lⁿ(D k)`.
+    choose φ hφm hφle hφint using fun k => hC P f (ε * c⁻¹) (Φ '' D k) (hflip k)
+    refine ⟨fun k => Φ '' D k, φ, ?_, hφm, hφle, ?_⟩
+    · rintro _ ⟨w, hw, rfl⟩
+      rw [← hDU] at hw
+      obtain ⟨k, hk⟩ := mem_iUnion.1 hw
+      exact mem_iUnion.2 ⟨k, mem_image_of_mem Φ hk⟩
+    · calc ∑' k, ∫⁻ t, φ k t
+          ≤ ∑' k, (C : ℝ≥0∞) * ((ε * c⁻¹ : ℝ≥0) : ℝ≥0∞) *
+              ((K : ℝ≥0∞) ^ (m + 1) * volume (D k)) := by
+            refine ENNReal.tsum_le_tsum fun k => (hφint k).trans ?_
+            rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+            gcongr
+            exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+              (m + 1) (hK.mono fun w hw => (hDE k hw).1.1)
+        _ = (C : ℝ≥0∞) * ((ε * c⁻¹ : ℝ≥0) : ℝ≥0∞) * (K : ℝ≥0∞) ^ (m + 1) *
+              volume (Ω ∩ Φ ⁻¹' W ∩ ball 0 R) := by
+            simp_rw [← mul_assoc]
+            rw [ENNReal.tsum_mul_left, ← measure_iUnion hDdisj hDm, hDU]
+        _ ≤ (C : ℝ≥0∞) * ((ε * c⁻¹ : ℝ≥0) : ℝ≥0∞) * (K : ℝ≥0∞) ^ (m + 1) *
+              volume (ball (0 : Eucl (m + 1)) R) := by
+            gcongr
+            exact inter_subset_right
+        _ = (ε : ℝ≥0∞) *
+              (((C * c⁻¹ * K ^ (m + 1) : ℝ≥0) : ℝ≥0∞) * volume (ball (0 : Eucl (m + 1)) R)) := by
+            push_cast
+            ring
+  -- `W = ⋃_R Φ(E₀ ∩ B(0, R))`, so its slices are null for a.e. level.
+  filter_upwards [ae_all_iff.2 hR] with t ht
+  refine measure_mono_null ?_ (measure_iUnion_null ht)
+  rintro _ ⟨hxW, hxt⟩
+  obtain ⟨w, hwΩ, rfl⟩ := hWΦ hxW
+  obtain ⟨R, hwR⟩ := exists_nat_gt ‖w‖
+  exact mem_iUnion.2 ⟨R, ⟨w, ⟨⟨hwΩ, hxW⟩, mem_ball_zero_iff.2 hwR⟩, rfl⟩, hxt⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
