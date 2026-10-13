@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1.coordinate_trace-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1",
+  "depth": 4,
+  "title": "Coordinate trace identity: Σ_i (−1)^i θ(L w_i, w without w_i) = tr(A)·θ(w) for θ = dx^I and p_I∘L = A∘p_I (parent step 3)",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, I : Fin n → Fin P, and let θ be an n-covector on ℝ^P with θ(v) = det(Matrix.of fun k j => v j (I k)) for every v : Fin n → ℝ^P. Let A : ℝⁿ → ℝⁿ be ℝ-linear, and let L : ℝ^P → ℝ^P be any map with (L v)(I k) = (A(p v))_k for all v ∈ ℝ^P and k ∈ Fin n, where p v := WithLp.toLp 2 (fun k => v (I k)) ∈ ℝⁿ. Then for every w : Fin n → ℝ^P, Σ_{i ∈ Fin n} (−1)^i·θ(Fin.cons (L(w i)) (i.removeNth w)) = tr(A)·θ(w), where tr(A) = LinearMap.trace ℝ ℝⁿ A.",
+  "lean_statement": "∀ (P m : ℕ) (I : Fin (m + 1) → Fin P) (θ : Covector (Euclid P) (m + 1)) (A : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) (L : Euclid P → Euclid P), (∀ v : Fin (m + 1) → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → (∀ (v : Euclid P) (k : Fin (m + 1)), L v (I k) = A (WithLp.toLp 2 (fun k' => v (I k'))) k) → ∀ w : Fin (m + 1) → Euclid P, ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * θ (Fin.cons (L (w i)) (i.removeNth w)) = LinearMap.trace ℝ (Euclid (m + 1)) A * θ w",
+  "lean_name": "cmr_df_cons_sum_trace",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1.jacobi_trace-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1.jacobi_trace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-c9e202e0ac-a1"
+}
