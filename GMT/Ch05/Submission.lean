@@ -458,6 +458,30 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Localization of integrals: if `f : ℝⁿ → ℝ` is continuous on an open `O` and vanishes off a
+compact `T ⊆ O`, then `f` is continuous, integrable, and `∫_O f = ∫_{ℝⁿ} f`.  At a point of `O`,
+`f` is continuous because `O` is open; a point outside `O` lies in the open set `Tᶜ` (`T` is
+closed), where `f = 0`.  So `f` is continuous with compact support (`HasCompactSupport.intro`),
+hence integrable (`Continuous.integrable_of_hasCompactSupport`), and it vanishes off `O`
+(`setIntegral_eq_integral_of_forall_compl_eq_zero`). -/
+theorem dohr_eb_sch_bu_wel_localized_integral : ∀ (n : ℕ) (f : Rn n → ℝ) (O T : Set (Rn n)), IsOpen O → IsCompact T → T ⊆ O → ContinuousOn f O → (∀ z, z ∉ T → f z = 0) → Continuous f ∧ Integrable f ∧ ∫ z in O, f z = ∫ z, f z := by
+  intro n f O T hO hT hTO hf hfT
+  have hcont : Continuous f := by
+    refine continuous_iff_continuousAt.2 fun z => ?_
+    by_cases hz : z ∈ O
+    · exact hf.continuousAt (hO.mem_nhds hz)
+    · -- `z ∉ T`, and `f = 0` on the open neighbourhood `Tᶜ` of `z`.
+      have hzT : z ∉ T := fun h => hz (hTO h)
+      have hev : (fun _ => (0 : ℝ)) =ᶠ[𝓝 z] f :=
+        Filter.mem_of_superset (hT.isClosed.isOpen_compl.mem_nhds hzT) fun w hw => (hfT w hw).symm
+      exact continuousAt_const.congr hev
+  refine ⟨hcont, hcont.integrable_of_hasCompactSupport (HasCompactSupport.intro hT hfT), ?_⟩
+  exact setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => hfT z fun h => hz (hTO h)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
