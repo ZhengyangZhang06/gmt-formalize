@@ -598,6 +598,35 @@ theorem gwe_wewe_energy_bound : ∀ (n ℓ : ℕ) (K0 σ E : ℝ) (f : Rn n → 
   -- Step 6: `∫_{B1} |Df|² = (∫⁻_{B1} ofReal |Df|²).toReal ≤ (1 + n) K0 E σⁿ`.
   rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hnonneg) hmeas.aestronglyMeasurable]
   exact ENNReal.toReal_le_of_le_ofReal (by positivity) hlint
+/-- Cauchy–Schwarz on a set of finite measure (Hölder with `p = q = 2` for `g` and `1` on
+`ν = μ|_S`): if `0 ≤ g` and `g² ≤ D` a.e. on `S`, with `D` integrable on `S`, then
+`∫_S g dμ ≤ (∫_S g² dμ)^{1/2} μ(S)^{1/2} ≤ μ(S)^{1/2} (∫_S D dμ)^{1/2}`. -/
+theorem gwe_wewe_setIntegral_le_sqrt_mul_sqrt : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (S : Set X) (g D : X → ℝ), μ S < ⊤ → AEStronglyMeasurable g (μ.restrict S) → IntegrableOn D S μ → (∀ᵐ x ∂(μ.restrict S), 0 ≤ g x ∧ g x ^ 2 ≤ D x) → ∫ x in S, g x ∂μ ≤ Real.sqrt (μ S).toReal * Real.sqrt (∫ x in S, D x ∂μ) := by
+  intro X _ μ S g D hS hg hD hgD
+  -- `ν = μ|_S` is a finite measure.
+  have : IsFiniteMeasure (μ.restrict S) := isFiniteMeasure_restrict.2 hS.ne
+  -- `g²` is `ν`-integrable, being dominated by the integrable `D`.
+  have hg2 : Integrable (fun x => g x ^ 2) (μ.restrict S) :=
+    Integrable.mono' hD (hg.pow 2)
+      (hgD.mono fun x hx => (Real.norm_of_nonneg (sq_nonneg (g x))).le.trans hx.2)
+  -- Hence `g ∈ L²(ν)`.
+  have hgL2 : MemLp g (ENNReal.ofReal 2) (μ.restrict S) := by
+    rw [← integrable_norm_rpow_iff hg (by simp) ENNReal.ofReal_ne_top]
+    refine hg2.congr (ae_of_all _ fun x => ?_)
+    simp only [ENNReal.toReal_ofReal zero_le_two, Real.rpow_two, Real.norm_eq_abs, sq_abs]
+  -- Hölder with `p = q = 2` for `g` and the constant `1 ∈ L²(ν)`.
+  have hH := integral_mul_le_Lp_mul_Lq_of_nonneg (f := g) (g := fun _ => (1 : ℝ))
+    Real.HolderConjugate.two_two (hgD.mono fun x hx => hx.1) (ae_of_all _ fun _ => zero_le_one)
+    hgL2 (memLp_const 1)
+  simp only [mul_one, Real.rpow_two, one_pow, integral_const, smul_eq_mul, measureReal_def,
+    Measure.restrict_apply_univ, ← Real.sqrt_eq_rpow] at hH
+  -- `∫_S g² ≤ ∫_S D`, and `√` is monotone.
+  have hmono : ∫ x in S, g x ^ 2 ∂μ ≤ ∫ x in S, D x ∂μ :=
+    integral_mono_ae hg2 hD (hgD.mono fun x hx => hx.2)
+  calc ∫ x in S, g x ∂μ ≤ Real.sqrt (∫ x in S, g x ^ 2 ∂μ) * Real.sqrt (μ S).toReal := hH
+    _ ≤ Real.sqrt (∫ x in S, D x ∂μ) * Real.sqrt (μ S).toReal :=
+      mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt hmono) (Real.sqrt_nonneg _)
+    _ = Real.sqrt (μ S).toReal * Real.sqrt (∫ x in S, D x ∂μ) := mul_comm _ _
 
 end Submission
 
