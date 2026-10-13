@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "754616b44bf2c424e72172ea57dc12bf371df046b17239d16f502b1612203174",
+  "git_delta": {
+    "base_commit": "9fe86b43dc763b55113e5bab0c97d6bccfcc06da",
+    "candidate_commit": "cd8c8dbf850d8215dff253c1d073caf7e8b93b82",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_eil_unnormalized",
+    "diff_sha256": "6c5ea2a62bccb2afca48688febd380d54777c501d8e1a3a3271a5f282d0207af",
+    "source_sha256": "06abac7f051ac879f8911895850983d569b79a5119742924cd1acbd19cc9dab4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_eil_unnormalized",
+      "statement": "∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X), LipschitzOnWith L f A → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, (μH[(m : ℝ)] : Measure X) (A ∩ f ⁻¹' {t}) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
