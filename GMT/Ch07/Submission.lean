@@ -1973,6 +1973,59 @@ theorem Submission.cmcs_lipschitz_smoothing : ∀ (P : ℕ) (g : Euclid P → �
     rw [← hconv] at h
     exact dist_le_zero.1 h
 
+/-- **Leibniz identity with a `C^∞` multiplier** (Simon Ch. 6, proof of Lemma 4.5(2):
+`∂T(gω) − T(g dω) = T(dg ∧ ω)`), for `T = τ(M, θ, ξ)` and `∂T = τ(M', θ', ξ')` in `ℝᴾ`: for
+`g ∈ C^∞` and `ω ∈ 𝒟^{m+1}(ℝᴾ)`,
+`∫_{M'} θ' g ⟨ω, ξ'⟩ dH^{m+1} − ∫_M θ g ⟨dω, ξ⟩ dH^{m+2} = ∫_M θ ⟨dg ∧ ω, ξ⟩ dH^{m+2}`.
+For every `IMRep` `R = (M, θ, ξ)`, `∫ φ dR.measure = ∫_M θ φ dHᵈ`
+(`integral_withDensity_eq_integral_smul`, no integrability needed), so `T = ξ μ_T` and
+`∂T = ξ' μ_∂` with `μ_T = θ H^{m+2}⌞M`, `μ_∂ = θ' H^{m+1}⌞M'`.  The defect identity
+`cmcs_cd_defect_identity` with `k = m + 1` then gives the claim after rewriting back to `Hᵈ`. -/
+theorem Submission.dtc_bc_lc_sl_ll_smooth_leibniz : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (g : Euclid P → ℝ), RT.Represents T → RB.Represents T.boundary → ContDiff ℝ (⊤ : ℕ∞) g → ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (∫ x in RB.carrier, (RB.mult x : ℝ) * g x * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) - (∫ x in RT.carrier, (RT.mult x : ℝ) * g x * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) = ∫ x in RT.carrier, (RT.mult x : ℝ) * RT.orient x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight ((ω : DifferentialForm (Euclid P) (m + 1)) x))) ∂μHE[m + 2] := by
+  intro P m T RT RB g hRT hRB hg ω
+  -- Steps 1 and 2: `∫ φ dR.measure = ∫_M θ φ dHᵈ` for every `IMRep` `R = (M, θ, ξ)`, the density
+  -- `θ` being measurable and `ℕ`-valued
+  have key : ∀ {d : ℕ} (R : IMRep (univ : Set (Euclid P)) d) (φ : Euclid P → ℝ),
+      ∫ x, φ x ∂R.measure = ∫ x in R.carrier, (R.mult x : ℝ) * φ x ∂μHE[d] := by
+    intro d R φ
+    have hm : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+    have hmeas : R.measure =
+        (μHE[d].restrict R.carrier).withDensity fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+      simp [IMRep.measure]
+    rw [hmeas, integral_withDensity_eq_integral_smul hm φ]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp [NNReal.smul_def]
+  -- Step 3: `T = ξ μ_T` and `∂T = ξ' μ_∂`
+  have hT : ∀ ω' : TestFormOn (univ : Set (Euclid P)) (m + 1 + 1),
+      T ω' = ∫ x, RT.orient x ((ω' : DifferentialForm (Euclid P) (m + 1 + 1)) x) ∂RT.measure := by
+    intro ω'
+    rw [hRT ω', key]
+    rfl
+  have hB : ∀ θ : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      T.boundary θ = ∫ x, RB.orient x ((θ : DifferentialForm (Euclid P) (m + 1)) x) ∂RB.measure := by
+    intro θ
+    rw [hRB θ, key]
+    rfl
+  -- Step 4: the defect identity with `k = m + 1`, `μ = μ_T`, `μ' = μ_∂`
+  have h := Submission.cmcs_cd_defect_identity P (m + 1) univ T RT.measure RB.measure RT.orient
+    RB.orient g ω hT hB hg
+  -- Step 5: back to Hausdorff measure, reassociate `θ (g ⟨·, ξ⟩) = (θ g) ⟨·, ξ⟩` and rearrange
+  rw [key, key, key] at h
+  have e1 : ∫ x in RT.carrier, (RT.mult x : ℝ) * (g x * RT.orient x (exteriorDerivative
+      (ω : DifferentialForm (Euclid P) (m + 1)) x)) ∂μHE[m + 2] =
+      ∫ x in RT.carrier, (RT.mult x : ℝ) * g x * RT.orient x (exteriorDerivative
+      (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2] := by
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [mul_assoc]
+  have e2 : ∫ x in RB.carrier, (RB.mult x : ℝ) * (g x * RB.orient x
+      ((ω : DifferentialForm (Euclid P) (m + 1)) x)) ∂μHE[m + 1] =
+      ∫ x in RB.carrier, (RB.mult x : ℝ) * g x * RB.orient x
+      ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] := by
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [mul_assoc]
+  rw [e1, e2] at h
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
