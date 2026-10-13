@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Splitting `∫_{G(M)}` along a Borel decomposition of `M`.**  Let `G : ℝᵈ → ℝᴾ` be continuous
+and injective on `M`, let `Aᵢ ⊆ M` (`i ∈ ℕ`) be pairwise disjoint Borel sets, and let
+`Hᵐ(G(M \ ⋃ᵢ Aᵢ)) = 0`.  Then `∫_{G(M)} g dHᵐ = Σᵢ ∫_{G(Aᵢ)} g dHᵐ` for every `g : ℝᴾ → [0, ∞]`.
+The `G(Aᵢ)` are Borel (Lusin–Souslin) and pairwise disjoint, `⋃ᵢ G(Aᵢ) ⊆ G(M)`, and
+`G(M) \ ⋃ᵢ G(Aᵢ) ⊆ G(M \ ⋃ᵢ Aᵢ)` is `Hᵐ`-null. -/
+theorem Submission.codim1_lura_lintegral_image_eq_tsum_pieces : ∀ (m d P : ℕ) (M : Set (Euclid d)) (A : ℕ → Set (Euclid d)) (G : Euclid d → Euclid P), ContinuousOn G M → InjOn G M → (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[m] (G '' (M \ ⋃ i, A i)) = 0 → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' M, g w ∂μHE[m] = ∑' i, ∫⁻ w in G '' A i, g w ∂μHE[m] := by
+  intro m d P M A G hG hinj hA hAM hdisj hnull g
+  -- each `G(Aᵢ)` is Borel: `G` is continuous and injective on `Aᵢ ⊆ M` (Lusin–Souslin)
+  have hmeas : ∀ i, MeasurableSet (G '' A i) := fun i =>
+    (hA i).image_of_continuousOn_injOn (hG.mono (hAM i)) (hinj.mono (hAM i))
+  -- the `G(Aᵢ)` are pairwise disjoint, as `G` is injective on `M`
+  have hdisj' : Pairwise (Disjoint on fun i => G '' A i) := fun i j hij =>
+    disjoint_image_image fun a ha b hb hab =>
+      (hdisj hij).ne_of_mem ha hb (hinj (hAM i ha) (hAM j hb) hab)
+  -- `⋃ᵢ G(Aᵢ) ⊆ G(M)`
+  have hsub : (⋃ i, G '' A i) ⊆ G '' M := iUnion_subset fun i => image_mono (hAM i)
+  -- `G(M) \ ⋃ᵢ G(Aᵢ) ⊆ G(M \ ⋃ᵢ Aᵢ)`, which is `Hᵐ`-null by hypothesis
+  have hdiff : G '' M \ ⋃ i, G '' A i ⊆ G '' (M \ ⋃ i, A i) := by
+    rintro y ⟨⟨x, hxM, rfl⟩, hy⟩
+    refine ⟨x, ⟨hxM, fun hx => hy ?_⟩, rfl⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+    exact mem_iUnion.mpr ⟨i, mem_image_of_mem G hi⟩
+  -- so `G(M) = ⋃ᵢ G(Aᵢ)` `Hᵐ`-a.e., and the integral is countably additive over the `G(Aᵢ)`
+  have hae : G '' M =ᵐ[μHE[m]] ⋃ i, G '' A i :=
+    ae_eq_set.mpr ⟨measure_mono_null hdiff hnull, by rw [sdiff_eq_empty.mpr hsub, measure_empty]⟩
+  rw [setLIntegral_congr hae, lintegral_iUnion hmeas hdisj' g]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
