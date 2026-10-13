@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d12c1574aff522ae796a63b22ffc2d2b53c7d1977b453ec321987e51dd5586b",
+  "git_delta": {
+    "base_commit": "3c5f150dcbf8dc2447b4f4802215ef93732e2de9",
+    "candidate_commit": "7fb98fe53fd7e74b7f552b9264936df3421c7bb4",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_imcomb_subset_locality",
+    "diff_sha256": "1986ee573209f800f56ca023e2e5f403d5d11a36cb9f68e75da495764e1e5922",
+    "source_sha256": "83d53edf441869f2b70b3412d897976df6c7a0bd53af36a9613ebcf5e47ee599",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_imcomb_subset_locality",
+      "statement": "∀ (N k : ℕ) (E M : Set (Eucl N)) (θ : Eucl N → ℝ), E ⊆ M → NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → NullMeasurableSet M (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k E θ x Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
