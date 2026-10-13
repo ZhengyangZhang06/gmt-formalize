@@ -359,6 +359,38 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Finitely many `n`-covectors separate `n`-vectors (Simon Ch. 6, §1; used for Theorem 8.2 to
+show that a representation `τ(M, θ, ξ)` of `T` lives on `spt T` up to an `Hⁿ`-null set).
+Evaluation on tuples of standard basis vectors, `Φ(α)(r) = α(e_{r(1)}, …, e_{r(n)})`, embeds
+`Λⁿ(ℝ^P)` linearly into `ℝ^(Fin n → Fin P)`, since a multilinear map is determined by its values
+on basis vectors.  So `Λⁿ(ℝ^P)` is finite-dimensional, and an `n`-vector vanishing on a basis
+`b₁, …, b_N` is zero. -/
+theorem Submission.iwl_sp_sn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by
+  intro P n
+  -- Step 1: evaluation on `n`-tuples of standard basis vectors of `ℝ^P` is linear.
+  let e : Module.Basis (Fin P) ℝ (Eucl P) := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  let Φ : Covector (Eucl P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α r => α (fun i => e (r i))
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  -- Step 2: `Φ` is injective, as a multilinear map is determined by its values on basis vectors.
+  have hΦ : Function.Injective Φ := by
+    intro α β h
+    have hm : α.toContinuousMultilinearMap.toMultilinearMap =
+        β.toContinuousMultilinearMap.toMultilinearMap :=
+      Module.Basis.ext_multilinear (fun _ => e) (fun r => congrFun h r)
+    ext v
+    exact congrArg (fun m : MultilinearMap ℝ (fun _ : Fin n => Eucl P) ℝ => m v) hm
+  -- Step 3: hence `Λⁿ(ℝ^P)` is finite-dimensional; take a basis `b₁, …, b_N`.
+  have : FiniteDimensional ℝ (Covector (Eucl P) n) := FiniteDimensional.of_injective Φ hΦ
+  let b := Module.finBasis ℝ (Covector (Eucl P) n)
+  refine ⟨Module.finrank ℝ (Covector (Eucl P) n), b, ?_⟩
+  -- Step 4: a linear functional vanishing on a basis is zero.
+  intro w hw
+  have hlin : (w : Covector (Eucl P) n →ₗ[ℝ] ℝ) = 0 := b.ext (fun i => by simpa using hw i)
+  ext α
+  simpa using congrArg (fun l : Covector (Eucl P) n →ₗ[ℝ] ℝ => l α) hlin
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
