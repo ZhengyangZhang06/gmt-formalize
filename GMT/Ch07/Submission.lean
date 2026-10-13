@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The divergence of a compactly supported `C¹` vector field integrates to zero** (used for the
+complement in Simon Ch. 3, 4.3 (11)): `∫ trace Dφ(z) dLᴾ(z) = 0` for `φ ∈ C¹_c(ℝᴾ; ℝᴾ)`.
+For fixed `w`, the difference quotients `g_t = t⁻¹(φ(· + tw) − φ)` have integral `0` by
+translation invariance of `Lᴾ`, tend to `Dφ(·)w` pointwise as `t → 0`, and for `0 < |t| ≤ 1` are
+bounded by `M‖w‖ 1_{K'}`, where `M = sup ‖Dφ‖` (mean value inequality) and
+`K' = cthickening ‖w‖ (spt φ)` is compact; dominated convergence gives `∫ Dφ(z)w dz = 0`.
+Finally `trace Dφ(z) = Σᵢ ⟨eᵢ, Dφ(z)eᵢ⟩`, and the integral commutes with the sum and `⟨eᵢ, ·⟩`. -/
+theorem Submission.codim1_rdo_dg_vdl_integral_divergence_eq_zero : ∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0 := by
+  intro P φ hφ hsupp
+  -- step 1: `Dφ` is continuous with compact support, `φ` is `M`-Lipschitz and integrable
+  have hdiff : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  have hφc : Continuous φ := hφ.continuous
+  have hDc : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv one_ne_zero
+  obtain ⟨M, hM⟩ : ∃ M, ∀ z, ‖fderiv ℝ φ z‖ ≤ M :=
+    hDc.bounded_above_of_compact_support (hsupp.fderiv ℝ)
+  have hlip : ∀ x y : Euclid P, ‖φ y - φ x‖ ≤ M * ‖y - x‖ := fun x y =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun z _ => hdiff z) (fun z _ => hM z)
+      (mem_univ x) (mem_univ y)
+  have hint : Integrable φ := hφc.integrable_of_hasCompactSupport hsupp
+  -- step 2: `∫ Dφ(z) w dz = 0` for every `w`
+  have key : ∀ w : Euclid P, ∫ z, fderiv ℝ φ z w = 0 := by
+    intro w
+    -- (a) the difference quotients `g_t` have integral zero, by translation invariance
+    have ha : ∀ t : ℝ, ∫ z, t⁻¹ • (φ (z + t • w) - φ z) = 0 := fun t => by
+      rw [integral_smul, integral_sub (hint.comp_add_right (t • w)) hint,
+        integral_add_right_eq_self, sub_self, smul_zero]
+    -- (b) `g_t(z) → Dφ(z) w` as `t → 0`, `t ≠ 0`
+    have hb : ∀ z, Tendsto (fun t : ℝ => t⁻¹ • (φ (z + t • w) - φ z)) (𝓝[≠] 0)
+        (𝓝 (fderiv ℝ φ z w)) := fun z => by
+      have h : HasDerivAt (fun t : ℝ => φ (z + t • w)) (fderiv ℝ φ z w) 0 :=
+        (hdiff z).hasFDerivAt.hasLineDerivAt w
+      simpa only [zero_add, zero_smul, add_zero] using hasDerivAt_iff_tendsto_slope_zero.mp h
+    -- (c) for `0 < |t| ≤ 1`, `‖g_t‖ ≤ M‖w‖ 1_{K'}` with `K' = cthickening ‖w‖ (tsupport φ)`
+    have hK' : IsCompact (cthickening ‖w‖ (tsupport φ)) := hsupp.cthickening
+    have h1 : ∀ᶠ t : ℝ in 𝓝[≠] 0, |t| ≤ 1 := by
+      apply eventually_nhdsWithin_of_eventually_nhds
+      filter_upwards [closedBall_mem_nhds (0 : ℝ) one_pos] with t ht
+      simpa using ht
+    have hbound : ∀ᶠ t : ℝ in 𝓝[≠] 0, ∀ᵐ z, ‖t⁻¹ • (φ (z + t • w) - φ z)‖ ≤
+        (cthickening ‖w‖ (tsupport φ)).indicator (fun _ => M * ‖w‖) z := by
+      filter_upwards [h1, self_mem_nhdsWithin] with t ht ht0
+      have ht0' : t ≠ 0 := ht0
+      refine ae_of_all _ fun z => ?_
+      by_cases hz : z ∈ cthickening ‖w‖ (tsupport φ)
+      · rw [indicator_of_mem hz, norm_smul, norm_inv, Real.norm_eq_abs]
+        calc |t|⁻¹ * ‖φ (z + t • w) - φ z‖ ≤ |t|⁻¹ * (M * ‖z + t • w - z‖) :=
+              mul_le_mul_of_nonneg_left (hlip z (z + t • w)) (inv_nonneg.mpr (abs_nonneg t))
+          _ = M * ‖w‖ := by
+              rw [add_sub_cancel_left, norm_smul, Real.norm_eq_abs, mul_left_comm,
+                inv_mul_cancel_left₀ (abs_ne_zero.mpr ht0')]
+      · -- outside `K'`, both `z` and `z + t • w` lie outside `tsupport φ`, so `g_t(z) = 0`
+        have hz1 : z ∉ tsupport φ := fun h => hz (self_subset_cthickening _ h)
+        have hz2 : z + t • w ∉ tsupport φ := fun h => hz <|
+          mem_cthickening_of_dist_le z (z + t • w) ‖w‖ _ h <| by
+            rw [dist_eq_norm, sub_add_cancel_left, norm_neg, norm_smul, Real.norm_eq_abs]
+            exact mul_le_of_le_one_left (norm_nonneg w) ht
+        rw [indicator_of_notMem hz, image_eq_zero_of_notMem_tsupport hz1,
+          image_eq_zero_of_notMem_tsupport hz2, sub_self, smul_zero, norm_zero]
+    have hbound_int : Integrable ((cthickening ‖w‖ (tsupport φ)).indicator fun _ => M * ‖w‖) :=
+      (integrableOn_const hK'.measure_lt_top.ne).integrable_indicator hK'.measurableSet
+    -- (d) dominated convergence along `t → 0`, `t ≠ 0`; all the integrals vanish by (a)
+    have hd := tendsto_integral_filter_of_dominated_convergence
+      (F := fun (t : ℝ) (z : Euclid P) => t⁻¹ • (φ (z + t • w) - φ z)) _
+      (Eventually.of_forall fun t =>
+        (show Continuous fun z => t⁻¹ • (φ (z + t • w) - φ z) by fun_prop).aestronglyMeasurable)
+      hbound hbound_int (ae_of_all _ hb)
+    simp only [ha] at hd
+    exact tendsto_nhds_unique hd tendsto_const_nhds
+  -- step 3: `trace Dφ(z) = Σᵢ ⟨eᵢ, Dφ(z) eᵢ⟩`; integrate termwise
+  have htr : ∀ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) =
+      ∑ i, inner ℝ (EuclideanSpace.basisFun (Fin P) ℝ i)
+        (fderiv ℝ φ z (EuclideanSpace.basisFun (Fin P) ℝ i)) := fun z => by
+    rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)]
+    rfl
+  have hcomp : ∀ v : Euclid P, Integrable (fun z => fderiv ℝ φ z v) := fun v =>
+    (hDc.clm_apply continuous_const).integrable_of_hasCompactSupport (hsupp.fderiv_apply ℝ v)
+  simp_rw [htr]
+  rw [integral_finsetSum _ fun i _ => by
+    simpa only [innerSL_apply_apply] using
+      (innerSL ℝ (EuclideanSpace.basisFun (Fin P) ℝ i)).integrable_comp (hcomp _)]
+  refine Finset.sum_eq_zero fun i _ => ?_
+  have h := (innerSL ℝ (EuclideanSpace.basisFun (Fin P) ℝ i)).integral_comp_comm
+    (hcomp (EuclideanSpace.basisFun (Fin P) ℝ i))
+  simp only [innerSL_apply_apply] at h
+  rw [h, key, inner_zero_right]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
