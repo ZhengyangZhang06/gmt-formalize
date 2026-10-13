@@ -1,0 +1,102 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lpf_wtc_|lpf_weighted_tangent_on_c1_chart|slicing_im_coarea_chart_tangent|HasWeightedApproximateTangentSpaceAt|blowUpMap",
+        "theorem withDensity_apply|lemma withDensity_apply|theorem restrict_map|MeasurableEmbedding.integral_map|theorem integral_smul_measure",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt",
+        "weighted_area_formula_lipschitzOn_fiberSum|def areaJacobianWithin|measure_toOuterMeasure_isBorelRegular|ae_dimensionalUpperDensity_eq_zero_outside|simon_theorem_3_6|exists_isClosed_continuousOn_of_measurable|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_def",
+        "exists_measurable_subset_ae_eq|of_pseudoMetrizableSpace_of_isFiniteMeasure|exists_isClosed_sdiff_lt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart-tangent-independent-audit-hu6lwduj/ExactScopeChallenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart-tangent-independent-audit-hu6lwduj/AssemblyFromContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart-tangent-independent-audit-hu6lwduj/AcceptedAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart-tangent-independent-audit-hu6lwduj/MatrixGram.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-tangent-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-tangent-a1/decomposition-v1.json",
+        "/tmp/ct-decomp-mS6k37/projB/GMT/Ch06/Submission.lean",
+        "/tmp/chart-tangent-independent-audit-hu6lwduj/reuse-check.json",
+        "/tmp/chart-tangent-independent-audit-hu6lwduj/ExactScopeChallenges.lean",
+        "/tmp/chart-tangent-independent-audit-hu6lwduj/AssemblyFromContracts.lean",
+        "/tmp/chart-tangent-independent-audit-hu6lwduj/AcceptedAndAssembly.lean",
+        "/tmp/chart-tangent-independent-audit-hu6lwduj/MatrixGram.lean",
+        "/tmp/chart-tangent-independent-audit-hu6lwduj/direct-accepted-and-assembly.log"
+      ],
+      "conclusion": "The reuse-only split is appropriate for slicing_im_coarea_chart_tangent. Snapshot revisions and pinned dependencies were verified; the frozen Ch06 sources contain none of the proposed child declarations. All nine names are bare identifiers with exactly one accepted DAG owner and byte-identical frozen types. Acceptance records, handoff hashes and comparator passes were checked. The 17-node prerequisite closure is acyclic and excludes the selected parent. All nine one-line propositions independently elaborate in the exact comparator scope without child implementations. Fresh compilation verifies each accepted declaration against its proposed type and verifies the supplied assembly against the selected parent type. Their axiom closures contain only propext, Classical.choice and Quot.sound. A separate check confirms that the explicit Matrix.of Gram determinant gives the intended normDet Jacobian."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary S and g. Measurable-equivalence transport, restriction and measure scaling justify the unconditional Bochner identity; r > 0 permits division."
+    },
+    {
+      "key": "chart_image_measurable_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Injectivity gives a Borel image; antilipschitz localization bounds preimages of compact sets, and the C¹ derivative bound on a compact convex ball gives finite image measure."
+    },
+    {
+      "key": "chart_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit Matrix.of expression matches the stated Gram Jacobian. Bounded localization supplies Lipschitz control and finite integrals; the injective weighted area formula applied to positive and negative parts proves the exact signed identity."
+    },
+    {
+      "key": "chart_approximate_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiating the lower bound establishes injectivity and dimension n. The declared blow-up and area-formula dependencies give the rescaled integral; fixed compact domination and the linear area formula establish the required limit, including n = 0."
+    },
+    {
+      "key": "lusin_compact_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type contain the required positivity and local integrability. Borel cores, finite weighted measures and Lusin yield compact continuous-weight pieces. Positivity proves both finite Hausdorff measure of each piece and a Hausdorff-null remainder."
+    },
+    {
+      "key": "zero_density_off_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-density contract is valid: pinned withDensity_apply requires measurability of the evaluated set, not g. A Borel carrier hull, countable compact localization and the upper-density theorem establish the exact closed-ball quotient limit."
+    },
+    {
+      "key": "density_bound_of_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff argument proves the stated eventual ENNReal bound. Local finiteness justifies integral comparison even for arbitrary S; the declared blow-up dependency supplies the scaling identity."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Local finiteness and the density assumptions ensure integrability on the localized symmetric-difference pieces. Their scaled integral errors vanish, transferring every test-function limit and the dimension condition."
+    },
+    {
+      "key": "weighted_tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All stated hypotheses are correctly used. Local integrability justifies the three-term decomposition; the declared density bound controls the continuity error, and nonnegativity plus the weighted density hypothesis controls the remainder. The resulting limit is exactly the weighted tangent predicate."
+    }
+  ],
+  "required_changes": []
+}
