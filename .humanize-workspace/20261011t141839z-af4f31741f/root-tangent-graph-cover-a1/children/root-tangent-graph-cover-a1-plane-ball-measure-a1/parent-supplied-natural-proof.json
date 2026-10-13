@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+        "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+        "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+        "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+        "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+        "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+        "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+        "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+        "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+        "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+        "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+        "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+      ],
+      "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Source: step (1.2) of the parent proof (normalisation), stated for every r ≥ 0. Notation: W := T.plane, a linear subspace of ℝ^N; ℝ^n := EuclideanSpace ℝ (Fin n); H := μHE[n] (on ℝ^N and on ℝ^n).\n\n1. finrank W = n (Grassmannian.finrank_plane). Hence W, with the inner product induced from ℝ^N, has an orthonormal basis b indexed by Fin n: take Mathlib's stdOrthonormalBasis ℝ W (indexed by Fin (finrank ℝ W)) and reindex it along finCongr (Grassmannian.finrank_plane T) : Fin (finrank ℝ W) ≃ Fin n.\n\n2. Let J : ℝ^n → ℝ^N be the composition of b.repr.symm : ℝ^n ≃ₗᵢ W with the inclusion W.subtypeₗᵢ : W →ₗᵢ ℝ^N. J is a linear isometry, in particular an isometry of metric spaces, and its range is W.\n\n3. J(closedBall(0, r)) = W ∩ closedBall(0, r). (⊆) For u ∈ ℝ^n with ‖u‖ ≤ r: J u ∈ W, and ‖J u‖ = ‖b.repr.symm u‖ = ‖u‖ ≤ r (the norm of an element of W is its norm in ℝ^N, Submodule.norm_coe; b.repr.symm preserves norms, LinearIsometryEquiv.norm_map). (⊇) For y ∈ W with ‖y‖ ≤ r put u := b.repr y; then ‖u‖ = ‖y‖ ≤ r and J u = y.\n\n4. By isometry invariance of the Euclidean Hausdorff measure (Isometry.euclideanHausdorffMeasure_image), H(J(closedBall(0, r))) = μHE[n](closedBall(0, r)) computed in ℝ^n, and on ℝ^n = EuclideanSpace ℝ (Fin n) we have μHE[n] = volume (EuclideanSpace.euclideanHausdorffMeasure_eq_volume).\n\n5. volume is an additive Haar measure on ℝ^n and finrank ℝ^n = n (finrank_euclideanSpace_fin), so for r ≥ 0, Measure.addHaar_closedBall gives volume(closedBall(0, r)) = ofReal(r^n) · volume(ball(0, 1)) = ofReal(r^n) · unitBallVolume n (definition of unitBallVolume). As r ≥ 0, ofReal(r^n) = ofReal(r)^n (ENNReal.ofReal_pow).\n\n6. Combining steps 3–5: H(W ∩ closedBall(0, r)) = ofReal(r)^n · unitBallVolume n = unitBallVolume n · ofReal(r)^n. ∎ (No case distinction is needed; e.g. for n = 0 this reads H^0({0}) = 1 = ω_0, and for r = 0, n ≥ 1 it gives H^n({0}) = 0.)\n\nFormalization note (checked in a scratch copy): b := (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane); J := T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry; then rw [← himg, J.isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr, finrank_euclideanSpace_fin, unitBallVolume, ENNReal.ofReal_pow hr, mul_comm].",
+  "key_steps": [
+    "An orthonormal basis of T.plane indexed by Fin n (finrank_plane) gives a linear isometry J : ℝ^n → ℝ^N with range T.plane.",
+    "J(closedBall 0 r) = T.plane ∩ closedBall 0 r.",
+    "Isometry invariance of μHE[n] and μHE[n] = volume on EuclideanSpace ℝ (Fin n).",
+    "addHaar_closedBall: volume(closedBall 0 r) = ofReal(r^n)·volume(ball 0 1) = ω_n·ofReal(r)^n."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def unitBallVolume|def densityRatio|theorem volume_ball|volume_euclideanSpace_eq_dirac|exists_pos_sum_of_countable|isOpen_biUnion_countable|of_pseudoMetrizableSpace_of_isFiniteMeasure|exists_isOpen_lt_of_lt|theorem restrict_apply|theorem exists_inv_nat_lt",
+        "exists_inv_nat_lt|inv_ne_zero|natCast_ne_top",
+        "frt_hnw_unitBallVolume_eq_gamma",
+        "frt_hnw_exists_open_superset_measure_lt",
+        "sed -n '246,304p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "sed -n '33,53p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hnw-scratch-7f3a/NoImp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hnw-scratch-7f3a/Assembly.lean",
+        "#print axioms Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity",
+        "#print axioms Chapter01.simonHausdorffMeasureReal_toOuterMeasure",
+        "#print axioms Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-hausdorff-null-of-weight-null-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-hausdorff-null-of-weight-null-a1/decomposition-v1.json",
+        "/tmp/hnw-scratch-7f3a/NoImp.lean",
+        "/tmp/hnw-scratch-7f3a/Assembly.lean",
+        "/tmp/hnw-independent-audit-og_1fycl/FrozenContracts.lean",
+        "/tmp/hnw-independent-audit-og_1fycl/ImportCompatibility.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and the unchanged contract. Independently recompiled both child proofs and the exact selected parent assembly; their axioms are only propext, Classical.choice and Quot.sound. Separately compiled all three propositions without child implementations, then verified by definitional equality that the added imports preserve their interpretation. Canonical Euclidean Borel, proper-space and second-countability instances check. The comparison theorem permits n = 0 and infinite thresholds, validating the assembly's m = 0 case. The split appropriately separates normalization and local outer approximation; both children contribute to the selected parent. Their empty dependency lists are correct and acyclic. Neither bare declaration name conflicts with the 142-node DAG or another proposal."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_ball_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches the prose and is independently elaboratable. The proof correctly handles dimension zero using Dirac volume and Gamma(1), then supplies the Nonempty instance required by the positive-dimensional ball formula and justifies the real-power identity. It is complete, non-circular, and provides the normalization needed by the parent. The name is a fresh bare identifier."
+    },
+    {
+      "key": "small_open_superset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis, including arbitrary Z and possibly infinite ζ; the Lean type matches exactly. Compact closed balls supply finite restrictions, Lindelöf supplies a countable cover, and the positive summable budget controls the union. Restriction and outer regularity legitimately apply without measurability of Z. Coverage, containment, strict measure bound and empty-set cases are justified. The proof is complete and independent, and the name is a fresh bare identifier."
+    }
+  ],
+  "required_changes": []
+}

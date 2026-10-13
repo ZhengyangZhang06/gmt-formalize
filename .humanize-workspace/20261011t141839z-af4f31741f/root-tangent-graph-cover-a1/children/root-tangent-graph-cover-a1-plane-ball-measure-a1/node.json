@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.plane_ball_measure-a1",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "depth": 2,
+  "title": "H^n of a centred closed ball in an n-plane equals ω_n r^n",
+  "statement": "For N, n ∈ ℕ, T ∈ G(N,n) and r ≥ 0: μHE[n](T.plane ∩ closedBall 0 r) = unitBallVolume n · ofReal(r)^n, i.e. H^n(T ∩ B_r(0)) = ω_n r^n, where ω_n = unitBallVolume n is the Lebesgue measure of the open unit ball of ℝ^n = EuclideanSpace ℝ (Fin n).",
+  "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+  "lean_name": "tgc_plane_closedBall_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-plane-ball-measure-a1-a1"
+}

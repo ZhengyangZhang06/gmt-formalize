@@ -1,0 +1,102 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "AllardRectifiability|TangentConesAre|FirstRectifiability|VarifoldTangentCones|FirstVariationRepresentation|StationaryMonotonicityIdentity|DensityExistsAE|ConstancyTheorem",
+        "def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique|regular_euclideanHausdorffMeasure_restrict_submodule|support_euclideanHausdorffMeasure_restrict_submodule",
+        "measure_toMeasurable_inter_of_sFinite|restrict_restrict_of_subset|restrict_apply₀|restrict_congr_set",
+        "weight_support_eq_fst_image_support|continuous_normalProject|theorem eq_of_plane_eq",
+        "rg -n 'allard_tc_' GMT .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "sh /tmp/allard-independent-audit-o8v9992v/run-lean.sh /tmp/allard-independent-audit-o8v9992v/Challenges.lean",
+        "sh /tmp/allard-independent-audit-o8v9992v/run-lean.sh /tmp/allard-independent-audit-o8v9992v/Assembly.lean",
+        "sh /tmp/allard-independent-audit-o8v9992v/run-lean.sh /tmp/allard-independent-audit-o8v9992v/Axioms.lean",
+        "sh /tmp/allard-independent-audit-o8v9992v/run-lean.sh /tmp/allard-independent-audit-o8v9992v/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/tmp/allard-independent-audit-o8v9992v/Challenges.lean",
+        "/tmp/allard-independent-audit-o8v9992v/Assembly.lean",
+        "/tmp/allard-independent-audit-o8v9992v/Axioms.lean",
+        "/tmp/allard-independent-audit-o8v9992v/Instances.lean"
+      ],
+      "conclusion": "The split appropriately isolates the analytic obligations of the selected allard_rectifiability_and_tangent_cones contract. The snapshot contract is byte-identical to the workspace Contract and Submission; Mathlib and SimonGMT revisions match their pins. All ten exact one-line propositions independently elaborate in the comparator's replayed scope with autoImplicit=false and without child declarations. The conditional parent assembly proves exactly AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones, with only standard axioms and no sorryAx. All 21 checked supporting library declarations also use only standard axioms. The proposed graph, combined with the current DAG, is acyclic; external results enter through explicit hypotheses. All names are fresh bare identifiers, with no reservations found in the DAG or other branch proposals. Instance checks confirm pointwise set dilation, continuous-map notation, Grassmannian compactness, and normalized Hausdorff measure. The supplied proofs were independently checked step by step, including zero-dimensional cases, arbitrary filters, measurable hulls, and arbitrary-set change of variables."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "flat_blowup_ball_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches every stated hypothesis and both limits. Eventual local finiteness justifies integration; the cutoff sandwich and plane-ball normalization prove the limits for arbitrary filters and real θ, including n=0. No additional positivity or NeBot hypothesis is needed."
+    },
+    {
+      "key": "stationary_cone_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit monotonicity and constancy premises match the prose. The proof correctly establishes constant ratios on the weight support, vanishing normal defect, containment in a plane, and the hypotheses of ConstancyTheorem. Unit-ball mass then determines the multiplicity."
+    },
+    {
+      "key": "density_blowup_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable localization and rational sublevel sets produce one conull set valid for all θ₀ and τ. Finite-density bounds convert relative measure decay into the required normalized decay. The proof also covers nonpositive thresholds and zero ball mass."
+    },
+    {
+      "key": "unique_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three assumptions exactly match the type. Ball limits identify every tangent plane through continuous matrix-entry tests; subsequence compactness then yields the full blow-up limit. The sole child dependency is sufficient and correctly directed."
+    },
+    {
+      "key": "allard_rectifiability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All external premises are explicit and agree with the frozen sibling interfaces. The proof derives variation decay, obtains the tangent-density bound through a countable sequence of thresholds, applies the three declared children, and concludes rectifiability through FirstRectifiabilityTheorem. It never assumes Allard's conclusion."
+    },
+    {
+      "key": "tangent_plane_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "HasTangentPlane supplies domain membership and positive multiplicity. The ball-limit child, eventual finite ball mass, and continuity of ENNReal.ofReal establish exactly the stated HasDensity conclusion."
+    },
+    {
+      "key": "tangent_plane_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Homogeneity at the single specified positive scale suffices. The proof correctly compares density ratios and weight blow-ups, then uses equality of plane measures and their supports to identify both multiplicity and plane. The s=1 specialization supplies uniqueness without circularity."
+    },
+    {
+      "key": "tangent_point_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conclusion matches the exact canonical representation requested. Rectifiability supplies s-finiteness before the measurable-hull argument; positive density and the density comparison theorem eliminate the omitted carrier. The ensuing weight identity proves weighted approximate tangency, and uniqueness justifies replacing approximate planes by varifold tangent planes."
+    },
+    {
+      "key": "cone_rescaling_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All representation and homogeneity hypotheses appear in the type. The proof establishes carrier invariance modulo Hausdorff-null sets, identifies planes and multiplicities on the common carrier, and applies valid arbitrary-set restriction and change-of-variables identities. This proves equality of the full varifold measures."
+    },
+    {
+      "key": "tangent_cones_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lower-density bound at τ=1 and tangent-cone stationarity justify applying the explicit Allard hypothesis. The two declared children then establish rescaling invariance. The parent supplies Allard independently through allard_rectifiability, so this conditional obligation introduces no cycle and proves the selected second conjunct."
+    }
+  ],
+  "required_changes": []
+}

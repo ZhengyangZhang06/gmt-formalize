@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.rescaled_divergence_bound-a1",
+  "parent_id": "root.varifold_tangents-a1",
+  "depth": 2,
+  "title": "First-variation scaling bound for the rescalings V_{x,t} (fact R2 of the parent proof)",
+  "statement": "Let V be an n-varifold on the open set U ⊆ ℝ^N with locally bounded first variation, x ∈ ℝ^N, t > 0, R > 0 with closed ball B_{tR}(x) ⊆ U, M ∈ ℝ, and X : ℝ^N → ℝ^N a C¹ vector field with compact support, tsupport X ⊆ B°_R(0) (open ball) and |X(y)| ≤ M for all y. Then |∫ div_S X(y) dV_{x,t}(y,S)| ≤ M · R^{n−1} · (tR)^{1−n}‖δV‖(B_{tR}(x)), where V_{x,t} = rescaledMeasure V x t, div_S X = Varifold.tangentialDivergence X and ‖δV‖ = variationMeasure V; in ℝ≥0∞: ofReal|∫ div_S X dV_{x,t}| ≤ ofReal M · (ofReal R^n / ofReal R) · (ofReal(tR)·‖δV‖(B_{tR}(x)) / ofReal(tR)^n).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t R M : ℝ) (X : Euclidean N → Euclidean N), V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R → closedBall x (t * R) ⊆ U → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball (0 : Euclidean N) R → (∀ y, ‖X y‖ ≤ M) → ENNReal.ofReal |∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂(rescaledMeasure V x t)| ≤ ENNReal.ofReal M * (ENNReal.ofReal R ^ n / ENNReal.ofReal R) * (ENNReal.ofReal (t * R) * variationMeasure V (closedBall x (t * R)) / ENNReal.ofReal (t * R) ^ n)",
+  "lean_name": "varifold_tangents_rescaled_divergence_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-rescaled-divergence-bound-a1-a1"
+}

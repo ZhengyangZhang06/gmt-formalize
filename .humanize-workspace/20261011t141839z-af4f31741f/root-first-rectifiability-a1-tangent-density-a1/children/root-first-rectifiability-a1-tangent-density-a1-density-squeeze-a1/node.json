@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.tangent_density-a1.density_squeeze-a1",
+  "parent_id": "root.first_rectifiability-a1.tangent_density-a1",
+  "depth": 3,
+  "title": "Two-sided eventual ball-mass bounds ⇒ Θ^n(μ, x) = a",
+  "statement": "Let N, n ∈ ℕ, μ a measure on Euclidean N, x ∈ Euclidean N and a ∈ [0, ∞]; write ω_n = unitBallVolume n. Assume:\n(i) for every c ∈ [0, ∞] with c < a · ω_n, eventually as t → 0⁺, c · ENNReal.ofReal(t)^n ≤ μ(closedBall x t);\n(ii) for every c ∈ [0, ∞] with a · ω_n < c, eventually as t → 0⁺, μ(closedBall x t) ≤ c · ENNReal.ofReal(t)^n.\nThen HasDensity n μ x a, i.e. μ(B_t(x))/(ω_n t^n) → a as t ↓ 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (a : ℝ≥0∞), (∀ c : ℝ≥0∞, c < a * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) → (∀ c : ℝ≥0∞, a * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n) → HasDensity n μ x a",
+  "lean_name": "frt_td_hasDensity_of_ball_mass_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-tangent-density-a1-density-squeeze-a1-a1"
+}

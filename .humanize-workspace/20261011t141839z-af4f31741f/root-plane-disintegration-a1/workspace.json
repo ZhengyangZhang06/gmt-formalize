@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T141839Z-af4f31741f",
+  "parent_id": "root.plane_disintegration-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch08/20261011t141839z-af4f31741f/dispatch/root-plane-disintegration-a1",
+  "source_commit": "63436ae63eb6a2fd7525bef73c73cf88e2cd7e93",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch08/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.plane_disintegration-a1.riesz_limit-a1",
+      "key": "riesz_limit",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-plane-disintegration-a1-riesz-limit-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-riesz-limit-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_lintegral_div|ae_tendsto_average' mathlib/Mathlib/MeasureTheory/Covering/",
+              "rg -n 'theorem rnDeriv_restrict|rnDeriv_restrict_self|rnDeriv_restrict_right' mathlib/Mathlib",
+              "rg -n 'rnDeriv_lt_top|rnDeriv_ne_top|withDensity_rnDeriv_eq|eq_rnDeriv' mathlib/Mathlib/MeasureTheory/Measure/Decomposition/*.lean",
+              "rg -n '^theorem|^lemma|^noncomputable def|^instance' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "rg -n 'SeparableSpace C\\(|SecondCountableTopology C\\(|instSeparableSpace' mathlib/Mathlib/Topology/ContinuousMap/",
+              "rg -n 'support_mem_ae|measure_compl_support|mem_support_iff_forall' mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "rg -n -i 'disintegr|ae_tendsto_rnDeriv|rieszMeasure|exists_dense_seq' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n '^theorem' simongmt Chapter01/RadonNikodymTheorem.lean Chapter01/RadonNikodymDensity.lean",
+              "#check / #print axioms Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure and hasBesicovitchCovering_subtype after import GMT.Ch08.Submission",
+              "#synth HasBesicovitchCovering/HereditarilyLindelofSpace/ProperSpace (Euclidean N); T2Space/LocallyCompactSpace/BorelSpace/CompactSpace (Grassmannian N n); SeparableSpace C(Grassmannian N n, ℝ) (fails with contract imports, succeeds with import Mathlib.Topology.ContinuousMap.SecondCountableSpace)",
+              "python3 contract_scope(Contract.lean, GMT.Ch08.main_theorem) from verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py on the 4 child statements",
+              "lake env lean /tmp/pdis_scratch/final/FromJson.lean (4 statements + generated challenge targets + parent assembly in comparator scope)",
+              "lake env lean /tmp/pdis_scratch/Full.lean (sorry-free proofs of the 4 children and plane_disintegration; #print axioms)",
+              "sed -n 60,170p book/chapter-08.txt (printed Lemma 1.3 and its proof)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymTheorem.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/pdis_scratch/final/FromJson.lean",
+              "/tmp/pdis_scratch/Full.lean"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Ch08 Contract is byte-identical to the workspace Contract and Submission.\n\nLibrary results the children rely on:\n- The pinned SimonGMT library already has the kernel-checked differentiation lemma Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure (FirstVariationDensity.lean:60; Besicovitch on the open subspace U via hasBesicovitchCovering_subtype, :30). It is in the import closure of GMT.Ch08.Submission, and its axioms are only propext, Classical.choice and Quot.sound. It realizes printed (1) on U without compact exhaustions. Mathlib's Besicovitch.ae_tendsto_rnDeriv (Besicovitch.lean:1078) needs locally finite measures on ℝ^N, which μ_V need not be.\n- Radon–Nikodym: Measure.withDensity_rnDeriv_eq (RadonNikodym.lean:60) and Measure.rnDeriv_lt_top (Lebesgue.lean:384).\n- Riesz: RealRMK.rieszMeasure / integral_rieszMeasure (RMK Real.lean:345), with the IsFiniteMeasure instance for compact spaces at :445.\n- Measure.support_mem_ae (Support.lean:198).\n- ContinuousMap.instSeparableSpace (SecondCountableSpace.lean:108). It is not in the contract closure, so pointwise_measure must import that pure-Mathlib module.\n\nThere is no existing disintegration lemma in Mathlib or SimonGMT, so the four children are new obligations.\n\nVerification:\n- All four child lean_statements pass validate_lean_statement and elaborate in the replayed contract scope. The challenge-style `exact Submission.X` targets close, and the parent assembly checks against the frozen type.\n- Complete scratch proofs of all four children and of the parent compile with standard axioms only."
+          }
+        ],
+        "parent_id": "root.plane_disintegration-a1",
+        "child_id": "root.plane_disintegration-a1.riesz_limit-a1",
+        "subproblem": {
+          "key": "riesz_limit",
+          "title": "Weak limit on G(N,n) from convergence on a dense set (printed (3)–(4) and the Riesz step of Lemma 8.1.3)",
+          "statement": "Let G = G(N,n), a compact Hausdorff second-countable space with its Borel σ-algebra. Let l be a nontrivial filter on ℝ, and (m_ρ)_{ρ∈ℝ} Borel measures on G such that m_ρ is a probability measure for l-eventually all ρ. Let D ⊆ C(G,ℝ) be dense for the sup-norm topology (the topology of C(G,ℝ), as G is compact), and suppose lim_l ∫ f dm_ρ exists in ℝ for every f ∈ D. Then there is a Borel probability measure η on G with ∫ f dm_ρ → ∫ f dη along l for every f ∈ C(G,ℝ).",
+          "lean_statement": "∀ (N n : ℕ) (l : Filter ℝ) (m : ℝ → Measure (Grassmannian N n)) (D : Set C(Grassmannian N n, ℝ)), l.NeBot → (∀ᶠ ρ in l, IsProbabilityMeasure (m ρ)) → Dense D → (∀ f ∈ D, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 c)) → ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧ ∀ f : C(Grassmannian N n, ℝ), Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 (∫ S, f S ∂η))",
+          "lean_name": "plane_disint_riesz_limit",
+          "depends_on": [],
+          "natural_proof": "Source: Simon, Ch. 8, proof of Lemma 1.3: printed (3), (4) and the final appeal to the Riesz representation theorem, isolated from the varifold. In the book, m_ρ is the normalized slice measure of V over B_ρ(x) and D is the countable dense family. Correction (b) of the parent proof is applied: the limit functional is positive and takes the value 1 at the constant 1, so the Riesz theorem for positive functionals on the compact space G (Ch. 1, 4.12) represents it by a probability measure.\n\nNotation: ‖f‖ = sup_G |f| for f ∈ C(G,ℝ); the metric of C(G,ℝ) is dist(f,g) = ‖f − g‖.\n\n1. Integrability and the estimate (printed (3)). Each f ∈ C(G,ℝ) is continuous on the compact space G, hence bounded (|f(S)| ≤ ‖f‖) and Borel. So it is integrable for every finite Borel measure on G (Continuous.integrable_of_hasCompactSupport with HasCompactSupport.of_compactSpace). If m is a probability measure and f, g ∈ C(G,ℝ), then\n |∫ f dm − ∫ g dm| = |∫ (f − g) dm| ≤ ‖f − g‖ · m(G) = ‖f − g‖\n (integral_sub; norm_integral_le_of_norm_le_const with |(f − g)(S)| ≤ ‖f − g‖, ContinuousMap.norm_coe_le_norm).\n\n2. The limit exists for every f (printed (4)). Fix f ∈ C(G,ℝ), put F(ρ) := ∫ f dm_ρ, and let ε > 0. By density choose g ∈ D with ‖f − g‖ < ε/4 (Dense.exists_dist_lt), and let c_g := lim_l ∫ g dm_ρ.\n For l-eventually all ρ, m_ρ is a probability measure and |∫ g dm_ρ − c_g| < ε/4. For such ρ, step 1 gives |F(ρ) − c_g| ≤ |F(ρ) − ∫ g dm_ρ| + |∫ g dm_ρ − c_g| < ε/4 + ε/4 = ε/2.\n Thus F⁻¹(ball(c_g, ε/2)) ∈ l, i.e. ball(c_g, ε/2) belongs to the image filter F_*(l), and any two points of this ball are at distance < ε. Since l ≠ ⊥, also F_*(l) ≠ ⊥, so F_*(l) is a Cauchy filter on ℝ (Metric.cauchy_iff). As ℝ is complete, F converges along l to a real number L(f) (cauchy_map_iff_exists_tendsto). The printed argument phrases this as limsup − liminf ≤ 2ε for every ε.\n\n3. Properties of L. Limits along the nontrivial filter l in the Hausdorff space ℝ are unique (tendsto_nhds_unique).\n(i) Additivity: for l-eventually all ρ, m_ρ is a probability measure, so f and g are integrable and ∫ (f + g) dm_ρ = ∫ f dm_ρ + ∫ g dm_ρ (integral_add). The right side tends to L(f) + L(g), so L(f + g) = L(f) + L(g).\n(ii) Homogeneity: ∫ (a f) dm_ρ = a ∫ f dm_ρ for all ρ (integral_smul), so L(a f) = a L(f).\n(iii) Monotonicity (positivity): if f ≤ g pointwise, then ∫ f dm_ρ ≤ ∫ g dm_ρ for l-eventually all ρ (integral_mono), so L(f) ≤ L(g) (le_of_tendsto_of_tendsto).\n(iv) Normalization: ∫ 1 dm_ρ = m_ρ(G) = 1 for l-eventually all ρ, so L(1) = 1.\n\n4. Riesz representation (Ch. 1, 4.12). G is compact, so every f ∈ C(G,ℝ) has compact support and C(G,ℝ) = C_c(G,ℝ) (HasCompactSupport.of_compactSpace). By step 3, Λ(f) := L(f) is a positive (monotone) linear functional Λ : C_c(G,ℝ) → ℝ. G is a compact Hausdorff (so locally compact T2) space and its σ-algebra is Borel (Subtype.borelSpace). The Riesz–Markov–Kakutani theorem therefore gives a Borel measure η on G with ∫ f dη = Λ(f) = L(f) for all f ∈ C(G,ℝ) (Mathlib RealRMK.rieszMeasure Λ and RealRMK.integral_rieszMeasure, RieszMarkovKakutani/Real.lean:345).\n η is finite because G is compact (instance at Real.lean:445). Also η(G).toReal = ∫ 1 dη = L(1) = 1 (integral_const), so η(G) = 1 and η is a probability measure.\n\n5. Conclusion. For every f ∈ C(G,ℝ), ∫ f dm_ρ → L(f) = ∫ f dη along l, by steps 2 and 4. ∎",
+          "proof_key_steps": [
+            "For a probability measure m: |∫ f dm − ∫ g dm| ≤ ‖f − g‖ (printed (3)).",
+            "Approximating f by some g ∈ D whose limit exists shows that ρ ↦ ∫ f dm_ρ is Cauchy along l, so it converges to some L(f) (printed (4)).",
+            "L is linear and monotone with L(1) = 1 (limits of eventual identities, uniqueness of limits).",
+            "Riesz–Markov–Kakutani on the compact space G (C(G,ℝ) = C_c(G,ℝ)) gives η with ∫ f dη = L(f), and η(G) = L(1) = 1."
+          ]
+        },
+        "audit": {
+          "key": "riesz_limit",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact type includes all filter, density and eventual-probability hypotheses. The sup-norm estimate yields a Cauchy image filter; completeness and NeBot give limits and uniqueness. Eventual integral identities establish a positive normalized linear functional, and compact-space Riesz representation gives the required probability measure. No additional obligation or circular reliance is hidden."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-riesz-limit-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-riesz-limit-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-riesz-limit-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.plane_disintegration-a1.slice_density-a1",
+      "key": "slice_density",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-plane-disintegration-a1-slice-density-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-slice-density-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_lintegral_div|ae_tendsto_average' mathlib/Mathlib/MeasureTheory/Covering/",
+              "rg -n 'theorem rnDeriv_restrict|rnDeriv_restrict_self|rnDeriv_restrict_right' mathlib/Mathlib",
+              "rg -n 'rnDeriv_lt_top|rnDeriv_ne_top|withDensity_rnDeriv_eq|eq_rnDeriv' mathlib/Mathlib/MeasureTheory/Measure/Decomposition/*.lean",
+              "rg -n '^theorem|^lemma|^noncomputable def|^instance' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "rg -n 'SeparableSpace C\\(|SecondCountableTopology C\\(|instSeparableSpace' mathlib/Mathlib/Topology/ContinuousMap/",
+              "rg -n 'support_mem_ae|measure_compl_support|mem_support_iff_forall' mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "rg -n -i 'disintegr|ae_tendsto_rnDeriv|rieszMeasure|exists_dense_seq' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n '^theorem' simongmt Chapter01/RadonNikodymTheorem.lean Chapter01/RadonNikodymDensity.lean",
+              "#check / #print axioms Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure and hasBesicovitchCovering_subtype after import GMT.Ch08.Submission",
+              "#synth HasBesicovitchCovering/HereditarilyLindelofSpace/ProperSpace (Euclidean N); T2Space/LocallyCompactSpace/BorelSpace/CompactSpace (Grassmannian N n); SeparableSpace C(Grassmannian N n, ℝ) (fails with contract imports, succeeds with import Mathlib.Topology.ContinuousMap.SecondCountableSpace)",
+              "python3 contract_scope(Contract.lean, GMT.Ch08.main_theorem) from verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py on the 4 child statements",
+              "lake env lean /tmp/pdis_scratch/final/FromJson.lean (4 statements + generated challenge targets + parent assembly in comparator scope)",
+              "lake env lean /tmp/pdis_scratch/Full.lean (sorry-free proofs of the 4 children and plane_disintegration; #print axioms)",
+              "sed -n 60,170p book/chapter-08.txt (printed Lemma 1.3 and its proof)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymTheorem.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/pdis_scratch/final/FromJson.lean",
+              "/tmp/pdis_scratch/Full.lean"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Ch08 Contract is byte-identical to the workspace Contract and Submission.\n\nLibrary results the children rely on:\n- The pinned SimonGMT library already has the kernel-checked differentiation lemma Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure (FirstVariationDensity.lean:60; Besicovitch on the open subspace U via hasBesicovitchCovering_subtype, :30). It is in the import closure of GMT.Ch08.Submission, and its axioms are only propext, Classical.choice and Quot.sound. It realizes printed (1) on U without compact exhaustions. Mathlib's Besicovitch.ae_tendsto_rnDeriv (Besicovitch.lean:1078) needs locally finite measures on ℝ^N, which μ_V need not be.\n- Radon–Nikodym: Measure.withDensity_rnDeriv_eq (RadonNikodym.lean:60) and Measure.rnDeriv_lt_top (Lebesgue.lean:384).\n- Riesz: RealRMK.rieszMeasure / integral_rieszMeasure (RMK Real.lean:345), with the IsFiniteMeasure instance for compact spaces at :445.\n- Measure.support_mem_ae (Support.lean:198).\n- ContinuousMap.instSeparableSpace (SecondCountableSpace.lean:108). It is not in the contract closure, so pointwise_measure must import that pure-Mathlib module.\n\nThere is no existing disintegration lemma in Mathlib or SimonGMT, so the four children are new obligations.\n\nVerification:\n- All four child lean_statements pass validate_lean_statement and elaborate in the replayed contract scope. The challenge-style `exact Submission.X` targets close, and the parent assembly checks against the frozen type.\n- Complete scratch proofs of all four children and of the parent compile with standard axioms only."
+          }
+        ],
+        "parent_id": "root.plane_disintegration-a1",
+        "child_id": "root.plane_disintegration-a1.slice_density-a1",
+        "subproblem": {
+          "key": "slice_density",
+          "title": "Lemma 8.1.3, printed (1)–(2): differentiation of the β-weighted slices of V",
+          "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N open, and V an n-varifold on U: a Borel measure on ℝ^N × G(N,n) with V((ℝ^N∖U) × G) = 0 and V(K × G) < ∞ for every compact K ⊆ U. Let μ_V = π_#V be its weight, so μ_V(A) = V(A × G) for Borel A, and let β : G(N,n) → ℝ be continuous with β ≥ 0. Then there is a Borel function e : ℝ^N → ℝ such that:\n(1) for μ_V-a.e. x, (∫_{B_ρ(x)×G} β(S) dV(y,S)) / μ_V(B_ρ(x)) → e(x) as ρ ↓ 0. Here B_ρ(x) is the closed ball, the numerator is the Bochner integral of (y,S) ↦ β(S) over B_ρ(x) × G, and the denominator is the real number μ_V(B_ρ(x)).toReal, with t/0 = 0;\n(2) for every Borel set A ⊆ ℝ^N, ∫⁻_{A×G} ofReal(β(S)) dV(y,S) = ∫⁻_A ofReal(e(x)) dμ_V(x).",
+          "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (β : C(Grassmannian N n, ℝ)), (∀ S, 0 ≤ β S) → ∃ e : Euclidean N → ℝ, Measurable e ∧ (∀ᵐ x ∂V.weight, Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (e x))) ∧ ∀ A : Set (Euclidean N), MeasurableSet A → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (e x) ∂V.weight",
+          "lean_name": "plane_disint_slice_density",
+          "depends_on": [],
+          "natural_proof": "Source: Simon, Ch. 8, proof of Lemma 1.3 (p. 207), for a single β = β_j ∈ 𝒦⁺. The printed text reads: \"By the XXX Theorem 3.23 of Ch. 1 we know that (since there is a Radon measure γ_j on ℝ^{n+ℓ} characterized by γ_j(B) = ∫_{Gₙ(B)} β_j(S) dV(y,S) for Borel sets B ⊆ ℝ^{n+ℓ}) (1) e(x,j) = lim_{ρ↓0} ∫_{Gₙ(B_ρ(x))} β_j(S) dV(y,S) / μ_V(B_ρ(x)) exists for each x ∈ ℝ^{n+ℓ} ∖ Z_j, where Z_j is a Borel set with μ_V(Z_j) = 0 and e(x,j) is a μ_V-measurable function of x, with (2) ∫_A e(x,j) dμ_V(x) = ∫_{Gₙ(A)} β_j(S) dV(y,S) for any Borel set A.\" Correction (a) of the parent proof is applied: μ_V is only Radon on the open set U, not necessarily locally finite at ∂U, so the differentiation theorem is applied on U, where both measures are Radon.\n\nNotation. G := G(N,n), a compact space. μ := μ_V = V.weight, so μ(A) = V(A × G) for Borel A (Varifold.weight_apply). c := sup_G |β| = ‖β‖ < ∞, so 0 ≤ β(S) ≤ c for all S. We use three facts:\n(F1) μ(ℝ^N ∖ U) = V((ℝ^N∖U) × G) = 0 (field V.supported);\n(F2) μ(K) = V(K × G) < ∞ for every compact K ⊆ U (Varifold.weight_finite_on_compact);\n(F3) μ is σ-finite (instance Varifold.weight.instSigmaFinite).\n\n1. The measure γ (the printed γ_j). Let F(y,S) := ofReal(β(S)) ∈ [0,∞), a Borel function on ℝ^N × G. Put γ := π_#(V⌞F) with π(y,S) = y, i.e. γ := (V.measure.withDensity F).map Prod.fst. For Borel B ⊆ ℝ^N we have π⁻¹(B) = B × G, so γ(B) = ∫⁻_{B×G} ofReal(β(S)) dV(y,S) (Measure.map_apply, withDensity_apply, Set.prod_univ).\n\n2. Comparison with μ. For Borel B, ofReal(β(S)) ≤ ofReal(c) gives γ(B) ≤ ofReal(c)·V(B × G) = ofReal(c)·μ(B) (lintegral_mono, setLIntegral_const). Hence γ(ℝ^N ∖ U) = 0 by (F1), and γ(K) < ∞ for every compact K ⊆ U by (F2). Also γ ≪ μ, since μ(B) = 0 forces γ(B) = 0 for Borel B (Measure.AbsolutelyContinuous.mk).\n\n3. γ is the zero extension of a Radon measure on U. Let γ_U := γ.comap Subtype.val be the restriction of γ to the open subspace U, so γ_U(C) = γ(C) for Borel C ⊆ U.\n(a) γ_U.map Subtype.val = γ⌞U = γ, because γ(ℝ^N∖U) = 0 (map_comap_subtype_coe, Measure.restrict_eq_self_of_ae_mem).\n(b) γ_U is locally finite. U is an open subset of ℝ^N, hence locally compact (IsOpen.locallyCompactSpace), so each y ∈ U has a compact neighbourhood C in U (exists_compact_mem_nhds). Its image in ℝ^N is a compact subset of U, so γ_U(C) = γ(C) < ∞ by step 2.\n(c) γ is σ-finite: it is the push-forward of the locally finite, hence σ-finite, measure γ_U on the second-countable space U under the measurable embedding Subtype.val (MeasurableEmbedding.sigmaFinite_map).\n\n4. Differentiation (printed (1); Ch. 1, 3.23(i)). Apply the Besicovitch differentiation theorem on the open set U to the Radon measures γ_U and μ_U := V.domainWeight. Every satellite configuration in the metric subspace U is also one in ℝ^N, so U has the Besicovitch covering property, and closed balls of U are traces of closed balls of ℝ^N. Transporting back along the inclusion, using γ_U.map val = γ and μ_U.map val = μ, gives: for μ-a.e. x,\n γ(B_ρ(x)) / μ(B_ρ(x)) → g(x) := (dγ/dμ)(x) in [0,∞] as ρ ↓ 0,\n where dγ/dμ = γ.rnDeriv μ and the quotients are in [0,∞] with a/b = a·b⁻¹.\n This is exactly the kernel-checked SimonGMT lemma Poincare.SimonGMT.Chapter08.Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure V γ_U (FirstVariationDensity.lean:60; it uses hasBesicovitchCovering_subtype, :30). It is in the import closure of GMT.Ch08.Submission and uses only the axioms propext, Classical.choice, Quot.sound. After rewriting γ_U.map Subtype.val = γ by 3(a), its conclusion reads: ∀ᵐ x ∂V.weight, Tendsto (fun r ↦ γ (closedBall x r) / V.weight (closedBall x r)) (𝓝[>] 0) (𝓝 (γ.rnDeriv V.weight x)).\n Mathematically equivalent route (supplied detail (a)): apply Besicovitch's theorem (Mathlib Besicovitch.ae_tendsto_rnDeriv) to the finite measures γ⌞K and μ⌞K for compact K ⊆ U, at points of interior K, where small closed balls lie in K. Identify d(γ⌞K)/d(μ⌞K) = dγ/dμ μ⌞K-a.e. by uniqueness of the Lebesgue decomposition (Measure.eq_rnDeriv), and use countably many such K whose interiors cover U.\n Moreover g(x) < ∞ for μ-a.e. x, since γ is σ-finite (Measure.rnDeriv_lt_top). Define e(x) := g(x).toReal ∈ [0,∞). Then e is Borel measurable (Measure.measurable_rnDeriv, Measurable.ennreal_toReal).\n\n5. The real quotient: proof of (1). By step 4 and (F1), μ-a.e. x satisfies three conditions at once: x ∈ U, γ(B_ρ(x))/μ(B_ρ(x)) → g(x), and g(x) < ∞. Fix such an x and choose r > 0 with ball(x,r) ⊆ U.\n Let 0 < ρ < r and B := B_ρ(x). Then B ⊆ ball(x,r) ⊆ U is compact, so μ(B) = V(B × G) < ∞ by (F2). The function z ↦ β(z.2) is continuous, ≥ 0 and bounded by c, hence integrable on B × G for V (Measure.integrableOn_of_bounded). Therefore\n γ(B) = ∫⁻_{B×G} ofReal(β(z.2)) dV = ofReal(∫_{B×G} β(z.2) dV) (ofReal_integral_eq_lintegral_ofReal),\n and since the integral is ≥ 0, γ(B).toReal = ∫_{B×G} β(z.2) dV (ENNReal.toReal_ofReal). Because (a/b).toReal = a.toReal / b.toReal for all a, b ∈ [0,∞] (ENNReal.toReal_div), for every ρ ∈ (0, r):\n (∫_{B_ρ(x)×G} β(z.2) dV) / μ(B_ρ(x)).toReal = (γ(B_ρ(x)) / μ(B_ρ(x))).toReal.\n Since g(x) ≠ ∞ and toReal is continuous at finite points (ENNReal.tendsto_toReal), (γ(B_ρ(x))/μ(B_ρ(x))).toReal → g(x).toReal = e(x) as ρ ↓ 0. Since (0, r) ∈ 𝓝[>]0, the real quotient has the same limit (Tendsto.congr'). This proves (1).\n\n6. The integral identity: proof of (2). γ ≪ μ by step 2, and γ, μ are σ-finite by 3(c) and (F3). The Radon–Nikodym theorem gives μ⌞g = γ (Measure.withDensity_rnDeriv_eq), i.e. γ(A) = ∫⁻_A g dμ for every Borel A (withDensity_apply). Since g < ∞ μ-a.e., g(x) = ofReal(g(x).toReal) = ofReal(e(x)) for μ-a.e. x (ENNReal.ofReal_toReal). Hence ∫⁻_A g dμ = ∫⁻_A ofReal(e) dμ (setLIntegral_congr_fun_ae). With step 1, ∫⁻_{A×G} ofReal(β(S)) dV = γ(A) = ∫⁻_A ofReal(e(x)) dμ(x). This is (2), the printed (2) written as an identity of lintegrals. ∎",
+          "proof_key_steps": [
+            "γ(B) := ∫⁻_{B×G} ofReal β dV is the Borel measure π_#(V⌞ofReal∘β∘snd) on ℝ^N with γ ≤ ‖β‖·μ_V; hence γ vanishes off U, is finite on compact subsets of U, and γ ≪ μ_V.",
+            "γ is the zero extension of the locally finite measure γ.comap Subtype.val on U, hence σ-finite.",
+            "Besicovitch differentiation on U (SimonGMT Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure): γ(B_ρ(x))/μ_V(B_ρ(x)) → dγ/dμ_V(x) < ∞ for μ_V-a.e. x; set e := toReal(dγ/dμ_V).",
+            "For x ∈ U and small ρ, the real Bochner quotient equals toReal of the [0,∞] ratio (ofReal_integral_eq_lintegral_ofReal, ENNReal.toReal_div); this gives (1).",
+            "Radon–Nikodym gives μ_V⌞(dγ/dμ_V) = γ, and dγ/dμ_V = ofReal∘e μ_V-a.e.; this gives (2)."
+          ]
+        },
+        "audit": {
+          "key": "slice_density",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and Lean type match, including Borel measurability and arbitrary Borel A; openness is carried by Varifold. Domination establishes support, local finiteness on U, absolute continuity and sigma-finiteness. Domain differentiation, finite-point toReal continuity, local Bochner integrability and RN reconstruction prove both conclusions. The proof is complete and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-slice-density-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-slice-density-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-slice-density-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.plane_disintegration-a1.identity_of_limits-a1",
+      "key": "identity_of_limits",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-plane-disintegration-a1-identity-of-limits-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-identity-of-limits-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_lintegral_div|ae_tendsto_average' mathlib/Mathlib/MeasureTheory/Covering/",
+              "rg -n 'theorem rnDeriv_restrict|rnDeriv_restrict_self|rnDeriv_restrict_right' mathlib/Mathlib",
+              "rg -n 'rnDeriv_lt_top|rnDeriv_ne_top|withDensity_rnDeriv_eq|eq_rnDeriv' mathlib/Mathlib/MeasureTheory/Measure/Decomposition/*.lean",
+              "rg -n '^theorem|^lemma|^noncomputable def|^instance' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "rg -n 'SeparableSpace C\\(|SecondCountableTopology C\\(|instSeparableSpace' mathlib/Mathlib/Topology/ContinuousMap/",
+              "rg -n 'support_mem_ae|measure_compl_support|mem_support_iff_forall' mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "rg -n -i 'disintegr|ae_tendsto_rnDeriv|rieszMeasure|exists_dense_seq' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n '^theorem' simongmt Chapter01/RadonNikodymTheorem.lean Chapter01/RadonNikodymDensity.lean",
+              "#check / #print axioms Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure and hasBesicovitchCovering_subtype after import GMT.Ch08.Submission",
+              "#synth HasBesicovitchCovering/HereditarilyLindelofSpace/ProperSpace (Euclidean N); T2Space/LocallyCompactSpace/BorelSpace/CompactSpace (Grassmannian N n); SeparableSpace C(Grassmannian N n, ℝ) (fails with contract imports, succeeds with import Mathlib.Topology.ContinuousMap.SecondCountableSpace)",
+              "python3 contract_scope(Contract.lean, GMT.Ch08.main_theorem) from verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py on the 4 child statements",
+              "lake env lean /tmp/pdis_scratch/final/FromJson.lean (4 statements + generated challenge targets + parent assembly in comparator scope)",
+              "lake env lean /tmp/pdis_scratch/Full.lean (sorry-free proofs of the 4 children and plane_disintegration; #print axioms)",
+              "sed -n 60,170p book/chapter-08.txt (printed Lemma 1.3 and its proof)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymTheorem.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/pdis_scratch/final/FromJson.lean",
+              "/tmp/pdis_scratch/Full.lean"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Ch08 Contract is byte-identical to the workspace Contract and Submission.\n\nLibrary results the children rely on:\n- The pinned SimonGMT library already has the kernel-checked differentiation lemma Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure (FirstVariationDensity.lean:60; Besicovitch on the open subspace U via hasBesicovitchCovering_subtype, :30). It is in the import closure of GMT.Ch08.Submission, and its axioms are only propext, Classical.choice and Quot.sound. It realizes printed (1) on U without compact exhaustions. Mathlib's Besicovitch.ae_tendsto_rnDeriv (Besicovitch.lean:1078) needs locally finite measures on ℝ^N, which μ_V need not be.\n- Radon–Nikodym: Measure.withDensity_rnDeriv_eq (RadonNikodym.lean:60) and Measure.rnDeriv_lt_top (Lebesgue.lean:384).\n- Riesz: RealRMK.rieszMeasure / integral_rieszMeasure (RMK Real.lean:345), with the IsFiniteMeasure instance for compact spaces at :445.\n- Measure.support_mem_ae (Support.lean:198).\n- ContinuousMap.instSeparableSpace (SecondCountableSpace.lean:108). It is not in the contract closure, so pointwise_measure must import that pure-Mathlib module.\n\nThere is no existing disintegration lemma in Mathlib or SimonGMT, so the four children are new obligations.\n\nVerification:\n- All four child lean_statements pass validate_lean_statement and elaborate in the replayed contract scope. The challenge-style `exact Submission.X` targets close, and the parent assembly checks against the frozen type.\n- Complete scratch proofs of all four children and of the parent compile with standard axioms only."
+          }
+        ],
+        "parent_id": "root.plane_disintegration-a1",
+        "child_id": "root.plane_disintegration-a1.identity_of_limits-a1",
+        "subproblem": {
+          "key": "identity_of_limits",
+          "title": "Lemma 8.1.3, second part: ∫_{Gₙ(A)} β dV = ∫_A ∫ β dη^(x) dμ_V(x)",
+          "statement": "Let V be an n-varifold on an open set U ⊆ ℝ^N with weight μ_V. Let η : ℝ^N → Measure(G(N,n)) be such that, for μ_V-a.e. x, η(x) is a probability measure and (∫_{B_ρ(x)×G} β(S) dV(y,S)) / μ_V(B_ρ(x)) → ∫ β dη(x) as ρ ↓ 0 for every continuous β : G(N,n) → ℝ (closed balls; Bochner integral divided by μ_V(B_ρ(x)).toReal). Then for every Borel A ⊆ ℝ^N and every continuous β ≥ 0 on G(N,n): ∫⁻_{A×G} ofReal(β(S)) dV(x,S) = ∫⁻_A (∫⁻ ofReal(β(S)) dη(x)(S)) dμ_V(x).",
+          "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (η : Euclidean N → Measure (Grassmannian N n)), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) → ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight",
+          "lean_name": "plane_disint_identity_of_limits",
+          "depends_on": [
+            "slice_density"
+          ],
+          "natural_proof": "Source: Simon, Ch. 8, end of the proof of Lemma 1.3 (p. 208): \"Finally the last part of the lemma follows directly from (2) … if we keep in mind that e(x,j) in (1) is exactly η̃_V^(x)(β_j) ≡ ∫ β_j dη_V^(x).\" This is step 5 of the parent proof, with one simplification: (2) is applied to the given β itself. Any fixed β ∈ 𝒦⁺ can be adjoined to the countable family β_1, β_2, …, so it plays the role of β_j. The uniform approximation by the β_{j_k} and the summation over compact pieces of U in the parent's step 5 are then unnecessary. The identity is stated with lintegrals for every Borel A ⊆ ℝ^N (correction (c) of the parent proof).\n\nNotation. G := G(N,n), μ := μ_V = V.weight, and avg_ρ^x(β) := (∫_{B_ρ(x)×G} β(z.2) dV)/μ(B_ρ(x)).toReal.\n\n1. The printed (1)–(2) for β. Fix a Borel set A ⊆ ℝ^N and β ∈ C(G,ℝ) with β ≥ 0. The sibling lemma slice_density gives e : ℝ^N → ℝ with:\n (1) for μ-a.e. x, avg_ρ^x(β) → e(x) as ρ ↓ 0;\n (2) ∫⁻_{A×G} ofReal(β(S)) dV(y,S) = ∫⁻_A ofReal(e(x)) dμ(x).\n\n2. \"e(x,·) is exactly η̃^(x)(·)\". By hypothesis, for μ-a.e. x, η(x) is a probability measure and avg_ρ^x(β) → ∫ β dη(x) as ρ ↓ 0. For μ-a.e. x this and (1) hold together. Since 𝓝[>]0 is a nontrivial filter on ℝ and ℝ is Hausdorff, limits are unique (tendsto_nhds_unique), so e(x) = ∫ β dη(x).\n\n3. From Bochner integral to lintegral. For such x, β is continuous on the compact space G, hence bounded and Borel, hence integrable for the finite measure η(x) (Continuous.integrable_of_hasCompactSupport, HasCompactSupport.of_compactSpace). As β ≥ 0, ofReal(∫ β dη(x)) = ∫⁻ ofReal(β(S)) dη(x)(S) (ofReal_integral_eq_lintegral_ofReal). Hence ofReal(e(x)) = ∫⁻ ofReal(β(S)) dη(x)(S) for μ-a.e. x.\n\n4. Conclusion. Integrands that agree μ-a.e. have the same lintegral over the Borel set A (setLIntegral_congr_fun_ae; measurability of x ↦ ∫⁻ ofReal β dη(x) is not needed). So ∫⁻_A ofReal(e(x)) dμ(x) = ∫⁻_A (∫⁻ ofReal(β(S)) dη(x)(S)) dμ(x). Combined with (2): ∫⁻_{A×G} ofReal(β(S)) dV = ∫⁻_A (∫⁻ ofReal(β) dη(x)) dμ(x). ∎",
+          "proof_key_steps": [
+            "slice_density for the given β ≥ 0: avg_ρ^x(β) → e(x) μ_V-a.e., and ∫⁻_{A×G} ofReal β dV = ∫⁻_A ofReal e dμ_V (printed (1)–(2)).",
+            "Uniqueness of limits along 𝓝[>]0 gives e(x) = ∫ β dη(x) μ_V-a.e. (printed \"e(x,j) is exactly η̃^(x)(β_j)\").",
+            "ofReal(∫ β dη(x)) = ∫⁻ ofReal β dη(x) for the probability measure η(x) and bounded β ≥ 0.",
+            "Replace the integrand μ_V-a.e. on A and combine with (2)."
+          ]
+        },
+        "audit": {
+          "key": "identity_of_limits",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The conditional contract exactly matches the prose and uses only slice_density. For each fixed nonnegative continuous test, uniqueness of right-hand limits identifies its RN density with the eta integral almost everywhere. Probability-measure integrability converts this to the inner lintegral, and a.e. congruence proves the identity for every Borel A without requiring measurability of the chosen eta field."
+        },
+        "resolved_dependencies": [
+          "root.plane_disintegration-a1.slice_density-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-identity-of-limits-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-identity-of-limits-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-identity-of-limits-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.plane_disintegration-a1.pointwise_measure-a1",
+      "key": "pointwise_measure",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-plane-disintegration-a1-pointwise-measure-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-pointwise-measure-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_lintegral_div|ae_tendsto_average' mathlib/Mathlib/MeasureTheory/Covering/",
+              "rg -n 'theorem rnDeriv_restrict|rnDeriv_restrict_self|rnDeriv_restrict_right' mathlib/Mathlib",
+              "rg -n 'rnDeriv_lt_top|rnDeriv_ne_top|withDensity_rnDeriv_eq|eq_rnDeriv' mathlib/Mathlib/MeasureTheory/Measure/Decomposition/*.lean",
+              "rg -n '^theorem|^lemma|^noncomputable def|^instance' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "rg -n 'SeparableSpace C\\(|SecondCountableTopology C\\(|instSeparableSpace' mathlib/Mathlib/Topology/ContinuousMap/",
+              "rg -n 'support_mem_ae|measure_compl_support|mem_support_iff_forall' mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "rg -n -i 'disintegr|ae_tendsto_rnDeriv|rieszMeasure|exists_dense_seq' .lake/packages/simongmt/Poincare/SimonGMT/",
+              "grep -n '^theorem' simongmt Chapter01/RadonNikodymTheorem.lean Chapter01/RadonNikodymDensity.lean",
+              "#check / #print axioms Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure and hasBesicovitchCovering_subtype after import GMT.Ch08.Submission",
+              "#synth HasBesicovitchCovering/HereditarilyLindelofSpace/ProperSpace (Euclidean N); T2Space/LocallyCompactSpace/BorelSpace/CompactSpace (Grassmannian N n); SeparableSpace C(Grassmannian N n, ℝ) (fails with contract imports, succeeds with import Mathlib.Topology.ContinuousMap.SecondCountableSpace)",
+              "python3 contract_scope(Contract.lean, GMT.Ch08.main_theorem) from verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py on the 4 child statements",
+              "lake env lean /tmp/pdis_scratch/final/FromJson.lean (4 statements + generated challenge targets + parent assembly in comparator scope)",
+              "lake env lean /tmp/pdis_scratch/Full.lean (sorry-free proofs of the 4 children and plane_disintegration; #print axioms)",
+              "sed -n 60,170p book/chapter-08.txt (printed Lemma 1.3 and its proof)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymTheorem.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/pdis_scratch/final/FromJson.lean",
+              "/tmp/pdis_scratch/Full.lean"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Ch08 Contract is byte-identical to the workspace Contract and Submission.\n\nLibrary results the children rely on:\n- The pinned SimonGMT library already has the kernel-checked differentiation lemma Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure (FirstVariationDensity.lean:60; Besicovitch on the open subspace U via hasBesicovitchCovering_subtype, :30). It is in the import closure of GMT.Ch08.Submission, and its axioms are only propext, Classical.choice and Quot.sound. It realizes printed (1) on U without compact exhaustions. Mathlib's Besicovitch.ae_tendsto_rnDeriv (Besicovitch.lean:1078) needs locally finite measures on ℝ^N, which μ_V need not be.\n- Radon–Nikodym: Measure.withDensity_rnDeriv_eq (RadonNikodym.lean:60) and Measure.rnDeriv_lt_top (Lebesgue.lean:384).\n- Riesz: RealRMK.rieszMeasure / integral_rieszMeasure (RMK Real.lean:345), with the IsFiniteMeasure instance for compact spaces at :445.\n- Measure.support_mem_ae (Support.lean:198).\n- ContinuousMap.instSeparableSpace (SecondCountableSpace.lean:108). It is not in the contract closure, so pointwise_measure must import that pure-Mathlib module.\n\nThere is no existing disintegration lemma in Mathlib or SimonGMT, so the four children are new obligations.\n\nVerification:\n- All four child lean_statements pass validate_lean_statement and elaborate in the replayed contract scope. The challenge-style `exact Submission.X` targets close, and the parent assembly checks against the frozen type.\n- Complete scratch proofs of all four children and of the parent compile with standard axioms only."
+          }
+        ],
+        "parent_id": "root.plane_disintegration-a1",
+        "child_id": "root.plane_disintegration-a1.pointwise_measure-a1",
+        "subproblem": {
+          "key": "pointwise_measure",
+          "title": "Lemma 8.1.3, first part: the plane-distribution measures η_V^(x) exist μ_V-a.e.",
+          "statement": "Let V be an n-varifold on an open set U ⊆ ℝ^N with weight μ_V. Then for μ_V-a.e. x ∈ ℝ^N there is a Borel probability measure η on G = G(N,n) such that, for every continuous β : G → ℝ, (∫_{B_ρ(x)×G} β(S) dV(y,S)) / μ_V(B_ρ(x)) → ∫ β dη as ρ ↓ 0. Here B_ρ(x) is the closed ball, and the quotient is the Bochner integral divided by the real number μ_V(B_ρ(x)).toReal, with t/0 = 0.",
+          "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∀ᵐ x ∂V.weight, ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂η))",
+          "lean_name": "plane_disint_pointwise_measure",
+          "depends_on": [
+            "slice_density",
+            "riesz_limit"
+          ],
+          "natural_proof": "Source: Simon, Ch. 8, proof of Lemma 1.3 (pp. 207–208), first part: the countable dense family, printed (1), (3), (4) and the Riesz step. It follows steps 1–4 of the parent proof. The differentiation (1) is the sibling slice_density; the passage through (3), (4) and Riesz is the sibling riesz_limit.\n\nNotation. G := G(N,n), μ := μ_V = V.weight, and ‖f‖ := sup_G |f| for f ∈ C(G,ℝ). For x ∈ ℝ^N, ρ ∈ ℝ and β ∈ C(G,ℝ) let\n avg_ρ^x(β) := (∫_{B_ρ(x)×G} β(z.2) dV(z)) / μ(B_ρ(x)).toReal,\n which is exactly the quotient in the statement.\n\n1. Countable dense family (printed \"β_1, β_2, … ∈ 𝒦⁺ dense in 𝒦⁺\"). G is compact and second countable, so C(G,ℝ) (compact-open = sup-norm topology) is second countable, hence separable (Mathlib ContinuousMap.instSeparableSpace, Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean:108). That pure-Mathlib module is not in the contract's import closure and must be imported. Choose f_1, f_2, … with dense range in C(G,ℝ) (TopologicalSpace.exists_dense_seq).\n Put c_j := ‖f_j‖ and β_j := f_j + c_j, adding the constant function c_j. Then β_j ∈ C(G,ℝ) and β_j ≥ 0, since f_j(S) ≥ −|f_j(S)| ≥ −‖f_j‖. This is the printed passage between 𝒦⁺ and 𝒦 via β = (β + c) − c, applied to a dense sequence of 𝒦.\n\n2. Differentiation (printed (1)). For each j, the sibling lemma slice_density applied to V and β_j ≥ 0 gives e_j : ℝ^N → ℝ such that avg_ρ^x(β_j) → e_j(x) as ρ ↓ 0 for μ-a.e. x.\n\n3. A common conull set (the printed x ∈ ℝ^{n+ℓ} ∖ ⋃_j Z_j). Each condition below holds for μ-a.e. x. There are countably many of them, so they hold simultaneously for μ-a.e. x (ae_all_iff, filter_upwards).\n(a) x ∈ U, because μ(ℝ^N∖U) = V((ℝ^N∖U) × G) = 0 (Varifold.weight_apply, V.supported).\n(b) x ∈ spt μ, i.e. μ(W) > 0 for every neighbourhood W of x. ℝ^N is second countable, hence hereditarily Lindelöf, so μ(ℝ^N ∖ spt μ) = 0 (Measure.support_mem_ae, Support.lean:198; Measure.mem_support_iff_forall, :75).\n(c) For every j, avg_ρ^x(β_j) → e_j(x) as ρ ↓ 0 (step 2).\n Fix such an x; it remains to produce η for it.\n\n4. Small balls. U is open and x ∈ U, so choose r > 0 with ball(x,r) ⊆ U. For 0 < ρ < r, B_ρ(x) ⊆ ball(x,r) ⊆ U is compact, so μ(B_ρ(x)) < ∞ (Varifold.weight_finite_on_compact). Also μ(B_ρ(x)) ≥ μ(ball(x,ρ)) > 0 by (b), because the open ball ball(x,ρ) is a neighbourhood of x.\n\n5. Slice measures. For ρ ∈ ℝ define the Borel measure on G\n m_ρ := μ(B_ρ(x))⁻¹ · σ_#(V⌞(B_ρ(x) × G)), with σ(y,S) := S,\n i.e. m ρ = (V.weight (closedBall x ρ))⁻¹ • (V.measure.restrict (closedBall x ρ ×ˢ univ)).map Prod.snd.\n(a) For every ρ and every f ∈ C(G,ℝ), ∫ f dm_ρ = avg_ρ^x(f). The ingredients are:\n - ∫ f d(t·ν) = t.toReal·∫ f dν for t ∈ [0,∞] (integral_smul_measure);\n - ∫ f d(σ_#ν') = ∫ f∘σ dν', since σ is measurable and f continuous (integral_map);\n - ∫ (f∘σ) d(V⌞(B × G)) = ∫_{B×G} f(z.2) dV;\n - (μ(B)⁻¹).toReal = (μ(B).toReal)⁻¹ (ENNReal.toReal_inv).\n Together they give ∫ f dm_ρ = (μ(B).toReal)⁻¹ ∫_{B×G} f(z.2) dV = avg_ρ^x(f). This holds for every ρ; no positivity is needed.\n(b) For 0 < ρ < r, m_ρ is a probability measure: m_ρ(G) = μ(B_ρ(x))⁻¹·V(B_ρ(x) × G) = μ(B_ρ(x))⁻¹·μ(B_ρ(x)) = 1, since 0 < μ(B_ρ(x)) < ∞ by step 4 (Measure.map_apply, Measure.restrict_apply, Varifold.weight_apply, ENNReal.inv_mul_cancel).\n\n6. Limits on the dense family (printed (4) for the β_j). Let j ∈ ℕ and 0 < ρ < r. By 5(b), every f ∈ C(G,ℝ) is m_ρ-integrable and ∫ c_j dm_ρ = c_j·m_ρ(G) = c_j. Hence ∫ f_j dm_ρ = ∫ β_j dm_ρ − c_j = avg_ρ^x(β_j) − c_j (integral_add, integral_const, and 5(a) for β_j).\n Since (0, r) ∈ 𝓝[>]0 and avg_ρ^x(β_j) → e_j(x) by (c), we get ∫ f_j dm_ρ → e_j(x) − c_j as ρ ↓ 0 (Tendsto.sub_const, Tendsto.congr'). So lim_{ρ↓0} ∫ f dm_ρ exists for every f in D := {f_1, f_2, …}, which is dense in C(G,ℝ).\n\n7. Riesz limit (printed (3), (4) and the Riesz representation). Apply the sibling lemma riesz_limit with the nontrivial filter l := 𝓝[>]0 on ℝ, the family (m_ρ), and D. Its hypotheses hold: m_ρ is a probability measure for all ρ ∈ (0, r), hence l-eventually (step 5(b)); D is dense (step 1); and limits exist on D (step 6).\n It yields a probability measure η on G with ∫ f dm_ρ → ∫ f dη as ρ ↓ 0 for every f ∈ C(G,ℝ). By 5(a), avg_ρ^x(β) = ∫ β dm_ρ for all ρ, so avg_ρ^x(β) → ∫ β dη for every continuous β : G → ℝ. Since x was an arbitrary point of the μ-conull set of step 3, the statement holds for μ-a.e. x. ∎",
+          "proof_key_steps": [
+            "Take a dense sequence f_j in the separable space C(G,ℝ) and set β_j := f_j + ‖f_j‖ ≥ 0.",
+            "slice_density for each β_j gives avg_ρ^x(β_j) → e_j(x) μ_V-a.e.; intersect with x ∈ U and x ∈ spt μ_V (countably many conull sets).",
+            "For such x, 0 < μ_V(B_ρ(x)) < ∞ for small ρ. The slice measures m_ρ = μ_V(B_ρ(x))⁻¹ σ_#(V⌞(B_ρ(x)×G)) satisfy ∫ f dm_ρ = avg_ρ^x(f) for every ρ and are eventually probability measures.",
+            "∫ f_j dm_ρ = avg_ρ^x(β_j) − ‖f_j‖ converges for every j.",
+            "riesz_limit gives a probability measure η with ∫ f dm_ρ → ∫ f dη for all f, i.e. avg_ρ^x(β) → ∫ β dη."
+          ]
+        },
+        "audit": {
+          "key": "pointwise_measure",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The a.e.-exists-forall quantifier order matches the prose. The countable conull intersection, support positivity and compact-ball finiteness justify eventual probability normalization. The normalized-slice integral identity is valid even at exceptional radii under Lean's integral conventions. The two declared dependencies supply precisely the remaining steps; the argument also handles empty Grassmannians vacuously."
+        },
+        "resolved_dependencies": [
+          "root.plane_disintegration-a1.slice_density-a1",
+          "root.plane_disintegration-a1.riesz_limit-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-pointwise-measure-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-pointwise-measure-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-pointwise-measure-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/task.md": "26a69821fcbb4c8156d8dbf819ba687b1796fca88b5c4969fc177e4e2d316f7f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/problem.md": "f3ff6fdb84533e44ef581c7db9fc65e6f4432d3e00703417ae6a5521b34622cf",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/problem.json": "ab856ea735af6858e6e745d0a7c2f7609ef9100e057929e5e454a9981df30814",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/reference-manifest.json": "b9f15a98b4902e870b1591aa2a8d0fbc8638813c80ba6751d53265f3313f8524",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/decomposition.json": "8473c87d2ee7f7db722502e71596116b2ce613eda83384e1f6f6bca0365af148",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/decomposition-audit.json": "38dbcb071f729a5a0f727f11c9dabfd14ad4d4c638a685db4218c94753382788",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/controller-contract.json": "d6d64638c7d2185f309c986882cec6bc2e74e968c0a584815c0cff93d386fef9",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-riesz-limit-a1/parent-child-handoff.json": "50580922f9f0160e7913098583a0e5d5a8334a933893dee5e8b82f2baa797f16",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-riesz-limit-a1/parent-supplied-plan.md": "ca6386e6ca5f23ac54079bd9a983090f1078d3791b93a4540f5ee24ff2a39398",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-riesz-limit-a1/parent-supplied-natural-proof.md": "ea60d8a710bf2531c2877c8e0fcbb6b52f52e630d212bcd2d4ed5c95d7c7bbb8",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-riesz-limit-a1/parent-supplied-natural-proof.json": "e73b085c5b5d2a9b8ad99320c9781f41472eea75626232308a920f2e48d16a7b",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-riesz-limit-a1/node.json": "561b3037db132672617a6183d150e7982fcabd8043fbc0bc90b7601ebef003d5",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-slice-density-a1/parent-child-handoff.json": "6e7524771a0f528d345000688476abf8df9da1a87c6e06eb27c2cc82c7a919a7",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-slice-density-a1/parent-supplied-plan.md": "049b9472792033822eb1215dcb185fd3d57cc2ca8ada8cdba9e7f1ee5ce86ff7",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-slice-density-a1/parent-supplied-natural-proof.md": "5934a2bb5dc069079fc90d153a7e80f1fc5f55580ee0214c6996651646557d4d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-slice-density-a1/parent-supplied-natural-proof.json": "2a47af0199db337d4aea537b5a8e48247f742a955859580d3c10b6b7c479bad0",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-slice-density-a1/node.json": "c4de7e54fe7b912852fb0f06a06a689c703c2a4e6523866deaa92c9ddb97e15a",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-identity-of-limits-a1/parent-child-handoff.json": "c8a55b0bb39adad361b66b02875bd887222d65d0a25cde102046093783a50280",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-identity-of-limits-a1/parent-supplied-plan.md": "32cf9be1bd774ef602da7f91af0cf31d58a0420b97b7b1fed6f6629f74cb7f00",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-identity-of-limits-a1/parent-supplied-natural-proof.md": "6ccee6ec0ae30a9fe2489b9af7025657e81806083864a42cc550060a73094a89",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-identity-of-limits-a1/parent-supplied-natural-proof.json": "da91415fcfeb0221107a880915d5861632aefeac3ea46fed36221bd63e5dcf1f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-identity-of-limits-a1/node.json": "094520cbab124349cfb5adf43ee5753a121735ea65a64092bc30d4ed87998a1d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-pointwise-measure-a1/parent-child-handoff.json": "b0ad231045a26707ba64aa8ad61c4fb63c893acb8e5d576c783d726ffac8b9ef",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-pointwise-measure-a1/parent-supplied-plan.md": "43b7e5e400a1ff00d2facfda4901751eba182c947fca54061beee4d8a7ced26e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-pointwise-measure-a1/parent-supplied-natural-proof.md": "0d4bd651c991bfd3feff99e8bed55c5ec447be888e06c5fdaac07a49194a193c",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-pointwise-measure-a1/parent-supplied-natural-proof.json": "62988af8a00d9245b423454973d5b9ce6208f29a63af68971a35806e18928a4c",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-plane-disintegration-a1/children/root-plane-disintegration-a1-pointwise-measure-a1/node.json": "5929567de584ff739ba1cb85aa962c27663f40aad4babf3e57d6c754af17dbc3"
+  }
+}

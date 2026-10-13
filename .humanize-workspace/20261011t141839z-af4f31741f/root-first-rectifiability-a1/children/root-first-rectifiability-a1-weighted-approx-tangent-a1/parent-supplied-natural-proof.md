@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.first_rectifiability-a1`
+- Child DAG node: `root.first_rectifiability-a1.weighted_approx_tangent-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 7 of the parent proof of Simon, Ch. 8, Theorem 1.2 (the printed "V has approximate tangent space T_x with multiplicity θ(x) in the sense of 1.7 of Ch. 3"). Notation: μ := V.weight; H^n := μHE[n]; blowUpMap x r y = r⁻¹ • (y − x) (SimonGMT Chapter03/Rectifiable.lean); Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P means finrank P = n and, for every f ∈ C_c(ℝ^N), ∫_{blowUpMap x r '' M} f(y) θ(x + r • y) dH^n(y) → θ(x) ∫_P f dH^n as r ↓ 0.
+
+1. From HasTangentPlane V x T (θ x): x ∈ U and θ(x) > 0. Also finrank T.plane = n (Grassmannian.finrank_plane).
+
+2. μ as a weighted Hausdorff measure on compact pieces. Let K' ⊆ U be compact and h : ℝ^N → ℝ bounded, Borel and zero outside K'. Then ∫ h dμ = ∫_{M ∩ K'} h θ dH^n, both integrands being integrable. Proof: ν := μ.restrict K' is finite (μ(K') < ∞ by the hypothesis with B := K' and integrability on M ∩ K', or by Varifold.weight_finite_on_compact); ν' := (H^n.restrict (M ∩ K')).withDensity (ENNReal.ofReal ∘ θ). For Borel B, ν(B) = μ(B ∩ K') = ∫⁻_{B ∩ K' ∩ M} ENNReal.ofReal θ dH^n = ν'(B) (hypothesis applied to the Borel set B ∩ K'; withDensity_apply, Measure.restrict_restrict), so ν = ν' (Measure.ext). θ is a.e.-strongly measurable for H^n.restrict (M ∩ K') (from IntegrableOn θ (M ∩ K')), and θ = (ENNReal.ofReal (θ ·)).toReal holds H^n.restrict (M ∩ K')-a.e. because M ∩ K' is null-measurable (ae_restrict_mem₀) and θ > 0 on M. Hence ∫ h dν' = ∫ h θ d(H^n.restrict (M ∩ K')) (integral_withDensity_eq_integral_toReal_smul₀ or integral_withDensity_eq_integral_smul₀), where |h θ| ≤ (sup |h|) |θ| is integrable. Since h = 0 off K', ∫ h dμ = ∫ h dν.
+
+3. Homothety change of variables. Fix r > 0 and let φ := blowUpMap x r, a homeomorphism of ℝ^N (hence a measurable equivalence) with inverse y ↦ x + r • y. For Borel S, (H^n.map φ)(S) = H^n(φ⁻¹ S) = H^n(x + r • S) = r^n H^n(S) (translation is an isometry, Isometry.euclideanHausdorffMeasure_image, and Measure.euclideanHausdorffMeasure_smul₀; or directly euclideanHausdorffMeasure_homothety_preimage, Mathlib Geometry/Euclidean/Volume/Measure.lean:152–172), so H^n.map φ = ENNReal.ofReal(r^n) • H^n. By MeasurableEquiv.restrict_map and φ⁻¹(φ '' M) = M, (H^n.restrict M).map φ = (H^n.map φ).restrict (φ '' M) = ENNReal.ofReal(r^n) • H^n.restrict (φ '' M). Consequently, for every function F : ℝ^N → ℝ, ∫_{φ '' M} F dH^n = r⁻¹ ^ n ∫_M F(φ z) dH^n(z) (integral_smul_measure and MeasurableEmbedding.integral_map).
+
+4. The blow-up integrals. Let f ∈ C_c(ℝ^N), choose R ≥ 1 with tsupport f ⊆ closedBall 0 R, and r₀ > 0 with closedBall x (r₀ R) ⊆ U (U open, x ∈ U). For 0 < r ≤ r₀ apply 3 with F(y) := f(y) θ(x + r • y); then F(φ z) = f(r⁻¹ • (z − x)) θ(z), and with K' := closedBall x (r R) ⊆ U and h(z) := f(r⁻¹ • (z − x)) (continuous, bounded, zero outside K'), step 2 gives
+ ∫_{blowUpMap x r '' M} f(y) θ(x + r • y) dH^n(y) = r⁻¹ ^ n ∫_M f(r⁻¹ • (z − x)) θ(z) dH^n(z) = r⁻¹ ^ n ∫ f(r⁻¹ • (z − x)) dμ(z)
+ (the middle integral equals ∫_{M ∩ K'} h θ dH^n because its integrand vanishes off K').
+
+5. Limit. By frt_weight_blowup_tendsto (applied to the tangent plane T with multiplicity θ(x) and g := f), r⁻¹ ^ n ∫ f(r⁻¹ • (z − x)) dμ(z) → θ(x) ∫_{T.plane} f dH^n as r ↓ 0. The left-hand side of 4 agrees with it on (0, r₀] ∈ 𝓝[>] 0, so it has the same limit. Together with finrank T.plane = n this proves Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x T.plane.
+
+6. The equivalence. If S = T, the approximate tangent property holds by 5. Conversely, if Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane, then by Chapter03.HasWeightedApproximateTangentSpaceAt.unique (θ(x) ≠ 0) and 5, S.plane = T.plane, hence S = T because a point of G is determined by its plane (SimonGMT Grassmannian.eq_of_plane_eq, Chapter08/ConstancyTangent.lean:33, after importing Poincare.SimonGMT.Chapter08.ConstancyTangent; directly: the symmetric idempotent matrix S.1 is the matrix of the orthogonal projection onto S.plane). ∎
+
+## Key steps
+
+1. x ∈ U, θ(x) > 0, finrank T.plane = n.
+2. μ_V⌞K' = (θ H^n⌞(M ∩ K')) for compact K' ⊆ U, so ∫ h dμ_V = ∫_{M∩K'} hθ dH^n for bounded Borel h supported in K'.
+3. Homothety change of variables: ∫_{blowUpMap x r '' M} F dH^n = r^{-n} ∫_M F(blowUpMap x r z) dH^n(z).
+4. Hence the Ch. 3 1.7 blow-up integral equals r^{-n} ∫ f(r^{-1}(z − x)) dμ_V for small r, which tends to θ(x)∫_{T.plane} f dH^n by frt_weight_blowup_tendsto.
+5. Uniqueness of weighted approximate tangent planes (θ(x) ≠ 0) and Grassmannian.eq_of_plane_eq give the equivalence with S = T.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/{Contract,Submission}.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -n 'def FirstRectifiabilityTheorem|def IsVarifoldOf|def HasTangentPlane|def HasDensity|def densityRatio|def rescaledMeasure|def planeVarifoldMeasure' project/GMT/Ch08/Contract.lean`
+- `rg -n 'theorem ae_tendsto_measure_inter_div |theorem ae_tendsto_rnDeriv ' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'theorem hausdorffMeasure_image_le|theorem hausdorffMeasure_apply|theorem hausdorffMeasure_zero_singleton' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'Isometry.euclideanHausdorffMeasure_image|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_homothety|euclideanHausdorffMeasure_zero |euclideanHausdorffMeasure_smul₀' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem LipschitzOnWith.extend_real' mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `rg -n 'theorem withDensity_rnDeriv_eq ' mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `rg -n 'ext_of_integral_eq_on_compactlySupported$' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `rg -n 'theorem ext_of_generateFrom_of_iUnion' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `rg -n 'of_pseudoMetrizableSpace_of_isFiniteMeasure' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `rg -n 'lemma measure_compl_support' mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'theorem addHaar_closedBall ' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean (no Nontrivial assumption)`
+- `rg -n 'lemma volume_euclideanSpace_eq_dirac' mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `rg -n 'theorem exists_countable_dense ' mathlib/Mathlib/Topology/Bases.lean`
+- `rg -l -i 'varifold' mathlib/Mathlib | wc -l (0 files)`
+- `grep -rn 'theorem eq_of_plane_eq|instance instCompactSpace|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|theorem volume_euclidean_ball_eq|theorem measurable_closedBall_mass_of_sFinite|theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem simonHausdorffMeasureReal_toOuterMeasure' simongmt Poincare/SimonGMT`
+- `sed Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasWeightedApproximateTangentSpaceAt(.unique), regular/support_euclideanHausdorffMeasure_restrict_submodule) and Chapter08/Varifold.lean (Varifold, Grassmannian, weight, finrank_plane)`
+- `lake env lean Scratch/Final.lean (import GMT.Ch08.Submission + comparator scope replay: 2 sibling types + 12 child statements as sorry'd lemmas + parent assembly with no sorry)`
+- `lake env lean Scratch/Ch_<key>.lean for each of the 12 children (comparator NodeChallenge form)`
+- `lake env lean Scratch/Avail3.lean (#print axioms for 5 SimonGMT lemmas outside the Submission import closure: propext, Classical.choice, Quot.sound)`
+- `lake env lean Scratch/Omega0.lean (unitBallVolume 0 = 1 via volume_euclideanSpace_eq_dirac)`
+- `lake env lean Review/Mine2.lean (Borel ball mass via measurable_measure_prodMk_left; SimonGMT measurable_closedBall_mass_of_sFinite does not apply verbatim)`
+- `python3 dag.json lean_name collision check (no collision among 45 nodes)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/InfiniteDensitySet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1/parent-child-handoff.json`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission. Mathlib contains no varifold theory, and pinned SimonGMT has neither Ch. 3, 1.6/1.9 nor an area formula on rectifiable carriers. Each child therefore builds on library facts that do exist. The Mathlib facts are Besicovitch.ae_tendsto_measure_inter_div / ae_tendsto_rnDeriv (Besicovitch.lean:1105/1078), LipschitzOnWith/LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:733/745), hausdorffMeasure_apply (546), Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Volume/Measure.lean:131/187), euclideanHausdorffMeasure_homothety_preimage and _smul₀ (152–172), LipschitzOnWith.extend_real (Lipschitz.lean:308), withDensity_rnDeriv_eq (RadonNikodym.lean:60), Measure.ext_of_integral_eq_on_compactlySupported (RieszMarkovKakutani/Real.lean:412), ext_of_generateFrom_of_iUnion (Restrict.lean:491), WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure (Regular.lean:1072), measure_compl_support (Support.lean:202), addHaar_closedBall (EqHaar.lean:500, no Nontrivial assumption), volume_euclideanSpace_eq_dirac (ω_0 = 1) and measurable_measure_prodMk_left. The SimonGMT facts are Grassmannian.instCompactSpace and finrank_plane, Chapter03 regular/support_euclideanHausdorffMeasure_restrict_submodule and HasWeightedApproximateTangentSpaceAt.unique, Grassmannian.eq_of_plane_eq (ConstancyTangent.lean:33), mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251), simonHausdorffMeasureReal_toOuterMeasure and simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (AreaLiteral.lean:42), and volume_euclidean_ball_eq (n > 0). The five SimonGMT lemmas outside Submission's import closure import cleanly and use only propext, Classical.choice and Quot.sound. SimonGMT measurable_closedBall_mass_of_sFinite is stated under a local Borel instance and does not apply verbatim, so the children cite measurable_measure_prodMk_left instead (checked in Lean). In a scratch copy importing GMT.Ch08.Submission with the comparator's replayed scope, all 12 child lean_statements elaborate, both together and as individual NodeChallenge files, and pass validate_lean_statement. The parent assembly checks against type FirstRectifiabilityTheorem with no sorry of its own. None of the frt_-prefixed names collides with any node of the 45-node DAG.
