@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1.testform_restrict_cc-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1",
+  "depth": 4,
+  "title": "Test forms in U restrict to compactly supported continuous maps on the subspace U",
+  "statement": "Let P, n, d ∈ ℕ and let U ⊆ ℝ^P be an arbitrary set with the subspace topology (the subtype ↥U). Let f : Λⁿ(ℝ^P) → ℝ^d (Covector (Euclid P) n → EuclideanSpace ℝ (Fin d)) be continuous with f(0) = 0. Let ω ∈ 𝒟ⁿ(U) (TestFormOn U n): a C^∞ n-form on ℝ^P with compact support and tsupport ω ⊆ U. Then there is g ∈ C_c(U, ℝ^d) (CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin d))) with g(x) = f(ω(x)) for every x ∈ U.",
+  "lean_statement": "∀ (P n d : ℕ) (U : Set (Euclid P)) (f : Covector (Euclid P) n → EuclideanSpace ℝ (Fin d)), Continuous f → f 0 = 0 → ∀ ω : TestFormOn U n, ∃ g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)), ∀ x : U, g x = f ((ω : DifferentialForm (Euclid P) n) x)",
+  "lean_name": "cmrc_testForm_restrict_cc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-f608128ac6-a1"
+}
