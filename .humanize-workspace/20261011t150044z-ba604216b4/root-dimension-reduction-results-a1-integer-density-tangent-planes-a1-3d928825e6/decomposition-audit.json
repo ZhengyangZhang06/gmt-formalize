@@ -1,0 +1,46 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'idod_planar_density_const_nat|dimred_im_mass_measure|dimred_cs_mi_density_eq_mult_ae|idtp_imrep_measure_density_ae|rsd_ae_hasMassDensity_mult' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "rg -n 'withDensity_absolutelyContinuous|withDensity_zero_left|withDensity_apply' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "python3 /tmp/scoped_pdi_audit/verify.py",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin LEAN_NUM_THREADS=2 lake env lean /tmp/scoped_pdi_audit/Verify.lean > /tmp/scoped_pdi_audit/Verify.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3d928825e6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-16defc412f/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/store.py",
+        "/tmp/scoped_pdi_audit/verify.py",
+        "/tmp/scoped_pdi_audit/Verify.lean",
+        "/tmp/scoped_pdi_audit/Verify.log"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest. The frozen contract matches the selected proof base; the searched prerequisite names have no matches in the snapshot project. Both proposed declarations instead have verified comparator-accepted candidate histories with identical frozen types. Reuse preserves their existing dependencies and creates no new nodes. The resulting 42-node prerequisite closure is acyclic, with every proper prerequisite accepted and no reliance on the selected theorem or its ancestors. Independently reconstructed Lean verification exited 0: both child propositions elaborate before their implementations, and the supplied assembly proves the exact selected parent type using the actual candidate histories. All three theorems depend only on propext, Classical.choice and Quot.sound. Explicit elaboration confirms the real-valued indicator and natural-to-real cast; the right-neighborhood filter is nontrivial. No matrix-unit construction occurs. The split appropriately registers reusable prerequisites: their conclusions supply the carrier equality and null-carrier contradiction needed for this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches all three conjuncts of the independently elaborated one-line proposition. The numbered proof establishes duality, local Radon regularity, both mass inequalities, support equivalence and representation independence. The approximation argument requires equality of the retracted field only almost everywhere, where the unit-orientation property supplies it. The proof is non-circular and sufficiently detailed. The bare name validly reuses comparator-accepted candidate 01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a at its identical frozen type. Part (a) provides precisely the mass-measure identity used by the selected parent."
+    },
+    {
+      "key": "density_eq_mult",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line proposition agree, including the restricted Hausdorff measure and real cast of multiplicity. The proof obtains equality R.measure-a.e. from the two retained accepted prerequisites, then correctly transfers it using (H^n restricted to M) ≪ R.measure, justified by measurable, positive multiplicity. No measurability assumption on Θ is needed. These dependencies are accepted and acyclic. The bare name validly reuses candidate b0ca2599fa518c681e48568a9d7b7b1fb0ea2f30 at its identical frozen type. Instantiating Θ with the prescribed indicator gives exactly the carrier equality needed to select the parent's natural-number witness."
+    }
+  ],
+  "required_changes": []
+}
