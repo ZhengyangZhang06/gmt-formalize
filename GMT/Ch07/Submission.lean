@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Gluing step of the weighted area formula on a rectifiable carrier (Simon Ch. 3, 2.4–2.5).
+Let `S ⊆ ℝᴾ` contain the pairwise disjoint Borel pieces `Sₖ` (`k` in a countable type), with
+`Hⁿ(S ∖ ⋃ₖ Sₖ) = 0` and `Lⁿ(F(S ∖ ⋃ₖ Sₖ)) = 0`.  If on every piece the fibre sum
+`y ↦ ∑_{x ∈ Sₖ, F(x) = y} h(x)` is `Lⁿ`-a.e. measurable with integral `∫_{Sₖ} φ h dHⁿ`, then the
+same holds on `S`.  Off the null set `F(S ∖ ⋃ₖ Sₖ)` the fibre of `S` is the disjoint union of the
+fibres of the `Sₖ`, so the fibre sum over `S` is a.e. the sum over `k` of the fibre sums over the
+`Sₖ`; integrate term by term and use `Hⁿ⌞S = ∑ₖ Hⁿ⌞Sₖ`. -/
+theorem Submission.idtp_caf_glue_pieces : ∀ (P n : ℕ) (ι : Type) [Countable ι] (S : Set (Euclid P)) (pieces : ι → Set (Euclid P)) (F : Euclid P → Euclid n) (φ h : Euclid P → ℝ≥0∞), (∀ k, MeasurableSet (pieces k)) → (∀ k, pieces k ⊆ S) → Pairwise (fun k k' => Disjoint (pieces k) (pieces k')) → μHE[n] (S \ ⋃ k, pieces k) = 0 → volume (F '' (S \ ⋃ k, pieces k)) = 0 → (∀ k, AEMeasurable (fun y : Euclid n => ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in pieces k, φ x * h x ∂μHE[n]) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in S, φ x * h x ∂μHE[n] := by
+  intro P n ι _ S pieces F φ h hmeas hsub hdisj hnull himg hpiece
+  -- Off the null set `F(S \ ⋃ₖ Sₖ)` the fibre of `S` is the disjoint union of the fibres of the
+  -- pieces, so the fibre sum over `S` splits as the sum over `k` of the fibre sums over `Sₖ`
+  have hfib : ∀ᵐ y ∂(volume : Measure (Euclid n)),
+      ∑' x : ↥(S ∩ F ⁻¹' {y}), h x = ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp himg] with y hy
+    have hset : S ∩ F ⁻¹' {y} = ⋃ k, (pieces k ∩ F ⁻¹' {y}) := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, mem_iUnion]
+      constructor
+      · rintro ⟨hxS, hxy⟩
+        by_contra hx
+        refine hy ⟨x, ⟨hxS, ?_⟩, hxy⟩
+        simp only [mem_iUnion, not_exists]
+        exact fun k hk => hx ⟨k, hk, hxy⟩
+      · rintro ⟨k, hxk, hxy⟩
+        exact ⟨hsub k hxk, hxy⟩
+    rw [hset]
+    exact ENNReal.tsum_biUnion fun i _ j _ hij =>
+      (hdisj hij).mono inter_subset_left inter_subset_left
+  -- A countable sum of a.e. measurable fibre sums is a.e. measurable
+  have hsum : AEMeasurable
+      (fun y : Euclid n => ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume :=
+    AEMeasurable.tsum fun k => (hpiece k).1
+  refine ⟨hsum.congr (hfib.mono fun y hy => hy.symm), ?_⟩
+  -- `S` and `⋃ₖ Sₖ` agree up to an `Hⁿ`-null set
+  have hae : (⋃ k, pieces k) =ᵐ[μHE[n]] S :=
+    ae_eq_set.mpr ⟨by rw [Set.sdiff_eq_empty.mpr (iUnion_subset hsub), measure_empty], hnull⟩
+  calc ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume
+      = ∫⁻ y, ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x ∂volume := lintegral_congr_ae hfib
+    _ = ∑' k, ∫⁻ y, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x ∂volume :=
+      lintegral_tsum fun k => (hpiece k).1
+    _ = ∑' k, ∫⁻ x in pieces k, φ x * h x ∂μHE[n] := tsum_congr fun k => (hpiece k).2
+    _ = ∫⁻ x in ⋃ k, pieces k, φ x * h x ∂μHE[n] := (lintegral_iUnion hmeas hdisj _).symm
+    _ = ∫⁻ x in S, φ x * h x ∂μHE[n] := setLIntegral_congr hae
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
