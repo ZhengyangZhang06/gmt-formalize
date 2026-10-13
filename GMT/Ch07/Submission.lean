@@ -529,6 +529,65 @@ theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P
       Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
     simp
 
+/-- **Uniform local mass bound for blow-ups with converging centres** (Simon 7.5.3 and 7.5.5,
+chapter-07.txt lines 790–901).  If `xᵢ → x`, `λᵢ → 0` (`λᵢ > 0`) and `M_{B_ρ(y)}(T) ≤ Cρⁿ` for
+`y ∈ B_{r₀}(x)`, `0 < ρ < r₀`, then for each `R > 0` and all large `i`,
+`η_{xᵢ,λᵢ#}T(ω) ≤ max(C, 0)Rⁿ` for every `ω ∈ 𝒟ⁿ(ℝᴾ)` with `spt ω ⊆ B_R(0)` and `|ω| ≤ 1`.  If
+`spt ω ⊄ η_{xᵢ,λᵢ}(U)` the value is `0`; otherwise `η_{xᵢ,λᵢ#}T(ω) = λᵢ⁻ⁿ T(ω')` with
+`ω' = ω ∘ η_{xᵢ,λᵢ}` admissible for `M_{B_{λᵢR}(xᵢ)}(T) ≤ C(λᵢR)ⁿ`. -/
+theorem Submission.codim1_zsl_gbl_blowUp_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) y) ≤ 1) → currentEval (blowUp T (xs i) (lams i) (hlams i).ne') (ω : DifferentialForm (Euclid P) n) ≤ c := by
+  intro P n U T x xs lams hlams hxs hlam hmass R hR
+  obtain ⟨C, r₀, hr₀, hmass⟩ := hmass
+  refine ⟨max C 0 * R ^ n, ?_⟩
+  -- Step 1: for all large `i`, `xᵢ ∈ B_{r₀}(x)` and `λᵢR < r₀`.
+  have hlamR : Tendsto (fun i => lams i * R) atTop (𝓝 0) := by
+    simpa using hlam.mul_const R
+  filter_upwards [hxs.eventually (ball_mem_nhds x hr₀), hlamR.eventually (gt_mem_nhds hr₀)]
+    with i hxi hlRi
+  intro ω hωsupp hωnorm
+  have hρ : 0 < lams i * R := mul_pos (hlams i) hR
+  unfold currentEval
+  split_ifs with h
+  · -- Step 2: `spt ω ⊆ η(U)`, so `η_{xᵢ,λᵢ#}T(ω) = λᵢ⁻ⁿ T(ω')` with `ω' = ω ∘ η ∈ 𝒟ⁿ(U)`.
+    obtain ⟨ω', hω'⟩ := (Submission.dtc_blowUp_testForm_corr P n U (xs i) (lams i) (hlams i)).1
+      ⟨(ω : DifferentialForm (Euclid P) n), h⟩
+    rw [(Submission.dtc_blowUp_testForm_corr P n U (xs i) (lams i) (hlams i)).2.2 T
+      ⟨(ω : DifferentialForm (Euclid P) n), h⟩ ω' hω']
+    -- Step 3: `ω'` is admissible for `M_{B_{λᵢR}(xᵢ)}(T)`: `η(z) = λᵢ⁻¹(z − xᵢ)` lies in
+    -- `B_R(0)` iff `z ∈ B_{λᵢR}(xᵢ)`, and `|ω'(z)| = |ω(η(z))| ≤ 1`.
+    have hdil : ∀ z, dilation (xs i) (lams i) z = (lams i)⁻¹ • (z - xs i) := by
+      intro z
+      simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_sub]
+      abel
+    have hsupp : tsupport (ω' : DifferentialForm (Euclid P) n) ⊆ ball (xs i) (lams i * R) := by
+      rw [show (ω' : DifferentialForm (Euclid P) n) =
+          (ω : DifferentialForm (Euclid P) n) ∘ dilation (xs i) (lams i) from funext hω']
+      have hcont : Continuous (dilation (xs i) (lams i)) :=
+        continuous_const.add (dilationCLM P (lams i)).continuous
+      refine (tsupport_comp_subset_preimage _ hcont).trans fun z hz => ?_
+      have hz' := mem_ball_zero_iff.mp (hωsupp hz)
+      rw [hdil, norm_smul, norm_inv, Real.norm_of_nonneg (hlams i).le,
+        inv_mul_lt_iff₀ (hlams i)] at hz'
+      rwa [mem_ball, dist_eq_norm]
+    have hadm : ω' ∈ massAdmissibleOn U n (ball (xs i) (lams i * R)) := by
+      refine ⟨hsupp, fun z => ?_⟩
+      rw [hω' z]
+      exact hωnorm _
+    -- Step 4: `T(ω') ≤ M_{B_{λᵢR}(xᵢ)}(T) ≤ C(λᵢR)ⁿ`, hence `T(ω') ≤ max(C, 0)(λᵢR)ⁿ`.
+    have hT : T ω' ≤ max C 0 * (lams i * R) ^ n := by
+      rcases ENNReal.ofReal_le_ofReal_iff'.mp
+          ((T.le_massOn hadm).trans (hmass (xs i) hxi (lams i * R) hρ hlRi)) with hT | hT
+      · exact hT.trans (mul_le_mul_of_nonneg_right (le_max_left C 0) (pow_nonneg hρ.le n))
+      · exact hT.trans (mul_nonneg (le_max_right C 0) (pow_nonneg hρ.le n))
+    -- Step 5: `λᵢ⁻ⁿ max(C, 0)(λᵢR)ⁿ = max(C, 0)Rⁿ`.
+    calc (lams i)⁻¹ ^ n * T ω' ≤ (lams i)⁻¹ ^ n * (max C 0 * (lams i * R) ^ n) :=
+          mul_le_mul_of_nonneg_left hT (pow_nonneg (inv_nonneg.mpr (hlams i).le) n)
+      _ = max C 0 * R ^ n := by
+          rw [mul_pow, mul_left_comm, ← mul_assoc ((lams i)⁻¹ ^ n), ← mul_pow,
+            inv_mul_cancel₀ (hlams i).ne', one_pow, one_mul]
+  · -- `spt ω ⊄ η(U)`: the value is `0 ≤ max(C, 0)Rⁿ`.
+    exact mul_nonneg (le_max_right C 0) (pow_nonneg hR.le n)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
