@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsLocallyHolderCkα|abbrev Rn|namespace|^import|^open|^set_option",
+        "dohr_eb_ehs|difference quotient|schauder|campanato|caccioppoli",
+        "norm_image_sub_le_of_norm_deriv_le_segment|integral_add_right_eq_self|theorem _root_.IsCompact.cthickening",
+        "rg -n 'dohr_eb_ehs' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-step-a1/parent-child-handoff.json",
+        "/tmp/ehs-independent-audit-63tb7rd9/Checks/Types.lean",
+        "/tmp/ehs-independent-audit-63tb7rd9/Checks/Small.lean",
+        "/tmp/ehs-independent-audit-63tb7rd9/Checks/Assembly.lean",
+        "/tmp/ehs-independent-audit-63tb7rd9/Checks/APIs.lean",
+        "/tmp/ehs-independent-audit-63tb7rd9/Checks/AcceptedDependency.lean"
+      ],
+      "conclusion": "Confirmed project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The pinned calculus and integration declarations support the supplied arguments; the searches found no replacement elliptic regularity theorem. Independently compiled all three standalone proposition types, both supplied smaller proofs, and the exact selected parent assembly. The assembly uses precisely the three children and four declared dependencies, plus standard axioms. The smaller proofs and previously accepted Hölder dependency use only standard axioms; that dependency's frozen type is unchanged. CLM evaluation, Schwarz symmetry, and the documented depth-3 instance construction also checked. All proposed names are fresh bare identifiers, and the dependency/child closure is acyclic. The split is appropriate: its three independent obligations establish differentiation, coefficient smoothness, and forcing regularity needed for this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "differentiated_el",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches the prose and its hypotheses. Steps 1–10 justify the Schwarz identity, compact support of the translated tests, integrability, the translation sign, and both uniform convergence estimates needed to pass to the limit. Empty support, arbitrary directions including zero, and merely local regularity are covered. The proof is complete and non-circular; the additional symmetry import is already specified."
+    },
+    {
+      "key": "hessian_apply_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Evaluating DPsi at fixed Q, differentiating, then evaluating at P gives exactly the stated Hessian argument order. The supplied proof is complete and independent of the parent; its Lean script compiled with only standard axioms."
+    },
+    {
+      "key": "inner_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the full scalar regularity conclusion for arbitrary m and alpha. Openness justifies the ordinary iterated-derivative identity, real inner-product symmetry gives the correct functional, and its nonnegative operator norm transfers the Hölder bound. The supplied non-circular proof, including m = 0, compiled with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}

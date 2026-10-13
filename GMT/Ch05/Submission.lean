@@ -458,6 +458,562 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): chain rule and Schwarz symmetry.**
+If `Ψ : L(ℝⁿ, ℝ^ℓ) → ℝ` is `C²` and `u` is `C²` on the open set `U ⊆ ℝⁿ`, then for every direction
+`e` and every `y ∈ U`, `D(DΨ ∘ Du)(y) e = D²Ψ(Du(y))[Dv_e(y)]`, where `v_e(z) = Du(z) e`.
+Proof: the chain rule gives `D(DΨ ∘ Du)(y) e = D²Ψ(Du(y))[D²u(y) e]`, and
+`Dv_e(y) w = D²u(y)[w][e]`; these agree because `D²u(y)` is symmetric (Schwarz).  Given `ε > 0`,
+pick `δ > 0` with `B̆_δ(y) ⊆ U` and `‖D²u(z) − D²u(y)‖ < ε` on `B̆_δ(y)`.  For
+`h = δ/(2(|v| + |w| + 1))` the mean value inequality for `z ↦ u(z + hw) − u(z)` on `[y, y + hv]`
+bounds the second difference `Δ = u(y + hv + hw) − u(y + hv) − u(y + hw) + u(y)` by
+`|Δ − h² D²u(y)[w][v]| ≤ ε h² |v| |w|`, and swapping `v` and `w` gives
+`|Δ − h² D²u(y)[v][w]| ≤ ε h² |v| |w|`.  Hence `|D²u(y)[v][w] − D²u(y)[w][v]| ≤ 2ε |v| |w|` for
+every `ε > 0`. -/
+theorem dohr_eb_ehs_del_chain_symm : ∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ∀ (e y : Rn n), y ∈ U → fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) y e = fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y) (fderiv ℝ (fun z => fderiv ℝ u z e) y) := by
+  intro n ℓ Ψ U u hU hΨ hu e y hy
+  have hUy : U ∈ 𝓝 y := hU.mem_nhds hy
+  -- Step 1: `u` and `Du` are differentiable on `U`, and `D²u` is continuous on `U`.
+  have hDu : ContDiffOn ℝ 1 (fun z => fderiv ℝ u z) U := hu.fderiv_of_isOpen hU (by norm_num)
+  have hdu : ∀ z ∈ U, DifferentiableAt ℝ u z := fun z hz =>
+    (hu.differentiableOn two_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hdDu : ∀ z ∈ U, DifferentiableAt ℝ (fderiv ℝ u) z := fun z hz =>
+    (hDu.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hDuy : DifferentiableAt ℝ (fderiv ℝ u) y := hdDu y hy
+  have hD2 : ContinuousOn (fderiv ℝ (fderiv ℝ u)) U :=
+    hDu.continuousOn_fderiv_of_isOpen hU le_rfl
+  -- Step 2: `DΨ` is `C¹`, hence differentiable at `Du(y)`.
+  have hDΨ : ContDiff ℝ 1 (fderiv ℝ Ψ) := hΨ.fderiv_right (by norm_num)
+  have hDΨd : DifferentiableAt ℝ (fderiv ℝ Ψ) (fderiv ℝ u y) :=
+    hDΨ.differentiable one_ne_zero _
+  -- Step 3: chain rule, `D(DΨ ∘ Du)(y) = D²Ψ(Du(y)) ∘ D²u(y)`.
+  have h1 : fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) y =
+      (fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y)).comp (fderiv ℝ (fderiv ℝ u) y) :=
+    fderiv_fun_comp (𝕜 := ℝ) (x := y) (g := fderiv ℝ Ψ) (f := fun z => fderiv ℝ u z)
+      hDΨd hDuy
+  -- Step 4: `Dv_e(y) w = D²u(y)[w][e]`.
+  have h2 : fderiv ℝ (fun z => fderiv ℝ u z e) y = (fderiv ℝ (fderiv ℝ u) y).flip e := by
+    rw [fderiv_clm_apply hDuy (differentiableAt_const e)]
+    simp
+  -- Step 5: Schwarz symmetry of `A = D²u(y)`, via the mean value inequality for `Du`.
+  have hsymm : ∀ v w : Rn n,
+      fderiv ℝ (fderiv ℝ u) y v w = fderiv ℝ (fderiv ℝ u) y w v := by
+    intro v w
+    set A := fderiv ℝ (fderiv ℝ u) y
+    have hbound : ∀ ε > 0, ‖A v w - A w v‖ ≤ 2 * ε * (‖v‖ * ‖w‖) := by
+      intro ε hε
+      -- `δ = min r δ'`: `B̆_δ(y) ⊆ U` and `‖D²u(z) − A‖ < ε` on `B̆_δ(y)`
+      obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU y hy
+      obtain ⟨δ', hδ', hδ'A⟩ := (NormedAddCommGroup.tendsto_nhds_nhds (E := Rn n)
+        (F := Rn n →L[ℝ] Rn n →L[ℝ] Rn ℓ)).mp (hD2.continuousAt hUy) ε hε
+      have hδ : 0 < min r δ' := lt_min hr hδ'
+      have hball : ball y (min r δ') ⊆ U := (ball_subset_ball (min_le_left _ _)).trans hrU
+      -- mean value inequality for `Du` on `B̆_δ(y)` with the fixed linear map `A`
+      have hmvt : ∀ a ∈ ball y (min r δ'), ∀ b ∈ ball y (min r δ'),
+          ‖fderiv ℝ u b - fderiv ℝ u a - A (b - a)‖ ≤ ε * ‖b - a‖ := by
+        intro a ha b hb
+        refine (convex_ball y (min r δ')).norm_image_sub_le_of_norm_fderiv_le'
+          (fun z hz => hdDu z (hball hz)) (fun z hz => ?_) ha hb
+        have hzy : ‖z - y‖ < δ' := by
+          rw [← dist_eq_norm]
+          exact lt_of_lt_of_le (mem_ball.mp hz) (min_le_right _ _)
+        exact (hδ'A z hzy).le
+      -- second difference estimate: `z ↦ u(z + h b) − u(z)` on the segment `[y, y + h a]`
+      have hsecond : ∀ (h : ℝ) (a b : Rn n), |h| * (‖a‖ + ‖b‖) < min r δ' →
+          ‖(u (y + h • a + h • b) - u (y + h • a) - (u (y + h • b) - u y)) - (h ^ 2) • A b a‖
+            ≤ ε * (|h| * ‖b‖) * (|h| * ‖a‖) := by
+        intro h a b hab
+        have hseg : ∀ z ∈ segment ℝ y (y + h • a),
+            z ∈ ball y (min r δ') ∧ z + h • b ∈ ball y (min r δ') := by
+          intro z hz
+          have hz' : z ∈ closedBall y (|h| * ‖a‖) := by
+            refine (convex_closedBall y _).segment_subset
+              (mem_closedBall_self (by positivity)) ?_ hz
+            rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+          rw [mem_closedBall, dist_eq_norm] at hz'
+          have hb0 : 0 ≤ |h| * ‖b‖ := by positivity
+          constructor
+          · rw [mem_ball, dist_eq_norm]
+            linarith
+          · rw [mem_ball, dist_eq_norm]
+            calc ‖z + h • b - y‖ = ‖(z - y) + h • b‖ := by congr 1; abel
+              _ ≤ ‖z - y‖ + ‖h • b‖ := norm_add_le _ _
+              _ ≤ |h| * ‖a‖ + |h| * ‖b‖ := by rw [norm_smul, Real.norm_eq_abs]; linarith
+              _ = |h| * (‖a‖ + ‖b‖) := by ring
+              _ < min r δ' := hab
+        have hφd : ∀ z ∈ segment ℝ y (y + h • a),
+            DifferentiableAt ℝ (fun x => u (x + h • b) - u x) z := fun z hz =>
+          ((differentiableAt_comp_add_right (h • b)).mpr (hdu _ (hball (hseg z hz).2))).sub
+            (hdu z (hball (hseg z hz).1))
+        have hφ := (convex_segment y (y + h • a)).norm_image_sub_le_of_norm_fderiv_le'
+          (φ := h • A b) (C := ε * (|h| * ‖b‖)) hφd (fun z hz => ?_)
+          (left_mem_segment ℝ _ _) (right_mem_segment ℝ _ _)
+        · simp only [add_sub_cancel_left, smul_apply, map_smul, smul_smul,
+            norm_smul, Real.norm_eq_abs] at hφ
+          rw [pow_two]
+          convert hφ using 2
+        · rw [fderiv_fun_sub ((differentiableAt_comp_add_right (h • b)).mpr
+            (hdu _ (hball (hseg z hz).2))) (hdu z (hball (hseg z hz).1)), fderiv_comp_add_right]
+          have := hmvt z (hseg z hz).1 (z + h • b) (hseg z hz).2
+          rwa [add_sub_cancel_left, map_smul, norm_smul, Real.norm_eq_abs] at this
+      -- a small step `h > 0`; compare the estimates for `(v, w)` and `(w, v)`
+      set h : ℝ := min r δ' / (2 * (‖v‖ + ‖w‖ + 1)) with hh
+      have hvw : 0 ≤ ‖v‖ + ‖w‖ := by positivity
+      have hpos : 0 < h := by positivity
+      have hsmall : ∀ a b : Rn n, ‖a‖ + ‖b‖ = ‖v‖ + ‖w‖ → |h| * (‖a‖ + ‖b‖) < min r δ' := by
+        intro a b hab
+        rw [hab, abs_of_pos hpos, hh, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+        nlinarith
+      have e1 := hsecond h v w (hsmall v w rfl)
+      have e2 := hsecond h w v (hsmall w v (add_comm _ _))
+      rw [add_right_comm y (h • w) (h • v)] at e2
+      have hdiff : (h ^ 2) • (A v w - A w v) =
+          ((u (y + h • v + h • w) - u (y + h • v) - (u (y + h • w) - u y)) - (h ^ 2) • A w v) -
+          ((u (y + h • v + h • w) - u (y + h • w) - (u (y + h • v) - u y)) - (h ^ 2) • A v w) := by
+        rw [smul_sub]; abel
+      have hle : h ^ 2 * ‖A v w - A w v‖ ≤ h ^ 2 * (2 * ε * (‖v‖ * ‖w‖)) := by
+        have := norm_sub_le
+          ((u (y + h • v + h • w) - u (y + h • v) - (u (y + h • w) - u y)) - (h ^ 2) • A w v)
+          ((u (y + h • v + h • w) - u (y + h • w) - (u (y + h • v) - u y)) - (h ^ 2) • A v w)
+        rw [← hdiff, norm_smul, Real.norm_eq_abs, abs_of_nonneg (by positivity)] at this
+        rw [abs_of_pos hpos] at e1 e2
+        nlinarith
+      exact le_of_mul_le_mul_left hle (by positivity)
+    -- let `ε → 0`
+    refine eq_of_forall_dist_le fun ε hε => ?_
+    rw [dist_eq_norm]
+    have hK : 0 ≤ ‖v‖ * ‖w‖ := by positivity
+    calc ‖A v w - A w v‖ ≤ 2 * (ε / (2 * (‖v‖ * ‖w‖ + 1))) * (‖v‖ * ‖w‖) :=
+          hbound _ (by positivity)
+      _ = ε * ((‖v‖ * ‖w‖) / (‖v‖ * ‖w‖ + 1)) := by field_simp
+      _ ≤ ε * 1 := by
+          gcongr
+          rw [div_le_one (by positivity)]
+          linarith
+      _ = ε := mul_one ε
+  -- Step 6: `Dv_e(y) = D²u(y) e`; substitute into the chain rule.
+  have h3 : (fderiv ℝ (fderiv ℝ u) y).flip e = fderiv ℝ (fderiv ℝ u) y e := by
+    ext w : 1
+    rw [ContinuousLinearMap.flip_apply]
+    exact hsymm w e
+  rw [h1, h2, h3]
+  rfl
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap, differentiated Euler–Lagrange
+equation): uniform convergence of difference quotients.**
+If `f : ℝⁿ → E` (`E` any real normed space) is `C¹` on an open `U` and `K ⊆ U` is compact, then for
+every direction `e` the difference quotients `h⁻¹ (f(x + h e) − f(x))` converge to `Df(x) e`
+uniformly on `K` as `h → 0`, `h ≠ 0`.
+Proof: `K` has a compact closed thickening `K_ε ⊆ U`, on which `Df` is uniformly continuous
+(Heine–Cantor).  Given `η > 0`, pick `θ > 0` with `‖Df(w) − Df(x)‖ < η/(‖e‖ + 1)` whenever
+`w, x ∈ K_ε` and `‖w − x‖ < θ`.  For `0 < |h| < min(ε, θ)/(‖e‖ + 1)` and `x ∈ K`, the segment
+`[x, x + h e]` lies in `B_{‖h e‖}(x) ⊆ K_ε`, so the mean value inequality with the fixed linear map
+`Df(x)` gives `‖f(x + h e) − f(x) − Df(x)(h e)‖ ≤ η |h| ‖e‖/(‖e‖ + 1)`; dividing by `|h|`,
+`‖Df(x) e − h⁻¹ (f(x + h e) − f(x))‖ ≤ η ‖e‖/(‖e‖ + 1) < η`. -/
+theorem dohr_eb_ehs_del_diffquot_uniform : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Rn n → E) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 f U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (h : ℝ) (x : Rn n) => h⁻¹ • (f (x + h • e) - f x)) (fun x => fderiv ℝ f x e) (𝓝[≠] 0) K := by
+  intro n E _ _ f U K e hU hf hK hKU
+  -- Step 1: a compact closed thickening `K_ε = cthickening ε K` of `K` inside `U`.
+  obtain ⟨ε, hε, hεU⟩ := hK.exists_cthickening_subset_open hU hKU
+  have hK' : IsCompact (cthickening ε K) := hK.cthickening
+  -- Step 2: `f` is differentiable on `U` and `Df` is uniformly continuous on `K_ε`.
+  have hcont : ContinuousOn (fderiv ℝ f) U := hf.continuousOn_fderiv_of_isOpen hU le_rfl
+  have huc : UniformContinuousOn (fderiv ℝ f) (cthickening ε K) :=
+    hK'.uniformContinuousOn_of_continuous (hcont.mono hεU)
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ f z := fun z hz =>
+    (hf.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  -- Step 3: given `η > 0`, choose `θ` and restrict to `0 < |d| < min ε θ / (‖e‖ + 1)`.
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro η hη
+  rw [Metric.uniformContinuousOn_iff] at huc
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  obtain ⟨θ, hθ, hθK⟩ := huc (η / (‖e‖ + 1)) (div_pos hη he1)
+  have hpos : 0 < min ε θ / (‖e‖ + 1) := div_pos (lt_min hε hθ) he1
+  have hev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < min ε θ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with d hd
+    simpa [Real.dist_eq] using hd
+  filter_upwards [hev, self_mem_nhdsWithin] with d hd hd0
+  have hd0' : d ≠ 0 := hd0
+  intro x hx
+  -- Step 4: the segment `[x, x + d • e]` lies in `closedBall x ‖d • e‖ ⊆ K_ε ⊆ U`.
+  have hde : ‖d • e‖ < min ε θ := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |d| * ‖e‖ ≤ |d| * (‖e‖ + 1) := by gcongr; linarith
+      _ < min ε θ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = min ε θ := div_mul_cancel₀ _ he1.ne'
+  have hball : closedBall x ‖d • e‖ ⊆ cthickening ε K :=
+    (closedBall_subset_closedBall (hde.le.trans (min_le_left _ _))).trans
+      (closedBall_subset_cthickening hx ε)
+  have hxde : x + d • e ∈ closedBall x ‖d • e‖ := by
+    rw [mem_closedBall, dist_eq_norm]; simp
+  have hseg : segment ℝ x (x + d • e) ⊆ closedBall x ‖d • e‖ :=
+    (convex_closedBall x _).segment_subset (mem_closedBall_self (norm_nonneg _)) hxde
+  have hxK' : x ∈ cthickening ε K := self_subset_cthickening K hx
+  -- Step 5: the mean value inequality with the fixed linear map `Df(x)`.
+  have hmvt : ‖f (x + d • e) - f x - fderiv ℝ f x ((x + d • e) - x)‖ ≤
+      η / (‖e‖ + 1) * ‖(x + d • e) - x‖ := by
+    refine (convex_segment x (x + d • e)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun w hw => hdiff w (hεU (hball (hseg hw)))) (fun w hw => ?_) (left_mem_segment ℝ _ _)
+      (right_mem_segment ℝ _ _)
+    have hw := hseg hw
+    have hwx : dist w x < θ := by
+      rw [mem_closedBall] at hw
+      exact hw.trans_lt (hde.trans_le (min_le_right _ _))
+    have := hθK w (hball hw) x hxK' hwx
+    rw [dist_eq_norm] at this
+    exact this.le
+  have hsub : (x + d • e) - x = d • e := by abel
+  rw [hsub] at hmvt
+  -- Step 6: divide by `d ≠ 0`.
+  rw [dist_eq_norm]
+  have hrw : fderiv ℝ f x e - d⁻¹ • (f (x + d • e) - f x) =
+      -(d⁻¹ • (f (x + d • e) - f x - fderiv ℝ f x (d • e))) := by
+    rw [map_smul, smul_sub d⁻¹ (f (x + d • e) - f x) (d • fderiv ℝ f x e), smul_smul,
+      inv_mul_cancel₀ hd0', one_smul]; abel
+  rw [hrw, norm_neg, norm_smul, norm_inv, Real.norm_eq_abs]
+  calc |d|⁻¹ * ‖f (x + d • e) - f x - fderiv ℝ f x (d • e)‖
+      ≤ |d|⁻¹ * (η / (‖e‖ + 1) * ‖d • e‖) := by gcongr
+    _ = η * (‖e‖ / (‖e‖ + 1)) := by
+      rw [norm_smul, Real.norm_eq_abs]; field_simp
+    _ < η * 1 := by
+      gcongr
+      rw [div_lt_one he1]; linarith
+    _ = η := mul_one η
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): limit of the left side of the
+differenced Euler–Lagrange equation.**
+Let `F : ℝⁿ → L*`, `L* = L(L(ℝⁿ, ℝ^ℓ), ℝ)`, be `C¹` on an open `U`, and let
+`τ : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` be continuous with compact support `K = spt τ ⊆ U`.  Then for every
+direction `e`, `∫_U F(x)[h⁻¹ (τ(x) − τ(x − h e))] dx → −∫_U DF(x)e[τ(x)] dx` as `h → 0`, `h ≠ 0`.
+Proof: choose `δ > 0` with `cthickening δ K ⊆ U`.  For `|h| < δ/(|e| + 1)` the integrand vanishes
+off `U`, every piece is continuous on a compact set and vanishes off it (hence integrable), and the
+translation `x = y + h e` (Lebesgue measure is translation invariant) gives
+`∫_U F(x)[h⁻¹ (τ(x) − τ(x − h e))] dx = −∫_K Q_h(y)[τ(y)] dy`, `Q_h(y) = h⁻¹ (F(y + h e) − F(y))`.
+By `dohr_eb_ehs_del_diffquot_uniform`, `Q_h → DF(·)e` uniformly on `K`, so the integrands are
+eventually bounded by `(sup_K |DF(·)e| + 1) sup |τ|` on the finite-measure set `K`, and dominated
+convergence gives `∫_K Q_h[τ] → ∫_K DF(·)e[τ] = ∫_U DF(·)e[τ]`. -/
+theorem dohr_eb_ehs_del_lhs_tendsto : ∀ n ℓ : ℕ, ∀ (F : Rn n → ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)) (τ : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 F U → Continuous τ → HasCompactSupport τ → tsupport τ ⊆ U → Tendsto (fun h : ℝ => ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e)))) (𝓝[≠] 0) (𝓝 (-∫ x in U, fderiv ℝ F x e (τ x))) := by
+  intro n ℓ F τ U e hU hF hτ hτc hτU
+  -- Step 1: `K = tsupport τ` is compact and has a closed thickening `cthickening δ K ⊆ U`.
+  have hK : IsCompact (tsupport τ) := hτc
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hτU
+  -- Step 2: `F` and `DF(·)e` are continuous on `U`; `‖τ‖ ≤ Cτ` everywhere, `‖DF(·)e‖ ≤ CD` on `K`.
+  have hFc : ContinuousOn F U := hF.continuousOn
+  have hDFe : ContinuousOn (fun y => fderiv ℝ F y e) U :=
+    (hF.continuousOn_fderiv_of_isOpen hU le_rfl).clm_apply continuousOn_const
+  obtain ⟨Cτ, hCτ⟩ := hτ.bounded_above_of_compact_support hτc
+  obtain ⟨CD, hCD⟩ := hK.exists_bound_of_continuousOn (f := fun y => fderiv ℝ F y e)
+    (hDFe.mono hτU)
+  -- Step 3: `h⁻¹ (F(y + h e) − F(y)) → DF(y)e` uniformly on `K` (sibling, with `E = L*`).
+  have hUC := Submission.dohr_eb_ehs_del_diffquot_uniform n _ F U (tsupport τ) e hU hF hK hτU
+  -- Step 1 (cont.): for `|h| < δ/(‖e‖ + 1)` and `y ∈ K`, `y + h e ∈ cthickening δ K ⊆ U`.
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hpos : 0 < δ / (‖e‖ + 1) := div_pos hδ he1
+  have hev : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < δ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with h hh
+    simpa [Real.dist_eq] using hh
+  have hshift : ∀ h : ℝ, |h| < δ / (‖e‖ + 1) → ∀ y ∈ tsupport τ,
+      y + h • e ∈ cthickening δ (tsupport τ) := by
+    intro h hh y hy
+    apply mem_cthickening_of_dist_le (y + h • e) y δ (tsupport τ) hy
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+    calc |h| * ‖e‖ ≤ |h| * (‖e‖ + 1) := by gcongr; linarith
+      _ ≤ δ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = δ := div_mul_cancel₀ _ he1.ne'
+  have hτ0 : ∀ y, y ∉ tsupport τ → τ y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport hy
+  -- Step 5: the limit integral over `U` is the integral over `K`.
+  have hRHS : ∫ x in U, fderiv ℝ F x e (τ x) = ∫ x in tsupport τ, fderiv ℝ F x e (τ x) :=
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hU.measurableSet hτU
+      (fun x hx => by rw [hτ0 x hx.2, map_zero])
+  -- Step 4: for `0 < |h| < δ/(‖e‖ + 1)` the left side is `−∫_K h⁻¹ (F(y + h e) − F(y))[τ(y)] dy`.
+  have hEq : (fun h : ℝ => ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e)))) =ᶠ[𝓝[≠] 0]
+      (fun h : ℝ => -∫ y in tsupport τ, (h⁻¹ • (F (y + h • e) - F y)) (τ y)) := by
+    filter_upwards [hev] with h hh
+    -- (b) `F(·)[τ]` and `F(· + h e)[τ]` are continuous on `K` and vanish off `K`.
+    have hI1 : Integrable (fun x => F x (τ x)) := by
+      apply IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport τ)
+      · exact ((hFc.mono hτU).clm_apply hτ.continuousOn).integrableOn_compact hK
+      · intro x hx; rw [hτ0 x hx, map_zero]
+    have hI2 : Integrable (fun x => F (x + h • e) (τ x)) := by
+      apply IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport τ)
+      · apply ContinuousOn.integrableOn_compact hK
+        apply ContinuousOn.clm_apply _ hτ.continuousOn
+        exact hFc.comp (continuousOn_id.add continuousOn_const)
+          (fun y hy => hδU (hshift h hh y hy))
+      · intro x hx; rw [hτ0 x hx, map_zero]
+    -- (a) the integrand vanishes off `U`, so `∫_U = ∫_{ℝⁿ}`.
+    have hL : ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e))) =
+        ∫ x, F x (h⁻¹ • (τ x - τ (x - h • e))) := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hxU
+      have h1 : τ x = 0 := hτ0 x (fun hx => hxU (hτU hx))
+      have h2 : τ (x - h • e) = 0 := by
+        apply hτ0
+        intro hx
+        apply hxU
+        have := hshift h hh (x - h • e) hx
+        rw [sub_add_cancel] at this
+        exact hδU this
+      simp [h1, h2]
+    -- (d) translation invariance: `∫ F(x)[τ(x − h e)] dx = ∫ F(y + h e)[τ(y)] dy`.
+    have hT : ∫ x, F x (τ (x - h • e)) = ∫ y, F (y + h • e) (τ y) := by
+      rw [← integral_add_right_eq_self (fun x => F x (τ (x - h • e))) (h • e)]
+      simp only [add_sub_cancel_right]
+    have hI3 : Integrable (fun x => F x (τ (x - h • e))) := by
+      have := hI2.comp_sub_right (h • e)
+      simpa only [sub_add_cancel] using this
+    -- (c), (e) linearity of `F(x)` and of the integral.
+    have hW : ∫ x, F x (h⁻¹ • (τ x - τ (x - h • e))) =
+        -∫ y, (h⁻¹ • (F (y + h • e) - F y)) (τ y) := by
+      calc ∫ x, F x (h⁻¹ • (τ x - τ (x - h • e)))
+          = ∫ x, h⁻¹ * (F x (τ x) - F x (τ (x - h • e))) := by
+            congr 1; ext x; rw [map_smul, map_sub, smul_eq_mul]
+        _ = h⁻¹ * ((∫ x, F x (τ x)) - ∫ x, F x (τ (x - h • e))) := by
+            rw [integral_const_mul, integral_sub hI1 hI3]
+        _ = h⁻¹ * ((∫ y, F y (τ y)) - ∫ y, F (y + h • e) (τ y)) := by rw [hT]
+        _ = -∫ y, (h⁻¹ • (F (y + h • e) - F y)) (τ y) := by
+            rw [← integral_sub hI1 hI2, ← integral_const_mul, ← integral_neg]
+            congr 1; ext y
+            simp only [_root_.smul_apply, _root_.sub_apply, smul_eq_mul]
+            ring
+    have hS : ∫ y, (h⁻¹ • (F (y + h • e) - F y)) (τ y) =
+        ∫ y in tsupport τ, (h⁻¹ • (F (y + h • e) - F y)) (τ y) := by
+      symm
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro y hy; rw [hτ0 y hy, map_zero]
+    rw [hL, hW, hS]
+  -- Step 6: dominated convergence on `K`, with the bound `(CD + 1) Cτ` for small `h`.
+  have hev1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), ∀ y ∈ tsupport τ,
+      ‖h⁻¹ • (F (y + h • e) - F y) - fderiv ℝ F y e‖ < 1 := by
+    filter_upwards [(Metric.tendstoUniformlyOn_iff.mp hUC) 1 one_pos] with h hh y hy
+    have := hh y hy
+    rw [dist_comm, dist_eq_norm] at this
+    exact this
+  have hlim : Tendsto (fun h : ℝ => ∫ y in tsupport τ, (h⁻¹ • (F (y + h • e) - F y)) (τ y))
+      (𝓝[≠] 0) (𝓝 (∫ y in tsupport τ, fderiv ℝ F y e (τ y))) := by
+    apply tendsto_integral_filter_of_dominated_convergence (fun _ => (CD + 1) * Cτ)
+    · filter_upwards [hev] with h hh
+      apply ContinuousOn.aestronglyMeasurable _ hK.measurableSet
+      -- The integrand is the real-valued `h⁻¹ (F(y + h e)[τ(y)] − F(y)[τ(y)])`, continuous on `K`.
+      have hc : ContinuousOn (fun y => h⁻¹ * (F (y + h • e) (τ y) - F y (τ y))) (tsupport τ) :=
+        continuousOn_const.mul
+          (((hFc.comp (continuousOn_id.add continuousOn_const)
+            (fun y hy => hδU (hshift h hh y hy))).clm_apply hτ.continuousOn).sub
+            ((hFc.mono hτU).clm_apply hτ.continuousOn))
+      refine hc.congr (fun y _ => ?_)
+      simp only [_root_.smul_apply, _root_.sub_apply, smul_eq_mul]
+    · filter_upwards [hev1] with h hh
+      apply ae_restrict_of_forall_mem hK.measurableSet
+      intro y hy
+      have hQ : ‖h⁻¹ • (F (y + h • e) - F y)‖ ≤ CD + 1 := by
+        have h1 := norm_le_insert' (E := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+          (h⁻¹ • (F (y + h • e) - F y)) (fderiv ℝ F y e)
+        linarith [hh y hy, hCD y hy]
+      calc ‖(h⁻¹ • (F (y + h • e) - F y)) (τ y)‖
+          ≤ ‖h⁻¹ • (F (y + h • e) - F y)‖ * ‖τ y‖ := ContinuousLinearMap.le_opNorm _ _
+        _ ≤ (CD + 1) * Cτ := by
+            gcongr
+            · linarith [norm_nonneg (fderiv ℝ F y e), hCD y hy]
+            · exact hCτ y
+    · exact integrableOn_const hK.measure_lt_top.ne
+    · apply ae_restrict_of_forall_mem hK.measurableSet
+      intro y hy
+      exact ((ContinuousLinearMap.apply ℝ ℝ (τ y)).continuous.tendsto _).comp (hUC.tendsto_at hy)
+  -- Step 7: conclusion.
+  rw [hRHS]
+  exact hlim.neg.congr' hEq.symm
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127):
+admissibility of the difference-quotient test maps `φ_h(x) = h⁻¹ (ζ(x) − ζ(x − h e))`.  For
+`ζ ∈ C¹_c` with `tsupport ζ ⊆ U` (`U` open), compactness gives `δ > 0` with
+`K' = cthickening δ (tsupport ζ) ⊆ U`; for `|h| < δ / (‖e‖ + 1)` we have `‖h e‖ < δ`, so
+`support φ_h ⊆ K'` and `φ_h` is `C¹`, compactly supported with `tsupport φ_h ⊆ K' ⊆ U`.  The chain
+rule for the translation and linearity give `Dφ_h(y) = h⁻¹ (Dζ(y) − Dζ(y − h e))`. -/
+theorem dohr_eb_ehs_del_test_admissible : ∀ n ℓ : ℕ, ∀ (ζ : Rn n → Rn ℓ) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∀ᶠ h in 𝓝[≠] (0 : ℝ), ContDiff ℝ 1 (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ∧ HasCompactSupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ∧ tsupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆ U ∧ ∀ y, fderiv ℝ (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) y = h⁻¹ • (fderiv ℝ ζ y - fderiv ℝ ζ (y - h • e)) := by
+  intro n ℓ ζ U e hU hζ hζc hζU
+  -- Step 1 (margin): `K' = cthickening δ (tsupport ζ) ⊆ U`; restrict to `|h| < δ / (‖e‖ + 1)`.
+  obtain ⟨δ, hδ, hδU⟩ := hζc.isCompact.exists_cthickening_subset_open hU hζU
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hpos : 0 < δ / (‖e‖ + 1) := div_pos hδ he1
+  have hev : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < δ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with h hh
+    simpa [Real.dist_eq] using hh
+  filter_upwards [hev] with h hh
+  have hdiff : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  have hhe : ‖h • e‖ < δ := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |h| * ‖e‖ ≤ |h| * (‖e‖ + 1) := by gcongr; linarith
+      _ < δ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = δ := div_mul_cancel₀ _ he1.ne'
+  -- Step 2 (support): if `φ_h(x) ≠ 0` then `x ∈ tsupport ζ` or `x − h e ∈ tsupport ζ`, so `x ∈ K'`.
+  have hsupp : Function.support (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆
+      cthickening δ (tsupport ζ) := by
+    intro x hx
+    by_contra hxK
+    apply hx
+    have h1 : ζ x = 0 := by
+      by_contra h1
+      exact hxK (self_subset_cthickening _ (subset_tsupport _ h1))
+    have h2 : ζ (x - h • e) = 0 := by
+      by_contra h2
+      apply hxK
+      apply mem_cthickening_of_dist_le x (x - h • e) δ (tsupport ζ) (subset_tsupport _ h2)
+      rw [dist_eq_norm, sub_sub_cancel]
+      exact hhe.le
+    simp [h1, h2]
+  have htsupp : tsupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆ cthickening δ (tsupport ζ) :=
+    closure_minimal hsupp isClosed_cthickening
+  refine ⟨?_, ?_, htsupp.trans hδU, ?_⟩
+  -- Step 3 (`C¹`): `ζ` composed with the translation, a difference and a constant multiple.
+  · exact (hζ.sub (hζ.comp (contDiff_id.sub contDiff_const))).const_smul h⁻¹
+  -- Step 4 (compact support): `tsupport φ_h` is closed inside the compact set `K'`.
+  · exact IsCompact.of_isClosed_subset hζc.isCompact.cthickening (isClosed_tsupport _) htsupp
+  -- Step 5 (derivative): chain rule for the translation (`hasFDerivAt_comp_sub`) and linearity.
+  · intro y
+    have hd1 : HasFDerivAt (fun x => ζ (x - h • e)) (fderiv ℝ ζ (y - h • e)) y :=
+      (hasFDerivAt_comp_sub (h • e)).mpr (hdiff (y - h • e)).hasFDerivAt
+    exact ((((hdiff y).hasFDerivAt).sub hd1).const_smul h⁻¹).fderiv
+
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap, differentiated Euler–Lagrange
+equation): limit of the right side.**
+If `ζ : ℝⁿ → ℝ^ℓ` is `C¹` with compact support, `tsupport ζ ⊆ U` for an open `U`, and `g` is
+continuous on `U`, then for every direction `e`, with `φ_h = h⁻¹ (ζ − ζ(· − h e))`,
+`∫_U ⟨φ_h(x), g(x)⟩ dx → ∫_U ⟨Dζ(x) e, g(x)⟩ dx` as `h → 0`, `h ≠ 0`.
+Proof: some `K' = cthickening δ (tsupport ζ)` is a compact subset of `U`, on which `‖g‖ ≤ C_g`
+and `‖Dζ(·) e‖ ≤ C_ζ`.  Since `x − h e = x + h (−e)`, the uniform convergence of difference
+quotients in the direction `−e` (`dohr_eb_ehs_del_diffquot_uniform`) gives `φ_h → Dζ(·) e`
+uniformly on `K'` and pointwise everywhere.  For `0 < |h| < δ/(‖e‖ + 1)`, `φ_h` vanishes off `K'`,
+so eventually `|⟨φ_h, g⟩| ≤ (C_ζ + 1) C_g 1_{K'}`, which is integrable; the integrands are
+continuous on `U`, and dominated convergence along `𝓝[≠] 0` concludes. -/
+theorem dohr_eb_ehs_del_rhs_tendsto : ∀ n ℓ : ℕ, ∀ (ζ g : Rn n → Rn ℓ) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ContinuousOn g U → Tendsto (fun h : ℝ => ∫ x in U, inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x)) (𝓝[≠] 0) (𝓝 (∫ x in U, inner ℝ (fderiv ℝ ζ x e) (g x))) := by
+  intro n ℓ ζ g U e hU hζ hζc hζU hg
+  -- Step 1: a compact margin `K' = cthickening δ (tsupport ζ) ⊆ U`, and bounds on `K'` for
+  -- `‖g‖` and `‖Dζ(·) e‖`.
+  obtain ⟨δ, hδ, hδU⟩ := hζc.isCompact.exists_cthickening_subset_open hU hζU
+  have hK' : IsCompact (cthickening δ (tsupport ζ)) := hζc.isCompact.cthickening
+  obtain ⟨Cg, hCg⟩ := hK'.exists_bound_of_continuousOn (hg.mono hδU)
+  have hDζc : Continuous (fun x => fderiv ℝ ζ x e) :=
+    (hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  obtain ⟨Cz, hCz⟩ := hK'.exists_bound_of_continuousOn hDζc.continuousOn
+  -- Step 2: uniform convergence of the difference quotients on `K'` in the direction `-e`,
+  -- rewritten via `φ_h(x) = -(h⁻¹ (ζ(x + h (-e)) - ζ(x)))` and `Dζ(x) e = -(Dζ(x) (-e))`.
+  have hUC := Submission.dohr_eb_ehs_del_diffquot_uniform n (Rn ℓ) ζ univ
+    (cthickening δ (tsupport ζ)) (-e) isOpen_univ hζ.contDiffOn hK' (subset_univ _)
+  have hφ : ∀ (h : ℝ) (x : Rn n), h⁻¹ • (ζ x - ζ (x - h • e)) =
+      -(h⁻¹ • (ζ (x + h • (-e)) - ζ x)) := by
+    intro h x
+    rw [smul_neg, ← sub_eq_add_neg, ← smul_neg, neg_sub]
+  have hDneg : ∀ x, fderiv ℝ ζ x e = -(fderiv ℝ ζ x (-e)) := by
+    intro x; simp
+  -- Step 3: eventually `|h| < δ/(‖e‖ + 1)` and `‖φ_h - Dζ(·) e‖ < 1` on `K'`.
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hpos : 0 < δ / (‖e‖ + 1) := div_pos hδ he1
+  have hev : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < δ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with h hh
+    simpa [Real.dist_eq] using hh
+  have hev1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), ∀ x ∈ cthickening δ (tsupport ζ),
+      ‖h⁻¹ • (ζ x - ζ (x - h • e)) - fderiv ℝ ζ x e‖ < 1 := by
+    filter_upwards [(Metric.tendstoUniformlyOn_iff.mp hUC) 1 one_pos] with h hh x hx
+    have := hh x hx
+    rw [dist_eq_norm] at this
+    rw [hφ, hDneg, neg_sub_neg]
+    exact this
+  -- Step 4: dominated convergence along `𝓝[≠] 0` with the bound `(C_ζ + 1) C_g 1_{K'}`.
+  apply tendsto_integral_filter_of_dominated_convergence
+    ((cthickening δ (tsupport ζ)).indicator (fun _ => (Cz + 1) * Cg))
+  · -- The integrands are continuous on `U`.
+    filter_upwards with h
+    apply ContinuousOn.aestronglyMeasurable _ hU.measurableSet
+    apply ContinuousOn.inner _ hg
+    have hζ0 := hζ.continuous
+    exact Continuous.continuousOn (by fun_prop)
+  · -- Domination: on `K'` by the uniform estimate, off `K'` the difference quotient vanishes.
+    filter_upwards [hev, hev1] with h hh hh1
+    filter_upwards with x
+    by_cases hx : x ∈ cthickening δ (tsupport ζ)
+    · rw [indicator_of_mem hx]
+      have h1 : ‖h⁻¹ • (ζ x - ζ (x - h • e))‖ ≤ Cz + 1 := by
+        have := hh1 x hx
+        calc ‖h⁻¹ • (ζ x - ζ (x - h • e))‖
+            = ‖(h⁻¹ • (ζ x - ζ (x - h • e)) - fderiv ℝ ζ x e) + fderiv ℝ ζ x e‖ := by
+              rw [sub_add_cancel]
+          _ ≤ ‖h⁻¹ • (ζ x - ζ (x - h • e)) - fderiv ℝ ζ x e‖ + ‖fderiv ℝ ζ x e‖ :=
+              norm_add_le _ _
+          _ ≤ 1 + Cz := by linarith [hCz x hx]
+          _ = Cz + 1 := by ring
+      calc ‖inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x)‖
+          ≤ ‖h⁻¹ • (ζ x - ζ (x - h • e))‖ * ‖g x‖ := norm_inner_le_norm _ _
+        _ ≤ (Cz + 1) * Cg := by
+            gcongr
+            · linarith [norm_nonneg (fderiv ℝ ζ x e), hCz x hx]
+            · exact hCg x hx
+    · rw [indicator_of_notMem hx]
+      have h1 : ζ x = 0 := by
+        by_contra h1
+        exact hx (self_subset_cthickening _ (subset_tsupport _ h1))
+      have h2 : ζ (x - h • e) = 0 := by
+        by_contra h2
+        apply hx
+        apply mem_cthickening_of_dist_le x (x - h • e) δ (tsupport ζ) (subset_tsupport _ h2)
+        rw [dist_eq_norm, sub_sub_cancel, norm_smul, Real.norm_eq_abs]
+        calc |h| * ‖e‖ ≤ |h| * (‖e‖ + 1) := by gcongr; linarith
+          _ ≤ δ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+          _ = δ := div_mul_cancel₀ _ he1.ne'
+      simp [h1, h2]
+  · -- The bound is integrable: a constant on the compact set `K'`.
+    rw [integrable_indicator_iff hK'.isClosed.measurableSet]
+    exact integrableOn_const (ne_of_lt (lt_of_le_of_lt
+      (Measure.restrict_apply_le _ _) hK'.measure_lt_top))
+  · -- Pointwise convergence, from the sibling applied to the compact set `{x}`.
+    filter_upwards with x
+    apply Tendsto.inner _ tendsto_const_nhds
+    have hx := (Submission.dohr_eb_ehs_del_diffquot_uniform n (Rn ℓ) ζ univ {x} (-e) isOpen_univ
+      hζ.contDiffOn isCompact_singleton (subset_univ _)).tendsto_at (mem_singleton x)
+    simp only [hφ, hDneg]
+    exact hx.neg
+/-- The weak Euler–Lagrange equation `∫_U DΨ(Du)[Dφ] = -∫_U ⟨φ, g⟩` (all `φ ∈ C¹_c(U; ℝ^ℓ)`),
+differentiated in the direction `e`: `∫_U D²Ψ(Du)[Dv_e][Dζ] = ∫_U ⟨g, Dζ e⟩` with `v_e = Du(·) e`.
+Test the equation with the difference quotients `φ_h = h⁻¹ (ζ − ζ(· − h e))`, which are admissible
+for small `h ≠ 0`.  With `F = DΨ ∘ Du` (`C¹` on `U`) and `τ = Dζ`, the left side tends to
+`−∫_U DF(x) e [Dζ(x)]` and the right side to `−∫_U ⟨Dζ(x) e, g(x)⟩` as `h → 0`; the limits agree, and
+`DF(x) e = D²Ψ(Du(x))[Dv_e(x)]` on `U` by the chain rule and the symmetry of `D²u`. -/
+theorem dohr_eb_ehs_differentiated_el : ∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ContinuousOn g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → ∀ (e : Rn n) (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x) (fderiv ℝ (fun z => fderiv ℝ u z e) x) (fderiv ℝ ζ x) = ∫ x in U, inner ℝ (g x) (fderiv ℝ ζ x e) := by
+  intro n ℓ Ψ U u g hU hΨ hu hg hEL e ζ hζ hζc hζU
+  -- `F = DΨ ∘ Du` is `C¹` on `U`; `τ = Dζ` is continuous with compact support inside `U`.
+  have hF : ContDiffOn ℝ 1 (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) U :=
+    (hΨ.fderiv_right (m := 1) (by norm_num)).comp_contDiffOn
+      (hu.fderiv_of_isOpen hU (m := 1) (by norm_num))
+  have hτ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv (by norm_num)
+  have hτc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv ℝ
+  have hτU : tsupport (fderiv ℝ ζ) ⊆ U := (tsupport_fderiv_subset ℝ).trans hζU
+  -- The two sides of the equation tested with `φ_h` and their limits as `h → 0`.
+  have hL := Submission.dohr_eb_ehs_del_lhs_tendsto n ℓ (fun z => fderiv ℝ Ψ (fderiv ℝ u z))
+    (fderiv ℝ ζ) U e hU hF hτ hτc hτU
+  have hR := (Submission.dohr_eb_ehs_del_rhs_tendsto n ℓ ζ g U e hU hζ hζc hζU hg).neg
+  -- For small `h ≠ 0`, `φ_h` is admissible and `Dφ_h = h⁻¹ (Dζ − Dζ(· − h e))`.
+  have hLR : (fun h : ℝ => ∫ x in U,
+        fderiv ℝ Ψ (fderiv ℝ u x) (h⁻¹ • (fderiv ℝ ζ x - fderiv ℝ ζ (x - h • e)))) =ᶠ[𝓝[≠] 0]
+      fun h : ℝ => -∫ x in U, inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x) := by
+    filter_upwards [Submission.dohr_eb_ehs_del_test_admissible n ℓ ζ U e hU hζ hζc hζU]
+      with h ⟨h1, h2, h3, h4⟩
+    have hEL_h := hEL _ h1 h2 h3
+    simp only [h4] at hEL_h
+    exact hEL_h
+  -- Uniqueness of limits along `𝓝[≠] 0`.
+  have key := neg_inj.mp (tendsto_nhds_unique_of_eventuallyEq hL hR hLR)
+  calc ∫ x in U, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x) (fderiv ℝ (fun z => fderiv ℝ u z e) x)
+        (fderiv ℝ ζ x)
+      = ∫ x in U, fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) x e (fderiv ℝ ζ x) :=
+        setIntegral_congr_fun hU.measurableSet fun x hx =>
+          (DFunLike.congr_fun
+            (Submission.dohr_eb_ehs_del_chain_symm n ℓ Ψ U u hU hΨ hu e x hx) _).symm
+    _ = ∫ x in U, inner ℝ (fderiv ℝ ζ x e) (g x) := key
+    _ = ∫ x in U, inner ℝ (g x) (fderiv ℝ ζ x e) :=
+        integral_congr_ae (Eventually.of_forall fun x => real_inner_comm _ _)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

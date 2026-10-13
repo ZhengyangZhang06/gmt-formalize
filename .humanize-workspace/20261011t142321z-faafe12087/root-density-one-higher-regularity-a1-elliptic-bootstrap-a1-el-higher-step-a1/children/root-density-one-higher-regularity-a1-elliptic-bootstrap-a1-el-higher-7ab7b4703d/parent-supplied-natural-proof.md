@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.hessian_apply_smooth-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the smoothness claim in Step 2 of the parent-supplied proof ("h_PQ(R) := B(R)[P][Q] is C^infinity on L ... a derivative of the smooth function R' -> DPsi(R')[.] followed by evaluation"), with the order of the two evaluations made explicit.
+Notation: L := L(R^n, R^l) = (Rn n →L[ℝ] Rn ℓ), L* := L(L, R) = (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, A := DPsi = fderiv R Psi : L -> L*, and h(R) := fderiv R (fderiv R Psi) R P Q = (DA(R)[P])[Q].
+1. Psi is C^infinity, so by contDiff_infty_iff_fderiv Psi is differentiable and A = fderiv R Psi is C^infinity. In particular A is differentiable at every R.
+2. Let a_Q(R) := A(R)[Q] = fderiv R Psi R Q. a_Q is A followed by the continuous linear evaluation T -> T(Q) from L* to R, so a_Q is C^infinity (ContDiff.clm_apply with the constant function Q).
+3. Fix R. The derivative of R' -> A(R')[c(R')] with the constant map c(R') = Q is given by the product rule for evaluating a differentiable CLM-valued map (fderiv_clm_apply): D a_Q(R) = A(R) o Dc(R) + (DA(R)).flip(Q) = (DA(R)).flip(Q), since the derivative of a constant map is 0. Applying this to P gives D a_Q(R)[P] = DA(R)[P][Q] = fderiv R (fderiv R Psi) R P Q = h(R). Hence h(R) = fderiv R a_Q R P for every R in L.
+4. Since a_Q is C^infinity, its derivative fderiv R a_Q : L -> L* is C^infinity (contDiff_infty_iff_fderiv again). The map R -> fderiv R a_Q R P is this derivative followed by the continuous linear evaluation at P (ContDiff.clm_apply with the constant function P), so it is C^infinity. By step 3 it equals h. Hence R -> fderiv R (fderiv R Psi) R P Q is C^infinity on L. QED
+Lean note: the argument uses normed structures only on L and on L*. It never needs them on the bilinear-form type (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, whose instances fail at the default maxSynthPendingDepth at the pin. The following script follows steps 1-4. It compiled against the exact frozen type at the pin (Lean 4.35.0-rc3, Mathlib 25730c7c, frozen Submission imports) with no errors or warnings:
+  intro n ℓ Ψ hΨ P Q
+  have hA : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ Ψ) := (contDiff_infty_iff_fderiv.1 hΨ).2
+  have haQ : ContDiff ℝ (⊤ : ℕ∞) (fun R => fderiv ℝ Ψ R Q) := hA.clm_apply contDiff_const
+  have hDaQ : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ (fun R => fderiv ℝ Ψ R Q)) :=
+    (contDiff_infty_iff_fderiv.1 haQ).2
+  have heq : (fun R => fderiv ℝ (fderiv ℝ Ψ) R P Q)
+      = fun R => fderiv ℝ (fun R' => fderiv ℝ Ψ R' Q) R P := by
+    funext R
+    rw [fderiv_clm_apply (hA.differentiable (by simp) R) (differentiableAt_const Q)]
+    simp
+  rw [heq]
+  exact hDaQ.clm_apply contDiff_const
+
+## Key steps
+
+1. A := fderiv R Psi is C^infinity (contDiff_infty_iff_fderiv)
+2. a_Q := (R ↦ fderiv R Psi R Q) is C^infinity because evaluation at Q is continuous linear
+3. fderiv_clm_apply with the constant argument Q: fderiv R a_Q R P = fderiv R (fderiv R Psi) R P Q
+4. fderiv R a_Q is C^infinity, so R ↦ fderiv R a_Q R P = D^2Psi(R)[P][Q] is C^infinity
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `python3 -I scan of dag.json lean_name values containing dohr_eb / ehs (collision check, 431 unique names); rg -c 'dohr_eb_ehs' <snapshot>`
+- `rg -n 'theorem ContinuousLinearMap.iteratedFDeriv_comp_left|theorem norm_compContinuousMultilinearMap_le|theorem contDiff_infty_iff_fderiv|theorem fderiv_clm_apply|theorem ContDiffAt.isSymmSndFDerivAt|theorem support_fderiv_subset|theorem IsCompact.uniformContinuousOn_of_continuous|theorem ContDiffOn.fderiv_of_isOpen|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem ContinuousOn.integrableOn_compact' <snapshot>/mathlib/Mathlib`
+- `rg -n 'integral_add_right_eq_self|uniformContinuous_of_continuous|norm_image_sub_le_of_norm_hasFDerivWithin_le|exists_cthickening_subset_open' <snapshot>/mathlib/Mathlib`
+- `lake build GMT.Ch05.Submission in scratch copy /tmp/ehs-split-1tMXHd/proj (Lean 4.35.0-rc3, .lake/packages -> shared lake-packages-25730c7c)`
+- `lake env lean Checks/Types.lean (3 child types + parent type in the comparator's replayed scope: namespace GMT.Ch05, open MeasureTheory Metric Set Filter Topology, open scoped ENNReal NNReal, open RectifiableVarifold)`
+- `lake env lean Checks/Assembly.lean (parent frozen type proved from the 3 child types + 4 dependency types posed as axioms; #print axioms)`
+- `lake env lean Checks/Small.lean (children dohr_eb_ehs_hessian_apply_contDiff and dohr_eb_ehs_inner_right_holder proved outright)`
+- `lake env lean Probe/Avail.lean and Probe/Avail2.lean (#check of every lemma cited in child 1 under the frozen imports, and with import Mathlib.Analysis.Calculus.FDeriv.Symmetric)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py, identical to the flow's copy) on the 3 child statements`
+- `git show <ref>:GMT/Ch05/Submission.lean | grep '^import' for the conical-approximation solution branches (precedent for adding Mathlib imports)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean and Submission.lean are byte-identical to the snapshot Contract. Neither the snapshot nor dag.json uses the prefix 'dohr_eb_ehs', so the three proposed names are globally fresh.
+
+All Mathlib lemmas cited in the child proofs exist at the pin, with these locations:
+- ContinuousLinearMap.iteratedFDeriv_comp_left: ContDiff/Basic.lean:255.
+- ContinuousLinearMap.norm_compContinuousMultilinearMap_le: Normed/Module/Multilinear/Basic.lean:919.
+- contDiff_infty_iff_fderiv: ContDiff/Defs.lean:1266.
+- ContDiffOn.fderiv_of_isOpen: ContDiff/Defs.lean:907.
+- fderiv_clm_apply: FDeriv/CompCLM.lean:143.
+- ContDiffAt.isSymmSndFDerivAt: FDeriv/Symmetric.lean:533.
+- support_fderiv_subset: FDeriv/Const.lean:379.
+- IsCompact.uniformContinuousOn_of_continuous: HeineCantor.lean:49.
+- HasCompactSupport.uniformContinuous_of_continuous: to_additive of HeineCantor.lean:91.
+- IsCompact.exists_cthickening_subset_open: Thickening.lean:426.
+- setIntegral_eq_integral_of_forall_compl_eq_zero: Bochner/Set.lean:486.
+- ContinuousOn.integrableOn_compact: LocallyIntegrable.lean:592.
+- norm_image_sub_le_of_norm_hasFDerivWithin_le: MeanValue.lean:422.
+- integral_add_right_eq_self: used at Rademacher.lean:190.
+
+Under the frozen Submission imports every one of these resolves except ContDiffAt.isSymmSndFDerivAt and second_derivative_symmetric_of_eventually. Child 1 must therefore add `import Mathlib.Analysis.Calculus.FDeriv.Symmetric`. The conical-approximation solution branches already add Mathlib imports to Submission.lean, so this has precedent. With that import, minSmoothness ℝ 2 = 2 closes by simp.
+
+Lean checks on the scratch build:
+- The 3 child types and the frozen parent type elaborate in the comparator scope.
+- With the 3 child types and the 4 dependency types posed as axioms, the parent type is proved. #print axioms lists propext, Classical.choice, Quot.sound and exactly those 7.
+- Children 2 and 3 are proved outright.
+
+The snapshot contains no elliptic or difference-quotient regularity theory that could replace child 1. 'difference quotient' only appears in UniformLimitsDeriv.lean, as recorded in the parent handoff.
