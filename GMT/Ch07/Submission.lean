@@ -549,6 +549,90 @@ theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid
     exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
       tendsto_one_div_add_atTop_nhds_zero_nat
 
+/-- **Weak convergence of derivatives against `C¹` test fields.**  If the `uₖ : ℝᵈ → ℝ` are
+`K`-Lipschitz and converge uniformly to `u`, and `Ψ : ℝᵈ → ℝᵈ` is `C¹` with compact support, then
+`∫ Duₖ[Ψ] → ∫ Du[Ψ]`.  The limit `u` is again `K`-Lipschitz.  Writing `Ψ = Σₗ Ψₗ eₗ`,
+Rademacher's theorem and integration by parts give `∫ Dv[Ψ] = Σₗ ∫ qₗ v` for every Lipschitz `v`,
+where `qₗ = DΨₗ[-eₗ]` is continuous with compact support; dominated convergence with the bound
+`|qₗ| (|u| + 1)` gives `∫ qₗ uₖ → ∫ qₗ u`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_weak_smooth : ∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Ψ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Ψ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Ψ y))) := by
+  intro d K us u Ψ hus hU hΨ hΨc
+  -- the uniform limit `u` is again `K`-Lipschitz
+  have hu : LipschitzWith K u := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    exact le_of_tendsto ((hU.tendsto_at x).dist (hU.tendsto_at y))
+      (Eventually.of_forall fun k => (hus k).dist_le_mul x y)
+  -- coordinates `Ψₗ = ⟨Ψ, eₗ⟩`: `C¹` with compact support
+  set e : Fin d → Euclid d := fun l => EuclideanSpace.single l 1
+  set g : Fin d → Euclid d → ℝ := fun l y => Ψ y l
+  have hg_smooth : ∀ l, ContDiff ℝ 1 (g l) := fun l =>
+    (EuclideanSpace.proj l : Euclid d →L[ℝ] ℝ).contDiff.comp hΨ
+  have hg_supp : ∀ l, HasCompactSupport (g l) := fun l =>
+    hΨc.comp_left (g := fun v : Euclid d => v l) (by simp)
+  have hdecomp : ∀ (L : Euclid d →L[ℝ] ℝ) (x : Euclid d), L x = ∑ l, L (e l) * x l := by
+    intro L x
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin d) ℝ).sum_repr x]
+    simp [map_sum, map_smul, e, EuclideanSpace.basisFun_apply, mul_comm]
+  -- `qₗ = DΨₗ[-eₗ]` is continuous with compact support
+  set q : Fin d → Euclid d → ℝ := fun l y => lineDeriv ℝ (g l) y (-(e l))
+  have hq_eq : ∀ l, q l = fun y => fderiv ℝ (g l) y (-(e l)) := fun l => funext fun y =>
+    ((hg_smooth l).differentiable one_ne_zero y).lineDeriv_eq_fderiv
+  have hq_cont : ∀ l, Continuous (q l) := by
+    intro l
+    rw [hq_eq l]
+    exact ((hg_smooth l).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hq_supp : ∀ l, HasCompactSupport (q l) := by
+    intro l
+    rw [hq_eq l]
+    exact ((hg_supp l).fderiv (𝕜 := ℝ)).comp_left (g := fun L : Euclid d →L[ℝ] ℝ => L (-(e l)))
+      (by simp)
+  -- for Lipschitz `v`, `∫ Dv[Ψ] = Σₗ ∫ Dv[eₗ] Ψₗ = Σₗ ∫ qₗ v` (Rademacher, integration by parts)
+  have hsum : ∀ (v : Euclid d → ℝ) (C : NNReal), LipschitzWith C v →
+      ∫ y, fderiv ℝ v y (Ψ y) = ∑ l, ∫ y, q l y * v y := by
+    intro v C hv
+    have h1 : (fun y => fderiv ℝ v y (Ψ y)) = fun y => ∑ l, fderiv ℝ v y (e l) * g l y := by
+      funext y
+      exact hdecomp _ _
+    rw [h1, integral_finsetSum]
+    · refine Finset.sum_congr rfl fun l _ => ?_
+      obtain ⟨D, hD⟩ := (hg_smooth l).lipschitzWith_of_hasCompactSupport (hg_supp l) one_ne_zero
+      rw [← hv.integral_lineDeriv_mul_eq hD (hg_supp l) (e l)]
+      apply integral_congr_ae
+      filter_upwards [hv.ae_differentiableAt] with y hy
+      rw [hy.lineDeriv_eq_fderiv]
+    · intro l _
+      have hgi : Integrable (g l) :=
+        (hg_smooth l).continuous.integrable_of_hasCompactSupport (hg_supp l)
+      refine Integrable.bdd_mul (c := C * ‖e l‖) hgi
+        (measurable_fderiv_apply_const ℝ v (e l)).aestronglyMeasurable
+        (Eventually.of_forall fun y => ?_)
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hv) (norm_nonneg _))
+  rw [hsum u K hu]
+  have hk : (fun k => ∫ y, fderiv ℝ (us k) y (Ψ y)) = fun k => ∑ l, ∫ y, q l y * us k y := by
+    funext k
+    exact hsum (us k) K (hus k)
+  rw [hk]
+  -- dominated convergence for each `∫ qₗ uₖ`, with bound `|qₗ| (|u| + 1)`
+  refine tendsto_finsetSum _ fun l _ => ?_
+  apply tendsto_integral_filter_of_dominated_convergence (fun y => ‖q l y‖ * (‖u y‖ + 1))
+  · exact Eventually.of_forall fun k => ((hq_cont l).mul (hus k).continuous).aestronglyMeasurable
+  · rw [Metric.tendstoUniformly_iff] at hU
+    filter_upwards [hU 1 one_pos] with k hk
+    refine Eventually.of_forall fun y => ?_
+    rw [norm_mul]
+    gcongr
+    have h1 := hk y
+    rw [dist_eq_norm] at h1
+    have h2 : ‖us k y‖ ≤ ‖u y‖ + ‖u y - us k y‖ := by
+      have := norm_sub_norm_le (us k y) (u y)
+      rw [norm_sub_rev] at this
+      linarith
+    linarith
+  · exact ((hq_cont l).norm.mul (hu.continuous.norm.add continuous_const))
+      |>.integrable_of_hasCompactSupport (hq_supp l).norm.mul_right
+  · exact Eventually.of_forall fun y => ((hU.tendsto_at y).const_mul (q l y))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
