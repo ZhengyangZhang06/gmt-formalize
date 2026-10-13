@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e9ba8f604742ae1bda8c396d1cb9448353d24a97e69d722fcde30c015bdc9359",
+  "git_delta": {
+    "base_commit": "2eff2c568e95c3aeb44eacf4edce59809eb4e404",
+    "candidate_commit": "504663036679888699191e777b80026fe18cdfee",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_contDiffOn_image_null_of_volume_null",
+    "diff_sha256": "4f612edf1964ef95e3851d8fabc82187646ab0423edf147ad60b204a308af8cc",
+    "source_sha256": "b2d2e11cfa1231691b9228e7e63f14a8fa490eebed4cc76911abf476d145a244",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_contDiffOn_image_null_of_volume_null",
+      "statement": "∀ (n N : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → T ⊆ V → volume T = 0 → μHE[n] (ψ '' T) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

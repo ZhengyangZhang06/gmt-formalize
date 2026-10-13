@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eb289a8616d593820ab806b82c5ad687448c064b98e1ca41d9d6d23ffdf06055",
+  "git_delta": {
+    "base_commit": "ad05e66cb32340410afc25531d3289f8ec2068f4",
+    "candidate_commit": "dc20d004c72fcccfa4e8d0e7737d3c15990098db",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "tangentMeasure_eventually_cone_small",
+    "diff_sha256": "35e8b1c09c84ac3d77bce1b6f98fa1adfc344ebe0b12d434ecb5037622a0f5ba",
+    "source_sha256": "666fe87382ab0406da82c8ff5a90cef2e47d0d04dc3230a01e0953c8f7919d5a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentMeasure_eventually_cone_small",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → 0 < n → HasApproxTangentPlaneWithMultiplicity n μ x P θ → ∀ ε : ℝ, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μ ({z | ‖P.starProjection (z - x)‖ ≤ ‖z - x‖ / 2} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (ε * ρ ^ n)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

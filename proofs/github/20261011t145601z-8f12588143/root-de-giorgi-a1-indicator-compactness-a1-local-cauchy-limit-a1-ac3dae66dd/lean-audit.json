@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1ccdafb104204614fc074dce1184edb43ca0d2f9a56c8133d705c09d19c1e4dd",
+  "git_delta": {
+    "base_commit": "a88bcb961baed1a469fe0c64b82509d80e237c1a",
+    "candidate_commit": "8db9bae8269976a427ecab60ae9bb2daf4751501",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_limit_of_local_cauchy",
+    "diff_sha256": "4717929276360dfeb080424c51614a96862dd7727b8d78bd30a90e406e2bbd04",
+    "source_sha256": "fc0353bbea44c4c0e2669be74ede6ca21aec8d8d75a4b41838600733007a43d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_limit_of_local_cauchy",
+      "statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → (∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε) → ∃ G : Set (Rn N), MeasurableSet G ∧ ∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

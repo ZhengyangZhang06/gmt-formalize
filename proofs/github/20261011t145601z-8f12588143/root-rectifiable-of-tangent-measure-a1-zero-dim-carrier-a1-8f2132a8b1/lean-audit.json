@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8613b982b241512f71c09b61c418a3299dc30a76553bfd14c5e8bb275e6570ed",
+  "git_delta": {
+    "base_commit": "ad05e66cb32340410afc25531d3289f8ec2068f4",
+    "candidate_commit": "51d88a09367549795a96f720431ca9f03143111f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "tangentMeasure_zero_dim_carrier",
+    "diff_sha256": "8e6da5d1bc80649cd59ae048cdc48570e33c689d7dc25b4f937aa405925df234",
+    "source_sha256": "91bd9048376cb5bb8dc9679752df9a8c9101a1ea00f01f14b251b08bc1534fa6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentMeasure_zero_dim_carrier",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ c : ℝ, 0 < c ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal c ≤ μ (Metric.ball x ρ)) → ∃ R : Set (Rn N), MeasurableSet R ∧ CountablyRectifiable 0 R ∧ μ Rᶜ = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

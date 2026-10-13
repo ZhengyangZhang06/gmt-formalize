@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "601662e4cb90d01ba1a77f4d18dad5e6fbad84947439ecdd83410e7d5529c136",
+  "git_delta": {
+    "base_commit": "85bd2619ec95f7a0e806c862e3eb30c20c721aec",
+    "candidate_commit": "4edf5e62910328aaa6a590b58a4841ebd525dcd0",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_hausdorff_density_of_approxTangent",
+    "diff_sha256": "b8036e9b136202b7b2a0c1f8c3357e635b0abb507b8df7cad9dc2ff96c39d29f",
+    "source_sha256": "23ef88baab30484f56027ef9f54337515326e629ebd3d5df7741e8883c875967",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_hausdorff_density_of_approxTangent",
+      "statement": "∀ (n N : ℕ) (M : Set (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μHE[n] (M ∩ Metric.closedBall x δ) < ∞) → HasApproximateTangentSpaceAt n M x P → Tendsto (fun ρ : ℝ ↦ μHE[n] (M ∩ Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

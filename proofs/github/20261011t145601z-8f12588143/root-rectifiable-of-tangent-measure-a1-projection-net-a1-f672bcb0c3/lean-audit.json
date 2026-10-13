@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4ee28444b631c666e52626e2a9841b9bc81f5da26933ee07d5ac423429475d7f",
+  "git_delta": {
+    "base_commit": "ad05e66cb32340410afc25531d3289f8ec2068f4",
+    "candidate_commit": "39dfa0a9acf93663356a59b9395469e1e15d632d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "tangentMeasure_countable_projection_net",
+    "diff_sha256": "d90232a8164ab4d2e37a86dc22a823617c8b928b9d5ca72eb3637ae4791c06eb",
+    "source_sha256": "06a397717c4bffbf09603986b82c1b82c4c928cc53282427458b2be90b427d7a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentMeasure_countable_projection_net",
+      "statement": "∀ (N n : ℕ) (ε : ℝ), n ≤ N → 0 < ε → ∃ Q : ℕ → Submodule ℝ (Rn N), (∀ j, finrank ℝ (Q j) = n) ∧ ∀ P : Submodule ℝ (Rn N), finrank ℝ P = n → ∃ j, ‖P.starProjection - (Q j).starProjection‖ < ε",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

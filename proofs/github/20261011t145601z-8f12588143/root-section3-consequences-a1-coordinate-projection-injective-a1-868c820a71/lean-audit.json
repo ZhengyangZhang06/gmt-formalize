@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9dd1cade93d3ebc2bd7d3b4cb6beb49868cd2db966079b722105217e2a4ad464",
+  "git_delta": {
+    "base_commit": "2eff2c568e95c3aeb44eacf4edce59809eb4e404",
+    "candidate_commit": "79f43d2230731dfa6ecafd291027b594228e8628",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_exists_coordinateProjection_injOn",
+    "diff_sha256": "9daaabcde37c5fa5a3e6fd135ae98177c465184d71f036c650995155000b4aae",
+    "source_sha256": "062145631f0b28a11eaa812c4ed3623ccaa1b6336b0506f806685f8269f81a2f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_exists_coordinateProjection_injOn",
+      "statement": "∀ (N n : ℕ) (L : Submodule ℝ (Rn N)), finrank ℝ L = n → ∃ J : Finset (Fin N), J.card = n ∧ Set.InjOn (coordinateProjection J) (L : Set (Rn N))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

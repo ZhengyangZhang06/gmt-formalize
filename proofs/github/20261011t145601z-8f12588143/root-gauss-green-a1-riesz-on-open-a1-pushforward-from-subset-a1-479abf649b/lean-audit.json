@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f498261af4cc025b6c95ed1e14cdce56ddbaaf390fe75728a73cdc2ae7995df2",
+  "git_delta": {
+    "base_commit": "a2340fc548447e3a7ab6da116dcb1e5acc7f79a4",
+    "candidate_commit": "14f8078e602d85a2292543b231e54eaaef3d1f37",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_riesz_pushforward_subtype",
+    "diff_sha256": "3224c4af1ccafa2270f9a2c0a32ec5a44f366ddcbd23c73025f9af4334c1a111",
+    "source_sha256": "4c1e0bce0307382335dd3fcab4a6ce1fa0dea085f26ff0f8ac2c9634bd1519c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_riesz_pushforward_subtype",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ₀ : Measure U) (ν₀ : U → Rn N), MeasurableSet U → (∀ K : Set U, IsCompact K → μ₀ K < ∞) → AEStronglyMeasurable ν₀ μ₀ → (∀ᵐ y ∂μ₀, ‖ν₀ y‖ = 1) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

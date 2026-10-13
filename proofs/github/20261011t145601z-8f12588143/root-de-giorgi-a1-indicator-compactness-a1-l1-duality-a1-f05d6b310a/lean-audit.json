@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "31e5fba77eae8b8957c5642c11e24b47e0cd929c6672b81c7a441b19ba1dc833",
+  "git_delta": {
+    "base_commit": "08d9e76c317acdf971f1e637bd7f925b512be220",
+    "candidate_commit": "30b69d18621ca03e9bfcc488350afcc4803549ef",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "77cfe6a1867d6f5c3a92a095a83819833ea2f00c59a6b97b6d2927264f2bd13a",
+    "source_sha256": "7ed4e14fb2ac396a10a3f075a91e194169357e28828f5fcd6cd5c0cf4d22bd18",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_ball_integral_abs_le_of_test_bound",
+      "statement": "∀ (N : ℕ) (w : Rn N → ℝ) (R M : ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume → (∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ → tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∫ y, w y * ψ y ≤ M) → ∫ y in Metric.ball (0 : Rn N) R, |w y| ≤ M",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.besicovitch_federer-a1`
+- Child DAG node: `root.besicovitch_federer-a1.cone_mass_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is Step 3 of the parent proof (P. Mattila, Geometry of Sets and Measures in Euclidean Spaces, Lemma 15.14; M. G. Dall'Alba, The Besicovitch-Federer Projection Theorem, Lemma 4.6, with the constants adjusted as in the parent), with all details written out. It uses the sibling cone_free_rectifiable.
+
+Notation. N := n + ℓ, |·| the Euclidean norm, B(x, ρ) the open ball, Hⁿ := μHE[n] (an outer measure on all subsets), P := W.starProjection. For x ∈ ℝ^N and t > 0 let X_∞(x, t) := {y : |P(y − x)| < t|y − x|} (open cone around x + W^⊥, without radius bound), so that the set {y | ‖W.starProjection (y − x)‖ < t * ‖y − x‖} ∩ Metric.ball x r of the statement is X(x, r, t) := X_∞(x, t) ∩ B(x, r). Note x ∉ X_∞(x, t) (since 0 < 0 fails) and X_∞(x, t) ⊆ X_∞(x, t′) for t ≤ t′. The hypothesis is
+ (H) Hⁿ(B ∩ X(x, r, s)) ≤ c(rs)ⁿ for all x ∈ B and 0 < r < δ.
+Facts used.
+ (F1) P is linear, |Pz| ≤ |z| (so P is 1-Lipschitz) and P(ℝ^N) = W.
+ (F2) Hⁿ on W. Let ω := Hⁿ(W ∩ B(0, 1)). Then 0 < ω < ∞ and Hⁿ(W ∩ B(w, ρ)) = ωρⁿ for all w ∈ W and ρ > 0. Reason: W with the induced metric is an n-dimensional inner product space; for subsets of W, Hⁿ computed in ℝ^N equals Hⁿ computed in W (the inclusion is an isometry; Mathlib Isometry.euclideanHausdorffMeasure_image), and on an n-dimensional inner product space μHE[n] is the volume measure (Mathlib InnerProductSpace.euclideanHausdorffMeasure_eq_volume), an additive Haar measure, so the ball of radius ρ has measure ρⁿ times the (positive, finite) measure of the unit ball (Mathlib Measure.addHaar_ball).
+ (F3) Hⁿ({x}) = 0 for every x, because n ≥ 1.
+
+1. Fix a ∈ ℝ^N and put B′ := B ∩ B(a, δ/8), B″ := {x ∈ B′ : B′ ∩ X_∞(x, s/4) ≠ ∅} and E := B′ ∖ B″.
+
+2. E is Hⁿ-null. Let x, y ∈ E. Since y ∈ B′ and x ∉ B″, y ∉ X_∞(x, s/4), i.e. (s/4)|y − x| ≤ |P(y − x)|. Thus E satisfies the hypothesis of the sibling cone_free_rectifiable with s/4 > 0 in place of s and r := 1 (the inequality even holds without the distance restriction), so E is countably n-rectifiable. As E ⊆ B and B is purely n-unrectifiable, Hⁿ(E) = 0. Consequently Hⁿ(B′) ≤ Hⁿ(B″) + Hⁿ(E) = Hⁿ(B″).
+
+3. The radius h(x). For x ∈ B″ let h(x) := sup{|y − x| : y ∈ B′ ∩ X_∞(x, s/4)}. The set is nonempty, each of its points y satisfies y ≠ x, and |y − x| ≤ |y − a| + |a − x| < δ/4. Hence 0 < h(x) ≤ δ/4. Choose x′ = x′(x) ∈ B′ ∩ X_∞(x, s/4) with |x′ − x| > 3h(x)/4 (possible since 3h(x)/4 < h(x)); then also |x′ − x| ≤ h(x) and |P(x′ − x)| < (s/4)|x′ − x|.
+
+4. The slab C_x. Let C_x := {z ∈ ℝ^N : |P(z − x)| < s·h(x)/4}. Claim: B′ ∩ C_x ⊆ {x} ∪ X(x, 3h(x), s) ∪ X(x′, 3h(x), s). Let z ∈ B′ ∩ C_x with z ≠ x.
+ (a) |z − x| ≤ h(x): otherwise |P(z − x)| < s·h(x)/4 < (s/4)|z − x|, so z ∈ B′ ∩ X_∞(x, s/4) and |z − x| ≤ h(x) by the definition of h(x), a contradiction. Consequently |z − x′| ≤ |z − x| + |x − x′| ≤ 2h(x) < 3h(x).
+ (b) If z = x′, then z ∈ X_∞(x, s/4) ⊆ X_∞(x, s) and |z − x| ≤ h(x) < 3h(x), so z ∈ X(x, 3h(x), s).
+ (c) If z ∈ X_∞(x′, s), then z ∈ X(x′, 3h(x), s) by (a).
+ (d) Otherwise z ≠ x′ and z ∉ X_∞(x′, s), i.e. s|z − x′| ≤ |P(z − x′)|. By linearity, |P(z − x′)| ≤ |P(z − x)| + |P(x − x′)| < s·h(x)/4 + (s/4)|x − x′| ≤ s·h(x)/2. Hence |z − x′| < h(x)/2 and |z − x| ≥ |x′ − x| − |z − x′| > 3h(x)/4 − h(x)/2 = h(x)/4. Then |P(z − x)| < s·h(x)/4 < s|z − x|, so z ∈ X_∞(x, s), and |z − x| ≤ h(x) < 3h(x) by (a); thus z ∈ X(x, 3h(x), s).
+
+5. Mass of a slab. Since x ∈ B, x′ ∈ B′ ⊆ B and 0 < 3h(x) ≤ 3δ/4 < δ, hypothesis (H) at x and at x′ with r := 3h(x), together with (F3) and subadditivity, gives
+ Hⁿ(B′ ∩ C_x) ≤ Hⁿ({x}) + Hⁿ(B ∩ X(x, 3h(x), s)) + Hⁿ(B ∩ X(x′, 3h(x), s)) ≤ 2c(3h(x)s)ⁿ = 2c·3ⁿ·(s·h(x))ⁿ.
+
+6. Covering (5r-lemma). Consider the open balls β_x := B(Px, s·h(x)/20) ⊆ ℝ^N, x ∈ B″, whose radii are ≤ sδ/80. By the Vitali covering lemma (Simon Ch. 1, 3.4; Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement with τ = 2) there is T ⊆ B″ such that the balls β_t (t ∈ T) are pairwise disjoint and every x ∈ B″ has some t ∈ T with β_x ∩ β_t ≠ ∅ and h(x) ≤ 2h(t). For such x and t, |Px − Pt| < s·h(x)/20 + s·h(t)/20 ≤ 3s·h(t)/20 < s·h(t)/4, i.e. x ∈ C_t. Hence B″ ⊆ ⋃_{t∈T} (B′ ∩ C_t). The index set T is countable: the β_t are pairwise disjoint nonempty open subsets of the separable space ℝ^N (each contains a point of a fixed countable dense set, and distinct t give distinct points).
+
+7. Packing estimate. Each β_t has its centre Pt in W, so by (F2) Hⁿ(W ∩ β_t) = ω(s·h(t)/20)ⁿ. The sets W ∩ β_t (t ∈ T) are pairwise disjoint Borel sets contained in W ∩ B(Pa, δ/4), because |Pt − Pa| ≤ |t − a| < δ/8 by (F1), s·h(t)/20 < δ/80, and δ/8 + δ/80 < δ/4. By countable additivity and (F2), Σ_{t∈T} ω(s·h(t)/20)ⁿ ≤ Hⁿ(W ∩ B(Pa, δ/4)) = ω(δ/4)ⁿ; dividing by ω ∈ (0, ∞): Σ_{t∈T} (s·h(t))ⁿ ≤ 20ⁿ(δ/4)ⁿ = 5ⁿδⁿ.
+
+8. By 6, countable subadditivity, 5 and 7: Hⁿ(B″) ≤ Σ_{t∈T} Hⁿ(B′ ∩ C_t) ≤ 2c·3ⁿ·Σ_{t∈T}(s·h(t))ⁿ ≤ 2c·3ⁿ·5ⁿ·δⁿ = 2·15ⁿ·c·δⁿ. (If B″ = ∅ this reads 0 ≤ 2·15ⁿcδⁿ.)
+
+9. Conclusion. By 2 and 8, Hⁿ(B ∩ B(a, δ/8)) = Hⁿ(B′) ≤ 2·15ⁿ·c·δⁿ, i.e. μHE[n] (B ∩ Metric.ball a (δ/8)) ≤ ENNReal.ofReal (2 * 15 ^ n * c * δ ^ n) (the right-hand side is ≥ 0 as c ≥ 0, δ > 0). Since a was arbitrary, this proves the claim. ∎
+
+## Key steps
+
+1. Split B′ := B ∩ B(a, δ/8) into B″ (points whose (s/4)-cone meets B′) and E := B′ ∖ B″; E is cone-free, hence rectifiable (sibling), hence Hⁿ-null.
+2. For x ∈ B″ let h(x) be the largest distance to a point of B′ in the (s/4)-cone and pick x′ at distance > 3h(x)/4.
+3. The slab C_x = {|P(z − x)| < s h(x)/4} meets B′ only in {x} ∪ X(x, 3h(x), s) ∪ X(x′, 3h(x), s), so Hⁿ(B′ ∩ C_x) ≤ 2c·3ⁿ(s h(x))ⁿ.
+4. Vitali 5r-covering of the balls B(Px, s h(x)/20) gives countably many disjoint balls whose 5-fold enlargements put B″ inside ⋃ C_t.
+5. Packing the disjoint n-balls in W ∩ B(Pa, δ/4) gives Σ(s h(t))ⁿ ≤ 5ⁿδⁿ, hence Hⁿ(B′) ≤ 2·15ⁿ c δⁿ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n "^def ForAlmostAllProjections|^noncomputable def frameProjection|^def BesicovitchFedererProjectionTheorem" project/GMT/Ch03/Contract.lean`
+- `rg -n "theorem measurable_rectifiable_purelyUnrectifiable_decomposition|theorem PurelyUnrectifiable.mono|theorem countablyRectifiable_iUnion" simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn" simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `rg -n "theorem exists_disjoint_subfamily_covering_enlargement|theorem exists_disjoint_covering_ae" mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `rg -n "theorem _root_.Monotone.measure_iUnion" mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `rg -n "theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi" mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `rg -n "theorem ae_tendsto_measure_inter_div" mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n "instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace" mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `rg -n "InnerProductSpace.euclideanHausdorffMeasure_eq_volume|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_zero" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "theorem hausdorffMeasure_zero_singleton" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n "theorem starProjection_norm_le" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n "theorem finrank_span_eq_card" mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `rg -n "lemma isMulInvariant_eq_smul_of_compactSpace" mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean`
+- `rg -n "IsTopologicalGroup \(unitary R\)" mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean`
+- `rg -l -i "besicovitch.?federer|purely.?unrectifiable" mathlib/Mathlib`
+- `rg -l -i "CompactSpace \(Matrix.orthogonalGroup|orthogonalGroup.*CompactSpace" mathlib/Mathlib`
+- `rg -n -i "orthogonalGroup|haar|grassmann" simongmt/Poincare/SimonGMT (only Ch02 additive-Haar area lemmas and a Ch08 Grassmannian type; no O(N) Haar measure)`
+- `lake env lean on comparator-scope test files (import GMT.Ch03.Submission + replayed contract scope) elaborating all 8 child types and three Lean assemblies (parent; compact_case; cone_density_positive)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SymmetricVitali.lean`
+
+Pinned snapshot (project d09bc8a, Mathlib 25730c7c) plus the pinned simongmt package. Reused by the children: SimonGMT measurable_rectifiable_purelyUnrectifiable_decomposition (measurable Lemma 3.2, used by compact_reduction instead of the sibling node, avoiding a cycle), PurelyUnrectifiable.mono, CountablyRectifiable.mono/countablyRectifiable_iUnion, euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz image bound for μHE); Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement (5r-lemma) and Vitali.exists_disjoint_covering_ae, Monotone.measure_iUnion (continuity from below for arbitrary sets), LipschitzOnWith.extend_real/extend_pi (McShane), Besicovitch.ae_tendsto_measure_inter_div (density theorem for finite measures), InnerRegularCompactLTTop for all measures on Polish spaces, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_zero + hausdorffMeasure_zero_singleton, Submodule.starProjection_norm_le, finrank_span_eq_card, Haar uniqueness on compact groups (isMulInvariant_eq_smul_of_compactSpace), IsTopologicalGroup (unitary R). No match: neither Mathlib nor SimonGMT contains the Besicovitch–Federer theorem, the cone lemmas, a CompactSpace instance or Haar measure for the orthogonal group, or invariant measures on Grassmannians/spheres in Hausdorff normalization; these are supplied by the children's proofs (cone_trichotomy carries the O(N) Haar-averaging argument).

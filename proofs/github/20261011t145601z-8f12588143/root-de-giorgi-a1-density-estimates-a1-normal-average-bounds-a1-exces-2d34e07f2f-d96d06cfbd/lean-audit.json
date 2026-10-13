@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cde80ab67202ddd3afde7df0f8d1f3cc69ce56381e383ff56b891359715bfb78",
+  "git_delta": {
+    "base_commit": "7f882ddb18e0a9ebdfed83788b415edaf5e836da",
+    "candidate_commit": "49746c981d7507d0f64f9d99194c3f639010247f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiNAB_excess_le_sqrt",
+    "diff_sha256": "eaea304d218086f3ec0da5c109d5e391f22459318b36e4209b6223646fd7e7c7",
+    "source_sha256": "e105c4ca8d4e1b6b3252b241d1a41157a9fc36145951e87e77d7f1a3303b8ac0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiNAB_excess_le_sqrt",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (e : Rn N) (S : Set (Rn N)), μ S < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → ∫ y in S, ‖ν y - e‖ ∂μ ≤ (μ S).toReal * Real.sqrt (2 * (1 - (μ S).toReal⁻¹ * ∫ y in S, inner ℝ (ν y) e ∂μ))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

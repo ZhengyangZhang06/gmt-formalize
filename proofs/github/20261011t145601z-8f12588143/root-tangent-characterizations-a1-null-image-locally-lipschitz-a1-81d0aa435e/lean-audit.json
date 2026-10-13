@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "28733ee2ec98c97814f2eec427dc00bad1f4965386bd599be71ebd6ac51a3d6d",
+  "git_delta": {
+    "base_commit": "7071efd653fc693f070856de73577aa54154ed13",
+    "candidate_commit": "bcd7595c8f81d4770ce3b09c67612b3072b24dce",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "hausdorffMeasure_image_null_of_locallyLipschitzOn",
+    "diff_sha256": "6fd4a0ef35902cff1437cb827501cc53308a80fd45de976682ac7d298808e9da",
+    "source_sha256": "37632a09c97ec1091fb6d16955dd459fd2d3df3bdfe16c18a0466f397cb53f27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn",
+      "statement": "∀ (n N : ℕ) (V Z : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → LocallyLipschitzOn V ψ → Z ⊆ V → volume Z = 0 → μHE[n] (ψ '' Z) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

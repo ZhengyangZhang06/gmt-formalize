@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "64e08b639fcbcf39f1819be694a8a346b9fd562f29d525a802e9f4b0e56a0408",
+  "git_delta": {
+    "base_commit": "2eff2c568e95c3aeb44eacf4edce59809eb4e404",
+    "candidate_commit": "304f06ec8ee277cce9ddd80eb9ee532f13e56b83",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_rectifiableDecomposition",
+    "diff_sha256": "3a4a2369df0a9871667687ab6ede4fb8fb5aa5f380f76e8c612deaedc763741a",
+    "source_sha256": "eb94489df3ddc88bfd5ad7126b52d97a9097fe0fdd576bd1fed27b1764e6c8ec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_rectifiableDecomposition",
+      "statement": "RectifiableDecomposition",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

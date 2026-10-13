@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "319e1f82bf0e6fdbb54a684e176c8dd54d6a60ff8b4d9d15a66487f039c39517",
+  "git_delta": {
+    "base_commit": "cbae100144d4035b0d67385126d76792b9ddc1b3",
+    "candidate_commit": "4b58890a18d202dde4f23334edb4a440d55d821d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_measure_eq_of_open_eq",
+    "diff_sha256": "06edd74a4c07f12da5109aa84dd0ef4c747c1597007b24e7e1d4ed26b13bcaa1",
+    "source_sha256": "454404d397e3888d48c5248ddd59cd1ae28b2dfc7ef5d9036cc3ab70e9f30827",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_measure_eq_of_open_eq",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ μ' : Measure (Rn N)), IsOpen U → μ Uᶜ = 0 → μ' Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → (∀ O : Set (Rn N), IsOpen O → O ⊆ U → μ O = μ' O) → μ = μ'",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

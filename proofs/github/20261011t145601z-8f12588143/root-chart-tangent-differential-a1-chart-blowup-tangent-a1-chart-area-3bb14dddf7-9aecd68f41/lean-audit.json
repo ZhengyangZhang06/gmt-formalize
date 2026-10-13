@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "84a22b536c8494ba35f04c0989068373e9f1e1296250bb9735073cdd7f993713",
+  "git_delta": {
+    "base_commit": "581e7c59a001d57700701c59029db18a623640ea",
+    "candidate_commit": "b0d27781477c6ee1277d2814f320e4e87ddfb2d0",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_injective_area_setIntegral",
+    "diff_sha256": "71d04bf7f05b34731cad443c6d5c0adbdcdc30fd2b506af094cf18ecd3e69619",
+    "source_sha256": "db3c5b0e23a77f85c18988a45f1eb77cfa0cef583b3273423c5849b41f840e69",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_injective_area_setIntegral",
+      "statement": "∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0), IsOpen B → LipschitzOnWith K ψ B → InjOn ψ B → ∀ g : Rn N → ℝ, Continuous g → ∫ y in ψ '' B, g y ∂μHE[n] = ∫ v in B, g (ψ v) * (fderiv ℝ ψ v).toLinearMap.normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

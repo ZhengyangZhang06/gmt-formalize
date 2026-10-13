@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "385dc9333cf453209bc2fe237762d520f590b4cc6d15ca7c7a978bdc39f31eb6",
+  "git_delta": {
+    "base_commit": "9636c87124608c5d0386e27bfa9a48673cff0b2e",
+    "candidate_commit": "3f39aab1378339e2fa9bd9d66b5f50aebfcbafce",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_l1Dual_tendsto_integral_mul",
+    "diff_sha256": "9552ff9f5b5495ad6e40cc95c7f39fb94e9c2fc5ab7eaa1a598592213fe8f072",
+    "source_sha256": "80a70996b733bd6129ec071d95131bacd5e9b00ce1ac6c5ca29ad292aeba450e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_l1Dual_tendsto_integral_mul",
+      "statement": "∀ (N : ℕ) (w s : Rn N → ℝ) (R : ℝ) (ψ : ℕ → Rn N → ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume → (∀ j, AEStronglyMeasurable (ψ j) volume) → (∀ j y, |ψ j y| ≤ 1) → (∀ j y, y ∉ Metric.ball (0 : Rn N) R → ψ j y = 0) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))) → Tendsto (fun j ↦ ∫ y, w y * ψ j y) atTop (𝓝 (∫ y, w y * s y))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

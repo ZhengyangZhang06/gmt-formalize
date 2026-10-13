@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bb5298e1f05af4551b90c577824aee926b7135a37937a37c40448cd3e76cd55c",
+  "git_delta": {
+    "base_commit": "44d3d66b3769ae6f131339d1b42b5c8d69790c27",
+    "candidate_commit": "504efa5909bbf32f289422af7f49be5f18d270e3",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "03f9665ee8185cf2e0f8d77125b10c9e5b66b93100f0ca8fc598e596a7b704a8",
+    "source_sha256": "c15e7e872ebf21962ef58645370d2dc7cfdd7c4fca7478cf0a4a26506946ccfe",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.submanifoldCoverCharacterization_holds",
+      "statement": "SubmanifoldCoverCharacterization",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

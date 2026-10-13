@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "59e8d7c3ee20b2475ffaaab156f4db61a747196943e867648f4443b7b2628d5e",
+  "git_delta": {
+    "base_commit": "81e07832ddaee7a309d3e2c45c2c1cda818e6fab",
+    "candidate_commit": "8426e9d802457119314670d8b312f01c6227230d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_plane_closedBall_measure_eq",
+    "diff_sha256": "4a487624dad3f5f737627f4cfd6080a35e21516f677ae8417e4eee35330b6369",
+    "source_sha256": "0399ac56fc76cf7033201c80127c25edaca313c01946e995e33427973110d38a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_plane_closedBall_measure_eq",
+      "statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) < ∞ ∧ ∀ y ∈ W, ∀ ρ : ℝ, 0 ≤ ρ → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall y ρ) = ENNReal.ofReal (ρ ^ n) * μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

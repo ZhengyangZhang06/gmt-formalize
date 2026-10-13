@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "41c305b8df9425aa10386394fe93ab31af324d10ca8c5bbb05040a5f0b0698b8",
+  "git_delta": {
+    "base_commit": "1d2c8b27140de8f8af090dcade9dd92b0d77cba6",
+    "candidate_commit": "3a8bf9244c4c857255b60d48ef2930ad7f6d33e3",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "lipschitz_real_c1_approximation",
+    "diff_sha256": "63a4a9a8629958732ff475d7cec8d9dc0238afc83b0eec9b50baacb180365282",
+    "source_sha256": "ff1a936a92d0c50d1533762eea3974ad7a3e7d49314162a0cecfc60a3f13f9c4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitz_real_c1_approximation",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68c66b53ba2b894bdaf8ebe1e849265296bbee5b6a0210010018afd79bba2e7f",
+  "git_delta": {
+    "base_commit": "b66e405fb3f071ec19068322b9ccd21e0844d6b8",
+    "candidate_commit": "eb052edcc8c467d21a4a6aa8b2f5c7e52e3b3704",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "coarea_normDet_block_triangular",
+    "diff_sha256": "b6b585ecc316d75e25e020753f8cfdd96a87478b96a57d1eb692a93987f0f9de",
+    "source_sha256": "6a8fd6d856f9022143eba9002d183e831795e195b294c6b540d41b1713cc4824",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_normDet_block_triangular",
+      "statement": "∀ {V X : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] (f : V →ₗ[ℝ] X) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective f → W = (K.map f)ᗮ → f.normDet = (f ∘ₗ K.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

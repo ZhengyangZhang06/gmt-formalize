@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e4d3ef6f3a04e681795f709f5d644fed609532a2b08bdd5e21ac64ef91ea83a",
+  "git_delta": {
+    "base_commit": "660aa3453e52f2440a9ec2a283da4a9f77fc4201",
+    "candidate_commit": "b369d10e92f4fc96b2774e64f61380ab809a58ac",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "contDiffOn_image_euclideanHausdorff_null",
+    "diff_sha256": "e097239164769c49ad3ba39f4afa5a765a54e0a08fd852208018f5a7ea0939ba",
+    "source_sha256": "b5d66a39851380a4576b232c1d71dde8fcf8da68d5e371cf353d628990f7ff63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.contDiffOn_image_euclideanHausdorff_null",
+      "statement": "∀ (n N k : ℕ) (D Z : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen D → ContDiffOn ℝ 1 ψ D → Z ⊆ D → μHE[k] Z = 0 → μHE[k] (ψ '' Z) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

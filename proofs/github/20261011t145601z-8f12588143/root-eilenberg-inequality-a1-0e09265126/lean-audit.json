@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "feb19a07f906b639cc1efd82419cf5d3a6adb80bff682f3bb7bd285fd499a78d",
+  "git_delta": {
+    "base_commit": "1e9aaa15cad66495ef044c6566d7a5d59233adcc",
+    "candidate_commit": "c2a19cb2785ec877ca0ea4d4a5d709b1943bb099",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "09498a411e201a1fcd80ae86bc72ae20fbf29f51bb049714e34f2eb27d64af6b",
+    "source_sha256": "74a256dda6e35fa9a7b8c8a07f5cfeb1d78bf97f61a21cf2fdab47af33aee740",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_upper_integral_inequality",
+      "statement": "∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6d7b5fbe8053dd5d34e9dbd3e67a3cf8dae7115d7b673c652a53fdbe3fe2fcd6",
+  "git_delta": {
+    "base_commit": "6d314cd926ad736b23940f775af346fb0b9c13c4",
+    "candidate_commit": "dde971756da9927204f22d4b7b7edb27bcf14dd1",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_cone_subset_iUnion_slabCones",
+    "diff_sha256": "2d6531277f68ac2c92ba398aaee866b79769213129ca0543ba9f5645b52b4bb3",
+    "source_sha256": "d08ad85e94c4e3a32bf8c00c70c8f20654b830740e9c529ab85f3cfd8ca46e53",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_cone_subset_iUnion_slabCones",
+      "statement": "∀ (n ℓ : ℕ), 0 < ℓ → ∀ W : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W = n → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∀ (y : Rn (n + ℓ)) (s : ℝ), ‖W.starProjection y‖ < s * ‖y‖ → ∃ j, ‖W.starProjection y‖ < Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

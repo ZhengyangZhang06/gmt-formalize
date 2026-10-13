@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c2382ccd7575a14e0007ef0d97abd509d1a8efd532ba7f9df64acf5f3ebe29c0",
+  "git_delta": {
+    "base_commit": "e5b565d0635d8a79d69b519640d43f288e7ce049",
+    "candidate_commit": "f44cf72b84444bfd957197e46886daa1dbc8da1e",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDensSob_one_dim_contDiff",
+    "diff_sha256": "72060cc03bb1f084eca48456ea1e7fa1b083f48bd2df4352e57b19aea4807692",
+    "source_sha256": "62db275820ffed01a37c1abaca087d92c9aebc532a77d600b614b3bf3ea56cdc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDensSob_one_dim_contDiff",
+      "statement": "∀ v : Rn 1 → ℝ, ContDiff ℝ 1 v → HasCompactSupport v → eLpNorm v ∞ volume ≤ ENNReal.ofReal (1 / 2 * ∫ y, ‖fderiv ℝ v y‖)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

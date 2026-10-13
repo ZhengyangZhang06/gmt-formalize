@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8db930916b43034dda57aa711d7f90249f84842c80c615ea96a8296616afb4c4",
+  "git_delta": {
+    "base_commit": "66f554dc7c1f605af87057ea2f013ad59f61f9f9",
+    "candidate_commit": "cb63064354a83d13bba04666872c91ac32037685",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_coneMass_slab_cover",
+    "diff_sha256": "ee9280246e99f001a4590caefb84aefe042de52fde357c0ba0f74614f0f09b4e",
+    "source_sha256": "4ff9ec6705cecbb5a8e2f66e1f23041597a3bb8996d172251330284e20e1ad3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_coneMass_slab_cover",
+      "statement": "∀ (N : ℕ) (P : Rn N →L[ℝ] Rn N) (s R : ℝ) (S : Set (Rn N)) (x : Rn N), 0 < s → (∃ y ∈ S, ‖P (y - x)‖ < s / 4 * ‖y - x‖) → (∀ y ∈ S, ‖y - x‖ ≤ R) → ∃ h : ℝ, 0 < h ∧ h ≤ R ∧ ∃ x' ∈ S, S ∩ {z | ‖P (z - x)‖ < s * h / 4} ⊆ insert x ({y | ‖P (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x (3 * h) ∪ {y | ‖P (y - x')‖ < s * ‖y - x'‖} ∩ Metric.ball x' (3 * h))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6883d151fca7d2c87a34ddcdf40b28056901b1a2a515382e3f0c8526b6bb3af6",
+  "git_delta": {
+    "base_commit": "e155cfc4aa2b59309b4ef86f5dc385d54ba2cbd5",
+    "candidate_commit": "e30037d8261971ccbe3d26672de595e1e579f27a",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgi_measurableSet_reducedBoundary",
+    "diff_sha256": "25c31580ba57471c2702c3668370cfaa011752ca96e6defbf2897bd2f0c0079e",
+    "source_sha256": "5a699e85f2cc21995d522a445d83f07bc692abd76fc4814762eb5acf67ae9029",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_measurableSet_reducedBoundary",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → MeasurableSet (reducedBoundary U μ ν)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

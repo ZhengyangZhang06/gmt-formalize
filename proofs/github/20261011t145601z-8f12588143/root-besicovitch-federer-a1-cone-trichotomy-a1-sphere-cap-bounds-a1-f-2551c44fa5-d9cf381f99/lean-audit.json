@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e91739689bec87be1a0a207c7e5d7ccae079848e9657802329a2ac292443fbc8",
+  "git_delta": {
+    "base_commit": "fb0a95659267905db29ce033aa3e53b4edf5f26f",
+    "candidate_commit": "46dae9bc0bc191714b7f28c646066f2af60f7f08",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_planeBall_measure_uniform",
+    "diff_sha256": "fb4f5c81d86981040e5f5c29b5a721b78dcfa7b544dd156636f0dcd6f3805a51",
+    "source_sha256": "80991d2a6adcb868bc495494899ce69d3cd0d5c2bd6abd184c9e3d5c8cfd13a6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_planeBall_measure_uniform",
+      "statement": "∀ n : ℕ, ∃ ω : ℝ, 0 < ω ∧ ∀ (N : ℕ) (T : Submodule ℝ (Rn N)), finrank ℝ T = n → ∀ w ∈ T, ∀ ρ : ℝ, 0 < ρ → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball w ρ) = ENNReal.ofReal (ω * ρ ^ n)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

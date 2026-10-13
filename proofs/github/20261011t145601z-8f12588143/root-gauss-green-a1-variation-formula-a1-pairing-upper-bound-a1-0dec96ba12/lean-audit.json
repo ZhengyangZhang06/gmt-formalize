@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c107c4cf2e4876c6fc317e311d7be1662cfae40b666a4668cb1994b21bf2df0a",
+  "git_delta": {
+    "base_commit": "97c7a95289ed7520df536a0fea780852656a5504",
+    "candidate_commit": "02587c45bb47cfca62715ce2a04a47ad5167bdcd",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenVar_ofReal_integral_inner_le_measure",
+    "diff_sha256": "4aae56d2c7053274b7c7da664b12b5fbe72b84520e5843a95df81920f6f5b781",
+    "source_sha256": "6b58fc4f43e7d82082263fbe74e9fdc60cefb1f72e4495d6d1779d33a7d53d37",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenVar_ofReal_integral_inner_le_measure",
+      "statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (ν g : Rn N → Rn N), MeasurableSet O → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → tsupport g ⊆ O → (∀ x, ‖g x‖ ≤ 1) → ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) ≤ μ O",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

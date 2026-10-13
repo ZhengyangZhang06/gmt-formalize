@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a2818e5a6193ce90e60121ea23e84444449c03a0f543214a7a25ba8454430901",
+  "git_delta": {
+    "base_commit": "67dab962008b643b53041e487ddfba490152cd84",
+    "candidate_commit": "f13086cfeae48aae23482369a9582022d0a31cda",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "areaFormula_glue_pieces",
+    "diff_sha256": "83d3239059cca454d315d0c1df87a4502de9eaefb81b61e8a5aa12ca5cc45de4",
+    "source_sha256": "b505b31b3d1ed98ea920d119c1938bdd45872495db1a1f7fff57a62e36e8aee2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.areaFormula_glue_pieces",
+      "statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (g h : X → ℝ≥0∞) (M : Set X) (G : ℕ → Set X), NullMeasurableSet M μ → (∀ α, NullMeasurableSet (G α) μ) → μ (M \\ ⋃ α, G α) = 0 → ν (f '' (M \\ ⋃ α, G α)) = 0 → (∀ α, ∀ S ⊆ M ∩ G α, NullMeasurableSet S μ → (∫⁻ x in S, g x ∂μ = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂ν) ∧ AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) ν) → ∫⁻ x in M, g x ∂μ = ∫⁻ y, ∑' x : ↥(M ∩ f ⁻¹' {y}), h x ∂ν",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

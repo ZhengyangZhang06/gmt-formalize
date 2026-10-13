@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e4a6d42189f0b73158db8ecf4ed1f7895a7290458b90f832119cd379da449101",
+  "git_delta": {
+    "base_commit": "b11fc8d03581018a281173fed8d00895d708ef56",
+    "candidate_commit": "3d7dbf7fdfd27ea5a7083d1b0e66293124742d53",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_starProjection_isometricChart",
+    "diff_sha256": "b894a5b64d3a3031ee6673ca5f22d35e19d5b60585f92e53cfd5fd7f301f11bf",
+    "source_sha256": "2256003ba5308539544e368cff6e4ced0cdc6b10bf93931dcae1ae42fe741b50",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_starProjection_isometricChart",
+      "statement": "∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∃ f : Rn (n + ℓ) → Rn n, LipschitzWith 1 f ∧ (∀ a b : Rn (n + ℓ), f a = f b ↔ W.starProjection a = W.starProjection b) ∧ ∀ S : Set (Rn (n + ℓ)), μHE[n] (W.starProjection '' S) = volume (f '' S)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a9d06e5c4a0e804e2d86e3a9b7a8a13779ecd8a2f5a4a674fce284596dd3c34d",
+  "git_delta": {
+    "base_commit": "f0f9b6efa29fd54d0fc69aaf45eb35a074707765",
+    "candidate_commit": "bb5c9aa1789a76351fcca7a6aab1c6a718b8fadf",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "5a82c4ebf7558e2931bdd01dd834d5b3cc6e79a1df9e62056afa1fd436354414",
+    "source_sha256": "7b2019434ab78de89f8bf57877bfa46393af935760ead7c7c65c8f5d4a0f5747",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_regular_point_ball_image_isC1Submanifold",
+      "statement": "∀ (n p : ℕ) (G : Rn n → Rn p), ContDiff ℝ 1 G → ∀ x : Rn n, Function.Injective (fderiv ℝ G x) → ∃ σ : ℝ, 0 < σ ∧ IsC1Submanifold n (G '' Metric.ball x σ)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c0d569837b44c6e6d4f8c8852696a3311c79e9833d752bf400155e35cfaa95b5",
+  "git_delta": {
+    "base_commit": "66f554dc7c1f605af87057ea2f013ad59f61f9f9",
+    "candidate_commit": "4d1747c326b6f7eaa9d61ab2edf6ab2732d750b8",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_coneMass_subspace_ball_packing",
+    "diff_sha256": "fba4b57b331be8ce5bc261e0557516836e75200320fcb7eaf63f2c182ace6022",
+    "source_sha256": "c5aae73ad83c841034594121767051cfdb7b5414d71fe8899a956a7d8e7d89f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_coneMass_subspace_ball_packing",
+      "statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → ∀ (ι : Type) (T : Set ι) (w : ι → Rn N) (ρ : ι → ℝ) (w₀ : Rn N) (R : ℝ), T.Countable → (∀ i ∈ T, w i ∈ W) → w₀ ∈ W → (∀ i ∈ T, 0 < ρ i) → T.PairwiseDisjoint (fun i ↦ Metric.ball (w i) (ρ i)) → (∀ i ∈ T, Metric.ball (w i) (ρ i) ⊆ Metric.ball w₀ R) → ∑' i : T, ENNReal.ofReal (ρ i ^ n) ≤ ENNReal.ofReal (R ^ n)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

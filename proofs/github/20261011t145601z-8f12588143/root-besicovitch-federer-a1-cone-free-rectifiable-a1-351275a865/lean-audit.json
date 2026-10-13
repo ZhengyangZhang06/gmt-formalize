@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0e2cd809c5096ac871dc0edd3c7012e9df00a43c8754cc8baac2bfcf7ab6abd9",
+  "git_delta": {
+    "base_commit": "e1117ce32893a64c88fdbafb77ade2448556bedb",
+    "candidate_commit": "2c0eae0eee5431c8c5efd7d72ebfc559ba61f923",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_coneFree_countablyRectifiable",
+    "diff_sha256": "568f9306d7a3120b818f151a992abc6f4e218d24fc66f7070ebbb25b8579c9e1",
+    "source_sha256": "8d5ff68f3630fb6c90efbf710c943b3eb015e297b7e0b05de28c01c7a9a51db6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_coneFree_countablyRectifiable",
+      "statement": "∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ (s r : ℝ), 0 < s → 0 < r → ∀ E : Set (Rn (n + ℓ)), (∀ a ∈ E, ∀ b ∈ E, dist b a < r → s * ‖b - a‖ ≤ ‖W.starProjection (b - a)‖) → CountablyRectifiable n E",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

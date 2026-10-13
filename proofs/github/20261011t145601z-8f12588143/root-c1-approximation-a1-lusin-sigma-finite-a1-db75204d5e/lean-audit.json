@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4bfe4a26a9349d4b474f2146b2698996f2c9089f337dfa26e11db202d8c5fd40",
+  "git_delta": {
+    "base_commit": "52cebd177e6c754aa812ed6d9c630d52ef5da848",
+    "candidate_commit": "514d46539d1710ec4e6e0b27a7cf6315a4baf479",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "lusin_closed_subset_continuousOn_volume",
+    "diff_sha256": "b86689d98d756cded7922c5dba103bab9e01d5e5a4237289e731117015ed6f24",
+    "source_sha256": "fa1b236d8dc11e26c5dc077de8b822d16da148a1573878349ebd94dc969e2502",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lusin_closed_subset_continuousOn_volume",
+      "statement": "∀ (n : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] [MeasurableSpace F] [BorelSpace F] (u : Rn n → F) (S : Set (Rn n)), Measurable u → MeasurableSet S → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ S, IsClosed C ∧ volume (S \\ C) < ε ∧ ContinuousOn u C",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

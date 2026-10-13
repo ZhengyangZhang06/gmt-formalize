@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f325f0a5a12e6341b0e2661fc92d924fec21b7bc153edc3cf448268c7884318b",
+  "git_delta": {
+    "base_commit": "ef2f2cdcd3c707233d95a83db88150739ba86f9d",
+    "candidate_commit": "c0095b05240341c6bd856cbe19cfc013b157890b",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "e531f24e35a3261e568cead54206c48f6b9fc3a8490b51c7e92b38f999815b8f",
+    "source_sha256": "adfbde0029449f50e393a66854f84074804fc6f959202b36bbef8e48876964ed",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_rectifiable_measure_eq_hausdorff",
+      "statement": "(∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) → ApproximateTangentCharacterization → ∀ (n ℓ : ℕ) (U S : Set (Rn (n + ℓ))) (μ : Measure (Rn (n + ℓ))), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn (n + ℓ)), IsCompact K → K ⊆ U → μ K < ∞) → MeasurableSet S → S ⊆ U → μ Sᶜ = 0 → (∀ x ∈ S, ∃ P : Submodule ℝ (Rn (n + ℓ)), HasApproxTangentPlaneWithMultiplicity n μ x P 1) → CountablyRectifiable n S ∧ μ = (μHE[n] : Measure (Rn (n + ℓ))).restrict S",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

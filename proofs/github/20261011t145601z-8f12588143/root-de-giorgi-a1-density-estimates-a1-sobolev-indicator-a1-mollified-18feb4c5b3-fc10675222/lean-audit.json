@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86692ff4a653e11a3dd2178041d43f56e75ffb041f9b9630338054f558c76559",
+  "git_delta": {
+    "base_commit": "d089f5f0f7229520d36125bf740aa3b79868303b",
+    "candidate_commit": "1520a387149715b857eb16855640fcaa8284fe83",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiSobIndMFL_integral_mul_swap",
+    "diff_sha256": "ea6ecd8e7a192d3c7d57699c4d3f1bbc5a72a17a990e0b7dde3b02eaf11d2277",
+    "source_sha256": "f250504637f2b1fb1ebeb68687aaa2b97ad1d46e9ef26c55bc506bdfc1cec38f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiSobIndMFL_integral_mul_swap",
+      "statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → Continuous ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → μ (Metric.cthickening r (tsupport ζ)) < ∞ → Integrable (fun y ↦ ζ y * (∫ z, ρ (y - z) ∂μ)) ∧ ∫ y, ζ y * (∫ z, ρ (y - z) ∂μ) = ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5aa6eba1787d4e7d687ad40515eeb35e60714125662a91ad8332093adf4c20c",
+  "git_delta": {
+    "base_commit": "6e5d6988ab8c184989ca5fce8500d36b9c783c5e",
+    "candidate_commit": "77d9bbdab5ab3f01c167c50989f411308b52642d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_riesz_sigmaCompact_borel",
+    "diff_sha256": "daf4d554fe18cf5b2b77004f58e1747427a23883af7c4a68820bf027b6654d88",
+    "source_sha256": "c1c18e97d204b3a12eba7cfc9811049a00850a8e4114d760db1b2600f8fb0ae7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_riesz_sigmaCompact_borel",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] (N : ℕ) (L : C_c(X, Rn N) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ C : ℝ, ∀ f : C_c(X, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) → ∃ (μ : Measure X) (ν : X → Rn N), (∀ K : Set X, IsCompact K → μ K < ∞) ∧ StronglyMeasurable ν ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ f : C_c(X, Rn N), L f = ∫ x, inner ℝ (f x) (ν x) ∂μ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

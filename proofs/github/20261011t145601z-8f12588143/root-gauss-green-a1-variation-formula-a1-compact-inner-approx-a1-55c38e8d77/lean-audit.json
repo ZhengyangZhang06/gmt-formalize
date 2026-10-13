@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "617a54371685a97e0019ea24c50f8c1d1d54c13f4d7520c6eacec13a4b9c4086",
+  "git_delta": {
+    "base_commit": "97c7a95289ed7520df536a0fea780852656a5504",
+    "candidate_commit": "5b897c9e3d395afd6d90bba8b95c0b1e9eb146f1",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenVar_measure_isOpen_le_of_isCompact",
+    "diff_sha256": "3e685e214977a0861919ed2e7bd52e0dd4c0acc0d11b674adcced9003ca30953",
+    "source_sha256": "a8f5d1282bd9fd933bf196d2945fe91d1fa8e3c5afc5c18604d85bdae121dcf8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenVar_measure_isOpen_le_of_isCompact",
+      "statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (c : ℝ≥0∞), IsOpen O → (∀ K : Set (Rn N), IsCompact K → K ⊆ O → μ K ≤ c) → μ O ≤ c",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

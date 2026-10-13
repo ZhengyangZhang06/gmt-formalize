@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c51286da48eee1ec771cc5c11aba2bed90bf7603d4508c95e6e81f1c069a2b75",
+  "git_delta": {
+    "base_commit": "e08ab35378e4bdfd5a9c1681ec1d26f83f526f19",
+    "candidate_commit": "fe8fba36e33614def49fad2e9496a8b16dd8b7f5",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "6e2cb1c859d621381f7d41fa7b116fd27f2bdd2a12506dd0a450a9b934b8e582",
+    "source_sha256": "ee778592857011ab409f54a6b6a509945a86919bf87307f83d09a28e599890d5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.approximateTangentCharacterizations_hold",
+      "statement": "ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

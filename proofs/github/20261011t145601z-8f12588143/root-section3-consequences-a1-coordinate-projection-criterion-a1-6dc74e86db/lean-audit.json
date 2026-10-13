@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "91832b331efa1166ef014c188fa758a866db5b53ff9af6344ca4ef61bac4379d",
+  "git_delta": {
+    "base_commit": "46b8a34d70e2f8a0b1e9648e8809406fa08b1141",
+    "candidate_commit": "4cfe848112ee7b4a6e2300a0723c1c2633d6b2bd",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_coordinateProjectionCriterion_of_submanifoldCover",
+    "diff_sha256": "29d84781e7b825cef9cd88742f08cefaeaae7f295a5c1b4dbf6cd6168cd9752f",
+    "source_sha256": "f39c28923cb59987fdfa8e9a064e9c4e738ae02eaa49a73237104c31e9651fd7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_coordinateProjectionCriterion_of_submanifoldCover",
+      "statement": "SubmanifoldCoverCharacterization → CoordinateProjectionCriterion",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

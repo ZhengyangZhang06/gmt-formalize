@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5b01fbe95bd1704519565373e7ff7a7dd12e0e948717a59da4abf04da0561775",
+  "git_delta": {
+    "base_commit": "4bed88089e28434b97b338793a349f03e055ac2d",
+    "candidate_commit": "3f6f99a189141137e78814baf343ad3b8b6652da",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "5aea1d6e7b5d19976a0021b42db18e244d6710bf0d4f10d4f183356304b46ce8",
+    "source_sha256": "fc52be51a2f243736a6c6d78a5c9b726e17a3661ef971266e8a29e00aa4aa1f9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_measure_compl_reducedBoundary",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → μ (reducedBoundary U μ ν)ᶜ = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

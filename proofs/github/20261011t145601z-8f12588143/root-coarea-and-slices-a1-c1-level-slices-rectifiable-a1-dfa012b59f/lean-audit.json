@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7b353bfa3a7c3c5db26609da34832a746a87863413e082adf720f40aea69dce2",
+  "git_delta": {
+    "base_commit": "008701b579c9adf9745a5ec96a7a44793bb13141",
+    "candidate_commit": "2fac48b91327361e5865ea3d1fefd74066376978",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "229842f9a21a5d04f02df560ca15a1dbd859fabc672aa597f8136b24b30d732e",
+    "source_sha256": "298e8fc6b2a7ac25e83c91c898020696e2e5eaa6da45661a2a9174f6a85d9699",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_level_slices_countablyRectifiable",
+      "statement": "∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), 0 < k → IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)), CountablyRectifiable k (ψ '' (D ∩ G ⁻¹' {y}))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

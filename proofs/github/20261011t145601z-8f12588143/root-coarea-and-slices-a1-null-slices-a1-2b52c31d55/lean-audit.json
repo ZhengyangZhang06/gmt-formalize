@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fd67cf821d0bdf16f481ea29dadac9d670fac88b1522eab6f663d38624d2ab6a",
+  "git_delta": {
+    "base_commit": "e22f0ba8b4dd2ccff1f63017d565b31bfb6b4bd2",
+    "candidate_commit": "cf96e828ab573728e6833fbef2b9ca906b7a2cbb",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "coarea_null_slices_of_eilenberg",
+    "diff_sha256": "f4d9d44e1247f41cc5a80d0b9f6f8967e29ccd96ba662126df6b5ada55f5eb22",
+    "source_sha256": "bfff39993fea64964e64963c8e3c7c0a1a980d1c3ddc691219c9dffd044fb23d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_null_slices_of_eilenberg",
+      "statement": "(∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (N m k : ℕ) (U Z : Set (Rn N)) (f : Rn N → Rn m), LocallyLipschitzOn U f → Z ⊆ U → μHE[m + k] Z = 0 → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (Z ∩ f ⁻¹' {y}) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
