@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.graph_tangent_rank-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1",
+  "depth": 3,
+  "title": "Graph tangent planes are n-dimensional mu_V-a.e. in the graph region",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V a rectifiable n-varifold in U (contract structure RectifiableVarifold n l U) with weight mu := V.weight and support Sigma := V.support = U cap spt mu, xi in R^(n+l), R real with Bo_R(xi) contained in U, Q a linear isometry equivalence of R^(n+l), u : R^n -> R^l differentiable on Bo^n_R(0), G(z) := graphPoint z (u z), and assume Q((Sigma - xi)) cap Bo_R(0) = G(Bo^n_R(0)) cap Bo_R(0). Assume (TP): for mu-a.e. y in Bo_R(xi) and every x in Bo^n_R(0) with Q(y - xi) = G(x), V.tangentProj y is the orthogonal projection (starProjection) onto the subspace Q^{-1}(range DG(x)), DG(x) := fderiv R G x. Then for mu-a.e. y in Bo_R(xi) there is a subspace P of R^(n+l) with finrank P = n and V.tangentProj y = P.starProjection.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ball ξ R ⊆ U → DifferentiableOn ℝ u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (∀ᵐ y ∂V.weight, y ∈ ball ξ R → ∀ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) → V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection) → ∀ᵐ y ∂V.weight, y ∈ ball ξ R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj y = P.starProjection",
+  "lean_name": "dohr_lmo_graph_tangent_rank",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-graph-cabb27e079-a1"
+}

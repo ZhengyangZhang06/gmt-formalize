@@ -458,6 +458,117 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, 7.1 (second assertion, local multiplicity one), steps 1–2: if
+`Q(S − ξ) ∩ B̆_R(0) = Γ ∩ B̆_R(0)` for the graph `Γ = graph u` of a `C¹` map `u` on `B̆ⁿ_R(0)`
+whose `Hⁿ`-density is `1` at each of its points, then `Hⁿ(S ∩ B̆_ρ(ξ)) < ∞` for `ρ < R` and `S`
+has `Hⁿ`-density `1` at each point of `S ∩ B̆_R(ξ)`.  The isometry `T z = Q(z − ξ)` preserves
+`Hⁿ`; `T(S ∩ B̆_ρ(ξ))` lies in the compact set `G(Bⁿ_ρ(0)) ⊆ Γ`, `G x = (x, u x)`, covered by
+finitely many balls `B_r(G x)` with `Hⁿ(Γ ∩ B_r(G x)) < ∞`; and if `T y = G x`, then
+`T(S ∩ B_r(y)) = Γ ∩ B_r(G x)` for `0 < r < R − |y − ξ|`. -/
+theorem dohr_lmo_graph_support_density : ∀ n ℓ : ℕ, ∀ (S : Set (Amb n ℓ)) (ξ : Amb n ℓ) (R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (∀ x ∈ ball (0 : Rn n) R, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1)) → (∀ ρ : ℝ, ρ < R → (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball ξ ρ) < ⊤) ∧ ∀ y ∈ S ∩ ball ξ R, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (S ∩ closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1) := by
+  intro n ℓ S ξ R Q u hu hgraph hdens
+  -- Step 0: `T z = Q (z - ξ)` is an isometry, so it preserves `Hⁿ`, and
+  -- `T(S) ∩ B̆_R(0) = Γ ∩ B̆_R(0)` with `Γ = graph u`.
+  have hT : ∀ X : Set (Amb n ℓ),
+      (μHE[n] : Measure (Amb n ℓ)) (Q '' ((fun x => x - ξ) '' X)) = μHE[n] X := fun X => by
+    rw [Q.isometry.euclideanHausdorffMeasure_image,
+      (Isometry.of_dist_eq fun x y => dist_sub_right x y ξ).euclideanHausdorffMeasure_image]
+  have hSΓ : ∀ z ∈ S, ‖z - ξ‖ < R → ∃ x ∈ ball (0 : Rn n) R, graphPoint x (u x) = Q (z - ξ) := by
+    intro z hz hzR
+    have hmem : Q (z - ξ) ∈ Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R :=
+      ⟨⟨z - ξ, ⟨z, hz, rfl⟩, rfl⟩, by rwa [mem_ball_zero_iff, Q.norm_map]⟩
+    rw [hgraph] at hmem
+    exact hmem.1
+  have hΓS : ∀ w ∈ graphOver u (ball 0 R), ‖w‖ < R → ∃ z ∈ S, Q (z - ξ) = w := by
+    intro w hw hwR
+    have hmem : w ∈ graphOver u (ball 0 R) ∩ ball 0 R := ⟨hw, mem_ball_zero_iff.2 hwR⟩
+    rw [← hgraph] at hmem
+    obtain ⟨⟨_, ⟨z, hz, rfl⟩, rfl⟩, -⟩ := hmem
+    exact ⟨z, hz, rfl⟩
+  refine ⟨fun ρ hρ => ?_, fun y hy => ?_⟩
+  · -- (a) `T(S ∩ B̆_ρ(ξ)) ⊆ G(Bⁿ_ρ(0))` with `G x = (x, u x)`; this compact subset of `Γ` has
+    -- finite measure since every point of it has a ball `B_r(G x)` with `Hⁿ(Γ ∩ B_r(G x)) < ∞`.
+    have hKR : closedBall (0 : Rn n) ρ ⊆ ball 0 R := closedBall_subset_ball hρ
+    have hnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖a‖ ≤ ‖graphPoint a b‖ := by
+      intro a b
+      rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, Fin.sum_univ_add]
+      refine Real.sqrt_le_sqrt (le_add_of_le_of_nonneg (le_of_eq ?_)
+        (Finset.sum_nonneg fun j _ => by positivity))
+      simp [graphPoint]
+    have hgp : Continuous fun p : Rn n × Rn ℓ => graphPoint p.1 p.2 := by
+      refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+      induction i using Fin.addCases with
+      | left j =>
+        simp only [Fin.append_left]
+        exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp continuous_fst)
+      | right j =>
+        simp only [Fin.append_right]
+        exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp continuous_snd)
+    have hGc : ContinuousOn (fun x => graphPoint x (u x)) (closedBall (0 : Rn n) ρ) :=
+      hgp.comp_continuousOn (continuousOn_id.prodMk (hu.continuousOn.mono hKR))
+    have hfin : (μHE[n] : Measure (Amb n ℓ))
+        ((fun x => graphPoint x (u x)) '' closedBall (0 : Rn n) ρ) < ⊤ := by
+      refine ((isCompact_closedBall 0 ρ).image_of_continuousOn hGc).measure_lt_top_of_nhdsWithin ?_
+      rintro _ ⟨x, hxK, rfl⟩
+      obtain ⟨r, hr2, hr0⟩ := (((hdens x (hKR hxK)).eventually_lt_const
+        ENNReal.one_lt_two).and self_mem_nhdsWithin).exists
+      refine ⟨graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r, ?_, ?_⟩
+      · refine mem_nhdsWithin.2 ⟨ball (graphPoint x (u x)) r, isOpen_ball, mem_ball_self hr0, ?_⟩
+        rintro _ ⟨hw, ⟨x', hx', rfl⟩⟩
+        exact ⟨⟨x', hKR hx', rfl⟩, ball_subset_closedBall hw⟩
+      · refine lt_top_iff_ne_top.2 fun htop => ?_
+        rw [htop, ENNReal.top_div_of_ne_top ENNReal.ofReal_ne_top] at hr2
+        exact not_top_lt hr2
+    refine lt_of_le_of_lt ?_ hfin
+    rw [← hT (S ∩ ball ξ ρ)]
+    refine measure_mono ?_
+    rintro _ ⟨_, ⟨z, ⟨hz, hzB⟩, rfl⟩, rfl⟩
+    have hzρ : ‖z - ξ‖ < ρ := by rwa [mem_ball, dist_eq_norm] at hzB
+    obtain ⟨x, -, hxe⟩ := hSΓ z hz (hzρ.trans hρ)
+    refine ⟨x, mem_closedBall_zero_iff.2 ?_, hxe⟩
+    calc ‖x‖ ≤ ‖graphPoint x (u x)‖ := hnorm x (u x)
+      _ = ‖z - ξ‖ := by rw [hxe, Q.norm_map]
+      _ ≤ ρ := hzρ.le
+  · -- (b) `T y = G x` with `x ∈ B̆ⁿ_R(0)`; for `0 < r < R - |y - ξ|`,
+    -- `T(S ∩ B_r(y)) = Γ ∩ B_r(G x)`, so the density ratios agree near `0`.
+    obtain ⟨hyS, hyB⟩ := hy
+    have hyR : ‖y - ξ‖ < R := by rwa [mem_ball, dist_eq_norm] at hyB
+    obtain ⟨x, hx, hxy⟩ := hSΓ y hyS hyR
+    refine (hdens x hx).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hyR)] with r hr
+    have hset : graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r =
+        Q '' ((fun x => x - ξ) '' (S ∩ closedBall y r)) := by
+      ext w
+      constructor
+      · rintro ⟨hwΓ, hwB⟩
+        rw [mem_closedBall, hxy] at hwB
+        have hwR : ‖w‖ < R := by
+          calc ‖w‖ = dist w 0 := (dist_zero_right w).symm
+            _ ≤ dist w (Q (y - ξ)) + dist (Q (y - ξ)) 0 := dist_triangle _ _ _
+            _ = dist w (Q (y - ξ)) + ‖y - ξ‖ := by rw [dist_zero_right, Q.norm_map]
+            _ < R := by linarith [hr.2]
+        obtain ⟨z, hz, rfl⟩ := hΓS w hwΓ hwR
+        refine ⟨z - ξ, ⟨z, ⟨hz, ?_⟩, rfl⟩, rfl⟩
+        rw [mem_closedBall, ← dist_sub_right z y ξ, ← Q.dist_map]
+        exact hwB
+      · rintro ⟨_, ⟨z, ⟨hz, hzB⟩, rfl⟩, rfl⟩
+        rw [mem_closedBall] at hzB
+        have hzR : ‖z - ξ‖ < R := by
+          calc ‖z - ξ‖ = dist z ξ := (dist_eq_norm z ξ).symm
+            _ ≤ dist z y + dist y ξ := dist_triangle _ _ _
+            _ = dist z y + ‖y - ξ‖ := by rw [dist_eq_norm y ξ]
+            _ < R := by linarith [hr.2]
+        obtain ⟨x', hx', hx'e⟩ := hSΓ z hz hzR
+        refine ⟨⟨x', hx', hx'e⟩, ?_⟩
+        show Q (z - ξ) ∈ closedBall (graphPoint x (u x)) r
+        rw [mem_closedBall, hxy, Q.dist_map, dist_sub_right]
+        exact hzB
+    rw [hset, hT]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

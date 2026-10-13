@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.hausdorff_null_of_weight_null-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1",
+  "depth": 3,
+  "title": "mu_V-null subsets of the carrier are H^n-null",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l) and V = v(M, theta) a rectifiable n-varifold in U (M := V.carrier, theta := V.mult with theta > 0 on M and theta AEMeasurable for H^n restricted to M, mu := V.weight = (H^n restricted to M).withDensity (ofReal o theta), H^n := muHE[n]). If A is a subset of M with mu(A) = 0, then H^n(A) = 0.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (A : Set (Amb n ℓ)), A ⊆ V.carrier → V.weight A = 0 → (μHE[n] : Measure (Amb n ℓ)) A = 0",
+  "lean_name": "dohr_lmo_hausdorff_null_of_weight_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-hausd-f6d1e55ddf-a1"
+}
