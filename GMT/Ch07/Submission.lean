@@ -451,6 +451,242 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Graph representation of a blow-up of `T = ∂[[E]]` (used in the proof of Simon 7.5.5,
+pp. 199–200).  Let `Γ(v) = x + ιv + ι'u(v)` be a `C¹` graph chart of `N` over `B_{δ₁}`
+(`ι, ι'` orthogonal isometries spanning `ℝ^{n+1+k}`) whose Jacobian orients `ξN`, let
+`y = x + ιs + ι't`, `G(w) = ιw + ι'(λ⁻¹(u(s + λw) − t))` and
+`F' = {w : s + λw ∈ B_{δ₁}, Γ(s + λw) ∈ E}`.  If `η_{y,λ#}T = ∂[[η_{y,λ}(E)]]` and the area
+formula for `C¹` graphs holds, then `F'` is measurable and
+`η_{y,λ#}T(ω) = ∫_{F' ∩ B_R} dω(G(w))(DG(w)e₀, …, DG(w)eₙ) dw` for `ω ∈ 𝒟ⁿ(ℝ^{n+1+k})` with
+`spt ω ⊆ B_R`, whenever `|s| + λR < δ₁`, `|t| + λR < δ₂` and `B_{λR}(y) ⊆ U`.  Here
+`y + λG(w) = Γ(s + λw)` and `DG(w) = DΓ(s + λw)`; Pythagoras and the chart identity give
+`η_{y,λ}(E) ∩ B_R ⊆ G(F' ∩ B_R) ⊆ η_{y,λ}(E)`, and `dω = 0` off `B_R`. -/
+theorem Submission.codim1_zsl_gbl_blowUp_graph_representation : ∀ (n k : ℕ) (U N E : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (T : GeometricCurrentOn U n) (x y : Euclid (n + 1 + k)) (lam : ℝ) (hlam : 0 < lam) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ₁ δ₂ : ℝ) (s : Euclid (n + 1)) (t : Euclid k), MeasurableSet E → E ⊆ N → IsBoundaryOfRegion (blowUp T y lam hlam.ne') (dilation y lam '' E) (fun z => ξN (y + lam • z)) → (∀ (g : Euclid (n + 1) → Euclid k) (D A : Set (Euclid (n + 1))) (f : Euclid (n + 1 + k) → ℝ), IsOpen D → ContDiffOn ℝ 1 g D → MeasurableSet A → A ⊆ D → ∫ z in (fun w => ι w + ι' (g w)) '' A, f z ∂μHE[n + 1] = ∫ w in A, Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det) * f (ι w + ι' (g w))) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ z : Euclid (n + 1 + k), ∃ v w, z = ι v + ι' w) → ContDiffOn ℝ 1 u (ball 0 δ₁) → N ∩ {z | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, z = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid (n + 1)) δ₁ → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α) → y = x + ι s + ι' t → MeasurableSet {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧ x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E} ∧ ∀ R : ℝ, ‖s‖ + lam * R < δ₁ → ‖t‖ + lam * R < δ₂ → ball y (lam * R) ⊆ U → ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → currentEval (blowUp T y lam hlam.ne') (ω : DifferentialForm (Euclid (n + 1 + k)) n) = ∫ w in {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧ x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E} ∩ ball 0 R, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) (fun j => fderiv ℝ (fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) w (EuclideanSpace.single j (1 : ℝ))) := by
+  intro n k U N E ξN T x y lam hlam ι ι' u δ₁ δ₂ s t hE hEN hbd harea horth hspan hu hchart
+    hjac hy
+  have hlam0 : lam ≠ 0 := hlam.ne'
+  -- Step 1: measurability of F'
+  have hΓcont : ContinuousOn (fun v => x + ι v + ι' (u v)) (ball (0 : Euclid (n + 1)) δ₁) := by
+    have hcu : ContinuousOn u (ball (0 : Euclid (n + 1)) δ₁) := hu.continuousOn
+    exact (continuousOn_const.add ι.continuous.continuousOn).add
+      (ι'.continuous.comp_continuousOn hcu)
+  have hA₀ : MeasurableSet {v : Euclid (n + 1) | v ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι v + ι' (u v) ∈ E} := by
+    classical
+    have hpw : Measurable ((ball (0 : Euclid (n + 1)) δ₁).piecewise
+        (fun v => x + ι v + ι' (u v)) (fun _ => (0 : Euclid (n + 1 + k)))) :=
+      hΓcont.measurable_piecewise continuousOn_const measurableSet_ball
+    have heq : {v : Euclid (n + 1) | v ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+        x + ι v + ι' (u v) ∈ E} = ball (0 : Euclid (n + 1)) δ₁ ∩
+          (ball (0 : Euclid (n + 1)) δ₁).piecewise (fun v => x + ι v + ι' (u v))
+            (fun _ => (0 : Euclid (n + 1 + k))) ⁻¹' E := by
+      ext v
+      simp only [Set.mem_ofPred_eq, mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hv, hvE⟩
+        exact ⟨hv, by rwa [Set.piecewise_eq_of_mem _ _ _ hv]⟩
+      · rintro ⟨hv, hvE⟩
+        exact ⟨hv, by rwa [Set.piecewise_eq_of_mem _ _ _ hv] at hvE⟩
+    rw [heq]
+    exact measurableSet_ball.inter (hpw hE)
+  have haff : Continuous (fun w : Euclid (n + 1) => s + lam • w) :=
+    continuous_const.add (continuous_id.const_smul lam)
+  have hF : MeasurableSet {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E} :=
+    haff.measurable hA₀
+  refine ⟨hF, ?_⟩
+  intro R hR1 hR2 hRU ω hω
+  set F' := {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E}
+  -- Step 2: the dilation
+  have hdil : ∀ z : Euclid (n + 1 + k), dilation y lam (y + lam • z) = z := by
+    intro z
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply,
+      smul_add, smul_smul, inv_mul_cancel₀ hlam0, one_smul]
+    abel
+  have hdil' : ∀ e : Euclid (n + 1 + k), y + lam • dilation y lam e = e := by
+    intro e
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply,
+      smul_add, smul_neg, smul_smul, mul_inv_cancel₀ hlam0, one_smul]
+    abel
+  have hηE : dilation y lam '' E = (fun z => y + lam • z) ⁻¹' E := by
+    ext z
+    constructor
+    · rintro ⟨e, he, rfl⟩
+      simpa [hdil' e] using he
+    · intro hz
+      exact ⟨y + lam • z, hz, hdil z⟩
+  have hηEmeas : MeasurableSet (dilation y lam '' E) := by
+    rw [hηE]
+    exact (continuous_const.add (continuous_id.const_smul lam)).measurable hE
+  have hballU : ball (0 : Euclid (n + 1 + k)) R ⊆ dilation y lam '' U := by
+    intro z hz
+    refine ⟨y + lam • z, hRU ?_, hdil z⟩
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    rw [mem_ball, dist_zero_right] at hz
+    exact mul_lt_mul_of_pos_left hz hlam
+  -- Step 3: evaluation of the blow-up
+  have hωtest : IsTestForm (ω : DifferentialForm (Euclid (n + 1 + k)) n) := ω.2.1
+  have hcur : currentEval (blowUp T y lam hlam.ne') (ω : DifferentialForm (Euclid (n + 1 + k)) n) =
+      ∫ z in dilation y lam '' E, ξN (y + lam • z)
+        (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z) ∂μHE[n + 1] := by
+    have h : IsTestForm (ω : DifferentialForm (Euclid (n + 1 + k)) n) ∧
+        tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ dilation y lam '' U :=
+      ⟨hωtest, hω.trans hballU⟩
+    unfold currentEval
+    rw [dite_eq_left h]
+    exact hbd ⟨ω, h⟩
+  -- Step 4: Pythagoras and (4.1)
+  have hpyth : ∀ (a : Euclid (n + 1)) (b : Euclid k),
+      ‖a‖ ≤ ‖ι a + ι' b‖ ∧ ‖b‖ ≤ ‖ι a + ι' b‖ := by
+    intro a b
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth a b)
+    rw [ι.norm_map, ι'.norm_map] at h
+    have h0 := norm_nonneg (ι a + ι' b)
+    have ha := norm_nonneg a
+    have hb := norm_nonneg b
+    constructor <;> nlinarith
+  have h41 : ∀ w : Euclid (n + 1),
+      y + lam • (ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) =
+        x + ι (s + lam • w) + ι' (u (s + lam • w)) := by
+    intro w
+    rw [hy]
+    simp only [map_add, map_sub, map_smul, smul_add, smul_sub, smul_smul, mul_inv_cancel₀ hlam0,
+      one_smul]
+    abel
+  -- Step 5: Y ⊆ η(E)
+  set G : Euclid (n + 1) → Euclid (n + 1 + k) :=
+    fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))
+  have hYsub : G '' (F' ∩ ball 0 R) ⊆ dilation y lam '' E := by
+    rintro _ ⟨w, ⟨hwF, _⟩, rfl⟩
+    rw [hηE, mem_preimage]
+    simp only [G]
+    rw [h41 w]
+    exact hwF.2
+  -- Step 6: f vanishes on η(E) \ Y
+  have hvan : ∀ z ∈ dilation y lam '' E \ G '' (F' ∩ ball 0 R),
+      ξN (y + lam • z)
+        (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z) = 0 := by
+    rintro z ⟨hzE, hzY⟩
+    by_cases hzR : z ∈ ball (0 : Euclid (n + 1 + k)) R
+    · exfalso
+      apply hzY
+      rw [hηE, mem_preimage] at hzE
+      obtain ⟨a, b, hzab⟩ := hspan z
+      have hzn : ‖z‖ < R := by simpa [mem_ball, dist_zero_right] using hzR
+      obtain ⟨ha, hb⟩ := hpyth a b
+      rw [← hzab] at ha hb
+      have he : y + lam • z = x + ι (s + lam • a) + ι' (t + lam • b) := by
+        rw [hy, hzab]
+        simp only [map_add, map_smul, smul_add]
+        abel
+      have hsa : s + lam • a ∈ ball (0 : Euclid (n + 1)) δ₁ := by
+        rw [mem_ball, dist_zero_right]
+        calc ‖s + lam • a‖ ≤ ‖s‖ + ‖lam • a‖ := norm_add_le _ _
+          _ = ‖s‖ + lam * ‖a‖ := by rw [norm_smul, Real.norm_of_nonneg hlam.le]
+          _ < ‖s‖ + lam * R := by
+            have := mul_lt_mul_of_pos_left (ha.trans_lt hzn) hlam
+            linarith
+          _ < δ₁ := hR1
+      have htb : t + lam • b ∈ ball (0 : Euclid k) δ₂ := by
+        rw [mem_ball, dist_zero_right]
+        calc ‖t + lam • b‖ ≤ ‖t‖ + ‖lam • b‖ := norm_add_le _ _
+          _ = ‖t‖ + lam * ‖b‖ := by rw [norm_smul, Real.norm_of_nonneg hlam.le]
+          _ < ‖t‖ + lam * R := by
+            have := mul_lt_mul_of_pos_left (hb.trans_lt hzn) hlam
+            linarith
+          _ < δ₂ := hR2
+      have hmem : y + lam • z ∈ N ∩ {z | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁,
+          ∃ w ∈ ball (0 : Euclid k) δ₂, z = x + ι v + ι' w} :=
+        ⟨hEN hzE, s + lam • a, hsa, t + lam • b, htb, he⟩
+      rw [hchart] at hmem
+      obtain ⟨v, hv, hve⟩ := hmem
+      have hsw : s + lam • (lam⁻¹ • (v - s)) = v := by
+        rw [smul_smul, mul_inv_cancel₀ hlam0, one_smul]
+        abel
+      simp only at hve
+      have hGw : G (lam⁻¹ • (v - s)) = z := by
+        apply smul_right_injective _ hlam0
+        apply add_left_cancel (a := y)
+        show y + lam • (ι (lam⁻¹ • (v - s)) + ι' (lam⁻¹ • (u (s + lam • (lam⁻¹ • (v - s))) - t))) =
+          y + lam • z
+        rw [h41 (lam⁻¹ • (v - s)), hsw]
+        exact hve
+      refine ⟨lam⁻¹ • (v - s), ⟨⟨?_, ?_⟩, ?_⟩, hGw⟩
+      · rw [hsw]; exact hv
+      · rw [hsw, hve]; exact hzE
+      · -- |w| ≤ |G w| = |z| < R
+        have := (hpyth (lam⁻¹ • (v - s)) (lam⁻¹ • (u (s + lam • (lam⁻¹ • (v - s))) - t))).1
+        rw [mem_ball, dist_zero_right]
+        have hGw' : ι (lam⁻¹ • (v - s)) + ι' (lam⁻¹ • (u (s + lam • (lam⁻¹ • (v - s))) - t)) = z :=
+          hGw
+        rw [hGw'] at this
+        exact this.trans_lt hzn
+    · have hzt : z ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n)) :=
+        fun h => hzR (hω (tsupport_exteriorDerivative_subset _ h))
+      rw [image_eq_zero_of_notMem_tsupport hzt, map_zero]
+  -- Step 7: restriction of the integral
+  have hrestr := setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (μ := μHE[n + 1])
+    (f := fun z => ξN (y + lam • z)
+      (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z)) hηEmeas hYsub hvan
+  -- Step 8: area formula
+  set D : Set (Euclid (n + 1)) := (fun w => s + lam • w) ⁻¹' ball (0 : Euclid (n + 1)) δ₁
+  have hDopen : IsOpen D := isOpen_ball.preimage haff
+  have hgC1 : ContDiffOn ℝ 1 (fun w => lam⁻¹ • (u (s + lam • w) - t)) D := by
+    have haffC : ContDiff ℝ 1 (fun w : Euclid (n + 1) => s + lam • w) :=
+      contDiff_const.add (contDiff_id.const_smul lam)
+    have h1 : ContDiffOn ℝ 1 (fun w => u (s + lam • w)) D :=
+      hu.comp haffC.contDiffOn (fun w hw => hw)
+    exact (h1.sub contDiffOn_const).const_smul lam⁻¹
+  have hAmeas : MeasurableSet (F' ∩ ball (0 : Euclid (n + 1)) R) := hF.inter measurableSet_ball
+  have hAD : F' ∩ ball (0 : Euclid (n + 1)) R ⊆ D := fun w hw => hw.1.1
+  have harea' := harea (fun w => lam⁻¹ • (u (s + lam • w) - t)) D (F' ∩ ball 0 R)
+    (fun z => ξN (y + lam • z) (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z))
+    hDopen hgC1 hAmeas hAD
+  -- Step 9: the derivative of G
+  have hDG : ∀ w ∈ D, fderiv ℝ (fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) w =
+      fderiv ℝ (fun v => x + ι v + ι' (u v)) (s + lam • w) := by
+    intro w hw
+    have hv : s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ := hw
+    have hud : DifferentiableAt ℝ u (s + lam • w) :=
+      (hu.differentiableOn one_ne_zero _ hv).differentiableAt (isOpen_ball.mem_nhds hv)
+    set L := fderiv ℝ u (s + lam • w)
+    have hLd : HasFDerivAt u L (s + lam • w) := hud.hasFDerivAt
+    have haffd : HasFDerivAt (fun w : Euclid (n + 1) => s + lam • w)
+        (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1))) w :=
+      (((ContinuousLinearMap.id ℝ (Euclid (n + 1))).hasFDerivAt (x := w)).const_smul
+        lam).const_add s
+    have hcomp : HasFDerivAt (fun w => u (s + lam • w))
+        (L.comp (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1)))) w :=
+      hLd.comp w haffd
+    have hg : HasFDerivAt (fun w => lam⁻¹ • (u (s + lam • w) - t))
+        (lam⁻¹ • (L.comp (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1))))) w :=
+      (hcomp.sub_const t).const_smul lam⁻¹
+    have hLeq : lam⁻¹ • (L.comp (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1)))) = L := by
+      ext1 e
+      simp only [smul_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.id_apply, map_smul, smul_smul, inv_mul_cancel₀ hlam0, one_smul]
+    rw [hLeq] at hg
+    have hG : HasFDerivAt (fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t)))
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp L) w :=
+      (ι.toContinuousLinearMap.hasFDerivAt).add (ι'.toContinuousLinearMap.hasFDerivAt.comp w hg)
+    have hΓd : HasFDerivAt (fun v => x + ι v + ι' (u v))
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp L) (s + lam • w) :=
+      ((ι.toContinuousLinearMap.hasFDerivAt (x := s + lam • w)).const_add x).add
+        (ι'.toContinuousLinearMap.hasFDerivAt.comp (s + lam • w) hLd)
+    rw [hG.fderiv, hΓd.fderiv]
+  -- Steps 10-11: pointwise identity and conclusion
+  rw [hcur, hrestr]
+  simp only [G]
+  rw [harea']
+  refine setIntegral_congr_fun hAmeas ?_
+  intro w hw
+  have hwD : w ∈ D := hAD hw
+  have hv : s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ := hwD
+  simp only
+  rw [hDG w hwD, h41 w]
+  exact (hjac (s + lam • w) hv _).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
