@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.plane_quadratic_moment-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+  "depth": 3,
+  "title": "Cut-off quadratic moments over n-planes, with a constant depending only on n",
+  "statement": "Let n ∈ ℕ with n ≥ 1, and for every P ∈ ℕ let Hⁿ = μHE[n] be the normalized n-dimensional Hausdorff measure on ℝ^P = EuclideanSpace ℝ (Fin P). There is a single constant c > 0 depending only on n — the same c for every ambient dimension P, every subspace Q and every vector u — such that for every P ∈ ℕ, every linear subspace Q ⊆ ℝ^P with dim Q = n and every u ∈ ℝ^P, ∫_Q max(1 − |y|², 0)·⟨u, y⟩² dHⁿ(y) = c·|p_Q u|². Here ∫_Q means integration against Hⁿ⌞Q (Hⁿ on ℝ^P restricted to Q) and p_Q = Q.starProjection is the orthogonal projection of ℝ^P onto Q.",
+  "lean_statement": "∀ n : ℕ, 0 < n → ∃ c : ℝ, 0 < c ∧ ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ u : Euclid P, ∫ y in (Q : Set (Euclid P)), max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 ∂μHE[n] = c * ‖Q.starProjection u‖ ^ 2",
+  "lean_name": "exists_plane_cutoff_quadratic_moment_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-b7386b9a1e-a1"
+}
