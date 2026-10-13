@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4f75709baed67920ca0ae07065ed5c4b57602305bb47a488ffef0dd74f7205a",
+  "git_delta": {
+    "base_commit": "2762c5af2852faa5edf81a8110b1cc6114dfb9dc",
+    "candidate_commit": "47f8e74a7fa40f146b0e0611ae7375347a05f7c4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_hds_compact_subseq",
+    "diff_sha256": "dfcae8cb13e330e447fa40cbaf68d0cec49e4303711926ae3900c27a25b3b5ac",
+    "source_sha256": "325ce2511c16acc61650e0174124fe0fe5cd75869a302668b283d47ace94867f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_hds_compact_subseq",
+      "statement": "∀ (n ℓ : ℕ) (α K M : ℝ) (S : Set (Rn n)) (g : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → IsCompact S → (∀ j, ∀ z ∈ S, ‖g j z‖ ≤ M) → (∀ j, ∀ z ∈ S, ∀ z' ∈ S, ‖g j z - g j z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ (χ : ℕ → ℕ) (G : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧ TendstoUniformlyOn (fun j => g (χ j)) G atTop S",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
