@@ -451,6 +451,26 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A covector vanishing on all increasing tuples of standard basis vectors is zero**
+(definiteness of the Euclidean coefficient norm).  With `e` the standard basis of `ℝᴾ`, an
+alternating map is determined by its values `α(e_{J(0)}, …, e_{J(n-1)})` on injective
+`J : Fin n → Fin P`.  For such `J`, `σ = Tuple.sort J` makes `J ∘ σ` monotone and injective, hence
+strictly increasing, so `0 = α(e_{J ∘ σ}) = sign σ • α(e_J)` with `sign σ = ±1`. -/
+theorem Submission.cbr_ci_dr_dn_covector_eq_zero_of_coords : ∀ (P n : ℕ) (α : Covector (Euclid P) n), (∀ I : Fin n → Fin P, StrictMono I → α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) = 0) → α = 0 := by
+  intro P n α h
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- Step 1: it suffices to check `α(e_J) = 0` for injective `J`
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine e.ext_alternating fun J hJ => ?_
+  show α (fun i => e (J i)) = (0 : ℝ)
+  -- Step 2: sorting `J` gives a strictly increasing `J ∘ σ`
+  have hmono : StrictMono (J ∘ Tuple.sort J) :=
+    (Tuple.monotone_sort J).strictMono_of_injective (hJ.comp (Tuple.sort J).injective)
+  -- Step 3: `0 = α(e_J ∘ σ) = sign σ • α(e_J)`, and `sign σ = ±1`
+  have h1 : α.toAlternatingMap ((fun i => e (J i)) ∘ Tuple.sort J) = 0 := h _ hmono
+  rw [AlternatingMap.map_perm] at h1
+  rcases Int.units_eq_one_or (Equiv.Perm.sign (Tuple.sort J)) with hs | hs <;> simpa [hs] using h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

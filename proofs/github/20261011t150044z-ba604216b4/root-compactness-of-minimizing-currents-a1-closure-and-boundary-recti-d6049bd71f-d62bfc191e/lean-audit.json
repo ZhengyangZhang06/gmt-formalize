@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "95ae1aa73b0baff899317a2de7e794f15eb99685f24d674e7bf9e65a5b9a0ece",
+  "git_delta": {
+    "base_commit": "bae395f898ebb5d15942c93202d8af5d659acea4",
+    "candidate_commit": "2ccd46e875b58f188f03e68b65c928fbac3c21cd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_dr_dn_covector_eq_zero_of_coords",
+    "diff_sha256": "d3869405706882f1e02c4bdb3418ec12c37faf5b50ccb4b1d978b72890ad245d",
+    "source_sha256": "f311efb2fa7d976662cad66378227a17f817c1874aa18aa7b492464efad5bbcf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_dr_dn_covector_eq_zero_of_coords",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n), (∀ I : Fin n → Fin P, StrictMono I → α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) = 0) → α = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
