@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git rev-parse HEAD = d8d46c95...; lake-manifest.json mathlib rev 25730c7c..., simongmt rev 2b366308...",
+        "cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (all byte-identical)",
+        "grep -n 'theorem exists_disjoint_subfamily_covering_enlargement_closedBall' mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean (158: radii bounded by R, enlargement factor τ > 3; used with τ = 5)",
+        "grep -n 'volume_pi_closedBall|volume_pi_ball|volume_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean (278: Real.volume_pi_closedBall = ofReal ((2r)^card ι), sup metric, r ≥ 0)",
+        "grep -n 'volume_preserving' mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean (124: EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp; 134: PiLp.volume_preserving_ofLp)",
+        "grep -rn 'theorem volume_closedBall|theorem volume_ball' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean (307/324: exact Gamma-function formulas, not needed)",
+        "grep -n 'theorem countable_meas_pos_of_disjoint_iUnion' mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean (305)",
+        "grep -n 'theorem tsum_meas_le_meas_iUnion_of_disjoint' mathlib/Mathlib/MeasureTheory/Measure/Basic.lean (167: arbitrary index type)",
+        "grep -n 'theorem measure_biUnion_le ' mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean (74: countable index set, arbitrary sets)",
+        "grep -n 'theorem dist_apply_le' mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean (652); grep -n 'theorem EuclideanSpace.dist_eq' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean (158)",
+        "grep -n 'theorem exists_fiveTimesCovering' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean (26: Simon Ch. 1, 3.4; equivalent alternative to Mathlib's Vitali)",
+        "rg -n -i 'vitali|fiveTimes|five.times|closedBall.*volume|volume.*closedBall|2 \\* r\\) \\^' local-references/197bdd4b88278494/project/GMT (only Ch01 Vitali-property and Ch05 density statements; no ball-volume bound, Vitali measure bound or periodic-tube lemma)",
+        "rg -n 'volume \\(closedBall|volume_closedBall|volume_pi_closedBall' lake-packages-25730c7c/simongmt/Poincare (only exact-formula uses; no (2r)^k bound for EuclideanSpace ℝ ι)",
+        "rg -n 'dgc_pm_|dgc_lattice|dgc_vitali|dgc_closedBall' over project, simongmt/Poincare, mathlib/Mathlib and workspace GMT (no match)",
+        "python3 -I scan of dag.json (610 nodes): regex volume (closedBall|Vitali|PairwiseDisjoint|2 * r) ^ over lean_statement (only the accepted fiw_tb_tda_ps_ball_volume_le: ∀ n r, 0 ≤ r → volume (closedBall (0 : Eucl n) r) ≤ ofReal ((2r)^n), a different type, so not reusable); lean_name collision check for dgc_pm_ball_volume_le / dgc_pm_lattice_tubes_disjoint / dgc_pm_vitali_volume_bound (none)",
+        "sed -n 1640,1700p book/chapter-06.txt (printed (1)–(4) of the proof of 5.1, 'pairwise disjoint collection', L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1}, pp. 163–164)",
+        "python3 -I: verifier/lean_contract.py validate_lean_statement on the three child statements and the parent statement (all valid); verifier/gmt-compare.py child_modules/contract_scope read to reproduce the challenge scope",
+        "PATH=toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/pm-split-7c41/Final.lean (full proofs of the three children; Submission.dgc_periodic_maximal proved from them; comparator-style theorem _root_.HumanizeNodeComparator.target_i : (stmt) := by exact Submission.X for all four; no sorry; #print axioms = [propext, Classical.choice, Quot.sound])"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-good-center-a1-periodic-maximal-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/pm-split-7c41/Final.lean",
+        "/tmp/pm-split-7c41/statements.json"
+      ],
+      "conclusion": "Pinned revisions are confirmed (project d8d46c95, Mathlib 25730c7c, simongmt 2b366308). The frozen Contract is byte-identical to both the Submission and the snapshot.\n\nNeither the project nor SimonGMT has a (2r)^k bound for EuclideanSpace ℝ ι balls, a Vitali packing measure bound or a periodic-tube disjointness lemma. The DAG's accepted fiw_tb_tda_ps_ball_volume_le is a Fin n / centre-0 variant with a different frozen type, so it cannot be reused.\n\nThe children are therefore built on pinned Mathlib primitives:\n- ball_volume: PiLp.volume_preserving_ofLp, Real.volume_pi_closedBall, PiLp.dist_apply_le and dist_pi_le_iff.\n- tubes_disjoint: EuclideanSpace.dist_eq, PiLp.dist_apply_le and Int.one_le_abs.\n- vitali_bound: Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (τ = 5) and measure_biUnion_le. SimonGMT's Chapter01.exists_fiveTimesCovering is an equivalent alternative.\n- Parent glue: Measure.countable_meas_pos_of_disjoint_iUnion and tsum_meas_le_meas_iUnion_of_disjoint.\n\nAll three child types validate and elaborate in the comparator's exact contract scope. All were fully proved in scratch, and Submission.dgc_periodic_maximal was kernel-checked from them with axioms [propext, Classical.choice, Quot.sound] and no sorry. No name collides with anything, and no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "parent_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1",
+  "child_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1.vitali_bound-a1",
+  "subproblem": {
+    "key": "vitali_bound",
+    "title": "5-times covering packing bound: L^k(S) ≤ 10^k M (printed (4) and L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1})",
+    "statement": "Let ι be a finite index set with k := |ι| elements, and E := ℝ^ι = EuclideanSpace ℝ ι with its Euclidean distance and Lebesgue outer measure L^k (Mathlib's volume, evaluated on arbitrary sets). Let S ⊆ E be any set (not assumed measurable), r : E → ℝ, and R, M ∈ ℝ with 0 < r(b) ≤ R for every b ∈ S. Write ofReal(t) := max(t, 0) ∈ [0, ∞). Assume the packing condition: for every u ⊆ S such that the closed balls B̄_{r(b)}(b) = {w : |w − b| ≤ r(b)}, b ∈ u, are pairwise disjoint (distinct b, b′ ∈ u give disjoint balls), u is countable and Σ_{b∈u} ofReal(r(b)^k) ≤ ofReal(M) in [0, ∞]. Then L^k(S) ≤ ofReal(10^k · M).",
+    "lean_statement": "∀ (ι : Type) [Fintype ι] (S : Set (EuclideanSpace ℝ ι)) (r : EuclideanSpace ℝ ι → ℝ) (R M : ℝ), (∀ b ∈ S, 0 < r b ∧ r b ≤ R) → (∀ u ⊆ S, u.PairwiseDisjoint (fun b => closedBall b (r b)) → u.Countable ∧ ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) ≤ ENNReal.ofReal M) → volume S ≤ ENNReal.ofReal (10 ^ Fintype.card ι * M)",
+    "lean_name": "dgc_pm_vitali_volume_bound",
+    "depends_on": [
+      "ball_volume"
+    ],
+    "natural_proof": "Source: steps 4, 8 and 9 of the parent proof. Simon, Ch. 6, §5, pp. 163–164, prints (4): 'by the 5-times Covering Lemma 3.4 of Ch. 1 there is a pairwise disjoint subcollection {B_{σ_ℓ}(b_ℓ)} of the collection {B_{σ_b}(b)}_{b∈B_j} such that B_j ⊆ ⋃_ℓ B_{5σ_ℓ}(b_ℓ)'. It then concludes: 'Thus by (4) we conclude L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1}'.\n- The summation bound Σ_ℓ σ_ℓ^{n+1} ≤ β⁻¹ (parent steps 5–7) appears here as the packing hypothesis, with M in place of β⁻¹.\n- Per the parent's errata, the covering lemma is applied to closed balls.\n- The printed ω_k(5σ)^k is bounded by (10σ)^k through the sibling ball_volume (erratum ω_k ≤ 2^k).\nNotation: ofReal(t) := max(t, 0) ∈ [0, ∞); B̄_ρ(c) = {w ∈ E : |w − c| ≤ ρ}; all sums are in [0, ∞].\n\n1. Covering (printed (4)). The closed balls B̄_{r(b)}(b), b ∈ S, have radii r(b) ≤ R. Apply the 5-times covering lemma (Simon Ch. 1, 3.4). In Mathlib this is Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall with index set S, centres x(b) = b, radii r, bound R and enlargement factor τ = 5 > 3. It holds for any family of closed balls with radii bounded above in a (pseudo)metric space. It gives u ⊆ S such that:\n   - the balls B̄_{r(b)}(b), b ∈ u, are pairwise disjoint, and\n   - for every a ∈ S there is b ∈ u with B̄_{r(a)}(a) ⊆ B̄_{5r(b)}(b).\n   Since r(a) > 0, a ∈ B̄_{r(a)}(a). Hence S ⊆ ⋃_{b∈u} B̄_{5r(b)}(b). (If S = ∅, take u = ∅.)\n2. Packing. Apply the packing hypothesis to this u, which is legitimate because u ⊆ S and its balls are pairwise disjoint. So u is countable and Σ_{b∈u} ofReal(r(b)^k) ≤ ofReal(M).\n3. Volume of the enlarged balls (sibling ball_volume). For b ∈ u, 5r(b) ≥ 0 because r(b) > 0, so L^k(B̄_{5r(b)}(b)) ≤ ofReal((2·5r(b))^k). Moreover (2·5r(b))^k = (10 r(b))^k = 10^k·r(b)^k, and ofReal(s·t) = ofReal(s)·ofReal(t) for s = 10^k ≥ 0. Hence L^k(B̄_{5r(b)}(b)) ≤ ofReal(10^k)·ofReal(r(b)^k).\n4. Conclusion (printed L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1}). L^k is an outer measure: it is monotone and countably subadditive on arbitrary sets, so S need not be measurable. Therefore:\n   L^k(S) ≤ L^k(⋃_{b∈u} B̄_{5r(b)}(b))          (monotonicity, step 1)\n          ≤ Σ_{b∈u} L^k(B̄_{5r(b)}(b))            (countable subadditivity; u is countable by step 2)\n          ≤ Σ_{b∈u} ofReal(10^k)·ofReal(r(b)^k)  (step 3)\n          = ofReal(10^k)·Σ_{b∈u} ofReal(r(b)^k)  (a constant factor comes out of a sum in [0, ∞])\n          ≤ ofReal(10^k)·ofReal(M)               (step 2; multiplication is monotone in [0, ∞])\n          = ofReal(10^k·M)                        (since 10^k ≥ 0). ∎",
+    "proof_key_steps": [
+      "5-times (Vitali) covering with τ = 5 and radii ≤ R gives u ⊆ S with pairwise disjoint balls B̄_{r(b)}(b) and S ⊆ ⋃_{b∈u} B̄_{5r(b)}(b) (printed (4)).",
+      "The packing hypothesis for this u gives: u countable and Σ_{b∈u} ofReal(r(b)^k) ≤ ofReal(M).",
+      "Sibling ball_volume: L^k(B̄_{5r(b)}(b)) ≤ ofReal((10 r(b))^k) = ofReal(10^k)·ofReal(r(b)^k).",
+      "Monotonicity and countable subadditivity of the outer measure give L^k(S) ≤ ofReal(10^k)·Σ_{b∈u} ofReal(r(b)^k) ≤ ofReal(10^k·M)."
+    ]
+  },
+  "audit": {
+    "key": "vitali_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The packing quantifier, countability requirement and ENNReal sum match the prose exactly. Bounded-radius closed-ball Vitali covering with factor 5, ball_volume at radius 5r, and outer-measure subadditivity prove the conclusion. Neither measurability of S nor M ≥ 0 is missing. The proof uses only its declared sibling dependency. For the selected parent, measurable positive disjoint tubes establish the packing condition for every disjoint subfamily; cancellation of positive finite μ(univ) gives M = 1/β. Together with the zero-mass case, this yields exactly dgc_periodic_maximal."
+  },
+  "resolved_dependencies": [
+    "root.deformation-a1.good_center-a1.periodic_maximal-a1.ball_volume-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-good-center-a1-periodic-maximal-a1-vitali-bound-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-good-center-a1-periodic-maximal-a1-vitali-bound-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-good-center-a1-periodic-maximal-a1-vitali-bound-a1/parent-supplied-natural-proof.json"
+}
