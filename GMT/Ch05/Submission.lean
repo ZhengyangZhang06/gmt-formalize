@@ -15191,52 +15191,6 @@ theorem gwe_vgt_weight_density : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : Re
     · simp [indicator_of_mem hy]
     · simp [indicator_of_notMem hy]
 
-/-- **Measurability of the graph map and of the graph Jacobian** over a closed ball `B = B_R(0)`.
-Let `F(x) = q(graphPoint x (f x))` with `f` continuous on `B`, and `J_f(x) =
-√det(Iₙ + (⟨Df(x) e_a, Df(x) e_b⟩)_{a,b})`.  (i) `F(A)` is Borel for every Borel `A ⊆ B`:
-`(a, b) ↦ graphPoint a b` is continuous coordinatewise, so `F` is continuous on `B`; `F` is
-injective, since the first `n` coordinates of `F(x)` determine `x` after undoing `q`; apply
-Lusin–Souslin.  (ii) `F` agrees on `B` with the Borel map `B.piecewise F 0` (`B` closed).
-(iii) `J_f = Φ ∘ Df` with `Φ` continuous on `ℝⁿ →L[ℝ] ℝ^ℓ` and `Df` Borel. -/
-theorem gwe_vgt_graph_measurability : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), ContinuousOn f (closedBall 0 R) → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → MeasurableSet (q '' graphOver f A)) ∧ (∃ Fh : Rn n → Amb n ℓ, Measurable Fh ∧ ∀ x ∈ closedBall (0 : Rn n) R, Fh x = q (graphPoint x (f x))) ∧ Measurable (fun x : Rn n => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ)))))) := by
-  intro n ℓ q f R hf
-  -- `(a, b) ↦ graphPoint a b` is continuous: each coordinate is a coordinate of `a` or of `b`.
-  have hgp : Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) := by
-    unfold graphPoint
-    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
-    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
-    · simp only [Fin.append_left]
-      exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp continuous_fst)
-    · simp only [Fin.append_right]
-      exact (continuous_apply k).comp ((PiLp.continuous_ofLp 2 _).comp continuous_snd)
-  -- `F = q ∘ (x ↦ graphPoint x (f x))` is continuous on `B` and injective.
-  have hFc : ContinuousOn (fun x => q (graphPoint x (f x))) (closedBall 0 R) :=
-    q.continuous.comp_continuousOn (hgp.comp_continuousOn (continuousOn_id.prodMk hf))
-  have hFi : Function.Injective (fun x => q (graphPoint x (f x))) := by
-    intro x y hxy
-    have h := congrArg (fun (z : Amb n ℓ) (j : Fin n) => z (Fin.castAdd ℓ j)) (q.injective hxy)
-    ext j
-    simpa [graphPoint] using congrFun h j
-  refine ⟨fun A hA hAB => ?_, ?_, ?_⟩
-  · -- (i) Lusin–Souslin for the continuous injective map `F` on the Borel set `A`.
-    rw [graphOver, image_image]
-    exact hA.image_of_continuousOn_injOn (hFc.mono hAB) hFi.injOn
-  · -- (ii) `B.piecewise F 0` is Borel and equals `F` on `B`.
-    classical
-    exact ⟨(closedBall 0 R).piecewise (fun x => q (graphPoint x (f x))) fun _ => 0,
-      hFc.measurable_piecewise continuousOn_const measurableSet_closedBall,
-      fun x hx => piecewise_eq_of_mem _ _ _ hx⟩
-  · -- (iii) `J_f = Φ ∘ fderiv ℝ f` with `Φ` continuous and `fderiv ℝ f` Borel.
-    have hΦ : Continuous fun D : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det
-        ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
-          inner ℝ (D (EuclideanSpace.single a (1 : ℝ)))
-            (D (EuclideanSpace.single b (1 : ℝ))))) := by
-      refine Real.continuous_sqrt.comp (Continuous.matrix_det (continuous_const.add
-        (continuous_matrix fun a b => ?_)))
-      simp only [Matrix.of_apply]
-      exact (continuous_eval_const _).inner (continuous_eval_const _)
-    exact hΦ.measurable.comp (measurable_fderiv ℝ f)
-
 end Submission
 
 /-- **Bochner and null-set transfer** (steps 5 and 6 of the varifold graph transfer).  The
@@ -64491,49 +64445,6 @@ theorem rsod_isC1Submanifold_open_inter : ∀ (m N : ℕ) (S B : Set (EuclideanS
       exact ⟨fun hx => ⟨hx.1.1, hx.2⟩, fun hx => ⟨⟨hx.1, (hKWB hx.2).2⟩, hx.2⟩⟩
     rw [hKV]
     exact hprop K hK fun z hz => (hKWB hz).1
-
-/-- Pythagorean identity for graph points: `|(x, y)|² = |x|² + |y|²` for the point
-`(x, y) ∈ ℝⁿ × ℝ^ℓ = ℝ^{n+ℓ}`.  Expand the three squared Euclidean norms as sums of squared
-coordinates (`EuclideanSpace.real_norm_sq_eq`), split the sum over `Fin (n + ℓ)` into the indices
-`Fin.castAdd ℓ j` and `Fin.natAdd n k` (`Fin.sum_univ_add`), and read off the coordinates `x j`,
-resp. `y k`, of `graphPoint x y` there (`Fin.append_left`/`Fin.append_right`). -/
-theorem rsod_norm_graphPoint_sq : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
-    ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
-  intro n ℓ x y
-  rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
-    EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
-  simp [graphPoint]
-
-/-- The rotated, translated graph chart `φ x = q (graphPoint x (u x)) + x₀` of a map `u` that is
-`C¹` on an open set `Ω ⊆ ℝⁿ` is injective on all of `ℝⁿ`, `C¹` on `Ω`, and has injective
-derivative at every point of `Ω`.  By `rsod_graphPoint_eq_finAddEquivProd_symm`,
-`φ x = A (x, u x) + x₀` for the injective continuous linear map `A = q ∘ E.symm`,
-`E = EuclideanSpace.finAddEquivProd`.  Hence `φ x = φ x'` forces `(x, u x) = (x', u x')`; `φ` is
-`C¹` on `Ω` as `A` after the `C¹` map `x ↦ (x, u x)`, plus a constant; and at `x ∈ Ω` (a
-neighbourhood of `x`, so `u` is differentiable there) the chain rule gives
-`Dφ(x) v = A (v, Du(x) v)`, which determines `v` since `A` is injective. -/
-theorem rsod_graphChart_injective_contDiffOn_fderiv_injective : ∀ {n ℓ : ℕ}
-    (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (Ω : Set (Rn n)), IsOpen Ω →
-    ContDiffOn ℝ 1 u Ω → Function.Injective (fun x => q (graphPoint x (u x)) + x₀) ∧
-      ContDiffOn ℝ 1 (fun x => q (graphPoint x (u x)) + x₀) Ω ∧
-      ∀ x ∈ Ω, Function.Injective (fderiv ℝ (fun x => q (graphPoint x (u x)) + x₀) x) := by
-  intro n ℓ q u x₀ Ω hΩ hu
-  let E : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
-  let A : Rn n × Rn ℓ →L[ℝ] Amb n ℓ := (q : Amb n ℓ →L[ℝ] Amb n ℓ).comp (E.symm : _ →L[ℝ] _)
-  have hA : Function.Injective A := q.injective.comp E.symm.injective
-  have hφ : (fun x => q (graphPoint x (u x)) + x₀) = fun x => A (x, u x) + x₀ := by
-    funext x
-    simp [A, E, rsod_graphPoint_eq_finAddEquivProd_symm]
-  rw [hφ]
-  refine ⟨fun x x' h => (Prod.ext_iff.mp (hA (add_right_cancel h))).1,
-    (A.contDiff.comp_contDiffOn (contDiffOn_id.prodMk hu)).add contDiffOn_const, fun x hx => ?_⟩
-  have hux : HasFDerivAt u (fderiv ℝ u x) x :=
-    ((hu.contDiffAt (hΩ.mem_nhds hx)).differentiableAt one_ne_zero).hasFDerivAt
-  have hφx : HasFDerivAt (fun x => A (x, u x) + x₀)
-      (A.comp ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ u x))) x :=
-    (A.hasFDerivAt.comp x ((hasFDerivAt_id x).prodMk hux)).add_const x₀
-  rw [hφx.fderiv]
-  exact fun v w h => (Prod.ext_iff.mp (hA h)).1
 
 /-- Fact (Gr) in the proof of Simon Ch. 5, Corollary 7.3, for the Ch. 2 §4 notion of a `C¹`
 submanifold: if `u` is `C¹` on the closed ball `Bⁿ_s(0)` and `{y : y + x₀ ∈ S}` agrees with
