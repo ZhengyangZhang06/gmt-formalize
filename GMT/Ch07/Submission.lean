@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Compactly supported `C¹` antiderivative** (du Bois-Reymond, step 4).  For `K = tsupport g`
+nonempty, pick `a < a' < inf K` and `sup K < b' < b`, so `g = 0` outside `(a', b')`.  By the
+fundamental theorem of calculus `Φ(x) = ∫_{a'}^{x} g` is `C¹` with `Φ' = g`.  It vanishes for
+`x < a'` (`g = 0` on `(x, a']`) and for `x > b'` (`Φ(x) = ∫ g = 0`), so
+`tsupport Φ ⊆ [a', b'] ⊆ (a, b)`.  If `K = ∅`, then `g = 0` and `Φ = 0` works. -/
+theorem Submission.idtp_ccd_scsp_dbr_antiderivative : ∀ (a b : ℝ) (g : ℝ → ℝ), Continuous g → HasCompactSupport g → tsupport g ⊆ Ioo a b → ∫ x, g x = 0 → ∃ Φ : ℝ → ℝ, ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ Ioo a b ∧ deriv Φ = g := by
+  intro a b g hg hgc hsub hint
+  rcases (tsupport g).eq_empty_or_nonempty with hK | hK
+  · -- `tsupport g = ∅`: `g = 0`, and `Φ = 0` works
+    have hg0 : g = 0 := funext fun x => image_eq_zero_of_notMem_tsupport (by simp [hK])
+    refine ⟨0, contDiff_const, HasCompactSupport.zero, by simp, ?_⟩
+    rw [hg0]
+    exact deriv_const' 0
+  -- `a < a' < inf K ≤ sup K < b' < b` for the compact set `K = tsupport g`
+  have ha := (hsub (hgc.isCompact.sInf_mem hK)).1
+  have hb := (hsub (hgc.isCompact.sSup_mem hK)).2
+  set a' := (a + sInf (tsupport g)) / 2 with ha'
+  set b' := (sSup (tsupport g) + b) / 2 with hb'
+  -- `g = 0` outside `(a', b')`
+  have hzero : ∀ y, y ∉ Ioo a' b' → g y = 0 := by
+    intro y hy
+    refine image_eq_zero_of_notMem_tsupport fun hyK => hy ⟨?_, ?_⟩
+    · have := csInf_le hgc.isCompact.bddBelow hyK
+      linarith
+    · have := le_csSup hgc.isCompact.bddAbove hyK
+      linarith
+  -- `Φ(x) = ∫_{a'}^{x} g` vanishes outside `[a', b']`
+  have hΦ : ∀ x, x ∉ Icc a' b' → (∫ y in a'..x, g y) = 0 := by
+    intro x hx
+    rcases lt_or_ge x a' with hxa | hxa
+    · -- `x < a'`: `g = 0` on `Ι a' x = (x, a']`
+      refine intervalIntegral.integral_zero_ae (Eventually.of_forall fun y hy => hzero y ?_)
+      rw [uIoc_of_ge hxa.le] at hy
+      exact fun h => (not_lt.2 hy.2) h.1
+    · -- `x > b'`: `support g ⊆ (a', x]`, so `Φ(x) = ∫ g = 0`
+      have hxb : b' < x := lt_of_not_ge fun h => hx ⟨hxa, h⟩
+      rw [intervalIntegral.integral_eq_integral_of_support_subset, hint]
+      intro y hy
+      have hy' : y ∈ Ioo a' b' := support_subset_iff'.2 hzero hy
+      exact ⟨hy'.1, hy'.2.le.trans hxb.le⟩
+  -- fundamental theorem of calculus: `Φ' = g`
+  have hderiv : deriv (fun x => ∫ y in a'..x, g y) = g :=
+    funext fun x => Continuous.deriv_integral g hg a' x
+  refine ⟨fun x => ∫ y in a'..x, g y, ?_, HasCompactSupport.intro isCompact_Icc hΦ,
+    (closure_minimal (support_subset_iff'.2 hΦ) isClosed_Icc).trans
+      (Icc_subset_Ioo (by linarith) (by linarith)), hderiv⟩
+  rw [contDiff_one_iff_deriv, hderiv]
+  exact ⟨fun x => (hg.integral_hasStrictDerivAt a' x).hasDerivAt.differentiableAt, hg⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
