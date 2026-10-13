@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6a094f325896fb488ce199b74dcd1f2df0277f74cb7e1f11fa3e209c908a297e",
+  "git_delta": {
+    "base_commit": "4eda269fbcfe2e5c6ae1cb377b564da2bd97d9e3",
+    "candidate_commit": "2a8195c24ed95b5087c8f5e2428e289182393ded",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmrc_polar_pushforward",
+    "diff_sha256": "48b0a529deeec612d2d25300e9ebf7a9e9b1f68ac9b5439a580617af7c02cfd8",
+    "source_sha256": "b8748e9ec5763661110039e082b26d37f29e6e433a06a661caa6bf73e38c1f99",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmrc_polar_pushforward",
+      "statement": "∀ (P n d : ℕ) (U : Set (Euclid P)) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (μ₀ : Measure U) (ν : U → EuclideanSpace ℝ (Fin d)), IsOpen U → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → Measurable ν → (∀ K : Set U, IsCompact K → IntegrableOn ν K μ₀) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ AEStronglyMeasurable β μ ∧ (∃ C : ℝ, ∀ x, ‖β x‖ ≤ C) ∧ (∀ x, covectorEuclideanNorm (β x) ≤ 1) ∧ (∀ᵐ x ∂μ, ξ x (β x) = 1) ∧ ∀ ω : DifferentialForm (Euclid P) n, ∫ x, inner ℝ (c (ω x)) (ν x) ∂μ₀ = ∫ x, ξ x (ω x) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
