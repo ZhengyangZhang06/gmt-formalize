@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9b2ec7f41a05775473770e06ee870b2843162204d3d8f32dbe3552d14480c178",
+  "git_delta": {
+    "base_commit": "7a7a5dd0865c6a015ce56910dd0c86f2fd723f01",
+    "candidate_commit": "98617b429473d07717501fdf85291b19cce2691a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_sf_imrep_of_subset",
+    "diff_sha256": "4c9b82f4feb913ff09eaf0da6cf012a0f1a7bcf1203daf24d1c3d1b012e7e618",
+    "source_sha256": "15658ef353057c77ebe98836d0d805663b53fa7db0105cc251afb99b0ef70fde",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_sf_imrep_of_subset",
+      "statement": "∀ (P n : ℕ) (A S : Set (Euclid P)) (θ : Euclid P → ℕ) (ζ : Euclid P → MultiVector P n), MeasurableSet A → MeasurableSet S → A ⊆ S → CountablyRectifiable n S → Measurable θ → (∀ x ∈ S, 0 < θ x) → (∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in S ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞) → AEStronglyMeasurable ζ (μHE[n].restrict A) → (∀ᵐ x ∂(μHE[n].restrict A), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n S x Q ∧ IsUnitOrientationOf (ζ x) Q) → ∃ R : IMRep (univ : Set (Euclid P)) n, R.carrier = A ∧ R.mult = θ ∧ R.orient = ζ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
