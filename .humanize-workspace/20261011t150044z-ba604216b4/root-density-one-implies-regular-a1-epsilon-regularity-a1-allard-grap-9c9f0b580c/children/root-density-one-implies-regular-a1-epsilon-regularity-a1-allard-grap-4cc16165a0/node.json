@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.weakly_harmonic_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+  "depth": 6,
+  "title": "L² limits of almost-harmonic Lipschitz functions satisfy ∫WΔζ = 0 (step A3, before Weyl's lemma)",
+  "statement": "Let n ∈ ℕ, R ∈ ℝ, B := B̆_R(0) ⊆ ℝⁿ (ℝⁿ = Euclid n), e_i := EuclideanSpace.single i 1, D := fderiv ℝ and Δζ(y) := Σ_{i<n} iteratedFDeriv ℝ 2 ζ y ![e_i, e_i]. Let (u_j)_{j∈ℕ} be Lipschitz functions ℝⁿ → ℝ (each with its own constant), (c_j) and (δ_j) real sequences with δ_j → 0, and W : ℝⁿ → ℝ in L²(B) (MemLp W 2 for Lebesgue measure restricted to B) with ∫_B (u_j − c_j − W)² → 0. Assume that for every j, every C¹ function ζ : ℝⁿ → ℝ with compact support and tsupport ζ ⊆ B, and every G ∈ ℝ with ‖Dζ(v)‖ ≤ G for all v, |∫_B Σ_{i<n} Du_j(v)e_i·Dζ(v)e_i dv| ≤ δ_j·G. Then ∫_B W·Δζ = 0 for every ζ : ℝⁿ → ℝ of class C² with compact support and tsupport ζ ⊆ B.",
+  "lean_statement": "∀ (n : ℕ) (R : ℝ) (u : ℕ → Euclid n → ℝ) (c δ : ℕ → ℝ) (W : Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → Tendsto δ atTop (𝓝 0) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (u j x - c j - W x) ^ 2) atTop (𝓝 0) → (∀ (j : ℕ) (ζ : Euclid n → ℝ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ (u j) v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ j * G) → ∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0",
+  "lean_name": "dorag_haa_weakly_harmonic_limit",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.lipschitz_ibp-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.l2_pairing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.lipschitz_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.l2_pairing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0-a1"
+}

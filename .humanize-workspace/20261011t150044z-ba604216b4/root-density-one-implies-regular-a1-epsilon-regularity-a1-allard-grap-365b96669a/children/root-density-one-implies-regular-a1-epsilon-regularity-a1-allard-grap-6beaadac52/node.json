@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1",
+  "depth": 5,
+  "title": "Poincaré inequality on the unit ball for Lipschitz functions",
+  "statement": "For every n ≥ 1 there is C_P > 0 such that every Lipschitz u : ℝⁿ → ℝ (ℝⁿ = Euclid n) satisfies ∫_B (u − ū)² ≤ C_P·∫_B ‖Du‖². Here B := B̆_1(0) is the open unit ball, ū := (∫_B u)/Lⁿ(B) is the mean of u over B (Lⁿ = volume, taken as a real number), and Du = fderiv ℝ u with the operator norm.",
+  "lean_statement": "∀ n : ℕ, 0 < n → ∃ CP : ℝ, 0 < CP ∧ ∀ (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∫ x in ball (0 : Euclid n) 1, (u x - (∫ y in ball (0 : Euclid n) 1, u y) / (volume (ball (0 : Euclid n) 1)).toReal) ^ 2 ≤ CP * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2",
+  "lean_name": "dorag_ha_poincare_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6beaadac52-a1"
+}

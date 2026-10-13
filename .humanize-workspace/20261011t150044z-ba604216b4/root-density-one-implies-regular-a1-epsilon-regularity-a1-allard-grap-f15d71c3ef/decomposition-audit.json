@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem (HasFDerivAt.le_of_lip.|ContDiffAt.isSymmSndFDerivAt|iteratedFDeriv_two_apply|fderiv_clm_apply)|theorem (image_norm_le_of_norm_deriv_right_le_deriv_boundary|norm_image_sub_le_of_norm_deriv_le_segment.)",
+        "theorem (addHaar_ball |integral_inter_add_sdiff|norm_setIntegral_le_of_norm_le_const|setIntegral_mono_set)|theorem abs_pow_sub_pow_le",
+        "mean.value|meanValue|ball_average|average_ball|harmonic.*fderiv|fderiv.*harmonic|harmonic.*deriv|deriv.*harmonic",
+        "harmonic|interior.estimat|mean.value|meanValue",
+        "dorag_ha_ie_(fderiv_apply_harmonic|sq_mul_volume_le_of_mean_value|opNorm_sq_mul_volume_le_of_mean_value|shifted_ball_integral_sub_le|norm_fderiv_le_of_mean_value|taylor_two_le)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ie-decomp/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ie-independent-audit-9mv2z3tv/Types.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Ring/Abs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f15d71c3ef/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f15d71c3ef/decomposition-v1.json",
+        "GMT/Ch07/Submission.lean",
+        "swarm-project.json",
+        "/tmp/ie-decomp/All.lean",
+        "/tmp/ie-independent-audit-9mv2z3tv/Types.lean",
+        "/tmp/ie-independent-audit-9mv2z3tv/fderiv_apply_harmonic.lean",
+        "/tmp/ie-independent-audit-9mv2z3tv/mean_value_gradient_bound.lean",
+        "/tmp/ie-independent-audit-9mv2z3tv/mean_value_derivative_bound.lean",
+        "/tmp/ie-independent-audit-9mv2z3tv/taylor_second_order.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte-identical Ch07 contract/header. The inspected snapshot supplies the calculus, integration, operator-norm and Haar-volume tools used in the proofs. Searches of its harmonic directories found complex circle means, but no applicable real Euclidean ball mean-value or derivative-harmonicity theorem. No comparator-accepted declaration is reused. All six proposed types independently elaborate before any child declaration exists and match the supplied proof declarations byte for byte. Recompilation of All.lean and isolated proofs containing only listed prerequisites succeeded; every child uses only propext, Classical.choice and Quot.sound. The exact frozen parent assembles from these children assuming its exact declared mean-value dependency; the sole sorry is that dependency's stub, not a completed proof of it. Name scans found no collisions in 344 DAG nodes, other branch JSON records, or 1028 Git refs. Names are bare identifiers and dependencies are correctly directed and acyclic. The six-child split is appropriate: the supplied arguments establish the selected parent's three estimates with CH = 4n·2^n/√ω, without circular reliance or further proof planning."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_apply_harmonic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes openness, all finite smoothness orders and the Laplacian hypothesis. The proof derives evaluation derivatives locally, establishes both third-derivative symmetries, and differentiates the locally zero finite trace. This proves both conclusions without invoking harmonic regularity or the parent."
+    },
+    {
+      "key": "mean_value_sq_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated continuity, positive radius and mean-value identity. Compactness supplies all required integrability; expanding the nonnegative variance integral yields exactly f(y)^2·V ≤ ∫f². The argument also covers n = 0 and requires no undeclared dependency."
+    },
+    {
+      "key": "mean_value_gradient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The field takes values in continuous linear maps, so the inferred norm is the intended operator norm. Positive finite ball volume justifies division. Applying mean_value_sq_bound to every component, integrating the operator-norm bound, and taking square roots proves the exact conclusion. Its sole child dependency is correctly declared."
+    },
+    {
+      "key": "shifted_ball_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The parenthesized integral difference has the intended Lean parsing. The hypotheses imply nonnegative radii, including the zero-radius case. Integrability, measurable disjoint differences, annulus containment and finite-measure subtraction are all justified. The n > 0 hypothesis supplies the nontrivial-space condition for Haar scaling at radius zero."
+    },
+    {
+      "key": "mean_value_derivative_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the proposition; K ≥ 0 follows from the bound at x. The declared shifted-ball lemma gives the normalized difference estimate. The polynomial inequality supplies a local bound anchored at x, exactly sufficient for HasFDerivAt.le_of_lip'. Letting the auxiliary radius decrease to zero yields precisely 2nK/ρ."
+    },
+    {
+      "key": "taylor_second_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the segment Hessian bound and remainder. The condition ‖v‖ < R keeps the entire segment inside the open smoothness domain and implies R > 0. Chain rules identify both derivatives, and the two stated mean-value comparisons give S/2. Nonnegativity of S follows from the hypothesis at τ = 0. The vector notation has the required Fin 2 → Euclid n type."
+    }
+  ],
+  "required_changes": []
+}
