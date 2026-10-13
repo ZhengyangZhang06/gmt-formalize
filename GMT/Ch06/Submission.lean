@@ -1557,6 +1557,101 @@ theorem Submission.rpn_pullback_top_form_bound :
         ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
       rw [hR]
       ring
+/-- **Kronecker duality of coordinate wedges (Simon Ch. 6, 1.1–1.2).**  For an increasing
+multi-index `I`, `dx^I = dx^{I₁} ∧ ⋯ ∧ dx^{Iₙ}` has coordinate `1` at `I` and `0` at every
+increasing `J ≠ I`: by (1.1), `dx^I(e_{J₁}, …, e_{Jₙ}) = det [I i = J j]`.  For `J = I` this matrix
+is the identity, as `I` is injective.  For `J ≠ I` some `I i ∉ range J` (otherwise the finite
+ranges, of equal cardinality, coincide, and increasing enumerations with equal ranges are equal),
+so row `i` vanishes. -/
+theorem Submission.polyhedral_approx_pairing_wedge_kronecker : ∀ (P n : ℕ) (I : SimonMultiIndex n P), euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) I = 1 ∧ ∀ J : SimonMultiIndex n P, J ≠ I → euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J = 0 := by
+  intro P n I
+  -- (1)–(2) The coordinate at `J` is the determinant of the matrix `[I i = J j]`.
+  have hdet : ∀ J : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J =
+        Matrix.det (Matrix.of fun i j => if I i = J j then (1 : ℝ) else 0) := by
+    intro J
+    rw [euclideanCovectorCoordinate, wedgeCovectors_apply_det]
+    congr 1
+    ext i j
+    simp [PiLp.single_apply]
+  refine ⟨?_, fun J hJ => ?_⟩
+  · -- (3) For `J = I` the matrix is the identity, as `I` is injective.
+    have hone : (Matrix.of fun i j => if I i = I j then (1 : ℝ) else 0) = 1 := by
+      ext i j
+      simp [Matrix.one_apply, I.injective.eq_iff]
+    rw [hdet, hone, Matrix.det_one]
+  · -- (4) Some `I i` lies outside `range J`: otherwise `range I = range J` and `I = J`.
+    obtain ⟨i, hi⟩ : ∃ i, ∀ j, I i ≠ J j := by
+      by_contra h
+      have hsub : range I ⊆ range J := by
+        rintro _ ⟨i, rfl⟩
+        by_contra hi
+        exact h ⟨i, fun j hj => hi ⟨j, hj.symm⟩⟩
+      have hrange : range I = range J :=
+        Set.eq_of_subset_of_ncard_le hsub (by
+          rw [Set.ncard_range_of_injective I.injective, Set.ncard_range_of_injective J.injective])
+      exact hJ (OrderEmbedding.range_inj_of_wellFoundedLT.mp hrange).symm
+    -- (5) Row `i` of the matrix vanishes, so the determinant is `0`.
+    rw [hdet]
+    exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [hi j]
+/-- An `n`-covector on `ℝ^P` is determined by its coordinates on increasing multi-indices
+(Simon Ch. 6, 1.2): if `α(e_{I(0)}, …, e_{I(n-1)}) = β(e_{I(0)}, …, e_{I(n-1)})` for every
+increasing `I`, then `α = β`.  Alternating maps agreeing on injective tuples of basis vectors are
+equal; sorting an injective tuple `v` by `σ = Tuple.sort v` gives the increasing `I = v ∘ σ`, and
+`e_v = e_I ∘ σ⁻¹` gives `γ(e_v) = sign(σ⁻¹) γ(e_I)` for `γ = α, β`. -/
+theorem Submission.polyhedral_approx_pairing_covector_ext : ∀ (P n : ℕ) (α β : Covector (Eucl P) n), (∀ I : SimonMultiIndex n P, euclideanCovectorCoordinate α I = euclideanCovectorCoordinate β I) → α = β := by
+  intro P n α β h
+  -- Reduce to the underlying alternating maps on injective tuples of standard basis vectors.
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+  -- Sorting `v` by `σ = Tuple.sort v` gives the increasing multi-index `I = v ∘ σ`.
+  have hsm : StrictMono (v ∘ Tuple.sort v) :=
+    (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+  let I : SimonMultiIndex n P := OrderEmbedding.ofStrictMono _ hsm
+  -- `e_v = e_I ∘ σ⁻¹`.
+  have he : (fun i => EuclideanSpace.single (v i) (1 : ℝ)) =
+      (fun j => EuclideanSpace.single (I j) (1 : ℝ)) ∘ ⇑(Tuple.sort v)⁻¹ := by
+    funext i
+    simp [I]
+  -- `γ(e_v) = sign(σ⁻¹) • γ(e_I)` for `γ = α, β`, and `α(e_I) = β(e_I)`.
+  rw [he, AlternatingMap.map_perm, AlternatingMap.map_perm]
+  congr 1
+  exact h I
+
+/-- **Rotated coordinate expansion of a covector (Simon Ch. 6, 1.2; Lemma 2.36, Remark 2.37(2)).**
+For a linear isometry `Q` of `ℝ^P`, every `n`-covector expands as
+`φ = ∑_α φ(Q⁻¹e_{α(0)}, …, Q⁻¹e_{α(n-1)}) Q^*dx^α`, where
+`Q^*dx^α = (dx^{α(0)} ∘ Q) ∧ ⋯ ∧ (dx^{α(n-1)} ∘ Q)`.  The pull-back `φ' = (Q⁻¹)^*φ` has
+coordinates `φ'(e_α) = φ(Q⁻¹e_α)`, so the Kronecker property `dx^α(e_I) = δ_{αI}` gives
+`φ' = ∑_α φ'(e_α) dx^α` on increasing coordinates, hence everywhere.  Pulling back by `Q` gives
+`φ = Q^*φ'`. -/
+theorem Submission.rpn_covector_rotated_expansion : ∀ (P n : ℕ) (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (φ : Covector (Eucl P) n), φ = ∑ α : SimonMultiIndex n P, φ (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) • wedgeCovectors n (fun i => (EuclideanSpace.proj (α i) : Eucl P →L[ℝ] ℝ).comp (Q : Eucl P →L[ℝ] Eucl P)) := by
+  intro P n Q φ
+  -- (2) Standard expansion of `φ' = (Q⁻¹)^*φ`: both sides have the same increasing coordinates.
+  have hexp : covectorPullback n (Q.symm : Eucl P →L[ℝ] Eucl P) φ =
+      ∑ α : SimonMultiIndex n P, φ (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) •
+        wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) := by
+    refine Submission.polyhedral_approx_pairing_covector_ext P n _ _ fun I => ?_
+    -- (1) By the Kronecker property only the `α = I` summand survives.
+    have hK := Submission.polyhedral_approx_pairing_wedge_kronecker P n
+    simp only [euclideanCovectorCoordinate] at hK ⊢
+    rw [ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single I]
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, (hK I).1, mul_one]
+      rfl
+    · intro α _ hα
+      rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, (hK α).2 I (Ne.symm hα), mul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ I) h
+  -- (3) `φ = Q^*φ'` since `Q⁻¹ Q = id`, and `Q^*dx^α = wedgeCovectors n (fun i => dx^{α(i)} ∘ Q)`.
+  have hφ : φ = covectorPullback n (Q : Eucl P →L[ℝ] Eucl P)
+      (covectorPullback n (Q.symm : Eucl P →L[ℝ] Eucl P) φ) := by
+    ext v
+    simp [Function.comp_def]
+  conv_lhs => rw [hφ, hexp]
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun α _ => ?_
+  rw [map_smul, covectorPullback_wedgeCovectors]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
