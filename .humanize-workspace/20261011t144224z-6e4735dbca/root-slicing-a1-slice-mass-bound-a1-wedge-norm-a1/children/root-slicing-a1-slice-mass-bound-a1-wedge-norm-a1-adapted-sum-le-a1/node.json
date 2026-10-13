@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.adapted_sum_le-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Adapted-family estimate: Σ^<_u((α∧γ)²) ≤ c²·Σ^<_u(γ²) when α(u_0) = c and α(u_j) = 0 for j ≠ 0 (parent Steps 6–7)",
+  "statement": "For all P, m ∈ ℕ, every continuous linear functional α : ℝ^P → ℝ, every m-covector γ on ℝ^P, every family u = (u_0,…,u_{P−1}) of vectors of ℝ^P (not necessarily orthonormal) and every c ∈ ℝ such that α(u_j) = c for j = 0 and α(u_j) = 0 for j ≠ 0 (j ∈ Fin P), the following holds. Let α∧γ := alternatizeUncurryFin(α.smulRight γ), so that (α∧γ)(w_0,…,w_m) = Σ_i (−1)^i α(w_i)·γ(w_0,…,ŵ_i,…,w_m). Then Σ_{I : {0,…,m} → [P] strictly increasing} ((α∧γ)(u_{I(0)},…,u_{I(m)}))² ≤ c²·Σ_{J : {0,…,m−1} → [P] strictly increasing} γ(u_{J(0)},…,u_{J(m−1)})². In Lean both sums run over all maps, with summand 0 for maps that are not strictly increasing.",
+  "lean_statement": "∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m) (u : Fin P → Eucl P) (c : ℝ), (∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then c else 0) → (∑ I : Fin (m + 1) → Fin P, if StrictMono I then (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i))) ^ 2 else 0) ≤ c ^ 2 * ∑ I : Fin m → Fin P, if StrictMono I then (γ (fun i => u (I i))) ^ 2 else 0",
+  "lean_name": "slicing_mb_wn_adapted_sum_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-adapted-sum-le-a1-a1"
+}
