@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b7e7ee9e6ba0b87abfb6e0dd3f0def8659c6e0da3e0ecf94a544f65537afabdb",
+  "git_delta": {
+    "base_commit": "9f7f41cda774bfc0046c3a5f40779b3d3154b7f0",
+    "candidate_commit": "45d9f3f45e7761ecd20556354db0fe1c3869d38d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgid_carrier_sdiff_measure_support_null",
+    "diff_sha256": "15f8c01b2d2341a51cdaa2226bc1bf5f46470b2c3c3788fe01ffd00f7509543a",
+    "source_sha256": "bb6d021f2ea6ad4fabbaf972e6340f46a90927efd2f08227540185643d9074eb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgid_carrier_sdiff_measure_support_null",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), μHE[n] (R.carrier \\ R.measure.support) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
