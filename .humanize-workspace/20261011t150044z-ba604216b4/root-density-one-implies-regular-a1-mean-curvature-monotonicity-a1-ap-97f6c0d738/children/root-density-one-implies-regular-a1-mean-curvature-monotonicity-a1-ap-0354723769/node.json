@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_points-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1",
+  "depth": 4,
+  "title": "Approximate tangent vectors are limits of blow-ups of M ∩ N",
+  "statement": "Let P, n ∈ ℕ and M, N ⊆ ℝ^P with Hⁿ(M ∖ N) = 0, where Hⁿ = μHE[n]. Let x ∈ ℝ^P, and let Q be an approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n M x Q): dim Q = n, and ∫_{η_{x,λ}(M)} f dHⁿ → ∫_Q f dHⁿ as λ ↓ 0 for every f ∈ C_c(ℝ^P, ℝ), where η_{x,λ}(y) = λ⁻¹(y − x). Let w ∈ Q and s > 0. Then there is λ₀ > 0 such that for every λ ∈ (0, λ₀) some y ∈ M ∩ N satisfies |λ⁻¹(y − x) − w| < s.",
+  "lean_statement": "∀ (P n : ℕ) (M N : Set (Euclid P)) (x w : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (M \\ N) = 0 → HasApproximateTangentSpaceAt n M x Q → w ∈ Q → ∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ M ∩ N, ‖lam⁻¹ • (y - x) - w‖ < s",
+  "lean_name": "dsmc_att_blowUp_points_of_approxTangent",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.plane_integral_pos-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_null_image-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.plane_integral_pos-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_null_image-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-0354723769-a1"
+}
