@@ -729,6 +729,51 @@ theorem Submission.deformation_dilation_integer_multiplicity : ∀ (N : ℕ) (ρ
     rw [hXY ω η hη, hrep η, show (η : DifferentialForm (Eucl N) k) =
       fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x) from funext hη]
     exact Submission.deformation_dilation_im_tauAction N k ρ M θ ξ ω hρ hemb hmp
+/-- Dilation of lattice chains (the rescaling `x ↦ ρx` behind Simon Ch. 6, 5.3, p. 160).
+If `Y(ω) = X(η)` whenever `η(x) = ρᵏ ω(ρx)`, and `X = ∑'_F β_F [[F]]` on the unit lattice, then
+`Y = ∑'_F β_F [[ρF]]` on the `ρ`-lattice: `ρF` is the image of `F` under `x ↦ ρ • x` and
+`∫_{ρF} g dHᵏ = ρᵏ ∫_F g(ρx) dHᵏ(x)`, so the two sums agree term by term. -/
+theorem Submission.deformation_dilation_lattice_chain :
+    ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+        (∀ x, (η : DifferentialForm (Eucl N) k) x =
+          ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) →
+      ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y := by
+  intro N ρ hρ k X Y hXY β hX ω
+  -- Step 1: `latticeFace ρ F = ρ • latticeFace 1 F`, coordinatewise.
+  have hface : ∀ F : LatticeFaceIndex k N,
+      latticeFace ρ F = (fun x : Eucl N => ρ • x) '' latticeFace 1 F := by
+    intro F
+    ext y
+    constructor
+    · intro hy
+      refine ⟨ρ⁻¹ • y, fun i => ?_, smul_inv_smul₀ hρ.ne' y⟩
+      rw [PiLp.smul_apply, smul_eq_mul, one_mul, one_mul]
+      refine ⟨fun hi => ?_, fun hi => ?_⟩
+      · obtain ⟨h₁, h₂⟩ := (hy i).1 hi
+        exact ⟨(le_inv_mul_iff₀ hρ).2 h₁, (inv_mul_le_iff₀ hρ).2 h₂⟩
+      · rw [(hy i).2 hi, inv_mul_cancel_left₀ hρ.ne']
+    · rintro ⟨x, hx, rfl⟩ i
+      rw [PiLp.smul_apply, smul_eq_mul]
+      refine ⟨fun hi => ?_, fun hi => ?_⟩
+      · obtain ⟨h₁, h₂⟩ := (hx i).1 hi
+        rw [one_mul] at h₁ h₂
+        exact ⟨mul_le_mul_of_nonneg_left h₁ hρ.le, mul_le_mul_of_nonneg_left h₂ hρ.le⟩
+      · rw [(hx i).2 hi, one_mul]
+  -- Step 2: `[[F]](ρᵏ ω(ρ ·)) = [[ρF]](ω)`, by the scaling `Hᵏ(ρ S) = ρᵏ Hᵏ(S)`.
+  obtain ⟨hemb, hmp⟩ := Submission.deformation_dilation_hausdorff N k ρ hρ
+  have hact : ∀ F : LatticeFaceIndex k N,
+      latticeFaceAction 1 F (fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) =
+        latticeFaceAction ρ F ω := by
+    intro F
+    rw [latticeFaceAction, latticeFaceAction, hface F, hmp.setIntegral_image_emb hemb,
+      Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+      smul_eq_mul, ← integral_const_mul]
+    rfl
+  -- Step 3: compare the two chains term by term at the pulled-back test form `η`.
+  obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N ρ hρ k).1 ω
+  rw [hXY ω η hη, hX η, funext hη]
+  exact tsum_congr fun F => by rw [hact F]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
