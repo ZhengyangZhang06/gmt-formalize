@@ -1,0 +1,26 @@
+{
+  "node_id": "root.deformation-a1.mass_restriction-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1104",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0b7851dc2aad39b445dee72d62552bfdcf96e632",
+  "integrated_commit": "",
+  "proof_base_commit": "1938ad3eb6c8452d5f94e253177767af4224ff8a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1",
+  "requires": [
+    "root.integrality_weak_limits-a1.restriction_theory-a1",
+    "root.rectifiability-a1.mass_measure_representation-a1",
+    "root.slicing-a1.representation_unique-a1",
+    "root.polyhedral_approximation-a1.restriction_tau-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.zero_density_off_set-a1",
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.deformation-a1.mass_restriction-a1.mass_measure_facts-a1",
+    "root.deformation-a1.mass_restriction-a1.representation_unique-a1",
+    "root.deformation-a1.mass_restriction-a1.tangent_inter-a1",
+    "root.deformation-a1.mass_restriction-a1.triple_inter-a1"
+  ]
+}
