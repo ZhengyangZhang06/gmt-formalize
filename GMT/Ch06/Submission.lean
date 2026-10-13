@@ -1302,6 +1302,45 @@ theorem Submission.slicing_im_creg_local_to_global : ∀ (P n : ℕ) (Φ : Eucl 
   refine ⟨by rw [hslice]; exact AEMeasurable.tsum fun k => (hLP k).1, ?_⟩
   rw [hslice, lintegral_tsum fun k => (hLP k).1, ← hWU, lintegral_iUnion hWm hWd]
   exact tsum_congr fun k => (hLP k).2
+/-- Countable gluing of co-area identities.  Put `Z = M \ ⋃ i, W i`.  For a.e. `t`,
+`ν (Z ∩ f⁻¹{t}) = 0`, so `M ∩ f⁻¹{t}` and `⋃ i, (W i ∩ f⁻¹{t})` are `ν`-a.e. equal and the slice
+integral over `M` is the sum of the slice integrals over the disjoint pieces `W i ∩ f⁻¹{t}`.
+Integrating in `t` (`lintegral_tsum`) and summing the piece identities gives
+`∫_{⋃ W i} J g dμ` (`lintegral_iUnion`), which is `∫_M J g dμ` because `J g = 0` a.e. on `Z`. -/
+theorem Submission.slicing_im_coarea_glue :
+    ∀ (X : Type) [MeasurableSpace X] (μ ν : Measure X) (f : X → ℝ) (J g : X → ℝ≥0∞)
+      (M : Set X) (W : ℕ → Set X), Measurable f → (∀ i, MeasurableSet (W i)) →
+      (∀ i, W i ⊆ M) → Pairwise (Function.onFun Disjoint W) →
+      (∀ᵐ x ∂(μ.restrict (M \ ⋃ i, W i)), J x * g x = 0) →
+      (∀ᵐ t ∂(volume : Measure ℝ), ν ((M \ ⋃ i, W i) ∩ f ⁻¹' {t}) = 0) →
+      (∀ i, AEMeasurable (fun t : ℝ => ∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧
+        ∫⁻ t, (∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) =
+          ∫⁻ x in W i, J x * g x ∂μ) →
+      AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧
+        ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) =
+          ∫⁻ x in M, J x * g x ∂μ := by
+  intro X _ μ ν f J g M W hf hW hWM hdisj hZ hslice hpieces
+  -- For a.e. `t`, `M ∩ f⁻¹{t}` and `⋃ i, (W i ∩ f⁻¹{t})` differ by the `ν`-null set
+  -- `(M \ ⋃ i, W i) ∩ f⁻¹{t}`, so the slice integral over `M` is the sum over the pieces.
+  have hsum : (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) =ᵐ[volume]
+      fun t => ∑' i, ∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν := by
+    filter_upwards [hslice] with t ht
+    have hset : M ∩ f ⁻¹' {t} =ᵐ[ν] ⋃ i, W i ∩ f ⁻¹' {t} := by
+      rw [← iUnion_inter]
+      refine ae_eq_set.2 ⟨measure_mono_null (fun x hx => ?_) ht, ?_⟩
+      · exact ⟨⟨hx.1.1, fun hxW => hx.2 ⟨hxW, hx.1.2⟩⟩, hx.1.2⟩
+      · rw [sdiff_eq_empty.2 (inter_subset_inter_left _ (iUnion_subset hWM)), measure_empty]
+    rw [setLIntegral_congr hset]
+    exact lintegral_iUnion (fun i => (hW i).inter (hf (measurableSet_singleton t)))
+      (fun i j hij => (hdisj hij).mono inter_subset_left inter_subset_left) g
+  -- The remainder `M \ ⋃ i, W i` does not contribute to the weighted integral over `M`.
+  have hM : ∫⁻ x in M, J x * g x ∂μ = ∫⁻ x in ⋃ i, W i, J x * g x ∂μ := by
+    rw [← lintegral_inter_add_sdiff (fun x => J x * g x) M (MeasurableSet.iUnion hW),
+      inter_eq_right.2 (iUnion_subset hWM), lintegral_congr_ae hZ, lintegral_zero, add_zero]
+  refine ⟨(AEMeasurable.tsum fun i => (hpieces i).1).congr hsum.symm, ?_⟩
+  rw [lintegral_congr_ae hsum, lintegral_tsum fun i => (hpieces i).1, hM,
+    lintegral_iUnion hW hdisj]
+  exact tsum_congr fun i => (hpieces i).2
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
