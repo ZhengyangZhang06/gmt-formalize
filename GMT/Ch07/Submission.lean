@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Frame bounds for the affine graph plane (Simon Ch. 5, proof of Theorem 4.5).  Let
+`L = ι + ι' ∘ Λ`, `S = range L` and `τ = ξ + ι' c`, where `ι`, `ι'` are orthogonal isometric
+frames with `range ι ⊆ T`, `dim T = n`.  Then (a) `dim S = n`; (b) at `ξ + ι v + ι' w`, the
+distance to `τ + S` is at most `‖w - c - Λ v‖`, and `‖v‖ ≤ ‖ξ + ι v + ι' w - τ‖`; (c) for every
+`x`, `dist(x - τ, S) ≤ dist(x - ξ, T) + ‖c‖ + ‖Λ‖ ‖x - τ‖`, since `range ι = T`,
+`range ι' = Tᗮ` and so `x = ξ + ι v + ι' w` with `‖w‖ = dist(x - ξ, T)`. -/
+theorem Submission.dorag_tes_gah_plane_frame_bounds : ∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (Λ : Euclid n →L[ℝ] Euclid k) (ξ : Euclid (n + k)) (c : Euclid k), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → Module.finrank ℝ (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)) = n ∧ (∀ (v : Euclid n) (w : Euclid k), ‖(ξ + ι v + ι' w - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (ξ + ι v + ι' w - (ξ + ι' c))‖ ≤ ‖w - c - Λ v‖ ∧ ‖v‖ ≤ ‖ξ + ι v + ι' w - (ξ + ι' c)‖) ∧ ∀ x : Euclid (n + k), ‖(x - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (x - (ξ + ι' c))‖ ≤ ‖(x - ξ) - T.starProjection (x - ξ)‖ + ‖c‖ + ‖Λ‖ * ‖x - (ξ + ι' c)‖ := by
+  intro n k T ι ι' Λ ξ c hT horth hιT
+  set L : Euclid n →ₗ[ℝ] Euclid (n + k) := ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap
+  have hLv : ∀ v, L v = ι v + ι' (Λ v) := fun v => rfl
+  -- Step 1 (Pythagoras): `‖ι v + ι' u‖² = ‖v‖² + ‖u‖²`
+  have hpy : ∀ (v : Euclid n) (u : Euclid k), ‖ι v + ι' u‖ ^ 2 = ‖v‖ ^ 2 + ‖u‖ ^ 2 := by
+    intro v u
+    rw [norm_add_sq_real, horth v u, ι.norm_map, ι'.norm_map]
+    ring
+  -- Step 2 (a): `L` is injective, so `dim S = n`
+  have ha : Module.finrank ℝ (LinearMap.range L) = n := by
+    have hinj : Function.Injective L := by
+      rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+      intro v hv
+      have h := hpy v (Λ v)
+      rw [← hLv, hv, norm_zero] at h
+      have h0 : ‖v‖ ^ 2 = 0 := by nlinarith [sq_nonneg ‖v‖, sq_nonneg ‖Λ v‖]
+      simpa using h0
+    rw [LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+  -- Step 3 (nearest point): `‖y - p_S y‖ ≤ ‖y - s‖` for `s ∈ S`
+  have hnear : ∀ y s : Euclid (n + k), s ∈ LinearMap.range L →
+      ‖y - (LinearMap.range L).starProjection y‖ ≤ ‖y - s‖ := by
+    intro y s hs
+    rw [Submodule.starProjection_minimal]
+    exact ciInf_le ⟨0, by rintro _ ⟨z, rfl⟩; exact norm_nonneg _⟩ (⟨s, hs⟩ : LinearMap.range L)
+  -- Step 4 (b)
+  have hb : ∀ (v : Euclid n) (w : Euclid k),
+      ‖(ξ + ι v + ι' w - (ξ + ι' c)) - (LinearMap.range L).starProjection (ξ + ι v + ι' w - (ξ + ι' c))‖
+        ≤ ‖w - c - Λ v‖ ∧ ‖v‖ ≤ ‖ξ + ι v + ι' w - (ξ + ι' c)‖ := by
+    intro v w
+    have hy : ξ + ι v + ι' w - (ξ + ι' c) = ι v + ι' (w - c) := by
+      rw [map_sub]; abel
+    rw [hy]
+    refine ⟨?_, ?_⟩
+    · have h1 : ι v + ι' (w - c) - L v = ι' (w - c - Λ v) := by
+        rw [hLv, map_sub ι' (w - c) (Λ v)]; abel
+      calc _ ≤ ‖ι v + ι' (w - c) - L v‖ := hnear _ _ (LinearMap.mem_range_self L v)
+        _ = ‖w - c - Λ v‖ := by rw [h1, ι'.norm_map]
+    · have h2 := hpy v (w - c)
+      have h3 : ‖v‖ ^ 2 ≤ ‖ι v + ι' (w - c)‖ ^ 2 := by nlinarith [sq_nonneg ‖w - c‖]
+      exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 h3
+  -- Step 5: `range ι = T`
+  have hrι : LinearMap.range ι.toLinearMap = T := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rintro _ ⟨v, rfl⟩
+      exact hιT v
+    · rw [LinearMap.finrank_range_of_inj ι.injective, finrank_euclideanSpace_fin, hT]
+  -- Step 6: `range ι' = Tᗮ`
+  have hrι' : LinearMap.range ι'.toLinearMap = Tᗮ := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rintro _ ⟨w, rfl⟩
+      rw [Submodule.mem_orthogonal]
+      intro u hu
+      rw [← hrι] at hu
+      obtain ⟨v, rfl⟩ := hu
+      exact horth v w
+    · have h := Submodule.finrank_add_finrank_orthogonal T
+      rw [hT, finrank_euclideanSpace_fin] at h
+      rw [LinearMap.finrank_range_of_inj ι'.injective, finrank_euclideanSpace_fin]
+      omega
+  -- Step 7 (c)
+  refine ⟨ha, hb, ?_⟩
+  intro x
+  obtain ⟨v, hv⟩ : T.starProjection (x - ξ) ∈ LinearMap.range ι.toLinearMap := by
+    rw [hrι]; exact T.starProjection_apply_mem _
+  obtain ⟨w, hw⟩ : (x - ξ) - T.starProjection (x - ξ) ∈ LinearMap.range ι'.toLinearMap := by
+    rw [hrι']; exact Submodule.sub_starProjection_mem_orthogonal _
+  simp only [LinearIsometry.coe_toLinearMap] at hv hw
+  have hx : ξ + ι v + ι' w = x := by
+    rw [hv, hw]; abel
+  have hwn : ‖w‖ = ‖(x - ξ) - T.starProjection (x - ξ)‖ := by
+    rw [← hw, ι'.norm_map]
+  obtain ⟨hb1, hb2⟩ := hb v w
+  rw [hx] at hb1 hb2
+  rw [← hwn]
+  calc _ ≤ ‖w - c - Λ v‖ := hb1
+    _ ≤ ‖w - c‖ + ‖Λ v‖ := norm_sub_le _ _
+    _ ≤ ‖w‖ + ‖c‖ + ‖Λ‖ * ‖v‖ := by gcongr; exacts [norm_sub_le _ _, Λ.le_opNorm v]
+    _ ≤ ‖w‖ + ‖c‖ + ‖Λ‖ * ‖x - (ξ + ι' c)‖ := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
