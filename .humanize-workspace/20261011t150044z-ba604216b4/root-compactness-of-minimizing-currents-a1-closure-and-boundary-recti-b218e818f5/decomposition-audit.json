@@ -1,0 +1,97 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def (IsIntegerMultiplicity|IsUnitOrientationOf|boundaryMassOn|CompactlyContained)|def (IMRep\\.)?(action|measure|Represents)|instance.*Sub",
+        "zeroRegion|def GeometricCurrentOn.support|isOpen_zeroRegion",
+        "Isometry\\.(map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image)|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton|integral_withDensity_eq_integral_smul|restrict_withDensity|extDeriv_constOfIsEmpty|setIntegral_finset",
+        "rsd_cmr_support_subset_of_vanish",
+        "dtc_imrep_current",
+        "cbr_cc_",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cc-independent-audit-dp21467v/Types-standalone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cc-independent-audit-dp21467v/Assembly-standalone.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b218e818f5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b218e818f5/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cc-independent-audit-dp21467v/Types-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Alg-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Isp-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Sub-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Seg-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Zero-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Fill-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/Assembly-standalone.lean",
+        "/tmp/cc-independent-audit-dp21467v/support_vanish-accepted.lean",
+        "/tmp/cc-independent-audit-dp21467v/imrep_current-accepted.lean"
+      ],
+      "conclusion": "The pinned revisions and frozen definitions match. All eight propositions pass lexical validation and independently elaborate against the frozen contract. Both reused declarations have byte-identical accepted types and compatible definitions; the six new names have no DAG collisions. The added dependency graph is acyclic. All six new proofs, both accepted reused proofs, and the exact parent assembly recompile successfully; their axiom closures contain only propext, Classical.choice and Quot.sound. The split appropriately isolates filling, slice properties and supporting constructions, and its conclusions establish this selected parent through its five declared dependencies. The supplied binding digest was independently reproduced. No matrix-instance issue occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Relatively compact zero-region neighborhoods exclude every point outside K; support equals K minus the open zero region, proving compactness. All hypotheses are present."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Orientation bounds and locally integrable multiplicity give integrability and linearity; uniform zeroth-order convergence on common compact supports proves current continuity, without requiring U open."
+    },
+    {
+      "key": "current_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match all three clauses. The empty representation proves zero is IM; symmetric admissible forms give the mass bound; integer and finite-set inductions prove the combination clause using only the stated difference hypothesis."
+    },
+    {
+      "key": "isp_of_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes IMRep measure admissibility, restriction identities, and simultaneous almost-everywhere local slice-mass finiteness. BR(d) then applies to the restricted IM current. Removed local-mass assumptions are unnecessary, and current_algebra is correctly declared."
+    },
+    {
+      "key": "isp_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "REP and SL provide the required representations and restriction currents. RU proves both restriction identities, yielding the exact difference of slices outside a common null set. The stated IM difference hypothesis completes the proof without circularity."
+    },
+    {
+      "key": "segment_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies Hausdorff-measure normalization, rectifiability, tangent lines, unit orientation, and the boundary formula by the fundamental theorem of calculus. MR and support_vanish supply the remaining bounds. The coincident-endpoint case is covered."
+    },
+    {
+      "key": "zero_current_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive singleton mass, MR and VO place the carrier inside the compact support. Local integrability makes it finite; singleton positivity upgrades the orientation condition to every carrier point, giving the claimed integer sum."
+    },
+    {
+      "key": "filling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension split is complete: ISO supplies positive-dimensional fillings; the degree-zero case proves total multiplicity zero with a cutoff and combines segment currents. Boundary equality, finite mass and compact support follow using exactly the declared dependencies."
+    }
+  ],
+  "required_changes": []
+}

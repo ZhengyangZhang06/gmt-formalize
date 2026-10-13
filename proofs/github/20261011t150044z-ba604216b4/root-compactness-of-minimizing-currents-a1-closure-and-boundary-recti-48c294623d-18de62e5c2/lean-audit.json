@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "71521d5ba48731b6041b19897886087dcc0163a4d2ab4ff33cf8e55bad9c56e1",
+  "git_delta": {
+    "base_commit": "711dfdd3e39d8805b2bf8fa3b2cb3b935b63262d",
+    "candidate_commit": "28e23663af902467069039b7cedab94620a90ac7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cc_seg_line_hausdorff",
+    "diff_sha256": "36b8bc8ba4e0887f4fd1393106dbb740ba41038ba23e87dfcc00fd99746dd363",
+    "source_sha256": "eca84013909a2f70865c12646fb29f27ef539c2f226528955825a3368534d0b4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cc_seg_line_hausdorff",
+      "statement": "∀ (P : ℕ) (a τ : Euclid P), ‖τ‖ = 1 → ∀ A : Set ℝ, MeasurableSet A → MeasurableSet ((fun u : ℝ => a + u • τ) '' A) ∧ μHE[1] ((fun u : ℝ => a + u • τ) '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in (fun u : ℝ => a + u • τ) '' A, h x ∂μHE[1] = ∫ u in A, h (a + u • τ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
