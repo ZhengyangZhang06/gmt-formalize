@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "695f57aa2089022a7207046047cc162e5550cb123490cc54cc46d66eaebc78c2",
+  "git_delta": {
+    "base_commit": "00832a8f9315a20a77af8c5e4ed99b50c7b10c4a",
+    "candidate_commit": "e9c2ad4d4e4287e69ba5af597719c71df07d8ca1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cttp_span_ball_measure",
+    "diff_sha256": "3fe4d3778ac74b2d8082a3bc401fdf282a52682c8126509bb19fd2b6f7ecaba1",
+    "source_sha256": "df2a08a3bca336321891dd121747212f3471fba02a7f5af1f8acdfbd9666da84",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_span_ball_measure",
+      "statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → ∀ y ∈ Submodule.span ℝ (Set.range τ), ∀ ρ : ℝ, 0 < ρ → μHE[n] (ball y ρ ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
