@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2ddd43cffc7dd73c0fd979e0267f1df5b73eaa220393b435d2fa5c0410236934",
+  "git_delta": {
+    "base_commit": "181459233c702d7df9407f0eee6fd44024559558",
+    "candidate_commit": "4edc1be6bb8b64199be78c4a093525cc795124a0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_imc_tangent_field_aestronglyMeasurable",
+    "diff_sha256": "1dfbc98d070d51d6068bd5abdf1255035360fa7db9720fd1543505f255fc7706",
+    "source_sha256": "24f02d615469a2b01ef90bfae17ad1ffa3c8294c35d06d639c65e148a0c76b59",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_imc_tangent_field_aestronglyMeasurable",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
