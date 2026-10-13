@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "de95a96121d68a5452468875baf14da98ec7433add8334ddd1e97c131c1af0c5",
+  "git_delta": {
+    "base_commit": "2bd895f27469b327179cb1b4c09119b5c8526e5b",
+    "candidate_commit": "1e8bd10a0cb8097d76fe97224a7e565853bb1d06",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_rc_pairing_integrable_abs_le",
+    "diff_sha256": "62419b814c431403f6d76984c2c2ac9c8f5918427dc77470127de533d8e55ef9",
+    "source_sha256": "797abce039447792761196a94f26206d2dda20e7435a48b4b575781cdd494dca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_rc_pairing_integrable_abs_le",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E K : Set (Euclid P)) (ω : DifferentialForm (Euclid P) n) (ε : ℝ), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Continuous ω → MeasurableSet K → μ K < ∞ → (∀ x, x ∉ K → ω x = 0) → (∀ x, covectorEuclideanNorm (ω x) ≤ ε) → Integrable (fun x => ξ x (ω x)) (μ.restrict E) ∧ |∫ x in E, ξ x (ω x) ∂μ| ≤ ε * (μ K).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
