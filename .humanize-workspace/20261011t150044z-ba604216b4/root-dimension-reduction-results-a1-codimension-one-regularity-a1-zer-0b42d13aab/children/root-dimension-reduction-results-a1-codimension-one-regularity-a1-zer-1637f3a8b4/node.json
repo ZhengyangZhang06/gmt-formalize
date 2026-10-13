@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "depth": 4,
+  "title": "Weak limits of region boundaries on C¹-flattening graphs are region boundaries in the limit plane (parent steps 7(b)–10)",
+  "statement": "Let n, k ∈ ℕ, P := n + 1 + k, linear isometries ι : ℝ^{n+1} → ℝ^P and ι' : ℝ^k → ℝ^P with ⟨ιv, ι'w⟩ = 0 for all v, w and such that every y ∈ ℝ^P equals ιv + ι'w for some v, w; ξ_A ∈ Λ_{n+1}(ℝ^P) with ξ_A(α) = α(ιe_0, …, ιe_n) for every (n+1)-covector α (e_j = EuclideanSpace.single j 1); b ∈ ℝ^k; sets U_i ⊆ ℝ^P, currents S_i ∈ 𝒟_n(U_i) and S ∈ 𝒟_n(ℝ^P) with S_i ⇀ S in ℝ^P (ConvergesWeakly: currentEval(S_i)(ω) → S(ω) for every ω ∈ 𝒟^n(ℝ^P)); maps g_i : ℝ^{n+1} → ℝ^k and measurable sets F_i ⊆ ℝ^{n+1}; put G_i(w) := ιw + ι'g_i(w). Assume, for every R > 0 (B_R := ball(0, R) ⊆ ℝ^{n+1}): (H1) for all large i, g_i is differentiable at every w ∈ B_R; (H2) for every ε > 0 and all large i, |g_i(w) − b| < ε and ‖Dg_i(w)‖ < ε for all w ∈ B_R; (H3) for all large i and every ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ ball(0, R) ⊆ ℝ^P, currentEval(S_i)(ω) = ∫_{F_i∩B_R} dω(G_i(w))(DG_i(w)e_0, …, DG_i(w)e_n) dw (DG_i(w) = fderiv ℝ G_i w); (H4) there is c ∈ ℝ such that for all large i and every ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ ball(0, R) and covectorEuclideanNorm(ω(y)) ≤ 1 for all y, currentEval(S_i)(ω) ≤ c. Then there is a measurable F ⊆ {ιw + ι'b : w ∈ ℝ^{n+1}} with S(ω) = ∫_F ξ_A(dω(y)) dH^{n+1}(y) for every ω ∈ 𝒟^n(ℝ^P) (IsBoundaryOfRegion S F (y ↦ ξ_A)).",
+  "lean_statement": "∀ (n k : ℕ) (Us : ℕ → Set (Euclid (n + 1 + k))) (Ss : (i : ℕ) → GeometricCurrentOn (Us i) n) (S : GeometricCurrentOn (univ : Set (Euclid (n + 1 + k))) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ξA : MultiVector (n + 1 + k) (n + 1)) (b : Euclid k) (gs : ℕ → Euclid (n + 1) → Euclid k) (Fs : ℕ → Set (Euclid (n + 1))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξA α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) → ConvergesWeakly Ss S → (∀ i, MeasurableSet (Fs i)) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, DifferentiableAt ℝ (gs i) w) → (∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, ‖gs i w - b‖ < ε ∧ ‖fderiv ℝ (gs i) w‖ < ε) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) = ∫ w in Fs i ∩ ball 0 R, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w (EuclideanSpace.single j (1 : ℝ)))) → (∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (n + 1 + k)) n) y) ≤ 1) → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) ≤ c) → ∃ F : Set (Euclid (n + 1 + k)), MeasurableSet F ∧ F ⊆ {y | ∃ w, y = ι w + ι' b} ∧ IsBoundaryOfRegion S F (fun _ => ξA)",
+  "lean_name": "codim1_zsl_flat_graph_limit",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-1637f3a8b4-a1"
+}

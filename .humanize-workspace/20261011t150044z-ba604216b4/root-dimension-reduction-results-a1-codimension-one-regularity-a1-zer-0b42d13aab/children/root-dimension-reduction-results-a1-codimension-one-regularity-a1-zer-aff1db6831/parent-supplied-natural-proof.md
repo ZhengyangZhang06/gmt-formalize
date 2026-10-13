@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.centres_near-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 3 of the supplied proof of the parent node ("dist(x_i, N) = O(λ_i), and x ∈ N"), together with the last bullet of its step 1 (S_i(ω) = 0 when tsupport ω misses η_i(N)). Support of a current: Simon Ch. 6, 2.11 (chapter-06.txt line 299). Sibling child used: blowup_region (Submission.codim1_zsl_blowUp_isBoundaryOfRegion).
+
+Notation. η_i := dilation x_i λ_i (η_i(z) = λ_i^{−1}(z − x_i)), S_i := blowUp T x_i λ_i ∈ 𝒟_n(η_i(U)), H^{n+1} := μHE[n+1]. For ω ∈ 𝒟^n(ℝ^P), currentEval(S_i)(ω) = S_i(ω) if tsupport ω ⊆ η_i(U) and 0 otherwise. Hypothesis (b) says currentEval(S_i)(ω) → S(ω) for every ω ∈ 𝒟^n(ℝ^P). infDist(z, B) is Metric.infDist.
+
+1. (Vanishing away from η_i(N).) Let i ∈ ℕ and ω ∈ 𝒟^n(ℝ^P) with tsupport ω ∩ η_i(N) = ∅. Then currentEval(S_i)(ω) = 0. If tsupport ω ⊄ η_i(U) this is the definition of currentEval. Otherwise currentEval(S_i)(ω) = S_i(ω) = ∫_{η_i(E)} ξ_N(x_i + λ_iw)(dω(w)) dH^{n+1}(w) by blowup_region (y := x_i, λ := λ_i). For w ∈ η_i(E) ⊆ η_i(N) we have w ∉ tsupport ω; since tsupport(dω) ⊆ tsupport ω (SimonGMT tsupport_exteriorDerivative_subset), dω(w) = 0 and the integrand vanishes at w. A set integral of a function vanishing on the set is 0 (setIntegral_eq_zero_of_forall_eq_zero; no measurability is needed).
+
+2. (Distance criterion.) Let R ≥ 0 and i be such that |p − x_i| > λ_iR for every p ∈ N. Then closedBall(0, R) ∩ η_i(N) = ∅, because |η_i(p)| = |p − x_i|/λ_i > R for p ∈ N.
+
+3. (A criterion for S = 0.) Suppose σ : ℕ → ℕ is strictly increasing and, for every R ≥ 0, there is j₀ such that for all j ≥ j₀ every p ∈ N satisfies |p − x_{σ(j)}| > λ_{σ(j)}R. Then S(ω) = 0 for every ω ∈ 𝒟^n(ℝ^P): tsupport ω is compact, so tsupport ω ⊆ closedBall(0, R) for some R ≥ 0; by steps 2 and 1, currentEval(S_{σ(j)})(ω) = 0 for all j ≥ j₀; and currentEval(S_{σ(j)})(ω) → S(ω) by (b) composed with σ (σ(j) → ∞).
+
+4. (S = 0 contradicts spt S ≠ ∅.) If S(ω) = 0 for all ω ∈ 𝒟^n(ℝ^P), then spt S = ∅: for z ∈ ℝ^P the open ball W := ball(z, 1) has compact closure closedBall(z, 1) ⊆ ℝ^P and S vanishes on W, so z ∈ W ⊆ zeroRegion S and z ∉ spt S = ℝ^P ∖ zeroRegion S. This contradicts spt S ≠ ∅. Hence the situation of step 3 never occurs.
+
+5. (N ≠ ∅.) If N = ∅, the condition of step 3 holds vacuously with σ = id, contradicting step 4. So N ≠ ∅, and infDist(·, N) is a finite 1-Lipschitz function.
+
+6. (The rescaled distances are bounded.) Put r_i := infDist(x_i, N)/λ_i ≥ 0. Claim: (r_i) is bounded above. Otherwise, for every j ∈ ℕ there are infinitely many i with r_i > j (if only finitely many i had r_i > j, then r would be bounded by the maximum of j and these finitely many values). By Filter.extraction_forall_of_frequently there is a strictly increasing σ with r_{σ(j)} > j for every j. For R ≥ 0 and j > R every p ∈ N then satisfies |p − x_{σ(j)}| ≥ infDist(x_{σ(j)}, N) = λ_{σ(j)}r_{σ(j)} > λ_{σ(j)}R, so the condition of step 3 holds, contradicting step 4. Hence there is M ≥ 0 with infDist(x_i, N) ≤ Mλ_i for every i.
+
+7. (The constant C₀.) Put C₀ := M + 1 > 0. For each i, infDist(x_i, N) ≤ Mλ_i < C₀λ_i (λ_i > 0), so by Metric.infDist_lt_iff (N ≠ ∅) there is p ∈ N with |p − x_i| < C₀λ_i; in particular dist(p, x_i) ≤ C₀λ_i.
+
+8. (x ∈ N.) For every i, infDist(x, N) ≤ |x − x_i| + infDist(x_i, N) ≤ |x − x_i| + Mλ_i, and the right side tends to 0 (x_i → x, λ_i → 0). So infDist(x, N) = 0 and x ∈ closure N (Metric.mem_closure_iff_infDist_zero, N ≠ ∅). Since x ∈ U and (closure N ∖ N) ∩ U = ∅, x ∈ N. ∎
+
+## Key steps
+
+1. By blowup_region, currentEval(S_i)(ω) = 0 whenever tsupport ω misses η_i(N), since dω vanishes on η_i(E) ⊆ η_i(N).
+2. If infDist(x_i, N)/λ_i were unbounded, along a subsequence every compactly supported ω would eventually miss η_i(N); then S = 0 and spt S = ∅, a contradiction (this also forces N ≠ ∅).
+3. Hence infDist(x_i, N) ≤ Mλ_i, giving p_i ∈ N with |p_i − x_i| ≤ (M + 1)λ_i, and infDist(x, N) = 0 gives x ∈ closure N ∩ U ⊆ N.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; grep -n simongmt -A6 local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `cat decomposition-audit-v1.json decomposition-review-receipt-v1.json; python3 dump of decomposition-v1.json (12 subproblems: statements, lean_statements, natural proofs, key steps, dependencies)`
+- `python3 scan of dag.json: lean_name lookup of the 8 codim1_zsl_* names, the 4 reused names (status, candidate commit, lean_statement byte equality with decomposition-v1.json), dtc_hausdorff_dilation, dor_ims_unitOrientation_dual and codim1_zero_scale_limit_offset_plane; raw count of 'codim1_zsl'; keyword scan 'area formula|BV|perimeter|bvVariation|indicator' over statements and titles`
+- `for r in $(git for-each-ref --format='%(objectname)' | sort -u): git grep -q -e codim1_zsl $r -- 'GMT/*.lean' (1277 commits); positive control: the same loop with dgcr_graph_orientation_jacobian; grep -rl codim1_zsl .lake/packages/simongmt/Poincare GMT`
+- `grep -n 'def IsTestForm|def exteriorDerivative|theorem exteriorDerivative_apply|def covectorEuclideanNorm|def massOn|def zeroRegion|def support|def affinePullbackForm|theorem exteriorDerivative_affinePullbackForm|theorem tsupport_exteriorDerivative_subset' simongmt/Poincare/SimonGMT/Chapter06/*.lean, then sed of Forms.lean 25-135, Mass.lean 25-80, CurrentLocalEquality.lean 95-125, AffineCurrentPushforward.lean 30-50 and 145-160, Currents.lean 120-190`
+- `rg -n 'theorem tsupport_eq|theorem support_eq|protected theorem neg|symmetric :' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'integral_comp_inv_smul_of_nonneg|support_convolution_subset|exists_isCompact_sdiff_lt|exists_isOpen_sdiff_lt|integral_pos_iff_support_of_nonneg|theorem lintegral_tsum' mathlib/Mathlib; rg -n 'namespace Module.Basis|def det' mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `lean -DautoImplicit=false /tmp/zsl-v2/Lib.lean and /tmp/zsl-v2/Lib2.lean (#check of about 70 Mathlib/SimonGMT lemmas cited by the children)`
+- `lean -DautoImplicit=false /tmp/zsl-v2/Bump.lean (ρ := (∫b)⁻¹·b for b : ContDiffBump (0 : Euclid m) with radii 1/2, 1: ContDiff ℝ ⊤, ρ ≥ 0, ρ(−z) = ρ(z), tsupport ρ = closedBall 0 1, ∫ρ = 1)`
+- `lean -DautoImplicit=false /tmp/zsl-v2/TypesV2.lean (12 child types generated from the v2 JSON plus the assembly of the selected type); lean -DautoImplicit=false /tmp/zsl-v2/AssemblyV2.lean (children as axioms, #print axioms)`
+- `grep -n 'def check_source_delta' -A40 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-review-receipt-v1.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/tmp/zsl-v2/Lib.lean`
+- `/tmp/zsl-v2/Lib2.lean`
+- `/tmp/zsl-v2/Bump.lean`
+- `/tmp/zsl-v2/TypesV2.lean`
+- `/tmp/zsl-v2/AssemblyV2.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot lake-manifest pins simongmt 2b366308, equal to .lake/packages/simongmt. The snapshot Contract.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+DAG.
+- The selected node is 'decomposing' with the handoff's exact frozen type.
+- The 4 reused declarations are accepted with types byte-identical to v1: dtc_blowUp_testForm_corr (5e184fbc), setIntegral_blowUpMap_image_eq_inv_pow_mul (713eebc5), rsdic_unitOrientation_eq_or_eq_neg (fe95347b) and dgcr_graph_orientation_jacobian (62aa1f11).
+- The 8 codim1_zsl_* names have 0 occurrences in dag.json, SimonGMT, GMT/ and the 1277 commits reachable from refs. The positive control dgcr_graph_orientation_jacobian was found on 6 of those commits.
+- No accepted node gives an exact graph area formula or BV compactness. The only area-formula nodes are unaccepted (dpf_area_formula_bilipschitz_rectifiable, idtp_carrier_area_formula) and have other types.
+Library.
+- The SimonGMT definitions match the children's proofs: exteriorDerivative = extDeriv with the alternating-sum formula, IsTestForm = ContDiff ℝ ∞ ∧ HasCompactSupport, covectorEuclideanNorm, massOn/massAdmissibleOn, zeroRegion/support and affinePullbackForm.
+- In the snapshot Mathlib, ContDiffBump.tsupport_eq (BumpFunction/Basic.lean:157) gives closedBall c rOut. This confirms the v1 defect, so step 1 of bv_compactness now claims only tsupport ρ = closedBall(0, 1). ContDiffBump.neg (:132) gives evenness, and support_eq (:151) gives the open-ball support.
+- Every lemma cited by the corrected proofs exists in the import closure. Examples: integral_comp_inv_smul_of_nonneg (Haar/NormedSpace.lean:129), support_convolution_subset (Convolution.lean:670), MeasurableSet.exists_isCompact_sdiff_lt/exists_isOpen_sdiff_lt (Regular.lean:843/385), exists_continuous_one_zero_of_isCompact and Module.Basis.det (Determinant.lean:591; the old name Basis.det is fixed).
+Lean.
+- Bump.lean compiles the corrected mollifier.
+- TypesV2.lean elaborates all 12 frozen types taken verbatim from the v2 JSON and proves the selected type; lean exits 0. Its axioms are propext, sorryAx, Classical.choice and Quot.sound.
+- With the children as axioms, AssemblyV2.lean depends only on propext, Classical.choice, Quot.sound and the 4 direct children.
+- leaf_verification.check_source_delta forbids new declarations and imports in leaf proofs, so the deep lemmas must stay separate children.

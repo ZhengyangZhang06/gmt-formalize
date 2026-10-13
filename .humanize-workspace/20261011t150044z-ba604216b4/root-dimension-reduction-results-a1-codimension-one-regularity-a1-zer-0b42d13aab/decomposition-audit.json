@@ -1,0 +1,125 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "rg -n 'codim1_zsl_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT .lake/packages/simongmt/Poincare",
+        "integral_withDensity_eq_integral_smul|theorem measurable_fderiv|exists_continuous_one_zero_of_isCompact|theorem tsupport_eq|protected theorem neg",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|integral_const_mul|integral_smul_measure",
+        "python3 /tmp/zsl-independent-audit/run_lean.py /tmp/zsl-independent-audit/Types.lean",
+        "python3 /tmp/zsl-independent-audit/run_lean.py /tmp/zsl-independent-audit/Assembly.lean",
+        "python3 /tmp/zsl-independent-audit/run_lean.py /tmp/zsl-independent-audit/testform_corr-candidate.lean",
+        "python3 /tmp/zsl-independent-audit/run_lean.py /tmp/zsl-independent-audit/blowup_change_of_variables-candidate.lean",
+        "python3 /tmp/zsl-independent-audit/run_lean.py /tmp/zsl-independent-audit/orientation_sign-candidate.lean",
+        "python3 /tmp/zsl-independent-audit/run_lean.py /tmp/zsl-independent-audit/graph_orientation_jacobian-candidate.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt",
+        "/tmp/zsl-independent-audit/Types.lean",
+        "/tmp/zsl-independent-audit/Assembly.lean",
+        "/tmp/zsl-independent-audit/testform_corr-candidate.lean",
+        "/tmp/zsl-independent-audit/blowup_change_of_variables-candidate.lean",
+        "/tmp/zsl-independent-audit/orientation_sign-candidate.lean",
+        "/tmp/zsl-independent-audit/graph_orientation_jacobian-candidate.lean"
+      ],
+      "conclusion": "Project, Mathlib and SimonGMT revisions match the snapshot pins; the snapshot contract and workspace contract/submission are byte-identical. All twelve frozen propositions independently elaborate before any child declaration exists. All names are bare identifiers; the eight new names have no matches in the active DAG, GMT sources or SimonGMT sources. The four reused declarations have byte-identical accepted types, compile from their immutable candidate commits, and depend only on propext, Classical.choice and Quot.sound. Dependency checks found no cycle or reliance on the selected parent. The corrected bump support, arbitrary-integrand Bochner identities, derivative measurability and Hausdorff transport are supported by the inspected sources. No child type contains a problematic matrix-unit construction. Splitting is appropriate: the supplied proofs establish distinct analytic and geometric obligations. A separate conditional Lean assembly proves the exact selected frozen type from centres_near, graph_chart, graph_blowup_limit and offset_plane, with no sorryAx or ancestor theorem dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "offset_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The orthonormal frame establishes dimension and a proper affine chart; closedness, nonemptiness, the curve-based tangent-space equality and constant orientation establish every InClassO conjunct."
+    },
+    {
+      "key": "blowup_region",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact contract for arbitrary U and E. Test-form correspondence, exterior differentiation and the accepted change-of-variables identity cancel the scaling factors correctly without imposing measurability or integrability hypotheses."
+    },
+    {
+      "key": "centres_near",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Vanishing away from the rescaled carrier handles both branches of currentEval, so openness of U is unnecessary. An escaping-distance subsequence contradicts nonempty support; the resulting global bound yields nearby points for every index and x ∈ closure N ∩ U ⊆ N."
+    },
+    {
+      "key": "graph_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse function theorem supplies the graph with the stated derivative and radius properties. Chart properness excludes additional nearby branches. The two declared orientation dependencies, continuity and connectedness establish the precise positive-sign Jacobian identity."
+    },
+    {
+      "key": "graph_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Linear measure scaling, local comparison with the derivative and countable disjoint decomposition establish the weighted measure identity. The measurable embedding and finite measurable density then justify the stated Bochner equality for arbitrary integrands, including non-integrable ones."
+    },
+    {
+      "key": "bv_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The corrected closed-ball mollifier support gives convolution support strictly inside B_{R+2}. The gradient bound, translation estimate, cube-average extraction and fast subsequence establish local convergence to the measurable liminf set. The proof also handles dimension zero and nonpositive radii."
+    },
+    {
+      "key": "flat_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lifted divergence forms have a uniform coefficient-norm bound and the required supports. Nonzero scalar rescaling preserves the currentEval branch. BV compactness and uniform convergence of the graph integrands identify S, and isometric Hausdorff transport gives exactly the asserted measurable region boundary."
+    },
+    {
+      "key": "graph_blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Nearby carrier points bound the normal offsets, and Du(0)=0 yields the required subsequential flattening. The mass estimate and area/orientation calculation establish all four flat_limit hypotheses with tails uniform over the relevant test forms. The resulting conclusion matches the frozen type."
+    },
+    {
+      "key": "testform_corr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Affine homeomorphisms preserve the required test-form supports, and multilinearity gives the exact inverse-power scaling, including degree zero. The accepted implementation independently recompiles without nonstandard axioms."
+    },
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Hausdorff scaling and the restricted-measure pushforward identity hold for arbitrary sets; measurable-embedding integration handles arbitrary functions. The supplied proof and independently recompiled implementation establish the exact contract."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The orthonormal change-of-basis determinant is ±1, and restriction of alternating forms to Q gives a single sign independent of the covector. Degree zero is covered; the implementation recompiles with only standard axioms."
+    },
+    {
+      "key": "graph_orientation_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The derivative has a left inverse; the Gram determinant calculation establishes positive J. Normalized evaluation and the constructed dual covector prove continuity, unit orientation and the Jacobian identity. The implementation and its dependency closure introduce no circularity or nonstandard axioms."
+    }
+  ],
+  "required_changes": []
+}

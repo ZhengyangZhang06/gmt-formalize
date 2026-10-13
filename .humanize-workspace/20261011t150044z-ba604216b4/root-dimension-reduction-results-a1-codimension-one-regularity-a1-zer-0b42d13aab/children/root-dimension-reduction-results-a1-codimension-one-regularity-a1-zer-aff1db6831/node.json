@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.centres_near-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "depth": 4,
+  "title": "Nonzero zero-scale limits force the blow-up centres to lie within O(λ_i) of N, and x ∈ N (parent step 3)",
+  "statement": "Let P, n ∈ ℕ, U, N, E ⊆ ℝ^P, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U), x ∈ ℝ^P, points x_i ∈ ℝ^P and scales λ_i > 0 (i ∈ ℕ), and S ∈ 𝒟_n(ℝ^P). Assume (closure N ∖ N) ∩ U = ∅, E ⊆ N, T(ω) = ∫_E ξ_N(z)(dω(z)) dH^{n+1}(z) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N), x ∈ U, x_i → x, λ_i → 0, the blow-ups η_{x_i,λ_i#}T (blowUp T x_i λ_i) converge weakly to S in ℝ^P (ConvergesWeakly: currentEval(η_{x_i,λ_i#}T)(ω) → S(ω) for every ω ∈ 𝒟^n(ℝ^P)), and spt S ≠ ∅. Then x ∈ N, and there is C₀ > 0 such that for every i some p ∈ N satisfies |p − x_i| ≤ C₀λ_i.",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n), (closure N \\ N) ∩ U = ∅ → E ⊆ N → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → S.support.Nonempty → x ∈ N ∧ ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i",
+  "lean_name": "codim1_zsl_blowUp_centres_near",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.blowup_region-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.blowup_region-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-aff1db6831-a1"
+}

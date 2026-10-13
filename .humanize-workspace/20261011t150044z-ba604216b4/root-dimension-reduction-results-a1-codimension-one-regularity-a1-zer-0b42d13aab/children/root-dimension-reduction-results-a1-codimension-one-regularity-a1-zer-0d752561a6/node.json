@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "depth": 4,
+  "title": "Zero-scale limits of blow-ups along an oriented graph chart are region boundaries in an offset tangent plane (parent steps 1–2, 5–7(a), then flat_limit)",
+  "statement": "Let n, k ∈ ℕ, P := n + 1 + k, U, N, E ⊆ ℝ^P, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U), x ∈ ℝ^P, points x_i ∈ ℝ^P and scales λ_i > 0 (i ∈ ℕ), S ∈ 𝒟_n(ℝ^P), linear isometries ι : ℝ^{n+1} → ℝ^P and ι' : ℝ^k → ℝ^P, u : ℝ^{n+1} → ℝ^k and δ₁, δ₂, C₀ ∈ ℝ. Assume: U is open; E is measurable and E ⊆ N; T(ω) = ∫_E ξ_N(y)(dω(y)) dH^{n+1}(y) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N); x ∈ U; x_i → x; λ_i → 0; (a) there are C ∈ ℝ and r₀ > 0 with M_{B_ρ(y)}(T) ≤ ofReal(Cρ^n) (T.massOn (ball y ρ) ≤ ENNReal.ofReal (C·ρ^n)) for all y ∈ B_{r₀}(x) and 0 < ρ < r₀; (b) the blow-ups η_{x_i,λ_i#}T (blowUp T x_i λ_i) converge weakly to S in ℝ^P (ConvergesWeakly); (c) for every i there is p ∈ N with |p − x_i| ≤ C₀λ_i; (d) ⟨ιv, ι'w⟩ = 0 for all v, w, and every y ∈ ℝ^P equals ιv + ι'w for some v, w; (e) δ₁ > 0, δ₂ > 0, u is C¹ on B_{δ₁} := ball(0, δ₁) ⊆ ℝ^{n+1}, u(0) = 0, Du(0) = 0 and u(B_{δ₁}) ⊆ ball(0, δ₂) ⊆ ℝ^k; (f) with Γ(v) := x + ιv + ι'u(v): N ∩ {x + ιv + ι'w : |v| < δ₁, |w| < δ₂} = Γ(B_{δ₁}); (g) ξ_N(x)(α) = α(ιe_0, …, ιe_n) for every (n+1)-covector α (e_j = EuclideanSpace.single j 1); (h) for every v ∈ B_{δ₁} and every (n+1)-covector α, α(DΓ(v)e_0, …, DΓ(v)e_n) = √det(DΓ(v)*∘DΓ(v))·ξ_N(Γ(v))(α). Then there are b ∈ ℝ^k and a measurable F ⊆ {ιw + ι'b : w ∈ ℝ^{n+1}} such that S(ω) = ∫_F ξ_N(x)(dω(y)) dH^{n+1}(y) for every ω ∈ 𝒟^n(ℝ^P) (IsBoundaryOfRegion S F (y ↦ ξ_N(x))).",
+  "lean_statement": "∀ (n k : ℕ) (U N E : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid (n + 1 + k)) (xs : ℕ → Euclid (n + 1 + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid (n + 1 + k))) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ₁ δ₂ C₀ : ℝ), IsOpen U → MeasurableSet E → E ⊆ N → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → ContDiffOn ℝ 1 u (ball 0 δ₁) → u 0 = 0 → fderiv ℝ u 0 = 0 → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, u v ∈ ball (0 : Euclid k) δ₂) → N ∩ {y | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid (n + 1)) δ₁ → (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξN x α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α) → ∃ (b : Euclid k) (F : Set (Euclid (n + 1 + k))), MeasurableSet F ∧ F ⊆ {y | ∃ w, y = ι w + ι' b} ∧ IsBoundaryOfRegion S F (fun _ => ξN x)",
+  "lean_name": "codim1_zsl_graph_blowup_limit",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.blowup_region-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.blowup_region-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "result_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d752561a6-a1"
+}
