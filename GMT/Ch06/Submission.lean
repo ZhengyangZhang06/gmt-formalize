@@ -359,6 +359,31 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Leibniz bound for determinants: if every entry of a real `n × n` matrix satisfies
+`|A i j| ≤ c`, then `|det A| ≤ n! · cⁿ`.  Expand `det A = ∑_σ sgn(σ) • ∏_i A (σ i) i`, apply the
+triangle inequality, drop the sign `±1`, bound each product of `n` entries by `cⁿ`, and count the
+`n!` permutations of `Fin n`. -/
+theorem Submission.deformation_ipl_mwc_mil_abs_det_le :
+    ∀ (n : ℕ) (c : ℝ) (A : Matrix (Fin n) (Fin n) ℝ), (∀ i j, |A i j| ≤ c) →
+      |Matrix.det A| ≤ (n.factorial : ℝ) * c ^ n := by
+  intro n c A hA
+  rw [Matrix.det_apply]
+  calc |∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ i, A (σ i) i|
+      ≤ ∑ σ : Equiv.Perm (Fin n), |Equiv.Perm.sign σ • ∏ i, A (σ i) i| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ = ∑ σ : Equiv.Perm (Fin n), ∏ i, |A (σ i) i| := by
+        -- `sgn σ = ±1`, and `|·|` is multiplicative on finite products.
+        refine Finset.sum_congr rfl fun σ _ => ?_
+        rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+          simp [h, Finset.abs_prod]
+    _ ≤ ∑ _σ : Equiv.Perm (Fin n), c ^ n := by
+        refine Finset.sum_le_sum fun σ _ => ?_
+        calc ∏ i, |A (σ i) i| ≤ ∏ _i : Fin n, c :=
+              Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) (fun i _ => hA _ _)
+          _ = c ^ n := by simp
+    _ = (n.factorial : ℝ) * c ^ n := by
+        simp [Fintype.card_perm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
