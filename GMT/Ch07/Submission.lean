@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Range of the derivative of `(t, α) ↦ t γ(α)`.**  If `G(w) = w₀ γ(w₁)` on an open
+neighbourhood `S` of `ω = (t, α)`, `γ` is differentiable at `α` and `t ≠ 0`, then
+`DG(ω) h = h₀ γ(α) + (t h₁) γ'(α)`, so `range DG(ω) = span {γ(α), γ'(α)}`; the vector
+`a γ(α) + b γ'(α)` is the value at `h = (a, b / t)`. -/
+theorem Submission.idtp_ccd_scsp_cc_scaled_curve_range : ∀ (P : ℕ) (γ : ℝ → Euclid P) (G : Euclid 2 → Euclid P) (S : Set (Euclid 2)) (t α : ℝ), IsOpen S → !₂[t, α] ∈ S → (∀ w ∈ S, G w = w 0 • γ (w 1)) → DifferentiableAt ℝ γ α → t ≠ 0 → Set.range (fderiv ℝ G !₂[t, α]) = (Submodule.span ℝ {γ α, deriv γ α} : Set (Euclid P)) := by
+  intro P γ G S t α hS hω hG hγ ht
+  -- Step 1: `G = G̃` on the open neighbourhood `S` of `ω = (t, α)`, so `DG(ω) = DG̃(ω)`
+  have hloc : G =ᶠ[𝓝 !₂[t, α]] fun w => w 0 • γ (w 1) :=
+    Filter.eventually_of_mem (hS.mem_nhds hω) hG
+  -- Steps 2–3: the coordinate maps are their own derivatives; chain rule for `w ↦ γ(w₁)`
+  have h0 : HasFDerivAt (fun w : Euclid 2 => w 0) (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin 2))
+      !₂[t, α] :=
+    (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin 2)).hasFDerivAt
+  have h1 : HasFDerivAt (fun w : Euclid 2 => w 1) (EuclideanSpace.proj (𝕜 := ℝ) (1 : Fin 2))
+      !₂[t, α] :=
+    (EuclideanSpace.proj (𝕜 := ℝ) (1 : Fin 2)).hasFDerivAt
+  have hγ1 : HasFDerivAt (fun w : Euclid 2 => γ (w 1))
+      ((ContinuousLinearMap.toSpanSingleton ℝ (deriv γ α)).comp
+        (EuclideanSpace.proj (𝕜 := ℝ) (1 : Fin 2))) !₂[t, α] :=
+    hγ.hasDerivAt.hasFDerivAt.comp _ h1
+  -- Step 4: product rule, `DG(ω) h = h₀ γ(α) + (t h₁) γ'(α)`
+  have hG' : HasFDerivAt (fun w : Euclid 2 => w 0 • γ (w 1)) _ !₂[t, α] := h0.smul hγ1
+  have hval : ∀ h : Euclid 2, fderiv ℝ G !₂[t, α] h = h 0 • γ α + (t * h 1) • deriv γ α := by
+    intro h
+    rw [hloc.fderiv_eq, hG'.fderiv]
+    simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+      add_apply, smul_apply, ContinuousLinearMap.comp_apply, PiLp.proj_apply,
+      ContinuousLinearMap.toSpanSingleton_apply, ContinuousLinearMap.smulRight_apply]
+    rw [smul_smul, add_comm]
+  -- Steps 5–7: both inclusions, via `Submodule.mem_span_pair`
+  ext v
+  simp only [Set.mem_range, SetLike.mem_coe, Submodule.mem_span_pair]
+  constructor
+  · rintro ⟨h, rfl⟩
+    exact ⟨h 0, t * h 1, (hval h).symm⟩
+  · rintro ⟨a, b, rfl⟩
+    refine ⟨!₂[a, b / t], ?_⟩
+    rw [hval]
+    simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+      mul_div_cancel₀ b ht]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
