@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "Deformation theorem for integer multiplicity currents with a finite set of approximating currents (Simon Ch. 6, 5.1–5.4)",
+  "statement": "For all P, m ∈ ℕ (degree n := m + 1) there is a constant c ∈ ℝ≥0 with c ≥ 1 such that for every ρ > 0, every compact K ⊆ ℝ^P and every Λ ∈ ℝ≥0 there is a finite set 𝒬 of currents in 𝒟_n(ℝ^P) with the following property. If T ∈ 𝒟_n(ℝ^P) is integer multiplicity, spt T ⊆ K, M(T) ≤ Λ and M(∂T) < ∞, then there are Q ∈ 𝒬, R ∈ 𝒟_{n+1}(ℝ^P) and S ∈ 𝒟_n(ℝ^P) such that: Q, ∂Q and R are integer multiplicity; T − Q − S = ∂R; Q = 0 or M(Q) ≥ ρⁿ; M(Q) ≤ c·M(T), M(∂Q) ≤ c·M(∂T), M(R) ≤ c·ρ·M(T) and M(S) ≤ c·ρ·M(∂T); spt Q ∪ spt R ⊆ thickening(3√P·ρ, spt T) and spt ∂Q ∪ spt S ⊆ thickening(3√P·ρ, spt ∂T), where thickening(r, A) := {x : |x − y| < r for some y ∈ A} (Mathlib Metric.thickening; it is empty when A = ∅). Here M := massOn ℝ^P is the total mass (GeometricCurrentOn.mass, with the Euclidean coefficient norm), masses and products are read in [0, ∞], and spt is the support of Simon 6.2.11 (GeometricCurrentOn.support). Nothing beyond these properties is asserted about Q: in particular the statement does not assert that Q is a polyhedral chain (that is only a feature of the construction used in the proof).",
+  "lean_statement": "∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (Λ : NNReal), 0 < ρ → IsCompact K → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → T.support ⊆ K → T.mass ≤ Λ → T.boundary.mass < ∞ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support",
+  "lean_name": "cmc_deformation_theorem",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-a1"
+}

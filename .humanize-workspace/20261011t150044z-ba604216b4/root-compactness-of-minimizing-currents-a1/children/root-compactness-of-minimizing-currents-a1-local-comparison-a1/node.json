@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "Local comparison inequality for weak limits of minimizing currents (Simon 7.2.4, (1)–(11))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, and T_j (j ∈ ℕ), T ∈ 𝒟_n(U). Assume: (i) each T_j is minimizing in U (contract IsMinimizingIn T_j U: T_j is integer multiplicity and M_W(T_j) ≤ M_W(S') whenever W is open with closure(W) compact and contained in U, S' ∈ 𝒟_n(U) is integer multiplicity, ∂S' = ∂T_j, and spt(S' − T_j) is a compact subset of U ∩ W); (ii) sup_j (M_W(T_j) + M_W(∂T_j)) < ∞ for every open W with closure(W) compact and contained in U; (iii) T_j ⇀ T in U; (iv) T is integer multiplicity. Then for every compact K ⊆ U and every ε > 0 there exist an open set W with K ⊆ W ⊆ thickening(ε, K) := {x : |x − y| < ε for some y ∈ K} (Mathlib Metric.thickening ε K) and closure(W) compact and contained in U, a strictly increasing φ : ℕ → ℕ and numbers e_j ∈ [0, ∞] with e_j → 0, such that M_W(T_{φ(j)}) ≤ M_W(S) + e_j for every j ∈ ℕ and every integer multiplicity S ∈ 𝒟_n(U) with ∂S = ∂T and spt(S − T) ⊆ K.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), IsOpen U → (∀ j, IsMinimizingIn (Ts j) U) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T → ∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → K ⊆ U → 0 < ε → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ CompactlyContained W U ∧ ∃ (φ : ℕ → ℕ) (e : ℕ → ℝ≥0∞), StrictMono φ ∧ Tendsto e atTop (𝓝 0) ∧ ∀ S : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity S → S.boundary = T.boundary → (S - T).support ⊆ K → ∀ j, (Ts (φ j)).massOn W ≤ S.massOn W + e j",
+  "lean_name": "cmc_local_comparison_inequality",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1",
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-a1"
+}
