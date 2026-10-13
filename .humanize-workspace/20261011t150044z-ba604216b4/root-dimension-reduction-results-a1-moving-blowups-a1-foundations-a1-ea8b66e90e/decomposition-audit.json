@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dimred_mbl_fnd_coordinate_divergence_form|cmr_coordinate_divergence_form|cmr_df_|rsd_mw_tfa_norm_props' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "map_insertNth|norm_curryLeft|curryLeft_apply_apply|def curryLeft|opNorm_le_bound|fderiv_continuousAlternatingMap_apply_const_apply|eq_smul_basis_det|trace_eq_matrix_trace|insertNth_removeNth|tsupport_smul_subset_left|bounded_above_of_compact_support",
+        "def covectorEuclideanNorm|covectorEuclideanNorm_neg|def IsTestForm|abbrev Covector|exteriorDerivative_apply|exteriorDerivative_isTestForm|tsupport_exteriorDerivative_subset",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred-divergence-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred-divergence-independent-audit/Proofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred-divergence-independent-audit/Conditional.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-ea8b66e90e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-7443869795/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-c9e202e0ac/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-cd3bfb833a/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/accepted-candidate.json",
+        "/tmp/dimred-divergence-independent-audit/Types.lean",
+        "/tmp/dimred-divergence-independent-audit/Proofs.lean",
+        "/tmp/dimred-divergence-independent-audit/Conditional.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected divergence-form theorem. Independently verified the parent digest, pinned revisions, source compatibility, and library definitions. The snapshot project contains none of the proposed declarations. Each bare child name uniquely identifies a comparator-accepted DAG declaration with a byte-identical frozen type and matching accepted-source hash; there are no conflicting active reservations. All four types elaborate without child implementations. Reconstructed child proofs and the exact parent assembly compile with only propext, Classical.choice and Quot.sound. Conditional compilation confirms that coordinate_trace, contraction_extderiv and norm_props suffice for the parent; coordinate_trace uses jacobi_trace. This dependency graph is acyclic. The assembly establishes smoothness, both support inclusions and bounds with K independent of g."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "jacobi_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the prose. Multilinearity, cancellation under a repeated column, reduction to the standard basis and the trace computation prove the identity, including n = 0 and singular column matrices. Matrix.of gives the intended matrix construction. No parent reliance occurs. The supplied adjugate alternative also agrees with [Grover, §2, equations (2.1)–(2.3)](https://arxiv.org/html/1007.4402v2#S2)."
+    },
+    {
+      "key": "coordinate_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type include precisely the required coordinate hypotheses. The insertion sign matches the pinned library convention; the entrywise comparison and declared jacobi_trace dependency yield the conclusion. Neither injectivity of I nor linearity of L is needed. The proof is complete and non-circular."
+    },
+    {
+      "key": "contraction_extderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type faithfully states the pointwise formula with both differentiability hypotheses. Continuous-linear currying, the scalar product rule, differentiation of fixed-tuple evaluation and the pinned exterior-derivative formula give every stated term with the correct sign. No additional smoothness assumption or child dependency is hidden."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches all four prose conclusions. The masked coefficient vector proves subadditivity and homogeneity; the operator-norm estimate gives C = sqrt(P^n), and the difference estimate proves continuity. The argument includes degree zero and empty coefficient index sets. Part (iii) supplies the parent's two norm bounds; the additional accepted conclusions introduce no circularity."
+    }
+  ],
+  "required_changes": []
+}
