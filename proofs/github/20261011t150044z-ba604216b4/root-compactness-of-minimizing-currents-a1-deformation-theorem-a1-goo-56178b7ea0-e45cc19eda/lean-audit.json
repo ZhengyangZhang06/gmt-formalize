@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2b1538b3cf4bb256b7c09d87ae69654d3e91149cc08e3577d42106e6c2faefb4",
+  "git_delta": {
+    "base_commit": "e3d9de845faf9a6ab904af80bb597bebfd243c2e",
+    "candidate_commit": "95867e1568e3b1a26aab41bf1f8b11f9de8cfd06",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_gc_bad_set_volume",
+    "diff_sha256": "f64fab8e20d242566bbac20dd36de2fd36d07d709f1db3438fffb89572b67252",
+    "source_sha256": "436b1f2b1efb14b97b4aef850a6b35991bbef157bda65181b381622f53551bd6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_gc_bad_set_volume",
+      "statement": "∀ (d : ℕ) (ρ : Measure (Fin d → ℝ)), IsFiniteMeasure ρ → ∀ β : ℝ, 0 < β → volume {g : Fin d → ℝ | (∀ k, |g k - 1 / 2| < 1 / 4) ∧ ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧ ENNReal.ofReal (β * r ^ d) * ρ univ < ρ {y | ∃ z : Fin d → ℤ, ∑ k, (y k - g k - z k) ^ 2 < r ^ 2}} ≤ ENNReal.ofReal (10 ^ d / β)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
