@@ -4149,6 +4149,176 @@ theorem Submission.slicing_im_st_level_set_charts :
       (fun v' _ v'' _ => (one_mul ‖v' - v''‖).symm ▸ hanti (xs i) v' v'')
       (fun v' hv' => (hgood (xs i) v' hv').2.1.trans hvh.symm)
 
+/-- Simon Ch. 6, Lemma 4.1 (1)–(2) (p. 154), from Ch. 3, 2.10(2) and 1.6 (`n = m + 1`): for
+`L¹`-a.e. `t` the regular level set `M_t = {x ∈ M : f(x) = t, G(x) ≠ 0}` is countably
+`m`-rectifiable, and at `H^m`-a.e. `x ∈ M_t` every weighted approximate tangent plane `Q` of
+`(M, θ)` gives the weighted approximate tangent plane `Q ∩ G(x)^⊥` of `(M_t, θ)`.
+
+`M` is covered up to an `Hⁿ`-null set by C¹ antilipschitz charts `Φ j` with `f ∘ Φ j = h j` on
+`A j`, `h j` C¹, `range DΦ j` the tangent plane, `G ∈ range DΦ j` and `⟪G, DΦ j u⟫ = D(h j) u`
+(`slicing_im_st_chart_data`). For a.e. `t` these facts hold at `H^m`-a.e. point of `M_t`
+(`slicing_im_st_ae_transfer`), and `M_t` is `H^m`-null-measurable with `θ` locally integrable
+(`slicing_im_st_measure_fields`). The level sets `{h j = t}` are covered by C¹ bi-Lipschitz
+`m`-charts `Ψ` with `range DΨ = DΦ j (ker D(h j))` (`slicing_im_st_level_set_charts`). At a good
+point `G ≠ 0` forces `D(h j) ≠ 0`, and `DΦ j (ker D(h j)) = Q ∩ G^⊥`. Lipschitz extensions of
+the `Ψ` cover `M_t` up to an `H^m`-null set, and `slicing_im_st_weighted_tangent_on_c1_chart`
+makes each `range DΨ` a weighted approximate tangent plane of `(M_t, θ)`. -/
+theorem Submission.slicing_im_st_slice_geometry :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1))
+      (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U →
+      IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → Measurable G →
+      (∀ x, ‖G x‖ ≤ L) →
+      (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+          G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) →
+      (∀ g : Eucl P → ℝ≥0∞, Measurable g →
+        AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)))
+            (volume : Measure ℝ) ∧
+          ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)))
+              ∂(volume : Measure ℝ) =
+            ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) →
+      ∀ᵐ t ∂(volume : Measure ℝ), CountablyRectifiable m {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ∧
+        ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict {x | x ∈ M ∧ f x = t ∧ G x ≠ 0}),
+          ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+            HasWeightedApproximateTangentSpaceAt m {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} θ x
+              (Q ⊓ (ℝ ∙ G x)ᗮ) := by
+  intro P m U M θ ξ f L G hU hT hf hG hGL hTG hCA
+  -- Step 1: C¹ antilipschitz charts `Φ j` of `M` with `f ∘ Φ j = h j` on `A j`.
+  obtain ⟨Φ, Ω, A, h, hΩ, hΦ, hΦc, hAΩ, hh, hfh, hcover, hchart⟩ :=
+    Submission.slicing_im_st_chart_data P m U M θ ξ f L G hU hT hf hTG
+  -- Step 2: the good points `p` have full `Hⁿ ⌞ M`-measure; for a.e. `t` they have full
+  -- `H^m ⌞ M_t`-measure, `M_t` is `H^m`-null-measurable and `θ` is locally integrable on it.
+  set p : Eucl P → Prop := fun x => (x ∈ ⋃ j, Φ j '' A j) ∧
+    ∀ j, ∀ w ∈ A j, Φ j w = x →
+      HasWeightedApproximateTangentSpaceAt (m + 1) M θ x
+          (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) ∧
+        G x ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap ∧
+        ∀ u : Eucl (m + 1), inner ℝ (G x) (fderiv ℝ (Φ j) w u) = fderiv ℝ (h j) w u
+  have hcov : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), x ∈ ⋃ j, Φ j '' A j := by
+    rw [ae_restrict_iff'₀ hT.nullMeasurableSet, ae_iff]
+    refine measure_mono_null (fun x hx => ?_) hcover
+    simp only [Classical.not_imp, Set.mem_ofPred_eq] at hx
+    exact hx
+  have hp : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x := by
+    filter_upwards [hcov, hchart] with x hx1 hx2 using ⟨hx1, hx2⟩
+  filter_upwards [Submission.slicing_im_st_ae_transfer P m M f G hCA p hp,
+    Submission.slicing_im_st_measure_fields P m U M θ ξ f L G hU hT hf.continuous.measurable hG
+      hGL hCA] with t hpt hmf
+  obtain ⟨hnm, hint, -⟩ := hmf
+  set Mt : Set (Eucl P) := {x | x ∈ M ∧ f x = t ∧ G x ≠ 0}
+  have hMt : Mt ⊆ M ∩ f ⁻¹' {t} := fun x hx => ⟨hx.1, hx.2.1⟩
+  have hp_Mt : ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict Mt), p x :=
+    ae_restrict_of_ae_restrict_of_subset hMt hpt
+  have hN : (μHE[m] : Measure (Eucl P)) {x | x ∈ Mt ∧ ¬ p x} = 0 := by
+    have := (ae_restrict_iff'₀ hnm).1 hp_Mt
+    rw [ae_iff] at this
+    refine measure_mono_null (fun x hx => ?_) this
+    simp only [Classical.not_imp, Set.mem_ofPred_eq]
+    exact hx
+  -- Step 3: C¹ bi-Lipschitz `m`-charts `Ψ j i` of the level sets `{h j = t}`.
+  choose Ψ V hV hΨ hΨL hΨc hΨcover hΨrange using fun j =>
+    Submission.slicing_im_st_level_set_charts P m (Φ j) (Ω j) (h j) t (hΩ j) (hΦ j) (hΦc j)
+      (hh j)
+  -- Step 4: a good point `x ∈ M_t` is `Ψ j i v` with `range DΨ j i v = Q ∩ G(x)^⊥` for every
+  -- weighted approximate tangent plane `Q` of `(M, θ)` at `x`.
+  have key : ∀ x ∈ Mt, p x → ∃ j i, ∃ v ∈ V j i, Ψ j i v = x ∧
+      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+        LinearMap.range (fderiv ℝ (Ψ j i) v).toLinearMap = Q ⊓ (ℝ ∙ G x)ᗮ := by
+    intro x hx hpx
+    obtain ⟨hxU, hpch⟩ := hpx
+    obtain ⟨j, w, hwA, hwx⟩ := Set.mem_iUnion.1 hxU
+    obtain ⟨hTan, hGmem, hinner⟩ := hpch j w hwA hwx
+    -- (a) `h j w = f x = t`.
+    have hht : h j w = t := by rw [← hfh j w hwA, hwx, hx.2.1]
+    -- (b) `D(h j) w ≠ 0`, as `D(h j) w u₀ = ‖G x‖² ≠ 0` for `DΦ j w u₀ = G x`.
+    have hDh : fderiv ℝ (h j) w ≠ 0 := by
+      intro h0
+      obtain ⟨u₀, hu₀⟩ := hGmem
+      have := hinner u₀
+      rw [h0] at this
+      simp only [zero_apply] at this
+      have hu₀' : fderiv ℝ (Φ j) w u₀ = G x := hu₀
+      rw [hu₀', real_inner_self_eq_norm_sq] at this
+      exact hx.2.2 (norm_eq_zero.1 (pow_eq_zero_iff (n := 2) (by norm_num) |>.1 this))
+    -- (c) `x = Ψ j i v` for some `i` and `v ∈ V j i`.
+    obtain ⟨i, v, hv, hΨv⟩ := hΨcover j w (hAΩ j hwA) hht hDh
+    -- (d) The point `w'` attached to `v` is `w`, since `Φ j` is injective on `Ω j`.
+    obtain ⟨w', hw', -, hΨw', hrange⟩ := hΨrange j i v hv
+    have hww' : w' = w := by
+      obtain ⟨c, hc, hcl⟩ := hΦc j
+      have h0 := hcl w' hw' w (hAΩ j hwA)
+      rw [← hΨw', hΨv, sub_self, norm_zero] at h0
+      have : ‖w' - w‖ = 0 := le_antisymm
+        (by nlinarith [norm_nonneg (w' - w)]) (norm_nonneg _)
+      exact sub_eq_zero.1 (norm_eq_zero.1 this)
+    subst hww'
+    refine ⟨j, i, v, hv, hΨv.trans hwx, fun Q hQ => ?_⟩
+    -- (e) `Q = range DΦ j w` by uniqueness of the tangent plane, as `θ x > 0`.
+    have hQT : Q = LinearMap.range (fderiv ℝ (Φ j) w').toLinearMap :=
+      hQ.unique (ne_of_gt (hT.pos x hx.1)) hTan
+    -- (f) `DΦ j w (ker D(h j) w) = range DΦ j w ∩ G(x)^⊥`, by `⟪G x, DΦ j w u⟫ = D(h j) w u`.
+    rw [hrange, hQT]
+    ext y
+    simp only [Submodule.mem_map, LinearMap.mem_ker, Submodule.mem_inf, LinearMap.mem_range,
+      Submodule.mem_orthogonal_singleton_iff_inner_right, ContinuousLinearMap.coe_coe]
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      exact ⟨⟨u, rfl⟩, by rw [hinner u, hu]⟩
+    · rintro ⟨⟨u, rfl⟩, hy⟩
+      exact ⟨u, by rw [← hinner u, hy], rfl⟩
+  refine ⟨?_, ?_⟩
+  · -- Step 5: Lipschitz extensions of the `Ψ j i` cover `M_t` up to the `H^m`-null set of bad
+    -- points (Ch. 3, 2.10(2)).
+    have hext : ∀ j i, ∃ F : Eucl m → Eucl P, (∃ K : ℝ≥0, LipschitzWith K F) ∧
+        Set.EqOn (Ψ j i) F (V j i) := by
+      intro j i
+      obtain ⟨K, hK⟩ := hΨL j i
+      obtain ⟨F, hF, hEq⟩ := hK.extend_finite_dimension
+      exact ⟨F, ⟨_, hF⟩, hEq⟩
+    choose F hFL hFeq using hext
+    refine ⟨{x | x ∈ Mt ∧ ¬ p x}, hN, fun k => F (Nat.unpair k).1 (Nat.unpair k).2,
+      fun k => hFL _ _, fun x hx => ?_⟩
+    by_cases hpx : p x
+    · obtain ⟨j, i, v, hv, hΨv, -⟩ := key x hx hpx
+      refine Or.inr (Set.mem_iUnion.2 ⟨Nat.pair j i, ?_⟩)
+      simp only [Nat.unpair_pair]
+      exact ⟨v, (hFeq j i hv).symm.trans hΨv⟩
+    · exact Or.inl ⟨hx, hpx⟩
+  · -- Step 6: on every chart, `range DΨ j i` is a weighted approximate tangent plane of
+    -- `(M_t, θ)` at `H^m`-a.e. point of `M_t`.
+    have htan : ∀ j i, ∀ᵐ y ∂((μHE[m] : Measure (Eucl P)).restrict Mt),
+        ∀ v ∈ V j i, Ψ j i v = y →
+          HasWeightedApproximateTangentSpaceAt m Mt θ y
+            (LinearMap.range (fderiv ℝ (Ψ j i) v).toLinearMap) := by
+      intro j i
+      have hW := Submission.slicing_im_st_weighted_tangent_on_c1_chart P m U Mt θ (Ψ j i) (V j i)
+        hU (fun y hy => hT.subset hy.1) hnm (fun y hy => hT.pos y hy.1) hint (hV j i) (hΨ j i)
+        (hΨc j i)
+      have hinj : Set.InjOn (Ψ j i) (V j i) := by
+        intro a ha b hb hab
+        obtain ⟨c, hc, hcl⟩ := hΨc j i
+        have h0 := hcl a ha b hb
+        rw [hab, sub_self, norm_zero] at h0
+        have : ‖a - b‖ = 0 := le_antisymm
+          (by nlinarith [norm_nonneg (a - b)]) (norm_nonneg _)
+        exact sub_eq_zero.1 (norm_eq_zero.1 this)
+      -- `Ψ j i '' V j i` is Borel (Lusin–Souslin), so the chart statement restricts to `M_t`.
+      have hS : MeasurableSet (Ψ j i '' V j i) :=
+        (hV j i).measurableSet.image_of_continuousOn_injOn (hΨ j i).continuous.continuousOn hinj
+      rw [Set.inter_comm, ← Measure.restrict_restrict hS, ae_restrict_iff' hS] at hW
+      filter_upwards [hW] with y hy v hv hvy
+      exact hy ⟨v, hv, hvy⟩ v hv hvy
+    -- Step 7: at a.e. good point of `M_t`, Step 4 identifies `Q ⊓ (ℝ ∙ G x)ᗮ` with a chart plane.
+    have hall : ∀ᵐ y ∂((μHE[m] : Measure (Eucl P)).restrict Mt), ∀ j i,
+        ∀ v ∈ V j i, Ψ j i v = y →
+          HasWeightedApproximateTangentSpaceAt m Mt θ y
+            (LinearMap.range (fderiv ℝ (Ψ j i) v).toLinearMap) :=
+      ae_all_iff.mpr fun j => ae_all_iff.mpr (htan j)
+    filter_upwards [ae_restrict_mem₀ hnm, hp_Mt, hall] with x hxMt hpx hx Q hQ
+    obtain ⟨j, i, v, hv, hΨv, hrange⟩ := key x hxMt hpx
+    rw [← hrange Q hQ]
+    exact hx j i v hv hΨv
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
