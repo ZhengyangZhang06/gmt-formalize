@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`∂[[E]]` is a cycle**: Simon 7.5.1 (`T = ∂[[E]]`, chapter-07.txt line 752) with (6.1.12)
+`d²ω = 0` (chapter-06.txt line 150) and the boundary (6.2.3) `∂T(ω) = T(dω)`, `∂T = 0` if `n = 0`
+(chapter-06.txt lines 216–220).  If `T(ω) = ∫_E ⟨dω, ξ_N⟩ dH^{n+1}` for every `ω ∈ 𝒟ⁿ(U)`, then
+`∂T = 0` in `U`: for `n = m + 1` and `φ ∈ 𝒟ᵐ(U)`, `∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξ_N⟩ dH^{m+2} = 0`,
+since `d(dφ) = 0` for the smooth form `φ`.  No hypothesis on `U`, `E` or `ξ_N` is needed. -/
+theorem Submission.regcomp_cop_region_boundary_vanishes : ∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsBoundaryOfRegion T E ξN → BoundaryVanishes T := by
+  intro P n
+  cases n with
+  | zero =>
+    -- Degree `0`: `BoundaryVanishes T` is `True` (Simon's convention `∂T = 0`, 6.2.3).
+    intro U E ξN T _
+    trivial
+  | succ m =>
+    -- Degree `m + 1`: show `∂T = 0` by testing on every `φ ∈ 𝒟ᵐ(U)`.
+    intro U E ξN T hT
+    show T.boundary = 0
+    apply GeometricCurrentOn.ext
+    intro φ
+    -- `∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξ_N⟩ dH^{m+2}`: (6.2.3) and the hypothesis at `dφ ∈ 𝒟^{m+1}(U)`.
+    rw [GeometricCurrentOn.boundary_apply, hT (exteriorDerivativeTestOn U m φ),
+      GeometricCurrentOn.zero_apply]
+    -- `d(dφ) = 0` for the smooth form `φ` (6.1.12), so the integrand is `ξ_N(x)(0) = 0`.
+    have hdd : exteriorDerivative ((exteriorDerivativeTestOn U m φ : TestFormOn U (m + 1)) :
+        DifferentialForm (Euclid P) (m + 1)) = 0 :=
+      exteriorDerivative_sq φ.property.1.1
+    simp only [hdd, Pi.zero_apply, map_zero, integral_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
