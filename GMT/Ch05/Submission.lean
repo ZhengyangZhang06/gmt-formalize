@@ -649,7 +649,7 @@ theorem dohr_eb_elc2_shift_ibp : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (g ζ : Rn n
         congr 1
         funext y
         exact hII y
-set_option maxSynthPendingDepth 5 in
+
 /-- Elliptic bootstrap for Simon Ch. 5, Theorem 7.1 (second assertion), `C^{1,α} ⇒ C^{2,α}` step:
 difference quotients of a weak solution satisfy the averaged linearized weak equation.  Let
 `Ψ ∈ C²`, `u ∈ C¹(U; ℝ^ℓ)` and `g ∈ C⁰(U; ℝ^ℓ)` with `∫_U DΨ(Du)[Dφ] = -∫_U ⟨φ, g⟩` for every
@@ -657,9 +657,9 @@ difference quotients of a weak solution satisfy the averaged linearized weak equ
 `Δ(x) = Du(x + d e) - Du(x)`, every `ζ ∈ C¹_c(V; ℝ^ℓ)` satisfies
 `∫_V ∫₀¹ D²Ψ(Du(x) + tΔ(x))[d⁻¹Δ(x)][Dζ(x)] dt dx = ∫_V ⟨∫₀¹ g(x + t d e) dt, Dζ(x) e⟩ dx`.
 Test the equation with `ζ` and with `ζ(· - d e)` and translate back.  By the fundamental theorem of
-calculus for `t ↦ DΨ(Du(x) + tΔ(x))` the difference of the left sides is `d` times the left side
-above; by `dohr_eb_elc2_shift_ibp` the difference of the right sides is `d` times the right side
-above; cancel `d`. -/
+calculus for the real function `t ↦ DΨ(Du(x) + tΔ(x))[Dζ(x)]` the difference of the left sides is
+`d` times the left side above; by `dohr_eb_elc2_shift_ibp` the difference of the right sides is `d`
+times the right side above; cancel `d`. -/
 theorem dohr_eb_elc2_dq_weak_equation : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U V : Set (Rn n)) (u g : Rn n → Rn ℓ) (e : Rn n) (d : ℝ), ContDiff ℝ 2 Ψ → IsOpen U → IsOpen V → ContDiffOn ℝ 1 u U → ContinuousOn g U → d ≠ 0 → (∀ x ∈ V, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ V → ∫ x in V, (∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x)) = ∫ x in V, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
   intro n ℓ Ψ U V u g e d hΨ hU hV hu hg hd hseg hweak ζ hζ hζc hζV
   set K := tsupport ζ
@@ -679,7 +679,6 @@ theorem dohr_eb_elc2_dq_weak_equation : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] 
   -- `A = DΨ` is `C¹` with derivative `B = D²Ψ`
   have hA1 : ContDiff ℝ 1 (fderiv ℝ Ψ) := hΨ.fderiv_right (by norm_num)
   have hAc : Continuous (fderiv ℝ Ψ) := hA1.continuous
-  have hBc : Continuous (fderiv ℝ (fderiv ℝ Ψ)) := hA1.continuous_fderiv one_ne_zero
   have hAd : Differentiable ℝ (fderiv ℝ Ψ) := hA1.differentiable one_ne_zero
   -- a function vanishing off a compact `C` and continuous at the points of `C` is integrable
   have integ_of : ∀ (F : Rn n → ℝ) (C : Set (Rn n)), IsCompact C → (∀ y ∉ C, F y = 0) →
@@ -779,7 +778,8 @@ theorem dohr_eb_elc2_dq_weak_equation : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] 
       congr 1; funext x; simp [hR2, hR3, inner_sub_left]
     rw [this, integral_sub hR2i hR3i]
     ring
-  -- pointwise: `F1 - F2 = d • I` by the fundamental theorem of calculus in `L*`
+  -- pointwise: `F1 - F2 = d • I`, by the fundamental theorem of calculus for the real function
+  -- `t ↦ DΨ(P + t (Q - P))[w]` with `P = Du(y)`, `Q = Du(y + d e)`, `w = Dζ(y)`
   set I : Rn n → ℝ := fun x => ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ)
     (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x))
     (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x) with hI
@@ -787,32 +787,32 @@ theorem dohr_eb_elc2_dq_weak_equation : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] 
     with hJ
   have hFTC : ∀ y, F1 y - F2 y = d * I y := by
     intro y
-    by_cases hy : y ∈ K
-    · set Δ := fderiv ℝ u (y + d • e) - fderiv ℝ u y with hΔ
-      have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
-          HasDerivAt (fun t : ℝ => fderiv ℝ Ψ (fderiv ℝ u y + t • Δ))
-            (fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y + t • Δ) Δ) t := by
-        intro t _
-        have hl : HasDerivAt (fun t : ℝ => fderiv ℝ u y + t • Δ) Δ t := by
-          simpa using ((hasDerivAt_id t).smul_const Δ).const_add (fderiv ℝ u y)
-        exact (hAd (fderiv ℝ u y + t • Δ)).hasFDerivAt.comp_hasDerivAt t hl
-      have hint : IntervalIntegrable
-          (fun t : ℝ => fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y + t • Δ) Δ) volume 0 1 := by
-        apply Continuous.intervalIntegrable
-        exact (hBc.comp (by fun_prop)).clm_apply continuous_const
-      have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
-      simp only [one_smul, zero_smul, add_zero] at hftc
-      have hP1 : fderiv ℝ u y + Δ = fderiv ℝ u (y + d • e) := by simp [hΔ]
-      rw [hP1] at hftc
-      have happ := DFunLike.congr_fun hftc (fderiv ℝ ζ y)
-      rw [ContinuousLinearMap.intervalIntegral_apply hint] at happ
-      simp only [hF1, hF2, hI]
-      rw [← sub_apply, ← happ, ← intervalIntegral.integral_const_mul]
-      apply intervalIntegral.integral_congr
+    simp only [hF1, hF2, hI]
+    generalize fderiv ℝ u (y + d • e) = Q
+    generalize fderiv ℝ u y = P
+    generalize fderiv ℝ ζ y = w
+    have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+        HasDerivAt (fun t : ℝ => fderiv ℝ Ψ (P + t • (Q - P)) w)
+          (fderiv ℝ (fderiv ℝ Ψ) (P + t • (Q - P)) (Q - P) w) t := by
       intro t _
-      simp only [map_smul, smul_apply, smul_eq_mul]
-      rw [← mul_assoc, mul_inv_cancel₀ hd, one_mul]
-    · simp [hF1, hF2, hI, hDζ0 y hy]
+      have h1 := (hAd (P + t • (Q - P))).hasFDerivAt.clm_apply
+        (hasFDerivAt_const w (P + t • (Q - P)))
+      have hl : HasDerivAt (fun t : ℝ => P + t • (Q - P)) (Q - P) t := by
+        simpa using ((hasDerivAt_id t).smul_const (Q - P)).const_add P
+      have h2 := h1.comp_hasDerivAt t hl
+      simp only [add_apply, ContinuousLinearMap.comp_apply, zero_apply, map_zero, zero_add,
+        ContinuousLinearMap.flip_apply] at h2
+      exact h2
+    have hcont : Continuous fun t : ℝ => fderiv ℝ (fderiv ℝ Ψ) (P + t • (Q - P)) (Q - P) w := by
+      have hB := hA1.continuous_fderiv one_ne_zero
+      fun_prop
+    have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (hcont.intervalIntegrable 0 1)
+    rw [one_smul ℝ (Q - P), add_sub_cancel P Q, zero_smul ℝ (Q - P), add_zero P] at hftc
+    rw [← hftc, ← intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr
+    intro t _
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    rw [← mul_assoc, mul_inv_cancel₀ hd, one_mul]
   -- the right sides, by the sibling `dohr_eb_elc2_shift_ibp`
   have hIBP := Submission.dohr_eb_elc2_shift_ibp n ℓ U g ζ e d hU hg hζ hζc hsegK
   have hmain : ∫ x, I x = ∫ x, J x := by
