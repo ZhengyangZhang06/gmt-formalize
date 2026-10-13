@@ -1957,62 +1957,6 @@ theorem Submission.slicing_representation_unique :
   refine Finset.sum_congr rfl fun β _ => hbdd β (a β) (ham β) ?_ (ha0 β)
   obtain ⟨C, hC⟩ := hab β
   exact ⟨C, fun x => (Real.norm_eq_abs (a β x)).symm.le.trans (hC x)⟩
-/-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
-rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
-every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
-for every continuous compactly supported `ω` with `spt ω ⊆ U`.  Since `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ`
-orthonormal, `|⟨α, ξ⟩| ≤ ‖α‖` `Hᵏ⌞M`-a.e.; `θ` is integrable on `M ∩ K`, and the integrand of
-(b) vanishes on `M \ spt ω`. -/
-theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P)) := by
-  intro P k U M θ ξ hT
-  -- Step 1: for `Hᵏ⌞M`-a.e. `x`, `|ξ(x)(α)| ≤ ‖α‖` for every covector `α`
-  -- (`|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`; the empty product for `k = 0`).
-  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
-      ∀ α : Covector (Eucl P) k, ‖ξ x α‖ ≤ ‖α‖ := by
-    filter_upwards [hT.orients] with x hx α
-    obtain ⟨τ, hτ, -, hξ⟩ := hx
-    have hs : ‖simpleNVector τ α‖ ≤ ‖α‖ :=
-      calc ‖simpleNVector τ α‖ = ‖α τ‖ := rfl
-        _ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
-        _ = ‖α‖ := by simp [hτ.norm_eq_one]
-    rcases hξ with h | h
-    · rw [h]; exact hs
-    · rw [h, neg_apply, norm_neg]; exact hs
-  -- Step 2: `x ↦ ξ(x)(ω(x))` is a.e.-strongly measurable for `Hᵏ⌞M` whenever `ω` is
-  -- (continuous evaluation `(w, α) ↦ w(α)` composed with `(ξ, ω)`).
-  have hmeas : ∀ ω : Eucl P → Covector (Eucl P) k,
-      AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
-      AEStronglyMeasurable (fun x => ξ x (ω x)) ((μHE[k] : Measure (Eucl P)).restrict M) := by
-    intro ω hω
-    have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
-      continuous_fst.clm_apply continuous_snd
-    exact hev.comp_aestronglyMeasurable (hT.aestronglyMeasurable.prodMk hω)
-  -- Steps 3–4: for compact `K ⊆ U` and `‖ω‖ ≤ C`, `θ` is integrable on `M ∩ K` and
-  -- `ξ(·)(ω(·))` is measurable and a.e. bounded by `C` there, so the product is integrable.
-  have hK : ∀ (K : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) k) (C : ℝ), IsCompact K →
-      K ⊆ U → AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
-      (∀ x, ‖ω x‖ ≤ C) →
-      IntegrableOn (fun x => θ x * ξ x (ω x)) (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
-    intro K ω C hKc hKU hω hC
-    have hle : (μHE[k] : Measure (Eucl P)).restrict (M ∩ K) ≤
-        (μHE[k] : Measure (Eucl P)).restrict M :=
-      Measure.restrict_mono Set.inter_subset_left le_rfl
-    have hθ : Integrable θ ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
-      hT.integrableOn K hKc hKU
-    refine hθ.mul_bdd (c := C) ((hmeas ω hω).mono_measure hle) ?_
-    filter_upwards [ae_mono hle hunit] with x hx
-    exact (hx (ω x)).trans (hC x)
-  -- Part (a): the constant field `b`, bounded by `‖b‖`.
-  refine ⟨fun K b hKc hKU => hK K (fun _ => b) ‖b‖ hKc hKU aestronglyMeasurable_const
-    (fun _ => le_rfl), ?_⟩
-  -- Part (b): integrable on `M ∩ spt ω` (Step 4) and zero on `M \ spt ω` (Step 5), with `M`
-  -- null-measurable.
-  intro ω hωc hωs hωU
-  obtain ⟨C, hC⟩ := hωc.bounded_above_of_compact_support hωs
-  refine (hK (tsupport ω) ω C hωs hωU hωc.aestronglyMeasurable hC).of_ae_sdiff_eq_zero
-    hT.nullMeasurableSet (Filter.Eventually.of_forall fun x hx => ?_)
-  have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
-  rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
 /-- Orthonormal frames of the same subspace have the same simple `n`-vector up to sign (Simon
 Ch. 6, 3.1: `ξ(x) = τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` is determined by `TₓM` up
 to sign).  `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q = span τ = span τ'`.  Restricted to
@@ -2411,19 +2355,6 @@ theorem Submission.iwl_imc_lincomb_im : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOp
   · simp only [indicator_of_notMem hx1, indicator_of_notMem hx2, hc]
     ring
 
-/-- Upper density theorem at every scale `Rr` (Simon Ch. 1, 3.6 with Remark 3.7(2)): if
-`∫⁻_{S ∩ K} g dHᵏ < ∞` for every compact `K ⊆ U`, then for `Hᵏ`-a.e. `x ∈ U \ S` and every
-`R > 0`, `r⁻ᵏ ∫⁻_{S ∩ B̄_{Rr}(x)} g dHᵏ → 0` as `r → 0+`.  The unit-scale case
-`ρ⁻ᵏ ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ → 0` is `lpf_wtc_ae_zero_density_off_set`; the change of scale
-`ρ = Rr` is `iwl_imc_quotient_rescale_tendsto_zero`. -/
-theorem Submission.iwl_imc_density_zero_off_set : ∀ (P k : ℕ) (U S : Set (Eucl P)) (g : Eucl P → ℝ≥0∞), IsOpen U → NullMeasurableSet S (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∫⁻ y in S ∩ K, g y ∂(μHE[k] : Measure (Eucl P)) < ∞) → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ U → x ∉ S → ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in S ∩ closedBall x (R * r), g y ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0) := by
-  intro P k U S g hU hS hg
-  -- Unit scale: for `Hᵏ`-a.e. `x ∈ U \ S`, `F_x(ρ) / ρᵏ → 0`, `F_x(ρ) = ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ`.
-  filter_upwards [Submission.lpf_wtc_ae_zero_density_off_set P k U S g hU hS hg]
-    with x hx hxU hxS R hR
-  -- Change of scale `ρ = Rr`: `r⁻ᵏ F_x(Rr) → 0`.
-  exact Submission.iwl_imc_quotient_rescale_tendsto_zero k
-    (fun ρ => ∫⁻ y in S ∩ closedBall x ρ, g y ∂(μHE[k] : Measure (Eucl P))) (hx hxU hxS) R hR
 /-- Normalized Lebesgue points (Simon Ch. 1, 3.23 with Theorem 3.3): for `Hᵏ⌞M`-a.e. `x` and
 every `R > 0`, `r⁻ᵏ ∫_{M ∩ B̄_{Rr}(x)} |f - f(x)| dHᵏ → 0` as `r ↓ 0`.  On a ball `W` with
 `K = B̄ ⊆ U`, Lebesgue–Besicovitch differentiation for the finite measure `λ = Hᵏ⌞(M ∩ K)` makes
