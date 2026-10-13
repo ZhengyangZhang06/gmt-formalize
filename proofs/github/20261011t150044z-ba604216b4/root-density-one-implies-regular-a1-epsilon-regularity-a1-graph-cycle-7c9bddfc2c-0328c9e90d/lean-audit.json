@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e5e4c30e4855cbd2d3fa8fcf8c32bc7b5115f767dc09d79cdc0a667b03f991e3",
+  "git_delta": {
+    "base_commit": "bbbc2909788d317f80b9178b92e5e54e0a9559cf",
+    "candidate_commit": "8ab8c47e260ead100bb507c6666353e69a9f96ec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx",
+    "diff_sha256": "82724764932eb64f1a7690e3fdb628f81e48c7bc7e20aed3e54ad9b21ef98af2",
+    "source_sha256": "b97196bc8076f0e4b67a8e30ec85c00f029148dc6da810b15e16075917d196ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx",
+      "statement": "∀ (n : ℕ) (K : Set (Euclid n)) (G f : Euclid n → ℝ) (C : ℝ), MeasurableSet K → IntegrableOn G K volume → AEStronglyMeasurable f (volume.restrict K) → (∀ x ∈ K, |f x| ≤ C) → (∀ ε : ℝ, 0 < ε → ∃ g : Euclid n → ℝ, AEStronglyMeasurable g (volume.restrict K) ∧ (∀ x ∈ K, |f x - g x| ≤ ε) ∧ ∫ x in K, G x * g x = 0) → ∫ x in K, G x * f x = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
