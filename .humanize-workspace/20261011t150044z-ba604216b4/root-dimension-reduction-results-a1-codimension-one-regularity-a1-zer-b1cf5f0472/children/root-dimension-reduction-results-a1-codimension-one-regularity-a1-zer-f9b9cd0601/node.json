@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1.translate_tangent_space-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1",
+  "depth": 5,
+  "title": "The tangent space of a translated linear subspace is the subspace",
+  "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P (= Euclid P) be a linear subspace, and let a, y ∈ ℝ^P with y + a ∈ Q. Put A := {z ∈ ℝ^P : z + a ∈ Q} = Q − a. Then tangentSpace A y = Q as subsets of ℝ^P. Here tangentSpace A y is the set of v ∈ ℝ^P for which there is γ : ℝ → ℝ^P that is C¹ on (−1, 1), maps (−1, 1) into A, satisfies γ(0) = y, and has derivative v at 0 (HasDerivAt γ v 0).",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a y : Euclid P), y + a ∈ Q → tangentSpace {z | z + a ∈ Q} y = (Q : Set (Euclid P))",
+  "lean_name": "codim1_zsl_op_translate_tangentSpace_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f9b9cd0601-a1"
+}
