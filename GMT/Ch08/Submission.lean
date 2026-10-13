@@ -8244,102 +8244,6 @@ theorem Submission.frt_varifold_eq_tangent_graph_measure :
   refine ⟨(hg hA).nullMeasurableSet.congr hAe.symm, ?_⟩
   rw [hV, Measure.map_apply hg hA, measure_congr hAe]
 
-/-- **Simon Ch. 8, Lemma 1.3, printed (1)–(2)** (child `slice_density` of `plane_disintegration`):
-for continuous `β ≥ 0` on `G(N,n)`, the `β`-weighted slices `γ(B) = ∫_{Gₙ(B)} β(S) dV(y,S)` of `V`
-are differentiated by `μ_V`: the ratio `γ(B_ρ(x)) / μ_V(B_ρ(x))` tends to a Borel `e(x)` for
-`μ_V`-a.e. `x`, and `γ(A) = ∫_A e dμ_V` for Borel `A`.  Since `γ ≤ ‖β‖ μ_V`, `γ` is the zero
-extension of a locally finite measure on `U`, so SimonGMT's Besicovitch differentiation on `U`
-(`Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure`) and Radon–Nikodym apply, with
-`e = (dγ/dμ_V).toReal`. -/
-theorem Submission.plane_disint_slice_density :
-    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (β : C(Grassmannian N n, ℝ)), (∀ S, 0 ≤ β S) → ∃ e : Euclidean N → ℝ, Measurable e ∧ (∀ᵐ x ∂V.weight, Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (e x))) ∧ ∀ A : Set (Euclidean N), MeasurableSet A → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (e x) ∂V.weight := by
-  intro N n U V β hβ
-  have hU : IsOpen U := V.isOpen_domain
-  -- `γ(B) = ∫_{Gₙ(B)} β dV`, i.e. `γ = π_#(V ⌞ β)`.
-  obtain ⟨γ, hγ⟩ : ∃ γ : Measure (Euclidean N), ∀ B, MeasurableSet B →
-      γ B = ∫⁻ z in B ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure :=
-    ⟨(V.measure.withDensity fun z ↦ ENNReal.ofReal (β z.2)).map Prod.fst, fun B hB ↦ by
-      rw [Measure.map_apply measurable_fst hB, withDensity_apply _ (measurable_fst hB),
-        ← Set.prod_univ]⟩
-  -- `γ ≤ ‖β‖ μ_V`: so `γ ≪ μ_V`, `γ` vanishes off `U` and is finite on compact subsets of `U`.
-  have hγle : ∀ B, MeasurableSet B → γ B ≤ ENNReal.ofReal ‖β‖ * V.weight B := by
-    intro B hB
-    rw [hγ B hB, V.weight_apply hB, ← setLIntegral_const]
-    exact lintegral_mono fun z ↦ ENNReal.ofReal_le_ofReal
-      ((le_abs_self _).trans (β.norm_coe_le_norm z.2))
-  have hγac : γ ≪ V.weight :=
-    Measure.absolutelyContinuous_of_le_smul (Measure.le_iff.2 fun B hB ↦ hγle B hB)
-  have hUc : V.weight Uᶜ = 0 := by
-    rw [V.weight_apply hU.measurableSet.compl]
-    exact V.supported
-  have hγU : γ Uᶜ = 0 := by
-    have := hγle Uᶜ hU.measurableSet.compl
-    rwa [hUc, mul_zero, nonpos_iff_eq_zero] at this
-  -- `γ` is the zero extension of the locally finite measure `γ.comap Subtype.val` on `U`.
-  have hemb := MeasurableEmbedding.subtype_coe hU.measurableSet
-  obtain ⟨γU, hmap, hγUfin⟩ : ∃ γU : Measure U,
-      γU.map Subtype.val = γ ∧ IsLocallyFiniteMeasure γU := by
-    refine ⟨γ.comap Subtype.val, ?_, ?_⟩
-    · rw [map_comap_subtype_coe hU.measurableSet]
-      apply Measure.restrict_eq_self_of_ae_mem
-      rw [ae_iff]
-      exact hγU
-    · have : LocallyCompactSpace U := hU.locallyCompactSpace
-      refine ⟨fun x ↦ ?_⟩
-      obtain ⟨K, hK, hKx⟩ := exists_compact_mem_nhds x
-      have hK' : IsCompact (Subtype.val '' K) := hK.image continuous_subtype_val
-      refine ⟨K, hKx, ?_⟩
-      rw [hemb.comap_apply]
-      exact (hγle _ hK'.measurableSet).trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top
-        (lt_top_iff_ne_top.2 (V.weight_finite_on_compact _ hK'
-          (by rintro _ ⟨y, _, rfl⟩; exact y.2))))
-  have : SigmaFinite γ := by
-    rw [← hmap]
-    exact hemb.sigmaFinite_map
-  -- Besicovitch differentiation on `U`: `γ(B_ρ(x)) / μ_V(B_ρ(x)) → dγ/dμ_V(x)` for `μ_V`-a.e. `x`.
-  have hdiff := V.ae_tendsto_firstVariationDensity_of_domainMeasure γU
-  rw [hmap] at hdiff
-  refine ⟨fun x ↦ (γ.rnDeriv V.weight x).toReal,
-    (Measure.measurable_rnDeriv γ V.weight).ennreal_toReal, ?_, fun A hA ↦ ?_⟩
-  · -- (1): near `x ∈ U` the real quotient is the `toReal` of the `[0,∞]` quotient.
-    have hUae : ∀ᵐ x ∂V.weight, x ∈ U := by
-      rw [ae_iff]
-      exact hUc
-    filter_upwards [hdiff, Measure.rnDeriv_lt_top γ V.weight, hUae] with x hx hfin hxU
-    obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU x hxU
-    refine ((ENNReal.tendsto_toReal hfin.ne).comp hx).congr' ?_
-    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
-    have hfinB : V.measure (closedBall x ρ ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ :=
-      V.finite_on_compact _ (isCompact_closedBall x ρ)
-        ((closedBall_subset_ball hρ.2).trans hrU)
-    have hint : IntegrableOn (fun z : Euclidean N × Grassmannian N n ↦ β z.2)
-        (closedBall x ρ ×ˢ univ) V.measure :=
-      Measure.integrableOn_of_bounded hfinB
-        (β.continuous.comp continuous_snd).aestronglyMeasurable
-        (M := ‖β‖) (ae_of_all _ fun z ↦ β.norm_coe_le_norm z.2)
-    rw [Function.comp_apply, ENNReal.toReal_div, hγ _ measurableSet_closedBall,
-      ← ofReal_integral_eq_lintegral_ofReal hint (ae_of_all _ fun z ↦ hβ z.2),
-      ENNReal.toReal_ofReal (integral_nonneg fun z : Euclidean N × Grassmannian N n ↦ hβ z.2)]
-  · -- (2): Radon–Nikodym, `γ = μ_V ⌞ (dγ/dμ_V)` with `dγ/dμ_V < ∞` `μ_V`-a.e.
-    have hRN : V.weight.withDensity (γ.rnDeriv V.weight) A = γ A := by
-      rw [Measure.withDensity_rnDeriv_eq γ V.weight hγac]
-    rw [withDensity_apply _ hA] at hRN
-    rw [← hγ A hA, ← hRN]
-    refine setLIntegral_congr_fun_ae hA ?_
-    filter_upwards [Measure.rnDeriv_lt_top γ V.weight] with x hx _
-    exact (ENNReal.ofReal_toReal hx.ne).symm
-
-        (closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
-      Measure.integrableOn_of_bounded hi (β.continuous.comp continuous_snd).aestronglyMeasurable
-        (ae_of_all _ fun z ↦ β.norm_coe_le_norm z.2)
-    rw [integral_add hint (integrableOn_const hi), add_div, add_sub_cancel_right]
-  refine ⟨hβ, ?_⟩
-  -- Step 4: `β ≡ 1` gives the weight, since `∫_{B × G(N,n)} 1 dV = V(B × G(N,n)) = μ_V(B)`.
-  have h1 := hβ (ContinuousMap.const _ 1)
-  simp only [ContinuousMap.const_apply, mul_one] at h1
-  refine h1.congr fun i ↦ ?_
-  rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
-    V.weight_apply measurableSet_closedBall]
 /-- **At a tangent point the density equals the multiplicity** (child `tangent_plane_density` of
 `allard_tangent_cones`; Simon Ch. 8, 1.1 with Ch. 1, 3.1): if `V` has tangent plane `T` with
 multiplicity `θ` at `x`, then `Θ^n(μ_V, x) = θ`.  Child `flat_blowup_ball_limits` along `t = id` on
@@ -10642,27 +10546,6 @@ theorem Submission.first_rectifiability_theorem : FirstRectifiabilityTheorem := 
       rw [(happrox x hx S).1 hS]
       exact hθ x hx.2
   rw [hVA, hweight _ hSA, hset]
-/-- **Simon Ch. 8, 5.5 with Remark 5.6, and 5.7, pp. 215–218** (child `allard_tangent_cones` of
-`main_theorem`): Allard's Rectifiability Theorem, and tangent cones are rectifiable cones.
-Part A (5.5, 5.6) is child `allard_rectifiability`, applied to 2.5–2.10
-(`first_variation_theorems`), 3.4 and 3.6 (`monotonicity_and_density_theorems`), 4.1
-(`constancy_theorem`), 5.1–5.4 with the blow-up density lower bound (`varifold_tangent_theorems`),
-Lemma 1.3 (`plane_disintegration`) and 1.2 (`first_rectifiability_theorem`).  Part B (5.7) is child
-`tangent_cones_rectifiable`; as in the printed proof of 5.7, it applies 5.5, i.e. Part A, to each
-tangent cone. -/
-theorem Submission.allard_rectifiability_and_tangent_cones :
-    AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones := by
-  -- Part A (5.5, 5.6): child `allard_rectifiability` with the sibling theorems it assumes.
-  have hA : AllardRectifiabilityTheorem :=
-    Submission.allard_tc_rectifiability Submission.first_variation_theorems.2
-      Submission.monotonicity_and_density_theorems.2.1
-      Submission.monotonicity_and_density_theorems.2.2 Submission.constancy_theorem
-      Submission.varifold_tangent_theorems.1 Submission.varifold_tangent_theorems.2
-      Submission.plane_disintegration Submission.first_rectifiability_theorem
-  -- Part B (5.7): child `tangent_cones_rectifiable`, whose proof applies Part A to the cones.
-  exact ⟨hA, Submission.allard_tc_tangent_cones_rectifiable Submission.varifold_tangent_theorems.1
-    Submission.varifold_tangent_theorems.2 hA Submission.first_rectifiability_theorem⟩
-
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 /-- Subsequence extraction in Simon Ch. 1, 4.16 (erratum: the Alaoglu theorem only yields a
@@ -10867,5 +10750,26 @@ theorem Submission.varifold_tangent_theorems :
     filter_upwards [hrad] with z hz
     rw [Grassmannian.normalProject_eq_sub, sub_eq_zero] at hz
     exact hz.symm
+
+/-- **Simon Ch. 8, 5.5 with Remark 5.6, and 5.7, pp. 215–218** (child `allard_tangent_cones` of
+`main_theorem`): Allard's Rectifiability Theorem, and tangent cones are rectifiable cones.
+Part A (5.5, 5.6) is child `allard_rectifiability`, applied to 2.5–2.10
+(`first_variation_theorems`), 3.4 and 3.6 (`monotonicity_and_density_theorems`), 4.1
+(`constancy_theorem`), 5.1–5.4 with the blow-up density lower bound (`varifold_tangent_theorems`),
+Lemma 1.3 (`plane_disintegration`) and 1.2 (`first_rectifiability_theorem`).  Part B (5.7) is child
+`tangent_cones_rectifiable`; as in the printed proof of 5.7, it applies 5.5, i.e. Part A, to each
+tangent cone. -/
+theorem Submission.allard_rectifiability_and_tangent_cones :
+    AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones := by
+  -- Part A (5.5, 5.6): child `allard_rectifiability` with the sibling theorems it assumes.
+  have hA : AllardRectifiabilityTheorem :=
+    Submission.allard_tc_rectifiability Submission.first_variation_theorems.2
+      Submission.monotonicity_and_density_theorems.2.1
+      Submission.monotonicity_and_density_theorems.2.2 Submission.constancy_theorem
+      Submission.varifold_tangent_theorems.1 Submission.varifold_tangent_theorems.2
+      Submission.plane_disintegration Submission.first_rectifiability_theorem
+  -- Part B (5.7): child `tangent_cones_rectifiable`, whose proof applies Part A to the cones.
+  exact ⟨hA, Submission.allard_tc_tangent_cones_rectifiable Submission.varifold_tangent_theorems.1
+    Submission.varifold_tangent_theorems.2 hA Submission.first_rectifiability_theorem⟩
 
 end GMT.Ch08
