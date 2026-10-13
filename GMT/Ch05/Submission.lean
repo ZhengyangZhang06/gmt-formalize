@@ -545,6 +545,25 @@ theorem dohr_eb_lhr_dqwe_shifted_weak_identity : ∀ (n ℓ : ℕ) (U : Set (Rn 
   simp only [add_sub_cancel_right] at e1 e2
   rw [e1, e2, ← hL, ← hR]
   exact h3
+/-- A function `F : ℝⁿ → ℝ` continuous at every point of a compact set `K` and vanishing off `K` is
+Lebesgue integrable.  `K` is closed, so each `x ∉ K` has the open neighbourhood `ℝⁿ \ K` on which
+`F = 0`, and `F` is continuous at `x`; at the points of `K` it is continuous by hypothesis.  Thus `F`
+is continuous, and it has compact support since it vanishes off the compact set `K`, so it is
+integrable for `volume`, which is finite on compact sets. -/
+theorem dohr_eb_lhr_dqwe_integrable_of_continuousAt : ∀ (n : ℕ) (F : Rn n → ℝ) (K : Set (Rn n)), IsCompact K → (∀ x ∈ K, ContinuousAt F x) → (∀ x, x ∉ K → F x = 0) → Integrable F := by
+  intro n F K hK hcont hzero
+  -- Steps 1–3: `F` is continuous at every point; off `K` it agrees with `0` on the open
+  -- neighbourhood `Kᶜ` of the point.
+  have hF : Continuous F := by
+    refine continuous_iff_continuousAt.2 fun x => ?_
+    by_cases hx : x ∈ K
+    · exact hcont x hx
+    · have hev : (fun _ => (0 : ℝ)) =ᶠ[𝓝 x] F := by
+        filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hx] with y hy
+        exact (hzero y hy).symm
+      exact continuousAt_const.congr hev
+  -- Steps 4–5: `F` vanishes off the compact set `K`, so it has compact support and is integrable.
+  exact hF.integrable_of_hasCompactSupport (HasCompactSupport.intro hK hzero)
 
 end Submission
 
