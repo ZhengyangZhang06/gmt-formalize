@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.translated_varifold-a1.exists_structure-a1",
+  "parent_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "depth": 3,
+  "title": "Translated rectifiable varifold structure",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be an arbitrary set, and let V = v(M, θ) be a rectifiable n-varifold in U. That is, M ⊆ U is countably n-rectifiable and Hⁿ-null-measurable, and θ is positive on M, Hⁿ⌞M-a.e. measurable and Hⁿ-integrable on M ∩ K for every compact K ⊆ U. Let x₀ ∈ ℝ^{n+ℓ}. Then there is a rectifiable n-varifold W in {y : y + x₀ ∈ U} with carrier {y : y + x₀ ∈ M} and with multiplicity y ↦ θ(y + x₀) for every y.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ), ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ ∀ y, W.mult y = V.mult (y + x₀)",
+  "lean_name": "rsod_tv_exists_structure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-translated-varifold-a1-exists-structure-a1-a1"
+}

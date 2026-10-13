@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.translated_varifold-a1.mean_curvature-a1",
+  "parent_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "depth": 3,
+  "title": "Generalized mean curvature of a translated varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be arbitrary, let V be a rectifiable n-varifold in U, let x₀ ∈ ℝ^{n+ℓ}, and let W be a rectifiable n-varifold in {y : y + x₀ ∈ U}. Assume that μ_W is the pushforward of μ_V under y ↦ y − x₀, and that W.tangentProj(y) = V.tangentProj(y + x₀) for all y. Let H : ℝ^{n+ℓ} → ℝ^{n+ℓ}. Suppose V has generalized mean curvature H in U: H is locally μ_V-integrable on U, and ∫ div_M X dμ_V = −∫ X·H dμ_V for every C¹ vector field X with compact support and tsupport X ⊆ U. Then W has generalized mean curvature y ↦ H(y + x₀) in {y : y + x₀ ∈ U}.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → (∀ y, W.tangentProj y = V.tangentProj (y + x₀)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun y => H (y + x₀))",
+  "lean_name": "rsod_tv_meanCurvature",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-translated-varifold-a1-mean-curvature-a1-a1"
+}
