@@ -527,6 +527,44 @@ theorem Submission.cbrldvc_setIntegral_le_sub_of_subset : ∀ (P : ℕ) (μ : Me
   rw [hsplit]
   linarith
 
+/-- **Covering inequality for the set integral of a bounded density** (the covering in the proof
+of Simon Ch. 6, 8.2 after (4): pairwise disjoint closed balls covering almost all of the low
+density set, with total measure at most `μ(W)`).  Let `μ` be finite on compact subsets of `ℝᴾ`,
+`|g| ≤ 1` `μ`-a.e., `θ ≤ 1`, `W` open with `μ(W) < ∞`, and let every point of `E ⊆ W` be the
+centre of arbitrarily small closed balls `B̄_ρ(x)` with `∫_{B̄_ρ(x)} g dμ ≤ θ μ(B̄_ρ(x))`.
+Besicovitch gives countably many such balls, pairwise disjoint and contained in `W`, whose
+union `V` covers `μ`-almost all of `E`.  By countable additivity `∫_V g dμ ≤ θ μ(V)`, and `g ≤ 1`
+on `W \ V`, so `∫_W g dμ ≤ μ(W) − (1 − θ) μ(V) ≤ μ(W) − (1 − θ) μ(E)`. -/
+theorem Submission.cbrld_vitali_setIntegral_le : ∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (E W : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable g μ → (∀ᵐ x ∂μ, |g x| ≤ 1) → θ ≤ 1 → IsOpen W → E ⊆ W → μ W < ∞ → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ ∫ y in closedBall x ρ, g y ∂μ ≤ θ * (μ (closedBall x ρ)).toReal) → ∫ y in W, g y ∂μ ≤ (μ W).toReal - (1 - θ) * (μ E).toReal := by
+  intro P μ g θ E W hK hg hg1 hθ hW hEW hWfin hsmall
+  -- steps 1–3: countably many pairwise disjoint admissible balls `B̄_{r(x)}(x) ⊆ W`, `x ∈ t`,
+  -- covering `μ`-almost all of `E`
+  obtain ⟨t, r, htc, -, hr, hdisj, hnull⟩ :=
+    Submission.cbrldvc_exists_disjoint_closedBall_cover P μ
+      (fun x ρ => ∫ y in closedBall x ρ, g y ∂μ ≤ θ * (μ (closedBall x ρ)).toReal) E W hK hW hEW
+      hsmall
+  -- step 4: their union `V` is measurable, `V ⊆ W`, `μ(V) < ∞` and `μ(E) ≤ μ(V)`
+  have hVmeas : MeasurableSet (⋃ x ∈ t, closedBall x (r x)) :=
+    MeasurableSet.biUnion htc fun _ _ => measurableSet_closedBall
+  have hVW : ⋃ x ∈ t, closedBall x (r x) ⊆ W := iUnion₂_subset fun x hx => (hr x hx).2.1
+  have hVfin : μ (⋃ x ∈ t, closedBall x (r x)) < ∞ := (measure_mono hVW).trans_lt hWfin
+  have hEV : μ E ≤ μ (⋃ x ∈ t, closedBall x (r x)) := measure_mono_ae (ae_le_set.2 hnull)
+  -- step 5: `∫_V g dμ ≤ θ μ(V)`, summing over the disjoint balls
+  have hgV : IntegrableOn g (⋃ x ∈ t, closedBall x (r x)) μ :=
+    Measure.integrableOn_of_bounded hVfin.ne hg (M := 1)
+      (ae_restrict_of_ae (hg1.mono fun x hx => by rwa [Real.norm_eq_abs]))
+  have hV : ∫ y in ⋃ x ∈ t, closedBall x (r x), g y ∂μ ≤
+      θ * (μ (⋃ x ∈ t, closedBall x (r x))).toReal :=
+    Submission.cbrldvc_setIntegral_biUnion_le_mul_measure P μ g θ t (fun x => closedBall x (r x))
+      htc (fun _ _ => measurableSet_closedBall) hdisj hVfin hgV fun x hx => (hr x hx).2.2
+  -- steps 6–7: `g ≤ 1` on `W \ V`; then `μ(E) ≤ μ(V)` and `1 − θ ≥ 0`
+  calc ∫ y in W, g y ∂μ
+      ≤ (μ W).toReal - (1 - θ) * (μ (⋃ x ∈ t, closedBall x (r x))).toReal :=
+        Submission.cbrldvc_setIntegral_le_sub_of_subset P μ g θ _ W hg hg1 hVmeas hVW hWfin hV
+    _ ≤ (μ W).toReal - (1 - θ) * (μ E).toReal :=
+        sub_le_sub_left (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hVfin.ne hEV)
+          (sub_nonneg.2 hθ)) _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
