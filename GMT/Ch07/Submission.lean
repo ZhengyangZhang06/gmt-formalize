@@ -661,6 +661,50 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **Countable chart partition** (Simon Ch. 2, §4, (4.1), as used for the area formula on a
+submanifold, 4.11–4.13).  Let `M ⊂ ℝᴾ` be an embedded `m`-dimensional `C¹` submanifold and `E ⊆ M`
+Borel.  Each `y ∈ M` has a chart `ψ_y : V_y → W_y` as in (4.1) with `y ∈ W_y` (each `y ∉ M` gets
+the empty chart), and by Lindelöf countably many `W_{y_k}` already cover `M`.  The pieces
+`E_k = (E ∩ W_{y_k}) \ ⋃_{j<k} (E ∩ W_{y_j})` are Borel, pairwise disjoint, have union `E`, and
+`E_k ⊆ W_{y_k} ∩ M`. -/
+theorem Submission.codim1_hcp_af_chart_partition : ∀ (P m : ℕ) (M E : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → MeasurableSet E → E ⊆ M → ∃ (Es : ℕ → Set (Euclid P)) (Vs : ℕ → Set (Euclid m)) (Ws : ℕ → Set (Euclid P)) (ψs : ℕ → Euclid m → Euclid P), (∀ k, MeasurableSet (Es k)) ∧ Pairwise (fun i j => Disjoint (Es i) (Es j)) ∧ (⋃ k, Es k) = E ∧ ∀ k, IsOpen (Vs k) ∧ IsOpen (Ws k) ∧ ContDiffOn ℝ 1 (ψs k) (Vs k) ∧ InjOn (ψs k) (Vs k) ∧ ψs k '' Vs k = Ws k ∩ M ∧ (∀ K ⊆ Ws k, IsCompact K → IsCompact (Vs k ∩ ψs k ⁻¹' K)) ∧ (∀ z ∈ Vs k, Injective (fderiv ℝ (ψs k) z)) ∧ Es k ⊆ Ws k ∩ M := by
+  intro P m M E hM hE hEM
+  -- every `y` has a chart `(V_y, W_y, ψ_y)` satisfying (4.1), with `y ∈ W_y` if `y ∈ M`
+  -- (for `y ∉ M` the empty chart `(∅, ∅, 0)`)
+  have hchart : ∀ y : Euclid P, ∃ (V : Set (Euclid m)) (W : Set (Euclid P))
+      (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ ContDiffOn ℝ 1 ψ V ∧ InjOn ψ V ∧
+        ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧
+        (∀ z ∈ V, Injective (fderiv ℝ ψ z)) ∧ (y ∈ M → y ∈ W) := by
+    intro y
+    by_cases hy : y ∈ M
+    · obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hD⟩ := hM y hy
+      exact ⟨V, W, ψ, hV, hW, by exact_mod_cast hψ, hinj, himg, hprop, hD, fun _ => hyW⟩
+    · exact ⟨∅, ∅, 0, isOpen_empty, isOpen_empty, contDiffOn_empty, injOn_empty _, by simp,
+        by simp, by simp, fun h => absurd h hy⟩
+  choose V W ψ hV hW hψ hinj himg hprop hD hyW using hchart
+  -- Lindelöf: countably many `W_y`, `y ∈ T`, have the same union `⋃_y W_y ⊇ M`
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable W hW
+  -- enumerate `T ⊆ {y_0, y_1, …}`, so that `M ⊆ ⋃_k W_{y_k}`
+  obtain ⟨f, hf⟩ := Set.countable_iff_exists_subset_range.1 hTc
+  have hcover : M ⊆ ⋃ k, W (f k) := by
+    intro y hy
+    have hyT : y ∈ ⋃ i ∈ T, W i := by
+      rw [hTU]
+      exact mem_iUnion.2 ⟨y, hyW y hy⟩
+    obtain ⟨i, hiT, hyi⟩ := mem_iUnion₂.1 hyT
+    obtain ⟨k, rfl⟩ := hf hiT
+    exact mem_iUnion.2 ⟨k, hyi⟩
+  -- the pieces `E_k = (E ∩ W_{y_k}) \ ⋃_{j<k} (E ∩ W_{y_j})` and the charts at `y_k`
+  refine ⟨disjointed fun k => E ∩ W (f k), fun k => V (f k), fun k => W (f k),
+    fun k => ψ (f k), MeasurableSet.disjointed fun k => hE.inter (hW (f k)).measurableSet,
+    disjoint_disjointed _, ?_, fun k => ⟨hV (f k), hW (f k), hψ (f k), hinj (f k), himg (f k),
+      hprop (f k), hD (f k), fun x hx => ?_⟩⟩
+  -- `⋃_k E_k = ⋃_k (E ∩ W_{y_k}) = E ∩ ⋃_k W_{y_k} = E`, as `E ⊆ M ⊆ ⋃_k W_{y_k}`
+  · rw [iUnion_disjointed, ← inter_iUnion]
+    exact inter_eq_left.2 (hEM.trans hcover)
+  -- `E_k ⊆ E ∩ W_{y_k} ⊆ W_{y_k} ∩ M`
+  · have hx' := disjointed_subset _ k hx
+    exact ⟨hx'.2, hEM hx'.1⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
