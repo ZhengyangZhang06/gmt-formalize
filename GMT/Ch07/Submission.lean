@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A `C¹` immersion is locally injective.**  If `G : ℝᵐ → ℝᴾ` is `C¹` and `DG(x)` is injective,
+then for some `r > 0` the map `G` and every `DG(z)`, `z ∈ B̄_r(x)`, are injective.  `L = DG(x)` is
+anti-Lipschitz on the finite-dimensional `ℝᵐ`, `c ‖v‖ ≤ ‖L v‖` with `c > 0`, and continuity of
+`DG` gives `‖DG(z) - L‖ ≤ c/2` on `B̄_r(x)`.  If `DG(z) u = 0` then
+`c ‖u‖ ≤ ‖L u‖ = ‖(DG(z) - L) u‖ ≤ (c/2) ‖u‖`; if `G a = G b`, the mean value inequality
+`‖G a - G b - L (a - b)‖ ≤ (c/2) ‖a - b‖` gives `c ‖a - b‖ ≤ (c/2) ‖a - b‖`.  So `u = 0`, `a = b`. -/
+theorem Submission.dor_lmbsf_c1c_immersion_local_injOn : ∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Set.InjOn G (Metric.closedBall x r) ∧ ∀ z ∈ Metric.closedBall x r, Function.Injective (fderiv ℝ G z) := by
+  intro P m G x hG hx
+  set L : Euclid m →L[ℝ] Euclid P := fderiv ℝ G x
+  -- `L` is injective on the finite-dimensional `ℝᵐ`, hence anti-Lipschitz: `c ‖v‖ ≤ ‖L v‖`
+  obtain ⟨K, hKpos, hK⟩ :=
+    (L : Euclid m →ₗ[ℝ] Euclid P).exists_antilipschitzWith (LinearMap.ker_eq_bot.2 hx)
+  have hK' : (0 : ℝ) < K := hKpos
+  set c : ℝ := (K : ℝ)⁻¹
+  have hcpos : 0 < c := inv_pos.2 hK'
+  have hLc : ∀ v, c * ‖v‖ ≤ ‖L v‖ := fun v =>
+    (inv_mul_le_iff₀ hK').2 (L.bound_of_antilipschitz hK v)
+  -- continuity of `DG` gives `δ > 0` with `‖DG(z) - L‖ ≤ c/2` on `B̄_{δ/2}(x)`
+  obtain ⟨δ, hδpos, hδ⟩ :=
+    Metric.continuous_iff.1 (hG.continuous_fderiv one_ne_zero) x (c / 2) (half_pos hcpos)
+  have hbound : ∀ z ∈ closedBall x (δ / 2), ‖fderiv ℝ G z - L‖ ≤ c / 2 := by
+    intro z hz
+    have h := hδ z (lt_of_le_of_lt (mem_closedBall.1 hz) (half_lt_self hδpos))
+    rw [dist_eq_norm] at h
+    exact h.le
+  refine ⟨δ / 2, half_pos hδpos, ?_, ?_⟩
+  · -- mean value inequality: `‖G a - G b - L (a - b)‖ ≤ (c/2) ‖a - b‖`
+    intro a ha b hb hab
+    have hmvt := (convex_closedBall x (δ / 2)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun z _ => (hG.differentiable one_ne_zero) z) hbound hb ha
+    rw [hab, sub_self, zero_sub, norm_neg] at hmvt
+    have h1 := hLc (a - b)
+    have h2 : ‖a - b‖ = 0 :=
+      le_antisymm (by nlinarith [norm_nonneg (a - b)]) (norm_nonneg _)
+    exact sub_eq_zero.1 (norm_eq_zero.1 h2)
+  · -- if `DG(z) u = 0` then `c ‖u‖ ≤ ‖L u‖ = ‖(DG(z) - L) u‖ ≤ (c/2) ‖u‖`
+    intro z hz v w hvw
+    have hu : fderiv ℝ G z (v - w) = 0 := by rw [map_sub, hvw, sub_self]
+    have h1 := hLc (v - w)
+    have h2 : ‖L (v - w)‖ ≤ c / 2 * ‖v - w‖ := by
+      have h3 : L (v - w) = -((fderiv ℝ G z - L) (v - w)) := by
+        rw [sub_apply, hu, zero_sub, neg_neg]
+      rw [h3, norm_neg]
+      calc ‖(fderiv ℝ G z - L) (v - w)‖ ≤ ‖fderiv ℝ G z - L‖ * ‖v - w‖ :=
+            ContinuousLinearMap.le_opNorm _ _
+        _ ≤ c / 2 * ‖v - w‖ := by gcongr; exact hbound z hz
+    have h4 : ‖v - w‖ = 0 :=
+      le_antisymm (by nlinarith [norm_nonneg (v - w)]) (norm_nonneg _)
+    exact sub_eq_zero.1 (norm_eq_zero.1 h4)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
