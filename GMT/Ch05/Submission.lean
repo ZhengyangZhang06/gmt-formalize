@@ -458,6 +458,67 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): under the change of variables `x = y + ρ z` with `ρ > 0`, which maps `B̆_r(0)` onto
+`B̆_{ρr}(y)`, the Hölder bound `‖ρ g(y + ρ z) − ρ g(y + ρ z')‖ ≤ c ‖z − z'‖^α` on `B̆_r(0)` is
+equivalent to the scale-weighted bound `ρ^{1+α} ‖g(x) − g(x')‖ ≤ c ‖x − x'‖^α` on `B̆_{ρr}(y)`,
+because `ρ^{1+α} = ρ ρ^α` and `‖x − x'‖^α = ρ^α ‖z − z'‖^α`. -/
+theorem dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α) := by
+  intro n ℓ g y ρ r α c hρ
+  -- Step 1: `ρ^α > 0`, `ρ^{1+α} = ρ ρ^α`, `‖(y + ρ z) − (y + ρ z')‖^α = ρ^α ‖z − z'‖^α` and
+  -- `‖ρ A − ρ B‖ = ρ ‖A − B‖`.
+  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
+  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
+  have hnorm : ∀ z z' : Rn n, ‖(y + ρ • z) - (y + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
+      Real.mul_rpow hρ.le (norm_nonneg _)]
+  have hsm : ∀ u v : Rn n →L[ℝ] Rn ℓ, ‖ρ • u - ρ • v‖ = ρ * ‖u - v‖ := by
+    intro u v
+    rw [show ρ • u - ρ • v = ρ • (u - v) from (smul_sub ρ u v).symm, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hρ]
+  -- Step 2: `z(x) = ρ⁻¹ (x − y)` satisfies `y + ρ z(x) = x` and maps `B̆_{ρr}(y)` into `B̆_r(0)`.
+  have hback : ∀ x : Rn n, y + ρ • (ρ⁻¹ • (x - y)) = x := by
+    intro x
+    rw [smul_smul, mul_inv_cancel₀ hρ.ne', one_smul, add_sub_cancel]
+  have hinball : ∀ x ∈ ball y (ρ * r), ρ⁻¹ • (x - y) ∈ ball (0 : Rn n) r := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ,
+      inv_mul_lt_iff₀ hρ]
+    exact hx
+  constructor
+  -- Step 3: (a) ⇒ (b), multiplying the bound at `z(x), z(x')` by `ρ^α > 0`.
+  · intro h x hx x' hx'
+    have h1 := h _ (hinball x hx) _ (hinball x' hx')
+    rw [hback, hback, hsm] at h1
+    have h2 := hnorm (ρ⁻¹ • (x - y)) (ρ⁻¹ • (x' - y))
+    rw [hback, hback] at h2
+    rw [hsplit, h2]
+    calc ρ * ρ ^ α * ‖g x - g x'‖ = ρ ^ α * (ρ * ‖g x - g x'‖) := by ring
+      _ ≤ ρ ^ α * (c * ‖ρ⁻¹ • (x - y) - ρ⁻¹ • (x' - y)‖ ^ α) := by gcongr
+      _ = c * (ρ ^ α * ‖ρ⁻¹ • (x - y) - ρ⁻¹ • (x' - y)‖ ^ α) := by ring
+  -- Step 4: (b) ⇒ (a), cancelling the factor `ρ^α > 0` in the bound at `y + ρ z, y + ρ z'`.
+  · intro h z hz z' hz'
+    have hmap : ∀ u ∈ ball (0 : Rn n) r, y + ρ • u ∈ ball y (ρ * r) := by
+      intro u hu
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos hρ]
+      rw [mem_ball_zero_iff] at hu
+      exact mul_lt_mul_of_pos_left hu hρ
+    have h1 := h _ (hmap z hz) _ (hmap z' hz')
+    rw [hsplit, hnorm] at h1
+    rw [hsm]
+    have h2 : ρ ^ α * (ρ * ‖g (y + ρ • z) - g (y + ρ • z')‖) ≤ ρ ^ α * (c * ‖z - z'‖ ^ α) := by
+      calc ρ ^ α * (ρ * ‖g (y + ρ • z) - g (y + ρ • z')‖)
+          = ρ * ρ ^ α * ‖g (y + ρ • z) - g (y + ρ • z')‖ := by ring
+        _ ≤ c * (ρ ^ α * ‖z - z'‖ ^ α) := h1
+        _ = ρ ^ α * (c * ‖z - z'‖ ^ α) := by ring
+    exact le_of_mul_le_mul_left h2 hρα
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
