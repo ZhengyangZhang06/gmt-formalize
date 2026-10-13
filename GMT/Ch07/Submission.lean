@@ -494,6 +494,81 @@ theorem Submission.codim1_rdo_dg_sp_gns_real_of_lintegral : ∀ (P : ℕ) (p : �
         rw [Real.mul_rpow C.coe_nonneg (Real.rpow_nonneg hI p), Real.rpow_rpow_inv hI hp.ne']
     _ ≤ ((C : ℝ) ^ p⁻¹ + 1) * ∫ z, ‖fderiv ℝ w z‖ :=
         mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) hI
+/-- **Variation of `1_F ζ` from the Gauss–Green identity** (Simon Ch. 3, proof of Theorem 4.3
+(De Giorgi), chapter-03.txt lines 689–712: `|D(ζ 1_F)| ≤ ζ |D1_F| + 1_F |Dζ|`, in dual form).  If
+`∫_F div φ = -∫ ⟨φ, ν⟩ dμ` for every `C¹` compactly supported `φ` with `tsupport φ ⊆ D`, `|ν| = 1`
+and `μ` is finite on compact subsets of `D`, then for `ζ ≥ 0` `C¹` with compact support in `D` and
+`g` `C¹` compactly supported with `|g| ≤ 1`, `|∫ 1_F ζ div g| ≤ ∫ ζ dμ + ∫_F |Dζ|`.  Apply (GG) to
+`φ = ζ g`: `div (ζ g) = ζ div g + Dζ(g)` (the trace of `v ↦ Dζ(v) g` is `Dζ(g)`), and bound
+`|⟨ζ g, ν⟩| ≤ ζ` and `|Dζ(g)| ≤ |Dζ|`. -/
+theorem Submission.codim1_rdo_dg_sp_gauss_green_variation : ∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P), IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → ∀ g : Euclid P → Euclid P, ContDiff ℝ 1 g → HasCompactSupport g → (∀ z, ‖g z‖ ≤ 1) → |∫ z, F.indicator ζ z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)| ≤ ∫ z, ζ z ∂μ + ∫ z in F, ‖fderiv ℝ ζ z‖ := by
+  intro P D F μ ν _ hF _ hμK _ hν1 hGG ζ hζ hζc hζD hζ0 g hg _ hg1
+  -- Step 1: the test field `φ = ζ g` satisfies the hypotheses of (GG)
+  have hsupp : support (fun z => ζ z • g z) ⊆ support ζ := fun z hz h0 => hz (by simp [h0])
+  have hGGφ := hGG (fun z => ζ z • g z) (hζ.smul hg) (hζc.mono hsupp)
+    ((closure_mono hsupp).trans hζD)
+  -- Step 2: `div (ζ g) = ζ div g + Dζ(g)`
+  have hdiv : ∀ z, LinearMap.trace ℝ (Euclid P)
+      (fderiv ℝ (fun z => ζ z • g z) z : Euclid P →ₗ[ℝ] Euclid P) =
+      ζ z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P) +
+        fderiv ℝ ζ z (g z) := by
+    intro z
+    rw [fderiv_fun_smul ((hζ.differentiable one_ne_zero) z) ((hg.differentiable one_ne_zero) z),
+      ContinuousLinearMap.toLinearMap_add, ContinuousLinearMap.toLinearMap_smul, map_add, map_smul,
+      smul_eq_mul]
+    congr 1
+    exact LinearMap.trace_smulRight (fderiv ℝ ζ z : Euclid P →ₗ[ℝ] ℝ) (g z)
+  -- Step 3: integrability with respect to Lebesgue measure
+  have hdivg : Continuous fun z =>
+      LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P) :=
+    ((LinearMap.trace ℝ (Euclid P)).comp
+      (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional.comp
+      (hg.continuous_fderiv one_ne_zero)
+  have hI1 : Integrable (fun z =>
+      ζ z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)) :=
+    (hζ.continuous.mul hdivg).integrable_of_hasCompactSupport hζc.mul_right
+  have hI2 : Integrable (fun z => fderiv ℝ ζ z (g z)) :=
+    ((hζ.continuous_fderiv one_ne_zero).clm_apply hg.continuous).integrable_of_hasCompactSupport
+      ((hζc.fderiv ℝ).mono fun z hz h0 => hz (by simp [h0]))
+  have hI3 : Integrable (fun z => ‖fderiv ℝ ζ z‖) :=
+    (hζ.continuous_fderiv one_ne_zero).norm.integrable_of_hasCompactSupport (hζc.fderiv ℝ).norm
+  -- Step 4: rewriting the left side
+  have hkey : ∫ z, F.indicator ζ z *
+      LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P) =
+      -∫ z, inner ℝ (ζ z • g z) (ν z) ∂μ - ∫ z in F, fderiv ℝ ζ z (g z) := by
+    have h1 : ∫ z, F.indicator ζ z *
+        LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P) =
+        ∫ z in F, ζ z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P) := by
+      rw [← integral_indicator hF]
+      congr 1
+      ext z
+      by_cases hz : z ∈ F <;> simp [hz]
+    have h2 := hGGφ
+    simp only [hdiv] at h2
+    rw [integral_add hI1.integrableOn hI2.integrableOn] at h2
+    rw [h1]
+    linarith
+  -- Step 5: `ζ` is `μ`-integrable
+  have hζμ : Integrable ζ μ := by
+    have : IsFiniteMeasure (μ.restrict (tsupport ζ)) := isFiniteMeasure_restrict.2 (hμK _ hζc hζD)
+    exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport ζ)).1
+      (hζ.continuous.integrable_of_hasCompactSupport hζc)
+  -- Step 6: pointwise bounds
+  have hb1 : ∀ z, ‖inner ℝ (ζ z • g z) (ν z)‖ ≤ ζ z := by
+    intro z
+    calc ‖inner ℝ (ζ z • g z) (ν z)‖ ≤ ‖ζ z • g z‖ * ‖ν z‖ := norm_inner_le_norm _ _
+      _ = ζ z * ‖g z‖ := by rw [hν1, mul_one, norm_smul, Real.norm_of_nonneg (hζ0 z)]
+      _ ≤ ζ z * 1 := mul_le_mul_of_nonneg_left (hg1 z) (hζ0 z)
+      _ = ζ z := mul_one _
+  have hb2 : ∀ z, ‖fderiv ℝ ζ z (g z)‖ ≤ ‖fderiv ℝ ζ z‖ := fun z =>
+    ((fderiv ℝ ζ z).le_opNorm (g z)).trans (mul_le_of_le_one_right (norm_nonneg _) (hg1 z))
+  -- Step 7: conclusion
+  have hA : |∫ z, inner ℝ (ζ z • g z) (ν z) ∂μ| ≤ ∫ z, ζ z ∂μ :=
+    norm_integral_le_of_norm_le hζμ (Eventually.of_forall hb1)
+  have hB : |∫ z in F, fderiv ℝ ζ z (g z)| ≤ ∫ z in F, ‖fderiv ℝ ζ z‖ :=
+    norm_integral_le_of_norm_le hI3.integrableOn (Eventually.of_forall hb2)
+  rw [hkey, show ∀ a b : ℝ, -a - b = -(a + b) from fun a b => by ring, abs_neg]
+  exact (abs_add_le _ _).trans (add_le_add hA hB)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
