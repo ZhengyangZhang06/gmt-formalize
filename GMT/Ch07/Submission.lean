@@ -2412,6 +2412,27 @@ theorem Submission.dimred_regular_point_density : ∀ (P n : ℕ) (U : Set (Eucl
   filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
   rw [hmass s hs, mul_div_assoc]
 
+/-- **Currents of degree above the ambient dimension vanish** (Simon Ch. 6, 1.2: the `dx^α`,
+`α ∈ I_{j,P}`, form a basis of `Λʲ(ℝᴾ)`, and `I_{j,P} = ∅` when `j > P`).  If `P < j`, every
+family of `j` vectors in `ℝᴾ` is linearly dependent, so every `j`-covector vanishes; hence every
+test form `ω ∈ 𝒟ʲ(U)` is `0`, and `T(ω) = T(0) = 0`. -/
+theorem Submission.dimred_cdg_eq_zero_of_lt_degree : ∀ (P j : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U j), P < j → T = 0 := by
+  intro P j U T hPj
+  -- Step 1: every `j`-covector `α` on `ℝᴾ` is `0`; a linearly independent `v : Fin j → ℝᴾ` would
+  -- give `j ≤ dim ℝᴾ = P`, so `α(v) = 0` for every `v`
+  have hcov : ∀ α : Covector (Euclid P) j, α = 0 := by
+    intro α
+    ext v
+    have hdep : ¬LinearIndependent ℝ v := fun hli => by
+      have hle := hli.fintype_card_le_finrank
+      rw [Fintype.card_fin, finrank_euclideanSpace_fin] at hle
+      omega
+    exact α.toAlternatingMap.map_linearDependent v hdep
+  -- Step 2: every test form `ω ∈ 𝒟ʲ(U)` is `0`; Step 3: `T(ω) = T(0) = 0`
+  ext ω
+  have hω : ω = 0 := Subtype.ext (funext fun x => hcov _)
+  rw [hω, map_zero, GeometricCurrentOn.zero_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
