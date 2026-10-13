@@ -495,4 +495,37 @@ theorem Submission.dgcr_bwd_coordinate_covector : ∀ (m : ℕ) (j : Fin (m + 1)
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+theorem Submission.dgcr_bwd_graph_pullback_extDeriv : ∀ (m k : ℕ) (ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid (m + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + 1 + k)) (u : Euclid (m + 1) → Euclid k) (z : Euclid (m + 1 + k)) (ψ : DifferentialForm (Euclid (m + 1)) m) (v : Euclid (m + 1)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsSmoothForm ψ → DifferentiableAt ℝ u v → exteriorDerivative (affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ) (z + ι v + ι' (u v)) (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ))) = exteriorDerivative ψ v (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro m k ι ι' u z ψ v hperp hψ hu
+  -- `L := ι*` is a left inverse of `ι` and annihilates the orthogonal factor `ι'`.
+  have hLι : ∀ v', ContinuousLinearMap.adjoint ι.toContinuousLinearMap (ι v') = v' := by
+    intro v'
+    apply ext_inner_right ℝ
+    intro y
+    rw [ContinuousLinearMap.adjoint_inner_left]
+    exact ι.inner_map_map v' y
+  have hLι' : ∀ w, ContinuousLinearMap.adjoint ι.toContinuousLinearMap (ι' w) = 0 := by
+    intro w
+    apply ext_inner_right ℝ
+    intro y
+    rw [ContinuousLinearMap.adjoint_inner_left, inner_zero_left, real_inner_comm]
+    exact hperp y w
+  -- Chain rule for the graph map `Φ v = z + ι v + ι' (u v)`.
+  have hD : fderiv ℝ (fun v => z + ι v + ι' (u v)) v =
+      ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp (fderiv ℝ u v) := by
+    have hι : HasFDerivAt (fun v => ι v) ι.toContinuousLinearMap v :=
+      ι.toContinuousLinearMap.hasFDerivAt
+    have hι' : HasFDerivAt (fun v => ι' (u v)) (ι'.toContinuousLinearMap.comp (fderiv ℝ u v)) v :=
+      ι'.toContinuousLinearMap.hasFDerivAt.comp v hu.hasFDerivAt
+    have h1 := ((hasFDerivAt_const z v).add hι).add hι'
+    rw [zero_add] at h1
+    exact h1.fderiv
+  -- `d` commutes with the affine pull-back; the base point is `v` and the frame is `eᵢ`.
+  rw [exteriorDerivative_affinePullbackForm _ _ hψ]
+  simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+  congr 1
+  · simp [map_add, hLι, hLι']
+  · funext i
+    simp [hD, hLι, hLι']
+
 end GMT.Ch07
