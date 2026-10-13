@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'aal_l1th|l1_tilt|l1th' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "rg -n 'def (hsNormSq|hsNorm|divM|weight|support|HasGeneralizedMeanCurvature)|abbrev (Amb|Rn)|integrableOn_mult' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "Python inspection of dag.json and other branches' decomposition-v*.json files for proposed name reservations and dependency cycles",
+        "validate_lean_statement applied independently to all three proposed lean_statement strings",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/l1th-independent-audit-v7choh7i/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/l1th-independent-audit-v7choh7i/VerifiedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-l1-tilt-height-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-l1-tilt-height-a1/decomposition-v1.json",
+        "/tmp/l1th-decomp/final/All3.lean",
+        "/tmp/l1th-independent-audit-v7choh7i/FrozenTypes.lean",
+        "/tmp/l1th-independent-audit-v7choh7i/VerifiedAssembly.lean"
+      ],
+      "conclusion": "The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The working contract and inspected compiler sources match the snapshot. The proposed-name search returned no matches; no other DAG branch reserves these names. Located smoothTransition properties, orthogonal-projection identities, IsProj.trace, trace_smulRight, trace_eq_sum_inner, support conullness, and compact-set integrability. All three types independently elaborate as propositions before any child implementation exists. Their operations use Euclidean continuous linear maps, operator norms, and explicit linear-map composition, with no matrix-instance ambiguity. The supplied proofs were independently recompiled against pinned definitions: each child uses only propext, Classical.choice, and Quot.sound. The exact selected parent assembly also compiles, conditional solely on its inherited aal_tangent_structure prerequisite. The split is appropriate: the three substantive obligations and retained measure-theoretic argument establish this selected L¹ estimate with constants 144 and 4h. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all stated hypotheses and cutoff properties. The explicit bump gives c ≥ 1/3; its normalized primitive has the claimed range, plateaus, and derivative bound. Radial composition is C¹ away from the center and locally constant at the center; the Lipschitz estimate proves the operator-norm bound, including m = 0. This is a complete, non-circular construction. aal_l1th_exists_cutoff is a bare, unreserved identifier."
+    },
+    {
+      "key": "projection_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts match the prose and pinned Hilbert–Schmidt definitions. Coordinate expansion and Cauchy–Schwarz prove the operator-norm inequality. Self-adjointness identifies the squared Hilbert–Schmidt norm with the trace of the square; idempotence, cyclicity of trace, and the equal-dimension hypothesis give exactly the factor 1/2. Finite-dimensional projection instances are available, including dimension zero. The proof is complete and independent. aal_l1th_projection_algebra is bare and unreserved."
+    },
+    {
+      "key": "test_field_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely the differentiability, rank, and tangent-projection hypotheses in the prose. Product differentiation, trace linearity, the rank-one trace formula, and annihilation of the normal component yield the displayed identity. Applying projection_algebra uses the two rank hypotheses correctly. This declared dependency is sufficient and non-circular; neither cutoff nor the parent estimate is assumed. The proof needs no further planning. aal_l1th_test_field_divergence is bare and unreserved."
+    }
+  ],
+  "required_changes": []
+}
