@@ -1402,6 +1402,56 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Simon Ch. 6, 2.4, 2.11 and 3.2(3)**, for currents in `ℝᴾ`.  If `Y = τ(M, θ, ξ)`, then
+`M(Y) = μ_R(ℝᴾ)` and `spt Y = spt μ_R`; `ℝᴾ` is hereditarily Lindelöf, so `μ_R(ℝᴾ \ spt Y) = 0`,
+and `θ ≥ 1` on `M` gives `Hⁿ(M \ spt Y) = 0`.  If `spt Y` is compact, `μ_R(ℝᴾ) = μ_R(spt Y)` is
+finite by local integrability of `θ`.  Supports are complements of open zero regions, and a common
+relatively compact neighbourhood on which `Y₁` and `Y₂` vanish lies in the zero region of
+`Y₁ - Y₂`. -/
+theorem Submission.dimred_mbl_pf_imrep_carrier_mass_support : ∀ (P n : ℕ), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → μHE[n] (R.carrier \ Y.support) = 0 ∧ Y.mass = R.measure univ ∧ (IsCompact Y.support → R.measure univ ≠ ∞)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y₁.support ∧ (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support := by
+  intro P n
+  -- Step 6: `spt Y = ℝᴾ \ Z(Y)` is the complement of the open zero region
+  have hclosed : ∀ Y : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y.support :=
+    fun Y => by
+      rw [GeometricCurrentOn.support, ← compl_eq_univ_sdiff]
+      exact Y.isOpen_zeroRegion.isClosed_compl
+  refine ⟨fun Y R hR => ?_, fun Y₁ Y₂ => ⟨hclosed Y₁, ?_⟩⟩
+  · -- Step 1: `M_W(Y) = μ_R(W)` for open `W`, and `spt Y = spt μ_R`
+    obtain ⟨hmass, hsupp⟩ :=
+      Submission.dor_imrep_massOn_eq_measure_and_support P n univ Y R isOpen_univ hR
+    rw [univ_inter] at hsupp
+    -- Step 3: `μ_R(ℝᴾ \ spt Y) = 0`, `ℝᴾ` being hereditarily Lindelöf
+    have hnull : R.measure (Y.support)ᶜ = 0 := by
+      rw [hsupp]
+      exact Measure.measure_compl_support
+    refine ⟨?_, hmass univ isOpen_univ, fun hK => ?_⟩
+    · -- Step 4: `θ ≥ 1` on `M`, so `Hⁿ(M \ spt Y) = 0`
+      have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+        (measurable_from_nat (f := (Nat.cast : ℕ → ℝ≥0∞))).comp R.measurable_mult
+      have h0 := (withDensity_apply_eq_zero hθ).1 hnull
+      rw [Measure.restrict_apply' R.measurableSet_carrier] at h0
+      refine measure_mono_null (fun x hx => ?_) h0
+      exact ⟨⟨Nat.cast_ne_zero.2 (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
+    · -- Step 5: `μ_R(ℝᴾ) = μ_R(spt Y) = ∫_{M ∩ spt Y} θ dHⁿ < ∞`
+      have hfin : R.measure Y.support ≠ ∞ := by
+        rw [IMRep.measure, withDensity_apply _ (hclosed Y).measurableSet,
+          Measure.restrict_restrict (hclosed Y).measurableSet, inter_comm]
+        exact R.locallyIntegrable_mult _ hK (subset_univ _)
+      refine ne_top_of_le_ne_top hfin ?_
+      calc R.measure univ ≤ R.measure Y.support + R.measure (Y.support)ᶜ :=
+            measure_univ_le_add_compl _
+        _ = R.measure Y.support := by rw [hnull, add_zero]
+  · -- Step 7: a common relatively compact neighbourhood where `Y₁`, `Y₂` vanish
+    intro x hx
+    by_contra hx'
+    rw [mem_union, not_or] at hx'
+    simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_univ, true_and, not_not] at hx hx'
+    obtain ⟨⟨W₁, ⟨hW₁, hW₁c, -, hY₁⟩, hxW₁⟩, ⟨W₂, ⟨hW₂, -, -, hY₂⟩, hxW₂⟩⟩ := hx'
+    refine hx ⟨W₁ ∩ W₂, ⟨hW₁.inter hW₂, hW₁c.of_isClosed_subset isClosed_closure
+      (closure_mono inter_subset_left), subset_univ _, fun ω hω => ?_⟩, hxW₁, hxW₂⟩
+    show Y₁ ω - Y₂ ω = 0
+    rw [hY₁ ω (hω.trans inter_subset_left), hY₂ ω (hω.trans inter_subset_right), sub_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
