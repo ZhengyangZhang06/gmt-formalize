@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.current_calculus-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "Support, mass and boundary of a difference of currents",
+  "statement": "For all P, n ∈ ℕ, U, W ⊆ Euclid P and A, B ∈ 𝒟_n(U) (GeometricCurrentOn U n): spt(A − B) ⊆ spt A ∪ spt B and M_W(A − B) ≤ M_W(A) + M_W(B). For all P, m ∈ ℕ, U ⊆ Euclid P and A, B ∈ 𝒟_{m+1}(U): spt ∂A ⊆ spt A and ∂(A − B) = ∂A − ∂B.",
+  "lean_statement": "(∀ (P n : ℕ) (U W : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).support ⊆ A.support ∪ B.support ∧ (A - B).massOn W ≤ A.massOn W + B.massOn W) ∧ ∀ (P m : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U (m + 1)), A.boundary.support ⊆ A.support ∧ (A - B).boundary = A.boundary - B.boundary",
+  "lean_name": "dimred_mbl_dtfr_current_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-62aafed356-a1"
+}

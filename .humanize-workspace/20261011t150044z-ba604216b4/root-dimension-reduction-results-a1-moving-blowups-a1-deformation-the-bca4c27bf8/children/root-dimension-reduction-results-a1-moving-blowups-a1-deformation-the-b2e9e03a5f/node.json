@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "Cubical Stokes: the boundary of an integer polyhedral n-chain is an integer polyhedral (n−1)-chain",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let s be a finite set of index pairs p = (ι, b) with ι : Fin n → Fin P strictly increasing, and let β assign an integer to each pair. Let T ∈ 𝒟_n(Euclid P) (domain univ) satisfy T(ω) = Σ_{p∈s} β_p ∫_{(0,1)ⁿ} ω(Φ_p y)(e_{ι(0)}, …, e_{ι(m)}) dy for all test n-forms ω, where Φ_p(y) := b + Σ_j y_j e_{ι(j)}. Then there are a finite set s' of index pairs q = (ι', b') with ι' : Fin m → Fin P strictly increasing, and integers β'_q, such that ∂T(γ) = Σ_{q∈s'} β'_q ∫_{(0,1)^m} γ(Φ_q y)(e_{ι'(0)}, …, e_{ι'(m−1)}) dy for every test m-form γ.",
+  "lean_statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s', StrictMono p.1) ∧ ∀ γ : TestFormOn (univ : Set (Euclid P)) m, T.boundary γ = ∑ p ∈ s', (β' p : ℝ) * ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))",
+  "lean_name": "dimred_mbl_dtfr_chain_boundary",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_divergence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_divergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b2e9e03a5f-a1"
+}

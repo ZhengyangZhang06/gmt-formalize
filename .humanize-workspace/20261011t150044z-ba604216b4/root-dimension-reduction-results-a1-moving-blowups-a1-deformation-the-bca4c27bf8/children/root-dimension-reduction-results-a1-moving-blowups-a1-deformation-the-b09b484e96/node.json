@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_divergence-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "Divergence form of the exterior derivative along a coordinate face",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, ι : Fin n → Fin P strictly increasing, b : Fin P → ℤ, and let γ be a C^∞ differential m-form on Euclid P (ContDiff ℝ (⊤ : ℕ∞), i.e. smooth, not analytic). Write e_i for the standard unit vectors, Φ(y) := b + Σ_j y_j e_{ι(j)} (a map Euclid n → Euclid P) and E := (e_{ι(0)}, …, e_{ι(m)}). Let G : Euclid n → Euclid n satisfy G(y)_i = (−1)^i γ(Φ y)(e_{ι(succAbove i 0)}, …, e_{ι(succAbove i (m−1))}) for all y and i, i.e. γ(Φ y) evaluated on E with its i-th entry removed. Then: (1) G is C^∞; (2) ‖G(y)‖ ≤ |γ(Φ y)| (covectorEuclideanNorm) for all y; (3) dγ(Φ y)(E) = trace DG(y) for all y, where dγ = exteriorDerivative γ and trace DG(y) = LinearMap.trace ℝ (Euclid n) (fderiv ℝ G y).",
+  "lean_statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m) (G : Euclid (m + 1) → Euclid (m + 1)), StrictMono ι → ContDiff ℝ (⊤ : ℕ∞) γ → (∀ (y : Euclid (m + 1)) (i : Fin (m + 1)), G y i = (-1 : ℝ) ^ (i : ℕ) * γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun l => EuclideanSpace.single (ι (Fin.succAbove i l)) (1 : ℝ))) → ContDiff ℝ (⊤ : ℕ∞) G ∧ (∀ y : Euclid (m + 1), ‖G y‖ ≤ covectorEuclideanNorm (γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)))) ∧ ∀ y : Euclid (m + 1), exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)",
+  "lean_name": "dimred_mbl_dtfr_face_divergence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b09b484e96-a1"
+}
