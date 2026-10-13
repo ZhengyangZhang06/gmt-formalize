@@ -472,6 +472,76 @@ theorem Submission.dgid_carrier_sdiff_measure_support_null : ∀ (P n : ℕ) (U 
     ext x; simp [and_comm]
   rw [hset]
   exact nonpos_iff_eq_zero.mp ((key _ hS).trans h0.le)
+/-- An integer multiplicity triple `R = (M, θ, ξ_R)` oriented by `±ξ` on `S` is represented on `W`
+by an integer density times `ξ` on `S` (a step of the graph argument for Simon 7.4.3): if `S` is
+Borel, `Hⁿ((M ∩ W) \ S) = 0`, `ξ(x)(β(x)) = 1` on `S` and `ξ_R = ±ξ` `Hⁿ`-a.e. on `M ∩ S`, then
+`g = 1_M θ ξ_R(β)` is integer-valued with `|g| ≤ 1_M θ` `Hⁿ⌞S`-a.e., and
+`τ(M, θ, ξ_R)(ω) = ∫_S g ⟨ω, ξ⟩ dHⁿ` whenever `spt ω ⊆ W`. -/
+theorem Submission.dgid_imrep_signed_density_representation : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (W S : Set (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), MeasurableSet S → μHE[n] ((R.carrier ∩ W) \ S) = 0 → AEStronglyMeasurable β (μHE[n].restrict S) → (∀ x ∈ S, ξ x (β x) = 1) → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ S)), R.orient x = ξ x ∨ R.orient x = -ξ x) → ∃ g : Euclid P → ℝ, AEStronglyMeasurable g (μHE[n].restrict S) ∧ (∀ᵐ x ∂(μHE[n].restrict S), (∃ m : ℤ, g x = m) ∧ ‖g x‖ₑ ≤ R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) x) ∧ ∀ ω : DifferentialForm (Euclid P) n, tsupport ω ⊆ W → R.action ω = ∫ x in S, g x * ξ x (ω x) ∂μHE[n] := by
+  intro P n U R W S ξ β hS hnull hβ hξβ hor
+  have hM : MeasurableSet R.carrier := R.measurableSet_carrier
+  -- Step 1: the sign hypothesis as a pointwise a.e. statement
+  have hor' : ∀ᵐ x ∂μHE[n], x ∈ R.carrier ∩ S → (R.orient x = ξ x ∨ R.orient x = -ξ x) :=
+    (ae_restrict_iff' (hM.inter hS)).mp hor
+  -- Step 2: pointwise identities on the sign set
+  have hpt : ∀ x ∈ R.carrier ∩ S, (R.orient x = ξ x ∨ R.orient x = -ξ x) →
+      (∃ m : ℤ, (R.mult x : ℝ) * R.orient x (β x) = m) ∧
+      ‖(R.mult x : ℝ) * R.orient x (β x)‖ₑ = (R.mult x : ℝ≥0∞) ∧
+      ∀ α : Covector (Euclid P) n,
+        (R.mult x : ℝ) * R.orient x α = (R.mult x : ℝ) * R.orient x (β x) * ξ x α := by
+    intro x hx hsign
+    rcases hsign with hs | hs
+    · rw [hs, hξβ x hx.2, mul_one]
+      exact ⟨⟨R.mult x, by push_cast; rfl⟩, by simp, fun α => rfl⟩
+    · rw [hs, neg_apply, hξβ x hx.2]
+      refine ⟨⟨-(R.mult x : ℤ), by push_cast; ring⟩, by simp, fun α => ?_⟩
+      rw [neg_apply]; ring
+  refine ⟨R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x (β x)), ?_, ?_, ?_⟩
+  · -- Step 4: measurability
+    rw [aestronglyMeasurable_indicator_iff hM, Measure.restrict_restrict hM]
+    have h1 : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) (μHE[n].restrict (R.carrier ∩ S)) :=
+      (measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable
+    have h2 : AEStronglyMeasurable R.orient (μHE[n].restrict (R.carrier ∩ S)) :=
+      R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+    have h3 : AEStronglyMeasurable β (μHE[n].restrict (R.carrier ∩ S)) :=
+      hβ.mono_measure (Measure.restrict_mono inter_subset_right le_rfl)
+    have h4 : AEStronglyMeasurable (fun x => R.orient x (β x)) (μHE[n].restrict (R.carrier ∩ S)) :=
+      (continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂ h2 h3
+    exact h1.mul h4
+  · -- Step 3: integrality and the bound by the multiplicity
+    filter_upwards [ae_restrict_of_ae hor', ae_restrict_mem hS] with x hx hxS
+    by_cases hxM : x ∈ R.carrier
+    · obtain ⟨hint, hnorm, -⟩ := hpt x ⟨hxM, hxS⟩ (hx ⟨hxM, hxS⟩)
+      rw [indicator_of_mem hxM, indicator_of_mem hxM]
+      exact ⟨hint, hnorm.le⟩
+    · rw [indicator_of_notMem hxM, indicator_of_notMem hxM]
+      exact ⟨⟨0, by simp⟩, by simp⟩
+  · -- Step 5: the representation
+    intro ω hω
+    have hω0 : ∀ x, x ∉ W → ω x = 0 := fun x hx =>
+      image_eq_zero_of_notMem_tsupport (fun h => hx (hω h))
+    have e1 : ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n] =
+        ∫ x in R.carrier ∩ S, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n] := by
+      apply setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hM.nullMeasurableSet inter_subset_left
+      filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxd
+      have hxW : x ∉ W := fun hxW => hx ⟨⟨hxd.1, hxW⟩, fun hxS => hxd.2 ⟨hxd.1, hxS⟩⟩
+      rw [hω0 x hxW, map_zero, mul_zero]
+    have e2 : ∫ x in R.carrier ∩ S, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n] =
+        ∫ x in R.carrier ∩ S, R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x (β x)) x *
+          ξ x (ω x) ∂μHE[n] := by
+      apply setIntegral_congr_ae (hM.inter hS)
+      filter_upwards [hor'] with x hx hxMS
+      rw [indicator_of_mem hxMS.1]
+      exact (hpt x hxMS (hx hxMS)).2.2 (ω x)
+    have e3 : ∫ x in S, R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x (β x)) x *
+          ξ x (ω x) ∂μHE[n] =
+        ∫ x in R.carrier ∩ S, R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x (β x)) x *
+          ξ x (ω x) ∂μHE[n] := by
+      apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS inter_subset_right
+      intro x hx
+      have hxM : x ∉ R.carrier := fun hxM => hx.2 ⟨hxM, hx.1⟩
+      rw [indicator_of_notMem hxM, zero_mul]
+    rw [IMRep.action, e1, e2, e3]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
