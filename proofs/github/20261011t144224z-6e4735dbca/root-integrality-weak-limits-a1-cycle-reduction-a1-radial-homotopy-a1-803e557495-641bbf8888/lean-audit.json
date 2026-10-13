@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9de0e2df51adf92869f448124bf6ee03c2fda8646cce34462c7bf2b85f894288",
+  "git_delta": {
+    "base_commit": "d770bf91a0d09bfa19f0d7aebc171ffb97122641",
+    "candidate_commit": "af76167caf31bebf5ffd1d9d1cb8e25f69d5b632",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_rh_radial_ftc",
+    "diff_sha256": "d6d2656c6713b7b182e4f0edd65eab115222c311f964f8513496dbb700fa0796",
+    "source_sha256": "04cb2fbc483e2ecd68c6fbeb03b255671299154ee8128492fa4319ecff9d6211",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_rh_radial_ftc",
+      "statement": "∀ (P n m : ℕ) (φ : DifferentialForm (Eucl P) n), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → ∀ (x : Eucl P) (u : Fin n → Eucl P), ∫ t in (0 : ℝ)..1, (t ^ (m + 1) * fderiv ℝ φ (t • x) x u + ((m : ℝ) + 1) * t ^ m * φ (t • x) u) = φ x u",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
