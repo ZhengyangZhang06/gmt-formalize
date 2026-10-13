@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dohr_eb_lhr_dqub_|dqub' project mathlib/Mathlib",
+        "rg -n 'iteratedFDeriv_one_apply|continuousOn_fderiv_of_isOpen|norm_image_sub_le_of_norm_fderiv_le|norm_image_sub_le_of_norm_hasDerivWithin_le|continuousMultilinearCurryFin1_symm_apply|theorem Basis.sum_repr|def finBasis|def toContinuousLinearMap|structure IsLinearMap' mathlib/Mathlib/Analysis/Calculus mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Curry.lean mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean mathlib/Mathlib/Algebra/Module/LinearMap/Defs.lean",
+        "sed -n '1,240p' project/GMT/Ch05/Contract.lean",
+        "(theorem|lemma|def|axiom) +dohr_eb_lhr_dqub_",
+        "python3 /tmp/dqub-independent-audit-awu50pe_/audit_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean TypesAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Module/LinearMap/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-52f82eff2a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-52f82eff2a/decomposition-v1.json",
+        "/tmp/dqub-decomp-dMSAWZ/proj/GMT/Ch05/Submission.lean",
+        "/tmp/dqub-independent-audit-awu50pe_/audit_contracts.py",
+        "/tmp/dqub-independent-audit-awu50pe_/TypesAssembly.lean",
+        "/tmp/dqub-independent-audit-awu50pe_/Proofs.lean"
+      ],
+      "conclusion": "Confirmed project pin ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d. The frozen definitions and eight core Mathlib source files match the compiler environment. Snapshot searches found the cited calculus, currying, and coordinate lemmas, and no dqub declarations. No proposed name is reserved in the 486-node DAG or declared across 2542 searched git refs; no accepted declaration is reused. All five names are bare identifiers and all types are independent, one-line propositions. Isolated Lean checks, using frozen definitions without child implementations, accepted every type and proved the exact selected parent from wd_props and forcing_holder alone. Recompiled proofs of all five children and the parent use only propext, Classical.choice, and Quot.sound. Typeclass-sensitive scalar and continuous-linear-map constructions are valid; no matrix-unit construction occurs. The split is appropriate, dependencies are acyclic and correctly directed, and M = max(S, M') combines the two final obligations into the frozen parent. Relative source commands ran in the snapshot root; Lean checks ran in /tmp/dqub-independent-audit-awu50pe_."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_consts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. The currying isometry transfers derivative-difference norms exactly; C¹ regularity on open U gives continuity of fderiv, compactness supplies its bound, and maxima with zero yield nonnegative constants. The proof works for arbitrary real α and requires no completeness assumption or circular dependency."
+    },
+    {
+      "key": "dq_mean_value",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. Geometry keeps both translated paths inside the derivative-control set. The proof derives R > 0 and the needed S ≥ 0, handles either sign of d through uIcc 0 d, applies the vector-valued mean-value inequality, and divides by positive |d|. No extra sign assumption on H is needed."
+    },
+    {
+      "key": "form_coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the two finite-testing-vector bounds. Finite-dimensional continuous coordinates justify the linear and double bilinear expansions. The nonnegative termwise estimates and C = N c + N² c² prove both conclusions, including dimension zero. Both linearity hypotheses are used correctly; no additional continuity assumption is required."
+    },
+    {
+      "key": "wd_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four conclusions and quantifier order match. Only the declared dependencies are used: fderiv_consts fixes S before d, and dq_mean_value supplies the value bound by taking y = x. Open-set differentiability justifies the translation derivative formula. The Hölder constant 2 H_v / |d| may depend on d, exactly as the type permits."
+    },
+    {
+      "key": "forcing_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The forcing expression and all hypotheses match exactly. The three declared dependencies supply finite component bounds and form estimates with constants chosen before d. T, β1, and β2 have the asserted linearities, and their displayed identity uses the correct shifted derivatives Q_x and Q_y. The triangle inequality yields the stated d-independent M without hidden assumptions or circular reliance."
+    }
+  ],
+  "required_changes": []
+}

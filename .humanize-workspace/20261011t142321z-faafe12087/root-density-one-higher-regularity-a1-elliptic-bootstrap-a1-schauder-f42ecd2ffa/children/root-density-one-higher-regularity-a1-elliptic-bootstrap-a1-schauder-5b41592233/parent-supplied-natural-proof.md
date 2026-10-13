@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1.holder_rescale-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof (the two changes of variables z = (x - y)/rho used there: transferring the Hoelder hypothesis of Dw on B_rho(y) to Dwt on B_1(0), and transferring the blow-up conclusion on B_{1/2}(0) back to B_{rho/2}(y)), isolated as an exact equivalence.
+Notation: |.| is the Euclidean norm on R^n, ||.|| the operator norm on L := L(R^n, R^l), and s^beta (s >= 0, beta real) the real power Real.rpow; for s, t >= 0 and every real beta, (s t)^beta = s^beta t^beta (mul_rpow), and s^beta > 0 when s > 0.
+1. Preliminary identities. Since rho > 0, rho^alpha > 0 and rho^{1+alpha} = rho * rho^alpha (rpow_add, rpow_one). For all z, z' in R^n, (y + rho z) - (y + rho z') = rho (z - z'), so |(y + rho z) - (y + rho z')| = rho |z - z'|; since rho >= 0 and |z - z'| >= 0, |(y + rho z) - (y + rho z')|^alpha = rho^alpha |z - z'|^alpha (mul_rpow). For all A, B in L, ||rho A - rho B|| = ||rho (A - B)|| = rho ||A - B||.
+2. Change of variables. For x in R^n put z(x) := rho^{-1} (x - y); then y + rho z(x) = x. If x is in B_{rho r}(y), then |z(x)| = rho^{-1} |x - y| < rho^{-1} rho r = r, so z(x) is in B_r(0). Conversely, if z is in B_r(0), then |(y + rho z) - y| = rho |z| < rho r, so y + rho z is in B_{rho r}(y).
+3. (a) implies (b). Let x, x' be in B_{rho r}(y) and put z := z(x), z' := z(x'). By step 2, z and z' are in B_r(0), y + rho z = x and y + rho z' = x'. By (a) and step 1, rho ||g(x) - g(x')|| = ||rho g(x) - rho g(x')|| <= c |z - z'|^alpha. Multiply by rho^alpha > 0 and use step 1 for the pair z, z' (whose images are x, x'): rho^{1+alpha} ||g(x) - g(x')|| = rho^alpha (rho ||g(x) - g(x')||) <= c rho^alpha |z - z'|^alpha = c |x - x'|^alpha.
+4. (b) implies (a). Let z, z' be in B_r(0) and put x := y + rho z, x' := y + rho z'. By step 2, x and x' are in B_{rho r}(y). By (b) and step 1, rho^alpha (rho ||g(x) - g(x')||) = rho^{1+alpha} ||g(x) - g(x')|| <= c |x - x'|^alpha = rho^alpha (c |z - z'|^alpha). Cancelling the factor rho^alpha > 0 gives rho ||g(x) - g(x')|| <= c |z - z'|^alpha, i.e. ||rho g(y + rho z) - rho g(y + rho z')|| <= c |z - z'|^alpha by step 1.
+No sign condition on r, alpha or c is needed: every step is an identity or a multiplication or division by one of the positive numbers rho, rho^alpha. QED
+Lean proof checked at the pin (Lean 4.35.0-rc3, Mathlib 25730c7c; stated inside `namespace GMT.Ch05` with the contract's `open`s, appended to a scratch copy of the submission; the generated NodeSolution target closes by `exact Submission.dohr_eb_sch_ube_holder_rescale`; #print axioms: propext, Classical.choice, Quot.sound):
+set_option maxSynthPendingDepth 3 in
+theorem Submission.dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α) := by
+  intro n ℓ g y ρ r α c hρ
+  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
+  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
+  have hnorm : ∀ z z' : Rn n, ‖(y + ρ • z) - (y + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
+      Real.mul_rpow hρ.le (norm_nonneg _)]
+  have hsm : ∀ u v : Rn n →L[ℝ] Rn ℓ, ‖ρ • u - ρ • v‖ = ρ * ‖u - v‖ := by
+    intro u v
+    rw [← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ]
+  have hback : ∀ x : Rn n, y + ρ • (ρ⁻¹ • (x - y)) = x := by
+    intro x
+    rw [smul_smul, mul_inv_cancel₀ hρ.ne', one_smul, add_sub_cancel]
+  have hinball : ∀ x ∈ ball y (ρ * r), ρ⁻¹ • (x - y) ∈ ball (0 : Rn n) r := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ,
+      inv_mul_lt_iff₀ hρ]
+    exact hx
+  constructor
+  · intro h x hx x' hx'
+    have h1 := h _ (hinball x hx) _ (hinball x' hx')
+    rw [hback, hback, hsm] at h1
+    have h2 := hnorm (ρ⁻¹ • (x - y)) (ρ⁻¹ • (x' - y))
+    rw [hback, hback] at h2
+    rw [hsplit, h2]
+    calc ρ * ρ ^ α * ‖g x - g x'‖ = ρ ^ α * (ρ * ‖g x - g x'‖) := by ring
+      _ ≤ ρ ^ α * (c * ‖ρ⁻¹ • (x - y) - ρ⁻¹ • (x' - y)‖ ^ α) := by gcongr
+      _ = c * (ρ ^ α * ‖ρ⁻¹ • (x - y) - ρ⁻¹ • (x' - y)‖ ^ α) := by ring
+  · intro h z hz z' hz'
+    have hmap : ∀ u ∈ ball (0 : Rn n) r, y + ρ • u ∈ ball y (ρ * r) := by
+      intro u hu
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos hρ]
+      rw [mem_ball_zero_iff] at hu
+      exact mul_lt_mul_of_pos_left hu hρ
+    have h1 := h _ (hmap z hz) _ (hmap z' hz')
+    rw [hsplit, hnorm] at h1
+    rw [hsm]
+    have h2 : ρ ^ α * (ρ * ‖g (y + ρ • z) - g (y + ρ • z')‖) ≤ ρ ^ α * (c * ‖z - z'‖ ^ α) := by
+      calc ρ ^ α * (ρ * ‖g (y + ρ • z) - g (y + ρ • z')‖)
+          = ρ * ρ ^ α * ‖g (y + ρ • z) - g (y + ρ • z')‖ := by ring
+        _ ≤ c * (ρ ^ α * ‖z - z'‖ ^ α) := h1
+        _ = ρ ^ α * (c * ‖z - z'‖ ^ α) := by ring
+    exact le_of_mul_le_mul_left h2 hρα
+
+## Key steps
+
+1. rho^{1+alpha} = rho rho^alpha, |(y + rho z) - (y + rho z')|^alpha = rho^alpha |z - z'|^alpha, ||rho A - rho B|| = rho ||A - B||
+2. z := rho^{-1}(x - y) maps B_{rho r}(y) onto B_r(0) with y + rho z = x, and y + rho z lies in B_{rho r}(y) for z in B_r(0)
+3. (a) => (b): multiply rho ||g(x) - g(x')|| <= c |z - z'|^alpha by rho^alpha > 0
+4. (b) => (a): cancel the positive factor rho^alpha
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `rg -n '^def HolderOnWith|^def HolderWith' and rg -n '^(theorem|lemma|protected theorem|protected lemma) (HolderOnWith|HolderWith)?\.?(comp|smul|dist_le|mono)' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/Holder.lean`
+- `rg -il 'absorption|absorb' <snapshot>/mathlib/Mathlib <snapshot>/project`
+- `rg -n -i 'holder|hölder|campanato|schauder' <snapshot>/project (*.lean)`
+- `rg -l -i 'interior estimate|C\^\{1,\s*α\}|schauder estimate|blow-?up' <snapshot>/mathlib/Mathlib`
+- `rg -n '^theorem le_csSup |^theorem csSup_le |le_csSup_of_le|theorem csSup_le' <snapshot>/mathlib/Mathlib/Order/ConditionallyCompleteLattice/Basic.lean`
+- `rg -n '^theorem (div_rpow|mul_rpow|rpow_add|one_rpow|zero_rpow|rpow_pos_of_pos|rpow_nonneg|rpow_le_rpow|rpow_le_one|one_le_rpow|rpow_le_rpow_of_exponent_le|inv_rpow|rpow_two) ' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `rg -n "theorem ball_subset_ball'|theorem mem_ball_self" <snapshot>/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean; grep 'add_sub_cancel|mul_div_cancel' <snapshot>/mathlib/Mathlib/Algebra/Group/Basic.lean`
+- `python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') to obtain the replayed child scope; python3 scan of dag.json for collisions of the 4 proposed lean_names and for the sibling statuses/frozen types`
+- `lake env lean Checks/AllChallenges.lean, Checks/Assembly.lean, Checks/Proof_<key>.lean for the 4 keys; in a scratch Submission copy with the children appended: lake build GMT.Ch05.Submission, then Checks/Sol_<key>.lean, Checks/Chal_<key>.lean, Checks/Sol_parent.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Holder.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/ConditionallyCompleteLattice/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Lattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Tactic/Linarith/Frontend.lean`
+
+Pins: the snapshot fixes project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Submission.lean is byte-identical to the snapshot Contract.lean.
+
+No relevant library result exists at the pin, so the children must be proved:
+- 'absorption|absorb' matches only algebraic and lattice absorption laws (e.g. Order/Lattice.lean). There is no analytic absorption lemma.
+- 'interior estimate|schauder estimate|blow-up' matches only tactic documentation (e.g. 'exponential blowup' in Tactic/Linarith/Frontend.lean).
+- The project's Hoelder matches are only the contract definitions IsHolderCkα and IsLocallyHolderCkα (Contract.lean:84, 92).
+- Mathlib's HolderOnWith (Topology/MetricSpace/Holder.lean:57) uses ℝ≥0 constants and edist, and its comp (line 105) multiplies exponents. It cannot express rho^{1+alpha}-weighted quotients with real constants, so the children state explicit inequalities in the style of the frozen parent.
+
+Mathlib lemmas used in the verified child proofs:
+- le_csSup and csSup_le (ConditionallyCompleteLattice/Basic.lean:197, 201).
+- Real.rpow_pos_of_pos, zero_rpow, one_rpow, rpow_nonneg, rpow_add, rpow_two, mul_rpow, div_rpow, rpow_le_rpow, rpow_le_rpow_of_exponent_le, rpow_le_one, one_le_rpow (Pow/Real.lean, lines 116-677).
+- Metric.ball_subset_ball' and mem_ball_self (Pseudo/Defs.lean:537, 379).
+- add_sub_cancel, the to_additive form of mul_div_cancel (Group/Basic.lean:962).
+
+The four proposed lean_names do not occur in dag.json (486 nodes at check time).
+
+Lean checks on scratch builds at the pin:
+1. All four child types and the frozen parent type elaborate in the comparator's replayed scope.
+2. The frozen parent type is proved with the four child types and the three sibling types as hypotheses. Axioms: propext, Classical.choice, Quot.sound.
+3. Each child is proved outright (absorption from holder_improvement). Each closes its generated NodeSolution target by `exact Submission.X` with the same three axioms.
+4. Instance checks: (ρ • Φ u) P = ρ * Φ u P holds by rfl, and ‖T‖ on L(R^n,R^l) is the operator norm. smul_sub on L(R^n,R^l) needs `set_option maxSynthPendingDepth 3`.

@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n -i 'weak (equation|solution)|difference quotient|isSymmSndFDerivAt|dohr_eb_lhr_ds_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "hasFDerivAt_of_tendstoUniformlyOnFilter",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "norm_image_sub_le_of_norm_fderiv_le'",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "integral_undef",
+        "isSymmSndFDerivAt|contDiffOn_clm_apply|fderiv_clm_apply|tsupport_fderiv_subset|fderiv_comp_sub",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ds-independent-audit-wk7426im/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ds-independent-audit-wk7426im/Proofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ds-independent-audit-wk7426im/Unavailable.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-3f41da54f4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-3f41da54f4/decomposition-v1.json",
+        "/tmp/ds-independent-audit-wk7426im/Challenges.lean",
+        "/tmp/ds-independent-audit-wk7426im/Proofs.lean",
+        "/tmp/ds-independent-audit-wk7426im/Unavailable.lean"
+      ],
+      "conclusion": "Confirmed project pin ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d. The project search returned no relevant match. DAG and other-node JSON scans found no reservations for the six bare declaration names. All six exact one-line propositions and the selected parent type independently elaborate under the frozen Contract scope before any child implementation exists. Fresh compilation of the supplied proof artifacts and parent assembly succeeds with only propext, Classical.choice and Quot.sound; proof-local synthesis-depth settings suffice. The unavailable symmetry and componentwise-smoothness lemmas were independently confirmed unavailable under the frozen imports. The split is appropriate: its dependencies are acyclic and correctly directed, and its conclusions establish this exact selected parent. The parent's integrability case split is valid under Bochner integral semantics."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "diffquot_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Compact thickening, uniform continuity of Dg, the segment mean-value estimate, and division by nonzero d establish the exact punctured-filter uniform limit. Neither completeness nor e ≠ 0 is needed. The supplied argument is complete and does not rely on reusing the differently typed sibling declaration."
+    },
+    {
+      "key": "dir_deriv_symm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated operator equality. Uniform convergence of T_d, eventual differentiability on a common neighborhood, and pointwise convergence supply precisely the pinned uniform-limit theorem's hypotheses. The proof derives symmetry without assuming it and uses only the declared diffquot_uniform dependency."
+    },
+    {
+      "key": "clm_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The finite basis expansion proves C¹ regularity into L*, and differentiation of evaluation at a constant P proves the asserted identity. The argument is complete, non-circular, and compatible with the verified continuous-linear-map instances."
+    },
+    {
+      "key": "bilin_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type both freeze w(x) in the final derivative. Basis expansion, clm_family, and the product and finite-sum rules establish both C¹ regularity and the exact Leibniz formula. Its sole child dependency is correctly directed."
+    },
+    {
+      "key": "translate_weak",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly allows arbitrary U and imposes no coefficient regularity or integrability. The translated test function satisfies the required support condition. Vanishing outside U and the pinned translation-invariance identity justify the integral equalities even for arbitrary Bochner integrands. No hypothesis is missing."
+    },
+    {
+      "key": "weak_eq_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including both integrability conclusions. Compact support supplies continuity and measurability; C_i‖e‖‖Dζ‖ supplies integrable domination on a common parameter neighborhood. Differentiation under the integral and translate_weak yield equality of derivatives, followed by restriction to U. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

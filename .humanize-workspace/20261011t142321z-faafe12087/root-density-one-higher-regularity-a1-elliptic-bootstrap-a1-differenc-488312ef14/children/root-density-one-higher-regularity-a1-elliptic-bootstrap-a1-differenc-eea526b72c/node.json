@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1.interpolation-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1",
+  "depth": 4,
+  "title": "Interpolation inequality: sup of Dh controlled by sup of h and the alpha-Hoelder seminorm of Dh",
+  "statement": "Let n, l be natural numbers, h : R^n -> R^l, x ∈ R^n, and r, t, alpha, L, S real with 0 < t ≤ r, alpha > 0 and L ≥ 0. Assume h is differentiable at every point of the closed ball B̄_{2r}(x), ‖Dh(y) - Dh(y')‖ ≤ L |y - y'|^alpha for all y, y' ∈ B̄_{2r}(x), and |h(y)| ≤ S for all y ∈ B̄_{2r}(x). Then the operator norm satisfies ‖Dh(y)‖ ≤ 2S/t + L t^alpha for every y ∈ B̄_r(x).",
+  "lean_statement": "∀ (n ℓ : ℕ) (h : Rn n → Rn ℓ) (x : Rn n) (r t α L S : ℝ), 0 < t → t ≤ r → 0 < α → 0 ≤ L → (∀ y ∈ closedBall x (2 * r), DifferentiableAt ℝ h y) → (∀ y ∈ closedBall x (2 * r), ∀ y' ∈ closedBall x (2 * r), ‖fderiv ℝ h y - fderiv ℝ h y'‖ ≤ L * ‖y - y'‖ ^ α) → (∀ y ∈ closedBall x (2 * r), ‖h y‖ ≤ S) → ∀ y ∈ closedBall x r, ‖fderiv ℝ h y‖ ≤ 2 * S / t + L * t ^ α",
+  "lean_name": "dohr_eb_dql_interpolation_fderiv_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-differenc-eea526b72c-a1"
+}

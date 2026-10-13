@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.c1_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1",
+  "depth": 5,
+  "title": "C^1 limit from locally uniform convergence of derivatives on growing balls",
+  "statement": "Let n, l be natural numbers and L := L(R^n, R^l) with the operator norm. Let W_k : R^n -> R^l (k in N), V : R^n -> L and reals R_k with R_k -> +infinity. Assume every W_k is C^1 on the open ball B_{R_k}(0), W_k(0) = 0 for every k, V is continuous, and for every real r the Frechet derivatives DW_k converge to V uniformly on the closed ball Bbar_r(0). Then there is W : R^n -> R^l that is C^1 on R^n and satisfies DW(z) = V(z) for every z in R^n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (W : ℕ → Rn n → Rn ℓ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), Tendsto R atTop atTop → (∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k))) → (∀ k, W k 0 = 0) → Continuous V → (∀ r : ℝ, TendstoUniformlyOn (fun k => fderiv ℝ (W k)) V atTop (closedBall (0 : Rn n) r)) → ∃ W' : Rn n → Rn ℓ, ContDiff ℝ 1 W' ∧ ∀ z, fderiv ℝ W' z = V z",
+  "lean_name": "dohr_eb_sch_bu_contDiff_of_fderiv_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-8a9cf31694-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.snd_deriv_symm-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "depth": 5,
+  "title": "Symmetry of the second derivative of a C^2 map R^n -> R^l",
+  "statement": "Let n, l be natural numbers and V : R^n -> R^l a C^2 map. Write D^2V(x) for the derivative at x of the map x -> DV(x) into L(R^n, R^l). Then D^2V(x)(v)(w) = D^2V(x)(w)(v) for all x, v, w in R^n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : Rn n → Rn ℓ), ContDiff ℝ 2 V → ∀ x v w : Rn n, fderiv ℝ (fderiv ℝ V) x v w = fderiv ℝ (fderiv ℝ V) x w v",
+  "lean_name": "dohr_eb_sch_liou_snd_deriv_symm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-28073fdd2c-a1"
+}

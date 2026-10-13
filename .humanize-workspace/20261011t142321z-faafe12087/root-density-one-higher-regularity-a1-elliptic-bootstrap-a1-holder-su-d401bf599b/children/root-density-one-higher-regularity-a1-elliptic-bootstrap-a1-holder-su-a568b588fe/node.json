@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1.clm_columns_contdiff-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+  "depth": 4,
+  "title": "An operator-valued map on R^n is C^m iff all its columns are C^m",
+  "statement": "Let n, m be natural numbers, E a real normed space, R^n = EuclideanSpace R (Fin n), U any subset of R^n, and g : R^n -> L(R^n, E) a map into the continuous linear maps from R^n to E. Let e_k = EuclideanSpace.single k 1 for k in Fin n be the standard basis vectors. Then g is C^m on U if and only if, for every k in Fin n, the column map x -> g(x) e_k is C^m on U.",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), ContDiffOn ℝ m g U ↔ ∀ k : Fin n, ContDiffOn ℝ m (fun x => g x (EuclideanSpace.single k (1 : ℝ))) U",
+  "lean_name": "dohr_eb_hsif_contDiffOn_clm_iff_columns",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-a568b588fe-a1"
+}

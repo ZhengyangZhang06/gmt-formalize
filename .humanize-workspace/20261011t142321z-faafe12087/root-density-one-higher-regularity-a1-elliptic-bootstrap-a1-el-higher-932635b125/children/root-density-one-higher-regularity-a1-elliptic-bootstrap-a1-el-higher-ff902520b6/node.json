@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.lhs_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1",
+  "depth": 5,
+  "title": "Limit of the left side: discrete integration by parts against a C^1 field",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) and L* := L(L, R) (operator norms). Let U ⊆ R^n be open, F : R^n -> L* of class C^1 on U, tau : R^n -> L continuous with compact support and tsupport tau ⊆ U, and e in R^n. Then ∫_U F(x)[h^{-1}(tau(x) - tau(x - he))] dx -> -∫_U DF(x)e[tau(x)] dx as h -> 0 with h ≠ 0 (along 𝓝[≠] 0), where DF(x)e := fderiv R F x e.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (F : Rn n → ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)) (τ : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 F U → Continuous τ → HasCompactSupport τ → tsupport τ ⊆ U → Tendsto (fun h : ℝ => ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e)))) (𝓝[≠] 0) (𝓝 (-∫ x in U, fderiv ℝ F x e (τ x)))",
+  "lean_name": "dohr_eb_ehs_del_lhs_tendsto",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.diffquot_uniform-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.diffquot_uniform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-ff902520b6-a1"
+}

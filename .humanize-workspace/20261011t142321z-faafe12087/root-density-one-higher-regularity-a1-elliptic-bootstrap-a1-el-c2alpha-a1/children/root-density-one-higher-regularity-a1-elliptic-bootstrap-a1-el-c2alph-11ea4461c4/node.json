@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1.hessian_bounds-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1",
+  "depth": 4,
+  "title": "Uniform bound and Lipschitz bound for D^2 Psi on a closed ball of L(R^n, R^l)",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) (continuous linear maps Rn n ->L Rn l with the operator norm), Psi : L -> R of class C^3 and eps a real number. Write B(P)[Q][Q'] := D^2 Psi(P)[Q][Q'] = fderiv R (fderiv R Psi) P Q Q'. Then there are real numbers M_B >= 0 and L_B >= 0 such that (i) |B(P)[Q][Q']| <= M_B ||Q|| ||Q'|| for all P, Q, Q' in L with ||P|| <= eps, and (ii) |B(P)[Q][Q'] - B(P')[Q][Q']| <= L_B ||P - P'|| ||Q|| ||Q'|| for all P, P', Q, Q' in L with ||P|| <= eps and ||P'|| <= eps.",
+  "lean_statement": "∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ), ContDiff ℝ 3 Ψ → ∀ ε : ℝ, ∃ MB LB : ℝ, 0 ≤ MB ∧ 0 ≤ LB ∧ (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) ∧ ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖",
+  "lean_name": "dohr_eb_elc2_hessian_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alph-11ea4461c4-a1"
+}

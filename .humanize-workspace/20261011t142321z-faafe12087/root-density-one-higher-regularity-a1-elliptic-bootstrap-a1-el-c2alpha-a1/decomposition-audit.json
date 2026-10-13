@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsLocallyHolderCkα|difference quotient|lebesgue_number_lemma|shift_ibp|averaged_hessian",
+        "norm_image_sub_le_of_norm_fderiv_le|norm_image_sub_le_of_norm_deriv_le_segment_01",
+        "intervalIntegral_integral_swap|integral_apply|comp_comm|of_forall_sdiff_eq_zero|integral_mul_right_eq_self|prod_restrict",
+        "lebesgue_number_lemma_of_metric|contDiffOn_of_locally_contDiffOn|continuousOn_fderiv_of_isOpen|fderiv_right|continuous_fderiv|iteratedFDeriv_one_apply|continuousMultilinearCurryFin1|toContinuousLinearMap|fderiv_of_notMem_tsupport",
+        "dohr_eb_elc2_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/ChildTypes.lean > child-types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Assembly.lean > assembly.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alpha-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alpha-a1/decomposition-v1.json",
+        "/tmp/elc2-independent-audit-r9apiorj/Checks/ChildTypes.lean",
+        "/tmp/elc2-independent-audit-r9apiorj/Checks/Assembly.lean",
+        "/tmp/elc2-independent-audit-r9apiorj/assembly.log"
+      ],
+      "conclusion": "Verified the pinned revisions and frozen contract. The project search found the Hölder definition but no existing helpers for the proposed difference-quotient, averaging or covering obligations; the required calculus, integration and covering lemmas exist in pinned Mathlib. Independently compiled all seven standalone types before implementing any child, then compiled the supplied child proofs unchanged with exact-type checks. Every child uses only propext, Classical.choice and Quot.sound. The supplied assembly proves the exact selected parent type, assuming only its three frozen sibling contracts additionally. The bilinear constructions compile with the supplied local synthesis-depth settings. All names are bare, distinct and unreserved; dependencies are correctly directed and acyclic. The seven-child split is appropriate and establishes this selected node."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hessian_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary real ε. Compact bounds for B and DB, the convex mean-value inequality and bilinear operator-norm estimates prove both conclusions. Negative ε causes no gap because the constrained ball is empty."
+    },
+    {
+      "key": "averaged_hessian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The dual-valued integral defines a genuine continuous bilinear form for every x. Segment convexity and integral estimates prove coercivity, boundedness and the exact Hölder bound; LB ≥ 0 is used correctly, without imposing unstated continuity or sign assumptions."
+    },
+    {
+      "key": "shift_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact identity for arbitrary d and e, including d = 0. Clamping and compact spatial support justify continuity and product integrability despite g being controlled only on U. FTC, translation and both Fubini applications have the correct sign and hypotheses."
+    },
+    {
+      "key": "dq_weak_equation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type preserve all weak-test and segment hypotheses. Translated supports lie in U, the subtracted integrands are integrable, and FTC gives the stated averaged Hessian integrand. The declared dependency shift_ibp supplies the forcing identity; cancelling nonzero d completes the proof without circularity."
+    },
+    {
+      "key": "dq_basic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly allows arbitrary V and K. Openness of U supplies ordinary differentiability at both endpoints. Translation calculus, the segment mean-value estimate and the triangle inequality prove all four conclusions with exactly the stated ε‖e‖ and 2|d|⁻¹H factors."
+    },
+    {
+      "key": "averaged_forcing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive exponent yields continuity on K and integrability along the required segments. Evaluation composed with innerSL defines the stated continuous linear form everywhere. Integration and Cauchy–Schwarz give the exact Hölder bound, including the factor ‖e‖, without an unstated H ≥ 0 assumption."
+    },
+    {
+      "key": "local_to_global_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conclusion matches the frozen Hölder definition. Local C¹ regularity glues on U; compact derivative bounds and a finite cover with a Lebesgue number control near and far pairs. The order-one curry isometry supplies the exact iterated-derivative norm identity. Empty sets cause no gap."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'TendstoUniformlyOn|weak_eq|setIntegral_eq_integral' project/GMT",
+        "rg -n 'TendstoUniformlyOn.*integral|integral.*TendstoUniformly|tendsto_integral_of_tendstoUniformly|TendstoUniformly.*setIntegral' mathlib/Mathlib",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|norm_setIntegral_le_of_norm_le_const|integrable_of_hasCompactSupport|continuous_of_tsupport_subset|HasCompactSupport.intro|measure_lt_top|tendstoUniformlyOn_iff|le_opNorm₂|rpow_le_rpow|support_fderiv_subset|HasCompactSupport.fderiv|continuous_fderiv|ContinuousOn.clm_apply",
+        "rg -l 'dohr_eb_sch_bu_wel_(localized_integral|tendsto_integral_of_tendstoUniformlyOn|pairing_tendstoUniformlyOn)' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes -g '*.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wel-independent-audit-imr6nows/Types.lean",
+        "python3 /tmp/wel-independent-audit-imr6nows/check.py /tmp/wel-independent-audit-imr6nows/Leaves12.lean",
+        "python3 /tmp/wel-independent-audit-imr6nows/check.py /tmp/wel-independent-audit-imr6nows/Leaf3.lean",
+        "python3 /tmp/wel-independent-audit-imr6nows/check.py /tmp/wel-independent-audit-imr6nows/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-335f55150d/parent-child-handoff.json",
+        "/tmp/wel-independent-audit-imr6nows/Types.lean",
+        "/tmp/wel-independent-audit-imr6nows/Leaves12.lean",
+        "/tmp/wel-independent-audit-imr6nows/Leaf3.lean",
+        "/tmp/wel-independent-audit-imr6nows/Assembly.lean"
+      ],
+      "conclusion": "Snapshot searches used the specified snapshot as working directory. The project search and the displayed combined uniform-integral search returned no matches. Inspected Mathlib files supply the required localization, integral estimates, bilinear bounds and real-power monotonicity. The compiler Mathlib revision matches the manifest; checked supporting sources match the snapshot byte-for-byte. All three verbatim child types elaborate independently in comparator scope. Independent Lean proofs following the supplied arguments, and an assembly proof of the exact frozen parent from the three child types as hypotheses, compile with only propext, Classical.choice and Quot.sound. Volume, Real.rpow and operator-norm interpretations were checked. The split appropriately separates localization, integration of uniform limits and pairing estimates. All names are bare, unreserved identifiers; no accepted declaration is reused. Empty child dependency lists are acyclic, and no proof relies on the parent or an ancestor."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "localized_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. Closedness of T supplies the zero neighbourhoods outside O; continuity inside O uses openness. Support containment yields compact support and integrability, and vanishing outside O gives the integral identity. All three conclusions follow without circular reliance, including when T is empty."
+    },
+    {
+      "key": "uniform_limit_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely preserves both eventual hypotheses and all remaining assumptions. The proof combines their thresholds with uniform convergence, uses integrability correctly for integral subtraction, and localizes the difference to K. The bound with epsilon/(M+1) proves convergence even when K has zero measure. The argument is complete and independently formalizable."
+    },
+    {
+      "key": "pairing_uniform_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches every quantified bound and both conclusions. Nonnegative maxima handle unrestricted r, Z and N, including empty K. Absolute values correctly handle signed c and d. Bilinearity gives the stated decomposition, and the two epsilon/2 estimates and error estimate establish uniform convergence. Real-power monotonicity covers alpha=0. The operator-norm bound checks with synthesis depth 3; the frozen type itself needs no implementation or alias."
+    }
+  ],
+  "required_changes": []
+}

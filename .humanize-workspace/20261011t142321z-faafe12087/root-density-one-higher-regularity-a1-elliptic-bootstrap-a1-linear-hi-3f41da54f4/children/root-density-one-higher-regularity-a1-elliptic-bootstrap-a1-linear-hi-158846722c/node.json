@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.bilin_leibniz-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1",
+  "depth": 5,
+  "title": "Leibniz rule for a componentwise C^1 family of bilinear forms along a C^1 map",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l), U an open subset of R^n, a : R^n -> (continuous bilinear forms on L), i.e. a(x) ∈ L(L, L(L, R)), such that x ↦ a(x)[P][Q] is C^1 on U for all P, Q ∈ L, w : R^n -> L of class C^1 on U, and e ∈ R^n. Then the L*-valued map x ↦ a(x)[w(x)] is C^1 on U, and for every x ∈ U and P ∈ L: (D(a(·)[w(·)])(x) e)[P] = a(x)[Dw(x) e][P] + D(a(·)[w(x)][P])(x) e, where w(x) is frozen in the last term.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → (Rn n →L[ℝ] Rn ℓ)) (e : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → ContDiffOn ℝ 1 w U → ContDiffOn ℝ 1 (fun x => a x (w x)) U ∧ ∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun z => a z (w z)) x e P = a x (fderiv ℝ w x e) P + fderiv ℝ (fun z => a z (w x) P) x e",
+  "lean_name": "dohr_eb_lhr_ds_bilin_leibniz",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.clm_family-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.clm_family-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-158846722c-a1"
+}

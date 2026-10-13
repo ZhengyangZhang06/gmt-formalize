@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dohr_eb_ehs_del|diffquot_uniform|isSymmSndFDerivAt",
+        "theorem ContDiffAt.isSymmSndFDerivAt",
+        "theorem fderiv_clm_apply",
+        "theorem norm_image_sub_le_of_norm_fderiv_le",
+        "IsCompact.cthickening|cthickening_empty|def cthickening|uniformContinuousOn_of_continuous|tendsto_at|theorem hasFDerivAt_comp_sub",
+        "theorem tendsto_integral_filter_of_dominated_convergence",
+        "theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -o .lake/build/lib/lean/Checks/Contracts.olean Checks/Contracts.lean",
+        "LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -o .lake/build/lib/lean/Checks/Proofs.olean Checks/Proofs.lean",
+        "LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/TypeEquality.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-932635b125/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-932635b125/decomposition-v1.json",
+        "/tmp/del-independent-audit-i7pblbs0/Checks/Contracts.lean",
+        "/tmp/del-independent-audit-i7pblbs0/Checks/Proofs.lean",
+        "/tmp/del-independent-audit-i7pblbs0/Checks/TypeEquality.lean"
+      ],
+      "conclusion": "The five-way split is appropriate and establishes exactly the selected differentiated Euler–Lagrange contract. The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; compiler dependencies agree with that pin. Relevant calculus, compactness and integration lemmas were inspected. No proposed declaration occurs in the snapshot project, among the 515 DAG names, or in another recorded decomposition. All names are bare identifiers. The only dependency edges are lhs_limit and rhs_limit depending on diffquot_uniform; the supplied scripts use exactly those dependencies. In the fresh scratch directory, all standalone contract types elaborate with the proposed declarations absent. All five supplied proofs and the exact parent assembly compile, using only propext, Classical.choice and Quot.sound. Every proved type is Expr-identical to its independently elaborated frozen type. The scoped instance option preserves the contract types; no matrix-unit construction occurs. The related accepted difference-quotient declaration has a narrower codomain and is not reused as an identical contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chain_symm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and matches the standalone Lean proposition. Differentiability on the open neighbourhood, the chain rule, constant-vector evaluation and Schwarz symmetry establish the exact operator identity. The proof is complete and non-circular; the required symmetry import is explicitly supplied."
+    },
+    {
+      "key": "diffquot_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the universe-0 arbitrary real normed codomain. Compact thickening, uniform continuity of Df and the mean-value remainder estimate prove the two-sided punctured uniform limit. No completeness hypothesis is needed; empty K and zero direction are covered."
+    },
+    {
+      "key": "lhs_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match. The proof establishes compactly supported integrability before splitting integrals, obtains the correct minus sign by translation, and supplies measurability, domination and pointwise convergence for the limit. Its sole sibling dependency is diffquot_uniform, used with the required dual-space codomain."
+    },
+    {
+      "key": "rhs_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match. The negative-direction rewrite gives the correct limit. The support argument and compact indicator bound justify dominated convergence using only continuity of g on U. All hypotheses are used correctly, with no circular reliance."
+    },
+    {
+      "key": "test_admissible",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match all four conjuncts and the eventual quantifier. The compact margin controls translated support and its closure; composition and linearity establish C¹ regularity and the derivative formula at every point. The proof is complete and independent of the other children."
+    }
+  ],
+  "required_changes": []
+}

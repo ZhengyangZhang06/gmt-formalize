@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1.curry_succ_iff-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+  "depth": 4,
+  "title": "C^{m+1,alpha}_loc of f iff C^1 plus C^{m,alpha}_loc of Df (currying isometry)",
+  "statement": "Let n, m be natural numbers, alpha a real number, E a real normed space, R^n = EuclideanSpace R (Fin n), U an open subset of R^n and f : R^n -> E. Write D^j for Mathlib's global iterated derivative iteratedFDeriv R j (defined at every point) and Df = fderiv R f. Then the following are equivalent. (A) f is C^{m+1} on U, and for every compact K contained in U there is C in R with ||D^{m+1}f(x) - D^{m+1}f(y)|| <= C ||x - y||^alpha for all x, y in K. (B) f is C^1 on U, Df is C^m on U, and for every compact K contained in U there is C in R with ||D^m(Df)(x) - D^m(Df)(y)|| <= C ||x - y||^alpha for all x, y in K.",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α))",
+  "lean_name": "dohr_eb_hsif_succ_iff_curry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-a490968346-a1"
+}

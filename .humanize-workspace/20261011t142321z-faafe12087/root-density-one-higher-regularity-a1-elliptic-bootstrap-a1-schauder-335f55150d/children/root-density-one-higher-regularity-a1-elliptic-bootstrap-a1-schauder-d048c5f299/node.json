@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1.pairing_uniform_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1",
+  "depth": 6,
+  "title": "Uniform convergence of the perturbed bilinear pairings and of the error forms on a bounded set",
+  "statement": "Let n, l be natural numbers. Notation: L := L(R^n, R^l), the continuous linear maps R^n -> R^l with the operator norm; L* := continuous linear forms on L; Bil := continuous bilinear forms on L, viewed as continuous linear maps L -> L*, written b[P][Q]; |z|^alpha is the real power (Real.rpow). Let alpha >= 0, r, Z and N be real numbers, A in Bil, ah_k : R^n -> Bil, Psi_k : R^n -> L*, U_k : R^n -> L (k in N), V, Q : R^n -> L, K an arbitrary subset of R^n, and c_k, d_k real sequences. Assume: c_k -> 0 and d_k -> 0; U_k -> V uniformly on K; |z| <= r, ||Q(z)|| <= Z and ||V(z)|| <= N for every z in K; for all sufficiently large k, all z in K and all P, P' in L: |ah_k(z)[P][P'] - A[P][P']| <= c_k (1 + |z|^alpha) ||P|| ||P'||; and for all sufficiently large k, all z in K and all P in L: |Psi_k(z)[P]| <= d_k |z|^alpha ||P||. Then, as k -> infinity, (i) the maps z -> ah_k(z)[U_k(z)][Q(z)] converge to z -> A[V(z)][Q(z)] uniformly on K, and (ii) the maps z -> Psi_k(z)[Q(z)] converge to the zero function uniformly on K.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α r Z N : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V Q : Rn n → (Rn n →L[ℝ] Rn ℓ)) (K : Set (Rn n)) (c d : ℕ → ℝ), 0 ≤ α → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → TendstoUniformlyOn U V atTop K → (∀ z ∈ K, ‖z‖ ≤ r) → (∀ z ∈ K, ‖Q z‖ ≤ Z) → (∀ z ∈ K, ‖V z‖ ≤ N) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P P' : Rn n →L[ℝ] Rn ℓ, |ah k z P P' - A P P'| ≤ c k * (1 + ‖z‖ ^ α) * ‖P‖ * ‖P'‖) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P : Rn n →L[ℝ] Rn ℓ, |Ψ k z P| ≤ d k * ‖z‖ ^ α * ‖P‖) → TendstoUniformlyOn (fun k z => ah k z (U k z) (Q z)) (fun z => A (V z) (Q z)) atTop K ∧ TendstoUniformlyOn (fun k z => Ψ k z (Q z)) (fun _ => (0 : ℝ)) atTop K",
+  "lean_name": "dohr_eb_sch_bu_wel_pairing_tendstoUniformlyOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-d048c5f299-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.chain_symm-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1",
+  "depth": 5,
+  "title": "Chain rule with Schwarz symmetry for the coefficient field DPsi(Du)",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) (= Rn n →L[ℝ] Rn ℓ, operator norm) and Psi : L -> R of class C^2. Let U ⊆ R^n be open and u : R^n -> R^l of class C^2 on U. Then for every e in R^n and every y in U, D(z -> DPsi(Du(z)))(y)e = D^2Psi(Du(y))[Dv_e(y)] in L* = L(L, R), where v_e(z) := Du(z)e = fderiv R u z e and D^2Psi(P)[Q] := fderiv R (fderiv R Psi) P Q.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ∀ (e y : Rn n), y ∈ U → fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) y e = fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y) (fderiv ℝ (fun z => fderiv ℝ u z e) y)",
+  "lean_name": "dohr_eb_ehs_del_chain_symm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-dfc2922dcb-a1"
+}

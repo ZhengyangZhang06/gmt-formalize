@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.wd_props-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1",
+  "depth": 5,
+  "title": "Difference quotients of a locally C^{1,α} map: bound, C^1, derivative formula and Hölder derivative",
+  "statement": "Let n, ℓ be natural numbers, α a real number, U ⊆ ℝ^n open, and v : ℝ^n → ℝ^ℓ with IsLocallyHolderCkα 1 α v U (v is C^1 on U and iteratedFDeriv ℝ 1 v is α-Hölder on every compact subset of U). Let xb, e ∈ ℝ^n and R > 0 with closedBall(xb, 4R) ⊆ U and ‖e‖ ≤ 1. Then there is a real S with the following property. For every real d with d ≠ 0 and |d| < R, write w_d(z) := d⁻¹(v(z + d e) − v(z)) and B := ball(xb, 2R) (open ball). Then (i) ‖w_d(x)‖ ≤ S for x ∈ B; (ii) w_d is C^1 on B; (iii) fderiv ℝ w_d x = d⁻¹(Dv(x + d e) − Dv(x)) for x ∈ B, where Dv = fderiv ℝ v; (iv) there is a real K with ‖Dw_d(x) − Dw_d(y)‖ ≤ K‖x − y‖^α for all x, y ∈ B.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α : ℝ) (U : Set (Rn n)) (v : Rn n → Rn ℓ) (xb e : Rn n) (R : ℝ), IsOpen U → 0 < R → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → IsLocallyHolderCkα 1 α v U → ∃ S : ℝ, ∀ d : ℝ, d ≠ 0 → |d| < R → (∀ x ∈ ball xb (2 * R), ‖d⁻¹ • (v (x + d • e) - v x)‖ ≤ S) ∧ ContDiffOn ℝ 1 (fun z => d⁻¹ • (v (z + d • e) - v z)) (ball xb (2 * R)) ∧ (∀ x ∈ ball xb (2 * R), fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x = d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x)) ∧ ∃ K : ℝ, ∀ x ∈ ball xb (2 * R), ∀ y ∈ ball xb (2 * R), ‖fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x - fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) y‖ ≤ K * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_lhr_dqub_wd_props",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.fderiv_consts-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.dq_mean_value-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.fderiv_consts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.dq_mean_value-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-9019aa5ff6-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.mollify-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "depth": 5,
+  "title": "Mollification of a C^{1,alpha} global weak solution preserves the equation and the Hoelder bound",
+  "statement": "Let n, l be natural numbers, alpha > 0, K >= 0 and eps > 0. Let L := L(R^n, R^l) with the operator norm and let A be a continuous bilinear form on L. Let W : R^n -> R^l be C^1 with ||DW(x) - DW(y)|| <= K |x - y|^alpha for all x, y, and assume that the integral over R^n of A[DW(x)][Dzeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l. Then there is a C^infinity map V : R^n -> R^l such that (i) ||DV(x) - DV(y)|| <= K |x - y|^alpha for all x, y; (ii) ||DV(x) - DW(x)|| <= K eps^alpha for all x; (iii) the integral over R^n of A[DV(x)][Dzeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α K ε : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → 0 ≤ K → 0 < ε → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∃ V : Rn n → Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) V ∧ (∀ x y : Rn n, ‖fderiv ℝ V x - fderiv ℝ V y‖ ≤ K * ‖x - y‖ ^ α) ∧ (∀ x : Rn n, ‖fderiv ℝ V x - fderiv ℝ W x‖ ≤ K * ε ^ α) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0",
+  "lean_name": "dohr_eb_sch_liou_mollify",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-75a198a31d-a1"
+}

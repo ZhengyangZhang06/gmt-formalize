@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1.cutoff-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1",
+  "depth": 5,
+  "title": "Smooth cutoff equal to 1 on B_rho(y), supported in B_{2rho}(y), with gradient at most K/rho",
+  "statement": "There is a real constant K >= 0 such that for every natural number n, every point y in R^n (Rn n = EuclideanSpace R (Fin n)) and every rho > 0 there is a function eta : R^n -> R with: eta is C^1 on R^n; 0 <= eta(x) <= 1 for every x; eta(x) = 1 for every x in the open ball B_rho(y); eta has compact support; the topological support tsupport(eta) is contained in the open ball B_{2 rho}(y); and ||D eta(x)|| <= K / rho for every x in R^n, where D eta(x) = fderiv R eta x and ||.|| is the operator norm.",
+  "lean_statement": "∃ K : ℝ, 0 ≤ K ∧ ∀ (n : ℕ) (y : Rn n) (ρ : ℝ), 0 < ρ → ∃ η : Rn n → ℝ, ContDiff ℝ 1 η ∧ (∀ x, 0 ≤ η x ∧ η x ≤ 1) ∧ (∀ x ∈ ball y ρ, η x = 1) ∧ HasCompactSupport η ∧ tsupport η ⊆ ball y (2 * ρ) ∧ ∀ x, ‖fderiv ℝ η x‖ ≤ K / ρ",
+  "lean_name": "dohr_eb_sch_cacc_exists_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-476d69697f-a1"
+}

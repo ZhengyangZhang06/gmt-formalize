@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.fderiv_consts-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1",
+  "depth": 5,
+  "title": "Sup and Hölder constants for fderiv on a compact set",
+  "statement": "Let E and F be real normed spaces, α a real number, U ⊆ E open, K ⊆ U compact, and g : E → F C^1 on U (ContDiffOn ℝ 1 g U). Assume there is a real C with ‖D^1 g(x) − D^1 g(y)‖ ≤ C‖x − y‖^α for all x, y ∈ K, where D^1 g = iteratedFDeriv ℝ 1 g. Then there are reals S ≥ 0 and H ≥ 0 such that ‖Dg(x)‖ ≤ S for all x ∈ K and ‖Dg(x) − Dg(y)‖ ≤ H‖x − y‖^α for all x, y ∈ K, where Dg = fderiv ℝ g.",
+  "lean_statement": "∀ (E F : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] (α : ℝ) (U K : Set E) (g : E → F), IsOpen U → IsCompact K → K ⊆ U → ContDiffOn ℝ 1 g U → (∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 g x - iteratedFDeriv ℝ 1 g y‖ ≤ C * ‖x - y‖ ^ α) → ∃ S H : ℝ, 0 ≤ S ∧ 0 ≤ H ∧ (∀ x ∈ K, ‖fderiv ℝ g x‖ ≤ S) ∧ ∀ x ∈ K, ∀ y ∈ K, ‖fderiv ℝ g x - fderiv ℝ g y‖ ≤ H * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_lhr_dqub_fderiv_consts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-a39c328641-a1"
+}

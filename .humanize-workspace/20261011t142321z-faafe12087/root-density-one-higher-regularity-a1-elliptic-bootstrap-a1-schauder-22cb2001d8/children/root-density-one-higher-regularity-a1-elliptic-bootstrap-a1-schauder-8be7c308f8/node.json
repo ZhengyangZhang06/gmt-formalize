@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.blowup_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1",
+  "depth": 5,
+  "title": "Blow-up limit: compactness of normalized blow-up sequences for divergence-form systems",
+  "statement": "Let n, l be natural numbers. Notation: L := L(R^n, R^l), the continuous linear maps R^n -> R^l with the operator norm; L* := continuous linear forms on L; Bil := continuous bilinear forms on L, viewed as continuous linear maps L -> L*, written b[P][Q]. B_r(0) is the open and Bbar_r(0) the closed ball; D denotes the Frechet derivative (fderiv); 'C^1_c map' means a C^1 map zeta : R^n -> R^l with compact support; integrals are Bochner integrals for Lebesgue measure. Let alpha > 0, lam, M and K >= 0 be real. Let W_k : R^n -> R^l, ah_k : R^n -> Bil, Psi_k : R^n -> L*, e_k in R^n (k in N) and real sequences R_k, c_k, d_k satisfy: (a) R_k -> +infinity, c_k -> 0, d_k -> 0; (b) for every k, W_k is C^1 on B_{R_k}(0), W_k(0) = 0, DW_k(0) = 0, and ||DW_k(z) - DW_k(z')|| <= K |z - z'|^alpha for all z, z' in B_{R_k}(0); (c) for every k, (z, P, Q) -> ah_k(z)[P][Q] is continuous on B_{R_k}(0) x L x L and Psi_k is continuous on B_{R_k}(0); (d) for all k and P, Q in L: lam ||P||^2 <= ah_k(0)[P][P] and |ah_k(0)[P][Q]| <= M ||P|| ||Q||; (e) for all k, z in B_{R_k}(0) and P, Q in L: |ah_k(z)[P][Q] - ah_k(0)[P][Q]| <= c_k |z|^alpha ||P|| ||Q|| and |Psi_k(z)[Q]| <= d_k |z|^alpha ||Q||; (f) for every k and every C^1_c map zeta with tsupport zeta contained in B_{R_k}(0), the integral over B_{R_k}(0) of ah_k(z)[DW_k(z)][Dzeta(z)] equals the integral over B_{R_k}(0) of Psi_k(z)[Dzeta(z)]; (g) |e_k| <= 1 for every k, and ||DW_k(e_k)|| = 1 for all sufficiently large k. Then there exist A in Bil and W : R^n -> R^l such that lam ||P||^2 <= A[P][P] and |A[P][Q]| <= M ||P|| ||Q|| for all P, Q in L; W is C^1 on R^n; ||DW(z) - DW(z')|| <= K |z - z'|^alpha for all z, z' in R^n; the integral over R^n of A[DW(z)][Dzeta(z)] is 0 for every C^1_c map zeta; DW(0) = 0; and ||DW(e0)|| = 1 for some e0 in R^n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α lam M K : ℝ) (W : ℕ → Rn n → Rn ℓ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : ℕ → Rn n) (R c d : ℕ → ℝ), 0 < α → 0 ≤ K → Tendsto R atTop atTop → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → (∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k))) → (∀ k, W k 0 = 0) → (∀ k, fderiv ℝ (W k) 0 = 0) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k), ‖fderiv ℝ (W k) z - fderiv ℝ (W k) z'‖ ≤ K * ‖z - z'‖ ^ α) → (∀ k, ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) => ah k p.1 p.2.1 p.2.2) (ball (0 : Rn n) (R k) ×ˢ univ)) → (∀ k, ContinuousOn (Ψ k) (ball (0 : Rn n) (R k))) → (∀ k, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ ah k 0 P P) → (∀ k, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |ah k 0 P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ P Q : Rn n →L[ℝ] Rn ℓ, |ah k z P Q - ah k 0 P Q| ≤ c k * ‖z‖ ^ α * ‖P‖ * ‖Q‖) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ Q : Rn n →L[ℝ] Rn ℓ, |Ψ k z Q| ≤ d k * ‖z‖ ^ α * ‖Q‖) → (∀ k, ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) (R k) → ∫ z in ball (0 : Rn n) (R k), ah k z (fderiv ℝ (W k) z) (fderiv ℝ ζ z) = ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z)) → (∀ k, ‖e k‖ ≤ 1) → (∀ᶠ k in atTop, ‖fderiv ℝ (W k) (e k)‖ = 1) → ∃ (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W' : Rn n → Rn ℓ), (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) ∧ (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ M * ‖P‖ * ‖Q‖) ∧ ContDiff ℝ 1 W' ∧ (∀ z z' : Rn n, ‖fderiv ℝ W' z - fderiv ℝ W' z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z, A (fderiv ℝ W' z) (fderiv ℝ ζ z) = 0) ∧ fderiv ℝ W' 0 = 0 ∧ ∃ e₀ : Rn n, ‖fderiv ℝ W' e₀‖ = 1",
+  "lean_name": "dohr_eb_sch_bu_blowup_limit",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.c1_limit-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.c1_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-8be7c308f8-a1"
+}

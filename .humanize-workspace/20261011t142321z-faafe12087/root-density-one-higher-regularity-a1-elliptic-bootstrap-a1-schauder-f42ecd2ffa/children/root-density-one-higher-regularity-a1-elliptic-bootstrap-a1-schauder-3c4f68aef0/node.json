@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1.rescaled_structure-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1",
+  "depth": 5,
+  "title": "Rescaled coefficients on an admissible sub-ball satisfy the structure conditions with the same constants",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, a : R^n -> (continuous bilinear forms on L), Phi : R^n -> (continuous linear forms on L), w : R^n -> R^l, y0 in R^n, and reals rho, alpha, lam, M with rho > 0, |y0| + rho <= 1, alpha >= 0 and M >= 0. Assume, for all x, x' in B_1(0) and P, Q in L: (H1) lam ||P||^2 <= a(x)[P][P]; (H2) |a(x)[P][Q]| <= M ||P|| ||Q||; (H3) |a(x)[P][Q] - a(x')[P][Q]| <= M |x - x'|^alpha ||P|| ||Q||; (H4) |Phi(x)[P] - Phi(x')[P]| <= M |x - x'|^alpha ||P||; (H5) |w(x)| <= M. Then, for all z, z' in B_1(0) and P, Q in L: (i) lam ||P||^2 <= a(y0 + rho z)[P][P]; (ii) |a(y0 + rho z)[P][Q]| <= M ||P|| ||Q||; (iii) |a(y0 + rho z)[P][Q] - a(y0 + rho z')[P][Q]| <= M |z - z'|^alpha ||P|| ||Q||; (iv) |(rho Phi(y0 + rho z))[P] - (rho Phi(y0 + rho z'))[P]| <= M |z - z'|^alpha ||P||; (v) |w(y0 + rho z)| <= M.",
+  "lean_statement": "∀ (n ℓ : ℕ) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ) (y₀ : Rn n) (ρ α lam M : ℝ), 0 < ρ → ‖y₀‖ + ρ ≤ 1 → 0 ≤ α → 0 ≤ M → (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ M) → (∀ z ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a (y₀ + ρ • z) P P) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a (y₀ + ρ • z) P Q| ≤ M * ‖P‖ * ‖Q‖) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a (y₀ + ρ • z) P Q - a (y₀ + ρ • z') P Q| ≤ M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |(ρ • Φ (y₀ + ρ • z)) P - (ρ • Φ (y₀ + ρ • z')) P| ≤ M * ‖z - z'‖ ^ α * ‖P‖) ∧ ∀ z ∈ ball (0 : Rn n) 1, ‖w (y₀ + ρ • z)‖ ≤ M",
+  "lean_name": "dohr_eb_sch_ube_rescaled_structure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-3c4f68aef0-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1.scalar_c1_bounds-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1",
+  "depth": 5,
+  "title": "A C^1 scalar function is bounded and uniformly alpha-Hoelder on a compact convex subset of its open domain",
+  "statement": "Let n be a natural number, alpha a real number with 0 < alpha <= 1, U an open subset of R^n, K a compact convex subset of U, and f : R^n -> R a function that is C^1 on U. Then there is a real S >= 0 such that |f(x)| <= S and |f(x) - f(y)| <= S |x - y|^alpha for all x, y in K.",
+  "lean_statement": "∀ (n : ℕ) (α : ℝ) (U K : Set (Rn n)) (f : Rn n → ℝ), 0 < α → α ≤ 1 → IsOpen U → IsCompact K → Convex ℝ K → K ⊆ U → ContDiffOn ℝ 1 f U → ∃ S : ℝ, 0 ≤ S ∧ ∀ x ∈ K, ∀ y ∈ K, |f x| ≤ S ∧ |f x - f y| ≤ S * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_lhr_cub_scalar_c1_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-8a64e1c142-a1"
+}

@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "det_one_add_smul|exists_mulVec_eq_zero_iff|theorem PosDef.det_pos",
+        "rg -n '^(theorem|lemma).*([Cc]ontDiff.*det|contDiff.*det)' Mathlib/Analysis/Calculus",
+        "rg -n '^(theorem|lemma).*([Cc]ontDiff.*det|[Cc]ontDiff.*fderiv_right|[Cc]ontDiff.*continuous_fderiv|[Cc]ontDiff.*sqrt|HasDerivAt.sqrt|HasDerivAt.clm_apply|Filter.EventuallyEq.deriv_eq|le_opNorm₂|opNorm_le_bound)' Mathlib/Analysis/Calculus Mathlib/Analysis/SpecialFunctions/Sqrt.lean Mathlib/Analysis/Normed/Operator/Basic.lean Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        "rg -n 'dohr_eb_ail_' project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ail-independent-audit-kipkv5me/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Checks/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/ToLinearEquiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-246dc597e4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-246dc597e4/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/ail-independent-audit-kipkv5me/Types.lean",
+        "/tmp/ail-independent-audit-kipkv5me/Availability.lean",
+        "/tmp/ail-independent-audit-kipkv5me/Unavailable.lean",
+        "/tmp/ail-decomp-8LoHju/proj/Checks/EndToEnd.lean"
+      ],
+      "conclusion": "Verified project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and Lean 4.35.0-rc3. The required determinant expansion, kernel criterion, calculus rules, and bilinear norm estimate exist. The determinant-smoothness search found no matching declaration; the supplied Leibniz proof suffices. PosDef and Gram declarations are unavailable under the frozen imports, confirming the IVT alternative. All seven names are bare, distinct, and unreserved in the DAG and other proposals; no prior declaration is reused. Independently generated checks elaborate every exact child type without child implementations and verify the ordinary matrix identity and Gram entries. Recompiling the inspected complete proofs and parent assembly succeeds; every theorem uses only propext, Classical.choice, and Quot.sound. The split is appropriate, all dependencies are acyclic and correctly directed, and every child contributes to the selected parent. Its assembly yields the exact one-half coercivity bound from the Hessian at zero and the uniform perturbation estimate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_det_pos",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches the prose. The quadratic-form identity proves trivial kernel for I+sG when s≥0; determinant nonvanishing and the intermediate value theorem then prove positivity. This is complete, independent, and valid also when n=0. The inline construction uses Matrix.of and the ordinary matrix identity."
+    },
+    {
+      "key": "integrand_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type states exactly global C∞ regularity with the specified operator-norm domain. Smooth evaluation and inner products, the finite Leibniz formula, and positivity from gram_det_pos justify composition with sqrt. The sole dependency is correctly directed; no parent conclusion is assumed."
+    },
+    {
+      "key": "line_second_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include precisely the real normed-space and C² hypotheses needed. C² makes DF differentiable; two chain-rule applications and evaluation at the constant vector give the stated iterated deriv equality. No completeness or finite-dimensionality hypothesis is missing."
+    },
+    {
+      "key": "sqrt_det_second_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition correctly permits every real square matrix. The polynomial expansion gives p(0)=1, p′(0)=0, and p″(0)=2 trace S. Positivity near zero justifies the derivative formula and eventual equality; the quotient rule then gives trace S. No global positivity, symmetry, or circular Hessian computation is assumed."
+    },
+    {
+      "key": "hessian_at_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated diagonal Hessian identity. The proof uses exactly its three declared dependencies: smoothness supplies C², the line lemma identifies the Hessian evaluation, and the scalar determinant lemma computes it. Gram scaling and the trace identity complete the argument without an additional obligation."
+    },
+    {
+      "key": "opnorm_sq_le_hs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the operator-norm comparison for all dimensions. Expansion in the standard basis, finite Cauchy–Schwarz, and opNorm_le_bound establish the unsquared estimate; nonnegativity justifies squaring. Using all vectors also covers a zero-dimensional domain. The differently typed accepted hsNorm theorem is not reused."
+    },
+    {
+      "key": "hessian_local_unif",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes all stated hypotheses and the required uniform quantifiers. C² gives operator-norm continuity of the nested derivative. Choosing ε=r/2 handles the closed-ball condition, and the bilinear operator-norm estimate gives the bound simultaneously for all Q,Q′. The generic construction and its application to the parent's domain compile without additional hypotheses."
+    }
+  ],
+  "required_changes": []
+}
