@@ -359,6 +359,111 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, (2.8)–(2.9): for `W ⊂⊂ U` and `S = X ⌞ A`, `M_W(S) ≤ M_W(X)`.  For an
+admissible `ω`, `S(ω) = ∫_A ⟨ω, v⟩ dμ`.  By regularity of the finite measure `|⟨ω, v⟩| μ` there
+are a closed `F ⊆ A` and an open `G ⊇ A` with `∫_{G \ F} |⟨ω, v⟩| dμ < ε`; a smooth
+`ψ : ℝ^P → [0, 1]` equal to `1` on `F` with support `G` makes `ψ ω` admissible and
+`S(ω) ≤ X(ψ ω) + ε ≤ M_W(X) + ε`. -/
+theorem Submission.ind_pi_ss_restriction_massOn_le : ∀ (P k : ℕ) (U W A : Set (Eucl P)) (X S : GeometricCurrentOn U k), IsOpen U → CompactlyContainedOpen W U → IsRestriction X A S → S.massOn W ≤ X.massOn W := by
+  intro P k U W A X S _ _ hR
+  obtain ⟨hA, μ, v, hrep, hS⟩ := hR
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) k),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  set f : Eucl P → ℝ := fun x => v x ((ω : DifferentialForm (Eucl P) k) x)
+  have hfi : Integrable f μ := (hrep ω).1
+  -- The finite measure `ν = |f| μ`.
+  set ν : Measure (Eucl P) := μ.withDensity (fun x => ‖f x‖ₑ) with hν_def
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity hfi.2.ne
+  refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+  have hε2 : (ε : ℝ≥0∞) / 2 ≠ 0 := by simp [hε.ne']
+  obtain ⟨F, hFA, hFc, hνF⟩ := hA.exists_isClosed_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
+  obtain ⟨G, hAG, hGo, -, hνG⟩ := hA.exists_isOpen_sdiff_lt (μ := ν) (measure_ne_top ν A) hε2
+  obtain ⟨ψ, hψs, hψr, hψsupp, hψ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hGo hFc (hFA.trans hAG)
+  -- The cut-off test form `ψ ω`.
+  have hω_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) :=
+    ω.2.1.1
+  have hω_cpt : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
+  let ω' : TestFormOn U k := ⟨fun x => ψ x • (ω : DifferentialForm (Eucl P) k) x,
+    ⟨hψs.smul hω_smooth, HasCompactSupport.smul_left (f := ψ) hω_cpt⟩,
+    (tsupport_smul_subset_right _ _).trans ω.2.2⟩
+  have hω' : ω' ∈ massAdmissibleOn U k W := by
+    refine ⟨(tsupport_smul_subset_right _ _).trans hω.1, fun x => ?_⟩
+    change covectorEuclideanNorm (ψ x • (ω : DifferentialForm (Eucl P) k) x) ≤ 1
+    have h0 := hψr ⟨x, rfl⟩
+    rw [hsmul, abs_of_nonneg h0.1]
+    calc ψ x * covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x) ≤ 1 * 1 :=
+          mul_le_mul h0.2 (hω.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have hω'f : ∀ x, v x ((ω' : DifferentialForm (Eucl P) k) x) = ψ x * f x := by
+    intro x
+    change v x (ψ x • (ω : DifferentialForm (Eucl P) k) x) = ψ x * f x
+    rw [map_smul, smul_eq_mul]
+  have hψf : Integrable (fun x => ψ x * f x) μ := by
+    simpa only [hω'f] using (hrep ω').1
+  have hXω' : X ω' = ∫ x, ψ x * f x ∂μ := by
+    simpa only [hω'f] using (hrep ω').2
+  have hGF : MeasurableSet (G \ F) := hGo.measurableSet.diff hFc.measurableSet
+  -- Pointwise: `1_A f - ψ f ≤ 1_{G \ F} |f|`.
+  have hpt : ∀ x, A.indicator f x - ψ x * f x ≤ (G \ F).indicator (fun x => |f x|) x := by
+    intro x
+    have h0 := hψr ⟨x, rfl⟩
+    have hnn : 0 ≤ (G \ F).indicator (fun x => |f x|) x :=
+      Set.indicator_nonneg (fun _ _ => abs_nonneg _) x
+    by_cases hxF : x ∈ F
+    · rw [Set.indicator_of_mem (hFA hxF), (hψ1 x).1 hxF, one_mul, sub_self]
+      exact hnn
+    · by_cases hxG : x ∈ G
+      · rw [Set.indicator_of_mem (show x ∈ G \ F from ⟨hxG, hxF⟩)]
+        by_cases hxA : x ∈ A
+        · rw [Set.indicator_of_mem hxA]
+          nlinarith [le_abs_self (f x), abs_nonneg (f x), h0.1, h0.2]
+        · rw [Set.indicator_of_notMem hxA]
+          nlinarith [neg_abs_le (f x), abs_nonneg (f x), h0.1, h0.2]
+      · have hψ0 : ψ x = 0 := by
+          by_contra h
+          exact hxG (hψsupp ▸ (Function.mem_support.mpr h))
+        rw [Set.indicator_of_notMem (fun h => hxG (hAG h)), hψ0, zero_mul, sub_zero]
+        exact hnn
+  have hνGF : ν (G \ F) < ε := by
+    calc ν (G \ F) ≤ ν ((G \ A) ∪ (A \ F)) := measure_mono fun x hx => by
+          by_cases hxA : x ∈ A
+          · exact Or.inr ⟨hxA, hx.2⟩
+          · exact Or.inl ⟨hx.1, hxA⟩
+      _ ≤ ν (G \ A) + ν (A \ F) := measure_union_le _ _
+      _ < (ε : ℝ≥0∞) / 2 + (ε : ℝ≥0∞) / 2 := ENNReal.add_lt_add hνG hνF
+      _ = ε := ENNReal.add_halves _
+  have hint : ∫ x in G \ F, |f x| ∂μ ≤ ε := by
+    have h1 : ∫ x in G \ F, |f x| ∂μ = (ν (G \ F)).toReal := by
+      rw [hν_def, withDensity_apply _ hGF]
+      simp_rw [← Real.norm_eq_abs]
+      exact integral_norm_eq_lintegral_enorm hfi.aestronglyMeasurable.restrict
+    rw [h1]
+    simpa using ENNReal.toReal_mono ENNReal.coe_ne_top hνGF.le
+  have hest : S ω ≤ X ω' + ε := by
+    have hdiff : S ω - X ω' = ∫ x, (A.indicator f x - ψ x * f x) ∂μ := by
+      rw [hS ω, hXω', integral_sub (hfi.indicator hA) hψf, integral_indicator hA]
+    have hle : ∫ x, (A.indicator f x - ψ x * f x) ∂μ ≤
+        ∫ x, (G \ F).indicator (fun x => |f x|) x ∂μ :=
+      integral_mono ((hfi.indicator hA).sub hψf) (hfi.abs.indicator hGF) hpt
+    rw [integral_indicator hGF] at hle
+    linarith
+  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal (X ω' + ε) := ENNReal.ofReal_le_ofReal hest
+    _ ≤ ENNReal.ofReal (X ω') + ENNReal.ofReal ε := ENNReal.ofReal_add_le
+    _ = ENNReal.ofReal (X ω') + ε := by rw [ENNReal.ofReal_coe_nnreal]
+    _ ≤ X.massOn W + ε := by gcongr; exact X.le_massOn hω'
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

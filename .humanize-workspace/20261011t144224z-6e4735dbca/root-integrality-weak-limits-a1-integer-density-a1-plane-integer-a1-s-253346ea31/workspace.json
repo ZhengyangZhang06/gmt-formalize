@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1",
+      "key": "cycle_slice_boundary",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "diff GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical)",
+              "python3 scan of dag.json (572 nodes): frozen types/status of ind_pi_good_slice_selection, iwl_restriction_theory, iwl_restriction_weak_limit; all lean_statements containing IsSlice, IsRestriction+massOn, ∫⁻+StrictMono/Countable; lean_names matching slice|fatou|liminf|restrict.*mass|cycle; collision check for ind_pi_ss_*",
+              "git show <accepted restriction-limit branch>:GMT/Ch06/Submission.lean | grep Submission.iwl_restriction_theory (how accepted declarations are reused)",
+              "grep -n 'structure GeometricCurrentOn|instance.*Zero|GeometricCurrentOn.ext|zero_apply|def massOn|NVector' simongmt Chapter06/{Currents,Mass,FormsDuality}.lean",
+              "rg in snapshot mathlib: lintegral_liminf_le, Measurable.liminf, liminf_le_of_frequently_le', ae_lt_top, Set.Countable.measure_zero, measure_eq_zero_iff_ae_notMem, ae_restrict_of_ae, ae_restrict_mem, Measure.restrict_eq_zero, Real.volume_Ioo, ae_neBot, Filter.Eventually.exists, extraction_of_frequently_atTop, frequently_lt_of_liminf_lt, norm_fderiv_le_of_lipschitz, integrable_zero_measure, mul_le_mul_right, ENNReal.lt_add_right, LipschitzWith.lipschitzOnWith, isOpen_lt, StrictMono.tendsto_atTop",
+              "grep -n '8.2|selection argument|4.5(1)|6.7(2)' book/chapter-06.txt; sed -n 1225,1260p and 2405,2450p book/chapter-06.txt; sed -n 1505,1575p book/chapter-02.txt",
+              "verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements",
+              "lake env lean /tmp/ssel-decomp/Stmts.lean; lake env lean /tmp/ssel-decomp/Asm.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/ssel-decomp/Stmts.lean",
+              "/tmp/ssel-decomp/Asm.lean"
+            ],
+            "conclusion": "Snapshot pins project d8d46c95 and Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nAccepted declarations that children may use:\n- Submission.iwl_restriction_theory (accepted): (R0) a measure representation gives finite mass; (R1) restrictions are unique; (R2) existence of a mass measure, restrictions to measurable sets, and the formula M_W(S) = μ(W ∩ A). Accepted branches embed it as `theorem Submission.iwl_restriction_theory` in Submission.lean.\n- Its frozen type and RWL's frozen type (iwl_restriction_weak_limit, accepted) are byte-identical to the strings used in the checks.\n\nSimonGMT supplies:\n- GeometricCurrentOn.ext and the Zero instance with zero_apply (Currents.lean:305–319);\n- massOn as the sSup of ofReal (T ω) over admissible forms, so M_V(0) = 0 (Mass.lean).\n\nAll Mathlib lemmas cited in the child proofs exist in the snapshot, for example:\n- lintegral_liminf_le (Lebesgue/Add.lean:233), Measurable.liminf (BorelSpace/Order.lean:1058), ae_lt_top (Markov.lean:159);\n- Set.Countable.measure_zero (NullSingletonClass.lean:58), Real.volume_Ioo (Lebesgue/Basic.lean:96), ae_neBot (Measure/Filter.lean:44);\n- extraction_of_frequently_atTop (AtTopBot/Basic.lean:114), frequently_lt_of_liminf_lt (generated by to_dual at LiminfLimsup.lean:645);\n- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), integrable_zero_measure (Integrable.lean:283), mul_le_mul_right (Monoid/Unbundled/Basic.lean:58; the old mul_le_mul_left' is not present).\n\nDAG: no node is named ind_pi_ss_*, and no node has a type equivalent to any child. The closest are slicing_mass_bound, smr_restriction_massOn_eq and iwl_rl_monotone_helly_selection, none of them equivalent.\n\nBook: the printed Proof of 8.2 (chapter-06.txt ~2424–2435) obtains display (8) 'by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2' (chapter-02.txt ~1540–1565). The supplied Steps 6–8 are its Fatou form.\n\nLean checks in the exact comparator scope:\n- all four child statements and the parent elaborate;\n- assembly_parent (the parent from the three direct children), assembly_B, leaf_C, leaf_B1 and leaf_A all compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+        "child_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1",
+        "subproblem": {
+          "key": "cycle_slice_boundary",
+          "title": "A slice of a cycle is the boundary of the corresponding restriction",
+          "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P open, T ∈ D_{m+1}(U) with ∂T = 0, f : ℝ^P → ℝ, t ∈ ℝ, and S ∈ D_m(U) with IsSlice T f t S (S = ∂(T ⌞ {f < t}) − (∂T) ⌞ {f < t}, with the sets taken inside U). Then there is A ∈ D_{m+1}(U) such that A is a restriction of T to {x ∈ U : f(x) < t} (IsRestriction T {x ∈ U : f(x) < t} A) and ∂A = S.",
+          "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (t : ℝ) (S : GeometricCurrentOn U m), IsOpen U → T.boundary = 0 → IsSlice T f t S → ∃ A : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ f x < t} A ∧ A.boundary = S",
+          "lean_name": "ind_pi_ss_cycle_slice_boundary",
+          "depends_on": [],
+          "natural_proof": "Source: Step 3 of the parent proof (Simon Ch. 6, (4.6) with ∂T = 0).\n\nConventions. (R1) is the second conjunct of the comparator-accepted declaration Submission.iwl_restriction_theory: if U is open, then any two restrictions (IsRestriction) of the same current X ∈ D_k(U) to the same set are equal. Write A_t := {x ∈ U : f(x) < t}.\n\n1. Unfold IsSlice T f t S. There are A ∈ D_{m+1}(U) and B ∈ D_m(U) such that:\n (a) IsRestriction T A_t A;\n (b) IsRestriction ∂T A_t B;\n (c) S(ω) = ∂A(ω) − B(ω) for every ω ∈ D^m(U).\n2. The zero current 0 ∈ D_m(U) is a restriction of ∂T to A_t:\n (i) A_t is measurable, by the first component of (b).\n (ii) Take the zero measure μ := 0 and v := 0 : ℝ^P → Λ_m(ℝ^P). Then IsMeasureRepresentation ∂T 0 0 holds. For each test form ω, the function x ↦ 0(ω(x)) is integrable with respect to the zero measure, since every function is (integrable_zero_measure). Moreover ∂T(ω) = 0, because ∂T = 0 and the zero current vanishes on every form (GeometricCurrentOn.zero_apply), and ∫ 0(ω(x)) d0(x) = 0, an integral against the zero measure.\n (iii) For each ω, 0(ω) = 0 = ∫_{A_t} 0(ω(x)) d0(x).\n3. Apply (R1) to U (open), the current ∂T ∈ D_m(U), the set A_t and its two restrictions B (from (b)) and 0 (from step 2). This gives B = 0.\n4. For every ω ∈ D^m(U), (c) and step 3 give S(ω) = ∂A(ω) − 0(ω) = ∂A(ω) − 0 = ∂A(ω). By extensionality of currents (GeometricCurrentOn.ext), ∂A = S.\n5. By (a), A is a restriction of T to A_t = {x ∈ U : f(x) < t}, and ∂A = S by step 4. Hence A is the required current. ∎",
+          "proof_key_steps": [
+            "Unfold IsSlice: there are restrictions A of T and B of ∂T to A_t = {x ∈ U : f(x) < t} with S = ∂A − B.",
+            "0 is a restriction of ∂T = 0 to A_t: A_t is measurable (from B's restriction); use μ := 0, v := 0.",
+            "Uniqueness (R1) of Submission.iwl_restriction_theory gives B = 0.",
+            "Hence S(ω) = ∂A(ω) for all ω, and ∂A = S by GeometricCurrentOn.ext."
+          ]
+        },
+        "audit": {
+          "key": "cycle_slice_boundary",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and Lean type match, including arbitrary f. IsSlice supplies measurability of the sublevel set; the zero-measure representation constructs the zero restriction. Accepted uniqueness removes the boundary restriction, and current extensionality proves A.boundary = S. No additional regularity hypothesis or circular reliance is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.fatou_level_selection-a1",
+      "key": "fatou_level_selection",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "diff GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical)",
+              "python3 scan of dag.json (572 nodes): frozen types/status of ind_pi_good_slice_selection, iwl_restriction_theory, iwl_restriction_weak_limit; all lean_statements containing IsSlice, IsRestriction+massOn, ∫⁻+StrictMono/Countable; lean_names matching slice|fatou|liminf|restrict.*mass|cycle; collision check for ind_pi_ss_*",
+              "git show <accepted restriction-limit branch>:GMT/Ch06/Submission.lean | grep Submission.iwl_restriction_theory (how accepted declarations are reused)",
+              "grep -n 'structure GeometricCurrentOn|instance.*Zero|GeometricCurrentOn.ext|zero_apply|def massOn|NVector' simongmt Chapter06/{Currents,Mass,FormsDuality}.lean",
+              "rg in snapshot mathlib: lintegral_liminf_le, Measurable.liminf, liminf_le_of_frequently_le', ae_lt_top, Set.Countable.measure_zero, measure_eq_zero_iff_ae_notMem, ae_restrict_of_ae, ae_restrict_mem, Measure.restrict_eq_zero, Real.volume_Ioo, ae_neBot, Filter.Eventually.exists, extraction_of_frequently_atTop, frequently_lt_of_liminf_lt, norm_fderiv_le_of_lipschitz, integrable_zero_measure, mul_le_mul_right, ENNReal.lt_add_right, LipschitzWith.lipschitzOnWith, isOpen_lt, StrictMono.tendsto_atTop",
+              "grep -n '8.2|selection argument|4.5(1)|6.7(2)' book/chapter-06.txt; sed -n 1225,1260p and 2405,2450p book/chapter-06.txt; sed -n 1505,1575p book/chapter-02.txt",
+              "verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements",
+              "lake env lean /tmp/ssel-decomp/Stmts.lean; lake env lean /tmp/ssel-decomp/Asm.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/ssel-decomp/Stmts.lean",
+              "/tmp/ssel-decomp/Asm.lean"
+            ],
+            "conclusion": "Snapshot pins project d8d46c95 and Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nAccepted declarations that children may use:\n- Submission.iwl_restriction_theory (accepted): (R0) a measure representation gives finite mass; (R1) restrictions are unique; (R2) existence of a mass measure, restrictions to measurable sets, and the formula M_W(S) = μ(W ∩ A). Accepted branches embed it as `theorem Submission.iwl_restriction_theory` in Submission.lean.\n- Its frozen type and RWL's frozen type (iwl_restriction_weak_limit, accepted) are byte-identical to the strings used in the checks.\n\nSimonGMT supplies:\n- GeometricCurrentOn.ext and the Zero instance with zero_apply (Currents.lean:305–319);\n- massOn as the sSup of ofReal (T ω) over admissible forms, so M_V(0) = 0 (Mass.lean).\n\nAll Mathlib lemmas cited in the child proofs exist in the snapshot, for example:\n- lintegral_liminf_le (Lebesgue/Add.lean:233), Measurable.liminf (BorelSpace/Order.lean:1058), ae_lt_top (Markov.lean:159);\n- Set.Countable.measure_zero (NullSingletonClass.lean:58), Real.volume_Ioo (Lebesgue/Basic.lean:96), ae_neBot (Measure/Filter.lean:44);\n- extraction_of_frequently_atTop (AtTopBot/Basic.lean:114), frequently_lt_of_liminf_lt (generated by to_dual at LiminfLimsup.lean:645);\n- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), integrable_zero_measure (Integrable.lean:283), mul_le_mul_right (Monoid/Unbundled/Basic.lean:58; the old mul_le_mul_left' is not present).\n\nDAG: no node is named ind_pi_ss_*, and no node has a type equivalent to any child. The closest are slicing_mass_bound, smr_restriction_massOn_eq and iwl_rl_monotone_helly_selection, none of them equivalent.\n\nBook: the printed Proof of 8.2 (chapter-06.txt ~2424–2435) obtains display (8) 'by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2' (chapter-02.txt ~1540–1565). The supplied Steps 6–8 are its Fatou form.\n\nLean checks in the exact comparator scope:\n- all four child statements and the parent elaborate;\n- assembly_parent (the parent from the three direct children), assembly_B, leaf_C, leaf_B1 and leaf_A all compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+        "child_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.fatou_level_selection-a1",
+        "subproblem": {
+          "key": "fatou_level_selection",
+          "title": "Fatou selection of a good level and a bounded subsequence",
+          "statement": "Let g_k : ℝ → [0, ∞] (k ∈ ℕ) be measurable functions, a < b real numbers, C ∈ [0, ∞] with C < ∞ and ∫⁻_{(a,b)} g_k(t) dt ≤ C for every k, and E ⊆ ℝ countable. Then there are γ ∈ (a, b) with γ ∉ E, a strictly increasing σ : ℕ → ℕ and G ∈ [0, ∞] with G < ∞ such that g_{σ(k)}(γ) ≤ G for every k.",
+          "lean_statement": "∀ (g : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (C : ℝ≥0∞) (E : Set ℝ), a < b → (∀ k, Measurable (g k)) → C < ∞ → (∀ k, ∫⁻ t in Ioo a b, g k t ≤ C) → E.Countable → ∃ (γ : ℝ) (σ : ℕ → ℕ) (G : ℝ≥0∞), γ ∈ Ioo a b ∧ γ ∉ E ∧ StrictMono σ ∧ G < ∞ ∧ ∀ k, g (σ k) γ ≤ G",
+          "lean_name": "ind_pi_ss_fatou_level_selection",
+          "depends_on": [],
+          "natural_proof": "Source: Steps 6, 7 and 8 of the parent proof. This is the Fatou-lemma form of the selection argument cited in the printed proof of 8.2: “by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2”.\n\nWrite λ := volume⌞(a,b) for Lebesgue measure restricted to the open interval (a, b), so that ∫⁻_{(a,b)} h = ∫⁻ h dλ.\n\n1. Define F(t) := liminf_{k→∞} g_k(t) ∈ [0, ∞] for t ∈ ℝ. F is measurable, being the liminf of a sequence of measurable [0, ∞]-valued functions (Measurable.liminf).\n2. Fatou's lemma (lintegral_liminf_le, for the measure λ and the measurable g_k) gives ∫⁻ F dλ ≤ liminf_k ∫⁻ g_k dλ. Since ∫⁻ g_k dλ ≤ C for every k, and so in particular frequently, liminf_k ∫⁻ g_k dλ ≤ C (liminf_le_of_frequently_le'). Hence ∫⁻ F dλ ≤ C < ∞.\n3. F is measurable and ∫⁻ F dλ ≠ ∞, so F(t) < ∞ for λ-a.e. t (ae_lt_top).\n4. E is countable and Lebesgue measure on ℝ has no atoms, so volume(E) = 0 (Set.Countable.measure_zero). Equivalently, t ∉ E for volume-a.e. t (measure_eq_zero_iff_ae_notMem), and hence also for λ-a.e. t (ae_restrict_of_ae).\n5. (a, b) is measurable, so λ-a.e. t lies in (a, b) (ae_restrict_mem).\n6. λ ≠ 0. Indeed, λ = 0 would mean volume((a, b)) = 0 (Measure.restrict_eq_zero), but volume((a, b)) = ofReal(b − a) > 0 because a < b (Real.volume_Ioo). Therefore the a.e. filter of λ is nontrivial (ae_neBot). The conjunction of the properties in steps 3, 4 and 5 holds λ-a.e., so it holds at some point (Filter.Eventually.exists): there is γ with F(γ) < ∞, γ ∉ E and γ ∈ (a, b).\n7. Put G := F(γ) + 1. Then G < ∞, as a sum of two finite elements of [0, ∞] (ENNReal.add_lt_top). Also F(γ) < G (ENNReal.lt_add_right, since F(γ) ≠ ∞ and 1 ≠ 0).\n8. liminf_k g_k(γ) = F(γ) < G, so g_k(γ) < G holds for infinitely many k, i.e. frequently along atTop (Filter.frequently_lt_of_liminf_lt). Its coboundedness side condition holds automatically in the complete lattice [0, ∞].\n9. By extraction_of_frequently_atTop, there is a strictly increasing σ : ℕ → ℕ with g_{σ(k)}(γ) < G for every k, and in particular g_{σ(k)}(γ) ≤ G.\n10. Thus γ ∈ (a, b), γ ∉ E, σ is strictly increasing, G < ∞, and g_{σ(k)}(γ) ≤ G for all k, as claimed. ∎",
+          "proof_key_steps": [
+            "F := liminf_k g_k is measurable, and Fatou's lemma gives ∫⁻_{(a,b)} F ≤ C < ∞.",
+            "F < ∞ a.e. on (a, b); the countable set E is Lebesgue-null; a.e. t (for volume⌞(a,b)) lies in (a, b).",
+            "volume((a, b)) > 0 makes the a.e. filter nontrivial, so pick γ ∈ (a, b) ∖ E with F(γ) < ∞.",
+            "With G := F(γ) + 1, g_k(γ) < G holds frequently; extract a strictly increasing σ with g_{σ(k)}(γ) ≤ G."
+          ]
+        },
+        "audit": {
+          "key": "fatou_level_selection",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and Lean type match. Fatou yields an almost-everywhere finite liminf; countable nullity and positive interval measure supply a level outside E. The finite bound F(γ)+1 gives frequent bounded values and a strictly increasing subsequence. All side conditions are justified, and the proof is complete independently of currents and the parent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.restriction_mass_le-a1",
+      "key": "restriction_mass_le",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "diff GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical)",
+              "python3 scan of dag.json (572 nodes): frozen types/status of ind_pi_good_slice_selection, iwl_restriction_theory, iwl_restriction_weak_limit; all lean_statements containing IsSlice, IsRestriction+massOn, ∫⁻+StrictMono/Countable; lean_names matching slice|fatou|liminf|restrict.*mass|cycle; collision check for ind_pi_ss_*",
+              "git show <accepted restriction-limit branch>:GMT/Ch06/Submission.lean | grep Submission.iwl_restriction_theory (how accepted declarations are reused)",
+              "grep -n 'structure GeometricCurrentOn|instance.*Zero|GeometricCurrentOn.ext|zero_apply|def massOn|NVector' simongmt Chapter06/{Currents,Mass,FormsDuality}.lean",
+              "rg in snapshot mathlib: lintegral_liminf_le, Measurable.liminf, liminf_le_of_frequently_le', ae_lt_top, Set.Countable.measure_zero, measure_eq_zero_iff_ae_notMem, ae_restrict_of_ae, ae_restrict_mem, Measure.restrict_eq_zero, Real.volume_Ioo, ae_neBot, Filter.Eventually.exists, extraction_of_frequently_atTop, frequently_lt_of_liminf_lt, norm_fderiv_le_of_lipschitz, integrable_zero_measure, mul_le_mul_right, ENNReal.lt_add_right, LipschitzWith.lipschitzOnWith, isOpen_lt, StrictMono.tendsto_atTop",
+              "grep -n '8.2|selection argument|4.5(1)|6.7(2)' book/chapter-06.txt; sed -n 1225,1260p and 2405,2450p book/chapter-06.txt; sed -n 1505,1575p book/chapter-02.txt",
+              "verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements",
+              "lake env lean /tmp/ssel-decomp/Stmts.lean; lake env lean /tmp/ssel-decomp/Asm.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/ssel-decomp/Stmts.lean",
+              "/tmp/ssel-decomp/Asm.lean"
+            ],
+            "conclusion": "Snapshot pins project d8d46c95 and Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nAccepted declarations that children may use:\n- Submission.iwl_restriction_theory (accepted): (R0) a measure representation gives finite mass; (R1) restrictions are unique; (R2) existence of a mass measure, restrictions to measurable sets, and the formula M_W(S) = μ(W ∩ A). Accepted branches embed it as `theorem Submission.iwl_restriction_theory` in Submission.lean.\n- Its frozen type and RWL's frozen type (iwl_restriction_weak_limit, accepted) are byte-identical to the strings used in the checks.\n\nSimonGMT supplies:\n- GeometricCurrentOn.ext and the Zero instance with zero_apply (Currents.lean:305–319);\n- massOn as the sSup of ofReal (T ω) over admissible forms, so M_V(0) = 0 (Mass.lean).\n\nAll Mathlib lemmas cited in the child proofs exist in the snapshot, for example:\n- lintegral_liminf_le (Lebesgue/Add.lean:233), Measurable.liminf (BorelSpace/Order.lean:1058), ae_lt_top (Markov.lean:159);\n- Set.Countable.measure_zero (NullSingletonClass.lean:58), Real.volume_Ioo (Lebesgue/Basic.lean:96), ae_neBot (Measure/Filter.lean:44);\n- extraction_of_frequently_atTop (AtTopBot/Basic.lean:114), frequently_lt_of_liminf_lt (generated by to_dual at LiminfLimsup.lean:645);\n- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), integrable_zero_measure (Integrable.lean:283), mul_le_mul_right (Monoid/Unbundled/Basic.lean:58; the old mul_le_mul_left' is not present).\n\nDAG: no node is named ind_pi_ss_*, and no node has a type equivalent to any child. The closest are slicing_mass_bound, smr_restriction_massOn_eq and iwl_rl_monotone_helly_selection, none of them equivalent.\n\nBook: the printed Proof of 8.2 (chapter-06.txt ~2424–2435) obtains display (8) 'by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2' (chapter-02.txt ~1540–1565). The supplied Steps 6–8 are its Fatou form.\n\nLean checks in the exact comparator scope:\n- all four child statements and the parent elaborate;\n- assembly_parent (the parent from the three direct children), assembly_B, leaf_C, leaf_B1 and leaf_A all compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+        "child_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.restriction_mass_le-a1",
+        "subproblem": {
+          "key": "restriction_mass_le",
+          "title": "Mass of a restriction is at most the mass of the current on W ⊂⊂ U",
+          "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P open, W ⊂⊂ U (CompactlyContainedOpen W U: W open, closure W compact, closure W ⊆ U), A ⊆ ℝ^P, and X, S ∈ D_k(U) such that S is a restriction of X to A (IsRestriction X A S). Then M_W(S) ≤ M_W(X).",
+          "lean_statement": "∀ (P k : ℕ) (U W A : Set (Eucl P)) (X S : GeometricCurrentOn U k), IsOpen U → CompactlyContainedOpen W U → IsRestriction X A S → S.massOn W ≤ X.massOn W",
+          "lean_name": "ind_pi_ss_restriction_massOn_le",
+          "depends_on": [],
+          "natural_proof": "Source: Step 1, display (∗), of the parent proof (Simon Ch. 6, (2.8)–(2.9): M_W(T ⌞ A) = μ_T(W ∩ A) ≤ μ_T(W) = M_W(T)).\n\nConventions. (R0) and (R2) denote the first and third conjuncts of the comparator-accepted declaration Submission.iwl_restriction_theory (its frozen type is byte-identical in dag.json):\n- (R0) if X ∈ D_k(U), U open, has a measure representation (IsMeasureRepresentation X μ v), then M_V(X) < ∞ for every V with CompactlyContainedOpen V U;\n- (R2) if U is open and M_V(X) < ∞ for every V ⊂⊂ U, then there is a measure μ with IsMassMeasure X μ such that X has a restriction to every measurable set and every restriction S′ of X to any set A′ satisfies M_{W′}(S′) = μ(W′ ∩ A′) for every open W′ ⊆ U.\n\n1. Unfold IsRestriction X A S. A is measurable, and there are a measure μ and v : ℝ^P → Λ_k(ℝ^P) with IsMeasureRepresentation X μ v (and S(ω) = ∫_A ⟨ω, v⟩ dμ for every test form ω). Keep the hypothesis IsRestriction X A S itself for step 4.\n2. By (R0), applied to U (open), X, μ and v: M_V(X) < ∞ for every V with CompactlyContainedOpen V U.\n3. By (R2), applied to U and X (whose local masses are finite by step 2), there is a measure μ_X such that:\n - IsMassMeasure X μ_X holds, i.e. μ_X(U^c) = 0 and μ_X(V) = M_V(X) for every V ⊂⊂ U;\n - M_{W′}(S′) = μ_X(W′ ∩ A′) for every restriction S′ of X to a set A′ and every open W′ ⊆ U.\n4. W is open (first component of CompactlyContainedOpen W U), and W ⊆ closure W ⊆ U (subset_closure and the third component). Applying the formula of step 3 to S′ := S, A′ := A and W′ := W gives M_W(S) = μ_X(W ∩ A).\n5. W ∩ A ⊆ W, so μ_X(W ∩ A) ≤ μ_X(W) by monotonicity of measures (measure_mono). Also μ_X(W) = M_W(X) by the second component of IsMassMeasure X μ_X applied to W, since W ⊂⊂ U.\n6. Combining steps 4 and 5: M_W(S) = μ_X(W ∩ A) ≤ μ_X(W) = M_W(X). ∎",
+          "proof_key_steps": [
+            "Unpack IsRestriction X A S to obtain a measure representation (μ, v) of X.",
+            "(R0) of Submission.iwl_restriction_theory: X has finite mass on every V ⊂⊂ U.",
+            "(R2): mass measure μ_X of X with M_{W′}(S′) = μ_X(W′ ∩ A′) for every restriction S′ of X to A′ and every open W′ ⊆ U.",
+            "W is open and W ⊆ U, so M_W(S) = μ_X(W ∩ A).",
+            "μ_X(W ∩ A) ≤ μ_X(W) = M_W(X), by monotonicity and IsMassMeasure (W ⊂⊂ U)."
+          ]
+        },
+        "audit": {
+          "key": "restriction_mass_le",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and Lean type match. IsRestriction supplies the measure representation needed for accepted R0, so local finite mass is derived without an omitted hypothesis. R2, compact containment and measure monotonicity then prove the exact inequality. The proof is complete and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_family-a1",
+      "key": "cycle_slice_family",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "diff GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical)",
+              "python3 scan of dag.json (572 nodes): frozen types/status of ind_pi_good_slice_selection, iwl_restriction_theory, iwl_restriction_weak_limit; all lean_statements containing IsSlice, IsRestriction+massOn, ∫⁻+StrictMono/Countable; lean_names matching slice|fatou|liminf|restrict.*mass|cycle; collision check for ind_pi_ss_*",
+              "git show <accepted restriction-limit branch>:GMT/Ch06/Submission.lean | grep Submission.iwl_restriction_theory (how accepted declarations are reused)",
+              "grep -n 'structure GeometricCurrentOn|instance.*Zero|GeometricCurrentOn.ext|zero_apply|def massOn|NVector' simongmt Chapter06/{Currents,Mass,FormsDuality}.lean",
+              "rg in snapshot mathlib: lintegral_liminf_le, Measurable.liminf, liminf_le_of_frequently_le', ae_lt_top, Set.Countable.measure_zero, measure_eq_zero_iff_ae_notMem, ae_restrict_of_ae, ae_restrict_mem, Measure.restrict_eq_zero, Real.volume_Ioo, ae_neBot, Filter.Eventually.exists, extraction_of_frequently_atTop, frequently_lt_of_liminf_lt, norm_fderiv_le_of_lipschitz, integrable_zero_measure, mul_le_mul_right, ENNReal.lt_add_right, LipschitzWith.lipschitzOnWith, isOpen_lt, StrictMono.tendsto_atTop",
+              "grep -n '8.2|selection argument|4.5(1)|6.7(2)' book/chapter-06.txt; sed -n 1225,1260p and 2405,2450p book/chapter-06.txt; sed -n 1505,1575p book/chapter-02.txt",
+              "verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements",
+              "lake env lean /tmp/ssel-decomp/Stmts.lean; lake env lean /tmp/ssel-decomp/Asm.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/ssel-decomp/Stmts.lean",
+              "/tmp/ssel-decomp/Asm.lean"
+            ],
+            "conclusion": "Snapshot pins project d8d46c95 and Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nAccepted declarations that children may use:\n- Submission.iwl_restriction_theory (accepted): (R0) a measure representation gives finite mass; (R1) restrictions are unique; (R2) existence of a mass measure, restrictions to measurable sets, and the formula M_W(S) = μ(W ∩ A). Accepted branches embed it as `theorem Submission.iwl_restriction_theory` in Submission.lean.\n- Its frozen type and RWL's frozen type (iwl_restriction_weak_limit, accepted) are byte-identical to the strings used in the checks.\n\nSimonGMT supplies:\n- GeometricCurrentOn.ext and the Zero instance with zero_apply (Currents.lean:305–319);\n- massOn as the sSup of ofReal (T ω) over admissible forms, so M_V(0) = 0 (Mass.lean).\n\nAll Mathlib lemmas cited in the child proofs exist in the snapshot, for example:\n- lintegral_liminf_le (Lebesgue/Add.lean:233), Measurable.liminf (BorelSpace/Order.lean:1058), ae_lt_top (Markov.lean:159);\n- Set.Countable.measure_zero (NullSingletonClass.lean:58), Real.volume_Ioo (Lebesgue/Basic.lean:96), ae_neBot (Measure/Filter.lean:44);\n- extraction_of_frequently_atTop (AtTopBot/Basic.lean:114), frequently_lt_of_liminf_lt (generated by to_dual at LiminfLimsup.lean:645);\n- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), integrable_zero_measure (Integrable.lean:283), mul_le_mul_right (Monoid/Unbundled/Basic.lean:58; the old mul_le_mul_left' is not present).\n\nDAG: no node is named ind_pi_ss_*, and no node has a type equivalent to any child. The closest are slicing_mass_bound, smr_restriction_massOn_eq and iwl_rl_monotone_helly_selection, none of them equivalent.\n\nBook: the printed Proof of 8.2 (chapter-06.txt ~2424–2435) obtains display (8) 'by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2' (chapter-02.txt ~1540–1565). The supplied Steps 6–8 are its Fatou form.\n\nLean checks in the exact comparator scope:\n- all four child statements and the parent elaborate;\n- assembly_parent (the parent from the three direct children), assembly_B, leaf_C, leaf_B1 and leaf_A all compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+        "child_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_family-a1",
+        "subproblem": {
+          "key": "cycle_slice_family",
+          "title": "Restrictions of a cycle to sublevel sets with an integrable boundary-mass bound",
+          "statement": "Assume SlicingTheorem. Let P, m ∈ ℕ, U ⊆ ℝ^P open, W ⊂⊂ U (CompactlyContainedOpen W U), and X ∈ D_{m+1}(U) with ∂X = 0 and M_V(X) < ∞ for every V ⊂⊂ U. Let d : ℝ^P → ℝ be L-Lipschitz (L ∈ ℝ≥0) and a < b. Then there are currents A_t ∈ D_{m+1}(U) (t ∈ ℝ) and a measurable g : ℝ → [0, ∞] such that: (i) for every t, A_t is a restriction of X to {x ∈ U : d(x) < t}; (ii) M_W(∂A_t) ≤ g(t) for every t ∈ (a, b); (iii) ∫⁻_{(a,b)} g(t) dt ≤ L · M_W(X).",
+          "lean_statement": "SlicingTheorem → ∀ (P m : ℕ) (U W : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ), IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b → X.boundary = 0 → (∀ V, CompactlyContainedOpen V U → X.massOn V < ∞) → ∃ (A : ℝ → GeometricCurrentOn U (m + 1)) (g : ℝ → ℝ≥0∞), Measurable g ∧ (∀ t, IsRestriction X {x | x ∈ U ∧ d x < t} (A t)) ∧ (∀ t ∈ Ioo a b, (A t).boundary.massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * X.massOn W",
+          "lean_name": "ind_pi_ss_cycle_slice_family",
+          "depends_on": [
+            "cycle_slice_boundary",
+            "restriction_mass_le"
+          ],
+          "natural_proof": "Source: Steps 2, 3 and 4 of the parent proof for a single cycle X (Simon Ch. 6, 4.5(1)–(2), 4.6, 4.10).\n\nConventions. (R2) is the third conjunct of the comparator-accepted declaration Submission.iwl_restriction_theory: if U is open and M_V(X) < ∞ for every V ⊂⊂ U, then there is a measure μ with IsMassMeasure X μ such that X has a restriction to every measurable set (the accompanying mass formula is not needed here). The sibling lemmas are:\n- cycle_slice_boundary (Submission.ind_pi_ss_cycle_slice_boundary);\n- restriction_mass_le (Submission.ind_pi_ss_restriction_massOn_le).\nFor t ∈ ℝ put A_t := {x ∈ U : d(x) < t}.\n\n1. Preliminaries.\n - W is open, and W ⊆ closure W ⊆ U (components of CompactlyContainedOpen W U).\n - d is continuous (LipschitzWith.continuous) and L-Lipschitz on U (LipschitzWith.lipschitzOnWith).\n2. The zero current has zero mass. For every set V, M_V(0) = 0. By definition, M_V(0) is the supremum of ofReal(0(ω)) over the mass-admissible forms ω. Since 0(ω) = 0 (GeometricCurrentOn.zero_apply), every such value is ofReal 0 = 0. Hence M_V(0) ≤ 0 (sSup_le), and M_V(0) = 0.\n3. Slicing.\n - For every V ⊂⊂ U, M_V(X) < ∞ by hypothesis, and M_V(∂X) = M_V(0) = 0 < ∞ by ∂X = 0 and step 2.\n - So the hypothesis of SlicingTheorem holds for T := X on U, with f := d and the constant L of step 1.\n - SlicingTheorem gives S : ℝ → D_m(U) with IsSlice X d t S_t for every t ∈ ℝ, together with its mass clause (used in step 6).\n4. Slices are boundaries.\n - Fix t. Apply the sibling lemma cycle_slice_boundary to U (open), T := X (∂X = 0), f := d, t and S := S_t (IsSlice X d t S_t). It gives a current A′ with IsRestriction X A_t A′ and ∂A′ = S_t.\n - By choice, fix such an A′ =: A_t for every t ∈ ℝ.\n - Thus, for every t, A_t is a restriction of X to {x ∈ U : d(x) < t}, and ∂A_t = S_t.\n5. A restriction to the band.\n - The band Bd := {x ∈ U : a < d(x) < b} = U ∩ {a < d} ∩ {d < b} is open: U is open, and {a < d} and {d < b} are open by continuity of d (isOpen_lt). Hence Bd is measurable (IsOpen.measurableSet).\n - X has finite mass on every V ⊂⊂ U. By (R2), X therefore has a restriction to every measurable set. Fix Rb with IsRestriction X Bd Rb.\n6. Slice mass bound.\n - By Mathlib's norm_fderiv_le_of_lipschitz, ‖fderiv ℝ d x‖ ≤ L for every x ∈ ℝ^P, hence ‖fderiv ℝ d x‖₊ ≤ L for every x. So the almost-everywhere derivative hypothesis of the mass clause holds on W with L_W := L.\n - Apply the mass clause of SlicingTheorem with W (open, W ⊆ U), L_W := L, a < b and R := Rb (step 5).\n - It gives a measurable g : ℝ → [0, ∞] with M_W(S_t) ≤ g(t) for every t ∈ (a, b), and ∫⁻_{(a,b)} g ≤ L · M_W(Rb).\n7. Comparison with X.\n - The sibling lemma restriction_mass_le (U open, W ⊂⊂ U, IsRestriction X Bd Rb) gives M_W(Rb) ≤ M_W(X).\n - Multiplication by L in [0, ∞] is monotone, so ∫⁻_{(a,b)} g ≤ L · M_W(Rb) ≤ L · M_W(X).\n8. Boundary mass bound. For t ∈ (a, b), step 4 gives ∂A_t = S_t, so M_W(∂A_t) = M_W(S_t) ≤ g(t) by step 6.\n9. Conclusion. The family (A_t)_{t∈ℝ} and g satisfy:\n - g is measurable (step 6);\n - for every t, A_t is a restriction of X to {x ∈ U : d(x) < t} (step 4);\n - M_W(∂A_t) ≤ g(t) for t ∈ (a, b) (step 8);\n - ∫⁻_{(a,b)} g ≤ L · M_W(X) (step 7). ∎",
+          "proof_key_steps": [
+            "M_V(0) = 0, so SlicingTheorem applies to the cycle X (d is L-Lipschitz on U) and gives slices S_t with IsSlice X d t S_t.",
+            "cycle_slice_boundary: for each t, choose a restriction A_t of X to {x ∈ U : d(x) < t} with ∂A_t = S_t.",
+            "(R2) of Submission.iwl_restriction_theory: X has a restriction Rb to the open (hence measurable) band {x ∈ U : a < d(x) < b}.",
+            "norm_fderiv_le_of_lipschitz gives ‖fderiv ℝ d‖ ≤ L. The slicing mass clause then gives a measurable g with M_W(S_t) ≤ g(t) on (a, b) and ∫⁻ g ≤ L·M_W(Rb).",
+            "restriction_mass_le gives M_W(Rb) ≤ M_W(X), so ∫⁻ g ≤ L·M_W(X). Also M_W(∂A_t) = M_W(S_t) ≤ g(t)."
+          ]
+        },
+        "audit": {
+          "key": "cycle_slice_family",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact contract follows from the supplied proof: zero boundary mass supplies the slicing hypotheses, cycle_slice_boundary provides the restriction family, and the Lipschitz derivative bound and measurable band permit the slicing mass clause. restriction_mass_le gives the stated integral bound. Both declared sibling dependencies are necessary to this proof and correctly directed."
+        },
+        "resolved_dependencies": [
+          "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1",
+          "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.restriction_mass_le-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/decomposition.json": "65cfd5d2db1f63c8d530a42fbe8b07e610aeb3c54b7810136d43b085386f079a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/decomposition-audit.json": "3c0cd910b750d748188391b6c5eaeebd7ca0a0471ad1786e76585791afab7f25",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-child-handoff.json": "04720ba1851155499fc1e931cad101749ceb097181307668d00950a75997d028",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-supplied-plan.md": "4bb751767b8d087b1f26d1d46f4a7abc0fac52d6ed0644a28d939391d56d6743",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-supplied-natural-proof.md": "80766e85b0ed90caf1221851e77befa93fa5ab9d315a2b797b86a8d6ab3b3c80",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/parent-supplied-natural-proof.json": "0baffca3441203aa017cf9137faaeab1e2bac59e2abc3204a7779141aa069866",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6/node.json": "c19632087a8886d7497ef9bfcd025fac3ead6c38908b99b8c2b9b384dbfadfca",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-child-handoff.json": "beccd456ee9cf52f5f87730916ffd490ebfde53ff1c0459ff38b0188f89cff54",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-supplied-plan.md": "a2b4afd94a734a636651b98e22731bf8546689bfc3515c82f653f8c509234466",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-supplied-natural-proof.md": "2c55db014cf2c7898d3a2a6d01fa7f43dff282db55f68f6a611e9951d3f30d9e",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/parent-supplied-natural-proof.json": "8acfc4110e4c50b8b797a2617dbe90071bdb9ac6f7b34d75988ce7d044a6677b",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-1a1addc5ce/node.json": "f726bc948ca4129aad39ccb2fe0209613ad6ac9541126f795b6d58d44c7a1168",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-child-handoff.json": "8f52c6fe97c15c903ace6dd8736786226b6f9cb4687f4149d9394074786ef440",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-supplied-plan.md": "8ce4cc1f2f398e206961c3a599df2504b24379db4b68f6347752f5341cdd5c10",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-supplied-natural-proof.md": "046e920e4b19f5bbcae3572bd52a938688eafdae0d820ce8adf544b7d752ebff",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/parent-supplied-natural-proof.json": "a6592a1e060b3adc5124eab72ffc499c0a5fcb4f0c08658ab35a3c8fb943a09b",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24/node.json": "fd31fab0bf7bc5cf17a29613d6d2db13047d4301389525659aa5dea9ef98580c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-child-handoff.json": "d04cfe3ab00e6ecf65e71aabf9b3b7d3b654bdf588eb90fd9bcc7a9112acea3c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-supplied-plan.md": "b642b70f81540cac07fe394fcb8d6bac89414c29bf4204030fe951147ec89cf4",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-supplied-natural-proof.md": "066a95929ba4516b2e63e0ff5f1e29934223f1973bb5b60bddfac5311af8098d",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/parent-supplied-natural-proof.json": "20ce6b5a12b703848b697c8896e4d11964a2fe0b526fac1d6f199712b02cb8cc",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/children/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991/node.json": "6986e1bb4a2e4cbc55ee3f47143d9da452f12ef898f8b79857d9f5751e253b11"
+  }
+}
