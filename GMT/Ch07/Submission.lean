@@ -542,6 +542,65 @@ theorem Submission.mcs_exists_c1_field_eq_proj_near : ∀ (P : ℕ) (U N O : Set
       rw [(hχL y).1 (interior_subset hy), one_smul]
     · filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxX] with y hy
       simp [hy]
+/-- **Simon Ch. 4, 2.2–2.3** (additivity of the first variation of `V = v(M, θ)`): if
+`x ↦ p_{TₓM}` is `Hⁿ⌞M`-measurable and `X, Y ∈ C¹_c(U; ℝᴾ)`, then `δV(X + Y) = δV(X) + δV(Y)`.
+For `Z ∈ C¹_c(U; ℝᴾ)`, `θ div_M Z` is `Hⁿ⌞M`-integrable: `div_M Z(x) = tr(pₓ ∘ DZ(x))` is
+measurable, `|div_M Z| ≤ ‖tr‖ sup ‖DZ‖` on `spt Z` and `div_M Z = 0` off `spt Z`, and `θ` is
+integrable on the compact `spt Z ⊆ U`.  Pointwise `D(X + Y) = DX + DY` and the trace is linear, so
+`div_M (X + Y) = div_M X + div_M Y`; integrate. -/
+theorem Submission.mcs_firstVariation_add : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (X Y : Euclid P → Euclid P), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ContDiff ℝ 1 Y → HasCompactSupport Y → tsupport Y ⊆ U → R.firstVariation (X + Y) = R.firstVariation X + R.firstVariation Y := by
+  intro P n U R X Y hp hX hXc hXU hY hYc hYU
+  -- Step 1: the trace is a continuous linear functional on `L(ℝᴾ, ℝᴾ)`, and
+  -- `div_M Z(x) = tr(pₓ ∘ DZ(x))`
+  let tr : (Euclid P →L[ℝ] Euclid P) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+    ((LinearMap.trace ℝ (Euclid P)).comp (ContinuousLinearMap.coeLM ℝ))
+  have hdiv : ∀ (Z : Euclid P → Euclid P) (x : Euclid P), tangentialDivergence n R.carrier Z x =
+      tr ((approxTangentPlane n R.carrier x).starProjection ∘L fderiv ℝ Z x) := fun _ _ => rfl
+  have hθ : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have hθ' : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  -- Step 2: `θ div_M Z` is `Hⁿ⌞M`-integrable for `Z ∈ C¹_c(U; ℝᴾ)`
+  have hint : ∀ Z : Euclid P → Euclid P, ContDiff ℝ 1 Z → HasCompactSupport Z → tsupport Z ⊆ U →
+      Integrable (fun x => (R.mult x : ℝ) * tangentialDivergence n R.carrier Z x)
+        (μHE[n].restrict R.carrier) := by
+    intro Z hZ hZc hZU
+    have hD : Continuous (fderiv ℝ Z) := hZ.continuous_fderiv one_ne_zero
+    -- Step 2(a): `div_M Z` is a.e. strongly measurable (`p` measurable, `DZ` continuous)
+    have hmeas : AEStronglyMeasurable (fun x => tangentialDivergence n R.carrier Z x)
+        (μHE[n].restrict R.carrier) :=
+      (tr.continuous.comp isBoundedBilinearMap_comp.continuous).comp_aestronglyMeasurable₂
+        (g := fun p D : Euclid P →L[ℝ] Euclid P => tr (p ∘L D)) hp hD.aestronglyMeasurable
+    -- Step 2(b): `|θ div_M Z| ≤ ‖tr‖ C θ 1_K`, `K = spt Z`, `C = sup ‖DZ‖`
+    obtain ⟨C, hC⟩ := hD.bounded_above_of_compact_support (hZc.fderiv ℝ)
+    have hKm : MeasurableSet (tsupport Z) := (isClosed_tsupport Z).measurableSet
+    have hbound : ∀ x, ‖(R.mult x : ℝ) * tangentialDivergence n R.carrier Z x‖ ≤
+        (tsupport Z).indicator (fun x => ‖tr‖ * C * (R.mult x : ℝ)) x := by
+      intro x
+      rw [norm_mul, Real.norm_natCast, hdiv]
+      by_cases hxK : x ∈ tsupport Z
+      · rw [Set.indicator_of_mem hxK, mul_comm (R.mult x : ℝ)]
+        refine mul_le_mul_of_nonneg_right ?_ (Nat.cast_nonneg _)
+        refine (tr.le_opNorm _).trans (mul_le_mul_of_nonneg_left ?_ (norm_nonneg tr))
+        refine (ContinuousLinearMap.opNorm_comp_le _ _).trans ?_
+        simpa using mul_le_mul (Submodule.starProjection_norm_le _) (hC x) (norm_nonneg _)
+          zero_le_one
+      · rw [Set.indicator_of_notMem hxK, fderiv_of_notMem_tsupport ℝ hxK,
+          ContinuousLinearMap.comp_zero, map_zero, norm_zero, mul_zero]
+    -- Step 2(c): `θ` is `Hⁿ⌞M`-integrable on `K`, since `∫_{M ∩ K} θ dHⁿ < ∞`
+    have hθK : IntegrableOn (fun x => (R.mult x : ℝ)) (tsupport Z) (μHE[n].restrict R.carrier) := by
+      rw [IntegrableOn, Measure.restrict_restrict hKm, Set.inter_comm]
+      simpa using integrable_toReal_of_lintegral_ne_top hθ'.aemeasurable
+        (R.locallyIntegrable_mult _ hZc hZU)
+    exact ((integrable_indicator_iff hKm).2 (Integrable.const_mul hθK (‖tr‖ * C))).mono'
+      (hθ.aestronglyMeasurable.mul hmeas) (ae_of_all _ hbound)
+  -- Step 3: `div_M (X + Y) = div_M X + div_M Y` pointwise
+  have hadd : ∀ x, tangentialDivergence n R.carrier (X + Y) x =
+      tangentialDivergence n R.carrier X x + tangentialDivergence n R.carrier Y x := by
+    intro x
+    rw [hdiv, hdiv, hdiv, fderiv_add (hX.differentiable one_ne_zero x)
+      (hY.differentiable one_ne_zero x), ContinuousLinearMap.comp_add, map_add]
+  -- Step 4: integrate, by `integral_add`
+  simp only [IMRep.firstVariation, hadd, mul_add]
+  exact integral_add (hint X hX hXc hXU) (hint Y hY hYc hYU)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
