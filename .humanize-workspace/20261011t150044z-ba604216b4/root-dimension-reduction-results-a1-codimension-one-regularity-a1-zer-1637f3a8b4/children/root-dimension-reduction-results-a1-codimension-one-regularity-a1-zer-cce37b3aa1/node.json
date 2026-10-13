@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1.graph_integral_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+  "depth": 5,
+  "title": "Graph integrals of a compactly supported covector field converge under C¹-flattening graphs and L¹_loc-convergent domains (parent Part D)",
+  "statement": "Let m, k, P ∈ ℕ, let ι : ℝ^m → ℝ^P and ι' : ℝ^k → ℝ^P be linear isometries (ℝ^d = Euclid d), b ∈ ℝ^k, R ∈ ℝ, B := ball(0, R) ⊆ ℝ^m, and let β : ℝ^P → Λ^m(ℝ^P) (Covector (Euclid P) m) be continuous with compact support. Let g_i : ℝ^m → ℝ^k (i ∈ ℕ) and let A_i, A ⊆ ℝ^m be measurable sets. Assume (a) L^m((A_i Δ A) ∩ B) → 0 (L^m = Lebesgue measure, Δ = symmetric difference); (b) for all large i, g_i is differentiable at every w ∈ B; (c) for every ε > 0, for all large i, |g_i(w) − b| < ε and ‖Dg_i(w)‖ < ε for all w ∈ B. Put G_i(w) := ιw + ι'g_i(w), DG_i(w) := fderiv ℝ G_i w and e_j := EuclideanSpace.single j 1. Then ∫_{A_i∩B} β(G_i(w))(DG_i(w)e_0, …, DG_i(w)e_{m−1}) dw → ∫_{A∩B} β(ιw + ι'b)(ιe_0, …, ιe_{m−1}) dw as i → ∞ (Bochner integrals with respect to Lebesgue measure on ℝ^m).",
+  "lean_statement": "∀ (m k P : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (b : Euclid k) (R : ℝ) (β : Euclid P → Covector (Euclid P) m) (gs : ℕ → Euclid m → Euclid k) (As : ℕ → Set (Euclid m)) (A : Set (Euclid m)), Continuous β → HasCompactSupport β → (∀ i, MeasurableSet (As i)) → MeasurableSet A → Tendsto (fun i => volume (symmDiff (As i) A ∩ ball (0 : Euclid m) R)) atTop (𝓝 0) → (∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, DifferentiableAt ℝ (gs i) w) → (∀ ε : ℝ, 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, ‖gs i w - b‖ < ε ∧ ‖fderiv ℝ (gs i) w‖ < ε) → Tendsto (fun i => ∫ w in As i ∩ ball 0 R, β (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w (EuclideanSpace.single j (1 : ℝ)))) atTop (𝓝 (∫ w in A ∩ ball 0 R, β (ι w + ι' b) (fun j => ι (EuclideanSpace.single j (1 : ℝ)))))",
+  "lean_name": "codim1_zsl_fl_graph_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-cce37b3aa1-a1"
+}

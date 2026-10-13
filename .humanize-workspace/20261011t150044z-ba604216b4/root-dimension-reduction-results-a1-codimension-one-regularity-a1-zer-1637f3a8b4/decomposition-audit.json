@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show dcc3f4b7fc0f6beb359e7585fbca8b266cc0f38f:GMT/Ch07/Submission.lean",
+        "git show 42e24164cfdc5445c7426ab7ee11003f8faee961:GMT/Ch07/Submission.lean",
+        "ConvergesWeakly|IsBoundaryOfRegion|currentEval|namespace|^end |^import|^open|^.*axiom|^.*sorry|simongmt|2b366308",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem integral_map|measurable_fderiv|norm_image_sub_le|theorem support_eq|one_of_mem_closedBall|tsupport_eq",
+        "codim1_zsl_fl_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/flat-limit-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/flat-limit-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/flat-limit-independent-audit/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-1637f3a8b4/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-1637f3a8b4/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5474b3f56d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-3b2bcbaf8e/accepted-candidate.json",
+        "/tmp/flat-limit-independent-audit/Types.lean",
+        "/tmp/flat-limit-independent-audit/Assembly.lean",
+        "/tmp/flat-limit-independent-audit/Proofs.lean"
+      ],
+      "conclusion": "The split appropriately isolates four new obligations and two accepted reusable lemmas for exactly codim1_zsl_flat_graph_limit. Project, Mathlib and SimonGMT pins match; inspected library sources match their pinned versions. All six frozen propositions elaborate independently of their implementations, and all six supplied proofs compile with only propext, Classical.choice and Quot.sound. The supplied parent assembly also compiles from the frozen child contracts and the handoff's existing BV-compactness dependency, without sorry. BV compactness remains a separate pending dependency. Dependencies are correctly directed and acyclic, including existing dependency closures. Both reused declarations have comparator acceptance records and identical frozen types; their supplied implementations match the accepted implementations modulo comments and whitespace. All names are bare identifiers, and the four new names have no reservation in another DAG branch. Inline constructions use the intended instances; no problematic matrix-unit expression occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coordinate_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including m = 0. The continuous determinant contraction gives the required sign through cycleRange and vanishes when basis vectors repeat. The complete proof compiles; accepted reuse has the identical frozen type."
+    },
+    {
+      "key": "pullback_extderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact affine-shift identity follows from the adjoint identities, the graph chain rule at v, and commutation of exterior differentiation with affine pullback. All required hypotheses appear in both statements; spanning is unnecessary. Accepted reuse has the identical frozen type."
+    },
+    {
+      "key": "divergence_lift",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs K independently of h, R and φ, establishes compact support and the actual covectorEuclideanNorm bound, and derives the divergence identity using germ locality and the two declared dependencies. Arbitrary R and zero-dimensional normal spaces are covered. Prose, type and compiled proof agree."
+    },
+    {
+      "key": "perimeter_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual hypotheses are combined before quantifying over test fields. The normalized lift, H3 and H4 give the bound; vanishing divergence outside the support removes the ball, and positivity of K justifies rescaling. The conclusion exactly supplies the existing BV-compactness hypothesis without circularity."
+    },
+    {
+      "key": "graph_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The multilinear estimate proves uniform convergence on the ball. Eventual measurability and boundedness establish integrability, and the symmetric-difference estimate proves convergence of the integrals. No undeclared orthogonality or global regularity is used. The proof covers m = 0 and arbitrary R and matches the frozen type."
+    },
+    {
+      "key": "isometric_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Completeness gives a closed measurable embedding. Isometric invariance of normalized Hausdorff measure and restriction to the image yield the stated measure identity. MeasurableEmbedding.integral_map applies to every integrand, so no missing measurability or integrability hypothesis is needed. Prose and type agree."
+    }
+  ],
+  "required_changes": []
+}

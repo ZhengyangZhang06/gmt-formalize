@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1.perimeter_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+  "depth": 5,
+  "title": "Uniform local perimeter bounds for the parameter sets F_i from the mass bounds of the S_i (parent Part B)",
+  "statement": "Let n, k ∈ ℕ, P := n + 1 + k, U_i ⊆ ℝ^P and currents S_i ∈ 𝒟_n(U_i) (GeometricCurrentOn (U_i) n) for i ∈ ℕ, linear isometries ι : ℝ^{n+1} → ℝ^P and ι' : ℝ^k → ℝ^P with ⟨ιv, ι'w⟩ = 0 for all v, w and such that every y ∈ ℝ^P equals ιv + ι'w for some v, w, b ∈ ℝ^k, maps g_i : ℝ^{n+1} → ℝ^k and measurable sets F_i ⊆ ℝ^{n+1}; put G_i(w) := ιw + ι'g_i(w) and e_j := EuclideanSpace.single j 1. Assume, for every R > 0 (B_R := ball(0, R) ⊆ ℝ^{n+1}): (H1) for all large i, g_i is differentiable at every w ∈ B_R; (H2) for every ε > 0 and all large i, |g_i(w) − b| < ε and ‖Dg_i(w)‖ < ε for all w ∈ B_R; (H3) for all large i and every ω ∈ 𝒟^n(ℝ^P) (TestFormOn univ n) with tsupport ω ⊆ ball(0, R) ⊆ ℝ^P, currentEval(S_i)(ω) = ∫_{F_i∩B_R} dω(G_i(w))(DG_i(w)e_0, …, DG_i(w)e_n) dw (DG_i(w) = fderiv ℝ G_i w); (H4) there is c ∈ ℝ such that for all large i and every ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ ball(0, R) and covectorEuclideanNorm(ω(y)) ≤ 1 for all y, currentEval(S_i)(ω) ≤ c. Then for every R > 0 there is c ∈ ℝ such that, for all large i and every C^∞ vector field φ : ℝ^{n+1} → ℝ^{n+1} (ContDiff ℝ (⊤ : ℕ∞) φ) with compact support, tsupport φ ⊆ B_R and |φ(v)| ≤ 1 for all v, ∫_{F_i} div φ dL^{n+1} ≤ c, where div φ(v) := trace Dφ(v) (LinearMap.trace of fderiv ℝ φ v) and L^{n+1} is Lebesgue measure. (This is the hypothesis of the sibling BV compactness theorem codim1_zsl_perimeter_compactness for the sets F_i, with m := n + 1.)",
+  "lean_statement": "∀ (n k : ℕ) (Us : ℕ → Set (Euclid (n + 1 + k))) (Ss : (i : ℕ) → GeometricCurrentOn (Us i) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (b : Euclid k) (gs : ℕ → Euclid (n + 1) → Euclid k) (Fs : ℕ → Set (Euclid (n + 1))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → (∀ i, MeasurableSet (Fs i)) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, DifferentiableAt ℝ (gs i) w) → (∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, ‖gs i w - b‖ < ε ∧ ‖fderiv ℝ (gs i) w‖ < ε) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) = ∫ w in Fs i ∩ ball 0 R, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w (EuclideanSpace.single j (1 : ℝ)))) → (∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (n + 1 + k)) n) y) ≤ 1) → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) ≤ c) → ∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 R → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in Fs i, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ v).toLinearMap ≤ c",
+  "lean_name": "codim1_zsl_fl_perimeter_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1.divergence_lift-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1.divergence_lift-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-c6ed2a06b3-a1"
+}
