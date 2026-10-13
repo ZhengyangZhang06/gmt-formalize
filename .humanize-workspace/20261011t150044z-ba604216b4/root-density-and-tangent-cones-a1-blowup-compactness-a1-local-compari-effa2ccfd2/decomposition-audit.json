@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'whitney|lusin|c1_approx|egorov|rademacher' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "rg -l -i 'whitney|lusin' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "tendstoUniformlyOn_of_ae_tendsto|exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|exists_disjoint_subfamily_covering_enlargement_ball|continuousOn_iUnion|isClosed_iUnion|measurable_fderiv|measurableSet_of_differentiableAt|norm_fderiv_le_of_lipschitz|LipschitzWith.ae_differentiableAt|contDiff_one_iff_fderiv",
+        "git show 38ed0bc3fc04526acffdc4d100ebe9ea7bc9663f:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1approx-independent-audit-swiepu90/ReuseAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1approx-independent-audit-swiepu90/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-effa2ccfd2/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-effa2ccfd2/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/tmp/c1approx-independent-audit-swiepu90/ReuseAndAssembly.lean",
+        "/tmp/c1approx-independent-audit-swiepu90/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes the exact selected parent. Both dependency edges are correctly directed and acyclic. All five bare names identify accepted DAG declarations with identical frozen types and no conflicting active reservation; their proof bodies also match the accepted candidates. Every type passes lexical validation and independently elaborates in a generated comparator challenge. The rebuilt five proofs and selected-parent assembly compile using only propext, Classical.choice and Quot.sound. The assembly also compiles with the three directly used child propositions supplied as hypotheses, including ε = ∞ and n = 0. The snapshot supplies the cited analytic tools; searches found no relevant measure-theoretic Lusin or C¹ Whitney extension theorem in Mathlib, and the SimonGMT extension module is outside the frozen import closure. No problematic inline matrix constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Restricting μ to A supplies the finite Borel measure needed for compact inner approximation. The countable-basis construction produces compact K, the strict error budget, and continuity for the stated general target Y. The proof is complete and non-circular."
+    },
+    {
+      "key": "lusin_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes all stated hypotheses. Applying lusin_finite on bounded shells is valid; local finiteness justifies both closedness and continuity of the union. The summable budget proves the strict measure bound, including infinite ε. Its sole dependency is correctly directed."
+    },
+    {
+      "key": "egorov_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the exact measurable, pointwise-convergence contract. Shellwise Egorov and closed inner approximation have valid hypotheses and budgets. The union is closed, and every compact subset meets only finitely many shells, yielding the required uniform convergence without circular reliance."
+    },
+    {
+      "key": "whitney_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. The Lipschitz bound, measurable countable suprema, dense-set domination and differentiability establish measurable remainders tending to zero. egorov_closed then gives exactly the compact-uniform estimate, including y = x. The retained derivative-continuity hypothesis is redundant in this supplied proof, which is harmless."
+    },
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type preserves the closed-set data and compact-uniform compatibility. The supplied construction proves bounded overlap, local finiteness, partition derivative bounds, prescribed derivatives on A and derivative continuity across A; its constants and boundary estimates check out. It is a complete non-circular proof. The retained continuity hypothesis on h is harmlessly redundant."
+    }
+  ],
+  "required_changes": []
+}
