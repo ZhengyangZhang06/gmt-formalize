@@ -483,6 +483,70 @@ theorem Submission.dph_iprod_slice_covector_norm_le :
       _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
           rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
 
+/-- A linear functional `T₀` on `𝒟^q(U)` with `|T₀(ω)| ≤ B · sup_x |ω(x)|` (Euclidean coefficient
+norm) is a current of mass at most `B`: test-form convergence makes `sup_x |ω_j(x)| → 0`, since
+`|α| ≤ √(P^q) ‖α‖` (conjunct (C3) of `Submission.dph_iprod_slice_covector_norm_le`), and every
+mass-admissible `ω` has `T(ω) ≤ |T₀(ω)| ≤ B`. -/
+theorem Submission.dph_iprod_current_of_bound :
+    ∀ (P q : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U q →ₗ[ℝ] ℝ) (B : ℝ), 0 ≤ B →
+      (∀ (ω : TestFormOn U q) (C : ℝ),
+        (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) q) x) ≤ C) →
+          |T₀ ω| ≤ B * C) →
+      ∃ T : GeometricCurrentOn U q, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal B := by
+  have hSN := Submission.dph_iprod_slice_covector_norm_le
+  intro P q U T₀ B hB hbd
+  -- (C3): the coefficient norm is at most `c = √(P^q)` times the operator norm.
+  have hC3 : ∀ α : Covector (Eucl P) q,
+      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ q) * ‖α‖ :=
+    fun α => hSN.2.2 P q α
+  set c := Real.sqrt ((P : ℝ) ^ q)
+  have hc0 : 0 ≤ c := Real.sqrt_nonneg _
+  refine ⟨⟨T₀, ?_⟩, fun ω => rfl, ?_⟩
+  · -- Sequential continuity at `0`: the order-`0` uniform convergence on the common compact
+    -- support `K` gives `|ω_j(x)| ≤ c δ` for all `x` and large `j`, so `|T₀(ω_j)| ≤ B c δ < ε`.
+    intro ωs hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    have h0 := hunif 0
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨δ, hδ, hδε⟩ : ∃ δ > 0, B * c * δ < ε := by
+      refine ⟨ε / (B * c + 1), by positivity, ?_⟩
+      have hpos : 0 < B * c + 1 := by positivity
+      rw [← mul_div_assoc, div_lt_iff₀ hpos]
+      nlinarith [mul_nonneg hB hc0]
+    rw [Metric.tendstoUniformlyOn_iff] at h0
+    filter_upwards [h0 δ hδ] with n hn
+    have hpt : ∀ x, covectorEuclideanNorm ((ωs n : DifferentialForm (Eucl P) q) x) ≤ c * δ := by
+      intro x
+      by_cases hx : x ∈ K
+      · have h1 := hn x hx
+        rw [dist_comm, dist_eq_norm] at h1
+        have h2 : iteratedFDeriv ℝ 0
+            (((0 : TestFormOn U q) : DifferentialForm (Eucl P) q)) x = 0 := by
+          simp
+        rw [h2, sub_zero, norm_iteratedFDeriv_zero] at h1
+        calc covectorEuclideanNorm ((ωs n : DifferentialForm (Eucl P) q) x)
+            ≤ c * ‖(ωs n : DifferentialForm (Eucl P) q) x‖ := hC3 _
+          _ ≤ c * δ := mul_le_mul_of_nonneg_left h1.le hc0
+      · -- Off `K`, `ω_j` vanishes.
+        have h3 : (ωs n : DifferentialForm (Eucl P) q) x = 0 :=
+          image_eq_zero_of_notMem_tsupport (fun h => hx (hsupp n h))
+        rw [h3, covectorEuclideanNorm_zero]
+        positivity
+    have h4 := hbd (ωs n) (c * δ) hpt
+    rw [Real.dist_eq, sub_zero]
+    calc |T₀ (ωs n)| ≤ B * (c * δ) := h4
+      _ = B * c * δ := by ring
+      _ < ε := hδε
+  · -- Mass: a mass-admissible `ω` has `|ω(x)| ≤ 1` everywhere, so `T(ω) ≤ |T₀(ω)| ≤ B`.
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    apply ENNReal.ofReal_le_ofReal
+    have h5 := hbd ω 1 hω.2
+    have h6 : T₀ ω ≤ |T₀ ω| := le_abs_self _
+    show T₀ ω ≤ B
+    linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
