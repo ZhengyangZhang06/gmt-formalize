@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.annular_tonelli-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+  "depth": 4,
+  "title": "Tonelli lower bound for the annular conical integral with one fixed cutoff",
+  "statement": "Let n and l be natural numbers, mu a measure on R^(n+l), w : R^(n+l) -> R, y in R^(n+l), phi : R -> R, and R, eps, s, r real. Assume:\n- eps > 0 and mu(B_R(y)) < infinity (closed ball);\n- w is a.e.-strongly measurable for mu restricted to the open ball ball y R, and 0 <= w(x) <= 1 for mu-a.e. x in ball y R;\n- phi is C^1 and nonincreasing, with phi(u) = 1 for u <= 1 and phi(u) = 0 for u >= 1 + eps;\n- 0 < s <= r and (1 + eps) r < R.\nWrite r_x := |x - y|, phi' := deriv phi and Q(t) := -(integral (r_x/t) phi'(r_x/t) w(x) dmu)/t. Then the lower integral over closedBall y r minus ball y ((1+eps) s) of ofReal(w(x)/r_x^n) dmu is at most ofReal(integral_s^r Q(t)/t^n dt).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (R ε s r : ℝ), 0 < ε → μ (closedBall y R) < ⊤ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → s ≤ r → (1 + ε) * r < R → ∫⁻ x in closedBall y r \\ ball y ((1 + ε) * s), ENNReal.ofReal (w x / ‖x - y‖ ^ n) ∂μ ≤ ENNReal.ofReal (∫ t in s..r, -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t / t ^ n)",
+  "lean_name": "allard52_am_annular_tonelli",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-a-025b952a82-a1"
+}
