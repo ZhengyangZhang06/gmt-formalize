@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aacca130828e004ce78f05f39d6ecf5d749407cf506e87aacedcee8d7eb57817",
+  "git_delta": {
+    "base_commit": "a2ee6047e98437f5ed1345e0934c22c407ebd2d0",
+    "candidate_commit": "b058a032ec55d802c0a7c177bb729e0b6f4c971d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bvc_smooth_indicator_approx",
+    "diff_sha256": "4051618f0b5fb352b4095d0a75253e78d65f25076777aa55a97704a712cefba9",
+    "source_sha256": "3403cc48677e3ca7290f7503c8d5917aa9126ed9af6ef51b13b142c67b0b6bfa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bvc_smooth_indicator_approx",
+      "statement": "∀ (n : ℕ) (P : Set (Euclid n)) (R η : ℝ), MeasurableSet P → P ⊆ ball (0 : Euclid n) R → 0 < η → ∃ ψ : Euclid n → ℝ, ContDiff ℝ 1 ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ ball (0 : Euclid n) R ∧ (∀ z, 0 ≤ ψ z ∧ ψ z ≤ 1) ∧ ∫ z, |ψ z - P.indicator (fun _ => (1 : ℝ)) z| < η",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
