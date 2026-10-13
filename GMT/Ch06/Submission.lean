@@ -406,6 +406,94 @@ theorem Submission.rpn_moc_abs_apply_le_mul_measure_diff :
     _ = c * c' * (μ (W \ K)).toReal := by
       rw [integral_indicator_const _ hA, measureReal_def, smul_eq_mul, mul_comm]
 
+/-- Cut-off estimate for the top-degree form `f θ_L`, `θ_L = L^*(dy¹ ∧ ⋯ ∧ dyⁿ)` (Simon Ch. 6,
+proof of Lemma 2.36, display (2)): from the pullback bound (H1) and cut-offs `b = 1` on `L(K)`
+with `𝓛ⁿ(spt b)` arbitrarily small (H2), `|T(f θ_L)| ≤ c c' μ(W \ K)`. -/
+theorem Submission.rpn_moc_abs_apply_top_form_le :
+    ∀ (P m : ℕ) (U W K : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (ξ : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ ξ → IsOpen W →
+      W ⊆ U → IsCompact K → μ (W \ K) ≠ ∞ →
+      ∀ (L : Eucl P →L[ℝ] Eucl (m + 1)) (f : Eucl P → ℝ) (c c' : ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ W →
+      (∀ x, |f x| ≤ c) →
+      (∀ᵐ x ∂μ, |ξ x (wedgeCovectors (m + 1)
+        (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L))| ≤ c') →
+      (∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a →
+        HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ φ : TestFormOn U (m + 1),
+        (∀ x, (φ : DifferentialForm (Eucl P) (m + 1)) x = (f x * a (L x)) •
+          wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) →
+        |T φ| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))) →
+      (∀ δ : ℝ, 0 < δ → ∃ b : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧
+        HasCompactSupport b ∧ (∀ y, 0 ≤ b y ∧ b y ≤ 1) ∧ (∀ y ∈ L '' K, b y = 1) ∧
+        ((volume : Measure (Eucl (m + 1))) (tsupport b)).toReal ≤ δ) →
+      ∀ ζ : TestFormOn U (m + 1), (∀ x, (ζ : DifferentialForm (Eucl P) (m + 1)) x =
+        f x • wedgeCovectors (m + 1)
+          (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) →
+      |T ζ| ≤ c * c' * (μ (W \ K)).toReal := by
+  intro P m U W K T μ ξ hrep hW hWU hK hμK L f c c' hf hfc hfW hfle hξ hH1 hH2 ζ hζ
+  obtain ⟨C, hC⟩ := hH1
+  set θ : Covector (Eucl P) (m + 1) :=
+    wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)
+  -- Step 1: it suffices to prove `|T ζ| ≤ c c' μ(W \ K) + ε` for every `ε > 0`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  -- Step 2: a cut-off `b` from (H2) for `δ = (ε / (|C| + 1))ⁿ`.
+  have hA : 0 < |C| + 1 := by positivity
+  obtain ⟨b, hb, hbc, hb01, hbK, hbδ⟩ := hH2 ((ε / (|C| + 1)) ^ (m + 1)) (by positivity)
+  -- Step 3: the test form `φ₁ = (f · (b ∘ L)) θ_L`.
+  obtain ⟨φ₁, hφ₁⟩ := Submission.rpn_moc_exists_testForm_smul P (m + 1) U
+    (fun x => f x * b (L x)) θ (hf.mul (hb.comp L.contDiff))
+    (hfc.mul_right (f' := fun x => b (L x))) (tsupport_mul_subset_left.trans (hfW.trans hWU))
+  -- Step 4: (H1) with `a = b`, `M = 1` gives `|T φ₁| ≤ |C| 𝓛ⁿ(spt b)^{1/n} ≤ ε`.
+  have h₁ : |T φ₁| ≤ ε := by
+    set v : ℝ := ((volume (tsupport b)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))
+    have hv0 : 0 ≤ v := Real.rpow_nonneg ENNReal.toReal_nonneg _
+    have hvε : v ≤ ε / (|C| + 1) :=
+      calc v ≤ ((ε / (|C| + 1)) ^ (m + 1)) ^ ((1 : ℝ) / ((m : ℝ) + 1)) :=
+            Real.rpow_le_rpow ENNReal.toReal_nonneg hbδ (by positivity)
+        _ = ε / (|C| + 1) := by
+            rw [show (1 : ℝ) / ((m : ℝ) + 1) = ((m + 1 : ℕ) : ℝ)⁻¹ by push_cast; ring]
+            exact Real.pow_rpow_inv_natCast (by positivity) (Nat.succ_ne_zero m)
+    calc |T φ₁| ≤ C * 1 * v :=
+          hC b hb hbc 1 (fun y => (abs_of_nonneg (hb01 y).1).trans_le (hb01 y).2) φ₁ hφ₁
+      _ ≤ |C| * (ε / (|C| + 1)) := by
+          rw [mul_one]
+          exact mul_le_mul (le_abs_self C) hvε hv0 (abs_nonneg C)
+      _ ≤ ε := by
+          rw [mul_div_assoc', div_le_iff₀ hA]
+          nlinarith [abs_nonneg C]
+  -- Step 5: `φ₂ = ζ - φ₁ = h θ_L` with `h = f · (1 - b ∘ L)`.
+  have hφ₂ : ∀ x, ((ζ - φ₁ : TestFormOn U (m + 1)) : DifferentialForm (Eucl P) (m + 1)) x =
+      (f x * (1 - b (L x))) • θ := by
+    intro x
+    rw [Submodule.coe_sub, Pi.sub_apply, hζ x, hφ₁ x]
+    ext v
+    simp only [ContinuousAlternatingMap.sub_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    ring
+  -- Step 6: `|h| ≤ c`, `h = 0` off `W` and `h = 0` on `K`.
+  have hh_le : ∀ x, |f x * (1 - b (L x))| ≤ c := by
+    intro x
+    have h01 := hb01 (L x)
+    rw [abs_mul, abs_of_nonneg (sub_nonneg.mpr h01.2)]
+    calc |f x| * (1 - b (L x)) ≤ |f x| * 1 :=
+          mul_le_mul_of_nonneg_left (by linarith [h01.1]) (abs_nonneg _)
+      _ ≤ c := by rw [mul_one]; exact hfle x
+  have hh_W : ∀ x, x ∉ W → f x * (1 - b (L x)) = 0 := by
+    intro x hx
+    rw [image_eq_zero_of_notMem_tsupport fun hx' => hx (hfW hx'), zero_mul]
+  have hh_K : ∀ x ∈ K, f x * (1 - b (L x)) = 0 := by
+    intro x hx
+    rw [hbK (L x) (mem_image_of_mem L hx), sub_self, mul_zero]
+  -- Step 7: the remainder bound for `φ₂`.
+  have h₂ : |T (ζ - φ₁)| ≤ c * c' * (μ (W \ K)).toReal :=
+    Submission.rpn_moc_abs_apply_le_mul_measure_diff P (m + 1) U W K T μ ξ hrep hW hK hμK θ
+      (fun x => f x * (1 - b (L x))) c c' hh_le hh_W hh_K hξ (ζ - φ₁) hφ₂
+  -- Step 8: `T ζ = T φ₁ + T φ₂` and the triangle inequality.
+  have hsplit : T ζ = T φ₁ + T (ζ - φ₁) := by
+    rw [show T (ζ - φ₁) = T ζ - T φ₁ from map_sub T.toCurrent ζ φ₁]
+    ring
+  calc |T ζ| ≤ |T φ₁| + |T (ζ - φ₁)| := by rw [hsplit]; exact abs_add_le _ _
+    _ ≤ c * c' * (μ (W \ K)).toReal + ε := by linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
