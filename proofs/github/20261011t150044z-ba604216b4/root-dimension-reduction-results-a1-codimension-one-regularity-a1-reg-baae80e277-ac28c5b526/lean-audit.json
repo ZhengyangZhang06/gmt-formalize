@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a9e5e3c89132a46ab13d8d3d66f146f9d5a3d28abd4b9e23d00c117479bdaaf4",
+  "git_delta": {
+    "base_commit": "5ca4144b09d15c4827cc273b058f080029a87b84",
+    "candidate_commit": "fbc9ac3c07e9f4beb15c1d8f54e995a0d77d582a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1pt_rescaled_integral_tendsto",
+    "diff_sha256": "77d93fda150bb36a47a57bdd933b3a4b65e950dd5881f03d2e2aa2533868c3dc",
+    "source_sha256": "17febd05fff6b6495a13e597ca54055147fdc36b9fb2ad5d3aeaa6b2e7822dfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1pt_rescaled_integral_tendsto",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (h : Euclid n → ℝ) (B : Set (Euclid n)) (z : Euclid n) (m : ℝ) (f : Euclid P → ℝ), Continuous g → DifferentiableAt ℝ g z → Continuous h → IsOpen B → z ∈ B → 0 < m → (∀ a ∈ B, m * ‖a - z‖ ≤ ‖g a - g z‖) → (∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g z v‖) → Continuous f → HasCompactSupport f → Tendsto (fun s : ℝ => ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0) (𝓝 (h z * ∫ b, f (fderiv ℝ g z b)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
