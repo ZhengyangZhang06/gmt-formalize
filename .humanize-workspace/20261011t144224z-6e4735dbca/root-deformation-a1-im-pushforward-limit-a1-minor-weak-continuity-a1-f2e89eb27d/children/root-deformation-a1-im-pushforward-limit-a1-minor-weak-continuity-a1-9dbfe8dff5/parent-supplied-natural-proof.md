@@ -1,0 +1,138 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1`
+- Child DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1.swap_cancel-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 4 of the parent proof (pairing σ with σ∘(0 u+1)); this is the algebraic core of the Piola identity, i.e. of the divergence-free rows of cofactor matrices (L. C. Evans, Partial Differential Equations, 2nd ed., §8.1.4(b), Lemma 1 (Divergence-free rows), p. 464; J. M. Ball, Arch. Rational Mech. Anal. 63 (1977) 337–403).
+
+Notation. S := Equiv.Perm (Fin (r+1)); sgn σ := ((Equiv.Perm.sign σ : ℤ) : ℝ); the product in S is composition, (σ * τ)(i) = σ(τ(i)) (Equiv.Perm.mul_apply). For u ∈ Fin r and σ ∈ S put R_u(σ) := Π_{t ∈ Finset.univ.erase u} N_{t, σ(t.succ)} and T_u(σ) := sgn σ · (H_u(σ(0), σ(u.succ)) · R_u(σ)).
+
+1. (Reordering.) Distributing sgn σ over the inner sum (Finset.mul_sum) and exchanging the two finite sums (Finset.sum_comm), the left-hand side equals Σ_{u ∈ Fin r} S_u with S_u := Σ_{σ ∈ S} T_u(σ). It therefore suffices to show S_u = 0 for every u ∈ Fin r (then the whole sum is Σ_u 0 = 0, Finset.sum_eq_zero). For r = 0 the sum over u is empty and there is nothing more to prove.
+
+2. (The transposition.) Fix u ∈ Fin r and let τ := Equiv.swap 0 u.succ ∈ S. Since u.succ ≠ 0 (Fin.succ_ne_zero), τ is a transposition and sign τ = −1 (Equiv.Perm.sign_swap).
+
+3. (Sign reversal.) Let σ ∈ S. Then:
+ (a) sign(σ * τ) = sign σ · sign τ = −sign σ (Equiv.Perm.sign_mul), and since the casts ℤˣ → ℤ → ℝ are multiplicative (push_cast), sgn(σ * τ) = −sgn σ;
+ (b) (σ * τ)(0) = σ(τ(0)) = σ(u.succ) and (σ * τ)(u.succ) = σ(τ(u.succ)) = σ(0) (Equiv.swap_apply_left, Equiv.swap_apply_right);
+ (c) if t ∈ Fin r and t ≠ u, then t.succ ≠ 0 (Fin.succ_ne_zero) and t.succ ≠ u.succ (Fin.succ is injective), so τ(t.succ) = t.succ (Equiv.swap_apply_of_ne_of_ne) and (σ * τ)(t.succ) = σ(t.succ); hence every factor of R_u(σ * τ) equals the corresponding factor of R_u(σ), and R_u(σ * τ) = R_u(σ) (Finset.prod_congr; the members t of Finset.univ.erase u satisfy t ≠ u, Finset.ne_of_mem_erase);
+ (d) by the symmetry hypothesis, H_u(σ(u.succ), σ(0)) = H_u(σ(0), σ(u.succ)).
+ Therefore T_u(σ * τ) = (−sgn σ) · (H_u(σ(u.succ), σ(0)) · R_u(σ)) = −(sgn σ · (H_u(σ(0), σ(u.succ)) · R_u(σ))) = −T_u(σ).
+
+4. (Reindexing.) Right multiplication by τ, σ ↦ σ * τ, is a bijection of S (Equiv.mulRight τ), so reindexing the finite sum (Equiv.sum_comp) gives S_u = Σ_{σ ∈ S} T_u(σ * τ). By step 3 this equals Σ_{σ ∈ S} (−T_u(σ)) = −S_u (Finset.sum_neg_distrib).
+
+5. (Conclusion.) From S_u = −S_u in ℝ we get 2·S_u = 0, hence S_u = 0 (linarith). By step 1 the whole sum equals Σ_u S_u = 0. ∎
+
+Formalization notes (no new mathematics). The following script was checked with lake env lean after import GMT.Ch06.Submission in the exact comparator scope (namespace GMT.Ch06 with the frozen open commands, after the noncomputable section); it compiles without warnings and #print axioms reports only propext, Classical.choice and Quot.sound. It may be used verbatim:
+theorem Submission.deformation_ipl_mwc_pi_swap_cancel : ∀ (r : ℕ) (H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ) (N : Fin r → Fin (r + 1) → ℝ), (∀ u i j, H u i j = H u j i) → ∑ σ : Equiv.Perm (Fin (r + 1)), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ u : Fin r, H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) = 0 := by
+  intro r H N hH
+  simp_rw [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_eq_zero (fun u _ => ?_)
+  let τ : Equiv.Perm (Fin (r + 1)) := Equiv.swap 0 u.succ
+  have hτne : (0 : Fin (r + 1)) ≠ u.succ := (Fin.succ_ne_zero u).symm
+  let T : Equiv.Perm (Fin (r + 1)) → ℝ := fun σ =>
+    ((Equiv.Perm.sign σ : ℤ) : ℝ) * (H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ))
+  have hT : ∀ σ : Equiv.Perm (Fin (r + 1)), T (σ * τ) = - T σ := by
+    intro σ
+    have h0 : (σ * τ) 0 = σ u.succ := by simp [τ, Equiv.Perm.mul_apply]
+    have h1 : (σ * τ) u.succ = σ 0 := by simp [τ, Equiv.Perm.mul_apply]
+    have hprod : ∏ t ∈ Finset.univ.erase u, N t ((σ * τ) t.succ) = ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) := by
+      refine Finset.prod_congr rfl (fun t ht => ?_)
+      have htu : t ≠ u := Finset.ne_of_mem_erase ht
+      rw [Equiv.Perm.mul_apply, Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero t) (fun h => htu (Fin.succ_injective _ h))]
+    have hsign : ((Equiv.Perm.sign (σ * τ) : ℤ) : ℝ) = - ((Equiv.Perm.sign σ : ℤ) : ℝ) := by
+      rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hτne]
+      push_cast
+      ring
+    simp only [T]
+    rw [h0, h1, hprod, hsign, hH u (σ u.succ) (σ 0)]
+    ring
+  have hS : ∑ σ, T σ = ∑ σ, T (σ * τ) := (Equiv.sum_comp (Equiv.mulRight τ) T).symm
+  have hS' : ∑ σ, T σ = - ∑ σ, T σ := by
+    calc ∑ σ, T σ = ∑ σ, T (σ * τ) := hS
+      _ = ∑ σ, - T σ := Finset.sum_congr rfl (fun σ _ => hT σ)
+      _ = - ∑ σ, T σ := Finset.sum_neg_distrib _
+  have : ∑ σ, T σ = 0 := by linarith
+  exact this
+
+## Key steps
+
+1. Distribute sgn σ and exchange the sums (Finset.mul_sum, Finset.sum_comm): reduce to S_u := Σ_σ sgn σ·(H_u(σ 0, σ u.succ)·Π_{t ≠ u} N_{t,σ(t.succ)}) = 0 for each u.
+2. τ := swap 0 u.succ is a transposition (u.succ ≠ 0): sgn(σ*τ) = −sgn σ, (σ*τ)(0) = σ(u.succ), (σ*τ)(u.succ) = σ(0), (σ*τ)(t.succ) = σ(t.succ) for t ≠ u.
+3. With the symmetry of H_u, T_u(σ*τ) = −T_u(σ) for every σ.
+4. Reindex by the bijection σ ↦ σ*τ (Equiv.mulRight, Equiv.sum_comp): S_u = −S_u, hence S_u = 0 and the total sum is 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project, project_commit d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git rev-parse HEAD (= project_commit)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (both identical)`
+- `python3 -I over dag.json: nodes under root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1 (piola_identity at depth 4 with no deps; minor_ibp_smooth depends on it); regex piola|hessian|schwarz|symm|cofactor|leibniz|laplace|det_|perm|sign|swap|finsetProd|fderiv_sum|prod_rule|product rule|second deriv|isSymmSnd over titles, lean names and statements; duplicate lean_name scan (none)`
+- `grep deformation_ipl_mwc_pi_ over dag.json, nodes/, GMT/, the snapshot project and simongmt/Poincare; git log --all -S deformation_ipl_mwc_pi_ (no match)`
+- `rg -n 'isSymmSndFDerivAt|IsSymmSndFDerivAt|det_succ_row_zero|Piola|piola|cofactor' over simongmt/Poincare and the snapshot project`
+- `rg -n in the snapshot Mathlib: 'theorem det_succ_row_zero|theorem det_apply'|theorem det_transpose' (LinearAlgebra/Matrix/Determinant/Basic.lean); 'theorem ContDiffAt.isSymmSndFDerivAt|def IsSymmSndFDerivAt' (Analysis/Calculus/FDeriv/Symmetric.lean); 'theorem HasFDerivAt.finsetProd|theorem fderiv_finsetProd|theorem HasFDerivAt.const_mul' (FDeriv/Mul.lean); 'theorem fderiv_clm_apply' (FDeriv/CompCLM.lean); 'theorem HasFDerivAt.sum|theorem fderiv_sum' (FDeriv/Add.lean); 'theorem sign_mul|theorem sign_swap' (GroupTheory/Perm/Sign.lean); 'theorem prod_univ_succ' (Algebra/BigOperators/Fin.lean)`
+- `lake env lean /tmp/piola_decomp/build/Avail.lean and Names.lean (#check of every cited name under import GMT.Ch06.Submission); Closure.lean (#check of the SimonGMT Chapter08 Piola lemma under the frozen import)`
+- `git show 3ceb8b21a8d3961c1d9a4aad2075a7d209773632:GMT/Ch06/Submission.lean | grep (how accepted children are declared)`
+- `python3 -I /tmp/piola_decomp/scripts/gen.py (verifier lean_contract.validate_lean_statement plus gmt-compare child_modules in contract mode) and lake env lean on the four /tmp/piola_decomp/build/*_challenge.lean`
+- `lake env lean on /tmp/piola_decomp/build/Assembly.lean, RefImpl2.lean, RefImpl2Compare.lean and Iso_{cofactor_leibniz,hessian_symm,fderiv_sum_prod,swap_cancel}.lean, with #print axioms`
+- `python3 -I /tmp/piola_decomp/scripts/build_payload.py (re-validates key and name patterns and lean statements, and embeds the verified scripts)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyPiola.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/GroupTheory/Perm/Sign.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/BigOperators/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/piola_decomp/build/Avail.lean`
+- `/tmp/piola_decomp/build/Names.lean`
+- `/tmp/piola_decomp/build/Closure.lean`
+- `/tmp/piola_decomp/build/cofactor_leibniz_challenge.lean`
+- `/tmp/piola_decomp/build/hessian_symm_challenge.lean`
+- `/tmp/piola_decomp/build/fderiv_sum_prod_challenge.lean`
+- `/tmp/piola_decomp/build/swap_cancel_challenge.lean`
+- `/tmp/piola_decomp/build/Assembly.lean`
+- `/tmp/piola_decomp/build/RefImpl2.lean`
+- `/tmp/piola_decomp/build/RefImpl2Compare.lean`
+- `/tmp/piola_decomp/build/Iso_cofactor_leibniz.lean`
+- `/tmp/piola_decomp/build/Iso_hessian_symm.lean`
+- `/tmp/piola_decomp/build/Iso_fderiv_sum_prod.lean`
+- `/tmp/piola_decomp/build/Iso_swap_cancel.lean`
+- `/tmp/piola_decomp/scripts/gen.py`
+- `/tmp/piola_decomp/scripts/build_payload.py`
+
+The pinned revisions are confirmed: HEAD = project_commit d8d46c95, and Contract, Submission and the snapshot Contract are byte-identical.
+
+Nothing existing can be reused. No DAG node, no SimonGMT lemma in the frozen import closure and no Mathlib lemma states the Piola identity, the restricted Leibniz cofactor formula or the swap cancellation. SimonGMT Chapter08 ConstancyPiola (chartTangentialDivergence_coordinate_test) is a different identity, for varifold charts, and is an unknown identifier under import GMT.Ch06.Submission. Chapter06 FormsDuality only uses det_succ_row_zero for wedgeCovectors_apply_det.
+
+Every Mathlib name the children need exists in the snapshot and elaborates under the frozen import: Matrix.det_succ_row_zero, Matrix.det_apply', Matrix.det_transpose, Fin.prod_univ_succ, Pi.single_apply, ContDiffAt.isSymmSndFDerivAt, ContDiff.fderiv_right, ContDiff.differentiable, fderiv_clm_apply, HasFDerivAt.finsetProd, HasFDerivAt.const_mul, HasFDerivAt.sum, Equiv.Perm.sign_mul, Equiv.Perm.sign_swap, Equiv.swap_apply_of_ne_of_ne, Equiv.mulRight, Equiv.sum_comp and Fintype.sum_ite_eq. Use sum_apply and smul_apply: ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, coe_sum' and coe_smul' are deprecated.
+
+Accepted children are declared as theorem Submission.X inside namespace GMT.Ch06. The four new names deformation_ipl_mwc_pi_{cofactor_leibniz,hessian_symm,fderiv_sum_prod,swap_cancel} collide with nothing.
+
+Lean checks:
+- All four statements validate and elaborate in the generated comparator challenge modules (exit 0).
+- The parent compiles from the four sorry'd children.
+- A sorry-free, warning-free reference implementation of the four children and the parent compiles.
+- Each child's script compiles in isolation.
+- The comparator-style exact Submission.X check passes for all five frozen types.
+- #print axioms reports only propext, Classical.choice and Quot.sound.

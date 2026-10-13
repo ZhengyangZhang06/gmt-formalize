@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1.swap_cancel-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1",
+  "depth": 5,
+  "title": "Cancellation of the alternating sum against a symmetric kernel via σ ↦ σ∘(0 u+1) (parent Step 4)",
+  "statement": "Let r ∈ ℕ, let H : Fin r → Fin (r+1) → Fin (r+1) → ℝ satisfy H_u(i, j) = H_u(j, i) for all u ∈ Fin r and i, j ∈ Fin (r+1), and let N : Fin r → Fin (r+1) → ℝ be arbitrary. For a permutation σ of Fin (r+1) let sgn σ ∈ {1, −1} ⊂ ℝ be its sign; let 0 be the first element of Fin (r+1) and t.succ = t+1 for t ∈ Fin r. Then Σ_{σ ∈ Perm(Fin (r+1))} sgn σ · Σ_{u ∈ Fin r} H_u(σ(0), σ(u.succ)) · Π_{t ∈ Fin r, t ≠ u} N_{t, σ(t.succ)} = 0, where the product runs over Finset.univ.erase u.",
+  "lean_statement": "∀ (r : ℕ) (H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ) (N : Fin r → Fin (r + 1) → ℝ), (∀ u i j, H u i j = H u j i) → ∑ σ : Equiv.Perm (Fin (r + 1)), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ u : Fin r, H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) = 0",
+  "lean_name": "deformation_ipl_mwc_pi_swap_cancel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-9dbfe8dff5-a1"
+}

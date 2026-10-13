@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem det_succ_row_zero|theorem det_apply|theorem det_transpose",
+        "def IsSymmSndFDerivAt|theorem ContDiffAt.isSymmSndFDerivAt|theorem fderiv_clm_apply|theorem HasFDerivAt.finsetProd|theorem HasFDerivAt.const_mul|theorem HasFDerivAt.sum",
+        "theorem sign_mul|theorem sign_swap|theorem prod_univ_succ|def of|abbrev of",
+        "fderiv_right",
+        "piola|cofactor_leibniz|hessian_symm|fderiv_sum_prod|swap_cancel",
+        "\"lean_name\": \"deformation_ipl_mwc_pi_(cofactor_leibniz|hessian_symm|fderiv_sum_prod|swap_cancel)\"",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/piola_independent_audit_fz1jfxnj/complete_assembly.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/piola_independent_audit_fz1jfxnj/parent_from_hypotheses.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/GroupTheory/Perm/Sign.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/BigOperators/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/piola_independent_audit_fz1jfxnj/cofactor_leibniz_isolated.lean",
+        "/tmp/piola_independent_audit_fz1jfxnj/hessian_symm_isolated.lean",
+        "/tmp/piola_independent_audit_fz1jfxnj/fderiv_sum_prod_isolated.lean",
+        "/tmp/piola_independent_audit_fz1jfxnj/swap_cancel_isolated.lean",
+        "/tmp/piola_independent_audit_fz1jfxnj/parent_from_hypotheses.lean",
+        "/tmp/piola_independent_audit_fz1jfxnj/complete_assembly.lean"
+      ],
+      "conclusion": "Confirmed project revision d8d46c9587747dee0751a1f780fcafdba16a3886 and mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d. Relevant snapshot sources match the compiling package files; Submission matches the frozen Contract. The snapshot project search found no matching Piola helpers. DAG and proposal searches found no competing reservations for the four bare identifiers. All four one-line contracts pass validation and independently elaborate as Prop before their implementations. Each supplied proof compiles in isolation under the frozen comparator scope, and exact-type checks pass. Both the complete supplied assembly and the parent proved from the four contracts as hypotheses compile; axiom reports contain only propext, Classical.choice and Quot.sound. The split appropriately separates four independent obligations, with no cyclic dependencies. Retained regularity and finite-sum regrouping establish precisely the selected parent, including repeated directions and r = 0. Matrix.of constructions and sign casts are correct; no problematic IsUnit construction occurs. Public background consulted: [arXiv:2211.06952, §7.2, Lemma 7.2](https://arxiv.org/pdf/2211.06952); its invertibility-based argument is unnecessary for the supplied proof."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cofactor_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree on every parameter, sign, index and empty-product convention. Laplace expansion of the auxiliary matrix isolates column q; Leibniz expansion through the transpose and splitting row zero give exactly the stated permutation sum. The complete proof is independent of all children and the parent, and its supplied Lean script passes isolated compilation."
+    },
+    {
+      "key": "hessian_symm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C² hypothesis and all three vectors are explicitly quantified in both statements. C² regularity makes Df differentiable; differentiating evaluation at a constant vector gives D²f(x)(v)(u). Schwarz symmetry then gives the exact reversed expression. The proof contains no missing regularity assumption or circular dependence, and its supplied script compiles independently."
+    },
+    {
+      "key": "fderiv_sum_prod",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-type instance, scalar coefficients, pointwise differentiability assumptions and erased-index products match the prose exactly. The supplied proof constructs the derivative by the finite product rule, constant multiplication and finite summation, then evaluates at v and commutes real factors. Empty index sets are covered. No additional smoothness or sibling result is assumed; isolated compilation passes."
+    },
+    {
+      "key": "swap_cancel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean type exactly expresses the stated symmetry hypothesis and alternating sum. Right composition with swap(0,u.succ) reverses the sign, exchanges the kernel arguments and fixes every retained product factor. Reindexing yields S_u = -S_u, which implies zero over ℝ. The proof handles r = 0 and needs no injectivity or invertibility assumptions. It is complete, non-circular and independently compiles."
+    }
+  ],
+  "required_changes": []
+}
