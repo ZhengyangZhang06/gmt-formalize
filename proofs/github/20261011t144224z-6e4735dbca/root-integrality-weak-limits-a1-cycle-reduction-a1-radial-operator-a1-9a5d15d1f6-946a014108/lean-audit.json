@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bfcd5cfc2261d97abe537cca40213fe2fbbce259f5bfb53a7d52d7623d07d059",
+  "git_delta": {
+    "base_commit": "3b17b61b3ee3c13dda23ae3ae5aea4f7fe5b9c7f",
+    "candidate_commit": "12cdbc2068eaed22c35ff439880b5f7eec91e0ea",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ro_integrand_contDiff_fderiv",
+    "diff_sha256": "b7f56d0403e5f91b330cdc256fd3d99c78fa02eacc70ade823b6610357069a20",
+    "source_sha256": "710f824c68eab80a74c4dc438bf8a5834cbeb492290e929ee3e06a8266b85f00",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ro_integrand_contDiff_fderiv",
+      "statement": "∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × Eucl P => p.1 ^ a • (ω (p.1 • p.2)).curryLeft p.2) ∧ ∀ (t : ℝ) (x w : Eucl P) (v : Fin k → Eucl P), fderiv ℝ (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x w v = t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
