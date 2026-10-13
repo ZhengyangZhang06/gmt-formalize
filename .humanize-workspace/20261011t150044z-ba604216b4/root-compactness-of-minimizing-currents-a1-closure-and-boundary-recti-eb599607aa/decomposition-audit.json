@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_cp_dir_|dgcr_bwd_extDeriv_smul_const",
+        "theorem toDual_symm_apply|inner_right_of_mem_orthogonal|theorem Continuous.integrable_of_hasCompactSupport|theorem HasCompactSupport.fderiv_apply|theorem span_induction|class IsFiniteMeasureOnCompacts|theorem integral_const_mul |theorem integral_congr_ae|def toContinuousLinearMap|theorem fderiv_mul_const",
+        "continuous_fderiv",
+        "python3 -I /tmp/directional-independent-audit/prepare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/directional-independent-audit/ChallengesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/directional-independent-audit/ProofsAndParent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-eb599607aa/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-eb599607aa/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2/accepted-candidate.json",
+        "/tmp/directional-independent-audit/ChallengesAndAssembly.lean",
+        "/tmp/directional-independent-audit/ProofsAndParent.lean",
+        "/tmp/directional-independent-audit/wedge_riesz.lean",
+        "/tmp/directional-independent-audit/span_vanishing.lean",
+        "/tmp/directional-independent-audit/cycle_pairing.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected directional theorem. The pinned definitions match the workspace; no proposed declaration name occurs in the frozen project snapshot. Current DAG checks confirm three fresh names and valid comparator-accepted reuse of the byte-identical exterior-derivative type. All names are bare identifiers. The dependency graph is acyclic and correctly directed. All four exact one-line propositions elaborate independently before their implementations. Independently compiled supplied proofs, isolated new-child proofs, and an assembly using only the three new contracts as hypotheses establish the exact frozen parent. Riesz vectors generate V; cycle_pairing and span_vanishing prove (a), and wedge_riesz with orthogonality proves (b). Typeclass-sensitive constructions elaborate correctly. Axiom checks report only propext, Classical.choice and Quot.sound. The handoff and required contract digest match."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "extderiv_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match, including pointwise differentiability. Comparator acceptance and identical reuse type are verified. The proof establishes differentiability of the form, expands its exterior derivative, differentiates each scalar evaluation, and converts integer scalar multiplication to the stated real factors. It is complete and non-circular."
+    },
+    {
+      "key": "wedge_riesz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact quantified contract matches the prose. The proof constructs the wedge covector, establishes its formula, uniqueness and linearity, then applies finite-dimensional continuity and Riesz representation. This proves the property for every permitted w and γ. Its sole child dependency is extderiv_smul; the isolated supplied proof compiles."
+    },
+    {
+      "key": "span_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All measure, smoothness, support and generator hypotheses appear in both statements. Continuous compactly supported directional derivatives are integrable because ν is finite on compacts. This justifies integral additivity; scalar homogeneity and span induction complete the argument. No undeclared dependency or gap remains, and the isolated supplied proof compiles."
+    },
+    {
+      "key": "cycle_pairing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact Lean type. The proof constructs the test form φα, uses extderiv_smul and the Riesz representative of Dφ to establish the pointwise pairing, then applies integral congruence and the cycle hypothesis. Integral congruence needs no integrability assumption, so omitting finiteness on compacts here is sound. The assumed vector property is supplied by wedge_riesz during parent assembly, without circularity. The isolated supplied proof compiles."
+    }
+  ],
+  "required_changes": []
+}

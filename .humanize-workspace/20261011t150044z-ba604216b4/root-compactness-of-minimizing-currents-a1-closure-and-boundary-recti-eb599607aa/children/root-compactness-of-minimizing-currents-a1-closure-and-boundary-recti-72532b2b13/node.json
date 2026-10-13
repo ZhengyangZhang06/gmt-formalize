@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1.span_vanishing-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1",
+  "depth": 6,
+  "title": "Vanishing of ∫Dφ[v]dν on a set of directions extends to its span",
+  "statement": "Let P ∈ ℕ, ν a Borel measure on ℝ^P with ν(K) < ∞ for every compact K, φ : ℝ^P → ℝ a C^∞ function with compact support, and S ⊆ ℝ^P a set of vectors such that ∫Dφ(y)[v]dν(y) = 0 for every v ∈ S. Then ∫Dφ(y)[v]dν(y) = 0 for every v in the linear span of S.",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (φ : Euclid P → ℝ) (S : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ v ∈ S, ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ v ∈ Submodule.span ℝ S, ∫ y, fderiv ℝ φ y v ∂ν = 0",
+  "lean_name": "cbr_ci_cp_dir_integral_fderiv_span",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-72532b2b13-a1"
+}
