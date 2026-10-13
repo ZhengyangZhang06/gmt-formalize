@@ -768,6 +768,230 @@ theorem Submission.dr_cc_lip_at_union : ∀ (X Y : Type) [PseudoMetricSpace X] [
   obtain ⟨k, hk⟩ := Set.mem_iUnion.1 (hB hy')
   exact hrb k y' ⟨hk, hy'⟩ (hdist.trans_le (hδr k))
 
+/-- Simon Ch. 6, Lemma 5.4, claim (3) (pp. 162–163), as a pointwise upper Lipschitz bound.  Let
+`ψ₀` satisfy (S1) (`ψ₀ x = x` on `C ∖ La` where `ℓ` coordinates lie in `{0, 1}`) and (S2) (on each
+face of dimension `≥ m + 2`, `ψ₀` is constant along the rays from its centre `c` up to its
+boundary).  Then near `x ∈ C ∖ La`, `|ψ₀ x' - ψ₀ x| ≤ (c₁ / dist(x, La) + ε) |x' - x|`.
+
+Induction on the dimension `j` of the faces `F` of `C = [0,1]^d`, with
+`c₁(j) = β r q^(j - (m + 2))`, `r = √d`, `β = 1 + 4r`, `q = 4rβ`.  On `F ∖ La`, `ψ₀ = ψ₀ ∘ g` for
+the radial projection `g` from `c` onto `∂F` (S2).  For `j = m + 2`, `ψ₀ = g` there (S1).  For
+`j + 1`, the bound at `g x` on the facets through `g x` glues to `∂F ∖ La` and composes with that
+of `g`.  Finally `dist(g x, La) ≥ min(1/4, s dist(x, La))` turns `β s c₁(j) / dist(g x, La)` into
+`c₁(j + 1) / dist(x, La)`. -/
+theorem Submission.dr_cc_pointwise_lip :
+    ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ c₁ : ℝ, 0 ≤ c₁ ∧ ∀ a : Eucl (m + 1 + ℓ), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) →
+      ∀ La : Set (Eucl (m + 1 + ℓ)),
+        La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧
+          ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} →
+      ∀ ψ₀ : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
+        (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+          (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, x i = 0 ∨ x i = 1) → ψ₀ x = x) →
+        (∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), m + 2 ≤ J.card →
+          (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i, 0 ≤ x i ∧ x i ≤ 1) →
+          x ∉ La → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s →
+          (∀ i, y i - c i = s * (x i - c i)) → (∃ i ∈ J, y i = 0 ∨ y i = 1) → ψ₀ y = ψ₀ x) →
+        ∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → ∀ ε : ℝ, 0 < ε →
+          ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La →
+            dist x' x < δ → dist (ψ₀ x') (ψ₀ x) ≤ (c₁ / infDist x La + ε) * dist x' x := by
+  intro m ℓ hℓ
+  -- Constants: `r = √d ≥ 1`, `β = 1 + 4r ≤ q = 4rβ`, `c₁(j) = β r q^(j - (m + 2))`, `c₁ = c₁(d)`.
+  obtain ⟨r, hr⟩ : ∃ r : ℝ, Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ) = r := ⟨_, rfl⟩
+  have hr1 : 1 ≤ r := by
+    rw [← hr, Real.one_le_sqrt]
+    exact_mod_cast (show 1 ≤ m + 1 + ℓ by omega)
+  have hr0 : 0 ≤ r := by linarith
+  have hβ : 0 < 1 + 4 * r := by linarith
+  have hq : 0 < 4 * r * (1 + 4 * r) := mul_pos (by linarith) hβ
+  have hβq : 1 + 4 * r ≤ 4 * r * (1 + 4 * r) := by nlinarith
+  refine ⟨(1 + 4 * r) * r * (4 * r * (1 + 4 * r)) ^ (m + 1 + ℓ - (m + 2)), by positivity, ?_⟩
+  intro a ha La hLa ψ₀ hS1 hS2
+  -- `La` is closed, contains the centre of every face of dimension `≥ m + 2` (so `a ∈ La`), and
+  -- has the cone property; so `dist(z, La) > 0` for `z ∉ La`.
+  obtain ⟨hLac, hcLa, hcone⟩ := Submission.dr_cc_skeleton_facts m ℓ a ha La hLa
+  have hLane : La.Nonempty :=
+    ⟨a, hcLa Finset.univ a (by rw [Finset.card_univ, Fintype.card_fin]; omega) fun i _ => rfl⟩
+  have hdpos : ∀ z, z ∉ La → 0 < infDist z La := fun z hz =>
+    (hLac.notMem_iff_infDist_pos hLane).1 hz
+  -- A face `(J, c)` (`c i = a i` on `J`, `c i ∈ {0, 1}` off `J`) has point set
+  -- `F = {x ∈ C : x i = c i for i ∉ J}`.  For `|J| ≥ m + 2`, the radial map `g` from `c ∈ La`
+  -- sends `F ∖ La` into `∂F ∖ La` with `ψ₀ ∘ g = ψ₀` there (S2), and is `β s`-Lipschitz at `x`.
+  have setup : ∀ (J : Finset (Fin (m + 1 + ℓ))) (c : Eucl (m + 1 + ℓ)), m + 2 ≤ J.card →
+      (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) →
+      ∃ g : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
+        (∀ x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) →
+          x' ∉ La → (∀ i, 0 ≤ g x' i ∧ g x' i ≤ 1) ∧ (∀ i ∉ J, g x' i = c i) ∧
+            (∃ i ∈ J, g x' i = 0 ∨ g x' i = 1) ∧ g x' ∉ La ∧ ψ₀ (g x') = ψ₀ x') ∧
+        ∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → (∀ i ∉ J, x i = c i) → x ∉ La →
+          ∃ s : ℝ, 0 < s ∧ (∀ i, g x i - c i = s * (x i - c i)) ∧ s * infDist x La ≤ r ∧
+            ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl (m + 1 + ℓ),
+              (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) → dist x' x < δ →
+              dist (g x') (g x) ≤ ((1 + 4 * r) * s + ε) * dist x' x := by
+    intro J c hJ hcJ hcJc
+    obtain ⟨g, hg⟩ := Submission.dr_cc_radial_map (m + 1 + ℓ) a ha J c hcJ
+    have hc : c ∈ La := hcLa J c hJ hcJ
+    refine ⟨g, fun x' hx'C hx'F hx'La => ?_, fun x hxC hxF hxLa => ?_⟩
+    · obtain ⟨hgC, hgJ, s', hs', hscale, -⟩ := hg x' hx'C hx'F fun h => hx'La (h ▸ hc)
+      have hgF : ∀ i ∉ J, g x' i = c i := fun i hi => by
+        have h := hscale i
+        rwa [hx'F i hi, sub_self, mul_zero, sub_eq_zero] at h
+      exact ⟨hgC, hgF, hgJ, fun h => hx'La (hcone J c x' (g x') s' hcJ hcJc hx'F hgC hs' hscale h),
+        hS2 J c x' (g x') s' hJ hcJ hcJc hx'C hx'La hx'F hgC hs' hscale hgJ⟩
+    · obtain ⟨-, -, s, hs, hscale, hsr, hlip⟩ := hg x hxC hxF fun h => hxLa (h ▸ hc)
+      rw [hr] at hsr hlip
+      exact ⟨s, hs, hscale,
+        (mul_le_mul_of_nonneg_left (infDist_le_dist_of_mem hc) hs.le).trans hsr, hlip⟩
+  -- Claim `P(j)`: on every face of dimension `j ≥ m + 2`, `ψ₀` is `c₁(j) / dist(x, La)`-Lipschitz
+  -- at every `x ∈ F ∖ La` within `F ∖ La`.
+  have key : ∀ j : ℕ, m + 2 ≤ j → ∀ (J : Finset (Fin (m + 1 + ℓ))) (c : Eucl (m + 1 + ℓ)),
+      J.card = j → (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) →
+      ∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → (∀ i ∉ J, x i = c i) → x ∉ La →
+      ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl (m + 1 + ℓ),
+        (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) → x' ∉ La → dist x' x < δ →
+        dist (ψ₀ x') (ψ₀ x) ≤
+          ((1 + 4 * r) * r * (4 * r * (1 + 4 * r)) ^ (j - (m + 2)) / infDist x La + ε) *
+            dist x' x := by
+    intro j hj
+    induction j, hj using Nat.le_induction with
+    | base =>
+      -- `|J| = m + 2`: `g` lands where `ℓ` coordinates lie in `{0, 1}`, so `ψ₀ = g` on `F ∖ La`
+      -- by (S1), and `β s ≤ β r / dist(x, La)` as `s dist(x, La) ≤ s |x - c| ≤ r`.
+      intro J c hJc hcJ hcJc x hxC hxF hxLa ε hε
+      obtain ⟨g, hgA, hgx⟩ := setup J c hJc.ge hcJ hcJc
+      have hψg : ∀ z : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ z i ∧ z i ≤ 1) → (∀ i ∉ J, z i = c i) →
+          z ∉ La → ψ₀ z = g z := by
+        intro z hzC hzF hzLa
+        obtain ⟨hgzC, hgzF, ⟨i, hiJ, hi⟩, hgzLa, hψ⟩ := hgA z hzC hzF hzLa
+        rw [← hψ]
+        refine hS1 (g z) hgzC hgzLa ⟨insert i (Finset.univ \ J), ?_, fun k hk => ?_⟩
+        · rw [Finset.card_insert_of_notMem (by simp [hiJ]), Finset.card_univ_sdiff,
+            Fintype.card_fin, hJc]
+          omega
+        · rcases Finset.mem_insert.1 hk with rfl | hk
+          · exact hi
+          · have hkJ : k ∉ J := (Finset.mem_sdiff.1 hk).2
+            rw [hgzF k hkJ]
+            exact hcJc k hkJ
+      obtain ⟨s, hs, -, hsr, hlip⟩ := hgx x hxC hxF hxLa
+      obtain ⟨δ, hδ, hδlip⟩ := hlip ε hε
+      refine ⟨δ, hδ, fun x' hx'C hx'F hx'La hx'x => ?_⟩
+      rw [hψg x' hx'C hx'F hx'La, hψg x hxC hxF hxLa]
+      refine (hδlip x' hx'C hx'F hx'x).trans
+        (mul_le_mul_of_nonneg_right (add_le_add ?_ le_rfl) dist_nonneg)
+      rw [Nat.sub_self, pow_zero, mul_one, le_div_iff₀ (hdpos x hxLa)]
+      nlinarith [mul_le_mul_of_nonneg_left hsr hβ.le]
+    | succ j hj ih =>
+      intro J c hJc hcJ hcJc x hxC hxF hxLa
+      obtain ⟨g, hgA, hgx⟩ := setup J c (by omega) hcJ hcJc
+      obtain ⟨s, hs, hscale, hsr, hlip⟩ := hgx x hxC hxF hxLa
+      obtain ⟨hyC, hyF, -, hyLa, hψy⟩ := hgA x hxC hxF hxLa
+      have hdx := hdpos x hxLa
+      have hdy := hdpos (g x) hyLa
+      -- `ψ₀` is `c₁(j) / dist(g x, La)`-Lipschitz at `g x` within `∂F ∖ La`: `P(j)` on each facet
+      -- `F ∩ {y i = b}` (`i ∈ J`, `b ∈ {0, 1}`) through `g x`, glued over the finitely many facets.
+      have hψB : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ {y' : Eucl (m + 1 + ℓ) |
+          (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ (∀ i ∉ J, y' i = c i) ∧ (∃ i ∈ J, y' i = 0 ∨ y' i = 1) ∧
+            y' ∉ La}, dist y' (g x) < δ → dist (ψ₀ y') (ψ₀ (g x)) ≤
+          ((1 + 4 * r) * r * (4 * r * (1 + 4 * r)) ^ (j - (m + 2)) / infDist (g x) La + ε) *
+            dist y' (g x) := by
+        have hcoord : ∀ k : Fin (m + 1 + ℓ), Continuous fun y' : Eucl (m + 1 + ℓ) => y' k :=
+          fun k => PiLp.continuous_apply 2 _ k
+        refine Submission.dr_cc_lip_at_union (Eucl (m + 1 + ℓ)) (Eucl (m + 1 + ℓ))
+          (Fin (m + 1 + ℓ) × Bool) (fun p => {y' : Eucl (m + 1 + ℓ) | (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧
+            (∀ i ∉ J, y' i = c i) ∧ p.1 ∈ J ∧ y' p.1 = if p.2 then 1 else 0}) _ ψ₀ (g x) _
+          (fun p => ?_) ?_ ?_
+        · -- Each facet is closed.
+          have h1 : IsClosed {y' : Eucl (m + 1 + ℓ) | ∀ i, 0 ≤ y' i ∧ y' i ≤ 1} := by
+            simp only [Set.ofPred_forall]
+            exact isClosed_iInter fun i => (isClosed_le continuous_const (hcoord i)).inter
+              (isClosed_le (hcoord i) continuous_const)
+          have h2 : IsClosed {y' : Eucl (m + 1 + ℓ) | ∀ i ∉ J, y' i = c i} := by
+            simp only [Set.ofPred_forall]
+            exact isClosed_iInter fun i =>
+              isClosed_iInter fun _ => isClosed_eq (hcoord i) continuous_const
+          exact h1.inter (h2.inter
+            (isClosed_const.inter (isClosed_eq (hcoord p.1) continuous_const)))
+        · -- The facets cover `∂F ∖ La`.
+          rintro y' ⟨hy'C, hy'F, ⟨i, hiJ, hi | hi⟩, -⟩
+          · exact Set.mem_iUnion.2 ⟨(i, false), hy'C, hy'F, hiJ, by simp [hi]⟩
+          · exact Set.mem_iUnion.2 ⟨(i, true), hy'C, hy'F, hiJ, by simp [hi]⟩
+        · -- The facet through `g x` is the face `(J.erase i, c')`, `c' i = b`, of dimension `j`.
+          rintro ⟨i, b⟩ hy ε hε
+          obtain ⟨-, -, hiJ, hyi⟩ : (∀ k, 0 ≤ g x k ∧ g x k ≤ 1) ∧ (∀ k ∉ J, g x k = c k) ∧
+              i ∈ J ∧ g x i = if b then 1 else 0 := hy
+          obtain ⟨c', hc'i, hc'k⟩ : ∃ c' : Eucl (m + 1 + ℓ),
+              c' i = (if b then 1 else 0) ∧ ∀ k ≠ i, c' k = c k :=
+            ⟨WithLp.toLp 2 fun k => if k = i then (if b then 1 else 0) else c k, by simp,
+              fun k hk => by simp [hk]⟩
+          have hF' : ∀ z : Eucl (m + 1 + ℓ), (∀ k ∉ J, z k = c k) →
+              z i = (if b then 1 else 0) → ∀ k ∉ J.erase i, z k = c' k := by
+            intro z hzF hzi k hk
+            by_cases hki : k = i
+            · rw [hki, hzi, hc'i]
+            · rw [hzF k fun h => hk (Finset.mem_erase.2 ⟨hki, h⟩), hc'k k hki]
+          obtain ⟨δ, hδ, hδlip⟩ := ih (J.erase i) c'
+            (by rw [Finset.card_erase_of_mem hiJ, hJc, Nat.add_sub_cancel])
+            (fun k hk => by
+              obtain ⟨hki, hkJ⟩ := Finset.mem_erase.1 hk
+              rw [hc'k k hki]
+              exact hcJ k hkJ)
+            (fun k hk => by
+              by_cases hki : k = i
+              · rw [hki, hc'i]
+                cases b <;> simp
+              · rw [hc'k k hki]
+                exact hcJc k fun h => hk (Finset.mem_erase.2 ⟨hki, h⟩))
+            (g x) hyC (hF' (g x) hyF hyi) hyLa ε hε
+          refine ⟨δ, hδ, fun y' hy' hy'y => ?_⟩
+          obtain ⟨⟨hy'C, hy'F, -, hy'i⟩, -, -, -, hy'La⟩ := hy'
+          exact hδlip y' hy'C (hF' y' hy'F hy'i) hy'La hy'y
+      -- Chain rule for `ψ₀ ∘ g`, which equals `ψ₀` on `F ∖ La`.
+      have hcomp := Submission.dr_cc_lip_at_comp (Eucl (m + 1 + ℓ)) (Eucl (m + 1 + ℓ))
+        (Eucl (m + 1 + ℓ)) g ψ₀
+        {x' : Eucl (m + 1 + ℓ) | (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) ∧ (∀ i ∉ J, x' i = c i) ∧ x' ∉ La}
+        {y' : Eucl (m + 1 + ℓ) | (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ (∀ i ∉ J, y' i = c i) ∧
+          (∃ i ∈ J, y' i = 0 ∨ y' i = 1) ∧ y' ∉ La}
+        x ((1 + 4 * r) * s)
+        ((1 + 4 * r) * r * (4 * r * (1 + 4 * r)) ^ (j - (m + 2)) / infDist (g x) La)
+        (by positivity) (by positivity)
+        (fun x' hx' => by
+          obtain ⟨hx'C, hx'F, hx'La⟩ := hx'
+          obtain ⟨h1, h2, h3, h4, -⟩ := hgA x' hx'C hx'F hx'La
+          exact ⟨h1, h2, h3, h4⟩)
+        (fun ε hε => by
+          obtain ⟨δ, hδ, h⟩ := hlip ε hε
+          exact ⟨δ, hδ, fun x' hx' hx'x => h x' hx'.1 hx'.2.1 hx'x⟩)
+        hψB
+      -- The constant: `β s c₁(j) / dist(g x, La) ≤ q c₁(j) / dist(x, La) = c₁(j + 1) / dist(x, La)`
+      -- by `dist(g x, La) ≥ min(1/4, s dist(x, La))` and `s dist(x, La) ≤ r`.
+      have hsim := Submission.dr_cc_similarity_bound m ℓ a ha La hLa J c x (g x) s hcJ hcJc hxF
+        hyC hs hscale
+      have hkey : (1 + 4 * r) * s * infDist x La ≤ 4 * r * (1 + 4 * r) * infDist (g x) La := by
+        rcases le_total (1 / 4) (s * infDist x La) with h14 | h14
+        · rw [min_eq_left h14] at hsim
+          nlinarith [mul_le_mul_of_nonneg_left hsr hβ.le, mul_le_mul_of_nonneg_left hsim hq.le]
+        · rw [min_eq_right h14] at hsim
+          nlinarith [mul_le_mul_of_nonneg_left hsim hq.le,
+            mul_le_mul_of_nonneg_right hβq (mul_nonneg hs.le hdx.le)]
+      have hQ : 0 ≤ (1 + 4 * r) * r * (4 * r * (1 + 4 * r)) ^ (j - (m + 2)) := by positivity
+      intro ε hε
+      obtain ⟨δ, hδ, hδlip⟩ := hcomp ε hε
+      refine ⟨δ, hδ, fun x' hx'C hx'F hx'La hx'x => ?_⟩
+      have h := hδlip x' ⟨hx'C, hx'F, hx'La⟩ hx'x
+      rw [(hgA x' hx'C hx'F hx'La).2.2.2.2, hψy] at h
+      refine h.trans (mul_le_mul_of_nonneg_right (add_le_add ?_ le_rfl) dist_nonneg)
+      rw [show j + 1 - (m + 2) = j - (m + 2) + 1 by omega, pow_succ, mul_div_assoc',
+        div_le_div_iff₀ hdy hdx]
+      nlinarith [mul_le_mul_of_nonneg_left hkey hQ]
+  -- `P(d)` on the face `C` itself (`J` = all indices, `c = a`) is the claim.
+  intro x hxC hxLa ε hε
+  obtain ⟨δ, hδ, h⟩ := key (m + 1 + ℓ) (by omega) Finset.univ a
+    (by rw [Finset.card_univ, Fintype.card_fin]) (fun i _ => rfl)
+    (fun i hi => absurd (Finset.mem_univ i) hi) x hxC (fun i hi => absurd (Finset.mem_univ i) hi)
+    hxLa ε hε
+  exact ⟨δ, hδ, fun x' hx'C hx'La hx'x =>
+    h x' hx'C (fun i hi => absurd (Finset.mem_univ i) hi) hx'La hx'x⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
