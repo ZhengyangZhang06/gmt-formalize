@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d5da79997145332fc397255f0d64a9f3411b44c015c8e38b0ec907831e55a6ad",
+  "git_delta": {
+    "base_commit": "e9d9b4d212f02499792f80d25a82223d4b9d7042",
+    "candidate_commit": "d9f36d24a35baead007d3b5b2d3ac98e4e9cfa59",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_product_integral_reduce",
+    "diff_sha256": "7a93f218cbdac0e514494798b692a025d63e8d83bd00856faac14dc21e8c841e",
+    "source_sha256": "4a8f5339eeaad545f8471fe6a0cd2f0587341b3b1de68bbc097d851558189eb7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_product_integral_reduce",
+      "statement": "∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ) (h f ψ₀ : ℝ → ℝ), (∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = h p.1) → (∀ t, t ∉ Ioo a b → f t = 0) → (∀ α, α ∉ Ioo c d → ψ₀ α = 0) → ∫ α, ψ₀ α = 1 → ∫ p : ℝ × ℝ, f p.1 * ψ₀ p.2 * H p = ∫ t, f t * h t",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
