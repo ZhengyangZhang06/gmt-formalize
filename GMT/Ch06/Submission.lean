@@ -433,6 +433,26 @@ theorem Submission.cmb_rb_abs_euclideanCovectorCoordinate_le :
       EuclideanSpace.basisFun_apply]
   · exact ite_nonneg (sq_nonneg _) le_rfl
 
+/-- Evaluation bound for an `n`-covector at an arbitrary tuple of vectors:
+`|φ(v)| ≤ (∑_β |dx^β(v)|) · |φ|`, summing over the increasing multi-indices `β`. -/
+theorem Submission.rpn_moc_abs_covector_apply_le :
+    ∀ (P n : ℕ) (φ : Covector (Eucl P) n) (v : Fin n → Eucl P), |φ v| ≤
+      (∑ β : SimonMultiIndex n P,
+        |wedgeCovectors n (fun j => (EuclideanSpace.proj (β j) : Eucl P →L[ℝ] ℝ)) v|) *
+        covectorEuclideanNorm φ := by
+  intro P n φ v
+  -- Evaluate the coordinate expansion `φ = ∑_β φ(e_β) dx^β` at `v`.
+  have hexp := DFunLike.congr_fun (Submission.cmb_covector_eq_sum_coord_smul_wedge P n φ) v
+  simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
+    smul_eq_mul] at hexp
+  -- Triangle inequality, then `|φ(e_β)| ≤ |φ|` termwise.
+  rw [hexp, Finset.sum_mul]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun β _ => ?_)
+  rw [abs_mul]
+  exact (mul_le_mul_of_nonneg_right
+    (Submission.cmb_rb_abs_euclideanCovectorCoordinate_le P n φ β) (abs_nonneg _)).trans_eq
+    (mul_comm _ _)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

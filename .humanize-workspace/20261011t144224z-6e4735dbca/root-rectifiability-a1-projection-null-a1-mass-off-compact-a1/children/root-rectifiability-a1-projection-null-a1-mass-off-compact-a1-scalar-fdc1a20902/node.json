@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1.scalar_test_form-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1",
+  "depth": 4,
+  "title": "A smooth compactly supported function times a constant covector is a test form in Dⁿ(U) (test-form claims of Steps 6–7 of the parent proof)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, let f : ℝ^P → ℝ be C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f, i.e. smooth of every finite order) with compact support (HasCompactSupport f) and tsupport f ⊆ U, and let θ ∈ Covector (Eucl P) n be a fixed n-covector. Then there is a test form φ ∈ Dⁿ(U) (φ : TestFormOn U n) with φ(x) = f(x)·θ for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (f : Eucl P → ℝ) (θ : Covector (Eucl P) n), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ U → ∃ φ : TestFormOn U n, ∀ x, (φ : DifferentialForm (Eucl P) n) x = f x • θ",
+  "lean_name": "rpn_moc_exists_testForm_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-mass-off-compact-a1-scalar-fdc1a20902-a1"
+}
