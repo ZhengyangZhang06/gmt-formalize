@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "depth": 3,
+  "title": "Tangent planes and orientations of an IMRep transfer to Borel supersets of subsets of its carrier",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let R = (M, θ, ξ) be an IMRep in U (Simon Ch. 6, 3.1: M = R.carrier, θ = R.mult, ξ = R.orient), and let B, C be Borel sets with B ⊆ M, B ⊆ C ⊆ U and Hⁿ(C ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]). Then for Hⁿ-a.e. x ∈ B there is a linear subspace Q of ℝ^P such that C has approximate tangent space Q at x (HasApproximateTangentSpaceAt n C x Q) and ξ(x) is a unit orientation of Q (IsUnitOrientationOf (ξ x) Q).",
+  "lean_statement": "∀ (P n : ℕ) (U B C : Set (Euclid P)) (R : IMRep U n), IsOpen U → MeasurableSet B → MeasurableSet C → B ⊆ R.carrier → B ⊆ C → C ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (C ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict B), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n C x Q ∧ IsUnitOrientationOf (R.orient x) Q",
+  "lean_name": "rsdic_imrep_ae_tangent_orient_of_subset",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-imrep-tangent-transfer-a1-a1"
+}
