@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97a5c5bcc82af616da68d6948c9b31f2e9bb7d818106aaf019b8e81b74c0c213",
+  "git_delta": {
+    "base_commit": "a51a69af98a60d185cf39853f0c7f29822d21c71",
+    "candidate_commit": "5123f7ebeb2df21b4cddb6de26f4d6c162f10ee3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_ftd_plane_ball_measure",
+    "diff_sha256": "4362957983ca86e6b64212e9be8895ba0d2226ad3af55df98d2e31b442a5c9a3",
+    "source_sha256": "106c463ace813cba96b4c5d81a04d2d50ff1a29413e977031bc384b1ab17770d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_ftd_plane_ball_measure",
+      "statement": "∀ (N m : ℕ) (Q : Submodule ℝ (Euclid N)), Module.finrank ℝ Q = m → ∀ s : ℝ, 0 < s → μHE[m] ((Q : Set (Euclid N)) ∩ ball 0 s) = unitBallVolume m * ENNReal.ofReal (s ^ m)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
