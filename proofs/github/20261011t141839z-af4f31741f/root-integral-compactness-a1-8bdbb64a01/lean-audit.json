@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6b699597774bca07aee2b4325edb54f18bb8e86b5c2b850d979c15318b95c2bc",
+  "git_delta": {
+    "base_commit": "8657a608c220f8b0bf1788f060a9e69994b00371",
+    "candidate_commit": "2cde3ae11f2d8f8bae1148af137e6d3ad6c3d891",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "7352c34e786c39f3b5372cfca5b0d0ca2a85c8b6e3106718713ba17157e18fb2",
+    "source_sha256": "16f8bec9ad9401c6cc2cde073eff564b8ce74b535e8cfcbc9ac54bd54f793c20",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.integral_compactness_theorem",
+      "statement": "IntegralCompactnessTheorem",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
