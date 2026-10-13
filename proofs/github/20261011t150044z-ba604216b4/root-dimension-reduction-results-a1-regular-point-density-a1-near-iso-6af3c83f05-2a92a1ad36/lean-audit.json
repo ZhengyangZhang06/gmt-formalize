@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "908a2e39eb20e3d4d66fbcd884b89e13a7866b515f8f0721da49b8aec87cb634",
+  "git_delta": {
+    "base_commit": "5b5806ecdfd46ce36637a03ab00560941d926d31",
+    "candidate_commit": "3e2c9c336ac44f230114b32f7982af03135a9b65",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_rpd_near_isometric_chart",
+    "diff_sha256": "2cebe419e40b586e0ae8f117e44e583cab1b0e7fe5ef29da8161a39538079a84",
+    "source_sha256": "707f484d340813bd17d8e528704b73d4634c6ad64987ec80e755431e75cc2a6e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_rpd_near_isometric_chart",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (z : Euclid P), IsEmbeddedSubmanifold 1 n M → z ∈ M → ∀ ε : ℝ, 0 < ε → ∃ (χ : Euclid n → Euclid P) (δ δ' : ℝ), 0 < δ ∧ 0 < δ' ∧ χ 0 = z ∧ (∀ a ∈ ball (0 : Euclid n) δ, ∀ b ∈ ball (0 : Euclid n) δ, (1 - ε) * ‖a - b‖ ≤ ‖χ a - χ b‖ ∧ ‖χ a - χ b‖ ≤ (1 + ε) * ‖a - b‖) ∧ χ '' ball 0 δ ⊆ M ∧ M ∩ ball z δ' ⊆ χ '' ball 0 δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
