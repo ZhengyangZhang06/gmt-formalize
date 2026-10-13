@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6670f7ea31ca4fa53d147be04171aee768e9febb591020886319ba9e59f50c5",
+  "git_delta": {
+    "base_commit": "1ee04d117a8d19c247dd4d8986c112e62ec03aa3",
+    "candidate_commit": "8c95cf70a0929f50fc5e1c6eee19999053f2018b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gt_fderiv_columns_sq_le_rows_sq",
+    "diff_sha256": "8098a2873581e6ec6264fa665c8181f59f614501f625c016ccd77063ac8075b2",
+    "source_sha256": "308376a91bf35e0b1393028ae658ff550f83edd87d93f298e01f8fc6665d1a30",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gt_fderiv_columns_sq_le_rows_sq",
+      "statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
