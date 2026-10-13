@@ -1240,6 +1240,97 @@ theorem Submission.dtc_mass_eq_measure : ∀ (P n : ℕ) (U W : Set (Euclid P)) 
       _ ≤ T.massOn W := iSup_le fun m => hcompact _
           ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
 
+/-- **Zero-dimensional minimizing currents vanish** (step 1 of the proof of Simon 7.3.1).  If
+`T ∈ 𝒟₀(U)` is minimizing in `A` and `spt T ⊆ A`, then `T = 0`, `spt T = ∅` and `M_W(T) = 0` for
+every `W`.  Let `T = τ(M, θ, ξ)`, suppose `p ∈ M` and put `R' = (M \ {p}, θ, ξ)`.  For every open
+`V ⊆ U` containing `p`, `M_V(T) = μ_{R'}(V) + θ(p) ≥ 1`, so `p ∈ spt T ⊆ A`.  Deleting `p` gives
+the integer multiplicity competitor `S = T − θ(p)ξ(p)δ_p = τ(R')` with `spt(S − T) ⊆ {p}`.  On a
+small ball `W ⊂⊂ U` about `p`, `μ_{R'}(W) < ∞` gives
+`M_W(S) = μ_{R'}(W) < μ_{R'}(W) + θ(p) = M_W(T)`, contradicting minimality.  Hence `M = ∅` and
+`T = 0`. -/
+theorem Submission.dtc_dim_zero_eq_zero : ∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → T = 0 ∧ T.support = ∅ ∧ ∀ W : Set (Euclid P), T.massOn W = 0 := by
+  intro P U A T hU hmin hsptA
+  obtain ⟨⟨R, hR⟩, hminT⟩ := hmin
+  -- a current vanishing on every admissible form of `W` has no mass in `W`
+  have hmass_zero : ∀ (S : GeometricCurrentOn U 0) (W : Set (Euclid P)),
+      (∀ ω ∈ massAdmissibleOn U 0 W, S ω = 0) → S.massOn W = 0 := by
+    intro S W hS
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (S ω) ≤ 0
+    rw [hS ω hω, ENNReal.ofReal_zero]
+  -- every `y ∈ U` is the centre of a ball `W` with `W ⊂⊂ U`
+  have hball : ∀ y ∈ U, ∃ ε > 0, CompactlyContained (ball y ε) U := by
+    intro y hy
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU y hy
+    have hcl : closure (ball y (ε / 2)) ⊆ closedBall y (ε / 2) := closure_ball_subset_closedBall
+    exact ⟨ε / 2, half_pos hε,
+      (isCompact_closedBall y (ε / 2)).of_isClosed_subset isClosed_closure hcl,
+      hcl.trans ((closedBall_subset_ball (half_lt_self hε)).trans hεU)⟩
+  -- the carrier `M` is empty
+  have hM : R.carrier = ∅ := by
+    by_contra hne
+    obtain ⟨p, hp⟩ := nonempty_iff_ne_empty.mpr hne
+    have hpU : p ∈ U := R.carrier_subset hp
+    have hθ : (R.mult p : ℝ≥0∞) ≠ 0 := by exact_mod_cast (R.mult_pos p hp).ne'
+    obtain ⟨R', -, -, -, hmeas, hact⟩ := Submission.dtc_dim_zero_erase_point P U R p hp
+    -- `M_V(T) = μ_{R'}(V) + θ(p)` for every open `V ⊆ U` containing `p`
+    have hmassV : ∀ V : Set (Euclid P), IsOpen V → V ⊆ U → p ∈ V →
+        T.massOn V = R'.measure V + (R.mult p : ℝ≥0∞) := by
+      intro V hV hVU hpV
+      rw [Submission.dtc_mass_eq_measure P 0 U V T R hU hV hVU hR, hmeas, Measure.add_apply,
+        Measure.smul_apply, Measure.dirac_apply_of_mem hpV, smul_eq_mul, mul_one]
+    -- `p ∈ spt T ⊆ A`: on an open `V ∋ p` where `T` vanishes, `M_V(T) = 0 < θ(p)`
+    have hpA : p ∈ A := by
+      refine hsptA ⟨hpU, fun hpZ => ?_⟩
+      obtain ⟨V, ⟨hVo, -, hVU, hvan⟩, hpV⟩ := mem_sUnion.mp hpZ
+      have h0 := hmass_zero T V fun ω hω => hvan ω hω.1
+      rw [hmassV V hVo (subset_closure.trans hVU) hpV] at h0
+      exact hθ (add_eq_zero.mp h0).2
+    -- the competitor `S = T − θ(p)ξ(p)δ_p` is represented by `R'`, and `S − T = −θ(p)ξ(p)δ_p`
+    obtain ⟨X, hX, -⟩ := Submission.dtc_point_current P 0 U p ((R.mult p : ℝ) • R.orient p) hU
+    obtain ⟨Y, hY, hYspt⟩ :=
+      Submission.dtc_point_current P 0 U p (-((R.mult p : ℝ) • R.orient p)) hU
+    have hS : R'.Represents (T - X) := by
+      intro ω
+      change T ω - X ω = _
+      rw [hR ω, hX ω, hact ω, smul_apply, smul_eq_mul, add_sub_cancel_right]
+    have hSTY : T - X - T = Y := by
+      ext ω
+      change T ω - X ω - T ω = Y ω
+      rw [hX ω, hY ω, neg_apply, sub_sub_cancel_left]
+    have hspt : (T - X - T).support ⊆ {p} := by
+      rw [hSTY]
+      exact hYspt
+    -- minimality on a ball `W ∋ p` with `W ⊂⊂ U`
+    obtain ⟨ε, hε, hWcc⟩ := hball p hpU
+    have hWU : ball p ε ⊆ U := subset_closure.trans hWcc.2
+    have hpW : p ∈ ball p ε := mem_ball_self hε
+    have hle := hminT (ball p ε) (T - X) isOpen_ball hWcc ⟨R', hS⟩ trivial
+      ((finite_singleton p).subset hspt).isCompact
+      (hspt.trans (singleton_subset_iff.mpr ⟨hpA, hpW⟩))
+    rw [hmassV _ isOpen_ball hWU hpW,
+      Submission.dtc_mass_eq_measure P 0 U _ (T - X) R' hU isOpen_ball hWU hS] at hle
+    -- `μ_{R'}(W) < ∞`, since `θ` is locally integrable and `closure W` is compact in `U`
+    have hfin : R'.measure (ball p ε) ≠ ∞ := by
+      refine ne_top_of_le_ne_top ?_ (measure_mono (subset_closure (s := ball p ε)))
+      rw [IMRep.measure, withDensity_apply _ isClosed_closure.measurableSet,
+        Measure.restrict_restrict isClosed_closure.measurableSet, Set.inter_comm]
+      exact R'.locallyIntegrable_mult _ hWcc.1 hWcc.2
+    exact absurd hle (not_le.mpr (ENNReal.lt_add_right hfin hθ))
+  -- with `M = ∅`, `T(ω) = ∫_∅ ⋯ = 0` for every `ω`
+  have hT0 : T = 0 := by
+    ext ω
+    rw [hR ω, GeometricCurrentOn.zero_apply, IMRep.action, hM, Measure.restrict_empty,
+      integral_zero_measure]
+  subst hT0
+  refine ⟨rfl, ?_, fun W => hmass_zero 0 W fun ω _ => rfl⟩
+  -- `spt 0 = ∅`: `0` vanishes on a ball `W ⊂⊂ U` about every `y ∈ U`
+  refine eq_empty_iff_forall_notMem.mpr fun y hy => hy.2 ?_
+  obtain ⟨ε, hε, hWcc⟩ := hball y hy.1
+  exact mem_sUnion.mpr ⟨ball y ε, ⟨isOpen_ball, hWcc.1, hWcc.2, fun ω _ => rfl⟩,
+    mem_ball_self hε⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
