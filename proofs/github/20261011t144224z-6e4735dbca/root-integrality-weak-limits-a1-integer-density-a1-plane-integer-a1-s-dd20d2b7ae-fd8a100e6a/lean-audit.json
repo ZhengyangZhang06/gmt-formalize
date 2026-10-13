@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f67e1da54e3b2b34d5aaf0314dbd69a5d726ba18a61c35dba10175bb7f2c8ea4",
+  "git_delta": {
+    "base_commit": "972adbd6f40181b985a27190f0f87f66f5fccf2f",
+    "candidate_commit": "c763e84863a73e61fc19d3f911a3b5436d9eb603",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_pi_span_integral",
+    "diff_sha256": "ff3b253e506219847604299d036c4ba80eb6f9eac86eca399c4ed4278e29406f",
+    "source_sha256": "5ab0249db1167136d507f4fc4d5170fee974128615982c93c6da099876aeaeb5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_span_integral",
+      "statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P), Orthonormal ℝ τ → (∀ h : Eucl P → ℝ, ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), h z ∂(μHE[n] : Measure (Eucl P)) = ∫ a : Eucl n, h (∑ i, a i • τ i)) ∧ ∀ K : Set (Eucl P), IsCompact K → ((μHE[n] : Measure (Eucl P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Eucl P))) K < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
