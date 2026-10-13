@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def covectorEuclideanNorm|def massAdmissibleOn|def massOn|theorem le_massOn|def TestFormOnConverges|structure GeometricCurrentOn|def TestFormOn|abbrev NVector|def NVector|def Covector|abbrev Covector|wedgeCovectors_apply_det",
+        "simon_theorem_4_14|IsLocallyBoundedCcFunctional|IsRadonOuterMeasure|toCaratheodoryMeasure_apply_all|isOpenSigmaFinite_of_finite_compacts|exists_borel_subset_mod_null|toBorelMeasure_apply_all|exists_isClosed_continuousOn_of_measurable",
+        "exists_contDiff_support_eq_eq_one_iff|NullMeasurable.aemeasurable",
+        "exists_lt_isCompact_of_ne_top|instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace",
+        "norm_eq|inner_apply|instInnerProductSpace",
+        "smr_covector_coord_isometry|smr_exists_testForm_uniform_approx|smr_exists_continuous_extension|smr_riesz_borel_euclidean|smr_riesz_continuous_forms|smr_restriction_isCurrent|smr_ofReal_integral_le_massOn|smr_exists_unit_form_gt|smr_restriction_massOn_eq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smr-independent-audit-lw37qmnh/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smr-independent-audit-lw37qmnh/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smr-independent-audit-lw37qmnh/References.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+        "/tmp/smr-independent-audit-lw37qmnh/Types.lean",
+        "/tmp/smr-independent-audit-lw37qmnh/Assembly.lean",
+        "/tmp/smr-independent-audit-lw37qmnh/References.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and frozen contract compatibility. Splitting is appropriate: all nine obligations contribute to the selected mass-representation theorem, and their dependencies are acyclic and correctly directed. All nine exact one-line propositions independently elaborate without child implementations. Every proposed name is a bare identifier; no reservation matches were found in the 166-node DAG or handoffs, and the name search found no existing declarations in the frozen project or SimonGMT. No comparator-accepted declaration is reused by name. Independently kernel-checked the exact parent implication from continuous_extension, riesz_forms, restriction_current and restriction_mass as hypotheses; its only axioms are propext, Classical.choice and Quot.sound. The cited Riesz, completion, Lusin, approximation, cutoff, Tietze and inner-regularity results passed the same axiom check. Explicit checks confirm EuclideanSpace uses the intended Euclidean norm and inner product, and restriction preserves integrability for arbitrary sets. No matrix-unit construction occurs. These checks establish contract compatibility and assembly; each supplied analytic proof was also reviewed independently below."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_isometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Coordinate evaluation gives the norm identity; sorting, alternation and multilinear determination prove injectivity; determinant-dual wedges prove surjectivity. The argument covers k = 0 and k > P and assumes no child or parent conclusion."
+    },
+    {
+      "key": "testform_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract allows arbitrary U and requires only V open. The supplied norm comparison, smooth approximation and cutoff establish both the prescribed support and uniform coefficient-norm error. The positive denominator √M + 1 handles degenerate dimensions. No undeclared sibling result is needed."
+    },
+    {
+      "key": "continuous_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and four conclusions match. The finite-mass estimate makes approximant evaluations Cauchy; common relatively compact neighbourhoods prove independence, agreement with X and linearity. The final argument supplies one bound for every form supported in K. Only the two declared dependencies are used."
+    },
+    {
+      "key": "riesz_borel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and proposition match. Zero extension yields the required locally bounded functional on C_c(U; H). The pinned Riesz theorem, completion argument, Borel modification, integral trimming and push-forward establish every asserted property. Integrability is proved separately, and no finiteness near the boundary of U is assumed."
+    },
+    {
+      "key": "riesz_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from the two declared dependencies. Finite dimensionality makes J and its inverse continuous; transferring L preserves the required bounds. The constructed continuous linear functionals satisfy representation, measurable evaluations, the everywhere bound and the stated almost-everywhere unit witnesses."
+    },
+    {
+      "key": "restriction_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger arbitrary-set contract is valid as written: μ.restrict A ≤ μ preserves integrability without measurability of A. Integral linearity constructs the functional, and zeroth-derivative uniform convergence on a common finite-measure compact set proves precisely the required current continuity. No openness of U is needed."
+    },
+    {
+      "key": "continuous_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including arbitrary A. Rescaled approximants have the required support and unit bound. Their evaluations converge pointwise, establishing the limit's almost-everywhere strong measurability; domination on a common finite-measure compact set gives integrability and integral convergence. Passing through continuous ENNReal.ofReal proves the claim."
+    },
+    {
+      "key": "unit_form_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are represented exactly. Coordinate measurability and the unit witnesses produce a Borel unit field without a measurable-selection assumption. Compact exhaustion, inner regularity, coordinatewise Lusin, Tietze and the cutoff yield an integrable form with the strict requested lower bound. The proof handles infinite μ(W ∩ A) using finite compact localization."
+    },
+    {
+      "key": "restriction_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches, including every representing S and arbitrary open W contained in U. The indicator estimate proves the supremum upper bound. The two declared dependencies give the lower bound for every c < μ(W ∩ A), including infinite mass. No representation uniqueness or parent theorem is assumed."
+    }
+  ],
+  "required_changes": []
+}
