@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d8c4d82a6fa8b2dde2f70b48981d20bc037101ad826ad9e0c3f48bcd3b0ff258",
+  "git_delta": {
+    "base_commit": "00832a8f9315a20a77af8c5e4ed99b50c7b10c4a",
+    "candidate_commit": "abb2ac22a0c9e0c79e254a733759e9f2a9c05c80",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cttp_cone_density_translation_invariant",
+    "diff_sha256": "24828de2546d8548f26427ca60b17e764834f83df880c19750b65d3d42924ec7",
+    "source_sha256": "a9ab6bfc1c7772125a1a7d6e54d3ff551a6f3b4038e27fb3e29a901895054f72",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_cone_density_translation_invariant",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), R.Represents S → IsConeCurrent S → (∀ v ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => x + v) ⁻¹' A) = R.measure A) → ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
