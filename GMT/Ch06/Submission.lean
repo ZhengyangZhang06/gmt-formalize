@@ -639,6 +639,91 @@ theorem Submission.slicing_im_coarea_eilenberg : ∀ m : ℕ, ∃ C : ℝ≥0, �
       _ = ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * L * (κ₁ * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A) := by
         ring
 
+/-- Slices of the critical part of a `C¹` chart piece are `Hᵐ`-null for a.e. level (Simon Ch. 2,
+6.3–6.4, via Eilenberg's inequality).  Put `E₀ = Ω ∩ Φ⁻¹(W)`, so that `W = Φ(E₀)` and `Dh = 0` on
+`E₀`.  For `R ∈ ℕ` and `ε > 0`, `slicing_im_coarea_cc_small_lip_partition` splits
+`E₀ ∩ B(0, R)` into disjoint Borel pieces `D k` on which `h` is `ε`-Lipschitz.  As `f ∘ Φ = h` on
+`E₀` and `c |w - w'| ≤ |Φ w - Φ w'|`, `f` is `ε c⁻¹`-Lipschitz on `Φ(D k)`, so Eilenberg's
+inequality `slicing_im_coarea_eilenberg` dominates the slices of `Φ(D k)` by `φ k` with
+`∫ φ k ≤ C ε c⁻¹ Hⁿ(Φ(D k)) ≤ C ε c⁻¹ Kⁿ Lⁿ(D k)`; these sum to at most
+`ε · C c⁻¹ Kⁿ Lⁿ(B(0, R))`.  Hence `slicing_im_coarea_cc_null_of_small_majorants` makes the
+slices of `Φ(E₀ ∩ B(0, R))` null for a.e. level, and `W = ⋃_R Φ(E₀ ∩ B(0, R))`. -/
+theorem Submission.slicing_im_coarea_chart_critical :
+    ∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ)
+      (f : Eucl P → ℝ) (W : Set (Eucl P)), IsOpen Ω → ContDiff ℝ 1 Φ →
+      (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) →
+      (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      ContDiff ℝ 1 h → MeasurableSet W → W ⊆ Φ '' Ω →
+      (∀ w ∈ Ω, Φ w ∈ W → f (Φ w) = h w ∧ fderiv ℝ h w = 0) →
+      ∀ᵐ t ∂(volume : Measure ℝ), (μHE[m] : Measure (Eucl P)) (W ∩ f ⁻¹' {t}) = 0 := by
+  rintro P m Φ Ω h f W hΩ hΦ ⟨K, hK⟩ ⟨c, hc0, hc⟩ hh hW hWΦ hfh
+  lift c to ℝ≥0 using hc0.le
+  obtain ⟨C, hC⟩ := Submission.slicing_im_coarea_eilenberg m
+  -- For each radius `R`, the slices of `Φ(E₀ ∩ B(0, R))` are null for a.e. level.
+  have hR : ∀ R : ℕ, ∀ᵐ t ∂(volume : Measure ℝ),
+      (μHE[m] : Measure (Eucl P)) (Φ '' (Ω ∩ Φ ⁻¹' W ∩ ball 0 R) ∩ f ⁻¹' {t}) = 0 := by
+    intro R
+    refine Submission.slicing_im_coarea_cc_null_of_small_majorants (Eucl P) μHE[m] f
+      (Φ '' (Ω ∩ Φ ⁻¹' W ∩ ball 0 R))
+      (((C * c⁻¹ * K ^ (m + 1) : ℝ≥0) : ℝ≥0∞) * volume (ball (0 : Eucl (m + 1)) R))
+      (ENNReal.mul_ne_top ENNReal.coe_ne_top measure_ball_lt_top.ne) fun ε hε => ?_
+    -- Disjoint Borel pieces `D k` of `E₀ ∩ B(0, R)` on which `h` is `ε`-Lipschitz.
+    obtain ⟨D, hDm, hDdisj, hDU, hDlip⟩ :=
+      Submission.slicing_im_coarea_cc_small_lip_partition (m + 1) h (Ω ∩ Φ ⁻¹' W ∩ ball 0 R) ε hh
+        ((hΩ.measurableSet.inter (hW.preimage hΦ.continuous.measurable)).inter measurableSet_ball)
+        (fun w hw => (hfh w hw.1.1 hw.1.2).2) hε
+    have hDE : ∀ k, D k ⊆ Ω ∩ Φ ⁻¹' W ∩ ball 0 R := fun k => hDU ▸ subset_iUnion D k
+    -- `f = h ∘ Φ⁻¹` is `ε c⁻¹`-Lipschitz on `Φ(D k)`.
+    have hflip : ∀ k, LipschitzOnWith (ε * c⁻¹) f (Φ '' D k) := by
+      intro k
+      refine LipschitzOnWith.of_dist_le_mul ?_
+      rintro _ ⟨w, hw, rfl⟩ _ ⟨w', hw', rfl⟩
+      obtain ⟨⟨hwΩ, hwW⟩, -⟩ := hDE k hw
+      obtain ⟨⟨hw'Ω, hw'W⟩, -⟩ := hDE k hw'
+      rw [(hfh w hwΩ hwW).1, (hfh w' hw'Ω hw'W).1]
+      have hcw : (c : ℝ) * dist w w' ≤ dist (Φ w) (Φ w') := by
+        simpa only [dist_eq_norm] using hc w hwΩ w' hw'Ω
+      calc dist (h w) (h w') ≤ ε * dist w w' := (hDlip k).dist_le_mul w hw w' hw'
+        _ ≤ ε * ((c : ℝ)⁻¹ * dist (Φ w) (Φ w')) := by
+          gcongr
+          rw [inv_mul_eq_div, le_div_iff₀ hc0, mul_comm]
+          exact hcw
+        _ = ((ε * c⁻¹ : ℝ≥0) : ℝ) * dist (Φ w) (Φ w') := by push_cast; ring
+    -- Eilenberg's inequality on each `Φ(D k)`, and `Hⁿ(Φ(D k)) ≤ Kⁿ Lⁿ(D k)`.
+    choose φ hφm hφle hφint using fun k => hC P f (ε * c⁻¹) (Φ '' D k) (hflip k)
+    refine ⟨fun k => Φ '' D k, φ, ?_, hφm, hφle, ?_⟩
+    · rintro _ ⟨w, hw, rfl⟩
+      rw [← hDU] at hw
+      obtain ⟨k, hk⟩ := mem_iUnion.1 hw
+      exact mem_iUnion.2 ⟨k, mem_image_of_mem Φ hk⟩
+    · calc ∑' k, ∫⁻ t, φ k t
+          ≤ ∑' k, (C : ℝ≥0∞) * ((ε * c⁻¹ : ℝ≥0) : ℝ≥0∞) *
+              ((K : ℝ≥0∞) ^ (m + 1) * volume (D k)) := by
+            refine ENNReal.tsum_le_tsum fun k => (hφint k).trans ?_
+            rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+            gcongr
+            exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+              (m + 1) (hK.mono fun w hw => (hDE k hw).1.1)
+        _ = (C : ℝ≥0∞) * ((ε * c⁻¹ : ℝ≥0) : ℝ≥0∞) * (K : ℝ≥0∞) ^ (m + 1) *
+              volume (Ω ∩ Φ ⁻¹' W ∩ ball 0 R) := by
+            simp_rw [← mul_assoc]
+            rw [ENNReal.tsum_mul_left, ← measure_iUnion hDdisj hDm, hDU]
+        _ ≤ (C : ℝ≥0∞) * ((ε * c⁻¹ : ℝ≥0) : ℝ≥0∞) * (K : ℝ≥0∞) ^ (m + 1) *
+              volume (ball (0 : Eucl (m + 1)) R) := by
+            gcongr
+            exact inter_subset_right
+        _ = (ε : ℝ≥0∞) *
+              (((C * c⁻¹ * K ^ (m + 1) : ℝ≥0) : ℝ≥0∞) * volume (ball (0 : Eucl (m + 1)) R)) := by
+            push_cast
+            ring
+  -- `W = ⋃_R Φ(E₀ ∩ B(0, R))`, so its slices are null for a.e. level.
+  filter_upwards [ae_all_iff.2 hR] with t ht
+  refine measure_mono_null ?_ (measure_iUnion_null ht)
+  rintro _ ⟨hxW, hxt⟩
+  obtain ⟨w, hwΩ, rfl⟩ := hWΦ hxW
+  obtain ⟨R, hwR⟩ := exists_nat_gt ‖w‖
+  exact mem_iUnion.2 ⟨R, ⟨w, ⟨⟨hwΩ, hxW⟩, mem_ball_zero_iff.2 hwR⟩, rfl⟩, hxt⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
