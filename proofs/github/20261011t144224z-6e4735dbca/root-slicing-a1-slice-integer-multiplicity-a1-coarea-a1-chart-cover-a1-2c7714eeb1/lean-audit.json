@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "94dbf0844583c25d6c6e5bd23560b2ae948acbb12dd30318a117380ec804db23",
+  "git_delta": {
+    "base_commit": "a645634b6cdbe347065d8a19bdeb491d0a3cc969",
+    "candidate_commit": "de9ec3b03cc1aa05ae54e1392f76a9585e868c7d",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "af8e90cdc42144ab0ebf18707627c6cbb814cdf5a4e244f58fe1fce383d69792",
+    "source_sha256": "c8a1e6eb1c9104be5d2ed1395c4c71eaa85d23f2cc1ed14ab8b97ab1e5566011",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_chart_cover",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \\ ⋃ j, Φ j '' Ω j) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
