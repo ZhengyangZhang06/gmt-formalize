@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|^variable|^theorem|^lemma",
+        "theorem map_perm|theorem map_eq_zero_of_not_injective|theorem.*ext_alternating",
+        "monotone_sort|strictMono|StrictMono",
+        "covectorEuclideanNorm.*(pullback|compContinuousLinearMap)|(pullback|compContinuousLinearMap).*covectorEuclideanNorm",
+        "sh /tmp/iwl-sp-independent-audit/leanrun.sh /tmp/iwl-sp-independent-audit/TypeChecks.lean",
+        "sh /tmp/iwl-sp-independent-audit/leanrun.sh /tmp/iwl-sp-independent-audit/Assembly.lean",
+        "sh /tmp/iwl-sp-independent-audit/leanrun.sh /tmp/iwl-sp-independent-audit/CheckedProbes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1/parent-child-handoff.json",
+        "/tmp/iwl-sp-independent-audit/TypeChecks.lean",
+        "/tmp/iwl-sp-independent-audit/Assembly.lean",
+        "/tmp/iwl-sp-independent-audit/CheckedProbes.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and rebuilt the frozen Submission in isolated scratch. All six one-line propositions independently elaborate in comparator scope. Every proposed name is a bare identifier and is unreserved in the 261-node DAG. Dependencies are acyclic and correctly directed. The split is appropriate: a fresh Lean assembly proves exactly the selected parent from the child contracts. Recompiled five supplied child proof probes, with their declared dependencies as hypotheses where needed; these and the assembly use only propext, Classical.choice and Quot.sound. The pullback-norm proof was independently checked mathematically. No existing coefficient-norm pullback theorem matched the searched frozen project and Chapter06 sources. Typeclass-sensitive norms, scalar actions and smoothness orders match the prose; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-domain statement. Scalar coefficient integrability, the fundamental lemma for arbitrary measures, finite basis separation, positivity and a countable zero-region cover prove the exact null-set conclusion. The proof is self-contained; its fresh name does not reuse the accepted sibling declaration."
+    },
+    {
+      "key": "pushforward_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated hypotheses match IsLipschitzPushforward exactly. Support-null supplies almost-everywhere membership in the compatibility neighbourhood. Derivative uniqueness on the orienting frame then identifies the integrands. integral_congr_ae needs no extra integrability assumption. The sole child dependency is correctly declared."
+    },
+    {
+      "key": "pullback_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition uses the intended Euclidean coefficient norm and continuous-linear-map operator norm. The factorial tuple identity, single-slot Cauchy–Schwarz estimate and multilinear induction prove the inequality completely. Factorial cancellation and nonnegative square roots remain valid in degree zero and when dimensions are smaller than the degree."
+    },
+    {
+      "key": "compatible_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and requested properties match. Properness produces the compact set; thickenings and smooth Urysohn provide the cutoff. Analyticity of linear pullback establishes smoothness, and the closed preimage argument establishes topological support containment. The neighbourhood covers A, including the empty-compact-set case."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract compatibility hypothesis and both dependencies are used correctly. The proof follows the actual signed-evaluation definition of massOn, preserves the required support, and normalizes by c^j only when positive. The separate zero case correctly handles zero-times-infinite mass; degree zero has c^0 = 1."
+    },
+    {
+      "key": "boundary_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The higher-degree formula is an explicit hypothesis, so no child dependency is missing. Locality and extDeriv_pullback establish compatibility of dη and dω on the same neighbourhood. Applying that hypothesis and boundary_apply proves the exact conclusion without circularity or additional properness assumptions."
+    }
+  ],
+  "required_changes": []
+}
