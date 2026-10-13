@@ -1292,6 +1292,63 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     rw [hL, map_sum, ← hCBτ]
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ` is `Cʳ` (`r ≥ 1`) on an open `V ⊆ ℝᵈ` and `ψ(V) ⊆ N`,
+then every `Dψ(v) a`, `v ∈ V`, is the velocity at `0` of a `C¹` curve in `N` through `ψ(v)`, i.e.
+`Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N`.  For `a = 0` take the constant curve.  Otherwise, with
+`B_{ρ₀}(v) ⊆ V`, `c = ρ₀ / |a|` and `h(t) = t / (1 + t² / c²)` (smooth, `h(0) = 0`, `h'(0) = 1`,
+`|h| ≤ c / 2`), the curve `γ(t) = ψ(v + h(t) a)` stays in `ψ(V)` and has velocity `Dψ(v) a`. -/
+theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → ContDiffOn ℝ r ψ V → ψ '' V ⊆ N → ∀ v ∈ V, Set.range (fderiv ℝ ψ v) ⊆ tangentSpace N (ψ v) := by
+  rintro P r d N V ψ hr hV hψ hN v hv _ ⟨a, rfl⟩
+  -- `ψ` is `C¹` on `V`, hence differentiable at the interior point `v`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `ψ(v)` has velocity `0 = Dψ(v) 0`
+    subst ha
+    refine ⟨fun _ => ψ v, contDiffOn_const, fun _ _ => hN (mem_image_of_mem ψ hv), rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (ψ v)
+  · -- `a ≠ 0`: `β(t) = v + h(t) a` with `h(t) = t / (1 + t² / c²)`, `c = ρ₀ / |a|`
+    obtain ⟨ρ₀, hρ₀, hball⟩ := Metric.isOpen_iff.mp hV v hv
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    set c : ℝ := ρ₀ / ‖a‖ with hc_def
+    have hc : 0 < c := div_pos hρ₀ ha'
+    have hden : ∀ t : ℝ, 0 < 1 + t ^ 2 / c ^ 2 := fun t => by positivity
+    set h : ℝ → ℝ := fun t => t / (1 + t ^ 2 / c ^ 2) with hh_def
+    -- (a) `h` is smooth
+    have h_cd : ContDiff ℝ 1 h :=
+      contDiff_id.div (contDiff_const.add ((contDiff_id.pow 2).div_const _)) fun t => (hden t).ne'
+    -- (b) `h'(0) = 1`
+    have h_deriv : HasDerivAt h 1 0 := by
+      have := hasDerivAt_id' (x := (0 : ℝ)) |>.fun_div
+        (((hasDerivAt_id' (x := (0 : ℝ))).fun_pow 2).div_const (c ^ 2) |>.const_add 1) (hden 0).ne'
+      convert this using 1
+      simp
+    -- (c) `|h(t)| ≤ c / 2`, since `2 c |t| ≤ c² + t²`
+    have h_bd : ∀ t, |h t| ≤ c / 2 := by
+      intro t
+      rw [hh_def, abs_div, abs_of_pos (hden t), div_le_iff₀ (hden t)]
+      have h1 : c / 2 * (1 + t ^ 2 / c ^ 2) = (c ^ 2 + |t| ^ 2) / (2 * c) := by
+        rw [sq_abs]; field_simp
+      rw [h1, le_div_iff₀ (by positivity)]
+      nlinarith [sq_nonneg (c - |t|)]
+    -- `β` stays in `B_{ρ₀}(v) ⊆ V`, `β(0) = v` and `β'(0) = a`
+    set β : ℝ → Euclid d := fun t => v + h t • a with hβ_def
+    have hβV : ∀ t, β t ∈ V := fun t => hball <| by
+      rw [Metric.mem_ball, dist_eq_norm, hβ_def]
+      simp only [add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+      calc |h t| * ‖a‖ ≤ c / 2 * ‖a‖ := by gcongr; exact h_bd t
+        _ = ρ₀ / 2 := by rw [hc_def]; field_simp
+        _ < ρ₀ := by linarith
+    have hβ0 : β 0 = v := by simp [hβ_def, hh_def]
+    have hβ_cd : ContDiff ℝ 1 β := contDiff_const.add (h_cd.smul contDiff_const)
+    have hβ_deriv : HasDerivAt β a 0 := by
+      have := HasDerivAt.const_add v (h_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = ψ ∘ β` is `C¹` on `(-1, 1)`, lies in `ψ(V) ⊆ N`, and `γ'(0) = Dψ(v) a`
+    refine ⟨ψ ∘ β, hψ1.comp hβ_cd.contDiffOn fun t _ => hβV t,
+      fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
+    exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
 /-- Evaluation of `n`-covectors at an `n`-family `c`, `ev c = (α ↦ α c)`, is a continuous map
 into `n`-vectors: `‖ev c - ev c'‖ ≤ n · max(‖c‖, ‖c'‖)ⁿ⁻¹ · ‖c - c'‖`. -/
 theorem Submission.dgoj_exists_continuous_covector_eval : ∀ (P n : ℕ), ∃ ev : (Fin n → Euclid P) → MultiVector P n, Continuous ev ∧ ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c := by
@@ -1325,6 +1382,170 @@ theorem Submission.dgoj_exists_continuous_covector_eval : ∀ (P n : ℕ), ∃ e
   have h1 : Tendsto (fun c => ‖ev c - ev c₀‖) (𝓝 c₀) (𝓝 0) :=
     squeeze_zero (fun c => norm_nonneg (ev c - ev c₀)) (fun c => key c c₀) h0
   exact (tendsto_iff_norm_sub_tendsto_zero (E := MultiVector P n) (f := ev) (b := ev c₀)).2 h1
+
+/-- Step 6 of the graph chart in the proof of **Simon 7.5.8** (orientations as in Ch. 6, 1.1–2.2):
+if `ξN` orients `N`, `ξN(x) = ιe₀ ∧ ⋯ ∧ ιeₙ`, and `u` is `C¹` on `D = B_δ(0)` with `u(0) = 0`,
+`Du(0) = 0`, `u ⊥ range ι` and `G(v) = x + ιv + u(v) ∈ N`, then on `D`
+`ξN(G(v)) = J(v)⁻¹ a₀(v) ∧ ⋯ ∧ aₙ(v)`, where `aᵢ(v) = ιeᵢ + Du(v)eᵢ` and
+`J(v) = det(⟨aᵢ(v), aⱼ(v)⟩)^{1/2}`.  Since `Du(v) ⊥ range ι`, `a(v)` is linearly independent, so
+`η(v) = J(v)⁻¹ a₀(v) ∧ ⋯ ∧ aₙ(v)` is a unit orientation of `span a(v) = T_{G(v)}N`, and
+`ξN(G(v)) = ±η(v)`.  The sign `s(v) = ξN(G(v))(L(η(v))) = ±1` is continuous on the connected
+set `D` and `s(0) = 1`, so `s = 1` on `D`. -/
+theorem Submission.codim1_rdo_gc_orientation_along_graph : ∀ (P n : ℕ) (N : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ : ℝ), IsOrientation (n + 1) N ξN → (∀ α : Covector (Euclid P) (n + 1), ξN x α = α (fun i => ι (EuclideanSpace.single i 1))) → 0 < δ → u 0 = 0 → fderiv ℝ u 0 = 0 → ContDiffOn ℝ 1 u (ball 0 δ) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ, x + ι v + u v ∈ N) → ∀ v ∈ ball (0 : Euclid (n + 1)) δ, ∀ α : Covector (Euclid P) (n + 1), ξN (x + ι v + u v) α * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) (ι (EuclideanSpace.single j 1) + fderiv ℝ u v (EuclideanSpace.single j 1)))) = α (fun i => ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) := by
+  intro P n N ξN x ι u δ hξ hιξ hδ hu0 hDu0 hu horth hmem
+  set D := ball (0 : Euclid (n + 1)) δ with hD
+  have hDopen : IsOpen D := isOpen_ball
+  let e : Fin (n + 1) → Euclid (n + 1) := fun i => EuclideanSpace.single i 1
+  -- the graph map `G`, its derivative `A(v) = ι + Du(v)`, the frame `a(v)` and `J(v)`
+  let G : Euclid (n + 1) → Euclid P := fun v => x + ι v + u v
+  let A : Euclid (n + 1) → (Euclid (n + 1) →L[ℝ] Euclid P) :=
+    fun v => ι.toContinuousLinearMap + fderiv ℝ u v
+  let a : Euclid (n + 1) → Fin (n + 1) → Euclid P := fun v i => ι (e i) + fderiv ℝ u v (e i)
+  let gram : Euclid (n + 1) → ℝ := fun v => Matrix.det (Matrix.of fun i j => inner ℝ (a v i) (a v j))
+  let J : Euclid (n + 1) → ℝ := fun v => Real.sqrt (gram v)
+  -- (1) calculus on the open ball `D`
+  have hudiff : ∀ v ∈ D, HasFDerivAt u (fderiv ℝ u v) v := fun v hv =>
+    ((hu.contDiffAt (hDopen.mem_nhds hv)).differentiableAt (by norm_num)).hasFDerivAt
+  have hGderiv : ∀ v ∈ D, HasFDerivAt G (A v) v := fun v hv => by
+    have h1 : HasFDerivAt (fun v : Euclid (n + 1) => x + ι v) ι.toContinuousLinearMap v :=
+      (ι.toContinuousLinearMap.hasFDerivAt).const_add x
+    exact h1.add (hudiff v hv)
+  have hAe : ∀ v ∈ D, ∀ i, fderiv ℝ G v (e i) = a v i := fun v hv i => by
+    rw [(hGderiv v hv).fderiv]; rfl
+  have hDuc : ContinuousOn (fderiv ℝ u) D := hu.continuousOn_fderiv_of_isOpen hDopen le_rfl
+  have hGc : ContDiffOn ℝ 1 G D :=
+    (contDiffOn_const.add ι.toContinuousLinearMap.contDiff.contDiffOn).add hu
+  -- (2) `Du(v)` is orthogonal to `range ι`: `v' ↦ ⟨ιw, u(v')⟩` vanishes on `D`
+  have hDorth : ∀ v ∈ D, ∀ w a', inner ℝ (ι w) (fderiv ℝ u v a') = 0 := by
+    intro v hv w a'
+    have hloc : (fun v' => inner ℝ (ι w) (u v')) =ᶠ[𝓝 v] fun _ => (0 : ℝ) :=
+      Filter.eventually_of_mem (hDopen.mem_nhds hv) (fun v' hv' => horth v' hv' w)
+    have hd : HasFDerivAt (fun v' => inner ℝ (ι w) (u v'))
+        ((innerSL ℝ (ι w)).comp (fderiv ℝ u v)) v :=
+      (innerSL ℝ (ι w)).hasFDerivAt.comp v (hudiff v hv)
+    have hd0 : HasFDerivAt (fun v' => inner ℝ (ι w) (u v')) (0 : Euclid (n + 1) →L[ℝ] ℝ) v :=
+      (hasFDerivAt_const (0 : ℝ) v).congr_of_eventuallyEq hloc
+    have h2 := congrArg (fun L => L a') (hd.unique hd0)
+    simpa using h2
+  -- (3) `‖A(v)c‖ ≥ ‖c‖`, so `A(v)` is injective and `a(v)` is linearly independent
+  have hnorm : ∀ v ∈ D, ∀ c : Euclid (n + 1), ‖c‖ ^ 2 ≤ ‖A v c‖ ^ 2 := by
+    intro v hv c
+    have h1 : A v c = ι c + fderiv ℝ u v c := rfl
+    rw [h1, norm_add_sq_real, hDorth v hv c c, LinearIsometry.norm_map]
+    nlinarith [sq_nonneg ‖fderiv ℝ u v c‖]
+  have hinj : ∀ v ∈ D, Injective (A v) := by
+    intro v hv c₁ c₂ h12
+    have h1 := hnorm v hv (c₁ - c₂)
+    rw [map_sub, h12, sub_self, norm_zero] at h1
+    have h2 : ‖c₁ - c₂‖ = 0 := by nlinarith [norm_nonneg (c₁ - c₂)]
+    exact sub_eq_zero.mp (norm_eq_zero.mp h2)
+  have hlin : ∀ v ∈ D, LinearIndependent ℝ (a v) := by
+    intro v hv
+    have hb := (EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis.linearIndependent
+    have hker : LinearMap.ker (A v : Euclid (n + 1) →ₗ[ℝ] Euclid P) = ⊥ :=
+      LinearMap.ker_eq_bot.mpr (hinj v hv)
+    have := hb.map' (A v : Euclid (n + 1) →ₗ[ℝ] Euclid P) hker
+    convert this using 1
+    funext i
+    simp [a, A, e]
+  -- (4) `η(v) = J(v)⁻¹ a₀(v) ∧ ⋯ ∧ aₙ(v)` is a unit orientation of `span a(v)`
+  obtain ⟨ev, hevc, hev⟩ := Submission.dgoj_exists_continuous_covector_eval P (n + 1)
+  let η : Euclid (n + 1) → MultiVector P (n + 1) := fun v => (J v)⁻¹ • ev (a v)
+  have hgpos : ∀ v ∈ D, 0 < gram v := fun v hv =>
+    (Submission.codim1_rdo_gc_gram_unitOrientation P (n + 1) (a v) (hlin v hv)).1
+  have hJpos : ∀ v ∈ D, 0 < J v := fun v hv => Real.sqrt_pos.2 (hgpos v hv)
+  have hηJ : ∀ v ∈ D, ∀ α, η v α * J v = α (a v) := by
+    intro v hv α
+    simp only [η, smul_apply, hev, smul_eq_mul]
+    field_simp [(hJpos v hv).ne']
+  have hηunit : ∀ v ∈ D, IsUnitOrientationOf (η v) (Submodule.span ℝ (Set.range (a v))) :=
+    fun v hv => (Submission.codim1_rdo_gc_gram_unitOrientation P (n + 1) (a v) (hlin v hv)).2 _
+      (hηJ v hv)
+  -- (5)–(6) `span a(v) = T_{G(v)}N`, hence `ξN(G(v)) = ±η(v)`
+  have hrange := Submission.dsmc_chart_range_subset_tangentSpace P 1 (n + 1) N D G le_rfl hDopen
+    (by simpa using hGc) (by rintro _ ⟨v, hv, rfl⟩; exact hmem v hv)
+  have hsign : ∀ v ∈ D, ξN (G v) = η v ∨ ξN (G v) = -η v := by
+    intro v hv
+    obtain ⟨Q, hQ, hQξ⟩ := hξ.2 (G v) (hmem v hv)
+    have hle : Submodule.span ℝ (Set.range (a v)) ≤ Q := by
+      rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      have h1 : a v i ∈ tangentSpace N (G v) := hrange v hv ⟨e i, hAe v hv i⟩
+      rw [← hQ] at h1
+      exact h1
+    have hfin1 : Module.finrank ℝ (Submodule.span ℝ (Set.range (a v))) = n + 1 := by
+      rw [finrank_span_eq_card (hlin v hv)]; simp
+    have hfin2 : Module.finrank ℝ Q = n + 1 := by
+      obtain ⟨τ, hτ, hτspan, -⟩ := hQξ
+      rw [← hτspan, finrank_span_eq_card hτ.linearIndependent]; simp
+    have hEq := Submodule.eq_of_le_of_finrank_eq hle (hfin1.trans hfin2.symm)
+    have hηQ : IsUnitOrientationOf (η v) Q := hEq ▸ hηunit v hv
+    exact Submission.rsdic_unitOrientation_eq_or_eq_neg P (n + 1) (η v) (ξN (G v)) Q hηQ hQξ
+  -- (7) the sign function `s(v) = ξN(G(v))(L(η(v))) ∈ {1, -1}` is continuous on `D`
+  obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P (n + 1)
+  have hηL : ∀ v ∈ D, η v (L (η v)) = 1 := fun v hv => (hL _ _ (hηunit v hv)).2.2
+  let s : Euclid (n + 1) → ℝ := fun v => ξN (G v) (L (η v))
+  have hs : ∀ v ∈ D, s v = 1 ∨ s v = -1 := by
+    intro v hv
+    rcases hsign v hv with h | h
+    · left; simp only [s, h]; exact hηL v hv
+    · right; simp only [s, h, neg_apply]; rw [hηL v hv]
+  have hGcont : ContinuousOn G D := hGc.continuousOn
+  have hξG : ContinuousOn (fun v => ξN (G v)) D := hξ.1.comp hGcont (fun v hv => hmem v hv)
+  have hac : ContinuousOn a D := continuousOn_pi.2 fun i =>
+    continuousOn_const.add (hDuc.clm_apply continuousOn_const)
+  have hgramc : ContinuousOn gram D := by
+    have hM : ContinuousOn (fun v => (Matrix.of fun i j => inner ℝ (a v i) (a v j) :
+        Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)) D :=
+      continuousOn_pi.2 fun i => continuousOn_pi.2 fun j =>
+        ((continuousOn_pi.1 hac) i).inner ((continuousOn_pi.1 hac) j)
+    exact (continuous_id.matrix_det).comp_continuousOn hM
+  have hJc : ContinuousOn J D := Real.continuous_sqrt.comp_continuousOn hgramc
+  have hηc : ContinuousOn η D :=
+    (hJc.inv₀ (fun v hv => (hJpos v hv).ne')).smul (hevc.comp_continuousOn hac)
+  have hsc : ContinuousOn s D := hξG.clm_apply (L.continuous.comp_continuousOn hηc)
+  -- (8) at the centre: `G(0) = x`, `a(0) = ιe`, `J(0) = 1`, so `η(0) = ξN(x)` and `s(0) = 1`
+  have h0D : (0 : Euclid (n + 1)) ∈ D := mem_ball_self hδ
+  have hG0 : G 0 = x := by simp [G, hu0]
+  have ha0 : a 0 = fun i => ι (e i) := by funext i; simp [a, hDu0]
+  have hgram0 : gram 0 = 1 := by
+    have hM : (Matrix.of fun i j => inner ℝ (a 0 i) (a 0 j) : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) = 1 := by
+      ext i j
+      rw [ha0, Matrix.of_apply, LinearIsometry.inner_map_map, Matrix.one_apply]
+      simp [e, EuclideanSpace.inner_single_left]
+    simp only [gram, hM, Matrix.det_one]
+  have hJ0 : J 0 = 1 := by simp [J, hgram0]
+  have hη0 : η 0 = ξN x := by
+    ext α
+    simp only [η, hJ0, inv_one, one_smul, hev, ha0, hιξ]
+    rfl
+  have hs0 : s 0 = 1 := by
+    show ξN (G 0) (L (η 0)) = 1
+    rw [hG0, ← hη0]; exact hηL 0 h0D
+  -- (9) `D` is connected, so the intermediate value theorem gives `s = 1` on `D`
+  have hsconst : ∀ v ∈ D, s v = 1 := by
+    intro v hv
+    rcases hs v hv with h | h
+    · exact h
+    · exfalso
+      have hpre : IsPreconnected D := (convex_ball (0 : Euclid (n + 1)) δ).isPreconnected
+      have hivt := hpre.intermediate_value hv h0D hsc
+      rw [h, hs0] at hivt
+      obtain ⟨w, hw, hw0⟩ := hivt (show (0 : ℝ) ∈ Icc (-1 : ℝ) 1 by norm_num)
+      rcases hs w hw with h' | h' <;> rw [hw0] at h' <;> norm_num at h'
+  -- (10) hence `ξN(G(v)) = η(v)`, which is the claim
+  intro v hv α
+  have hpos : ξN (G v) = η v := by
+    rcases hsign v hv with h | h
+    · exact h
+    · exfalso
+      have h1 := hsconst v hv
+      simp only [s, h, neg_apply] at h1
+      rw [hηL v hv] at h1
+      norm_num at h1
+  show ξN (G v) α * J v = α (a v)
+  rw [hpos]
+  exact hηJ v hv α
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
