@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'slicing_im_coarea_chart_cover|lpf_c1_approximation_eucl|lpf_c1_local_antilipschitz' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "theorem ContDiffAt.exists_lipschitzOnWith|theorem exists_countable_basis|theorem Countable.exists_eq_range|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|exists_pos_mul_lt|exists_antilipschitzWith|approximates_deriv_on_nhds",
+        "def CountablyRectifiable|theorem area_image_criticalSet_eq_zero|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "git merge-base --is-ancestor f7a35d70d995337ed144dac4f6ad64b3dd527871 eff6bc80913593f9d5e9d1c9607c7d8265732d0a",
+        "python3 /tmp/chartcover-independent-audit-_eou_hxs/run.py frozen Types.lean",
+        "python3 /tmp/chartcover-independent-audit-_eou_hxs/run.py frozen Assembly.lean",
+        "python3 /tmp/chartcover-independent-audit-_eou_hxs/run.py frozen ImportProbe.lean",
+        "python3 /tmp/chartcover-independent-audit-_eou_hxs/run.py real GMT/Ch06/Submission.lean",
+        "python3 /tmp/chartcover-independent-audit-_eou_hxs/run.py real Solutions.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-cover-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-9651ace1ab/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-fa0007faad/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/parent_verification.py",
+        "/tmp/chartcover-independent-audit-_eou_hxs/frozen/src/Types.lean",
+        "/tmp/chartcover-independent-audit-_eou_hxs/frozen/src/Assembly.lean",
+        "/tmp/chartcover-independent-audit-_eou_hxs/real/src/Solutions.lean"
+      ],
+      "conclusion": "Verified the requested parent digest and pinned revisions. The frozen project contains none of the three theorem names. Both child propositions elaborate independently against the frozen base, and both match their uniquely named comparator-accepted contracts byte-for-byte. Artifact hashes and accepted dependency histories agree. Reuse preserves the vector child's scalar prerequisite; adding the proposed child edges creates no cycle. The split isolates two genuine analytic steps. Independently compiling the supplied assembly with only the child propositions as hypotheses proves the exact selected parent. Compiling the accepted implementations together with that assembly gives only propext, Classical.choice and Quot.sound for both children and the parent. The critical-image theorem requires the AreaCritical import; the configured non-leaf gate permits this while retaining comparator checks."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation_eucl",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary dimensions and positive extended-real tolerance. Steps 1–6 correctly split the tolerance, approximate Lipschitz coordinates, intersect closed sets, bound the exceptional measure, and reconstruct the C¹ map and its derivative by finite sums. The derivative conclusion uses the scalar derivative hypotheses, not merely equality on the closed set. Q = 0 and ε = ∞ are covered. The scalar prerequisite is accepted and retained through reuse. The bare name and frozen type match accepted candidate eff6bc80913593f9d5e9d1c9607c7d8265732d0a. This supplies precisely the approximation data used in the selected parent's coverage argument, without circularity."
+    },
+    {
+      "key": "c1_local_antilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes exactly the stated C¹ and injective-derivative hypotheses. The proof obtains a positive linear lower bound, handles n = 0 explicitly, controls the linearization error on a ball, and applies the reverse triangle inequality with c = m/2. All estimates hold for every pair of points in that ball. No parent theorem or sibling conclusion is assumed. The bare name and frozen type match accepted candidate 961fc1089331625dcf27a53f631a38156cb2dd6e. Combined with local Lipschitzness and the countable-basis argument, this supplies the selected parent's required chart bounds."
+    }
+  ],
+  "required_changes": []
+}
