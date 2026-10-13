@@ -451,6 +451,118 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Directional difference estimate from the divergence bound** (steps 1–2 of the parent proof).
+For `‖w‖ ≤ 1` the field `g(y) = a(y + v) • w` is admissible and `div g(y) = Da(y + v)(w)` (trace
+of a rank-one map), so `|∫ h·Da(q + v)(w) dν| ≤ Λ`.  The fundamental theorem of calculus along
+`s ↦ q x + s • z` and Fubini on `(0, 1] × X` (majorant `M‖z‖|h|`, `‖Da‖ ≤ M`) give
+`∫ h·(a(q + z) − a(q)) dν = ∫₀¹ ∫ h·Da(q + s • z)(z) dν ds`, and `Da(p)(z) = ‖z‖·Da(p)(w)` with
+`w = ‖z‖⁻¹ • z` bounds the inner integral by `Λ‖z‖`. -/
+theorem Submission.cmr_tdn_directional_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, |a y| ≤ 1) → ∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖ := by
+  intro n X _ ν q h Λ hν hq hh hdiv a ha hsupp hbd z
+  -- Step 1: `a` is differentiable, `Da` is continuous with compact support, so `‖Da‖ ≤ M`
+  have h0 : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
+  have hdiff : Differentiable ℝ a := ha.differentiable h0
+  have hcont : Continuous (fderiv ℝ a) := ha.continuous_fderiv h0
+  obtain ⟨M, hM⟩ := hcont.bounded_above_of_compact_support (hsupp.fderiv ℝ)
+  -- Step 3: for `‖w‖ ≤ 1` the field `g(y) = a(y + v) • w` is admissible, with
+  -- `div g(y) = Da(y + v)(w)`; this gives `(∗)`
+  have key : ∀ v w : Euclid n, ‖w‖ ≤ 1 → |∫ x, h x * fderiv ℝ a (q x + v) w ∂ν| ≤ Λ := by
+    intro v w hw
+    set g : Euclid n → Euclid n := fun y => a (y + v) • w with hg_def
+    have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g :=
+      (ha.comp (contDiff_id.add contDiff_const)).smul contDiff_const
+    have hg_supp : HasCompactSupport g :=
+      (hsupp.comp_homeomorph (Homeomorph.addRight v)).smul_right (f' := fun _ => w)
+    have hg_bd : ∀ y, ‖g y‖ ≤ 1 := by
+      intro y
+      simp only [hg_def, norm_smul, Real.norm_eq_abs]
+      calc |a (y + v)| * ‖w‖ ≤ 1 * 1 := mul_le_mul (hbd _) hw (norm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    have htrace : ∀ y, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g y).toLinearMap
+        = fderiv ℝ a (y + v) w := by
+      intro y
+      have h1 : HasFDerivAt (fun y => a (y + v)) (fderiv ℝ a (y + v)) y :=
+        (hasFDerivAt_comp_add_right v).2 (hdiff (y + v)).hasFDerivAt
+      rw [(h1.smul_const w).fderiv, ContinuousLinearMap.coe_smulRight,
+        LinearMap.trace_smulRight]
+      rfl
+    simpa only [htrace] using hdiv g hg_smooth hg_supp hg_bd
+  -- Step 4: fundamental theorem of calculus along `s ↦ q x + s • z`
+  have hftc : ∀ x, ∫ s in (0 : ℝ)..1, h x * fderiv ℝ a (q x + s • z) z
+      = h x * (a (q x + z) - a (q x)) := by
+    intro x
+    have hderiv : ∀ s ∈ uIcc (0 : ℝ) 1,
+        HasDerivAt (fun s : ℝ => a (q x + s • z)) (fderiv ℝ a (q x + s • z) z) s := by
+      intro s _
+      have hline : HasDerivAt (fun s : ℝ => q x + s • z) z s := by
+        simpa using ((hasDerivAt_id s).smul_const z).const_add (q x)
+      exact (hdiff (q x + s • z)).hasFDerivAt.comp_hasDerivAt s hline
+    have hcontS : Continuous (fun s : ℝ => fderiv ℝ a (q x + s • z) z) :=
+      (hcont.comp (continuous_const.add (continuous_id.smul continuous_const))).clm_apply
+        continuous_const
+    rw [intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (hcontS.intervalIntegrable 0 1)]
+    simp
+  -- Step 5: Fubini on `Leb|(0, 1] ⊗ ν`, with integrable majorant `M‖z‖|h|`
+  have hGint : Integrable (uncurry fun (s : ℝ) (x : X) => h x * fderiv ℝ a (q x + s • z) z)
+      ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) := by
+    have : IsFiniteMeasure (volume.restrict (uIoc (0 : ℝ) 1)) := by
+      rw [uIoc_of_le zero_le_one]; infer_instance
+    have hmaj : Integrable (fun p : ℝ × X => (M * ‖z‖) * |h p.2|)
+        ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) :=
+      (hh.abs.comp_snd _).const_mul _
+    refine hmaj.mono' ?_ ?_
+    · have h1 : AEStronglyMeasurable (fun p : ℝ × X => h p.2)
+          ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) := hh.aestronglyMeasurable.comp_snd
+      have h2 : Continuous (fun p : ℝ × Euclid n => fderiv ℝ a (p.2 + p.1 • z) z) :=
+        (hcont.comp (continuous_snd.add (continuous_fst.smul continuous_const))).clm_apply
+          continuous_const
+      have h3 : Measurable (fun p : ℝ × X => (p.1, q p.2)) :=
+        measurable_fst.prodMk (hq.comp measurable_snd)
+      exact h1.mul (h2.measurable.comp h3).aestronglyMeasurable
+    · filter_upwards with p
+      simp only [uncurry, Real.norm_eq_abs, abs_mul]
+      have hp : |fderiv ℝ a (q p.2 + p.1 • z) z| ≤ M * ‖z‖ :=
+        calc |fderiv ℝ a (q p.2 + p.1 • z) z| = ‖fderiv ℝ a (q p.2 + p.1 • z) z‖ :=
+              (Real.norm_eq_abs _).symm
+          _ ≤ ‖fderiv ℝ a (q p.2 + p.1 • z)‖ * ‖z‖ := ContinuousLinearMap.le_opNorm _ _
+          _ ≤ M * ‖z‖ := by gcongr; exact hM _
+      calc |h p.2| * |fderiv ℝ a (q p.2 + p.1 • z) z| ≤ |h p.2| * (M * ‖z‖) := by gcongr
+        _ = M * ‖z‖ * |h p.2| := by ring
+  have heq : ∫ x, h x * (a (q x + z) - a (q x)) ∂ν
+      = ∫ s in (0 : ℝ)..1, ∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν := by
+    rw [intervalIntegral_integral_swap hGint]
+    exact integral_congr_ae (Eventually.of_forall fun x => (hftc x).symm)
+  -- Step 6: with `w = ‖z‖⁻¹ • z` (so `‖w‖ ≤ 1`, `z = ‖z‖ • w`, also for `z = 0`),
+  -- `(∗)` bounds the inner integral by `Λ‖z‖` for every `s`
+  set w : Euclid n := ‖z‖⁻¹ • z with hw_def
+  have hw : ‖w‖ ≤ 1 := by
+    by_cases hz : z = 0
+    · simp [hw_def, hz]
+    · rw [hw_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hz)]
+  have hzw : z = ‖z‖ • w := by
+    by_cases hz : z = 0
+    · simp [hz]
+    · rw [hw_def, smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.2 hz), one_smul]
+  have hlin : ∀ p : Euclid n, fderiv ℝ a p z = ‖z‖ * fderiv ℝ a p w := by
+    intro p
+    conv_lhs => rw [hzw]
+    rw [map_smul, smul_eq_mul]
+  have hbound : ∀ s ∈ uIoc (0 : ℝ) 1,
+      ‖∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν‖ ≤ Λ * ‖z‖ := by
+    intro s _
+    have hrw : ∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν
+        = ‖z‖ * ∫ x, h x * fderiv ℝ a (q x + s • z) w ∂ν := by
+      rw [← integral_const_mul]
+      congr 1
+      ext x
+      rw [hlin]
+      ring
+    rw [hrw, Real.norm_eq_abs, abs_mul, abs_norm, mul_comm Λ]
+    exact mul_le_mul_of_nonneg_left (key (s • z) w hw) (norm_nonneg _)
+  rw [heq]
+  simpa using intervalIntegral.norm_integral_le_of_norm_le_const hbound
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
