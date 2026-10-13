@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c8429d5729ce460bbb32d655cdfd065632396dd19a0d7a8c521837eaee424b3",
+  "git_delta": {
+    "base_commit": "dd721795100f97edbbe395230981825f73776c89",
+    "candidate_commit": "7085c89d6462e58d98a931f110e0c38b9715d85e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ehs_del_chain_symm",
+    "diff_sha256": "44a98a4f0392730ec850883e299c114616d31315344784855a0a7b5bc475c255",
+    "source_sha256": "409f759e86996c49f248671adae1d1432637ca0592ee8e74de3602581a05e4ff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ehs_del_chain_symm",
+      "statement": "∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ∀ (e y : Rn n), y ∈ U → fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) y e = fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y) (fderiv ℝ (fun z => fderiv ℝ u z e) y)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

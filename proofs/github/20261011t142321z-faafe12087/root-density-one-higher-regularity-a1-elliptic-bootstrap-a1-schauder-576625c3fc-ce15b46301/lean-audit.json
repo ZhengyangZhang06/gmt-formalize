@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1bd936a4cc29251ddb1a05dd5b8ccfadfc593126531c0da40a7d8fc818cbc8d1",
+  "git_delta": {
+    "base_commit": "1ad4d35df16bd7629c0ee8029f70ac4902702b06",
+    "candidate_commit": "23d9c4bc859832720593523b6f6b02f1ab732519",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_hds_diagonal_extract",
+    "diff_sha256": "b051a5ab02d8ae453b29543cf6d83a9b8ff061f4b44ba73cdc3e9ddbdb3b5056",
+    "source_sha256": "188ee3d2945d12cd31b60442d2ede5651ac09f0edeb1a1215b4a7bac113c4b19",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_hds_diagonal_extract",
+      "statement": "∀ (n ℓ : ℕ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (S : ℕ → Set (Rn n)), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧ TendstoUniformlyOn (fun j => F (ψ (χ j))) g atTop (S m)) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ ∀ m : ℕ, TendstoUniformlyOn (fun j => F (φ j)) V atTop (S m)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,123 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon's Remark 3.1.8(1) (Lusin's theorem plus the Upper Density Theorem for the measure |ϑ|Hⁿ⌞A), in the detailed form of step 6 of the parent proof. The parent's “step 5 with C := C_i” is supplied here by the hypothesis of this statement.
+Notation: Hⁿ := μHE[n]; η := η_{x,r} (blowUpMap x r); T_x K = P abbreviates HasApproximateTangentSpaceAt n K x P; I_r(f) := ∫_{η(A)} f(y)·ϑ(x + ry) dHⁿ(y); B_ρ(p) is the closed ball; ν.real := (ν ·).toReal.
+Siblings used:
+- blowup_scaling (Submission.rsod_blowUpMap_measure_scaling).
+- upper_density_zero (Submission.rsod_ae_tendsto_density_zero_outside): for every measure ν on ℝ^{n+ℓ} and every Borel S with ν(S) < ∞, for Hⁿ-a.e. x ∉ S, (ρⁿ)⁻¹·ν.real(S ∩ B_ρ(x)) → 0 as ρ ↓ 0.
+1. Lusin. Fix i ∈ ℕ. Apply simongmt Chapter01.IsBorelRegularOuterMeasure.exists_isClosed_continuousOn (Simon Ch. 1, Thm 1.17; module Poincare.SimonGMT.Chapter01.Lusin) to the outer measure of Hⁿ, which is Borel regular (Chapter01.measure_toOuterMeasure_isBorelRegular). Its inputs:
+- ClosedSetsAreGDelta for ℝ^{n+ℓ}: Chapter01.closedSetsAreGDelta_iff.mpr, since every closed set of a metric space is G_δ (IsClosed.isGδ).
+- The Borel set A, which is Carathéodory measurable by le_toOuterMeasure_caratheodory, with Hⁿ(A) < ∞.
+- ϑ, measurable for the Carathéodory σ-algebra: ϑ is Borel measurable and Borel sets are Carathéodory measurable (apply le_toOuterMeasure_caratheodory to ϑ⁻¹(s) for Borel s ⊆ ℝ).
+- ε := 1/(i+1) ≠ 0 in [0, ∞].
+It gives a closed set C_i ⊆ A with Hⁿ(A ∖ C_i) < 1/(i+1) and ϑ continuous on C_i. Then Hⁿ(A ∖ ⋃_i C_i) ≤ Hⁿ(A ∖ C_j) < 1/(j+1) for every j, so Hⁿ(A ∖ ⋃_i C_i) = 0.
+2. Weighted measure. Let μ' := (Hⁿ⌞A).withDensity(‖ϑ‖ₑ), i.e. μ'(S) = ∫_{S ∩ A} |ϑ| dHⁿ for Borel S. It is a finite measure because ϑ is integrable on A.
+3. Exceptional sets. Fix i.
+(a) Apply upper_density_zero with ν := μ' and the Borel set S := A ∖ C_i (μ'(S) ≤ μ'(univ) < ∞). It gives an Hⁿ-null set E'_i such that (ρⁿ)⁻¹·μ'.real((A ∖ C_i) ∩ B_ρ(x)) → 0 as ρ ↓ 0 for every x ∉ (A ∖ C_i) ∪ E'_i.
+(b) The hypothesis with the closed set K := C_i ⊆ A gives an Hⁿ-null set E''_i such that every x ∈ C_i ∖ E''_i has some P with T_x C_i = P.
+Put E_i := E'_i ∪ E''_i.
+4. Fix x ∈ C_i ∖ E_i and P with T_x C_i = P; in particular finrank P = n. Fix f ∈ C_c(ℝ^{n+ℓ}, ℝ), M_f := sup|f|, and R > 0 with f = 0 off B_R(0). It remains to show I_r(f) → ϑ(x)∫_P f dHⁿ as r ↓ 0.
+5. Change of variables (blowup_scaling). Let r > 0. η is a measurable embedding, being an affine homeomorphism, e.g. (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ _); and x + rη(z) = z. For every set S, part (ii) gives η_*(Hⁿ⌞S) = ofReal(rⁿ)·Hⁿ⌞η(S). Hence for every function F : ℝ^{n+ℓ} → ℝ (no measurability, sign or integrability needed), ∫_{η(S)} F(x + ry) dHⁿ(y) = (rⁿ)⁻¹∫_S F(z) dHⁿ(z) (integral_smul_measure and MeasurableEmbedding.integral_map). The same computation with lintegrals gives ∫⁻_{η(S)} G(x + ry) dHⁿ(y) = (rⁿ)⁻¹∫⁻_S G dHⁿ for G ≥ 0, and integrability transfers (MeasurableEmbedding.integrable_map_iff, Integrable.smul_measure). Consequences:
+(α) y ↦ f(y)ϑ(x + ry) is integrable on η(A). Indeed z ↦ f(η(z))ϑ(z) is integrable on A, being the product of the integrable ϑ with the bounded continuous f ∘ η (Integrable.bdd_mul), and integrability transfers along η.
+(β) η(S) ∩ B_R(0) = η(S ∩ B_{rR}(x)) for every S, because ‖η(z)‖ = r⁻¹‖z − x‖. So for Borel S ⊆ A, ∫_{η(S) ∩ B_R(0)} |ϑ(x + ry)| dHⁿ(y) = (rⁿ)⁻¹∫_{S ∩ B_{rR}(x)} |ϑ| dHⁿ = (rⁿ)⁻¹·μ'.real(S ∩ B_{rR}(x)).
+(γ) Hⁿ(η(C_i)) = (rⁿ)⁻¹Hⁿ(C_i) < ∞ by part (i), so bounded Borel functions are integrable on η(C_i). η(C_i) and η(A ∖ C_i) are Borel (preimages of Borel sets under y ↦ x + ry) and disjoint (η is injective), and their union is η(A).
+6. Bounded density ratio (Simon Remark 3.1.5(3)). Let g(y) := min(1, max(0, R + 1 − ‖y‖)). Then g ∈ C_c(ℝ^{n+ℓ}, ℝ), 0 ≤ g ≤ 1 and g = 1 on B_R(0). By (γ), g is integrable on η(C_i), and Hⁿ.real(η(C_i) ∩ B_R(0)) = ∫_{η(C_i)} 1_{B_R(0)} dHⁿ ≤ ∫_{η(C_i)} g dHⁿ. Since T_x C_i = P, ∫_{η(C_i)} g dHⁿ → ∫_P g dHⁿ. So, eventually along 𝓝[>] 0, ∫_{η(C_i)} g dHⁿ ≤ Λ := ∫_P g dHⁿ + 1. By mem_nhdsGT_iff_exists_Ioo_subset there is r₁ > 0 with Hⁿ.real(η(C_i) ∩ B_R(0)) ≤ Λ for all 0 < r < r₁.
+7. Splitting. By (α) and (γ) (setIntegral_union), I_r(f) = J₁(r) + J₂(r), with J₁(r) := ∫_{η(C_i)} f(y)ϑ(x + ry) dHⁿ(y) and J₂(r) := ∫_{η(A ∖ C_i)} f(y)ϑ(x + ry) dHⁿ(y).
+8. J₂(r) → 0. Since |f(y)ϑ(x + ry)| ≤ M_f·1_{B_R(0)}(y)·|ϑ(x + ry)|, (β) with S := A ∖ C_i gives |J₂(r)| ≤ M_f·(rⁿ)⁻¹·μ'.real((A ∖ C_i) ∩ B_{rR}(x)) = M_f·Rⁿ·((rR)ⁿ)⁻¹·μ'.real((A ∖ C_i) ∩ B_{rR}(x)). As r ↓ 0, ρ := rR ↓ 0. Since x ∈ C_i (so x ∉ A ∖ C_i) and x ∉ E'_i, step 3(a) gives |J₂(r)| → 0.
+9. J₁(r) → ϑ(x)∫_P f dHⁿ. By (α) and (γ), J₁(r) − ϑ(x)∫_{η(C_i)} f dHⁿ = ∫_{η(C_i)} f(y)(ϑ(x + ry) − ϑ(x)) dHⁿ(y). Let ε' > 0. Continuity of ϑ on C_i at x ∈ C_i gives δ > 0 with |ϑ(z) − ϑ(x)| < ε' for all z ∈ C_i with ‖z − x‖ < δ. Let 0 < r < min(r₁, δ/R). If y ∈ η(C_i) ∩ B_R(0), then z := x + ry ∈ C_i and ‖z − x‖ = r‖y‖ ≤ rR < δ; and f(y) = 0 for y ∉ B_R(0). Hence |J₁(r) − ϑ(x)∫_{η(C_i)} f dHⁿ| ≤ ε'·M_f·Hⁿ.real(η(C_i) ∩ B_R(0)) ≤ ε'·M_f·Λ. As ε' was arbitrary, J₁(r) − ϑ(x)∫_{η(C_i)} f dHⁿ → 0. Also ϑ(x)∫_{η(C_i)} f dHⁿ → ϑ(x)∫_P f dHⁿ because T_x C_i = P.
+10. By steps 7–9, I_r(f) → ϑ(x)∫_P f dHⁿ. As f was arbitrary and finrank P = n, HasWeightedApproximateTangentSpaceAt n A ϑ x P holds for every i and every x ∈ C_i ∖ E_i.
+11. Conclusion. By steps 1 and 3, a point of A without a weighted approximate tangent space lies in (A ∖ ⋃_i C_i) ∪ ⋃_i E_i, a countable union of Hⁿ-null sets. Hence for Hⁿ-a.e. x, x ∈ A implies that some P satisfies HasWeightedApproximateTangentSpaceAt n A ϑ x P.
+
+## Key steps
+
+1. Lusin: closed C_i ⊆ A with ϑ continuous on C_i and Hⁿ(A ∖ ⋃ C_i) = 0
+2. μ' := |ϑ|Hⁿ⌞A is a finite Borel measure; the Upper Density Theorem (sibling upper_density_zero) for μ' on A ∖ C_i and the hypothesis T_x C_i = P hold off null sets E_i
+3. change of variables from blowup_scaling: integrability of f(y)ϑ(x+ry) on η(A) and the bound (rⁿ)⁻¹μ'(S ∩ B_{rR}(x))
+4. bounded density ratio Hⁿ(η(C_i) ∩ B_R(0)) ≤ Λ, from T_x C_i = P with a cutoff g
+5. split I_r(f) over η(C_i) and η(A ∖ C_i); the second part → 0 by zero density
+6. the first part → ϑ(x)∫_P f by continuity of ϑ on C_i at x and T_x C_i = P
+7. the exceptional set lies in (A ∖ ⋃ C_i) ∪ ⋃ E_i, which is null
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sha256(parent-child-handoff.json subproblem.natural_proof) == decomposition-scope-v{1,2,3}.json target.proof_sha256`
+- `field-by-field sha256 diff of decomposition-v{1,2,3}.json subproblems (key, title, statement, lean_statement, lean_name, depends_on, natural_proof, proof_key_steps)`
+- `grep -rlE 'rsod_blowUpMap_measure_scaling|rsod_ae_tendsto_density_zero_outside|rsod_isC1Submanifold_measurableSet|rsod_isC1Submanifold_approxTangent|rsod_ae_approxTangent_of_c1Cover|rsod_ae_weightedApproxTangent_of_unweighted|rsod_weightedApproxTangent_congr' <run dir> --exclude-dir=local-references (excluding this node's own dir); GMT; .lake/packages/simongmt; <snapshot>/project`
+- `rg -l 'rsod_' <snapshot>/mathlib/Mathlib`
+- `git grep -lE '<the 7 proposed names>' <tip> -- '*.lean' for each of the 128 distinct tips of 340 refs`
+- `dag.json: occurrences of each proposed name, duplicate lean_name check, identical-type check, status of rsod_blowUp_setIntegral_eq / tae_c1_chart_image_approxTangent / aetp_c1_piece_approxTangent, sibling rectifiable_c1_cover-a1 lean_statement`
+- `grep -n 'def IsC1Submanifold|structure RectifiableVarifold' GMT/Ch05/Submission.lean`
+- `grep -n 'def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'exists_isClosed_continuousOn|caratheodory' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `grep -n '1\.2 Lemma|1\.3 Remark|1\.6 Theorem|1\.7 Definition|1\.8 Remark|1\.9 Theorem' book/chapter-03.txt`
+- `lake build GMT.Ch05.Submission (fresh scratch /tmp/aetangent-v4-kM1OXj)`
+- `lake env lean AllChallenges.lean / Assembly.lean / Leaves.lean / LeafUD.lean / LibCheck.lean (run in parallel)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-scope-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/aetangent-v4-kM1OXj/AllChallenges.lean`
+- `/tmp/aetangent-v4-kM1OXj/Assembly.lean`
+- `/tmp/aetangent-v4-kM1OXj/Leaves.lean`
+- `/tmp/aetangent-v4-kM1OXj/LeafUD.lean`
+- `/tmp/aetangent-v4-kM1OXj/LibCheck.lean`
+- `/tmp/aetangent-v4-scripts/gen.py`
+- `/tmp/aetangent-v4-scripts/check_leaves.py`
+
+Pins confirmed: project ea5607598f3133b40a13241f2e51517a8c6423cd (equal to workspace HEAD), Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json) and simongmt 2b3663083f3fe399b6296fb8eaee52169170e197 (lake-manifest.json). The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies.
+
+This is a publication retry. The handoff proof sha256 a26c202b… equals proof_sha256 in decomposition-scope-v1/v2/v3.json. v2 and v3 are byte-identical in every subproblem field, all three audits are acceptable, and the DAG node has retry_operation = publication and no children.
+
+Name scan, no match anywhere for any of the 7 proposed names:
+- dag.json (200 nodes);
+- other nodes' run files (145 decomposition files across 200 node dirs);
+- GMT, simongmt and the snapshot project;
+- snapshot Mathlib (rg 'rsod_': no files);
+- Lean files at all 128 distinct git ref tips (340 refs).
+No DAG node has a type identical to a proposed child. rsod_blowUp_setIntegral_eq is now accepted in the density_of_approx_tangent-a1 branch, but its type differs from all seven proposed types, so it is not reused.
+
+Frozen definitions match the child proofs:
+- IsC1Submanifold: charts V ⊆ Rn m, W open, ContDiffOn ℝ 1 φ V, InjOn, φ '' V = W ∩ S, properness, injective fderiv.
+- blowUpMap x r y = r⁻¹ • (y - x).
+- HasApproximateTangentSpaceAt and HasWeightedApproximateTangentSpaceAt: finrank P = n plus the 𝓝[>] 0 limit for every f : C_c(E, ℝ).
+- The simongmt Lusin theorem (IsBorelRegularOuterMeasure.exists_isClosed_continuousOn) requires measurability for mu.caratheodory, which W's step 1 addresses.
+
+Simon Ch. 3 printed text (book/chapter-03.txt): Remark 1.3, the proof of 1.6 '⇒', Remark 1.8(1) and Theorem 1.9 match children U and W and the parent glue. The printed bound written with M \ N_j is read as M \ M_j, matching the displayed decomposition; U uses C \ C_k.
+
+Lean results (fresh build, v4.35.0-rc3, 3014 jobs):
+- AllChallenges: 0 errors and 7 sorry warnings, so all 7 types elaborate in the exact comparator scope. The file is identical to attempt 3's up to target numbering.
+- Assembly: 0 errors and exactly 8 sorry warnings (7 child stubs plus the sibling stub). The parent proof contains no sorry. All 7 `exact Submission.X` solution forms and the parent form typecheck.
+- Leaves (S, B, G) and LeafUD (UD): complete proofs whose axioms are only propext, Classical.choice and Quot.sound.
+- LibCheck: every library result cited by T, U, W, UD and the glue exists with the cited signature.
+
+No Matrix/IsUnit construction occurs.

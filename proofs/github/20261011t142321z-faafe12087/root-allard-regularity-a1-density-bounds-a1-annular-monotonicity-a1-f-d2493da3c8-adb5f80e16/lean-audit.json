@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "abf889de48970ab9927debf1f3105e8292611b5a4f85a6f9ce3879da30be2769",
+  "git_delta": {
+    "base_commit": "9c720cdcfa008fbae122d86f0d890d2999414373",
+    "candidate_commit": "19acf5d27cf7f167c7b3ab71ac49c0e7abcc4986",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_fc_cutoff_facts",
+    "diff_sha256": "e7c0bbf81e883eaa7fe45838f9caf88692cec383b4634e74f49b92d7b59d212f",
+    "source_sha256": "5be932fdf8ede26c8f31a4b527049b62fc25818257c9a77fb0a15e8439ea3ea8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_fc_cutoff_facts",
+      "statement": "∀ (φ : ℝ → ℝ) (ε : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → (∀ u : ℝ, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u : ℝ, deriv φ u ≤ 0) ∧ (∀ u : ℝ, 1 + ε < u → deriv φ u = 0) ∧ Continuous (deriv φ) ∧ ∃ C : ℝ, ∀ u : ℝ, |deriv φ u| ≤ C",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

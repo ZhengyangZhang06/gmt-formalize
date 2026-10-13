@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.ball_lintegral_ofreal-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the last part of step 3 of the parent proof (null sphere, integrability on the ball, and ofReal_integral_eq_lintegral_ofReal), stated for a general continuous nonnegative φ. The parent applies it with φ(x') := ‖f(x') − (c + A x')‖^2. This φ is >= 0, and it is continuous on B̄_r(0) because f is 1-Lipschitz (hence continuous) on B̄_R(0) ⊇ B̄_r(0) (r <= R) and x' ↦ c + A x' is continuous.
+
+1. The sphere S := B̄_r(0) \ B_r(0) = {x : ‖x‖ = r} is Lebesgue-null. L^n is an additive Haar measure on the finite-dimensional space R^n and r ≠ 0, so L^n(S) = 0 (Measure.addHaar_sphere_of_ne_zero). That lemma needs no nontriviality assumption; for n = 0 the sphere is in fact empty, because every vector of R^0 is 0 and r > 0.
+2. The two balls agree up to a null set.
+   - B_r(0) ⊆ B̄_r(0) ⊆ B_r(0) ∪ S, so by monotonicity and subadditivity L^n(B̄_r(0)) <= L^n(B_r(0)) + L^n(S) = L^n(B_r(0)).
+   - B_r(0) is measurable, and L^n(B̄_r(0)) < ∞ because the closed ball is compact (IsCompact.measure_lt_top).
+   - Hence B_r(0) and B̄_r(0) coincide up to an L^n-null set (ae_eq_of_subset_of_measure_ge), so L^n.restrict (B_r(0)) = L^n.restrict (B̄_r(0)) (Measure.restrict_congr_set).
+   - Therefore ∫⁻_{B̄_r(0)} ofReal(φ) dL^n = ∫⁻_{B_r(0)} ofReal(φ) dL^n.
+3. φ is continuous on the compact set B̄_r(0), hence bounded there and a.e.-strongly measurable for L^n.restrict B̄_r(0). As L^n(B̄_r(0)) < ∞, φ is integrable on B̄_r(0) (ContinuousOn.integrableOn_compact), and hence on the subset B_r(0) (IntegrableOn.mono_set).
+4. φ(x) >= 0 for every x ∈ B_r(0) ⊆ B̄_r(0). Since B_r(0) is measurable, φ >= 0 holds a.e. for L^n.restrict B_r(0) (ae_restrict_of_forall_mem).
+5. For a real function that is integrable and a.e. nonnegative, the ofReal of its Bochner integral equals the lower integral of its ofReal (ofReal_integral_eq_lintegral_ofReal). By steps 3 and 4 applied to L^n.restrict B_r(0): ofReal(∫_{B_r(0)} φ dL^n) = ∫⁻_{B_r(0)} ofReal(φ) dL^n.
+6. By steps 2 and 5, ∫⁻_{B̄_r(0)} ofReal(φ) dL^n = ∫⁻_{B_r(0)} ofReal(φ) dL^n = ofReal(∫_{B_r(0)} φ dL^n). ∎
+
+## Key steps
+
+1. The sphere {‖x‖ = r} is Lebesgue-null since r ≠ 0 (Measure.addHaar_sphere_of_ne_zero)
+2. So the open and closed balls agree a.e. and the restricted measures coincide (ae_eq_of_subset_of_measure_ge, Measure.restrict_congr_set)
+3. φ is continuous on the compact closed ball, hence integrable on it and on the open ball
+4. φ >= 0 on the open ball; ofReal_integral_eq_lintegral_ofReal converts the Bochner integral
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 -I scan of <run>/dag.json lean_statement fields for: '∀ᵐ [a-z] ∂V\.weight, [a-z] ∈ V\.support', 'IsCompact K → K ⊆ U → V\.weight', 'V\.weight K', 'V\.mult x ≤ 2', 'restrict.*≤ V\.weight', 'V\.weight\.restrict', short statements containing 'support', 'graphPoint', 'V.weight'/'μHE'/'mult'`
+- `rg -n 'theorem addHaar_sphere_of_ne_zero|lemma support_mem_ae :|lemma measure_compl_support :|theorem restrict_withDensity |theorem ae_withDensity_iff' |theorem lintegral_withDensity_eq_lintegral_mul₀ |theorem withDensity_absolutelyContinuous |theorem ae_restrict_mem₀ |theorem ae_eq_of_subset_of_measure_ge|theorem integral_eq_lintegral_of_nonneg_ae|theorem ofReal_integral_eq_lintegral_ofReal|theorem toReal_le_of_le_ofReal|theorem lintegral_inter_add_sdiff|lemma setLIntegral_indicator |theorem setLIntegral_mono_ae |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem measure_mono_ae|theorem restrict_congr_set|theorem lintegral_const_mul |theorem lintegral_mono' ' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'lintegral_inter_add_diff|setLIntegral_indicator|lintegral_union_le|toReal_le_of_le_ofReal' <snapshot>/mathlib/Mathlib`
+- `sha256sum <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `git show cdb88b48925591849cbb90579af1307d72e56810:GMT/Ch05/Submission.lean (accepted allard52_cft_graph_map_sqrt_two and lip_approx_graph_coordinates)`
+- `git grep -l -E 'measure_compl_support|ae_restrict_mem₀' over refs/heads/humanize-recursive/* -- GMT/Ch05/*.lean; git show <l1-tilt-height-a1 branch>:GMT/Ch05/Submission.lean | grep (patterns for the weight/carrier a.e. arguments)`
+- `python3 -I: cross-parent reuse precedents in <run>/nodes/*/decomposition-v*.json (listed depends_on vs DAG depends_on of reused accepted nodes)`
+- `grep -rl tdo_ghe_ <run>/dag.json <run>/nodes <run>/DAG.md <run>/issue-workers.json GMT .lake/packages/simongmt/Poincare <snapshot>/project <snapshot>/mathlib/Mathlib; git log --all --format=%H -S tdo_ghe_ (no match)`
+- `sed -n 895,980p book/chapter-05.txt (printed (14)-(20) of the proof of 4.5)`
+- `lake env lean -o /tmp/ghe-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean /tmp/ghe-decomp/checks/{Types,C1,C2,C3,Assembly,Full,Comparator}.lean (LEAN_PATH = scratch olean + lake-packages-25730c7c)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1-g-ee44f55667/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/ghe-decomp/checks/Types.lean`
+- `/tmp/ghe-decomp/checks/C1.lean`
+- `/tmp/ghe-decomp/checks/C2.lean`
+- `/tmp/ghe-decomp/checks/C3.lean`
+- `/tmp/ghe-decomp/checks/Assembly.lean`
+- `/tmp/ghe-decomp/checks/Full.lean`
+- `/tmp/ghe-decomp/checks/Comparator.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Contract.lean has sha256 c966f51e..., identical to the workspace Contract.lean and Submission.lean.
+
+Mathlib facts used (paths under mathlib/Mathlib):
+- Measure.support_mem_ae / measure_compl_support (MeasureTheory/Measure/Support.lean:198/202).
+- withDensity_absolutelyContinuous :146, restrict_withDensity :215, ae_withDensity_iff' :291 and lintegral_withDensity_eq_lintegral_mul₀ :458, all in MeasureTheory/Measure/WithDensity.lean.
+- ae_restrict_mem₀ (Measure/Restrict.lean:637) and Measure.restrict_congr_set (:104).
+- ae_eq_of_subset_of_measure_ge (Measure/Basic.lean:332).
+- Measure.addHaar_sphere_of_ne_zero (Measure/Lebesgue/EqHaar.lean:519). It has no Nontrivial assumption, so it covers n = 0.
+- ofReal_integral_eq_lintegral_ofReal :739 and integral_eq_lintegral_of_nonneg_ae :515 (Integral/Bochner/Basic.lean). The latter needs no integrability, so step (1b) is not needed.
+- setLIntegral_mono_ae, setLIntegral_mono', setLIntegral_const, setLIntegral_indicator and lintegral_inter_add_sdiff (Integral/Lebesgue/Basic.lean). lintegral_inter_add_diff is a deprecated alias of the last, deprecated 2026-06-03.
+- ENNReal.toReal_le_of_le_ofReal (Basic/ENNReal/Real.lean:283).
+- measure_mono_ae (OuterMeasure/AE.lean:309).
+
+DAG search:
+- No node states 'μ-a.e. point lies in V.support', a weight-versus-Hausdorff density comparison, or the closed-ball/open-ball lintegral conversion. The new children therefore get fresh names.
+- rsod_weight_closedBall_eq_ofReal_integral (accepted) would give step (1b) but is unnecessary.
+- hausdorff_carrier_diff_support_null and dohr_lmo_dema_weight_restrict_withDensity (both accepted) do not fit: U is arbitrary, so V.support need not be measurable.
+- allard52_cft_graph_map_sqrt_two is accepted (candidate cdb88b48) with exactly the needed type, so it is reused byte-identically.
+- The prefix tdo_ghe_ has no match in the DAG, nodes, project, simongmt, Mathlib or git history.
+
+The book (chapter-05.txt:958-971) bounds the ∫ over B_{ησ}(τ) ∩ graph f with the area formula and θ <= 2, and the remainder with (3) and (4). The children and the assembly follow the supplied formalized version of this argument.
+
+Lean: all child types and the parent type elaborate. The three new children are fully proved, with standard axioms only. The parent is assembled from the children plus the two sibling types with no additional sorry. Comparator-style exact-type checks pass.

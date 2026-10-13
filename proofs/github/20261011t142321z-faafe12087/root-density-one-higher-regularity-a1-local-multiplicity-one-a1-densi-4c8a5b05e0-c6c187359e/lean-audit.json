@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "dc95a5b216033af561fc323535a8eb2877644ba64ff28cda5075967e67688534",
+  "git_delta": {
+    "base_commit": "e2ae971a6dc187e58d0d038841f410c01f5c09a9",
+    "candidate_commit": "57f00cb736b0ade18522ff544933f64f06eba646",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "f332b69a420239523592ca5fd17e656caf6accd309002e46b37c1bd48719afb0",
+    "source_sha256": "a0b2e15f47880cfe3fdaeb231e56cc3a0305a0481e4cb4afcfe088656d2d8499",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_density_eq_mult_ae",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (y₀ : Amb n ℓ) (r₀ : ℝ), closedBall y₀ r₀ ⊆ U → (μHE[n] : Measure (Amb n ℓ)) (V.support ∩ ball y₀ r₀) < ⊤ → (∀ y ∈ V.support ∩ ball y₀ r₀, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (V.support ∩ closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1)) → (∀ᵐ y ∂V.weight, y ∈ ball y₀ r₀ → V.HasDensity y (V.mult y)) ∧ ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball y₀ r₀)), y ∉ V.carrier → V.HasDensity y 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

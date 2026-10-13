@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "41f302f5874ba8b71076c2eddc4603ef88cd93f737124c1ff9f0ebd5bc8d5f3d",
+  "git_delta": {
+    "base_commit": "0bb1b87a22b135393f9d3592e7be9b2b5619b9f7",
+    "candidate_commit": "84f554f0bfb861b94e233ce9e00db43a1c1bb3e6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_lad_line_integral_rep",
+    "diff_sha256": "9751fbc9c0bf2e6c191ed2b5ee420a5a78e5fa60c1e43abdb078a6fbd25b768f",
+    "source_sha256": "83b87a5710427f4e63a78f67e7a876e7db314c93e8f420f6b32ed1b77bb8d656",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_lad_line_integral_rep",
+      "statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (K : ℝ≥0), IsOpen U → Convex ℝ U → LipschitzOnWith K f U → ContinuousOn g U → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U → HasFDerivAt f (g x) x) → ∀ x ∈ U, ∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

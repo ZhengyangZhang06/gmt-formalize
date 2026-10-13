@@ -1,0 +1,22 @@
+{
+  "node_id": "root.regular_set_open_dense-a1.regular_points_dense-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/460",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4270",
+  "candidate_commit": "c737f1b8555ec54f4c3c5c673c73c6678d2366d6",
+  "integrated_commit": "",
+  "proof_base_commit": "07fc355de43561c2564473fa671e4d88b426e92d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.regular_set_open_dense-a1",
+  "requires": [
+    "root.regular_set_open_dense-a1.c1_submanifold_open_inter-a1",
+    "root.regular_set_open_dense-a1.localized_varifold-a1",
+    "root.regular_set_open_dense-a1.density_one_regular_point-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+    "root.regular_set_open_dense-a1.least_integer_density_point-a1"
+  ]
+}

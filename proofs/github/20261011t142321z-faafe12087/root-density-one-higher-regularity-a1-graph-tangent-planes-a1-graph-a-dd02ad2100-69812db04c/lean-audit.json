@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "568e208acb5fb6ff87128eba1da417c29ae1540cf18a3d9a8e20d25516b575ff",
+  "git_delta": {
+    "base_commit": "d095551b98d6f1b18351bc077d3e64c0471ac35e",
+    "candidate_commit": "9de41cfaee3f4d9bd9ff1ab8930cbff0558dec9e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_gat_bilip_integral_sandwich",
+    "diff_sha256": "a76bce953139773cedba4d3aec17c53ab163496098e818ef9127216007bb8e17",
+    "source_sha256": "c86cf73a107393393c484d841dbdb44d7bf527fe47335985736172bcbd7f5c24",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_gat_bilip_integral_sandwich",
+      "statement": "∀ (n ℓ : ℕ) (μ₁ μ₂ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (κ M : ℝ), IsFiniteMeasure μ₂ → Continuous φ → (∀ w, |φ w| ≤ M) → 1 ≤ κ → μ₁ ≤ ENNReal.ofReal κ • μ₂ → μ₂ ≤ ENNReal.ofReal κ • μ₁ → |∫ w, φ w ∂μ₁ - ∫ w, φ w ∂μ₂| ≤ 2 * ((κ - 1) * κ * (M * (μ₂ univ).toReal))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

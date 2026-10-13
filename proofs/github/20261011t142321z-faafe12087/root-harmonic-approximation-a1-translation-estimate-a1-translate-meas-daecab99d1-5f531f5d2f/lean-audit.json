@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d09dd556f19b10c99b49ba6aac05e1a889cc6bfedc8baa740a295db3472ed67a",
+  "git_delta": {
+    "base_commit": "3fe721747a635acb83fe9b7128d590e6c88b261d",
+    "candidate_commit": "e989fd4b136ebb6b92d031c96591dff200004602",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aestronglyMeasurable_ball_comp_sub",
+    "diff_sha256": "07d8203bf1c1d12973ece2f823b8f25823877f37f82ea5e74dc44795f2e8d40a",
+    "source_sha256": "164d7b9aa8591fbc6f48a3ca9b940fdfb6044dd3ddd72956a0d3f6cb96b16bab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aestronglyMeasurable_ball_comp_sub",
+      "statement": "∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → AEStronglyMeasurable (fun x => h (x - z)) (volume.restrict (ball (0 : Rn n) r))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

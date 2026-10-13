@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "675432a6362bdf8e7e6a7a9c2a4b2fe64ea20622141702c56c6e030a9e8a6d7f",
+  "git_delta": {
+    "base_commit": "678a7952a87720ec4223f59ec63818d4b21f42d9",
+    "candidate_commit": "93727800b22bb113b558877cd80562631a5ceb31",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_wel_localized_integral",
+    "diff_sha256": "40b1bb4bdf51e1e2b394cae801493f025156823da38bfb167f40dc34f9ad8bf6",
+    "source_sha256": "d4f8099e4c41a1f4d04254a843a90b43268b1602b21bafe0d5ad5c80955b6376",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_wel_localized_integral",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (O T : Set (Rn n)), IsOpen O → IsCompact T → T ⊆ O → ContinuousOn f O → (∀ z, z ∉ T → f z = 0) → Continuous f ∧ Integrable f ∧ ∫ z in O, f z = ∫ z, f z",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

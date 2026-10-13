@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ed8ac3dc32b96f0e7572cce880cc13266906167cb1ac23b51f3dce10aa01987",
+  "git_delta": {
+    "base_commit": "e85cf00b1bdd5997f4cb0c4d0320ac0d5013a15a",
+    "candidate_commit": "7881dde5f7e308e54f05a8f95dc7a4b94e277e4c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_planeMeasure_closedBall",
+    "diff_sha256": "830a2e57b0505e3db51ec6815a0365f1f3cfff5f746a22e82587952957738947",
+    "source_sha256": "03b5bd53d998c03c726e118a5f10ec6da538aab5f588a6912eac9287b87069ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_planeMeasure_closedBall",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n → ∀ s : ℝ, 0 ≤ s → ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) = ENNReal.ofReal (unitBallVolume n * s ^ n)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

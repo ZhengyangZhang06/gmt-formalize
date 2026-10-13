@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.localized_varifold-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: fact (Loc) of the parent proof (V~ := v(M ∩ B, θ/N) is a contract varifold on B; here with an arbitrary constant c > 0 in place of 1/N). Let n, ℓ ∈ ℕ, U ⊆ ℝ^{n+ℓ} (not necessarily open), V : RectifiableVarifold n ℓ U with M := V.carrier, θ := V.mult, Hⁿ := μHE[n], μ := V.weight = (Hⁿ⌞M).withDensity(ofReal ∘ θ), spt V := V.support = U ∩ spt μ; let B be open with B ⊆ U and c > 0.
+1. Construction. Define W : RectifiableVarifold n ℓ B with carrier M ∩ B and mult x ↦ c·θ(x). The fields: (a) M ∩ B ⊆ B. (b) M ∩ B is Hⁿ-null-measurable, since M is (V.nullMeasurableSet_carrier) and B is open, hence Borel. (c) M ∩ B ⊆ M is countably n-rectifiable (Chapter03.CountablyRectifiable.mono). (d) For x ∈ M ∩ B, c·θ(x) > 0 because c > 0 and θ(x) > 0 (V.mult_pos). (e) Hⁿ⌞(M ∩ B) ≤ Hⁿ⌞M, so θ, hence c·θ, is AEMeasurable for Hⁿ⌞(M ∩ B) (AEMeasurable.mono_measure, const_mul). (f) If K ⊆ B is compact then K ⊆ U, θ is integrable on M ∩ K (V.integrableOn_mult) and (M ∩ B) ∩ K ⊆ M ∩ K, so c·θ is integrable on (M ∩ B) ∩ K. By construction W.carrier = M ∩ B and W.mult x = c·θ(x) for every x.
+2. Weight. B is measurable. For every x, ofReal(c·θ(x)) = ofReal(c)·ofReal(θ(x)) (ENNReal.ofReal_mul, c ≥ 0), so W.weight = (Hⁿ⌞(M ∩ B)).withDensity(ofReal(c)·(ofReal ∘ θ)) = ofReal(c) • (Hⁿ⌞(M ∩ B)).withDensity(ofReal ∘ θ) (withDensity_smul', ofReal c ≠ ∞). Further Hⁿ⌞(M ∩ B) = (Hⁿ⌞M)⌞B (Measure.restrict_restrict with B measurable) and ((Hⁿ⌞M).withDensity f)⌞B = ((Hⁿ⌞M)⌞B).withDensity f (restrict_withDensity, B measurable). Hence W.weight = ofReal(c) • μ⌞B.
+3. Support. (a) For a measure ν and a ∈ (0, ∞): (a•ν)(G) = a·ν(G) > 0 ⟺ ν(G) > 0 for every set G, hence spt(a•ν) = spt ν (Measure.mem_support_iff_forall). (b) B ∩ spt(μ⌞B) = B ∩ spt μ: the inclusion ⊆ holds because μ⌞B ≤ μ (support_mono, or support_restrict_subset); for ⊇, if x ∈ B ∩ spt μ and G ∈ 𝓝 x, then G ∩ B ∈ 𝓝 x (B open), and (μ⌞B)(G) = μ(G ∩ B) > 0 (Measure.restrict_apply' with B measurable); this is Mathlib's interior_inter_support with interior B = B. (c) Therefore W.support = B ∩ spt(W.weight) = B ∩ spt(μ⌞B) = B ∩ spt μ = B ∩ (U ∩ spt μ) (since B ⊆ U) = B ∩ spt V.
+4. Tangent planes agree on B. Claim: for x ∈ B and every subspace P, HasWeightedApproximateTangentSpaceAt n (M ∩ B) (c·θ) x P ⟺ HasWeightedApproximateTangentSpaceAt n M θ x P. The dimension conditions are identical. Fix f ∈ C_c(ℝ^{n+ℓ}, ℝ), R > 0 with f = 0 outside B_R(0) (closed ball), and d > 0 with B_d(x) ⊆ B. Let 0 < r < d/R and η := blowUpMap x r, η(y) = r⁻¹(y - x), a bijection; so η(M ∩ B) = η(M) ∩ η(B), and η(B) is open. For every y with f(y) ≠ 0 we have ‖y‖ ≤ R, so ‖(x + ry) - x‖ ≤ rR < d, hence x + ry ∈ B, i.e. y ∈ η(B). Thus f(y) = 0 for every y ∉ η(B), so the integrand y ↦ f(y)·θ(x + ry) vanishes at every point outside the open set η(B). Writing the set integral over η(M ∩ B) = η(M) ∩ η(B) as the integral for the measure Hⁿ⌞η(M) restricted to the measurable set η(B) (Measure.restrict_restrict) and using setIntegral_eq_integral_of_forall_compl_eq_zero for that measure, together with integral_const_mul (valid with or without integrability): ∫_{η(M ∩ B)} f(y)·(c·θ(x + ry)) dHⁿ(y) = c·∫_{η(M)} f(y)·θ(x + ry) dHⁿ(y). So for 0 < r < d/R the function of r appearing in the definition for (M ∩ B, c·θ) equals c times the one for (M, θ), and the limit values are (c·θ(x))·∫_P f dHⁿ = c·(θ(x)·∫_P f dHⁿ). Since c ≠ 0, multiplying by c or by c⁻¹ (Tendsto.const_mul, Tendsto.congr' on the eventual equality in 𝓝[>]0) shows the two convergence statements are equivalent; this proves the claim. Consequently, for x ∈ B the predicates P ↦ HasWeighted…(M ∩ B, c·θ, x, P) and P ↦ HasWeighted…(M, θ, x, P) are equal (funext, propext), so the dependent if-then-else defining tangentProj yields W.tangentProj x = V.tangentProj x, and therefore W.divM X x = V.divM X x for every X : ℝ^{n+ℓ} → ℝ^{n+ℓ} and every x ∈ B.
+5. Generalized mean curvature. Assume V.HasGeneralizedMeanCurvature H: (i) LocallyIntegrableOn H U μ and (ii) ∫ V.divM X dμ = -∫ ⟨X, H⟩ dμ for every C¹ field X with compact support and tsupport X ⊆ U. (a) LocallyIntegrableOn H B W.weight: for x ∈ B, B ⊆ U is a neighbourhood of x, so 𝓝[U] x = 𝓝 x = 𝓝[B] x; by (i) there is G ∈ 𝓝 x with H integrable on G for μ, hence for μ⌞B ≤ μ and for ofReal(c) • μ⌞B = W.weight (Integrable.smul_measure, ofReal c ≠ ∞). (b) Let X be C¹ with compact support and tsupport X ⊆ B; then tsupport X ⊆ U and (ii) applies. Outside tsupport X the field X vanishes on a neighbourhood, so fderiv ℝ X = 0 there and V.divM X = trace(0) = 0, and ⟨X, H⟩ = 0 there. By step 2 (integral_smul_measure, (ofReal c).toReal = c), step 4 (setIntegral_congr_fun on the measurable set B) and setIntegral_eq_integral_of_forall_compl_eq_zero (integrands vanish off tsupport X ⊆ B): ∫ W.divM X dW.weight = c·∫_B W.divM X dμ = c·∫_B V.divM X dμ = c·∫ V.divM X dμ = -c·∫ ⟨X, H⟩ dμ = -c·∫_B ⟨X, H⟩ dμ = -∫ ⟨X, H⟩ dW.weight. Hence W.HasGeneralizedMeanCurvature H.
+6. LocallyLp. Assume V.LocallyLp H p and let K ⊆ B be compact. Then K ⊆ U, and ∫⁻_K ‖H‖ₑ^p dW.weight = ofReal(c)·∫⁻_K ‖H‖ₑ^p d(μ⌞B) ≤ ofReal(c)·∫⁻_K ‖H‖ₑ^p dμ < ∞ (lintegral_smul_measure, monotonicity of the lintegral in the measure, ofReal c < ∞). Hence W.LocallyLp H p.
+7. Steps 1-6 give W with W.carrier = M ∩ B, W.mult = c·θ, W.weight = ofReal c • μ⌞B, W.support = B ∩ spt V, and the transfer of generalized mean curvature and of LocallyLp, as claimed.
+
+## Key steps
+
+1. Build W on B with carrier M ∩ B and multiplicity c·θ; check the six structure fields
+2. W.weight = ofReal c • μ⌞B (withDensity_smul', restrict_withDensity)
+3. spt of a positive multiple and of μ⌞B on the open set B give W.support = B ∩ spt V
+4. Approximate tangent planes are local and homogeneous in θ, so W.tangentProj = V.tangentProj on B
+5. First variation and local integrability of H transfer; LocallyLp transfers
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -l 'rsod_|regularSet|IsC1Submanifold' <snapshot>/project`
+- `rg -n '^lemma (isClosed_support|mem_support_iff_forall|notMem_support_iff_exists|support_mem_ae|measure_compl_support|interior_inter_support|support_restrict_subset)' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n '^theorem (IsometryEquiv.measurePreserving_euclideanHausdorffMeasure|MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|Isometry.euclideanHausdorffMeasure_image)' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -l -e '[Vv]arifold' -e 'ApproximateTangent' -e 'approximate tangent' -e 'Whitney' -e 'rectifiable' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem ae_tendsto_rnDeriv ' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'subRight' <snapshot>/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean; rg -n 'theorem ae_map_iff \{p' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean; rg -n '^theorem ae_smul_measure ' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Module.lean; rg -n 'protected theorem Tendsto.const_mul' <snapshot>/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `sed -n 1,558p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasWeightedApproximateTangentSpaceAt, .unique)`
+- `rg -n -i 'whitney|c1_approx|C1Approx|approximation theorem|upper density|theorem_1_5' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/{Chapter01/DensityComparison.lean,Chapter01/HausdorffDensityBounds.lean,Chapter01/Lusin.lean,Chapter02/AreaCritical.lean,Chapter02/WhitneyExtension.lean,Chapter04/TangentDensity.lean}`
+- `grep -rl rsod_ .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087 (name-collision check)`
+- `lake env lean /tmp/rsod-check/RsodCheck/All.lean (12 child statements, comparator targets, parent assembly, glue and leaf proofs)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Manifold/WhitneyEmbedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/rsod-check/RsodCheck/All.lean`
+
+The snapshot is pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json).
+
+No prior proofs exist. regularSet and IsC1Submanifold occur only in project/GMT/Ch05/{Contract,Submission}.lean and README.md. No rsod_ name occurs anywhere in the run, so there are no name collisions.
+
+No-match results:
+- Mathlib has no varifold, rectifiable-set, approximate-tangent or Whitney C¹-extension material. The only hits are Geometry/Manifold/WhitneyEmbedding.lean and PartitionOfUnity.lean (the Whitney embedding theorem for manifolds) and a comment in CategoryTheory/Monoidal/Rigid/Braided.lean.
+- The pinned simongmt package lies outside the snapshot, under .lake/packages. It proves uniqueness of weighted approximate tangent planes (Chapter03/Rectifiable.lean, whose definition matches Def 1.7 literally).
+- simongmt proves only the easy direction of Ch. 3 Lemma 1.2; SubmanifoldCover.lean says the 'only if' direction 'remains a separate theorem'.
+- simongmt has no C¹ approximation theorem, and its Chapter04 varifold stores tangent planes as data.
+- So a.e. existence of tangent planes (Ch. 3, 1.9) and the C¹ cover are genuinely new obligations: children rectifiable_c1_cover and ae_approx_tangent_exists.
+
+Usable Mathlib items:
+- Measure.support API: isClosed_support, mem_support_iff_forall, notMem_support_iff_exists, support_mem_ae (hereditarily Lindelöf), interior_inter_support, support_restrict_subset.
+- μHE[n] invariance: IsometryEquiv.measurePreserving_euclideanHausdorffMeasure and euclideanHausdorffMeasure_smul₀.
+- Measurable equivalences: MeasurableEquiv.subRight with MeasurableEmbedding.ae_map_iff and MeasurableEquiv.map_apply.
+- Measure.ae_smul_measure, ENNReal.Tendsto.const_mul and Besicovitch.ae_tendsto_rnDeriv.
+
+Usable simongmt items:
+- Chapter03: CountablyRectifiable.mono and HasWeightedApproximateTangentSpaceAt.unique.
+- Chapter01: simon_theorem_3_6 (upper density), simon_theorem_3_26_i and Lusin (simon_theorem_1_17).
+- Chapter02: exists_contDiff_one_extension_of_whitney with HasWhitneyC1Compatibility, rademacher_ae_differentiableAt, and area_image_criticalSet_eq_zero.
+- Chapter04: planeMeasure_unit_closedBall, tangentDensityCutoff and one_le_density_of_approximateTangent, for Remark 1.8(2).
+
+Lean check (/tmp/rsod-check/RsodCheck/All.lean, built against GMT.Ch05.Submission with Lean v4.35.0-rc3):
+- All 12 child types elaborate in the comparator's contract scope.
+- With the children and the sibling as sorry declarations, the following compile with 0 errors: the parent assembly of RegularSetOpenDense, the glue proofs of regular_set_rel_open, density_one_regular_point and regular_points_dense, and full proofs of c1_submanifold_open_inter and least_integer_density_point.
+- There are 13 sorry warnings: the 12 children plus the simulated sibling.

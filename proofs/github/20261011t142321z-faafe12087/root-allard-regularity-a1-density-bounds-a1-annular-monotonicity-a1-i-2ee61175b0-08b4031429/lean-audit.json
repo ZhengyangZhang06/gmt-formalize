@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8cf10e67425177a2d14dbd164d6aa9fde3d7a245de86c04fdc7d75c7cf9cdeeb",
+  "git_delta": {
+    "base_commit": "56030247dd255ee9648a1d853f19ba4fff8c12dc",
+    "candidate_commit": "18178d1ad43fb123b6c130cfff918539807aaf98",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_integrating_factor",
+    "diff_sha256": "b4e203c4ad9e0ffdbe750f05ccc3f3391fb82aa915141768ab212d7b64dcf90c",
+    "source_sha256": "e854f124ec2b9a226a9e202043c009656d07a34ea620606e203069efe07c5562",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_integrating_factor",
+      "statement": "∀ (n : ℕ) (I I' E Q a : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t ∈ Ioo 0 R, HasDerivAt I (I' t) t) → (∀ t ∈ Ioo 0 R, ContinuousAt E t) → (∀ t ∈ Ioo 0 R, ContinuousAt Q t) → (∀ t ∈ Ioo 0 R, 0 ≤ I t) → (∀ t ∈ Ioo 0 R, (n : ℝ) * I t - t * I' t + t * Q t = -E t) → (∀ t, a t = E t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t ∈ Ioo 0 R, |a t| ≤ M * t ^ (-β)) → ∀ s r : ℝ, 0 < s → s ≤ r → r < R → Real.exp (-∫ τ in (0)..r, a τ) * (1 + I r / r ^ n) - Real.exp (-∫ τ in (0)..s, a τ) * (1 + I s / s ^ n) = ∫ t in s..r, Real.exp (-∫ τ in (0)..t, a τ) * (Q t / t ^ n)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

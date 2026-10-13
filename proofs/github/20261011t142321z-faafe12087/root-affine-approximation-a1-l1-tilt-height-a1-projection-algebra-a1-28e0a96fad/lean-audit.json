@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d93edba95032e8a09c0803f02fe87ff33fc9f5522c8a7926cd6d2a8b800c102c",
+  "git_delta": {
+    "base_commit": "9626d39012b375b2549ca451e639d1475e440bb9",
+    "candidate_commit": "6a1ded0f94459b60393a00c3ace61d7ccef44dda",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aal_l1th_projection_algebra",
+    "diff_sha256": "4c94d987570a0dff6f68c4df632926bedcf10d706005ada72f0ede799a8bfb74",
+    "source_sha256": "4d3c102f1cdc4cfb5f0d50932a9f4948e2138d6597803565f4d5c626020a9c67",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_l1th_projection_algebra",
+      "statement": "(∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A) ∧ ∀ (m : ℕ) (P T : Submodule ℝ (Rn m)), Module.finrank ℝ P = Module.finrank ℝ T → LinearMap.trace ℝ (Rn m) (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) = hsNormSq (P.starProjection - T.starProjection) / 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

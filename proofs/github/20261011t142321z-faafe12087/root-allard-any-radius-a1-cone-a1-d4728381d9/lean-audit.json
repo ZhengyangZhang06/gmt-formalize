@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3104e9e5a74e0a71e2c5b08ad9a471f7bf3d8be90ffc99b607b11c6148fc7e21",
+  "git_delta": {
+    "base_commit": "035ad68693ba67d494ad5e779fe6e01ec4d9b08b",
+    "candidate_commit": "6bc5c428381f18d4e043944130bef6b75f08ba8d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_cone",
+    "diff_sha256": "9b19983e68873623c3975fa5a21e27235a1874a20fda94905bd2dd040d46b21f",
+    "source_sha256": "3263e33202594db652908b01ef2bde507e6739847691fad8f7c4181139e0847f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_cone",
+      "statement": "ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ κ c₀ : ℝ, 0 < γ → γ < 1 → 0 < κ → κ ≤ (1 - γ) / 8 → 0 < c₀ → c₀ ≤ 1 / 4 → ∃ δC : ℝ, 0 < δC ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δC → V.AllardHypotheses H p δ ρ → ∀ T : Submodule ℝ (Amb n ℓ), (∀ x ∈ V.support ∩ closedBall 0 (c₀ * ρ), infDist x (T : Set (Amb n ℓ)) ≤ κ / 2 * ‖x‖) → ∀ y ∈ V.support ∩ closedBall 0 ((1 + γ) / 2 * ρ), infDist y (T : Set (Amb n ℓ)) ≤ κ * ‖y‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

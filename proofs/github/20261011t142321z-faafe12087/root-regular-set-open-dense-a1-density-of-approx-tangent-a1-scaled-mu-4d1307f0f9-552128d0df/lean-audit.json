@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "24e43cd6398387a8fa46bb31489f37798f11c986f3f1ba79ce74ee9007e39bef",
+  "git_delta": {
+    "base_commit": "2e64e82fd3b51ba338f252aa6ee3d6c217bf8dd1",
+    "candidate_commit": "b30ebfa88273b4798c4d063b4dd1110287a8a190",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_tendsto_scaled_mult_integral",
+    "diff_sha256": "c6561cd8320989b25bcb7f7ca1e0dd815bf799a890674e2e86ae8fa681c37555",
+    "source_sha256": "388f2351cbec7a1af06ed9b818f78154050237707893cbac62c0ce463161a6ae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_tendsto_scaled_mult_integral",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), x ∈ U → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 (unitBallVolume n * V.mult x))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

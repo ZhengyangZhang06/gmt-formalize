@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d302660b4e632c436ad45fc73ec4f64c72fbb81b11a09a2692ce79ff292e08fe",
+  "git_delta": {
+    "base_commit": "59a90554e2d28e7a1b8d7558fa5cc4108ca65249",
+    "candidate_commit": "aa9047bba273d784449e612be2058178eea58a68",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean",
+      "proofs/github/20261011t142321z-faafe12087/root-final-proof.md"
+    ],
+    "diff_sha256": "f72e4dd0ab3a34675956e2e8f9c5026f67fd60b81636a49ffa972d8922af3ba8",
+    "source_sha256": "ac23060c847cd402dc25b50bffa9413fa16281a4dd0689304cc280d5b76aaeb6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch05.main_theorem",
+      "statement": "TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "853934cd4a52955be86f89ccf164f1b19584ede6"
+}

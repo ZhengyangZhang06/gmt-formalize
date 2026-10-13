@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_any_radius-a1.graph_comparison-a1`
+- Child DAG node: `root.allard_any_radius-a1.graph_comparison-a1.lebesgue_points-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the parent proof (Lebesgue–Besicovitch differentiation for the finite measure mu restricted to an open ball, Simon Ch. 1, 3.23; Mathlib Besicovitch.vitaliFamily with Besicovitch.tendsto_filterAt). The parent's bound |p_y| <= sqrt n is replaced by an operator-norm bound C. Notation: N := n + l, B_s(y) closed balls, e_i the standard basis vectors.
+1. Hilbert–Schmidt versus operator norm. For a linear map A of R^N, hsNormSq(A) = sum over i < N of |A e_i|^2 <= N ||A||^2, because |A e_i| <= ||A|| |e_i| = ||A|| (ContinuousLinearMap.le_opNorm). Also C >= 0 (as 0 <= ||g(0)|| <= C) and ||g(w) - g(y)|| <= ||g(w)|| + ||g(y)|| <= 2C. Hence hsNormSq(g w - g y) <= N (2C) ||g w - g y||. With K := ofReal(2 N C) < infinity:
+   ofReal(hsNormSq(g w - g y)) <= K ||g w - g y||ₑ for all w, y.
+2. The finite measure. mu_O := mu restricted to O has mu_O(R^N) = mu(O) < infinity, so it is a finite measure (hence locally finite and s-finite). g is a.e. strongly measurable for mu_O and bounded by C, so g is mu_O-integrable (Integrable.of_bound).
+3. Differentiation. R^N is a finite-dimensional real normed space, so it has the Besicovitch covering property and is second countable. Apply Lebesgue's differentiation theorem along the Besicovitch Vitali family of mu_O (VitaliFamily.ae_tendsto_lintegral_enorm_sub_div_of_integrable for Besicovitch.vitaliFamily mu_O): for mu_O-a.e. y,
+   (integral over a of ||g w - g y||ₑ dmu_O(w)) / mu_O(a) -> 0 as a shrinks to y along the family.
+   Compose with Besicovitch.tendsto_filterAt (closed balls B_s(y), s -> 0+): for mu_O-a.e. y,
+   Q_y(s) := (integral over B_s(y) of ||g w - g y||ₑ dmu_O) / mu_O(B_s(y)) -> 0 as s -> 0+.
+   Since O is Borel, "mu_O-a.e. y" means "mu-a.e. y, provided y is in O" (ae_restrict_iff').
+4. Comparison and squeeze. Fix such a y in O and e > 0 with B°_e(y) contained in O. For 0 < s < e, B_s(y) is contained in O, so mu_O(B_s(y)) = mu(B_s(y)) and mu_O restricted to B_s(y) equals mu restricted to B_s(y) (Measure.restrict_apply, Measure.restrict_restrict_of_subset). By step 1 and lintegral_const_mul':
+   mu(B_s(y))^-1 · integral over B_s(y) of ofReal(hsNormSq(g w - g y)) dmu <= mu(B_s(y))^-1 · K · integral over B_s(y) of ||g w - g y||ₑ dmu = K Q_y(s).
+   Here a / b = b^-1 a in [0, infinity]; if mu(B_s(y)) = 0, both sides are 0 since infinity · 0 = 0.
+   As K < infinity, K Q_y(s) -> K · 0 = 0 (ENNReal.Tendsto.const_mul). The left side is >= 0, and the bound holds for s in (0, e), an element of 𝓝[>] 0. So the left side tends to 0 by the squeeze theorem (tendsto_of_tendsto_of_tendsto_of_le_of_le'). This holds for mu-a.e. y in O. QED
+
+## Key steps
+
+1. hsNormSq(A) <= (n+l)||A||^2 and ||g w - g y|| <= 2C give ofReal(hsNormSq(g w - g y)) <= K ||g w - g y||
+2. mu restricted to O is finite, so the bounded field g is integrable for it
+3. Besicovitch–Lebesgue differentiation along closed balls for mu restricted to O
+4. Small balls around y in O see mu and mu restricted to O alike; squeeze with K times the L^1 averages
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `python3 -I: print lean_statement of every subproblem in nodes/root-allard-any-radius-a1/decomposition-v2.json and nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v{1,2}.json`
+- `python3 -I scan of every lean_name in dag.json and nodes/*/*.json (409 reserved names); grep -rl anyrad_gc dag.json nodes GMT <snapshot>/project; git grep -l anyrad_gc <all refs> -- GMT/Ch05/Submission.lean (no match)`
+- `python3 -I: dag.json nodes with status accepted/proved whose lean_statement mentions graphOver|tangentProj|hsNormSq|filterAt|withDensity|V.weight|μHE`
+- `git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean | grep -n '^theorem\|sorry\|import'; git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep import`
+- `rg -n 'μHE\[' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -n 'hausdorffMeasure_image_le\|theorem hausdorffMeasure_smul₀\|theorem hausdorffMeasure_le_liminf_tsum\|mkMetric_le_liminf_tsum' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -n '^theorem\|^protected def' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\|theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean; grep -n 'protected def vitaliFamily\|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -rn 'theorem LipschitzOnWith.extend_pi\|theorem LipschitzOnWith.extend_real\|extend_lp_infty' Mathlib/Topology/MetricSpace; grep -n 'lipschitzOnWith_of_nnnorm_fderiv_le\|norm_image_sub_le_of_norm_fderiv_le' Mathlib/Analysis/Calculus/MeanValue.lean; grep -rn starProjection_norm_le Mathlib/Analysis/InnerProductSpace/Projection`
+- `grep -n 'theorem\|lemma\|instance\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `python3 -I /tmp/gc-split-k7/scripts/closure.py <the 15 frozen header imports> (transitive import closure: 3203 modules)`
+- `sed -n on runtime.py (_solve_children, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.py (check_source_delta), parent_verification.py; cat swarm-project.json (max_nodes 1000); len(dag.json nodes) = 200`
+- `lake build GMT.Ch05.Submission in the scratch copy /tmp/gc-split-k7/proj (packages symlinked to the workspace .lake/packages)`
+- `lake env lean Checks/Types.lean; lake env lean Checks/Assembly.lean; lake env lean Val/GraphTransfer.lean Val/HausdorffLeWeight.lean Val/GraphTangent.lean Val/Lebesgue.lean; python3 -I scripts/stmtcheck.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py`
+- `/tmp/gc-split-k7/closure.txt`
+- `/tmp/gc-split-k7/proj/Checks/Types.lean`
+- `/tmp/gc-split-k7/proj/Checks/Assembly.lean`
+- `/tmp/gc-split-k7/proj/Val/GraphTransfer.lean`
+- `/tmp/gc-split-k7/proj/Val/HausdorffLeWeight.lean`
+- `/tmp/gc-split-k7/proj/Val/GraphTangent.lean`
+- `/tmp/gc-split-k7/proj/Val/Lebesgue.lean`
+
+Snapshot and reuse
+- manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace GMT/Ch05/Submission.lean is the frozen contract file.
+- Two accepted declarations from other branches cover parts of this proof and are reused with byte-identical frozen types (accepted, candidate commit present, comparator passed):
+  - aetp_upper_density_zero_ae: the Upper Density Theorem (candidate 066406829f…).
+  - ted_tangent_plane_facts: tangent-plane existence, measurability, density, and locality along Lipschitz graphs (candidate a8902dc6…; a sorry-free proof of about 1500 lines).
+- Other accepted lemmas were found but are not needed: upperDensity_ne_zero_outside_hausdorff_null, rsod_blowUp_setIntegral_eq, lip_approx_graph_coordinates, allard52_tangent_ae, lgc_tangent_plane_ae.
+- No-match: anyrad_gc_* occurs nowhere (dag.json, node files, snapshot project, all git refs). The 409 reserved names include none of the new names.
+
+Library
+All of the following are in the transitive import closure of the frozen header (3203 modules, computed from source and confirmed by #check), so leaves need no new import:
+- LipschitzWith.hausdorffMeasure_image_le and Measure.hausdorffMeasure_le_liminf_tsum (Measure/Hausdorff.lean);
+- Measure.euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean);
+- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall;
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div(_of_integrable), with Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;
+- MeasurableSet.image_of_continuousOn_injOn (Lusin–Souslin);
+- Convex.lipschitzOnWith_of_nnnorm_fderiv_le, LipschitzOnWith.extend_pi and extend_finite_dimension;
+- Submodule.starProjection_norm_le and Integrable.of_bound;
+- SimonGMT HasWeightedApproximateTangentSpaceAt and its .unique.
+
+Controller rules
+- runtime.py reuses an accepted cross-branch node only when the lean_statement is identical.
+- leaf_verification.check_source_delta makes each leaf one appended theorem with no imports.
+- max_nodes is 1000 and the DAG has 200 nodes.
+
+Lean checks
+- All 7 child types elaborate.
+- Assembly.lean proves the exact selected type sorry-free (propext, Classical.choice, Quot.sound).
+- The 5 new children are proved in scratch as single theorems.

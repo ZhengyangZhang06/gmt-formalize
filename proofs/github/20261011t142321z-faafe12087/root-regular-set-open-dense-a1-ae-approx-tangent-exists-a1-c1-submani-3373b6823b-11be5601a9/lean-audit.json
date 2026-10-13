@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0757e3cdd9ae36b126514d49ffe3c24d3b40f580867c04e21b3289166167c4f4",
+  "git_delta": {
+    "base_commit": "0a0087f9392d2a5504c9aae706dbd524f53b023e",
+    "candidate_commit": "690257804882f1fdf92822fdb1518275ee71138a",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "029ebc38f8b2ddb155711869fdcccdf2257f6eac2635f11c9a6e7ae770961f3a",
+    "source_sha256": "9f813bcf723020aba62e8688fc839e59be915b0a15d4372d4d7965cc4a6c794a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_isC1Submanifold_approxTangent",
+      "statement": "∀ (m N : ℕ), 1 ≤ m → ∀ (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → ∀ x ∈ S, ∃ P : Submodule ℝ (EuclideanSpace ℝ (Fin N)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "90b305e031738c45b2b1e550cc08817f9554919320f6c35e3fb6a88c15ee6c76",
+  "git_delta": {
+    "base_commit": "3f99a8f12d4fcfb169f1c5d9272f486ca50ad7eb",
+    "candidate_commit": "3c270d2f9a2be035de23a1bade60044cb640484a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_dge1_density_le_monotone_bound",
+    "diff_sha256": "374c6959a824edf616b101dc2b4b48b283cdc39b8db94b199396b5fe77bff1bf",
+    "source_sha256": "e45af5bfc3106b2658250da37392f1133884e751d7e5d9ca04f01f5193fc84a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_dge1_density_le_monotone_bound",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (x : Amb n ℓ) (ω R A β θ₀ : ℝ) (F : ℝ → ℝ), 0 < ω → 0 < R → 0 < β → 0 ≤ θ₀ → (∀ t : ℝ, 0 < t → t ≤ R → |F t - 1| ≤ A * (t / R) ^ β) → (∀ s t : ℝ, 0 < s → s ≤ t → t ≤ R → F s * ((μ (closedBall x s)).toReal / s ^ n) + (F s - 1) ≤ F t * ((μ (closedBall x t)).toReal / t ^ n) + (F t - 1)) → Tendsto (fun r : ℝ => μ (closedBall x r) / ENNReal.ofReal (ω * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ₀)) → ∀ t : ℝ, 0 < t → t ≤ R → ω * θ₀ ≤ (1 + A * (t / R) ^ β) * ((μ (closedBall x t)).toReal / t ^ n) + A * (t / R) ^ β",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

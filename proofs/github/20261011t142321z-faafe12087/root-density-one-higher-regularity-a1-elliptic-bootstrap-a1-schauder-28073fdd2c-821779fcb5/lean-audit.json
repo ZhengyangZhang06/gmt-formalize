@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5d1b9cfe599069f7c314b4bbdce21bebfe7dcceb4488734fd5f6d55133f558c4",
+  "git_delta": {
+    "base_commit": "113d03983a9ec60829535df2de74b7fcd46ee839",
+    "candidate_commit": "1b8394e023e16a13745f7433decfcd78a48da54d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_liou_snd_deriv_symm",
+    "diff_sha256": "70f9534bde2c9e04e4293665a5a576a45530ee81014164861bd3e2fadeb81b2f",
+    "source_sha256": "63a57eebe1480c57edae37d8e789620788f5f87eeda8e85237f4e5b84208699f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_liou_snd_deriv_symm",
+      "statement": "∀ (n ℓ : ℕ) (V : Rn n → Rn ℓ), ContDiff ℝ 2 V → ∀ x v w : Rn n, fderiv ℝ (fderiv ℝ V) x v w = fderiv ℝ (fderiv ℝ V) x w v",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

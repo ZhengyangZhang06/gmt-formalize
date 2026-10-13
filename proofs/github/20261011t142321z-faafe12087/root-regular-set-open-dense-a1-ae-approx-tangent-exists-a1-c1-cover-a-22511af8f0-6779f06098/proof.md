@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_cover_ae_tangent-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_cover_ae_tangent-a1.blowup_vanish-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Steps 3 and 5 of the parent proof, i.e. Simon Ch. 3, printed proof of Theorem 1.6 '⇒': the estimate |∫_{η_{x,λ}(A)} f dHⁿ| ≤ sup|f|·Hⁿ(B_R(0) ∩ η_{x,λ}(A)) = sup|f|·λ⁻ⁿ·Hⁿ(B_{λR}(x) ∩ A) → 0, stated for an arbitrary finite-measure set A of zero n-density at x (step 5 of the parent's supplied proof applies this estimate to Aⁱ_k; after this split only the transfer sibling uses it, with A := C ∖ D and A := N ∖ D). Documented erratum: the printed error set 'M ∖ N_j' must be read as M ∖ M_j (and N_j ∖ M_j), as the parent proof does with C ∖ C_k and N_k ∖ C_k; since A is arbitrary here, both corrected error sets are covered. The scaling of step 3 of the parent (sibling blowup_scaling, which is not a prerequisite of this child) is supplied by its integral form, the sibling change of variables (CV) below.
+Notation. μ := Hⁿ = μHE[n]; η_r := η_{x,r} = Chapter03.blowUpMap x r, η_r(z) = r⁻¹(z − x); 'r ↓ 0' means along 𝓝[>] 0; μ.real(S) := μ(S).toReal. Hypotheses: (F) μ(A) < ∞; (D) (ρⁿ)⁻¹·μ.real(A ∩ B_ρ(x)) → 0 as ρ ↓ 0. Sibling (CV) = rsod_blowUp_setIntegral_eq: for every set S, all g, θ : ℝ^{n+ℓ} → ℝ and r > 0, ∫_{η_r(S)} g(y)·θ(x + r y) dμ(y) = (rⁿ)⁻¹ ∫_S g(η_r(z))·θ(z) dμ(z).
+Fix f ∈ C_c(ℝ^{n+ℓ}, ℝ).
+1. Bound and support radius. f is continuous with compact support, hence bounded: fix M ∈ ℝ with |f(y)| ≤ M for all y (Continuous.bounded_above_of_compact_support). tsupport f is compact, hence bounded, so tsupport f ⊆ B_{R₀}(0) for some R₀ ∈ ℝ (Bornology.IsBounded.subset_closedBall). Put R := max(R₀, 1), so R > 0. If y ∉ B_R(0) then f(y) = 0: otherwise y ∈ support f ⊆ tsupport f ⊆ B_{R₀}(0) ⊆ B_R(0).
+2. Change of variables. Fix r > 0 and put g := f ∘ η_r. By (CV) with S := A and θ ≡ 1 (so that the factors θ(·) = 1 drop out), ∫_{η_r(A)} f dμ = (rⁿ)⁻¹ ∫_A g dμ.
+3. Localization. If z ∉ B_{rR}(x) then g(z) = 0. Indeed, if g(z) = f(η_r(z)) ≠ 0 then by step 1 ‖η_r(z)‖ ≤ R; as ‖η_r(z)‖ = r⁻¹‖z − x‖ (r > 0), ‖z − x‖ = r·(r⁻¹‖z − x‖) ≤ rR, i.e. z ∈ B_{rR}(x). Hence g equals the indicator of B_{rR}(x) times g at every point. Closed balls are measurable, so setIntegral_indicator (which needs measurability only of the ball, not of A) gives ∫_A g dμ = ∫_{A ∩ B_{rR}(x)} g dμ.
+4. Estimate. By monotonicity and (F), μ(A ∩ B_{rR}(x)) ≤ μ(A) < ∞, and |g| ≤ M everywhere. So norm_setIntegral_le_of_norm_le_const gives |∫_{A ∩ B_{rR}(x)} g dμ| ≤ M·μ.real(A ∩ B_{rR}(x)). With steps 2–3, and since (rⁿ)⁻¹ = Rⁿ·((rR)ⁿ)⁻¹ (as (rR)ⁿ = rⁿRⁿ with r, R > 0):
+ |∫_{η_r(A)} f dμ| = (rⁿ)⁻¹·|∫_{A ∩ B_{rR}(x)} g dμ| ≤ (rⁿ)⁻¹·M·μ.real(A ∩ B_{rR}(x)) = M·Rⁿ·((rR)ⁿ)⁻¹·μ.real(A ∩ B_{rR}(x)) =: b(r).
+ This holds for every r > 0. (It is Simon's display sup|f|·λ⁻ⁿ·Hⁿ(B_{λR}(x) ∩ A).)
+5. The bound tends to 0. The map r ↦ rR is continuous with value 0 at r = 0 and maps (0, ∞) into (0, ∞) because R > 0; hence it tends from 𝓝[>] 0 to 𝓝[>] 0 (tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within). Composing (D) with it gives ((rR)ⁿ)⁻¹·μ.real(A ∩ B_{rR}(x)) → 0 as r ↓ 0, and multiplying by the constant M·Rⁿ gives b(r) → M·Rⁿ·0 = 0.
+6. Conclusion. (0, ∞) belongs to 𝓝[>] 0, so the bound of step 4 holds eventually as r ↓ 0. By the squeeze theorem for norms (squeeze_zero_norm') and step 5, ∫_{η_{x,r}(A)} f dHⁿ → 0 as r ↓ 0. Since f ∈ C_c(ℝ^{n+ℓ}, ℝ) was arbitrary, the theorem follows. ∎
+Remarks: no measurability of A is used (only closed balls are fed to setIntegral_indicator, and norm_setIntegral_le_of_norm_le_const needs only μ(A ∩ B_{rR}(x)) < ∞); n = 0 needs no change. All sub-steps are carried out inline in the single theorem (the problem policy requires every new named helper to be its own DAG node).
+
+## Key steps
+
+1. |f| ≤ M and f = 0 off B_R(0) with R := max(R₀, 1) > 0
+2. change of variables (CV, θ ≡ 1): ∫_{η_r(A)} f = (rⁿ)⁻¹∫_A f∘η_r
+3. f∘η_r = 0 off B_{rR}(x), so ∫_A f∘η_r = ∫_{A∩B_{rR}(x)} f∘η_r (setIntegral_indicator)
+4. |∫_{η_r(A)} f| ≤ M·Rⁿ·((rR)ⁿ)⁻¹·Hⁿ.real(A ∩ B_{rR}(x)) using Hⁿ(A) < ∞
+5. r ↦ rR maps 𝓝[>]0 to 𝓝[>]0, so the bound → 0 by the density hypothesis; squeeze
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sha256sum <snapshot>/project/GMT/Ch05/{Contract,Submission}.lean vs workspace GMT/Ch05/{Contract,Submission}.lean`
+- `rg -l 'rsod_' <snapshot>/mathlib/Mathlib`
+- `grep -rl 'rsod_blowUp_integral_tendsto_zero|rsod_approxTangent_transfer' <run dir>/nodes <run dir>/website <run dir>/*.json <run dir>/*.md <run dir>/*.mmd; GMT; .lake/packages/simongmt/Poincare; <snapshot>/project`
+- `git grep -lE 'rsod_blowUp_integral_tendsto_zero|rsod_approxTangent_transfer' <tip> -- '*.lean' for each of 395 distinct tips of 879 refs`
+- `dag.json (319 nodes): lean_name and byte-identical lean_statement scan for the 3 proposed children; status/candidate of rsod_blowUp_setIntegral_eq; types of aetp_blowUp_integral_tendsto_zero_of_density_zero and aetp_approxTangent_of_density_zero_symmDiff`
+- `grep -n 'theorem setIntegral_union|theorem setIntegral_indicator|theorem norm_setIntegral_le_of_norm_le_const' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `grep -n 'lemma Measure.integrableOn_of_bounded' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `grep -n 'Continuous.bounded_above_of_compact_support' <snapshot>/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `grep -n 'hasCompactSupport|C_c(' <snapshot>/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `grep -n 'subset_closedBall' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `grep -n 'measure_eq_zero_iff_ae_notMem|theorem ae_all_iff' <snapshot>/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `grep -n 'def Measure.real|measureReal_def' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `grep -n 'def blowUpMap|def HasApproximateTangentSpaceAt|open scoped CompactlySupported' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `git show 98fd790d5bc2f705d0efa953dadfb274b5462997:GMT/Ch05/Submission.lean (accepted rsod_blowUp_setIntegral_eq)`
+- `grep -n '1.3 Remark|1.5 Remarks|1.6 Theorem|1.8 Remarks' book/chapter-03.txt`
+- `gmt-compare.py contract_scope/child_modules and lean_contract.validate_lean_statement on all 4 types; lake env lean Chk/Challenge_*.lean, Chk/Solution_*.lean, Chk/Axioms.lean (scratch /tmp/c1cover-split-VG4cS6, /tmp/c1cover-splitB-Xn2BSs)`
+- `web search: Leon Simon Introduction to Geometric Measure Theory approximate tangent space countably n-rectifiable Theorem 1.6 pdf`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-cover-a-62ae94b19e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-locality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/c1cover-scripts/children.json`
+- `/tmp/c1cover-scripts/subproblems-final.json`
+- `/tmp/c1cover-splitB-Xn2BSs/GMT/Ch05/Submission.lean`
+
+Pins and snapshot: the manifest gives project ea5607598f3133b40a13241f2e51517a8c6423cd (equal to workspace HEAD) and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Snapshot Contract.lean and Submission.lean have sha256 c966f51e…, byte-identical to the workspace copies.
+
+Name scan, no match anywhere for either new name:
+- snapshot Mathlib: rg 'rsod_' exits 1 (no files);
+- dag.json (319 nodes), all run-directory node files, GMT/, simongmt and the snapshot project;
+- Lean files at the 395 distinct tips of 879 git refs.
+No DAG node has a type identical to either new child.
+
+Reuse: rsod_blowUp_setIntegral_eq is DAG node …density_of_approx_tangent-a1.blowup_change_of_variables-a1, status accepted, candidate 98fd790d…. Its name and type are byte-identical to the proposed child. Its accepted proof (git show 98fd790d) uses translation isometry plus homothety scaling, integral_smul_measure and MeasurableEmbedding.integral_map, with no integrability needed.
+
+The other-branch nodes aetp_blowUp_integral_tendsto_zero_of_density_zero and aetp_approxTangent_of_density_zero_symmDiff are unaccepted (decomposing) and have different names and types (ENNReal ratio; symmetric-difference form), so they are neither reused nor duplicated.
+
+Mathlib API in the snapshot matches every citation in the child proofs:
+- Bochner/Set.lean:
+  - setIntegral_union (Disjoint s t, MeasurableSet t, integrability on both pieces);
+  - setIntegral_indicator (only MeasurableSet t);
+  - norm_setIntegral_le_of_norm_le_const (μ s < ∞, ∀ x ∈ s, ‖f x‖ ≤ C, bound C * μ.real s).
+- IntegrableOn.lean: Measure.integrableOn_of_bounded (μ s ≠ ∞, AEStronglyMeasurable f μ, ae bound on μ.restrict s).
+- Bounded.lean: Continuous.bounded_above_of_compact_support.
+- CompactlySupported.lean: CompactlySupportedContinuousMap.hasCompactSupport. The C_c(·,·) notation is scoped, so the child types spell out CompactlySupportedContinuousMap.
+- MetricSpace/Bounded.lean: Bornology.IsBounded.subset_closedBall.
+- OuterMeasure/AE.lean: measure_eq_zero_iff_ae_notMem and ae_all_iff.
+- MeasureSpaceDef.lean: Measure.real s = (μ s).toReal.
+- Deprecations noted and avoided: Set.diff_subset → sdiff_subset, Set.diff_union_of_subset → sdiff_union_of_subset.
+
+simongmt Rectifiable.lean: blowUpMap x r y = r⁻¹ • (y - x). HasApproximateTangentSpaceAt n M x P is finrank P = n plus, for every f : C_c(E, ℝ), Tendsto (fun r => ∫ y in blowUpMap x r '' M, f y ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in P, f y ∂μHE[n])).
+
+Simon Ch. 3 (book/chapter-03.txt): Remark 1.3 (lines 67–72), Remark 1.5(2) and the proof of Thm 1.6 '⇒' (lines 86–160) match the parent glue and the two new children. The printed error set M∖N_j is read as M∖M_j, realized as C∖D and N∖D with D := C_k.
+
+Lean results (v4.35.0-rc3):
+- All 4 types validate and elaborate in the generated comparator challenge modules.
+- The extended Submission compiles. The children are complete, with axioms only propext, Classical.choice and Quot.sound.
+- The parent's frozen type is proved from tangent_transfer plus the sibling stubs, with no sorry in its body.
+- All exact Submission.X solution modules compile.
+- No Matrix/IsUnit construction occurs.
+
+Public copies of Simon's text: https://math.stanford.edu/~lms/ntu-gmt-text.pdf and https://web.stanford.edu/class/math285/ts-gmt.pdf.

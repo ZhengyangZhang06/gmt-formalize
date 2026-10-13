@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "822b0a11929c5951f94233aa57bf05262c5f71f7102c3c1eabcc92562e46af55",
+  "git_delta": {
+    "base_commit": "9602ff084a1275d0e1cf45d4ad51a97f8a672978",
+    "candidate_commit": "662f21541b9d753cce663b250a050e6b49373f68",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ball_weakly_harmonic_local_representative",
+    "diff_sha256": "e2bf4972b1a40d6c9dda68a366bac4796a47d6c43f9f839c53b90b6731e69551",
+    "source_sha256": "1674b1a9315c897230e55191f8acb41979be8ee579d045b66c933d57b989bb76",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ball_weakly_harmonic_local_representative",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0) → ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∃ v : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

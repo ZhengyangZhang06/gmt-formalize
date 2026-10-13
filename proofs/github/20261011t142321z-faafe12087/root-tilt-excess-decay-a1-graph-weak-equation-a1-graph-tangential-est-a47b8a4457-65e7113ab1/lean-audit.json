@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c8634cbee8a3c92678cdc0866f57401999f719b89df3c097e886464e3a3b413e",
+  "git_delta": {
+    "base_commit": "bb1627f252b77f78ad9867601b77c0b1233315ac",
+    "candidate_commit": "42714a27f40dd8c7bc61717ec87d2a38c82340a2",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gte_tangentProj_integrands",
+    "diff_sha256": "edb74f1e8d2083f680137e21e03827096b3949b9f589877835215f42365edc50",
+    "source_sha256": "175de96a1b1c4bb653cfa6971ca2749bb268d81767fbcd55671e26b42df46c47",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gte_tangentProj_integrands",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ x v : Amb n ℓ, ‖V.tangentProj x v‖ ≤ ‖v‖) ∧ (AEStronglyMeasurable V.tangentProj V.weight → ∀ S : Set (Amb n ℓ), V.weight S < ⊤ → (∀ (e : Amb n ℓ) (g : Amb n ℓ → Amb n ℓ) (C : ℝ), AEStronglyMeasurable g V.weight → (∀ x, ‖g x‖ ≤ C) → IntegrableOn (fun x => inner ℝ (V.tangentProj x e) (V.tangentProj x (g x))) S V.weight) ∧ ∀ T : Submodule ℝ (Amb n ℓ), IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) S V.weight)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

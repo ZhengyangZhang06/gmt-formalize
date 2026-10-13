@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2243a29054fa960619c77e839542228fd58292d8015a68689ef9cf52417cc356",
+  "git_delta": {
+    "base_commit": "526e969d846ac441610902de957b9b8678de7b0f",
+    "candidate_commit": "bc89ae8036a0922059057c42e44d087388b8edc4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_dqwe_linear_family_continuousAt",
+    "diff_sha256": "7bbaf88b30e217ff7ef9c5f9cf6c9b74bcb66aacbf91c680394cee454e31f2c6",
+    "source_sha256": "6a6185fa109af7da927c18baa10c79617ff7601b0eb474bbbdf0f54204f8cd46",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_dqwe_linear_family_continuousAt",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => Φ x P) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => Φ (s x) (B x)) x₀",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

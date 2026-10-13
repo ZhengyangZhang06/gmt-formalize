@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "89ba9bfeee65f59fda3c7c6f19ec47cf088267641c6be6246dd9f148c4360a14",
+  "git_delta": {
+    "base_commit": "b14e7ebcddb57255ebe59c0c83c300e78378057e",
+    "candidate_commit": "79fc3fdeffa2af50df341a6404d1bcb5abd39695",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_cc_profile_integral_continuousAt",
+    "diff_sha256": "4020e18785678ec58a0bbd57f8ce1d3b984755f2aafe88e8c54564460232fd98",
+    "source_sha256": "cb5a96264558f305f7ebef96e5c5432a5448ead12e8bdbaf6336e6a1778335ba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_cc_profile_integral_continuousAt",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (g : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → Continuous g → 0 < T → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, g (‖x - y‖ / s) * f x ∂μ) t",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

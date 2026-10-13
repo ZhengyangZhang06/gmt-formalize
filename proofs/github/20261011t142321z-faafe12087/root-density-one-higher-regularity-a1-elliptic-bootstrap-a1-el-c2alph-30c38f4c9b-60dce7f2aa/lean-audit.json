@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4b92ac2369c2a6a7288124746112a101ec334e2389788fcbb64eef320e50fac2",
+  "git_delta": {
+    "base_commit": "292b4bfc7c4e3e8f1f7f42917b5673051fc20448",
+    "candidate_commit": "fe9bf091013591f8a04fb124af3a58539b1b8e99",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_elc2_averaged_forcing",
+    "diff_sha256": "da6cd3164342e202e693c5d605538327d01adb80f3164eb22685411b745df1c2",
+    "source_sha256": "5ef99483bc24aff92060e935858ee054ff2b04a3ec8d010a543d0412be1161cc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_elc2_averaged_forcing",
+      "statement": "∀ (n ℓ : ℕ) (α H d : ℝ) (g : Rn n → Rn ℓ) (S K : Set (Rn n)) (e : Rn n), 0 < α → (∀ x ∈ S, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ K) → (∀ x ∈ K, ∀ y ∈ K, ‖g x - g y‖ ≤ H * ‖x - y‖ ^ α) → ∃ Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P : Rn n →L[ℝ] Rn ℓ), Φ x P = inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (P e)) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ H * ‖e‖ * ‖x - y‖ ^ α * ‖P‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

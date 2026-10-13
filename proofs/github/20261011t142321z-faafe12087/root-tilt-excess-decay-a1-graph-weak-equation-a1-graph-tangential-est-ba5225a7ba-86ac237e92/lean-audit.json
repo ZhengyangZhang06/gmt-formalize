@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "557ff408888eb617488b52d702c09869add0e265a34be78df0501133d25954d6",
+  "git_delta": {
+    "base_commit": "bb1627f252b77f78ad9867601b77c0b1233315ac",
+    "candidate_commit": "7c412268b41cf24854493fd5e59faa6b8d27306e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gte_graph_image_geometry",
+    "diff_sha256": "ab063990662b67eb94d0e36ee3847db2db5d70213e9522aa10af9c58a57c74a9",
+    "source_sha256": "d47bf506653d8a96b16d9210df5b18351e9070ae61161be026c25592d29a6683",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gte_graph_image_geometry",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) ∧ Continuous (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) ∧ (∀ (x : Rn n) (y : Rn ℓ), (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x) ∧ ∀ (f : Rn n → Rn ℓ) (R r : ℝ), ContinuousOn f (closedBall 0 R) → r ≤ R → IsCompact (q '' graphOver f (closedBall 0 R)) ∧ MeasurableSet (q '' graphOver f (ball 0 r))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

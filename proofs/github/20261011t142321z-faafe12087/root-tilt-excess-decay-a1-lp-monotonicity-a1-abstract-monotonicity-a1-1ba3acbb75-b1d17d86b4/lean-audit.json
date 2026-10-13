@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "599e3def666a1ac6368acb4a09ba47e1558548c016a51303e7e25f0ae39441cd",
+  "git_delta": {
+    "base_commit": "26e4363361b085c6344ce20d46fbd01254414419",
+    "candidate_commit": "25e15b3ac9f02bc660c855674745f1cd2bc49fcb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_lpm_am_exp_perturbation_bounds",
+    "diff_sha256": "5c703a83e17cb2cd253b25e040b8a4458f3128b8b72f5570c27048d5ad895a0c",
+    "source_sha256": "f763d9dc2c9be6c3dc1c44ed145fa2dd067339c45a536279a212aa65c4149823",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_lpm_am_exp_perturbation_bounds",
+      "statement": "∀ (Λ q u : ℝ), 0 < Λ → 0 ≤ q → q ≤ 1 → |u| ≤ Λ / 4 * q → Real.exp (-Λ) ≤ Real.exp u ∧ Real.exp u ≤ Real.exp Λ ∧ |Real.exp u - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * q ∧ (Λ ≤ 1 → |Real.exp u - 1| ≤ Λ * q)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

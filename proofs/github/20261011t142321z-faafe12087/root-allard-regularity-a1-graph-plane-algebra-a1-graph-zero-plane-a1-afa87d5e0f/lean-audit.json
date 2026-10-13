@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "135bd7013bf80fa8298bdc6ea2ba92fa957491892fd7b821ed0094db8e52a3d3",
+  "git_delta": {
+    "base_commit": "08b7e2df9183d2d4048a3bbbcb394f441afc745e",
+    "candidate_commit": "b009c732843d141805db9737e1532e4367bf2f72",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gpa_span_graph_zero",
+    "diff_sha256": "d1f35a6ef959362901d9a0ec3b3e37d489319134484210bd3fc3629005c0e537",
+    "source_sha256": "7faac801eebd1c0c2f2e929f95d39a73ca070d8dc60a39d60f0e24f05631c336",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gpa_span_graph_zero",
+      "statement": "∀ (n ℓ : ℕ), Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v ((0 : Rn n →L[ℝ] Rn ℓ) v)) = horizontalPlane n ℓ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

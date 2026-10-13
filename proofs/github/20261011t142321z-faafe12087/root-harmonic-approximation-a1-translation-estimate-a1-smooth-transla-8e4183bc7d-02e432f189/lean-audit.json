@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bbaaed83def1f86fb4980bccd13d89c34fb99eacea4e99914a8894874d88c11f",
+  "git_delta": {
+    "base_commit": "2aa4d9e21f203fb3c489d38a9a0d467cc553aea2",
+    "candidate_commit": "0db6ba120e217148727cc5768363262dcc844635",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "afd4a88374c3af2d4e777a90243b4f2baae6481e849279dbfdf123538b8eef0a",
+    "source_sha256": "6d912f552d0ea93599e9235dfbc69362dda6023e1d030fe8825c4ea2681b1ec8",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.contDiff_one_ball_translation_estimate",
+      "statement": "∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (r : ℝ) (z : Rn n), ∫⁻ x in ball (0 : Rn n) r, ‖φ (x - z) - φ x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ x‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

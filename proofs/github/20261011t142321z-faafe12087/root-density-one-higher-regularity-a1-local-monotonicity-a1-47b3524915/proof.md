@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.local_monotonicity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 4, Section 4, 4.1-4.9 (monotonicity for L^p mean curvature, with the coefficient kappa := (p - n)/(4p) of 4.2; cf. simongmt Chapter04.lpMeanCurvatureKappa and LpAnnularCorrection), which is fact (M) of the parent-supplied proof. The only properties of the tangent planes used in Simon's derivation are that, mu-a.e. on the ball where the radial test fields live, V.tangentProj x is the orthogonal projection onto an n-dimensional subspace, and that x -> V.tangentProj x is measurable there (needed so that the integrals below are the genuine integrals, since a Bochner integral of a non-measurable function is 0 by convention); both are taken as hypotheses, so no general existence or measurability theorem for approximate tangent spaces (Simon Ch. 3, 1.9) is needed.
+
+Notation. mu := V.weight, r(x) := |x - y|, B_rho := closed ball B_rho(y), Bo_rho := open ball. kappa := (p - n)/(4p) = (1 - n/p)/4 in (0, 1/4). For x with V.tangentProj x = p_P (P of dimension n) write grad^perp r := grad r - p_P(grad r), so |p_P grad r|^2 = 1 - |grad^perp r|^2 for x != y. ||H|| := (integral over B_R of |H|^p dmu)^{1/p}.
+
+1. Finiteness. B_R is a compact subset of U, so mu(B_R) < infinity (theta is H^n-integrable on M cap B_R). The hypothesis V.scaledLpNorm H p y R <= kappa Lambda says (R^{p-n} integral over B_R of |H|^p dmu)^{1/p} <= kappa Lambda, so ||H|| <= kappa Lambda R^{n/p - 1} < infinity, and H is mu-integrable on B_R (Hoelder).
+
+2. Radial test fields. For eps in (0, 1/2) fix a C-infinity nonincreasing phi_eps : R -> [0, 1] with phi_eps = 1 on (-infinity, 1 - eps] and phi_eps = 0 on [1, infinity), chosen so that phi_eps increases pointwise to the indicator of (-infinity, 1) as eps decreases to 0. For 0 < rho < R let X(x) := phi_eps(r/rho)(x - y). X is C^1 (phi_eps(r/rho) is constant near x = y) with compact support in B_rho, contained in Bo_R, contained in U, so it is admissible in V.HasGeneralizedMeanCurvature H.
+
+3. Divergence and measurability. For x != y, DX(x) = phi_eps(r/rho) I + (r/rho) phi_eps'(r/rho) grad r (x) grad r, and DX(y) = I. At mu-a.e. x in Bo_R, V.tangentProj x = p_P with dim P = n (hypothesis), hence V.divM X(x) = trace(DX(x) o p_P) = n phi_eps(r/rho) + (r/rho) phi_eps'(r/rho)(1 - |grad^perp r|^2). Outside Bo_R, X vanishes near x, so divM X = 0 there. Since x -> DX(x) is continuous, the trace is continuous and x -> V.tangentProj x is a.e.-strongly measurable for mu restricted to Bo_R (hypothesis), the functions V.divM X and |grad^perp r|^2 = |grad r - V.tangentProj(x) grad r|^2 (for x != y) are a.e.-strongly measurable for mu restricted to Bo_R, and divM X vanishes outside the compact set B_rho contained in Bo_R; they are bounded, so all integrals below are integrals of bounded measurable functions with compact support against the finite measure mu restricted to B_R.
+
+4. Monotonicity identity (Simon 4.1). Put I(rho) := integral of phi_eps(r/rho) dmu and K(rho) := integral of phi_eps(r/rho) |grad^perp r|^2 dmu. Differentiating under the integral (phi_eps' bounded, supported where (1 - eps) rho <= r <= rho): rho I'(rho) = - integral of (r/rho) phi_eps'(r/rho) dmu and rho K'(rho) = - integral of (r/rho) phi_eps'(r/rho)|grad^perp r|^2 dmu >= 0. The first variation identity integral of divM X dmu = - integral of <X, H> dmu becomes n I - rho I' + rho K' = - integral of phi_eps(r/rho) <x - y, H> dmu, i.e. d/drho(rho^{-n} I(rho)) = rho^{-n} K'(rho) + rho^{-n-1} integral of phi_eps(r/rho) <x - y, H> dmu.
+
+5. Estimate of the mean-curvature term (Simon after 4.2). Since phi_eps(r/rho) = 0 for r >= rho and 0 <= phi_eps <= 1 (so phi_eps^{p/(p-1)} <= phi_eps), Hoelder gives |integral of phi_eps(r/rho)<x - y, H> dmu| <= rho ||H|| I(rho)^{1 - 1/p}. Hence |rho^{-n-1} integral ...| <= rho^{-n/p} ||H|| (rho^{-n} I)^{1-1/p} <= kappa Lambda R^{-1} (rho/R)^{-n/p} (rho^{-n} I)^{1-1/p} <= kappa Lambda R^{-1} (rho/R)^{-n/p} (1 + rho^{-n} I) (using a^{1-1/p} <= 1 + a). Define F0(rho) := - rho^{-n-1} (integral of phi_eps(r/rho)<x - y, H> dmu)/(1 + rho^{-n} I(rho)); then |F0(rho)| <= kappa Lambda R^{-1}(rho/R)^{-n/p}, F0 is continuous on (0, R), and (Simon 4.3) d/drho(rho^{-n} I) = rho^{-n} K' - F0 (1 + rho^{-n} I).
+
+6. Integrating factor (Simon 4.4-4.6). Let F_eps(rho) := exp(integral from 0 to rho of F0(t) dt) (F0 is integrable near 0). Since integral from 0 to rho of |F0| <= kappa Lambda (rho/R)^{1 - n/p}/(1 - n/p) = (Lambda/4)(rho/R)^{1-n/p} <= Lambda/4: e^{-Lambda} <= F_eps <= e^{Lambda}, |F_eps(rho) - 1| <= e^{Lambda/4}(Lambda/4)(rho/R)^{1-n/p} <= Lambda (Lambda <= 1), and F_eps(rho) -> 1 as rho -> 0+, all uniformly in eps. A direct computation using step 5 gives d/drho(F_eps rho^{-n} I + F_eps) = F_eps rho^{-n} K' >= 0, so rho -> F_eps(rho) rho^{-n} I(rho) + F_eps(rho) - 1 is nondecreasing on (0, R).
+
+7. Letting eps -> 0. As eps -> 0, phi_eps(r/t) increases to the indicator of r < t, so by dominated convergence F0 (which depends on eps) converges for every t in (0, R) to the corresponding quantity with the open ball Bo_t, under the uniform bound of step 5; hence F_eps -> F pointwise on (0, R), where F satisfies the same bounds, is continuous, and F -> 1 at 0+. Also I(rho) -> mu(Bo_rho). Pointwise limits of nondecreasing functions are nondecreasing, so rho -> F(rho) rho^{-n} mu(Bo_rho) + F(rho) - 1 is nondecreasing on (0, R). For rho in (0, R), mu(B_rho) = lim of mu(Bo_{rho'}) as rho' -> rho+ (rho' < R) and F is continuous, so Phi(rho) := F(rho) rho^{-n} mu(B_rho) + F(rho) - 1 is the right limit of a nondecreasing function and is therefore nondecreasing on (0, R). Since mu(B_rho) < infinity, mu(B_rho) = ofReal of its toReal, so Phi is exactly the function in the statement, with F satisfying |F r - 1| <= Lambda, exp(-Lambda) <= F r <= exp(Lambda) on (0, R) and F -> 1 at 0+.
+
+8. Density (Simon 4.9). Phi is nondecreasing and bounded below by F - 1 >= -Lambda on (0, R), so L := lim of Phi(rho) as rho -> 0+ exists in R. Since F(rho) -> 1, rho^{-n} mu(B_rho) = (Phi(rho) - F(rho) + 1)/F(rho) -> L, and L >= 0. Put t := L/omega_n >= 0 (omega_n > 0). Then mu(B_rho(y))/(omega_n rho^n) -> t as rho -> 0+; as all these quantities are finite, the extended-real quotient V.weight(closedBall y rho)/ofReal(omega_n rho^n) tends to ofReal(t), i.e. V.HasDensity y t, and Phi -> omega_n t. This gives all asserted properties.
+
+## Key steps
+
+1. finiteness of mu(B_R) and of the L^p norm of H
+2. radial test fields phi_eps(r/rho)(x - y); tangential divergence and its measurability from the two tangent-plane hypotheses
+3. first variation gives d/drho(rho^-n I) = rho^-n K' + rho^(-n-1) integral of phi <x - y, H>
+4. Hoelder estimate of the mean-curvature term with kappa = (p-n)/(4p)
+5. integrating factor F with the bounds |F - 1| <= Lambda, e^(+-Lambda), F -> 1
+6. eps -> 0 and right limits give monotonicity with closed balls
+7. monotone limit gives the density t and Phi -> omega_n t
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -l 'dohr_' <snapshot> .lake/packages/simongmt GMT .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes`
+- `rg -n '^import' <snapshot>/project/GMT/Ch05/Contract.lean`
+- `lean /tmp/dohr-check/src/T1.lean (#check ContinuousLinearMap.adjoint and LinearMap.normDet after import GMT.Ch05.Submission)`
+- `rg -n 'theorem ae_tendsto_rnDeriv \(' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'lemma measure_compl_support :' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'theorem hausdorffMeasure_image \(e : X ≃ᵢ Y\)|theorem hausdorffMeasure_homothety_image' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `for pat in Schauder Campanato 'difference quotient' '[Vv]arifold' 'Legendre-Hadamard'; do rg -l "$pat" <snapshot>/mathlib/Mathlib | wc -l; done`
+- `grep -rn 'def normDet' .lake/packages/mathlib/Mathlib`
+- `grep -n 'HasWeightedApproximateTangentSpaceAt' -r .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'theorem injective_area_formula_lipschitzOn' -A 12 .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `grep -rn 'def areaJacobianAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02`
+- `rg -n 'def lpMeanCurvatureKappa' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `lake env lean -o /tmp/dohr-check/build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/dohr-check/build lean /tmp/dohr-check/final/Children.lean'`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/dohr-check/build lean /tmp/dohr-check/final/Assembly.lean'`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/dohr-check/build lean /tmp/dohr-check/final/Glue.lean'`
+- `grep -n '7.1|Schauder' book/chapter-05.txt; sed -n 455,575p book/chapter-04.txt; sed -n 595,724p book/chapter-01.txt`
+- `python3 -I /tmp/dohr-scripts/pdftext.py gm.pdf gm.txt, then regex search for 'Theorem 5.19', 'Theorem 5.20', 'Proposition 8.6', 'Theorem 4.9', '(8.5)', '(3.17)' in the Giaquinta-Martinazzi text (https://www2.karlin.mff.cuni.cz/~kaplicky/pages/pages/2020z/gm.pdf)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/dohr-check/final/Children.lean`
+- `/tmp/dohr-check/final/Assembly.lean`
+- `/tmp/dohr-check/final/Glue.lean`
+- `/tmp/dohr-check/final/stmts.json`
+- `/tmp/dohr-scripts/gm.txt`
+
+Pinned snapshot (manifest.json): project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean is byte-identical to the workspace copy. No prior proof or 'dohr_' name exists in the snapshot, simongmt, GMT/ or the DAG (rg returns no matches), so all 9 proposed names are free.
+
+The contract's imports reach neither ContinuousLinearMap.adjoint nor LinearMap.normDet (Lean reports 'Unknown constant'). The graph area element is therefore written as sqrt(Matrix.det (1 + Gram matrix)). Lean examples confirm that 1 is the identity matrix and + is entrywise.
+
+Usable Mathlib items: Besicovitch.ae_tendsto_rnDeriv (Besicovitch.lean:1078), VitaliFamily differentiation (Differentiation.lean), Measure.measure_compl_support (Support.lean:202), and IsometryEquiv.hausdorffMeasure_image / hausdorffMeasure_homothety_image (Hausdorff.lean:845, 1060).
+
+Mathlib has no Schauder, Campanato, Legendre-Hadamard or varifold theory: 'Schauder' matches only Schauder-basis files, the other patterns match nothing, and 'difference quotient' matches only UniformLimitsDeriv.lean.
+
+simongmt provides HasWeightedApproximateTangentSpaceAt and its .unique (Chapter03/Rectifiable.lean:330, 345), injective_area_formula_lipschitzOn (Chapter02/AreaDomain.lean:147), areaJacobianAt = normDet of the derivative (Chapter02/Area.lean:26), and lpMeanCurvatureKappa = (p-n)/(4p) (Chapter04/LpMeanCurvature.lean:76). Its Chapter 4 monotonicity is stated only for the stronger Chapter04.RectifiableVarifold, hence the local monotonicity and tangent-plane children.
+
+Lean checks with the pinned toolchain against a compiled scratch GMT.Ch05.Submission:
+- all 9 child statements elaborate (Children.lean);
+- Assembly.lean proves DensityOneHigherRegularity from them and allard_regularity_theorem with no sorry of its own (axioms: propext, sorryAx, Classical.choice, Quot.sound);
+- Glue.lean confirms that the measurability conjunct restricts to sub-balls.
+
+Book: Theorem 7.1 and its proof are at chapter-05.txt l.1312-1366, monotonicity 4.1-4.10 at chapter-04.txt l.455-575, and comparison/density theorems at chapter-01.txt 3.3-3.6.
+
+Giaquinta-Martinazzi (2nd ed., 2012), extracted text, confirms: Theorem 5.19 (Hoelder coefficients and C^{0,sigma} data give Du in C^{0,sigma}_loc), Theorem 5.20 (C^{k+1,sigma}_loc for k >= 1), Proposition 8.6 (difference quotients for D_alpha A(Du) = 0 under (8.5)), Theorem 4.9, and Definition 3.36 / Remark 3.37 (Legendre implies Legendre-Hadamard).

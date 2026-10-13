@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f71d90b2f24af9da4124727ad68999ada29206e07b2511d88f5f51904fe593c0",
+  "git_delta": {
+    "base_commit": "3558c05a1c21da64b03b72054f9da21576684897",
+    "candidate_commit": "013c65e15ceb6c1519b431fd73ae0c9f03aa5451",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_vel_holder_rigid_transport",
+    "diff_sha256": "0078eddaddb815c7045f382210919a3a6aac42bf05ffaad35c6b44ca3759d395",
+    "source_sha256": "e4ee942a4c66749611c193cff316b556bff109d62292a584baccd6e522f09dcb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_vel_holder_rigid_transport",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (h : Amb n ℓ → Amb n ℓ) (q : ℕ) (α : ℝ) (ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), IsLocallyHolderCkα q α h U → IsOpen ((fun y => Q (y - ξ)) '' U) ∧ IsLocallyHolderCkα q α (fun z => Q (h (ξ + Q.symm z))) ((fun y => Q (y - ξ)) '' U)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

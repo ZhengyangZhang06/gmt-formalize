@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5133667eff7535ac5b223de5e2f4be2b6206d50dd5c14cc70108f1c1ef919f7f",
+  "git_delta": {
+    "base_commit": "4bc2e37568f6c8cd46783636b673fa96e73c571f",
+    "candidate_commit": "8552c0e3592d8e6572a57422dddb4eac29ceb616",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "e8f394ed56af76d7bdaec818d9b95fb500c0b70be7b942e2198b648cd8a2c327",
+    "source_sha256": "64325b41ea25fa337ca6817fd103e6237efa24b016f64c84959b682431a20e90",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_tilt_height_l1",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → 0 ≤ h → closedBall z r ⊆ U → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ C * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + C * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

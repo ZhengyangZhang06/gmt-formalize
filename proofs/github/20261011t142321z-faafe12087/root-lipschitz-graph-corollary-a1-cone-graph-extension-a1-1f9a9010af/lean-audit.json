@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dec3b6b02bbcb3f06ca616242a59a54ea1f255e3ab91522001ae8e226c1a825e",
+  "git_delta": {
+    "base_commit": "61786225e32cb2124309860f51365d686d2d8dba",
+    "candidate_commit": "25cccf218225868cb581db3590d03a0838796cc8",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lgc_cone_graph_extension",
+    "diff_sha256": "7e551145295a25f418ee247f05ec68d4cbc942ce5eaee9a8aae1305c2314935c",
+    "source_sha256": "4e27fc985b8bb7987291d321ccf91034a2ff65a92705fb6b58cd283545c5cf91",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lgc_cone_graph_extension",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (S : Set (Amb n ℓ)) (ε R₀ : ℝ), 0 ≤ ε → ε ≤ 1 / 2 → 0 ≤ R₀ → (∀ y ∈ S, ∀ z ∈ S, infDist (y - z) (rotatedPlane q : Set (Amb n ℓ)) ≤ ε * ‖y - z‖) → (∀ y ∈ S, infDist y (rotatedPlane q : Set (Amb n ℓ)) ≤ R₀) → ∃ f : Rn n → Rn ℓ, LipschitzWith (Real.toNNReal (2 * Real.sqrt ℓ * ε)) f ∧ (∀ x, ‖f x‖ ≤ R₀) ∧ ∀ y ∈ S, ∃ x : Rn n, ‖x‖ ≤ ‖y‖ ∧ q (graphPoint x (f x)) = y",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

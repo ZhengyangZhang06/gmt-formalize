@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2b6028b2308a912e5e24c766ebb5b801960f374105693a613b03313b56eeaf53",
+  "git_delta": {
+    "base_commit": "c81e5430712f6ad9366aa423c7fa5e93522ba7a2",
+    "candidate_commit": "c332d05bbef6d801a3879faa6a00430ce57d992f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_vfv_hasFDerivAt_comp_first_block",
+    "diff_sha256": "de0bb501e29df7201529ee63e5e089b76b54c22202afc104f564a6d4b2493a26",
+    "source_sha256": "bc02509aac2becc4f531d399aac1012be996b30b86ebdbba8fecd374f8cfbdb1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_vfv_hasFDerivAt_comp_first_block",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (ζ : Rn n → ℝ) (x : Amb n ℓ), DifferentiableAt ℝ ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1 → HasFDerivAt (fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1) (innerSL ℝ (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

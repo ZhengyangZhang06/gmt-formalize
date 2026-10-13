@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f26d221b88aa3be80e807dcfef6193374315a0c60045183e6bc0840f2b1e5f14",
+  "git_delta": {
+    "base_commit": "bb1627f252b77f78ad9867601b77c0b1233315ac",
+    "candidate_commit": "b4a05d9a39ec43d1e5374a6db29c0f007396014a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gte_lipschitz_ball_calculus",
+    "diff_sha256": "b36b25dbb7a3987aa247be7ac9dab461a49c7fe39d6f25996ab49f1f231816a0",
+    "source_sha256": "d8942f753e39b09a9e7b8a2edac71368a0f629c616c3c4f6662bf4be2fca6032",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gte_lipschitz_ball_calculus",
+      "statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → MeasurableSet (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) ∧ volume (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) = 0 ∧ ∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ f x‖ ≤ K ∧ (DifferentiableAt ℝ f x → ∀ (j : Fin ℓ) (v : Rn n), inner ℝ (gradient (fun y => f y j) x) v = fderiv ℝ f x v j)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

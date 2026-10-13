@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "12fa0cb92493da0a10a808e24fcac440062b70e4c53f1cd898ea9da073b39b3f",
+  "git_delta": {
+    "base_commit": "eb1b15a76a110ae02e49aee2a198191594526b31",
+    "candidate_commit": "2d52355beccf00346cd15e6943810be2bcdd8b70",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_wfu_weightedApproxTangent_of_closed_piece",
+    "diff_sha256": "d1fbf15ec1b7317962b10e529c37d0ca9758a1641f2ef2c1768945e842a9a880",
+    "source_sha256": "62ac6c0127ead47958a4e5dbd86cf097873508f85eaba5a1baf8ecf80e334897",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_wfu_weightedApproxTangent_of_closed_piece",
+      "statement": "∀ (n ℓ : ℕ) (A C : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → MeasurableSet C → C ⊆ A → ContinuousWithinAt ϑ C x → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ)).real ((A \\ C) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

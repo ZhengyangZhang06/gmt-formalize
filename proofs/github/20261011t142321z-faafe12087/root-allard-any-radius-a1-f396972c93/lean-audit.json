@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c86f374d3dbd8d23386c8402817508eb3434c6be3f256e1cc89fcaffbe9d4ea9",
+  "git_delta": {
+    "base_commit": "c42ed2a4e3354d8cf91034bec26ee44738fec3ea",
+    "candidate_commit": "96627165d312b80bff4fab99b2d71dc80cc160e7",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "0ff25867c20f359233fc71369a8fb0b4c6cdcde6155ba2e9a6814bfd9723de9c",
+    "source_sha256": "e7579f89c154613f000638fee981d178f0c93be48c0f5a356f2fce7d18f3d3d1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_regularity_any_radius",
+      "statement": "AllardRegularityAnyRadius",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

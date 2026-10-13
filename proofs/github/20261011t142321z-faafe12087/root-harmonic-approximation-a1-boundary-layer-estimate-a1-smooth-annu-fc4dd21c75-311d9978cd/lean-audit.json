@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0413f7777422cd585b095486a357e2bb7822395a386f7c912f973045f450c064",
+  "git_delta": {
+    "base_commit": "fc465b496b812590cd308ae2dcb8a108cc4221e7",
+    "candidate_commit": "edc69855099408a4fd313156a0c5646ae4ef6fdb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ble_sac_annulus_dilation_avg_le",
+    "diff_sha256": "10b29e0590c268c284120cb19d6869c6e19366500d0a3f59b05af79d62324d9c",
+    "source_sha256": "aa2b17b46b4efab7ff0ed2d71b786d85043336c6659519b251c3fab2e5b79e40",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ble_sac_annulus_dilation_avg_le",
+      "statement": "∀ (n : ℕ) (F : Rn n → ℝ≥0∞), Measurable F → ∀ r s τ : ℝ, 1 / 2 ≤ r → r < 1 → 0 < s → 1 / 2 ≤ τ → ∫⁻ t in Icc τ 1, ∫⁻ x in ball (0 : Rn n) s \\ ball 0 (r * s), F (t • x) ≤ ENNReal.ofReal (2 ^ (n + 1) * (1 - r)) * ∫⁻ y in ball (0 : Rn n) s, F y",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

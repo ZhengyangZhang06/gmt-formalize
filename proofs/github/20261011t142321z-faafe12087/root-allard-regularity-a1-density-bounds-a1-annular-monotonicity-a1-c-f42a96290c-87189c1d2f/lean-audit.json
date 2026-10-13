@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e1050dc27f026de5126fbf696955735b21a6428f97d65ffa319b6773c100a3a8",
+  "git_delta": {
+    "base_commit": "84f837882ed23b27a9e4d4e124d203f68c4fcd3b",
+    "candidate_commit": "13c81f72f61a30ebe68dd8827b1df6ada77ce4fe",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_amcl_interval_limit",
+    "diff_sha256": "5edeaa35c343f964d6cb90554e9dddaf2537ef37fb852993ec66b721aabe20ac",
+    "source_sha256": "91cc7142c66391b1ed7d508a285c7cf86cd7de67af2a096d9ffc1ec4300b1c31",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_amcl_interval_limit",
+      "statement": "∀ (n : ℕ) (p R Λ t : ℝ) (a : ℕ → ℝ → ℝ) (g : ℝ → ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < t → (∀ᶠ k in atTop, ∀ τ : ℝ, 0 < τ → τ ≤ t → ContinuousAt (a k) τ ∧ |a k τ| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (τ / R) ^ (-((n : ℝ) / p))) → (∀ τ : ℝ, 0 < τ → τ ≤ t → Tendsto (fun k => a k τ) atTop (𝓝 (g τ))) → Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (∫ τ in (0)..t, g τ)) ∧ |∫ τ in (0)..t, g τ| ≤ Λ / 2 * (t / R) ^ (1 - (n : ℝ) / p)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

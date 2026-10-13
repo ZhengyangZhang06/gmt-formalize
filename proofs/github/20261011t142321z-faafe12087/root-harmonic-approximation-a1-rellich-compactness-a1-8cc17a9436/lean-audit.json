@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ecb384de602f54abed5747adc8c58970035e1af6982d8039b92a5ae40d81e195",
+  "git_delta": {
+    "base_commit": "7d2d1a2d2262f47a6015661c149b17b1ba4adc01",
+    "candidate_commit": "97f86e7dd6dfeb85d3cb4a4561fd4f5a61796835",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "w12_ball_rellich_compactness",
+    "diff_sha256": "42f28d2a9a53345417f3463ff4fe2118fbe48332bbbce5f5e00b987d808a2859",
+    "source_sha256": "731730662e1fe09e1ac7b026c560d112bf77c25155b619db11ef4f36109d6c47",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.w12_ball_rellich_compactness",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ (A : ℝ) (f : ℕ → Rn n → ℝ) (g : ℕ → Rn n → Rn n), (∀ k, IsW12WithGradient (f k) (g k) (ball 0 1)) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖f k x‖ₑ ^ 2 ≤ ENNReal.ofReal A) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖g k x‖ₑ ^ 2 ≤ ENNReal.ofReal A) → ∃ (φ : ℕ → ℕ) (w : Rn n → ℝ), StrictMono φ ∧ MemLp w 2 (volume.restrict (ball (0 : Rn n) 1)) ∧ Tendsto (fun k => ∫⁻ x in ball (0 : Rn n) 1, ‖f (φ k) x - w x‖ₑ ^ 2) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

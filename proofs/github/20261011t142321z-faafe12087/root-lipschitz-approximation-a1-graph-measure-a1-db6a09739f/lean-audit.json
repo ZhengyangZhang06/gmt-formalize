@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e99d72c0db03be84a000fe2c6d3581d460b003e3a2232739f48e5ca9f1c5474b",
+  "git_delta": {
+    "base_commit": "a475e97fb10cd405a746d8a37a7ed6f66966dd5f",
+    "candidate_commit": "9d591eb7d00cb5b39c77b8d7bb0054b1790424f7",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "9a63b48b4b39e2908570c63bee97502f125c881bb6ea65f1a2c653d30ea45dfb",
+    "source_sha256": "14e3ce9d4f861d911e60bbd736e040f1cf7c677e6e8c4c9a6d24424aeb983294",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_graph_measure",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall c r)) ≤ ENNReal.ofReal (2 ^ ((n : ℝ) / 2) * unitBallVolume n * r ^ n)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

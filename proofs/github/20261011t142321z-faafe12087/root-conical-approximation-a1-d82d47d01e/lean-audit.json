@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2b2879f9c6d0b05f3e16b74e1ddefa467fac46e5cbc7d064c73300a2101792ca",
+  "git_delta": {
+    "base_commit": "af3a55070773e1b513497103b2199b2ab6751c9b",
+    "candidate_commit": "0f113e83c54261a24677f7c69b69da7287c51eeb",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "c7f16b794e825eac47475a8b936c9866953d11561f0e249d910d1b7d33cdf1d3",
+    "source_sha256": "67dd36d1ed92e8b9af2a1a81891f29858b41bc6e4928918e927c0f6b611c4b61",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.conical_approximation_theorem",
+      "statement": "ConicalApproximationTheorem",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

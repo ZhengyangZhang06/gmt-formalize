@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f8c77885e225be5289f9adcef5e53df5bc67da806ca9db6373701c702401c63",
+  "git_delta": {
+    "base_commit": "a35eecc79b049d45a92147ab5efd3713d06e6985",
+    "candidate_commit": "7d96c95fdfe49f72ea4ef2d9eaeec77e9e7c1140",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_rgr_right_inverse_contDiffOn",
+    "diff_sha256": "ad0fc156a7b18bba80cd1dc92e0d1a2b30ccfbbd4e6bea289f590070f5983aee",
+    "source_sha256": "a944ff4fd7c316e3f6bf4b84944534aae690687752b17418a44ba432e1ca8846",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_rgr_right_inverse_contDiffOn",
+      "statement": "∀ {n : ℕ} (Φ X : Rn n → Rn n) (U W : Set (Rn n)) (κ : ℝ), IsOpen U → IsOpen W → 0 < κ → ContDiffOn ℝ 1 Φ U → (∀ x ∈ U, ∀ h : Rn n, κ * ‖h‖ ≤ ‖fderiv ℝ Φ x h‖) → ContinuousOn X W → (∀ w ∈ W, X w ∈ U ∧ Φ (X w) = w) → ContDiffOn ℝ 1 X W ∧ ∀ w ∈ W, ‖fderiv ℝ X w‖ ≤ κ⁻¹",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

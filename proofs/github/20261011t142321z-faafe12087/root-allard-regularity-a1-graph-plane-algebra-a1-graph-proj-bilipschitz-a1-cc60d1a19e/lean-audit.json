@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4aba766970753fbc88ff1cb2b6ae6bd76f67e7ceeb8eab15912a73c650dbe36d",
+  "git_delta": {
+    "base_commit": "6b8304345331a87e27f5783a5a1f4e5b35501797",
+    "candidate_commit": "b6c19a82443cbc8ce7d3de502a805ad22de8a173",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gpa_graphProj_bilipschitz",
+    "diff_sha256": "cd5fbd09879aa679861bf17418107f8ed47b3b3a063fcecef628380c5e92a5ed",
+    "source_sha256": "4c19fd99a441ef0ecf3ab1b275d544b2a10ba0f8ad14f4c2c85adaadc0775b98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gpa_graphProj_bilipschitz",
+      "statement": "∀ (n ℓ : ℕ), ∃ L₀ : ℝ, 0 < L₀ ∧ L₀ ≤ 1 / 4 ∧ ∀ (A B : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNorm B ≤ L₀ → hsNormSq (A - B) ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ∧ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ≤ 3 * hsNormSq (A - B)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

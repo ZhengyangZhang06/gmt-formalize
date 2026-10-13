@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0b5ff3c52f526d6f8dcf8fcb44361b1f3ff5bed8cf43b0354bb232692b0481da",
+  "git_delta": {
+    "base_commit": "c044cb3e1decc1bd3f3e37bf385fb0d23a24944f",
+    "candidate_commit": "4382422c9ae2812370574ceeb8a87b8390470340",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ehs_hessian_apply_contDiff",
+    "diff_sha256": "71110b18fbe672e3e20b04ec8bfdffb816e7be3fa7e04c6389de23f8cd120808",
+    "source_sha256": "f0d9ef1df8758a4fad0a4ef00a9a57fa86e894d42d4035c12731019641b82183",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ehs_hessian_apply_contDiff",
+      "statement": "∀ n ℓ : ℕ, ∀ Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ, ContDiff ℝ (⊤ : ℕ∞) Ψ → ∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) (fun R : Rn n →L[ℝ] Rn ℓ => fderiv ℝ (fderiv ℝ Ψ) R P Q)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

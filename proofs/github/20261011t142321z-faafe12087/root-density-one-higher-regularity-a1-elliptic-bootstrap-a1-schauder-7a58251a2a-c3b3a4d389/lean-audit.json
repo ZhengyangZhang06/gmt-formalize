@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "196cbbfc8b3dae36c327734a37e7797a2edf45526028a26542f4d1e4caeca912",
+  "git_delta": {
+    "base_commit": "1ad4d35df16bd7629c0ee8029f70ac4902702b06",
+    "candidate_commit": "4814ae5a05c84fac0fb018df85be40a1f71a24e4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_hds_unif_of_dense",
+    "diff_sha256": "8b5f1dc868aa5bc73a2ba5f39ed93d6539c99dfa6e9fcd5dcff65926aaffefeb",
+    "source_sha256": "f3764d26f23e0aa54393872ec7b52178b2b5e4069290905782a64f245686f867",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_hds_unif_of_dense",
+      "statement": "∀ (n ℓ : ℕ) (α K : ℝ) (S D : Set (Rn n)) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → IsCompact S → D ⊆ S → S ⊆ closure D → (∀ d ∈ D, ∃ v : Rn n →L[ℝ] Rn ℓ, Tendsto (fun j => F j d) atTop (𝓝 v)) → (∀ j, ∀ z ∈ S, ∀ z' ∈ S, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ G : Rn n → (Rn n →L[ℝ] Rn ℓ), TendstoUniformlyOn F G atTop S",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

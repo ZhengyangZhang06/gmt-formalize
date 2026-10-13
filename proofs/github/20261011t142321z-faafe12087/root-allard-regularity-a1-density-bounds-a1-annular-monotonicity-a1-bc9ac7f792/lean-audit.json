@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e34d58acfbd7b7e1d24507933f2322b576b5f9b5f07475b90c3cdb18422a18b5",
+  "git_delta": {
+    "base_commit": "f2a1c6fa482bf79c4ef285d7f328ada46442561a",
+    "candidate_commit": "0698aebc6ca1b5b10811d19a4640bcd75328e205",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "d2b8d35fa218a9ee3c4e1558e548d51eedb12bf473879cce9045c3c375eb9fea",
+    "source_sha256": "9269009dae730df751dcd95f6ddc861954484c28b1fbb29e35d8c604d99d301b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_annular_monotonicity",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R Λ : ℝ), 0 < R → closedBall y R ⊆ U → (∀ᵐ x ∂V.weight, x ∈ ball y R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → AEStronglyMeasurable (fun x => V.tangentProj x) (V.weight.restrict (ball y R)) → 0 < Λ → Λ ≤ 1 → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ F : ℝ → ℝ, (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p)) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (V.weight (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1 ∧ ∫⁻ x in closedBall y r \\ closedBall y s, ENNReal.ofReal (‖x - y - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (Real.exp Λ * ((F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1) - (F s * (s ^ n)⁻¹ * (V.weight (closedBall y s)).toReal + F s - 1)))) ∧ ∃ t : ℝ, 0 ≤ t ∧ V.HasDensity y t ∧ ∀ r ∈ Ioo 0 R, unitBallVolume n * t ≤ F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

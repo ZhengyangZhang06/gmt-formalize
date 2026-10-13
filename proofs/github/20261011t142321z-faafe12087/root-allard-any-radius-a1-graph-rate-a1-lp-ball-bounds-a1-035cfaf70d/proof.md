@@ -1,0 +1,122 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_any_radius-a1.graph_rate-a1`
+- Child DAG node: `root.allard_any_radius-a1.graph_rate-a1.lp_ball_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation. mu := V.weight; B := closedBall z r; ‖H x‖ₑ is the extended norm of H(x), so ‖H x‖ₑ = ofReal(‖H x‖). For xi in R^(n+l) and real sigma, I(xi, sigma) := lower integral over closedBall xi sigma of ‖H x‖ₑ^p d mu, a value in [0, infinity]; so K(xi, sigma) = (ofReal(sigma^(p-n)) * I(xi, sigma))^(1/p). Let f : R^(n+l) -> R, f(x) := ‖H x‖ (the real norm of H(x)). Then f >= 0 everywhere and ofReal(f(x)) = ‖H x‖ₑ for every x. Nothing is assumed or used about the measurability or integrability of H itself: every measure-theoretic property invoked below is a property of the real function f.
+
+1. Since n >= 1 and p > n: p > 1, p - n > 0 and 0 < 1/p < 1. Also rho >= r > 0.
+
+2. (K1).
+- t -> t^(p-n) is nondecreasing on [0, infinity) (positive exponent), so r^(p-n) <= rho^(p-n) and ofReal(r^(p-n)) <= ofReal(rho^(p-n)) (Real.rpow_le_rpow, ENNReal.ofReal_le_ofReal).
+- B is contained in closedBall 0 rho, so I(z, r) <= I(0, rho): the lower integral of an arbitrary [0, infinity]-valued function is monotone in the domain (mu restricted to B is <= mu restricted to closedBall 0 rho), with no measurability needed (lintegral_mono_set).
+- Multiplication on [0, infinity] is monotone in each factor, and t -> t^(1/p) is nondecreasing on [0, infinity] (1/p >= 0; ENNReal.rpow_le_rpow).
+Hence K(z, r) = (ofReal(r^(p-n)) I(z, r))^(1/p) <= (ofReal(rho^(p-n)) I(0, rho))^(1/p) = K(0, rho).
+
+3. (K2): set-up and case split on the integrability of f. Let delta >= 0 with K(0, rho) <= ofReal(delta) and mu(B) < infinity. Put RHS := delta * rho^(n/p - 1) * (mu(B).toReal)^(1 - 1/p). Then RHS >= 0: delta >= 0, rho^(n/p - 1) > 0 because rho > 0, and (mu(B).toReal)^(1 - 1/p) >= 0 as a real power of the nonnegative real mu(B).toReal. The integral in (K2) is the Bochner integral over B of the real-valued function f = ‖H‖. Let nu := mu restricted to B. Split on whether f is integrable on B with respect to mu (IntegrableOn f B mu, i.e. f is nu-integrable).
+Case A: f is not integrable on B. The Bochner integral of a non-integrable function is 0 by convention (integral_undef, applied to the function f and the measure nu). Hence the integral over B of ‖H x‖ d mu equals 0 <= RHS, and (K2) holds.
+Case B: f is integrable on B. Integrability of f with respect to nu includes the nu-a.e. strong measurability of f; hence f is nu-a.e. measurable, and so is x -> ofReal(f(x)) = ‖H x‖ₑ (composition of the measurable map ofReal with f; IntegrableOn f B mu unfolds to Integrable f nu, then Integrable.aestronglyMeasurable and ENNReal.measurable_ofReal.comp_aemeasurable). Steps 4-6 treat Case B and use only these properties of f.
+
+4. Bound on I(z, r)^(1/p) (valid in both cases).
+- On [0, infinity], (a b)^(1/p) = a^(1/p) b^(1/p) since 1/p >= 0 (ENNReal.mul_rpow_of_nonneg).
+- Since rho > 0, ofReal(rho^(p-n))^(1/p) = ofReal((rho^(p-n))^(1/p)) = ofReal(rho^((p-n)/p)) (ENNReal.ofReal_rpow_of_nonneg, Real.rpow_mul).
+- So K(0, rho) = ofReal(c) I(0, rho)^(1/p) with c := rho^((p-n)/p), and 0 < c < infinity; by hypothesis ofReal(c) I(0, rho)^(1/p) <= ofReal(delta).
+- ofReal(c) is neither 0 nor infinity, so dividing by it: I(0, rho)^(1/p) <= ofReal(delta)/ofReal(c) = ofReal(delta/c) = ofReal(delta rho^(-(p-n)/p)) = ofReal(delta rho^(n/p - 1)), since -(p-n)/p = n/p - 1 (ENNReal.le_div_iff_mul_le, ENNReal.ofReal_div_of_pos, Real.rpow_neg).
+- By step 2, I(z, r) <= I(0, rho), and t -> t^(1/p) is monotone, so I(z, r)^(1/p) <= ofReal(delta rho^(n/p - 1)).
+
+5. Hoelder (Case B).
+- Let q' := p/(p-1). Then p, q' > 1 are Hoelder conjugate (1/p + 1/q' = 1; Real.HolderConjugate.conjExponent) and 1/q' = 1 - 1/p.
+- Hoelder's inequality for [0, infinity]-valued functions with respect to nu, applied to the nu-a.e. measurable function F_1 := ofReal o f (Case B) and the constant function 1 (ENNReal.lintegral_mul_le_Lp_mul_Lq), gives: lower integral of F_1 * 1 d nu <= (lower integral of F_1^p d nu)^(1/p) * (lower integral of 1^(q') d nu)^(1/q').
+- F_1(x)^p = ofReal(‖H x‖)^p = ‖H x‖ₑ^p for every x (ofReal_norm), so the lower integral of F_1^p d nu is I(z, r). The lower integral of 1^(q') = 1 d nu is nu(univ) = mu(B), and its power 1/q' is mu(B)^(1 - 1/p) (lintegral_const, Measure.restrict_apply_univ).
+- Hence, with step 4 and monotonicity of multiplication on [0, infinity]: lower integral over B of ofReal(f) d mu <= I(z, r)^(1/p) mu(B)^(1 - 1/p) <= ofReal(delta rho^(n/p - 1)) mu(B)^(1 - 1/p).
+- The right side is finite: ofReal(...) < infinity, and mu(B)^(1 - 1/p) < infinity because mu(B) < infinity and 1 - 1/p > 0.
+
+6. Conversion (Case B).
+- f >= 0 everywhere and f is nu-a.e. strongly measurable (Case B). For a nonnegative a.e.-strongly measurable real function, the Bochner integral equals the toReal of the lower integral of its ofReal (integral_eq_lintegral_of_nonneg_ae, applied to f and nu): the integral over B of f d mu = (lower integral over B of ofReal(f) d mu).toReal. This identity concerns f only; no measurability of H is used.
+- Both sides of the last inequality of step 5 are finite, and toReal is monotone on finite values (ENNReal.toReal_mono), so the integral over B of f d mu <= (ofReal(delta rho^(n/p - 1)) mu(B)^(1 - 1/p)).toReal.
+- toReal of a product is the product of the toReals; toReal(ofReal a) = a for a = delta rho^(n/p - 1) >= 0; and toReal(c^t) = (toReal c)^t for c in [0, infinity] and real t (ENNReal.toReal_mul, ENNReal.toReal_ofReal, ENNReal.toReal_rpow). Hence the right side equals delta rho^(n/p - 1) (mu(B).toReal)^(1 - 1/p) = RHS.
+So in Case B as well the integral over closedBall z r of ‖H x‖ d mu is at most delta * rho^(n/p - 1) * (mu(closedBall z r).toReal)^(1 - 1/p). Together with Case A this proves (K2), and with step 2 the theorem.
+
+## Key steps
+
+1. p > 1, p - n > 0, rho >= r > 0
+2. (K1): r^(p-n) <= rho^(p-n), domain monotonicity of the lower integral, and monotonicity of products and of t^(1/p)
+3. (K2) Case A: with f(x) := ‖H x‖, if f is not IntegrableOn (closedBall z r) V.weight, integral_undef applied to f makes the integral 0 <= RHS (RHS >= 0)
+4. (K2) Case B: f integrable on the ball, so f itself (not H) is a.e.-strongly measurable for mu restricted to the ball, and ofReal o f = ‖H‖ₑ is a.e.-measurable
+5. K(0,rho) <= ofReal(delta) gives I(z,r)^(1/p) <= I(0,rho)^(1/p) <= ofReal(delta rho^(n/p-1))
+6. Hoelder for ofReal o f and the constant 1 on the ball: the lower integral of ofReal o f is at most I(z,r)^(1/p) mu(B)^(1-1/p) <= ofReal(delta rho^(n/p-1)) mu(B)^(1-1/p), a finite bound
+7. integral_eq_lintegral_of_nonneg_ae for the nonnegative a.e.-strongly measurable f, toReal monotonicity on finite values, and toReal of products/ofReal/rpow give (K2)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean; diff GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `python3 -I scan of every lean_name field in dag.json and nodes/*/*.json for the 8 any_radius_gr_* names; grep -rl any_radius_gr_ --include=*.json <run>; git grep -c any_radius_gr_ <ref> -- '*.lean' over all refs; rg -l any_radius_gr_ <snapshot>/project`
+- `python3 -I dump of nodes/root-allard-any-radius-a1/decomposition-v2.json (sibling statements tangent_ae, rescaled_varifold, monotonicity_bounds, tilt_height_l1, tilt_iteration, graph_comparison, radial_height, campanato, pinching) and of this node's parent-child-handoff.json, decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json`
+- `sed -n 200,210p and sed -n 515,530p <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean (integral_undef, integral_eq_lintegral_of_nonneg_ae)`
+- `rg -n 'theorem lintegral_mul_le_Lp_mul_Lq' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean; sed -n 195,215p of the same file`
+- `rg -n 'eLpNorm_le_eLpNorm_mul_rpow_measure_univ' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `grep -n 'theorem toReal_rpow|theorem ofReal_rpow_of_nonneg|theorem mul_rpow_of_nonneg' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean; grep -n 'ofReal_norm' <snapshot>/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `grep -n 'theorem integral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean; grep -n 'theorem lintegral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean; grep -n 'theorem lintegral_mono_set' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean`
+- `lake build GMT.Ch05.Submission in /tmp/gr-v2-scratch/proj (fresh copy of the pinned snapshot project, packages symlinked to lake-packages-25730c7c)`
+- `lake env lean Checks/Types.lean and Checks/TypesV2.lean (the 8 child lean_statements from v1 and from the final v2 draft, plus the selected parent type)`
+- `lake env lean Checks/Iface.lean (14 sibling/child interface examples)`
+- `lake env lean Checks/LpBall.lean (complete proof of the frozen lp_ball_bounds type; #print axioms)`
+- `lake env lean Checks/Names.lean (#check of every Mathlib name cited in the corrected lp_ball_bounds proof)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/tmp/gr-v2-scratch/proj/Checks/Types.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/TypesV2.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/Iface.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/LpBall.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/Names.lean`
+
+Snapshot
+- Pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- Snapshot Contract.lean and Submission.lean are byte-identical to the workspace copies, and Submission equals Contract.
+
+Definitions that shape the split
+- scaledLpNorm = (ofReal(sigma^(p-n)) * lintegral over closedBall xi sigma of ‖H x‖ₑ^p)^(1/p).
+- tiltExcess = (sigma^n)^-1 times a Bochner integral.
+- lp_ball_bounds is stated for an arbitrary H (no measurability hypothesis), so its (K2) proof must split on the integrability of f = ‖H‖ itself.
+
+Mathlib facts behind the correction
+- integral_undef (Bochner/Basic.lean:204) applies to the actual integrand f.
+- integral_eq_lintegral_of_nonneg_ae (:515) needs only 0 <=ᵐ f and AEStronglyMeasurable f.
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202) needs AEMeasurable of both factors.
+- ENNReal.toReal_rpow (Pow/NNReal.lean:962) is unconditional.
+- ofReal_norm replaces the deprecated ofReal_norm_eq_enorm (Normed/Group/Basic.lean:389).
+- IntegrableOn.aestronglyMeasurable does not exist; Integrable.aestronglyMeasurable is cited instead.
+- Change of variables along a MeasurableEquiv needs no measurability, which supports translate_identities: integral_map_equiv (Bochner/Basic.lean:1105) and lintegral_map_equiv (Lebesgue/Map.lean:94). Neither does lintegral_mono_set (Lebesgue/Basic.lean:98).
+
+No-match results
+- 'any_radius_gr_' occurs in 0 snapshot project files and in 0 .lean files on any git branch.
+- In dag.json and nodes/*/*.json it occurs only in this node's own v1 proposal, audit and receipt, so the 8 names are free.
+
+Lean
+- All 8 frozen child types and the parent type elaborate.
+- The full lp_ball_bounds proof compiles with only propext, Classical.choice and Quot.sound.
+- The 14 interface examples compile without sorry.

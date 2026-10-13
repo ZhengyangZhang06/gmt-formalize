@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f9168cbe7ad87c798a4cbae946274ad07fcc70f4d43b014e761c497df48cc87b",
+  "git_delta": {
+    "base_commit": "3f6907cf803b63f467961d50fdd2b022b952b6af",
+    "candidate_commit": "bf239f8dda7d1a10692b585d3e8f8770ff2ebf0f",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "67f4cc93beafa6dd7975804ac90ee3f640f2609b4e78103a450a9a6f84b1eb34",
+    "source_sha256": "151c9afcd4f6a93fc937571338ff396bce8821c14febf056b0a98fdff5975270",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_graph_approx_tangent",
+      "statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (graphOver u (ball 0 R)) (graphPoint x (u x)) (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

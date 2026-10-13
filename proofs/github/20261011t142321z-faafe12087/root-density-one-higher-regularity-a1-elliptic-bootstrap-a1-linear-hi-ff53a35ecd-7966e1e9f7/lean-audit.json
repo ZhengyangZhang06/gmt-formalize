@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "107604453b0619eb31674c291bc1d1a2791069fcaef830df77c1f777204f8bd0",
+  "git_delta": {
+    "base_commit": "e8d35e73edb7fc5b219addebd1eb552647a6e5b6",
+    "candidate_commit": "b15cb03d9d3ac8870b305f26d16ebae07fde6f4d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_cub_bilinear_basis_bound",
+    "diff_sha256": "e2b94b85392945e994af21543e484019f34505192dbd17b2abc0133488fe8be8",
+    "source_sha256": "e6f9d782e208102fb27098c1431e85be1737bb7ed6c65cc87d142a9463652603",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_cub_bilinear_basis_bound",
+      "statement": "∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (E : Fin N → L) (c : ℝ), 0 ≤ c ∧ (∀ (B : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t)|) * ‖P‖ * ‖Q‖) ∧ ∀ (B B' : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q - B' P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t) - B' (E r) (E t)|) * ‖P‖ * ‖Q‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

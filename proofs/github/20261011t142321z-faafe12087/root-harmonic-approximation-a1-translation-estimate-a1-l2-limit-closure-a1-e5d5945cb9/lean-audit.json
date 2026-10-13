@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23cd1f5ab85e9e2e01237fe047ac64900f9bcdbdc9274c57b060f11f543db82a",
+  "git_delta": {
+    "base_commit": "3fe721747a635acb83fe9b7128d590e6c88b261d",
+    "candidate_commit": "e5a8af348bfb48b7ad7d40c311b4f75f3e3d52ca",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lintegral_sq_le_of_l2_approximation",
+    "diff_sha256": "da1761f21d3fde6fc323a9e1262f1b7969e794b2c0262fd6b884c67624638771",
+    "source_sha256": "bab37e922266f77ca4b5b6a1f8f056d1f318845b0fe2edbeb482ff8761e5f81b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lintegral_sq_le_of_l2_approximation",
+      "statement": "∀ {α E F : Type} [MeasurableSpace α] [NormedAddCommGroup E] [NormedAddCommGroup F] (μ ν : Measure α) (c : ℝ≥0∞) (a : ℕ → α → E) (a₀ : α → E) (b : ℕ → α → F) (b₀ : α → F), c ≠ ∞ → (∀ j, AEStronglyMeasurable (a j) μ) → AEStronglyMeasurable a₀ μ → (∀ j, AEStronglyMeasurable (b j) ν) → AEStronglyMeasurable b₀ ν → Tendsto (fun j => ∫⁻ x, ‖a j x - a₀ x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖b j x - b₀ x‖ₑ ^ 2 ∂ν) atTop (𝓝 0) → (∀ j, ∫⁻ x, ‖a j x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b j x‖ₑ ^ 2 ∂ν) → ∫⁻ x, ‖a₀ x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b₀ x‖ₑ ^ 2 ∂ν",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

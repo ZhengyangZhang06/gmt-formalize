@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a5d9285dd4d1ff782c1715b9ba5dcd8b2e66aa088645764d55774ee14a642c15",
+  "git_delta": {
+    "base_commit": "7b614d9943b29bf00dcc7dd9340c9eefae417fd4",
+    "candidate_commit": "c3797069427f590b81f7f231c78affcbaad3cc25",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_rv_support_eq",
+    "diff_sha256": "eb65cf26636b59dcb5380ab6810aaa5d1a2b50ff3fcd66c4a674c5511797900e",
+    "source_sha256": "5c99612f77d01faddd22e15d411121e639b883756171f06f1830e6262bdda890",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_rv_support_eq",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → W.support = (fun x => c + R • x) ⁻¹' V.support",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

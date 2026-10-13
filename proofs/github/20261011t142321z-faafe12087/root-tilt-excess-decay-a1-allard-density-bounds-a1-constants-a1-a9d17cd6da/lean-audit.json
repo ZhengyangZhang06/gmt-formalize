@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3aeee6d45a5e00bf60f5c45ceaf8baf90743b339efaff5e9ac6e479df11e79b2",
+  "git_delta": {
+    "base_commit": "fe98383069acfe09e171bb6cccf3f384b910c3f5",
+    "candidate_commit": "a487c5fb38cdafedba42d86cebcd64c6c5b7ff18",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_adb_constants",
+    "diff_sha256": "833290c09ffd173a17fbf146a73641b4e6c95c5ef742c3b7537696c55bcdc0be",
+    "source_sha256": "deea5c4a2c83f055d5247acef6754724c790c3524a7b2878e41040a8a51e3e24",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_adb_constants",
+      "statement": "∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ C δP : ℝ, 1 ≤ C ∧ 0 < δP ∧ δP ≤ 1 / 8 ∧ δP ≤ κ ∧ C * δP ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δP → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 4 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + C * t) * ω ∧ (1 - C * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "63050d89c39af8ea323fbb9e895754533cbfca8c8e2132d664bfed780de21c0c",
+  "git_delta": {
+    "base_commit": "7a1b524cfdc50043fe020177c8cab262fde1f8e6",
+    "candidate_commit": "a8a55f03f340bb27b1cb2db261f66fddce0c30ca",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mollifier_l2_tendsto",
+    "diff_sha256": "17ca6779e217ae978d9bf9e19a00c7c1bddb3c7b5d40187eaa76b6f5640d8136",
+    "source_sha256": "0e98d5b3a28ca3a3b9e56a5b3ecf5e7737e2aecb41d4fb81fc01c077c9fe506f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mollifier_l2_tendsto",
+      "statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (H : Rn n → E), Integrable H → MemLp H 2 volume → ∀ (ρ : ℕ → Rn n → ℝ) (ε : ℕ → ℝ), (∀ j, Continuous (ρ j)) → (∀ j z, 0 ≤ ρ j z) → (∀ j, ∫ z, ρ j z = 1) → (∀ j z, ε j ≤ ‖z‖ → ρ j z = 0) → Tendsto ε atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖(∫ z, ρ j z • H (x - z)) - H x‖ₑ ^ 2) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

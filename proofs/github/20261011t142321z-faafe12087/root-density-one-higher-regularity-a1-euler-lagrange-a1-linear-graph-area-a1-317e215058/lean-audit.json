@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4d1d098c11b31a7676e8741f728675e4b919f2d413122bacfa67253e78c738fa",
+  "git_delta": {
+    "base_commit": "3558c05a1c21da64b03b72054f9da21576684897",
+    "candidate_commit": "d6f38af23b12fb6e368b6b80cdb925d6287ac6ea",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_vel_linear_graph_area",
+    "diff_sha256": "ff56ab2a51ca0619995aeeb4aa5a953040d1c521c3dda4b8e1244cc5931d970f",
+    "source_sha256": "164238412331928b90014e5000e6d1358201b6cd0f5b6a36646ede0dc9e0d431",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_vel_linear_graph_area",
+      "statement": "∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) ∧ ∀ S : Set (Rn n), (μHE[n] : Measure (Amb n ℓ)) ((fun v => graphPoint v (P v)) '' S) = ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) * (volume : Measure (Rn n)) S",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

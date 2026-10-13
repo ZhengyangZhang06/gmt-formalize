@@ -1,0 +1,23 @@
+{
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/582",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4897",
+  "candidate_commit": "3bdcf0e93c002aa8606cc41a1b5c7b566c63f480",
+  "integrated_commit": "",
+  "proof_base_commit": "680645b6a7380bd05e4b339df00021f6f7ff10e0",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_regularity-a1",
+  "requires": [
+    "root.allard_regularity-a1.graph_plane_algebra-a1.hs_norm_bounds-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.rotation_exists-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_normal_bound-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.isometry_conj-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_zero_plane-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_bilipschitz-a1"
+  ]
+}

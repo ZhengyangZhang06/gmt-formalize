@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "558509a9dccdeef31de05368727c287f92df8ab1133eb7943d78b7520ceebef3",
+  "git_delta": {
+    "base_commit": "949117079b001523313f6f59fdbf32d0e767b7f6",
+    "candidate_commit": "a86b282c4bc45c15959f54a836b7422a1931c9ab",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mvk_integral_fderiv_grad_eq_neg_laplacian",
+    "diff_sha256": "15deaf7b39cfad17e1bd5f874283ac570d03e8952b570ee40cea3b29202fa4fc",
+    "source_sha256": "593c89703f1badf4870bb622445283a57a11005892fca675f63b56d0d6e5741c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mvk_integral_fderiv_grad_eq_neg_laplacian",
+      "statement": "∀ (n : ℕ) (H Ψ : Rn n → ℝ) (w : Rn n → Rn n), ContDiff ℝ 2 H → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → (∀ z v : Rn n, fderiv ℝ Ψ z v = inner ℝ (w z) v) → ∫ z, fderiv ℝ H z (w z) = -∫ z, Laplacian.laplacian H z * Ψ z",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

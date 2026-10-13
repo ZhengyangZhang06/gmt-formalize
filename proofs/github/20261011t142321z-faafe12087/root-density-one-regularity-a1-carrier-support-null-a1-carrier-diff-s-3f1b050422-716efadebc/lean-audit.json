@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c728ac5036e8ae84b8ed8a9c93651314fb6b2a4be417e2a650a03ab01453e4b5",
+  "git_delta": {
+    "base_commit": "03dd4115b31310266168e649fb7d46b16807d8a9",
+    "candidate_commit": "caad9301a37256be637bff3d4ed8473bcb4709a2",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "hausdorff_carrier_diff_support_null",
+    "diff_sha256": "577222d508d890365006035984595938a148078e5a6ebb8e81650c4cc38dfd25",
+    "source_sha256": "d861c42a82dc8e5be6110b634b3d9296bb30e707170997c4353eec0072fd12a8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hausdorff_carrier_diff_support_null",
+      "statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (μHE[n] : Measure (Amb n ℓ)) (V.carrier \\ V.support) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

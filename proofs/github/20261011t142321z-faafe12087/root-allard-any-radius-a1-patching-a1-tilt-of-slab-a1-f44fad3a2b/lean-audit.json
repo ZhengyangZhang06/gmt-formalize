@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5a5b16e7a8f1a3a6d899dda4b69ef9caf03b646482c6359ac65b695d88f47a55",
+  "git_delta": {
+    "base_commit": "c358a09e6a597857e527ecf99c983bb4f517deca",
+    "candidate_commit": "5f49b4204d06b1dd9135bfd33b795c65ddd5900c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_tilt_le_of_slab",
+    "diff_sha256": "56b33d8d42982610680f922cf2d5053b05ca22171d796f7cb3b77e17694a7a31",
+    "source_sha256": "aca2c309a2e333786ec3fe2d12cf60a40af0da9195705e41cf633e093dc1457d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_tilt_le_of_slab",
+      "statement": "∀ {n ℓ : ℕ} (q q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (s ε h : ℝ), 0 < s → (∀ x₁ ∈ closedBall (0 : Rn n) s, ∀ x₂ ∈ closedBall (0 : Rn n) s, ‖v x₁ - v x₂‖ ≤ ε * ‖x₁ - x₂‖) → (∀ x ∈ closedBall (0 : Rn n) s, infDist (y + q (graphPoint x (v x))) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ h) → ∀ e : Rn n, infDist (q (graphPoint e 0)) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ (h / s + ε) * ‖e‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61242cb4b16cc3b18a76be45d3fffd98b64f38b3e308eab4857c81a246086dde",
+  "git_delta": {
+    "base_commit": "6bec5c1aac32aafd613f0fd876adc7ff52360a24",
+    "candidate_commit": "32dfff1832a8ff0a0829a06d237c580b30724bcb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_ds_clm_family",
+    "diff_sha256": "ef3b8740a36346dd6e6bf4504f2774cf8d97290f6683e61b07df615de33fd6a2",
+    "source_sha256": "2a42d82f1935d9280ca3aef8f0af4981442ba69f9b10df01a8e6f456687062be",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_ds_clm_family",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U) → ContDiffOn ℝ 1 Φ U ∧ ∀ x ∈ U, ∀ (e : Rn n) (P : Rn n →L[ℝ] Rn ℓ), fderiv ℝ Φ x e P = fderiv ℝ (fun z => Φ z P) x e",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

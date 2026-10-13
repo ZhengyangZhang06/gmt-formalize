@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f2318130bf8640450c336c41d29d71365790a3b75892951b68c238cb383079de",
+  "git_delta": {
+    "base_commit": "3455fb5000e47654b3d7df697ee2b7a10dc49047",
+    "candidate_commit": "4ae44d539f626f0f97e6945df0506e14d527f200",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_vel_graph_area_formula",
+    "diff_sha256": "b51f57d28e4cb4cc4d2aa3219233af1d6a6e625a53fb716db1f2e51b3633a98b",
+    "source_sha256": "14f364f40b5bef795d71705af3b03dd5089ccf13e4980fe5d2950318df6070c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_vel_graph_area_formula",
+      "statement": "∀ n ℓ : ℕ, ∀ (D : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen D → ContDiffOn ℝ 1 u D → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ D → (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' A) = ∫⁻ x in A, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "95b41dc1b7cffeafd5a7c2f133a16165d1efeed71f604cb6f816087c0cacb54c",
+  "git_delta": {
+    "base_commit": "2ecf770d5df85949153a4cb4f8f973777433c140",
+    "candidate_commit": "112b2379b7db26ce4468b1bcc40fab07852dc3c3",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ods_ae_abs_deriv_inner_le",
+    "diff_sha256": "4c57b3944c20f2f861cc2f88f8dc8e7835b13577b75376c5bc97e33c40cff02b",
+    "source_sha256": "15d9f47ec34698c3bca9f7051fd1642eeb8b2d332facdb0aa9dcae469bdf9bc7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ods_ae_abs_deriv_inner_le",
+      "statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0) (u : Rn ℓ), LipschitzOnWith K W (Icc (-a) a) → ‖u‖ ≤ 1 → ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |deriv (fun x => inner ℝ u (W x)) r| ≤ ‖deriv W r‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

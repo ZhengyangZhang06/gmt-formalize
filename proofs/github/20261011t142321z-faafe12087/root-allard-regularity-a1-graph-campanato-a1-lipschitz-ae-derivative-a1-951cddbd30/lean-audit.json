@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "06a68a879964b9fa2acac31570651fd9cb293311450273a775d124656f245227",
+  "git_delta": {
+    "base_commit": "dce46e8111682f9131809ffa40e9d927e7a156ed",
+    "candidate_commit": "3e5ecdadf94219b5adcb8184d12a47ba830797ad",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "44a936f5e80e95ab5505e3a0e6a25e6efa867f98ebb71c91ae330af1a7f5d44e",
+    "source_sha256": "9c1cf0c43bfebe6c2122f236e0557ce652d265f5f57bd9d7c556543139f9a6cf",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_lipschitz_hasFDerivAt_of_ae",
+      "statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (c : Rn n) (r : ℝ) (K : ℝ≥0), LipschitzOnWith K f (ball c r) → ContinuousOn g (ball c r) → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x) → ∀ x ∈ ball c r, HasFDerivAt f (g x) x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

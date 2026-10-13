@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2954374b1760488e6ecaa59a4de26b1235e175e97fb1c05d6caa83a887c232f5",
+  "git_delta": {
+    "base_commit": "290532127a890891b525057a3479e5fb412bf213",
+    "candidate_commit": "bd669aaf540f20a6fdbf85cd0f0deb0fc8b7dc5e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_lpm_fcm_cmd_radial_integrable",
+    "diff_sha256": "3964ae71746e765fd0d7b7afb7aeafc4da04a4ba931262bdcad68a7697837649",
+    "source_sha256": "667882e0be0f69a5b27eae5d463d1824b8b7de1524bc161a70e77a3a0cb51311",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_lpm_fcm_cmd_radial_integrable",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

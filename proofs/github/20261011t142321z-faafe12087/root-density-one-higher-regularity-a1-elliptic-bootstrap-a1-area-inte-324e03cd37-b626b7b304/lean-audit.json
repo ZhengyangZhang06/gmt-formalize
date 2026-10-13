@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "049082620bd51a6d33249aa1308cdf328108ff4e38f22c79013d21239e1efdea",
+  "git_delta": {
+    "base_commit": "8469ded480fd91a9e955bbc262c7edc306042ce4",
+    "candidate_commit": "69daf3a68fe226ce5b2a8164cb8e39225095a34b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_hessian_zero",
+    "diff_sha256": "0e2b0328e1d2aa6e3530c710d125597f84bc64689c756283156d68cc82f55046",
+    "source_sha256": "93e8bccfadd5d1a11122bd27e266f1bfdf62d26ee4cdeac2e8629d3009208b0b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_hessian_zero",
+      "statement": "∀ n ℓ : ℕ, ∀ Q : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) 0 Q Q = ∑ a : Fin n, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

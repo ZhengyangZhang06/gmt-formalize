@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7591ef61f7a58af749a5d33579c786179746f8d1e9495d76932e14d8b9c63afb",
+  "git_delta": {
+    "base_commit": "1ad4d35df16bd7629c0ee8029f70ac4902702b06",
+    "candidate_commit": "1d8494f237662487f20cbe03d963531e3c3f3660",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_hds_holder_of_limit",
+    "diff_sha256": "1ac1b5adfc39935dc6c6ef4bff69db9de96cee4c8db5897e569091cfc0303ff6",
+    "source_sha256": "bbe722568fec674cc523f5b71cbaa38a9a6a133705e218ba5851b457e608ef91",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_hds_holder_of_limit",
+      "statement": "∀ (n ℓ : ℕ) (α K : ℝ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → (∀ z, Tendsto (fun j => F j z) atTop (𝓝 (V z))) → (∀ z z' : Rn n, ∀ᶠ j in atTop, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → (∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ Continuous V",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

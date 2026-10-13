@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.ae_mem_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step (1a) of the parent proof, stated for an arbitrary contract rectifiable varifold. The parent uses it in its step 4, for the part of B̄_r(τ) off the graph.
+
+Notation.
+- ν := μHE[n].restrict M, the Hausdorff measure H^n restricted to the carrier M.
+- ρ(x) := ENNReal.ofReal(θ(x)).
+- μ := V.weight = ν.withDensity ρ, by the definition of RectifiableVarifold.weight.
+- V.support = U ∩ μ.support, by the definition of RectifiableVarifold.support. Here μ.support is the set of points x every neighbourhood of which has positive μ-measure.
+
+1. μ-a.e. point lies in μ.support. The ambient space R^{n+l} = EuclideanSpace R (Fin (n+l)) is second countable, hence hereditarily Lindelöf. The complement of μ.support is open, and every point of it has an open neighbourhood of μ-measure zero. By the Lindelöf property, countably many of these neighbourhoods cover the complement, so μ((μ.support)^c) = 0 by countable subadditivity. In Mathlib this is Measure.support_mem_ae (equivalently measure_compl_support): ∀ᵐ x ∂μ, x ∈ μ.support.
+2. ν-a.e. point lies in M. The carrier M is H^n-null-measurable (structure field nullMeasurableSet_carrier). For a null-measurable set M, almost every point for the restricted measure H^n.restrict M lies in M (ae_restrict_mem₀): ∀ᵐ x ∂ν, x ∈ M.
+3. μ is absolutely continuous with respect to ν. If A is measurable with ν(A) = 0, then μ(A) = ∫⁻_A ρ dν = 0, by withDensity_apply and the vanishing of integrals over null sets (Mathlib withDensity_absolutelyContinuous). Hence every property that holds ν-a.e. holds μ-a.e. (AbsolutelyContinuous.ae_le). Applied to step 2: ∀ᵐ x ∂μ, x ∈ M.
+4. M ⊆ U (structure field carrier_subset). Hence, by step 3, ∀ᵐ x ∂μ, x ∈ U.
+5. The intersection of two μ-a.e. events is μ-a.e. (filter_upwards). By steps 1 and 4, for μ-a.e. x we have x ∈ U and x ∈ μ.support, i.e. x ∈ U ∩ μ.support = V.support. This is the claim ∀ᵐ x ∂V.weight, x ∈ V.support. ∎
+
+Lean outline, checked against the frozen Submission olean:
+- intro n ℓ U V
+- have h1 : ∀ᵐ x ∂V.weight, x ∈ V.weight.support := Measure.support_mem_ae
+- have h2 : ∀ᵐ x ∂V.weight, x ∈ V.carrier := (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+- filter_upwards [h1, h2] with x hx1 hx2
+- exact ⟨V.carrier_subset hx2, hx1⟩
+
+## Key steps
+
+1. R^{n+l} is second countable, so the complement of the support of the measure μ = V.weight is μ-null (Measure.support_mem_ae)
+2. M is H^n-null-measurable, so H^n.restrict M-a.e. point lies in M (ae_restrict_mem₀)
+3. μ = (H^n.restrict M).withDensity(ofReal ∘ θ) is absolutely continuous w.r.t. H^n.restrict M, so μ-a.e. point lies in M ⊆ U
+4. Intersect the two μ-a.e. events: μ-a.e. point lies in U ∩ μ.support = V.support
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 -I scan of <run>/dag.json lean_statement fields for: '∀ᵐ [a-z] ∂V\.weight, [a-z] ∈ V\.support', 'IsCompact K → K ⊆ U → V\.weight', 'V\.weight K', 'V\.mult x ≤ 2', 'restrict.*≤ V\.weight', 'V\.weight\.restrict', short statements containing 'support', 'graphPoint', 'V.weight'/'μHE'/'mult'`
+- `rg -n 'theorem addHaar_sphere_of_ne_zero|lemma support_mem_ae :|lemma measure_compl_support :|theorem restrict_withDensity |theorem ae_withDensity_iff' |theorem lintegral_withDensity_eq_lintegral_mul₀ |theorem withDensity_absolutelyContinuous |theorem ae_restrict_mem₀ |theorem ae_eq_of_subset_of_measure_ge|theorem integral_eq_lintegral_of_nonneg_ae|theorem ofReal_integral_eq_lintegral_ofReal|theorem toReal_le_of_le_ofReal|theorem lintegral_inter_add_sdiff|lemma setLIntegral_indicator |theorem setLIntegral_mono_ae |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem measure_mono_ae|theorem restrict_congr_set|theorem lintegral_const_mul |theorem lintegral_mono' ' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'lintegral_inter_add_diff|setLIntegral_indicator|lintegral_union_le|toReal_le_of_le_ofReal' <snapshot>/mathlib/Mathlib`
+- `sha256sum <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `git show cdb88b48925591849cbb90579af1307d72e56810:GMT/Ch05/Submission.lean (accepted allard52_cft_graph_map_sqrt_two and lip_approx_graph_coordinates)`
+- `git grep -l -E 'measure_compl_support|ae_restrict_mem₀' over refs/heads/humanize-recursive/* -- GMT/Ch05/*.lean; git show <l1-tilt-height-a1 branch>:GMT/Ch05/Submission.lean | grep (patterns for the weight/carrier a.e. arguments)`
+- `python3 -I: cross-parent reuse precedents in <run>/nodes/*/decomposition-v*.json (listed depends_on vs DAG depends_on of reused accepted nodes)`
+- `grep -rl tdo_ghe_ <run>/dag.json <run>/nodes <run>/DAG.md <run>/issue-workers.json GMT .lake/packages/simongmt/Poincare <snapshot>/project <snapshot>/mathlib/Mathlib; git log --all --format=%H -S tdo_ghe_ (no match)`
+- `sed -n 895,980p book/chapter-05.txt (printed (14)-(20) of the proof of 4.5)`
+- `lake env lean -o /tmp/ghe-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean /tmp/ghe-decomp/checks/{Types,C1,C2,C3,Assembly,Full,Comparator}.lean (LEAN_PATH = scratch olean + lake-packages-25730c7c)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1-g-ee44f55667/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/ghe-decomp/checks/Types.lean`
+- `/tmp/ghe-decomp/checks/C1.lean`
+- `/tmp/ghe-decomp/checks/C2.lean`
+- `/tmp/ghe-decomp/checks/C3.lean`
+- `/tmp/ghe-decomp/checks/Assembly.lean`
+- `/tmp/ghe-decomp/checks/Full.lean`
+- `/tmp/ghe-decomp/checks/Comparator.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Contract.lean has sha256 c966f51e..., identical to the workspace Contract.lean and Submission.lean.
+
+Mathlib facts used (paths under mathlib/Mathlib):
+- Measure.support_mem_ae / measure_compl_support (MeasureTheory/Measure/Support.lean:198/202).
+- withDensity_absolutelyContinuous :146, restrict_withDensity :215, ae_withDensity_iff' :291 and lintegral_withDensity_eq_lintegral_mul₀ :458, all in MeasureTheory/Measure/WithDensity.lean.
+- ae_restrict_mem₀ (Measure/Restrict.lean:637) and Measure.restrict_congr_set (:104).
+- ae_eq_of_subset_of_measure_ge (Measure/Basic.lean:332).
+- Measure.addHaar_sphere_of_ne_zero (Measure/Lebesgue/EqHaar.lean:519). It has no Nontrivial assumption, so it covers n = 0.
+- ofReal_integral_eq_lintegral_ofReal :739 and integral_eq_lintegral_of_nonneg_ae :515 (Integral/Bochner/Basic.lean). The latter needs no integrability, so step (1b) is not needed.
+- setLIntegral_mono_ae, setLIntegral_mono', setLIntegral_const, setLIntegral_indicator and lintegral_inter_add_sdiff (Integral/Lebesgue/Basic.lean). lintegral_inter_add_diff is a deprecated alias of the last, deprecated 2026-06-03.
+- ENNReal.toReal_le_of_le_ofReal (Basic/ENNReal/Real.lean:283).
+- measure_mono_ae (OuterMeasure/AE.lean:309).
+
+DAG search:
+- No node states 'μ-a.e. point lies in V.support', a weight-versus-Hausdorff density comparison, or the closed-ball/open-ball lintegral conversion. The new children therefore get fresh names.
+- rsod_weight_closedBall_eq_ofReal_integral (accepted) would give step (1b) but is unnecessary.
+- hausdorff_carrier_diff_support_null and dohr_lmo_dema_weight_restrict_withDensity (both accepted) do not fit: U is arbitrary, so V.support need not be measurable.
+- allard52_cft_graph_map_sqrt_two is accepted (candidate cdb88b48) with exactly the needed type, so it is reused byte-identically.
+- The prefix tdo_ghe_ has no match in the DAG, nodes, project, simongmt, Mathlib or git history.
+
+The book (chapter-05.txt:958-971) bounds the ∫ over B_{ησ}(τ) ∩ graph f with the area formula and θ <= 2, and the remainder with (3) and (4). The children and the assembly follow the supplied formalized version of this argument.
+
+Lean: all child types and the parent type elaborate. The three new children are fully proved, with standard axioms only. The parent is assembled from the children plus the two sibling types with no additional sorry. Comparator-style exact-type checks pass.

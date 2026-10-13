@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65b599db20fa750ddb81dbc2f84942e77773253357efd88ffa3703cdee1a2458",
+  "git_delta": {
+    "base_commit": "949117079b001523313f6f59fdbf32d0e767b7f6",
+    "candidate_commit": "493b3e1b30ec5126b2b9d7f472b86f71c28e01d5",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mvk_integral_ray_fubini",
+    "diff_sha256": "7b1842b70b72420806dc78c64c2c60914b311402812d776d124aa99fa21e1d9c",
+    "source_sha256": "dd16d78e9fee4c47f4c05262fda6794a55083d7de0043da016734b6c30fe792f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mvk_integral_ray_fubini",
+      "statement": "∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 ≤ t → Continuous ρ → (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ 1 h → ∫ z, ρ z * h (x₀ + t • z) = (∫ z, ρ z) * h x₀ + ∫ σ in (0 : ℝ)..t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

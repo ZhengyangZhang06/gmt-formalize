@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "694ca635abc7b2e4724bad938c1140f114a326e63b4b3bdf6f14cf8a0e4a2859",
+  "git_delta": {
+    "base_commit": "cb7637f6e8683fbfddfbda55e8740315724d4a71",
+    "candidate_commit": "bee03434612e27f699c160d7f541428df7b7094f",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "acef2745c26f7a71d8911c4ce4cb40505512b79b218762e99245262a169da464",
+    "source_sha256": "aafc086b89ad74b0f45796ff1d211edffdce15f31fc6bd12635db281603439d7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.affine_approximation_lemma",
+      "statement": "AffineApproximationLemma",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

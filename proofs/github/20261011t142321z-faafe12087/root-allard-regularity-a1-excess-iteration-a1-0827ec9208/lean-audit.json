@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3188bdb183944c06dd67cc10251fa1315656efc3d78634191eb7d3f9ade21684",
+  "git_delta": {
+    "base_commit": "6fcebf589e4b50d8e497c82043ca9f6dd12c04ec",
+    "candidate_commit": "7b2ff6f38d346fe0419f6da812b60ae995adbddc",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_excess_iteration",
+    "diff_sha256": "3703fb2d28caf37df3373b6d88f55e246514069a3e71ab4571fdb3e7f1f5961d",
+    "source_sha256": "0a8f573a221aef1d0b6a513c52bcd9251c14b45d35e06b9b6fca1e71ad3198bc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_excess_iteration",
+      "statement": "TiltExcessDecayTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₁ C : ℝ, 0 < δ₁ ∧ 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ), ∀ σ : ℝ, 0 < σ → σ ≤ δ * ρ / 2 → ∀ S₀ : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S₀ = n → ∃ S : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S = n ∧ hsNormSq (S.starProjection - S₀.starProjection) ≤ C * V.tiltExcessStar H p δ ξ σ S₀ ∧ ∀ s : ℝ, 0 < s → s ≤ σ → V.tiltExcess ξ s S ≤ C * (s / σ) ^ (2 * (1 - n / p)) * V.tiltExcessStar H p δ ξ σ S₀",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25ab0935b66a528de3215031d465704d4e88a4b96e09dd9c5a9aafcfd48e3109",
+  "git_delta": {
+    "base_commit": "efffe0ddd59d01d62db9513197144890ea00674e",
+    "candidate_commit": "30c4826343da700abe3229708fa2dfbd8274e920",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "poincare_ball_double_integral_exhaustion",
+    "diff_sha256": "239a2497c9764d47e415f90a339251f66b7efa0fd2919a0af3985658d79a3f08",
+    "source_sha256": "07bd4eae2036cc2b07c2347f7f2a5f80b1ae65c97045ac6810be308b1f4527c6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.poincare_ball_double_integral_exhaustion",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0∞), AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) 1)) → (∀ r : ℝ, 0 < r → r < 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ K) → ∫⁻ x in ball (0 : Rn n) 1, ∫⁻ y in ball (0 : Rn n) 1, ‖f x - f y‖ₑ ^ 2 ≤ K",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

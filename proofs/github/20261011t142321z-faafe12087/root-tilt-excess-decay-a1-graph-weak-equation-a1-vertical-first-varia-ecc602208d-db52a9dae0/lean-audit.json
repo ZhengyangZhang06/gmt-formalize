@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "429caa7b75c8cfaf5547eccf63557d4539a7df8a45f30c2f88d6b7fa3f4a698e",
+  "git_delta": {
+    "base_commit": "c81e5430712f6ad9366aa423c7fa5e93522ba7a2",
+    "candidate_commit": "0faee52e83411d14faabbc03820c7389ca36bc27",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_vfv_divM_smul_const_eq_inner",
+    "diff_sha256": "d39eacceb146aeadfad6988735204e8e2271e788bcbc29482a027373fa3c0f56",
+    "source_sha256": "13567495095e5dc1b694a3b6f5e6341e6e9d03ddb71b87b247a61a03efd47240",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_vfv_divM_smul_const_eq_inner",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (f : Amb n ℓ → ℝ) (e g x : Amb n ℓ), HasFDerivAt f (innerSL ℝ g) x → V.divM (fun y => f y • e) x = inner ℝ (V.tangentProj x e) (V.tangentProj x g)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

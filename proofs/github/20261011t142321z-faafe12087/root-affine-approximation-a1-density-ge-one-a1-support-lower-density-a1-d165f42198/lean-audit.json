@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dcedc40e324232444726b415e65aa94d48545c93d39b0c707c666159827146c5",
+  "git_delta": {
+    "base_commit": "0a9d2298c793423d57d58fbc188d6a2ebc98dd9b",
+    "candidate_commit": "96eb2ef9811d4b8c17fd969b7039b97b106b711a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aal_dge1_support_density_lower_bound",
+    "diff_sha256": "b1342d98b7d6aa2a5c1c81adc7fd7c3027624979725d8ab115ef32ec89620bde",
+    "source_sha256": "b201ed473d806d608df765a3357e71bf3707f981864fe0aeb4c2b67a07c5e245",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_dge1_support_density_lower_bound",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (ω r : ℝ) (c : ℝ → ℝ), 0 < ω → 0 < r → y ∈ μ.support → μ (closedBall y (2 * r)) < ⊤ → (∀ t : ℝ, 0 < t → t ≤ r → 0 ≤ c t) → Tendsto c (𝓝[>] 0) (𝓝 0) → (∀ᵐ x ∂μ, x ∈ ball y r → ∀ t : ℝ, 0 < t → t ≤ r → ω ≤ (1 + c t) * ((μ (closedBall x t)).toReal / t ^ n) + c t) → ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (ω * s ^ n)) ≤ μ (closedBall y s)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

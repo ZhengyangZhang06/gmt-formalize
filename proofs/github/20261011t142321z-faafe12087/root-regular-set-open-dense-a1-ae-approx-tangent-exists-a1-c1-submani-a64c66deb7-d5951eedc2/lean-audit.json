@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7b9bf313c7d1a41c20ee46f8c68a6f610050f303d8a6a879446d69654d6aa6af",
+  "git_delta": {
+    "base_commit": "4426c5c3be12ae0223e04eeca9a50384f05dc92e",
+    "candidate_commit": "f5fa839759c7298229b30704ee1bacf4b32f2a99",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_isC1Submanifold_measurableSet",
+    "diff_sha256": "50739ba37a170d4f759fa6fa2c040406bd7990894ee43fbe537db13646a521c1",
+    "source_sha256": "f144d1ae2ffdb67f332930d2b6cf9209d127b3220ead3c8ed88586a0c78e1d8d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_isC1Submanifold_measurableSet",
+      "statement": "∀ (m N : ℕ) (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → MeasurableSet S",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
