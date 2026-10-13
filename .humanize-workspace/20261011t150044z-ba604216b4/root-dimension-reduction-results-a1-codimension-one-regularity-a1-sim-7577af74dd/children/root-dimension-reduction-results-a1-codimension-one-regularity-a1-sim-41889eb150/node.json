@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.subspace_ball_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "depth": 4,
+  "title": "H^m of a ball in an m-dimensional linear subspace (parent B10c)",
+  "statement": "The m-dimensional Hausdorff measure of a ball in an m-dimensional subspace. Data: P, m ∈ ℕ; a linear subspace H₀ ⊆ ℝ^P with dim H₀ = m (Module.finrank ℝ H₀ = m); ρ > 0. Conclusion: H^m(H₀ ∩ B_ρ(0)) = ω_m·ρ^m, i.e. μHE[m](H₀ ∩ ball 0 ρ) = unitBallVolume m · ofReal(ρ^m), where unitBallVolume m is the Lebesgue measure of the unit ball of ℝ^m.",
+  "lean_statement": "∀ (P m : ℕ) (H₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ H₀ = m → ∀ ρ : ℝ, 0 < ρ → μHE[m] ((H₀ : Set (Euclid P)) ∩ ball 0 ρ) = unitBallVolume m * ENNReal.ofReal (ρ ^ m)",
+  "lean_name": "codim1_subspace_ball_euclideanHausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-41889eb150-a1"
+}

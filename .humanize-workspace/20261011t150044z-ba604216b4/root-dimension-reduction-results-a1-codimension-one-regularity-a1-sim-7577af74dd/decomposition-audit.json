@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '1,220p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|addHaar_ball_of_pos|aestronglyMeasurable|hausdorffMeasure_image_le",
+        "contDiff_infty|ContDiff.*infty|coe_top|infty.*iff|smooth.*analytic|analytic.*smooth",
+        "codim1_density_one_regular_local_rep|codim1_cone_offvertex_unit_multiplicity_rep|codim1_minimizing_piece_area_comparison|codim1_deformation_minimal_hypercone_is_plane|codim1_subspace_ball_euclideanHausdorff",
+        "theorem .*simons|theorem .*Simons|theorem .*Allard|def .*Allard|theorem .*nonlinear|def .*nonlinear|IsUnit \\(fun|Matrix.of",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/simons-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/simons-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/decomposition-v1.json",
+        "/tmp/simons-independent-audit/Types.lean",
+        "/tmp/simons-independent-audit/Assembly.lean",
+        "/tmp/simons-independent-audit/unit_orientation_dual.lean",
+        "/tmp/simons-independent-audit/vanish_off_support.lean",
+        "/tmp/simons-independent-audit/cone_pullback_identity.lean",
+        "/tmp/simons-independent-audit/orientation_sign.lean",
+        "/tmp/simons-independent-audit/chart_tangent_space.lean",
+        "/tmp/simons-independent-audit/bilipschitz_measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match the pins; the frozen and working contracts are byte-identical. All eleven propositions independently elaborate with autoImplicit=false. Every name is bare; the five new names have no competing DAG reservation or occurrence in another decomposition. The six reused types exactly match their accepted contracts; independently recompiling their immutable candidates confirms only propext, Classical.choice and Quot.sound as target axioms. Dependencies are acyclic and correctly directed. The assembly independently kernel-checks the exact selected parent type from four proposed contracts and the inherited oriented_piece_mass obligation; that existing obligation remains unaccepted and is not treated as an accepted child. The split is appropriate: the children establish local structure, global representation, area comparison, geometric flatness and the required ball measure. The snapshot supplies the stated measure identities and Appendix B algebra; it does not supply Allard regularity. The latter is explicitly cited with its hypotheses checked in the supplied proof. ContDiff at the coerced ℕ∞ top means smoothness. No child contains a matrix-unit construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_one_local_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type includes every stated hypothesis and matches all four conclusions. Proper charts justify relative closedness and the graph-density estimate; admissible constant-covector tests force the nonzero integer multiplicity to have absolute value one. The two support inclusions, orientation restriction and finiteness are proved without circular reliance on a mass-identity theorem."
+    },
+    {
+      "key": "offvertex_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the global representation and cone conclusions, including the empty case. The proof establishes compatible local orientations, dilation invariance, finite area through a convergent dyadic-annulus sum, and representation away from zero. Integer multiplicity and m≥1 justify vertex negligibility and the final dominated-convergence passage."
+    },
+    {
+      "key": "area_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The additional lower mass bound is explicit in both prose and Lean and is supplied by the parent assembly. The proof constructs admissible diffeomorphic competitors, checks integer multiplicity, boundary and compact support, bounds competitor mass by area, and cancels a finite common exterior part. The empty-support case is covered."
+    },
+    {
+      "key": "hypercone_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All geometric and deformation hypotheses appear in the exact type. The proof derives stationarity, verifies the regularity theorem's hypotheses, constructs a smooth normal, obtains stability, and carries out the Simons identity, cutoff and exponent arguments before proving that the components form one punctured plane. These steps agree with [Simon’s text, Chapter 5 §7 and Appendix B](https://web.stanford.edu/class/math285/ts-gmt.pdf). It neither assumes the selected current theorem nor merely proposes a future proof search."
+    },
+    {
+      "key": "subspace_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the normalized Hausdorff-measure statement. An isometry onto the subspace, isometry invariance and positive-radius Haar scaling prove it. The cited scaling theorem also covers m=0."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and passes independent compilation and axiom checks. The coordinate expansion and squared-minor identity establish the norm bound and both properties of the continuous linear dual map, including the degenerate dimensions."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and passes independent compilation and axiom checks. Compact support lies in the zero region, and a finite smooth partition of unity reduces the evaluation to vanishing pieces. No openness assumption on U is needed."
+    },
+    {
+      "key": "cone_pullback_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and passes independent compilation and axiom checks. The proof verifies the currentEval branch and pulled-back test-form domain, then derives the exact inverse-dilation factor by multilinearity."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and passes independent compilation and axiom checks. The orthogonal change-of-basis determinant is ±1, giving a sign independent of the tested covector. The argument includes n=0."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and passes independent compilation and axiom checks. Bounded parameter curves prove one inclusion; properness gives inverse continuity, and the derivative remainder estimate puts every tangent velocity in the closed derivative range."
+    },
+    {
+      "key": "bilipschitz_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and passes independent compilation and axiom checks. Hausdorff image bounds applied to the map and its inverse give both inequalities after normalization. Arbitrary subsets and the allowed zero upper constant are handled by the stated hypotheses."
+    }
+  ],
+  "required_changes": []
+}

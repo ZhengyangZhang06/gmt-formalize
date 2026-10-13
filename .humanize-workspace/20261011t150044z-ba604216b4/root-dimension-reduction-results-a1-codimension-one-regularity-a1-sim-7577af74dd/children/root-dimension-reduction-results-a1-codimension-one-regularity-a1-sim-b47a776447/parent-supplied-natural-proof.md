@@ -1,0 +1,167 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent step B2 (B2a–B2e: local structure of M at a regular point of density one) of the supplied proof of codim1_simons_regular_cone_density, written for an arbitrary open U. Book: Simon 7.4.1 (reg T; contract regularSet), Ch. 3, 1.8(2) (density of a set with a tangent plane, chapter-03.txt lines 298–316), Ch. 6, 2.5 (M_W, chapter-06.txt line 231) and 2.11 (spt T, line 299); Ch. 2, §4, 4.1 (local representations, chapter-02.txt line 854).
+Departure from the parent text, stated explicitly. The parent's B2c–B2d get M_W(T) = |m_y|·H^m(M_y ∩ W) from oriented_piece_mass. That declaration is a sibling of the parent node: it is unaccepted and owned by another parent, so it cannot be a dependency of this node. The proof below needs only a lower bound for M_{B_s(y)}(T) (step 4), obtained by testing T with one constant covector times a bump function. Membership of M_y ∩ B_ρ(y) in spt T (the last bullet of B2d) is shown in step 6b by positivity of T on such forms, not through densities.
+
+Reused accepted declarations (sibling subproblems with identical frozen types):
+- unit_orientation_dual (Submission.dor_ims_unitOrientation_dual): there is a continuous linear L : Λ_m(ℝ^P) → Λ^m(ℝ^P) such that every unit orientation ξ of a subspace satisfies (a) |ξ(α)| ≤ |α| for all α, (b) |L(ξ)| ≤ 1, (c) ξ(L(ξ)) = 1.
+- chart_tangent_space (Submission.chart_tangentSpace_eq_range_fderiv): if (V, W, ψ) satisfies the chart clauses of IsEmbeddedSubmanifold r d N with r ≥ 1, then tangentSpace N (ψ v) = range Dψ(v) for every v ∈ V.
+- bilipschitz_measure (Submission.dimred_rpd_bilipschitz_image_measure): if E ⊆ ℝ^n, c₁ > 0, c₂ ≥ 0 and c₁|a − b| ≤ |χ(a) − χ(b)| ≤ c₂|a − b| for a, b ∈ E, then c₁ⁿ·Lⁿ(E) ≤ Hⁿ(χ(E)) ≤ c₂ⁿ·Lⁿ(E).
+
+Notation.
+- H^m := μHE[m]. On ℝ^m = Euclid m it is Lebesgue measure L^m, and it is invariant under isometries.
+- ω_m := unitBallVolume m = L^m(B_1(0)) ∈ (0, ∞), so L^m(B_r(0)) = ω_m r^m. B_s(x) := ball x s.
+- Λ^m := Covector (Euclid P) m and Λ_m := MultiVector P m. ⟨α, ξ⟩ := ξ(α). |α| := covectorEuclideanNorm α, a norm on Λ^m.
+- M_W(T) := T.massOn W = sup{ofReal T(ω) : ω ∈ 𝒟^m(U), tsupport ω ⊆ W, |ω(x)| ≤ 1 for all x}. Such ω are admissible for W.
+- T vanishes on W if T(ω) = 0 whenever tsupport ω ⊆ W. Z(T) is the union of the open W with closure W compact and contained in U on which T vanishes; spt T = U ∖ Z(T).
+- A chart of an embedded C¹ m-submanifold N at w is a triple (V, W, ψ) as in the definition of IsEmbeddedSubmanifold 1 m N with w ∈ W.
+
+Facts on embedded C¹ submanifolds (N an embedded C¹ m-submanifold of ℝ^P).
+(F1) Charts are closed embeddings. Let (V, W, ψ) be a chart of N.
+ (i) If v_j ∈ V and ψ(v_j) → z ∈ W, then a subsequence of (v_j) converges to some v ∈ V with ψ(v) = z. Indeed K := {z} ∪ {ψ(v_j) : j} is a compact subset of W, so V ∩ ψ⁻¹(K) is compact and contains every v_j; a subsequence converges in it, and ψ(v) = z by continuity of ψ on the open set V.
+ (ii) Hence W ∩ N = ψ(V) is closed in W, and ψ⁻¹ : W ∩ N → V is continuous: if ψ(v_j) → ψ(v), every subsequence of (v_j) has a further subsequence converging to some v' with ψ(v') = ψ(v), and v' = v by injectivity. So ψ(V') is relatively open in N for every open V' ⊆ V.
+(F0) N is Borel. By (F1)(ii) every w ∈ N has an open W_w ∋ w with W_w ∩ N closed in W_w. By second countability countably many W_{w_k} cover N, and N = ⋃_k (W_{w_k} ∩ N) is a countable union of intersections of an open and a closed set.
+(F2) Open pieces. Let O ⊆ ℝ^P be open. Then N ∩ O is an embedded C¹ m-submanifold, and for w ∈ N ∩ O, tangentSpace(N ∩ O, w) = tangentSpace(N, w) = range Dψ(ψ⁻¹(w)) for every chart (V, W, ψ) of N at w. This is an m-dimensional linear subspace.
+ Proof. (V ∩ ψ⁻¹(O), W ∩ O, ψ) is a chart of N ∩ O at w:
+ - V ∩ ψ⁻¹(O) is open, since ψ is continuous on the open set V;
+ - ψ(V ∩ ψ⁻¹(O)) = W ∩ O ∩ N;
+ - for compact K ⊆ W ∩ O, (V ∩ ψ⁻¹(O)) ∩ ψ⁻¹(K) = V ∩ ψ⁻¹(K) is compact;
+ - C¹-smoothness, injectivity and injectivity of Dψ restrict.
+ Both charts have the same derivative at ψ⁻¹(w), so chart_tangent_space gives both tangent-space identities. range Dψ(ψ⁻¹(w)) has dimension m because Dψ(ψ⁻¹(w)) is injective on ℝ^m.
+(F3) Positivity. For w ∈ N and r > 0, H^m(N ∩ B_r(w)) > 0.
+ Proof. Let (V, W, ψ) be a chart at w, v₀ := ψ⁻¹(w) and A := Dψ(v₀). A is injective, so 2c|a| ≤ |Aa| for some c > 0. By continuity of Dψ choose δ > 0 with closedBall(v₀, δ) ⊆ V, ‖Dψ(v) − A‖ ≤ c on B_δ(v₀), and ψ(B_δ(v₀)) ⊆ B_r(w). For a, b ∈ B_δ(v₀) the mean value inequality for ψ − A gives |ψ(a) − ψ(b) − A(a − b)| ≤ c|a − b|. Hence c|a − b| ≤ |ψ(a) − ψ(b)| ≤ (‖A‖ + c)|a − b|. By bilipschitz_measure, H^m(ψ(B_δ(v₀))) ≥ c^m·L^m(B_δ(v₀)) > 0, and ψ(B_δ(v₀)) ⊆ N ∩ B_r(w).
+(F4) Density one (Simon Ch. 3, 1.8(2), C¹ case). For w ∈ N, H^m(N ∩ B_s(w))/(ω_m s^m) → 1 as s ↓ 0.
+ Proof. Set-up.
+ - Let (V, W, ψ) be a chart at w, v₀ := ψ⁻¹(w), A := Dψ(v₀) and Q := range A (dimension m).
+ - Let p be the orthogonal projection onto Q, p^⊥ := id − p, and ι : ℝ^m → ℝ^P a linear isometry with range Q.
+ - F := ι⁻¹∘p∘(ψ − w) : V → ℝ^m is C¹ with DF(v₀) = ι⁻¹∘A invertible. By the inverse function theorem there are open V₁ ∋ v₀ (V₁ ⊆ V) and G ∋ 0 such that F : V₁ → G is a C¹ diffeomorphism.
+ - Put u := p^⊥∘(ψ − w)∘F⁻¹ : G → Q^⊥ and g(a) := w + ι(a) + u(a). Then ψ∘F⁻¹ = g on G, u is C¹, u(0) = 0, and Du(0) = 0 because A has range Q.
+ - By (F1)(ii), ψ(V₁) = N ∩ O₁ for an open O₁ ∋ w. Choose s₁ > 0 with B_{s₁}(w) ⊆ O₁ and closedBall(0, s₁) ⊆ G.
+ - For 0 < s < s₁ put L(s) := sup{‖Du(a)‖ : |a| ≤ s}. Then L(s) → 0 as s ↓ 0.
+ Estimates for 0 < s < s₁.
+ - For |a|, |b| ≤ s: ι(a) − ι(b) ∈ Q is orthogonal to u(a) − u(b) ∈ Q^⊥, and |u(a) − u(b)| ≤ L(s)|a − b|. So |a − b| ≤ |g(a) − g(b)| ≤ (1 + L(s))|a − b|, and |u(a)| ≤ L(s)|a|.
+ - N ∩ B_s(w) = g(E_s) with E_s := {a ∈ B_s(0) : |a|² + |u(a)|² < s²}. A point of N ∩ B_s(w) lies in ψ(V₁) = g(G), and |g(a) − w|² = |a|² + |u(a)|², which forces a ∈ E_s. Conversely g(E_s) ⊆ ψ(V₁) ⊆ N.
+ - B_{s/√(1+L(s)²)}(0) ⊆ E_s ⊆ B_s(0).
+ - bilipschitz_measure (χ := g, E := E_s, c₁ = 1, c₂ = 1 + L(s)) gives L^m(E_s) ≤ H^m(N ∩ B_s(w)) ≤ (1 + L(s))^m L^m(E_s).
+ - Hence (1 + L(s)²)^{−m/2} ≤ H^m(N ∩ B_s(w))/(ω_m s^m) ≤ (1 + L(s))^m, and both bounds tend to 1.
+
+Proof.
+1. (Unfolding y ∈ reg T.) The definition of regularSet gives:
+ - ρ_y > 0 with B_{ρ_y}(y) ⊆ U, and m_y ∈ ℤ ∖ {0};
+ - an embedded C¹ m-submanifold M_y ∋ y with an orientation ξ_y: ξ_y is continuous on M_y, and for each w ∈ M_y, ξ_y(w) is a unit orientation of a subspace Q_w with (Q_w : Set) = tangentSpace(M_y, w);
+ - H^m(M_y ∩ K) < ∞ for every compact K ⊆ B_{ρ_y}(y);
+ - (R) T(ω) = m_y ∫_{M_y} ⟨ω(x), ξ_y(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_{ρ_y}(y).
+ For such ω the integrand is integrable on M_y. M_y is Borel by (F0). x ↦ ξ_y(x)(ω(x)) is continuous on M_y and vanishes off the compact set tsupport ω ⊆ B_{ρ_y}(y). It is bounded by |ω(x)| ≤ sup|ω| (unit_orientation_dual (a)), and H^m(M_y ∩ tsupport ω) < ∞.
+2. (Choice of ρ₀.) Let (V, W, ψ) be a chart of M_y at y. By (F1)(ii), W ∩ M_y is closed in W. Choose ρ₀ > 0 with 2ρ₀ < ρ_y and B_{2ρ₀}(y) ⊆ W. Then:
+ - B_{ρ₀}(y) ⊆ U;
+ - closedBall(y, ρ₀) is a compact subset of B_{ρ_y}(y), so c₀ := H^m(M_y ∩ closedBall(y, ρ₀)) < ∞;
+ - for every ρ ∈ (0, ρ₀], M_y ∩ B_ρ(y) is relatively closed in B_ρ(y).
+3. (Dual covectors.) Let L be the map of unit_orientation_dual for (P, m). For w ∈ M_y, |L(ξ_y(w))| ≤ 1 and ξ_y(w)(L(ξ_y(w))) = 1. For fixed β ∈ Λ^m, x ↦ ξ_y(x)(β) is continuous on M_y, because evaluation at β is a continuous linear functional on Λ_m.
+4. (|m_y| = 1.) Fix ε ∈ (0, 1). Put β₀ := L(ξ_y(y)) and β := sgn(m_y)·β₀, so |β| ≤ 1. By step 3 there is s₀ ∈ (0, ρ₀] with ξ_y(x)(β₀) ≥ 1 − ε for all x ∈ M_y ∩ B_{s₀}(y).
+ Let 0 < s < s₀ and η ∈ (0, 1).
+ - Choose a smooth φ : ℝ^P → [0, 1] with φ = 1 on closedBall(y, (1 − η)s) and tsupport φ ⊆ B_s(y).
+ - ω := φ·β is smooth with compact tsupport ω ⊆ B_s(y) ⊆ U, so ω ∈ 𝒟^m(U). Also |ω(x)| = φ(x)|β| ≤ 1, so ω is admissible for B_s(y) and ofReal(T(ω)) ≤ M_{B_s(y)}(T).
+ - By (R), T(ω) = m_y·sgn(m_y) ∫_{M_y} φ·ξ_y(β₀) dH^m = |m_y| ∫_{M_y} φ(x) ξ_y(x)(β₀) dH^m(x).
+ - The integrand is ≥ 0 on M_y: φ = 0 off B_s(y), and ξ_y(β₀) ≥ 1 − ε > 0 on M_y ∩ B_s(y). It is ≥ 1 − ε on M_y ∩ closedBall(y, (1 − η)s).
+ - Hence M_{B_s(y)}(T) ≥ |m_y|(1 − ε)·H^m(M_y ∩ closedBall(y, (1 − η)s)).
+ As η ↓ 0 the closed balls increase to B_s(y). By continuity of measure from below,
+ (4.1) M_{B_s(y)}(T) ≥ |m_y|(1 − ε)·H^m(M_y ∩ B_s(y)) for 0 < s < s₀.
+ Divide by ω_m s^m ∈ (0, ∞) and let s ↓ 0:
+ - the left side tends to 1 by the hypothesis HasMassDensity T y 1;
+ - the right side tends to |m_y|(1 − ε) by (F4) with N := M_y and w := y.
+ So |m_y|(1 − ε) ≤ 1 for every ε ∈ (0, 1), and |m_y| ≤ 1. Since m_y is a nonzero integer, m_y ∈ {1, −1}.
+5. (The orientation.) Put ξ(x) := m_y·ξ_y(x) = ±ξ_y(x).
+ - ξ is continuous on M_y.
+ - For w ∈ M_y, ξ(w) is a unit orientation of Q_w, since IsUnitOrientationOf allows either sign. Hence |L(ξ(w))| ≤ 1 and ξ(w)(L(ξ(w))) = 1.
+ - (R) becomes (R') T(ω) = ∫_{M_y} ⟨ω, ξ⟩ dH^m whenever tsupport ω ⊆ B_{ρ_y}(y).
+6. (Support.) Fix ρ ∈ (0, ρ₀] and put S := spt T ∩ B_ρ(y). We show S = M_y ∩ B_ρ(y).
+ (6a) S ⊆ M_y. Let x ∈ B_ρ(y) ∖ M_y.
+ - By step 2 there is r > 0 with closedBall(x, r) ⊆ B_ρ(y) and closedBall(x, r) ∩ M_y = ∅.
+ - If ω ∈ 𝒟^m(U) and tsupport ω ⊆ B_r(x), then ω = 0 on M_y, so T(ω) = 0 by (R').
+ - B_r(x) is open with compact closure closedBall(x, r) ⊆ U. So B_r(x) ⊆ Z(T) and x ∉ spt T.
+ (6b) M_y ∩ B_ρ(y) ⊆ S. Let w ∈ M_y ∩ B_ρ(y) and suppose w ∈ Z(T): w ∈ O for an open O with compact closure in U on which T vanishes.
+ - Put β_w := L(ξ(w)). By continuity choose r > 0 with B_r(w) ⊆ O ∩ B_ρ(y) and ξ(x)(β_w) ≥ 1/2 for x ∈ M_y ∩ B_r(w).
+ - Take a smooth φ : ℝ^P → [0, 1] with φ = 1 on closedBall(w, r/2) and tsupport φ ⊆ B_r(w), and ω := φ·β_w ∈ 𝒟^m(U).
+ - tsupport ω ⊆ O, so T(ω) = 0.
+ - By (R'), T(ω) = ∫_{M_y} φ·ξ(β_w) dH^m. The integrand is ≥ 0 on M_y and ≥ 1/2 on M_y ∩ B_{r/2}(w), so T(ω) ≥ ½·H^m(M_y ∩ B_{r/2}(w)) > 0 by (F3).
+ This contradiction shows w ∉ Z(T). As w ∈ B_ρ(y) ⊆ U, w ∈ spt T.
+7. (Conclusions for ρ ∈ (0, ρ₀].)
+ (i) By step 6, S = M_y ∩ B_ρ(y). By (F2) with O := B_ρ(y), S is an embedded C¹ m-submanifold and tangentSpace(S, w) = tangentSpace(M_y, w) for w ∈ S.
+ (ii) ξ is continuous on S ⊆ M_y. For w ∈ S, ξ(w) is a unit orientation of Q_w with (Q_w : Set) = tangentSpace(M_y, w) = tangentSpace(S, w). So ξ is an orientation of S (IsOrientation m S ξ).
+ (iii) H^m(S) ≤ H^m(M_y ∩ closedBall(y, ρ₀)) = c₀ < ∞.
+ (iv) Let ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_ρ(y). Then ω(x) = 0 for every x ∈ M_y ∖ B_ρ(y), so the integrand of (R') vanishes on M_y ∖ S. Hence T(ω) = ∫_{M_y} ⟨ω, ξ⟩ dH^m = ∫_S ⟨ω(x), ξ(x)⟩ dH^m(x).
+ Together with ρ₀ > 0 and B_{ρ₀}(y) ⊆ U (step 2), this proves the statement. ∎
+
+## Key steps
+
+1. Unfold y ∈ reg T: T = m_y[[M_y]] on B_{ρ_y}(y), with M_y an embedded C¹ submanifold oriented by a continuous ξ_y. Charts are closed embeddings, so M_y ∩ B_ρ(y) is relatively closed in B_ρ(y) for ρ ≤ ρ₀.
+2. Testing T with φ·sgn(m_y)·L(ξ_y(y)) gives M_{B_s(y)}(T) ≥ |m_y|(1−ε)·H^m(M_y ∩ B_s(y)). Density one of T and of C¹ submanifolds (graph over the tangent plane, bilipschitz_measure) forces |m_y| = 1.
+3. T vanishes off M_y inside B_ρ(y). Bump forms φ·L(ξ(w)), with positivity of H^m on open pieces, put every w ∈ M_y ∩ B_ρ(y) in spt T. So spt T ∩ B_ρ(y) = M_y ∩ B_ρ(y).
+4. Open pieces of embedded C¹ submanifolds keep their charts and tangent spaces (chart_tangent_space). So ξ = m_yξ_y orients spt T ∩ B_ρ(y), which has finite H^m-measure and represents T on B_ρ(y).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (IMRep, IsIntegerMultiplicity, IsMinimizingIn, HasMassDensity, IsConeCurrent, IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, regularSet, unitBallVolume)`
+- `grep -n 'def support|def zeroRegion|isOpen_zeroRegion|def massOn|structure GeometricCurrentOn|abbrev Covector' simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass,Forms}.lean`
+- `grep -n 'theorem|def' simongmt/Poincare/SimonGMT/AppendixB/{SimonsInequalities,ConeDefect,LagrangeIdentity}.lean and Chapter02/{SecondFundamentalForm,SecondFundamentalFormCalculus,SubmanifoldCalculus,AreaFormula}.lean`
+- `sed -n 1,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n 'theorem addHaar_ball_of_pos|theorem ContinuousOn.aestronglyMeasurable|theorem setLIntegral_one|measure_sdiff_null' Mathlib`
+- `python3 scans of dag.json: 518 nodes by status; children of codimension_one_regularity; accepted nodes whose statements mention IsConeCurrent, regularSet or HasMassDensity; statuses, frozen types and candidate commits of the 6 reused names; status of codim1_massOn_eq_lintegral_of_oriented_rep (decomposing)`
+- `runtime.py of flow gmt-claude-b888e19cffb1: _solve_children, _existing_lean_name_problem, _wait_for_accepted_dependencies, _overlay_accepted_children`
+- `git grep over all 2770 refs for the 5 new names (no match); git grep 'PseudoMetrizableSpace (MultiVector' in accepted branches`
+- `lean -DautoImplicit=false /tmp/simons-split/check/Types2.lean; lean -DautoImplicit=false /tmp/simons-split/check/Assembly2.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `book: chapter-B.txt 1-282; chapter-02.txt 1162-1440; chapter-05.txt 1290-1380; chapter-06.txt 400-440 and 770-870; chapter-03.txt 290-330; chapter-07-source.txt 900-1010 and 1256-1300`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalForm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-ori-0059e6635e/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/simons-split/check/Types2.lean`
+- `/tmp/simons-split/check/Assembly2.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…), so the selected frozen type and the 6 reused types are unchanged.
+Library.
+- SimonGMT supplies GeometricCurrentOn, support = U \ zeroRegion with zeroRegion open, and massOn (Chapter06).
+- SimonGMT supplies the Appendix B algebra: simonsDefect_eq_sum_skew, four_mul_radialSkewSum_le, cone_simonsDefect_lower_bound (AppendixB/ConeDefect.lean) and exists_final_exponent (SimonsInequalities.lean).
+- It has only pointwise second-fundamental-form algebra (Chapter02/SecondFundamentalForm.lean): no submanifold curvature field, no Simons identity, no Allard theorem, no nonlinear push-forward. These remain book citations inside hypercone_plane and area_comparison.
+- The snapshot Mathlib has μHE isometry invariance and μHE = volume on Euclid d (Geometry/Euclidean/Volume/Measure.lean), Measure.euclideanHausdorffMeasure_smul₀, and addHaar_ball_of_pos (MeasureTheory/Measure/Lebesgue/EqHaar.lean:445), used by subspace_ball_measure and offvertex_rep.
+DAG.
+- codim1_massOn_eq_lintegral_of_oriented_rep is decomposing (unaccepted) under another parent. It cannot be a child or a child dependency here, so only this node's glue uses it.
+- The six reused names are accepted with byte-identical types. Candidate commits: dor_ims_unitOrientation_dual 9c8432cb0101, dtc_vanish_off_support 44ef61f79e21, cone_current_apply_dilation_pullback 52115c22ec2d, rsdic_unitOrientation_eq_or_eq_neg fe95347baaed, chart_tangentSpace_eq_range_fderiv d626082a69a0, dimred_rpd_bilipschitz_image_measure 0501e07ced47.
+- Overlapping unaccepted nodes cannot be reused: dimred_rpd_submanifold_density_one, dimred_rpd_massOn_eq_mult_measure and imrep_c1_diffeo_pushforward_im. Child sessions may reuse them once accepted.
+- The 5 new codim1_ names are free in dag.json, GMT/, SimonGMT and all 2770 refs.
+Lean.
+- Types2.lean elaborates all 11 child types (exit 0).
+- Assembly2.lean proves the selected frozen type from 4 child types plus oriented_piece_mass as axioms (exit 0). Its axioms are propext, Classical.choice, Quot.sound and those 5.
+- A MultiVector PseudoMetrizableSpace instance workaround from accepted branches was needed and works.
