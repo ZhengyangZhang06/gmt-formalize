@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_family-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+  "depth": 5,
+  "title": "Restrictions of a cycle to sublevel sets with an integrable boundary-mass bound",
+  "statement": "Assume SlicingTheorem. Let P, m ∈ ℕ, U ⊆ ℝ^P open, W ⊂⊂ U (CompactlyContainedOpen W U), and X ∈ D_{m+1}(U) with ∂X = 0 and M_V(X) < ∞ for every V ⊂⊂ U. Let d : ℝ^P → ℝ be L-Lipschitz (L ∈ ℝ≥0) and a < b. Then there are currents A_t ∈ D_{m+1}(U) (t ∈ ℝ) and a measurable g : ℝ → [0, ∞] such that: (i) for every t, A_t is a restriction of X to {x ∈ U : d(x) < t}; (ii) M_W(∂A_t) ≤ g(t) for every t ∈ (a, b); (iii) ∫⁻_{(a,b)} g(t) dt ≤ L · M_W(X).",
+  "lean_statement": "SlicingTheorem → ∀ (P m : ℕ) (U W : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ), IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b → X.boundary = 0 → (∀ V, CompactlyContainedOpen V U → X.massOn V < ∞) → ∃ (A : ℝ → GeometricCurrentOn U (m + 1)) (g : ℝ → ℝ≥0∞), Measurable g ∧ (∀ t, IsRestriction X {x | x ∈ U ∧ d x < t} (A t)) ∧ (∀ t ∈ Ioo a b, (A t).boundary.massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * X.massOn W",
+  "lean_name": "ind_pi_ss_cycle_slice_family",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1",
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.restriction_mass_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.restriction_mass_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-ea88c12991-a1"
+}

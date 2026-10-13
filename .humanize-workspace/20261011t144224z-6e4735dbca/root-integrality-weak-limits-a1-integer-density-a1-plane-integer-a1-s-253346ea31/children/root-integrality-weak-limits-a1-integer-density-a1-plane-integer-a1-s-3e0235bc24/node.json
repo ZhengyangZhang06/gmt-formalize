@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.restriction_mass_le-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+  "depth": 5,
+  "title": "Mass of a restriction is at most the mass of the current on W ⊂⊂ U",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P open, W ⊂⊂ U (CompactlyContainedOpen W U: W open, closure W compact, closure W ⊆ U), A ⊆ ℝ^P, and X, S ∈ D_k(U) such that S is a restriction of X to A (IsRestriction X A S). Then M_W(S) ≤ M_W(X).",
+  "lean_statement": "∀ (P k : ℕ) (U W A : Set (Eucl P)) (X S : GeometricCurrentOn U k), IsOpen U → CompactlyContainedOpen W U → IsRestriction X A S → S.massOn W ≤ X.massOn W",
+  "lean_name": "ind_pi_ss_restriction_massOn_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-3e0235bc24-a1"
+}
