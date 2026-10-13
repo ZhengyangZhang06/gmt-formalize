@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "336ce99846fa9054750610a88d39b74b199be739516c616410e272205c5d3369",
+  "git_delta": {
+    "base_commit": "6050bb529400c6b05f6c893447ce8b263366fdd9",
+    "candidate_commit": "1700209e79fe4f7f6dae1235db56856c60f890ed",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_cp_gradient_bound_ae",
+    "diff_sha256": "fb3354bc8143b8d9239036b704b666dcd1c3e0b770e5ed466980bffc3231f5e5",
+    "source_sha256": "ffb46a2172e1c9bde4dc10690f524c264937c0db26168943d1957d8b3da8ff93",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_cp_gradient_bound_ae",
+      "statement": "(∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (m P : ℕ) (Z : Set (Euclid m)) (F : Euclid m → ℝ) (ψ : Euclid m → Euclid P) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet Z → (∀ y ∈ Z, DifferentiableAt ℝ F y ∧ DifferentiableAt ℝ ψ y) → (∀ y ∈ Z, f (ψ y) = F y) → LipschitzWith L f → ∀ᵐ y ∂volume, y ∈ Z → ∀ e : Euclid m, |fderiv ℝ F y e| ≤ (L : ℝ) * ‖fderiv ℝ ψ y e‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
