@@ -2254,6 +2254,60 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
     · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
   let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
   -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+/-- **Local-to-global gluing** (the partition-of-unity argument of Simon Ch. 6, 2.11).  Suppose
+every point of the open set `O` has an open neighbourhood `B` such that
+`C(ω) = ∫_M ⟨ω(z), ξ(z)⟩ dHᵐ(z)` for every test form `ω` with `spt ω ⊆ B`.  Then the identity
+holds for every `ω ∈ 𝒟ᵐ(ℝᴾ)` with `spt ω ⊆ O`.  Finitely many such `B₁, …, B_N` cover the compact
+set `K = spt ω`.  A smooth partition of unity `ψ₁, …, ψ_N` on `K` subordinate to them splits
+`ω = Σⱼ ψⱼω` into test forms with `spt (ψⱼω) ⊆ Bⱼ`.  Each integrand `⟨ψⱼω, ξ⟩` is continuous on the
+Borel set `M` and bounded by `(sup |ψⱼω|) · 1_K`, which is integrable as `Hᵐ(M ∩ K) < ∞`; so the
+integral is additive over `j`. -/
+theorem Submission.codim1_ovr_partition_glue_rep : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M O : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), IsOpen O → MeasurableSet M → ContinuousOn ξ M → (∀ x ∈ M, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ x ∈ O, ∃ B : Set (Euclid P), IsOpen B ∧ x ∈ B ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ B → C ω = ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) m) z) ∂μHE[m]) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → C ω = ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) m) z) ∂μHE[m] := by
+  intro P m C M O ξ hO hMm hξc hξb hfin hloc ω hωO
+  classical
+  set ω₀ : DifferentialForm (Euclid P) m := (ω : DifferentialForm (Euclid P) m) with hω₀
+  -- `K = spt ω` is compact, and `ω` is smooth
+  set K := tsupport ω₀ with hKdef
+  have hKc : IsCompact K := ω.property.1.2
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω₀ := ω.property.1.1
+  -- the Euclidean covector norm is continuous
+  have hnc : Continuous fun α : Covector (Euclid P) m => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))).continuous).pow 2
+    · exact continuous_const
+  -- finitely many of the local neighbourhoods `B x`, `x ∈ K`, cover `K`
+  choose! B hBo hxB hBrep using hloc
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun x : K => B x) (fun x => hBo x (hωO x.2))
+    (fun x hx => mem_iUnion.2 ⟨⟨x, hx⟩, hxB x (hωO hx)⟩)
+  let Wt : t → Set (Euclid P) := fun i => B ((i : K) : Euclid P)
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.1 (ht hx)
+    exact mem_iUnion.2 ⟨⟨y, hy⟩, hxy⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => hBo _ (hωO (i : K).2)) hKt
+  have hψs : ∀ i, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ i) :=
+    fun i => contMDiff_iff_contDiff.mp (ψ i).contMDiff
+  -- each `ψᵢω` is a test form supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • ω₀ x) ∈ TestFormOn (univ : Set (Euclid P)) m ∧
+      tsupport (fun x => ψ i x • ω₀ x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • ω₀ x) ⊆ K := tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, subset_univ _⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (hψs i).smul hωs
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn (univ : Set (Euclid P)) m := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hpt : ∀ x, ω₀ x = ∑ i, ψ i x • ω₀ x := by
+    intro x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : ω₀ x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
   have hsum : ω = ∑ i, ωi i := by
     apply Subtype.ext
     funext x
@@ -2535,6 +2589,40 @@ theorem Submission.codim1_ovr_cone_locally_finite_measure : ∀ (P m : ℕ) (M :
     hR₁.trans (closedBall_subset_closedBall (le_max_left _ _))
   exact ne_top_of_le_ne_top (h6b _ (lt_of_lt_of_le one_pos (le_max_right _ _)))
     (measure_mono (inter_subset_inter_right _ hKR))
+    exact hpt x
+  -- each piece is represented, and its integrand is integrable on `M`
+  have hpiece : ∀ i, C (ωi i) = ∫ z in M, ξ z (ψ i z • ω₀ z) ∂μHE[m] :=
+    fun i => hBrep _ (hωO (i : K).2) (ωi i) (hmem i).2
+  have hint : ∀ i, IntegrableOn (fun z => ξ z (ψ i z • ω₀ z)) M μHE[m] := by
+    intro i
+    have hcont : Continuous fun x => ψ i x • ω₀ x := (hψs i).continuous.smul hωs.continuous
+    obtain ⟨S, hS⟩ := (hnc.comp hcont).bounded_above_of_compact_support
+      (((hmem i).1.1.2).comp_left (covectorEuclideanNorm_zero P m))
+    refine Integrable.mono' (g := K.indicator fun _ => S) ?_ ?_ ?_
+    · refine IntegrableOn.integrable_indicator ?_ hKc.isClosed.measurableSet
+      show IntegrableOn (fun _ => S) K (μHE[m].restrict M)
+      refine integrableOn_const ?_
+      rw [Measure.restrict_apply hKc.isClosed.measurableSet, inter_comm]
+      exact hfin _ hKc
+    · exact (hξc.clm_apply hcont.continuousOn).aestronglyMeasurable hMm
+    · refine (ae_restrict_iff' hMm).2 (Eventually.of_forall fun z hz => ?_)
+      by_cases hzK : z ∈ K
+      · rw [indicator_of_mem hzK, Real.norm_eq_abs]
+        refine (hξb z hz _).trans ?_
+        have := hS z
+        rw [Function.comp_apply, Real.norm_eq_abs] at this
+        exact (le_abs_self _).trans this
+      · rw [indicator_of_notMem hzK, image_eq_zero_of_notMem_tsupport hzK, smul_zero, map_zero,
+          norm_zero]
+  -- linearity of `C` and of the integral: sum the pieces
+  calc C ω = ∑ i, C (ωi i) := by
+        rw [hsum]; exact map_sum (C.toCurrent : TestFormOn (univ : Set (Euclid P)) m →ₗ[ℝ] ℝ) _ _
+    _ = ∑ i, ∫ z in M, ξ z (ψ i z • ω₀ z) ∂μHE[m] := Finset.sum_congr rfl fun i _ => hpiece i
+    _ = ∫ z in M, ∑ i, ξ z (ψ i z • ω₀ z) ∂μHE[m] :=
+        (integral_finsetSum _ fun i _ => hint i).symm
+    _ = ∫ z in M, ξ z (ω₀ z) ∂μHE[m] := by
+        congr 1; funext z
+        rw [← map_sum, ← hpt z]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
