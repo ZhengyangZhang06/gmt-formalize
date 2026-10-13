@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ab1e54710cc26846caada35926e0566b3e337392a09f025fd9c08dc1719b9efa",
+  "git_delta": {
+    "base_commit": "a0a49e5e5921fe6631d77b91f2798b5064456018",
+    "candidate_commit": "14cdd14d82736f61e02f393ae2097dcbb5ace7b1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_csfp_great_circle_local_plane",
+    "diff_sha256": "4f5e3862fbd2e66ae52a19838d2b4b84aeba3b05d24254a8f94eb13ac4d2ff04",
+    "source_sha256": "275d027f45bb95be8019b5ab57779633f1bf438408a5abce24c459f262a8fce3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_csfp_great_circle_local_plane",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)) (x₀ : Euclid P) (ε₀ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q' : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q' = 2 ∧ S ∩ ball p δ = (Q' : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q = 2 → x₀ ∈ Q → ‖x₀‖ = 1 → 0 < ε₀ → S ∩ ball x₀ ε₀ = (Q : Set (Euclid P)) ∩ ball x₀ ε₀ → ∀ x : Euclid P, x ∈ Q → ‖x‖ = 1 → ∃ ε : ℝ, 0 < ε ∧ S ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
