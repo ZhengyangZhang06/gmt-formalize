@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15046a322b518517bae9caa69dffa64f442bce26f1534d76e7f7656aeff8fa60",
+  "git_delta": {
+    "base_commit": "96006947e6a704ffb19a877c6810cdba2bc0e9a0",
+    "candidate_commit": "387c271625995ec890c556ce1d8c7c0c5ef6f9f6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pwl_chart_cutoff_localize",
+    "diff_sha256": "2b573245f0aab9e04f4835eddfbe6619c6380e46c6ec0b8f2f91cfe19683b9a3",
+    "source_sha256": "5117f547bd678710c63ee8c52382d86b14b7a4545fcf60bfb8049e6f14539f0a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pwl_chart_cutoff_localize",
+      "statement": "∀ (P d : ℕ) (V C : Set (Euclid d)) (ψ : Euclid d → Euclid P) (hs : ℕ → Euclid P → ℝ) (h : Euclid P → ℝ) (c : ℝ), IsOpen V → ContDiffOn ℝ 1 ψ V → IsCompact C → C ⊆ V → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs h atTop → ∃ (O : Set (Euclid d)) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ), IsOpen O ∧ C ⊆ O ∧ (∀ k, LipschitzWith K (us k)) ∧ LipschitzWith K u ∧ TendstoUniformly us u atTop ∧ (∀ k, ∀ y ∈ O, us k y = hs k (ψ y)) ∧ ∀ y ∈ O, u y = h (ψ y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
