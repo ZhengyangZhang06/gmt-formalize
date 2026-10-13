@@ -2398,6 +2398,32 @@ theorem Submission.cmc_slice_mass_bounds : ∀ (P k : ℕ) (U : Set (Euclid P)) 
       (fun t => ((A t).boundary - B t).massOn W) a b hf.continuous.measurable hW.measurableSet
       fun t _ => hpt W t
 
+/-- **Composition with a dilation preserves test forms on `ℝᴾ`** (Simon Ch. 3, 1.4,
+chapter-03.txt line 85; `η^#ω` in 6.2.23, chapter-06.txt lines 403–413; used for the dilations
+`η_{a,λ#}` in the proof of 7.3.1, chapter-07.txt lines 329–337).  For `λ > 0` and
+`η = η_{a,λ}`, `η(y) = −λ⁻¹a + λ⁻¹y`, every `φ ∈ 𝒟ᵐ(ℝᴾ)` gives `φ' = φ ∘ η ∈ 𝒟ᵐ(ℝᴾ)`:
+`φ ∘ η` is `C^∞` because `η` is a constant plus the linear map `dilationCLM P λ`; it has compact
+support because `η` is a homeomorphism (`y ↦ λ⁻¹y` followed by `z ↦ −λ⁻¹a + z`), so
+`tsupport (φ ∘ η) = η⁻¹(tsupport φ)` is compact; and `tsupport (φ ∘ η) ⊆ ℝᴾ` is trivial. -/
+theorem Submission.cbr_ci_dsp_testForm_comp_dilation : ∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ φ : TestFormOn (univ : Set (Euclid P)) m, ∃ φ' : TestFormOn (univ : Set (Euclid P)) m, ∀ y : Euclid P, (φ' : DifferentialForm (Euclid P) m) y = (φ : DifferentialForm (Euclid P) m) (dilation a lam y) := by
+  intro P m a lam hlam φ
+  -- Step 2: `η = η_{a,λ}` is the homeomorphism `y ↦ λ⁻¹y` followed by `z ↦ −λ⁻¹a + z`.
+  let e : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+    (Homeomorph.addLeft (-(lam⁻¹ • a)))
+  have he : ⇑e = dilation a lam := by
+    funext y
+    simp [e, dilation, dilationCLM]
+  obtain ⟨⟨hsmooth, hcompact⟩, -⟩ := φ.property
+  -- Step 4: `φ' := φ ∘ η`, with `φ'(y) = φ(η(y))` by definition.
+  refine ⟨⟨fun y => (φ : DifferentialForm (Euclid P) m) (dilation a lam y), ?_⟩, fun y => rfl⟩
+  change IsTestForm (fun y => (φ : DifferentialForm (Euclid P) m) (dilation a lam y)) ∧
+    tsupport (fun y => (φ : DifferentialForm (Euclid P) m) (dilation a lam y)) ⊆ univ
+  -- Step 1: `η = (−λ⁻¹a) + dilationCLM P λ` is `C^∞`, so `φ ∘ η` is `C^∞`; Step 3: `⊆ univ`.
+  refine ⟨⟨hsmooth.comp (contDiff_const.add (dilationCLM P lam).contDiff), ?_⟩, subset_univ _⟩
+  -- Step 2: `φ ∘ e` has compact support, and `e = η`.
+  have h := hcompact.comp_homeomorph e
+  rwa [he] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
