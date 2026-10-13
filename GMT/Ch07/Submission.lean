@@ -451,6 +451,51 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Level splitting of a test form** (a step in the proof of Simon Ch. 6, 4.8,
+`spt ⟨T, f, t₊⟩ ⊆ spt T ∩ {f = t}`).  If `tsupport η` misses the level set `{f = t}` of a
+continuous `f`, then `η = η₁ + η₂` with test forms `η₁ = χ η` supported in `{f < t}` and
+`η₂ = (1 - χ) η` supported in `{t < f}`.  Here `χ` is a smooth Urysohn function equal to `1` on
+`K₋ = tsupport η ∩ {f ≤ t}` and to `0` on `K₊ = tsupport η ∩ {t ≤ f}`; these closed sets are
+disjoint, with `K₋ ⊆ {f < t}` and `K₊ ⊆ {t < f}`, because `tsupport η` misses `{f = t}`. -/
+theorem Submission.cmcs_ss_testForm_level_split : ∀ (P n : ℕ) (U : Set (Euclid P)) (f : Euclid P → ℝ) (t : ℝ) (η : TestFormOn U n), Continuous f → Disjoint (tsupport (η : DifferentialForm (Euclid P) n)) {x | f x = t} → ∃ η₁ η₂ : TestFormOn U n, η = η₁ + η₂ ∧ tsupport (η₁ : DifferentialForm (Euclid P) n) ⊆ {x | f x < t} ∧ tsupport (η₂ : DifferentialForm (Euclid P) n) ⊆ {x | t < f x} := by
+  intro P n U f t η hf hη
+  obtain ⟨⟨hsmooth, hcpt⟩, hU⟩ := η.property
+  set e : DifferentialForm (Euclid P) n := (η : DifferentialForm (Euclid P) n)
+  -- the closed halves `K₋ = K ∩ {f ≤ t}` and `K₊ = K ∩ {t ≤ f}` of `K = tsupport η` are
+  -- disjoint, since `K` misses `{f = t}`
+  have hKl : IsClosed (tsupport e ∩ {x | f x ≤ t}) :=
+    (isClosed_tsupport e).inter (isClosed_le hf continuous_const)
+  have hKu : IsClosed (tsupport e ∩ {x | t ≤ f x}) :=
+    (isClosed_tsupport e).inter (isClosed_le continuous_const hf)
+  have hd : Disjoint (tsupport e ∩ {x | t ≤ f x}) (tsupport e ∩ {x | f x ≤ t}) :=
+    Set.disjoint_left.2 fun x hxu hxl => Set.disjoint_left.1 hη hxu.1 (le_antisymm hxl.2 hxu.2)
+  -- a smooth `χ` with `χ = 0` on `K₊` and `χ = 1` on `K₋`
+  obtain ⟨χ, hχ, -, hχ₀, hχ₁⟩ :=
+    exists_contDiff_zero_iff_one_iff_of_isClosed (n := (⊤ : ℕ∞)) hKu hKl hd
+  -- `χ η` and `(1 - χ) η` are test forms in `U`, with sum `η`
+  have h₁ : (fun x => χ x • e x) ∈ TestFormOn U n :=
+    ⟨⟨hχ.smul hsmooth, hcpt.smul_left (f := χ)⟩, (tsupport_smul_subset_right χ e).trans hU⟩
+  have h₂ : (fun x => (1 - χ x) • e x) ∈ TestFormOn U n :=
+    ⟨⟨(contDiff_const.sub hχ).smul hsmooth, hcpt.smul_left (f := fun x => 1 - χ x)⟩,
+      (tsupport_smul_subset_right (fun x => 1 - χ x) e).trans hU⟩
+  refine ⟨⟨_, h₁⟩, ⟨_, h₂⟩, Subtype.ext (funext fun x => ?_), ?_, ?_⟩
+  · change e x = χ x • e x + (1 - χ x) • e x
+    rw [← add_smul, add_sub_cancel, one_smul]
+  · -- `support (χ η) ⊆ K₋`, a closed subset of `{f < t}`
+    have hs : support (fun x => χ x • e x) ⊆ tsupport e ∩ {x | f x ≤ t} := fun x hx => by
+      have he : x ∈ tsupport e := subset_tsupport e (right_ne_zero_of_smul hx)
+      refine ⟨he, show f x ≤ t from le_of_not_ge fun h => ?_⟩
+      exact left_ne_zero_of_smul hx ((hχ₀ x).1 ⟨he, h⟩)
+    exact (closure_minimal hs hKl).trans fun x hx =>
+      lt_of_le_of_ne hx.2 fun h => Set.disjoint_left.1 hη hx.1 h
+  · -- `support ((1 - χ) η) ⊆ K₊`, a closed subset of `{t < f}`
+    have hs : support (fun x => (1 - χ x) • e x) ⊆ tsupport e ∩ {x | t ≤ f x} := fun x hx => by
+      have he : x ∈ tsupport e := subset_tsupport e (right_ne_zero_of_smul hx)
+      refine ⟨he, show t ≤ f x from le_of_not_ge fun h => left_ne_zero_of_smul hx ?_⟩
+      rw [(hχ₁ x).1 ⟨he, h⟩, sub_self]
+    exact (closure_minimal hs hKu).trans fun x hx =>
+      lt_of_le_of_ne hx.2 fun h => Set.disjoint_left.1 hη hx.1 h.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
