@@ -409,6 +409,76 @@ theorem Submission.rpn_pe_integral_eq_polar :
     setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_]
   · rw [NNReal.smul_def, Real.coe_toNNReal _ (pow_nonneg hx.out.le _), smul_eq_mul]
   · exact (measurable_subtype_coe.pow_const _).real_toNNReal
+/-- The radial integral `∫_{B_ρ(0)} |w|^{1-n} dw = n ω_n ρ` in `ℝⁿ`, `n = m + 1`, `ρ > 0`,
+`ω_n = Lⁿ(B_1(0))` (formula (R) of the potential estimate in the proof of Simon Ch. 6, 8.1);
+`|w|^{1-n}` is written `(‖w‖ ^ m)⁻¹`.  In polar coordinates (`integrableOn_fun_norm_addHaar`,
+`integral_fun_norm_addHaar`) the radial profile `r^{n-1} (r^{n-1})⁻¹` is `1` on `(0, ρ)`: this
+gives integrability, and with `1_{B_ρ(0)}(w) = 1_{(-∞, ρ)}(|w|)` the value `n ω_n ρ`. -/
+theorem Submission.rpn_pe_inv_norm_pow_ball :
+    ∀ (m : ℕ) (ρ : ℝ), 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (ball (0 : Eucl (m + 1)) ρ) ∧ ∫ t in ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ = ((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ρ := by
+  intro m ρ hρ
+  have hdim : Module.finrank ℝ (Eucl (m + 1)) - 1 = m := by
+    rw [finrank_euclideanSpace_fin, Nat.add_sub_cancel]
+  constructor
+  · -- Integrability: `r ^ m • (r ^ m)⁻¹ = 1` is integrable on `(0, ρ)`.
+    rw [integrableOn_fun_norm_addHaar (volume : Measure (Eucl (m + 1)))
+      (f := fun r : ℝ => (r ^ m)⁻¹), hdim]
+    refine (integrableOn_congr_fun (g := fun _ => (1 : ℝ)) (fun r hr => ?_) measurableSet_Ioo).2
+      (integrableOn_const measure_Ioo_lt_top.ne)
+    exact mul_inv_cancel₀ (pow_ne_zero _ (ne_of_gt hr.1))
+  · -- `h = 1_{(-∞, ρ)} · (r ↦ (r ^ m)⁻¹)`, so `1_{B_ρ(0)}(w) (‖w‖ ^ m)⁻¹ = h ‖w‖`.
+    set h : ℝ → ℝ := (Iio ρ).indicator fun r => (r ^ m)⁻¹ with hh
+    have hind : (ball (0 : Eucl (m + 1)) ρ).indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) =
+        fun t => h ‖t‖ := by
+      ext t
+      simp [hh, indicator]
+    -- For `r > 0`, `r ^ m • h r = 1_{(-∞, ρ)}(r)`, so the radial integral is `L¹((0, ρ)) = ρ`.
+    have hrad : ∫ y in Ioi (0 : ℝ), y ^ (Module.finrank ℝ (Eucl (m + 1)) - 1) • h y = ρ := by
+      rw [hdim, setIntegral_congr_fun measurableSet_Ioi
+        (g := (Iio ρ).indicator fun _ => (1 : ℝ)) (fun y hy => ?_)]
+      · rw [integral_indicator measurableSet_Iio, Measure.restrict_restrict measurableSet_Iio,
+          setIntegral_const, Iio_inter_Ioi, measureReal_def, Real.volume_Ioo,
+          ENNReal.toReal_ofReal (by linarith), smul_eq_mul, mul_one, sub_zero]
+      · by_cases hy' : y < ρ
+        · simp [hh, indicator, hy', mul_inv_cancel₀ (pow_ne_zero m (ne_of_gt (mem_Ioi.1 hy)))]
+        · simp [hh, indicator, hy']
+    rw [← integral_indicator measurableSet_ball, hind,
+      integral_fun_norm_addHaar (volume : Measure (Eucl (m + 1))) h, hrad,
+      finrank_euclideanSpace_fin, measureReal_def, smul_eq_mul, nsmul_eq_mul]
+    push_cast
+    ring
+
+/-- The kernels `K(w) = w_j / (c|w|^{m+1})` on `ℝ^{m+1}` are locally integrable. This is Step 2 of
+the potential estimate (Gilbarg–Trudinger §7.8) that replaces the BV argument of Simon Ch. 6,
+Remark 2.35 in the proof of 8.1; there `c = nωₙ`. With `x / 0 = 0`, `|K(w)| ≤ |c|⁻¹ (|w|^m)⁻¹`
+everywhere, and `(|w|^m)⁻¹` is integrable on every ball about `0`
+(`Submission.rpn_pe_inv_norm_pow_ball`). -/
+theorem Submission.rpn_pe_kernel_locallyIntegrable : ∀ (m : ℕ) (j : Fin (m + 1)) (c : ℝ), LocallyIntegrable (fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1))) := by
+  intro m j c
+  -- Step 1: `K` is Borel measurable.
+  have hmeas : Measurable fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1)) := by fun_prop
+  -- Step 2: `|K(w)| ≤ |c|⁻¹ (|w|^m)⁻¹`. If `c = 0` or `w = 0` the left side is `0`; otherwise
+  -- `|w_j| ≤ |w|`.
+  have hbound : ∀ t : Eucl (m + 1), ‖t j / (c * ‖t‖ ^ (m + 1))‖ ≤ |c|⁻¹ * (‖t‖ ^ m)⁻¹ := by
+    intro t
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp
+    rcases eq_or_ne t 0 with rfl | ht
+    · simp only [PiLp.zero_apply, zero_div, norm_zero]
+      positivity
+    have htpos : 0 < ‖t‖ := norm_pos_iff.2 ht
+    rw [norm_div, norm_mul, norm_pow, norm_norm, Real.norm_eq_abs c]
+    calc ‖t j‖ / (|c| * ‖t‖ ^ (m + 1)) ≤ ‖t‖ / (|c| * ‖t‖ ^ (m + 1)) := by
+          gcongr
+          exact PiLp.norm_apply_le t j
+      _ = |c|⁻¹ * (‖t‖ ^ m)⁻¹ := by
+          field_simp
+          ring
+  -- Step 3: around `x` use the ball `B_{|x|+1}(0)`, where `(|w|^m)⁻¹` is integrable.
+  intro x
+  refine ⟨ball (0 : Eucl (m + 1)) (‖x‖ + 1), isOpen_ball.mem_nhds (by simp), ?_⟩
+  exact ((Submission.rpn_pe_inv_norm_pow_ball m (‖x‖ + 1) (by positivity)).1.const_mul |c|⁻¹).mono'
+    hmeas.aestronglyMeasurable (ae_of_all _ hbound)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
