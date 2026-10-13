@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.vitali_bound-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Vitali 5r-covering estimate for two measures (fact Cov)",
+  "statement": "Let N in N, nu and Psi measures on R^N, S and W subsets of R^N, r : R^N -> R, R_0 in R and M in [0, infinity]. If for every y in S: 0 < r(y) <= R_0, B_(r(y))(y) is contained in W, and nu(S cap B_(5 r(y))(y)) <= M Psi(B_(r(y))(y)), then nu(S) <= M Psi(W).",
+  "lean_statement": "∀ (N : ℕ) (ν Ψ : Measure (EuclideanSpace ℝ (Fin N))) (S W : Set (EuclideanSpace ℝ (Fin N))) (r : EuclideanSpace ℝ (Fin N) → ℝ) (R₀ : ℝ) (M : ℝ≥0∞), (∀ y ∈ S, 0 < r y ∧ r y ≤ R₀ ∧ closedBall y (r y) ⊆ W ∧ ν (S ∩ closedBall y (5 * r y)) ≤ M * Ψ (closedBall y (r y))) → ν S ≤ M * Ψ W",
+  "lean_name": "lip_approx_vitali_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-vitali-bound-a1-a1"
+}
