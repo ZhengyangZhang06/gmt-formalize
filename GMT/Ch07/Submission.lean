@@ -451,6 +451,77 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Tangential lift of a gradient on a `C¹` chart** (Simon Ch. 2, §4; Ch. 3, 2.1).  Let `ψ` be
+`C¹` on the open set `V ⊆ ℝᵐ` with injective differential and `F : ℝᵐ → ℝ` be `C¹`.  With
+`A(y) = Dψ(y)`, `Γ(y) = A(y)* A(y)` and `a(y)` the Riesz vector of `DF(y)`, the field
+`Φ(y) = A(y) Γ(y)⁻¹ a(y)` is continuous on `V`, lies in `Dψ(y)(ℝᵐ)`, satisfies
+`⟨Φ(y), Dψ(y)e⟩ = DF(y)e`, and `|Φ(y)| ≤ L` whenever `|DF(y)e| ≤ L |Dψ(y)e|` for all `e`. -/
+theorem Submission.dor_lmbsf_cp_chart_tangent_lift : ∀ (m P : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (F : Euclid m → ℝ), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ Φ : Euclid m → Euclid P, ContinuousOn Φ V ∧ ∀ y ∈ V, Φ y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid m →ₗ[ℝ] Euclid P) ∧ (∀ e : Euclid m, inner ℝ (Φ y) (fderiv ℝ ψ y e) = fderiv ℝ F y e) ∧ ∀ L : NNReal, (∀ e : Euclid m, |fderiv ℝ F y e| ≤ (L : ℝ) * ‖fderiv ℝ ψ y e‖) → ‖Φ y‖ ≤ (L : ℝ) := by
+  classical
+  intro m P V ψ F hV hψ hinj hF
+  let A : Euclid m → (Euclid m →L[ℝ] Euclid P) := fun y => fderiv ℝ ψ y
+  let Γ : Euclid m → (Euclid m →L[ℝ] Euclid m) :=
+    fun y => (ContinuousLinearMap.adjoint (A y)).comp (A y)
+  let a : Euclid m → Euclid m :=
+    fun y => (InnerProductSpace.toDual ℝ (Euclid m)).symm (fderiv ℝ F y)
+  -- `Γ(y)` is injective, hence a unit, on `V`
+  have hunit : ∀ y ∈ V, IsUnit (Γ y) := by
+    intro y hy
+    rw [ContinuousLinearMap.isUnit_iff_isUnit_toLinearMap, LinearMap.isUnit_iff_ker_eq_bot,
+      LinearMap.ker_eq_bot']
+    intro e he
+    have h1 : inner ℝ (Γ y e) e = ‖A y e‖ ^ 2 := by
+      simp only [Γ, ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
+      exact real_inner_self_eq_norm_sq (A y e)
+    have h2 : Γ y e = 0 := he
+    rw [h2, inner_zero_left] at h1
+    have h3 : A y e = 0 := by
+      have : ‖A y e‖ = 0 := by nlinarith [norm_nonneg (A y e)]
+      exact norm_eq_zero.1 this
+    exact hinj y hy (by simpa [A] using h3)
+  refine ⟨fun y => A y (Ring.inverse (Γ y) (a y)), ?_, ?_⟩
+  · -- continuity: `fderiv`, adjoint, composition, `Ring.inverse` at units, evaluation
+    have hA : ContinuousOn A V := hψ.continuousOn_fderiv_of_isOpen hV le_rfl
+    have hAadj : ContinuousOn (fun y => ContinuousLinearMap.adjoint (A y)) V :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid m) (F := Euclid P)).continuous
+        |>.comp_continuousOn hA
+    have hΓ : ContinuousOn Γ V := hAadj.clm_comp hA
+    have hinv : ContinuousOn (fun y => Ring.inverse (Γ y)) V := by
+      intro y hy
+      obtain ⟨u, hu⟩ := hunit y hy
+      have hc := NormedRing.inverse_continuousAt u
+      rw [hu] at hc
+      exact hc.comp_continuousWithinAt (hΓ y hy)
+    have ha : Continuous a :=
+      (InnerProductSpace.toDual ℝ (Euclid m)).symm.continuous.comp
+        (hF.continuous_fderiv one_ne_zero)
+    exact hA.clm_apply (hinv.clm_apply ha.continuousOn)
+  · intro y hy
+    set w := Ring.inverse (Γ y) (a y) with hw
+    have hΓw : Γ y w = a y := by
+      obtain ⟨u, hu⟩ := hunit y hy
+      rw [hw, ← hu, Ring.inverse_unit, ← mul_apply_eq_comp, Units.mul_inv, one_apply_eq_self]
+    -- the defining identity `⟨A w, A e⟩ = ⟨Γ w, e⟩ = ⟨a, e⟩ = DF(y) e`
+    have hdef : ∀ e : Euclid m, inner ℝ (A y w) (fderiv ℝ ψ y e) = fderiv ℝ F y e := by
+      intro e
+      have : inner ℝ (A y w) (A y e) = inner ℝ (Γ y w) e := by
+        simp only [Γ, ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
+      change inner ℝ (A y w) (A y e) = _
+      rw [this, hΓw]
+      simp [a, InnerProductSpace.toDual_symm_apply]
+    refine ⟨⟨w, rfl⟩, hdef, fun L hL => ?_⟩
+    -- `|Φ|² = DF(y) w ≤ L |A w| = L |Φ|`
+    have hsq : ‖A y w‖ ^ 2 ≤ (L : ℝ) * ‖A y w‖ := by
+      rw [← real_inner_self_eq_norm_sq]
+      calc inner ℝ (A y w) (A y w) = fderiv ℝ F y w := hdef w
+        _ ≤ |fderiv ℝ F y w| := le_abs_self _
+        _ ≤ (L : ℝ) * ‖fderiv ℝ ψ y w‖ := hL w
+    change ‖A y w‖ ≤ (L : ℝ)
+    by_cases h0 : ‖A y w‖ = 0
+    · rw [h0]; exact L.coe_nonneg
+    · have hpos : 0 < ‖A y w‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm h0)
+      nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
