@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_plane_density-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "At a tangent point the density equals the multiplicity",
+  "statement": "If an n-varifold V on open U ⊆ ℝ^N has tangent plane T with multiplicity θ at x (HasTangentPlane V x T θ, Def. 8.1.1), then Θ^n(μ_V, x) exists and equals ofReal θ (HasDensity n V.weight x (ENNReal.ofReal θ)).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ)",
+  "lean_name": "allard_tc_tangent_plane_density",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-plane-density-a1-a1"
+}

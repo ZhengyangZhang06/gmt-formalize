@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.zero_defect_plane-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "Vanishing normal defect about y gives x − y ∈ S on the whole support (printed 5.5(8))",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N and y ∈ ℝ^N. Suppose normalDefect V y (B_ρ(y)) = ∫_{B_ρ(y)×G} ofReal(|(x−y) − p_S(x−y)|²/|x−y|^{n+2}) dV(x,S) = 0 for every ρ > 0 (closed balls). Then x − y ∈ S (z.1 − y ∈ z.2.plane) for every z = (x,S) in the support of V.measure on ℝ^N × G(N,n).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (y : Euclidean N), (∀ ρ : ℝ, 0 < ρ → normalDefect V y (closedBall y ρ) = 0) → ∀ z ∈ V.measure.support, z.1 - y ∈ z.2.plane",
+  "lean_name": "allard_tc_scf_zero_defect_mem_plane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-zero-defect-plane-a1-a1"
+}

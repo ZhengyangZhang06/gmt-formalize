@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "Canonical representation of a varifold on ℝ^N with tangent planes almost everywhere",
+  "statement": "Assume FirstRectifiabilityTheorem (Simon 8.1.2). Let C be an n-varifold on ℝ^N with a tangent plane (Def. 8.1.1) at μ_C-a.e. point. Then there are M ⊆ ℝ^N and θ : ℝ^N → ℝ such that: IsVarifoldOf C M θ; every x ∈ M has a tangent plane T with multiplicity θ(x) (HasTangentPlane C x T (θ x)); and for every Borel A ⊆ ℝ^N × G(N,n), C(A) = ∫ over {x ∈ M : ∃ T, HasTangentPlane C x T (θ x) ∧ (x,T) ∈ A} of θ dH^n. In other words, the approximate tangent planes of (M,θ) in IsVarifoldOf may be replaced by the varifold tangent planes.",
+  "lean_statement": "FirstRectifiabilityTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), (∀ᵐ x ∂C.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane C x T θ) → ∃ (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ ∧ (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) ∧ ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n]",
+  "lean_name": "allard_tc_tangent_point_representation",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.tangent_plane_density-a1",
+    "root.allard_tangent_cones-a1.tangent_plane_dilation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_plane_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_plane_dilation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1",
+  "depth": 3,
+  "title": "At a tangent point the normalised ball averages of β(S) tend to β(T) (corrected η_V^(x)(β) = β(T_x))",
+  "statement": "Let V be an n-varifold on the open set U ⊆ ℝ^N, x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ, and suppose V has tangent plane T with multiplicity θ at x in the sense of Simon Ch. 8, Def. 1.1 (HasTangentPlane V x T θ: x ∈ U, θ > 0, and ∫ f dV_{x,t} → θ ∫ f dv(T) as t ↓ 0 for every f ∈ C_c(ℝ^N × G(N,n)), where V_{x,t} = rescaledMeasure V x t and v(T) = planeVarifoldMeasure T). Then for every continuous β : G(N,n) → ℝ, (∫_{Gₙ(B_ρ(x))} β(S) dV(y,S)) / μ_V(B_ρ(x)) → β(T) as ρ ↓ 0, where B_ρ(x) is the closed ball, Gₙ(A) = A × G(N,n), μ_V = V.weight, and μ_V(B_ρ(x)) is taken as a real number (ENNReal.toReal).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T))",
+  "lean_name": "frt_vgm_tangent_ball_average",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1-a1"
+}

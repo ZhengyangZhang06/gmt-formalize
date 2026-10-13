@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_cutoff_limits-a1",
+  "parent_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "depth": 3,
+  "title": "Plane integrals of the unit-ball cut-offs converge to ω_n",
+  "statement": "Let N, n ∈ ℕ and T ∈ G(N,n). For k ∈ ℕ and y ∈ ℝ^N put φ_k⁺(y) = max(0, 1 − (k+1)·max(0, ‖y‖ − 1)) and φ_k⁻(y) = min(1, (k+1)·max(0, 1 − ‖y‖)). Then, as k → ∞, ∫_{T.plane} φ_k⁺ dH^n → ω_n and ∫_{T.plane} φ_k⁻ dH^n → ω_n. Here H^n = μHE[n] on ℝ^N, the integrals are real Bochner integrals over T.plane (with respect to μHE[n] restricted to T.plane), and ω_n = (unitBallVolume n).toReal.",
+  "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n), Tendsto (fun k : ℕ ↦ ∫ y in (T.plane : Set (Euclidean N)), max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)) ∂(μHE[n] : Measure (Euclidean N))) atTop (𝓝 (unitBallVolume n).toReal) ∧ Tendsto (fun k : ℕ ↦ ∫ y in (T.plane : Set (Euclidean N)), min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)) ∂(μHE[n] : Measure (Euclidean N))) atTop (𝓝 (unitBallVolume n).toReal)",
+  "lean_name": "allard_tc_fbl_plane_cutoff_limits",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1-plane-cutoff-limits-a1-a1"
+}

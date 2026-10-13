@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.tangent_density-a1.lower_bound-a1",
+  "parent_id": "root.first_rectifiability-a1.tangent_density-a1",
+  "depth": 3,
+  "title": "Blow-up convergence ⇒ lower ball-mass bound c·t^n ≤ μ(B_t(x)) for c < θω_n",
+  "statement": "Let N, n ∈ ℕ, μ a measure on Euclidean N, x ∈ Euclidean N, T ∈ G(N,n) and θ ∈ ℝ with θ > 0. Assume that for every g ∈ C_c(Euclidean N, ℝ), t⁻¹^n ∫ g(t⁻¹ • (z − x)) dμ(z) → θ ∫_{T.plane} g dμHE[n] as t → 0⁺. Then for every c ∈ [0, ∞] with c < ENNReal.ofReal(θ) · unitBallVolume n, eventually as t → 0⁺ we have c · ENNReal.ofReal(t)^n ≤ μ(closedBall x t).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), 0 < θ → (∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂μ) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]))) → ∀ c : ℝ≥0∞, c < ENNReal.ofReal θ * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)",
+  "lean_name": "frt_td_ball_mass_lower_of_blowup",
+  "depends_on": [
+    "root.first_rectifiability-a1.tangent_density-a1.plane_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.tangent_density-a1.plane_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-tangent-density-a1-lower-bound-a1-a1"
+}

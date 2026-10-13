@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.first_variation_control-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "First-variation control of a scaled restricted measure gives locally bounded first variation and a bound on ‖δW‖",
+  "statement": "Let Ω ⊆ ℝ^N, μ a measure on ℝ^N × G(N,n), W an n-varifold on Ω, and c, β ∈ [0,∞] with c ≠ ∞ and β ≠ ∞, such that W.measure = c • μ⌞(Ω × G(N,n)). Assume that for every C¹ field X : ℝ^N → ℝ^N with compact support, tsupport X ⊆ Ω and ‖X(y)‖ ≤ 1 for all y, we have ofReal|∫ div_S X(z) dμ(z,S)| ≤ β, where div_S X(z) = Varifold.tangentialDivergence X z S. Then W has locally bounded first variation, and variationMeasure W O ≤ c·β for every O with IsRelCompactOpenIn O Ω.",
+  "lean_statement": "∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μ : Measure (Euclidean N × Grassmannian N n)) (W : Varifold N n Ω) (c β : ℝ≥0∞), c ≠ ∞ → β ≠ ∞ → W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → (∀ X : Euclidean N → Euclidean N, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ Ω → (∀ y, ‖X y‖ ≤ 1) → ENNReal.ofReal |∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂μ| ≤ β) → W.HasLocallyBoundedFirstVariation ∧ ∀ O : Set (Euclidean N), IsRelCompactOpenIn O Ω → variationMeasure W O ≤ c * β",
+  "lean_name": "varifold_tangents_dlb_restricted_firstVariation_control",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-first-variation-control-a1-a1"
+}

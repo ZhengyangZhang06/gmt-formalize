@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "rg -n 'structure Varifold|def weight|instSigmaFinite|weight_finite_on_compact|def project|def plane|finrank_plane|instCompactSpace|project_project|projectionLinearMap_isSymmetric|projectionLinearMap_apply_of_mem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "rg -n 'euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "rg -n 'tendsto_measure_cthickening_of_isClosed|countable_meas_pos_of_disjoint_iUnion' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "rg -n 'theorem integral_map|theorem integral_smul_measure|theorem integral_mono_of_nonneg|ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "rg -n 'tgc_weight_blowup_tendsto|tgc_plane_closedBall_hausdorff|tgc_tangent_weight_lower_bound|tgc_tangent_cone_weight_decay|tgc_dim_zero_tangent_points_countable|tgc_tilted_cone_inclusion|tgc_cone_density_graph_cover' project/GMT mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tgc-independent-audit-n4br_wgc/Elaboration.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tgc-independent-audit-n4br_wgc/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Constructions/SumProd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+        "/tmp/tgc-independent-audit-n4br_wgc/Elaboration.lean",
+        "/tmp/tgc-independent-audit-n4br_wgc/Assembly.lean"
+      ],
+      "conclusion": "The seven-way split is appropriate for the selected tangent-graph-cover theorem. The pinned definitions provide the stated projection, tangent-plane, domain-openness, and measure hypotheses. The cited normalization, integral, continuity, and countability APIs support the supplied arguments. All seven one-line propositions independently elaborate in the comparator's replayed scope without child implementations; an independent assembly from the exact child assumptions proves the exact frozen parent type. Dependencies are acyclic and correctly directed. All seven names are fresh bare identifiers, with no collision among the 38 current DAG records; the snapshot search found no declarations with those names. Checked reused declarations depend only on propext, Classical.choice, and Quot.sound. Euclidean norms and canonical Borel measure instances match the prose; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Compactness of the Grassmannian makes the lifted test function compactly supported; the pushforward and scalar-measure integral identities establish exactly the asserted limit. Their measurability requirements are supplied, and no integrability assumption or parent theorem is improperly invoked."
+    },
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthonormal-basis isometry identifies the plane ball exactly. Isometry invariance, normalized Hausdorff measure on Euclidean n-space, and the Haar closed-ball formula prove the frozen equality, including r = 0 and n = 0. No additional dimension hypothesis is needed."
+    },
+    {
+      "key": "lower_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff argument uses precisely the declared weight_blowup and plane_ball_measure dependencies. It establishes the required strict limit comparison, handles infinite ball mass separately, and justifies the finite ENNReal-to-real conversions and positive-scale cancellation. The eventual conclusion matches the prose exactly."
+    },
+    {
+      "key": "cone_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "For every β > 0, the closed cone section meets the tangent plane only at its vertex, which is null because n > 0. Finite thickenings and the explicit cutoff yield the small limit. The proof establishes integrability inside a compact ball contained in U before comparing mass with the integral, and separately handles ε = ∞. Both declared dependencies suffice."
+    },
+    {
+      "key": "dim_zero_countable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The n = 0 lower bound gives positive mass on sufficiently small balls. Local finiteness at the tangent point permits continuity from above to a positive singleton mass; sigma-finiteness then makes the set of such atoms countable. This proves exactly the stated set-countability obligation without using the covering theorem."
+    },
+    {
+      "key": "cone_linear_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Symmetry and idempotence justify Pythagoras and contraction of the normal projection. The successive L/2, L/4, and L/8 estimates correctly yield both the L/16 cone inequality and the factor-2 norm bound. Every hypothesis and constant matches the frozen type, with no undeclared dependency."
+    },
+    {
+      "key": "cone_graph_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable uniform classes cover every point of A, including when the initial lower-bound constant is infinite. The declared linear-algebra child gives the ball inclusion, and the chosen constants produce a strict positive-mass contradiction. Product closure preserves the graph inequality; dense localization and enumeration produce the required closed cover. No measurability of A, local finiteness of μ, or positive-dimensional hypothesis is silently required."
+    }
+  ],
+  "required_changes": []
+}

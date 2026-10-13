@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1`
+- Child DAG node: `root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1.ball_integral_measurable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 3 of the parent-supplied proof of frt_vgm_measurable_plane_selection (part of the Borel version of x ↦ T_x needed in Simon, Ch. 8, proof of 1.2, p. 208). There it is applied to ν = V.measure, which is σ-finite (Varifold.measure.instSigmaFinite) and hence s-finite; here it is stated for an arbitrary s-finite ν on ℝ^N × G(N,n).
+
+Let N, n ∈ ℕ, let ν be an s-finite measure on ℝ^N × G, G := Grassmannian N n, and fix r ∈ ℝ and β ∈ C(G, ℝ).
+
+1. Let E_r := {p ∈ ℝ^N × (ℝ^N × G) : dist p.2.1 p.1 ≤ r}. The map p ↦ dist p.2.1 p.1 is continuous (Continuous.dist of continuous_fst ∘ continuous_snd and continuous_fst), so E_r is closed (isClosed_le with the constant r).
+
+2. ℝ^N is second countable with its Borel σ-algebra, and G is second countable (Grassmannian.instSecondCountableTopology) with the subtype σ-algebra, which is its Borel σ-algebra. Hence the product σ-algebra on ℝ^N × (ℝ^N × G) contains every open set (OpensMeasurableSpace of products of second-countable spaces), and the closed set E_r is measurable (IsClosed.measurableSet).
+
+3. Define F : ℝ^N × (ℝ^N × G) → ℝ by F := E_r.indicator (p ↦ β(p.2.2)). The map p ↦ p.2.2 is measurable (measurable_snd twice) and β is continuous, hence measurable (β.continuous.measurable); so p ↦ β(p.2.2) is measurable and, E_r being measurable, its indicator F is measurable (Measurable.indicator). A measurable real-valued function is strongly measurable (Measurable.stronglyMeasurable; ℝ is second countable and metrizable).
+
+4. ν is s-finite, so MeasureTheory.StronglyMeasurable.integral_prod_right', applied to F and ν, shows that x ↦ ∫ F(x, z) dν(z) is strongly measurable, hence measurable (StronglyMeasurable.measurable).
+
+5. Fix x ∈ ℝ^N. The set closedBall x r ×ˢ univ is measurable (measurableSet_closedBall.prod MeasurableSet.univ), so integral_indicator (which needs no integrability) gives ∫_{closedBall x r ×ˢ univ} β(z.2) dν(z) = ∫ (closedBall x r ×ˢ univ).indicator (z ↦ β z.2) z dν(z). For every z ∈ ℝ^N × G, z ∈ closedBall x r ×ˢ univ ⇔ dist z.1 x ≤ r ⇔ (x, z) ∈ E_r (Set.mem_prod, Metric.mem_closedBall, Set.mem_univ). So the two integrands agree pointwise: (closedBall x r ×ˢ univ).indicator (z ↦ β z.2) z = F(x, z).
+
+6. By Step 5 (function extensionality in x), the map in the statement equals x ↦ ∫ F(x, z) dν(z), which is measurable by Step 4. ∎
+
+## Key steps
+
+1. E_r = {(x, z) : dist z.1 x ≤ r} is closed in ℝ^N × (ℝ^N × G), hence measurable (second-countable factors).
+2. F := 1_{E_r}(x, z) β(z.2) is measurable, hence strongly measurable.
+3. ν is s-finite, so StronglyMeasurable.integral_prod_right' makes x ↦ ∫ F(x, z) dν(z) measurable.
+4. integral_indicator and the pointwise identity 1_{B_r(x)×G}(z) β(z.2) = F(x, z) identify the ball integral with ∫ F(x, ·) dν.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n 'theorem measurable_measure_prodMk_left\b|theorem measurable_measure_prodMk_left ' mathlib/Mathlib`
+- `rg -n "integral_prod_right'" mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `sed -n 25,75p mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean`
+- `rg -n 'measurableSet_exists_tendsto' mathlib/Mathlib`
+- `rg -n 'theorem measurableSet_exists_tendsto|theorem measurable_limUnder|limUnder' mathlib/Mathlib/MeasureTheory`
+- `rg -n 'of_eval_matrix|theorem Measurable.matrix|measurable_matrix|Matrix.measurable' mathlib/Mathlib`
+- `rg -n 'theorem measurable_of_tendsto_metrizable|theorem measurable_limit_of_tendsto_metrizable_ae' mathlib/Mathlib`
+- `rg -n 'measure_closedBall|measurable.*closedBall|closedBall.*[Mm]easurable fun|fun x => .* \(closedBall x' mathlib/Mathlib --glob '*.lean' | rg -i measurable (no generic ball-mass measurability lemma)`
+- `rg -n 'theorem .*measurable_setIntegral|theorem Measurable.setIntegral|StronglyMeasurable.setIntegral' mathlib/Mathlib --glob '*.lean' (no match)`
+- `grep -n 'structure Varifold|instSigmaFinite|theorem weight_apply|abbrev Grassmannian|instCompactSpace|isClosed_projectionSet|projectionSet|def weight' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `rg -n 'measurable_closedBall_mass_of_sFinite' .lake/packages/simongmt/Poincare`
+- `diff -q project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean; diff -q snapshot vs .lake mathlib MeasureTheory/Measure/Prod.lean and MeasureTheory/Constructions/Polish/Basic.lean (all identical)`
+- `grep -c frt_vgm_mps_ dag.json issue-workers.json (0); git grep -q frt_vgm_mps_ over all 447 local and remote refs (0); rg -l frt_vgm_mps_ over the snapshot and simongmt (0)`
+- `python3 -I dag.json scan of lean_name/lean_statement for density_borel_representative and measurable_densities (both need measurability of x ↦ μ(closedBall x r); statements differ)`
+- `lake env lean /tmp/mps_decomp/Split.lean, /tmp/mps_decomp/Children.lean, /tmp/mps_decomp/Full.lean, /tmp/mps_decomp/SolutionEmu.lean, /tmp/mps_decomp/cmp/<child>/NodeChallenge.lean`
+- `python3 -I /tmp/mps_decomp/scripts/validate.py (verifier lean_contract.validate_lean_statement + gmt-compare child_modules)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Matrix/MeasurableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/InfiniteDensitySet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-measurable-pla-2a9de20f84/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-graph-measure-ext-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/mps_decomp/Split.lean`
+- `/tmp/mps_decomp/Children.lean`
+- `/tmp/mps_decomp/Full.lean`
+- `/tmp/mps_decomp/SolutionEmu.lean`
+
+Snapshot: project 63436ae6, Mathlib 25730c7c. The snapshot's Contract.lean and Mathlib files are byte-identical to the ones the build uses.
+
+Every lemma the three children need exists in the pinned library:
+- measurable_measure_prodMk_left (Measure/Prod.lean:97), for child 1.
+- StronglyMeasurable.integral_prod_right' (Integral/Prod.lean:76) and integral_indicator, for child 2.
+- MeasureTheory.measurableSet_exists_tendsto (Polish/Basic.lean:997), StronglyMeasurable.limUnder (Polish/StronglyMeasurable.lean:53), Measurable.of_eval_matrix (Analysis/Matrix/MeasurableSpace.lean:33) and Grassmannian.isClosed_projectionSet, for child 3.
+- The SFinite inputs come from Varifold.measure.instSigmaFinite and Varifold.weight.instSigmaFinite (Varifold.lean:398, 615).
+
+The imported environment has no direct lemma for any child. Mathlib has no ball-mass or parametric set-integral measurability lemma. SimonGMT's Chapter01.measurable_closedBall_mass_of_sFinite (InfiniteDensitySet.lean:29) uses a file-local borel instance and is not imported by GMT.Ch08.Submission (Unknown identifier).
+
+The DAG nodes density_borel_representative and measurable_densities need child 1's fact, which confirms it is reusable; their statements differ from child 1's.
+
+Lean checks:
+- All three children were fully proved, and the parent's exact frozen type was proved from them with no sorry. Axioms: propext, Classical.choice, Quot.sound.
+- The verifier's own child_modules challenge files elaborate.
+- All three types pass validate_lean_statement.
+- The names frt_vgm_mps_* have no collision anywhere.

@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def HasTangentPlane|def rescaledMeasure|def planeVarifoldMeasure|def HasDensity|def densityRatio|^import|^open|^namespace",
+        "ext_of_integral_eq_on_compactlySupported|isSymmetricProjection_iff_eq_coe_starProjection_range|theorem integral_smul_measure|theorem integral_map ",
+        "allard_tc_tpd_plane_eq_of_integral_eq|frt_weight_blowup_tendsto",
+        "git show b951e87c9540d60a4b82361e9d286261aaf2579b -- GMT/Ch08/Submission.lean",
+        "python3 /tmp/tpd-independent-audit-kmg1efnk/run_lean.py /tmp/tpd-independent-audit-kmg1efnk/weight_blowupChallenge.lean",
+        "python3 /tmp/tpd-independent-audit-kmg1efnk/run_lean.py /tmp/tpd-independent-audit-kmg1efnk/plane_eq_of_integral_eqChallenge.lean",
+        "python3 /tmp/tpd-independent-audit-kmg1efnk/run_lean.py /tmp/tpd-independent-audit-kmg1efnk/ConditionalAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-plane-dilation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-plane-dilation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-blowup-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-blowup-a1/comparator-v1.log",
+        "/tmp/tpd-independent-audit-kmg1efnk/weight_blowupChallenge.lean",
+        "/tmp/tpd-independent-audit-kmg1efnk/plane_eq_of_integral_eqChallenge.lean",
+        "/tmp/tpd-independent-audit-kmg1efnk/ConditionalAssembly.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte-identical contract definitions. The required integration, regularity, support and projection lemmas have the stated hypotheses. Neither proposed declaration occurs in the searched snapshot/workspace GMT sources. The acceptance receipt confirms identical-type reuse at b951e87; the new name is unreserved, and the DAG is acyclic. Both independently generated comparator challenge types compile with autoImplicit=false before either child is implemented. Both supplied proofs and the parent assembly also compile; replacing the existing density sibling's stub with an explicit assumption leaves only propext, Classical.choice and Quot.sound. The split appropriately extracts steps 2 and 5. Together with the already-declared density dependency, the retained scaling and limit arguments establish the selected frozen conclusion. No problematic inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes all hypotheses. The bare name legitimately reuses a comparator-accepted declaration with an identical frozen type. Independently checked: compactness makes g composed with fst a compactly supported test; tangent convergence, measurable pushforward identities, positive-scale scalar conversion and eventual equality yield precisely the stated limit. integral_map requires no omitted integrability hypothesis. The proof has no circular dependency and supplies the selected parent's two blow-up limits."
+    },
+    {
+      "key": "plane_eq_of_integral_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose; the bare name is unreserved. finrank_plane supplies the hypotheses for regularity and support identification. Equal test integrals identify the restricted measures, their supports identify the submodules, and uniqueness of symmetric projections followed by matrix and subtype extensionality proves T'=T. The projection instances and coercions compile correctly. All steps are supplied, require no additional hypotheses or child dependencies, and establish the selected parent's final plane-identification step without circularity."
+    }
+  ],
+  "required_changes": []
+}

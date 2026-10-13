@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_plane_dilation-a1.plane_eq_of_integral_eq-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_plane_dilation-a1",
+  "depth": 3,
+  "title": "An n-plane is determined by the H^n-integrals of C_c functions over it",
+  "statement": "Let N, n ∈ ℕ and T, T' ∈ G(N,n). Here G(N,n) = Grassmannian N n consists of the symmetric idempotent real N×N matrices of trace n, and S.plane is the range of the orthogonal projection represented by S. Let H^n = μHE[n] be the n-dimensional Euclidean Hausdorff measure on ℝ^N. If ∫_{T.plane} g dH^n = ∫_{T'.plane} g dH^n for every g ∈ C_c(ℝ^N, ℝ), then T' = T.",
+  "lean_statement": "∀ (N n : ℕ) (T T' : Grassmannian N n), (∀ g : C_c(Euclidean N, ℝ), ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] = ∫ y in (T'.plane : Set (Euclidean N)), g y ∂μHE[n]) → T' = T",
+  "lean_name": "allard_tc_tpd_plane_eq_of_integral_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-plane-dilation-a1-plane-eq-of-in-a5ef851669-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.unique_tangent_plane-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "Uniqueness of the flat tangent cone and convergence of the full blow-up (Lemma 1.3 argument)",
+  "statement": "Let V be an n-varifold on open U ⊆ ℝ^N, x ∈ U, θ0 > 0, ν a measure on G(N,n). Assume: (a) every sequence t_j > 0, t_j → 0 has a strictly increasing φ such that V_{x,t_φ(j)} converges vaguely to C.measure for some n-varifold C on ℝ^N; (b) every C ∈ VarTan(V,x) satisfies C.measure = ofReal θ0 • v(T) for some T ∈ G(N,n); (c) for every continuous β on G(N,n), (∫_{B_ρ(x)×G} β(S) dV)/μ_V(B_ρ(x)) → ∫ β dν as ρ ↓ 0. Then V has a tangent plane at x with multiplicity θ0: HasTangentPlane V x T θ0 for some T.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ) (ν : Measure (Grassmannian N n)), x ∈ U → 0 < θ₀ → (∀ t : ℕ → ℝ, (∀ j, 0 < t j) → Tendsto t atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ C : Varifold N n (univ : Set (Euclidean N)), VagueConverges (fun j ↦ rescaledMeasure V x (t (φ j))) C.measure) → (∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T) → (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂ν))) → ∃ T : Grassmannian N n, HasTangentPlane V x T θ₀",
+  "lean_name": "allard_tc_unique_tangent_plane",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-unique-tangent-plane-a1-a1"
+}
