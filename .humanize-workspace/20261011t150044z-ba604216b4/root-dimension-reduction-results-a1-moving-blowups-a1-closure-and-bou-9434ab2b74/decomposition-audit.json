@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dmcbr_|cbr_vague|cbr_sublevel|cbr_slice' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "ae_hasDerivAt|stieltjesFunction|ae_differentiableAt",
+        "exists_contDiff_support_eq_eq_one_iff|theorem measure_inter_add_sdiff|theorem withDensity_apply_le|theorem withDensity_rnDeriv_le|theorem measure_Ioo|liminf_const_mul_of_ne_top|def rieszMeasure|integral_rieszMeasure",
+        "isCompact_univ_pi|def denseSeq|theorem Measurable.find|uniformContinuous_of_continuous",
+        "git show 7920d7e4587a3657b7e82582fb07afe05a4d5e03:GMT/Ch07/Submission.lean",
+        "git show ef833280210e2a76d19989de42138b03535941cf:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit_s0tzf1pe/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit_s0tzf1pe/VagueLimitCandidate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit_s0tzf1pe/PortmanteauCandidate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit_s0tzf1pe/CriticalChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-9434ab2b74/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-9434ab2b74/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        "/tmp/dmcbr_independent_audit_s0tzf1pe/Assembly.lean",
+        "/tmp/dmcbr_independent_audit_s0tzf1pe/VagueLimitCandidate.lean",
+        "/tmp/dmcbr_independent_audit_s0tzf1pe/PortmanteauCandidate.lean",
+        "/tmp/dmcbr_independent_audit_s0tzf1pe/CriticalChecks.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest. The snapshot project search returned no matching declarations. The five-way split appropriately establishes dmcbr_measure_convergence_tools: independent Lean compilation verifies all five exact types and their assembly into the frozen parent type. Every type is a standalone one-line proposition matching its prose; names are bare identifiers. The three fresh names are unreserved, and both reused declarations remain accepted with byte-identical candidate types. Their independently compiled proofs and the conditional assembly use only propext, Classical.choice, and Quot.sound. Countable-product first countability, the smooth cutoff, and multiplication of a test form by that cutoff were checked in Lean. No matrix-unit construction occurs. Empty dependency lists accurately describe independent proofs and introduce no cycles. All supplied proofs are complete enough for formalization without another planning pass."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vague_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact exhaustion, the countable rational test family, compact-product subsequence selection, uniform approximation, and the Cauchy estimate establish Claim A. The strictly increasing diagonal and its subsequence tails then prove the exact convergence contract. No circular reliance or missing hypothesis."
+    },
+    {
+      "key": "vague_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Integrability and extension by zero justify the positive linear limit functional. Riesz representation on the open subtype and push-forward establish every conclusion. The reused declaration has the identical frozen type and passes independent compatibility and axiom checks."
+    },
+    {
+      "key": "portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integral comparisons, compact thickenings, and increasing compact exhaustion prove both inequalities under precisely the stated hypotheses. No support condition on μ is silently added. Identical-type accepted reuse and axiom checks pass."
+    },
+    {
+      "key": "restriction_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement exactly matches T2. Measurability and compact-support bounds justify the integrals; valid smooth cutoffs produce test forms and the stated error estimates. The compact-band limsup bound and the two shrinking-band limits prove convergence without requiring μX{f=t}=0."
+    },
+    {
+      "key": "slice_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles empty intervals and arbitrary, possibly nonmeasurable G. Splitting along a Borel strip validates the slope bound. Monotone differentiation, the Stieltjes derivative-integral inequality, measurable liminf, finite-L multiplication including L=0, and Fatou establish the exact majorant contract without assuming Z measurable."
+    }
+  ],
+  "required_changes": []
+}
