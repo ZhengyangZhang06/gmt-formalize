@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.plane_ball_mass-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "Mass of the plane varifold v(T) over a closed ball about 0",
+  "statement": "For T ∈ G(N,n) and r > 0, v(T)(B_r(0) × G(N,n)) = ω·ofReal(r)^n, where v(T) = planeVarifoldMeasure T = (H^n⌞T).map (y ↦ (y,T)), B_r(0) is the closed ball, and ω = unitBallVolume n.",
+  "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → planeVarifoldMeasure T (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n))) = unitBallVolume n * ENNReal.ofReal r ^ n",
+  "lean_name": "allard_tc_scf_plane_ball_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-plane-ball-mass-a1-a1"
+}
