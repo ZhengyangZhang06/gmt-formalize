@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ef9cd3a896fd1cb52e4c91c62a094a728a2d4c851bab1fb41ff6885f3a9dacc0",
+  "git_delta": {
+    "base_commit": "922a0dd24e6fda0e1ecc3d608db041c56ea2a6bd",
+    "candidate_commit": "42f31cc4c4e56087fa69a57c99da724825da1e0a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_ss_testForm_level_split",
+    "diff_sha256": "0e51266925a014028e30e70e13dd1a556a7cc39c1d9280e2255056b599a54be8",
+    "source_sha256": "237c517f911e242cf5cf9ca5c0bfdcbc9ad8ef401923a62da468415618ad6c01",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_ss_testForm_level_split",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (f : Euclid P → ℝ) (t : ℝ) (η : TestFormOn U n), Continuous f → Disjoint (tsupport (η : DifferentialForm (Euclid P) n)) {x | f x = t} → ∃ η₁ η₂ : TestFormOn U n, η = η₁ + η₂ ∧ tsupport (η₁ : DifferentialForm (Euclid P) n) ⊆ {x | f x < t} ∧ tsupport (η₂ : DifferentialForm (Euclid P) n) ⊆ {x | t < f x}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
