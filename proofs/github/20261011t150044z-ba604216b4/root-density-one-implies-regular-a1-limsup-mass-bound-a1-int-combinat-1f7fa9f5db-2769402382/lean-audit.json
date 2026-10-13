@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "058f403e3575635637728f3709f50ca94360afcab92a59470494dec2d5a5f14a",
+  "git_delta": {
+    "base_commit": "75de0ee730e84679ec70412ef193cfd5fd2dab7c",
+    "candidate_commit": "4d37886e9e528008961e01e22d2a37293a7dc576",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ic_measure_le_of_weighted_orient_eq",
+    "diff_sha256": "c895266c34b4e7519323a0a72ffaba6a207c7bf4e1a0f8b78743639081d65c52",
+    "source_sha256": "072e0cd1bf3e004d823111d04e3509b363349335dd38932887ab51520b2af25d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
