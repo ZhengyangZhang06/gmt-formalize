@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9845b5abdefd452bf6decdc4583a2b61a29d6c82ed084d2e2872066d4fce5475",
+  "git_delta": {
+    "base_commit": "96a1226c1971ba6f732476a635f3f0a307b10d84",
+    "candidate_commit": "0f2720dced4f3534b36edbf7d9ecc81bddded052",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9bff4c9be44d0076b89e4a19415f76013f693fb1ddc335ce480fbf5d30ba8913",
+    "source_sha256": "139f236e75faf0de8ed5377c27ce5013377aa16d489717bc1ec3597c5a4976f1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_poincare_ball",
+      "statement": "∀ n : ℕ, 0 < n → ∃ CP : ℝ, 0 < CP ∧ ∀ (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∫ x in ball (0 : Euclid n) 1, (u x - (∫ y in ball (0 : Euclid n) 1, u y) / (volume (ball (0 : Euclid n) 1)).toReal) ^ 2 ≤ CP * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
