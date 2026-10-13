@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.segment_imrep-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+  "depth": 5,
+  "title": "The oriented open segment with multiplicity one is an IMRep",
+  "statement": "Let P ∈ ℕ, a, τ ∈ ℝ^P with |τ| = 1, and ℓ > 0. There is an integer multiplicity triple R (structure IMRep of the frozen contract, Simon 6.3.1) of degree 1 in U = ℝ^P such that: (i) R.carrier ⊆ [a, a + ℓτ] (segment ℝ a (a + ℓ • τ)); (ii) R.measure(ℝ^P) < ∞; (iii) R.action(ω) = ∫_{(0,ℓ)} ω(a + uτ)(τ) du for every differential 1-form ω on ℝ^P, where ω(y)(τ) is the value of the 1-covector ω(y) on the 1-tuple (τ).",
+  "lean_statement": "∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → 0 < ℓ → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.carrier ⊆ segment ℝ a (a + ℓ • τ) ∧ R.measure univ < ∞ ∧ ∀ ω : DifferentialForm (Euclid P) 1, R.action ω = ∫ u in Ioo 0 ℓ, ω (a + u • τ) (fun _ => τ)",
+  "lean_name": "cbr_cc_seg_segment_imrep",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.line_hausdorff-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.open_segment_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.line_hausdorff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.open_segment_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1f7f6f058b-a1"
+}
