@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4494358fd09e40b9db7805663e4a28867039db5d4138f6d1bb3d67b1a5e181fa",
+  "git_delta": {
+    "base_commit": "24a2a6411824d8c5ad3d261bd952b9c8ffa06bb1",
+    "candidate_commit": "b8d7b09ccd8feb8a170fe489ae4689dfb8355b95",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_io_wedge_eval_cons",
+    "diff_sha256": "dde06b2b0fc8cd0614a617484ee5813468e7ae077187f40851a708c34545c79a",
+    "source_sha256": "e1d682ed6627f87fe79175c8f08fba165f5223effb3b82c956e797378e3a2bd3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_io_wedge_eval_cons",
+      "statement": "∀ (P n : ℕ) (ν : Euclid P) (σ : Fin n → Euclid P) (α : Covector (Euclid P) n), ‖ν‖ = 1 → (∀ i, inner ℝ ν (σ i) = 0) → ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α) (Fin.cons ν σ : Fin (n + 1) → Euclid P) = α σ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
