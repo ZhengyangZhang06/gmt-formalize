@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b60b789630bd3dd0d28e39814437a59594155ab5ef8c458af6e8afb47524f2d4",
+  "git_delta": {
+    "base_commit": "ae082efa70d0d49403c15d52e979ada1299d5def",
+    "candidate_commit": "4ac7b55eff073746c2f50dc3284bf5dc4fb62ca1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bvc_indicator_totally_bounded",
+    "diff_sha256": "5d0cedcdb9fe1dd0638239e4f2ce748b05616fdb4f6800d6302482725e58841e",
+    "source_sha256": "59cbf9a9c54066b4bf56aa71718cbc542a97822cd0f1d94c5840c5ca55030cd1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bvc_indicator_totally_bounded",
+      "statement": "∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ z in Fs k, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∀ R : ℝ, 0 < R → ∀ θ : ℝ, 0 < θ → ∃ S : Finset ℕ, ∀ k, ∃ i ∈ S, volume (symmDiff (Fs k) (Fs i) ∩ ball (0 : Euclid (m + 1)) R) < ENNReal.ofReal θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
