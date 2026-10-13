@@ -582,6 +582,50 @@ theorem Submission.cbr_rlim_cutoff_error_le : ∀ (P k : ℕ) (U : Set (Euclid P
     _ ≤ ∫ x, (C ∩ B).indicator (fun _ => M) x ∂μ := norm_integral_le_of_norm_le hmi hbd
     _ = M * (μ (C ∩ B)).toReal := by
       rw [integral_indicator_const M (hCm.inter hBm), smul_eq_mul, measureReal_def, mul_comm]
+/-- A thin level band of small measure: if `C` is measurable with `μ(C), ν(C) < ∞`, `f` is
+continuous, `μ{f = t} = 0` and `δ > 0`, then some `ε > 0` has `μ(C ∩ {t − ε ≤ f ≤ t}) < δ` and
+`ν(C ∩ {t − ε < f < t}) < δ`.  The closed bands of width `1/(n+1)` decrease into the `μ`-null set
+`{f = t}` and the open ones decrease to `∅`, so by continuity from above both measures tend
+to `0`. -/
+theorem Submission.cbr_rlim_thin_band : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (C : Set (Euclid P)) (f : Euclid P → ℝ) (t δ : ℝ), MeasurableSet C → μ C < ∞ → ν C < ∞ → Continuous f → μ {x | f x = t} = 0 → 0 < δ → ∃ ε : ℝ, 0 < ε ∧ μ (C ∩ {x | t - ε ≤ f x ∧ f x ≤ t}) < ENNReal.ofReal δ ∧ ν (C ∩ {x | t - ε < f x ∧ f x < t}) < ENNReal.ofReal δ := by
+  intro P μ ν C f t δ hC hμC hνC hf hμt hδ
+  have hfm : Measurable f := hf.measurable
+  -- the widths `1 / (n + 1)` decrease, so the closed and the open bands decrease in `n`
+  have hr : Antitone fun n : ℕ => 1 / ((n : ℝ) + 1) := fun _ _ h => Nat.one_div_le_one_div h
+  have hAm : Antitone fun n : ℕ => C ∩ {x | t - 1 / ((n : ℝ) + 1) ≤ f x ∧ f x ≤ t} :=
+    fun _ _ h x hx => ⟨hx.1, (sub_le_sub_left (hr h) t).trans hx.2.1, hx.2.2⟩
+  have hBm : Antitone fun n : ℕ => C ∩ {x | t - 1 / ((n : ℝ) + 1) < f x ∧ f x < t} :=
+    fun _ _ h x hx => ⟨hx.1, (sub_le_sub_left (hr h) t).trans_lt hx.2.1, hx.2.2⟩
+  -- the closed bands shrink into the `μ`-null level set `{f = t}`
+  have hA0 : μ (⋂ n : ℕ, C ∩ {x | t - 1 / ((n : ℝ) + 1) ≤ f x ∧ f x ≤ t}) = 0 := by
+    refine measure_mono_null (fun x hx => ?_) hμt
+    rw [mem_iInter] at hx
+    refine le_antisymm (hx 0).2.2 (le_of_not_gt fun hlt => ?_)
+    obtain ⟨n, hn⟩ := exists_nat_one_div_lt (sub_pos.2 hlt)
+    linarith [(hx n).2.1]
+  -- the open bands shrink to the empty set
+  have hB0 : ν (⋂ n : ℕ, C ∩ {x | t - 1 / ((n : ℝ) + 1) < f x ∧ f x < t}) = 0 := by
+    refine measure_mono_null (fun x hx => ?_) measure_empty
+    rw [mem_iInter] at hx
+    obtain ⟨n, hn⟩ := exists_nat_one_div_lt (sub_pos.2 (hx 0).2.2)
+    exact absurd (hx n).2.1 (by linarith)
+  -- continuity from above (the first bands have finite measure): eventually both band
+  -- measures are below `δ`
+  have hδ' : (0 : ℝ≥0∞) < ENNReal.ofReal δ := ENNReal.ofReal_pos.2 hδ
+  have hA := (tendsto_measure_iInter_atTop
+    (s := fun n : ℕ => C ∩ {x | t - 1 / ((n : ℝ) + 1) ≤ f x ∧ f x ≤ t})
+    (fun _ => (hC.inter ((measurableSet_le measurable_const hfm).inter
+      (measurableSet_le hfm measurable_const))).nullMeasurableSet) hAm
+    ⟨0, ((measure_mono inter_subset_left).trans_lt hμC).ne⟩).eventually_lt_const
+    (hA0.trans_lt hδ')
+  have hB := (tendsto_measure_iInter_atTop
+    (s := fun n : ℕ => C ∩ {x | t - 1 / ((n : ℝ) + 1) < f x ∧ f x < t})
+    (fun _ => (hC.inter ((measurableSet_lt measurable_const hfm).inter
+      (measurableSet_lt hfm measurable_const))).nullMeasurableSet) hBm
+    ⟨0, ((measure_mono inter_subset_left).trans_lt hνC).ne⟩).eventually_lt_const
+    (hB0.trans_lt hδ')
+  obtain ⟨N, hN⟩ := (hA.and hB).exists
+  exact ⟨1 / ((N : ℝ) + 1), Nat.one_div_pos_of_nat, hN.1, hN.2⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
