@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Zero `n`-density of the excess `B ∖ A` (step 6 of the tangent-locality argument for a piece):
+if `Hⁿ(A ∩ B̄_ρ(x)) ≤ Cρⁿ` for `0 < ρ < r₁`, `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞`, and for every `ε > 0`
+eventually `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))`, then `ρ⁻ⁿ Hⁿ((B ∖ A) ∩ B̄_ρ(x)) → 0` as
+`ρ ↓ 0`.  With `ε = 1/2`, subadditivity and cancellation of the finite half give
+`Hⁿ(B ∩ B̄_ρ(x)) ≤ 2Cρⁿ` for small `ρ`; then `ε = δ/(2C + 1)` gives
+`Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ δρⁿ`. -/
+theorem Submission.ptd_tl_excess_density_zero : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ C r₁ : ℝ), 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → 0 < r₁ → (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)) → Tendsto (fun ρ : ℝ => μHE[n] ((B \ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro P n A B x r₀ C r₁ hr₀ hfin hr₁ hG hE
+  -- Step 1: for `ρ > 0`, `ofReal (Cρⁿ) = ofReal C · (ofReal ρ)ⁿ`
+  have hA : ∀ ρ : ℝ, 0 < ρ → ρ < r₁ →
+      μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal C * ENNReal.ofReal ρ ^ n := by
+    intro ρ hρ hρ₁
+    rw [← ENNReal.ofReal_pow hρ.le, ← ENNReal.ofReal_mul' (pow_nonneg hρ.le n)]
+    exact hG ρ hρ hρ₁
+  -- Step 2: eventually `Hⁿ(B ∩ B̄_ρ(x)) ≤ κ (ofReal ρ)ⁿ` with `κ = 2 ofReal C`
+  set κ : ℝ≥0∞ := 2 * ENNReal.ofReal C with hκ
+  have hB : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] (B ∩ closedBall x ρ) ≤ κ * ENNReal.ofReal ρ ^ n := by
+    filter_upwards [Ioo_mem_nhdsGT (lt_min hr₀ hr₁),
+      hE 2⁻¹ (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top)] with ρ hρ he
+    have hρ₀ : ρ ≤ r₀ := hρ.2.le.trans (min_le_left _ _)
+    have hρ₁ : ρ < r₁ := hρ.2.trans_le (min_le_right _ _)
+    have hβ : μHE[n] (B ∩ closedBall x ρ) ≠ ∞ :=
+      ne_top_of_le_ne_top hfin
+        (measure_mono (inter_subset_inter_right B (closedBall_subset_closedBall hρ₀)))
+    -- `B ∩ B̄_ρ(x) ⊆ (A ∩ B̄_ρ(x)) ∪ ((B ∖ A) ∩ B̄_ρ(x))`, so subadditivity applies
+    have hsub : μHE[n] (B ∩ closedBall x ρ) ≤
+        μHE[n] (A ∩ closedBall x ρ) + μHE[n] ((B \ A) ∩ closedBall x ρ) := by
+      refine (measure_mono ?_).trans (measure_union_le _ _)
+      rintro y ⟨hyB, hyρ⟩
+      by_cases hyA : y ∈ A
+      · exact Or.inl ⟨hyA, hyρ⟩
+      · exact Or.inr ⟨⟨hyB, hyA⟩, hyρ⟩
+    -- `β/2 + β/2 = β ≤ a + e ≤ a + β/2`; cancelling the finite `β/2` gives `β/2 ≤ a`
+    have hhalf : μHE[n] (B ∩ closedBall x ρ) / 2 ≤ μHE[n] (A ∩ closedBall x ρ) := by
+      refine (ENNReal.add_le_add_iff_right (ENNReal.div_ne_top hβ two_ne_zero)).1 ?_
+      rw [ENNReal.add_halves, ENNReal.div_eq_inv_mul]
+      exact hsub.trans (add_le_add le_rfl he)
+    calc μHE[n] (B ∩ closedBall x ρ)
+        = μHE[n] (B ∩ closedBall x ρ) / 2 + μHE[n] (B ∩ closedBall x ρ) / 2 :=
+          (ENNReal.add_halves _).symm
+      _ ≤ μHE[n] (A ∩ closedBall x ρ) + μHE[n] (A ∩ closedBall x ρ) := add_le_add hhalf hhalf
+      _ = 2 * μHE[n] (A ∩ closedBall x ρ) := (two_mul _).symm
+      _ ≤ 2 * (ENNReal.ofReal C * ENNReal.ofReal ρ ^ n) := by gcongr; exact hA ρ hρ.1 hρ₁
+      _ = κ * ENNReal.ofReal ρ ^ n := by rw [hκ, mul_assoc]
+  -- Step 3: for `δ > 0`, `ε = δ/(κ + 1)` gives `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ δ (ofReal ρ)ⁿ` eventually
+  rw [ENNReal.tendsto_nhds_zero]
+  intro δ hδ
+  have hκ₁ : κ + 1 ≠ ∞ :=
+    ENNReal.add_ne_top.2 ⟨ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.ofReal_ne_top,
+      ENNReal.one_ne_top⟩
+  have hκ₀ : κ + 1 ≠ 0 := by positivity
+  filter_upwards [hB, hE (δ / (κ + 1)) (ENNReal.div_pos hδ.ne' hκ₁)] with ρ hρB hρe
+  -- Step 4: hence `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) / (ofReal ρ)ⁿ ≤ δ`
+  refine ENNReal.div_le_of_le_mul ?_
+  calc μHE[n] ((B \ A) ∩ closedBall x ρ)
+      ≤ δ / (κ + 1) * μHE[n] (B ∩ closedBall x ρ) := hρe
+    _ ≤ δ / (κ + 1) * ((κ + 1) * ENNReal.ofReal ρ ^ n) := by
+        gcongr
+        exact hρB.trans (by gcongr; exact le_self_add)
+    _ = δ * ENNReal.ofReal ρ ^ n := by rw [← mul_assoc, ENNReal.div_mul_cancel hκ₀ hκ₁]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
