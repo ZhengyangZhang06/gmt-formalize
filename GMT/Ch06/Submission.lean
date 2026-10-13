@@ -390,6 +390,21 @@ theorem Submission.deformation_ipl_mwc_pi_cofactor_leibniz : ∀ (r : ℕ) (N : 
       Matrix.cons_val_succ, Pi.single_apply]
     split_ifs <;> ring
   rw [← h1, h2]
+/-- Schwarz symmetry of mixed directional second derivatives of a `C²` function on `ℝ^k`:
+`∂_v (∂_u f)(x) = ∂_u (∂_v f)(x)`. -/
+theorem Submission.deformation_ipl_mwc_pi_hessian_symm :
+    ∀ (k : ℕ) (f : Eucl k → ℝ), ContDiff ℝ 2 f → ∀ x u v : Eucl k,
+      fderiv ℝ (fun y : Eucl k => fderiv ℝ f y u) x v =
+        fderiv ℝ (fun y : Eucl k => fderiv ℝ f y v) x u := by
+  intro k f hf x u v
+  -- `Df` is `C¹`, hence differentiable at `x`; by Schwarz, `D²f(x)` is symmetric.
+  have h1 : ContDiff ℝ 1 (fderiv ℝ f) := hf.fderiv_right (by norm_num)
+  have hd : DifferentiableAt ℝ (fderiv ℝ f) x := (h1.differentiable (by norm_num)) x
+  have hs : IsSymmSndFDerivAt ℝ f x := hf.contDiffAt.isSymmSndFDerivAt (by simp)
+  -- Differentiating `y ↦ Df(y) u` at `x` in direction `v` gives `D²f(x) v u`.
+  rw [fderiv_clm_apply hd (differentiableAt_const u),
+    fderiv_clm_apply hd (differentiableAt_const v)]
+  simpa using hs v u
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
