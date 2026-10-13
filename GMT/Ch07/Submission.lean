@@ -451,6 +451,555 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial retraction onto the closed unit ball is nonexpansive towards the ball** (step 0(d)
+of `regcomp_exists_smooth_unit_form_approx`).  If `‖y‖ ≤ 1`, then
+`‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖`: for `‖x‖ ≤ 1` the retraction fixes `x`; for `s = ‖x‖ > 1`,
+`‖x - y‖² - ‖s⁻¹ • x - y‖² = s² - 1 - 2(1 - s⁻¹)⟨x, y⟩ ≥ (s - 1)²` by Cauchy–Schwarz. -/
+theorem Submission.regcomp_norm_radial_retraction_sub_le : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (x y : E), ‖y‖ ≤ 1 → ‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖ := by
+  intro E _ _ x y hy
+  rcases le_or_gt ‖x‖ 1 with hx | hx
+  · -- Step 1: if `‖x‖ ≤ 1`, the retraction fixes `x`.
+    rw [max_eq_left hx, inv_one, one_smul]
+  · -- Steps 2–5: `s = ‖x‖ > 1`; compare the squared distances.
+    rw [max_eq_right hx.le]
+    have hs : 0 < ‖x‖ := one_pos.trans hx
+    -- Cauchy–Schwarz with `‖y‖ ≤ 1`: `⟨x, y⟩ ≤ s`; and `s⁻¹ < 1`, `s⁻¹ s = 1`.
+    have hxy : inner ℝ x y ≤ ‖x‖ :=
+      (real_inner_le_norm x y).trans (mul_le_of_le_one_right hs.le hy)
+    have hinv : ‖x‖⁻¹ < 1 := inv_lt_one_of_one_lt₀ hx
+    have hcancel : ‖x‖⁻¹ * ‖x‖ = 1 := inv_mul_cancel₀ hs.ne'
+    -- `‖s⁻¹ • x - y‖² = 1 - 2s⁻¹⟨x, y⟩ + ‖y‖²`.
+    have h2 : ‖‖x‖⁻¹ • x - y‖ ^ 2 = 1 - 2 * (‖x‖⁻¹ * inner ℝ x y) + ‖y‖ ^ 2 := by
+      rw [norm_sub_sq_real, norm_smul, real_inner_smul_left, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 hs), hcancel, one_pow]
+    -- The difference of the squares is at least `(s - 1)² ≥ 0`.
+    have key : ‖‖x‖⁻¹ • x - y‖ ^ 2 ≤ ‖x - y‖ ^ 2 := by
+      rw [h2, norm_sub_sq_real]
+      nlinarith [mul_nonneg (sub_nonneg.2 hinv.le) (sub_nonneg.2 hxy), sq_nonneg (‖x‖ - 1)]
+    exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 key
+
+/-- **The Euclidean coefficient norm** `|α|_E = covectorEuclideanNorm α` on `Λⁿ(ℝᴾ)` (Simon
+6.1.15) is a continuous seminorm dominated by the operator norm, and the radial retraction
+`v ↦ (max 1 |v|_E)⁻¹ v` onto its unit ball does not increase the distance to points of that ball.
+
+The coefficient map `Φ α = (ev_j α)_j ∈ ℓ²(Fin n → Fin P)`, with
+`ev_j α = α(e_{j 0}, …, e_{j (n-1)})` for increasing `j` and `0` otherwise, is continuous linear
+with `‖Φ α‖ = |α|_E` (`EuclideanSpace.norm_eq`).  So (i)–(iii) are those of `‖·‖ ∘ Φ`, (iv) holds
+with `c = 1 + ‖Φ‖`, and (v) is `regcomp_norm_radial_retraction_sub_le` for `x = Φ v`, `y = Φ b`. -/
+theorem Submission.regcomp_covectorEuclideanNorm_seminorm_retract : ∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) ∧ (∀ α β : Covector (Euclid P) n, covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β) ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ c * ‖α‖) ∧ ∀ v b : Covector (Euclid P) n, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v - b) ≤ covectorEuclideanNorm (v - b) := by
+  intro P n
+  classical
+  -- `ev j α = α(e_{j 0}, …, e_{j (n-1)})` for increasing `j`, and `0` otherwise
+  let ev : (Fin n → Fin P) → Covector (Euclid P) n →L[ℝ] ℝ := fun j =>
+    if StrictMono j then
+      ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+        (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (j i))
+    else 0
+  -- the coefficient map `Φ : Λⁿ → ℓ²(Fin n → Fin P)`
+  let Φ : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P) :=
+    (EuclideanSpace.equiv (Fin n → Fin P) ℝ).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.pi ev)
+  have hΦ : ∀ α, ‖Φ α‖ = covectorEuclideanNorm α := by
+    intro α
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    by_cases hj : StrictMono j <;> simp [Φ, ev, hj]
+  refine ⟨1 + ‖Φ‖, by positivity, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (continuous_norm.comp Φ.continuous).congr hΦ
+  · intro α β
+    simpa only [← hΦ, map_add] using norm_add_le (Φ α) (Φ β)
+  · intro t α
+    simp only [← hΦ, map_smul, norm_smul, Real.norm_eq_abs]
+  · intro α
+    rw [← hΦ]
+    exact (Φ.le_opNorm α).trans
+      (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left zero_le_one) (norm_nonneg α))
+  · intro v b hb
+    rw [← hΦ] at hb
+    simp only [← hΦ, map_sub, map_smul]
+    exact Submission.regcomp_norm_radial_retraction_sub_le (EuclideanSpace ℝ (Fin n → Fin P))
+      (Φ v) (Φ b) hb
+/-- Operator norm of an `n`-covector from its values on the standard basis: if
+`|α(e_{j(0)}, …, e_{j(n−1)})| ≤ C` for every `j : Fin n → Fin P` (`e` the standard orthonormal
+basis of `ℝᴾ`), then `‖α‖ ≤ Pⁿ C`.  Expanding each `v_k = Σᵢ (v_k)ᵢ eᵢ`, multilinearity gives
+`α(v) = Σ_r (Π_k (v_k)_{r(k)}) α(e ∘ r)` over the `Pⁿ` tuples `r : Fin n → Fin P`, and
+`|(v_k)ᵢ| ≤ ‖v_k‖` bounds each term by `C Π_k ‖v_k‖`. -/
+theorem Submission.regcomp_covector_opNorm_le_of_basis_bound : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (C : ℝ), 0 ≤ C → (∀ j : Fin n → Fin P, |α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))| ≤ C) → ‖α‖ ≤ (P : ℝ) ^ n * C := by
+  intro P n α C hC hbound
+  refine ContinuousAlternatingMap.opNorm_le_bound α (by positivity) fun v => ?_
+  -- multilinear expansion in the standard basis
+  have hexp : α v = ∑ r : Fin n → Fin P,
+      (∏ k, v k (r k)) * α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (r k)) := by
+    conv_lhs => rw [show v = fun k => ∑ i, v k i • EuclideanSpace.basisFun (Fin P) ℝ i from
+      funext fun k => ((EuclideanSpace.basisFun (Fin P) ℝ).sum_repr (v k)).symm]
+    rw [α.map_sum]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    rw [α.map_smul_univ, smul_eq_mul]
+  rw [hexp]
+  calc ‖∑ r : Fin n → Fin P,
+        (∏ k, v k (r k)) * α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (r k))‖
+      ≤ ∑ r : Fin n → Fin P,
+        ‖(∏ k, v k (r k)) * α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (r k))‖ :=
+        norm_sum_le _ _
+    _ ≤ ∑ _r : Fin n → Fin P, (∏ k, ‖v k‖) * C := by
+        refine Finset.sum_le_sum fun r _ => ?_
+        rw [norm_mul, norm_prod]
+        refine mul_le_mul ?_ ?_ (norm_nonneg _) (by positivity)
+        · exact Finset.prod_le_prod₀ (fun k _ => norm_nonneg _) fun k _ =>
+            PiLp.norm_apply_le (v k) (r k)
+        · simpa [Real.norm_eq_abs] using hbound r
+    _ = (P : ℝ) ^ n * C * ∏ k, ‖v k‖ := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+          Fintype.card_fin, nsmul_eq_mul]
+        push_cast
+        ring
+
+/-- **Smooth unit approximation inside the support.**  Let `f : ℝᴾ → Λⁿ(ℝᴾ)` be continuous with
+compact support and `|f|_E ≤ 1`, where `|·|_E = covectorEuclideanNorm` (Simon 6.1.15).  For every
+`κ > 0` there is a test form `h` with `support h ⊆ support f`, `|h|_E ≤ 1` and `|h - f|_E ≤ κ`.
+
+Take `c` with `|α|_E ≤ c ‖α‖` from `regcomp_covectorEuclideanNorm_seminorm_retract` and
+`δ = min (1/2) (κ/2)`.  Smooth partitions of unity give a `C^∞` map `h` with
+`‖h - (1 - δ) • f‖ < δ / c` that vanishes wherever `f` does.  This is the argument of Mathlib's
+`Continuous.exists_contDiff_approx`, run in place because `Mathlib.Geometry.Manifold.SmoothApprox`
+is outside the contract imports.  So `tsupport h ⊆ tsupport f` is compact,
+`|h|_E < δ + (1 - δ) = 1` and `|h - f|_E < δ + δ ≤ κ`. -/
+theorem Submission.regcomp_exists_smooth_unit_form_support_approx : ∀ (P n : ℕ) (f : Euclid P → Covector (Euclid P) n), Continuous f → HasCompactSupport f → (∀ z, covectorEuclideanNorm (f z) ≤ 1) → ∀ κ : ℝ, 0 < κ → ∃ h : DifferentialForm (Euclid P) n, IsTestForm h ∧ support h ⊆ support f ∧ (∀ z, covectorEuclideanNorm (h z) ≤ 1) ∧ ∀ z, covectorEuclideanNorm (h z - f z) ≤ κ := by
+  intro P n f hf hfc hf1 κ hκ
+  -- (0) `|·|_E` is a seminorm with `|α|_E ≤ c ‖α‖`
+  obtain ⟨c, hc, -, hadd, hsmul, hle, -⟩ :=
+    Submission.regcomp_covectorEuclideanNorm_seminorm_retract P n
+  -- (1) `δ = min (1/2) (κ/2)`
+  obtain ⟨δ, hδ0, hδ1, hδκ⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 2 ∧ 2 * δ ≤ κ :=
+    ⟨min (1 / 2) (κ / 2), lt_min (by norm_num) (half_pos hκ), min_le_left _ _, by
+      linarith [min_le_right (1 / 2 : ℝ) (κ / 2)]⟩
+  -- (2) a `C^∞` `g` with `dist (g x) ((1 - δ) • f x) < δ / c`, and `g x = 0` where `f x = 0`
+  have hr : 0 < δ / c := div_pos hδ0 hc
+  have hFc : Continuous fun x => (1 - δ) • f x := hf.const_smul (1 - δ)
+  obtain ⟨g, hg⟩ := exists_contMDiffMap_forall_mem_convex_of_local (n := ⊤)
+    (modelWithCornersSelf ℝ (Euclid P))
+    (t := fun x => {y | dist y ((1 - δ) • f x) < δ / c ∧ (f x = 0 → y = 0)})
+    (fun x => (convex_ball ((1 - δ) • f x) (δ / c)).inter
+      (convex_singleton (0 : Covector (Euclid P) n)).setOfPred_const_imp)
+    (fun x => by
+      have h1 : ∀ᶠ y in 𝓝 x, dist ((1 - δ) • f x) ((1 - δ) • f y) < δ / c :=
+        (hFc.continuousAt.eventually_mem (ball_mem_nhds _ hr)).mono fun y hy => mem_ball'.1 hy
+      have h2 : ∀ᶠ y in 𝓝 x,
+          dist ((1 - δ) • f x) ((1 - δ) • f y) < δ / c ∧ (f y = 0 → (1 - δ) • f x = 0) := by
+        by_cases hx : f x = 0
+        · exact h1.mono fun y hy => ⟨hy, fun _ => by rw [hx, smul_zero]⟩
+        · exact (h1.and (hf.continuousAt.eventually_ne hx)).mono fun y hy =>
+            ⟨hy.1, fun h => absurd h hy.2⟩
+      exact ⟨_, h2, fun _ => (1 - δ) • f x, contMDiffOn_const, fun y hy => hy⟩)
+  -- (3) `support g ⊆ support f`
+  have hsupp : support g ⊆ support f := fun x hx hfx => hx ((hg x).2 hfx)
+  -- (5) `|g x - (1 - δ) • f x|_E < δ`
+  have hgF : ∀ x, covectorEuclideanNorm (g x - (1 - δ) • f x) < δ := by
+    intro x
+    calc covectorEuclideanNorm (g x - (1 - δ) • f x) ≤ c * ‖g x - (1 - δ) • f x‖ := hle _
+      _ = c * dist (g x) ((1 - δ) • f x) := by rw [dist_eq_norm]
+      _ < c * (δ / c) := mul_lt_mul_of_pos_left (hg x).1 hc
+      _ = δ := by field_simp
+  -- (6) `|g z|_E ≤ δ + (1 - δ) = 1`
+  have hunit : ∀ z, covectorEuclideanNorm (g z) ≤ 1 := by
+    intro z
+    calc covectorEuclideanNorm (g z)
+        = covectorEuclideanNorm ((g z - (1 - δ) • f z) + (1 - δ) • f z) := by rw [sub_add_cancel]
+      _ ≤ covectorEuclideanNorm (g z - (1 - δ) • f z) + covectorEuclideanNorm ((1 - δ) • f z) :=
+          hadd _ _
+      _ = covectorEuclideanNorm (g z - (1 - δ) • f z) + (1 - δ) * covectorEuclideanNorm (f z) := by
+          rw [hsmul, abs_of_nonneg (by linarith)]
+      _ ≤ δ + (1 - δ) * 1 :=
+          add_le_add (hgF z).le (mul_le_mul_of_nonneg_left (hf1 z) (by linarith))
+      _ = 1 := by ring
+  -- (7) `|g z - f z|_E ≤ δ + δ ≤ κ`
+  have happrox : ∀ z, covectorEuclideanNorm (g z - f z) ≤ κ := by
+    intro z
+    have hsplit : g z - f z = (g z - (1 - δ) • f z) + (-δ) • f z := by
+      module
+    calc covectorEuclideanNorm (g z - f z)
+        = covectorEuclideanNorm ((g z - (1 - δ) • f z) + (-δ) • f z) := by rw [hsplit]
+      _ ≤ covectorEuclideanNorm (g z - (1 - δ) • f z) + covectorEuclideanNorm ((-δ) • f z) :=
+          hadd _ _
+      _ = covectorEuclideanNorm (g z - (1 - δ) • f z) + δ * covectorEuclideanNorm (f z) := by
+          rw [hsmul, abs_neg, abs_of_pos hδ0]
+      _ ≤ δ + δ * 1 := add_le_add (hgF z).le (mul_le_mul_of_nonneg_left (hf1 z) hδ0.le)
+      _ ≤ κ := by linarith
+  -- (4), (8) `tsupport g ⊆ tsupport f` is compact, so `g` is a test form
+  exact ⟨g, ⟨g.contMDiff.contDiff, hfc.mono hsupp⟩, hsupp, hunit, happrox⟩
+
+/-- **Continuous unit-form approximation in `L¹(ν)`**, the first stage of the approximation of
+unit covector fields by test forms behind the mass formula `M_W(τ(M, θ, ξ)) = ∫_{M ∩ W} θ dHⁿ`
+(Simon 6.3.2(3); Euclidean coefficient norm `|·|_E` of 6.1.15, 6.2.4).  Let `ν` be finite, `O`
+open, `K ⊆ O` compact, and `g` a `ν`-integrable `n`-covector field with `|g|_E ≤ 1` and `g = 0`
+off `K`.  Then for `ε > 0` some continuous `f` with compact support in `O` has `|f|_E ≤ 1` and
+`∫ |f − g|_E dν ≤ ε`.  `ν` is regular, so `g` has a continuous `L¹(ν)`-approximation `g₀`
+(indicators of measurable sets are approximated by Urysohn functions); cut it off by an Urysohn
+function `χ`, equal to `1` on `K` and to `0` off `int L` for a compact `L` with `K ⊆ int L`,
+`L ⊆ O`; then compose with the radial retraction `v ↦ (max 1 |v|_E)⁻¹ v` onto the unit
+`|·|_E`-ball, which does not increase `|·|_E`-distances to points of that ball. -/
+theorem Submission.regcomp_exists_continuous_unit_form_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (O K : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen O → IsCompact K → K ⊆ O → Integrable g ν → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → (∀ x, x ∉ K → g x = 0) → ∀ ε : ℝ, 0 < ε → ∃ f : Euclid P → Covector (Euclid P) n, Continuous f ∧ HasCompactSupport f ∧ tsupport f ⊆ O ∧ (∀ z, covectorEuclideanNorm (f z) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) ∂ν ≤ ENNReal.ofReal ε := by
+  intro P n ν O K g hν hO hK hKO hg hg1 hgK ε hε
+  -- Step 0: the norm facts and the radial retraction `π v = (max 1 |v|_E)⁻¹ • v`
+  obtain ⟨c, hc, hcont, -, hsmul, hle, hretr⟩ :=
+    Submission.regcomp_covectorEuclideanNorm_seminorm_retract P n
+  let π : Covector (Euclid P) n → Covector (Euclid P) n :=
+    fun v => (max 1 (covectorEuclideanNorm v))⁻¹ • v
+  have hmax : ∀ v : Covector (Euclid P) n, 0 < max 1 (covectorEuclideanNorm v) :=
+    fun v => zero_lt_one.trans_le (le_max_left _ _)
+  have hπc : Continuous π :=
+    ((continuous_const.max hcont).inv₀ fun v => (hmax v).ne').smul continuous_id
+  have hπ1 : ∀ v, covectorEuclideanNorm (π v) ≤ 1 := fun v => by
+    change covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v) ≤ 1
+    rw [hsmul, abs_of_pos (inv_pos.2 (hmax v)), inv_mul_le_iff₀ (hmax v), mul_one]
+    exact le_max_right _ _
+  -- Step 1: `ν` is finite, hence regular.  For measurable `s`, an Urysohn function `φ`, equal to
+  -- `1` on a compact `F ⊆ s` and to `0` off an open `V ⊇ s`, has `‖φ • a − 1_s a‖ ≤ ‖1_{V \ F} a‖`
+  -- with `ν (V \ F)` small; so by density some continuous `g₀` has `∫ ‖g − g₀‖ dν ≤ ε / c`, and
+  -- as `|·|_E ≤ c ‖·‖`, `∫ |g₀ − g|_E dν ≤ ε`
+  have hind : ∀ (a : Covector (Euclid P) n) ⦃s : Set (Euclid P)⦄, MeasurableSet s → ν s < ∞ →
+      ∀ {δ : ℝ≥0∞}, δ ≠ 0 → ∃ φ : Euclid P → Covector (Euclid P) n,
+        eLpNorm (φ - s.indicator fun _ => a) 1 ν ≤ δ ∧ Continuous φ := by
+    intro a s hs _ δ hδ
+    obtain ⟨η, hη, hηδ⟩ := exists_eLpNorm_indicator_le (μ := ν) ENNReal.one_ne_top a hδ
+    have hη2 : (η : ℝ≥0∞) / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.coe_pos.2 hη).ne').ne'
+    obtain ⟨F, hFs, hF, hsF⟩ := hs.exists_isCompact_sdiff_lt (measure_ne_top ν s) hη2
+    obtain ⟨V, hsV, hV, -, hVs⟩ := hs.exists_isOpen_sdiff_lt (measure_ne_top ν s) hη2
+    obtain ⟨φ, hφF, hφV, -, hφ⟩ := exists_continuous_one_zero_of_isCompact hF hV.isClosed_compl
+      (disjoint_compl_right_iff_subset.2 (hFs.trans hsV))
+    have hφc : Continuous fun x => φ x • a := φ.continuous.smul continuous_const
+    refine ⟨fun x => φ x • a, (eLpNorm_mono (hφc.aestronglyMeasurable.sub
+      (aestronglyMeasurable_const.indicator hs)) fun x => ?_).trans (hηδ (V \ F) ?_
+      (hV.measurableSet.diff hF.measurableSet).nullMeasurableSet), hφc⟩
+    · -- pointwise: `0` on `F` and off `V`, at most `‖a‖` on `V \ F`
+      show ‖φ x • a - s.indicator (fun _ => a) x‖ ≤ ‖(V \ F).indicator (fun _ => a) x‖
+      by_cases hxF : x ∈ F
+      · rw [hφF hxF, indicator_of_mem (hFs hxF), Pi.one_apply, one_smul, sub_self, norm_zero]
+        exact norm_nonneg _
+      by_cases hxV : x ∈ V
+      · rw [indicator_of_mem (show x ∈ V \ F from ⟨hxV, hxF⟩)]
+        by_cases hxs : x ∈ s
+        · rw [indicator_of_mem hxs]
+          calc ‖φ x • a - a‖ = ‖(φ x - 1) • a‖ := by rw [sub_smul (φ x) 1 a, one_smul]
+            _ = |φ x - 1| * ‖a‖ := by rw [norm_smul, Real.norm_eq_abs]
+            _ ≤ 1 * ‖a‖ := by
+                gcongr
+                rw [abs_le]
+                constructor <;> linarith [(hφ x).1, (hφ x).2]
+            _ = ‖a‖ := one_mul _
+        · rw [indicator_of_notMem hxs, sub_zero, norm_smul, Real.norm_eq_abs,
+            abs_of_nonneg (hφ x).1]
+          exact mul_le_of_le_one_left (norm_nonneg _) (hφ x).2
+      · rw [hφV (mem_compl hxV), Pi.zero_apply, zero_smul,
+          indicator_of_notMem fun h => hxV (hsV h), sub_zero, norm_zero]
+        exact norm_nonneg _
+    · -- `V \ F ⊆ (V \ s) ∪ (s \ F)`
+      calc ν (V \ F) ≤ ν ((V \ s) ∪ (s \ F)) := measure_mono fun x hx => by
+            by_cases hxs : x ∈ s
+            exacts [Or.inr ⟨hxs, hx.2⟩, Or.inl ⟨hx.1, hxs⟩]
+        _ ≤ ν (V \ s) + ν (s \ F) := measure_union_le _ _
+        _ ≤ η / 2 + η / 2 := add_le_add hVs.le hsF.le
+        _ = η := ENNReal.add_halves _
+  obtain ⟨g₀, hgg₀, hg₀c⟩ := (memLp_one_iff_integrable.2 hg).induction_dense ENNReal.one_ne_top
+    Continuous hind (fun _ _ h₁ h₂ => h₁.add h₂) (ENNReal.ofReal_pos.2 (div_pos hε hc)).ne'
+  rw [eLpNorm_one_eq_lintegral_enorm (hg.aestronglyMeasurable.sub hg₀c.aestronglyMeasurable)]
+    at hgg₀
+  have h₀ : ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g₀ x - g x)) ∂ν ≤ ENNReal.ofReal ε :=
+    calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g₀ x - g x)) ∂ν
+        ≤ ∫⁻ x, ENNReal.ofReal c * ‖(g - g₀) x‖ₑ ∂ν := lintegral_mono fun x => by
+          rw [← ofReal_norm, ← ENNReal.ofReal_mul hc.le, Pi.sub_apply, norm_sub_rev]
+          exact ENNReal.ofReal_le_ofReal (hle _)
+      _ = ENNReal.ofReal c * ∫⁻ x, ‖(g - g₀) x‖ₑ ∂ν :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal c * ENNReal.ofReal (ε / c) := by gcongr
+      _ = ENNReal.ofReal ε := by rw [← ENNReal.ofReal_mul hc.le, mul_div_cancel₀ _ hc.ne']
+  -- Step 2: a compact `L` with `K ⊆ int L`, `L ⊆ O`, and an Urysohn cutoff `χ`, `1` on `K` and
+  -- `0` off `int L`; since `g = χ • g`, `|χ • g₀ − g|_E = χ |g₀ − g|_E ≤ |g₀ − g|_E`
+  obtain ⟨L, hL, hKL, hLO⟩ := exists_compact_between hK hO hKO
+  obtain ⟨χ, hχK, hχL, -, hχ⟩ := exists_continuous_one_zero_of_isCompact hK
+    isOpen_interior.isClosed_compl (disjoint_compl_right_iff_subset.2 hKL)
+  have hχ0 : ∀ x, x ∉ L → χ x = 0 := fun x hx => hχL fun hx' => hx (interior_subset hx')
+  have hgχ : ∀ x, χ x • g x = g x := by
+    intro x
+    by_cases hx : x ∈ K
+    · rw [hχK hx, Pi.one_apply, one_smul]
+    · rw [hgK x hx, smul_zero]
+  have h₁ : ∀ x, covectorEuclideanNorm (χ x • g₀ x - g x) ≤ covectorEuclideanNorm (g₀ x - g x) :=
+    fun x => calc covectorEuclideanNorm (χ x • g₀ x - g x)
+        = covectorEuclideanNorm (χ x • (g₀ x - g x)) := by rw [smul_sub, hgχ x]
+      _ = χ x * covectorEuclideanNorm (g₀ x - g x) := by rw [hsmul, abs_of_nonneg (hχ x).1]
+      _ ≤ covectorEuclideanNorm (g₀ x - g x) :=
+          mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hχ x).2
+  -- Step 3: `f = π ∘ (χ • g₀)` is continuous, vanishes off `L` (`π 0 = 0`) and has `|f|_E ≤ 1`
+  have hfL : support (fun x => π (χ x • g₀ x)) ⊆ L := fun x hx => by
+    by_contra hxL
+    exact hx (show π (χ x • g₀ x) = 0 by rw [hχ0 x hxL, zero_smul]; exact smul_zero _)
+  have hfL' : tsupport (fun x => π (χ x • g₀ x)) ⊆ L := closure_minimal hfL hL.isClosed
+  refine ⟨fun x => π (χ x • g₀ x), hπc.comp (χ.continuous.smul hg₀c),
+    hL.of_isClosed_subset (isClosed_tsupport _) hfL', hfL'.trans hLO, fun z => hπ1 _, ?_⟩
+  -- Step 4: `|f − g|_E ≤ |χ • g₀ − g|_E ≤ |g₀ − g|_E` pointwise, as `|g|_E ≤ 1`; integrate
+  exact (lintegral_mono fun x => ENNReal.ofReal_le_ofReal
+    ((hretr _ _ (hg1 x)).trans (h₁ x))).trans h₀
+/-- **Basis independence of `Σ_j α(b ∘ j)²`** (Simon 6.1): for an `n`-covector `α` on `ℝᴾ` and
+orthonormal bases `b`, `b'` of `ℝᴾ`, `Σ_{j : Fin n → Fin P} α(b_{j 0}, …, b_{j (n-1)})²` is the same
+for `b` and `b'`.  Expand `bᵢ = Σₛ ⟨b'ₛ, bᵢ⟩ b'ₛ` in every slot (multilinearity), square and sum
+over `j`; the `j`-sum factors over the slots, and `Σᵢ ⟨b'ₛ, bᵢ⟩⟨bᵢ, b'ₜ⟩ = ⟨b'ₛ, b'ₜ⟩ = δₛₜ`
+(Parseval for `b`) kills every cross term. -/
+theorem Submission.regcomp_covector_sq_sum_basis_invariant : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (b b' : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2 = ∑ j : Fin n → Fin P, (α (fun k => b' (j k))) ^ 2 := by
+  intro P n α b b'
+  classical
+  -- `c i s = ⟨b'ₛ, bᵢ⟩`, the coordinates of `bᵢ` in `b'`
+  set c : Fin P → Fin P → ℝ := fun i s => inner ℝ (b' s) (b i) with hc
+  -- multilinearity: `α(b ∘ j) = Σ_a (Πₖ c(j k, a k)) α(b' ∘ a)`
+  have hexp : ∀ j : Fin n → Fin P, α (fun k => b (j k)) =
+      ∑ a : Fin n → Fin P, (∏ k, c (j k) (a k)) * α (fun k => b' (a k)) := by
+    intro j
+    have hb : (fun k => b (j k)) = fun k => ∑ s, c (j k) s • b' s :=
+      funext fun k => (b'.sum_repr' (b (j k))).symm
+    rw [hb, α.map_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [← smul_eq_mul, ← α.map_smul_univ]
+  -- Parseval for `b` and orthonormality of `b'`: `Σᵢ c(i, s) c(i, t) = δₛₜ`
+  have hdelta : ∀ s t : Fin P, ∑ i, c i s * c i t = if s = t then 1 else 0 := by
+    intro s t
+    have h1 : ∑ i, c i s * c i t = inner ℝ (b' s) (b' t) := by
+      rw [← b.sum_inner_mul_inner (b' s) (b' t)]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [hc]
+      rw [real_inner_comm (b' t) (b i)]
+    rw [h1]
+    exact (orthonormal_iff_ite.mp b'.orthonormal) s t
+  -- `Σ_j Πₖ c(j k, a k) c(j k, a' k) = Πₖ Σᵢ c(i, a k) c(i, a' k) = δ_{a a'}`
+  have hT : ∀ a a' : Fin n → Fin P,
+      ∑ j : Fin n → Fin P, ∏ k, (c (j k) (a k) * c (j k) (a' k)) = if a = a' then 1 else 0 := by
+    intro a a'
+    rw [← Fintype.prod_sum (fun k i => c i (a k) * c i (a' k))]
+    simp_rw [hdelta]
+    split_ifs with h
+    · subst h
+      simp
+    · obtain ⟨k, hk⟩ := Function.ne_iff.mp h
+      exact Finset.prod_eq_zero (Finset.mem_univ k) (ite_eq_right hk)
+  calc ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2
+      = ∑ j : Fin n → Fin P, ∑ a : Fin n → Fin P, ∑ a' : Fin n → Fin P,
+          (α (fun k => b' (a k)) * α (fun k => b' (a' k))) *
+            ∏ k, (c (j k) (a k) * c (j k) (a' k)) := by
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hexp j, sq, Finset.sum_mul_sum]
+        refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun a' _ => ?_
+        rw [Finset.prod_mul_distrib]
+        ring
+    _ = ∑ a : Fin n → Fin P, ∑ a' : Fin n → Fin P,
+          (α (fun k => b' (a k)) * α (fun k => b' (a' k))) *
+            ∑ j : Fin n → Fin P, ∏ k, (c (j k) (a k) * c (j k) (a' k)) := by
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun a' _ => ?_
+        rw [Finset.mul_sum]
+    _ = ∑ a : Fin n → Fin P, (α (fun k => b' (a k))) ^ 2 := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        simp_rw [hT]
+        rw [Finset.sum_eq_single a]
+        · simp [sq]
+        · intro a' _ hne
+          simp [Ne.symm hne]
+        · intro h
+          exact absurd (Finset.mem_univ a) h
+/-- **Simon 6.1.2, 6.1.5** (the Euclidean coefficient norm in the standard basis `e`):
+`Σ_{j : Fin n → Fin P} α(e_{j(0)}, …, e_{j(n−1)})² = n! |α|_E²`.  Tuples `j` with a repeated
+index contribute `0` (alternation), and `(I, σ) ↦ I ∘ σ` is a bijection from the strictly
+increasing `I` and the permutations `σ` of `Fin n` onto the injective `j`, with
+`α(e_{I ∘ σ}) = sgn σ · α(e_I)`. -/
+theorem Submission.regcomp_covector_sq_sum_basisFun : ∀ (P n : ℕ) (α : Covector (Euclid P) n), ∑ j : Fin n → Fin P, (α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
+  intro P n α
+  classical
+  -- `|α|_E² = Σ_I [I strictly increasing] α(e_I)²`, so `n! |α|_E² = Σ_{(I, σ)} α(e_I)²` over
+  -- strictly increasing `I` and `σ ∈ Perm(Fin n)`
+  unfold covectorEuclideanNorm
+  rw [Real.sq_sqrt (Finset.sum_nonneg fun I _ => by positivity), ← Finset.sum_filter,
+    Finset.mul_sum]
+  have hcard : ∀ x : ℝ, (n.factorial : ℝ) * x = ∑ _σ : Equiv.Perm (Fin n), x := fun x => by
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  simp only [hcard]
+  rw [← Finset.sum_product']
+  -- alternation: non-injective `j` contribute `0`
+  have hzero : ∀ j : Fin n → Fin P, ¬ Injective j →
+      α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k)) = 0 := fun j hj =>
+    α.map_eq_zero_of_not_injective _
+      fun h => hj (Injective.of_comp (f := ⇑(EuclideanSpace.basisFun (Fin P) ℝ)) h)
+  rw [← Finset.sum_filter_of_ne (p := Injective) fun j _ hne => by
+    by_contra hj
+    exact hne (by rw [hzero j hj]; norm_num)]
+  symm
+  -- `(I, σ) ↦ I ∘ σ` is a bijection onto the injective `j`, and `α(e_{I ∘ σ}) = sgn σ · α(e_I)`
+  refine Finset.sum_bij (fun p _ => fun k => p.1 (p.2 k)) ?_ ?_ ?_ ?_
+  · intro p hp
+    simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp ⊢
+    exact hp.injective.comp p.2.injective
+  · -- equal ranges force `I = I'`, and then `σ = σ'` by injectivity of `I`
+    intro p hp q hq hpq
+    simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp hq
+    have hrange : Set.range p.1 = Set.range q.1 := by
+      rw [← EquivLike.range_comp p.1 p.2, ← EquivLike.range_comp q.1 q.2]
+      exact congrArg Set.range hpq
+    have hI : p.1 = q.1 := (StrictMono.range_inj_of_wellFoundedLT hp hq).mp hrange
+    have hσ : p.2 = q.2 := by
+      ext k
+      have := congr_fun hpq k
+      rw [hI] at this
+      exact congrArg Fin.val (hq.injective this)
+    exact Prod.ext hI hσ
+  · -- `j ∘ Tuple.sort j` is monotone and injective, hence strictly increasing
+    intro j hj
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hj
+    refine ⟨(j ∘ Tuple.sort j, (Tuple.sort j)⁻¹), ?_, ?_⟩
+    · simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true]
+      exact (Tuple.monotone_sort j).strictMono_of_injective (hj.comp (Tuple.sort j).injective)
+    · funext k
+      simp
+  · intro p _
+    have hperm : α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 (p.2 k))) =
+        Equiv.Perm.sign p.2 • α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 k)) :=
+      α.toAlternatingMap.map_perm (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 k)) p.2
+    dsimp only
+    rw [hperm]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign p.2) with h | h <;> simp [h]
+
+/-- **Simon 6.1.2, 6.1.5** in an arbitrary orthonormal basis (the coefficient norm behind
+Remark 6.3.2(3)): for an `n`-covector `α` on `ℝᴾ` and an orthonormal basis `f` of `ℝᴾ`,
+`Σ_{j : Fin n → Fin P} α(f_{j(0)}, …, f_{j(n−1)})² = n! |α|_E²`.  The sum is the same for every
+orthonormal basis (`regcomp_covector_sq_sum_basis_invariant` with `b' = e`, the standard basis),
+and for `e` it is `n! |α|_E²` (`regcomp_covector_sq_sum_basisFun`). -/
+theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (f : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => f (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
+  intro P n α f
+  rw [Submission.regcomp_covector_sq_sum_basis_invariant P n α f
+    (EuclideanSpace.basisFun (Fin P) ℝ)]
+  exact Submission.regcomp_covector_sq_sum_basisFun P n α
+
+/-- **Evaluation on an orthonormal frame is bounded by the Euclidean coefficient norm** (Simon
+Ch. 6, Remark 2.6(a); step 1(a) of the mass formula, Remark 6.3.2(3)): `|α(τ)| ≤ |α|_E` for every
+`n`-covector `α` and orthonormal `τ₁, …, τₙ` in `ℝᴾ`.  Extend `τ` to an orthonormal basis `f` of
+`ℝᴾ` with `f ∘ ι = τ`, `ι = Fin.castLE`.  For every permutation `π`,
+`α(f ∘ (ι ∘ π))² = α(τ ∘ π)² = α(τ)²`, and `π ↦ ι ∘ π` is injective, so
+`n! α(τ)² ≤ Σ_j α(f ∘ j)² = n! |α|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`. -/
+theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α := by
+  intro P n α τ hτ
+  classical
+  -- Step 1: `n ≤ P`, and an orthonormal basis `f` of `ℝᴾ` with `f (ι k) = τ k`, `ι = Fin.castLE`
+  have hnP : n ≤ P := by
+    simpa [finrank_euclideanSpace_fin] using hτ.linearIndependent.fintype_card_le_finrank
+  let ι : Fin n → Fin P := Fin.castLE hnP
+  have hι : Injective ι := Fin.castLE_injective hnP
+  let v : Fin P → Euclid P := fun i => if h : (i : ℕ) < n then τ ⟨i, h⟩ else 0
+  let s : Set (Fin P) := {i | (i : ℕ) < n}
+  have hvs : Orthonormal ℝ (s.domRestrict v) := by
+    let e : s → Fin n := fun i => ⟨i.1, i.2⟩
+    have he : Injective e := fun a b hab =>
+      Subtype.ext (Fin.ext (congrArg (Fin.val : Fin n → ℕ) hab))
+    have hve : s.domRestrict v = τ ∘ e := by
+      funext i
+      have hi : ((i : Fin P) : ℕ) < n := i.2
+      simp [v, e, hi]
+    rw [hve]
+    exact hτ.comp e he
+  obtain ⟨f, hf⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hvs
+  have hfι : ∀ k, f (ι k) = τ k := by
+    intro k
+    rw [hf (ι k) k.2]
+    simp [v, ι]
+  -- Step 2: `α(f ∘ (ι ∘ π))² = α(τ ∘ π)² = α(τ)²` for every permutation `π`
+  let Φ : Equiv.Perm (Fin n) → (Fin n → Fin P) := fun π => ι ∘ π
+  have hΦ : Injective Φ := fun π π' h => Equiv.ext fun k => hι (congrFun h k)
+  have hperm : ∀ π : Equiv.Perm (Fin n), α (fun k => f (Φ π k)) ^ 2 = α τ ^ 2 := by
+    intro π
+    have h1 : (fun k => f (Φ π k)) = τ ∘ π := funext fun k => hfι (π k)
+    have h2 : α (τ ∘ π) = Equiv.Perm.sign π • α τ := α.toAlternatingMap.map_perm τ π
+    rw [h1, h2]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign π) with h | h <;> simp [h]
+  -- Step 3: `n! α(τ)² = Σ_π α(f ∘ (ι ∘ π))² ≤ Σ_j α(f ∘ j)²`, the terms being nonnegative
+  have hle : (n.factorial : ℝ) * α τ ^ 2 ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
+    calc (n.factorial : ℝ) * α τ ^ 2
+        = ∑ j ∈ Finset.univ.image Φ, α (fun k => f (j k)) ^ 2 := by
+          rw [Finset.sum_image fun π _ π' _ h => hΦ h]
+          simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm,
+            Fintype.card_fin, nsmul_eq_mul]
+      _ ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun j _ _ => sq_nonneg _
+  -- Step 4: `Σ_j α(f ∘ j)² = n! |α|_E²` (`regcomp_covector_sq_sum_orthonormalBasis`); cancel `n!`
+  rw [Submission.regcomp_covector_sq_sum_orthonormalBasis P n α f] at hle
+  have hsq : α τ ^ 2 ≤ covectorEuclideanNorm α ^ 2 :=
+    le_of_mul_le_mul_left hle (Nat.cast_pos.mpr n.factorial_pos)
+  -- Step 5: `|α(τ)| ≤ |α|_E`, since `|α|_E ≥ 0`
+  exact abs_le_of_sq_le_sq hsq (covectorEuclideanNorm_nonneg α)
+
+/-- **Smooth unit forms approximating a unit covector field in `L¹(ν)`** (used in the proof of the
+mass formula `M_W(T) = μ_T(W)`, with `ν = μ_T⌞O`).  Let `ν` be finite, `O` open, `K ⊆ O` compact
+and `g` an a.e. strongly measurable field with `|g|_E ≤ 1` vanishing off `K`.  Then for every
+`ε > 0` some test form `h` has `tsupport h ⊆ O`, `|h|_E ≤ 1` and `∫|h − g|_E dν < ε`.
+On a standard basis tuple `e ∘ j`, `|α(e ∘ j)| ≤ |α|_E` (orthonormal if `j` is injective, `0`
+otherwise), so `‖α‖ ≤ Pⁿ|α|_E` and `g` is bounded, hence integrable.  Approximate `g` within `ε/4`
+in `L¹(ν)` by a continuous unit field `f` with compact support in `O`
+(`regcomp_exists_continuous_unit_form_approx`), then `f` uniformly within
+`κ = ε/(4(1 + ν(ℝᴾ)))` by a unit test form `h` with `support h ⊆ support f`
+(`regcomp_exists_smooth_unit_form_support_approx`); the error is `≤ κ ν(ℝᴾ) + ε/4 ≤ ε/2`. -/
+theorem Submission.regcomp_exists_smooth_unit_form_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (O K : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen O → IsCompact K → K ⊆ O → AEStronglyMeasurable g ν → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → (∀ x, x ∉ K → g x = 0) → ∀ ε : ℝ, 0 < ε → ∃ h : DifferentialForm (Euclid P) n, IsTestForm h ∧ tsupport h ⊆ O ∧ (∀ z, covectorEuclideanNorm (h z) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂ν < ENNReal.ofReal ε := by
+  intro P n ν O K g hν hO hK hKO hg hg1 hgK ε hε
+  -- step 0(a): the triangle inequality for `|·|_E`
+  obtain ⟨-, -, -, hadd, -, -, -⟩ := Submission.regcomp_covectorEuclideanNorm_seminorm_retract P n
+  -- step 0(c): `‖α‖ ≤ Pⁿ|α|_E`, as `|α(e ∘ j)| ≤ |α|_E` for every `j : Fin n → Fin P`
+  have hop : ∀ α : Covector (Euclid P) n, ‖α‖ ≤ (P : ℝ) ^ n * covectorEuclideanNorm α := by
+    intro α
+    refine Submission.regcomp_covector_opNorm_le_of_basis_bound P n α _
+      (covectorEuclideanNorm_nonneg α) fun j => ?_
+    by_cases hj : Injective j
+    · -- `e ∘ j` is orthonormal
+      exact Submission.regcomp_covector_eval_orthonormal_le P n α _
+        ((EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.comp j hj)
+    · -- `e ∘ j` has a repeated entry, so `α(e ∘ j) = 0`
+      have hv : ¬Injective fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k) :=
+        fun he => hj fun a b hab => he (congrArg (EuclideanSpace.basisFun (Fin P) ℝ) hab)
+      rw [α.map_eq_zero_of_not_injective _ hv, abs_zero]
+      exact covectorEuclideanNorm_nonneg α
+  -- step 1: `‖g x‖ ≤ Pⁿ`, so `g` is `ν`-integrable
+  have hgi : Integrable g ν :=
+    Integrable.of_bound hg ((P : ℝ) ^ n) (Eventually.of_forall fun x =>
+      (hop (g x)).trans (mul_le_of_le_one_right (by positivity) (hg1 x)))
+  -- steps 1–3: a continuous unit field `f`, compactly supported in `O`, `ε/4`-close to `g`
+  obtain ⟨f, hfc, hfcs, hfO, hf1, hfg⟩ := Submission.regcomp_exists_continuous_unit_form_approx
+    P n ν O K g hν hO hK hKO hgi hg1 hgK (ε / 4) (by positivity)
+  -- step 4: a unit test form `h` with `support h ⊆ support f` and `|h − f|_E ≤ κ`
+  obtain ⟨κ, hκ⟩ : ∃ κ : ℝ, κ = ε / (4 * (1 + (ν univ).toReal)) := ⟨_, rfl⟩
+  have hκ0 : 0 < κ := by rw [hκ]; positivity
+  obtain ⟨h, hh, hhf, hh1, hhκ⟩ :=
+    Submission.regcomp_exists_smooth_unit_form_support_approx P n f hfc hfcs hf1 κ hκ0
+  refine ⟨h, hh, (closure_mono hhf).trans hfO, hh1, ?_⟩
+  -- step 5: `|h − g|_E ≤ κ + |f − g|_E` pointwise, and `κ ν(ℝᴾ) ≤ ε/4`
+  have hpt : ∀ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ≤
+      ENNReal.ofReal κ + ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) := by
+    intro x
+    rw [← ENNReal.ofReal_add hκ0.le (covectorEuclideanNorm_nonneg _),
+      ← sub_add_sub_cancel (h x) (f x) (g x)]
+    exact ENNReal.ofReal_le_ofReal ((hadd _ _).trans (add_le_add (hhκ x) le_rfl))
+  have hκν : ENNReal.ofReal κ * ν univ ≤ ENNReal.ofReal (ε / 4) := by
+    rw [← ENNReal.ofReal_toReal (measure_ne_top ν univ), ← ENNReal.ofReal_mul hκ0.le]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc κ * (ν univ).toReal ≤ κ * (1 + (ν univ).toReal) :=
+          mul_le_mul_of_nonneg_left (by linarith) hκ0.le
+      _ = ε / 4 := by
+          rw [hκ, div_mul_eq_mul_div,
+            mul_div_mul_right ε 4 (show 1 + (ν univ).toReal ≠ 0 by positivity)]
+  calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂ν
+      ≤ ∫⁻ x, (ENNReal.ofReal κ + ENNReal.ofReal (covectorEuclideanNorm (f x - g x))) ∂ν :=
+        lintegral_mono hpt
+    _ = ENNReal.ofReal κ * ν univ +
+          ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) ∂ν := by
+        rw [lintegral_add_left measurable_const, lintegral_const]
+    _ ≤ ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) := add_le_add hκν hfg
+    _ = ENNReal.ofReal (ε / 4 + ε / 4) := (ENNReal.ofReal_add (by positivity) (by positivity)).symm
+    _ < ENNReal.ofReal ε := (ENNReal.ofReal_lt_ofReal_iff hε).2 (by linarith)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
