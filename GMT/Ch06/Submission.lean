@@ -4135,6 +4135,93 @@ theorem Submission.lpf_chart_chain_rule : ∀ (P Q n : ℕ) (U M : Set (Eucl P))
     exact (hline s).unique (hw₂ _ hTw _ (LinearMap.mem_range_self _ s))
   exact heq ▸ hdiff.hasFDerivAt
 
+/-- Area formula on a rectifiable set (Simon Ch. 3, 2.4–2.5), with `J^M f = ‖L_# ξ‖`: for
+`Hⁿ`-null-measurable `A ⊆ M` and `h ≥ 0`, the fibre sum `y ↦ ∑_{x ∈ A ∩ f⁻¹(y)} h(x)` is
+`Hⁿ`-a.e. measurable and `∫_A h ‖L_# ξ‖ dHⁿ = ∫ ∑_{x ∈ A ∩ f⁻¹(y)} h(x) dHⁿ(y)`.
+`A` is cut into the pieces `A ∩ disjointed (Φⱼ(Ωⱼ)) j` of the `C¹` chart cover; on each piece
+the chart area formula applies, and the rest of `A` is `Hⁿ`-null with `Hⁿ`-null image. -/
+theorem Submission.lpf_rectifiable_area_formula :
+    ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)),
+      IsOpen U → IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f →
+      (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt n M θ x Tx →
+          ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) →
+      AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) →
+      ∀ (A : Set (Eucl P)) (h : Eucl P → ℝ≥0∞), A ⊆ M →
+        NullMeasurableSet A (μHE[n] : Measure (Eucl P)) →
+        AEMeasurable h ((μHE[n] : Measure (Eucl P)).restrict A) →
+        AEMeasurable (fun y => ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x)
+            (μHE[n] : Measure (Eucl Q)) ∧
+          ∫⁻ x in A, h x * ‖nVectorPushforward n (L x) (ξ x)‖ₑ ∂(μHE[n] : Measure (Eucl P)) =
+            ∫⁻ y, ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x ∂(μHE[n] : Measure (Eucl Q)) := by
+  intro P Q n U M θ ξ f L hU hM hf hderiv hL A h hAM hA hh
+  -- `C¹` charts `Φⱼ`, Lipschitz and antilipschitz on open `Ωⱼ`, cover `M` up to an `Hⁿ`-null set.
+  obtain ⟨Φ, Ω, hΩ, hΦC1, hΦLip, hΦanti, hcover⟩ :=
+    Submission.lpf_countably_rectifiable_c1_cover P n M hM.countablyRectifiable
+  -- An antilipschitz chart is injective, so `Φⱼ(Ωⱼ)` is Borel (Lusin–Souslin).
+  have hinj : ∀ j, InjOn (Φ j) (Ω j) := by
+    intro j w hw w' hw' hww'
+    obtain ⟨c, hc, hanti⟩ := hΦanti j
+    have h1 := hanti w hw w' hw'
+    rw [hww', sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by nlinarith [norm_nonneg (w - w')]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  have himage : ∀ j, MeasurableSet (Φ j '' Ω j) := fun j =>
+    (hΩ j).measurableSet.image_of_continuousOn_injOn (hΦC1 j).continuous.continuousOn (hinj j)
+  -- The pieces `Bⱼ := A ∩ disjointed (Φᵢ(Ωᵢ)) j` and the remainder `Z := A \ ⋃ⱼ Φⱼ(Ωⱼ)`.
+  set S : ℕ → Set (Eucl P) := fun j => Φ j '' Ω j
+  set B : ℕ → Set (Eucl P) := fun j => A ∩ disjointed S j
+  set Z : Set (Eucl P) := A \ ⋃ j, S j
+  have hBA : ∀ j, B j ⊆ A := fun j => inter_subset_left
+  have hBS : ∀ j, B j ⊆ Φ j '' Ω j := fun j => inter_subset_right.trans (disjointed_subset S j)
+  have hBmeas : ∀ j, NullMeasurableSet (B j) (μHE[n] : Measure (Eucl P)) := fun j =>
+    hA.inter (MeasurableSet.disjointed himage j).nullMeasurableSet
+  have hBdisj : Pairwise (Function.onFun Disjoint B) := fun i j hij =>
+    Disjoint.mono inter_subset_right inter_subset_right (disjoint_disjointed S hij)
+  have hAcover : A ⊆ Z ∪ ⋃ j, B j := by
+    intro x hx
+    by_cases hxS : x ∈ ⋃ j, S j
+    · right
+      have hx' : x ∈ ⋃ j, disjointed S j := by rwa [iUnion_disjointed]
+      obtain ⟨j, hj⟩ := mem_iUnion.mp hx'
+      exact mem_iUnion.mpr ⟨j, hx, hj⟩
+    · exact Or.inl ⟨hx, hxS⟩
+  have hZM : Z ⊆ M \ ⋃ j, S j := fun x hx => ⟨hAM hx.1, hx.2⟩
+  have hZ0 : (μHE[n] : Measure (Eucl P)) Z = 0 := measure_mono_null hZM hcover
+  -- `f` is locally Lipschitz on `U ⊇ M ⊇ Z`, so `f(Z)` is `Hⁿ`-null.
+  have hfZ0 : (μHE[n] : Measure (Eucl Q)) (f '' Z) = 0 :=
+    (Submission.lpf_locally_lipschitz_image P Q n U f hf).1 Z
+      (fun x hx => hM.subset (hAM hx.1)) hZ0
+  -- The area formula on each piece, through the chart `Φⱼ`.
+  have hpiece : ∀ j, AEMeasurable (fun y => ∑' x : {x : Eucl P // x ∈ B j ∧ f x = y}, h x)
+        (μHE[n] : Measure (Eucl Q)) ∧
+      ∫⁻ x in B j, h x * ‖nVectorPushforward n (L x) (ξ x)‖ₑ ∂(μHE[n] : Measure (Eucl P)) =
+        ∫⁻ y, ∑' x : {x : Eucl P // x ∈ B j ∧ f x = y}, h x ∂(μHE[n] : Measure (Eucl Q)) := by
+    intro j
+    have hBM : B j ⊆ M := (hBA j).trans hAM
+    have hle := Measure.restrict_mono_set (μHE[n] : Measure (Eucl P)) hBM
+    -- `x ↦ ‖L(x)_# ξ(x)‖ₑ` is a.e.-measurable on `Bⱼ`.
+    have hJ : AEMeasurable (fun x => ‖nVectorPushforward n (L x) (ξ x)‖ₑ)
+        ((μHE[n] : Measure (Eucl P)).restrict (B j)) :=
+      Submission.lpf_raf_pushforward_enorm_aemeasurable P Q n _ L ξ
+        (hL.mono_measure hle) (hM.aestronglyMeasurable.mono_measure hle)
+    -- Chain rule on the chart, then the a.e. Jacobian identity
+    -- `‖L(Φⱼ w)_# ξ(Φⱼ w)‖ · JΦⱼ(w) = J(f ∘ Φⱼ)(w)`, restricted to `Ωⱼ ∩ Φⱼ⁻¹(Bⱼ)`.
+    have hchain := Submission.lpf_chart_chain_rule P Q n U M θ ξ f L (Φ j) (Ω j) hU hM hf
+      hderiv (hΩ j) (hΦC1 j) (hΦanti j)
+    have hjac := Submission.lpf_raf_chart_jacobian_ae Submission.lpf_simple_nvector_algebra
+      P Q n U M θ ξ f L (Φ j) (Ω j) hM (hΩ j) (hΦC1 j) (hΦanti j) hchain
+    exact Submission.lpf_raf_chart_area_formula P Q n U f (Φ j) (Ω j)
+      (fun x => ‖nVectorPushforward n (L x) (ξ x)‖ₑ) h (B j) hU hf (hΩ j) (hΦLip j)
+      (hΦanti j) (hBM.trans hM.subset) (hBS j) (hBmeas j)
+      (hh.mono_measure (Measure.restrict_mono_set _ (hBA j))) hJ
+      (ae_restrict_of_ae_restrict_of_subset (inter_subset_inter_right _ (preimage_mono hBM)) hjac)
+  -- Glue the pieces; the remainder `Z` is `Hⁿ`-null with `Hⁿ`-null image.
+  exact Submission.lpf_raf_fiber_sum_glue (Eucl P) (Eucl Q) (μHE[n] : Measure (Eucl P))
+    (μHE[n] : Measure (Eucl Q)) f h (fun x => h x * ‖nVectorPushforward n (L x) (ξ x)‖ₑ) A Z B
+    hBA hBdisj hBmeas hAcover hZ0 hfZ0 hpiece
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
