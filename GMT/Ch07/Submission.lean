@@ -1830,6 +1830,81 @@ theorem Submission.stationary_imrep_radial_tangency_of_ball_ratio : ∀ (P n : �
     have h0 : ‖x - (approxTangentPlane (m + 1) R.carrier x).starProjection x‖ ^ 2 = 0 := by
       linarith
     exact (sub_eq_zero.1 (norm_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 h0))).symm
+/-- Stationarity plus radial tangency make the weighted first moments vanish (Simon 7.4.5,
+proof, chapter-07.txt lines 708–719): if `δV(X) = 0` for every compactly supported `C¹` field
+`X` and `p_{TₓM} x = x` for `μ_V`-a.e. `x`, then `∫ max(ρ² − |x|², 0) ⟨e, x⟩ dμ_V = 0`.  Test
+with `Y(x) = max(ρ² − |x|², 0)² e`, which is `C¹`, vanishes outside `closedBall 0 |ρ|` and has
+`DY(x) w = −4 max(ρ² − |x|², 0) ⟨x, w⟩ e`; the rank-one trace and self-adjointness of `p_x`
+give `div_M Y(x) = −4 max(ρ² − |x|², 0) ⟨p_x x, e⟩ = −4 max(ρ² − |x|², 0) ⟨e, x⟩` a.e. -/
+theorem Submission.stationary_radial_imrep_weighted_moment_eq_zero : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → ∀ (e : Euclid P) (ρ : ℝ), ∫ x, max (ρ ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ e x ∂R.measure = 0 := by
+  intro P n R hstat hrad e ρ
+  -- the profile `g(t) = (max t 0)²` is `C¹` with `g'(t) = 2 max t 0`
+  set g : ℝ → ℝ := fun t => max t 0 ^ 2 with hg_def
+  have hg_ne : ∀ t : ℝ, t ≠ 0 → HasDerivAt g (2 * max t 0) t := by
+    intro t ht
+    rcases ht.lt_or_gt with ht | ht
+    · have hev : g =ᶠ[𝓝 t] fun _ => 0 := by
+        filter_upwards [Iio_mem_nhds ht] with s (hs : s < 0)
+        simp [hg_def, max_eq_right hs.le]
+      rw [max_eq_right ht.le, mul_zero]
+      exact (hasDerivAt_const t (0 : ℝ)).congr_of_eventuallyEq hev
+    · have hev : g =ᶠ[𝓝 t] fun s => s ^ 2 := by
+        filter_upwards [Ioi_mem_nhds ht] with s (hs : 0 < s)
+        simp [hg_def, max_eq_left hs.le]
+      rw [max_eq_left ht.le]
+      simpa using (hasDerivAt_pow 2 t).congr_of_eventuallyEq hev
+  have hg : ∀ t : ℝ, HasDerivAt g (2 * max t 0) t :=
+    hasDerivAt_of_hasDerivAt_of_ne' (x := 0) hg_ne (by fun_prop) (by fun_prop)
+  have hg_cd : ContDiff ℝ 1 g := by
+    refine contDiff_one_iff_deriv.mpr ⟨fun t => (hg t).differentiableAt, ?_⟩
+    rw [show deriv g = fun t => 2 * max t 0 from funext fun t => (hg t).deriv]
+    fun_prop
+  -- the field `Y(x) = g(ρ² − ‖x‖²) e`: `C¹`, supported in `closedBall 0 |ρ|`
+  set Y : Euclid P → Euclid P := fun x => g (ρ ^ 2 - ‖x‖ ^ 2) • e with hY_def
+  have hY_cd : ContDiff ℝ 1 Y :=
+    (hg_cd.comp (contDiff_const.sub (contDiff_norm_sq ℝ))).smul contDiff_const
+  have hY_cs : HasCompactSupport Y := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) |ρ|) fun x hx => ?_
+    have hx' : |ρ| < ‖x‖ := by simpa using hx
+    have hneg : ρ ^ 2 - ‖x‖ ^ 2 ≤ 0 := by nlinarith [abs_nonneg ρ, sq_abs ρ]
+    simp [hY_def, hg_def, max_eq_right hneg]
+  -- `DY(x) w = 2 m(x) (−2⟨x, w⟩) e`, where `m(x) = max(ρ² − ‖x‖², 0)`
+  have hY_deriv : ∀ x, HasFDerivAt Y
+      (((2 * max (ρ ^ 2 - ‖x‖ ^ 2) 0) • -(2 • innerSL ℝ x)).smulRight e) x := by
+    intro x
+    have h1 : HasFDerivAt (fun y : Euclid P => ρ ^ 2 - ‖y‖ ^ 2) (-(2 • innerSL ℝ x)) x :=
+      (hasStrictFDerivAt_norm_sq x).hasFDerivAt.const_sub (ρ ^ 2)
+    exact ((hg _).comp_hasFDerivAt x h1).smul_const e
+  -- `div_M Y(x) = trace(p_x ∘ DY(x)) = −4 m(x) ⟨x, p_x e⟩` (rank-one trace)
+  have hdiv : ∀ x, tangentialDivergence n R.carrier Y x =
+      -4 * max (ρ ^ 2 - ‖x‖ ^ 2) 0 *
+        inner ℝ x ((approxTangentPlane n R.carrier x).starProjection e) := by
+    intro x
+    rw [tangentialDivergence, (hY_deriv x).fderiv]
+    set p := (approxTangentPlane n R.carrier x).starProjection
+    set L : Euclid P →L[ℝ] ℝ := (2 * max (ρ ^ 2 - ‖x‖ ^ 2) 0) • -(2 • innerSL ℝ x) with hL
+    have hcomp : p.toLinearMap ∘ₗ (L.smulRight e).toLinearMap =
+        (L : Euclid P →ₗ[ℝ] ℝ).smulRight (p e) := by
+      ext w
+      simp
+    rw [hcomp, LinearMap.trace_smulRight]
+    simp [hL]
+    ring
+  -- `δV(Y) = ∫ div_M Y dμ`
+  have hfv : R.firstVariation Y = ∫ x, tangentialDivergence n R.carrier Y x ∂R.measure := by
+    rw [IMRep.firstVariation, IMRep.measure, integral_withDensity_eq_integral_toReal_smul]
+    · simp
+    · exact measurable_from_nat.comp R.measurable_mult
+    · exact Eventually.of_forall fun x => ENNReal.natCast_lt_top _
+  -- radial tangency: `⟨x, p_x e⟩ = ⟨p_x x, e⟩ = ⟨e, x⟩` a.e.
+  have hae : (fun x => tangentialDivergence n R.carrier Y x) =ᵐ[R.measure]
+      fun x => -4 * (max (ρ ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ e x) := by
+    filter_upwards [hrad] with x hx
+    rw [hdiv x, ← Submodule.inner_starProjection_left_eq_right, hx, real_inner_comm]
+    ring
+  have h0 := hstat Y hY_cd hY_cs
+  rw [hfv, integral_congr_ae hae, integral_const_mul] at h0
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
