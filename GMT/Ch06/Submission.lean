@@ -435,6 +435,147 @@ theorem Submission.fiw_tb_tda_ps_ball_volume_le : ∀ (n : ℕ) (r : ℝ), 0 ≤
     _ = ENNReal.ofReal ((2 * r) ^ n) := by
         rw [Real.volume_Icc_pi, ENNReal.ofReal_pow (by linarith)]
         simp only [sub_neg_eq_add, Finset.prod_const, Finset.card_univ, Fintype.card_fin, two_mul]
+/-- Top-dimensional lattice cubes in `ℝⁿ`, `n = m + 1`, `ρ > 0`.  The only order embedding
+`Fin n ↪o Fin n` is the identity, so `latticeFace ρ F` is the closed cube `ρ (F.1 + [0, 1]ⁿ)`:
+it is closed, has volume `ρⁿ` and diameter at most `√n ρ`.  The hyperplanes `{xᵢ = ρ k}` are
+null, the cubes cover `ℝⁿ` and two distinct cubes only meet inside these hyperplanes, so
+lower integrals and integrals of integrable functions split as sums over the cubes. -/
+theorem Submission.fiw_tb_tda_lattice_cubes :
+    ∀ (m : ℕ) (ρ : ℝ), 0 < ρ →
+      (∀ (F : LatticeFaceIndex (m + 1) (m + 1)) (j : Fin (m + 1)), F.2 j = j) ∧
+      (∀ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F =
+        {x : Eucl (m + 1) | ∀ i, ρ * (F.1 i : ℝ) ≤ x i ∧ x i ≤ ρ * ((F.1 i : ℝ) + 1)}) ∧
+      (∀ F : LatticeFaceIndex (m + 1) (m + 1), MeasurableSet (latticeFace ρ F)) ∧
+      (∀ F : LatticeFaceIndex (m + 1) (m + 1),
+        volume (latticeFace ρ F) = ENNReal.ofReal (ρ ^ (m + 1))) ∧
+      (∀ F : LatticeFaceIndex (m + 1) (m + 1), ∀ x ∈ latticeFace ρ F, ∀ y ∈ latticeFace ρ F,
+        dist x y ≤ Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ) ∧
+      (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∀ (i : Fin (m + 1)) (k : ℤ), x i ≠ ρ * k) ∧
+      (∀ g : Eucl (m + 1) → ℝ≥0∞, ∫⁻ x, g x =
+        ∑' F : LatticeFaceIndex (m + 1) (m + 1), ∫⁻ x in latticeFace ρ F, g x) ∧
+      ∀ f : Eucl (m + 1) → ℝ, Integrable f →
+        ∫ x, f x = ∑' F : LatticeFaceIndex (m + 1) (m + 1), ∫ x in latticeFace ρ F, f x := by
+  intro m ρ hρ
+  -- (a) A strictly monotone self-map of the finite chain `Fin (m + 1)` is the identity.
+  have ha : ∀ (F : LatticeFaceIndex (m + 1) (m + 1)) (j : Fin (m + 1)), F.2 j = j :=
+    fun F _ => F.2.strictMono.apply_eq
+  -- (b) Every coordinate lies in `range F.2`, so the face is the closed cube.
+  have hb : ∀ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F =
+      {x : Eucl (m + 1) | ∀ i, ρ * (F.1 i : ℝ) ≤ x i ∧ x i ≤ ρ * ((F.1 i : ℝ) + 1)} := by
+    intro F
+    have hr : ∀ i, i ∈ range F.2 := fun i => ⟨i, ha F i⟩
+    ext x
+    simp only [latticeFace, mem_ofPred_eq, hr, not_true_eq_false, true_implies, false_implies,
+      and_true]
+  -- The cube is the preimage of a box under the volume-preserving `WithLp.ofLp`.
+  have hbox : ∀ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F =
+      WithLp.ofLp ⁻¹' Icc (fun i => ρ * (F.1 i : ℝ)) (fun i => ρ * ((F.1 i : ℝ) + 1)) := by
+    intro F
+    rw [hb F]
+    ext x
+    simp [Pi.le_def, forall_and]
+  have hvol := PiLp.volume_preserving_ofLp (Fin (m + 1))
+  -- (c) The cube is measurable.
+  have hc : ∀ F : LatticeFaceIndex (m + 1) (m + 1), MeasurableSet (latticeFace ρ F) := by
+    intro F
+    rw [hbox F]
+    exact hvol.measurable measurableSet_Icc
+  -- (d) Its volume is `∏ᵢ ρ = ρ^(m + 1)`.
+  have hd : ∀ F : LatticeFaceIndex (m + 1) (m + 1),
+      volume (latticeFace ρ F) = ENNReal.ofReal (ρ ^ (m + 1)) := by
+    intro F
+    rw [hbox F, hvol.measure_preimage measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi]
+    have hside : ∀ i : Fin (m + 1), ρ * ((F.1 i : ℝ) + 1) - ρ * (F.1 i : ℝ) = ρ := fun i => by
+      ring
+    simp only [hside, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
+      ENNReal.ofReal_pow hρ.le]
+  -- (e) Coordinates of two points of the cube differ by at most `ρ`.
+  have he : ∀ F : LatticeFaceIndex (m + 1) (m + 1), ∀ x ∈ latticeFace ρ F,
+      ∀ y ∈ latticeFace ρ F, dist x y ≤ Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ := by
+    intro F x hx y hy
+    rw [hb F] at hx hy
+    have hcoord : ∀ i, dist (x i) (y i) ^ 2 ≤ ρ ^ 2 := by
+      intro i
+      refine pow_le_pow_left₀ dist_nonneg ?_ 2
+      rw [Real.dist_eq, abs_sub_le_iff]
+      constructor <;> linarith [(hx i).1, (hx i).2, (hy i).1, (hy i).2]
+    have hsum : ∑ i, dist (x i) (y i) ^ 2 ≤ ((m + 1 : ℕ) : ℝ) * ρ ^ 2 := by
+      calc ∑ i, dist (x i) (y i) ^ 2 ≤ ∑ _i : Fin (m + 1), ρ ^ 2 :=
+            Finset.sum_le_sum fun i _ => hcoord i
+        _ = ((m + 1 : ℕ) : ℝ) * ρ ^ 2 := by
+            rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+    rw [EuclideanSpace.dist_eq]
+    calc Real.sqrt (∑ i, dist (x i) (y i) ^ 2) ≤ Real.sqrt (((m + 1 : ℕ) : ℝ) * ρ ^ 2) :=
+          Real.sqrt_le_sqrt hsum
+      _ = Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ := by
+          rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hρ.le]
+  -- (f) Each hyperplane `{xᵢ = ρ k}` is the `WithLp.ofLp`-preimage of a null hyperplane.
+  have hf : ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∀ (i : Fin (m + 1)) (k : ℤ), x i ≠ ρ * k := by
+    rw [ae_all_iff]
+    intro i
+    rw [ae_all_iff]
+    intro k
+    have hnull : (volume : Measure (Eucl (m + 1))) {x | x i = ρ * k} = 0 :=
+      hvol.quasiMeasurePreserving.preimage_null
+        (Measure.pi_hyperplane (fun _ : Fin (m + 1) => (volume : Measure ℝ)) i (ρ * k))
+    rw [ae_iff]
+    simpa using hnull
+  -- A point of a cube off the hyperplanes determines the lattice point: `⌊xᵢ / ρ⌋ = F.1 i`.
+  have hfloor : ∀ (F : LatticeFaceIndex (m + 1) (m + 1)) (x : Eucl (m + 1)),
+      x ∈ latticeFace ρ F → (∀ (i : Fin (m + 1)) (k : ℤ), x i ≠ ρ * k) →
+        ∀ i, ⌊x i / ρ⌋ = F.1 i := by
+    intro F x hx hgood i
+    rw [hb F] at hx
+    obtain ⟨h1, h2⟩ := hx i
+    have h3 : x i ≠ ρ * ((F.1 i + 1 : ℤ) : ℝ) := hgood i (F.1 i + 1)
+    push_cast at h3
+    have h4 : x i < ρ * ((F.1 i : ℝ) + 1) := lt_of_le_of_ne h2 h3
+    rw [Int.floor_eq_iff]
+    constructor
+    · rw [le_div_iff₀ hρ]
+      linarith
+    · rw [div_lt_iff₀ hρ]
+      linarith
+  -- The cubes cover `ℝ^(m + 1)`: `x` lies in the cube at `(⌊xᵢ / ρ⌋)ᵢ`.
+  have hU : (⋃ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F) = univ := by
+    refine eq_univ_of_forall fun x => mem_iUnion.2 ?_
+    refine ⟨(fun i => ⌊x i / ρ⌋, OrderEmbedding.ofStrictMono id strictMono_id), ?_⟩
+    rw [hb]
+    intro i
+    constructor
+    · have h := Int.floor_le (x i / ρ)
+      rw [le_div_iff₀ hρ] at h
+      linarith
+    · have h := Int.lt_floor_add_one (x i / ρ)
+      rw [div_lt_iff₀ hρ] at h
+      linarith
+  -- Distinct cubes have distinct lattice points, so they only meet in the null hyperplanes.
+  have hbad : (volume : Measure (Eucl (m + 1)))
+      {x | ¬ ∀ (i : Fin (m + 1)) (k : ℤ), x i ≠ ρ * k} = 0 := ae_iff.1 hf
+  have hdisj : Pairwise (Function.onFun (AEDisjoint (volume : Measure (Eucl (m + 1))))
+      fun F : LatticeFaceIndex (m + 1) (m + 1) => latticeFace ρ F) := by
+    intro F G hFG
+    refine measure_mono_null (fun x hx => ?_) hbad
+    intro hgood
+    have h2 : F.2 = G.2 := DFunLike.ext _ _ fun j => (ha F j).trans (ha G j).symm
+    have h1 : F.1 ≠ G.1 := fun h => hFG (Prod.ext h h2)
+    obtain ⟨i, hi⟩ := Function.ne_iff.1 h1
+    exact hi ((hfloor F x hx.1 hgood i).symm.trans (hfloor G x hx.2 hgood i))
+  refine ⟨ha, hb, hc, hd, he, hf, ?_, ?_⟩
+  -- (g) Lower integrals split over the countable, a.e. disjoint cover.
+  · intro g
+    calc ∫⁻ x, g x = ∫⁻ x in ⋃ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F, g x := by
+          rw [hU, Measure.restrict_univ]
+      _ = ∑' F : LatticeFaceIndex (m + 1) (m + 1), ∫⁻ x in latticeFace ρ F, g x :=
+          lintegral_iUnion₀ (fun F => (hc F).nullMeasurableSet) hdisj g
+  -- (h) So do integrals of integrable functions.
+  · intro f hfi
+    calc ∫ x, f x = ∫ x in ⋃ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F, f x := by
+          rw [hU, Measure.restrict_univ]
+      _ = ∑' F : LatticeFaceIndex (m + 1) (m + 1), ∫ x in latticeFace ρ F, f x :=
+          integral_iUnion_ae (fun F => (hc F).nullMeasurableSet) hdisj (by
+            rw [hU]
+            exact hfi.integrableOn)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
