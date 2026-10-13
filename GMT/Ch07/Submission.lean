@@ -918,6 +918,103 @@ theorem Submission.codim1_rdo_dg_rc_halving_step : ∀ (m : ℕ) (D : Set (Eucli
         rw [hlam, Measure.restrict_apply' hU.measurableSet, inter_eq_left.2 sdiff_subset]
     _ ≤ lam Kᶜ := measure_mono fun x hx hxK => hx.2 (hKΓ hxK)
     _ ≤ μ U / 2 := hKc
+/-- Iterated halving on a countable ball cover (Simon Ch. 3, proof of 1.6 "⇐", final iteration):
+let `D ⊆ ℝ^{m+1}` be open, `μ(ℝ^{m+1} \ D) = 0` and `μ(K) < ∞` for compact `K ⊆ D`.  If every
+open `U` with compact closure `Ū ⊆ D` has a closed countably `m`-rectifiable `Γ` with
+`μ(U \ Γ) ≤ μ(U)/2`, then `μ` is carried by a Borel countably `m`-rectifiable set `R`.
+For an open `W` with compact closure in `D`, applying the hypothesis to `W \ Γᵢ` gives closed
+countably `m`-rectifiable sets `Γᵢ` with `μ(W \ Γᵢ) ≤ 2⁻ⁱ μ(W)`, so `μ(W \ ⋃ᵢ Γᵢ) = 0`; `D` is
+covered by countably many balls `B_{r/2}(x)` with `B_r(x) ⊆ D` (Lindelöf), and `R` is the union
+of the corresponding sets `⋃ᵢ Γᵢ`. -/
+theorem Submission.codim1_rdo_dg_rc_of_halving : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))), IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → (∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \ Γ) ≤ μ U / 2) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0 := by
+  intro m D μ hDo hDc hfin hhalf
+  -- Steps 2–3: on an open set `W` with compact closure in `D`, iterate the halving hypothesis.
+  have key : ∀ W : Set (Euclid (m + 1)), IsOpen W → IsCompact (closure W) → closure W ⊆ D →
+      ∃ R' : Set (Euclid (m + 1)), MeasurableSet R' ∧ CountablyRectifiable m R' ∧
+        μ (W \ R') = 0 := by
+    intro W hWo hWc hWD
+    have hWfin : μ W ≠ ∞ := ne_top_of_le_ne_top (hfin _ hWc hWD) (measure_mono subset_closure)
+    have step : ∀ i : ℕ, ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧
+        μ (W \ Γ) ≤ μ W * (2⁻¹ : ℝ≥0∞) ^ i := by
+      intro i
+      induction i with
+      | zero =>
+        refine ⟨∅, isClosed_empty,
+          Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty, ?_⟩
+        simp
+      | succ i ih =>
+        obtain ⟨Γ, hΓc, hΓr, hΓμ⟩ := ih
+        have hUo : IsOpen (W \ Γ) := hWo.sdiff hΓc
+        have hUcl : closure (W \ Γ) ⊆ closure W := closure_mono sdiff_subset
+        obtain ⟨Γ', hΓ'c, hΓ'r, hΓ'μ⟩ :=
+          hhalf (W \ Γ) hUo (hWc.of_isClosed_subset isClosed_closure hUcl) (hUcl.trans hWD)
+        refine ⟨Γ ∪ Γ', hΓc.union hΓ'c, ?_, ?_⟩
+        · rw [← sUnion_pair]
+          refine Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+            (Set.toFinite _).countable ?_
+          rintro S (rfl | rfl)
+          · exact hΓr
+          · exact hΓ'r
+        · rw [← Set.sdiff_sdiff]
+          calc μ ((W \ Γ) \ Γ') ≤ μ (W \ Γ) / 2 := hΓ'μ
+            _ = μ (W \ Γ) * 2⁻¹ := div_eq_mul_inv _ _
+            _ ≤ μ W * (2⁻¹ : ℝ≥0∞) ^ i * 2⁻¹ := by gcongr
+            _ = μ W * (2⁻¹ : ℝ≥0∞) ^ (i + 1) := by rw [pow_succ, mul_assoc]
+    choose Γ hΓc hΓr hΓμ using step
+    refine ⟨⋃ i, Γ i, MeasurableSet.iUnion (fun i => (hΓc i).measurableSet),
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion Γ hΓr, ?_⟩
+    have hlim : Tendsto (fun i : ℕ => μ W * (2⁻¹ : ℝ≥0∞) ^ i) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun i : ℕ => (2⁻¹ : ℝ≥0∞) ^ i) atTop (𝓝 0) :=
+        ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one ENNReal.one_half_lt_one
+      simpa using ENNReal.Tendsto.const_mul h1 (Or.inr hWfin)
+    refine nonpos_iff_eq_zero.1 ?_
+    refine ge_of_tendsto' hlim (fun i => ?_)
+    exact (measure_mono (sdiff_subset_sdiff_right (subset_iUnion Γ i))).trans (hΓμ i)
+  -- Step 1: a countable cover of `D` by balls with compact closure inside `D`.
+  have hr : ∀ x : Euclid (m + 1), ∃ r : ℝ, 0 < r ∧ (x ∈ D → ball x r ⊆ D) := by
+    intro x
+    by_cases hx : x ∈ D
+    · obtain ⟨r, hr0, hrD⟩ := Metric.isOpen_iff.1 hDo x hx
+      exact ⟨r, hr0, fun _ => hrD⟩
+    · exact ⟨1, one_pos, fun h => absurd h hx⟩
+  choose r hr0 hrD using hr
+  let W : Euclid (m + 1) → Set (Euclid (m + 1)) := fun x => ball x (r x / 2)
+  have hWcl : ∀ x ∈ D, closure (W x) ⊆ D := fun x hx =>
+    closure_ball_subset_closedBall.trans
+      ((closedBall_subset_ball (half_lt_self (hr0 x))).trans (hrD x hx))
+  have hWcpt : ∀ x, IsCompact (closure (W x)) := fun x =>
+    (isCompact_closedBall x (r x / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  have hR : ∀ x : Euclid (m + 1), ∃ R' : Set (Euclid (m + 1)), MeasurableSet R' ∧
+      CountablyRectifiable m R' ∧ (x ∈ D → μ (W x \ R') = 0) := by
+    intro x
+    by_cases hx : x ∈ D
+    · obtain ⟨R', h1, h2, h3⟩ := key (W x) isOpen_ball (hWcpt x) (hWcl x hx)
+      exact ⟨R', h1, h2, fun _ => h3⟩
+    · exact ⟨∅, MeasurableSet.empty,
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty,
+        fun h => absurd h hx⟩
+  choose Rx hRxm hRxr hRxμ using hR
+  obtain ⟨T, hTD, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable D W (fun x _ => isOpen_ball)
+  have hDcov : D ⊆ ⋃ x ∈ T, W x := by
+    rw [hTU]
+    intro y hy
+    exact mem_biUnion hy (mem_ball_self (half_pos (hr0 y)))
+  -- Step 4: glue.
+  refine ⟨⋃ x ∈ T, Rx x, MeasurableSet.biUnion hTc (fun x _ => hRxm x), ?_, ?_⟩
+  · rw [← sUnion_image]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (hTc.image Rx)
+      (by rintro S ⟨x, -, rfl⟩; exact hRxr x)
+  · have hsub : (⋃ x ∈ T, Rx x)ᶜ ⊆ Dᶜ ∪ ⋃ x ∈ T, (W x \ Rx x) := by
+      intro y hy
+      by_cases hyD : y ∈ D
+      · right
+        obtain ⟨x, hxT, hyW⟩ := mem_iUnion₂.1 (hDcov hyD)
+        exact mem_iUnion₂.2 ⟨x, hxT, hyW, fun hyR => hy (mem_iUnion₂.2 ⟨x, hxT, hyR⟩)⟩
+      · exact Or.inl hyD
+    refine measure_mono_null hsub (measure_union_null hDc ?_)
+    exact (measure_biUnion_null_iff hTc).2 (fun x hx => hRxμ x (hTD hx))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
