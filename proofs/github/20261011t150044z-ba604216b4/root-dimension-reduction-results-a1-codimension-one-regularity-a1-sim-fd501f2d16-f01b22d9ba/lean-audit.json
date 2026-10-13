@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec6df49fcda6b5fcaac010b40da6a3e43bf92538625cf55667ee4d090a7e8d8c",
+  "git_delta": {
+    "base_commit": "6701ad4acc5828604e30caa5fc443133ebdaa9dc",
+    "candidate_commit": "8616ea4063fd7f522fe3ed145c39794c0d14cb95",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_pp_unit_rectifiable_current",
+    "diff_sha256": "877ff7869f0b7f8910a953ab684738a79799a390a1a2292ef354291682d5d428",
+    "source_sha256": "e1915625795c5978ea5b3e60eacf6ddcdadf49bb5a8b9a89309e2d290ec55870",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_pp_unit_rectifiable_current",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (η : Euclid P → MultiVector P m), MeasurableSet M → CountablyRectifiable m M → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → AEStronglyMeasurable η (μHE[m].restrict M) → (∀ᵐ y ∂(μHE[m].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt m M y Q ∧ IsUnitOrientationOf (η y) Q) → ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity D ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Integrable (fun y => η y ((ω : DifferentialForm (Euclid P) m) y)) (μHE[m].restrict M) ∧ D ω = ∫ y in M, η y ((ω : DifferentialForm (Euclid P) m) y) ∂μHE[m]) ∧ ∀ W' : Set (Euclid P), D.massOn W' ≤ μHE[m] (M ∩ W')",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
