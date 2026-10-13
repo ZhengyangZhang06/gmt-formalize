@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.graph_point_linear_equiv-a1",
+  "parent_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1",
+  "depth": 3,
+  "title": "Graph points are the inverse of the canonical equivalence ℝ^{n+ℓ} ≅ ℝⁿ × ℝ^ℓ",
+  "statement": "For all n, ℓ ∈ ℕ, x ∈ ℝⁿ and y ∈ ℝ^ℓ, the graph point graphPoint x y = toLp 2 (Fin.append (ofLp x) (ofLp y)) (the vector of ℝ^{n+ℓ} whose first n coordinates are x and whose last ℓ coordinates are y) equals E.symm (x, y), where E := EuclideanSpace.finAddEquivProd : ℝ^{n+ℓ} ≃L[ℝ] ℝⁿ × ℝ^ℓ is Mathlib's canonical continuous linear equivalence sending z to the pair (first n coordinates of z, last ℓ coordinates of z).",
+  "lean_statement": "∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ), graphPoint x y = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y)",
+  "lean_name": "rsod_graphPoint_eq_finAddEquivProd_symm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-poi-152c2738dc-a1"
+}

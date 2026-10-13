@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T142321Z-faafe12087",
+  "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch05/20261011t142321z-faafe12087/dispatch/root-allard-any-radius-a1-graph-comparison-a1",
+  "source_commit": "ea5607598f3133b40a13241f2e51517a8c6423cd",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch05/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_volume-a1",
+      "key": "graph_volume",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json",
+              "python3 -I: print lean_statement of every subproblem in nodes/root-allard-any-radius-a1/decomposition-v2.json and nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v{1,2}.json",
+              "python3 -I scan of every lean_name in dag.json and nodes/*/*.json (409 reserved names); grep -rl anyrad_gc dag.json nodes GMT <snapshot>/project; git grep -l anyrad_gc <all refs> -- GMT/Ch05/Submission.lean (no match)",
+              "python3 -I: dag.json nodes with status accepted/proved whose lean_statement mentions graphOver|tangentProj|hsNormSq|filterAt|withDensity|V.weight|μHE",
+              "git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean | grep -n '^theorem\\|sorry\\|import'; git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep import",
+              "rg -n 'μHE\\[' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -n 'hausdorffMeasure_image_le\\|theorem hausdorffMeasure_smul₀\\|theorem hausdorffMeasure_le_liminf_tsum\\|mkMetric_le_liminf_tsum' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "grep -n '^theorem\\|^protected def' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\\|theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean; grep -n 'protected def vitaliFamily\\|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem LipschitzOnWith.extend_pi\\|theorem LipschitzOnWith.extend_real\\|extend_lp_infty' Mathlib/Topology/MetricSpace; grep -n 'lipschitzOnWith_of_nnnorm_fderiv_le\\|norm_image_sub_le_of_norm_fderiv_le' Mathlib/Analysis/Calculus/MeanValue.lean; grep -rn starProjection_norm_le Mathlib/Analysis/InnerProductSpace/Projection",
+              "grep -n 'theorem\\|lemma\\|instance\\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "python3 -I /tmp/gc-split-k7/scripts/closure.py <the 15 frozen header imports> (transitive import closure: 3203 modules)",
+              "sed -n on runtime.py (_solve_children, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.py (check_source_delta), parent_verification.py; cat swarm-project.json (max_nodes 1000); len(dag.json nodes) = 200",
+              "lake build GMT.Ch05.Submission in the scratch copy /tmp/gc-split-k7/proj (packages symlinked to the workspace .lake/packages)",
+              "lake env lean Checks/Types.lean; lake env lean Checks/Assembly.lean; lake env lean Val/GraphTransfer.lean Val/HausdorffLeWeight.lean Val/GraphTangent.lean Val/Lebesgue.lean; python3 -I scripts/stmtcheck.py"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/isolated-comparator-result.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/parent-supplied-natural-proof.md",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py",
+              "/tmp/gc-split-k7/closure.txt",
+              "/tmp/gc-split-k7/proj/Checks/Types.lean",
+              "/tmp/gc-split-k7/proj/Checks/Assembly.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTransfer.lean",
+              "/tmp/gc-split-k7/proj/Val/HausdorffLeWeight.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTangent.lean",
+              "/tmp/gc-split-k7/proj/Val/Lebesgue.lean"
+            ],
+            "conclusion": "Snapshot and reuse\n- manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace GMT/Ch05/Submission.lean is the frozen contract file.\n- Two accepted declarations from other branches cover parts of this proof and are reused with byte-identical frozen types (accepted, candidate commit present, comparator passed):\n  - aetp_upper_density_zero_ae: the Upper Density Theorem (candidate 066406829f…).\n  - ted_tangent_plane_facts: tangent-plane existence, measurability, density, and locality along Lipschitz graphs (candidate a8902dc6…; a sorry-free proof of about 1500 lines).\n- Other accepted lemmas were found but are not needed: upperDensity_ne_zero_outside_hausdorff_null, rsod_blowUp_setIntegral_eq, lip_approx_graph_coordinates, allard52_tangent_ae, lgc_tangent_plane_ae.\n- No-match: anyrad_gc_* occurs nowhere (dag.json, node files, snapshot project, all git refs). The 409 reserved names include none of the new names.\n\nLibrary\nAll of the following are in the transitive import closure of the frozen header (3203 modules, computed from source and confirmed by #check), so leaves need no new import:\n- LipschitzWith.hausdorffMeasure_image_le and Measure.hausdorffMeasure_le_liminf_tsum (Measure/Hausdorff.lean);\n- Measure.euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean);\n- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall;\n- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div(_of_integrable), with Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;\n- MeasurableSet.image_of_continuousOn_injOn (Lusin–Souslin);\n- Convex.lipschitzOnWith_of_nnnorm_fderiv_le, LipschitzOnWith.extend_pi and extend_finite_dimension;\n- Submodule.starProjection_norm_le and Integrable.of_bound;\n- SimonGMT HasWeightedApproximateTangentSpaceAt and its .unique.\n\nController rules\n- runtime.py reuses an accepted cross-branch node only when the lean_statement is identical.\n- leaf_verification.check_source_delta makes each leaf one appended theorem with no imports.\n- max_nodes is 1000 and the DAG has 200 nodes.\n\nLean checks\n- All 7 child types elaborate.\n- Assembly.lean proves the exact selected type sorry-free (propext, Classical.choice, Quot.sound).\n- The 5 new children are proved in scratch as single theorems."
+          }
+        ],
+        "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+        "child_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_volume-a1",
+        "subproblem": {
+          "key": "graph_volume",
+          "title": "Lebesgue measure of a parameter set is at most H^n of its rotated graph",
+          "statement": "For all natural numbers n, l, every linear isometry q of R^(n+l), every map u : R^n -> R^l and every set A contained in R^n (no measurability or regularity assumed): L^n(A) <= H^n(q(graph u over A)), where graph u over A = {graphPoint(x, u(x)) : x in A}, graphPoint(x, y) = (x, y) in R^n x R^l = R^(n+l), L^n = volume on R^n and H^n = muHE[n] on R^(n+l).",
+          "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (A : Set (Rn n)), volume A ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u A)",
+          "lean_name": "anyrad_gc_volume_le_graph_hausdorff",
+          "depends_on": [],
+          "natural_proof": "Source: step 1 of the parent proof (the 1-Lipschitz left inverse pi of the graph map) together with step 5 (L^n(A') = H^n(pi(F(A'))) <= H^n(F(A')), using that pi is 1-Lipschitz and H^n = L^n on R^n). Notation: S := q(graph u over A) = {q(graphPoint(x, u x)) : x in A}.\n1. Projection. Let pi : R^(n+l) -> R^n, pi(z) := (z_1, ..., z_n), the first n coordinates. In Lean this is WithLp.toLp 2 (fun i : Fin n => z (Fin.castAdd l i)).\n   (a) pi(graphPoint(x, y)) = x, since graphPoint(x, y) = toLp (Fin.append x y) and Fin.append x y (Fin.castAdd l i) = x i (Fin.append_left).\n   (b) For all z, z': |pi z - pi z'|^2 = sum over i < n of (z_i - z'_i)^2 <= sum over j < n + l of (z_j - z'_j)^2 = |z - z'|^2. To see this, split the sum over Fin (n + l) with Fin.sum_univ_add; the remaining part is a sum of squares, hence >= 0. So pi is 1-Lipschitz.\n2. Left inverse. phi := pi o q^-1 is 1-Lipschitz, because q^-1 is an isometry. Also phi(q(graphPoint(x, u x))) = pi(graphPoint(x, u x)) = x, hence phi(S) = A.\n3. Lipschitz image bound. On every metric space, muHE[n] = c_n muH[n] with the same scalar c_n = addHaarScalarFactor(volume on EuclideanSpace R (Fin n), muH[n]), which depends only on n (Measure.euclideanHausdorffMeasure_def). By LipschitzWith.hausdorffMeasure_image_le with K = 1 and d = n >= 0: muH[n](phi(S)) <= 1^n muH[n](S) = muH[n](S). Multiplying by c_n gives muHE[n](phi(S)) <= muHE[n](S).\n4. Normalisation on R^n. muHE[n] = volume on EuclideanSpace R (Fin n) (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). Therefore L^n(A) = muHE[n](A) = muHE[n](phi(S)) <= muHE[n](S) = H^n(q(graph u over A)). QED",
+          "proof_key_steps": [
+            "The first-n-coordinates map pi is 1-Lipschitz and pi(graphPoint(x, y)) = x",
+            "phi = pi o q^-1 is 1-Lipschitz and maps q(graph u over A) onto A",
+            "Lipschitz image bound for muH[n], transported to muHE[n] = c_n muH[n] with the same c_n on both spaces",
+            "muHE[n] equals Lebesgue measure on R^n"
+          ]
+        },
+        "audit": {
+          "key": "graph_volume",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Prose and type agree for arbitrary sets without regularity assumptions. The coordinate projection composed with q⁻¹ is a 1-Lipschitz left inverse; the common Hausdorff normalization yields exactly the claimed volume bound."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1.lebesgue_points-a1",
+      "key": "lebesgue_points",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json",
+              "python3 -I: print lean_statement of every subproblem in nodes/root-allard-any-radius-a1/decomposition-v2.json and nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v{1,2}.json",
+              "python3 -I scan of every lean_name in dag.json and nodes/*/*.json (409 reserved names); grep -rl anyrad_gc dag.json nodes GMT <snapshot>/project; git grep -l anyrad_gc <all refs> -- GMT/Ch05/Submission.lean (no match)",
+              "python3 -I: dag.json nodes with status accepted/proved whose lean_statement mentions graphOver|tangentProj|hsNormSq|filterAt|withDensity|V.weight|μHE",
+              "git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean | grep -n '^theorem\\|sorry\\|import'; git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep import",
+              "rg -n 'μHE\\[' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -n 'hausdorffMeasure_image_le\\|theorem hausdorffMeasure_smul₀\\|theorem hausdorffMeasure_le_liminf_tsum\\|mkMetric_le_liminf_tsum' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "grep -n '^theorem\\|^protected def' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\\|theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean; grep -n 'protected def vitaliFamily\\|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem LipschitzOnWith.extend_pi\\|theorem LipschitzOnWith.extend_real\\|extend_lp_infty' Mathlib/Topology/MetricSpace; grep -n 'lipschitzOnWith_of_nnnorm_fderiv_le\\|norm_image_sub_le_of_norm_fderiv_le' Mathlib/Analysis/Calculus/MeanValue.lean; grep -rn starProjection_norm_le Mathlib/Analysis/InnerProductSpace/Projection",
+              "grep -n 'theorem\\|lemma\\|instance\\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "python3 -I /tmp/gc-split-k7/scripts/closure.py <the 15 frozen header imports> (transitive import closure: 3203 modules)",
+              "sed -n on runtime.py (_solve_children, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.py (check_source_delta), parent_verification.py; cat swarm-project.json (max_nodes 1000); len(dag.json nodes) = 200",
+              "lake build GMT.Ch05.Submission in the scratch copy /tmp/gc-split-k7/proj (packages symlinked to the workspace .lake/packages)",
+              "lake env lean Checks/Types.lean; lake env lean Checks/Assembly.lean; lake env lean Val/GraphTransfer.lean Val/HausdorffLeWeight.lean Val/GraphTangent.lean Val/Lebesgue.lean; python3 -I scripts/stmtcheck.py"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/isolated-comparator-result.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/parent-supplied-natural-proof.md",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py",
+              "/tmp/gc-split-k7/closure.txt",
+              "/tmp/gc-split-k7/proj/Checks/Types.lean",
+              "/tmp/gc-split-k7/proj/Checks/Assembly.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTransfer.lean",
+              "/tmp/gc-split-k7/proj/Val/HausdorffLeWeight.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTangent.lean",
+              "/tmp/gc-split-k7/proj/Val/Lebesgue.lean"
+            ],
+            "conclusion": "Snapshot and reuse\n- manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace GMT/Ch05/Submission.lean is the frozen contract file.\n- Two accepted declarations from other branches cover parts of this proof and are reused with byte-identical frozen types (accepted, candidate commit present, comparator passed):\n  - aetp_upper_density_zero_ae: the Upper Density Theorem (candidate 066406829f…).\n  - ted_tangent_plane_facts: tangent-plane existence, measurability, density, and locality along Lipschitz graphs (candidate a8902dc6…; a sorry-free proof of about 1500 lines).\n- Other accepted lemmas were found but are not needed: upperDensity_ne_zero_outside_hausdorff_null, rsod_blowUp_setIntegral_eq, lip_approx_graph_coordinates, allard52_tangent_ae, lgc_tangent_plane_ae.\n- No-match: anyrad_gc_* occurs nowhere (dag.json, node files, snapshot project, all git refs). The 409 reserved names include none of the new names.\n\nLibrary\nAll of the following are in the transitive import closure of the frozen header (3203 modules, computed from source and confirmed by #check), so leaves need no new import:\n- LipschitzWith.hausdorffMeasure_image_le and Measure.hausdorffMeasure_le_liminf_tsum (Measure/Hausdorff.lean);\n- Measure.euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean);\n- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall;\n- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div(_of_integrable), with Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;\n- MeasurableSet.image_of_continuousOn_injOn (Lusin–Souslin);\n- Convex.lipschitzOnWith_of_nnnorm_fderiv_le, LipschitzOnWith.extend_pi and extend_finite_dimension;\n- Submodule.starProjection_norm_le and Integrable.of_bound;\n- SimonGMT HasWeightedApproximateTangentSpaceAt and its .unique.\n\nController rules\n- runtime.py reuses an accepted cross-branch node only when the lean_statement is identical.\n- leaf_verification.check_source_delta makes each leaf one appended theorem with no imports.\n- max_nodes is 1000 and the DAG has 200 nodes.\n\nLean checks\n- All 7 child types elaborate.\n- Assembly.lean proves the exact selected type sorry-free (propext, Classical.choice, Quot.sound).\n- The 5 new children are proved in scratch as single theorems."
+          }
+        ],
+        "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+        "child_id": "root.allard_any_radius-a1.graph_comparison-a1.lebesgue_points-a1",
+        "subproblem": {
+          "key": "lebesgue_points",
+          "title": "Quadratic Lebesgue points of a bounded operator field for a measure finite on an open set",
+          "statement": "Let n, l be natural numbers, mu a measure on R^(n+l), O an open set with mu(O) < infinity, and g : R^(n+l) -> L(R^(n+l), R^(n+l)) mu-a.e. strongly measurable with operator norm ||g(w)|| <= C for every w. Then for mu-a.e. y in O, mu(B_s(y))^-1 times the integral over B_s(y) of hsNormSq(g(w) - g(y)) dmu(w) tends to 0 in [0, infinity] as s -> 0+ (B_s(y) closed balls; hsNormSq the squared Hilbert–Schmidt norm).",
+          "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (O : Set (Amb n ℓ)), IsOpen O → μ O < ⊤ → ∀ (g : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (C : ℝ), AEStronglyMeasurable g μ → (∀ w, ‖g w‖ ≤ C) → ∀ᵐ y ∂μ, y ∈ O → Tendsto (fun s : ℝ => (μ (closedBall y s))⁻¹ * ∫⁻ w in closedBall y s, ENNReal.ofReal (hsNormSq (g w - g y)) ∂μ) (𝓝[>] 0) (𝓝 0)",
+          "lean_name": "anyrad_gc_hsNormSq_lebesgue_ae",
+          "depends_on": [],
+          "natural_proof": "Source: step 7 of the parent proof (Lebesgue–Besicovitch differentiation for the finite measure mu restricted to an open ball, Simon Ch. 1, 3.23; Mathlib Besicovitch.vitaliFamily with Besicovitch.tendsto_filterAt). The parent's bound |p_y| <= sqrt n is replaced by an operator-norm bound C. Notation: N := n + l, B_s(y) closed balls, e_i the standard basis vectors.\n1. Hilbert–Schmidt versus operator norm. For a linear map A of R^N, hsNormSq(A) = sum over i < N of |A e_i|^2 <= N ||A||^2, because |A e_i| <= ||A|| |e_i| = ||A|| (ContinuousLinearMap.le_opNorm). Also C >= 0 (as 0 <= ||g(0)|| <= C) and ||g(w) - g(y)|| <= ||g(w)|| + ||g(y)|| <= 2C. Hence hsNormSq(g w - g y) <= N (2C) ||g w - g y||. With K := ofReal(2 N C) < infinity:\n   ofReal(hsNormSq(g w - g y)) <= K ||g w - g y||ₑ for all w, y.\n2. The finite measure. mu_O := mu restricted to O has mu_O(R^N) = mu(O) < infinity, so it is a finite measure (hence locally finite and s-finite). g is a.e. strongly measurable for mu_O and bounded by C, so g is mu_O-integrable (Integrable.of_bound).\n3. Differentiation. R^N is a finite-dimensional real normed space, so it has the Besicovitch covering property and is second countable. Apply Lebesgue's differentiation theorem along the Besicovitch Vitali family of mu_O (VitaliFamily.ae_tendsto_lintegral_enorm_sub_div_of_integrable for Besicovitch.vitaliFamily mu_O): for mu_O-a.e. y,\n   (integral over a of ||g w - g y||ₑ dmu_O(w)) / mu_O(a) -> 0 as a shrinks to y along the family.\n   Compose with Besicovitch.tendsto_filterAt (closed balls B_s(y), s -> 0+): for mu_O-a.e. y,\n   Q_y(s) := (integral over B_s(y) of ||g w - g y||ₑ dmu_O) / mu_O(B_s(y)) -> 0 as s -> 0+.\n   Since O is Borel, \"mu_O-a.e. y\" means \"mu-a.e. y, provided y is in O\" (ae_restrict_iff').\n4. Comparison and squeeze. Fix such a y in O and e > 0 with B°_e(y) contained in O. For 0 < s < e, B_s(y) is contained in O, so mu_O(B_s(y)) = mu(B_s(y)) and mu_O restricted to B_s(y) equals mu restricted to B_s(y) (Measure.restrict_apply, Measure.restrict_restrict_of_subset). By step 1 and lintegral_const_mul':\n   mu(B_s(y))^-1 · integral over B_s(y) of ofReal(hsNormSq(g w - g y)) dmu <= mu(B_s(y))^-1 · K · integral over B_s(y) of ||g w - g y||ₑ dmu = K Q_y(s).\n   Here a / b = b^-1 a in [0, infinity]; if mu(B_s(y)) = 0, both sides are 0 since infinity · 0 = 0.\n   As K < infinity, K Q_y(s) -> K · 0 = 0 (ENNReal.Tendsto.const_mul). The left side is >= 0, and the bound holds for s in (0, e), an element of 𝓝[>] 0. So the left side tends to 0 by the squeeze theorem (tendsto_of_tendsto_of_tendsto_of_le_of_le'). This holds for mu-a.e. y in O. QED",
+          "proof_key_steps": [
+            "hsNormSq(A) <= (n+l)||A||^2 and ||g w - g y|| <= 2C give ofReal(hsNormSq(g w - g y)) <= K ||g w - g y||",
+            "mu restricted to O is finite, so the bounded field g is integrable for it",
+            "Besicovitch–Lebesgue differentiation along closed balls for mu restricted to O",
+            "Small balls around y in O see mu and mu restricted to O alike; squeeze with K times the L^1 averages"
+          ]
+        },
+        "audit": {
+          "key": "lebesgue_points",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The everywhere operator-norm bound matches the prose. Finite restriction to O justifies Besicovitch differentiation. The Hilbert–Schmidt comparison and eventual equality of small-ball restrictions yield the exact ENNReal limit, including zero-mass balls."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_tangent-a1",
+      "key": "graph_tangent",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json",
+              "python3 -I: print lean_statement of every subproblem in nodes/root-allard-any-radius-a1/decomposition-v2.json and nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v{1,2}.json",
+              "python3 -I scan of every lean_name in dag.json and nodes/*/*.json (409 reserved names); grep -rl anyrad_gc dag.json nodes GMT <snapshot>/project; git grep -l anyrad_gc <all refs> -- GMT/Ch05/Submission.lean (no match)",
+              "python3 -I: dag.json nodes with status accepted/proved whose lean_statement mentions graphOver|tangentProj|hsNormSq|filterAt|withDensity|V.weight|μHE",
+              "git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean | grep -n '^theorem\\|sorry\\|import'; git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep import",
+              "rg -n 'μHE\\[' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -n 'hausdorffMeasure_image_le\\|theorem hausdorffMeasure_smul₀\\|theorem hausdorffMeasure_le_liminf_tsum\\|mkMetric_le_liminf_tsum' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "grep -n '^theorem\\|^protected def' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\\|theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean; grep -n 'protected def vitaliFamily\\|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem LipschitzOnWith.extend_pi\\|theorem LipschitzOnWith.extend_real\\|extend_lp_infty' Mathlib/Topology/MetricSpace; grep -n 'lipschitzOnWith_of_nnnorm_fderiv_le\\|norm_image_sub_le_of_norm_fderiv_le' Mathlib/Analysis/Calculus/MeanValue.lean; grep -rn starProjection_norm_le Mathlib/Analysis/InnerProductSpace/Projection",
+              "grep -n 'theorem\\|lemma\\|instance\\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "python3 -I /tmp/gc-split-k7/scripts/closure.py <the 15 frozen header imports> (transitive import closure: 3203 modules)",
+              "sed -n on runtime.py (_solve_children, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.py (check_source_delta), parent_verification.py; cat swarm-project.json (max_nodes 1000); len(dag.json nodes) = 200",
+              "lake build GMT.Ch05.Submission in the scratch copy /tmp/gc-split-k7/proj (packages symlinked to the workspace .lake/packages)",
+              "lake env lean Checks/Types.lean; lake env lean Checks/Assembly.lean; lake env lean Val/GraphTransfer.lean Val/HausdorffLeWeight.lean Val/GraphTangent.lean Val/Lebesgue.lean; python3 -I scripts/stmtcheck.py"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/isolated-comparator-result.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/parent-supplied-natural-proof.md",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py",
+              "/tmp/gc-split-k7/closure.txt",
+              "/tmp/gc-split-k7/proj/Checks/Types.lean",
+              "/tmp/gc-split-k7/proj/Checks/Assembly.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTransfer.lean",
+              "/tmp/gc-split-k7/proj/Val/HausdorffLeWeight.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTangent.lean",
+              "/tmp/gc-split-k7/proj/Val/Lebesgue.lean"
+            ],
+            "conclusion": "Snapshot and reuse\n- manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace GMT/Ch05/Submission.lean is the frozen contract file.\n- Two accepted declarations from other branches cover parts of this proof and are reused with byte-identical frozen types (accepted, candidate commit present, comparator passed):\n  - aetp_upper_density_zero_ae: the Upper Density Theorem (candidate 066406829f…).\n  - ted_tangent_plane_facts: tangent-plane existence, measurability, density, and locality along Lipschitz graphs (candidate a8902dc6…; a sorry-free proof of about 1500 lines).\n- Other accepted lemmas were found but are not needed: upperDensity_ne_zero_outside_hausdorff_null, rsod_blowUp_setIntegral_eq, lip_approx_graph_coordinates, allard52_tangent_ae, lgc_tangent_plane_ae.\n- No-match: anyrad_gc_* occurs nowhere (dag.json, node files, snapshot project, all git refs). The 409 reserved names include none of the new names.\n\nLibrary\nAll of the following are in the transitive import closure of the frozen header (3203 modules, computed from source and confirmed by #check), so leaves need no new import:\n- LipschitzWith.hausdorffMeasure_image_le and Measure.hausdorffMeasure_le_liminf_tsum (Measure/Hausdorff.lean);\n- Measure.euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean);\n- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall;\n- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div(_of_integrable), with Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;\n- MeasurableSet.image_of_continuousOn_injOn (Lusin–Souslin);\n- Convex.lipschitzOnWith_of_nnnorm_fderiv_le, LipschitzOnWith.extend_pi and extend_finite_dimension;\n- Submodule.starProjection_norm_le and Integrable.of_bound;\n- SimonGMT HasWeightedApproximateTangentSpaceAt and its .unique.\n\nController rules\n- runtime.py reuses an accepted cross-branch node only when the lean_statement is identical.\n- leaf_verification.check_source_delta makes each leaf one appended theorem with no imports.\n- max_nodes is 1000 and the DAG has 200 nodes.\n\nLean checks\n- All 7 child types elaborate.\n- Assembly.lean proves the exact selected type sorry-free (propext, Classical.choice, Quot.sound).\n- The 5 new children are proved in scratch as single theorems."
+          }
+        ],
+        "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+        "child_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_tangent-a1",
+        "subproblem": {
+          "key": "graph_tangent",
+          "title": "Tangent planes along a C^1 graph piece, given the transfer of weight-null sets to parameters",
+          "statement": "Let n >= 1, l >= 0, U open in R^(n+l), V a contract rectifiable n-varifold in U with weight mu = V.weight, q a linear isometry of R^(n+l), Omega open in R^n, u : R^n -> R^l of class C^1 on Omega, and F(x) := q(graphPoint(x, u(x))). Assume that for every property P which holds mu-a.e., P(F(x)) holds for L^n-a.e. x in Omega. Then for L^n-a.e. x in Omega, V.tangentProj(F(x)) is the orthogonal projection onto the image under q of span{graphPoint(v, Du(x) v) : v in R^n} (Du(x) = fderiv u x).",
+          "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → (∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂V.weight, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))) → ∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection",
+          "lean_name": "anyrad_gc_graph_tangentProj_ae",
+          "depends_on": [
+            "tangent_facts"
+          ],
+          "natural_proof": "Source: step 6 of the parent proof (\"locality of approximate tangents, Simon Ch. 3, Remark 1.8(1), identifies p on the graph with q(graph Du) a.e.\") and step 5 (null sets transfer to parameters). The locality statement is taken from the sibling tangent_facts (Submission.ted_tangent_plane_facts, conjunct (4)). That conjunct proves, for Lipschitz graphs, exactly the blow-up identification of step 6: Lebesgue points of theta on the graph, zero density of M \\ Gamma and Gamma \\ M, and convergence of the blown-up graphs to the tangent plane. Its exceptional set is mu-null, which the transfer hypothesis handles. Notation: T(x) := image under q of span{graphPoint(v, Du(x) v) : v in R^n}, i.e. Submodule.map q (span (range (v -> graphPoint v (Du(x) v)))).\n1. Regularity of u. u is C^1 on the open set Omega. So u is differentiable at every x in Omega (ContDiffOn.differentiableOn_one, and Omega is a neighbourhood of x), and x -> Du(x) is continuous on Omega (ContDiffOn.continuousOn_fderiv_of_isOpen).\n2. Local Lipschitz extension. Fix x_0 in Omega and e > 0 with B°_e(x_0) contained in Omega. Put r := e/2 and K := B_r(x_0) (closed ball); K is contained in Omega and is compact and convex.\n   ||Du|| is continuous on K, hence bounded there by some C (IsCompact.exists_bound_of_continuousOn). By the mean value inequality on the convex set K, u is L-Lipschitz on K with L := max(C, 0) (Convex.lipschitzOnWith_of_nnnorm_fderiv_le).\n   Extend u restricted to K to a map f : R^n -> R^l that is Lipschitz on all of R^n and equals u on K. One way is LipschitzOnWith.extend_finite_dimension. Another is a coordinatewise McShane extension (LipschitzOnWith.extend_pi for x -> ofLp(u x), then toLp, which is Lipschitz as a linear map between finite-dimensional spaces).\n   Put R := |x_0| + r. Then B°_r(x_0) is contained in B°_R(0) (triangle inequality), and f is Lipschitz on B_R(0).\n3. Apply tangent_facts (4) to q, f, R and the Lipschitz constant of f. It gives a mu-a.e. property Q(y):\n   \"for all x' in B°_R(0), if y = q(graphPoint(x', f x')) and f is differentiable at x', then V.tangentProj y is the orthogonal projection onto span{q(graphPoint(v, Df(x') v)) : v in R^n}\".\n   By the transfer hypothesis, Q(F x) holds for L^n-a.e. x in Omega.\n4. Let x in B°_r(x_0) satisfy Q(F x).\n   (a) x lies in B°_R(0), and f(x) = u(x) since x is in K; so F x = q(graphPoint(x, f x)).\n   (b) f = u on the open ball B°_r(x_0), a neighbourhood of x. Hence f is differentiable at x, because u is (step 1; DifferentiableAt.congr_of_eventuallyEq), and Df(x) = Du(x) (Filter.EventuallyEq.fderiv_eq).\n   (c) So Q(F x) gives V.tangentProj(F x) = orthogonal projection onto span{q(graphPoint(v, Du(x) v))}.\n   (d) span{q(w) : w in W} = map q (span W) with W := range(v -> graphPoint(v, Du(x) v)) (Submodule.map_span, Set.range_comp). This is T(x), so V.tangentProj(F x) = T(x).starProjection. In Lean, prove the submodule equality first and conclude by congr, since starProjection carries an instance argument.\n   Hence the set of x in Omega cap B°_r(x_0) where the conclusion fails is L^n-null.\n5. Local to global. Every x_0 in Omega has a neighbourhood B°_r(x_0) on which the failure set is L^n-null (step 4). R^n is second countable, so countably many of these balls cover Omega, and the failure set in Omega is L^n-null. One can use measure_null_of_locally_null, or a countable cover by balls with centres in a countable dense set and rational radii together with ae_all_iff. Together with ae_restrict_mem (Omega is open, hence Borel), this is the claim: for L^n-a.e. x in Omega, V.tangentProj(F x) = T(x).starProjection. QED",
+          "proof_key_steps": [
+            "u is differentiable on Omega with continuous Du",
+            "On a closed ball K in Omega u is Lipschitz (mean value inequality); extend to a globally Lipschitz f equal to u on K",
+            "tangent_facts (4) for (q, f, R) gives the graph tangent identity mu-a.e.; transfer it to parameters",
+            "On the open ball f = u near x, so Df(x) = Du(x) and span{q(graphPoint(v, Du v))} = q(span{graphPoint(v, Du v)})",
+            "Countably many balls (Lindelöf / measure_null_of_locally_null) give the L^n-a.e. statement on Omega"
+          ]
+        },
+        "audit": {
+          "key": "graph_tangent",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The explicit transfer hypothesis supplies the needed parameter-null-set control. Local Lipschitz extensions, tangent_facts, equality of local derivatives, the span-image identity, and a countable cover prove precisely the stated projection identity."
+        },
+        "resolved_dependencies": [
+          "root.tilt_excess_decay-a1.tangent_plane_facts-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_transfer-a1",
+      "key": "graph_transfer",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json",
+              "python3 -I: print lean_statement of every subproblem in nodes/root-allard-any-radius-a1/decomposition-v2.json and nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v{1,2}.json",
+              "python3 -I scan of every lean_name in dag.json and nodes/*/*.json (409 reserved names); grep -rl anyrad_gc dag.json nodes GMT <snapshot>/project; git grep -l anyrad_gc <all refs> -- GMT/Ch05/Submission.lean (no match)",
+              "python3 -I: dag.json nodes with status accepted/proved whose lean_statement mentions graphOver|tangentProj|hsNormSq|filterAt|withDensity|V.weight|μHE",
+              "git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean | grep -n '^theorem\\|sorry\\|import'; git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep import",
+              "rg -n 'μHE\\[' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -n 'hausdorffMeasure_image_le\\|theorem hausdorffMeasure_smul₀\\|theorem hausdorffMeasure_le_liminf_tsum\\|mkMetric_le_liminf_tsum' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "grep -n '^theorem\\|^protected def' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\\|theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean; grep -n 'protected def vitaliFamily\\|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem LipschitzOnWith.extend_pi\\|theorem LipschitzOnWith.extend_real\\|extend_lp_infty' Mathlib/Topology/MetricSpace; grep -n 'lipschitzOnWith_of_nnnorm_fderiv_le\\|norm_image_sub_le_of_norm_fderiv_le' Mathlib/Analysis/Calculus/MeanValue.lean; grep -rn starProjection_norm_le Mathlib/Analysis/InnerProductSpace/Projection",
+              "grep -n 'theorem\\|lemma\\|instance\\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "python3 -I /tmp/gc-split-k7/scripts/closure.py <the 15 frozen header imports> (transitive import closure: 3203 modules)",
+              "sed -n on runtime.py (_solve_children, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.py (check_source_delta), parent_verification.py; cat swarm-project.json (max_nodes 1000); len(dag.json nodes) = 200",
+              "lake build GMT.Ch05.Submission in the scratch copy /tmp/gc-split-k7/proj (packages symlinked to the workspace .lake/packages)",
+              "lake env lean Checks/Types.lean; lake env lean Checks/Assembly.lean; lake env lean Val/GraphTransfer.lean Val/HausdorffLeWeight.lean Val/GraphTangent.lean Val/Lebesgue.lean; python3 -I scripts/stmtcheck.py"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/isolated-comparator-result.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/parent-supplied-natural-proof.md",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py",
+              "/tmp/gc-split-k7/closure.txt",
+              "/tmp/gc-split-k7/proj/Checks/Types.lean",
+              "/tmp/gc-split-k7/proj/Checks/Assembly.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTransfer.lean",
+              "/tmp/gc-split-k7/proj/Val/HausdorffLeWeight.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTangent.lean",
+              "/tmp/gc-split-k7/proj/Val/Lebesgue.lean"
+            ],
+            "conclusion": "Snapshot and reuse\n- manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace GMT/Ch05/Submission.lean is the frozen contract file.\n- Two accepted declarations from other branches cover parts of this proof and are reused with byte-identical frozen types (accepted, candidate commit present, comparator passed):\n  - aetp_upper_density_zero_ae: the Upper Density Theorem (candidate 066406829f…).\n  - ted_tangent_plane_facts: tangent-plane existence, measurability, density, and locality along Lipschitz graphs (candidate a8902dc6…; a sorry-free proof of about 1500 lines).\n- Other accepted lemmas were found but are not needed: upperDensity_ne_zero_outside_hausdorff_null, rsod_blowUp_setIntegral_eq, lip_approx_graph_coordinates, allard52_tangent_ae, lgc_tangent_plane_ae.\n- No-match: anyrad_gc_* occurs nowhere (dag.json, node files, snapshot project, all git refs). The 409 reserved names include none of the new names.\n\nLibrary\nAll of the following are in the transitive import closure of the frozen header (3203 modules, computed from source and confirmed by #check), so leaves need no new import:\n- LipschitzWith.hausdorffMeasure_image_le and Measure.hausdorffMeasure_le_liminf_tsum (Measure/Hausdorff.lean);\n- Measure.euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean);\n- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall;\n- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div(_of_integrable), with Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;\n- MeasurableSet.image_of_continuousOn_injOn (Lusin–Souslin);\n- Convex.lipschitzOnWith_of_nnnorm_fderiv_le, LipschitzOnWith.extend_pi and extend_finite_dimension;\n- Submodule.starProjection_norm_le and Integrable.of_bound;\n- SimonGMT HasWeightedApproximateTangentSpaceAt and its .unique.\n\nController rules\n- runtime.py reuses an accepted cross-branch node only when the lean_statement is identical.\n- leaf_verification.check_source_delta makes each leaf one appended theorem with no imports.\n- max_nodes is 1000 and the DAG has 200 nodes.\n\nLean checks\n- All 7 child types elaborate.\n- Assembly.lean proves the exact selected type sorry-free (propext, Classical.choice, Quot.sound).\n- The 5 new children are proved in scratch as single theorems."
+          }
+        ],
+        "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+        "child_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_transfer-a1",
+        "subproblem": {
+          "key": "graph_transfer",
+          "title": "Area comparison and null-set transfer along a continuous graph piece dominated by a measure",
+          "statement": "Let n, l be natural numbers, q a linear isometry of R^(n+l), Omega a Borel subset of R^n, u : R^n -> R^l continuous on Omega, F(x) := q(graphPoint(x, u(x))), Gamma := q(graph u over Omega) = F(Omega), and nu a measure on R^(n+l) with H^n restricted to Gamma <= nu (H^n = muHE[n]). Then (a) for every Borel A contained in Omega, q(graph u over A) = F(A) is Borel; (b) for every Borel A contained in Omega and every Borel g : R^(n+l) -> [0, infinity], the integral over A of g(F(x)) dL^n(x) is at most the integral over q(graph u over A) of g dnu; (c) for every property P of points of R^(n+l) that holds nu-a.e., P(F(x)) holds for L^n-a.e. x in Omega.",
+          "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), MeasurableSet Ω → ContinuousOn u Ω → ∀ ν : Measure (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)).restrict (q '' graphOver u Ω) ≤ ν → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → MeasurableSet (q '' graphOver u A)) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂ν) ∧ ∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂ν, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))",
+          "lean_name": "anyrad_gc_graph_lintegral_transfer",
+          "depends_on": [
+            "graph_volume"
+          ],
+          "natural_proof": "Source: steps 1 and 5 of the parent proof (Borel images by Lusin–Souslin; L^n(A') <= H^n(F(A')) <= mu(F(A')) gives (E1) through the push-forward F_#(L^n restricted to A), and transfers null sets to parameters). Here mu is replaced by any measure nu dominating H^n on the graph piece. Uses the sibling graph_volume (Submission.anyrad_gc_volume_le_graph_hausdorff). Notation: H := muHE[n] on R^(n+l). For every A, q(graph u over A) = F(A) (Set.image_image).\n1. F is continuous on Omega and injective. graphPoint is continuous in (x, y): it is toLp o Fin.append applied to (ofLp x, ofLp y) (PiLp.continuous_toLp, PiLp.continuous_ofLp, Fin.continuous_append). The map x -> (x, u x) is continuous on Omega, and q is continuous, so F is continuous on Omega. If F x = F x', then graphPoint(x, u x) = graphPoint(x', u x') (q is injective); comparing the coordinates Fin.castAdd l i gives x = x'.\n2. (a) Let A be Borel with A contained in Omega. F is continuous and injective on A, and R^n is a Polish space, so F(A) is Borel by the Lusin–Souslin theorem (MeasurableSet.image_of_continuousOn_injOn).\n3. Key inequality. For every set S in R^(n+l):\n   H(S cap Gamma) <= (H restricted to Gamma)(S) <= nu(S)\n   by Measure.le_restrict_apply and the hypothesis applied to arbitrary sets (Measure.le_iff'). Combined with graph_volume (L^n(B) <= H(F(B)) for every B in R^n): if B is contained in Omega and F(B) is contained in S, then\n   L^n(B) <= H(F(B)) <= H(S cap Gamma) <= nu(S).\n4. (b) Let A be Borel with A contained in Omega, and g Borel. F is a.e.-measurable for L^n restricted to A (ContinuousOn.aemeasurable). Let m := F_#(L^n restricted to A) (Measure.map).\n   For Borel B, m(B) = L^n(F^-1(B) cap A) (Measure.map_apply_of_aemeasurable, Measure.restrict_apply'). F(F^-1(B) cap A) is contained in (B cap F(A)) cap Gamma, so by step 3, m(B) <= nu(B cap F(A)) = (nu restricted to F(A))(B) (Measure.restrict_apply). Hence m <= nu restricted to F(A) (Measure.le_iff).\n   Therefore: integral over A of g(F x) dx = integral of g dm (lintegral_map') <= integral of g d(nu restricted to F(A)) (lintegral_mono') = integral over q(graph u over A) of g dnu.\n5. (c) Let P hold nu-a.e., i.e. nu({y : not P y}) = 0. Since Omega is Borel, (L^n restricted to Omega)({x : not P(F x)}) = L^n({x : not P(F x)} cap Omega) (Measure.restrict_apply'). The F-image of this set is contained in {y : not P y} cap Gamma, so by step 3 its L^n-measure is <= nu({y : not P y}) = 0. Hence P(F x) holds for L^n-a.e. x in Omega (ae_iff). QED",
+          "proof_key_steps": [
+            "F = q o graphPoint(., u(.)) is continuous on Omega and injective",
+            "Lusin–Souslin gives Borel images F(A)",
+            "graph_volume plus H^n restricted to Gamma <= nu give L^n(B) <= nu(S) whenever F(B) is contained in S",
+            "The push-forward of L^n restricted to A is <= nu restricted to F(A); lintegral_map' gives (b)",
+            "nu-null sets pull back to L^n-null parameter sets in Omega: (c)"
+          ]
+        },
+        "audit": {
+          "key": "graph_transfer",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All three conclusions match the prose. Lusin–Souslin gives Borel images; graph_volume gives pushforward domination and the integral inequality. The arbitrary-set estimate transfers every almost-everywhere predicate without an unstated measurability assumption."
+        },
+        "resolved_dependencies": [
+          "root.allard_any_radius-a1.graph_comparison-a1.graph_volume-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1.hausdorff_le_weight-a1",
+      "key": "hausdorff_le_weight",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat <snapshot>/manifest.json",
+              "python3 -I: print lean_statement of every subproblem in nodes/root-allard-any-radius-a1/decomposition-v2.json and nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v{1,2}.json",
+              "python3 -I scan of every lean_name in dag.json and nodes/*/*.json (409 reserved names); grep -rl anyrad_gc dag.json nodes GMT <snapshot>/project; git grep -l anyrad_gc <all refs> -- GMT/Ch05/Submission.lean (no match)",
+              "python3 -I: dag.json nodes with status accepted/proved whose lean_statement mentions graphOver|tangentProj|hsNormSq|filterAt|withDensity|V.weight|μHE",
+              "git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean | grep -n '^theorem\\|sorry\\|import'; git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep import",
+              "rg -n 'μHE\\[' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -n 'hausdorffMeasure_image_le\\|theorem hausdorffMeasure_smul₀\\|theorem hausdorffMeasure_le_liminf_tsum\\|mkMetric_le_liminf_tsum' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "grep -n '^theorem\\|^protected def' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\\|theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean; grep -n 'protected def vitaliFamily\\|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem LipschitzOnWith.extend_pi\\|theorem LipschitzOnWith.extend_real\\|extend_lp_infty' Mathlib/Topology/MetricSpace; grep -n 'lipschitzOnWith_of_nnnorm_fderiv_le\\|norm_image_sub_le_of_norm_fderiv_le' Mathlib/Analysis/Calculus/MeanValue.lean; grep -rn starProjection_norm_le Mathlib/Analysis/InnerProductSpace/Projection",
+              "grep -n 'theorem\\|lemma\\|instance\\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "python3 -I /tmp/gc-split-k7/scripts/closure.py <the 15 frozen header imports> (transitive import closure: 3203 modules)",
+              "sed -n on runtime.py (_solve_children, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.py (check_source_delta), parent_verification.py; cat swarm-project.json (max_nodes 1000); len(dag.json nodes) = 200",
+              "lake build GMT.Ch05.Submission in the scratch copy /tmp/gc-split-k7/proj (packages symlinked to the workspace .lake/packages)",
+              "lake env lean Checks/Types.lean; lake env lean Checks/Assembly.lean; lake env lean Val/GraphTransfer.lean Val/HausdorffLeWeight.lean Val/GraphTangent.lean Val/Lebesgue.lean; python3 -I scripts/stmtcheck.py"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-comparison-a1/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/isolated-comparator-result.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/parent-supplied-natural-proof.md",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py",
+              "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py",
+              "/tmp/gc-split-k7/closure.txt",
+              "/tmp/gc-split-k7/proj/Checks/Types.lean",
+              "/tmp/gc-split-k7/proj/Checks/Assembly.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTransfer.lean",
+              "/tmp/gc-split-k7/proj/Val/HausdorffLeWeight.lean",
+              "/tmp/gc-split-k7/proj/Val/GraphTangent.lean",
+              "/tmp/gc-split-k7/proj/Val/Lebesgue.lean"
+            ],
+            "conclusion": "Snapshot and reuse\n- manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace GMT/Ch05/Submission.lean is the frozen contract file.\n- Two accepted declarations from other branches cover parts of this proof and are reused with byte-identical frozen types (accepted, candidate commit present, comparator passed):\n  - aetp_upper_density_zero_ae: the Upper Density Theorem (candidate 066406829f…).\n  - ted_tangent_plane_facts: tangent-plane existence, measurability, density, and locality along Lipschitz graphs (candidate a8902dc6…; a sorry-free proof of about 1500 lines).\n- Other accepted lemmas were found but are not needed: upperDensity_ne_zero_outside_hausdorff_null, rsod_blowUp_setIntegral_eq, lip_approx_graph_coordinates, allard52_tangent_ae, lgc_tangent_plane_ae.\n- No-match: anyrad_gc_* occurs nowhere (dag.json, node files, snapshot project, all git refs). The 409 reserved names include none of the new names.\n\nLibrary\nAll of the following are in the transitive import closure of the frozen header (3203 modules, computed from source and confirmed by #check), so leaves need no new import:\n- LipschitzWith.hausdorffMeasure_image_le and Measure.hausdorffMeasure_le_liminf_tsum (Measure/Hausdorff.lean);\n- Measure.euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean);\n- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall;\n- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div(_of_integrable), with Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;\n- MeasurableSet.image_of_continuousOn_injOn (Lusin–Souslin);\n- Convex.lipschitzOnWith_of_nnnorm_fderiv_le, LipschitzOnWith.extend_pi and extend_finite_dimension;\n- Submodule.starProjection_norm_le and Integrable.of_bound;\n- SimonGMT HasWeightedApproximateTangentSpaceAt and its .unique.\n\nController rules\n- runtime.py reuses an accepted cross-branch node only when the lean_statement is identical.\n- leaf_verification.check_source_delta makes each leaf one appended theorem with no imports.\n- max_nodes is 1000 and the DAG has 200 nodes.\n\nLean checks\n- All 7 child types elaborate.\n- Assembly.lean proves the exact selected type sorry-free (propext, Classical.choice, Quot.sound).\n- The 5 new children are proved in scratch as single theorems."
+          }
+        ],
+        "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+        "child_id": "root.allard_any_radius-a1.graph_comparison-a1.hausdorff_le_weight-a1",
+        "subproblem": {
+          "key": "hausdorff_le_weight",
+          "title": "H^n on a set of positive lower density is dominated by the weight when theta >= 1",
+          "statement": "Let n, l be natural numbers, U a set in R^(n+l), V = v(M, theta) a contract rectifiable n-varifold in U with weight mu = V.weight = (H^n restricted to M) with density ofReal(theta), O an open set with mu(O) < infinity, and Gamma a subset of O. Assume theta >= 1 mu-a.e., and every y in Gamma has positive lower density: there are c > 0 and s_0 > 0 with ofReal(c s^n) <= mu(B_s(y)) for all 0 < s < s_0. Then H^n restricted to Gamma is <= mu as measures; in particular H^n(Gamma \\ M) = 0, and H^n(B cap Gamma) <= mu(B) for every set B.",
+          "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O Γ : Set (Amb n ℓ)), IsOpen O → V.weight O < ⊤ → Γ ⊆ O → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → (∀ y ∈ Γ, ∃ c s₀ : ℝ, 0 < c ∧ 0 < s₀ ∧ ∀ s : ℝ, 0 < s → s < s₀ → ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)).restrict Γ ≤ V.weight",
+          "lean_name": "anyrad_gc_hausdorff_restrict_le_weight",
+          "depends_on": [
+            "upper_density"
+          ],
+          "natural_proof": "Source: steps 3 and 4 of the parent proof (Gamma \\ M is H^n-null by the Upper Density Theorem; H^n <= mu on Gamma because theta >= 1). Uses the sibling upper_density (Submission.aetp_upper_density_zero_ae). Notation: H := muHE[n] on R^(n+l), M := V.carrier (H-null-measurable), theta := V.mult (> 0 on M, and a.e.-measurable for H restricted to M), mu := V.weight = (H restricted to M).withDensity(ofReal o theta). B_r(x) is the closed ball and B°_r(x) the open ball.\n1. A measurable core of M. M is H-null-measurable, so there is a Borel M_1 contained in M with M_1 = M H-a.e. (NullMeasurableSet.exists_measurable_subset_ae_eq). Then (H restricted to M)(complement of M_1) = (H restricted to M_1)(complement of M_1) = 0, because restrictions to a.e.-equal sets agree (Measure.restrict_congr_set, Measure.restrict_apply). mu is absolutely continuous with respect to H restricted to M (withDensity_absolutelyContinuous), so mu(complement of M_1) = 0.\n2. Upper density. A := O cap M_1 is Borel with mu(A) <= mu(O) < infinity. By upper_density applied to nu := mu and A: for H-a.e. x, if x is not in A, then mu(A cap B_r(x))/ofReal(r^n) -> 0 as r -> 0+.\n3. H(Gamma \\ M) = 0. Let x be in Gamma \\ M; then x is not in A, since A is contained in M_1, which is contained in M. Let c, s_0 be as in the hypothesis for y = x, and e > 0 with B°_e(x) contained in O (O is open and contains x).\n   For 0 < r < min(s_0, e/2), B_r(x) is contained in O. So B_r(x) \\ A is contained in the complement of M_1, and mu(B_r(x) \\ A) = 0 by step 1. Therefore\n   ofReal(c r^n) <= mu(B_r(x)) <= mu(A cap B_r(x)) + mu(B_r(x) \\ A) = mu(A cap B_r(x)),\n   i.e. mu(A cap B_r(x))/ofReal(r^n) >= ofReal(c) > 0 (ENNReal.le_div_iff_mul_le, ofReal(c) ofReal(r^n) = ofReal(c r^n)).\n   This holds for all r in the interval (0, min(s_0, e/2)), which belongs to the filter 𝓝[>] 0. If the quotient tended to 0, it would eventually be < ofReal(c) (Filter.Tendsto.eventually_lt_const). Since 𝓝[>] 0 is a proper filter, both eventual properties would hold at some r, a contradiction.\n   Hence x lies in the exceptional H-null set of step 2. So Gamma \\ M is contained in that set, and H(Gamma \\ M) = 0 (measure_mono_null).\n4. theta >= 1 H-a.e. on M. The hypothesis says 1 <= theta mu-a.e. The density ofReal o theta is a.e.-measurable for H restricted to M (V.aemeasurable_mult.ennreal_ofReal), so by ae_withDensity_iff', for (H restricted to M)-a.e. x: ofReal(theta x) != 0 implies 1 <= theta x. Also, for (H restricted to M)-a.e. x, x lies in M (ae_restrict_mem₀, M null-measurable), where theta x > 0 (V.mult_pos), so ofReal(theta x) != 0. Hence 1 <= ofReal(theta x) for (H restricted to M)-a.e. x.\n5. Conclusion. As measures:\n   H restricted to Gamma <= H restricted to M = (H restricted to M).withDensity 1 <= (H restricted to M).withDensity(ofReal o theta) = mu.\n   The first inequality is Measure.restrict_mono_ae: Gamma is contained in M up to the H-null set Gamma \\ M (step 3, ae_le_set). Then withDensity_one, and withDensity_mono with step 4. Equivalently, for every Borel B:\n   H(B cap Gamma) <= H(B cap M) + H(Gamma \\ M) = H(B cap M) <= integral over B of ofReal(theta) d(H restricted to M) = mu(B) (withDensity_apply).\n   For an arbitrary set B: H(B cap Gamma) <= (H restricted to Gamma)(B) <= mu(B) (Measure.le_restrict_apply, Measure.le_iff'). In particular H(Gamma \\ M) <= mu(complement of M) = 0. QED",
+          "proof_key_steps": [
+            "Borel core M_1 of the carrier with mu(complement of M_1) = 0",
+            "Apply upper_density to mu and A = O cap M_1",
+            "Positive lower density at points of Gamma \\ M contradicts zero density, so H^n(Gamma \\ M) = 0",
+            "theta >= 1 H^n-a.e. on M via ae_withDensity_iff' and mult_pos",
+            "H^n restricted to Gamma <= H^n restricted to M = withDensity 1 <= withDensity(ofReal theta) = mu"
+          ]
+        },
+        "audit": {
+          "key": "hausdorff_le_weight",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The Borel carrier core permits application of upper_density. Positive lower density forces Γ minus the carrier to be Hausdorff-null. Positivity transfers the multiplicity bound, and restriction/withDensity monotonicity proves the exact measure inequality, including nonmeasurable Γ."
+        },
+        "resolved_dependencies": [
+          "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.upper_density_zero-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/task.md": "dfbb96c99584d2d384c58549f43fcf0bdd3ac2e8b8a71edf8b14c8afcabcd8fc",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/problem.md": "48c9992b115965304a389586c670b288f316caa7929675f19c9b628e3101d681",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/problem.json": "903986fbfad51db95c6d9248a0daa43d238876f161c37cf7419ff4eda4a4786e",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/reference-manifest.json": "79927b124570304468be0ca6c249cfa2a3ebfd5d3f74fe7260e04399c872e1a9",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/decomposition.json": "8eca8c320eb5685de5e1d3f3a74c3fcc3ba277fd2916e9472581c771d1114078",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/decomposition-audit.json": "54822062ab7fa783347e02a5f188f5f1c08848866edf34e490919fb0000af8ca",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/controller-contract.json": "975f7dd6624a7302dadf68f7c66e60b0a60b125bed783510c38ebe3bf2350b51",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-child-handoff.json": "347b6c0143ac222e540a32a120c91d7d7b43f3ea2a376ab44da29f0321ad5f3e",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-supplied-plan.md": "597e18c02e24be2c7bc7ad6669867611365c5417eda8c380bf9946b91eb14f9a",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-supplied-natural-proof.md": "7c658fcda515cd8be0630ee15592d2800958e0aaeae70ac799754d49746b2387",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/parent-supplied-natural-proof.json": "4d9ac4ad2e2ace56bf690b90972f14264858f6c009fad78fbc414691af2bb530",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-volume-a1/node.json": "3bc420a5a09df23686dcc1d55fc7c75d4a30474d8d4e350830210d6ccfe941b1",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-child-handoff.json": "606a89e4ecadeec83f14210852a4332cb9706dbaeb028391315224f858caec35",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-supplied-plan.md": "d4d9fd6c9b26528b8c20dd035671d221d12440dce3d873d76c48d1023b7fbb0a",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-supplied-natural-proof.md": "a746f5f4c115ee567d7d62726f6a60a8fc24237c8e82f854f422b1c2f52542ef",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/parent-supplied-natural-proof.json": "495fcebe78a46d7657d396a5a2ca3f4fd96ea4b61332fc2fb93cffcfef78a2a7",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-lebesgue-points-a1/node.json": "79f07cecf349088e77c2d13cc667fd55dbd1ccb29ad1f34a6c8c6095e51eff1a",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-child-handoff.json": "d7a342d3b32d4e24b80820f1e6406e5119ed898d373b984c36033d28b882467d",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-supplied-plan.md": "a92e85415591192eaed98c4f53290319d1c09668e1ea7ed9184aa836f3d2e673",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-supplied-natural-proof.md": "4a15bb351d785ed16258e9da4bba980891acee3c50e8be78efbdd6aac9185c48",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/parent-supplied-natural-proof.json": "271fc815f39d9a4041422b7543f0c6097b61a210d868e9698f2e4311a3237324",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1/node.json": "dc06cde627f8846b6b1bb0bdb384332490e6f3bae91f513e973de2fa6bd7d0df",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-child-handoff.json": "6b32588e2b1b987e8975e7f1c6c1f774aa16b8499c13f0d2b690da05fa915437",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-supplied-plan.md": "b08008d7fd69e36e8f9af2039a803b06992ca35e496e6977017ab674ed29e0df",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-supplied-natural-proof.md": "316acbcd287420149ab768ad184d4f3ac1b86d7ac3faed907265203931fe3e03",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/parent-supplied-natural-proof.json": "6e21082ec62b198c9aeabc9cf63873e43d41e8a0ce6d46c70c667f6c115b3157",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-graph-transfer-a1/node.json": "29636090280837cc1f6ccfcbe491ee34f06314d893e45c39e8e11f205857155a",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-child-handoff.json": "ab23ba03f648f6645c90bbc757bcc9c908059d889542a424d1a40cd9c43f9f44",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-supplied-plan.md": "b109def63bc4ca8c0b11c6d58c7f74c295ac0dd11bc84ad585d7c5c1e99b0752",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-supplied-natural-proof.md": "2e47163d6a15e83a6345b27b13a6a83553c5a7233050d77a4ff8033fb0ef9f49",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/parent-supplied-natural-proof.json": "169f8b7b487be330339d1b6731f63f7be6da7ba7f8f12db905e2f90ede40f184",
+    ".humanize-workspace/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1/children/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1/node.json": "a83079e410e1564b9816aa1aefe71b079608261c11e71edfcfac2c29d494875f"
+  }
+}
