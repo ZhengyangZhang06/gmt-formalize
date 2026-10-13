@@ -935,6 +935,42 @@ theorem Submission.ptd_ae_approxTangent_iff_of_subset : ∀ (P n : ℕ) (U A B :
       Submission.ptd_tl_measure_closedBall_le_of_tangent P n A x Q (s / 2) hA hr₀
         (ne_top_of_le_ne_top hBfin (hAB_le (s / 2))) hTA
     exact (hiff C r₁ hr₁ hgrowth).2 hTA
+/-- Borel image and null-set pullback along a bi-Lipschitz piece: if `F : ℝⁿ → ℝᴾ` is Lipschitz,
+`B ⊆ ℝⁿ` is Borel and `m‖a − a'‖ ≤ ‖F a − F a'‖` on `B` (`m > 0`), then `F(B)` is Borel
+(Lusin–Souslin), and a property holding `Hⁿ⌞F(B)`-a.e. holds at `F b` for Lebesgue-a.e. `b ∈ B`:
+`invFunOn F B` is `m⁻¹`-Lipschitz on `F(B)` (Simon Ch. 2, 1.8(i)) and maps the `Hⁿ`-null bad
+image set onto a superset of the bad parameters, and `Hⁿ` is Lebesgue measure on `ℝⁿ`. -/
+theorem Submission.ptd_piece_image_measurable_ae_pullback : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → MeasurableSet (F '' B) ∧ ∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) → ∀ᵐ b ∂(volume.restrict B), p (F b) := by
+  intro P n F B L m hF hB hm hlow
+  -- Step 1: the lower bound makes `F` injective on `B`
+  have hinj : InjOn F B := fun a ha a' ha' h => by
+    have hle := hlow a ha a' ha'
+    rw [h, sub_self, norm_zero] at hle
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hle hm))
+  -- Step 2: Lusin–Souslin
+  have hFB : MeasurableSet (F '' B) := hB.image_of_continuousOn_injOn hF.continuous.continuousOn hinj
+  refine ⟨hFB, fun p hp => ?_⟩
+  -- Step 3: `G = invFunOn F B` is `m⁻¹`-Lipschitz on `F '' B`
+  have hG : LipschitzOnWith (Real.toNNReal m⁻¹) (invFunOn F B) (F '' B) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨a, ha, rfl⟩ _ ⟨a', ha', rfl⟩
+    rw [hinj.leftInvOn_invFunOn ha, hinj.leftInvOn_invFunOn ha', dist_eq_norm, dist_eq_norm,
+      inv_mul_eq_div, le_div_iff₀' hm]
+    exact hlow a ha a' ha'
+  -- Step 4: the bad parameters lie in the `G`-image of the `Hⁿ`-null bad image set
+  rw [ae_restrict_iff' hFB, ae_iff] at hp
+  rw [ae_restrict_iff' hB, ae_iff, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  have hnull : μHE[n] (invFunOn F B '' {y | ¬(y ∈ F '' B → p y)}) = 0 := by
+    refine le_zero_iff.1 ?_
+    calc μHE[n] (invFunOn F B '' {y | ¬(y ∈ F '' B → p y)})
+        ≤ (Real.toNNReal m⁻¹ : ℝ≥0∞) ^ n * μHE[n] {y | ¬(y ∈ F '' B → p y)} :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hG.mono fun y hy => (not_imp.1 hy).1)
+      _ = 0 := by rw [hp, mul_zero]
+  refine measure_mono_null (fun b hb => ?_) hnull
+  obtain ⟨hbB, hpb⟩ := not_imp.1 (show ¬(b ∈ B → p (F b)) from hb)
+  exact ⟨F b, show ¬(F b ∈ F '' B → p (F b)) from not_imp.2 ⟨mem_image_of_mem F hbB, hpb⟩,
+    hinj.leftInvOn_invFunOn hbB⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
