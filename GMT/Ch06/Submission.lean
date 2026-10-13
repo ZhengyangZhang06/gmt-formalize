@@ -359,6 +359,125 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Smoothness of a parametric interval integral, with all derivatives under the integral sign:
+for `G : ℝ × ℝ^P → V` of class `C^∞` (`V` complete), `g x = ∫_a^b G(t, x) dt` is `C^∞`, every
+`x`-derivative `(t, x) ↦ ∂_x^j G(t, x)` is continuous, and `D^j g(x) = ∫_a^b ∂_x^j G(t, x) dt`.
+
+Proof.  For smooth `H : ℝ × ℝ^P → W` the `x`-derivative `H'(t, x) = DH(t, x) ∘ inr` is smooth with
+values in the complete space `ℝ^P →L W`.  Bounding `‖H'‖` on the compact set
+`[[a, b]] × closedBall x₀ 1` and differentiating under the integral sign gives
+`D(∫_a^b H(t, ·) dt) = ∫_a^b H'(t, ·) dt`.  Induction on `j`, over all complete codomains at once,
+identifies `D^{j+1}` with `D^j ∘ D` through the currying isometry, which commutes with the
+interval integral; `C^j` for every `j` is `C^∞`. -/
+theorem Submission.iwl_cr_ro_intervalIntegral_contDiff :
+    ∀ (P : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (G : ℝ × Eucl P → V) (a b : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x : Eucl P => ∫ t in a..b, G (t, x)) ∧ (∀ j : ℕ, Continuous (fun p : ℝ × Eucl P => iteratedFDeriv ℝ j (fun z : Eucl P => G (p.1, z)) p.2)) ∧ ∀ (j : ℕ) (x : Eucl P), iteratedFDeriv ℝ j (fun y : Eucl P => ∫ t in a..b, G (t, y)) x = ∫ t in a..b, iteratedFDeriv ℝ j (fun z : Eucl P => G (t, z)) x := by
+  intro P V _ _ _ G a b hG
+  -- The partial derivative of a smooth `H` in `x` is `H'(t, x) = DH(t, x) ∘ inr` (chain rule).
+  have hderiv : ∀ (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] (H : ℝ × Eucl P → W),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H → ∀ (t : ℝ) (x : Eucl P),
+      HasFDerivAt (fun z : Eucl P => H (t, z))
+        ((fderiv ℝ H (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P))) x := by
+    intro W _ _ H hH t x
+    exact (hH.differentiable (by simp) (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)
+  -- One differentiation under the integral sign: `‖H'‖ ≤ K` on `[[a, b]] × closedBall x₀ 1`.
+  have hstep : ∀ (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+      (H : ℝ × Eucl P → W), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H → ∀ x₀ : Eucl P,
+      HasFDerivAt (fun x : Eucl P => ∫ t in a..b, H (t, x))
+        (∫ t in a..b, (fderiv ℝ H (t, x₀)).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P))) x₀ := by
+    intro W _ _ _ H hH x₀
+    have hHc : Continuous H := hH.continuous
+    have hH'c : Continuous fun p : ℝ × Eucl P =>
+        (fderiv ℝ H p).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P)) :=
+      (hH.continuous_fderiv (by simp)).clm_comp continuous_const
+    obtain ⟨K, hK⟩ := (isCompact_uIcc.prod (isCompact_closedBall x₀ 1)).exists_bound_of_continuousOn
+      hH'c.continuousOn
+    exact hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume)
+      (F := fun x t => H (t, x))
+      (F' := fun x t => (fderiv ℝ H (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P)))
+      (bound := fun _ => K) (ball_mem_nhds x₀ one_pos)
+      (Eventually.of_forall fun x =>
+        (hHc.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable)
+      ((hHc.comp (continuous_id.prodMk continuous_const)).intervalIntegrable a b)
+      ((hH'c.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable)
+      (ae_restrict_of_forall_mem measurableSet_uIoc fun t ht x hx =>
+        hK (t, x) ⟨uIoc_subset_uIcc ht, ball_subset_closedBall hx⟩)
+      intervalIntegrable_const
+      (Eventually.of_forall fun t x _ => hderiv W H hH t x)
+  -- Induction on `j` over all complete codomains: `C^j`, continuity of `∂_x^j H`, and
+  -- `D^j (∫_a^b H(t, ·) dt) = ∫_a^b ∂_x^j H(t, ·) dt`.
+  have claim : ∀ j : ℕ, ∀ (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+      (H : ℝ × Eucl P → W), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H →
+      ContDiff ℝ j (fun x : Eucl P => ∫ t in a..b, H (t, x)) ∧
+      Continuous (fun p : ℝ × Eucl P => iteratedFDeriv ℝ j (fun z : Eucl P => H (p.1, z)) p.2) ∧
+      ∀ x : Eucl P, iteratedFDeriv ℝ j (fun y : Eucl P => ∫ t in a..b, H (t, y)) x =
+        ∫ t in a..b, iteratedFDeriv ℝ j (fun z : Eucl P => H (t, z)) x := by
+    intro j
+    induction j with
+    | zero =>
+      intro W _ _ _ H hH
+      have hHc : Continuous H := hH.continuous
+      refine ⟨?_, ?_, ?_⟩
+      · rw [Nat.cast_zero, contDiff_zero]
+        exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+          (f := fun x t => H (t, x)) (hHc.comp continuous_swap) a b
+      · simp only [iteratedFDeriv_zero_eq_comp, Function.comp_def]
+        exact (continuousMultilinearCurryFin0 ℝ (Eucl P) W).symm.continuous.comp hHc
+      · intro x
+        simp only [iteratedFDeriv_zero_eq_comp, Function.comp_apply]
+        exact (LinearIsometry.intervalIntegral_comp_comm
+          (continuousMultilinearCurryFin0 ℝ (Eucl P) W).symm.toLinearIsometry
+          (fun t => H (t, x))).symm
+    | succ j ih =>
+      intro W _ _ _ H hH
+      set H' : ℝ × Eucl P → (Eucl P →L[ℝ] W) :=
+        fun p => (fderiv ℝ H p).comp (ContinuousLinearMap.inr ℝ ℝ (Eucl P)) with hH'
+      have hH'smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) H' :=
+        (hH.fderiv_right (m := ((⊤ : ℕ∞) : WithTop ℕ∞)) (by simp)).clm_comp contDiff_const
+      obtain ⟨ih1, ih2, ih3⟩ := ih (Eucl P →L[ℝ] W) H' hH'smooth
+      have hg : fderiv ℝ (fun x : Eucl P => ∫ t in a..b, H (t, x)) =
+          fun x => ∫ t in a..b, H' (t, x) := by
+        funext x
+        exact (hstep W H hH x).fderiv
+      have hgd : Differentiable ℝ (fun x : Eucl P => ∫ t in a..b, H (t, x)) :=
+        fun x => (hstep W H hH x).differentiableAt
+      have hpart : ∀ t : ℝ, fderiv ℝ (fun z : Eucl P => H (t, z)) = fun z => H' (t, z) :=
+        fun t => funext fun z => (hderiv W H hH t z).fderiv
+      refine ⟨?_, ?_, ?_⟩
+      · rw [Nat.cast_succ, contDiff_succ_iff_fderiv]
+        refine ⟨hgd, fun h => absurd h (by simp), ?_⟩
+        rw [hg]
+        exact ih1
+      · have : (fun p : ℝ × Eucl P => iteratedFDeriv ℝ (j + 1) (fun z : Eucl P => H (p.1, z)) p.2) =
+            fun p => (continuousMultilinearCurryRightEquiv' ℝ j (Eucl P) W).symm
+              (iteratedFDeriv ℝ j (fun z : Eucl P => H' (p.1, z)) p.2) := by
+          funext p
+          rw [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply]
+          congr 2
+          exact hpart p.1
+        rw [this]
+        exact (continuousMultilinearCurryRightEquiv' ℝ j (Eucl P) W).symm.continuous.comp ih2
+      · intro x
+        rw [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply]
+        have : (fun y => fderiv ℝ (fun x : Eucl P => ∫ t in a..b, H (t, x)) y) =
+            fun x => ∫ t in a..b, H' (t, x) := hg
+        rw [this, ih3 x]
+        have hint : IntervalIntegrable
+            (fun t : ℝ => iteratedFDeriv ℝ j (fun z : Eucl P => H' (t, z)) x) volume a b :=
+          (ih2.comp (continuous_id.prodMk continuous_const)).intervalIntegrable a b
+        have e := ContinuousLinearMap.intervalIntegral_comp_comm
+          ((continuousMultilinearCurryRightEquiv' ℝ j (Eucl P) W).symm :
+            (Eucl P [×j]→L[ℝ] (Eucl P →L[ℝ] W)) →L[ℝ] (Eucl P [×(j + 1)]→L[ℝ] W)) hint
+        simp only [LinearIsometryEquiv.coe_toContinuousLinearEquiv,
+          ContinuousLinearEquiv.coe_coe] at e
+        rw [← e]
+        refine intervalIntegral.integral_congr (fun t _ => ?_)
+        rw [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply]
+        congr 2
+        exact (hpart t).symm
+  exact ⟨contDiff_infty.2 fun n => (claim n V G hG).1,
+    fun j => (claim j V G hG).2.1,
+    fun j x => (claim j V G hG).2.2 x⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
