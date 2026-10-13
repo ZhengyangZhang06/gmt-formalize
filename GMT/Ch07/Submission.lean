@@ -782,6 +782,110 @@ theorem Submission.codim1_hcp_fcp_immersion_image_open_in_subspace : ∀ (P m : 
     have hgwO : g w ∈ Subtype.val ⁻¹' O := hOg ▸ mem_image_of_mem g hw
     exact hgψ w hw ▸ hgwO
 
+/-- **Local flatness of a flat hypercone** (the passage from `|A| ≡ 0` to a hyperplane in Simon,
+Appendix B, Theorem B.2, on one chart).  Let `M ⊆ A₀` (`dim A₀ = m + 1`) be an embedded `C¹`
+`m`-dimensional cone with a unit normal `ν` in `A₀`, differentiable on `M` with zero tangential
+derivative.  Take a chart `ψ`, `ψ(v₀) = x`, and a ball `B = B_δ(v₀) ⊆ V`.  By the chain rule
+`ν ∘ ψ` has zero derivative on `B`, so `ν ∘ ψ ≡ n := ν(x)` there; then `⟨n, ψ⟩` has derivative
+`⟨ν(ψ(v)), Dψ(v) a⟩ = 0`, so `⟨n, ψ(v)⟩ = ⟨n, x⟩` on `B`.  Some `B̄_ρ(x)` has
+`M ∩ B̄_ρ(x) ⊆ ψ(B)` and contains the cone point `(1 + s)x`, `s = ρ/(|x| + 1)`, which forces
+`⟨n, x⟩ = 0`.  So `ψ(B)` lies in `H = A₀ ∩ n^⊥`, which has dimension `m`, and `ψ(B) = O' ∩ H`
+with `O'` open (inverse function theorem); `O = B_ρ(x) ∩ O'` has `O ∩ M = O ∩ H`. -/
+theorem Submission.codim1_hcp_fcp_local_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P)) := by
+  intro P m A₀ M ν hA₀ hMA₀ hM hcone hνd hνn hνflat x hx
+  -- Step 1: a chart `ψ : V → W` with `ψ(v₀) = x`, a ball `B = B_δ(v₀) ⊆ V`, and
+  -- `Dψ(v) a ∈ T_{ψ(v)}M` for `v ∈ V` (chart_tangent_space)
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, hψV, hproper, hDψ⟩ := hM x hx
+  obtain ⟨v₀, hv₀, rfl⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW, hx⟩
+  obtain ⟨δ, hδ, hBV⟩ := Metric.isOpen_iff.1 hV v₀ hv₀
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+  have hψd : ∀ v ∈ V, DifferentiableAt ℝ ψ v := fun v hv =>
+    (hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)
+  have hψM : ∀ v ∈ V, ψ v ∈ M := fun v hv =>
+    (show ψ v ∈ W ∩ M from hψV ▸ mem_image_of_mem ψ hv).2
+  have htan : ∀ v ∈ V, ∀ a, fderiv ℝ ψ v a ∈ tangentSpace M (ψ v) := fun v hv a => by
+    rw [Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW hψ hinj hψV
+      hproper hDψ hv]
+    exact mem_range_self a
+  have hB : IsPreconnected (ball v₀ δ) := (convex_ball v₀ δ).isPreconnected
+  -- Step 2: `D(ν ∘ ψ)(v) a = Dν(ψ(v)) (Dψ(v) a) = 0` on `B`, so `ν(ψ(v)) = ν(x) =: n` on `B`
+  have hνψ : ∀ v ∈ ball v₀ δ, ν (ψ v) = ν (ψ v₀) := by
+    have hd : ∀ v ∈ ball v₀ δ, DifferentiableAt ℝ (ν ∘ ψ) v := fun v hv =>
+      (hνd _ (hψM v (hBV hv))).comp v (hψd v (hBV hv))
+    intro v hv
+    refine isOpen_ball.is_const_of_fderiv_eq_zero (f := ν ∘ ψ) hB
+      (fun w hw => (hd w hw).differentiableWithinAt) (fun w hw => ?_) hv (mem_ball_self hδ)
+    rw [fderiv_comp w (hνd _ (hψM w (hBV hw))) (hψd w (hBV hw))]
+    ext1 a
+    exact hνflat _ (hψM w (hBV hw)) _ (htan w (hBV hw) a)
+  obtain ⟨hnA, hnorm, -⟩ := hνn _ hx
+  set n := ν (ψ v₀)
+  clear_value n
+  -- Step 3: `D⟨n, ψ⟩(v) a = ⟨ν(ψ(v)), Dψ(v) a⟩ = 0` on `B`, so `⟨n, ψ(v)⟩ = ⟨n, x⟩` on `B`
+  have hnψ : ∀ v ∈ ball v₀ δ, inner ℝ n (ψ v) = inner ℝ n (ψ v₀) := by
+    have hd : ∀ v ∈ ball v₀ δ, HasFDerivAt (fun w => innerSL ℝ n (ψ w))
+        ((innerSL ℝ n).comp (fderiv ℝ ψ v)) v := fun v hv =>
+      (innerSL ℝ n).hasFDerivAt.comp v (hψd v (hBV hv)).hasFDerivAt
+    intro v hv
+    refine isOpen_ball.is_const_of_fderiv_eq_zero (f := fun w => innerSL ℝ n (ψ w)) hB
+      (fun w hw => (hd w hw).differentiableAt.differentiableWithinAt) (fun w hw => ?_) hv
+      (mem_ball_self hδ)
+    rw [(hd w hw).fderiv]
+    ext1 a
+    rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, ← hνψ w hw]
+    exact (hνn _ (hψM w (hBV hw))).2.2 _ (htan w (hBV hw) a)
+  -- Step 4: `M ∩ B̄_ρ(x) ⊆ ψ(B)` (chart_localization)
+  obtain ⟨ρ, hρ, -, hloc, -⟩ := Submission.dor_lmb_ret_chart_localization P m M W V ψ v₀ hW
+    hψ.continuousOn hinj hψV hproper hv₀ δ hδ
+  -- Step 5: the cone point `(1 + s) x`, `s = ρ / (|x| + 1)`, lies in `M ∩ B̄_ρ(x) ⊆ ψ(B)`,
+  -- so `(1 + s) ⟨n, x⟩ = ⟨n, x⟩` and `⟨n, x⟩ = 0`
+  have hnx : inner ℝ n (ψ v₀) = 0 := by
+    set s : ℝ := ρ / (‖ψ v₀‖ + 1) with hs_def
+    have hs : 0 < s := div_pos hρ (by positivity)
+    have hmem : (1 + s) • ψ v₀ ∈ M ∩ closedBall (ψ v₀) ρ := by
+      refine ⟨hcone _ (by linarith) _ hx, ?_⟩
+      rw [mem_closedBall, dist_eq_norm, add_smul, one_smul, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hs.le, hs_def, div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
+      nlinarith [norm_nonneg (ψ v₀)]
+    obtain ⟨v, ⟨-, hv⟩, hvx⟩ := hloc hmem
+    have h := hnψ v hv
+    rw [hvx, real_inner_smul_right] at h
+    have h' : s * inner ℝ n (ψ v₀) = 0 := by linear_combination h
+    exact (mul_eq_zero.1 h').resolve_left hs.ne'
+  -- Step 6: `H = A₀ ∩ n^⊥` has dimension `m` and contains `ψ(B)`
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    simp at hnorm
+  set H : Submodule ℝ (Euclid P) := A₀ ⊓ (Submodule.span ℝ {n})ᗮ with hH
+  have hHdim : Module.finrank ℝ H = m := by
+    have hle : Submodule.span ℝ {n} ≤ A₀ := (Submodule.span_singleton_le_iff_mem n A₀).2 hnA
+    have htop : A₀ ⊔ (Submodule.span ℝ {n})ᗮ = ⊤ :=
+      top_unique <| (Submodule.sup_orthogonal_of_hasOrthogonalProjection
+        (K := Submodule.span ℝ {n})).symm.le.trans (sup_le_sup_right hle _)
+    have h1 := Submodule.finrank_sup_add_finrank_inf_eq A₀ (Submodule.span ℝ {n})ᗮ
+    have h2 := Submodule.finrank_add_finrank_orthogonal (Submodule.span ℝ {n})
+    rw [htop, finrank_top, finrank_euclideanSpace_fin, ← hH] at h1
+    rw [finrank_span_singleton hn0, finrank_euclideanSpace_fin] at h2
+    omega
+  have hψBH : ψ '' ball v₀ δ ⊆ (H : Set (Euclid P)) := by
+    rintro _ ⟨v, hv, rfl⟩
+    refine Submodule.mem_inf.2 ⟨hMA₀ (hψM v (hBV hv)), ?_⟩
+    rw [Submodule.mem_orthogonal_singleton_iff_inner_right, hnψ v hv, hnx]
+  -- Step 7: `ψ(B) = O' ∩ H` with `O'` open (immersion_open)
+  obtain ⟨O', hO', hO'H⟩ := Submission.codim1_hcp_fcp_immersion_image_open_in_subspace P m H
+    (ball v₀ δ) ψ hHdim isOpen_ball (hψ1.mono hBV) (fun v hv => hDψ v (hBV hv)) hψBH
+  -- Step 8: `O = B_ρ(x) ∩ O'` is open, contains `x`, and `O ∩ M = O ∩ H`
+  refine ⟨H, hHdim, inf_le_left, ball (ψ v₀) ρ ∩ O', isOpen_ball.inter hO',
+    ⟨mem_ball_self hρ, ?_⟩, Subset.antisymm ?_ ?_⟩
+  · exact (show ψ v₀ ∈ O' ∩ (H : Set (Euclid P)) from
+      hO'H ▸ mem_image_of_mem ψ (mem_ball_self hδ)).1
+  · rintro y ⟨hyO, hyM⟩
+    obtain ⟨v, ⟨-, hv⟩, rfl⟩ := hloc ⟨hyM, ball_subset_closedBall hyO.1⟩
+    exact ⟨hyO, hψBH (mem_image_of_mem ψ hv)⟩
+  · rintro y ⟨hyO, hyH⟩
+    obtain ⟨v, hv, rfl⟩ : y ∈ ψ '' ball v₀ δ := hO'H ▸ ⟨hyO.2, hyH⟩
+    exact ⟨hyO, hψM v (hBV hv)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
