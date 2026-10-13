@@ -633,6 +633,23 @@ theorem Submission.dgcr_atg_graph_tangent_finrank : ∀ (n k : ℕ) (ι : Euclid
   -- `dim range DΦ(v₀) = dim ℝⁿ = n`
   rw [LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
 
+/-- **Simon Ch. 3, 1.4–1.5** on a `C¹` graph (used for 7.4.3, via Allard's Theorem 5.2 of Ch. 5):
+let `Φ(v) = z + ιv + ι'u(v)` with `u` of class `C¹` on `D = B_s(0) ∋ v₀`.  If `Hⁿ`-almost all of
+`A ∩ B_r(Φ(v₀))` lies on the graph `Φ(D)`, then an approximate tangent plane `Q` of `A` at
+`Φ(v₀)` is the graph's tangent plane `range DΦ(v₀)`.  The graph is flat at `Φ(v₀)` along
+`range DΦ(v₀)`, which therefore contains `Q`, and both planes are `n`-dimensional. -/
+theorem Submission.dgcr_approxTangent_eq_graph_tangent : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s r : ℝ) (A : Set (Euclid (n + k))) (v₀ : Euclid n) (Q : Submodule ℝ (Euclid (n + k))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → v₀ ∈ ball (0 : Euclid n) s → 0 < r → μHE[n] ((A ∩ ball (z + ι v₀ + ι' (u v₀)) r) \ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)) = 0 → HasApproximateTangentSpaceAt n A (z + ι v₀ + ι' (u v₀)) Q → Q = LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k)) := by
+  intro n k ι ι' u z s r A v₀ Q horth hu hv₀ hr hnull hQ
+  -- `u` is `C¹` on the open ball `D ∋ v₀`, hence differentiable at `v₀`
+  have hdiff : DifferentiableAt ℝ u v₀ :=
+    (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hv₀)
+  -- `Φ(D)` is flat at `Φ(v₀)` along `L = range DΦ(v₀)`, so `Q ≤ L`
+  have hle := Submission.dgcr_atg_approxTangent_le_of_flat (n + k) n _ A _ r Q _ hr hnull
+    (Submission.dgcr_atg_graph_image_flat n k ι ι' u z (ball (0 : Euclid n) s) v₀ horth hdiff) hQ
+  -- `dim Q = n = dim L`
+  have hL := Submission.dgcr_atg_graph_tangent_finrank n k ι ι' u z v₀ horth hdiff
+  exact Submodule.eq_of_le_of_finrank_eq hle (hQ.finrank_eq.trans hL.symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
