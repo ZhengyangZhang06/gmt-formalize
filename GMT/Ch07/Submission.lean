@@ -718,6 +718,119 @@ theorem Submission.dpf_pushforward_formula_current_exists : ∀ (P n : ℕ) (U K
   calc |S₀ (ωs j)| ≤ ε / (Λ ^ n * I + 1) * Λ ^ n * I := hb
     _ = ε * (Λ ^ n * I / (Λ ^ n * I + 1)) := by ring
     _ < ε := mul_lt_of_lt_one_right hε ((div_lt_one (by linarith)).2 (lt_add_one _))
+/-- Simon 6.2.24(1), reduction from `C¹` to smooth maps (step 3 of the push-forward proof): a `C¹`
+map `φ` of `ℝᴾ` with `φ = id` off the compact set `K ⊆ U` is the pointwise `C¹` limit of `C^∞`
+maps `ψₖ` that equal `id` off one compact `K' ⊆ U` and have uniformly bounded differentials.
+`K' = cthickening δ K ⊆ U` and `ψₖ = id + ρₖ ⋆ (φ − id)`, `ρₖ` a normalized smooth bump supported
+in `B_{δ/(k+2)}(0)`; then `Dψₖ = I + ρₖ ⋆ D(φ − id)`, so `‖Dψₖ‖ ≤ 1 + sup ‖D(φ − id)‖`, and the
+mollifications of the continuous `φ − id` and `D(φ − id)` converge pointwise. -/
+theorem Submission.dpf_smooth_approx_compact_perturbation : ∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ (ψ : ℕ → Euclid P → Euclid P) (K' : Set (Euclid P)) (C : ℝ), IsCompact K' ∧ K' ⊆ U ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ψ k)) ∧ (∀ k x, x ∉ K' → ψ k x = x) ∧ (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) ∧ (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) ∧ ∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x)) := by
+  intro P U K φ hU hK hKU hφ hfix
+  -- Step 1: a margin `δ > 0` with `K' = cthickening δ K ⊆ U`
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  -- Step 2: the perturbation `g = φ - id` is `C¹` and vanishes off `K`; `‖Dg‖ ≤ A`
+  obtain ⟨g, hg⟩ : ∃ g : Euclid P → Euclid P, ∀ x, g x = φ x - x := ⟨fun x => φ x - x, fun _ => rfl⟩
+  have hgφ : g = fun x => φ x - x := funext hg
+  have hg1 : ContDiff ℝ 1 g := by
+    rw [hgφ]
+    exact hφ.sub contDiff_id
+  have hgK : ∀ x, x ∉ K → g x = 0 := fun x hx => by rw [hg, hfix x hx, sub_self]
+  have hgcs : HasCompactSupport g := HasCompactSupport.intro hK hgK
+  have hgc : Continuous g := hg1.continuous
+  have hDgc : Continuous (fderiv ℝ g) := hg1.continuous_fderiv one_ne_zero
+  have hDg : ∀ x, fderiv ℝ g x = fderiv ℝ φ x - ContinuousLinearMap.id ℝ (Euclid P) := by
+    intro x
+    rw [hgφ]
+    exact (((hφ.differentiable one_ne_zero) x).hasFDerivAt.sub (hasFDerivAt_id x)).fderiv
+  obtain ⟨A, hA⟩ := hDgc.bounded_above_of_compact_support (hgcs.fderiv ℝ)
+  have hA0 : 0 ≤ A := (norm_nonneg _).trans (hA 0)
+  -- Step 3: nonnegative smooth `ρ k` with `∫ ρ k = 1`, supported in `ball 0 (r k)`, where
+  -- `r k = δ / (k + 2)`: the bump `β k` with `rOut = r k`, divided by its integral
+  obtain ⟨r, hr0, hrδ, hrlim⟩ : ∃ r : ℕ → ℝ, (∀ k, 0 < r k) ∧ (∀ k, r k ≤ δ) ∧
+      Tendsto r atTop (𝓝 0) := by
+    refine ⟨fun k => δ / ((k : ℝ) + 2), fun k => by positivity, fun k => ?_, ?_⟩
+    · exact div_le_self hδ.le (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
+    · exact tendsto_const_nhds.div_atTop
+        (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+  obtain ⟨ρ, hρs, hρn, hρi, hρsupp⟩ : ∃ ρ : ℕ → Euclid P → ℝ,
+      (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ρ k)) ∧ (∀ k x, 0 ≤ ρ k x) ∧ (∀ k, ∫ x, ρ k x = 1) ∧
+      (∀ k, support (ρ k) ⊆ ball 0 (r k)) := by
+    let β : ∀ k, ContDiffBump (0 : Euclid P) := fun k =>
+      ⟨r k / 2, r k, half_pos (hr0 k), half_lt_self (hr0 k)⟩
+    have hβi : ∀ k, 0 < ∫ x, β k x := fun k => by
+      rw [integral_pos_iff_support_of_nonneg (fun x => (β k).nonneg)
+        ((β k).continuous.integrable_of_hasCompactSupport (β k).hasCompactSupport),
+        (β k).support_eq]
+      exact measure_ball_pos _ _ (hr0 k)
+    refine ⟨fun k x => (∫ y, β k y)⁻¹ * β k x, fun k => contDiff_const.mul (β k).contDiff,
+      fun k x => mul_nonneg (inv_nonneg.2 (hβi k).le) (β k).nonneg, fun k => ?_,
+      fun k x hx => ?_⟩
+    · rw [integral_const_mul, inv_mul_cancel₀ (hβi k).ne']
+    · have hx' : x ∈ support (β k) := right_ne_zero_of_mul hx
+      rwa [(β k).support_eq] at hx'
+  have hρc : ∀ k, HasCompactSupport (ρ k) := fun k =>
+    HasCompactSupport.intro (isCompact_closedBall 0 (r k)) fun x hx =>
+      notMem_support.1 fun h => hx (ball_subset_closedBall (hρsupp k h))
+  have hρloc : ∀ k, LocallyIntegrable (ρ k) volume := fun k => (hρs k).continuous.locallyIntegrable
+  have hsmall : Tendsto (fun k => support (ρ k)) atTop (𝓝 (0 : Euclid P)).smallSets := by
+    rw [tendsto_smallSets_iff]
+    intro t ht
+    obtain ⟨ε, hε, hεt⟩ := Metric.mem_nhds_iff.1 ht
+    filter_upwards [(tendsto_order.1 hrlim).2 ε hε] with k hk
+    exact (hρsupp k).trans ((ball_subset_ball hk.le).trans hεt)
+  -- Steps 4 and 6: `ψ k = id + ρ k ⋆ g` has derivative `I + ρ k ⋆ Dg` (the `precompR`
+  -- convolution of `hasFDerivAt_convolution_right` is the scalar one)
+  have hL : (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Euclid P →L[ℝ] Euclid P).precompR (Euclid P) =
+      (ContinuousLinearMap.lsmul ℝ ℝ :
+        ℝ →L[ℝ] (Euclid P →L[ℝ] Euclid P) →L[ℝ] (Euclid P →L[ℝ] Euclid P)) := by
+    ext a f v
+    simp [ContinuousLinearMap.precompR]
+  have hderiv : ∀ k x, HasFDerivAt
+      (fun y => y + convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume y)
+      (ContinuousLinearMap.id ℝ (Euclid P) +
+        convolution (ρ k) (fderiv ℝ g) (ContinuousLinearMap.lsmul ℝ ℝ) volume x) x := by
+    intro k x
+    have h := hgcs.hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) (hρloc k) hg1 x
+    rw [hL] at h
+    exact (hasFDerivAt_id x).add h
+  -- Step 5: off `K'`, `g = 0` on `ball x (r k)`, so `(ρ k ⋆ g) x = 0`
+  have hsupp : ∀ k x, x ∉ cthickening δ K →
+      convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0 := by
+    intro k x hx
+    have hgy : ∀ y ∈ ball x (r k), g y = 0 := fun y hy => hgK y fun hyK =>
+      hx (mem_cthickening_of_dist_le x y δ K hyK ((mem_ball'.1 hy).le.trans (hrδ k)))
+    rw [convolution_eq_right' _ (hρsupp k) fun y hy =>
+      (hgy y hy).trans (hgy x (mem_ball_self (hr0 k))).symm, hgy x (mem_ball_self (hr0 k))]
+    simp
+  refine ⟨fun k x => x + convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume x,
+    cthickening δ K, 1 + A, hK.cthickening, hδU, fun k => ?_, fun k x hx => ?_, fun k x => ?_,
+    fun x => ?_, fun x => ?_⟩
+  · exact contDiff_id.add
+      ((hρc k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρs k)
+        hgc.locallyIntegrable)
+  · simp only [hsupp k x hx, add_zero]
+  · -- Step 6: `‖Dψ k‖ ≤ ‖I‖ + sup ‖Dg‖ ≤ 1 + A`
+    rw [(hderiv k x).fderiv]
+    refine (norm_add_le _ _).trans (add_le_add ContinuousLinearMap.norm_id_le ?_)
+    have h := dist_convolution_le (x₀ := x) (z₀ := 0) (μ := volume) hA0 (hρsupp k) (hρn k) (hρi k)
+      hDgc.aestronglyMeasurable fun y _ => by rw [dist_zero_right]; exact hA y
+    rwa [dist_zero_right] at h
+  · -- Step 7: `ψ k x → x + g x = φ x`
+    have h := convolution_tendsto_right (μ := volume) (φ := ρ) (g := fun _ => g)
+      (k := fun _ => x) (Eventually.of_forall hρn) (Eventually.of_forall hρi) hsmall
+      (Eventually.of_forall fun _ => hgc.aestronglyMeasurable) ((hgc.tendsto x).comp tendsto_snd)
+      tendsto_const_nhds
+    have h2 := (tendsto_const_nhds : Tendsto (fun _ : ℕ => x) atTop (𝓝 x)).add h
+    rwa [hg x, add_sub_cancel] at h2
+  · -- Step 7: `Dψ k x → I + Dg x = Dφ x`
+    have h := convolution_tendsto_right (μ := volume) (φ := ρ) (g := fun _ => fderiv ℝ g)
+      (k := fun _ => x) (Eventually.of_forall hρn) (Eventually.of_forall hρi) hsmall
+      (Eventually.of_forall fun _ => hDgc.aestronglyMeasurable)
+      ((hDgc.tendsto x).comp tendsto_snd) tendsto_const_nhds
+    have h2 := (tendsto_const_nhds : Tendsto (fun _ : ℕ => ContinuousLinearMap.id ℝ (Euclid P))
+      atTop (𝓝 (ContinuousLinearMap.id ℝ (Euclid P)))).add h
+    rw [hDg x, add_sub_cancel] at h2
+    exact h2.congr fun k => ((hderiv k x).fderiv).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
