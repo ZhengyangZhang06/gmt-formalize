@@ -2126,6 +2126,51 @@ theorem Submission.smr_restriction_massOn_eq : ∀ (P k : ℕ) (U : Set (Eucl P)
     exact hcφ.trans_le (Submission.smr_ofReal_integral_le_massOn P k U μ v hint hfin hv A S hS
       W hW hWU φ hφc hφs hφW hφ1)
 
+/-- **Simon Ch. 6, 2.7–2.9 (pp. 136–137).**  A current `X ∈ 𝒟ₖ(U)` with `M_W(X) < ∞` for every
+`W ⊂⊂ U` is represented as `X(ω) = ∫ ⟨ω, v⟩ dμ` (2.7) by a Borel measure `μ` living on `U`,
+finite on compact subsets of `U`, with `|⟨α, v(x)⟩| ≤ |α|`; the restrictions
+`(X ⌞ A)(ω) = ∫_A ⟨ω, v⟩ dμ` to Borel sets `A` are currents (2.9) with
+`M_W(X ⌞ A) = μ(W ∩ A)` for every open `W ⊆ U` (2.8).  `X` extends to continuous compactly
+supported forms in `U` (`smr_exists_continuous_extension`); the Riesz representation of the
+extension (`smr_riesz_continuous_forms`) gives `(μ, v)`, and the restriction statements are
+`smr_restriction_isCurrent` and `smr_restriction_massOn_eq`. -/
+theorem Submission.slicing_mass_representation :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k,
+      (∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) →
+      ∃ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k),
+        IsMeasureRepresentation X μ v ∧ μ Uᶜ = 0 ∧
+        (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧
+        (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) ∧
+        (∀ A : Set (Eucl P), MeasurableSet A → ∃ S : GeometricCurrentOn U k,
+          ∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) ∧
+        ∀ A : Set (Eucl P), MeasurableSet A → ∀ S : GeometricCurrentOn U k,
+          (∀ ω : TestFormOn U k,
+            S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) →
+          ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → S.massOn W = μ (W ∩ A) := by
+  intro P k U hU X hX
+  -- Step 2: `X` extends to a linear functional `L` on continuous compactly supported forms in
+  -- `U`, bounded on forms with `|φ| ≤ 1` supported in a fixed compact subset of `U`.
+  obtain ⟨L, hLX, hLadd, hLsmul, hLbd⟩ :=
+    Submission.smr_exists_continuous_extension P k U hU X hX
+  -- Steps 3–4: Riesz gives `L φ = ∫ ⟨φ, v⟩ dμ` with (b), (c), (d), Borel coefficients of `v`
+  -- and, `μ`-a.e., a covector `α` with `|α| ≤ 1` and `⟨α, v⟩ = 1`.
+  obtain ⟨μ, v, hLrep, hμU, hμK, hv, hvmeas, hvunit⟩ :=
+    Submission.smr_riesz_continuous_forms P k U hU L hLadd hLsmul hLbd
+  -- (a): a test form is a continuous compactly supported form in `U`, on which `L = X`.
+  have hrep : IsMeasureRepresentation X μ v := by
+    intro ω
+    obtain ⟨hint, hL⟩ := hLrep (ω : DifferentialForm (Eucl P) k)
+      (ContDiff.continuous ω.property.1.1) ω.property.1.2 ω.property.2
+    exact ⟨hint, (hLX ω).symm.trans hL⟩
+  have hint : ∀ ω : TestFormOn U k,
+      Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ := fun ω => (hrep ω).1
+  -- (e): restrictions are currents (Step 5); (f): their mass on open `W ⊆ U` is `μ (W ∩ A)`
+  -- (Step 6).
+  exact ⟨μ, v, hrep, hμU, hμK, hv,
+    fun A _ => Submission.smr_restriction_isCurrent P k U μ v hint hμK hv A,
+    fun A hA S hS W hW hWU => Submission.smr_restriction_massOn_eq P k U μ v hint hμK hv hvmeas
+      hvunit A hA S hS W hW hWU⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
