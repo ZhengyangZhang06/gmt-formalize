@@ -877,6 +877,408 @@ theorem ted_lpm_curvature_holder : ∀ (n ℓ : ℕ) (p : ℝ), 1 < p → ∀ (�
     Real.norm_eq_abs] at h
   rw [hq1, mul_assoc]
   exact h
+/-- Simon Ch. 4, (4.3)–(4.4), in abstract form (`P = I'`, and `Q` plays the role of `J'`): if on
+`(0, R)` we have `I' = P`, `L` continuous, `I ≥ 0`, `nI − tP + tQ = −L`,
+`a = (L/t^{n+1})/(1 + I/tⁿ)` and `|a| ≤ M t^{−β}` with `β < 1`, then
+`Ψ(s) = exp(−∫₀ˢ a)(1 + I(s)/sⁿ)` satisfies `Ψ'(t) = exp(−∫₀ᵗ a) Q(t)/tⁿ`, and
+`exp(−∫₀^ρ |a|) ≤ exp(−∫₀ᵗ a) ≤ exp(∫₀^ρ |a|)` for `0 < t ≤ ρ < R`. -/
+theorem aal_cfs_integrating_factor_deriv : ∀ (n : ℕ) (I L a P Q : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t : ℝ, 0 < t → t < R → HasDerivAt I (P t) t) → (∀ t : ℝ, 0 < t → t < R → ContinuousAt L t) → (∀ t : ℝ, 0 < t → t < R → 0 ≤ I t) → (∀ t : ℝ, 0 < t → t < R → (n : ℝ) * I t - t * P t + t * Q t = -L t) → (∀ t : ℝ, 0 < t → t < R → a t = L t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → t < R → |a t| ≤ M * t ^ (-β)) → (∀ t : ℝ, 0 < t → t < R → HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n)) (Real.exp (-∫ u in (0)..t, a u) * (Q t / t ^ n)) t) ∧ (∀ t ρ : ℝ, 0 < t → t ≤ ρ → ρ < R → Real.exp (-∫ u in (0)..ρ, |a u|) ≤ Real.exp (-∫ u in (0)..t, a u) ∧ Real.exp (-∫ u in (0)..t, a u) ≤ Real.exp (∫ u in (0)..ρ, |a u|)) := by
+  intro n I L a P Q R M β hβ hIder hLc hInn hid ha hab
+  have hden : ∀ t, 0 < t → t < R → 1 ≤ 1 + I t / t ^ n := fun t ht htR => by
+    have := div_nonneg (hInn t ht htR) (pow_pos ht n).le
+    linarith
+  -- `a` is continuous on `(0, R)`
+  have hacontAt : ∀ t, 0 < t → t < R → ContinuousAt a t := by
+    intro t ht htR
+    have hev : (fun s => L s / s ^ (n + 1) / (1 + I s / s ^ n)) =ᶠ[𝓝 t] a := by
+      filter_upwards [Ioo_mem_nhds ht htR] with s hs
+      exact (ha s hs.1 hs.2).symm
+    refine ContinuousAt.congr ?_ hev
+    exact ((hLc t ht htR).div ((continuous_pow (n + 1)).continuousAt)
+      (pow_ne_zero _ ht.ne')).div
+      (continuousAt_const.add ((hIder t ht htR).continuousAt.div
+        ((continuous_pow n).continuousAt) (pow_ne_zero _ ht.ne')))
+      (by linarith [hden t ht htR])
+  have hacont : ContinuousOn a (Ioo 0 R) := fun t ht =>
+    (hacontAt t ht.1 ht.2).continuousWithinAt
+  -- `a` is integrable on `[0, t]`, by the bound `|a s| ≤ M s^(-β)` with `β < 1`
+  have haint : ∀ t, 0 < t → t < R → IntervalIntegrable a volume 0 t := by
+    intro t ht htR
+    refine IntervalIntegrable.mono_fun' (g := fun s => M * s ^ (-β)) ?_ ?_ ?_
+    · exact (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul M
+    · rw [uIoc_of_le ht.le]
+      exact (hacont.mono (Ioc_subset_Ioo_right htR)).aestronglyMeasurable measurableSet_Ioc
+    · rw [uIoc_of_le ht.le]
+      refine (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun s hs => ?_)
+      show ‖a s‖ ≤ M * s ^ (-β)
+      rw [Real.norm_eq_abs]
+      exact hab s hs.1 (lt_of_le_of_lt hs.2 htR)
+  -- the fundamental theorem of calculus for `∫₀ᵗ a`
+  have hGderiv : ∀ t, 0 < t → t < R → HasDerivAt (fun u => ∫ s in (0)..u, a s) (a t) t := by
+    intro t ht htR
+    exact intervalIntegral.integral_hasDerivAt_right (haint t ht htR)
+      (hacont.stronglyMeasurableAtFilter isOpen_Ioo t ⟨ht, htR⟩) (hacontAt t ht htR)
+  refine ⟨fun t ht htR => ?_, fun t ρ ht htρ hρR => ?_⟩
+  · have hd := ((hGderiv t ht htR).neg.exp).mul ((hasDerivAt_const t (1 : ℝ)).add
+      ((hIder t ht htR).div (hasDerivAt_pow n t) (pow_ne_zero n ht.ne')))
+    have hd' : HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n))
+        (Real.exp (-∫ u in (0)..t, a u) * -a t * (1 + I t / t ^ n) +
+          Real.exp (-∫ u in (0)..t, a u) *
+            (0 + (P t * t ^ n - I t * ((n : ℝ) * t ^ (n - 1))) / (t ^ n) ^ 2)) t := hd
+    convert hd' using 1
+    set E := Real.exp (-∫ u in (0)..t, a u) with hEdef
+    have hP : 0 < t ^ n := pow_pos ht n
+    have hden' : 1 + I t / t ^ n ≠ 0 := by linarith [hden t ht htR]
+    have haL : a t * (1 + I t / t ^ n) = L t / (t ^ n * t) := by
+      rw [ha t ht htR, div_mul_cancel₀ _ hden', pow_succ]
+    have hnpow : (n : ℝ) * t ^ (n - 1) = n * t ^ n / t := by
+      rcases Nat.eq_zero_or_pos n with hn | hn
+      · subst hn
+        simp
+      · rw [eq_div_iff ht.ne', mul_assoc, ← pow_succ, Nat.sub_add_cancel hn]
+    have hq : (P t * t ^ n - I t * ((n : ℝ) * t ^ (n - 1))) / (t ^ n) ^ 2 =
+        (t * P t - n * I t) / (t ^ n * t) := by
+      rw [hnpow]
+      field_simp
+    have hidt : t * P t - n * I t = t * Q t + L t := by linarith [hid t ht htR]
+    have hQ : (t * Q t + L t) / (t ^ n * t) = Q t / t ^ n + L t / (t ^ n * t) := by
+      field_simp
+    rw [hq, hidt, hQ]
+    linear_combination E * haL
+  · have hiρ := haint ρ (ht.trans_le htρ) hρR
+    have h1 : |∫ u in (0)..t, a u| ≤ ∫ u in (0)..t, |a u| :=
+      intervalIntegral.abs_integral_le_integral_abs ht.le
+    have h2 : ∫ u in (0)..t, |a u| ≤ ∫ u in (0)..ρ, |a u| :=
+      intervalIntegral.integral_mono_interval le_rfl ht.le htρ
+        (Eventually.of_forall fun u => abs_nonneg _) hiρ.abs
+    have h3 := abs_le.mp (h1.trans h2)
+    exact ⟨Real.exp_le_exp.mpr (by linarith [h3.2]), Real.exp_le_exp.mpr (by linarith [h3.1])⟩
+/-- Differentiation in the scale of a radial cutoff integral (step 2(c) of the annular
+monotonicity proof, part (c) of `allard52_am_cutoff_integral_calculus`): if `f` is
+`μ`-integrable on `B_S(y)`, `φ` is `C¹` with `φ = 0` on `[T, ∞)`, `T > 0`, `t > 0` and `T t < S`,
+then `s ↦ ∫ φ(‖x − y‖/s) f(x) dμ` has derivative `-(∫ (‖x − y‖/t) φ'(‖x − y‖/t) f(x) dμ)/t` at `t`.
+For `0 < s < S/T` the integrands vanish off `B_S(y)`; on `(t/2, S/T)` the `s`-derivatives are
+bounded by `(2 C₁/t) |f|` with `C₁ = max_{[0,T]} |u φ'(u)|`, and one differentiates under the
+integral sign against `μ ⌞ B_S(y)`. -/
+theorem allard52_am_cc_cutoff_integral_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t := by
+  intro n ℓ μ y f φ S T t hf hφ hT hφ0 ht htS
+  set K : Set (Amb n ℓ) := closedBall y S with hK
+  set ν : Measure (Amb n ℓ) := μ.restrict K with hν
+  have hfν : Integrable f ν := hf
+  have hφc : Continuous φ := hφ.continuous
+  have hdφc : Continuous (deriv φ) := hφ.continuous_deriv_one
+  -- Step 2: `φ' = 0` on `(T, ∞)`.
+  have hdzero : ∀ u, T < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hu] with v hv
+      exact hφ0 v hv.le
+    exact h.deriv_eq.trans (deriv_const u 0)
+  -- Step 3: `|φ u| ≤ C₀` and `|u φ'(u)| ≤ C₁` for `u ≥ 0`.
+  obtain ⟨C₀, hC₀⟩ : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → |φ u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hφc.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hφ0 u h.le, abs_zero]
+      exact le_max_right _ _
+  obtain ⟨C₁, hC₁0, hC₁⟩ : ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 0 ≤ u → |u * deriv φ u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      (continuous_id.mul hdφc).continuousOn
+    refine ⟨max C 0, le_max_right _ _, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hdzero u h, mul_zero, abs_zero]
+      exact le_max_right _ _
+  -- Step 5: `d/ds φ(r/s) = -(r/s) φ'(r/s) / s` for `s ≠ 0`.
+  have hderiv : ∀ (r s : ℝ), s ≠ 0 →
+      HasDerivAt (fun u => φ (r / u)) (-(r / s * deriv φ (r / s)) / s) s := by
+    intro r s hs
+    have h1 : HasDerivAt (fun u : ℝ => r / u) (r * -(s ^ 2)⁻¹) s := by
+      have := (hasDerivAt_inv hs).const_mul r
+      convert this using 1
+      funext u
+      exact div_eq_mul_inv r u
+    have h2 := ((hφ.differentiable (by simp) (r / s)).hasDerivAt).comp s h1
+    have heq : -(r / s * deriv φ (r / s)) / s = deriv φ (r / s) * (r * -(s ^ 2)⁻¹) := by
+      rw [sq, mul_inv]
+      ring
+    rw [heq]
+    exact h2
+  -- Step 1: `t < R := S / T`; we work on the neighbourhood `(t/2, R)` of `t`.
+  set R : ℝ := S / T with hR
+  have hRiff : ∀ s : ℝ, s < R ↔ T * s < S := fun s => by
+    rw [hR, lt_div_iff₀ hT, mul_comm]
+  have htR : t < R := (hRiff t).2 htS
+  -- Step 2: for `0 < s < R` the integrands vanish off `K = B_S(y)`.
+  have hout : ∀ s, 0 < s → s < R → ∀ x, x ∉ K → T < ‖x - y‖ / s := by
+    intro s hs hsR x hx
+    have hxS : S < ‖x - y‖ := by
+      simpa [hK, mem_closedBall, dist_eq_norm, not_le] using hx
+    rw [lt_div_iff₀ hs]
+    linarith [(hRiff s).1 hsR]
+  have hconv : ∀ s, 0 < s → s < R →
+      ∫ x, φ (‖x - y‖ / s) * f x ∂μ = ∫ x, φ (‖x - y‖ / s) * f x ∂ν := by
+    intro s hs hsR
+    rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hφ0 _ (hout s hs hsR x hx).le, zero_mul]
+  have hconv' : ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ =
+      ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂ν := by
+    rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hdzero _ (hout t ht htR x hx), mul_zero, zero_mul]
+  -- Step 4: measurability, and integrability of the integrand at `t`, for `ν`.
+  have hmeas : ∀ s, AEStronglyMeasurable (fun x => φ (‖x - y‖ / s) * f x) ν := fun s =>
+    (hφc.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / s)).aestronglyMeasurable.mul
+      hfν.aestronglyMeasurable
+  have hint : Integrable (fun x => φ (‖x - y‖ / t) * f x) ν := by
+    refine Integrable.mono' (hfν.norm.const_mul C₀) (hmeas t) ?_
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_right (hC₀ _ (div_nonneg (norm_nonneg _) ht.le)) (norm_nonneg _)
+  -- Step 6: differentiation under the integral sign for `ν` on `(t/2, R)`, bound `(2C₁/t)‖f‖`.
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+    (F := fun s x => φ (‖x - y‖ / s) * f x)
+    (F' := fun s x => -(‖x - y‖ / s * deriv φ (‖x - y‖ / s)) / s * f x)
+    (x₀ := t) (bound := fun x => 2 * C₁ / t * ‖f x‖) (s := Ioo (t / 2) R)
+    (Ioo_mem_nhds (half_lt_self ht) htR) (Eventually.of_forall hmeas) hint ?_ ?_
+    (hfν.norm.const_mul _) ?_
+  -- Step 7: evaluate the derivative and transfer from `ν` back to `μ` near `t`.
+  · have hderivν := key.2
+    have heq : (∫ x, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t * f x ∂ν) =
+        -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t := by
+      rw [hconv', ← integral_neg, ← integral_div]
+      congr 1
+      funext x
+      ring
+    rw [heq] at hderivν
+    refine hderivν.congr_of_eventuallyEq ?_
+    filter_upwards [Ioo_mem_nhds ht htR] with s hs
+    exact hconv s hs.1 hs.2
+  · exact (by fun_prop : Continuous fun x : Amb n ℓ =>
+      -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t).aestronglyMeasurable.mul hfν.aestronglyMeasurable
+  · refine Eventually.of_forall fun x s hs => ?_
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_div, abs_neg, abs_of_pos hs0]
+    have h1 : |‖x - y‖ / s * deriv φ (‖x - y‖ / s)| / s ≤ 2 * C₁ / t := by
+      rw [div_le_div_iff₀ hs0 ht]
+      have := hC₁ _ (div_nonneg (norm_nonneg (x - y)) hs0.le)
+      nlinarith [hs.1]
+    exact mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
+  · refine Eventually.of_forall fun x s hs => ?_
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    exact (hderiv ‖x - y‖ s hs0.ne').mul_const (f x)
+
+end Submission
+
+namespace Submission
+
+/-- Integrability of a continuous radial profile vanishing beyond `T` (the integrability parts (a)
+and (b) of `ted_lpm_fcm_cutoff_mass_hasDerivAt`): if `μ(B_S(y)) < ∞`, `g` is continuous with
+`g = 0` on `(T, ∞)`, `t > 0` and `T t < S`, then `x ↦ g(‖x − y‖/t)` is `μ`-integrable.
+It is bounded by `K = max(max_{[0,T]} |g|, 0)`, hence integrable on `B_S(y)`, and it vanishes off
+`B_S(y)`, where `‖x − y‖/t > S/t > T`. -/
+theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ := by
+  intro n ℓ μ y g S T t hμ hg hg0 ht htS
+  -- Step 1: `|g u| ≤ K` for `u ≥ 0`.
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ K := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hg.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hg0 u h, abs_zero]
+      exact le_max_right _ _
+  -- Step 2: `x ↦ g(‖x − y‖/t)` is continuous, hence a.e.-strongly measurable.
+  have hmeas : AEStronglyMeasurable (fun x => g (‖x - y‖ / t)) (μ.restrict (closedBall y S)) :=
+    (hg.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable
+  -- Steps 3–4: it is bounded by `K`, hence integrable on `B_S(y)`, which has finite measure.
+  have hon : IntegrableOn (fun x => g (‖x - y‖ / t)) (closedBall y S) μ := by
+    refine IntegrableOn.of_bound hμ hmeas K (Eventually.of_forall fun x => ?_)
+    rw [Real.norm_eq_abs]
+    exact hK _ (div_nonneg (norm_nonneg _) ht.le)
+  -- Steps 5–6: off `B_S(y)` we have `‖x − y‖/t > T`, so the integrand vanishes there.
+  refine hon.integrable_of_forall_notMem_eq_zero fun x hx => hg0 _ ?_
+  have hxS : S < ‖x - y‖ := by
+    simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+  rw [lt_div_iff₀ ht]
+  linarith
+
+end Submission
+
+namespace Submission
+
+/-- Derivative of the radial cutoff mass `I(s) = ∫ φ(‖x − y‖/s) dμ` (Simon Ch. 4, 4.3), together
+with the integrability of its two radial profiles: if `μ(B_S(y)) < ∞`, `φ` is `C¹` with `φ = 0` on
+`[T, ∞)`, `T > 0`, `t > 0` and `T t < S`, then `φ(‖x − y‖/t)` and `(‖x − y‖/t) φ'(‖x − y‖/t)` are
+`μ`-integrable and `I'(t) = -(∫ (‖x − y‖/t) φ'(‖x − y‖/t) dμ)/t`.  The profiles `φ` and
+`u ↦ u φ'(u)` are continuous and vanish on `(T, ∞)` (where `φ' = 0`), so
+`ted_lpm_fcm_cmd_radial_integrable` gives both integrability statements; the derivative is the
+weight-`1` case of `allard52_am_cc_cutoff_integral_hasDerivAt`, as `1` is integrable on the
+finite-measure ball `B_S(y)`. -/
+theorem ted_lpm_fcm_cutoff_mass_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → μ (closedBall y S) < ⊤ → ContDiff ℝ 1 φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → Integrable (fun x => φ (‖x - y‖ / t)) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t := by
+  intro n ℓ μ y φ S T t hT hμ hφ hφ0 ht htS
+  -- `φ' = 0` on `(T, ∞)`: near each such point `φ` is the zero function.
+  have hdzero : ∀ u, T < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hu] with v hv
+      exact hφ0 v hv.le
+    exact h.deriv_eq.trans (deriv_const u 0)
+  refine ⟨?_, ?_, ?_⟩
+  -- (a): the continuous profile `φ` vanishes on `(T, ∞)`.
+  · exact ted_lpm_fcm_cmd_radial_integrable n ℓ μ y φ S T t hμ hφ.continuous
+      (fun u hu => hφ0 u hu.le) ht htS
+  -- (b): so does the continuous profile `u ↦ u φ'(u)`.
+  · exact ted_lpm_fcm_cmd_radial_integrable n ℓ μ y (fun u => u * deriv φ u) S T t hμ
+      (continuous_id.mul hφ.continuous_deriv_one) (fun u hu => by simp only [hdzero u hu, mul_zero])
+      ht htS
+  -- (c): the weighted cutoff derivative with weight `1`.
+  · simpa only [mul_one] using allard52_am_cc_cutoff_integral_hasDerivAt n ℓ μ y
+      (fun _ => 1) φ S T t (integrableOn_const hμ.ne) hφ hT hφ0 ht htS
+/-- Simon Ch. 4, 4.3–4.4 (continuity in the scale of the cutoff pairing): let `φ` be continuous
+with `φ = 0` on `[T, ∞)` for some `T > 0`, and let `H` be `μ`-integrable on `B_S(y)`.  Then
+`L(s) = ∫ φ(‖x − y‖/s) (x − y)·H(x) dμ(x)` is continuous at every `t > 0` with `T t < S`.
+`|φ| ≤ K` on `[0, ∞)` (a bound on the compact `[0, T]`); for `0 < s < S/T` the integrand vanishes
+off `B_S(y)` and is bounded there by `K S ‖H‖`, so dominated convergence applies to `μ ⌞ B_S(y)`. -/
+theorem ted_lpm_fcm_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → IntegrableOn H (closedBall y S) μ → Continuous φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t := by
+  intro n ℓ μ H y φ S T t hT hH hφc hzero ht htS
+  have hHν : Integrable H (μ.restrict (closedBall y S)) := hH
+  -- Step 1: `|φ| ≤ K` on `[0, ∞)`: `φ` is bounded on the compact `[0, T]` and vanishes beyond `T`.
+  obtain ⟨K, hK⟩ := isCompact_Icc.exists_bound_of_continuousOn (hφc.continuousOn (s := Icc 0 T))
+  have hK0 : 0 ≤ K := (norm_nonneg _).trans (hK 0 ⟨le_rfl, hT.le⟩)
+  have hφK : ∀ u, 0 ≤ u → ‖φ u‖ ≤ K := fun u hu => by
+    rcases le_or_gt u T with h | h
+    · exact hK u ⟨hu, h⟩
+    · rw [hzero u h.le, norm_zero]
+      exact hK0
+  -- `t < S/T`.
+  have htR : t < S / T := by
+    rw [lt_div_iff₀ hT]
+    linarith
+  -- Step 2: for `s ∈ (0, S/T)` the integrand vanishes off `B_S(y)` (there `‖x − y‖/s ≥ T`),
+  -- so `L(s)` is the integral against `μ ⌞ B_S(y)`.
+  have hconv : ∀ s ∈ Ioo 0 (S / T),
+      ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂(μ.restrict (closedBall y S)) =
+        ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ := by
+    rintro s ⟨hs, hsR⟩
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    rw [lt_div_iff₀ hT] at hsR
+    have h1 : T ≤ ‖x - y‖ / s := by
+      rw [le_div_iff₀ hs]
+      linarith
+    rw [hzero _ h1, zero_mul]
+  -- Step 3: dominated convergence for the `μ ⌞ B_S(y)`-integral at `t`, with bound `K S ‖H‖`.
+  have hmain : ContinuousAt (fun s =>
+      ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂(μ.restrict (closedBall y S))) t := by
+    refine continuousAt_of_dominated (bound := fun x => K * S * ‖H x‖) ?_ ?_
+      (hHν.norm.const_mul (K * S)) ?_
+    · -- Measurability: `x ↦ φ(‖x − y‖/s)` is continuous and `x ↦ (x − y)·H(x)` is
+      -- a.e. strongly measurable.
+      refine Eventually.of_forall fun s => ?_
+      have hcut : Continuous fun x : Amb n ℓ => φ (‖x - y‖ / s) := hφc.comp (by fun_prop)
+      exact hcut.aestronglyMeasurable.mul
+        (continuous_inner.comp_aestronglyMeasurable
+          ((by fun_prop : Continuous fun x : Amb n ℓ => x - y).aestronglyMeasurable.prodMk
+            hHν.aestronglyMeasurable))
+    · -- Domination for `s > 0`: on `B_S(y)`,
+      -- `|φ(‖x − y‖/s) (x − y)·H(x)| ≤ K ‖x − y‖ ‖H x‖ ≤ K S ‖H x‖`.
+      filter_upwards [Ioi_mem_nhds ht] with s hs
+      rw [ae_restrict_iff' measurableSet_closedBall]
+      refine Eventually.of_forall fun x hx => ?_
+      rw [mem_closedBall, dist_eq_norm] at hx
+      calc ‖φ (‖x - y‖ / s) * inner ℝ (x - y) (H x)‖
+          = ‖φ (‖x - y‖ / s)‖ * ‖inner ℝ (x - y) (H x)‖ := norm_mul _ _
+        _ ≤ K * (‖x - y‖ * ‖H x‖) :=
+            mul_le_mul (hφK _ (div_nonneg (norm_nonneg _) (le_of_lt hs)))
+              (norm_inner_le_norm _ _) (norm_nonneg _) hK0
+        _ ≤ K * (S * ‖H x‖) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hx (norm_nonneg _)) hK0
+        _ = K * S * ‖H x‖ := (mul_assoc _ _ _).symm
+    · -- Pointwise continuity in `s` at `t ≠ 0`, since `φ` is continuous.
+      refine Eventually.of_forall fun x => ?_
+      exact (hφc.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
+        continuousAt_const
+  -- Step 4: both functions agree on the neighbourhood `(0, S/T)` of `t`.
+  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
+/-- Simon Ch. 4, 3.4–3.5 and 4.3–4.4, for one fixed cutoff `φ` (`C¹`, nonincreasing, `φ = 0` on
+`[T, ∞)`): if the radial inequality (R) holds on `(0, S/T)` and `|a(t)| ≤ M t^{−β}` with `β < 1`, where
+`I(t) = ∫ φ(|x − y|/t) dμ` and `a = (L/t^{n+1})/(1 + I/tⁿ)` with `L(t) = ∫ φ(|x − y|/t)(x − y)·H dμ`,
+then `a` is continuous on `(0, S/T)` and `Ψ(ρ) = exp(−∫₀^ρ a)(1 + I(ρ)/ρⁿ)` is nondecreasing there. -/
+theorem ted_lpm_fixed_cutoff_monotone : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (I a : ℝ → ℝ) (T S M β : ℝ), 0 < T → β < 1 → μ (closedBall y S) < ⊤ → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ t : ℝ, T ≤ t → φ t = 0) → (∀ ρ : ℝ, 0 < ρ → T * ρ < S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ)) ∂μ ≤ -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → (∀ t : ℝ, I t = ∫ x, φ (‖x - y‖ / t) ∂μ) → (∀ t : ℝ, a t = (∫ x, φ (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ) / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → T * t < S → |a t| ≤ M * t ^ (-β)) → ContinuousOn a (Ioo 0 (S / T)) ∧ MonotoneOn (fun ρ => Real.exp (-∫ t in (0)..ρ, a t) * (1 + I ρ / ρ ^ n)) (Ioo 0 (S / T)) := by
+  intro n ℓ μ H y φ I a T S M β hT hβ hμS hH hφ hanti hφT hR hI ha hab
+  -- `t < S/T` means `T t < S`
+  have hTt : ∀ t, t < S / T → T * t < S := fun t htR => (lt_div_iff₀' hT).mp htR
+  -- the pairing `L`, the derivative `P = I'` and the defect `Q = (t P − n I − L)/t`
+  set L : ℝ → ℝ := fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ
+  set P : ℝ → ℝ := fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t with hP
+  set Q : ℝ → ℝ := fun t => (t * P t - n * I t - L t) / t with hQ
+  -- `φ ≥ 0` (it is nonincreasing and `φ(T) = 0`), hence `I ≥ 0`
+  have hφnn : ∀ u, 0 ≤ φ u := fun u => by
+    rcases le_total u T with h | h
+    · simpa [hφT T le_rfl] using hanti h
+    · exact le_of_eq (hφT u h).symm
+  have hInn : ∀ t, 0 ≤ I t := fun t => by
+    rw [hI t]
+    exact integral_nonneg fun x => hφnn _
+  -- the cutoff mass `I` is differentiable with `I' = P`, and the pairing `L` is continuous
+  have hmass : ∀ t, 0 < t → t < S / T →
+      Integrable (fun x => φ (‖x - y‖ / t)) μ ∧
+        Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧
+        HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (P t) t := fun t ht htR =>
+    Submission.ted_lpm_fcm_cutoff_mass_hasDerivAt n ℓ μ y φ S T t hT hμS hφ hφT ht (hTt t htR)
+  have hIder : ∀ t, 0 < t → t < S / T → HasDerivAt I (P t) t := fun t ht htR => by
+    rw [show I = fun s => ∫ x, φ (‖x - y‖ / s) ∂μ from funext hI]
+    exact (hmass t ht htR).2.2
+  have hLc : ∀ t, 0 < t → t < S / T → ContinuousAt L t := fun t ht htR =>
+    Submission.ted_lpm_fcm_cutoff_pairing_continuousAt n ℓ μ H y φ S T t hT hH hφ.continuous hφT
+      ht (hTt t htR)
+  -- the radial inequality (R) reads `n I − t I' ≤ −L`, i.e. `Q ≥ 0`
+  have hQnn : ∀ t, 0 < t → t < S / T → 0 ≤ Q t := fun t ht htR => by
+    obtain ⟨h1, h2, -⟩ := hmass t ht htR
+    have hRt : ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) + ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) ∂μ ≤
+        -L t := hR t ht (hTt t htR)
+    rw [integral_add (h1.const_mul (n : ℝ)) h2, integral_const_mul, ← hI t] at hRt
+    have htP : t * P t = -∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ := by
+      simp only [hP]
+      field_simp
+    simp only [hQ]
+    refine div_nonneg ?_ ht.le
+    rw [htP]
+    linarith
+  have hid : ∀ t, 0 < t → t < S / T → (n : ℝ) * I t - t * P t + t * Q t = -L t :=
+    fun t ht _ => by
+      have ht0 : t ≠ 0 := ht.ne'
+      simp only [hQ]
+      field_simp
+      ring
+  -- the integrating factor: `Ψ' = exp(−∫₀ᵗ a) Q(t)/tⁿ` on `(0, S/T)`
+  obtain ⟨hΨ, -⟩ := aal_cfs_integrating_factor_deriv n I L a P Q (S / T) M β hβ hIder hLc
+    (fun t _ _ => hInn t) hid (fun t _ _ => ha t) (fun t ht htR => hab t ht (hTt t htR))
+  refine ⟨fun t ht => ?_, ?_⟩
+  · -- `a = (L/t^{n+1})/(1 + I/tⁿ)` is continuous at every point of `(0, S/T)`
+    have hden : 1 + I t / t ^ n ≠ 0 := by
+      have := div_nonneg (hInn t) (pow_pos ht.1 n).le
+      linarith
+    rw [show a = fun s => L s / s ^ (n + 1) / (1 + I s / s ^ n) from funext ha]
+    exact (((hLc t ht.1 ht.2).div (continuous_pow (n + 1)).continuousAt
+      (pow_ne_zero _ ht.1.ne')).div (continuousAt_const.add ((hIder t ht.1 ht.2).continuousAt.div
+        (continuous_pow n).continuousAt (pow_ne_zero _ ht.1.ne'))) hden).continuousWithinAt
+  · -- `Ψ' ≥ 0` on the open interval `(0, S/T)`
+    refine monotoneOn_of_deriv_nonneg (convex_Ioo 0 (S / T))
+      (fun t ht => (hΨ t ht.1 ht.2).continuousAt.continuousWithinAt) ?_ ?_ <;> rw [interior_Ioo]
+    · exact fun t ht => (hΨ t ht.1 ht.2).differentiableAt.differentiableWithinAt
+    · intro t ht
+      rw [(hΨ t ht.1 ht.2).deriv]
+      exact mul_nonneg (Real.exp_pos _).le (div_nonneg (hQnn t ht.1 ht.2) (pow_pos ht.1 n).le)
 
 end Submission
 

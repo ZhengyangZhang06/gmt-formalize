@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json",
+        "cmp <snapshot>/project/GMT/Ch05/Contract.lean <workspace>/GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean <workspace>/GMT/Ch05/Submission.lean (both identical)",
+        "rg -n 'ted_lpm_fcm_cmd|allard52_am_cc_cutoff_integral_hasDerivAt|ted_lpm_fcm_cutoff_mass_hasDerivAt' <snapshot>/project (no match)",
+        "rg -n 'theorem integrableOn_const|lemma integrableOn_const|integrable_of_forall_notMem_eq_zero|lemma IntegrableOn.of_bound|integrableOn_of_bounded' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'continuous_deriv_one' Analysis; rg -n 'theorem ContDiff.continuous|theorem ContDiff.differentiable ' Analysis/Calculus/ContDiff/Defs.lean (cwd <snapshot>/mathlib/Mathlib)",
+        "grep -rn 'exists_bound_of_continuousOn' --include=*.lean <snapshot>/mathlib/Mathlib (declared via @[to_additive] in Analysis/Normed/Group/Bounded.lean)",
+        "rg -n \"^theorem ae_restrict_iff'|theorem Filter.EventuallyEq.deriv_eq|theorem HasDerivAt.congr_of_eventuallyEq|^theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|^theorem setIntegral_eq_integral_of_forall_compl_eq_zero|lemma div_le_div_of_nonneg_right|lemma lt_div_iff₀|theorem integral_neg|theorem integral_div|^theorem hasDerivAt_inv|^theorem HasDerivAt.comp |lemma isFiniteMeasure_restrict\" (cwd <snapshot>/mathlib/Mathlib)",
+        "python3 -I scan of dag.json: lean_name/status/candidate_commit/proof_base_commit/lean_statement of nodes matching cutoff, aal_cfs, ted_lpm, allard52_am_cc, radial; count of nodes per lean_name",
+        "git show 78a807ebd10dcb649b9421e3cf85d7f01bf8fb35:GMT/Ch05/Submission.lean (accepted allard52_am_cc_cutoff_integral_hasDerivAt); diff against the workspace Submission.lean (only the inserted Submission block)",
+        "grep -c ted_lpm_fcm_cmd dag.json DAG.md issue-workers.json; grep -rl ted_lpm_fcm_cmd nodes; git log --all --oneline -S'ted_lpm_fcm_cmd' (no match anywhere)",
+        "sed -n on /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py: _existing_lean_name_problem, _solve_children (existing_by_name), _install_parent_supplied_child_handoff, _accepted_checkpoint, _overlay_accepted_children, _decompose, _reference_use_problem; store.py ensure",
+        "python3 -I contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') from verifier/gmt-compare.py; validate_lean_statement from _recursive_lean/lean_contract.py and verifier/lean_contract.py on all three types",
+        "lake build GMT.Ch05.Submission; lake env lean Check/{Types_reuse,Types_integ,Types_parent,Child_integ,Child_integ2,Assembly,Sol_reuse,Sol_integ,Sol_parent}.lean (cwd /tmp/cmd-decomp-wleW1Q/proj)",
+        "WebSearch: 'Leon Simon Introduction to Geometric Measure Theory monotonicity formula cutoff function φ(r/ρ) differentiate I(ρ) lecture notes'; 'Mathlib hasDerivAt_integral_of_dominated_loc_of_deriv_le differentiation under the integral sign'"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-d08fa2abc9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/store.py",
+        "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Types_reuse.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Types_integ.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Types_parent.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Child_integ.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Child_integ2.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Assembly.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Sol_reuse.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Sol_integ.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/Check/Sol_parent.lean",
+        "/tmp/cmd-decomp-wleW1Q/proj/GMT/Ch05/Submission.lean"
+      ],
+      "conclusion": "Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Contract.lean and Submission.lean are byte-identical to the workspace files.\n\nNo-match results:\n- The snapshot project contains none of ted_lpm_fcm_cmd*, allard52_am_cc_cutoff_integral_hasDerivAt or ted_lpm_fcm_cutoff_mass_hasDerivAt.\n- The prefix ted_lpm_fcm_cmd occurs nowhere in dag.json, DAG.md, issue-workers.json, nodes/ or the git history, so the new name is globally unused.\n\nReused declaration: allard52_am_cc_cutoff_integral_hasDerivAt.\n- Accepted node root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_calculus-a1.cutoff_derivative-a1, accepted since 2026-10-12T20:35:34Z, candidate 78a807eb, base b14e7ebc. It is the unique holder of the name and has a string-identical type.\n- Its accepted proof recompiles with {propext, Classical.choice, Quot.sound}.\n- Part (c) is its case f = 1.\n- runtime.py admits accepted cross-branch reuse with an identical type and overlays the candidate into the parent worktree.\n\nMathlib lemmas (snapshot paths under mathlib/Mathlib):\n- New child: IsCompact.exists_bound_of_continuousOn (Analysis/Normed/Group/Bounded.lean:91, via to_additive), IntegrableOn.of_bound (MeasureTheory/Integral/IntegrableOn.lean:174), Measure.integrableOn_of_bounded (:716), IntegrableOn.integrable_of_forall_notMem_eq_zero (:453), ae_restrict_iff' (MeasureTheory/Measure/Restrict.lean:629), lt_div_iff₀ and div_le_div_of_nonneg_right (Algebra/Order/GroupWithZero/Basic.lean:1136, 1193).\n- Assembly: integrableOn_const (IntegrableOn.lean:119), Filter.EventuallyEq.deriv_eq (Analysis/Calculus/Deriv/Basic.lean:638), ContDiff.continuous (Analysis/Calculus/ContDiff/Defs.lean:1150), ContDiff.continuous_deriv_one (Analysis/Calculus/ContDiff/Deriv.lean:113).\n- Reused proof: ContDiff.differentiable (Defs.lean:1159, takes n != 0), hasDerivAt_integral_of_dominated_loc_of_deriv_le (Analysis/Calculus/ParametricIntegral.lean:286), setIntegral_eq_integral_of_forall_compl_eq_zero (MeasureTheory/Integral/Bochner/Set.lean:486), HasDerivAt.congr_of_eventuallyEq (Deriv/Basic.lean:606), integral_neg and integral_div (MeasureTheory/Integral/Bochner/Basic.lean:256, 297), hasDerivAt_inv (Deriv/Inv.lean:55), HasDerivAt.comp (Deriv/Comp.lean:243).\n\nLean checks (default maxHeartbeats):\n- All three types elaborate in NodeChallenge form.\n- The new child is fully proved two ways.\n- The parent assembly proves the frozen type from the two children.\n- The full sorry-free chain builds, and the NodeSolution checks for all three declarations pass with standard axioms.\n\nPublic sources: Simon's GMT notes (https://web.stanford.edu/class/math285/ts-gmt.pdf, https://math.stanford.edu/~lms/ntu-gmt-text.pdf) for the cutoff-mass monotonicity setting, and the Mathlib ParametricIntegral docs (https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/ParametricIntegral.html)."
+    }
+  ],
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1.cutoff_mass_derivative-a1",
+  "child_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1.cutoff_mass_derivative-a1.radial_profile_integrable-a1",
+  "subproblem": {
+    "key": "radial_profile_integrable",
+    "title": "Integrability of a continuous radial profile g(|x - y|/t) that vanishes beyond T",
+    "statement": "Let n, l be natural numbers, E := R^{n+l} (Euclidean space), mu a measure on E, y in E, g : R -> R and S, T, t real numbers. Write B_S(y) for the closed ball of radius S about y. Assume: mu(B_S(y)) < infinity; g is continuous; g(u) = 0 for every u > T; t > 0; and T t < S. Then the real function x -> g(|x - y|/t) is mu-integrable on E.",
+    "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ",
+    "lean_name": "ted_lpm_fcm_cmd_radial_integrable",
+    "depends_on": [],
+    "natural_proof": "Source: steps 1(c), 2 and 3 of the supplied proof of ted_lpm_fcm_cutoff_mass_hasDerivAt (the integrability parts (a) and (b)), stated for an arbitrary continuous radial profile g. Part (a) is the case g = phi; part (b) is the case g(u) = u phi'(u).\n\nNotation: B := B_S(y) the closed ball, h(x) := g(|x - y|/t).\n\n1. A bound for g on [0, infinity). g is continuous, hence bounded on the compact interval [0, T], which is empty if T < 0 (IsCompact.exists_bound_of_continuousOn). So there is K0 with |g(u)| <= K0 for all u in [0, T]. Put K := max(K0, 0).\n - If 0 <= u <= T, then |g(u)| <= K0 <= K.\n - If u > T, then g(u) = 0 by hypothesis, so |g(u)| = 0 <= K.\n Hence |g(u)| <= K for every u >= 0.\n\n2. Measurability. h is continuous on E, as the composition of the continuous maps x -> |x - y|, division by the constant t, and g. A continuous real function on E is a.e. strongly measurable for every measure (E carries its Borel sigma-algebra), in particular for mu restricted to B.\n\n3. Uniform bound. For every x in E, |x - y|/t >= 0 because t > 0. So |h(x)| <= K by step 1.\n\n4. Integrability on B. B has finite mu-measure by hypothesis. By steps 2 and 3, h is a.e. strongly measurable for mu restricted to B and bounded by K there. Hence h is integrable on B (IntegrableOn.of_bound).\n\n5. Vanishing off B. Let x lie outside B. Then |x - y| > S, and S > T t by hypothesis, so |x - y| > T t. Dividing by t > 0 gives |x - y|/t > T, hence h(x) = g(|x - y|/t) = 0.\n\n6. Conclusion. h is integrable on B and vanishes at every point outside B, so h is mu-integrable (IntegrableOn.integrable_of_forall_notMem_eq_zero).",
+    "proof_key_steps": [
+      "|g(u)| <= K for all u >= 0, by compactness of [0, T] and g = 0 on (T, infinity).",
+      "x -> g(|x - y|/t) is continuous, hence a.e. strongly measurable, and it is bounded by K everywhere because |x - y|/t >= 0.",
+      "It is integrable on B_S(y), which has finite mu-measure (IntegrableOn.of_bound).",
+      "It vanishes outside B_S(y), because there |x - y| > S > T t gives |x - y|/t > T.",
+      "Being integrable on B_S(y) and zero outside it, the function is mu-integrable (IntegrableOn.integrable_of_forall_notMem_eq_zero)."
+    ]
+  },
+  "audit": {
+    "key": "radial_profile_integrable",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and independent one-line Lean proposition match, including the absence of T > 0. The compact-interval argument with K = max(K0, 0) remains valid when T < 0. Continuity supplies measurability; the uniform bound and finite ball measure give integrability on the ball; T*t < S and t > 0 give vanishing outside it. These steps prove the exact statement without circularity or deferred proof construction. The bare name is unreserved. Applying it to φ and u ↦ u*deriv φ u establishes parent conclusions (a) and (b)."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-7ad9a18942/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-7ad9a18942/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-7ad9a18942/parent-supplied-natural-proof.json"
+}
