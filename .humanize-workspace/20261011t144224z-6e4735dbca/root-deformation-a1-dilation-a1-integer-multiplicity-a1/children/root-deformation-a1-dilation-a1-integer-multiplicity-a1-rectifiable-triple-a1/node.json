@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1.rectifiable_triple-a1",
+  "parent_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1",
+  "depth": 4,
+  "title": "Dilation invariance of rectifiable triples",
+  "statement": "Let N, k ∈ ℕ, let ρ ∈ ℝ with ρ > 0, M ⊆ ℝ^N, θ : ℝ^N → ℝ and ξ : ℝ^N → NVector(ℝ^N, k). Put φ(x) := ρ • x, μ := H^k = μHE[k] and c := ENNReal.ofReal(ρ^k). Assume (H1) φ is a measurable embedding and (H2) φ is measure preserving from c • μ to μ. If (M, θ, ξ) is a rectifiable triple in ℝ^N (IsRectifiableTriple univ k M θ ξ), then so is (φ(M), θ(ρ⁻¹·), ξ(ρ⁻¹·)). In Lean: IsRectifiableTriple univ k ((fun x => ρ • x) '' M) (fun y => θ (ρ⁻¹ • y)) (fun y => ξ (ρ⁻¹ • y)).",
+  "lean_statement": "∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) → MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) → IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ → IsRectifiableTriple (univ : Set (Eucl N)) k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y)) (fun y : Eucl N => ξ (ρ⁻¹ • y))",
+  "lean_name": "deformation_dilation_im_rectifiableTriple",
+  "depends_on": [
+    "root.deformation-a1.dilation-a1.integer_multiplicity-a1.weighted_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1.weighted_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-dilation-a1-integer-multiplicity-a1-rectifiable-triple-a1-a1"
+}
