@@ -359,6 +359,122 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Straightening at a regular point (inverse function theorem): if `h` is `C¹` and
+`Dh(w₀) ≠ 0`, the local inverse `χ` of `Ψ = [h, π]` (`π` the orthogonal projection onto
+`ker Dh(w₀) ≅ ℝ^m`) is a `C¹`, Lipschitz chart on an open `B` with `w₀ ∈ χ(B) ⊆ Ω`,
+`h ∘ χ = y ↦ y 0` on `B`, and `|v - v'| ≤ |χ[t,v] - χ[t,v']|` on each slice `{y 0 = t}`, where
+`[t,v] = (t, v_0, …, v_{m-1})`. -/
+theorem Submission.slicing_im_creg_straightening : ∀ (m : ℕ) (h : Eucl (m + 1) → ℝ) (Ω : Set (Eucl (m + 1))) (w₀ : Eucl (m + 1)), IsOpen Ω → w₀ ∈ Ω → ContDiff ℝ 1 h → fderiv ℝ h w₀ ≠ 0 → ∃ (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)), IsOpen B ∧ ContDiffOn ℝ 1 χ B ∧ IsOpen (χ '' B) ∧ w₀ ∈ χ '' B ∧ χ '' B ⊆ Ω ∧ (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) ∧ (∀ y ∈ B, h (χ y) = y 0) ∧ ∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖ := by
+  intro m h Ω w₀ hΩ hw₀ hh hDh
+  -- Step 1: the coordinate map `J (a, b) = [a, b]` is continuous linear and injective.
+  obtain ⟨J, hJ⟩ : ∃ J : ℝ × Eucl m →L[ℝ] Eucl (m + 1), ∀ a b, J (a, b) =
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons a (EuclideanSpace.equiv (Fin m) ℝ b)) := by
+    refine ⟨LinearMap.toContinuousLinearMap
+      { toFun := fun p => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons p.1 (EuclideanSpace.equiv (Fin m) ℝ p.2))
+        map_add' := fun p q => ?_
+        map_smul' := fun c p => ?_ }, fun a b => rfl⟩
+    · ext i
+      refine Fin.cases ?_ (fun j => ?_) i <;> simp
+    · ext i
+      refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  have hJ0 : ∀ a b, J (a, b) 0 = a := fun a b => by simp [hJ]
+  have hJs : ∀ a b (j : Fin m), J (a, b) j.succ = b j := fun a b j => by simp [hJ]
+  have hJinj : ∀ a a' b b', J (a, b) = J (a', b') → a = a' ∧ b = b' := fun a a' b b' hab =>
+    ⟨by rw [← hJ0 a b, hab, hJ0], by ext j; rw [← hJs a b j, hab, hJs]⟩
+  -- Step 2: `pr = ι_K ∘ P_K` (`π` above) for `K = ker Dh(w₀)`, `P_K` the orthogonal projection
+  -- and `ι_K : K ≃ ℝ^m` an orthonormal basis: `|pr u| ≤ |u|` and `ker Dh(w₀) ∩ ker pr = 0`.
+  obtain ⟨pr, hprn, hprk⟩ : ∃ pr : Eucl (m + 1) →L[ℝ] Eucl m, (∀ u, ‖pr u‖ ≤ ‖u‖) ∧
+      ∀ u, fderiv ℝ h w₀ u = 0 → pr u = 0 → u = 0 := by
+    let ℓ : Module.Dual ℝ (Eucl (m + 1)) := (fderiv ℝ h w₀ : Eucl (m + 1) →ₗ[ℝ] ℝ)
+    have hℓ : ℓ ≠ 0 := fun h0 => hDh (ContinuousLinearMap.ext fun u => LinearMap.congr_fun h0 u)
+    have hK : Module.finrank ℝ (LinearMap.ker ℓ) = m := by
+      have := Module.Dual.finrank_ker_add_one_of_ne_zero hℓ
+      rw [finrank_euclideanSpace_fin] at this
+      omega
+    let b := (stdOrthonormalBasis ℝ (LinearMap.ker ℓ)).reindex (finCongr hK)
+    refine ⟨b.repr.toLinearIsometry.toContinuousLinearMap ∘L
+      (LinearMap.ker ℓ).orthogonalProjectionOnto, fun u => ?_, fun u hu hpu => ?_⟩
+    · simp only [ContinuousLinearMap.comp_apply, LinearIsometry.coe_toContinuousLinearMap,
+        LinearIsometryEquiv.coe_toLinearIsometry, LinearIsometryEquiv.norm_map]
+      exact (LinearMap.ker ℓ).norm_orthogonalProjectionOnto_apply_le u
+    · have huK : u ∈ LinearMap.ker ℓ := LinearMap.mem_ker.2 hu
+      simp only [ContinuousLinearMap.comp_apply, LinearIsometry.coe_toContinuousLinearMap,
+        LinearIsometryEquiv.coe_toLinearIsometry, LinearIsometryEquiv.map_eq_zero_iff,
+        Submodule.orthogonalProjectionOnto_eq_zero_iff] at hpu
+      simpa using Submodule.inner_right_of_mem_orthogonal huK hpu
+  -- Step 3: `Ψ = [h, pr]` is `C¹` with invertible derivative `e₀ = J ∘ (Dh(w₀), pr)` at `w₀`.
+  have hΨs : HasStrictFDerivAt (fun w => J (h w, pr w)) (J ∘L ((fderiv ℝ h w₀).prod pr)) w₀ :=
+    J.hasStrictFDerivAt.comp w₀
+      ((hh.contDiffAt.hasStrictFDerivAt one_ne_zero).prodMk pr.hasStrictFDerivAt)
+  have hΨc : ContDiff ℝ 1 (fun w => J (h w, pr w)) := J.contDiff.comp (hh.prodMk pr.contDiff)
+  have hLinj : Function.Injective (J ∘L ((fderiv ℝ h w₀).prod pr)) := by
+    refine (injective_iff_map_eq_zero _).2 fun u hu => ?_
+    have h1 : J (fderiv ℝ h w₀ u, pr u) = J (0, 0) := by
+      rw [Prod.mk_zero_zero, map_zero]
+      exact hu
+    obtain ⟨h1a, h1b⟩ := hJinj _ _ _ _ h1
+    exact hprk u h1a h1b
+  let e₀ : Eucl (m + 1) ≃L[ℝ] Eucl (m + 1) :=
+    (LinearEquiv.ofInjectiveEndo (J ∘L ((fderiv ℝ h w₀).prod pr) :
+      Eucl (m + 1) →ₗ[ℝ] Eucl (m + 1)) hLinj).toContinuousLinearEquiv
+  have he₀ : (e₀ : Eucl (m + 1) →L[ℝ] Eucl (m + 1)) = J ∘L ((fderiv ℝ h w₀).prod pr) :=
+    ContinuousLinearMap.ext fun u => by simp [e₀, LinearEquiv.coe_ofInjectiveEndo]
+  have hΨe : HasStrictFDerivAt (fun w => J (h w, pr w))
+      (e₀ : Eucl (m + 1) →L[ℝ] Eucl (m + 1)) w₀ := by
+    rw [he₀]
+    exact hΨs
+  -- Step 4: inverse function theorem; `χ = Φ.symm` is `C¹` at `y₀ = Ψ(w₀)`.
+  obtain ⟨Φ, hΦ, hw₀s⟩ : ∃ Φ : OpenPartialHomeomorph (Eucl (m + 1)) (Eucl (m + 1)),
+      ⇑Φ = (fun w => J (h w, pr w)) ∧ w₀ ∈ Φ.source :=
+    ⟨hΨe.toOpenPartialHomeomorph _, hΨe.toOpenPartialHomeomorph_coe,
+      hΨe.mem_toOpenPartialHomeomorph_source⟩
+  have hy₀ : Φ w₀ ∈ Φ.target := Φ.map_source hw₀s
+  have hχy₀ : Φ.symm (Φ w₀) = w₀ := Φ.left_inv hw₀s
+  have hχC : ContDiffAt ℝ 1 Φ.symm (Φ w₀) := by
+    refine Φ.contDiffAt_symm (f₀' := e₀) hy₀ ?_ ?_
+    · rw [hχy₀, hΦ]
+      exact hΨe.hasFDerivAt
+    · rw [hχy₀, hΦ]
+      exact hΨc.contDiffAt
+  -- Step 5: a ball `B` around `y₀` inside the target, on which `χ` is `C¹`, Lipschitz (mean value
+  -- inequality near `y₀`) and maps into `Ω`.
+  obtain ⟨Λ, T, hT, hΛ⟩ := hχC.exists_lipschitzOnWith
+  have hΩ' : Φ.symm ⁻¹' Ω ∈ 𝓝 (Φ w₀) :=
+    (Φ.continuousAt_symm hy₀).preimage_mem_nhds (by rw [hχy₀]; exact hΩ.mem_nhds hw₀)
+  have hev : ∀ᶠ y in 𝓝 (Φ w₀),
+      (y ∈ Φ.target ∧ ContDiffAt ℝ 1 Φ.symm y ∧ Φ.symm y ∈ Ω) ∧ y ∈ T := by
+    filter_upwards [Φ.open_target.mem_nhds hy₀, hχC.eventually (by simp), hΩ', hT]
+      with y h1 h2 h3 h4
+    exact ⟨⟨h1, h2, h3⟩, h4⟩
+  obtain ⟨ε, hε, hεB⟩ := Metric.eventually_nhds_iff_ball.1 hev
+  -- Step 6: `Ψ ∘ χ = id` on `B`; `B` and `χ(B)` are open, `w₀ = χ(y₀) ∈ χ(B)`.
+  have hΨχ : ∀ y ∈ ball (Φ w₀) ε, J (h (Φ.symm y), pr (Φ.symm y)) = y := fun y hy => by
+    have h1 := Φ.right_inv (hεB y hy).1.1
+    rw [hΦ] at h1
+    exact h1
+  refine ⟨ball (Φ w₀) ε, Φ.symm, isOpen_ball,
+    fun y hy => (hεB y hy).1.2.1.contDiffWithinAt,
+    Φ.isOpen_image_symm_of_subset_target isOpen_ball fun y hy => (hεB y hy).1.1,
+    ⟨Φ w₀, mem_ball_self hε, hχy₀⟩, ?_, ⟨Λ, hΛ.mono fun y hy => (hεB y hy).2⟩, ?_, ?_⟩
+  · -- Step 7: `χ(B) ⊆ Ω`.
+    rintro _ ⟨y, hy, rfl⟩
+    exact (hεB y hy).1.2.2
+  · -- Step 8: `h ∘ χ` is the first coordinate.
+    intro y hy
+    conv_rhs => rw [← hΨχ y hy]
+    exact (hJ0 _ _).symm
+  · -- Step 9: on a slice, `pr ∘ χ` recovers `v`, and `|pr| ≤ 1`.
+    intro s v v' hv hv'
+    simp only [← hJ] at hv hv' ⊢
+    have hpv : ∀ v : Eucl m, J (s, v) ∈ ball (Φ w₀) ε → pr (Φ.symm (J (s, v))) = v :=
+      fun v hv => (hJinj _ _ _ _ (hΨχ _ hv)).2
+    calc ‖v - v'‖ = ‖pr (Φ.symm (J (s, v))) - pr (Φ.symm (J (s, v')))‖ := by
+          rw [hpv v hv, hpv v' hv']
+      _ = ‖pr (Φ.symm (J (s, v)) - Φ.symm (J (s, v')))‖ := by rw [map_sub]
+      _ ≤ ‖Φ.symm (J (s, v)) - Φ.symm (J (s, v'))‖ := hprn _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
