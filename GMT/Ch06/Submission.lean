@@ -786,6 +786,30 @@ theorem Submission.dph_lpfex_bounded_compatible_form :
   · -- Off `O ⊇ spt η₀` the form vanishes.
     rw [image_eq_zero_of_notMem_tsupport fun h => hx (hη₀O h), covectorEuclideanNorm_zero]
     exact mul_nonneg (pow_nonneg Λ.coe_nonneg k) hC0
+/-- Simon Ch. 6, 3.6–3.9 (Lipschitz push-forward, existence), the Cauchy argument of Step 6: a
+real sequence `a` converges if `a (q i) - a (p i) → 0` for all index maps `p, q → ∞`. -/
+theorem Submission.dph_lpfex_tendsto_of_index_maps :
+    ∀ a : ℕ → ℝ, (∀ p q : ℕ → ℕ, Tendsto p atTop atTop → Tendsto q atTop atTop →
+      Tendsto (fun i => a (q i) - a (p i)) atTop (𝓝 0)) → ∃ s : ℝ, Tendsto a atTop (𝓝 s) := by
+  intro a ha
+  -- 1. `a` is Cauchy; otherwise some `ε > 0` has `ε ≤ |a m - a n|` for some `m, n ≥ N`, every `N`.
+  have hcauchy : CauchySeq a := by
+    rw [Metric.cauchySeq_iff]
+    by_contra hne
+    push Not at hne
+    obtain ⟨ε, hε, hgap⟩ := hne
+    -- 2. Index maps `p N, q N ≥ N` with `ε ≤ |a (p N) - a (q N)|`; both tend to infinity.
+    choose p hp q hq hpq using hgap
+    have hpt : Tendsto p atTop atTop := tendsto_atTop_mono hp tendsto_id
+    have hqt : Tendsto q atTop atTop := tendsto_atTop_mono hq tendsto_id
+    -- 3. The hypothesis gives `|a (q i) - a (p i)| < ε` for some `i`, contradicting the gap.
+    obtain ⟨i, hi⟩ := (Metric.tendsto_nhds.1 (ha p q hpt hqt) ε hε).exists
+    have hgap_i := hpq i
+    rw [Real.dist_eq, sub_zero] at hi
+    rw [Real.dist_eq, abs_sub_comm] at hgap_i
+    exact lt_irrefl ε (hgap_i.trans_lt hi)
+  -- 4. `ℝ` is complete.
+  exact cauchySeq_tendsto_of_complete hcauchy
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
