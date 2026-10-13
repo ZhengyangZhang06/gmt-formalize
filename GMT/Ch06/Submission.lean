@@ -733,6 +733,83 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
 
+/-- Mass bound for currents related by compatible pull-backs (step 6 of the smooth push-forward
+step in the proof of Simon Ch. 6, 8.2): if `Y(ω) = Z(η)` whenever `η = f^#ω` near `A`, and
+`‖Df‖ ≤ c`, then `M_W(Y) ≤ c^j M_{f⁻¹(W) ∩ U}(Z)`.  For `ω` admissible for `M_W(Y)`, the
+compatible form `η = ζ f^#ω` (`Submission.iwl_sp_exists_compatible_testForm`) has
+`Y(ω) = Z(η)`, `spt η ⊆ f⁻¹(W) ∩ U` and `|η| ≤ ‖Df‖^j |ω ∘ f| ≤ c^j`
+(`Submission.iwl_sp_covectorEuclideanNorm_pullback_le`), so `c^{-j} η` is admissible for
+`M_{f⁻¹(W) ∩ U}(Z)`; if `c^j = 0`, then `j ≥ 1`, `Df = 0` and `η = 0`. -/
+theorem Submission.iwl_sp_massOn_le_of_compatible : ∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (Y : GeometricCurrentOn V j) (Z : GeometricCurrentOn U j) (f : Eucl P → Eucl Q) (c : ℝ), IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) → (∀ (ω : TestFormOn V j) (η : TestFormOn U j), (∃ N : Set (Eucl P), IsOpen N ∧ A ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x = ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → Y ω = Z η) → 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q), Y.massOn W ≤ ENNReal.ofReal (c ^ j) * Z.massOn (f ⁻¹' W ∩ U) := by
+  intro P Q j U V A Y Z f c hU hAU hf hprop hcompat hc hDf W
+  -- Step 0: the Euclidean coefficient norm is absolutely homogeneous.
+  have hsmul : ∀ (t : ℝ) (β : Covector (Eucl P) j),
+      covectorEuclideanNorm (t • β) = |t| * covectorEuclideanNorm β := by
+    intro t β
+    simp only [covectorEuclideanNorm, ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    exact Finset.sum_congr rfl fun I _ => by rw [mul_ite, mul_zero]
+  apply sSup_le
+  rintro _ ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (Y ω) ≤ _
+  -- Step 2: the compatible form `η = ζ f^#ω`, with `Y(ω) = Z(η)`.
+  obtain ⟨η, ζ, N, hN, hAN, hζ, hηζ, hηN, hηsupp⟩ :=
+    Submission.iwl_sp_exists_compatible_testForm P Q j U V A f hU hAU hf hprop ω
+  rw [hcompat ω η ⟨N, hN, hAN, hηN⟩]
+  -- Step 3: `spt η ⊆ f⁻¹(W) ∩ U`.
+  have hsupp : tsupport (η : DifferentialForm (Eucl P) j) ⊆ f ⁻¹' W ∩ U :=
+    subset_inter (hηsupp.trans (preimage_mono hω.1)) η.property.2
+  -- Step 4: `|η(x)| ≤ ‖Df(x)‖^j |ω(f(x))| ≤ c^j`.
+  have hbound : ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) j) x) ≤ c ^ j := by
+    intro x
+    rw [hηζ x, hsmul, abs_of_nonneg (hζ x).1]
+    calc ζ x * covectorEuclideanNorm
+          (((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x))
+        ≤ covectorEuclideanNorm
+          (((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) :=
+          mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hζ x).2
+      _ ≤ ‖fderiv ℝ f x‖ ^ j * covectorEuclideanNorm ((ω : DifferentialForm (Eucl Q) j) (f x)) :=
+          Submission.iwl_sp_covectorEuclideanNorm_pullback_le P Q j _ _
+      _ ≤ c ^ j * 1 :=
+          mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) (hDf x) j) (hω.2 (f x))
+            (covectorEuclideanNorm_nonneg _) (pow_nonneg hc j)
+      _ = c ^ j := mul_one _
+  rcases (pow_nonneg hc j).eq_or_lt with h0 | hpos
+  · -- Step 5: `c^j = 0`, so `j ≠ 0`, `Df = 0` and `η = 0`.
+    have hj : j ≠ 0 := by
+      rintro rfl
+      simp at h0
+    have hc0 : c = 0 := (pow_eq_zero_iff hj).mp h0.symm
+    have hη0 : η = 0 := by
+      apply Subtype.ext
+      funext x
+      show (η : DifferentialForm (Eucl P) j) x = 0
+      have hpb0 : ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap
+          (fderiv ℝ f x) = 0 := by
+        ext v
+        rw [norm_le_zero_iff.mp ((hDf x).trans hc0.le),
+          ContinuousAlternatingMap.compContinuousLinearMap_apply,
+          ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+        exact ((ω : DifferentialForm (Eucl Q) j) (f x)).map_coord_zero
+          ⟨0, Nat.pos_of_ne_zero hj⟩ rfl
+      rw [hηζ x, hpb0, smul_zero]
+    rw [hη0, map_zero, ENNReal.ofReal_zero]
+    exact zero_le
+  · -- Step 6: `c^{-j} η` is admissible for `M_{f⁻¹(W) ∩ U}(Z)`.
+    have hη₁ : ((c ^ j)⁻¹ • η : TestFormOn U j) ∈ massAdmissibleOn U j (f ⁻¹' W ∩ U) := by
+      refine ⟨(tsupport_smul_subset_right (fun _ => (c ^ j)⁻¹)
+        (η : DifferentialForm (Eucl P) j)).trans hsupp, fun x => ?_⟩
+      change covectorEuclideanNorm ((c ^ j)⁻¹ • (η : DifferentialForm (Eucl P) j) x) ≤ 1
+      rw [hsmul, abs_of_pos (inv_pos.mpr hpos)]
+      calc (c ^ j)⁻¹ * covectorEuclideanNorm ((η : DifferentialForm (Eucl P) j) x)
+          ≤ (c ^ j)⁻¹ * c ^ j := mul_le_mul_of_nonneg_left (hbound x) (inv_nonneg.mpr hpos.le)
+        _ = 1 := inv_mul_cancel₀ hpos.ne'
+    rw [← smul_inv_smul₀ hpos.ne' η, map_smul, smul_eq_mul,
+      ENNReal.ofReal_mul (pow_nonneg hc j)]
+    gcongr
+    exact Z.le_massOn hη₁
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
