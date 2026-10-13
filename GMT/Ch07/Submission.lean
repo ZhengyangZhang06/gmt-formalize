@@ -864,6 +864,128 @@ theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ)
     calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
       _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
 
+/-- **Simon Ch. 6, 2.11 and Ch. 7, 4.1**: if `T = m[[M]]` with `m ≠ 0` on an open `G ⊆ U`, where
+`M` is an oriented embedded `C¹` submanifold and `Hⁿ(M ∩ K) < ∞` for compact `K ⊆ G`, then
+`M ∩ G ⊆ spt T`.  Were `x ∈ M ∩ G` in an open `W` on which `T` vanishes, take `α` with
+`ξ(x)(α) = 1` and a bump `g` at `x` with `tsupport g ⊆ W ∩ G` so small that `ξ(α) > 1/2` on `M`
+there.  Then `0 = T(gα) = m ∫_M g ξ(α) dHⁿ`, yet the integrand is `≥ 0` and is `> 1/2` on
+`M ∩ B_{ε/4}(x)`, which has positive `Hⁿ`-measure because `M` has density one at `x`. -/
+theorem Submission.idtp_ccd_rps_submanifold_subset_support : ∀ (P n : ℕ) (U G M : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen G → G ⊆ U → m ≠ 0 → IsEmbeddedSubmanifold 1 n M → IsOrientation n M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ G → μHE[n] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → M ∩ G ⊆ T.support := by
+  intro P n U G M T m ξ hG hGU hm hM hξ hfin hrep x hx
+  obtain ⟨hxM, hxG⟩ := hx
+  refine ⟨hGU hxG, fun hxZ => ?_⟩
+  obtain ⟨W, ⟨hWo, -, -, hWv⟩, hxW⟩ := Set.mem_sUnion.1 hxZ
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 n M hM).1
+  -- (a) a covector α with ξ(x)(α) = 1, and the bound ‖ξ(z)‖ ≤ 1 on M
+  obtain ⟨Qx, -, hQx⟩ := hξ.2 x hxM
+  have hξx := (Submission.imsupp_unit_orientation_ne_zero_norm_le_one P n (ξ x) Qx hQx).1
+  obtain ⟨α₀, hα₀⟩ : ∃ α₀ : Covector (Euclid P) n, ξ x α₀ ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hξx (ContinuousLinearMap.ext fun a => by simpa using h a)
+  obtain ⟨α, hα⟩ : ∃ α : Covector (Euclid P) n, ξ x α = 1 :=
+    ⟨(ξ x α₀)⁻¹ • α₀, by rw [map_smul, smul_eq_mul, inv_mul_cancel₀ hα₀]⟩
+  have hnorm : ∀ z ∈ M, ‖ξ z‖ ≤ 1 := by
+    intro z hz
+    obtain ⟨Q, -, hQ⟩ := hξ.2 z hz
+    exact (Submission.imsupp_unit_orientation_ne_zero_norm_le_one P n (ξ z) Q hQ).2
+  -- (b) continuity of z ↦ ξ(z)(α) on M at x
+  have hcont : ContinuousOn (fun z => ξ z α) M := hξ.1.clm_apply continuousOn_const
+  obtain ⟨ε₁, hε₁, hε₁'⟩ := Metric.continuousWithinAt_iff.1 (hcont x hxM) (1 / 2) (by norm_num)
+  have hhalf : ∀ z ∈ M, dist z x < ε₁ → 1 / 2 < ξ z α := by
+    intro z hz hzx
+    have h := hε₁' hz hzx
+    rw [Real.dist_eq, hα] at h
+    linarith [(abs_lt.1 h).1]
+  -- (c) the radius ε
+  obtain ⟨r, hr, hrWG⟩ := Metric.isOpen_iff.1 (hWo.inter hG) x ⟨hxW, hxG⟩
+  set ε := min r ε₁ with hεdef
+  have hε : 0 < ε := lt_min hr hε₁
+  have hεr : ε ≤ r := min_le_left _ _
+  have hεε₁ : ε ≤ ε₁ := min_le_right _ _
+  have hcb : closedBall x (ε / 2) ⊆ W ∩ G :=
+    (closedBall_subset_ball (by linarith)).trans ((ball_subset_ball hεr).trans hrWG)
+  -- (d) the bump form ω = g·α
+  let g : ContDiffBump x := ⟨ε / 4, ε / 2, by positivity, by linarith⟩
+  let ω : DifferentialForm (Euclid P) n := fun z => g z • α
+  have hωsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := g.contDiff.smul contDiff_const
+  have hωcpt : HasCompactSupport ω := g.hasCompactSupport.smul_right
+  have hωts : tsupport ω ⊆ closedBall x (ε / 2) :=
+    (tsupport_smul_subset_left (fun z => g z) (fun _ => α)).trans g.tsupport_eq.subset
+  let ωU : TestFormOn U n :=
+    ⟨ω, ⟨hωsmooth, hωcpt⟩, hωts.trans (hcb.trans fun z hz => hGU hz.2)⟩
+  have hT0 : T ωU = 0 := hWv ωU (hωts.trans (hcb.trans inter_subset_left))
+  have hTrep := hrep ωU (hωts.trans (hcb.trans inter_subset_right))
+  -- (e) the integrand h(z) = g(z)·ξ(z)(α)
+  have hval : ∀ z, ξ z ((ωU : DifferentialForm (Euclid P) n) z) = g z * ξ z α := by
+    intro z
+    show ξ z (g z • α) = g z * ξ z α
+    rw [map_smul, smul_eq_mul]
+  have hzero : ∀ z, z ∉ closedBall x (ε / 2) → g z = 0 := fun z hz =>
+    image_eq_zero_of_notMem_tsupport (by rw [g.tsupport_eq]; exact hz)
+  set μ : Measure (Euclid P) := μHE[n] with hμdef
+  set h : Euclid P → ℝ := fun z => ξ z ((ωU : DifferentialForm (Euclid P) n) z) with hhdef
+  have hcontOn : ContinuousOn h M := by
+    have : ContinuousOn (fun z => g z * ξ z α) M := g.continuous.continuousOn.mul hcont
+    exact this.congr fun z _ => hval z
+  have hmeas : AEStronglyMeasurable h (μ.restrict M) := hcontOn.aestronglyMeasurable hMmeas
+  have hfinK : μ (M ∩ closedBall x (ε / 2)) ≠ ∞ :=
+    hfin _ (isCompact_closedBall _ _) (hcb.trans inter_subset_right)
+  have hintK : IntegrableOn h (closedBall x (ε / 2)) (μ.restrict M) := by
+    refine Measure.integrableOn_of_bounded (M := ‖α‖) ?_ hmeas ?_
+    · rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+      exact hfinK
+    · have hM' : ∀ᵐ z ∂(μ.restrict M), z ∈ M := ae_restrict_mem hMmeas
+      refine ae_restrict_of_ae ?_
+      filter_upwards [hM'] with z hz
+      rw [hhdef]
+      dsimp only
+      rw [hval z, norm_mul]
+      have h1 : ‖g z‖ ≤ 1 := by
+        rw [Real.norm_eq_abs, abs_of_nonneg (g.nonneg)]
+        exact g.le_one
+      have h2 : ‖ξ z α‖ ≤ ‖α‖ :=
+        ((ξ z).le_opNorm α).trans (by nlinarith [hnorm z hz, norm_nonneg α])
+      nlinarith [norm_nonneg (g z), norm_nonneg (ξ z α)]
+  have hint : Integrable h (μ.restrict M) :=
+    hintK.integrable_of_forall_notMem_eq_zero fun z hz => by
+      rw [hhdef]; dsimp only; rw [hval z, hzero z hz, zero_mul]
+  have hnonneg : 0 ≤ᵐ[μ.restrict M] h := by
+    filter_upwards [ae_restrict_mem hMmeas] with z hz
+    show (0 : ℝ) ≤ h z
+    rw [hhdef]; dsimp only; rw [hval z]
+    by_cases hzb : z ∈ closedBall x (ε / 2)
+    · have : 1 / 2 < ξ z α := hhalf z hz (by
+        rw [mem_closedBall] at hzb; linarith)
+      exact mul_nonneg g.nonneg (by linarith)
+    · rw [hzero z hzb, zero_mul]
+  -- (f) positive measure of M near x
+  have hpos : 0 < μ (M ∩ ball x (ε / 4)) := by
+    rw [pos_iff_ne_zero]
+    intro h0
+    have hlim := Submission.dimred_rpd_submanifold_density_one P n M x hM hxM
+    have hev : (fun s : ℝ => μHE[n] (M ∩ ball x s) / (unitBallVolume n * ENNReal.ofReal (s ^ n)))
+        =ᶠ[𝓝[>] 0] fun _ => 0 := by
+      filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < ε / 4 by positivity)] with s hs
+      have : μHE[n] (M ∩ ball x s) = 0 :=
+        measure_mono_null (inter_subset_inter_right _ (ball_subset_ball hs.2.le)) h0
+      rw [this, ENNReal.zero_div]
+    exact one_ne_zero (tendsto_nhds_unique (hlim.congr' hev) tendsto_const_nhds)
+  have hsupp : μ (M ∩ ball x (ε / 4)) ≤ (μ.restrict M) (support h) := by
+    refine le_trans (measure_mono ?_) (Measure.le_restrict_apply _ _)
+    rintro z ⟨hzM, hzb⟩
+    refine ⟨?_, hzM⟩
+    rw [mem_support, hhdef]; dsimp only; rw [hval z]
+    have hg1 : g z = 1 := g.one_of_mem_closedBall (ball_subset_closedBall hzb)
+    have : 1 / 2 < ξ z α := hhalf z hzM (by rw [mem_ball] at hzb; linarith)
+    rw [hg1, one_mul]
+    linarith
+  have hIpos : 0 < ∫ z in M, h z ∂μ :=
+    (integral_pos_iff_support_of_nonneg_ae hnonneg hint).2 (hpos.trans_le hsupp)
+  -- (g) contradiction
+  rw [hTrep] at hT0
+  exact mul_ne_zero (Int.cast_ne_zero.2 hm) hIpos.ne' hT0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
