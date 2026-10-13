@@ -405,6 +405,85 @@ theorem Submission.fiw_tl_blowup_setIntegral :
   rw [hc] at h
   rw [← h, inv_mul_cancel_left₀ (pow_ne_zero n hr.ne')]
 
+/-- Continuity in `σ` of the blown-up slice integrals (Simon Ch. 6, 3.2(2), product with an
+interval): if `θ` is `Hᵐ`-integrable on `M ∩ K` for every compact `K`, `f ∈ C_c(ℝ^{P+1})` and
+`r > 0`, then `σ ↦ ∫_{η(M)} f(σ, w) θ(x + r w) dHᵐ(w)` is continuous, `η = η_{x,r}`.  Undoing the
+blow-up (`fiw_tl_blowup_setIntegral`) gives `r⁻ᵐ ∫_M f(σ, η u) θ(u) dHᵐ(u)`, continuous by dominated
+convergence with the `σ`-independent bound `sup |f| · |θ| · 1_{B̄(x, r R)}`, `spt f ⊆ B̄(0, R)`. -/
+theorem Submission.iwl_cr_ip_wt_slice_continuous :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P), (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))) := by
+  intro P m M θ x hθint f hfc hfcs r hr
+  -- Coordinates `Φ(s, u) = (s, u₁, …, u_P)`, with `‖u‖ ≤ ‖Φ(s, u)‖`.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  have hnorm : ∀ (s : ℝ) (u : Eucl P), ‖u‖ ≤ ‖Φ s u‖ := by
+    intro s u
+    have h : ‖Φ s u‖ ^ 2 = s ^ 2 + ‖u‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_succ]
+      rfl
+    exact le_of_sq_le_sq (by rw [h]; nlinarith [sq_nonneg s]) (norm_nonneg _)
+  have hΦc : Continuous fun p : ℝ × Eucl P => Φ p.1 p.2 :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  -- Support radius and sup bound of `f`.
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ z : Eucl (P + 1), f z ≠ 0 → ‖z‖ ≤ R := by
+    obtain ⟨R, hR⟩ := hfcs.isCompact.isBounded.subset_closedBall 0
+    refine ⟨R, fun z hz => ?_⟩
+    simpa using hR (subset_tsupport _ hz)
+  obtain ⟨Cf, hCf⟩ : ∃ C : ℝ, ∀ z, ‖f z‖ ≤ C := hfc.bounded_above_of_compact_support hfcs
+  -- `θ` is a.e. strongly measurable for `Hᵐ ⌞ M` (exhaust `M` by the compact balls `B̄(0, n)`).
+  have hθae : AEStronglyMeasurable θ ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ n : ℕ, M ∩ closedBall (0 : Eucl P) n := by
+      ext u
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hu => ⟨⌈‖u‖⌉₊, hu, Nat.le_ceil _⟩, fun ⟨_, hu, _⟩ => hu⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  -- Undo the blow-up: the slice integral is `r⁻ᵐ ∫_M f(Φ(σ, η u)) θ(u) dHᵐ(u)`.
+  have hcov : ∀ σ : ℝ, ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f (Φ σ w) * θ (x + r • w)
+      ∂(μHE[m] : Measure (Eucl P)) = (r ^ m)⁻¹ * ∫ u in M,
+        f (Φ σ (Poincare.SimonGMT.Chapter03.blowUpMap x r u)) * θ u ∂(μHE[m] : Measure (Eucl P)) := by
+    intro σ
+    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => f (Φ σ w) * θ (x + r • w)) hr]
+    congr 1
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul,
+      add_sub_cancel]
+  show Continuous fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+    f (Φ σ w) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))
+  simp_rw [hcov]
+  refine continuous_const.mul ?_
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    show Continuous fun u : Eucl P => r⁻¹ • (u - x)
+    fun_prop
+  -- Dominated convergence with the `σ`-independent bound `1_{B̄(x, r R)} · Cf · |θ|`.
+  refine continuous_of_dominated
+    (bound := (closedBall x (r * R)).indicator fun u => Cf * |θ u|) (fun σ => ?_) (fun σ => ?_) ?_ ?_
+  · exact ((hfc.comp (hΦc.comp (continuous_const.prodMk hηc))).aestronglyMeasurable).mul hθae
+  · refine Filter.Eventually.of_forall fun u => ?_
+    by_cases hu : u ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ u)]
+      exact mul_le_mul_of_nonneg_right (hCf _) (abs_nonneg _)
+    · rw [indicator_of_notMem hu]
+      have hf0 : f (Φ σ (Poincare.SimonGMT.Chapter03.blowUpMap x r u)) = 0 := by
+        by_contra h
+        apply hu
+        have h1 := (hnorm σ _).trans (hR _ h)
+        rw [mem_closedBall, dist_eq_norm]
+        simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
+          abs_inv, abs_of_pos hr] at h1
+        rw [inv_mul_le_iff₀ hr] at h1
+        exact h1
+      rw [hf0, zero_mul, norm_zero]
+  · rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact ((hθint _ (isCompact_closedBall x (r * R))).norm.const_mul Cf).congr
+      (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
+  · refine Filter.Eventually.of_forall fun u => ?_
+    exact (hfc.comp (hΦc.comp (continuous_id.prodMk continuous_const))).mul continuous_const
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
