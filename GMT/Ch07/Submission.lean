@@ -553,6 +553,99 @@ theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Eu
       _ ≤ ε := by
         rw [mul_div_assoc', div_le_iff₀ hC]
         nlinarith [norm_nonneg A]
+/-- **Simon 6.2.5** (evaluation bound by local mass): if `M_W(T) < ∞`, `spt ω ⊆ W` and
+`|ω(x)| ≤ r` for every `x`, then `|T(ω)| ≤ r · M_W(T)`.  The Euclidean coefficient norm is
+homogeneous, `|cα| = |c| |α|`, so for `s > 0` with `r ≤ s` both forms `±s⁻¹ω` are admissible for
+`M_W(T)`; hence `|T(ω)| ≤ s · M_W(T)`, and `s ↓ r` gives the claim. -/
+theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
+  intro P n U W T ω r hM hW hr
+  -- homogeneity of the Euclidean coefficient norm
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
+  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
+    intro s hs hrs
+    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
+      intro c hc
+      have hmem : c • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
+        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+        rw [hsmul]
+        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
+              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
+                (inv_nonneg.2 hs.le)
+          _ = 1 := inv_mul_cancel₀ hs.ne'
+      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
+      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
+    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
+    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
+    rw [neg_mul, ← mul_neg] at h2
+    rw [abs_le]
+    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
+  -- let `s ↓ r`
+  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
+      (𝓝 (r * (T.massOn W).toReal)) :=
+    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim
+    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
+
+/-- **Uniform approximation by test forms supported in an open set** (selected proof, step 3,
+approximating sequences).  Let `|α| = covectorEuclideanNorm α = ‖c α‖` for a continuous linear
+equivalence `c`.  A continuous, compactly supported `n`-covector field `G` with `tsupport G ⊆ V`
+(`V` open) is uniformly `ε`-approximated in `|·|` by a test form `ω` with `tsupport ω ⊆ V`.
+
+Since `c` is linear, `|tα| = |t| |α|`.  `c ∘ G` is continuous with compact support, hence bounded
+by some `C`; put `s = max C 0 + 1 > 0`, so `|G| ≤ s`.  Then `g = s⁻¹ G` is continuous, compactly
+supported, `tsupport g ⊆ V` and `|g| ≤ 1`, so `dor_ims_sua_mollify_unit_field` gives a test form
+`ω₀` with `tsupport ω₀ ⊆ V` and `|ω₀ − g| ≤ ε/s`.  Finally `ω = s ω₀` is a test form with
+`tsupport ω ⊆ tsupport ω₀ ⊆ V` and `|ω − G| = s |ω₀ − g| ≤ ε`. -/
+theorem Submission.dimred_mbl_fnd_tfe_uniform_testForm_approx : ∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (V : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n) (ε : ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → IsOpen V → Continuous G → HasCompactSupport G → tsupport G ⊆ V → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ ∀ x, covectorEuclideanNorm (ω x - G x) ≤ ε := by
+  intro P n d c V G ε hc hV hGc hGs hGV hε
+  -- (1) homogeneity `|t • α| = |t| |α|`, since `c` is linear
+  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    rw [hc, hc, map_smul, norm_smul, Real.norm_eq_abs]
+  -- (2) `c ∘ G` is continuous with compact support, so `‖c (G x)‖ ≤ C`; `s = max C 0 + 1`
+  obtain ⟨C, hC⟩ := (hGs.comp_left (map_zero c)).exists_bound_of_continuous
+    (c.continuous.comp hGc)
+  set s : ℝ := max C 0 + 1
+  have hs : 0 < s := by positivity
+  have hGb : ∀ x, covectorEuclideanNorm (G x) ≤ s := fun x => by
+    rw [hc]
+    exact (hC x).trans ((le_max_left C 0).trans (le_add_of_nonneg_right zero_le_one))
+  -- (3) the normalized field `g = s⁻¹ • G`: continuous, compactly supported in `V`, `|g| ≤ 1`
+  set g : Euclid P → Covector (Euclid P) n := fun x => s⁻¹ • G x with hg_def
+  have hgc : Continuous g := hGc.const_smul s⁻¹
+  have hgG : support g ⊆ support G := fun x hx h => hx (by simp [g, h])
+  have hgs : HasCompactSupport g := hGs.mono hgG
+  have hgV : tsupport g ⊆ V := (closure_mono hgG).trans hGV
+  have hg1 : ∀ x, covectorEuclideanNorm (g x) ≤ 1 := fun x => by
+    rw [hg_def, hsmul, abs_of_pos (inv_pos.2 hs), inv_mul_le_iff₀ hs, mul_one]
+    exact hGb x
+  -- (4) mollify `g` with error `ε / s`
+  obtain ⟨ω₀, ⟨hω₀s, hω₀c⟩, hω₀V, -, hω₀g⟩ :=
+    Submission.dor_ims_sua_mollify_unit_field P n V g (ε / s) hV hgc hgs hgV hg1 (div_pos hε hs)
+  -- (5) rescale: `ω = s • ω₀` is a test form with `tsupport ω ⊆ tsupport ω₀ ⊆ V`
+  refine ⟨fun x => s • ω₀ x, ⟨ContDiff.const_smul (𝕜 := ℝ) s hω₀s,
+    hω₀c.smul_left (f := fun _ => s)⟩, (tsupport_smul_subset_right (fun _ => s) ω₀).trans hω₀V,
+    fun x => ?_⟩
+  -- (6) `ω x - G x = s • (ω₀ x - g x)`, so `|ω x - G x| = s |ω₀ x - g x| ≤ s (ε / s) = ε`
+  have hdiff : s • ω₀ x - G x = s • (ω₀ x - g x) := by
+    rw [hg_def, smul_sub, smul_smul, mul_inv_cancel₀ hs.ne', one_smul]
+  rw [hdiff, hsmul, abs_of_pos hs]
+  calc s * covectorEuclideanNorm (ω₀ x - g x) ≤ s * (ε / s) :=
+        mul_le_mul_of_nonneg_left (hω₀g x) hs.le
+    _ = ε := mul_div_cancel₀ ε hs.ne'
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

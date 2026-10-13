@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.uniform_approx-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1",
+  "depth": 5,
+  "title": "Uniform approximation of continuous compactly supported covector fields by test forms supported in an open set (selected proof, step 3)",
+  "statement": "Let P, n, d ∈ ℕ and let c : Λ := Covector (Euclid P) n → ℝ^d = EuclideanSpace ℝ (Fin d) be a continuous linear equivalence with covectorEuclideanNorm α = ‖c α‖ for every α ∈ Λ. Let V ⊆ ℝ^P be open, let G : ℝ^P → Λ be continuous with compact support and tsupport G ⊆ V, and let ε > 0. Then there is an n-form ω : ℝ^P → Λ that is C^∞ with compact support (IsTestForm ω), with tsupport ω ⊆ V and covectorEuclideanNorm (ω(x) − G(x)) ≤ ε for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (V : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n) (ε : ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → IsOpen V → Continuous G → HasCompactSupport G → tsupport G ⊆ V → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ ∀ x, covectorEuclideanNorm (ω x - G x) ≤ ε",
+  "lean_name": "dimred_mbl_fnd_tfe_uniform_testForm_approx",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.mollify_unit_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.mollify_unit_field-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305-a1",
+      "result_commit": "8abce3204fc05f00ae9a4047981f27a9f9a6ba3b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-c3e9dc0467-a1"
+}
