@@ -1391,6 +1391,71 @@ theorem Submission.lpf_wtc_lusin_compact_pieces :
       exact mem_iUnion.2 ⟨Nat.pair i (Nat.pair j l), by simpa [Nat.unpair_pair] using hl⟩
     · exact Or.inl ⟨hxM, hxB⟩
 
+/-- Simon Ch. 3, Remark 1.8(1): for `Hᵏ`-a.e. `x ∈ E` and every subspace `Q`, `Q` is the
+approximate tangent space of `E` at `x` with respect to `θ` (Definition 1.7) iff it is the
+approximate tangent space of `E` at `x` (Definition 1.4).  Off an `Hᵏ`-null set, `x` lies in a
+compact Lusin piece `C ⊆ E` on which `θ` is continuous, and both `Hᵏ ⌞ (E ∖ C)` and
+`θ Hᵏ ⌞ (E ∖ C)` have `k`-density `0` at `x`.  Both tangent conditions then transfer between `E`
+and `C`. -/
+theorem Submission.imc_weightedTangent_iff_approxTangent : ∀ (N k : ℕ) (E : Set (Eucl N)) (θ : Eucl N → ℝ), NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E ∩ K) < ∞) → (∀ x ∈ E, 0 < θ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (E ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k E θ x Q ↔ Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E x Q := by
+  intro N k E θ hE hEfin hθ hθint
+  -- Step 2: compact pieces `C i ⊆ E`, `θ|C i` continuous, covering `E` up to an `Hᵏ`-null set.
+  obtain ⟨C, hCc, hCE, hθC, hCfin, hEC⟩ := Submission.lpf_wtc_lusin_compact_pieces N k univ E θ
+    isOpen_univ (subset_univ E) hE hθ fun K hK _ => hθint K hK
+  have hCm : ∀ i, NullMeasurableSet (C i) (μHE[k] : Measure (Eucl N)) := fun i =>
+    (hCc i).isClosed.measurableSet.nullMeasurableSet
+  have hS : ∀ i, NullMeasurableSet (E \ C i) (μHE[k] : Measure (Eucl N)) := fun i =>
+    hE.diff (hCm i)
+  -- Step 3: `Hᵏ ⌞ (E ∖ C i)` and `θ Hᵏ ⌞ (E ∖ C i)` have `k`-density `0` at a.e. `x ∉ E ∖ C i`.
+  have hdens₁ : ∀ i, ∀ᵐ x ∂(μHE[k] : Measure (Eucl N)), x ∉ E \ C i →
+      Tendsto (fun ρ : ℝ => (μHE[k] : Measure (Eucl N)) ((E \ C i) ∩ closedBall x ρ) /
+        ENNReal.ofReal (ρ ^ k)) (𝓝[>] 0) (𝓝 0) := by
+    intro i
+    have h := Submission.imc_ae_zero_density_off_set N k (E \ C i) (fun _ => 1) (hS i)
+      fun K hK => by
+        simp only [setLIntegral_one]
+        exact (measure_mono (inter_subset_inter_left K sdiff_subset)).trans_lt (hEfin K hK)
+    simpa only [setLIntegral_one] using h
+  have hdens₂ : ∀ i, ∀ᵐ x ∂(μHE[k] : Measure (Eucl N)), x ∉ E \ C i →
+      Tendsto (fun ρ : ℝ => (∫⁻ y in (E \ C i) ∩ closedBall x ρ, ENNReal.ofReal (θ y)
+        ∂(μHE[k] : Measure (Eucl N))) / ENNReal.ofReal (ρ ^ k)) (𝓝[>] 0) (𝓝 0) := fun i =>
+    Submission.imc_ae_zero_density_off_set N k (E \ C i) (fun y => ENNReal.ofReal (θ y)) (hS i)
+      fun K hK => (lintegral_mono_set (inter_subset_inter_left K sdiff_subset)).trans_lt
+        (hθint K hK).lintegral_lt_top
+  -- `Hᵏ ⌞ E`-a.e. `x` lies in some piece `C i`.
+  have hcov : ∀ᵐ x ∂(μHE[k] : Measure (Eucl N)), x ∈ E → x ∈ ⋃ i, C i :=
+    measure_mono_null (fun x hx => not_imp.1 hx) hEC
+  filter_upwards [ae_restrict_mem₀ hE, ae_restrict_of_ae (ae_all_iff.2 hdens₁),
+    ae_restrict_of_ae (ae_all_iff.2 hdens₂), (ae_restrict_iff'₀ hE).2 hcov]
+    with x hxE hx₁ hx₂ hxC Q
+  obtain ⟨i, hi⟩ := mem_iUnion.1 hxC
+  have hxS : x ∉ E \ C i := fun h => h.2 hi
+  -- Steps 4–7 at `x` are carried out on the piece `C i`; collect the data they need.
+  have h₀ : Tendsto (fun ρ : ℝ => (μHE[k] : Measure (Eucl N)) ((C i \ E) ∩ closedBall x ρ) /
+      ENNReal.ofReal (ρ ^ k)) (𝓝[>] 0) (𝓝 0) := by
+    simp only [sdiff_eq_empty.2 (hCE i), empty_inter, measure_empty, ENNReal.zero_div]
+    exact tendsto_const_nhds
+  have hθ₀ : ∀ y ∈ E, 0 ≤ θ y := fun y hy => (hθ y hy).le
+  have hCr : (μHE[k] : Measure (Eucl N)) (C i ∩ closedBall x 1) < ∞ :=
+    (measure_mono inter_subset_left).trans_lt (hCfin i)
+  have hr : ∃ r : ℝ, 0 < r ∧ (μHE[k] : Measure (Eucl N)) (C i ∩ closedBall x r) < ∞ ∧
+      IntegrableOn θ (E ∩ closedBall x r) (μHE[k] : Measure (Eucl N)) :=
+    ⟨1, one_pos, hCr, hθint _ (isCompact_closedBall x 1)⟩
+  have hθx : ContinuousWithinAt θ (C i) x := (hθC i).continuousWithinAt hi
+  constructor
+  · -- (⇒) weighted tangent of `E` ⇒ tangent of `C i` ⇒ tangent of `E`.
+    intro hw
+    exact Submission.lpf_wtc_tangent_transfer N k E (C i) x Q hE (hCm i)
+      (Submission.imc_wte_approxTangent_of_weightedTangent N k E (C i) θ x Q hE (hCm i) (hCE i)
+        hθ₀ (hθ x hxE) hw hr hθx (hx₂ i hxS))
+      ⟨1, one_pos, hCr⟩ (hx₁ i hxS) h₀
+  · -- (⇐) tangent of `E` ⇒ tangent of `C i` ⇒ weighted tangent of `E`.
+    intro hu
+    exact Submission.lpf_wtc_weighted_tangent_transfer N k E (C i) θ x Q hE (hCm i) (hCE i) hi hθ₀
+      (Submission.lpf_wtc_tangent_transfer N k (C i) E x Q (hCm i) hE hu
+        ⟨1, one_pos, hEfin _ (isCompact_closedBall x 1)⟩ h₀ (hx₁ i hxS))
+      hr hθx (hx₂ i hxS)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
