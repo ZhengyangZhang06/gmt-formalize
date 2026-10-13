@@ -359,6 +359,43 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Radial homotopy formula in degree zero: if `χ(x)(v) = ∫₀¹ t⁰ dφ(t x)(x, v) dt` for a smooth
+`0`-form `φ`, then `χ(x) = φ(x) - φ(0)` (fundamental theorem of calculus along `t ↦ t x`). -/
+theorem Submission.iwl_cr_rh_degree_zero :
+    ∀ (P : ℕ) (φ χ : DifferentialForm (Eucl P) 0), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ →
+      (∀ (x : Eucl P) (v : Fin 0 → Eucl P),
+        χ x v = ∫ t in (0 : ℝ)..1, t ^ 0 * extDeriv φ (t • x) (Fin.cons x v)) →
+      ∀ x, χ x = φ x - φ 0 := by
+  intro P φ χ hφ hχ x
+  ext v
+  -- `dφ(t x)(x, v) = Dφ(t x)[x](v)`: the alternating sum has the single term `i = 0`.
+  have hd : ∀ t : ℝ, extDeriv φ (t • x) (Fin.cons x v) = fderiv ℝ φ (t • x) x v := by
+    intro t
+    rw [extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_one]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero]
+    exact congrArg _ (Subsingleton.elim _ _)
+  rw [hχ x v, ContinuousAlternatingMap.sub_apply]
+  simp only [pow_zero, one_mul, hd]
+  have hdiff : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hcont : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  -- `s ↦ φ(s x)(v)` has derivative `Dφ(t x)[x](v)` at every `t`.
+  have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+      HasDerivAt (fun s : ℝ => φ (s • x) v) (fderiv ℝ φ (t • x) x v) t := by
+    intro t _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 : HasDerivAt (fun s : ℝ => φ (s • x)) (fderiv ℝ φ (t • x) x) t :=
+      (hdiff (t • x)).hasFDerivAt.comp_hasDerivAt t h1
+    exact (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).hasFDerivAt.comp_hasDerivAt t h2
+  have hint : IntervalIntegrable (fun t : ℝ => fderiv ℝ φ (t • x) x v) volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    have : Continuous fun t : ℝ => fderiv ℝ φ (t • x) x :=
+      (hcont.comp (continuous_id.smul continuous_const)).clm_apply continuous_const
+    exact (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).continuous.comp this
+  -- Fundamental theorem of calculus on `[0, 1]`.
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
