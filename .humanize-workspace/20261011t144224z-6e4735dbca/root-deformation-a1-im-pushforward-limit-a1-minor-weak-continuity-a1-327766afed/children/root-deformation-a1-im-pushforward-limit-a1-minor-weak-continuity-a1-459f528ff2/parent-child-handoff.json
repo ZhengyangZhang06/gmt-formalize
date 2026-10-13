@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886 = git rev-parse HEAD; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (both identical)",
+        "python3 -I over dag.json: nodes under minor_weak_continuity (status, lean_name, depends_on); regex over titles/statements/lean statements: lineDeriv|integral_lineDeriv|directional derivative|integration by parts|Laplace expansion|det_succ_row_zero|cofactor|Piola|HasCompactSupport.*fderiv; statements concluding ContDiff of Matrix.det or ∫ …, fderiv … = 0 (none)",
+        "python3 -I over dag.json: lean_name collision check for deformation_ipl_mwc_mis_integral_fderiv_eq_zero and deformation_ipl_mwc_mis_det_contDiff (free; re-checked at 656 nodes, including the new minor_ibp_lipschitz children abs_det_le, ae_fderiv_extension, det_dominated_convergence and the test_density child scalar_dense)",
+        "rg -n 'deformation_ipl_mwc_mis|integral_fderiv_eq_zero|det_contDiff' GMT/ local-references/197bdd4b88278494/project lake-packages-25730c7c/simongmt/Poincare and snapshot Mathlib (no match)",
+        "grep -n 'theorem|lemma' Mathlib/Analysis/Calculus/Rademacher.lean; sed -n 30,105p and 160,205p (LipschitzWith.integral_lineDeriv_mul_eq; section variables FiniteDimensional ℝ E, μ.IsAddHaarMeasure)",
+        "grep -rn 'theorem contDiff_prod|ContDiff.sum|contDiff_det|ContDiff.det|ContDiff.*Matrix.det' snapshot Mathlib (contDiff_prod and ContDiff.sum in ContDiff/Operations.lean; no determinant-smoothness lemma)",
+        "rg -n '^theorem' Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean; lake env lean /tmp/mis_decomp/NotAvail.lean (integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable and integral_bilinear_fderiv_right_eq_neg_left_of_integrable unknown under the frozen import)",
+        "git show 50ef52b3 (accepted slicing_im_ll_gws_lipschitz_ibp: Submission.X declaration layout; its IBP only gives an existential g, so it cannot replace child 1)",
+        "lake env lean /tmp/mis_decomp/Avail.lean (#check of ContDiff.lipschitzWith_of_hasCompactSupport, LipschitzWith.integral_lineDeriv_mul_eq, DifferentiableAt.lineDeriv_eq_fderiv, Matrix.det_apply', Matrix.det_succ_row_zero, contDiff_prod, ContDiff.sum, ContDiff.fderiv_right, ContDiff.clm_apply, tsupport_fderiv_subset, integral_finsetSum)",
+        "lake env lean /tmp/mis_decomp/Children.lean (both children proved; axioms propext, Classical.choice, Quot.sound)",
+        "python3 -I /tmp/mis_decomp/scripts/gen.py (verifier lean_contract.validate_lean_statement + gmt-compare child_modules, contract mode); lake env lean /tmp/mis_decomp/build/*_challenge.lean (exit 0, sorry warning only) and *_solution_emulated.lean (standard axioms)",
+        "lake env lean /tmp/mis_decomp/Assembly.lean (parent frozen type from Piola + both child types as hypotheses; axioms propext, Classical.choice, Quot.sound); python3 -I /tmp/mis_decomp/scripts/link.py + lake env lean /tmp/mis_decomp/build/Link.lean (real Submission names; sorryAx only from the Piola stub)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-327766afed/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-327766afed/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-327766afed/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/mis_decomp/Avail.lean",
+        "/tmp/mis_decomp/NotAvail.lean",
+        "/tmp/mis_decomp/Children.lean",
+        "/tmp/mis_decomp/Assembly.lean",
+        "/tmp/mis_decomp/children.json",
+        "/tmp/mis_decomp/scripts/gen.py",
+        "/tmp/mis_decomp/scripts/link.py",
+        "/tmp/mis_decomp/build/Link.lean",
+        "/tmp/mis_decomp/build/integral_fderiv_zero_challenge.lean",
+        "/tmp/mis_decomp/build/det_contdiff_challenge.lean",
+        "/tmp/mis_decomp/build/integral_fderiv_zero_solution_emulated.lean",
+        "/tmp/mis_decomp/build/det_contdiff_solution_emulated.lean"
+      ],
+      "conclusion": "Pinned revisions confirmed: HEAD = project_commit d8d46c95, and Contract = Submission = the snapshot Contract byte for byte.\nNo existing declaration does the job. Mathlib's C¹ integration-by-parts file (LineDeriv/IntegrationByParts) is outside the frozen import closure, and no Mathlib, SimonGMT or accepted DAG node proves that ∫ fderiv h · e = 0 for compactly supported C¹ h, or that a determinant of C^m entries is C^m. The accepted slicing_im_ll_gws_lipschitz_ibp only provides an existential divergence g, so it does not apply.\nBoth children are therefore new, and their names (deformation_ipl_mwc_mis_*) collide with nothing.\nAvailable under the frozen import (and used): ContDiff.lipschitzWith_of_hasCompactSupport, LipschitzWith.integral_lineDeriv_mul_eq, DifferentiableAt.lineDeriv_eq_fderiv, Matrix.det_apply', Matrix.det_succ_row_zero, contDiff_prod, ContDiff.sum, ContDiff.fderiv_right, ContDiff.clm_apply, tsupport_fderiv_subset, Continuous.integrable_of_hasCompactSupport, integral_finsetSum.\nLean checks: both statements validate and elaborate in the comparator scope, and both children are proved with standard axioms. The parent's frozen type follows from the frozen piola_identity type plus the two children with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1",
+  "child_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1.det_contdiff-a1",
+  "subproblem": {
+    "key": "det_contdiff",
+    "title": "The determinant of a square matrix of C^m functions is C^m (Leibniz formula; parent Step 2)",
+    "statement": "Let k, n ∈ ℕ and let m ∈ WithTop ℕ∞ be any smoothness order in the sense of Mathlib's ContDiff: a finite order, m = ∞ (C^∞), or m = ω (real analytic). For t, s ∈ Fin n let M_{t,s} : ℝ^k → ℝ (M : Fin n → Fin n → Eucl k → ℝ) be functions, each of class C^m. Then the function w ↦ det(M_{t,s}(w))_{t,s ∈ Fin n}, the determinant of the n×n real matrix Matrix.of (fun t s => M t s w), is of class C^m on ℝ^k = Eucl k. For n = 0 this function is the constant 1.",
+    "lean_statement": "∀ (k n : ℕ) (m : WithTop ℕ∞) (M : Fin n → Fin n → Eucl k → ℝ), (∀ t s, ContDiff ℝ m (M t s)) → ContDiff ℝ m (fun w => Matrix.det (Matrix.of fun t s : Fin n => M t s w))",
+    "lean_name": "deformation_ipl_mwc_mis_det_contDiff",
+    "depends_on": [],
+    "natural_proof": "Source: Step 2 of the parent proof of deformation_ipl_mwc_minor_ibp_smooth (“By the Leibniz formula (Matrix.det_apply), C_q is a finite sum of ± products of such entries, hence C¹”). Here it is stated for an arbitrary n×n matrix of C^m functions and an arbitrary smoothness order m ∈ WithTop ℕ∞.\n\nNotation.\n- ℝ^k = Eucl k.\n- S_n := Equiv.Perm (Fin n), the finite group of permutations of Fin n. For σ ∈ S_n, ε(σ) := ((Equiv.Perm.sign σ : ℤ) : ℝ) ∈ {1, −1}.\n- “C^m” means ContDiff ℝ m for the given m. This covers finite orders, m = ∞ and m = ω, since all Mathlib lemmas used below hold for every m ∈ WithTop ℕ∞.\n- For w ∈ ℝ^k, A(w) := Matrix.of (fun t s => M t s w) is the n×n real matrix with entries A(w)_{t,s} = M_{t,s}(w) (Matrix.of_apply).\n\n1. (Leibniz formula.) For every square matrix B over the commutative ring ℝ indexed by Fin n, Mathlib's Matrix.det_apply' gives det B = Σ_{σ ∈ S_n} ε(σ) · Π_{i ∈ Fin n} B_{σ(i), i}. Applying it to B = A(w) gives, for every w ∈ ℝ^k,\n det A(w) = Σ_{σ ∈ S_n} ε(σ) · Π_{i ∈ Fin n} M_{σ(i), i}(w).\nSo the function w ↦ det A(w) equals w ↦ Σ_{σ ∈ S_n} ε(σ) · P_σ(w), where P_σ(w) := Π_{i ∈ Fin n} M_{σ(i), i}(w).\n\n2. (Products.) Fix σ ∈ S_n. For each i ∈ Fin n, the factor w ↦ M_{σ(i), i}(w) is C^m by hypothesis (take t := σ(i), s := i). ℝ is a normed commutative ℝ-algebra, so a finite product of C^m real-valued functions is C^m (Mathlib contDiff_prod over the finite set Finset.univ of Fin n). Hence P_σ is C^m. If n = 0 the product is empty, so P_σ ≡ 1, which is C^m as a constant; contDiff_prod covers this case too.\n\n3. (Constant multiples.) The constant function w ↦ ε(σ) is C^m (contDiff_const), and a product of two C^m real functions is C^m (ContDiff.mul). Hence w ↦ ε(σ) · P_σ(w) is C^m.\n\n4. (Finite sums.) S_n is finite, and a finite sum of C^m functions is C^m (Mathlib ContDiff.sum over Finset.univ of S_n). Hence w ↦ Σ_σ ε(σ) · P_σ(w) is C^m. By Step 1 this function is w ↦ det A(w) = Matrix.det (Matrix.of fun t s => M t s w), which is therefore C^m. ∎\n\nFormalization notes. Checked under the frozen `import GMT.Ch06.Submission`; do not add imports. The following script proves the exact frozen type, using only the axioms propext, Classical.choice and Quot.sound:\n  intro k n m M hM\n  simp only [Matrix.det_apply', Matrix.of_apply]\n  apply ContDiff.sum\n  intro σ _\n  apply contDiff_const.mul\n  apply contDiff_prod\n  intro i _\n  exact hM _ _",
+    "proof_key_steps": [
+      "Leibniz formula (Matrix.det_apply', Matrix.of_apply): det(Matrix.of fun t s => M t s w) = Σ_σ ε(σ) · Π_i M (σ i) i w.",
+      "For each σ, the product w ↦ Π_i M (σ i) i w is C^m (contDiff_prod; the empty product for n = 0 is the constant 1).",
+      "The constant multiple ε(σ) · product is C^m (contDiff_const.mul).",
+      "The finite sum over σ ∈ Equiv.Perm (Fin n) is C^m (ContDiff.sum), so the determinant function is C^m."
+    ]
+  },
+  "audit": {
+    "key": "det_contdiff",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The standalone one-line proposition matches the stated dimensions, arbitrary smoothness order, entrywise hypotheses, and determinant conclusion. Matrix.of constructs the intended real matrix. The Leibniz expansion followed by finite products, constant multiplication, and finite sums proves the result for every stated order, including analytic regularity and n = 0. The supplied proof is complete, non-circular, and compiles with standard axioms. The free bare name is valid. Specializing to the derivative entries with m = 1 gives exactly the cofactor regularity needed by the parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-459f528ff2/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-459f528ff2/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-459f528ff2/parent-supplied-natural-proof.json"
+}
