@@ -1121,6 +1121,70 @@ theorem dohr_eb_elc2_averaged_forcing : ∀ (n ℓ : ℕ) (α H d : ℝ) (g : Rn
       _ ≤ ‖G x - G y‖ * (‖P‖ * ‖e‖) := by gcongr; exact P.le_opNorm e
       _ ≤ (H * ‖x - y‖ ^ α) * (‖P‖ * ‖e‖) := by gcongr
       _ = H * ‖e‖ * ‖x - y‖ ^ α * ‖P‖ := by ring
+/-- Local-to-global step of the elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1
+(pp. 127–128): if every point of the open set `U` has a ball `B_r(x)` on which `f` is `C¹` with
+`‖Df(y) - Df(z)‖ ≤ C ‖y - z‖^α`, then `f` is `C^{1,α}` in `U`.  `f` is `C¹` on `U` by locality
+(`contDiffOn_of_locally_contDiffOn`), and `D¹f` corresponds to `Df` under the linear isometry
+`continuousMultilinearCurryFin1`.  A compact `K ⊆ U` is covered by finitely many of the balls; for a
+Lebesgue number `δ` of this cover, pairs with `‖y - z‖ < δ` lie in one ball, while pairs with
+`‖y - z‖ ≥ δ` satisfy `‖Df(y) - Df(z)‖ ≤ 2B ≤ (2B/δ^α) ‖y - z‖^α`, where `B ≥ sup_K ‖Df‖`. -/
+theorem dohr_eb_elc2_local_to_global_holder : ∀ (n ℓ : ℕ) (α : ℝ) (f : Rn n → Rn ℓ) (U : Set (Rn n)), 0 < α → IsOpen U → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ContDiffOn ℝ 1 f (ball x r) ∧ ∃ C : ℝ, ∀ y ∈ ball x r, ∀ z ∈ ball x r, ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ C * ‖y - z‖ ^ α) → IsLocallyHolderCkα 1 α f U := by
+  intro n ℓ α f U hα hU hloc
+  -- Step 1: `f` is `C¹` on `U`, being `C¹` on a ball around each point of `U`.
+  have hC1 : ContDiffOn ℝ 1 f U := by
+    refine contDiffOn_of_locally_contDiffOn fun x hx => ?_
+    obtain ⟨r, hr, hf, -⟩ := hloc x hx
+    exact ⟨ball x r, isOpen_ball, mem_ball_self hr, hf.mono inter_subset_right⟩
+  refine ⟨by simpa using hC1, fun K hK hKU => ?_⟩
+  -- Step 2: `‖D¹f x - D¹f y‖ = ‖Df x - Df y‖`, via the isometry `continuousMultilinearCurryFin1`.
+  have hconv : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ 1 f x - iteratedFDeriv ℝ 1 f y‖ = ‖fderiv ℝ f x - fderiv ℝ f y‖ := by
+    intro x y
+    have hc : ∀ z, iteratedFDeriv ℝ 1 f z =
+        (continuousMultilinearCurryFin1 ℝ (Rn n) (Rn ℓ)).symm (fderiv ℝ f z) := by
+      intro z
+      ext m
+      simp
+    rw [hc, hc, ← LinearIsometryEquiv.map_sub, LinearIsometryEquiv.norm_map]
+  simp_rw [hconv]
+  -- Step 3: `Df` is continuous on `U`, hence bounded on `K` by some `B ≥ 0`.
+  obtain ⟨B, hB⟩ :=
+    hK.exists_bound_of_continuousOn ((hC1.continuousOn_fderiv_of_isOpen hU le_rfl).mono hKU)
+  have hB0 : 0 ≤ max B 0 := le_max_right _ _
+  -- Step 4: finitely many of the balls cover `K`; `δ > 0` is a Lebesgue number of this cover.
+  choose! r hr _hfr C hC using hloc
+  obtain ⟨t, ht⟩ := hK.elim_finite_subcover (fun i : K => ball (i : Rn n) (r i))
+    (fun _ => isOpen_ball) fun x hx => mem_iUnion.mpr ⟨⟨x, hx⟩, mem_ball_self (hr x (hKU hx))⟩
+  obtain ⟨δ, hδ, hleb⟩ := lebesgue_number_lemma_of_metric hK
+    (c := fun i : t => ball ((i : K) : Rn n) (r (i : K))) (fun _ => isOpen_ball) fun x hx => by
+      obtain ⟨i, hi, hx'⟩ := mem_iUnion₂.mp (ht hx)
+      exact mem_iUnion.mpr ⟨⟨i, hi⟩, hx'⟩
+  -- Step 5: `Cs = ∑_{i ∈ t} |C i|` dominates every local Hölder constant of the subcover.
+  have hCs : ∀ i ∈ t, C i ≤ ∑ j ∈ t, |C j| := fun i hi =>
+    (le_abs_self _).trans (Finset.single_le_sum (f := fun j : K => |C j|) (fun j _ => abs_nonneg _) hi)
+  have hδα : 0 < δ ^ α := Real.rpow_pos_of_pos hδ α
+  have hD0 : 0 ≤ 2 * max B 0 / δ ^ α := div_nonneg (mul_nonneg zero_le_two hB0) hδα.le
+  refine ⟨∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α, fun y hy z hz => ?_⟩
+  have hpow : 0 ≤ ‖y - z‖ ^ α := Real.rpow_nonneg (norm_nonneg _) α
+  by_cases hyz : ‖y - z‖ < δ
+  · -- Step 6a: `y` and `z` lie in one ball `B_{r_i}(x_i)` of the subcover.
+    obtain ⟨⟨i, hi⟩, hsub⟩ := hleb y hy
+    have hyb : y ∈ ball (i : Rn n) (r i) := hsub (mem_ball_self hδ)
+    have hzb : z ∈ ball (i : Rn n) (r i) :=
+      hsub (by rwa [mem_ball, dist_eq_norm, norm_sub_rev])
+    calc ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ C i * ‖y - z‖ ^ α := hC i (hKU i.2) y hyb z hzb
+      _ ≤ (∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α) * ‖y - z‖ ^ α :=
+        mul_le_mul_of_nonneg_right (by linarith [hCs i hi]) hpow
+  · -- Step 6b: `‖y - z‖ ≥ δ`, so `‖Df y - Df z‖ ≤ 2 max B 0 ≤ (2 max B 0 / δ^α) ‖y - z‖^α`.
+    have hδyz : δ ^ α ≤ ‖y - z‖ ^ α := Real.rpow_le_rpow hδ.le (not_lt.mp hyz) hα.le
+    calc ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ ‖fderiv ℝ f y‖ + ‖fderiv ℝ f z‖ := norm_sub_le _ _
+      _ ≤ max B 0 + max B 0 :=
+        add_le_add ((hB y hy).trans (le_max_left _ _)) ((hB z hz).trans (le_max_left _ _))
+      _ = 2 * max B 0 / δ ^ α * δ ^ α := by rw [div_mul_cancel₀ _ hδα.ne']; ring
+      _ ≤ 2 * max B 0 / δ ^ α * ‖y - z‖ ^ α := mul_le_mul_of_nonneg_left hδyz hD0
+      _ ≤ (∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α) * ‖y - z‖ ^ α :=
+        mul_le_mul_of_nonneg_right
+          (le_add_of_nonneg_left (Finset.sum_nonneg fun j _ => abs_nonneg (C j))) hpow
 
 end Submission
 
