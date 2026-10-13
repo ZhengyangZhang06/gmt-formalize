@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e094df019d21950c8a871b4bd528102f72d1976b70d21006d45ca44d56e892eb",
+  "git_delta": {
+    "base_commit": "e9766c5eb69807b11911a9e524e4a66794c2da7c",
+    "candidate_commit": "7a706164baaf42fc7f55751247396a8836928310",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_abs_apply_le_massOn",
+    "diff_sha256": "deeb66434f41cafb868f2b13be9b0a4c766cc905b7f8440ad00eb1933ea7cfcc",
+    "source_sha256": "db8e6cd3c3b799eaa590862c233fc84ade59422f89ee95050357f721e61dd928",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_abs_apply_le_massOn",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
