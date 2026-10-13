@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06ba5ae180dae5243845b635372431a66515611f1d033afae65ed02404a29983",
+  "git_delta": {
+    "base_commit": "54709047846d42fdd0cf05ef3c75009640fc8294",
+    "candidate_commit": "fe723c8975487a9ebf5318ad9ab0cede92a5eb1e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_tdn_directional_bound",
+    "diff_sha256": "56df0d1697e5b6aba2b71c302e8704577fea8abac8e82bcd5907ce4f29bb57e3",
+    "source_sha256": "9e04727a9aaac9cddf405570d936f42cfb6b6cee059a3a01a1daad7d615832e2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_tdn_directional_bound",
+      "statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, |a y| ≤ 1) → ∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
