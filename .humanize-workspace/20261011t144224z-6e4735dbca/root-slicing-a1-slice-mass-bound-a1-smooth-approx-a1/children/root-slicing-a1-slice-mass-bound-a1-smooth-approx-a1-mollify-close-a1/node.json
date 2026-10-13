@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollify_close-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+  "depth": 4,
+  "title": "Uniform error of the mollification of a globally Lipschitz function: |ρ⋆F − F| ≤ Lσ (parent Step 6)",
+  "statement": "Let P ∈ ℕ and L ≥ 0, and let F : ℝ^P → ℝ satisfy |F(a) − F(b)| ≤ L|a − b| for all a, b ∈ ℝ^P. Let σ ∈ ℝ, and let ρ : ℝ^P → ℝ be continuous with compact support such that ρ(y) ≥ 0 for all y, ρ(y) = 0 whenever |y| ≥ σ, and ∫ρ dλ^P = 1. Then for every x ∈ ℝ^P, |∫ ρ(y)F(x − y) dλ^P(y) − F(x)| ≤ Lσ. Here λ^P is Lebesgue measure (`volume` on `Eucl P`).",
+  "lean_statement": "∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ (ρ : Eucl P → ℝ) (σ : ℝ), Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) → ∫ y, ρ y = 1 → ∀ x : Eucl P, |(∫ y, ρ y * F (x - y)) - F x| ≤ (L : ℝ) * σ",
+  "lean_name": "slicing_mb_sa_mollify_lipschitz_close",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-close-a1-a1"
+}
