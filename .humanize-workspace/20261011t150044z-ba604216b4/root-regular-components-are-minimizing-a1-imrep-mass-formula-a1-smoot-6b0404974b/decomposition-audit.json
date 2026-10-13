@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm|radial|retraction",
+        "Integrable.exists_hasCompactSupport_lintegral_sub_le|Continuous.exists_contDiff_approx|Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|theorem opNorm_le_bound|theorem exists_continuous_one_zero_of_isCompact|theorem exists_compact_between|EuclideanSpace.norm_eq|EuclideanSpace.equiv|norm_sub_sq_real|real_inner_le_norm",
+        "def apply|theorem opNorm_le_bound|theorem map_sum|theorem map_smul_univ|map_eq_zero_of_not_injective|theorem norm_apply_le|theorem norm_eq|theorem basisFun_repr|protected def equiv",
+        "\"lean_name\": \"(regcomp_norm_radial_retraction_sub_le|regcomp_covectorEuclideanNorm_seminorm_retract|regcomp_covector_opNorm_le_of_basis_bound|regcomp_exists_smooth_unit_form_support_approx|regcomp_exists_continuous_unit_form_approx)\"",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-form-split/Full2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-form-split/Assembly2Exact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth_form_independent_audit_9g_ciuls/FrozenTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-6b0404974b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-6b0404974b/decomposition-v1.json",
+        "/tmp/smooth-form-split/Full2.lean",
+        "/tmp/smooth-form-split/Assembly2Exact.lean",
+        "/tmp/smooth_form_independent_audit_9g_ciuls/FrozenTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected smooth-approximation theorem. The workspace contract is byte-identical to the snapshot contract; inspected Mathlib sources match revision 25730c7c759d108ef87ab70af2342a196760f79d. No relevant reusable coefficient-norm/retraction theorem was found in the snapshot project. The cited density, regularity, cutoff, multilinear and support-preserving smooth-approximation APIs have the required hypotheses and conclusions. Scalar C_c-density is also corroborated by [Stanford Math 205A, Theorem 2.10](https://web.stanford.edu/class/math205a/radon-13.pdf); the vector-valued result was checked directly in pinned Mathlib.\n\nAll five names are bare identifiers. The final 291-node DAG scan, updated 2026-10-12T15:26:35Z, found no name collisions or identical frozen types. Dependencies are correctly directed and acyclic: coeff_norm_toolkit uses radial_retraction; continuous_l1_approx and smooth_support_approx use coeff_norm_toolkit; opnorm_basis_bound is independent. The parent's existing orthonormal-evaluation dependency has no return dependency on the selected parent.\n\nAll five exact one-line propositions elaborate independently before any child declaration. Full2.lean compiles, and each child's axiom list contains only propext, Classical.choice and Quot.sound. Its exact frozen parent assembly additionally uses only the declared regcomp_covector_eval_orthonormal_le dependency. Assembly2Exact.lean also compiles; its sorry warnings are confined to the deliberately assumed child contracts.\n\nThe conclusions establish this selected parent: the basis estimate and existing evaluation lemma give integrability; continuous approximation gives error at most ε/4; smoothing with κ = ε/(4(1 + (ν univ).toReal)) preserves support containment and the unit bound. The integrated triangle inequality gives error at most ε/2 < ε. No ancestor theorem or undeclared child obligation is used."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. The two norm cases are exhaustive. For s > 1, the squared-distance expansion and Cauchy–Schwarz give difference at least (s − 1)²; nonnegativity of norms yields the stated inequality. The proof is complete and independent."
+    },
+    {
+      "key": "coeff_norm_toolkit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit continuous linear coefficient map has Euclidean norm exactly covectorEuclideanNorm. This proves all four seminorm/comparison clauses with c = 1 + ‖Φ‖, and the declared radial_retraction dependency proves the fifth clause. The inferred coefficient-space norm is the intended Euclidean norm. All hypotheses and conclusions match the frozen proposition."
+    },
+    {
+      "key": "opnorm_basis_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standard-basis multilinear expansion, coordinate bounds and P^n tuple count prove the required evaluation bound, which opNorm_le_bound converts to the exact conclusion. C ≥ 0 is used correctly in the estimates. Empty-index cases are valid. No undeclared dependency or circular step occurs."
+    },
+    {
+      "key": "smooth_support_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Pinned Continuous.exists_contDiff_approx supplies the stated support inclusion and C∞ regularity, requiring finite-dimensionality only of the domain. With δ = min(1/2, κ/2), the shrinking and approximation estimates establish the unit bound and error ≤ κ. Closure containment proves compact support. The proof uses only coeff_norm_toolkit and matches the exact proposition."
+    },
+    {
+      "key": "continuous_l1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite Euclidean Borel measures satisfy the required regularity assumptions, and integrability is explicitly hypothesized. Density at tolerance ε/c, the cutoff identity g = χg, and the zero-preserving radial retraction establish continuity, compact support inside O, the unit bound and the exact lower-integral estimate. All parameter signs and integral manipulations are justified; only coeff_norm_toolkit is needed."
+    }
+  ],
+  "required_changes": []
+}
