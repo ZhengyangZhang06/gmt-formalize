@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1.cylinder_mass_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+  "depth": 4,
+  "title": "From weighted ball integrals to cylinder masses in [0,∞] (step 5 of the cylinder-monotonicity proof)",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N, P ∈ G(N,n), y ∈ ℝ^N, and q(v) := v − p_P(v) with p_P = Grassmannian.project P. Let τ, σ, ρ, E ∈ ℝ with 0 < σ ≤ ρ and μ(B_ρ(y)) < ∞, where B_r(y) = closedBall y r. Let h : ℝ^N → ℝ be measurable with 0 ≤ h ≤ 1, h(z) = 1 whenever |q(z − y)| < τ, and h(z) = 0 whenever |q(z − y)| ≥ 2τ. Suppose the real inequality (∫_{B_σ(y)} h dμ)/σ^n ≤ (∫_{B_ρ(y)} h dμ)/ρ^n + E holds (Bochner integrals). Then, in [0,∞], μ(B_σ(y) ∩ {z : |q(z − y)| < τ})/ofReal(σ)^n ≤ μ(B_ρ(y) ∩ {z : |q(z − y)| < 2τ})/ofReal(ρ)^n + ofReal(E), where ofReal = ENNReal.ofReal (so ofReal(E) = max(E,0)).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (y : Euclidean N) (h : Euclidean N → ℝ) (τ σ ρ E : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) → (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) → 0 < σ → σ ≤ ρ → μ (closedBall y ρ) ≠ ∞ → (∫ z in closedBall y σ, h z ∂μ) / σ ^ n ≤ (∫ z in closedBall y ρ, h z ∂μ) / ρ ^ n + E → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal E",
+  "lean_name": "intcpt_allard_cm_cylinder_mass_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-monotonicity-a1-6e281d5d44-a1"
+}

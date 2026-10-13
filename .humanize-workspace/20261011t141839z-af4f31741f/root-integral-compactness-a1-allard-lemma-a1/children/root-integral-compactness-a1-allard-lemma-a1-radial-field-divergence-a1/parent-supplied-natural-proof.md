@@ -1,0 +1,81 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.allard_lemma-a1`
+- Child DAG node: `root.integral_compactness-a1.allard_lemma-a1.radial_field_divergence-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the pointwise computation underlying Simon 8.3.3 and 8.3.5 (the tangential divergence of the radial fields used there), needed in step 3 of the parent proof for X_t(z) = h(z)φ(|z − y|²/t²)(z − y). Notation: p_S := Grassmannian.project S = projectionLinearMap S, a linear map whose matrix in the standard orthonormal basis is S.1; Y(w) := a(w)(w − y).
+
+1. The map w ↦ w − y is differentiable with derivative the identity. By the product rule (fderiv_fun_smul), Y is differentiable at z with DY(z) = a(z)·id + Da(z).smulRight(z − y), i.e. DY(z)[v] = a(z)v + Da(z)[v]·(z − y).
+
+2. By definition, div_S Y(z) = Matrix.trace(S.1 · jacobian Y z), and jacobian Y z is the matrix of DY(z) in the standard basis (Varifold.jacobian_eq_toMatrix). Since S.1 is the matrix of p_S in the same basis, LinearMap.trace_eq_matrix_trace and LinearMap.toMatrix_comp give div_S Y(z) = LinearMap.trace(p_S ∘ DY(z)).
+
+3. Composition: p_S ∘ DY(z) = a(z)·p_S + Da(z).smulRight(p_S(z − y)), since p_S(a(z)v + Da(z)[v](z − y)) = a(z)p_S v + Da(z)[v]·p_S(z − y) for every v.
+
+4. The trace of p_S equals the trace of its matrix S.1, which is n (Grassmannian.trace_eq); and the trace of the rank-one map v ↦ ℓ(v)u equals ℓ(u) (LinearMap.trace_smulRight). By linearity of the trace,
+ div_S Y(z) = a(z)·n + Da(z)[p_S(z − y)] = n·a(z) + Da(z)[Grassmannian.project S (z − y)]. ∎
+
+## Key steps
+
+1. Product rule: DY(z) = a(z)·id + Da(z).smulRight(z − y)
+2. div_S Y(z) = trace(S.1·jacobian) = LinearMap.trace(p_S ∘ DY(z))
+3. p_S ∘ DY(z) = a(z)p_S + Da(z).smulRight(p_S(z − y))
+4. trace p_S = n and trace(ℓ.smulRight u) = ℓ(u) give n·a(z) + Da(z)[p_S(z − y)]
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum snapshot project/GMT/Ch08/Contract.lean, workspace GMT/Ch08/Contract.lean, GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -n 'theorem exist_disjoint_covering_families|theorem image_sub_le_mul_sub_of_deriv_le|theorem monotoneOn_of_deriv_nonneg|theorem tendsto_integral_filter_of_dominated_convergence|theorem lintegral_iUnion |theorem contDiff_norm_sq|theorem le_opNorm |theorem lintegral_indicator_const |theorem withDensity_apply |theorem measure_biUnion |theorem tendsto_nhds_unique |theorem measure_ball_pos|theorem ofReal_div_of_pos|theorem one_lt_card_iff_nontrivial' mathlib/Mathlib`
+- `rg -n 'countable_of_nonempty_interior|IsPath.length_lt|sum_fiberwise_of_maps_to|exists_bound_of_continuousOn|deriv_nonpos|theorem ConnectedComponent' mathlib/Mathlib`
+- `rg -n 'theorem|def Real.smoothTransition' mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean (no derivative bound for smoothTransition exists)`
+- `grep -n 'trace_smulRight|theorem fderiv_fun_smul|theorem trace_eq_matrix_trace' mathlib Mathlib/LinearAlgebra/Trace.lean Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `grep -n '^theorem|^def|^noncomputable def' simongmt Chapter08/{Varifold,FirstVariationRiesz,FirstVariationBounds,WeightedRadialIdentity,RadialFirstVariation}.lean and Chapter04/FirstVariation.lean (tangentialDivergence, jacobian, firstVariationRieszMeasure, isFirstVariationPolarRepresentation_riesz, firstVariationNormOn_le_of_polarRepresentation, weightedCutoffMass, hasDerivAt_normalized_weightedCutoffMass, squaredRadialVectorField, radialNormalSq)`
+- `python3 transitive scan of 'import Poincare…' lines from Submission's imports (Chapter08 closure: Varifold, FirstVariation*, FirstVariationRiesz, PolarNorm, ScalarRiesz, VectorRiesz, DeformationFamily/Integral, JacobianBounds, VarifoldConvergence; no WeightedRadialIdentity, RadialFirstVariation or Chapter04)`
+- `lake env lean /tmp/allard-decomp-v1/ImportCheck.lean and ImportCheck2.lean (#check from import GMT.Ch08.Submission: hasDerivAt_normalized_weightedCutoffMass, radialNormalSq_nonneg and SimpleGraph connectivity unknown; Besicovitch.exist_disjoint_covering_families, isFirstVariationPolarRepresentation_riesz, hasDerivAt_integral_of_dominated_loc_of_deriv_le, monotoneOn_of_deriv_nonneg, tendsto_integral_filter_of_dominated_convergence, Real.smoothTransition.contDiff, Finset.sum_fiberwise_of_maps_to, Finset.exists_subset_card_eq, contDiff_norm_sq available)`
+- `grep 'helper declarations' nodes/*/rlcr-plan-v1.md (14 plans: one theorem per node, no helpers, no import changes); git show b70dd9d and fb766d9 (accepted solutions are pure insertions; an extra import was dropped)`
+- `lake env lean /tmp/allard-decomp-v1/Assembly.lean (9 sorried children + sorry-free parent assembly + comparator-form targets)`
+- `lake env lean /tmp/allard-decomp-v1/Glue.lean (sibling glue G2-G7)`
+- `lake env lean /tmp/allard-decomp-v1/C1proof.lean, C3aproof.lean, DivProof.lean (complete proofs; axioms propext, Classical.choice, Quot.sound)`
+- `python3 validate_lean_statement (verifier/lean_contract.py) on all 9 lean_statements; grep of dag.json, the run directory and all git refs for the 9 intcpt_allard_* names (0 hits)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Combinatorics/SimpleGraph/Connectivity/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Combinatorics/SimpleGraph/Paths.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-pointwise-measure-a1/rlcr-plan-v1.md`
+- `/tmp/allard-decomp-v1/Assembly.lean`
+- `/tmp/allard-decomp-v1/Glue.lean`
+- `/tmp/allard-decomp-v1/C1proof.lean`
+- `/tmp/allard-decomp-v1/C3aproof.lean`
+- `/tmp/allard-decomp-v1/DivProof.lean`
+
+The snapshot is project 63436ae6 + Mathlib 25730c7c; its Contract is byte-identical to the workspace Contract and Submission. The leaf policy (all 14 rlcr-plans) allows one theorem per node, with no helper declarations and no import changes. Submission's import closure contains SimonGMT Varifold, FirstVariation*, FirstVariationRiesz and VarifoldConvergence. It does not contain WeightedRadialIdentity, RadialFirstVariation, Chapter04 or Mathlib's SimpleGraph connectivity. So the children's proofs cite only closure lemmas: Besicovitch.exist_disjoint_covering_families with countable_of_nonempty_interior; isFirstVariationPolarRepresentation_riesz; Varifold.tangentialDivergence via LinearMap.trace_smulRight and fderiv_fun_smul; hasDerivAt_integral_of_dominated_loc_of_deriv_le; monotoneOn_of_deriv_nonneg; tendsto_integral_filter_of_dominated_convergence; Real.smoothTransition; contDiff_norm_sq; Finset.sum_fiberwise_of_maps_to and Finset.exists_subset_card_eq. Each was #checked from import GMT.Ch08.Submission. The weighted radial identity is re-derived in the child weighted_radial_monotonicity, and the 5(c) clustering is done by greedy merging. In the scratch copy with the comparator's replayed scope, all 9 statements elaborate in comparator form and pass validate_lean_statement. The parent's frozen type is proved from the 9 sorried stubs by a sorry-free assembly, and the sibling glue compiles. Three children (good_point_monotonicity, first_variation_le_sup_mul, radial_field_divergence) are fully proved with axioms propext, Classical.choice and Quot.sound only. The 9 lean_names are unused anywhere in the DAG, the run directory and the git refs.

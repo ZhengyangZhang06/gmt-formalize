@@ -1,0 +1,110 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.allard_lemma-a1`
+- Child DAG node: `root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon 8.3.5 (the weighted monotonicity identity), integrated over [σ, ρ] and combined with the error estimates of step 3 of the parent proof (Simon 8.5.10, printed (7)). ERRATUM (E2): the coefficient of δV(X) in 3.5 is '−' (SimonGMT Chapter08/WeightedRadialIdentity.lean). SimonGMT's Varifold.hasDerivAt_normalized_weightedCutoffMass is outside Submission's import closure, so the needed inequality is derived here from the definitions.
+Notation. μ := W.weight; ‖δW‖ := variationMeasure W; B_r(y) := closedBall y r; G := Grassmannian N n. For S ∈ G, p_S := Grassmannian.project S, a self-adjoint idempotent linear map, so ⟨v, p_S v⟩ = ‖p_S v‖² ≤ ‖v‖². t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖. For z ∈ ℝ^N, w := z − y.
+
+1. Preliminaries on φ. φ' is continuous, so it is bounded on the compact interval [0, A²]; let L_φ be such a bound. Only arguments s = ‖w‖²/t² ≥ 0 occur, and φ' = 0 on (A², ∞). Since φ is non-increasing and differentiable, φ' ≤ 0 everywhere: difference quotients of a non-increasing function are ≤ 0.
+
+2. Radius. Put R := (ρA + 1)/2, so ρA < R < 1. Then closedBall y R ⊆ ball y 1 ⊆ U, and μ(B_R(y)) = W.measure(B_R(y) ×ˢ univ) < ∞, because W is finite on compact subsets of U (Varifold.weight_finite_on_compact).
+
+3. Test fields. For t > 0 let a_t(z) := h(z)φ(‖w‖²/t²) and X_t(z) := a_t(z)(z − y).
+ a_t is C¹, with Da_t(z)[v] = φ(‖w‖²/t²)Dh(z)[v] + h(z)φ'(‖w‖²/t²)(2/t²)⟨w, v⟩; so X_t is C¹.
+ If ‖w‖ ≥ tA then ‖w‖²/t² ≥ A², so φ(‖w‖²/t²) = 0 and X_t(z) = 0. Hence tsupport X_t ⊆ closedBall y (tA), and ‖X_t(z)‖ ≤ tA for all z (0 ≤ h, φ ≤ 1).
+ By the sibling radial_field_divergence (applied to a_t, which is differentiable) and ⟨w, p_S w⟩ = ‖p_S w‖², for all z and S:
+  (D) div_S X_t(z) = n·a_t(z) + φ(‖w‖²/t²)·Dh(z)[p_S w] + (2/t²)h(z)φ'(‖w‖²/t²)‖p_S w‖².
+
+4. Integrals. For t ∈ (0, R/A) define
+  Ĩ(t) := ∫ φ(‖w‖²/t²)h(z) dμ(z),  J(t) := ∫ (2‖w‖²/t³)(−φ'(‖w‖²/t²))h(z) dμ(z),
+  G(t) := ∫ φ(‖w‖²/t²)·Dh(z)[p_S w] dW(z,S),  Q(t) := ∫ (2/t²)h(z)(−φ'(‖w‖²/t²))(‖w‖² − ‖p_S w‖²) dW(z,S).
+ Each integrand is measurable and bounded (the derivatives involved are continuous), and vanishes unless ‖w‖ < tA < R. So each is integrable against the finite measure μ restricted to B_R(y), respectively W.measure restricted to B_R(y) ×ˢ univ. Moreover J(t) ≥ 0 and Q(t) ≥ 0, because φ' ≤ 0, h ≥ 0 and ‖p_S w‖ ≤ ‖w‖. Since μ = (Prod.fst)_# W.measure, the integral of a function of z against μ equals the integral of the same function of z.1 against W.measure (integral_map).
+
+5. Derivative of Ĩ. Let t₀ ∈ (0, R/A); we show Ĩ has derivative J(t₀) at t₀.
+ F(t,z) := φ(‖w‖²/t²)h(z) is differentiable in t > 0, with ∂_tF(t,z) = (−2‖w‖²/t³)φ'(‖w‖²/t²)h(z).
+ Put t₁ := (t₀ + R/A)/2. For t ∈ (t₀/2, t₁), ∂_tF(t,·) vanishes outside B_R(y) and is bounded by L_φ·2(t₁A)²/(t₀/2)³. That constant on B_R(y) is a μ-integrable bound.
+ So differentiation under the integral sign (hasDerivAt_integral_of_dominated_loc_of_deriv_le) gives Ĩ'(t₀) = J(t₀).
+
+6. Weighted radial inequality. By definition W.firstVariation X_t = ∫ div_S X_t(z) dW(z,S). Integrating (D), whose three terms are integrable:
+  δW(X_t) = n·Ĩ(t) + G(t) − ∫ (2/t²)h(−φ'(‖w‖²/t²))‖p_S w‖² dW.
+ Also t·J(t) = ∫ (2/t²)h(−φ'(‖w‖²/t²))‖w‖² dW. Subtracting,
+  t·Ĩ'(t) − n·Ĩ(t) = t·J(t) − n·Ĩ(t) = G(t) − δW(X_t) + Q(t) ≥ G(t) − δW(X_t).
+ Hence t ↦ Ĩ(t)/t^n is differentiable on (0, R/A), with derivative (t·Ĩ'(t) − n·Ĩ(t))/t^{n+1} ≥ (G(t) − δW(X_t))/t^{n+1}.
+
+7. Error bounds for t ∈ [σ, ρ]. Here 0 < tA ≤ ρA < 1 and t < R/A.
+ (a) Apply the sibling first_variation_bound to X_t with K' := closedBall y (tA), which is compact and ⊆ U, and bound tA: |δW(X_t)| ≤ tA·‖δW‖(B_{tA}(y)). By (1r) and (3r) at radius tA ∈ (0,1), ‖δW‖(B_{tA}(y)) ≤ ε·μ(B_{tA}(y)) ≤ εK(tA)^n. So |δW(X_t)| ≤ A^{n+1}Kε·t^{n+1}.
+ (b) The integrand of G vanishes unless ‖w‖ < tA. There, by the gradient hypothesis and 0 ≤ φ ≤ 1, its absolute value is ≤ M·t_P(S)·tA. So, using (2r) at radius tA,
+  |G(t)| ≤ M·tA·∫_{B_{tA}(y)×G} t_P dW ≤ M·tA·ε(tA)^n = M·A^{n+1}ε·t^{n+1}.
+ (c) Therefore, by step 6, d/dt(Ĩ(t)/t^n) ≥ −A^{n+1}(M + K)ε ≥ −2^{n+1}(M + K)ε on [σ, ρ], since 0 < A ≤ 2.
+
+8. Integration. F(t) := Ĩ(t)/t^n + 2^{n+1}(M + K)ε·t is differentiable at every point of [σ, ρ] with F' ≥ 0 there. So it is non-decreasing on [σ, ρ] (monotoneOn_of_deriv_nonneg on the convex set [σ, ρ]), and
+  Ĩ(σ)/σ^n ≤ Ĩ(ρ)/ρ^n + 2^{n+1}(M + K)ε(ρ − σ) ≤ Ĩ(ρ)/ρ^n + 2^{n+1}(M + K)ερ. ∎
+
+## Key steps
+
+1. φ' ≤ 0 and φ' bounded on [0, A²]; R := (ρA + 1)/2 gives closedBall y R ⊆ U with finite mass
+2. X_t = h·φ(‖·−y‖²/t²)·(· − y) is C¹, supported in closedBall y (tA), |X_t| ≤ tA; divergence (D) via radial_field_divergence
+3. Ĩ'(t) = J(t) by differentiation under the integral sign
+4. Integrating (D): tĨ' − nĨ = G − δW(X_t) + Q ≥ G − δW(X_t)
+5. |δW(X_t)| ≤ A^{n+1}Kεt^{n+1} (first_variation_bound with (1r), (3r)); |G| ≤ MA^{n+1}εt^{n+1} (gradient hypothesis, (2r))
+6. d/dt(Ĩ/t^n) ≥ −2^{n+1}(M+K)ε; monotonicity of Ĩ(t)/t^n + 2^{n+1}(M+K)εt on [σ,ρ]
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum snapshot project/GMT/Ch08/Contract.lean, workspace GMT/Ch08/Contract.lean, GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -n 'theorem exist_disjoint_covering_families|theorem image_sub_le_mul_sub_of_deriv_le|theorem monotoneOn_of_deriv_nonneg|theorem tendsto_integral_filter_of_dominated_convergence|theorem lintegral_iUnion |theorem contDiff_norm_sq|theorem le_opNorm |theorem lintegral_indicator_const |theorem withDensity_apply |theorem measure_biUnion |theorem tendsto_nhds_unique |theorem measure_ball_pos|theorem ofReal_div_of_pos|theorem one_lt_card_iff_nontrivial' mathlib/Mathlib`
+- `rg -n 'countable_of_nonempty_interior|IsPath.length_lt|sum_fiberwise_of_maps_to|exists_bound_of_continuousOn|deriv_nonpos|theorem ConnectedComponent' mathlib/Mathlib`
+- `rg -n 'theorem|def Real.smoothTransition' mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean (no derivative bound for smoothTransition exists)`
+- `grep -n 'trace_smulRight|theorem fderiv_fun_smul|theorem trace_eq_matrix_trace' mathlib Mathlib/LinearAlgebra/Trace.lean Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `grep -n '^theorem|^def|^noncomputable def' simongmt Chapter08/{Varifold,FirstVariationRiesz,FirstVariationBounds,WeightedRadialIdentity,RadialFirstVariation}.lean and Chapter04/FirstVariation.lean (tangentialDivergence, jacobian, firstVariationRieszMeasure, isFirstVariationPolarRepresentation_riesz, firstVariationNormOn_le_of_polarRepresentation, weightedCutoffMass, hasDerivAt_normalized_weightedCutoffMass, squaredRadialVectorField, radialNormalSq)`
+- `python3 transitive scan of 'import Poincare…' lines from Submission's imports (Chapter08 closure: Varifold, FirstVariation*, FirstVariationRiesz, PolarNorm, ScalarRiesz, VectorRiesz, DeformationFamily/Integral, JacobianBounds, VarifoldConvergence; no WeightedRadialIdentity, RadialFirstVariation or Chapter04)`
+- `lake env lean /tmp/allard-decomp-v1/ImportCheck.lean and ImportCheck2.lean (#check from import GMT.Ch08.Submission: hasDerivAt_normalized_weightedCutoffMass, radialNormalSq_nonneg and SimpleGraph connectivity unknown; Besicovitch.exist_disjoint_covering_families, isFirstVariationPolarRepresentation_riesz, hasDerivAt_integral_of_dominated_loc_of_deriv_le, monotoneOn_of_deriv_nonneg, tendsto_integral_filter_of_dominated_convergence, Real.smoothTransition.contDiff, Finset.sum_fiberwise_of_maps_to, Finset.exists_subset_card_eq, contDiff_norm_sq available)`
+- `grep 'helper declarations' nodes/*/rlcr-plan-v1.md (14 plans: one theorem per node, no helpers, no import changes); git show b70dd9d and fb766d9 (accepted solutions are pure insertions; an extra import was dropped)`
+- `lake env lean /tmp/allard-decomp-v1/Assembly.lean (9 sorried children + sorry-free parent assembly + comparator-form targets)`
+- `lake env lean /tmp/allard-decomp-v1/Glue.lean (sibling glue G2-G7)`
+- `lake env lean /tmp/allard-decomp-v1/C1proof.lean, C3aproof.lean, DivProof.lean (complete proofs; axioms propext, Classical.choice, Quot.sound)`
+- `python3 validate_lean_statement (verifier/lean_contract.py) on all 9 lean_statements; grep of dag.json, the run directory and all git refs for the 9 intcpt_allard_* names (0 hits)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Combinatorics/SimpleGraph/Connectivity/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Combinatorics/SimpleGraph/Paths.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-plane-disintegration-a1-pointwise-measure-a1/rlcr-plan-v1.md`
+- `/tmp/allard-decomp-v1/Assembly.lean`
+- `/tmp/allard-decomp-v1/Glue.lean`
+- `/tmp/allard-decomp-v1/C1proof.lean`
+- `/tmp/allard-decomp-v1/C3aproof.lean`
+- `/tmp/allard-decomp-v1/DivProof.lean`
+
+The snapshot is project 63436ae6 + Mathlib 25730c7c; its Contract is byte-identical to the workspace Contract and Submission. The leaf policy (all 14 rlcr-plans) allows one theorem per node, with no helper declarations and no import changes. Submission's import closure contains SimonGMT Varifold, FirstVariation*, FirstVariationRiesz and VarifoldConvergence. It does not contain WeightedRadialIdentity, RadialFirstVariation, Chapter04 or Mathlib's SimpleGraph connectivity. So the children's proofs cite only closure lemmas: Besicovitch.exist_disjoint_covering_families with countable_of_nonempty_interior; isFirstVariationPolarRepresentation_riesz; Varifold.tangentialDivergence via LinearMap.trace_smulRight and fderiv_fun_smul; hasDerivAt_integral_of_dominated_loc_of_deriv_le; monotoneOn_of_deriv_nonneg; tendsto_integral_filter_of_dominated_convergence; Real.smoothTransition; contDiff_norm_sq; Finset.sum_fiberwise_of_maps_to and Finset.exists_subset_card_eq. Each was #checked from import GMT.Ch08.Submission. The weighted radial identity is re-derived in the child weighted_radial_monotonicity, and the 5(c) clustering is done by greedy merging. In the scratch copy with the comparator's replayed scope, all 9 statements elaborate in comparator form and pass validate_lean_statement. The parent's frozen type is proved from the 9 sorried stubs by a sorry-free assembly, and the sibling glue compiles. Three children (good_point_monotonicity, first_variation_le_sup_mul, radial_field_divergence) are fully proved with axioms propext, Classical.choice and Quot.sound only. The 9 lean_names are unused anywhere in the DAG, the run directory and the git refs.
