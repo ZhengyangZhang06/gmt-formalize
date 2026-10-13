@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e915caf241f38563ab05afca419dd8a4326fc7a92fb3e352c2987ae25f702004",
+  "git_delta": {
+    "base_commit": "5da5a06935c9b955aaede0e2e6a14cda9205bc1c",
+    "candidate_commit": "d8931494eb342c99c3d8a5fe6cbb7dea50200a1a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_ray_ftc",
+    "diff_sha256": "9bfd166da577742c05cf9096e6caca2e7178099528e9499f7dd8a36e891e33e4",
+    "source_sha256": "3de95d061da4bdf642ef1de46fc261fd8edf2eebf20608f0735aa871fd30e418",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_ray_ftc",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∀ᵐ x : Euclid n, ∀ t : ℝ, u x - u (t • x) = ∫ σ in t..1, fderiv ℝ u (σ • x) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
