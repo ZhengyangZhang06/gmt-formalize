@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.cone_graph_extension-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1",
+  "depth": 2,
+  "title": "Cone condition and height bound give a bounded Lipschitz graph containing the set",
+  "statement": "Let n, l >= 0, q a linear isometry of R^(n+l), T_0 := rotatedPlane q = q(R^n x {0}), S a subset of R^(n+l), 0 <= eps <= 1/2 and R_0 >= 0. If dist(y - z, T_0) <= eps |y - z| for all y, z in S and dist(y, T_0) <= R_0 for all y in S (dist(., T_0) = infDist to the subspace), then there is f : R^n -> R^l which is (2 sqrt(l) eps)-Lipschitz on all of R^n (LipschitzWith (Real.toNNReal (2 * sqrt l * eps)) f), satisfies |f(x)| <= R_0 for every x in R^n, and such that every y in S equals q(graphPoint x (f x)) for some x in R^n with |x| <= |y|.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (S : Set (Amb n ℓ)) (ε R₀ : ℝ), 0 ≤ ε → ε ≤ 1 / 2 → 0 ≤ R₀ → (∀ y ∈ S, ∀ z ∈ S, infDist (y - z) (rotatedPlane q : Set (Amb n ℓ)) ≤ ε * ‖y - z‖) → (∀ y ∈ S, infDist y (rotatedPlane q : Set (Amb n ℓ)) ≤ R₀) → ∃ f : Rn n → Rn ℓ, LipschitzWith (Real.toNNReal (2 * Real.sqrt ℓ * ε)) f ∧ (∀ x, ‖f x‖ ≤ R₀) ∧ ∀ y ∈ S, ∃ x : Rn n, ‖x‖ ≤ ‖y‖ ∧ q (graphPoint x (f x)) = y",
+  "lean_name": "lgc_cone_graph_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-cone-graph-extension-a1-a1"
+}

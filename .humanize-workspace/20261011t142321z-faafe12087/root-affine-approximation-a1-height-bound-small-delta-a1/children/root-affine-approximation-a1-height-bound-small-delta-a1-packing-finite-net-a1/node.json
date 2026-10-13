@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.height_bound_small_delta-a1.packing_finite_net-a1",
+  "parent_id": "root.affine_approximation-a1.height_bound_small_delta-a1",
+  "depth": 3,
+  "title": "Finite net from a maximal disjoint family of closed balls (packing count)",
+  "statement": "Let X be a metric space whose sigma-algebra contains all open sets (so closed balls are measurable), and let mu be a measure on X. Let S, E be subsets of X and r, a, b real numbers with r > 0, a > 0, b >= 0 and mu(E) <= b. Assume that for every y in S the closed ball B_r(y) = {x : dist(x,y) <= r} is contained in E and mu(B_r(y)) >= a. Then there is a finite set F contained in S with (#F) * a <= b such that every y in S satisfies dist(y, z) <= 2r for some z in F.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] (μ : Measure X) (S E : Set X) (r a b : ℝ), 0 < r → 0 < a → 0 ≤ b → μ E ≤ ENNReal.ofReal b → (∀ y ∈ S, closedBall y r ⊆ E ∧ ENNReal.ofReal a ≤ μ (closedBall y r)) → ∃ F : Finset X, (↑F : Set X) ⊆ S ∧ (F.card : ℝ) * a ≤ b ∧ ∀ y ∈ S, ∃ z ∈ F, dist y z ≤ 2 * r",
+  "lean_name": "aal_packing_finite_net",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-height-bound-small-delta-a1-packing-finite-net-a1-a1"
+}
