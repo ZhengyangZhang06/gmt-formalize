@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7c89ed4c7192c3494868c81a6c90d0be1369a5e9e5b48e3e9548e38660edebe0",
+  "git_delta": {
+    "base_commit": "5ce5dbda0976686bccb39b489dbde9d63f10af49",
+    "candidate_commit": "97e9c76a056b6d9c0e87a89777606b54ca110ac9",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "154736a1844bd764b04f8c920ef6873beb1eb1b7b0ae5f0379d4a665c5b9b665",
+    "source_sha256": "bbc6bc647f13ab271e928ddf7631308566940fd65761e86b07e5cacb01ed05a7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_decay_at_origin",
+      "statement": "TiltExcessHeightEstimate → AffineApproximationLemma → LipschitzApproximationLemma → HarmonicApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ t : ℝ, 0 < t → t ≤ 1 / 128 → ∃ δ₁ : ℝ, 0 < δ₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ S : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S = n ∧ V.tiltExcess 0 (t * (δ * ρ)) S ≤ C * t ^ 2 * V.tiltExcessStar H p δ 0 (δ * ρ) T",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
