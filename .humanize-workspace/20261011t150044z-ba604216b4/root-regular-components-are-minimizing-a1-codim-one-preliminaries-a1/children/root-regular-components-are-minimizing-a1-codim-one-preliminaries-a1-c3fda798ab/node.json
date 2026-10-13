@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.dim_le_of_embedded-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1",
+  "depth": 3,
+  "title": "A nonempty embedded d-dimensional submanifold of ℝ^P has d ≤ P",
+  "statement": "Let P, d, r ∈ ℕ and let M ⊆ ℝ^P be a nonempty d-dimensional embedded C^r submanifold in the sense of the contract (IsEmbeddedSubmanifold r d M: every y ∈ M has an open V ⊆ ℝ^d, an open W ∋ y and ψ : ℝ^d → ℝ^P, C^r and injective on V, with ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) compact for compact K ⊆ W, and Dψ(z) injective for every z ∈ V). Then d ≤ P.",
+  "lean_statement": "∀ (P d r : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → M.Nonempty → d ≤ P",
+  "lean_name": "regcomp_cop_dim_le_of_embedded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-c3fda798ab-a1"
+}
