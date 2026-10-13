@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_iff_density_zero-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes agree where the symmetric difference has density zero",
+  "statement": "Let P, n ∈ ℕ, A, B ⊆ ℝ^P Borel, x ∈ ℝ^P and r₀ > 0 with Hⁿ(A ∩ closedBall(x, r₀)) < ∞ and Hⁿ(B ∩ closedBall(x, r₀)) < ∞ (Hⁿ = μHE[n]). If Hⁿ((A∖B) ∩ closedBall(x, ρ))/ρⁿ → 0 and Hⁿ((B∖A) ∩ closedBall(x, ρ))/ρⁿ → 0 as ρ ↓ 0 (quotients in [0, ∞], ρⁿ = ENNReal.ofReal(ρ)ⁿ), then for every linear subspace Q of ℝ^P: A has approximate tangent space Q at x (HasApproximateTangentSpaceAt n A x Q) if and only if B does.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → 0 < r₀ → μHE[n] (A ∩ closedBall x r₀) ≠ ∞ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((A \\ B) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q",
+  "lean_name": "doraggt_approxTangent_iff_of_density_zero",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-c8e28598f4-a1",
+      "result_commit": "0591fd7c22a234ab017bc833decdcebac31fa572",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c5809c1d90-a1"
+}
