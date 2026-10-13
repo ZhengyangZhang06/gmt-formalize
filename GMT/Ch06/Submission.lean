@@ -941,6 +941,30 @@ theorem Submission.fiw_tb_lcc_local_isolating_form : ∀ (n N : ℕ) (ρ : ℝ) 
     rw [hψp, hφ1 p hpK, one_mul]
     exact one_pos
 
+/-- Simon Ch. 6, proof of 7.2, (2) (p. 171): every face `F` of a lattice chain
+`Pc = ∑_F β_F [[F]]` in `ℝ^N` with `β_F ≠ 0` lies in `spt Pc`, and `|β_F| ρ^{m+1} ≤ M(Pc)`.  If a
+point `x ∈ F` were outside `spt Pc`, then `Pc` would vanish on some open `W ∋ x`; the isolating
+form `ω` of `F` localized at `x` (`tsupport ω ⊆ W`, `[[G]](ω) = 0` for `G ≠ F`, `[[F]](ω) > 0`)
+would give `0 = Pc(ω) = β_F [[F]](ω) ≠ 0`.  The mass bound is
+`isoperimetric_lattice_chain_mass_ge`. -/
+theorem Submission.fiw_tb_lattice_chain_coeff : ∀ (m N : ℕ) (ρ : ℝ) (β : LatticeFaceIndex (m + 1) N → ℝ) (Pc : GeometricCurrentOn (univ : Set (Eucl N)) (m + 1)), 0 < ρ → IsLatticeChain ρ β Pc → ∀ F : LatticeFaceIndex (m + 1) N, β F ≠ 0 → latticeFace ρ F ⊆ Pc.support ∧ ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ Pc.mass := by
+  intro m N ρ β Pc hρ hPc F hF
+  refine ⟨fun x hx => ?_, Submission.isoperimetric_lattice_chain_mass_ge m N ρ β Pc hρ hPc F⟩
+  -- Otherwise `x` lies in the zero region: some open `W ∋ x` on which `Pc` vanishes.
+  by_contra hxs
+  have hxz : x ∈ Pc.zeroRegion := by
+    by_contra h
+    exact hxs ⟨mem_univ x, h⟩
+  obtain ⟨W, ⟨hWo, -, -, hWv⟩, hxW⟩ := hxz
+  -- The isolating form of `F` localized at `x` is supported in `W`, so `Pc` kills it.
+  obtain ⟨ω, hωW, hoff, hpos⟩ :=
+    Submission.fiw_tb_lcc_local_isolating_form (m + 1) N ρ F x W hρ hx hWo hxW
+  have h1 : Pc ω = 0 := hWv ω hωW
+  -- Only `F` contributes to the lattice sum, so `Pc ω = β_F [[F]](ω) ≠ 0`.
+  have h2 : Pc ω = β F * latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) (m + 1)) := by
+    rw [hPc ω, tsum_eq_single F fun G hG => by rw [hoff G hG, mul_zero]]
+  exact mul_ne_zero hF hpos.ne' (h2 ▸ h1)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
