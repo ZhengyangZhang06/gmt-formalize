@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ebd9dca32c70d7a5dbc1194b051744d594246b36fa91ffa7708c8f1436bb21ed",
+  "git_delta": {
+    "base_commit": "b6e4dd4886961a9398dccdb328bb44e264cdca4a",
+    "candidate_commit": "c6b2246df9f0ad783dbaa639094a8d1393bed1e6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_dolr_rep_hasMassDensity",
+    "diff_sha256": "8eea3bf6788d49c856a447adcbf2203ac11dba74a28c297fbbfd27da47f5b33e",
+    "source_sha256": "abf47df3041f403b952c50ee067074ac4897d7709b381656c684363c0c98ca2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_dolr_rep_hasMassDensity",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (y : Euclid P) (ρ : ℝ) (k : ℤ) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 0 < ρ → ball y ρ ⊆ U → y ∈ M → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → HasMassDensity T y (k.natAbs : ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
