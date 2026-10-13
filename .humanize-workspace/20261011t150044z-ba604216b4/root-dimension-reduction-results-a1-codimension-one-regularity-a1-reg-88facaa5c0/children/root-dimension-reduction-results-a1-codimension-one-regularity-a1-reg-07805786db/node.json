@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.sobolev_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1",
+  "depth": 6,
+  "title": "The Sobolev bound passes from mollifications to the limit (parent steps 3–4; Simon Ch. 3, 4.3 with Ch. 2, 2.5)",
+  "statement": "Let P be a natural number and let p > 0 and c ≥ 0 be real numbers. Write L^P = volume on R^P = EuclideanSpace ℝ (Fin P), |Dw| for the operator norm of the derivative and div g = trace Dg. Assume the Sobolev inequality (S): every C¹ function w : R^P → R with compact support satisfies (∫ |w|^p dL^P)^{1/p} ≤ c ∫ |Dw| dL^P. Let u : R^P → R be Lebesgue integrable with compact support, and let M ∈ R satisfy |∫ u div g dL^P| ≤ M for every C¹ compactly supported g : R^P → R^P with |g(z)| ≤ 1 for all z. Let (η_k)_{k∈N} be C¹ functions R^P → R with compact support such that η_k ≥ 0, η_k(−z) = η_k(z) for all z, and ∫ η_k dL^P = 1. Assume (η_k * u)(x) → u(x) as k → ∞ for L^P-a.e. x. Here (η * u)(x) = ∫ η(t) u(x − t) dt is Mathlib's convolution with lsmul ℝ ℝ and volume. Then (∫ |u|^p dL^P)^{1/p} ≤ c M, with Bochner integrals and the power 1/p written p⁻¹.",
+  "lean_statement": "∀ (P : ℕ) (p c : ℝ), 0 < p → 0 ≤ c → (∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → (∫ z, |w z| ^ p) ^ p⁻¹ ≤ c * ∫ z, ‖fderiv ℝ w z‖) → ∀ (u : Euclid P → ℝ) (M : ℝ), Integrable u → HasCompactSupport u → (∀ g : Euclid P → Euclid P, ContDiff ℝ 1 g → HasCompactSupport g → (∀ z, ‖g z‖ ≤ 1) → |∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)| ≤ M) → ∀ η : ℕ → Euclid P → ℝ, (∀ k, ContDiff ℝ 1 (η k)) → (∀ k, HasCompactSupport (η k)) → (∀ k z, 0 ≤ η k z) → (∀ k z, η k (-z) = η k z) → (∀ k, ∫ z, η k z = 1) → (∀ᵐ x, Tendsto (fun k => convolution (η k) u (ContinuousLinearMap.lsmul ℝ ℝ) volume x) atTop (𝓝 (u x))) → (∫ z, |u z| ^ p) ^ p⁻¹ ≤ c * M",
+  "lean_name": "codim1_rdo_dg_sp_sobolev_limit",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.mollify_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.mollify_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-07805786db-a1"
+}
