@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.locality-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1",
+  "depth": 4,
+  "title": "Locality of currents: test forms that agree near the support have the same value",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, T ∈ D_n(U) (GeometricCurrentOn U n), ψ, φ ∈ D^n(U) (TestFormOn U n), and let N ⊆ ℝ^P be an open set with spt T ⊆ N. If ψ(x) = φ(x) for every x ∈ N, then T(ψ) = T(φ).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ψ φ : TestFormOn U n) (N : Set (Eucl P)), IsOpen N → T.support ⊆ N → (∀ x ∈ N, (ψ : DifferentialForm (Eucl P) n) x = (φ : DifferentialForm (Eucl P) n) x) → T ψ = T φ",
+  "lean_name": "iwl_cr_ce_apply_eq_of_eqOn_nhds_support",
+  "depends_on": [
+    "root.isoperimetric-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-locality-a1-a1"
+}
