@@ -451,6 +451,93 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Translation bound for smooth tests** (steps 1(b)–(d) of the BV estimate): let `u` be
+integrable on `B = B_ρ(0) ⊆ ℝⁿ` with `|∫_B u(y) Df(y)(z) dy| ≤ V ‖z‖ K` for every smooth compactly
+supported `f` with `tsupport f ⊆ B` and `|f| ≤ K`.  If `g` is smooth with compact support,
+`tsupport g ⊆ B_{ρ−‖v‖}(0)` and `|g| ≤ M`, then `|∫_B u(y) (g(y + v) − g(y)) dy| ≤ V ‖v‖ M`.  By
+the fundamental theorem of calculus along `τ ↦ y + τv` and Fubini on `(0, 1] × B` (dominated by
+`K_D ‖v‖ |u|`, where `‖Dg‖ ≤ K_D`), the left side is `∫₀¹ ∫_B u(y) Dg(y + τv)(v) dy dτ`; for
+`τ ∈ (0, 1]` the inner integral is bounded by the hypothesis applied to the translate `g(· + τv)`,
+whose support stays in `B`. -/
+theorem Submission.cbr_ci_pw_bv_translate_test : ∀ (n : ℕ) (ρ V M : ℝ) (u g : Euclid n → ℝ) (v : Euclid n), IntegrableOn u (ball 0 ρ) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (K : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 ρ → (∀ y, |f y| ≤ K) → |∫ y in ball 0 ρ, u y * fderiv ℝ f y z| ≤ V * ‖z‖ * K) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (ρ - ‖v‖) → (∀ y, |g y| ≤ M) → |∫ y in ball 0 ρ, u y * (g (y + v) - g y)| ≤ V * ‖v‖ * M := by
+  intro n ρ V M u g v hu hvar hg hgc hgs hgb
+  -- Step 1: `Dg` is continuous with compact support, hence bounded by some `K_D`
+  have hgd : Differentiable ℝ g := hg.differentiable (by simp)
+  have hDc : Continuous (fderiv ℝ g) := hg.continuous_fderiv (by simp)
+  have hDcs : HasCompactSupport (fderiv ℝ g) := hgc.fderiv ℝ
+  obtain ⟨KD, hKD⟩ := hDc.bounded_above_of_compact_support hDcs
+  -- Step 2: FTC along the segment `τ ↦ y + τv`
+  have hFTC : ∀ y, g (y + v) - g y = ∫ τ in (0:ℝ)..1, fderiv ℝ g (y + τ • v) v := by
+    intro y
+    have hderiv : ∀ τ ∈ uIcc (0:ℝ) 1,
+        HasDerivAt (fun τ : ℝ => g (y + τ • v)) (fderiv ℝ g (y + τ • v) v) τ := by
+      intro τ _
+      have h1 : HasDerivAt (fun τ : ℝ => y + τ • v) v τ := by
+        simpa using ((hasDerivAt_id τ).smul_const v).const_add y
+      exact (hgd (y + τ • v)).hasFDerivAt.comp_hasDerivAt τ h1
+    have hint : IntervalIntegrable (fun τ : ℝ => fderiv ℝ g (y + τ • v) v) volume 0 1 := by
+      apply Continuous.intervalIntegrable
+      exact (hDc.comp (continuous_const.add (continuous_id.smul continuous_const))).clm_apply
+        continuous_const
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+    simp
+  -- Step 3: `Φ(τ, y) = u(y) Dg(y + τv)(v)` is integrable on `(0, 1] × B`, dominated by
+  -- `K_D ‖v‖ |u(y)|`
+  have : IsFiniteMeasure (volume.restrict (Set.uIoc (0:ℝ) 1)) :=
+    isFiniteMeasure_restrict.2 (by simp)
+  have hInt : Integrable (uncurry fun (τ : ℝ) (y : Euclid n) => u y * fderiv ℝ g (y + τ • v) v)
+      ((volume.restrict (Set.uIoc (0:ℝ) 1)).prod (volume.restrict (ball (0 : Euclid n) ρ))) := by
+    have hdom : Integrable (fun p : ℝ × Euclid n => (KD * ‖v‖) * ‖u p.2‖)
+        ((volume.restrict (Set.uIoc (0:ℝ) 1)).prod (volume.restrict (ball (0 : Euclid n) ρ))) :=
+      (hu.norm.const_mul (KD * ‖v‖)).comp_snd _
+    refine hdom.mono' ?_ (Eventually.of_forall fun p => ?_)
+    · exact (hu.aestronglyMeasurable.comp_snd).mul
+        ((hDc.comp (continuous_snd.add (continuous_fst.smul continuous_const))).clm_apply
+          continuous_const).aestronglyMeasurable
+    · simp only [uncurry, norm_mul]
+      have h1 : ‖fderiv ℝ g (p.2 + p.1 • v) v‖ ≤ KD * ‖v‖ :=
+        ((fderiv ℝ g (p.2 + p.1 • v)).le_opNorm v).trans
+          (mul_le_mul_of_nonneg_right (hKD _) (norm_nonneg v))
+      calc ‖u p.2‖ * ‖fderiv ℝ g (p.2 + p.1 • v) v‖ ≤ ‖u p.2‖ * (KD * ‖v‖) :=
+            mul_le_mul_of_nonneg_left h1 (norm_nonneg _)
+        _ = KD * ‖v‖ * ‖u p.2‖ := by ring
+  -- Step 4: Fubini, `∫_B u (g(· + v) − g) = ∫₀¹ X(τ) dτ` with `X(τ) = ∫_B u(y) Dg(y + τv)(v) dy`
+  have hLHS : ∫ y in ball (0 : Euclid n) ρ, u y * (g (y + v) - g y)
+      = ∫ τ in (0:ℝ)..1, ∫ y in ball (0 : Euclid n) ρ, u y * fderiv ℝ g (y + τ • v) v := by
+    simp_rw [hFTC, ← intervalIntegral.integral_const_mul]
+    exact (intervalIntegral_integral_swap hInt).symm
+  -- Step 5: `|X(τ)| ≤ V ‖v‖ M` for `τ ∈ (0, 1]`, by the hypothesis for `f_τ = g(· + τv)`
+  have hX : ∀ τ ∈ Set.uIoc (0:ℝ) 1,
+      ‖∫ y in ball (0 : Euclid n) ρ, u y * fderiv ℝ g (y + τ • v) v‖ ≤ V * ‖v‖ * M := by
+    intro τ hτ
+    rw [uIoc_of_le zero_le_one] at hτ
+    set f : Euclid n → ℝ := fun y => g (y + τ • v) with hf
+    have hfs : ContDiff ℝ (⊤ : ℕ∞) f := hg.comp (contDiff_id.add contDiff_const)
+    have hfc : HasCompactSupport f := hgc.comp_homeomorph (Homeomorph.addRight (τ • v))
+    have hft : tsupport f ⊆ ball 0 ρ := by
+      intro y hy
+      have : f = g ∘ (Homeomorph.addRight (τ • v)) := rfl
+      rw [this, tsupport_comp_eq_preimage] at hy
+      have hy' := mem_ball_zero_iff.1 (hgs hy)
+      simp only [Homeomorph.coe_addRight] at hy'
+      rw [mem_ball_zero_iff]
+      have h1 : ‖y‖ ≤ ‖y + τ • v‖ + ‖τ • v‖ := by
+        calc ‖y‖ = ‖(y + τ • v) - τ • v‖ := by simp
+          _ ≤ ‖y + τ • v‖ + ‖τ • v‖ := norm_sub_le _ _
+      have h2 : ‖τ • v‖ ≤ ‖v‖ := by
+        rw [norm_smul, Real.norm_eq_abs, abs_of_pos hτ.1]
+        exact mul_le_of_le_one_left (norm_nonneg _) hτ.2
+      linarith
+    have hfb : ∀ y, |f y| ≤ M := fun y => hgb _
+    have := hvar f v M hfs hfc hft hfb
+    rw [Real.norm_eq_abs]
+    simpa [hf, fderiv_comp_add_right] using this
+  -- Step 6: integrate the bound of step 5 over `(0, 1]`
+  rw [hLHS, ← Real.norm_eq_abs]
+  calc ‖∫ τ in (0:ℝ)..1, ∫ y in ball (0 : Euclid n) ρ, u y * fderiv ℝ g (y + τ • v) v‖
+      ≤ V * ‖v‖ * M * |1 - 0| := intervalIntegral.norm_integral_le_of_norm_le_const hX
+    _ = V * ‖v‖ * M := by simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
