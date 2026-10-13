@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dorag_tes_|codim1_ldr|dorag_tilt_excess",
+        "ae_differentiableAt|norm_fderiv_le_of_lipschitz|measurable_fderiv",
+        "weighted_area_formula_lipschitz_injOn|areaJacobianAt_sq_eq_det_adjoint_comp",
+        "theorem measurable_fderiv|theorem addHaar_sphere|theorem integral_withDensity_eq_integral_toReal_smul|theorem measure_compl_support",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/tilt-excess-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/tilt-excess-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-6ff8a80a21/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-6ff8a80a21/decomposition-v1.json",
+        "/tmp/tilt-excess-independent-audit/Types.lean",
+        "/tmp/tilt-excess-independent-audit/Types.log",
+        "/tmp/tilt-excess-independent-audit/Assembly.lean",
+        "/tmp/tilt-excess-independent-audit/Assembly.log",
+        "/tmp/tilt-excess-independent-audit/ReuseChecks.json"
+      ],
+      "conclusion": "Project, Mathlib and SimonGMT revisions match their pins. The snapshot contains no dorag_tes_*, codim1_ldr or dorag_tilt_excess declarations; Chapter 5 contains different, sorry-backed specifications. The cited differentiation, measurability, density-integration, sphere-nullness and area-formula tools are available. The area-formula axiom check reports only propext, Classical.choice and Quot.sound. All eight reused names have exactly one accepted owner, identical frozen and candidate types, and passing comparator/kernel records restricted to those permitted axioms; detailed evidence paths are recorded in ReuseChecks.json. Every name is bare, and every frozen type is an independently elaborating one-line proposition without implementation-dependent aliases. Fresh type and parent-assembly checks both exit 0. The assembly establishes the exact selected contract conditionally on the declared sibling and child contracts, without sorryAx or additional assumptions. Dependencies are correctly directed and acyclic, with no reliance on either tilt-excess parent. Splitting into these analytic obligations is appropriate, and their conclusions support the supplied proof of this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "proj_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the prose. Basis expansion and Cauchy–Schwarz prove (a); the parallelogram estimate proves (b); orthogonality yields the quadratic identity in (c) and annihilation gives (d). Sum parsing was independently checked. No circular dependency occurs."
+    },
+    {
+      "key": "graph_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches both weighted lower-integral inequalities. Injectivity, Lipschitz continuity, almost-everywhere differentiation, the Gram operator and determinant bounds are justified. The pinned weighted area formula supplies precisely the required measure normalization and hypotheses."
+    },
+    {
+      "key": "plane_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two cases establish every conclusion. Projection measurability justifies integral addition, and M > 0 justifies division after integrating the projection inequality. The argument remains valid when the ball has infinite measure. Only proj_algebra is required."
+    },
+    {
+      "key": "graph_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All frame, height, tangent, measurability and first-variation hypotheses appear in the type. The proof establishes the graph identity, constructs an admissible cutoff field, proves integrability, and bounds each term in the integral splitting with the stated constants. Both conclusions follow without circularity."
+    },
+    {
+      "key": "graph_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exceptional-set estimates correctly use positive multiplicity and support-nullness. The graph-area comparison and derivative-norm identity give the transfer bounds. The positive/negative-part argument proves the stated signed estimate without an extra factor, and the Lean subtraction is outside both integrals."
+    },
+    {
+      "key": "graph_weak_harmonic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adjoint supplies the coordinate map required by both dependencies. Their hypotheses are discharged explicitly. The energy estimate follows with 2e+a; the signed transfer estimate and first variation give the displayed weak-harmonic constant. The conclusions provide the normalization needed in the selected parent."
+    },
+    {
+      "key": "graph_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The graph map is injective, giving the required dimension. Projection minimality proves both pointwise height bounds; multiplicity one and graph_area control the graph contribution. Sphere-nullness justifies the open parameter ball. The separate off-graph summand and ENNReal treatment match the type exactly."
+    },
+    {
+      "key": "affine_assembly",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Componentwise choices construct the stated vector and continuous linear map with the required norm bounds. Continuity supplies integrability on bounded balls, enabling summation of squared errors and conversion to the lower integral. The proof explicitly handles k = 0 and empty balls."
+    }
+  ],
+  "required_changes": []
+}
