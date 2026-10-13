@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "531a8ecfbf04a3706e6d2a0baf8dcb817c310b9fa8e14a43c5f394be991a7054",
+  "git_delta": {
+    "base_commit": "e9e712f1d56f68a583ca6150ca2616ef7edf16a5",
+    "candidate_commit": "9c77a4f358e151a7cf5d9abdb58431a8a4619153",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_bv_smooth_ae_approx",
+    "diff_sha256": "412b54f52f6eb34ec635ceb9c264082f5164ea5db830c4aa11c9b890ebf5d819",
+    "source_sha256": "aeacbe00eaa9fc95053405ed7c77c23daba0bb8e187a175bf51f449c31624423",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_bv_smooth_ae_approx",
+      "statement": "∀ (n : ℕ) (R δ : ℝ) (g₀ : Euclid n → ℝ), 0 < δ → Measurable g₀ → (∀ x, |g₀ x| ≤ 1) → (∀ x, R ≤ ‖x‖ → g₀ x = 0) → ∃ G : ℕ → Euclid n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (G j)) ∧ (∀ j, HasCompactSupport (G j)) ∧ (∀ j, tsupport (G j) ⊆ ball 0 (R + δ)) ∧ (∀ j x, |G j x| ≤ 1) ∧ ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun j => G j x) atTop (𝓝 (g₀ x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
