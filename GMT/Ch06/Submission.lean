@@ -359,6 +359,50 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Coordinates of a Borel `k`-vector field in an isometric chart `J` of the `k`-covectors:
+`u(x) = (v(x)(J⁻¹eᵢ))ᵢ` is Borel, `‖u‖ ≤ 1`, `‖u‖ = 1` `μ`-a.e. and `v(x)(α) = ⟨Jα, u(x)⟩`. -/
+theorem Submission.smr_ufd_unit_coord_field :
+    ∀ (P k N : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k)
+      (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)),
+      (∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖) →
+      (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) →
+      (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) →
+      (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) →
+      ∃ u : Eucl P → EuclideanSpace ℝ (Fin N), Measurable u ∧ (∀ x, ‖u x‖ ≤ 1) ∧
+        (∀ᵐ x ∂μ, ‖u x‖ = 1) ∧
+        ∀ (x : Eucl P) (α : Covector (Eucl P) k), v x α = inner ℝ (J α) (u x) := by
+  intro P k N μ v J hJ hv hmeas hae
+  -- Coordinates in the chart `J`: `u(x)ᵢ = v(x)(J⁻¹eᵢ)`.
+  let u : Eucl P → EuclideanSpace ℝ (Fin N) := fun x =>
+    WithLp.toLp 2 (fun i => v x (J.symm (EuclideanSpace.single i 1)))
+  -- Pairing formula `v(x)(α) = ⟨Jα, u(x)⟩`, by expanding `Jα` in the standard basis.
+  have hpair : ∀ (x : Eucl P) (α : Covector (Eucl P) k), v x α = inner ℝ (J α) (u x) := by
+    intro x α
+    have hexp : J α = ∑ i, (J α) i • EuclideanSpace.single i (1 : ℝ) := by
+      simpa [EuclideanSpace.basisFun_apply] using
+        ((EuclideanSpace.basisFun (Fin N) ℝ).sum_repr (J α)).symm
+    conv_lhs => rw [← J.symm_apply_apply α, hexp]
+    simp [map_sum, map_smul, PiLp.inner_apply, u, mul_comm]
+  -- `‖u(x)‖ ≤ 1`: test with `α = J⁻¹u(x)`, so `‖u(x)‖² = v(x)(α) ≤ |α| = ‖u(x)‖`.
+  have hle : ∀ x, ‖u x‖ ≤ 1 := by
+    intro x
+    have h1 : ‖u x‖ ^ 2 ≤ ‖u x‖ := by
+      have := hv x (J.symm (u x))
+      rw [hpair, hJ, LinearEquiv.apply_symm_apply, real_inner_self_eq_norm_sq] at this
+      exact (le_abs_self _).trans this
+    by_contra h
+    nlinarith [norm_nonneg (u x), not_le.mp h]
+  refine ⟨u, ?_, hle, ?_, hpair⟩
+  · exact (WithLp.measurable_toLp 2 (Fin N → ℝ)).comp (measurable_pi_iff.mpr fun i => hmeas _)
+  -- `‖u(x)‖ = 1` a.e.: by Cauchy–Schwarz, `1 = v(x)(α) = ⟨Jα, u(x)⟩ ≤ |α| ‖u(x)‖ ≤ ‖u(x)‖`.
+  · filter_upwards [hae] with x ⟨α, hα, hvα⟩
+    refine le_antisymm (hle x) ?_
+    have h2 : (1 : ℝ) ≤ ‖J α‖ * ‖u x‖ := by
+      rw [← hvα, hpair]
+      exact real_inner_le_norm _ _
+    rw [← hJ] at h2
+    nlinarith [norm_nonneg (u x), covectorEuclideanNorm_nonneg α]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
