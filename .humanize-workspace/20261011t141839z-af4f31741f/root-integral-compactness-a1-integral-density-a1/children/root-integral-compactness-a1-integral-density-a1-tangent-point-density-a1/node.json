@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1",
+  "depth": 3,
+  "title": "Density of θH^n⌞M at a weighted approximate tangent point (Simon Ch. 3 Remark 1.8(2); parent step 4)",
+  "statement": "Let N, n ∈ ℕ, M ⊆ ℝ^N H^n-null-measurable, θ : ℝ^N → ℝ with θ ≥ 0 on M, x ∈ M, r₀ > 0 with θ H^n-integrable on M ∩ B̄_{r₀}(x), and P ⊆ ℝ^N a linear subspace such that M has weighted approximate tangent space P at x with respect to θ (Simon Ch. 3, 1.7: dim P = n and ∫_{η_{x,r}(M)} f(y)θ(x+ry) dH^n(y) → θ(x)∫_P f dH^n as r ↓ 0 for every f ∈ C_c(ℝ^N,ℝ), η_{x,r}(z) = r^{-1}(z−x)). Then the measure ν := (H^n⌞M) with density ofReal∘θ (so ν(B) = ∫⁻_{M∩B} ofReal θ dH^n for Borel B) has n-dimensional density θ(x) at x: ν(B̄_ρ(x))/(ω_nρ^n) → θ(x) as ρ ↓ 0.",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (P : Submodule ℝ (Euclidean N)) (r₀ : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → x ∈ M → 0 < r₀ → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P → HasDensity n (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) x (ENNReal.ofReal (θ x))",
+  "lean_name": "intcpt_id_tangent_point_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-tangent-point-density-a1-a1"
+}
