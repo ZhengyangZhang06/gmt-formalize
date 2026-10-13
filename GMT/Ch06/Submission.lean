@@ -498,6 +498,262 @@ theorem Submission.fiw_tb_tda_density : ∀ (m : ℕ) (X : GeometricCurrentOn (u
       rw [hΔ ((ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x) v]; rfl
     rw [h]; ring
   · rw [indicator_of_notMem hxM, indicator_of_notMem hxM, zero_mul]
+/-- An integer median of an integer-valued function on a set of positive finite measure (Simon
+Ch. 6, proof of 5.1, (31): the choice of `β_F`).  With `A k = F ∩ {u ≤ k}`, `μ (A k)` increases
+to `μ F = a` as `k → ∞` and decreases to `0` as `k → -∞` (continuity of `μ` from below and from
+above), so there is a least integer `β` with `μ (A β) ≥ a/2`.  Then `μ (A (β - 1)) < a/2`, and since
+`u` is integer-valued, `F ⊆ A (β - 1) ∪ (F ∩ {β ≤ u})`, which forces `μ (F ∩ {β ≤ u}) ≥ a/2`. -/
+theorem Submission.fiw_tb_tda_im_median_exists :
+    ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ),
+      MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u →
+      (∀ x, ∃ k : ℤ, u x = k) →
+      ∃ β : ℤ, ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ β}) ∧
+        ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | (β : ℝ) ≤ u x}) := by
+  intro α _ μ F a u hF ha hμF hu hint
+  -- Step 1: `A k = F ∩ {u ≤ k}` is measurable and monotone in `k`.
+  set A : ℤ → Set α := fun k => F ∩ {x | u x ≤ k}
+  have hAmeas : ∀ k, MeasurableSet (A k) := fun k => hF.inter (measurableSet_le hu measurable_const)
+  have hAmono : Monotone A := fun k l hkl x hx =>
+    ⟨hx.1, show u x ≤ (l : ℝ) from (hx.2 : u x ≤ k).trans (Int.cast_le.mpr hkl)⟩
+  have hhalf_pos : 0 < ENNReal.ofReal (a / 2) := ENNReal.ofReal_pos.mpr (by linarith)
+  have hhalf_lt : ENNReal.ofReal (a / 2) < ENNReal.ofReal a :=
+    (ENNReal.ofReal_lt_ofReal_iff ha).mpr (by linarith)
+  have hsum : ENNReal.ofReal (a / 2) + ENNReal.ofReal (a / 2) = ENNReal.ofReal a := by
+    rw [← ENNReal.ofReal_add (by linarith) (by linarith), add_halves]
+  -- Step 2: `⋃ k, A k = F`, so `μ (A k) → μ F = ofReal a` and some `μ (A k₁) > ofReal (a / 2)`.
+  have hUnion : (⋃ k, A k) = F := by
+    refine Subset.antisymm (iUnion_subset fun k => inter_subset_left) fun x hx => ?_
+    exact mem_iUnion.mpr ⟨⌈u x⌉, hx, show u x ≤ (⌈u x⌉ : ℝ) from Int.le_ceil _⟩
+  have hlim_top : Tendsto (μ ∘ A) atTop (𝓝 (ENNReal.ofReal a)) := by
+    have := tendsto_measure_iUnion_atTop (μ := μ) hAmono
+    rwa [hUnion, hμF] at this
+  obtain ⟨k₁, hk₁⟩ := (hlim_top.eventually (lt_mem_nhds hhalf_lt)).exists
+  -- Step 3: `⋂ j, A (-j) = ∅`, so `μ (A (-j)) → 0` and some `μ (A (-j₀)) < ofReal (a / 2)`.
+  have hBanti : Antitone fun j : ℕ => A (-(j : ℤ)) :=
+    fun j j' hjj' => hAmono (neg_le_neg (Int.ofNat_le.mpr hjj'))
+  have hInter : (⋂ j : ℕ, A (-(j : ℤ))) = ∅ := by
+    refine eq_empty_of_forall_notMem fun x hx => ?_
+    have hx' : u x ≤ ((-((1 - ⌊u x⌋).toNat : ℤ) : ℤ) : ℝ) :=
+      (mem_iInter.mp hx (1 - ⌊u x⌋).toNat).2
+    have hj : -((1 - ⌊u x⌋).toNat : ℤ) < ⌊u x⌋ := by
+      have := Int.self_le_toNat (1 - ⌊u x⌋)
+      omega
+    exact absurd hx' (not_le.mpr ((Int.cast_lt.mpr hj).trans_le (Int.floor_le _)))
+  have hlim_bot : Tendsto (μ ∘ fun j : ℕ => A (-(j : ℤ))) atTop (𝓝 0) := by
+    have := tendsto_measure_iInter_atTop (μ := μ) (fun j => (hAmeas _).nullMeasurableSet) hBanti
+      ⟨0, ne_top_of_le_ne_top (hμF ▸ ENNReal.ofReal_ne_top) (measure_mono inter_subset_left)⟩
+    rwa [hInter, measure_empty] at this
+  obtain ⟨j₀, hj₀⟩ := (hlim_bot.eventually (gt_mem_nhds hhalf_pos)).exists
+  -- Step 4: `β` is the least integer with `ofReal (a / 2) ≤ μ (A β)`; the set of such integers
+  -- contains `k₁` and is bounded below by `-j₀`.
+  obtain ⟨β, hβK, hβmin⟩ := Int.exists_least_of_bdd
+    (P := fun k => ENNReal.ofReal (a / 2) ≤ μ (A k))
+    ⟨-(j₀ : ℤ), fun k hk => not_lt.mp fun hlt =>
+      lt_irrefl _ ((hk.trans (measure_mono (hAmono hlt.le))).trans_lt hj₀)⟩
+    ⟨k₁, hk₁.le⟩
+  -- Step 5: the first inequality is `β ∈ K`.
+  refine ⟨β, hβK, ?_⟩
+  -- Step 6: `μ (A (β - 1)) < ofReal (a / 2)` by minimality, and `F ⊆ A (β - 1) ∪ (F ∩ {β ≤ u})`
+  -- as `u` is integer-valued; subadditivity and `a / 2 + a / 2 = a` give the second inequality.
+  have hβ1 : μ (A (β - 1)) < ENNReal.ofReal (a / 2) := by
+    by_contra h
+    have := hβmin _ (not_lt.mp h)
+    omega
+  have hcover : F ⊆ A (β - 1) ∪ (F ∩ {x | (β : ℝ) ≤ u x}) := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hint x
+    rcases le_or_gt k (β - 1) with hkb | hkb
+    · exact Or.inl ⟨hx, show u x ≤ ((β - 1 : ℤ) : ℝ) by rw [hk]; exact_mod_cast hkb⟩
+    · exact Or.inr ⟨hx, show (β : ℝ) ≤ u x by rw [hk]; exact_mod_cast (show β ≤ k by omega)⟩
+  by_contra hlt
+  have h1 : μ F ≤ μ (A (β - 1)) + μ (F ∩ {x | (β : ℝ) ≤ u x}) :=
+    (measure_mono hcover).trans (measure_union_le _ _)
+  have h2 := ENNReal.add_lt_add hβ1 (not_le.mp hlt)
+  rw [hsum, ← hμF] at h2
+  exact lt_irrefl _ (h1.trans_lt h2)
+/-- **Size and support bounds for a median** (Simon Ch. 6, 5.1, (31) and (35)).  Let `c` be a
+median of a measurable `u` on a measurable `F`: both `F ∩ {u ≤ c}` and `F ∩ {c ≤ u}` have measure
+at least `a / 2`, where `a > 0`.  Then `|c| a ≤ 2 ∫_F |u| dμ`, and if `c ≠ 0` then `u` is not
+`μ`-a.e. zero on `F`.  On the half-measure set `S = F ∩ {c ≤ u}` (if `c ≥ 0`) or
+`S = F ∩ {u ≤ c}` (if `c < 0`) one has `|c| ≤ |u|`, and `u ≠ 0` when `c ≠ 0`. -/
+theorem Submission.fiw_tb_tda_im_median_bounds : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → Measurable u → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c}) → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c ≤ u x}) → ENNReal.ofReal (|c| * a) ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ ∧ (c ≠ 0 → μ (F ∩ {x | u x ≠ 0}) ≠ 0) := by
+  intro α _ μ F a c u hF ha hu hle hge
+  -- A measurable `S ⊆ F` with `a / 2 ≤ μ S` on which `|c| ≤ |u|`, and `u ≠ 0` if `c ≠ 0`.
+  obtain ⟨S, hSm, hSF, hSμ, hSabs, hSne⟩ : ∃ S : Set α, MeasurableSet S ∧ S ⊆ F ∧
+      ENNReal.ofReal (a / 2) ≤ μ S ∧ (∀ x ∈ S, |c| ≤ |u x|) ∧ (c ≠ 0 → ∀ x ∈ S, u x ≠ 0) := by
+    rcases le_or_gt 0 c with hc | hc
+    · refine ⟨F ∩ {x | c ≤ u x}, hF.inter (measurableSet_le measurable_const hu),
+        inter_subset_left, hge, fun x hx => ?_, fun hc0 x hx => ?_⟩
+      · rw [abs_of_nonneg hc]
+        exact (show c ≤ u x from hx.2).trans (le_abs_self _)
+      · exact ((lt_of_le_of_ne hc (Ne.symm hc0)).trans_le (show c ≤ u x from hx.2)).ne'
+    · refine ⟨F ∩ {x | u x ≤ c}, hF.inter (measurableSet_le hu measurable_const),
+        inter_subset_left, hle, fun x hx => ?_, fun _ x hx => ?_⟩
+      · rw [abs_of_neg hc]
+        exact (neg_le_neg (show u x ≤ c from hx.2)).trans (neg_le_abs _)
+      · exact ((show u x ≤ c from hx.2).trans_lt hc).ne
+  refine ⟨?_, fun hc0 hnull => ?_⟩
+  · -- (M1) `|c| (a / 2) ≤ |c| μ(S) = ∫_S |c| ≤ ∫_S |u| ≤ ∫_F |u|`; multiply by `2`.
+    have hS : ENNReal.ofReal |c| * ENNReal.ofReal (a / 2) ≤ ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ :=
+      calc ENNReal.ofReal |c| * ENNReal.ofReal (a / 2) ≤ ENNReal.ofReal |c| * μ S := by gcongr
+        _ = ∫⁻ _ in S, ENNReal.ofReal |c| ∂μ := (setLIntegral_const S _).symm
+        _ ≤ ∫⁻ x in S, ENNReal.ofReal |u x| ∂μ :=
+          setLIntegral_mono' hSm fun x hx => ENNReal.ofReal_le_ofReal (hSabs x hx)
+        _ ≤ ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ := lintegral_mono_set hSF
+    calc ENNReal.ofReal (|c| * a) = 2 * (ENNReal.ofReal |c| * ENNReal.ofReal (a / 2)) := by
+          rw [← ENNReal.ofReal_mul (abs_nonneg c), ← ENNReal.ofReal_ofNat 2,
+            ← ENNReal.ofReal_mul zero_le_two]
+          congr 1
+          ring
+      _ ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ := by gcongr
+  · -- (M2) `S ⊆ F ∩ {u ≠ 0}` would be null, but `0 < ofReal (a / 2) ≤ μ S`.
+    have hSsub : S ⊆ F ∩ {x | u x ≠ 0} := fun x hx => ⟨hSF hx, hSne hc0 x hx⟩
+    have hS0 : μ S = 0 := measure_mono_null hSsub hnull
+    have hpos : 0 < ENNReal.ofReal (a / 2) := ENNReal.ofReal_pos.mpr (half_pos ha)
+    exact (hpos.trans_le (hSμ.trans_eq hS0)).ne rfl
+/-- Median minimization: if `c₀` is a median of `u` on `F` (each of `F ∩ {u ≤ c₀}` and
+`F ∩ {u ≥ c₀}` has measure at least `a / 2`, where `μ F = a`), then `c₀` minimizes
+`c ↦ ∫_F |u - c| dμ`. -/
+theorem Submission.fiw_tb_tda_im_median_minimizes :
+    ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c₀ : ℝ) (u : α → ℝ),
+      MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ →
+      ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c₀}) →
+      ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c₀ ≤ u x}) →
+      ∀ c : ℝ,
+        ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ ≤ ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ := by
+  intro α _ μ F a c₀ u hF ha hμF hu _ hle hge c
+  -- (P2)–(P3): if `μ (F ∩ S) ≥ a / 2`, then `μ (F \ S) = a - μ (F ∩ S) ≤ a / 2 ≤ μ (F ∩ S)`.
+  have half : ∀ S : Set α, MeasurableSet S → ENNReal.ofReal (a / 2) ≤ μ (F ∩ S) →
+      μ (F \ S) ≤ μ (F ∩ S) := by
+    intro S hS hS2
+    have ha2 : (0 : ℝ) ≤ a / 2 := by linarith
+    have hfin : μ (F ∩ S) ≠ ∞ := ne_top_of_le_ne_top (by rw [hμF]; exact ENNReal.ofReal_ne_top)
+      (measure_mono inter_subset_left)
+    have hsum : μ (F ∩ S) + μ (F \ S) ≤ μ (F ∩ S) + ENNReal.ofReal (a / 2) :=
+      calc μ (F ∩ S) + μ (F \ S) = μ F := measure_inter_add_sdiff F hS
+        _ = ENNReal.ofReal (a / 2) + ENNReal.ofReal (a / 2) := by
+          rw [hμF, ← ENNReal.ofReal_add ha2 ha2, add_halves]
+        _ ≤ μ (F ∩ S) + ENNReal.ofReal (a / 2) := by gcongr
+    exact ((ENNReal.add_le_add_iff_left hfin).1 hsum).trans hS2
+  -- Step 1 (comparison): for `d ≥ 0`, if `|u - c₀| + d ≤ |u - c|` on `S`, `|u - c₀| - d ≤ |u - c|`
+  -- off `S` and `μ (F \ S) ≤ μ (F ∩ S)`, integrate over `F ∩ S` and `F \ S`.
+  have key : ∀ (S : Set α) (d : ℝ), MeasurableSet S → 0 ≤ d → μ (F \ S) ≤ μ (F ∩ S) →
+      (∀ x ∈ S, |u x - c₀| + d ≤ |u x - c|) → (∀ x ∉ S, |u x - c₀| - d ≤ |u x - c|) →
+      ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ ≤ ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ := by
+    intro S d hS hd hμS hin hout
+    have hin' : ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ + ENNReal.ofReal d * μ (F ∩ S) ≤
+        ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c| ∂μ :=
+      calc ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ + ENNReal.ofReal d * μ (F ∩ S)
+          = ∫⁻ x in F ∩ S, (ENNReal.ofReal |u x - c₀| + ENNReal.ofReal d) ∂μ := by
+            rw [lintegral_add_right _ measurable_const, setLIntegral_const]
+        _ ≤ ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c| ∂μ :=
+          setLIntegral_mono' (hF.inter hS) fun x hx => by
+            rw [← ENNReal.ofReal_add (abs_nonneg _) hd]
+            exact ENNReal.ofReal_le_ofReal (hin x hx.2)
+    have hout' : ∫⁻ x in F \ S, ENNReal.ofReal |u x - c₀| ∂μ ≤
+        ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F ∩ S) :=
+      calc ∫⁻ x in F \ S, ENNReal.ofReal |u x - c₀| ∂μ
+          ≤ ∫⁻ x in F \ S, (ENNReal.ofReal |u x - c| + ENNReal.ofReal d) ∂μ :=
+            setLIntegral_mono' (hF.diff hS) fun x hx =>
+              (ENNReal.ofReal_le_ofReal (by linarith [hout x hx.2])).trans ENNReal.ofReal_add_le
+        _ = ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F \ S) := by
+            rw [lintegral_add_right _ measurable_const, setLIntegral_const]
+        _ ≤ ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F ∩ S) := by
+            gcongr
+    calc ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ
+        = ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ +
+            ∫⁻ x in F \ S, ENNReal.ofReal |u x - c₀| ∂μ :=
+          (lintegral_inter_add_sdiff (fun x => ENNReal.ofReal |u x - c₀|) F hS).symm
+      _ ≤ ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ +
+            (∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F ∩ S)) := by
+          gcongr
+      _ = (∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ + ENNReal.ofReal d * μ (F ∩ S)) +
+            ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ := by
+          ring
+      _ ≤ ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c| ∂μ +
+            ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ := by
+          gcongr
+      _ = ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ :=
+          lintegral_inter_add_sdiff (fun x => ENNReal.ofReal |u x - c|) F hS
+  rcases le_or_gt c₀ c with hc | hc
+  · -- Step 2: `c₀ ≤ c`; take `S = {u ≤ c₀}` and `d = c - c₀`.
+    have hS : MeasurableSet {x | u x ≤ c₀} := measurableSet_le hu measurable_const
+    refine key _ (c - c₀) hS (by linarith) (half _ hS hle) (fun x hx => ?_) (fun x hx => ?_)
+    · have hx : u x ≤ c₀ := hx
+      rw [abs_of_nonpos (show u x - c₀ ≤ 0 by linarith),
+        abs_of_nonpos (show u x - c ≤ 0 by linarith)]
+      linarith
+    · have hx : c₀ < u x := not_le.1 hx
+      rw [abs_of_pos (show 0 < u x - c₀ by linarith)]
+      linarith [le_abs_self (u x - c)]
+  · -- Step 3: `c < c₀`; take `S = {c₀ ≤ u}` and `d = c₀ - c`.
+    have hS : MeasurableSet {x | c₀ ≤ u x} := measurableSet_le measurable_const hu
+    refine key _ (c₀ - c) hS (by linarith) (half _ hS hge) (fun x hx => ?_) (fun x hx => ?_)
+    · have hx : c₀ ≤ u x := hx
+      rw [abs_of_nonneg (show 0 ≤ u x - c₀ by linarith),
+        abs_of_nonneg (show 0 ≤ u x - c by linarith)]
+      linarith
+    · have hx : u x < c₀ := not_le.1 hx
+      rw [abs_of_neg (show u x - c₀ < 0 by linarith)]
+      linarith [neg_le_abs (u x - c)]
+/-- **Mean deviation bound** (the comparison of `u` with its mean `ū = a⁻¹ ∫_F u dμ` on `F`,
+`μ(F) = a`, in the integer-median step that feeds the Poincaré inequality, Simon Ch. 6, (32)).
+For each `x`, `u(x) − ū = a⁻¹ ∫_F (u(x) − u(y)) dμ(y)`, so `|u(x) − ū| ≤ a⁻¹ ∫_F |u(x) − u(y)| dμ(y)`;
+integrating over `x ∈ F` gives `∫_F |u − ū| dμ ≤ a⁻¹ ∫_F ∫_F |u(x) − u(y)| dμ(y) dμ(x)`. -/
+theorem Submission.fiw_tb_tda_im_mean_deviation : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ → ∫⁻ x in F, ENNReal.ofReal |u x - a⁻¹ * ∫ y in F, u y ∂μ| ∂μ ≤ ENNReal.ofReal a⁻¹ * ∫⁻ x in F, ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ := by
+  intro α _ μ F a u _ ha hμF _ hint
+  -- `μ(F) = a` is finite and its real value is `a`.
+  have hfin : μ F ≠ ∞ := by rw [hμF]; exact ENNReal.ofReal_ne_top
+  have hreal : μ.real F = a := by rw [measureReal_def, hμF, ENNReal.toReal_ofReal ha.le]
+  have hainv : 0 < a⁻¹ := inv_pos.mpr ha
+  -- Pointwise bound `|u(x) − ū| ≤ a⁻¹ ∫_F |u(x) − u(y)| dμ(y)`, read in `ℝ≥0∞`.
+  have hpt : ∀ x, ENNReal.ofReal |u x - a⁻¹ * ∫ y in F, u y ∂μ| ≤
+      ENNReal.ofReal a⁻¹ * ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ := by
+    intro x
+    -- `y ↦ u(x) − u(y)` is integrable on `F`: a constant minus `u`.
+    have hc : IntegrableOn (fun _ : α => u x) F μ := integrableOn_const hfin
+    have hsub : IntegrableOn (fun y => u x - u y) F μ := hc.sub hint
+    -- `a⁻¹ ∫_F (u(x) − u(y)) dμ(y) = a⁻¹ (a u(x) − ∫_F u dμ) = u(x) − ū`.
+    have hmean : u x - a⁻¹ * ∫ y in F, u y ∂μ = a⁻¹ * ∫ y in F, (u x - u y) ∂μ := by
+      rw [integral_sub hc hint, setIntegral_const, hreal, smul_eq_mul, mul_sub,
+        ← mul_assoc, inv_mul_cancel₀ ha.ne', one_mul]
+    -- `|∫_F f| ≤ ∫_F |f|` and `a⁻¹ > 0`.
+    have habs : |u x - a⁻¹ * ∫ y in F, u y ∂μ| ≤ a⁻¹ * ∫ y in F, |u x - u y| ∂μ := by
+      rw [hmean, abs_mul, abs_of_pos hainv]
+      exact mul_le_mul_of_nonneg_left abs_integral_le_integral_abs hainv.le
+    calc ENNReal.ofReal |u x - a⁻¹ * ∫ y in F, u y ∂μ|
+        ≤ ENNReal.ofReal (a⁻¹ * ∫ y in F, |u x - u y| ∂μ) := ENNReal.ofReal_le_ofReal habs
+      _ = ENNReal.ofReal a⁻¹ * ENNReal.ofReal (∫ y in F, |u x - u y| ∂μ) :=
+          ENNReal.ofReal_mul hainv.le
+      _ = ENNReal.ofReal a⁻¹ * ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ := by
+          rw [ofReal_integral_eq_lintegral_ofReal hsub.abs
+            (Eventually.of_forall fun y => abs_nonneg _)]
+  -- Integrate over `x ∈ F` and pull out the finite constant `ofReal a⁻¹`.
+  calc ∫⁻ x in F, ENNReal.ofReal |u x - a⁻¹ * ∫ y in F, u y ∂μ| ∂μ
+      ≤ ∫⁻ x in F, ENNReal.ofReal a⁻¹ * ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ :=
+        lintegral_mono hpt
+    _ = ENNReal.ofReal a⁻¹ * ∫⁻ x in F, ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+
+/-- **Integer medians** (Simon Ch. 6, proof of 5.1, (31) and (35), on an arbitrary measure
+space).  If `μ(F) = a > 0` and `u` is measurable, integer-valued and integrable on `F`, some
+integer `β` has `|β| a ≤ 2 ∫_F |u|`, `β ≠ 0 → μ(F ∩ {u ≠ 0}) ≠ 0` and
+`∫_F |u - β| ≤ a⁻¹ ∫_F ∫_F |u(x) - u(y)| dμ(y) dμ(x)`.  Take an integer median `β`, i.e.
+`μ(F ∩ {u ≤ β}) ≥ a/2` and `μ(F ∩ {u ≥ β}) ≥ a/2` (`fiw_tb_tda_im_median_exists`).  The first
+two estimates hold for every median (`fiw_tb_tda_im_median_bounds`).  A median minimizes
+`c ↦ ∫_F |u - c|` (`fiw_tb_tda_im_median_minimizes`), so comparing with the mean
+`c = a⁻¹ ∫_F u` (`fiw_tb_tda_im_mean_deviation`) gives the third. -/
+theorem Submission.fiw_tb_tda_integer_median : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → (∀ x, ∃ k : ℤ, u x = k) → IntegrableOn u F μ → ∃ β : ℤ, ENNReal.ofReal (|(β : ℝ)| * a) ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ ∧ (β ≠ 0 → μ (F ∩ {x | u x ≠ 0}) ≠ 0) ∧ ∫⁻ x in F, ENNReal.ofReal |u x - β| ∂μ ≤ ENNReal.ofReal a⁻¹ * ∫⁻ x in F, ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ := by
+  intro α _ μ F a u hF ha hμF hu hZ hui
+  -- An integer median: `μ(F ∩ {u ≤ β}) ≥ a/2` and `μ(F ∩ {u ≥ β}) ≥ a/2`.
+  obtain ⟨β, hle, hge⟩ := Submission.fiw_tb_tda_im_median_exists μ F a u hF ha hμF hu hZ
+  -- (M1) and (M2) hold for every real median `c = β`.
+  obtain ⟨hM1, hM2⟩ := Submission.fiw_tb_tda_im_median_bounds μ F a β u hF ha hu hle hge
+  refine ⟨β, hM1, fun hβ => hM2 (Int.cast_ne_zero.mpr hβ), ?_⟩
+  -- (M4): `∫_F |u - β| ≤ ∫_F |u - ū|` for the mean `ū = a⁻¹ ∫_F u`, then the mean deviation bound.
+  exact (Submission.fiw_tb_tda_im_median_minimizes μ F a β u hF ha hμF hu hui hle hge
+    (a⁻¹ * ∫ y in F, u y ∂μ)).trans
+    (Submission.fiw_tb_tda_im_mean_deviation μ F a u hF ha hμF hu hui)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
