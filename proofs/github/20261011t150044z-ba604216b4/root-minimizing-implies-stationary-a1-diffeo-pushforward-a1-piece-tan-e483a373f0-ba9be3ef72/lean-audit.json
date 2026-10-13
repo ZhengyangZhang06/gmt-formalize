@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cefee22e42f9698ae075afa6eeca0e1bbd220f19ee7decac8ec673fd221b7c7a",
+  "git_delta": {
+    "base_commit": "5693466c1da5308f483b94a73216658bdc4bf4c1",
+    "candidate_commit": "bed5b8494a351297a2be8f0a0b63079868d53507",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ptd_piece_image_measurable_ae_pullback",
+    "diff_sha256": "eab57c233a3ac9cc6aeef86cf6b31969d0445254fa8ee581b197111112188aff",
+    "source_sha256": "992bf72cc3b6ca59a007cb698be6012c434c734eafa13ed6be1ae36d6d0b3600",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ptd_piece_image_measurable_ae_pullback",
+      "statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → MeasurableSet (F '' B) ∧ ∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) → ∀ᵐ b ∂(volume.restrict B), p (F b)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
