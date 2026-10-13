@@ -5802,6 +5802,184 @@ theorem dohr_eb_schauder_interior_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α
             (Real.rpow_nonneg (norm_nonneg _) _)
           exact le_add_of_nonneg_left (inv_nonneg.2 hR.le)
 
+/-- **Higher interior regularity for linear elliptic systems** (node `linear_higher_regularity` of
+the elliptic bootstrap for Simon Ch. 5, Theorem 7.1; [GM] Theorem 5.20).  Let `a` be Legendre
+elliptic with constant `lam > 0` on the open set `U`, let the scalar components `x ↦ a x P Q` and
+`x ↦ Φ x P` be `C^{m,α}_loc` on `U` (`m ≥ 1`, `0 < α < 1`), and let `v ∈ C^{m,α}_loc(U)` be a weak
+solution of `div (a Dv) = div Φ`.  Then `v ∈ C^{m+1,α}_loc(U)`.  Induction on `m`, for all data:
+* `m = 1`: near `xb ∈ U` the difference quotients `w_d` of `v` in a coordinate direction solve the
+  same system with right side `Ψ_d` (`dohr_eb_lhr_dq_weak_equation`), with bounds uniform in `d`
+  (`dohr_eb_lhr_dq_uniform_bounds`, `dohr_eb_lhr_coeff_uniform_bounds`); the Schauder estimate
+  (`dohr_eb_schauder_interior_estimate`) bounds `Dw_d` in `C^{0,α}` uniformly, the limit `d → 0`
+  (`dohr_eb_difference_quotient_limit`) gives `D_k v ∈ C^{1,α}` near `xb`, and covering
+  (`dohr_eb_lhr_cover_holder_one`) and `dohr_eb_holder_succ_iff_fderiv` give `v ∈ C^{2,α}_loc`.
+* `m → m + 1`: `D_s v` solves the system with right side `Ψ = D_s Φ - (D_s a)[Dv]`
+  (`dohr_eb_lhr_differentiated_system`); expanding `Dv` in a basis of `L(ℝⁿ, ℝ^ℓ)` shows that the
+  components of `Ψ` are `C^{m,α}_loc` (`dohr_eb_holder_bilinear`, `dohr_eb_lhr_holder_loc_sub_sum`),
+  so the order-`m` case and `dohr_eb_holder_succ_iff_fderiv` conclude. -/
+theorem dohr_eb_linear_higher_regularity : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ m : ℕ, 1 ≤ m → ∀ (U : Set (Rn n)) (lam : ℝ) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ), IsOpen U → 0 < lam → (∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ m (fun x => a x P Q) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => a z P Q) x - iteratedFDeriv ℝ m (fun z => a z P Q) y‖ ≤ C * ‖x - y‖ ^ α) → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ m (fun x => Φ x P) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => Φ z P) x - iteratedFDeriv ℝ m (fun z => Φ z P) y‖ ≤ C * ‖x - y‖ ^ α) → IsLocallyHolderCkα m α v U → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → IsLocallyHolderCkα (m + 1) α v U := by
+  intro n ℓ hn α hα hα1 m hm
+  induction m, hm using Nat.le_induction with
+  | base =>
+    -- Base case `m = 1` (steps 1–6 of the proof).
+    intro U lam a Φ v hU hlam hell ha hΦ hv hweak
+    have ha1 : ∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U ∧
+        ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+          ‖iteratedFDeriv ℝ 1 (fun z => a z P Q) x - iteratedFDeriv ℝ 1 (fun z => a z P Q) y‖ ≤
+            C * ‖x - y‖ ^ α := fun P Q => ⟨by exact_mod_cast (ha P Q).1, (ha P Q).2⟩
+    have hΦ1 : ∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U ∧
+        ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+          ‖iteratedFDeriv ℝ 1 (fun z => Φ z P) x - iteratedFDeriv ℝ 1 (fun z => Φ z P) y‖ ≤
+            C * ‖x - y‖ ^ α := fun P => ⟨by exact_mod_cast (hΦ P).1, (hΦ P).2⟩
+    have hvC1 : ContDiffOn ℝ 1 v U := by exact_mod_cast hv.1
+    -- Step 6: it suffices that every partial derivative `D_k v` is `C^{1,α}_loc` on `U`.
+    refine (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) 1 α v U hU).2.2
+      ⟨hvC1, fun k => ?_⟩
+    -- Steps 1–5: `D_k v` is `C^{1,α}` on a ball around every point of `U`.
+    have hloc : ∀ xb ∈ U, ∃ R : ℝ, 0 < R ∧ ball xb R ⊆ U ∧
+        ContDiffOn ℝ 1 (fun x => fderiv ℝ v x (EuclideanSpace.single k (1 : ℝ))) (ball xb R) ∧
+        ∃ C : ℝ, ∀ y ∈ ball xb R, ∀ z ∈ ball xb R,
+          ‖fderiv ℝ (fun x => fderiv ℝ v x (EuclideanSpace.single k (1 : ℝ))) y -
+            fderiv ℝ (fun x => fderiv ℝ v x (EuclideanSpace.single k (1 : ℝ))) z‖ ≤
+            C * ‖y - z‖ ^ α := by
+      intro xb hxb
+      -- Step 1: `closedBall xb (4 * R) ⊆ U`.
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU xb hxb
+      obtain ⟨R, hR, hball⟩ : ∃ R : ℝ, 0 < R ∧ closedBall xb (4 * R) ⊆ U :=
+        ⟨ε / 8, by positivity, (closedBall_subset_ball (by linarith)).trans hεU⟩
+      have h2R : ball xb (2 * R) ⊆ closedBall xb (4 * R) :=
+        ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))
+      have hR2R : ball xb R ⊆ ball xb (2 * R) := ball_subset_ball (by linarith)
+      have he : ‖(EuclideanSpace.single k (1 : ℝ) : Rn n)‖ = 1 := by simp
+      -- Steps 2 and 4: bounds on the difference quotients `w_d` and the data, uniform in `d`.
+      obtain ⟨M₁, hM₁⟩ := Submission.dohr_eb_lhr_dq_uniform_bounds n ℓ α U a Φ v xb
+        (EuclideanSpace.single k (1 : ℝ)) R hα hα1.le hU hR hball he.le ha1 hΦ1 hv
+      obtain ⟨M₂, hM₂⟩ := Submission.dohr_eb_lhr_coeff_uniform_bounds n ℓ α U
+        (closedBall xb (4 * R)) a hα hα1.le hU (isCompact_closedBall _ _) (convex_closedBall _ _)
+        hball fun P Q => (ha1 P Q).1
+      -- Step 4: one Schauder constant `C` for the data `(lam, max M₁ M₂)` on balls of radius `2R`.
+      obtain ⟨C, hC⟩ := Submission.dohr_eb_schauder_interior_estimate n ℓ hn α hα hα1 lam
+        (max M₁ M₂) (2 * R) hlam (by positivity)
+      have hdq : ∀ d : ℝ, d ≠ 0 → |d| < R →
+          (∀ x ∈ ball xb R, ‖d⁻¹ • (fderiv ℝ v (x + d • EuclideanSpace.single k (1 : ℝ)) -
+            fderiv ℝ v x)‖ ≤ C) ∧
+          ∀ x ∈ ball xb R, ∀ y ∈ ball xb R,
+            ‖d⁻¹ • (fderiv ℝ v (x + d • EuclideanSpace.single k (1 : ℝ)) - fderiv ℝ v x) -
+              d⁻¹ • (fderiv ℝ v (y + d • EuclideanSpace.single k (1 : ℝ)) - fderiv ℝ v y)‖ ≤
+              C * ‖x - y‖ ^ α := by
+        intro d hd hdR
+        obtain ⟨hw, hwC1, hwD, hwH, hΨH⟩ := hM₁ d hd hdR
+        -- Step 3: `w_d` is a weak solution on `ball xb (2 * R)` with right side `Ψ`.
+        obtain ⟨Ψ, hΨ, hΨweak⟩ := Submission.dohr_eb_lhr_dq_weak_equation n ℓ U a Φ v xb
+          (EuclideanSpace.single k (1 : ℝ)) R d hU hR hball he.le hd hdR
+          (fun P Q => (ha1 P Q).1.continuousOn) (fun P => (hΦ1 P).1.continuousOn) hvC1 hweak
+        -- Step 4: the Schauder estimate for `w_d` on `ball xb (2 * R)`.
+        obtain ⟨hS1, hS2⟩ := hC xb a Ψ
+          (fun z => d⁻¹ • (v (z + d • EuclideanSpace.single k (1 : ℝ)) - v z))
+          (fun x hx P => hell x (hball (h2R hx)) P)
+          (fun x hx P Q => (hM₂ x (h2R hx) x (h2R hx) P Q).1.trans
+            (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_right _ _)
+              (norm_nonneg _)) (norm_nonneg _)))
+          (fun x hx y hy P Q => (hM₂ x (h2R hx) y (h2R hy) P Q).2.trans
+            (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+              (le_max_right _ _) (Real.rpow_nonneg (norm_nonneg _) _)) (norm_nonneg _))
+              (norm_nonneg _)))
+          (fun x hx y hy P => by
+            rw [hΨ x P, hΨ y P]
+            exact (hΨH x hx y hy P).trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+              (le_max_left _ _) (Real.rpow_nonneg (norm_nonneg _) _)) (norm_nonneg _)))
+          (fun x hx => (hw x hx).trans (le_max_left _ _)) hwC1 hwH hΨweak
+        rw [show 2 * R / 2 = R by ring] at hS1 hS2
+        refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+        · rw [← hwD x (hR2R hx)]
+          exact hS1 x hx
+        · rw [← hwD x (hR2R hx), ← hwD y (hR2R hy)]
+          exact hS2 x hx y hy
+      -- Step 5: letting `d → 0`, `D_k v` is `C^{1,α}` on `ball xb R`.
+      have hvB :
+          ContDiffOn ℝ 1 v (ball xb (R + R * ‖(EuclideanSpace.single k (1 : ℝ) : Rn n)‖)) :=
+        hvC1.mono ((ball_subset_ball (by rw [he]; linarith)).trans
+          (ball_subset_closedBall.trans hball))
+      obtain ⟨hk1, -, hk3⟩ := Submission.dohr_eb_difference_quotient_limit n ℓ α v xb
+        (EuclideanSpace.single k (1 : ℝ)) R R C hα hα1.le hR hvB
+        (fun d hd hdR => (hdq d hd hdR).1) (fun d hd hdR => (hdq d hd hdR).2)
+      exact ⟨R, hR, hR2R.trans (h2R.trans hball), hk1, C, hk3⟩
+    -- Step 6: covering.
+    obtain ⟨hk1, hk2⟩ := Submission.dohr_eb_lhr_cover_holder_one n (Rn ℓ) α U
+      (fun x => fderiv ℝ v x (EuclideanSpace.single k (1 : ℝ))) hα hU hloc
+    exact ⟨by exact_mod_cast hk1, hk2⟩
+  | succ m hm IH =>
+    -- Inductive step `m → m + 1` (steps 7–10 of the proof).
+    intro U lam a Φ v hU hlam hell ha hΦ hv hweak
+    have h1 : (1 : WithTop ℕ∞) ≤ ((m + 1 : ℕ) : WithTop ℕ∞) := by
+      exact_mod_cast Nat.le_add_left 1 m
+    have h2 : (2 : WithTop ℕ∞) ≤ ((m + 1 : ℕ) : WithTop ℕ∞) := by
+      exact_mod_cast Nat.succ_le_succ hm
+    have hmm : ((m : ℕ) : WithTop ℕ∞) ≤ ((m + 1 : ℕ) : WithTop ℕ∞) := by
+      exact_mod_cast Nat.le_succ m
+    -- Step 7: `v` is `C²` and the data are `C¹` on `U`.
+    have hvC1 : ContDiffOn ℝ 1 v U := hv.1.of_le h1
+    have hvC2 : ContDiffOn ℝ 2 v U := hv.1.of_le h2
+    have ha1 : ∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U := fun P Q =>
+      (ha P Q).1.of_le h1
+    have hΦ1 : ∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U := fun P =>
+      (hΦ P).1.of_le h1
+    -- `Dv` and every `D_s v` are `C^{m,α}_loc` on `U`.
+    obtain ⟨-, hDv, hDvH⟩ :=
+      (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α v U hU).1.1 hv
+    have hvs := ((Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α v U hU).2.1 hv).2
+    -- Step 10: it suffices that every `D_s v` is `C^{m+1,α}_loc` on `U`.
+    refine (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) (m + 1) α v U hU).2.2
+      ⟨hvC1, fun s => ?_⟩
+    -- Step 8: `D_s v` is a weak solution with right side `Ψ = D_s Φ - (D_s a)[Dv]`.
+    obtain ⟨Ψ, hΨ, hΨweak⟩ := Submission.dohr_eb_lhr_differentiated_system n ℓ U a Φ v
+      (EuclideanSpace.single s (1 : ℝ)) hU ha1 hΦ1 hvC2 hweak
+    -- Step 9 (iii): the components of `Ψ` are `C^{m,α}_loc` on `U`.  With a basis `b` of
+    -- `L(ℝⁿ, ℝ^ℓ)`, `Ψ x P = D_s(Φ(·)P)(x) - ∑ᵣ b.repr (Dv x) r * D_s(a(·)(b r)P)(x)` on `U`;
+    -- each summand is a product of two scalar `C^{m,α}_loc` functions.
+    have hΨm : ∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ m (fun x => Ψ x P) U ∧
+        ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+          ‖iteratedFDeriv ℝ m (fun z => Ψ z P) x - iteratedFDeriv ℝ m (fun z => Ψ z P) y‖ ≤
+            C * ‖x - y‖ ^ α := by
+      intro P
+      let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+      let B : Fin (Module.finrank ℝ (Rn n →L[ℝ] Rn ℓ)) →
+          (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ →L[ℝ] ℝ := fun r =>
+        (ContinuousLinearMap.mul ℝ ℝ).comp (LinearMap.toContinuousLinearMap (b.coord r))
+      have hB : ∀ r Q t, B r Q t = b.repr Q r * t := fun r Q t => by simp [B]
+      have hΦs := ((Submission.dohr_eb_holder_succ_iff_fderiv n ℝ m α (fun z => Φ z P) U hU).2.1
+        (hΦ P)).2 s
+      have has := fun r => ((Submission.dohr_eb_holder_succ_iff_fderiv n ℝ m α
+        (fun z => a z (b r) P) U hU).2.1 (ha (b r) P)).2 s
+      refine Submission.dohr_eb_lhr_holder_loc_sub_sum n ℝ m _ α U
+        (fun x => fderiv ℝ (fun z => Φ z P) x (EuclideanSpace.single s (1 : ℝ))) (fun x => Ψ x P)
+        (fun r x => B r (fderiv ℝ v x)
+          (fderiv ℝ (fun z => a z (b r) P) x (EuclideanSpace.single s (1 : ℝ))))
+        hU hΦs.1 hΦs.2 (fun r => Submission.dohr_eb_holder_bilinear (Rn n) (Rn n →L[ℝ] Rn ℓ) ℝ ℝ
+          m α (B r) (fderiv ℝ v) _ U hα hα1.le hU hDv hDvH (has r).1 (has r).2) fun x hx => ?_
+      rw [hΨ x hx P]
+      congr 1
+      -- `D_s(a(·)(Dv x)P)(x) = ∑ᵣ b.repr (Dv x) r * D_s(a(·)(b r)P)(x)`, by linearity in `Dv x`.
+      have hfun : (fun z => a z (fderiv ℝ v x) P) =
+          fun z => ∑ r, b.repr (fderiv ℝ v x) r * a z (b r) P := by
+        funext z
+        conv_lhs => rw [← b.sum_repr (fderiv ℝ v x)]
+        simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
+          FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+      have hsum : HasFDerivAt (fun z => a z (fderiv ℝ v x) P)
+          (∑ r, b.repr (fderiv ℝ v x) r • fderiv ℝ (fun z => a z (b r) P) x) x := by
+        rw [hfun]
+        exact HasFDerivAt.fun_sum fun r _ =>
+          ((((ha1 (b r) P).differentiableOn one_ne_zero) x hx).differentiableAt
+            (hU.mem_nhds hx)).hasFDerivAt.const_mul _
+      rw [hsum.fderiv]
+      simp only [FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+        Pi.smul_apply, smul_eq_mul, hB]
+    -- Step 10: the order-`m` case for the data `(U, lam, a, Ψ, D_s v)`.
+    exact IH U lam a Ψ (fun z => fderiv ℝ v z (EuclideanSpace.single s (1 : ℝ))) hU hlam hell
+      (fun P Q => ⟨(ha P Q).1.of_le hmm, Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n) ℝ m α
+        _ U hα hα1.le hU (ha P Q).1⟩) hΨm (hvs s) hΨweak
+
 end Submission
 
 end GMT.Ch05
