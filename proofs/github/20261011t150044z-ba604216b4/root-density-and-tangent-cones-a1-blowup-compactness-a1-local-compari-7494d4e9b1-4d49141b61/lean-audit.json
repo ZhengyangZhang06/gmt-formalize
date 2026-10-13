@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f91a95d3ffecc488c6d0253922c25d79b7100563b514ab8f1d30e8d8f566fe11",
+  "git_delta": {
+    "base_commit": "0a568b07b757c6d7cf7388efef1a9dba0d3a1b4c",
+    "candidate_commit": "c259a189b480935daf98385e9068e6057625d3d6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_good_level",
+    "diff_sha256": "55a80a6bcd8dd0fc9d66ae0f6e0821ddd9a70ac09861a0218c335f98be087dae",
+    "source_sha256": "af4121fd1506a98f646353d8cb34d6843cec5d918588da49fa886a61c71649b6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_good_level",
+      "statement": "∀ (P : ℕ) (g : ℕ → ℝ → ℝ≥0∞) (μ : ℕ → Measure (Euclid P)) (h : Euclid P → ℝ) (good : ℕ → ℝ → Prop) (a b : ℝ), a < b → Measurable h → (∀ i, AEMeasurable (g i) (volume.restrict (Ioo a b))) → (∑' i, ∫⁻ t in Ioo a b, g i t) ≠ ∞ → (∀ i, μ i {x | a < h x ∧ h x < b} ≠ ∞) → (∀ i, ∀ᵐ t, good i t) → ∃ t ∈ Ioo a b, (∀ i, good i t) ∧ (∑' i, g i t) ≠ ∞ ∧ ∀ i, μ i {x | h x = t} = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
