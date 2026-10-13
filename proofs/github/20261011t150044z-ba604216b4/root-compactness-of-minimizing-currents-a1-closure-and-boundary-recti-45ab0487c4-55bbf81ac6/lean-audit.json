@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "04b60d8dfdc26749471814092a815f6984d957a9375fe0e4b06cd8be4e826399",
+  "git_delta": {
+    "base_commit": "55741579b3715c4bd4288711333cabeebf86e3c4",
+    "candidate_commit": "5ea5286a7c872ca11c5f10d7d9569971a05cc088",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_slice_length_usc",
+    "diff_sha256": "7e059b0637994dc1941bef0024ebfe51f8a9e3289412e139f88985d7c7ff5d90",
+    "source_sha256": "42678d0172228007bab6e0cfc92c2d048dca686185249fc9c761998061d37cf8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_slice_length_usc",
+      "statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

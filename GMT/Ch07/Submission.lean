@@ -451,6 +451,60 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Ch. 1, Note after the proof of 2.10** (p. 12): for compact `A ⊆ ℝᵈ` and a coordinate
+`j`, the length `y ↦ L¹{t : y[j ↦ t] ∈ A}` of the slice of `A` along the `j`-th coordinate line
+through `y` is upper semicontinuous.  Every slice lies in `[-R, R]` (`A ⊆ B_R(0)`), so has finite
+length.  Given `L¹(A^j_x) < r`, outer regularity gives an open `U ⊇ A^j_x` with `L¹(U) < r`; the
+compact set `C = A ∖ {z : z_j ∈ U}` has closed image under `π z = z[j ↦ 0]`, `π x ∉ π(C)`, and for
+`y` in the neighbourhood `π⁻¹(π(C)ᶜ)` of `x` the slice `A^j_y` lies in `U`, so `L¹(A^j_y) < r`. -/
+theorem Submission.cbr_ci_iso_slice_length_usc : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal) := by
+  intro d j A hA
+  -- every slice lies in `[-R, R]`, so it has finite length
+  obtain ⟨R, hR⟩ := hA.isBounded.subset_closedBall (0 : Euclid d)
+  have hfin : ∀ y : Euclid d,
+      volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} ≠ ∞ := by
+    intro y
+    refine ne_top_of_le_ne_top (measure_Icc_lt_top (a := -R) (b := R)).ne (measure_mono ?_)
+    intro t ht
+    have h1 := PiLp.norm_apply_le (WithLp.toLp 2 (Function.update y.ofLp j t) : Euclid d) j
+    rw [WithLp.ofLp_toLp, Function.update_self, Real.norm_eq_abs] at h1
+    exact abs_le.mp (h1.trans (mem_closedBall_zero_iff.mp (hR ht)))
+  refine upperSemicontinuous_iff.mpr fun x => upperSemicontinuousAt_iff.mpr fun r hr => ?_
+  -- outer regularity: an open `U` around the slice through `x` with `L¹(U) < r`
+  obtain ⟨U, hxU, hUo, hUr⟩ := Set.exists_isOpen_lt_of_lt
+    {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp j t) ∈ A} (ENNReal.ofReal r)
+    ((ENNReal.lt_ofReal_iff_toReal_lt (hfin x)).mpr hr)
+  -- the projection `z ↦ z[j ↦ 0]` and the compact part of `A` off `{z : z_j ∈ U}`
+  let proj : Euclid d → Euclid d := fun z => WithLp.toLp 2 (Function.update z.ofLp j 0)
+  have hproj : Continuous proj :=
+    (PiLp.continuous_toLp 2 _).comp
+      ((continuous_update j).comp ((PiLp.continuous_ofLp 2 _).prodMk continuous_const))
+  have hC : IsCompact (A \ {z : Euclid d | z.ofLp j ∈ U}) :=
+    hA.diff (hUo.preimage (PiLp.continuous_apply 2 _ j))
+  -- `π x ∉ π(C)`: a point of `C` over `π x` would put its `j`-th coordinate in the slice at `x`
+  have hx : proj x ∉ proj '' (A \ {z : Euclid d | z.ofLp j ∈ U}) := by
+    rintro ⟨z, ⟨hzA, hzU⟩, hzx⟩
+    have h : Function.update z.ofLp j 0 = Function.update x.ofLp j 0 := by
+      simpa only [proj, WithLp.ofLp_toLp] using congrArg WithLp.ofLp hzx
+    have hz : WithLp.toLp 2 (Function.update x.ofLp j (z.ofLp j)) = z := by
+      calc WithLp.toLp 2 (Function.update x.ofLp j (z.ofLp j))
+          = WithLp.toLp 2 (Function.update (Function.update x.ofLp j 0) j (z.ofLp j)) := by
+            rw [Function.update_idem]
+        _ = z := by rw [← h, Function.update_idem, Function.update_eq_self, WithLp.toLp_ofLp]
+    exact hzU (hxU (show WithLp.toLp 2 (Function.update x.ofLp j (z.ofLp j)) ∈ A by
+      rw [hz]; exact hzA))
+  -- on the neighbourhood `π⁻¹(π(C)ᶜ)` of `x` every slice lies in `U`
+  filter_upwards [((hC.image hproj).isClosed.isOpen_compl.preimage hproj).mem_nhds hx] with y hy
+  have hy' : proj y ∉ proj '' (A \ {z : Euclid d | z.ofLp j ∈ U}) := hy
+  have hyU : {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} ⊆ U := by
+    intro t ht
+    by_contra htU
+    refine hy' ⟨WithLp.toLp 2 (Function.update y.ofLp j t), ⟨ht, ?_⟩, ?_⟩
+    · show (WithLp.toLp 2 (Function.update y.ofLp j t)).ofLp j ∉ U
+      rwa [WithLp.ofLp_toLp, Function.update_self]
+    · simp only [proj, Function.update_idem]
+  exact ENNReal.toReal_lt_of_lt_ofReal ((measure_mono hyU).trans_lt hUr)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
