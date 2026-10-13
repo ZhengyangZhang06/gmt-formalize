@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1.pow_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1",
+  "depth": 6,
+  "title": "A bound a·M^r ≤ b·M^n for all integers M ≥ 1 with a > 0 forces r ≤ n",
+  "statement": "Let r, n ∈ ℕ and a, b ∈ ℝ with a > 0. If a·M^r ≤ b·M^n for every integer M ≥ 1 (i.e. every natural number M ≥ 1), then r ≤ n.",
+  "lean_statement": "∀ (r n : ℕ) (a b : ℝ), 0 < a → (∀ M : ℕ, 1 ≤ M → a * (M : ℝ) ^ r ≤ b * (M : ℝ) ^ n) → r ≤ n",
+  "lean_name": "cbr_ci_cp_gd_le_of_pow_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5b6e3cd2cd-a1"
+}

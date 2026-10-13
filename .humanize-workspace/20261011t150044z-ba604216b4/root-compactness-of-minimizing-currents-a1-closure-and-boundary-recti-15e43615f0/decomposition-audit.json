@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_cp_gd_|finrank_le_of_growth",
+        "theorem EuclideanSpace.norm_eq|stdOrthonormalBasis|sum_repr_symm|norm_coe|theorem measure_biUnion_finset|lemma card_piFinset|theorem card_Icc|def piFinset|norm_le_norm_add_norm_sub",
+        "toReal_mono|toReal_pos|toReal_mul|mul_ne_top|ofReal_ne_top",
+        "python3 /tmp/gd-independent-audit/check_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gd-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gd-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gd-build/Final.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Int/Interval.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-15e43615f0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-15e43615f0/decomposition-v1.json",
+        "/tmp/gd-independent-audit/check_contracts.py",
+        "/tmp/gd-independent-audit/Types.lean",
+        "/tmp/gd-independent-audit/Assembly.lean",
+        "/tmp/gd-build/Final.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and contract compatibility. The cited orthonormal-coordinate, finite-cardinality, measure-additivity and ENNReal conversion lemmas exist. No proposed name was found in the snapshot or workspace; all three are fresh bare identifiers across the 1598-node DAG, and no identical frozen type is being reused. Each exact one-line proposition elaborates independently of its implementation, with the intended Euclidean norm, real radius/distance and ENNReal multiplication. All dependency lists are correctly empty and acyclic. The split appropriately separates geometry, measure counting and exponent comparison. Independently compiled a hypothesis-only assembly proving the exact selected parent: growth makes the positive unit-ball mass finite; packing and counting give the real polynomial bound required by pow_bound. Also inspected and recompiled the supplied scratch proofs, checking their types against the frozen strings. The child proofs and both assembly checks use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lattice_packing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree on every hypothesis and all four conclusions. The orthonormal isometry, nonzero integer-coordinate separation, integer-box cardinality and sum-of-squares norm bound establish the claimed finite set. The construction also handles M = 0 and dim V = 0. All six proof steps are complete and independent of the parent and siblings; the ℓ² construction has the intended instance."
+    },
+    {
+      "key": "ball_count",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition contain exactly the invariance, membership, norm and separation assumptions. Invariance at −x gives equal masses, separation makes the open balls disjoint, and the norm bound gives containment. Measurable finite additivity and monotonicity prove the ENNReal inequality. The proof remains valid for an empty set, arbitrary real ρ and infinite measures; no additional finiteness or positivity assumption is hidden."
+    },
+    {
+      "key": "pow_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The real coefficients and natural exponents and indices match the prose exactly. Assuming r > n, the explicit Archimedean choice gives M ≥ 1 and aM > b. Exponent monotonicity followed by cancellation of the strictly positive M^n contradicts this. Every step is justified using only the stated assumptions, including when b is negative; there is no circular reliance or deferred proof construction."
+    }
+  ],
+  "required_changes": []
+}
