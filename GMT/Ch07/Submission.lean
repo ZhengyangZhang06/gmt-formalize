@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Chart localization (steps 1 and 4(a) of the nearest point retraction used in the proof of
+Simon 7.4.3): if `ψ` is continuous and injective on `V`, `ψ(V) = W ∩ N` with `W` open, and `ψ` is
+proper into `W` (`V ∩ ψ⁻¹(K)` is compact for compact `K ⊆ W`), then for `v₀ ∈ V` and `ε > 0` some
+closed ball `B̄_ρ(ψ(v₀)) ⊆ W` has `N ∩ B̄_ρ(ψ(v₀)) ⊆ ψ(V ∩ B_ε(v₀))` and `N ∩ B̄_ρ(ψ(v₀))` compact.
+With `B̄_{ρ₀}(ψ(v₀)) ⊆ W`, the set `C := (V ∩ ψ⁻¹(B̄_{ρ₀}(ψ(v₀)))) \ B_ε(v₀)` is compact, so
+`ψ(C)` is compact; it misses `ψ(v₀)` by injectivity, so any `ρ ≤ ρ₀` with
+`B̄_ρ(ψ(v₀)) ∩ ψ(C) = ∅` works, and `N ∩ B̄_ρ(ψ(v₀)) = ψ(V ∩ ψ⁻¹(B̄_ρ(ψ(v₀))))` is compact by
+properness. -/
+theorem Submission.dor_lmb_ret_chart_localization : ∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ closedBall (ψ v₀) ρ ⊆ W ∧ N ∩ closedBall (ψ v₀) ρ ⊆ ψ '' (V ∩ ball v₀ ε) ∧ IsCompact (N ∩ closedBall (ψ v₀) ρ) := by
+  intro P d N W V ψ v₀ hW hψ hinj himage hproper hv₀ ε hε
+  -- Step 1: `y := ψ(v₀) ∈ W`, and `B̄_{ρ₀}(y) ⊆ W` for some `ρ₀ > 0`
+  have hy : ψ v₀ ∈ W ∩ N := by
+    rw [← himage]
+    exact mem_image_of_mem ψ hv₀
+  obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.1 hW _ hy.1
+  have hρ₀W : closedBall (ψ v₀) (r / 2) ⊆ W :=
+    (closedBall_subset_ball (half_lt_self hr)).trans hrW
+  -- Step 2: `C := (V ∩ ψ⁻¹(B̄_{ρ₀}(y))) \ B_ε(v₀)` is compact
+  have hC : IsCompact ((V ∩ ψ ⁻¹' closedBall (ψ v₀) (r / 2)) \ ball v₀ ε) :=
+    (hproper _ hρ₀W (isCompact_closedBall _ _)).diff isOpen_ball
+  -- Step 3: `ψ(C)` is compact
+  have hψC : IsCompact (ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) (r / 2)) \ ball v₀ ε)) :=
+    hC.image_of_continuousOn (hψ.mono fun _ hx => hx.1.1)
+  -- Step 4: `y ∉ ψ(C)`, by injectivity of `ψ` on `V`
+  have hyC : ψ v₀ ∉ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) (r / 2)) \ ball v₀ ε) := by
+    rintro ⟨c, ⟨⟨hcV, -⟩, hcε⟩, hc⟩
+    rw [hinj hcV hv₀ hc] at hcε
+    exact hcε (mem_ball_self hε)
+  -- Step 5: some `B_{ρ₂}(y)` misses `ψ(C)`; take `ρ ≤ ρ₀` with `ρ < ρ₂`
+  obtain ⟨ρ₂, hρ₂, hρ₂C⟩ := Metric.isOpen_iff.1 hψC.isClosed.isOpen_compl _ hyC
+  obtain ⟨ρ, hρ, hρρ₀, hρρ₂⟩ : ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ r / 2 ∧ ρ < ρ₂ :=
+    ⟨min (r / 2) (ρ₂ / 2), lt_min (half_pos hr) (half_pos hρ₂), min_le_left _ _,
+      (min_le_right _ _).trans_lt (half_lt_self hρ₂)⟩
+  have hρW : closedBall (ψ v₀) ρ ⊆ W := (closedBall_subset_closedBall hρρ₀).trans hρ₀W
+  -- every `z ∈ N ∩ B̄_ρ(y)` is `ψ(v)` with `v ∈ V`, `ψ(v) ∈ B̄_ρ(y)`
+  have hpre : ∀ z ∈ N ∩ closedBall (ψ v₀) ρ, ∃ v ∈ V, ψ v ∈ closedBall (ψ v₀) ρ ∧ ψ v = z := by
+    rintro z ⟨hzN, hzB⟩
+    have hz : z ∈ ψ '' V := by
+      rw [himage]
+      exact ⟨hρW hzB, hzN⟩
+    obtain ⟨v, hvV, rfl⟩ := hz
+    exact ⟨v, hvV, hzB, rfl⟩
+  refine ⟨ρ, hρ, hρW, ?_, ?_⟩
+  · -- Step 6: inclusion
+    intro z hz
+    obtain ⟨v, hvV, hvB, rfl⟩ := hpre z hz
+    refine ⟨v, ⟨hvV, ?_⟩, rfl⟩
+    by_contra hvε
+    exact hρ₂C (closedBall_subset_ball hρρ₂ hvB)
+      ⟨v, ⟨⟨hvV, closedBall_subset_closedBall hρρ₀ hvB⟩, hvε⟩, rfl⟩
+  · -- Step 7: `N ∩ B̄_ρ(y) = ψ(V ∩ ψ⁻¹(B̄_ρ(y)))` is compact
+    have heq : N ∩ closedBall (ψ v₀) ρ = ψ '' (V ∩ ψ ⁻¹' closedBall (ψ v₀) ρ) := by
+      apply Subset.antisymm
+      · intro z hz
+        obtain ⟨v, hvV, hvB, rfl⟩ := hpre z hz
+        exact ⟨v, ⟨hvV, hvB⟩, rfl⟩
+      · rintro _ ⟨v, ⟨hvV, hvB⟩, rfl⟩
+        have hv : ψ v ∈ W ∩ N := by
+          rw [← himage]
+          exact mem_image_of_mem ψ hvV
+        exact ⟨hv.2, hvB⟩
+    rw [heq]
+    exact (hproper _ hρW (isCompact_closedBall _ _)).image_of_continuousOn
+      (hψ.mono inter_subset_left)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
