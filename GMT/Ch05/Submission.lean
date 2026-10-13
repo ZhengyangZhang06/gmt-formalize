@@ -460,6 +460,767 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- Affine subtraction and scaling of a `C¹` weak solution (the integral computation in the blow-up
+step of the Schauder estimate used for the elliptic bootstrap in Simon Ch. 5, 7.1): if `v` is `C¹`
+on the open set `D`, `∫_D b[Dv][Dζ] = ∫_D Θ[Dζ]` for all `ζ ∈ C¹_c(D)`, and `B₀[P₀][Dζ]`, `Θ₀[Dζ]`
+have integral `0` over `ℝⁿ` for all `ζ ∈ C¹_c`, then `V = s (v − c − P₀)` is `C¹` on `D` with
+`DV = s (Dv − P₀)` and `∫_D b[DV][Dζ] = ∫_D (s ((Θ − Θ₀) − (b[P₀] − B₀[P₀])))[Dζ]`. -/
+theorem dohr_eb_sch_bu_weak_eq_sub_affine : ∀ (n ℓ : ℕ) (b : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Θ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (D : Set (Rn n)) (B₀ : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Θ₀ : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (P₀ : Rn n →L[ℝ] Rn ℓ) (c : Rn ℓ) (s : ℝ), IsOpen D → ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) => b p.1 p.2.1 p.2.2) (D ×ˢ univ) → ContinuousOn Θ D → ContDiffOn ℝ 1 v D → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → ∫ x in D, b x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in D, Θ x (fderiv ℝ ζ x)) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, B₀ P₀ (fderiv ℝ ζ x) = 0) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, Θ₀ (fderiv ℝ ζ x) = 0) → ContDiffOn ℝ 1 (fun x => s • (v x - c - P₀ x)) D ∧ (∀ x ∈ D, fderiv ℝ (fun x => s • (v x - c - P₀ x)) x = s • (fderiv ℝ v x - P₀)) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → ∫ x in D, b x (fderiv ℝ (fun x => s • (v x - c - P₀ x)) x) (fderiv ℝ ζ x) = ∫ x in D, (s • ((Θ x - Θ₀) - (b x P₀ - B₀ P₀))) (fderiv ℝ ζ x) := by
+  intro n ℓ b Θ v D B₀ Θ₀ P₀ c s hD hb hΘ hv hweak hB₀ hΘ₀
+  -- (ii) as `HasFDerivAt`: on the open set `D`, `v` is differentiable and
+  -- `D(s • (v - c - P₀)) = s • (Dv - P₀)`.
+  have hderiv : ∀ x ∈ D,
+      HasFDerivAt (fun x => s • (v x - c - P₀ x)) (s • (fderiv ℝ v x - P₀)) x := by
+    intro x hx
+    have hvx : DifferentiableAt ℝ v x :=
+      (hv.differentiableOn_one x hx).differentiableAt (hD.mem_nhds hx)
+    exact ((hvx.hasFDerivAt.sub_const c).sub P₀.hasFDerivAt).const_smul s
+  refine ⟨((hv.sub contDiffOn_const).sub P₀.contDiff.contDiffOn).const_smul s,
+    fun x hx => (hderiv x hx).fderiv, ?_⟩
+  intro ζ hζ hζc hζD
+  -- `Dζ` is continuous and vanishes off the compact set `tsupport ζ ⊆ D`.
+  have hTc : IsCompact (tsupport ζ) := hζc
+  have hζ' : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hζ0 : ∀ x, x ∉ tsupport ζ → fderiv ℝ ζ x = 0 := fun x hx =>
+    Function.notMem_support.1 fun h => hx (support_fderiv_subset ℝ h)
+  -- A function continuous on `D` that vanishes where `Dζ` does is integrable.
+  have hint : ∀ g : Rn n → ℝ, ContinuousOn g D → (∀ x, fderiv ℝ ζ x = 0 → g x = 0) →
+      Integrable g := fun g hg hg0 =>
+    ((hg.mono hζD).integrableOn_compact hTc).integrable_of_forall_notMem_eq_zero
+      fun x hx => hg0 x (hζ0 x hx)
+  have hvc : ContinuousOn (fderiv ℝ v) D := hv.continuousOn_fderiv_of_isOpen hD le_rfl
+  have hbc : ∀ P : Rn n → (Rn n →L[ℝ] Rn ℓ), ContinuousOn P D →
+      ContinuousOn (fun x => b x (P x) (fderiv ℝ ζ x)) D := fun P hP =>
+    hb.comp (continuousOn_id.prodMk (hP.prodMk hζ'.continuousOn)) fun x hx => ⟨hx, mem_univ _⟩
+  have i1 : Integrable fun x => b x (fderiv ℝ v x) (fderiv ℝ ζ x) :=
+    hint _ (hbc _ hvc) fun x hx => by rw [hx, map_zero]
+  have i2 : Integrable fun x => b x P₀ (fderiv ℝ ζ x) :=
+    hint _ (hbc _ continuousOn_const) fun x hx => by rw [hx, map_zero]
+  have i3 : Integrable fun x => Θ x (fderiv ℝ ζ x) :=
+    hint _ (hΘ.clm_apply hζ'.continuousOn) fun x hx => by rw [hx, map_zero]
+  have i4 : Integrable fun x => Θ₀ (fderiv ℝ ζ x) :=
+    hint _ (Θ₀.continuous.comp hζ').continuousOn fun x hx => by rw [hx, map_zero]
+  have i5 : Integrable fun x => B₀ P₀ (fderiv ℝ ζ x) :=
+    hint _ ((B₀ P₀).continuous.comp hζ').continuousOn fun x hx => by rw [hx, map_zero]
+  have i34 : Integrable fun x => Θ x (fderiv ℝ ζ x) - Θ₀ (fderiv ℝ ζ x) := i3.sub i4
+  have i25 : Integrable fun x => b x P₀ (fderiv ℝ ζ x) - B₀ P₀ (fderiv ℝ ζ x) := i2.sub i5
+  -- The integrals of `Θ₀[Dζ]` and `B₀[P₀][Dζ]` over `D` are those over `ℝⁿ`, which vanish.
+  have hz4 : ∫ x in D, Θ₀ (fderiv ℝ ζ x) = 0 := by
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hζ0 x fun h => hx (hζD h), map_zero]]
+    exact hΘ₀ ζ hζ hζc
+  have hz5 : ∫ x in D, B₀ P₀ (fderiv ℝ ζ x) = 0 := by
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hζ0 x fun h => hx (hζD h), map_zero]]
+    exact hB₀ ζ hζ hζc
+  -- Bilinearity: on `D`, `b[DV][Dζ] = s b[Dv][Dζ] - s b[P₀][Dζ]`.
+  have hL : ∫ x in D, b x (fderiv ℝ (fun x => s • (v x - c - P₀ x)) x) (fderiv ℝ ζ x) =
+      ∫ x in D, (s * b x (fderiv ℝ v x) (fderiv ℝ ζ x) - s * b x P₀ (fderiv ℝ ζ x)) := by
+    refine setIntegral_congr_fun hD.measurableSet fun x hx => ?_
+    simp only [(hderiv x hx).fderiv, map_smul, map_sub, smul_apply, sub_apply, smul_eq_mul,
+      mul_sub]
+  -- Evaluate the right-hand side pointwise, split the integrals and use the weak equation.
+  simp only [smul_apply, sub_apply, smul_eq_mul]
+  rw [hL, integral_sub (i1.integrableOn.const_mul s) (i2.integrableOn.const_mul s),
+    integral_const_mul, integral_const_mul, integral_const_mul,
+    integral_sub i34.integrableOn i25.integrableOn,
+    integral_sub i3.integrableOn i4.integrableOn, integral_sub i2.integrableOn i5.integrableOn,
+    hweak ζ hζ hζc hζD, hz4, hz5]
+  ring
+/-- **Diagonal extraction with one glued limit** (Simon Ch. 5, proof of Theorem 7.1: Hölder
+compactness in the Schauder blow-up argument).  Let `F k : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` and `S m ⊆ ℝⁿ`.  If, for
+every `m`, every subsequence `F ∘ ψ` has a further subsequence `F ∘ ψ ∘ χ` converging uniformly on
+`S m`, then a single subsequence `F ∘ φ` converges uniformly on every `S m` to one limit `V`.
+
+Proof: iterate the extractions, `Ψ 0 = id` and `Ψ (m + 1) = Ψ m ∘ χ_m` with `F ∘ Ψ (m + 1) → g_m`
+uniformly on `S m`, and take the diagonal `φ j = Ψ (j + 1) j`; it is strictly increasing because
+`χ i ≥ i` for strictly increasing `χ`.  Since `Ψ (m + d) = Ψ m ∘ ρ` with `ρ` strictly increasing,
+for `j ≥ m` the index `φ j` is the term of `Ψ (m + 1)` at a position `τ j ≥ j`, so `F ∘ φ → g_m`
+uniformly on `S m`.  Put `V z = g_{m(z)} z` for the least `m(z)` with `z ∈ S m(z)` (and `V z = 0`
+off `⋃ S m`); uniqueness of limits gives `V = g_m` on `S m`. -/
+theorem dohr_eb_sch_bu_hds_diagonal_extract : ∀ (n ℓ : ℕ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (S : ℕ → Set (Rn n)), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧ TendstoUniformlyOn (fun j => F (ψ (χ j))) g atTop (S m)) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ ∀ m : ℕ, TendstoUniformlyOn (fun j => F (φ j)) V atTop (S m) := by
+  intro n ℓ F S h
+  -- Step 1: choose `χ m ψ` and `g m ψ` for every `ψ`; the convergence is only claimed for
+  -- strictly increasing `ψ` (otherwise take `χ = id`, `g = 0`).
+  have h' : ∀ (m : ℕ) (ψ : ℕ → ℕ), ∃ (χ : ℕ → ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)),
+      StrictMono χ ∧ (StrictMono ψ → TendstoUniformlyOn (fun j => F (ψ (χ j))) g atTop (S m)) := by
+    intro m ψ
+    by_cases hψ : StrictMono ψ
+    · obtain ⟨χ, g, hχ, hg⟩ := h m ψ hψ
+      exact ⟨χ, g, hχ, fun _ => hg⟩
+    · exact ⟨id, 0, strictMono_id, fun hψ' => absurd hψ' hψ⟩
+  choose χ g hχ hg using h'
+  -- Step 2: nested subsequences `Ψ 0 = id`, `Ψ (m + 1) = Ψ m ∘ χ m (Ψ m)`.
+  obtain ⟨Ψ, hΨ0, hΨs⟩ : ∃ Ψ : ℕ → ℕ → ℕ, Ψ 0 = id ∧ ∀ m, Ψ (m + 1) = Ψ m ∘ χ m (Ψ m) :=
+    ⟨fun m => Nat.rec (motive := fun _ => ℕ → ℕ) id (fun k ψ => ψ ∘ χ k ψ) m, rfl, fun _ => rfl⟩
+  have hΨmono : ∀ m, StrictMono (Ψ m) := by
+    intro m
+    induction m with
+    | zero => rw [hΨ0]; exact strictMono_id
+    | succ m ih => rw [hΨs]; exact ih.comp (hχ m (Ψ m))
+  have hconv : ∀ m, TendstoUniformlyOn (fun j => F (Ψ (m + 1) j)) (g m (Ψ m)) atTop (S m) := by
+    intro m
+    rw [hΨs]
+    exact hg m (Ψ m) (hΨmono m)
+  -- Step 3: later stages factor through earlier ones, `Ψ (m + d) = Ψ m ∘ ρ m d`.
+  have hfac : ∀ m d, ∃ ρ : ℕ → ℕ, StrictMono ρ ∧ Ψ (m + d) = Ψ m ∘ ρ := by
+    intro m d
+    induction d with
+    | zero => exact ⟨id, strictMono_id, rfl⟩
+    | succ d ih =>
+      obtain ⟨ρ, hρ, hρe⟩ := ih
+      refine ⟨ρ ∘ χ (m + d) (Ψ (m + d)), hρ.comp (hχ _ _), ?_⟩
+      rw [← add_assoc, hΨs, hρe]
+      rfl
+  choose ρ hρ hρe using hfac
+  -- Step 4: the diagonal `φ j = Ψ (j + 1) j` is strictly increasing.
+  have hφ : StrictMono (fun j => Ψ (j + 1) j) := by
+    apply strictMono_nat_of_lt_succ
+    intro j
+    show Ψ (j + 1) j < Ψ (j + 1 + 1) (j + 1)
+    rw [hΨs (j + 1)]
+    exact hΨmono (j + 1)
+      (lt_of_lt_of_le (Nat.lt_succ_self j) ((hχ (j + 1) (Ψ (j + 1))).id_le (j + 1)))
+  -- Step 5: for `j ≥ m`, `φ j = Ψ (m + 1) (τ j)` with `τ j = ρ (m + 1) (j - m) j ≥ j`, so
+  -- `F ∘ φ → g m (Ψ m)` uniformly on `S m`.
+  have hφconv : ∀ m, TendstoUniformlyOn (fun j => F (Ψ (j + 1) j)) (g m (Ψ m)) atTop (S m) := by
+    intro m
+    have hτ : ∀ j, m ≤ j → Ψ (j + 1) j = Ψ (m + 1) (ρ (m + 1) (j - m) j) := by
+      intro j hj
+      have hjm : j + 1 = m + 1 + (j - m) := by omega
+      rw [hjm, hρe]
+      rfl
+    have hτt : Tendsto (fun j => ρ (m + 1) (j - m) j) atTop atTop :=
+      tendsto_atTop_mono (fun j => (hρ (m + 1) (j - m)).id_le j) tendsto_id
+    have h1 : TendstoUniformlyOn (fun j => F (Ψ (m + 1) (ρ (m + 1) (j - m) j))) (g m (Ψ m))
+        atTop (S m) := fun u hu => hτt.eventually (hconv m u hu)
+    refine h1.congr ?_
+    filter_upwards [eventually_ge_atTop m] with j hj
+    intro z _
+    simp only [hτ j hj]
+  -- Step 6: glue the limits, `V z = g m(z) (Ψ m(z)) z` for the least `m(z)` with `z ∈ S m(z)`.
+  classical
+  refine ⟨fun j => Ψ (j + 1) j,
+    fun z => if hz : ∃ m, z ∈ S m then g (Nat.find hz) (Ψ (Nat.find hz)) z else 0, hφ,
+    fun m => (hφconv m).congr_right ?_⟩
+  intro z hz
+  have hex : ∃ m, z ∈ S m := ⟨m, hz⟩
+  simp only [dite_eq_left hex]
+  exact tendsto_nhds_unique ((hφconv m).tendsto_at hz) ((hφconv _).tendsto_at (Nat.find_spec hex))
+/-- Uniformly Hölder maps `F j : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` that converge on a dense subset `D` of a compact
+set `S` converge uniformly on `S`.  Given `ε > 0`, pick `η > 0` with `K η^α < ε/3`; finitely many
+balls `B̆_η(d)`, `d ∈ T ⊆ D`, cover `S`; from some `N` on all `F j d`, `d ∈ T`, are `ε/6`-close to
+their limits; the Hölder bound and the triangle inequality then make `(F j)` uniformly Cauchy on
+`S`, and completeness of `L` supplies the uniform limit. -/
+theorem dohr_eb_sch_bu_hds_unif_of_dense : ∀ (n ℓ : ℕ) (α K : ℝ) (S D : Set (Rn n)) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → IsCompact S → D ⊆ S → S ⊆ closure D → (∀ d ∈ D, ∃ v : Rn n →L[ℝ] Rn ℓ, Tendsto (fun j => F j d) atTop (𝓝 v)) → (∀ j, ∀ z ∈ S, ∀ z' ∈ S, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ G : Rn n → (Rn n →L[ℝ] Rn ℓ), TendstoUniformlyOn F G atTop S := by
+  intro n ℓ α K S D F hα hK hS hDS hSD hconv hHol
+  -- Step 1: the limits `v d` on `D`.
+  choose! v hv using hconv
+  -- Steps 2–5: `(F j)` is uniformly Cauchy on `S`.
+  have hU : UniformCauchySeqOn F atTop S := by
+    refine Metric.uniformCauchySeqOn_iff.2 fun ε hε => ?_
+    -- Step 2: a Hölder scale `η > 0` with `K η^α < ε/3`.
+    have h0 : Tendsto (fun t : ℝ => K * t ^ α) (𝓝 0) (𝓝 0) := by
+      have h := ((Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).const_mul K).tendsto
+      simpa [Real.zero_rpow hα.ne'] using h
+    obtain ⟨η, hηε, hη⟩ : ∃ η : ℝ, K * η ^ α < ε / 3 ∧ 0 < η :=
+      (((h0.eventually (gt_mem_nhds (div_pos hε three_pos))).filter_mono
+        nhdsWithin_le_nhds).and (self_mem_nhdsWithin : ∀ᶠ t in 𝓝[>] (0 : ℝ), 0 < t)).exists
+    -- Step 3: finitely many balls `B̆_η(d)`, `d ∈ T ⊆ D`, cover `S`.
+    obtain ⟨T, hTD, hTfin, hST⟩ := hS.elim_finite_subcover_image (b := D)
+      (c := fun d => Metric.ball d η) (fun d _ => Metric.isOpen_ball) fun z hz => by
+        obtain ⟨d, hd, hzd⟩ := Metric.mem_closure_iff.1 (hSD hz) η hη
+        exact Set.mem_biUnion hd (Metric.mem_ball.2 hzd)
+    -- Step 4: from some `N` on, `F j d` is `ε/6`-close to `v d` for every `d ∈ T`.
+    have hev : ∀ᶠ j in atTop, ∀ d ∈ T, dist (F j d) (v d) < ε / 6 :=
+      hTfin.eventually_all.2 fun d hd =>
+        (hv d (hTD hd)).eventually (Metric.ball_mem_nhds _ (div_pos hε (by norm_num)))
+    obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 hev
+    refine ⟨N, fun m hm m' hm' z hz => ?_⟩
+    -- Step 5: the Hölder bound and the triangle inequality.
+    obtain ⟨d, hdT, hzd⟩ := Set.mem_iUnion₂.1 (hST hz)
+    have hdS : d ∈ S := hDS (hTD hdT)
+    have hzd' : ‖z - d‖ ^ α ≤ η ^ α :=
+      Real.rpow_le_rpow (norm_nonneg _) (by rw [← dist_eq_norm]; exact (Metric.mem_ball.1 hzd).le)
+        hα.le
+    have hHol' : ∀ j, dist (F j z) (F j d) < ε / 3 := fun j => by
+      rw [dist_eq_norm]
+      calc ‖F j z - F j d‖ ≤ K * ‖z - d‖ ^ α := hHol j z hz d hdS
+        _ ≤ K * η ^ α := mul_le_mul_of_nonneg_left hzd' hK
+        _ < ε / 3 := hηε
+    have h1 := hHol' m
+    have h2 := hHol' m'
+    have h3 := hN m hm d hdT
+    have h4 := hN m' hm' d hdT
+    have h5 := dist_triangle4 (F m z) (F m d) (F m' d) (F m' z)
+    have h6 := dist_triangle (F m d) (v d) (F m' d)
+    rw [dist_comm (F m' d) (F m' z)] at h5
+    rw [dist_comm (v d) (F m' d)] at h6
+    linarith
+  -- Step 6: pointwise limits on `S`, by completeness of `L`.
+  have hlim : ∀ z ∈ S, ∃ w, Tendsto (fun j => F j z) atTop (𝓝 w) := fun z hz =>
+    cauchySeq_tendsto_of_complete (hU.cauchySeq hz)
+  -- Step 7: uniformly Cauchy plus pointwise convergence gives uniform convergence.
+  exact ⟨fun z => limUnder atTop (fun j => F j z),
+    hU.tendstoUniformlyOn_of_tendsto fun z hz => tendsto_nhds_limUnder (hlim z hz)⟩
+/-- Sequential Arzelà–Ascoli on a compact set `S ⊆ ℝⁿ` for maps `g_j : ℝⁿ → L = L(ℝⁿ, ℝ^ℓ)` that
+are bounded by `M` and `α`-Hölder with constant `K` on `S`, uniformly in `j`: some subsequence
+`g_{χ(j)}` converges uniformly on `S`.
+
+Proof: if `S = ∅` there is nothing to prove.  Otherwise `S`, a subspace of the second-countable
+space `ℝⁿ`, has a countable subset `D ⊆ S` with `S ⊆ closure D`; `D` is nonempty, so `D = {d_m}`
+for a sequence `d`.  At each `d_m` every subsequence `g_{ψ(j)}(d_m)` lies in the compact closed
+`M`-ball of the finite-dimensional space `L`, so it has a convergent further subsequence, i.e. one
+converging uniformly on `{d_m}`.  `dohr_eb_sch_bu_hds_diagonal_extract` with `S_m = {d_m}` gives a
+single `χ` with `g_{χ(j)}` convergent at every point of `D`, and `dohr_eb_sch_bu_hds_unif_of_dense`
+upgrades this to uniform convergence on `S`. -/
+theorem dohr_eb_sch_bu_hds_compact_subseq : ∀ (n ℓ : ℕ) (α K M : ℝ) (S : Set (Rn n)) (g : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → IsCompact S → (∀ j, ∀ z ∈ S, ‖g j z‖ ≤ M) → (∀ j, ∀ z ∈ S, ∀ z' ∈ S, ‖g j z - g j z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ (χ : ℕ → ℕ) (G : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧ TendstoUniformlyOn (fun j => g (χ j)) G atTop S := by
+  intro n ℓ α K M S g hα hK hS hM hH
+  -- Step 1: the empty case.
+  rcases S.eq_empty_or_nonempty with hS0 | ⟨z₀, hz₀⟩
+  · subst hS0
+    exact ⟨id, 0, strictMono_id, tendstoUniformlyOn_empty⟩
+  -- Step 2: a countable `D ⊆ S` with `S ⊆ closure D`; it is nonempty, so `D = range d`.
+  obtain ⟨D, hDc, hDS, hSD⟩ := TopologicalSpace.exists_countable_dense_subset S
+  have hDne : D.Nonempty := closure_nonempty_iff.mp ⟨z₀, hSD hz₀⟩
+  obtain ⟨d, rfl⟩ := hDc.exists_eq_range hDne
+  -- Step 3: at `d m`, every subsequence has a further subsequence converging on `{d m}`, since
+  -- `g (ψ j) (d m)` stays in the closed `M`-ball of `L`, compact as `L` is finite-dimensional.
+  have hpt : ∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ) (G : Rn n → (Rn n →L[ℝ] Rn ℓ)),
+      StrictMono χ ∧ TendstoUniformlyOn (fun j => g (ψ (χ j))) G atTop {d m} := by
+    intro m ψ _
+    obtain ⟨v, -, χ, hχ, hv⟩ := (isCompact_closedBall (0 : Rn n →L[ℝ] Rn ℓ) M).tendsto_subseq
+      (x := fun j => g (ψ j) (d m))
+      (fun j => mem_closedBall_zero_iff.mpr (hM (ψ j) (d m) (hDS (mem_range_self m))))
+    exact ⟨χ, fun _ => v, hχ, tendstoUniformlyOn_singleton_iff_tendsto.mpr hv⟩
+  -- Step 4: diagonal extraction over the points `d m` of `D`.
+  obtain ⟨χ, W, hχ, hW⟩ :=
+    Submission.dohr_eb_sch_bu_hds_diagonal_extract n ℓ g (fun m => {d m}) hpt
+  have hconv : ∀ z ∈ range d, ∃ v : Rn n →L[ℝ] Rn ℓ, Tendsto (fun j => g (χ j) z) atTop (𝓝 v) := by
+    rintro _ ⟨m, rfl⟩
+    exact ⟨W (d m), (hW m).tendsto_at (mem_singleton (d m))⟩
+  -- Step 5: by the uniform Hölder bound, convergence on `D` upgrades to uniform convergence on `S`.
+  obtain ⟨G, hG⟩ := Submission.dohr_eb_sch_bu_hds_unif_of_dense n ℓ α K S (range d)
+    (fun j => g (χ j)) hα hK hS hDS hSD hconv (fun j => hH (χ j))
+  exact ⟨χ, G, hχ, hG⟩
+
+end Submission
+/-- **Hölder bounds pass to pointwise limits** (steps 7b–c of the Hölder diagonal-subsequence
+argument in the Schauder blow-up estimate for Simon 7.1).  If `F_j(z) → V(z)` for every `z` and,
+for all `z, z'`, `‖F_j(z) − F_j(z')‖ ≤ K ‖z − z'‖^α` for all large `j`, then `V` satisfies the same
+`α`-Hölder bound and, as `α > 0`, is continuous. -/
+theorem Submission.dohr_eb_sch_bu_hds_holder_of_limit : ∀ (n ℓ : ℕ) (α K : ℝ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), 0 < α → 0 ≤ K → (∀ z, Tendsto (fun j => F j z) atTop (𝓝 (V z))) → (∀ z z' : Rn n, ∀ᶠ j in atTop, ‖F j z - F j z'‖ ≤ K * ‖z - z'‖ ^ α) → (∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ Continuous V := by
+  intro n ℓ α K F V hα _ hF hFK
+  -- Step 1: `‖F_j z − F_j z'‖ → ‖V z − V z'‖` and these norms are eventually `≤ K ‖z − z'‖^α`;
+  -- `(-∞, K ‖z − z'‖^α]` is closed, so the limit satisfies the same bound.
+  have hV : ∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α := fun z z' =>
+    le_of_tendsto ((hF z).sub (hF z')).norm (hFK z z')
+  refine ⟨hV, continuous_iff_continuousAt.mpr fun z => ?_⟩
+  -- Step 2a: `t ↦ t^α` is continuous at `0` with value `0^α = 0` (`α > 0`) and `‖z' − z‖ → 0`,
+  -- so `K ‖z' − z‖^α → 0` as `z' → z`.
+  have hpow : Tendsto (fun t : ℝ => t ^ α) (𝓝 0) (𝓝 0) := by
+    simpa [Real.zero_rpow hα.ne'] using (Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto
+  have hK0 : Tendsto (fun z' : Rn n => K * ‖z' - z‖ ^ α) (𝓝 z) (𝓝 0) := by
+    simpa using (hpow.comp (tendsto_norm_sub_self z)).const_mul K
+  -- Steps 2b–c: `0 ≤ ‖V z' − V z‖ ≤ K ‖z' − z‖^α`, so `‖V z' − V z‖ → 0` by squeezing, that is,
+  -- `V z' → V z`.
+  exact tendsto_iff_norm_sub_tendsto_zero.mpr
+    (squeeze_zero (fun z' => norm_nonneg _) (fun z' => hV z' z) hK0)
+
+namespace Submission
+
+/-- **Arzelà–Ascoli with diagonal extraction for uniformly Hölder maps on growing balls**
+(blow-up step of the Schauder estimate behind Simon Ch. 5, Theorem 7.1, second assertion).
+Let `R_k → ∞` and let `f_k : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` satisfy `f_k(0) = 0` and
+`‖f_k(z) − f_k(z')‖ ≤ K|z − z'|^α` on `B̆_{R_k}(0)`.  Then a subsequence `f_{φ(j)}` converges
+uniformly on every closed ball `B_r(0)` to a continuous `V` with `V(0) = 0` and
+`‖V(z) − V(z')‖ ≤ K|z − z'|^α` on `ℝⁿ`: on `B_m(0)` the tail `k ≥ k_m` (`R_k > m`) is uniformly
+Hölder and bounded by `K mᵅ`, so every subsequence has a further subsequence converging uniformly
+on `B_m(0)` (Arzelà–Ascoli); a diagonal subsequence converges on every `B_m(0)`, and the Hölder
+bound passes to the limit. -/
+theorem dohr_eb_sch_bu_holder_diag_subseq : ∀ (n ℓ : ℕ) (α K : ℝ) (f : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), 0 < α → 0 ≤ K → Tendsto R atTop atTop → (∀ k, f k 0 = 0) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k), ‖f k z - f k z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ V 0 = 0 ∧ Continuous V ∧ (∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ ∀ r : ℝ, TendstoUniformlyOn (fun j => f (φ j)) V atTop (closedBall (0 : Rn n) r) := by
+  intro n ℓ α K f R hα hK hR hf0 hf
+  -- Step 1: for each `m` there is `k_m` with `R_k > m` for `k ≥ k_m`; for such `k` the map `f_k`
+  -- is `K`-`α`-Hölder on `B_m(0)` and bounded there by `K mᵅ` (since `f_k(0) = 0`).
+  have hkm : ∀ m : ℕ, ∃ km : ℕ, ∀ k ≥ km, (m : ℝ) < R k := fun m =>
+    eventually_atTop.1 (hR.eventually_gt_atTop (m : ℝ))
+  choose km hkm using hkm
+  have hhol : ∀ m : ℕ, ∀ k ≥ km m, ∀ z ∈ closedBall (0 : Rn n) m,
+      ∀ z' ∈ closedBall (0 : Rn n) m, ‖f k z - f k z'‖ ≤ K * ‖z - z'‖ ^ α :=
+    fun m k hk z hz z' hz' =>
+      hf k z (closedBall_subset_ball (hkm m k hk) hz) z' (closedBall_subset_ball (hkm m k hk) hz')
+  have hbd : ∀ m : ℕ, ∀ k ≥ km m, ∀ z ∈ closedBall (0 : Rn n) m, ‖f k z‖ ≤ K * (m : ℝ) ^ α := by
+    intro m k hk z hz
+    have h := hhol m k hk z hz 0 (mem_closedBall_self (Nat.cast_nonneg m))
+    rw [hf0, sub_zero, sub_zero] at h
+    exact h.trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (norm_nonneg z) (mem_closedBall_zero_iff.1 hz) hα.le) hK)
+  -- Step 2 (Arzelà–Ascoli): along any strictly increasing `ψ`, the shifted tail
+  -- `f_{ψ(k_m + j)}` satisfies the bounds of step 1 on `B_m(0)`, so a further subsequence
+  -- converges uniformly on `B_m(0)`.
+  have hstep2 : ∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ)
+      (g : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧
+        TendstoUniformlyOn (fun j => f (ψ (χ j))) g atTop (closedBall (0 : Rn n) m) := by
+    intro m ψ hψ
+    have hge : ∀ j, km m ≤ ψ (km m + j) := fun j =>
+      (Nat.le_add_right (km m) j).trans (hψ.id_le (km m + j))
+    obtain ⟨χ', G, hχ', hG⟩ := Submission.dohr_eb_sch_bu_hds_compact_subseq n ℓ α K
+      (K * (m : ℝ) ^ α) (closedBall (0 : Rn n) m) (fun j => f (ψ (km m + j))) hα hK
+      (isCompact_closedBall 0 m) (fun j z hz => hbd m _ (hge j) z hz)
+      (fun j z hz z' hz' => hhol m _ (hge j) z hz z' hz')
+    exact ⟨fun j => km m + χ' j, G, fun a b hab => Nat.add_lt_add_left (hχ' hab) (km m), hG⟩
+  -- Steps 3–6: diagonal extraction over the balls `B_m(0)`, with a single limit `V`; every
+  -- `B_r(0)` lies in `B_{⌈r⌉}(0)`, and pointwise convergence at `z` follows from `z ∈ B_{|z|}(0)`.
+  obtain ⟨φ, V, hφ, hV⟩ := Submission.dohr_eb_sch_bu_hds_diagonal_extract n ℓ f
+    (fun m => closedBall (0 : Rn n) m) hstep2
+  have hVr : ∀ r : ℝ, TendstoUniformlyOn (fun j => f (φ j)) V atTop (closedBall (0 : Rn n) r) :=
+    fun r => (hV ⌈r⌉₊).mono (closedBall_subset_closedBall (Nat.le_ceil r))
+  have hpt : ∀ z, Tendsto (fun j => f (φ j) z) atTop (𝓝 (V z)) := fun z =>
+    (hVr ‖z‖).tendsto_at (mem_closedBall_zero_iff.2 le_rfl)
+  -- Step 7a: `f_{φ(j)}(0) = 0` for every `j`, so `V(0) = 0`.
+  have hV0 : V 0 = 0 :=
+    tendsto_nhds_unique (hpt 0) (tendsto_const_nhds.congr fun j => (hf0 (φ j)).symm)
+  -- Step 7b–c: `R_{φ(j)} → ∞`, so for large `j` both `z, z'` lie in `B̆_{R_{φ(j)}}(0)` and the
+  -- Hölder bound holds at `z, z'`; it passes to the limit, which is therefore continuous.
+  have hev : ∀ z z' : Rn n, ∀ᶠ j in atTop, ‖f (φ j) z - f (φ j) z'‖ ≤ K * ‖z - z'‖ ^ α := by
+    intro z z'
+    filter_upwards [(hR.comp hφ.tendsto_atTop).eventually_gt_atTop (max ‖z‖ ‖z'‖)] with j hj
+    exact hf (φ j) z (mem_ball_zero_iff.2 ((le_max_left _ _).trans_lt hj))
+      z' (mem_ball_zero_iff.2 ((le_max_right _ _).trans_lt hj))
+  obtain ⟨hVH, hVc⟩ := Submission.dohr_eb_sch_bu_hds_holder_of_limit n ℓ α K
+    (fun j => f (φ j)) V hα hK hpt hev
+  exact ⟨φ, V, hφ, hV0, hVc, hVH, hVr⟩
+/-- **`C¹` limit on growing balls** (blow-up step of the Schauder estimate behind Simon 7.1).
+Let `R_k → ∞`, let `W_k` be `C¹` on `B̆_{R_k}(0)` with `W_k(0) = 0`, let `V : ℝⁿ → L(ℝⁿ; ℝ^ℓ)` be
+continuous, and let `DW_k → V` uniformly on every closed ball `B_r(0)`.  Then
+`W(z) = ∫₀¹ V(tz) z dt` is `C¹` on `ℝⁿ` with `DW = V`: for `k` large,
+`W_k(z) = ∫₀¹ DW_k(tz) z dt` by the fundamental theorem of calculus, so
+`|W_k(z) − W(z)| ≤ |z| sup_{B_{|z|}(0)} ‖DW_k − V‖ → 0`, and near each point the derivatives
+converge uniformly, so the theorem on uniform limits of derivatives gives `DW = V`. -/
+theorem dohr_eb_sch_bu_contDiff_of_fderiv_tendsto : ∀ (n ℓ : ℕ) (W : ℕ → Rn n → Rn ℓ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), Tendsto R atTop atTop → (∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k))) → (∀ k, W k 0 = 0) → Continuous V → (∀ r : ℝ, TendstoUniformlyOn (fun k => fderiv ℝ (W k)) V atTop (closedBall (0 : Rn n) r)) → ∃ W' : Rn n → Rn ℓ, ContDiff ℝ 1 W' ∧ ∀ z, fderiv ℝ W' z = V z := by
+  intro n ℓ W V R hR hW hW0 hVc hV
+  -- Step 1: for `k` large (`R k > r + 1`), `W k` has derivative `DW_k(y)` at every
+  -- `y ∈ B̆_{r+1}(0)`, and `DW_k` is continuous there.
+  have hstep1 : ∀ r : ℝ, ∀ᶠ k in atTop,
+      (∀ y ∈ ball (0 : Rn n) (r + 1), HasFDerivAt (W k) (fderiv ℝ (W k) y) y) ∧
+        ContinuousOn (fderiv ℝ (W k)) (ball (0 : Rn n) (r + 1)) := by
+    intro r
+    filter_upwards [hR.eventually_gt_atTop (r + 1)] with k hk
+    have hsub : ball (0 : Rn n) (r + 1) ⊆ ball 0 (R k) := ball_subset_ball hk.le
+    refine ⟨fun y hy => ?_, ((hW k).continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).mono hsub⟩
+    exact (((hW k).differentiableOn one_ne_zero).differentiableAt
+      (isOpen_ball.mem_nhds (hsub hy))).hasFDerivAt
+  -- Steps 2–3: for `k` large, `W_k(z) = ∫₀¹ DW_k(tz) z dt` (FTC, `W_k(0) = 0`), so with
+  -- `W(z) = ∫₀¹ V(tz) z dt` we get `|W_k(z) − W(z)| ≤ |z| sup_{B_{|z|}(0)} ‖DW_k − V‖ → 0`.
+  have hconv : ∀ z : Rn n,
+      Tendsto (fun k => W k z) atTop (𝓝 (∫ t in (0 : ℝ)..1, V (t • z) z)) := by
+    intro z
+    have hmem : ∀ t ∈ uIcc (0 : ℝ) 1, t • z ∈ closedBall (0 : Rn n) ‖z‖ := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+      exact mul_le_of_le_one_left (norm_nonneg z) ht.2
+    have hmem' : ∀ t ∈ uIcc (0 : ℝ) 1, t • z ∈ ball (0 : Rn n) (‖z‖ + 1) := fun t ht =>
+      closedBall_subset_ball (lt_add_one _) (hmem t ht)
+    have hVint : IntervalIntegrable (fun t : ℝ => V (t • z) z) volume 0 1 :=
+      ((hVc.comp (continuous_id.smul continuous_const)).clm_apply
+        continuous_const).intervalIntegrable 0 1
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    have hδ : 0 < ε / (‖z‖ + 1) := by positivity
+    obtain ⟨N, hN⟩ := eventually_atTop.1
+      ((hstep1 ‖z‖).and (Metric.tendstoUniformlyOn_iff.1 (hV ‖z‖) _ hδ))
+    refine ⟨N, fun k hk => ?_⟩
+    obtain ⟨⟨hd, hc⟩, hu⟩ := hN k hk
+    have hWint : IntervalIntegrable (fun t : ℝ => fderiv ℝ (W k) (t • z) z) volume 0 1 :=
+      ContinuousOn.intervalIntegrable ((hc.comp (continuous_id.smul continuous_const).continuousOn
+        hmem').clm_apply continuousOn_const)
+    have hftc : ∫ t in (0 : ℝ)..1, fderiv ℝ (W k) (t • z) z = W k z := by
+      have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := 0) (b := 1)
+        (f := fun t : ℝ => W k (t • z)) (f' := fun t => fderiv ℝ (W k) (t • z) z)
+        (fun t ht => by
+          have h2 := (hd _ (hmem' t ht)).comp_hasDerivAt t ((hasDerivAt_id t).smul_const z)
+          rw [one_smul] at h2
+          exact h2)
+        hWint
+      simpa [hW0] using h
+    rw [dist_eq_norm, ← hftc, ← intervalIntegral.integral_sub hWint hVint]
+    calc ‖∫ t in (0 : ℝ)..1, (fderiv ℝ (W k) (t • z) z - V (t • z) z)‖
+        ≤ ε / (‖z‖ + 1) * ‖z‖ * |1 - 0| := by
+          refine intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => ?_
+          have hlt := hu (t • z) (hmem t (uIoc_subset_uIcc ht))
+          rw [dist_eq_norm, norm_sub_rev] at hlt
+          exact ((fderiv ℝ (W k) (t • z) - V (t • z)).le_opNorm z).trans
+            (mul_le_mul_of_nonneg_right hlt.le (norm_nonneg z))
+      _ < ε := by
+          rw [sub_zero, abs_one, mul_one, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+          nlinarith
+  -- Step 4: near every `x`, `DW_k → V` uniformly and `W_k → W` pointwise, so `DW(x) = V(x)`.
+  have hderiv : ∀ x : Rn n, HasFDerivAt (fun z => ∫ t in (0 : ℝ)..1, V (t • z) z) (V x) x := by
+    intro x
+    have hnhds : ∀ᶠ y in 𝓝 x, y ∈ ball (0 : Rn n) (‖x‖ + 1) :=
+      isOpen_ball.mem_nhds (mem_ball_zero_iff.2 (lt_add_one _))
+    exact hasFDerivAt_of_tendstoUniformlyOnFilter (l := atTop) (f := W)
+      (f' := fun k => fderiv ℝ (W k)) (g' := V)
+      ((hV (‖x‖ + 1)).tendstoUniformlyOnFilter.mono_right
+        (le_principal_iff.2 (mem_of_superset hnhds ball_subset_closedBall)))
+      (((hstep1 ‖x‖).prod_mk hnhds).mono fun p hp => hp.1.1 p.2 hp.2)
+      (Eventually.of_forall hconv)
+  -- Step 5: `DW = V` is continuous, so `W` is `C¹`.
+  have hfd : fderiv ℝ (fun z => ∫ t in (0 : ℝ)..1, V (t • z) z) = V :=
+    funext fun x => (hderiv x).fderiv
+  refine ⟨fun z => ∫ t in (0 : ℝ)..1, V (t • z) z,
+    contDiff_one_iff_fderiv.2 ⟨fun x => (hderiv x).differentiableAt, ?_⟩,
+    fun z => (hderiv z).fderiv⟩
+  rw [hfd]
+  exact hVc
+/-- Localization of integrals: if `f : ℝⁿ → ℝ` is continuous on an open `O` and vanishes off a
+compact `T ⊆ O`, then `f` is continuous, integrable, and `∫_O f = ∫_{ℝⁿ} f`.  At a point of `O`,
+`f` is continuous because `O` is open; a point outside `O` lies in the open set `Tᶜ` (`T` is
+closed), where `f = 0`.  So `f` is continuous with compact support (`HasCompactSupport.intro`),
+hence integrable (`Continuous.integrable_of_hasCompactSupport`), and it vanishes off `O`
+(`setIntegral_eq_integral_of_forall_compl_eq_zero`). -/
+theorem dohr_eb_sch_bu_wel_localized_integral : ∀ (n : ℕ) (f : Rn n → ℝ) (O T : Set (Rn n)), IsOpen O → IsCompact T → T ⊆ O → ContinuousOn f O → (∀ z, z ∉ T → f z = 0) → Continuous f ∧ Integrable f ∧ ∫ z in O, f z = ∫ z, f z := by
+  intro n f O T hO hT hTO hf hfT
+  have hcont : Continuous f := by
+    refine continuous_iff_continuousAt.2 fun z => ?_
+    by_cases hz : z ∈ O
+    · exact hf.continuousAt (hO.mem_nhds hz)
+    · -- `z ∉ T`, and `f = 0` on the open neighbourhood `Tᶜ` of `z`.
+      have hzT : z ∉ T := fun h => hz (hTO h)
+      have hev : (fun _ => (0 : ℝ)) =ᶠ[𝓝 z] f :=
+        Filter.mem_of_superset (hT.isClosed.isOpen_compl.mem_nhds hzT) fun w hw => (hfT w hw).symm
+      exact continuousAt_const.congr hev
+  refine ⟨hcont, hcont.integrable_of_hasCompactSupport (HasCompactSupport.intro hT hfT), ?_⟩
+  exact setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => hfT z fun h => hz (hTO h)
+/-- Convergence of integrals under uniform convergence on a compact set containing the supports
+(steps 4 and 5d of the weak-equation limit in the blow-up argument for the Schauder estimate): if
+`K ⊆ ℝⁿ` is compact, `g` and eventually every `f k` are integrable and vanish off `K`, and
+`f k → g` uniformly on `K`, then `∫ f k → ∫ g`.  For `ε > 0` put `M = 𝓛ⁿ(K) < ∞` and
+`δ = ε / (M + 1)`; for large `k`, `|∫ f k - ∫ g| = |∫_K (f k - g)| ≤ δ M < ε`. -/
+theorem dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn : ∀ (n : ℕ) (K : Set (Rn n)) (f : ℕ → Rn n → ℝ) (g : Rn n → ℝ), IsCompact K → (∀ᶠ k in atTop, Integrable (f k)) → Integrable g → (∀ᶠ k in atTop, ∀ z, z ∉ K → f k z = 0) → (∀ z, z ∉ K → g z = 0) → TendstoUniformlyOn f g atTop K → Tendsto (fun k => ∫ z, f k z) atTop (𝓝 (∫ z, g z)) := by
+  intro n K f g hK hfi hgi hfK hgK hfg
+  -- Step 1: `K` is compact, so `M = 𝓛ⁿ(K)` is finite (and `M ≥ 0`).
+  have hKfin : (volume : Measure (Rn n)) K < ∞ := hK.measure_lt_top
+  have hM : 0 ≤ (volume : Measure (Rn n)).real K := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Step 2: with `δ = ε / (M + 1) > 0`, for all large `k` the function `f k` is integrable,
+  -- vanishes off `K`, and `|g - f k| < δ` on `K`.
+  have hδ : 0 < ε / ((volume : Measure (Rn n)).real K + 1) := div_pos hε (by linarith)
+  filter_upwards [hfi, hfK, Metric.tendstoUniformlyOn_iff.1 hfg _ hδ] with k hk1 hk2 hk3
+  -- Steps 3–4: `∫ f k - ∫ g = ∫ (f k - g) = ∫_K (f k - g)`, as `f k - g` vanishes off `K`.
+  have h4 : ∫ z in K, (f k z - g z) = ∫ z, (f k z - g z) :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => by
+      rw [hk2 z hz, hgK z hz, sub_zero]
+  rw [dist_eq_norm, ← integral_sub hk1 hgi, ← h4]
+  -- Step 5: `|∫_K (f k - g)| ≤ δ M`.
+  have h5 : ‖∫ z in K, (f k z - g z)‖ ≤
+      ε / ((volume : Measure (Rn n)).real K + 1) * (volume : Measure (Rn n)).real K :=
+    norm_setIntegral_le_of_norm_le_const hKfin fun z hz => by
+      rw [← dist_eq_norm, dist_comm]
+      exact (hk3 z hz).le
+  -- Step 6: `δ M = ε M / (M + 1) < ε`.
+  have h6 : ε / ((volume : Measure (Rn n)).real K + 1) * (volume : Measure (Rn n)).real K < ε := by
+    rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    linarith
+  exact h5.trans_lt h6
+
+end Submission
+/-- **Uniform limits of the perturbed pairings and of the error forms** (steps 4 and 5a–c of the
+weak-equation limit in the Schauder blow-up estimate for Simon 7.1).  Let `A` be a continuous
+bilinear form on `L = L(ℝⁿ, ℝ^ℓ)`, let `U_k → V` uniformly on `K`, and let `‖z‖ ≤ r`, `‖Q z‖ ≤ Z`
+and `‖V z‖ ≤ N` on `K`.  If `c_k → 0`, `d_k → 0` and, for all large `k` and all `z ∈ K`,
+`|ah_k(z)[P][P'] − A[P][P']| ≤ c_k (1 + ‖z‖^α) ‖P‖ ‖P'‖` and `|Ψ_k(z)[P]| ≤ d_k ‖z‖^α ‖P‖`, then
+`ah_k(z)[U_k(z)][Q(z)] → A[V(z)][Q(z)]` and `Ψ_k(z)[Q(z)] → 0` uniformly on `K`.  The bound
+`|A[P][P']| ≤ C_A ‖P‖ ‖P'‖` comes from `ContinuousLinearMap.isBoundedBilinearMap`. -/
+theorem Submission.dohr_eb_sch_bu_wel_pairing_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (α r Z N : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V Q : Rn n → (Rn n →L[ℝ] Rn ℓ)) (K : Set (Rn n)) (c d : ℕ → ℝ), 0 ≤ α → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → TendstoUniformlyOn U V atTop K → (∀ z ∈ K, ‖z‖ ≤ r) → (∀ z ∈ K, ‖Q z‖ ≤ Z) → (∀ z ∈ K, ‖V z‖ ≤ N) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P P' : Rn n →L[ℝ] Rn ℓ, |ah k z P P' - A P P'| ≤ c k * (1 + ‖z‖ ^ α) * ‖P‖ * ‖P'‖) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P : Rn n →L[ℝ] Rn ℓ, |Ψ k z P| ≤ d k * ‖z‖ ^ α * ‖P‖) → TendstoUniformlyOn (fun k z => ah k z (U k z) (Q z)) (fun z => A (V z) (Q z)) atTop K ∧ TendstoUniformlyOn (fun k z => Ψ k z (Q z)) (fun _ => (0 : ℝ)) atTop K := by
+  intro n ℓ α r Z N A ah Ψ U V Q K c d hα hc hd hUV hr hZ hN hah hΨ
+  -- Step 1: nonnegative bounds on `K`: `‖z‖ ^ α ≤ R := (max r 0) ^ α`, `‖Q z‖ ≤ Z₀ := max Z 0`
+  -- and `‖V z‖ ≤ N₀ := max N 0` (no case split when `K` is empty).
+  obtain ⟨R, hR0, hR⟩ : ∃ R : ℝ, 0 ≤ R ∧ ∀ z ∈ K, ‖z‖ ^ α ≤ R :=
+    ⟨max r 0 ^ α, Real.rpow_nonneg (le_max_right r 0) α, fun z hz =>
+      Real.rpow_le_rpow (norm_nonneg z) ((hr z hz).trans (le_max_left r 0)) hα⟩
+  obtain ⟨Z₀, hZ₀0, hZ₀⟩ : ∃ Z₀ : ℝ, 0 ≤ Z₀ ∧ ∀ z ∈ K, ‖Q z‖ ≤ Z₀ :=
+    ⟨max Z 0, le_max_right Z 0, fun z hz => (hZ z hz).trans (le_max_left Z 0)⟩
+  obtain ⟨N₀, hN₀0, hN₀⟩ : ∃ N₀ : ℝ, 0 ≤ N₀ ∧ ∀ z ∈ K, ‖V z‖ ≤ N₀ :=
+    ⟨max N 0, le_max_right N 0, fun z hz => (hN z hz).trans (le_max_left N 0)⟩
+  -- Step 2: the bilinear bound `‖A P P'‖ ≤ C_A ‖P‖ ‖P'‖`.
+  obtain ⟨CA, hCA0, hCA⟩ : ∃ CA > 0, ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖A P P'‖ ≤ CA * ‖P‖ * ‖P'‖ :=
+    A.isBoundedBilinearMap.bound
+  refine ⟨?_, ?_⟩
+  · -- Claim (i).  Step 3: with `C₁ = (1 + R)(N₀ + 1) Z₀` and `C₂ = C_A Z₀`, eventually
+    -- `|c_k| < (ε/2)/(C₁ + 1)`, `‖U_k z − V z‖ < min 1 ((ε/2)/(C₂ + 1))` on `K`, and the
+    -- coefficient bound holds on `K`.
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hC₁ : 0 < (1 + R) * (N₀ + 1) * Z₀ + 1 := by positivity
+    have hC₂ : 0 < CA * Z₀ + 1 := by positivity
+    have hδ₁ : 0 < ε / 2 / ((1 + R) * (N₀ + 1) * Z₀ + 1) := by positivity
+    have hδ₂ : 0 < min 1 (ε / 2 / (CA * Z₀ + 1)) := by positivity
+    filter_upwards [Metric.tendsto_nhds.mp hc _ hδ₁, Metric.tendstoUniformlyOn_iff.mp hUV _ hδ₂,
+      hah] with k hck hUk hahk z hz
+    rw [Real.dist_eq, sub_zero] at hck
+    have hP : ‖U k z - V z‖ < min 1 (ε / 2 / (CA * Z₀ + 1)) := by
+      rw [← dist_eq_norm, dist_comm]
+      exact hUk z hz
+    have hP₁ : ‖U k z - V z‖ ≤ 1 := hP.le.trans (min_le_left _ _)
+    have hP₂ : ‖U k z - V z‖ < ε / 2 / (CA * Z₀ + 1) := hP.trans_le (min_le_right _ _)
+    -- Step 4: `‖U_k z‖ ≤ ‖V z‖ + ‖U_k z − V z‖ ≤ N₀ + 1`.
+    have hUn : ‖U k z‖ ≤ N₀ + 1 :=
+      calc ‖U k z‖ = ‖V z + (U k z - V z)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖V z‖ + ‖U k z - V z‖ := norm_add_le _ _
+        _ ≤ N₀ + 1 := add_le_add (hN₀ z hz) hP₁
+    -- Step 5: `A[V][Q] − ah_k[U_k][Q] = −((ah_k − A)[U_k][Q] + A[U_k − V][Q])`.
+    have hdec : A (V z) (Q z) - ah k z (U k z) (Q z) =
+        -((ah k z (U k z) (Q z) - A (U k z) (Q z)) + A (U k z - V z) (Q z)) := by
+      rw [map_sub, sub_apply]
+      ring
+    -- Step 6: the first term is `≤ |c_k| C₁ < ε/2`.
+    have h₁ : |ah k z (U k z) (Q z) - A (U k z) (Q z)| < ε / 2 := by
+      have hQ := hZ₀ z hz
+      have hRz := hR z hz
+      calc |ah k z (U k z) (Q z) - A (U k z) (Q z)|
+          ≤ c k * (1 + ‖z‖ ^ α) * ‖U k z‖ * ‖Q z‖ := hahk z hz _ _
+        _ ≤ |c k| * (1 + ‖z‖ ^ α) * ‖U k z‖ * ‖Q z‖ := by
+            gcongr
+            exact le_abs_self (c k)
+        _ ≤ |c k| * (1 + R) * (N₀ + 1) * Z₀ := by gcongr
+        _ ≤ |c k| * ((1 + R) * (N₀ + 1) * Z₀ + 1) := by
+            nlinarith [abs_nonneg (c k)]
+        _ < ε / 2 := (lt_div_iff₀ hC₁).mp hck
+    -- Step 7: the second term is `≤ ‖U_k z − V z‖ C₂ < ε/2`.
+    have h₂ : |A (U k z - V z) (Q z)| < ε / 2 := by
+      have hQ := hZ₀ z hz
+      calc |A (U k z - V z) (Q z)| = ‖A (U k z - V z) (Q z)‖ := (Real.norm_eq_abs _).symm
+        _ ≤ CA * ‖U k z - V z‖ * ‖Q z‖ := hCA _ _
+        _ ≤ CA * ‖U k z - V z‖ * Z₀ := by gcongr
+        _ ≤ ‖U k z - V z‖ * (CA * Z₀ + 1) := by
+            nlinarith [norm_nonneg (U k z - V z)]
+        _ < ε / 2 := (lt_div_iff₀ hC₂).mp hP₂
+    -- Step 8: the triangle inequality.
+    rw [Real.dist_eq, hdec, abs_neg]
+    calc |(ah k z (U k z) (Q z) - A (U k z) (Q z)) + A (U k z - V z) (Q z)|
+        ≤ |ah k z (U k z) (Q z) - A (U k z) (Q z)| + |A (U k z - V z) (Q z)| := abs_add_le _ _
+      _ < ε / 2 + ε / 2 := add_lt_add h₁ h₂
+      _ = ε := add_halves ε
+  · -- Claim (ii), Step 9: with `C₃ = R Z₀`, eventually `|d_k| < ε/(C₃ + 1)` and the error bound
+    -- holds on `K`, so `|Ψ_k z (Q z)| ≤ |d_k| C₃ < ε`.
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hC₃ : 0 < R * Z₀ + 1 := by positivity
+    have hδ : 0 < ε / (R * Z₀ + 1) := by positivity
+    filter_upwards [Metric.tendsto_nhds.mp hd _ hδ, hΨ] with k hdk hΨk z hz
+    rw [Real.dist_eq, sub_zero] at hdk
+    have hQ := hZ₀ z hz
+    have hRz := hR z hz
+    rw [Real.dist_eq, zero_sub, abs_neg]
+    calc |Ψ k z (Q z)| ≤ d k * ‖z‖ ^ α * ‖Q z‖ := hΨk z hz _
+      _ ≤ |d k| * ‖z‖ ^ α * ‖Q z‖ := by
+          gcongr
+          exact le_abs_self (d k)
+      _ ≤ |d k| * R * Z₀ := by gcongr
+      _ ≤ |d k| * (R * Z₀ + 1) := by nlinarith [abs_nonneg (d k)]
+      _ < ε := (lt_div_iff₀ hC₃).mp hdk
+
+namespace Submission
+
+/-- **Limit of the weak equations on growing balls** (blow-up step of the Schauder estimate behind
+Simon 7.1).  Let `R_k → ∞`, `c_k, d_k → 0`, `V` continuous and `U_k → V` uniformly on every closed
+ball `B_r(0)`.  Suppose that on `B̆_{R_k}(0)` the coefficients `â_k`, `Ψ_k` are continuous with
+`|â_k(z)[P][Q] − A[P][Q]| ≤ c_k (1 + |z|^α) ‖P‖ ‖Q‖` and `|Ψ_k(z)[Q]| ≤ d_k |z|^α ‖Q‖`, and that
+`∫_{B̆_{R_k}(0)} â_k[U_k][Dζ] = ∫_{B̆_{R_k}(0)} Ψ_k[Dζ]` for every `C¹` map `ζ` with compact support
+in `B̆_{R_k}(0)`.  Then `∫ A[V][Dζ] = 0` for every compactly supported `C¹` map `ζ : ℝⁿ → ℝ^ℓ`: if
+`spt ζ ⊆ B_r(0)`, then for `k` large `B_r(0) ⊆ B̆_{R_k}(0)`, the integrands vanish off `B_r(0)` and
+converge uniformly on it, to `A[V][Dζ]` and to `0`, so
+`∫ A[V][Dζ] = lim ∫ â_k[U_k][Dζ] = lim ∫ Ψ_k[Dζ] = 0`. -/
+theorem dohr_eb_sch_bu_weak_eq_limit : ∀ (n ℓ : ℕ) (α : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)) (R c d : ℕ → ℝ), 0 ≤ α → Tendsto R atTop atTop → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → Continuous V → (∀ r : ℝ, TendstoUniformlyOn U V atTop (closedBall (0 : Rn n) r)) → (∀ k, ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) => ah k p.1 p.2.1 p.2.2) (ball (0 : Rn n) (R k) ×ˢ univ)) → (∀ k, ContinuousOn (Ψ k) (ball (0 : Rn n) (R k))) → (∀ k, ContinuousOn (U k) (ball (0 : Rn n) (R k))) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ P Q : Rn n →L[ℝ] Rn ℓ, |ah k z P Q - A P Q| ≤ c k * (1 + ‖z‖ ^ α) * ‖P‖ * ‖Q‖) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ Q : Rn n →L[ℝ] Rn ℓ, |Ψ k z Q| ≤ d k * ‖z‖ ^ α * ‖Q‖) → (∀ k, ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) (R k) → ∫ z in ball (0 : Rn n) (R k), ah k z (U k z) (fderiv ℝ ζ z) = ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z, A (V z) (fderiv ℝ ζ z) = 0 := by
+  intro n ℓ α A ah Ψ U V R c d hα hR hc hd hVc hUV hahc hΨc hUc hah hΨ hweak ζ hζ hζc
+  -- Step 1: `tsupport ζ ⊆ B_r(0)`; `Z` bounds `‖Dζ‖` and `N` bounds `‖V‖` on `B_r(0)`.
+  have hT : IsCompact (tsupport ζ) := hζc.isCompact
+  obtain ⟨r, hTr⟩ := hT.isBounded.subset_closedBall (0 : Rn n)
+  have hK : IsCompact (closedBall (0 : Rn n) r) := isCompact_closedBall 0 r
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  obtain ⟨Z, hZ⟩ := hDζ.bounded_above_of_compact_support (hζc.fderiv ℝ)
+  obtain ⟨N, hN⟩ := hK.exists_bound_of_continuousOn hVc.continuousOn
+  -- `Dζ` vanishes off `tsupport ζ`, hence off `B_r(0)`.
+  have hDζ0 : ∀ z, z ∉ tsupport ζ → fderiv ℝ ζ z = 0 := fun z hz =>
+    Function.notMem_support.1 fun h => hz (support_fderiv_subset ℝ h)
+  have hDζK : ∀ z, z ∉ closedBall (0 : Rn n) r → fderiv ℝ ζ z = 0 := fun z hz =>
+    hDζ0 z fun h => hz (hTr h)
+  -- Step 2: for `k` large, `r < R_k`, so `B_r(0) ⊆ B̆_{R_k}(0)`.
+  have hRr : ∀ᶠ k in atTop, r < R k := hR.eventually_gt_atTop r
+  -- Step 3: for `k` large both integrands are integrable, and the weak equation on `B̆_{R_k}(0)`
+  -- becomes `∫ â_k[U_k][Dζ] = ∫ Ψ_k[Dζ]` over `ℝⁿ`; `A[V][Dζ]` is integrable.
+  have hloc : ∀ᶠ k in atTop,
+      (Integrable fun z => ah k z (U k z) (fderiv ℝ ζ z)) ∧
+      (Integrable fun z => Ψ k z (fderiv ℝ ζ z)) ∧
+      ∫ z, ah k z (U k z) (fderiv ℝ ζ z) = ∫ z, Ψ k z (fderiv ℝ ζ z) := by
+    filter_upwards [hRr] with k hk
+    have hTR : tsupport ζ ⊆ ball (0 : Rn n) (R k) := hTr.trans (closedBall_subset_ball hk)
+    have hFk : (Integrable fun z => ah k z (U k z) (fderiv ℝ ζ z)) ∧
+        ∫ z in ball (0 : Rn n) (R k), ah k z (U k z) (fderiv ℝ ζ z) =
+          ∫ z, ah k z (U k z) (fderiv ℝ ζ z) :=
+      (Submission.dohr_eb_sch_bu_wel_localized_integral n
+        (fun z => ah k z (U k z) (fderiv ℝ ζ z)) _ _ isOpen_ball hT hTR
+        ((hahc k).comp (continuousOn_id.prodMk ((hUc k).prodMk hDζ.continuousOn))
+          fun z hz => ⟨hz, mem_univ _⟩)
+        fun z hz => by simp only [hDζ0 z hz, map_zero]).2
+    have hEk : (Integrable fun z => Ψ k z (fderiv ℝ ζ z)) ∧
+        ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z) = ∫ z, Ψ k z (fderiv ℝ ζ z) :=
+      (Submission.dohr_eb_sch_bu_wel_localized_integral n (fun z => Ψ k z (fderiv ℝ ζ z)) _ _
+        isOpen_ball hT hTR ((hΨc k).clm_apply hDζ.continuousOn)
+        fun z hz => by simp only [hDζ0 z hz, map_zero]).2
+    exact ⟨hFk.1, hEk.1, by rw [← hFk.2, ← hEk.2]; exact hweak k ζ hζ hζc hTR⟩
+  have hF0 : Integrable fun z => A (V z) (fderiv ℝ ζ z) :=
+    (Submission.dohr_eb_sch_bu_wel_localized_integral n (fun z => A (V z) (fderiv ℝ ζ z)) univ _
+      isOpen_univ hT (subset_univ _) ((A.continuous.comp hVc).clm_apply hDζ).continuousOn
+      fun z hz => by simp only [hDζ0 z hz, map_zero]).2.1
+  -- Steps 4–5, pointwise: on `B_r(0)`, `â_k[U_k][Dζ] → A[V][Dζ]` and `Ψ_k[Dζ] → 0` uniformly.
+  obtain ⟨hF, hE⟩ := Submission.dohr_eb_sch_bu_wel_pairing_tendstoUniformlyOn n ℓ α r Z N A ah Ψ
+    U V (fderiv ℝ ζ) (closedBall 0 r) c d hα hc hd (hUV r)
+    (fun z hz => mem_closedBall_zero_iff.1 hz) (fun z _ => hZ z) hN
+    (hRr.mono fun k hk z hz P P' => hah k z (closedBall_subset_ball hk hz) P P')
+    (hRr.mono fun k hk z hz P => hΨ k z (closedBall_subset_ball hk hz) P)
+  -- Steps 4–5, integrals: all integrands vanish off `B_r(0)`, so
+  -- `∫ â_k[U_k][Dζ] → ∫ A[V][Dζ]` and `∫ Ψ_k[Dζ] → 0`.
+  have hFlim := Submission.dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn n
+    (closedBall 0 r) (fun k z => ah k z (U k z) (fderiv ℝ ζ z))
+    (fun z => A (V z) (fderiv ℝ ζ z)) hK (hloc.mono fun k hk => hk.1) hF0
+    (Eventually.of_forall fun k z hz => by simp only [hDζK z hz, map_zero])
+    (fun z hz => by simp only [hDζK z hz, map_zero]) hF
+  have hElim := Submission.dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn n
+    (closedBall 0 r) (fun k z => Ψ k z (fderiv ℝ ζ z)) (fun _ => (0 : ℝ)) hK
+    (hloc.mono fun k hk => hk.2.1) (integrable_zero _ _ _)
+    (Eventually.of_forall fun k z hz => by simp only [hDζK z hz, map_zero])
+    (fun _ _ => rfl) hE
+  -- Step 6: `∫ A[V][Dζ] = lim ∫ â_k[U_k][Dζ] = lim ∫ Ψ_k[Dζ] = 0`.
+  rw [integral_zero] at hElim
+  exact tendsto_nhds_unique hFlim (hElim.congr' (hloc.mono fun k hk => hk.2.2.symm))
+/-- **Blow-up limit for the Schauder estimate** (compactness and limit equation of the blow-up
+argument).  Rescaled solutions `W_k` of `div (âₖ(z) DW_k) = div Ψ_k` on growing balls `B_{R_k}(0)`,
+with `DW_k` uniformly `K`-`α`-Hölder, `DW_k(0) = 0` and `|DW_k(e_k)| = 1` at a point `|e_k| ≤ 1`,
+and coefficients whose oscillation `c_k` and right sides `d_k` tend to `0`, have a subsequential
+limit `W ∈ C¹(ℝⁿ)` with `DW(0) = 0`, `DW` globally `K`-`α`-Hölder, `|DW(e₀)| = 1`, solving the
+constant-coefficient equation `∫ A[DW][Dζ] = 0` for a limit `A` of the frozen coefficients
+`âₖ(0)`, which keeps their Legendre and boundedness constants.  This is the compactness step of
+the blow-up proof of the Schauder estimates (L. Simon, *Schauder estimates by scaling*,
+Calc. Var. PDE 5 (1997), 391–407). -/
+theorem dohr_eb_sch_bu_blowup_limit : ∀ (n ℓ : ℕ) (α lam M K : ℝ) (W : ℕ → Rn n → Rn ℓ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : ℕ → Rn n) (R c d : ℕ → ℝ), 0 < α → 0 ≤ K → Tendsto R atTop atTop → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → (∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k))) → (∀ k, W k 0 = 0) → (∀ k, fderiv ℝ (W k) 0 = 0) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k), ‖fderiv ℝ (W k) z - fderiv ℝ (W k) z'‖ ≤ K * ‖z - z'‖ ^ α) → (∀ k, ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) => ah k p.1 p.2.1 p.2.2) (ball (0 : Rn n) (R k) ×ˢ univ)) → (∀ k, ContinuousOn (Ψ k) (ball (0 : Rn n) (R k))) → (∀ k, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ ah k 0 P P) → (∀ k, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |ah k 0 P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ P Q : Rn n →L[ℝ] Rn ℓ, |ah k z P Q - ah k 0 P Q| ≤ c k * ‖z‖ ^ α * ‖P‖ * ‖Q‖) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ Q : Rn n →L[ℝ] Rn ℓ, |Ψ k z Q| ≤ d k * ‖z‖ ^ α * ‖Q‖) → (∀ k, ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) (R k) → ∫ z in ball (0 : Rn n) (R k), ah k z (fderiv ℝ (W k) z) (fderiv ℝ ζ z) = ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z)) → (∀ k, ‖e k‖ ≤ 1) → (∀ᶠ k in atTop, ‖fderiv ℝ (W k) (e k)‖ = 1) → ∃ (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W' : Rn n → Rn ℓ), (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) ∧ (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ M * ‖P‖ * ‖Q‖) ∧ ContDiff ℝ 1 W' ∧ (∀ z z' : Rn n, ‖fderiv ℝ W' z - fderiv ℝ W' z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z, A (fderiv ℝ W' z) (fderiv ℝ ζ z) = 0) ∧ fderiv ℝ W' 0 = 0 ∧ ∃ e₀ : Rn n, ‖fderiv ℝ W' e₀‖ = 1 := by
+  intro n ℓ α lam M K W ah Ψ e R c d hα hK hR hc hd hW hW0 hDW0 hHol hahc hΨc hell hbd hahz hΨ
+    hweak he hunit
+  -- At the default pending-synthesis depth, instance search does not find the operator-norm
+  -- structure on the space of bilinear forms on `L(ℝⁿ, ℝ^ℓ)`, so it is supplied explicitly; this
+  -- space is finite-dimensional, hence proper.
+  let : NormedAddCommGroup ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ) (E := Rn n →L[ℝ] Rn ℓ)
+      (F := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (σ₁₂ := RingHom.id ℝ)
+  let : NormedSpace ℝ ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ) (E := Rn n →L[ℝ] Rn ℓ)
+      (F := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (σ₁₂ := RingHom.id ℝ)
+  have : FiniteDimensional ℝ ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) :=
+    ContinuousLinearMap.finiteDimensional (𝕜 := ℝ) (E := Rn n →L[ℝ] Rn ℓ)
+      (F := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+  have : ProperSpace ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) :=
+    FiniteDimensional.proper_real _
+  -- Step 1: `‖âₖ(0)‖ ≤ max M 0`, so a subsequence `â_{φA j}(0)` converges to some `A` in the
+  -- finite-dimensional (hence proper) space of bilinear forms.
+  obtain ⟨A, -, φA, hφA, hA⟩ :=
+    (isCompact_closedBall (0 : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+      (max M 0)).tendsto_subseq (x := fun k => ah k 0) fun k => by
+        rw [mem_closedBall_zero_iff]
+        refine ContinuousLinearMap.opNorm_le_bound₂ _ (le_max_right M 0) fun P Q => ?_
+        rw [Real.norm_eq_abs]
+        exact (hbd k P Q).trans (mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right (le_max_left M 0) (norm_nonneg P)) (norm_nonneg Q))
+  -- Step 2: the points `e_{φA j}` lie in `B̄₁(0)`; a further subsequence converges to `e₀`.
+  obtain ⟨e₀, -, φe, hφe, he₀⟩ := (isCompact_closedBall (0 : Rn n) 1).tendsto_subseq
+    (x := fun j => e (φA j)) fun j => mem_closedBall_zero_iff.mpr (he (φA j))
+  -- Step 3: a diagonal subsequence along which `DW` converges locally uniformly to a continuous,
+  -- globally `K`-`α`-Hölder `V` with `V(0) = 0`.
+  obtain ⟨φ₂, V, hφ₂, hV0, hVc, hVHol, hVunif⟩ :=
+    Submission.dohr_eb_sch_bu_holder_diag_subseq n ℓ α K (fun j => fderiv ℝ (W (φA (φe j))))
+      (fun j => R (φA (φe j))) hα hK (hR.comp (hφA.comp hφe).tendsto_atTop)
+      (fun j => hDW0 (φA (φe j))) (fun j => hHol (φA (φe j)))
+  set ψ : ℕ → ℕ := fun i => φA (φe (φ₂ i))
+  have hψ : Tendsto ψ atTop atTop := ((hφA.comp hφe).comp hφ₂).tendsto_atTop
+  have hU : ∀ r : ℝ, TendstoUniformlyOn (fun i => fderiv ℝ (W (ψ i))) V atTop
+      (closedBall (0 : Rn n) r) := hVunif
+  -- Step 4: the limit `W'` is `C¹` on `ℝⁿ` with `DW' = V`.
+  obtain ⟨W', hW'c, hW'V⟩ := Submission.dohr_eb_sch_bu_contDiff_of_fderiv_tendsto n ℓ
+    (fun i => W (ψ i)) V (fun i => R (ψ i)) (hR.comp hψ) (fun i => hW (ψ i))
+    (fun i => hW0 (ψ i)) hVc hU
+  -- Step 5: `|âψᵢ(z)[P][Q] - A[P][Q]| ≤ (|c_{ψ i}| + ‖âψᵢ(0) - A‖)(1 + |z|^α)‖P‖‖Q‖`.
+  have hAψ : Tendsto (fun i => ah (ψ i) 0) atTop (𝓝 A) := hA.comp (hφe.comp hφ₂).tendsto_atTop
+  have hε : Tendsto (fun i => ‖ah (ψ i) 0 - A‖) atTop (𝓝 0) :=
+    tendsto_iff_norm_sub_tendsto_zero.mp hAψ
+  have hεb : ∀ i, ∀ P Q : Rn n →L[ℝ] Rn ℓ,
+      |ah (ψ i) 0 P Q - A P Q| ≤ ‖ah (ψ i) 0 - A‖ * ‖P‖ * ‖Q‖ := fun i P Q => by
+    have h := (ah (ψ i) 0 - A).le_opNorm₂ P Q
+    rwa [sub_apply, sub_apply, Real.norm_eq_abs] at h
+  have hc' : Tendsto (fun i => |c (ψ i)| + ‖ah (ψ i) 0 - A‖) atTop (𝓝 0) := by
+    simpa using (hc.comp hψ).abs.add hε
+  have hcoef : ∀ i, ∀ z ∈ ball (0 : Rn n) (R (ψ i)), ∀ P Q : Rn n →L[ℝ] Rn ℓ,
+      |ah (ψ i) z P Q - A P Q| ≤ (|c (ψ i)| + ‖ah (ψ i) 0 - A‖) * (1 + ‖z‖ ^ α) * ‖P‖ * ‖Q‖ := by
+    intro i z hz P Q
+    have h1 := hahz (ψ i) z hz P Q
+    have h2 := hεb i P Q
+    have hzα : 0 ≤ ‖z‖ ^ α := Real.rpow_nonneg (norm_nonneg z) α
+    have hPQ : 0 ≤ ‖P‖ * ‖Q‖ := mul_nonneg (norm_nonneg P) (norm_nonneg Q)
+    have hε0 : 0 ≤ ‖ah (ψ i) 0 - A‖ := norm_nonneg _
+    have hc0 : 0 ≤ |c (ψ i)| - c (ψ i) := sub_nonneg.mpr (le_abs_self _)
+    calc |ah (ψ i) z P Q - A P Q|
+        ≤ |ah (ψ i) z P Q - ah (ψ i) 0 P Q| + |ah (ψ i) 0 P Q - A P Q| := abs_sub_le _ _ _
+      _ ≤ c (ψ i) * ‖z‖ ^ α * ‖P‖ * ‖Q‖ + ‖ah (ψ i) 0 - A‖ * ‖P‖ * ‖Q‖ := add_le_add h1 h2
+      _ ≤ (|c (ψ i)| + ‖ah (ψ i) 0 - A‖) * (1 + ‖z‖ ^ α) * ‖P‖ * ‖Q‖ := by
+        nlinarith [mul_nonneg (abs_nonneg (c (ψ i))) hPQ, mul_nonneg (mul_nonneg hc0 hzα) hPQ,
+          mul_nonneg (mul_nonneg hε0 hzα) hPQ]
+  -- Step 6: the weak equations pass to the limit.
+  have hlim := Submission.dohr_eb_sch_bu_weak_eq_limit n ℓ α A (fun i => ah (ψ i))
+    (fun i => Ψ (ψ i)) (fun i => fderiv ℝ (W (ψ i))) V (fun i => R (ψ i))
+    (fun i => |c (ψ i)| + ‖ah (ψ i) 0 - A‖) (fun i => d (ψ i)) hα.le (hR.comp hψ) hc'
+    (hd.comp hψ) hVc hU (fun i => hahc (ψ i)) (fun i => hΨc (ψ i))
+    (fun i => (hW (ψ i)).continuousOn_fderiv_of_isOpen isOpen_ball le_rfl) hcoef
+    (fun i => hΨ (ψ i)) (fun i => hweak (ψ i))
+  -- Step 7: the Legendre and boundedness constants pass to the limit `A`.
+  have hellA : ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P := by
+    intro P
+    have hT : Tendsto (fun i => A P P + ‖ah (ψ i) 0 - A‖ * ‖P‖ * ‖P‖) atTop
+        (𝓝 (A P P + 0 * ‖P‖ * ‖P‖)) :=
+      tendsto_const_nhds.add ((hε.mul_const ‖P‖).mul_const ‖P‖)
+    rw [zero_mul, zero_mul, add_zero] at hT
+    refine ge_of_tendsto' hT fun i => ?_
+    have h1 := hell (ψ i) P
+    have h2 := hεb i P P
+    have h3 := le_abs_self (ah (ψ i) 0 P P - A P P)
+    linarith
+  have hbdA : ∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ M * ‖P‖ * ‖Q‖ := by
+    intro P Q
+    have hT : Tendsto (fun i => M * ‖P‖ * ‖Q‖ + ‖ah (ψ i) 0 - A‖ * ‖P‖ * ‖Q‖) atTop
+        (𝓝 (M * ‖P‖ * ‖Q‖ + 0 * ‖P‖ * ‖Q‖)) :=
+      tendsto_const_nhds.add ((hε.mul_const ‖P‖).mul_const ‖Q‖)
+    rw [zero_mul, zero_mul, add_zero] at hT
+    refine ge_of_tendsto' hT fun i => ?_
+    have h1 := abs_le.mp (hbd (ψ i) P Q)
+    have h2 := abs_le.mp (hεb i P Q)
+    rw [abs_le]
+    constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
+  -- Step 8: `DWψᵢ(eψᵢ) → V(e₀)`, and these have norm `1` for large `i`, so `|V(e₀)| = 1`.
+  have heψ : Tendsto (fun i => e (ψ i)) atTop (𝓝[closedBall (0 : Rn n) 1] e₀) :=
+    tendsto_nhdsWithin_iff.mpr ⟨he₀.comp hφ₂.tendsto_atTop,
+      Eventually.of_forall fun i => mem_closedBall_zero_iff.mpr (he (ψ i))⟩
+  have hVe₀ : ‖V e₀‖ = 1 :=
+    tendsto_nhds_unique ((hU 1).tendsto_comp hVc.continuousWithinAt heψ).norm
+      (tendsto_const_nhds.congr' ((hψ.eventually hunit).mono fun i hi => hi.symm))
+  -- Step 9: conclusion.
+  refine ⟨A, W', hellA, hbdA, hW'c, fun z z' => ?_, fun ζ hζ hζc => ?_, ?_, e₀, ?_⟩
+  · rw [hW'V z, hW'V z']
+    exact hVHol z z'
+  · simp_rw [hW'V]
+    exact hlim ζ hζ hζc
+  · rw [hW'V 0, hV0]
+  · rw [hW'V e₀]
+    exact hVe₀
 /-- **Zero mean of a linear form of `Dζ`** (step (1a) of the Schauder estimate in the elliptic
 bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).  For a continuous linear form `c` on
 `L(ℝⁿ, ℝ^ℓ)` and a compactly supported `C¹` map `ζ : ℝⁿ → ℝ^ℓ`, `∫ c(Dζ(x)) dx = 0`.
@@ -512,6 +1273,7 @@ theorem dohr_eb_sch_integral_clm_fderiv_eq_zero : ∀ (n ℓ : ℕ) (c : (Rn n �
       (Eventually.of_forall fun y => integral_add_right_eq_self ζ y)
   simpa using hderiv.unique hzero
 
+end Submission
 /-- **Interpolation bound for `Dw`** (step (1b) of the Schauder estimate in the elliptic bootstrap
 for Simon 7.1).  If `w` is `C¹` on `B̆_ρ(x)` with `|w| ≤ S` there and
 `‖Dw(y) − Dw(z)‖ ≤ K |y − z|^α` for `y, z ∈ B̆_ρ(x)`, then `‖Dw(x)‖ ≤ 2S/t + t^α K` for every
@@ -570,6 +1332,8 @@ theorem Submission.dohr_eb_sch_fderiv_norm_interpolation : ∀ (n ℓ : ℕ) (w 
   rw [hv', norm_smul, Real.norm_of_nonneg (norm_nonneg v)]
   exact (mul_le_mul_of_nonneg_left (hunit _ (norm_smul_inv_norm hv)) (norm_nonneg v)).trans_eq
     (mul_comm _ _)
+namespace Submission
+
 /-- **Affine rescaling of `C¹` weak solutions** (scaling step of the Schauder estimate in the
 elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).  Let `w` be `C¹` on the open
 set `U` with `∫_U a(x)[Dw][Dζ] = ∫_U Φ(x)[Dζ]` for every `ζ ∈ C¹_c(U; ℝ^ℓ)`, and let
@@ -1959,6 +2723,419 @@ theorem dohr_eb_sch_liouville_const_coeff : ∀ (n ℓ : ℕ) (α lam Lam K : �
     simpa only [mul_zero] using ((h0.const_mul Kp).const_mul 2).mono_left nhdsWithin_le_nhds
   exact sub_eq_zero.mp (norm_le_zero_iff.mp
     (ge_of_tendsto hlim (eventually_nhdsWithin_of_forall hε)))
+
+/-- **Blow-up Hölder estimate on the unit ball** (L. Simon's scaling argument; step 5 of the
+Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).
+For `0 < α < 1`, `λ > 0`, `M` and `δ > 0` there is `C_δ ≥ 0` such that every `C¹` weak solution `w`
+on `B₁ = B̆₁(0)` of `∫ a(x)[Dw][Dζ] = ∫ Φ(x)[Dζ]`, with `a` Legendre-elliptic (`λ`), bounded and
+`α`-Hölder (`M`), `Φ` `α`-Hölder (`G ≥ 0`), `|w| ≤ S` and `[Dw]_{α;B₁} ≤ K`, satisfies
+`‖Dw(x) − Dw(y)‖ ≤ (δK + C_δ(S + G))|x − y|^α` on `B̆_{1/2}(0)`.
+Proof by contradiction: violating data for `C_δ = k` are normalized by the difference quotient
+`σ_k = ‖Dw_k(x_k) − Dw_k(y_k)‖/ρ_k^α`, `ρ_k = |x_k − y_k|`; the interpolation bound gives
+`‖Dw_k‖ = o(σ_k)` on `B̆_{1/2}(0)`, hence `ρ_k → 0`. The blow-ups
+`W_k(z) = (σ_k ρ_k^{1+α})⁻¹ (w_k(x_k + ρ_k z) − w_k(x_k) − ρ_k Dw_k(x_k) z)` solve rescaled systems
+(rescale, zero mean, affine subtraction) with `DW_k(0) = 0`, `[DW_k]_α ≤ δ⁻¹`,
+`‖DW_k((y_k − x_k)/ρ_k)‖ = 1` and errors tending to `0`.  The blow-up limit is a global solution of a
+constant-coefficient Legendre system with `DW(0) = 0`, `‖DW(e₀)‖ = 1` and `[DW]_α ≤ δ⁻¹`, whose
+gradient is constant by the Liouville theorem: a contradiction. -/
+theorem dohr_eb_sch_blowup_holder_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ lam M δ : ℝ, 0 < lam → 0 < δ → ∃ Cδ : ℝ, 0 ≤ Cδ ∧ ∀ (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ) (K S G : ℝ), 0 ≤ G → (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ G * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ S) → ContDiffOn ℝ 1 w (ball (0 : Rn n) 1) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) 1 → ∫ x in ball (0 : Rn n) 1, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in ball (0 : Rn n) 1, Φ x (fderiv ℝ ζ x)) → ∀ x ∈ ball (0 : Rn n) (1 / 2), ∀ y ∈ ball (0 : Rn n) (1 / 2), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ (δ * K + Cδ * (S + G)) * ‖x - y‖ ^ α := by
+  -- Norms, subtraction and continuity on `L(ℝⁿ, ℝ^ℓ)` and its dual need a deeper instance search.
+  set_option maxSynthPendingDepth 3 in
+  intro n ℓ _hn α hα hα1 lam M δ hlam hδ
+  -- Step (0b): `α`-Hölder dependence on the base point gives continuity of linear forms in
+  -- operator norm, and joint continuity of `(z, P, Q) ↦ b(z)[P][Q]`.
+  have hcontL : ∀ (f : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : Set (Rn n)) (C : ℝ),
+      (∀ z ∈ U, ∀ z' ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, |f z P - f z' P| ≤ C * ‖z - z'‖ ^ α * ‖P‖) →
+      ContinuousOn f U := by
+    intro f U C hf z₀ hz₀
+    have hb : ∀ z ∈ U, ‖f z - f z₀‖ ≤ |C| * ‖z - z₀‖ ^ α := by
+      intro z hz
+      refine ContinuousLinearMap.opNorm_le_bound _
+        (mul_nonneg (abs_nonneg C) (Real.rpow_nonneg (norm_nonneg _) α)) fun P => ?_
+      rw [sub_apply, Real.norm_eq_abs]
+      calc |f z P - f z₀ P| ≤ C * ‖z - z₀‖ ^ α * ‖P‖ := hf z hz z₀ hz₀ P
+        _ ≤ |C| * ‖z - z₀‖ ^ α * ‖P‖ := by gcongr; exact le_abs_self C
+    have hg : Continuous fun z : Rn n => |C| * ‖z - z₀‖ ^ α :=
+      continuous_const.mul ((continuous_id.sub continuous_const).norm.rpow_const
+        fun _ => Or.inr hα.le)
+    have hg0 : Tendsto (fun z : Rn n => |C| * ‖z - z₀‖ ^ α) (𝓝[U] z₀)
+        (𝓝 (|C| * ‖z₀ - z₀‖ ^ α)) := hg.continuousWithinAt
+    rw [sub_self, norm_zero, Real.zero_rpow hα.ne', mul_zero] at hg0
+    exact tendsto_iff_norm_sub_tendsto_zero.mpr
+      (squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
+        (eventually_nhdsWithin_of_forall hb) hg0)
+  have hcontJ : ∀ (b : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+      (U : Set (Rn n)) (C : ℝ),
+      (∀ z ∈ U, ∀ z' ∈ U, ∀ P Q : Rn n →L[ℝ] Rn ℓ,
+        |b z P Q - b z' P Q| ≤ C * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) →
+      ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        b p.1 p.2.1 p.2.2) (U ×ˢ univ) := by
+    intro b U C hb p₀ hp₀
+    have hfr : Continuous fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        b p₀.1 p.2.1 p.2.2 :=
+      ((b p₀.1).continuous.comp continuous_snd.fst).clm_apply continuous_snd.snd
+    have hg : Continuous fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        |C| * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖ :=
+      ((continuous_const.mul ((continuous_fst.sub continuous_const).norm.rpow_const
+        fun _ => Or.inr hα.le)).mul continuous_snd.fst.norm).mul continuous_snd.snd.norm
+    have hg0 : Tendsto (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        |C| * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖) (𝓝[U ×ˢ univ] p₀)
+        (𝓝 (|C| * ‖p₀.1 - p₀.1‖ ^ α * ‖p₀.2.1‖ * ‖p₀.2.2‖)) := hg.continuousWithinAt
+    rw [sub_self, norm_zero, Real.zero_rpow hα.ne', mul_zero, zero_mul, zero_mul] at hg0
+    have hdiff : Tendsto (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        b p.1 p.2.1 p.2.2 - b p₀.1 p.2.1 p.2.2) (𝓝[U ×ˢ univ] p₀) (𝓝 0) := by
+      refine squeeze_zero_norm' ?_ hg0
+      filter_upwards [self_mem_nhdsWithin] with p hp
+      rw [Real.norm_eq_abs]
+      calc |b p.1 p.2.1 p.2.2 - b p₀.1 p.2.1 p.2.2|
+          ≤ C * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖ := hb _ hp.1 _ hp₀.1 _ _
+        _ ≤ |C| * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖ := by gcongr; exact le_abs_self C
+    have hsum := hdiff.add hfr.continuousWithinAt
+    simp only [sub_add_cancel, zero_add] at hsum
+    exact hsum
+  -- Step 1: contradiction hypothesis; for each `k` take violating data with `C_δ = k`.
+  by_contra hcon
+  push Not at hcon
+  choose a Φ w K S G hG hell hbd haH hΦH hwS hwC hwH hweak x hx y hy hviol using
+    fun k : ℕ => hcon (k : ℝ) (Nat.cast_nonneg k)
+  have h0B : (0 : Rn n) ∈ ball (0 : Rn n) 1 := mem_ball_self one_pos
+  have hx1 : ∀ k, x k ∈ ball (0 : Rn n) 1 := fun k => ball_subset_ball (by norm_num) (hx k)
+  have hy1 : ∀ k, y k ∈ ball (0 : Rn n) 1 := fun k => ball_subset_ball (by norm_num) (hy k)
+  have hxn : ∀ k, ‖x k‖ < 1 / 2 := fun k => mem_ball_zero_iff.mp (hx k)
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℕ → ℝ, ∀ k, ρ k = ‖x k - y k‖ := ⟨_, fun _ => rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : ℕ → ℝ, ∀ k,
+      N k = ‖fderiv ℝ (w k) (x k) - fderiv ℝ (w k) (y k)‖ := ⟨_, fun _ => rfl⟩
+  have hviol' : ∀ k : ℕ, (δ * K k + k * (S k + G k)) * ρ k ^ α < N k := fun k => by
+    rw [hρ, hN]; exact hviol k
+  -- `x_k ≠ y_k`, so `ρ_k > 0`; `K_k, S_k ≥ 0` and `N_k > 0`.
+  have hρpos : ∀ k, 0 < ρ k := by
+    intro k
+    rw [hρ]
+    refine norm_pos_iff.mpr fun hxy => ?_
+    have h := hviol k
+    rw [sub_eq_zero.mp hxy, sub_self, sub_self, norm_zero, norm_zero,
+      Real.zero_rpow hα.ne', mul_zero] at h
+    exact lt_irrefl 0 h
+  have hραpos : ∀ k, 0 < ρ k ^ α := fun k => Real.rpow_pos_of_pos (hρpos k) α
+  have hK0 : ∀ k, 0 ≤ K k := by
+    intro k
+    have h := hwH k (x k) (hx1 k) (y k) (hy1 k)
+    rw [← hρ, ← hN] at h
+    by_contra hneg
+    push Not at hneg
+    have h1 : K k * ρ k ^ α < 0 := mul_neg_of_neg_of_pos hneg (hραpos k)
+    have h2 : 0 ≤ N k := by rw [hN]; exact norm_nonneg _
+    linarith
+  have hS0 : ∀ k, 0 ≤ S k := fun k => (norm_nonneg _).trans (hwS k 0 h0B)
+  have hsplit : ∀ k : ℕ, (δ * K k + k * (S k + G k)) * ρ k ^ α =
+      δ * K k * ρ k ^ α + (k * S k * ρ k ^ α + k * G k * ρ k ^ α) := fun k => by ring
+  have hKρ : ∀ k, 0 ≤ δ * K k * ρ k ^ α := fun k =>
+    mul_nonneg (mul_nonneg hδ.le (hK0 k)) (hραpos k).le
+  have hSρ : ∀ k : ℕ, 0 ≤ (k : ℝ) * S k * ρ k ^ α := fun k =>
+    mul_nonneg (mul_nonneg (Nat.cast_nonneg k) (hS0 k)) (hραpos k).le
+  have hGρ : ∀ k : ℕ, 0 ≤ (k : ℝ) * G k * ρ k ^ α := fun k =>
+    mul_nonneg (mul_nonneg (Nat.cast_nonneg k) (hG k)) (hραpos k).le
+  have hNpos : ∀ k, 0 < N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hKρ k, hSρ k, hGρ k]
+  have hKN : ∀ k, δ * K k * ρ k ^ α ≤ N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hSρ k, hGρ k]
+  have hSN : ∀ k : ℕ, (k : ℝ) * S k * ρ k ^ α ≤ N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hKρ k, hGρ k]
+  have hGN : ∀ k : ℕ, (k : ℝ) * G k * ρ k ^ α ≤ N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hKρ k, hSρ k]
+  -- Step 3: small gradients.  The interpolation bound with `t = k^{-1/2}` on `B̆_{1/2}(z)` gives
+  -- `‖Dw_k(z)‖ ρ_k^α ≤ ε_k N_k` on `B̆_{1/2}(0)`, `ε_k = 2k^{-1/2} + k^{-α/2}/δ → 0`.
+  obtain ⟨ε, hε⟩ : ∃ ε : ℕ → ℝ, ∀ k : ℕ,
+      ε k = 2 / Real.sqrt k + (Real.sqrt k)⁻¹ ^ α / δ := ⟨_, fun _ => rfl⟩
+  have hinterp : ∀ k : ℕ, 5 ≤ k → ∀ z ∈ ball (0 : Rn n) (1 / 2),
+      ‖fderiv ℝ (w k) z‖ * ρ k ^ α ≤ ε k * N k := by
+    intro k hk z hz
+    have hk' : (5 : ℝ) ≤ k := by exact_mod_cast hk
+    have hsq2 : 2 < Real.sqrt k := by
+      rw [show (2 : ℝ) = Real.sqrt 4 by
+        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      exact Real.sqrt_lt_sqrt (by norm_num) (by linarith)
+    have hsq : 0 < Real.sqrt k := by linarith
+    have ht : 0 < (Real.sqrt k)⁻¹ := inv_pos.mpr hsq
+    have ht2 : (Real.sqrt k)⁻¹ < 1 / 2 := by
+      rw [one_div]; exact inv_strictAnti₀ (by norm_num) hsq2
+    have hsub : ball z (1 / 2) ⊆ ball (0 : Rn n) 1 :=
+      ball_subset_ball' (by rw [dist_zero_right]; linarith [mem_ball_zero_iff.mp hz])
+    have hI := Submission.dohr_eb_sch_fderiv_norm_interpolation n ℓ (w k) z (1 / 2)
+      (Real.sqrt k)⁻¹ α (S k) (K k) hα.le (hK0 k) ht ht2 ((hwC k).mono hsub)
+      (fun y' hy' => hwS k y' (hsub hy'))
+      (fun y' hy' z' hz' => hwH k y' (hsub hy') z' (hsub hz'))
+    have hkk : Real.sqrt k * Real.sqrt k = k := Real.mul_self_sqrt (Nat.cast_nonneg k)
+    have e1 : 2 * S k / (Real.sqrt k)⁻¹ * ρ k ^ α ≤ 2 / Real.sqrt k * N k := by
+      rw [div_inv_eq_mul, div_mul_eq_mul_div, le_div_iff₀ hsq]
+      calc 2 * S k * Real.sqrt k * ρ k ^ α * Real.sqrt k
+          = 2 * ((Real.sqrt k * Real.sqrt k) * S k * ρ k ^ α) := by ring
+        _ = 2 * ((k : ℝ) * S k * ρ k ^ α) := by rw [hkk]
+        _ ≤ 2 * N k := by linarith [hSN k]
+    have e2 : (Real.sqrt k)⁻¹ ^ α * K k * ρ k ^ α ≤ (Real.sqrt k)⁻¹ ^ α / δ * N k := by
+      have htα : 0 ≤ (Real.sqrt k)⁻¹ ^ α := Real.rpow_nonneg ht.le α
+      rw [div_mul_eq_mul_div, le_div_iff₀ hδ]
+      calc (Real.sqrt k)⁻¹ ^ α * K k * ρ k ^ α * δ
+          = (Real.sqrt k)⁻¹ ^ α * (δ * K k * ρ k ^ α) := by ring
+        _ ≤ (Real.sqrt k)⁻¹ ^ α * N k := mul_le_mul_of_nonneg_left (hKN k) htα
+    calc ‖fderiv ℝ (w k) z‖ * ρ k ^ α
+        ≤ (2 * S k / (Real.sqrt k)⁻¹ + (Real.sqrt k)⁻¹ ^ α * K k) * ρ k ^ α :=
+          mul_le_mul_of_nonneg_right hI (hραpos k).le
+      _ = 2 * S k / (Real.sqrt k)⁻¹ * ρ k ^ α + (Real.sqrt k)⁻¹ ^ α * K k * ρ k ^ α := by ring
+      _ ≤ 2 / Real.sqrt k * N k + (Real.sqrt k)⁻¹ ^ α / δ * N k := add_le_add e1 e2
+      _ = ε k * N k := by rw [hε]; ring
+  have hεt : Tendsto ε atTop (𝓝 0) := by
+    have hinv : Tendsto (fun k : ℕ => (Real.sqrt k)⁻¹) atTop (𝓝 0) :=
+      tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)
+    have h1 : Tendsto (fun k : ℕ => 2 / Real.sqrt k) atTop (𝓝 0) := by
+      simpa [div_eq_mul_inv] using hinv.const_mul 2
+    have h2 : Tendsto (fun k : ℕ => (Real.sqrt k)⁻¹ ^ α / δ) atTop (𝓝 0) := by
+      have h3 := ((Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto.comp hinv).div_const δ
+      rw [Real.zero_rpow hα.ne', zero_div] at h3
+      exact h3
+    have h4 := h1.add h2
+    rw [add_zero] at h4
+    exact h4.congr fun k => (hε k).symm
+  -- Step 4: the scale tends to `0`: `ρ_k^α = N_k/σ_k ≤ 2ε_k`.
+  have hρα_le : ∀ k, 5 ≤ k → ρ k ^ α ≤ 2 * ε k := by
+    intro k hk
+    have h1 := hinterp k hk (x k) (hx k)
+    have h2 := hinterp k hk (y k) (hy k)
+    have h3 : N k ≤ ‖fderiv ℝ (w k) (x k)‖ + ‖fderiv ℝ (w k) (y k)‖ := by
+      rw [hN]; exact norm_sub_le _ _
+    have h4 : N k * ρ k ^ α ≤ N k * (2 * ε k) := by
+      calc N k * ρ k ^ α
+          ≤ (‖fderiv ℝ (w k) (x k)‖ + ‖fderiv ℝ (w k) (y k)‖) * ρ k ^ α :=
+            mul_le_mul_of_nonneg_right h3 (hραpos k).le
+        _ = ‖fderiv ℝ (w k) (x k)‖ * ρ k ^ α + ‖fderiv ℝ (w k) (y k)‖ * ρ k ^ α := by ring
+        _ ≤ ε k * N k + ε k * N k := add_le_add h1 h2
+        _ = N k * (2 * ε k) := by ring
+    exact le_of_mul_le_mul_left h4 (hNpos k)
+  have hραt : Tendsto (fun k => ρ k ^ α) atTop (𝓝 0) := by
+    have h2ε : Tendsto (fun k => 2 * ε k) atTop (𝓝 0) := by simpa using hεt.const_mul 2
+    refine squeeze_zero' (Eventually.of_forall fun k => (hραpos k).le) ?_ h2ε
+    filter_upwards [eventually_ge_atTop 5] with k hk using hρα_le k hk
+  have hρt : Tendsto ρ atTop (𝓝 0) := by
+    have h1 := (Real.continuousAt_rpow_const 0 α⁻¹ (Or.inr (inv_nonneg.mpr hα.le))).tendsto.comp
+      hραt
+    rw [Real.zero_rpow (inv_ne_zero hα.ne')] at h1
+    exact h1.congr fun k => Real.rpow_rpow_inv (hρpos k).le hα.ne'
+  have hρhalf : ∀ᶠ k in atTop, ρ k < 1 / 2 := hρt.eventually (Iio_mem_nhds (by norm_num))
+  -- Step 5: the blow-up sequence on `D_k = B̆_{R_k}(0)`, `R_k = 1/(2ρ_k)`.
+  obtain ⟨s, hs⟩ : ∃ s : ℕ → ℝ, ∀ k, s k = (ρ k * N k)⁻¹ := ⟨_, fun _ => rfl⟩
+  obtain ⟨R, hR⟩ : ∃ R : ℕ → ℝ, ∀ k, R k = (2 * ρ k)⁻¹ := ⟨_, fun _ => rfl⟩
+  obtain ⟨P₀, hP₀⟩ : ∃ P₀ : ℕ → (Rn n →L[ℝ] Rn ℓ), ∀ k,
+      P₀ k = ρ k • fderiv ℝ (w k) (x k) := ⟨_, fun _ => rfl⟩
+  obtain ⟨ah, hah⟩ : ∃ ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ,
+      ∀ k z, ah k z = a k (x k + ρ k • z) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨W, hW⟩ : ∃ W : ℕ → Rn n → Rn ℓ, ∀ k,
+      W k = fun z => s k • (w k (x k + ρ k • z) - w k (x k) - P₀ k z) := ⟨_, fun _ => rfl⟩
+  obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ∀ k z,
+      Ψ k z = s k • ((ρ k • Φ k (x k + ρ k • z) - ρ k • Φ k (x k)) -
+        (ah k z (P₀ k) - a k (x k) (P₀ k))) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨e, he⟩ : ∃ e : ℕ → Rn n, ∀ k, e k = (ρ k)⁻¹ • (y k - x k) := ⟨_, fun _ => rfl⟩
+  have hspos : ∀ k, 0 < s k := fun k => by
+    rw [hs]; exact inv_pos.mpr (mul_pos (hρpos k) (hNpos k))
+  have hsρ : ∀ k, s k * ρ k = (N k)⁻¹ := fun k => by
+    rw [hs, mul_inv, mul_comm (ρ k)⁻¹, mul_assoc, inv_mul_cancel₀ (hρpos k).ne', mul_one]
+  have hRpos : ∀ k, 0 < R k := fun k => by
+    rw [hR]; exact inv_pos.mpr (mul_pos two_pos (hρpos k))
+  have hρR : ∀ k, ρ k * R k = 1 / 2 := fun k => by
+    rw [hR, mul_inv, ← mul_assoc, mul_comm (ρ k), mul_assoc, mul_inv_cancel₀ (hρpos k).ne',
+      mul_one, one_div]
+  have hmap : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), x k + ρ k • z ∈ ball (0 : Rn n) 1 := by
+    intro k z hz
+    rw [mem_ball_zero_iff] at hz ⊢
+    calc ‖x k + ρ k • z‖ ≤ ‖x k‖ + ‖ρ k • z‖ := norm_add_le _ _
+      _ = ‖x k‖ + ρ k * ‖z‖ := by rw [norm_smul, Real.norm_of_nonneg (hρpos k).le]
+      _ < 1 / 2 + ρ k * R k := add_lt_add (hxn k) (mul_lt_mul_of_pos_left hz (hρpos k))
+      _ = 1 := by rw [hρR k]; norm_num
+  have hscale : ∀ k (z z' : Rn n),
+      ‖(x k + ρ k • z) - (x k + ρ k • z')‖ ^ α = ρ k ^ α * ‖z - z'‖ ^ α := by
+    intro k z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_of_nonneg (hρpos k).le,
+      Real.mul_rpow (hρpos k).le (norm_nonneg _)]
+  -- The rescaled maps `w_k(x_k + ρ_k ·)` solve the rescaled system on `D_k` (sibling rescale).
+  have hres := fun k => Submission.dohr_eb_sch_weak_eq_affine_rescale n ℓ (a k) (Φ k) (w k)
+    (ball 0 1) (x k) 0 (ρ k) (R k) (hρpos k) isOpen_ball
+    (by
+      rw [smul_zero, add_zero, hρR k]
+      exact ball_subset_ball' (by rw [dist_zero_right]; linarith [hxn k]))
+    (hwC k) (hweak k)
+  -- Step (0b) for the rescaled coefficients.
+  have hJ : ∀ k, ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+      ah k p.1 p.2.1 p.2.2) (ball (0 : Rn n) (R k) ×ˢ univ) := by
+    intro k
+    refine hcontJ (ah k) (ball 0 (R k)) (M * ρ k ^ α) fun z hz z' hz' P Q => ?_
+    rw [hah, hah]
+    calc |a k (x k + ρ k • z) P Q - a k (x k + ρ k • z') P Q|
+        ≤ M * ‖(x k + ρ k • z) - (x k + ρ k • z')‖ ^ α * ‖P‖ * ‖Q‖ :=
+          haH k _ (hmap k z hz) _ (hmap k z' hz') P Q
+      _ = M * ρ k ^ α * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ := by rw [hscale]; ring
+  have hΘc : ∀ k, ContinuousOn (fun z => ρ k • Φ k (x k + ρ k • z)) (ball (0 : Rn n) (R k)) := by
+    intro k
+    refine hcontL _ (ball 0 (R k)) (ρ k * G k * ρ k ^ α) fun z hz z' hz' P => ?_
+    simp only [smul_apply, smul_eq_mul]
+    rw [← mul_sub, abs_mul, abs_of_pos (hρpos k)]
+    calc ρ k * |Φ k (x k + ρ k • z) P - Φ k (x k + ρ k • z') P|
+        ≤ ρ k * (G k * ‖(x k + ρ k • z) - (x k + ρ k • z')‖ ^ α * ‖P‖) :=
+          mul_le_mul_of_nonneg_left (hΦH k _ (hmap k z hz) _ (hmap k z' hz') P) (hρpos k).le
+      _ = ρ k * G k * ρ k ^ α * ‖z - z'‖ ^ α * ‖P‖ := by rw [hscale]; ring
+  -- Step 6: the blow-ups solve the rescaled system with error `Ψ_k`
+  -- (sibling zero mean and child `weak_eq_sub_affine`).
+  have hsub := fun k => Submission.dohr_eb_sch_bu_weak_eq_sub_affine n ℓ (ah k)
+    (fun z => ρ k • Φ k (x k + ρ k • z)) (fun z => w k (x k + ρ k • z)) (ball 0 (R k))
+    (a k (x k)) (ρ k • Φ k (x k)) (P₀ k) (w k (x k)) (s k) isOpen_ball (hJ k) (hΘc k)
+    (hres k).1 (fun ζ hζ hζc hζs => by simpa only [hah] using (hres k).2.2 ζ hζ hζc hζs)
+    (fun ζ hζ hζc => Submission.dohr_eb_sch_integral_clm_fderiv_eq_zero n ℓ _ ζ hζ hζc)
+    (fun ζ hζ hζc => Submission.dohr_eb_sch_integral_clm_fderiv_eq_zero n ℓ _ ζ hζ hζc)
+  have hWC : ∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k)) := fun k => by
+    rw [hW k]; exact (hsub k).1
+  have hDW : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k),
+      fderiv ℝ (W k) z = s k • (ρ k • fderiv ℝ (w k) (x k + ρ k • z) - P₀ k) := by
+    intro k z hz
+    rw [hW k, (hsub k).2.1 z hz, (hres k).2.1 z hz]
+  have hW0 : ∀ k, W k 0 = 0 := fun k => by
+    rw [hW k]; simp
+  have hDW0 : ∀ k, fderiv ℝ (W k) 0 = 0 := fun k => by
+    rw [hDW k 0 (mem_ball_self (hRpos k)), hP₀, smul_zero, add_zero, sub_self, smul_zero]
+  have hWH : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k),
+      ‖fderiv ℝ (W k) z - fderiv ℝ (W k) z'‖ ≤ δ⁻¹ * ‖z - z'‖ ^ α := by
+    intro k z hz z' hz'
+    rw [hDW k z hz, hDW k z' hz']
+    have h1 : s k • (ρ k • fderiv ℝ (w k) (x k + ρ k • z) - P₀ k) -
+        s k • (ρ k • fderiv ℝ (w k) (x k + ρ k • z') - P₀ k) =
+        (s k * ρ k) • (fderiv ℝ (w k) (x k + ρ k • z) - fderiv ℝ (w k) (x k + ρ k • z')) := by
+      rw [← smul_sub, sub_sub_sub_cancel_right, ← smul_sub, smul_smul]
+    rw [h1, norm_smul, Real.norm_of_nonneg (mul_pos (hspos k) (hρpos k)).le, hsρ]
+    have h2 := hwH k _ (hmap k z hz) _ (hmap k z' hz')
+    rw [hscale] at h2
+    have h3 : (N k)⁻¹ * (K k * ρ k ^ α) ≤ δ⁻¹ := by
+      rw [inv_mul_le_iff₀ (hNpos k), le_mul_inv_iff₀ hδ]
+      calc K k * ρ k ^ α * δ = δ * K k * ρ k ^ α := by ring
+        _ ≤ N k := hKN k
+    calc (N k)⁻¹ * ‖fderiv ℝ (w k) (x k + ρ k • z) - fderiv ℝ (w k) (x k + ρ k • z')‖
+        ≤ (N k)⁻¹ * (K k * (ρ k ^ α * ‖z - z'‖ ^ α)) :=
+          mul_le_mul_of_nonneg_left h2 (inv_nonneg.mpr (hNpos k).le)
+      _ = (N k)⁻¹ * (K k * ρ k ^ α) * ‖z - z'‖ ^ α := by ring
+      _ ≤ δ⁻¹ * ‖z - z'‖ ^ α := mul_le_mul_of_nonneg_right h3 (Real.rpow_nonneg (norm_nonneg _) α)
+  -- Bounds for the frozen and rescaled coefficients and for the error `Ψ_k`.
+  have hah0 : ∀ k, ah k 0 = a k (x k) := fun k => by rw [hah, smul_zero, add_zero]
+  have hell0 : ∀ k (P : Rn n →L[ℝ] Rn ℓ), lam * ‖P‖ ^ 2 ≤ ah k 0 P P := fun k P => by
+    rw [hah0]; exact hell k (x k) (hx1 k) P
+  have hbd0 : ∀ k (P Q : Rn n →L[ℝ] Rn ℓ), |ah k 0 P Q| ≤ M * ‖P‖ * ‖Q‖ := fun k P Q => by
+    rw [hah0]; exact hbd k (x k) (hx1 k) P Q
+  have hahb : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ P Q : Rn n →L[ℝ] Rn ℓ,
+      |ah k z P Q - ah k 0 P Q| ≤ M * ρ k ^ α * ‖z‖ ^ α * ‖P‖ * ‖Q‖ := by
+    intro k z hz P Q
+    have h := haH k _ (hmap k z hz) _ (hmap k 0 (mem_ball_self (hRpos k))) P Q
+    rw [hscale, sub_zero] at h
+    rw [hah k z, hah k 0]
+    calc _ ≤ M * (ρ k ^ α * ‖z‖ ^ α) * ‖P‖ * ‖Q‖ := h
+      _ = M * ρ k ^ α * ‖z‖ ^ α * ‖P‖ * ‖Q‖ := by ring
+  have hΨd : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k),
+      ∀ Q : Rn n →L[ℝ] Rn ℓ, |Ψ k z Q - Ψ k z' Q| ≤
+        (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k) * ‖z - z'‖ ^ α * ‖Q‖ := by
+    intro k z hz z' hz' Q
+    have hΦ := hΦH k _ (hmap k z hz) _ (hmap k z' hz') Q
+    have ha := haH k _ (hmap k z hz) _ (hmap k z' hz') (P₀ k) Q
+    have hP : ‖P₀ k‖ = ρ k * ‖fderiv ℝ (w k) (x k)‖ := by
+      rw [hP₀, norm_smul, Real.norm_of_nonneg (hρpos k).le]
+    rw [hscale] at hΦ ha
+    rw [hP] at ha
+    have hexp : Ψ k z Q - Ψ k z' Q = s k * (ρ k * (Φ k (x k + ρ k • z) Q -
+        Φ k (x k + ρ k • z') Q) - (a k (x k + ρ k • z) (P₀ k) Q -
+        a k (x k + ρ k • z') (P₀ k) Q)) := by
+      rw [hΨ, hΨ, hah, hah]
+      simp only [smul_apply, sub_apply, smul_eq_mul]
+      ring
+    rw [hexp, abs_mul, abs_of_pos (hspos k)]
+    have htri : |ρ k * (Φ k (x k + ρ k • z) Q - Φ k (x k + ρ k • z') Q) -
+        (a k (x k + ρ k • z) (P₀ k) Q - a k (x k + ρ k • z') (P₀ k) Q)| ≤
+        ρ k * (G k * (ρ k ^ α * ‖z - z'‖ ^ α) * ‖Q‖) +
+          M * (ρ k ^ α * ‖z - z'‖ ^ α) * (ρ k * ‖fderiv ℝ (w k) (x k)‖) * ‖Q‖ := by
+      refine (abs_sub _ _).trans ?_
+      rw [abs_mul, abs_of_pos (hρpos k)]
+      exact add_le_add (mul_le_mul_of_nonneg_left hΦ (hρpos k).le) ha
+    calc s k * |ρ k * (Φ k (x k + ρ k • z) Q - Φ k (x k + ρ k • z') Q) -
+          (a k (x k + ρ k • z) (P₀ k) Q - a k (x k + ρ k • z') (P₀ k) Q)|
+        ≤ s k * (ρ k * (G k * (ρ k ^ α * ‖z - z'‖ ^ α) * ‖Q‖) +
+          M * (ρ k ^ α * ‖z - z'‖ ^ α) * (ρ k * ‖fderiv ℝ (w k) (x k)‖) * ‖Q‖) :=
+          mul_le_mul_of_nonneg_left htri (hspos k).le
+      _ = (s k * ρ k) * (G k + M * ‖fderiv ℝ (w k) (x k)‖) * ρ k ^ α * ‖z - z'‖ ^ α * ‖Q‖ := by
+          ring
+      _ = (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k) * ‖z - z'‖ ^ α * ‖Q‖ := by
+          rw [hsρ]; ring
+  have hΨc : ∀ k, ContinuousOn (Ψ k) (ball (0 : Rn n) (R k)) := fun k => hcontL (Ψ k) _ _ (hΨd k)
+  have hΨb : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ Q : Rn n →L[ℝ] Rn ℓ,
+      |Ψ k z Q| ≤ (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k) * ‖z‖ ^ α * ‖Q‖ := by
+    intro k z hz Q
+    have h := hΨd k z hz 0 (mem_ball_self (hRpos k)) Q
+    have h0 : Ψ k 0 Q = 0 := by
+      rw [hΨ, hah]
+      simp
+    rwa [h0, sub_zero, sub_zero] at h
+  have hWeq : ∀ k (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball (0 : Rn n) (R k) →
+      ∫ z in ball (0 : Rn n) (R k), ah k z (fderiv ℝ (W k) z) (fderiv ℝ ζ z) =
+        ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z) := by
+    intro k ζ hζ hζc hζs
+    rw [hW k]
+    simp only [hΨ]
+    exact (hsub k).2.2 ζ hζ hζc hζs
+  -- The unit vectors `e_k = (y_k − x_k)/ρ_k` with `‖DW_k(e_k)‖ = 1`.
+  have he1 : ∀ k, ‖e k‖ = 1 := fun k => by
+    rw [he, norm_smul, norm_inv, Real.norm_of_nonneg (hρpos k).le, norm_sub_rev, ← hρ,
+      inv_mul_cancel₀ (hρpos k).ne']
+  have hxe : ∀ k, x k + ρ k • e k = y k := fun k => by
+    rw [he, smul_smul, mul_inv_cancel₀ (hρpos k).ne', one_smul, add_sub_cancel]
+  have heN : ∀ᶠ k in atTop, ‖fderiv ℝ (W k) (e k)‖ = 1 := by
+    filter_upwards [hρhalf] with k hk
+    have hek : e k ∈ ball (0 : Rn n) (R k) := by
+      rw [mem_ball_zero_iff, he1, hR, one_lt_inv₀ (mul_pos two_pos (hρpos k))]
+      linarith
+    rw [hDW k (e k) hek, hxe, hP₀, ← smul_sub, smul_smul, norm_smul,
+      Real.norm_of_nonneg (mul_pos (hspos k) (hρpos k)).le, hsρ, norm_sub_rev, ← hN,
+      inv_mul_cancel₀ (hNpos k).ne']
+  -- Limits of the scale-dependent constants.
+  have hRt : Tendsto R atTop atTop := by
+    have h2ρ : Tendsto (fun k => 2 * ρ k) atTop (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.mpr ⟨?_, Eventually.of_forall fun k => ?_⟩
+      · simpa using hρt.const_mul 2
+      · exact mul_pos two_pos (hρpos k)
+    exact (tendsto_inv_nhdsGT_zero.comp h2ρ).congr fun k => (hR k).symm
+  have hct : Tendsto (fun k => M * ρ k ^ α) atTop (𝓝 0) := by
+    simpa using hραt.const_mul M
+  have hdt : Tendsto (fun k => (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k))
+      atTop (𝓝 0) := by
+    have hG' : Tendsto (fun k => G k * (ρ k ^ α / N k)) atTop (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun k =>
+        mul_nonneg (hG k) (div_nonneg (hραpos k).le (hNpos k).le)) ?_
+        tendsto_one_div_atTop_nhds_zero_nat
+      filter_upwards [eventually_ge_atTop 1] with k hk
+      have hk' : (0 : ℝ) < k := by exact_mod_cast hk
+      rw [mul_div_assoc', div_le_div_iff₀ (hNpos k) hk', one_mul]
+      calc G k * ρ k ^ α * k = k * G k * ρ k ^ α := by ring
+        _ ≤ N k := hGN k
+    have hD' : Tendsto (fun k => ‖fderiv ℝ (w k) (x k)‖ * (ρ k ^ α / N k)) atTop (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun k =>
+        mul_nonneg (norm_nonneg _) (div_nonneg (hραpos k).le (hNpos k).le)) ?_ hεt
+      filter_upwards [eventually_ge_atTop 5] with k hk
+      rw [mul_div_assoc', div_le_iff₀ (hNpos k)]
+      exact hinterp k hk (x k) (hx k)
+    have h := hG'.add (hD'.const_mul M)
+    rw [mul_zero, add_zero] at h
+    exact h.congr fun k => by ring
+  -- Steps 7–8 (child `blowup_limit`) and step 9 (sibling Liouville theorem).
+  obtain ⟨A, W', hA1, hA2, hW'C, hW'H, hW'eq, hW'0, e₀, he₀⟩ :=
+    Submission.dohr_eb_sch_bu_blowup_limit n ℓ α lam M δ⁻¹ W ah Ψ e R (fun k => M * ρ k ^ α)
+      (fun k => (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k)) hα
+      (inv_nonneg.mpr hδ.le) hRt hct hdt hWC hW0 hDW0 hWH hJ hΨc hell0 hbd0 hahb hΨb hWeq
+      (fun k => (he1 k).le) heN
+  have hconst := Submission.dohr_eb_sch_liouville_const_coeff n ℓ α lam M δ⁻¹ A W' hα hα1 hlam
+    hA1 hA2 hW'C hW'H hW'eq e₀ 0
+  rw [hconst, hW'0, norm_zero] at he₀
+  exact zero_ne_one he₀
 
 end Submission
 
