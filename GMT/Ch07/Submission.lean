@@ -553,6 +553,23 @@ theorem Submission.idtp_cse_rc_af_polar_angle_fderiv : ∀ (P : ℕ) (a e x : Eu
   field_simp
   ring
 
+/-- **Simon 7.3.3, proof of (1)** (2-dimensional minimizing cones, chapter text lines 501–504;
+polar angle for the rotation field, Ch. 4, 2.2–2.6): if `a, e` is an orthonormal pair in the
+`2`-dimensional subspace `Q`, then (i) `|p_Q y|² = (y · a)² + (y · e)²`, and (ii) on `{x · a > 0}`
+the angle `f(y) = arctan((y · e)/(y · a))` is `C¹` with
+`Df(x)v = ((x · a)e − (x · e)a) · v / |p_Q x|²`.  `(a, e)` is an orthonormal basis of `Q`, so
+`p_Q y = (y · a)a + (y · e)e`, which gives (i); the quotient and `arctan` chain rules give `Df(x)v`
+with denominator `(x · a)² + (x · e)²`, which is `|p_Q x|²` by (i). -/
+theorem Submission.idtp_cse_rc_angle_fderiv : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ y : Euclid P, ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ContDiffAt ℝ 1 (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x ∧ ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x v = inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2 := by
+  intro P Q a e hQ ha he ha1 he1 hae
+  -- (i): `p_Q y = (y · a)a + (y · e)e`, so `|p_Q y|² = (y · a)² + (y · e)²`
+  have hnorm : ∀ y : Euclid P, ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 :=
+    fun y => (Submission.idtp_cse_rc_af_plane_projection P Q a e hQ ha he ha1 he1 hae y).2
+  refine ⟨hnorm, fun x hx => ?_⟩
+  -- (ii): `x · a ≠ 0`, and the denominator `(x · a)² + (x · e)²` of `Df(x)v` is `|p_Q x|²` by (i)
+  obtain ⟨hf, hDf⟩ := Submission.idtp_cse_rc_af_polar_angle_fderiv P a e x hx.ne'
+  exact ⟨hf, fun v => by rw [hDf v, hnorm x]⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
