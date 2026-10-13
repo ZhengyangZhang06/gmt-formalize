@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.pairing_integrable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6(b) of the parent proof, stated for an arbitrary continuous compactly supported covector field β. That step bounds |g_ω(x)| by θ(x)·sup|ω|·Λ^n·1_{ψ(tsupport ω)}(x), uses |ξ(x)(β)| ≤ ‖β‖ for unit orientations, and gets integrability of the bound from R.locallyIntegrable_mult. The parent applies this lemma with β(x) = ω(φ(x))∘Dφ(x), whose support lies in the compact set ψ(tsupport ω) ⊆ U.
+Notation: E := ℝ^P, H^n := μHE[n], M := R.carrier, θ := R.mult, ξ := R.orient, μ := H^n⌞M, K := tsupport β.
+1. Unit orientations have norm at most 1 on covectors. If IsUnitOrientationOf ζ Q, there is an orthonormal family τ = (τ_1, …, τ_n) with ζ(α) = α(τ) for all α, or ζ(α) = −α(τ) for all α. For every n-covector α, |α(τ)| ≤ ‖α‖·∏_i ‖τ_i‖ = ‖α‖, by the operator-norm bound for continuous alternating maps (ContinuousAlternatingMap.le_opNorm) and ‖τ_i‖ = 1. Hence |ζ(α)| ≤ ‖α‖.
+2. Boundedness and support. β is continuous with compact support, so there is C ∈ ℝ with ‖β(x)‖ ≤ C for all x (Continuous.bounded_above_of_compact_support). K = tsupport β is compact (HasCompactSupport), hence closed and Borel, and K ⊆ U by hypothesis. If x ∉ K then β(x) = 0.
+3. A.e. bound. By R.orients, for μ-a.e. x there is Q such that ξ(x) is a unit orientation of Q. For every such x:
+- if x ∈ K, then |θ(x) ξ(x)(β(x))| = θ(x)|ξ(x)(β(x))| ≤ θ(x)‖β(x)‖ ≤ C θ(x), by step 1 and θ(x) ≥ 0;
+- if x ∉ K, then θ(x) ξ(x)(β(x)) = θ(x) ξ(x)(0) = 0 by linearity.
+So |θ(x) ξ(x)(β(x))| ≤ G(x) := 1_K(x)·C·θ(x) for μ-a.e. x.
+4. G is μ-integrable. Since K is Borel, G = 1_K·(Cθ) is μ-integrable iff Cθ is integrable for μ⌞K = H^n⌞(M ∩ K) (integrable_indicator_iff, Measure.restrict_restrict). θ : E → ℕ is measurable, and ∫⁻_{M∩K} θ dH^n < ∞ by R.locallyIntegrable_mult applied to the compact K ⊆ U. Hence the real function θ is H^n⌞(M∩K)-integrable (integrable_toReal_of_lintegral_ne_top), and so is Cθ.
+5. Measurability. x ↦ θ(x) ∈ ℝ is measurable, hence μ-a.e. strongly measurable. ξ is μ-a.e. strongly measurable (R.aestronglyMeasurable_orient) and β is continuous, so x ↦ (ξ(x), β(x)) is μ-a.e. strongly measurable. The evaluation map (ζ, α) ↦ ζ(α) on Λ_n(ℝ^P) × Λ^n(ℝ^P) is continuous (bounded bilinear). Therefore x ↦ ξ(x)(β(x)) is μ-a.e. strongly measurable, and so is its product with θ.
+6. By steps 3–5, x ↦ θ(x) ξ(x)(β(x)) is μ-a.e. strongly measurable and dominated μ-a.e. by the μ-integrable function G. Hence it is μ-integrable (Integrable.mono').
+
+## Key steps
+
+1. Every unit orientation ζ = ±(evaluation at an orthonormal frame) satisfies |ζ(α)| ≤ ‖α‖.
+2. β is bounded by some C and vanishes off the compact Borel set K = tsupport β ⊆ U.
+3. By R.orients, |θ ξ(β)| ≤ C θ 1_K holds H^n⌞M-a.e.
+4. C θ 1_K is integrable, since ∫⁻_{M∩K} θ dH^n < ∞ by R.locallyIntegrable_mult.
+5. θ·ξ(β) is a.e. strongly measurable (θ measurable, ξ a.e. strongly measurable, β continuous, evaluation continuous); conclude by domination.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)`
+- `python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I: nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v{1,2,3}.json sibling keys, lean_names and frozen lean_statements`
+- `python3 -I: dag.json status of the 12 diffeo_pushforward nodes; regex scan of all 509 lean_names for integrab|change_of_var|imrep|lipschitz|hausdorff|quasi|pushforward|image`
+- `grep -rl '"dpfir_bilipschitz_image_imrep_exists"|"dpfir_imrep_pairing_continuous_integrable"|"dpfir_integral_eq_of_area_lintegral"' dag.json nodes/*/decomposition-v*.json (no hits)`
+- `rg -n 'μHE\[|def euclideanHausdorffMeasure' mathlib/Mathlib; rg -n hausdorffMeasure_image_le mathlib/Mathlib`
+- `rg -n 'theorem to_rightInverse|absolutelyContinuous_of_le_smul|comp_quasiMeasurePreserving|integral_eq_lintegral_pos_part_sub_lintegral_neg_part|def compContinuousLinearMapCLM|continuous_compContinuousLinearMapCLM|bounded_above_of_compact_support|image_eq_preimage_of_inverse|enorm_eq_ofReal' mathlib/Mathlib`
+- `rg -n 'theorem ContDiff.continuous_fderiv|clm_comp|clm_apply|apply_continuousLinearMap|comp_aestronglyMeasurable₂|zero_compContinuousLinearMap' mathlib/Mathlib`
+- `rg -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03; rg -n 'abbrev Covector|abbrev DifferentialForm|def IsTestForm|testFormOnSubmodule' simongmt/Poincare/SimonGMT/Chapter06`
+- `rg -n 'euclideanHausdorffMeasure_image_le_of_lipschitzOn|weighted_area_formula|QuasiMeasurePreserving' simongmt/Poincare/SimonGMT`
+- `rg -n 'Integrable|bilipschitz|QuasiMeasurePreserving|image.*IMRep' project/GMT --glob '*.lean'; rg -n dpfir_ project mathlib (no match)`
+- `git show <solution ref of rsd_mw_wlm_integrable_clm_comp>:GMT/Ch07/Submission.lean (handling of MultiVector topology)`
+- `python3 -I: gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem)`
+- `sed -n 420,445p and 810,865p book/chapter-06.txt (Simon 6.2.24(3), 6.3.6–3.9)`
+- `lake env lean /tmp/dpfir-scratch/Types.lean (child types elaborate)`
+- `lake env lean /tmp/dpfir-scratch/Inst.lean, Inst2.lean, Comp.lean (#synth PseudoMetrizableSpace probes; ζ measurability idiom)`
+- `lake env lean /tmp/dpfir-scratch/AssemblyCond3.lean (#print axioms assembly_conditional3)`
+- `lake env lean /tmp/dpfir-scratch/Final.lean (#print axioms TestC2, TestA, TestB, assembly_conditional3)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dpfir-scratch/Types.lean`
+- `/tmp/dpfir-scratch/AssemblyCond3.lean`
+- `/tmp/dpfir-scratch/ChildC2.lean`
+- `/tmp/dpfir-scratch/ChildA.lean`
+- `/tmp/dpfir-scratch/ChildB.lean`
+- `/tmp/dpfir-scratch/Final.lean`
+- `/tmp/dpfir-scratch/Comp.lean`
+
+The local snapshot proves neither this statement nor any of the three children. The project GMT tree has no bi-Lipschitz IMRep image lemma, no pairing-integrability lemma for continuous covector fields, and no area-to-Bochner transfer, and no dpfir_ name occurs anywhere. The accepted DAG lemmas regcomp_rim_action_integrable and rsd_cmr_ic_action_integrable cover only test forms ω ∈ TestFormOn U n, so pairing_integrable is a new generalization.
+
+Every library fact the child proofs use exists at the pinned revisions:
+- Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn, importable from GMT.Ch07.Submission;
+- LipschitzWith.hausdorffMeasure_image_le and AntilipschitzWith.to_rightInverse;
+- Measure.absolutelyContinuous_of_le_smul and AEStronglyMeasurable.comp_quasiMeasurePreserving;
+- integral_eq_lintegral_pos_part_sub_lintegral_neg_part;
+- ContinuousAlternatingMap.le_opNorm and continuous_compContinuousLinearMapCLM;
+- Continuous.bounded_above_of_compact_support and Set.image_eq_preimage_of_inverse.
+
+The definitions of CountablyRectifiable (null M₀ plus Lipschitz F_j : ℝ^n → E) and HasApproximateTangentSpaceAt (with its uniqueness lemma) match the child proofs.
+
+Typeclass pitfall: PseudoMetrizableSpace cannot be synthesized for MultiVector P n or for Covector →L Covector. Measurability of ζ in the parent therefore goes through continuous_fst.clm_comp continuous_snd composed with prodMk and id, which compiles.
+
+In Lean, the three child types elaborate in the comparator's replayed scope. A conditional proof of the exact frozen parent type from the four frozen sibling types plus the three child types compiles using only propext, Classical.choice and Quot.sound, and complete proofs of all three children compile with the same axioms.

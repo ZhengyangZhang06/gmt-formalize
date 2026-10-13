@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.area_integral_transfer-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1",
+  "depth": 4,
+  "title": "From a lintegral area identity to the Bochner change of variables, with integrability",
+  "statement": "Let μ, ν be measures on ℝ^P, φ : ℝ^P → ℝ^P, and J : ℝ^P → ℝ with J ≥ 0, such that ∫⁻ g dν = ∫⁻ J(x)·g(φ(x)) dμ(x) for every g : ℝ^P → [0, ∞]. Let h, f : ℝ^P → ℝ, where h is ν-a.e. strongly measurable, f is μ-integrable, and J(x)·h(φ(x)) = f(x) for μ-a.e. x. Then h is ν-integrable and ∫ h dν = ∫ f dμ.",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (φ : Euclid P → Euclid P) (J h f : Euclid P → ℝ), (∀ x, 0 ≤ J x) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y, g y ∂ν = ∫⁻ x, ENNReal.ofReal (J x) * g (φ x) ∂μ) → AEStronglyMeasurable h ν → Integrable f μ → (∀ᵐ x ∂μ, J x * h (φ x) = f x) → Integrable h ν ∧ ∫ y, h y ∂ν = ∫ x, f x ∂μ",
+  "lean_name": "dpfir_integral_eq_of_area_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-ddc9727a9c-a1"
+}
