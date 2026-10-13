@@ -451,6 +451,29 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The determinant covector** (Simon 6.2.34–2.35, step 4 of the chart perimeter computation):
+for a continuous linear `A : ℝᴾ → ℝⁿ⁺¹` there is a continuous linear `Λ : ℝⁿ⁺¹ → Λⁿ(ℝᴾ)` with
+`Λ(p)(a₀, …, aₙ₋₁) = det[p, Aa₀, …, Aaₙ₋₁]` (column `0` is `p`, column `k + 1` is `Aaₖ`).
+By Hadamard's inequality the determinant `D` in the standard basis of `ℝⁿ⁺¹` is a continuous
+alternating map; `Λ` is its first-slot curry `p ↦ D(p, ·)` pulled back by `A`. -/
+theorem Submission.codim1_lur_det_covector_clm : ∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)), ∃ Λ : Euclid (n + 1) →L[ℝ] Covector (Euclid P) n, ∀ (p : Euclid (n + 1)) (a : Fin n → Euclid P), Λ p a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r) := by
+  intro P n A
+  set b := EuclideanSpace.basisFun (Fin (n + 1)) ℝ with hb
+  have : Fact (Module.finrank ℝ (Euclid (n + 1)) = n + 1) := ⟨by simp⟩
+  -- Hadamard: |det v| ≤ ∏ ‖v i‖, so the determinant is a continuous alternating map
+  have hbound : ∀ v : Fin (n + 1) → Euclid (n + 1), ‖b.toBasis.det v‖ ≤ 1 * ∏ i, ‖v i‖ := by
+    intro v
+    rw [one_mul, Real.norm_eq_abs, ← Orientation.volumeForm_robust' (b.toBasis.orientation) b v]
+    exact Orientation.abs_volumeForm_apply_le _ v
+  let D : Euclid (n + 1) [⋀^Fin (n + 1)]→L[ℝ] ℝ := b.toBasis.det.mkContinuous 1 hbound
+  refine ⟨(ContinuousAlternatingMap.compContinuousLinearMapCLM A).comp D.curryLeft, ?_⟩
+  intro p a
+  simp only [ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.compContinuousLinearMapCLM_apply,
+    ContinuousAlternatingMap.compContinuousLinearMap_apply, ContinuousAlternatingMap.curryLeft_apply_apply]
+  show b.toBasis.det _ = _
+  rw [Module.Basis.det_apply]
+  congr 1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
