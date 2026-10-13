@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.translate_varifold-a1.exists_translate-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.translate_varifold-a1",
+  "depth": 3,
+  "title": "Existence of the translated rectifiable varifold (structure fields)",
+  "statement": "Let n, l be natural numbers, U any subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U in the sense of the contract structure RectifiableVarifold (M contained in U, M H^n-null-measurable and countably n-rectifiable, theta > 0 on M, theta a.e.-measurable for H^n restricted to M, theta H^n-integrable on M cap K for every compact K contained in U), and xi in R^(n+l); put tau(x) = x - xi. Then there is a rectifiable n-varifold V' in tau(U) whose carrier is tau(M) and whose multiplicity satisfies V'.mult(y) = theta(y + xi) for every y in R^(n+l).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ ∀ y, V'.mult y = V.mult (y + ξ)",
+  "lean_name": "dohr_tv_exists_translate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-translate-varifold-a1-exists-translate-a1-a1"
+}
