@@ -3035,6 +3035,120 @@ theorem Submission.iwl_cr_support_lemmas :
       rw [hZ ω, e1, e2]
       ring
 
+/-- Simon Ch. 6, 2.25–2.27: the homotopy formula `(E0)`/`(E1)` and the affine-homotopy estimate
+`(Aff)`, for `Z = [[0,1]] × X` given by its slice characterization and with push-forwards written as
+evaluation on compatible forms.  For `(E0)`/`(E1)`, pick a test form `θ = G^#ω` near
+`[0,1] × spt X` (2.23).  Then `dθ = G^#(dω)` (2.5), so `Z(dθ) = Z η'`; the end slices satisfy
+`θᵢ = (G ∘ jᵢ)^#ω` near `spt X`, so `X θᵢ = X ηᵢ`; and the boundary formula for `[[0,1]] × X`
+gives `X θ₁ - X θ₀ = Z(dθ) (+ Z' θ)`, with `Z' θ = Z' θ'` by locality. -/
+theorem Submission.dph_smooth_homotopy : (∀ (m m' : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) 0) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (0 + 1)) (G : Eucl (m + 1) → Eucl m'), X.mass < ∞ → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) 0), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin 0 → Eucl m), (φ s : DifferentialForm (Eucl m) 0) x v = (η : DifferentialForm (Eucl (m + 1)) (0 + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support})) → ∀ (ω : TestFormOn (univ : Set (Eucl m')) 0) (η₀ η₁ : TestFormOn (univ : Set (Eucl m)) 0) (η' : TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1)), (∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η₀ : DifferentialForm (Eucl m) 0) x = ((ω : DifferentialForm (Eucl m') 0) ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)) → (∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η₁ : DifferentialForm (Eucl m) 0) x = ((ω : DifferentialForm (Eucl m') 0) ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)) → (∃ N : Set (Eucl (m + 1)), IsOpen N ∧ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N ∧ ∀ x ∈ N, (η' : DifferentialForm (Eucl (m + 1)) (0 + 1)) x = ((exteriorDerivative (ω : DifferentialForm (Eucl m') 0)) (G x)).compContinuousLinearMap (fderiv ℝ G x)) → X η₁ - X η₀ = Z η') ∧ (∀ (m m' j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1)) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)) (Z' : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1)) (G : Eucl (m + 1) → Eucl m'), X.mass < ∞ → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) ((j + 1) + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1)), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m), (φ s : DifferentialForm (Eucl m) (j + 1)) x v = (η : DifferentialForm (Eucl (m + 1)) ((j + 1) + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) j), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin j → Eucl m), (φ s : DifferentialForm (Eucl m) j) x v = (η : DifferentialForm (Eucl (m + 1)) (j + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z' η = ∫ s in (0 : ℝ)..1, X.boundary (φ s)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support})) → ∀ (ω : TestFormOn (univ : Set (Eucl m')) (j + 1)) (η₀ η₁ : TestFormOn (univ : Set (Eucl m)) (j + 1)) (η' : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)) (θ' : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1)), (∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η₀ : DifferentialForm (Eucl m) (j + 1)) x = ((ω : DifferentialForm (Eucl m') (j + 1)) ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)) → (∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η₁ : DifferentialForm (Eucl m) (j + 1)) x = ((ω : DifferentialForm (Eucl m') (j + 1)) ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))) x)) → (∃ N : Set (Eucl (m + 1)), IsOpen N ∧ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N ∧ ∀ x ∈ N, (η' : DifferentialForm (Eucl (m + 1)) (j + 1 + 1)) x = ((exteriorDerivative (ω : DifferentialForm (Eucl m') (j + 1))) (G x)).compContinuousLinearMap (fderiv ℝ G x)) → (∃ N : Set (Eucl (m + 1)), IsOpen N ∧ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N ∧ ∀ x ∈ N, (θ' : DifferentialForm (Eucl (m + 1)) (j + 1)) x = ((ω : DifferentialForm (Eucl m') (j + 1)) (G x)).compContinuousLinearMap (fderiv ℝ G x)) → X η₁ - X η₀ = Z η' + Z' θ') ∧ (∀ (m m' k : ℕ), ∃ c : ℝ, 0 ≤ c ∧ ∀ (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1)) (F₀ F₁ : Eucl m → Eucl m') (O : Set (Eucl m)) (s L B : ℝ), 0 ≤ s → 0 ≤ L → 0 ≤ B → X.mass ≤ ENNReal.ofReal B → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₀ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₁ → IsOpen O → X.support ⊆ O → (∀ x ∈ O, dist (F₁ x) (F₀ x) ≤ s) → (∀ x ∈ O, ‖fderiv ℝ F₀ x‖ ≤ L) → (∀ x ∈ O, ‖fderiv ℝ F₁ x‖ ≤ L) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (F₀ ⁻¹' K ∩ X.support)) → ∀ (ψ : TestFormOn (univ : Set (Eucl m')) (k + 1)) (C : ℝ) (η' : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)), (∀ y, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl m') (k + 1)) y) ≤ C) → (∃ N : Set (Eucl (m + 1)), IsOpen N ∧ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N ∧ ∀ x ∈ N, (η' : DifferentialForm (Eucl (m + 1)) (k + 1)) x = ((ψ : DifferentialForm (Eucl m') (k + 1)) ((fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) x)).compContinuousLinearMap (fderiv ℝ (fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) x)) → |Z η'| ≤ c * s * L ^ k * B * C) := by
+  -- `j_s x = (s, x)` is continuous, and `(s, x)` lies over `[0,1] × spt X` when `s ∈ [0,1]` and
+  -- `x ∈ spt X`, since `t (s, x) = s` and `tl (s, x) = x`.
+  have hcons : ∀ (m : ℕ) (s : ℝ), Continuous fun x : Eucl m =>
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) :=
+    fun m s => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.continuous.comp
+      (continuous_const.finCons (EuclideanSpace.equiv (Fin m) ℝ).continuous)
+  have hcyl : ∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q) (s : ℝ),
+      s ∈ Icc (0 : ℝ) 1 → ∀ x ∈ X.support,
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈
+          {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+            (EuclideanSpace.equiv (Fin m) ℝ).symm
+              (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} := by
+    intro m q X s hs x hx
+    refine ⟨?_, ?_⟩
+    · rw [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero]
+      exact hs
+    · rw [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+        ContinuousLinearEquiv.symm_apply_apply]
+      exact hx
+  -- End slices (1c): if `θ = G^#ω` on an open `N ⊇ [0,1] × spt X` and `η` is compatible with
+  -- `(G ∘ j_s, ω)` near `spt X`, then the horizontal slice `θ_s` of `θ` has `X θ_s = X η`.
+  have hend : ∀ (m m' q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q)
+      (G : Eucl (m + 1) → Eucl m') (ω : DifferentialForm (Eucl m') q)
+      (θ : TestFormOn (univ : Set (Eucl (m + 1))) q) (N : Set (Eucl (m + 1))) (s : ℝ)
+      (η : TestFormOn (univ : Set (Eucl m)) q),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → IsOpen N → s ∈ Icc (0 : ℝ) 1 →
+      {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+        (EuclideanSpace.equiv (Fin m) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N →
+      (∀ y ∈ N, (θ : DifferentialForm (Eucl (m + 1)) q) y =
+        (ω (G y)).compContinuousLinearMap (fderiv ℝ G y)) →
+      (∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+        (η : DifferentialForm (Eucl m) q) x =
+          (ω ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap
+            (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)) →
+      ∃ θs : TestFormOn (univ : Set (Eucl m)) q,
+        (∀ (x : Eucl m) (v : Fin q → Eucl m), (θs : DifferentialForm (Eucl m) q) x v =
+          (θ : DifferentialForm (Eucl (m + 1)) q)
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+            (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧
+        X θs = X η := by
+    rintro m m' q X G ω θ N s η hG hN hs hAN hθ ⟨N₀, hN₀, hXN₀, hη⟩
+    -- `θ_s = (G ∘ j_s)^#ω` wherever `j_s x ∈ N`, so `θ_s = η` on `N₀ ∩ j_s⁻¹(N) ⊇ spt X`.
+    obtain ⟨θs, hθs, hθsN⟩ := Submission.dph_sh_slice_compatible_testForm m m' q G ω θ N s hG hθ
+    exact ⟨θs, hθs, Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support m q univ X θs η _
+      (hN₀.inter (hN.preimage (hcons m s)))
+      (fun x hx => ⟨hXN₀ hx, hAN (hcyl m q X s hs x hx)⟩)
+      fun x hx => (hθsN x hx.2).trans (hη x hx.1).symm⟩
+  refine ⟨?_, ?_, Submission.dph_sh_affine_estimate⟩
+  · -- (E0)
+    rintro m m' X Z G hX hZ hG hprop ω η₀ η₁ η' h₀ h₁ ⟨N', hN', hAN', h'⟩
+    -- (1a) `θ ∈ 𝒟⁰(ℝ^{m+1})` with `θ = G^#ω` on an open `N ⊇ [0,1] × spt X`.
+    obtain ⟨θ, _, N, hN, hAN, -, -, hθ, -⟩ :=
+      Submission.iwl_sp_exists_compatible_testForm (m + 1) m' 0 univ univ _ G isOpen_univ
+        (subset_univ _) hG (fun K hK _ => hprop K hK) ω
+    -- (1b) `dθ = G^#(dω)` on `N`, and `η' = G^#(dω)` on `N'`, so `∂Z θ = Z(dθ) = Z η'`.
+    have hdθ := Submission.dph_sh_extDeriv_compatible (m + 1) m' 0 G ω θ N hG ω.property.1.1 hN hθ
+    have hZθ : Z.boundary θ = Z η' := by
+      rw [GeometricCurrentOn.boundary_apply]
+      exact Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl m 0 X Z hZ _ η' (N ∩ N') (hN.inter hN')
+        (subset_inter hAN hAN') fun y hy => (hdθ y hy.1).trans (h' y hy.2).symm
+    -- (1c) The end slices `θ₀, θ₁` have `X θᵢ = X ηᵢ`.
+    obtain ⟨θ₀, hθ₀, hX₀⟩ := hend m m' 0 X G ω θ N 0 η₀ hG hN
+      (left_mem_Icc.2 zero_le_one) hAN hθ h₀
+    obtain ⟨θ₁, hθ₁, hX₁⟩ := hend m m' 0 X G ω θ N 1 η₁ hG hN
+      (right_mem_Icc.2 zero_le_one) hAN hθ h₁
+    -- (1d) The boundary formula `∂([[0,1]] × X) θ = X θ₁ - X θ₀`.
+    rw [← hX₀, ← hX₁, ← hZθ]
+    exact (Submission.dph_interval_product.2.1 m X Z hX hZ θ θ₀ θ₁ hθ₀ hθ₁).symm
+  · -- (E1)
+    rintro m m' j X Z Z' G hX hZ hZ' hG hprop ω η₀ η₁ η' θ' h₀ h₁ ⟨N', hN', hAN', h'⟩
+      ⟨N'', hN'', hAN'', hθ'⟩
+    -- (1a) `θ ∈ 𝒟^{j+1}(ℝ^{m+1})` with `θ = G^#ω` on an open `N ⊇ [0,1] × spt X`.
+    obtain ⟨θ, _, N, hN, hAN, -, -, hθ, -⟩ :=
+      Submission.iwl_sp_exists_compatible_testForm (m + 1) m' (j + 1) univ univ _ G isOpen_univ
+        (subset_univ _) hG (fun K hK _ => hprop K hK) ω
+    -- (1b) `∂Z θ = Z(dθ) = Z η'`.
+    have hdθ := Submission.dph_sh_extDeriv_compatible (m + 1) m' (j + 1) G ω θ N hG
+      ω.property.1.1 hN hθ
+    have hZθ : Z.boundary θ = Z η' := by
+      rw [GeometricCurrentOn.boundary_apply]
+      exact Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl m (j + 1) X Z hZ _ η' (N ∩ N')
+        (hN.inter hN') (subset_inter hAN hAN') fun y hy => (hdθ y hy.1).trans (h' y hy.2).symm
+    -- (1c) The end slices `θ₀, θ₁` have `X θᵢ = X ηᵢ`.
+    obtain ⟨θ₀, hθ₀, hX₀⟩ := hend m m' (j + 1) X G ω θ N 0 η₀ hG hN
+      (left_mem_Icc.2 zero_le_one) hAN hθ h₀
+    obtain ⟨θ₁, hθ₁, hX₁⟩ := hend m m' (j + 1) X G ω θ N 1 η₁ hG hN
+      (right_mem_Icc.2 zero_le_one) hAN hθ h₁
+    -- (1e) With the `dt`-slices `φ` of `θ`, `∫₀¹ ∂X(φ_s) ds = Z' θ`; and `θ = θ' = G^#ω` on
+    -- `N ∩ N'' ⊇ [0,1] × spt X ⊇ [0,1] × spt ∂X`, so `Z' θ = Z' θ'`.
+    obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm m j θ
+    have hZ'θ : Z' θ = ∫ s in (0 : ℝ)..1, X.boundary (φ s) := hZ' θ φ fun s _ x v => hφ s x v
+    have hspt : X.boundary.support ⊆ X.support := Submission.iwl_cr_support_lemmas.1 m j univ X
+    have hZ'θ' : Z' θ = Z' θ' :=
+      Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl m j X.boundary Z' hZ' θ θ' (N ∩ N'')
+        (hN.inter hN'') (fun y hy => ⟨hAN ⟨hy.1, hspt hy.2⟩, hAN'' ⟨hy.1, hspt hy.2⟩⟩)
+        fun y hy => (hθ y hy.1).trans (hθ' y hy.2).symm
+    -- The boundary formula `∂([[0,1]] × X) θ = X θ₁ - X θ₀ - ∫₀¹ ∂X(φ_s) ds`.
+    have hb := Submission.dph_interval_product.2.2 m j X Z hX hZ θ θ₀ θ₁ φ hθ₀ hθ₁
+      fun s _ x v => hφ s x v
+    rw [← hX₀, ← hX₁, ← hZθ, ← hZ'θ', hZ'θ, hb, sub_add_cancel]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
