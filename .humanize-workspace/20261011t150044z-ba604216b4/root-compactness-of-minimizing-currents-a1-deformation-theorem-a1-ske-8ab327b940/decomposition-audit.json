@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcsd_good_radius|cmcsd_gr_liminf_slice_le_deriv|cmcsd_gr_exists_deriv_le_off_null|cmcs_smi_lintegral_ofReal_deriv_le|cbr_smm_liminf_left_slope_le_deriv' project/GMT mathlib/Mathlib",
+        "rg -n 'theorem (Monotone.ae_hasDerivAt|Monotone.ae_differentiableAt|measurable_deriv|HasDerivAt.tendsto_slope_zero_left|mul_meas_ge_le_lintegral₀|lintegral_eq_zero_iff|measure_sdiff|measure_sdiff_null|withDensity_apply_le|withDensity_rnDeriv_le|measure_Ioo)|def Monotone.stieltjesFunction' mathlib/Mathlib/Analysis/Calculus mathlib/Mathlib/MeasureTheory",
+        "sed -n '570,602p' mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        "git show 6efe397f182ee5f93e5be9c4b09eb298c3f56ad8:GMT/Ch07/Submission.lean | tail -65",
+        "git show 9e4623f7949b6e8a31421369c9b6bcbc190d2c41:GMT/Ch07/Submission.lean | tail -65",
+        "cmcsd_gr_liminf_slice_le_deriv",
+        "cmcsd_gr_exists_deriv_le_off_null",
+        ". GMT/Scratch/cmcsd_good_radius_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcsd-good-radius-independent-audit-tjy44__g/Independent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-8ab327b940/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a-f8cc50fd1b/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_good_radius_decomposition/FullCheck.lean",
+        "/tmp/cmcsd-good-radius-independent-audit-tjy44__g/Independent.lean"
+      ],
+      "conclusion": "The split is appropriate for exactly cmcsd_good_radius. The two new children, together with monotone almost-everywhere differentiability, imply its complete frozen conclusion. Dependencies slice_liminf → left_slope and markov_point → lebesgue_deriv are correctly directed and acyclic. Snapshot revisions and compiler packages match; the declaration-name search found no matches in snapshot project/GMT or Mathlib. All four names are bare identifiers, both new names are unreserved in the DAG, and both reused declarations have accepted comparator records and byte-identical frozen types. Independently compiled all five frozen propositions before declaring any child implementation, then compiled the supplied proofs and exact parent assembly using the frozen imports. Every resulting theorem depends only on propext, Classical.choice and Quot.sound. Checked real scalar operations, Real.measureSpace, the measurable-space specialization and nontriviality of the right-neighbourhood filter. Recomputed the requested parent contract digest successfully."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_liminf",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose, including the arbitrary measurable space, finite measure, measurability and differentiability hypotheses. Finite measurable sublevels justify measure_sdiff and ofReal_toReal; the strict strip inclusion gives the required inequality. Eventual comparison of ENNReal liminfs followed by the declared left_slope dependency proves the exact conclusion. No circularity or missing hypothesis."
+    },
+    {
+      "key": "markov_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type and prose agree exactly. The supplied proof establishes the integral bound through lebesgue_deriv and handles B = ∞, B = 0 and 0 < B < ∞ separately. ENNReal cancellation uses both required nonzero and finiteness hypotheses. The resulting positive-measure good set survives removal of N without assuming N measurable. The proof supplies the required point and bound without circular reliance."
+    },
+    {
+      "key": "lebesgue_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration with identical frozen type. Independently checked the Stieltjes endpoint bounds, almost-everywhere derivative identification and both measure inequalities. The interval formula also handles a ≥ b, so no endpoint-order hypothesis is missing. The supplied proof is complete and non-circular. The classical inequality is corroborated by [Forrest, slide 11](https://www.math.uwaterloo.ca/~beforres/PMath451/Lectures/Chapter5/Differentiate/DifferentiateSlides.pdf)."
+    },
+    {
+      "key": "left_slope",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration with identical frozen type. Negating the increment correctly converts left slopes into the stated positive-step quotients. Eventual positivity permits ofReal_mul, continuity gives convergence, and nontriviality of the filter gives the liminf equality. No monotonicity assumption is needed, including when the derivative is negative. The proof establishes the exact statement."
+    }
+  ],
+  "required_changes": []
+}
