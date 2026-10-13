@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical; workspace HEAD b4d606db = manifest project_commit)",
+        "rg -n \"massOn_sub|mass_sub|massOn_add|sub_massOn|diagonal|exists_infinite_fiber|cmc_fc_cs_\" local-references/123e8435b4a2469b/project --glob '*.lean' (no match)",
+        "rg -n \"theorem tsupport_neg|theorem ofReal_add_le|theorem inv_two_add_inv_two|theorem _root_.Set.Infinite.exists_gt|theorem strictMono_nat_of_lt_succ|protected theorem Finite.biUnion|theorem Finite.biUnion \" local-references/123e8435b4a2469b/mathlib/Mathlib --glob '*.lean'",
+        "rg -n \"tsupport_inv|tsupport_neg|mulTSupport_inv\" local-references/123e8435b4a2469b/mathlib/Mathlib; rg -n \"theorem pow_pos\" local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal",
+        "rg -n \"theorem Finite.exists_infinite_fiber|infinite_fiber|Infinite.exists_gt|Infinite.exists_ne_map_eq_of_mapsTo|theorem Finite.biUnion\" local-references/123e8435b4a2469b/mathlib/Mathlib --glob '*.lean'",
+        "grep -n '^theorem \\|^def \\|^@\\[simp\\] theorem \\|^@\\[ext\\]' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass}.lean (massAdmissibleOn, GeometricCurrentOn.massOn/mass/le_massOn, covectorEuclideanNorm_neg, GeometricCurrentOn.ext, GeometricCurrentOn.boundary_apply); sed -n 25,50p Chapter06/Forms.lean (DifferentialForm = E → Covector E n)",
+        "python3 scan of dag.json: lean_name collisions for cmc_fc_cs_massOn_sub_le / cmc_fc_cs_close_of_common_center / cmc_fc_cs_diagonal_subseq (none); statements containing (X - Y).mass, massOn _ + _.massOn, Set.Infinite, StrictMono φ ∧ ∀ r, 2⁻¹ (only lcmp_massOn_le_add_of_eval_eq, decomposing, other parent, different type); frozen parent type string-equality check (True)",
+        "sed -n 2755,2870p, 2000,2060p, 3159,3200p, 6500,6600p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (speculative stubs, sibling-dependency wait, accepted-child overlay, _dependency_problem, _existing_lean_name_problem)",
+        "git show 44ef61f:GMT/Ch07/Submission.lean (placement of accepted child theorem Submission.dtc_vanish_off_support inside namespace GMT.Ch07)",
+        "sed -n 2085,2125p book/chapter-06.txt (Simon Ch. 6, 7.2: 'apply (1) with ε = 1, 1/2, 1/4 etc. to extract a subsequence … d(T_{j_{r+1}}, T_{j_r}) < 2^{-r}')",
+        "lake env lean /tmp/cauchy_dec/Types.lean (three child types + pp.explicit Sub instance); lake env lean /tmp/cauchy_dec/Assembly.lean (#print axioms cs_assembly); lake env lean /tmp/cauchy_dec/Children.lean (full child proofs); lake env lean /tmp/cauchy_dec/EndToEnd.lean (exact frozen parent from the three children, #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Lattice.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Interval/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Monotone/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-subseq-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-subseq-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-subseq-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cauchy_dec/Types.lean",
+        "/tmp/cauchy_dec/Assembly.lean",
+        "/tmp/cauchy_dec/Children.lean",
+        "/tmp/cauchy_dec/EndToEnd.lean"
+      ],
+      "conclusion": "The snapshot (project b4d606db, mathlib 25730c7c) has a Contract.lean byte-identical to the workspace Contract.lean and Submission.lean. Neither the snapshot project nor SimonGMT Chapter06 has a mass-subadditivity lemma for differences (Mass.lean has only massOn_mono, le_massOn and massOn_le_liminf), a close-pair lemma or a diagonal-extraction lemma. Among DAG nodes, the only related statement is lcmp_massOn_le_add_of_eval_eq, which is unaccepted, under another parent and of a different type, so it cannot be reused and the three new names are globally unique. The pinned Mathlib supplies every tool the child proofs cite: tsupport_neg (to_additive of mulTSupport_inv), covectorEuclideanNorm_neg (SimonGMT), ENNReal.ofReal_add_le, GeometricCurrentOn.le_massOn, GeometricCurrentOn.ext, Set.Infinite.exists_gt, strictMono_nat_of_lt_succ, Set.Finite.biUnion, ENNReal.pow_pos and ENNReal.inv_two_add_inv_two. Lean checks: all three child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract opens, using the contract Sub instance GMT.Ch07.instSubGeometricCurrentOnEuclid. Full scratch proofs of the three children and of the exact frozen parent type from them compile, and #print axioms reports [propext, Classical.choice, Quot.sound] for all four declarations."
+    }
+  ],
+  "proof": "Source: step 1 (F1) of the parent-supplied proof of cmc_fc_cauchy_subseq (Simon Ch. 6, proof of 7.2).\n1. By definition, M_G(A − B) = sSup {ENNReal.ofReal((A − B)(ω)) : ω ∈ massAdmissibleOn U n G}. By the least-upper-bound property (sSup_le) it suffices to show ENNReal.ofReal((A − B)(ω)) ≤ M_G(A) + M_G(B) for every admissible ω. Fix such an ω, so that tsupport ω ⊆ G and covectorEuclideanNorm(ω(x)) ≤ 1 for all x.\n2. The negative −ω ∈ TestFormOn U n (negation in the submodule) is also admissible for M_G. Its underlying form is x ↦ −ω(x), so tsupport(−ω) = tsupport ω ⊆ G (tsupport_neg) and covectorEuclideanNorm(−ω(x)) = covectorEuclideanNorm(ω(x)) ≤ 1 for all x (covectorEuclideanNorm_neg).\n3. By the definition of the contract Sub instance, the linear functional underlying A − B is A.toCurrent − B.toCurrent, so (A − B)(ω) = A(ω) − B(ω) definitionally. Since B is linear, B(−ω) = −B(ω) (LinearMap.map_neg). Hence (A − B)(ω) = A(ω) + B(−ω).\n4. For real s, t we have ENNReal.ofReal(s + t) ≤ ENNReal.ofReal(s) + ENNReal.ofReal(t) (ENNReal.ofReal_add_le). With step 3 this gives ENNReal.ofReal((A − B)(ω)) ≤ ENNReal.ofReal(A(ω)) + ENNReal.ofReal(B(−ω)).\n5. Since ω is admissible, ENNReal.ofReal(A(ω)) ≤ M_G(A). Since −ω is admissible (step 2), ENNReal.ofReal(B(−ω)) ≤ M_G(B) (GeometricCurrentOn.le_massOn). Adding these bounds (add_le_add) and combining with step 4 gives ENNReal.ofReal((A − B)(ω)) ≤ M_G(A) + M_G(B) for every admissible ω. By step 1, M_G(A − B) ≤ M_G(A) + M_G(B). ∎",
+  "key_steps": [
+    "Reduce the supremum bound to one admissible form ω (sSup_le).",
+    "−ω is admissible: tsupport_neg and covectorEuclideanNorm_neg.",
+    "(A − B)(ω) = A(ω) + B(−ω) by the Sub instance and linearity of B.",
+    "ENNReal.ofReal_add_le, then le_massOn for ω (with A) and for −ω (with B)."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
