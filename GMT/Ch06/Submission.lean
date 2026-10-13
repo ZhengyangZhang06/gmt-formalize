@@ -2320,6 +2320,178 @@ theorem Submission.deformation_ipl_cc_signed_change_of_variables : ∀ (P k : �
   · refine lintegral_congr fun w => ?_
     rw [← ENNReal.ofReal_mul' (hJ0 w), neg_mul]
 
+/-- Measurable relative orientation on a `C¹` antilipschitz chart (Simon Ch. 6, proof of 3.9,
+step (6c)): for a rectifiable triple `(M, θ, ξ)` and a `C¹` map `Φ` that is antilipschitz on the
+open set `Ω`, there is a sign `σ = ±1`, a.e.-strongly measurable for `Lᵏ ⌞ (Ω ∩ Φ⁻¹(M))`, with
+`JΦ(w) ξ(Φ(w)) = σ(w) ∂₁Φ(w) ∧ ⋯ ∧ ∂ₖΦ(w)` for `Lᵏ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`.  The sign is that of
+`⟨ξ(Φ(w)), β_w⟩` for the covector `β_w(u) = det (⟪∂ₐΦ(w), u_b⟫)`, continuous in `w`. -/
+theorem Submission.deformation_ipl_cc_chart_orientation_sign : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)), IsOpen U → IsRectifiableTriple U k M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∃ σ : Eucl k → ℝ, AEStronglyMeasurable σ ((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)) ∧ ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)), (σ w = 1 ∨ σ w = -1) ∧ Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det • ξ (Φ w) = σ w • simpleNVector (fun b => fderiv ℝ Φ w (EuclideanSpace.single b 1)) := by
+  intro P k U M θ ξ Φ Ω hU hT hΩ hΦC1 hΦanti
+  have hΦc : Continuous Φ := hΦC1.continuous
+  have hΦm : Measurable Φ := hΦc.measurable
+  -- A strongly measurable representative `ξt` of `ξ`.
+  set ξt := hT.aestronglyMeasurable.mk ξ with hξt
+  have hξtm : StronglyMeasurable ξt := hT.aestronglyMeasurable.stronglyMeasurable_mk
+  have hξeq : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ξ x = ξt x :=
+    hT.aestronglyMeasurable.ae_eq_mk
+  -- Good points of `M ∩ Φ(Ω)`: tangent spaces from the chart and the orientation, `ξ = ξt`.
+  have hgoodH : ∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ Φ '' Ω)),
+      (∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt k M θ y
+          (LinearMap.range (fderiv ℝ Φ w).toLinearMap)) ∧
+      (∃ τ : Fin k → Eucl P, Orthonormal ℝ τ ∧
+        HasWeightedApproximateTangentSpaceAt k M θ y (Submodule.span ℝ (range τ)) ∧
+        (ξ y = simpleNVector τ ∨ ξ y = -simpleNVector τ)) ∧
+      ξ y = ξt y := by
+    have h1 := Submission.lpf_weighted_tangent_on_c1_chart P k U M θ Φ Ω hU hT.subset
+      hT.nullMeasurableSet hT.pos hT.integrableOn hΩ hΦC1 hΦanti
+    have h2 := ae_restrict_of_ae_restrict_of_subset (inter_subset_left : M ∩ Φ '' Ω ⊆ M) hT.orients
+    have h3 := ae_restrict_of_ae_restrict_of_subset (inter_subset_left : M ∩ Φ '' Ω ⊆ M) hξeq
+    filter_upwards [h1, h2, h3] with y hy1 hy2 hy3
+    exact ⟨hy1, hy2, hy3⟩
+  -- Pull the good points back to parameters.
+  obtain ⟨hSm, hgood⟩ := Submission.lpf_ccr_ae_pullback P k M Φ Ω _ hΩ.measurableSet hΦm hΦanti
+    hT.nullMeasurableSet hgoodH
+  have hmemS : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)), w ∈ Ω ∩ Φ ⁻¹' M :=
+    ae_restrict_mem₀ hSm
+  set v : Eucl k → Fin k → Eucl P := fun w b => fderiv ℝ Φ w (EuclideanSpace.single b 1) with hv
+  set J : Eucl k → ℝ := fun w => Real.sqrt (Matrix.of fun i j => inner ℝ
+    (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det
+    with hJdef
+  -- The test covector `β w = covectorPullback (DΦ(w)†) β₀`, `β w u = det (⟪∂ₐΦ(w), u_b⟫)`.
+  set β₀ : Covector (Eucl k) k := wedgeCovectors k (fun a => (EuclideanSpace.proj a : Eucl k →L[ℝ] ℝ))
+    with hβ₀
+  set β : Eucl k → Covector (Eucl P) k :=
+    fun w => covectorPullback k (ContinuousLinearMap.adjoint (fderiv ℝ Φ w)) β₀ with hβdef
+  have hβv : ∀ w, β w (v w) = (Matrix.of fun i j => inner ℝ (v w i) (v w j)).det := by
+    intro w
+    simp only [hβdef, covectorPullback_apply, hβ₀, wedgeCovectors_apply_det]
+    congr 1
+    ext i j
+    simp only [Matrix.of_apply, Function.comp_apply]
+    have h1 := EuclideanSpace.inner_single_left (𝕜 := ℝ) i (1 : ℝ)
+      (ContinuousLinearMap.adjoint (fderiv ℝ Φ w) (v w j))
+    rw [ContinuousLinearMap.adjoint_inner_right] at h1
+    simp only [map_one, one_mul] at h1
+    rw [h1]
+    rfl
+  have hβc : Continuous β := by
+    have hfd : Continuous (fderiv ℝ Φ) := hΦC1.continuous_fderiv one_ne_zero
+    have hadj : Continuous (fun w => ContinuousLinearMap.adjoint (fderiv ℝ Φ w)) :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Eucl k) (F := Eucl P)).continuous.comp hfd
+    have hcomp : Continuous (fun A : Eucl P →L[ℝ] Eucl k =>
+        (covectorPullback k A : Covector (Eucl k) k →L[ℝ] Covector (Eucl P) k)) :=
+      ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM
+    exact (hcomp.comp hadj).clm_apply continuous_const
+  -- The sign `σ` of the pairing `p w = ⟨ξ(Φ(w)), β w⟩`, and its measurability.
+  set p : Eucl k → ℝ := fun w => ξ (Φ w) (β w) with hp
+  set σ : Eucl k → ℝ := fun w => if 0 ≤ p w then 1 else -1 with hσdef
+  have hpm : AEStronglyMeasurable p ((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)) := by
+    have hξΦ : AEStronglyMeasurable (fun w => ξ (Φ w))
+        ((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)) := by
+      refine (hξtm.comp_measurable hΦm).aestronglyMeasurable.congr ?_
+      filter_upwards [hgood] with w hw
+      exact hw.2.2.symm
+    have hpair : Continuous (fun q : NVector (Eucl P) k × Covector (Eucl P) k => q.1 q.2) :=
+      isBoundedBilinearMap_apply.continuous
+    exact hpair.comp_aestronglyMeasurable (hξΦ.prodMk hβc.aestronglyMeasurable)
+  have hσm : AEStronglyMeasurable σ ((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)) := by
+    have hs : Measurable (fun t : ℝ => if 0 ≤ t then (1 : ℝ) else -1) :=
+      Measurable.ite measurableSet_Ici measurable_const measurable_const
+    exact (hs.comp_aemeasurable hpm.aemeasurable).aestronglyMeasurable
+  refine ⟨σ, hσm, ?_⟩
+  filter_upwards [hgood, hmemS] with w hw hwS
+  obtain ⟨hw1, ⟨τ, hτ, hτT, hξτ⟩, -⟩ := hw
+  -- `range DΦ(w) = span τ` by uniqueness of the weighted approximate tangent space (`θ > 0`).
+  have hθpos : 0 < θ (Φ w) := hT.pos _ hwS.2
+  have hrange : LinearMap.range (fderiv ℝ Φ w).toLinearMap = Submodule.span ℝ (range τ) :=
+    HasWeightedApproximateTangentSpaceAt.unique hθpos.ne' (hw1 w hwS.1 rfl) hτT
+  have hσval : σ w = 1 ∨ σ w = -1 := by
+    simp only [hσdef]; split_ifs <;> simp
+  refine ⟨hσval, ?_⟩
+  -- `∂Φ(w) = B τ` with `B_{ba} = ⟪τ_a, ∂_bΦ(w)⟫`, so `simpleNVector ∂Φ(w) = det B • simpleNVector τ`.
+  have hvmem : ∀ b, v w b ∈ Submodule.span ℝ (range τ) := by
+    intro b; rw [← hrange]; exact LinearMap.mem_range_self _ _
+  have hvexp : ∀ b, (∑ a, inner ℝ (τ a) (v w b) • τ a) = v w b := by
+    intro b
+    obtain ⟨cf, hcf⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (hvmem b)
+    have hc : ∀ a, inner ℝ (τ a) (v w b) = cf a := by
+      intro a; rw [← hcf]; exact hτ.inner_right_fintype cf a
+    simp_rw [hc]; exact hcf
+  set B : Matrix (Fin k) (Fin k) ℝ := Matrix.of fun b a => inner ℝ (τ a) (v w b) with hB
+  have hS : simpleNVector (v w) = B.det • simpleNVector τ := by
+    rw [← Submission.lpf_simple_nvector_algebra.2 P k B τ]
+    congr 1
+    funext b
+    simp only [hB, Matrix.of_apply]
+    exact (hvexp b).symm
+  -- Norms: `‖simpleNVector τ‖ = 1`, `JΦ(w) = |det B|` and `β w (∂Φ(w)) = (det B)²`.
+  have hsτ : ‖simpleNVector τ‖ = 1 := by
+    have h := Submission.lpf_simple_nvector_algebra.1 P k τ
+    have hG : (Matrix.of fun i j => inner ℝ (τ i) (τ j)) = (1 : Matrix (Fin k) (Fin k) ℝ) := by
+      ext i j
+      simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ]
+    rw [hG, Matrix.det_one] at h
+    have h0 : 0 ≤ ‖simpleNVector τ‖ := ContinuousLinearMap.opNorm_nonneg _
+    nlinarith [h]
+  have hnsmul : ∀ (d : ℝ) (s : NVector (Eucl P) k), ‖d • s‖ = |d| * ‖s‖ := by
+    intro d s
+    apply le_antisymm
+    · simpa [Real.norm_eq_abs] using ContinuousLinearMap.opNorm_smul_le d s
+    · by_cases hd : d = 0
+      · simp only [hd, abs_zero, zero_mul]; exact ContinuousLinearMap.opNorm_nonneg _
+      · have h := ContinuousLinearMap.opNorm_smul_le d⁻¹ (d • s)
+        rw [smul_smul, inv_mul_cancel₀ hd, one_smul, Real.norm_eq_abs, abs_inv] at h
+        have hpos : 0 < |d| := abs_pos.mpr hd
+        calc |d| * ‖s‖ ≤ |d| * (|d|⁻¹ * ‖d • s‖) := by gcongr
+          _ = ‖d • s‖ := by field_simp
+  have hnormS : ‖simpleNVector (v w)‖ = |B.det| := by
+    rw [hS, hnsmul, hsτ, mul_one]
+  have hJ : J w = |B.det| := by
+    have h := Submission.lpf_simple_nvector_algebra.1 P k (v w)
+    show Real.sqrt (Matrix.of fun i j => inner ℝ (v w i) (v w j)).det = |B.det|
+    rw [← h, Real.sqrt_sq (ContinuousLinearMap.opNorm_nonneg _), hnormS]
+  have hSβ : simpleNVector (v w) (β w) = B.det ^ 2 := by
+    rw [simpleNVector_apply, hβv, ← Submission.lpf_simple_nvector_algebra.1 P k (v w), hnormS,
+      sq_abs]
+  -- Case analysis on `det B` and on the orientation `ξ(Φ(w)) = ±simpleNVector τ`.
+  by_cases hd : B.det = 0
+  · have hJ0 : J w = 0 := by rw [hJ, hd, abs_zero]
+    have hS0 : simpleNVector (v w) = 0 := by rw [hS, hd, zero_smul]
+    show J w • ξ (Φ w) = σ w • simpleNVector (v w)
+    rw [hJ0, zero_smul, hS0, smul_zero]
+  · have hs : simpleNVector τ (β w) = B.det := by
+      have h1 : B.det * simpleNVector τ (β w) = B.det * B.det := by
+        have := hSβ
+        rw [hS, smul_apply, smul_eq_mul] at this
+        rw [this]; ring
+      exact mul_left_cancel₀ hd h1
+    show J w • ξ (Φ w) = σ w • simpleNVector (v w)
+    rw [hJ, hS, smul_smul]
+    rcases hξτ with h | h
+    · have hp' : p w = B.det := by
+        show ξ (Φ w) (β w) = B.det
+        rw [h, hs]
+      rw [h]
+      congr 1
+      simp only [hσdef, hp']
+      split_ifs with h0
+      · rw [abs_of_nonneg h0]; ring
+      · rw [abs_of_neg (lt_of_not_ge h0)]; ring
+    · have hp' : p w = -B.det := by
+        show ξ (Φ w) (β w) = -B.det
+        rw [h, neg_apply, hs]
+      rw [h]
+      have hcoef : -|B.det| = σ w * B.det := by
+        simp only [hσdef, hp']
+        split_ifs with h0
+        · have hneg : B.det < 0 := lt_of_le_of_ne (by linarith) hd
+          rw [abs_of_neg hneg]; ring
+        · have hpos : 0 < B.det := by linarith
+          rw [abs_of_pos hpos]; ring
+      ext γ
+      simp only [smul_apply, neg_apply, smul_eq_mul]
+      rw [← hcoef]; ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
