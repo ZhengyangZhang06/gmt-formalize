@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cavalieri's principle along a coordinate direction** (Simon Ch. 1, proof of 2.10: Steiner
+symmetrization keeps Lebesgue measure "by Fubini").  If measurable `S, A ⊆ ℝᵈ` have line slices
+`{t : y[j↦t] ∈ S}`, `{t : y[j↦t] ∈ A}` of equal `L¹`-measure through every `y`, then
+`Lᵈ(S) = Lᵈ(A)`.  With `d = n + 1`, `φ(t, z) = Fin.insertNth j t z` is measure preserving from
+`L¹ ⊗ Lⁿ` to `Lᵈ`; its fibre over `z` is the slice through `φ(0, z)`, and Tonelli
+(`Measure.prod_apply_symm`) integrates the equal slice measures over `z`. -/
+theorem Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq : ∀ (d : ℕ) (j : Fin d) (S A : Set (Euclid d)), MeasurableSet S → MeasurableSet A → (∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ S} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}) → volume S = volume A := by
+  intro d j S A hS hA hslice
+  cases d with
+  | zero => exact Fin.elim0 j
+  | succ n =>
+    -- `φ(t, z) = Fin.insertNth j t z`, measure preserving from `L¹ ⊗ Lⁿ` to `Lᵈ`
+    let e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) j
+    let φ : ℝ × (Fin n → ℝ) → Euclid (n + 1) := fun p => WithLp.toLp 2 (e.symm p)
+    have hφ : MeasurePreserving φ volume volume :=
+      (PiLp.volume_preserving_toLp (Fin (n + 1))).comp
+        (MeasurePreserving.symm e (volume_preserving_piFinSuccAbove _ j))
+    -- the fibre of `φ` over `z` is the coordinate slice through `φ(0, z)`
+    have hfibre (B : Set (Euclid (n + 1))) (z : Fin n → ℝ) :
+        (fun t => φ (t, z)) ⁻¹' B =
+          {t : ℝ | WithLp.toLp 2 (Function.update (φ (0, z)).ofLp j t) ∈ B} := by
+      ext t
+      change WithLp.toLp 2 (j.insertNth t z) ∈ B ↔
+        WithLp.toLp 2 (Function.update (j.insertNth 0 z) j t) ∈ B
+      rw [Fin.update_insertNth]
+    -- Tonelli: `Lᵈ(B) = (L¹ ⊗ Lⁿ)(φ⁻¹ B) = ∫⁻ z, L¹(fibre of φ⁻¹ B over z)`
+    have hvol (B : Set (Euclid (n + 1))) (hB : MeasurableSet B) :
+        volume B = ∫⁻ z : Fin n → ℝ, volume ((fun t => φ (t, z)) ⁻¹' B) :=
+      (hφ.measure_preimage hB.nullMeasurableSet).symm.trans
+        (Measure.prod_apply_symm (hB.preimage hφ.measurable))
+    rw [hvol S hS, hvol A hA]
+    refine lintegral_congr fun z => ?_
+    rw [hfibre S z, hfibre A z]
+    exact hslice (φ (0, z))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
