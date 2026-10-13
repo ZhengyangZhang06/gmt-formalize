@@ -1054,6 +1054,32 @@ theorem Submission.iwl_sp_boundary_apply_eq_of_compatible : ∀ (P Q k : ℕ) (U
   exact extDeriv_pullback (ω.property.1.1.differentiable (by simp)).differentiableAt
     hf.contDiffAt (by simp)
 
+/-- **Smooth push-forward of an integer multiplicity current** (Simon Ch. 6, 2.23–2.24, p. 139,
+and Lemma 3.9, p. 148).  Assume Lemma 3.9 (`LipschitzPushforwardIntegerMultiplicity`).  Let
+`X ∈ 𝒟_{k+1}(U)` be integer multiplicity and `f` be `C^∞` with `f(U) ⊆ V` and `f | spt X` proper.
+Then the integer multiplicity push-forward `S = f_# X` of 3.9 is the push-forward of 2.23 (remark
+after 3.10, p. 148): (1) `S(ω) = X(η)` whenever `η = f^# ω` on an open set containing `spt X`;
+(2) `∂S(ω) = ∂X(η)` likewise (2.24(1)); (3) if `‖Df‖ ≤ c`, then
+`M_W(S) ≤ c^{k+1} M_{f⁻¹(W) ∩ U}(X)` and `M_W(∂S) ≤ c^k M_{f⁻¹(W) ∩ U}(∂X)`. -/
+theorem Submission.iwl_smooth_pushforward : LipschitzPushforwardIntegerMultiplicity → ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (X : GeometricCurrentOn U (k + 1)) (f : Eucl P → Eucl Q), IsIntegerMultiplicity X → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → MapsTo f U V → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn V (k + 1), IsIntegerMultiplicity S ∧ (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) ∧ (∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η) ∧ ∀ c : ℝ, 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q), S.massOn W ≤ ENNReal.ofReal (c ^ (k + 1)) * X.massOn (f ⁻¹' W ∩ U) ∧ S.boundary.massOn W ≤ ENNReal.ofReal (c ^ k) * X.boundary.massOn (f ⁻¹' W ∩ U) := by
+  intro hLip P Q k U V hU hV X f hX hf hfUV hprop
+  -- Step 1: `f` is `C¹`, hence locally Lipschitz on `U`, so 3.9 gives an integer multiplicity
+  -- `S` which is the push-forward `f_# X` of (3.6).
+  obtain ⟨S, hSX, hS⟩ := hLip P Q (k + 1) U V hU hV X f hX
+    (hf.of_le (m := 1) (by exact_mod_cast le_top)).locallyLipschitz.locallyLipschitzOn hfUV hprop
+  -- Steps 2–4, assertion (1): as `f` is differentiable, (3.6) agrees with the push-forward of 2.23.
+  have h₁ := Submission.iwl_sp_lipschitzPushforward_apply_eq P Q (k + 1) U V X S f
+    (hf.differentiable (by simp)) hSX
+  -- Step 5, assertion (2): `∂ f_# X = f_# ∂X`.
+  have h₂ := Submission.iwl_sp_boundary_apply_eq_of_compatible P Q k U V X S f hf h₁
+  -- Step 6, assertion (3): the mass comparison with `A = spt X ⊆ U`, applied to `(S, X)` in
+  -- degree `k + 1` through (1) and to `(∂S, ∂X)` in degree `k` through (2).
+  exact ⟨S, hS, h₁, h₂, fun c hc hDf W =>
+    ⟨Submission.iwl_sp_massOn_le_of_compatible P Q (k + 1) U V X.support S X f c hU
+        X.support_subset_domain hf hprop h₁ hc hDf W,
+      Submission.iwl_sp_massOn_le_of_compatible P Q k U V X.support S.boundary X.boundary f c hU
+        X.support_subset_domain hf hprop h₂ hc hDf W⟩⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
