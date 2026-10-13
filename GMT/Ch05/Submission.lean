@@ -458,6 +458,85 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Choice of the constants `δ_P, C_P` for the density bounds in the proof of Simon Ch. 5, 5.2
+(pure real analysis; `κ > 0`, `ω > 0` arbitrary).  With `Λ = t/κ` and `q = (1 + t)/(1 − 3t)ⁿ`, the
+functions `G₊ = e^{2Λ} qω + 2e^Λ Λ`, `G₋ = e^{−Λ}(ω − Λ)` and `G_c = e^Λ(e^Λ qω + Λ − ω)` are `C¹` on
+`(−1/24, 1/4)` (where `1 − 3t > 1/4`) with `G₊(0) = G₋(0) = ω`, `G_c(0) = 0`; bounding their
+derivatives by `A` on `[0, t₀]`, `t₀ = min{1/8, κ}`, the mean value theorem gives the three bounds
+for `0 < t ≤ δ_P` with `C_P = max{1, A/ω}` and `δ_P = min{t₀, 1/(2C_P)}`. -/
+theorem allard52_density_constants : ∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ δP CP : ℝ, 0 < δP ∧ δP ≤ 1 / 8 ∧ δP ≤ κ ∧ 0 < CP ∧ CP * δP ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δP → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 3 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + CP * t) * ω ∧ (1 - CP * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ) ∧ Real.exp (t / κ) * (Real.exp (t / κ) * ((1 + t) / (1 - 3 * t) ^ n * ω) + t / κ - ω) ≤ CP * ω * t := by
+  intro n κ ω hκ hω
+  -- The radius `t₀ = min (1/8) κ`; `[0, t₀]` sits inside the open interval `I = (-1/24, 1/4)`,
+  -- on which `1 - 3 t > 1/4 > 0`.
+  obtain ⟨t₀, ht₀pos, ht₀le, ht₀κ⟩ : ∃ t₀ : ℝ, 0 < t₀ ∧ t₀ ≤ 1 / 8 ∧ t₀ ≤ κ :=
+    ⟨min (1 / 8) κ, lt_min (by norm_num) hκ, min_le_left _ _, min_le_right _ _⟩
+  have hsub : Icc (0 : ℝ) t₀ ⊆ Ioo (-1 / 24 : ℝ) (1 / 4) := fun x hx =>
+    ⟨by linarith [hx.1], by linarith [hx.2]⟩
+  -- Mean value inequality for a `C¹` function on `I`: its derivative is bounded on the compact
+  -- `[0, t₀]` by some `A`, hence `|G t - G 0| ≤ A t` for `t ∈ [0, t₀]`.
+  have key : ∀ G : ℝ → ℝ, ContDiffOn ℝ 1 G (Ioo (-1 / 24 : ℝ) (1 / 4)) →
+      ∃ A : ℝ, ∀ t ∈ Icc (0 : ℝ) t₀, |G t - G 0| ≤ A * t := by
+    intro G hG
+    have hcont : ContinuousOn (deriv G) (Ioo (-1 / 24 : ℝ) (1 / 4)) :=
+      hG.continuousOn_deriv_of_isOpen isOpen_Ioo le_rfl
+    obtain ⟨A, hA⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := t₀)).exists_bound_of_continuousOn
+      (hcont.mono hsub)
+    refine ⟨A, fun t ht => ?_⟩
+    have hdiff : ∀ x ∈ Icc (0 : ℝ) t₀, DifferentiableAt ℝ G x := fun x hx =>
+      (hG.differentiableOn one_ne_zero).differentiableAt (isOpen_Ioo.mem_nhds (hsub hx))
+    have h := (convex_Icc (0 : ℝ) t₀).norm_image_sub_le_of_norm_deriv_le hdiff hA
+      (left_mem_Icc.2 ht₀pos.le) ht
+    rwa [Real.norm_eq_abs, Real.norm_eq_abs, sub_zero, abs_of_nonneg ht.1] at h
+  -- Smoothness of `G₊`, `G₋`, `G_c` on `I`: the denominator `(1 - 3 t)ⁿ` has no zero there.
+  have hden : ∀ x ∈ Ioo (-1 / 24 : ℝ) (1 / 4), (1 - 3 * x) ^ n ≠ 0 := fun x hx =>
+    pow_ne_zero _ (by linarith [hx.2] : (0 : ℝ) < 1 - 3 * x).ne'
+  have hR : ContDiffOn ℝ 1 (fun t : ℝ => (1 + t) / (1 - 3 * t) ^ n * ω)
+      (Ioo (-1 / 24 : ℝ) (1 / 4)) := by
+    apply ContDiffOn.mul _ contDiffOn_const
+    exact ContDiffOn.fun_div (by fun_prop) (by fun_prop) hden
+  have hE : ContDiff ℝ 1 (fun t : ℝ => Real.exp (t / κ)) := by fun_prop
+  have hE2 : ContDiff ℝ 1 (fun t : ℝ => Real.exp (2 * (t / κ))) := by fun_prop
+  obtain ⟨A₁, hA₁⟩ := key (fun t => Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 3 * t) ^ n * ω) +
+      2 * Real.exp (t / κ) * (t / κ)) ((hE2.contDiffOn.mul hR).add (by fun_prop))
+  obtain ⟨A₂, hA₂⟩ := key (fun t => Real.exp (-(t / κ)) * (ω - t / κ)) (by fun_prop)
+  obtain ⟨A₃, hA₃⟩ := key (fun t => Real.exp (t / κ) *
+      (Real.exp (t / κ) * ((1 + t) / (1 - 3 * t) ^ n * ω) + t / κ - ω))
+    (hE.contDiffOn.mul (((hE.contDiffOn.mul hR).add (by fun_prop)).sub contDiffOn_const))
+  -- The constants: one bound `A` for the three derivatives, `C_P = max 1 (A/ω)` and
+  -- `δ_P = min t₀ (1/(2 C_P))`.
+  obtain ⟨A, hA1, hA2, hA3⟩ : ∃ A : ℝ, A₁ ≤ A ∧ A₂ ≤ A ∧ A₃ ≤ A :=
+    ⟨max (max A₁ A₂) A₃, le_trans (le_max_left _ _) (le_max_left _ _),
+      le_trans (le_max_right _ _) (le_max_left _ _), le_max_right _ _⟩
+  obtain ⟨CP, hCP1, hCPA⟩ : ∃ CP : ℝ, 1 ≤ CP ∧ A ≤ CP * ω :=
+    ⟨max 1 (A / ω), le_max_left _ _, (div_le_iff₀ hω).1 (le_max_right _ _)⟩
+  have hCPpos : 0 < CP := lt_of_lt_of_le one_pos hCP1
+  refine ⟨min t₀ (1 / (2 * CP)), CP, lt_min ht₀pos (by positivity),
+    le_trans (min_le_left _ _) ht₀le, le_trans (min_le_left _ _) ht₀κ, hCPpos, ?_, ?_⟩
+  · calc CP * min t₀ (1 / (2 * CP)) ≤ CP * (1 / (2 * CP)) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) hCPpos.le
+      _ = 1 / 2 := by field_simp
+  · intro t ht htδ
+    have htI : t ∈ Icc (0 : ℝ) t₀ := ⟨ht.le, le_trans htδ (min_le_left _ _)⟩
+    have h1 := hA₁ t htI
+    have h2 := hA₂ t htI
+    have h3 := hA₃ t htI
+    -- Values at `0`: `G₊(0) = G₋(0) = ω` and `G_c(0) = 0`.
+    simp only [zero_div, mul_zero, neg_zero, Real.exp_zero, add_zero, sub_zero, one_pow, div_one,
+      one_mul, mul_one, sub_self] at h1 h2 h3
+    have hAt : A * t ≤ CP * ω * t := mul_le_mul_of_nonneg_right hCPA ht.le
+    have h1' : A₁ * t ≤ A * t := mul_le_mul_of_nonneg_right hA1 ht.le
+    have h2' : A₂ * t ≤ A * t := mul_le_mul_of_nonneg_right hA2 ht.le
+    have h3' : A₃ * t ≤ A * t := mul_le_mul_of_nonneg_right hA3 ht.le
+    refine ⟨?_, ?_, ?_⟩
+    · linarith [(abs_le.1 h1).2]
+    · linarith [(abs_le.1 h2).1]
+    · linarith [le_abs_self (Real.exp (t / κ) *
+        (Real.exp (t / κ) * ((1 + t) / (1 - 3 * t) ^ n * ω) + t / κ - ω))]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
