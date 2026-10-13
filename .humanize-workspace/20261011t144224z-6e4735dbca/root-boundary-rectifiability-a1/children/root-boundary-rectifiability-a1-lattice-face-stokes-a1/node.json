@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1",
+  "parent_id": "root.boundary_rectifiability-a1",
+  "depth": 2,
+  "title": "Stokes' theorem on a lattice face",
+  "statement": "Let P, m ∈ ℕ, ρ > 0, F = (z, α) ∈ LatticeFaceIndex (m+1) P (z ∈ ℤ^P, α : Fin (m+1) → Fin P strictly increasing) and ω a smooth m-form on ℝ^P. Writing [[G]](η) := latticeFaceAction ρ G η = ∫_{latticeFace ρ G} η(x)(e_{γ(0)}, …, e_{γ(d−1)}) dH^d(x) for a d-face index G = (w, γ), Stokes' theorem on the face holds: [[F]](dω) = Σ_{i=0}^{m} (−1)^i ([[(z + e_{α(i)}, α ∘ succAbove_i)]](ω) − [[(z, α ∘ succAbove_i)]](ω)), where α ∘ succAbove_i is α with its i-th entry removed.",
+  "lean_statement": "∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P) (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω → latticeFaceAction ρ F (exteriorDerivative ω) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (latticeFaceAction ρ (F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2) ω - latticeFaceAction ρ (F.1, (Fin.succAboveOrderEmb i).trans F.2) ω)",
+  "lean_name": "br_lattice_face_stokes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-face-stokes-a1-a1"
+}

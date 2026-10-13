@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "IsRectifiableTriple|IsIntegerMultiplicity|tauAction",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "euclideanHausdorffMeasure_eq_volume",
+        "eq_smul_basis_det",
+        "det_to_matrix_orthonormalBasis_real",
+        "span_eq_top_of_card_eq_finrank",
+        "locallyIntegrableOn_iff",
+        "theorem integrable_indicator_iff₀",
+        "theorem integral_indicator₀",
+        "theorem restrict_restrict₀",
+        "theorem ae_restrict_iff'₀",
+        "theorem Integrable.mul_bdd",
+        "theorem IntegrableOn.mul_continuousOn",
+        "ind_top_orthonormal_frame_sign",
+        "ind_top_form_density_ae_unique",
+        "ind_top_dim_integer_density",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/const_integer_independent_audit_41flkxoo/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/const_integer_independent_audit_41flkxoo/RecheckSuppliedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/const_integer_independent_audit_41flkxoo/AssemblyFromContracts.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-const-integer-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-const-integer-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/tmp/cimi-decomp-7f3a/Full.lean",
+        "/tmp/const_integer_independent_audit_41flkxoo/Contracts.lean",
+        "/tmp/const_integer_independent_audit_41flkxoo/RecheckSuppliedProofs.lean",
+        "/tmp/const_integer_independent_audit_41flkxoo/AssemblyFromContracts.lean"
+      ],
+      "conclusion": "Independently verified the pinned project and Mathlib revisions, matching workspace contracts, and clean pinned Mathlib/SimonGMT dependencies. The cited definitions and lemmas support every supplied proof step. All frozen propositions validate and elaborate in comparator scope before child implementations exist. The supplied proofs and an independently written assembly from the exact child contracts compile; axiom reports contain only propext, Classical.choice, and Quot.sound. No proposed name occurs in the current 449-node DAG or searched project/library sources; all names are bare identifiers. No accepted declaration is redeclared under a changed type. The split is appropriate: frame_sign_top supports top_integer_density, while top_integer_density and top_density_unique imply precisely ind_const_multiple_integer using positive volume of nonempty open U. Dependencies are correctly directed and acyclic. No forbidden matrix-unit construction occurs; the determinant construction uses Matrix.of."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "frame_sign_top",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including n = 0. The spanning lemma has no Nonempty requirement. Completing the frame to an orthonormal basis, obtaining determinant ±1, evaluating the alternating-map identity, and applying extensionality prove the exact disjunction. The supplied proof is complete and independent of the parent and other DAG branches."
+    },
+    {
+      "key": "top_density_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the global a.e. implication match the Lean type. The proof constructs a normalized volume covector and admissible scalar test forms, derives local integrability from compact integrability, and establishes product integrability before subtracting integrals. Vanishing outside U correctly converts to the fundamental lemma's whole-space integral. This proves the exact conclusion without circular reliance."
+    },
+    {
+      "key": "top_integer_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type agree for arbitrary U. The sole child dependency, frame_sign_top, gives the required orientation signs. Evaluating ξ at the volume covector supplies an a.e. measurable bounded sign. The indicator density is integer-valued a.e. globally, integrable on compact subsets, and represents X. Null-measurable indicator and restriction identities justify the argument without assuming U measurable or open. Every construction is supplied explicitly."
+    }
+  ],
+  "required_changes": []
+}
