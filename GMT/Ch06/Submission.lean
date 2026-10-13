@@ -542,6 +542,169 @@ theorem Submission.iwl_cr_ro_integrand_contDiff_fderiv :
       ContinuousAlternatingMap.curryLeft_smul]
     rw [add_comm]
     rfl
+/-- Bound on the `j`-th derivative of the radial-homotopy integrand: for `t ∈ [0, 1]` and
+`‖x‖ ≤ R`, `‖D^j (z ↦ t^a • ι_z ω(t z))(x)‖ ≤ (R + j) D` when `‖D^i ω‖ ≤ D` on `closedBall 0 R`
+for all `i ≤ j`.  Writing the integrand as `t^a • B (g z) z` with `g z = ω (t • z)` and `B` the
+interior product (`‖B u v‖ ≤ ‖u‖ ‖v‖`), the Leibniz rule for `z ↦ B (g z) z`, proved below by
+induction on the order, gives `‖D^j (B (g ·) ·)(x)‖ ≤ ‖x‖ ‖D^j g(x)‖ + j ‖D^(j-1) g(x)‖`, and
+`‖D^i g(x)‖ ≤ ‖D^i ω(t x)‖ ≤ D` since `‖t x‖ ≤ R`. -/
+theorem Submission.iwl_cr_ro_integrand_iteratedFDeriv_le :
+    ∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+      ∀ (j : ℕ) (R D : ℝ), 0 ≤ D →
+        (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) →
+        ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ closedBall (0 : Eucl P) R,
+          ‖iteratedFDeriv ℝ j (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x‖ ≤
+            (R + j) * D := by
+  intro P k a ω hω j R D hD hbound t ht x hx
+  -- Leibniz bound for `z ↦ B (g z) z`.  Since `D (B (g ·) ·)(z) = B (g z) + B' (Dg z) z` with
+  -- `B' A z h = B (A h) z`, again of the same shape, induction on the order gives
+  -- `‖D^n (B (g ·) ·)(y)‖ ≤ ‖y‖ ‖D^n g(y)‖ + n ‖D^(n-1) g(y)‖`.
+  have leibniz : ∀ (n : ℕ) (F G : Type) [NormedAddCommGroup F] [NormedSpace ℝ F]
+      [NormedAddCommGroup G] [NormedSpace ℝ G] (B : F →L[ℝ] Eucl P →L[ℝ] G),
+      (∀ u v, ‖B u v‖ ≤ ‖u‖ * ‖v‖) →
+      ∀ g : Eucl P → F, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → ∀ y : Eucl P,
+        ‖iteratedFDeriv ℝ n (fun z => B (g z) z) y‖ ≤
+          ‖y‖ * ‖iteratedFDeriv ℝ n g y‖ + n * ‖iteratedFDeriv ℝ (n - 1) g y‖ := by
+    intro n
+    induction n with
+    | zero =>
+      intro F G _ _ _ _ B hB g hg y
+      rw [norm_iteratedFDeriv_zero, norm_iteratedFDeriv_zero, Nat.cast_zero, zero_mul, add_zero,
+        mul_comm]
+      exact hB (g y) y
+    | succ n ih =>
+      intro F G _ _ _ _ B hB g hg y
+      obtain ⟨B', hB'apply, hB'bound⟩ :
+          ∃ B' : (Eucl P →L[ℝ] F) →L[ℝ] Eucl P →L[ℝ] Eucl P →L[ℝ] G,
+            (∀ A z h, B' A z h = B (A h) z) ∧ ∀ A z, ‖B' A z‖ ≤ ‖A‖ * ‖z‖ := by
+        refine ⟨((ContinuousLinearMap.compL ℝ (Eucl P) F G).comp B.flip).flip,
+          fun A z h => rfl, fun A z => ?_⟩
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun h => ?_
+        show ‖B (A h) z‖ ≤ ‖A‖ * ‖z‖ * ‖h‖
+        calc ‖B (A h) z‖ ≤ ‖A h‖ * ‖z‖ := hB (A h) z
+          _ ≤ ‖A‖ * ‖h‖ * ‖z‖ := by gcongr; exact A.le_opNorm h
+          _ = ‖A‖ * ‖z‖ * ‖h‖ := by ring
+      have hBnorm : ‖B‖ ≤ 1 := by
+        refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun u => ?_
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun v => ?_
+        rw [one_mul]
+        exact hB u v
+      have hgd : Differentiable ℝ g := (contDiff_infty_iff_fderiv.1 hg).1
+      have hdg : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ g) :=
+        (contDiff_infty_iff_fderiv.1 hg).2
+      have hderiv : fderiv ℝ (fun z => B (g z) z) = fun z => B (g z) + B' (fderiv ℝ g z) z := by
+        funext z
+        have h1 : HasFDerivAt (fun z => B (g z)) (B.comp (fderiv ℝ g z)) z :=
+          B.hasFDerivAt.comp z (hgd z).hasFDerivAt
+        have h2 : HasFDerivAt (fun z => B (g z) z)
+            ((B (g z)).comp (ContinuousLinearMap.id ℝ (Eucl P)) +
+              (B.comp (fderiv ℝ g z)).flip z) z :=
+          h1.clm_apply (hasFDerivAt_id z)
+        rw [h2.fderiv]
+        ext h
+        simp [hB'apply]
+      have hc1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => B (g z)) := B.contDiff.comp hg
+      have hc2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => B' (fderiv ℝ g z) z) :=
+        B'.isBoundedBilinearMap.contDiff.comp (hdg.prodMk contDiff_id)
+      have hle : ((n : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by exact_mod_cast le_top
+      have hadd : iteratedFDeriv ℝ n (fun z => B (g z) + B' (fderiv ℝ g z) z) y =
+          iteratedFDeriv ℝ n (fun z => B (g z)) y +
+            iteratedFDeriv ℝ n (fun z => B' (fderiv ℝ g z) z) y :=
+        iteratedFDeriv_add_apply (hc1.contDiffAt.of_le hle) (hc2.contDiffAt.of_le hle)
+      have hcomp : iteratedFDeriv ℝ n (fun z => B (g z)) y =
+          B.compContinuousMultilinearMap (iteratedFDeriv ℝ n g y) :=
+        B.iteratedFDeriv_comp_left hg.contDiffAt hle
+      have e1 : ‖iteratedFDeriv ℝ n (fun z => B (g z)) y‖ ≤ ‖iteratedFDeriv ℝ n g y‖ := by
+        rw [hcomp]
+        calc ‖B.compContinuousMultilinearMap (iteratedFDeriv ℝ n g y)‖
+            ≤ ‖B‖ * ‖iteratedFDeriv ℝ n g y‖ := B.norm_compContinuousMultilinearMap_le _
+          _ ≤ 1 * ‖iteratedFDeriv ℝ n g y‖ := by gcongr
+          _ = ‖iteratedFDeriv ℝ n g y‖ := one_mul _
+      have e2 := ih (Eucl P →L[ℝ] F) (Eucl P →L[ℝ] G) B' hB'bound (fderiv ℝ g) hdg y
+      rw [norm_iteratedFDeriv_fderiv] at e2
+      have e3 : (n : ℝ) * ‖iteratedFDeriv ℝ (n - 1) (fderiv ℝ g) y‖ =
+          n * ‖iteratedFDeriv ℝ n g y‖ := by
+        rcases n with _ | m
+        · simp
+        · rw [norm_iteratedFDeriv_fderiv, Nat.add_sub_cancel]
+      rw [e3] at e2
+      rw [← norm_iteratedFDeriv_fderiv, hderiv, hadd, Nat.add_sub_cancel]
+      calc ‖iteratedFDeriv ℝ n (fun z => B (g z)) y +
+            iteratedFDeriv ℝ n (fun z => B' (fderiv ℝ g z) z) y‖
+          ≤ ‖iteratedFDeriv ℝ n (fun z => B (g z)) y‖ +
+            ‖iteratedFDeriv ℝ n (fun z => B' (fderiv ℝ g z) z) y‖ := norm_add_le _ _
+        _ ≤ ‖iteratedFDeriv ℝ n g y‖ +
+            (‖y‖ * ‖iteratedFDeriv ℝ (n + 1) g y‖ + n * ‖iteratedFDeriv ℝ n g y‖) :=
+              add_le_add e1 e2
+        _ = ‖y‖ * ‖iteratedFDeriv ℝ (n + 1) g y‖ +
+            ((n + 1 : ℕ) : ℝ) * ‖iteratedFDeriv ℝ n g y‖ := by push_cast; ring
+  -- The interior product `B α = α.curryLeft`, a linear isometry, so `‖B u v‖ ≤ ‖u‖ ‖v‖`.
+  obtain ⟨B, hB, hBbound⟩ :
+      ∃ B : Covector (Eucl P) (k + 1) →L[ℝ] Eucl P →L[ℝ] Covector (Eucl P) k,
+        (∀ α, B α = α.curryLeft) ∧ ∀ u v, ‖B u v‖ ≤ ‖u‖ * ‖v‖ := by
+    refine ⟨(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+      (n := k)).toContinuousLinearMap, fun α => rfl, fun u v => ?_⟩
+    calc ‖(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+          (n := k)).toContinuousLinearMap u v‖
+        ≤ ‖(ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl P) (F := ℝ)
+          (n := k)).toContinuousLinearMap u‖ * ‖v‖ := ContinuousLinearMap.le_opNorm _ _
+      _ = ‖u‖ * ‖v‖ := by
+          rw [LinearIsometry.coe_toContinuousLinearMap, LinearIsometry.norm_map]
+  have hx' : ‖x‖ ≤ R := by simpa using hx
+  have hR : 0 ≤ R := (norm_nonneg x).trans hx'
+  have ht0 : 0 ≤ t := ht.1
+  have ht1 : t ≤ 1 := ht.2
+  have hfun : (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) =
+      fun z => t ^ a • B (ω (t • z)) z := by
+    funext z; rw [hB]
+  rw [hfun]
+  -- `g z = ω (L z)` with `L = t • id`, `‖L‖ ≤ 1`, so `‖D^i g(x)‖ ≤ ‖D^i ω(t x)‖ ≤ D` for `i ≤ j`.
+  set L : Eucl P →L[ℝ] Eucl P := t • ContinuousLinearMap.id ℝ (Eucl P) with hL
+  have hLnorm : ‖L‖ ≤ 1 := by
+    rw [hL, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht0]
+    calc t * ‖ContinuousLinearMap.id ℝ (Eucl P)‖ ≤ 1 * 1 :=
+          mul_le_mul ht1 ContinuousLinearMap.norm_id_le (norm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have hgfun : (fun z : Eucl P => ω (t • z)) = ω ∘ L := by
+    funext z; simp [hL]
+  have hg : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Eucl P => ω (t • z)) := by
+    rw [hgfun]; exact hω.comp L.contDiff
+  have hgnorm : ∀ i ≤ j, ‖iteratedFDeriv ℝ i (fun z : Eucl P => ω (t • z)) x‖ ≤ D := by
+    intro i hi
+    rw [hgfun, L.iteratedFDeriv_comp_right hω x (by exact_mod_cast le_top)]
+    have hLx : L x ∈ closedBall (0 : Eucl P) R := by
+      rw [mem_closedBall, dist_zero_right]
+      calc ‖L x‖ ≤ ‖L‖ * ‖x‖ := L.le_opNorm x
+        _ ≤ 1 * R := mul_le_mul hLnorm hx' (norm_nonneg x) zero_le_one
+        _ = R := one_mul R
+    calc ‖(iteratedFDeriv ℝ i ω (L x)).compContinuousLinearMap fun _ => L‖
+        ≤ ‖iteratedFDeriv ℝ i ω (L x)‖ * ∏ _ : Fin i, ‖L‖ :=
+          ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _
+      _ ≤ D * 1 := by
+          apply mul_le_mul (hbound i hi _ hLx) _ (Finset.prod_nonneg fun _ _ => norm_nonneg _) hD
+          exact Finset.prod_le_one₀ (fun _ _ => norm_nonneg _) (fun _ _ => hLnorm)
+      _ = D := mul_one D
+  -- Pull out `t^a` (`0 ≤ t^a ≤ 1`) and apply the Leibniz bound.
+  have hH : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Eucl P => B (ω (t • z)) z) :=
+    B.isBoundedBilinearMap.contDiff.comp (hg.prodMk contDiff_id)
+  have hsmul : iteratedFDeriv ℝ j (fun z : Eucl P => t ^ a • B (ω (t • z)) z) x =
+      t ^ a • iteratedFDeriv ℝ j (fun z : Eucl P => B (ω (t • z)) z) x :=
+    iteratedFDeriv_const_smul_apply' (hH.contDiffAt.of_le (by exact_mod_cast le_top))
+  rw [hsmul, norm_smul]
+  have hta : ‖t ^ a‖ ≤ 1 := by
+    rw [norm_pow, Real.norm_eq_abs, abs_of_nonneg ht0]
+    exact pow_le_one₀ ht0 ht1
+  have key := leibniz j _ _ B hBbound (fun z => ω (t • z)) hg x
+  have hsum : ‖x‖ * ‖iteratedFDeriv ℝ j (fun z => ω (t • z)) x‖ +
+      j * ‖iteratedFDeriv ℝ (j - 1) (fun z => ω (t • z)) x‖ ≤ (R + j) * D := by
+    have e1 : ‖x‖ * ‖iteratedFDeriv ℝ j (fun z => ω (t • z)) x‖ ≤ R * D :=
+      mul_le_mul hx' (hgnorm j le_rfl) (norm_nonneg _) hR
+    have e2 : (j : ℝ) * ‖iteratedFDeriv ℝ (j - 1) (fun z => ω (t • z)) x‖ ≤ j * D :=
+      mul_le_mul_of_nonneg_left (hgnorm (j - 1) (Nat.sub_le j 1)) (Nat.cast_nonneg j)
+    linarith
+  calc ‖t ^ a‖ * ‖iteratedFDeriv ℝ j (fun z : Eucl P => B (ω (t • z)) z) x‖
+      ≤ 1 * ((R + j) * D) := mul_le_mul hta (key.trans hsum) (norm_nonneg _) zero_le_one
+    _ = (R + j) * D := one_mul _
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
