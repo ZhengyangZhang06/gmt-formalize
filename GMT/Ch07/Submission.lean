@@ -747,18 +747,6 @@ theorem Submission.codim1_rdo_dg_bh_tangential_vanish : ∀ (m : ℕ) (D F : Set
   -- Step 1: `spt ζ ⊆ B_R(0)` with `R > 0`, and `|ζ| ≤ M`
   obtain ⟨R₀, hR₀⟩ := hζc.isCompact.isBounded.subset_ball (0 : Euclid (m + 1))
   set R := max R₀ 1
-
-/-- Simon Ch. 3, 4.3, proof of (9): the normal derivatives of the blow-ups `F_{y,r}` are
-asymptotically nonpositive.  Take `tsupport ζ ⊆ B_R(0)`, `M ≥ sup ζ` and `δ' = δ / (1 + M C₁ Rᵐ)`.
-For small `r`, `directional_gauss_green` (with `w = v`, `ρ = rR`) and the pointwise bound
-`-ζ⟨v, ν⟩ ≤ M (1 - ⟨ν, v⟩)` on `B̄_ρ(y)` give
-`∫_{F_{y,r}} Dζ(v) ≤ r⁻ᵐ M ∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ r⁻ᵐ M δ' μ(B̄_ρ(y)) ≤ M δ' C₁ Rᵐ ≤ δ`,
-by `normal_defect_small` and `μ(B̄_ρ(y)) ≤ C₁ρᵐ`. -/
-theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z v ≤ δ := by
-  intro m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv hA hρ₁ hC₁ hball hmass ζ hζ hζc hζ0 δ hδ
-  -- Step 1: `tsupport ζ ⊆ B_R(0)` with `R ≥ 1`, `|ζ| ≤ M`, and `δ' = δ / (1 + M C₁ Rᵐ)`
-  obtain ⟨R₀, hR₀⟩ := hζc.isCompact.isBounded.subset_ball (0 : Euclid (m + 1))
-  set R := max R₀ 1 with hR_def
   have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
   have hR : tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R :=
     hR₀.trans (ball_subset_ball (le_max_left _ _))
@@ -766,11 +754,6 @@ theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Eu
   have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
   have hM' : ∀ z, |ζ z| ≤ M := fun z => by simpa [Real.norm_eq_abs] using hM z
   -- Step 2: `μ(B̄_{ρ₁/2}(y)) < ∞`, and `r ↦ rR` maps `𝓝[>] 0` into `𝓝[>] 0`
-  set K := M * C₁ * R ^ m with hK
-  have hK0 : 0 ≤ K := by positivity
-  set δ' := δ / (1 + K) with hδ'_def
-  have hδ' : 0 < δ' := div_pos hδ (by linarith)
-  -- Step 2: the normal defect on `B̄_ρ(y)` is at most `δ' μ(B̄_ρ(y))` for small `ρ = rR`
   have hfin : ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞ :=
     ⟨ρ₁ / 2, half_pos hρ₁, ne_top_of_le_ne_top ENNReal.ofReal_ne_top
       (hmass _ (half_pos hρ₁) (half_lt_self hρ₁))⟩
@@ -796,11 +779,6 @@ theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Eu
   have hr : 0 < r := h3
   have hrR : 0 < r * R := mul_pos hr hRpos
   -- Step 4: `B̄_{rR}(y) ⊆ D` and `μ(B̄_{rR}(y)) ≤ C₁(rR)ᵐ < ∞`
-  have hnd := htend.eventually
-    (Submission.codim1_rdo_dg_bh_normal_defect_small m μ ν y v hν hν1 hv hfin hA δ' hδ')
-  filter_upwards [hnd, hsmall, self_mem_nhdsWithin] with r h1 h2 h3
-  have hr : 0 < r := h3
-  have hrR : 0 < r * R := mul_pos hr hRpos
   have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall h2.le).trans hball
   have hBfin : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) := hmass _ hrR h2
   have hBlt : μ (closedBall y (r * R)) < ∞ := hBfin.trans_lt ENNReal.ofReal_lt_top
@@ -809,7 +787,6 @@ theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Eu
   have hμB : (μ (closedBall y (r * R))).toReal ≤ C₁ * (r * R) ^ m :=
     ENNReal.toReal_le_of_le_ofReal (by positivity) hBfin
   -- Step 5: the directional Gauss–Green identity; its integrand vanishes off `B̄_{rR}(y)`
-  -- Step 3: the rescaled identity, with `s(z) = ζ(r⁻¹(z - y))` vanishing off `B̄_ρ(y)`
   have hζz : ∀ z, z ∉ closedBall y (r * R) → ζ (r⁻¹ • (z - y)) = 0 := by
     intro z hz
     by_contra hne
@@ -860,6 +837,64 @@ theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Eu
     _ = δ * K := by rw [hK, mul_pow]; field_simp
     _ < η := by
         rw [hδ_def, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+        nlinarith
+
+/-- Simon Ch. 3, 4.3, proof of (9): the normal derivatives of the blow-ups `F_{y,r}` are
+asymptotically nonpositive.  Take `tsupport ζ ⊆ B_R(0)`, `M ≥ sup ζ` and `δ' = δ / (1 + M C₁ Rᵐ)`.
+For small `r`, `directional_gauss_green` (with `w = v`, `ρ = rR`) and the pointwise bound
+`-ζ⟨v, ν⟩ ≤ M (1 - ⟨ν, v⟩)` on `B̄_ρ(y)` give
+`∫_{F_{y,r}} Dζ(v) ≤ r⁻ᵐ M ∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ r⁻ᵐ M δ' μ(B̄_ρ(y)) ≤ M δ' C₁ Rᵐ ≤ δ`,
+by `normal_defect_small` and `μ(B̄_ρ(y)) ≤ C₁ρᵐ`. -/
+theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z v ≤ δ := by
+  intro m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv hA hρ₁ hC₁ hball hmass ζ hζ hζc hζ0 δ hδ
+  -- Step 1: `tsupport ζ ⊆ B_R(0)` with `R ≥ 1`, `|ζ| ≤ M`, and `δ' = δ / (1 + M C₁ Rᵐ)`
+  obtain ⟨R₀, hR₀⟩ := hζc.isCompact.isBounded.subset_ball (0 : Euclid (m + 1))
+  set R := max R₀ 1 with hR_def
+  have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hR : tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R :=
+    hR₀.trans (ball_subset_ball (le_max_left _ _))
+  obtain ⟨M, hM⟩ : ∃ M, ∀ z, ‖ζ z‖ ≤ M := hζ.continuous.bounded_above_of_compact_support hζc
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have hM' : ∀ z, |ζ z| ≤ M := fun z => by simpa [Real.norm_eq_abs] using hM z
+  set K := M * C₁ * R ^ m with hK
+  have hK0 : 0 ≤ K := by positivity
+  set δ' := δ / (1 + K) with hδ'_def
+  have hδ' : 0 < δ' := div_pos hδ (by linarith)
+  -- Step 2: the normal defect on `B̄_ρ(y)` is at most `δ' μ(B̄_ρ(y))` for small `ρ = rR`
+  have hfin : ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞ :=
+    ⟨ρ₁ / 2, half_pos hρ₁, ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+      (hmass _ (half_pos hρ₁) (half_lt_self hρ₁))⟩
+  have htend : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+    · have : Tendsto (fun r : ℝ => r * R) (𝓝 0) (𝓝 (0 * R)) := tendsto_id.mul_const R
+      rw [zero_mul] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hRpos
+  have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r * R < ρ₁ :=
+    (htend.mono_right nhdsWithin_le_nhds).eventually (gt_mem_nhds hρ₁)
+  have hnd := htend.eventually
+    (Submission.codim1_rdo_dg_bh_normal_defect_small m μ ν y v hν hν1 hv hfin hA δ' hδ')
+  filter_upwards [hnd, hsmall, self_mem_nhdsWithin] with r h1 h2 h3
+  have hr : 0 < r := h3
+  have hrR : 0 < r * R := mul_pos hr hRpos
+  have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall h2.le).trans hball
+  have hBfin : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) := hmass _ hrR h2
+  have hBlt : μ (closedBall y (r * R)) < ∞ := hBfin.trans_lt ENNReal.ofReal_lt_top
+  have : IsFiniteMeasure (μ.restrict (closedBall y (r * R))) :=
+    isFiniteMeasure_restrict.mpr hBlt.ne
+  have hμB : (μ (closedBall y (r * R))).toReal ≤ C₁ * (r * R) ^ m :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hBfin
+  -- Step 3: the rescaled identity, with `s(z) = ζ(r⁻¹(z - y))` vanishing off `B̄_ρ(y)`
+  have hζz : ∀ z, z ∉ closedBall y (r * R) → ζ (r⁻¹ • (z - y)) = 0 := by
+    intro z hz
+    by_contra hne
+    apply hz
+    have hmem : r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) R := hR (subset_tsupport _ hne)
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at hmem
+    rw [mem_closedBall, dist_eq_norm]
+    have := (inv_mul_lt_iff₀ hr).mp hmem
+    linarith
   have hζmeas : Measurable (fun z : Euclid (m + 1) => ζ (r⁻¹ • (z - y))) :=
     (hζ.continuous.comp ((continuous_id.sub continuous_const).const_smul r⁻¹)).measurable
   have hrm : 0 < r ^ m := pow_pos hr m
