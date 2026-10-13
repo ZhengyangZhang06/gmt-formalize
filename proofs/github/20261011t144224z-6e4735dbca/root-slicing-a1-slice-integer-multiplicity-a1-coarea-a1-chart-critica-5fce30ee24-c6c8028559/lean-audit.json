@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8931a7e720f9d597db18d27484d0d29a7ae60f37959fe1dc5ede5cec2f69af8d",
+  "git_delta": {
+    "base_commit": "f85bf9976bae178db240610c754a9c794dcf0a32",
+    "candidate_commit": "5a9e3fad9b64cacb0e5ffb91e2421fa53eda6341",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_cc_small_lip_partition",
+    "diff_sha256": "05c6f500b75a079431ba2dd53a2655deaf92b6deae069c695556f56a823906d8",
+    "source_sha256": "c99a793de2e7fbe3b1aab26239d690110d84ea82cc40ec6d49706b9c82a4c2b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_cc_small_lip_partition",
+      "statement": "∀ (n : ℕ) (h : Eucl n → ℝ) (E : Set (Eucl n)) (ε : ℝ≥0), ContDiff ℝ 1 h → MeasurableSet E → (∀ w ∈ E, fderiv ℝ h w = 0) → 0 < ε → ∃ D : ℕ → Set (Eucl n), (∀ k, MeasurableSet (D k)) ∧ Pairwise (Function.onFun Disjoint D) ∧ (⋃ k, D k) = E ∧ ∀ k, LipschitzOnWith ε h (D k)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
