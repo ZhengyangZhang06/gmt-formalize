@@ -549,6 +549,29 @@ theorem Submission.dorag_ha_rb_segment_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ
   filter_upwards [hp] with p hp
   have h := Submission.dorag_ha_rb_line_ftc n u L p z 0 1 hu (hp.mono fun τ hτ _ => hτ)
   rwa [one_smul, zero_smul, add_zero] at h
+/-- FTC along rays through the origin: for an `L`-Lipschitz `u` and a.e. `x`,
+`u(x) − u(tx) = ∫_t^1 Du(σx)x dσ` for every `t`.  By Rademacher the differentiability set `D` of
+`u` is measurable and conull.  For `σ ≠ 0` the dilation `x ↦ σx` pulls null sets back to null sets
+(Haar scaling), so a.e. `x` has `σx ∈ D`; `σ = 0` is a null exception in `ℝ`.  Swapping the two
+a.e. quantifiers (`Measure.ae_ae_comm`, `{(σ, x) : σx ∈ D}` being measurable) gives a.e. `x` with
+`σx ∈ D` for a.e. `σ`, and for such `x` the line FTC `Submission.dorag_ha_rb_line_ftc` with
+`p = 0`, `v = x` applies for every `t`. -/
+theorem Submission.dorag_ha_rb_ray_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∀ᵐ x : Euclid n, ∀ t : ℝ, u x - u (t • x) = ∫ σ in t..1, fderiv ℝ u (σ • x) x := by
+  intro n u L hu
+  -- for `σ ≠ 0`, a.e. `x` has `σ • x` in the (conull) differentiability set
+  have hσ : ∀ᵐ σ : ℝ, ∀ᵐ x : Euclid n, DifferentiableAt ℝ u (σ • x) := by
+    filter_upwards [Measure.ae_ne volume (0 : ℝ)] with σ hσ
+    exact (Measure.quasiMeasurePreserving_smul volume hσ).ae hu.ae_differentiableAt
+  -- swap the quantifiers: `{(σ, x) | DifferentiableAt ℝ u (σ • x)}` is measurable
+  have hx : ∀ᵐ x : Euclid n, ∀ᵐ σ : ℝ, DifferentiableAt ℝ u (σ • x) :=
+    (Measure.ae_ae_comm (p := fun (σ : ℝ) (x : Euclid n) => DifferentiableAt ℝ u (σ • x))
+      ((continuous_smul (M := ℝ) (X := Euclid n)).measurable
+        (measurableSet_of_differentiableAt ℝ u))).1 hσ
+  filter_upwards [hx] with x hx t
+  have h := Submission.dorag_ha_rb_line_ftc n u L 0 x t 1 hu (by
+    filter_upwards [hx] with σ hσ _
+    rwa [zero_add])
+  simpa only [zero_add, one_smul] using h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
