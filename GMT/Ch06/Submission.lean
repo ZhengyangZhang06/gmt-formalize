@@ -1463,6 +1463,45 @@ theorem Submission.imc_lintegral_coordNorm_le_mass : ∀ (N k : ℕ) (Y : Geomet
         setLIntegral_iUnion_of_directed _
           (Monotone.directed_le fun _ _ h => ball_subset_ball (Nat.cast_le.mpr h))
     _ ≤ Y.mass := iSup_le hball
+/-- Riesz–Fischer (the `L¹`-limit step in the proof of Simon Ch. 6, Lemma 3.13): if the `fₙ` are
+`μ`-a.e. strongly measurable with `∑ₙ ∫⁻ ‖fₙ₊₁ − fₙ‖ₑ dμ < ∞`, then `fₙ → g` `μ`-a.e. for a
+`μ`-a.e. strongly measurable `g`, and `∫⁻ ‖fₙ − g‖ₑ dμ → 0`. -/
+theorem Submission.imc_ae_tendsto_of_summable_lintegral :
+    ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (E : Type) [NormedAddCommGroup E] [CompleteSpace E] (f : ℕ → X → E), (∀ n, AEStronglyMeasurable (f n) μ) → (∑' n, ∫⁻ x, ‖f (n + 1) x - f n x‖ₑ ∂μ) ≠ ∞ → ∃ g : X → E, AEStronglyMeasurable g μ ∧ (∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x))) ∧ Tendsto (fun n => ∫⁻ x, ‖f n x - g x‖ₑ ∂μ) atTop (𝓝 0) := by
+  intro X _ μ E _ _ f hf hsum
+  -- Step 1: the increments `dₙ = ‖fₙ₊₁ − fₙ‖ₑ` have a.e. finite sum (`lintegral_tsum`).
+  set d : ℕ → X → ℝ≥0∞ := fun n x => ‖f (n + 1) x - f n x‖ₑ
+  have hd : ∀ n, AEMeasurable (d n) μ := fun n => ((hf (n + 1)).sub (hf n)).enorm
+  have hS : ∫⁻ x, ∑' n, d n x ∂μ = ∑' n, ∫⁻ x, d n x ∂μ := lintegral_tsum hd
+  have hfin : ∀ᵐ x ∂μ, ∑' n, d n x < ∞ :=
+    ae_lt_top' (AEMeasurable.tsum hd) (by rw [hS]; exact hsum)
+  -- Step 2: where the sum is finite, `(fₙ x)` is Cauchy.
+  have hedist : ∀ x n, edist (f n x) (f (n + 1) x) ≤ d n x := fun x n => by
+    rw [edist_comm, edist_eq_enorm_sub]
+  have hcauchy : ∀ᵐ x ∂μ, CauchySeq (fun n => f n x) := by
+    filter_upwards [hfin] with x hx
+    exact cauchySeq_of_edist_le_of_tsum_ne_top (fun n => d n x) (hedist x) hx.ne
+  -- Step 3: the limit `g`, a.e. strongly measurable as an a.e. limit.
+  set g : X → E := fun x => limUnder atTop (fun n => f n x)
+  have hlim : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x)) := by
+    filter_upwards [hcauchy] with x hx
+    exact hx.tendsto_limUnder
+  refine ⟨g, aestronglyMeasurable_of_tendsto_ae atTop hf hlim, hlim, ?_⟩
+  -- Step 4: `‖fₙ − g‖ₑ ≤ ∑_{m ≥ n} dₘ` a.e.
+  have htail : ∀ n, ∀ᵐ x ∂μ, ‖f n x - g x‖ₑ ≤ ∑' m, d (n + m) x := by
+    intro n
+    filter_upwards [hfin, hlim] with x hx hxl
+    rw [← edist_eq_enorm_sub]
+    exact edist_le_tsum_of_edist_le_of_tendsto (fun m => d m x) (hedist x) hxl n
+  -- Step 5: integrate; the tails of a finite series tend to `0`.
+  have hbound : ∀ n, ∫⁻ x, ‖f n x - g x‖ₑ ∂μ ≤ ∑' m, ∫⁻ x, d (n + m) x ∂μ := by
+    intro n
+    calc ∫⁻ x, ‖f n x - g x‖ₑ ∂μ ≤ ∫⁻ x, ∑' m, d (n + m) x ∂μ := lintegral_mono_ae (htail n)
+      _ = ∑' m, ∫⁻ x, d (n + m) x ∂μ := lintegral_tsum fun m => hd (n + m)
+  have htend : Tendsto (fun n => ∑' m, ∫⁻ x, d (n + m) x ∂μ) atTop (𝓝 0) := by
+    have := ENNReal.tendsto_sum_nat_add (fun m => ∫⁻ x, d m x ∂μ) hsum
+    simpa [add_comm] using this
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds htend (fun n => bot_le) hbound
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
