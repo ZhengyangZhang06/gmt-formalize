@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1.square_shrink-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 6 (square and the set N), stated for abstract local-inverse data (O, N₀, G) of a map F continuous on U. Conventions: for w ∈ Euclid 2, w₀ and w₁ are its coordinates (Lean w 0, w 1); (a, b) ∈ Euclid 2 is the point with coordinates a, b (Lean !₂[a, b]); B_ε(y) is the open ball; R_s := {w : w₀ ∈ (r₀ − s, r₀ + s) and w₁ ∈ (−s, s)}.
+1. Since O is open and F(p) ∈ O, there is ε > 0 with B_ε(F(p)) ⊆ O (Metric.isOpen_iff).
+2. Put s := min(ε, r₀)/4. Then s > 0 (ε > 0, r₀ > 0), s ≤ r₀/4 < r₀, and s ≤ ε/4.
+3. (R_s ⊆ O.) Let w ∈ R_s. Then |w₀ − r₀| < s and |w₁| < s, so (w₀ − r₀)² < s² and w₁² < s². Because F(p) = (r₀, 0), the Euclidean distance is dist(w, F(p)) = √((w₀ − r₀)² + (w₁ − 0)²) (EuclideanSpace.dist_eq, Fin.sum_univ_two, Real.dist_eq, sq_abs). Now (w₀ − r₀)² + w₁² < 2s² ≤ 2(ε/4)² = ε²/8 < ε², so dist(w, F(p)) < ε (Real.sqrt_lt', ε > 0). Hence w ∈ B_ε(F(p)) ⊆ O.
+4. (R_s is open.) R_s is the intersection of the preimages of the open intervals (r₀ − s, r₀ + s) and (−s, s) under the continuous coordinate maps w ↦ w₀ and w ↦ w₁ (isOpen_Ioo.preimage, IsOpen.inter).
+5. (The set N.) Define N := N₀ ∩ (U ∩ F⁻¹(R_s)). Since F is continuous on the open set U and R_s is open, U ∩ F⁻¹(R_s) is open (ContinuousOn.isOpen_inter_preimage); as N₀ is open, N is open. Clearly N ⊆ U.
+6. (p ∈ N.) p ∈ N₀ by hypothesis, p ∈ U because N₀ ⊆ U, and F(p) = (r₀, 0) ∈ R_s because r₀ − s < r₀ < r₀ + s and −s < 0 < s (s > 0). Hence p ∈ N.
+7. (M ∩ N ⊆ G(R_s).) Let x ∈ M ∩ N. Then x ∈ M ∩ N₀ = G(O), so x = G(w) for some w ∈ O. Then F(x) = F(G(w)) = w, and x ∈ F⁻¹(R_s) gives w = F(x) ∈ R_s. Hence x = G(w) ∈ G(R_s).
+8. (G(R_s) ⊆ M ∩ N.) Let w ∈ R_s. By step 3, w ∈ O, so G(w) ∈ G(O) = M ∩ N₀; thus G(w) ∈ M, G(w) ∈ N₀, G(w) ∈ U (N₀ ⊆ U) and F(G(w)) = w ∈ R_s. Hence G(w) ∈ N₀ ∩ (U ∩ F⁻¹(R_s)) = N, and G(w) ∈ M ∩ N.
+9. By steps 2–8, s and N satisfy 0 < s < r₀, N open, p ∈ N, N ⊆ U, R_s ⊆ O and M ∩ N = G(R_s). ∎
+
+## Key steps
+
+1. Choose ε > 0 with B_ε(F p) ⊆ O and s := min(ε, r₀)/4, so 0 < s < r₀ and s ≤ ε/4.
+2. Every w in the square R_s has dist(w, (r₀,0))² < 2s² < ε², so R_s ⊆ O; R_s is open.
+3. N := N₀ ∩ (U ∩ F⁻¹(R_s)) is open (F continuous on open U), contains p, and lies in U.
+4. Using G(O) = M ∩ N₀ and F∘G = id on O, x ∈ M ∩ N iff x = G(w) with w ∈ R_s.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 215,240p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace); grep -n 'namespace|^open' GMT/Ch07/Contract.lean`
+- `python3 -I scan of dag.json: sibling lean_statements under ...stationary_cone_sheet_planar-a1 (tangent_plane_mem, local_inverse, angle_curve); grep -o 'idtp_ccd_scsp_[a-z_]*' dag.json; grep -c 'idtp_ccd_scsp_cc_' dag.json (0); grep -rl idtp_ccd_scsp_cc_ ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean and run nodes (no match)`
+- `python3 -I scan of dag.json lean_statements for: arctan with fderiv/ContDiffOn | 'inner ℝ u e = 0 ∧ ∀ v' (orthonormal completion) | IsPreconnected | 'w 0 ∈' | 'deriv γ' with Set.range | 'q.1 • γ q.2'`
+- `grep -rn 'theorem IsPreconnected.subset_of_closure_inter_subset|theorem hasStrictFDerivAt_norm_sq|theorem HasFDerivAt.sqrt|theorem HasFDerivAt.arctan|theorem contDiffOn_piLp|theorem finrank_span_eq_card|theorem exists_of_lt|theorem eq_of_le_of_finrank_eq|theorem mem_closure_iff_nhdsWithin_neBot|theorem ContinuousOn.isOpen_inter_preimage|theorem Filter.EventuallyEq.fderiv_eq|theorem HasFDerivAt.smul|theorem contDiffAt_norm|theorem contDiff_arctan|theorem hasDerivAt_inv|theorem HasFDerivAt.unique|theorem mem_span_pair|theorem tendsto_nhds_unique|theorem isPreconnected_Ioo|theorem sqrt_lt'|theorem orthonormal_iff_ite|theorem range_cons' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `lake env lean /tmp/cc_chart_dec_q41/{Probe,Probe2,Stubs,Assembly,C1,C2,C3,C4,C6,Combined}.lean and /tmp/cc_chart_dec_q41/out/FromJson.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7262430116/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7262430116/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/SetLike/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ClusterPt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/VecNotation.lean`
+- `/tmp/cc_chart_dec_q41/Combined.lean`
+- `/tmp/cc_chart_dec_q41/Assembly.lean`
+- `/tmp/cc_chart_dec_q41/out/FromJson.lean`
+
+Pins match: snapshot project_commit b4d606d = workspace HEAD and mathlib 25730c7c = .lake/packages/mathlib HEAD. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (namespace GMT.Ch07; opens Filter Function Set MeasureTheory Metric, scoped ENNReal Topology, Poincare.SimonGMT.Chapter06, and Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt)).
+
+The frozen sibling types tangent_plane_mem, local_inverse and angle_curve were read from dag.json; the parent assembly uses them verbatim.
+
+No accepted DAG declaration states any child:
+- The only near match is idtp_tdc_dlc_ld_orthonormal_partner, which is alpha-equivalent to plane_orthonormal. It is in another branch and still decomposing, so it is not reusable.
+- idtp_cse_fa_sector_open_contDiffOn and idtp_cse_rc_angle_fderiv concern a different ℝ×ℝ-valued map and are not accepted.
+- The prefix idtp_ccd_scsp_cc_ is unused.
+
+Every Mathlib lemma cited in the child proofs exists in the pinned snapshot, e.g. IsPreconnected.subset_of_closure_inter_subset (Topology/Connected/Basic.lean:434), hasStrictFDerivAt_norm_sq (InnerProductSpace/Calculus.lean:197), HasFDerivAt.sqrt, HasFDerivAt.arctan, contDiffOn_piLp (ContDiff/WithLp.lean:58), finrank_span_eq_card, IsConcreteLE.exists_of_lt (Basic/SetLike/Basic.lean:284), Submodule.eq_of_le_of_finrank_eq, mem_closure_iff_nhdsWithin_neBot, ContinuousOn.isOpen_inter_preimage, Filter.EventuallyEq.fderiv_eq, HasFDerivAt.smul, contDiffAt_norm, Real.contDiff_arctan, hasDerivAt_inv, HasFDerivAt.unique, Submodule.mem_span_pair, tendsto_nhds_unique, isPreconnected_Ioo, Real.sqrt_lt', orthonormal_iff_ite and Matrix.range_cons. Names that do not exist here and are not cited: HasFDerivAt.norm, HasFDerivAt.div, HasFDerivAt.inv and hasFDerivAt_piLp. SetLike.exists_of_lt is deprecated.
+
+Lean checks:
+- All five child types elaborate after import GMT.Ch07.Submission.
+- Each child has a complete Lean proof with axioms propext, Classical.choice and Quot.sound only.
+- The parent's exact frozen type is proved from the five children plus the three sibling stubs; sorryAx appears only through the sibling stubs.
