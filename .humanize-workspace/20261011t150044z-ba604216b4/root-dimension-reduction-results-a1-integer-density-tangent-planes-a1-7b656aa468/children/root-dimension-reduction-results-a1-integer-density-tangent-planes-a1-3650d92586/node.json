@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_point_support-a1.submanifold_subset_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_point_support-a1",
+  "depth": 5,
+  "title": "Points of an oriented C¹ submanifold M with T = m[[M]] (m ≠ 0) on an open set G lie in spt T",
+  "statement": "Let P, n ∈ ℕ, let U, G, M ⊆ ℝ^P be sets, T ∈ 𝒟_n(U) (T : GeometricCurrentOn U n), m ∈ ℤ and ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n). Assume: G is open and G ⊆ U; m ≠ 0; M is an embedded C¹ n-dimensional submanifold (IsEmbeddedSubmanifold 1 n M); ξ is an orientation of M (IsOrientation n M ξ: ξ is continuous on M, and for every z ∈ M, ξ(z) is a unit orientation of the subspace tangentSpace M z); Hⁿ(M ∩ K) < ∞ for every compact K ⊆ G (Hⁿ := μHE[n]); and T(ω) = m·∫_M ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω ⊆ G. Then M ∩ G ⊆ spt T, where spt T = T.support = U ∖ zeroRegion T (Simon 6.2.11).",
+  "lean_statement": "∀ (P n : ℕ) (U G M : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen G → G ⊆ U → m ≠ 0 → IsEmbeddedSubmanifold 1 n M → IsOrientation n M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ G → μHE[n] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → M ∩ G ⊆ T.support",
+  "lean_name": "idtp_ccd_rps_submanifold_subset_support",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1-a1",
+      "result_commit": "e8842d90b78f15ebdbe728429ce98fccfaa6665c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584-a1",
+      "result_commit": "2e5d20d49a4a41f79e81db1a65e850fb919b38ba",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3650d92586-a1"
+}

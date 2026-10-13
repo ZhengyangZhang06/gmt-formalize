@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (IsEmbeddedSubmanifold|IsOrientation|regularSet|tangentSpace)|IsUnitOrientationOf|def unitBallVolume",
+        "theorem (integral_pos_iff_support_of_nonneg_ae|setIntegral_eq_zero_of_forall_eq_zero)|integrableOn_of_bounded|integrable_of_forall_notMem_eq_zero|ContinuousOn.aestronglyMeasurable|le_restrict_apply|IsOpen.inter_closure|tsupport_smul_subset_left|ContinuousOn.clm_apply",
+        "alternatization_apply_apply",
+        "dimred_rpd_embedded_locally_closed",
+        "dimred_rpd_submanifold_density_one",
+        "imsupp_unit_orientation_ne_zero_norm_le_one",
+        "idtp_ccd_rps_support_subset_closure",
+        "idtp_ccd_rps_submanifold_subset_support",
+        "git show 6da66b1edf6f809895011d303069229d599f99d6:GMT/Ch07/Submission.lean",
+        "git show e8842d90b78f15ebdbe728429ce98fccfaa6665c:GMT/Ch07/Submission.lean",
+        "git show 2e5d20d49a4a41f79e81db1a65e850fb919b38ba:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rps-independent-audit-i8bexy33/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rps-independent-audit-i8bexy33/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rps-independent-audit-i8bexy33/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b656aa468/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b656aa468/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/tmp/rps-independent-audit-i8bexy33/Types.lean",
+        "/tmp/rps-independent-audit-i8bexy33/Full.lean",
+        "/tmp/rps-independent-audit-i8bexy33/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes exactly the selected regular-point support theorem. Project and Mathlib revisions match the manifest; the snapshot contract and workspace contract are byte-identical. All three reused declarations have identical comparator-frozen types and matching accepted candidate hashes. Their prerequisite chains are discharged and do not reach the selected parent. Neither new name is reserved in the DAG or another decomposition proposal. All five names are bare identifiers, and all statements are standalone, one-line propositions matching their prose. Fresh Lean checks successfully elaborate the statements before implementation, compile the supplied new proofs with the accepted reused proofs, and verify both the exact parent theorem and its assembly from child hypotheses. Axiom checks report only propext, Classical.choice and Quot.sound. The measure, norm and bump-function constructions use the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "embedded_locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted contract. Proper chart preimages and continuity give compact slices, including for r = 0. The open union of chart neighborhoods yields M = O ∩ closure M, proving Borel measurability. The complete proof supplies precisely the compactness and measurability needed downstream."
+    },
+    {
+      "key": "submanifold_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted contract with independently checked, acyclic accepted prerequisites. The chart inclusions and bi-Lipschitz measure bounds give the stated squeeze after division by a positive finite denominator. Letting ε tend to zero proves the exact ENNReal limit, including n = 0."
+    },
+    {
+      "key": "unit_orientation_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted contract. The operator-norm estimate follows from orthonormality. Mathlib's unnormalized alternatization gives a covector evaluating to 1 on the frame, proving nonvanishing for either orientation sign and also for n = 0. No circular reliance occurs."
+    },
+    {
+      "key": "support_subset_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type agree, and the new name is unreserved. A smaller ball outside closure M has compact closure inside G ⊆ U. Every test form supported there vanishes on M, so the representation makes T vanish there. This contradicts support membership without requiring measurability or orientation hypotheses."
+    },
+    {
+      "key": "submanifold_subset_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact type; its three dependencies are correctly directed. The proof constructs a valid smooth compactly supported form, establishes measurability and integrability using local finiteness and the norm bound, obtains positive measure from density one, and derives a positive pairing integral. Nonzero integer multiplicity gives the contradiction for either sign. The supplied Lean proof independently compiles."
+    }
+  ],
+  "required_changes": []
+}
