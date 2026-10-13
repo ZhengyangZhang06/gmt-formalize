@@ -451,6 +451,18 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3 of the orientation of a slice (Simon 6.4.3, `⟨v⌞w, a⟩ = ⟨v, w ∧ a⟩`): if `ν` is a
+unit vector orthogonal to `σ₀, …, σₙ₋₁`, then `(ν♭ ∧ α)(ν, σ₀, …, σₙ₋₁) = α(σ₀, …, σₙ₋₁)` for
+every `n`-covector `α`, where `ν♭ ∧ α` is the alternatization of `w ↦ ⟨ν, w⟩ α`,
+`(ν♭ ∧ α)(v) = ∑ᵢ (-1)ⁱ ⟨ν, vᵢ⟩ α(v₀, …, v̂ᵢ, …, vₙ)`.  The term `i = 0` is
+`⟨ν, ν⟩ α(σ) = α(σ)`; every other term has a factor `⟨ν, σⱼ⟩ = 0`. -/
+theorem Submission.dor_lmbsf_io_wedge_eval_cons : ∀ (P n : ℕ) (ν : Euclid P) (σ : Fin n → Euclid P) (α : Covector (Euclid P) n), ‖ν‖ = 1 → (∀ i, inner ℝ ν (σ i) = 0) → ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α) (Fin.cons ν σ : Fin (n + 1) → Euclid P) = α σ := by
+  intro P n ν σ α hν hνσ
+  -- expand at `v = (ν, σ₀, …, σₙ₋₁)` and split off the term `i = 0`
+  rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ]
+  -- `⟨ν, ν⟩ = ‖ν‖² = 1`, `v` without `v₀` is `σ`, and `⟨ν, vⱼ₊₁⟩ = ⟨ν, σⱼ⟩ = 0`
+  simp [Fin.removeNth_zero, Fin.tail_cons, innerSL_apply_apply, hνσ, hν]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
