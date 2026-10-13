@@ -474,6 +474,79 @@ theorem Submission.iwl_cr_ci_ie_param_fubini : ∀ (P m : ℕ) (μ : Measure (Eu
   exact Submission.iwl_cr_ci_ie_nvector_intervalIntegral P m 0 1 (fun s => Φ s x) (Ψ x) (ξ x)
     (hΦ.comp (continuous_id.prodMk continuous_const)) (hΨ x)
 
+/-- **Exchange of an integer multiplicity current with `∫₀¹ ds` (Simon Ch. 6, 8.2, cone
+construction).**  Let `X = τ(M, θ, ξ)` be integer multiplicity, `(s, x) ↦ φ(s)(x)` continuous with
+`spt φ(s) ⊆ K` (`K` compact) for `s ∈ [0, 1]`, and `ψ(x)(v) = ∫₀¹ φ(s)(x)(v) ds`.  Then
+`∫₀¹ X(φ(s)) ds = X(ψ)`: `μ_K := Hᵐ⌞(M ∩ K)` is finite (`θ ≥ 1` on `M`), every `φ(s)` and `ψ`
+vanish off `K`, so `X(φ(s))` and `X(ψ)` are `μ_K`-integrals, and Fubini applies to
+`θ(x) ξ(x)(φ(s)(x))`, dominated by `B |θ(x)|` with `B = sup_{[0,1] × K} ‖φ‖` and `|ξ(x)(α)| ≤ ‖α‖`. -/
+theorem Submission.iwl_cr_ci_integral_exchange : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (K : Set (Eucl P)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m) (ψ : TestFormOn (univ : Set (Eucl P)) m), IsIntegerMultiplicity X → IsCompact K → Continuous (fun p : ℝ × Eucl P => (φ p.1 : DifferentialForm (Eucl P) m) p.2) → (∀ s ∈ Icc (0 : ℝ) 1, tsupport (φ s : DifferentialForm (Eucl P) m) ⊆ K) → (∀ (x : Eucl P) (v : Fin m → Eucl P), (ψ : DifferentialForm (Eucl P) m) x v = ∫ s in (0 : ℝ)..1, (φ s : DifferentialForm (Eucl P) m) x v) → ∫ s in (0 : ℝ)..1, X (φ s) = X ψ := by
+  intro P m X K φ ψ hX hK hφc hsupp hψ
+  -- `X = τ(M, θ, ξ)` with `θ` integer valued on `M`.
+  obtain ⟨M, θ, ξ, hT, hint, hXτ⟩ := hX
+  -- `μ_K := Hᵐ⌞(M ∩ K)` is finite; `θ` is `μ_K`-integrable and `ξ` is `μ_K`-measurable.
+  have hfin : (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞ :=
+    Submission.iwl_cr_ci_ie_measure_inter_compact_lt_top P m univ M θ ξ K hT hint hK
+      (subset_univ K)
+  have _instK : IsFiniteMeasure ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hfin⟩
+  have hθ : Integrable θ ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    hT.integrableOn K hK (subset_univ K)
+  have hξ : AEStronglyMeasurable ξ ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    hT.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+  -- `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ` for an orthonormal `τ`, so `|ξ(x)(α)| ≤ ‖α‖` `μ_K`-a.e.
+  have hbd : ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)),
+      ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖ := by
+    have h : ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict M),
+        ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖ :=
+      hT.orients.mono fun x ⟨τ, hτ, _, hξx⟩ => Submission.fiw_ims_tt_unit_bound P m τ (ξ x) hτ hξx
+    exact ae_restrict_of_ae_restrict_of_subset inter_subset_left h
+  -- Every `φ(s)`, `s ∈ [0, 1]`, and `ψ` vanish off `K`.
+  have hφ0 : ∀ s ∈ Icc (0 : ℝ) 1, ∀ x ∉ K, (φ s : DifferentialForm (Eucl P) m) x = 0 :=
+    fun s hs x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hsupp s hs h)
+  have hψ0 : ∀ x ∉ K, (ψ : DifferentialForm (Eucl P) m) x = 0 := by
+    intro x hx
+    ext v
+    rw [hψ x v]
+    have h : ∫ s in (0 : ℝ)..1, (φ s : DifferentialForm (Eucl P) m) x v
+        = ∫ s in (0 : ℝ)..1, (0 : ℝ) := by
+      apply intervalIntegral.integral_congr
+      intro s hs
+      rw [uIcc_of_le zero_le_one] at hs
+      simp [hφ0 s hs x hx]
+    rw [h]
+    simp
+  -- `‖φ(s)(x)‖ ≤ B` on the compact set `[0, 1] × K`, hence for all `x` when `s ∈ [0, 1]`.
+  obtain ⟨B, hBd⟩ : ∃ B : ℝ, ∀ s ∈ Icc (0 : ℝ) 1, ∀ x,
+      ‖(φ s : DifferentialForm (Eucl P) m) x‖ ≤ B := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn hφc.continuousOn
+    refine ⟨max C 0, fun s hs x => ?_⟩
+    by_cases hx : x ∈ K
+    · exact (hC (s, x) ⟨hs, hx⟩).trans (le_max_left _ _)
+    · rw [hφ0 s hs x hx, norm_zero]
+      exact le_max_right _ _
+  -- For `ω` vanishing off `K`, `X(ω) = ∫ θ ξ(ω) dμ_K`.
+  have hXK : ∀ ω : TestFormOn (univ : Set (Eucl P)) m,
+      (∀ x ∉ K, (ω : DifferentialForm (Eucl P) m) x = 0) →
+      X ω = ∫ x, θ x * ξ x ((ω : DifferentialForm (Eucl P) m) x)
+        ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) := by
+    intro ω hω
+    rw [hXτ ω, tauAction, ← setIntegral_indicator hK.isClosed.measurableSet]
+    congr 1
+    funext x
+    by_cases hx : x ∈ K
+    · simp [hx]
+    · simp [hx, hω x hx]
+  -- Fubini on `[0, 1] × (M ∩ K)`: `∫₀¹ ∫ θ ξ(φ(s)) dμ_K ds = ∫ θ ξ(ψ) dμ_K`.
+  have hmain := Submission.iwl_cr_ci_ie_param_fubini P m
+    ((μHE[m] : Measure (Eucl P)).restrict (M ∩ K)) θ ξ
+    (fun s => (φ s : DifferentialForm (Eucl P) m)) ψ B inferInstance hθ hξ hbd hφc hBd hψ
+  rw [hXK ψ hψ0, ← hmain]
+  apply intervalIntegral.integral_congr
+  intro s hs
+  rw [uIcc_of_le zero_le_one] at hs
+  exact hXK (φ s) (hφ0 s hs)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
