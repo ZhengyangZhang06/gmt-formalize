@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8a4180a5e061a8c12e2298dcfb17cd6925aa6321a75c45bcc0e67dd81ce8e289",
+  "git_delta": {
+    "base_commit": "4a9ad8722694d1481d6165cd5e7a0c055d59a9cf",
+    "candidate_commit": "8faf6c21ff30ba5daa97ab87766115bd91995069",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_mi_measure_eq_withDensity",
+    "diff_sha256": "cc8a2ddf7b65ade69d3044605d0306afd21c073556302f07c87a82b0e04eb8fa",
+    "source_sha256": "5642566fc1350844461fd39851f96e5dc617eeac30cbb7416448a29fcc6ef9db",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_mi_measure_eq_withDensity",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Θ : Euclid P → ℝ), R.Represents S → (∀ x : Euclid P, HasMassDensity S x (Θ x)) → R.measure = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (Θ x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
