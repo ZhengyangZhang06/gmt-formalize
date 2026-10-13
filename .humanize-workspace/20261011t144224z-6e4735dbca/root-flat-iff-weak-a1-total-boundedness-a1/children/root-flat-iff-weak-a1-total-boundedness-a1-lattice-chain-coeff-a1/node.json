@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1",
+  "depth": 3,
+  "title": "Faces with nonzero coefficient lie in the support, and |β_F|ρ^n ≤ M(P) (G5 a, b)",
+  "statement": "Let m, N ∈ ℕ, n := m + 1, ρ > 0, β : LatticeFaceIndex n N → ℝ and Pc ∈ D_n(ℝ^N) with IsLatticeChain ρ β Pc (Pc(ω) = Σ'_F β_F latticeFaceAction ρ F ω for all ω ∈ D^n(ℝ^N)). Then for every face index F with β_F ≠ 0: latticeFace ρ F ⊆ spt Pc, and |β_F| ρ^n ≤ M(Pc), i.e. ENNReal.ofReal(|β_F| ρ^n) ≤ Pc.mass.",
+  "lean_statement": "∀ (m N : ℕ) (ρ : ℝ) (β : LatticeFaceIndex (m + 1) N → ℝ) (Pc : GeometricCurrentOn (univ : Set (Eucl N)) (m + 1)), 0 < ρ → IsLatticeChain ρ β Pc → ∀ F : LatticeFaceIndex (m + 1) N, β F ≠ 0 → latticeFace ρ F ⊆ Pc.support ∧ ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ Pc.mass",
+  "lean_name": "fiw_tb_lattice_chain_coeff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-lattice-chain-coeff-a1-a1"
+}
