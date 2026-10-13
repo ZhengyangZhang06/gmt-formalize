@@ -805,6 +805,86 @@ theorem Submission.dor_lmb_ret_normal_coordinates : ∀ (P d : ℕ) (V : Set (Eu
     exact hG _ (hB hz)
   exact ⟨⟨_, hz, hΦz⟩, congrArg Prod.fst hGz⟩
 
+/-- **Nearest-point retraction near a chart point** (proof of Simon 7.4.3: the nearest-point
+projection onto the embedded `C²` submanifold `N` near `y = ψ(v₀)`).  Normal coordinates give
+`δ`, `O`, `g` with `g(ψ(v) + n) = v` for `v ∈ B_δ(v₀)` and `n ⊥ range Dψ(v)`, `|n| < δ`; chart
+localization with `ε = δ` gives a compact `K = N ∩ B̄_ρ(y) ⊆ ψ(V ∩ B_δ(v₀))`.  For `x ∈ B_r(y)`,
+`r = min(ρ/2, δ)`, the distance from `x` to `K` is attained at some `p = ψ(v)`, `v ∈ B_δ(v₀)`, and
+points of `N \ K` are farther away, so `p` is nearest in `N`.  The first-order condition for
+`|x − ψ(·)|²` at `v` makes `x − p` normal to `range Dψ(v)`; as `|x − p| ≤ |x − y| < δ`, normal
+coordinates give `x = ψ(v) + (x − p) ∈ O` and `g(x) = v`. -/
+theorem Submission.dor_lmb_ret_nearest_point : ∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ 2 ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (r δ : ℝ) (g : Euclid P → Euclid d), 0 < r ∧ 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ ContDiffOn ℝ 1 g (ball (ψ v₀) r) ∧ MapsTo g (ball (ψ v₀) r) (ball v₀ δ) ∧ (∀ x ∈ ball (ψ v₀) r, ∀ z ∈ N, ‖x - ψ (g x)‖ ≤ ‖x - z‖) ∧ (∀ x ∈ ball (ψ v₀) r, (fderiv ℝ ψ (g x)).range.starProjection (x - ψ (g x)) = 0) ∧ ∀ x ∈ N ∩ ball (ψ v₀) r, ψ (g x) = x := by
+  intro P d N W V ψ v₀ hV hW hψ hinj himg hprop hDψ hv₀
+  -- normal coordinates: `g(ψ(v) + n) = v` for `v ∈ B_δ(v₀)` and normal `n` with `|n| < δ`
+  obtain ⟨δ, O, g, hδ, hδV, -, hgO, hrec⟩ :=
+    Submission.dor_lmb_ret_normal_coordinates P d V ψ v₀ hV hψ hDψ hv₀
+  -- chart localization with `ε = δ`: `K = N ∩ B̄_ρ(y)` is compact and lies in `ψ(V ∩ B_δ(v₀))`
+  obtain ⟨ρ, hρ, -, hKψ, hK⟩ := Submission.dor_lmb_ret_chart_localization P d N W V ψ v₀ hW
+    hψ.continuousOn hinj himg hprop hv₀ δ hδ
+  -- `ψ(V) ⊆ N`, so `y ∈ K`
+  have hψN : ∀ w ∈ V, ψ w ∈ N := fun w hw => (himg ▸ mem_image_of_mem ψ hw : ψ w ∈ W ∩ N).2
+  have hyK : ψ v₀ ∈ N ∩ closedBall (ψ v₀) ρ := ⟨hψN v₀ hv₀, mem_closedBall_self hρ.le⟩
+  have hr : 0 < min (ρ / 2) δ := lt_min (half_pos hρ) hδ
+  -- for `x ∈ B_r(y)`: a nearest point `ψ(v)` of `N`, with `x − ψ(v)` normal and `g(x) = v`
+  have key : ∀ x ∈ ball (ψ v₀) (min (ρ / 2) δ), ∃ v ∈ ball v₀ δ,
+      (∀ z ∈ N, ‖x - ψ v‖ ≤ ‖x - z‖) ∧
+        (fderiv ℝ ψ v).range.starProjection (x - ψ v) = 0 ∧ x ∈ O ∧ g x = v := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm, lt_min_iff] at hx
+    obtain ⟨hxρ, hxδ⟩ := hx
+    -- the distance from `x` to `K` is attained at some `p ∈ K`
+    obtain ⟨p, hpK, hpmin⟩ := hK.exists_isMinOn ⟨ψ v₀, hyK⟩
+      ((continuous_const.sub continuous_id).norm.continuousOn :
+        ContinuousOn (fun z => ‖x - z‖) _)
+    rw [isMinOn_iff] at hpmin
+    have hpy : ‖x - p‖ ≤ ‖x - ψ v₀‖ := hpmin _ hyK
+    -- points of `N \ K` are at distance `> ρ - ρ / 2 > |x - y|` from `x`
+    have hnear : ∀ z ∈ N, ‖x - p‖ ≤ ‖x - z‖ := by
+      intro z hz
+      by_cases hzK : z ∈ closedBall (ψ v₀) ρ
+      · exact hpmin z ⟨hz, hzK⟩
+      rw [mem_closedBall, dist_eq_norm, not_le] at hzK
+      have htri : ‖z - ψ v₀‖ ≤ ‖x - ψ v₀‖ + ‖x - z‖ := by
+        simpa using norm_sub_le (x - ψ v₀) (x - z)
+      linarith
+    -- `p = ψ(v)` with `v ∈ V ∩ B_δ(v₀)`
+    obtain ⟨v, ⟨hvV, hvδ⟩, rfl⟩ := hKψ hpK
+    -- `w ↦ |x − ψ(w)|²` has a local minimum at `v`, as `ψ(V) ⊆ N` and `V` is open
+    have hmin : IsLocalMin (fun w => ‖x - ψ w‖ ^ 2) v := by
+      filter_upwards [hV.mem_nhds hvV] with w hw
+      exact pow_le_pow_left₀ (norm_nonneg _) (hnear _ (hψN w hw)) 2
+    have hDv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+      ((hψ.differentiableOn two_ne_zero).differentiableAt (hV.mem_nhds hvV)).hasFDerivAt
+    -- its derivative `w ↦ −2⟨x − ψ(v), Dψ(v)w⟩` vanishes, so `x − ψ(v) ⊥ range Dψ(v)`
+    have h0 := hmin.hasFDerivAt_eq_zero (hDv.const_sub x).norm_sq
+    have hnormal : (fderiv ℝ ψ v).range.starProjection (x - ψ v) = 0 := by
+      rw [Submodule.starProjection_apply_eq_zero_iff, Submodule.mem_orthogonal]
+      rintro _ ⟨w, rfl⟩
+      have h := congrArg (fun L => L w) h0
+      simp only [_root_.smul_apply, ContinuousLinearMap.comp_apply, _root_.neg_apply,
+        innerSL_apply_apply, inner_neg_right, _root_.zero_apply, smul_neg, neg_eq_zero,
+        smul_eq_zero] at h
+      rw [real_inner_comm]
+      exact h.resolve_left two_ne_zero
+    -- normal coordinates recover `v` from `x = ψ(v) + (x − ψ(v))`, `|x − ψ(v)| < δ`
+    obtain ⟨hxO, hgx⟩ := hrec v hvδ (x - ψ v) hnormal (hpy.trans_lt hxδ)
+    rw [add_sub_cancel] at hxO hgx
+    exact ⟨v, hvδ, hnear, hnormal, hxO, hgx⟩
+  refine ⟨min (ρ / 2) δ, δ, g, hr, hδ, hδV,
+    hgO.mono fun x hx => (key x hx).elim fun _ h => h.2.2.2.1, fun x hx => ?_, fun x hx => ?_,
+    fun x hx => ?_, fun x hx => ?_⟩
+  · obtain ⟨v, hvδ, -, -, -, hgx⟩ := key x hx
+    rwa [hgx]
+  · obtain ⟨v, -, hnear, -, -, hgx⟩ := key x hx
+    rwa [hgx]
+  · obtain ⟨v, -, -, hnormal, -, hgx⟩ := key x hx
+    rwa [hgx]
+  · -- a point of `N` is its own nearest point
+    obtain ⟨v, -, hnear, -, -, hgx⟩ := key x hx.2
+    have h := hnear x hx.1
+    rw [sub_self, norm_zero, norm_le_zero_iff, sub_eq_zero] at h
+    rw [hgx, h]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
