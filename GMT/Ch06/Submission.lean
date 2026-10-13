@@ -453,6 +453,59 @@ theorem Submission.iwl_sp_sn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Me
   · exact absurd h (hpos x hxM).ne'
   · exact h
 
+/-- **A rectifiable representation is null where the current vanishes (a step of the proof that
+`τ(M, θ, ξ)` lives on `spt T`, used for Simon Ch. 6, Theorem 8.2).**  If `T = τ(M, θ, ξ)` and `T`
+vanishes on an open `W` with `closure W` a compact subset of `U`, then `Hⁿ(M ∩ W) = 0`.  Testing
+`T` with `φ α` (`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so
+`⟨α, ξ⟩ = 0` a.e. on `M ∩ W` (`iwl_sp_sn_weighted_fundamental_lemma`; `|⟨α, ξ⟩| ≤ ‖α‖` by
+`iwl_sp_sn_signed_simpleNVector_bound_ne_zero`).  Finitely many covectors separate `n`-vectors
+(`iwl_sp_sn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`, while `ξ ≠ 0` a.e. on `M`. -/
+theorem Submission.iwl_sp_sn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0 := by
+  intro P n U W T M θ ξ h hrep hWo hWc hWU hvan
+  have hWU' : W ⊆ U := subset_closure.trans hWU
+  -- `θ` is integrable on `M ∩ W ⊆ M ∩ closure W`, as `closure W` is a compact subset of `U`.
+  have hθ : IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) :=
+    (h.integrableOn (closure W) hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure)
+  -- Step 1: `ξ x = ±simpleNVector τ` with `τ` orthonormal, so `|ξ x b| ≤ ‖b‖` and `ξ x ≠ 0`.
+  have hgood : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      (∀ b : Covector (Eucl P) n, |ξ x b| ≤ ‖b‖) ∧ ξ x ≠ 0 := by
+    filter_upwards [h.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    exact Submission.iwl_sp_sn_signed_simpleNVector_bound_ne_zero P n τ (ξ x) hτ hξ
+  -- Steps 3–5: each coefficient `x ↦ ξ x α` vanishes a.e. on `M ∩ W`.
+  have key : ∀ α : Covector (Eucl P) n,
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ W → ξ x α = 0 := by
+    intro α
+    refine Submission.iwl_sp_sn_weighted_fundamental_lemma P (μHE[n] : Measure (Eucl P)) M W θ
+      (fun x => ξ x α) ‖α‖ hWo h.nullMeasurableSet h.pos hθ ?_ ?_ ?_
+    · exact (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+        h.aestronglyMeasurable
+    · filter_upwards [hgood] with x hx
+      exact hx.1 α
+    · -- `ω = φ α` is a test form supported in `W`, so `T ω = 0`.
+      intro φ hφ hφc hφW
+      let ω : DifferentialForm (Eucl P) n := fun x => φ x • α
+      have hωs : IsSmoothForm ω := hφ.smul contDiff_const
+      have hωc : HasCompactSupport ω := hφc.smul_right
+      have hωW : tsupport ω ⊆ W := (tsupport_smul_subset_left φ (fun _ => α)).trans hφW
+      let ωU : TestFormOn U n := ⟨ω, ⟨hωs, hωc⟩, hωW.trans hWU'⟩
+      have h0 : T ωU = 0 := hvan ωU hωW
+      rw [hrep ωU] at h0
+      simpa [tauAction, ωU, ω, map_smul, smul_eq_mul] using h0
+  -- Steps 6–7: finitely many covectors separate `n`-vectors, so `ξ = 0` a.e. on `M ∩ W`,
+  -- contradicting `ξ ≠ 0`.
+  obtain ⟨N, b, hb⟩ := Submission.iwl_sp_sn_covector_separating_family P n
+  have hall : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ i, x ∈ W → ξ x (b i) = 0 :=
+    ae_all_iff.mpr fun i => key (b i)
+  have hnotW : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∉ W := by
+    filter_upwards [hall, hgood] with x hx hg hxW
+    exact hg.2 (hb (ξ x) fun i => hx i hxW)
+  -- Step 8: `(Hⁿ ⌞ M)(W) = Hⁿ(M ∩ W)`, as `W` is open.
+  have hres : (μHE[n] : Measure (Eucl P)).restrict M W = 0 := by
+    rw [ae_iff] at hnotW
+    simpa using hnotW
+  rwa [Measure.restrict_apply hWo.measurableSet, Set.inter_comm] at hres
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
