@@ -605,6 +605,26 @@ theorem Submission.deformation_dilation_hausdorff : ∀ (N k : ℕ) (ρ : ℝ), 
       one_pow, ENNReal.ofReal_one]
   rw [hc, one_mul]
 
+/-- Dilation preserves integer multiplicity (Simon Ch. 6, 2.23 and Lemma 3.9 for the dilation
+`η_ρ(x) = ρx`, `ρ > 0`): if `X = τ(M, θ, ξ)` is integer multiplicity and `Y(ω) = X(η)` whenever
+`η(x) = ρᵏ ω(ρx)`, then `Y = τ(ρM, θ(ρ⁻¹ ·), ξ(ρ⁻¹ ·))` with natural-valued `θ(ρ⁻¹ ·)`. -/
+theorem Submission.deformation_dilation_integer_multiplicity : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y := by
+  intro N ρ hρ k X Y hXY hX
+  obtain ⟨M, θ, ξ, hT, hθ, hrep⟩ := hX
+  -- `φ(x) = ρ • x` is a measurable embedding pushing `ρᵏ Hᵏ` forward to `Hᵏ`.
+  obtain ⟨hemb, hmp⟩ := Submission.deformation_dilation_hausdorff N k ρ hρ
+  refine ⟨(fun x : Eucl N => ρ • x) '' M, fun y => θ (ρ⁻¹ • y), fun y => ξ (ρ⁻¹ • y),
+    Submission.deformation_dilation_im_rectifiableTriple N k ρ M θ ξ hρ hemb hmp hT, ?_, ?_⟩
+  · -- The multiplicity at `ρ • x` is `θ(ρ⁻¹ • ρ • x) = θ x ∈ ℕ`.
+    rintro _ ⟨x, hx, rfl⟩
+    simpa only [inv_smul_smul₀ hρ.ne'] using hθ x hx
+  · -- `Y ω = X η = τ(M, θ, ξ)(η) = τ(ρM, θ(ρ⁻¹ ·), ξ(ρ⁻¹ ·))(ω)` for the pull-back `η = ρᵏ ω(ρ ·)`.
+    intro ω
+    obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N ρ hρ k).1 ω
+    rw [hXY ω η hη, hrep η, show (η : DifferentialForm (Eucl N) k) =
+      fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x) from funext hη]
+    exact Submission.deformation_dilation_im_tauAction N k ρ M θ ξ ω hρ hemb hmp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
