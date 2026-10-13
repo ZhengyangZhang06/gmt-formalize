@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "66ccc450561e6b5be99e15c9279a6ab1ab4bc35a54a97220a6f964ce95494f3e",
+  "git_delta": {
+    "base_commit": "a07a1870ed3fe8532e1e6ff91b4380eb16103785",
+    "candidate_commit": "8ae4965a0dae8f1c6b7bc7c384ba9c599eaf5450",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_hausdorff",
+    "diff_sha256": "d603467890795cc0ef608cf5508a63a4bbadb971a70a901ec97aca86270cc312",
+    "source_sha256": "9e72454aa48bf6fefd4a5d8b08fe2c8098861684f757d048749609ae2972a9f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_hausdorff",
+      "statement": "∀ (N k : ℕ) (ρ : ℝ), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) ∧ MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
