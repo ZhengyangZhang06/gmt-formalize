@@ -3371,6 +3371,149 @@ theorem Submission.imc_im_density_limit : ∀ (N k : ℕ) (M : ℕ → Set (Eucl
   simp_rw [htau]
   exact tendsto_integral_of_L1 _ hint₀'.aestronglyMeasurable (Eventually.of_forall hintp) hL1
 
+/-- **Completeness of integer multiplicity currents (Simon Ch. 6, Lemma 3.13, p. 149).**  If
+`T_j ∈ 𝒟ₖ(ℝ^N)` are integer multiplicity and `M(T − T_j) → 0`, then `T` is integer
+multiplicity.  Write `T_j = τ(M_j, θ_j, ξ_j)` and `κ_j := 1_{M_j} θ_j ξ_j`.  Along a subsequence
+with `M(T − T_{φ(p)}) < 2⁻ᵖ`, subadditivity of mass gives `M(T_{φ(p+1)} − T_{φ(p)}) ≤ 2 · 2⁻ᵖ`.
+As `(Hᵏ, κ_{φ(p+1)} − κ_{φ(p)})` represents `T_{φ(p+1)} − T_{φ(p)}` (2.7), the mass lower bound
+(printed (1)) makes `∑_p ∫ |κ_{φ(p+1)} − κ_{φ(p)}| dHᵏ` finite.  The densities then converge to an
+integer multiplicity triple `(M₀, θ₀, ξ₀)` with `τ(M_{φ(p)}, θ_{φ(p)}, ξ_{φ(p)})(ω) →
+τ(M₀, θ₀, ξ₀)(ω)` (printed (2)–(3)).  Finally `|T(ω) − T_j(ω)| ≤ c · M(T − T_j) → 0` whenever
+`|ω| ≤ c`, so `T = τ(M₀, θ₀, ξ₀)`. -/
+theorem Submission.deformation_im_completeness : ∀ (N k : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl N)) k) (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ ε : ℝ≥0∞, 0 < ε → ∃ J : ℕ, ∀ j, J ≤ j → ∀ D : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω, D ω = T ω - Tj j ω) → D.mass < ε) → IsIntegerMultiplicity T := by
+  intro N k T Tj hIM hconv
+  -- Step 1: triples `T_j = τ(M_j, θ_j, ξ_j)` with natural multiplicity.
+  choose M θ ξ hMθξ hnat hTj using hIM
+  -- Step 2: the difference `A − B` of two currents is a current.
+  let sub : GeometricCurrentOn (univ : Set (Eucl N)) k →
+      GeometricCurrentOn (univ : Set (Eucl N)) k → GeometricCurrentOn (univ : Set (Eucl N)) k :=
+    fun A B => ⟨A.toCurrent - B.toCurrent, fun ωs h => by
+      simpa using (A.continuous' ωs h).sub (B.continuous' ωs h)⟩
+  -- Step 3: `-ω` is admissible with `ω`, so mass is subadditive: if `D = E₁ − E₂`, then
+  -- `D(ω) = E₁(ω) + E₂(−ω) ≤ M(E₁) + M(E₂)` for every admissible `ω`.
+  have hneg : ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      ω ∈ massAdmissibleOn univ k univ → -ω ∈ massAdmissibleOn univ k univ := fun ω hω =>
+    ⟨subset_univ _, fun x => by simpa using hω.2 x⟩
+  have hmass : ∀ D E₁ E₂ : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω, D ω = E₁ ω - E₂ ω) → D.mass ≤ E₁.mass + E₂.mass := by
+    intro D E₁ E₂ hD
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    calc ENNReal.ofReal (D ω) = ENNReal.ofReal (E₁ ω + E₂ (-ω)) := by
+          rw [hD, sub_eq_add_neg, map_neg E₂.toCurrent ω]
+      _ ≤ ENNReal.ofReal (E₁ ω) + ENNReal.ofReal (E₂ (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ E₁.mass + E₂.mass := add_le_add (E₁.le_massOn hω) (E₂.le_massOn (hneg ω hω))
+  -- Step 4: a subsequence with `M(T − T_{φ(p)}) < 2⁻ᵖ` (Simon's proof of 3.13); then
+  -- `T_{φ(p+1)} − T_{φ(p)} = (T − T_{φ(p)}) − (T − T_{φ(p+1)})` has mass `≤ 2 · 2⁻ᵖ`.
+  obtain ⟨φ, hφ, hφm⟩ := extraction_forall_of_eventually fun p : ℕ =>
+    (show ∀ᶠ j in atTop, ∀ D : GeometricCurrentOn (univ : Set (Eucl N)) k,
+        (∀ ω, D ω = T ω - Tj j ω) → D.mass < (2⁻¹ : ℝ≥0∞) ^ p from
+      eventually_atTop.2 (hconv _ (ENNReal.pow_pos (ENNReal.inv_pos.2 (by norm_num)) p)))
+  have hD : ∀ p, (sub (Tj (φ (p + 1))) (Tj (φ p))).mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ p := by
+    intro p
+    calc (sub (Tj (φ (p + 1))) (Tj (φ p))).mass
+        ≤ (sub T (Tj (φ p))).mass + (sub T (Tj (φ (p + 1)))).mass :=
+          hmass _ _ _ fun ω => by
+            change Tj (φ (p + 1)) ω - Tj (φ p) ω = (T ω - Tj (φ p) ω) - (T ω - Tj (φ (p + 1)) ω)
+            ring
+      _ ≤ (2⁻¹ : ℝ≥0∞) ^ p + (2⁻¹ : ℝ≥0∞) ^ p :=
+          add_le_add (hφm p (sub T (Tj (φ p))) fun _ => rfl).le
+            ((hφm (p + 1) (sub T (Tj (φ (p + 1)))) fun _ => rfl).le.trans
+              (pow_le_pow_right_of_le_one' (by norm_num) p.le_succ))
+      _ = 2 * (2⁻¹ : ℝ≥0∞) ^ p := (two_mul _).symm
+  -- Step 5: `T_j(ω) = ∫ κ_j(ω) dHᵏ` with an integrable integrand (`ltg_tau_integrable` (b)).
+  have hrep : ∀ j (ω : TestFormOn (univ : Set (Eucl N)) k),
+      Integrable (fun x => (M j).indicator (fun y => θ j y • ξ j y) x
+        ((ω : DifferentialForm (Eucl N) k) x)) (μHE[k] : Measure (Eucl N)) ∧
+      Tj j ω = ∫ x, (M j).indicator (fun y => θ j y • ξ j y) x
+        ((ω : DifferentialForm (Eucl N) k) x) ∂(μHE[k] : Measure (Eucl N)) := by
+    intro j ω
+    have hκ : (fun x => (M j).indicator (fun y => θ j y • ξ j y) x
+        ((ω : DifferentialForm (Eucl N) k) x)) =
+        (M j).indicator (fun x => θ j x * ξ j x ((ω : DifferentialForm (Eucl N) k) x)) := by
+      funext x
+      by_cases hx : x ∈ M j <;> simp [hx]
+    rw [hκ, integral_indicator₀ (hMθξ j).nullMeasurableSet, hTj j ω]
+    exact ⟨((Submission.ltg_tau_integrable N k univ (M j) (θ j) (ξ j) (hMθξ j)).2 _
+      (ContDiff.continuous ω.2.1.1) ω.2.1.2 (subset_univ _)).integrable_indicator₀
+        (hMθξ j).nullMeasurableSet, rfl⟩
+  -- Step 6: hence `(Hᵏ, κ_{φ(p+1)} − κ_{φ(p)})` represents `T_{φ(p+1)} − T_{φ(p)}` (2.7).
+  have hrepD : ∀ p, IsMeasureRepresentation (sub (Tj (φ (p + 1))) (Tj (φ p)))
+      (μHE[k] : Measure (Eucl N)) fun x =>
+        (M (φ (p + 1))).indicator (fun y => θ (φ (p + 1)) y • ξ (φ (p + 1)) y) x -
+          (M (φ p)).indicator (fun y => θ (φ p) y • ξ (φ p) y) x := by
+    intro p ω
+    obtain ⟨h₁, e₁⟩ := hrep (φ (p + 1)) ω
+    obtain ⟨h₂, e₂⟩ := hrep (φ p) ω
+    exact ⟨h₁.sub h₂, (congrArg₂ (· - ·) e₁ e₂).trans (integral_sub h₁ h₂).symm⟩
+  -- Step 7: the mass lower bound (printed (1)) gives
+  -- `∑_p ∫ |κ_{φ(p+1)} − κ_{φ(p)}| dHᵏ ≤ ∑_p 2 · 2⁻ᵖ = 4`.
+  have hsum : (∑' p, ∫⁻ x, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N,
+      (euclideanNVectorCoordinate ((M (φ (p + 1))).indicator
+        (fun y => θ (φ (p + 1)) y • ξ (φ (p + 1)) y) x -
+          (M (φ p)).indicator (fun y => θ (φ p) y • ξ (φ p) y) x) γ) ^ 2))
+      ∂(μHE[k] : Measure (Eucl N))) ≠ ∞ := by
+    refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum fun p =>
+      (Submission.imc_lintegral_coordNorm_le_mass N k _ _ _ (hrepD p)).trans (hD p))
+    rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv]
+    norm_num
+  -- Step 8: the densities converge to an integer multiplicity triple `(M₀, θ₀, ξ₀)` with
+  -- `τ(M_{φ(p)}, θ_{φ(p)}, ξ_{φ(p)})(ω) → τ(M₀, θ₀, ξ₀)(ω)` (printed (2)–(3)).
+  obtain ⟨M₀, θ₀, ξ₀, hT₀, hnat₀, hlim⟩ := Submission.imc_im_density_limit N k
+    (fun p => M (φ p)) (fun p => θ (φ p)) (fun p => ξ (φ p)) (fun p => hMθξ (φ p))
+    (fun p => hnat (φ p)) hsum
+  -- Step 9: `T_j(ω) → T(ω)`: if `|ω| ≤ c`, then `±c⁻¹ω` are admissible, so
+  -- `|T(ω) − T_j(ω)| ≤ c · M(T − T_j)`.  Here `|aα| = |a| |α|` for the coefficient norm.
+  have hsmul : ∀ (a : ℝ) (α : Covector (Eucl N) k),
+      covectorEuclideanNorm (a • α) = |a| * covectorEuclideanNorm α := by
+    intro a α
+    simp only [covectorEuclideanNorm]
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg a), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs <;> simp [mul_pow]
+  have hweak : ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      Tendsto (fun j => Tj j ω) atTop (𝓝 (T ω)) := by
+    intro ω
+    -- `|ω|` is continuous with compact support, hence bounded by `c := max C 1`.
+    have hcont : Continuous fun x =>
+        covectorEuclideanNorm ((ω : DifferentialForm (Eucl N) k) x) := by
+      simp only [covectorEuclideanNorm]
+      refine (continuous_finsetSum _ fun I _ => ?_).sqrt
+      by_cases hI : StrictMono I <;> simp only [hI, ↓reduceIte]
+      · exact ((continuous_eval_const _).comp (ContDiff.continuous ω.2.1.1)).pow 2
+      · exact continuous_const
+    obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support
+      (ω.2.1.2.mono fun x hx h0 => hx (by simp [h0]))
+    have hc : (0 : ℝ) < max C 1 := lt_of_lt_of_le one_pos (le_max_right C 1)
+    have hadm : (max C 1)⁻¹ • ω ∈ massAdmissibleOn univ k univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      change covectorEuclideanNorm ((max C 1)⁻¹ • (ω : DifferentialForm (Eucl N) k) x) ≤ 1
+      rw [hsmul, abs_of_pos (inv_pos.2 hc), inv_mul_le_one₀ hc]
+      exact (Real.le_norm_self _).trans ((hC x).trans (le_max_left C 1))
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨J, hJ⟩ := hconv (ENNReal.ofReal ((max C 1)⁻¹ * ε))
+      (ENNReal.ofReal_pos.2 (mul_pos (inv_pos.2 hc) hε))
+    refine ⟨J, fun j hj => ?_⟩
+    have hm := hJ j hj (sub T (Tj j)) fun _ => rfl
+    have h₁ := ((sub T (Tj j)).le_massOn hadm).trans_lt hm
+    have h₂ := ((sub T (Tj j)).le_massOn (hneg _ hadm)).trans_lt hm
+    rw [ENNReal.ofReal_lt_ofReal_iff (mul_pos (inv_pos.2 hc) hε)] at h₁ h₂
+    change T ((max C 1)⁻¹ • ω) - Tj j ((max C 1)⁻¹ • ω) < _ at h₁
+    change T (-((max C 1)⁻¹ • ω)) - Tj j (-((max C 1)⁻¹ • ω)) < _ at h₂
+    rw [map_smul, map_smul, smul_eq_mul, smul_eq_mul, ← mul_sub] at h₁
+    rw [map_neg T.toCurrent, map_neg (Tj j).toCurrent, map_smul, map_smul, smul_eq_mul,
+      smul_eq_mul, neg_sub_neg, ← mul_sub] at h₂
+    rw [Real.dist_eq, abs_sub_lt_iff]
+    exact ⟨lt_of_mul_lt_mul_left h₂ (inv_nonneg.2 hc.le),
+      lt_of_mul_lt_mul_left h₁ (inv_nonneg.2 hc.le)⟩
+  -- Step 10: `T(ω) = lim_p T_{φ(p)}(ω) = lim_p τ(M_{φ(p)}, θ_{φ(p)}, ξ_{φ(p)})(ω) =
+  -- τ(M₀, θ₀, ξ₀)(ω)`, so `T = τ(M₀, θ₀, ξ₀)` is integer multiplicity.
+  refine ⟨M₀, θ₀, ξ₀, hT₀, hnat₀, fun ω => tendsto_nhds_unique
+    ((hweak ω).comp hφ.tendsto_atTop) ?_⟩
+  exact (hlim _ (ContDiff.continuous ω.2.1.1) ω.2.1.2).congr fun p => (hTj (φ p) ω).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
