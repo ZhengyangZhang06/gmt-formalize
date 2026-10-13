@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "massOn_le_add|massOn_add|massOn_sub|im_partial_sum|series_limit|cmc_fc_sl_|dimred_mbl_fc",
+        "^(import|open|namespace|section)|instance.*Sub|def boundaryMassOn|def IsIntegerMultiplicity|abbrev Euclid|def CompactlyContained",
+        "ofReal_add_le|one_sub_inv_two",
+        "git show cacdc05dfa22f76a2c7e0c50db4ecb92f5c85953 -- GMT/Ch07/Submission.lean",
+        "git show a6a740d8eb1b7ef650cab5e74e9c6170654b404a -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/series-limit-independent-audit-r6loivuo/TypesAndProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/series-limit-independent-audit-r6loivuo/AssemblyFromTypes.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/NatInt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-da25f33ca0/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-da25f33ca0/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-3898743d47/comparison-identity-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-3898743d47/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-b770db587f/comparison-identity-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-b770db587f/isolated-comparator-result.json",
+        "/tmp/series-limit-independent-audit-r6loivuo/TypesAndProofs.lean",
+        "/tmp/series-limit-independent-audit-r6loivuo/AssemblyFromTypes.lean",
+        "/tmp/series-limit-independent-audit-r6loivuo/DirectTypesAndProofs.lean",
+        "/tmp/series-limit-independent-audit-r6loivuo/DirectAssemblyFromTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected series-limit contract. Snapshot and workspace contracts match; project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308 are compatible. The snapshot project search found no matching mass-triangle or partial-sum declaration. Inspected definitions and Mathlib lemmas support both supplied proofs. Each proposed name has exactly one existing reservation, at a comparator-accepted declaration with a byte-identical frozen type. Both raw types elaborate before either child is declared. Independent Lean checks confirm the contract Sub instance, pointwise subtraction, scalar action on test forms, and positive-degree boundaryMassOn reductions. Reused proofs have only propext, Classical.choice and Quot.sound as axioms. The exact selected parent compiles from precisely the two child types and its declared series_current prerequisite, plus those standard axioms. The assembly correctly supplies telescoping, uniform boundary bounds, CL applications, weak-limit passage and the combined geometric-tail estimate. Dependency traversal, including the proposed reuse edges, found no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary U and G, |c| ≤ 1, and the support-restricted evaluation identity. Independently checked all four steps: coefficient squares prove norm homogeneity; scalar multiplication preserves support and admissibility; linearity and ofReal_add_le bound each evaluation; sSup_le proves the mass inequality. Neither openness nor finite mass is needed. The proof is complete and non-circular, and its c = ±1 cases serve the selected parent. The bare name validly reuses the identical comparator-accepted type."
+    },
+    {
+      "key": "im_partial_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the prose: explicit IS_U, integer multiplicity of every Y_i, sums over range (N + 1), and one witness satisfying the bound for every G. The base case and induction are complete. Three applications of IS_U make Z − ((B − B) − B) integer multiplicity; pointwise subtraction gives the required evaluation; mass_triangle at c = 1 supplies the mass bound. No additional openness, zero-current IM, or current-addition instance is assumed. Its sole child dependency is correctly directed and acyclic. The bare name validly reuses the identical comparator-accepted type."
+    }
+  ],
+  "required_changes": []
+}
