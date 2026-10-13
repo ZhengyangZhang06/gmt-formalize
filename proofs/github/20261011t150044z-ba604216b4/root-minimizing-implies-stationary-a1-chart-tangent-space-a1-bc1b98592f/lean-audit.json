@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "069652a817dd401606d178508283f428261c5bd86074ee99aba297a0c1764c98",
+  "git_delta": {
+    "base_commit": "f6eeb6e9b3a2c66f7568029e77807a8e57f12bd0",
+    "candidate_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "eaa5be8491738a7326917dea3e383a974031f52f98baf097d78123e847b0b8c9",
+    "source_sha256": "1e71c8b6ea90d6fe916dbf2cc35bd0827e58ca375d64b35a3bbd26d04e3afca7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chart_tangentSpace_eq_range_fderiv",
+      "statement": "∀ (P d r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v ∈ V → tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
