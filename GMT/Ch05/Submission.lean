@@ -11491,7 +11491,6 @@ theorem dohr_local_multiplicity_one : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set 
     Submission.dohr_lmo_carrier_graph_symmDiff n ℓ V.carrier V.support ξ R s Q u hsR hgraph
       hsymm⟩
 
-end Submission
 
 /-- Simon Ch. 5, proof of Theorem 7.1 (p. 128, system (2)), vertical first variation: if
 `Q(spt V - ξ)` is the graph of a `C¹` function `u` over `B̆_R(0)` and `μ_V = Hⁿ ⌞ spt V` on
