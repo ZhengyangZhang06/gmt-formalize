@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.approx_differentiable-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Approximate tangential differentiability of f along M with gradient G, from C¹ chart pieces (Simon Ch. 3, 2.1; Remark 1.8(1))",
+  "statement": "Let P, d ∈ ℕ, let M ⊆ ℝ^P be Borel with H^d(M ∩ K) < ∞ for every compact K (H^d = μHE[d]), and let f : ℝ^P → ℝ and G : ℝ^P → ℝ^P be arbitrary maps. For j ∈ ℕ let ψ_j : ℝ^d → ℝ^P and F_j : ℝ^d → ℝ be C¹ and V_j, Y_j ⊆ ℝ^d, such that ψ_j is injective on V_j, Dψ_j(y) is injective for y ∈ V_j, closure(Y_j) is compact and contained in V_j, ψ_j(Y_j) is Borel and contained in M, and for every y ∈ Y_j: f(ψ_j(y)) = F_j(y); M has approximate tangent space Dψ_j(y)(ℝ^d) at ψ_j(y) (Simon Ch. 3, 1.4); G(ψ_j(y)) ∈ Dψ_j(y)(ℝ^d); and ⟨G(ψ_j(y)), Dψ_j(y)e⟩ = DF_j(y)e for all e ∈ ℝ^d. Assume H^d(M ∖ ⋃_j ψ_j(Y_j)) = 0. Then for H^d-a.e. x ∈ M: M has approximate tangent space T_xM := approxTangentPlane d M x at x, G(x) ∈ T_xM, and for every ε > 0, H^d({y ∈ M ∩ B_r(x) : ε|y − x| < |f(y) − f(x) − ⟨G(x), y − x⟩|})/r^d → 0 as r ↓ 0 (B_r(x) = ball x r; quotient in [0, ∞] with r^d entered as ENNReal.ofReal (r ^ d)).",
+  "lean_statement": "∀ (P d : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (ψ : ℕ → Euclid d → Euclid P) (V Y : ℕ → Set (Euclid d)) (F : ℕ → Euclid d → ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[d] (M ∩ K) ≠ ∞) → (∀ j, ContDiff ℝ 1 (ψ j)) → (∀ j, InjOn (ψ j) (V j)) → (∀ j, ∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) → (∀ j, ContDiff ℝ 1 (F j)) → (∀ j, IsCompact (closure (Y j))) → (∀ j, closure (Y j) ⊆ V j) → (∀ j, MeasurableSet (ψ j '' Y j)) → (∀ j, ψ j '' Y j ⊆ M) → (∀ j, ∀ y ∈ Y j, f (ψ j y) = F j y) → (∀ j, ∀ y ∈ Y j, HasApproximateTangentSpaceAt d M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P))) → (∀ j, ∀ y ∈ Y j, G (ψ j y) ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (G (ψ j y)) (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e) → μHE[d] (M \\ ⋃ j, ψ j '' Y j) = 0 → ∀ᵐ x ∂(μHE[d].restrict M), HasApproximateTangentSpaceAt d M x (approxTangentPlane d M x) ∧ G x ∈ approxTangentPlane d M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[d] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ d)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dtc_bc_lc_sl_co_approx_differentiable",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_bilipschitz-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.tangent_complement_density-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_bilipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.tangent_complement_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-41c94d66e6-a1"
+}

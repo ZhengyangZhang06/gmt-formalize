@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_gradient-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Continuous tangential gradient along a C¹ immersion: B(B*B)⁻¹∇F (Simon's ∇^{N_j}f on one chart, Ch. 3, 2.1)",
+  "statement": "Let P, d ∈ ℕ, let ψ : ℝ^d → ℝ^P and F : ℝ^d → ℝ be C¹, and let V ⊆ ℝ^d be any set such that Dψ(y) is injective for every y ∈ V. Then there is a map h : ℝ^d → ℝ^P, continuous on V, such that for every y ∈ V: h(y) ∈ Dψ(y)(ℝ^d) (LinearMap.range (fderiv ℝ ψ y)) and ⟨h(y), Dψ(y)e⟩ = DF(y)e for every e ∈ ℝ^d. (h(y) is the gradient at ψ(y) of F∘ψ⁻¹ along the immersed piece.)",
+  "lean_statement": "∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (F : Euclid d → ℝ) (V : Set (Euclid d)), ContDiff ℝ 1 ψ → ContDiff ℝ 1 F → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ∃ h : Euclid d → Euclid P, ContinuousOn h V ∧ ∀ y ∈ V, h y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (h y) (fderiv ℝ ψ y e) = fderiv ℝ F y e",
+  "lean_name": "dtc_bc_lc_sl_co_chart_gradient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-87919f64c2-a1"
+}

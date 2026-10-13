@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.tangent_complement_density-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Density zero of M ∖ A at a point where A ⊆ M have the same approximate tangent plane",
+  "statement": "Let P, N ∈ ℕ, A ⊆ M ⊆ ℝ^P with A Borel, x ∈ ℝ^P, Q a linear subspace of ℝ^P, and s > 0 with H^N(M ∩ B̄_s(x)) < ∞ (H^N = μHE[N], B̄_s(x) = closedBall x s). Suppose M and A both have approximate tangent space Q at x (HasApproximateTangentSpaceAt N M x Q and HasApproximateTangentSpaceAt N A x Q; Simon Ch. 3, Definition 1.4). Then H^N((M ∖ A) ∩ B_r(x))/r^N → 0 as r ↓ 0, where B_r(x) = ball x r and the quotient is taken in [0, ∞] with r^N entered as ENNReal.ofReal (r ^ N).",
+  "lean_statement": "∀ (P N : ℕ) (A M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), MeasurableSet A → A ⊆ M → 0 < s → μHE[N] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt N M x Q → HasApproximateTangentSpaceAt N A x Q → Tendsto (fun r : ℝ => μHE[N] ((M \\ A) ∩ ball x r) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dtc_bc_lc_sl_co_tangent_complement_density",
+  "depends_on": [
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1-a1",
+      "result_commit": "dbef2c15948a21d9574315bea458a9edb4f708e3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-81790968d5-a1"
+}

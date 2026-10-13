@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.slice_glue-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Slices glue over a countable Borel partition: countable rectifiability and approximate tangent planes of M ∩ f⁻¹(t) (Simon Ch. 3, 2.10(2); Ch. 6, Lemma 4.1)",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0, M ⊆ ℝ^P Borel with H^{n+1}(M ∩ K) < ∞ for every compact K, f : ℝ^P → ℝ Borel, G : ℝ^P → ℝ^P with |G(x)| ≤ L for every x, T : ℝ^P → {linear subspaces of ℝ^P} any map, and A_j ⊆ M (j ∈ ℕ) Borel. Write M₀ := M ∖ ⋃_j A_j and Hᵏ = μHE[k]. Assume: (i) (co-area on M) for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹(t)} g dHⁿ is L¹-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dH^{n+1}; (ii) Hⁿ(M₀ ∩ f⁻¹(t)) = 0 for L¹-a.e. t; (iii) for every j, for L¹-a.e. t: A_j ∩ f⁻¹(t) is countably n-rectifiable and for Hⁿ-a.e. x ∈ A_j ∩ f⁻¹(t), G(x) ≠ 0 and A_j ∩ f⁻¹(t) has approximate tangent space T(x) ∩ G(x)^⊥ (= T x ⊓ (ℝ ∙ G x)ᗮ) at x. Then for L¹-a.e. t: M ∩ f⁻¹(t) is countably n-rectifiable, and for Hⁿ-a.e. x ∈ M ∩ f⁻¹(t), G(x) ≠ 0 and M ∩ f⁻¹(t) has approximate tangent space T(x) ∩ G(x)^⊥ at x.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (T : Euclid P → Submodule ℝ (Euclid P)) (A : ℕ → Set (Euclid P)) (L : NNReal), MeasurableSet M → Measurable f → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → (∀ x, ‖G x‖ ≤ L) → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → (∀ j, MeasurableSet (A j)) → (∀ j, A j ⊆ M) → (∀ᵐ t, μHE[n] ((M \\ ⋃ j, A j) ∩ f ⁻¹' {t}) = 0) → (∀ j, ∀ᵐ t, CountablyRectifiable n (A j ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (A j ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (A j ∩ f ⁻¹' {t}) x (T x ⊓ (ℝ ∙ G x)ᗮ)) → ∀ᵐ t, CountablyRectifiable n (M ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (M ∩ f ⁻¹' {t}) x (T x ⊓ (ℝ ∙ G x)ᗮ)",
+  "lean_name": "dtc_bc_lc_sl_co_slice_glue",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-6c12cf5116-a1"
+}

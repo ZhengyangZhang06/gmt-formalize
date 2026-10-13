@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_bilipschitz-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Bi-Lipschitz bounds for a C¹ immersion on a compact set on which it is injective",
+  "statement": "Let P, d ∈ ℕ, let ψ : ℝ^d → ℝ^P be C¹ (ContDiff ℝ 1 ψ), and let K ⊆ ℝ^d be compact such that ψ is injective on K and Dψ(y) = fderiv ℝ ψ y is injective for every y ∈ K. Then there are real numbers m > 0 and Λ such that m|a − b| ≤ |ψ(a) − ψ(b)| ≤ Λ|a − b| for all a, b ∈ K (Euclidean norms on ℝ^d = Euclid d and ℝ^P = Euclid P).",
+  "lean_statement": "∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (K : Set (Euclid d)), ContDiff ℝ 1 ψ → IsCompact K → InjOn ψ K → (∀ y ∈ K, Injective (fderiv ℝ ψ y)) → ∃ m Λ : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖ψ a - ψ b‖ ∧ ‖ψ a - ψ b‖ ≤ Λ * ‖a - b‖",
+  "lean_name": "dtc_bc_lc_sl_co_chart_bilipschitz",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204-a1",
+      "result_commit": "12e74edc2f87670883f4d67e2d52fc0830d265e7",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-6617b8a893-a1"
+}

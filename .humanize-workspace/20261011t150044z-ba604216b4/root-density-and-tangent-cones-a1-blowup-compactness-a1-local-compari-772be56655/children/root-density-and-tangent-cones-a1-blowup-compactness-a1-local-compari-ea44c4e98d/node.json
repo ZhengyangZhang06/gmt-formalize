@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.coarea_glue-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "The co-area formula is countably additive over a Borel partition modulo a null set with null slices (Simon Ch. 3, 2.8–2.9)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel, f : ℝ^P → ℝ Borel, G : ℝ^P → ℝ^P any map, and A_j ⊆ M (j ∈ ℕ) pairwise disjoint Borel sets. Write M₀ := M ∖ ⋃_j A_j and Hᵏ = μHE[k]. Assume H^{n+1}(M₀) = 0; Hⁿ(M₀ ∩ f⁻¹(t)) = 0 for L¹-a.e. t ∈ ℝ; and for every j and every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{A_j∩f⁻¹(t)} g dHⁿ is L¹-a.e.-measurable and ∫_ℝ ∫_{A_j∩f⁻¹(t)} g dHⁿ dt = ∫_{A_j} |G| g dH^{n+1}. Then for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹(t)} g dHⁿ is L¹-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dH^{n+1}. (All integrals are lower Lebesgue integrals in [0, ∞]; |G| enters as ENNReal.ofReal ‖G x‖; dt is Lebesgue measure on ℝ.)",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (A : ℕ → Set (Euclid P)), MeasurableSet M → Measurable f → (∀ j, MeasurableSet (A j)) → (∀ j, A j ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n + 1] (M \\ ⋃ j, A j) = 0 → (∀ᵐ t, μHE[n] ((M \\ ⋃ j, A j) ∩ f ⁻¹' {t}) = 0) → (∀ j, ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in A j, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]",
+  "lean_name": "dtc_bc_lc_sl_co_coarea_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ea44c4e98d-a1"
+}

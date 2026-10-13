@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|CountablyRectifiable|blowUpMap",
+        "theorem ae_tendsto_measure_inter_div|theorem lintegral_iUnion|theorem lintegral_tsum|theorem inverse_continuousAt|isUnit_iff_bijective|addHaar_ball_of_pos",
+        "euclideanHausdorffMeasure_eq_volume|image_of_continuousOn_injOn|preimage_isClosed_of_isClosed|theorem find|measurable_piecewise",
+        "mul_apply_eq_comp|inst.*Ring|instance.*Ring",
+        "dtc_bc_lc_sl_co_",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show 12e74edc2f87670883f4d67e2d52fc0830d265e7:GMT/Ch07/Submission.lean",
+        "git show dbef2c15948a21d9574315bea458a9edb4f708e3:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/coarea_independent_audit/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/coarea_independent_audit/IndependentProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/coarea_independent_audit/IndependentAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-772be56655/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-772be56655/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1/accepted-candidate.json",
+        "/tmp/coarea_independent_audit/im_calculus_accepted.lean",
+        "/tmp/coarea_independent_audit/local_lower_lipschitz_accepted.lean",
+        "/tmp/coarea_independent_audit/unweighted_density_accepted.lean",
+        "/tmp/coarea_independent_audit/IndependentTypes.lean",
+        "/tmp/coarea_independent_audit/IndependentProofs.lean",
+        "/tmp/coarea_independent_audit/IndependentAssembly.lean",
+        "/tmp/coarea_independent_audit/types.log",
+        "/tmp/coarea_independent_audit/proofs.log",
+        "/tmp/coarea_independent_audit/assembly.log"
+      ],
+      "conclusion": "The split is appropriate and proves the selected co-area contract through the supplied assembly. All eleven standalone, one-line propositions match their prose and elaborate in the frozen scope. The eight supplied proof appendices independently compile with only their listed dependencies abstracted as hypotheses; the exact parent assembly also compiles from frozen child and resolved-dependency hypotheses. These checks use only propext, Classical.choice and Quot.sound. The three reused declarations have identical accepted types and matching source hashes; their comparator logs confirm the standard-axiom gate passed. All names are bare identifiers, the eight new names are unreserved, and dependency traversal found no cycle or return path to the selected parent. The inspected library supports the density, measurability, integration and tangent arguments; its co-area results are linear, while nonlinear chart co-area remains an explicit resolved dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_bilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all stated hypotheses. Compactness and injectivity force coincident limiting points; the declared local lower Lipschitz dependency then contradicts vanishing secant ratios. The mean value argument supplies the upper bound."
+    },
+    {
+      "key": "chart_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram-operator argument proves invertibility, the range condition, gradient identity and continuity. Its explicitly typed continuous-linear endomorphism ring uses composition multiplication, avoiding the function-multiplication issue. Neither openness of V nor global chart injectivity is silently assumed."
+    },
+    {
+      "key": "density_gradient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball-in-cone argument establishes directional approximation using outer measure, without requiring Y measurable. Differentiability and the Lipschitz comparison give the exact differential bound. The supplied realization also covers zero dimension."
+    },
+    {
+      "key": "gradient_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density-point bounds justify Borel trimming with null image loss. Continuous inverse charts and disjoint Borel pieces yield a measurable, everywhere bounded field satisfying both chart identities. Coverage is preserved without unstated assumptions on M."
+    },
+    {
+      "key": "tangent_complement_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurability of A permits measure splitting even for arbitrary M. The reused density theorem gives equal finite limits; justified ENNReal subtraction, normalization cancellation and open-ball comparison prove the exact conclusion."
+    },
+    {
+      "key": "approx_differentiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Tangent uniqueness, correctly directed locality, complement density zero and the quantitative Taylor estimate establish every asserted clause. The good-point set works for all positive epsilon, and countable gluing handles the null remainder."
+    },
+    {
+      "key": "coarea_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Null-slice removal and disjoint measurable unions justify the slice integral decomposition. A.e.-measurability and lintegral_tsum give the formula. The pinned lintegral_iUnion theorem accepts arbitrary nonnegative integrands, so measurability of G is unnecessary."
+    },
+    {
+      "key": "slice_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Co-area applied to compact-ball indicators proves a.e. local finiteness. Countably intersecting the good-level conditions permits rectifiability gluing and tangent locality on each piece, followed by removal of the null remainder. No circular use of the desired slice conclusion occurs."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical four-part declaration at commit 2af75d6921b01a9c889a45103692ca0af95ea394. The referenced accepted Lean proof supplies all four parts, including those omitted from the prose recap; its comparator and axiom checks passed. Part (a) supplies the required locality."
+    },
+    {
+      "key": "local_lower_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse at commit 12e74edc2f87670883f4d67e2d52fc0830d265e7, with accepted comparator evidence. The injective derivative bound and uniform C¹ approximation prove the stated positive lower Lipschitz estimate."
+    },
+    {
+      "key": "unweighted_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse at commit dbef2c15948a21d9574315bea458a9edb4f708e3, with accepted comparator evidence. Plane-volume normalization, blow-up scaling and locally integrable cutoffs establish the closed-ball density limit without adding measurability of M."
+    }
+  ],
+  "required_changes": []
+}
