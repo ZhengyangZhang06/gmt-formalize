@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -l -e 'dorag_' -e 'dimred_cdg_' -g '*.lean' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        "rg -n -i 'rellich|kondrachov|weyl.?s lemma' -g '*.lean' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "withDensity_absolutelyContinuous|lemma mono_ac|theorem ae_tendsto_average_norm_sub|theorem LipschitzWith.ae_differentiableAt|theorem LipschitzOnWith.extend_real|theorem norm_fderiv_le_of_lipschitz|theorem measurable_fderiv|theorem exists_disjoint_subfamily_covering_enlargement_closedBall",
+        "def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|theorem simon_theorem_3_3|theorem simon_theorem_3_6|weighted_area_formula_lipschitz_injOn|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure",
+        "python3 /tmp/independent-allard-audit/check_reuse.py",
+        "lake env lean -DautoImplicit=false /tmp/independent-allard-audit/Types.lean",
+        "lake env lean -DautoImplicit=false /tmp/independent-allard-audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-allard-graph-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-allard-graph-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/independent-allard-audit/check_reuse.py",
+        "/tmp/independent-allard-audit/Types.lean",
+        "/tmp/independent-allard-audit/Assembly.lean",
+        "/tmp/independent-allard-audit/Assembly.log"
+      ],
+      "conclusion": "Project, Mathlib and SimonGMT pins match; the frozen Contract matches the workspace. Snapshot searches found no proposed declarations or Rellich/Kondrachov/Weyl lemmas. Chapter 5 supplies specifications, not completed Allard proofs. Independently checked all 12 names against unique accepted owners, identical frozen types, candidate-source hashes and retained comparator records; checked available raw receipts and the matching twin's standard-axiom/kernel receipt. All types independently elaborate without child declarations. The selected dependency closure, including proposed reuse, is acyclic. A fresh compilation proves the exact selected parent from the five directly used child contracts, using only propext, Classical.choice and Quot.sound. The other seven children supply their prerequisites. Thus the split establishes this selected theorem and preserves its contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree for arbitrary P and n, including n = 0. The orientation-to-projection construction establishes measurability; absolute continuity transfers it to R.measure without circularity."
+    },
+    {
+      "key": "monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff identity, exponential inequalities and closed-ball limits establish both annular bounds. Approximate-tangent density and upper semicontinuity supply the support density bound. Local finiteness and measurability are justified."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated hypotheses match the type. Localized outer regularity and the supplied density lower bound yield the null-set conclusion through density comparison; normalization differences do not affect nullity."
+    },
+    {
+      "key": "graph_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rademacher, area-formula blow-up and localized vanishing densities establish precisely the restricted-a.e. tangent identity. Injectivity justifies the universal parameter clause, which is vacuous off the graph."
+    },
+    {
+      "key": "tilt_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit cutoff, projection trace identity and Young inequalities give the stated unnormalized integral estimate with C = 146. The proof handles n = 0 and justifies conversion to lower integrals."
+    },
+    {
+      "key": "harmonic_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactness contradiction, scaling and harmonic estimates prove all three affine bounds with the required constant dependencies. Its analytic prerequisites already have accepted descendant proofs; no new planning pass or Allard assumption is needed."
+    },
+    {
+      "key": "density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The uniform radius range, upper/lower mass bounds and normal-part estimate follow from monotonicity. Localized multiplicity density excludes integer multiplicity at least two. All four conclusions match the Lean type."
+    },
+    {
+      "key": "affine_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Packing and Chebyshev select an actual tangent plane; the exponent identity gives the uniform height bound. Applying tilt_height yields the exact integral estimate, with all centers and radii admissible."
+    },
+    {
+      "key": "lipschitz_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering argument, two-case cone estimate and coordinate extensions prove 5A. The hole estimate proves 5B on the stated smaller closed ball. Constants and the k = 0 case are consistent."
+    },
+    {
+      "key": "tilt_excess_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly transfers the first-variation equation to the Lipschitz graph, normalizes harmonic approximation and estimates the new plane. Choosing constants in the stated order proves the exact ENNReal decay inequality, including zero excess."
+    },
+    {
+      "key": "tilt_excess_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density bounds control successive projections; geometric summation gives a rank-n limit projection. Interpolation between consecutive radii proves both conclusions with one uniform constant. Dependencies are correctly directed."
+    },
+    {
+      "key": "graph_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly handles negative K through its positive part. The larger parameter ball supports every tangent identity used in the Campanato estimate; the projection estimate, continuous derivative extension and mollification establish the exact C¹ conclusion."
+    }
+  ],
+  "required_changes": []
+}
