@@ -3871,6 +3871,171 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
 
+/-- Measurable tangential differential on a single `C¹` chart (for the push-forward in Simon
+Ch. 6, 3.9): let `Φ` be `C¹` with `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` (`c > 0`) on the open set `Ω`, and
+let `Λ A` be a left inverse of each injective `A` with `‖A (Λ A v)‖ ≤ ‖v‖`, `Λ` continuous on the
+injective maps.  With `Ψ` the inverse of `Φ` on `S = Φ(Ω)`, the map
+`G x = D(f ∘ Φ)(Ψ x) ∘ Λ(DΦ(Ψ x))` on `S` (`0` elsewhere) is Borel: `S` is Borel by
+Lusin–Souslin, `Ψ` is `c⁻¹`-Lipschitz on `S`, `DΦ(w)` is injective by
+`lpf_wtc_cat_fderiv_lower_bound`, and `D(f ∘ Φ)` is Borel. -/
+theorem Submission.lpf_tde_mcd_single_chart :
+    ∀ (P Q n : ℕ) (Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (f : Eucl P → Eucl Q), ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} → (∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A → (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∃ G : Eucl P → (Eucl P →L[ℝ] Eucl Q), Measurable G ∧ MeasurableSet (Φ '' Ω) ∧ ∀ x ∈ Φ '' Ω, ∃ w ∈ Ω, Φ w = x ∧ (∀ s : Eucl n, G x (fderiv ℝ Φ w s) = fderiv ℝ (f ∘ Φ) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ Φ w s‖ ≤ ‖v‖ ∧ G x v = fderiv ℝ (f ∘ Φ) w s := by
+  classical
+  intro P Q n Λ Φ Ω f hΛc hΛ hΩ hΦ hc
+  obtain ⟨c, hcpos, hanti⟩ := hc
+  -- `c ‖a‖ ≤ 0` with `c > 0` forces `a = 0`.
+  have hzero : ∀ a : Eucl n, c * ‖a‖ ≤ 0 → a = 0 := fun a ha =>
+    norm_le_zero_iff.mp (by nlinarith [norm_nonneg a])
+  -- `Φ` is injective on `Ω`, so `S = Φ(Ω)` is Borel by the Lusin–Souslin theorem.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' h
+    have h1 := hanti w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (hzero _ h1)
+  have hS : MeasurableSet (Φ '' Ω) :=
+    hΩ.measurableSet.image_of_continuousOn_injOn hΦ.continuous.continuousOn hinj
+  -- The inverse chart `Ψ` maps `S` into `Ω`, inverts `Φ` there and is `c⁻¹`-Lipschitz on `S`.
+  obtain ⟨Ψ, hΨmem, hΨeq⟩ : ∃ Ψ : Eucl P → Eucl n,
+      (∀ x ∈ Φ '' Ω, Ψ x ∈ Ω) ∧ ∀ x ∈ Φ '' Ω, Φ (Ψ x) = x :=
+    ⟨Function.invFunOn Φ Ω, fun _ hx => Function.invFunOn_mem hx,
+      fun _ hx => Function.invFunOn_eq hx⟩
+  have hΨcont : ContinuousOn Ψ (Φ '' Ω) := by
+    refine (LipschitzOnWith.of_dist_le_mul (K := Real.toNNReal c⁻¹)
+      fun x hx x' hx' => ?_).continuousOn
+    have h1 := hanti (Ψ x) (hΨmem x hx) (Ψ x') (hΨmem x' hx')
+    rw [hΨeq x hx, hΨeq x' hx'] at h1
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (inv_nonneg.mpr hcpos.le),
+      inv_mul_eq_div, le_div_iff₀ hcpos]
+    linarith
+  -- `DΦ(w)` is injective for `w ∈ Ω` by the lower bound `c ‖s‖ ≤ ‖DΦ(w) s‖`.
+  have hDinj : ∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w) := by
+    intro w hw s t hst
+    have h1 := Submission.lpf_wtc_cat_fderiv_lower_bound P n Φ Ω c w hΩ hw
+      (hΦ.differentiable one_ne_zero w) hanti (s - t)
+    rw [map_sub, hst, sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (hzero _ h1)
+  -- `Ψ` and `x ↦ Λ(DΦ(Ψ x))`, extended by `0` off `S`, are Borel, and so is `D(f ∘ Φ)`.
+  have hΨm : Measurable ((Φ '' Ω).piecewise Ψ fun _ => 0) :=
+    hΨcont.measurable_piecewise continuousOn_const hS
+  have hΛm : Measurable ((Φ '' Ω).piecewise (fun x => Λ (fderiv ℝ Φ (Ψ x))) fun _ => 0) := by
+    refine ContinuousOn.measurable_piecewise ?_ continuousOn_const hS
+    exact hΛc.comp ((hΦ.continuous_fderiv one_ne_zero).comp_continuousOn hΨcont)
+      fun x hx => hDinj (Ψ x) (hΨmem x hx)
+  have hBm := (measurable_fderiv ℝ (f ∘ Φ)).comp hΨm
+  -- `G x = D(f ∘ Φ)(Ψ x) ∘ Λ(DΦ(Ψ x))` on `S`; composition of linear maps is continuous.
+  refine ⟨fun x => (fderiv ℝ (f ∘ Φ) ((Φ '' Ω).piecewise Ψ (fun _ => 0) x)).comp
+      ((Φ '' Ω).piecewise (fun x => Λ (fderiv ℝ Φ (Ψ x))) (fun _ => 0) x),
+    isBoundedBilinearMap_comp.continuous.measurable2 hBm hΛm, hS, fun x hx => ?_⟩
+  have hA := hΛ _ (hDinj (Ψ x) (hΨmem x hx))
+  refine ⟨Ψ x, hΨmem x hx, hΨeq x hx, fun s => ?_,
+    fun v => ⟨Λ (fderiv ℝ Φ (Ψ x)) v, hA.2 v, ?_⟩⟩
+  · simp only [Set.piecewise_eq_of_mem _ _ _ hx, ContinuousLinearMap.comp_apply]
+    rw [← ContinuousLinearMap.comp_apply (Λ _), hA.1, ContinuousLinearMap.id_apply]
+  · simp only [Set.piecewise_eq_of_mem _ _ _ hx, ContinuousLinearMap.comp_apply]
+/-- Countable measurable gluing by the first index: for measurable sets `S j` and measurable
+maps `G j : X → Y` there is a measurable `L : X → Y` vanishing off `⋃ j, S j` and agreeing at each
+`x ∈ ⋃ j, S j` with some `G j` such that `x ∈ S j`.  Take `L x = G'_{j(x)} x` with
+`G'_j = (S j).piecewise (G j) 0` and `j(x)` the least `j` with `x ∈ S j ∨ x ∉ ⋃ i, S i`;
+`L` is measurable by `Measurable.find`. -/
+theorem Submission.lpf_tde_mcd_countable_glue :
+    ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Zero Y] (S : ℕ → Set X)
+      (G : ℕ → X → Y), (∀ j, MeasurableSet (S j)) → (∀ j, Measurable (G j)) →
+      ∃ L : X → Y, Measurable L ∧ (∀ x, x ∉ (⋃ j, S j) → L x = 0) ∧
+        ∀ x ∈ (⋃ j, S j), ∃ j, x ∈ S j ∧ L x = G j x := by
+  intro X Y _ _ _ S G hS hG
+  classical
+  -- Every `x` satisfies `x ∈ S j ∨ x ∉ ⋃ i, S i` for some `j`.
+  have h : ∀ x, ∃ j, x ∈ S j ∨ x ∉ ⋃ i, S i := fun x => by
+    by_cases hx : x ∈ ⋃ i, S i
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 hx
+      exact ⟨j, Or.inl hj⟩
+    · exact ⟨0, Or.inr hx⟩
+  -- `L x = G'_{j(x)} x` with `G'_j = (S j).piecewise (G j) 0` and `j(x)` the least such `j`.
+  refine ⟨fun x => (S (Nat.find (h x))).piecewise (G (Nat.find (h x))) 0 x, ?_, ?_, ?_⟩
+  · exact Measurable.find (p := fun j x => x ∈ S j ∨ x ∉ ⋃ i, S i)
+      (fun j => (hG j).piecewise (hS j) measurable_const)
+      (fun j => (hS j).union (MeasurableSet.iUnion hS).compl) h
+  · intro x hx
+    have hxS : x ∉ S (Nat.find (h x)) := fun hxS => hx (mem_iUnion.2 ⟨_, hxS⟩)
+    simp only [piecewise_eq_of_notMem _ _ _ hxS, Pi.zero_apply]
+  · intro x hx
+    have hxS : x ∈ S (Nat.find (h x)) := (Nat.find_spec (h x)).resolve_right (not_not.2 hx)
+    exact ⟨Nat.find (h x), hxS, piecewise_eq_of_mem _ _ _ hxS⟩
+/-- Moore–Penrose left inverse (Simon Ch. 3 §2, input to 2.1–2.2): `Λ(A) = (A* A)⁻¹ A*` is
+continuous on the injective `A : ℝⁿ → ℝ^P`, `Λ(A) A = id`, and the orthogonal projection
+`A Λ(A)` onto `range A` does not increase norms. -/
+theorem Submission.lpf_tde_continuous_left_inverse :
+    ∀ (n P : ℕ), ∃ Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n),
+      ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} ∧
+      ∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A →
+        (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖ := by
+  intro n P
+  -- `A* A` is a unit of the endomorphism ring when `A` is injective.
+  have hunit : ∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A →
+      IsUnit ((ContinuousLinearMap.adjoint A).comp A) := by
+    intro A hA
+    have hinj : Function.Injective ((ContinuousLinearMap.adjoint A).comp A) :=
+      (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+    exact ContinuousLinearMap.isUnit_iff_bijective.2
+      ⟨hinj, LinearMap.injective_iff_surjective.1 hinj⟩
+  -- `Λ(A) = (A* A)⁻¹ A*`, with `Ring.inverse` (`= 0` off the units).
+  refine ⟨fun A => (Ring.inverse ((ContinuousLinearMap.adjoint A).comp A)).comp
+    (ContinuousLinearMap.adjoint A), ?_, fun A hA => ?_⟩
+  · -- Adjoint, composition and the ring inverse at units are continuous.
+    intro A₀ hA₀
+    have hadj : Continuous fun A : Eucl n →L[ℝ] Eucl P => ContinuousLinearMap.adjoint A :=
+      ContinuousLinearMap.adjoint.continuous
+    have hinv : ContinuousAt (fun A : Eucl n →L[ℝ] Eucl P =>
+        Ring.inverse ((ContinuousLinearMap.adjoint A).comp A)) A₀ := by
+      have h := NormedRing.inverse_continuousAt (hunit A₀ hA₀).unit
+      rw [IsUnit.unit_spec] at h
+      exact h.comp_of_eq (hadj.clm_comp continuous_id).continuousAt rfl
+    exact (hinv.clm_comp hadj.continuousAt).continuousWithinAt
+  have hu := hunit A hA
+  refine ⟨?_, fun v => ?_⟩
+  · -- `Λ(A) A = (A* A)⁻¹ (A* A) = id`.
+    rw [ContinuousLinearMap.comp_assoc, ← ContinuousLinearMap.mul_def,
+      Ring.inverse_mul_cancel _ hu]
+    rfl
+  · -- `p := A Λ(A) v` satisfies `A* p = A* v`, so `v - p ⊥ p`; Pythagoras.
+    beta_reduce
+    set p := A ((Ring.inverse ((ContinuousLinearMap.adjoint A).comp A)).comp
+      (ContinuousLinearMap.adjoint A) v) with hp
+    have hAp : ContinuousLinearMap.adjoint A p = ContinuousLinearMap.adjoint A v := by
+      have h := congrArg (fun T : Eucl n →L[ℝ] Eucl n => T (ContinuousLinearMap.adjoint A v))
+        (Ring.mul_inverse_cancel _ hu)
+      simpa [ContinuousLinearMap.mul_def, hp] using h
+    have horth : inner ℝ (v - p) p = 0 := by
+      rw [hp, ← ContinuousLinearMap.adjoint_inner_left, ← hp, map_sub, hAp, sub_self,
+        inner_zero_left]
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+    rw [sub_add_cancel] at h
+    exact (mul_self_le_mul_self_iff (norm_nonneg p) (norm_nonneg v)).2
+      (by nlinarith [mul_self_nonneg ‖v - p‖])
+
+/-- Borel chartwise tangential differential (Simon Ch. 3 §2, 2.1–2.2, for Ch. 6, 3.6): for C¹
+charts `Φ j` antilipschitz on open `Ω j` and any `f`, glue the Borel pieces
+`x = Φ j w ↦ D(f ∘ Φ j)(w) ∘ Λ(DΦ j(w))` along the first chart through `x`, and `0` off the
+charts; `Λ` is the continuous left inverse of `lpf_tde_continuous_left_inverse`. -/
+theorem Submission.lpf_tde_measurable_chart_differential :
+    ∀ (P Q n : ℕ) (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)) (f : Eucl P → Eucl Q), (∀ j, IsOpen (Ω j)) → (∀ j, ContDiff ℝ 1 (Φ j)) → (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), StronglyMeasurable L ∧ (∀ x, x ∉ (⋃ j, Φ j '' Ω j) → L x = 0) ∧ ∀ x ∈ (⋃ j, Φ j '' Ω j), ∃ j, ∃ w ∈ Ω j, Φ j w = x ∧ (∀ s : Eucl n, L x (fderiv ℝ (Φ j) w s) = fderiv ℝ (f ∘ Φ j) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ (Φ j) w s‖ ≤ ‖v‖ ∧ L x v = fderiv ℝ (f ∘ Φ j) w s := by
+  intro P Q n Φ Ω f hΩ hΦ hanti
+  -- Step 0: the continuous left inverse `Λ` on the injective maps.
+  obtain ⟨Λ, hΛc, hΛ⟩ := Submission.lpf_tde_continuous_left_inverse n P
+  -- Steps 1–5, chart by chart: a Borel piece `G j` on the Borel image `Φ j '' Ω j`.
+  choose G hGm hSm hG using fun j =>
+    Submission.lpf_tde_mcd_single_chart P Q n Λ (Φ j) (Ω j) f hΛc hΛ (hΩ j) (hΦ j) (hanti j)
+  -- Steps 6–7: glue the pieces along the first chart containing `x`, `0` off the charts.
+  obtain ⟨L, hLm, hL0, hL⟩ := Submission.lpf_tde_mcd_countable_glue (Eucl P)
+    (Eucl P →L[ℝ] Eucl Q) (fun j => Φ j '' Ω j) G hSm hGm
+  refine ⟨L, hLm.stronglyMeasurable, hL0, fun x hx => ?_⟩
+  -- Step 8: `L x` is the piece of a chart `j` through `x`, so the chart identities transfer.
+  obtain ⟨j, hxj, hLx⟩ := hL x hx
+  obtain ⟨w, hw, hΦw, hA, hv⟩ := hG j x hxj
+  refine ⟨j, w, hw, hΦw, fun s => by rw [hLx]; exact hA s, fun v => ?_⟩
+  obtain ⟨s, hs, hGs⟩ := hv v
+  exact ⟨s, hs, by rw [hLx]; exact hGs⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
