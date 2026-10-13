@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.cube_core-a1.lip_at_comp-a1",
+  "parent_id": "root.deformation-a1.retraction-a1.cube_core-a1",
+  "depth": 4,
+  "title": "Composition (chain) rule for pointwise upper Lipschitz bounds",
+  "statement": "Let X, Y, Z be pseudometric spaces, f : X → Y, g : Y → Z, A ⊆ X, B ⊆ Y with f(A) ⊆ B, x ∈ X, and K₁, K₂ ∈ ℝ with K₁ ≥ 0 and K₂ ≥ 0. Assume (H1) for every ε > 0 there is δ > 0 such that d(f(x′), f(x)) ≤ (K₁ + ε)·d(x′, x) for all x′ ∈ A with d(x′, x) < δ, and (H2) for every ε > 0 there is δ > 0 such that d(g(y′), g(f(x))) ≤ (K₂ + ε)·d(y′, f(x)) for all y′ ∈ B with d(y′, f(x)) < δ. Then for every ε > 0 there is δ > 0 such that d(g(f(x′)), g(f(x))) ≤ (K₁K₂ + ε)·d(x′, x) for all x′ ∈ A with d(x′, x) < δ. (In the language of the parent proof: if f is K₁-Lipschitz at x within A, f maps A into B, and g is K₂-Lipschitz at f(x) within B, then g∘f is K₁K₂-Lipschitz at x within A; x itself need not lie in A.)",
+  "lean_statement": "∀ (X Y Z : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] [PseudoMetricSpace Z] (f : X → Y) (g : Y → Z) (A : Set X) (B : Set Y) (x : X) (K₁ K₂ : ℝ), 0 ≤ K₁ → 0 ≤ K₂ → MapsTo f A B → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (f x') (f x) ≤ (K₁ + ε) * dist x' x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' (f x) < δ → dist (g y') (g (f x)) ≤ (K₂ + ε) * dist y' (f x)) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (g (f x')) (g (f x)) ≤ (K₁ * K₂ + ε) * dist x' x",
+  "lean_name": "dr_cc_lip_at_comp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-cube-core-a1-lip-at-comp-a1-a1"
+}
