@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2011686047d164258773825937fe78bc125907ed38894a1626941c2e93ad43ea",
+  "git_delta": {
+    "base_commit": "021779ae0fc6d5885c3f318293c954da037248bc",
+    "candidate_commit": "bec895ce5c479af80ca6abcb9b19fac62a1d4c0b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpfir_ii_countablyRectifiable_image_of_lipschitz",
+    "diff_sha256": "27f4a1273f152f7a5e0b5cbfcb11f69d0bc12b2b2aea34cecbbad2480bdcfe89",
+    "source_sha256": "bfd948f3ec9be758e28eae778dc480f61b1f659cdd09eeeb72b2bbb4037329e8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpfir_ii_countablyRectifiable_image_of_lipschitz",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith Λ φ → CountablyRectifiable n M → CountablyRectifiable n (φ '' M)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
