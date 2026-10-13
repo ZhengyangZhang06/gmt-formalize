@@ -535,6 +535,38 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
+/-- **Evaluation of a finite-mass current is bounded by mass times the coefficient sup norm**
+(Simon Ch. 6, 2.4: `M(X) = sup_{|ω| ≤ 1} X(ω)`, so `|X(ω)| ≤ sup |ω| · M(X)`; used for the
+mass-absolutely convergent series in the proof of 7.2).  For `|s| = c⁻¹` the rescaled form
+`s • ω` is admissible for `M(X) = M_U(X)`, as `|s • ω(x)| = c⁻¹ |ω(x)| ≤ 1` by homogeneity of
+the coefficient norm; hence `s X(ω) = X(s • ω) ≤ M(X)`.  The choices `s = ±c⁻¹` give
+`±X(ω) ≤ c M(X)`. -/
+theorem Submission.cmc_fc_sc_abs_le_mul_mass : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (ω : TestFormOn U n) (c : ℝ), 0 < c → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |X ω| ≤ c * X.mass.toReal := by
+  intro P n U X ω c hc hX hω
+  -- Step 1: for `|s| = c⁻¹`, `s • ω` is admissible, so `s X(ω) = X(s • ω) ≤ M(X)`
+  have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * X ω ≤ X.mass.toReal := by
+    intro s hs
+    have hadm : s • ω ∈ massAdmissibleOn U n U := by
+      refine ⟨(s • ω).property.2, fun x => ?_⟩
+      have hx : ((s • ω : TestFormOn U n) : DifferentialForm (Euclid P) n) x =
+          s • ((ω : DifferentialForm (Euclid P) n) x) := rfl
+      rw [hx, (Submission.rsd_mw_tfa_norm_props P n).2.1, hs]
+      calc c⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c⁻¹ * c :=
+            mul_le_mul_of_nonneg_left (hω x) (inv_nonneg.mpr hc.le)
+        _ = 1 := inv_mul_cancel₀ hc.ne'
+    have hle : ENNReal.ofReal (X (s • ω)) ≤ X.mass := X.le_massOn hadm
+    rw [ENNReal.ofReal_le_iff_le_toReal hX] at hle
+    have hlin : X (s • ω) = s * X ω := by
+      rw [map_smul, smul_eq_mul]
+    rwa [hlin] at hle
+  -- Step 2: `s = c⁻¹` and `s = -c⁻¹` give `X(ω) ≤ c M(X)` and `-X(ω) ≤ c M(X)`
+  have hinv : |c⁻¹| = c⁻¹ := abs_of_pos (inv_pos.mpr hc)
+  have hpos := mul_le_mul_of_nonneg_left (hbound c⁻¹ hinv) hc.le
+  have hneg := mul_le_mul_of_nonneg_left (hbound (-c⁻¹) (by rw [abs_neg, hinv])) hc.le
+  rw [← mul_assoc, mul_inv_cancel₀ hc.ne', one_mul] at hpos
+  rw [neg_mul, mul_neg, ← mul_assoc, mul_inv_cancel₀ hc.ne', one_mul] at hneg
+  exact abs_le.mpr ⟨by linarith, hpos⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
