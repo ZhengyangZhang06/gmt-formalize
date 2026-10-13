@@ -1,0 +1,159 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.whitney_remainder-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source.
+- These are steps 3, 4 and 7 of the parent proof, i.e. Simon's proof of Ch. 2, Theorem 1.5 (chapter-02.txt lines 251–265).
+- On C one defines R(x, y). Simon notes that lim_{y→x, y∈C} R(x, y) = 0 for x ∈ C, 'but not necessarily uniformly'.
+- He puts η_k(x) = sup{|R(x, y)| : y ∈ C ∩ B_{1/k}(x) ∖ {x}}. Then η_k ↓ 0 pointwise on C, Egoroff gives uniform convergence on a large closed A, 'and 1.6(∗) holds'.
+- Here η is indexed from 0 with radius 1/(k + 1), i.e. it is the parent's η_{k+1}.
+- Steps 5–6 of the parent proof (Egoroff and the closed subset) are the sibling egorov_closed.
+Notation: Df(x) := fderiv ℝ f x ∈ (ℝ^n)*; |·| is the Euclidean norm; L^n = volume.
+
+1. (The remainder and its bound.) For x ≠ y let R(x, y) := |f(y) − f(x) − Df(x)(y − x)| / |y − x| ≥ 0. Since f is L-Lipschitz, ‖Df(x)‖ ≤ L for every x (norm_fderiv_le_of_lipschitz). Hence
+ R(x, y) ≤ (|f(y) − f(x)| + ‖Df(x)‖·|y − x|)/|y − x| ≤ 2L.
+2. (Pointwise smallness.) Let x ∈ C. Since f is differentiable at x with derivative Df(x), for every ε'' > 0 there is ρ > 0 such that |f(y) − f(x) − Df(x)(y − x)| ≤ ε''|y − x| whenever |y − x| < ρ.
+3. (The functions η_k.) For k ∈ ℕ and x ∈ ℝ^n let
+ E_k(x) := {R(x, y) : y ∈ C, 0 < |y − x| < 1/(k + 1)} ⊆ [0, 2L],
+ η_k(x) := sup E_k(x) if x ∈ C (with sup ∅ := 0), and η_k(x) := 0 if x ∉ C.
+Then 0 ≤ η_k ≤ 2L. Since E_k(x) is bounded above, R(x, y) ≤ η_k(x) for all x, y ∈ C with 0 < |y − x| < 1/(k + 1).
+4. (Pointwise convergence.) Let x ∈ C and ε'' > 0. Take ρ from step 2 for ε''/2, and k₀ with 1/(k₀ + 1) < ρ.
+- Let k ≥ k₀. Every y ∈ C with 0 < |y − x| < 1/(k + 1) ≤ 1/(k₀ + 1) < ρ satisfies R(x, y) ≤ ε''/2.
+- So every element of E_k(x) is ≤ ε''/2, and 0 ≤ η_k(x) ≤ ε''/2 < ε''.
+Hence η_k(x) → 0 as k → ∞, for every x ∈ C.
+5. (Borel measurability.) Fix k. It suffices to show that {η_k > t} is Borel for every real t (measurable_of_Ioi).
+- If t < 0, the set is ℝ^n, because η_k ≥ 0.
+- Let t ≥ 0 and U := {η_k > t}. Then U ⊆ C, since η_k = 0 ≤ t off C.
+Claim: every x ∈ U has a neighbourhood W with W ∩ C ⊆ U.
+- Let x ∈ U. Then x ∈ C, and E_k(x) ≠ ∅, since otherwise η_k(x) = sup ∅ = 0 ≤ t.
+- As sup E_k(x) > t, some element of E_k(x) exceeds t: there is y ∈ C with 0 < |y − x| < 1/(k + 1) and R(x, y) > t.
+- The map z ↦ R(z, y) is continuous within C at x. Its numerator z ↦ |f(y) − f(z) − Df(z)(y − z)| is continuous within C at x, because f is continuous (being Lipschitz), Df is continuous on C, and evaluation (λ, v) ↦ λ(v) is jointly continuous. Its denominator z ↦ |y − z| is continuous and non-zero at x.
+- So the three conditions 0 < |y − z|, |y − z| < 1/(k + 1) and R(z, y) > t hold for all z ∈ C in some neighbourhood W of x.
+- For z ∈ W ∩ C, step 3 (with the roles x := z, y := y) gives η_k(z) ≥ R(z, y) > t, i.e. z ∈ U. This proves the claim.
+Consequently U = C ∩ V with V := interior(U ∪ (ℝ^n ∖ C)), an open set:
+- for x ∈ U, the claim gives W ⊆ U ∪ (ℝ^n ∖ C), so x ∈ V;
+- conversely C ∩ V ⊆ C ∩ (U ∪ (ℝ^n ∖ C)) ⊆ U.
+C is closed and V is open, so U is Borel. Thus η_k is Borel measurable. (Equivalently, η_k is lower semicontinuous on C.)
+6. (Egoroff.) C is closed, hence measurable. Apply the sibling egorov_closed with:
+- the set C;
+- the measurable functions η_k (k ∈ ℕ) of step 5;
+- the measurable limit g ≡ 0, the convergence hypothesis being step 4;
+- the given ε.
+It gives a closed A ⊆ C with L^n(C ∖ A) < ε such that η_k → 0 uniformly on every compact Q ⊆ A.
+7. (The uniform remainder estimate.) Let Q ⊆ A be compact and ε' > 0. By step 6 there is k with |η_k(x)| < ε' for all x ∈ Q. Put δ := 1/(k + 1) > 0, and let x ∈ Q and y ∈ A with |x − y| < δ.
+- If y = x, the left side is |f(x) − f(x) − Df(x)(0)| = 0 ≤ ε'·0.
+- Otherwise x, y ∈ A ⊆ C and 0 < |y − x| < 1/(k + 1), so step 3 gives R(x, y) ≤ η_k(x) < ε'. Multiplying by |y − x| > 0 gives |f(y) − f(x) − Df(x)(y − x)| = R(x, y)·|y − x| ≤ ε'|y − x|.
+Together with step 6, A is the required closed set. ∎
+
+Implementation note (not part of the mathematics). A Lean proof of exactly this statement following steps 1–7, about 150 lines, was compiled against a stub of egorov_closed with its frozen type.
+- It opens with `classical` and defines η k x := if x ∈ C then sSup (E k x) else 0, where E k x is the image of y ↦ R x y over {y | y ∈ C ∧ 0 < dist y x ∧ dist y x < 1/(k+1)}.
+- It uses le_csSup, Real.sSup_nonneg, Real.sSup_le, Real.sSup_empty and exists_lt_of_lt_csSup.
+- For step 4: HasFDerivAt.isLittleO with Asymptotics.IsLittleO.def, Metric.eventually_nhds_iff and exists_nat_one_div_lt.
+- For step 5: measurable_of_Ioi, ContinuousWithinAt.clm_apply, eventually_nhdsWithin_iff and mem_interior_iff_mem_nhds.
+- For step 7: Metric.tendstoUniformlyOn_iff.
+
+## Key steps
+
+1. R(x,y) = |f(y) − f(x) − Df(x)(y − x)|/|y − x| ≤ 2L, because ‖Df‖ ≤ L.
+2. η_k(x) = sup{R(x,y) : y ∈ C, 0 < |y − x| < 1/(k+1)} on C (0 off C) satisfies R(x,y) ≤ η_k(x), and η_k(x) → 0 on C by differentiability.
+3. {η_k > t} is relatively open in C, by continuity of z ↦ R(z,y) within C (using continuity of f and of Df on C). So it equals C ∩ V with V open, and η_k is Borel.
+4. egorov_closed gives a closed A ⊆ C with L^n(C ∖ A) < ε and η_k → 0 uniformly on each compact Q ⊆ A. Then |f(y) − f(x) − Df(x)(y − x)| ≤ η_k(x)|y − x| ≤ ε'|y − x| for x ∈ Q, y ∈ A, |x − y| < 1/(k+1).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat PROBLEM.md README.md swarm-project.json lakefile.toml lean-toolchain; ls GMT/Ch07 (only Contract.lean, Submission.lean, README.md)`
+- `rg -l -i whitney <snapshot>/mathlib/Mathlib -> Geometry/Manifold/WhitneyEmbedding.lean, Geometry/Manifold/PartitionOfUnity.lean, CategoryTheory/Monoidal/Rigid/Braided.lean (no C¹ Whitney extension)`
+- `rg -l -i lusin <snapshot>/mathlib/Mathlib -> Constructions/Polish/Basic.lean, Topology/MetricSpace/Polish.lean, Topology/MetricSpace/CantorScheme.lean, MeasureTheory/Function/Jacobian.lean, Tactic/Inclusion/Core/Elab.lean (Lusin–Souslin / Lusin separation only; no measure-theoretic Lusin continuity theorem)`
+- `rg -n 'theorem tendstoUniformlyOn_of_ae_tendsto' (MeasureTheory/Function/Egorov.lean:205); rg -n 'MeasurableSet.exists_isClosed_sdiff_lt' (MeasureTheory/Measure/Regular.lean:1036); rg -n 'theorem continuousOn_iUnion |theorem isClosed_iUnion' Topology/LocallyFinite.lean (103, 128); rg -n 'measurableSet_of_differentiableAt|measurable_fderiv' Analysis/Calculus/FDeriv/Measurable.lean (372, 378); rg -n norm_fderiv_le_of_lipschitz Analysis/Calculus/FDeriv/Basic.lean (947); rg -n ae_differentiableAt Analysis/Calculus/Rademacher.lean; rg -n measurable_of_Ioi MeasureTheory/Constructions/BorelSpace/Order.lean (653); rg -n exists_disjoint_subfamily_covering_enlargement_ball MeasureTheory/Covering/Vitali.lean (195); rg -n contDiff_one_iff_fderiv Analysis/Calculus/ContDiff/Defs.lean (1261); rg -n 'structure ContDiffBump' Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n -i 'c1_approx|whitney' <snapshot>/project/GMT/Ch07/Contract.lean (no match)`
+- `python3 -I scans of dag.json: lean_name/title/statement matching whitney|lusin|egor|rademacher (only the selected node and the accepted dor_ims_lusin_* nodes); exact title/statement/lean_statement of dor_ims_lusin_measurable_continuousOn (status accepted, candidate e4172a7b); collision check for codim1_rdo_c1a_whitney_extension, codim1_rdo_c1a_lusin_isClosed, codim1_rdo_c1a_egorov_isClosed, codim1_rdo_c1a_whitney_remainder (0 matches); selected node depth 5, no children; parent's decomposition-v1.json format for reused accepted children`
+- `git grep -i -E 'whitney|egorov|egoroff|tendstoUniformlyOn_of_ae_tendsto|codim1_rdo_c1a_' over all 768 candidate/speculative/integrated commits in dag.json (no match); git log --all --name-only -- GMT/Ch07 (no Lean file other than Submission.lean ever added); git show e4172a7b:GMT/Ch07/Submission.lean (accepted Lusin proof, lines 453–515, prefix identical to Contract.lean, no extra imports)`
+- `sed -n /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py: _decompose (depth >= max_depth check), _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff (accepted checkpoints untouched), _overlay_accepted_children and _merge_candidate_history (Lean-unioned merge of children + depends_on); store.py ensure`
+- `python3 -I: gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) and child_modules; grep -n 'lake' verifier/comparator/Main.lean (runs `lake build <target>`)`
+- `grep -n in book/chapter-02.txt (1.5 Theorem line 165, 1.6 Theorem line 173, 'For the proof see' line 186, Proof of Theorem 1.5 lines 246–266) and book/chapter-01.txt (1.15 infinite-measure case lines 323–342, 1.17 Lusin line 346)`
+- `cat simongmt Chapter01/Lusin.lean and Chapter02/Whitney{Cover,Partition,Jet,Extension}.lean; ls -la and find -name '*.olean' ! -newermt 2026-10-10 in simongmt/.lake/build/lib/lean/Poincare/SimonGMT (stale: Audit, Chapter02/WhitneyCover, WhitneyJet, WhitneyPartition; WhitneyExtension.olean absent); grep -rln 'import Poincare.SimonGMT.Chapter02.Whitney' (only WhitneyPartition, WhitneyExtension)`
+- `lake env lean /tmp/c1a-split/Avail.lean, Api.lean (#check of cited lemmas, instance probes for SecondCountableTopology/OpensMeasurableSpace on Euclid n →L[ℝ] ℝ and WeaklyRegular/IsAddHaarMeasure volume), Types.lean, Assembly.lean (#print axioms); lake env lean /tmp/c1a-split/proto/{LusinClosed,EgorovClosed,WhitneyRemainder}.lean; lake env lean /tmp/c1a-split/vendor/WhitneyExtensionCopy.lean (#print axioms)`
+- `lake build GMT.Ch07.WhitneyTest in scratch copy /tmp/c1a-split/projtest (git archive HEAD, .lake/packages -> shared tree): fails importing stale Poincare.SimonGMT.Chapter02.WhitneyJet ('failed to remove output artifacts: read-only file system'); succeeds with the four Whitney files vendored under GMT/Ch07/; lake build GMT.Ch07.C1AEndToEnd and GMT.Ch07.C1AFinalCheck (#print axioms)`
+- `web (standard): Evans–Gariepy 'Measure Theory and Fine Properties of Functions' §6.5 Whitney's extension theorem, §6.6.1 approximation of Lipschitz functions by C¹ functions`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/WhitneyEmbedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-07b3f8e4c7/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/github_runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/comparator/Main.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/c1a-split/Avail.lean`
+- `/tmp/c1a-split/Api.lean`
+- `/tmp/c1a-split/Types.lean`
+- `/tmp/c1a-split/Assembly.lean`
+- `/tmp/c1a-split/proto/LusinClosed.lean`
+- `/tmp/c1a-split/proto/EgorovClosed.lean`
+- `/tmp/c1a-split/proto/WhitneyRemainder.lean`
+- `/tmp/c1a-split/vendor/WhitneyExtensionCopy.lean`
+- `/tmp/c1a-split/projtest/GMT/Ch07/WhitneyTest.lean`
+- `/tmp/c1a-split/projtest/GMT/Ch07/C1AEndToEnd.lean`
+- `/tmp/c1a-split/projtest/GMT/Ch07/C1AFinalCheck.lean`
+- `/tmp/c1a-split/final/statements.json`
+
+Pins and scope.
+- The snapshot (project b4d606db, Mathlib 25730c7c) matches the workspace, and Submission.lean equals Contract.lean.
+- Children are elaborated in the replayed contract scope: namespace GMT.Ch07 with its opens.
+- Neither SimonGMT's HasWhitneyC1Compatibility nor its Lusin theorem is in scope after `import GMT.Ch07.Submission`, so the Whitney hypothesis is stated inline.
+
+Library.
+- The snapshot Mathlib has no C¹ Whitney extension; 'whitney' matches only the manifold embedding files.
+- It has no measure-theoretic Lusin continuity theorem; 'lusin' matches only Lusin–Souslin and Lusin separation.
+- It does have everything the children use: Egorov (Egorov.lean:205), closed inner regularity (Regular.lean:1036), LocallyFinite.isClosed_iUnion and continuousOn_iUnion, Rademacher, measurableSet_of_differentiableAt and measurable_fderiv, norm_fderiv_le_of_lipschitz, measurable_of_Ioi, Vitali, contDiff_one_iff_fderiv and ContDiffBump.
+- SimonGMT kernel-checks Whitney 1.6 as exists_contDiff_one_extension_of_whitney. However, WhitneyExtension has no olean, and the WhitneyCover, WhitneyPartition and WhitneyJet oleans are stale (Oct 3, built in another environment; every other SimonGMT olean is from Oct 11).
+- The comparator runs `lake build`. Importing those modules makes it try to rebuild them on the read-only tree, which fails.
+- Vendoring all four files under GMT/Ch07/ with redirected imports builds; the axioms are propext, Classical.choice and Quot.sound.
+- Simon prints no proof of 1.6 (chapter-02.txt line 186 refers to [EG92]/[Fed69]). The child's proof is the standard EG92 §6.5 construction that SimonGMT formalizes.
+
+DAG.
+- Submission.dor_ims_lusin_measurable_continuousOn is accepted (commit e4172a7b, self-contained) and is reused with its identical type.
+- No other node or commit uses Whitney or Egorov.
+- The four new names are globally unused.
+- Depth 5 < max_depth 6, so depth-6 leaves are allowed.
+- Accepted children are not handed off again; their commits are overlaid through children and depends_on.
+
+Lean.
+- All five child types elaborate and pass the comparator-style `exact Submission.X` check.
+- The parent type follows from the child types.
+- A full end-to-end `lake build` (accepted Lusin proof, prototype proofs of lusin_closed, egorov_closed and whitney_remainder, vendored Whitney, and the assembly) proves Submission.codim1_rdo_c1_approximation with axioms propext, Classical.choice and Quot.sound only.

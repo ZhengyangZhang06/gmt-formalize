@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "230bbfb3f76f1a9f0c6ae224b24e48af98d91f233aee67e20132d21217abe6e2",
+  "git_delta": {
+    "base_commit": "5f6fea8681b9b7bf9a56a8463a5210eca7290a07",
+    "candidate_commit": "24f2011c5536d5f1b0c7cffab68efa1fba1da360",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_rectifiable_ae_approxTangent",
+    "diff_sha256": "09ba4cf444511e91372852b84d9e400777b79610299ccbb0e7542efa6b391d44",
+    "source_sha256": "1cde7ecd893dedcecba136512148efd1bfc7b15ba830f5dc30815b725372e421",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_rectifiable_ae_approxTangent",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)), MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → ∀ᵐ w ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M w Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1.rescaled_area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+  "depth": 6,
+  "title": "Area formula for the blow-ups of an injective regular image (step 3)",
+  "statement": "Let P, n ∈ ℕ, g : ℝ^n → ℝ^P, B ⊆ ℝ^n a Borel set, z ∈ ℝ^n, s > 0 and f : ℝ^P → ℝ an arbitrary function. Assume g is differentiable at every a ∈ B, g is injective on B, and Dg(a) is injective for every a ∈ B. Notation:\n- B_s := {b ∈ ℝ^n : z + sb ∈ B}.\n- η_{w,s}(y) := s^{-1}(y − w) (SimonGMT blowUpMap).\n- J(a) := √det(Dg(a)* ∘ Dg(a)), where Dg(a)* is the adjoint; this is Simon's Jacobian J_g, Ch. 2 (3.3).\nThen ∫_{η_{g(z),s}(g(B))} f dH^n = ∫_{B_s} J(z + sb) · f(s^{-1}(g(z + sb) − g(z))) dL^n(b). Here H^n = μHE[n] on ℝ^P and L^n is Lebesgue measure on ℝ^n. Both sides are Bochner integrals, with value 0 for non-integrable integrands.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (B : Set (Euclid n)) (z : Euclid n) (s : ℝ) (f : Euclid P → ℝ), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ g a) → InjOn g B → (∀ a ∈ B, Injective (fderiv ℝ g a)) → 0 < s → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap (g z) s '' (g '' B), f y ∂μHE[n] = ∫ b in {b : Euclid n | z + s • b ∈ B}, Real.sqrt (((fderiv ℝ g (z + s • b)).adjoint ∘L fderiv ℝ g (z + s • b)).det) * f (s⁻¹ • (g (z + s • b) - g z))",
+  "lean_name": "codim1_rdo_c1pt_rescaled_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-bab615aebf-a1"
+}
