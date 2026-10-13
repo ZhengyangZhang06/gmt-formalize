@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fcd9963df7490d0374c2c2fd35a8d25e5efc7bcfffc61223b6d7e0fc3d23db8d",
+  "git_delta": {
+    "base_commit": "b7d36882bcbb7b0f5fe06f95a4c9a7c586a88365",
+    "candidate_commit": "b9f5e7f12daa50203a1761f3c709aebb864d1020",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pf_imrep_carrier_mass_support",
+    "diff_sha256": "d6c7ec56918de745db84f9b5c45d9357527c8568042d88ea1caa9669d3d5ec0e",
+    "source_sha256": "ee6c7da32a8da05e111fb44e82e3020ca2ba304f2385ce7e4efdb904bc637676",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pf_imrep_carrier_mass_support",
+      "statement": "∀ (P n : ℕ), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → μHE[n] (R.carrier \\ Y.support) = 0 ∧ Y.mass = R.measure univ ∧ (IsCompact Y.support → R.measure univ ≠ ∞)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y₁.support ∧ (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

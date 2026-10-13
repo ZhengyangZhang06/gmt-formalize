@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1",
+  "parent_id": "root.density_one_implies_regular-a1",
+  "depth": 2,
+  "title": "Allard ε-regularity for integer multiplicity cycles stationary in N",
+  "statement": "Let ℓ ≤ k and n ≥ 1, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-dimensional submanifold of ℝ^{n+k} with (N̄ ∖ N) ∩ U = ∅, and y₀ ∈ N ∩ U. There exist r₀ > 0 and δ > 0 with the following property. Let T ∈ 𝒟_n(U) be represented by an integer multiplicity triple R = (M, θ, ξ) whose varifold v(M, θ) is stationary in U ∩ N, with spt T ⊆ N and ∂T = 0 in U. Let z ∈ spt T with |z − y₀| < r₀ and ρ ∈ (0, r₀] with M_{B_ρ(z)}(T) ≤ (1 + δ)ω_nρⁿ. Then z ∈ reg T. Here reg T is as in 7.4.1 and the contract: z ∈ spt T, and there are ρ'' > 0 with B_{ρ''}(z) ⊆ U, m ∈ ℤ ∖ {0}, and an embedded C¹ n-submanifold Σ ∋ z with a continuous orientation ξ_Σ and Hⁿ(Σ ∩ K) < ∞ for compact K ⊆ B_{ρ''}(z), such that T(ω) = m∫_Σ⟨ω, ξ_Σ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U) with spt ω ⊆ B_{ρ''}(z).",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (y₀ : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → y₀ ∈ N ∩ U → ∃ r₀ δ : ℝ, 0 < r₀ ∧ 0 < δ ∧ ∀ (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → T.support ⊆ N → BoundaryVanishes T → R.IsStationaryAlong N → ∀ z ∈ T.support, dist z y₀ < r₀ → ∀ ρ : ℝ, 0 < ρ → ρ ≤ r₀ → T.massOn (ball z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → z ∈ regularSet T",
+  "lean_name": "dor_stationary_cycle_epsilon_regularity",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-a1"
+}
