@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "973d51e7274183a4aba45cabac327fe37b13d70b422a0a2d2b9428f3bb7a394a",
+  "git_delta": {
+    "base_commit": "f3e520564a0804db6503739fbd6e327e6bfac06f",
+    "candidate_commit": "a6ce523cfabe92247610df139a4bd0b457dfb971",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cipi_halfspace_partial_integral",
+    "diff_sha256": "bc3a468450aa97cf915a60588da42a73c91c4fdbbfca8ae16c99ff1836a31b8d",
+    "source_sha256": "24295fc5567c2e7d51ebef7e8bb44944cb5f1fd2ab109682bebaf65b4d4667f6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cipi_halfspace_partial_integral",
+      "statement": "∀ (d : ℕ) (g : (Fin (d + 1) → ℝ) → ℝ) (t : ℝ), ContDiff ℝ 1 g → HasCompactSupport g → (∀ i : Fin (d + 1), i ≠ 0 → ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single i 1) = 0) ∧ ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single 0 1) = ∫ z' : Fin d → ℝ, g (Fin.cons t z')",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
