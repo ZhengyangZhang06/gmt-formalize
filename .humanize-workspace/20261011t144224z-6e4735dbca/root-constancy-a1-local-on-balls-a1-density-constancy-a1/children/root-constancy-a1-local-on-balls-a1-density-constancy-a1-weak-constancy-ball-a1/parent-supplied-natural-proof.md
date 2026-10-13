@@ -1,0 +1,202 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.constancy-a1.local_on_balls-a1.density_constancy-a1`
+- Child DAG node: `root.constancy-a1.local_on_balls-a1.density_constancy-a1.weak_constancy_ball-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon, Introduction to Geometric Measure Theory, Ch. 6, Theorem 2.34, printed proof p. 143: “If σ < … and x ∈ B_{ρ−σ}(x₀), then ϕ_(σ)(x − ·) is a C_c^∞(B_ρ(x₀)) function and hence a legitimate choice for a in (2), so in fact (2) says D_j((θ_ε)_(σ)) = 0 on B_{ρ−σ}(x₀), hence (θ_ε)_(σ) is constant on B_{ρ−σ}(x₀), hence (letting σ ↓ 0) θ_ε is constant c on B_ρ(x₀).” Some symbols are lost in the text extraction; this reading follows the bracket of Step 5 of the parent proof. Correspondences:
+- the locally integrable θ plays the role of θ_ε, and the hypothesis is (2);
+- the mollifiers ϕ_(σ), σ = 1/(k+1), and the limit σ ↓ 0 come from the sibling theorem smooth_approx_identity.
+We mollify θ itself rather than 1_B θ. On B_{ρ−σ}(x₀) the two mollifications coincide, and since θ is locally integrable on all of ℝⁿ, θ ∗ ψ_k is defined everywhere.
+
+Notation. ℝⁿ = Eucl n; Lⁿ = Lebesgue measure (volume); |·| = Euclidean norm; B_s(x) = ball x s, B̄_s(x) = closedBall x s; spt = tsupport; e_j = EuclideanSpace.single j 1; (θ ∗ ψ)(x) = ∫ θ(t) ψ(x − t) dLⁿ(t) = convolution θ ψ (ContinuousLinearMap.lsmul ℝ ℝ) volume x.
+
+Proof.
+
+1. (Mollifiers.) By the sibling theorem smooth_approx_identity (constancy_mdc_smooth_approx_identity_ae_tendsto) there are ψ_k : ℝⁿ → ℝ (k ∈ ℕ), each C^∞ with compact support and spt ψ_k ⊆ B̄_{r_k}(0), where r_k := 1/(k+1). Since θ is locally integrable, θ_k(x) := (θ ∗ ψ_k)(x) = ∫ θ(t) ψ_k(x − t) dt → θ(x) for Lⁿ-a.e. x. (The other two properties, ψ_k ≥ 0 and ∫ψ_k = 1, are not needed.)
+
+2. (Smoothness and derivative of θ_k.) ψ_k is C^∞, in particular C¹, with compact support, and θ is locally integrable. Hence θ_k is C^∞, in particular differentiable everywhere. Differentiating under the integral sign gives Dθ_k(x) = ∫ θ(t) Dψ_k(x − t) dt. Evaluation at a fixed v commutes with this integral, since Dψ_k is continuous with compact support. So for every x and v ∈ ℝⁿ: Dθ_k(x)(v) = ∫ θ(t) Dψ_k(x − t)(v) dt.
+
+3. (The derivative vanishes where the reflected kernel fits in the ball.) Fix k and x with B̄_{r_k}(x) ⊆ B_ρ(x₀), and let a(t) := ψ_k(x − t).
+(a) a is C^∞ (ψ_k composed with the affine map t ↦ x − t), and by the chain rule Da(t) = −Dψ_k(x − t) for every t.
+(b) a has compact support: t ↦ x − t is a homeomorphism of ℝⁿ onto itself, so spt a is the image of the compact set spt ψ_k under its inverse.
+(c) The closed support of a composition with a continuous map lies in the preimage of the closed support. Hence spt a ⊆ {t : x − t ∈ spt ψ_k} ⊆ {t : |x − t| ≤ r_k} = B̄_{r_k}(x) ⊆ B_ρ(x₀).
+So a is an admissible test function. By the hypothesis and Step 2, for every j: 0 = ∫ θ(t) Da(t)(e_j) dt = −∫ θ(t) Dψ_k(x − t)(e_j) dt = −Dθ_k(x)(e_j). Thus the linear map Dθ_k(x) vanishes on the basis e_1,…,e_n of ℝⁿ, so Dθ_k(x) = 0. (For n = 0 there is nothing to check: ℝ⁰ = {0}.)
+
+4. (θ_k is constant on B_{ρ−r_k}(x₀).) Let W_k := B_{ρ−r_k}(x₀); it is empty if ρ ≤ r_k.
+- For z ∈ W_k and w ∈ B̄_{r_k}(z): |w − x₀| ≤ |w − z| + |z − x₀| < r_k + (ρ − r_k) = ρ. So B̄_{r_k}(z) ⊆ B_ρ(x₀), and Dθ_k(z) = 0 by Step 3.
+- W_k is open and convex, hence preconnected, and θ_k is differentiable on W_k with vanishing derivative. By the mean value theorem, θ_k(x) = θ_k(y) for all x, y ∈ W_k.
+
+5. (A good base point.) Let G be the set of x with θ_k(x) → θ(x) as k → ∞; by Step 1, ℝⁿ ∖ G is Lⁿ-null. Since ρ > 0, Lⁿ(B_ρ(x₀)) > 0, so B_ρ(x₀) ∩ G ≠ ∅. Choose x₁ in it and put c := θ(x₁).
+
+6. (Conclusion.) Let x ∈ B_ρ(x₀) ∩ G.
+- Since |x₁ − x₀| < ρ, |x − x₀| < ρ and r_k → 0, there is k₀ with r_k < ρ − |x₁ − x₀| and r_k < ρ − |x − x₀| for all k ≥ k₀. That is, x₁, x ∈ W_k, so θ_k(x) = θ_k(x₁) for all k ≥ k₀ by Step 4.
+- Since x₁ ∈ G, θ_k(x₁) → θ(x₁) = c; hence θ_k(x) → c. Since x ∈ G, also θ_k(x) → θ(x). By uniqueness of limits, θ(x) = c.
+Because B_ρ(x₀) ∖ G is null, θ(x) = c for Lⁿ-a.e. x ∈ B_ρ(x₀). ∎
+
+Formalization notes (no new mathematics). Every name is available under the frozen `import GMT.Ch06.Submission`; do NOT add any import. With L := ContinuousLinearMap.lsmul ℝ ℝ:
+- Step 1: obtain ⟨ψ, hψs, hψc, hψt, -, -, hψlim⟩ := constancy_mdc_smooth_approx_identity_ae_tendsto n.
+- Step 2: (hψc k).hasFDerivAt_convolution_right L hθ hψ1 x; convolution_precompR_apply L hθ ((hψc k).fderiv ℝ) (hψ1.continuous_fderiv one_ne_zero); (hψc k).contDiff_convolution_right L hθ (hψs k).
+- Step 3: (hψc k).comp_homeomorph (Homeomorph.subLeft x); tsupport_comp_subset_preimage; HasFDerivAt.comp with (hasFDerivAt_id y).const_sub x; ContinuousLinearMap.coe_injective with (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.ext and EuclideanSpace.basisFun_apply.
+- Step 4: IsOpen.is_const_of_fderiv_eq_zero with (convex_ball _ _).isPreconnected.
+- Steps 5–6: Measure.exists_mem_of_measure_ne_zero_of_ae with measure_ball_pos; ae_restrict_of_ae; ae_restrict_mem; tendsto_nhds_unique; Tendsto.congr'; tendsto_one_div_add_atTop_nhds_zero_nat.
+The following complete single-theorem proof of exactly this frozen type was compiled against the frozen Submission together with the sibling theorem. It needs no new import, produces no warning, and #print axioms gives propext, Classical.choice, Quot.sound. It also passes a simulation of the leaf Git gate. It is a reference implementation; the prose proof above governs.
+
+theorem constancy_mdc_ae_const_of_weak_partials_vanish : <frozen type> := by
+  intro n θ hθ x₀ ρ hρ hw
+  obtain ⟨ψ, hψs, hψc, hψt, -, -, hψlim⟩ := constancy_mdc_smooth_approx_identity_ae_tendsto n
+  have hd : ∀ (k : ℕ) (x : Eucl n), closedBall x (1 / ((k : ℝ) + 1)) ⊆ ball x₀ ρ →
+      fderiv ℝ (convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x = 0 := by
+    intro k x hx
+    have hψ1 : ContDiff ℝ 1 (ψ k) := (hψs k).of_le (by exact_mod_cast le_top)
+    let a : Eucl n → ℝ := fun y => ψ k (x - y)
+    have ha : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a := (hψs k).comp (contDiff_const.sub contDiff_id)
+    have hac : HasCompactSupport a := (hψc k).comp_homeomorph (Homeomorph.subLeft x)
+    have has : tsupport a ⊆ ball x₀ ρ := by
+      refine (tsupport_comp_subset_preimage (ψ k) (continuous_const.sub continuous_id)).trans ?_
+      intro y hy
+      apply hx
+      have hy' := hψt k hy
+      rw [mem_closedBall, dist_eq_norm, sub_zero] at hy'
+      rw [mem_closedBall, dist_eq_norm, norm_sub_rev]
+      exact hy'
+    have hda : ∀ y, fderiv ℝ a y = -(fderiv ℝ (ψ k) (x - y)) := by
+      intro y
+      have h1 : HasFDerivAt (ψ k) (fderiv ℝ (ψ k) (x - y)) (x - y) :=
+        ((hψ1.differentiable one_ne_zero) (x - y)).hasFDerivAt
+      have h2 : HasFDerivAt (fun y : Eucl n => x - y) (-ContinuousLinearMap.id ℝ (Eucl n)) y :=
+        (hasFDerivAt_id y).const_sub x
+      have h3 := h1.comp y h2
+      simpa [a, Function.comp_def] using h3.fderiv
+    rw [((hψc k).hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hθ hψ1 x).fderiv]
+    apply ContinuousLinearMap.coe_injective
+    refine (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.ext fun j => ?_
+    rw [ContinuousLinearMap.coe_coe, convolution_precompR_apply (ContinuousLinearMap.lsmul ℝ ℝ) hθ
+      ((hψc k).fderiv ℝ) (hψ1.continuous_fderiv one_ne_zero)]
+    have hz := hw a ha hac has j
+    simp only [hda, neg_apply, mul_neg, integral_neg, neg_eq_zero] at hz
+    simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply, LinearMap.zero_apply,
+      ContinuousLinearMap.toLinearMap_zero]
+    simpa only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul] using hz
+  have hconst : ∀ (k : ℕ) (x y : Eucl n), x ∈ ball x₀ (ρ - 1 / ((k : ℝ) + 1)) →
+      y ∈ ball x₀ (ρ - 1 / ((k : ℝ) + 1)) →
+      convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume x =
+        convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume y := by
+    intro k x y hx hy
+    have hdiff : Differentiable ℝ (convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+      ((hψc k).contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hθ (hψs k)).differentiable
+        (by simp)
+    refine isOpen_ball.is_const_of_fderiv_eq_zero (convex_ball _ _).isPreconnected
+      hdiff.differentiableOn ?_ hx hy
+    intro z hz
+    apply hd k z
+    intro w hw'
+    rw [mem_ball] at hz ⊢
+    rw [mem_closedBall] at hw'
+    calc dist w x₀ ≤ dist w z + dist z x₀ := dist_triangle _ _ _
+      _ < ρ := by linarith
+  have hlim := hψlim θ hθ
+  have hpos : volume (ball x₀ ρ) ≠ 0 := (measure_ball_pos volume x₀ hρ).ne'
+  obtain ⟨x₁, hx₁, hlim₁⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hpos (ae_restrict_of_ae hlim)
+  refine ⟨θ x₁, ?_⟩
+  filter_upwards [ae_restrict_of_ae hlim, ae_restrict_mem measurableSet_ball] with x hx hxb
+  apply tendsto_nhds_unique hx
+  apply hlim₁.congr'
+  have hr : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have e1 : ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < ρ - dist x₁ x₀ :=
+    hr.eventually (gt_mem_nhds (by have := mem_ball.mp hx₁; linarith))
+  have e2 : ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < ρ - dist x x₀ :=
+    hr.eventually (gt_mem_nhds (by have := mem_ball.mp hxb; linarith))
+  filter_upwards [e1, e2] with k hk1 hk2
+  exact hconst k x₁ x (by rw [mem_ball]; linarith) (by rw [mem_ball]; linarith)
+
+## Key steps
+
+1. Take ψ_k from smooth_approx_identity (C^∞, compact support, spt ψ_k ⊆ B̄_{1/(k+1)}(0)); then θ_k := θ ∗ ψ_k → θ a.e.
+2. θ_k is C^∞ and Dθ_k(x)(v) = ∫ θ(t) Dψ_k(x − t)(v) dt (hasFDerivAt_convolution_right, convolution_precompR_apply).
+3. If B̄_{1/(k+1)}(x) ⊆ B_ρ(x₀), then a = ψ_k(x − ·) is an admissible test function with Da = −Dψ_k(x − ·); the hypothesis gives Dθ_k(x)(e_j) = 0 for all j, so Dθ_k(x) = 0.
+4. θ_k has zero derivative on the convex open ball B_{ρ − 1/(k+1)}(x₀), so it is constant there.
+5. Pick x₁ ∈ B_ρ(x₀) with θ_k(x₁) → θ(x₁) =: c (the ball has positive measure).
+6. For a.e. x ∈ B_ρ(x₀), θ_k(x) = θ_k(x₁) for all large k, so θ(x) = lim θ_k(x) = c.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean (identical); ls project/GMT/Ch06 in the snapshot`
+- `rg -n 'theorem ae_tendsto_average_norm_sub|theorem exists_contDiff_tsupport_subset|theorem integral_comp_smul |theorem addHaar_closedBall |theorem _root_.HasCompactSupport.convolutionExists_right|theorem _root_.HasCompactSupport.hasFDerivAt_convolution_right|theorem convolution_precompR_apply|theorem integral_pos_iff_support_of_nonneg|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem exists_mem_of_measure_ne_zero_of_ae|theorem tsupport_fderiv_apply_subset|theorem support_convolution_subset' mathlib/Mathlib`
+- `rg -n 'integral_div_left_eq_self|integral_sub_left_eq_self' mathlib/Mathlib/MeasureTheory/Group/Integral.lean; rg -n 'isUnifLocDoublingMeasure' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `rg -n 'contDiff_convolution_left|contDiff_convolution_right|ae_convolution_tendsto_right_of_locallyIntegrable|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem _root_.IsOpen.is_const_of_fderiv_eq_zero' mathlib/Mathlib`
+- `rg -n 'ae_eq_const_of_weak|DistributionalConstancy|constancy_mdc' project (no match)`
+- `grep -n 'theorem ae_eq_const_of_weak_coordinate_derivatives_zero' -B5 -A30 simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean; sed -n 1,304p of that file (fderiv_convolution_eq_zero, constancyMollifier via ContDiffBump.normed, ae_constancyMollifier_convolution_tendsto, ae_eq_const_on_ball); grep abbrev Euclidean Chapter08/Varifold.lean`
+- `lake env lean #check files after `import GMT.Ch06.Submission` (Check1–Check4.lean): unknown = Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero, ContDiffBump.normed, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, ContDiffBump.convolution_tendsto_right, MeasureTheory.ae_eq_zero_of_integral_contDiff_smul_eq_zero, Integrable.exists_hasCompactSupport_integral_sub_le; available = IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub (instance for volume on Eucl n infers), VitaliFamily.ae_tendsto_average, exists_contDiff_tsupport_subset, Measure.integral_comp_smul, Measure.addHaar_closedBall, integral_sub_left_eq_self, Integrable.comp_sub_left, HasCompactSupport.convolutionExists_right/contDiff_convolution_left/right/hasFDerivAt_convolution_right, convolution_precompR_apply, IsOpen.is_const_of_fderiv_eq_zero, finrank_euclideanSpace_fin`
+- `sed of /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py (check_source_delta), prompts.py (RLCR_LEAN_TASK: preserve imports), runtime.py (_existing_lean_name_problem, reuse); git show cdfc95d (leaf candidate rejected for adding an import)`
+- `python3 -I: lean_contract.validate_lean_statement on the 3 child types and the parent type; gmt-compare.contract_scope replay; lake env lean on generated challenge modules ChallengeA/B/C.lean`
+- `lake env lean /tmp/dc-split-check/{Compose,ProveAC,ProveB,EndToEnd,EndToEnd2}.lean with #print axioms; python3 -I simulation of check_source_delta on each child insertion into the frozen Submission`
+- `python3 -I scan of dag.json lean_name values (453 nodes) for the 3 proposed names (no match)`
+- `book sources: chapter-06-source.txt lines 569–600 (2.34 printed proof), chapter-02-source.txt lines 530–545 (mollifier ϕ_σ), chapter-01-source.txt lines 927–935 (Corollary 3.17)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-01-source.txt`
+- `/tmp/dc-split-check/ProveAC.lean`
+- `/tmp/dc-split-check/ProveB.lean`
+- `/tmp/dc-split-check/EndToEnd2.lean`
+
+Snapshot pins project d8d46c95 and Mathlib 25730c7c. The frozen Submission.lean is byte-identical to Contract.lean.
+
+Not available under the frozen `import GMT.Ch06.Submission`:
+- the SimonGMT weak-constancy lemma ae_eq_const_of_weak_coordinate_derivatives_zero (DistributionalConstancy.lean:294), which the supplied Step 5 cites;
+- ContDiffBump.normed;
+- ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (BumpFunction/Convolution.lean:103);
+- ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:186).
+The leaf gate forbids adding the import: check_source_delta rejects import, set_option and extra declarations, and commit cdfc95d shows an import-adding leaf rejected.
+
+Available, and enough for an in-closure proof:
+- Lebesgue points: IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub (DensityTheorem.lean:150), with instance isUnifLocDoublingMeasureOfIsAddHaarMeasure (EqHaar.lean:550);
+- exists_contDiff_tsupport_subset (FiniteDimension.lean:45);
+- Measure.integral_comp_smul (Haar/NormedSpace.lean:92) and Measure.addHaar_closedBall (EqHaar.lean:500);
+- integral_sub_left_eq_self, the additive form of Group/Integral.lean:163;
+- the convolution API: convolutionExists_right (Convolution.lean:316), support_convolution_subset (:670), convolution_precompR_apply (:970), hasFDerivAt_convolution_right (ContDiff/Convolution.lean:61), contDiff_convolution_right/left (:420, :427);
+- IsOpen.is_const_of_fderiv_eq_zero (MeanValue.lean:617).
+The SimonGMT proof (fderiv_convolution_eq_zero, ae_eq_const_on_ball) served as the model for weak_constancy_ball.
+
+Results:
+- The 3 child types validate and elaborate in the comparator scope.
+- Each child has a complete single-theorem Lean proof that compiles warning-free with no new import and passes the leaf-gate simulation.
+- An end-to-end file proves the parent's exact frozen type from the children, with axioms propext, Classical.choice, Quot.sound only.
+- The proposed names collide with nothing in the DAG (453 nodes), the project snapshot or simongmt.
