@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.strip_lintegral_le-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1",
+  "depth": 4,
+  "title": "Strip estimate ∫⁻ ofReal(‖Dg‖·|η|) dμ ≤ ofReal(c)·μ(W ∩ S)",
+  "statement": "Let P, k ∈ ℕ, μ a measure on ℝ^P, g : ℝ^P → ℝ, η : ℝ^P → Λ^k(ℝ^P) any k-form (DifferentialForm (Euclid P) k), W, S ⊆ ℝ^P and c ∈ ℝ. Assume ‖Dg(x)‖ ≤ c for all x (operator norm of fderiv ℝ g x), Dg(x) ≠ 0 implies x ∈ S, tsupport η ⊆ W, and |η(x)| ≤ 1 for all x (|·| = covectorEuclideanNorm). Then ∫⁻ ofReal(‖Dg(x)‖·|η(x)|) dμ(x) ≤ ofReal(c)·μ(W ∩ S) in [0,∞].",
+  "lean_statement": "∀ (P k : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (η : DifferentialForm (Euclid P) k) (W S : Set (Euclid P)) (c : ℝ), (∀ x, ‖fderiv ℝ g x‖ ≤ c) → (∀ x, fderiv ℝ g x ≠ 0 → x ∈ S) → tsupport η ⊆ W → (∀ x, covectorEuclideanNorm (η x) ≤ 1) → ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm (η x)) ∂μ ≤ ENNReal.ofReal c * μ (W ∩ S)",
+  "lean_name": "cmcs_smp_strip_lintegral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-91447f8a5e-a1"
+}
