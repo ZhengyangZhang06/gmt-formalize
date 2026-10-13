@@ -1839,6 +1839,101 @@ theorem Submission.dimred_cs_psd_ball_volume_slice : ∀ (d m : ℕ) (ρ : ℝ),
   rw [Real.lt_sqrt (norm_nonneg v)]
   constructor <;> intro h <;> linarith
 
+/-- **Simon 7.3.5** (chapter-07.txt lines 407–417, proof left to the reader): the density step
+for a product `[[L]] × S₀`, with `d = dim L`.  If `f(0) = 0` and `f(r)/(ωₘrᵐ) → θ` as `r ↓ 0`, then
+`(ω_{d+m}ρ^{d+m})⁻¹ ∫_{ℝᵈ} f(√(ρ² − |σ|²)) dσ → θ` as `ρ ↓ 0`.  Every radius `√(ρ² − |σ|²)`
+lies in `[0, ρ]`, so for `a' < θ < b'` the hypothesis gives `a'·Lᵐ(B_r) ≤ f(r) ≤ b'·Lᵐ(B_r)` for
+all small `r ≥ 0`.  Integrating in `σ` and using the slice identity
+`∫_{ℝᵈ} Lᵐ(B_{√(ρ² − |σ|²)}) dσ = L^{d+m}(B_ρ) = ω_{d+m}ρ^{d+m}` bounds the ratio between `a'`
+and `b'` for all small `ρ > 0`; no measurability of `f` is needed. -/
+theorem Submission.dimred_cs_psd_radial_density : ∀ (d m : ℕ) (f : ℝ → ℝ≥0∞) (θ : ℝ≥0∞), f 0 = 0 → Tendsto (fun r : ℝ => f r / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => (∫⁻ σ : Euclid d, f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) / (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m)))) (𝓝[>] 0) (𝓝 θ) := by
+  intro d m f θ hf0 hlim
+  -- `Lᵏ(B_r(0)) = ωₖrᵏ` for `r > 0`, with `0 < ωₖ < ∞`
+  have hvol : ∀ (k : ℕ) (r : ℝ), 0 < r →
+      volume (ball (0 : Euclid k) r) = unitBallVolume k * ENNReal.ofReal (r ^ k) := by
+    intro k r hr
+    rw [Measure.addHaar_ball_of_pos volume (0 : Euclid k) hr, finrank_euclideanSpace_fin, mul_comm]
+    rfl
+  have hω0 : ∀ k : ℕ, unitBallVolume k ≠ 0 := fun k =>
+    (measure_ball_pos volume (0 : Euclid k) one_pos).ne'
+  have hωt : ∀ k : ℕ, unitBallVolume k ≠ ⊤ := fun k => measure_ball_lt_top.ne
+  have hc0 : ∀ (k : ℕ) (r : ℝ), 0 < r → unitBallVolume k * ENNReal.ofReal (r ^ k) ≠ 0 := by
+    intro k r hr
+    exact mul_ne_zero (hω0 k) (ENNReal.ofReal_pos.2 (pow_pos hr k)).ne'
+  have hct : ∀ (k : ℕ) (r : ℝ), unitBallVolume k * ENNReal.ofReal (r ^ k) ≠ ⊤ := fun k r =>
+    ENNReal.mul_ne_top (hωt k) ENNReal.ofReal_ne_top
+  -- the comparison profile `v(r) = Lᵐ(B_r(0))`, with `v(0) = 0 = f(0)`
+  set v : ℝ → ℝ≥0∞ := fun r => volume (ball (0 : Euclid m) r) with hv
+  have hv0 : v 0 = 0 := by simp [hv]
+  -- slice identity: `∫_{ℝᵈ} v(√(ρ² − |σ|²)) dσ = ω_{d+m}ρ^{d+m}`
+  have hslice : ∀ ρ : ℝ, 0 < ρ → ∫⁻ σ : Euclid d, v (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) =
+      unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m)) := by
+    intro ρ hρ
+    rw [← hvol _ _ hρ, Submission.dimred_cs_psd_ball_volume_slice d m ρ hρ.le]
+  -- every radius `√(ρ² − |σ|²)` lies in `[0, ρ]`
+  have hsq_le : ∀ ρ : ℝ, 0 < ρ → ∀ σ : Euclid d, Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ≤ ρ := by
+    intro ρ hρ σ
+    calc Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ≤ Real.sqrt (ρ ^ 2) :=
+          Real.sqrt_le_sqrt (by nlinarith [norm_nonneg σ])
+      _ = ρ := Real.sqrt_sq hρ.le
+  refine tendsto_order.2 ⟨fun a ha => ?_, fun b hb => ?_⟩
+  · -- lower bound: `a'·v ≤ f` on `[0, s)` integrates to `a' ≤` the ratio for `ρ ∈ (0, s)`
+    obtain ⟨a', haa', ha'θ⟩ := exists_between ha
+    have h1 : ∀ᶠ r in 𝓝[>] (0 : ℝ), a' < f r / (unitBallVolume m * ENNReal.ofReal (r ^ m)) :=
+      (tendsto_order.1 hlim).1 a' ha'θ
+    obtain ⟨s, hs, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 h1
+    filter_upwards [Ioo_mem_nhdsGT hs] with ρ hρ
+    have hbound : ∀ σ : Euclid d, a' * v (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) ≤
+        f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) := by
+      intro σ
+      rcases (Real.sqrt_nonneg (ρ ^ 2 - ‖σ‖ ^ 2)).eq_or_lt with h | h
+      · rw [← h, hv0, mul_zero]
+        exact zero_le
+      · have hr : Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ∈ Ioo 0 s :=
+          ⟨h, lt_of_le_of_lt (hsq_le ρ hρ.1 σ) hρ.2⟩
+        have h2 := hsub hr
+        simp only [mem_ofPred_eq] at h2
+        rw [ENNReal.lt_div_iff_mul_lt (Or.inl (hc0 m _ h)) (Or.inl (hct m _))] at h2
+        rw [hv]
+        simp only
+        rw [hvol m _ h]
+        exact h2.le
+    have hint := lintegral_mono (μ := (volume : Measure (Euclid d))) hbound
+    rw [lintegral_const_mul' _ _ (ne_top_of_lt ha'θ), hslice ρ hρ.1] at hint
+    calc a < a' := haa'
+      _ = a' * (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) /
+            (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) :=
+          (ENNReal.mul_div_cancel_right (hc0 _ _ hρ.1) (hct _ _)).symm
+      _ ≤ _ := ENNReal.div_le_div_right hint _
+  · -- upper bound: `f ≤ b'·v` on `[0, s)` integrates to the ratio `≤ b'` for `ρ ∈ (0, s)`
+    obtain ⟨b', hθb', hb'b⟩ := exists_between hb
+    have h1 : ∀ᶠ r in 𝓝[>] (0 : ℝ), f r / (unitBallVolume m * ENNReal.ofReal (r ^ m)) < b' :=
+      (tendsto_order.1 hlim).2 b' hθb'
+    obtain ⟨s, hs, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 h1
+    filter_upwards [Ioo_mem_nhdsGT hs] with ρ hρ
+    have hbound : ∀ σ : Euclid d, f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) ≤
+        b' * v (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) := by
+      intro σ
+      rcases (Real.sqrt_nonneg (ρ ^ 2 - ‖σ‖ ^ 2)).eq_or_lt with h | h
+      · rw [← h, hf0]
+        exact zero_le
+      · have hr : Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ∈ Ioo 0 s :=
+          ⟨h, lt_of_le_of_lt (hsq_le ρ hρ.1 σ) hρ.2⟩
+        have h2 := hsub hr
+        simp only [mem_ofPred_eq] at h2
+        rw [ENNReal.div_lt_iff (Or.inl (hc0 m _ h)) (Or.inl (hct m _))] at h2
+        rw [hv]
+        simp only
+        rw [hvol m _ h]
+        exact h2.le
+    have hint := lintegral_mono (μ := (volume : Measure (Euclid d))) hbound
+    rw [lintegral_const_mul' _ _ (ne_top_of_lt hb'b), hslice ρ hρ.1] at hint
+    calc _ ≤ b' * (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) /
+            (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) :=
+          ENNReal.div_le_div_right hint _
+      _ = b' := ENNReal.mul_div_cancel_right (hc0 _ _ hρ.1) (hct _ _)
+      _ < b := hb'b
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
