@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.support_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+  "depth": 6,
+  "title": "Support estimate: points of Z lie in {⟨y,a⟩ > 1/2, |y| < 5/4}",
+  "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace with orthogonal projection π := Q.starProjection, let a, e, y ∈ ℝ^P, and let s ∈ ℝ with 0 < s ≤ 1/4. Assume |πy|² = ⟨y,a⟩² + ⟨y,e⟩², ⟨y,a⟩ > 0, ||y| − 1| < s, |arctan(⟨y,e⟩/⟨y,a⟩)| < s and |y − πy| < s|y|. Then ⟨y,a⟩ > 1/2 and |y| < 5/4.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e y : Euclid P) (s : ℝ), 0 < s → s ≤ 1 / 4 → ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 → 0 < inner ℝ y a → |‖y‖ - 1| < s → |Real.arctan (inner ℝ y e / inner ℝ y a)| < s → ‖y - Q.starProjection y‖ < s * ‖y‖ → 1 / 2 < inner ℝ y a ∧ ‖y‖ < 5 / 4",
+  "lean_name": "idtp_cse_rc_tf_support_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2-a1"
+}

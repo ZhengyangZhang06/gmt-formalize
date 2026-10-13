@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.indicator_extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+  "depth": 6,
+  "title": "Extension by zero of a function C¹ on an open set whose nonzero set lies in a compact subset",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open, let K ⊆ U be compact, and let h : ℝ^P → ℝ be C¹ at every point of U. Assume every y ∈ U with h(y) ≠ 0 lies in K. Let g := 1_U·h be the extension of h|_U by zero, so g = h on U and g = 0 off U (Lean: U.indicator h). Then g is C¹ on ℝ^P, g has compact support, Dg(x) = Dh(x) for every x ∈ U, and Dg(x) = 0 for every x ∉ U.",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → IsCompact K → K ⊆ U → (∀ x ∈ U, ContDiffAt ℝ 1 h x) → (∀ y ∈ U, h y ≠ 0 → y ∈ K) → ContDiff ℝ 1 (U.indicator h) ∧ HasCompactSupport (U.indicator h) ∧ (∀ x ∈ U, fderiv ℝ (U.indicator h) x = fderiv ℝ h x) ∧ (∀ x ∉ U, fderiv ℝ (U.indicator h) x = 0)",
+  "lean_name": "idtp_cse_rc_tf_indicator_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160-a1"
+}

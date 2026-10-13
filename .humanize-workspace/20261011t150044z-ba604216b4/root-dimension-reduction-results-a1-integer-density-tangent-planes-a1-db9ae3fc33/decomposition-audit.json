@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "norm_sq_eq_add_norm_sq_starProjection|starProjection_orthogonal_val",
+        "hasStrictFDerivAt_norm_sq|contDiffAt_norm|theorem DifferentiableAt.norm",
+        "theorem (arctan_strictMono|arctan_one|arctan_neg|two_le_pi)",
+        "notMem_mulTSupport_iff_eventuallyEq|HasCompactMulSupport.intro|HasCompactSupport.intro|def tsupport|def mulTSupport",
+        "support_deriv_subset",
+        "idtp_cse_rc_tf_(support_bound|indicator_extension|product_fderiv)",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tf_decomp/Stmts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tf_decomp/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/decomposition-v1.json",
+        "/tmp/tf_decomp/Stmts.lean",
+        "/tmp/tf_decomp/Full.lean",
+        "/tmp/tf_decomp/Named.lean"
+      ],
+      "conclusion": "The split appropriately isolates three independent obligations of the selected test-function theorem. The pinned projection, calculus, support and arctan lemmas support the supplied proofs. The workspace mathlib revision matches the manifest; all 15 compared Mathlib files and Submission.lean match the snapshot byte-for-byte. No proposed name occurs in the DAG, worker registry or project declarations; node-artifact matches belong only to this proposal. All names are bare identifiers, and empty child dependency lists are correct and acyclic. The exact one-line propositions elaborate before child implementations, with the intended Euclidean norm and orthogonal-projection instances. No matrix-unit construction occurs. Independently rerunning Full.lean kernel-checked all three child proofs and the exact selected-parent assembly, conditional on the frozen cone_cutoff and angle_fderiv contracts. Each check reports only propext, Classical.choice and Quot.sound. Parent, sibling and child types were compared against the frozen artifacts."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including the explicit projection-norm identity. Arctan monotonicity yields β² < α²; Pythagoras and the radial/cone bounds yield projection norm squared > 135/256, hence α > 1/2 and norm < 5/4. Every step is justified without additional geometric hypotheses or circular reliance."
+    },
+    {
+      "key": "indicator_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and four conclusions match exactly. Compactness makes K closed, so the support inclusion extends to topological support. Openness gives local equality with h inside U; K ⊆ U gives local equality with zero outside U, including boundary points. These establish global C¹ regularity, compact support and both derivative identities independently."
+    },
+    {
+      "key": "product_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact differentiability hypotheses and directional identity match the prose. Comparing the two derivatives of the squared norm and using x ≠ 0 proves DN(x)v = 0. The stated chain and product rules then give precisely the frozen formula. The proof is complete, non-circular and directly usable in the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

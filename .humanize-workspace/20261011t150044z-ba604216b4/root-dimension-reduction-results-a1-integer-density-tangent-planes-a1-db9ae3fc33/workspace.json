@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.indicator_extension-a1",
+      "key": "indicator_extension",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scan of dag.json: nodes with id prefix root...rotation_conservation-a1 (status, depth, lean_name, depends_on, lean_statement); depth/status counts (depth-6 nodes exist, so depth 5 may split)",
+              "python3 regex scan of dag.json lean_statements for 'fderiv ℝ \\(fun [a-z] : Euclid P => ‖[a-z]‖\\)', 'fderiv ℝ norm', 'HasCompactSupport', 'Real.arctan' (no reusable norm-derivative or extension-by-zero lemma)",
+              "grep -c idtp_cse_rc_tf_support_bound|idtp_cse_rc_tf_indicator_extension|idtp_cse_rc_tf_product_fderiv|idtp_cse_rc_tf_ dag.json issue-workers.json; rg -l idtp_cse_rc_tf nodes/ GMT/ local-references/123e8435b4a2469b/project; rg -l --glob '*.lean' idtp_cse_rc_tf .swarm-worktrees/*/gmt-ch07/GMT/Ch07 (all no match)",
+              "grep -rn 'theorem hasStrictFDerivAt_norm\\b|theorem fderiv_norm\\b|theorem HasFDerivAt.norm\\b|theorem DifferentiableAt.norm\\b|theorem hasFDerivAt_norm_rpow|theorem fderiv_norm_sq' Mathlib (no plain norm-derivative lemma; hasStrictFDerivAt_norm_sq, DifferentiableAt.norm, contDiffAt_norm exist)",
+              "rg -n 'theorem (starProjection_orthogonal_val|norm_sq_eq_add_norm_sq_starProjection|hasStrictFDerivAt_norm_sq|HasFDerivAt.pow|HasFDerivAt.mul|HasDerivAt.comp_hasFDerivAt|Filter.EventuallyEq.fderiv_eq|ContDiffAt.congr_of_eventuallyEq|contDiff_iff_contDiffAt|fderiv_const_apply|support_deriv_subset|arctan_one|arctan_neg|IsCompact.inter_left|contDiffAt_norm|contDiffAt_const|ContDiffAt.differentiableAt|ContDiff.differentiable) ' in the snapshot mathlib",
+              "rg -n 'theorem (two_le_pi|arctan_strictMono)|notMem_mulTSupport_iff_eventuallyEq' in the snapshot mathlib Trigonometric and Topology/Algebra/Support.lean",
+              "cmp of 14 cited Mathlib files between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+              "lake env lean /tmp/tf_decomp/Stmts.lean (parent, cone_cutoff, angle_fderiv and the 3 child types elaborate)",
+              "lake env lean /tmp/tf_decomp/Full.lean (childA/B/C proved; parent_from_children proves the exact parent type from the 3 children + cone_cutoff/angle_fderiv types; #print axioms: propext, Classical.choice, Quot.sound)",
+              "lake env lean /tmp/tf_decomp/Named.lean (exact Submission.idtp_cse_rc_tf_* names and frozen types: standard axioms; Submission.idtp_cse_rc_test_function proved from them, sorry only via the two scratch sibling stand-ins; 0 errors)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormPow.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Pow.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/tmp/tf_decomp/Stmts.lean",
+              "/tmp/tf_decomp/Full.lean",
+              "/tmp/tf_decomp/Named.lean",
+              "/tmp/tf_decomp/gen/children.json",
+              "/tmp/tf_decomp/gen/proposal_children.json"
+            ],
+            "conclusion": "The frozen GMT.Ch07 contract (snapshot project Submission.lean, identical to the workspace copy) is the compiler authority at mathlib 25730c7c. All 14 cited snapshot Mathlib files are byte-identical to .lake/packages/mathlib. The DAG has no reusable lemma for the norm derivative in orthogonal directions or for extension by zero, so these become the generic children product_fderiv and indicator_extension. Mathlib at this pin has no plain norm-derivative lemma, so child 3 derives DN(x)v = 0 from hasStrictFDerivAt_norm_sq, HasFDerivAt.pow and HasFDerivAt.unique. Every lemma cited in the child proofs exists at this pin: Submodule.{norm_sq_eq_add_norm_sq_starProjection, starProjection_orthogonal_val}, Real.{two_le_pi, arctan_strictMono, arctan_one, arctan_neg}, contDiffAt_norm, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.{fun_mul, pow, unique, fderiv}, Filter.EventuallyEq.fderiv_eq, ContDiffAt.congr_of_eventuallyEq, contDiffAt_const, fderiv_const_apply, contDiff_iff_contDiffAt, HasCompactSupport.intro, notMem_tsupport_iff_eventuallyEq, support_deriv_subset, IsCompact.inter_left. The proposed names idtp_cse_rc_tf_{support_bound, indicator_extension, product_fderiv} appear nowhere in dag.json, issue-workers.json, node artifacts, the project or the 4216 swarm worktrees. All three child types elaborate and were kernel-checked under their exact names with propext, Classical.choice and Quot.sound only. The exact frozen parent type follows from them plus the frozen types of idtp_cse_rc_cone_cutoff and idtp_cse_rc_angle_fderiv, with standard axioms only. An independent reviewer reproduced these checks and returned ACCEPT."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.indicator_extension-a1",
+        "subproblem": {
+          "key": "indicator_extension",
+          "title": "Extension by zero of a function C¹ on an open set whose nonzero set lies in a compact subset",
+          "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open, let K ⊆ U be compact, and let h : ℝ^P → ℝ be C¹ at every point of U. Assume every y ∈ U with h(y) ≠ 0 lies in K. Let g := 1_U·h be the extension of h|_U by zero, so g = h on U and g = 0 off U (Lean: U.indicator h). Then g is C¹ on ℝ^P, g has compact support, Dg(x) = Dh(x) for every x ∈ U, and Dg(x) = 0 for every x ∉ U.",
+          "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → IsCompact K → K ⊆ U → (∀ x ∈ U, ContDiffAt ℝ 1 h x) → (∀ y ∈ U, h y ≠ 0 → y ∈ K) → ContDiff ℝ 1 (U.indicator h) ∧ HasCompactSupport (U.indicator h) ∧ (∀ x ∈ U, fderiv ℝ (U.indicator h) x = fderiv ℝ h x) ∧ (∀ x ∉ U, fderiv ℝ (U.indicator h) x = 0)",
+          "lean_name": "idtp_cse_rc_tf_indicator_extension",
+          "depends_on": [],
+          "natural_proof": "Source: steps 5, 6 and 7 of the parent proof (compact support, local form and C¹ regularity of g), stated for an arbitrary open set U, compact K ⊆ U and function h.\nNotation: g := U.indicator h, so g(y) = h(y) for y ∈ U (Set.indicator_of_mem) and g(y) = 0 for y ∉ U (Set.indicator_of_notMem).\n1. (Support.) support g ⊆ K. Let g(y) ≠ 0. If y ∉ U then g(y) = 0, a contradiction; so y ∈ U and h(y) = g(y) ≠ 0, hence y ∈ K by hypothesis.\n2. (Topological support.) K is compact in the Hausdorff space ℝ^P, hence closed (IsCompact.isClosed). So tsupport g = closure(support g) ⊆ K by step 1 (closure_minimal).\n3. (Compact support.) Every y ∉ K has g(y) = 0 by step 1. Since K is compact, g has compact support (HasCompactSupport.intro).\n4. (Points of U.) Let x ∈ U. Since U is open, U ∈ 𝓝 x (IsOpen.mem_nhds), and g = h on U, so g =ᶠ[𝓝 x] h. Hence g is C¹ at x because h is (ContDiffAt.congr_of_eventuallyEq), and Dg(x) = Dh(x) (Filter.EventuallyEq.fderiv_eq). This is the third conclusion.\n5. (Points off U.) Let x ∉ U. Since K ⊆ U, x ∉ K, so x ∉ tsupport g by step 2. Hence g = 0 on a neighbourhood of x (notMem_tsupport_iff_eventuallyEq). The constant function 0 is C¹ (contDiffAt_const), so g is C¹ at x (ContDiffAt.congr_of_eventuallyEq), and Dg(x) = D0(x) = 0 (Filter.EventuallyEq.fderiv_eq, fderiv_const_apply). This is the fourth conclusion.\n6. (Global C¹.) By steps 4 and 5, g is C¹ at every point of ℝ^P, hence ContDiff ℝ 1 g (contDiff_iff_contDiffAt). With step 3, all four conclusions hold. ∎",
+          "proof_key_steps": [
+            "g(y) ≠ 0 forces y ∈ U and h(y) ≠ 0, so support g ⊆ K; K is compact, hence closed, so tsupport g ⊆ K.",
+            "g vanishes off the compact set K, so HasCompactSupport g.",
+            "For x ∈ U, U is a neighbourhood of x on which g = h; so g is C¹ at x and Dg(x) = Dh(x).",
+            "For x ∉ U, x ∉ K ⊇ tsupport g, so g = 0 near x; so g is C¹ at x and Dg(x) = 0.",
+            "C¹ at every point gives ContDiff ℝ 1 g."
+          ]
+        },
+        "audit": {
+          "key": "indicator_extension",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All hypotheses and four conclusions match exactly. Compactness makes K closed, so the support inclusion extends to topological support. Openness gives local equality with h inside U; K ⊆ U gives local equality with zero outside U, including boundary points. These establish global C¹ regularity, compact support and both derivative identities independently."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.product_fderiv-a1",
+      "key": "product_fderiv",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scan of dag.json: nodes with id prefix root...rotation_conservation-a1 (status, depth, lean_name, depends_on, lean_statement); depth/status counts (depth-6 nodes exist, so depth 5 may split)",
+              "python3 regex scan of dag.json lean_statements for 'fderiv ℝ \\(fun [a-z] : Euclid P => ‖[a-z]‖\\)', 'fderiv ℝ norm', 'HasCompactSupport', 'Real.arctan' (no reusable norm-derivative or extension-by-zero lemma)",
+              "grep -c idtp_cse_rc_tf_support_bound|idtp_cse_rc_tf_indicator_extension|idtp_cse_rc_tf_product_fderiv|idtp_cse_rc_tf_ dag.json issue-workers.json; rg -l idtp_cse_rc_tf nodes/ GMT/ local-references/123e8435b4a2469b/project; rg -l --glob '*.lean' idtp_cse_rc_tf .swarm-worktrees/*/gmt-ch07/GMT/Ch07 (all no match)",
+              "grep -rn 'theorem hasStrictFDerivAt_norm\\b|theorem fderiv_norm\\b|theorem HasFDerivAt.norm\\b|theorem DifferentiableAt.norm\\b|theorem hasFDerivAt_norm_rpow|theorem fderiv_norm_sq' Mathlib (no plain norm-derivative lemma; hasStrictFDerivAt_norm_sq, DifferentiableAt.norm, contDiffAt_norm exist)",
+              "rg -n 'theorem (starProjection_orthogonal_val|norm_sq_eq_add_norm_sq_starProjection|hasStrictFDerivAt_norm_sq|HasFDerivAt.pow|HasFDerivAt.mul|HasDerivAt.comp_hasFDerivAt|Filter.EventuallyEq.fderiv_eq|ContDiffAt.congr_of_eventuallyEq|contDiff_iff_contDiffAt|fderiv_const_apply|support_deriv_subset|arctan_one|arctan_neg|IsCompact.inter_left|contDiffAt_norm|contDiffAt_const|ContDiffAt.differentiableAt|ContDiff.differentiable) ' in the snapshot mathlib",
+              "rg -n 'theorem (two_le_pi|arctan_strictMono)|notMem_mulTSupport_iff_eventuallyEq' in the snapshot mathlib Trigonometric and Topology/Algebra/Support.lean",
+              "cmp of 14 cited Mathlib files between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+              "lake env lean /tmp/tf_decomp/Stmts.lean (parent, cone_cutoff, angle_fderiv and the 3 child types elaborate)",
+              "lake env lean /tmp/tf_decomp/Full.lean (childA/B/C proved; parent_from_children proves the exact parent type from the 3 children + cone_cutoff/angle_fderiv types; #print axioms: propext, Classical.choice, Quot.sound)",
+              "lake env lean /tmp/tf_decomp/Named.lean (exact Submission.idtp_cse_rc_tf_* names and frozen types: standard axioms; Submission.idtp_cse_rc_test_function proved from them, sorry only via the two scratch sibling stand-ins; 0 errors)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormPow.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Pow.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/tmp/tf_decomp/Stmts.lean",
+              "/tmp/tf_decomp/Full.lean",
+              "/tmp/tf_decomp/Named.lean",
+              "/tmp/tf_decomp/gen/children.json",
+              "/tmp/tf_decomp/gen/proposal_children.json"
+            ],
+            "conclusion": "The frozen GMT.Ch07 contract (snapshot project Submission.lean, identical to the workspace copy) is the compiler authority at mathlib 25730c7c. All 14 cited snapshot Mathlib files are byte-identical to .lake/packages/mathlib. The DAG has no reusable lemma for the norm derivative in orthogonal directions or for extension by zero, so these become the generic children product_fderiv and indicator_extension. Mathlib at this pin has no plain norm-derivative lemma, so child 3 derives DN(x)v = 0 from hasStrictFDerivAt_norm_sq, HasFDerivAt.pow and HasFDerivAt.unique. Every lemma cited in the child proofs exists at this pin: Submodule.{norm_sq_eq_add_norm_sq_starProjection, starProjection_orthogonal_val}, Real.{two_le_pi, arctan_strictMono, arctan_one, arctan_neg}, contDiffAt_norm, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.{fun_mul, pow, unique, fderiv}, Filter.EventuallyEq.fderiv_eq, ContDiffAt.congr_of_eventuallyEq, contDiffAt_const, fderiv_const_apply, contDiff_iff_contDiffAt, HasCompactSupport.intro, notMem_tsupport_iff_eventuallyEq, support_deriv_subset, IsCompact.inter_left. The proposed names idtp_cse_rc_tf_{support_bound, indicator_extension, product_fderiv} appear nowhere in dag.json, issue-workers.json, node artifacts, the project or the 4216 swarm worktrees. All three child types elaborate and were kernel-checked under their exact names with propext, Classical.choice and Quot.sound only. The exact frozen parent type follows from them plus the frozen types of idtp_cse_rc_cone_cutoff and idtp_cse_rc_angle_fderiv, with standard axioms only. An independent reviewer reproduced these checks and returned ACCEPT."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.product_fderiv-a1",
+        "subproblem": {
+          "key": "product_fderiv",
+          "title": "Derivative of ψ(f)·l(|·|)·ζ in a direction orthogonal to the position vector",
+          "statement": "Let P ∈ ℕ, let f, ζ : ℝ^P → ℝ and ψ, l : ℝ → ℝ, and let x, v ∈ ℝ^P with x ≠ 0 and ⟨x,v⟩ = 0. Assume f and ζ are differentiable at x, ψ is differentiable at f(x), and l is differentiable at |x|. Then h(y) := ψ(f(y))·l(|y|)·ζ(y) satisfies Dh(x)v = ψ(f(x))·l(|x|)·Dζ(x)v + ζ(x)·l(|x|)·(ψ'(f(x))·Df(x)v), where ψ' := deriv ψ.",
+          "lean_statement": "∀ (P : ℕ) (f ζ : Euclid P → ℝ) (ψ l : ℝ → ℝ) (x v : Euclid P), x ≠ 0 → inner ℝ x v = 0 → DifferentiableAt ℝ f x → DifferentiableAt ℝ ψ (f x) → DifferentiableAt ℝ l ‖x‖ → DifferentiableAt ℝ ζ x → fderiv ℝ (fun y : Euclid P => ψ (f y) * l ‖y‖ * ζ y) x v = ψ (f x) * l ‖x‖ * fderiv ℝ ζ x v + ζ x * l ‖x‖ * (deriv ψ (f x) * fderiv ℝ f x v)",
+          "lean_name": "idtp_cse_rc_tf_product_fderiv",
+          "depends_on": [],
+          "natural_proof": "Source: step 8 of the parent proof (formula (★): the radial term drops for ⟨x,v⟩ = 0), stated for arbitrary f, ζ, ψ, l with only the differentiability it needs.\nNotation: N(y) := |y|, F(y) := ψ(f(y)), L(y) := l(|y|), so h = (F·L)·ζ; ψ' := deriv ψ and l' := deriv l.\n1. (The norm is differentiable at x.) Since x ≠ 0, N is C^∞ at x (contDiffAt_norm), hence differentiable at x (ContDiffAt.differentiableAt).\n2. (The radial derivative vanishes in the direction v.) By the chain rule for powers (HasFDerivAt.pow), y ↦ N(y)² has derivative 2|x|·DN(x) at x. On the other hand y ↦ |y|² has derivative 2⟨x,·⟩ at x (hasStrictFDerivAt_norm_sq). These are the same function, so by uniqueness of the Fréchet derivative (HasFDerivAt.unique) the two derivatives agree. Evaluating at v gives 2|x|·DN(x)v = 2⟨x,v⟩ = 0. Since x ≠ 0, |x| ≠ 0, hence DN(x)v = 0.\n3. (Chain rule.) Since ψ is differentiable at f(x) and f at x, F has derivative ψ'(f(x))·Df(x) at x (HasDerivAt.comp_hasFDerivAt). Since l is differentiable at |x| = N(x) and N at x, L has derivative l'(|x|)·DN(x) at x. So DF(x)v = ψ'(f(x))·Df(x)v and, by step 2, DL(x)v = l'(|x|)·DN(x)v = 0.\n4. (Product rule.) ζ is differentiable at x. Applying the product rule twice (HasFDerivAt.fun_mul) to h = (F·L)·ζ: Dh(x) = F(x)L(x)·Dζ(x) + ζ(x)·(F(x)·DL(x) + L(x)·DF(x)). Rewrite fderiv by this derivative (HasFDerivAt.fderiv) and evaluate at v: Dh(x)v = F(x)L(x)·Dζ(x)v + ζ(x)F(x)·DL(x)v + ζ(x)L(x)·DF(x)v.\n5. (Conclusion.) Substitute DL(x)v = 0 and DF(x)v = ψ'(f(x))·Df(x)v from step 3, and F(x) = ψ(f(x)), L(x) = l(|x|). Then Dh(x)v = ψ(f(x))·l(|x|)·Dζ(x)v + ζ(x)·l(|x|)·(ψ'(f(x))·Df(x)v), after rearranging by ring. ∎",
+          "proof_key_steps": [
+            "For x ≠ 0 the norm N is differentiable at x.",
+            "D(N²)(x) = 2|x|·DN(x) by the chain rule and D(|·|²)(x) = 2⟨x,·⟩, so uniqueness gives 2|x|·DN(x)v = 2⟨x,v⟩ = 0, hence DN(x)v = 0.",
+            "The chain rule gives D(ψ∘f)(x)v = ψ'(f(x))·Df(x)v and D(l∘N)(x)v = l'(|x|)·DN(x)v = 0.",
+            "The product rule for (ψ∘f)·(l∘N)·ζ gives the formula once the l∘N term is dropped."
+          ]
+        },
+        "audit": {
+          "key": "product_fderiv",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact differentiability hypotheses and directional identity match the prose. Comparing the two derivatives of the squared norm and using x ≠ 0 proves DN(x)v = 0. The stated chain and product rules then give precisely the frozen formula. The proof is complete, non-circular and directly usable in the parent assembly."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.support_bound-a1",
+      "key": "support_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scan of dag.json: nodes with id prefix root...rotation_conservation-a1 (status, depth, lean_name, depends_on, lean_statement); depth/status counts (depth-6 nodes exist, so depth 5 may split)",
+              "python3 regex scan of dag.json lean_statements for 'fderiv ℝ \\(fun [a-z] : Euclid P => ‖[a-z]‖\\)', 'fderiv ℝ norm', 'HasCompactSupport', 'Real.arctan' (no reusable norm-derivative or extension-by-zero lemma)",
+              "grep -c idtp_cse_rc_tf_support_bound|idtp_cse_rc_tf_indicator_extension|idtp_cse_rc_tf_product_fderiv|idtp_cse_rc_tf_ dag.json issue-workers.json; rg -l idtp_cse_rc_tf nodes/ GMT/ local-references/123e8435b4a2469b/project; rg -l --glob '*.lean' idtp_cse_rc_tf .swarm-worktrees/*/gmt-ch07/GMT/Ch07 (all no match)",
+              "grep -rn 'theorem hasStrictFDerivAt_norm\\b|theorem fderiv_norm\\b|theorem HasFDerivAt.norm\\b|theorem DifferentiableAt.norm\\b|theorem hasFDerivAt_norm_rpow|theorem fderiv_norm_sq' Mathlib (no plain norm-derivative lemma; hasStrictFDerivAt_norm_sq, DifferentiableAt.norm, contDiffAt_norm exist)",
+              "rg -n 'theorem (starProjection_orthogonal_val|norm_sq_eq_add_norm_sq_starProjection|hasStrictFDerivAt_norm_sq|HasFDerivAt.pow|HasFDerivAt.mul|HasDerivAt.comp_hasFDerivAt|Filter.EventuallyEq.fderiv_eq|ContDiffAt.congr_of_eventuallyEq|contDiff_iff_contDiffAt|fderiv_const_apply|support_deriv_subset|arctan_one|arctan_neg|IsCompact.inter_left|contDiffAt_norm|contDiffAt_const|ContDiffAt.differentiableAt|ContDiff.differentiable) ' in the snapshot mathlib",
+              "rg -n 'theorem (two_le_pi|arctan_strictMono)|notMem_mulTSupport_iff_eventuallyEq' in the snapshot mathlib Trigonometric and Topology/Algebra/Support.lean",
+              "cmp of 14 cited Mathlib files between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+              "lake env lean /tmp/tf_decomp/Stmts.lean (parent, cone_cutoff, angle_fderiv and the 3 child types elaborate)",
+              "lake env lean /tmp/tf_decomp/Full.lean (childA/B/C proved; parent_from_children proves the exact parent type from the 3 children + cone_cutoff/angle_fderiv types; #print axioms: propext, Classical.choice, Quot.sound)",
+              "lake env lean /tmp/tf_decomp/Named.lean (exact Submission.idtp_cse_rc_tf_* names and frozen types: standard axioms; Submission.idtp_cse_rc_test_function proved from them, sorry only via the two scratch sibling stand-ins; 0 errors)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormPow.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Pow.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/tmp/tf_decomp/Stmts.lean",
+              "/tmp/tf_decomp/Full.lean",
+              "/tmp/tf_decomp/Named.lean",
+              "/tmp/tf_decomp/gen/children.json",
+              "/tmp/tf_decomp/gen/proposal_children.json"
+            ],
+            "conclusion": "The frozen GMT.Ch07 contract (snapshot project Submission.lean, identical to the workspace copy) is the compiler authority at mathlib 25730c7c. All 14 cited snapshot Mathlib files are byte-identical to .lake/packages/mathlib. The DAG has no reusable lemma for the norm derivative in orthogonal directions or for extension by zero, so these become the generic children product_fderiv and indicator_extension. Mathlib at this pin has no plain norm-derivative lemma, so child 3 derives DN(x)v = 0 from hasStrictFDerivAt_norm_sq, HasFDerivAt.pow and HasFDerivAt.unique. Every lemma cited in the child proofs exists at this pin: Submodule.{norm_sq_eq_add_norm_sq_starProjection, starProjection_orthogonal_val}, Real.{two_le_pi, arctan_strictMono, arctan_one, arctan_neg}, contDiffAt_norm, HasDerivAt.comp_hasFDerivAt, HasFDerivAt.{fun_mul, pow, unique, fderiv}, Filter.EventuallyEq.fderiv_eq, ContDiffAt.congr_of_eventuallyEq, contDiffAt_const, fderiv_const_apply, contDiff_iff_contDiffAt, HasCompactSupport.intro, notMem_tsupport_iff_eventuallyEq, support_deriv_subset, IsCompact.inter_left. The proposed names idtp_cse_rc_tf_{support_bound, indicator_extension, product_fderiv} appear nowhere in dag.json, issue-workers.json, node artifacts, the project or the 4216 swarm worktrees. All three child types elaborate and were kernel-checked under their exact names with propext, Classical.choice and Quot.sound only. The exact frozen parent type follows from them plus the frozen types of idtp_cse_rc_cone_cutoff and idtp_cse_rc_angle_fderiv, with standard axioms only. An independent reviewer reproduced these checks and returned ACCEPT."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.support_bound-a1",
+        "subproblem": {
+          "key": "support_bound",
+          "title": "Support estimate: points of Z lie in {⟨y,a⟩ > 1/2, |y| < 5/4}",
+          "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace with orthogonal projection π := Q.starProjection, let a, e, y ∈ ℝ^P, and let s ∈ ℝ with 0 < s ≤ 1/4. Assume |πy|² = ⟨y,a⟩² + ⟨y,e⟩², ⟨y,a⟩ > 0, ||y| − 1| < s, |arctan(⟨y,e⟩/⟨y,a⟩)| < s and |y − πy| < s|y|. Then ⟨y,a⟩ > 1/2 and |y| < 5/4.",
+          "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e y : Euclid P) (s : ℝ), 0 < s → s ≤ 1 / 4 → ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 → 0 < inner ℝ y a → |‖y‖ - 1| < s → |Real.arctan (inner ℝ y e / inner ℝ y a)| < s → ‖y - Q.starProjection y‖ < s * ‖y‖ → 1 / 2 < inner ℝ y a ∧ ‖y‖ < 5 / 4",
+          "lean_name": "idtp_cse_rc_tf_support_bound",
+          "depends_on": [],
+          "natural_proof": "Source: steps 3 and 4 of the parent proof (the arctan bound and the support bound), stated for one point y; the identity |πy|² = ⟨y,a⟩² + ⟨y,e⟩² is a hypothesis of this statement.\nNotation: α := ⟨y,a⟩ > 0, β := ⟨y,e⟩, t := β/α, q := y − πy.\n1. (π/4 exceeds s.) Since π ≥ 2 (Real.two_le_pi), π/4 ≥ 1/2 > 1/4 ≥ s. The hypothesis |arctan t| < s therefore gives −π/4 < −s < arctan t < s < π/4.\n2. (|t| < 1.) arctan is strictly increasing, hence monotone (Real.arctan_strictMono), arctan 1 = π/4 (Real.arctan_one), and arctan(−1) = −arctan 1 = −π/4 (Real.arctan_neg). If t ≥ 1 then arctan t ≥ arctan 1 = π/4, contradicting step 1; so t < 1. If t ≤ −1 then arctan t ≤ arctan(−1) = −π/4, contradicting step 1; so t > −1.\n3. (β² < α².) Since α > 0, the inequalities −1 < β/α < 1 are equivalent to −α < β < α (div_lt_one, lt_div_iff₀). Hence α − β > 0 and α + β > 0, so α² − β² = (α − β)(α + β) > 0, i.e. β² < α².\n4. (Pythagoras.) |y|² = |πy|² + |q|². Indeed Submodule.norm_sq_eq_add_norm_sq_starProjection gives |y|² = |πy|² + |Qᗮ.starProjection y|², and Qᗮ.starProjection y = y − πy = q (Submodule.starProjection_orthogonal_val).\n5. (Bounds on |y|.) ||y| − 1| < s means 1 − s < |y| < 1 + s. With s ≤ 1/4 this gives |y| > 3/4, hence |y|² > 9/16, and |y| < 5/4. The latter is the second conclusion.\n6. (Lower bound for |πy|².) From 0 ≤ |q| < s|y|, squaring gives |q|² < (s|y|)² = s²|y|² (pow_lt_pow_left₀). From 0 < s ≤ 1/4, s² ≤ 1/16, so 1 − s² ≥ 15/16. By step 4, |πy|² = |y|² − |q|² > (1 − s²)|y|² ≥ (15/16)|y|² > (15/16)(9/16) = 135/256, using |y|² ≥ 0 and step 5.\n7. (First conclusion.) By hypothesis and step 3, |πy|² = α² + β² < 2α². With step 6, 2α² > 135/256, so α² > 135/512 > 128/512 = 1/4 = (1/2)². Since α > 0 and 1/2 > 0, this gives α > 1/2 (pow_lt_pow_iff_left₀). With step 5, 1/2 < ⟨y,a⟩ and |y| < 5/4. ∎",
+          "proof_key_steps": [
+            "s ≤ 1/4 < π/4, and arctan is strictly increasing with arctan(±1) = ±π/4, so |arctan(β/α)| < s forces −1 < β/α < 1.",
+            "Multiplying by α = ⟨y,a⟩ > 0 gives |β| < α, hence ⟨y,e⟩² < ⟨y,a⟩².",
+            "Pythagoras: |y|² = |πy|² + |y − πy|², via norm_sq_eq_add_norm_sq_starProjection and starProjection_orthogonal_val.",
+            "||y| − 1| < s ≤ 1/4 gives 3/4 < |y| < 5/4; |y − πy| < s|y| with s² ≤ 1/16 gives |πy|² > (15/16)|y|² > 135/256.",
+            "|πy|² = ⟨y,a⟩² + ⟨y,e⟩² < 2⟨y,a⟩², so ⟨y,a⟩² > 135/512 > 1/4, and ⟨y,a⟩ > 0 gives ⟨y,a⟩ > 1/2."
+          ]
+        },
+        "audit": {
+          "key": "support_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean proposition match, including the explicit projection-norm identity. Arctan monotonicity yields β² < α²; Pythagoras and the radial/cone bounds yield projection norm squared > 135/256, hence α > 1/2 and norm < 5/4. Every step is justified without additional geometric hypotheses or circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/decomposition.json": "c1591929f4ae838c87abd949cb457f5bd0d46a58670077531beed1fd8db1d226",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/decomposition-audit.json": "b4ac891e7ec9c33f41cc447cad13e0b0e951671a7dc7ad9f0180c8bef71989c4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-child-handoff.json": "c37cb5bc940ab9f2461679ee9c388b5c94030d10ec0b97476b2c6ade9b07ce01",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-supplied-plan.md": "c57e67f92db95494b805923f7c9a7252dc87a862526bca33395de7fe11c5f517",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-supplied-natural-proof.md": "4e65e0994a255dfa1db017336966b7bfcafb6411bf6d455bd8c3a7975609c37a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/parent-supplied-natural-proof.json": "0bbf1b643315e707dcd32b434c488ccd17eace44653af67f90a1546be3eb145d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1666e3160/node.json": "1ce5ba2fb239cb801cac9fe4c0f0f70a0aab63f9de6627af01e121886e446c6b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-child-handoff.json": "358b255a099e8180bc53590382a22d04a445b2ea8408552ddf3c9563c0d6539a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-supplied-plan.md": "1eed4413e0a300de0e43598e2b4af61cf639477d577edb67e8bee3dee6f5c7f0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-supplied-natural-proof.md": "2b389ac5887401750ff5e5aee396856ee71741b5ee7ce8d5113f103d8fad7f6f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/parent-supplied-natural-proof.json": "6b24e8e20890d7eb8d5786fbf893794c0ee0a871b1611f7ece741bb2ad2de527",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9/node.json": "7daa411defbf8ea703a3218453a9ef70154f1efb73b7509021e5408da0080282",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-child-handoff.json": "932ad8ac1a7939324e1ef122aecbf01a1a306cf49bf4876c9beecd03c6b1d5e2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-supplied-plan.md": "ff7df654fa1bcc29c22f223ddd11c9d7883d9f7e2fca531468adaba10c68aa00",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-supplied-natural-proof.md": "cea018f50951fcf46763b8b661e4f38dffbb981f3922670e0a82330901a1d215",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/parent-supplied-natural-proof.json": "96bc7b29a6ea698df25cc04017009a4888f8939bd6c1bd76b50a2048cbda6de8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b2be5bd7b2/node.json": "189d37877443f214613de566de079051247e70ad3b9ea7dcca7a81acb4826946"
+  }
+}
