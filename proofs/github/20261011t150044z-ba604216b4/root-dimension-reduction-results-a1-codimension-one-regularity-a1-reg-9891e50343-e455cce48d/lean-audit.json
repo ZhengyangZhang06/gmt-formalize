@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "059e0d38369940d330e26b2ac864567b77de59823c4306bef069b9f2982613f1",
+  "git_delta": {
+    "base_commit": "7da8f43d5b6888af31e81437b66b97ad28bee27a",
+    "candidate_commit": "e7310fa12d06667c7f59029f2c1a14cb3d7157e9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_pfr_ae_transfer_to_image",
+    "diff_sha256": "f460bc6c489e4c42b6ec3bb694522bec933e845aa1a62ee87b34c36c2a198280",
+    "source_sha256": "33d21970fdb2c7b420c2b0bbe6d08d565ae43c34f1598762e6df99dcc5a62035",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_pfr_ae_transfer_to_image",
+      "statement": "∀ (m d P : ℕ) (B B' : Set (Euclid d)) (G : Euclid d → Euclid P) (J : Euclid d → ℝ) (p : Euclid d → Prop), MeasurableSet B → MeasurableSet B' → B' ⊆ B → ContinuousOn G B → InjOn G B → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μHE[m] = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂μHE[m]) → (∀ᵐ v ∂(μHE[m].restrict B), p v) → ∀ᵐ w ∂(μHE[m].restrict (G '' B')), ∃ v ∈ B', G v = w ∧ p v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
