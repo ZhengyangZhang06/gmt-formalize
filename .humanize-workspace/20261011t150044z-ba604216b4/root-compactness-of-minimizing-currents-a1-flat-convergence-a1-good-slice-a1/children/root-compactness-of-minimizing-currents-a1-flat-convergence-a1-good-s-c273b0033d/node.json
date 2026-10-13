@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1",
+  "depth": 4,
+  "title": "Tonelli–Fatou: lower left difference quotients have a.e. finite liminf over j",
+  "statement": "Let μ_j (j ∈ ℕ) be Borel measures on ℝ, let a, b ∈ ℝ and let Λ ∈ [0, ∞) satisfy μ_j([a, b]) ≤ Λ for every j. For t ∈ ℝ and j ∈ ℕ let S_j(t) := liminf_{h→0+} ENNReal.ofReal(h⁻¹)·μ_j((t − h, t)) ∈ [0, ∞] (limit inferior in [0, ∞] along h → 0 with h > 0, i.e. along 𝓝[>] 0). Then for Lebesgue-almost every t ∈ ℝ: if a < t < b, then liminf_{j→∞} S_j(t) ≠ ∞.",
+  "lean_statement": "∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ j (Ioo (t - h) t)) (𝓝[>] 0)) atTop ≠ ∞",
+  "lean_name": "cmc_fc_gs_ae_quotient_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c273b0033d-a1"
+}

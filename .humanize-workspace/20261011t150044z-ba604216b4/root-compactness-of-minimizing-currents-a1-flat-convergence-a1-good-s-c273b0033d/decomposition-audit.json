@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'measurable_measure_prodMk_left|theorem prod_apply|theorem prod_apply_symm|variable.*SFinite' mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "rg -n 'theorem lintegral_liminf_le|theorem lintegral_const_mul|theorem lintegral_const |theorem ae_lt_top|theorem Measurable.liminf|theorem measurableSet_lt|theorem volume_Ioo' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/{Add,Basic,Markov}.lean mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "rg -n 'liminf_le_liminf_comp|limsup_le_limsup_comp|limsup_le_limsup|limsup_congr|liminf_const|limsup_const|tendsto_one_div_add_atTop_nhds_zero_nat|tendsto_nhdsWithin_iff|theorem restrict_apply |restrict_apply_univ' mathlib/Mathlib/Order/LiminfLimsup.lean mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean mathlib/Mathlib/Topology/NhdsWithin.lean mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -n 'cmc_fc_gs_aqf_|Ioo \\(t - h\\) t|lintegral_measure_Ioo|measure_Ioo_sub|lintegral_measure_Ioc_sub' project mathlib/Mathlib --glob '*.lean'",
+        "cmc_fc_gs_aqf_window_lintegral",
+        "cmc_fc_gs_aqf_ae_seq_liminf_finite",
+        "cmc_fc_gs_aqf_liminf_le_seq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/aqf2-dec-b7c1/proofs/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/aqf-independent-audit-zvkloqtr/IndependentChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c273b0033d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c273b0033d/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/aqf2-dec-b7c1/proofs/Full.lean",
+        "/tmp/aqf-independent-audit-zvkloqtr/IndependentChecks.lean",
+        "/tmp/aqf-independent-audit-zvkloqtr/window_lintegral_NodeChallenge.lean",
+        "/tmp/aqf-independent-audit-zvkloqtr/ae_seq_liminf_finite_NodeChallenge.lean",
+        "/tmp/aqf-independent-audit-zvkloqtr/liminf_le_seq_NodeChallenge.lean",
+        "/tmp/aqf-independent-audit-zvkloqtr/parent_NodeChallenge.lean"
+      ],
+      "conclusion": "Independently consulted the snapshot pinned to project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The window-identity and proposed-name searches returned no matches. Inspected sources confirm the s-finite hypotheses for measurable sections and both product-measure formulas, and the stated Fatou, measurability, restriction and liminf tools. All three names are fresh bare identifiers in the current DAG; no accepted declaration is reused. The only child dependency is ae_seq_liminf_finite on window_lintegral, so dependencies are correctly directed and acyclic. The immutable handoff matches the selected contract, and independently recomputing its digest produced the requested digest. All four freshly generated comparator challenges elaborate without child implementations. Independent rfl and instance checks confirm real inversion and division, ENNReal multiplication, Lebesgue measure, and the right-neighborhood and natural-number filters. Recompilation of the inspected exact-type child proofs and parent proof, and a separately written parent assembly parameterized by the child contracts, succeeded with only propext, Classical.choice and Quot.sound. The split is appropriate: restriction supplies the total-mass hypothesis for the double-Fatou child; the comparison child and liminf monotonicity then prove precisely the selected global almost-everywhere implication, including the vacuous empty-interval case."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "window_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches both prose conclusions and explicitly includes s-finiteness and arbitrary real h. The proof establishes measurability of E and correctly identifies both sections, then applies product-measure formulas under their actual s-finite hypotheses. Real.volume_Ioo and lintegral_const give the claimed identity for every h, including h ≤ 0 and infinite total mass. No finiteness or positivity hypothesis is missing. The proof is complete, non-circular and directly formalizable; its bare Submission name is unreserved."
+    },
+    {
+      "key": "ae_seq_liminf_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type exactly expresses the stated uniform finite total-mass assumption and both natural-number liminfs. The proof derives finite, hence s-finite, measures; applies only the declared window_lintegral dependency; verifies the positive finite ENNReal normalization; and establishes quotient measurability and the exact integral identity. Sequential measurability, two correctly directed Fatou inequalities, liminf monotonicity and ae_lt_top prove the exact almost-everywhere conclusion. Every needed hypothesis is supplied, with no circular reliance or deferred proof search. The bare name is fresh."
+    },
+    {
+      "key": "liminf_le_seq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the prose, including the strict interior hypothesis, right-neighborhood filter, restricted measure and real step sizes. Positive reciprocal steps converge in the required filter, giving the liminf inequality in the correct direction. The two interior inequalities ensure eventual window containment in Icc a b; measurability permits restrict_apply. The normalization and eventual equality then justify liminf_congr. No finiteness or measurability of the quotient function is needed. The supplied proof is complete and independent of the other children and parent theorem; the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
