@@ -579,6 +579,43 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
+/-- **Variation bound for the `L¹` representative** (Simon 6.2.5 applied to `∂Y`): if
+`Y(ω) = ∫_U u ⟨ω, e⟩` for all test `(d+1)`-forms, `M_U(∂Y) < ∞`, `|ε| ≤ ‖z‖`,
+`d(f ε)(e) = Df(z)`, and `f` is a smooth compactly supported function in `U` with `|f| ≤ M`, then
+`|∫_U u Df(z)| ≤ M_U(∂Y) ‖z‖ M`.  Indeed `γ = f ε` is a test `d`-form with `spt γ ⊆ U` and
+`|γ| = |f| |ε| ≤ M ‖z‖`, so `|∂Y(γ)| ≤ M ‖z‖ M_U(∂Y)`, while `∂Y(γ) = Y(dγ) = ∫_U u Df(z)`. -/
+theorem Submission.cbr_ci_pw_l1_boundary_variation_bound : ∀ (d : ℕ) (U : Set (Euclid (d + 1))) (Y : GeometricCurrentOn U (d + 1)) (u : Euclid (d + 1) → ℝ) (ε : Covector (Euclid (d + 1)) d) (f : Euclid (d + 1) → ℝ) (z : Euclid (d + 1)) (M : ℝ), (∀ ω : TestFormOn U (d + 1), Y ω = ∫ y in U, u y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))) → Y.boundary.massOn U ≠ ∞ → covectorEuclideanNorm ε ≤ ‖z‖ → (∀ y, exteriorDerivative (fun x => f x • ε) y (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ f y z) → ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ U → (∀ y, |f y| ≤ M) → |∫ y in U, u y * fderiv ℝ f y z| ≤ (Y.boundary.massOn U).toReal * ‖z‖ * M := by
+  intro d U Y u ε f z M hrep hfin hεn hεd hf hfc hfU hM
+  -- the test `d`-form `γ = f ε`, with `spt γ ⊆ spt f ⊆ U`
+  have hsupp : tsupport (fun x => f x • ε : DifferentialForm (Euclid (d + 1)) d) ⊆ U :=
+    (tsupport_smul_subset_left f (fun _ => ε)).trans hfU
+  have hmem : (fun x => f x • ε : DifferentialForm (Euclid (d + 1)) d) ∈
+      testFormOnSubmodule (E := Euclid (d + 1)) U d :=
+    ⟨⟨hf.smul contDiff_const, hfc.smul_right⟩, hsupp⟩
+  let γ : TestFormOn U d := ⟨fun x => f x • ε, hmem⟩
+  -- `|γ(x)| = |f(x)| |ε| ≤ M ‖z‖`
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  have hbound : ∀ x, covectorEuclideanNorm ((γ : DifferentialForm (Euclid (d + 1)) d) x) ≤
+      M * ‖z‖ := by
+    intro x
+    change covectorEuclideanNorm (f x • ε) ≤ M * ‖z‖
+    rw [(Submission.rsd_mw_tfa_norm_props (d + 1) d).2.1]
+    exact mul_le_mul (hM x) hεn (covectorEuclideanNorm_nonneg ε) hM0
+  -- `|∂Y(γ)| ≤ M ‖z‖ M_U(∂Y)`
+  have key := Submission.cmr_abs_apply_le_massOn (d + 1) d U U Y.boundary γ (M * ‖z‖) hfin hsupp
+    hbound
+  -- `∂Y(γ) = Y(dγ) = ∫_U u Df(z)`
+  have heq : Y.boundary γ = ∫ y in U, u y * fderiv ℝ f y z := by
+    rw [GeometricCurrentOn.boundary_apply, hrep]
+    congr 1
+    funext y
+    change u y * exteriorDerivative (fun x => f x • ε) y
+      (fun i => EuclideanSpace.single i (1 : ℝ)) = _
+    rw [hεd y]
+  rw [heq] at key
+  calc |∫ y in U, u y * fderiv ℝ f y z| ≤ M * ‖z‖ * (Y.boundary.massOn U).toReal := key
+    _ = (Y.boundary.massOn U).toReal * ‖z‖ * M := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
