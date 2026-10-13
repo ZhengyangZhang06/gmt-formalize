@@ -476,7 +476,7 @@ theorem Submission.dgcr_atg_graph_image_flat : ∀ (n k : ℕ) (ι : Euclid n �
     (((differentiableAt_const z).add ι.toContinuousLinearMap.differentiableAt).add
       (ι'.toContinuousLinearMap.differentiableAt.comp v₀ hu)).hasFDerivAt
   -- little-o: `‖Φ v − Φ v₀ − DΦ(v₀)(v − v₀)‖ ≤ ε‖v − v₀‖` whenever `dist v v₀ < ρ`
-  obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.1 (hΦd.isLittleO.def hε)
+  obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.1 (hΦd.isLittleO.bound hε)
   refine ⟨ρ, hρ, ?_⟩
   -- `y = Φ v` with `‖v − v₀‖ ≤ ‖y − Φ v₀‖ < ρ`; take `t = DΦ(v₀)(v − v₀)`
   rintro y ⟨v, -, rfl⟩ hy
