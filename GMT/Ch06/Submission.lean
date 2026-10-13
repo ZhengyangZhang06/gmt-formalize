@@ -1407,6 +1407,63 @@ theorem Submission.polyhedral_approx_pairing_expansion : ∀ (P n : ℕ) (w : NV
         congrArg w hc
     _ = _ := by simp only [map_sum, map_smul, smul_eq_mul]
 
+/-- **Lower half of the mass formula `M(T) = ∫ |T⃗| dμ_T` (Simon Ch. 6, 2.7–2.8; display (1) in the
+proof of Lemma 3.13).**  If `(μ, κ)` represents `Y ∈ 𝒟_k(ℝ^N)` as in (2.7), then
+`∫ |κ| dμ ≤ M(Y)` in `[0, ∞]`, where `|w| = (∑_γ w(dx^γ)²)^{1/2}` is the Euclidean norm of a
+`k`-vector.  Let `M(Y) < ∞` and `R ∈ ℕ`.  The coordinates `κ^γ` are `μ`-integrable on `B_R`, so
+for `ε > 0` there is a continuous form `ω` with `tsupport ω ⊆ B_R`, `|ω| ≤ 1` and
+`∫_{B_R} |κ| dμ ≤ ∫ κ(ω) dμ + ε`; by (2.7) and the mass bound, `∫ κ(ω) dμ ≤ M(Y)`.  Hence
+`∫_{B_R} |κ| dμ ≤ M(Y)`; let `R ↑ ∞`. -/
+theorem Submission.imc_lintegral_coordNorm_le_mass : ∀ (N k : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl N)) k) (μ : Measure (Eucl N)) (κ : Eucl N → NVector (Eucl N) k), IsMeasureRepresentation Y μ κ → ∫⁻ x, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ ≤ Y.mass := by
+  intro N k Y μ κ hY
+  -- If `M(Y) = ∞` there is nothing to prove.
+  rcases eq_or_ne Y.mass ∞ with hM | hM
+  · rw [hM]
+    exact le_top
+  -- Step 7: the integral over every ball `B_R`, `R ∈ ℕ`, is at most `M(Y)`.
+  have hball : ∀ R : ℕ, ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt
+      (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ ≤ Y.mass := by
+    intro R
+    -- Step 1: the coordinates `κ^γ` are `μ`-integrable on `closedBall 0 R ⊇ B_R`.
+    have hint : ∀ γ : SimonMultiIndex k N,
+        IntegrableOn (fun x => euclideanNVectorCoordinate (κ x) γ) (ball (0 : Eucl N) R) μ :=
+      fun γ => (Submission.cmb_rb_measureRepresentation_integrableOn_coeff N k univ univ
+        isOpen_univ subset_rfl Y μ κ hY (closedBall 0 R) (isCompact_closedBall 0 R)
+        (subset_univ _) γ).mono_set ball_subset_closedBall
+    -- `B_R ⊂⊂ ℝ^N`, and `M_{B_R}(Y) ≤ M(Y) = ofReal (M(Y).toReal)`.
+    have hW : CompactlyContainedOpen (ball (0 : Eucl N) R) univ :=
+      ⟨isOpen_ball, (isCompact_closedBall 0 R).closure_of_subset ball_subset_closedBall,
+        subset_univ _⟩
+    have hmass : Y.massOn (ball (0 : Eucl N) R) ≤ ENNReal.ofReal Y.mass.toReal := by
+      rw [ENNReal.ofReal_toReal hM]
+      exact Y.massOn_mono (subset_univ _)
+    refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+    -- Steps 3–6: a continuous form `ω`, `tsupport ω ⊆ B_R`, `|ω| ≤ 1`, nearly attains
+    -- `∫_{B_R} |κ| dμ`.
+    obtain ⟨ω, hω, hωR, hω1, -, hle⟩ := Submission.imc_mlb_exists_form_lintegral_coordNorm_le
+      N k μ κ R hint ε (NNReal.coe_pos.mpr hε)
+    -- Step 2: `∫ κ(ω) dμ ≤ |∫ κ(ω) dμ| ≤ M(Y).toReal`.
+    have hωM : ∫ x, κ x (ω x) ∂μ ≤ Y.mass.toReal := by
+      have h := (Submission.cmb_measureRepresentation_continuous_bound N k univ _ hW Y μ κ hY
+        Y.mass.toReal 1 ENNReal.toReal_nonneg hmass ω hω hωR hω1).2
+      rw [mul_one] at h
+      exact (le_abs_self _).trans h
+    calc _ ≤ ENNReal.ofReal (∫ x, κ x (ω x) ∂μ + ε) := hle
+      _ ≤ ENNReal.ofReal (Y.mass.toReal + ε) := ENNReal.ofReal_le_ofReal (by linarith)
+      _ = Y.mass + ε := by
+        rw [ENNReal.ofReal_add ENNReal.toReal_nonneg ε.coe_nonneg, ENNReal.ofReal_toReal hM,
+          ENNReal.ofReal_coe_nnreal]
+  -- Monotone convergence along the directed exhaustion `⋃_R B_R = ℝ^N`; no measurability of the
+  -- integrand is needed.
+  calc _ = ∫⁻ x in ⋃ R : ℕ, ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt
+        (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ := by
+        rw [iUnion_ball_nat, Measure.restrict_univ]
+    _ = ⨆ R : ℕ, ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt
+        (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ :=
+        setLIntegral_iUnion_of_directed _
+          (Monotone.directed_le fun _ _ h => ball_subset_ball (Nat.cast_le.mpr h))
+    _ ≤ Y.mass := iSup_le hball
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
