@@ -1057,6 +1057,53 @@ theorem Submission.codim1_rdo_c1pt_rescaled_integral_tendsto : ∀ (P n : ℕ) (
   rw [← hid]
   exact hdom.congr' hloc
 
+/-- **Approximate tangent space of a `C¹` piece** (Simon Ch. 3, 1.4; the step "since `x ∈ Nⱼ` and
+`Nⱼ` is a `C¹` submanifold, `lim_{λ↓0} ∫_{η_{x,λ}(Nⱼ)} f dHⁿ = ∫_{TₓNⱼ} f dHⁿ`" of the proof of
+1.6 "⇒", chapter-03.txt lines 113–125).  Let `g` be `C¹` with `m|a − b| ≤ |g(a) − g(b)|` on
+`B = B_r(c)`, `m > 0`, and `z ∈ B`.  Then `|Dg(a)v| ≥ m|v|`, so `Dg(a)` is injective for `a ∈ B`,
+`g` is injective on `B` and `T = Dg(z)(ℝⁿ)` has dimension `n`.  By the area formula (Ch. 2, 3.2,
+3.3, 3.5), `∫_{η_{g(z),s}(g(B))} f dHⁿ = ∫_{B_s} J_g(z + sb) f(s⁻¹(g(z + sb) − g(z))) db` for
+`s > 0`.  The Jacobian `J_g = √det(Dg* ∘ Dg)` is continuous, so these integrals tend to
+`J_g(z) ∫ f(Dg(z)b) db`, which is `∫_T f dHⁿ` by the linear area formula (Ch. 2, 3.1). -/
+theorem Submission.codim1_rdo_c1_piece_approxTangent : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r m : ℝ), ContDiff ℝ 1 g → 0 < m → (∀ a ∈ ball c r, ∀ b ∈ ball c r, m * ‖a - b‖ ≤ ‖g a - g b‖) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt n (g '' ball c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n g c r m hg hm hlip z hz
+  have hdiff : Differentiable ℝ g := hg.differentiable one_ne_zero
+  -- a vector `x` with `m|x| ≤ 0` vanishes, since `m > 0`
+  have hzero : ∀ x : Euclid n, m * ‖x‖ ≤ 0 → x = 0 := fun x hx =>
+    norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hx hm)
+  -- Step 1, `m|v| ≤ |Dg(a)v|` for `a ∈ B`, so `Dg(a)` is injective; `g` is injective on `B`.
+  have hlow : ∀ a ∈ ball c r, ∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g a v‖ := fun a ha =>
+    Submission.codim1_rdo_c1pt_fderiv_lower_bound P n g (ball c r) a m isOpen_ball ha (hdiff a)
+      fun x hx => hlip x hx a ha
+  have hinj : ∀ a ∈ ball c r, Injective (fderiv ℝ g a) := by
+    intro a ha v w hvw
+    have h := hlow a ha (v - w)
+    rw [map_sub, hvw, sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (hzero _ h)
+  have hinjOn : InjOn g (ball c r) := by
+    intro a ha b hb hab
+    have h := hlip a ha b hb
+    rw [hab, sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (hzero _ h)
+  -- Step 2, the Jacobian `J_g(a) = √det(Dg(a)* ∘ Dg(a))` is continuous.
+  have hcont : Continuous (fderiv ℝ g) := hg.continuous_fderiv one_ne_zero
+  have hJ : Continuous fun a => Real.sqrt (((fderiv ℝ g a).adjoint ∘L fderiv ℝ g a).det) :=
+    Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      ((ContinuousLinearMap.adjoint.continuous.comp hcont).clm_comp hcont))
+  refine ⟨?_, fun f => ?_⟩
+  · -- `dim T = n`
+    rw [LinearMap.finrank_range_of_inj (f := (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid P))
+      (hinj z hz), finrank_euclideanSpace_fin]
+  · -- Steps 3–8, `∫_T f dHⁿ = J_g(z) ∫ f(Dg(z)b) db` is the limit of the rescaled area formulas.
+    rw [Submission.codim1_rdo_c1pt_linear_range_integral P n (fderiv ℝ g z) f (hinj z hz)]
+    refine (Submission.codim1_rdo_c1pt_rescaled_integral_tendsto P n g
+      (fun a => Real.sqrt (((fderiv ℝ g a).adjoint ∘L fderiv ℝ g a).det)) (ball c r) z m f
+      hdiff.continuous (hdiff z) hJ isOpen_ball hz hm (fun a ha => hlip a ha z hz) (hlow z hz)
+      f.continuous f.hasCompactSupport).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P n g (ball c r) z s f
+      measurableSet_ball (fun a _ => hdiff a) hinjOn hinj hs).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
