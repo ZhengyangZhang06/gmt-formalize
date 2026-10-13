@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Coordinate functionals of a locally bounded `L : C_c(X, ℝᵈ) → ℝ`: `Λᵢ(f) = L(f • eᵢ)` is
+linear and locally bounded with the same constants.  `T f := f.compLeft (t ↦ t • eᵢ)` is linear
+with `(T f)(x) = f(x) • eᵢ`, `tsupport (T f) ⊆ tsupport f` and `‖(T f)(x)‖ = |f(x)|`;
+take `Λᵢ := L ∘ T`. -/
+theorem Submission.cmr_vr_coordinate_functional : ∀ (X : Type) [TopologicalSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∀ i : Fin d, ∃ Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ, (∀ (f : CompactlySupportedContinuousMap X ℝ) (g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))), (∀ x, g x = f x • EuclideanSpace.single i (1 : ℝ)) → L g = Λ f) ∧ ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M := by
+  intro X _ d L hL i
+  -- `c t = t • eᵢ` is continuous and `c 0 = 0`, so `T f := f.compLeft c` has `(T f) x = f x • eᵢ`
+  let c : C(ℝ, EuclideanSpace ℝ (Fin d)) :=
+    ⟨fun t => t • EuclideanSpace.single i (1 : ℝ), continuous_id.smul continuous_const⟩
+  have hc0 : c 0 = 0 := zero_smul ℝ _
+  have hT : ∀ (f : CompactlySupportedContinuousMap X ℝ) (x : X),
+      f.compLeft c x = f x • EuclideanSpace.single i (1 : ℝ) :=
+    fun f x => CompactlySupportedContinuousMap.compLeft_apply hc0 f x
+  -- `T` is linear (pointwise, then extensionality); `Λ := L ∘ T`
+  let T : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ]
+      CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) :=
+    { toFun := fun f => f.compLeft c
+      map_add' := fun f₁ f₂ => CompactlySupportedContinuousMap.ext fun x => by
+        simp only [hT, CompactlySupportedContinuousMap.add_apply, add_smul]
+      map_smul' := fun r f => CompactlySupportedContinuousMap.ext fun x => by
+        simp only [hT, CompactlySupportedContinuousMap.smul_apply, RingHom.id_apply, smul_eq_mul,
+          mul_smul] }
+  refine ⟨L ∘ₗ T, fun f g hg => ?_, fun K hK => ?_⟩
+  · -- `g = T f` by extensionality
+    exact congrArg L (CompactlySupportedContinuousMap.ext fun x => (hg x).trans (hT f x).symm)
+  · -- `tsupport (T f) ⊆ tsupport f ⊆ K` and `‖(T f) x‖ = |f x| ≤ 1`: same constant `M`
+    obtain ⟨M, hM⟩ := hL K hK
+    refine ⟨M, fun f hf hf1 => hM (T f) ?_ fun x => ?_⟩
+    · have hTf : ⇑(T f) = fun x => f x • EuclideanSpace.single i (1 : ℝ) := funext (hT f)
+      rw [hTf]
+      exact (tsupport_smul_subset_left _ _).trans hf
+    · show ‖f.compLeft c x‖ ≤ 1
+      rw [hT, norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs]
+      exact hf1 x
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
