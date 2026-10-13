@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The vector representing `β ↦ ζ(β ∧ α)` (steps 4(a), 4(b) of the parent proof; Simon Ch. 6,
+proof of Lemma 4.5(2), display (3)).  Write `β ∧ α` for `alternatizeUncurryFin (β.smulRight α)`,
+`eₗ` for the standard basis of `ℝᴾ` and `V = Σₗ ζ(⟨eₗ, ·⟩ ∧ α) eₗ`.  Then `ζ(β ∧ α) = β(V)` for
+every `1`-covector `β`, as `β ↦ ζ(β ∧ α)` is linear and `β = Σₗ β(eₗ) ⟨eₗ, ·⟩`.  If `ζ` orients
+`Q` and `v ∈ Qᗮ`, then `(⟨v, ·⟩ ∧ α)(τ) = Σᵢ (-1)ⁱ ⟨v, τᵢ⟩ α(…) = 0` for the basis `τ` of `Q`, so
+`⟨v, V⟩ = ζ(⟨v, ·⟩ ∧ α) = 0` and `V ∈ Qᗮᗮ = Q`. -/
+theorem Submission.dor_lmbsf_ll_wedge_representing_vector : ∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (α : Covector (Euclid P) n), (∀ β : Euclid P →L[ℝ] ℝ, ζ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ l : Fin P, ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight α)) • EuclideanSpace.single l (1 : ℝ))) ∧ ∀ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ζ Q → (∑ l : Fin P, ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight α)) • EuclideanSpace.single l (1 : ℝ)) ∈ Q := by
+  intro P n ζ α
+  -- `Φ(β) = ζ(β ∧ α)` is linear in `β`
+  let Φ : (Euclid P →L[ℝ] ℝ) → ℝ := fun β =>
+    ζ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α))
+  have hΦadd : ∀ β₁ β₂ : Euclid P →L[ℝ] ℝ, Φ (β₁ + β₂) = Φ β₁ + Φ β₂ := by
+    intro β₁ β₂
+    have : (β₁ + β₂).smulRight α = β₁.smulRight α + β₂.smulRight α := by
+      ext v; simp [add_smul]
+    simp only [Φ, this, ContinuousAlternatingMap.alternatizeUncurryFin_add, map_add]
+  have hΦsmul : ∀ (c : ℝ) (β : Euclid P →L[ℝ] ℝ), Φ (c • β) = c • Φ β := by
+    intro c β
+    have : (c • β).smulRight α = c • β.smulRight α := by
+      ext v; simp [mul_smul]
+    simp only [Φ, this, ContinuousAlternatingMap.alternatizeUncurryFin_smul, map_smul]
+  let Φl : (Euclid P →L[ℝ] ℝ) →ₗ[ℝ] ℝ :=
+    { toFun := Φ, map_add' := hΦadd, map_smul' := hΦsmul }
+  -- `β = Σₗ β(eₗ) ⟨eₗ, ·⟩`
+  have hβexp : ∀ β : Euclid P →L[ℝ] ℝ, β = ∑ l : Fin P,
+      β (EuclideanSpace.single l (1 : ℝ)) • innerSL ℝ (EuclideanSpace.single l (1 : ℝ)) := by
+    intro β
+    ext v
+    have hv : v = ∑ l : Fin P, v l • EuclideanSpace.single l (1 : ℝ) := by
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr v]
+      simp
+    simp only [FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+      Pi.smul_apply, innerSL_apply_apply, EuclideanSpace.inner_single_left, map_one, one_mul,
+      smul_eq_mul]
+    conv_lhs => rw [hv]
+    simp [map_sum, map_smul, mul_comm]
+  -- `ζ(β ∧ α) = Σₗ β(eₗ) ζ(⟨eₗ, ·⟩ ∧ α) = β(V)`
+  have hid : ∀ β : Euclid P →L[ℝ] ℝ, Φ β = β (∑ l : Fin P,
+      Φ (innerSL ℝ (EuclideanSpace.single l (1 : ℝ))) • EuclideanSpace.single l (1 : ℝ)) := by
+    intro β
+    have h1 : Φ β = Φl β := rfl
+    rw [h1, hβexp β, map_sum]
+    simp only [map_sum, map_smul, smul_eq_mul]
+    apply Finset.sum_congr rfl
+    intro l _
+    simp only [Φl, LinearMap.coe_mk, AddHom.coe_mk]
+    have := hβexp β
+    rw [← this]
+    ring
+  refine ⟨hid, ?_⟩
+  intro Q hQ
+  obtain ⟨τ, -, hspan, hsign⟩ := hQ
+  -- `ζ(⟨v, ·⟩ ∧ α) = ±(⟨v, ·⟩ ∧ α)(τ) = 0` for `v ∈ Qᗮ`, as every `τᵢ ∈ Q`
+  have hzero : ∀ v ∈ Qᗮ, Φ (innerSL ℝ v) = 0 := by
+    intro v hv
+    have hτQ : ∀ i, τ i ∈ Q := fun i => hspan ▸ Submodule.subset_span (Set.mem_range_self i)
+    have hval :
+        ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ v).smulRight α) τ = 0 := by
+      rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+      apply Finset.sum_eq_zero
+      intro i _
+      simp [Submodule.inner_left_of_mem_orthogonal (hτQ i) hv]
+    rcases hsign with h | h
+    · simp only [Φ, h, hval]
+    · simp only [Φ, h, hval, neg_zero]
+  -- `⟨u, V⟩ = ζ(⟨u, ·⟩ ∧ α) = 0` for `u ∈ Qᗮ`, so `V ∈ Qᗮᗮ = Q`
+  rw [← Submodule.orthogonal_orthogonal Q, Submodule.mem_orthogonal]
+  intro u hu
+  have := hid (innerSL ℝ u)
+  rw [hzero u hu, innerSL_apply_apply] at this
+  exact this.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
