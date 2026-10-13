@@ -515,6 +515,44 @@ theorem Submission.dimred_cs_ti_wedge_vanishes : ∀ (P n : ℕ) (U : Set (Eucli
   rcases hξ with hξ | hξ
   · rw [hξ, hβ v hvQ]
   · rw [hξ, hβ v hvQ, neg_zero]
+/-- **Cartan's formula for a constant field** `X ≡ v` (Simon Ch. 6, 2.25–2.26, the infinitesimal
+form of the homotopy `h(t, x) = x + tv`).  For an `(m+1)`-form `β` differentiable at `y`,
+`d(ι_v β)(y) + ι_v dβ(y) = Dβ(y)[v]`.  With `B = Dβ(y)`, `D(ι_v β)(y) u = (B u).curryLeft v`, and every
+term of `d(ι_v β)(y)(w)` cancels a term of `dβ(y)(v, w)`, leaving its `k = 0` term `B v w`. -/
+theorem Submission.dimred_cs_ti_const_cartan : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (v y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) v) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) v = fderiv ℝ β y v := by
+  intro P m β v y hβ
+  -- `ι_v β = Φ ∘ β` for the continuous linear map `Φ α = α.curryLeft v`
+  let Φ : Covector (Euclid P) (m + 1) →L[ℝ] Covector (Euclid P) m :=
+    (ContinuousLinearMap.apply ℝ (Covector (Euclid P) m) v).comp
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := m)).toContinuousLinearMap
+  have hD : fderiv ℝ (fun z => Φ (β z)) y = Φ.comp (fderiv ℝ β y) :=
+    (Φ.hasFDerivAt.comp y hβ.hasFDerivAt).fderiv
+  have h1 : exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) v) y =
+      ContinuousAlternatingMap.alternatizeUncurryFin (Φ.comp (fderiv ℝ β y)) := by
+    rw [← hD]
+    rfl
+  -- removing entry `i + 1` of `(v, w)` leaves `(v, w without wᵢ)`
+  have hrm : ∀ (i : Fin (m + 1)) (w : Fin (m + 1) → Euclid P),
+      Fin.removeNth i.succ (Matrix.vecCons v w) = Matrix.vecCons v (Fin.removeNth i w) := by
+    intro i w
+    funext j
+    cases j using Fin.cases with
+    | zero => simp [Fin.removeNth_apply]
+    | succ j => simp [Fin.removeNth_apply]
+  rw [h1]
+  ext w
+  simp only [ContinuousAlternatingMap.add_apply,
+    ContinuousAlternatingMap.alternatizeUncurryFin_apply, exteriorDerivative, extDeriv,
+    ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
+    ContinuousAlternatingMap.curryLeft_apply_apply,
+    LinearIsometry.coe_toContinuousLinearMap, ContinuousAlternatingMap.curryLeftLI_apply, Φ]
+  -- split off the `k = 0` term `B v w` of `dβ(y)(v, w)`; the other terms cancel the first sum
+  rw [Fin.sum_univ_succ (n := m + 1)]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_succ, Fin.removeNth_zero, Fin.tail_vecCons,
+    hrm, Fin.val_zero, Fin.val_succ, pow_zero, one_smul, pow_succ, mul_neg_one, neg_smul,
+    Finset.sum_neg_distrib]
+  abel
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
