@@ -2604,6 +2604,32 @@ theorem Submission.slicing_representation_unique :
   obtain ⟨C, hC⟩ := hab β
   exact ⟨C, fun x => (Real.norm_eq_abs (a β x)).symm.le.trans (hC x)⟩
 
+/-- **Simon Ch. 6, 4.6 (p. 157).**  The slice `⟨T, f, t₋⟩ = ∂(T ⌞ A_t) − (∂T) ⌞ A_t` exists for
+every level `t`.  `A_t = {x ∈ U | f x < t}` is open, as `f` is continuous on the open set `U`;
+the representations of `T` and `∂T` from `slicing_mass_representation` restrict to `A_t`, and
+`∂(T ⌞ A_t) − (∂T) ⌞ A_t` is again a sequentially continuous functional. -/
+theorem Submission.slicing_exists :
+    ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1),
+      (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) →
+      ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ t : ℝ,
+        ∃ S : GeometricCurrentOn U m, IsSlice T f t S := by
+  intro P m U hU T hT f L hf t
+  -- Step 1: `A_t = U ∩ f⁻¹(-∞, t)` is open, hence Borel.
+  have hAt : MeasurableSet {x | x ∈ U ∧ f x < t} :=
+    (hf.continuousOn.isOpen_inter_preimage hU isOpen_Iio).measurableSet
+  -- Step 2: `T ⌞ A_t`, through a representation `(μ, v)` of `T`.
+  obtain ⟨μ, v, hrep, -, -, -, hres, -⟩ :=
+    Submission.slicing_mass_representation P (m + 1) U hU T fun W hW => (hT W hW).1
+  obtain ⟨A, hA⟩ := hres _ hAt
+  -- Step 3: `(∂T) ⌞ A_t`, through a representation `(μ', v')` of `∂T`.
+  obtain ⟨μ', v', hrep', -, -, -, hres', -⟩ :=
+    Submission.slicing_mass_representation P m U hU T.boundary fun W hW => (hT W hW).2
+  obtain ⟨B, hB⟩ := hres' _ hAt
+  -- Step 4: `S = ∂A − B` is linear, and continuous as a difference of continuous functionals.
+  refine ⟨⟨A.boundary.toCurrent - B.toCurrent, fun ωs hωs => ?_⟩,
+    A, B, ⟨hAt, μ, v, hrep, hA⟩, ⟨hAt, μ', v', hrep', hB⟩, fun ω => rfl⟩
+  simpa using (A.boundary.continuous' ωs hωs).sub (B.continuous' ωs hωs)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
