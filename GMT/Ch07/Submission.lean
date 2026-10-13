@@ -451,6 +451,378 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Ch. 5, 3.3** ("applying this with `D_j u` in place of `u`"): a directional derivative
+`u_e = Dh(·) e` of a smooth harmonic `h` on an open `U ⊆ ℝⁿ` is smooth and harmonic on `U`.  With
+`G = D²h` and `H = D³h`: near `y ∈ U`, `Du_e(z) b = G z b e`, so `D²u_e(y)(a, b) = H y a b e`;
+symmetry of `D²h` on `U` and of `D²(Dh)` at `y` give `H y eᵢ eᵢ e = H y e eᵢ eᵢ`, and
+`∑ᵢ H y e eᵢ eᵢ` is the `e`-derivative at `y` of `z ↦ Δh(z)`, which vanishes near `y`. -/
+theorem Submission.dorag_ha_ie_fderiv_apply_harmonic : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (e : Euclid n), IsOpen U → (∀ m : ℕ, ContDiffOn ℝ m h U) → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiffOn ℝ m (fun y => fderiv ℝ h y e) U) ∧ ∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun z => fderiv ℝ h z e) y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+  intro n U h e hU hh hΔ
+  -- (i): `Dh` is `Cᵐ` on the open set `U`, and so is its evaluation at `e`
+  have hu : ∀ m : ℕ, ContDiffOn ℝ m (fun y => fderiv ℝ h y e) U := fun m =>
+    ((hh (m + 1)).fderiv_of_isOpen (m := m) hU (by push_cast; exact le_rfl)).clm_apply
+      contDiffOn_const
+  refine ⟨hu, fun y hy => ?_⟩
+  -- `h` is `C³` at every point of `U`, so `F = Dh` is differentiable on `U`
+  have h3 : ∀ z ∈ U, ContDiffAt ℝ 3 h z := fun z hz => (hh 3).contDiffAt (hU.mem_nhds hz)
+  have hFd : ∀ z ∈ U, DifferentiableAt ℝ (fderiv ℝ h) z := fun z hz =>
+    ((h3 z hz).fderiv_right (m := 2) (by norm_num)).differentiableAt (by norm_num)
+  -- the derivative of `z ↦ c z v` at `z` is `a ↦ Dc(z) a v`
+  have ev : ∀ {W : Type} [NormedAddCommGroup W] [NormedSpace ℝ W]
+      (c : Euclid n → Euclid n →L[ℝ] W) (v z a : Euclid n), DifferentiableAt ℝ c z →
+      fderiv ℝ (fun z' => c z' v) z a = fderiv ℝ c z a v := by
+    intro W _ _ c v z a hc
+    rw [fderiv_clm_apply hc (differentiableAt_const v)]
+    simp
+  -- `F` is `C²` at `y`, so `G = D²h` is differentiable at `y`
+  have hF2 : ContDiffAt ℝ 2 (fderiv ℝ h) y := (h3 y hy).fderiv_right (by norm_num)
+  have hGd : DifferentiableAt ℝ (fderiv ℝ (fderiv ℝ h)) y :=
+    (hF2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hGbd : ∀ b, DifferentiableAt ℝ (fun z => fderiv ℝ (fderiv ℝ h) z b) y := fun b =>
+    hGd.clm_apply (differentiableAt_const b)
+  -- (∗): `D(z ↦ G z b c)(y) a = H y a b c`
+  have hstar : ∀ a b c, fderiv ℝ (fun z => fderiv ℝ (fderiv ℝ h) z b c) y a =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b c := by
+    intro a b c
+    rw [ev (fun z => fderiv ℝ (fderiv ℝ h) z b) c y a (hGbd b), ev _ b y a hGd]
+  -- `D²u_e(y)(a, b) = H y a b e`
+  have hud : DifferentiableAt ℝ (fderiv ℝ (fun z => fderiv ℝ h z e)) y :=
+    (((hu 2).contDiffAt (hU.mem_nhds hy)).fderiv_right (m := 1) (by norm_num)).differentiableAt
+      (by norm_num)
+  have hu2 : ∀ a b, iteratedFDeriv ℝ 2 (fun z => fderiv ℝ h z e) y ![a, b] =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b e := by
+    intro a b
+    have hloc : (fun z => fderiv ℝ (fun z => fderiv ℝ h z e) z b) =ᶠ[𝓝 y]
+        fun z => fderiv ℝ (fderiv ℝ h) z b e := by
+      filter_upwards [hU.mem_nhds hy] with z hz
+      exact ev (fderiv ℝ h) e z b (hFd z hz)
+    rw [iteratedFDeriv_two_apply]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    rw [← ev _ b y a hud, hloc.fderiv_eq, hstar]
+  -- symmetry of `D²(Dh)` at `y`: `H y a b = H y b a`
+  have hsym1 : ∀ a b, fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y b a := fun a b =>
+    (hF2.isSymmSndFDerivAt (by norm_num)).eq a b
+  -- symmetry of `D²h` on `U`, differentiated at `y`: `H y a b c = H y a c b`
+  have hsym2 : ∀ a b c, fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a b c =
+      fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y a c b := by
+    intro a b c
+    have hloc : (fun z => fderiv ℝ (fderiv ℝ h) z b c) =ᶠ[𝓝 y]
+        fun z => fderiv ℝ (fderiv ℝ h) z c b := by
+      filter_upwards [hU.mem_nhds hy] with z hz
+      exact ((h3 z hz).isSymmSndFDerivAt (by norm_num)).eq b c
+    rw [← hstar a b c, ← hstar a c b, hloc.fderiv_eq]
+  -- the `e`-derivative of `z ↦ Δh(z) = ∑ᵢ G z eᵢ eᵢ`, which vanishes near `y`
+  have hL : ∑ i : Fin n, fderiv ℝ (fderiv ℝ (fderiv ℝ h)) y e (EuclideanSpace.single i (1 : ℝ))
+      (EuclideanSpace.single i (1 : ℝ)) = 0 := by
+    have hloc : (fun z => ∑ i : Fin n, fderiv ℝ (fderiv ℝ h) z (EuclideanSpace.single i (1 : ℝ))
+        (EuclideanSpace.single i (1 : ℝ))) =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+      filter_upwards [hU.mem_nhds hy] with z hz
+      simpa only [iteratedFDeriv_two_apply, Matrix.cons_val_zero, Matrix.cons_val_one] using
+        hΔ z hz
+    have h0 := congrArg (fun φ : Euclid n →L[ℝ] ℝ => φ e) (hloc.fderiv_eq (𝕜 := ℝ))
+    simp only [fderiv_const_apply, zero_apply] at h0
+    rw [fderiv_fun_sum fun i _ => (hGbd _).clm_apply (differentiableAt_const _),
+      sum_apply] at h0
+    rw [← h0]
+    exact Finset.sum_congr rfl fun i _ => (hstar e _ _).symm
+  rw [← hL]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [hu2, hsym2 _ _ e, hsym1 _ e]
+/-- If `f` is continuous on `closedBall y ρ` and equals its own ball mean at `y`,
+`∫_{B_ρ(y)} f = V f(y)` with `V = Lⁿ(B_ρ(y))`, then `f(y)² V ≤ ∫_{B_ρ(y)} f²` (Simon Ch. 5, 3.2
+with `q = 0`): `0 ≤ ∫_{B_ρ(y)} (f − f(y))² = ∫_{B_ρ(y)} f² − 2f(y) ∫_{B_ρ(y)} f + f(y)² V
+= ∫_{B_ρ(y)} f² − f(y)² V`. -/
+theorem Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value : ∀ (n : ℕ) (f : Euclid n → ℝ) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn f (closedBall y ρ) → ∫ z in ball y ρ, f z = (volume (ball y ρ)).toReal * f y → f y ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, f z ^ 2 := by
+  intro n f y ρ _ hf hmean
+  -- `f` and `f²` are continuous on the compact closed ball, hence integrable on the ball
+  have hfi : IntegrableOn f (ball y ρ) :=
+    (hf.integrableOn_compact (isCompact_closedBall y ρ)).mono_set ball_subset_closedBall
+  have hf2i : IntegrableOn (fun z => f z ^ 2) (ball y ρ) :=
+    ((hf.pow 2).integrableOn_compact (isCompact_closedBall y ρ)).mono_set ball_subset_closedBall
+  have hci : IntegrableOn (fun _ => f y ^ 2) (ball y ρ) := integrableOn_const measure_ball_lt_top.ne
+  have hnonneg : 0 ≤ ∫ z in ball y ρ, (f z - f y) ^ 2 :=
+    setIntegral_nonneg measurableSet_ball fun z _ => sq_nonneg _
+  -- expand the square: `∫ (f − f(y))² = ∫ f² − 2f(y) ∫ f + f(y)² V`
+  have hexp : ∫ z in ball y ρ, (f z - f y) ^ 2 = (∫ z in ball y ρ, f z ^ 2) -
+      2 * f y * (∫ z in ball y ρ, f z) + f y ^ 2 * (volume (ball y ρ)).toReal := by
+    have hi : IntegrableOn (fun z => f z ^ 2 - 2 * f y * f z) (ball y ρ) :=
+      hf2i.sub (hfi.const_mul _)
+    calc ∫ z in ball y ρ, (f z - f y) ^ 2
+        = ∫ z in ball y ρ, ((f z ^ 2 - 2 * f y * f z) + f y ^ 2) := by
+          congr 1; funext z; ring
+      _ = (∫ z in ball y ρ, f z ^ 2) - 2 * f y * (∫ z in ball y ρ, f z) +
+            f y ^ 2 * (volume (ball y ρ)).toReal := by
+          rw [integral_add hi hci, integral_sub hf2i (hfi.const_mul _), integral_const_mul,
+            setIntegral_const, smul_eq_mul, measureReal_def, mul_comm (volume (ball y ρ)).toReal]
+  -- insert `∫ f = V f(y)`
+  rw [hexp, hmean] at hnonneg
+  linarith
+
+/-- **Operator-norm `L²` bound from the ball mean value identity** (the gradient case of the
+interior estimates for harmonic functions, Simon Ch. 5, 3.2–3.3; chapter-05.txt lines 643–653).
+Let `g : ℝⁿ → (ℝⁿ)*` be continuous on `closedBall y ρ`, `ρ > 0`, with `V = |B_ρ(y)|` and
+`I = ∫_{B_ρ(y)} ‖g‖²`.  If every component `z ↦ g z e` has ball average `g y e`, then
+`Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value` and `|g z e| ≤ ‖g z‖ ‖e‖` give
+`(g y e)² V ≤ ∫_{B_ρ(y)} (g z e)² ≤ ‖e‖² I`, i.e. `|g y e| ≤ √(I/V) ‖e‖` for every `e`.  Hence
+`‖g y‖ ≤ √(I/V)` (`opNorm_le_bound`) and `‖g y‖² V ≤ I`. -/
+theorem Submission.dorag_ha_ie_opNorm_sq_mul_volume_le_of_mean_value : ∀ (n : ℕ) (g : Euclid n → (Euclid n →L[ℝ] ℝ)) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn g (closedBall y ρ) → (∀ e : Euclid n, ∫ z in ball y ρ, g z e = (volume (ball y ρ)).toReal * g y e) → ‖g y‖ ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, ‖g z‖ ^ 2 := by
+  intro n g y ρ hρ hg hmv
+  set V := (volume (ball y ρ)).toReal
+  set I := ∫ z in ball y ρ, ‖g z‖ ^ 2
+  -- `V > 0`, and `‖g‖²` is integrable on the ball (continuous on the compact closed ball).
+  have hV : 0 < V := ENNReal.toReal_pos (measure_ball_pos volume y hρ).ne' measure_ball_lt_top.ne
+  have hgn : IntegrableOn (fun z => ‖g z‖ ^ 2) (ball y ρ) :=
+    ((hg.norm.pow 2).integrableOn_compact (isCompact_closedBall y ρ)).mono_set
+      ball_subset_closedBall
+  have hI : 0 ≤ I := setIntegral_nonneg measurableSet_ball fun z _ => sq_nonneg _
+  -- Each component: `(g y e)² V ≤ ∫_{B_ρ(y)} (g z e)² ≤ ‖e‖² I`.
+  have hcomp : ∀ e : Euclid n, g y e ^ 2 * V ≤ ‖e‖ ^ 2 * I := by
+    intro e
+    have hfe : ContinuousOn (fun z => g z e) (closedBall y ρ) := hg.clm_apply continuousOn_const
+    have hfe2 : IntegrableOn (fun z => g z e ^ 2) (ball y ρ) :=
+      ((hfe.pow 2).integrableOn_compact (isCompact_closedBall y ρ)).mono_set
+        ball_subset_closedBall
+    have hpt : ∀ z, g z e ^ 2 ≤ ‖e‖ ^ 2 * ‖g z‖ ^ 2 := fun z => by
+      have h : |g z e| ≤ ‖g z‖ * ‖e‖ := by
+        simpa only [Real.norm_eq_abs] using (g z).le_opNorm e
+      calc g z e ^ 2 = |g z e| ^ 2 := (sq_abs _).symm
+        _ ≤ (‖g z‖ * ‖e‖) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+        _ = ‖e‖ ^ 2 * ‖g z‖ ^ 2 := by ring
+    calc g y e ^ 2 * V ≤ ∫ z in ball y ρ, g z e ^ 2 :=
+          Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value n (fun z => g z e) y ρ hρ hfe
+            (hmv e)
+      _ ≤ ∫ z in ball y ρ, ‖e‖ ^ 2 * ‖g z‖ ^ 2 := setIntegral_mono hfe2 (hgn.const_mul _) hpt
+      _ = ‖e‖ ^ 2 * I := integral_const_mul _ _
+  -- Hence `|g y e| ≤ √(I/V) ‖e‖` for every `e`, so `‖g y‖ ≤ √(I/V)`.
+  have hIV : 0 ≤ I / V := div_nonneg hI hV.le
+  have hop : ‖g y‖ ≤ √(I / V) := by
+    refine (g y).opNorm_le_bound (Real.sqrt_nonneg _) fun e => ?_
+    have h : g y e ^ 2 ≤ ‖e‖ ^ 2 * (I / V) := by
+      rw [mul_div_assoc', le_div_iff₀ hV]
+      exact hcomp e
+    calc ‖g y e‖ = √(g y e ^ 2) := by rw [Real.norm_eq_abs, Real.sqrt_sq_eq_abs]
+      _ ≤ √(‖e‖ ^ 2 * (I / V)) := Real.sqrt_le_sqrt h
+      _ = √(I / V) * ‖e‖ := by
+        rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _), mul_comm]
+  -- Square and multiply by `V > 0`.
+  calc ‖g y‖ ^ 2 * V ≤ √(I / V) ^ 2 * V :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hop 2) hV.le
+    _ = I := by rw [Real.sq_sqrt hIV, div_mul_cancel₀ I hV.ne']
+/-- Shifted-ball comparison: if `‖w‖ ≤ ρ` and `|u| ≤ K` on `B_{ρ+‖w‖}(x)`, then the integrals of
+`u` over `B_ρ(x + w)` and `B_ρ(x)` differ by at most `K ωₙ ((ρ + ‖w‖)ⁿ − (ρ − ‖w‖)ⁿ)`.  Both balls
+lie in `B_{ρ+‖w‖}(x)`; the difference of the integrals is `∫_{S₁} u − ∫_{S₂} u` with
+`S₁ = B_ρ(x + w) \ B_ρ(x)`, `S₂ = B_ρ(x) \ B_ρ(x + w)`, and the disjoint sets `S₁`, `S₂` lie in the
+annulus `B_{ρ+‖w‖}(x) \ B_{ρ−‖w‖}(x)`, of measure `ωₙ ((ρ + ‖w‖)ⁿ − (ρ − ‖w‖)ⁿ)`. -/
+theorem Submission.dorag_ha_ie_shifted_ball_integral_sub_le : ∀ (n : ℕ) (u : Euclid n → ℝ) (x w : Euclid n) (ρ K : ℝ), 0 < n → ‖w‖ ≤ ρ → 0 ≤ K → IntegrableOn u (ball x (ρ + ‖w‖)) → (∀ z ∈ ball x (ρ + ‖w‖), |u z| ≤ K) → |(∫ y in ball (x + w) ρ, u y) - ∫ y in ball x ρ, u y| ≤ K * (volume (ball (0 : Euclid n) 1)).toReal * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := by
+  intro n u x w ρ K hn hwρ hK hint hbound
+  have hs0 : 0 ≤ ‖w‖ := norm_nonneg w
+  -- Step 1: both balls lie in `B_{ρ+‖w‖}(x)`
+  have hdist : ∀ z : Euclid n, ‖z - x‖ ≤ ‖z - (x + w)‖ + ‖w‖ := fun z => by
+    calc ‖z - x‖ = ‖(z - (x + w)) + w‖ := by congr 1; abel
+      _ ≤ ‖z - (x + w)‖ + ‖w‖ := norm_add_le _ _
+  have hdist' : ∀ z : Euclid n, ‖z - (x + w)‖ ≤ ‖z - x‖ + ‖w‖ := fun z => by
+    calc ‖z - (x + w)‖ = ‖(z - x) + -w‖ := by congr 1; abel
+      _ ≤ ‖z - x‖ + ‖-w‖ := norm_add_le _ _
+      _ = ‖z - x‖ + ‖w‖ := by rw [norm_neg]
+  have h₁ : ball (x + w) ρ ⊆ ball x (ρ + ‖w‖) := by
+    intro z hz
+    rw [mem_ball_iff_norm] at hz ⊢
+    linarith [hdist z]
+  have h₀ : ball x ρ ⊆ ball x (ρ + ‖w‖) := ball_subset_ball (by linarith)
+  -- Step 2: split each ball along the other
+  have e₁ := integral_inter_add_sdiff (μ := volume) (t := ball x ρ) measurableSet_ball
+    (hint.mono_set h₁)
+  have e₀ := integral_inter_add_sdiff (μ := volume) (t := ball (x + w) ρ) measurableSet_ball
+    (hint.mono_set h₀)
+  rw [inter_comm] at e₀
+  rw [← e₁, ← e₀, add_sub_add_left_eq_sub]
+  -- Step 3: bound each piece by `K` times its measure
+  have hS₁ : ball (x + w) ρ \ ball x ρ ⊆ ball x (ρ + ‖w‖) := sdiff_subset.trans h₁
+  have hS₂ : ball x ρ \ ball (x + w) ρ ⊆ ball x (ρ + ‖w‖) := sdiff_subset.trans h₀
+  have hpiece : ∀ S ⊆ ball x (ρ + ‖w‖), |∫ y in S, u y| ≤ K * volume.real S := by
+    intro S hS
+    have := norm_setIntegral_le_of_norm_le_const (μ := volume) (f := u)
+      ((measure_mono hS).trans_lt measure_ball_lt_top) (fun z hz => by
+        rw [Real.norm_eq_abs]; exact hbound z (hS hz))
+    rwa [Real.norm_eq_abs] at this
+  -- Step 4: the two pieces are disjoint and lie in the annulus `B_{ρ+‖w‖}(x) \ B_{ρ−‖w‖}(x)`
+  have hdisj : Disjoint (ball (x + w) ρ \ ball x ρ) (ball x ρ \ ball (x + w) ρ) :=
+    disjoint_sdiff_sdiff
+  have hin : Disjoint ((ball (x + w) ρ \ ball x ρ) ∪ (ball x ρ \ ball (x + w) ρ))
+      (ball x (ρ - ‖w‖)) := by
+    rw [Set.disjoint_left]
+    rintro z (⟨_, hz0⟩ | ⟨_, hz1⟩) hzin
+    · exact hz0 (ball_subset_ball (by linarith) hzin)
+    · apply hz1
+      rw [mem_ball_iff_norm] at hzin ⊢
+      linarith [hdist' z]
+  have hU : (ball (x + w) ρ \ ball x ρ) ∪ (ball x ρ \ ball (x + w) ρ) ∪ ball x (ρ - ‖w‖) ⊆
+      ball x (ρ + ‖w‖) :=
+    union_subset (union_subset hS₁ hS₂) (ball_subset_ball (by linarith))
+  have hmeas : volume.real (ball (x + w) ρ \ ball x ρ) + volume.real (ball x ρ \ ball (x + w) ρ) +
+      volume.real (ball x (ρ - ‖w‖)) ≤ volume.real (ball x (ρ + ‖w‖)) := by
+    rw [← measureReal_union hdisj (measurableSet_ball.diff measurableSet_ball)
+      (measure_ne_top_of_subset hS₁ measure_ball_lt_top.ne)
+      (measure_ne_top_of_subset hS₂ measure_ball_lt_top.ne),
+      ← measureReal_union hin measurableSet_ball
+      (measure_ne_top_of_subset (union_subset hS₁ hS₂) measure_ball_lt_top.ne)
+      measure_ball_lt_top.ne]
+    exact measureReal_mono hU measure_ball_lt_top.ne
+  -- Step 5: measure of balls, `Lⁿ(B_r(x)) = ωₙ rⁿ` for `r ≥ 0`
+  have : Nontrivial (Euclid n) :=
+    Module.nontrivial_of_finrank_pos (R := ℝ) (by rw [finrank_euclideanSpace_fin]; exact hn)
+  have hball : ∀ r : ℝ, 0 ≤ r →
+      volume.real (ball x r) = r ^ n * (volume (ball (0 : Euclid n) 1)).toReal := by
+    intro r hr
+    rw [measureReal_def, Measure.addHaar_ball volume x hr, finrank_euclideanSpace_fin,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_nonneg hr n)]
+  rw [hball (ρ + ‖w‖) (by linarith), hball (ρ - ‖w‖) (by linarith)] at hmeas
+  -- Step 6: conclusion
+  calc |(∫ y in ball (x + w) ρ \ ball x ρ, u y) - ∫ y in ball x ρ \ ball (x + w) ρ, u y|
+      ≤ |∫ y in ball (x + w) ρ \ ball x ρ, u y| + |∫ y in ball x ρ \ ball (x + w) ρ, u y| :=
+        abs_sub _ _
+    _ ≤ K * volume.real (ball (x + w) ρ \ ball x ρ) +
+        K * volume.real (ball x ρ \ ball (x + w) ρ) := add_le_add (hpiece _ hS₁) (hpiece _ hS₂)
+    _ = K * (volume.real (ball (x + w) ρ \ ball x ρ) +
+        volume.real (ball x ρ \ ball (x + w) ρ)) := by ring
+    _ ≤ K * ((ρ + ‖w‖) ^ n * (volume (ball (0 : Euclid n) 1)).toReal -
+        (ρ - ‖w‖) ^ n * (volume (ball (0 : Euclid n) 1)).toReal) :=
+        mul_le_mul_of_nonneg_left (by linarith) hK
+    _ = K * (volume (ball (0 : Euclid n) 1)).toReal * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := by ring
+
+/-- **Interior gradient bound from the ball mean value identity** (Simon Ch. 5, estimates
+3.2–3.4, derived by comparing ball means over shifted balls).  Let `ω = Lⁿ(B̆₁(0))`, so
+`Lⁿ(B̆_ρ(z)) = ωρⁿ`.  For `‖w‖ ≤ ρ/2` the mean value identity at `x + w` and at `x`, together
+with `Submission.dorag_ha_ie_shifted_ball_integral_sub_le`, give
+`ρⁿ|u(x + w) − u(x)| ≤ K((ρ + ‖w‖)ⁿ − (ρ − ‖w‖)ⁿ)`, and `abs_pow_sub_pow_le` bounds the right
+side by `2‖w‖nK(ρ + η)ⁿ⁻¹` when `‖w‖ ≤ η`.  Hence `‖Du(x)‖ ≤ 2nK(ρ + η)ⁿ⁻¹/ρⁿ` for
+`0 < η ≤ ρ/2` (`HasFDerivAt.le_of_lip'`), and letting `η → 0⁺` gives `‖Du(x)‖ ≤ 2nK/ρ`. -/
+theorem Submission.dorag_ha_ie_norm_fderiv_le_of_mean_value : ∀ (n : ℕ) (u : Euclid n → ℝ) (x : Euclid n) (ρ K : ℝ), 0 < n → 0 < ρ → DifferentiableAt ℝ u x → ContinuousOn u (closedBall x (3 * ρ / 2)) → (∀ z ∈ closedBall x (3 * ρ / 2), |u z| ≤ K) → (∀ z ∈ closedBall x (ρ / 2), ∫ y in ball z ρ, u y = (volume (ball z ρ)).toReal * u z) → ‖fderiv ℝ u x‖ ≤ 2 * (n : ℝ) * K / ρ := by
+  intro n u x ρ K hn hρ hdiff hcont hbound hmv
+  -- Step 1: `Lⁿ(B̆_ρ(z)) = ρⁿω` with `ω > 0`, and `K ≥ |u(x)| ≥ 0`
+  obtain ⟨ω, hω_def⟩ : ∃ ω : ℝ, (volume (ball (0 : Euclid n) 1)).toReal = ω := ⟨_, rfl⟩
+  have hω : 0 < ω := by
+    rw [← hω_def]
+    exact ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  have hvol : ∀ z : Euclid n, (volume (ball z ρ)).toReal = ρ ^ n * ω := by
+    intro z
+    rw [Measure.addHaar_ball_of_pos volume z hρ, finrank_euclideanSpace_fin, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (pow_nonneg hρ.le n), hω_def]
+  have hx : x ∈ closedBall x (ρ / 2) := mem_closedBall_self (by positivity)
+  have hK : 0 ≤ K := (abs_nonneg _).trans (hbound x (mem_closedBall_self (by positivity)))
+  -- Step 2: `ρⁿ|u(x + w) − u(x)| ≤ K((ρ + ‖w‖)ⁿ − (ρ − ‖w‖)ⁿ)` for `‖w‖ ≤ ρ/2`
+  have hshift : ∀ w : Euclid n, ‖w‖ ≤ ρ / 2 →
+      ρ ^ n * |u (x + w) - u x| ≤ K * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := by
+    intro w hw
+    have hsub : ball x (ρ + ‖w‖) ⊆ closedBall x (3 * ρ / 2) :=
+      ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))
+    have hint : IntegrableOn u (ball x (ρ + ‖w‖)) :=
+      (hcont.integrableOn_compact (isCompact_closedBall x _)).mono_set hsub
+    have hcmp := Submission.dorag_ha_ie_shifted_ball_integral_sub_le n u x w ρ K hn
+      (by linarith) hK hint fun z hz => hbound z (hsub hz)
+    have hxw : x + w ∈ closedBall x (ρ / 2) := by
+      rwa [mem_closedBall, dist_eq_norm, add_sub_cancel_left]
+    have hdiffint : (∫ y in ball (x + w) ρ, u y) - ∫ y in ball x ρ, u y
+        = ω * (ρ ^ n * (u (x + w) - u x)) := by
+      rw [hmv (x + w) hxw, hmv x hx, hvol, hvol]
+      ring
+    rw [hdiffint, abs_mul, abs_mul, abs_of_pos hω, abs_of_pos (pow_pos hρ n), hω_def] at hcmp
+    refine le_of_mul_le_mul_left ?_ hω
+    calc ω * (ρ ^ n * |u (x + w) - u x|) ≤ K * ω * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := hcmp
+      _ = ω * (K * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n)) := by ring
+  -- Step 3: `(ρ + s)ⁿ − (ρ − s)ⁿ ≤ 2sn(ρ + η)ⁿ⁻¹` for `0 ≤ s ≤ ρ`, `s ≤ η`
+  have hpow : ∀ s η : ℝ, 0 ≤ s → s ≤ ρ → s ≤ η →
+      (ρ + s) ^ n - (ρ - s) ^ n ≤ 2 * s * n * (ρ + η) ^ (n - 1) := by
+    intro s η hs hsρ hsη
+    have h := abs_pow_sub_pow_le (ρ + s) (ρ - s) n
+    rw [show ρ + s - (ρ - s) = 2 * s by ring, abs_of_nonneg (by linarith : (0 : ℝ) ≤ 2 * s),
+      abs_of_nonneg (by linarith : (0 : ℝ) ≤ ρ + s), abs_of_nonneg (by linarith : (0 : ℝ) ≤ ρ - s),
+      max_eq_left (by linarith : ρ - s ≤ ρ + s)] at h
+    calc (ρ + s) ^ n - (ρ - s) ^ n ≤ |(ρ + s) ^ n - (ρ - s) ^ n| := le_abs_self _
+      _ ≤ 2 * s * n * (ρ + s) ^ (n - 1) := h
+      _ ≤ 2 * s * n * (ρ + η) ^ (n - 1) := by gcongr
+  -- Step 4: `‖Du(x)‖ ≤ C_η := 2nK(ρ + η)ⁿ⁻¹/ρⁿ` for `0 < η ≤ ρ/2`
+  have hstep : ∀ η : ℝ, 0 < η → η ≤ ρ / 2 →
+      ‖fderiv ℝ u x‖ ≤ 2 * n * K * (ρ + η) ^ (n - 1) / ρ ^ n := by
+    intro η hη hηρ
+    refine hdiff.hasFDerivAt.le_of_lip' (by positivity) ?_
+    filter_upwards [ball_mem_nhds x hη] with y hy
+    rw [mem_ball, dist_eq_norm] at hy
+    have h₁ := hshift (y - x) (by linarith)
+    rw [add_sub_cancel] at h₁
+    have h₂ := hpow ‖y - x‖ η (norm_nonneg _) (by linarith) hy.le
+    rw [Real.norm_eq_abs, div_mul_eq_mul_div, le_div_iff₀ (pow_pos hρ n)]
+    calc |u y - u x| * ρ ^ n = ρ ^ n * |u y - u x| := mul_comm _ _
+      _ ≤ K * ((ρ + ‖y - x‖) ^ n - (ρ - ‖y - x‖) ^ n) := h₁
+      _ ≤ K * (2 * ‖y - x‖ * n * (ρ + η) ^ (n - 1)) := mul_le_mul_of_nonneg_left h₂ hK
+      _ = 2 * n * K * (ρ + η) ^ (n - 1) * ‖y - x‖ := by ring
+  -- Step 5: let `η → 0⁺`; `C_η → 2nKρⁿ⁻¹/ρⁿ = 2nK/ρ`
+  have hlim : Tendsto (fun η : ℝ => 2 * n * K * (ρ + η) ^ (n - 1) / ρ ^ n) (𝓝[>] 0)
+      (𝓝 (2 * n * K * (ρ + 0) ^ (n - 1) / ρ ^ n)) := by
+    have hC : Continuous fun η : ℝ => 2 * n * K * (ρ + η) ^ (n - 1) / ρ ^ n := by fun_prop
+    exact (hC.tendsto 0).mono_left nhdsWithin_le_nhds
+  have hval : 2 * n * K * (ρ + 0) ^ (n - 1) / ρ ^ n = 2 * n * K / ρ := by
+    have hpn : ρ ^ n = ρ * ρ ^ (n - 1) := by rw [← pow_succ', Nat.sub_add_cancel hn]
+    rw [add_zero, hpn, mul_div_mul_right _ _ (pow_ne_zero _ hρ.ne')]
+  rw [← hval]
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [Ioo_mem_nhdsGT (half_pos hρ)] with η hη
+  exact hstep η hη.1 hη.2.le
+/-- **Order-2 Taylor bound along a segment** (Simon Ch. 5, 3.4, p. 115: "an order 2 Taylor series
+expansion for `u`").  If `h` is `C²` on `B_R(0)`, `‖v‖ < R` and `|D²h(τv)(v, v)| ≤ S` for
+`τ ∈ [0, 1]`, then `|h(v) − h(0) − Dh(0)v| ≤ S/2`: with `φ(τ) = h(τv)` and `φ₁(τ) = Dh(τv)v`, the
+mean value inequality gives `|φ₁(τ) − φ₁(0)| ≤ Sτ`, and comparing `ψ(τ) = φ(τ) − φ(0) − τφ₁(0)`
+with `Sτ²/2` gives `|ψ(1)| ≤ S/2`. -/
+theorem Submission.dorag_ha_ie_taylor_two_le : ∀ (n : ℕ) (h : Euclid n → ℝ) (R S : ℝ) (v : Euclid n), ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → ‖v‖ < R → (∀ τ ∈ Icc (0 : ℝ) 1, |iteratedFDeriv ℝ 2 h (τ • v) ![v, v]| ≤ S) → |h v - h 0 - fderiv ℝ h 0 v| ≤ S / 2 := by
+  intro n h R S v hh hv hS
+  -- Step 1: the segment `τ ↦ τ • v`, `τ ∈ [0, 1]`, lies in the open ball
+  have hmem : ∀ τ ∈ Icc (0 : ℝ) 1, τ • v ∈ ball (0 : Euclid n) R := by
+    intro τ hτ
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_of_nonneg hτ.1]
+    exact (mul_le_of_le_one_left (norm_nonneg v) hτ.2).trans_lt hv
+  -- Step 2: `h` and `Dh` are differentiable on the open ball
+  have hD1 : ∀ p ∈ ball (0 : Euclid n) R, HasFDerivAt h (fderiv ℝ h p) p := fun p hp =>
+    ((hh.differentiableOn two_ne_zero).differentiableAt (isOpen_ball.mem_nhds hp)).hasFDerivAt
+  have hD2 : ∀ p ∈ ball (0 : Euclid n) R,
+      HasFDerivAt (fderiv ℝ h) (fderiv ℝ (fderiv ℝ h) p) p := fun p hp =>
+    (((hh.fderiv_of_isOpen isOpen_ball (by norm_num : (1 : WithTop ℕ∞) + 1 ≤ 2)).differentiableOn
+      one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hp)).hasFDerivAt
+  -- Step 3: `φ τ = h (τ • v)` has derivative `φ₁ τ = Dh (τ • v) v`, and `φ₁` has derivative
+  -- `D²h (τ • v) (v, v)`
+  have hline : ∀ τ : ℝ, HasDerivAt (fun t : ℝ => t • v) v τ := fun τ => by
+    simpa using (hasDerivAt_id τ).smul_const v
+  have hφ : ∀ τ ∈ Icc (0 : ℝ) 1,
+      HasDerivAt (fun t : ℝ => h (t • v)) (fderiv ℝ h (τ • v) v) τ := fun τ hτ =>
+    (hD1 _ (hmem τ hτ)).comp_hasDerivAt τ (hline τ)
+  have hφ₁ : ∀ τ ∈ Icc (0 : ℝ) 1, HasDerivAt (fun t : ℝ => fderiv ℝ h (t • v) v)
+      (iteratedFDeriv ℝ 2 h (τ • v) ![v, v]) τ := fun τ hτ => by
+    have h1 : HasDerivAt (fderiv ℝ h ∘ fun t : ℝ => t • v)
+        (fderiv ℝ (fderiv ℝ h) (τ • v) v) τ :=
+      (hD2 _ (hmem τ hτ)).comp_hasDerivAt τ (hline τ)
+    rw [iteratedFDeriv_two_apply]
+    exact (ContinuousLinearMap.apply ℝ ℝ v).hasFDerivAt.comp_hasDerivAt τ h1
+  -- Step 4: mean value inequality, `|φ₁ τ - φ₁ 0| ≤ S τ` on `[0, 1]`
+  have hmvt : ∀ τ ∈ Icc (0 : ℝ) 1, ‖fderiv ℝ h (τ • v) v - fderiv ℝ h 0 v‖ ≤ S * τ := by
+    have := norm_image_sub_le_of_norm_deriv_le_segment'
+      (fun τ hτ => (hφ₁ τ hτ).hasDerivWithinAt) (fun τ hτ => hS τ (Ico_subset_Icc_self hτ))
+    simpa using this
+  -- Step 5: compare `ψ τ = φ τ - φ 0 - τ φ₁ 0` with `S τ² / 2`
+  have hψ : ∀ τ ∈ Icc (0 : ℝ) 1,
+      HasDerivAt (fun t : ℝ => h (t • v) - h 0 - t * fderiv ℝ h 0 v)
+        (fderiv ℝ h (τ • v) v - fderiv ℝ h 0 v) τ := fun τ hτ => by
+    simpa using
+      ((hφ τ hτ).sub_const (h 0)).fun_sub ((hasDerivAt_id τ).mul_const (fderiv ℝ h 0 v))
+  have hB : ∀ x : ℝ, HasDerivAt (fun t : ℝ => S * t ^ 2 / 2) (S * x) x := fun x => by
+    convert ((hasDerivAt_pow 2 x).const_mul S).div_const 2 using 1
+    ring
+  have hcmp := image_norm_le_of_norm_deriv_right_le_deriv_boundary
+    (fun τ hτ => (hψ τ hτ).continuousAt.continuousWithinAt)
+    (fun τ hτ => (hψ τ (Ico_subset_Icc_self hτ)).hasDerivWithinAt)
+    (by simp) hB (fun τ hτ => hmvt τ (Ico_subset_Icc_self hτ))
+    (right_mem_Icc.2 zero_le_one)
+  -- Step 6: at `τ = 1`, `ψ 1 = h v - h 0 - Dh 0 v`
+  simpa using hcmp
 /-- The radial potential of the mean value property (Simon Ch. 5, 3.2–3.4).  For continuous `g`
 vanishing on `[r², ∞)`, `Ψ(y) = P(|y|²)` with `P(t) = ½∫_{r²}^t g` is `C¹` with
 `DΨ(y)v = P'(|y|²)·2⟨y, v⟩ = g(|y|²)⟨y, v⟩` (FTC and the chain rule), and `Ψ(y) = 0` for
@@ -1033,6 +1405,149 @@ theorem Submission.dorag_ha_mean_value : ∀ (n : ℕ) (U : Set (Euclid n)) (h :
     rw [hc', integral_const_mul]
   -- (ii): the ball average, from the kernel identity (i)
   exact ⟨hker, Submission.dorag_ha_mv_ball_of_kernel n h x r hr (hh.continuousOn.mono hxr) hker⟩
+
+/-- Interior estimates for harmonic functions (Simon Ch. 5, 3.2–3.4, the standard estimates that
+"follow directly from the mean-value property").  If `h` is smooth and harmonic on
+`B = B̆_R(0) ⊂ ℝⁿ` with `∫_B ‖Dh‖² ≤ Rⁿ`, then with `ω = Lⁿ(B̆₁(0))`, `K₁ = 2ⁿ/√ω` and
+`C_H = 4nK₁`: (a) `|h(0)| ≤ C_H √(R⁻ⁿ∫_B h²)`, (b) `‖Dh(0)‖ ≤ C_H`, and
+(c) `|h(v) − h(0) − Dh(0)v| ≤ C_H‖v‖²/R` for `‖v‖ ≤ R/4`.  The directional derivatives `Dh(·)e`
+are again harmonic, so the ball mean value property and Cauchy–Schwarz give (a), (b) on
+`B̆_{R/2}(0)` and `‖Dh‖ ≤ K₁` on `B̄_{5R/8}(0)` (balls of radius `R/4`); comparing the means of
+`Dh(·)v` over shifted balls gives `|D²h(x)(v, v)| ≤ 8nK₁‖v‖²/R` for `‖x‖ ≤ R/4`, and (c) follows
+by second-order Taylor expansion. -/
+theorem Submission.dorag_ha_interior_estimates : ∀ n : ℕ, 0 < n → ∃ CH : ℝ, 0 < CH ∧ ∀ (R : ℝ) (h : Euclid n → ℝ), 0 < R → (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R)) → (∀ y ∈ ball (0 : Euclid n) R, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun y => ‖fderiv ℝ h y‖ ^ 2) (ball (0 : Euclid n) R) → ∫ y in ball (0 : Euclid n) R, ‖fderiv ℝ h y‖ ^ 2 ≤ R ^ n → IntegrableOn (fun y => h y ^ 2) (ball (0 : Euclid n) R) → |h 0| ≤ CH * Real.sqrt ((∫ y in ball (0 : Euclid n) R, h y ^ 2) / R ^ n) ∧ ‖fderiv ℝ h 0‖ ≤ CH ∧ ∀ v : Euclid n, ‖v‖ ≤ R / 4 → |h v - h 0 - fderiv ℝ h 0 v| ≤ CH * ‖v‖ ^ 2 / R := by
+  intro n hn
+  have hn' : (0 : ℝ) < n := Nat.cast_pos.2 hn
+  -- `ω = Lⁿ(B̆₁(0)) ∈ (0, ∞)` and `Lⁿ(B̆_r(y)) = rⁿω`
+  obtain ⟨ω, hω_def⟩ : ∃ ω : ℝ, (volume (ball (0 : Euclid n) 1)).toReal = ω := ⟨_, rfl⟩
+  have hω : 0 < ω := hω_def ▸ ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne'
+    measure_ball_lt_top.ne
+  have hvol : ∀ (y : Euclid n) (r : ℝ), 0 < r → (volume (ball y r)).toReal = r ^ n * ω := by
+    intro y r hr
+    rw [Measure.addHaar_ball_of_pos volume y hr, finrank_euclideanSpace_fin, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (by positivity), hω_def]
+  -- `K₁ = 2ⁿ/√ω`, so that `K₁²ω = 4ⁿ`, and `C_H = 4nK₁ ≥ K₁`
+  obtain ⟨K₁, hK₁_def⟩ : ∃ K₁ : ℝ, 2 ^ n / Real.sqrt ω = K₁ := ⟨_, rfl⟩
+  have hK₁ : 0 < K₁ := hK₁_def ▸ div_pos (pow_pos two_pos n) (Real.sqrt_pos.2 hω)
+  have hK₁sq : K₁ ^ 2 * ω = 4 ^ n := by
+    rw [← hK₁_def, div_pow, Real.sq_sqrt hω.le, div_mul_cancel₀ _ hω.ne', ← pow_mul, mul_comm,
+      pow_mul]
+    norm_num
+  have hle_K₁ : ∀ a : ℝ, 0 ≤ a → a ^ 2 * ω ≤ 4 ^ n → a ≤ K₁ := by
+    intro a ha haK
+    rw [← hK₁sq] at haK
+    exact (pow_le_pow_iff_left₀ ha hK₁.le two_ne_zero).1 (le_of_mul_le_mul_right haK hω)
+  have hCH : 0 < 4 * (n : ℝ) * K₁ := mul_pos (mul_pos four_pos hn') hK₁
+  have hK₁CH : K₁ ≤ 4 * n * K₁ :=
+    le_mul_of_one_le_left hK₁.le (by have : (1 : ℝ) ≤ n := Nat.one_le_cast.2 hn; linarith)
+  refine ⟨4 * n * K₁, hCH, ?_⟩
+  intro R h hR hcd hlap hgradint hgrad hint
+  have hB : IsOpen (ball (0 : Euclid n) R) := isOpen_ball
+  have h2 : ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) := by exact_mod_cast hcd 2
+  have hDh : ContDiffOn ℝ 1 (fderiv ℝ h) (ball (0 : Euclid n) R) :=
+    h2.fderiv_of_isOpen hB (by norm_num)
+  -- `B̄_r(y) ⊆ B` as soon as `‖y‖ + r < R`
+  have hsub : ∀ (y : Euclid n) (r : ℝ), ‖y‖ + r < R → closedBall y r ⊆ ball (0 : Euclid n) R :=
+    fun y r hyr => closedBall_subset_ball' (by rw [dist_zero_right]; linarith)
+  -- step 1: every `u_e = Dh(·)e` is smooth and harmonic on `B`
+  have hA := fun e => Submission.dorag_ha_ie_fderiv_apply_harmonic n _ h e hB hcd hlap
+  -- the mean value identities for `h` and for every `u_e` on balls `B̄_r(y) ⊆ B`
+  have hmv : ∀ (y : Euclid n) (r : ℝ), 0 < r → closedBall y r ⊆ ball (0 : Euclid n) R →
+      ∫ z in ball y r, h z = (volume (ball y r)).toReal * h y :=
+    fun y r hr hyr => (Submission.dorag_ha_mean_value n _ h hn hB h2 hlap y r hr hyr).2
+  have hmvD : ∀ (e y : Euclid n) (r : ℝ), 0 < r → closedBall y r ⊆ ball (0 : Euclid n) R →
+      ∫ z in ball y r, fderiv ℝ h z e = (volume (ball y r)).toReal * fderiv ℝ h y e :=
+    fun e y r hr hyr => (Submission.dorag_ha_mean_value n _ _ hn hB
+      (by exact_mod_cast (hA e).1 2) (hA e).2 y r hr hyr).2
+  -- step 2 (2b): `‖Dh(y)‖²ω ≤ cⁿ` whenever `B̄_{R/c}(y) ⊆ B`, since `∫_B ‖Dh‖² ≤ Rⁿ`
+  have hgrad_le : ∀ (y : Euclid n) (c : ℝ), 0 < c →
+      closedBall y (R / c) ⊆ ball (0 : Euclid n) R → ‖fderiv ℝ h y‖ ^ 2 * ω ≤ c ^ n := by
+    intro y c hc hyc
+    have hRc : 0 < R / c := div_pos hR hc
+    have h1 := Submission.dorag_ha_ie_opNorm_sq_mul_volume_le_of_mean_value n (fderiv ℝ h) y
+      (R / c) hRc (hDh.continuousOn.mono hyc) fun e => hmvD e y (R / c) hRc hyc
+    have h2 : ∫ z in ball y (R / c), ‖fderiv ℝ h z‖ ^ 2 ≤ R ^ n :=
+      (setIntegral_mono_set hgradint (Eventually.of_forall fun _ => sq_nonneg _)
+        (ball_subset_closedBall.trans hyc).eventuallyLE).trans hgrad
+    rw [hvol y _ hRc, div_pow] at h1
+    have hRn : 0 < R ^ n := pow_pos hR n
+    calc ‖fderiv ℝ h y‖ ^ 2 * ω
+        = ‖fderiv ℝ h y‖ ^ 2 * (R ^ n / c ^ n * ω) * (c ^ n / R ^ n) := by field_simp
+      _ ≤ R ^ n * (c ^ n / R ^ n) := by gcongr; exact h1.trans h2
+      _ = c ^ n := by field_simp
+  -- (a): the mean value bound (2a) on `B̆_{R/2}(0)`
+  have ha : |h 0| ≤ 4 * n * K₁ * Real.sqrt ((∫ y in ball (0 : Euclid n) R, h y ^ 2) / R ^ n) := by
+    have hR2 : 0 < R / 2 := half_pos hR
+    have hsub0 := hsub 0 (R / 2) (by rw [norm_zero]; linarith)
+    have h1 := Submission.dorag_ha_ie_sq_mul_volume_le_of_mean_value n h 0 (R / 2) hR2
+      ((hcd 0).continuousOn.mono hsub0) (hmv 0 _ hR2 hsub0)
+    have h2 : ∫ z in ball (0 : Euclid n) (R / 2), h z ^ 2 ≤ ∫ y in ball (0 : Euclid n) R, h y ^ 2 :=
+      setIntegral_mono_set hint (Eventually.of_forall fun _ => sq_nonneg _)
+        (ball_subset_closedBall.trans hsub0).eventuallyLE
+    rw [hvol 0 _ hR2, div_pow] at h1
+    obtain ⟨I, hI_def⟩ : ∃ I : ℝ, ∫ y in ball (0 : Euclid n) R, h y ^ 2 = I := ⟨_, rfl⟩
+    rw [hI_def] at h2 ⊢
+    have hRn : 0 < R ^ n := pow_pos hR n
+    have hI : 0 ≤ I := le_trans (by positivity) (h1.trans h2)
+    have hconst : 2 ^ n / ω ≤ (4 * n * K₁) ^ 2 := by
+      rw [div_le_iff₀ hω]
+      calc (2 : ℝ) ^ n ≤ 4 ^ n := pow_le_pow_left₀ (by norm_num) (by norm_num) n
+        _ ≤ 16 * n ^ 2 * 4 ^ n := le_mul_of_one_le_left (by positivity) (by
+            have : (1 : ℝ) ≤ n := Nat.one_le_cast.2 hn
+            nlinarith)
+        _ = (4 * n * K₁) ^ 2 * ω := by rw [← hK₁sq]; ring
+    have hsq : h 0 ^ 2 ≤ (4 * n * K₁) ^ 2 * (I / R ^ n) :=
+      calc h 0 ^ 2 = h 0 ^ 2 * (R ^ n / 2 ^ n * ω) * (2 ^ n / ω / R ^ n) := by field_simp
+        _ ≤ I * (2 ^ n / ω / R ^ n) := by gcongr; exact h1.trans h2
+        _ = 2 ^ n / ω * (I / R ^ n) := by ring
+        _ ≤ (4 * n * K₁) ^ 2 * (I / R ^ n) := mul_le_mul_of_nonneg_right hconst (by positivity)
+    calc |h 0| ≤ Real.sqrt ((4 * n * K₁) ^ 2 * (I / R ^ n)) := Real.abs_le_sqrt hsq
+      _ = 4 * n * K₁ * Real.sqrt (I / R ^ n) := by
+        rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq hCH.le]
+  -- (b): the mean value bound (2b) on `B̆_{R/2}(0)`
+  have hb : ‖fderiv ℝ h 0‖ ≤ 4 * n * K₁ :=
+    (hle_K₁ _ (norm_nonneg _) ((hgrad_le 0 2 two_pos (hsub 0 _ (by rw [norm_zero]; linarith))).trans
+      (pow_le_pow_left₀ (by norm_num) (by norm_num) n))).trans hK₁CH
+  -- step 4: `‖Dh‖ ≤ K₁` on `B̄_{5R/8}(0)`, by (2b) on balls of radius `R/4`
+  have hstep4 : ∀ z : Euclid n, ‖z‖ ≤ 5 * R / 8 → ‖fderiv ℝ h z‖ ≤ K₁ := fun z hz =>
+    hle_K₁ _ (norm_nonneg _) (hgrad_le z 4 four_pos (hsub z _ (by linarith)))
+  -- step 5: `|D²h(x)(v, v)| ≤ 8nK₁‖v‖²/R` for `‖x‖ ≤ R/4`, by the shifted-ball comparison
+  -- for the harmonic function `u_v = Dh(·)v`, bounded by `K₁‖v‖` on `B̄_{3R/8}(x)`
+  have hstep5 : ∀ v x : Euclid n, ‖v‖ ≤ R / 4 → ‖x‖ ≤ R / 4 →
+      |iteratedFDeriv ℝ 2 h x ![v, v]| ≤ 2 * n * (K₁ * ‖v‖) / (R / 4) * ‖v‖ := by
+    intro v x hv hx
+    have hR4 : 0 < R / 4 := by positivity
+    have hxB : x ∈ ball (0 : Euclid n) R := mem_ball_zero_iff.2 (by linarith)
+    have hu := (hA v).1
+    have hdiff : DifferentiableAt ℝ (fun y => fderiv ℝ h y v) x :=
+      ((hu 1).differentiableOn (by norm_num)).differentiableAt (hB.mem_nhds hxB)
+    have hD := Submission.dorag_ha_ie_norm_fderiv_le_of_mean_value n (fun y => fderiv ℝ h y v) x
+      (R / 4) (K₁ * ‖v‖) hn hR4 hdiff ((hu 0).continuousOn.mono (hsub x _ (by linarith)))
+      (fun z hz => by
+        have hz' : ‖z‖ ≤ 5 * R / 8 := by linarith [norm_le_of_mem_closedBall hz]
+        show |fderiv ℝ h z v| ≤ K₁ * ‖v‖
+        rw [← Real.norm_eq_abs]
+        exact ((fderiv ℝ h z).le_opNorm v).trans
+          (mul_le_mul_of_nonneg_right (hstep4 z hz') (norm_nonneg v)))
+      (fun z hz => hmvD v z (R / 4) hR4
+        (hsub z _ (by linarith [norm_le_of_mem_closedBall hz])))
+    have hDhx : DifferentiableAt ℝ (fderiv ℝ h) x :=
+      (hDh.differentiableOn one_ne_zero).differentiableAt (hB.mem_nhds hxB)
+    have hiter : iteratedFDeriv ℝ 2 h x ![v, v] = fderiv ℝ (fun y => fderiv ℝ h y v) x v := by
+      rw [iteratedFDeriv_two_apply, fderiv_clm_apply hDhx (differentiableAt_const v)]
+      simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+        fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.comp_zero, zero_add,
+        ContinuousLinearMap.flip_apply]
+    rw [hiter, ← Real.norm_eq_abs]
+    exact ((fderiv ℝ _ x).le_opNorm v).trans (mul_le_mul_of_nonneg_right hD (norm_nonneg v))
+  -- step 6 and (c): second-order Taylor expansion along `τ ↦ h(τv)`
+  refine ⟨ha, hb, fun v hv => ?_⟩
+  have hT := Submission.dorag_ha_ie_taylor_two_le n h R (2 * n * (K₁ * ‖v‖) / (R / 4) * ‖v‖) v
+    h2 (by linarith [norm_nonneg v]) fun τ hτ => hstep5 v (τ • v) hv (by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hτ.1]
+      exact (mul_le_of_le_one_left (norm_nonneg v) hτ.2).trans hv)
+  calc |h v - h 0 - fderiv ℝ h 0 v| ≤ 2 * n * (K₁ * ‖v‖) / (R / 4) * ‖v‖ / 2 := hT
+    _ = 4 * n * K₁ * ‖v‖ ^ 2 / R := by field_simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
