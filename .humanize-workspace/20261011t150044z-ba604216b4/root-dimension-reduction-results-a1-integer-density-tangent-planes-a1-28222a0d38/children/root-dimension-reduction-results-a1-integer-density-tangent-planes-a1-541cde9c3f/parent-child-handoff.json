@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}",
+        "python3 scan of dag.json: lean_statement/status/depends_on of idtp_cone_constant_density_planar, idtp_tdc_arc_continuation, idtp_tdc_cone_dilation, idtp_tdc_dlc_normalize_dist_le, idtp_tdc_dlc_subspace_eq_of_inter_ball_eq, idtp_tdc_dlc_light_disc, and the ancestor chain's depends_on",
+        "python3 scan of dag.json lean_statements for 'inner ℝ z e = 0', 'Real.cos φ • z + Real.sin φ • e', 'Real.cos', 'arccos', 'Orthonormal', '‖y‖⁻¹ • y', 's⁻¹ •', 'IsConeCurrent C → ∀ s', 'finrank ℝ Q = 2 → z ∈ Q'",
+        "python3 scan of dag.json for lean_name prefix idtp_tdc_dlc_ld and the five proposed names; scan of accepted depth>=5 nodes whose natural proofs cite ancestor-level prerequisites",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp ... GMT/Ch07/Submission.lean; cat manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD",
+        "rg -n \"theorem one_sub_sq_div_two_le_cos|theorem mul_le_sin |theorem cos_arccos|theorem sin_arccos|theorem arccos_nonneg|theorem arccos_le_pi|theorem pi_le_four|theorem cos_two_mul_eq_one_sub|theorem sqrt_sq_eq_abs|theorem sin_nonneg_of_nonneg_of_le_pi\" mathlib/Mathlib",
+        "rg -n \"theorem finrank_span_singleton|theorem finrank_mono|theorem eq_of_le_of_finrank_eq|theorem Orthonormal.linearIndependent|theorem finrank_span_eq_card|theorem norm_add_sq_real|theorem norm_sub_sq_real|theorem real_inner_self_eq_norm_sq|theorem inner_self_eq_zero|theorem smul_mem_iff|theorem not_le_iff_exists\" mathlib/Mathlib",
+        "rg -n \"one_sub_sq_div_two_le_cos|finrank_mono|mem_span_range_iff_exists_fun|smul_inv_smul₀|IsConcreteLE\" mathlib/Mathlib",
+        "rg -n \"idtp_tdc_dlc_ld|idtp_tdc|orthonormal_partner|arc_point_bounds|unit_vector_angle|cone_scale_piece|piece_mass_bound\" project mathlib/Mathlib",
+        "git show 4b8c28a1:GMT/Ch07/Submission.lean (layout of the accepted Submission.idtp_tdc_cone_dilation)",
+        "lake env lean /tmp/ld-split-a1/Names.lean; lake env lean /tmp/ld-split-a1/gen/Stmts.lean; lake env lean /tmp/ld-split-a1/gen/Assembly.lean; lake env lean /tmp/ld-split-a1/gen/Children.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Inverse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/GroupWithZero/Action/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Atoms.lean",
+        "/tmp/ld-split-a1/Names.lean",
+        "/tmp/ld-split-a1/gen/Stmts.lean",
+        "/tmp/ld-split-a1/gen/Assembly.lean",
+        "/tmp/ld-split-a1/gen/Children.lean"
+      ],
+      "conclusion": "Pins and contract:\n- manifest.json pins project b4d606db and mathlib 25730c7c. The workspace HEAD and .lake mathlib match these pins.\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n- Accepted declarations sit in namespace GMT.Ch07 as `theorem Submission.X`, as in the accepted cone_dilation commit 4b8c28a1.\n\nReuse:\n- No DAG node, snapshot file or workspace source contains any of the five proposed idtp_tdc_dlc_ld_* names (rg: no match).\n- No accepted DAG declaration has any child's exact type.\n- idtp_tdc_acont_great_circle implies arc_point_bounds, but it is still decomposing, so it is not reused.\n- Accepted depth-5 and depth-6 nodes, e.g. codim1_rdo_dg_rc_ball_cone_measurable, already cite ancestor-level prerequisites. So the children may cite idtp_tdc_cone_dilation (accepted) and idtp_cone_constant_density_planar, as the supplied proof does.\n\nMathlib snapshot: it contains every lemma the child proofs cite. Examples: Real.one_sub_sq_div_two_le_cos (Bounds.lean:124), Real.mul_le_sin (Bounds.lean:83), Real.cos_arccos/sin_arccos/arccos_nonneg/arccos_le_pi (Inverse.lean), Real.pi_le_four, Real.cos_two_mul_eq_one_sub, Real.sqrt_sq_eq_abs, finrank_span_singleton, Submodule.finrank_mono, Submodule.eq_of_le_of_finrank_eq, Orthonormal.linearIndependent, finrank_span_eq_card, norm_add_sq_real, norm_sub_sq_real, inner_self_eq_zero, Submodule.smul_mem_iff, smul_inv_smul₀ and IsConcreteLE.not_le_iff_exists.\n\nLean checks:\n- All five lean_statements elaborate after import GMT.Ch07.Submission.\n- A hypothesis-only assembly derives the exact frozen selected type from the five child types and the frozen types of idtp_cone_constant_density_planar, idtp_tdc_arc_continuation and idtp_tdc_dlc_normalize_dist_le.\n- Every child is fully proved in Lean.\n- All of these use only the axioms propext, Classical.choice and Quot.sound.\n- An independent reviewer re-ran the checks and confirmed byte-exactness against dag.json."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.arc_point_bounds-a1",
+  "subproblem": {
+    "key": "arc_point_bounds",
+    "title": "Points of a unit great-circle arc are unit vectors within arc length of the start",
+    "statement": "Let P ∈ ℕ, let z, e ∈ ℝ^P with ‖z‖ = 1, ‖e‖ = 1 and ⟨z, e⟩ = 0, and let φ ∈ ℝ with φ ≥ 0. Then ‖cos φ · z + sin φ · e‖ = 1 and ‖cos φ · z + sin φ · e − z‖ ≤ φ.",
+    "lean_statement": "∀ (P : ℕ) (z e : Euclid P) (φ : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 0 ≤ φ → ‖Real.cos φ • z + Real.sin φ • e‖ = 1 ∧ ‖Real.cos φ • z + Real.sin φ • e - z‖ ≤ φ",
+    "lean_name": "idtp_tdc_dlc_ld_arc_point_bounds",
+    "depends_on": [],
+    "natural_proof": "Source: the computation in step 3(ii) of the supplied proof of idtp_tdc_dlc_light_disc, which shows that an arc point a = cos φ z + sin φ ϵ is a unit vector with ‖a − z‖ ≤ φ.\nHypotheses: ‖z‖ = 1, ‖e‖ = 1, ⟨z, e⟩ = 0, φ ≥ 0.\n1. (Pythagoras.) For all a, b ∈ ℝ, ‖a z + b e‖² = ‖a z‖² + 2⟨a z, b e⟩ + ‖b e‖² = a²‖z‖² + 2ab⟨z, e⟩ + b²‖e‖² = a² + b² (norm_add_sq_real, norm_smul, inner_smul_left, inner_smul_right).\n2. (Unit norm.) Step 1 with a = cos φ and b = sin φ gives ‖cos φ z + sin φ e‖² = cos²φ + sin²φ = 1. A nonnegative real number whose square is 1 equals 1, so ‖cos φ z + sin φ e‖ = 1.\n3. (Distance to z.) cos φ z + sin φ e − z = (cos φ − 1) z + sin φ e. Step 1 with a = cos φ − 1 and b = sin φ gives ‖cos φ z + sin φ e − z‖² = (cos φ − 1)² + sin²φ = (cos²φ + sin²φ) − 2 cos φ + 1 = 2 − 2 cos φ.\n4. By Real.one_sub_sq_div_two_le_cos, 1 − φ²/2 ≤ cos φ, i.e. 2 − 2 cos φ ≤ φ². Hence ‖cos φ z + sin φ e − z‖² ≤ φ².\n5. Let N := ‖cos φ z + sin φ e − z‖ ≥ 0. If N > φ, then N > φ ≥ 0 gives N² > φ², contradicting step 4. Hence N ≤ φ.\n6. Steps 2 and 5 are the two claims. ∎",
+    "proof_key_steps": [
+      "For orthonormal z, e: ‖a z + b e‖² = a² + b².",
+      "a = cos φ, b = sin φ gives ‖cos φ z + sin φ e‖ = 1.",
+      "a = cos φ − 1, b = sin φ gives ‖cos φ z + sin φ e − z‖² = 2 − 2cos φ ≤ φ², using 1 − φ²/2 ≤ cos φ.",
+      "Both sides are nonnegative, so ‖cos φ z + sin φ e − z‖ ≤ φ."
+    ]
+  },
+  "audit": {
+    "key": "arc_point_bounds",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact hypotheses yield both squared-norm identities. The global cosine lower bound gives the distance-square estimate, and φ ≥ 0 justifies passing to the unsquared inequality, including φ = 0. This supplies precisely the endpoint estimate needed by the parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-541cde9c3f/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-541cde9c3f/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-541cde9c3f/parent-supplied-natural-proof.json"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.cone_scale_piece-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "depth": 6,
+  "title": "Dilation transfers a planar constant-density piece of an integer multiplicity cone",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟₂(ℝ^P) be integer multiplicity and a cone. Let Q be a linear subspace of ℝ^P, x ∈ ℝ^P, k ∈ ℕ, s > 0 and ε ∈ ℝ. Suppose spt C ∩ B_ε(s⁻¹x) = Q ∩ B_ε(s⁻¹x) and HasMassDensity C y k for every y ∈ spt C ∩ B_ε(s⁻¹x). Then spt C ∩ B_{sε}(x) = Q ∩ B_{sε}(x), and HasMassDensity C y k for every y ∈ spt C ∩ B_{sε}(x).",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (s ε : ℝ), IsIntegerMultiplicity C → IsConeCurrent C → 0 < s → C.support ∩ ball (s⁻¹ • x) ε = (Q : Set (Euclid P)) ∩ ball (s⁻¹ • x) ε → (∀ y ∈ C.support, y ∈ ball (s⁻¹ • x) ε → HasMassDensity C y k) → C.support ∩ ball x (s * ε) = (Q : Set (Euclid P)) ∩ ball x (s * ε) ∧ ∀ y ∈ C.support, y ∈ ball x (s * ε) → HasMassDensity C y k",
+  "lean_name": "idtp_tdc_dlc_ld_cone_scale_piece",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f4f9ede195-a1"
+}

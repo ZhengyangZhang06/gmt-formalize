@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.cone_scale_piece-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the supplied proof of idtp_tdc_dlc_light_disc, the claim that Good(x) holds with radius s·ε when Good(w) holds with radius ε, for w = s⁻¹ • x. Here s > 0 is arbitrary (the parent uses s = ‖x‖), and ε is not assumed positive (if ε ≤ 0 all balls are empty and the same argument applies).
+Hypotheses: IsIntegerMultiplicity C, IsConeCurrent C, 0 < s, (A) spt C ∩ B_ε(s⁻¹ • x) = Q ∩ B_ε(s⁻¹ • x), (B) HasMassDensity C y k for every y ∈ spt C with y ∈ B_ε(s⁻¹ • x).
+0. (Fact (c) of the parent: cone dilation.) Use the accepted declaration Submission.idtp_tdc_cone_dilation, a prerequisite of idtp_tdc_density_locally_constant (the parent of idtp_tdc_dlc_light_disc) that is already cited by the supplied proof of idtp_tdc_dlc_light_disc. Its frozen type is ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity C → IsConeCurrent C → ∀ s : ℝ, 0 < s → (∀ W, C.massOn ((fun x => s • x) '' W) = ENNReal.ofReal (s ^ n) * C.massOn W) ∧ (∀ x, s • x ∈ C.support ↔ x ∈ C.support) ∧ ∀ (x : Euclid P) (θ : ℝ), HasMassDensity C (s • x) θ ↔ HasMassDensity C x θ.
+   - Apply it with n = 2 and factor s⁻¹ > 0: (S) for every y, s⁻¹ • y ∈ spt C ↔ y ∈ spt C.
+   - Apply it with n = 2 and factor s > 0: (D) for every u and θ, HasMassDensity C (s • u) θ ↔ HasMassDensity C u θ.
+1. (Balls.) For y ∈ ℝ^P, ‖s⁻¹ • y − s⁻¹ • x‖ = ‖s⁻¹ • (y − x)‖ = s⁻¹‖y − x‖, as s > 0. Hence y ∈ B_{sε}(x) ⟺ ‖y − x‖ < sε ⟺ s⁻¹‖y − x‖ < ε ⟺ s⁻¹ • y ∈ B_ε(s⁻¹ • x).
+2. (Subspace.) For y ∈ ℝ^P, y ∈ Q ⟺ s⁻¹ • y ∈ Q, because Q is a subspace and s⁻¹ ≠ 0 (Submodule.smul_mem_iff).
+3. (Support equation.) For every y ∈ ℝ^P:
+   y ∈ spt C ∩ B_{sε}(x)
+   ⟺ s⁻¹ • y ∈ spt C and s⁻¹ • y ∈ B_ε(s⁻¹ • x)   (by (S) and step 1)
+   ⟺ s⁻¹ • y ∈ Q and s⁻¹ • y ∈ B_ε(s⁻¹ • x)        (by (A) at the point s⁻¹ • y)
+   ⟺ y ∈ Q and y ∈ B_{sε}(x)                          (by steps 2 and 1).
+   Hence spt C ∩ B_{sε}(x) = Q ∩ B_{sε}(x).
+4. (Density.) Let y ∈ spt C with y ∈ B_{sε}(x). By (S), s⁻¹ • y ∈ spt C, and by step 1, s⁻¹ • y ∈ B_ε(s⁻¹ • x). So (B) gives HasMassDensity C (s⁻¹ • y) k. By (D) with u := s⁻¹ • y and θ := k, HasMassDensity C (s • (s⁻¹ • y)) k. Since s ≠ 0, s • (s⁻¹ • y) = y (smul_inv_smul₀), so HasMassDensity C y k.
+5. Steps 3 and 4 are the two claims. ∎
+
+## Key steps
+
+1. idtp_tdc_cone_dilation with factor s⁻¹ gives s⁻¹y ∈ spt C ⟺ y ∈ spt C; with factor s it gives HasMassDensity C (s u) θ ⟺ HasMassDensity C u θ.
+2. y ∈ B_{sε}(x) ⟺ s⁻¹y ∈ B_ε(s⁻¹x), and y ∈ Q ⟺ s⁻¹y ∈ Q.
+3. Transporting the support equation through y ↦ s⁻¹y gives spt C ∩ B_{sε}(x) = Q ∩ B_{sε}(x).
+4. For y ∈ spt C ∩ B_{sε}(x), the density k at s⁻¹y transfers to s(s⁻¹y) = y.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 scan of dag.json: lean_statement/status/depends_on of idtp_cone_constant_density_planar, idtp_tdc_arc_continuation, idtp_tdc_cone_dilation, idtp_tdc_dlc_normalize_dist_le, idtp_tdc_dlc_subspace_eq_of_inter_ball_eq, idtp_tdc_dlc_light_disc, and the ancestor chain's depends_on`
+- `python3 scan of dag.json lean_statements for 'inner ℝ z e = 0', 'Real.cos φ • z + Real.sin φ • e', 'Real.cos', 'arccos', 'Orthonormal', '‖y‖⁻¹ • y', 's⁻¹ •', 'IsConeCurrent C → ∀ s', 'finrank ℝ Q = 2 → z ∈ Q'`
+- `python3 scan of dag.json for lean_name prefix idtp_tdc_dlc_ld and the five proposed names; scan of accepted depth>=5 nodes whose natural proofs cite ancestor-level prerequisites`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp ... GMT/Ch07/Submission.lean; cat manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD`
+- `rg -n "theorem one_sub_sq_div_two_le_cos|theorem mul_le_sin |theorem cos_arccos|theorem sin_arccos|theorem arccos_nonneg|theorem arccos_le_pi|theorem pi_le_four|theorem cos_two_mul_eq_one_sub|theorem sqrt_sq_eq_abs|theorem sin_nonneg_of_nonneg_of_le_pi" mathlib/Mathlib`
+- `rg -n "theorem finrank_span_singleton|theorem finrank_mono|theorem eq_of_le_of_finrank_eq|theorem Orthonormal.linearIndependent|theorem finrank_span_eq_card|theorem norm_add_sq_real|theorem norm_sub_sq_real|theorem real_inner_self_eq_norm_sq|theorem inner_self_eq_zero|theorem smul_mem_iff|theorem not_le_iff_exists" mathlib/Mathlib`
+- `rg -n "one_sub_sq_div_two_le_cos|finrank_mono|mem_span_range_iff_exists_fun|smul_inv_smul₀|IsConcreteLE" mathlib/Mathlib`
+- `rg -n "idtp_tdc_dlc_ld|idtp_tdc|orthonormal_partner|arc_point_bounds|unit_vector_angle|cone_scale_piece|piece_mass_bound" project mathlib/Mathlib`
+- `git show 4b8c28a1:GMT/Ch07/Submission.lean (layout of the accepted Submission.idtp_tdc_cone_dilation)`
+- `lake env lean /tmp/ld-split-a1/Names.lean; lake env lean /tmp/ld-split-a1/gen/Stmts.lean; lake env lean /tmp/ld-split-a1/gen/Assembly.lean; lake env lean /tmp/ld-split-a1/gen/Children.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Inverse.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/GroupWithZero/Action/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Atoms.lean`
+- `/tmp/ld-split-a1/Names.lean`
+- `/tmp/ld-split-a1/gen/Stmts.lean`
+- `/tmp/ld-split-a1/gen/Assembly.lean`
+- `/tmp/ld-split-a1/gen/Children.lean`
+
+Pins and contract:
+- manifest.json pins project b4d606db and mathlib 25730c7c. The workspace HEAD and .lake mathlib match these pins.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+- Accepted declarations sit in namespace GMT.Ch07 as `theorem Submission.X`, as in the accepted cone_dilation commit 4b8c28a1.
+
+Reuse:
+- No DAG node, snapshot file or workspace source contains any of the five proposed idtp_tdc_dlc_ld_* names (rg: no match).
+- No accepted DAG declaration has any child's exact type.
+- idtp_tdc_acont_great_circle implies arc_point_bounds, but it is still decomposing, so it is not reused.
+- Accepted depth-5 and depth-6 nodes, e.g. codim1_rdo_dg_rc_ball_cone_measurable, already cite ancestor-level prerequisites. So the children may cite idtp_tdc_cone_dilation (accepted) and idtp_cone_constant_density_planar, as the supplied proof does.
+
+Mathlib snapshot: it contains every lemma the child proofs cite. Examples: Real.one_sub_sq_div_two_le_cos (Bounds.lean:124), Real.mul_le_sin (Bounds.lean:83), Real.cos_arccos/sin_arccos/arccos_nonneg/arccos_le_pi (Inverse.lean), Real.pi_le_four, Real.cos_two_mul_eq_one_sub, Real.sqrt_sq_eq_abs, finrank_span_singleton, Submodule.finrank_mono, Submodule.eq_of_le_of_finrank_eq, Orthonormal.linearIndependent, finrank_span_eq_card, norm_add_sq_real, norm_sub_sq_real, inner_self_eq_zero, Submodule.smul_mem_iff, smul_inv_smul₀ and IsConcreteLE.not_le_iff_exists.
+
+Lean checks:
+- All five lean_statements elaborate after import GMT.Ch07.Submission.
+- A hypothesis-only assembly derives the exact frozen selected type from the five child types and the frozen types of idtp_cone_constant_density_planar, idtp_tdc_arc_continuation and idtp_tdc_dlc_normalize_dist_le.
+- Every child is fully proved in Lean.
+- All of these use only the axioms propext, Classical.choice and Quot.sound.
+- An independent reviewer re-ran the checks and confirmed byte-exactness against dag.json.

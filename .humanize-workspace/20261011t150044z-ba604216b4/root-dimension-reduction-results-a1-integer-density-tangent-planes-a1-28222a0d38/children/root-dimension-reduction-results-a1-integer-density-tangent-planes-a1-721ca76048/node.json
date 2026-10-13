@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.unit_vector_angle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "depth": 6,
+  "title": "A unit vector of span{z, e} near z lies on one of the two arcs from z at angle below L",
+  "statement": "Let P ∈ ℕ and z, e ∈ ℝ^P with ‖z‖ = 1, ‖e‖ = 1 and ⟨z, e⟩ = 0. Let w ∈ ℝ^P with ‖w‖ = 1 and w = ⟨w, z⟩ z + ⟨w, e⟩ e, and let L ∈ ℝ with ‖w − z‖ < L/2. Then there are θ ∈ ℝ and v ∈ ℝ^P with 0 ≤ θ < L, v = e or v = −e, and w = cos θ · z + sin θ · v.",
+  "lean_statement": "∀ (P : ℕ) (z e w : Euclid P) (L : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → ‖w‖ = 1 → w = inner ℝ w z • z + inner ℝ w e • e → ‖w - z‖ < L / 2 → ∃ (θ : ℝ) (v : Euclid P), 0 ≤ θ ∧ θ < L ∧ (v = e ∨ v = -e) ∧ w = Real.cos θ • z + Real.sin θ • v",
+  "lean_name": "idtp_tdc_dlc_ld_unit_vector_angle",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-721ca76048-a1"
+}

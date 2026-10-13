@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.piece_mass_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "depth": 6,
+  "title": "A planar constant-density piece at a nonzero point of a 2-dimensional minimizing cone has mass at least H² of the plane",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟₂(ℝ^P) be minimizing in ℝ^P, with ∂C = 0 and a cone. Let Q be a linear subspace of ℝ^P, x ∈ Q with x ≠ 0, k ∈ ℕ with k ≥ 1, and ε > 0. Suppose spt C ∩ B_ε(x) = Q ∩ B_ε(x) and HasMassDensity C y k for every y ∈ spt C ∩ B_ε(x). Then there is ε' > 0 such that spt C ∩ B_ε'(x) = Q ∩ B_ε'(x), HasMassDensity C y k for every y ∈ spt C ∩ B_ε'(x), and H²(W ∩ Q) ≤ M_W(C) for every open W ⊆ B_ε'(x). Here H² = μHE[2] and M_W = massOn.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (ε : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → 1 ≤ k → x ∈ Q → x ≠ 0 → 0 < ε → C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε → (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) → ∃ ε' : ℝ, 0 < ε' ∧ C.support ∩ ball x ε' = (Q : Set (Euclid P)) ∩ ball x ε' ∧ (∀ y ∈ C.support, y ∈ ball x ε' → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε' → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W",
+  "lean_name": "idtp_tdc_dlc_ld_piece_mass_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7fcb6f7535-a1"
+}
