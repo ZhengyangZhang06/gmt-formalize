@@ -1,0 +1,79 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1.dilation_mass-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 9 of the parent proof (admissible forms for η(W) and for W correspond via ω ↦ ω∘η, and multiplication by ofReal(λ^{−m}) commutes with suprema); this correspondence is the sibling mass_scaling for the blow-up η_#X, and dilation_blowup identifies X' with η_#X on equal forms.
+Conventions. ℝ^P = Euclid P; η := dilation a λ, η(y) = −λ⁻¹a + λ⁻¹y = λ⁻¹(y − a), λ > 0. For V ⊆ ℝ^P, 𝒟^k(V) = TestFormOn V k is the space of C^∞ k-forms ω on ℝ^P (maps to k-covectors) with compact tsupport ω ⊆ V; its elements are determined by their underlying forms. 𝒟_k(V) = GeometricCurrentOn V k. For X, X' ∈ 𝒟_k(ℝ^P), X' is a dilation of X when X'(ω) = λ^{−k}X(ω') for all ω, ω' ∈ 𝒟^k(ℝ^P) with ω'(y) = ω(η(y)) for every y. η_#Y := η_{a,λ#}Y = blowUp Y a λ ∈ 𝒟_k(η(U)) for Y ∈ 𝒟_k(U). Sibling names refer to the children of this decomposition: testform_correspondence = dtc_blowUp_testForm_corr, blowup_structure = dtc_blowUp_algebra, rep_pushforward = dtc_blowUp_imrep, mass_scaling = dtc_blowUp_massOn_image, dilation_blowup = cbr_cidc_dilation_exists_eq_blowUp.
+For a domain D ⊆ ℝ^P and V ⊆ ℝ^P let Adm(D, V) := {φ ∈ 𝒟^m(D) : tsupport φ ⊆ V and |φ(y)| ≤ 1 for all y} (SimonGMT massAdmissibleOn D m V), so that M_V(Y) = sup{ofReal(Y(φ)) : φ ∈ Adm(D, V)} for Y ∈ 𝒟_m(D). Membership in Adm(D, V) depends only on the underlying form of φ and on D only through φ ∈ 𝒟^m(D).
+1. η is onto ℝ^P: for y ∈ ℝ^P, η(a + λy) = −λ⁻¹a + λ⁻¹(a + λy) = −λ⁻¹a + λ⁻¹a + (λ⁻¹λ)y = y because λ ≠ 0. Hence ℝ^P ⊆ η(ℝ^P), i.e. η(ℝ^P) = ℝ^P, so every ω ∈ 𝒟^k(ℝ^P) is also an element of 𝒟^k(η(ℝ^P)) with the same underlying form (tsupport ω ⊆ ℝ^P ⊆ η(ℝ^P); SimonGMT testFormOnInclusion), and every element of 𝒟^k(η(ℝ^P)) is an element of 𝒟^k(ℝ^P) with the same underlying form.
+2. Claim: M_V(X') = M_V(η_#X) for every V ⊆ ℝ^P (X' ∈ 𝒟_m(ℝ^P), η_#X ∈ 𝒟_m(η(ℝ^P))). Let A := {ofReal(X'(φ)) : φ ∈ Adm(ℝ^P, V)} and B := {ofReal(η_#X(φ₁)) : φ₁ ∈ Adm(η(ℝ^P), V)}. (⊆) If φ ∈ Adm(ℝ^P, V), its copy φ₁ ∈ 𝒟^m(η(ℝ^P)) (step 1) has the same underlying form, hence φ₁ ∈ Adm(η(ℝ^P), V), and X'(φ) = η_#X(φ₁) by dilation_blowup (ii); so ofReal(X'(φ)) ∈ B. (⊇) If φ₁ ∈ Adm(η(ℝ^P), V), its copy φ ∈ 𝒟^m(ℝ^P) (tsupport φ₁ ⊆ η(ℝ^P) ⊆ ℝ^P) has the same underlying form, hence φ ∈ Adm(ℝ^P, V), and X'(φ) = η_#X(φ₁) by dilation_blowup (ii); so ofReal(η_#X(φ₁)) ∈ A. Thus A = B and M_V(X') = sup A = sup B = M_V(η_#X).
+3. Apply step 2 with V = η(W) and then mass_scaling with U = ℝ^P, n = m, T = X, x = a and W: M_{η(W)}(X') = M_{η(W)}(η_#X) = ofReal(λ^{−m})·M_W(X). No hypothesis on W or m was used. ∎
+Formalization notes (proved in a scratch build from the exact sibling types): rw [← mass_scaling P m univ X a λ hlam W]; unfold GeometricCurrentOn.massOn; congr 1; ext r; in each direction rintro ⟨φ, ⟨hs, hn⟩, rfl⟩, refine ⟨testFormOnInclusion _ m φ, ⟨hs, hn⟩, ?_⟩ (with hsurj, resp. subset_univ _), dsimp only, and rewrite with (dilation_blowup P m a λ hlam).2 X X' hX φ (testFormOnInclusion hsurj m φ) rfl, resp. (dilation_blowup P m a λ hlam).2 X X' hX (testFormOnInclusion (subset_univ _) m φ₁) φ₁ rfl (the test-form arguments must be explicit for rfl to elaborate).
+
+## Key steps
+
+1. η(ℝ^P) = ℝ^P, so admissible forms for X' (domain ℝ^P) and for η_#X (domain η(ℝ^P)) on any V are the same forms.
+2. dilation_blowup (ii) gives X'(φ) = η_#X(φ₁) for corresponding forms, so M_V(X') = M_V(η_#X).
+3. mass_scaling with V = η(W): M_{η(W)}(η_#X) = ofReal(λ^{−m})M_W(X).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Submission.lean (identical)`
+- `rg -n 'def blowUp|def dilation |def dilationCLM' project/GMT/Ch07/Contract.lean (lines 175, 179, 184: blowUp T x λ = (T.restrictDomain _).affinePushforward (dilationCLM P λ) (-(λ⁻¹ • x)) _)`
+- `rg -n 'theorem _root_.MeasurableEmbedding.integral_map|theorem integral_smul_measure|lemma Homeomorph.measurableEmbedding' mathlib/Mathlib (found: MeasureTheory/Integral/Bochner/Basic.lean:1093 and :1052, MeasureTheory/Constructions/BorelSpace/Basic.lean:567)`
+- `rg -n 'cbr_cidc_|dtc_blowUp_testForm_corr' project (no match); python3 -I scan of dag.json: lean_name in {dtc_hausdorff_dilation, dtc_blowUp_testForm_corr, dtc_approxTangent_dilation, dtc_blowUp_imrep, dtc_blowUp_massOn_image, dtc_blowUp_algebra} each exactly one node, status accepted, candidate_commit set, lean_statement byte-identical; no node with prefix cbr_cidc_`
+- `git show 6cdd2c0a916b259c47744f21c1f8501c98dce2c7:GMT/Ch07/Submission.lean (this node's proof base: bare contract); git show cb3c7f3eda7f74be829e1ae3271494c85af94319, 17c63f22cc8bff3693345ac9074b98fadbf16246, f64597f33dbddb264b249a7f03156a1073cce7da :GMT/Ch07/Submission.lean (accepted proofs of the six dtc_* theorems)`
+- `sed of SimonGMT Chapter06 Currents.lean, Forms.lean, Mass.lean, AffineCurrentPushforward.lean, CurrentLocalEquality.lean (GeometricCurrentOn, boundary_apply, exteriorDerivativeTestOn, massOn, massAdmissibleOn, affinePushforward_apply, boundary_affinePushforward, restrictDomain_apply, testFormOnInclusion_coe)`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _overlay_accepted_children) and leaf_verification.py check_source_delta; python3 -I read of decomposition-v2.json and decomposition-audit-v2.json of root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1 (accepted precedent of cross-branch reuse)`
+- `lake env lean /tmp/dilcalc-decomp/Check1.lean (new children from reused types as hypotheses), /tmp/dilcalc-decomp/FinalAssembly.lean (frozen parent type from the 11 child types), /tmp/dilcalc-decomp/Full.lean (accepted dtc_* proofs + five new single-theorem proofs + parent assembly); #print axioms: propext, Classical.choice, Quot.sound; verifier/lean_contract.py validate_lean_statement on all 11 types (pass)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3e82e4b03e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-dilation-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dilcalc-decomp/Check1.lean`
+- `/tmp/dilcalc-decomp/FinalAssembly.lean`
+- `/tmp/dilcalc-decomp/Full.lean`
+
+Snapshot and project facts:
+- The snapshot contract is byte-identical to Submission.lean (project b4d606db, Mathlib 25730c7c).
+- This node's base 6cdd2c0a is the bare contract, so an unsplit leaf would have no helper declarations.
+
+Reused declarations. Six comparator-accepted declarations of root.density_and_tangent_cones-a1.blowup_scaling-a1 prove the supplied steps 2–7 and 9 for blowUp in an arbitrary domain: dtc_hausdorff_dilation, dtc_blowUp_testForm_corr, dtc_approxTangent_dilation, dtc_blowUp_imrep, dtc_blowUp_massOn_image and dtc_blowUp_algebra. Each:
+- is unique in the DAG;
+- is accepted with a candidate commit;
+- is reused here with its byte-identical type.
+The runtime allows this reuse; cmcdt_dilation_pushforward is a precedent.
+
+New declarations. The five new names (prefix cbr_cidc_) occur nowhere in the DAG or the snapshot. The Mathlib lemmas they use exist in the snapshot: MeasurableEmbedding.integral_map, integral_smul_measure, Homeomorph.measurableEmbedding and ENNReal.toReal_ofReal.
+
+Lean checks:
+- All 11 types elaborate after `import GMT.Ch07.Submission` and pass the verifier's lexical check.
+- The frozen parent type follows from the 11 types by a one-line assembly.
+- An end-to-end build compiles: the real accepted proofs, plus single-theorem proofs of the five new children, plus the parent. #print axioms gives only propext, Classical.choice, Quot.sound.
