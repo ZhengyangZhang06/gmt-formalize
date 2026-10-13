@@ -1,0 +1,19 @@
+{
+  "node_id": "root.deformation-a1.im_completeness-a1.limit_triple-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3296",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "dfb7982325afb2e090382c3ee4c90ff90faa0ad7",
+  "integrated_commit": "",
+  "proof_base_commit": "4af1ba2effe34dc3635ea657ab92cb565c05bde1",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.im_completeness-a1",
+  "requires": [
+    "root.deformation-a1.im_completeness-a1.approx_tangent_locality-a1",
+    "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1",
+    "root.flat_iff_weak-a1.im_series-a1.frame_sign-a1"
+  ]
+}
