@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.set_integral_cauchy_schwarz-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1",
+  "depth": 4,
+  "title": "Cauchy-Schwarz on a finite-measure set: int_S g <= sqrt(mu S) sqrt(int_S D) when 0 <= g and g^2 <= D",
+  "statement": "Let X be a type with a measurable-space structure, mu a measure on X, and S a subset of X with mu(S) < infinity. Let g, D : X -> R be such that:\n- g is a.e.-strongly measurable with respect to mu restricted to S;\n- D is integrable on S;\n- for (mu restricted to S)-a.e. x: 0 <= g(x) and g(x)^2 <= D(x).\nThen int_S g dmu <= sqrt((mu S).toReal) * sqrt(int_S D dmu).",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (S : Set X) (g D : X → ℝ), μ S < ⊤ → AEStronglyMeasurable g (μ.restrict S) → IntegrableOn D S μ → (∀ᵐ x ∂(μ.restrict S), 0 ≤ g x ∧ g x ^ 2 ≤ D x) → ∫ x in S, g x ∂μ ≤ Real.sqrt (μ S).toReal * Real.sqrt (∫ x in S, D x ∂μ)",
+  "lean_name": "gwe_wewe_setIntegral_le_sqrt_mul_sqrt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-366e60ba37-a1"
+}
