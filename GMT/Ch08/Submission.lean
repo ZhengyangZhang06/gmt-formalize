@@ -7,8 +7,6 @@ import Poincare.SimonGMT.Chapter01.DensityComparison
 import Poincare.SimonGMT.Chapter01.EuclideanHausdorffUpper
 import Poincare.SimonGMT.Chapter02.AreaLiteral
 import Poincare.SimonGMT.Chapter08.StationaryMonotonicity
-import Poincare.SimonGMT.Chapter01.DensityComparison
-import Poincare.SimonGMT.Chapter02.AreaLiteral
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -12717,68 +12715,6 @@ theorem Submission.frt_hnw_unitBallVolume_eq_gamma :
       ring
     rw [hpow]
 
-    exact h
-  have hliminf : ∀ O : Set (Euclidean N), IsRelCompactOpenIn O (ball (0 : Euclidean N) R) →
-      liminf (fun i ↦ variationMeasure (W i) O) atTop ≠ ∞ := by
-    intro O hO
-    rw [(tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hβ (fun _ ↦ zero_le)
-      fun i ↦ (hFV i).2 O hO).liminf_eq]
-    exact ENNReal.zero_ne_top
-  -- Step 6: `Θ^n(μ_{W_i}, y) ≥ 1` unless `x + t_{j₀+i} y` lies in the bad set.
-  have hdens : ∀ i : ℕ, ∀ y ∈ ball (0 : Euclidean N) R \ {y | x + t (i + j₀) • y ∈
-      {z | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight z θ ∧ ENNReal.ofReal τ ≤ θ}},
-      ∃ θ : ℝ≥0∞, HasDensity n (W i).weight y θ ∧ 1 ≤ θ := by
-    rintro i y ⟨hyR, hyE⟩
-    simp only [mem_ofPred_eq, not_not] at hyE
-    obtain ⟨θ, hθ, hτθ⟩ := hyE
-    exact ⟨c * θ, Submission.varifold_tangents_dlb_restricted_hasDensity N n U V x (t (i + j₀)) R
-      c θ (W i) y (ht0 _) hctop (hW i) hyR hθ, hc1.symm.le.trans (mul_le_mul_right hτθ c)⟩
-  -- Step 7: `μ_{W_i}(bad ∩ O) ≤ τ⁻¹ R^n e(t_{j₀+i} R) → 0`, where
-  -- `e(ρ) = ρ^{-n} μ_V(bad ∩ B_ρ(x))`.
-  have hbadW : ∀ O : Set (Euclidean N), IsRelCompactOpenIn O (ball (0 : Euclidean N) R) →
-      Tendsto (fun i ↦ (W i).weight ({y | x + t (i + j₀) • y ∈
-        {z | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight z θ ∧ ENNReal.ofReal τ ≤ θ}} ∩ O)) atTop
-        (𝓝 0) := by
-    intro O hO
-    have h := ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul
-      ((hbad.comp htR).comp (tendsto_add_atTop_nat j₀))
-        (Or.inr (ENNReal.pow_ne_top ENNReal.ofReal_ne_top : ENNReal.ofReal R ^ n ≠ ∞)))
-      (Or.inr hctop)
-    rw [mul_zero, mul_zero] at h
-    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h (fun _ ↦ zero_le)
-      fun i ↦ Submission.varifold_tangents_dlb_restricted_bad_set_weight_le N n U V x
-        (t (i + j₀)) R c (W i) _ O (ht0 _) hR (hW i) (subset_closure.trans hO.2.2)
-  -- Step 8: semicontinuity 3.7 on `Ω` gives `Θ^n(μ_{C'}, ·) ≥ 1` `μ_{C'}`-a.e.
-  obtain ⟨-, -, hC'ae⟩ := hsemi N n (ball (0 : Euclidean N) R) W C'
-    (fun i ↦ {y | x + t (i + j₀) • y ∈
-      {z | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight z θ ∧ ENNReal.ofReal τ ≤ θ}})
-    hRadon (fun i ↦ (hFV i).1) hliminf hdens hbadW
-  -- Step 9: transfer back to `C` on `Ω`, multiplying the density by `c⁻¹ = τ`.
-  have h := Submission.varifold_tangents_dlb_ae_hasDensity_of_restricted N n univ
-    (ball (0 : Euclidean N) R) C C' c hc0 hctop hC' hC'ae
-  rwa [hcinv] at h
-/-- `ω_n = π^{n/2} / Γ(n/2 + 1)` for every `n ∈ ℕ` (including `ω_0 = 1`): for `n = 0` the volume
-of `EuclideanSpace ℝ (Fin 0)` is the Dirac mass at `0`, and for `n ≥ 1` this is
-`EuclideanSpace.volume_ball` at radius `1` together with `√π ^ n = π ^ (n / 2)`. -/
-theorem Submission.frt_hnw_unitBallVolume_eq_gamma :
-    ∀ n : ℕ, unitBallVolume n = ENNReal.ofReal (Real.pi ^ ((n : ℝ) / 2) / Real.Gamma ((n : ℝ) / 2 + 1)) := by
-  intro n
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · -- Step 1: the volume of `EuclideanSpace ℝ (Fin 0)` is `dirac 0`, so `ω_0 = 1 = π^0 / Γ(1)`.
-    rw [unitBallVolume, volume_euclideanSpace_eq_dirac (Fin 0),
-      Measure.dirac_apply_of_mem (mem_ball_self (x := (0 : EuclideanSpace ℝ (Fin 0))) one_pos)]
-    simp
-  · -- Step 2: the ball formula at centre `0` and radius `1`, with `card (Fin n) = n`.
-    have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
-    rw [unitBallVolume, EuclideanSpace.volume_ball (Fin n) 0 1, Fintype.card_fin,
-      ENNReal.ofReal_one, one_pow, one_mul]
-    -- Step 3: `√π ^ n = π ^ (n / 2)`.
-    have hpow : Real.sqrt Real.pi ^ n = Real.pi ^ ((n : ℝ) / 2) := by
-      rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul Real.pi_pos.le]
-      congr 1
-      ring
-    rw [hpow]
-
 /-- Small open neighbourhoods of null sets (used for the First Rectifiability Theorem, Simon Ch. 8,
 1.2): if `μ` is finite on compact subsets of the open set `U` and `Z ⊆ U` is `μ`-null, then for every
 `ζ > 0` there is an open `O` with `Z ⊆ O ⊆ U` and `μ(O) < ζ`. -/
@@ -16299,91 +16235,6 @@ theorem Submission.allard_tc_tangent_cones_rectifiable :
     Submission.allard_tc_tangent_point_representation hFRT N n C htan
   -- Steps B4–B6: dilation invariance `η_{0,s #} C = C` from the homogeneity 5.3.
   exact Submission.allard_tc_cone_rescaling_invariance N n C M θ hMθ hTM hrep hhom
-/-- Final step of Simon Ch. 1, 4.16 (Riesz representation, Theorem 4.12): if the masses `μ_j(K)` of
-each compact `K` are eventually bounded and `∫ f dμ_j` converges for every `f ∈ C_c(X, ℝ)`, then
-the limits are the integrals `∫ f dν` against a single locally finite measure `ν` on `X`. -/
-theorem Submission.radon_exists_measure_of_tendsto_integral :
-    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [MeasurableSpace X]
-      [BorelSpace X] (μ : ℕ → Measure X),
-      (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) →
-      (∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 L)) →
-      ∃ ν : Measure X, IsLocallyFiniteMeasure ν ∧
-        ∀ f : C_c(X, ℝ), Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 (∫ x, f x ∂ν)) := by
-  intro X _ _ _ _ _ μ hμ hconv
-  -- Step 1: each `f ∈ C_c(X, ℝ)` is `μ j`-integrable for all large `j`, since `f` is continuous,
-  -- vanishes off the compact set `tsupport f`, and `μ j (tsupport f) < ∞` for large `j`.
-  have hint : ∀ f : C_c(X, ℝ), ∀ᶠ j in atTop, Integrable f (μ j) := by
-    intro f
-    obtain ⟨C, hC, hev⟩ := hμ (tsupport f) f.hasCompactSupport.isCompact
-    filter_upwards [hev] with j hj
-    have : IsFiniteMeasure ((μ j).restrict (tsupport f)) :=
-      isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hC hj)
-    exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).1
-      (f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport)
-  -- Step 2: the limit functional `F f = lim_j ∫ f dμ_j` is additive, homogeneous and positive.
-  choose F hF using hconv
-  have hadd : ∀ f g : C_c(X, ℝ), F (f + g) = F f + F g := by
-    intro f g
-    refine tendsto_nhds_unique (hF (f + g)) (((hF f).add (hF g)).congr' ?_)
-    filter_upwards [hint f, hint g] with j hf hg
-    rw [CompactlySupportedContinuousMap.coe_add]
-    exact (integral_add hf hg).symm
-  have hsmul : ∀ (c : ℝ) (f : C_c(X, ℝ)), F (c • f) = c • F f := by
-    intro c f
-    refine tendsto_nhds_unique (hF (c • f)) (((hF f).const_smul c).congr fun j ↦ ?_)
-    rw [CompactlySupportedContinuousMap.coe_smul]
-    exact (integral_smul c _).symm
-  have hpos : ∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ F f := fun f hf ↦
-    ge_of_tendsto' (hF f) fun j ↦ integral_nonneg (CompactlySupportedContinuousMap.le_def.1 hf)
-  -- Step 3: by the Riesz–Markov–Kakutani theorem, `F f = ∫ f dν` for the Riesz measure `ν` of `F`,
-  -- which is regular, hence finite on compact sets, hence locally finite.
-  refine ⟨RealRMK.rieszMeasure (PositiveLinearMap.mk₀ ⟨⟨F, hadd⟩, hsmul⟩ hpos), inferInstance,
-    fun f ↦ ?_⟩
-  rw [RealRMK.integral_rieszMeasure]
-  exact hF f
-  filter_upwards [hU, Measure.support_mem_ae (μ := V.weight), ae_all_iff.2 he]
-    with x hxU hxspt hxlim
-  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
-  -- The slice measures `m_ρ = μ_V(B_ρ(x))⁻¹ σ_#(V ⌞ (B_ρ(x) × G(N,n)))`, `σ(y, S) = S`.
-  obtain ⟨m, hm⟩ : ∃ m : ℝ → Measure (Grassmannian N n), ∀ ρ, m ρ =
-      (V.weight (closedBall x ρ))⁻¹ •
-        (V.measure.restrict (closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)))).map Prod.snd :=
-    ⟨_, fun _ ↦ rfl⟩
-  -- `∫ f dm_ρ` is the quotient of the statement, for every `ρ`.
-  have hm_int : ∀ (ρ : ℝ) (g : C(Grassmannian N n, ℝ)), ∫ S, g S ∂(m ρ) =
-      (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), g z.2 ∂V.measure) /
-        (V.weight (closedBall x ρ)).toReal := by
-    intro ρ g
-    rw [hm, integral_smul_measure, integral_map measurable_snd.aemeasurable
-      g.continuous.aestronglyMeasurable, ENNReal.toReal_inv, smul_eq_mul, div_eq_inv_mul]
-  -- For `0 < ρ < r`, `0 < μ_V(B_ρ(x)) < ∞` (`x ∈ spt μ_V`, `B_ρ(x) ⊆ U` compact), so `m_ρ(G) = 1`.
-  have hm_prob : ∀ ρ ∈ Ioo 0 r, IsProbabilityMeasure (m ρ) := by
-    intro ρ hρ
-    have hpos : 0 < V.weight (closedBall x ρ) :=
-      (Measure.mem_support_iff_forall x).1 hxspt _ (closedBall_mem_nhds x hρ.1)
-    have hfin : V.weight (closedBall x ρ) ≠ ∞ :=
-      V.weight_finite_on_compact _ (isCompact_closedBall x ρ)
-        ((closedBall_subset_ball hρ.2).trans hrU)
-    constructor
-    rw [hm, Measure.smul_apply, Measure.map_apply measurable_snd MeasurableSet.univ,
-      preimage_univ, Measure.restrict_apply_univ, ← V.weight_apply measurableSet_closedBall,
-      smul_eq_mul]
-    exact ENNReal.inv_mul_cancel hpos.ne' hfin
-  -- Printed (4) on the dense family: `∫ f_j dm_ρ = ∫ β_j dm_ρ - ‖f_j‖ → e_j(x) - ‖f_j‖`.
-  have hm_lim : ∀ g ∈ range f, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, g S ∂(m ρ)) (𝓝[>] 0) (𝓝 c) := by
-    rintro _ ⟨j, rfl⟩
-    refine ⟨e j x - ‖f j‖, ((hxlim j).sub_const ‖f j‖).congr' ?_⟩
-    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
-    have := hm_prob ρ hρ
-    rw [← hm_int]
-    simp only [hβ]
-    rw [integral_add ((f j).continuous.integrable_of_hasCompactSupport
-        (HasCompactSupport.of_compactSpace _)) (integrable_const _), integral_const,
-      probReal_univ, one_smul, add_sub_cancel_right]
-  -- Printed (3), (4) and the Riesz representation.
-  obtain ⟨η, hη, hηlim⟩ := Submission.plane_disint_riesz_limit N n (𝓝[>] 0) m (range f)
-    inferInstance (by filter_upwards [Ioo_mem_nhdsGT hr] using hm_prob) hf hm_lim
-  exact ⟨η, hη, fun g ↦ (hηlim g).congr fun ρ ↦ hm_int ρ g⟩
 
 /-- **Simon Ch. 8, Lemma 1.3, last part** (child `identity_of_limits` of `plane_disintegration`):
 if for `μ_V`-a.e. `x` the measure `η(x)` on `G(N,n)` is a probability measure and the slice ratios
@@ -17186,23 +17037,6 @@ theorem Submission.first_rectifiability_theorem : FirstRectifiabilityTheorem := 
       rw [(happrox x hx S).1 hS]
       exact hθ x hx.2
   rw [hVA, hweight _ hSA, hset]
-theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
-theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem :=
-  -- Each conjunct is the child theorem proving that item of the book; 5.5 and its corollary 5.7
-  -- share one child, whose conjuncts appear here in the statement's order (5.7 before 5.5).
-  ⟨Submission.first_rectifiability_theorem,
-    Submission.first_variation_theorems.1,
-    Submission.first_variation_theorems.2,
-    Submission.monotonicity_and_density_theorems.1,
-    Submission.monotonicity_and_density_theorems.2.1,
-    Submission.monotonicity_and_density_theorems.2.2,
-    Submission.density_semicontinuity_theorem,
-    Submission.constancy_theorem,
-    Submission.varifold_tangent_theorems.1,
-    Submission.allard_rectifiability_and_tangent_cones.2,
-    Submission.allard_rectifiability_and_tangent_cones.1,
-    Submission.compactness_theorem,
-    Submission.integral_compactness_theorem⟩
 
 /-- Subsequence extraction in Simon Ch. 1, 4.16 (erratum: the Alaoglu theorem only yields a
 subnet, so `X` is taken second countable).  If `X` is locally compact, Hausdorff and second
@@ -17549,5 +17383,22 @@ theorem Submission.integral_compactness_theorem : IntegralCompactnessTheorem := 
     (fun W _ ↦ tendsto_const_nhds.congr fun j ↦
       (measure_mono_null inter_subset_left (hnull j)).symm)
   exact ⟨φ, hφ, V, hV, hlim φ V hφ hV, hVδ, hVlim⟩
+
+theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem :=
+  -- Each conjunct is the child theorem proving that item of the book; 5.5 and its corollary 5.7
+  -- share one child, whose conjuncts appear here in the statement's order (5.7 before 5.5).
+  ⟨Submission.first_rectifiability_theorem,
+    Submission.first_variation_theorems.1,
+    Submission.first_variation_theorems.2,
+    Submission.monotonicity_and_density_theorems.1,
+    Submission.monotonicity_and_density_theorems.2.1,
+    Submission.monotonicity_and_density_theorems.2.2,
+    Submission.density_semicontinuity_theorem,
+    Submission.constancy_theorem,
+    Submission.varifold_tangent_theorems.1,
+    Submission.allard_rectifiability_and_tangent_cones.2,
+    Submission.allard_rectifiability_and_tangent_cones.1,
+    Submission.compactness_theorem,
+    Submission.integral_compactness_theorem⟩
 
 end GMT.Ch08
