@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_change_of_variables-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1",
+  "depth": 4,
+  "title": "Change of variables for Hausdorff integrals over a blow-up image",
+  "statement": "Let P, n ∈ ℕ, let ℝ^P carry its Borel σ-algebra, let M ⊆ ℝ^P be an arbitrary set (no measurability assumed), let x ∈ ℝ^P, let r > 0, and let f : ℝ^P → ℝ be an arbitrary function. Write Hⁿ = μHE[n] and η_{x,r}(y) := r⁻¹(y − x) (SimonGMT Chapter03.blowUpMap x r). Then ∫_{η_{x,r}(M)} f dHⁿ = (r⁻¹)ⁿ ∫_M f(η_{x,r}(y)) dHⁿ(y). Here ∫_A g dHⁿ is the Bochner integral of g against the restricted measure Hⁿ⌞A, and a function that is not integrable has integral 0.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (r : ℝ), 0 < r → ∀ f : Euclid P → ℝ, ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = r⁻¹ ^ n * ∫ y in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μHE[n]",
+  "lean_name": "setIntegral_blowUpMap_image_eq_inv_pow_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-a52ac21faf-a1"
+}
