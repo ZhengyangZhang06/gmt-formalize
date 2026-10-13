@@ -534,6 +534,39 @@ theorem Submission.cmc_fc_cs_diagonal_subseq : ∀ (C : ℕ → ℕ → ℕ → 
   -- Step 5: `φ(r + 1) ∈ I_{r+2} ⊆ I_{r+1}` and `φ(r) ∈ I_{r+1} = F(r, I_r)`
   exact ⟨φ, hφ, fun r => hpair r _ (hsub (r + 1) (hφI (r + 1))) _ (hφI r)⟩
 
+/-- **Simon Ch. 6, proof of Theorem 7.2** (a subsequence that is Cauchy at rate `2⁻ʳ`).  Suppose
+every `η > 0` admits a finite `𝒬` such that each `X j` splits as `X j - Q - S = ∂R` with `Q ∈ 𝒬`,
+integer multiplicity `R`, `S` and `M(R) + M(S) ≤ η`.  Call `j`, `l` `2⁻ʳ`-close if
+`X j - X l - S = ∂R` for such `R`, `S` with `M(R) + M(S) ≤ 2⁻ʳ`.  By
+`cmc_fc_cs_diagonal_subseq` it suffices that every infinite `I ⊆ ℕ` contains an infinite set of
+pairwise `2⁻ʳ`-close indices.  Split every `X j` for `η = 2^{-(r+1)}`; as `𝒬` is finite, the
+`j ∈ I` sharing one center `Q` form an infinite set (pigeonhole), and two of them are
+`2^{-(r+1)} + 2^{-(r+1)} = 2⁻ʳ`-close by `cmc_fc_cs_close_of_common_center`. -/
+theorem Submission.cmc_fc_cauchy_subseq : (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ η : ℝ≥0∞, 0 < η → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X j - Q - S = R.boundary ∧ R.mass + S.mass ≤ η) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X (φ (r + 1)) - X (φ r) - S = R.boundary ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+  intro hIS P m U X hU hX
+  -- Steps 4–5: diagonal extraction for the relation "`j` and `l` are `2⁻ʳ`-close"
+  refine Submission.cmc_fc_cs_diagonal_subseq (fun r j l => ∃ (R : GeometricCurrentOn U (m + 2))
+    (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+      X j - X l - S = R.boundary ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) fun r I hI => ?_
+  -- Step 3: split every `X j` against the finite family `𝒬` for `η = 2^{-(r+1)}`
+  obtain ⟨𝒬, h𝒬, hsplit⟩ := hX ((2⁻¹ : ℝ≥0∞) ^ (r + 1))
+    (ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) _)
+  choose Q hQ R S hR hS hRS hmass using hsplit
+  -- pigeonhole: `I ⊆ ⋃_{Q' ∈ 𝒬} {j ∈ I | Q j = Q'}` with `𝒬` finite, so some fiber is infinite
+  obtain ⟨Q', -, hQ'⟩ : ∃ Q' ∈ 𝒬, {j ∈ I | Q j = Q'}.Infinite := by
+    by_contra! hfin
+    exact hI ((h𝒬.biUnion hfin).subset fun j hj => mem_biUnion (hQ j) ⟨hj, rfl⟩)
+  refine ⟨{j ∈ I | Q j = Q'}, sep_subset _ _, hQ', ?_⟩
+  -- Step 2: two indices with the common center `Q'` are `2⁻ʳ`-close
+  rintro j ⟨-, hj⟩ l ⟨-, hl⟩
+  obtain ⟨R', S', hR', hS', hRS', hmass'⟩ := Submission.cmc_fc_cs_close_of_common_center hIS P m U
+    (X j) (X l) Q' (S j) (S l) (R j) (R l) hU (hR j) (hS j) (hR l) (hS l) (hj ▸ hRS j)
+    (hl ▸ hRS l)
+  refine ⟨R', S', hR', hS', hRS', hmass'.trans ?_⟩
+  calc ((R j).mass + (S j).mass) + ((R l).mass + (S l).mass)
+      ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) + (2⁻¹ : ℝ≥0∞) ^ (r + 1) := add_le_add (hmass j) (hmass l)
+    _ = (2⁻¹ : ℝ≥0∞) ^ r := by rw [pow_succ, ← mul_add, ENNReal.inv_two_add_inv_two, mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
