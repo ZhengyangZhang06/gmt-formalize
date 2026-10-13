@@ -359,6 +359,122 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The coordinate wedge covectors are dual to the increasing basis tuples: the `J`-th coordinate
+of `∑_I c_I dx^I` is `c_J`, i.e. `dx^I(e_{J(0)}, …, e_{J(k-1)}) = δ_{IJ}`. -/
+theorem Submission.smr_ci_coord_sum_smul_wedge :
+    ∀ (P k : ℕ) (c : SimonMultiIndex k P → ℝ) (J : SimonMultiIndex k P),
+      euclideanCovectorCoordinate (∑ I : SimonMultiIndex k P,
+        c I • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) k) J = c J := by
+  intro P k c J
+  classical
+  -- Kronecker property: `dx^I (e_J) = δ_{IJ}`.
+  have hK : ∀ I : SimonMultiIndex k P, wedgeCovectors k (fun j => EuclideanSpace.proj (I j))
+      (fun j => EuclideanSpace.single (J j) (1 : ℝ)) = if I = J then 1 else 0 := by
+    intro I
+    rw [wedgeCovectors_apply_det]
+    split_ifs with hIJ
+    · -- the matrix `[δ_{I i, I j}]` is the identity
+      subst hIJ
+      convert Matrix.det_one (n := Fin k) (R := ℝ)
+      ext i j
+      simp [Matrix.one_apply, PiLp.single_apply, I.injective.eq_iff]
+    · -- some `I i` is not among the `J j`, so row `i` vanishes
+      obtain ⟨i, hi⟩ : ∃ i, ∀ j, I i ≠ J j := by
+        by_contra! h
+        apply hIJ
+        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
+        have hsub : Set.range I ⊆ Set.range J := by
+          rintro _ ⟨i, rfl⟩
+          obtain ⟨j, hj⟩ := h i
+          exact ⟨j, hj.symm⟩
+        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range J)
+        rw [Set.ncard_range_of_injective J.injective, Set.ncard_range_of_injective I.injective]
+      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [PiLp.single_apply, hi j]
+  -- Evaluation at `e_J` is linear, so only the term `I = J` survives.
+  rw [euclideanCovectorCoordinate, ContinuousAlternatingMap.sum_apply]
+  simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+/-- A `k`-covector on `ℝ^P` whose coordinates `α(e_{I(0)}, …, e_{I(k-1)})` vanish for every
+increasing multi-index `I` is zero. -/
+theorem Submission.smr_ci_covector_eq_zero_of_coord :
+    ∀ (P k : ℕ) (α : Covector (Eucl P) k),
+      (∀ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I = 0) → α = 0 := by
+  intro P k α hα
+  classical
+  -- By extensionality on the standard basis it suffices to treat injective index tuples `v`.
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap, ContinuousAlternatingMap.toAlternatingMap_zero,
+    AlternatingMap.zero_apply]
+  -- Sorting `v` gives an increasing multi-index `I` with `e_I = e_v ∘ σ`, `σ := Tuple.sort v`.
+  have hsm : StrictMono (v ∘ Tuple.sort v) :=
+    (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+  have h := hα (OrderEmbedding.ofStrictMono _ hsm)
+  have heq : (fun j => EuclideanSpace.single (OrderEmbedding.ofStrictMono _ hsm j) (1 : ℝ)) =
+      (fun i => EuclideanSpace.single (v i) (1 : ℝ)) ∘ Tuple.sort v := rfl
+  -- `α(e_I) = sign σ • α(e_v)`, and the sign is a unit.
+  rw [euclideanCovectorCoordinate, heq, ← ContinuousAlternatingMap.coe_toAlternatingMap α,
+    AlternatingMap.map_perm] at h
+  exact (smul_eq_zero_iff_eq _).mp h
+/-- The Euclidean coefficient norm of a `k`-covector on `ℝ^P` is the `ℓ²`-norm of its coordinates
+`α(e_{I(0)}, …, e_{I(k-1)})` over the increasing multi-indices `I : Fin k ↪o Fin P`. -/
+theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
+    ∀ (P k : ℕ) (α : Covector (Eucl P) k), covectorEuclideanNorm α =
+      Real.sqrt (∑ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I ^ 2) := by
+  intro P k α
+  unfold covectorEuclideanNorm
+  congr 1
+  -- Drop the tuples that are not strictly increasing; their terms vanish.
+  rw [← Finset.sum_filter]
+  -- Reindex the strictly increasing tuples by the order embeddings, `I ↦ ⇑I`.
+  symm
+  refine Finset.sum_bij' (fun I _ => ⇑I)
+    (fun f hf => OrderEmbedding.ofStrictMono f (Finset.mem_filter.1 hf).2)
+    (fun I _ => Finset.mem_filter.2 ⟨Finset.mem_univ _, I.strictMono⟩)
+    (fun _ _ => Finset.mem_univ _) (fun I _ => ?_) (fun f _ => ?_) (fun I _ => ?_)
+  · exact RelEmbedding.ext fun _ => rfl
+  · exact OrderEmbedding.coe_ofStrictMono _
+  · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
+    simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
+
+/-- Simon (6.1.2)–(6.1.5): listing the coefficients `α(e_{I(0)}, …, e_{I(k-1)})` over the
+increasing multi-indices `I` is a linear isomorphism `J` of the `k`-covectors on `ℝ^P` onto `ℝ^N`
+with `|α| = ‖J α‖` for the Euclidean coefficient norm `|α| = covectorEuclideanNorm α`. -/
+theorem Submission.smr_covector_coord_isometry :
+    ∀ (P k : ℕ), ∃ (N : ℕ) (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)),
+      ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖ := by
+  intro P k
+  -- Enumerate the increasing multi-indices `I : Fin k ↪o Fin P` by `Fin N`.
+  let σ : Fin (Fintype.card (SimonMultiIndex k P)) ≃ SimonMultiIndex k P :=
+    (Fintype.equivFin (SimonMultiIndex k P)).symm
+  -- The coordinate map `J α = (α(e_{σ n}))_n`, linear because evaluation is.
+  obtain ⟨J, hJ⟩ : ∃ J : Covector (Eucl P) k →ₗ[ℝ]
+      EuclideanSpace ℝ (Fin (Fintype.card (SimonMultiIndex k P))),
+      ∀ α n, J α n = euclideanCovectorCoordinate α (σ n) :=
+    ⟨{ toFun := fun α => WithLp.toLp 2 fun n => euclideanCovectorCoordinate α (σ n)
+       map_add' := fun α β => by
+         ext n
+         simp [euclideanCovectorCoordinate]
+       map_smul' := fun c α => by
+         ext n
+         simp [euclideanCovectorCoordinate] }, fun _ _ => rfl⟩
+  have hbij : Function.Bijective J := by
+    refine ⟨(injective_iff_map_eq_zero J).2 fun α hα => ?_, fun y => ?_⟩
+    · -- injective: a covector whose coordinates all vanish is zero
+      refine Submission.smr_ci_covector_eq_zero_of_coord P k α fun I => ?_
+      rw [← σ.apply_symm_apply I, ← hJ, hα, PiLp.zero_apply]
+    · -- surjective: `∑_I y_{σ⁻¹ I} dx^I` has coordinates `y`
+      refine ⟨∑ I : SimonMultiIndex k P,
+        y (σ.symm I) • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)), ?_⟩
+      ext n
+      rw [hJ, Submission.smr_ci_coord_sum_smul_wedge, σ.symm_apply_apply]
+  refine ⟨_, LinearEquiv.ofBijective J hbij, fun α => ?_⟩
+  -- Both norms are square roots of the same sum of squares, reindexed along `σ`.
+  rw [Submission.smr_ci_norm_eq_sqrt_sum_coord_sq, LinearEquiv.ofBijective_apply,
+    EuclideanSpace.norm_eq, ← σ.sum_comp]
+  simp only [hJ, Real.norm_eq_abs, sq_abs]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
