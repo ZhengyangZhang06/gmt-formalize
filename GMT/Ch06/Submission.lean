@@ -751,6 +751,34 @@ theorem Submission.rpn_pe_kernel_sup_bound : ∀ m : ℕ, ∃ C : ℝ, ∀ a : E
           (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
         ring
 
+/-- **Potential estimate (replaces Simon Ch. 6, Remark 2.35; Gilbarg–Trudinger, Lemma 7.14 and
+§7.8).**  For `n = m + 1`, `ω_n = Lⁿ(B₁(0))` and `a ∈ C_c^∞(ℝⁿ)` with `|a| ≤ M`, the potentials
+`ψ_j(y) = ∫ K_j(t) a(y - t) dt` of the kernels `K_j(t) = t_j / (n ω_n |t|ⁿ)` are `C^∞`, satisfy
+`∑_j ∂_j ψ_j = a` and `|ψ_j| ≤ C M Lⁿ(spt a)^{1/n}` with `C` depending only on `m`.  The kernels
+are locally integrable, so `ψ_j` is smooth with `∂_k ψ_j = K_j ⋆ ∂_k a`; summing `∂_j ψ_j` over
+`j` gives `a` by the representation formula, and the bound is the kernel sup estimate. -/
+theorem Submission.rpn_potential_estimate : ∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∃ ψ : Fin (m + 1) → Eucl (m + 1) → ℝ, (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ j)) ∧ (∀ y, ∑ j : Fin (m + 1), fderiv ℝ (ψ j) y (EuclideanSpace.single j (1 : ℝ)) = a y) ∧ ∀ j y, |ψ j y| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  have hli := @Submission.rpn_pe_kernel_locallyIntegrable
+  have hconv := @Submission.rpn_pe_convolution_contDiff_fderiv
+  have hrep := @Submission.rpn_pe_kernel_representation
+  have hsup := @Submission.rpn_pe_kernel_sup_bound
+  intro m
+  -- Step 1: the constant `C` of the kernel sup bound, chosen before `a` and `M`.
+  obtain ⟨C, hC⟩ := hsup m
+  refine ⟨C, fun a ha hca M hM => ?_⟩
+  -- Steps 2–3: `K_j(t) = t_j / (n ω_n |t|ⁿ)` is locally integrable, so `ψ_j = K_j ⋆ a` is `C^∞`
+  -- and `Dψ_j(y) v = ∫ K_j(t) Da(y - t) v dt`.
+  have hψ := fun j : Fin (m + 1) => hconv (m + 1)
+    (fun t : Eucl (m + 1) =>
+      t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1))) a
+    (hli m j (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal)) ha hca
+  -- Step 5: `|ψ_j(y)| ≤ C M Lⁿ(spt a)^{1/n}` is the kernel sup bound.
+  refine ⟨fun j y => ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal *
+      ‖t‖ ^ (m + 1)) * a (y - t), fun j => (hψ j).1, fun y => ?_, fun j y => hC a hca M hM j y⟩
+  -- Step 4: `∑_j ∂_j ψ_j(y) = ∑_j ∫ K_j(t) ∂_j a(y - t) dt = a(y)` (representation formula).
+  rw [← hrep m a ha hca y]
+  exact Finset.sum_congr rfl fun j _ => ((hψ j).2 y (EuclideanSpace.single j 1)).2
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
