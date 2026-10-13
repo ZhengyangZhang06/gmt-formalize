@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.regular_set_dense-a1.integer_combination-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/781 | this PR | root.regular_set_dense-a1.integer_combination-a1.tangent_growth-a1, root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1, root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1, root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1, root.regular_set_dense-a1.integer_combination-a1.overlap_orientation_sign-a1, root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1, root.regular_set_dense-a1.integer_combination-a1.combination_action-a1 |
