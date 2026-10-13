@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.de_giorgi-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 3, 4.1–4.3 (De Giorgi; chapter-03.txt lines 551–746), for U = ℝ^{n+1}. Also used:
+- Ch. 2, 2.1–2.2 and 2.5–2.6 (BV functions, mollification, compactness; chapter-02.txt lines 477–626);
+- Ch. 1, 3.23 and 4.16 (differentiation of Radon measures; compactness of Radon measures).
+This is the De Giorgi input of step 8 of the parent proof. Simon's 3.14 uses 4.3(‡), the half-space blow-up, for the compatibility of the normals of nested sets; the OCR has lost the symbol, and the supplied text writes '4.3(∗)' for the same item.
+Errata applied:
+- (i) The OCR of 4.1 drops the minus sign. For the inward normal ν the identity is ∫_E div g dL^{n+1} = −∫⟨g, ν⟩ dμ_E.
+- (ii) The limit set (9) is {z^{n+1} > c}, not '<': with inward normal e_{n+1}, the blow-ups converge to the upper half-space, consistent with (‡).
+- (iii) The printed first sentence of the proof of 4.3 ('By 1.6 and 3.6 of Ch. 1 the first part follows from (†)') is a whole argument: comparison of μ with H^n, the rectifiability criterion of Ch. 3, 1.6 '⇐' for a measure with flat tangent measures, density one of rectifiable sets, and Radon–Nikodym. Here it is supplied in step 5 by the accepted siblings measure_eq_hausdorff and rect_density_one, whose hypotheses are verified there. Those siblings produce rectifiability and the identity μ = H^n⌞B together, from the tangent-measure convergence of step 4(f) alone. So no step uses μ = H^n⌞B before it is established.
+Siblings used: gauss_green_measure (codim1_rdo_dg_gauss_green_measure), the Riesz-representation step 4.1; measure_eq_hausdorff (codim1_rdo_dg_measure_eq_hausdorff); rect_density_one (codim1_rdo_rectifiable_ae_density_one).
+Notation: L := L^{n+1} = volume = μHE[n+1]; H^n := μHE[n]; ω_k := L^k(B_1); div φ := trace Dφ; η_{y,λ}(z) := λ^{−1}(z − y); E_{y,λ} := η_{y,λ}(E) = {w : y + λw ∈ E}; C₊ := max(C, 0).
+1. (Gauss–Green measure; 4.1.) The hypothesis holds with C_K := C for every compact K. So gauss_green_measure (m := n, D := ℝ^{n+1}, F := E) gives a Borel measure μ with μ(K) < ∞ for every compact K, and a Borel ν with |ν(y)| = 1 for every y, such that (4.1) ∫_E div φ dL = −∫⟨φ, ν⟩ dμ for every C¹ compactly supported φ.
+2. (Finite total mass.)
+ (a) Continuous test fields. Let g be C¹ and compactly supported with |g| ≤ 1. Its mollifications g_ε are C^∞, have |g_ε| ≤ 1, supports in a fixed compact set, and div g_ε → div g uniformly. The hypothesis for −g_ε gives −∫_E div g_ε ≤ C, so ∫⟨g, ν⟩dμ = −∫_E div g ≤ C₊. By uniform approximation, ∫⟨g, ν⟩ dμ ≤ C₊ for every continuous compactly supported g with |g| ≤ 1.
+ (b) μ(K) ≤ C₊. Let K be compact and κ > 0. By Lusin there is a compact K' ⊆ K with μ(K ∖ K') < κ and ν|_{K'} continuous. Choose an open W ⊇ K with μ(W ∖ K) < κ. Extend ν|_{K'} to a continuous unit-bounded g (Tietze, then radial retraction onto the unit ball), and multiply it by χ ∈ C_c(W; [0, 1]) with χ = 1 on K'. Then ∫⟨χg, ν⟩dμ ≥ μ(K') − μ(W ∖ K') ≥ μ(K) − 3κ. So μ(K) ≤ C₊ for every compact K, and μ(ℝ^{n+1}) ≤ C₊.
+3. (Reduced boundary; 4.2.) Let ∂*E be the set of y ∈ spt μ at which ν_E(y) := lim_{ρ↓0}μ(B̄_ρ(y))^{−1}∫_{B̄_ρ(y)}ν dμ exists and |ν_E(y)| = 1. By differentiation of Radon measures (Ch. 1, 3.23; Mathlib VitaliFamily.ae_tendsto_average with the Besicovitch family), these averages tend to ν(y) for μ-a.e. y. Hence μ(ℝ^{n+1} ∖ ∂*E) = 0 and ν_E = ν μ-a.e.
+4. (Blow-up at y ∈ ∂*E; printed proof of 4.3, (1)–(12).) After a rigid motion, y = 0 and ν_E(0) = e_{n+1}. Put E_λ := E_{0,λ}, μ_λ(A) := λ^{−n}μ(λA) and ν_λ(z) := ν(λz); then (4.1) holds for (E_λ, μ_λ, ν_λ).
+ (a) (1)–(2): ⨍_{B_ρ}ν^{n+1}dμ → 1 and ⨍_{B_ρ}|ν^i|dμ → 0 for i ≤ n, as ρ ↓ 0.
+ (b) (3)–(6): test (4.1) with g = ζ_ke_{n+1}, where ζ_k are Lipschitz radial cut-offs decreasing to 1_{B̄_ρ}. This gives ∫_{B̄_ρ}ν^{n+1}dμ ≤ (d/dρ)L(E ∩ B_ρ) ≤ H^n(∂B_ρ) for a.e. small ρ. With (1), μ(B_ρ) ≤ 2(d/dρ)L(E ∩ B_ρ) ≤ 2(n+1)ω_{n+1}ρ^n for ρ < ρ₁, so μ_λ(B_R) ≤ cR^n.
+ (c) (7): by the BV compactness theorem (Ch. 2, 2.6), along any λ_k ↓ 0 a subsequence has 1_{E_{λ_k}} → 1_F in L¹_loc, with F of locally finite perimeter.
+ (d) (8)–(9): for ζ ∈ C_c^1 and i ≤ n, |∫_{E_λ}D_iζ| ≤ sup|ζ|·λ^{−n}∫_{B_{λR}}|ν^i|dμ → 0, so F = ℝ^n × H. For ζ ≥ 0, (4.1) and (1) give ∫_FD_{n+1}ζ = lim(−∫ζν_λ^{n+1}dμ_λ) ≤ 0. So 1_H is nondecreasing and F = {z^{n+1} > c} (erratum ii).
+ (e) (10)–(11): apply the Sobolev inequality for BV functions (by mollification, Ch. 2, 2.5; Mathlib lintegral_pow_le_pow_lintegral_fderiv) to ζ1_E, using D(ζ1_E) = ζD1_E + 1_EDζ and (6). It gives V^{n/(n+1)} ≤ c·(d/dρ)V for V(ρ) := L(E ∩ B_ρ), which is positive because 0 ∈ spt μ. Integrating, L(E ∩ B_ρ) ≥ c'ρ^{n+1} for small ρ, and the same holds for the complement (normal −ν). These scale-invariant bounds pass to F and force c = 0. The limit is unique, so 1_{E_λ} → 1_{{z^{n+1} > 0}} in L¹_loc as λ ↓ 0. This is (‡).
+ (f) (12): put P₀ := {z^{n+1} = 0} = ν_E(0)^⊥.
+  - By (4.1) and L¹_loc convergence, ν_λμ_λ → e_{n+1}H^n⌞P₀ weakly.
+  - Weak subsequential limits μ* of μ_λ exist by (6) and Ch. 1, 4.16, and H^n⌞P₀ ≤ μ*, since the variation of a weak limit is at most the limit of the variations.
+  - Testing with ζe_{n+1}, 1_{B_R} ≤ ζ ≤ 1_{B_{R+ε}}, and using (1): ∫(1 − ν_λ^{n+1})dμ_λ → 0 on B_{R+ε}. So μ*(B_R) ≤ ω_nR^n = H^n⌞P₀(B_R).
+  - Hence every subsequential limit is μ* = H^n⌞P₀ (4.3(†)). Every sequence λ_k ↓ 0 has a subsequence along which μ_{λ_k} converges, and all such limits agree. So ∫f dμ_λ → ∫_{P₀}f dH^n as λ ↓ 0, for every f ∈ C_c(ℝ^{n+1}).
+5. (Rectifiable carrier and μ = H^n⌞B; the first sentence of the proof of 4.3.) Let G := {y ∈ ∂*E : ν_E(y) = ν(y)}; μ(ℝ^{n+1} ∖ G) = 0 by step 3.
+ (a) Flat tangent measures. Let y ∈ G and f ∈ C_c(ℝ^{n+1}). Undo the rigid motion of step 4: Φ(z) := Q(z − y) with Q orthogonal and Qν(y) = e_{n+1}. Then ∫f dμ_λ in step 4 is λ^{−n}∫(f∘Q)(λ^{−1}(z − y))dμ(z). Also Q^{−1}P₀ = (span{ν(y)})^⊥, and H^n is invariant under orthogonal maps. So step 4(f), applied to f∘Q^{−1}, gives
+  (FT) r^{−n}∫f(r^{−1}(z − y))dμ(z) → ∫_{(span{ν(y)})^⊥} f dH^n as r ↓ 0,
+  for every y ∈ G, hence for μ-a.e. y, and for every continuous compactly supported f.
+ (b) Apply measure_eq_hausdorff with m := n ≥ 1, D := ℝ^{n+1} (open), and μ, ν from step 1. Its hypotheses:
+  - μ(ℝ^{n+1} ∖ D) = μ(∅) = 0, and μ(K) < ∞ for every compact K (step 1);
+  - ν is Borel with |ν(y)| = 1 for every y (step 1);
+  - (FT) holds for μ-a.e. y and every continuous compactly supported f (step 5(a));
+  - (RD): for every Borel countably n-rectifiable S ⊆ ℝ^{n+1} with H^n(S) < ∞, H^n(S ∩ B_t(w))/(ω_nt^n) → 1 as t ↓ 0 for H^n-a.e. w ∈ S. This is exactly rect_density_one with P := n + 1 and n := n (n ≥ 1).
+  It gives a Borel, countably n-rectifiable B ⊆ ℝ^{n+1} with μ = H^n⌞B as measures. For H^n-a.e. y ∈ B, the approximate tangent space of B at y (Simon Ch. 3, 1.4) is (span{ν(y)})^⊥.
+6. (Output.)
+ - B is Borel and countably n-rectifiable, and H^n(B) = μ(ℝ^{n+1}) ≤ C₊ < ∞ by step 2(b).
+ - ν is Borel and |ν(y)| = 1 for every y, in particular on B.
+ - For H^n-a.e. y ∈ B, B has approximate tangent space (span{ν(y)})^⊥ at y (step 5).
+ - Gauss–Green: by (4.1) and μ = H^n⌞B, ∫_E div φ dL = −∫⟨φ, ν⟩dμ = −∫_B⟨φ, ν⟩dH^n for every C¹ compactly supported φ.
+ - (‡): choose a Borel N ⊇ ℝ^{n+1} ∖ G with μ(N) = 0. Then H^n(B ∩ N) = μ(N) = 0. Let y ∈ B ∖ N, so y ∈ G and ν_E(y) = ν(y). Step 4(e), transported back by the rigid motion (L is invariant under orthogonal maps, and B_ρ(0) is rotation invariant), gives L((E_{y,r} Δ {w : ⟨w, ν(y)⟩ > 0}) ∩ B_ρ(0)) → 0 as r ↓ 0, for every ρ ∈ ℝ (B_ρ(0) = ∅ if ρ ≤ 0). So this holds for H^n⌞B-a.e. y. ∎
+
+## Key steps
+
+1. gauss_green_measure gives μ and a unit Borel ν with ∫_E div φ = −∫⟨φ, ν⟩dμ; the perimeter bound gives μ(ℝ^{n+1}) ≤ max(C, 0).
+2. Besicovitch differentiation: μ is carried by the reduced boundary ∂*E, where the normal averages converge to ν.
+3. Blow-up at y ∈ ∂*E (printed 4.3 (1)–(12)): E_{y,λ} tends in L¹_loc to the half-space {⟨w, ν⟩ > 0} (‡), and λ^{−n}μ(y + λ·) → H^n⌞ν(y)^⊥ for the whole family λ ↓ 0.
+4. measure_eq_hausdorff, with (RD) supplied by rect_density_one at P := n + 1, turns these flat tangent measures into a Borel countably n-rectifiable B with μ = H^n⌞B and approximate tangent planes ν^⊥ a.e.; no step uses μ = H^n⌞B before it is obtained.
+5. Output: H^n(B) = μ(ℝ^{n+1}) < ∞, the Gauss–Green formula over B, and (‡) at H^n⌞B-a.e. point.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (both e4148e7f…)`
+- `rg -n 'BoundaryRectifiability|FedererFleming|CompactnessTheorem|DeGiorgi|IsoperimetricTheorem|RectifiabilityTheorem' project/GMT -g '*.lean' (only sorry-based contract definitions in GMT/Ch06 and GMT/Ch08, namespaces GMT.Ch06/GMT.Ch08, not importable from GMT.Ch07); rg -n 'closure|De Giorgi|reduced boundary|slice' project/GMT/Ch07 (only topological closure in definitions; no closure, slicing or De Giorgi theorem)`
+- `sed -n 321,345p project/GMT/Ch06/Contract.lean (BoundaryRectifiability, FlatConvergenceIffWeakConvergence, RectifiabilityTheorem: formulation reference only)`
+- `rg in snapshot mathlib: 'theorem ae_tendsto_average ' (Covering/Differentiation.lean:855), 'theorem ae_tendsto_rnDeriv' (Differentiation.lean:657), 'lintegral_pow_le_pow_lintegral_fderiv' (FunctionalSpaces/SobolevInequality.lean:371), 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' (Distribution/AEEqOfIntegralContDiff.lean:186), 'euclideanHausdorffMeasure_eq_volume' (Geometry/Euclidean/Volume/Measure.lean:187), 'theorem integral_tsum' (Integral/DominatedConvergence.lean:88), 'exists_disjoint_subfamily_covering_enlargement_closedBall' (Covering/Vitali.lean:158), 'theorem exists_dense_seq' (Topology/Bases.lean:364), 'tendsto_inv_nat_nhds_zero' (Topology/Instances/ENNReal/Lemmas.lean:486)`
+- `grep declarations in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,FormSupNorm,Forms}.lean and Chapter03/Rectifiable.lean: GeometricCurrentOn, TestFormOn, boundary_apply, boundary_boundary, exteriorDerivative_sq, massAdmissibleOn, massOn, mass, le_massOn, massOn_le_liminf, covectorEuclideanNorm (no smul/bound lemma), testFormEuclideanSupNorm, HasApproximateTangentSpaceAt (blow-up integral definition); no closure, slicing, isoperimetric, De Giorgi or boundary-rectifiability theorem`
+- `python3 -I scans of dag.json (1615 nodes): accepted codim1_rdo_dg_* De Giorgi helpers (measure_eq_hausdorff, rectifiable_of_flat_tangent, flat_tangent_density_cone, normal_average_ae, cutoff_estimates, gauss_green_measure, ...) and codim1_rdo_rectifiable_ae_density_one; non-accepted codim1_rdo_de_giorgi_gauss_green, tangent_measure_ae, blowup_halfspace, volume_density_lower, cmc_closure_and_boundary_rectifiability with cbr_* children, dtc_bc_tc_closure, cmc_deformation_theorem; accepted cbr_isoperimetric_filling (conditional on cmc_deformation_theorem); statement of the deformation sibling dtc_bc_lc_fd_deformation; collision check of dtc_bc_lc_fd_bim_* (only in this node's decomposition-v1.json)`
+- `cat nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json} (rejected v1 and its required changes)`
+- `python3 -I /tmp/bim_v2_scripts/reuse_check.py: git show <commit>:GMT/Ch07/Submission.lean for 3632b24, be5e512, 44ef61f, cfaa429, 8380287, 2af75d6, d1641e8, 3450f10 (whitespace-normalised types identical to dag.json; only sorry = main_theorem; no axiom/opaque); git show <commit>:GMT/Ch07/Contract.lean | sha256sum (all e4148e7f…); comparator-v1.log and isolated-comparator-result.json of the two new reuses ('Your solution is okay!', passed)`
+- `git show 3632b24 / be5e512 :GMT/Ch07/Submission.lean | grep helpers cited by the reused proofs (codim1_rdo_dg_flat_tangent_density_cone, codim1_rdo_dg_rectifiable_of_flat_tangent; regcomp_atl_upper_density_zero, rsd_tendsto_closedBall_density_of_approxTangent, rsd_tendsto_ball_density_of_closedBall): all present and accepted; git log --all -S 'dtc_bc_lc_fd_bim_' (no hit)`
+- `lake env lean /tmp/bim_v2_check/Challenges.lean (12 targets in comparator challenge form after the gmt-compare.py contract_scope replay: exit 0, 12 sorry warnings only)`
+- `lake env lean /tmp/bim_v2_check/AllChecks.lean (stubs; sorry-free bim_* helper lemmas; node_assembly; de_giorgi_from_children; closure_cycles_from_general; #print axioms)`
+- `sed book/chapter-06.txt lines 440-660 (2.23-2.37), 725-960 (3.1-3.15), 1150-1420 (4.1-4.11), 1425-1500 (5.1-5.4), 1925-2160 (6.1-8.1), 2160-2296 (8.1 proof), 2290-2473 (8.2-8.3); chapter-01.txt 596-612, 800-830, 1745-1800 (3.3, 3.12, 4.16); chapter-03.txt 551-746 (4.1-4.3)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4abe9c6216/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4abe9c6216/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/bim_v2_check/Challenges.lean`
+- `/tmp/bim_v2_check/AllChecks.lean`
+
+Pins: the snapshot manifest (project b4d606db, Mathlib 25730c7c) matches the workspace, and the snapshot and workspace GMT/Ch07/Contract.lean are byte-identical (sha256 e4148e7f…). The pinned project proves no closure, slicing, isoperimetric, De Giorgi or boundary-rectifiability theorem usable from GMT.Ch07. GMT/Ch06 and GMT/Ch08 only state them as sorry-based contract definitions in other namespaces; they served as formulation references. SimonGMT provides currents, boundary, massOn/mass (Euclidean coefficient norm), le_massOn, massOn_le_liminf, support and HasApproximateTangentSpaceAt, but no bound for covectorEuclideanNorm; the needed homogeneity and operator-norm bounds were proved in the scratch check. Snapshot Mathlib supplies the measure-theory tools cited in the child proofs (Besicovitch/Vitali differentiation, GNS inequality, fundamental lemma, μHE = volume, integral_tsum, separability). In the DAG, the De Giorgi parent codim1_rdo_de_giorgi_gauss_green and the closure theorems are not accepted. The accepted codim1_rdo_dg_measure_eq_hausdorff and codim1_rdo_rectifiable_ae_density_one close the rejected de_giorgi step 6: types identical in commits 3632b24 and be5e512, comparators passed, helpers contained. They are reused together with the six v1 reuses. All eight reused types are identical in their accepted commits, those commits' contracts are byte-identical, and they contain no extra sorry or axioms. The four new names are unreserved and the dependencies are acyclic. Lean: all 12 child types elaborate in challenge form. The parent's frozen type is proved from the 12 child stubs plus the deformation sibling, with the inline weak-limit step proved sorry-free (propext, Classical.choice, Quot.sound). de_giorgi's type is assembled from the three reused De Giorgi lemmas, and closure_cycles follows from the cousin dtc_bc_tc_closure's type.

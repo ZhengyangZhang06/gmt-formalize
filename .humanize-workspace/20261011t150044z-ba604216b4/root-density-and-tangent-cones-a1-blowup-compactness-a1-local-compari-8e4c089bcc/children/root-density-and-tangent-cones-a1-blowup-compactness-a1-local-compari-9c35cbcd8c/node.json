@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.closure_cycles-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+  "depth": 6,
+  "title": "Closure theorem for integer multiplicity cycles of bounded mass (Simon 6.8.2 in the case ∂T_j = 0, Remark 6.4)",
+  "statement": "Let P, n ∈ ℕ with n < P. Let T_j (j ∈ ℕ) and T be currents in 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) such that every T_j is integer multiplicity (IsIntegerMultiplicity), ∂T_j = 0 for every j (contract BoundaryVanishes; vacuous for n = 0), sup_j M(T_j) < ∞ (M = mass = M_{ℝ^P}), and T_j ⇀ T in ℝ^P (WeaklyConvergesOn). Then T is integer multiplicity.",
+  "lean_statement": "∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (T : GeometricCurrentOn (univ : Set (Euclid P)) n), n < P → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ j, BoundaryVanishes (Ts j)) → ⨆ j, (Ts j).mass < ∞ → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T",
+  "lean_name": "dtc_bc_lc_fd_bim_closure_cycles",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9c35cbcd8c-a1"
+}

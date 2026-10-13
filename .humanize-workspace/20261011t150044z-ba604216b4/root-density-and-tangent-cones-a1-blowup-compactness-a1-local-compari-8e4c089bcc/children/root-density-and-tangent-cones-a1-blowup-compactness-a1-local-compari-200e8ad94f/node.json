@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.de_giorgi-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+  "depth": 6,
+  "title": "De Giorgi's structure theorem for a set of finite perimeter in ℝ^{n+1}: rectifiable reduced boundary, Gauss–Green formula and half-space blow-ups (Simon Ch. 3, 4.1–4.3)",
+  "statement": "Let n ≥ 1, let E ⊆ ℝ^{n+1} be Borel and C ∈ ℝ, and assume ∫_E div φ dL^{n+1} ≤ C for every C^∞ compactly supported φ : ℝ^{n+1} → ℝ^{n+1} with |φ| ≤ 1 everywhere (div φ = trace Dφ, L^{n+1} = volume). Then there are a Borel set B ⊆ ℝ^{n+1} and a Borel map ν : ℝ^{n+1} → ℝ^{n+1} such that: B is countably n-rectifiable and H^n(B) < ∞ (H^n = μHE[n]); |ν(y)| = 1 for y ∈ B; for H^n-a.e. y ∈ B the approximate tangent space of B at y (Simon Ch. 3, 1.4; SimonGMT HasApproximateTangentSpaceAt) is (span{ν(y)})^⊥; ∫_E div φ dL^{n+1} = −∫_B ⟨φ, ν⟩ dH^n for every C¹ compactly supported φ; and for H^n-a.e. y ∈ B and every ρ ∈ ℝ, L^{n+1}((E_{y,r} Δ {w : ⟨w, ν(y)⟩ > 0}) ∩ B_ρ(0)) → 0 as r ↓ 0, where E_{y,r} := {w : y + rw ∈ E}.",
+  "lean_statement": "∀ (n : ℕ) (E : Set (Euclid (n + 1))) (C : ℝ), 1 ≤ n → MeasurableSet E → (∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ y : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) ≤ C) → ∃ (B : Set (Euclid (n + 1))) (ν : Euclid (n + 1) → Euclid (n + 1)), MeasurableSet B ∧ CountablyRectifiable n B ∧ μHE[n] B ≠ ∞ ∧ Measurable ν ∧ (∀ y ∈ B, ‖ν y‖ = 1) ∧ (∀ᵐ y ∂(μHE[n].restrict B), HasApproximateTangentSpaceAt n B y (Submodule.span ℝ {ν y})ᗮ) ∧ (∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ y in E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ y : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) = -∫ y in B, inner ℝ (φ y) (ν y) ∂μHE[n]) ∧ ∀ᵐ y ∂(μHE[n].restrict B), ∀ ρ : ℝ, Tendsto (fun r : ℝ => volume (symmDiff ((fun w => y + r • w) ⁻¹' E) {w | 0 < inner ℝ w (ν y)} ∩ ball (0 : Euclid (n + 1)) ρ)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dtc_bc_lc_fd_bim_de_giorgi",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.gauss_green_measure-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.hausdorff_identification-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.gauss_green_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6409b1b96d-a1",
+      "result_commit": "3450f100f2bc24645474a6e44b437f899d9571db",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.hausdorff_identification-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4abe9c6216-a1",
+      "result_commit": "3632b244600d917333b1ceef4709c265614d91ef",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c-a1",
+      "result_commit": "be5e5124bcc122be14e4b41214ce012bae5b1691",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-200e8ad94f-a1"
+}
