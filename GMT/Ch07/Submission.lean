@@ -4698,6 +4698,275 @@ theorem Submission.dorag_affine_approximation : ∀ (n k : ℕ), 0 < n → ∃ �
                 exact le_max_of_le_right (le_max_right _ _)
             _ = C₃ * e ^ 2 * (r / 2) ^ n := by ring
 
+/-- **Lipschitz approximation** (Simon Ch. 5, Lemma 2.6 and Corollary 2.7, with the corrections of
+the accepted proof: the `Hⁿ`-estimate is on `B_{σ₀/4}(ξ)`, the graph conclusion on `B_{σ₀/8}(ξ)`,
+and `sup |f|` carries the factor `σ₀`).  Write `μ = μ_V`, `P = p_{T₀}`, `Q = I − P`,
+`ε = δ^{1/(2n+2)}` and `e(x) = |p_x − P|²`.  Take `δ₅ = min(δ₁, δ₃)` from the density bounds and the
+affine approximation, `C₈` from the good-set cone estimate, `λ₀, C₉` from the off-support estimate,
+`β = min(1/4, 1/(2C₈), 1/D, λ₀/D)` with `D = 2√k C₈ + 1`, and `β' = min(β, 1/(2·5ⁿC₉))`.
+
+The good set `G = {y ∈ spt μ ∩ B_{3σ₀/4}(ξ) : ∫_{B_{t/2}(y)} e dμ ≤ β²L²tⁿ for t ∈ (0, σ₀/2]}`
+satisfies `|Q(y₂ − y₁)| ≤ C₈βL|y₂ − y₁|` (cone estimate, fed by the affine approximation and the
+lower density bound), so it lies in the graph `F` of some `f` with `Lip f ≤ 2√k C₈βL ≤ L` and
+`|f| ≤ √k C₆εσ₀` (graph extension).  The bad-set bound gives
+`μ(B_{3σ₀/4}(ξ) ∖ G) ≤ 2(5/2)ⁿωₙ(βL)⁻² ∫_{B_{σ₀}(ξ)} e dμ`, and the off-support estimate (from the
+monotonicity identity `(M2)` and the density bounds) with the hole-measure bound gives
+`Hⁿ((F ∖ spt μ) ∩ B_{σ₀/4}(ξ)) ≤ 2^{n/2}ωₙ15ⁿC₉(μ(B_{3σ₀/4}(ξ) ∖ F) + ∫_{B_{3σ₀/4}(ξ)} e dμ)`;
+adding these gives 5A.  Under the hypothesis of 5B, `spt μ ∩ B_{σ₀/2}(ξ) ⊆ G ⊆ F`, and a point of
+`(F ∖ spt μ) ∩ B_{σ₀/8}(ξ)` would give `sⁿ ≤ C₉5ⁿβ'²L²sⁿ ≤ sⁿ/2` in the off-support estimate. -/
+theorem Submission.dorag_lipschitz_approximation : ∀ (n k : ℕ), 0 < n → ∀ C₆ : ℝ, 1 ≤ C₆ → ∃ δ₅ β β' C₇ : ℝ, 0 < δ₅ ∧ δ₅ ≤ 1 / 8 ∧ 0 < β' ∧ β' ≤ β ∧ β ≤ 1 / 4 ∧ 0 < C₇ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₅ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (δ * ρ), ∀ (σ₀ L : ℝ) (T₀ : Submodule ℝ (Euclid (n + k))), 0 < σ₀ → σ₀ ≤ δ * ρ → Module.finrank ℝ T₀ = n → 0 < L → L ≤ 1 → δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ≤ β * L → ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (C₆ * (δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * σ₀ ^ n) → (∀ x ∈ R.measure.support ∩ closedBall ξ σ₀, ‖(x - ξ) - T₀.starProjection (x - ξ)‖ ≤ C₆ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * σ₀) → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ v, ι v ∈ T₀) ∧ (∀ v w, ‖f v - f w‖ ≤ L * ‖v - w‖) ∧ (∀ v, ‖f v‖ ≤ C₇ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * σ₀) ∧ R.measure (closedBall ξ (σ₀ / 2) \ range (fun v => ξ + ι v + ι' (f v))) + μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \ R.measure.support) ∩ closedBall ξ (σ₀ / 4)) ≤ ENNReal.ofReal (C₇ / L ^ 2) * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ∧ ((∀ y ∈ R.measure.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 → ∫⁻ x in closedBall y t, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (β' ^ 2 * L ^ 2 * t ^ n)) → R.measure.support ∩ closedBall ξ (σ₀ / 8) = range (fun v => ξ + ι v + ι' (f v)) ∩ closedBall ξ (σ₀ / 8)) := by
+  intro n k hn C₆ hC₆
+  obtain ⟨δ₁, C₂, hδ₁, hδ₁8, -, hdens⟩ := Submission.dorag_standing_density_bounds n k hn
+  obtain ⟨δ₃, C₃, hδ₃, -, hC₃, haff⟩ := Submission.dorag_affine_approximation n k hn
+  obtain ⟨C₈, hC₈, hcone⟩ := Submission.dorag_lip_good_set_cone_estimate n k C₃ C₆ hC₃ hC₆
+  obtain ⟨lam₀, C₉, hlam₀, hC₉, hoff⟩ := Submission.dorag_lip_off_support_estimate n k
+  -- `ωₙ = ω` with `0 < ω < ∞`
+  obtain ⟨ω, hω, hωeq⟩ : ∃ ω : ℝ, 0 < ω ∧ unitBallVolume n = ENNReal.ofReal ω := by
+    have h1 : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+    have h2 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+    exact ⟨_, ENNReal.toReal_pos h2 h1, (ENNReal.ofReal_toReal h1).symm⟩
+  -- `β = min(1/4, 1/(2C₈), 1/D, λ₀/D)` with `D = 2√k C₈ + 1`
+  have hsk : 0 ≤ Real.sqrt k := Real.sqrt_nonneg _
+  obtain ⟨β, hβ, hβ4, hβC₈, hβk, hβlam⟩ : ∃ β : ℝ, 0 < β ∧ β ≤ 1 / 4 ∧ C₈ * β ≤ 1 / 2 ∧
+      2 * Real.sqrt k * C₈ * β ≤ 1 ∧ 2 * Real.sqrt k * C₈ * β ≤ lam₀ := by
+    obtain ⟨D, hD, hD_def⟩ : ∃ D : ℝ, 0 < D ∧ D = 2 * Real.sqrt k * C₈ + 1 :=
+      ⟨_, by positivity, rfl⟩
+    obtain ⟨β₀, hβ₀⟩ : ∃ β₀ : ℝ, β₀ = min (min (1 / 4) (1 / (2 * C₈))) (min (1 / D) (lam₀ / D)) :=
+      ⟨_, rfl⟩
+    have h0 : 0 < β₀ := by rw [hβ₀]; positivity
+    have ha : β₀ ≤ 1 / 4 := by rw [hβ₀]; exact (min_le_left _ _).trans (min_le_left _ _)
+    have hb : β₀ ≤ 1 / (2 * C₈) := by rw [hβ₀]; exact (min_le_left _ _).trans (min_le_right _ _)
+    have hc : β₀ ≤ 1 / D := by rw [hβ₀]; exact (min_le_right _ _).trans (min_le_left _ _)
+    have hd : β₀ ≤ lam₀ / D := by rw [hβ₀]; exact (min_le_right _ _).trans (min_le_right _ _)
+    rw [le_div_iff₀ (by positivity)] at hb
+    rw [le_div_iff₀ hD, hD_def] at hc hd
+    exact ⟨β₀, h0, ha, by linarith only [hb], by linarith only [hc, h0], by linarith only [hd, h0]⟩
+  -- `β' = min(β, 1/(2·5ⁿC₉))`, so that `C₉5ⁿβ'² ≤ 1/2`
+  obtain ⟨β', hβ', hβ'β, hβ'C₉⟩ : ∃ β' : ℝ, 0 < β' ∧ β' ≤ β ∧ C₉ * 5 ^ n * β' ^ 2 ≤ 1 / 2 := by
+    refine ⟨min β (1 / (2 * 5 ^ n * C₉)), by positivity, min_le_left _ _, ?_⟩
+    have h0 : 0 < min β (1 / (2 * 5 ^ n * C₉)) := by positivity
+    have h1 : min β (1 / (2 * 5 ^ n * C₉)) ≤ 1 := (min_le_left _ _).trans (by linarith only [hβ4])
+    have h2 := min_le_right β (1 / (2 * 5 ^ n * C₉))
+    rw [le_div_iff₀ (by positivity)] at h2
+    linarith only [mul_le_mul h2 h1 h0.le zero_le_one]
+  -- `C₇ = max(√k C₆, (C_b + 2^{n/2}ω15ⁿC₉(C_b + 1))/β²)` with `C_b = 2(5/2)ⁿω`
+  obtain ⟨C₇, hC₇, hC₇k, hC₇b⟩ : ∃ C₇ : ℝ, 0 < C₇ ∧ Real.sqrt k * C₆ ≤ C₇ ∧
+      (2 * (5 / 2) ^ n * ω + 2 ^ ((n : ℝ) / 2) * ω * (15 ^ n * C₉) * (2 * (5 / 2) ^ n * ω + 1)) /
+        β ^ 2 ≤ C₇ :=
+    ⟨max _ _, lt_max_of_lt_right (by positivity), le_max_left _ _, le_max_right _ _⟩
+  refine ⟨min δ₁ δ₃, β, β', C₇, lt_min hδ₁ hδ₃, (min_le_left _ _).trans hδ₁8, hβ', hβ'β, hβ4, hC₇,
+    ?_⟩
+  intro δ hδ hδ₅ U W R H κ ρ z hW hWU hρ hzW hH hHκ hvar hz hmass hκρ ξ hξ σ₀ L T₀ hσ₀ hσ₀δ hT₀
+    hL hL1 hεβ _ hii
+  have hδ₁' : δ ≤ δ₁ := hδ₅.trans (min_le_left _ _)
+  have hδ₃' : δ ≤ δ₃ := hδ₅.trans (min_le_right _ _)
+  have hδ8 : δ ≤ 1 / 8 := hδ₁'.trans hδ₁8
+  obtain ⟨hDa, hDb, -, -⟩ :=
+    hdens δ hδ hδ₁' U W R H κ ρ z hW hWU hρ hzW hH hHκ hvar hz hmass hκρ
+  have haffδ := haff δ hδ hδ₃' U W R H κ ρ z hW hWU hρ hzW hH hHκ hvar hz hmass hκρ
+  have hmono := (Submission.dorag_monotonicity_density n k hn U W R H κ hW hWU hH hHκ hvar).1
+  obtain ⟨ι, ι', hιι', hιT₀, hspan, hproj⟩ :=
+    Submission.dorag_lip_orthonormal_coordinates n k T₀ hT₀
+  set ε : ℝ := δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))
+  have hε : 0 ≤ ε := Real.rpow_nonneg hδ.le _
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  obtain ⟨hξs, hξz⟩ := hξ
+  rw [mem_closedBall] at hξz
+  -- radius bookkeeping: `σ₀ ≤ δρ ≤ ρ/8`, `B_{3σ₀/4}(ξ) ⊆ B_{2δρ}(z)` and `5σ₀/4 ≤ (1 − 4δ)ρ`
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδρ8 : δ * ρ ≤ ρ / 8 := by linarith only [mul_le_mul_of_nonneg_right hδ8 hρ.le]
+  have hnear : ∀ y ∈ closedBall ξ (3 * σ₀ / 4), dist y z ≤ 2 * δ * ρ := fun y hy => by
+    linarith only [dist_triangle y ξ z, mem_closedBall.mp hy, hξz, hσ₀δ, hδρ]
+  have hfar : 5 * σ₀ / 4 ≤ (1 - 4 * δ) * ρ := by linarith only [hσ₀δ, hδρ8, hρ]
+  have h34 : 3 * σ₀ / 4 ≤ σ₀ := by linarith only [hσ₀]
+  have h24 : σ₀ / 2 ≤ 3 * σ₀ / 4 := by linarith only [hσ₀]
+  -- the density bounds (a), (b) at points of `B_{3σ₀/4}(ξ)` and radii `≤ 5σ₀/4`
+  have hDa' : ∀ y ∈ closedBall ξ (3 * σ₀ / 4), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 4 →
+      R.measure (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n) :=
+    fun y hy t ht ht' =>
+      hDa y (mem_closedBall.mpr (by linarith only [hnear y hy, hδρ])) t ht (ht'.trans hfar)
+  have hDb' : ∀ y ∈ R.measure.support ∩ closedBall ξ (3 * σ₀ / 4), ∀ t : ℝ, 0 < t →
+      t ≤ 5 * σ₀ / 4 → unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ 2 * R.measure (closedBall y t) :=
+    fun y hy t ht ht' =>
+      hDb y ⟨hy.1, mem_closedBall.mpr (by linarith only [hnear y hy.2, hδρ])⟩ t ht (ht'.trans hfar)
+  -- the tilt-excess density `e(x) = |p_x − p_{T₀}|²`
+  set e : Euclid (n + k) → ℝ := fun x => ∑ i : Fin (n + k),
+    ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+      T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+  -- (c) the cone condition on the good set, from the affine approximation and the density bounds
+  have hconeX := hcone R.measure (approxTangentPlane n R.carrier) T₀ ξ σ₀ ε β L
+    (Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R) hσ₀ hε hβ hL hεβ
+    (fun y hy t ht ht' => by
+      obtain ⟨S, -, hS⟩ := haffδ y ⟨hy.1, mem_closedBall.mpr (hnear y hy.2)⟩ t ht
+        (by linarith only [ht', hσ₀δ, hδρ])
+      exact ⟨S, hS⟩)
+    (fun y hy t ht ht' => hDb' y hy t ht (by linarith only [ht', hσ₀])) hii
+  -- (a) the good set `G = B_{3σ₀/4}(ξ) ∩ G'`
+  set G' : Set (Euclid (n + k)) := {y | y ∈ R.measure.support ∧ ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 →
+    ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂R.measure ≤
+      ENNReal.ofReal (β ^ 2 * L ^ 2 * t ^ n)}
+  have hconeG : ∀ y₁ ∈ closedBall ξ (3 * σ₀ / 4) ∩ G', ∀ y₂ ∈ closedBall ξ (3 * σ₀ / 4) ∩ G',
+      ‖(y₂ - y₁) - T₀.starProjection (y₂ - y₁)‖ ≤ C₈ * β * L * ‖y₂ - y₁‖ := by
+    rintro y₁ ⟨hy₁B, hy₁s, hy₁t⟩ y₂ ⟨hy₂B, hy₂s, -⟩
+    exact hconeX y₁ ⟨hy₁s, hy₁B⟩ y₂ ⟨hy₂s, hy₂B⟩ hy₁t
+  -- (d) the Lipschitz graph `F ⊇ G`, `Lip f ≤ Λ := 2√k C₈βL ≤ L`
+  have hlam : C₈ * β * L ≤ 1 / 2 := (mul_le_of_le_one_right (by positivity) hL1).trans hβC₈
+  obtain ⟨f, hfLip, hfbd, hGF⟩ := Submission.dorag_lip_cone_set_graph_extension n k T₀ ι ι' ξ
+    (closedBall ξ (3 * σ₀ / 4) ∩ G') (C₈ * β * L) (C₆ * ε * σ₀) hspan hproj (by positivity) hlam
+    (by positivity) hconeG (fun y hy => hii y ⟨hy.2.1, closedBall_subset_closedBall h34 hy.1⟩)
+  set F : Set (Euclid (n + k)) := range (fun v => ξ + ι v + ι' (f v))
+  have hΛ : 2 * Real.sqrt k * (C₈ * β * L) = (2 * Real.sqrt k * C₈ * β) * L := by ring
+  have hΛ0 : 0 ≤ 2 * Real.sqrt k * (C₈ * β * L) := by positivity
+  have hΛL : 2 * Real.sqrt k * (C₈ * β * L) ≤ L := by
+    rw [hΛ]
+    exact mul_le_of_le_one_left hL.le hβk
+  have hΛlam : 2 * Real.sqrt k * (C₈ * β * L) ≤ lam₀ := by
+    rw [hΛ]
+    exact (mul_le_of_le_one_right (by positivity) hL1).trans hβlam
+  obtain ⟨hFcone, hFH⟩ := Submission.dorag_lip_graph_cone_hausdorff_bound n k T₀ ι ι' ξ f _ hιι'
+    hproj hΛ0 (hΛL.trans hL1) hfLip
+  -- (f) the off-support estimate (10') at the points of `(F ∖ spt μ) ∩ B_{σ₀/4}(ξ)`
+  have hκσ₀ : κ * σ₀ ≤ 1 := by
+    have hσρ : σ₀ ≤ ρ := by linarith only [hσ₀δ, hδρ8, hρ]
+    linarith only [mul_le_mul_of_nonneg_left hσρ hκ, hκρ, hδ8]
+  have hoffX := hoff R.measure (approxTangentPlane n R.carrier) T₀ F ξ σ₀ κ _ hσ₀ hκ hκσ₀ hΛ0
+    hΛlam hξs hFcone
+    (fun y hy t ht ht' =>
+      hDa' y (closedBall_subset_closedBall h24 hy) t ht (by linarith only [ht', hσ₀]))
+    (fun y hy t ht ht' =>
+      hDb' y ⟨hy.1, closedBall_subset_closedBall h24 hy.2⟩ t ht (by linarith only [ht', hσ₀]))
+    (fun y s t hy hs hst ht => (hmono y s t hs hst ((closedBall_subset_closedBall' (by
+      linarith only [dist_triangle y ξ z, mem_closedBall.mp hy, ht, hξz, hσ₀δ, hδρ8, hρ])).trans
+        hzW)).2)
+  -- (b) the bad set `B_{3σ₀/4}(ξ) ∖ G`, and the holes `(F ∖ spt μ) ∩ B_{σ₀/4}(ξ)` of the graph
+  have hbad := Submission.dorag_lip_bad_set_measure_bound n k R.measure e ξ σ₀ (β ^ 2 * L ^ 2) hσ₀
+    (by positivity) hDa'
+  have hhole := Submission.dorag_lip_graph_hole_measure_bound n k R.measure e F
+    ((F \ R.measure.support) ∩ closedBall ξ (σ₀ / 4)) (closedBall ξ (3 * σ₀ / 4))
+    (ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) * unitBallVolume n) C₉ (σ₀ / 8)
+    isClosed_closedBall.measurableSet (fun η hη => hη.1.1) (fun η hη r hr => hFH η hη.1.1 r hr)
+    (fun η hη => by
+      obtain ⟨s, y, -, hs, h2s, -, hsn⟩ := hoffX η hη
+      have hηξ : dist η ξ ≤ σ₀ / 4 := hη.2
+      exact ⟨s, hs, by linarith only [h2s, hηξ],
+        closedBall_subset_closedBall' (by linarith only [h2s, hηξ, hσ₀]), hsn⟩)
+  -- 5A: `μ(B_{σ₀/2}(ξ) ∖ F) ≤ μ(B_{3σ₀/4}(ξ) ∖ G)`, plus the hole estimate
+  have h5A : R.measure (closedBall ξ (σ₀ / 2) \ F) +
+      μHE[n] ((F \ R.measure.support) ∩ closedBall ξ (σ₀ / 4)) ≤
+      ENNReal.ofReal (C₇ / L ^ 2) * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (e x) ∂R.measure := by
+    set X : ℝ≥0∞ := ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (e x) ∂R.measure
+    obtain ⟨cb, hcb, hcb_def⟩ : ∃ cb : ℝ, 0 ≤ cb ∧ cb = 2 * (5 / 2) ^ n / (β ^ 2 * L ^ 2) * ω :=
+      ⟨_, by positivity, rfl⟩
+    obtain ⟨K₁, hK₁, hK₁_def⟩ : ∃ K₁ : ℝ, 0 ≤ K₁ ∧ K₁ = 2 ^ ((n : ℝ) / 2) * ω * (15 ^ n * C₉) :=
+      ⟨_, by positivity, rfl⟩
+    have hbad' : R.measure (closedBall ξ (3 * σ₀ / 4) \ G') ≤ ENNReal.ofReal cb * X := by
+      have h : ENNReal.ofReal cb = ENNReal.ofReal (2 * (5 / 2) ^ n / (β ^ 2 * L ^ 2)) *
+          unitBallVolume n := by
+        rw [hcb_def, hωeq, ENNReal.ofReal_mul (by positivity)]
+      rw [h]
+      exact hbad
+    have h1 : R.measure (closedBall ξ (σ₀ / 2) \ F) ≤ ENNReal.ofReal cb * X := by
+      refine (measure_mono ?_).trans hbad'
+      rintro x ⟨hx, hxF⟩
+      have hx' : x ∈ closedBall ξ (3 * σ₀ / 4) := closedBall_subset_closedBall h24 hx
+      exact ⟨hx', fun hxG => hxF (hGF ⟨hx', hxG⟩)⟩
+    have h2 : R.measure (closedBall ξ (3 * σ₀ / 4) \ F) ≤ ENNReal.ofReal cb * X := by
+      refine (measure_mono ?_).trans hbad'
+      rintro x ⟨hx, hxF⟩
+      exact ⟨hx, fun hxG => hxF (hGF ⟨hx, hxG⟩)⟩
+    have h3 : ∫⁻ x in closedBall ξ (3 * σ₀ / 4), ENNReal.ofReal (e x) ∂R.measure ≤ X :=
+      lintegral_mono_set (closedBall_subset_closedBall h34)
+    have h4 : μHE[n] ((F \ R.measure.support) ∩ closedBall ξ (σ₀ / 4)) ≤
+        ENNReal.ofReal K₁ * (ENNReal.ofReal cb * X + X) := by
+      have h : ENNReal.ofReal K₁ = ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) * unitBallVolume n *
+          ENNReal.ofReal (15 ^ n * C₉) := by
+        rw [hK₁_def, hωeq, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity)]
+      rw [h]
+      exact hhole.trans (by gcongr)
+    -- `C_b/(βL)² + 2^{n/2}ω15ⁿC₉(C_b/(βL)² + 1) ≤ C₇/L²`, as `(βL)² ≤ 1`
+    have hreal : cb + K₁ * (cb + 1) ≤ C₇ / L ^ 2 := by
+      have ha : 0 < β ^ 2 * L ^ 2 := by positivity
+      have ha1 : β ^ 2 * L ^ 2 ≤ 1 :=
+        (mul_le_mul (pow_le_one₀ hβ.le (by linarith only [hβ4])) (pow_le_one₀ hL.le hL1)
+          (by positivity) zero_le_one).trans_eq (one_mul 1)
+      have h1a : 1 ≤ 1 / (β ^ 2 * L ^ 2) := by
+        rw [le_div_iff₀ ha]
+        linarith only [ha1]
+      calc cb + K₁ * (cb + 1) ≤ cb + K₁ * (cb + 1 / (β ^ 2 * L ^ 2)) := by gcongr
+        _ = (2 * (5 / 2) ^ n * ω + 2 ^ ((n : ℝ) / 2) * ω * (15 ^ n * C₉) *
+              (2 * (5 / 2) ^ n * ω + 1)) / β ^ 2 / L ^ 2 := by
+          rw [hcb_def, hK₁_def]
+          field_simp
+        _ ≤ C₇ / L ^ 2 := by gcongr
+    calc R.measure (closedBall ξ (σ₀ / 2) \ F) +
+          μHE[n] ((F \ R.measure.support) ∩ closedBall ξ (σ₀ / 4))
+        ≤ ENNReal.ofReal cb * X + ENNReal.ofReal K₁ * (ENNReal.ofReal cb * X + X) :=
+          add_le_add h1 h4
+      _ = ENNReal.ofReal (cb + K₁ * (cb + 1)) * X := by
+          rw [ENNReal.ofReal_add hcb (by positivity), ENNReal.ofReal_mul hK₁,
+            ENNReal.ofReal_add hcb zero_le_one, ENNReal.ofReal_one]
+          ring
+      _ ≤ ENNReal.ofReal (C₇ / L ^ 2) * X := by gcongr
+  -- 5B: under the small-tilt hypothesis `spt μ ∩ B_{σ₀/2}(ξ) ⊆ G ⊆ F`, and (10') excludes holes
+  have h5B : (∀ y ∈ R.measure.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 →
+      ∫⁻ x in closedBall y t, ENNReal.ofReal (e x) ∂R.measure ≤
+        ENNReal.ofReal (β' ^ 2 * L ^ 2 * t ^ n)) →
+      R.measure.support ∩ closedBall ξ (σ₀ / 8) = F ∩ closedBall ξ (σ₀ / 8) := by
+    intro hB
+    have h82 : σ₀ / 8 ≤ σ₀ / 2 := by linarith only [hσ₀]
+    have h84 : σ₀ / 8 ≤ σ₀ / 4 := by linarith only [hσ₀]
+    have hsG : ∀ y ∈ R.measure.support ∩ closedBall ξ (σ₀ / 2), y ∈ F := by
+      rintro y ⟨hys, hyB⟩
+      refine hGF ⟨closedBall_subset_closedBall h24 hyB, hys, fun t ht ht' => ?_⟩
+      calc ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂R.measure
+          ≤ ∫⁻ x in closedBall y t, ENNReal.ofReal (e x) ∂R.measure :=
+            lintegral_mono_set (closedBall_subset_closedBall (by linarith only [ht]))
+        _ ≤ ENNReal.ofReal (β' ^ 2 * L ^ 2 * t ^ n) := hB y ⟨hys, hyB⟩ t ht ht'
+        _ ≤ ENNReal.ofReal (β ^ 2 * L ^ 2 * t ^ n) := by gcongr
+    ext x
+    refine ⟨fun hx => ⟨hsG x ⟨hx.1, closedBall_subset_closedBall h82 hx.2⟩, hx.2⟩,
+      fun hx => ⟨?_, hx.2⟩⟩
+    by_contra hxs
+    have hxξ : dist x ξ ≤ σ₀ / 8 := hx.2
+    obtain ⟨s, y, hys, hs, h2s, hyx, hsn⟩ :=
+      hoffX x ⟨⟨hx.1, hxs⟩, closedBall_subset_closedBall h84 hx.2⟩
+    -- `B_{3s}(x) ⊆ B_{σ₀/2}(ξ)`, so `μ(B_{3s}(x) ∖ F) = 0`
+    have h0 : R.measure (closedBall x (3 * s) \ F) = 0 := by
+      refine measure_mono_null (fun w hw hws => hw.2 (hsG w ⟨hws, ?_⟩))
+        Measure.measure_compl_support
+      rw [mem_closedBall]
+      linarith only [dist_triangle w x ξ, mem_closedBall.mp hw.1, h2s, hxξ, hσ₀]
+    -- `B_{3s}(x) ⊆ B_{5s}(y)`, `y ∈ spt μ ∩ B_{σ₀/2}(ξ)` and `5s ≤ σ₀/2`
+    have hI : ∫⁻ w in closedBall x (3 * s), ENNReal.ofReal (e w) ∂R.measure ≤
+        ENNReal.ofReal (β' ^ 2 * L ^ 2 * (5 * s) ^ n) := by
+      have hyξ : dist y ξ ≤ σ₀ / 2 := by
+        linarith only [dist_triangle y x ξ, hyx, h2s, hxξ, hσ₀]
+      calc ∫⁻ w in closedBall x (3 * s), ENNReal.ofReal (e w) ∂R.measure
+          ≤ ∫⁻ w in closedBall y (5 * s), ENNReal.ofReal (e w) ∂R.measure :=
+            lintegral_mono_set
+              (closedBall_subset_closedBall' (by rw [dist_comm]; linarith only [hyx]))
+        _ ≤ _ := hB y ⟨hys, mem_closedBall.mpr hyξ⟩ (5 * s) (by positivity)
+            (by linarith only [h2s, hxξ, hσ₀])
+    rw [h0, zero_add] at hsn
+    have hlt : ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal (C₉ * (β' ^ 2 * L ^ 2 * (5 * s) ^ n)) := by
+      rw [ENNReal.ofReal_mul hC₉.le]
+      exact hsn.trans (by gcongr)
+    rw [ENNReal.ofReal_le_ofReal_iff (by positivity)] at hlt
+    have hsn0 : 0 < s ^ n := by positivity
+    have hL2 : L ^ 2 ≤ 1 := pow_le_one₀ hL.le hL1
+    have hsmall : C₉ * (β' ^ 2 * L ^ 2 * (5 * s) ^ n) ≤ s ^ n / 2 := by
+      calc C₉ * (β' ^ 2 * L ^ 2 * (5 * s) ^ n) = (C₉ * 5 ^ n * β' ^ 2) * L ^ 2 * s ^ n := by
+            rw [mul_pow]
+            ring
+        _ ≤ (1 / 2) * 1 * s ^ n := by gcongr
+        _ = s ^ n / 2 := by ring
+    linarith only [hlt, hsmall, hsn0]
+  refine ⟨ι, ι', f, hιι', hιT₀, fun v w => (hfLip v w).trans
+    (mul_le_mul_of_nonneg_right hΛL (norm_nonneg _)), fun v => (hfbd v).trans ?_, h5A, h5B⟩
+  calc Real.sqrt k * (C₆ * ε * σ₀) = (Real.sqrt k * C₆) * (ε * σ₀) := by ring
+    _ ≤ C₇ * (ε * σ₀) := by gcongr
+    _ = C₇ * ε * σ₀ := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
