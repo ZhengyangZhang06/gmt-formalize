@@ -6371,6 +6371,57 @@ theorem Submission.slicing_im_st_interior_product :
     rw [ContinuousLinearMap.neg_comp, hc, hm, neg_one_smul ℝ (simpleNVector τ')]
     exact neg_neg (simpleNVector τ')
 
+/-- Slices of a rectifiable triple are rectifiable triples (Simon Ch. 6, 4.1–4.4).  For `L¹`-a.e.
+`t`, `M_t = {x ∈ M : f(x) = t, G(x) ≠ 0}` with multiplicity `θ` and orientation
+`ξ_t = ξ ⌞ ν`, `ν = |G|⁻¹ G` (`ξ_t(x)(α) = ξ(x)(ν(x)♭ ∧ α)`), is a rectifiable `m`-triple in `U`.
+The co-area formula `slicing_im_coarea` for `(M, f, G)` feeds `slicing_im_st_measure_fields`
+(null-measurability of `M_t`, local integrability of `θ` on `M_t`, measurability of `ξ_t`),
+`slicing_im_st_slice_geometry` (`M_t` is countably `m`-rectifiable with weighted approximate
+tangent plane `TₓM ∩ G(x)^⊥`, Simon 4.1(2)) and the null transfer `slicing_im_st_ae_transfer`,
+which carries the orientation clause of `(M, θ, ξ)` and the tangential-gradient property to
+`Hᵐ`-a.e. point of `M_t`; `subset` and `pos` are inherited from `M_t ⊆ M`.  At such a point,
+`ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ₊₁` with `τ` an orthonormal basis of `TₓM ∋ G(x) ≠ 0`, so
+`slicing_im_st_interior_product` gives an orthonormal basis `τ'` of `TₓM ∩ G(x)^⊥` with
+`ξ_t(x) = ±τ'₁ ∧ ⋯ ∧ τ'ₘ` (Simon 4.3). -/
+theorem Submission.slicing_im_slice_triple :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1))
+      (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U →
+      IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → Measurable G →
+      (∀ x, ‖G x‖ ≤ L) →
+      (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+          G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) →
+      ∀ᵐ t ∂(volume : Measure ℝ), IsRectifiableTriple U m {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} θ
+        (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+          (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)
+            (innerSL ℝ (‖G x‖⁻¹ • G x))))) := by
+  intro P m U M θ ξ f L G hU hT hf hG hGL hTG
+  -- The co-area formula for `(M, f, G)`.
+  have hCA := Submission.slicing_im_coarea P m U M θ ξ f L G hU hT hf hG hGL hTG
+  -- For a.e. `t`: `M_t` is `Hᵐ`-null-measurable, `θ` is locally `Hᵐ`-integrable on `M_t` and
+  -- `ξ_t` is `Hᵐ ⌞ M_t`-a.e. strongly measurable.
+  have hMF := Submission.slicing_im_st_measure_fields P m U M θ ξ f L G hU hT
+    hf.continuous.measurable hG hGL hCA
+  -- For a.e. `t`: `M_t` is countably `m`-rectifiable and, `Hᵐ`-a.e. on `M_t`, `TₓM ∩ G(x)^⊥` is
+  -- a weighted approximate tangent plane of `(M_t, θ)`.
+  have hSG := Submission.slicing_im_st_slice_geometry P m U M θ ξ f L G hU hT hf hG hGL hTG hCA
+  -- For a.e. `t`: the orientation clause of `(M, θ, ξ)` and the tangential-gradient property hold
+  -- `Hᵐ`-a.e. on `M ∩ f⁻¹{t}`.
+  have hNT := Submission.slicing_im_st_ae_transfer P m M f G hCA _ (hT.orients.and hTG)
+  filter_upwards [hMF, hSG, hNT] with t ⟨hnm, hint, hasm⟩ ⟨hcr, htan⟩ hp
+  have hsub : {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ⊆ M ∩ f ⁻¹' {t} := fun x hx => ⟨hx.1, hx.2.1⟩
+  refine ⟨fun x hx => hT.subset hx.1, hnm, hcr, fun x hx => hT.pos x hx.1, hint, hasm, ?_⟩
+  -- Orientation: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ₊₁` with `span τ = TₓM ∋ G(x) ≠ 0`, so
+  -- `ξ_t(x) = ±τ'₁ ∧ ⋯ ∧ τ'ₘ` with `span τ' = TₓM ∩ G(x)^⊥`, a weighted approximate tangent plane
+  -- of `(M_t, θ)` at `x`.
+  filter_upwards [ae_restrict_mem₀ hnm, htan, ae_restrict_of_ae_restrict_of_subset hsub hp]
+    with x hx hxtan ⟨⟨τ, hτ, hτT, hξ⟩, hxTG⟩
+  obtain ⟨τ', hτ', hspan, hξ'⟩ :=
+    Submission.slicing_im_st_interior_product P m τ (G x) (ξ x) hτ (hxTG _ hτT).1 hx.2.2 hξ
+  refine ⟨τ', hτ', ?_, hξ'⟩
+  rw [hspan]
+  exact hxtan _ hτT
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
