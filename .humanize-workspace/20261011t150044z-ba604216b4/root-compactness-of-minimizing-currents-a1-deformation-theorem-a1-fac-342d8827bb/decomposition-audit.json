@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcdtfrpo_|approxTangent_le|orthonormal_frame_sign|IsUnitOrientationOf' project/GMT mathlib/Mathlib -g '*.lean'",
+        "rg -n 'theorem setIntegral_eq_zero_of_forall_eq_zero|theorem integral_pos_iff_support_of_nonneg|theorem Continuous.integrable_of_hasCompactSupport|class Regular|class IsFiniteMeasureOnCompacts|mem_support_iff_forall' mathlib/Mathlib/MeasureTheory",
+        "sed -n '70,215p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '620,670p' mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "sed -n '970,1005p' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "cmcdtfrpo_approxTangent_le_of_sub_mem",
+        "cmcdtfrpo_orthonormal_frame_sign",
+        "rg -l 'cmcdtfrpo_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition*.json' -g 'parent-child-handoff.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/plane-orientation-independent-audit-xu_tmg1w/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/podecomp/lean/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/podecomp/lean/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/decomposition-v1.json",
+        "/tmp/plane-orientation-independent-audit-xu_tmg1w/StandaloneTypes.lean",
+        "/tmp/podecomp/lean/EndToEnd.lean",
+        "/tmp/podecomp/lean/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate: it separates independent analytic and multilinear-algebra obligations. Both dependency lists are correctly empty and acyclic. Coordinate expansion, equal dimensions, and the two orientation signs complete precisely the selected frozen parent statement; the assembly was independently compiled. Both one-line child propositions elaborate without their implementations. Their inspected proofs and the complete assembly compile with only propext, Classical.choice, and Quot.sound. Snapshot revisions match the compiler packages, including the consulted source files. Neither proposed bare identifier occurs in the 1609-node DAG or snapshot declarations; supplementary artifact matches belong only to this selected node. No cross-branch declaration is reused. The relevant measure and determinant lemmas have the required hypotheses, and no ambiguous inline Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_le_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including arbitrary A without measurability. Every blow-up lies in V. Closedness gives a positive-distance compact bump at any q ∈ Q outside V; its blow-up integrals vanish, and uniqueness of the approximate-tangent limit forces its Q-integral to vanish. The dimension hypothesis supplies full support and regularity of the restricted plane measure, making that same integral strictly positive. All hypotheses and integrability requirements are justified, including n = 0. The proof is complete, non-circular, and directly formalizable; its exact implementation compiles. The bare name is unreserved."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, with the sign chosen uniformly before quantifying over covectors. Orthonormality constructs a basis of the common span and transfers to its induced inner product. Restricting each alternating form gives evaluation multiplied by one fixed basis determinant; the orthonormal-basis determinant theorem makes this coefficient ±1. The finite-dimensional spanning argument and empty-frame case require no additional hypotheses. The proof is complete, independent of the parent and sibling, and its exact implementation compiles. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

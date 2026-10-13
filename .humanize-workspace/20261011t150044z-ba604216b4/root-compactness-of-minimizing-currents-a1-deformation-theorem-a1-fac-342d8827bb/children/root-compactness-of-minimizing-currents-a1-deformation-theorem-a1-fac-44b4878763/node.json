@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.frame_sign-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "depth": 5,
+  "title": "Orthonormal frames with the same span evaluate all n-covectors equally up to one global sign",
+  "statement": "Let P, n ∈ ℕ and let τ, e : Fin n → ℝ^P (= Euclid P) be orthonormal families (for the Euclidean inner product) with span(range τ) = span(range e). Then one of the following holds:\n- α(τ_0, …, τ_{n−1}) = α(e_0, …, e_{n−1}) for every n-covector α, or\n- α(τ_0, …, τ_{n−1}) = −α(e_0, …, e_{n−1}) for every n-covector α.\nHere an n-covector is a continuous alternating n-linear map α : (ℝ^P)^n → ℝ, that is, an element of Covector (Euclid P) n.",
+  "lean_statement": "∀ (P n : ℕ) (τ e : Fin n → Euclid P), Orthonormal ℝ τ → Orthonormal ℝ e → Submodule.span ℝ (Set.range τ) = Submodule.span ℝ (Set.range e) → (∀ α : Covector (Euclid P) n, α τ = α e) ∨ (∀ α : Covector (Euclid P) n, α τ = -α e)",
+  "lean_name": "cmcdtfrpo_orthonormal_frame_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-44b4878763-a1"
+}
