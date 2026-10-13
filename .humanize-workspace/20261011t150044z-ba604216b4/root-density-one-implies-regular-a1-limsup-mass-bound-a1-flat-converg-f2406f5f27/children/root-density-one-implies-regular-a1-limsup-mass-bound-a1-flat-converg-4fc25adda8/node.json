@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.zero_neg-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "depth": 6,
+  "title": "Zero and negated currents: integrality, mass of 0 − X, and the bound |X(ω)| ≤ sup|ω|·M(X)",
+  "statement": "Let P, k ∈ ℕ and U ⊆ ℝ^P open. (a) The zero current 0 ∈ 𝒟_k(U) is integer multiplicity. (b) If X ∈ 𝒟_k(U) is integer multiplicity then so is 0 − X (contract subtraction). (c) M_G(0 − X) = M_G(X) for every X ∈ 𝒟_k(U) and every G ⊆ ℝ^P. (d) If X ∈ 𝒟_k(U) with M(X) < ∞, ω ∈ 𝒟^k(U) and s > 0 with |ω(x)| ≤ s for all x (Euclidean coefficient norm covectorEuclideanNorm), then |X(ω)| ≤ s·M(X), where M(X) is read as a real number via ENNReal.toReal.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)), IsOpen U → IsIntegerMultiplicity (0 : GeometricCurrentOn U k) ∧ (∀ X : GeometricCurrentOn U k, IsIntegerMultiplicity X → IsIntegerMultiplicity (0 - X)) ∧ (∀ (X : GeometricCurrentOn U k) (G : Set (Euclid P)), (0 - X).massOn G = X.massOn G) ∧ ∀ (X : GeometricCurrentOn U k) (ω : TestFormOn U k) (s : ℝ), 0 < s → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ s) → |X ω| ≤ s * X.mass.toReal",
+  "lean_name": "dor_lmb_fcd_sd_zero_neg",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-4fc25adda8-a1"
+}
