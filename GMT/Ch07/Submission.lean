@@ -451,6 +451,91 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gram-determinant chain rule along an orthonormal frame** (the Jacobian chain rule of the area
+formula, used for Simon 7.5.8).  Let `Λ : ℝᵐ → ℝᵈ` be linear and `eₖ` the standard basis of `ℝᵐ`.
+(i) If `Λ` is injective, `det[⟨Λeₖ, Λeₗ⟩] > 0`.  (ii) If `σ` is an orthonormal frame spanning
+`range Λ` and `Γ : ℝᵈ → ℝᴾ` is linear, `det[⟨ΓΛeₖ, ΓΛeₗ⟩] = det[⟨Γσᵢ, Γσⱼ⟩] · det[⟨Λeₖ, Λeₗ⟩]`.
+Writing `Λeₗ = ∑ₐ Rₐₗ σₐ` (`Rₐₗ = ⟨σₐ, Λeₗ⟩`), `[⟨GΛeₖ, GΛeₗ⟩] = Rᵀ[⟨Gσₐ, Gσ_b⟩]R` for every
+linear `G`; take `G = Γ` and `G = id`.  For (i), let `σ` be an orthonormal basis of `range Λ` (of
+dimension `m`): then `det[⟨Λeₖ, Λeₗ⟩] = (det R)²`, and `R` is invertible as `Λ` is injective. -/
+theorem Submission.codim1_lura_gram_det_comp_orthonormal : ∀ (m d P : ℕ) (Λ : Euclid m →L[ℝ] Euclid d), (Injective Λ → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1)) (Λ (EuclideanSpace.single l 1)))) ∧ ∀ (Γ : Euclid d →L[ℝ] Euclid P) (σ : Fin m → Euclid d), Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = LinearMap.range (Λ : Euclid m →ₗ[ℝ] Euclid d) → Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Γ (Λ (EuclideanSpace.single k 1))) (Γ (Λ (EuclideanSpace.single l 1)))) = Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (Γ (σ i)) (Γ (σ j))) * Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1)) (Λ (EuclideanSpace.single l 1))) := by
+  intro m d P Λ
+  -- for an orthonormal frame `σ` of `range Λ`: `Λeₗ = ∑ₐ Rₐₗ σₐ`,
+  -- `[⟨GΛeₖ, GΛeₗ⟩] = Rᵀ[⟨Gσₐ, Gσ_b⟩]R` and `det[⟨Λeₖ, Λeₗ⟩] = (det R)²` (`[⟨σₐ, σ_b⟩] = 1`)
+  have frame : ∀ σ : Fin m → Euclid d, Orthonormal ℝ σ →
+      Submodule.span ℝ (Set.range σ) = LinearMap.range (Λ : Euclid m →ₗ[ℝ] Euclid d) →
+      ∃ R : Matrix (Fin m) (Fin m) ℝ, (∀ l, Λ (EuclideanSpace.single l 1) = ∑ a, R a l • σ a) ∧
+        (∀ (Q : ℕ) (G : Euclid d →L[ℝ] Euclid Q),
+          (Matrix.of fun k l : Fin m => inner ℝ (G (Λ (EuclideanSpace.single k 1)))
+            (G (Λ (EuclideanSpace.single l 1)))) =
+            R.transpose * (Matrix.of fun a b : Fin m => inner ℝ (G (σ a)) (G (σ b))) * R) ∧
+        Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1))
+          (Λ (EuclideanSpace.single l 1))) = R.det * R.det := by
+    intro σ hσ hspan
+    obtain ⟨R, hR⟩ : ∃ R : Matrix (Fin m) (Fin m) ℝ,
+        ∀ l, Λ (EuclideanSpace.single l 1) = ∑ a, R a l • σ a := by
+      refine ⟨Matrix.of fun a l => inner ℝ (σ a) (Λ (EuclideanSpace.single l 1)), fun l => ?_⟩
+      have hl : Λ (EuclideanSpace.single l 1) ∈ Submodule.span ℝ (Set.range σ) :=
+        hspan ▸ LinearMap.mem_range_self (Λ : Euclid m →ₗ[ℝ] Euclid d) _
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hl
+      simp only [Matrix.of_apply]
+      rw [← hc]
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [hσ.inner_right_fintype]
+    have key : ∀ (Q : ℕ) (G : Euclid d →L[ℝ] Euclid Q),
+        (Matrix.of fun k l : Fin m => inner ℝ (G (Λ (EuclideanSpace.single k 1)))
+          (G (Λ (EuclideanSpace.single l 1)))) =
+          R.transpose * (Matrix.of fun a b : Fin m => inner ℝ (G (σ a)) (G (σ b))) * R := by
+      intro Q G
+      ext k l
+      rw [Matrix.of_apply, hR k, hR l]
+      simp only [map_sum, map_smul, sum_inner, inner_sum, real_inner_smul_left,
+        real_inner_smul_right, Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply,
+        Finset.sum_mul]
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+      ring
+    refine ⟨R, hR, key, ?_⟩
+    have hone : (Matrix.of fun a b : Fin m => inner ℝ (σ a) (σ b)) = 1 := by
+      ext a b
+      rw [Matrix.of_apply, orthonormal_iff_ite.mp hσ a b, Matrix.one_apply]
+    have h := key d (ContinuousLinearMap.id ℝ (Euclid d))
+    simp only [ContinuousLinearMap.id_apply] at h
+    rw [h, hone, Matrix.mul_one, Matrix.det_mul, Matrix.det_transpose]
+  refine ⟨fun hΛ => ?_, fun Γ σ hσ hspan => ?_⟩
+  · -- (i): `σ` an orthonormal basis of `range Λ`, of dimension `m`; if `Rv = 0` then
+    -- `Λ(∑ₗ vₗeₗ) = ∑ₐ (Rv)ₐσₐ = 0`, so `v = 0`: `det R ≠ 0`
+    set W := LinearMap.range (Λ : Euclid m →ₗ[ℝ] Euclid d) with hW
+    have hdim : Module.finrank ℝ W = m := by
+      rw [hW, LinearMap.finrank_range_of_inj hΛ, finrank_euclideanSpace_fin]
+    set b : OrthonormalBasis (Fin m) ℝ W := (stdOrthonormalBasis ℝ W).reindex (finCongr hdim)
+    have hσ : Orthonormal ℝ (fun a => (b a : Euclid d)) :=
+      b.orthonormal.comp_linearIsometry W.subtypeₗᵢ
+    have hspan : Submodule.span ℝ (Set.range fun a => (b a : Euclid d)) = W := by
+      rw [show (fun a => (b a : Euclid d)) = W.subtype ∘ b from rfl, Set.range_comp,
+        Submodule.span_image, ← b.coe_toBasis, b.toBasis.span_eq, Submodule.map_top,
+        Submodule.range_subtype]
+    obtain ⟨R, hR, -, hdet⟩ := frame _ hσ hspan
+    rw [hdet]
+    refine mul_self_pos.mpr fun h0 => ?_
+    obtain ⟨v, hv, hRv⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr h0
+    apply hv
+    have hsum : Λ (∑ l, v l • EuclideanSpace.single l 1) = 0 := by
+      simp only [map_sum, map_smul, hR, Finset.smul_sum, smul_smul]
+      rw [Finset.sum_comm]
+      simp only [← Finset.sum_smul]
+      refine Finset.sum_eq_zero fun a _ => ?_
+      have ha : ∑ l, v l * R a l = 0 := by
+        simpa [Matrix.mulVec, dotProduct, mul_comm] using congrFun hRv a
+      rw [ha, zero_smul]
+    have hzero := hΛ (hsum.trans (map_zero Λ).symm)
+    funext l
+    exact Fintype.linearIndependent_iff.mp
+      (EuclideanSpace.orthonormal_single (ι := Fin m) (𝕜 := ℝ)).linearIndependent v hzero l
+  · -- (ii): `det(RᵀHR) = det R · det H · det R` with `H = [⟨Γσₐ, Γσ_b⟩]`
+    obtain ⟨R, -, key, hdet⟩ := frame σ hσ hspan
+    rw [key P Γ, hdet, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
