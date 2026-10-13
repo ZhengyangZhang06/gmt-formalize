@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+        "grep -n 'def IsGaussGreenPair|def normalAverage|def reducedBoundary|def reducedNormal|def HasApproxTangentPlaneWithMultiplicity|def DeGiorgiTheorem|def ApproximateTangentCharacterization|def GaussGreenRepresentation' <snapshot>/project/GMT/Ch03/Contract.lean",
+        "grep -rn -i 'de.?giorgi|reducedBoundary' <snapshot>/mathlib/Mathlib .lake/packages/simongmt/Poincare",
+        "grep -n -i 'compactness|arzela' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/*.lean",
+        "grep -n 'def blowUpMap|def HasApproximateTangentSpaceAt|theorem countablyRectifiable_iUnion' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "grep -n 'def euclideanDivergence|support_euclideanDivergence_subset|euclideanDivergence_eq_sum_inner|def IsLocallyBV|isLocallyBV_of_locallyL1_of_uniform_bound' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "grep -rn 'simon_theorem_3_3|def dimensionalUpperDensity|def dimensionalDensityQuotient|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def realUnitBallVolume' .lake/packages/simongmt/Poincare/SimonGMT",
+        "grep -n 'WeakDerivativesZero|constancyMollifier' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "grep 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_average|theorem tendsto_filterAt|protected def vitaliFamily' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering",
+        "grep 'theorem Monotone.ae_differentiableAt|theorem eLpNorm_le_eLpNorm_fderiv_of_eq|theorem LipschitzWith.ae_differentiableAt|theorem tendsto_of_subseq_tendsto|theorem arzela_ascoli|theorem integral_Ioi_of_hasDerivAt_of_tendsto' <snapshot>/mathlib/Mathlib",
+        "grep 'MonotoneOn.intervalIntegral_deriv_mem_uIcc|MonotoneOn.intervalIntegral_slope_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral",
+        "grep 'StronglyMeasurable.integral_prod_right|measurable_measure_prodMk_left|measurableSet_exists_tendsto|StronglyMeasurable.limUnder' <snapshot>/mathlib/Mathlib",
+        "grep 'euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_homothety_image|measurePreserving_euclideanHausdorffMeasure|theorem hausdorffMeasure_image|notation \"μHE[' <snapshot>/mathlib/Mathlib",
+        "grep 'withDensity_rnDeriv_eq|addHaar_image_homothety|theorem addHaar_smul|ae_convolution_tendsto_right_of_locallyIntegrable|finrank_orthogonal_span_singleton|LinearIsometryEquiv.measurePreserving|tendsto_measure_iUnion_atTop|Filter.Tendsto.limUnder_eq|HasCompactSupport.contDiff_convolution_left|OrthonormalBasis.volume_parallelepiped' <snapshot>/mathlib/Mathlib",
+        "python3 -I (importlib of verifier/gmt-compare.py) contract_scope(Contract.lean, 'GMT.Ch03.main_theorem') -> NodeChallenge prefix; lake env lean /tmp/dg-decomp/challenges/Challenge_*.lean (10 files), /tmp/dg-decomp/Assembly.lean, /tmp/dg-decomp/Interfaces.lean",
+        "python3 -I lean_name collision check against dag.json (73 nodes)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/tmp/dg-decomp/Assembly.lean",
+        "/tmp/dg-decomp/Interfaces.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c). Neither Mathlib nor the pinned SimonGMT has a De Giorgi theorem, BV subsequence compactness, a Lipschitz Gauss–Green identity, density estimates for the reduced boundary, half-space rigidity, or measurability of the reduced boundary. SimonGMT FinitePerimeter.lean records only the definitions, and BV.lean states that subsequence extraction 'remains the compactness obligation'. These obligations therefore become children. Library facts located for the child proofs: Besicovitch differentiation (VitaliFamily.ae_tendsto_average, Besicovitch.ae_tendsto_rnDeriv, Besicovitch.tendsto_filterAt); the Gagliardo–Nirenberg–Sobolev inequality (eLpNorm_le_eLpNorm_fderiv_of_eq); Monotone.ae_differentiableAt and MonotoneOn.intervalIntegral_deriv_mem_uIcc; Rademacher; Arzelà–Ascoli; a.e. convergence of mollifiers; product measurability; μHE scaling and isometry invariance; SimonGMT simon_theorem_3_3 with simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure; countablyRectifiable_iUnion; WeakDerivativesZero. All ten child types elaborate in the exact NodeChallenge scope. The parent assembly and the sibling-interface checks compile against stubs, with propext, Classical.choice, Quot.sound and the stubs' sorryAx as the only axioms. No lean_name collides with dag.json."
+    }
+  ],
+  "parent_id": "root.de_giorgi-a1",
+  "child_id": "root.de_giorgi-a1.tangent_measure-a1",
+  "subproblem": {
+    "key": "tangent_measure",
+    "title": "(‡): μ has approximate tangent plane (span{ν_E(x)})^⊥ with multiplicity 1 at every reduced-boundary point",
+    "statement": "Let n ∈ ℕ, N := n + 1, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable and (μ, ν) a Gauss-Green pair for (U, E) (IsGaussGreenPair U E μ ν). Let x ∈ ∂*E := reducedBoundary U μ ν and P := (span{ν_E(x)})^⊥ with ν_E(x) := reducedNormal μ ν x. Then HasApproxTangentPlaneWithMultiplicity n μ x P 1: finrank P = n and for every f ∈ C_c(ℝ^N, ℝ), (rⁿ)⁻¹ ∫ f(η_{x,r}(y)) dμ(y) → 1·∫_P f dHⁿ as r ↓ 0 (Hⁿ = μHE[n], η_{x,r} = blowUpMap x r).",
+    "lean_statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, HasApproxTangentPlaneWithMultiplicity n μ x ((Submodule.span ℝ {reducedNormal μ ν x})ᗮ) 1",
+    "lean_name": "deGiorgi_tangent_measure",
+    "depends_on": [
+      "blowup_identity",
+      "density_estimates",
+      "blowup_halfspace"
+    ],
+    "natural_proof": "Source. Parent proof Part 4; Simon, Ch. 3, proof of Theorem 4.3, chapter-03.txt lines 739-746 (\"Then by 4.1, (1) and (2) we have μ_{ρ⁻¹E} → Hⁿ⌞{x^{n+1} = 0} as ρ ↓ 0\"), with erratum E3 (the mass bound (6') is also needed to control ∫φ(1 − ν_{n+1})dμ_ρ) and the sign correction E1 for the limiting half-space.\n\nNotation. L^N = volume; Hⁿ = μHE[n]; e := ν_E(x) = reducedNormal μ ν x; P := (span{e})^⊥; H := {y : ⟨y, e⟩ > 0}; η_r := η_{x,r} = blowUpMap x r; E_r := η_r(E); D_vφ(y) := Dφ(y)v; ω_n := Lⁿ(B_1(0)) (ω₀ = 1).\n\nStep 0 (dimension). As x ∈ ∂*E, normalAverage(x, ρ) → v with |v| = 1; limits along the non-trivial filter 𝓝[>]0 are unique, so e = limUnder(...) = v and |e| = 1. Hence span{e} is a line and finrank P = (n + 1) − 1 = n (Mathlib Submodule.finrank_orthogonal_span_singleton).\n\nStep 1 (flat facts). Choose an orthonormal basis b_1, ..., b_n of P; with b_{n+1} := e it is an orthonormal basis of ℝ^N. T(z, t) := Σ_{i≤n} z_i b_i + te is a linear isometry ℝⁿ × ℝ → ℝ^N (Euclidean norms) carrying Lⁿ ⊗ L¹ to L^N (T is the measure-preserving coordinate identification of ℝⁿ × ℝ with ℝ^{n+1} followed by the linear isometry of ℝ^N sending the standard basis to (b_1, ..., b_n, e), and linear isometries preserve Lebesgue measure: Mathlib LinearIsometryEquiv.measurePreserving), and ι(z) := T(z, 0) is an isometry of ℝⁿ onto P. Since Hausdorff measure is invariant under isometries and μHE[n] = Lⁿ on ℝⁿ (Mathlib Isometry.hausdorffMeasure_image, IsometryEquiv.measurePreserving_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume), Hⁿ⌞P is the image of Lⁿ under ι: ∫_P f dHⁿ = ∫_{ℝⁿ} f(ι(z)) dz for bounded Borel f with compact support, and Hⁿ(P ∩ B_R(0)) = ω_nRⁿ < ∞. (For n = 0, P = {0} and H⁰⌞P is the unit mass at 0.)\n For φ ∈ C¹_c(ℝ^N, ℝ): since (d/dt)φ(T(z, t)) = D_eφ(T(z, t)), Fubini and the fundamental theorem of calculus (φ has compact support) give\n ∫_H D_eφ dL^N = ∫_{ℝⁿ} ∫_0^∞ (d/dt)φ(T(z, t)) dt dz = ∫_{ℝⁿ} (−φ(T(z, 0))) dz = −∫_P φ dHⁿ.\n\nStep 2 (constants). Sibling density_estimates gives ρ₁ > 0 with B_{ρ₁}(x) ⊆ U and C (replace C by max(C, 0)) with μ(B_ρ(x)) ≤ Cρⁿ for every ρ ∈ (0, ρ₁), and ε(ρ) := (ρⁿ)⁻¹ ∫_{B_ρ(x)} |ν − e| dμ → 0 as ρ ↓ 0.\n\nStep 3 (C¹ test functions; parent Part 4 (i)-(ii)). Let φ ∈ C¹_c(ℝ^N, ℝ) with tsupport φ ⊆ B_R(0) for some R > 0, and r ∈ (0, ρ₁/R). Then η_r⁻¹(B_R(0)) = B_{rR}(x) ⊆ U, so B_R(0) ⊆ η_r(U), and sibling blowup_identity with g := φe (C¹, compact support; div g = D_eφ; ⟨g(η_r(y)), ν(y)⟩ = φ(η_r(y))⟨e, ν(y)⟩) gives\n (rⁿ)⁻¹ ∫ φ(η_r(y))⟨e, ν(y)⟩ dμ(y) = −∫_{E_r} D_eφ.\n (i) By sibling blowup_halfspace with the compact set K := tsupport φ: |∫_{E_r} D_eφ − ∫_H D_eφ| ≤ sup|D_eφ|·L^N(K ∩ (E_r Δ H)) → 0, so by Step 1 the left side tends to −∫_H D_eφ = ∫_P φ dHⁿ as r ↓ 0.\n (ii) Since |1 − ⟨e, ν⟩| = |⟨e, e − ν⟩| ≤ |ν − e| and φ∘η_r vanishes outside B_{rR}(x): |(rⁿ)⁻¹ ∫ φ(η_r(y))(1 − ⟨e, ν(y)⟩) dμ(y)| ≤ sup|φ|·(rⁿ)⁻¹ ∫_{B_{rR}(x)} |ν − e| dμ = sup|φ|·Rⁿ·ε(rR) → 0.\n All integrals here are finite (bounded integrands supported in B_{rR}(x), μ(B_{rR}(x)) < ∞). Adding (i) and (ii): (rⁿ)⁻¹ ∫ φ(η_r(y)) dμ(y) → ∫_P φ dHⁿ as r ↓ 0.\n\nStep 4 (continuous test functions; parent Part 4 (iii)). Let f ∈ C_c(ℝ^N, ℝ) and choose R > 1 with tsupport f ⊆ B_{R−1}(0). Given δ > 0, mollifying f with radius < 1 gives φ ∈ C^∞_c with tsupport φ ⊆ B_R(0) and sup|f − φ| ≤ δ (f is uniformly continuous). For r ∈ (0, ρ₁/R): |(rⁿ)⁻¹ ∫ (f − φ)(η_r(y)) dμ(y)| ≤ δ(rⁿ)⁻¹μ(B_{rR}(x)) ≤ δCRⁿ, and |∫_P f dHⁿ − ∫_P φ dHⁿ| ≤ δHⁿ(P ∩ B_R(0)) = δω_nRⁿ. With Step 3 for φ: limsup_{r↓0} |(rⁿ)⁻¹ ∫ f(η_r(y)) dμ(y) − ∫_P f dHⁿ| ≤ δ(C + ω_n)Rⁿ. As δ > 0 is arbitrary, (rⁿ)⁻¹ ∫ f(η_r(y)) dμ(y) → ∫_P f dHⁿ = 1·∫_P f dHⁿ.\n\nStep 5 (conclusion). finrank P = n (Step 0) and the convergence of Step 4 for every f ∈ C_c(ℝ^N, ℝ) are exactly HasApproxTangentPlaneWithMultiplicity n μ x ((span{ν_E(x)})^⊥) 1. ∎",
+    "proof_key_steps": [
+      "|e| = 1 for e = ν_E(x), so finrank (span{e})^⊥ = n; via an isometry T : ℝⁿ × ℝ → ℝ^N, −∫_H D_eφ = ∫_P φ dHⁿ and Hⁿ(P ∩ B_R(0)) = ω_nRⁿ.",
+      "Sibling blowup_identity with g = φe: (rⁿ)⁻¹∫φ(η_r(y))⟨e, ν⟩dμ = −∫_{E_r}D_eφ → −∫_H D_eφ = ∫_Pφ dHⁿ by sibling blowup_halfspace.",
+      "The defect (rⁿ)⁻¹∫φ(η_r(y))(1 − ⟨e, ν⟩)dμ is at most sup|φ|Rⁿε(rR) → 0 by sibling density_estimates.",
+      "Uniform approximation of f ∈ C_c by C¹ functions, using μ(B_{rR}(x)) ≤ C(rR)ⁿ and Hⁿ(P ∩ B_R) = ω_nRⁿ, gives the limit for every f ∈ C_c."
+    ]
+  },
+  "audit": {
+    "key": "tangent_measure",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof verifies dimension n, the correctly normalized flat-plane integral identity, and the excess error estimate. Uniform approximation extends convergence from C¹ tests to every C_c test. Multiplicity is exactly one, including the H⁰ point-mass case."
+  },
+  "resolved_dependencies": [
+    "root.de_giorgi-a1.blowup_identity-a1",
+    "root.de_giorgi-a1.density_estimates-a1",
+    "root.de_giorgi-a1.blowup_halfspace-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1/parent-supplied-natural-proof.json"
+}

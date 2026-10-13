@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "(‡): μ has approximate tangent plane (span{ν_E(x)})^⊥ with multiplicity 1 at every reduced-boundary point",
+  "statement": "Let n ∈ ℕ, N := n + 1, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable and (μ, ν) a Gauss-Green pair for (U, E) (IsGaussGreenPair U E μ ν). Let x ∈ ∂*E := reducedBoundary U μ ν and P := (span{ν_E(x)})^⊥ with ν_E(x) := reducedNormal μ ν x. Then HasApproxTangentPlaneWithMultiplicity n μ x P 1: finrank P = n and for every f ∈ C_c(ℝ^N, ℝ), (rⁿ)⁻¹ ∫ f(η_{x,r}(y)) dμ(y) → 1·∫_P f dHⁿ as r ↓ 0 (Hⁿ = μHE[n], η_{x,r} = blowUpMap x r).",
+  "lean_statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, HasApproxTangentPlaneWithMultiplicity n μ x ((Submodule.span ℝ {reducedNormal μ ν x})ᗮ) 1",
+  "lean_name": "deGiorgi_tangent_measure",
+  "depends_on": [
+    "root.de_giorgi-a1.blowup_identity-a1",
+    "root.de_giorgi-a1.density_estimates-a1",
+    "root.de_giorgi-a1.blowup_halfspace-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.blowup_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.blowup_halfspace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-a1"
+}

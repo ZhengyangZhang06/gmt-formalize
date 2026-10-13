@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "Compactness for sets with locally uniformly bounded perimeter (Simon Ch. 2, Thm 2.6, for characteristic functions)",
+  "statement": "Let N ∈ ℕ and let (F_k)_{k∈ℕ} be Lebesgue null-measurable subsets of ℝ^N. Assume that for every R > 0 there is C_R ∈ ℝ such that for all sufficiently large k and every C¹ map g : ℝ^N → ℝ^N with compact support, tsupport g ⊆ B_R(0) and |g(y)| ≤ 1 for all y, ∫_{F_k} div g dL^N ≤ C_R. Then there are a strictly increasing φ : ℕ → ℕ and a measurable G ⊆ ℝ^N such that L^N(K ∩ (F_{φ(k)} Δ G)) → 0 as k → ∞ for every compact K ⊆ ℝ^N.",
+  "lean_statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F k, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ G : Set (Rn N), MeasurableSet G ∧ ∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F (φ k)) G)) atTop (𝓝 0)",
+  "lean_name": "deGiorgi_indicator_compactness",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-a1"
+}

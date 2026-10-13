@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.boundary_measurable-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "The reduced boundary is a Borel set (parent Part 5b)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, μ a Borel measure on ℝ^N with μ(ℝ^N ∖ U) = 0 and μ(K) < ∞ for every compact K ⊆ U, and ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e. Then reducedBoundary U μ ν = {x ∈ U : normalAverage μ ν x ρ = μ(B_ρ(x)).toReal⁻¹ • ∫_{B_ρ(x)} ν dμ converges as ρ ↓ 0 to a vector of length 1} is a measurable (Borel) subset of ℝ^N.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → MeasurableSet (reducedBoundary U μ ν)",
+  "lean_name": "deGiorgi_measurableSet_reducedBoundary",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-boundary-measurable-a1-a1"
+}

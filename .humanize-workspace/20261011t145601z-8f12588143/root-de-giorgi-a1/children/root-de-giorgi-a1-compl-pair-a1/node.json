@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.compl_pair-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "Complement of a Gauss-Green pair: (μ, −ν) represents U ∖ E (parent Part 1a, erratum E5)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable, μ a Borel measure on ℝ^N and ν : ℝ^N → ℝ^N such that (μ, ν) is a Gauss-Green pair for (U, E) (IsGaussGreenPair U E μ ν: μ(ℝ^N ∖ U) = 0; μ(K) < ∞ for every compact K ⊆ U; ν is μ-a.e. strongly measurable; |ν| = 1 μ-a.e.; ∫_{E∩U} div g dL^N = −∫⟨g, ν⟩ dμ for every C¹ compactly supported g : ℝ^N → ℝ^N with tsupport g ⊆ U). Then (μ, −ν) is a Gauss-Green pair for (U, U ∖ E), i.e. IsGaussGreenPair U (U ∖ E) μ (−ν).",
+  "lean_statement": "∀ (N : ℕ) (U E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → IsGaussGreenPair U (U \\ E) μ (-ν)",
+  "lean_name": "deGiorgi_gaussGreenPair_compl",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-compl-pair-a1-a1"
+}
