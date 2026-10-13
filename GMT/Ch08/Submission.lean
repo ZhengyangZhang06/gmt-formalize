@@ -482,44 +482,6 @@ theorem Submission.intcpt_fli_weight_integral_tendsto :
     rfl
   -- Step 7: substitute steps 5 and 6 into step 4.
   simpa only [hleft, hright] using hlim
-/-- `H^n` of the balls of an `n`-plane centred on the plane (step 0(c) of the flat-limit step of
-Simon Ch. 8, 5.9): for `T ∈ G(N,n)`, `a ∈ T` and `r > 0`, both `T ∩ B_r(a)` and `T ∩ B°_r(a)`
-have `H^n`-measure `ω_n r^n`. -/
-theorem Submission.intcpt_fli_plane_ball_measure :
-    ∀ (N n : ℕ) (T : Grassmannian N n) (a : Euclidean N) (r : ℝ), a ∈ T.plane → 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall a r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball a r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
-  intro N n T a r ha hr
-  -- Step 1: an orthonormal basis `B` of `T.plane` indexed by `Fin n` (`dim T.plane = n`) gives a
-  -- linear isometry `L : ℝ^n → ℝ^N` with values in `T.plane` and `L (B.repr v) = v`.
-  let B : OrthonormalBasis (Fin n) ℝ T.plane :=
-    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr (Grassmannian.finrank_plane T))
-  let L : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
-    T.plane.subtypeₗᵢ.comp B.repr.symm.toLinearIsometry
-  have hLrepr : ∀ v : T.plane, L (B.repr v) = v := fun v ↦ by simp [L]
-  -- Step 2: `ι x = a + L x` is an isometry with `ι 0 = a`.
-  let ι : EuclideanSpace ℝ (Fin n) → Euclidean N := fun x ↦ a + L x
-  have hι : Isometry ι := Isometry.of_dist_eq fun x y ↦ by
-    simp only [ι, dist_eq_norm, add_sub_add_left_eq_sub, ← map_sub, L.norm_map]
-  have hι0 : ι 0 = a := by simp [ι]
-  -- Step 3: `ι` maps onto `T.plane` (`y = ι (B.repr (y - a))` for `y ∈ T.plane`), so it maps
-  -- `B_r(0) = ι⁻¹(B_r(a))` onto `T.plane ∩ B_r(a)`, and likewise for open balls.
-  have hrange : range ι = (T.plane : Set (Euclidean N)) := by
-    ext y
-    refine ⟨?_, fun hy ↦ ⟨B.repr ⟨y - a, T.plane.sub_mem hy ha⟩, by simp [ι, hLrepr]⟩⟩
-    rintro ⟨x, rfl⟩
-    exact T.plane.add_mem ha (B.repr.symm x).2
-  -- Step 4: `μHE[n]` is isometry invariant and equals `volume` on `ℝ^n`.
-  have hvol : ∀ S : Set (EuclideanSpace ℝ (Fin n)),
-      (μHE[n] : Measure (Euclidean N)) (ι '' S) = volume S := fun S ↦ by
-    rw [hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-  -- Steps 5–6: Haar scaling of balls in `ℝ^n` (no nontriviality is needed, so `n = 0` is
-  -- included) and `ofReal (r ^ n) = (ofReal r) ^ n`.
-  constructor
-  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_closedBall,
-      hvol, Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin, unitBallVolume,
-      ENNReal.ofReal_pow hr.le, mul_comm]
-  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_ball, hvol,
-      Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin, unitBallVolume,
-      ENNReal.ofReal_pow hr.le, mul_comm]
 /-- Tilt cutoffs are test functions (the cutoff `χ(z) t_P(S)` of the flat-limit step of Simon
 Ch. 8, 5.9): for `P ∈ G(N,n)` and continuous compactly supported `χ` on `ℝ^N`, the function
 `(z,S) ↦ χ(z) ‖p_S - p_P‖` lies in `C_c(ℝ^N × G(N,n))` and has support in `spt χ × G(N,n)`. -/
@@ -767,50 +729,6 @@ theorem Submission.intcpt_fli_unit_disc_mass_eventually :
     mem_iUnion₂.1 (hcover ⟨ha, by rwa [mem_closedBall, dist_zero_right]⟩)
   rw [mem_ball] at hadist
   exact (measure_mono (closedBall_subset_closedBall' (by linarith))).trans (hk al hal).le
-/-- Tilt cutoffs are test functions (the cutoff `χ(z) t_P(S)` of the flat-limit step of Simon
-Ch. 8, 5.9): for `P ∈ G(N,n)` and continuous compactly supported `χ` on `ℝ^N`, the function
-`(z,S) ↦ χ(z) ‖p_S - p_P‖` lies in `C_c(ℝ^N × G(N,n))` and has support in `spt χ × G(N,n)`. -/
-theorem Submission.intcpt_fli_tilt_cutoff_cc :
-    ∀ (N n : ℕ) (P : Grassmannian N n) (χ : Euclidean N → ℝ), Continuous χ → HasCompactSupport χ → ∃ f : C_c(Euclidean N × Grassmannian N n, ℝ), (∀ (z : Euclidean N) (S : Grassmannian N n), f (z, S) = χ z * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖) ∧ tsupport f ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
-  intro N n P χ hχ hχcs
-  -- Step 1: `Φ = toContinuousLinearMap ∘ (toMatrix b b)⁻¹` is linear on the finite-dimensional
-  -- matrix space, hence continuous.
-  let b := (EuclideanSpace.basisFun (Fin N) ℝ).toBasis
-  let Φ : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
-    (LinearMap.toContinuousLinearMap :
-      (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap ∘ₗ
-      (LinearMap.toMatrix b b).symm.toLinearMap
-  have hΦ : Continuous Φ := Φ.continuous_of_finiteDimensional
-  -- Step 2: `p_S = (toMatrix b b)⁻¹ S`, so by linearity
-  -- `toContinuousLinearMap (p_S - p_P) = Φ (S - P)`.
-  have heq : ∀ S : Grassmannian N n, LinearMap.toContinuousLinearMap
-      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P) = Φ (S.1 - P.1) := by
-    intro S
-    have h : (LinearMap.toMatrix b b).symm (S.1 - P.1) =
-        Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P := by
-      rw [map_sub]
-      rfl
-    rw [← h]
-    rfl
-  -- Step 3: `t_P(S) = ‖Φ (S - P)‖` is continuous in `S`.
-  have ht : Continuous fun S : Grassmannian N n ↦ ‖LinearMap.toContinuousLinearMap
-      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ := by
-    simp only [heq]
-    exact (hΦ.comp (continuous_subtype_val.sub continuous_const)).norm
-  -- Step 4: `F(z,S) = χ(z) t_P(S)` is continuous.
-  let F : Euclidean N × Grassmannian N n → ℝ := fun z ↦ χ z.1 * ‖LinearMap.toContinuousLinearMap
-      (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
-  have hF : Continuous F := (hχ.comp continuous_fst).mul (ht.comp continuous_snd)
-  -- Step 5: `support F ⊆ support χ × G ⊆ tsupport χ × G`, which is closed.
-  have hFsupp : tsupport F ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
-    refine closure_minimal (fun z hz ↦ ⟨subset_tsupport χ fun h ↦ hz ?_, mem_univ _⟩)
-      ((isClosed_tsupport χ).prod isClosed_univ)
-    simp only [F, h, zero_mul]
-  -- Step 6: `tsupport χ × G` is compact (`G` is compact), so `F ∈ C_c(ℝ^N × G)`.
-  have hFcs : HasCompactSupport F :=
-    (hχcs.prod isCompact_univ).of_isClosed_subset (isClosed_tsupport F) hFsupp
-  exact ⟨⟨⟨F, hF⟩, hFcs⟩, fun z S ↦ rfl, hFsupp⟩
-
 /-- **The tilt excess of a sequence converging to a plane tends to zero** (step 4(iii) of the
 proof that a flat limit of integral varifolds has integer multiplicity, used for Simon Ch. 8, 5.9).
 If `∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c` with `tsupport f ⊆ B°_5(0) × G(N,n)`, then
@@ -1095,78 +1013,6 @@ theorem Submission.intcpt_fli_tangent_tilt_bound :
         gcongr
         rw [le_div_iff₀ hωpos]
         exact hmain
-/-- Canonical integer representation of an integral varifold, with mass domination (step 6 of the
-flat-limit integer multiplicity argument for Simon Ch. 8, 5.9): given a.e. positive integer
-densities of integral varifolds (hD) and the canonical tangent-plane representation (hC), an
-integral `W` with locally bounded first variation is `v(M, θ)` for
-`M = {x ∈ spt μ_W : W has a tangent plane at x}`, `θ` is a positive integer `H^n`-a.e. on `M`, and
-`∫ u dμ_W ≤ ∫_{M ∩ K} u θ dH^n` for Borel `u ≥ 0` vanishing off a compact `K ⊆ U`. -/
-theorem Submission.intcpt_fli_integral_canonical_domination :
-    (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), IsIntegral V → ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞)) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) → ∃ θ : Euclidean N → ℝ, IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} θ ∧ (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) ∧ ∀ Z ⊆ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, V.weight Z = 0 → (μHE[n] : Measure (Euclidean N)) Z = 0) → ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U), IsIntegral W → W.HasLocallyBoundedFirstVariation → ∃ θ : Euclidean N → ℝ, IsVarifoldOf W {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'} θ ∧ (∀ x ∈ {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane W x T (θ x)) ∧ HasDensity n W.weight x (ENNReal.ofReal (θ x))) ∧ (μHE[n] : Measure (Euclidean N)) {x | x ∈ {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'} ∧ ¬ ∃ m : ℕ, 1 ≤ m ∧ θ x = m} = 0 ∧ ∀ (K : Set (Euclidean N)) (u : Euclidean N → ℝ≥0∞), IsCompact K → K ⊆ U → Measurable u → (∀ x, x ∉ K → u x = 0) → ∫⁻ x, u x ∂W.weight ≤ ∫⁻ x in {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'} ∩ K, u x * ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N)) := by
-  intro hD hC N n U W hint hlbfv
-  -- Step 1: by (hD), `Θ^n(μ_W, x)` is an integer `k ≥ 1` for `μ_W`-a.e. `x`, so (hC) applies.
-  have hdens := hD N n U W hint
-  have hpos : ∀ᵐ x ∂W.weight, ∃ θ : ℝ≥0∞, HasDensity n W.weight x θ ∧ 0 < θ := by
-    filter_upwards [hdens] with x hx
-    obtain ⟨k, hk1, hk⟩ := hx
-    exact ⟨k, hk, by exact_mod_cast hk1⟩
-  -- Step 2: (hC) gives `θ` with the representation and tangent/density conclusions.
-  obtain ⟨θ, hvarOf, htan, hnull⟩ := hC N n U W hlbfv hpos
-  refine ⟨θ, hvarOf, htan, ?_, ?_⟩
-  -- Step 3: the points of `M` where `θ` is not a positive integer form a `μ_W`-null set (density
-  -- limits along `𝓝[>] 0` are unique), hence an `H^n`-null set by the null transfer property.
-  · apply hnull
-    · intro x hx; exact hx.1
-    · apply measure_eq_zero_iff_ae_notMem.2
-      filter_upwards [hdens] with x hx hxZ
-      obtain ⟨k, hk1, hk⟩ := hx
-      obtain ⟨hxM, hnot⟩ := hxZ
-      have hθx := (htan x hxM).2
-      have heq : ENNReal.ofReal (θ x) = (k : ℝ≥0∞) := tendsto_nhds_unique hθx hk
-      have hθpos : 0 < θ x := hvarOf.2.2.2.1 x hxM
-      apply hnot
-      refine ⟨k, hk1, ?_⟩
-      have := congrArg ENNReal.toReal heq
-      rwa [ENNReal.toReal_ofReal hθpos.le, ENNReal.toReal_natCast] at this
-  -- Step 4: domination. `θ` is `H^n`-integrable on `M ∩ K`, so `ofReal ∘ θ` is a.e.-measurable there.
-  · intro K u hK hKU hu huK
-    have hθint := hvarOf.2.2.2.2.1 K hK hKU
-    have hθae : AEMeasurable (fun x => ENNReal.ofReal (θ x))
-        ((μHE[n] : Measure (Euclidean N)).restrict
-          ({x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
-            HasTangentPlane W x T θ'} ∩ K)) :=
-      hθint.aestronglyMeasurable.aemeasurable.ennreal_ofReal
-    have hKmeas : MeasurableSet K := hK.isClosed.measurableSet
-    -- Step 5: `μ_W ⌞ K ≤ (H^n ⌞ (M ∩ K)).withDensity (ofReal ∘ θ)`, tested on Borel sets `B` via
-    -- `IsVarifoldOf` applied to `(B ∩ K) × G(N,n)`.
-    have hle : W.weight.restrict K ≤ ((μHE[n] : Measure (Euclidean N)).restrict
-        ({x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
-          HasTangentPlane W x T θ'} ∩ K)).withDensity (fun x => ENNReal.ofReal (θ x)) := by
-      refine Measure.le_iff.2 (fun B hB => ?_)
-      rw [Measure.restrict_apply hB, withDensity_apply _ hB, Measure.restrict_restrict hB,
-        Varifold.weight_apply W (hB.inter hKmeas),
-        hvarOf.2.2.2.2.2 _ ((hB.inter hKmeas).prod MeasurableSet.univ)]
-      apply lintegral_mono_set
-      intro x hx
-      obtain ⟨hxM, S, _, hxS⟩ := hx
-      exact ⟨hxS.1.1, hxM, hxS.1.2⟩
-    -- Step 6: integrate `u` (supported in `K`) against this inequality.
-    have hsupp : Function.support u ⊆ K := by
-      intro x hx
-      by_contra hxK
-      exact hx (huK x hxK)
-    calc ∫⁻ x, u x ∂W.weight = ∫⁻ x in K, u x ∂W.weight :=
-          (setLIntegral_eq_of_support_subset hsupp).symm
-      _ ≤ ∫⁻ x, u x ∂(((μHE[n] : Measure (Euclidean N)).restrict
-          ({x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
-            HasTangentPlane W x T θ'} ∩ K)).withDensity (fun x => ENNReal.ofReal (θ x))) :=
-          lintegral_mono' hle le_rfl
-      _ = ∫⁻ x in {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
-            HasTangentPlane W x T θ'} ∩ K, ENNReal.ofReal (θ x) * u x
-            ∂(μHE[n] : Measure (Euclidean N)) :=
-          lintegral_withDensity_eq_lintegral_mul₀ hθae hu.aemeasurable
-      _ = _ := by simp_rw [mul_comm]
-
 /-- **Mass over the good flat points** (Simon Ch. 8, 5.9, integrality of flat limits,
 pp. 218–219, with Allard's lemma 5.10; child `good_mass_estimate` of `flat_limit_integer`).
 Let `W` be an integral `n`-varifold on `U ⊇ B°_3(0)` with locally bounded first variation,
