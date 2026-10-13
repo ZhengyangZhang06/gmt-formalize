@@ -7567,6 +7567,37 @@ theorem Submission.rectifiability_mass_measure_rectifiable : ∀ (P m : ℕ) (U 
   obtain ⟨i, hi⟩ := hWK K hK hKU
   exact hθint K hK.measurableSet ((measure_mono hi).trans_lt (hWfin i))
 
+/-- **Simon Ch. 6, 8.1 (Rectifiability Theorem, p. 173).**  By (1)–(8) of the printed proof the
+mass measure is `μ = θ Hⁿ ⌞ M` with `M` countably `n`-rectifiable and `θ > 0` locally
+`Hⁿ`-integrable on `M`; by (2.7)–(2.8) `T(ω) = ∫ ⟨ω, ξ⟩ dμ` with `|ξ| = 1` `μ`-a.e., so
+`T = τ(M, θ, ξ)` (9); and by (10)–(13) `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of the
+weighted approximate tangent space `TₓM`, for `Hⁿ`-a.e. `x ∈ M`.  (Book `n = m + 1`.) -/
+theorem Submission.rectifiability_theorem : RectifiabilityTheorem := by
+  intro P m U hU T hT ⟨μ, hμ, hdens⟩
+  -- (1)–(8): `μ = θ Hⁿ ⌞ M`.
+  obtain ⟨M, θ, hMU, hM, hMrect, hθm, hθpos, hθint, rfl⟩ :=
+    Submission.rectifiability_mass_measure_rectifiable P m U hU T hT μ hμ hdens
+  -- (2.7)–(2.8), using `M_W(T) ≤ M_W(T) + M_W(∂T)`.
+  obtain ⟨ξ, hξm, hξ1, hrep⟩ :=
+    (Submission.rectifiability_mass_measure_representation P (m + 1) U hU T fun W hW =>
+      (hT W hW).trans_le' le_self_add).2 _ hμ
+  -- (9): `T = τ(M, θ, ξ)`, as `θ > 0` on `M`.
+  have hτ : ∀ ω : TestFormOn U (m + 1), T ω = tauAction (m + 1) M θ ξ ω := fun ω => by
+    rw [(hrep ω).2, integral_withDensity_eq_integral_toReal_smul hθm.ennreal_ofReal
+      (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top), tauAction]
+    exact setIntegral_congr_fun hM fun x hx => by
+      rw [ENNReal.toReal_ofReal (hθpos x hx).le, smul_eq_mul]
+  -- `|ξ| = 1` holds `Hⁿ`-a.e. on `M`, as `θ > 0` on `M`.
+  have hξ1' : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M),
+      ∑ α : SimonMultiIndex (m + 1) P, (euclideanNVectorCoordinate (ξ x) α) ^ 2 = 1 := by
+    filter_upwards [(ae_withDensity_iff hθm.ennreal_ofReal).1 hξ1, ae_restrict_mem hM]
+      with x hx hxM
+    exact hx (ENNReal.ofReal_pos.2 (hθpos x hxM)).ne'
+  -- (10)–(13), using `M_W(∂T) ≤ M_W(T) + M_W(∂T)`.
+  exact ⟨M, θ, ξ, ⟨hMU, hM.nullMeasurableSet, hMrect, hθpos, hθint, hξm.aestronglyMeasurable,
+    Submission.rectifiability_orientation P m U hU T (fun W hW => (hT W hW).trans_le' le_add_self)
+      M θ ξ hMU hM.nullMeasurableSet hMrect hθpos hθint hξm.aestronglyMeasurable hξ1' hτ⟩, hτ⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
