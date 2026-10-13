@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "MinimizingImpliesStationary|IsStationaryAlong|def IMRep.firstVariation|HasLocallyBoundedMeanCurvature|7.1.2|errat|stationar",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem measurable_fderiv|ae_tendsto_measure_inter_div",
+        "weighted_area_formula_lipschitz_injOn|area_image_compl_regularSet_eq_zero|measurableSet_areaRegularSet|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure",
+        "git show c2d6ad3e021de8215c1c8bde8b550eb049c1418a:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/stationarity_independent_audit_x0i1xamf/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-20c39fe7bf/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/stationarity_independent_audit_x0i1xamf/Evidence.json",
+        "/tmp/stationarity_independent_audit_x0i1xamf/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected MinimizingImpliesStationary contract. Project, Mathlib and SimonGMT revisions match the recorded verification inputs. The snapshot supplies the contract definitions; SimonGMT Chapter07/Basic contains only abstract minimization lemmas. Independently checked all 12 frozen handoffs, accepted owners, candidate sources, comparator challenge types, kernel results and axiom restrictions; detailed source paths are retained in Evidence.json. Every name is a bare identifier with exactly one accepted owner and an identical frozen type. The 83 reachable DAG nodes are acyclic and do not depend on the selected parent. All 12 types elaborate without child implementations. The independently compiled assembly proves the exact selected type from support_null, stationary_of_minimizing and mean_curvature_of_stationary; all other proposed children are prerequisites. Reused proofs passed comparators permitting only propext, Quot.sound and Classical.choice."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all prose hypotheses. Countable reduction, finite restricted measures, smooth scalar tests and the fundamental lemma force the orientation to vanish off support, contradicting its unit property. The argument includes degree zero and uses no mass-identification theorem circularly."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type accurately includes regularity, openness, injectivity and relative properness. Explicit curves prove one inclusion; properness gives inverse continuity, and derivative coercivity controls the reverse difference quotients. Both inclusions are complete."
+    },
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the claimed almost-everywhere strong measurability. Approximate-tangent uniqueness, recovery of the plane from its orientation, and the compact quotient construction justify the measurable projection field. The zero-dimensional case is covered."
+    },
+    {
+      "key": "covector_gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match the prose. The multilinear expansion and Cauchy–Binet identity give the bound; the determinant covector supplies equality on orthonormal frames. Empty and excessive dimensions are handled. The Gram matrix explicitly uses Matrix.of; no pointwise-multiplication instance issue occurs."
+    },
+    {
+      "key": "mass_equals_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the open-set mass identity and the frozen Euclidean coefficient norm. The upper bound follows from the registered Gram lemma. Measurable near-dual covectors, norm-preserving smooth approximation and compact exhaustion establish the lower bound without assuming the desired identity."
+    },
+    {
+      "key": "diffeo_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All deformation hypotheses and the boundary implication appear in the type. The proof constructs the current, preserves its boundary through smooth approximation, proves tangent transport using bi-Lipschitz pieces and density, and verifies every representation field using the area formula. The partition radius remains positive in dimension zero."
+    },
+    {
+      "key": "tangential_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type requires precisely the properties constructed. Straightening, compactly supported coordinate perturbations and finite composition establish preservation, invertibility and the uniform derivative expansion. Defining the family as identity for large parameters is valid because no global parameter regularity is required."
+    },
+    {
+      "key": "first_variation_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-mass hypothesis, uniform expansion and action formula match the prose. The explicit Gram-determinant estimate controls the error uniformly; the registered measurability lemma and finite weight justify integration. Taking the admissible-form supremum yields exactly the ENNReal.ofReal bound."
+    },
+    {
+      "key": "stationary_of_minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly assumes carrier-nullness outside N. Registered children produce integer-multiplicity competitors with matching boundary and compact difference support in N∩W. Minimality and the two-sided parameter estimate force zero first variation. Zero dimension and zero local mass are handled separately."
+    },
+    {
+      "key": "approx_tangent_in_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis and needs no additional measurability assumption on M. Chart flatness excludes blow-up mass near a vector outside the manifold tangent space, while approximate-tangent convergence gives a positive limiting integral there. This proves the required inclusion."
+    },
+    {
+      "key": "tangent_projection_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the neighborhood extension statement. The smooth projection formula for injective derivatives, local straightening and a locally finite partition of unity construct the extension and prove its exact values on N. Empty N is explicitly covered."
+    },
+    {
+      "key": "mean_curvature_of_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the frozen generalized-mean-curvature predicate. The explicit contraction defining H is measurable and locally bounded. Tangent containment and the cutoff projection field give the signed divergence identity; verified integrability permits its integration. The proof uses stationarity only as an explicit hypothesis."
+    }
+  ],
+  "required_changes": []
+}
