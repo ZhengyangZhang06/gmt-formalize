@@ -465,6 +465,28 @@ theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n 
       map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
   have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
   -- `|ι(s)|² = ⟨ι(s), ι(s)⟩ = Σᵢ sᵢ² = |s|²`, so `ι` is an isometry
+  have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
+    intro s
+    have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
+      rw [hLapp, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.norm_eq,
+        Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
+  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
+  -- `range ι = Q`: `ι(s) ∈ Q`, and each `y ∈ Q` is `Σᵢ cᵢτᵢ = ι(c)`
+  have hrange : Set.range L = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+    ext y
+    constructor
+    · rintro ⟨s, rfl⟩
+      rw [hLapp]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · intro hy
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (SetLike.mem_coe.mp hy)
+      exact ⟨(WithLp.equiv 2 (Fin n → ℝ)).symm c, by rw [hLapp]; rfl⟩
+  -- `ι_#(Hⁿ) = Hⁿ⌞range ι = Hⁿ⌞Q`, and `Hⁿ = Lⁿ` on `ℝⁿ`
+  have h := hiso.map_euclideanHausdorffMeasure (d := n)
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
+  exact h.symm
 /-- A test function on the parameter domain of a plane extends to an ambient test function (step 6
 of the constancy argument for a current carried by a plane, Simon Ch. 6, 2.34).  For orthonormal
 `τ`, `ι(s) = Σᵢ sᵢτᵢ` and `ψ ∈ C^∞_c` with `spt ψ ⊆ ι⁻¹(V)`, let `ι*(y) = (⟨τₖ, y⟩)ₖ` (so
@@ -488,21 +510,6 @@ theorem Submission.idtp_pc_plane_test_extension : ∀ (P n : ℕ) (V : Set (Eucl
         Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
       simp [sq]
     exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
-  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
-  -- `range ι = Q`: `ι(s) ∈ Q`, and each `y ∈ Q` is `Σᵢ cᵢτᵢ = ι(c)`
-  have hrange : Set.range L = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
-    ext y
-    constructor
-    · rintro ⟨s, rfl⟩
-      rw [hLapp]
-      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-    · intro hy
-      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (SetLike.mem_coe.mp hy)
-      exact ⟨(WithLp.equiv 2 (Fin n → ℝ)).symm c, by rw [hLapp]; rfl⟩
-  -- `ι_#(Hⁿ) = Hⁿ⌞range ι = Hⁿ⌞Q`, and `Hⁿ = Lⁿ` on `ℝⁿ`
-  have h := hiso.map_euclideanHausdorffMeasure (d := n)
-  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
-  exact h.symm
   let Ls₀ : Euclid P →ₗ[ℝ] Euclid n :=
     { toFun := fun y => (WithLp.equiv 2 (Fin n → ℝ)).symm (fun k => inner ℝ (τ k) y)
       map_add' := fun y z => by ext k; simp [inner_add_right]
