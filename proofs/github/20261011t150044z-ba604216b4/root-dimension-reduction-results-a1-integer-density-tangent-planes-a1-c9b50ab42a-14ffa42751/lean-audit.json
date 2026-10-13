@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bead4fd7a4e6cb842b3eb64d746fdcc50725439ddb9c1a030f00bb3c5df5655f",
+  "git_delta": {
+    "base_commit": "6b816ca66bff01e36d70588b0092b9453303b063",
+    "candidate_commit": "7271612b4316fba2ebbe1eed5b4cacc25327a1db",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fc_square_lintegral_lower",
+    "diff_sha256": "320708bbd4a119dcc43d78913fe9ede90403fcf2b85d32284d059ea451b6f5d2",
+    "source_sha256": "ea21f330741e36a527817cccd89a0d0ec712b4d7e6989db38d58014ce00bc7c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fc_square_lintegral_lower",
+      "statement": "∀ (N : ℝ × ℝ → ℝ≥0∞) (m : ℕ) (r : ℝ), 0 < r → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r → (m : ℝ≥0∞) ≤ N p) → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r → 0 < p.2 → (m : ℝ≥0∞) + 1 ≤ N p) → ENNReal.ofReal ((4 * (m : ℝ) + 2) * r ^ 2) ≤ ∫⁻ p in Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r, N p",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
