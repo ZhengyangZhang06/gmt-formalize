@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical); cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (identical)",
+        "snapshot project/lake-manifest.json revs vs git rev-parse HEAD of lake-packages-25730c7c/{simongmt,mathlib}: simongmt 2b3663083f3fe399b6296fb8eaee52169170e197, mathlib 25730c7c759d108ef87ab70af2342a196760f79d (match)",
+        "rg -n 'covectorEuclideanNorm' local-references/197bdd4b88278494/project (no match)",
+        "rg -n 'slicing_mb_wn_|sq_sum_eq_factorial_mul|sq_sum_onb_invariant|norm_sq_eq_onb_sum|adapted_onb|adapted_sum_le' local-references/197bdd4b88278494/project (no match)",
+        "grep -n 'covectorEuclideanNorm|abbrev Covector|def Covector|StrictMono' simongmt/Poincare/SimonGMT/Chapter06/*.lean; rg -n 'OrthonormalBasis' Poincare/SimonGMT/Chapter06 (no match); rg -n 'factorial|orderEmbOfFin|Tuple.sort|StrictMono I' Poincare/SimonGMT",
+        "grep -n 'theorem|lemma|def |abbrev ' simongmt Chapter06/{WedgeForms,FormSupNorm,FormsDuality,GeometricPointProduct}.lean",
+        "rg -n 'lemma OrthonormalBasis.norm_dual' Mathlib/Analysis/InnerProductSpace/Dual.lean; rg -n 'theorem Orthonormal.exists_orthonormalBasis_extension_of_card_eq' Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n 'theorem alternatizeUncurryFin_apply' Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean; rg -n 'theorem curryLeft_apply_apply' Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "rg -n 'theorem monotone_sort|theorem sort_eq_refl_iff_monotone|theorem comp_perm_comp_sort_eq_comp_sort' Mathlib/Data/Fin/Tuple/Sort.lean; rg -n 'theorem map_perm ' Mathlib/LinearAlgebra/Alternating/Basic.lean; rg -n 'theorem map_eq_zero_of_not_injective' Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n '^theorem toDual_symm_apply' Mathlib/Analysis/InnerProductSpace/Dual.lean; rg -n 'def apply \\(m' Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "rg -ln 'factorial' Mathlib/LinearAlgebra/Alternating Mathlib/LinearAlgebra/ExteriorPower Mathlib/Analysis/Normed/Module/Alternating; module docstrings of Mathlib/LinearAlgebra/ExteriorPower/{BilinForm,Pairing,HodgeStar}.lean",
+        "python3 scan of dag.json (217 nodes, 217 distinct lean_names): five proposed names absent; statements mentioning covectorEuclideanNorm/Orthonormal/alternatizeUncurryFin/smulRight/StrictMono listed (no identical type)",
+        "contract_scope/child_modules in verifier/gmt-compare.py (replayed child scope: opens, namespace GMT.Ch06, noncomputable section/end)",
+        "lake env printenv LEAN_PATH; lean -o /tmp/wedge_split_trCfMb/out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean",
+        "lean /tmp/wedge_split_trCfMb/check/Stmts.lean (5 child types + parent elaborate, no errors)",
+        "lean /tmp/wedge_split_trCfMb/check/Instances.lean (pp.explicit: StrictMono decidability instance instDecidableStrictMonoOfForallForallForallLt, same as in covectorEuclideanNorm; #check of cited lemmas)",
+        "lean /tmp/wedge_split_trCfMb/check/Assembly.lean (#print axioms full_assembly: [propext, Classical.choice, Quot.sound]; ‖α‖ = ContinuousLinearMap.opNorm α by rfl)",
+        "lean /tmp/wedge_split_trCfMb/check/{ProveC1,ProveC2,ProveC4_ax,ProveC5_ax,EndToEnd}.lean (#print axioms of all five children and the parent: [propext, Classical.choice, Quot.sound])",
+        "grep -n -i 'orthonormal' book/chapter-06.txt; sed -n 85,110p book/chapter-06.txt (Simon 1.5–1.6)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/ExteriorPower/BilinForm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/ExteriorPower/HodgeStar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/wedge_split_trCfMb/check/Stmts.lean",
+        "/tmp/wedge_split_trCfMb/check/Instances.lean",
+        "/tmp/wedge_split_trCfMb/check/Assembly.lean",
+        "/tmp/wedge_split_trCfMb/check/ProveC1.lean",
+        "/tmp/wedge_split_trCfMb/check/ProveC2.lean",
+        "/tmp/wedge_split_trCfMb/check/ProveC4.lean",
+        "/tmp/wedge_split_trCfMb/check/ProveC5.lean",
+        "/tmp/wedge_split_trCfMb/check/EndToEnd.lean"
+      ],
+      "conclusion": "Findings:\n- The pinned snapshot (project d8d46c95, Mathlib 25730c7c, SimonGMT 2b366308 per lake-manifest and package HEADs) contains the frozen Ch06 contract, byte-identical to the workspace Submission.\n- SimonGMT defines covectorEuclideanNorm as √(Σ_{I : Fin n → Fin P} if StrictMono I then α(basisFun ∘ I)² else 0) (Mass.lean:30), with Covector E n = E [⋀^Fin n]→L[ℝ] ℝ (Forms.lean:31).\n- SimonGMT has no orthonormal-basis invariance, counting identity or wedge-norm bound for this norm. Its only wedge estimate (norm_covectorWedge_le) is for the operator norm, and it contains no OrthonormalBasis usage in Chapter06.\n- Mathlib provides the needed tools: OrthonormalBasis.norm_dual (‖L‖² = Σ L(b_i)², the one-slot Parseval step), Orthonormal.exists_orthonormalBasis_extension_of_card_eq, InnerProductSpace.toDual_symm_apply, alternatizeUncurryFin_apply, curryLeft_apply_apply, ContinuousAlternatingMap.apply, map_eq_zero_of_not_injective, AlternatingMap.map_perm and the Tuple.sort API.\n- Mathlib's exterior-power bilinear forms act on ⋀[R]^n M, not on continuous alternating maps, and provide no coefficient-norm invariance. So all five children are new obligations.\n- In the replayed comparator child scope, all five child types and the parent type elaborate. The StrictMono decidability instance matches the one in covectorEuclideanNorm's definition.\n- The parent follows from the children with axioms [propext, Classical.choice, Quot.sound]. Scratch proofs of all five children compile with the same axioms.\n- No proposed name occurs in the snapshot project or among the 217 DAG nodes.\n- Simon 1.5–1.6 (local book) states that the covector inner product is induced from ℝ^P, which supports the basis independence in Step 3."
+    }
+  ],
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "child_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.adapted_onb-a1",
+  "subproblem": {
+    "key": "adapted_onb",
+    "title": "Orthonormal basis adapted to a linear functional: α(u_0) = ‖α‖ and α(u_j) = 0 for j ≠ 0 (parent Steps 4–5)",
+    "statement": "For every P ∈ ℕ and every continuous linear functional α : ℝ^P → ℝ (Eucl P →L[ℝ] ℝ) there is an orthonormal basis u = (u_0,…,u_{P−1}) of ℝ^P, indexed by Fin P, such that for every j ∈ Fin P: α(u_j) = ‖α‖ (the operator norm) if j = 0, and α(u_j) = 0 if j ≠ 0. No hypothesis α ≠ 0 is needed: for α = 0 the standard basis works.",
+    "lean_statement": "∀ (P : ℕ) (α : Eucl P →L[ℝ] ℝ), ∃ u : OrthonormalBasis (Fin P) ℝ (Eucl P), ∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then ‖α‖ else 0",
+    "lean_name": "slicing_mb_wn_adapted_onb",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof, Steps 4–5 (the trivial case α = 0 and the adapted orthonormal basis).\n\nClaim. For every P and every continuous linear functional α : ℝ^P → ℝ, there is an orthonormal basis u = (u_0,…,u_{P−1}) of ℝ^P indexed by [P] := {0,…,P−1} such that, for every j ∈ [P], α(u_j) = ‖α‖ if j = 0 and α(u_j) = 0 if j ≠ 0. Here ‖α‖ is the operator norm.\n\n1. (Case α = 0.) Then ‖α‖ = 0. Take u := e, the standard basis, which is orthonormal. For every j, α(e_j) = 0; this equals ‖α‖ = 0 if j = 0 and equals 0 if j ≠ 0. This case includes P = 0, where [P] is empty and the condition is vacuous.\n\n2. (Case α ≠ 0: Riesz vector.) By the Riesz representation on ℝ^P there is a ∈ ℝ^P with α(z) = ⟨a, z⟩ for all z; namely a := (InnerProductSpace.toDual ℝ ℝ^P)⁻¹ α. Moreover |a| = ‖α‖. By Cauchy–Schwarz, |α(z)| ≤ |a||z| for all z, so ‖α‖ ≤ |a|. Also |a|² = α(a) ≤ ‖α‖|a|, so |a| ≤ ‖α‖ (trivial if a = 0). Equivalently, the Riesz map is a linear isometry. Since α ≠ 0, a ≠ 0, so |a| > 0.\n\n3. (P ≥ 1.) ℝ^0 = {0}, so the existence of a ≠ 0 forces P ≥ 1. Hence 0 ∈ [P].\n\n4. (Extension to an orthonormal basis.) v := a/|a| satisfies |v| = 1, so the one-member family (v), indexed by {0} ⊆ [P], is orthonormal. Since dim ℝ^P = P = #[P], this family extends to an orthonormal basis u of ℝ^P indexed by [P] with u_0 = v. This is Gram–Schmidt; in Mathlib, apply Orthonormal.exists_orthonormalBasis_extension_of_card_eq to s := {0} and the constant family j ↦ v, using finrank ℝ ℝ^P = P = Fintype.card (Fin P).\n\n5. (Values.) α(u_0) = ⟨a, a/|a|⟩ = |a|²/|a| = |a| = ‖α‖. For j ≠ 0 we have a = |a|·u_0, hence α(u_j) = ⟨a, u_j⟩ = |a|·⟨u_0, u_j⟩ = 0, because u is orthonormal and u_0 ⊥ u_j for j ≠ 0.\n\n6. (Conclusion.) In both cases α(u_j) = (‖α‖ if j = 0, else 0) for all j ∈ [P]. ∎\n\nFormalization pointers: InnerProductSpace.toDual_symm_apply (⟨(toDual ℝ E).symm α, x⟩ = α x), and the isometry property of toDual for |a| = ‖α‖. Orthonormal.exists_orthonormalBasis_extension_of_card_eq takes hv : Orthonormal ℝ (s.domRestrict v). Use OrthonormalBasis.orthonormal for ⟨u_0, u_j⟩ = 0. In case 1, EuclideanSpace.basisFun (Fin P) ℝ works.",
+    "proof_key_steps": [
+      "α = 0: ‖α‖ = 0, and the standard basis satisfies the condition.",
+      "α ≠ 0: there is a Riesz vector a with α = ⟨a,·⟩ and |a| = ‖α‖ > 0; in particular P ≥ 1.",
+      "Extend the unit vector a/|a|, placed at index 0, to an orthonormal basis u of ℝ^P (dim ℝ^P = P).",
+      "α(u_0) = |a| = ‖α‖, and α(u_j) = |a|·⟨u_0,u_j⟩ = 0 for j ≠ 0."
+    ]
+  },
+  "audit": {
+    "key": "adapted_onb",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The zero-functional case includes P = 0. Otherwise the Riesz vector forces P > 0; extending its normalization at index zero and applying orthogonality gives all required values. The natural-number index test in Lean correctly expresses the prose without requiring an inhabitant of Fin 0. No hypothesis is missing."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-adapted-onb-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-adapted-onb-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-adapted-onb-a1/parent-supplied-natural-proof.json"
+}
