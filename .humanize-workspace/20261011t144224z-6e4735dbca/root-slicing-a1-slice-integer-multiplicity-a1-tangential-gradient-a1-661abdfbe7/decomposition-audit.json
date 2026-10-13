@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slicing_im_tg_cg_gram_field|slicing_im_tg_cg_borel_transfer|lpf_wtc_cat_fderiv_lower_bound|lpf_tde_chart_nondiff_image_null",
+        "ae_differentiableWithinAt_of_mem",
+        "measurable_extend",
+        "inverse_continuousAt",
+        "isUnit_iff_bijective|normedRing|mul_def|coe_mul",
+        "git show 8cfbc487a3d10545b0ea005ad58122242bbcc072:GMT/Ch06/Submission.lean",
+        "git show 019ad40a7219b394f7e3a76a9361c778b6a98739:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart_gradient_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart_gradient_independent_audit/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-661abdfbe7/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-661abdfbe7/decomposition-v1.json",
+        "/tmp/chart_gradient_independent_audit/Types.lean",
+        "/tmp/chart_gradient_independent_audit/Proofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and contract identity. The snapshot provides the required Rademacher, derivative measurability, Lusin–Souslin, operator inversion and null-image results; no proposed child declaration was found in its project sources. Both reused declarations have exactly their accepted frozen types. Neither new name is reserved by another branch. All four one-line propositions elaborate independently with autoImplicit disabled. Fresh proof checks establish all children and the exact selected parent using only propext, Classical.choice and Quot.sound. The split appropriately isolates four obligations; together with the existing line_deriv dependency they prove the selected chart-gradient contract, including the everywhere bound and universal preimage clause. Adding the proposed edges preserves acyclicity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including unrestricted real c. The proof correctly obtains the line derivative, uses openness to retain nearby points, divides only by positive t, and passes the lower bound through the slope limit. Reuse matches the accepted declaration exactly; there is no circular dependence."
+    },
+    {
+      "key": "chart_nondiff_image_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Local Lipschitz neighborhoods yield a countable open cover; Rademacher and openness give a null nondifferentiability set, and the normalized Hausdorff image bound proves the exact conclusion. The scalar-to-Eucl 1 instantiation used by the parent is valid. Exact accepted-type reuse and axiom compatibility were checked."
+    },
+    {
+      "key": "gram_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches all hypotheses and conclusions, including arbitrary h. Injectivity makes the Gram operator invertible; the adjoint and Riesz identities prove range membership and representation. Continuity, piecewise measurability and measurable_fderiv establish Borel measurability. IsUnit and Ring.inverse use bundled continuous linear endomorphisms with composition multiplication, independently verified. The proof is complete and non-circular, including zero-dimensional cases."
+    },
+    {
+      "key": "borel_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree exactly. Lusin–Souslin makes the restriction to the Borel set a measurable embedding; measurable extension gives the field, injectivity gives its prescribed values, and the extension definition gives zero off the image. All hypotheses are sufficient and correctly used. The fresh bare name is available, and the proof needs no additional obligation."
+    }
+  ],
+  "required_changes": []
+}

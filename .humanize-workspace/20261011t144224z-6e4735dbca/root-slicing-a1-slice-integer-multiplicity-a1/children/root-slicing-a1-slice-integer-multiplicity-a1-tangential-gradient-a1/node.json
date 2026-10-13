@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Tangential gradient of a Lipschitz function on a rectifiable carrier (Simon Ch. 3, 2.1)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open and (M, θ, ξ) with IsRectifiableTriple U n M θ ξ (M ⊆ U Hⁿ-null-measurable and countably n-rectifiable; θ > 0 on M and Hⁿ-integrable on M ∩ K for every compact K ⊆ U; ξ Hⁿ⌞M-a.e. strongly measurable and, for Hⁿ-a.e. x ∈ M, ξ(x) = ±τ₁∧⋯∧τ_n for an orthonormal basis τ of a weighted approximate tangent plane of (M, θ) at x). Let f : ℝ^P → ℝ be L-Lipschitz (L ≥ 0). Then there is a Borel measurable G : ℝ^P → ℝ^P with |G(x)| ≤ L for every x ∈ ℝ^P such that for Hⁿ-a.e. x ∈ M and every subspace Q which is a weighted approximate tangent plane of (M, θ) at x (HasWeightedApproximateTangentSpaceAt n M θ x Q) we have G(x) ∈ Q and, for every u ∈ Q, s ↦ f(x + s u) is differentiable at s = 0 with derivative ⟨G(x), u⟩.",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → ∃ G : Eucl P → Eucl P, Measurable G ∧ (∀ x, ‖G x‖ ≤ L) ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0",
+  "lean_name": "slicing_im_tangential_gradient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Leibniz identity for Lipschitz multipliers on rectifiable currents (Simon Ch. 6, proof of 4.5(2), (1)–(3))",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, and T ∈ D_n(U) with T(η) = ∫_M θ⟨η, ξ⟩ dHⁿ (= tauAction n M θ ξ η) for all η ∈ D^n(U). Let (μ, v) be a measure representation of T and (μ', v') one of ∂T (IsMeasureRepresentation). Let h : ℝ^P → ℝ be L_h-Lipschitz and G_h : ℝ^P → ℝ^P Borel with |G_h| ≤ L_h everywhere and the tangential-gradient property for h (for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x: G_h(x) ∈ Q and d/ds h(x+su)|₀ = ⟨G_h(x), u⟩ for u ∈ Q). Then for every ω ∈ D^m(U): ∫ h⟨v', ω⟩ dμ' − ∫ h⟨v, dω⟩ dμ = ∫_M θ(x)·ξ(x)(G_h(x)♭∧ω(x)) dHⁿ(x), where G_h(x)♭∧ω(x) = alternatizeUncurryFin ((innerSL ℝ (G_h x)).smulRight (ω x)).",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (T : GeometricCurrentOn U (m + 1)), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → (∀ η : TestFormOn U (m + 1), T η = tauAction (m + 1) M θ ξ η) → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)) (μ' : Measure (Eucl P)) (v' : Eucl P → NVector (Eucl P) m), IsMeasureRepresentation T μ v → IsMeasureRepresentation T.boundary μ' v' → ∀ (h : Eucl P → ℝ) (Lh : ℝ≥0) (Gh : Eucl P → Eucl P), LipschitzWith Lh h → Measurable Gh → (∀ x, ‖Gh x‖ ≤ Lh) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → Gh x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (Gh x) u) 0) → ∀ ω : TestFormOn U m, (∫ x, h x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ') - (∫ x, h x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ) = ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (Gh x)).smulRight ((ω : DifferentialForm (Eucl P) m) x))) ∂(μHE[m + 1] : Measure (Eucl P))",
+  "lean_name": "slicing_im_lipschitz_leibniz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-a1"
+}

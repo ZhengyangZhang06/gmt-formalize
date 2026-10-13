@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_eucl-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+  "depth": 3,
+  "title": "Vector-valued C¹ approximation of Lipschitz maps ℝⁿ → ℝ^Q (componentwise Simon Ch. 2, 1.5)",
+  "statement": "Let n, Q ∈ ℕ, let u : ℝⁿ → ℝ^Q be Lipschitz with constant K ≥ 0 (ℝᵐ = EuclideanSpace ℝ (Fin m)), and let ε ∈ (0, ∞]. Then there exist a closed set A ⊆ ℝⁿ with Lⁿ(ℝⁿ ∖ A) < ε (Lⁿ = volume) and a C¹ map G : ℝⁿ → ℝ^Q such that for every x ∈ A: u(x) = G(x), and u has Fréchet derivative DG(x) at x.",
+  "lean_statement": "∀ (n Q : ℕ) (u : Eucl n → Eucl Q) (K : ℝ≥0), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ (A : Set (Eucl n)) (G : Eucl n → Eucl Q), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧ ContDiff ℝ 1 G ∧ ∀ x ∈ A, u x = G x ∧ HasFDerivAt u (fderiv ℝ G x) x",
+  "lean_name": "lpf_c1_approximation_eucl",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-9651ace1ab-a1"
+}

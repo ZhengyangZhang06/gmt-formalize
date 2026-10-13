@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1.lipschitz_localization-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1",
+  "depth": 4,
+  "title": "Bounded open Lipschitz piece carrying the part of a C¹ antilipschitz chart over a compact set",
+  "statement": "Let Φ : ℝⁿ → ℝ^Q be C¹ (ContDiff ℝ 1 Φ), let Ω ⊆ ℝⁿ be open, let c > 0 satisfy c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω, and let K ⊆ ℝ^Q be compact (ℝ^P = EuclideanSpace ℝ (Fin P) with the Euclidean norm). Then there exist an open set s ⊆ ℝⁿ and a constant L ∈ ℝ≥0 such that s ⊆ Ω, Ω ∩ Φ⁻¹(K) ⊆ s, s is bounded, and Φ is L-Lipschitz on s.",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (K : Set (Eucl Q)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → IsCompact K → ∃ (s : Set (Eucl n)) (L : ℝ≥0), IsOpen s ∧ s ⊆ Ω ∧ Ω ∩ Φ ⁻¹' K ⊆ s ∧ Bornology.IsBounded s ∧ LipschitzOnWith L Φ s",
+  "lean_name": "lpf_wtc_caf_lipschitz_localization",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-66b189fcaa-a1"
+}

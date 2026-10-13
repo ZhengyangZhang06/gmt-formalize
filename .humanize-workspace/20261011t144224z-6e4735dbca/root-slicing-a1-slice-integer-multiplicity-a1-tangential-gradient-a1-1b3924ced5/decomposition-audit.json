@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "euclideanHausdorffMeasure_eq_volume|ContDiff.locallyLipschitz|theorem exists_countable_basis|theorem Countable.exists_eq_range|tendsto_inv_nat_nhds_zero|finrank_euclideanSpace_fin",
+        "slicing_im_tg_cc_lipschitz_range_c1_cover|slicing_im_tg_cc_contDiff_range_chart_cover",
+        "git show eff6bc80913593f9d5e9d1c9607c7d8265732d0a:GMT/Ch06/Submission.lean",
+        "git show 961fc1089331625dcf27a53f631a38156cb2dd6e:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-1b3924ced5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-1b3924ced5/decomposition-v1.json",
+        "/tmp/chart_cover_audit_e91bd206_rpf3knm_/Types.lean",
+        "/tmp/chart_cover_audit_e91bd206_rpf3knm_/Full.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected chart-cover theorem. The pinned sources confirm the rectifiability definition, normalized Hausdorff image bound, critical-image theorem, local Lipschitz property and countable enumeration facts. Both reused declarations remain accepted with identical frozen types; their accepted dependency closures are non-circular. Both new names have no snapshot match or conflicting DAG reservation. All names are bare identifiers. The combined dependency graph is acyclic and correctly directed. Independently reconstructed checks elaborate all five literal types before child implementation and compile the supplied proofs and parent assembly. Every checked target depends only on propext, Classical.choice and Quot.sound. The assembly proves the exact selected parent using triple enumeration and countable unions of null remainders."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation_eucl",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree, including derivative equality on the closed set. The proof correctly splits the tolerance, applies the accepted scalar theorem componentwise, intersects the closed sets, and reconstructs both values and derivatives by finite sums. It handles Q = 0 and infinite tolerance. Reuse is valid: the accepted declaration has the identical frozen type and contains its accepted prerequisite closure."
+    },
+    {
+      "key": "c1_local_antilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated positive-radius, positive-constant estimate. Injectivity supplies a uniform linear lower bound; C¹ regularity controls the derivative on a ball; the mean-value estimate and reverse triangle inequality prove the conclusion. The zero-dimensional case is covered. The reused accepted declaration has the identical frozen type and no circular dependency."
+    },
+    {
+      "key": "lipschitz_range_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independent one-line proposition. Approximation with positive ENNReal tolerances i⁻¹ gives a null exceptional parameter set. The normalized Hausdorff image bound makes its Lipschitz image null, and the proof explicitly places the uncovered range inside that image. The sole sibling dependency is correctly directed; no measurability assumption or dimension restriction is missing."
+    },
+    {
+      "key": "c1_range_chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on openness, both Lipschitz bounds and the null remainder. Enumerating good basis sets with empty-set padding is valid. Local antilipschitz and local Lipschitz neighborhoods cover every regular point. Global C¹ regularity supplies the differentiability required by the verified critical-image theorem, so the uncovered range is null. The argument handles degenerate dimensions, uses its dependency correctly, and supplies exactly the patches needed by the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

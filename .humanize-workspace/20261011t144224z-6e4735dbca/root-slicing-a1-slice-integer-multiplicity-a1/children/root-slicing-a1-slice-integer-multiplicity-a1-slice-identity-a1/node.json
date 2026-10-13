@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Each slice agrees with the integer multiplicity slice on a fixed form for a.e. t (Simon Ch. 6, 4.2 and 4.5(2))",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, T ∈ D_n(U) with T(η) = tauAction n M θ ξ η for all η ∈ D^n(U), f : ℝ^P → ℝ L-Lipschitz, and G : ℝ^P → ℝ^P Borel with |G| ≤ L everywhere and the tangential-gradient property for f (for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x: G(x) ∈ Q and d/ds f(x+su)|₀ = ⟨G(x), u⟩ for u ∈ Q). Let M_t := {x ∈ M : f(x) = t, G(x) ≠ 0} and ξ_t(x) := ξ(x)⌞(|G(x)|⁻¹G(x)) as in the slice triple (ξ_t(x)(α) = ξ(x)((|G(x)|⁻¹G(x))♭∧α)). Then for every ω ∈ D^m(U) there is an L¹-null set F_ω such that for every t ∉ F_ω and every S ∈ D_m(U) with IsSlice T f t S, S(ω) = tauAction m M_t θ ξ_t ω = ∫_{M_t} θ(x)ξ_t(x)(ω(x)) dH^m(x).",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → (∀ η : TestFormOn U (m + 1), T η = tauAction (m + 1) M θ ξ η) → LipschitzWith L f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∀ ω : TestFormOn U m, ∀ᵐ t ∂(volume : Measure ℝ), ∀ S : GeometricCurrentOn U m, IsSlice T f t S → S ω = tauAction m {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} θ (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ω",
+  "lean_name": "slicing_im_slice_identity",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1-a1"
+}

@@ -1,0 +1,128 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝᵏ := EuclideanSpace ℝ (Fin k) with inner product ⟨·,·⟩ and norm |·|; Lⁿ := volume on ℝⁿ; Hⁿ := μHE[n] (on ℝⁿ, Hⁿ = Lⁿ by Mathlib `EuclideanSpace.euclideanHausdorffMeasure_eq_volume`). For w ∈ ℝⁿ put A_w := DΦ(w) = fderiv ℝ Φ w and T_w := A_w(ℝⁿ) = LinearMap.range (fderiv ℝ Φ w). This lemma carries out Steps 2, 3 and 5 of the parent proof for one chart (Φ, Ω) = (Φ_j, Ω_j): Rademacher in the chart, the null-set transfer, the Gram-matrix definition of the gradient with its Borel measurability, and the Lipschitz bound; it uses the sibling lemma line_deriv (`slicing_im_tg_line_deriv_of_comp`, Step 4 of the parent proof). Let K ≥ 0 be a Lipschitz constant of Φ on Ω and c > 0 an antilipschitz constant of Φ on Ω.
+
+1. (Chart facts.) Let w ∈ Ω and u ∈ ℝⁿ. For small t ≠ 0, w + tu ∈ Ω (Ω open), so c|t||u| ≤ |Φ(w + tu) − Φ(w)|; dividing by |t| and letting t → 0 gives c|u| ≤ |A_w u|. So A_w is injective. Φ is injective on Ω, since Φ(w) = Φ(w′) gives c|w − w′| ≤ 0. Let Ψ : Φ(Ω) → Ω be the inverse of Φ|Ω; for y = Φ(w), y′ = Φ(w′) with w, w′ ∈ Ω, |Ψ(y) − Ψ(y′)| = |w − w′| ≤ c⁻¹|y − y′|, so Ψ is c⁻¹-Lipschitz.
+
+2. (Rademacher in the chart; parent Step 2.) h := f∘Φ is LK-Lipschitz on Ω. By Rademacher's theorem for maps Lipschitz on a set (Mathlib `LipschitzOnWith.ae_differentiableWithinAt_of_mem`, with the Haar measure Lⁿ), for Lⁿ-a.e. w ∈ Ω the map h is differentiable within Ω at w, hence differentiable at w because Ω is a neighbourhood of w (Mathlib `DifferentiableWithinAt.differentiableAt`). Thus D := {w ∈ Ω : h is differentiable at w} satisfies Lⁿ(Ω ∖ D) = 0, and D is Borel (Ω is open and {w : DifferentiableAt ℝ h w} is Borel by Mathlib `measurableSet_of_differentiableAt`).
+
+3. (Null-set transfer.) Φ is K-Lipschitz on Ω ∖ D, so Hⁿ(Φ(Ω ∖ D)) ≤ Kⁿ Hⁿ(Ω ∖ D) = Kⁿ Lⁿ(Ω ∖ D) = 0 (SimonGMT `Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn`, and Hⁿ = Lⁿ on ℝⁿ). Moreover Φ(Ω) ∖ Φ(D) ⊆ Φ(Ω ∖ D).
+
+4. (Pointwise representation of the chart derivative; parent Step 3.) Let w ∈ Ω, A := A_w, ℓ_w := fderiv ℝ h w ∈ L(ℝⁿ, ℝ) (Mathlib's fderiv; it is the derivative of h at w whenever w ∈ D), and let a_w ∈ ℝⁿ be its Riesz vector: ℓ_w(u) = ⟨a_w, u⟩ for all u ∈ ℝⁿ. The Gram operator A*A : ℝⁿ → ℝⁿ satisfies ⟨A*Au, u⟩ = |Au|² ≥ c²|u|², so it is injective, hence invertible (ℝⁿ is finite dimensional). Put γ(w) := A (A*A)⁻¹ a_w ∈ ℝ^P. Then γ(w) ∈ T_w, and for all u ∈ ℝⁿ
+ (★) ⟨γ(w), A u⟩ = ⟨A*A (A*A)⁻¹ a_w, u⟩ = ⟨a_w, u⟩ = ℓ_w(u).
+
+5. (γ is Borel.) w ↦ A_w is continuous on ℝⁿ (Φ is C¹), hence so is w ↦ A_w*A_w. On Ω its values are invertible, and inversion is continuous at every invertible operator (Mathlib `NormedRing.inverse_continuousAt`), so w ↦ B_w := A_w (A_w*A_w)⁻¹ ∈ L(ℝⁿ, ℝ^P) is continuous on Ω; extended by 0 off Ω it is Borel on ℝⁿ (piecewise on the open, hence Borel, set Ω). w ↦ ℓ_w is Borel (Mathlib `measurable_fderiv`), so w ↦ a_w is Borel (composition with the inverse of the continuous linear Riesz isometry `InnerProductSpace.toDual ℝ ℝⁿ`). Since (B, a) ↦ Ba is continuous and the spaces are second countable, γ̃(w) := B_w a_w for w ∈ Ω, γ̃(w) := 0 for w ∉ Ω, defines a Borel map γ̃ : ℝⁿ → ℝ^P with γ̃ = γ on Ω.
+
+6. (Definition of g; Borel measurability.) Φ(D) is a Borel subset of ℝ^P by the Lusin–Souslin theorem (Mathlib `MeasurableSet.image_of_continuousOn_injOn`): D is a Borel subset of the Polish space ℝⁿ and Φ is continuous and injective on D. Let Ψ̃ : ℝ^P → ℝⁿ be a Lipschitz, hence continuous, hence Borel, extension of Ψ from Φ(Ω) (componentwise McShane extension, Mathlib `LipschitzOnWith.extend_pi` composed with the linear equivalence ℝⁿ ≅ (Fin n → ℝ), or SimonGMT `Chapter02.exists_lipschitz_extension_finiteDimensional`). Define g(y) := γ̃(Ψ̃(y)) for y ∈ Φ(D) and g(y) := 0 for y ∉ Φ(D). Then g is Borel (`Measurable.piecewise`). For y = Φ(w) with w ∈ D we have Ψ̃(y) = Ψ(y) = w, so g(y) = γ(w) ∈ T_w. (Equivalently, g = Function.extend (Φ restricted to D) (γ restricted to D) 0, Borel by Mathlib `ContinuousOn.measurableEmbedding` and `MeasurableEmbedding.measurable_extend`.)
+
+7. (Directional derivatives; parent Step 4.) Let w ∈ D, y := Φ(w), and v ∈ T_w, say v = A_w u with u ∈ ℝⁿ. Φ is differentiable at w (it is C¹) and h = f∘Φ is differentiable at w (w ∈ D), so the sibling lemma line_deriv applied to f, L, Φ, w, u gives: s ↦ f(Φ(w) + s A_w u) = f(y + s v) has derivative ℓ_w(u) at s = 0. By (★) and step 6, ℓ_w(u) = ⟨γ(w), A_w u⟩ = ⟨g(y), v⟩. Also g(y) = γ(w) ∈ T_w.
+
+8. (Bound |g| ≤ L everywhere; parent Step 5.) Let y = Φ(w) with w ∈ D and put v := g(y) = γ(w) ∈ T_w. By step 7, q(s) := f(y + s v) has derivative ⟨g(y), v⟩ = |g(y)|² at s = 0. As f is L-Lipschitz, |q(s) − q(0)| ≤ L|s||v| for all s, so every difference quotient (q(s) − q(0))/s, s ≠ 0, has absolute value ≤ L|v|, and so does its limit: |g(y)|² ≤ L|g(y)|. Hence |g(y)| ≤ L (trivially if g(y) = 0, otherwise divide by |g(y)|). For y ∉ Φ(D), g(y) = 0 and |g(y)| = 0 ≤ L. So |g(x)| ≤ L for every x ∈ ℝ^P.
+
+9. (Almost everywhere conclusion.) Let y ∈ Φ(D), y = Φ(w₀) with w₀ ∈ D. If w ∈ Ω and Φ(w) = y, then w = w₀ by injectivity of Φ on Ω (step 1), so by step 7: g(y) ∈ T_w and for every v ∈ T_w, s ↦ f(y + s v) has derivative ⟨g(y), v⟩ at s = 0. Hence the set of y ∈ Φ(Ω) at which the conclusion fails is contained in Φ(Ω) ∖ Φ(D) ⊆ Φ(Ω ∖ D), which is Hⁿ-null by step 3. Therefore the conclusion holds for Hⁿ⌞Φ(Ω)-a.e. y; together with step 6 (g Borel) and step 8 (|g| ≤ L everywhere) this proves the lemma. ∎
+(For n = 0 the same argument applies verbatim: ℝ⁰ = {0}, every map on it is differentiable, A_w*A_w is the identity of the zero space, a_w = 0 and γ = 0.)
+
+Implementation remarks (not part of the mathematical argument). The comparator-accepted declaration `lpf_wtc_cat_fderiv_lower_bound` (|DΦ(w)s| ≥ c|s| on an open antilipschitz domain) is exactly step 1's lower bound and can be included as a reuse child (exact name, identical type) if this node is decomposed further. Step 3 uses SimonGMT `Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn`, which is already imported by the contract.
+
+## Key steps
+
+1. Chart facts: |DΦ(w)u| ≥ c|u|, Φ injective on Ω, inverse c⁻¹-Lipschitz.
+2. Rademacher on the open set Ω: f∘Φ is differentiable on a Borel D ⊆ Ω with Lⁿ(Ω∖D) = 0, so Hⁿ(Φ(Ω∖D)) = 0 by the Lipschitz image bound.
+3. Gram representation γ(w) = A(A*A)⁻¹∇(f∘Φ)(w) ∈ range A with ⟨γ(w), Au⟩ = D(f∘Φ)(w)u, A = DΦ(w); γ is Borel on Ω.
+4. g := γ∘(Φ|Ω)⁻¹ on the Borel set Φ(D) (Lusin–Souslin) and 0 elsewhere; g is Borel.
+5. line_deriv gives the ambient directional derivatives ⟨g(y), v⟩ for v ∈ range DΦ(w); testing v = g(y) against the Lipschitz bound gives |g| ≤ L everywhere.
+6. All failures lie in Φ(Ω∖D), which is Hⁿ-null.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/Contract.lean workspace GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (both identical; workspace HEAD d8d46c95)`
+- `python3 importlib verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') -> scope prefix: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end`
+- `grep -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique|def blowUpMap' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n '^theorem|^def' simongmt Chapter02/{Lipschitz,AreaLipschitz,AreaCritical,AreaDomain,WhitneyExtension,WhitneyJet}.lean Chapter01/{Lusin,DensityComparison}.lean Chapter03/{SubmanifoldCover,Differential,DisjointCover}.lean`
+- `grep -n '^theorem' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean; sed -n 1,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, euclideanHausdorffMeasure_smul0)`
+- `grep -rn 'theorem Measurable.find|theorem measurable_find|theorem ContinuousOn.measurableEmbedding|theorem MeasurableSet.image_of_continuousOn_injOn|theorem measurable_fderiv|theorem measurableSet_of_differentiableAt|theorem DifferentiableWithinAt.differentiableAt|theorem ae_restrict_iff|theorem tendstoUniformlyOn_of_ae_tendsto|IsSigmaCompact.image|theorem normDet_sq_eq_det_gram|theorem normDet_nonneg|theorem hausdorffMeasure_image_le' mathlib/Mathlib`
+- `ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02 and Chapter01 (WhitneyExtension.olean absent; AreaCritical, AreaLipschitz, AreaDomain, WhitneyJet, Lusin, DensityComparison present)`
+- `python3 scan of dag.json (360 nodes): uniqueness of slicing_im_tg_* names; byte-identity of child types with lpf_countably_rectifiable_c1_cover / lpf_weighted_tangent_on_c1_chart (speculative-ready); live statuses and statements of lpf_c1r_*, lpf_c1_local_antilipschitz, lpf_lipschitz_c1_immersion_pieces, lpf_wtc_*, lpf_tde_chart_directional_deriv, lpf_ccr_hasDerivAt_line_of_comp, rectifiability_weighted_tangent_ae, br_weightedTangent_congr, iwl_weighted_tangent_locality`
+- `read nodes/root-lipschitz-pushforward-im-a1/decomposition-v1.json, nodes/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1/decomposition-v1.json, nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1/decomposition-v1.json, nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/decomposition-v2.json (twin proofs; reuse-child mechanism)`
+- `git show <workspace_result_commit>:GMT/Ch06/Submission.lean for 138 accepted nodes (extra SimonGMT imports such as Chapter02.AreaDomain, Chapter01.DensityComparison, Chapter02.AreaBranches are allowed)`
+- `lake env lean /tmp/tg_split/Stmts.lean (four child types in exact comparator scope; 0 errors)`
+- `lake env lean /tmp/tg_split/Assembly.lean (frozen parent type proved from chart_cover, chart_tangent, chart_gradient stubs; #print axioms: propext, sorryAx [stubs only], Classical.choice, Quot.sound)`
+- `lake env lean /tmp/tg_split/CProof.lean (complete proof of the line_deriv frozen type; axioms propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/tg_split/Avail.lean (#check of cited Mathlib and SimonGMT lemmas in the Submission import closure)`
+- `python3 verifier/lean_contract.py validate_lean_statement on the four child types (all OK)`
+- `rg 'slicing_im_tg' local-references/197bdd4b88278494/project and lake-packages-25730c7c/simongmt (no match)`
+- `sed book/chapter-03.txt (1.1-1.9, 2.1-2.2), chapter-02.txt (1.4-1.8, 4.1-4.11), chapter-01.txt (3.6-3.7)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/decomposition-v2.json`
+- `/tmp/tg_split/Stmts.lean`
+- `/tmp/tg_split/Assembly.lean`
+- `/tmp/tg_split/CProof.lean`
+- `/tmp/tg_split/Avail.lean`
+
+Snapshot and imports:
+- The snapshot (project d8d46c95, the workspace HEAD; Mathlib 25730c7c) contains the frozen Ch06 contract, byte-identical to the workspace Contract.lean and Submission.lean. Child types may therefore use only contract, SimonGMT and Mathlib names. The comparator scope is namespace GMT.Ch06 with the contract's opens.
+- SimonGMT supplies the following:
+  - CountablyRectifiable as countably many Lipschitz images plus an Hⁿ-null set, and HasWeightedApproximateTangentSpaceAt with uniqueness at θ(x) ≠ 0.
+  - Lipschitz image bounds for μHE[n].
+  - Area-formula critical-image and injective results (AreaCritical, AreaLipschitz, AreaDomain), Lusin (Chapter01.Lusin) and the upper density theorem 3.6 (Chapter01.DensityComparison). These modules are not imported by the contract but are prebuilt and may be added to the imports, as accepted nodes do.
+  - Its Chapter02.WhitneyExtension module is not prebuilt, so it cannot be imported.
+- SimonGMT lacks the chart-cover direction of Simon Lemma 1.2 (SubmanifoldCover proves only the easy direction), a tangential gradient for Lipschitz functions, and tangent identification on C¹ charts.
+- Mathlib supplies Rademacher on sets (LipschitzOnWith.ae_differentiableWithinAt_of_mem), μHE[n] = volume on ℝⁿ, measurable_fderiv, measurableSet_of_differentiableAt, Lusin–Souslin images and measurable embeddings, Measurable.find, Egorov, and normDet_sq_eq_det_gram.
+
+DAG and reuse:
+- The chart-cover and chart-tangent lemmas exist in the DAG only as the speculative-ready lpf twins. Their types are byte-identical to the children chart_cover and chart_tangent, but they are not yet comparator-accepted, so fresh names are used.
+- Many of the twins' leaves are comparator-accepted and are listed in the child proofs for reuse in those children's own decompositions.
+- No accepted declaration has a type identical to any child. slicing_im_tg_* matches nowhere: not in the snapshot project, not in SimonGMT, not among the 360 DAG nodes.
+
+Kernel checks:
+- All four child types elaborate in the exact scope and pass the verifier's statement validator.
+- The frozen parent type is proved from chart_cover, chart_tangent and chart_gradient; sorryAx comes only from the stubs.
+- line_deriv is fully proved with standard axioms.
+
+These checks do not certify the analytic proofs of chart_cover, chart_tangent and chart_gradient.
