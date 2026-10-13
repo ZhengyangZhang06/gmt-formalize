@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c07d3b40097e6b9ea2b8d060ba24269baec3e4600c081b8235d3311ea389a655",
+  "git_delta": {
+    "base_commit": "ba11d1984d8f6098153029f0061e87eeac4acfb4",
+    "candidate_commit": "36c54d17de1246c8b62765415d4d4ea157587fa3",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "dd4c4051002e85ae7f3a27edc2ec670d7ce441122d7b1f3f2450f3b46d6ddc98",
+    "source_sha256": "68e5806ac5e7b60a21b69ac590de84093191fc3edf30d5fa977b5a602c92fbc7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_vertical_first_variation",
+      "statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in closedBall (0 : Amb n ℓ) (σ / 2), inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) (V.tangentProj x (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) ∂V.weight| ≤ M * (σ / 4) * ∫ x in closedBall (0 : Amb n ℓ) (σ / 2), ‖H x‖ ∂V.weight",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
