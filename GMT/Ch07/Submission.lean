@@ -4224,6 +4224,41 @@ theorem Submission.dorag_lipschitz_graph_approxTangent : ∀ (n k : ℕ), 0 < n 
   rw [approxTangentPlane, dite_eq_left hex]
   exact hex.choose_spec.unique hM
 
+/-- **A Lipschitz graph with `s^{n+1}` tilt-excess decay is `C¹`** (Simon Ch. 5, proof of
+Theorem 5.2, (9)–(11) and the final paragraph).  Let `Φ(v) = z + ιv + ι'f(v)`; for `s > 0`,
+`ENNReal.ofReal (K s^{n+1}) = K⁺s^{n+1}` with `K⁺ = max{K, 0}`.  Monotonicity gives the lower
+density bound `ωₙ ≤ e^{κt}t^{−n}μ(B_t(y))` (drop the nonnegative integral), and
+`Hⁿ((spt μ ∩ W) \ M) = 0`.  By Rademacher's theorem and the tangent planes of Lipschitz graphs,
+for a.e. `v` we have `T_{Φ(v)}M = graph Df(v)`, and at Lebesgue points of `x ↦ p_x` the plane `S`
+of the decay hypothesis at `Φ(v)` must be `graph Df(v)`.  As `|A₁ − A₂|² ≤ 4|p_{A₁} − p_{A₂}|²` for
+slopes `≤ 1/4`, the area formula turns the decay hypothesis into the Campanato bound
+`∫_{B̆ⁿ_s(v)} |Df − Df(v)|² ≤ C s^{n+1}` for a.e. `v ∈ B̆ⁿ_{a/2}(0)` and `s ≤ s₁`.  By Campanato's
+criterion `Df` agrees a.e. with a continuous `g`, and a Lipschitz map whose a.e. derivative is
+continuous is `C¹` (mollification). -/
+theorem Submission.dorag_graph_c1_of_tilt_decay : ∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (z : Euclid (n + k)) (a s₀ K : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ 1 / 4 * ‖v - w‖) → f 0 = 0 → 0 < a → 0 < s₀ → closedBall z a ⊆ W → R.measure.support ∩ closedBall z a = range (fun v => z + ι v + ι' (f v)) ∩ closedBall z a → (∀ ξ ∈ R.measure.support ∩ closedBall z a, ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ ∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall ξ s, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (K * s ^ (n + 1))) → ContDiffOn ℝ 1 f (ball (0 : Euclid n) (a / 2)) := by
+  intro n k hn U W R H κ ι ι' f z a s₀ K hW hWU hH hκ hMC horth hfL hf0 ha hs₀ hball hspt hdecay
+  have hLip : LipschitzWith (1 / 4 : NNReal) f := by
+    refine LipschitzWith.of_dist_le_mul fun v w => ?_
+    simpa [dist_eq_norm] using hfL v w
+  -- the prerequisites: `x ↦ p_x` is measurable, the lower density bound (monotonicity),
+  -- `Hⁿ((spt μ ∩ W) \ M) = 0`, and the tangent planes along the graph of `f`
+  have hP := Submission.dorag_approxTangent_starProjection_aesm (n + k) n U R
+  have hdens : ∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W →
+      unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) :=
+    fun y hy t ht hyt => le_add_self.trans
+      ((Submission.dorag_monotonicity_density n k hn U W R H κ hW hWU hH hκ hMC).2 y hy t ht hyt)
+  have hnull := Submission.dorag_support_sdiff_carrier_null n k hn U W R H κ hW hWU hH hκ hMC
+  have htan := Submission.dorag_lipschitz_graph_approxTangent n k hn U W R ι ι' z f (1 / 4) hW hWU
+    horth hLip
+  -- the Campanato bound for `Df` on `B̆ⁿ_{a/2}(0)` (Simon (11))
+  obtain ⟨C, s₁, hC, hs₁, hcamp⟩ := Submission.dorag_gc_graph_slope_campanato n k U W R κ ι ι' f z
+    a s₀ K hW hWU hP hdens hnull htan horth hfL hf0 ha hs₀ hball hspt hdecay
+  -- Campanato's criterion: `Df = g` a.e. for a continuous `g`
+  obtain ⟨g, hg, hfg⟩ := Submission.dorag_gc_campanato_continuous_deriv n k f (ball 0 (a / 2)) C s₁
+    hn isOpen_ball hC hs₁ hcamp
+  exact Submission.dorag_gc_contDiffOn_of_ae_hasFDerivAt n k f (1 / 4) (ball 0 (a / 2)) g hn hLip
+    isOpen_ball hg hfg
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
