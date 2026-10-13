@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c887090a573d28da17424fb696c8d884215d47a5e9cfeb524749379856808e07",
+  "git_delta": {
+    "base_commit": "a3bbb630c941ddddb755839454e9c9758e3c91ef",
+    "candidate_commit": "f58a546165a6ac376de1855c541b258160a44959",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_vdl_measure_closedBall_ne_zero",
+    "diff_sha256": "ca34c8ccee146e84465525fce8e632a882f4f35e7e93e708c82882b2680372eb",
+    "source_sha256": "302145ab7f4fae76952d66f45410afabe98a135f5c021c7de16c34c7f0373bb9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_vdl_measure_closedBall_ne_zero",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P), v ≠ 0 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
