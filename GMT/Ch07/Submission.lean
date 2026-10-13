@@ -785,6 +785,95 @@ theorem Submission.codim1_zsl_ga_local_comparison : ∀ (m k : ℕ) (ι : Euclid
   exact Submission.codim1_zsl_ga_lc_sandwich m t ε (J w₀) (volume B) _ _ hε1 hJ₀.le hεm hε1m
     hHlo hHhi hIlo hIhi
 
+/-- **Area formula for a `C¹` graph over a measurable set** (Simon Ch. 2, 3.2–3.3, for the graph
+map `G(w) = ι w + ι' (g w)` of a `g` that is `C¹` on an open `D`, with `ι`, `ι'` linear isometries
+with orthogonal ranges): `μHE[m] (G '' A) = ∫⁻_A √det (DG* ∘ DG)` for measurable `A ⊆ D`.
+`⟪ι v, G w⟫ = ⟪v, w⟫`, so `G` is injective; it is continuous on `D`.  For `t > 1`, countably many
+of the balls of `codim1_zsl_ga_local_comparison` cover `D`; disjointing them cuts `A` into
+measurable pieces with disjoint Borel images (Lusin–Souslin), and summing the local comparisons
+gives `μHE[m] (G '' A) ≤ t ∫⁻_A J` and `∫⁻_A J ≤ t μHE[m] (G '' A)`.  Let `t ↓ 1`. -/
+theorem Submission.codim1_zsl_ga_set_identity : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D A : Set (Euclid m)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → MeasurableSet A → A ⊆ D → μHE[m] ((fun w => ι w + ι' (g w)) '' A) = ∫⁻ w in A, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) := by
+  intro m k ι ι' g D A hperp hD hg hA hAD
+  -- steps 2–3 for any injective `G` continuous on `D` and any density `J` comparable with
+  -- `B ↦ μHE[m] (G '' B)` up to every factor `t > 1` on small balls around the points of `D`
+  have main : ∀ (G : Euclid m → Euclid (m + k)) (J : Euclid m → ℝ≥0∞), Injective G →
+      ContinuousOn G D → (∀ t : ℝ, 1 < t → ∀ w ∈ D, ∃ r : ℝ, 0 < r ∧ ball w r ⊆ D ∧
+        ∀ B : Set (Euclid m), MeasurableSet B → B ⊆ ball w r →
+          μHE[m] (G '' B) ≤ ENNReal.ofReal t * ∫⁻ x in B, J x ∧
+            ∫⁻ x in B, J x ≤ ENNReal.ofReal t * μHE[m] (G '' B)) →
+      μHE[m] (G '' A) = ∫⁻ x in A, J x := by
+    intro G J hinj hcont hloc
+    -- step 2: for fixed `t > 1`, `μHE[m] (G '' A) ≤ t ∫_A J` and `∫_A J ≤ t μHE[m] (G '' A)`
+    have hstep : ∀ t : ℝ, 1 < t → μHE[m] (G '' A) ≤ ENNReal.ofReal t * ∫⁻ x in A, J x ∧
+        ∫⁻ x in A, J x ≤ ENNReal.ofReal t * μHE[m] (G '' A) := by
+      intro t ht
+      -- (a) a comparison radius at each point of `D` (an arbitrary one elsewhere)
+      have hr : ∀ w, ∃ r : ℝ, w ∈ D → 0 < r ∧ ball w r ⊆ D ∧
+          ∀ B : Set (Euclid m), MeasurableSet B → B ⊆ ball w r →
+            μHE[m] (G '' B) ≤ ENNReal.ofReal t * ∫⁻ x in B, J x ∧
+              ∫⁻ x in B, J x ≤ ENNReal.ofReal t * μHE[m] (G '' B) := by
+        intro w
+        by_cases hw : w ∈ D
+        · obtain ⟨r, h⟩ := hloc t ht w hw
+          exact ⟨r, fun _ => h⟩
+        · exact ⟨1, fun h => absurd h hw⟩
+      choose r hr using hr
+      -- (b) countably many of these balls cover `D`; enumerate their centres
+      obtain ⟨T, hTD, hTc, hDT⟩ := TopologicalSpace.countable_cover_nhdsWithin
+        (f := fun w => ball w (r w)) (s := D) fun w hw =>
+          mem_nhdsWithin_of_mem_nhds (ball_mem_nhds w (hr w hw).1)
+      rcases A.eq_empty_or_nonempty with rfl | ⟨a, ha⟩
+      · simp
+      obtain ⟨e, rfl⟩ := hTc.exists_eq_range <| by
+        obtain ⟨x, hx, -⟩ := mem_iUnion₂.1 (hDT (hAD ha))
+        exact ⟨x, hx⟩
+      set V : ℕ → Set (Euclid m) := fun j => ball (e j) (r (e j))
+      -- (c) the pieces `A ∩ disjointed V j` partition `A`, each inside one ball
+      have hPm : ∀ j, MeasurableSet (A ∩ disjointed V j) := fun j =>
+        hA.inter (MeasurableSet.disjointed (fun _ => measurableSet_ball) j)
+      have hPd : Pairwise (Disjoint on fun j => A ∩ disjointed V j) := fun i j hij =>
+        Disjoint.mono inter_subset_right inter_subset_right (disjoint_disjointed V hij)
+      have hPA : ⋃ j, A ∩ disjointed V j = A := by
+        rw [← inter_iUnion, iUnion_disjointed, inter_eq_left]
+        intro x hx
+        simpa only [biUnion_range] using hDT (hAD hx)
+      -- (d) their images are disjoint Borel sets (`G` is injective; Lusin–Souslin)
+      have hGm : ∀ j, MeasurableSet (G '' (A ∩ disjointed V j)) := fun j =>
+        (hPm j).image_of_continuousOn_injOn (hcont.mono (inter_subset_left.trans hAD))
+          hinj.injOn
+      have hGd : Pairwise (Disjoint on fun j => G '' (A ∩ disjointed V j)) := fun i j hij =>
+        (disjoint_image_iff hinj).2 (hPd hij)
+      have hμ : μHE[m] (G '' A) = ∑' j, μHE[m] (G '' (A ∩ disjointed V j)) := by
+        conv_lhs => rw [← hPA]
+        rw [image_iUnion, measure_iUnion hGd hGm]
+      have hJ : ∫⁻ x in A, J x = ∑' j, ∫⁻ x in A ∩ disjointed V j, J x := by
+        conv_lhs => rw [← hPA]
+        exact lintegral_iUnion hPm hPd J
+      -- (e) sum the comparisons on the pieces
+      have hc : ∀ j, μHE[m] (G '' (A ∩ disjointed V j)) ≤
+            ENNReal.ofReal t * ∫⁻ x in A ∩ disjointed V j, J x ∧
+          ∫⁻ x in A ∩ disjointed V j, J x ≤
+            ENNReal.ofReal t * μHE[m] (G '' (A ∩ disjointed V j)) := fun j =>
+        (hr (e j) (hTD (mem_range_self j))).2.2 _ (hPm j)
+          (inter_subset_right.trans (disjointed_subset V j))
+      rw [hμ, hJ, ← ENNReal.tsum_mul_left, ← ENNReal.tsum_mul_left]
+      exact ⟨ENNReal.tsum_le_tsum fun j => (hc j).1, ENNReal.tsum_le_tsum fun j => (hc j).2⟩
+    -- step 3: `x ≤ t y` for every `t > 1` gives `x ≤ y` (let `t ↓ 1`)
+    have hlim : ∀ x y : ℝ≥0∞, (∀ t : ℝ, 1 < t → x ≤ ENNReal.ofReal t * y) → x ≤ y := by
+      intro x y h
+      have hty : Tendsto (fun t : ℝ => ENNReal.ofReal t * y) (𝓝[>] 1)
+          (𝓝 (ENNReal.ofReal 1 * y)) :=
+        ENNReal.Tendsto.mul_const
+          ((ENNReal.continuous_ofReal.tendsto 1).mono_left nhdsWithin_le_nhds) (Or.inl (by simp))
+      simpa using ge_of_tendsto hty (eventually_nhdsWithin_of_forall fun t ht => h t ht)
+    exact le_antisymm (hlim _ _ fun t ht => (hstep t ht).1) (hlim _ _ fun t ht => (hstep t ht).2)
+  -- step 1: `⟪ι v, G w⟫ = ⟪v, w⟫`, so `G` is injective; `G` is continuous on `D`
+  refine main _ _ (fun w₁ w₂ h => ext_inner_left ℝ fun v => ?_)
+    (ι.continuous.continuousOn.add (ι'.continuous.comp_continuousOn hg.continuousOn))
+    fun t ht w hw => Submission.codim1_zsl_ga_local_comparison m k ι ι' g D t w hperp hD hg ht hw
+  simpa only [inner_add_right, LinearIsometry.inner_map_map, hperp, add_zero] using
+    congrArg (inner ℝ (ι v)) h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
