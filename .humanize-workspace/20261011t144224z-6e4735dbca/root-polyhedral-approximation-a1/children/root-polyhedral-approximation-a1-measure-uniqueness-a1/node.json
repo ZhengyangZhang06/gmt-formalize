@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.measure_uniqueness-a1",
+  "parent_id": "root.polyhedral_approximation-a1",
+  "depth": 2,
+  "title": "Signed measures on an open set are determined by smooth test functions",
+  "statement": "Let P ∈ ℕ and U ⊆ ℝ^P open. Let μ₁, μ₂ be Borel measures on ℝ^P and g₁, g₂ : ℝ^P → ℝ functions such that g_i is μ_i-integrable on every compact K ⊆ U. Suppose ∫ ψ g₁ dμ₁ = ∫ ψ g₂ dμ₂ for every C^∞ function ψ : ℝ^P → ℝ with compact support and tsupport ψ ⊆ U. Then ∫_A u g₁ dμ₁ = ∫_A u g₂ dμ₂ for every Borel set A ⊆ ℝ^P and every continuous u : ℝ^P → ℝ with compact support and tsupport u ⊆ U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn g₁ K μ₁ ∧ IntegrableOn g₂ K μ₂) → (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ U → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ u : Eucl P → ℝ, Continuous u → HasCompactSupport u → tsupport u ⊆ U → ∫ x in A, u x * g₁ x ∂μ₁ = ∫ x in A, u x * g₂ x ∂μ₂",
+  "lean_name": "polyhedral_approx_measure_uniqueness",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-measure-uniqueness-a1-a1"
+}

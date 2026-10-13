@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Sets with null rotated coordinate projections are null for the mass measure (Simon 6, Remark 2.35, Lemma 2.36, Remark 2.37(2))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, T ∈ D_n(U) with M_W(T) + M_W(∂T) < ∞ for every open W ⊂⊂ U, and μ a Borel measure on ℝ^P with IsMassMeasure T μ. Let Q be a linear isometry of ℝ^P and E ⊆ ℝ^P a Borel set such that Lⁿ(p_α(Q(E))) = 0 for every α ∈ I(n,P), where p_α : ℝ^P → ℝⁿ, x ↦ (x^{α(1)}, …, x^{α(n)}), and Lⁿ is Lebesgue measure (volume) on ℝⁿ. Then μ(E) = 0.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → ∀ (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (E : Set (Eucl P)), MeasurableSet E → (∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' E) = 0) → μ E = 0",
+  "lean_name": "rectifiability_projection_null",
+  "depends_on": [
+    "root.rectifiability-a1.mass_measure_representation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.mass_measure_representation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-a1"
+}

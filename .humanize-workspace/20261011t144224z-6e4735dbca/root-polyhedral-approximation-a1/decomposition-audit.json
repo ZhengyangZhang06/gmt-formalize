@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^import|^open|^namespace|^def (PolyhedralApproximation|IsLatticeChain|IsSlice|IsRestriction|IsMeasureRepresentation|IsIntegerMultiplicity|DeformationTheorem|SlicingTheorem|tauAction|CompactlyContainedOpen)|^structure IsRectifiableTriple",
+        "polyhedral_approx_|restrictDomain|testFormOnInclusion",
+        "ext_alternating",
+        "^theorem (IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|ae_eq_zero_of_integral_contDiff_smul_eq_zero)|^variable|integral_rnDeriv_smul|exists_contMDiffMap_zero_one_of_isClosed",
+        "def contract_scope|def validate_lean_statement|child|namespace",
+        "6\\.2.*Weak|6\\.2 Theorem|Weak Polyhedral|4\\.5 Lemma",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pa_independent_audit_20261011/ContractsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pa_independent_audit_20261011/LibraryChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Locality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/CoordBound.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1/decomposition-v1.json",
+        "/tmp/pa_independent_audit_20261011/ContractsAndAssembly.lean",
+        "/tmp/pa_independent_audit_20261011/LibraryChecks.lean",
+        "/tmp/pa_decomp_check/Scratch/Locality.lean",
+        "/tmp/pa_decomp_check/Scratch/CoordBound.lean"
+      ],
+      "conclusion": "Confirmed project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and pinned SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. The checked project copies are byte-identical to the snapshot; package worktrees are clean. No proposed name occurs in another DAG branch or the frozen project. All seven types pass lexical validation and independently elaborate in comparator scope without child implementations. The independently checked assembly proves exactly PolyhedralApproximation from the two principal children and the selected node's existing dependencies. Assembly, tangent locality, coordinate bound, and checked library lemmas use only propext, Classical.choice and Quot.sound. The split is appropriate: all children contribute to this selected theorem, dependencies are acyclic and correctly directed, and names are bare identifiers. No matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pairing_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches both prose conclusions. Determinant evaluation, sorting injective tuples, and basis extensionality establish the expansion; linearity gives the pairing identity. The coordinate bound follows from a nonnegative summand of the squared coefficient norm. The argument covers n = 0 and n > P without additional hypotheses."
+    },
+    {
+      "key": "measure_uniqueness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis, with the explicit smoothness exponent correctly denoting C∞. Localization and integrability produce finite weighted measures before Radon–Nikodym is invoked, so no finiteness assumption on the original measures is missing. Smooth-test uniqueness identifies their densities on O; integrating the bounded Borel function 1_A·u proves the exact conclusion."
+    },
+    {
+      "key": "restriction_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both clauses match the prose. Cutoff tests establish local integrability of every representation coordinate. The pairing expansion and norm comparison then prove sequential continuity of the restricted functional and uniformly bound all mass-admissible evaluations. Clause (b) correctly unpacks the representation supplied by IsRestriction and requires no unstated mass or representation-uniqueness theorem."
+    },
+    {
+      "key": "restriction_tau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition faithfully includes openness, the rectifiable triple, the action formula, and IsRestriction. Orientation bounds and compact integrability justify all coordinate integrals. The declared measure_uniqueness dependency identifies their restrictions, and finite coordinate expansion reconstructs the action. The final restriction identity needs only measurability of A, not Borel measurability of M."
+    },
+    {
+      "key": "open_truncation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose; openness of U is unnecessary here. Integrability on M ∩ closure V supplies continuity and finite mass of the constructed functional. The blow-up argument proves tangent locality inside V, and null-measurability transfers the almost-everywhere orientation condition. All rectifiable-triple fields and natural-valued multiplicities are preserved, proving integer multiplicity."
+    },
+    {
+      "key": "truncation_sequence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes SlicingTheorem and all local hypotheses. Applying slicing to −φ correctly produces open superlevel restrictions. The declared children provide restrictions, their local mass bounds, and global integer-multiplicity truncations. The cutoff calculation proves finite global boundary mass without assuming an extension theorem. The chosen levels tend to zero and give eventual equality for every test form, including the empty-domain case."
+    },
+    {
+      "key": "finite_mass_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the sequence approximation statement and explicitly assumes DeformationTheorem. The mass evaluation bound, finite-mass conversions, recursive positive antitone scales, and integer coefficient choices are justified. The uniform-in-k deformation constant yields the stated O(1/(k+1)) error for each fixed test form. This is independent of the selected parent theorem and supplies precisely its required lattice approximation."
+    }
+  ],
+  "required_changes": []
+}

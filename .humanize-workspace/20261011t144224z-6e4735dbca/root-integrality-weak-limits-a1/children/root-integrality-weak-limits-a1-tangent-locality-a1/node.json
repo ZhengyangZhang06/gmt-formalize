@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Locality of weighted approximate tangent spaces",
+  "statement": "For P, n ∈ ℕ, Hⁿ-null-measurable sets M, M′ ⊆ ℝ^P (Hⁿ = μHE[n]), functions θ, θ′ : ℝ^P → ℝ and a point x with θ(x) = θ′(x): if for some ρ > 0 the function θ is Hⁿ-integrable on M ∩ B̄_ρ(x) and θ′ on M′ ∩ B̄_ρ(x), and if r^{−n}∫_{B̄_{Rr}(x)} |1_Mθ − 1_{M′}θ′| dHⁿ → 0 as r ↓ 0 for every R > 0, then for every linear subspace Q of ℝ^P, Q is a weighted approximate tangent space of (M,θ) at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt) if and only if it is one of (M′,θ′) at x.",
+  "lean_statement": "∀ (P n : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P), NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) → θ x = θ' x → (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧ IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q ↔ HasWeightedApproximateTangentSpaceAt n M' θ' x Q",
+  "lean_name": "iwl_weighted_tangent_locality",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-tangent-locality-a1-a1"
+}

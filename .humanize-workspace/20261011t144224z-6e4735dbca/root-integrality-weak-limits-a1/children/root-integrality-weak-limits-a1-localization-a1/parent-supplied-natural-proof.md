@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.localization-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions (fixed for this proof). ℝ^P := Eucl P with standard orthonormal basis e_1,…,e_P. Hᵏ := μHE[k], the normalized k-dimensional Hausdorff measure (a positive constant multiple of μH[k]; it equals Lebesgue measure on a k-dimensional Euclidean space, and μHE[0] = μH[0] is the counting measure). D_k(U) := GeometricCurrentOn U k; D^k(U) := TestFormOn U k (C^∞ k-forms on ℝ^P with compact tsupport contained in U). I(k,P) := the strictly increasing maps {1,…,k} → {1,…,P}; for I ∈ I(k,P), e_I := (e_{I(1)},…,e_{I(k)}) and dx^I is the constant k-covector with dx^I(e_J) = δ_{IJ} (J ∈ I(k,P)); every k-covector is α = Σ_I α(e_I) dx^I. |α| := covectorEuclideanNorm α = (Σ_I α(e_I)²)^{1/2} (the norm used in the definition of mass), and ‖ω‖ := sup_x |ω(x)| for a form ω. For a k-vector w (an element of NVector = the dual of the k-covectors) put w^I := w(dx^I) and |w|_* := (Σ_I (w^I)²)^{1/2}; then w(α) = Σ_I α(e_I) w^I, so |w(α)| ≤ |α| |w|_* (Cauchy–Schwarz). M_W(X) := X.massOn W, M(X) := X.mass = M_U(X), spt X := X.support, X_j ⇀ X := WeaklyConvergesOn, ∂ := boundary. τ(M,θ,ξ)(ω) := tauAction = ∫_M θ ⟨ω,ξ⟩ dHᵏ with ⟨ω,ξ⟩(x) := ξ(x)(ω(x)); "i.m." := IsIntegerMultiplicity; "X⌞A" denotes a current S with IsRestriction X A S; W ⊂⊂ U := CompactlyContainedOpen W U. B_r(x), B̄_r(x) denote open and closed balls.
+
+Source: Step 4 of the parent proof = the printed localization Remark 8.3(1) ("the general case of the theorem follows from the special case when U = ℝ^P and spt T_j ⊆ K for some fixed compact K; in fact if T_j are as in the theorem and ξ ∈ U, then by 4.5(1),(2) and an argument like that in 6.7(2) of Ch. 2 we know that, for L¹-a.e. r > 0, ∂(T_j⌞B_r(ξ)) are integer multiplicity and 8.2(∗) holds with T_j⌞B_r(ξ) in place of T_j for some subsequence {j′} ⊆ {j} (depending on r)"), carried out with an explicit choice of radii (slicing, Fatou, Helly) and the patching lemma; copied and filled in. Book n = m + 1.
+
+Hypotheses: SlicingTheorem; (Cpt) the integrality statement for degree m+1 currents on ℝ^P whose supports lie in a fixed compact set, with bounded total masses and boundary masses; U ⊆ ℝ^P open; T_j, T ∈ D_{m+1}(U) with T_j and ∂T_j i.m., sup_j(M_W(T_j) + M_W(∂T_j)) < ∞ for every W ⊂⊂ U, T_j ⇀ T. Goal: T is i.m.
+
+Facts used. (F1) |Y(ω)| ≤ ‖ω‖M_W(Y) if tsupport ω ⊆ W. (F2) If η, η′ ∈ D^j(U) agree on an open set containing spt Y then Y(η) = Y(η′) (cover tsupport(η − η′) ⊆ U ∖ spt Y by finitely many open sets on which Y vanishes and use a partition of unity). (F3) Lower semicontinuity of mass (`WeaklyConvergesOn.massOn_le_liminf`). (F4) For a restriction Y⌞A computed through a representation (μ,v): if tsupport ω ∩ closure(A) = ∅ then (Y⌞A)(ω) = 0; hence spt(Y⌞A) ⊆ closure(A) ∩ U, and spt ∂Z ⊆ spt Z for every Z ∈ D_{j+1}(U).
+
+1. (Reduction to a local statement.) By `iwl_im_patching` it suffices to show: every ξ_0 ∈ U has an open neighbourhood V ⊆ U and an i.m. Y ∈ D_{m+1}(U) with T(ω) = Y(ω) whenever tsupport ω ⊆ V. Fix ξ_0 ∈ U and r_0 > 0 with B̄_{2r_0}(ξ_0) ⊆ U; put d_0(x) := |x − ξ_0| (1-Lipschitz, continuous), W_0 := B_{2r_0}(ξ_0). Its closure B̄_{2r_0}(ξ_0) is compact and contained in U, so W_0 ⊂⊂ U and Λ_0 := sup_j(M_{W_0}(T_j) + M_{W_0}(∂T_j)) < ∞.
+2. (Slices.) For each j, T_j satisfies the hypothesis of SlicingTheorem (M_W(T_j) < ∞ and M_W(∂T_j) < ∞ for W ⊂⊂ U, from the hypothesis), with f := d_0 and L := 1. This gives S^j : ℝ → D_m(U) with: (a) IsSlice T_j d_0 t (S^j(t)) for all t, i.e. there are restrictions A^j_t of T_j and B^j_t of ∂T_j to {x ∈ U : d_0(x) < t} with S^j(t) = ∂A^j_t − B^j_t; (b) S^j(t) i.m. for L¹-a.e. t (T_j is i.m.); (c) for W := W_0 (open, ⊆ U), L_W := 1 (‖Dd_0‖ ≤ 1 wherever d_0 is differentiable, and fderiv is 0 elsewhere), a := r_0/2, b := r_0 and any restriction R^j of T_j to {x ∈ U : r_0/2 < d_0(x) < r_0}: a measurable g_j ≥ 0 with M_{W_0}(S^j(t)) ≤ g_j(t) for t ∈ (r_0/2, r_0) and ∫⁻_{(r_0/2,r_0)} g_j ≤ M_{W_0}(R^j). Such R^j exist by `iwl_restriction_theory` (R2) (T_j has locally finite mass), and M_{W_0}(R^j) = μ_{T_j}(W_0 ∩ {r_0/2 < d_0 < r_0}) ≤ μ_{T_j}(W_0) = M_{W_0}(T_j) ≤ Λ_0 (mass identity of (R2) and IsMassMeasure). So ∫⁻_{(r_0/2,r_0)} g_j ≤ Λ_0.
+3. (Helly.) M_W(T) ≤ liminf M_W(T_j) < ∞ for W ⊂⊂ U (F3), so T has locally finite mass. Apply `iwl_restriction_weak_limit` to X_j := T_j, X := T, W := W_0, φ := d_0 (sup_j M_{W_0}(T_j) ≤ Λ_0): we get a strictly increasing ψ and a countable E ⊆ ℝ.
+4. (Fatou.) h(t) := liminf_j g_{ψ(j)}(t) is measurable and ∫⁻_{(r_0/2,r_0)} h ≤ liminf_j ∫⁻ g_{ψ(j)} ≤ Λ_0 < ∞ (Fatou, `lintegral_liminf_le`), so h < ∞ L¹-a.e. on (r_0/2, r_0).
+5. (Choice of r.) The set of r ∈ (r_0/2, r_0) with r ∉ E, h(r) < ∞ and S^{ψ(j)}(r) i.m. for every j has full measure (complement: a countable set and countably many null sets), so we can fix such an r. Choose a strictly increasing σ with g_{ψσ(j)}(r) ≤ h(r) + 1 for all j; then M_{W_0}(S^{ψσ(j)}(r)) ≤ h(r) + 1 for all j.
+6. (The localized currents.) For j ∈ ℕ let A_j := A^{ψσ(j)}_r, B_j := B^{ψσ(j)}_r, S_j := S^{ψσ(j)}(r), so ∂A_j = S_j + B_j (pointwise on test forms). Put K_0 := B̄_r(ξ_0), a compact subset of W_0.
+   (a) A_j is i.m. (restriction of the i.m. T_{ψσ(j)}; `iwl_im_closure`(b)), B_j is i.m. (restriction of the i.m. ∂T_{ψσ(j)}; `iwl_im_closure`(b)), S_j is i.m. (step 5), hence ∂A_j = 1·S_j + 1·B_j is i.m. (`iwl_im_closure`(c)).
+   (b) spt A_j ⊆ K_0 and spt ∂A_j ⊆ K_0 (F4).
+   (c) By the mass identity of (R2) (with W := U) and IsMassMeasure (W_0 ⊂⊂ U): M_U(A_j) = μ_{T_{ψσ(j)}}(U ∩ B_r(ξ_0)) ≤ μ_{T_{ψσ(j)}}(W_0) = M_{W_0}(T_{ψσ(j)}) ≤ Λ_0, and likewise (∂T_{ψσ(j)} has locally finite mass) M_U(B_j) = μ_{∂T_{ψσ(j)}}(U ∩ B_r(ξ_0)) ≤ M_{W_0}(∂T_{ψσ(j)}) ≤ Λ_0. By the support clause of SlicingTheorem, spt S_j ⊆ spt T_{ψσ(j)} ∩ {d_0 = r} ⊆ K_0 ⊆ W_0, hence M_U(S_j) = M_{W_0}(S_j): for admissible ω and a cutoff ζ ∈ C_c^∞(W_0), 0 ≤ ζ ≤ 1, ζ = 1 near K_0, S_j(ω) = S_j(ζω) by (F2) and ζω is admissible for M_{W_0}. Hence M_U(∂A_j) ≤ M_U(S_j) + M_U(B_j) ≤ h(r) + 1 + Λ_0 (mass is subadditive).
+   (d) Let A be a restriction of T to {x ∈ U : d_0(x) < r} (exists by (R2)). For all j let R′_j be the restriction of T_{ψ(j)} to {d_0 < r} given by IsSlice (step 2(a)); since r ∉ E, {x ∈ U : d_0(x) ≤ r} = K_0 is compact and K_0 ⊆ W_0, `iwl_restriction_weak_limit` (B) gives R′_j ⇀ A. By uniqueness of restrictions ((R1)), A_j = R′_{σ(j)}, hence A_j ⇀ A. Also spt A ⊆ K_0 (F4).
+7. (Extension to ℝ^P; (P4).) Fix χ ∈ C_c^∞(W_0) ⊆ C_c^∞(U) with 0 ≤ χ ≤ 1 and χ = 1 on a neighbourhood of K_0. For Z ∈ D_j(U) with spt Z ⊆ K_0 define Z̃(ω) := Z(χω) for ω ∈ D^j(ℝ^P) (χω ∈ D^j(U)). Z̃ is linear and sequentially continuous (if ω_l → 0 in D^j(ℝ^P) then χω_l → 0 in D^j(U) with supports in tsupport χ), so Z̃ ∈ D_j(ℝ^P); by (F2) it does not depend on χ. Properties: (i) Z̃(ω) = Z(ω) for ω ∈ D^j(U) (F2: χω = ω near K_0); (ii) for Z of degree ≥ 1, ∂(Z̃) = (∂Z)~, because Z̃(dω) = Z(χ dω) and (∂Z)~(ω) = Z(d(χω)) = Z(χ dω) + Z(dχ ∧ ω), where Z(dχ ∧ ω) = 0 by (F2) (dχ ∧ ω vanishes near K_0); (iii) spt Z̃ ⊆ K_0 (if tsupport ω ∩ K_0 = ∅ then χω vanishes on a neighbourhood of spt Z, so Z̃(ω) = 0 by (F2)); (iv) M(Z̃) ≤ M_U(Z) (χω is admissible on U whenever ω is admissible on ℝ^P); (v) if Z is i.m. then Z̃ is i.m.: write Z = τ(M′,θ′,ξ′). Z vanishes on test forms supported in the open set U ∖ K_0 (F2). Hence the coefficient measures θ′ξ′^I Hᵏ⌞M′ (locally finite total variation on U, since θ′ is integrable on compacts and |ξ′^I| ≤ |ξ′|_* = 1 a.e. by Cauchy–Binet) annihilate C_c^∞(U ∖ K_0) (test Z with φ dx^I), hence C_c(U ∖ K_0) (uniform approximation with supports in a fixed compact set, dominated convergence), hence vanish on Borel subsets of U ∖ K_0 (Riesz uniqueness for locally finite signed measures, applied to Jordan decompositions). So θ′ξ′ = 0 Hᵏ-a.e. on M′ ∖ K_0, and since θ′ > 0 and |ξ′|_* = 1 a.e. on M′, Hᵏ(M′ ∖ K_0) = 0. Then Z = τ(M′ ∩ K_0, θ′, ξ′), and (M′ ∩ K_0, θ′, ξ′) is a rectifiable triple in U (removing an Hᵏ-null set changes neither the integrals nor, by `iwl_weighted_tangent_locality` applied to the null-measurable sets M′ and M′ ∩ K_0 with vanishing difference, the weighted tangent spaces) and also in ℝ^P (θ′ is integrable on M′ ∩ K_0 ∩ K for every compact K ⊆ ℝ^P since K_0 is a compact subset of U). Finally Z̃(ω) = Z(χω) = ∫_{M′∩K_0} θ′ ξ′(χω) dHᵏ = ∫_{M′∩K_0} θ′ ξ′(ω) dHᵏ (χ = 1 on K_0), so Z̃ = τ(M′ ∩ K_0, θ′, ξ′) is i.m.
+8. (Apply the compact case.) By steps 6 and 7, X_j := Ã_j ∈ D_{m+1}(ℝ^P) satisfy: X_j i.m. and ∂X_j = (∂A_j)~ i.m. (7(ii),(v)), i.e. IsIntegralCurrent X_j; spt X_j ⊆ K_0; sup_j (M(X_j) + M(∂X_j)) ≤ sup_j (M_U(A_j) + M_U(∂A_j)) ≤ 2Λ_0 + h(r) + 1 < ∞; and X_j ⇀ Ã, since X_j(ω) = A_j(χω) → A(χω) = Ã(ω) (step 6(d), one χ for all j). By the hypothesis (Cpt) with K := K_0, Ã is i.m., Ã = τ(M̃, θ̃, ξ̃).
+9. (Back to U.) For ω ∈ D^{m+1}(U), A(ω) = Ã(ω) (7(i)) = ∫_{M̃} θ̃ ξ̃(ω) dH^{m+1} = ∫_{M̃∩U} θ̃ ξ̃(ω) dH^{m+1} (ω = 0 off U). The triple (M̃ ∩ U, θ̃, ξ̃) is rectifiable in U: M̃ ∩ U ⊆ U, null-measurable, countably rectifiable, θ̃ ∈ {1,2,…}, integrable on compact subsets of U (they are compact in ℝ^P), ξ̃ measurable, and orients at a.e. x ∈ M̃ ∩ U because, U being open, 1_{M̃∩U}θ̃ = 1_{M̃}θ̃ on a ball around x, so the weighted tangent spaces agree by `iwl_weighted_tangent_locality` (M̃ and M̃ ∩ U are null-measurable). Hence A = τ(M̃ ∩ U, θ̃, ξ̃) is i.m. in U.
+10. (Local agreement.) Let V := B_r(ξ_0) (open, ξ_0 ∈ V ⊆ U). Computing A through a representation (μ,v) of T (as in (R2)): for tsupport ω ⊆ V, A(ω) = ∫_{B_r(ξ_0)} v(ω) dμ = ∫ v(ω) dμ = T(ω), since ω vanishes outside B_r(ξ_0). So T(ω) = A(ω) whenever tsupport ω ⊆ V, with A i.m. (step 9).
+11. As ξ_0 ∈ U was arbitrary, step 1 (`iwl_im_patching`) shows that T is integer multiplicity. ∎
+
+## Key steps
+
+1. By iwl_im_patching it suffices to represent T near each ξ_0 ∈ U by an integer multiplicity current.
+2. Slice the T_j by |x − ξ_0| (SlicingTheorem); Fatou bounds the slice masses for a.e. radius; Helly selection via iwl_restriction_weak_limit.
+3. Choose r with integer multiplicity slices, bounded slice masses and r ∉ E; A_j := T_j⌞B_r(ξ_0) are integral (iwl_im_closure), supported in B̄_r(ξ_0), with bounded masses, and A_j ⇀ T⌞B_r(ξ_0).
+4. Extend to ℝ^P by a cutoff, apply the compact-support hypothesis, restrict back to U.
+5. T = T⌞B_r(ξ_0) on forms supported in B_r(ξ_0); patch.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp project/GMT/Ch06/Contract.lean workspaces/gmt-ch06/GMT/Ch06/Contract.lean (identical); Submission.lean byte-identical to Contract.lean`
+- `python3: contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all 12 statements`
+- `python3 listing of dag.json lean_name fields (45 nodes, no iwl_* names)`
+- `rg -n 'theorem exists_disjoint_closedBall_covering_ae' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'theorem ae_tendsto_average|theorem ae_tendsto_lintegral_div' mathlib/Mathlib/MeasureTheory/Covering/{Differentiation,DensityTheorem}.lean`
+- `rg -n 'theorem hausdorffMeasure_smul|hausdorffMeasure_smul_right_image' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'ext_of_integral_eq_on_compactlySupported' mathlib/Mathlib`
+- `rg -n 'theorem map_linearDependent' mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `rg -n 'countable_not_continuousAt|MonotoneOn.intervalIntegral_deriv_mem_uIcc|theorem lintegral_liminf_le' mathlib/Mathlib`
+- `sed -n 1,140p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure, euclideanHausdorffMeasure_zero)`
+- `rg -il 'BoundedVariation|Rellich|Helly' mathlib/Mathlib (only 1-D bounded variation and convex Helly; no BV compactness or Helly selection)`
+- `rg -n 'theorem simon_theorem_4_14|vectorFunctionalEnvelopeMeasure|theorem simon_theorem_3_3|hasSymmetricVitaliProperty_euclidean|def IsLocallyBV|isLocallyBV_of_locallyL1_of_uniform_bound' simongmt/Poincare/SimonGMT/Chapter0{1,2}`
+- `rg -n 'def HasWeightedApproximateTangentSpaceAt|def blowUpMap|HasWeightedApproximateTangentSpaceAt.unique|def CountablyRectifiable|countablyRectifiable_of_measure_zero|CountablyRectifiable.mono' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n 'nVectorPushforward_simple|def simpleNVector|def covectorEuclideanNorm|massOn_le_liminf|boundary_boundary|WeaklyConvergesOn.boundary|def GeometricCurrentOn.support|restrictDomain' simongmt/Poincare/SimonGMT/Chapter06`
+- `grep -n '3.3|3.6|3.11|4.14|4.16' book/chapter-01.txt; grep -n '2.6 Theorem' book/chapter-02.txt; sed -n 2290,2480p book/chapter-06.txt (printed 8.2 proof)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/iwl-decomp-scratch, pinned packages)`
+- `lake env lean Scratch/Stmts.lean (12 child statements; only intended sorries)`
+- `lake env lean Scratch/Final.lean (12 exact Submission.<name> checks + parent assembly IwlAssemblyCheck.parent + #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/iwl-decomp-scratch/Scratch/Stmts.lean`
+- `/tmp/iwl-decomp-scratch/Scratch/Final.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) has the frozen Ch06 Contract and a byte-identical Submission with no Submission.* declarations.
+
+Scratch Lean checks of the frozen project:
+- All 12 child statements elaborate in the comparator's child scope.
+- `exact Submission.<name>` resolves for each child.
+- IntegralityOfWeakLimits follows from the 12 children plus SlicingTheorem, IsoperimetricTheorem, LipschitzPushforwardIntegerMultiplicity and RectifiabilityTheorem. The helper lemmas use only propext, Classical.choice and Quot.sound.
+- The smoothness exponent ((⊤ : ℕ∞) : WithTop ℕ∞) was checked to mean C^∞, not analytic.
+
+Mathlib supplies the tools the child proofs cite:
+- the Besicovitch disjoint covering (`Besicovitch.exists_disjoint_closedBall_covering_ae`);
+- Lebesgue–Besicovitch differentiation (`VitaliFamily.ae_tendsto_average`);
+- Hausdorff scaling (`hausdorffMeasure_smul`);
+- Riesz uniqueness (`Measure.ext_of_integral_eq_on_compactlySupported`);
+- monotone-derivative integral bounds (`MonotoneOn.intervalIntegral_deriv_mem_uIcc`);
+- Fatou (`lintegral_liminf_le`);
+- `AlternatingMap.map_linearDependent`;
+- μHE[0] = μH[0] (counting measure).
+
+SimonGMT supplies the vector Riesz theorem (`simon_theorem_4_14`, `vectorFunctionalEnvelopeMeasure`), the density comparison (`simon_theorem_3_3`), `HasWeightedApproximateTangentSpaceAt.unique`, `nVectorPushforward_simple`, `WeaklyConvergesOn.massOn_le_liminf`, `GeometricCurrentOn.boundary_boundary` and `restrictDomain`.
+
+No match was found for BV compactness, Helly's selection theorem or the product formula for Hausdorff measure. These are cited from Simon Ch. 2, 2.6, the parent's (P6), and Simon 3.2(2) / Federer 3.2.23.
+
+The DAG (45 nodes) reserves no iwl_* name. These checks do not certify the analytic proofs.

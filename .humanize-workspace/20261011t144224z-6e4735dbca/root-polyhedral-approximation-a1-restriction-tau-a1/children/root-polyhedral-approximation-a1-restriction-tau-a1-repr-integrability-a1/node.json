@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.restriction_tau-a1.repr_integrability-a1",
+  "parent_id": "root.polyhedral_approximation-a1.restriction_tau-a1",
+  "depth": 3,
+  "title": "Coordinates of a test-form-integrable n-vector field are locally integrable",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let μ be a (Borel) measure on ℝ^P and let v : ℝ^P → Λ_n(ℝ^P) (NVector (Eucl P) n: each v(x) is a continuous linear functional on n-covectors). Assume that for every test form ω ∈ Dⁿ(U) (TestFormOn U n: smooth of every finite order, compact support, tsupport ω ⊆ U) the function x ↦ v(x)(ω(x)) is μ-integrable. Then for every compact K ⊆ U and every n-covector c ∈ Λⁿ(ℝ^P) (Covector (Eucl P) n), the function x ↦ v(x)(c) is μ-integrable on K.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), (∀ ω : TestFormOn U n, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) n) x)) μ) → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∀ c : Covector (Eucl P) n, IntegrableOn (fun x => v x c) K μ",
+  "lean_name": "polyhedral_approx_rt_integrableOn_apply",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-restriction-tau-a1-repr-integrability-a1-a1"
+}

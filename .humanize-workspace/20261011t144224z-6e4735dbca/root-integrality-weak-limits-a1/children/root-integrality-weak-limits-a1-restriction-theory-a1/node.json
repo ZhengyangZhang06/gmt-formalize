@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.restriction_theory-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Restriction theory of currents of locally finite mass (Simon 2.7–2.9)",
+  "statement": "Let U ⊆ ℝ^P be open and k ∈ ℕ. (R0) If X ∈ D_k(U) has a measure representation (μ,v) (IsMeasureRepresentation), then M_W(X) < ∞ for every W ⊂⊂ U. (R1) Any two restrictions (IsRestriction) of X ∈ D_k(U) to the same set A are equal. (R2) If M_W(X) < ∞ for every W ⊂⊂ U, then there is a measure μ with IsMassMeasure X μ such that X has a restriction to every Borel set A, and every restriction S of X to a set A satisfies M_W(S) = μ(W ∩ A) for every open W ⊆ U.",
+  "lean_statement": "(∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (X : GeometricCurrentOn U k) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), IsMeasureRepresentation X μ v → ∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) ∧ (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (X : GeometricCurrentOn U k) (A : Set (Eucl P)) (S₁ S₂ : GeometricCurrentOn U k), IsRestriction X A S₁ → IsRestriction X A S₂ → S₁ = S₂) ∧ (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) → ∃ μ : Measure (Eucl P), IsMassMeasure X μ ∧ (∀ A : Set (Eucl P), MeasurableSet A → ∃ S : GeometricCurrentOn U k, IsRestriction X A S) ∧ ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U k), IsRestriction X A S → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → S.massOn W = μ (W ∩ A))",
+  "lean_name": "iwl_restriction_theory",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-restriction-theory-a1-a1"
+}

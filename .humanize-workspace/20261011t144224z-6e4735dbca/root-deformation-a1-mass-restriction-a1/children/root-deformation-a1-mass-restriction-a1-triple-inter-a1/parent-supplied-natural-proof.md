@@ -1,0 +1,100 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.mass_restriction-a1`
+- Child DAG node: `root.deformation-a1.mass_restriction-a1.triple_inter-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 9(b) of the selected parent's supplied proof (restriction of an integer multiplicity current to a Borel set; parent A4(b)). The orientation clause uses the sibling tangent_inter. Every other field of the triple passes to the subset M ∩ A.
+
+Conventions. ℝ^N := Eucl N, Hᵏ := μHE[k]. IsRectifiableTriple univ k M θ ξ has seven fields:
+ (1) M ⊆ univ;
+ (2) M is Hᵏ-null-measurable;
+ (3) M is countably k-rectifiable;
+ (4) θ(x) > 0 for x ∈ M;
+ (5) θ is Hᵏ-integrable on M ∩ K for every compact K ⊆ univ;
+ (6) ξ is a.e. strongly measurable for Hᵏ⌞M;
+ (7) for Hᵏ⌞M-a.e. x there is an orthonormal τ : Fin k → ℝ^N such that HasWeightedApproximateTangentSpaceAt k M θ x (span(range τ)) and ξ(x) = simpleNVector τ or ξ(x) = −simpleNVector τ.
+
+Sibling used. tangent_inter (dmr_weightedTangent_inter). Assume M is Hᵏ-null-measurable, θ > 0 on M, θ is Hᵏ-integrable on M ∩ K for every compact K, and A is Borel. Then for Hᵏ⌞(M ∩ A)-a.e. x, every subspace L with HasWeightedApproximateTangentSpaceAt k M θ x L also satisfies HasWeightedApproximateTangentSpaceAt k (M ∩ A) θ x L.
+
+Fix N, k, M, θ, ξ with IsRectifiableTriple univ k M θ ξ, and a Borel set A. We verify the seven fields for (M ∩ A, θ, ξ).
+
+1. (Subset.) M ∩ A ⊆ univ.
+
+2. (Null-measurability.) M is Hᵏ-null-measurable and A is Borel, hence M ∩ A is Hᵏ-null-measurable (NullMeasurableSet.inter).
+
+3. (Rectifiability.) M ∩ A ⊆ M and M is countably k-rectifiable, so M ∩ A is countably k-rectifiable (CountablyRectifiable.mono: the same null set M₀ and Lipschitz maps F_j cover the subset).
+
+4. (Positivity.) If x ∈ M ∩ A then x ∈ M, so θ(x) > 0.
+
+5. (Local integrability.) For a compact K ⊆ univ, (M ∩ A) ∩ K ⊆ M ∩ K, and θ is integrable on M ∩ K by field (5) of the original triple, hence on the subset (IntegrableOn.mono_set).
+
+6. (Measurability of ξ.) Since M ∩ A ⊆ M, Hᵏ⌞(M ∩ A) ≤ Hᵏ⌞M (Measure.restrict_mono). A function that is a.e. strongly measurable for a measure is so for every smaller measure (AEStronglyMeasurable.mono_measure), so ξ is a.e. strongly measurable for Hᵏ⌞(M ∩ A).
+
+7. (Orientation.) Let G₁ be the set of x for which field (7) of the original triple holds. Its complement is Hᵏ⌞M-null, hence Hᵏ⌞(M ∩ A)-null by the inequality of step 6 (ae_mono). Apply tangent_inter to M, θ and A. Its hypotheses are fields (2), (4) and (5) of the original triple (with K ⊆ univ automatic) and A Borel. Let G₂ be the resulting Hᵏ⌞(M ∩ A)-full set of points x at which every weighted approximate tangent space of (M, θ) at x is one of (M ∩ A, θ) at x. For x ∈ G₁ ∩ G₂ (Hᵏ⌞(M ∩ A)-almost every x) take τ from field (7) of the original triple. Then τ is orthonormal. Since x ∈ G₂, HasWeightedApproximateTangentSpaceAt k M θ x (span(range τ)) yields HasWeightedApproximateTangentSpaceAt k (M ∩ A) θ x (span(range τ)). And ξ(x) = ±simpleNVector τ is unchanged. This is field (7) for (M ∩ A, θ, ξ).
+
+Steps 1–7 establish IsRectifiableTriple univ k (M ∩ A) θ ξ. ∎
+
+## Key steps
+
+1. Subset, null-measurability (M null-measurable, A Borel), countable rectifiability (CountablyRectifiable.mono), positivity and local integrability pass to M ∩ A ⊆ M.
+2. Hᵏ⌞(M ∩ A) ≤ Hᵏ⌞M transfers a.e. strong measurability of ξ and the a.e. orientation data of (M, θ, ξ).
+3. tangent_inter turns HasWeightedApproximateTangentSpaceAt k M θ x (span τ) into the same for (M ∩ A, θ) at Hᵏ⌞(M ∩ A)-a.e. x, with the same τ and ξ(x) = ±simpleNVector τ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (both identical); git -C .lake/packages/{mathlib,simongmt} rev-parse HEAD (25730c7c…, 2b366308…)`
+- `python3 -I over dag.json: nodes with status accepted/integrating/merged and a candidate_commit whose lean_statement matches IsMassMeasure|IsRestriction|IsMeasureRepresentation|HasWeightedApproximateTangentSpaceAt|∃ … : TestFormOn|supportᶜ|IsBounded`
+- `git show <candidate_commit>:GMT/Ch06/Submission.lean | grep 'theorem Submission.<name>' for iwl_restriction_theory, rectifiability_mass_measure_representation, slicing_representation_unique, polyhedral_approx_restriction_tau, lpf_wtc_ae_zero_density_off_set, iwl_weighted_tangent_locality (types byte-identical)`
+- `cat nodes/<node>/isolated-comparator-result.json for the six reused nodes (passed = true, same candidate commits)`
+- `rg -n 'def GeometricCurrentOn.massOn|theorem GeometricCurrentOn.massOn_mono|def massAdmissibleOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; rg -n 'def GeometricCurrentOn.(VanishesOn|zeroRegion|support)' simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; rg -n 'def IsSmoothForm|def IsTestForm' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `rg -n 'theorem CountablyRectifiable.mono|def HasWeightedApproximateTangentSpaceAt' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n 'theorem isOpen_sUnion_countable|theorem measure_sUnion_null_iff|theorem iUnion_ball_nat|Monotone.measure_iUnion|theorem exists_contDiff_support_eq_eq_one_iff|theorem lintegral_indicator₀|theorem restrict_restrict₀|theorem ofReal_inv_of_pos' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `git for-each-ref (931 ref tips) | xargs git grep -l -E 'dmr_|deformation_mass_restriction' -- 'GMT/*.lean' (no match); dag.json lean_name and node-id scan for the four new names (free)`
+- `grep github_selected_issue 1104 .humanize/swarm-configs/*.json (1d5c18b4… max_nodes 1000); cat .humanize/issue-claims/22ac3a995036b376/1104.json (pid 31860); len(dag.json nodes) = 528`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py child_modules(contract mode) for all ten children; lean /tmp/dmr3/nc/NC_<key>.lean (exit 0, only the sorry warning)`
+- `lean /tmp/dmr3/lean/Full.lean: six reused types as axioms, four new children proved, frozen parent type proved; #print axioms Submission.deformation_mass_restriction`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-restriction-tau-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-restriction-tau-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/1d5c18b476c6436d8f2d8d63aa0120ff.json`
+- `/tmp/dmr3/nc/NC_restriction_theory.lean`
+- `/tmp/dmr3/lean/Full.lean`
+
+Pinned revisions are confirmed, and Contract = Submission = snapshot Contract. Six accepted theorems in other branches cover the heavy parts of the supplied proof: Riesz representation and mass measure, restriction existence, uniqueness and mass identity, local π–λ uniqueness, τ-restriction, the upper-density zero set, and weighted-tangent locality. Each is status accepted with a candidate commit and a passing isolated comparator, and each candidate Submission.lean declares Submission.<name> with exactly the type reused here. The remaining obligations are four new nodes with free names: mass-measure support and finiteness, bounded covector uniqueness, a.e. tangent transfer, and the restricted triple. All ten types pass validate_lean_statement and elaborate in the exact comparator NodeChallenge scope. A scratch file proves the four new children from exactly their declared dependencies and the exact frozen parent type from the ten children. Its axioms are only propext, Classical.choice and Quot.sound plus the six reused accepted declarations; there is no sorryAx and no parent helper declaration. The SimonGMT definitions used (massOn, massOn_mono, zeroRegion, support, IsSmoothForm order ∞, CountablyRectifiable.mono) and the Mathlib lemmas cited in the child proofs are present in the pinned sources.
