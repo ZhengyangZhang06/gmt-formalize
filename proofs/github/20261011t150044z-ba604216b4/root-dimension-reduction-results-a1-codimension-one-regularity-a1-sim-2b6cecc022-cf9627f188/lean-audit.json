@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2db5b9ee443caabe051a071d8cd960179d6142e9eae488daa6b6f6cd5ed4648a",
+  "git_delta": {
+    "base_commit": "a3bc236b89b0c83ba0f850166584905d7dff57e7",
+    "candidate_commit": "732ab9ec71c4adfbbc0cdb836b5f6f603b2426ed",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_pp_embedded_measurable_rectifiable",
+    "diff_sha256": "fa7d8dfc29136f77264338fd680f5f0f258c2a54c83930963a36edcaaf0028d3",
+    "source_sha256": "85a0b3ec33a444f5de35ae92710c560b659533adc5e4dd2215fb49dbb81ee929",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_pp_embedded_measurable_rectifiable",
+      "statement": "∀ (P m : ℕ) (N : Set (Euclid P)), IsEmbeddedSubmanifold 1 m N → MeasurableSet N ∧ CountablyRectifiable m N",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
