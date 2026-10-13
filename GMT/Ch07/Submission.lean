@@ -1664,6 +1664,33 @@ theorem Submission.dorag_ha_rb_l2_subseq : ∀ (α : Type) [MeasurableSpace α] 
   rw [zero_pow two_ne_zero] at h2
   exact h2.congr heq
 
+/-- **Rellich compactness in `L²(B̆₁(0))` for Lipschitz functions** (Gilbarg–Trudinger Thm 7.22,
+Evans §5.7 Thm 1; used in Simon Ch. 5, Lemma 3.1).  If the `uⱼ : ℝⁿ → ℝ` are Lipschitz with
+`∫_B uⱼ² ≤ M` and `∫_B ‖Duⱼ‖² ≤ M`, `B = B̆₁(0)`, then a subsequence converges in `L²(B)` to some
+`W ∈ L²(B)`.  Each `uⱼ` is continuous and bounded on `B`, which has finite measure, so
+`uⱼ ∈ L²(B)`.  `dorag_ha_rb_total_bounded` gives finite `L²(B)`-nets of `(uⱼ)` of every radius,
+and `dorag_ha_rb_l2_subseq` extracts the convergent subsequence in the complete space `L²(B)`.
+The hypothesis `n ≥ 1` is not needed. -/
+theorem Submission.dorag_ha_rellich_ball : ∀ (n : ℕ) (M : ℝ) (u : ℕ → Euclid n → ℝ), 0 < n → (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) 1, u j x ^ 2 ≤ M) → (∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ M) → ∃ (φ : ℕ → ℕ) (W : Euclid n → ℝ), StrictMono φ ∧ MemLp W 2 (volume.restrict (ball (0 : Euclid n) 1)) ∧ Tendsto (fun j => ∫ x in ball (0 : Euclid n) 1, (u (φ j) x - W x) ^ 2) atTop (𝓝 0) := by
+  intro n M u _hn hLip hu hDu
+  -- step 1: `B̆₁(0)` has finite Lebesgue measure
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_ne_top
+  -- step 2: an `L`-Lipschitz `uⱼ` is continuous with `|uⱼ| ≤ |uⱼ(0)| + L` on `B̆₁(0)`, so `uⱼ ∈ L²`
+  have hmem : ∀ j, MemLp (u j) 2 (volume.restrict (ball (0 : Euclid n) 1)) := by
+    intro j
+    obtain ⟨L, hL⟩ := hLip j
+    refine MemLp.of_bound hL.continuous.aestronglyMeasurable (|u j 0| + L) ?_
+    refine ae_restrict_of_forall_mem measurableSet_ball fun x hx => ?_
+    have h1 : |u j x - u j 0| ≤ L * ‖x‖ := by
+      simpa only [Real.dist_eq, dist_zero_right] using hL.dist_le_mul x 0
+    have h2 : (L : ℝ) * ‖x‖ ≤ L := mul_le_of_le_one_right L.coe_nonneg (mem_ball_zero_iff.1 hx).le
+    rw [Real.norm_eq_abs]
+    linarith [abs_sub_abs_le_abs_sub (u j x) (u j 0)]
+  -- step 3: finite `L²(B̆₁(0))`-nets of `(uⱼ)` and extraction of a convergent subsequence
+  exact Submission.dorag_ha_rb_l2_subseq (Euclid n) (volume.restrict (ball (0 : Euclid n) 1)) u
+    hmem (Submission.dorag_ha_rb_total_bounded n M u hLip hu hDu)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
