@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d1cf278786a43dbe3e629e13f3c4dbe7a0050262635b0d3f13fae3c469dfffaa",
+  "git_delta": {
+    "base_commit": "6ffc84ce6826873826cade35ce49fb54f44ea1bc",
+    "candidate_commit": "b6218183362914502612c8fef9e231776b727aa0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_smp_cutoff_integral_tendsto",
+    "diff_sha256": "d52c7d3085613a5fd04eed5322e9278ccfbbbc015b853d20288d935153314926",
+    "source_sha256": "c57108df3ce1b9412a6751d39f4b4cb4b4adb59c025af24ab1a8331d168f1673",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_smp_cutoff_integral_tendsto",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F f : Euclid P → ℝ) (t C : ℝ) (g : ℝ → Euclid P → ℝ), Integrable F μ → Measurable f → (∀ h : ℝ, 0 < h → h < 1 → AEStronglyMeasurable (g h) μ) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, |g h x| ≤ C) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, f x ≤ t - h → g h x = 1) → (∀ h : ℝ, 0 < h → h < 1 → ∀ x, t ≤ f x → g h x = 0) → Tendsto (fun h : ℝ => ∫ x, g h x * F x ∂μ) (𝓝[>] 0) (𝓝 (∫ x in {x | f x < t}, F x ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
