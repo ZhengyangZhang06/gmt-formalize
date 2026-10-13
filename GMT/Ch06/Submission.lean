@@ -653,6 +653,111 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   refine ⟨hD, hgae, ?_⟩
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
+/-- Jacobian identity for the slice map, in Gram-determinant form: if `γ ∈ range A` is dual to
+the first coordinate, `⟪γ, A (D y)⟫ = y₀`, then with `eᵢ` the standard basis,
+`√det(⟪A D e_{i+1}, A D e_{j+1}⟫)_{i,j<m} = ‖γ‖ · √det(⟪A eᵢ, A eⱼ⟫)_{i,j≤m} · |det D|`. -/
+theorem Submission.slicing_im_creg_jacobian_identity : ∀ (P m : ℕ) (A : Eucl (m + 1) →L[ℝ] Eucl P) (D : Eucl (m + 1) →L[ℝ] Eucl (m + 1)) (γ : Eucl P), γ ∈ LinearMap.range A.toLinearMap → (∀ y : Eucl (m + 1), inner ℝ γ (A (D y)) = y 0) → Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (A (D (EuclideanSpace.single i.succ 1))) (A (D (EuclideanSpace.single j.succ 1)))).det = ‖γ‖ * Real.sqrt (Matrix.of fun i j : Fin (m + 1) => inner ℝ (A (EuclideanSpace.single i 1)) (A (EuclideanSpace.single j 1))).det * |D.det| := by
+  intro P m A D γ hγ hdual
+  -- Coordinates: `x = ∑ₖ xₖ eₖ`, so `A (D x) = ∑ₖ xₖ vₖ` with `vₖ = A (D eₖ)`, and
+  -- `⟪A x, A y⟫ = ∑ₖ xₖ ∑ₗ ⟪A eₖ, A eₗ⟫ yₗ`.
+  have hexp : ∀ x : Eucl (m + 1), ∑ k, x k • EuclideanSpace.single k (1 : ℝ) = x := fun x => by
+    simpa using (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).sum_repr x
+  have hAD : ∀ x : Eucl (m + 1),
+      A (D x) = ∑ k, x k • A (D (EuclideanSpace.single k 1)) := fun x => by
+    conv_lhs => rw [← hexp x]
+    simp only [map_sum, map_smul]
+  have hgram : ∀ x y : Eucl (m + 1), inner ℝ (A x) (A y) = ∑ k, x k *
+      ∑ l, inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1)) * y l := by
+    intro x y
+    conv_lhs => rw [← hexp x, ← hexp y]
+    simp only [map_sum, map_smul, sum_inner, inner_sum, real_inner_smul_left,
+      real_inner_smul_right, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => by ring
+  -- Notation: `G` the Gram matrix of `A`, `Γ` the Gram matrix of the `vⱼ`, `M` the matrix of `D`.
+  set G : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ := Matrix.of fun i j =>
+    inner ℝ (A (EuclideanSpace.single i 1)) (A (EuclideanSpace.single j 1))
+  set Γ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ := Matrix.of fun i j =>
+    inner ℝ (A (D (EuclideanSpace.single i 1))) (A (D (EuclideanSpace.single j 1)))
+  set M : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
+    Matrix.of fun k i => D (EuclideanSpace.single i 1) k
+  have hMdet : M.det = D.det := by
+    have hDM : LinearMap.toMatrix (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis
+        (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis D.toLinearMap = M := by
+      ext k i
+      simp [LinearMap.toMatrix_apply, M]
+    rw [← hDM, LinearMap.det_toMatrix]
+  -- Step 2: `Γ = Mᵀ G M`, hence `det Γ = (det D)² det G`.
+  have hΓM : Γ = M.transpose * (G * M) := by
+    ext i j
+    simp only [Γ, G, M, Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply]
+    exact hgram _ _
+  have hΓdet : Γ.det = D.det ^ 2 * G.det := by
+    rw [hΓM, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hMdet]
+    ring
+  -- Step 3: `det Γ' = ‖γ‖² det Γ`, where `Γ' = Γ.submatrix succ succ` is the left-hand matrix.
+  have hclaim : (Γ.submatrix Fin.succ Fin.succ).det = ‖γ‖ ^ 2 * Γ.det := by
+    by_cases hD : D.det = 0
+    · -- Step 3(a): `D` is singular.  A kernel vector `y ≠ 0` of `D` has `y₀ = ⟪γ, A (D y)⟫ = 0`,
+      -- so its tail `z` is a nonzero kernel vector of `Γ'`.
+      rw [hΓdet, hD, show ‖γ‖ ^ 2 * ((0 : ℝ) ^ 2 * G.det) = 0 by ring]
+      obtain ⟨y, hyker, hyne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot
+        (LinearMap.bot_lt_ker_of_det_eq_zero hD).ne'
+      have hDy : D y = 0 := by simpa using LinearMap.mem_ker.1 hyker
+      have hy0 : y 0 = 0 := by rw [← hdual y, hDy, map_zero, inner_zero_right]
+      have hsum : ∑ j : Fin m, y j.succ • A (D (EuclideanSpace.single j.succ 1)) = 0 := by
+        rw [← map_zero A, ← hDy, hAD y, Fin.sum_univ_succ, hy0, zero_smul, zero_add]
+      rw [← Matrix.exists_mulVec_eq_zero_iff]
+      refine ⟨fun i => y i.succ, fun hz => hyne ?_, ?_⟩
+      · ext k
+        refine Fin.cases ?_ (fun i => ?_) k
+        · simpa using hy0
+        · simpa using congrFun hz i
+      · ext i
+        simp only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, Γ, Matrix.of_apply,
+          Pi.zero_apply]
+        rw [← inner_zero_right (A (D (EuclideanSpace.single i.succ 1))), ← hsum, inner_sum]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [real_inner_smul_right, mul_comm]
+    · -- Step 3(b): `D` is invertible.  Write `γ = A (D c)`; then `Γ c = e₀` and `c₀ = ‖γ‖²`,
+      -- and Cramer's rule `adj Γ · Γ = det Γ · 1` gives `det Γ' = (adj Γ)₀₀ = det Γ · c₀`.
+      obtain ⟨u, hu⟩ := LinearMap.mem_range.1 hγ
+      obtain ⟨c, hDc⟩ : ∃ c, D c = u :=
+        ⟨_, (D.toContinuousLinearEquivOfDetNeZero hD).apply_symm_apply u⟩
+      have hγc : A (D c) = γ := by rw [hDc]; simpa using hu
+      have hnorm : ‖γ‖ ^ 2 = c 0 := by
+        rw [← hdual c, hγc, real_inner_self_eq_norm_sq]
+      -- Step 1 (dual relation): `(Γ c)ᵢ = ⟪vᵢ, γ⟫ = (eᵢ)₀ = δᵢ₀`.
+      have hΓc : Γ.mulVec (fun j => c j) = Pi.single 0 1 := by
+        ext i
+        simp only [Matrix.mulVec, dotProduct, Γ, Matrix.of_apply]
+        have hi : ∑ j, inner ℝ (A (D (EuclideanSpace.single i 1)))
+            (A (D (EuclideanSpace.single j 1))) * c j =
+            inner ℝ (A (D (EuclideanSpace.single i 1))) (A (D c)) := by
+          rw [hAD c, inner_sum]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [real_inner_smul_right, mul_comm]
+        rw [hi, hγc, real_inner_comm, hdual]
+        by_cases h0 : i = 0
+        · subst h0; simp
+        · simp [h0, Ne.symm h0]
+      have hadj : Γ.adjugate 0 0 = Γ.det * c 0 := by
+        have h1 : Γ.adjugate.mulVec (Γ.mulVec fun j => c j) = Γ.det • fun j => c j := by
+          rw [Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec]
+        have h2 := congrFun h1 0
+        rw [hΓc] at h2
+        simpa using h2
+      rw [Matrix.adjugate_fin_succ_eq_det_submatrix] at hadj
+      simp only [Fin.val_zero, add_zero, pow_zero, one_mul, Fin.succAbove_zero] at hadj
+      rw [hadj, hnorm, mul_comm]
+  -- Steps 4–5: `det Γ' = (‖γ‖ |det D|)² det G`; take square roots.
+  have hfinal : (Γ.submatrix Fin.succ Fin.succ).det = (‖γ‖ * |D.det|) ^ 2 * G.det := by
+    rw [hclaim, hΓdet, mul_pow, sq_abs]
+    ring
+  show Real.sqrt (Γ.submatrix Fin.succ Fin.succ).det = ‖γ‖ * Real.sqrt G.det * |D.det|
+  rw [hfinal, Real.sqrt_mul (sq_nonneg _),
+    Real.sqrt_sq (mul_nonneg (norm_nonneg _) (abs_nonneg _))]
+  ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
