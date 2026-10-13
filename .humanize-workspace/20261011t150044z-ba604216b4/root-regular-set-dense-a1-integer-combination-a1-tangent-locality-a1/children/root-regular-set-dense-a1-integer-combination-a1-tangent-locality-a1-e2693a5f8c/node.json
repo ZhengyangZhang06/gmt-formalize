@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.blowup_scaling-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+  "depth": 4,
+  "title": "Hausdorff measure of a blow-up inside a ball (scaling of Hⁿ under η_{x,r})",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, r, R ∈ ℝ with r > 0, and let S ⊆ ℝ^P be an arbitrary set. Let η := blowUpMap x r (SimonGMT), η(z) = r⁻¹(z − x), and μ := μHE[n]. Then μ(η(S) ∩ B̄_R(0)) = ((ENNReal.ofReal r)⁻¹)ⁿ · μ(S ∩ B̄_{rR}(x)), where B̄ denotes closed balls.",
+  "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R))",
+  "lean_name": "rsdic_tl_blowUp_measure_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1-e2693a5f8c-a1"
+}

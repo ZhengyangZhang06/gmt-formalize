@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ac2fbf2c37cca87863928a90d87bd1818e1de13d7e01e1330193143768a61198",
+  "git_delta": {
+    "base_commit": "863876aee8141f9f57d7b210a4c24bd49df14118",
+    "candidate_commit": "568bfe5f73347cadf50a6748d118063fc5ea5bd2",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "415293e2c4ed79bfc40dca16f2f8a15f83daf79697ab1ebbca60f16b87c703dc",
+    "source_sha256": "39f4b2ede3f75d7236c87755580a1f3a0c31d2ef3fefd8af2a7f183bfd9e704b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_isIntegerMultiplicity_int_combination",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ S : GeometricCurrentOn U n) (p₁ p₂ : ℤ), IsOpen U → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω : TestFormOn U n, S ω = (p₁ : ℝ) * T₁ ω + (p₂ : ℝ) * T₂ ω) → IsIntegerMultiplicity S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
