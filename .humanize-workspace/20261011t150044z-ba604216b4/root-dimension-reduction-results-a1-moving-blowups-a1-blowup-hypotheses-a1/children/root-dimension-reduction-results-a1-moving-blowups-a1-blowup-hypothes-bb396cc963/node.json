@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.blowup_hypotheses-a1.local_retraction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.blowup_hypotheses-a1",
+  "depth": 4,
+  "title": "Local C¹ retraction onto an embedded C² submanifold with Lipschitz constants tending to 1",
+  "statement": "Let P, d ∈ ℕ, N ⊆ ℝ^P an embedded C² d-dimensional submanifold (IsEmbeddedSubmanifold 2 d N: every y ∈ N has an open W ∋ y and a map ψ, C² and injective on an open V ⊆ ℝ^d, with ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W, and Dψ injective on V), and x ∈ N. Then there are δ > 0 and π : ℝ^P → ℝ^P such that (i) π is C¹ on B_δ(x) = ball x δ; (ii) π maps B_δ(x) into N; (iii) π(y) = y for every y ∈ N ∩ B_δ(x); (iv) for every η > 0 there is s with 0 < s ≤ δ and |π(y) − π(z)| ≤ (1 + η)|y − z| for all y, z ∈ B_s(x).",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 2 d N → x ∈ N → ∃ (δ : ℝ) (π : Euclid P → Euclid P), 0 < δ ∧ ContDiffOn ℝ 1 π (ball x δ) ∧ MapsTo π (ball x δ) N ∧ (∀ y ∈ N ∩ ball x δ, π y = y) ∧ ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖",
+  "lean_name": "dimred_mbl_bh_local_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypothes-bb396cc963-a1"
+}

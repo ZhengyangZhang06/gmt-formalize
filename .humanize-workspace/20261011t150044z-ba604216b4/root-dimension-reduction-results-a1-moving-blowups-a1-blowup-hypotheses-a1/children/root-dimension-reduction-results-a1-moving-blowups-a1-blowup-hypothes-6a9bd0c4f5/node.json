@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.blowup_hypotheses-a1.moving_retractions-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.blowup_hypotheses-a1",
+  "depth": 4,
+  "title": "Rescaled retractions onto the blown-up constraint sets η_{x_j,λ_j}(U ∩ N) at moving centres",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, N ⊆ ℝ^P with (closure N ∖ N) ∩ U = ∅, and x ∈ U. Assume that if x ∈ N there are δ > 0 and π : ℝ^P → ℝ^P with π C¹ on B_δ(x), π(B_δ(x)) ⊆ N, π(y) = y for y ∈ N ∩ B_δ(x), and for every η > 0 some s ∈ (0, δ] with |π(y) − π(z)| ≤ (1 + η)|y − z| for y, z ∈ B_s(x). Let x_j ∈ ℝ^P with x_j → x and λ_j > 0 with λ_j → 0, and A_j := η_{x_j,λ_j}(U ∩ N) (η_{x_j,λ_j} = dilation x_j λ_j). Then for every G > 0 there are maps π_j : ℝ^P → ℝ^P (j ∈ ℕ) and G′ ∈ ℝ such that: for all large j, either A_j ∩ B_G(0) = ∅, or π_j is C¹ on B_G(0), maps B_G(0) into A_j ∩ B_{G′}(0) and π_j(y) = y for y ∈ A_j ∩ B_G(0); and for every η > 0, for all large j, either A_j ∩ B_G(0) = ∅ or |π_j(y) − π_j(z)| ≤ (1 + η)|y − z| for all y, z ∈ B_G(0). (B_s(y) = ball y s; 'for all large j' = eventually in atTop.)",
+  "lean_statement": "∀ (P : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ), IsOpen U → (closure N \\ N) ∩ U = ∅ → x ∈ U → (x ∈ N → ∃ (δ : ℝ) (π : Euclid P → Euclid P), 0 < δ ∧ ContDiffOn ℝ 1 π (ball x δ) ∧ MapsTo π (ball x δ) N ∧ (∀ y ∈ N ∩ ball x δ, π y = y) ∧ ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖) → (∀ j, 0 < lams j) → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∀ G : ℝ, 0 < G → ∃ (πs : ℕ → Euclid P → Euclid P) (G' : ℝ), (∀ᶠ j in atTop, dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G = ∅ ∨ (ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G') ∧ ∀ y ∈ dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y)) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G = ∅ ∨ ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖",
+  "lean_name": "dimred_mbl_bh_moving_rescaled_retractions",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypothes-6a9bd0c4f5-a1"
+}

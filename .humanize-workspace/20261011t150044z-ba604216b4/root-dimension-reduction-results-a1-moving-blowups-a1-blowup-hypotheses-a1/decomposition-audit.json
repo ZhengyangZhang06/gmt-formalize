@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def dilation|def blowUp|def IsEmbeddedSubmanifold|def IsMinimizingIn|def BoundaryVanishes|structure IMRep|def SameBoundary|namespace |^import |^open |^set_option",
+        "toOpenPartialHomeomorph|localInverse|contDiffAt_symm|norm_image_sub_le_of_norm_fderiv_le",
+        "starProjection_norm_le|ofInjective",
+        "euclideanHausdorffMeasure_smul₀",
+        "retraction",
+        "git show a8aa1841775ca6a76d46afa5d0acb0ccc7ae73a8:GMT/Ch07/Submission.lean",
+        "git show f64597f33dbddb264b249a7f03156a1073cce7da:GMT/Ch07/Submission.lean",
+        "git show 17c63f22cc8bff3693345ac9074b98fadbf16246:GMT/Ch07/Submission.lean",
+        "git show d49dda91b75b7417d67a10053e6dc4b65d4f0312:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bh_independent_audit_9iewij7v/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bh_independent_audit_9iewij7v/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bh_independent_audit_9iewij7v/moving_mass_bound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bh_independent_audit_9iewij7v/moving_retractions.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypotheses-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypotheses-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/bh_independent_audit_9iewij7v/Types.lean",
+        "/tmp/bh_independent_audit_9iewij7v/Assembly.lean",
+        "/tmp/bh_independent_audit_9iewij7v/moving_mass_bound.lean",
+        "/tmp/bh_independent_audit_9iewij7v/moving_retractions.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected dimred_mbl_blowUp_hypotheses contract. Pins and definitions match. All seven frozen types independently elaborate as propositions without child implementations; names are bare identifiers, and the three new names are unreserved. The four reused types match their accepted DAG and candidate declarations exactly, with compatible dependency pins and recorded comparator/kernel passes permitting only propext, Classical.choice and Quot.sound. Their transitive dependency graph is acyclic and does not contain the selected parent. The snapshot supplies the cited differential and measure-theoretic tools; searching snapshot project/GMT for 'retraction' found no match. Fresh checks of the supplied two implementations and conditional parent assembly passed with only the three permitted axioms. The assembly establishes all seven conjuncts of the exact immutable parent type. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_minimality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The proof constructs the inverse push-forward, transports integer multiplicity, boundary, compact support and competitor domains, then applies mass scaling to minimality. It handles degree zero and arbitrary U and A without additional assumptions or circular reliance."
+    },
+    {
+      "key": "blowup_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. The explicit test-form bijection proves subtraction compatibility and injectivity; correspondence of relatively compact vanishing regions proves support transport; affine pull-back commuting with exterior differentiation proves boundary transport. Exact accepted-type reuse is valid."
+    },
+    {
+      "key": "blowup_mass_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The admissible-form correspondence preserves coefficient norms and introduces precisely the positive factor ofReal((lam⁻¹)^n). Taking suprema proves both inequalities, including infinite mass and arbitrary W. The statement matches the accepted frozen type exactly."
+    },
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Orientation duality and local integrability justify the integral formula and upper bound. The compact-set Lusin, extension, cutoff and mollification argument supplies the sharp lower bound. The final vanishing-region argument proves the stated relative support equality U ∩ R.measure.support."
+    },
+    {
+      "key": "moving_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. Compact containment gives finite comparison mass; the supplied monotonicity hypothesis yields a uniform density bound near x; dilation scaling cancels the shrinking powers. R′ = max(R,1) covers every real radius, including degree zero. Both declared dependencies are used correctly, and the supplied implementation independently kernel-checks conditional on their exact types."
+    },
+    {
+      "key": "local_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof is complete: the derivative left inverse and inverse function theorem construct a graph parametrization; chart properness proves its image contains a relative neighbourhood in N. The resulting retraction has derivative equal to an orthogonal projection at x, so derivative continuity and the convex mean-value inequality give the required Lipschitz estimates. The zero-dimensional case is included. The frozen type is independent and the name unreserved."
+    },
+    {
+      "key": "moving_retractions",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The local retraction is an explicit hypothesis, so no sibling dependency is missing. Relative closedness gives eventual emptiness when x ∉ N. Otherwise the fixed rescaled maps satisfy the range bound with G′ = 5G, fix the constraint, and satisfy each eventual Lipschitz estimate without changing maps. Quantifier order matches exactly, and the supplied implementation independently kernel-checks."
+    }
+  ],
+  "required_changes": []
+}
