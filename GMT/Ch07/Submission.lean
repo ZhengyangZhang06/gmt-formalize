@@ -884,6 +884,26 @@ theorem Submission.dtc_cwv_euler_lie_annihilated : ∀ (P n : ℕ) (C : Geometri
   rw [map_add]
   exact (congrArg₂ (· + ·) h1 h2).trans (add_zero 0)
 
+/-- **Simon Ch. 6, Lemma 2.33, as applied in the proof of 7.3.1.**  Let `C = τ(M, θ, ξ)` be an
+`n`-current in `ℝᴾ`, `n ≥ 1`, with `∂C = 0` and `x ∧ C⃗ = 0` `μ_C`-a.e.  Then `C` is a cone:
+`η_{0,λ#}C = C` for every `λ > 0`.  Since `η_{0,λ#}C(ω) = C(λ⁻ⁿ ω(λ⁻¹ ·))`, it suffices that
+`s ↦ C(β_s)`, `β_s(y) = sⁿ ω(s y)`, is constant on `(0, ∞)`.  Its derivative is `s⁻¹ C(L_X β_s)`,
+where `(L_X β)(y) = n β(y) + Dβ(y)[y]` is the Lie derivative along the Euler field `X(y) = y`,
+and `C(L_X β) = C(d ι_X β) + C(ι_X dβ) = ∂C(ι_X β) + 0 = 0` by Cartan's formula, `∂C = 0` and
+`x ∧ ξ = 0`. -/
+theorem Submission.dtc_cone_of_wedge_vanishing : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents C → BoundaryVanishes C → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0) → IsConeCurrent C := by
+  intro P n C R hn hR hb hw
+  -- `η_{0,λ#}C(ω) = C(ω')` with `ω'(y) = λ⁻ⁿ ω(λ⁻¹ y)`, so it suffices that `C(ω') = C(ω)`
+  apply Submission.dtc_cwv_isConeCurrent_of_pullback_invariant P n C
+  intro lam hlam ω ω' hω'
+  rw [hR ω', hR ω]
+  -- `s ↦ τ(M, θ, ξ)(sⁿ ω(s ·))` is constant on `(0, ∞)` once `τ(M, θ, ξ)` kills every `L_X β`
+  refine Submission.dtc_cwv_action_dilation_invariant P n R ?_ lam hlam ω ω' hω'
+  intro β γ hγ
+  -- `C(L_X β) = C(d ι_X β) + C(ι_X dβ) = 0`
+  rw [← hR γ]
+  exact Submission.dtc_cwv_euler_lie_annihilated P n C R hn hR hb hw β γ hγ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
