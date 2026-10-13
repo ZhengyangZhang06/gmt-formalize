@@ -577,6 +577,179 @@ theorem dorag_ha_lsc_ibp_c1_ball : ∀ (n : ℕ) (R : ℝ) (h : Euclid n → ℝ
       simp only [this, mul_zero]
   rw [h1, h2, key]
 
+/-- Duality bound for the variation of a smooth `g` (Simon Ch. 2, 2.5 (4)): if `∫ g div ψ ≤ c`
+for every `C^∞` field `ψ` with compact support in `B = B_r(0)` and `|ψ| ≤ 1`, then
+`∫_B |Dg| ≤ c`.  Applied to the coordinates `ψᵢ`, `dorag_ha_lsc_ibp_c1_ball` gives
+`∫ g div ψ = -∫_B Σᵢ Dg(eᵢ) ψᵢ`.  With the gradient `G = ∇g`, `θₖ = 1/(k+1)` and bumps `χₖ`
+with `χₖ = 1` on `B̄_{r(1-θₖ/2)}(0)` and `spt χₖ ⊆ B`, the fields
+`ψₖ = -χₖ G/√(|G|² + θₖ²)` are admissible, so `∫_B χₖ |G|²/√(|G|² + θₖ²) ≤ c`.  The integrands
+tend to `|G| = |Dg|` on `B`, and Fatou's lemma concludes. -/
+theorem codim1_zsl_pc_smooth_grad_bound : ∀ (m : ℕ) (g : Euclid m → ℝ) (r c : ℝ), ContDiff ℝ (⊤ : ℕ∞) g → (∀ ψ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid m) r → (∀ v, ‖ψ v‖ ≤ 1) → ∫ v, g v * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap ≤ c) → ∫⁻ v in ball (0 : Euclid m) r, ‖fderiv ℝ g v‖ₑ ≤ ENNReal.ofReal c := by
+  intro m g r c hg hψ
+  rcases le_or_gt r 0 with hr | hr
+  · rw [ball_eq_empty.2 hr]; simp
+  set B := ball (0 : Euclid m) r with hB
+  have h1 : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := WithTop.coe_le_coe.2 le_top
+  -- Step 1: integration by parts in trace form, from `dorag_ha_lsc_ibp_c1_ball`.
+  have ibp : ∀ ψ : Euclid m → Euclid m, ContDiff ℝ 1 ψ → HasCompactSupport ψ → tsupport ψ ⊆ B →
+      ∫ v, g v * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap
+        = -∫ v in B, ∑ i : Fin m, fderiv ℝ g v (EuclideanSpace.single i (1:ℝ)) * ψ v i := by
+    intro ψ hψ1 hψc hψB
+    have key := Submission.dorag_ha_lsc_ibp_c1_ball m r g (fun i x => ψ x i)
+      (hg.of_le h1).contDiffOn (fun i => (contDiff_piLp 2).1 hψ1 i)
+      (fun i => hψc.comp_left (g := fun w : Euclid m => w i) (by simp))
+      (fun i => (tsupport_comp_subset (g := fun w : Euclid m => w i) (by simp) ψ).trans hψB)
+    have hd : ∀ v (i : Fin m), fderiv ℝ (fun x => ψ x i) v
+        = (PiLp.proj 2 (fun _ : Fin m => ℝ) i).comp (fderiv ℝ ψ v) := fun v i => by
+      have h := (PiLp.hasFDerivAt_apply (𝕜 := ℝ) 2 (ψ v) i).comp v
+        ((hψ1.differentiable one_ne_zero) v).hasFDerivAt
+      exact h.fderiv
+    have htr : ∀ v, LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap
+        = ∑ i : Fin m, fderiv ℝ (fun x => ψ x i) v (EuclideanSpace.single i 1) := by
+      intro v
+      rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin m) ℝ)]
+      refine Finset.sum_congr rfl (fun i _ => ?_)
+      rw [hd]
+      simp [EuclideanSpace.inner_single_left]
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := B) ?_]
+    · simp_rw [htr]
+      simp only [] at key
+      rw [key, neg_neg]
+    · intro v hv
+      have : fderiv ℝ ψ v = 0 := by
+        by_contra hne
+        exact hv (hψB (support_fderiv_subset ℝ hne))
+      simp [this]
+  -- Step 2: the gradient field `G = ∇g`.
+  set L := fderiv ℝ g with hLdef
+  have hL : ContDiff ℝ (⊤ : ℕ∞) L := (contDiff_infty_iff_fderiv.1 hg).2
+  set G : Euclid m → Euclid m := fun v => (InnerProductSpace.toDual ℝ (Euclid m)).symm (L v)
+    with hGdef
+  have hGi : ∀ v (i : Fin m), G v i = L v (EuclideanSpace.single i 1) := by
+    intro v i
+    have := EuclideanSpace.inner_single_left i (1:ℝ) (G v)
+    rw [real_inner_comm, hGdef, InnerProductSpace.toDual_symm_apply] at this
+    simpa using this.symm
+  have hGn : ∀ v, ‖G v‖ = ‖L v‖ := fun v => LinearIsometryEquiv.norm_map _ _
+  have hG : ContDiff ℝ (⊤ : ℕ∞) G := by
+    rw [contDiff_piLp 2]
+    intro i
+    have : (fun x => G x i) = fun x => L x (EuclideanSpace.single i 1) := funext fun x => hGi x i
+    rw [this]
+    exact hL.clm_apply contDiff_const
+  have hsum : ∀ v, ∑ i : Fin m, L v (EuclideanSpace.single i 1) * G v i = ‖G v‖ ^ 2 := by
+    intro v
+    rw [PiLp.norm_sq_eq_of_L2]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [← hGi, Real.norm_eq_abs, sq_abs, sq]
+  -- Step 3: parameters `θₖ`, bump cut-offs `χₖ` and test fields `ψₖ`.
+  set θ : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1) with hθdef
+  have hθpos : ∀ k, 0 < θ k := fun k => by positivity
+  have hθle : ∀ k, θ k ≤ 1 := fun k => by
+    rw [hθdef, div_le_one (by positivity)]
+    have := (Nat.cast_nonneg k : (0:ℝ) ≤ k)
+    linarith
+  have hθlim : Tendsto θ atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  set ri : ℕ → ℝ := fun k => r * (1 - θ k / 2) with hridef
+  set ro : ℕ → ℝ := fun k => r * (1 - θ k / 4) with hrodef
+  have hri : ∀ k, 0 < ri k := fun k => mul_pos hr (by linarith [hθle k])
+  have hrio : ∀ k, ri k < ro k := fun k => mul_lt_mul_of_pos_left (by linarith [hθpos k]) hr
+  have hro : ∀ k, ro k < r := fun k => mul_lt_of_lt_one_right hr (by linarith [hθpos k])
+  let χ : ℕ → ContDiffBump (0 : Euclid m) := fun k => ⟨ri k, ro k, hri k, hrio k⟩
+  have hχ1 : ∀ v ∈ B, ∀ᶠ k in atTop, χ k v = 1 := by
+    intro v hv
+    have hlim : Tendsto ri atTop (𝓝 r) := by
+      have := (tendsto_const_nhds (x := r)).mul
+        ((tendsto_const_nhds (x := (1:ℝ))).sub (hθlim.div_const 2))
+      simpa using this
+    have hv' : ‖v‖ < r := by simpa [hB] using hv
+    filter_upwards [hlim.eventually_const_lt hv'] with k hk
+    exact (χ k).one_of_mem_closedBall (by rw [mem_closedBall_zero_iff]; exact hk.le)
+  set s : ℕ → Euclid m → ℝ := fun k v => √(‖G v‖ ^ 2 + θ k ^ 2) with hsdef
+  have hspos : ∀ k v, 0 < s k v := fun k v => Real.sqrt_pos.2 (by have := hθpos k; positivity)
+  have hGs : ∀ k v, ‖G v‖ ≤ s k v := fun k v =>
+    Real.le_sqrt_of_sq_le (by have := hθpos k; nlinarith)
+  have hsc : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (s k) := fun k =>
+    ((hG.norm_sq ℝ).add contDiff_const).sqrt (fun v => by have := hθpos k; positivity)
+  set ψ : ℕ → Euclid m → Euclid m := fun k v => (-(χ k v / s k v)) • G v with hψdef
+  set f : ℕ → Euclid m → ℝ := fun k v => χ k v * (‖G v‖ ^ 2 / s k v) with hfdef
+  have hψs : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (ψ k) := fun k =>
+    (((χ k).contDiff.div (hsc k) (fun v => (hspos k v).ne')).neg).smul hG
+  have hψsupp : ∀ k, tsupport (ψ k) ⊆ closedBall 0 (ro k) := by
+    intro k
+    rw [← (χ k).tsupport_eq]
+    apply closure_mono
+    intro v hv
+    rw [Function.mem_support] at hv ⊢
+    intro h0
+    apply hv
+    simp [hψdef, h0]
+  have hψB : ∀ k, tsupport (ψ k) ⊆ B := fun k => (hψsupp k).trans (closedBall_subset_ball (hro k))
+  have hψc : ∀ k, HasCompactSupport (ψ k) := fun k =>
+    (isCompact_closedBall 0 (ro k)).of_isClosed_subset (isClosed_tsupport _) (hψsupp k)
+  have hψn : ∀ k v, ‖ψ k v‖ ≤ 1 := by
+    intro k v
+    have hχ0 := (χ k).nonneg (x := v)
+    have hχ1' := (χ k).le_one (x := v)
+    simp only [hψdef, norm_smul, norm_neg, norm_div, Real.norm_eq_abs, abs_of_nonneg hχ0,
+      abs_of_pos (hspos k v)]
+    rw [div_mul_eq_mul_div, div_le_one (hspos k v)]
+    calc χ k v * ‖G v‖ ≤ 1 * s k v := mul_le_mul hχ1' (hGs k v) (norm_nonneg _) zero_le_one
+      _ = s k v := one_mul _
+  -- Step 4: `∫ g div ψₖ = ∫_B fₖ ≤ c`.
+  have hint_eq : ∀ k, ∫ v, g v * LinearMap.trace ℝ (Euclid m) (fderiv ℝ (ψ k) v).toLinearMap
+      = ∫ v in B, f k v := by
+    intro k
+    rw [ibp (ψ k) ((hψs k).of_le h1) (hψc k) (hψB k), ← integral_neg]
+    congr 1
+    funext v
+    have : ∀ i : Fin m, L v (EuclideanSpace.single i 1) * (ψ k v) i
+        = -(χ k v / s k v) * (L v (EuclideanSpace.single i 1) * G v i) := fun i => by
+      simp only [hψdef, WithLp.ofLp_smul, Pi.smul_apply, smul_eq_mul]
+      ring
+    simp_rw [this, ← Finset.mul_sum, hsum, hfdef]
+    ring
+  have hle : ∀ k, ∫ v in B, f k v ≤ c := fun k =>
+    (hint_eq k) ▸ hψ (ψ k) (hψs k) (hψc k) (hψB k) (hψn k)
+  have hfc : ∀ k, Continuous (f k) := fun k =>
+    (χ k).continuous.mul (((continuous_norm.comp hG.continuous).pow 2).div (hsc k).continuous
+      (fun v => (hspos k v).ne'))
+  have hfnn : ∀ k v, 0 ≤ f k v := fun k v =>
+    mul_nonneg (χ k).nonneg (div_nonneg (sq_nonneg _) (hspos k v).le)
+  have hfi : ∀ k, IntegrableOn (f k) B := fun k =>
+    ((hfc k).continuousOn.integrableOn_compact (isCompact_closedBall (0 : Euclid m) r)).mono_set
+      ball_subset_closedBall
+  have hbound : ∀ k, ∫⁻ v in B, ENNReal.ofReal (f k v) ≤ ENNReal.ofReal c := by
+    intro k
+    rw [← ofReal_integral_eq_lintegral_ofReal (hfi k) (ae_of_all _ (hfnn k))]
+    exact ENNReal.ofReal_le_ofReal (hle k)
+  -- Step 5: `fₖ → ‖Dg‖` on `B`, and Fatou's lemma.
+  have htend : ∀ v ∈ B, Tendsto (fun k => ENNReal.ofReal (f k v)) atTop
+      (𝓝 (ENNReal.ofReal ‖G v‖)) := by
+    intro v hv
+    apply ENNReal.tendsto_ofReal
+    have hχt : Tendsto (fun k => χ k v) atTop (𝓝 1) :=
+      tendsto_const_nhds.congr' (by filter_upwards [hχ1 v hv] with k hk; exact hk.symm)
+    have hq : Tendsto (fun k => ‖G v‖ ^ 2 / s k v) atTop (𝓝 ‖G v‖) := by
+      rcases eq_or_ne ‖G v‖ 0 with h0 | h0
+      · simp [h0]
+      · have hs : Tendsto (fun k => s k v) atTop (𝓝 (√(‖G v‖ ^ 2 + 0 ^ 2))) :=
+          (tendsto_const_nhds.add (hθlim.pow 2)).sqrt
+        have hne : √(‖G v‖ ^ 2 + 0 ^ 2) ≠ 0 := by
+          rw [zero_pow two_ne_zero, add_zero, Real.sqrt_sq (norm_nonneg _)]; exact h0
+        have := (tendsto_const_nhds (x := ‖G v‖ ^ 2)).div hs hne
+        convert this using 2
+        rw [zero_pow two_ne_zero, add_zero, Real.sqrt_sq (norm_nonneg _), sq, mul_self_div_self]
+    have := hχt.mul hq
+    rw [one_mul] at this
+    exact this
+  calc ∫⁻ v in B, ‖L v‖ₑ = ∫⁻ v in B, liminf (fun k => ENNReal.ofReal (f k v)) atTop := by
+        refine setLIntegral_congr_fun measurableSet_ball (fun v hv => ?_)
+        rw [(htend v hv).liminf_eq, hGn, ofReal_norm]
+    _ ≤ liminf (fun k => ∫⁻ v in B, ENNReal.ofReal (f k v)) atTop :=
+        lintegral_liminf_le (fun k => (hfc k).measurable.ennreal_ofReal)
+    _ ≤ ENNReal.ofReal c := liminf_le_of_frequently_le' (Frequently.of_forall hbound)
+
 end Submission
 /-- Translations are continuous in measure on balls: for measurable `F ⊆ ℝᵐ`,
 `Lᵐ(((F − z) Δ F) ∩ B_R(0)) → 0` as `z → 0`, where `F − z = {v : v + z ∈ F}`.  Inner and outer
