@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Blow-up domains eventually contain bounded sets** (Simon 7.3.3(2), proof: the domain
+claims for `η_{x,σᵢ#}T`).  If `U` is open, `x ∈ U`, `λᵢ > 0` and `λᵢ → 0`, then every bounded `K`
+lies in `η_{x,λᵢ}(U)` for all large `i`: with `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`, eventually
+`λᵢ(|r| + 1) < δ`, and then each `w ∈ K` is `η_{x,λᵢ}(x + λᵢw)` with `x + λᵢw ∈ B_δ(x)`. -/
+theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U := by
+  intro P U x lams hU hx hpos hlim K hK
+  -- `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨r, hr⟩ := hK.subset_closedBall 0
+  -- `λᵢ(|r| + 1) → 0 < δ`, so `λᵢ(|r| + 1) < δ` for all large `i`
+  have hlim' : Tendsto (fun i => lams i * (|r| + 1)) atTop (𝓝 0) := by
+    simpa using hlim.mul_const (|r| + 1)
+  filter_upwards [hlim'.eventually (gt_mem_nhds hδ)] with i hi w hw
+  -- `y = x + λᵢw` lies in `B_δ(x) ⊆ U`, and `η_{x,λᵢ}(y) = w`
+  refine ⟨x + lams i • w, hball ?_, ?_⟩
+  · have hw : ‖w‖ ≤ |r| + 1 := by
+      linarith [mem_closedBall_zero_iff.mp (hr hw), le_abs_self r]
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg (hpos i).le]
+    exact (mul_le_mul_of_nonneg_left hw (hpos i).le).trans_lt hi
+  · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
+      smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
