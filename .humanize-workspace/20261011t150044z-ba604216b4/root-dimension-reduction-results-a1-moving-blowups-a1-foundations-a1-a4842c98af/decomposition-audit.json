@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmr_vr_|cmr_vector_riesz|dimred_mbl_fnd' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "rg -n 'integrable_of_forall_notMem_eq_zero|integrable_toReal_of_lintegral_ne_top|theorem Integrable.bdd_mul|theorem Integrable.mul_bdd|lemma Integrable.bdd_mul|lemma Integrable.mul_bdd|structure Regular|class Regular' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'inner_single_right|inner_apply|norm_single' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "git show 5d41e1d4:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vector-riesz-independent-audit/Conditional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vector-riesz-independent-audit/AcceptedChildren.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Module/PositiveLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-a4842c98af/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-6320466d7a/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-689458a1fc/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-1669aaf2f9/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-54a4dfc386/isolated-comparator-result.json",
+        "/tmp/vector-riesz-independent-audit/Conditional.lean",
+        "/tmp/vector-riesz-independent-audit/AcceptedChildren.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected vector-Riesz contract. Snapshot revisions and inspected working sources match; the snapshot project contains no matching cmr_vr_, cmr_vector_riesz, or dimred_mbl_fnd declaration. Each proposed bare name matches exactly one comparator-accepted DAG declaration with a byte-identical frozen type; no active-name conflict exists. The six-node reuse closure is accepted, acyclic, and excludes the selected parent. Empty sibling dependency lists are correct because each child proves a general statement from its explicit inputs. Independently compiled Conditional.lean proves the exact selected parent from only the four frozen child propositions, with autoImplicit disabled. Recompilation of the accepted children, their two supporting lemmas, and the parent assembly also succeeds. All checked proofs use only propext, Classical.choice, and Quot.sound. Euclidean scalar multiplication, inner products, and positive-linear-map instances match the intended mathematics."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coordinate_functional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line proposition agree, including both representation and local boundedness. Composition with t ↦ t • e_i preserves compact support, is linear, and preserves the scalar absolute-value bound because ‖e_i‖ = 1. The supplied proof establishes every clause without additional topological assumptions or circular reliance."
+    },
+    {
+      "key": "jordan_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Rescaling establishes the required finite bound; the variation sets are nonempty and bounded above. The two supremum arguments and explicit clamp cases prove additivity, and both scalar cases prove homogeneity. Extension by toRealPositiveLinear and positivity of V̂ + Λ yield the stated difference of positive functionals. The proof is complete under the stated arbitrary-topological-space hypothesis."
+    },
+    {
+      "key": "common_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all required topological and measurable hypotheses. RMK, finite-sum domination, σ-finiteness, and vanishing singular parts justify the measurable densities. Compact-set lintegral bounds establish local integrability, and bounded compactly supported products justify subtracting the Bochner integrals. The empty family is covered. The supplied argument is complete and non-circular; the scalar RMK step also agrees with [Carlen, Theorem 0.14](https://sites.math.rutgers.edu/~carlen/502S17/hahnsaks.pdf)."
+    },
+    {
+      "key": "coordinate_assembly",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the one-line proposition, including the weaker OpensMeasurableSpace assumption. Finite sums give measurable, compact-locally-integrable ν; coordinate projections preserve compact support; and the explicit product-integrability argument permits exchanging sum and integral. The zero-extension lemma requires no additional measurability assumption on the support set. The Euclidean inner-product identity completes the proof, including d = 0. Combined with the other children, this proves precisely the selected parent."
+    }
+  ],
+  "required_changes": []
+}
