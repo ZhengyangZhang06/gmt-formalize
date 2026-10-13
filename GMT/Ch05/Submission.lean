@@ -2322,6 +2322,232 @@ theorem allard52_annular_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : �
   simp_rw [hg]
   exact (hΦ s r hs hsr hr).2
 
+/-- Simon Ch. 4, 4.9 and 4.10(1), under the hypotheses 2.3 with `0 < δ ≤ κ = (p − n)/(4p)` and
+`μ_V`-a.e. `n`-dimensional, strongly measurable tangent planes: every density value
+`Θⁿ(μ_V, y) = t` at a point `y ∈ spt V ∩ B̆_ρ(0)` satisfies `t ≥ 1`.  With `Λ = δ/κ ∈ (0, 1]` and
+`α = 1 − n/p`, the annular monotonicity at each `x ∈ B̆_ρ(0)` and radius `R ≤ ρ − |x|` gives a density
+`Θ(x)` with `ω_n Θ(x) ≤ (1 + Λ (r/R)^α) r⁻ⁿ μ_V(B_r(x)) + Λ (r/R)^α` for `0 < r < R`.  Hence `Θ` is
+upper semicontinuous on `B̆_ρ(0)`, `Θ = θ ≥ 1` `μ_V`-a.e., and an open ball about `y` on which
+`Θ < 1` would be `μ_V`-null, contradicting `y ∈ spt μ_V`. -/
+theorem allard52_support_density_ge_one : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ (p - n) / (4 * p) → V.AllardHypotheses H p δ ρ → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) → ∀ y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ, ∀ t : ℝ, V.HasDensity y t → 1 ≤ t := by
+  intro n ℓ hn p hp U hU V H δ ρ hδ hδκ hA hmeas htan hdens y hy t ht
+  /- Step 1: uniqueness of densities, and `ω_n > 0`. -/
+  have hunique : ∀ (x : Amb n ℓ) (a b : ℝ), V.HasDensity x a → V.HasDensity x b →
+      ENNReal.ofReal a = ENNReal.ofReal b :=
+    fun _ _ _ ha hb => tendsto_nhds_unique ha hb
+  have hdeq : ∀ (x : Amb n ℓ) (a b : ℝ), V.HasDensity x a → V.HasDensity x b → 0 ≤ a → 0 ≤ b →
+      a = b :=
+    fun x a b ha hb ha0 hb0 => (ENNReal.ofReal_eq_ofReal_iff ha0 hb0).1 (hunique x a b ha hb)
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    positivity
+  /- Constants: `κ = (p - n)/(4p)`, `Λ = δ/κ ∈ (0, 1]`, `α = 1 - n/p ∈ (0, 1)`. -/
+  have hp0 : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hp
+  have hκ : 0 < (p - n) / (4 * p) := div_pos (by linarith) (by linarith)
+  obtain ⟨Λ, hΛdef⟩ : ∃ Λ : ℝ, Λ = δ / ((p - n) / (4 * p)) := ⟨_, rfl⟩
+  have hΛ0 : 0 < Λ := by
+    rw [hΛdef]
+    exact div_pos hδ hκ
+  have hΛ1 : Λ ≤ 1 := by
+    rw [hΛdef]
+    exact (div_le_one hκ).2 hδκ
+  have hκΛ : (p - n) / (4 * p) * Λ = δ := by
+    rw [hΛdef]
+    exact mul_div_cancel₀ δ hκ.ne'
+  obtain ⟨α, hαdef⟩ : ∃ α : ℝ, α = 1 - (n : ℝ) / p := ⟨_, rfl⟩
+  have hα : 0 < α := by
+    rw [hαdef, sub_pos, div_lt_one hp0]
+    exact hp
+  have hfin : V.weight (closedBall 0 ρ) ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top hA.2.2.2.2.2.1
+  /- Step 2: the monotonicity inequality (2.1) at points of `B̆_ρ(0)`, for every admissible
+  radius `R ≤ ρ - ‖x‖`, from the sibling subball bounds and annular monotonicity. -/
+  have hmono : ∀ (x : Amb n ℓ) (R : ℝ), 0 < R → R ≤ ρ - ‖x‖ →
+      ∃ θ : ℝ, 0 ≤ θ ∧ V.HasDensity x θ ∧ ∀ r ∈ Ioo 0 R, unitBallVolume n * θ ≤
+        (1 + Λ * (r / R) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) +
+          Λ * (r / R) ^ α := by
+    intro x R hR hRx
+    have hRρ : R ≤ ρ := by linarith [norm_nonneg x]
+    have hsub : closedBall x R ⊆ closedBall 0 ρ := by
+      intro z hz
+      rw [mem_closedBall, dist_eq_norm] at hz
+      rw [mem_closedBall_zero_iff]
+      calc ‖z‖ = ‖(z - x) + x‖ := by rw [sub_add_cancel]
+        _ ≤ ‖z - x‖ + ‖x‖ := norm_add_le _ _
+        _ ≤ ρ := by linarith
+    obtain ⟨hU', -, hLp, -⟩ :=
+      Submission.aal_allard_subball_bounds n ℓ p hp U V H δ ρ hA x R hR hRρ hsub
+    obtain ⟨F, hF, -, θ, hθ0, hθd, hθ⟩ :=
+      Submission.allard52_annular_monotonicity n ℓ hn p hp U hU V H hA.2.1 x R Λ hR hU'
+        (htan.mono fun z hz _ => hz) hmeas.restrict hΛ0 hΛ1 (by rw [hκΛ]; exact hLp)
+    rw [← hαdef] at hF
+    refine ⟨θ, hθ0, hθd, fun r hr => ?_⟩
+    obtain ⟨-, -, hFr⟩ := hF r hr
+    have hm : 0 ≤ (r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal := by
+      have := hr.1
+      positivity
+    have hFle : F r ≤ 1 + Λ * (r / R) ^ α := by
+      linarith [le_abs_self (F r - 1)]
+    calc unitBallVolume n * θ
+        ≤ F r * (r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal + F r - 1 := hθ r hr
+      _ = F r * ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) + (F r - 1) := by ring
+      _ ≤ (1 + Λ * (r / R) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) +
+            Λ * (r / R) ^ α :=
+          add_le_add (mul_le_mul_of_nonneg_right hFle hm) (by linarith [le_abs_self (F r - 1)])
+  -- existence of a (nonnegative) density at every point of `B̆_ρ(0)`
+  have hex : ∀ x : Amb n ℓ, x ∈ ball (0 : Amb n ℓ) ρ → ∃ θ : ℝ, 0 ≤ θ ∧ V.HasDensity x θ := by
+    intro x hx
+    have hxρ : ‖x‖ < ρ := mem_ball_zero_iff.1 hx
+    obtain ⟨θ, hθ0, hθ, -⟩ := hmono x (ρ - ‖x‖) (by linarith) le_rfl
+    exact ⟨θ, hθ0, hθ⟩
+  -- (2.1) holds for *every* nonnegative density value, by uniqueness
+  have hineq : ∀ (x : Amb n ℓ) (R : ℝ), 0 < R → R ≤ ρ - ‖x‖ → ∀ θ : ℝ, 0 ≤ θ →
+      V.HasDensity x θ → ∀ r ∈ Ioo 0 R, unitBallVolume n * θ ≤
+        (1 + Λ * (r / R) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) +
+          Λ * (r / R) ^ α := by
+    intro x R hR hRx θ hθ0 hθ r hr
+    obtain ⟨θ₁, hθ₁0, hθ₁, hθ₁ineq⟩ := hmono x R hR hRx
+    rw [hdeq x θ θ₁ hθ hθ₁ hθ0 hθ₁0]
+    exact hθ₁ineq r hr
+  /- Step 3: upper semicontinuity of the density on `B̆_ρ(0)`. -/
+  have husc : ∀ x : Amb n ℓ, x ∈ ball (0 : Amb n ℓ) ρ → ∀ θ : ℝ, 0 ≤ θ → V.HasDensity x θ →
+      ∀ η : ℝ, 0 < η → ∃ d > 0, ∀ x' ∈ ball x d, x' ∈ ball (0 : Amb n ℓ) ρ ∧
+        ∀ θ' : ℝ, 0 ≤ θ' → V.HasDensity x' θ' → θ' < θ + η := by
+    intro x hx θ hθ0 hθ η hη
+    have hxρ : ‖x‖ < ρ := mem_ball_zero_iff.1 hx
+    set R₀ := (ρ - ‖x‖) / 3 with hR₀def
+    have hR₀ : 0 < R₀ := by rw [hR₀def]; linarith
+    -- finiteness of the masses of the balls `B_s(x)`, `s ≤ 2 R₀`
+    have hfin' : ∀ s, s ≤ 2 * R₀ → V.weight (closedBall x s) ≠ ⊤ := by
+      intro s hs
+      refine ne_top_of_le_ne_top hfin (measure_mono ?_)
+      intro z hz
+      rw [mem_closedBall, dist_eq_norm] at hz
+      rw [mem_closedBall_zero_iff]
+      calc ‖z‖ = ‖(z - x) + x‖ := by rw [sub_add_cancel]
+        _ ≤ ‖z - x‖ + ‖x‖ := norm_add_le _ _
+        _ ≤ ρ := by rw [hR₀def] at hs; linarith
+    -- (a) the error term `c(r) = Λ (r/R₀)^α` tends to `0`
+    have hc : Tendsto (fun r : ℝ => Λ * (r / R₀) ^ α) (𝓝[>] 0) (𝓝 0) := by
+      have h2 : ContinuousAt (fun r : ℝ => Λ * (r / R₀) ^ α) 0 := by
+        apply ContinuousAt.mul continuousAt_const
+        exact ContinuousAt.rpow_const (continuousAt_id.div_const R₀) (Or.inr hα.le)
+      have h3 := h2.tendsto
+      simp only [zero_div, Real.zero_rpow hα.ne', mul_zero] at h3
+      exact h3.mono_left nhdsWithin_le_nhds
+    -- the normalized masses `r⁻ⁿ μ(B_r(x))` converge to `ω θ`
+    have hlimm : Tendsto (fun r : ℝ => (r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal)
+        (𝓝[>] 0) (𝓝 (unitBallVolume n * θ)) := by
+      have hθ' : Tendsto (fun r : ℝ => V.weight (closedBall x r) /
+          ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) := hθ
+      have h1 := (ENNReal.tendsto_toReal ENNReal.ofReal_ne_top).comp hθ'
+      rw [ENNReal.toReal_ofReal hθ0] at h1
+      have h2 := h1.const_mul (unitBallVolume n)
+      refine h2.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have hr' : 0 < r := hr
+      have hrn : 0 < r ^ n := pow_pos hr' n
+      simp only [Function.comp_apply, ENNReal.toReal_div]
+      rw [ENNReal.toReal_ofReal (mul_pos hω hrn).le]
+      field_simp
+    have hE : Tendsto (fun r : ℝ => (1 + Λ * (r / R₀) ^ α) *
+        ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) + Λ * (r / R₀) ^ α) (𝓝[>] 0)
+        (𝓝 (unitBallVolume n * θ)) := by
+      have h := (((tendsto_const_nhds : Tendsto (fun _ : ℝ => (1 : ℝ)) (𝓝[>] 0) (𝓝 1)).add
+        hc).mul hlimm).add hc
+      simp only [add_zero, one_mul] at h
+      exact h
+    have hlt : unitBallVolume n * θ < unitBallVolume n * θ + unitBallVolume n * η / 2 := by
+      have := mul_pos hω hη
+      linarith
+    obtain ⟨r, hrE, hr⟩ :=
+      ((hE.eventually (gt_mem_nhds hlt)).and
+        (Ioo_mem_nhdsGT hR₀ : ∀ᶠ r in 𝓝[>] (0 : ℝ), r ∈ Ioo 0 R₀)).exists
+    -- (b) continuity from above of `s ↦ μ(B_s(x))` at `r`
+    have hcont : Tendsto (fun s => V.weight (closedBall x s)) (𝓝[>] r)
+        (𝓝 (V.weight (closedBall x r))) := by
+      have h := tendsto_measure_biInter_gt (μ := V.weight) (s := closedBall x) (a := r)
+        (fun _ _ => measurableSet_closedBall.nullMeasurableSet)
+        (fun _ _ _ hij => closedBall_subset_closedBall hij)
+        ⟨2 * R₀, by linarith [hr.2], hfin' _ le_rfl⟩
+      rw [biInter_gt_closedBall] at h
+      exact h
+    have hcont' : Tendsto (fun s => (V.weight (closedBall x s)).toReal) (𝓝[>] r)
+        (𝓝 (V.weight (closedBall x r)).toReal) :=
+      (ENNReal.tendsto_toReal (hfin' r (by linarith [hr.2]))).comp hcont
+    have hE2 : Tendsto (fun s => (1 + Λ * (r / R₀) ^ α) *
+        ((r ^ n)⁻¹ * (V.weight (closedBall x s)).toReal) + Λ * (r / R₀) ^ α) (𝓝[>] r)
+        (𝓝 ((1 + Λ * (r / R₀) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) +
+          Λ * (r / R₀) ^ α)) :=
+      ((hcont'.const_mul _).const_mul _).add_const _
+    have hlt2 : (1 + Λ * (r / R₀) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x r)).toReal) +
+        Λ * (r / R₀) ^ α < unitBallVolume n * θ + unitBallVolume n * η := by
+      have := mul_pos hω hη
+      linarith
+    obtain ⟨r', hr'E, hr'⟩ :=
+      ((hE2.eventually (gt_mem_nhds hlt2)).and
+        (Ioo_mem_nhdsGT (show r < 2 * R₀ by linarith [hr.2]) :
+          ∀ᶠ s in 𝓝[>] r, s ∈ Ioo r (2 * R₀))).exists
+    -- (c) on `B̆_d(x)`, `d = min R₀ (r' - r)`, the density is `< θ + η`
+    refine ⟨min R₀ (r' - r), lt_min hR₀ (by linarith [hr'.1]), fun x' hx' => ?_⟩
+    have hd1 : dist x' x < R₀ := lt_of_lt_of_le hx' (min_le_left _ _)
+    have hd2 : dist x' x < r' - r := lt_of_lt_of_le hx' (min_le_right _ _)
+    have hnx' : ‖x'‖ < ‖x‖ + R₀ := by
+      rw [dist_eq_norm] at hd1
+      calc ‖x'‖ = ‖(x' - x) + x‖ := by rw [sub_add_cancel]
+        _ ≤ ‖x' - x‖ + ‖x‖ := norm_add_le _ _
+        _ < ‖x‖ + R₀ := by linarith
+    refine ⟨mem_ball_zero_iff.2 (by rw [hR₀def] at hnx'; linarith), fun θ' hθ'0 hθ' => ?_⟩
+    have key := hineq x' R₀ hR₀ (by rw [hR₀def] at hnx' ⊢; linarith) θ' hθ'0 hθ' r hr
+    have hball : closedBall x' r ⊆ closedBall x r' := by
+      intro z hz
+      rw [mem_closedBall] at hz ⊢
+      calc dist z x ≤ dist z x' + dist x' x := dist_triangle _ _ _
+        _ ≤ r' := by linarith
+    have hmono' : (V.weight (closedBall x' r)).toReal ≤ (V.weight (closedBall x r')).toReal :=
+      ENNReal.toReal_mono (hfin' r' hr'.2.le) (measure_mono hball)
+    have hr0 : 0 < r := hr.1
+    have hc0 : 0 ≤ Λ * (r / R₀) ^ α := by
+      have := hΛ0.le
+      positivity
+    have h3 : (1 + Λ * (r / R₀) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x' r)).toReal) ≤
+        (1 + Λ * (r / R₀) ^ α) * ((r ^ n)⁻¹ * (V.weight (closedBall x r')).toReal) := by
+      apply mul_le_mul_of_nonneg_left _ (by linarith)
+      exact mul_le_mul_of_nonneg_left hmono' (by positivity)
+    have h4 : unitBallVolume n * θ' < unitBallVolume n * (θ + η) := by
+      rw [mul_add]
+      linarith
+    exact lt_of_mul_lt_mul_left h4 hω.le
+  /- Step 4: `μ`-a.e. every density value is `≥ 1`. -/
+  have hae : ∀ᵐ x ∂V.weight, ∀ θ' : ℝ, V.HasDensity x θ' → 1 ≤ θ' := by
+    filter_upwards [hdens, hA.2.2.1] with x hx1 hx2 θ' hθ'
+    have h1 : 1 ≤ ENNReal.ofReal θ' := by
+      rw [hunique x θ' (V.mult x) hθ' hx1]
+      exact ENNReal.one_le_ofReal.2 hx2
+    exact ENNReal.one_le_ofReal.1 h1
+  /- Step 5: a ball about `y` on which the density is `< 1` would be `μ`-null. -/
+  have hysupp : y ∈ V.weight.support := (show y ∈ U ∩ V.weight.support from hy.1).2
+  obtain ⟨θ, hθ0, hθ⟩ := hex y hy.2
+  have hθ1 : 1 ≤ θ := by
+    by_contra hlt
+    have hlt : θ < 1 := not_le.1 hlt
+    obtain ⟨d, hd, hball⟩ := husc y hy.2 θ hθ0 hθ ((1 - θ) / 2) (by linarith)
+    have hzero : V.weight (ball y d) = 0 := by
+      rw [measure_eq_zero_iff_ae_notMem]
+      filter_upwards [hae] with x hx hxb
+      obtain ⟨hxW, hlt'⟩ := hball x hxb
+      obtain ⟨θ', hθ'0, hθ'⟩ := hex x hxW
+      have h1 := hx θ' hθ'
+      have h2 := hlt' θ' hθ'0 hθ'
+      linarith
+    have hpos := (Measure.mem_support_iff_forall y).1 hysupp (ball y d) (ball_mem_nhds y hd)
+    rw [hzero] at hpos
+    exact lt_irrefl _ hpos
+  have h1 : 1 ≤ ENNReal.ofReal t := by
+    rw [hunique y t θ ht hθ]
+    exact ENNReal.one_le_ofReal.2 hθ1
+  exact ENNReal.one_le_ofReal.1 h1
+
 end Submission
 
 end GMT.Ch05
