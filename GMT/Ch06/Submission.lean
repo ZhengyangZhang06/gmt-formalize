@@ -733,6 +733,112 @@ theorem Submission.ind_ab_orientation_error_vanishes :
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact hbound2 r hr
 
+/-- Blow-up of `τ(M, θ, ξ)` at a.e. point (Simon Ch. 6, proof of 8.2, display (7)): for
+`Hⁿ`-a.e. `x ∈ M`, every weighted approximate tangent space `Q` of `(M, θ)` at `x` and every
+continuous compactly supported `n`-form `ω`,
+`τ(M, θ, ξ)(r⁻ⁿ ω ∘ η_{x,r}) → θ(x) ∫_Q ⟨ω, ξ(x)⟩ dHⁿ` as `r ↓ 0`, `η_{x,r}(y) = r⁻¹(y − x)`. -/
+theorem Submission.ind_ae_blowup_limit :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+      IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ →
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt n M θ x Q →
+        ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω →
+          Tendsto (fun r : ℝ => tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x))))
+            (𝓝[>] 0)
+            (𝓝 (θ x * ∫ z in (Q : Set (Eucl P)), ξ x (ω z) ∂(μHE[n] : Measure (Eucl P)))) := by
+  have htan := @Submission.ind_ab_rescaled_tangent_limit
+  have hgrowth := @Submission.ind_ab_weighted_ball_growth
+  have hleb := @Submission.ind_ab_weighted_lebesgue_point
+  have herr := @Submission.ind_ab_orientation_error_vanishes
+  intro P n M θ ξ hT
+  have hθ0 : ∀ y ∈ M, 0 ≤ θ y := fun y hy => (hT.pos y hy).le
+  have hθK : ∀ K : Set (Eucl P), IsCompact K →
+      IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P)) :=
+    fun K hK => hT.integrableOn K hK (subset_univ K)
+  -- `‖ξ‖ ≤ 1` a.e. on `M`: `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal.
+  have hξ1 : ∀ᵐ y ∂(μHE[n] : Measure (Eucl P)).restrict M, ‖ξ y‖ ≤ 1 := by
+    filter_upwards [hT.orients] with y hy
+    obtain ⟨τ, hτ, -, hξy⟩ := hy
+    have hs : ∀ α : Covector (Eucl P) n, ‖α τ‖ ≤ 1 * ‖α‖ := fun α => by
+      rw [one_mul]
+      calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+    rcases hξy with h | h
+    · rw [h, simpleNVector_apply]
+      exact hs α
+    · rw [h, neg_apply, simpleNVector_apply, norm_neg]
+      exact hs α
+  filter_upwards [hleb P n M θ ξ hT] with x hx
+  intro Q hQ ω hω hωc
+  -- Growth `∫⁻_{M ∩ B̄_s(x)} θ ≤ C sⁿ`, and the orientation error `E(r) → 0`.
+  have hC := hgrowth P n M θ x Q hT.nullMeasurableSet hθ0 hθK hQ
+  have hE := herr P n M θ ξ x ω hT.nullMeasurableSet hθ0 hω hωc hC hx
+  -- The main term `A(r)`, tested with `f = ⟨ω, ξ(x)⟩ ∈ C_c(ℝ^P)`.
+  have hA := htan P n M θ x Q (fun z => ξ x (ω z)) hQ ((ξ x).continuous.comp hω)
+    (hωc.comp_left (map_zero (ξ x)))
+  have hlim := hA.add hE
+  rw [add_zero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  rw [Set.mem_Ioi] at hr
+  -- `τ(M, θ, ξ)(ω_r) = A(r) + E(r)` for `r > 0`, `ω_r(y) = r⁻ⁿ ω(r⁻¹(y − x))`.
+  obtain ⟨B, hB⟩ := hω.bounded_above_of_compact_support hωc
+  set c : ℝ := (r ^ n)⁻¹
+  set K : Set (Eucl P) := (fun z => x + r • z) '' tsupport ω
+  have hK : IsCompact K := hωc.isCompact.image (by fun_prop)
+  have hzero : ∀ y ∉ K, ω (r⁻¹ • (y - x)) = 0 := fun y hy =>
+    image_eq_zero_of_notMem_tsupport fun hmem =>
+      hy ⟨r⁻¹ • (y - x), hmem, show x + r • r⁻¹ • (y - x) = y by
+        rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+  have hbound : ∀ y, ‖c • ω (r⁻¹ • (y - x))‖ ≤ |c| * B := fun y => by
+    rw [norm_smul, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_left (hB _) (abs_nonneg c)
+  have hωr : Continuous fun y => c • ω (r⁻¹ • (y - x)) := by fun_prop
+  have hIA : IntegrableOn (fun y => θ y * ξ x (c • ω (r⁻¹ • (y - x)))) M
+      (μHE[n] : Measure (Eucl P)) := by
+    refine IntegrableOn.of_ae_sdiff_eq_zero (s := M ∩ K) ?_ hT.nullMeasurableSet
+      (Eventually.of_forall ?_)
+    · refine (hθK K hK).mul_bdd (c := ‖ξ x‖ * (|c| * B)) ?_ (Eventually.of_forall fun y => ?_)
+      · exact ((ξ x).continuous.comp hωr).aestronglyMeasurable
+      · exact ((ξ x).le_opNorm _).trans (mul_le_mul_of_nonneg_left (hbound y) (norm_nonneg _))
+    · rintro y ⟨hyM, hyMK⟩
+      have hyK : y ∉ K := fun h => hyMK ⟨hyM, h⟩
+      simp [hzero y hyK]
+  have hIE : IntegrableOn (fun y => θ y * (ξ y - ξ x) (c • ω (r⁻¹ • (y - x)))) M
+      (μHE[n] : Measure (Eucl P)) := by
+    refine IntegrableOn.of_ae_sdiff_eq_zero (s := M ∩ K) ?_ hT.nullMeasurableSet
+      (Eventually.of_forall ?_)
+    · have hξK : ∀ᵐ y ∂(μHE[n] : Measure (Eucl P)).restrict (M ∩ K), ‖ξ y‖ ≤ 1 :=
+        ae_restrict_of_ae_restrict_of_subset inter_subset_left hξ1
+      have hξm : AEStronglyMeasurable (fun y => ξ y - ξ x)
+          ((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)) :=
+        (hT.aestronglyMeasurable.mono_set inter_subset_left).sub aestronglyMeasurable_const
+      refine (hθK K hK).mul_bdd (c := (1 + ‖ξ x‖) * (|c| * B)) ?_ ?_
+      · exact (continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂ hξm
+          hωr.aestronglyMeasurable
+      · filter_upwards [hξK] with y hy
+        calc ‖(ξ y - ξ x) (c • ω (r⁻¹ • (y - x)))‖
+            ≤ ‖ξ y - ξ x‖ * ‖c • ω (r⁻¹ • (y - x))‖ := (ξ y - ξ x).le_opNorm _
+          _ ≤ (1 + ‖ξ x‖) * (|c| * B) := by
+            refine mul_le_mul ?_ (hbound y) (norm_nonneg _) (by positivity)
+            calc ‖ξ y - ξ x‖ ≤ ‖ξ y‖ + ‖ξ x‖ := norm_sub_le (ξ y) (ξ x)
+              _ ≤ 1 + ‖ξ x‖ := by linarith
+    · rintro y ⟨hyM, hyMK⟩
+      have hyK : y ∉ K := fun h => hyMK ⟨hyM, h⟩
+      simp [hzero y hyK]
+  have hsplit : (fun y => θ y * ξ y (c • ω (r⁻¹ • (y - x)))) = fun y =>
+      θ y * ξ x (c • ω (r⁻¹ • (y - x))) + θ y * (ξ y - ξ x) (c • ω (r⁻¹ • (y - x))) := by
+    funext y
+    rw [sub_apply]
+    ring
+  simp only [tauAction]
+  rw [hsplit, integral_add hIA hIE, ← integral_const_mul]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+  simp only [map_smul, smul_eq_mul]
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
