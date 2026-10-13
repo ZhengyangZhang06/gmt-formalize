@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2c505b436f9b5983294c2bdea43e989caa5a85c529838e604f3af37f18847891",
+  "git_delta": {
+    "base_commit": "ad5452825750549887e3ae6e7d984f3578fd2861",
+    "candidate_commit": "8283561e59d29d7cfa28c43b6312d9809ccd1084",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pwl_immersion_left_inverse",
+    "diff_sha256": "9ca59afbc63b3222113c3b01d849fb355d38eff81b1da75f1881958d57881fd3",
+    "source_sha256": "57ecdf284354e8963d155b1e09d7c2f7c2529925cbd7396790fbbe5707f779ab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pwl_immersion_left_inverse",
+      "statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ∃ R : Euclid d → (Euclid P →L[ℝ] Euclid d), ContinuousOn R V ∧ ∀ y ∈ V, (R y).comp (fderiv ℝ ψ y) = ContinuousLinearMap.id ℝ (Euclid d)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
