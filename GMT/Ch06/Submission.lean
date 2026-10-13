@@ -359,6 +359,40 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Lipschitz bound, in the field, for the pairing `∫_Ω Df(b)`.**  If `f` is `C`-Lipschitz on
+the open set `Ω ⊆ ℝⁿ` and `b, b'` are integrable on `Ω`, then
+`|∫_Ω Df(b) − ∫_Ω Df(b')| ≤ C ∫_Ω |b − b'|`, where `Df(w) = fderiv ℝ f w` (`0` where `f` is not
+differentiable).  On `Ω` we have `‖Df(w)‖ ≤ C`, so `w ↦ Df(w)(v(w))` is dominated by `C |v|`; it
+is a.e. strongly measurable because `Df` is Borel, hence integrable for `v = b, b'`, and the
+estimate follows by linearity of the integral and of `Df(w)`. -/
+theorem Submission.slicing_im_ll_gws_pairing_bound :
+    ∀ (n : ℕ) (Ω : Set (Eucl n)) (C : ℝ≥0) (f : Eucl n → ℝ), IsOpen Ω → LipschitzOnWith C f Ω →
+      ∀ b b' : Eucl n → Eucl n, IntegrableOn b Ω (volume : Measure (Eucl n)) →
+        IntegrableOn b' Ω (volume : Measure (Eucl n)) →
+        |(∫ w in Ω, fderiv ℝ f w (b w)) - ∫ w in Ω, fderiv ℝ f w (b' w)| ≤
+          C * ∫ w in Ω, ‖b w - b' w‖ := by
+  intro n Ω C f hΩ hf b b' hb hb'
+  -- `Ω` is a neighbourhood of each of its points, so `‖Df(w)‖ ≤ C` on `Ω`.
+  have hD : ∀ w ∈ Ω, ‖fderiv ℝ f w‖ ≤ C := fun w hw =>
+    norm_fderiv_le_of_lipschitzOn ℝ (hΩ.mem_nhds hw) hf
+  -- Hence `|Df(w)(v(w))| ≤ C |v(w)|` for a.e. `w ∈ Ω`, for every field `v`.
+  have hle : ∀ v : Eucl n → Eucl n,
+      ∀ᵐ w ∂(volume : Measure (Eucl n)).restrict Ω, ‖fderiv ℝ f w (v w)‖ ≤ C * ‖v w‖ := by
+    intro v
+    refine (ae_restrict_iff' hΩ.measurableSet).2 (Eventually.of_forall fun w hw => ?_)
+    exact (fderiv ℝ f w).le_of_opNorm_le (hD w hw) (v w)
+  -- `w ↦ Df(w)(v(w))` is integrable on `Ω` when `v` is: it is a.e. strongly measurable
+  -- (`Df` is Borel) and dominated by `C |v|`.
+  have hint : ∀ v : Eucl n → Eucl n, IntegrableOn v Ω volume →
+      IntegrableOn (fun w => fderiv ℝ f w (v w)) Ω volume := fun v hv =>
+    (hv.norm.const_mul C).mono' ((ContinuousLinearMap.apply ℝ ℝ).aestronglyMeasurable_comp₂
+      hv.aestronglyMeasurable (measurable_fderiv ℝ f).aestronglyMeasurable) (hle v)
+  -- Combine the integrals by linearity, then estimate.
+  rw [← integral_sub (hint b hb) (hint b' hb')]
+  simp_rw [← map_sub]
+  rw [← Real.norm_eq_abs, ← integral_const_mul]
+  exact norm_integral_le_of_norm_le ((hb.sub hb').norm.const_mul C) (hle (b - b'))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
