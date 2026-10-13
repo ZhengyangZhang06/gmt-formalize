@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Integration by parts for Jacobian minors of C² functions against a C¹ compactly supported test function (parent step (3.2)(ii))",
+  "statement": "Let k, r ∈ ℕ, let V_0, …, V_r : ℝ^k → ℝ (V : Fin (r+1) → (Eucl k → ℝ)) be of class C², let b : Fin (r+1) → Fin k, and let φ : ℝ^k → ℝ be of class C¹ with compact support. With ∂_i f(x) := fderiv ℝ f x (EuclideanSpace.single i 1), A(w) := (∂_{b(s)}V_t(w))_{t,s ∈ Fin (r+1)} and C_q(w) := (−1)^q det(∂_{b(q.succAbove s)}V_{t.succ}(w))_{t,s ∈ Fin r} for q ∈ Fin (r+1): ∫_{ℝ^k} φ(w)·det A(w) dw = −Σ_{q ∈ Fin (r+1)} ∫_{ℝ^k} V_0(w)·C_q(w)·∂_{b(q)}φ(w) dw, where dw is Lebesgue measure (volume).",
+  "lean_statement": "∀ (k r : ℕ) (V : Fin (r + 1) → Eucl k → ℝ) (b : Fin (r + 1) → Fin k) (φ : Eucl k → ℝ), (∀ t, ContDiff ℝ 2 (V t)) → ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ w, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) => fderiv ℝ (V t) w (EuclideanSpace.single (b s) 1)) ∂(volume : Measure (Eucl k)) = -∑ q : Fin (r + 1), ∫ w, V 0 w * ((-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1))) * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) ∂(volume : Measure (Eucl k))",
+  "lean_name": "deformation_ipl_mwc_minor_ibp_smooth",
+  "depends_on": [
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-327766afed-a1"
+}

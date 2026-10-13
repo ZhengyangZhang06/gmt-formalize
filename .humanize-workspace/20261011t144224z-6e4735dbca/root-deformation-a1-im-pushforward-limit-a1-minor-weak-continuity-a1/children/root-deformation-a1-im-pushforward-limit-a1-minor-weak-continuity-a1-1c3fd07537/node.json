@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Integration by parts for Jacobian minors of maps Lipschitz on an open set: identity (P) of parent step (3.2)",
+  "statement": "Let k, Q, r ∈ ℕ, let Ω ⊆ ℝ^k (ℝ^k = Eucl k) be open, C ≥ 0, v : ℝ^k → ℝ^Q C-Lipschitz on Ω, a : Fin (r+1) → Fin Q, b : Fin (r+1) → Fin k, and φ : ℝ^k → ℝ of class C¹ with compact support and tsupport φ ⊆ Ω. Write e_i := EuclideanSpace.single i 1, v^c := EuclideanSpace.proj c ∘ v and ∂_iv^c(w) := EuclideanSpace.proj c (fderiv ℝ v w (e_i)) (Mathlib fderiv, 0 where v is not differentiable). Let M(w) := det(∂_{b(s)}v^{a(t)}(w))_{t,s ∈ Fin (r+1)} and C_q(w) := (−1)^q det(∂_{b(q.succAbove s)}v^{a(t.succ)}(w))_{t,s ∈ Fin r} for q ∈ Fin (r+1). Then ∫_Ω φ(w)·M(w) dw = −Σ_{q ∈ Fin (r+1)} ∫_Ω v^{a(0)}(w)·C_q(w)·fderiv ℝ φ w (e_{b(q)}) dw, where dw is Lebesgue measure.",
+  "lean_statement": "∀ (k Q r : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (a : Fin (r + 1) → Fin Q) (b : Fin (r + 1) → Fin k) (v : Eucl k → Eucl Q) (φ : Eucl k → ℝ), IsOpen Ω → LipschitzOnWith C v Ω → ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ω → ∫ w in Ω, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) => EuclideanSpace.proj (a t) (fderiv ℝ v w (EuclideanSpace.single (b s) 1))) ∂(volume : Measure (Eucl k)) = -∑ q : Fin (r + 1), ∫ w in Ω, EuclideanSpace.proj (a 0) (v w) * ((-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t.succ) (fderiv ℝ v w (EuclideanSpace.single (b (q.succAbove s)) 1)))) * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) ∂(volume : Measure (Eucl k))",
+  "lean_name": "deformation_ipl_mwc_minor_ibp_lipschitz",
+  "depends_on": [
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.lipschitz_smooth_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.lipschitz_smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-1c3fd07537-a1"
+}

@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "norm_fderiv_le_of_lipschitzOn|ae_differentiableWithinAt_of_mem|integral_lineDeriv_mul_eq|contDiff_convolution_left|contDiff_convolution_right|exists_cthickening_subset_open|def cthickening|cthickening_empty|isSymmSndFDerivAt",
+        "deformation_ipl_mwc_|Piola|piola|weak.*contin.*minor|minor.*weak.*contin",
+        "abbrev Covector|def SimonMultiIndex|abbrev SimonMultiIndex|def wedgeCovectors|theorem wedgeCovectors_apply_det|def euclideanCovectorCoordinate",
+        "ae_tendsto_average_norm_sub|theorem hasFDerivAt_integral_of_dominated_loc_of_lip|theorem LipschitzOnWith.extend_real|lipschitzWith_of_hasCompactSupport|theorem measurable_fderiv ",
+        "theorem det_succ_row_zero|theorem det_apply|def det |def of |abbrev of |of_symm_apply|Matrix.of",
+        "git status --short",
+        "git rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/ParentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/minor_weak_star_ref.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/coeff_minor_continuity_ref.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/covector_expansion_accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/ae_mollifier_accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/mollify_fderiv_accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mwc_independent_audit_x_pzkhfh/mollify_close_accepted.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Matrix/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyPiola.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/IndependentTypes.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/ParentAssembly.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/minor_weak_star_ref.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/coeff_minor_continuity_ref.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/covector_expansion_accepted.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/ae_mollifier_accepted.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/mollify_fderiv_accepted.lean",
+        "/tmp/mwc_independent_audit_x_pzkhfh/mollify_close_accepted.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected theorem. All eleven one-line propositions independently elaborate in the frozen comparator scope without child implementations. All names are bare identifiers; the seven new names have no DAG reservations or library matches. The four reused contracts are byte-identical to their accepted DAG entries and handoffs, with successful comparator records. Their extracted implementations and the three supplied assembly proofs independently compile with only propext, Classical.choice and Quot.sound. Dependencies are correctly directed and acyclic. The parent assembly proves the exact frozen target from coefficient continuity and covector expansion. Matrix constructions use Matrix.of; no problematic IsUnit construction occurs. Snapshot revisions and inspected Mathlib files match the compiler dependencies. The related Chapter08 Piola theorem concerns chart tangential divergence and does not supply this arbitrary-cofactor contract. Public background was checked in the [Fonseca–Leoni–Malý paper](https://link.springer.com/article/10.1007/s00205-005-0377-2); acceptance rests on the supplied proofs and local checks."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match. Kronecker evaluations, permutation sorting, and alternating-map basis extensionality prove the finite expansion, including zero degree and n > P. Exact accepted reuse and permitted axioms were independently checked."
+    },
+    {
+      "key": "ae_mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized, scaled bump supplies all kernel properties. The Lebesgue-point estimate proves a.e. convergence for each locally integrable function using the same kernel sequence, matching the quantifier order. Dimension zero is covered. Exact accepted reuse was verified."
+    },
+    {
+      "key": "mollify_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translated Rademacher differentiability, measurable derivatives, and the integrable Lipschitz majorant L|ρ| satisfy the pinned integral-differentiation theorem. This proves the exact Fréchet derivative formula without requiring positivity or smoothness of ρ. Exact accepted reuse was verified."
+    },
+    {
+      "key": "mollify_close",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integral splitting is justified by compact-support integrability. Wherever ρ is nonzero, the support hypothesis gives |y| < σ; positivity and the Lipschitz estimate yield the stated bound after integration. No additional hypothesis σ > 0 is needed. Exact accepted reuse was verified."
+    },
+    {
+      "key": "piola_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cofactor signs and Fin.succAbove indexing match Laplace expansion. Differentiating the permutation formula and pairing σ with σ∘swap(0,u.succ) cancels every term by Hessian symmetry. The argument permits repeated directions and includes r = 0; it is complete and non-circular."
+    },
+    {
+      "key": "minor_ibp_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "C² rows give C¹ cofactors. Compact support of φ and its derivatives ensures integrability. Applying the justified zero-integral directional-derivative identity to V₀φC_q, then summing and using piola_identity, proves exactly the stated formula with C¹ tests."
+    },
+    {
+      "key": "lipschitz_smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared dependencies provide kernels, uniform error, and derivative convolution. Averaging preserves the constant L. A.e. convergence on the finite coordinate basis and the explicit operator-norm estimate give the asserted derivative convergence. The smoothness index denotes C∞, and dimension zero is covered."
+    },
+    {
+      "key": "minor_ibp_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise McShane extension and smoothing preserve the needed derivative bounds. The stated compactly supported majorants justify dominated convergence. Local equality on open Ω and Rademacher correctly identify scalar extension derivatives with projections of the vector fderiv a.e.; support then converts global integrals to restricted integrals."
+    },
+    {
+      "key": "test_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly establishes smooth L¹ density through compact exhaustion, truncation, and mollification. Restricted measurability, support control, and a fixed compact integrable majorant are supplied. The final approximation estimate proves the exact conclusion; Ω empty and the otherwise forced B ≥ 0 are handled."
+    },
+    {
+      "key": "minor_weak_star",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The induction genuinely decreases minor order. Bounded measurable minors permit test_density; minor_ibp_lipschitz reduces to cofactors, with uniform convergence controlling one term and the induction hypothesis applied to the justified L¹ test controlling the other. The embedded proof compiles from exactly the two declared dependency types."
+    },
+    {
+      "key": "coeff_minor_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Boundedness and uniform continuity of g justify integrability and convergence of the varying-coefficient error. minor_weak_star applies to the fixed integrable test ψ(g∘u₀). The embedded proof compiles from that exact dependency. Applying this child to each covector coordinate and summing proves the selected parent contract."
+    }
+  ],
+  "required_changes": []
+}

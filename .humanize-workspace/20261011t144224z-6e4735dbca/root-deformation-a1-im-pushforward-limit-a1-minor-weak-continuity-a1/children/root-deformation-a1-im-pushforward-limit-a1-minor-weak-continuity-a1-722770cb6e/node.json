@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_weak_star-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Weak-* convergence of all Jacobian minors of uniformly convergent, uniformly Lipschitz maps (the Claim of parent step 3)",
+  "statement": "Let k, Q ∈ ℕ, let Ω ⊆ ℝ^k (ℝ^k = Eucl k) be open, C ≥ 0, and let v_j : ℝ^k → ℝ^Q (j ∈ ℕ) and v₀ : ℝ^k → ℝ^Q all be C-Lipschitz on Ω with v_j → v₀ uniformly on Ω. For r ∈ ℕ, a : Fin r → Fin Q, b : Fin r → Fin k and u : ℝ^k → ℝ^Q let M_{a,b}(u)(w) := det(EuclideanSpace.proj (a t) (fderiv ℝ u w (EuclideanSpace.single (b s) 1)))_{t,s ∈ Fin r} (the r×r Jacobian minor with rows a and columns b; Mathlib fderiv, 0 where u is not differentiable; the empty determinant is 1). Then for every r, every a, b and every η : ℝ^k → ℝ that is Lebesgue-integrable on Ω: ∫_Ω η(w)·M_{a,b}(v_j)(w) dw → ∫_Ω η(w)·M_{a,b}(v₀)(w) dw as j → ∞ (dw = Lebesgue measure).",
+  "lean_statement": "∀ (k Q : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (v : ℕ → Eucl k → Eucl Q) (v₀ : Eucl k → Eucl Q), IsOpen Ω → (∀ j, LipschitzOnWith C (v j) Ω) → LipschitzOnWith C v₀ Ω → TendstoUniformlyOn v v₀ atTop Ω → ∀ (r : ℕ) (a : Fin r → Fin Q) (b : Fin r → Fin k) (η : Eucl k → ℝ), IntegrableOn η Ω (volume : Measure (Eucl k)) → Tendsto (fun j => ∫ w in Ω, η w * Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t) (fderiv ℝ (v j) w (EuclideanSpace.single (b s) 1))) ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, η w * Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t) (fderiv ℝ v₀ w (EuclideanSpace.single (b s) 1))) ∂(volume : Measure (Eucl k))))",
+  "lean_name": "deformation_ipl_mwc_minor_weak_star",
+  "depends_on": [
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.test_density-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.test_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-722770cb6e-a1"
+}

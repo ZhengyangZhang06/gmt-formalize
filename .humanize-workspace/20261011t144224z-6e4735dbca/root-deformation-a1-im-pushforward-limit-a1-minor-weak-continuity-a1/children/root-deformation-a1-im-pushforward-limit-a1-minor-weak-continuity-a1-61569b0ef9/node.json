@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.lipschitz_smooth_approx-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Smooth approximation of a Lipschitz function with almost-everywhere convergent derivatives (mollification, parent step (3.2)(iii))",
+  "statement": "Let k ∈ ℕ, L ≥ 0 and let g : ℝ^k → ℝ (ℝ^k = Eucl k) be L-Lipschitz. Then there are functions G_m : ℝ^k → ℝ (m ∈ ℕ) such that: every G_m is C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞), i.e. smooth of every finite order, not analytic); every G_m is L-Lipschitz; G_m → g uniformly on ℝ^k; and for Lebesgue-a.e. w ∈ ℝ^k, fderiv ℝ G_m w → fderiv ℝ g w in ℝ^k →L[ℝ] ℝ as m → ∞ (fderiv ℝ g w is the Fréchet derivative, 0 where g is not differentiable).",
+  "lean_statement": "∀ (k : ℕ) (L : ℝ≥0) (g : Eucl k → ℝ), LipschitzWith L g → ∃ G : ℕ → Eucl k → ℝ, (∀ m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (G m)) ∧ (∀ m, LipschitzWith L (G m)) ∧ TendstoUniformly G g atTop ∧ ∀ᵐ w ∂(volume : Measure (Eucl k)), Tendsto (fun m => fderiv ℝ (G m) w) atTop (𝓝 (fderiv ℝ g w))",
+  "lean_name": "deformation_ipl_mwc_lipschitz_smooth_approx",
+  "depends_on": [
+    "root.constancy-a1.local_on_balls-a1.density_constancy-a1.smooth_approx_identity-a1",
+    "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollify_fderiv-a1",
+    "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollify_close-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1.smooth_approx_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87-a1",
+      "result_commit": "2219dd324b47f4276f090e8ece62441b2f58fb58",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollify_fderiv-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-fderiv-a1-a1",
+      "result_commit": "fd43c997849f47644bfc0e4ee70fb3f8b7743995",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollify_close-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-close-a1-a1",
+      "result_commit": "0db2d9bb718d2841475070c496d6c527c1c5f3f7",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-61569b0ef9-a1"
+}
