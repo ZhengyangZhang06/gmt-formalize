@@ -1804,6 +1804,32 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Disjointification of injectively parametrised Borel pieces** (Simon Ch. 3, Remark 1.3).
+For continuous `ψⱼ : ℝᴺ → ℝᴾ` injective on Borel `Yⱼ`, the images `Aⱼ = ψⱼ(Yⱼ)` are Borel
+(Lusin–Souslin), so `Dⱼ = Aⱼ \ ⋃_{i<j} Aᵢ` (`disjointed`) are Borel, pairwise disjoint and have
+the same union as the `Aⱼ`.  The Borel pieces `Y'ⱼ = Yⱼ ∩ ψⱼ⁻¹(Dⱼ) ⊆ Yⱼ` have
+`ψⱼ(Y'ⱼ) = Aⱼ ∩ Dⱼ = Dⱼ`. -/
+theorem Submission.dtc_bc_lc_sl_cp_disjointify : ∀ (P N : ℕ) (ψ : ℕ → Euclid N → Euclid P) (Y : ℕ → Set (Euclid N)), (∀ j, Continuous (ψ j)) → (∀ j, MeasurableSet (Y j)) → (∀ j, InjOn (ψ j) (Y j)) → ∃ Y' : ℕ → Set (Euclid N), (∀ j, MeasurableSet (Y' j) ∧ Y' j ⊆ Y j) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y' i) (ψ j '' Y' j)) ∧ ⋃ j, ψ j '' Y' j = ⋃ j, ψ j '' Y j := by
+  intro P N ψ Y hψ hY hinj
+  -- the images `Aⱼ = ψⱼ(Yⱼ)` are Borel (Lusin–Souslin)
+  have hA : ∀ j, MeasurableSet (ψ j '' Y j) := fun j =>
+    (hY j).image_of_continuousOn_injOn (hψ j).continuousOn (hinj j)
+  -- `Y'ⱼ = Yⱼ ∩ ψⱼ⁻¹(Dⱼ)` with `Dⱼ = Aⱼ \ ⋃_{i<j} Aᵢ`, so that `ψⱼ(Y'ⱼ) = Dⱼ`
+  have himage : ∀ j, ψ j '' (Y j ∩ ψ j ⁻¹' disjointed (fun i => ψ i '' Y i) j) =
+      disjointed (fun i => ψ i '' Y i) j := fun j => by
+    rw [image_inter_preimage]
+    exact inter_eq_right.2 (disjointed_subset _ j)
+  refine ⟨fun j => Y j ∩ ψ j ⁻¹' disjointed (fun i => ψ i '' Y i) j,
+    fun j => ⟨(hY j).inter ((hψ j).measurable (MeasurableSet.disjointed hA j)),
+      inter_subset_left⟩, fun i j hij => ?_, ?_⟩
+  · -- the `Dⱼ` are pairwise disjoint
+    dsimp only
+    rw [himage i, himage j]
+    exact disjoint_disjointed _ hij
+  · -- `⋃ⱼ Dⱼ = ⋃ⱼ Aⱼ`
+    simp only [himage]
+    exact iUnion_disjointed
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
