@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1e1bcb43a066e19f37b4cd4756d28489c46f5d6bc664a388be1eb54d7a278629",
+  "git_delta": {
+    "base_commit": "6a9478a48126d68b82e88c5fe7db251e1123b06b",
+    "candidate_commit": "b18a4132b2262b12231acb07e4c8c4952794bb34",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "0baa940c6574cc2c399e1effef887de644e3195a9c843608b0427395bcbaa14d",
+    "source_sha256": "0ac60111be74b36376015b58a4ba2967ea26684fc145d19627e8433e2e8c678e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_imrep_bilipschitz_image_rep",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, R'.action (ω : DifferentialForm (Euclid P) n) = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
