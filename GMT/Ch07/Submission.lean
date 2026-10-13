@@ -658,6 +658,39 @@ theorem Submission.cmc_fc_gs_ae_quotient_finite : ∀ (μ : ℕ → Measure ℝ)
   exact ne_top_of_le_ne_top ht <| liminf_le_liminf <| Eventually.of_forall fun j =>
     Submission.cmc_fc_gs_aqf_liminf_le_seq (μ j) a b t hat
 
+/-- **Choice of a good slicing level** (Simon Ch. 6, proof of Theorem 7.2, chapter-06.txt
+line 2090: "by 4.5(1),(2) and an argument as in 6.7(2) of Ch. 2").  If `μⱼ([a, b]) ≤ Λ < ∞`,
+there are `s ∈ (a, b)`, a subsequence `φ` and `C < ∞` such that every lower left difference
+quotient `liminf_{h↓0} h⁻¹ μ_{φ(j)}((s − h, s))` is `≤ C` and, for every `ε > 0`, eventually
+`μ_{φ(j)}([s − δ, s]) ≤ ε` for some `δ > 0`.  Helly selection gives `φ₁` and a countable set `N`
+off which no mass concentrates from the left along `φ₁`; Tonelli and Fatou, applied to
+`μ ∘ φ₁`, give `L(t) := liminf_j liminf_{h↓0} h⁻¹ μ_{φ₁(j)}((t − h, t)) < ∞` for a.e.
+`t ∈ (a, b)`.  As `(a, b)` has positive Lebesgue measure and `N` is null, some `s ∈ (a, b) ∖ N`
+has `L(s) < ∞`; the quotients at `s` are `< L(s) + 1 =: C` for infinitely many `j`, which gives
+a second extraction `φ₂`, and `φ := φ₁ ∘ φ₂`. -/
+theorem Submission.cmc_fc_good_slice : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (s : ℝ) (φ : ℕ → ℕ) (C : ℝ≥0∞), a < s ∧ s < b ∧ StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (φ j) (Ioo (s - h) s)) (𝓝[>] 0) ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε := by
+  intro μ a b Λ hab hΛ hμ
+  -- Steps 1–3: Helly selection; off the countable set `N` no mass concentrates along `φ₁`
+  obtain ⟨φ₁, N, hφ₁, hN, hconc⟩ := Submission.cmc_fc_gs_helly_no_concentration μ a b Λ hΛ hμ
+  -- Step 4: Tonelli and Fatou for the subsequence `μ ∘ φ₁`, which is still bounded by `Λ`
+  have hfin := Submission.cmc_fc_gs_ae_quotient_finite (fun j => μ (φ₁ j)) a b Λ hΛ
+    fun j => hμ (φ₁ j)
+  -- Step 5: `(a, b)` is not Lebesgue-null and `N` is, so a good level `s ∈ (a, b) ∖ N` exists
+  have hab' : volume (Ioo a b) ≠ 0 := by
+    rw [Real.volume_Ioo]
+    exact (ENNReal.ofReal_pos.2 (sub_pos.2 hab)).ne'
+  have := ae_restrict_neBot.2 hab'
+  obtain ⟨s, hs, hsN, hL⟩ := ((ae_restrict_mem (s := Ioo a b) measurableSet_Ioo).and
+    (ae_restrict_of_ae ((hN.ae_notMem volume).and hfin))).exists
+  -- Step 6: the quotients at `s` are `< L + 1` infinitely often; extract `φ₂` along them
+  obtain ⟨φ₂, hφ₂, hlt⟩ := extraction_of_frequently_atTop
+    (frequently_lt_of_liminf_lt (by isBoundedDefault) (ENNReal.lt_add_right (hL hs) one_ne_zero))
+  refine ⟨s, φ₁ ∘ φ₂, _, hs.1, hs.2, hφ₁.comp hφ₂,
+    ENNReal.add_ne_top.2 ⟨hL hs, ENNReal.one_ne_top⟩, fun k => (hlt k).le, fun ε hε => ?_⟩
+  -- Steps 7–8: the `δ` of Helly selection works along `φ₁ ∘ φ₂`, since `φ₂ → ∞`
+  obtain ⟨δ, hδ, hev⟩ := hconc s hs hsN ε hε
+  exact ⟨δ, hδ, hφ₂.tendsto_atTop.eventually hev⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
