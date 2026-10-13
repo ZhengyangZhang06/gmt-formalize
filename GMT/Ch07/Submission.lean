@@ -2083,6 +2083,113 @@ theorem Submission.regcomp_imrep_mass_formula : ∀ (P n : ℕ) (U : Set (Euclid
   exact le_antisymm (Submission.regcomp_imrep_massOn_le_measure P n U T R hR W)
     (Submission.regcomp_imrep_measure_le_massOn P n U T R hU hR W hW)
 
+/-- **Simon 7.5.11 (proof, p. 202)**, the restriction step: let `T = τ(C, θ, ξ)` in the open `U`,
+let `A` be Borel with `Hⁿ(A \ C) = 0` and `T₁(ω) = ∫_A ⟨ω, ξ⟩ dHⁿ`.  Then `T₁ = τ(A ∩ C, 1, ξ)` and
+`T − T₁ = τ(C₂, θ − 1_A, ξ)`, `C₂ = C ∩ (Aᶜ ∪ {θ ≥ 2})`, are integer multiplicity,
+`M_W(T₁) + M_W(T − T₁) = M_W(T)` for open `W`, and `M_W(T − T₁) < ∞` for open `W ⊂⊂ U`.
+Both triples restrict `(C, θ, ξ)` to Borel subsets of `C`, which inherit the approximate tangent
+spaces of `C` (`Hⁿ(C ∩ K) ≤ ∫_{C ∩ K} θ dHⁿ < ∞`); since `θ = 1_{A ∩ C} + 1_{C₂}(θ − 1_A)` on `C`,
+weights and actions add, and the masses are the weights `μ_T = θ Hⁿ⌞C`. -/
+theorem Submission.regcomp_restriction_integer_multiplicity : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T T₁ : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet A → μHE[n] (A \ R.carrier) = 0 → (∀ ω : TestFormOn U n, T₁ ω = ∫ x in A, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → IsIntegerMultiplicity T₁ ∧ IsIntegerMultiplicity (T - T₁) ∧ (∀ W : Set (Euclid P), IsOpen W → T₁.massOn W + (T - T₁).massOn W = T.massOn W) ∧ ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → (T - T₁).massOn W ≠ ∞ := by
+  intro P n U A T T₁ R hU hR hA hAC hT₁
+  classical
+  -- Step 1: `Hⁿ(C ∩ K) ≤ ∫_{C ∩ K} θ dHⁿ < ∞` for compact `K ⊆ U`, as `θ ≥ 1` on `C`
+  have hCK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ := by
+    intro K hK hKU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
+    calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+        setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) fun x hx => by
+          exact_mod_cast R.mult_pos x hx.1
+  -- a Borel `C' ⊆ C` inherits, `Hⁿ`-a.e. on `C'`, the approximate tangent spaces of `C`
+  have hinherit : ∀ C' : Set (Euclid P), MeasurableSet C' → C' ⊆ R.carrier →
+      ∀ᵐ x ∂(μHE[n].restrict C'), ∀ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n R.carrier x Q → HasApproximateTangentSpaceAt n C' x Q := by
+    intro C' hC' hC'C
+    filter_upwards [Submission.regcomp_approx_tangent_locality P n U C' R.carrier hU hC'
+      R.measurableSet_carrier hC'C R.carrier_subset hCK] with x hx Q hQ
+    exact (hx Q).mp hQ
+  -- Step 2: `R₁ = (A ∩ C, 1, ξ)`
+  have hC₁ : MeasurableSet (A ∩ R.carrier) := hA.inter R.measurableSet_carrier
+  obtain ⟨R₁, hR₁c, hR₁m, hR₁o⟩ := Submission.regcomp_rim_sub_imrep P n U (A ∩ R.carrier) R
+    (fun _ => 1) hC₁ inter_subset_right measurable_const (fun _ _ => Nat.one_pos)
+    (fun x hx => R.mult_pos x hx.2) (hinherit _ hC₁ inter_subset_right)
+  -- Step 3: `R₂ = (C₂, θ₂, ξ)` with `C₂ = C ∩ (Aᶜ ∪ {θ ≥ 2})` and `θ₂ = θ − 1_A`
+  have hθge : MeasurableSet {x | 2 ≤ R.mult x} :=
+    R.measurable_mult (MeasurableSet.of_discrete : MeasurableSet {k : ℕ | 2 ≤ k})
+  have hC₂ : MeasurableSet (R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x})) :=
+    R.measurableSet_carrier.inter (hA.compl.union hθge)
+  have hθ₂ : Measurable fun x => if x ∈ A then R.mult x - 1 else R.mult x :=
+    Measurable.ite hA ((measurable_from_nat (f := fun k : ℕ => k - 1)).comp R.measurable_mult)
+      R.measurable_mult
+  have hθ₂pos : ∀ x ∈ R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x}),
+      0 < if x ∈ A then R.mult x - 1 else R.mult x := by
+    rintro x ⟨hxC, hx⟩
+    split_ifs with hxA
+    · rcases hx with hx | hx
+      · exact absurd hxA hx
+      · have h2 : 2 ≤ R.mult x := hx
+        omega
+    · exact R.mult_pos x hxC
+  have hθ₂le : ∀ x ∈ R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x}),
+      (if x ∈ A then R.mult x - 1 else R.mult x) ≤ R.mult x := by
+    intro x _
+    split_ifs <;> omega
+  obtain ⟨R₂, hR₂c, hR₂m, hR₂o⟩ := Submission.regcomp_rim_sub_imrep P n U
+    (R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x})) R
+    (fun x => if x ∈ A then R.mult x - 1 else R.mult x) hC₂ inter_subset_left hθ₂ hθ₂pos hθ₂le
+    (hinherit _ hC₂ inter_subset_left)
+  -- on `C`, `θ = 1_{A ∩ C} + 1_{C₂} θ₂`, so `(C, θ, ξ)` splits into `R₁` and `R₂`
+  have hsplit : ∀ x ∈ R.carrier,
+      R.mult x = R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x := by
+    intro x hxC
+    have h1 := R.mult_pos x hxC
+    rw [hR₁c, hR₁m, hR₂c, hR₂m]
+    by_cases hxA : x ∈ A
+    · rw [indicator_of_mem (show x ∈ A ∩ R.carrier from ⟨hxA, hxC⟩)]
+      by_cases h2 : 2 ≤ R.mult x
+      · rw [indicator_of_mem (show x ∈ R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x}) from
+          ⟨hxC, Or.inr h2⟩)]
+        simp only [ite_eq_left hxA]
+        omega
+      · rw [indicator_of_notMem (show x ∉ R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x}) by
+          rintro ⟨-, h | h⟩
+          · exact h hxA
+          · exact h2 h)]
+        simp only [add_zero]
+        omega
+    · rw [indicator_of_notMem (show x ∉ A ∩ R.carrier from fun h => hxA h.1),
+        indicator_of_mem (show x ∈ R.carrier ∩ (Aᶜ ∪ {x | 2 ≤ R.mult x}) from
+          ⟨hxC, Or.inl hxA⟩)]
+      simp only [ite_eq_right hxA, zero_add]
+  obtain ⟨hmeas, hact⟩ := Submission.regcomp_rim_imrep_split P n U R R₁ R₂
+    (by rw [hR₁c]; exact inter_subset_right) (by rw [hR₂c]; exact inter_subset_left) hR₁o hR₂o
+    hsplit
+  -- `T₁ = τ(A ∩ C, 1, ξ)`, since `Hⁿ(A \ C) = 0`
+  have hR₁T₁ : R₁.Represents T₁ := by
+    intro ω
+    have hAeq : μHE[n].restrict A = μHE[n].restrict (A ∩ R.carrier) :=
+      Measure.restrict_congr_set (ae_eq_set.mpr ⟨by rwa [Set.sdiff_self_inter],
+        by rw [Set.sdiff_eq_empty.mpr inter_subset_left, measure_empty]⟩)
+    rw [hT₁, hAeq, IMRep.action, hR₁c, hR₁m, hR₁o]
+    simp only [Nat.cast_one, one_mul]
+  -- `T − T₁ = τ(C₂, θ₂, ξ)`
+  have hR₂T : R₂.Represents (T - T₁) := by
+    intro ω
+    have hsub : (T - T₁) ω = T ω - T₁ ω := rfl
+    rw [hsub, hR ω, hR₁T₁ ω, hact ω]
+    ring
+  -- Steps 4–5: the masses are the weight measures `μ_T = θ Hⁿ⌞C` of the triples
+  refine ⟨⟨R₁, hR₁T₁⟩, ⟨R₂, hR₂T⟩, fun W hW => ?_, fun W hW hWU => ?_⟩
+  · rw [Submission.regcomp_imrep_mass_formula P n U T₁ R₁ hU hR₁T₁ W hW,
+      Submission.regcomp_imrep_mass_formula P n U (T - T₁) R₂ hU hR₂T W hW,
+      Submission.regcomp_imrep_mass_formula P n U T R hU hR W hW, hmeas, Measure.add_apply]
+  · rw [Submission.regcomp_imrep_mass_formula P n U (T - T₁) R₂ hU hR₂T W hW]
+    refine ne_top_of_le_ne_top ?_ (measure_mono subset_closure)
+    rw [IMRep.measure, withDensity_apply _ isClosed_closure.measurableSet,
+      Measure.restrict_restrict isClosed_closure.measurableSet, inter_comm]
+    exact R₂.locallyIntegrable_mult _ hWU.1 hWU.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
