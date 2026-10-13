@@ -504,7 +504,6 @@ theorem dohr_eb_elc2_hessian_bounds : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn
     gcongr
     exact hL.norm_sub_le (mem_closedBall_zero_iff.2 hP) (mem_closedBall_zero_iff.2 hP')
 
-end Submission
 /-- **Averaged Hessian coefficient** (Steps 4–5 of the `C^{2,α}` regularity proof for uniformly
 convex Euler–Lagrange systems, in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second
 assertion).  Let `Ψ` be `C²` on `L = L(ℝⁿ, ℝ^ℓ)` and `B = D²Ψ`.  Assume that on the closed `ε`-ball
