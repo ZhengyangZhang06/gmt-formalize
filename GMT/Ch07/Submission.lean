@@ -1610,6 +1610,194 @@ theorem Submission.codim1_zsl_pc_cauchy_limit_set : ∀ (m : ℕ) (F : ℕ → S
   intro l
   exact measure_mono (fun v hv => (hGmem l v).mpr ⟨l, le_rfl, hv⟩)
 
+/-- Compactness from a uniform translation estimate: the precompactness part of Simon Ch. 2, 2.6,
+proved with cube averages (Hanche-Olsen–Holden, Expo. Math. 28 (2010), Theorem 5).  The averages
+`b_{(l,z)}(i) = Lᵐ(Fᵢ ∩ Q_{l,z})/δₗᵐ ∈ [0, 1]` over the grid cubes `Q_{l,z}` of side
+`δₗ = 1/((l+1)(m+1))` all converge along one diagonal subsequence `σ₀`.  On `B_R`, the cube
+average bound (`2KCδₗ`) and dominated convergence for the step functions make `F_{σ₀ i}` Cauchy
+in measure, and `codim1_zsl_pc_cauchy_limit_set` extracts a further subsequence and the limit. -/
+theorem Submission.codim1_zsl_pc_compact_of_translation : ∀ (m : ℕ) (F : ℕ → Set (Euclid m)), (∀ i, MeasurableSet (F i)) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ i in atTop, ∀ h : Euclid m, ‖h‖ ≤ 1 → volume (symmDiff ((fun v => v + h) ⁻¹' F i) (F i) ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal (C * ‖h‖)) → ∃ (σ : ℕ → ℕ) (F' : Set (Euclid m)), StrictMono σ ∧ MeasurableSet F' ∧ ∀ R : ℝ, Tendsto (fun i => volume (symmDiff (F (σ i)) F' ∩ ball (0 : Euclid m) R)) atTop (𝓝 0) := by
+  intro m F hFm hT
+  obtain ⟨K, hK0, hK⟩ := Submission.codim1_zsl_pc_cube_average_bound m
+  -- Step 1: the scales `δ l`
+  obtain ⟨δ, hδpos, hδsqrt, hδlim⟩ : ∃ δ : ℕ → ℝ, (∀ l, 0 < δ l) ∧ (∀ l, δ l * Real.sqrt m ≤ 1) ∧
+      Tendsto δ atTop (𝓝 0) := by
+    have hm1 : (0:ℝ) < (m:ℝ) + 1 := by positivity
+    have hsq : Real.sqrt m ≤ (m:ℝ) + 1 := by
+      have h1 : (m:ℝ) ≤ ((m:ℝ) + 1) ^ 2 := by nlinarith [(Nat.cast_nonneg m : (0:ℝ) ≤ m)]
+      calc Real.sqrt m ≤ Real.sqrt (((m:ℝ) + 1) ^ 2) := Real.sqrt_le_sqrt h1
+        _ = (m:ℝ) + 1 := Real.sqrt_sq hm1.le
+    refine ⟨fun l => 1 / ((l:ℝ) + 1) / ((m:ℝ) + 1), fun l => by positivity, fun l => ?_, ?_⟩
+    · have hl1 : (0:ℝ) < (l:ℝ) + 1 := by positivity
+      calc 1 / ((l:ℝ) + 1) / ((m:ℝ) + 1) * Real.sqrt m
+          ≤ 1 / ((l:ℝ) + 1) / ((m:ℝ) + 1) * ((m:ℝ) + 1) :=
+            mul_le_mul_of_nonneg_left hsq (by positivity)
+        _ = 1 / ((l:ℝ) + 1) := div_mul_cancel₀ _ hm1.ne'
+        _ ≤ 1 := by
+            rw [div_le_one hl1]
+            linarith [(Nat.cast_nonneg l : (0:ℝ) ≤ l)]
+    · have h := tendsto_one_div_add_atTop_nhds_zero_nat.div_const ((m:ℝ) + 1)
+      rwa [zero_div] at h
+  -- Step 2: grid cubes and cube averages
+  set Q : ℕ → (Fin m → ℤ) → Set (Euclid m) := fun l z => {w : Euclid m | ∀ j, ⌊w j / δ l⌋ = z j}
+    with hQ
+  have hQvol : ∀ l (z : Fin m → ℤ), volume (Q l z) ≤ ENNReal.ofReal (δ l ^ m) := by
+    intro l z
+    have hQeq : Q l z = (WithLp.ofLp : Euclid m → (Fin m → ℝ)) ⁻¹'
+        (Set.pi univ fun j => Ico ((z j : ℝ) * δ l) (((z j : ℝ) + 1) * δ l)) := by
+      ext w
+      simp only [hQ, Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_pi, Set.mem_univ, true_implies,
+        Set.mem_Ico]
+      refine forall_congr' fun j => ?_
+      rw [Int.floor_eq_iff, le_div_iff₀ (hδpos l), div_lt_iff₀ (hδpos l)]
+    rw [hQeq, (PiLp.volume_preserving_ofLp (Fin m)).measure_preimage
+      (MeasurableSet.univ_pi fun j => measurableSet_Ico).nullMeasurableSet, Real.volume_pi_Ico]
+    have hsub : ∀ j : Fin m, ((z j : ℝ) + 1) * δ l - (z j : ℝ) * δ l = δ l := fun j => by ring
+    simp only [hsub, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+    exact (ENNReal.ofReal_pow (hδpos l).le m).ge
+  set b : ℕ × (Fin m → ℤ) → ℕ → ℝ := fun k i => (volume (F i ∩ Q k.1 k.2)).toReal / δ k.1 ^ m
+    with hb
+  have hb01 : ∀ k i, 0 ≤ b k i ∧ b k i ≤ 1 := by
+    intro k i
+    have hpos : 0 < δ k.1 ^ m := pow_pos (hδpos k.1) m
+    show 0 ≤ (volume (F i ∩ Q k.1 k.2)).toReal / δ k.1 ^ m ∧
+      (volume (F i ∩ Q k.1 k.2)).toReal / δ k.1 ^ m ≤ 1
+    refine ⟨div_nonneg ENNReal.toReal_nonneg hpos.le, ?_⟩
+    rw [div_le_one hpos]
+    exact ENNReal.toReal_le_of_le_ofReal hpos.le
+      ((measure_mono inter_subset_right).trans (hQvol k.1 k.2))
+  -- Step 3: diagonal subsequence
+  obtain ⟨σ₀, hσ₀, hL⟩ := Submission.codim1_zsl_pc_diagonal_subseq (ℕ × (Fin m → ℤ)) b
+    (fun _ => 1) (fun k i => (abs_le.2 ⟨by linarith [(hb01 k i).1], (hb01 k i).2⟩ : |b k i| ≤ 1))
+  choose L hL using hL
+  have hL01 : ∀ k, 0 ≤ L k ∧ L k ≤ 1 := fun k =>
+    ⟨ge_of_tendsto' (hL k) (fun i => (hb01 k (σ₀ i)).1),
+      le_of_tendsto' (hL k) (fun i => (hb01 k (σ₀ i)).2)⟩
+  -- measurability of the floor map and of coordinates
+  have hfloor : Measurable (Int.floor : ℝ → ℤ) :=
+    measurable_to_countable' fun n => by
+      rw [Int.preimage_floor_singleton]
+      exact measurableSet_Ico
+  have hcoord : ∀ j : Fin m, Measurable (fun v : Euclid m => v j) := fun j =>
+    (measurable_pi_apply j).comp (WithLp.measurable_ofLp 2 (Fin m → ℝ))
+  -- Step 4: the subsequence is Cauchy in `L¹_loc`
+  have hCauchy : ∀ R : ℝ, 0 < R → ∀ η : ℝ, 0 < η → ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j →
+      volume (symmDiff (F (σ₀ i)) (F (σ₀ j)) ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal η := by
+    intro R hR η hη
+    obtain ⟨C, hC⟩ := hT R hR
+    obtain ⟨i₀, hi₀⟩ := eventually_atTop.1 hC
+    have hC'0 : (0:ℝ) ≤ max C 0 := le_max_right _ _
+    have htrans : ∀ i, i₀ ≤ i → ∀ h : Euclid m, ‖h‖ ≤ 1 →
+        volume (symmDiff ((fun v => v + h) ⁻¹' F (σ₀ i)) (F (σ₀ i)) ∩ ball (0 : Euclid m) R) ≤
+          ENNReal.ofReal (max C 0 * ‖h‖) := by
+      intro i hi h hh
+      exact (hi₀ (σ₀ i) (le_trans hi (hσ₀.id_le i)) h hh).trans
+        (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _)))
+    have hKC : 0 ≤ K * max C 0 := mul_nonneg hK0 hC'0
+    have hlim0 : Tendsto (fun l => K * max C 0 * δ l) atTop (𝓝 0) := by
+      have h := hδlim.const_mul (K * max C 0)
+      rwa [mul_zero] at h
+    obtain ⟨l, hl⟩ := (hlim0.eventually (gt_mem_nhds (show (0:ℝ) < η / 4 by positivity))).exists
+    have hKCδ : 0 ≤ K * max C 0 * δ l := mul_nonneg hKC (hδpos l).le
+    set kf : Euclid m → (Fin m → ℤ) := fun v j => ⌊v j / δ l⌋ with hkf
+    have hkf_meas : Measurable kf := by
+      rw [measurable_pi_iff]
+      intro j
+      exact hfloor.comp ((hcoord j).div_const (δ l))
+    have hmeasA : ∀ i, Measurable (fun v => ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ) := fun i =>
+      (measurable_of_countable (fun z : Fin m → ℤ => ‖b (l, z) (σ₀ i) - L (l, z)‖ₑ)).comp hkf_meas
+    have hmeasU : ∀ i, Measurable
+        (fun v => ‖(F (σ₀ i)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ i)‖ₑ) := fun i =>
+      ((measurable_const.indicator (hFm (σ₀ i))).sub
+        ((measurable_of_countable (fun z : Fin m → ℤ => b (l, z) (σ₀ i))).comp hkf_meas)).enorm
+    have hDCT : Tendsto (fun i => ∫⁻ v in ball (0 : Euclid m) R,
+        ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ) atTop (𝓝 0) := by
+      have hbound : ∀ i, (fun v => ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ)
+          ≤ᵐ[volume.restrict (ball (0 : Euclid m) R)] (fun _ => (1 : ℝ≥0∞)) := by
+        intro i
+        refine ae_of_all _ (fun v => ?_)
+        have h1 := hb01 (l, kf v) (σ₀ i)
+        have h2 := hL01 (l, kf v)
+        show ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ ≤ 1
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_one.2
+          (abs_le.2 ⟨by linarith [h1.1, h1.2, h2.1, h2.2], by linarith [h1.1, h1.2, h2.1, h2.2]⟩)
+      have hfin : ∫⁻ _, (1 : ℝ≥0∞) ∂(volume.restrict (ball (0 : Euclid m) R)) ≠ ∞ := by
+        rw [lintegral_const, Measure.restrict_apply MeasurableSet.univ, univ_inter, one_mul]
+        exact measure_ball_lt_top.ne
+      have hlim : ∀ᵐ v ∂(volume.restrict (ball (0 : Euclid m) R)),
+          Tendsto (fun i => ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ) atTop (𝓝 0) := by
+        refine ae_of_all _ (fun v => ?_)
+        have h := ((hL (l, kf v)).sub_const (L (l, kf v))).enorm
+        rwa [sub_self, enorm_zero] at h
+      have h := tendsto_lintegral_of_dominated_convergence (fun _ => (1 : ℝ≥0∞)) hmeasA hbound
+        hfin hlim
+      rwa [lintegral_zero] at h
+    obtain ⟨i₁, hi₁⟩ := ENNReal.tendsto_atTop_zero.1 hDCT (ENNReal.ofReal (η / 8))
+      (ENNReal.ofReal_pos.2 (by positivity))
+    refine ⟨max i₀ i₁, fun i j hi hj => ?_⟩
+    have hi0 : i₀ ≤ i := le_trans (le_max_left _ _) hi
+    have hj0 : i₀ ≤ j := le_trans (le_max_left _ _) hj
+    have hi1 : i₁ ≤ i := le_trans (le_max_right _ _) hi
+    have hj1 : i₁ ≤ j := le_trans (le_max_right _ _) hj
+    have cube_i : ∫⁻ v in ball (0 : Euclid m) R,
+        ‖(F (σ₀ i)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ i)‖ₑ ≤
+          ENNReal.ofReal (K * max C 0 * δ l) :=
+      hK (F (σ₀ i)) R (max C 0) (δ l) (hFm _) hC'0 (hδpos l) (hδsqrt l) (htrans i hi0)
+    have cube_j : ∫⁻ v in ball (0 : Euclid m) R,
+        ‖(F (σ₀ j)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ j)‖ₑ ≤
+          ENNReal.ofReal (K * max C 0 * δ l) :=
+      hK (F (σ₀ j)) R (max C 0) (δ l) (hFm _) hC'0 (hδpos l) (hδsqrt l) (htrans j hj0)
+    have dct_i : ∫⁻ v in ball (0 : Euclid m) R, ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ ≤
+        ENNReal.ofReal (η / 8) := hi₁ i hi1
+    have dct_j : ∫⁻ v in ball (0 : Euclid m) R, ‖b (l, kf v) (σ₀ j) - L (l, kf v)‖ₑ ≤
+        ENNReal.ofReal (η / 8) := hi₁ j hj1
+    have tri : ∀ a b c d e : ℝ, ‖a - e‖ₑ ≤ ‖a - b‖ₑ + ‖b - c‖ₑ + ‖d - c‖ₑ + ‖e - d‖ₑ := by
+      intro a b c d e
+      have h1 : a - e = (a - b) + (b - c) - (d - c) - (e - d) := by ring
+      rw [h1]
+      exact enorm_sub_le.trans (add_le_add (enorm_sub_le.trans (add_le_add (enorm_add_le _ _)
+        le_rfl)) le_rfl)
+    have hS : MeasurableSet (symmDiff (F (σ₀ i)) (F (σ₀ j))) := (hFm _).symmDiff (hFm _)
+    have hpt : ∀ v, (symmDiff (F (σ₀ i)) (F (σ₀ j))).indicator (1 : Euclid m → ℝ≥0∞) v ≤
+        ‖(F (σ₀ i)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ i)‖ₑ
+          + ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ + ‖b (l, kf v) (σ₀ j) - L (l, kf v)‖ₑ
+          + ‖(F (σ₀ j)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ j)‖ₑ := by
+      intro v
+      refine le_trans ?_ (tri _ _ _ _ _)
+      by_cases h1 : v ∈ F (σ₀ i) <;> by_cases h2 : v ∈ F (σ₀ j) <;>
+        simp [Set.mem_symmDiff, h1, h2]
+    calc volume (symmDiff (F (σ₀ i)) (F (σ₀ j)) ∩ ball (0 : Euclid m) R)
+        = ∫⁻ v in ball (0 : Euclid m) R,
+            (symmDiff (F (σ₀ i)) (F (σ₀ j))).indicator (1 : Euclid m → ℝ≥0∞) v := by
+          rw [lintegral_indicator_one hS, Measure.restrict_apply hS]
+      _ ≤ ∫⁻ v in ball (0 : Euclid m) R,
+            (‖(F (σ₀ i)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ i)‖ₑ
+              + ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ + ‖b (l, kf v) (σ₀ j) - L (l, kf v)‖ₑ
+              + ‖(F (σ₀ j)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ j)‖ₑ) :=
+          lintegral_mono hpt
+      _ = (∫⁻ v in ball (0 : Euclid m) R,
+              ‖(F (σ₀ i)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ i)‖ₑ)
+            + (∫⁻ v in ball (0 : Euclid m) R, ‖b (l, kf v) (σ₀ i) - L (l, kf v)‖ₑ)
+            + (∫⁻ v in ball (0 : Euclid m) R, ‖b (l, kf v) (σ₀ j) - L (l, kf v)‖ₑ)
+            + (∫⁻ v in ball (0 : Euclid m) R,
+              ‖(F (σ₀ j)).indicator (fun _ => (1:ℝ)) v - b (l, kf v) (σ₀ j)‖ₑ) := by
+          rw [lintegral_add_right _ (hmeasU j), lintegral_add_right _ (hmeasA j),
+            lintegral_add_right _ (hmeasA i)]
+      _ ≤ ENNReal.ofReal (K * max C 0 * δ l) + ENNReal.ofReal (η / 8) + ENNReal.ofReal (η / 8)
+            + ENNReal.ofReal (K * max C 0 * δ l) :=
+          add_le_add (add_le_add (add_le_add cube_i dct_i) dct_j) cube_j
+      _ ≤ ENNReal.ofReal η := by
+          have e2 : (0:ℝ) ≤ η / 8 := by positivity
+          rw [← ENNReal.ofReal_add hKCδ e2,
+            ← ENNReal.ofReal_add (by linarith : (0:ℝ) ≤ K * max C 0 * δ l + η / 8) e2,
+            ← ENNReal.ofReal_add (by linarith : (0:ℝ) ≤ K * max C 0 * δ l + η / 8 + η / 8) hKCδ]
+          exact ENNReal.ofReal_le_ofReal (by linarith)
+  -- Step 5: extract a convergent subsequence
+  obtain ⟨σ₁, F', hσ₁, hF', hlim⟩ :=
+    Submission.codim1_zsl_pc_cauchy_limit_set m (fun i => F (σ₀ i)) (fun i => hFm _) hCauchy
+  exact ⟨σ₀ ∘ σ₁, F', hσ₀.comp hσ₁, hF', hlim⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
