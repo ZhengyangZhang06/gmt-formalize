@@ -934,6 +934,72 @@ theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : 
   -- Step 5: `|α(τ)| ≤ |α|_E`, since `|α|_E ≥ 0`
   exact abs_le_of_sq_le_sq hsq (covectorEuclideanNorm_nonneg α)
 
+/-- **Smooth unit forms approximating a unit covector field in `L¹(ν)`** (used in the proof of the
+mass formula `M_W(T) = μ_T(W)`, with `ν = μ_T⌞O`).  Let `ν` be finite, `O` open, `K ⊆ O` compact
+and `g` an a.e. strongly measurable field with `|g|_E ≤ 1` vanishing off `K`.  Then for every
+`ε > 0` some test form `h` has `tsupport h ⊆ O`, `|h|_E ≤ 1` and `∫|h − g|_E dν < ε`.
+On a standard basis tuple `e ∘ j`, `|α(e ∘ j)| ≤ |α|_E` (orthonormal if `j` is injective, `0`
+otherwise), so `‖α‖ ≤ Pⁿ|α|_E` and `g` is bounded, hence integrable.  Approximate `g` within `ε/4`
+in `L¹(ν)` by a continuous unit field `f` with compact support in `O`
+(`regcomp_exists_continuous_unit_form_approx`), then `f` uniformly within
+`κ = ε/(4(1 + ν(ℝᴾ)))` by a unit test form `h` with `support h ⊆ support f`
+(`regcomp_exists_smooth_unit_form_support_approx`); the error is `≤ κ ν(ℝᴾ) + ε/4 ≤ ε/2`. -/
+theorem Submission.regcomp_exists_smooth_unit_form_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (O K : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen O → IsCompact K → K ⊆ O → AEStronglyMeasurable g ν → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → (∀ x, x ∉ K → g x = 0) → ∀ ε : ℝ, 0 < ε → ∃ h : DifferentialForm (Euclid P) n, IsTestForm h ∧ tsupport h ⊆ O ∧ (∀ z, covectorEuclideanNorm (h z) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂ν < ENNReal.ofReal ε := by
+  intro P n ν O K g hν hO hK hKO hg hg1 hgK ε hε
+  -- step 0(a): the triangle inequality for `|·|_E`
+  obtain ⟨-, -, -, hadd, -, -, -⟩ := Submission.regcomp_covectorEuclideanNorm_seminorm_retract P n
+  -- step 0(c): `‖α‖ ≤ Pⁿ|α|_E`, as `|α(e ∘ j)| ≤ |α|_E` for every `j : Fin n → Fin P`
+  have hop : ∀ α : Covector (Euclid P) n, ‖α‖ ≤ (P : ℝ) ^ n * covectorEuclideanNorm α := by
+    intro α
+    refine Submission.regcomp_covector_opNorm_le_of_basis_bound P n α _
+      (covectorEuclideanNorm_nonneg α) fun j => ?_
+    by_cases hj : Injective j
+    · -- `e ∘ j` is orthonormal
+      exact Submission.regcomp_covector_eval_orthonormal_le P n α _
+        ((EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.comp j hj)
+    · -- `e ∘ j` has a repeated entry, so `α(e ∘ j) = 0`
+      have hv : ¬Injective fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k) :=
+        fun he => hj fun a b hab => he (congrArg (EuclideanSpace.basisFun (Fin P) ℝ) hab)
+      rw [α.map_eq_zero_of_not_injective _ hv, abs_zero]
+      exact covectorEuclideanNorm_nonneg α
+  -- step 1: `‖g x‖ ≤ Pⁿ`, so `g` is `ν`-integrable
+  have hgi : Integrable g ν :=
+    Integrable.of_bound hg ((P : ℝ) ^ n) (Eventually.of_forall fun x =>
+      (hop (g x)).trans (mul_le_of_le_one_right (by positivity) (hg1 x)))
+  -- steps 1–3: a continuous unit field `f`, compactly supported in `O`, `ε/4`-close to `g`
+  obtain ⟨f, hfc, hfcs, hfO, hf1, hfg⟩ := Submission.regcomp_exists_continuous_unit_form_approx
+    P n ν O K g hν hO hK hKO hgi hg1 hgK (ε / 4) (by positivity)
+  -- step 4: a unit test form `h` with `support h ⊆ support f` and `|h − f|_E ≤ κ`
+  obtain ⟨κ, hκ⟩ : ∃ κ : ℝ, κ = ε / (4 * (1 + (ν univ).toReal)) := ⟨_, rfl⟩
+  have hκ0 : 0 < κ := by rw [hκ]; positivity
+  obtain ⟨h, hh, hhf, hh1, hhκ⟩ :=
+    Submission.regcomp_exists_smooth_unit_form_support_approx P n f hfc hfcs hf1 κ hκ0
+  refine ⟨h, hh, (closure_mono hhf).trans hfO, hh1, ?_⟩
+  -- step 5: `|h − g|_E ≤ κ + |f − g|_E` pointwise, and `κ ν(ℝᴾ) ≤ ε/4`
+  have hpt : ∀ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ≤
+      ENNReal.ofReal κ + ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) := by
+    intro x
+    rw [← ENNReal.ofReal_add hκ0.le (covectorEuclideanNorm_nonneg _),
+      ← sub_add_sub_cancel (h x) (f x) (g x)]
+    exact ENNReal.ofReal_le_ofReal ((hadd _ _).trans (add_le_add (hhκ x) le_rfl))
+  have hκν : ENNReal.ofReal κ * ν univ ≤ ENNReal.ofReal (ε / 4) := by
+    rw [← ENNReal.ofReal_toReal (measure_ne_top ν univ), ← ENNReal.ofReal_mul hκ0.le]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc κ * (ν univ).toReal ≤ κ * (1 + (ν univ).toReal) :=
+          mul_le_mul_of_nonneg_left (by linarith) hκ0.le
+      _ = ε / 4 := by
+          rw [hκ, div_mul_eq_mul_div,
+            mul_div_mul_right ε 4 (show 1 + (ν univ).toReal ≠ 0 by positivity)]
+  calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂ν
+      ≤ ∫⁻ x, (ENNReal.ofReal κ + ENNReal.ofReal (covectorEuclideanNorm (f x - g x))) ∂ν :=
+        lintegral_mono hpt
+    _ = ENNReal.ofReal κ * ν univ +
+          ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) ∂ν := by
+        rw [lintegral_add_left measurable_const, lintegral_const]
+    _ ≤ ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) := add_le_add hκν hfg
+    _ = ENNReal.ofReal (ε / 4 + ε / 4) := (ENNReal.ofReal_add (by positivity) (by positivity)).symm
+    _ < ENNReal.ofReal ε := (ENNReal.ofReal_lt_ofReal_iff hε).2 (by linarith)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
