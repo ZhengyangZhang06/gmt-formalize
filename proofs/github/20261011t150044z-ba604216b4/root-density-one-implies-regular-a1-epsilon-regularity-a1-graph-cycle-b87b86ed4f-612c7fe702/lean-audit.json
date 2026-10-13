@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b42d110da4378298486d68bd7a794a312cb23cb6d9d98fa1f6b0fbe28acea549",
+  "git_delta": {
+    "base_commit": "31c7bf77fef9da6e0422254c51beb158f01ffc5d",
+    "candidate_commit": "329e3832b55d19228d95b8532a02784b7d0bc807",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgoj_unitOrientation_of_injective",
+    "diff_sha256": "83e03ea5cb936badcdb6450931d3070f01a2a722ad807c539fcd3552b3f549fb",
+    "source_sha256": "03c723b614a0821d6be8b84212c8e39d9e14305d8b7be7eaef3aa45a3579a9cb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgoj_unitOrientation_of_injective",
+      "statement": "∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → 0 < (F.adjoint ∘L F).det ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, α (fun i => F (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt ((F.adjoint ∘L F).det) * ξ α) → IsUnitOrientationOf ξ (LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
