@@ -475,6 +475,43 @@ theorem Submission.slicing_im_ll_mollify :
     filter_upwards [hlim.eventually (gt_mem_nhds hε)] with k hk x
     rw [dist_comm]
     exact (hbound k x).trans_lt hk
+/-- Continuous multipliers `g k → f` converging uniformly on `ℝ^P`, integrated against a
+`ν`-integrable density `F` vanishing off a compact set `K`: `∫ g k F dν → ∫ f F dν`. -/
+theorem Submission.slicing_im_ll_multiplier_tendsto :
+    ∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ)
+      (g : ℕ → Eucl P → ℝ), Integrable F ν → IsCompact K → (∀ x, x ∉ K → F x = 0) →
+      Continuous f → (∀ k, Continuous (g k)) → TendstoUniformly g f atTop →
+      Tendsto (fun k => ∫ x, g k x * F x ∂ν) atTop (𝓝 (∫ x, f x * F x ∂ν)) := by
+  intro P ν F K f g hF hK hFK hf hg hgf
+  -- A continuous `φ` is bounded by some `B` on `K` and `F` vanishes off `K`, so
+  -- `|φ F| ≤ B |F|` everywhere and `φ F` is integrable.
+  have hint : ∀ φ : Eucl P → ℝ, Continuous φ → Integrable (fun x => φ x * F x) ν := by
+    intro φ hφ
+    obtain ⟨B, hB⟩ := hK.exists_bound_of_continuousOn hφ.continuousOn
+    refine (hF.norm.const_mul B).mono' (hφ.aestronglyMeasurable.mul hF.aestronglyMeasurable)
+      (ae_of_all _ fun x => ?_)
+    rw [norm_mul]
+    by_cases hx : x ∈ K
+    · exact mul_le_mul_of_nonneg_right (hB x hx) (norm_nonneg _)
+    · simp [hFK x hx]
+  -- With `I = ∫ |F| dν`, once `|g k - f| < ε / (I + 1)` everywhere,
+  -- `|∫ g k F - ∫ f F| ≤ ∫ |g k - f| |F| ≤ ε I / (I + 1) < ε`.
+  set I := ∫ x, ‖F x‖ ∂ν
+  have hI : 0 ≤ I := integral_nonneg fun x => norm_nonneg _
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hδ : 0 < ε / (I + 1) := div_pos hε (by linarith)
+  obtain ⟨k₀, hk₀⟩ := eventually_atTop.1 (Metric.tendstoUniformly_iff.1 hgf _ hδ)
+  refine ⟨k₀, fun k hk => ?_⟩
+  rw [dist_eq_norm, ← integral_sub (hint _ (hg k)) (hint _ hf)]
+  calc ‖∫ x, (g k x * F x - f x * F x) ∂ν‖ ≤ ∫ x, ε / (I + 1) * ‖F x‖ ∂ν := by
+        refine norm_integral_le_of_norm_le (hF.norm.const_mul _) (ae_of_all _ fun x => ?_)
+        rw [← sub_mul, norm_mul, ← dist_eq_norm, dist_comm]
+        exact mul_le_mul_of_nonneg_right (hk₀ k hk x).le (norm_nonneg _)
+    _ = ε / (I + 1) * I := integral_const_mul _ _
+    _ < ε := by
+        rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+        nlinarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
