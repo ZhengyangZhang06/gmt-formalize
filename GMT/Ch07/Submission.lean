@@ -1206,6 +1206,110 @@ theorem Submission.cmcdtsr_face_count_induction : ∀ (P m : ℕ), ∃ c : ℝ, 
       apply div_le_div_of_nonneg_right _ hρ.le
       exact pow_le_pow_right₀ hK1 (by omega)
 
+/-- **Simon Ch. 6, Lemma 5.4** (retraction onto the `n`-skeleton away from the dual skeleton,
+`n = m + 1 < P`).  `ψ := Ψ_P` is the composite of the glued radial face retractions
+(`cmcdtsr_face_retraction_family`).  If `u` lies in a closed unit cube `z + [0,1]^P` and
+`d(u) := dist(u, L*(a)) > 0`, then `cmcdtsr_dual_dist_count` gives the counting condition with
+`ρ = d(u)/√(m+2)`, so `cmcdtsr_face_count_induction` (`j = P`, `J = univ`) keeps `ψ(u)` in that
+cube (hence `|ψ(u) − u| ≤ √P`), puts it in the `n`-skeleton, and bounds
+`|ψ(y) − ψ(u)| ≤ (√(m+2)·c₀/d(u))|y − u|` for `y` in the cube near `u`; by `cmcdtsr_cube_cover`
+the finitely many cubes through `u` cover a neighbourhood of `u`.  If `d(x), d(y) ≥ r` and
+`|x − y| < r/2`, then `d > r/2` on `[x, y]` (`d` is 1-Lipschitz) and `cmcdtsr_segment_lipschitz`
+applies with `K = 2√(m+2)·c₀/r`; otherwise `|ψ(x) − ψ(y)| ≤ 2√P + |x − y| ≤ ((4√P + 1)/r)|x − y|`.
+So `c = 2√(m+2)·c₀ + 4√P + 1`. -/
+theorem Submission.cmcdt_skeleton_retraction : ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 < c ∧ ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ ψ : Euclid P → Euclid P, (∀ x : Euclid P, 0 < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, ψ x i = z) ∧ dist (ψ x) x ≤ Real.sqrt P) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → ∀ x y : Euclid P, r ≤ infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → r ≤ infDist y {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → dist (ψ x) (ψ y) ≤ c / r * dist x y := by
+  intro P m hmP
+  obtain ⟨c₀, hc₀, hind⟩ := Submission.cmcdtsr_face_count_induction P m
+  have hs : 0 < Real.sqrt (m + 2) := Real.sqrt_pos.2 (by positivity)
+  have hsc : 0 ≤ Real.sqrt (m + 2) * c₀ := by positivity
+  refine ⟨2 * Real.sqrt (m + 2) * c₀ + 4 * Real.sqrt P + 1, by positivity, fun a ha => ?_⟩
+  obtain ⟨Ψ, hΨ₀, hΨ⟩ := Submission.cmcdtsr_face_retraction_family P m a ha
+  set L : Set (Euclid P) :=
+    {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  -- the closed unit cube `z + [0,1]^P` is the `P`-face `F(z, univ)`
+  have hface : ∀ (z : Fin P → ℤ) (u : Euclid P), (∀ i, (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) →
+      ∀ i : Fin P, (i ∈ Finset.univ → (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) ∧
+        (i ∉ Finset.univ → u i = z i) :=
+    fun z u hu i => ⟨fun _ => hu i, fun h => absurd (Finset.mem_univ i) h⟩
+  -- a closed unit cube has diameter `√P`
+  have hdiam : ∀ (z : Fin P → ℤ) (u v : Euclid P), (∀ i, (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) →
+      (∀ i, (z i : ℝ) ≤ v i ∧ v i ≤ z i + 1) → dist u v ≤ Real.sqrt P := by
+    intro z u v hu hv
+    rw [EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, dist (u i) (v i) ^ 2 ≤ ∑ _i : Fin P, (1 : ℝ) := by
+          refine Finset.sum_le_sum fun i _ => ?_
+          have h1 : dist (u i) (v i) ≤ 1 := by
+            rw [Real.dist_eq, abs_le]
+            constructor <;> linarith [(hu i).1, (hu i).2, (hv i).1, (hv i).2]
+          nlinarith [dist_nonneg (x := u i) (y := v i)]
+      _ = P := by simp
+  -- step 5 on one cube: `face_induction` with `j = P`, `J = univ` and `ρ = d(u)/√(m+2)`
+  have hcube : ∀ (z : Fin P → ℤ) (u : Euclid P), (∀ i, (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) →
+      0 < infDist u L → (∀ i, (z i : ℝ) ≤ Ψ P u i ∧ Ψ P u i ≤ z i + 1) ∧
+        (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ k : ℤ, Ψ P u i = k) ∧
+        ∀ᶠ y : Euclid P in 𝓝 u, (∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1) →
+          dist (Ψ P y) (Ψ P u) ≤ Real.sqrt (m + 2) * c₀ / infDist u L * dist y u := by
+    intro z u hu hd
+    obtain ⟨hA, hB, hC⟩ := hind a ha Ψ hΨ₀ hΨ P (by omega) le_rfl z Finset.univ (by simp) u
+      (hface z u hu) _ (div_pos hd hs) (Submission.cmcdtsr_dual_dist_count P m a u z)
+    refine ⟨fun i => (hA i).1 (Finset.mem_univ i), hB, ?_⟩
+    filter_upwards [eventually_nhdsWithin_iff.1 hC] with y hy hyz
+    exact (hy (hface z y hyz)).trans_eq (by rw [div_div_eq_mul_div, mul_comm c₀])
+  -- the pointwise bound `D̄ψ(u) ≤ √(m+2)·c₀/d(u)`: the cubes through `u` cover a neighbourhood
+  have hloc : ∀ u : Euclid P, 0 < infDist u L → ∀ᶠ y : Euclid P in 𝓝 u,
+      dist (Ψ P y) (Ψ P u) ≤ Real.sqrt (m + 2) * c₀ / infDist u L * dist y u := by
+    intro u hu
+    obtain ⟨Z, hZu, hZ⟩ := Submission.cmcdtsr_cube_cover P u
+    have hall : ∀ᶠ y : Euclid P in 𝓝 u, ∀ z ∈ Z, (∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1) →
+        dist (Ψ P y) (Ψ P u) ≤ Real.sqrt (m + 2) * c₀ / infDist u L * dist y u :=
+      (eventually_all_finset Z).2 fun z hz => (hcube z u (hZu z hz) hu).2.2
+    filter_upwards [hall, hZ] with y hy hyZ
+    obtain ⟨z, hz, hyz⟩ := hyZ
+    exact hy z hz hyz
+  -- (i): `x` and `ψ(x)` lie in the cube `⌊x⌋ + [0,1]^P`
+  have hI : ∀ x : Euclid P, 0 < infDist x L →
+      (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, Ψ P x i = z) ∧
+        dist (Ψ P x) x ≤ Real.sqrt P := by
+    intro x hx
+    have hfl : ∀ i, ((⌊x i⌋ : ℤ) : ℝ) ≤ x i ∧ x i ≤ ⌊x i⌋ + 1 :=
+      fun i => ⟨Int.floor_le _, (Int.lt_floor_add_one _).le⟩
+    obtain ⟨hA, hB, -⟩ := hcube (fun i => ⌊x i⌋) x hfl hx
+    exact ⟨hB, hdiam (fun i => ⌊x i⌋) (Ψ P x) x hA hfl⟩
+  refine ⟨Ψ P, hI, fun r hr hr4 x y hx hy => ?_⟩
+  rcases lt_or_ge (dist x y) (r / 2) with hxy | hxy
+  · -- (6a): `d > r/2` on `[x, y]`, where `ψ` is locally `(2√(m+2)·c₀/r)`-Lipschitz
+    have hseg : dist (Ψ P y) (Ψ P x) ≤ 2 * Real.sqrt (m + 2) * c₀ / r * dist y x := by
+      refine Submission.cmcdtsr_segment_lipschitz P (Ψ P) x y (2 * Real.sqrt (m + 2) * c₀ / r)
+        (by positivity) fun t ht => ?_
+      have hxw : dist x (x + t • (y - x)) ≤ dist x y := by
+        calc dist x (x + t • (y - x)) = t * dist x y := by
+              rw [dist_comm, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+                abs_of_nonneg ht.1, dist_comm, dist_eq_norm]
+          _ ≤ dist x y := mul_le_of_le_one_left dist_nonneg ht.2
+      have hdw : r / 2 < infDist (x + t • (y - x)) L := by
+        linarith [infDist_le_infDist_add_dist (x := x) (y := x + t • (y - x)) (s := L)]
+      have hdw₀ : 0 < infDist (x + t • (y - x)) L := by linarith
+      filter_upwards [hloc (x + t • (y - x)) hdw₀] with w hw
+      refine hw.trans (mul_le_mul_of_nonneg_right ?_ dist_nonneg)
+      rw [div_le_div_iff₀ hdw₀ hr]
+      nlinarith [mul_le_mul_of_nonneg_left hdw.le hsc]
+    rw [dist_comm, dist_comm x]
+    refine hseg.trans (mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right ?_ hr.le)
+      dist_nonneg)
+    linarith [Real.sqrt_nonneg (P : ℝ)]
+  · -- (6b): `|ψ(x) − ψ(y)| ≤ |ψ(x) − x| + |x − y| + |y − ψ(y)| ≤ 2√P + |x − y|`
+    have h1 := (hI x (by linarith)).2
+    have h2 := (hI y (by linarith)).2
+    calc dist (Ψ P x) (Ψ P y) ≤ dist (Ψ P x) x + dist x y + dist y (Ψ P y) :=
+          dist_triangle4 _ _ _ _
+      _ ≤ 2 * Real.sqrt P + dist x y := by rw [dist_comm y]; linarith
+      _ ≤ (2 * Real.sqrt (m + 2) * c₀ + 4 * Real.sqrt P + 1) / r * dist x y := by
+        rw [div_mul_eq_mul_div, le_div_iff₀ hr]
+        nlinarith [mul_nonneg hsc (dist_nonneg (x := x) (y := y)),
+          mul_nonneg (Real.sqrt_nonneg (P : ℝ)) (by linarith : (0 : ℝ) ≤ 4 * dist x y - 2 * r),
+          mul_nonneg (dist_nonneg (x := x) (y := y)) (by linarith : (0 : ℝ) ≤ 1 - r)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
