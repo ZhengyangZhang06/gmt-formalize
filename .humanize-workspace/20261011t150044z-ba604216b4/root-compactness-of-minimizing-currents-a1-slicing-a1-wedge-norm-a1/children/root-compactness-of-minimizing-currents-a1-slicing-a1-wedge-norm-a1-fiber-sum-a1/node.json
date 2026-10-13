@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1.fiber_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Fiber-sum identity for deleting one entry of a tuple",
+  "statement": "Let k, P ∈ ℕ, i₀ ∈ Fin P and F : (Fin k → Fin P) → ℝ. Then Σ_{j : Fin (k+1) → Fin P} Σ_{i ∈ Fin (k+1)} a(j, i) = (k + 1)·Σ_{j' : Fin k → Fin P} F(j'). Here a(j, i) := F(Fin.removeNth i j) if j(i) = i₀ and a(j, i) := 0 otherwise, and Fin.removeNth i j : Fin k → Fin P is j with its i-th entry deleted.",
+  "lean_statement": "∀ (k P : ℕ) (i₀ : Fin P) (F : (Fin k → Fin P) → ℝ), ∑ j : Fin (k + 1) → Fin P, ∑ i : Fin (k + 1), (if j i = i₀ then F (i.removeNth j) else 0) = ((k : ℝ) + 1) * ∑ j' : Fin k → Fin P, F j'",
+  "lean_name": "cmcs_wn_removeNth_fiber_sum",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1-fiber-sum-a1-a1"
+}
