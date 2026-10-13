@@ -451,6 +451,83 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Simon 6.2.23 (setting of the push-forward `φ_#T`; step 1 of the parent proof): a `C¹`
+bijection `φ` of `ℝᴾ` with injective differential everywhere and `φ = id` off the compact set
+`K ⊆ U` is bi-Lipschitz, and `φ⁻¹(U) = U`.  `‖Dφ‖` is bounded (continuous on `K`, `Dφ = I` off
+`K`), so `φ` is Lipschitz by the mean value inequality; `φ` is proper (`φ⁻¹(C) ⊆ C ∪ K`), hence
+a homeomorphism; `φ⁻¹` is `C¹` by the inverse function theorem and equals `id` off `K`, so it is
+Lipschitz as well, i.e. `φ` is antilipschitz. -/
+theorem Submission.dpf_c1_compact_perturbation_bilipschitz : ∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ Λ : NNReal, LipschitzWith Λ φ ∧ AntilipschitzWith Λ φ ∧ φ ⁻¹' U = U := by
+  intro P U K φ hK hKU hφ hbij hinj hfix
+  -- Steps 1, 3 and 6: a `C¹` map `f` equal to the identity off `K` has bounded differential
+  -- (`Df = I` on the open set `ℝᴾ \ K`, `‖Df‖` bounded on the compact `K`), hence is Lipschitz
+  have hlip : ∀ f : Euclid P → Euclid P, ContDiff ℝ 1 f → (∀ x, x ∉ K → f x = x) →
+      ∃ C : NNReal, LipschitzWith C f := by
+    intro f hf hfixf
+    obtain ⟨c, hc⟩ :=
+      hK.exists_bound_of_continuousOn (hf.continuous_fderiv one_ne_zero).continuousOn
+    refine ⟨max 1 c.toNNReal,
+      lipschitzWith_of_nnnorm_fderiv_le (hf.differentiable one_ne_zero) fun x => ?_⟩
+    by_cases hx : x ∈ K
+    · refine le_trans ?_ (le_max_right _ _)
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact (hc x hx).trans c.le_coe_toNNReal
+    · have hev : f =ᶠ[𝓝 x] id := by
+        filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hx] with y hy using hfixf y hy
+      rw [hev.fderiv_eq, fderiv_id]
+      refine le_trans ?_ (le_max_left _ _)
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact ContinuousLinearMap.norm_id_le
+  -- Step 2: `φ⁻¹(U) = U`
+  have hpre : φ ⁻¹' U = U := by
+    ext x
+    rw [mem_preimage]
+    constructor
+    · intro hx
+      by_contra hxU
+      have hxK : x ∉ K := fun h => hxU (hKU h)
+      rw [hfix x hxK] at hx
+      exact hxU hx
+    · intro hx
+      by_cases hxK : x ∈ K
+      · apply hKU
+        by_contra hφK
+        have hφx : φ x = x := hbij.1 (hfix (φ x) hφK)
+        exact hφK (by rwa [hφx])
+      · rw [hfix x hxK]
+        exact hx
+  -- Step 4: `φ` is proper (`φ⁻¹(C) ⊆ C ∪ K`), hence closed, hence a homeomorphism
+  have hcont : Continuous φ := hφ.continuous
+  have hclosed : IsClosedMap φ := by
+    refine (isProperMap_iff_isCompact_preimage.2 ⟨hcont, fun C hC => ?_⟩).isClosedMap
+    refine (hC.union hK).of_isClosed_subset (hC.isClosed.preimage hcont) fun x hx => ?_
+    by_cases hxK : x ∈ K
+    · exact Or.inr hxK
+    · left
+      simpa [hfix x hxK] using hx
+  obtain ⟨e, rfl⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = φ :=
+    ⟨(Equiv.ofBijective φ hbij).toHomeomorphOfContinuousClosed hcont hclosed, rfl⟩
+  -- Step 5: `ψ = φ⁻¹` is `C¹`, each `Dφ(a)` being a linear isomorphism
+  have hψ : ContDiff ℝ 1 e.symm := by
+    refine e.contDiff_symm (f₀' := fun a => (LinearEquiv.ofInjectiveEndo
+      (fderiv ℝ e a : Euclid P →ₗ[ℝ] Euclid P) (hinj a)).toContinuousLinearEquiv)
+      (fun a => ?_) hφ
+    have h1 : ((LinearEquiv.ofInjectiveEndo (fderiv ℝ e a : Euclid P →ₗ[ℝ] Euclid P)
+        (hinj a)).toContinuousLinearEquiv : Euclid P →L[ℝ] Euclid P) = fderiv ℝ e a := by
+      ext v
+      rfl
+    rw [h1]
+    exact (hφ.differentiable one_ne_zero a).hasFDerivAt
+  -- Step 6: `ψ = id` off `K`
+  have hψfix : ∀ y, y ∉ K → e.symm y = y := fun y hy => e.symm_apply_eq.2 (hfix y hy).symm
+  obtain ⟨C₁, hC₁⟩ := hlip e hφ hfix
+  obtain ⟨C₂, hC₂⟩ := hlip e.symm hψ hψfix
+  -- Steps 7 and 8: `φ` is `C₂`-antilipschitz; take `Λ = max C₁ C₂`
+  refine ⟨max C₁ C₂, hC₁.weaken (le_max_left _ _), fun x y => ?_, hpre⟩
+  calc edist x y = edist (e.symm (e x)) (e.symm (e y)) := by simp
+    _ ≤ C₂ * edist (e x) (e y) := hC₂ _ _
+    _ ≤ max C₁ C₂ * edist (e x) (e y) := by gcongr; exact le_max_right _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
