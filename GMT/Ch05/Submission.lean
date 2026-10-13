@@ -458,6 +458,95 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **`C¹` limit on growing balls** (blow-up step of the Schauder estimate behind Simon 7.1).
+Let `R_k → ∞`, let `W_k` be `C¹` on `B̆_{R_k}(0)` with `W_k(0) = 0`, let `V : ℝⁿ → L(ℝⁿ; ℝ^ℓ)` be
+continuous, and let `DW_k → V` uniformly on every closed ball `B_r(0)`.  Then
+`W(z) = ∫₀¹ V(tz) z dt` is `C¹` on `ℝⁿ` with `DW = V`: for `k` large,
+`W_k(z) = ∫₀¹ DW_k(tz) z dt` by the fundamental theorem of calculus, so
+`|W_k(z) − W(z)| ≤ |z| sup_{B_{|z|}(0)} ‖DW_k − V‖ → 0`, and near each point the derivatives
+converge uniformly, so the theorem on uniform limits of derivatives gives `DW = V`. -/
+theorem dohr_eb_sch_bu_contDiff_of_fderiv_tendsto : ∀ (n ℓ : ℕ) (W : ℕ → Rn n → Rn ℓ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), Tendsto R atTop atTop → (∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k))) → (∀ k, W k 0 = 0) → Continuous V → (∀ r : ℝ, TendstoUniformlyOn (fun k => fderiv ℝ (W k)) V atTop (closedBall (0 : Rn n) r)) → ∃ W' : Rn n → Rn ℓ, ContDiff ℝ 1 W' ∧ ∀ z, fderiv ℝ W' z = V z := by
+  intro n ℓ W V R hR hW hW0 hVc hV
+  -- Step 1: for `k` large (`R k > r + 1`), `W k` has derivative `DW_k(y)` at every
+  -- `y ∈ B̆_{r+1}(0)`, and `DW_k` is continuous there.
+  have hstep1 : ∀ r : ℝ, ∀ᶠ k in atTop,
+      (∀ y ∈ ball (0 : Rn n) (r + 1), HasFDerivAt (W k) (fderiv ℝ (W k) y) y) ∧
+        ContinuousOn (fderiv ℝ (W k)) (ball (0 : Rn n) (r + 1)) := by
+    intro r
+    filter_upwards [hR.eventually_gt_atTop (r + 1)] with k hk
+    have hsub : ball (0 : Rn n) (r + 1) ⊆ ball 0 (R k) := ball_subset_ball hk.le
+    refine ⟨fun y hy => ?_, ((hW k).continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).mono hsub⟩
+    exact (((hW k).differentiableOn one_ne_zero).differentiableAt
+      (isOpen_ball.mem_nhds (hsub hy))).hasFDerivAt
+  -- Steps 2–3: for `k` large, `W_k(z) = ∫₀¹ DW_k(tz) z dt` (FTC, `W_k(0) = 0`), so with
+  -- `W(z) = ∫₀¹ V(tz) z dt` we get `|W_k(z) − W(z)| ≤ |z| sup_{B_{|z|}(0)} ‖DW_k − V‖ → 0`.
+  have hconv : ∀ z : Rn n,
+      Tendsto (fun k => W k z) atTop (𝓝 (∫ t in (0 : ℝ)..1, V (t • z) z)) := by
+    intro z
+    have hmem : ∀ t ∈ uIcc (0 : ℝ) 1, t • z ∈ closedBall (0 : Rn n) ‖z‖ := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+      exact mul_le_of_le_one_left (norm_nonneg z) ht.2
+    have hmem' : ∀ t ∈ uIcc (0 : ℝ) 1, t • z ∈ ball (0 : Rn n) (‖z‖ + 1) := fun t ht =>
+      closedBall_subset_ball (lt_add_one _) (hmem t ht)
+    have hVint : IntervalIntegrable (fun t : ℝ => V (t • z) z) volume 0 1 :=
+      ((hVc.comp (continuous_id.smul continuous_const)).clm_apply
+        continuous_const).intervalIntegrable 0 1
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    have hδ : 0 < ε / (‖z‖ + 1) := by positivity
+    obtain ⟨N, hN⟩ := eventually_atTop.1
+      ((hstep1 ‖z‖).and (Metric.tendstoUniformlyOn_iff.1 (hV ‖z‖) _ hδ))
+    refine ⟨N, fun k hk => ?_⟩
+    obtain ⟨⟨hd, hc⟩, hu⟩ := hN k hk
+    have hWint : IntervalIntegrable (fun t : ℝ => fderiv ℝ (W k) (t • z) z) volume 0 1 :=
+      ContinuousOn.intervalIntegrable ((hc.comp (continuous_id.smul continuous_const).continuousOn
+        hmem').clm_apply continuousOn_const)
+    have hftc : ∫ t in (0 : ℝ)..1, fderiv ℝ (W k) (t • z) z = W k z := by
+      have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := 0) (b := 1)
+        (f := fun t : ℝ => W k (t • z)) (f' := fun t => fderiv ℝ (W k) (t • z) z)
+        (fun t ht => by
+          have h2 := (hd _ (hmem' t ht)).comp_hasDerivAt t ((hasDerivAt_id t).smul_const z)
+          rw [one_smul] at h2
+          exact h2)
+        hWint
+      simpa [hW0] using h
+    rw [dist_eq_norm, ← hftc, ← intervalIntegral.integral_sub hWint hVint]
+    calc ‖∫ t in (0 : ℝ)..1, (fderiv ℝ (W k) (t • z) z - V (t • z) z)‖
+        ≤ ε / (‖z‖ + 1) * ‖z‖ * |1 - 0| := by
+          refine intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => ?_
+          have hlt := hu (t • z) (hmem t (uIoc_subset_uIcc ht))
+          rw [dist_eq_norm, norm_sub_rev] at hlt
+          exact ((fderiv ℝ (W k) (t • z) - V (t • z)).le_opNorm z).trans
+            (mul_le_mul_of_nonneg_right hlt.le (norm_nonneg z))
+      _ < ε := by
+          rw [sub_zero, abs_one, mul_one, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+          nlinarith
+  -- Step 4: near every `x`, `DW_k → V` uniformly and `W_k → W` pointwise, so `DW(x) = V(x)`.
+  have hderiv : ∀ x : Rn n, HasFDerivAt (fun z => ∫ t in (0 : ℝ)..1, V (t • z) z) (V x) x := by
+    intro x
+    have hnhds : ∀ᶠ y in 𝓝 x, y ∈ ball (0 : Rn n) (‖x‖ + 1) :=
+      isOpen_ball.mem_nhds (mem_ball_zero_iff.2 (lt_add_one _))
+    exact hasFDerivAt_of_tendstoUniformlyOnFilter (l := atTop) (f := W)
+      (f' := fun k => fderiv ℝ (W k)) (g' := V)
+      ((hV (‖x‖ + 1)).tendstoUniformlyOnFilter.mono_right
+        (le_principal_iff.2 (mem_of_superset hnhds ball_subset_closedBall)))
+      (((hstep1 ‖x‖).prod_mk hnhds).mono fun p hp => hp.1.1 p.2 hp.2)
+      (Eventually.of_forall hconv)
+  -- Step 5: `DW = V` is continuous, so `W` is `C¹`.
+  have hfd : fderiv ℝ (fun z => ∫ t in (0 : ℝ)..1, V (t • z) z) = V :=
+    funext fun x => (hderiv x).fderiv
+  refine ⟨fun z => ∫ t in (0 : ℝ)..1, V (t • z) z,
+    contDiff_one_iff_fderiv.2 ⟨fun x => (hderiv x).differentiableAt, ?_⟩,
+    fun z => (hderiv z).fderiv⟩
+  rw [hfd]
+  exact hVc
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
