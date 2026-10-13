@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1",
+  "depth": 3,
+  "title": "Simon 4.11 for Lipschitz f with a fixed cut-off, after σ ↓ 0 (parent Step 4(a)–(d))",
+  "statement": "For all P, m ∈ ℕ, every U ⊆ ℝ^P, every T ∈ D_{m+1}(U), every (μ, v) with IsMeasureRepresentation T μ v, μ(K′) < ∞ for every compact K′ ⊆ U and |v(x)(α)| ≤ covectorEuclideanNorm(α) for all x, α, every (μ₁, v₁) with IsMeasureRepresentation T μ₁ v₁, every (μ₂, v₂) with IsMeasureRepresentation ∂T μ₂ v₂, every f : ℝ^P → ℝ which is L-Lipschitz on U, every open W ⊆ U, every LW ≥ 0 with ‖Df(x)‖ ≤ LW for Lebesgue-a.e. x ∈ W, every ω ∈ D^m(U) with tsupport ω ⊆ W and covectorEuclideanNorm(ω(x)) ≤ 1 for all x, and every C^∞ χ : ℝ → ℝ and reals t, h, c with |χ| ≤ 1, |χ′| ≤ c and χ′(s) = 0 for s ∉ (t − h, t): ofReal|∫ χ(f(x))·v₂(x)(ω(x)) dμ₂ − ∫ χ(f(x))·v₁(x)(dω(x)) dμ₁| ≤ ofReal(c)·LW·μ(tsupport ω ∩ f⁻¹([t − h, t])).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) → ∀ (μ₁ : Measure (Eucl P)) (v₁ : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ₁ v₁ → ∀ (μ₂ : Measure (Eucl P)) (v₂ : Eucl P → NVector (Eucl P) m), IsMeasureRepresentation T.boundary μ₂ v₂ → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Eucl P) m) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x) ≤ 1) → ∀ (χ : ℝ → ℝ) (t h c : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → (∀ s, |χ s| ≤ 1) → (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) → ENNReal.ofReal |∫ x, χ (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ - ∫ x, χ (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤ ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩ f ⁻¹' Icc (t - h) t)",
+  "lean_name": "slicing_mb_cutoff_defect_bound",
+  "depends_on": [
+    "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+    "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1-a1"
+}
