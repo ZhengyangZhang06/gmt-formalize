@@ -501,6 +501,288 @@ determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard bas
 `Φ α = (α(e ∘ I))_{I : Fin n → Fin P}` is an injective linear map into the finite-dimensional
 space `ℝ^(Fin n → Fin P)`. -/
 theorem Submission.lcn_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+/-- **Simon Ch. 2, §5** (frame trace bound for a first-order perturbation of the identity): if
+`‖B‖ ≤ A`, `‖L − I − tB‖ ≤ η|t|` with `η ≤ 1`, and `τ₁, …, τₙ` is orthonormal in `ℝᴾ`, then
+(i) `|Σₐ τₐ · Bτₐ| ≤ nA` and (ii) `Σₐ |Lτₐ|² − n ≤ 2t Σₐ τₐ · Bτₐ + 2nη|t| + n(A + 1)²t²`.
+With `E = L − I − tB` and `wₐ = tBτₐ + Eτₐ` we have `Lτₐ = τₐ + wₐ`, `|wₐ| ≤ (A + 1)|t|` and
+`τₐ · Eτₐ ≤ η|t|`; expand `|τₐ + wₐ|² = 1 + 2t τₐ · Bτₐ + 2 τₐ · Eτₐ + |wₐ|²` and sum over `a`. -/
+theorem Submission.fvmb_perturbed_frame_sum_norm_sq_sub_le : ∀ (P n : ℕ) (A η t : ℝ) (B L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), η ≤ 1 → ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → Orthonormal ℝ τ → |∑ a, inner ℝ (τ a) (B (τ a))| ≤ (n : ℝ) * A ∧ ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ) ≤ 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
+  intro P n A η t B L τ hη hB hE hτ
+  -- `E = L − I − tB`, so `‖E‖ ≤ η|t|`
+  set E : Euclid P →L[ℝ] Euclid P := L - ContinuousLinearMap.id ℝ (Euclid P) - t • B with hEdef
+  have hτ1 : ∀ a, ‖τ a‖ = 1 := hτ.1
+  -- unit vectors: `|Bτₐ| ≤ A`, `|Eτₐ| ≤ η|t|` and `|τₐ · Bτₐ| ≤ A`
+  have hBa : ∀ a, ‖B (τ a)‖ ≤ A := fun a =>
+    calc ‖B (τ a)‖ ≤ ‖B‖ * ‖τ a‖ := B.le_opNorm _
+      _ = ‖B‖ := by rw [hτ1 a, mul_one]
+      _ ≤ A := hB
+  have hEa : ∀ a, ‖E (τ a)‖ ≤ η * |t| := fun a =>
+    calc ‖E (τ a)‖ ≤ ‖E‖ * ‖τ a‖ := E.le_opNorm _
+      _ = ‖E‖ := by rw [hτ1 a, mul_one]
+      _ ≤ η * |t| := hE
+  have hDa : ∀ a, |inner ℝ (τ a) (B (τ a))| ≤ A := fun a =>
+    calc |inner ℝ (τ a) (B (τ a))| ≤ ‖τ a‖ * ‖B (τ a)‖ := abs_real_inner_le_norm _ _
+      _ = ‖B (τ a)‖ := by rw [hτ1 a, one_mul]
+      _ ≤ A := hBa a
+  refine ⟨?_, ?_⟩
+  · calc |∑ a, inner ℝ (τ a) (B (τ a))| ≤ ∑ a, |inner ℝ (τ a) (B (τ a))| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _a : Fin n, A := Finset.sum_le_sum fun a _ => hDa a
+      _ = (n : ℝ) * A := by rw [Finset.sum_const, Finset.card_fin, nsmul_eq_mul]
+  · -- one column: `|Lτₐ|² = |τₐ + wₐ|²` with `wₐ = tBτₐ + Eτₐ`
+    have hcol : ∀ a, ‖L (τ a)‖ ^ 2 ≤
+        1 + 2 * t * inner ℝ (τ a) (B (τ a)) + 2 * η * |t| + (A + 1) ^ 2 * t ^ 2 := by
+      intro a
+      have hL : L (τ a) = τ a + (t • B (τ a) + E (τ a)) := by
+        simp only [hEdef, sub_apply, smul_apply, ContinuousLinearMap.id_apply]
+        abel
+      have hw : ‖t • B (τ a) + E (τ a)‖ ≤ (A + 1) * |t| :=
+        calc ‖t • B (τ a) + E (τ a)‖ ≤ ‖t • B (τ a)‖ + ‖E (τ a)‖ := norm_add_le _ _
+          _ = |t| * ‖B (τ a)‖ + ‖E (τ a)‖ := by rw [norm_smul, Real.norm_eq_abs]
+          _ ≤ |t| * A + η * |t| :=
+              add_le_add (mul_le_mul_of_nonneg_left (hBa a) (abs_nonneg t)) (hEa a)
+          _ ≤ |t| * A + 1 * |t| := by gcongr
+          _ = (A + 1) * |t| := by ring
+      have hwsq : ‖t • B (τ a) + E (τ a)‖ ^ 2 ≤ (A + 1) ^ 2 * t ^ 2 :=
+        calc ‖t • B (τ a) + E (τ a)‖ ^ 2 ≤ ((A + 1) * |t|) ^ 2 :=
+              pow_le_pow_left₀ (norm_nonneg _) hw 2
+          _ = (A + 1) ^ 2 * t ^ 2 := by rw [mul_pow, sq_abs]
+      have hcross : inner ℝ (τ a) (E (τ a)) ≤ η * |t| :=
+        calc inner ℝ (τ a) (E (τ a)) ≤ ‖τ a‖ * ‖E (τ a)‖ := real_inner_le_norm _ _
+          _ = ‖E (τ a)‖ := by rw [hτ1 a, one_mul]
+          _ ≤ η * |t| := hEa a
+      rw [hL, norm_add_sq_real, hτ1 a, inner_add_right, real_inner_smul_right]
+      linarith
+    calc ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ)
+        ≤ ∑ a, (1 + 2 * t * inner ℝ (τ a) (B (τ a)) + 2 * η * |t| + (A + 1) ^ 2 * t ^ 2) -
+            (n : ℝ) := by
+          gcongr with a
+          exact hcol a
+      _ = 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| +
+            (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
+          rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib,
+            Finset.sum_const, Finset.sum_const, Finset.sum_const, ← Finset.mul_sum,
+            Finset.card_fin, nsmul_eq_mul, nsmul_eq_mul, nsmul_eq_mul]
+          ring
+/-- **Simon Ch. 2, §5** (the expansion `J_t = 1 + t div_M X + O(t²)` behind the first variation
+formula 5.3), scalar one-sided step: given `n`, `A ≥ 0`, `ε > 0` there are `0 < η ≤ 1` and
+`δ > 0` such that `|t| < δ`, `|D| ≤ nA` and `g ≤ exp(2tD + 2nη|t| + n(A + 1)²t²)` imply
+`√g ≤ 1 + tD + ε|t|`.  With `σ = tD + nη|t| + n(A + 1)²t²/2` the hypothesis gives
+`√g ≤ √(e^σ e^σ) = e^σ`; `|σ| ≤ c₀|t| ≤ 1` for `c₀ = (n + 1)(A + 2 + (A + 1)²)`, so
+`e^σ ≤ 1 + σ + σ² ≤ 1 + tD + nη|t| + Kt²` with `K = n(A + 1)²/2 + c₀²`.  Take
+`η = min(1, ε/(2n + 1))` (so `nη ≤ ε/2`) and `δ = min(1, 1/c₀, ε/(2K))` (so `Kt² ≤ (ε/2)|t|`). -/
+theorem Submission.fvmb_sqrt_le_first_order_of_le_exp : ∀ (n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t D g : ℝ, |t| < δ → |D| ≤ (n : ℝ) * A → g ≤ Real.exp (2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2) → Real.sqrt g ≤ 1 + t * D + ε * |t| := by
+  intro n A ε hA hε
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  -- Step 1: the constants `c₀`, `K`, `η`, `δ`
+  obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, c₀ = ((n : ℝ) + 1) * (A + 2 + (A + 1) ^ 2) := ⟨_, rfl⟩
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = (n : ℝ) * (A + 1) ^ 2 / 2 + c₀ ^ 2 := ⟨_, rfl⟩
+  have hc₀pos : 0 < c₀ := by rw [hc₀]; positivity
+  have hKpos : 0 < K := by
+    rw [hK]; exact add_pos_of_nonneg_of_pos (by positivity) (pow_pos hc₀pos 2)
+  obtain ⟨η, hη⟩ : ∃ η : ℝ, η = min 1 (ε / (2 * (n : ℝ) + 1)) := ⟨_, rfl⟩
+  have h2n : (0 : ℝ) < 2 * (n : ℝ) + 1 := by positivity
+  have hηpos : 0 < η := by rw [hη]; exact lt_min one_pos (div_pos hε h2n)
+  have hη1 : η ≤ 1 := by rw [hη]; exact min_le_left _ _
+  -- Step 2: `nη ≤ ε/2`
+  have hnη : (n : ℝ) * η ≤ ε / 2 := by
+    have h1 : η * (2 * (n : ℝ) + 1) ≤ ε := by
+      rw [← le_div_iff₀ h2n, hη]; exact min_le_right _ _
+    linarith
+  refine ⟨η, hηpos, hη1, min 1 (min (1 / c₀) (ε / (2 * K))),
+    lt_min one_pos (lt_min (one_div_pos.mpr hc₀pos) (div_pos hε (mul_pos two_pos hKpos))), ?_⟩
+  intro t D g ht hD hg
+  -- Step 3: `|t| ≤ 1`, `|t| ≤ 1/c₀`, `|t| ≤ ε/(2K)`, `t² ≤ |t|`
+  have ht1 : |t| ≤ 1 := (ht.trans_le (min_le_left _ _)).le
+  have htc : |t| ≤ 1 / c₀ := (ht.trans_le ((min_le_right _ _).trans (min_le_left _ _))).le
+  have htK : |t| ≤ ε / (2 * K) := (ht.trans_le ((min_le_right _ _).trans (min_le_right _ _))).le
+  have hta : 0 ≤ |t| := abs_nonneg t
+  have ht2 : t ^ 2 ≤ |t| := by
+    rw [← sq_abs]; nlinarith [mul_nonneg hta (sub_nonneg.mpr ht1)]
+  -- Step 4: `√g ≤ exp σ`
+  obtain ⟨σ, hσ⟩ : ∃ σ : ℝ, σ = t * D + (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2 :=
+    ⟨_, rfl⟩
+  have hsqrt : Real.sqrt g ≤ Real.exp σ := by
+    have h2σ : 2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 = σ + σ := by
+      rw [hσ]; ring
+    rw [h2σ, Real.exp_add] at hg
+    calc Real.sqrt g ≤ Real.sqrt (Real.exp σ * Real.exp σ) := Real.sqrt_le_sqrt hg
+      _ = Real.exp σ := Real.sqrt_mul_self (Real.exp_pos σ).le
+  -- Step 5: `|σ| ≤ c₀|t|`
+  have hσabs : |σ| ≤ c₀ * |t| := by
+    have h1 : |t * D| ≤ |t| * ((n : ℝ) * A) := by
+      rw [abs_mul]; exact mul_le_mul_of_nonneg_left hD hta
+    have h2 : abs ((n : ℝ) * η * |t|) ≤ (n : ℝ) * |t| := by
+      rw [abs_of_nonneg (mul_nonneg (mul_nonneg hn hηpos.le) hta)]
+      exact mul_le_mul_of_nonneg_right (mul_le_of_le_one_right hn hη1) hta
+    have h3 : |(n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2| ≤ (n : ℝ) * (A + 1) ^ 2 * |t| := by
+      have hc : (0 : ℝ) ≤ (n : ℝ) * (A + 1) ^ 2 := by positivity
+      have hc2 : (0 : ℝ) ≤ (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by positivity
+      rw [abs_of_nonneg (by positivity)]
+      calc (n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2 ≤ (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by linarith
+        _ ≤ (n : ℝ) * (A + 1) ^ 2 * |t| := mul_le_mul_of_nonneg_left ht2 hc
+    have htri : |σ| ≤ |t * D| + abs ((n : ℝ) * η * |t|) + |(n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2| := by
+      rw [hσ]
+      exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
+    have hcoef : (n : ℝ) * (A + 1 + (A + 1) ^ 2) ≤ c₀ := by
+      rw [hc₀]; nlinarith [sq_nonneg (A + 1)]
+    calc |σ| ≤ |t| * ((n : ℝ) * A) + (n : ℝ) * |t| + (n : ℝ) * (A + 1) ^ 2 * |t| := by linarith
+      _ = (n : ℝ) * (A + 1 + (A + 1) ^ 2) * |t| := by ring
+      _ ≤ c₀ * |t| := mul_le_mul_of_nonneg_right hcoef hta
+  -- Step 6: `|σ| ≤ 1` and `σ² ≤ c₀²t²`
+  have hσ1 : |σ| ≤ 1 := by
+    calc |σ| ≤ c₀ * |t| := hσabs
+      _ ≤ c₀ * (1 / c₀) := mul_le_mul_of_nonneg_left htc hc₀pos.le
+      _ = 1 := mul_one_div_cancel hc₀pos.ne'
+  have hσsq : σ ^ 2 ≤ c₀ ^ 2 * t ^ 2 := by
+    have h := pow_le_pow_left₀ (abs_nonneg σ) hσabs 2
+    rwa [sq_abs, mul_pow, sq_abs] at h
+  -- Step 7: `exp σ ≤ 1 + σ + σ²`
+  have hexp : Real.exp σ ≤ 1 + σ + σ ^ 2 := by
+    have h := (le_abs_self _).trans (Real.abs_exp_sub_one_sub_id_le hσ1)
+    linarith
+  -- Step 8: the error terms `nη|t| ≤ (ε/2)|t|` and `Kt² ≤ (ε/2)|t|`
+  have hnηt : (n : ℝ) * η * |t| ≤ ε / 2 * |t| := mul_le_mul_of_nonneg_right hnη hta
+  have hKt : K * t ^ 2 ≤ ε / 2 * |t| := by
+    have hK' : K * |t| ≤ ε / 2 := by
+      calc K * |t| ≤ K * (ε / (2 * K)) := mul_le_mul_of_nonneg_left htK hKpos.le
+        _ = ε / 2 := by field_simp
+    calc K * t ^ 2 = (K * |t|) * |t| := by rw [← sq_abs t]; ring
+      _ ≤ ε / 2 * |t| := mul_le_mul_of_nonneg_right hK' hta
+  have hKt2 : K * t ^ 2 = (n : ℝ) * (A + 1) ^ 2 * t ^ 2 / 2 + c₀ ^ 2 * t ^ 2 := by
+    rw [hK]; ring
+  -- Step 9: `√g ≤ exp σ ≤ 1 + σ + σ² ≤ 1 + tD + nη|t| + Kt² ≤ 1 + tD + ε|t|`
+  linarith
+/-- **Gram determinant bound** (Simon Ch. 4, 1.9 and Ch. 2, §5, where the Jacobian is the square
+root of such a Gram determinant): `det(vᵢ · vⱼ) ≤ exp(Σₐ |vₐ|² − n)` for `v₁, …, vₙ ∈ ℝᴾ`.
+With `V eₐ = vₐ` on `ℝⁿ`, the Gram matrix is the matrix of `S = V*V` in the standard basis, so
+`det G = Πᵢ λᵢ` and `Σₐ |vₐ|² = trace S = Σᵢ λᵢ` for the eigenvalues `λᵢ = |V uᵢ|² ≥ 0` of `S`;
+multiply `λᵢ ≤ e^{λᵢ − 1}` (`s + 1 ≤ eˢ`) over `i`. -/
+theorem Submission.fvmb_gram_det_le_exp_sum_norm_sq_sub : ∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ Real.exp (∑ a, ‖v a‖ ^ 2 - (n : ℝ)) := by
+  intro P n v
+  classical
+  -- `V eₐ = vₐ` and the symmetric operator `S = V*V` on `ℝⁿ`
+  let b := EuclideanSpace.basisFun (Fin n) ℝ
+  let V : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] Euclid P := b.toBasis.constr ℝ v
+  let S := LinearMap.adjoint V ∘ₗ V
+  have hS : S.IsSymmetric := LinearMap.isSymmetric_adjoint_comp_self V
+  have hn : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n := finrank_euclideanSpace_fin
+  have hVe : ∀ a, V (b a) = v a := by
+    intro a
+    have := b.toBasis.constr_basis ℝ v a
+    rw [OrthonormalBasis.coe_toBasis] at this
+    exact this
+  have hSinner : ∀ x y, inner ℝ x (S y) = inner ℝ (V x) (V y) := by
+    intro x y
+    simp [S, LinearMap.adjoint_inner_right]
+  -- the matrix of `S` is the Gram matrix, and `trace S = Σₐ |vₐ|²`
+  have hmat :
+      LinearMap.toMatrix b.toBasis b.toBasis S = Matrix.of fun i j => inner ℝ (v i) (v j) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+      OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, hSinner, hVe, hVe]
+    rfl
+  have hdet : LinearMap.det S = Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) := by
+    rw [← LinearMap.det_toMatrix b.toBasis, hmat]
+  have htr : LinearMap.trace ℝ _ S = ∑ a, ‖v a‖ ^ 2 := by
+    rw [LinearMap.trace_eq_sum_inner S b]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [hSinner, hVe, real_inner_self_eq_norm_sq]
+  -- spectral theorem: `det S = Πᵢ λᵢ`, `trace S = Σᵢ λᵢ`, with `λᵢ = ⟪uᵢ, S uᵢ⟫ = |V uᵢ|² ≥ 0`
+  rw [← hdet, hS.det_eq_prod_eigenvalues hn, ← htr, hS.trace_eq_sum_eigenvalues hn]
+  have hnonneg : ∀ i, 0 ≤ hS.eigenvalues hn i := by
+    intro i
+    have h1 := hS.apply_eigenvectorBasis hn i
+    have hu : ‖hS.eigenvectorBasis hn i‖ = 1 := (hS.eigenvectorBasis hn).orthonormal.1 i
+    have h2 : inner ℝ (hS.eigenvectorBasis hn i) (S (hS.eigenvectorBasis hn i)) =
+        hS.eigenvalues hn i := by
+      rw [h1, inner_smul_right, real_inner_self_eq_norm_sq, hu]
+      simp
+    rw [← h2, hSinner]
+    exact real_inner_self_nonneg
+  -- `0 ≤ λᵢ ≤ e^{λᵢ − 1}`, multiplied over `i`
+  simp only [RCLike.ofReal_real_eq_id, id]
+  calc ∏ i, hS.eigenvalues hn i ≤ ∏ i, Real.exp (hS.eigenvalues hn i - 1) := by
+        refine Finset.prod_le_prod₀ (fun i _ => hnonneg i) (fun i _ => ?_)
+        have := Real.add_one_le_exp (hS.eigenvalues hn i - 1)
+        linarith
+    _ = Real.exp (∑ i, hS.eigenvalues hn i - n) := by
+        rw [← Real.exp_sum, Finset.sum_sub_distrib]
+        simp
+
+/-- **First-order Jacobian bound** (Simon Ch. 2, §5, where `J_t = 1 + t div_M X + O(t²)` gives the
+first variation formula 5.3; here only `‖L − I − tB‖ ≤ η|t|` is assumed): for `|t| < δ`,
+`‖B‖ ≤ A` and orthonormal `τ₁, …, τₙ`, `(det(Lτᵢ · Lτⱼ))^{1/2} ≤ 1 + t Σₐ τₐ · Bτₐ + ε|t|`.
+With `D = Σₐ τₐ · Bτₐ`, the frame bound gives `|D| ≤ nA` and
+`Σₐ |Lτₐ|² − n ≤ 2tD + 2nη|t| + n(A + 1)²t²`, so the Gram determinant bound gives
+`det G ≤ exp(2tD + 2nη|t| + n(A + 1)²t²)`; the scalar bound (which supplies `0 < η ≤ 1` and
+`δ`) turns this into the claim. -/
+theorem Submission.fvmb_orthonormal_gram_sqrt_det_le_first_order : ∀ (P n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ B L : Euclid P →L[ℝ] Euclid P, ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (L (τ i)) (L (τ j)))) ≤ 1 + t * ∑ a, inner ℝ (τ a) (B (τ a)) + ε * |t| := by
+  intro P n A ε hA hε
+  -- `0 < η ≤ 1` and `δ` depend only on `n`, `A` and `ε`
+  obtain ⟨η, hη, hη1, δ, hδ, hsqrt⟩ := Submission.fvmb_sqrt_le_first_order_of_le_exp n A ε hA hε
+  refine ⟨η, hη, δ, hδ, fun t ht B L hB hL τ hτ => ?_⟩
+  -- `|D| ≤ nA` and `Σₐ |Lτₐ|² − n ≤ 2tD + 2nη|t| + n(A + 1)²t²`
+  obtain ⟨hD, htr⟩ :=
+    Submission.fvmb_perturbed_frame_sum_norm_sq_sub_le P n A η t B L τ hη1 hB hL hτ
+  refine hsqrt t _ _ ht hD ?_
+  -- `det G ≤ exp(Σₐ |Lτₐ|² − n) ≤ exp(2tD + 2nη|t| + n(A + 1)²t²)`
+  exact (Submission.fvmb_gram_det_le_exp_sum_norm_sq_sub P n fun a => L (τ a)).trans
+    (Real.exp_le_exp.mpr htr)
+/-- **Simon Ch. 2, (4.18)–(4.20)** (tangential divergence in an orthonormal frame): if `τ₁, …, τₙ`
+is an orthonormal basis of `Q`, then `trace(p_Q ∘ B) = Σₐ τₐ · Bτₐ`.  The orthogonality
+characterization of the projection gives `p_Q z = Σₐ (τₐ · z) τₐ`, so `p_Q ∘ B` is the sum of the
+rank-one maps `z ↦ (τₐ · Bz) τₐ`, and the trace of `z ↦ ℓ(z) v` is `ℓ(v)`. -/
+theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a)) := by
+  intro P n Q τ B hτ hQ
+  -- `p_Q z = Σₐ ⟪τₐ, z⟫ τₐ`: the right side lies in `Q` and `z` minus it is orthogonal to `Q`
+  have hproj : ∀ z : Euclid P, Q.starProjection z = ∑ a, inner ℝ (τ a) z • τ a := by
+    intro z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · rw [← hQ]
+      exact Submodule.sum_mem _ fun a _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
+    · intro q hq
+      rw [← hQ] at hq
+      induction hq using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨b, rfl⟩ := hx
+        rw [inner_sub_left, hτ.inner_left_fintype, real_inner_comm]
+        simp
+      | zero => simp
+      | add x y _ _ hx hy => rw [inner_add_right, hx, hy, add_zero]
+      | smul c x _ hx => rw [inner_smul_right, hx, mul_zero]
+  -- `p_Q ∘ B = Σₐ (z ↦ ⟪τₐ, Bz⟫ τₐ)`
+  have hdecomp : Q.starProjection.toLinearMap ∘ₗ B.toLinearMap =
+      ∑ a, ((innerₛₗ ℝ (τ a)) ∘ₗ B.toLinearMap).smulRight (τ a) := by
+    ext z
+    simp [hproj]
+  -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
+  rw [hdecomp, map_sum]
+  simp
+/-- **Simon 6.3.1, Ch. 3 Remark 1.5(1)**: for `Hⁿ`-a.e. `x ∈ M`, the orientation `ξ(x)` of an
+integer multiplicity triple `(M, θ, ξ)` orients the chosen approximate tangent plane `TₓM`.
+`R.orients` gives, a.e. on `M`, an approximate tangent plane `Q` at `x` oriented by `ξ(x)`; the
+chosen witness `approxTangentPlane n M x` is then `Q`, approximate tangent planes being unique. -/
+theorem Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), IsUnitOrientationOf (R.orient x) (approxTangentPlane n R.carrier x) := by
+  intro P n U R
+  filter_upwards [R.orients] with x hx
+  obtain ⟨Q, hQ, hξ⟩ := hx
+  -- the chosen witness of `∃ Q', HasApproximateTangentSpaceAt n M x Q'` is `Q`
+  have h : ∃ Q', HasApproximateTangentSpaceAt n R.carrier x Q' := ⟨Q, hQ⟩
+  have hT : approxTangentPlane n R.carrier x = Q := by
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec.unique hQ
+  rw [hT]
+  exact hξ
+/-- **Simon 6.1.15, 6.3.4–3.5** (Euclidean coefficient norm versus Gram determinants):
+(1) `|α(v₁, …, vₙ)| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}` for every `n`-covector `α` on `ℝᴾ`;
+(2) every orthonormal `τ₁, …, τₙ` admits an `n`-covector `α` with `|α|_E ≤ 1` and `α(τ) = 1`.
+Expand `α(v) = Σ_I α(e_I) det V_I` over strictly increasing `I` (multilinearity, alternation,
+Leibniz).  For the determinant covector `u ↦ det(⟨uₐ, v_b⟩)` this is Cauchy–Binet,
+`det(⟨vᵢ, vⱼ⟩) = Σ_I (det V_I)²`; then (1) is Cauchy–Schwarz over the `I`, and (2) holds for the
+determinant covector of `τ`. -/
+theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1 := by
   intro P n
   -- the standard basis `e` of `ℝᴾ`
   let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
@@ -3686,6 +3968,26 @@ theorem Submission.dpf_imrep_bilipschitz_image_rep : ∀ (P n : ℕ) (U : Set (E
     harea (Submission.dpfir_imrep_pairing_continuous_integrable P n U R' w hwcont hwc
       hwU).aestronglyMeasurable
     (Submission.dpfir_imrep_pairing_continuous_integrable P n U R β hβc hβcs hβU) hJh).2
+    · exact Real.sum_mul_le_sqrt_mul_sqrt Finset.univ a d
+  · -- (2): the determinant covector `β` of `τ` has `β(τ) = det 1 = 1` and
+    -- `|β|_E² = Σ_I β(e_I)² = det(⟨τᵢ, τⱼ⟩) = 1`
+    obtain ⟨β, hβ⟩ := hdet τ
+    have hone : (Matrix.of fun a b => inner ℝ (τ a) (τ b) : Matrix (Fin n) (Fin n) ℝ) = 1 := by
+      ext a b
+      rw [Matrix.of_apply, Matrix.one_apply]
+      exact (orthonormal_iff_ite.mp hτ) a b
+    have hβτ : β τ = 1 := by rw [hβ, hone, Matrix.det_one]
+    refine ⟨β, ?_, hβτ⟩
+    have hsum : (∑ I : Fin n → Fin P, if StrictMono I then (β (fun i => e (I i))) ^ 2 else 0) = 1 := by
+      have := hcb τ
+      rw [hone, Matrix.det_one] at this
+      rw [this]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [hβ]
+      · rfl
+    unfold covectorEuclideanNorm
+    rw [← he, hsum, Real.sqrt_one]
 /-- **The approximate tangent projection of an integer multiplicity triple is measurable**
 (Simon Ch. 3, 1.4 and 1.5(1); Ch. 6, 3.1).  For `R = (M, θ, ξ)`, `x ↦ p_{TₓM}` is
 `Hⁿ⌞M`-a.e. strongly measurable.  By uniqueness of approximate tangent planes, `TₓM` is a.e. the
@@ -5033,6 +5335,183 @@ theorem Submission.tangential_c1_deformation_exists : ∀ (P d : ℕ) (U N : Set
     obtain ⟨hGt, h2⟩ := h (show dist t 0 < δ by rwa [Real.dist_eq, sub_zero])
     simp only [hGt, ↓reduceIte]
     exact h2 x
+
+/-- **First variation bound for the mass of a deformation** (Simon Ch. 4, 2.2; Ch. 2, 5.2–5.3).
+Let `R = (M, θ, ξ)`, `μ_V(W) = ∫_{M ∩ W} θ dHⁿ < ∞`, `X ∈ C¹_c` with `spt X ⊆ W`, and let `φₜ` be
+`C¹` maps with `φₜ = id` off `spt X` and `‖Dφₜ − I − t DX‖ ≤ ε|t|` for small `|t|`.  If `S` acts by
+`S(ω) = ∫_M θ ⟨ω(φₜx) ∘ Dφₜ(x), ξ(x)⟩ dHⁿ`, then `M_W(S) ≤ μ_V(W) + t δV(X) + ε|t|` for small `|t|`.
+At a.e. `x ∈ M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` and
+`div_M X(x) = Σₐ τₐ · DX(x)τₐ`, so on `W` the integrand is at most
+`θ |ω|_E det(Dφₜτᵢ · Dφₜτⱼ)^{1/2} ≤ θ (1 + t div_M X + ε'|t|)`, `ε' = ε/(μ_V(W) + 1)`; off `W`,
+`φₜ x = x ∉ spt ω` and the integrand vanishes.  Integrate (a non-integrable integrand has integral
+`0` and the bound is nonnegative) and take the supremum over admissible `ω`. -/
+theorem Submission.pushforward_action_massOn_le_first_variation : ∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P) (φ : ℝ → Euclid P → Euclid P), IsOpen W → R.measure W ≠ ∞ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → (∀ t, ContDiff ℝ 1 (φ t)) → (∀ t x, x ∉ tsupport X → φ t x = x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t|) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ S : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap (fderiv ℝ (φ t) x)) ∂μHE[n]) → S.massOn W ≤ ENNReal.ofReal ((R.measure W).toReal + t * R.firstVariation X + ε * |t|) := by
+  intro P n U W R X φ hWo hRW hX hXc hXW _hφ hφid hφD ε hε
+  classical
+  have hDXc : Continuous (fderiv ℝ X) := hX.continuous_fderiv one_ne_zero
+  -- `div_M X = trace(p_{TₓM} ∘ DX)` is a.e. strongly measurable: `p_{TₓM}` is (TM) and the trace
+  -- of a composition is continuous
+  have hdvm : AEStronglyMeasurable (tangentialDivergence n R.carrier X)
+      (μHE[n].restrict R.carrier) := by
+    have h1 : Continuous fun L : Euclid P →L[ℝ] Euclid P =>
+        LinearMap.trace ℝ (Euclid P) L.toLinearMap :=
+      ((LinearMap.trace ℝ (Euclid P)).comp
+        (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional
+    have h2 : Continuous fun pL : (Euclid P →L[ℝ] Euclid P) × (Euclid P →L[ℝ] Euclid P) =>
+        LinearMap.trace ℝ (Euclid P) (pL.1.comp pL.2).toLinearMap :=
+      h1.comp (continuous_fst.clm_comp continuous_snd)
+    have h3 : Continuous fun pL : (Euclid P →L[ℝ] Euclid P) × (Euclid P →L[ℝ] Euclid P) =>
+        LinearMap.trace ℝ (Euclid P) (pL.1.toLinearMap ∘ₗ pL.2.toLinearMap) := by
+      simpa only [ContinuousLinearMap.toLinearMap_comp] using h2
+    have hq := (Submission.imrep_approxTangent_starProjection_aesm P n U R).prodMk
+      hDXc.aestronglyMeasurable
+    have hr := h3.comp_aestronglyMeasurable hq
+    exact hr
+  set μ : Measure (Euclid P) := μHE[n].restrict R.carrier
+  set θ : Euclid P → ℝ := fun x => (R.mult x : ℝ) with hθ
+  set dv : Euclid P → ℝ := tangentialDivergence n R.carrier X
+  set m : ℝ := (R.measure W).toReal with hm
+  have hθ0 : ∀ x, 0 ≤ θ x := fun x => Nat.cast_nonneg _
+  have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
+  -- `A` bounds `‖DX‖`: `DX` is continuous with compact support
+  obtain ⟨C, hC⟩ := hDXc.bounded_above_of_compact_support (hXc.fderiv ℝ)
+  set A : ℝ := max C 0
+  have hA0 : 0 ≤ A := le_max_right _ _
+  have hDXA : ∀ x, ‖fderiv ℝ X x‖ ≤ A := fun x => (hC x).trans (le_max_left _ _)
+  -- constants: `ε' = ε / (m + 1)`; `η, δ₁` from the Jacobian bound at `(A, ε')`; `δ₂` from the
+  -- hypothesis on `Dφₜ` at `η`
+  set ε' : ℝ := ε / (m + 1) with hε'
+  have hε'0 : 0 < ε' := div_pos hε (by linarith)
+  obtain ⟨η, hη, δ₁, hδ₁, hJ⟩ :=
+    Submission.fvmb_orthonormal_gram_sqrt_det_le_first_order P n A ε' hA0 hε'0
+  obtain ⟨δ₂, hδ₂, hD⟩ := hφD η hη
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun t ht S hS => ?_⟩
+  have ht₁ : |t| < δ₁ := ht.trans_le (min_le_left _ _)
+  have ht₂ : |t| < δ₂ := ht.trans_le (min_le_right _ _)
+  -- `θ 1_W` is integrable with integral `m`: `∫_{M ∩ W} θ dHⁿ = μ_V(W) < ∞`
+  have hWm : MeasurableSet W := hWo.measurableSet
+  have hθm : Measurable θ :=
+    (measurable_from_nat (f := (Nat.cast : ℕ → ℝ))).comp R.measurable_mult
+  have hRW' : R.measure W = ∫⁻ x in W, (R.mult x : ℝ≥0∞) ∂μ := withDensity_apply _ hWm
+  have hθW : Integrable (W.indicator θ) μ := by
+    rw [integrable_indicator_iff hWm]
+    have := integrable_toReal_of_lintegral_ne_top (μ := μ.restrict W)
+      (f := fun x => (R.mult x : ℝ≥0∞))
+      ((measurable_from_nat (f := (Nat.cast : ℕ → ℝ≥0∞))).comp R.measurable_mult).aemeasurable
+      (hRW' ▸ hRW)
+    simpa [IntegrableOn, hθ] using this
+  have hmW : ∫ x, W.indicator θ x ∂μ = m := by
+    rw [integral_indicator hWm, integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hθ0)
+      hθm.aestronglyMeasurable, hm, hRW']
+    simp only [hθ, ENNReal.ofReal_natCast]
+  -- fix an admissible form `ω`; `g` is the integrand of `S(ω)` and `h` its majorant
+  apply sSup_le
+  rintro r ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  apply ENNReal.ofReal_le_ofReal
+  rw [hS ω]
+  obtain ⟨g, hg⟩ : ∃ g : Euclid P → ℝ, g = fun x => (R.mult x : ℝ) * R.orient x
+      (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+        (fderiv ℝ (φ t) x)) := ⟨_, rfl⟩
+  obtain ⟨h, hh⟩ : ∃ h : Euclid P → ℝ,
+      h = fun x => W.indicator θ x * (1 + ε' * |t|) + t * (θ x * dv x) := ⟨_, rfl⟩
+  -- pointwise bounds at the a.e. points where `ξ(x)` orients `TₓM`
+  have key : ∀ᵐ x ∂μ,
+      g x ≤ h x ∧ 0 ≤ h x ∧ ‖θ x * dv x‖ ≤ ((n : ℝ) * A) * W.indicator θ x := by
+    filter_upwards [Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane P n U R]
+      with x hx
+    obtain ⟨τ, hτ, hspan, hsign⟩ := hx
+    -- `div_M X(x) = Σₐ τₐ · DX(x)τₐ`, hence `|div_M X(x)| ≤ nA`
+    have hdvx : dv x = ∑ a, inner ℝ (τ a) (fderiv ℝ X x (τ a)) :=
+      Submission.fvmb_trace_starProjection_comp_eq_sum_inner P n _ τ (fderiv ℝ X x) hτ hspan
+    have hdvA : |dv x| ≤ n * A := by
+      rw [hdvx]
+      calc |∑ a, inner ℝ (τ a) (fderiv ℝ X x (τ a))|
+          ≤ ∑ a, |inner ℝ (τ a) (fderiv ℝ X x (τ a))| := Finset.abs_sum_le_sum_abs _ _
+        _ ≤ ∑ _a : Fin n, A := Finset.sum_le_sum fun a _ => by
+          calc |inner ℝ (τ a) (fderiv ℝ X x (τ a))|
+              ≤ ‖τ a‖ * ‖fderiv ℝ X x (τ a)‖ := abs_real_inner_le_norm _ _
+            _ ≤ ‖τ a‖ * (‖fderiv ℝ X x‖ * ‖τ a‖) :=
+              mul_le_mul_of_nonneg_left (ContinuousLinearMap.le_opNorm _ _) (norm_nonneg _)
+            _ ≤ A := by rw [hτ.1 a, one_mul, mul_one]; exact hDXA x
+        _ = n * A := by simp
+    by_cases hxW : x ∈ W
+    · -- in `W`, with `β = ω(φₜx) ∘ Dφₜ(x)`:
+      -- `|ξ(x)(β)| = |ω(φₜx)(Dφₜτ)| ≤ |ω|_E det(Dφₜτᵢ · Dφₜτⱼ)^{1/2} ≤ 1 + t div_M X + ε'|t|`
+      obtain ⟨β, hβ⟩ : ∃ β : Covector (Euclid P) n,
+          β = ((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+            (fderiv ℝ (φ t) x) := ⟨_, rfl⟩
+      have hξ : |R.orient x β| =
+          |(ω : DifferentialForm (Euclid P) n) (φ t x) fun i => fderiv ℝ (φ t) x (τ i)| := by
+        rcases hsign with hs | hs
+        · rw [hs, hβ, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+          rfl
+        · rw [hs, abs_neg, hβ, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+          rfl
+      have hJx := hJ t ht₁ (fderiv ℝ X x) (fderiv ℝ (φ t) x) (hDXA x) (hD t ht₂ x) τ hτ
+      rw [← hdvx] at hJx
+      have hbound : |R.orient x β| ≤ 1 + t * dv x + ε' * |t| := by
+        rw [hξ]
+        refine ((Submission.covectorEuclideanNorm_gram_bounds P n).1 _ _).trans ?_
+        exact (mul_le_of_le_one_left (Real.sqrt_nonneg _) (hω1 _)).trans hJx
+      have hgx : g x = θ x * R.orient x β := by
+        rw [hg, hβ]
+      have hhx : h x = θ x * (1 + t * dv x + ε' * |t|) := by
+        simp only [hh, Set.indicator_of_mem hxW]
+        ring
+      refine ⟨?_, ?_, ?_⟩
+      · rw [hgx, hhx]
+        exact mul_le_mul_of_nonneg_left ((le_abs_self _).trans hbound) (hθ0 x)
+      · rw [hhx]
+        exact mul_nonneg (hθ0 x) ((abs_nonneg _).trans hbound)
+      · rw [Set.indicator_of_mem hxW, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hθ0 x)]
+        calc θ x * |dv x| ≤ θ x * (n * A) := mul_le_mul_of_nonneg_left hdvA (hθ0 x)
+          _ = n * A * θ x := by ring
+    · -- off `W`: `x ∉ spt X`, so `DX(x) = 0` and `φₜ x = x ∉ spt ω`
+      have hxX : x ∉ tsupport X := fun hx => hxW (hXW hx)
+      have hdv0 : dv x = 0 := by
+        rw [hdvx, fderiv_of_notMem_tsupport ℝ hxX]
+        simp
+      have hω0 : (ω : DifferentialForm (Euclid P) n) (φ t x) = 0 := by
+        rw [hφid t x hxX]
+        exact image_eq_zero_of_notMem_tsupport fun hx => hxW (hωW hx)
+      have hz : (0 : Covector (Euclid P) n).compContinuousLinearMap (fderiv ℝ (φ t) x) = 0 := by
+        ext v
+        simp
+      have hg0 : g x = 0 := by
+        simp only [hg, hω0, hz, map_zero, mul_zero]
+      have hh0 : h x = 0 := by
+        simp only [hh, Set.indicator_of_notMem hxW, hdv0, zero_mul, mul_zero, add_zero]
+      refine ⟨by rw [hg0, hh0], by rw [hh0], ?_⟩
+      rw [hdv0, Set.indicator_of_notMem hxW]
+      simp
+  -- integrate: `∫ g ≤ ∫ h = m (1 + ε'|t|) + t δV(X)` and `m ε' ≤ ε`
+  have hθdv : Integrable (fun x => θ x * dv x) μ :=
+    (hθW.const_mul ((n : ℝ) * A)).mono' (hθm.aestronglyMeasurable.mul hdvm)
+      (key.mono fun x hx => hx.2.2)
+  have hhint : Integrable h μ := by
+    rw [hh]
+    exact (hθW.mul_const _).add (hθdv.const_mul t)
+  have hint_h : ∫ x, h x ∂μ = m * (1 + ε' * |t|) + t * R.firstVariation X := by
+    simp only [hh]
+    rw [integral_add (hθW.mul_const _) (hθdv.const_mul t), integral_mul_const,
+      integral_const_mul, hmW]
+    rfl
+  have hgh : ∫ x, g x ∂μ ≤ ∫ x, h x ∂μ := by
+    by_cases hgi : Integrable g μ
+    · exact integral_mono_ae hgi hhint (key.mono fun x hx => hx.1)
+    · rw [integral_undef hgi]
+      exact integral_nonneg_of_ae (key.mono fun x hx => hx.2.1)
+  have hεm : m * ε' ≤ ε := by
+    rw [hε', mul_div_assoc', div_le_iff₀ (by linarith)]
+    nlinarith
+  have hεm' : m * ε' * |t| ≤ ε * |t| := mul_le_mul_of_nonneg_right hεm (abs_nonneg t)
+  calc ∫ x, (R.mult x : ℝ) * R.orient x
+        (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+          (fderiv ℝ (φ t) x)) ∂μ = ∫ x, g x ∂μ := by rw [hg]
+    _ ≤ ∫ x, h x ∂μ := hgh
+    _ = m * (1 + ε' * |t|) + t * R.firstVariation X := hint_h
+    _ = m + t * R.firstVariation X + m * ε' * |t| := by ring
+    _ ≤ m + t * R.firstVariation X + ε * |t| := by linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
