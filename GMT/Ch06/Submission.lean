@@ -465,6 +465,135 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     intro x hx
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+/-- A current kills every test form whose support misses `spt T`: `tsupport ω` is a compact subset
+of the zero region, so finitely many open `W ⊂⊂ U` on which `T` vanishes cover it, and a smooth
+partition of unity `ψᵢ` on `tsupport ω` subordinate to them splits `ω = ∑ᵢ ψᵢ ω` into test forms
+supported in those `W`. -/
+theorem Submission.isoperimetric_apply_eq_zero_of_disjoint_support :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n),
+      Disjoint (tsupport (ω : DifferentialForm (Eucl P) n)) T.support → T ω = 0 := by
+  intro P n U T ω hdisj
+  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) n)) := ω.property.1.2
+  have hKU : tsupport (ω : DifferentialForm (Eucl P) n) ⊆ U := ω.property.2
+  -- `tsupport ω` lies in the zero region: the union of the open `W ⊂⊂ U` on which `T` vanishes.
+  have hKZ : tsupport (ω : DifferentialForm (Eucl P) n) ⊆
+      ⋃ W : {W : Set (Eucl P) // IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧
+        T.VanishesOn W}, (W : Set (Eucl P)) := by
+    intro x hx
+    have hxZ : x ∈ T.zeroRegion := by
+      by_contra h
+      exact Set.disjoint_left.1 hdisj hx ⟨hKU hx, h⟩
+    obtain ⟨W, hW, hxW⟩ := Set.mem_sUnion.1 hxZ
+    exact Set.mem_iUnion.2 ⟨⟨W, hW⟩, hxW⟩
+  -- A finite subcover, indexed by the finset `t`.
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover _ (fun W => W.2.1) hKZ
+  have hcov : tsupport (ω : DifferentialForm (Eucl P) n) ⊆
+      ⋃ i : t, ((i : {W : Set (Eucl P) // IsOpen W ∧ IsCompact (closure W) ∧
+        closure W ⊆ U ∧ T.VanishesOn W}) : Set (Eucl P)) := by
+    intro x hx
+    obtain ⟨W, hWt, hxW⟩ := Set.mem_iUnion₂.1 (ht hx)
+    exact Set.mem_iUnion.2 ⟨⟨W, hWt⟩, hxW⟩
+  -- A smooth partition of unity `f i` on `tsupport ω` with `tsupport (f i) ⊆ W i`.
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Eucl P)) hKc.isClosed _ (fun i => i.1.2.1) hcov
+  -- `η i = f i • ω` is a test form in `U` supported in `W i`, hence `T (η i) = 0`.
+  have hfs : ∀ i, ContDiff ℝ _ (f i : Eucl P → ℝ) :=
+    fun i => contMDiff_iff_contDiff.1 (f i).contMDiff
+  have hsm : ∀ i, ContDiff ℝ _ (fun x => f i x • (ω : DifferentialForm (Eucl P) n) x) :=
+    fun i => (hfs i).smul ω.property.1.1
+  have hcs : ∀ i, HasCompactSupport (fun x => f i x • (ω : DifferentialForm (Eucl P) n) x) :=
+    fun i => hKc.of_isClosed_subset (isClosed_tsupport _)
+      (tsupport_smul_subset_right (fun x => f i x) _)
+  have hsU : ∀ i, tsupport (fun x => f i x • (ω : DifferentialForm (Eucl P) n) x) ⊆ U :=
+    fun i => (tsupport_smul_subset_right (fun x => f i x) _).trans hKU
+  let η : t → TestFormOn U n := fun i =>
+    ⟨fun x => f i x • (ω : DifferentialForm (Eucl P) n) x, ⟨⟨hsm i, hcs i⟩, hsU i⟩⟩
+  have hη : ∀ i, T (η i) = 0 := fun i =>
+    i.1.2.2.2.2 (η i) ((tsupport_smul_subset_left (fun x => f i x) _).trans (hf i))
+  -- `ω = ∑ i, η i`: `∑ i, f i = 1` on `tsupport ω`, and `ω = 0` off it.
+  have hsum : ω = ∑ i, η i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Eucl P) n) x =
+      ∑ i, f i x • (ω : DifferentialForm (Eucl P) n) x
+    rw [← Finset.sum_smul]
+    by_cases hx : x ∈ tsupport (ω : DifferentialForm (Eucl P) n)
+    · rw [← finsum_eq_sum_of_fintype, f.sum_eq_one hx, one_smul]
+    · rw [image_eq_zero_of_notMem_tsupport hx, smul_zero]
+  change T.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => hη i
+
+/-- Supports of boundaries, weak limits and linear combinations: `spt ∂Z ⊆ spt Z`; a weak limit of
+currents supported in a closed `K` is supported in `K`; `spt Z ⊆ spt Z₁ ∪ spt Z₂` when
+`Z = a Z₁ + b Z₂`.  In each case a point outside the claimed support lies in an open `W ⊂⊂ U` on
+which the current vanishes, i.e. in its zero region. -/
+theorem Submission.iwl_cr_support_lemmas :
+    (∀ (P m : ℕ) (U : Set (Eucl P)) (Z : GeometricCurrentOn U (m + 1)),
+      Z.boundary.support ⊆ Z.support) ∧
+    (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P))
+      (Zj : ℕ → GeometricCurrentOn U n) (Z : GeometricCurrentOn U n), IsClosed K →
+      (∀ j, (Zj j).support ⊆ K) → WeaklyConvergesOn Zj Z → Z.support ⊆ K) ∧
+    (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Z₁ Z₂ Z : GeometricCurrentOn U n) (a b : ℝ),
+      (∀ ω : TestFormOn U n, Z ω = a * Z₁ ω + b * Z₂ ω) →
+      Z.support ⊆ Z₁.support ∪ Z₂.support) := by
+  refine ⟨?_, ?_, ?_⟩
+  · -- (1) If `Z` vanishes on an admissible `W`, so does `∂Z`: `∂Z φ = Z (dφ)` and
+    -- `tsupport dφ ⊆ tsupport φ ⊆ W`.
+    intro P m U Z x hx
+    refine ⟨hx.1, fun hxZ => hx.2 ?_⟩
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := Set.mem_sUnion.1 hxZ
+    refine Set.mem_sUnion.2 ⟨W, ⟨hWo, hWc, hWU, fun φ hφ => ?_⟩, hxW⟩
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hWv _ ((tsupport_exteriorDerivative_subset _).trans hφ)
+  · -- (2) For `x ∈ spt Z \ K`, the ball `W = B(x, ε/2)` has `closure W ⊆ U \ K`.  A test form
+    -- supported in `W` misses `K ⊇ spt (Zj j)`, so every `Zj j` kills it, and so does the limit.
+    intro P n U hU K Zj Z hK hZj hconv x hx
+    by_contra hxK
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hU.sdiff hK) x ⟨hx.1, hxK⟩
+    have hr : 0 < ε / 2 := half_pos hε
+    have hcl : closure (ball x (ε / 2)) ⊆ U \ K := by
+      rw [closure_ball x hr.ne']
+      exact (closedBall_subset_ball (half_lt_self hε)).trans hball
+    refine hx.2 (Set.mem_sUnion.2 ⟨ball x (ε / 2), ⟨isOpen_ball, ?_,
+      hcl.trans sdiff_subset, fun ω hω => ?_⟩, mem_ball_self hr⟩)
+    · rw [closure_ball x hr.ne']
+      exact isCompact_closedBall x _
+    · have h0 : ∀ j, Zj j ω = 0 := fun j =>
+        Submission.isoperimetric_apply_eq_zero_of_disjoint_support P n U (Zj j) ω
+          (Set.disjoint_left.2 fun y hy hyS => (hcl (subset_closure (hω hy))).2 (hZj j hyS))
+      have hlim := hconv ω
+      simp only [h0] at hlim
+      exact tendsto_nhds_unique hlim tendsto_const_nhds
+  · -- (3) For `x ∈ spt Z` outside `spt Z₁ ∪ spt Z₂`, the ball `W = B(x, ε/2)` has `closure W`
+    -- inside both zero regions and `U`, so `Z₁`, `Z₂` and hence `Z = a Z₁ + b Z₂` vanish on `W`.
+    intro P n U hU Z₁ Z₂ Z a b hZ x hx
+    by_contra hx12
+    have h1 : x ∈ Z₁.zeroRegion := by
+      by_contra h
+      exact hx12 (Or.inl ⟨hx.1, h⟩)
+    have h2 : x ∈ Z₂.zeroRegion := by
+      by_contra h
+      exact hx12 (Or.inr ⟨hx.1, h⟩)
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1
+      ((Z₁.isOpen_zeroRegion.inter Z₂.isOpen_zeroRegion).inter hU) x ⟨⟨h1, h2⟩, hx.1⟩
+    have hr : 0 < ε / 2 := half_pos hε
+    have hcl : closure (ball x (ε / 2)) ⊆ Z₁.zeroRegion ∩ Z₂.zeroRegion ∩ U := by
+      rw [closure_ball x hr.ne']
+      exact (closedBall_subset_ball (half_lt_self hε)).trans hball
+    refine hx.2 (Set.mem_sUnion.2 ⟨ball x (ε / 2), ⟨isOpen_ball, ?_,
+      hcl.trans inter_subset_right, fun ω hω => ?_⟩, mem_ball_self hr⟩)
+    · rw [closure_ball x hr.ne']
+      exact isCompact_closedBall x _
+    · have e1 : Z₁ ω = 0 :=
+        Submission.isoperimetric_apply_eq_zero_of_disjoint_support P n U Z₁ ω
+          (Set.disjoint_left.2 fun y hy hyS => hyS.2 (hcl (subset_closure (hω hy))).1.1)
+      have e2 : Z₂ ω = 0 :=
+        Submission.isoperimetric_apply_eq_zero_of_disjoint_support P n U Z₂ ω
+          (Set.disjoint_left.2 fun y hy hyS => hyS.2 (hcl (subset_closure (hω hy))).1.2)
+      rw [hZ ω, e1, e2]
+      ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
