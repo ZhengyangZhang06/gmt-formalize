@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.linear_area-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+  "depth": 5,
+  "title": "Linear area formula with positive Gram determinant (Simon Ch. 2, 3.1)",
+  "statement": "Let n, P ∈ ℕ and let L : ℝ^n → ℝ^P be an injective continuous linear map (ℝ^d = Euclid d = EuclideanSpace ℝ (Fin d)) with Hilbert adjoint L*. Then (i) det(L*∘L) > 0, where det is the determinant of the endomorphism L*∘L of ℝ^n (ContinuousLinearMap.det); and (ii) for every set S ⊆ ℝ^n (no measurability assumed), H^n(L(S)) = √det(L*∘L) · L^n(S) in [0, ∞], where H^n = μHE[n] on ℝ^P, L^n = volume on ℝ^n, and the factor is ENNReal.ofReal √det(L*∘L).",
+  "lean_statement": "∀ (n P : ℕ) (L : Euclid n →L[ℝ] Euclid P), Function.Injective L → 0 < (L.adjoint ∘L L).det ∧ ∀ S : Set (Euclid n), μHE[n] (L '' S) = ENNReal.ofReal (Real.sqrt ((L.adjoint ∘L L).det)) * volume S",
+  "lean_name": "codim1_zsl_ga_linear_area",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-9601bdcdd4-a1"
+}

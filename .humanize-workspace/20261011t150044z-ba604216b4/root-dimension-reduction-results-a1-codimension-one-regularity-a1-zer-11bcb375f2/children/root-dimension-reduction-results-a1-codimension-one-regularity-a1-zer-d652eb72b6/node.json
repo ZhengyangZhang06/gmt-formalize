@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.sandwich-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "depth": 6,
+  "title": "Two-sided comparison in [0, ∞] from (1 ± ε)-sandwiches (supplied step 10)",
+  "statement": "Let m ∈ ℕ and t, ε, c ∈ ℝ with ε < 1, c ≥ 0, (1 + ε)^m ≤ t·(1 − ε) and 1 + ε ≤ t·(1 − ε)^m. Let X, H, I ∈ [0, ∞] satisfy ofReal((1 − ε)^m)·(ofReal(c)·X) ≤ H, H ≤ ofReal((1 + ε)^m)·(ofReal(c)·X), ofReal((1 − ε)·c)·X ≤ I and I ≤ ofReal((1 + ε)·c)·X, where ofReal = ENNReal.ofReal : ℝ → [0, ∞] (ofReal(x) = max(x, 0)) and products are taken in [0, ∞] (with 0·∞ = 0). Then H ≤ ofReal(t)·I and I ≤ ofReal(t)·H.",
+  "lean_statement": "∀ (m : ℕ) (t ε c : ℝ) (X H I : ℝ≥0∞), ε < 1 → 0 ≤ c → (1 + ε) ^ m ≤ t * (1 - ε) → 1 + ε ≤ t * (1 - ε) ^ m → ENNReal.ofReal ((1 - ε) ^ m) * (ENNReal.ofReal c * X) ≤ H → H ≤ ENNReal.ofReal ((1 + ε) ^ m) * (ENNReal.ofReal c * X) → ENNReal.ofReal ((1 - ε) * c) * X ≤ I → I ≤ ENNReal.ofReal ((1 + ε) * c) * X → H ≤ ENNReal.ofReal t * I ∧ I ≤ ENNReal.ofReal t * H",
+  "lean_name": "codim1_zsl_ga_lc_sandwich",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6-a1"
+}

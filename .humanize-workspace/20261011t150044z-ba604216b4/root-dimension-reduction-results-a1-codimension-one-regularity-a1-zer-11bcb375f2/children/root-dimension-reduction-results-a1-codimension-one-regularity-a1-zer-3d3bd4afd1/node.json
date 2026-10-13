@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.eps_choice-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "depth": 6,
+  "title": "Choice of the tolerance ε for a prescribed factor t > 1 (supplied step 4)",
+  "statement": "Let m ∈ ℕ and t ∈ ℝ with t > 1. Then there exists ε ∈ ℝ with 0 < ε < 1 such that (1 + ε)^m ≤ t·(1 − ε) and 1 + ε ≤ t·(1 − ε)^m.",
+  "lean_statement": "∀ (m : ℕ) (t : ℝ), 1 < t → ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1 + ε) ^ m ≤ t * (1 - ε) ∧ 1 + ε ≤ t * (1 - ε) ^ m",
+  "lean_name": "codim1_zsl_ga_lc_eps_choice",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1-a1"
+}
