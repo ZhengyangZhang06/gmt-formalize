@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_plane_dilation-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "Tangent planes and multiplicities of a homogeneous varifold are dilation invariant",
+  "statement": "Let C be an n-varifold on ℝ^N, s > 0, and suppose μ_C(s·A) = s^n μ_C(A) for every A ⊆ ℝ^N. If C has tangent plane T with multiplicity θ at y and tangent plane T' with multiplicity θ' at s·y (Def. 8.1.1), then T' = T and θ' = θ. With s = 1 this is the uniqueness of the tangent plane and multiplicity at a point.",
+  "lean_statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (s : ℝ) (y : Euclidean N) (T T' : Grassmannian N n) (θ θ' : ℝ), 0 < s → (∀ A : Set (Euclidean N), C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → HasTangentPlane C y T θ → HasTangentPlane C (s • y) T' θ' → T' = T ∧ θ' = θ",
+  "lean_name": "allard_tc_tangent_plane_dilation",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.tangent_plane_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_plane_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-plane-dilation-a1-a1"
+}
