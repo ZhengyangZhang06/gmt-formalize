@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.covector_finite_dimensional-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+  "depth": 4,
+  "title": "Covectors on ℝ^P form a finite-dimensional real vector space",
+  "statement": "For all natural numbers P and n, the real vector space Covector (Euclid P) n = Λⁿ(ℝ^P) is finite-dimensional over ℝ. This is the space of continuous alternating n-linear forms on ℝ^P = EuclideanSpace ℝ (Fin P), with pointwise addition and scalar multiplication.",
+  "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+  "lean_name": "dor_ims_lusin_covector_finiteDimensional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a-a1"
+}

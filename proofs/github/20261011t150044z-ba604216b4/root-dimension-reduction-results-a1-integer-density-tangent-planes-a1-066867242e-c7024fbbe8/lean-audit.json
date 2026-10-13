@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "415257cf0eb2d44b5fb029aad6362e6e68a37f219478745df66d40c44a98c288",
+  "git_delta": {
+    "base_commit": "ef694eca547284034d066d18c94ef2c5de86100f",
+    "candidate_commit": "2f5f61b98e0050eea131dea259f86b13ae0dd740",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_puvd_measure_eq_sum_planes",
+    "diff_sha256": "a1b6931abbdc6ce78f1e038b16cc8b9ea796cacf06a177202dabfedac73951f1",
+    "source_sha256": "d187eb5547de8c921f8177f9ecffdcb330a47917c3f6634ddc7047bc7ed16ae8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_puvd_measure_eq_sum_planes",
+      "statement": "∀ (P n q : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Ps : Fin q → Submodule ℝ (Euclid P)), 1 ≤ n → R.Represents C → (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) → (∀ x ∈ C.support, x ≠ 0 → ∃ i, x ∈ Ps i) → ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ i, R.measure (A ∩ ((Ps i : Set (Euclid P)) \\ {0}))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
