@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "969280859dab62cf5ae9a9d17a0ffa11eeb5bfda2eacb9367185763832aa3372",
+  "git_delta": {
+    "base_commit": "b107710fd4b894a25ed443cababa1f693164abe1",
+    "candidate_commit": "a80a89b34c580926d05c43accf29f89fe19224ee",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_ims_imrep_of_signed_pieces",
+    "diff_sha256": "2210c10815928df582b1204faf69faa6ffb25af6dcab62fc5657ad94219b0f2f",
+    "source_sha256": "56236ef5d30a83b842567764b49ca01012e90d36e36554a02587e8d1da1f559f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_ims_imrep_of_signed_pieces",
+      "statement": "∀ (P n : ℕ) (U C : Set (Euclid P)) (R₁ R₂ : IMRep U n) (θ : Euclid P → ℕ) (ξ : Euclid P → MultiVector P n), MeasurableSet C → C ⊆ R₁.carrier ∪ R₂.carrier → Measurable θ → (∀ x ∈ C, 0 < θ x) → (∀ x ∈ C, θ x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → AEStronglyMeasurable ξ (μHE[n].restrict C) → (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ξ x = R₁.orient x ∨ ξ x = -R₁.orient x) → (∀ᵐ x ∂(μHE[n].restrict (C \\ R₁.carrier)), ξ x = R₂.orient x ∨ ξ x = -R₂.orient x) → (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₁.carrier x Q → HasApproximateTangentSpaceAt n C x Q) → (∀ᵐ x ∂(μHE[n].restrict (C \\ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₂.carrier x Q → HasApproximateTangentSpaceAt n C x Q) → ∃ R : IMRep U n, R.carrier = C ∧ R.mult = θ ∧ R.orient = ξ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
