@@ -17187,6 +17187,22 @@ theorem Submission.first_rectifiability_theorem : FirstRectifiabilityTheorem := 
       exact hθ x hx.2
   rw [hVA, hweight _ hSA, hset]
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
+theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem :=
+  -- Each conjunct is the child theorem proving that item of the book; 5.5 and its corollary 5.7
+  -- share one child, whose conjuncts appear here in the statement's order (5.7 before 5.5).
+  ⟨Submission.first_rectifiability_theorem,
+    Submission.first_variation_theorems.1,
+    Submission.first_variation_theorems.2,
+    Submission.monotonicity_and_density_theorems.1,
+    Submission.monotonicity_and_density_theorems.2.1,
+    Submission.monotonicity_and_density_theorems.2.2,
+    Submission.density_semicontinuity_theorem,
+    Submission.constancy_theorem,
+    Submission.varifold_tangent_theorems.1,
+    Submission.allard_rectifiability_and_tangent_cones.2,
+    Submission.allard_rectifiability_and_tangent_cones.1,
+    Submission.compactness_theorem,
+    Submission.integral_compactness_theorem⟩
 
 /-- Subsequence extraction in Simon Ch. 1, 4.16 (erratum: the Alaoglu theorem only yields a
 subnet, so `X` is taken second countable).  If `X` is locally compact, Hausdorff and second
