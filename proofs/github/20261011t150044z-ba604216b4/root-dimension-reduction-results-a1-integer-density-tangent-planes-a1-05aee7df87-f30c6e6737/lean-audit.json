@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aba0824a978c17f7d9d77a8ed3d211bc38624e4a23f743cb2bce7d678be5c6a3",
+  "git_delta": {
+    "base_commit": "d231af2a56ead24217d62dbc2ffd0cce13ea192f",
+    "candidate_commit": "1f839c95b591a63e60a41addfcaf7535eac25267",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tpf_plane_subseq_limit",
+    "diff_sha256": "518755469987d8a50c9a7c497ac71df27a10c8659687a63be9365e02b308b89f",
+    "source_sha256": "c12834c2a4691d40692c6b94229f168bbc40328be51fecd683ae88d46cad6693",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_plane_subseq_limit",
+      "statement": "∀ (P n : ℕ) (Qs : ℕ → Submodule ℝ (Euclid P)), (∀ j, Module.finrank ℝ (Qs j) = n) → ∃ (js : ℕ → ℕ) (τ : Fin n → Euclid P) (κ : ℕ → ℝ), StrictMono js ∧ Orthonormal ℝ τ ∧ Tendsto κ atTop (𝓝 0) ∧ ∀ (i : ℕ) (u : Euclid P), ‖(Qs (js i)).starProjection u - (Submodule.span ℝ (Set.range τ)).starProjection u‖ ≤ κ i * ‖u‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
