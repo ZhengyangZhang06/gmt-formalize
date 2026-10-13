@@ -629,6 +629,119 @@ theorem Submission.regcomp_exists_smooth_unit_form_support_approx : ∀ (P n : �
   -- (4), (8) `tsupport g ⊆ tsupport f` is compact, so `g` is a test form
   exact ⟨g, ⟨g.contMDiff.contDiff, hfc.mono hsupp⟩, hsupp, hunit, happrox⟩
 
+/-- **Continuous unit-form approximation in `L¹(ν)`**, the first stage of the approximation of
+unit covector fields by test forms behind the mass formula `M_W(τ(M, θ, ξ)) = ∫_{M ∩ W} θ dHⁿ`
+(Simon 6.3.2(3); Euclidean coefficient norm `|·|_E` of 6.1.15, 6.2.4).  Let `ν` be finite, `O`
+open, `K ⊆ O` compact, and `g` a `ν`-integrable `n`-covector field with `|g|_E ≤ 1` and `g = 0`
+off `K`.  Then for `ε > 0` some continuous `f` with compact support in `O` has `|f|_E ≤ 1` and
+`∫ |f − g|_E dν ≤ ε`.  `ν` is regular, so `g` has a continuous `L¹(ν)`-approximation `g₀`
+(indicators of measurable sets are approximated by Urysohn functions); cut it off by an Urysohn
+function `χ`, equal to `1` on `K` and to `0` off `int L` for a compact `L` with `K ⊆ int L`,
+`L ⊆ O`; then compose with the radial retraction `v ↦ (max 1 |v|_E)⁻¹ v` onto the unit
+`|·|_E`-ball, which does not increase `|·|_E`-distances to points of that ball. -/
+theorem Submission.regcomp_exists_continuous_unit_form_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (O K : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen O → IsCompact K → K ⊆ O → Integrable g ν → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → (∀ x, x ∉ K → g x = 0) → ∀ ε : ℝ, 0 < ε → ∃ f : Euclid P → Covector (Euclid P) n, Continuous f ∧ HasCompactSupport f ∧ tsupport f ⊆ O ∧ (∀ z, covectorEuclideanNorm (f z) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) ∂ν ≤ ENNReal.ofReal ε := by
+  intro P n ν O K g hν hO hK hKO hg hg1 hgK ε hε
+  -- Step 0: the norm facts and the radial retraction `π v = (max 1 |v|_E)⁻¹ • v`
+  obtain ⟨c, hc, hcont, -, hsmul, hle, hretr⟩ :=
+    Submission.regcomp_covectorEuclideanNorm_seminorm_retract P n
+  let π : Covector (Euclid P) n → Covector (Euclid P) n :=
+    fun v => (max 1 (covectorEuclideanNorm v))⁻¹ • v
+  have hmax : ∀ v : Covector (Euclid P) n, 0 < max 1 (covectorEuclideanNorm v) :=
+    fun v => zero_lt_one.trans_le (le_max_left _ _)
+  have hπc : Continuous π :=
+    ((continuous_const.max hcont).inv₀ fun v => (hmax v).ne').smul continuous_id
+  have hπ1 : ∀ v, covectorEuclideanNorm (π v) ≤ 1 := fun v => by
+    change covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v) ≤ 1
+    rw [hsmul, abs_of_pos (inv_pos.2 (hmax v)), inv_mul_le_iff₀ (hmax v), mul_one]
+    exact le_max_right _ _
+  -- Step 1: `ν` is finite, hence regular.  For measurable `s`, an Urysohn function `φ`, equal to
+  -- `1` on a compact `F ⊆ s` and to `0` off an open `V ⊇ s`, has `‖φ • a − 1_s a‖ ≤ ‖1_{V \ F} a‖`
+  -- with `ν (V \ F)` small; so by density some continuous `g₀` has `∫ ‖g − g₀‖ dν ≤ ε / c`, and
+  -- as `|·|_E ≤ c ‖·‖`, `∫ |g₀ − g|_E dν ≤ ε`
+  have hind : ∀ (a : Covector (Euclid P) n) ⦃s : Set (Euclid P)⦄, MeasurableSet s → ν s < ∞ →
+      ∀ {δ : ℝ≥0∞}, δ ≠ 0 → ∃ φ : Euclid P → Covector (Euclid P) n,
+        eLpNorm (φ - s.indicator fun _ => a) 1 ν ≤ δ ∧ Continuous φ := by
+    intro a s hs _ δ hδ
+    obtain ⟨η, hη, hηδ⟩ := exists_eLpNorm_indicator_le (μ := ν) ENNReal.one_ne_top a hδ
+    have hη2 : (η : ℝ≥0∞) / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.coe_pos.2 hη).ne').ne'
+    obtain ⟨F, hFs, hF, hsF⟩ := hs.exists_isCompact_sdiff_lt (measure_ne_top ν s) hη2
+    obtain ⟨V, hsV, hV, -, hVs⟩ := hs.exists_isOpen_sdiff_lt (measure_ne_top ν s) hη2
+    obtain ⟨φ, hφF, hφV, -, hφ⟩ := exists_continuous_one_zero_of_isCompact hF hV.isClosed_compl
+      (disjoint_compl_right_iff_subset.2 (hFs.trans hsV))
+    have hφc : Continuous fun x => φ x • a := φ.continuous.smul continuous_const
+    refine ⟨fun x => φ x • a, (eLpNorm_mono (hφc.aestronglyMeasurable.sub
+      (aestronglyMeasurable_const.indicator hs)) fun x => ?_).trans (hηδ (V \ F) ?_
+      (hV.measurableSet.diff hF.measurableSet).nullMeasurableSet), hφc⟩
+    · -- pointwise: `0` on `F` and off `V`, at most `‖a‖` on `V \ F`
+      show ‖φ x • a - s.indicator (fun _ => a) x‖ ≤ ‖(V \ F).indicator (fun _ => a) x‖
+      by_cases hxF : x ∈ F
+      · rw [hφF hxF, indicator_of_mem (hFs hxF), Pi.one_apply, one_smul, sub_self, norm_zero]
+        exact norm_nonneg _
+      by_cases hxV : x ∈ V
+      · rw [indicator_of_mem (show x ∈ V \ F from ⟨hxV, hxF⟩)]
+        by_cases hxs : x ∈ s
+        · rw [indicator_of_mem hxs]
+          calc ‖φ x • a - a‖ = ‖(φ x - 1) • a‖ := by rw [sub_smul (φ x) 1 a, one_smul]
+            _ = |φ x - 1| * ‖a‖ := by rw [norm_smul, Real.norm_eq_abs]
+            _ ≤ 1 * ‖a‖ := by
+                gcongr
+                rw [abs_le]
+                constructor <;> linarith [(hφ x).1, (hφ x).2]
+            _ = ‖a‖ := one_mul _
+        · rw [indicator_of_notMem hxs, sub_zero, norm_smul, Real.norm_eq_abs,
+            abs_of_nonneg (hφ x).1]
+          exact mul_le_of_le_one_left (norm_nonneg _) (hφ x).2
+      · rw [hφV (mem_compl hxV), Pi.zero_apply, zero_smul,
+          indicator_of_notMem fun h => hxV (hsV h), sub_zero, norm_zero]
+        exact norm_nonneg _
+    · -- `V \ F ⊆ (V \ s) ∪ (s \ F)`
+      calc ν (V \ F) ≤ ν ((V \ s) ∪ (s \ F)) := measure_mono fun x hx => by
+            by_cases hxs : x ∈ s
+            exacts [Or.inr ⟨hxs, hx.2⟩, Or.inl ⟨hx.1, hxs⟩]
+        _ ≤ ν (V \ s) + ν (s \ F) := measure_union_le _ _
+        _ ≤ η / 2 + η / 2 := add_le_add hVs.le hsF.le
+        _ = η := ENNReal.add_halves _
+  obtain ⟨g₀, hgg₀, hg₀c⟩ := (memLp_one_iff_integrable.2 hg).induction_dense ENNReal.one_ne_top
+    Continuous hind (fun _ _ h₁ h₂ => h₁.add h₂) (ENNReal.ofReal_pos.2 (div_pos hε hc)).ne'
+  rw [eLpNorm_one_eq_lintegral_enorm (hg.aestronglyMeasurable.sub hg₀c.aestronglyMeasurable)]
+    at hgg₀
+  have h₀ : ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g₀ x - g x)) ∂ν ≤ ENNReal.ofReal ε :=
+    calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g₀ x - g x)) ∂ν
+        ≤ ∫⁻ x, ENNReal.ofReal c * ‖(g - g₀) x‖ₑ ∂ν := lintegral_mono fun x => by
+          rw [← ofReal_norm, ← ENNReal.ofReal_mul hc.le, Pi.sub_apply, norm_sub_rev]
+          exact ENNReal.ofReal_le_ofReal (hle _)
+      _ = ENNReal.ofReal c * ∫⁻ x, ‖(g - g₀) x‖ₑ ∂ν :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal c * ENNReal.ofReal (ε / c) := by gcongr
+      _ = ENNReal.ofReal ε := by rw [← ENNReal.ofReal_mul hc.le, mul_div_cancel₀ _ hc.ne']
+  -- Step 2: a compact `L` with `K ⊆ int L`, `L ⊆ O`, and an Urysohn cutoff `χ`, `1` on `K` and
+  -- `0` off `int L`; since `g = χ • g`, `|χ • g₀ − g|_E = χ |g₀ − g|_E ≤ |g₀ − g|_E`
+  obtain ⟨L, hL, hKL, hLO⟩ := exists_compact_between hK hO hKO
+  obtain ⟨χ, hχK, hχL, -, hχ⟩ := exists_continuous_one_zero_of_isCompact hK
+    isOpen_interior.isClosed_compl (disjoint_compl_right_iff_subset.2 hKL)
+  have hχ0 : ∀ x, x ∉ L → χ x = 0 := fun x hx => hχL fun hx' => hx (interior_subset hx')
+  have hgχ : ∀ x, χ x • g x = g x := by
+    intro x
+    by_cases hx : x ∈ K
+    · rw [hχK hx, Pi.one_apply, one_smul]
+    · rw [hgK x hx, smul_zero]
+  have h₁ : ∀ x, covectorEuclideanNorm (χ x • g₀ x - g x) ≤ covectorEuclideanNorm (g₀ x - g x) :=
+    fun x => calc covectorEuclideanNorm (χ x • g₀ x - g x)
+        = covectorEuclideanNorm (χ x • (g₀ x - g x)) := by rw [smul_sub, hgχ x]
+      _ = χ x * covectorEuclideanNorm (g₀ x - g x) := by rw [hsmul, abs_of_nonneg (hχ x).1]
+      _ ≤ covectorEuclideanNorm (g₀ x - g x) :=
+          mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hχ x).2
+  -- Step 3: `f = π ∘ (χ • g₀)` is continuous, vanishes off `L` (`π 0 = 0`) and has `|f|_E ≤ 1`
+  have hfL : support (fun x => π (χ x • g₀ x)) ⊆ L := fun x hx => by
+    by_contra hxL
+    exact hx (show π (χ x • g₀ x) = 0 by rw [hχ0 x hxL, zero_smul]; exact smul_zero _)
+  have hfL' : tsupport (fun x => π (χ x • g₀ x)) ⊆ L := closure_minimal hfL hL.isClosed
+  refine ⟨fun x => π (χ x • g₀ x), hπc.comp (χ.continuous.smul hg₀c),
+    hL.of_isClosed_subset (isClosed_tsupport _) hfL', hfL'.trans hLO, fun z => hπ1 _, ?_⟩
+  -- Step 4: `|f − g|_E ≤ |χ • g₀ − g|_E ≤ |g₀ − g|_E` pointwise, as `|g|_E ≤ 1`; integrate
+  exact (lintegral_mono fun x => ENNReal.ofReal_le_ofReal
+    ((hretr _ _ (hg1 x)).trans (h₁ x))).trans h₀
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
