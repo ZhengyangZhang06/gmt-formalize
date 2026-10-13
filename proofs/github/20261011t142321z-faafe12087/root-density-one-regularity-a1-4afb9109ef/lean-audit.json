@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ea52e6713f6bd85389c33ecd5a0a590b7271a7167c057ad8a7013523e3188ec1",
+  "git_delta": {
+    "base_commit": "28e28ef923eb6c42aa11cf6d934ce9562fd83410",
+    "candidate_commit": "63173e03f8f28f362cae047b5e752cb35d2f88f4",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "4244281d8a16f750918c3454fc7a8c91138360872e391af65ffc483925c3562d",
+    "source_sha256": "8d95ac18bb103c2ca5fe97a80f5a875b27ccaa18c53b2349f41459d48e14d0c0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.density_one_regularity",
+      "statement": "DensityOneRegularity",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
