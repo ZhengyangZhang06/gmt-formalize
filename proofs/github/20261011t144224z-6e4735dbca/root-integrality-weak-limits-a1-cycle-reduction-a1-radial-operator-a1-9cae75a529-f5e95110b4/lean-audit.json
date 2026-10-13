@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "38594b23dd42fd44de90704450c86f2a1ac344d25ad626a95e86418f03ac9046",
+  "git_delta": {
+    "base_commit": "3b17b61b3ee3c13dda23ae3ae5aea4f7fe5b9c7f",
+    "candidate_commit": "a318ea6a76a5cf16e41083767cd9a74683f4eff4",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ro_integrand_iteratedFDeriv_le",
+    "diff_sha256": "b1201a4d717d5dd29d5dec00e493e0996227898e3ac454ecdd410f2ef25d1f04",
+    "source_sha256": "b981d20b0ce1a23039975c8b46681389090a272160bccda7ae96f449950c1903",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ro_integrand_iteratedFDeriv_le",
+      "statement": "∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∀ (j : ℕ) (R D : ℝ), 0 ≤ D → (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) → ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x‖ ≤ (R + j) * D",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
