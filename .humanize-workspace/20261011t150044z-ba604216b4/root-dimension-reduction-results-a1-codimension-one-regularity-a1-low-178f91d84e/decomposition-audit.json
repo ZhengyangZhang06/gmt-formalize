@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "theorem (normDet_sq_eq_det_gram|normDet_comp|normDet_nonneg|lintegral_iUnion|setLIntegral_congr|lintegral_congr_ae|ofReal_mul|LipschitzWith.ae_differentiableAt|MeasurableSet.image_of_continuousOn_injOn|restrict_congr_set|disjoint_image_iff|ae_eq_set)|def approxTangentPlane|irreducible_def stdOrthonormalBasis",
+        "theorem (weighted_area_formula_lipschitz_injOn|areaJacobianAt_eq_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn|HasApproximateTangentSpaceAt.unique)|def (areaJacobianAt|HasApproximateTangentSpaceAt|CountablyRectifiable)",
+        "def gram|gram_apply|ofReal_mul|finrank_euclideanSpace_fin|irreducible_def stdOrthonormalBasis",
+        "dpf_raf_lintegral_image_eq_tsum_pieces|dpf_raf_piece_area_formula_gram",
+        "git show 43139109542afd7a31837d85d6109e60ddeb9c4a:GMT/Ch07/Submission.lean",
+        "git show c2cf4bd94740431232a18d408c47cbec4607e581:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/codim1-raf-independent-audit-r68_m70y/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/codim1-raf-independent-audit-r68_m70y/ReusedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/codim1-raf-independent-audit-r68_m70y/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-178f91d84e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-178f91d84e/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-29ff19b91f/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-c1fd1fa334/accepted-candidate.json",
+        "/tmp/codim1-raf-independent-audit-r68_m70y/Types.lean",
+        "/tmp/codim1-raf-independent-audit-r68_m70y/ReusedProofs.lean",
+        "/tmp/codim1-raf-independent-audit-r68_m70y/Assembly.lean"
+      ],
+      "conclusion": "Verified compatible pins: project b4d606db, Mathlib 25730c7c, SimonGMT 2b366308. The snapshot Contract and current Contract/Submission are byte-identical. Both child propositions independently elaborate in the comparator's replayed scope before their implementations exist. Neither child name occurs in the frozen project GMT sources or SimonGMT; each has exactly one accepted DAG owner with an identical frozen type and a passed comparator record. Independently recompiled both accepted proofs and the exact selected-parent assembly; all three use only propext, Classical.choice and Quot.sound. The weighted library area formula explicitly permits arbitrary weights and has no rank restriction. Matrix.of agrees with the library Gram matrix, including the dependent subspace basis. The proposed dependency graph is acyclic. The split is appropriate: image_split supplies both sums, piece_area equates their terms, and the parent's two tracked siblings supply the parametrizations and tangent identification. Assembly does not invoke either parent area-formula declaration. The piecewise argument also agrees with [Simon, Chapter 3, §2.3–2.6](https://web.stanford.edu/class/math285/ts-gmt); the arbitrary-weight extension is supported by the pinned Lean theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line proposition, including arbitrary M and nonmeasurable g. Steps 1–2 establish measurable, disjoint images; steps 3–4 establish null differences using the subset assumptions and Lipschitz image bound; steps 5–7 correctly apply restriction congruence and lintegral_iUnion without weight measurability. The proof is complete and non-circular. The bare name validly reuses accepted commit 43139109 with an identical frozen type. Its empty dependency list is correct. Applying it with φ and with id supplies exactly the parent's two integral decompositions."
+    },
+    {
+      "key": "piece_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree on all differentiability, Lipschitz, Borel, injectivity and almost-everywhere hypotheses. The supplied proof correctly combines two arbitrary-weight area formulas, Rademacher, the chain rule, normDet_comp, the standard-basis Gram identity, and almost-everywhere integral congruence. Matrix.of and the subspace coercions give the intended determinant. No measurability of Q or g, injective derivative, or positive-dimensional assumption is silently added. The proof is complete and non-circular. The bare name validly reuses accepted commit c2cf4bd9 with an identical frozen type; no sibling dependency is needed. Substituting approxTangentPlane gives precisely the parent's per-piece equality."
+    }
+  ],
+  "required_changes": []
+}
