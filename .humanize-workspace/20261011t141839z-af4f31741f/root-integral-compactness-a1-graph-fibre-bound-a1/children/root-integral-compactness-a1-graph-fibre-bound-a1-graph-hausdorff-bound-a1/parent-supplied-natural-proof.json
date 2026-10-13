@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "sha256sum snapshot project/GMT/Ch08/Contract.lean, workspace GMT/Ch08/Contract.lean and Submission.lean, scratch Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+        "sed -n 1,140p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def: μHE[d] = addHaarScalarFactor volume μH[d] • μH[d])",
+        "grep -n 'theorem hausdorffMeasure_image_le' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (HolderOnWith :688, LipschitzOnWith :733, LipschitzWith :745)",
+        "grep -rn 'image_of_continuousOn_injOn' mathlib/Mathlib (Lusin–Souslin, MeasureTheory/Constructions/Polish/Basic.lean:821)",
+        "grep -rn 'theorem le_lintegral_add|theorem lintegral_tsum|theorem lintegral_const_mul_le|theorem lintegral_map_le|theorem lintegral_iUnion₀|theorem lintegral_indicator₀|theorem lintegral_indicator_const₀|theorem lintegral_mono_set|theorem lintegral_sum_measure|theorem tsum_comp_le_tsum_of_injective' mathlib/Mathlib",
+        "grep -rn 'tsum_lintegral_le|le_lintegral_tsum|lintegral_tsum_le' mathlib/Mathlib (0 matches: countable superadditivity is proved inline in the parent glue)",
+        "grep -rnE 'exists_measurable_subset_ae_eq|theorem ae_eq_set|InjOn.leftInvOn_invFunOn|lintegral_finsetSum.|AEMeasurable.indicator₀|iUnion_disjointed|disjoint_disjointed|MeasurableSet.disjointed|disjointed_le|tsum_eq_iSup_nat|real_inner_le_norm|norm_add_sq_real' mathlib/Mathlib",
+        "sed -n 40,75p mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean (irreducible_def lintegral = ⨆ simple g ≤ f, g.lintegral μ; rw [MeasureTheory.lintegral])",
+        "grep -n 'Grassmannian|def project|def plane|projectionLinearMap' simongmt Chapter08/Varifold.lean; grep -rn 'theorem.*project' simongmt (RadialFirstVariation.lean has project_eq_starProjection/norm_project_sq_add_norm_normalProject_sq; not needed, children prove Pythagoras from symmetry + idempotence)",
+        "lake build GMT.Ch08.Submission; lake env lean Test/{ChildA,ChildB,ChildC,Assembly,Full}.lean in scratch /tmp/gfb-decomp-McRQeP",
+        "python3 -I: validate_lean_statement (verifier/lean_contract.py) on the 3 child statements; dag.json lean_name scan; timeout 100 grep -rho 'intcpt_[A-Za-z0-9_]*' over the run directory",
+        "read verifier/gmt-compare.py (contract_scope, child_modules) and nodes/*/decomposition-v1.json for format precedents"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Function.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-graph-fibre-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-divergence-bound-a1/decomposition-v1.json",
+        "/tmp/gfb-decomp-McRQeP/Test/Full.lean",
+        "/tmp/gfb-decomp-McRQeP/Test/Assembly.lean",
+        "/tmp/gfb-decomp-McRQeP/Test/ChildA.lean",
+        "/tmp/gfb-decomp-McRQeP/Test/ChildB.lean",
+        "/tmp/gfb-decomp-McRQeP/Test/ChildC.lean",
+        "/tmp/gfb-decomp-McRQeP/review-lean/Cmp_Parent.lean",
+        "/tmp/gfb-decomp-McRQeP/review-lean/AX_Parent.lean"
+      ],
+      "conclusion": "Snapshot = project 63436ae6 + Mathlib 25730c7c; its Contract is byte-identical to the workspace Contract and Submission.\n\nMathlib supplies every tool the three children and the parent glue need:\n- the Lipschitz image bound for μH (LipschitzOnWith/LipschitzWith.hausdorffMeasure_image_le) and μHE[n] = c • μH[n] (euclideanHausdorffMeasure_def);\n- Lusin–Souslin (MeasurableSet.image_of_continuousOn_injOn);\n- the Borel/null split (NullMeasurableSet.exists_measurable_subset_ae_eq, ae_eq_set);\n- for the lower integral: its definition as a supremum over simple functions, le_lintegral_add, lintegral_indicator_const₀ and lintegral_finsetSum';\n- lintegral_iUnion₀ for arbitrary integrands;\n- disjointed, ENNReal.tsum_sigma and ENNReal.tsum_comp_le_tsum_of_injective.\n\nMathlib has no countable-superadditivity lemma for non-measurable integrands, so the parent glue proves it inline. SimonGMT provides Grassmannian.project, plane, projectionLinearMap_isSymmetric and project_project. The children prove Pythagoras from these, so they do not need RadialFirstVariation.\n\nIn a scratch copy using the comparator's replayed scope, all three children and the parent's frozen type are fully proved (Test/Full.lean). The only axioms are propext, Classical.choice and Quot.sound, and the comparator-form `exact Submission.X` replays succeed. The parent proof uses only C, and C uses only A and B. All three statements pass validate_lean_statement, and none of their names is reserved in dag.json or the run directory."
+    }
+  ],
+  "proof": "Source: step 1 (geometry of one graph) and the Lipschitz image bound used in step 4 of the parent proof (step B6 (iii)–(iv) of the proof of Simon 8.5.9), specialised to a single graph piece A; no closedness or measurability of A is used. Notation: H^n := μHE[n] (Mathlib's Euclidean Hausdorff measure on ℝ^N = Euclidean N, an outer measure, so H^n(S) is defined for every set S); p := Grassmannian.project P, the orthogonal projection onto the n-plane P.plane = range p; it is linear (p = P.projectionLinearMap), symmetric (Grassmannian.projectionLinearMap_isSymmetric) and idempotent (Grassmannian.project_project). A set S ⊆ ℝ^N is an L-Lipschitz graph over P when |(y − z) − p(y − z)| ≤ L|p(y − z)| for all y, z ∈ S; every subset of such a set is again one.\n\n1. Pythagoras for p. For v ∈ ℝ^N, symmetry and idempotence give ⟨p v, p v⟩ = ⟨p(p v), v⟩ = ⟨p v, v⟩, hence ⟨p v, v − p v⟩ = 0 and, expanding |p v + (v − p v)|² (norm_add_sq_real), |v|² = |p v|² + |v − p v|².\n\n2. Inverse-Lipschitz estimate on A. Let y, z ∈ A and v := y − z, so p v = p(y) − p(z) by linearity. The hypothesis gives 0 ≤ |v − p v| ≤ L|p v|, hence |v − p v|² ≤ L²|p v|², and by step 1 |y − z|² = |p v|² + |v − p v|² ≤ (1 + L²)|p(y) − p(z)|². Taking square roots, |y − z| ≤ (1 + L²)^{1/2} |p(y) − p(z)|.\n\n3. Injectivity and the inverse map. If y, z ∈ A and p(y) = p(z), step 2 gives |y − z| ≤ 0, so y = z: p is injective on A. Let h := Function.invFunOn p A. By injectivity h(p(y)) = y for every y ∈ A (Set.InjOn.leftInvOn_invFunOn), and therefore h(p(A)) = A (Set.LeftInvOn.image_image).\n\n4. h is K-Lipschitz on p(A) with K := (1 + L²)^{1/2} (as an element of ℝ≥0: Real.toNNReal √(1 + L²)). Indeed, for a = p(y) and b = p(z) with y, z ∈ A, step 3 gives h(a) = y, h(b) = z, so by step 2 dist(h(a), h(b)) = |y − z| ≤ K|p(y) − p(z)| = K·dist(a, b) (LipschitzOnWith.of_dist_le_mul).\n\n5. Lipschitz image bound. By Mathlib's LipschitzOnWith.hausdorffMeasure_image_le (exponent d = n ≥ 0) applied to h on p(A), μH[n](h(p(A))) ≤ K^n·μH[n](p(A)); by step 3 the left side is μH[n](A). In [0, ∞], K^n = (ofReal √(1 + L²))^(n:ℝ) = ofReal(√(1 + L²)^(n:ℝ)) = ofReal((1 + L²)^{n/2}) (ENNReal.ofReal_rpow_of_nonneg, Real.sqrt_eq_rpow, Real.rpow_mul). So μH[n](A) ≤ ofReal((1 + L²)^{n/2})·μH[n](p(A)).\n\n6. Normalisation. By definition μHE[n] = c·μH[n] with the constant c = addHaarScalarFactor volume μH[n] (Measure.euclideanHausdorffMeasure_def, Measure.smul_apply). Multiplying the inequality of step 5 by c gives H^n(A) = c·μH[n](A) ≤ c·ofReal((1 + L²)^{n/2})·μH[n](p(A)) = ofReal((1 + L²)^{n/2})·H^n(p(A)). ∎",
+  "key_steps": [
+    "Pythagoras for the orthogonal projection: |v|² = |p v|² + |v − p v|².",
+    "Graph inequality ⇒ |y − z| ≤ (1 + L²)^{1/2}|p(y) − p(z)| on A; hence p is injective on A.",
+    "h := invFunOn p A satisfies h(p(A)) = A and is (1 + L²)^{1/2}-Lipschitz on p(A).",
+    "LipschitzOnWith.hausdorffMeasure_image_le: μH[n](A) ≤ ((1 + L²)^{1/2})^n μH[n](p(A)) = (1 + L²)^{n/2} μH[n](p(A)).",
+    "μHE[n] = c·μH[n] transfers the bound to H^n."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
