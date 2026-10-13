@@ -3797,6 +3797,137 @@ theorem Submission.dorag_ha_energy_lsc : ∀ (n : ℕ) (R E : ℝ) (u : ℕ → 
     (fun x _ => sq_nonneg _) fun r hr hrR => ?_
   exact Submission.dorag_ha_lsc_interior_energy n R E r h hr hrR hE0 hh hdual
 
+/-- **Harmonic approximation lemma** (Simon Ch. 5, Lemma 3.1, for Lipschitz `w`).  Given `n ≥ 1`
+and `ε > 0` there is `δ > 0` such that: if `w` is Lipschitz, `∫_{B_{R₀}} ‖Dw‖² ≤ R₀ⁿ` and
+`|∫_{B_{R₀}} ∇w·∇ζ| ≤ δ R₀ⁿ G` for every `C¹` function `ζ` with compact support in
+`B_{R₀} = B̆_{R₀}(0)` and `‖Dζ‖ ≤ G`, then some `h`, smooth and harmonic on `B_{R₀}`, has
+`∫_{B_{R₀}} ‖Dh‖² ≤ R₀ⁿ` and `∫_{B_{R₀}} (h − w)² ≤ ε R₀^{n+2}`.
+*Unit scale* (`R₀ = 1`), by contradiction: otherwise for each `j` some `w_j` satisfies the
+hypotheses with `δ = 1/(j+1)` but has no such `h`.  With `c_j` the mean of `w_j` over `B_1`,
+Poincaré bounds `∫_{B_1} (w_j − c_j)²` and Rellich gives `W ∈ L²(B_1)` with
+`∫_{B_1} (w_{φ(j)} − c_{φ(j)} − W)² → 0`.  Then `∫_{B_1} W Δζ = 0` for `C²` test functions `ζ`;
+Weyl's lemma gives a smooth harmonic `g = W` a.e. on `B_1`, and lower semicontinuity of the
+energy gives `∫_{B_1} ‖Dg‖² ≤ 1`.  For large `j`, `g + c_{φ(j)}` is admissible for `w_{φ(j)}`, a
+contradiction.  *Scaling*: `w₁(y) = R₀⁻¹ w(R₀y)` satisfies the unit-scale hypotheses, and an
+admissible `h₁` for `w₁` rescales to `h(x) = R₀ h₁(x/R₀)`. -/
+theorem Submission.dorag_ha_approximation : ∀ n : ℕ, 0 < n → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ (R₀ : ℝ) (w : Euclid n → ℝ) (Lw : NNReal), 0 < R₀ → LipschitzWith Lw w → ∫ v in ball (0 : Euclid n) R₀, ‖fderiv ℝ w v‖ ^ 2 ≤ R₀ ^ n → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R₀ → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R₀, ∑ i : Fin n, fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ * R₀ ^ n * G) → ∃ h : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R₀)) ∧ (∀ y ∈ ball (0 : Euclid n) R₀, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ IntegrableOn (fun y => ‖fderiv ℝ h y‖ ^ 2) (ball (0 : Euclid n) R₀) ∧ ∫ y in ball (0 : Euclid n) R₀, ‖fderiv ℝ h y‖ ^ 2 ≤ R₀ ^ n ∧ IntegrableOn (fun y => (h y - w y) ^ 2) (ball (0 : Euclid n) R₀) ∧ ∫ y in ball (0 : Euclid n) R₀, (h y - w y) ^ 2 ≤ ε * R₀ ^ (n + 2) := by
+  intro n hn ε hε
+  -- Unit scale: the statement for `R₀ = 1`
+  have hunit : ∃ δ : ℝ, 0 < δ ∧ ∀ (w : Euclid n → ℝ) (Lw : NNReal), LipschitzWith Lw w →
+      ∫ v in ball (0 : Euclid n) 1, ‖fderiv ℝ w v‖ ^ 2 ≤ 1 →
+      (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+        tsupport ζ ⊆ ball (0 : Euclid n) 1 → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) →
+        |∫ v in ball (0 : Euclid n) 1, ∑ i : Fin n,
+          fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) *
+            fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ * G) →
+      ∃ h₁ : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h₁ (ball (0 : Euclid n) 1)) ∧
+        (∀ y ∈ ball (0 : Euclid n) 1, ∑ i : Fin n, iteratedFDeriv ℝ 2 h₁ y
+          ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧
+        IntegrableOn (fun y => ‖fderiv ℝ h₁ y‖ ^ 2) (ball (0 : Euclid n) 1) ∧
+        ∫ y in ball (0 : Euclid n) 1, ‖fderiv ℝ h₁ y‖ ^ 2 ≤ 1 ∧
+        IntegrableOn (fun y => (h₁ y - w y) ^ 2) (ball (0 : Euclid n) 1) ∧
+        ∫ y in ball (0 : Euclid n) 1, (h₁ y - w y) ^ 2 ≤ ε := by
+    by_contra hcon
+    -- for each `j`, a counterexample `w j` to the unit-scale statement with `δ = 1/(j+1)`
+    have hbad : ∀ j : ℕ, ∃ (w : Euclid n → ℝ) (Lw : NNReal), LipschitzWith Lw w ∧
+        ∫ v in ball (0 : Euclid n) 1, ‖fderiv ℝ w v‖ ^ 2 ≤ 1 ∧
+        (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+          tsupport ζ ⊆ ball (0 : Euclid n) 1 → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) →
+          |∫ v in ball (0 : Euclid n) 1, ∑ i : Fin n,
+            fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) *
+              fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ 1 / ((j : ℝ) + 1) * G) ∧
+        ¬∃ h₁ : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h₁ (ball (0 : Euclid n) 1)) ∧
+          (∀ y ∈ ball (0 : Euclid n) 1, ∑ i : Fin n, iteratedFDeriv ℝ 2 h₁ y
+            ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧
+          IntegrableOn (fun y => ‖fderiv ℝ h₁ y‖ ^ 2) (ball (0 : Euclid n) 1) ∧
+          ∫ y in ball (0 : Euclid n) 1, ‖fderiv ℝ h₁ y‖ ^ 2 ≤ 1 ∧
+          IntegrableOn (fun y => (h₁ y - w y) ^ 2) (ball (0 : Euclid n) 1) ∧
+          ∫ y in ball (0 : Euclid n) 1, (h₁ y - w y) ^ 2 ≤ ε := by
+      intro j
+      by_contra hj
+      refine hcon ⟨1 / ((j : ℝ) + 1), by positivity, fun w Lw hLw hE hH => ?_⟩
+      by_contra hno
+      exact hj ⟨w, Lw, hLw, hE, hH, hno⟩
+    choose w Lw hLw hE hH hno using hbad
+    -- `c j` is the mean of `w j` over `B_1`; Poincaré bounds `∫_{B_1} (w j - c j)²`
+    obtain ⟨CP, hCP, hP⟩ := Submission.dorag_ha_poincare_ball n hn
+    obtain ⟨c, hc⟩ : ∃ c : ℕ → ℝ, ∀ j, c j = (∫ y in ball (0 : Euclid n) 1, w j y) /
+        (volume (ball (0 : Euclid n) 1)).toReal := ⟨_, fun _ => rfl⟩
+    have hu2 : ∀ j, ∫ x in ball (0 : Euclid n) 1, (w j x - c j) ^ 2 ≤ max CP 1 := by
+      intro j
+      have hPj := hP (w j) (Lw j) (hLw j)
+      rw [← hc j] at hPj
+      calc ∫ x in ball (0 : Euclid n) 1, (w j x - c j) ^ 2
+          ≤ CP * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (w j) x‖ ^ 2 := hPj
+        _ ≤ CP * 1 := mul_le_mul_of_nonneg_left (hE j) hCP.le
+        _ ≤ max CP 1 := (mul_one CP).le.trans (le_max_left _ _)
+    -- `D(w j - c j) = D(w j)`
+    have hDu2 : ∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (fun x => w j x - c j) x‖ ^ 2 ≤
+        max CP 1 := by
+      intro j
+      simp only [fderiv_sub_const]
+      exact (hE j).trans (le_max_right _ _)
+    -- Rellich: `w (φ j) - c (φ j) → W` in `L²(B_1)` along a subsequence `φ`
+    obtain ⟨φ, W, hφ, hW, hconv⟩ := Submission.dorag_ha_rellich_ball n (max CP 1)
+      (fun j x => w j x - c j) hn (fun j => ⟨_, (hLw j).sub (LipschitzWith.const (c j))⟩)
+      hu2 hDu2
+    -- `∫_{B_1} W Δζ = 0` for every `C²` test function `ζ` compactly supported in `B_1`
+    have hharm := Submission.dorag_haa_weakly_harmonic_limit n 1 (fun j => w (φ j))
+      (fun j => c (φ j)) (fun j => 1 / ((φ j : ℝ) + 1)) W (fun j => ⟨_, hLw (φ j)⟩)
+      (tendsto_one_div_add_atTop_nhds_zero_nat.comp hφ.tendsto_atTop) hW hconv
+      (fun j => hH (φ j))
+    -- Weyl: a smooth harmonic `g` with `g = W` a.e. on `B_1`
+    have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) 1)) :=
+      isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+    obtain ⟨g, hgC, hgΔ, hgW⟩ := Submission.dorag_ha_weyl_lemma n 1 W hn one_pos
+      (hW.integrable one_le_two) hharm
+    -- lower semicontinuity of the energy: `∫_{B_1} ‖Dg‖² ≤ 1`
+    obtain ⟨hgI, hgE⟩ := Submission.dorag_ha_energy_lsc n 1 1 (fun j => w (φ j))
+      (fun j => c (φ j)) W g hn one_pos (fun j => ⟨_, hLw (φ j)⟩) (fun j => hE (φ j)) hW hconv
+      (hgC 2) hgW
+    -- pick `j` with `∫_{B_1} (w (φ j) - c (φ j) - W)² ≤ ε`
+    obtain ⟨j, hj⟩ := (hconv.eventually (Iic_mem_nhds hε)).exists
+    have hj' : ∫ x in ball (0 : Euclid n) 1, (w (φ j) x - c (φ j) - W x) ^ 2 ≤ ε := hj
+    -- `w (φ j) - c (φ j)` is continuous, hence bounded on `B_1`, so it lies in `L²(B_1)`
+    have hcont : Continuous fun x => w (φ j) x - c (φ j) :=
+      (hLw (φ j)).continuous.sub continuous_const
+    obtain ⟨C, hC⟩ := (isCompact_closedBall (0 : Euclid n) 1).exists_bound_of_continuousOn
+      hcont.continuousOn
+    have hmem : MemLp (fun x => w (φ j) x - c (φ j)) 2 (volume.restrict (ball (0 : Euclid n) 1)) :=
+      MemLp.of_bound hcont.aestronglyMeasurable C
+        (ae_restrict_of_forall_mem measurableSet_ball fun x hx => hC x (ball_subset_closedBall hx))
+    have hd := hmem.sub hW
+    have hsq : IntegrableOn (fun y => (w (φ j) y - c (φ j) - W y) ^ 2) (ball (0 : Euclid n) 1) :=
+      (hd.integrable_mul hd).congr
+        (ae_of_all _ fun y => by simp only [Pi.mul_apply, Pi.sub_apply, sq])
+    -- `g + c (φ j) - w (φ j) = W - (w (φ j) - c (φ j))` a.e. on `B_1`
+    have hae : (fun y => (w (φ j) y - c (φ j) - W y) ^ 2)
+        =ᵐ[volume.restrict (ball (0 : Euclid n) 1)] fun y => (g y + c (φ j) - w (φ j) y) ^ 2 := by
+      filter_upwards [hgW] with y hy
+      rw [hy]
+      ring
+    -- `g + c (φ j)` is admissible for `w (φ j)`: adding a constant leaves `Dg`, `D²g` unchanged
+    have hgD : fderiv ℝ (fun x => g x + c (φ j)) = fderiv ℝ g :=
+      funext fun x => fderiv_add_const _
+    refine hno (φ j) ⟨fun x => g x + c (φ j), fun m => (hgC m).add contDiffOn_const,
+      fun y hy => ?_, ?_, ?_, hsq.congr hae, (integral_congr_ae hae).symm.trans_le hj'⟩
+    · have h2 : iteratedFDeriv ℝ 2 (fun x => g x + c (φ j)) y = iteratedFDeriv ℝ 2 g y := by
+        ext m
+        rw [iteratedFDeriv_two_apply, iteratedFDeriv_two_apply, hgD]
+      rw [h2]
+      exact hgΔ y hy
+    · rw [hgD]
+      exact hgI
+    · rw [hgD]
+      exact hgE
+  -- Scaling: `w₁(y) = R₀⁻¹ w(R₀y)` satisfies the unit-scale hypotheses, and an admissible `h₁`
+  -- for `w₁` rescales to `h(x) = R₀ h₁(x/R₀)`
+  obtain ⟨δ, hδ, hA⟩ := hunit
+  refine ⟨δ, hδ, fun R₀ w Lw hR₀ hLw hE hH => ?_⟩
+  obtain ⟨hLw₁, hE₁, hH₁⟩ := Submission.dorag_haa_rescale_hypotheses n δ R₀ w Lw hR₀ hLw hE hH
+  obtain ⟨h₁, hC₁, hΔ₁, hI₁, hD₁, hI₂, hε₁⟩ := hA _ Lw hLw₁ hE₁ hH₁
+  exact Submission.dorag_haa_rescale_conclusion n ε R₀ w h₁ hR₀ hC₁ hΔ₁ hI₁ hD₁ hI₂ hε₁
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
