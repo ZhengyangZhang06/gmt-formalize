@@ -554,6 +554,44 @@ theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a
     _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
     _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
     _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
+/-- **Inner-annulus quotients and the derivative of `r ↦ μ(B_r(x₁))`** (Simon Ch. 6: the
+quotients `h⁻¹ M(T⌞{t − h < |x − ξ| < t})` of 4.9 are bounded by the derivative of
+`r ↦ M(T⌞B_r(ξ))`, as used in the proof of 8.2, (2)).  If `μ(B_ρ(x₁)) < ∞` and
+`F(r) = μ(B_r(x₁))` has derivative `d` at `ρ`, then
+`liminf_{h ↓ 0} h⁻¹ μ{ρ − h < |x − x₁| < ρ} ≤ d`: for `h > 0` the annulus lies in
+`B_ρ(x₁) \ B_{ρ−h}(x₁)`, of measure `F(ρ) − F(ρ − h)`, and the backward difference quotients
+`h⁻¹ (F(ρ) − F(ρ − h))` tend to `d`. -/
+theorem Submission.cbrld_radius_liminf_annulus_le_of_hasDerivAt : ∀ (P : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (ρ d : ℝ), μ (ball x₁ ρ) ≠ ∞ → HasDerivAt (fun r : ℝ => (μ (ball x₁ r)).toReal) d ρ → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) ≤ ENNReal.ofReal d := by
+  intro P μ x₁ ρ d hμ hd
+  -- the backward difference quotients `h⁻¹ (F(ρ) − F(ρ − h))` tend to `d` as `h ↓ 0`
+  have hq : Tendsto (fun h : ℝ => h⁻¹ * ((μ (ball x₁ ρ)).toReal - (μ (ball x₁ (ρ - h))).toReal))
+      (𝓝[>] 0) (𝓝 d) := by
+    have hneg : Tendsto (fun h : ℝ => -h) (𝓝[>] 0) (𝓝[<] 0) := by
+      simpa using tendsto_neg_nhdsGT (a := (0 : ℝ))
+    refine (hd.tendsto_slope_zero_left.comp hneg).congr' (Eventually.of_forall fun h => ?_)
+    simp only [Function.comp_apply, smul_eq_mul]
+    rw [inv_neg, ← sub_eq_add_neg]
+    ring
+  have hlim : liminf (fun h : ℝ => ENNReal.ofReal
+      (h⁻¹ * ((μ (ball x₁ ρ)).toReal - (μ (ball x₁ (ρ - h))).toReal))) (𝓝[>] 0) =
+      ENNReal.ofReal d :=
+    ((ENNReal.continuous_ofReal.tendsto d).comp hq).liminf_eq
+  refine (liminf_le_liminf ?_).trans_eq hlim
+  -- for `h > 0`, the annulus lies in `B_ρ(x₁) \ B_{ρ−h}(x₁)`, of measure `F(ρ) − F(ρ − h)`
+  filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+  have hsub : ball x₁ (ρ - h) ⊆ ball x₁ ρ := ball_subset_ball (by linarith)
+  have hfin : μ (ball x₁ (ρ - h)) ≠ ∞ := ne_top_of_le_ne_top hμ (measure_mono hsub)
+  have hA : {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ} ⊆ ball x₁ ρ \ ball x₁ (ρ - h) :=
+    fun x hx => ⟨mem_ball.mpr hx.2, fun hx' => lt_asymm hx.1 (mem_ball.mp hx')⟩
+  calc ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}
+      ≤ ENNReal.ofReal h⁻¹ * μ (ball x₁ ρ \ ball x₁ (ρ - h)) := by gcongr
+    _ = ENNReal.ofReal h⁻¹ * ENNReal.ofReal
+          ((μ (ball x₁ ρ)).toReal - (μ (ball x₁ (ρ - h))).toReal) := by
+        rw [measure_sdiff hsub measurableSet_ball.nullMeasurableSet hfin,
+          ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hμ,
+          ENNReal.ofReal_toReal hfin]
+    _ = ENNReal.ofReal (h⁻¹ * ((μ (ball x₁ ρ)).toReal - (μ (ball x₁ (ρ - h))).toReal)) :=
+        (ENNReal.ofReal_mul (inv_nonneg.mpr hh.le)).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
