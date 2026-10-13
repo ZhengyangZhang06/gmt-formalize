@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Steiner symmetrization in direction `j` keeps the length of every line slice: for compact
+`A ⊆ ℝᵈ` and `y ∈ ℝᵈ`, `L¹{t | y[j↦t] ∈ S_j(A)} = L¹(B)` with `B = {t | y[j↦t] ∈ A}`.  Each
+point `y[j↦t]` of the line has `j`-th coordinate `t` and slice `B`, so the left set is
+`{t | B ≠ ∅ ∧ |t| ≤ ℓ/2}`, `ℓ = L¹(B)`.  It is empty if `B = ∅` and `[-ℓ/2, ℓ/2]` otherwise, of
+length `ℓ`, which is finite because `B` lies in the compact projection `π_j(A)`. -/
+theorem Submission.cbr_ci_iso_svol_steiner_slice_volume_eq : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ {x : Euclid d | {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}.Nonempty ∧ |x j| ≤ (volume {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}).toReal / 2}} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} := by
+  intro d j A hA y
+  -- `B = A^j_y = {s | y[j↦s] ∈ A}`
+  obtain ⟨B, hB⟩ : ∃ B : Set ℝ, {s : ℝ | WithLp.toLp 2 (update y.ofLp j s) ∈ A} = B :=
+    ⟨_, rfl⟩
+  -- steps 1–2: `(y[j↦t])_j = t` and `(y[j↦t])[j↦s] = y[j↦s]` (`WithLp.ofLp_toLp` is `rfl`), so
+  -- `A^j_{y[j↦t]} = B` and the left set is `{t | B ≠ ∅ ∧ |t| ≤ ℓ/2}`, `ℓ = (L¹ B).toReal`
+  simp only [mem_ofPred_eq, update_idem, update_self, hB]
+  -- step 3: `B ⊆ π_j(A)`, which is compact, so `L¹(B) < ∞`
+  have hBfin : volume B ≠ ∞ := by
+    have hπ : IsCompact ((fun x : Euclid d => x j) '' A) := hA.image (PiLp.continuous_apply 2 _ j)
+    refine (measure_lt_top_of_subset ?_ hπ.measure_lt_top.ne).ne
+    rintro s hs
+    rw [← hB] at hs
+    exact ⟨_, hs, update_self j s y.ofLp⟩
+  rcases B.eq_empty_or_nonempty with rfl | hBne
+  -- step 4: if `B = ∅`, the left set is empty
+  · simp only [Set.not_nonempty_empty, false_and, ofPred_false]
+  -- step 5: otherwise it is `[-ℓ/2, ℓ/2]`, of measure `ofReal ℓ = L¹(B)`
+  · have hIcc : {t : ℝ | B.Nonempty ∧ |t| ≤ (volume B).toReal / 2} =
+        Icc (-((volume B).toReal / 2)) ((volume B).toReal / 2) := by
+      ext t
+      rw [mem_ofPred_eq, mem_Icc, ← abs_le, and_iff_right hBne]
+    rw [hIcc, Real.volume_Icc, sub_neg_eq_add, add_halves, ENNReal.ofReal_toReal hBfin]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
