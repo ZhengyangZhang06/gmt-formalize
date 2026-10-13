@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e3870b721f239eacf512ecfcd1ba7a8b6e6a7f9138bbb9654a76b0ac542511e",
+  "git_delta": {
+    "base_commit": "ac93db3fe6aef91ce48c486165a1a08baa5399da",
+    "candidate_commit": "b7b7a81541f2bae1700493eea6bbafd11cb7b384",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_im_median_minimizes",
+    "diff_sha256": "a268a4e87037b17a8d19a7f8ba8e6623df22d453ccf9ba2e5f29afb7081c6d69",
+    "source_sha256": "d7c2415e986ab75817585a8df3149b8c2fa0a371f7f7483e068658627869e69b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_im_median_minimizes",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c₀ : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c₀}) → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c₀ ≤ u x}) → ∀ c : ℝ, ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ ≤ ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
