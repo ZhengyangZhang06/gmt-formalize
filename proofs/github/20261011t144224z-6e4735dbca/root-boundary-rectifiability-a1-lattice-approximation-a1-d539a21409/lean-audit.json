@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b39e725be173a7a726e55ef521fa5a77fff97f7b8e6a7fd5cb8783ab8699944a",
+  "git_delta": {
+    "base_commit": "82c29a3bb2b3d32a3c82cfd97857ab323082451c",
+    "candidate_commit": "e0e5bf49d43eda8d063ba57281b879594e40e99e",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "cd6fa10cc050b87377d21162b3ee06bbee0c5143010d7489ef90fae2aa832f6e",
+    "source_sha256": "2bc1940016497a129e2be9e9b3cc2f7c196a7df39f92d64ebe7edd561a2283c9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_lattice_approximation",
+      "statement": "DeformationTheorem → ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) P → ℤ) (Pk : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ k, 0 < ρ k) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pk k)) ∧ WeaklyConvergesOn Pk X ∧ (⨆ k, (Pk k).boundary.mass) < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
