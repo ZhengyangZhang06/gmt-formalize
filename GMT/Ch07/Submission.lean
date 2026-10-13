@@ -532,6 +532,33 @@ theorem Submission.cbr_ci_pw_mu_uniform_of_equilipschitz : ∀ (n : ℕ) (K : Se
   rw [abs_sub_comm a (F k z)] at htri
   linarith [hk z hz]
 
+/-- **Simon 7.2.4**, uniform convergence of mollified weak limits (step 11(a) of the weight
+lower bound `α ≥ 1`): if the `u_k` are eventually `L¹`-bounded by `Λ` on `B_{2R}(0)` and
+`∫_{B_{2R}(0)} u_k b → c ∫ b` for every test function `b` with `spt b ⊆ B_{2R}(0)`, then for a test
+function `φ` with `spt φ ⊆ B_s(0)`, `s < R`, the mollifications
+`w_k(x) = ∫_{B_{2R}(0)} u_k(y) φ(x − y) dy` converge to `c ∫ φ` uniformly on `B̄_R(0)`.  For
+`x ∈ B̄_R(0)` the translate `φ(x − ·)` is such a test function with the same integral
+(`cbr_ci_pw_mu_translate_admissible`), so `w_k(x) → c ∫ φ`; the `w_k` are eventually
+`LΛ`-Lipschitz (`cbr_ci_pw_mu_conv_lipschitz`); and pointwise convergence with an eventual
+uniform Lipschitz bound on the compact `B̄_R(0)` is uniform
+(`cbr_ci_pw_mu_uniform_of_equilipschitz`). -/
+theorem Submission.cbr_ci_pw_mollified_tendstoUniformlyOn : ∀ (n : ℕ) (R s c Λ : ℝ) (φ : Euclid n → ℝ) (u : ℕ → Euclid n → ℝ), 0 < R → 0 < s → s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → (∀ᶠ k in atTop, ∫ y in ball 0 (2 * R), |u k y| ≤ Λ) → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ ball 0 (2 * R) → Tendsto (fun k => ∫ y in ball 0 (2 * R), u k y * b y) atTop (𝓝 (c * ∫ y, b y))) → TendstoUniformlyOn (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (fun _ => c * ∫ y, φ y) atTop (closedBall 0 R) := by
+  intro n R s c Λ φ u _ _ hsR hφ hφs hu hΛ hconv
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : Euclid n) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφs.trans ball_subset_closedBall)
+  obtain ⟨L, hL, hLip⟩ := Submission.cbr_ci_pw_mu_conv_lipschitz n φ hφ hφc
+  refine Submission.cbr_ci_pw_mu_uniform_of_equilipschitz n (closedBall 0 R)
+    (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (c * ∫ y, φ y) (L * Λ)
+    (isCompact_closedBall 0 R) (fun x hx => ?_) ?_
+  · obtain ⟨hb, hbc, hbs, hbi⟩ :=
+      Submission.cbr_ci_pw_mu_translate_admissible n R s φ x hsR hφ hφs hx
+    have h := hconv (fun y => φ (x - y)) hb hbc hbs
+    rwa [hbi] at h
+  · filter_upwards [hΛ] with k hk x _ x' _
+    exact (hLip (ball 0 (2 * R)) (u k) (hu k) x x').trans
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hk hL) dist_nonneg)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
