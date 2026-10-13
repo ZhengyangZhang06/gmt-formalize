@@ -1,0 +1,53 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon 7.2.4, (8), (12)–(14). Siblings used: vanish_off_support (VO); mass_and_support, first conjunct (MR). M_O(Y) := Y.massOn O; IM: integer multiplicity.
+0. (L1) For Y ∈ 𝒟_n(V) and any O, M_O(Y) = M_{O∩V}(Y): admissible forms are test forms in V (tsupport ⊆ V), so the admissible sets coincide.
+(L2) If V is open and R_Y represents Y ∈ 𝒟_n(V), M_O(Y) = R_Y.measure O for open O ⊆ ℝ^P (MR).
+(L3) For bounded open O and strictly increasing φ'', M_O(C) ≤ liminf_i M_O(S_{φ''(i)}). For ω ∈ massAdmissibleOn univ n O: closure O ⊆ closedBall(0, R) for some R, so by (1) tsupport ω ⊆ O ⊆ U_j for large j, whence ofReal(currentEval(S_j, ω)) = ofReal(S_j(ω_j)) ≤ M_O(S_j), ω_j being ω as an element of massAdmissibleOn U_j n O; by (2), ofReal(C(ω)) = lim_i ofReal(currentEval(S_{φ''(i)}, ω)) ≤ liminf_i M_O(S_{φ''(i)}). Take the sup over ω.
+(L4) If R_k represents A_k ∈ 𝒟_n(V_k) (k = 1, 2; V_k open), ρ_k := R_k.measure, O ⊆ V₁ ∩ V₂ is open and currentEval A₁ ω = currentEval A₂ ω whenever tsupport ω ⊆ O, then ρ₁(E) = ρ₂(E) for Borel E ⊆ O. (i) For open G ⊆ O, M_G(A₁) and M_G(A₂) have the same admissible forms (tsupport ⊆ G ⊆ V₁ ∩ V₂) with equal values, so ρ₁(G) = ρ₂(G) by (L2). (ii) If G is open and closure G ⊆ O is compact, ρ_k(G) ≤ ∫_{carrier∩closure G} mult dHⁿ < ∞ (locallyIntegrable_mult). (iii) O_q := ball(0, q) ∖ cthickening(1/q, ℝ^P ∖ O) (ball(0, q) if O = ℝ^P), q ≥ 1, are open, increasing, with compact closures in O and union O. The measures ρ_k⌞O_q, finite by (ii), agree on every open G (G ∩ O_q is open ⊆ O; (i)) and on ℝ^P; open sets are a π-system generating the Borel sets, so they are equal (ext_of_generate_finite). (iv) For Borel E ⊆ O, ρ_k(E) = lim_q ρ_k(E ∩ O_q) (continuity from below), equal for k = 1, 2 by (iii).
+1. (Minimality.) C is IM. Let W be open with CompactlyContained W univ and S ∈ 𝒟_n(ℝ^P) IM with SameBoundary S C, K := (S − C).support compact and K ⊆ univ ∩ W. Choose ε > 0 with thickening(ε, K) ⊆ W (IsCompact.exists_thickening_subset_open). Hypothesis (3) with K, ε, ψ := id and the admissible S gives an open W', K ⊆ W' ⊆ thickening(ε, K) ⊆ W, and a strictly increasing φ' with limsup_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S); W' is bounded, so by (L3) M_{W'}(C) ≤ liminf_i M_{W'}(S_{φ'(i)}) ≤ limsup_i ⋯ ≤ M_{W'}(S). Let R_C, R_S represent C, S, μ_C := R_C.measure, μ_S := R_S.measure. If tsupport ω ⊆ O := ℝ^P ∖ K (open), then (S − C)(ω) = 0 by (VO), i.e. currentEval(S, ω) = currentEval(C, ω); so by (L4) (V₁ = V₂ = ℝ^P) μ_S = μ_C on Borel subsets of O ⊇ W ∖ W' (K ⊆ W'). By (L2), M_W(C) = μ_C(W') + μ_C(W ∖ W') = M_{W'}(C) + μ_S(W ∖ W') ≤ M_{W'}(S) + μ_S(W ∖ W') = μ_S(W) = M_W(S). Hence IsMinimizingIn C univ.
+2. (Radon criterion.) Claim: if μ, μ_j are Borel measures on ℝ^P with (a) μ(K) < ∞ and (b) limsup_j μ_j(K) ≤ μ(K) for compact K, and (c) μ(G) ≤ liminf_j μ_j(G) for bounded open G, then ∫ f dμ_j → ∫ f dμ (Bochner) for every continuous compactly supported f : ℝ^P → ℝ. Proof. K₀ := tsupport f (compact), M₀ := sup|f|; if M₀ = 0 all integrals vanish. (i) By (a), (b) there is j₁ with μ_j(K₀) ≤ A := μ(K₀) + 1 < ∞ for j ≥ j₁; f is ν-integrable for ν ∈ {μ} ∪ {μ_j : j ≥ j₁} (Borel, |f| ≤ M₀1_{K₀}). (ii) As f = f⁺ − f⁻ and finitely many j do not matter, it suffices to treat continuous 0 ≤ g ≤ M₀ vanishing off K₀. (iii) Layer cake (lintegral_eq_lintegral_meas_lt, _le): for Borel ν, I(ν) := ∫⁻ ofReal(g) dν = ∫⁻_{(0,∞)} ν({g > t}) dt = ∫⁻_{(0,∞)} ν({g ≥ t}) dt; for t > 0, {g > t} is bounded open and {g ≥ t} ⊆ K₀ compact, both empty for t > M₀. (iv) By (c) and Fatou (lintegral_liminf_le), I(μ) ≤ ∫⁻ liminf_j μ_j({g > t}) dt ≤ liminf_j I(μ_j). (v) For j ≥ j₁, μ_j({g ≥ t}) ≤ A·1_{(0,M₀]}(t), integrable; reverse Fatou (limsup_lintegral_le for (μ_{j₁+i})_i, whose t-functions are antitone, hence measurable) and (b) give limsup_j I(μ_j) ≤ ∫⁻ limsup_j μ_j({g ≥ t}) dt ≤ ∫⁻ μ({g ≥ t}) dt = I(μ). (vi) So I(μ_j) → I(μ) ≤ M₀μ(K₀) < ∞, with I(μ_j) ≤ M₀A for j ≥ j₁; as ∫ g dν = I(ν).toReal for integrable g ≥ 0 (integral_eq_lintegral_of_nonneg_ae) and toReal is continuous at finite values, ∫ g dμ_j → ∫ g dμ; recombine f⁺, f⁻. ∎
+3. (Mass measures.) Let R_j, R represent S_j (every j), C; μ_j := R_j.measure, μ := R.measure; f continuous with compact support. We check (a)–(c) of step 2. (a) For compact K ⊆ univ, μ(K) = ∫⁻_{carrier∩K} mult dHⁿ < ∞ (locallyIntegrable_mult). (c) For bounded open G, μ(G) = M_G(C) ≤ liminf_j M_G(S_j) = liminf_j μ_j(G) ((L2), (L3) with φ'' = id). (b) Let K be compact, ε > 0, a := μ(thickening(ε, K)). If limsup_j μ_j(K) > b > a, then μ_j(K) > b infinitely often, so μ_{ψ(i)}(K) > b ∀i for a strictly increasing ψ (extraction_of_frequently_atTop). Hypothesis (3) with K, ε, ψ and S := C, which is admissible (C is IM; SameBoundary C C is True for n = 0, reflexivity otherwise; C − C = 0 vanishes on every ball, an open set with compact closure, so its support is empty), gives an open W with K ⊆ W ⊆ thickening(ε, K) and a strictly increasing φ' with limsup_i M_W(S_{ψ(φ'(i))}) ≤ M_W(C) = μ(W) ≤ a. But M_W(S_{ψ(φ'(i))}) = μ_{ψ(φ'(i))}(W) ≥ μ_{ψ(φ'(i))}(K) > b for all i (L2), so that lim sup is ≥ b > a, a contradiction. Thus limsup_j μ_j(K) ≤ μ(thickening(ε, K)) for all ε > 0. As K is closed, thickening(1/q, K) ↓ K and μ(thickening(1, K)) ≤ μ(cthickening(1, K)) < ∞ by (a) (compact), so μ(thickening(1/q, K)) → μ(K) (tendsto_measure_thickening_of_isClosed); hence limsup_j μ_j(K) ≤ μ(K).
+Step 2 gives ∫ f dμ_j → ∫ f dμ for all representations and f: MassMeasuresConverge Ss C; with step 1 the claim follows. ∎
+
+## Key steps
+
+1. (L1)–(L4): mass on open sets = weight of any IMRep; M_O(C) ≤ liminf M_O(S_j) for bounded open O; currents agreeing near O have equal weights in O.
+2. Minimality: (3), (L3) give M_{W'}(C) ≤ M_{W'}(S); by (VO), (L4) the weights of S, C agree on W ∖ W'.
+3. Radon criterion: layer cake, Fatou, reverse Fatou.
+4. Mass measures: lim inf bound on bounded open sets by (L3); lim sup bound on compacts by contradiction with competitor C, ε ↓ 0; apply the criterion.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean`
+- `python3 scans of RUN/dag.json: selected node, prerequisite types, accepted reusable declarations and their lean_statement, status of the children of root.compactness_of_minimizing_currents-a1, lean_name collisions (dimred_mbl_: no match)`
+- `grep -n _existing_lean_name_problem _accepted_checkpoint contract in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py and speculation.py`
+- `grep -rn of every cited Mathlib/SimonGMT lemma name in the pinned lake packages`
+- `lean (v4.35.0-rc3) on AllTypes.lean, AssemblyCond.lean (#print axioms) and 12 Challenge_<key>.lean modules; lean_contract.validate_lean_statement on all child types`
+- `sed -n on book/chapter-06.txt (2.15, 2.23–2.33, 3.3–3.10, 4.6–4.11) and book/chapter-07.txt (7.2.4–7.2.5)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/mb2/lean/src/AssemblyCond.lean`
+
+Pins match (HEAD b4d606d, Mathlib 25730c7c, SimonGMT 2b366308) and Submission.lean is byte-identical to the frozen contract. The pinned libraries lack Federer–Fleming compactness, the deformation theorem, flat convergence, Lipschitz slicing and integral push-forward by nonlinear maps; SimonGMT supplies currents, mass, support, weak convergence, affine push-forward, the Lipschitz area formula and approximate tangent spaces, and every cited library name exists. Accepted declarations with exact types: dtc_vanish_off_support and dor_imrep_massOn_eq_measure_and_support (reused). The children of root.compactness_of_minimizing_currents-a1 are decomposing, not accepted, so they cannot be shared; identical types with unique dimred_mbl_* names are used. A child's prerequisites are its children plus depends_on, so monotonicity enters as a hypothesis. All 12 child types elaborate and the conditional assembly proves the parent type (axioms propext, Classical.choice, Quot.sound).

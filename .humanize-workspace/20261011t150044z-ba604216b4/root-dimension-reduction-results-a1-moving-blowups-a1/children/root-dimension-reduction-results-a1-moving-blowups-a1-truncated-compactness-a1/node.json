@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1",
+  "depth": 3,
+  "title": "Truncation at good slicing radii, weak compactness and closure: an integer multiplicity cycle as weak limit of the blow-ups",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. For j ∈ ℕ let U_j ⊆ ℝ^P be open and S_j ∈ 𝒟_n(U_j) be integer multiplicity with ∂S_j = 0 in U_j (S_j.boundary = 0). Assume (i) for every R ∈ ℝ, closedBall(0, R) ⊆ U_j for all large j; (ii) for every R ∈ ℝ there is c ∈ [0, ∞) with M_{B_R(0)}(S_j) ≤ c for all large j. Then there are a strictly increasing φ : ℕ → ℕ, an integer multiplicity C ∈ 𝒟_n(ℝ^P), integer multiplicity currents Ŝ_i ∈ 𝒟_n(ℝ^P) and radii ρ_i ∈ ℝ (i ∈ ℕ) such that: ∂C = 0; S_{φ(i)} ⇀ C in ℝ^P (ConvergesWeakly); sup_i (M_W(Ŝ_i) + M_W(∂Ŝ_i)) < ∞ for every bounded open W ⊆ ℝ^P; Ŝ_i ⇀ C (WeaklyConvergesOn); ρ_i → ∞; closedBall(0, ρ_i) ⊆ U_{φ(i)}; and Ŝ_i(ω) = currentEval(S_{φ(i)}, ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ B_{ρ_i}(0).",
+  "lean_statement": "∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → (∀ j, IsIntegerMultiplicity (Ss j)) → (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (Ss j).massOn (ball 0 R) ≤ c) → (∀ j, (Ss j).boundary = 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), StrictMono φ ∧ IsIntegerMultiplicity C ∧ C.boundary = 0 ∧ ConvergesWeakly (fun j => Ss (φ j)) C ∧ (∀ j, IsIntegerMultiplicity (Ŝ j)) ∧ (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ŝ j).massOn W + (Ŝ j).boundary.massOn W) < ∞) ∧ WeaklyConvergesOn Ŝ C ∧ Tendsto ρ atTop atTop ∧ (∀ j, closedBall (0 : Euclid P) (ρ j) ⊆ Us (φ j)) ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss (φ j)) (ω : DifferentialForm (Euclid P) (m + 1))",
+  "lean_name": "dimred_mbl_truncated_compactness",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.slicing-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compactness-a1-a1"
+}
