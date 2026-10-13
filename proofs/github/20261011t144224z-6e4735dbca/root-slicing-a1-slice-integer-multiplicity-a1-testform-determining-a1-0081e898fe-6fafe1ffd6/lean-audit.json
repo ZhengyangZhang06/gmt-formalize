@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "900c041a9fd866ebb99e722343d527643a90de09cce64813aba688008edc10dd",
+  "git_delta": {
+    "base_commit": "c37a61fa7b532d7403341b26f946754de0b714ec",
+    "candidate_commit": "c633e337cd22f5e28cbc72bdb2bf04a294fe6240",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_td_current_tendsto",
+    "diff_sha256": "53e0d4af4a37035a31c46a33aa7703278d2e1e84cf0ed61e2d3278bacb8d2e64",
+    "source_sha256": "cdf78eeed0914c2bc59e3e83bea3b08bac292f410c19536fc76571b92fb974a6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_td_current_tendsto",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (S : GeometricCurrentOn U k) (e : ℕ → TestFormOn U k) (ω : TestFormOn U k), TestFormOnConverges e ω → Tendsto (fun l => S (e l)) atTop (𝓝 (S ω))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
