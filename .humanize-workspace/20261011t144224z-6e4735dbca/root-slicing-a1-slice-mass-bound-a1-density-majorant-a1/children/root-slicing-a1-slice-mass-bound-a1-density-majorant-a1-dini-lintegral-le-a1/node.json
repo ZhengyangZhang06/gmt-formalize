@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1.dini_lintegral_le-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1",
+  "depth": 4,
+  "title": "Integral over (a,b) of the lower left Dini derivative of a nondecreasing function is at most G(b) − G(a) (parent Step 7 / (5d), Lebesgue's theorem)",
+  "statement": "Let G : ℝ → ℝ be nondecreasing and let a ≤ b. Let D(t) := liminf_{k→0+} ofReal((G(t) − G(t − k))/k) ∈ [0, ∞], with the liminf along 𝓝[>] 0 in [0, ∞]. Then ∫⁻_{(a,b)} D(t) dt ≤ ofReal(G(b) − G(a)), where ∫⁻ is the lower Lebesgue integral with respect to Lebesgue measure dt.",
+  "lean_statement": "∀ G : ℝ → ℝ, Monotone G → ∀ a b : ℝ, a ≤ b → ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤ ENNReal.ofReal (G b - G a)",
+  "lean_name": "slicing_mb_dm_lintegral_lowerLeftDini_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1-dini-lintegral-le-a1-a1"
+}

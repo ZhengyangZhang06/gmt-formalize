@@ -359,6 +359,1397 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Level cut-offs converge to the indicator of `{x ∈ U : f x < t}` under the integral: for
+`χ_h = 1` on `(-∞, t - h]`, `χ_h = 0` on `[t, ∞)` and `|χ_h| ≤ 1`,
+`∫ χ_h(f) F dν → ∫_{x ∈ U, f x < t} F dν` as `h → 0+` (dominated convergence; Simon 4.11). -/
+theorem Submission.slicing_mb_pointwise_cutoff_tendsto :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ (ν : Measure (Eucl P)) (F : Eucl P → ℝ), Integrable F ν → (∀ x, x ∉ U → F x = 0) → ∀ (t : ℝ) (χ : ℝ → ℝ → ℝ), (∀ h : ℝ, 0 < h → Measurable (χ h)) → (∀ h s : ℝ, 0 < h → |χ h s| ≤ 1) → (∀ h s : ℝ, 0 < h → s ≤ t - h → χ h s = 1) → (∀ h s : ℝ, 0 < h → t ≤ s → χ h s = 0) → Tendsto (fun h : ℝ => ∫ x, χ h (f x) * F x ∂ν) (𝓝[>] 0) (𝓝 (∫ x in {x | x ∈ U ∧ f x < t}, F x ∂ν)) := by
+  intro P U hU f L hf ν F hF hF0 t χ hχm hχb hχ1 hχ0
+  -- McShane extension `g` of `f|U`: globally Lipschitz, hence continuous.
+  obtain ⟨g, hg, hfg⟩ := hf.extend_real
+  have hgc : Continuous g := hg.continuous
+  -- The limit set `A = U ∩ g⁻¹(-∞, t)` is open, so the set integral is an indicator integral.
+  set A : Set (Eucl P) := {x | x ∈ U ∧ f x < t} with hA
+  have hAeq : A = U ∩ g ⁻¹' Iio t := by
+    ext x
+    constructor
+    · rintro ⟨hx, hfx⟩
+      exact ⟨hx, show g x < t from hfg hx ▸ hfx⟩
+    · rintro ⟨hx, hgx⟩
+      exact ⟨hx, show f x < t from (hfg hx).symm ▸ hgx⟩
+  have hAm : MeasurableSet A := by
+    rw [hAeq]
+    exact (hU.inter (isOpen_Iio.preimage hgc)).measurableSet
+  rw [← integral_indicator hAm]
+  -- Off `U` we have `F = 0`, so `f` may be replaced by `g` inside the integrand.
+  have hfg' : ∀ h x, χ h (f x) * F x = χ h (g x) * F x := by
+    intro h x
+    by_cases hx : x ∈ U
+    · rw [hfg hx]
+    · simp [hF0 x hx]
+  refine tendsto_integral_filter_of_dominated_convergence (fun x => ‖F x‖) ?_ ?_ hF.norm ?_
+  · -- measurability for `h > 0`
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    have : (fun x => χ h (f x) * F x) = fun x => χ h (g x) * F x := funext (hfg' h)
+    rw [this]
+    exact ((hχm h hh).comp hgc.measurable).aestronglyMeasurable.mul hF.aestronglyMeasurable
+  · -- domination by `‖F‖` for `h > 0`
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs (χ h (f x))]
+    calc |χ h (f x)| * ‖F x‖ ≤ 1 * ‖F x‖ := by gcongr; exact hχb h _ hh
+      _ = ‖F x‖ := one_mul _
+  · -- pointwise convergence at every `x`
+    refine Eventually.of_forall fun x => ?_
+    by_cases hx : x ∈ U
+    · by_cases hft : f x < t
+      · rw [indicator_of_mem (show x ∈ A from ⟨hx, hft⟩)]
+        apply tendsto_const_nhds.congr'
+        filter_upwards [Ioo_mem_nhdsGT (sub_pos.mpr hft)] with h hh
+        rw [hχ1 h (f x) hh.1 (by linarith [hh.2]), one_mul]
+      · rw [indicator_of_notMem (show x ∉ A from fun h => hft h.2)]
+        apply tendsto_const_nhds.congr'
+        filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+        rw [hχ0 h (f x) hh (not_lt.mp hft), zero_mul]
+    · rw [indicator_of_notMem (show x ∉ A from fun h => hx h.1), hF0 x hx]
+      simp
+/-- Passing `ofReal |X_ε(h)| ≤ ofReal ((1 + ε) / h) · LW · a(h)` to the `liminf` as `h → 0+`
+and then letting `ε ↓ 0`, in `[0, ∞]`: if for every `ε > 0` some `X_ε(h) → r` as `h → 0+`
+satisfies this bound for all `h > 0`, then `ofReal |r| ≤ LW · liminf_{h → 0+} a(h) / ofReal h`.
+For fixed `ε`, `ofReal |r|` is the `liminf` of `ofReal |X_ε(h)|`, and
+`ofReal ((1 + ε) / h) · LW · a(h) = (ofReal (1 + ε) · LW) · (a(h) / ofReal h)` for `h > 0`;
+the finite constant `ofReal (1 + ε) · LW` commutes with the `liminf`, and
+`ofReal (1 + ε) → 1` as `ε → 0+`. -/
+theorem Submission.slicing_mb_pointwise_liminf_bound :
+    ∀ (a : ℝ → ℝ≥0∞) (LW : ℝ≥0) (r : ℝ),
+      (∀ ε : ℝ, 0 < ε → ∃ X : ℝ → ℝ, Tendsto X (𝓝[>] 0) (𝓝 r) ∧
+        ∀ h : ℝ, 0 < h →
+          ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h) →
+      ENNReal.ofReal |r| ≤
+        (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0) := by
+  intro a LW r hX
+  -- For fixed `ε > 0`: `ofReal |r| ≤ ofReal (1 + ε) · (LW · liminf_{h → 0+} a(h) / ofReal h)`.
+  have key : ∀ ε : ℝ, 0 < ε → ENNReal.ofReal |r| ≤ ENNReal.ofReal (1 + ε) *
+      ((LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)) := by
+    intro ε hε
+    obtain ⟨X, hXr, hXb⟩ := hX ε hε
+    -- `ofReal |X(h)| → ofReal |r|`, so `ofReal |r|` is the `liminf` of `ofReal |X(h)|`.
+    have hlim : Tendsto (fun h => ENNReal.ofReal |X h|) (𝓝[>] 0) (𝓝 (ENNReal.ofReal |r|)) :=
+      ENNReal.tendsto_ofReal hXr.abs
+    -- For `h > 0`: `ofReal ((1 + ε) / h) · LW · a(h) = (ofReal (1 + ε) · LW) · (a(h) / ofReal h)`.
+    have hle : ∀ᶠ h in 𝓝[>] (0 : ℝ), ENNReal.ofReal |X h| ≤
+        ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h) := by
+      filter_upwards [self_mem_nhdsWithin] with h hh
+      calc ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h := hXb h hh
+        _ = ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h) := by
+          rw [ENNReal.ofReal_div_of_pos hh, div_eq_mul_inv, div_eq_mul_inv]
+          ring
+    -- Monotonicity of the `liminf` and the `liminf` of a finite constant multiple.
+    calc ENNReal.ofReal |r| = liminf (fun h => ENNReal.ofReal |X h|) (𝓝[>] 0) :=
+          hlim.liminf_eq.symm
+      _ ≤ liminf (fun h => ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h))
+            (𝓝[>] 0) := liminf_le_liminf hle
+      _ = ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) *
+            liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0) :=
+          ENNReal.liminf_const_mul_of_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+            ENNReal.coe_ne_top)
+      _ = ENNReal.ofReal (1 + ε) *
+            ((LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)) :=
+          mul_assoc _ _ _
+  -- `ofReal (1 + ε) · Y → Y` as `ε → 0+` (the limit factor `1` is nonzero), then `ε ↓ 0`.
+  have hone : Tendsto (fun ε : ℝ => ENNReal.ofReal (1 + ε)) (𝓝[>] 0) (𝓝 1) := by
+    have h1 : Tendsto (fun ε : ℝ => 1 + ε) (𝓝[>] 0) (𝓝 (1 + 0)) :=
+      ((continuous_const.add continuous_id).tendsto' 0 (1 + 0) rfl).mono_left nhdsWithin_le_nhds
+    have h2 := ENNReal.tendsto_ofReal h1
+    rwa [add_zero, ENNReal.ofReal_one] at h2
+  have hY := ENNReal.Tendsto.mul_const hone (Or.inl one_ne_zero)
+    (b := (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0))
+  rw [one_mul] at hY
+  exact ge_of_tendsto hY (eventually_nhdsWithin_of_forall fun ε hε => key ε hε)
+/-- Sharp smooth cut-off below the level `t` (the cut-off of the proof of Simon Ch. 6, 4.11,
+p. 158, with slope bound `(1 + ε)/h`): for `h, ε > 0` there is a `C^∞` function `χ : ℝ → ℝ` with
+`0 ≤ χ ≤ 1`, `χ = 1` on `(-∞, t - h]`, `χ = 0` on `[t, ∞)`, `|χ'| ≤ (1 + ε)/h`, and `χ' = 0` off
+`(t - h, t)`.  Take `χ = ρ ⋆ λ`: `λ` is the clamped affine profile equal to `1` on
+`(-∞, t - h + κ]`, to `0` on `[t - κ, ∞)` and of slope `-(1 + ε)/h` in between
+(`κ = εh/(2(1 + ε))`), and `ρ` is a normalized smooth bump supported in `(-κ/2, κ/2)`. -/
+theorem Submission.slicing_mb_cutoff : ∀ (t h ε : ℝ), 0 < h → 0 < ε → ∃ χ : ℝ → ℝ,
+    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ ∧ (∀ s, 0 ≤ χ s ∧ χ s ≤ 1) ∧
+    (∀ s, s ≤ t - h → χ s = 1) ∧ (∀ s, t ≤ s → χ s = 0) ∧
+    (∀ s, |deriv χ s| ≤ (1 + ε) / h) ∧ (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) := by
+  intro t h ε hh hε
+  -- Slope `K = (1 + ε)/h`, `κ = εh/(2(1 + ε))` (so `(h - 2κ) K = 1`), mollification radius `κ/2`.
+  set K : ℝ := (1 + ε) / h with hK_def
+  have hK : 0 < K := by positivity
+  set κ : ℝ := ε * h / (2 * (1 + ε)) with hκ_def
+  have hκ : 0 < κ := by positivity
+  have hκK : (h - 2 * κ) * K = 1 := by
+    rw [hK_def, hκ_def]; field_simp; ring
+  set r : ℝ := κ / 2 with hr_def
+  have hr : 0 < r := by positivity
+  set Kn : ℝ≥0 := ⟨K, hK.le⟩ with hKn_def
+  have hKn : (Kn : ℝ) = K := rfl
+  -- The profile `λ`: `1` on `(-∞, t - h + κ]`, `0` on `[t - κ, ∞)`, `K`-Lipschitz.
+  set lam : ℝ → ℝ := fun u => min (max 0 ((t - κ - u) * K)) 1 with hlam_def
+  have haff_lip : LipschitzWith Kn (fun u : ℝ => (t - κ - u) * K) := by
+    refine LipschitzWith.of_dist_le_mul fun a b => ?_
+    rw [Real.dist_eq, Real.dist_eq, hKn,
+      show (t - κ - a) * K - (t - κ - b) * K = -((a - b) * K) by ring, abs_neg, abs_mul,
+      abs_of_pos hK, mul_comm]
+  have hlam_lip : LipschitzWith Kn lam := (haff_lip.const_max 0).min_const 1
+  have hlam_cont : Continuous lam := hlam_lip.continuous
+  have hlam01 : ∀ u, 0 ≤ lam u ∧ lam u ≤ 1 := fun u =>
+    ⟨le_min (le_max_left _ _) zero_le_one, min_le_right _ _⟩
+  have hlam_one : ∀ u, u < t - h + κ → lam u = 1 := by
+    intro u hu
+    have h1 : 1 < (t - κ - u) * K := by
+      rw [← hκK]; exact mul_lt_mul_of_pos_right (by linarith) hK
+    simp only [hlam_def]
+    rw [max_eq_right (by linarith), min_eq_right h1.le]
+  have hlam_zero : ∀ u, t - κ < u → lam u = 0 := by
+    intro u hu
+    have h1 : (t - κ - u) * K ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (by linarith) hK.le
+    simp only [hlam_def]
+    rw [max_eq_left h1, min_eq_left zero_le_one]
+  -- The mollifier `ρ = (∫ φ)⁻¹ φ`, `φ` a smooth bump with support `ball 0 r`.
+  let φ : ContDiffBump (0 : ℝ) := ⟨r / 2, r, by positivity, by linarith⟩
+  have hφ_int_pos : 0 < ∫ y, φ y := by
+    refine φ.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero φ.hasCompactSupport
+      (fun y => φ.nonneg) (x := 0) ?_
+    rw [φ.one_of_mem_closedBall (by simp [φ]; positivity)]
+    exact one_ne_zero
+  set I : ℝ := ∫ y, φ y with hI_def
+  set ρ : ℝ → ℝ := fun y => I⁻¹ * φ y with hρ_def
+  have hρ_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ρ := contDiff_const.mul φ.contDiff
+  have hρ_cs : HasCompactSupport ρ := φ.hasCompactSupport.mul_left
+  have hρ_cont : Continuous ρ := hρ_smooth.continuous
+  have hρ_nonneg : ∀ y, 0 ≤ ρ y := fun y => mul_nonneg (inv_nonneg.2 hφ_int_pos.le) φ.nonneg
+  have hρ_int : Integrable ρ := hρ_cont.integrable_of_hasCompactSupport hρ_cs
+  have hρ_one : ∫ y, ρ y = 1 := by
+    simp only [hρ_def]; rw [integral_const_mul]; exact inv_mul_cancel₀ hφ_int_pos.ne'
+  have hρ_supp : ∀ y, ρ y ≠ 0 → |y| < r := by
+    intro y hy
+    have hy' : y ∈ Function.support φ := fun h0 => hy (by simp [hρ_def, h0])
+    rw [φ.support_eq, mem_ball, Real.dist_eq, sub_zero] at hy'
+    exact hy'
+  -- `χ = ρ ⋆ λ`.
+  set χ : ℝ → ℝ := convolution ρ lam (ContinuousLinearMap.lsmul ℝ ℝ) volume with hχ_def
+  have hχ : ∀ s, χ s = ∫ y, ρ y * lam (s - y) := by
+    intro s
+    simp only [hχ_def, convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+  have hint : ∀ s, Integrable (fun y => ρ y * lam (s - y)) := fun s =>
+    Continuous.integrable_of_hasCompactSupport
+      (hρ_cont.mul (hlam_cont.comp (continuous_const.sub continuous_id))) hρ_cs.mul_right
+  -- `χ = 1` on `(-∞, t - h + r)` and `χ = 0` on `(t - r, ∞)`.
+  have hχ_one : ∀ s, s < t - h + r → χ s = 1 := by
+    intro s hs
+    rw [hχ s, ← hρ_one]
+    congr 1
+    funext y
+    by_cases hy : ρ y = 0
+    · simp [hy]
+    · have := (abs_lt.1 (hρ_supp y hy)).1
+      rw [hlam_one (s - y) (by linarith), mul_one]
+  have hχ_zero : ∀ s, t - r < s → χ s = 0 := by
+    intro s hs
+    rw [hχ s]
+    have : (fun y => ρ y * lam (s - y)) = fun _ => 0 := by
+      funext y
+      by_cases hy : ρ y = 0
+      · simp [hy]
+      · have := (abs_lt.1 (hρ_supp y hy)).2
+        rw [hlam_zero (s - y) (by linarith), mul_zero]
+    rw [this, integral_zero]
+  -- `χ` is `K`-Lipschitz, since `λ` is and `ρ` is a probability density.
+  have hχ_lip : LipschitzWith Kn χ := by
+    refine LipschitzWith.of_dist_le_mul fun a b => ?_
+    rw [Real.dist_eq, Real.dist_eq, hχ a, hχ b, ← integral_sub (hint a) (hint b),
+      ← Real.norm_eq_abs]
+    calc ‖∫ y, (ρ y * lam (a - y) - ρ y * lam (b - y))‖ ≤ ∫ y, ρ y * (K * |a - b|) := by
+          refine norm_integral_le_of_norm_le (hρ_int.mul_const _)
+            (Eventually.of_forall fun y => ?_)
+          rw [Real.norm_eq_abs, ← mul_sub, abs_mul, abs_of_nonneg (hρ_nonneg y)]
+          refine mul_le_mul_of_nonneg_left ?_ (hρ_nonneg y)
+          have := hlam_lip.dist_le_mul (a - y) (b - y)
+          rw [Real.dist_eq, Real.dist_eq, hKn, sub_sub_sub_cancel_right] at this
+          exact this
+      _ = ↑Kn * |a - b| := by rw [integral_mul_const, hρ_one, one_mul, hKn]
+  refine ⟨χ, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact hρ_cs.contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hρ_smooth
+      hlam_cont.locallyIntegrable
+  · intro s
+    rw [hχ s]
+    refine ⟨integral_nonneg fun y => mul_nonneg (hρ_nonneg y) (hlam01 _).1, ?_⟩
+    calc ∫ y, ρ y * lam (s - y) ≤ ∫ y, ρ y :=
+          integral_mono (hint s) hρ_int fun y =>
+            mul_le_of_le_one_right (hρ_nonneg y) (hlam01 _).2
+      _ = 1 := hρ_one
+  · intro s hs
+    exact hχ_one s (by linarith)
+  · intro s hs
+    exact hχ_zero s (by linarith)
+  · intro s
+    have := norm_deriv_le_of_lipschitz (x₀ := s) hχ_lip
+    rwa [Real.norm_eq_abs, hKn] at this
+  · intro s hs
+    rw [mem_Ioo, not_and_or, not_lt, not_lt] at hs
+    rcases hs with hs | hs
+    · have hev : χ =ᶠ[𝓝 s] fun _ => (1 : ℝ) := by
+        filter_upwards [Iio_mem_nhds (show s < t - h + r by linarith)] with u hu
+        exact hχ_one u hu
+      rw [hev.deriv_eq, deriv_const]
+    · have hev : χ =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
+        filter_upwards [Ioi_mem_nhds (show t - r < s by linarith)] with u hu
+        exact hχ_zero u hu
+      rw [hev.deriv_eq, deriv_const]
+/-- Simon Ch. 6, proof of 4.8–4.9 (p. 158): the integral bounding the right side of 4.11, for a
+differentiable approximation `g` of `f` (Simon's `f^{(σ)}`):
+`∫ |D(χ ∘ g)| |ω| dμ ≤ c L_W μ(spt ω ∩ {t − h − δ < f < t + δ})` when `|ω| ≤ 1`,
+`|g − f| ≤ δ` and `‖Dg‖ ≤ L_W` on `spt ω`, `|χ'| ≤ c` and `χ' = 0` off `(t − h, t)`.
+Off `spt ω` the integrand vanishes.  On `spt ω` the chain rule gives
+`‖D(χ ∘ g)(x)‖ ≤ |χ'(g x)| ‖Dg(x)‖`; this is `0` unless `t − h < g x < t`, and then
+`t − h − δ < f x < t + δ` and the bound is `c L_W`.  Integrate the indicator bound. -/
+theorem Submission.slicing_mb_cdb_grad_lintegral_le :
+    ∀ (P m : ℕ) (μ : Measure (Eucl P)) (ω : DifferentialForm (Eucl P) m) (f g : Eucl P → ℝ) (LW : ℝ≥0) (χ : ℝ → ℝ) (t h c δ : ℝ), (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → Differentiable ℝ g → Differentiable ℝ χ → (∀ x ∈ tsupport ω, |g x - f x| ≤ δ) → (∀ x ∈ tsupport ω, ‖fderiv ℝ g x‖₊ ≤ LW) → (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) → ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) * ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ ≤ ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ)) := by
+  intro P m μ ω f g LW χ t h c δ hω hg hχ hgf hDg hc hband
+  set E := tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ)
+  set a : ℝ≥0∞ := ENNReal.ofReal c * (LW : ℝ≥0∞)
+  -- `c ≥ |χ'(0)| ≥ 0`.
+  have hc0 : 0 ≤ c := (abs_nonneg _).trans (hc 0)
+  -- Pointwise bound of the integrand by `1_E · a`.
+  have hpt : ∀ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+      ENNReal.ofReal (covectorEuclideanNorm (ω x)) ≤ E.indicator (fun _ => a) x := by
+    intro x
+    by_cases hxK : x ∈ tsupport ω
+    · -- Chain rule: `D(χ ∘ g)(x) = Dχ(g x) ∘ Dg(x)`.
+      have hchain : fderiv ℝ (fun y => χ (g y)) x = (fderiv ℝ χ (g x)).comp (fderiv ℝ g x) :=
+        fderiv_fun_comp x (hχ (g x)) (hg x)
+      by_cases hgx : g x ∈ Ioo (t - h) t
+      · -- `t − h < g x < t` and `|g x − f x| ≤ δ` put `x` in `E`.
+        have hxE : x ∈ E := by
+          refine ⟨hxK, ?_⟩
+          have hab := abs_le.mp (hgf x hxK)
+          rw [mem_Ioo] at hgx
+          rw [mem_preimage, mem_Ioo]
+          constructor <;> linarith [hgx.1, hgx.2, hab.1, hab.2]
+        rw [indicator_of_mem hxE]
+        have hnorm : ‖fderiv ℝ (fun y => χ (g y)) x‖ ≤ c * LW := by
+          rw [hchain]
+          calc ‖(fderiv ℝ χ (g x)).comp (fderiv ℝ g x)‖
+              ≤ ‖fderiv ℝ χ (g x)‖ * ‖fderiv ℝ g x‖ := ContinuousLinearMap.opNorm_comp_le _ _
+            _ ≤ c * LW := by
+              apply mul_le_mul _ _ (norm_nonneg _) hc0
+              · rw [← norm_deriv_eq_norm_fderiv, Real.norm_eq_abs]
+                exact hc _
+              · exact_mod_cast hDg x hxK
+        have h1 : (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) ≤ a := by
+          calc (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞)
+              = ENNReal.ofReal ‖fderiv ℝ (fun y => χ (g y)) x‖ := (ofReal_norm _).symm
+            _ ≤ ENNReal.ofReal (c * LW) := ENNReal.ofReal_le_ofReal hnorm
+            _ = a := by rw [ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal]
+        have h2 : ENNReal.ofReal (covectorEuclideanNorm (ω x)) ≤ 1 :=
+          ENNReal.ofReal_le_one.mpr (hω x)
+        calc (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+              ENNReal.ofReal (covectorEuclideanNorm (ω x))
+            ≤ a * 1 := mul_le_mul' h1 h2
+          _ = a := mul_one _
+      · -- `χ'(g x) = 0`, so `Dχ(g x) = 0` and `D(χ ∘ g)(x) = 0`.
+        have hfd : fderiv ℝ χ (g x) = 0 := by
+          rw [← norm_eq_zero, ← norm_deriv_eq_norm_fderiv, hband _ hgx, norm_zero]
+        rw [hchain, hfd]
+        simp
+    · -- Off `spt ω`, `ω x = 0`.
+      have h0 : ω x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp [h0]
+  calc ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+        ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ
+      ≤ ∫⁻ x, E.indicator (fun _ => a) x ∂μ := lintegral_mono hpt
+    _ ≤ a * μ E := lintegral_indicator_const_le _ _
+/-- Continuity from above for the shrinking level bands (parent proof, Step 6).  With
+`δ_j = 1/(j+1)`, the sets `E_j = K ∩ f⁻¹((a − δ_j, b + δ_j))` are Borel (`K` is closed and
+`f` is continuous on `K`), decrease in `j`, have intersection `K ∩ f⁻¹([a, b])`, and
+`μ(E_0) ≤ μ(K) < ∞`; so `μ(E_j) → μ(K ∩ f⁻¹([a, b]))`. -/
+theorem Submission.slicing_mb_cdb_band_measure_tendsto :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (K : Set (Eucl P)) (f : Eucl P → ℝ) (a b : ℝ),
+      IsClosed K → ContinuousOn f K → μ K < ∞ →
+        Tendsto
+          (fun j : ℕ => μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))))
+          atTop (𝓝 (μ (K ∩ f ⁻¹' Icc a b))) := by
+  intro P μ K f a b hK hf hμK
+  -- `E_j = K \ (K ∩ f⁻¹((a − δ_j, b + δ_j)ᶜ))` is Borel.
+  have hmeas : ∀ j : ℕ,
+      MeasurableSet (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))) := by
+    intro j
+    have hcl :
+        IsClosed (K ∩ f ⁻¹' (Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))ᶜ) :=
+      hf.preimage_isClosed_of_isClosed hK isOpen_Ioo.isClosed_compl
+    have heq : K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) =
+        K \ (K ∩ f ⁻¹' (Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))ᶜ) := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage, Set.mem_sdiff, mem_compl_iff]
+      tauto
+    rw [heq]
+    exact hK.measurableSet.diff hcl.measurableSet
+  -- `δ_j` decreases, so the bands decrease.
+  have hanti : Antitone fun j : ℕ =>
+      K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) := by
+    intro i j hij x hx
+    have hle : 1 / ((j : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := Nat.one_div_le_one_div hij
+    simp only [mem_inter_iff, mem_preimage, mem_Ioo] at hx ⊢
+    exact ⟨hx.1, by linarith [hx.2.1], by linarith [hx.2.2]⟩
+  -- `⋂_j E_j = K ∩ f⁻¹([a, b])`.
+  have hinter :
+      ⋂ j : ℕ, K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) =
+        K ∩ f ⁻¹' Icc a b := by
+    ext x
+    simp only [mem_iInter, mem_inter_iff, mem_preimage, mem_Ioo, mem_Icc]
+    constructor
+    · intro h
+      refine ⟨(h 0).1, ?_, ?_⟩
+      · by_contra! hlt
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (sub_pos.mpr hlt)
+        linarith [(h j).2.1]
+      · by_contra! hlt
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (sub_pos.mpr hlt)
+        linarith [(h j).2.2]
+    · rintro ⟨hxK, hax, hxb⟩ j
+      have hδ : 0 < 1 / ((j : ℝ) + 1) := Nat.one_div_pos_of_nat
+      exact ⟨hxK, by linarith, by linarith⟩
+  -- `μ(E_0) ≤ μ(K) < ∞`; continuity from above.
+  have hfin : ∃ j : ℕ,
+      μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))) ≠ ∞ :=
+    ⟨0, ((measure_mono inter_subset_left).trans_lt hμK).ne⟩
+  have h := tendsto_measure_iInter_atTop (fun j => (hmeas j).nullMeasurableSet) hanti hfin
+  rw [hinter] at h
+  exact h
+/-- Dominated convergence for the bounded continuous multipliers `χ(g_j)` against an integrable
+density `F` (the limit `σ ↓ 0` in the cutoff defect bound of the slice mass estimate, Simon Ch. 6,
+4.9–4.10): if `F` vanishes off `K` and `g_j → f` on `K`, then `∫ χ(g_j) F dν → ∫ χ(f) F dν`.
+The integrands are dominated by `|F|` since `|χ| ≤ 1`, and converge everywhere: on `K` by
+continuity of `χ`, off `K` because `F = 0`. -/
+theorem Submission.slicing_mb_cdb_multiplier_integral_tendsto :
+    ∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ)
+      (g : ℕ → Eucl P → ℝ) (χ : ℝ → ℝ), Integrable F ν → (∀ x, x ∉ K → F x = 0) →
+      (∀ j, Measurable (g j)) → (∀ x ∈ K, Tendsto (fun j => g j x) atTop (𝓝 (f x))) →
+      Continuous χ → (∀ s, |χ s| ≤ 1) →
+      Tendsto (fun j => ∫ x, χ (g j x) * F x ∂ν) atTop (𝓝 (∫ x, χ (f x) * F x ∂ν)) := by
+  intro P ν F K f g χ hF hFK hg hgf hχ hχ1
+  refine tendsto_integral_of_dominated_convergence (fun x => ‖F x‖) (fun j => ?_) hF.norm
+    (fun j => Eventually.of_forall fun x => ?_) (Eventually.of_forall fun x => ?_)
+  · -- `χ ∘ g j` is measurable and `F` is integrable.
+    exact (hχ.measurable.comp (hg j)).aestronglyMeasurable.mul hF.aestronglyMeasurable
+  · -- `|χ| ≤ 1`.
+    rw [norm_mul, Real.norm_eq_abs (χ (g j x))]
+    exact mul_le_of_le_one_left (norm_nonneg _) (hχ1 _)
+  · -- On `K` by continuity of `χ`; off `K` both sides vanish.
+    by_cases hx : x ∈ K
+    · exact ((hχ.tendsto (f x)).comp (hgf x hx)).mul_const (F x)
+    · simp only [hFK x hx, mul_zero]
+      exact tendsto_const_nhds
+/-- The mollifier behind Simon's `f^{(σ)}` (Ch. 6, §4, p. 158; parent Step 4): a smooth,
+nonnegative, compactly supported `ρ` vanishing off `B(0, σ)` with `∫ ρ = 1`.  Take the bump `φ`
+centred at `0` with radii `σ/2 < σ`; then `support φ = B(0, σ)`, so `c = ∫ φ > 0` and
+`ρ = c⁻¹ φ` works. -/
+theorem Submission.slicing_mb_sa_mollifier_exists :
+    ∀ (P : ℕ) (σ : ℝ), 0 < σ → ∃ ρ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ρ ∧
+      HasCompactSupport ρ ∧ (∀ y, 0 ≤ ρ y) ∧ (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) ∧
+      ∫ y, ρ y = 1 := by
+  intro P σ hσ
+  -- The smooth bump `φ` centred at `0` with `support φ = B(0, σ)`.
+  let φ : ContDiffBump (0 : Eucl P) := ⟨σ / 2, σ, half_pos hσ, half_lt_self hσ⟩
+  have hφi : Integrable φ := φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+  -- Its mass `c = ∫ φ` is positive since `B(0, σ)` has positive Lebesgue measure.
+  have hc : 0 < ∫ y, φ y := by
+    rw [integral_pos_iff_support_of_nonneg (fun y => φ.nonneg) hφi, φ.support_eq]
+    exact measure_ball_pos _ _ hσ
+  refine ⟨fun y => (∫ y, φ y)⁻¹ * φ y, contDiff_const.mul φ.contDiff,
+    φ.hasCompactSupport.mul_left, fun y => mul_nonneg (inv_nonneg.2 hc.le) φ.nonneg,
+    fun y hy => mul_eq_zero_of_right _ (φ.zero_of_le_dist (by rwa [dist_zero_right])), ?_⟩
+  rw [integral_const_mul, inv_mul_cancel₀ hc.ne']
+/-- **Uniform error of a mollified Lipschitz function** (Simon Ch. 6, 4.11, p. 158: "use
+`f^{(σ)}` in place of `f`").  If `F` is `L`-Lipschitz and `ρ ≥ 0` is continuous with compact
+support, `ρ(y) = 0` for `|y| ≥ σ` and `∫ ρ = 1`, then `|∫ ρ(y) F(x − y) dy − F(x)| ≤ L σ`.
+As `∫ ρ = 1`, the error is `∫ ρ(y) (F(x − y) − F(x)) dy`, and pointwise
+`|ρ(y) (F(x − y) − F(x))| ≤ ρ(y) L |y| ≤ ρ(y) L σ`, since `ρ(y) ≠ 0` forces `|y| < σ`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_close : ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ (ρ : Eucl P → ℝ) (σ : ℝ), Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) → ∫ y, ρ y = 1 → ∀ x : Eucl P, |(∫ y, ρ y * F (x - y)) - F x| ≤ (L : ℝ) * σ := by
+  intro P F L hF ρ σ hρc hρs hρ0 hρσ hρ1 x
+  -- `ρ` and `y ↦ ρ(y) F(x − y)` are continuous with compact support, hence integrable.
+  have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρs
+  have hgi : Integrable fun y => ρ y * F (x - y) :=
+    (hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hρs.mul_right
+  -- Since `∫ ρ = 1`, the error is `∫ ρ(y) (F(x − y) − F(x)) dy`.
+  have herr : (∫ y, ρ y * F (x - y)) - F x = ∫ y, ρ y * (F (x - y) - F x) := by
+    simp_rw [mul_sub]
+    rw [integral_sub hgi (hρi.mul_const (F x)), integral_mul_const, hρ1, one_mul]
+  -- Pointwise `|ρ(y) (F(x − y) − F(x))| ≤ ρ(y) L σ`.
+  have hpt : ∀ y, ‖ρ y * (F (x - y) - F x)‖ ≤ ρ y * ((L : ℝ) * σ) := by
+    intro y
+    by_cases hy : ρ y = 0
+    · simp [hy]
+    -- `ρ(y) ≠ 0` forces `|y| < σ`.
+    have hyσ : ‖y‖ ≤ σ := (not_le.mp fun h => hy (hρσ y h)).le
+    have hlip : |F (x - y) - F x| ≤ (L : ℝ) * σ := by
+      rw [← Real.dist_eq]
+      calc dist (F (x - y)) (F x) ≤ (L : ℝ) * dist (x - y) x := hF.dist_le_mul _ _
+        _ = (L : ℝ) * ‖y‖ := by rw [dist_self_sub_left]
+        _ ≤ (L : ℝ) * σ := mul_le_mul_of_nonneg_left hyσ L.coe_nonneg
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 y)]
+    exact mul_le_mul_of_nonneg_left hlip (hρ0 y)
+  -- Integrate the pointwise bound, using `∫ ρ = 1` once more.
+  rw [herr, ← Real.norm_eq_abs]
+  calc ‖∫ y, ρ y * (F (x - y) - F x)‖ ≤ ∫ y, ρ y * ((L : ℝ) * σ) :=
+        norm_integral_le_of_norm_le (hρi.mul_const _) (Eventually.of_forall hpt)
+    _ = (L : ℝ) * σ := by rw [integral_mul_const, hρ1, one_mul]
+/-- Differentiation under the integral sign for the mollification of a globally Lipschitz `F`
+by a continuous compactly supported `ρ`: `D(∫ ρ(y) F(· - y) dy)(x) = ∫ ρ(y) DF(x - y) dy`.
+By Rademacher's theorem and the invariance of Lebesgue measure under `y ↦ x - y`, `F` is
+differentiable at `x - y` for a.e. `y`; `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz on `ℝ^P`
+with integrable majorant `L |ρ|`, so `hasFDerivAt_integral_of_dominated_loc_of_lip` applies
+with `s = ℝ^P`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt :
+    ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ ρ : Eucl P → ℝ, Continuous ρ →
+      HasCompactSupport ρ → ∀ x : Eucl P,
+        HasFDerivAt (fun x' : Eucl P => ∫ y, ρ y * F (x' - y))
+          (∫ y, ρ y • fderiv ℝ F (x - y)) x := by
+  intro P F L hF ρ hρc hρs x
+  -- Rademacher, pulled back along the measure-preserving map `y ↦ x - y`.
+  have hae : ∀ᵐ y : Eucl P, DifferentiableAt ℝ F (x - y) :=
+    (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving.ae
+      hF.ae_differentiableAt
+  -- `y ↦ ρ(y) F(x' - y)` is continuous for every `x'`.
+  have hcont : ∀ x' : Eucl P, Continuous fun y : Eucl P => ρ y * F (x' - y) := fun x' =>
+    hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))
+  -- `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz for every `y`.
+  have hlip : ∀ y : Eucl P,
+      LipschitzOnWith (Real.nnabs (L * |ρ y|)) (fun x' : Eucl P => ρ y * F (x' - y)) univ := by
+    refine fun y => (LipschitzWith.of_dist_le_mul fun a b => ?_).lipschitzOnWith
+    calc dist (ρ y * F (a - y)) (ρ y * F (b - y)) = |ρ y| * dist (F (a - y)) (F (b - y)) := by
+          rw [Real.dist_eq, Real.dist_eq, ← mul_sub, abs_mul]
+      _ ≤ |ρ y| * (L * dist (a - y) (b - y)) := by gcongr; exact hF.dist_le_mul _ _
+      _ = Real.nnabs (L * |ρ y|) * dist a b := by
+          rw [dist_sub_right, Real.coe_nnabs, abs_mul, abs_abs, NNReal.abs_eq]; ring
+  -- For a.e. `y`, the chain rule gives the derivative `ρ(y) DF(x - y)` at `x`.
+  have hderiv : ∀ᵐ y : Eucl P,
+      HasFDerivAt (fun x' : Eucl P => ρ y * F (x' - y)) (ρ y • fderiv ℝ F (x - y)) x := by
+    filter_upwards [hae] with y hy
+    have h := hy.hasFDerivAt.comp x (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y)
+    rw [ContinuousLinearMap.comp_id] at h
+    exact h.const_mul (ρ y)
+  exact (hasFDerivAt_integral_of_dominated_loc_of_lip univ_mem
+    (Eventually.of_forall fun x' => (hcont x').aestronglyMeasurable)
+    ((hcont x).integrable_of_hasCompactSupport hρs.mul_right)
+    (hρc.measurable.smul ((measurable_fderiv ℝ F).comp
+      (measurable_const.sub measurable_id))).aestronglyMeasurable
+    (Eventually.of_forall hlip)
+    ((hρc.abs.integrable_of_hasCompactSupport hρs.abs).const_mul _) hderiv).2
+
+/-- Simon Ch. 6, 4.11 ("use `f^{(σ)}` in place of `f`") on a compact `K ⊆ W`: if `f` is
+`L`-Lipschitz on the open set `W` and `‖Df‖ ≤ LW` a.e. on `W`, then some `C^∞` function `g` is
+`δ`-close to `f` on `K` with `‖Dg‖ ≤ LW` on `K`.  Here `g = ρ ⋆ F` mollifies a McShane extension
+`F` of `f|W` with a kernel supported in a ball small enough that `x - y ∈ W` whenever `x ∈ K` and
+`ρ(y) ≠ 0`. -/
+theorem Submission.slicing_mb_smooth_approx :
+    ∀ (P : ℕ) (W : Set (Eucl P)), IsOpen W → ∀ (f : Eucl P → ℝ) (L : ℝ≥0),
+      LipschitzOnWith L f W → ∀ LW : ℝ≥0,
+      (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ δ : ℝ, 0 < δ →
+      ∃ g : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ (∀ x ∈ K, |g x - f x| ≤ δ) ∧
+        (∀ x ∈ K, ‖fderiv ℝ g x‖₊ ≤ LW) := by
+  intro P W hW f L hf LW hLW K hK hKW δ hδ
+  -- The closed `r`-neighbourhood of `K` lies in `W`.
+  obtain ⟨r, hr, hrW⟩ := hK.exists_cthickening_subset_open hW hKW
+  -- McShane extension: `F` is `L`-Lipschitz on `ℝ^P` and `F = f` on `W`.
+  obtain ⟨F, hFL, hfF⟩ := hf.extend_real
+  -- The mollification radius: `σ ≤ r` keeps `x - y` in `W`, and `L σ ≤ δ`.
+  obtain ⟨σ, hσ, hσr, hσδ⟩ : ∃ σ : ℝ, 0 < σ ∧ σ ≤ r ∧ (L : ℝ) * σ ≤ δ := by
+    refine ⟨min r (δ / ((L : ℝ) + 1)), lt_min hr (div_pos hδ (by positivity)), min_le_left _ _, ?_⟩
+    calc (L : ℝ) * min r (δ / ((L : ℝ) + 1)) ≤ (L : ℝ) * (δ / ((L : ℝ) + 1)) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) L.coe_nonneg
+      _ ≤ δ := by
+          rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+          nlinarith [L.coe_nonneg]
+  obtain ⟨ρ, hρ, hρc, hρ0, hρσ, hρ1⟩ := Submission.slicing_mb_sa_mollifier_exists P σ hσ
+  have hρi : Integrable ρ (volume : Measure (Eucl P)) :=
+    hρ.continuous.integrable_of_hasCompactSupport hρc
+  refine ⟨fun x => ∫ y, ρ y * F (x - y), ?_, fun x hx => ?_, fun x hx => ?_⟩
+  · -- `g = ρ ⋆ F` is `C^∞`: `ρ` is `C^∞` with compact support and `F` is continuous.
+    have hconv : (fun x => ∫ y, ρ y * F (x - y)) =
+        convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure (Eucl P)) := by
+      funext x
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+    rw [hconv]
+    exact hρc.contDiff_convolution_left _ hρ hFL.continuous.locallyIntegrable
+  · -- `|g - F| ≤ L σ ≤ δ` everywhere, and `F = f` on `K ⊆ W`.
+    rw [hfF (hKW hx)]
+    exact (Submission.slicing_mb_sa_mollify_lipschitz_close P F L hFL ρ σ hρ.continuous hρc hρ0
+      hρσ hρ1 x).trans hσδ
+  · -- `Dg(x) = ∫ ρ(y) DF(x - y) dy`; for a.e. `y` with `ρ(y) ≠ 0`, `x - y ∈ W` and
+    -- `‖DF(x - y)‖ = ‖Df(x - y)‖ ≤ LW` (`y ↦ x - y` preserves Lebesgue measure).
+    have hDg : fderiv ℝ (fun x => ∫ y, ρ y * F (x - y)) x = ∫ y, ρ y • fderiv ℝ F (x - y) :=
+      (Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt P F L hFL ρ hρ.continuous hρc
+        x).fderiv
+    rw [hDg, ← NNReal.coe_le_coe, coe_nnnorm]
+    have hae : ∀ᵐ y ∂(volume : Measure (Eucl P)),
+        x - y ∈ W → ‖fderiv ℝ f (x - y)‖₊ ≤ LW :=
+      ((volume : Measure (Eucl P)).measurePreserving_sub_left x).quasiMeasurePreserving.ae hLW
+    have hbd : ∀ᵐ y ∂(volume : Measure (Eucl P)),
+        ‖ρ y • fderiv ℝ F (x - y)‖ ≤ ρ y * LW := by
+      filter_upwards [hae] with y hy
+      rw [norm_smul, Real.norm_of_nonneg (hρ0 y)]
+      rcases eq_or_ne (ρ y) 0 with h0 | h0
+      · simp [h0]
+      have hyσ : ‖y‖ < σ := not_le.mp fun h => h0 (hρσ y h)
+      have hxy : x - y ∈ W := hrW (mem_cthickening_of_dist_le _ x r K hx (by
+        rw [dist_eq_norm, sub_sub_cancel_left, norm_neg]
+        exact hyσ.le.trans hσr))
+      have hD : fderiv ℝ F (x - y) = fderiv ℝ f (x - y) :=
+        (hfF.symm.eventuallyEq_of_mem (hW.mem_nhds hxy)).fderiv_eq
+      rw [hD]
+      exact mul_le_mul_of_nonneg_left (by exact_mod_cast hy hxy) (hρ0 y)
+    calc ‖∫ y, ρ y • fderiv ℝ F (x - y)‖ ≤ ∫ y, ‖ρ y • fderiv ℝ F (x - y)‖ :=
+          norm_integral_le_integral_norm _
+      _ ≤ ∫ y, ρ y * (LW : ℝ) :=
+          integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
+            (hρi.mul_const _) hbd
+      _ = LW := by rw [integral_mul_const, hρ1, one_mul]
+/-- Simon Ch. 6, 4.11 (Leibniz rule, pointwise): `d(ψω)(x) = ψ(x) dω(x) + Dψ(x) ∧ ω(x)`, the
+wedge `Dψ(x) ∧ ω(x)` being the alternatization of `h ↦ Dψ(x)(h) ω(x)`.  As `d = Alt ∘ D`
+(Mathlib's `extDeriv`), this is the product rule `D(ψω)(x) = ψ(x) Dω(x) + Dψ(x) ⊗ ω(x)`
+followed by linearity of `alternatizeUncurryFin`. -/
+theorem Submission.slicing_mb_lb_extDeriv_smul :
+    ∀ (P m : ℕ) (ψ : Eucl P → ℝ) (ω : DifferentialForm (Eucl P) m) (x : Eucl P), DifferentiableAt ℝ ψ x → DifferentiableAt ℝ ω x → exteriorDerivative (fun y => ψ y • ω y : DifferentialForm (Eucl P) m) x = ψ x • exteriorDerivative ω x + ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ ψ x).smulRight (ω x)) := by
+  intro P m ψ ω x hψ hω
+  simp only [exteriorDerivative, extDeriv]
+  rw [fderiv_fun_smul hψ hω, ContinuousAlternatingMap.alternatizeUncurryFin_add,
+    ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+/-- Multiplication by a smooth function `ψ` maps `𝒟ᵏ(U)` into itself: `ψ φ` is smooth, and
+`spt (ψ φ) ⊆ spt φ`, which is compact and contained in `U`. -/
+theorem Submission.slicing_mb_lb_smul_testForm :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (φ : TestFormOn U k) (ψ : Eucl P → ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ →
+      ∃ η : TestFormOn U k, ∀ x, (η : DifferentialForm (Eucl P) k) x =
+        ψ x • (φ : DifferentialForm (Eucl P) k) x := by
+  intro P k U φ ψ hψ
+  obtain ⟨⟨hφ, hφc⟩, hφU⟩ := φ.2
+  exact ⟨⟨ψ • (φ : DifferentialForm (Eucl P) k), ⟨hψ.smul hφ, hφc.smul_left⟩,
+    (tsupport_smul_subset_right ψ _).trans hφU⟩, fun _ => rfl⟩
+/-- The wedge `α ∧ ω` of a `C^∞` field `α` of covectors with a test form `ω ∈ 𝒟ᵐ(U)` is a test
+form in `𝒟ᵐ⁺¹(U)`, given pointwise by `alternatizeUncurryFin ((α x).smulRight (ω x))`. -/
+theorem Submission.slicing_mb_lb_wedge_testForm :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U m) (α : Eucl P → (Eucl P →L[ℝ] ℝ)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) α →
+      ∃ η : TestFormOn U (m + 1), ∀ x, (η : DifferentialForm (Eucl P) (m + 1)) x =
+        ContinuousAlternatingMap.alternatizeUncurryFin
+          ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x)) := by
+  intro P m U ω α hα
+  obtain ⟨⟨hωs, hωc⟩, hωU⟩ := ω.2
+  -- `η` vanishes wherever `ω` does: `(α x).smulRight 0 = 0` and `alternatizeUncurryFin` is linear.
+  have hsupp : Function.support (fun x => ContinuousAlternatingMap.alternatizeUncurryFin
+      ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x))) ⊆
+      Function.support (ω : DifferentialForm (Eucl P) m) := by
+    intro x hx h0
+    apply hx
+    simp only [h0, ContinuousLinearMap.smulRight_zero]
+    exact map_zero (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ)
+  -- Hence `η` has compact support and `tsupport η ⊆ tsupport ω ⊆ U`; the formula holds by `rfl`.
+  refine ⟨⟨fun x => ContinuousAlternatingMap.alternatizeUncurryFin
+      ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x)),
+    ⟨?_, hωc.mono hsupp⟩, (closure_mono hsupp).trans hωU⟩, fun x => rfl⟩
+  -- Smoothness: `x ↦ (α x).smulRight (ω x)` is `C^∞` (bounded bilinear in `(α x, ω x)`), and
+  -- `alternatizeUncurryFin` is the continuous linear map `alternatizeUncurryFinCLM`.
+  exact (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).contDiff.comp
+    (hα.smulRight hωs)
+/-- **Mass estimate from a normalized measure representation** (Simon Ch. 6, (2.7)).  If
+`T(η) = ∫ ⟨η, v⟩ dμ` for every test form `η` and `|⟨α, v(x)⟩| ≤ |α|` for every `x` and every
+`n`-covector `α` (Euclidean coefficient norm), then `|T(η)| ≤ ∫ |η| dμ` in `[0, ∞]`. -/
+theorem Submission.slicing_mb_lb_repr_bound : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → (∀ (x : Eucl P) (α : Covector (Eucl P) n), |v x α| ≤ covectorEuclideanNorm α) → ∀ η : TestFormOn U n, ENNReal.ofReal |T η| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x)) ∂μ := by
+  intro P n U T μ v hrep hv η
+  -- Step 1: `T(η) = ∫ ⟨η(x), v(x)⟩ dμ(x)` by the representation (2.7).
+  rw [(hrep η).2, ← Real.enorm_eq_ofReal_abs]
+  -- Step 2: `‖∫ g dμ‖ₑ ≤ ∫⁻ ‖g‖ₑ dμ`, which needs no integrability hypothesis.
+  refine (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono fun x => ?_)
+  -- Steps 3–4: pointwise `‖⟨η(x), v(x)⟩‖ₑ = ofReal |⟨η(x), v(x)⟩| ≤ ofReal |η(x)|`.
+  rw [Real.enorm_eq_ofReal_abs]
+  exact ENNReal.ofReal_le_ofReal (hv x _)
+/-- Counting identity: for any family `u` of vectors of `ℝ^P` and any `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = k! ∑_{I strictly increasing} φ(u_{I 0}, …, u_{I (k-1)})²`,
+where `I` ranges over all maps `Fin k → Fin P`. -/
+theorem Submission.slicing_mb_wn_sq_sum_eq_factorial_mul :
+    ∀ (P k : ℕ) (u : Fin P → Eucl P) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        (k.factorial : ℝ) * ∑ I : Fin k → Fin P,
+          if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  classical
+  set g : (Fin k → Fin P) → ℝ := fun I => (φ (fun i => u (I i))) ^ 2
+  -- A non-injective `I` repeats a vector of `u ∘ I`, so `φ (u ∘ I) = 0`.
+  have h0 : ∀ I : Fin k → Fin P, ¬Function.Injective I → g I = 0 := by
+    intro I hI
+    have hv : ¬Function.Injective (fun i => u (I i)) :=
+      fun h => hI fun a b hab => h (by simp only [hab])
+    simp only [g, φ.map_eq_zero_of_not_injective _ hv, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zero_pow]
+  -- `φ (u ∘ I ∘ σ) = sign σ • φ (u ∘ I)`, so the square is invariant under permutations.
+  have hperm : ∀ (I : Fin k → Fin P) (σ : Equiv.Perm (Fin k)), g (I ∘ σ) = g I := by
+    intro I σ
+    have h : φ (fun i => u ((I ∘ σ) i)) = Equiv.Perm.sign σ • φ (fun i => u (I i)) :=
+      φ.toAlternatingMap.map_perm (fun i => u (I i)) σ
+    simp only [g, h]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h' | h' <;> simp [h']
+  -- Write both sides as sums over the injective, resp. strictly increasing, maps.
+  have hL : ∑ I, g I = ∑ I ∈ Finset.univ.filter Function.Injective, g I := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs with h
+    · rfl
+    · exact h0 I h
+  have hR : (∑ I : Fin k → Fin P, if StrictMono I then g I else 0) =
+      ∑ I ∈ Finset.univ.filter StrictMono, g I := (Finset.sum_filter _ _).symm
+  -- `(σ, β) ↦ β ∘ σ` is a bijection from permutations × strictly increasing maps onto the
+  -- injective maps, with inverse `I ↦ ((sort I)⁻¹, I ∘ sort I)`.
+  have hbij : ∑ I ∈ Finset.univ.filter Function.Injective, g I =
+      ∑ p ∈ (Finset.univ : Finset (Equiv.Perm (Fin k))) ×ˢ Finset.univ.filter StrictMono,
+        g (p.2 ∘ p.1) := by
+    refine Finset.sum_nbij' (fun I => ((Tuple.sort I)⁻¹, I ∘ Tuple.sort I))
+      (fun p => p.2 ∘ p.1) ?_ ?_ ?_ ?_ ?_
+    · intro I hI
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and]
+      exact (Tuple.monotone_sort I).strictMono_of_injective (hI.comp (Tuple.sort I).injective)
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact hp.injective.comp σ.injective
+    · intro I _
+      funext i
+      simp
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      -- sorting `β ∘ σ` recovers the strictly increasing `β`
+      have hsorted : (β ∘ σ) ∘ Tuple.sort (β ∘ σ) = β := by
+        rw [Tuple.comp_perm_comp_sort_eq_comp_sort,
+          (Tuple.sort_eq_refl_iff_monotone).2 hp.monotone]
+        rfl
+      have hσ : σ * Tuple.sort (β ∘ σ) = 1 := by
+        ext i
+        have := congrFun hsorted i
+        simp only [Function.comp_apply] at this
+        simpa using congrArg Fin.val (hp.injective this)
+      have hinv : (Tuple.sort (β ∘ σ))⁻¹ = σ := by
+        rw [inv_eq_iff_eq_inv]
+        exact eq_inv_of_mul_eq_one_right hσ
+      simp only [hinv, hsorted]
+    · intro I _
+      congr 1
+      funext i
+      simp
+  -- Each permutation contributes `∑_β g β`, and there are `k!` permutations.
+  rw [hL, hbij, hR, Finset.sum_product]
+  simp_rw [hperm]
+  rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+/-- Basis independence of the full coefficient sum (Parseval's identity, one slot at a time): for
+orthonormal bases `u`, `v` of `ℝ^P` and a `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = ∑_I φ(v_{I 0}, …, v_{I (k-1)})²`, both sums over all index maps
+`I : Fin k → Fin P`.  Induction on `k`: write `I = (i, J)` and `φ(w_I) = (φ.curryLeft w_i)(w_J)`,
+replace `u` by `v` in the last `k` slots by the induction hypothesis for `φ.curryLeft (u i)`, then
+in slot `0` by `OrthonormalBasis.norm_dual` for the functional `z ↦ (φ.curryLeft z)(v_J)`. -/
+theorem Submission.slicing_mb_wn_sq_sum_onb_invariant :
+    ∀ (P k : ℕ) (u v : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        ∑ I : Fin k → Fin P, (φ (fun i => v (I i))) ^ 2 := by
+  intro P k u v
+  induction k with
+  | zero =>
+    -- Both families are the empty tuple.
+    intro φ
+    exact Fintype.sum_congr _ _ fun I => by
+      rw [Subsingleton.elim (fun i => u (I i)) (fun i => v (I i))]
+  | succ k ih =>
+    intro φ
+    -- Split `I = Fin.cons i J`; then `φ(w_I) = (φ.curryLeft w_i)(w_J)`.
+    have hsplit : ∀ w : OrthonormalBasis (Fin P) ℝ (Eucl P),
+        ∑ I : Fin (k + 1) → Fin P, (φ (fun i => w (I i))) ^ 2 =
+          ∑ i : Fin P, ∑ J : Fin k → Fin P, (φ.curryLeft (w i) (fun j => w (J j))) ^ 2 := by
+      intro w
+      rw [← Fintype.sum_prod_type', ← (Fin.consEquiv fun _ => Fin P).sum_comp]
+      refine Fintype.sum_congr _ _ fun p => ?_
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 2
+      funext i
+      refine Fin.cases ?_ (fun j => ?_) i <;>
+        simp only [Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ, Matrix.cons_val_zero,
+          Matrix.cons_val_succ]
+    -- Slots `1, …, k`: the induction hypothesis for each `k`-covector `φ.curryLeft (u i)`.
+    rw [hsplit u, hsplit v]
+    simp_rw [ih]
+    -- Slot `0`: for each `J`, Parseval for `ℓ_J z = (φ.curryLeft z)(v_J)` in the bases `u`, `v`.
+    rw [Finset.sum_comm]
+    conv_rhs => rw [Finset.sum_comm]
+    refine Fintype.sum_congr _ _ fun J => ?_
+    let ℓ : StrongDual ℝ (Eucl P) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (fun j => v (J j))).comp φ.curryLeft
+    have hu := u.norm_dual ℓ
+    have hv := v.norm_dual ℓ
+    simp only [ℓ, ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.apply_apply] at hu hv
+    rw [← hu, ← hv]
+
+/-- The Euclidean coefficient norm of a `k`-covector can be computed in any orthonormal basis
+`u` of `ℝ^P` (Simon Ch. 6, 1.5–1.6 and Remark 2.6): `|φ|² = ∑_{I increasing} φ(u_I)²`.
+With `e` the standard basis used by `covectorEuclideanNorm` and `N_w(φ) = ∑_{all I} φ(w_I)²`,
+`k! |φ|² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`, and `k! ≠ 0`. -/
+theorem Submission.slicing_mb_wn_norm_sq_eq_onb_sum :
+    ∀ (P k : ℕ) (u : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      covectorEuclideanNorm φ ^ 2 =
+        ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  -- `k! ∑_{I increasing} φ(e_I)² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`.
+  have key := (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) φ).symm.trans
+    ((Submission.slicing_mb_wn_sq_sum_onb_invariant P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) u φ).trans
+        (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k u φ))
+  -- `|φ|² = ∑_{I increasing} φ(e_I)²`: the radicand is a sum of squares and zeros.
+  rw [covectorEuclideanNorm, Real.sq_sqrt]
+  · exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr k.factorial_ne_zero) key
+  · exact Finset.sum_nonneg fun I _ => by split_ifs <;> positivity
+/-- Every continuous linear functional `α` on `ℝ^P` has an adapted orthonormal basis `u`:
+`α(u₀) = ‖α‖` and `α(uⱼ) = 0` for `j ≠ 0`. -/
+theorem Submission.slicing_mb_wn_adapted_onb :
+    ∀ (P : ℕ) (α : Eucl P →L[ℝ] ℝ), ∃ u : OrthonormalBasis (Fin P) ℝ (Eucl P),
+      ∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then ‖α‖ else 0 := by
+  intro P α
+  by_cases hα : α = 0
+  · -- `α = 0`: the standard basis works, since `‖α‖ = 0`.
+    exact ⟨EuclideanSpace.basisFun (Fin P) ℝ, fun j => by simp [hα]⟩
+  -- The Riesz vector `a` of `α`: `α z = ⟪a, z⟫` and `‖a‖ = ‖α‖ > 0`.
+  set a : Eucl P := (InnerProductSpace.toDual ℝ (Eucl P)).symm α
+  have hαa : ∀ z, α z = inner ℝ a z := fun z => InnerProductSpace.toDual_symm_apply.symm
+  have hna : ‖a‖ = ‖α‖ := LinearIsometryEquiv.norm_map _ _
+  have hpos : 0 < ‖a‖ := hna ▸ norm_pos_iff.mpr hα
+  have ha0 : a ≠ 0 := norm_pos_iff.mp hpos
+  -- `a ≠ 0` forces `P ≥ 1`, so the index `0` exists.
+  have hP : 0 < P := by
+    have := (Module.finrank_pos_iff_exists_ne_zero (R := ℝ)).mpr ⟨a, ha0⟩
+    rwa [finrank_euclideanSpace_fin] at this
+  set i₀ : Fin P := ⟨0, hP⟩
+  -- Extend the unit vector `‖a‖⁻¹ • a`, placed at index `i₀`, to an orthonormal basis `u`.
+  obtain ⟨u, hu⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq
+    (𝕜 := ℝ) (E := Eucl P) (by simp) (v := fun _ => ‖a‖⁻¹ • a) (s := {i₀})
+    (by
+      rw [orthonormal_subsingleton_iff]
+      intro i
+      exact norm_smul_inv_norm ha0)
+  have hu₀ : u i₀ = ‖a‖⁻¹ • a := hu i₀ (Set.mem_singleton _)
+  have haU : a = ‖a‖ • u i₀ := by rw [hu₀, smul_inv_smul₀ hpos.ne']
+  -- `α(uⱼ) = ‖a‖ ⟪u₀, uⱼ⟫`, which is `‖a‖ = ‖α‖` for `j = 0` and `0` otherwise.
+  refine ⟨u, fun j => ?_⟩
+  rw [hαa, haU, real_inner_smul_left]
+  split_ifs with hj
+  · have : j = i₀ := Fin.ext hj
+    subst this
+    rw [real_inner_self_eq_norm_sq, u.orthonormal.norm_eq_one, one_pow, mul_one, hna]
+  · have : i₀ ≠ j := fun h => hj (by rw [← h])
+    rw [u.orthonormal.inner_eq_zero this, mul_zero]
+/-- Coefficient sum of `α ∧ γ` on a family adapted to `α`: if `α (u j)` is `c` for `j = 0` and
+`0` otherwise, then `∑_{I increasing} ((α ∧ γ)(u_I))² ≤ c² ∑_{J increasing} γ(u_J)²`, where
+`α ∧ γ = alternatizeUncurryFin (α.smulRight γ)`.  The family `u` need not be orthonormal. -/
+theorem Submission.slicing_mb_wn_adapted_sum_le :
+    ∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m) (u : Fin P → Eucl P) (c : ℝ), (∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then c else 0) → (∑ I : Fin (m + 1) → Fin P, if StrictMono I then (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i))) ^ 2 else 0) ≤ c ^ 2 * ∑ I : Fin m → Fin P, if StrictMono I then (γ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P m α γ u c hα
+  -- Steps 1–2: on a strictly increasing `I`, every term of the wedge formula with `i ≥ 1`
+  -- vanishes, because `I i > I 0 ≥ 0` forces `α (u (I i)) = 0`.
+  have hval : ∀ I : Fin (m + 1) → Fin P, StrictMono I →
+      ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i)) =
+        α (u (I 0)) * γ (fun j => u (I j.succ)) := by
+    intro I hI
+    rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ,
+      Finset.sum_eq_zero fun i _ => ?_, add_zero]
+    · simp only [Fin.val_zero, pow_zero, one_smul, Fin.removeNth_zero,
+        ContinuousLinearMap.smulRight_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+      rfl
+    · have h : ((I 0 : Fin P) : ℕ) < (I i.succ : ℕ) := hI (Fin.succ_pos i)
+      have h0 : ((I i.succ : Fin P) : ℕ) ≠ 0 := by omega
+      simp [hα, h0]
+  -- Step 3: the summands of the left side vanish unless `I` is strictly increasing with
+  -- `I 0 = 0`, where they equal `c ^ 2 * γ (u ∘ I ∘ succ) ^ 2`.
+  have hL : ∀ I : Fin (m + 1) → Fin P,
+      (if StrictMono I then
+        (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) (fun i => u (I i))) ^ 2
+        else 0) =
+      if StrictMono I ∧ ((I 0 : Fin P) : ℕ) = 0 then
+        c ^ 2 * (γ (fun j => u (I j.succ))) ^ 2 else 0 := by
+    intro I
+    by_cases hI : StrictMono I
+    · rw [hval I hI, hα (I 0)]
+      by_cases h0 : ((I 0 : Fin P) : ℕ) = 0 <;> simp [hI, h0, mul_pow]
+    · simp [hI]
+  rw [Finset.sum_congr rfl fun I _ => hL I, ← Finset.sum_filter, ← Finset.mul_sum]
+  refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg c)
+  -- Steps 4–5: `I ↦ I ∘ succ` is injective on `{I | StrictMono I ∧ I 0 = 0}` and maps it into
+  -- the strictly increasing `m`-tuples; the remaining summands are nonnegative squares.
+  have hinj : Set.InjOn (fun (I : Fin (m + 1) → Fin P) (j : Fin m) => I j.succ)
+      (Finset.univ.filter fun I : Fin (m + 1) → Fin P =>
+        StrictMono I ∧ ((I 0 : Fin P) : ℕ) = 0) := by
+    intro I hI I' hI' h
+    simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hI hI'
+    funext i
+    refine Fin.cases ?_ (fun j => congrFun h j) i
+    exact Fin.ext (hI.2.trans hI'.2.symm)
+  rw [← Finset.sum_filter,
+    ← Finset.sum_image (f := fun J : Fin m → Fin P => (γ (fun i => u (J i))) ^ 2) hinj]
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun J _ _ => sq_nonneg _
+  intro J hJ
+  simp only [Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and] at hJ ⊢
+  obtain ⟨I, ⟨hI, _⟩, rfl⟩ := hJ
+  exact hI.comp Fin.strictMono_succ
+
+/-- The wedge estimate behind the bound on the right side of Simon Ch. 6, 4.11 (proof of 4.8–4.9):
+for a covector `α` and an `m`-covector `γ` on `ℝ^P`, the Euclidean coefficient norm of
+`α ∧ γ = alternatizeUncurryFin (α.smulRight γ)` is at most `‖α‖ |γ|`.  The coefficient norm can
+be computed in any orthonormal basis.  In a basis `u` with `α(u₀) = ‖α‖` and `α(uⱼ) = 0` for
+`j ≠ 0`, the coefficients of `α ∧ γ` are `‖α‖` times coefficients of `γ` on pairwise distinct
+multi-indices, so `|α ∧ γ|² ≤ ‖α‖² |γ|²`. -/
+theorem Submission.slicing_mb_wedge_norm_le :
+    ∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m),
+      covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ)) ≤
+        ‖α‖ * covectorEuclideanNorm γ := by
+  intro P m α γ
+  -- An orthonormal basis adapted to `α`: `α(u₀) = ‖α‖` and `α(uⱼ) = 0` for `j ≠ 0`.
+  obtain ⟨u, hu⟩ := Submission.slicing_mb_wn_adapted_onb P α
+  refine (sq_le_sq₀ (covectorEuclideanNorm_nonneg _)
+    (mul_nonneg (norm_nonneg α) (covectorEuclideanNorm_nonneg γ))).1 ?_
+  -- Both squared norms are sums over increasing multi-indices in `u`, and there
+  -- `Σ_{I incr} (α ∧ γ)(u_I)² ≤ ‖α‖² Σ_{J incr} γ(u_J)²`.
+  rw [mul_pow, Submission.slicing_mb_wn_norm_sq_eq_onb_sum P (m + 1) u,
+    Submission.slicing_mb_wn_norm_sq_eq_onb_sum P m u]
+  exact Submission.slicing_mb_wn_adapted_sum_le P m α γ u ‖α‖ hu
+/-- **Boundary defect of a smooth multiplier** (Simon Ch. 6, 4.11, with the representation
+estimate (2.7) and the wedge bound): if `(μ, v)` represents `T ∈ 𝒟ₘ₊₁(U)` with
+`|⟨α, v⟩| ≤ |α|`, `ω ∈ 𝒟ᵐ(U)` and `ψ` is `C^∞`, then `η₁ = ψω` and `η₂ = ψ dω` are test forms
+with `|∂T(η₁) − T(η₂)| ≤ ∫ |Dψ| |ω| dμ`.  The Leibniz rule `d(ψω) = ψ dω + Dψ ∧ ω` gives
+`∂T(η₁) − T(η₂) = T(Dψ ∧ ω)`, bounded by the representation and `|Dψ ∧ ω| ≤ ‖Dψ‖ |ω|`. -/
+theorem Submission.slicing_mb_leibniz_bound :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+      (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+      ∀ (ω : TestFormOn U m) (ψ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ →
+      ∃ (η₁ : TestFormOn U m) (η₂ : TestFormOn U (m + 1)),
+        (∀ x, (η₁ : DifferentialForm (Eucl P) m) x = ψ x • (ω : DifferentialForm (Eucl P) m) x) ∧
+        (∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x =
+          ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∧
+        ENNReal.ofReal |T.boundary η₁ - T η₂| ≤
+          ∫⁻ x, (‖fderiv ℝ ψ x‖₊ : ℝ≥0∞) *
+            ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x)) ∂μ := by
+  intro P m U T μ v hrep hnorm ω ψ hψ
+  -- The test forms `η₁ = ψ ω`, `η₂ = ψ dω` and `η₃ = Dψ ∧ ω` in `U`.
+  obtain ⟨η₁, hη₁⟩ := Submission.slicing_mb_lb_smul_testForm P m U ω ψ hψ
+  obtain ⟨η₂, hη₂⟩ :=
+    Submission.slicing_mb_lb_smul_testForm P (m + 1) U (exteriorDerivativeTestOn U m ω) ψ hψ
+  obtain ⟨η₃, hη₃⟩ :=
+    Submission.slicing_mb_lb_wedge_testForm P m U ω (fderiv ℝ ψ) (hψ.fderiv_right (by simp))
+  have hη₂' : ∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x =
+      ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x := hη₂
+  refine ⟨η₁, η₂, hη₁, hη₂', ?_⟩
+  -- Leibniz rule: `dη₁ = ψ dω + Dψ ∧ ω = η₂ + η₃`.
+  have hd : exteriorDerivativeTestOn U m η₁ = η₂ + η₃ := by
+    apply Subtype.ext
+    funext x
+    have h₁ : (η₁ : DifferentialForm (Eucl P) m) =
+        fun y => ψ y • (ω : DifferentialForm (Eucl P) m) y := funext hη₁
+    change exteriorDerivative (η₁ : DifferentialForm (Eucl P) m) x =
+      (η₂ : DifferentialForm (Eucl P) (m + 1)) x + (η₃ : DifferentialForm (Eucl P) (m + 1)) x
+    rw [h₁, hη₂', hη₃, Submission.slicing_mb_lb_extDeriv_smul P m ψ
+      (ω : DifferentialForm (Eucl P) m) x (hψ.differentiable (by simp) x)
+      (ω.2.1.1.differentiable (by simp) x)]
+  -- Hence `∂T(η₁) − T(η₂) = T(η₃)`.
+  have hb : T.boundary η₁ - T η₂ = T η₃ := by
+    rw [GeometricCurrentOn.boundary_apply, hd, map_add, add_sub_cancel_left]
+  -- The representation bound for `T(η₃)`, then `|Dψ ∧ ω| ≤ ‖Dψ‖ |ω|` pointwise.
+  rw [hb]
+  refine (Submission.slicing_mb_lb_repr_bound P (m + 1) U T μ v hrep hnorm η₃).trans
+    (lintegral_mono fun x => ?_)
+  rw [hη₃, ← enorm_eq_nnnorm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+  exact ENNReal.ofReal_le_ofReal (Submission.slicing_mb_wedge_norm_le P m _ _)
+
+/-- The cut-off defect bound in the proof of Simon Ch. 6, 4.9 for Lipschitz `f` (4.11 and the
+bound of its right side, p. 158, with `f^{(σ)}` in place of `f`, then `σ ↓ 0`).  Let
+`K = spt ω ⊆ W`, `|ω| ≤ 1`, `|v| ≤ 1` on covectors, `|Df| ≤ L_W` a.e. on the open `W ⊆ U`, and
+`|χ| ≤ 1`, `|χ'| ≤ c`, `χ' = 0` off `(t - h, t)`.  Then
+`|∫ χ(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ(f) ⟨dω, v₁⟩ dμ₁| ≤ c L_W μ(K ∩ {t - h ≤ f ≤ t})`, i.e.
+`∂T(χ(f) ω) - T(χ(f) dω)` computed through the representations of `∂T` and `T`.  For smooth
+`g_j` with `|g_j - f| ≤ 1/(j+1)` and `|Dg_j| ≤ L_W` on `K`, 4.11 for `ψ_j = χ ∘ g_j` gives the
+bound with the band `K ∩ {t - h - 1/(j+1) < f < t + 1/(j+1)}`; let `j → ∞` by dominated
+convergence on the left and continuity from above on the right. -/
+theorem Submission.slicing_mb_cutoff_defect_bound :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) →
+      (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+      ∀ (μ₁ : Measure (Eucl P)) (v₁ : Eucl P → NVector (Eucl P) (m + 1)),
+      IsMeasureRepresentation T μ₁ v₁ →
+      ∀ (μ₂ : Measure (Eucl P)) (v₂ : Eucl P → NVector (Eucl P) m),
+      IsMeasureRepresentation T.boundary μ₂ v₂ →
+      ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+      ∀ W : Set (Eucl P), IsOpen W → W ⊆ U →
+      ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Eucl P) m) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x) ≤ 1) →
+      ∀ (χ : ℝ → ℝ) (t h c : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → (∀ s, |χ s| ≤ 1) →
+      (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) →
+      ENNReal.ofReal |∫ x, χ (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ -
+        ∫ x, χ (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤
+      ENNReal.ofReal c * (LW : ℝ≥0∞) *
+        μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩ f ⁻¹' Icc (t - h) t) := by
+  intro P m U T μ v hμv hμK hv μ₁ v₁ hμ₁ μ₂ v₂ hμ₂ f L hf W hW hWU LW hLW ω hωW hω1 χ t h c hχ
+    hχ1 hχc hχ0
+  -- `K = spt ω` is compact and `K ⊆ W ⊆ U`.
+  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) m)) := ω.property.1.2
+  have hKU : tsupport (ω : DifferentialForm (Eucl P) m) ⊆ U := hωW.trans hWU
+  -- Smooth `g_j` with `|g_j - f| ≤ 1/(j+1)` and `‖Dg_j‖ ≤ L_W` on `K`.
+  choose g hg hgf hgD using fun j : ℕ =>
+    Submission.slicing_mb_smooth_approx P W hW f L (hf.mono hWU) LW hLW _ hKc hωW
+      (1 / ((j : ℝ) + 1)) (by positivity)
+  -- 4.11 for `ψ_j = χ ∘ g_j`, evaluated through the representations of `∂T` and `T`; its right
+  -- side is at most `c L_W μ(K ∩ {t - h - 1/(j+1) < f < t + 1/(j+1)})`.
+  have key : ∀ j : ℕ,
+      ENNReal.ofReal |∫ x, χ (g j x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ -
+        ∫ x, χ (g j x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤
+      ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩
+        f ⁻¹' Ioo (t - h - 1 / ((j : ℝ) + 1)) (t + 1 / ((j : ℝ) + 1))) := by
+    intro j
+    obtain ⟨η₁, η₂, hη₁, hη₂, hle⟩ := Submission.slicing_mb_leibniz_bound P m U T μ v hμv hv ω
+      (fun y => χ (g j y)) (hχ.comp (hg j))
+    have e₁ : T.boundary η₁ =
+        ∫ x, χ (g j x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ := by
+      rw [(hμ₂ η₁).2]
+      congr 1
+      funext x
+      rw [hη₁ x, map_smul, smul_eq_mul]
+    have e₂ : T η₂ =
+        ∫ x, χ (g j x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁ := by
+      rw [(hμ₁ η₂).2]
+      congr 1
+      funext x
+      rw [hη₂ x, map_smul, smul_eq_mul]
+    rw [← e₁, ← e₂]
+    exact hle.trans (Submission.slicing_mb_cdb_grad_lintegral_le P m μ _ f (g j) LW χ t h c
+      (1 / ((j : ℝ) + 1)) hω1 ((hg j).differentiable (by simp)) (hχ.differentiable (by simp))
+      (hgf j) (hgD j) hχc hχ0)
+  -- `g_j → f` pointwise on `K`.
+  have hconv : ∀ x ∈ tsupport (ω : DifferentialForm (Eucl P) m),
+      Tendsto (fun j => g j x) atTop (𝓝 (f x)) := by
+    intro x hx
+    rw [tendsto_iff_dist_tendsto_zero]
+    refine squeeze_zero (fun j => dist_nonneg) (fun j => ?_)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    rw [Real.dist_eq]
+    exact hgf j x hx
+  -- Left side: dominated convergence in both integrals, whose densities vanish off `K`.
+  have hL₂ := Submission.slicing_mb_cdb_multiplier_integral_tendsto P μ₂
+    (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) _ f g χ (hμ₂ ω).1
+    (fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx])
+    (fun j => (hg j).continuous.measurable) hconv hχ.continuous hχ1
+  have hL₁ := Submission.slicing_mb_cdb_multiplier_integral_tendsto P μ₁
+    (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x)) _ f g χ
+    (hμ₁ (exteriorDerivativeTestOn U m ω)).1
+    (fun x hx => by
+      have hx' : x ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m)) :=
+        fun h' => hx (tsupport_exteriorDerivative_subset _ h')
+      simp [image_eq_zero_of_notMem_tsupport hx'])
+    (fun j => (hg j).continuous.measurable) hconv hχ.continuous hχ1
+  -- Right side: continuity from above for the bands, as `μ(K) < ∞`.
+  have hR := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal c * (LW : ℝ≥0∞))
+    (Submission.slicing_mb_cdb_band_measure_tendsto P μ _ f (t - h) t (isClosed_tsupport _)
+      (hf.continuousOn.mono hKU) (hμK _ hKc hKU))
+    (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.coe_ne_top))
+  exact le_of_tendsto_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp (hL₂.sub hL₁).abs)
+    hR key
+
+/-- Simon Ch. 6, 4.9 (p. 158) for the slice `S = ⟨T, f, t₋⟩` of 4.6, `T` represented by `(μ, v)`:
+for open `W ⊆ U` with `|Df| ≤ L_W` a.e. on `W`,
+`M_W(S) ≤ L_W · liminf_{h ↓ 0} μ(W ∩ {t - h ≤ f ≤ t}) / h`.  For admissible `ω` and the
+cut-offs `χ_h` of `slicing_mb_cutoff` (slope at most `(1 + ε)/h`), the defect
+`X(h) = ∫ χ_h(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ_h(f) ⟨dω, v₁⟩ dμ₁` of 4.11 tends to `B(ω) - ∂A(ω) = -S(ω)`
+as `h ↓ 0` and satisfies `|X(h)| ≤ (1 + ε)/h · L_W · μ(W ∩ {t - h ≤ f ≤ t})`; let `h ↓ 0`,
+then `ε ↓ 0`. -/
+theorem Submission.slicing_mb_pointwise : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U →
+    ∀ (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+    (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) →
+    (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+    ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+    ∀ (t : ℝ) (S : GeometricCurrentOn U m), IsSlice T f t S →
+    ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ LW : ℝ≥0,
+    (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+    S.massOn W ≤ (LW : ℝ≥0∞) *
+      liminf (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) := by
+  intro P m U hU T μ v hT hμ hv f L hf t S hS W hW hWU LW hLW
+  -- `S = ∂A - B`, `A = T ⌞ {f < t}` (represented by `μ₁, v₁`), `B = (∂T) ⌞ {f < t}` (`μ₂, v₂`).
+  obtain ⟨A, B, ⟨-, μ₁, v₁, hT₁, hA⟩, ⟨-, μ₂, v₂, hT₂, hB⟩, hSAB⟩ := hS
+  -- It suffices to bound `S ω` for every `ω` admissible for `M_W`.
+  refine sSup_le ?_
+  rintro _ ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  have hSω : S ω = (∫ x in {x | x ∈ U ∧ f x < t},
+        v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁) -
+      ∫ x in {x | x ∈ U ∧ f x < t}, v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ := by
+    have := hSAB ω
+    rw [GeometricCurrentOn.boundary_apply, hA, hB] at this
+    exact this
+  -- The integrands `⟨ω, v₂⟩` and `⟨dω, v₁⟩` are integrable and vanish off `U`.
+  have hint₂ : Integrable (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) μ₂ := (hT₂ ω).1
+  have hint₁ : Integrable
+      (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x)) μ₁ :=
+    (hT₁ (exteriorDerivativeTestOn U m ω)).1
+  have hvan₂ : ∀ x, x ∉ U → v₂ x ((ω : DifferentialForm (Eucl P) m) x) = 0 := fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport fun hx' => hx (ω.property.2 hx'), map_zero]
+  have hvan₁ : ∀ x, x ∉ U → v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) = 0 :=
+    fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport fun hx' =>
+        hx (ω.property.2 (tsupport_exteriorDerivative_subset _ hx')), map_zero]
+  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal |S ω| := ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ = ENNReal.ofReal |(∫ x in {x | x ∈ U ∧ f x < t},
+          v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+        ∫ x in {x | x ∈ U ∧ f x < t},
+          v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| := by
+      rw [hSω, abs_sub_comm]
+    _ ≤ _ := by
+      refine Submission.slicing_mb_pointwise_liminf_bound
+        (fun h => μ (W ∩ f ⁻¹' Icc (t - h) t)) LW _ fun ε hε => ?_
+      -- The cut-offs `χ_h`, `h > 0`, of slope at most `(1 + ε)/h`.
+      choose! χ hχs hχ01 hχ1 hχ0 hχd hχd0 using
+        fun h (hh : 0 < h) => Submission.slicing_mb_cutoff t h ε hh hε
+      have hχm : ∀ h : ℝ, 0 < h → Measurable (χ h) := fun h hh =>
+        (hχs h hh).continuous.measurable
+      have hχabs : ∀ h s : ℝ, 0 < h → |χ h s| ≤ 1 := fun h s hh =>
+        abs_le.2 ⟨by linarith [(hχ01 h hh s).1], (hχ01 h hh s).2⟩
+      refine ⟨fun h => (∫ x, χ h (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+          ∫ x, χ h (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁,
+        ?_, fun h hh => ?_⟩
+      · -- `X(h) → B(ω) - ∂A(ω)` as `h ↓ 0`.
+        exact (Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf μ₂ _ hint₂ hvan₂ t χ
+          hχm hχabs (fun h s hh => hχ1 h hh s) (fun h s hh => hχ0 h hh s)).sub
+          (Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf μ₁ _ hint₁ hvan₁ t χ
+            hχm hχabs (fun h s hh => hχ1 h hh s) (fun h s hh => hχ0 h hh s))
+      · -- `|X(h)| ≤ (1 + ε)/h · L_W · μ(spt ω ∩ {t - h ≤ f ≤ t})`, and `spt ω ⊆ W`.
+        refine (Submission.slicing_mb_cutoff_defect_bound P m U T μ v hT hμ hv μ₁ v₁ hT₁ μ₂ v₂
+          hT₂ f L hf W hW hWU LW hLW ω hωW hω1 (χ h) t h ((1 + ε) / h) (hχs h hh)
+          (fun s => hχabs h s hh) (hχd h hh) (hχd0 h hh)).trans ?_
+        gcongr
+/-- The distribution function `G(r) = ν((a,b) ∩ (-∞, r])` of a measure `ν` on `ℝ` with
+`ν((a,b)) < ∞` is nondecreasing and right-continuous. -/
+theorem Submission.slicing_mb_dm_distribution_mono_rightcont :
+    ∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ →
+      Monotone (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) ∧
+      ∀ s : ℝ, ContinuousWithinAt (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) (Ici s) s := by
+  intro ν a b hab
+  -- Each `A_r = (a,b) ∩ (-∞, r]` lies in `(a,b)`, so `ν(A_r) < ∞`.
+  have hfin : ∀ r : ℝ, ν (Ioo a b ∩ Iic r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top hab (measure_mono inter_subset_left)
+  -- `r ↦ A_r` is monotone, hence so is `G`.
+  have hsub : ∀ r r' : ℝ, r ≤ r' → Ioo a b ∩ Iic r ⊆ Ioo a b ∩ Iic r' := fun r r' h =>
+    inter_subset_inter_right _ (Iic_subset_Iic.2 h)
+  refine ⟨fun r r' h => ENNReal.toReal_mono (hfin r') (measure_mono (hsub r r' h)), fun s => ?_⟩
+  -- Continuity within `[s, ∞)` is continuity within `(s, ∞)`.
+  rw [← continuousWithinAt_Ioi_iff_Ici]
+  -- `⋂_{r > s} A_r = A_s`.
+  have hinter : (⋂ r > s, Ioo a b ∩ Iic r) = Ioo a b ∩ Iic s := by
+    ext x
+    simp only [mem_iInter, mem_inter_iff, mem_Iic]
+    constructor
+    · intro h
+      exact ⟨(h (s + 1) (by linarith)).1, le_of_forall_gt_imp_ge_of_dense fun r hr => (h r hr).2⟩
+    · intro h r hr
+      exact ⟨h.1, h.2.trans hr.le⟩
+  -- Continuity of `ν` from above along `r ↓ s`, using `ν(A_{s+1}) < ∞`.
+  have hlim : Tendsto (fun r => ν (Ioo a b ∩ Iic r)) (𝓝[>] s) (𝓝 (ν (Ioo a b ∩ Iic s))) := by
+    rw [← hinter]
+    exact tendsto_measure_biInter_gt (s := fun r => Ioo a b ∩ Iic r)
+      (fun r _ => (measurableSet_Ioo.inter measurableSet_Iic).nullMeasurableSet)
+      (fun i j _ hij => hsub i j hij) ⟨s + 1, by linarith, hfin (s + 1)⟩
+  -- `toReal` is continuous at the finite value `ν(A_s)`.
+  exact (ENNReal.tendsto_toReal (hfin s)).comp hlim
+/-- The lower left Dini derivative `D(t) = liminf_{k → 0+} ofReal ((G t - G (t - k)) / k)` of a
+nondecreasing right-continuous `G : ℝ → ℝ` is Borel measurable. -/
+theorem Submission.slicing_mb_dm_lowerLeftDini_measurable :
+    ∀ G : ℝ → ℝ, Monotone G → (∀ s : ℝ, ContinuousWithinAt G (Ici s) s) →
+      Measurable (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k))
+        (𝓝[>] 0)) := by
+  intro G hG hG_cont
+  -- The intervals `(0, 1/(j+1))`, `j ∈ ℕ`, form a basis of `𝓝[>] 0`.
+  have hbasis : (𝓝[>] (0 : ℝ)).HasBasis (fun _ : ℕ => True)
+      (fun j => Ioo 0 (1 / ((j : ℝ) + 1))) := by
+    refine (nhdsGT_basis (0 : ℝ)).to_hasBasis (fun δ hδ => ?_) (fun j _ => ?_)
+    · obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+      exact ⟨j, trivial, Ioo_subset_Ioo_right hj.le⟩
+    · exact ⟨1 / ((j : ℝ) + 1), Nat.one_div_pos_of_nat, subset_rfl⟩
+  -- Right-continuity of `G` makes `k ↦ F_t(k)` left-continuous at each `k > 0`.
+  have hleft : ∀ t k : ℝ, 0 < k → ContinuousWithinAt
+      (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (Iio k) k := by
+    intro t k hk
+    have hGk : ContinuousWithinAt (fun x : ℝ => G (t - x)) (Iio k) k := by
+      have h1 : ContinuousWithinAt G (Ioi (t - k)) (t - k) :=
+        continuousWithinAt_Ioi_iff_Ici.2 (hG_cont (t - k))
+      refine h1.comp (continuous_const.sub continuous_id).continuousWithinAt ?_
+      intro x hx
+      simp only [mem_Ioi, mem_Iio] at hx ⊢
+      linarith
+    exact ENNReal.continuous_ofReal.continuousAt.comp_continuousWithinAt
+      ((continuousWithinAt_const.sub hGk).div continuousWithinAt_id hk.ne')
+  -- The infimum over real `k ∈ (0, δ)` equals the infimum over rational `q ∈ (0, δ)`.
+  have hrat : ∀ t δ : ℝ, (⨅ k ∈ Ioo 0 δ, ENNReal.ofReal ((G t - G (t - k)) / k)) =
+      ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), ENNReal.ofReal ((G t - G (t - q)) / q) := by
+    intro t δ
+    refine le_antisymm (le_iInf₂ fun q hq => iInf₂_le (q : ℝ) hq) (le_iInf₂ fun k hk => ?_)
+    -- Approximate `k` from the left by rationals `q n ∈ (max 0 (k - 1/(n+1)), k)`.
+    have hex : ∀ n : ℕ, ∃ q : ℚ, max 0 (k - 1 / ((n : ℝ) + 1)) < q ∧ (q : ℝ) < k := fun n =>
+      exists_rat_btwn (max_lt hk.1 (sub_lt_self k Nat.one_div_pos_of_nat))
+    choose q hq_lo hq_hi using hex
+    have hq_tendsto : Tendsto (fun n => (q n : ℝ)) atTop (𝓝[<] k) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_
+        (Eventually.of_forall hq_hi)
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le (g := fun n : ℕ => k - 1 / ((n : ℝ) + 1))
+        (h := fun _ => k) ?_ tendsto_const_nhds
+        (fun n => (le_max_right _ _).trans (hq_lo n).le) (fun n => (hq_hi n).le)
+      simpa using (tendsto_const_nhds (f := (atTop : Filter ℕ)) (x := k)).sub
+        tendsto_one_div_add_atTop_nhds_zero_nat
+    refine ge_of_tendsto' ((hleft t k hk.1).tendsto.comp hq_tendsto) fun n => ?_
+    exact iInf₂_le (q n) ⟨(le_max_left _ _).trans_lt (hq_lo n), (hq_hi n).trans hk.2⟩
+  -- Hence `D(t) = ⨆ j, ⨅ q ∈ ℚ ∩ (0, 1/(j+1)), F_t(q)`, a countable formula.
+  have hformula : (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k))
+      (𝓝[>] 0)) = fun t => ⨆ j : ℕ, ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 (1 / ((j : ℝ) + 1))),
+        ENNReal.ofReal ((G t - G (t - q)) / q) := by
+    funext t
+    rw [hbasis.liminf_eq_iSup_iInf]
+    simp only [iSup_true]
+    exact iSup_congr fun j => hrat t _
+  -- `G` is monotone, hence measurable, so each `t ↦ F_t(q)` is measurable.
+  rw [hformula]
+  have hGm : Measurable G := hG.measurable
+  refine Measurable.iSup fun j => Measurable.iInf fun q => Measurable.iInf_Prop _ ?_
+  exact ENNReal.measurable_ofReal.comp
+    ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)
+/-- For nondecreasing `G : ℝ → ℝ` and `a ≤ b`, the lower integral over `(a, b)` of the lower left
+Dini derivative `D(t) = liminf_{k → 0+} ofReal ((G t - G (t - k)) / k)` is at most `G b - G a`. -/
+theorem Submission.slicing_mb_dm_lintegral_lowerLeftDini_le :
+    ∀ G : ℝ → ℝ, Monotone G → ∀ a b : ℝ, a ≤ b →
+      ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤
+        ENNReal.ofReal (G b - G a) := by
+  intro G hG a b hab
+  -- Step sizes `δ n = 1/(n+1) → 0+`.
+  set δ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1)
+  have hδ_pos : ∀ n, 0 < δ n := fun n => Nat.one_div_pos_of_nat
+  have hδ_lim : Tendsto δ atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  have hδ_tendsto : Tendsto δ atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hδ_lim
+      (Eventually.of_forall hδ_pos)
+  -- Truncated left difference quotients `F n t = 1_{t > a + δ n} ofReal (G t - G (t - δ n)) / δ n`.
+  set F : ℕ → ℝ → ℝ≥0∞ := fun n => (Ioi (a + δ n)).indicator
+    (fun t => ENNReal.ofReal ((G t - G (t - δ n)) / δ n)) with hF_def
+  have hGm : Measurable G := hG.measurable
+  have hF_meas : ∀ n, Measurable (F n) := fun n =>
+    (ENNReal.measurable_ofReal.comp
+      ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)).indicator measurableSet_Ioi
+  -- For `t ∈ (a, b)`: `δ n → 0+`, and `t > a + δ n` eventually, so `D(t) ≤ liminf_n F n t`.
+  have hpt : ∀ t ∈ Ioo a b,
+      liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤
+        liminf (fun n => F n t) atTop := by
+    intro t ht
+    refine hδ_tendsto.liminf_le_liminf_comp.trans_eq (liminf_congr ?_)
+    filter_upwards [(tendsto_order.1 hδ_lim).2 _ (sub_pos.2 ht.1)] with n hn
+    have hmem : t ∈ Ioi (a + δ n) := by
+      simp only [mem_Ioi]
+      linarith
+    simp only [hF_def, Function.comp_apply, indicator_of_mem hmem]
+  -- Each `F n` integrates over `(a, b)` to at most `G b - G a`.
+  have hbound : ∀ n, ∫⁻ t in Ioo a b, F n t ≤ ENNReal.ofReal (G b - G a) := by
+    intro n
+    have hc : 0 < δ n := hδ_pos n
+    simp only [hF_def]
+    rw [setLIntegral_indicator measurableSet_Ioi, inter_comm, Ioo_inter_Ioi,
+      max_eq_right (by linarith : a ≤ a + δ n)]
+    rcases le_or_gt b (a + δ n) with hb | hb
+    · rw [Ioo_eq_empty (not_lt.2 hb), setLIntegral_empty]
+      exact zero_le
+    -- On `(a + δ n, b)` the quotient is nonnegative and integrable, and
+    -- `∫_{a+δ}^b (G t - G (t - δ)) dt = ∫_{b-δ}^b G - ∫_a^{a+δ} G ≤ δ (G b - G a)`.
+    have hGc : Monotone (fun t => G (t - δ n)) := fun x y hxy => hG (by linarith)
+    have hint : IntervalIntegrable (fun t => (G t - G (t - δ n)) / δ n) volume (a + δ n) b :=
+      (hG.intervalIntegrable.sub hGc.intervalIntegrable).div_const _
+    have hintOn : IntegrableOn (fun t => (G t - G (t - δ n)) / δ n) (Ioo (a + δ n) b) :=
+      ((intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le).1 hint).mono_set Ioo_subset_Ioc_self
+    have hnonneg : 0 ≤ᵐ[volume.restrict (Ioo (a + δ n) b)]
+        (fun t => (G t - G (t - δ n)) / δ n) :=
+      Eventually.of_forall fun t => div_nonneg (sub_nonneg.2 (hG (by linarith))) hc.le
+    have hreal : ∫ t in Ioo (a + δ n) b, (G t - G (t - δ n)) / δ n ≤ G b - G a := by
+      rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hb.le,
+        intervalIntegral.integral_div,
+        intervalIntegral.integral_sub hG.intervalIntegrable hGc.intervalIntegrable,
+        intervalIntegral.integral_comp_sub_right G (δ n), add_sub_cancel_right, div_le_iff₀ hc]
+      have h1 := intervalIntegral.integral_add_adjacent_intervals
+        (hG.intervalIntegrable (μ := volume) (a := a + δ n) (b := b - δ n))
+        (hG.intervalIntegrable (μ := volume) (a := b - δ n) (b := b))
+      have h2 := intervalIntegral.integral_add_adjacent_intervals
+        (hG.intervalIntegrable (μ := volume) (a := a) (b := a + δ n))
+        (hG.intervalIntegrable (μ := volume) (a := a + δ n) (b := b - δ n))
+      have h3 : ∫ x in (b - δ n)..b, G x ≤ δ n * G b := by
+        have := intervalIntegral.integral_mono_on (μ := volume) (by linarith : b - δ n ≤ b)
+          hG.intervalIntegrable intervalIntegrable_const (fun x hx => hG hx.2)
+        simpa [intervalIntegral.integral_const] using this
+      have h4 : δ n * G a ≤ ∫ x in a..(a + δ n), G x := by
+        have := intervalIntegral.integral_mono_on (μ := volume) (by linarith : a ≤ a + δ n)
+          intervalIntegrable_const hG.intervalIntegrable (fun x hx => hG hx.1)
+        simpa [intervalIntegral.integral_const] using this
+      linarith
+    calc ∫⁻ t in Ioo (a + δ n) b, ENNReal.ofReal ((G t - G (t - δ n)) / δ n)
+        = ENNReal.ofReal (∫ t in Ioo (a + δ n) b, (G t - G (t - δ n)) / δ n) :=
+          (ofReal_integral_eq_lintegral_ofReal hintOn hnonneg).symm
+      _ ≤ ENNReal.ofReal (G b - G a) := ENNReal.ofReal_le_ofReal hreal
+  -- Fatou's lemma.
+  calc ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0)
+      ≤ ∫⁻ t in Ioo a b, liminf (fun n => F n t) atTop := setLIntegral_mono' measurableSet_Ioo hpt
+    _ ≤ liminf (fun n => ∫⁻ t in Ioo a b, F n t) atTop := lintegral_liminf_le hF_meas
+    _ ≤ ENNReal.ofReal (G b - G a) := liminf_le_of_frequently_le' (Frequently.of_forall hbound)
+/-- **Lower left density versus the lower left Dini derivative** (Simon Ch. 6, p. 158, the step
+"4.9 gives 4.10").  Let `ν((a, b)) < ∞`, `G r = ν((a, b) ∩ (-∞, r])` (as a real number) and
+`t ∈ (a, b)`.  Then `liminf_{h → 0+} ν([t - h, t]) / h ≤ liminf_{k → 0+} (G t - G (t - k)) / k`.
+For `c > 1` and `0 < k < t - a`, `[t - k / c, t] ⊆ (a, b) ∩ (t - k, t]`, a band of mass
+`G t - G (t - k)`, so the density at `h = k / c` is at most `c · (G t - G (t - k)) / k`.
+Reparametrizing `h = k / c` gives `liminf ≤ c · liminf`, and `c ↓ 1` finishes. -/
+theorem Submission.slicing_mb_dm_density_le_lowerLeftDini : ∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ → ∀ t ∈ Ioo a b, liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ liminf (fun k : ℝ => ENNReal.ofReal (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) := by
+  intro ν a b hν t ht
+  obtain ⟨hat, htb⟩ := ht
+  -- Step 1: `A_r = (a, b) ∩ (-∞, r]` has finite measure, so `G r = ν(A_r).toReal` is monotone.
+  have hfin : ∀ r : ℝ, ν (Ioo a b ∩ Iic r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top hν (measure_mono inter_subset_left)
+  have hmono : ∀ r r' : ℝ, r ≤ r' →
+      (ν (Ioo a b ∩ Iic r)).toReal ≤ (ν (Ioo a b ∩ Iic r')).toReal := fun r r' hr =>
+    ENNReal.toReal_mono (hfin r') (measure_mono (inter_subset_inter_right _ (Iic_subset_Iic.2 hr)))
+  -- Step 2: for `s' ≤ s`, `A_s = A_{s'} ⊔ ((a, b) ∩ (s', s])`, so
+  -- `ν((a, b) ∩ (s', s]) = G s - G s'`.
+  have hincr : ∀ s' s : ℝ, s' ≤ s → ν (Ioo a b ∩ Ioc s' s) =
+      ENNReal.ofReal ((ν (Ioo a b ∩ Iic s)).toReal - (ν (Ioo a b ∩ Iic s')).toReal) := by
+    intro s' s hs
+    have hunion : Ioo a b ∩ Iic s = (Ioo a b ∩ Iic s') ∪ (Ioo a b ∩ Ioc s' s) := by
+      ext x
+      simp only [mem_inter_iff, mem_union, mem_Iic, mem_Ioc]
+      constructor
+      · rintro ⟨hx, hxs⟩
+        by_cases hxs' : x ≤ s'
+        · exact Or.inl ⟨hx, hxs'⟩
+        · exact Or.inr ⟨hx, lt_of_not_ge hxs', hxs⟩
+      · rintro (⟨hx, hxs'⟩ | ⟨hx, -, hxs⟩)
+        · exact ⟨hx, hxs'.trans hs⟩
+        · exact ⟨hx, hxs⟩
+    have hdisj : Disjoint (Ioo a b ∩ Iic s') (Ioo a b ∩ Ioc s' s) := by
+      rw [Set.disjoint_left]
+      rintro x ⟨-, hx₁⟩ ⟨-, hx₂, -⟩
+      exact absurd hx₁ (not_le.2 hx₂)
+    have hB : ν (Ioo a b ∩ Ioc s' s) ≠ ∞ :=
+      ne_top_of_le_ne_top hν (measure_mono inter_subset_left)
+    have hadd : (ν (Ioo a b ∩ Iic s)).toReal =
+        (ν (Ioo a b ∩ Iic s')).toReal + (ν (Ioo a b ∩ Ioc s' s)).toReal := by
+      rw [hunion, measure_union hdisj (measurableSet_Ioo.inter measurableSet_Ioc),
+        ENNReal.toReal_add (hfin s') hB]
+    rw [← ENNReal.ofReal_toReal hB, hadd, add_sub_cancel_left]
+  -- Step 3: for `c > 1` and `0 < k < t - a`, `h = k / c` gives `[t - h, t] ⊆ (a, b) ∩ (t - k, t]`,
+  -- hence `ν([t - h, t]) / h ≤ c · (G t - G (t - k)) / k`.
+  have hband : ∀ c : ℝ, 1 < c → ∀ᶠ k in 𝓝[>] (0 : ℝ),
+      ν (Icc (t - k / c) t) / ENNReal.ofReal (k / c) ≤ ENNReal.ofReal c * ENNReal.ofReal
+        (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k) := by
+    intro c hc
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hat)] with k hk
+    obtain ⟨hk0, hkt⟩ := hk
+    have hc0 : 0 < c := zero_lt_one.trans hc
+    have hhk : k / c < k := div_lt_self hk0 hc
+    have hsub : Icc (t - k / c) t ⊆ Ioo a b ∩ Ioc (t - k) t := by
+      rintro x ⟨hx₁, hx₂⟩
+      exact ⟨⟨by linarith, by linarith⟩, by linarith, hx₂⟩
+    have hΔ0 : 0 ≤ ((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k :=
+      div_nonneg (sub_nonneg.2 (hmono _ _ (by linarith))) hk0.le
+    apply ENNReal.div_le_of_le_mul
+    calc ν (Icc (t - k / c) t) ≤ ν (Ioo a b ∩ Ioc (t - k) t) := measure_mono hsub
+      _ = ENNReal.ofReal (c * (((ν (Ioo a b ∩ Iic t)).toReal -
+            (ν (Ioo a b ∩ Iic (t - k))).toReal) / k) * (k / c)) := by
+        rw [hincr _ _ (by linarith)]
+        congr 1
+        field_simp
+      _ = _ := by
+        rw [ENNReal.ofReal_mul (mul_nonneg hc0.le hΔ0), ENNReal.ofReal_mul hc0.le]
+  -- Steps 4–5: reparametrize `h = k / c` and factor out the constant `ofReal c`.
+  have hc_bound : ∀ c : ℝ, 1 < c →
+      liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤
+        ENNReal.ofReal c * liminf (fun k : ℝ => ENNReal.ofReal
+          (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) := by
+    intro c hc
+    have hc0 : 0 < c := zero_lt_one.trans hc
+    have htend : Tendsto (fun k : ℝ => k / c) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have h0 : Tendsto (fun k : ℝ => k / c) (𝓝 0) (𝓝 (0 / c)) := tendsto_id.div_const c
+        rw [zero_div] at h0
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with k hk
+        exact div_pos hk hc0
+    calc liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0)
+        ≤ liminf (fun k : ℝ => ν (Icc (t - k / c) t) / ENNReal.ofReal (k / c)) (𝓝[>] 0) :=
+          htend.liminf_le_liminf_comp
+      _ ≤ liminf (fun k : ℝ => ENNReal.ofReal c * ENNReal.ofReal
+            (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) :=
+          liminf_le_liminf (hband c hc)
+      _ = _ := ENNReal.liminf_const_mul_of_ne_top ENNReal.ofReal_ne_top
+  -- Step 6: let `c_n = 1 + 1 / (n + 1) ↓ 1`.
+  set D := liminf (fun k : ℝ => ENNReal.ofReal
+    (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0)
+  rcases eq_or_ne D ∞ with hD | hD
+  · rw [hD]
+    exact le_top
+  · have h1 : Tendsto (fun n : ℕ => 1 + 1 / ((n : ℝ) + 1)) atTop (𝓝 1) := by
+      simpa using tendsto_one_div_add_atTop_nhds_zero_nat.const_add (1 : ℝ)
+    have h2 : Tendsto (fun n : ℕ => ENNReal.ofReal (1 + 1 / ((n : ℝ) + 1)) * D) atTop (𝓝 D) := by
+      simpa using ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hD)
+    refine ge_of_tendsto h2 (Eventually.of_forall fun n => hc_bound _ ?_)
+    have : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+    linarith
+
+/-- The measurable majorant in Simon Ch. 6, 4.10 (`M_W(T ⌞ {f < t})` is increasing in `t`, so
+it is differentiable a.e. and its derivative integrates to at most `M_W(T ⌞ {a < f < b})`), for
+a Borel measure `ν` on `ℝ`: the lower left density `liminf_{h → 0+} ν([t - h, t]) / h` has a
+Borel majorant on `(a, b)` whose integral over `(a, b)` is at most `ν((a, b))`.
+If `ν((a, b)) = ∞` the constant `∞` works.  Otherwise the distribution function
+`G(r) = ν((a, b) ∩ (-∞, r])` is nondecreasing and right-continuous, and the majorant is `D` on
+`(a, b)` and `0` elsewhere, where `D(t) = liminf_{k → 0+} (G(t) - G(t - k)) / k` is the lower
+left Dini derivative of `G`: `D` is Borel, it dominates the closed-band density, and by
+Lebesgue's theorem for monotone functions `∫_{(a,b)} D ≤ G(b) - G(a) = ν((a, b))`. -/
+theorem Submission.slicing_mb_density_majorant :
+    ∀ (ν : Measure ℝ) (a b : ℝ), a < b → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧
+      (∀ t ∈ Ioo a b,
+        liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ g t) ∧
+      ∫⁻ t in Ioo a b, g t ≤ ν (Ioo a b) := by
+  intro ν a b hab
+  -- If `ν((a, b)) = ∞`, take `g ≡ ∞`.
+  by_cases hQ : ν (Ioo a b) = ∞
+  · exact ⟨fun _ => ∞, measurable_const, fun _ _ => le_top, by rw [hQ]; exact le_top⟩
+  obtain ⟨hG_mono, hG_right⟩ := Submission.slicing_mb_dm_distribution_mono_rightcont ν a b hQ
+  set G : ℝ → ℝ := fun r => (ν (Ioo a b ∩ Iic r)).toReal
+  set D : ℝ → ℝ≥0∞ := fun t =>
+    liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0)
+  refine ⟨(Ioo a b).indicator D,
+    (Submission.slicing_mb_dm_lowerLeftDini_measurable G hG_mono hG_right).indicator
+      measurableSet_Ioo, fun t ht => ?_, ?_⟩
+  · -- On `(a, b)` the closed-band density is at most `D = g`.
+    rw [Set.indicator_of_mem ht]
+    exact Submission.slicing_mb_dm_density_le_lowerLeftDini ν a b hQ t ht
+  · -- `∫⁻_{(a,b)} g = ∫⁻_{(a,b)} D ≤ G(b) - G(a)`, with `G(a) = 0` and `G(b) = ν((a, b))`.
+    have hGa : G a = 0 := by
+      have h : Ioo a b ∩ Iic a = ∅ :=
+        eq_empty_of_forall_notMem fun x (hx : x ∈ Ioo a b ∩ Iic a) => not_le.2 hx.1.1 hx.2
+      simp only [G, h, measure_empty, ENNReal.toReal_zero]
+    have hGb : G b = (ν (Ioo a b)).toReal := by
+      have h : Ioo a b ∩ Iic b = Ioo a b := inter_eq_left.2 fun x (hx : x ∈ Ioo a b) => hx.2.le
+      simp only [G, h]
+    rw [setLIntegral_congr_fun measurableSet_Ioo fun t ht => Set.indicator_of_mem ht D]
+    calc ∫⁻ t in Ioo a b, D t ≤ ENNReal.ofReal (G b - G a) :=
+          Submission.slicing_mb_dm_lintegral_lowerLeftDini_le G hG_mono a b hab.le
+      _ = ν (Ioo a b) := by rw [hGa, hGb, sub_zero, ENNReal.ofReal_toReal hQ]
 /-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
 (Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
 theorem Submission.cmb_abs_apply_le_of_massOn_le :
@@ -2721,6 +4112,65 @@ theorem Submission.slicing_support_subset :
           (fun y hy => hzero v _ y fun h => hWA y hy (hd ω W' hω h)),
         setIntegral_eq_zero_of_forall_eq_zero
           (fun y hy => hzero v' _ y fun h => hWA y hy (hω h)), sub_self]
+/-- **Mass bound for slices (Simon Ch. 6, 4.9–4.10, pp. 157–158).**  For `W ⊆ U` open,
+`‖Df‖ ≤ L_W` a.e. on `W` and `a < b`, `t ↦ M_W(⟨T, f, t⟩)` has a measurable majorant `g` on
+`(a, b)` with `∫⁻_{(a,b)} g ≤ L_W M_W(T ⌞ {a < f < b})`.  In the normalized representation
+`(μ, v)` of `T`, `M_W(T ⌞ {a < f < b}) = μ(W ∩ {a < f < b})`, and (4.9) bounds `M_W(⟨T, f, t⟩)`
+by `L_W liminf_{h ↓ 0} h⁻¹ μ(W ∩ f⁻¹[t - h, t])`.  This is `L_W` times the lower left density at
+`t` of `ν = f_#(μ ⌞ W)`, which has a measurable majorant with integral `≤ ν(a, b)` (4.10). -/
+theorem Submission.slicing_mass_bound : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ S : ℝ → GeometricCurrentOn U m, (∀ t, IsSlice T f t (S t)) → ∀ W, IsOpen W → W ⊆ U → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → ∀ a b : ℝ, a < b → ∀ R : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ a < f x ∧ f x < b} R → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ t ∈ Ioo a b, (S t).massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (LW : ℝ≥0∞) * R.massOn W := by
+  intro P m U hU T hT f L hf S hS W hW hWU LW hLW a b hab R hR
+  -- Step 1: a normalized representation `(μ, v)` of `T`, finite on compact subsets of `U`.
+  obtain ⟨μ, v, hrep, -, hfin, hnorm, -, hmass⟩ :=
+    Submission.slicing_mass_representation P (m + 1) U hU T fun W' hW' => (hT W' hW').1
+  -- Step 2: `R = T ⌞ A` is also computed in `(μ, v)`, hence `M_W(R) = μ(W ∩ A)`.
+  obtain ⟨hA, μR, vR, hrepR, hRA⟩ := hR
+  have hR' : ∀ ω : TestFormOn U (m + 1), R ω = ∫ x in {x | x ∈ U ∧ a < f x ∧ f x < b},
+      v x ((ω : DifferentialForm (Eucl P) (m + 1)) x) ∂μ := by
+    intro ω
+    rw [hRA ω]
+    exact Submission.slicing_representation_unique P (m + 1) U hU μR μ vR v
+      (fun ω => (hrepR ω).1) (fun ω => (hrep ω).1) univ isOpen_univ
+      (fun ω _ => (hrepR ω).2.symm.trans (hrep ω).2) _ hA ω (subset_univ _)
+  have hRmass : R.massOn W = μ (W ∩ {x | x ∈ U ∧ a < f x ∧ f x < b}) :=
+    hmass _ hA R hR' W hW hWU
+  -- Step 3: `ν = f_#(μ ⌞ W)`, using that `f` is continuous on the open set `W ⊆ U`.
+  have hfm : AEMeasurable f (μ.restrict W) :=
+    (hf.continuousOn.mono hWU).aemeasurable hW.measurableSet
+  have hν : ∀ s : Set ℝ, MeasurableSet s → (μ.restrict W).map f s = μ (W ∩ f ⁻¹' s) := by
+    intro s hs
+    rw [Measure.map_apply_of_aemeasurable hfm hs, Measure.restrict_apply' hW.measurableSet,
+      inter_comm]
+  -- Step 4: (4.10) for `ν`: a measurable majorant `g₀` of the lower left densities of `ν`.
+  obtain ⟨g₀, hg₀, hg₀le, hg₀int⟩ :=
+    Submission.slicing_mb_density_majorant ((μ.restrict W).map f) a b hab
+  refine ⟨fun t => (LW : ℝ≥0∞) * g₀ t, hg₀.const_mul _, fun t ht => ?_, ?_⟩
+  · -- Step 5: (4.9) gives `M_W(S t) ≤ L_W liminf_{h ↓ 0} h⁻¹ ν[t - h, t] ≤ L_W g₀(t)`.
+    have hden : (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) =
+        fun h : ℝ => (μ.restrict W).map f (Icc (t - h) t) / ENNReal.ofReal h := by
+      funext h
+      rw [hν _ measurableSet_Icc]
+    calc (S t).massOn W
+        ≤ (LW : ℝ≥0∞) *
+            liminf (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) :=
+          Submission.slicing_mb_pointwise P m U hU T μ v hrep hfin hnorm f L hf t (S t) (hS t)
+            W hW hWU LW hLW
+      _ ≤ (LW : ℝ≥0∞) * g₀ t := by
+          rw [hden]
+          exact mul_le_mul_right (hg₀le t ht) _
+  · -- Step 6: `∫⁻_{(a,b)} L_W g₀ ≤ L_W ν(a, b) = L_W μ(W ∩ {a < f < b}) = L_W M_W(R)`.
+    have hWab : W ∩ f ⁻¹' Ioo a b = W ∩ {x | x ∈ U ∧ a < f x ∧ f x < b} := by
+      ext x
+      constructor
+      · rintro ⟨hx, h⟩
+        exact ⟨hx, hWU hx, h⟩
+      · rintro ⟨hx, -, h⟩
+        exact ⟨hx, h⟩
+    calc ∫⁻ t in Ioo a b, (LW : ℝ≥0∞) * g₀ t
+        = (LW : ℝ≥0∞) * ∫⁻ t in Ioo a b, g₀ t := lintegral_const_mul _ hg₀
+      _ ≤ (LW : ℝ≥0∞) * (μ.restrict W).map f (Ioo a b) := mul_le_mul_right hg₀int _
+      _ = (LW : ℝ≥0∞) * R.massOn W := by
+          rw [hν _ measurableSet_Ioo, hWab, hRmass]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slicing_mb_cdb|grad_lintegral_le|band_measure_tendsto|multiplier_integral_tendsto",
+        "theorem lintegral_indicator_const_le|theorem tendsto_measure_iInter_atTop|theorem tendsto_integral_of_dominated_convergence|theorem ContinuousOn.preimage_isClosed_of_isClosed|theorem norm_deriv_eq_norm_fderiv|theorem fderiv_fun_comp|theorem opNorm_comp_le|theorem Tendsto.const_mul|tendsto_one_div_add_atTop_nhds_zero_nat|exists_nat_one_div_lt",
+        "abbrev NVector|abbrev Covector|abbrev DifferentialForm|def IsTestForm|def testFormOnSubmodule|abbrev TestFormOn|def covectorEuclideanNorm|covectorEuclideanNorm_zero|def exteriorDerivativeTestOn|boundary_apply|tsupport_exteriorDerivative_subset|abbrev exteriorDerivative",
+        "fderiv_fun_comp|norm_deriv_eq_norm_fderiv|opNorm_comp_le|ofReal_norm|enorm_eq_nnnorm",
+        "python3 /tmp/cdb_independent_audit_afv01uvi/run_check.py frozen",
+        "python3 /tmp/cdb_independent_audit_afv01uvi/run_check.py Challenges.lean",
+        "python3 /tmp/cdb_independent_audit_afv01uvi/run_check.py Children.lean",
+        "python3 /tmp/cdb_independent_audit_afv01uvi/run_check.py Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/tmp/cdb_independent_audit_afv01uvi/Challenges.lean",
+        "/tmp/cdb_independent_audit_afv01uvi/Children.lean",
+        "/tmp/cdb_independent_audit_afv01uvi/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and relevant snapshot/compiler-source agreement. The name search found no matches in the snapshot project or workspace declarations; independent scans found no reservations in the DAG or other proposed decompositions. All three names are bare identifiers, all frozen types pass lexical validation and elaborate before child implementation, and scratch proofs compile as Submission.X. Each child proof and the exact parent assembly uses only propext, Classical.choice and Quot.sound. The assembly treats the two existing sibling obligations as hypotheses, without claiming they are already proved. The split appropriately isolates three analytic steps of this selected cutoff-defect bound; the dependency closure is acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "grad_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary forms and unrestricted h and δ. The proof derives c ≥ 0, handles vanishing off the support and outside the derivative band, applies the chain rule with the ordinary continuous-linear-map operator norm, and performs the ENNReal conversions correctly. The indicator lower-integral inequality requires no measurability assumption. Every step is justified without relying on this child or the parent theorem, and it supplies the parent's approximant estimate."
+    },
+    {
+      "key": "band_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree on closedness, continuity restricted to K, finite μ(K), and arbitrary endpoints. The proof establishes measurable bands, antitonicity, the exact closed-band intersection, and a finite initial measure before applying continuity from above. It remains valid when a > b. This is a complete independent proof of the measure limit used by the parent."
+    },
+    {
+      "key": "multiplier_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type match exactly. The proof verifies a.e. strong measurability, domination by the integrable norm of F, and pointwise convergence both on K and off K. The pinned dominated-convergence theorem needs no separate measurability hypothesis on f or the limit. No finiteness assumption on ν or measurability assumption on K is missing. The complete, non-circular argument applies to both parent integrals."
+    }
+  ],
+  "required_changes": []
+}

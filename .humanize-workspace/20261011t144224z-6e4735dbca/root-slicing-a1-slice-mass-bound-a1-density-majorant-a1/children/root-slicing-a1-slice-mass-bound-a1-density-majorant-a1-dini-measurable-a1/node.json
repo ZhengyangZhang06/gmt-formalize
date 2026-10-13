@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1.dini_measurable-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1",
+  "depth": 4,
+  "title": "Lower left Dini derivative of a nondecreasing right-continuous function is Borel (parent Step 5 / (5b))",
+  "statement": "Let G : ℝ → ℝ be nondecreasing and right-continuous at every point: for every s ∈ ℝ, G(r) → G(s) as r → s within [s, ∞). For t ∈ ℝ define the lower left Dini derivative D(t) := liminf_{k→0+} ofReal((G(t) − G(t − k))/k) ∈ [0, ∞]. The liminf is taken in [0, ∞] along the filter 𝓝[>] 0. Then D : ℝ → [0, ∞] is Borel measurable.",
+  "lean_statement": "∀ G : ℝ → ℝ, Monotone G → (∀ s : ℝ, ContinuousWithinAt G (Ici s) s) → Measurable (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0))",
+  "lean_name": "slicing_mb_dm_lowerLeftDini_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1-dini-measurable-a1-a1"
+}

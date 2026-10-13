@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1",
+  "depth": 3,
+  "title": "Smooth approximation of a Lipschitz function with the a.e. gradient bound on a compact set (parent Step 3(i)–(iii))",
+  "statement": "For every P ∈ ℕ, every open W ⊆ ℝ^P, every f : ℝ^P → ℝ which is L-Lipschitz on W, every LW ≥ 0 with ‖Df(x)‖ ≤ LW for Lebesgue-a.e. x ∈ W (Df(x) = fderiv ℝ f x, which is 0 where f is not differentiable), every compact K ⊆ W and every δ > 0, there is a C^∞ function g : ℝ^P → ℝ with |g(x) − f(x)| ≤ δ and ‖Dg(x)‖ ≤ LW for every x ∈ K.",
+  "lean_statement": "∀ (P : ℕ) (W : Set (Eucl P)), IsOpen W → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f W → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ δ : ℝ, 0 < δ → ∃ g : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ (∀ x ∈ K, |g x - f x| ≤ δ) ∧ (∀ x ∈ K, ‖fderiv ℝ g x‖₊ ≤ LW)",
+  "lean_name": "slicing_mb_smooth_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-a1"
+}
