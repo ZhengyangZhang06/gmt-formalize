@@ -434,6 +434,85 @@ theorem Submission.isoperimetric_abs_covector_apply_le : ∀ (P n : ℕ) (α : C
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
           Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
 
+/-- **Radial coefficient bound** (for the cone mass estimate, Simon Ch. 6, 2.27 and 2.30,
+pp. 140–141, in the proof of 8.2, p. 177).  If `|ω(y)| ≤ 1` for all `y` and
+`β(v) = ∫₀¹ tᵐ ω(tx)(x, v) dt` for all `v`, then `|β| ≤ P^{2m+1} |x|`, `|·|` the Euclidean
+coefficient norm of Remark 2.6.  Put `K = P^{m+1} |x|`.  If `|u_i| ≤ 1` for all `i`, then
+`α(x, u) = |x| α(x/|x|, u)`, so `|α(x, u)| ≤ K |α|` by `isoperimetric_abs_covector_apply_le`.
+Hence `|β(e_I)| ≤ K` for each of the `P^m` maps `I : Fin m → Fin P`, and
+`|β| ≤ (P^m K²)^{1/2} ≤ P^m K = P^{2m+1} |x|`. -/
+theorem Submission.iwl_cr_cest_radial_coeff_bound : ∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (x : Eucl P) (β : Covector (Eucl P) m), (∀ y, covectorEuclideanNorm (ω y) ≤ 1) → (∀ v : Fin m → Eucl P, β v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → covectorEuclideanNorm β ≤ (P : ℝ) ^ (2 * m + 1) * ‖x‖ := by
+  intro P m ω x β hω hβ
+  classical
+  set K : ℝ := (P : ℝ) ^ (m + 1) * ‖x‖ with hK
+  have hK0 : 0 ≤ K := mul_nonneg (pow_nonneg (Nat.cast_nonneg P) _) (norm_nonneg x)
+  -- Step 1: `|α(x, u)| ≤ K |α|` whenever `|u_i| ≤ 1` for all `i`.
+  have hcoef : ∀ (α : Covector (Eucl P) (m + 1)) (u : Fin m → Eucl P), (∀ i, ‖u i‖ ≤ 1) →
+      |α (Fin.cons x u)| ≤ K * covectorEuclideanNorm α := by
+    intro α u hu
+    by_cases hx : x = 0
+    · -- The first argument vanishes.
+      have h0 : α (Fin.cons x u) = 0 := α.map_coord_zero 0 (by simp [hx])
+      rw [h0, abs_zero]
+      exact mul_nonneg hK0 (covectorEuclideanNorm_nonneg α)
+    · -- `α(x, u) = |x| α(τ)` for `τ = (x/|x|, u)`, whose entries have norm at most `1`.
+      have hx0 : 0 < ‖x‖ := norm_pos_iff.mpr hx
+      set τ : Fin (m + 1) → Eucl P := Fin.cons (‖x‖⁻¹ • x) u
+      have hτ : ∀ j, ‖τ j‖ ≤ 1 := by
+        intro j
+        refine Fin.cases ?_ (fun i => ?_) j
+        · simp [τ, norm_smul, inv_mul_cancel₀ hx0.ne']
+        · simpa [τ] using hu i
+      have hxu : (Fin.cons x u : Fin (m + 1) → Eucl P) = Function.update τ 0 (‖x‖ • τ 0) := by
+        funext j
+        refine Fin.cases ?_ (fun i => ?_) j
+        · simp [τ, smul_smul, mul_inv_cancel₀ hx0.ne']
+        · simp [τ]
+      rw [hxu, α.map_update_smul, Function.update_eq_self, smul_eq_mul, abs_mul,
+        abs_of_pos hx0]
+      calc ‖x‖ * |α τ| ≤ ‖x‖ * ((P : ℝ) ^ (m + 1) * covectorEuclideanNorm α) :=
+            mul_le_mul_of_nonneg_left
+              (Submission.isoperimetric_abs_covector_apply_le P (m + 1) α τ hτ) hx0.le
+        _ = K * covectorEuclideanNorm α := by rw [hK]; ring
+  -- Step 2: `|β(e_I)| ≤ K` for every `I : Fin m → Fin P`.
+  have hcoord : ∀ I : Fin m → Fin P,
+      |β (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ K := by
+    intro I
+    have he : ∀ i, ‖EuclideanSpace.basisFun (Fin P) ℝ (I i)‖ ≤ 1 := fun i =>
+      ((EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.1 (I i)).le
+    -- On `Ι(0, 1) = (0, 1]`, `0 ≤ tᵐ ≤ 1` and `|ω(tx)(x, e_I)| ≤ K |ω(tx)| ≤ K`.
+    have hbound : ∀ t ∈ Set.uIoc (0 : ℝ) 1,
+        ‖t ^ m * ω (t • x) (Fin.cons x fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))‖ ≤ K := by
+      intro t ht
+      rw [Set.uIoc_of_le zero_le_one] at ht
+      have htm : 0 ≤ t ^ m := pow_nonneg ht.1.le m
+      have htm1 : t ^ m ≤ 1 := pow_le_one₀ ht.1.le ht.2
+      have hval := (hcoef (ω (t • x)) _ he).trans
+        (mul_le_of_le_one_right hK0 (hω (t • x)))
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg htm]
+      exact (mul_le_of_le_one_left (abs_nonneg _) htm1).trans hval
+    have h := intervalIntegral.norm_integral_le_of_norm_le_const hbound
+    rw [Real.norm_eq_abs, sub_zero, abs_one, mul_one] at h
+    rw [hβ]
+    exact h
+  -- Step 3: `|β|² ≤ P^m K² ≤ (P^m K)²`, as `P^m ≤ (P^m)²`.
+  unfold covectorEuclideanNorm
+  refine (Real.sqrt_le_sqrt (y := ((P : ℝ) ^ m * K) ^ 2) ?_).trans_eq ?_
+  · calc _ ≤ ∑ _I : Fin m → Fin P, K ^ 2 := by
+          refine Finset.sum_le_sum fun I _ => ?_
+          split_ifs
+          · simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hcoord I) 2
+          · positivity
+      _ = (P : ℝ) ^ m * K ^ 2 := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+            Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
+      _ ≤ ((P : ℝ) ^ m) ^ 2 * K ^ 2 := by
+          refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg K)
+          exact_mod_cast Nat.le_self_pow two_ne_zero (P ^ m)
+      _ = ((P : ℝ) ^ m * K) ^ 2 := (mul_pow _ _ 2).symm
+  · rw [Real.sqrt_sq (mul_nonneg (pow_nonneg (Nat.cast_nonneg P) m) hK0), hK]
+    ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
