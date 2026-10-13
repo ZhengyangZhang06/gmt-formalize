@@ -507,6 +507,65 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 
+/-- Small deformations `x ↦ x + t • Z x` by a compactly supported `C¹` field `Z` are injective
+immersions (the maps `φ_t` of Simon Ch. 2, 5.1–5.2).  `DZ` is continuous with compact support, so
+`‖DZ‖ ≤ Λ` for some `Λ ≥ 0`, and `|t| < 1 / (Λ + 1)` gives `|t| Λ < 1`.  By the mean value
+inequality `Z` is `Λ`-Lipschitz, so `a + t • Z a = b + t • Z b` forces `‖a - b‖ ≤ |t| Λ ‖a - b‖`,
+i.e. `a = b`; in the same way the derivative `I + t • DZ(x)` is injective. -/
+theorem Submission.codim1_hcp_fv_perturbation_injective : ∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ c : ℝ, 0 < c ∧ ∀ t : ℝ, |t| < c → Injective (fun x => x + t • Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x) := by
+  intro P Z hZ hZc
+  have hdiff : Differentiable ℝ Z := hZ.differentiable one_ne_zero
+  -- step 1: `DZ` is continuous with compact support, hence bounded by some `Λ ≥ 0`
+  obtain ⟨Λ₀, hΛ₀⟩ := (hZ.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+    (hZc.fderiv (𝕜 := ℝ))
+  obtain ⟨Λ, hΛ0, hΛ⟩ : ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x, ‖fderiv ℝ Z x‖ ≤ Λ :=
+    ⟨max Λ₀ 0, le_max_right _ _, fun x => (hΛ₀ x).trans (le_max_left _ _)⟩
+  -- step 2: `c = 1 / (Λ + 1)`, so `|t| < c` gives `|t| Λ < 1`
+  refine ⟨1 / (Λ + 1), by positivity, fun t ht => ?_⟩
+  have htΛ : |t| * Λ < 1 := by
+    have h1 : |t| * (Λ + 1) < 1 := by
+      rwa [lt_div_iff₀ (by positivity)] at ht
+    nlinarith [abs_nonneg t]
+  -- step 3: mean value inequality, `‖Z a - Z b‖ ≤ Λ ‖a - b‖`
+  have hlip : ∀ a b, ‖Z a - Z b‖ ≤ Λ * ‖a - b‖ := fun a b =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun x _ => hdiff x) (fun x _ => hΛ x)
+      (Set.mem_univ b) (Set.mem_univ a)
+  refine ⟨fun a b hab => ?_, fun x => ?_⟩
+  · -- step 4: `a - b = t • (Z b - Z a)` gives `‖a - b‖ ≤ |t| Λ ‖a - b‖`, so `a = b`
+    have hab' : a - b = t • Z b - t • Z a := by
+      rw [sub_eq_sub_iff_add_eq_add, add_comm (t • Z b) b]; exact hab
+    have hn : ‖a - b‖ ≤ |t| * Λ * ‖a - b‖ := by
+      calc ‖a - b‖ = |t| * ‖Z b - Z a‖ := by
+            rw [hab', ← smul_sub, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖b - a‖) := mul_le_mul_of_nonneg_left (hlip b a) (abs_nonneg t)
+        _ = |t| * Λ * ‖a - b‖ := by rw [norm_sub_rev]; ring
+    have h0 : ‖a - b‖ = 0 := by
+      by_contra hne
+      have hpos : 0 < ‖a - b‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+      nlinarith
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+  · -- step 5: `D(x + t • Z x) = I + t • DZ(x)`, and `‖v - w‖ ≤ |t| Λ ‖v - w‖` as in step 4
+    have hfd : fderiv ℝ (fun x => x + t • Z x) x =
+        ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x :=
+      ((hasFDerivAt_id x).add ((hdiff x).hasFDerivAt.const_smul t)).fderiv
+    rw [hfd]
+    intro v w hvw
+    have hvw' : v - w = t • fderiv ℝ Z x w - t • fderiv ℝ Z x v := by
+      rw [sub_eq_sub_iff_add_eq_add, add_comm (t • fderiv ℝ Z x w) w]; exact hvw
+    have hn : ‖v - w‖ ≤ |t| * Λ * ‖v - w‖ := by
+      calc ‖v - w‖ = |t| * ‖fderiv ℝ Z x (w - v)‖ := by
+            conv_lhs => rw [hvw']
+            rw [← smul_sub, ← map_sub, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖w - v‖) :=
+          mul_le_mul_of_nonneg_left ((fderiv ℝ Z x).le_of_opNorm_le (hΛ x) (w - v))
+            (abs_nonneg t)
+        _ = |t| * Λ * ‖v - w‖ := by rw [norm_sub_rev]; ring
+    have h0 : ‖v - w‖ = 0 := by
+      by_contra hne
+      have hpos : 0 < ‖v - w‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+      nlinarith
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
