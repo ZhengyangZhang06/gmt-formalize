@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "24b9d12cb1edc07571077ffe8520f143de8c13efeba5dd2bc9c7b6a8fc869e3e",
+  "git_delta": {
+    "base_commit": "fbbd0f1e3e2cd4b6898a8f9676ac7f88dd124cbb",
+    "candidate_commit": "fd7d7b9df3f8d4e58bf82d7ec5f42fd1142a7e7d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_cacc_exists_cutoff",
+    "diff_sha256": "38b40b88f59c91d72a8c2f17f4f85755d91669dfffb50f4b18f11f7d86201624",
+    "source_sha256": "d23fa9633046392fae980ed677e771dd9c3864b37d3963a332032aff2d4b664a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_cacc_exists_cutoff",
+      "statement": "∃ K : ℝ, 0 ≤ K ∧ ∀ (n : ℕ) (y : Rn n) (ρ : ℝ), 0 < ρ → ∃ η : Rn n → ℝ, ContDiff ℝ 1 η ∧ (∀ x, 0 ≤ η x ∧ η x ≤ 1) ∧ (∀ x ∈ ball y ρ, η x = 1) ∧ HasCompactSupport η ∧ tsupport η ⊆ ball y (2 * ρ) ∧ ∀ x, ‖fderiv ℝ η x‖ ≤ K / ρ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
