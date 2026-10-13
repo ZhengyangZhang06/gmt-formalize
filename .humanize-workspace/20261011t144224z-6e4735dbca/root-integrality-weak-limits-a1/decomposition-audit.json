@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "def HasWeightedApproximateTangentSpaceAt|def blowUpMap|HasWeightedApproximateTangentSpaceAt.unique|def CountablyRectifiable",
+        "def support|support_subset|isClosed.*support|support_isClosed|massOn_le_liminf|def massOn|def covectorEuclideanNorm",
+        "hausdorffMeasure_smul₀|intervalIntegral_deriv_mem_uIcc",
+        "Helly|BoundedVariation|BV.*[Cc]ompact|[Cc]ompact.*BV",
+        "rg -n '\"lean_name\": \"iwl_|Submission\\.iwl_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentReview.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/iwl-decomp-scratch/Scratch/IndependentReview.lean",
+        "/tmp/iwl-decomp-scratch/Scratch/IndependentAssembly.lean"
+      ],
+      "conclusion": "The selected contract is exactly integrality_of_weak_limits : IntegralityOfWeakLimits. Scratch inputs match the frozen project; package revisions match the pins. All twelve one-line propositions elaborate independently without child implementations. Their type definitions and the assembly with children as explicit hypotheses use only propext, Classical.choice and Quot.sound. That assembly proves the selected parent using its four authorized sibling hypotheses. Child and upstream dependencies are acyclic; all proposed names are bare, distinct and unreserved. The smoothness exponent denotes C∞; no matrix-unit construction occurs. Local sources confirm the measure, tangent, support and covering conventions. No BV-compactness or Helly-selection theorem was found in the searched Lean libraries: top_dim explicitly invokes Simon Ch. 2, Theorem 2.6, while restriction_limit supplies its selection argument. The split appropriately separates reusable preliminaries and substantive proof stages. Analytic acceptance below follows independent reading of each supplied proof, not the elaboration checks."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes the essential null-measurability, local integrability and pointwise weight-equality hypotheses. Change of variables and the quantitative integral bound prove the exact tangent-space equivalence without circularity."
+    },
+    {
+      "key": "patching",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Vector-measure uniqueness establishes overlap compatibility; countable gluing, local integrability, partition of unity and tangent locality verify every required triple property."
+    },
+    {
+      "key": "zero_dim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uniform local mass bounds control both atom counts and integer coefficients. Subsequence extraction, collision summation, verification of the finite Dirac model and patching prove the stated base case."
+    },
+    {
+      "key": "top_dim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof obtains integer-valued densities and the required BV bounds, applies the cited local BV compactness theorem, identifies the weak limit and verifies its weighted tangent spaces. It correctly requires no boundary-integrality hypothesis."
+    },
+    {
+      "key": "restriction_theory",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match the prose. Coordinate cutoff estimates establish local finite mass; local measure uniqueness proves restriction uniqueness; Riesz representation and approximation establish existence and the mass identity for every open W ⊆ U."
+    },
+    {
+      "key": "im_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes local finite mass, Borel restriction closure and integer linear-combination closure. Its overlap argument justifies coincident tangent planes and signed integer multiplicities, including cancellation, using the declared dependencies."
+    },
+    {
+      "key": "restriction_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rational diagonal selection yields one subsequence and a countable exceptional set. Existing restrictions supply the needed representations; smooth cutoff estimates prove (A), and the stated compact sublevel containment proves (B). No unstated global mass bound is required."
+    },
+    {
+      "key": "smooth_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness provides compatible compactly supported pullbacks. Directional-derivative uniqueness identifies the sibling pushforward using only positive real weights. Naturality and the exterior-power norm estimate prove the boundary formula and both mass bounds."
+    },
+    {
+      "key": "localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Helly selection followed by Fatou gives a radius and subsequence satisfying all simultaneous requirements. The proof checks integral restrictions, uniform bounds, common compact support, extension, weak convergence and patching. The compact-case hypothesis is a genuine reduction."
+    },
+    {
+      "key": "cycle_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied cone construction verifies integrality, boundary, support and weak continuity for the currents used. The degree-zero augmentation is handled using compactly supported boundaries. BLI and the cycle hypothesis then imply the exact compact-support conclusion without circular reliance."
+    },
+    {
+      "key": "positive_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly applies BLI to restricted-current boundaries, derives the derivative bound, handles degree one separately and uses the correct isoperimetric dimension shift. The corrected exponent, radial support compression and covering argument establish positive density under the stated total-mass bound."
+    },
+    {
+      "key": "integer_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite upper density of the limiting mass measure supplies the crucial uniform rescaled bounds. The diagonal selection, normal slicing, cylinder localization and proper projection satisfy the top-dimensional child's exact hypotheses. Removing the exceptional null set completes integrality without using the parent."
+    }
+  ],
+  "required_changes": []
+}
