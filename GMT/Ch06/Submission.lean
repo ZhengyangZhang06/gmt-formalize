@@ -592,6 +592,94 @@ theorem Submission.constancy_mdc_smooth_approx_identity_ae_tendsto :
   refine squeeze_zero (fun k => norm_nonneg _) hbound ?_
   simpa using havg.const_mul C
 
+/-- Weak constancy on a ball (Simon Ch. 6, Theorem 2.34, printed proof p. 143): if `θ` is locally
+integrable and `∫ θ D_j a = 0` for every `a ∈ C_c^∞(B_ρ(x₀))` and every `j`, then `θ` is a.e.
+constant on `B_ρ(x₀)`.  The mollifications `θ ∗ ψ_k` have vanishing derivative on
+`B_{ρ - 1/(k+1)}(x₀)`, hence are constant there, and they converge to `θ` a.e. -/
+theorem Submission.constancy_mdc_ae_const_of_weak_partials_vanish :
+    ∀ (n : ℕ) (θ : Eucl n → ℝ), LocallyIntegrable θ volume → ∀ (x₀ : Eucl n) (ρ : ℝ), 0 < ρ →
+      (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a →
+        tsupport a ⊆ ball x₀ ρ → ∀ j : Fin n,
+          ∫ x, θ x * fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) ∂volume = 0) →
+      ∃ c : ℝ, ∀ᵐ x ∂volume.restrict (ball x₀ ρ), θ x = c := by
+  intro n θ hθ x₀ ρ hρ hw
+  -- Step 1: mollifiers `ψ k` with `tsupport (ψ k) ⊆ closedBall 0 (1 / (k + 1))` and
+  -- `θ ∗ ψ k → θ` almost everywhere.
+  obtain ⟨ψ, hψs, hψc, hψt, -, -, hψlim⟩ :=
+    Submission.constancy_mdc_smooth_approx_identity_ae_tendsto n
+  -- Steps 2–3: if `closedBall x (1 / (k + 1)) ⊆ ball x₀ ρ`, then `a = ψ k (x - ·)` is an
+  -- admissible test function and `D(θ ∗ ψ k)(x) e_j = -∫ θ D_j a = 0` for every `j`.
+  have hd : ∀ (k : ℕ) (x : Eucl n), closedBall x (1 / ((k : ℝ) + 1)) ⊆ ball x₀ ρ →
+      fderiv ℝ (convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x = 0 := by
+    intro k x hx
+    have hψ1 : ContDiff ℝ 1 (ψ k) := (hψs k).of_le (by exact_mod_cast le_top)
+    let a : Eucl n → ℝ := fun y => ψ k (x - y)
+    have ha : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a :=
+      (hψs k).comp (contDiff_const.sub contDiff_id)
+    have hac : HasCompactSupport a := (hψc k).comp_homeomorph (Homeomorph.subLeft x)
+    have has : tsupport a ⊆ ball x₀ ρ := by
+      refine (tsupport_comp_subset_preimage (ψ k) (continuous_const.sub continuous_id)).trans ?_
+      intro y hy
+      apply hx
+      have hy' := hψt k hy
+      rw [mem_closedBall, dist_eq_norm, sub_zero] at hy'
+      rw [mem_closedBall, dist_eq_norm, norm_sub_rev]
+      exact hy'
+    have hda : ∀ y, fderiv ℝ a y = -(fderiv ℝ (ψ k) (x - y)) := by
+      intro y
+      have h1 : HasFDerivAt (ψ k) (fderiv ℝ (ψ k) (x - y)) (x - y) :=
+        ((hψ1.differentiable one_ne_zero) (x - y)).hasFDerivAt
+      have h2 : HasFDerivAt (fun y : Eucl n => x - y) (-ContinuousLinearMap.id ℝ (Eucl n)) y :=
+        (hasFDerivAt_id y).const_sub x
+      simpa [a, Function.comp_def] using (h1.comp y h2).fderiv
+    rw [((hψc k).hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hθ hψ1 x).fderiv]
+    apply ContinuousLinearMap.coe_injective
+    refine (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.ext fun j => ?_
+    rw [ContinuousLinearMap.coe_coe, convolution_precompR_apply (ContinuousLinearMap.lsmul ℝ ℝ) hθ
+      ((hψc k).fderiv ℝ) (hψ1.continuous_fderiv one_ne_zero)]
+    have hz := hw a ha hac has j
+    simp only [hda, neg_apply, mul_neg, integral_neg, neg_eq_zero] at hz
+    simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply, LinearMap.zero_apply,
+      ContinuousLinearMap.toLinearMap_zero]
+    simpa only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul] using hz
+  -- Step 4: `θ ∗ ψ k` has zero derivative on the convex open ball `ball x₀ (ρ - 1 / (k + 1))`,
+  -- hence is constant there.
+  have hconst : ∀ (k : ℕ) (x y : Eucl n), x ∈ ball x₀ (ρ - 1 / ((k : ℝ) + 1)) →
+      y ∈ ball x₀ (ρ - 1 / ((k : ℝ) + 1)) →
+      convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume x =
+        convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume y := by
+    intro k x y hx hy
+    have hdiff : Differentiable ℝ (convolution θ (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+      ((hψc k).contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hθ
+        (hψs k)).differentiable (by simp)
+    refine isOpen_ball.is_const_of_fderiv_eq_zero (convex_ball _ _).isPreconnected
+      hdiff.differentiableOn ?_ hx hy
+    intro z hz
+    apply hd k z
+    intro w hw'
+    rw [mem_ball] at hz ⊢
+    rw [mem_closedBall] at hw'
+    calc dist w x₀ ≤ dist w z + dist z x₀ := dist_triangle _ _ _
+      _ < ρ := by linarith
+  -- Steps 5–6: pick `x₁ ∈ ball x₀ ρ` with `(θ ∗ ψ k)(x₁) → θ x₁`.  For a.e. `x ∈ ball x₀ ρ`,
+  -- `(θ ∗ ψ k)(x) = (θ ∗ ψ k)(x₁)` for all large `k`, so `θ x = θ x₁`.
+  have hlim := hψlim θ hθ
+  have hpos : volume (ball x₀ ρ) ≠ 0 := (measure_ball_pos volume x₀ hρ).ne'
+  obtain ⟨x₁, hx₁, hlim₁⟩ :=
+    Measure.exists_mem_of_measure_ne_zero_of_ae hpos (ae_restrict_of_ae hlim)
+  refine ⟨θ x₁, ?_⟩
+  filter_upwards [ae_restrict_of_ae hlim, ae_restrict_mem measurableSet_ball] with x hx hxb
+  apply tendsto_nhds_unique hx
+  apply hlim₁.congr'
+  have hr : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have e1 : ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < ρ - dist x₁ x₀ :=
+    hr.eventually (gt_mem_nhds (by have := mem_ball.mp hx₁; linarith))
+  have e2 : ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < ρ - dist x x₀ :=
+    hr.eventually (gt_mem_nhds (by have := mem_ball.mp hxb; linarith))
+  filter_upwards [e1, e2] with k hk1 hk2
+  exact hconst k x₁ x (by rw [mem_ball]; linarith) (by rw [mem_ball]; linarith)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
