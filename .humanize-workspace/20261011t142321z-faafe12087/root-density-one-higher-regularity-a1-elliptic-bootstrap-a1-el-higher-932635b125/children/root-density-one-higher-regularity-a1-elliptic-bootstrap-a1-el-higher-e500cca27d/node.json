@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.diffquot_uniform-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1",
+  "depth": 5,
+  "title": "Uniform convergence of difference quotients of a C^1 map on compact sets",
+  "statement": "Let n be a natural number, E : Type (universe 0) a real normed space, U ⊆ R^n open, f : R^n -> E of class C^1 on U, K ⊆ U compact and e in R^n. Then h^{-1}(f(x + he) - f(x)) -> Df(x)e = fderiv R f x e uniformly for x in K as h -> 0 with h ≠ 0 (TendstoUniformlyOn along the filter 𝓝[≠] 0).",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Rn n → E) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 f U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (h : ℝ) (x : Rn n) => h⁻¹ • (f (x + h • e) - f x)) (fun x => fderiv ℝ f x e) (𝓝[≠] 0) K",
+  "lean_name": "dohr_eb_ehs_del_diffquot_uniform",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-e500cca27d-a1"
+}
