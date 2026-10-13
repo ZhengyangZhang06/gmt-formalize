@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Representation T = ξ·μ with μ the mass measure (Simon 6.2.7–2.8, parent Part I)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and T ∈ 𝒟_n(U) (GeometricCurrentOn U n) with M_W(T) = T.massOn W < ∞ for every open W ⊂⊂ U (CompactlyContained W U: closure W is compact and contained in U). Then there are a Borel measure μ on ℝ^P and a map ξ : ℝ^P → Λ_n into the n-vectors (MultiVector P n, the continuous linear functionals on n-covectors) such that:\n- μ(ℝ^P ∖ U) = 0;\n- μ(K) < ∞ for every compact K ⊆ U;\n- M_W(T) = μ(W) for every open W ⊆ ℝ^P;\n- ξ is μ-a.e. strongly measurable;\n- |ξ(x)(α)| ≤ covectorEuclideanNorm α for every x and every n-covector α;\n- T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟ⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ)",
+  "lean_name": "cmr_exists_massRepresentation_core",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.testform_extension-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.testform_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-a1",
+      "result_commit": "bc8485e31491a6762e3f3e385086f4a502e7e036",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-42d2392225-a1"
+}
