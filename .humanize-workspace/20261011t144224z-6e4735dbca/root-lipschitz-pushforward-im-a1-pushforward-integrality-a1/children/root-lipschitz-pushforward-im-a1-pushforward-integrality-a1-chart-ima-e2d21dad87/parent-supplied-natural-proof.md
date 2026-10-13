@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.chart_image_rectifiable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions: ℝ^P = EuclideanSpace ℝ (Fin P) (Lean `Eucl P`); ℝⁿ = `Eucl n`. An n-covector on E is a continuous alternating n-linear map α : Eⁿ → ℝ (`Covector E n` = `E [⋀^Fin n]→L[ℝ] ℝ`, a real vector space under pointwise operations). Countably n-rectifiable (`CountablyRectifiable n S`, SimonGMT Ch. 3, Def. 1.1) means: there are an Hⁿ-null set S₀ and Lipschitz maps F_j : ℝⁿ → ℝ^Q (j ∈ ℕ) with S ⊆ S₀ ∪ ⋃_j F_j(ℝⁿ). The child proof is written in a file whose imports are fixed (`import GMT.Ch06.Submission`); every result cited below is available there.
+
+This is the fact, used in Step 11 (countablyRectifiable) of the parent proof, that each chart image G_k(O_k) is countably n-rectifiable. It is the argument of SimonGMT's `countablyRectifiable_image_contDiffOn_open` (Poincare.SimonGMT.Chapter03.SubmanifoldCover), reproduced here because that module is not imported by GMT.Ch06.Submission and a child may not add imports.
+
+1. (Compact exhaustion of O.) O is an open subset of the locally compact, σ-compact space ℝⁿ, so the subspace O is locally compact (`IsOpen.locallyCompactSpace`) and σ-compact. Hence there are compact sets K_j of the subspace O (j ∈ ℕ) covering O (`SigmaCompactSpace.exists_compact_covering`). Their images C_j ⊆ ℝⁿ under the inclusion O → ℝⁿ are compact (continuous image), satisfy C_j ⊆ O, and ⋃_j C_j = O.
+2. (G is Lipschitz on each C_j.) Let x ∈ C_j ⊆ O. Since O is open and G is C¹ on O, G is C¹ at x (`ContDiffOn.contDiffAt` with O ∈ 𝓝 x), hence Lipschitz on some neighbourhood t_x of x with some constant (`ContDiffAt.exists_lipschitzOnWith`). So G is locally Lipschitz on C_j, and since C_j is compact, G is L_j-Lipschitz on all of C_j for some L_j ≥ 0 (`LocallyLipschitzOn.exists_lipschitzOnWith_of_compact`).
+3. (Lipschitz extension.) A Lipschitz map from a subset of ℝⁿ into the finite-dimensional normed space ℝ^Q extends to a Lipschitz map on all of ℝⁿ (`LipschitzOnWith.extend_finite_dimension`): there is a Lipschitz g_j : ℝⁿ → ℝ^Q with g_j = G on C_j.
+4. (Rectifiability.) The range of a single Lipschitz map ℝⁿ → ℝ^Q is countably n-rectifiable (take S₀ = ∅ and F_i = g_j for all i; `Poincare.SimonGMT.Chapter03.countablyRectifiable_range`). A countable union of countably n-rectifiable sets is countably n-rectifiable (`Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion`), and so is every subset of a countably n-rectifiable set (`CountablyRectifiable.mono`). Hence ⋃_j g_j(ℝⁿ) is countably n-rectifiable.
+5. (Inclusion.) Let y ∈ G(O), y = G(x) with x ∈ O. By Step 1, x ∈ C_j for some j, and by Step 3, y = G(x) = g_j(x) ∈ g_j(ℝⁿ). Thus G(O) ⊆ ⋃_j g_j(ℝⁿ), and G(O) is countably n-rectifiable by Step 4. ∎
+
+Do not use SimonGMT's `countablyRectifiable_image_contDiffOn_open` (its module Poincare.SimonGMT.Chapter03.SubmanifoldCover is not imported by GMT.Ch06.Submission).
+
+Verified Lean script (engineering aid; the mathematics is the numbered proof above). On 2026-10-12 the script below was compiled as the complete proof of `theorem Submission.lpf_pi_chart_image_rectifiable : <the frozen Lean statement> := by` in the child context: `import GMT.Ch06.Submission`, inside `namespace GMT.Ch06` with the contract's `open` commands. It was compiled in one file together with the other ten children's proofs, which were real proofs, not stubs. `#print axioms` gives exactly propext, Classical.choice, Quot.sound. The script adds no helper declarations; all auxiliary facts are local `have`s. It uses no sibling lemma. The remaining compiler output consists only of style-linter and deprecation warnings.
+```
+  intro Q n G O hO hG
+  letI : LocallyCompactSpace O := hO.locallyCompactSpace
+  letI : SigmaCompactSpace O := inferInstance
+  obtain ⟨K, hKc, hKcover⟩ := SigmaCompactSpace.exists_compact_covering (X := O)
+  set C : ℕ → Set (Eucl n) := fun j => ((↑) : O → Eucl n) '' K j with hC
+  have hCc : ∀ j, IsCompact (C j) := fun j => (hKc j).image continuous_subtype_val
+  have hCO : ∀ j, C j ⊆ O := by
+    intro j x hx
+    obtain ⟨y, -, rfl⟩ := hx
+    exact y.2
+  have hLip : ∀ j, ∃ L : ℝ≥0, LipschitzOnWith L G (C j) := by
+    intro j
+    apply LocallyLipschitzOn.exists_lipschitzOnWith_of_compact (hCc j)
+    intro x hx
+    obtain ⟨L, t, ht, hGt⟩ := (hG.contDiffAt (hO.mem_nhds (hCO j hx))).exists_lipschitzOnWith
+    exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hGt⟩
+  choose L hL using hLip
+  choose g hgLip hgEq using fun j => (hL j).extend_finite_dimension
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun j => range (g j)) (fun j => Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hgLip j))).mono ?_
+  rintro y ⟨x, hxO, rfl⟩
+  have : (⟨x, hxO⟩ : O) ∈ ⋃ j, K j := by rw [hKcover]; trivial
+  obtain ⟨j, hj⟩ := mem_iUnion.mp this
+  have hxC : x ∈ C j := ⟨⟨x, hxO⟩, hj, rfl⟩
+  exact mem_iUnion.mpr ⟨j, ⟨x, (hgEq j hxC).symm⟩⟩
+```
+
+## Key steps
+
+1. Exhaust the open set O by countably many compact sets C_j ⊆ O
+2. G is C¹ hence locally Lipschitz on O, hence Lipschitz on each compact C_j
+3. Extend G|C_j to a Lipschitz map g_j : ℝⁿ → ℝ^Q (finite-dimensional target)
+4. G(O) ⊆ ⋃_j range(g_j), a countable union of Lipschitz images: countably n-rectifiable (union + mono)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/{Contract,Submission}.lean against workspace GMT/Ch06/{Contract,Submission}.lean (identical)`
+- `python3 over dag.json: frozen lean_statement/status of the 8 uncle nodes; all lean_name fields (226 unique); grep -c 'lpf_pi_' dag.json (0 matches)`
+- `contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (replay: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)`
+- `lean_contract.validate_lean_statement on all 11 child statements`
+- `grep -n 'def CountablyRectifiable|theorem CountablyRectifiable.mono|theorem countablyRectifiable_range|theorem countablyRectifiable_iUnion|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'abbrev NVector|def covectorPullback|def nVectorPushforward|def simpleNVector|theorem nVectorPushforward_simple' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean; 'abbrev Covector|abbrev DifferentialForm|def IsTestForm' Chapter06/Forms.lean; 'abbrev TestFormOn|structure GeometricCurrentOn' Chapter06/Currents.lean; 'def GeometricCurrentOn.support|theorem GeometricCurrentOn.support_subset_domain' Chapter06/CurrentLocalEquality.lean`
+- `grep -n 'theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean (line 216)`
+- `grep -n 'LocallyLipschitzOn.comp|protected lemma comp' mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean (only LocallyLipschitz.comp exists)`
+- `lake build GMT.Ch06.Submission in /tmp/lpi3_scratch (scratch copy, .lake/packages linked to the pinned package tree)`
+- `lake env lean Scratch/Stmts.lean (11 statements in comparator scope, only sorry warnings)`
+- `lake env lean Scratch/Names.lean (#check of ~90 cited Mathlib/SimonGMT names; #synth Norm (NVector (Eucl 3) 2) = ContinuousLinearMap.hasOpNorm, ENorm via SeminormedAddGroup.toContinuousENorm, MeasureSpace (Eucl 3) = measureSpaceOfInnerProductSpace, Norm (Covector ..) = ContinuousAlternatingMap.instNormedAddCommGroup.toNorm)`
+- `lake env lean Scratch/Inst.lean (#synth ContinuousAdd / PseudoMetrizableSpace / ContinuousENorm (NVector (Eucl 3) 2) fail; documented workarounds compile)`
+- `lake env lean Scratch/Assembly.lean (parent from 19 stubs; #print axioms propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean Scratch/AllChildren.lean and Scratch/E2E.lean (all 11 children proved in dependency order + parent assembly; per-child #print axioms = propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-inner-com-6be04fd41f/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/lpi3_scratch/Scratch/Stmts.lean`
+- `/tmp/lpi3_scratch/Scratch/Names.lean`
+- `/tmp/lpi3_scratch/Scratch/Inst.lean`
+- `/tmp/lpi3_scratch/Scratch/Assembly.lean`
+- `/tmp/lpi3_scratch/Scratch/AllChildren.lean`
+- `/tmp/lpi3_scratch/Scratch/E2E.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) is byte-identical to the workspace Contract and Submission. The child scope is import GMT.Ch06.Submission plus the replayed namespace and opens. It provides the contract notions (IsRectifiableTriple, tauAction, IsIntegerMultiplicity) and SimonGMT Ch03 Rectifiable (CountablyRectifiable with mono/range/iUnion, HasWeightedApproximateTangentSpaceAt, .unique for θ x ≠ 0). It also provides Ch06 n-vectors (NVector = Covector →L[ℝ] ℝ with the operator norm, simpleNVector, nVectorPushforward_simple), test forms, currents and support_subset_domain, plus Ch02 euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+
+It does not provide:
+- SimonGMT SubmanifoldCover (countablyRectifiable_image_contDiffOn_open) or Mathlib's Multilinear.FiniteDimensional; both facts are therefore separate import-free leaves.
+- LocallyLipschitzOn.comp.
+- Instance search on NVector for ContinuousAdd, PseudoMetrizableSpace, ContinuousENorm and NormSMulClass; the verified workarounds are recorded in the child texts.
+
+No lpf_pi_* name is reserved in dag.json, and leaf plans forbid helper declarations, so every child script is a single theorem. All 11 frozen statements validate and elaborate in the comparator scope. All 11 children are fully proved in Lean with only propext, Classical.choice and Quot.sound, using only their declared siblings. The frozen parent type follows from them and the eight uncles by the stated assembly; its only sorryAx comes from the uncle stubs.
