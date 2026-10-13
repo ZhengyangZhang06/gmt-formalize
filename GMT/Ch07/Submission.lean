@@ -797,6 +797,56 @@ theorem Submission.codim1_rdo_dg_bvc_translate_test_le : ∀ (n : ℕ) (F : Set 
   rw [integral_sub hφi.integrableOn (hφi.comp_add_right w).integrableOn]
   linarith
 
+/-- **`L¹` translation estimate** (step 1 of the BV compactness argument behind Simon Ch. 2, 2.6,
+via [GT01, 7.22], for a single translation `w`).  If `∫_F div g ≤ C` for every `C¹` vector field
+`g` with `|g| ≤ 1` and compact support in `B_{R+|w|}(0)`, then
+`∫_{B_R(0)} |1_F(z) − 1_F(z − w)| dz ≤ |w| C`.  The difference `f = 1_F − 1_F(· − w)` is Borel with
+`|f| ≤ 1`; for an admissible test `φ`, translation invariance of Lebesgue measure gives
+`∫ f φ = ∫_F (φ − φ(· + w))`, which `translate_test` bounds by `|w| C`, and `l1_duality` (with
+`M = 1`) turns this weak bound into the `L¹` bound. -/
+theorem Submission.codim1_rdo_dg_bvc_translation_l1_le : ∀ (n : ℕ) (F : Set (Euclid n)) (R C : ℝ) (w : Euclid n), MeasurableSet F → (∀ g : Euclid n → Euclid n, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid n) (R + ‖w‖) → (∀ z, ‖g z‖ ≤ 1) → ∫ z in F, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid n) ≤ C) → ∫ z in ball (0 : Euclid n) R, |F.indicator (fun _ => (1 : ℝ)) z - F.indicator (fun _ => (1 : ℝ)) (z - w)| ≤ ‖w‖ * C := by
+  intro n F R C w hF hdiv
+  -- Step 1: `u = 1_F` takes values in `[0, 1]`, so `f = u − u(· − w)` is Borel with `|f| ≤ 1`
+  set u : Euclid n → ℝ := F.indicator (fun _ => (1 : ℝ)) with hu
+  have hu01 : ∀ z, 0 ≤ u z ∧ u z ≤ 1 := fun z => by
+    by_cases hz : z ∈ F <;> simp [hu, hz]
+  have hu_meas : Measurable u := measurable_const.indicator hF
+  have hu_shift : Measurable fun z => u (z - w) := hu_meas.comp (measurable_id.sub_const w)
+  have hbd : ∀ z, |u z - u (z - w)| ≤ 1 := fun z => by
+    rw [abs_le]
+    constructor <;> linarith [(hu01 z).1, (hu01 z).2, (hu01 (z - w)).1, (hu01 (z - w)).2]
+  -- Step 4: `l1_duality` with `M = 1` and `A = ‖w‖ C` reduces the claim to the tested bound
+  refine Submission.codim1_rdo_dg_bvc_l1_le_of_tests n (fun z => u z - u (z - w)) R (‖w‖ * C) 1
+    (hu_meas.sub hu_shift) hbd fun φ hφ hφc hφs hφb => ?_
+  -- Step 2: `∫ f φ = ∫_F (φ − φ(· + w))`, moving the translation onto `φ` (`z = y + w`)
+  have hφi : Integrable φ := hφ.continuous.integrable_of_hasCompactSupport hφc
+  have hmul : ∀ ψ : Euclid n → ℝ, (fun z => u z * ψ z) = F.indicator ψ := fun ψ => by
+    funext z
+    by_cases hz : z ∈ F <;> simp [hu, hz]
+  have h1 : Integrable fun z => u z * φ z := by
+    rw [hmul]
+    exact hφi.indicator hF
+  have hu_shift_le : ∀ z, ‖u (z - w)‖ ≤ 1 := fun z => by
+    rw [Real.norm_eq_abs, abs_of_nonneg (hu01 (z - w)).1]
+    exact (hu01 (z - w)).2
+  have h2 : Integrable fun z => u (z - w) * φ z :=
+    hφi.bdd_mul hu_shift.aestronglyMeasurable (Eventually.of_forall hu_shift_le)
+  have h3 : Integrable fun z => u z * φ (z + w) := by
+    rw [hmul]
+    exact (hφi.comp_add_right w).indicator hF
+  have hshift : ∫ z, u (z - w) * φ z = ∫ z, u z * φ (z + w) := by
+    rw [← integral_add_right_eq_self (fun z => u (z - w) * φ z) w]
+    simp
+  have key : ∫ z, (u z - u (z - w)) * φ z = ∫ z in F, (φ z - φ (z + w)) := by
+    simp_rw [sub_mul]
+    rw [integral_sub h1 h2, hshift, ← integral_sub h1 h3, ← integral_indicator hF]
+    congr 1
+    funext z
+    by_cases hz : z ∈ F <;> simp [hu, hz]
+  -- Step 3: `translate_test` bounds `∫_F (φ − φ(· + w))` by `‖w‖ C`
+  exact key.trans_le
+    (Submission.codim1_rdo_dg_bvc_translate_test_le n F R C w φ hF hdiv hφ hφc hφs hφb)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
