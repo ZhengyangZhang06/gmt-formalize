@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1.conv_lipschitz-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1",
+  "depth": 6,
+  "title": "Mollification of an integrable function by a smooth compactly supported kernel is Lipschitz with constant proportional to its L¹ norm",
+  "statement": "Let n ∈ ℕ and φ : ℝⁿ → ℝ (ℝⁿ = Euclid n with Lebesgue measure) be smooth (ContDiff ℝ ⊤) with compact support. Then there is a constant L ≥ 0 such that for every set S ⊆ ℝⁿ, every v : ℝⁿ → ℝ Lebesgue integrable on S, and all x, x' ∈ ℝⁿ: |∫_S v(y)φ(x − y) dy − ∫_S v(y)φ(x' − y) dy| ≤ L·(∫_S |v(y)| dy)·dist(x, x').",
+  "lean_statement": "∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∃ L : ℝ, 0 ≤ L ∧ ∀ (S : Set (Euclid n)) (v : Euclid n → ℝ), IntegrableOn v S → ∀ x x' : Euclid n, |(∫ y in S, v y * φ (x - y)) - ∫ y in S, v y * φ (x' - y)| ≤ L * (∫ y in S, |v y|) * dist x x'",
+  "lean_name": "cbr_ci_pw_mu_conv_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e983a904c7-a1"
+}

@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "lipschitzWith_of_hasCompactSupport|bounded_above_of_compact_support|theorem Integrable.mul_bdd|integral_div_left_eq_self|tsupport_comp_eq_preimage|mulTSupport_comp_eq_preimage|finite_cover_balls_of_compact|theorem tendstoUniformlyOn_iff|eventually_all_finite",
+        "theorem .*tendstoUniformlyOn.*equicontinu|theorem .*Equicontinu.*tendsto_uniformOnFun|Eventually.*Lipschitz|eventually.*[Ee]qui",
+        "cbr_ci_pw_mu_",
+        "git log --all --format='%h %s' -S cbr_ci_pw_mu_ -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mollified-audit-dwpn09ho/Independent.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/Ascoli.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03314b82bb/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03314b82bb/decomposition-v1.json",
+        "/tmp/mu-decomp-7c1e/Full.lean",
+        "/tmp/mollified-audit-dwpn09ho/Independent.lean"
+      ],
+      "conclusion": "The split is appropriate: three independent analytic obligations reproduce the selected frozen parent through the supplied assembly. Snapshot signatures support every substantive proof step; the searched Ascoli results require whole-family equicontinuity, rather than the proposed eventual bound. Project contracts and inspected compiler-library files match the pinned snapshot. All three names are bare identifiers, unreserved in the current DAG, with no matches in the searched Submission history. All contracts pass lexical validation and elaborate before any child declaration. Their trial types match the proposed types byte-for-byte. Independently rerunning the complete supplied proofs and exact parent assembly succeeded; all four declarations use only propext, Classical.choice, and Quot.sound. The dependency graph is acyclic, with no child relying on another child or an ancestor."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translate_admissible",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all prose hypotheses and four conclusions. Closed support inside a compact closed ball supplies compact support; the smooth homeomorphism y ↦ x − y preserves it. The norm estimate gives support inside B_{2R}, and translation/negation invariance gives the integral identity. No positivity assumptions or integrability hypothesis are missing. Every step is supplied and non-circular."
+    },
+    {
+      "key": "conv_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition correctly chooses L ≥ 0 before quantifying over S, v, x, and x'. The proof establishes boundedness and Lipschitz continuity of the kernel, verifies product integrability, and then applies integral subtraction, absolute-value domination, and constant extraction. These arguments work for volume restricted to arbitrary S, so no measurability assumption on S is missing. The proof is complete and independent."
+    },
+    {
+      "key": "uniform_of_equilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly captures compactness, pointwise convergence to a constant, and an eventual common Lipschitz bound. Replacing L by max(L,0) makes the mesh estimate valid without assuming L ≥ 0. A finite net and finitely many eventual pointwise bounds combine with the eventual Lipschitz bound to establish the required uniform estimate. Empty K is handled vacuously; no continuity assumption or circular reliance is hidden."
+    }
+  ],
+  "required_changes": []
+}
