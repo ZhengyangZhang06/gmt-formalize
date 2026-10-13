@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Integral lower bound for `⟨ω, ξ⟩` from an `L¹`-close dual field.  Write
+`N = covectorEuclideanNorm`.  Let `ν` be finite, `ξ` `ν`-a.e. strongly measurable and `ω`
+continuous with `N (ω x) ≤ 1`; suppose that, for `ν`-a.e. `x`, `|ξ x α| ≤ N α` for every `α` and
+`ξ x (β x) = 1`.  If `∫⁻ N (ω − β) dν < ε`, then `ν(ℝᴾ) − ε < ∫ ξ(ω) dν`.
+The function `h = ξ(ω)` is a.e. strongly measurable (continuous bilinear evaluation) and a.e.
+bounded by `N ∘ ω ≤ 1`, hence integrable.  A.e., `h ≤ 1` and
+`h = ξ(β) + ξ(ω − β) ≥ 1 − N (ω − β)`, so `0 ≤ 1 − h ≤ N (ω − β)`.  Therefore
+`ofReal (∫ (1 − h) dν) = ∫⁻ ofReal (1 − h) dν ≤ ∫⁻ ofReal (N (ω − β)) dν < ofReal ε`, whence
+`ν(ℝᴾ) − ∫ h dν = ∫ (1 − h) dν < ε`.  No measurability of `β` is needed: the comparison is made
+only between lower integrals. -/
+theorem Submission.rsd_mw_wlm_sub_lt_integral : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β ω : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → Continuous ω → (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → (∀ᵐ x ∂ν, (∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ ξ x (β x) = 1) → ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε → (ν univ).toReal - ε < ∫ x, ξ x (ω x) ∂ν := by
+  intro P n ν ξ β ω ε hν hξ hω hωN hG hlt
+  have hhm : AEStronglyMeasurable (fun x => ξ x (ω x)) ν :=
+    isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+      (hξ.prodMk hω.aestronglyMeasurable)
+  have hh_int : Integrable (fun x => ξ x (ω x)) ν := by
+    refine Integrable.mono' (integrable_const (1 : ℝ)) hhm ?_
+    filter_upwards [hG] with x hx
+    rw [Real.norm_eq_abs]
+    exact (hx.1 (ω x)).trans (hωN x)
+  have hpt : ∀ᵐ x ∂ν, 0 ≤ 1 - ξ x (ω x) ∧
+      1 - ξ x (ω x) ≤ covectorEuclideanNorm (ω x - β x) := by
+    filter_upwards [hG] with x hx
+    have hsplit : ξ x (ω x) = ξ x (β x) + ξ x (ω x - β x) := by
+      rw [← map_add, add_sub_cancel]
+    have h1 := (abs_le.1 ((hx.1 (ω x)).trans (hωN x))).2
+    have h2 := (abs_le.1 (hx.1 (ω x - β x))).1
+    constructor
+    · linarith
+    · rw [hsplit, hx.2]
+      linarith
+  have h1h_int : Integrable (fun x => 1 - ξ x (ω x)) ν := (integrable_const 1).sub hh_int
+  have hint_eq : ∫ x, (1 - ξ x (ω x)) ∂ν = (ν univ).toReal - ∫ x, ξ x (ω x) ∂ν := by
+    rw [integral_sub (integrable_const 1) hh_int, integral_const, smul_eq_mul, mul_one,
+      measureReal_def]
+  have hofreal : ENNReal.ofReal (∫ x, (1 - ξ x (ω x)) ∂ν) < ENNReal.ofReal ε := by
+    rw [ofReal_integral_eq_lintegral_ofReal h1h_int (hpt.mono fun x hx => hx.1)]
+    calc ∫⁻ x, ENNReal.ofReal (1 - ξ x (ω x)) ∂ν
+        ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν :=
+          lintegral_mono_ae (hpt.mono fun x hx => ENNReal.ofReal_le_ofReal hx.2)
+      _ < ENNReal.ofReal ε := hlt
+  have hlt' := (ENNReal.ofReal_lt_ofReal_iff'.1 hofreal).1
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
