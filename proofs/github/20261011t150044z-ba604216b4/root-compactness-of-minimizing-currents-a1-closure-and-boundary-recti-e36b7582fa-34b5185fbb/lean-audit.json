@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3d3159790190f3cbe0509bcc1fcbe8aa75d15041ec868bf032f5cea8ce7c9e83",
+  "git_delta": {
+    "base_commit": "757abef181b2f721d6d865e26196169cfc828380",
+    "candidate_commit": "767677e3ec1eca18fadb33fdc6af8f79fcc616ad",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_tcd_plane_closedBall_measure",
+    "diff_sha256": "76a3050fd3d5fb00afb23c7fa3e4f2efcab6501a6418871e586a271d6b3e0e00",
+    "source_sha256": "8286aafd8b73cfec2883f9835291ca071733e5acd02444298c6e42e737b67b09",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_tcd_plane_closedBall_measure",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ r : ℝ, 0 ≤ r → μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 r) = ENNReal.ofReal (r ^ n) * unitBallVolume n",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

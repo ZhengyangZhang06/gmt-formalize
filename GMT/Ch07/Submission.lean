@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`Hⁿ` of a disc in an `n`-plane**: if `Q ⊆ ℝᴾ` is an `n`-dimensional subspace and `r ≥ 0`, then
+`Hⁿ(Q ∩ B̄_r(0)) = rⁿ ωₙ`.  An orthonormal basis of `Q` gives a linear isometry `j : ℝⁿ → ℝᴾ`
+with `j(B̄_r(0)) = Q ∩ B̄_r(0)`; `Hⁿ` is invariant under isometries and equals Lebesgue measure on
+`ℝⁿ`, and `Lⁿ(B̄_r(0)) = rⁿ Lⁿ(B₁(0))`. -/
+theorem Submission.cbrr_tcd_plane_closedBall_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ r : ℝ, 0 ≤ r → μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 r) = ENNReal.ofReal (r ^ n) * unitBallVolume n := by
+  intro P n Q hQ r hr
+  -- Step 1: an orthonormal basis `b` of `Q` indexed by `Fin n`
+  let b : OrthonormalBasis (Fin n) ℝ Q := (stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)
+  -- Step 2: the isometry `j = ι ∘ b.repr.symm : ℝⁿ → ℝᴾ`
+  have hj : Isometry (Q.subtypeₗᵢ ∘ b.repr.symm) := Q.subtypeₗᵢ.isometry.comp b.repr.symm.isometry
+  -- Step 3: `j(B̄_r(0)) = Q ∩ B̄_r(0)`
+  have himg : (Q.subtypeₗᵢ ∘ b.repr.symm) '' closedBall (0 : Euclid n) r =
+      (Q : Set (Euclid P)) ∩ closedBall 0 r := by
+    ext y
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      refine ⟨(b.repr.symm v).2, ?_⟩
+      rw [mem_closedBall_zero_iff] at hv ⊢
+      rwa [Function.comp_apply, LinearIsometry.norm_map, LinearIsometryEquiv.norm_map]
+    · rintro ⟨hyQ, hy⟩
+      refine ⟨b.repr ⟨y, hyQ⟩, ?_, ?_⟩
+      · rw [mem_closedBall_zero_iff] at hy ⊢
+        rwa [LinearIsometryEquiv.norm_map, ← Submodule.norm_coe]
+      · simp
+  -- Steps 4–7: isometry invariance, `Hⁿ = Lⁿ` on `ℝⁿ`, Haar scaling, and `ωₙ = Lⁿ(B₁(0))`
+  rw [← himg, hj.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr,
+    finrank_euclideanSpace_fin]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
