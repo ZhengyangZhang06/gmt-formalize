@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_exists-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1",
+  "depth": 4,
+  "title": "Coordinate covector dx^I exists as a continuous determinant covector",
+  "statement": "For all P, n ∈ ℕ and every map I : Fin n → Fin P (no monotonicity or injectivity assumed), there is an n-covector θ on ℝ^P with θ(v) = det(Matrix.of fun k j => v j (I k)) for every v : Fin n → ℝ^P. Here an n-covector is an element of Covector (Euclid P) n, a continuous alternating n-linear map ℝ^P → ℝ, and Euclid P = EuclideanSpace ℝ (Fin P). In words, θ(v) is the determinant of the n×n matrix whose (k, j) entry is the I(k)-th coordinate of v_j.",
+  "lean_statement": "∀ (P n : ℕ) (I : Fin n → Fin P), ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))",
+  "lean_name": "cmr_cc_det_covector_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d-a1"
+}
