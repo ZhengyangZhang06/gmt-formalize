@@ -458,6 +458,81 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Tangent projections and the integrands of the graph tangential estimate (steps 1(iii) and 3 of
+its proof, for Simon Ch. 5, Theorem 4.5, displays (8)–(12)): `p_x = V.tangentProj x` satisfies
+`‖p_x v‖ ≤ ‖v‖`, and if `x ↦ p_x` is `μ_V`-a.e. strongly measurable, then on each `S` with
+`μ_V(S) < ∞` the functions `x ↦ ⟨p_x e, p_x g(x)⟩` (`g` a.e. strongly measurable, `‖g‖ ≤ C`) and
+`x ↦ |p_x − p_T|²` are `μ_V`-integrable.  `p_x` is an orthogonal projection or `0`; each integrand
+is a continuous function of `(p_x, g(x))`, resp. of `p_x`, bounded by `‖e‖ C`, resp. `4 (n + ℓ)`. -/
+theorem gte_tangentProj_integrands : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ x v : Amb n ℓ, ‖V.tangentProj x v‖ ≤ ‖v‖) ∧ (AEStronglyMeasurable V.tangentProj V.weight → ∀ S : Set (Amb n ℓ), V.weight S < ⊤ → (∀ (e : Amb n ℓ) (g : Amb n ℓ → Amb n ℓ) (C : ℝ), AEStronglyMeasurable g V.weight → (∀ x, ‖g x‖ ≤ C) → IntegrableOn (fun x => inner ℝ (V.tangentProj x e) (V.tangentProj x (g x))) S V.weight) ∧ ∀ T : Submodule ℝ (Amb n ℓ), IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) S V.weight) := by
+  intro n ℓ U V
+  -- Step 1, (a): `p_x` is `K.starProjection` (operator norm `≤ 1`) or `0`.
+  have ha : ∀ x v : Amb n ℓ, ‖V.tangentProj x v‖ ≤ ‖v‖ := by
+    intro x v
+    unfold RectifiableVarifold.tangentProj
+    split_ifs with h
+    · calc ‖(Classical.choose h).starProjection v‖
+          ≤ ‖(Classical.choose h).starProjection‖ * ‖v‖ := ContinuousLinearMap.le_opNorm _ _
+        _ ≤ 1 * ‖v‖ := by gcongr; exact Submodule.starProjection_norm_le _
+        _ = ‖v‖ := one_mul _
+    · simp
+  -- Step 2: `x ↦ p_x` is a.e. strongly measurable and `μ_V(S) < ∞`.
+  refine ⟨ha, fun hmeas S hS => ⟨?_, ?_⟩⟩
+  · intro e g C hg hC
+    -- Step 3: `(L, w) ↦ ⟨L e, L w⟩` is continuous, so the integrand is a.e. strongly measurable.
+    have hcont : Continuous (fun (L : Amb n ℓ →L[ℝ] Amb n ℓ) (w : Amb n ℓ) =>
+        inner ℝ (L e) (L w)).uncurry :=
+      (continuous_fst.clm_apply continuous_const).inner (continuous_fst.clm_apply continuous_snd)
+    -- Steps 4–5: the integrand is bounded by `‖e‖ C` (Cauchy–Schwarz and (a)).
+    refine Measure.integrableOn_of_bounded (M := ‖e‖ * C) hS.ne
+      (hcont.comp_aestronglyMeasurable₂ hmeas hg) (Eventually.of_forall fun x => ?_)
+    rw [Real.norm_eq_abs]
+    calc |inner ℝ (V.tangentProj x e) (V.tangentProj x (g x))|
+        ≤ ‖V.tangentProj x e‖ * ‖V.tangentProj x (g x)‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖e‖ * C :=
+        mul_le_mul (ha x e) ((ha x (g x)).trans (hC x)) (norm_nonneg _) (norm_nonneg _)
+  · intro T
+    -- Step 6: `A ↦ hsNormSq A = Σᵢ ‖A eᵢ‖²` is continuous, so the integrand is a.e. strongly
+    -- measurable.
+    have hcont : Continuous (fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq A) := by
+      unfold hsNormSq
+      exact continuous_finsetSum _ fun i _ =>
+        ((continuous_id.clm_apply continuous_const).norm).pow 2
+    -- Steps 7–8: `0 ≤ hsNormSq (p_x − P_T) ≤ 4 (n + ℓ)`, since `‖(p_x − P_T) eᵢ‖ ≤ 2`.
+    refine Measure.integrableOn_of_bounded (M := 4 * (n + ℓ)) hS.ne
+      (hcont.comp_aestronglyMeasurable (hmeas.sub aestronglyMeasurable_const))
+      (Eventually.of_forall fun x => ?_)
+    have hnn : 0 ≤ hsNormSq (V.tangentProj x - T.starProjection) := by
+      unfold hsNormSq; positivity
+    rw [Real.norm_of_nonneg hnn]
+    unfold hsNormSq
+    have hterm : ∀ i : Fin (n + ℓ),
+        ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ^ 2 ≤ 4 := by
+      intro i
+      have h1 : ‖(EuclideanSpace.single i (1 : ℝ) : Amb n ℓ)‖ = 1 := by simp
+      have hp : ‖V.tangentProj x (EuclideanSpace.single i 1)‖ ≤ 1 := (ha x _).trans h1.le
+      have hq : ‖T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ≤ 1 :=
+        calc ‖T.starProjection (EuclideanSpace.single i (1 : ℝ))‖
+            ≤ ‖T.starProjection‖ * ‖(EuclideanSpace.single i (1 : ℝ) : Amb n ℓ)‖ :=
+              ContinuousLinearMap.le_opNorm _ _
+          _ ≤ 1 * 1 := by rw [h1]; gcongr; exact Submodule.starProjection_norm_le _
+          _ = 1 := one_mul _
+      have hd : ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ≤ 2 := by
+        rw [sub_apply]
+        calc _ ≤ ‖V.tangentProj x (EuclideanSpace.single i 1)‖
+              + ‖T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ := norm_sub_le _ _
+          _ ≤ 1 + 1 := add_le_add hp hq
+          _ = 2 := by norm_num
+      have h0 := norm_nonneg ((V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1))
+      nlinarith
+    calc ∑ i : Fin (n + ℓ), ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ^ 2
+        ≤ ∑ _i : Fin (n + ℓ), (4 : ℝ) := Finset.sum_le_sum fun i _ => hterm i
+      _ = 4 * (n + ℓ) := by simp [Finset.sum_const, Finset.card_univ]; ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
