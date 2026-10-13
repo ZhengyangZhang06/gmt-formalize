@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "269520b388de3656437974c3b4c45e5bfdac59a716ccf5529a50cc6edc2830a2",
+  "git_delta": {
+    "base_commit": "3ce822c528fb99ca86e15f86ba9592dba3a92a35",
+    "candidate_commit": "ce4ee5e2a8179a02774e8a74c0a3385fb7a1b2da",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_lattice_chain",
+    "diff_sha256": "18843b905be49412bedc86bec2065812567691b1846cfe86eb5d177e03930b2b",
+    "source_sha256": "42995c7e6e4d5f254a08ee9cc1934f35070da987dcc638b14d2faeabdac06881",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_lattice_chain",
+      "statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
