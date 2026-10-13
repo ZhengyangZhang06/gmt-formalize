@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1.carrier_sigma_finite-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+  "depth": 4,
+  "title": "The carrier measure of an integer multiplicity triple in an open set is σ-finite",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let R = (M, θ, ξ) be an IMRep U n. That is: M = R.carrier is a Borel, countably n-rectifiable subset of U; θ = R.mult : ℝ^P → ℕ is measurable, with θ(x) > 0 (so θ(x) ≥ 1) for x ∈ M and ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U; and ξ = R.orient is Hⁿ⌞M-a.e. strongly measurable and, Hⁿ⌞M-a.e., orients an approximate tangent plane of M. Then ν := Hⁿ⌞M (μHE[n].restrict R.carrier) is a σ-finite measure.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → SigmaFinite (μHE[n].restrict R.carrier)",
+  "lean_name": "dsmc_imrep_carrier_sigmaFinite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-f5d19753bf-a1"
+}
