@@ -359,6 +359,54 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The straight-line homotopy `G(y) = F₀(tl y) + t(y) • (F₁(tl y) - F₀(tl y))`, `t(y) = y₀`,
+`tl(y) = (y₁, …, yₘ)`, is proper on the cylinder `cyl(S) = {t ∈ [0,1], tl ∈ S}`.  `G` is continuous
+and `cyl(S)` is closed, so `G⁻¹(K) ∩ cyl(S)` is closed.  For `y` in it,
+`dist(F₀(tl y), G y) = t(y) · dist(F₁(tl y), F₀(tl y)) ≤ s`, so `F₀(tl y) ∈ cthickening s K` and
+`y = (t y, tl y)` lies in the compact image of `[0,1] × (F₀⁻¹(cthickening s K) ∩ S)`. -/
+theorem Submission.dph_sh_ae_affine_homotopy_isCompact_preimage_cyl :
+    ∀ (m m' : ℕ) (F₀ F₁ : Eucl m → Eucl m') (S : Set (Eucl m)) (s : ℝ), Continuous F₀ → Continuous F₁ → IsClosed S → (∀ x ∈ S, dist (F₁ x) (F₀ x) ≤ s) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (F₀ ⁻¹' K ∩ S)) → ∀ K : Set (Eucl m'), IsCompact K → IsCompact ((fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) ⁻¹' K ∩ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ S}) := by
+  intro m m' F₀ F₁ S s hF₀ hF₁ hS hs hprop K hK
+  -- `t(y) = y₀` and `tl(y) = (y₁, …, yₘ)` are continuous linear maps.
+  let tL : Eucl (m + 1) →L[ℝ] ℝ := EuclideanSpace.proj 0
+  let tlL : Eucl (m + 1) →L[ℝ] Eucl m :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.toContinuousLinearMap ∘L
+      (ContinuousLinearMap.pi fun j : Fin m => ContinuousLinearMap.proj j.succ) ∘L
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap
+  -- `Φ(τ, x) = (τ, x)` is continuous, so `Q = Φ([0,1] × (F₀⁻¹(cthickening s K) ∩ S))` is compact.
+  let Φ : ℝ × Eucl m → Eucl (m + 1) := fun p =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin m) ℝ p.2))
+  have hΦ : Continuous Φ :=
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin m) ℝ).continuous.comp continuous_snd))
+  have hQ : IsCompact (Φ '' (Icc (0 : ℝ) 1 ×ˢ (F₀ ⁻¹' cthickening s K ∩ S))) :=
+    (isCompact_Icc.prod (hprop _ (hK.cthickening (r := s)))).image hΦ
+  refine hQ.of_isClosed_subset ?_ ?_
+  · -- `G` is continuous and `cyl(S) = t⁻¹[0,1] ∩ tl⁻¹(S)` is closed.
+    have hG : Continuous fun y => F₀ (tlL y) + tL y • (F₁ (tlL y) - F₀ (tlL y)) :=
+      (hF₀.comp tlL.continuous).add (tL.continuous.smul
+        ((hF₁.comp tlL.continuous).sub (hF₀.comp tlL.continuous)))
+    exact (hK.isClosed.preimage hG).inter
+      ((isClosed_Icc.preimage tL.continuous).inter (hS.preimage tlL.continuous))
+  · rintro y ⟨hyK, hy01, hyS⟩
+    have hGy : F₀ (tlL y) + tL y • (F₁ (tlL y) - F₀ (tlL y)) ∈ K := hyK
+    have hτ : tL y ∈ Icc (0 : ℝ) 1 := hy01
+    have hx : tlL y ∈ S := hyS
+    -- `dist(F₀(tl y), G y) = t(y) · dist(F₁(tl y), F₀(tl y)) ≤ s`.
+    have hdist : dist (F₀ (tlL y)) (F₀ (tlL y) + tL y • (F₁ (tlL y) - F₀ (tlL y))) ≤ s := by
+      rw [dist_self_add_right, norm_smul, Real.norm_eq_abs, abs_of_nonneg hτ.1, ← dist_eq_norm]
+      exact (mul_le_of_le_one_left dist_nonneg hτ.2).trans (hs _ hx)
+    -- `Φ(t y, tl y) = y`.
+    have hΦy : Φ (tL y, tlL y) = y := by
+      change (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0)
+          (EuclideanSpace.equiv (Fin m) ℝ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) = y
+      rw [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+        ContinuousLinearEquiv.symm_apply_apply]
+    exact ⟨(tL y, tlL y), ⟨hτ, mem_cthickening_of_dist_le _ _ s K hGy hdist, hx⟩, hΦy⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
