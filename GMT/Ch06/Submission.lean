@@ -670,6 +670,69 @@ theorem Submission.iwl_sp_covectorEuclideanNorm_pullback_le : ∀ (P Q j : ℕ) 
   exact le_of_sq_le_sq hsq
     (mul_nonneg (pow_nonneg (norm_nonneg L) j) (covectorEuclideanNorm_nonneg α))
 
+/-- Contraction bound for the Euclidean coefficient norm: if the `k`-covector `δ` is the
+contraction `γ(w, ·)` of a `(k+1)`-covector `γ` with `w ∈ ℝ^p`, then `|δ| ≤ √(k+1) ‖w‖ |γ|`.
+Expand `w = ∑_b w_b e_b` in the first slot, so `δ(e_J) = ∑_b w_b γ(e_{(b, J)})`; Cauchy–Schwarz
+gives `δ(e_J)² ≤ ‖w‖² ∑_b γ(e_{(b, J)})²`.  Summing over all `J` and reindexing `(b, J) ↦ I`
+yields `k! |δ|² ≤ ‖w‖² (k+1)! |γ|²` by the all-tuples identity; cancel `k!` and take roots. -/
+theorem Submission.dph_sh_ib_covectorEuclideanNorm_contract_le :
+    ∀ (p k : ℕ) (γ : Covector (Eucl p) (k + 1)) (w : Eucl p) (δ : Covector (Eucl p) k),
+      (∀ u : Fin k → Eucl p, δ u = γ (Fin.cons w u)) →
+        covectorEuclideanNorm δ ≤ Real.sqrt ((k : ℝ) + 1) * ‖w‖ * covectorEuclideanNorm γ := by
+  intro p k γ w δ hδ
+  set e := EuclideanSpace.basisFun (Fin p) ℝ with he
+  -- Linearity in the first slot: `δ(e_J) = ∑_b w_b γ(e_{(b, J)})`.
+  have hexp : ∀ J : Fin k → Fin p, δ (fun i => e (J i)) =
+      ∑ b : Fin p, w b * γ (fun i => e ((Fin.cons b J : Fin (k + 1) → Fin p) i)) := by
+    intro J
+    have hw : ∑ b : Fin p, w b • e b = w := by
+      simpa only [he, EuclideanSpace.basisFun_repr] using e.sum_repr w
+    have hc : δ (fun i => e (J i)) = γ.curryLeft w (fun i => e (J i)) := hδ _
+    rw [hc]
+    conv_lhs => rw [← hw]
+    rw [map_sum, ContinuousAlternatingMap.sum_apply]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    rw [map_smul, ContinuousAlternatingMap.smul_apply, smul_eq_mul,
+      ContinuousAlternatingMap.curryLeft_apply_apply]
+    congr 2
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i <;>
+      simp only [Fin.cons_zero, Fin.cons_succ, Matrix.cons_val_zero, Matrix.cons_val_succ]
+  -- Cauchy–Schwarz in `b`.
+  have hcs : ∀ J : Fin k → Fin p, δ (fun i => e (J i)) ^ 2 ≤
+      ‖w‖ ^ 2 * ∑ b : Fin p, γ (fun i => e ((Fin.cons b J : Fin (k + 1) → Fin p) i)) ^ 2 := by
+    intro J
+    rw [hexp J, EuclideanSpace.real_norm_sq_eq]
+    exact Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+  -- `(b, J) ↦ Fin.cons b J` enumerates all index maps `Fin (k + 1) → Fin p`.
+  have hre : ∑ J : Fin k → Fin p, ∑ b : Fin p,
+      γ (fun i => e ((Fin.cons b J : Fin (k + 1) → Fin p) i)) ^ 2 =
+        ∑ I : Fin (k + 1) → Fin p, γ (fun i => e (I i)) ^ 2 := by
+    rw [Finset.sum_comm, ← Fintype.sum_prod_type', ← (Fin.consEquiv fun _ => Fin p).sum_comp]
+    rfl
+  -- `k! |δ|² ≤ ‖w‖² (k+1)! |γ|²`.
+  have hsum : (k.factorial : ℝ) * covectorEuclideanNorm δ ^ 2 ≤
+      ‖w‖ ^ 2 * (((k + 1).factorial : ℝ) * covectorEuclideanNorm γ ^ 2) := by
+    rw [← Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul p k δ,
+      ← Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul p (k + 1) γ, ← hre, Finset.mul_sum]
+    exact Finset.sum_le_sum fun J _ => hcs J
+  -- Cancel `k! > 0`, using `(k+1)! = (k+1) k!`.
+  have hsq : covectorEuclideanNorm δ ^ 2 ≤
+      ((k : ℝ) + 1) * ‖w‖ ^ 2 * covectorEuclideanNorm γ ^ 2 := by
+    have hpos : (0 : ℝ) < k.factorial := by exact_mod_cast k.factorial_pos
+    refine le_of_mul_le_mul_left ?_ hpos
+    calc (k.factorial : ℝ) * covectorEuclideanNorm δ ^ 2
+        ≤ ‖w‖ ^ 2 * (((k + 1).factorial : ℝ) * covectorEuclideanNorm γ ^ 2) := hsum
+      _ = (k.factorial : ℝ) * (((k : ℝ) + 1) * ‖w‖ ^ 2 * covectorEuclideanNorm γ ^ 2) := by
+        rw [Nat.factorial_succ, Nat.cast_mul, Nat.cast_succ]
+        ring
+  -- Take nonnegative square roots.
+  have hnn : 0 ≤ Real.sqrt ((k : ℝ) + 1) * ‖w‖ * covectorEuclideanNorm γ :=
+    mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg w)) (covectorEuclideanNorm_nonneg γ)
+  refine (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg δ) hnn two_ne_zero).1 ?_
+  rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]
+  exact hsq
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
