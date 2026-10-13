@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1.proj_null-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1",
+  "depth": 4,
+  "title": "Coordinate projections of Hⁿ-null sets are Lebesgue-null (parent step 3)",
+  "statement": "Let P, n ∈ ℕ, let I : Fin n → Fin P be injective, and let C ⊆ ℝ^P (Euclid P) satisfy μHE[n](C) = 0. Let q : ℝ^P → ℝⁿ (Euclid n) be the coordinate projection q(x) := WithLp.toLp 2 (fun k => x (I k)), i.e. q(x)_k = x_{I(k)}. Then the image q(C) has Lebesgue measure zero: volume(q(C)) = 0 (volume on EuclideanSpace ℝ (Fin n)).",
+  "lean_statement": "∀ (P n : ℕ) (I : Fin n → Fin P) (C : Set (Euclid P)), Function.Injective I → μHE[n] C = 0 → volume ((fun x : Euclid P => (WithLp.toLp 2 (fun k => x (I k)) : Euclid n)) '' C) = 0",
+  "lean_name": "cmr_volume_coordProj_image_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-nul-7d0081df34-a1"
+}
