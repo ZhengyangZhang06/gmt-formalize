@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.subspace_eq_of_inter_ball_eq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: fact (b) of the parent proof of idtp_tdc_density_locally_constant.
+1. dist x x = 0 < t, so x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x); hence x ∈ Q₂.
+2. Claim. Let Q, Q' be subspaces with x ∈ Q, x ∈ Q' and Q ∩ B_t(x) ⊆ Q'. Then Q ≤ Q'. Proof: let v ∈ Q and put s := t / (2(‖v‖ + 1)) > 0. Then x + s • v ∈ Q, as Q is a subspace containing x and v. Also dist (x + s • v) x = ‖s • v‖ = s‖v‖ = t‖v‖/(2(‖v‖ + 1)) < t. So x + s • v ∈ Q ∩ B_t(x) ⊆ Q'. As x ∈ Q', s • v = (x + s • v) − x ∈ Q', and v = s⁻¹ • (s • v) ∈ Q' since s ≠ 0.
+3. Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x) ⊆ Q₂, so step 2 with (Q, Q') := (Q₁, Q₂) gives Q₁ ≤ Q₂. Q₂ ∩ B_t(x) = Q₁ ∩ B_t(x) ⊆ Q₁, so step 2 with (Q, Q') := (Q₂, Q₁) gives Q₂ ≤ Q₁ (x ∈ Q₂ by step 1). By antisymmetry, Q₁ = Q₂. ∎
+
+## Key steps
+
+1. x ∈ Q₂, because x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x).
+2. If x ∈ Q ∩ Q' and Q ∩ B_t(x) ⊆ Q', then for v ∈ Q the point x + s•v with s = t/(2(‖v‖+1)) lies in Q ∩ B_t(x) ⊆ Q'. So s•v ∈ Q' and v ∈ Q'; hence Q ≤ Q'.
+3. Apply this in both directions and conclude by antisymmetry.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca9016021f/parent-child-handoff.json; cat .../parent-supplied-plan.md (selected frozen type, sibling prerequisites cone_dilation / arc_continuation / no_infinite_planar_pieces)`
+- `python3 scan of dag.json: frozen lean_statement and status of idtp_tdc_cone_dilation, idtp_tdc_arc_continuation, idtp_tdc_no_infinite_planar_pieces, idtp_tdc_subspace_ball_measure, idtp_cone_tangent_cone_planar, idtp_cone_constant_density_planar, idtp_cone_sector_endpoint_density, dimred_minimizing_monotonicity, dtc_density_usc, idtp_planar_cycle_eq_const_mul; depends_on of the parent two_dim_cone_density-a1 and grandparent integer_density_tangent_planes-a1`
+- `python3 scan of dag.json lean_statements for density uniqueness ('HasMassDensity' with "θ = θ'"), plane uniqueness ('(Q₁ Q₂ : Submodule') and the normalization inequality ('‖y‖⁻¹ • y', '2 * ‖')`
+- `python3 scan of dag.json lean_name prefix 'idtp_tdc_dlc' (974, then 979, then 1010 live nodes) and duplicate lean names; grep -rn idtp_tdc_dlc GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (vs manifest.json)`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (HasMassDensity, IsConeCurrent, IsMinimizingIn, IsIntegerMultiplicity, BoundaryVanishes, IsEmbeddedSubmanifold, blowUp)`
+- `rg -n "theorem isBounded_range_of_tendsto|def Infinite.natEmbedding|theorem Finite.preimage'|theorem mul_le_sin |theorem cos_arg|theorem sin_arg|theorem neg_pi_lt_arg|theorem arg_le_pi |theorem upperSemicontinuousOn_univ_iff|theorem finrank_span_singleton|theorem Orthonormal.linearIndependent|theorem finrank_euclideanSpace_fin|theorem norm_smul_inv_norm" mathlib/Mathlib`
+- `rg -n "closed_of_finiteDimensional|lemma sin_le |one_sub_sq_div_two_le_cos|abs_sin_le_abs|pi_le_four|cos_two_mul_eq_one_sub|eq_of_le_of_finrank_eq|isBounded_iff_forall_norm_le|Infinite.exists_gt|fintype_card_le_finrank|ofReal_eq_ofReal_iff|tendsto_nhds_unique " mathlib/Mathlib`
+- `lake env lean /tmp/dlc-split-a1/gen/Names.lean (#check of the 35 Mathlib names cited by the child proofs)`
+- `lake env lean /tmp/dlc-split-a1/gen/Child_<key>.lean for the 5 children; lake env lean /tmp/dlc-split-a1/gen/Assembly.lean (#print axioms dlc_assembly_check); lake env lean /tmp/dlc-split-a1/agents/{small,cone_density_function,light_disc,accumulating_discs}/Check.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca9016021f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca9016021f/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Lattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Complex/Arg.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Interval/Finset/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/RCLike/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/tmp/dlc-split-a1/gen/children.json`
+- `/tmp/dlc-split-a1/gen/Assembly.lean`
+- `/tmp/dlc-split-a1/gen/Names.lean`
+- `/tmp/dlc-split-a1/agents/small/Check.lean`
+- `/tmp/dlc-split-a1/agents/cone_density_function/Check.lean`
+- `/tmp/dlc-split-a1/agents/light_disc/Check.lean`
+- `/tmp/dlc-split-a1/agents/accumulating_discs/Check.lean`
+
+Pins and contract:
+- Workspace HEAD b4d606db, mathlib 25730c7c and simongmt 2b366308 match manifest.json.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. Namespace GMT.Ch07; opens Filter Function Set MeasureTheory Metric, scoped ENNReal Topology, Poincare.SimonGMT.Chapter06.
+
+Reuse:
+- Fact (a) of the supplied proof (density uniqueness) is exactly the accepted DAG declaration dimred_cs_mi_hasMassDensity_unique, with an identical frozen type. It is cited, with a short inline fallback proof, rather than re-proposed.
+- No DAG node has the type of plane uniqueness, the normalization inequality, or the three packaged proof segments. So five new idtp_tdc_dlc_* names are used.
+- None of these names occurs among the 1010 live DAG nodes, the node JSON files, or the workspace GMT sources.
+- All seven cross-branch or sibling black boxes cited by the children (idtp_tdc_cone_dilation, idtp_tdc_arc_continuation, idtp_tdc_no_infinite_planar_pieces, idtp_cone_tangent_cone_planar, idtp_cone_constant_density_planar, dimred_minimizing_monotonicity, dimred_cs_mi_hasMassDensity_unique) are already cited by the supplied proof or by its fact (a).
+
+Mathlib snapshot: it contains every lemma the child proofs cite. All 35 cited names #check successfully, including Real.mul_le_sin, Real.one_sub_sq_div_two_le_cos, Real.cos_arccos/sin_arccos, Real.pi_le_four, Set.Infinite.natEmbedding, Set.Finite.preimage', Metric.isBounded_range_of_tendsto and Submodule.closed_of_finiteDimensional.
+
+Lean checks:
+- All five lean_statements elaborate after import GMT.Ch07.Submission.
+- The hypothesis-only assembly derives the exact selected type idtp_tdc_density_locally_constant. Axioms: propext, Classical.choice, Quot.sound.
+- Each child is proved in Lean from the frozen types of the black boxes its natural proof cites, with the same axioms. Statement blocks were verified byte-identical to freshly generated templates.
