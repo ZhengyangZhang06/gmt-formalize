@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -529,6 +530,140 @@ theorem tdo_ods_hsNormSq_fderiv_single : ∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (
       rwa [hw_eq] at hcomp
     rw [fderiv_zero_of_not_differentiableAt hw, deriv_zero_of_not_differentiableAt hW]
     simp
+/-- **Integrability of `‖W'‖` for a Lipschitz curve.**  If `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on
+`[-a, a]`, then `r ↦ ‖deriv W r‖` is integrable on `(-a, a)`: it is measurable
+(`measurable_deriv`), bounded by `K` on `(-a, a)` because `[-a, a]` is a neighbourhood of each
+point there (`norm_deriv_le_of_lipschitzOn`), and `(-a, a)` has finite measure. -/
+theorem Submission.tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a) := by
+  intro ℓ W a K hW
+  -- (1) measurability of `‖W'‖`, (4) finite measure of `(-a, a)`
+  refine Measure.integrableOn_of_bounded (M := K) measure_Ioo_lt_top.ne
+    (measurable_deriv W).norm.aestronglyMeasurable ?_
+  -- (3) the a.e. bound on `(-a, a)` follows from the pointwise one
+  rw [ae_restrict_iff' measurableSet_Ioo]
+  refine Filter.Eventually.of_forall fun r hr => ?_
+  -- (2) `[-a, a]` is a neighbourhood of `r ∈ (-a, a)`, so `‖W'(r)‖ ≤ K`
+  rw [norm_norm]
+  exact norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW
+
+namespace Submission
+
+/-- A.e. derivative comparison for the one-dimensional sup bound in the tilt-excess decay
+(Simon Ch. 5, Theorem 4.5): if `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]` and `‖u‖ ≤ 1`, then
+`|(d/dr)⟨u, W(r)⟩| ≤ ‖W'(r)‖` for a.e. `r ∈ (-a, a)`.  By Rademacher's theorem `W` is
+differentiable within `[-a, a]` at a.e. point of `[-a, a]`, hence differentiable at a.e.
+`r ∈ (-a, a)`, where `[-a, a]` is a neighbourhood of `r`; there `x ↦ ⟨u, W x⟩` has derivative
+`⟨u, W'(r)⟩`, and Cauchy–Schwarz with `‖u‖ ≤ 1` gives the bound. -/
+theorem tdo_ods_ae_abs_deriv_inner_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0) (u : Rn ℓ), LipschitzOnWith K W (Icc (-a) a) → ‖u‖ ≤ 1 → ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |deriv (fun x => inner ℝ u (W x)) r| ≤ ‖deriv W r‖ := by
+  intro ℓ W a K u hW hu
+  -- Step 1 (Rademacher): for a.e. `r ∈ [-a, a]`, `W` is differentiable within `[-a, a]` at `r`.
+  filter_upwards [hW.ae_differentiableWithinAt_of_mem (μ := volume)] with r hr hrI
+  -- Step 2: for `r ∈ (-a, a)`, `[-a, a]` is a neighbourhood of `r`, so `W` is differentiable at `r`.
+  have hWr : DifferentiableAt ℝ W r :=
+    (hr (Ioo_subset_Icc_self hrI)).differentiableAt (Icc_mem_nhds hrI.1 hrI.2)
+  -- Step 3: `x ↦ ⟨u, W x⟩` has derivative `⟨u, W'(r)⟩ + ⟨0, W r⟩ = ⟨u, W'(r)⟩` at `r`.
+  have hd : HasDerivAt (fun x => inner ℝ u (W x)) (inner ℝ u (deriv W r)) r := by
+    simpa using (hasDerivAt_const r u).inner ℝ hWr.hasDerivAt
+  rw [hd.deriv]
+  -- Step 4: Cauchy–Schwarz and `‖u‖ ≤ 1`.
+  calc |inner ℝ u (deriv W r)| ≤ ‖u‖ * ‖deriv W r‖ := abs_real_inner_le_norm u (deriv W r)
+    _ ≤ 1 * ‖deriv W r‖ := mul_le_mul_of_nonneg_right hu (norm_nonneg _)
+    _ = ‖deriv W r‖ := one_mul _
+
+end Submission
+
+namespace Submission
+
+/-- Interval integral bounded by an a.e. dominating function, for the FTC bound in the
+one-dimensional sup estimate of the tilt-excess decay (Simon Ch. 5, Theorem 4.5): if `h` is
+integrable on `(-a, a)`, `s, t ∈ [-a, a]`, `g` is interval integrable between `s` and `t` and
+`|g| ≤ h` a.e. on `(-a, a)`, then `∫_s^t g ≤ ∫_{(-a,a)} h`.  Since `uIoc s t ⊆ (-a, a]` and the
+endpoint `a` is Lebesgue-null,
+`∫_s^t g ≤ ‖∫_s^t g‖ ≤ ∫_{uIoc s t} ‖g‖ ≤ ∫_{uIoc s t} h ≤ ∫_{(-a,a]} h = ∫_{(-a,a)} h`,
+where the fourth step uses `0 ≤ |g| ≤ h` a.e. on `(-a, a]`. -/
+theorem tdo_ods_intervalIntegral_le_of_ae_abs_le : ∀ (g h : ℝ → ℝ) (a s t : ℝ), IntegrableOn h (Ioo (-a) a) → s ∈ Icc (-a) a → t ∈ Icc (-a) a → IntervalIntegrable g volume s t → (∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |g r| ≤ h r) → ∫ r in s..t, g r ≤ ∫ r in Ioo (-a) a, h r := by
+  intro g h a s t hh hs ht hg hgh
+  -- Step 1: `uIoc s t ⊆ (-a, a]`, since `s, t ∈ [-a, a]`.
+  have hsub : uIoc s t ⊆ Ioc (-a) a := by
+    intro r hr
+    rcases mem_uIoc.1 hr with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact ⟨hs.1.trans_lt h1, h2.trans ht.2⟩
+    · exact ⟨ht.1.trans_lt h1, h2.trans hs.2⟩
+  -- Step 2: `h` is integrable on `(-a, a]` (the endpoint `a` is null and `h a` is finite),
+  -- hence on `uIoc s t`.
+  have hhIoc : IntegrableOn h (Ioc (-a) a) :=
+    (integrableOn_Ioc_iff_integrableOn_Ioo enorm_ne_top).2 hh
+  have hhI : IntegrableOn h (uIoc s t) := hhIoc.mono_set hsub
+  -- Step 3: `‖g‖` is integrable on `uIoc s t`.
+  have hgI : IntegrableOn (fun r => ‖g r‖) (uIoc s t) := (intervalIntegrable_iff.1 hg).norm
+  -- Step 4: `|g| ≤ h` a.e. on `(-a, a]` (a.e. `r ≠ a`), hence `0 ≤ h` a.e. there.
+  have hdom : ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioc (-a) a → |g r| ≤ h r := by
+    filter_upwards [hgh, Measure.ae_ne volume a] with r hr hra hrI
+    exact hr ⟨hrI.1, lt_of_le_of_ne hrI.2 hra⟩
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Ioc (-a) a)] h := by
+    rw [EventuallyLE, ae_restrict_iff' measurableSet_Ioc]
+    filter_upwards [hdom] with r hr hrI
+    exact (abs_nonneg _).trans (hr hrI)
+  -- Step 5: the chain of inequalities.
+  calc ∫ r in s..t, g r ≤ ‖∫ r in s..t, g r‖ := Real.le_norm_self _
+    _ ≤ ∫ r in uIoc s t, ‖g r‖ := intervalIntegral.norm_integral_le_integral_norm_uIoc
+    _ ≤ ∫ r in uIoc s t, h r := by
+        refine setIntegral_mono_on_ae hgI hhI measurableSet_uIoc ?_
+        filter_upwards [hdom] with r hr hrI
+        rw [Real.norm_eq_abs]
+        exact hr (hsub hrI)
+    _ ≤ ∫ r in Ioc (-a) a, h r := setIntegral_mono_set hhIoc hnonneg (ae_of_all _ hsub)
+    _ = ∫ r in Ioo (-a) a, h r := integral_Ioc_eq_integral_Ioo
+
+end Submission
+
+namespace Submission
+
+/-- **FTC bound for a Lipschitz curve** (used for the one-dimensional sup bound in the proof of the
+Tilt-excess Decay Theorem, Simon Ch. 5, 4.5).  If `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]`, then
+`|W(t) - W(s)| ≤ ∫_{(-a,a)} |W'|` for all `s, t ∈ [-a, a]`.
+
+Proof: if `W(t) = W(s)` the right side is the integral of a nonnegative function.  Otherwise put
+`v = W(t) - W(s)` and `u = |v|⁻¹ v`, so `|u| = 1` and `⟨u, v⟩ = |v|`.  The scalar function
+`φ = ⟨u, W⟩` is `K`-Lipschitz on `[-a, a] ⊇ uIcc s t`, hence absolutely continuous there, so
+`|v| = φ(t) - φ(s) = ∫_s^t φ'` (`AbsolutelyContinuousOnInterval.integral_deriv_eq_sub`) and `φ'` is
+interval integrable.  Since `|W'|` is integrable on `(-a, a)` (`tdo_ods_integrableOn_norm_deriv`)
+and `|φ'| ≤ |W'|` a.e. on `(-a, a)` (`tdo_ods_ae_abs_deriv_inner_le`), the dominated interval
+bound `tdo_ods_intervalIntegral_le_of_ae_abs_le` gives `∫_s^t φ' ≤ ∫_{(-a,a)} |W'|`. -/
+theorem tdo_ods_norm_sub_le_integral_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → ∀ s ∈ Icc (-a) a, ∀ t ∈ Icc (-a) a, ‖W t - W s‖ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖ := by
+  intro ℓ W a K hW s hs t ht
+  -- The trivial case `W t = W s`: the integrand is nonnegative.
+  by_cases hv : W t - W s = 0
+  · rw [hv, norm_zero]
+    exact integral_nonneg fun r => norm_nonneg _
+  -- The unit vector `u = |v|⁻¹ v` for `v = W t - W s`.
+  have hvn : ‖W t - W s‖ ≠ 0 := norm_ne_zero_iff.mpr hv
+  set u : Rn ℓ := ‖W t - W s‖⁻¹ • (W t - W s) with hu_def
+  have hu : ‖u‖ ≤ 1 := by
+    have h1 : ‖u‖ = 1 := by rw [hu_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvn]
+    exact h1.le
+  -- `φ = ⟨u, W⟩` is `K`-Lipschitz on `[-a, a]`, hence absolutely continuous on `uIcc s t`.
+  set φ : ℝ → ℝ := fun x => inner ℝ u (W x) with hφ_def
+  have hφ : LipschitzOnWith K φ (Icc (-a) a) := by
+    refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+    calc dist (φ x) (φ y) = |inner ℝ u (W x - W y)| := by
+          rw [Real.dist_eq, inner_sub_right]
+      _ ≤ ‖u‖ * ‖W x - W y‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖W x - W y‖ := mul_le_of_le_one_left (norm_nonneg _) hu
+      _ = dist (W x) (W y) := (dist_eq_norm _ _).symm
+      _ ≤ K * dist x y := hW.dist_le_mul x hx y hy
+  have hac := (hφ.mono (uIcc_subset_Icc hs ht)).absolutelyContinuousOnInterval
+  -- `φ(t) - φ(s) = ⟨u, v⟩ = |v|`.
+  have hφst : φ t - φ s = ‖W t - W s‖ := by
+    show inner ℝ u (W t) - inner ℝ u (W s) = ‖W t - W s‖
+    rw [← inner_sub_right, hu_def, real_inner_smul_left, real_inner_self_eq_norm_sq, sq,
+      ← mul_assoc, inv_mul_cancel₀ hvn, one_mul]
+  calc ‖W t - W s‖ = φ t - φ s := hφst.symm
+    _ = ∫ r in s..t, deriv φ r := hac.integral_deriv_eq_sub.symm
+    _ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖ :=
+      Submission.tdo_ods_intervalIntegral_le_of_ae_abs_le (deriv φ) (fun r => ‖deriv W r‖) a s t
+        (Submission.tdo_ods_integrableOn_norm_deriv ℓ W a K hW) hs ht hac.intervalIntegrable_deriv
+        (Submission.tdo_ods_ae_abs_deriv_inner_le ℓ W a K u hW hu)
 
 end Submission
 
