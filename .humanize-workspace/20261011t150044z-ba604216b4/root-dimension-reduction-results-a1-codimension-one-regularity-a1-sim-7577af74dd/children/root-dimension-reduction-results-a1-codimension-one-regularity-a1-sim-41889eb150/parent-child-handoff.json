@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "sed -n 1,457p GMT/Ch07/Contract.lean (IMRep, IsIntegerMultiplicity, IsMinimizingIn, HasMassDensity, IsConeCurrent, IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, regularSet, unitBallVolume)",
+        "grep -n 'def support|def zeroRegion|isOpen_zeroRegion|def massOn|structure GeometricCurrentOn|abbrev Covector' simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass,Forms}.lean",
+        "grep -n 'theorem|def' simongmt/Poincare/SimonGMT/AppendixB/{SimonsInequalities,ConeDefect,LagrangeIdentity}.lean and Chapter02/{SecondFundamentalForm,SecondFundamentalFormCalculus,SubmanifoldCalculus,AreaFormula}.lean",
+        "sed -n 1,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n 'theorem addHaar_ball_of_pos|theorem ContinuousOn.aestronglyMeasurable|theorem setLIntegral_one|measure_sdiff_null' Mathlib",
+        "python3 scans of dag.json: 518 nodes by status; children of codimension_one_regularity; accepted nodes whose statements mention IsConeCurrent, regularSet or HasMassDensity; statuses, frozen types and candidate commits of the 6 reused names; status of codim1_massOn_eq_lintegral_of_oriented_rep (decomposing)",
+        "runtime.py of flow gmt-claude-b888e19cffb1: _solve_children, _existing_lean_name_problem, _wait_for_accepted_dependencies, _overlay_accepted_children",
+        "git grep over all 2770 refs for the 5 new names (no match); git grep 'PseudoMetrizableSpace (MultiVector' in accepted branches",
+        "lean -DautoImplicit=false /tmp/simons-split/check/Types2.lean; lean -DautoImplicit=false /tmp/simons-split/check/Assembly2.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)",
+        "book: chapter-B.txt 1-282; chapter-02.txt 1162-1440; chapter-05.txt 1290-1380; chapter-06.txt 400-440 and 770-870; chapter-03.txt 290-330; chapter-07-source.txt 900-1010 and 1256-1300"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalForm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-v6.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-ori-0059e6635e/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/simons-split/check/Types2.lean",
+        "/tmp/simons-split/check/Assembly2.lean"
+      ],
+      "conclusion": "Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…), so the selected frozen type and the 6 reused types are unchanged.\nLibrary.\n- SimonGMT supplies GeometricCurrentOn, support = U \\ zeroRegion with zeroRegion open, and massOn (Chapter06).\n- SimonGMT supplies the Appendix B algebra: simonsDefect_eq_sum_skew, four_mul_radialSkewSum_le, cone_simonsDefect_lower_bound (AppendixB/ConeDefect.lean) and exists_final_exponent (SimonsInequalities.lean).\n- It has only pointwise second-fundamental-form algebra (Chapter02/SecondFundamentalForm.lean): no submanifold curvature field, no Simons identity, no Allard theorem, no nonlinear push-forward. These remain book citations inside hypercone_plane and area_comparison.\n- The snapshot Mathlib has μHE isometry invariance and μHE = volume on Euclid d (Geometry/Euclidean/Volume/Measure.lean), Measure.euclideanHausdorffMeasure_smul₀, and addHaar_ball_of_pos (MeasureTheory/Measure/Lebesgue/EqHaar.lean:445), used by subspace_ball_measure and offvertex_rep.\nDAG.\n- codim1_massOn_eq_lintegral_of_oriented_rep is decomposing (unaccepted) under another parent. It cannot be a child or a child dependency here, so only this node's glue uses it.\n- The six reused names are accepted with byte-identical types. Candidate commits: dor_ims_unitOrientation_dual 9c8432cb0101, dtc_vanish_off_support 44ef61f79e21, cone_current_apply_dilation_pullback 52115c22ec2d, rsdic_unitOrientation_eq_or_eq_neg fe95347baaed, chart_tangentSpace_eq_range_fderiv d626082a69a0, dimred_rpd_bilipschitz_image_measure 0501e07ced47.\n- Overlapping unaccepted nodes cannot be reused: dimred_rpd_submanifold_density_one, dimred_rpd_massOn_eq_mult_measure and imrep_c1_diffeo_pushforward_im. Child sessions may reuse them once accepted.\n- The 5 new codim1_ names are free in dag.json, GMT/, SimonGMT and all 2770 refs.\nLean.\n- Types2.lean elaborates all 11 child types (exit 0).\n- Assembly2.lean proves the selected frozen type from 4 child types plus oriented_piece_mass as axioms (exit 0). Its axioms are propext, Classical.choice, Quot.sound and those 5.\n- A MultiVector PseudoMetrizableSpace instance workaround from accepted branches was needed and works."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.subspace_ball_measure-a1",
+  "subproblem": {
+    "key": "subspace_ball_measure",
+    "title": "H^m of a ball in an m-dimensional linear subspace (parent B10c)",
+    "statement": "The m-dimensional Hausdorff measure of a ball in an m-dimensional subspace. Data: P, m ∈ ℕ; a linear subspace H₀ ⊆ ℝ^P with dim H₀ = m (Module.finrank ℝ H₀ = m); ρ > 0. Conclusion: H^m(H₀ ∩ B_ρ(0)) = ω_m·ρ^m, i.e. μHE[m](H₀ ∩ ball 0 ρ) = unitBallVolume m · ofReal(ρ^m), where unitBallVolume m is the Lebesgue measure of the unit ball of ℝ^m.",
+    "lean_statement": "∀ (P m : ℕ) (H₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ H₀ = m → ∀ ρ : ℝ, 0 < ρ → μHE[m] ((H₀ : Set (Euclid P)) ∩ ball 0 ρ) = unitBallVolume m * ENNReal.ofReal (ρ ^ m)",
+    "lean_name": "codim1_subspace_ball_euclideanHausdorff",
+    "depends_on": [],
+    "natural_proof": "Source. Parent step B10c of the supplied proof of codim1_simons_regular_cone_density: \"H^m on the m-plane H₀ is m-dimensional Lebesgue measure\", so H^m(H₀ ∩ B_ρ(0)) = ω_mρ^m. Book normalization: Simon Ch. 2, §1 and Ch. 3 (H^n = L^n on ℝ^n); here H^m := μHE[m], which equals volume on Euclid m (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume) and is invariant under isometries (Mathlib Isometry.euclideanHausdorffMeasure_image). ω_m := unitBallVolume m = volume(ball (0 : Euclid m) 1).\n\nProof. Fix P, m, an m-dimensional linear subspace H₀ ⊆ ℝ^P and ρ > 0.\n1. (A linear isometry onto H₀.) H₀ with the inner product of ℝ^P is an m-dimensional inner product space. Fix an orthonormal basis b_1, …, b_m of H₀ (for m = 0 the empty family) and define ι : ℝ^m → ℝ^P by ι(a) := Σ_i a_i b_i. By orthonormality |ι(a) − ι(a')|² = Σ_i (a_i − a'_i)² = |a − a'|². So ι is a linear isometry with range ι = H₀.\n2. (The ball.) ι(B_ρ(0)) = H₀ ∩ B_ρ(0). Indeed ι(0) = 0 and |ι(a)| = |a|, so ι maps B_ρ(0) ⊆ ℝ^m into H₀ ∩ B_ρ(0). Conversely every z ∈ H₀ ∩ B_ρ(0) is ι(a) for some a, and |a| = |z| < ρ.\n3. (Isometry invariance.) μHE[m] is preserved by isometries: μHE[m](ι(E)) = μHE[m](E) for every E ⊆ ℝ^m. Hence H^m(H₀ ∩ B_ρ(0)) = μHE[m](B_ρ(0) ⊆ ℝ^m).\n4. (Lebesgue measure of the ball.) On ℝ^m = Euclid m, μHE[m] = volume. Volume is an additive Haar measure on the m-dimensional space Euclid m, so volume(B_ρ(0)) = ρ^m·volume(B_1(0)) for ρ > 0 (Mathlib Measure.addHaar_ball_of_pos, valid for every ρ > 0 including m = 0, with finrank ℝ (Euclid m) = m). In [0, ∞] this is ofReal(ρ^m)·ω_m.\n5. Hence μHE[m](H₀ ∩ ball 0 ρ) = unitBallVolume m · ofReal(ρ^m), by commutativity of multiplication in [0, ∞]. (For m = 0 both sides equal 1: H₀ = {0} and μHE[0]{0} = μH[0]{0} = 1.) ∎",
+    "proof_key_steps": [
+      "An orthonormal basis of H₀ gives a linear isometry ι : ℝ^m → ℝ^P onto H₀ with ι(B_ρ(0)) = H₀ ∩ B_ρ(0).",
+      "μHE[m] is invariant under isometries and equals Lebesgue measure on ℝ^m.",
+      "The Lebesgue measure of B_ρ(0) ⊆ ℝ^m is ρ^m·ω_m."
+    ]
+  },
+  "audit": {
+    "key": "subspace_ball_measure",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proposition exactly matches the normalized Hausdorff-measure statement. An isometry onto the subspace, isometry invariance and positive-radius Haar scaling prove it. The cited scaling theorem also covers m=0."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-41889eb150/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-41889eb150/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-41889eb150/parent-supplied-natural-proof.json"
+}
