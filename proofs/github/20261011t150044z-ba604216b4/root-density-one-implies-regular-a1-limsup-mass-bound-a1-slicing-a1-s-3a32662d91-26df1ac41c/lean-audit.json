@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5e1fba000f3ab59831f983c9d9da12e8585be41958cec0707672d2b7289fc79",
+  "git_delta": {
+    "base_commit": "53b0008fb85649ca385cdaa1e7780fdcc82c4093",
+    "candidate_commit": "0d7bf54558d5a967fa75dfa88e34f53c32cb7b59",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pc_coarea_glue",
+    "diff_sha256": "abdaa5041f688caf28d0b059fd5608b0a95fe7e5030c9d020699e2074f9d20b9",
+    "source_sha256": "675625f496560e2518d32ac80a7870e424d571816ff1889ed4754245736e5e44",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pc_coarea_glue",
+      "statement": "∀ (P n : ℕ) (Z : Set (Euclid (n + 1))) (Zs : ℕ → Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (φ g : Euclid P → ℝ≥0∞), ContinuousOn ψ Z → InjOn ψ Z → Measurable F → (∀ q, MeasurableSet (Zs q)) → Pairwise (fun p q => Disjoint (Zs p) (Zs q)) → (⋃ q, Zs q) = Z → (∀ q, AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Zs q, g x ∂μHE[n + 1]) → AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Z, g x ∂μHE[n + 1]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
