@@ -779,6 +779,78 @@ theorem Submission.dimred_cs_ti_translate_action_hasDerivAt : ∀ (P n : ℕ) (R
     ((hθB.integrable_indicator hBm).const_mul K) h_diff
   exact key.2
 
+/-- Translation invariance of `R.action` (the integrated form of `L_v S = 0`; Simon Ch. 6, 2.25
+for the homotopy `h(t, x) = x + tv`, the translation counterpart of Lemma 2.33).  Suppose
+`R.action` annihilates every directional derivative `y ↦ Dβ(y)[v]` of a test form `β`.  Put
+`β_s(y) = ω(sv + y)` and `G(s) = R.action β_s`.  Its derivative
+`G'(t) = R.action(Dω(tv + ·)[v]) = R.action(Dβ_t(·)[v])`
+(`Submission.dimred_cs_ti_translate_action_hasDerivAt`) vanishes for every `t`, so `G` is constant
+and `R.action(ω(v + ·)) = G(1) = G(0) = R.action ω`. -/
+theorem Submission.dimred_cs_ti_action_translation_invariant : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), (∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = fderiv ℝ (β : DifferentialForm (Euclid P) n) y v) → R.action (γ : DifferentialForm (Euclid P) n) = 0) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, R.action (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) = R.action (ω : DifferentialForm (Euclid P) n) := by
+  intro P n R v hL ω
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  -- Step 1: `β_t(y) = ω(tv + y)` is a test form
+  have hβs : ∀ t : ℝ, ContDiff ℝ (⊤ : ℕ∞)
+      (fun y => (ω : DifferentialForm (Euclid P) n) (t • v + y)) :=
+    fun t => hws.comp (contDiff_const.add contDiff_id)
+  have hβc : ∀ t : ℝ, HasCompactSupport
+      (fun y => (ω : DifferentialForm (Euclid P) n) (t • v + y)) :=
+    fun t => hwc.comp_homeomorph (Homeomorph.addLeft (t • v))
+  -- Step 2: chain rule, `Dβ_t(y) = Dω(tv + y)`
+  have hfd : ∀ (t : ℝ) (y : Euclid P),
+      fderiv ℝ (fun z => (ω : DifferentialForm (Euclid P) n) (t • v + z)) y =
+        fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) :=
+    fun t y => fderiv_comp_add_left (t • v)
+  -- Step 3: `γ_t(y) = Dω(tv + y)[v]` is a test form
+  have hγs : ∀ t : ℝ, ContDiff ℝ (⊤ : ℕ∞)
+      (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v) := by
+    intro t
+    have hd : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ (ω : DifferentialForm (Euclid P) n)) :=
+      hws.fderiv_right (by simp)
+    exact (hd.comp (contDiff_const.add contDiff_id)).clm_apply contDiff_const
+  have hγc : ∀ t : ℝ, HasCompactSupport
+      (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v) := by
+    intro t
+    have h1 : HasCompactSupport
+        (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y)) :=
+      (hwc.fderiv ℝ).comp_homeomorph (Homeomorph.addLeft (t • v))
+    refine h1.mono ?_
+    intro y hy
+    simp only [mem_support] at hy ⊢
+    intro h0
+    apply hy
+    rw [h0]
+    rfl
+  -- Steps 4–5: `G(s) = R.action β_s` has derivative `R.action γ_t = 0` at every `t`
+  let G : ℝ → ℝ := fun s => R.action (fun y => (ω : DifferentialForm (Euclid P) n) (s • v + y))
+  have hG : ∀ t : ℝ, HasDerivAt G 0 t := by
+    intro t
+    have hD := Submission.dimred_cs_ti_translate_action_hasDerivAt P n R ω v t
+    let β : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨fun y => (ω : DifferentialForm (Euclid P) n) (t • v + y), ⟨hβs t, hβc t⟩, subset_univ _⟩
+    let γ : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v, ⟨hγs t, hγc t⟩,
+        subset_univ _⟩
+    have hγ0 : R.action (γ : DifferentialForm (Euclid P) n) = 0 :=
+      hL β γ (fun y => by
+        change fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v =
+          fderiv ℝ (fun z => (ω : DifferentialForm (Euclid P) n) (t • v + z)) y v
+        rw [hfd t y])
+    have h0 : R.action (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v) = 0 :=
+      hγ0
+    rw [h0] at hD
+    exact hD
+  -- Step 6: `G` is constant on `ℝ`
+  have hconst : G 1 = G 0 :=
+    is_const_of_deriv_eq_zero (fun t => (hG t).differentiableAt) (fun t => (hG t).deriv) 1 0
+  -- Step 7: `G(1) = R.action(ω(v + ·))` and `G(0) = R.action ω`
+  have hG1 : G 1 = R.action (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) := by
+    simp [G]
+  have hG0 : G 0 = R.action (ω : DifferentialForm (Euclid P) n) := by
+    simp [G]
+  rw [← hG1, hconst, hG0]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
