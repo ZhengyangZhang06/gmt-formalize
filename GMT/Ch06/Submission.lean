@@ -632,20 +632,6 @@ theorem Submission.cmb_exists_testForm_uniform_approx : ∀ (P n : ℕ) (U V : S
     _ ≤ ε := by
       rw [hε'_def, mul_div_assoc', div_le_iff₀ hN1]
       nlinarith
-/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
-(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
-theorem Submission.cmb_abs_apply_le_of_massOn_le :
-    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
-      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
-      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
-      |T ω| ≤ B * C := by
-  intro P n U W T ω B C hB hM hW hC
-  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
-  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
-      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
-    intro t α
-    unfold covectorEuclideanNorm
-    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
 
 open scoped CompactlySupported in
 theorem Submission.rectifiability_mass_measure_representation : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U k, (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞) → (∃ μ : Measure (Eucl P), IsMassMeasure T μ) ∧ ∀ μ : Measure (Eucl P), IsMassMeasure T μ → ∃ ξ : Eucl P → NVector (Eucl P) k, StronglyMeasurable ξ ∧ (∀ᵐ x ∂μ, ∑ α : SimonMultiIndex k P, (euclideanNVectorCoordinate (ξ x) α) ^ 2 = 1) ∧ IsMeasureRepresentation T μ ξ := by
