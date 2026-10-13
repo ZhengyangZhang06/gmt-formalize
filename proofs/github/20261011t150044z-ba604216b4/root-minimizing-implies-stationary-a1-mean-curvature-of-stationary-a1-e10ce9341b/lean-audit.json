@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2b814ffa8e4be47e2014ee7a2ca8d22ba6a155589b126d5a96b1e57f3909db28",
+  "git_delta": {
+    "base_commit": "05796a37a812594f00f5ee6afdc97eb5746edbb8",
+    "candidate_commit": "d4e6209ba3debcafab39c6e36ab1b997fcb95c7d",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4732d2f84f62be9c2d2e3780a886dfd46fa7653844d4b981d8bf253515d0d043",
+    "source_sha256": "f4f9341610e174f740d8fdf259aa69e895c2a0303583d422f6b4c4c080047371",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.meanCurvature_bounded_of_stationaryAlong",
+      "statement": "∀ (P n d : ℕ) (U N : Set (Euclid P)) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → μHE[n] (R.carrier \\ N) = 0 → R.IsStationaryAlong N → R.HasLocallyBoundedMeanCurvature",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
