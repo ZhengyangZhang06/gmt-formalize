@@ -903,6 +903,66 @@ theorem Submission.codim1_rdo_c1pt_rescaled_area_formula : ∀ (P n : ℕ) (g : 
     (measurable_fderiv ℝ g).comp ((measurable_const_add z).comp (measurable_const_smul s))
   rw [← himage, hbochner _ _ (fun b : Euclid n => fderiv ℝ g (z + s • b)) hBs hderiv
     (fun b hb => hreg _ hb) hinjφ hmeasf', hJdef]
+/-- **Simon Ch. 2, (3.1)** in integral form (area formula for an injective linear map): for an
+injective linear `L : ℝⁿ → ℝᴾ` and every `f`, `∫_{L(ℝⁿ)} f dHⁿ = √det(L* ∘ L) ∫_{ℝⁿ} f(Lb) dLⁿ(b)`.
+Write `L = W ∘ A` with `W` a linear isometry of `ℝⁿ` onto `L(ℝⁿ)` and `A` an automorphism of `ℝⁿ`;
+then `Hⁿ⌞L(ℝⁿ) = W#Lⁿ`, `Lⁿ = |det A| A#Lⁿ` and `det(L* ∘ L) = det(A* ∘ A) = (det A)²`. -/
+theorem Submission.codim1_rdo_c1pt_linear_range_integral : ∀ (P n : ℕ) (L : Euclid n →L[ℝ] Euclid P) (f : Euclid P → ℝ), Injective L → ∫ y in (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = Real.sqrt ((L.adjoint ∘L L).det) * ∫ b, f (L b) := by
+  intro P n L f hL
+  -- `L = W ∘ A`: `W` is a linear isometry of `ℝⁿ` onto `R = L(ℝⁿ)` (via an orthonormal basis of
+  -- `R`, which has dimension `n`) and `A` is a surjective endomorphism of `ℝⁿ`
+  obtain ⟨W, A, hWA, hA⟩ : ∃ (W : Euclid n →ₗᵢ[ℝ] Euclid P) (A : Euclid n →L[ℝ] Euclid n),
+      (∀ x, W (A x) = L x) ∧ Surjective A := by
+    let R := LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P)
+    have hrank : Module.finrank ℝ R = n :=
+      (LinearMap.finrank_range_of_inj (f := (L : Euclid n →ₗ[ℝ] Euclid P)) hL).trans
+        finrank_euclideanSpace_fin
+    let bv : OrthonormalBasis (Fin n) ℝ R := (stdOrthonormalBasis ℝ R).reindex (finCongr hrank)
+    refine ⟨R.subtypeₗᵢ.comp bv.repr.symm.toLinearIsometry,
+      bv.repr.toContinuousLinearEquiv.toContinuousLinearMap ∘L
+        L.codRestrict R (fun x => LinearMap.mem_range_self _ x), fun x => by simp, fun z => ?_⟩
+    obtain ⟨x, hx⟩ := LinearMap.mem_range.mp (bv.repr.symm z).2
+    refine ⟨x, ?_⟩
+    have hx' : L.codRestrict R (fun x => LinearMap.mem_range_self _ x) x = bv.repr.symm z :=
+      Subtype.ext hx
+    simp [hx']
+  have hAinj : Injective A := fun x y h => hL (by rw [← hWA x, ← hWA y, h])
+  -- `L(ℝⁿ) = W(ℝⁿ)`
+  have hrange : (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)) =
+      Set.range W := by
+    rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe, ← hA.range_comp W]
+    congr 1
+    funext x
+    exact (hWA x).symm
+  -- `Hⁿ⌞W(ℝⁿ) = W#Hⁿ` (`W` is an isometry) and `Hⁿ = Lⁿ` on `ℝⁿ`
+  have hW : ∫ y in Set.range W, f y ∂μHE[n] = ∫ x, f (W x) := by
+    rw [← W.isometry.map_euclideanHausdorffMeasure,
+      W.isometry.isClosedEmbedding.measurableEmbedding.integral_map,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- change of variables `x = A b` on `ℝⁿ`
+  have hAcv : ∫ x, f (W x) = |A.det| * ∫ b, f (W (A b)) := by
+    have h := integral_image_eq_integral_abs_det_fderiv_smul volume MeasurableSet.univ
+      (fun x _ => A.hasFDerivAt.hasFDerivWithinAt) hAinj.injOn (fun x => f (W x))
+    rw [Set.image_univ, hA.range_eq, Measure.restrict_univ] at h
+    rw [h, ← integral_const_mul]
+    simp only [smul_eq_mul]
+  -- `L* ∘ L = A* ∘ W* ∘ W ∘ A = A* ∘ A`, so `det (L* ∘ L) = (det A)²`
+  have hdet : (L.adjoint ∘L L).det = A.det ^ 2 := by
+    have hL' : L = W.toContinuousLinearMap ∘L A := ContinuousLinearMap.ext fun x => (hWA x).symm
+    have h1 : L.adjoint ∘L L = A.adjoint ∘L A := by
+      rw [hL', ContinuousLinearMap.adjoint_comp, ← ContinuousLinearMap.comp_assoc,
+        ContinuousLinearMap.comp_assoc (ContinuousLinearMap.adjoint _), W.adjoint_comp_self,
+        ContinuousLinearMap.one_def, ContinuousLinearMap.comp_id]
+    have hadj : LinearMap.det (LinearMap.adjoint (A : Euclid n →ₗ[ℝ] Euclid n)) =
+        LinearMap.det (A : Euclid n →ₗ[ℝ] Euclid n) := by
+      let b := EuclideanSpace.basisFun (Fin n) ℝ
+      rw [← LinearMap.det_toMatrix b.toBasis, LinearMap.toMatrix_adjoint b b,
+        Matrix.det_conjTranspose, LinearMap.det_toMatrix, star_trivial]
+    rw [h1, ContinuousLinearMap.det, ContinuousLinearMap.det,
+      ContinuousLinearMap.toLinearMap_comp, LinearMap.det_comp,
+      ← ContinuousLinearMap.adjoint_toLinearMap, hadj, sq]
+  rw [hrange, hW, hAcv, hdet, Real.sqrt_sq_eq_abs]
+  simp only [hWA]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
