@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.smooth_cutoff-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+  "depth": 4,
+  "title": "A smooth compactly supported cut-off in V that equals 1 outside a set of small measure",
+  "statement": "Let P ∈ ℕ, let ν be a finite Borel measure on ℝ^P, let V ⊆ ℝ^P be open with ν(ℝ^P ∖ V) = 0, and let δ > 0. Then there is a C^∞ function χ : ℝ^P → ℝ with compact support such that tsupport χ ⊆ V, 0 ≤ χ(x) ≤ 1 for every x, and ν({x : χ(x) ≠ 1}) < ofReal δ.",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (V : Set (Euclid P)), IsFiniteMeasure ν → IsOpen V → ν Vᶜ = 0 → ∀ δ : ℝ, 0 < δ → ∃ χ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ V ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ ν {x | χ x ≠ 1} < ENNReal.ofReal δ",
+  "lean_name": "rsd_mw_tfa_smooth_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-smooth-cutoff-a1-a1"
+}
