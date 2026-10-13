@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|approxTangentPlane|structure IMRep|def IMRep.measure|HasMassDensity|HasLocallyBoundedMeanCurvature|tangentialDivergence|firstVariation|MinimizingImpliesStationary|unitBallVolume",
+        "integral_eq_lintegral_of_nonneg_ae|integral_withDensity_eq_integral_smul|tendsto_nhdsWithin_Ioo_right|hasDerivAt_integral_of_dominated_loc_of_deriv_le|aemeasurable_of_tendsto_metrizable_ae|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_eq_volume|withDensity_absolutelyContinuous",
+        "def HasApproximateTangentSpaceAt|def blowUpMap|exp_normalizedBallMass_monotoneOn|massOn_mono|support_subset_domain|structure RectifiableVarifold",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/monotonicity_scope_audit_k8z3s81j/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/monotonicity_scope_audit_k8z3s81j/IndependentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/monotonicity_scope_audit_k8z3s81j/AcceptedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3a5d6a2a8e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3a5d6a2a8e/decomposition-v1.json",
+        "/tmp/monotonicity_scope_audit_k8z3s81j/FrozenTypes.lean",
+        "/tmp/monotonicity_scope_audit_k8z3s81j/IndependentAssembly.lean",
+        "/tmp/monotonicity_scope_audit_k8z3s81j/AcceptedProofs.lean"
+      ],
+      "conclusion": "The split is appropriate for this exact selected theorem. Project and Mathlib revisions match the manifest, and the frozen contract definitions are unchanged. All eight one-line propositions elaborate before their implementations are available. Every lean_name is a bare identifier with one accepted owner, a byte-identical frozen type, and a passing isolated comparator; this was rechecked against the live DAG at 2026-10-13T20:11:13Z. The proposed dependencies and all 38 reachable prerequisite nodes are acyclic. Independent assembly proves all four selected conclusions using six direct children and the two registered prerequisites; closed_ball_unit_density and open_ball_density support ae_density_lower_bound. Recompiling the actual reused proofs and checking their axiom closures found only propext, Classical.choice and Quot.sound, with no sorryAx. The assembled parent additionally depends only on the registered, still-pending stationarity theorem; its acceptance gate remains necessary. The inspected Mathlib lemmas support the delicate measurability, integration and limit steps. SimonGMT's varifold monotonicity theorem has a different interface, so it is not silently substituted for the IMRep obligation. No matrix-unit construction occurs. Mathematical cross-check: [Simon, Chapter 4 §3](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type match. Openness and local multiplicity integrability supply sigma-finiteness; measurable blow-up quadratic moments converge to projection norms. Polarization and finite-basis expansion then give operator-valued a.e. measurability, transferred by absolute continuity. The zero-dimensional case and potentially non-integrable blow-up integrals are handled correctly. The proof is complete and non-circular."
+    },
+    {
+      "key": "exp_ball_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All required measurability, curvature-bound and first-variation hypotheses appear in both statements. The radial computation gives nI−sI′≤κsI with the correct sign. Local finite mass justifies differentiation and dominated convergence; continuity reaches the endpoint ρ=r, and the cutoffs converge to open balls. The weighted Bochner identity is valid without an integrability assumption. No missing prerequisite or circular step was found."
+    },
+    {
+      "key": "truncated_mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Clipping a strongly measurable version produces an everywhere bounded field agreeing with the original field a.e. on K. Test fields vanish outside K, so their scalar integrands agree a.e. globally and the first-variation identity transfers by integral congruence. No additional openness or integrability hypothesis is needed."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement retains both local finiteness and compact-uniform monotonicity. The monotone infimum is finite, and normalization uses a positive finite unit-ball volume. The proportional-radius comparison proves upper semicontinuity using only massOn monotonicity, without assuming it is a measure. All ENNReal cancellations and limits have the required side conditions."
+    },
+    {
+      "key": "closed_ball_unit_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including local finite Hausdorff measure. Similarity scaling and plane-volume normalization identify the rescaled mass; inner and outer compact cutoffs squeeze it to unit density. Local finiteness makes the small-scale Bochner integrals genuine. The argument requires no unstated measurability of M and covers n=0."
+    },
+    {
+      "key": "open_ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen proposition matches the arbitrary-measure statement. The closed/open-ball sandwich and positive finite dilation factor establish both order-topology bounds. The scaling and cancellation steps remain valid for infinite measures and θ=∞. No local finiteness or parent density theorem is assumed."
+    },
+    {
+      "key": "ae_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two declared dependencies are exactly the unit-density and closed-to-open inputs used. Positive integer multiplicity gives the unweighted-measure lower bound and local finiteness. At a.e. tangent point, comparing its unit-density limit with any weighted-density limit forces θ≥1. Absolute continuity transfers the full-measure set correctly. The conditional conclusion avoids circular reliance on parent density existence."
+    },
+    {
+      "key": "support_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five assumptions match the exact type. The library support definition supplies y∈U. Nonnegativity and uniqueness of limits identify θ with Θ(y). If this value were below one, upper semicontinuity would give a ball in U violating the a.e. lower bound at every point, after transferring small-ball mass ratios to μ. Its zero measure contradicts the positive-ball hypothesis."
+    }
+  ],
+  "required_changes": []
+}
