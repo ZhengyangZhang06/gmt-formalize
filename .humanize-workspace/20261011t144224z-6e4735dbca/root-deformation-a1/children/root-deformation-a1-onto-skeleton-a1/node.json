@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1",
+  "parent_id": "root.deformation-a1",
+  "depth": 2,
+  "title": "Deformation of a normal current onto the n-skeleton (5.1, printed (6)–(26))",
+  "statement": "Deformation onto the n-skeleton (the main step of Simon 5.1, printed displays (6)–(26)), conditional on the Slicing Theorem and on Lemma 3.9. Assume SlicingTheorem and LipschitzPushforwardIntegerMultiplicity. For all m, ℓ ∈ ℕ with ℓ ≥ 1 (n := m + 1, d := n + ℓ) there is C = C(m,ℓ) ∈ [0,∞) such that for every T ∈ D_n(ℝ^d) with M(T) + M(∂T) < ∞ there are Q ∈ D_n(ℝ^d), R ∈ D_{n+1}(ℝ^d), S ∈ D_n(ℝ^d) with: T(ω) − Q(ω) = ∂R(ω) + S(ω) for all ω; spt Q ⊆ L_n := ⋃_F latticeFace 1 F; the tangential property: for every face index F = (z, α), every open ball B with B ∩ L_n ⊆ latticeFace 1 F and every test n-form ω with tsupport ω ⊆ B and ω(x)(e_{α₁},…,e_{α_n}) = 0 for all x, Q(ω) = 0; M(Q) ≤ C M(T), M(∂Q) ≤ C M(∂T), M(R) ≤ C M(T), M(S) ≤ C M(∂T); spt Q ∪ spt R ⊆ {x : dist(x, spt T) ≤ √d} and spt ∂Q ∪ spt S ⊆ {x : dist(x, spt ∂T) ≤ √d} (closed thickenings, Metric.cthickening); if T is integer multiplicity then so are Q and R; if T and ∂T are integer multiplicity then so is S.",
+  "lean_statement": "SlicingTheorem → LipschitzPushforwardIntegerMultiplicity → ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ C : ℝ≥0, ∀ T : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), T.mass + T.boundary.mass < ∞ → ∃ (Q : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)) (R : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 2)) (S : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), (∀ ω, T ω - Q ω = R.boundary ω + S ω) ∧ Q.support ⊆ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F ∧ (∀ (F : LatticeFaceIndex (m + 1) (m + 1 + ℓ)) (y : Eucl (m + 1 + ℓ)) (r : ℝ), ball y r ∩ (⋃ G : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 G) ⊆ latticeFace 1 F → ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) ⊆ ball y r → (∀ x, (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) x (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) = 0) → Q ω = 0) ∧ Q.mass ≤ C * T.mass ∧ Q.boundary.mass ≤ C * T.boundary.mass ∧ R.mass ≤ C * T.mass ∧ S.mass ≤ C * T.boundary.mass ∧ Q.support ∪ R.support ⊆ cthickening (Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ)) T.support ∧ Q.boundary.support ∪ S.support ⊆ cthickening (Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ)) T.boundary.support ∧ (IsIntegerMultiplicity T → IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity R) ∧ (IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → IsIntegerMultiplicity S)",
+  "lean_name": "deformation_onto_skeleton",
+  "depends_on": [
+    "root.deformation-a1.retraction-a1",
+    "root.deformation-a1.good_center-a1",
+    "root.deformation-a1.mass_restriction-a1",
+    "root.deformation-a1.im_completeness-a1",
+    "root.deformation-a1.im_pushforward_limit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.retraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.good_center-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.mass_restriction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-a1"
+}
