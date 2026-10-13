@@ -587,6 +587,62 @@ theorem Submission.idtp_ccd_scsp_dbr_fundamental_lemma : ∀ (a b : ℝ) (g : �
     simp only [mul_neg, integral_neg, hint χ hχ hχc hχs, neg_zero]
   linarith [not_lt.1 (claim g hg hint), not_lt.1 hneg]
 
+/-- **du Bois-Reymond lemma** on an open interval (step 10 of the parent proof; Encyclopedia of
+Mathematics, "Du Bois-Reymond lemma").  Fix a normalized bump `η` in `(a, b)` (sibling
+`dbr_normalized_bump`) and put `c := ∫ η κ`.  For a test function `χ` with `I := ∫ χ`, the
+zero-mean function `χ − I η` has a compactly supported `C¹` antiderivative `Φ` in `(a, b)`
+(sibling `dbr_antiderivative`).  Testing the hypothesis with `Φ` gives
+`0 = ∫ (χ − I η) κ = ∫ χ κ − I c = ∫ χ (κ − c)` (integrability from sibling `dbr_integrable`),
+so `κ − c` vanishes on `(a, b)` by the sibling `dbr_fundamental_lemma`. -/
+theorem Submission.idtp_ccd_scsp_du_bois_reymond : ∀ (a b : ℝ) (κ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → (∀ φ : ℝ → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ioo a b → ∫ x, deriv φ x * κ x = 0) → ∃ c : ℝ, ∀ x ∈ Ioo a b, κ x = c := by
+  intro a b κ hκ hφ
+  -- if `b ≤ a` the interval `(a, b)` is empty
+  rcases le_or_gt b a with hba | hab
+  · exact ⟨0, fun x hx => absurd ((hx.1.trans hx.2).trans_le hba) (lt_irrefl a)⟩
+  -- a normalized bump `η` in `(a, b)` and the constant `c = ∫ η κ`
+  obtain ⟨η, hη, hηc, hηs, hη1⟩ := Submission.idtp_ccd_scsp_dbr_normalized_bump a b hab
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, ∫ x, η x * κ x = c := ⟨_, rfl⟩
+  have hηi : Integrable η := hη.continuous.integrable_of_hasCompactSupport hηc
+  have hηκ : Integrable (fun x => η x * κ x) :=
+    Submission.idtp_ccd_scsp_dbr_integrable a b κ η hκ hη.continuous hηc hηs
+  -- `κ − c` is orthogonal to every test function in `(a, b)`
+  have horth : ∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ →
+      tsupport χ ⊆ Ioo a b → ∫ x, χ x * (κ x - c) = 0 := by
+    intro χ hχ hχc hχs
+    obtain ⟨I, hI⟩ : ∃ I : ℝ, ∫ x, χ x = I := ⟨_, rfl⟩
+    have hχi : Integrable χ := hχ.continuous.integrable_of_hasCompactSupport hχc
+    have hχκ : Integrable (fun x => χ x * κ x) :=
+      Submission.idtp_ccd_scsp_dbr_integrable a b κ χ hκ hχ.continuous hχc hχs
+    -- `χ − I η` is continuous, compactly supported in `(a, b)` and has zero mean
+    have h0c : Continuous (fun x => χ x - I * η x) :=
+      hχ.continuous.sub (continuous_const.mul hη.continuous)
+    have h0cpt : HasCompactSupport (fun x => χ x - I * η x) :=
+      hχc.sub (hηc.mul_left (f := fun _ => I))
+    have h0s : tsupport (fun x => χ x - I * η x) ⊆ Ioo a b :=
+      (tsupport_sub χ (fun x => I * η x)).trans
+        (union_subset hχs (tsupport_mul_subset_right.trans hηs))
+    have h0int : ∫ x, (χ x - I * η x) = 0 := by
+      rw [integral_sub hχi (hηi.const_mul I), integral_const_mul, hη1, mul_one, hI, sub_self]
+    -- its antiderivative `Φ` is an admissible test function
+    obtain ⟨Φ, hΦ, hΦc, hΦs, hΦd⟩ :=
+      Submission.idtp_ccd_scsp_dbr_antiderivative a b _ h0c h0cpt h0s h0int
+    have h0 : ∫ x, (χ x - I * η x) * κ x = 0 := by
+      have h := hφ Φ hΦ hΦc hΦs
+      rw [hΦd] at h
+      exact h
+    -- `∫ (χ − I η) κ = ∫ χ κ − I c = ∫ χ (κ − c)`
+    have h1 : ∫ x, (χ x - I * η x) * κ x = (∫ x, χ x * κ x) - I * c := by
+      simp_rw [sub_mul, mul_assoc]
+      rw [integral_sub hχκ (hηκ.const_mul I), integral_const_mul I (fun x => η x * κ x), hc]
+    have h2 : ∫ x, χ x * (κ x - c) = (∫ x, χ x * κ x) - I * c := by
+      simp_rw [mul_sub]
+      rw [integral_sub hχκ (hχi.mul_const c), integral_mul_const c χ, hI]
+    rw [h2, ← h1, h0]
+  -- the fundamental lemma gives `κ = c` on `(a, b)`
+  have hzero := Submission.idtp_ccd_scsp_dbr_fundamental_lemma a b (fun x => κ x - c)
+    (hκ.sub continuousOn_const) horth
+  exact ⟨c, fun x hx => sub_eq_zero.mp (hzero x hx)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
