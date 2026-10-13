@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_cdg_or_(minimizing_firstVariation_eq_zero|ball_graph_to_cylinder_graph)",
+        "locallyIntegrable_mult",
+        "mem_support_iff_forall",
+        "protected theorem surjective",
+        "norm_image_sub_le_of_norm_fderiv_le",
+        "fderiv_of_notMem_tsupport",
+        "IsCompact.cthickening",
+        "ofReal_lt_ofReal_iff",
+        "python3 -I /tmp/origin_regularity_decomposition_audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/orgsplit/ChildA.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/orgsplit/ChildB.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/orgsplit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-origin-regularity-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-origin-regularity-a1/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa68/20261013T034136Z-ch07-root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1-2fjw7x7z/comparator.log",
+        "/tmp/origin_regularity_decomposition_audit.py",
+        "/tmp/orgsplit/ChildA.lean",
+        "/tmp/orgsplit/ChildB.lean",
+        "/tmp/orgsplit/Assembly.lean",
+        "/tmp/orgsplit/Linked.lean"
+      ],
+      "conclusion": "Verified the selected handoff and digest, pinned revisions, and byte-identical snapshot/workspace contracts. Local definitions and Mathlib lemmas support the boundary conventions, support argument, finite positive mass, deformation estimates and graph argument. Neither proposed name is reserved in the DAG or present in the searched project/Mathlib sources. E and K have character-identical frozen types in their accepted commits; comparator evidence permits only the standard axioms. Runtime inheritance supplies exactly E/F/G to flat_stationarity and nothing to cylinder_graph. The effective dependency closure is acyclic when accepted declarations are treated as closed proofs. Independently reran ChildA, ChildB and Assembly successfully: their checked theorems use only propext, Classical.choice and Quot.sound. ChildA is conditional on the exact E/F/G types; ChildB is unconditional; Assembly proves the exact selected parent from E/J/K and the two children. Assembly's unused sorry declarations do not enter its axiom closure. The split appropriately isolates steps 3 and 6; pending prerequisites remain separate obligations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "flat_stationarity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. The bare identifier is fresh. Independently checked all twelve proof steps: compact support bounds DX; small deformations are bijective with injective derivative and preserve K; the chosen W has finite positive measure; F supplies an integer-multiplicity cycle whose difference from C has compact support in W; SameBoundary handles degree zero explicitly; minimality contradicts G using positivity of m. Removing the cap m/|a| is valid for ENNReal.ofReal_lt_ofReal_iff. The proof uses exactly inherited E/F/G, contains no reliance on this child or selected parent, and supplies the stationarity needed by Allard. Lean independently confirms its exact conclusion under those prerequisite types."
+    },
+    {
+      "key": "cylinder_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree on all dimensions, maps, hypotheses and set identities; the bare identifier is fresh. Independently checked the mean-value estimate on the open convex ball, cylinder containment, coordinate uniqueness from orthogonality, and both set inclusions. These arguments also cover zero-dimensional factors and arbitrary centres. The inferred derivatives, operator norms and real constants have the intended types. The proof has no DAG prerequisites or circular reliance and directly supplies the cylinder identity required by K. Its exact statement independently compiles with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}
