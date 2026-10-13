@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -uuu 'cmrc_|dimred_mbl_fnd|rsd_mw_exists' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "integral_withDensity_eq_integral_toReal_smul|MeasurableEmbedding.integral_map|withDensity_apply_eq_zero|measurable_extend|theorem map_apply|theorem isCompact_preimage_iff|exists_hasCompactSupport_integral_sub_le|exists_contDiff_dist_le",
+        "UniformContinuous.exists_contDiff_dist_le|exists_contDiff_support_eq_eq_one_iff|isCompact_preimage_iff|HasCompactSupport.intro|enorm_integral_le_lintegral_enorm|setIntegral_eq_integral_of_forall_compl_eq_zero|theorem _root_.Monotone.measure_iUnion|theorem continuous_infEDist|theorem exists_inv_nat_lt|of_sigmaCompactSpace_of_isLocallyFiniteMeasure",
+        "abbrev Covector|abbrev DifferentialForm|def IsTestForm|def TestFormOn|def covectorEuclideanNorm|def massOn|def massAdmissibleOn|le_massOn|structure GeometricCurrentOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-representation-review-3clo4q5_/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-087a55f6c3/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-087a55f6c3/decomposition-v1.json",
+        "/tmp/gmt-representation-review-3clo4q5_/ReuseEvidence.json",
+        "/tmp/gmt-representation-review-3clo4q5_/Assembly.lean"
+      ],
+      "conclusion": "The pinned project and mathlib revisions match the compiler context; snapshot Contract.lean and Submission.lean match the workspace byte-for-byte. The project search found no proposed child declarations. Independently checked all six reuse records: names are bare identifiers with one existing DAG owner each; frozen types match both immutable handoffs and accepted contracts exactly; candidate sources match verified comparator inputs; kernel receipts passed with only propext, Quot.sound and Classical.choice permitted. All reused child dependency closures are accepted and acyclic. The proposed selected-node dependency closure is also acyclic. Every child type elaborates independently in the replayed contract scope and contains no implementation-dependent alias or matrix-instance ambiguity. The split is appropriate: the supplied dependencies and children establish precisely the selected representation theorem. A separate conditional Lean assembly passed using their exact types as hypotheses, with no sorryAx or added axioms. Existing parent dependency obligations remain unchanged."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_l1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all prose hypotheses and conclusions. The complete argument establishes the seminorm estimates, compact core, continuous approximation, radial retraction, smooth rescaling and cutoff. Its integrated error is strictly below ε, including zero-dimensional cases. Reuse has the identical accepted type and no circular dependency; this child supplies the lower-bound approximation."
+    },
+    {
+      "key": "testform_restrict_cc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly permits arbitrary U. Continuity follows by composition; the preimage of tsupport ω is compact because it lies in the inclusion's range. The condition f(0)=0 makes the constructed map vanish outside that compact set. Packaging gives exactly the asserted compactly supported continuous map. No openness or additional dependency is needed."
+    },
+    {
+      "key": "polar_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and nine conclusions match the exact type. The measurable finite density and measurable embedding justify pushforward and change of measure even for arbitrary integrands. Compact integrability supplies local finiteness; continuity gives measurable fields; Cauchy–Schwarz and the inverse operator norm give both bounds. The exceptional normalization set has zero weighted measure. The proof is complete and independent."
+    },
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the stated bound for every set W without assuming measurability of W or ξ. Each integrand is bounded by the indicator of its closed topological support. The unconditional Bochner integral inequality and support inclusion bound every admissible evaluation, hence their supremum. The prose and one-line type agree exactly."
+    },
+    {
+      "key": "mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All eight hypotheses and the conditions on W′ appear in the type and are used correctly. The finite restriction makes β integrable; the declared approximation dependency supplies an admissible form. Evaluation is a.e. strongly measurable and bounded. Integrating 1−ξ(ω), then letting ε decrease to zero, proves the exact lower bound. Its only sibling dependency points correctly to testform_l1_approx."
+    },
+    {
+      "key": "open_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose without imposing unnecessary measure finiteness. The infEDist construction gives increasing open sets with compact closures inside W∩U and proves they exhaust that intersection, including an empty complement. Continuity from below and μ(Uᶜ)=0 yield μ(W)≤m. The argument is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
