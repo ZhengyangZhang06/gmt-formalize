@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30b47fa4d4b087a062b3c93565b61ea52094ace7f9a6cf501690be96a9c04363",
+  "git_delta": {
+    "base_commit": "caafb38377fcfb56932ed6a7ab452df00fdb1c14",
+    "candidate_commit": "827f2b91f9f4bc56c57c61f028ddb49fff28d5b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_sc_testForm_coeff_bound",
+    "diff_sha256": "4f060a62047a930e5492a399d33d74ec4399e3f0e8afd0355443f77df47d33a7",
+    "source_sha256": "35730fd40c1dde21f3b33774f3f61add314938e17cfab86331d5286dce691bfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_sc_testForm_coeff_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U n), ∃ c : ℝ, 0 < c ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
