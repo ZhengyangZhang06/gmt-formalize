@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1.jacobian_row_norms-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1",
+  "depth": 6,
+  "title": "Squared columns of a derivative are bounded by its squared rows",
+  "statement": "Let n, k ∈ ℕ, let f : ℝⁿ → ℝᵏ be an arbitrary map (Lean: f : Euclid n → Euclid k, Euclid m = EuclideanSpace ℝ (Fin m)), and let v ∈ ℝⁿ. Write:\n- Df(v) := fderiv ℝ f v, by Mathlib's convention the zero map if f is not differentiable at v;\n- e_i := EuclideanSpace.single i 1 for i ∈ Fin n;\n- fʲ := (w ↦ EuclideanSpace.proj j (f w)) : ℝⁿ → ℝ for j ∈ Fin k, the j-th coordinate of f;\n- Dfʲ(v) := fderiv ℝ fʲ v ∈ (ℝⁿ →L[ℝ] ℝ), with its operator norm.\nThen Σ_{i∈Fin n} |Df(v)e_i|² ≤ Σ_{j∈Fin k} ‖Dfʲ(v)‖².",
+  "lean_statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2",
+  "lean_name": "dorag_tes_gt_fderiv_columns_sq_le_rows_sq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-41bab8d635-a1"
+}
