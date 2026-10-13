@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev MultiVector|def unitBallVolume|def dilationCLM|def dilation |def blowUpMap",
+        "MeasurableEmbedding.lintegral_map|MeasurableEmbedding.restrict_map|theorem restrict_restrict |theorem restrict_smul|theorem lintegral_smul_measure|theorem map_apply \\(hf : MeasurableEmbedding",
+        "limsup_const_mul_of_ne_top|theorem limsup_const_mul |theorem eventually_lt_of_limsup_lt|theorem limsup_le_of_le|theorem Tendsto.const_mul ",
+        "restrict_map|eventually_lt_of_limsup_lt|sum_lt_top|le_of_forall_gt_imp_ge_of_dense|tendsto_nhdsWithin_iff",
+        "cbr_ci_bl_rb_scale_identities",
+        "cbr_ci_bl_rb_null_seq_transfer",
+        "cbr_ci_bl_rb_compact_sup_bound",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rescaled-bounds-independent-audit-cy674xrw/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rescaled-bounds-independent-audit-cy674xrw/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6264bc6f37/parent-child-handoff.json",
+        "/tmp/rescaled-bounds-independent-audit-cy674xrw/Types.lean",
+        "/tmp/rescaled-bounds-independent-audit-cy674xrw/EndToEnd.lean"
+      ],
+      "conclusion": "The split appropriately separates scaling identities, limit transfer, and compact bounds. The pinned definitions and relevant Mathlib sources match the compiler environment. All three names are fresh bare identifiers; the DAG search found no reservations, and dependencies are acyclic. Each exact one-line child proposition independently elaborates before any child declaration and passes the lexical validator. Independently rerun compilation confirms the supplied child implementations use only propext, Classical.choice, and Quot.sound. Assembly proves the exact frozen selected parent type, with only its two declared prerequisites additionally assumed. No declaration reuse or typeclass mismatch was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "scale_identities",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary M, θ and ζ and the explicit scaling hypothesis H. The proof establishes the homeomorphism, inverse and ball preimages, then derives all four identities. The pinned measurable-embedding lintegral theorem requires no integrand measurability, and restriction identities require only the measurable ball preimages. Positive finite normalization justifies cancellation, including n = 0. H is supplied by an existing parent prerequisite, so this is non-circular."
+    },
+    {
+      "key": "null_seq_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches both conditional conclusions and all hypotheses. Positivity and convergence give convergence within 𝓝[>] 0. Eventual bounds for every c > 1 establish the sequence limsup bound; the cited finite-constant multiplication lemma applies to atTop, including C = 0. Composition and ENNReal.Tendsto.const_mul prove the second conclusion with its side condition discharged by C ≠ ∞. No undeclared dependency is used."
+    },
+    {
+      "key": "compact_sup_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match exactly. Compactness supplies a positive-radius enclosing ball; eventual ball control bounds the tail, and individual total-mass finiteness bounds the finite initial segment. Their finite maximum bounds the full supremum. The proof is complete and independent. The parent establishes both hypotheses using scale_identities, finite Hausdorff mass, and its declared density_bounds prerequisite."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1.null_seq_transfer-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1",
+  "depth": 6,
+  "title": "Transfer of one-sided limits at 0⁺ to a positive null sequence with a finite constant factor",
+  "statement": "Let f, h : ℝ → [0,∞], let C ∈ [0,∞] with C ≠ ∞, and let s : ℕ → ℝ satisfy s_i > 0 for every i and s_i → 0 as i → ∞. Then (i) if limsup_{r→0⁺} f(r) ≤ 1 (limsup along 𝓝[>] 0), then limsup_{i→∞} C·f(s_i) ≤ C; and (ii) if h(r) → 0 as r → 0⁺ (along 𝓝[>] 0), then C·h(s_i) → 0 as i → ∞.",
+  "lean_statement": "∀ (f h : ℝ → ℝ≥0∞) (C : ℝ≥0∞) (s : ℕ → ℝ), C ≠ ∞ → (∀ i, 0 < s i) → Tendsto s atTop (𝓝 0) → (limsup f (𝓝[>] 0) ≤ 1 → limsup (fun i => C * f (s i)) atTop ≤ C) ∧ (Tendsto h (𝓝[>] 0) (𝓝 0) → Tendsto (fun i => C * h (s i)) atTop (𝓝 0))",
+  "lean_name": "cbr_ci_bl_rb_null_seq_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-051e0d3d2b-a1"
+}
