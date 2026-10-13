@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "structure Varifold|isOpen_domain|def weight|weight_finite_on_compact|instCompactSpace|finrank_plane",
+        "euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "def integral_map|theorem integral_map|theorem integral_smul_measure",
+        "theorem addHaar_closedBall",
+        "exists_isOpen_lt_of_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure",
+        "mul_simonHausdorff_le_of_le_dimensionalUpperDensity|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|volume_euclidean_ball_eq|def dimensionalDensityQuotient|def dimensionalUpperDensity",
+        "simonHausdorffMeasureReal_toOuterMeasure|realUnitBallVolume_zero",
+        "contract_scope|frozen|child_modules|candidate_inputs|Submission\\.",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean ExactTargets.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-canonical-representation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-canonical-representation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/canon-decomp-UcXiqH/Test/Full.lean",
+        "/tmp/canon-independent-audit-gt8831xb/ChallengeTypes.lean",
+        "/tmp/canon-independent-audit-gt8831xb/ExactTargets.lean"
+      ],
+      "conclusion": "The four-child split is appropriate for this selected parent. Checked sources match pinned project 63436ae6, Mathlib 25730c7c, and SimonGMT 2b366308. All four unchanged one-line propositions pass validation and elaborate against a freshly compiled frozen Contract without child implementations. Independently reread each supplied proof and recompiled its realization with exact JSON-derived targets and the immutable parent type; all depend only on propext, Classical.choice, and Quot.sound. The dependencies are correctly directed and acyclic: tangent_density uses weight_blowup and plane_ball_measure; null_transfer is independent. Allard and FirstRectifiability supply the representation and pointwise tangents, and the children supply density and null transfer, proving every parent conjunct. Required extra imports are permitted and available in the pinned packages. All proposed names are bare identifiers and unreserved elsewhere. The existing frt_weight_blowup_tendsto is now accepted, with an identical frozen type; the proposal's older status description does not invalidate its fresh-name obligation."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact proposition agree. Compactness of the Grassmannian makes the lifted test function compactly supported. The three image-measure identities and scalar-measure identity have the required measurability hypotheses and require no additional integrability assumption. Eventual equality for positive scales transfers the tangent limit. The supplied argument is complete and non-circular."
+    },
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The isometric inclusion, finrank identity, Hausdorff-volume identification, Haar scaling, and volume-preserving coordinate equivalence prove precisely the stated normalization. The cited scaling theorem permits every nonnegative radius, including radius zero and dimension zero. All required instances exist; no missing dimension hypothesis or circular dependency occurs."
+    },
+    {
+      "key": "tangent_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement exactly matches its prose, with openness and compact-set finiteness supplied by Varifold. The explicit cutoffs, integrable dominators, lower and upper bounds, approach of κ to 1, and eventual conversion from real masses to the ENNReal density ratio are justified. Positivity and denominator finiteness are established. Only the two declared sibling results are used."
+    },
+    {
+      "key": "null_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the full arbitrary-set contract. Local compact finiteness yields a countable finite-mass ball cover; finite restrictions provide outer regularity without assuming global finiteness. The normalization identities include dimension zero and arbitrary-set evaluations. Eventual equality of relative densities permits the cited comparison theorem, then positive thresholds and countable null unions finish the argument. No tangent-density or parent theorem is assumed."
+    }
+  ],
+  "required_changes": []
+}

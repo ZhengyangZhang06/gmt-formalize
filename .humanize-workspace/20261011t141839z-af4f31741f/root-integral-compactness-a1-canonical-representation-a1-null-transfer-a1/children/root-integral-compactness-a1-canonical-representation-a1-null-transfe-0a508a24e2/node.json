@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.canonical_representation-a1.null_transfer-a1.open_subset_measure_lt-a1",
+  "parent_id": "root.integral_compactness-a1.canonical_representation-a1.null_transfer-a1",
+  "depth": 4,
+  "title": "Outer approximation inside an open set of finite mass",
+  "statement": "Let N ∈ ℕ and let μ be a measure on ℝ^N = Euclidean N (Euclidean metric, Borel σ-algebra). Let W ⊆ ℝ^N be open with μ(W) < ∞. Let A ⊆ W be an arbitrary, not necessarily measurable, set and let ε ∈ [0, ∞] with μ(A) < ε, where μ(A) is the outer measure. Then there is an open set O with A ⊆ O ⊆ W and μ(O) < ε.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (ε : ℝ≥0∞), IsOpen W → μ W ≠ ∞ → A ⊆ W → μ A < ε → ∃ O : Set (Euclidean N), IsOpen O ∧ A ⊆ O ∧ O ⊆ W ∧ μ O < ε",
+  "lean_name": "intcpt_canon_nt_exists_open_subset_measure_lt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-canonical-representation-a1-null-transfe-0a508a24e2-a1"
+}
