@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.graph_plane_pointwise-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+  "depth": 6,
+  "title": "Tilt control of the gradient of a graph plane (pointwise form of Simon (7)–(9))",
+  "statement": "Let n, k, T, ι, ι', P be as in adapted_frame: dim T = n; ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 and ιv ∈ T for all v, w; P : ℝ^{n+k} → ℝⁿ continuous linear with P(ιv) = v and P(ι'w) = 0. Let L : ℝⁿ → ℝᵏ be continuous linear with operator norm ‖L‖ ≤ 1, and let Q be the subspace with Q = range(ι + ι'∘L) = {ιw + ι'(Lw) : w ∈ ℝⁿ}. Let j ∈ Fin k and t ≥ 0 be such that (Q1) |⟨p_Q a, b⟩ − ⟨a, b⟩| ≤ t|a||b| for all a, b ∈ T, and (Q2) |p_Q e|² ≤ t|e|² for all e ∈ T^⊥, where p_Q := Q.starProjection. Put λ := proj_j ∘ L : ℝⁿ → ℝ (proj_j = EuclideanSpace.proj j), ε_j := EuclideanSpace.single j 1 ∈ ℝᵏ and e_i := EuclideanSpace.single i 1 ∈ ℝⁿ. Then ‖λ‖² ≤ 2t, and for every continuous linear m : ℝⁿ → ℝ: |m(P(p_Q(ι'ε_j))) − Σ_{i∈Fin n} λ(e_i)·m(e_i)| ≤ t‖m‖.",
+  "lean_statement": "∀ (n k : ℕ) (T Q : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n) (L : Euclid n →L[ℝ] Euclid k) (j : Fin k) (t : ℝ), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → Q = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ L.toLinearMap) → ‖L‖ ≤ 1 → 0 ≤ t → (∀ a b : Euclid (n + k), a ∈ T → b ∈ T → |inner ℝ (Q.starProjection a) b - inner ℝ a b| ≤ t * ‖a‖ * ‖b‖) → (∀ e : Euclid (n + k), e ∈ Tᗮ → ‖Q.starProjection e‖ ^ 2 ≤ t * ‖e‖ ^ 2) → ‖(EuclideanSpace.proj j).comp L‖ ^ 2 ≤ 2 * t ∧ ∀ m : Euclid n →L[ℝ] ℝ, |m (P (Q.starProjection (ι' (EuclideanSpace.single j (1 : ℝ))))) - ∑ i : Fin n, ((EuclideanSpace.proj j).comp L) (EuclideanSpace.single i (1 : ℝ)) * m (EuclideanSpace.single i (1 : ℝ))| ≤ t * ‖m‖",
+  "lean_name": "dorag_tes_gv_graph_plane_pointwise",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.adapted_frame-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.adapted_frame-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2637ebed82-a1"
+}

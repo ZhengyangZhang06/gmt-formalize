@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.adapted_frame-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+  "depth": 6,
+  "title": "Orthogonal frame adapted to an n-plane",
+  "statement": "Let n, k ∈ ℕ, let T be a linear subspace of ℝ^{n+k} (Lean Euclid (n + k)) with dim T = n, let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 and ιv ∈ T for all v ∈ ℝⁿ, w ∈ ℝᵏ, and let P : ℝ^{n+k} → ℝⁿ be a continuous linear map with P(ιv) = v and P(ι'w) = 0 for all v, w. Let p_T := T.starProjection be the orthogonal projection onto T. Then: (a) ⟨ιu, y⟩ = ⟨u, Py⟩ for all u ∈ ℝⁿ and y ∈ ℝ^{n+k} (P is the adjoint of ι); (b) p_T y = ι(Py) for all y; (c) ι'w ∈ T^⊥ for all w ∈ ℝᵏ; (d) |y|² = |Py|² + |y − p_T y|² for all y; (e) |Py| ≤ |y| for all y.",
+  "lean_statement": "∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → (∀ (u : Euclid n) (y : Euclid (n + k)), inner ℝ (ι u) y = inner ℝ u (P y)) ∧ (∀ y, T.starProjection y = ι (P y)) ∧ (∀ w, ι' w ∈ Tᗮ) ∧ (∀ y, ‖y‖ ^ 2 = ‖P y‖ ^ 2 + ‖y - T.starProjection y‖ ^ 2) ∧ (∀ y, ‖P y‖ ≤ ‖y‖)",
+  "lean_name": "dorag_tes_gv_adapted_frame",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ad315eb33b-a1"
+}
