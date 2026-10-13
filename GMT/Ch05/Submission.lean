@@ -633,6 +633,26 @@ theorem gwe_gjb_det_one_add_bounds : ∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) �
   rw [Matrix.trace_add, Matrix.trace_one, Fintype.card_fin]
   congr 1
   ring
+/-- **Scalar exponential bound** for the area Jacobian of a linear graph (used with `s = |D|²`,
+`T = n` in `J(D) ≤ exp(|D|²/2) ≤ 1 + (e^{n/2}/2)|D|²`): for `0 ≤ s ≤ T`,
+`exp(s/2) ≤ 1 + (exp(T/2)/2) s`.  With `t = s/2`, `1 - t ≤ exp(-t)` (`add_one_le_exp` at `-t`)
+times `exp t > 0` gives `exp t ≤ 1 + t exp t`, and `t exp t ≤ t exp(T/2)` by monotonicity of
+`exp` and `0 ≤ t ≤ T/2`. -/
+theorem gwe_gjb_exp_half_le : ∀ (s T : ℝ), 0 ≤ s → s ≤ T → Real.exp (s / 2) ≤ 1 + Real.exp (T / 2) / 2 * s := by
+  intro s T hs hsT
+  -- `1 - s/2 ≤ exp (-(s/2))`: `add_one_le_exp` at `-(s/2)`.
+  have h1 : 1 - s / 2 ≤ Real.exp (-(s / 2)) := by
+    linarith [Real.add_one_le_exp (-(s / 2))]
+  -- Multiply by `exp (s/2) > 0`, using `exp (-(s/2)) * exp (s/2) = exp 0 = 1`.
+  have h2 : (1 - s / 2) * Real.exp (s / 2) ≤ 1 := by
+    calc (1 - s / 2) * Real.exp (s / 2) ≤ Real.exp (-(s / 2)) * Real.exp (s / 2) :=
+          mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+      _ = 1 := by rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  -- `exp` is monotone, `s/2 ≤ T/2` and `0 ≤ s/2`.
+  have h4 : s / 2 * Real.exp (s / 2) ≤ s / 2 * Real.exp (T / 2) :=
+    mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by linarith)
+  -- `exp (s/2) ≤ 1 + (s/2) exp (s/2) ≤ 1 + (s/2) exp (T/2)`.
+  linarith
 
 end Submission
 
