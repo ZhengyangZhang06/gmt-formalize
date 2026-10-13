@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1.rectangle_formula-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1",
+  "depth": 6,
+  "title": "Transverse measure σ on V^⊥ with ν(p⁻¹A ∩ q⁻¹B) = σ(B)·Hⁿ(A ∩ V) for a locally finite V-invariant measure ν",
+  "statement": "Let P, n ∈ ℕ, let V ⊆ ℝ^P be a linear subspace with dim V = n, let p := V.starProjection and q := V^⊥.starProjection be the orthogonal projections of ℝ^P onto V and onto V^⊥, and let ν be a Borel measure on ℝ^P with ν(K) < ∞ for every compact K and ν({x : v + x ∈ A}) = ν(A) for every v ∈ V and every Borel A. Then there is a Borel measure σ on ℝ^P with σ(ℝ^P ∖ V^⊥) = 0, σ(K) < ∞ for every compact K, and ν({y : p y ∈ A, q y ∈ B}) = σ(B)·Hⁿ(A ∩ V) for all Borel A, B ⊆ ℝ^P (Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → ∃ σ : Measure (Euclid P), σ (Vᗮ : Set (Euclid P))ᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) ∧ ∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → ν (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B) = σ B * μHE[n] (A ∩ (V : Set (Euclid P)))",
+  "lean_name": "cbr_ci_cp_prod_rectangle_formula",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1.subspace_haar-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1.subspace_haar-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee-a1",
+      "result_commit": "a029156d2b71053da5c6d27b9abcc46011c9cfac",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-57d7339df7-a1"
+}

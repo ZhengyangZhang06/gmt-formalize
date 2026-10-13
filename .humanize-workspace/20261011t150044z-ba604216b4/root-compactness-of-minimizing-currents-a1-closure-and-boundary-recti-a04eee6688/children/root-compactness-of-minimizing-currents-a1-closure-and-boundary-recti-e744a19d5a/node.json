@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1.subspace_haar-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1",
+  "depth": 6,
+  "title": "A locally finite measure carried by an n-dimensional subspace V and invariant under translations by V is a constant multiple of Hⁿ⌞V",
+  "statement": "Let P, n ∈ ℕ, let V ⊆ ℝ^P be a linear subspace with dim V = n (Module.finrank ℝ V = n), and let m be a Borel measure on ℝ^P such that m(ℝ^P ∖ V) = 0, m(K) < ∞ for every compact K ⊆ ℝ^P, and m({x : v + x ∈ A}) = m(A) for every v ∈ V and every Borel A ⊆ ℝ^P. Then there is c ∈ [0, ∞] with m = c·(Hⁿ⌞V), i.e. m(A) = c·Hⁿ(A ∩ V) for every Borel A ⊆ ℝ^P, where Hⁿ = μHE[n] is Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (m : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → m (V : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → m K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → m ((fun x => v + x) ⁻¹' A) = m A) → ∃ c : ℝ≥0∞, m = c • (μHE[n]).restrict (V : Set (Euclid P))",
+  "lean_name": "cbr_ci_cp_prod_subspace_haar",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e744a19d5a-a1"
+}
