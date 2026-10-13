@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "92ba7e034e027ead914f70731a1aa1dde880b2bc76ea422b6ca55023f2cf1962",
+  "git_delta": {
+    "base_commit": "a59808a784efc602484977049b93727d558ebec7",
+    "candidate_commit": "a5da625533fea444bc6d72950fd9bc792bff1d45",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_derivative_estimate",
+    "diff_sha256": "be36c8b6cf8ee4cdf1aeae6772fdf8293364cbb6210a56f95ca21405c302e7c5",
+    "source_sha256": "f9a88615f1f3ca95a845a9bafdd8d312c5b8d6e4483017fac7935c22418efb3d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_derivative_estimate",
+      "statement": "∀ (P d : ℕ) (O : Set (Euclid P)) (g : Euclid P → Euclid d) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (x : Euclid P) (a b : ℝ), IsOpen O → x ∈ O → DifferentiableAt ℝ g x → DifferentiableAt ℝ ψ (g x) → DifferentiableAt ℝ Q (g x) → (∀ z ∈ O, Q (g z) (z - ψ (g z)) = 0) → (Q (g x)).comp (fderiv ℝ ψ (g x)) = fderiv ℝ ψ (g x) → ‖Q (g x)‖ ≤ 1 → 0 ≤ a → 0 ≤ b → ‖fderiv ℝ Q (g x)‖ ≤ a → (∀ w : Euclid d, ‖w‖ ≤ b * ‖fderiv ℝ ψ (g x) w‖) → a * b * ‖x - ψ (g x)‖ ≤ 1 / 2 → ‖fderiv ℝ (ψ ∘ g) x‖ ≤ 1 + 2 * (a * b) * ‖x - ψ (g x)‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
