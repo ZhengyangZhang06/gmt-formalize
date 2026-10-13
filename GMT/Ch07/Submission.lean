@@ -977,6 +977,37 @@ theorem Submission.cmr_covector_euclidean_equiv : ∀ (P n : ℕ), ∃ (d : ℕ)
         split_ifs <;> simp }
   -- `‖A α‖ = |α|_E`
   have hnorm : ∀ α, ‖A α‖ = covectorEuclideanNorm α := by
+    intro α
+    rw [EuclideanSpace.norm_eq]
+    unfold covectorEuclideanNorm
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    simp only [A, LinearMap.coe_mk, AddHom.coe_mk, PiLp.toLp_apply, Real.norm_eq_abs, sq_abs]
+    split_ifs <;> simp
+  -- `A` is injective: `|α|_E = 0` forces `α v = 0` by the Gram bound
+  have hinj : Function.Injective A := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro α hα
+    have h0 : covectorEuclideanNorm α = 0 := by rw [← hnorm, hα, norm_zero]
+    ext v
+    have hv := (Submission.covectorEuclideanNorm_gram_bounds P n).1 α v
+    rw [h0, zero_mul] at hv
+    simpa using abs_nonpos_iff.mp hv
+  -- identify `range A` isometrically with `ℝᵈ` through an orthonormal basis
+  let S := LinearMap.range A
+  let b := stdOrthonormalBasis ℝ S
+  let e₀ : Covector (Euclid P) n ≃ₗ[ℝ] S := LinearEquiv.ofInjective A hinj
+  let c₀ : Covector (Euclid P) n ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ S)) :=
+    e₀.trans b.repr.toLinearEquiv
+  have hc₀ : ∀ α, ‖c₀ α‖ = covectorEuclideanNorm α := by
+    intro α
+    have h1 : c₀ α = b.repr (e₀ α) := rfl
+    rw [h1, LinearIsometryEquiv.norm_map, ← Submodule.norm_coe, LinearEquiv.ofInjective_apply,
+      hnorm]
+  -- covectors are finite-dimensional, so `c₀` is continuous
+  have : FiniteDimensional ℝ (Covector (Euclid P) n) := LinearEquiv.finiteDimensional c₀.symm
+  refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
+  rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
 /-- **Jacobi's trace identity for column replacement** (parent fact (F3) of the divergence form
 of the mass representation).  Let `M = (u j k)_{k,j}` be the matrix with columns `u j`.
 Replacing column `i` by `A (u i)` and summing the determinants over `i` gives `tr(A) · det M`.
@@ -1098,32 +1129,66 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
     unfold covectorEuclideanNorm
     congr 1
     refine Finset.sum_congr rfl fun I _ => ?_
-    simp only [A, LinearMap.coe_mk, AddHom.coe_mk, PiLp.toLp_apply, Real.norm_eq_abs, sq_abs]
-    split_ifs <;> simp
-  -- `A` is injective: `|α|_E = 0` forces `α v = 0` by the Gram bound
-  have hinj : Function.Injective A := by
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro α hα
-    have h0 : covectorEuclideanNorm α = 0 := by rw [← hnorm, hα, norm_zero]
-    ext v
-    have hv := (Submission.covectorEuclideanNorm_gram_bounds P n).1 α v
-    rw [h0, zero_mul] at hv
-    simpa using abs_nonpos_iff.mp hv
-  -- identify `range A` isometrically with `ℝᵈ` through an orthonormal basis
-  let S := LinearMap.range A
-  let b := stdOrthonormalBasis ℝ S
-  let e₀ : Covector (Euclid P) n ≃ₗ[ℝ] S := LinearEquiv.ofInjective A hinj
-  let c₀ : Covector (Euclid P) n ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ S)) :=
-    e₀.trans b.repr.toLinearEquiv
-  have hc₀ : ∀ α, ‖c₀ α‖ = covectorEuclideanNorm α := by
+    by_cases hI : StrictMono I <;> simp [v, c, e, hI]
+  -- Step 2: `v` is additive and `ℝ`-homogeneous
+  have hadd : ∀ α α' : Covector (Euclid P) n, v (α + α') = v α + v α' := by
+    intro α α'
+    simp only [v, ← WithLp.toLp_add]
+    congr 1
+    funext I
+    by_cases hI : StrictMono I <;> simp [c, hI]
+  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n), v (t • α) = t • v α := by
+    intro t α
+    simp only [v, ← WithLp.toLp_smul]
+    congr 1
+    funext I
+    by_cases hI : StrictMono I <;> simp [c, hI]
+  -- Step 3: (i), the triangle inequality in `EuclideanSpace ℝ (Fin n → Fin P)`
+  have h1 : ∀ α α' : Covector (Euclid P) n,
+      covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α' := by
+    intro α α'
+    rw [hN, hN, hN, hadd]
+    exact norm_add_le _ _
+  -- Step 4: (ii), homogeneity of the Euclidean norm
+  have h2 : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
+  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
+  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
+    intro I α
+    by_cases hI : StrictMono I
+    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
+    · simp [c, hI]
+  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
+  have h3 : ∀ α : Covector (Euclid P) n,
+      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
     intro α
-    have h1 : c₀ α = b.repr (e₀ α) := rfl
-    rw [h1, LinearIsometryEquiv.norm_map, ← Submodule.norm_coe, LinearEquiv.ofInjective_apply,
-      hnorm]
-  -- covectors are finite-dimensional, so `c₀` is continuous
-  have : FiniteDimensional ℝ (Covector (Euclid P) n) := LinearEquiv.finiteDimensional c₀.symm
-  refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
-  rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
+    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
+      Finset.sum_le_sum fun I _ => by
+        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
+    rw [hN, EuclideanSpace.norm_eq]
+    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
+          Real.sqrt_le_sqrt hsum
+      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
+  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
+      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
+    intro α α'
+    have ha : covectorEuclideanNorm α ≤
+        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
+      simpa only [sub_add_cancel] using h1 (α - α') α'
+    have hb : covectorEuclideanNorm α' ≤
+        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
+      have h := h1 (α' - α) α
+      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
+    have hC := h3 (α - α')
+    rw [Real.dist_eq, dist_eq_norm, abs_le]
+    constructor <;> linarith
+  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
+    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
 /-- **Simon 6.1.1–1.2** (coordinate covectors): (a) for every `I` the coordinate covector
 `dx^I(v) = det(v_j(I k))_{k,j}` exists; (b) an `n`-vector vanishing on `dx^I` for every strictly
@@ -1512,66 +1577,6 @@ theorem Submission.cmr_null_of_div_bound : ∀ (n : ℕ) (X : Type) [MeasurableS
   have hB := Submission.cmr_tdn_ball_average_bound n X ν q h Λ a r hν hq hh hΛ ha.continuous hac
     ha0 ha1 (hdir a ha hac fun y => abs_le.2 ⟨by linarith [ha0 y], ha1 y⟩) hr
   linarith
-    by_cases hI : StrictMono I <;> simp [v, c, e, hI]
-  -- Step 2: `v` is additive and `ℝ`-homogeneous
-  have hadd : ∀ α α' : Covector (Euclid P) n, v (α + α') = v α + v α' := by
-    intro α α'
-    simp only [v, ← WithLp.toLp_add]
-    congr 1
-    funext I
-    by_cases hI : StrictMono I <;> simp [c, hI]
-  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n), v (t • α) = t • v α := by
-    intro t α
-    simp only [v, ← WithLp.toLp_smul]
-    congr 1
-    funext I
-    by_cases hI : StrictMono I <;> simp [c, hI]
-  -- Step 3: (i), the triangle inequality in `EuclideanSpace ℝ (Fin n → Fin P)`
-  have h1 : ∀ α α' : Covector (Euclid P) n,
-      covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α' := by
-    intro α α'
-    rw [hN, hN, hN, hadd]
-    exact norm_add_le _ _
-  -- Step 4: (ii), homogeneity of the Euclidean norm
-  have h2 : ∀ (t : ℝ) (α : Covector (Euclid P) n),
-      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
-    intro t α
-    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
-  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
-  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
-    intro I α
-    by_cases hI : StrictMono I
-    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
-    · simp [c, hI]
-  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
-  have h3 : ∀ α : Covector (Euclid P) n,
-      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-    intro α
-    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
-      Finset.sum_le_sum fun I _ => by
-        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
-    rw [hN, EuclideanSpace.norm_eq]
-    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
-          Real.sqrt_le_sqrt hsum
-      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
-  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
-  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
-      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
-    intro α α'
-    have ha : covectorEuclideanNorm α ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
-      simpa only [sub_add_cancel] using h1 (α - α') α'
-    have hb : covectorEuclideanNorm α' ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
-      have h := h1 (α' - α) α
-      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
-    have hC := h3 (α - α')
-    rw [Real.dist_eq, dist_eq_norm, abs_le]
-    constructor <;> linarith
-  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
-    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
 /-- **Divergence form of `b · (div g) ∘ p_I` against `θ = dx^I`** (the projection step
 `p_I^#((div g) dy) = d(p_I^#γ)` of the mass representation used for Simon 7.2.4).  Let
