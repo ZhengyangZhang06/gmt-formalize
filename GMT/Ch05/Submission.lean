@@ -655,6 +655,87 @@ theorem any_radius_gr_la_rotatedPlane_facts : ∀ (n ℓ : ℕ) (q : Amb n ℓ �
         (Fin.castAdd_injective n ℓ)
     rw [rotatedPlane, LinearEquiv.finrank_map_eq, horizontalPlane, finrank_span_eq_card hli,
       Fintype.card_fin]
+/-- Display 4.2 of Simon Ch. 5 (p. 115) for a rotated plane, as used in (9)–(13) of the proof of
+Theorem 4.5: if `S ⊆ ℝ^{n+ℓ}` is an `n`-dimensional subspace and `T = q(ℝⁿ × {0})`, then
+`Σ_j |p_S e'_j|² = ½ |p_S − p_T|²`, where `e'_j = q(0, d_j)` are the images under `q` of the last
+`ℓ` standard basis vectors.
+In the orthonormal basis `q(ε_k)`, `trace(p_{T⊥} ∘ p_S) = Σ_k ⟨p_{T⊥} q(ε_k), p_S q(ε_k)⟩`.  The
+horizontal vectors `q(eᵢ, 0)` lie in `T` and contribute `0`, while `p_{T⊥} e'_j = e'_j` and
+`⟨e'_j, p_S e'_j⟩ = |p_S e'_j|²`; finally `trace(p_{T⊥} ∘ p_S) = ½ |p_S − p_T|²` since
+`dim S = n = dim T`. -/
+theorem gwe_gta_vertical_trace_sum : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (S : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ S = n → ∑ j : Fin ℓ, ‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 = hsNormSq (S.starProjection - (rotatedPlane q).starProjection) / 2 := by
+  intro n ℓ q S hS
+  -- (C1), (C2) and (L3) for `graphPoint`; (L5) and (L7) for `T = q(ℝⁿ × {0})`
+  obtain ⟨hC1, hC2, -, -, hsmul, -, -⟩ := Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  obtain ⟨hproj, -, hdimT⟩ := Submission.any_radius_gr_la_rotatedPlane_facts n ℓ q
+  -- Step 2: `ε_{castAdd ℓ i} = (eᵢ, 0)` and `ε_{natAdd n j} = (0, d_j)`, coordinatewise
+  have hcast : ∀ i : Fin n, EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) =
+      graphPoint (EuclideanSpace.single i (1 : ℝ)) (0 : Rn ℓ) := by
+    intro i
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j' => ?_) k
+    · rw [hC1, PiLp.single_apply, PiLp.single_apply]
+      simp [Fin.castAdd_inj]
+    · rw [hC2, PiLp.single_apply]
+      have hne : Fin.natAdd n j' ≠ Fin.castAdd ℓ i := by
+        intro h
+        have hval := congrArg Fin.val h
+        simp at hval
+        omega
+      simp [hne]
+  have hnat : ∀ j : Fin ℓ, EuclideanSpace.single (Fin.natAdd n j) (1 : ℝ) =
+      graphPoint (0 : Rn n) (EuclideanSpace.single j (1 : ℝ)) := by
+    intro j
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j' => ?_) k
+    · rw [hC1, PiLp.single_apply]
+      have hne : Fin.castAdd ℓ i' ≠ Fin.natAdd n j := by
+        intro h
+        have hval := congrArg Fin.val h
+        simp at hval
+        omega
+      simp [hne]
+    · rw [hC2, PiLp.single_apply, PiLp.single_apply]
+      simp [Fin.natAdd_inj]
+  -- Step 3: `(0, 0) = 0`, by (L3) with `t = 0`
+  have hzero : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    simpa using hsmul 0 0 0
+  -- Steps 4–5: in the orthonormal basis `b_k = q(ε_k)`, `trace f = Σ_k ⟨b_k, f b_k⟩`
+  let b : OrthonormalBasis (Fin (n + ℓ)) ℝ (Amb n ℓ) :=
+    (EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ).map q
+  have hb : ∀ k, b k = q (EuclideanSpace.single k 1) := by
+    intro k
+    simp [b, EuclideanSpace.basisFun_apply]
+  have htrace : ∀ f : Amb n ℓ →ₗ[ℝ] Amb n ℓ,
+      LinearMap.trace ℝ (Amb n ℓ) f = ∑ k, inner ℝ (b k) (f (b k)) := by
+    intro f
+    rw [LinearMap.trace_eq_matrix_trace ℝ b.toBasis f, Matrix.trace]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [Matrix.diag_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+      OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis]
+  -- Steps 6–7: `p_{T⊥}` is self-adjoint, and `p_{T⊥} q(eᵢ, 0) = 0` as `p_T q(eᵢ, 0) = q(eᵢ, 0)`
+  have hterm_cast : ∀ i : Fin n, inner ℝ (b (Fin.castAdd ℓ i))
+      ((rotatedPlane q)ᗮ.starProjection (S.starProjection (b (Fin.castAdd ℓ i)))) = 0 := by
+    intro i
+    rw [← Submodule.inner_starProjection_left_eq_right, hb, hcast,
+      Submodule.starProjection_orthogonal_val, hproj, sub_self, inner_zero_left]
+  -- Step 8: `p_{T⊥} e'_j = e'_j − q(0, 0) = e'_j` and `⟨e'_j, p_S e'_j⟩ = |p_S e'_j|²`
+  have hterm_nat : ∀ j : Fin ℓ, inner ℝ (b (Fin.natAdd n j))
+      ((rotatedPlane q)ᗮ.starProjection (S.starProjection (b (Fin.natAdd n j)))) =
+        ‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 := by
+    intro j
+    rw [← Submodule.inner_starProjection_left_eq_right, hb, hnat,
+      Submodule.starProjection_orthogonal_val, hproj, hzero, map_zero, sub_zero,
+      ← real_inner_self_eq_norm_sq, S.inner_starProjection_left_eq_right,
+      S.starProjection_eq_self_iff.2 (S.starProjection_apply_mem _)]
+  -- Step 10: `trace(p_{T⊥} ∘ p_S) = ½ |p_S − p_T|²`, since `dim S = n = dim T`
+  have htr := (Submission.hsNorm_starProjection_trace_identities).2.2 (n + ℓ) S (rotatedPlane q)
+    (by rw [hS, hdimT])
+  -- Steps 9 and 11: split the trace over the indices `castAdd ℓ i` and `natAdd n j`
+  rw [← htr, htrace, Fin.sum_univ_add]
+  simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
+  rw [Finset.sum_eq_zero fun i _ => hterm_cast i, zero_add]
+  exact (Finset.sum_congr rfl fun j _ => hterm_nat j).symm
 
 end Submission
 
