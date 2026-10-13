@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "233292275ce4f453304c07627953782858c3c527f4cb0d8a2f510f4534bb93be",
+  "git_delta": {
+    "base_commit": "f4121bf50f14449dd762f4fed9db2c739f10889c",
+    "candidate_commit": "2168e60892497e721062e23f5bff8835c4d7ebbb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_smi_lintegral_left_dini_le",
+    "diff_sha256": "abfddc85ffb90d8b37fa9feaa37b0b3a05aebaa747668a3ffdc66660f4f3112e",
+    "source_sha256": "ffc87367e3f58b4484971744f9baa799c9c2dcd311390ab39ae34f35324b15c7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_smi_lintegral_left_dini_le",
+      "statement": "∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) ≤ ENNReal.ofReal (F b - F a)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
