@@ -1,0 +1,63 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.regular_local_form-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 (2a–2d) of the parent-supplied proof. Notation: H⁰ = μHE[0]; for a 0-covector α, α(()) is its value at the empty family ().
+1. Unfold y ∈ regularSet T (n = 0): there are ρ > 0 with ball(y, ρ) ⊆ U, m ∈ ℤ with m ≠ 0, a set M ⊆ ℝ^P with y ∈ M, and ξ : ℝ^P → MultiVector P 0 such that IsEmbeddedSubmanifold 1 0 M, IsOrientation 0 M ξ, and T(ω) = m·∫_M ξ(x)(ω(x)) dH⁰(x) for every ω ∈ 𝒟^0(U) with tsupport ω ⊆ ball(y, ρ). (The remaining conjuncts, y ∈ spt T and the local finiteness of H⁰ on M, are not needed.)
+2. (2a) Apply IsEmbeddedSubmanifold 1 0 M at y ∈ M: there are V ⊆ ℝ^0, an open set W ⊆ ℝ^P with y ∈ W, and ψ : ℝ^0 → ℝ^P with ψ(V) = W ∩ M (the other chart properties are not needed). The space ℝ^0 = EuclideanSpace ℝ (Fin 0) has at most one point, since two functions on the empty index type Fin 0 are equal. As y ∈ W ∩ M = ψ(V), y = ψ(z₀) for some z₀ ∈ V. Every element of W ∩ M = ψ(V) is ψ(z) for some z ∈ V; then z = z₀, so the element is ψ(z₀) = y. Hence W ∩ M ⊆ {y}.
+3. (2b) W is open and y ∈ W, so there is r₀ > 0 with ball(y, r₀) ⊆ W. Put r := min(r₀, ρ) > 0. Then ball(y, r) ⊆ ball(y, ρ) ⊆ U and ball(y, r) ⊆ ball(y, r₀) ⊆ W, so M ∩ ball(y, r) ⊆ W ∩ M ⊆ {y}.
+4. (2c) The second conjunct of IsOrientation 0 M ξ at y ∈ M gives a subspace Q with IsUnitOrientationOf (ξ(y)) Q. By the sibling unit_orientation_zero (Submission.regcomp_cop_zdr_unitOrientation_zero) there is s ∈ ℝ with |s| = 1 and ξ(y)(α) = s·α(()) for every 0-covector α.
+5. Put c := m·s. Then |c| = |m|·|s| = |m| ≥ 1, since m is a nonzero integer.
+6. (2d) Let ω ∈ 𝒟^0(U) with tsupport ω ⊆ ball(y, r). As ball(y, r) ⊆ ball(y, ρ), step 1 gives T(ω) = m·∫_M f dH⁰ with f(x) := ξ(x)(ω(x)). Let K := tsupport ω; it is closed, hence measurable. For x ∉ K, ω(x) = 0, so f(x) = ξ(x)(0) = 0 because ξ(x) is linear. Moreover M ∩ K ⊆ M ∩ ball(y, r) ⊆ {y} by step 3. The sibling isolated_point_integral (Submission.regcomp_cop_zdr_setIntegral_eq_indicator; with C := M, which need not be measurable, the measurable set K, the point y and F := f) gives ∫_M f dH⁰ = 1_M(y)·f(y) = f(y), because y ∈ M. By step 4, f(y) = ξ(y)(ω(y)) = s·ω(y)(()). Therefore T(ω) = m·s·ω(y)(()) = c·ω(y)(()).
+7. So r > 0, ball(y, r) ⊆ U, |c| ≥ 1, and T(ω) = c·ω(y)(()) whenever tsupport ω ⊆ ball(y, r), as claimed.
+
+## Key steps
+
+1. Unfold regularSet: T = m·[[M]] on ball(y, ρ) ⊆ U, with m ≠ 0, M a 0-dimensional embedded submanifold through y oriented by ξ.
+2. A chart ψ : ℝ^0 → ℝ^P has a one-point domain, so W ∩ M = {y}; shrink to ball(y, r) ⊆ W ∩ ball(y, ρ), giving M ∩ ball(y, r) ⊆ {y}.
+3. The orientation at y is ξ(y) = s·eval with |s| = 1 (unit_orientation_zero); put c := m·s, so |c| = |m| ≥ 1.
+4. For tsupport ω ⊆ ball(y, r), the integrand ξ(·)(ω(·)) vanishes off tsupport ω, which meets M at most in y, so isolated_point_integral gives T(ω) = m·s·ω(y)(()).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `grep -n '^def IsUnitOrientationOf|^structure IMRep|^def IMRep.action|^def IMRep.Represents|^def IsMinimizingIn|^def IsEmbeddedSubmanifold|^def IsOrientation|^def regularSet' project/GMT/Ch07/Contract.lean`
+- `grep -n 'theorem hausdorffMeasure_zero_singleton|theorem one_le_hausdorffMeasure_zero_of_nonempty' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -rn 'euclideanHausdorffMeasure_zero' mathlib/Mathlib/Geometry mathlib/Mathlib/MeasureTheory`
+- `grep -n 'theorem setIntegral_indicator|theorem setIntegral_eq_zero_of_forall_eq_zero|theorem setIntegral_union' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `grep -rn 'theorem integral_singleton' mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean`
+- `grep -n 'def constOfIsEmpty' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `grep -n 'theorem one_of_mem_closedBall|theorem nonneg|theorem le_one|theorem tsupport_eq|theorem zero_of_le_dist' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `grep -n 'def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|theorem GeometricCurrentOn.le_massOn' simongmt Chapter06/Mass.lean; grep -n 'zeroRegion|VanishesOn|def GeometricCurrentOn.support' Chapter06/CurrentLocalEquality.lean; grep -n 'TestFormOnConverges|structure GeometricCurrentOn' Chapter06/Currents.lean`
+- `grep -rn 'regcomp_cop_zdr|dor_zdm|dor_zero_dim_minimizing' project/GMT (no match in the snapshot)`
+- `python3 scan of dag.json: lean_name/status/candidate_commit of dor_zdm_imrep_zero_structure, dor_zdm_point_current, dor_zdm_imrep_zero_erase_point, dor_zero_dim_minimizing_support_disjoint, dtc_*, rsd_cmr_support_subset_of_vanish; no regcomp_cop_zdr name`
+- `git grep -l regcomp_cop_zdr over all 1026 distinct ref tips (no match); git show 26a8976b:GMT/Ch07/Submission.lean (accepted proofs of the three reused declarations)`
+- `lean /tmp/zdr-decomp/Assembly.lean and /tmp/zdr-decomp/InSitu.lean (#print axioms); simulated leaf_verification.check_source_delta for each new child`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/regcomp_cop_decomposition/Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/regcomp_cop_zdr_decomposition/Assembly.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Submission.lean; IsUnitOrientationOf (line 52), IMRep (61), IMRep.action (79), Represents (83), IsMinimizingIn (134), IsEmbeddedSubmanifold (221), IsOrientation (234) and regularSet (244) are the definitions the children unfold. Mathlib supplies the facts used: hausdorffMeasure_zero_singleton (Hausdorff.lean:628), one_le_hausdorffMeasure_zero_of_nonempty (651), MeasureTheory.Measure.euclideanHausdorffMeasure_zero (Geometry/Euclidean/Volume/Measure.lean:82, notation μHE at 72), setIntegral_indicator (Bochner/Set.lean:194), setIntegral_eq_zero_of_forall_eq_zero (357, needs no measurability of the set), setIntegral_union (87), integral_singleton (Bochner/Basic.lean:1254), constOfIsEmpty (Alternating/Basic.lean:301) and ContDiffBump one_of_mem_closedBall/nonneg/le_one/tsupport_eq/zero_of_le_dist (BumpFunction/Basic.lean:137–163). SimonGMT (pinned lake package) supplies covectorEuclideanNorm (Mass.lean:30), massAdmissibleOn (57), massOn (68), le_massOn, zeroRegion/support (CurrentLocalEquality.lean:108, 115) and TestFormOnConverges (Currents.lean:132). The snapshot project contains no regcomp_cop_zdr, dor_zdm or dor_zero_dim_minimizing declaration (no match); the three reused declarations exist only as comparator-accepted DAG nodes (status accepted, candidate commits 39634bad, c422ce6d, 875f0d75) whose frozen types are copied byte-for-byte. A scratch assembly of the eight children and the selected theorem compiles warning-free with axioms propext, Classical.choice, Quot.sound; each new child is a single theorem that passes the leaf source-delta check.

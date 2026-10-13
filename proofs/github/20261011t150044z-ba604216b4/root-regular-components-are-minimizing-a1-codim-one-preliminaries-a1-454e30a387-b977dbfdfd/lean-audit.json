@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c07e75cdafdcf5db0395ddb0918a17d0206a52de10c87519eb8d43eeea9701e6",
+  "git_delta": {
+    "base_commit": "e7c26bb4fa432369de4f5ca559e0433b915046d9",
+    "candidate_commit": "f6549340e451540bde85c8ec4fe3299f1032a1b5",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "47f6dbf4bd97cbcdd8297677f40b9fff7244af275d378e2dfaba4773ae877dbc",
+    "source_sha256": "69cde5b21284bbf195c44c824a48a156593de46aafbd8980ec3a1be2d9950853",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_zero_dim_regularSet_empty",
+      "statement": "∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → regularSet T = ∅",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

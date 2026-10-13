@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.bump_form-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1",
+  "depth": 4,
+  "title": "Bump test 0-forms with prescribed value at the centre",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P, z ∈ ℝ^P and a, c ∈ ℝ with a > 0 and closedBall(z, a) ⊆ U. Then there is ω ∈ 𝒟^0(U) (TestFormOn U 0: a C^∞ 0-form on ℝ^P with compact support and tsupport ω ⊆ U) such that (i) tsupport ω ⊆ closedBall(z, a); (ii) ω(z)(()) = c, where () = (fun i => i.elim0) is the empty family Fin 0 → ℝ^P; (iii) ω(x) = 0 for every x ∉ ball(z, a); and (iv) covectorEuclideanNorm(ω(x)) ≤ |c| for every x ∈ ℝ^P, where covectorEuclideanNorm is the Euclidean coefficient norm of SimonGMT (Chapter06/Mass.lean) used in the definition of M_W.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (z : Euclid P) (a c : ℝ), 0 < a → closedBall z a ⊆ U → ∃ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ closedBall z a ∧ (ω : DifferentialForm (Euclid P) 0) z (fun i => i.elim0) = c ∧ (∀ x, x ∉ ball z a → (ω : DifferentialForm (Euclid P) 0) x = 0) ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) 0) x) ≤ |c|",
+  "lean_name": "regcomp_cop_zdr_exists_bumpForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-34745f365a-a1"
+}
