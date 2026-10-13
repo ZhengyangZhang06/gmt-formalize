@@ -5615,4 +5615,336 @@ end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+/-- **Hole measure of a Lipschitz graph** (Simon Ch. 5, proof of Lemma 2.6: the covering argument
+after (10), with graph points far from `spt V` reached along a path).  Take `ε_h, δ_h, C_h` from the
+hole estimate `lip_approx_hole_estimate` and put `ε = min{ε_h, 1}`, `δ₀ = min{δ_h, 1/8}`,
+`C₀ = 2^{n/2} ω_n 16ⁿ C_h`.  With `σ₀ = δρ`, `μ = μ_V`, `τ(x) = |p_{T_x M} − p_{T₀}|²` and
+`F̂ = q(graph f)` over `ℝⁿ`, the graph coordinates make `F̂` closed with the `ε`-cone property
+relative to `T₀ = q(ℝⁿ × {0})`, and every `ζ ∈ Z = B_{σ₀/2}(0) ∩ (q(graph f|B_{σ₀/2}(0)) \ spt V)`
+has `d(ζ) = dist(ζ, spt V) > 0`.
+* If `d(ζ) > σ₀/16` for some `ζ ∈ Z`, the intermediate value theorem along `t ↦ q(t x_ζ, f(t x_ζ))`
+  gives `ζ' ∈ F̂` with `|ζ'| ≤ 17σ₀/32` and `d(ζ') = σ₀/16`; the hole estimate at `ζ'` and the
+  graph measure bound give `Hⁿ(Z) ≤ 2^{n/2} ω_n (σ₀/2)ⁿ ≤ C₀ [⋯]`.
+* Otherwise the hole estimate at every `ζ ∈ Z` with `r(ζ) = 3d(ζ)/2 ≤ 3σ₀/32`, the graph measure
+  bound on `B_{5r(ζ)}(ζ)` and the Vitali bound for `Ψ = μ ⌞ F̂ᶜ + τ μ` and `W = B_{3σ₀/4}(0)` give
+  `Hⁿ(Z) ≤ 2^{n/2} ω_n 15ⁿ C_h Ψ(W) ≤ C₀ [⋯]`. -/
+theorem lip_approx_graph_hole_measure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ ε δ₀ C₀ : ℝ, 0 < ε ∧ 0 < δ₀ ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ε * ‖x - z‖) → (∀ x ∈ closedBall (0 : Rn n) (δ * ρ / 2), ‖f x‖ ≤ δ * ρ / 32) → (μHE[n] : Measure (Amb n ℓ)) (closedBall 0 (δ * ρ / 2) ∩ (q '' graphOver f (closedBall 0 (δ * ρ / 2)) \ V.support)) ≤ ENNReal.ofReal C₀ * (V.weight (closedBall 0 (3 * (δ * ρ) / 4) \ q '' graphOver f univ) + ENNReal.ofReal (∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight)) := by
+  -- Step 1 (a)–(d): geometry of `F̂ = q(graph f)` over `ℝⁿ`, from the graph coordinates.
+  have graph_geometry : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ),
+      0 ≤ ε → (∀ x z, ‖f x - f z‖ ≤ ε * ‖x - z‖) →
+      (∀ (a a' : Rn n) (b b' : Rn ℓ),
+        graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) →
+      (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) →
+      (∀ (a : Rn n) (b : Rn ℓ),
+        (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) →
+      Continuous (fun a : Rn n => q (graphPoint a (f a))) ∧ IsClosed (q '' graphOver f univ) ∧
+      (∀ x ∈ q '' graphOver f univ, ∀ z ∈ q '' graphOver f univ,
+        ‖(x - z) - (rotatedPlane q).starProjection (x - z)‖ ≤ ε * ‖x - z‖) ∧
+      (∀ (a : Rn n) (t : ℝ), q '' graphOver f univ ∩ closedBall (q (graphPoint a (f a))) t ⊆
+        q '' graphOver f (closedBall a t)) ∧
+      ∀ (a : Rn n) (b : Rn ℓ), ‖q (graphPoint a b)‖ ≤ ‖a‖ + ‖b‖ := by
+    intro n ℓ q f ε hε hf hi hii hiv
+    set g : Rn n → Amb n ℓ := fun a => q (graphPoint a (f a)) with hg_def
+    have hdiff : ∀ a a', g a - g a' = q (graphPoint (a - a') (f a - f a')) := by
+      intro a a'
+      simp only [hg_def, ← map_sub, hi]
+    have hdist : ∀ a a', ‖g a - g a'‖ ^ 2 = ‖a - a'‖ ^ 2 + ‖f a - f a'‖ ^ 2 := by
+      intro a a'
+      rw [hdiff, LinearIsometryEquiv.norm_map, hii]
+    -- `|a − a'| ≤ |g a − g a'| ≤ (1 + ε)|a − a'|`
+    have hlow : ∀ a a', ‖a - a'‖ ≤ ‖g a - g a'‖ := by
+      intro a a'
+      have h := hdist a a'
+      have h' : ‖a - a'‖ ^ 2 ≤ ‖g a - g a'‖ ^ 2 := by nlinarith [sq_nonneg ‖f a - f a'‖]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h'
+    have hup : ∀ a a', ‖g a - g a'‖ ≤ (1 + ε) * ‖a - a'‖ := by
+      intro a a'
+      have h1 := hdist a a'
+      have h2 := hf a a'
+      have hn1 := norm_nonneg (a - a')
+      have hn2 := norm_nonneg (f a - f a')
+      have h3 : ‖g a - g a'‖ ^ 2 ≤ ((1 + ε) * ‖a - a'‖) ^ 2 := by
+        rw [h1]
+        have : ‖f a - f a'‖ ^ 2 ≤ (ε * ‖a - a'‖) ^ 2 := pow_le_pow_left₀ hn2 h2 2
+        nlinarith [mul_nonneg hε hn1]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp h3
+    have hlip : LipschitzWith (Real.toNNReal (1 + ε)) g := by
+      apply LipschitzWith.of_dist_le_mul
+      intro a a'
+      rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (by linarith)]
+      exact hup a a'
+    have hanti : AntilipschitzWith 1 g := by
+      apply AntilipschitzWith.of_le_mul_dist
+      intro a a'
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul]
+      exact hlow a a'
+    have hrange : q '' graphOver f univ = range g := by
+      ext w
+      simp only [graphOver, image_univ, mem_image, mem_range, hg_def]
+      constructor
+      · rintro ⟨_, ⟨a, rfl⟩, rfl⟩
+        exact ⟨a, rfl⟩
+      · rintro ⟨a, rfl⟩
+        exact ⟨_, ⟨a, rfl⟩, rfl⟩
+    have hmem : ∀ x ∈ q '' graphOver f univ, ∃ a, g a = x := by
+      intro x hx
+      rw [hrange] at hx
+      exact hx
+    refine ⟨hlip.continuous, ?_, ?_, ?_, ?_⟩
+    · -- (a) `F̂` is the range of the antilipschitz map `g` on the complete space `ℝⁿ`.
+      rw [hrange]
+      exact hanti.isClosed_range hlip.uniformContinuous
+    · -- (b) the `ε`-cone property: `(x − z) − P(x − z) = q(0, f a − f a')`.
+      intro x hx z hz
+      obtain ⟨a, rfl⟩ := hmem x hx
+      obtain ⟨a', rfl⟩ := hmem z hz
+      have hP : (rotatedPlane q).starProjection (g a - g a') = q (graphPoint (a - a') 0) := by
+        rw [hdiff, hiv]
+      have hQ : (g a - g a') - (rotatedPlane q).starProjection (g a - g a') =
+          q (graphPoint 0 (f a - f a')) := by
+        rw [hP, hdiff, ← map_sub, hi, sub_self, sub_zero]
+      have hnQ : ‖q (graphPoint (0 : Rn n) (f a - f a'))‖ = ‖f a - f a'‖ := by
+        rw [LinearIsometryEquiv.norm_map]
+        have h := hii 0 (f a - f a')
+        rw [norm_zero] at h
+        have h' : ‖graphPoint (0 : Rn n) (f a - f a')‖ ^ 2 = ‖f a - f a'‖ ^ 2 := by rw [h]; ring
+        exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h'
+      rw [hQ, hnQ]
+      calc ‖f a - f a'‖ ≤ ε * ‖a - a'‖ := hf a a'
+        _ ≤ ε * ‖g a - g a'‖ := mul_le_mul_of_nonneg_left (hlow a a') hε
+    · -- (c) `F̂ ∩ B_t(g a) ⊆ q(graph f|B_t(a))`, since `|a'' − a| ≤ |g a'' − g a|`.
+      intro a t x hx
+      obtain ⟨a'', rfl⟩ := hmem x hx.1
+      have hd : ‖a'' - a‖ ≤ t := (hlow a'' a).trans (by rw [← dist_eq_norm]; exact hx.2)
+      exact ⟨graphPoint a'' (f a''),
+        ⟨a'', by rw [mem_closedBall, dist_eq_norm]; exact hd, rfl⟩, rfl⟩
+    · -- (d) `|q(a, b)| ≤ |a| + |b|`.
+      intro a b
+      rw [LinearIsometryEquiv.norm_map]
+      have h := hii a b
+      have hab : ‖graphPoint a b‖ ^ 2 ≤ (‖a‖ + ‖b‖) ^ 2 := by
+        rw [h]; nlinarith [norm_nonneg a, norm_nonneg b]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp hab
+  -- Step 3 (path point): along `t ↦ q(t x, f(t x))` the distance to `S` passes through `d`.
+  have path_point : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ),
+      Continuous (fun a : Rn n => q (graphPoint a (f a))) →
+      (∀ (a : Rn n) (b : Rn ℓ), ‖q (graphPoint a b)‖ ≤ ‖a‖ + ‖b‖) →
+      ∀ (S : Set (Amb n ℓ)), (0 : Amb n ℓ) ∈ S → ∀ (R c d : ℝ),
+      (∀ a ∈ closedBall (0 : Rn n) R, ‖f a‖ ≤ c) → c ≤ d →
+      ∀ x ∈ closedBall (0 : Rn n) R, d ≤ infDist (q (graphPoint x (f x))) S →
+      ∃ a ∈ closedBall (0 : Rn n) R,
+        infDist (q (graphPoint a (f a))) S = d ∧ ‖q (graphPoint a (f a))‖ ≤ R + c := by
+    intro n ℓ q f hg hnorm S hS R c d hfc hcd x hx hd
+    have hxR : ‖x‖ ≤ R := mem_closedBall_zero_iff.mp hx
+    have hR : 0 ≤ R := (norm_nonneg x).trans hxR
+    have hseg : ∀ t ∈ Icc (0 : ℝ) 1, t • x ∈ closedBall (0 : Rn n) R := by
+      intro t ht
+      rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+      calc t * ‖x‖ ≤ 1 * ‖x‖ := mul_le_mul_of_nonneg_right ht.2 (norm_nonneg _)
+        _ = ‖x‖ := one_mul _
+        _ ≤ R := hxR
+    have hcont : Continuous (fun t : ℝ => infDist (q (graphPoint (t • x) (f (t • x)))) S) :=
+      (continuous_infDist_pt S).comp (hg.comp (continuous_id.smul continuous_const))
+    have h0 : infDist (q (graphPoint ((0 : ℝ) • x) (f ((0 : ℝ) • x)))) S ≤ d := by
+      rw [zero_smul]
+      calc infDist (q (graphPoint (0 : Rn n) (f 0))) S ≤ dist (q (graphPoint (0 : Rn n) (f 0))) 0 :=
+            infDist_le_dist_of_mem hS
+        _ = ‖q (graphPoint (0 : Rn n) (f 0))‖ := dist_zero_right _
+        _ ≤ ‖(0 : Rn n)‖ + ‖f 0‖ := hnorm 0 (f 0)
+        _ ≤ c := by rw [norm_zero, zero_add]; exact hfc 0 (mem_closedBall_self hR)
+        _ ≤ d := hcd
+    have h1 : d ≤ infDist (q (graphPoint ((1 : ℝ) • x) (f ((1 : ℝ) • x)))) S := by
+      rw [one_smul]; exact hd
+    obtain ⟨t, ht, hteq⟩ := intermediate_value_Icc zero_le_one hcont.continuousOn ⟨h0, h1⟩
+    refine ⟨t • x, hseg t ht, hteq, ?_⟩
+    calc ‖q (graphPoint (t • x) (f (t • x)))‖ ≤ ‖t • x‖ + ‖f (t • x)‖ := hnorm _ _
+      _ ≤ R + c := add_le_add (mem_closedBall_zero_iff.mp (hseg t ht)) (hfc _ (hseg t ht))
+  -- Constants: `ε = min{ε_h, 1}`, `δ₀ = min{δ_h, 1/8}`, `C₀ = 2^{n/2} ω_n 16ⁿ C_h`.
+  intro n ℓ hn p hp
+  obtain ⟨εh, δh, Ch, hεh, hδh, hCh, hhole⟩ := lip_approx_hole_estimate n ℓ hn p hp
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  set K : ℝ := 2 ^ ((n : ℝ) / 2) * unitBallVolume n
+  have hK : 0 ≤ K := by positivity
+  refine ⟨min εh 1, min δh (1 / 8), K * 16 ^ n * Ch, lt_min hεh one_pos, lt_min hδh (by norm_num),
+    by positivity, ?_⟩
+  intro U hU V H δ ρ hδ hδ₀ hA q f hf hfb
+  have hA' := hA
+  unfold RectifiableVarifold.AllardHypotheses at hA'
+  obtain ⟨hρ, -, -, h0, hρU, -, -⟩ := hA'
+  have hδ8 : δ ≤ 1 / 8 := le_trans hδ₀ (min_le_right _ _)
+  have hδh' : δ ≤ δh := le_trans hδ₀ (min_le_left _ _)
+  set σ : ℝ := δ * ρ with hσ_def
+  have hσ : 0 < σ := mul_pos hδ hρ
+  have hσρ : σ ≤ ρ := by
+    have : δ * ρ ≤ 1 / 8 * ρ := mul_le_mul_of_nonneg_right hδ8 hρ.le
+    linarith
+  set μ := V.weight
+  set P := (rotatedPlane q).starProjection
+  set τ : Amb n ℓ → ℝ := fun x => hsNormSq (V.tangentProj x - P) with hτ_def
+  have hτ : ∀ x, 0 ≤ τ x := by
+    intro x
+    simp only [hτ_def, hsNormSq]
+    positivity
+  -- `τ` is integrable on closed balls in `B_ρ(0) ⊆ U` (tangent structure), so the tilt over any
+  -- ball inside `B_{σ₀}(0)` is at most `I = ∫_{B_{σ₀}(0)} τ dμ`.
+  obtain ⟨-, hint, -⟩ := lip_approx_tangent_structure n ℓ hn U hU V
+  have hintB : ∀ (c : Amb n ℓ) (r : ℝ), closedBall c r ⊆ closedBall 0 ρ →
+      IntegrableOn τ (closedBall c r) μ :=
+    fun c r h => hint (rotatedPlane q) _ (isCompact_closedBall c r) (h.trans hρU)
+  set I : ℝ := ∫ x in closedBall 0 σ, τ x ∂μ
+  have hImono : ∀ (c : Amb n ℓ) (r : ℝ), closedBall c r ⊆ closedBall 0 σ →
+      ∫ x in closedBall c r, τ x ∂μ ≤ I := by
+    intro c r h
+    exact setIntegral_mono_set (hintB 0 σ (closedBall_subset_closedBall hσρ))
+      (ae_of_all _ hτ) (LE.le.eventuallySubset h)
+  -- Step 1: `F̂` is closed with the `ε_h`-cone property, and `f` is `1`-Lipschitz.
+  set ε := min εh 1
+  have hε0 : 0 ≤ ε := (lt_min hεh one_pos).le
+  have hεh' : ε ≤ εh := min_le_left _ _
+  have hε1 : ε ≤ 1 := min_le_right _ _
+  obtain ⟨gi, gii, -, giv⟩ := lip_approx_graph_coordinates n ℓ q
+  obtain ⟨gcont, gclosed, gcone, gloc, gnorm⟩ := graph_geometry n ℓ q f ε hε0 hf gi gii giv
+  set Fhat := q '' graphOver f univ
+  have hcone_h : ∀ x ∈ Fhat, ∀ z ∈ Fhat, ‖(x - z) - P (x - z)‖ ≤ εh * ‖x - z‖ :=
+    fun x hx z hz => (gcone x hx z hz).trans (mul_le_mul_of_nonneg_right hεh' (norm_nonneg _))
+  have hf1 : ∀ x z, ‖f x - f z‖ ≤ ‖x - z‖ :=
+    fun x z => (hf x z).trans (mul_le_of_le_one_left (norm_nonneg _) hε1)
+  have hmemF : ∀ a : Rn n, q (graphPoint a (f a)) ∈ Fhat :=
+    fun a => ⟨graphPoint a (f a), ⟨a, mem_univ _, rfl⟩, rfl⟩
+  -- Step 2: the hole set `Z` and `d(ζ) = dist(ζ, spt V) > 0` on it.
+  set F := q '' graphOver f (closedBall 0 (σ / 2))
+  set Z := closedBall (0 : Amb n ℓ) (σ / 2) ∩ (F \ V.support)
+  have hZF : ∀ ζ ∈ Z, ∃ a ∈ closedBall (0 : Rn n) (σ / 2), q (graphPoint a (f a)) = ζ := by
+    intro ζ hζ
+    obtain ⟨w, ⟨a, ha, hw⟩, hqw⟩ := hζ.2.1
+    exact ⟨a, ha, by subst hw; exact hqw⟩
+  have hZpos : ∀ ζ ∈ Z, 0 < infDist ζ V.support := by
+    intro ζ hζ
+    have hζU : ζ ∈ U := hρU (closedBall_subset_closedBall (by linarith) hζ.1)
+    have hsub : V.support ⊆ V.weight.support := fun x hx => hx.2
+    have hζ' : ζ ∉ V.weight.support := fun h => hζ.2.2 ⟨hζU, h⟩
+    have hne : V.support.Nonempty := ⟨0, h0⟩
+    have hpos : 0 < infDist ζ V.weight.support :=
+      (infDist_pos_iff_notMem_closure (hne.mono hsub)).mp
+        (by rwa [Measure.isClosed_support.closure_eq])
+    exact hpos.trans_le (infDist_le_infDist_of_subset hsub hne)
+  by_cases hfar : ∃ ζ ∈ Z, σ / 16 < infDist ζ V.support
+  · -- Step 3 (far case): a path point at distance exactly `σ₀/16` and one hole estimate.
+    obtain ⟨ζ, hζZ, hζfar⟩ := hfar
+    obtain ⟨x, hx, hxζ⟩ := hZF ζ hζZ
+    obtain ⟨a, ha, hda, hna⟩ := path_point n ℓ q f gcont gnorm V.support h0
+      (σ / 2) (σ / 32) (σ / 16) hfb (by linarith) x hx (by rw [hxζ]; exact hζfar.le)
+    have hhn : ‖q (graphPoint a (f a))‖ ≤ 17 * σ / 32 := by linarith
+    have hh := hhole U hU V H δ ρ hδ hδh' hA (rotatedPlane q) Fhat gclosed hcone_h
+      (q (graphPoint a (f a))) (hmemF a) hhn (by rw [hda]; positivity) (by rw [hda])
+    rw [hda] at hh
+    have hsub1 : closedBall (q (graphPoint a (f a))) (3 * (σ / 16 / 2)) ⊆
+        closedBall 0 (3 * σ / 4) := by
+      apply closedBall_subset_closedBall'
+      rw [dist_zero_right]
+      linarith
+    have hsub2 : closedBall (q (graphPoint a (f a))) (3 * (σ / 16 / 2)) ⊆ closedBall 0 σ := by
+      apply closedBall_subset_closedBall'
+      rw [dist_zero_right]
+      linarith
+    have hgm := lip_approx_graph_measure n ℓ hn q f hf1 0 (σ / 2) (by positivity)
+    calc (μHE[n] : Measure (Amb n ℓ)) Z ≤ (μHE[n] : Measure (Amb n ℓ)) F :=
+          measure_mono (fun y hy => hy.2.1)
+      _ ≤ ENNReal.ofReal (K * (σ / 2) ^ n) := hgm
+      _ = ENNReal.ofReal (K * 16 ^ n) * ENNReal.ofReal ((σ / 16 / 2) ^ n) := by
+          rw [← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          rw [show σ / 2 = 16 * (σ / 16 / 2) by ring, mul_pow]
+          ring
+      _ ≤ ENNReal.ofReal (K * 16 ^ n) * (ENNReal.ofReal Ch *
+            (μ (closedBall (q (graphPoint a (f a))) (3 * (σ / 16 / 2)) \ Fhat) +
+              ENNReal.ofReal
+                (∫ x in closedBall (q (graphPoint a (f a))) (3 * (σ / 16 / 2)), τ x ∂μ))) := by
+          gcongr
+      _ ≤ ENNReal.ofReal (K * 16 ^ n) * (ENNReal.ofReal Ch *
+            (μ (closedBall 0 (3 * σ / 4) \ Fhat) + ENNReal.ofReal I)) := by
+          have h2 := hImono _ _ hsub2
+          gcongr
+      _ = ENNReal.ofReal (K * 16 ^ n * Ch) *
+            (μ (closedBall 0 (3 * σ / 4) \ Fhat) + ENNReal.ofReal I) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+  · -- Step 4 (near case): hole estimates at every `ζ ∈ Z` and the Vitali bound.
+    push Not at hfar
+    set W := closedBall (0 : Amb n ℓ) (3 * σ / 4)
+    set Ψ : Measure (Amb n ℓ) := μ.restrict Fhatᶜ + μ.withDensity (fun x => ENNReal.ofReal (τ x))
+      with hΨ_def
+    have hΨapp : ∀ B : Set (Amb n ℓ), MeasurableSet B → IntegrableOn τ B μ →
+        Ψ B = μ (B \ Fhat) + ENNReal.ofReal (∫ x in B, τ x ∂μ) := by
+      intro B hB hintB'
+      rw [hΨ_def, Measure.add_apply, Measure.restrict_apply hB, withDensity_apply _ hB, ← sdiff_eq,
+        ofReal_integral_eq_lintegral_ofReal hintB' (ae_of_all _ hτ)]
+    set r : Amb n ℓ → ℝ := fun y => 3 * (infDist y V.support / 2) with hr_def
+    set M : ℝ≥0∞ := ENNReal.ofReal (K * 15 ^ n * Ch) with hM_def
+    have hv := lip_approx_vitali_bound (n + ℓ) (μHE[n] : Measure (Amb n ℓ)) Ψ Z W r (3 * σ / 32)
+      M ?_
+    · -- Step 5: `Ψ(W) = μ(W \ F̂) + ∫_W τ dμ` and `M ≤ C₀`.
+      have hWρ : W ⊆ closedBall 0 ρ := closedBall_subset_closedBall (by linarith)
+      have hΨW : Ψ W = μ (W \ Fhat) + ENNReal.ofReal (∫ x in W, τ x ∂μ) :=
+        hΨapp W measurableSet_closedBall (hintB 0 _ hWρ)
+      calc (μHE[n] : Measure (Amb n ℓ)) Z ≤ M * Ψ W := hv
+        _ = M * (μ (W \ Fhat) + ENNReal.ofReal (∫ x in W, τ x ∂μ)) := by rw [hΨW]
+        _ ≤ ENNReal.ofReal (K * 16 ^ n * Ch) * (μ (W \ Fhat) + ENNReal.ofReal I) := by
+          gcongr
+          · rw [hM_def]
+            apply ENNReal.ofReal_le_ofReal
+            gcongr
+            norm_num
+          · exact hImono _ _ (closedBall_subset_closedBall (by linarith))
+    · intro y hy
+      have hd0 := hZpos y hy
+      have hd1 := hfar y hy
+      have hyn : dist y 0 ≤ σ / 2 := hy.1
+      obtain ⟨a, ha, hay⟩ := hZF y hy
+      refine ⟨by simp only [hr_def]; positivity, by simp only [hr_def]; linarith, ?_, ?_⟩
+      · apply closedBall_subset_closedBall'
+        simp only [hr_def]
+        linarith
+      · have hball : closedBall y (r y) ⊆ closedBall 0 ρ := by
+          apply closedBall_subset_closedBall'
+          simp only [hr_def]
+          linarith
+        have hΨy : Ψ (closedBall y (r y)) = μ (closedBall y (r y) \ Fhat) +
+            ENNReal.ofReal (∫ x in closedBall y (r y), τ x ∂μ) :=
+          hΨapp _ measurableSet_closedBall (hintB y _ hball)
+        have hyF : y ∈ Fhat := by rw [← hay]; exact hmemF a
+        have hhy := hhole U hU V H δ ρ hδ hδh' hA (rotatedPlane q) Fhat gclosed hcone_h
+          y hyF (by have := mem_closedBall_zero_iff.mp hy.1; linarith [hσ_def]) hd0
+          (by linarith [hσ_def])
+        -- `Z ∩ B_{5r}(y) ⊆ F̂ ∩ B_{5r}(q(a, f a)) ⊆ q(graph f|B_{5r}(a))`
+        have hsubZ : Z ∩ closedBall y (5 * r y) ⊆ q '' graphOver f (closedBall a (5 * r y)) := by
+          intro w hw
+          have hwF : w ∈ Fhat := image_mono (image_mono (subset_univ _)) hw.1.2.1
+          exact gloc a (5 * r y) ⟨hwF, by rw [hay]; exact hw.2⟩
+        have hgm := lip_approx_graph_measure n ℓ hn q f hf1 a (5 * r y)
+          (by simp only [hr_def]; positivity)
+        calc (μHE[n] : Measure (Amb n ℓ)) (Z ∩ closedBall y (5 * r y))
+            ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall a (5 * r y))) :=
+              measure_mono hsubZ
+          _ ≤ ENNReal.ofReal (K * (5 * r y) ^ n) := hgm
+          _ = ENNReal.ofReal (K * 15 ^ n) * ENNReal.ofReal ((infDist y V.support / 2) ^ n) := by
+              rw [← ENNReal.ofReal_mul (by positivity)]
+              congr 1
+              simp only [hr_def]
+              rw [show 5 * (3 * (infDist y V.support / 2)) = 15 * (infDist y V.support / 2) by ring,
+                mul_pow]
+              ring
+          _ ≤ ENNReal.ofReal (K * 15 ^ n) * (ENNReal.ofReal Ch *
+                (μ (closedBall y (3 * (infDist y V.support / 2)) \ Fhat) +
+                  ENNReal.ofReal
+                    (∫ x in closedBall y (3 * (infDist y V.support / 2)), τ x ∂μ))) := by
+              gcongr
+          _ = M * Ψ (closedBall y (r y)) := by
+              rw [hΨy, hM_def, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+
+end Submission
+
 end GMT.Ch05
