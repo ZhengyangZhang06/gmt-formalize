@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "euclideanHausdorffMeasure_eq_volume|notation.*μHE",
+        "exists_measurable_subset_ae_eq|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|exists_isCompact_sdiff_lt|measure_toMeasurable|lintegral_liminf_le|theorem ae_lt_top|abs_sub_lt_one_of_floor_eq_floor|exists_subset_card_eq",
+        "Eilenberg|infinite_fibre|infinite_fiber|fibre.*finite|fiber.*finite",
+        "\"lean_name\": \"(lpf_lli_inner_compact_approx|rectifiability_bf_infinite_fibre_null)\"",
+        "git show d24e9e7b54d326f9d566fb5543e6cdea196355d1 -- GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_projection_audit_s2qpdbsa/inner_compact_approx_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_projection_audit_s2qpdbsa/infinite_fibre_null_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_projection_audit_s2qpdbsa/ReuseProof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_projection_audit_s2qpdbsa/Library.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Floor/Ring.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-bf-projection-null-ae-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-bf-projection-null-ae-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-inner-com-6be04fd41f/accepted-candidate.json",
+        "/tmp/bf_projection_audit_s2qpdbsa/inner_compact_approx_Challenge.lean",
+        "/tmp/bf_projection_audit_s2qpdbsa/infinite_fibre_null_Challenge.lean",
+        "/tmp/bf_projection_audit_s2qpdbsa/ReuseProof.lean",
+        "/tmp/bf_projection_audit_s2qpdbsa/Library.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected projection theorem: compact approximation supplies the σ-compact core required by bf_trichotomy, and infinite_fibre_null supplies step 3(c). The remaining inherited contracts fit the supplied parent argument. Dependencies remain acyclic and correctly directed. Both child types independently elaborate in the frozen comparator scope, with only the expected challenge-stub sorry warnings. Both names are bare identifiers; the new name is unreserved, and the reused name has an identical comparator-accepted frozen type. The reused proof independently recompiles using only propext, Classical.choice and Quot.sound. Checked library inputs also use only these standard axioms. Normalized Hausdorff measure, Euclidean volume and Lipschitz instances agree with the prose. The searches found no directly reusable general infinite-fibre-null theorem. The cited fibre conclusion is also present in [Hovila et al., Lemma 2.3](https://arxiv.org/pdf/1104.3453)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "inner_compact_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly includes the arbitrary Borel measure, null-measurability and σ-finiteness hypotheses. The proof correctly obtains a Borel kernel, finite Borel pieces, regular finite restrictions, compact approximations with vanishing errors, a null countable remainder and the required reindexing. It never assumes ambient μ is σ-finite or regular. Reuse of the identical accepted declaration is valid and non-circular. Its conclusion supplies the parent's required σ-compact core."
+    },
+    {
+      "key": "infinite_fibre_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches all stated dimensions, measurability, finiteness and Lipschitz hypotheses. The countable Borel cube partitions give the asserted measure sum; measurable hulls preserve each image's outer measure; eventual separation gives arbitrarily large counts on every infinite fibre. Fatou then produces a measurable null set containing the entire infinite-fibre set. Neither measurability of that fibre set nor monotonicity of the hull counts is assumed. The argument covers degenerate dimensions and K = 0, is independent of both parent and sibling conclusions, and is detailed enough for formalization. Applying it to the Lipschitz map L_v supplies exactly the selected parent's remaining fibre-null obligation."
+    }
+  ],
+  "required_changes": []
+}
