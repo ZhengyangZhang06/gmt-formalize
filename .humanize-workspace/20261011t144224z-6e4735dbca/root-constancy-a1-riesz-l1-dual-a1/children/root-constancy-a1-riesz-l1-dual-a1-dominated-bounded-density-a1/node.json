@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.riesz_l1_dual-a1.dominated_bounded_density-a1",
+  "parent_id": "root.constancy-a1.riesz_l1_dual-a1",
+  "depth": 3,
+  "title": "Bounded Radon–Nikodym density of a finitely additive set function dominated by C·μ",
+  "statement": "Let μ be a finite measure on a measurable space α, let ν : Set α → ℝ be a set function and C ≥ 0 a real number such that (a) ν(A ∪ B) = ν(A) + ν(B) for all disjoint measurable sets A, B ⊆ α, and (b) |ν(A)| ≤ C·μ(A) for every measurable A ⊆ α, where μ(A) denotes the finite real number μ.real A. Then there is a measurable function θ : α → ℝ with |θ(x)| ≤ C for every x ∈ α such that ν(A) = ∫_A θ dμ for every measurable A ⊆ α.",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (ν : Set α → ℝ) (C : ℝ), 0 ≤ C → (∀ A B : Set α, MeasurableSet A → MeasurableSet B → Disjoint A B → ν (A ∪ B) = ν A + ν B) → (∀ A : Set α, MeasurableSet A → |ν A| ≤ C * μ.real A) → ∃ θ : α → ℝ, Measurable θ ∧ (∀ x, |θ x| ≤ C) ∧ ∀ A : Set α, MeasurableSet A → ν A = ∫ x in A, θ x ∂μ",
+  "lean_name": "constancy_riesz_bounded_density_of_dominated_additive",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-riesz-l1-dual-a1-dominated-bounded-density-a1-a1"
+}

@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n -i 'dual.*L1|L1.*dual|LpDual|Lp\\.dual|lpDual' mathlib/Mathlib/MeasureTheory/Function project/GMT/Ch06",
+        "sed -n '15,105p' mathlib/Mathlib/MeasureTheory/VectorMeasure/AddContent.lean",
+        "sed -n '10,53p' mathlib/Mathlib/MeasureTheory/VectorMeasure/Decomposition/RadonNikodym.lean",
+        "sed -n '141,186p' mathlib/Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean",
+        "sed -n '128,175p' mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+        "sed -n '924,975p' mathlib/Mathlib/MeasureTheory/Function/SimpleFuncDenseLp.lean",
+        "sed -n '1060,1087p' mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "rg -n '\"lean_name\": \"(constancy_riesz_bounded_density_of_dominated_additive|constancy_riesz_eq_integral_mul_of_indicator_eq)\"' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean dominated_bounded_density_NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean extend_from_indicators_NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AssemblyChecked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/VectorMeasure/AddContent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/VectorMeasure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SimpleFuncDenseLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-riesz-l1-dual-a1/parent-child-handoff.json",
+        "/tmp/riesz_independent_audit_apwk1rql/StandaloneTypes.lean",
+        "/tmp/riesz_independent_audit_apwk1rql/dominated_bounded_density_NodeChallenge.lean",
+        "/tmp/riesz_independent_audit_apwk1rql/extend_from_indicators_NodeChallenge.lean",
+        "/tmp/riesz_independent_audit_apwk1rql/AssemblyChecked.lean"
+      ],
+      "conclusion": "Independently verified project revision d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d. The duality-pattern search returned no matches in the searched directories. The cited countable-additivity constructor, signed Radon–Nikodym results, set-integral comparison, bounded-product integrability and Integrable.induction have the required hypotheses; 13 checked library files match the pinned package sources byte-for-byte. Both exact child types pass validation and compile as standalone comparator challenges against a freshly compiled frozen Submission, before either child exists. Inline indicator, function addition, scalar multiplication and measure-real constructions were checked. The supplied proof scripts and exact parent assembly compile with only propext, Classical.choice and Quot.sound. Neither bare identifier is reserved in the inspected DAG or 451 branch heads. The split is appropriate: apply the density child to ν(A)=F(1_A) with max(C,0), then the extension child to obtain precisely constancy_riesz_l1_dual_bounded_density. Empty sibling dependencies are correct and acyclic. The standard mathematical route is also corroborated by [Duals of Lp spaces, Theorem 6.1](https://www.math.ksu.edu/~nagy/real-an/4-06-dual-lp.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dominated_bounded_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including finiteness, C≥0, measurable-set additivity and domination, and an everywhere bound. The proof establishes ν(∅)=0, countable additivity through summable absolute values and convergent partial sums, and a signed-measure extension that vanishes on nonmeasurable sets. Domination proves absolute continuity; signed Radon–Nikodym supplies a measurable integrable density. Comparing both signs against the constant C establishes the a.e. bound, and measurable truncation gives the required everywhere bound without changing set integrals. All library prerequisites are satisfied. The proof is complete, non-circular and ready for formalization; the bare name is unreserved."
+    },
+    {
+      "key": "extend_from_indicators",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition includes every prose hypothesis and correctly interprets A.indicator 1 as the real-valued characteristic function. Subtraction and the normalized Lipschitz estimate establish a.e. invariance of F. Bounded measurable θ makes products integrable and supplies the second Lipschitz estimate. The L¹ representative identities justify continuity, and all four Integrable.induction obligations—scaled indicators, sums, closedness and a.e. congruence—are proved. Using max(C,0) and max(M,0) handles the unrestricted constants correctly. The proof neither invokes the density child nor assumes the parent conclusion, so its empty dependency list is correct. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
