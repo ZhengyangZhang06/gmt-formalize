@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5effe69b05f8a1f740b13dd40f0721bfb66d5f88df3ae96798d4e6ea67cd6423",
+  "git_delta": {
+    "base_commit": "4f4295e2af66626a768d62fe51d6257ce67dfcdc",
+    "candidate_commit": "18e839d9d650a640ea2919b1eaf5604926b290fd",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "4032ee1e3d4c171275d764eeda03046fcc4f259d878330d04c7fe33c9e9a930b",
+    "source_sha256": "9e40faf19430cb4b262fe93a5070ef0099d754d8dd6344180e8afde04a28acaf",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_gradient_weak_star",
+      "statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (C : ℝ≥0) (u : Eucl n → ℝ) (ug : ℕ → Eucl n → ℝ), IsOpen Ω → LipschitzOnWith C u Ω → (∀ k, LipschitzOnWith C (ug k) Ω) → TendstoUniformlyOn ug u atTop Ω → ∀ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) → Tendsto (fun k => ∫ w in Ω, fderiv ℝ (ug k) w (c w)) atTop (𝓝 (∫ w in Ω, fderiv ℝ u w (c w)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
