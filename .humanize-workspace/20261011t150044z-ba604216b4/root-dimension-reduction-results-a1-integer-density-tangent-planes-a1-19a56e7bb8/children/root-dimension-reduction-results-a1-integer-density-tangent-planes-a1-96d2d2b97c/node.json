@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.test_field-a1.profile_deriv-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.test_field-a1",
+  "depth": 6,
+  "title": "C¹ regularity and tangential derivative of the angle–radius profile φ(arctan(⟨y,e⟩/⟨y,u⟩))·λ(‖y‖)",
+  "statement": "For every P ∈ ℕ, all u, e, x ∈ ℝ^P with ⟨x,u⟩ > 0, and all C¹ functions φ, λ : ℝ → ℝ, the function F : ℝ^P → ℝ, F(y) := φ(arctan(⟨y,e⟩/⟨y,u⟩))·λ(‖y‖), is C¹ at x, and for every h ∈ ℝ^P with ⟨x,h⟩ = 0 its Fréchet derivative satisfies DF(x)h = φ′(arctan(⟨x,e⟩/⟨x,u⟩))·λ(‖x‖)·(⟨x,u⟩⟨h,e⟩ − ⟨x,e⟩⟨h,u⟩)/(⟨x,u⟩² + ⟨x,e⟩²), where φ′ is the derivative of φ.",
+  "lean_statement": "∀ (P : ℕ) (u e x : Euclid P) (φ lam : ℝ → ℝ), ContDiff ℝ 1 φ → ContDiff ℝ 1 lam → 0 < inner ℝ x u → ContDiffAt ℝ 1 (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) x ∧ ∀ h : Euclid P, inner ℝ x h = 0 → fderiv ℝ (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) x h = deriv φ (Real.arctan (inner ℝ x e / inner ℝ x u)) * lam ‖x‖ * ((inner ℝ x u * inner ℝ h e - inner ℝ x e * inner ℝ h u) / (inner ℝ x u ^ 2 + inner ℝ x e ^ 2))",
+  "lean_name": "idtp_ccd_scsp_tf_profile_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-96d2d2b97c-a1"
+}

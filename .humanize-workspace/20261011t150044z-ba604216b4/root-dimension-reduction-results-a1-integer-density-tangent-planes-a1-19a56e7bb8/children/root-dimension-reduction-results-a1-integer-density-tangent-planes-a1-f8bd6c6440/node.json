@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.test_field-a1.cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.test_field-a1",
+  "depth": 6,
+  "title": "Smooth cutoff equal to 1 near a compact set, supported in an open set",
+  "statement": "For every P ∈ ℕ and all sets K, N ⊆ ℝ^P with K compact, N open and K ⊆ N, there exist a C¹ function ζ : ℝ^P → ℝ with compact support and tsupport ζ ⊆ N, and an open set V ⊆ ℝ^P with K ⊆ V such that ζ(y) = 1 for every y ∈ V.",
+  "lean_statement": "∀ (P : ℕ) (K N : Set (Euclid P)), IsCompact K → IsOpen N → K ⊆ N → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ N ∧ ∃ V : Set (Euclid P), IsOpen V ∧ K ⊆ V ∧ ∀ y ∈ V, ζ y = 1",
+  "lean_name": "idtp_ccd_scsp_tf_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f8bd6c6440-a1"
+}
