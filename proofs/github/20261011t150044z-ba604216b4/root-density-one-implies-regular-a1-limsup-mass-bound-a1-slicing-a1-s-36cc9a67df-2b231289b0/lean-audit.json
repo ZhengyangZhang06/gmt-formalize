@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d32b72583ba3c49aa30b47234483c8491d102bb9677fe159c9a800a150f550ef",
+  "git_delta": {
+    "base_commit": "6cf877f8889cdf6259b7bce0e4d2729022a932f8",
+    "candidate_commit": "9c06c844e103a14e29ebb239371a9184e17302a1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "e653c81691dc35860bdeec0c206aa69f0020626364f89f44d30bb6571306d423",
+    "source_sha256": "88e205ec53a42c85c0f2b0b2dc73ae61289e0c73237914b574d4a649c38dc22c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_lipschitz_c1_approx",
+      "statement": "∀ (m : ℕ) (u : Euclid m → ℝ) (K : NNReal), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧ volume {y | u y ≠ G y} < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
