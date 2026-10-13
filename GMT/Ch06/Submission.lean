@@ -1287,6 +1287,210 @@ theorem Submission.isoperimetric_apply_eq_zero_of_disjoint_support :
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => hη i
 
+/-- Boundary of a current `Z` with the product characterization `ProdChar(X, Z)` of
+`[[0,1]] × X`: `Z(η) = ∫₀¹ X(φ(s)) ds` whenever `φ(s)(x)(v) = η((s, x))(e₀, ι ∘ v)` on `[0,1]`.
+With `ψᵢ(x)(v) = ψ((i, x))(ι ∘ v)` and `φ(s)(x)(v) = ψ((s, x))(e₀, ι ∘ v)`:
+(II) `∂Z(ψ) = X(ψ₁) − X(ψ₀)` in degree `0`; (III) `∂Z(ψ) = X(ψ₁) − X(ψ₀) − ∫₀¹ ∂X(φ(s)) ds` in
+positive degree; (N) `M(∂Z) ≤ 2 M(X) + M(∂X) < ∞` (no `M(∂X)` term in degree `0`). -/
+theorem Submission.dph_iprod_boundary :
+    (∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) 0)
+        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (0 + 1)), X.mass < ∞ →
+        (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1))
+            (φ : ℝ → TestFormOn (univ : Set (Eucl m)) 0),
+            (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+              (φ s : DifferentialForm (Eucl m) 0) x v =
+                (η : DifferentialForm (Eucl (m + 1)) (0 + 1))
+                  ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                  (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+            Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+        ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0)
+          (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) 0),
+          (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+            (ψ₀ : DifferentialForm (Eucl m) 0) x v =
+              (ψ : DifferentialForm (Eucl (m + 1)) 0)
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+            (ψ₁ : DifferentialForm (Eucl m) 0) x v =
+              (ψ : DifferentialForm (Eucl (m + 1)) 0)
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          Z.boundary ψ = X ψ₁ - X ψ₀) ∧
+    (∀ (m j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1))
+        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)), X.mass < ∞ →
+        (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) ((j + 1) + 1))
+            (φ : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1)),
+            (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+              (φ s : DifferentialForm (Eucl m) (j + 1)) x v =
+                (η : DifferentialForm (Eucl (m + 1)) ((j + 1) + 1))
+                  ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                  (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+            Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+        ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1))
+          (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) (j + 1))
+          (φ : ℝ → TestFormOn (univ : Set (Eucl m)) j),
+          (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+            (ψ₀ : DifferentialForm (Eucl m) (j + 1)) x v =
+              (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+            (ψ₁ : DifferentialForm (Eucl m) (j + 1)) x v =
+              (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin j → Eucl m),
+            (φ s : DifferentialForm (Eucl m) j) x v =
+              (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+                ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                  (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+          Z.boundary ψ = X ψ₁ - X ψ₀ - ∫ s in (0 : ℝ)..1, X.boundary (φ s)) ∧
+    (∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k)
+        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1)), X.mass < ∞ →
+        (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1))
+            (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k),
+            (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
+              (φ s : DifferentialForm (Eucl m) k) x v =
+                (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+                  ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                    (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+                  (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+            Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+        ((∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1)), k = j + 1 →
+            HEq Y X → Y.boundary.mass < ∞) →
+          Z.boundary.mass < ∞)) := by
+  have hSF := Submission.iwl_cr_ci_slice_testForm
+  have hHS := Submission.dph_iprod_horizontal_slices
+  have hC := Submission.dph_iprod_slice_continuity
+  have hD := Submission.dph_iprod_slice_extDeriv
+  have hF := Submission.dph_iprod_horizontal_ftc
+  -- (N) uses (II) and (III): prove the conjunction in the form `A`, `B`, `A → B → C`.
+  have key : ∀ {A B C : Prop}, A → B → (A → B → C) → A ∧ B ∧ C :=
+    fun a b h => ⟨a, b, h a b⟩
+  refine key ?_ ?_ ?_
+  · -- (II): the `e₀`-derivative slices `Ψ'` are `dt`-slices of `dψ`, so
+    -- `∂Z(ψ) = Z(dψ) = ∫₀¹ X(Ψ'(s)) ds = X(Ψ(1)) − X(Ψ(0))`.
+    intro m X Z hX hZ ψ ψ₀ ψ₁ h₀ h₁
+    obtain ⟨Ψ, Ψ', hΨ, hΨ'⟩ := hHS m 0 ψ
+    have hftc := hF m 0 X ψ Ψ Ψ' hX hΨ hΨ'
+    have hslice : ∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+        (Ψ' s : DifferentialForm (Eucl m) 0) x v =
+          ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) 0 ψ :
+              TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1)) :
+            DifferentialForm (Eucl (m + 1)) (0 + 1))
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+            (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+              (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) := by
+      intro s _ x v
+      rw [hΨ' s x v, hD.1 m ψ _ v]
+    have e0 : ψ₀ = Ψ 0 := by
+      apply Subtype.ext; funext x; ext v; rw [h₀ x v, hΨ 0 x v]
+    have e1 : ψ₁ = Ψ 1 := by
+      apply Subtype.ext; funext x; ext v; rw [h₁ x v, hΨ 1 x v]
+    rw [GeometricCurrentOn.boundary_apply, hZ _ Ψ' hslice, hftc.2.2, e0, e1]
+  · -- (III): `F(s) = Ψ'(s) − dφ(s)` are `dt`-slices of `dψ` on `[0,1]`, so
+    -- `∂Z(ψ) = ∫₀¹ X(F(s)) ds = ∫₀¹ X(Ψ'(s)) ds − ∫₀¹ ∂X(φ(s)) ds`, both integrands being
+    -- continuous on `[0,1]`.
+    intro m j X Z hX hZ ψ ψ₀ ψ₁ φ h₀ h₁ hφ
+    obtain ⟨Ψ, Ψ', hΨ, hΨ'⟩ := hHS m (j + 1) ψ
+    have hftc := hF m (j + 1) X ψ Ψ Ψ' hX hΨ hΨ'
+    let F : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1) :=
+      fun s => Ψ' s - exteriorDerivativeTestOn univ j (φ s)
+    have hslice : ∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+        (F s : DifferentialForm (Eucl m) (j + 1)) x v =
+          ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) (j + 1) ψ :
+              TestFormOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)) :
+            DifferentialForm (Eucl (m + 1)) (j + 1 + 1))
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+            (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+              (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) := by
+      intro s hs x v
+      rw [hD.2 m j ψ (φ s) s (fun x w => hφ s hs x w) x v, ← hΨ' s x v]
+      rfl
+    have hXF : ∀ s, X (F s) = X (Ψ' s) - X.boundary (φ s) := fun s =>
+      map_sub X.toCurrent (Ψ' s) (exteriorDerivativeTestOn univ j (φ s))
+    have hcont := (hC.1 m (j + 1) X hX _ F hslice).1
+    have hI₁ : IntervalIntegrable (fun s => X (Ψ' s)) volume 0 1 :=
+      hftc.1.intervalIntegrable 0 1
+    have hI₂ : IntervalIntegrable (fun s => X.boundary (φ s)) volume 0 1 := by
+      refine ContinuousOn.intervalIntegrable_of_Icc zero_le_one ?_
+      refine (hftc.1.continuousOn.sub hcont).congr fun s _ => ?_
+      simp only [Pi.sub_apply, hXF s]
+      ring
+    have e0 : ψ₀ = Ψ 0 := by
+      apply Subtype.ext; funext x; ext v; rw [h₀ x v, hΨ 0 x v]
+    have e1 : ψ₁ = Ψ 1 := by
+      apply Subtype.ext; funext x; ext v; rw [h₁ x v, hΨ 1 x v]
+    rw [GeometricCurrentOn.boundary_apply, hZ _ F hslice]
+    simp only [hXF]
+    rw [intervalIntegral.integral_sub hI₁ hI₂, hftc.2.2, e0, e1]
+  · -- (N): bound `∂Z(ψ)` uniformly over the mass-admissible `ψ` by (II), resp. (III), and the
+    -- slice bounds `|X(Ψ(s))| ≤ M(X)`, `|∂X(φ(s))| ≤ M(∂X)`.
+    intro hII hIII m k X Z hX hZ hN
+    have hmass : ∀ A : ℝ, (∀ ψ ∈ massAdmissibleOn (univ : Set (Eucl (m + 1))) k univ,
+        Z.boundary ψ ≤ A) → Z.boundary.mass < ∞ := by
+      intro A hA
+      have hle : Z.boundary.mass ≤ ENNReal.ofReal A := by
+        apply sSup_le
+        rintro _ ⟨ψ, hψ, rfl⟩
+        exact ENNReal.ofReal_le_ofReal (hA ψ hψ)
+      exact hle.trans_lt ENNReal.ofReal_lt_top
+    cases k with
+    | zero =>
+      refine hmass (2 * X.mass.toReal) fun ψ hψ => ?_
+      obtain ⟨Ψ, Ψ', hΨ, -⟩ := hHS m 0 ψ
+      have hb := hII m X Z hX hZ ψ (Ψ 0) (Ψ 1) (hΨ 0) (hΨ 1)
+      have hB := (hC.2 m 0 X hX (ψ : DifferentialForm (Eucl (m + 1)) 0) Ψ
+        ψ.2.1.1.continuous ψ.2.1.2 hΨ).2 1 hψ.2
+      have h0 := abs_le.mp (hB 0)
+      have h1 := abs_le.mp (hB 1)
+      rw [hb]
+      linarith [h0.1, h1.2]
+    | succ j =>
+      have hXb : X.boundary.mass < ∞ := hN j X rfl HEq.rfl
+      refine hmass (2 * X.mass.toReal + X.boundary.mass.toReal) fun ψ hψ => ?_
+      obtain ⟨Ψ, Ψ', hΨ, -⟩ := hHS m (j + 1) ψ
+      obtain ⟨φ, -, hφ⟩ := hSF m j ψ
+      have hb := hIII m j X Z hX hZ ψ (Ψ 0) (Ψ 1) φ (hΨ 0) (hΨ 1) fun s _ => hφ s
+      have hB := (hC.2 m (j + 1) X hX (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) Ψ
+        ψ.2.1.1.continuous ψ.2.1.2 hΨ).2 1 hψ.2
+      have hB' := (hC.1 m j X.boundary hXb ψ φ fun s _ => hφ s).2 1 hψ.2
+      have hI : ‖∫ s in (0 : ℝ)..1, X.boundary (φ s)‖ ≤
+          X.boundary.mass.toReal * 1 * |1 - 0| := by
+        refine intervalIntegral.norm_integral_le_of_norm_le_const fun s hs => ?_
+        rw [uIoc_of_le zero_le_one] at hs
+        rw [Real.norm_eq_abs]
+        exact hB' s (Ioc_subset_Icc_self hs)
+      rw [Real.norm_eq_abs, sub_zero, abs_one, mul_one, mul_one] at hI
+      have h0 := abs_le.mp (hB 0)
+      have h1 := abs_le.mp (hB 1)
+      have h2 := abs_le.mp hI
+      rw [hb]
+      linarith [h0.1, h1.2, h2.1]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
