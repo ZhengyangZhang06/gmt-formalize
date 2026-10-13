@@ -7117,6 +7117,67 @@ theorem Submission.deformation_ipl_chart_convergence : ∀ (P Q k : ℕ) (M : Se
     (fun x => θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))) Gd
     hEm hEdisj hMeq hGd (fun j => (hEj j).1) hE0.1 hboundj hbound0 hpiece
 
+/-- **Lipschitz push-forward as the limit of `C¹` push-forwards** (the consistency step behind
+the remark after display (21) in the proof of Simon Ch. 6, 5.1), conditional on Lemma 3.9.
+Lemma 3.9 gives an integer multiplicity `S = g_# X` with data `(M', θ', ξ', L')`.  Both triples
+represent `X`, so `Hᵏ(M Δ M') = 0` and `θ = θ'`, `ξ = ξ'` `Hᵏ`-a.e. on `M`
+(`ltg_tau_unique_on_open`); hence the weighted tangent spaces of `(M, θ)` are those of
+`(M', θ')` (`br_weightedTangent_congr`) and `L'` has the derivative property on `(M, θ)`.  As
+`Hᵏ(M \ spt X) = 0` (`lpf_rectifiable_support_null`), `θ` is integrable on `M ∩ g⁻¹(K)` for
+compact `K`, and `deformation_ipl_chart_convergence` gives convergence of the `C¹` push-forward
+integrals to `∫_M θ ⟨ω(g), L'_# ξ⟩ dHᵏ = S(ω)`. -/
+theorem Submission.deformation_im_pushforward_limit : LipschitzPushforwardIntegerMultiplicity → ∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω)) := by
+  intro hLPF P Q k X M θ ξ hM hθ hX g Λ hg hprop
+  -- (II.1) Lemma 3.9 with `U = ℝ^P`, `V = ℝ^Q`, `T = X = τ(M, θ, ξ)`, `f = g`.
+  obtain ⟨S, hSpush, hSint⟩ := hLPF P Q k univ univ isOpen_univ isOpen_univ X g
+    ⟨M, θ, ξ, hM, hθ, hX⟩ (locallyLipschitzOn_univ.2 hg.locallyLipschitz) (mapsTo_univ g univ)
+    fun K hK _ => hprop K hK
+  refine ⟨S, hSpush, hSint, ?_⟩
+  obtain ⟨M', θ', ξ', L', hM', hX', hL', hS⟩ := hSpush
+  intro gj Λ' hgj hgjL hgjg ω
+  -- (II.2)–(II.6): both triples represent `X`, so `Hᵏ(M Δ M') = 0` and `θ = θ'`, `ξ = ξ'`
+  -- `Hᵏ`-a.e. on `M`; in particular `Hᵏ ⌞ M = Hᵏ ⌞ M'`.
+  obtain ⟨hMM', hθξ⟩ := Submission.ltg_tau_unique_on_open P k univ univ isOpen_univ subset_rfl
+    M M' θ θ' ξ ξ' hM hM' fun ω _ => (hX ω).symm.trans (hX' ω)
+  have hrestr : (μHE[k] : Measure (Eucl P)).restrict M =
+      (μHE[k] : Measure (Eucl P)).restrict M' := by
+    refine Measure.restrict_congr_set (measure_symmDiff_eq_zero_iff.1 ?_)
+    simpa only [inter_univ] using hMM'
+  have hθξM : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), θ x = θ' x ∧ ξ x = ξ' x := by
+    simpa only [inter_univ] using hθξ
+  -- (II.7a–b): every weighted tangent space of `(M, θ)` at such `x` is one of `(M', θ')`, so
+  -- `L'` has the derivative property of `d^M g` on `(M, θ)`.
+  have hL : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P),
+      HasWeightedApproximateTangentSpaceAt k M θ x Tx →
+        ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => g (x + t • v)) (L' x v) 0 := by
+    have hL'M := hL'
+    rw [← hrestr] at hL'M
+    filter_upwards [hL'M, hθξM] with x hx hxθξ Tx hTx
+    exact hx Tx (Submission.br_weightedTangent_congr P k M M' θ θ' x univ isOpen_univ
+      (mem_univ x) hMM' (hθξ.mono fun y hy => hy.1) hxθξ.1 Tx hTx)
+  -- (b): `Hᵏ(M \ spt X) = 0` and `g⁻¹(K) ∩ spt X` is compact, so `θ` is integrable on
+  -- `M ∩ g⁻¹(K)` for every compact `K`.
+  have hint : ∀ K : Set (Eucl Q), IsCompact K →
+      IntegrableOn θ (M ∩ g ⁻¹' K) (μHE[k] : Measure (Eucl P)) := by
+    intro K hK
+    refine (hM.integrableOn _ (hprop K hK) (subset_univ _)).mono_set_ae (ae_le_set.2 ?_)
+    refine measure_mono_null ?_ (Submission.lpf_rectifiable_support_null P k univ X M θ ξ hM hX)
+    rintro x ⟨⟨hxM, hxK⟩, hx⟩
+    exact ⟨hxM, fun hxX => hx ⟨hxM, hxK, hxX⟩⟩
+  -- (I): the `C¹` push-forward integrals converge to `∫_M θ ⟨ω(g), L'_# ξ⟩ dHᵏ`.
+  have hconv := Submission.deformation_ipl_chart_convergence P Q k M θ ξ g Λ L' hM hg hL hint
+    gj Λ' hgj hgjL hgjg (ω : DifferentialForm (Eucl Q) k) ω.property.1.1.continuous
+    ω.property.1.2
+  -- (II.7c) and the final display of (II.7): this limit is `S(ω)`.
+  have hlim : ∫ x in M, θ x * nVectorPushforward k (L' x) (ξ x)
+      ((ω : DifferentialForm (Eucl Q) k) (g x)) ∂(μHE[k] : Measure (Eucl P)) = S ω := by
+    rw [hS ω, ← hrestr]
+    refine integral_congr_ae ?_
+    filter_upwards [hθξM] with x hx
+    rw [hx.1, hx.2]
+  rw [← hlim]
+  exact hconv
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
