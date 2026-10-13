@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.lebesgue_rescaled-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "depth": 5,
+  "title": "Lebesgue differentiation theorem in rescaled form",
+  "statement": "Let n ∈ ℕ and let g : ℝⁿ → ℝ be locally integrable with respect to Lebesgue measure Lⁿ (volume on Euclid n). Then for Lⁿ-a.e. v ∈ ℝⁿ: for every R > 0, ∫_{closedBall(0,R)} |g(v + rw) − g(v)| dw → 0 as r ↓ 0.",
+  "lean_statement": "∀ (n : ℕ) (g : Euclid n → ℝ), LocallyIntegrable g volume → ∀ᵐ v ∂(volume : Measure (Euclid n)), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |g (v + r • w) - g v|) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "doraggt_ae_rescaled_lebesgue_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-57d04995e6-a1"
+}
