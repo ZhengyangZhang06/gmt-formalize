@@ -951,6 +951,116 @@ theorem Submission.cbrr_ud_lusin_of_aestronglyMeasurable : ∀ (P : ℕ) {Y : Ty
     _ ≤ μ N + μ ((A \ N) \ K) := measure_union_le _ _
     _ = μ ((A \ N) \ K) := by rw [hN0, zero_add]
     _ < η := hKμ
+/-- **Lusin's theorem**, compact form (Simon 1.17), for a measurable `g : ℝᴾ → Y` into a
+second-countable `Y`.  If `μ(A) < ∞` and `ε ≠ 0`, there is a compact `K ⊆ A` with
+`μ(A \ K) < ε` on which `g` is continuous.  `μ⌞A` is finite, hence inner regular on `ℝᴾ`.  For a
+countable basis `(O_k)` of `Y` and weights `η_k > 0` with `∑ η_k < ε`, choose compact
+`C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)` with defects `< η_k / 2`, and put
+`K = ⋂ₖ (C_k ∪ D_k)`.  On `K`, `g x ∈ O_k ↔ x ∉ D_k`, so every `g⁻¹(O_k) ∩ K` is relatively
+open. -/
+theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < ε ∧ ContinuousOn g K := by
+  intro P Y _ _ _ _ μ A g ε hg hA hμA hε
+  -- `μ⌞A` is finite, hence regular on the σ-compact metric space `ℝᴾ`, so every measurable
+  -- `B ⊆ A` contains a compact `C` with `μ (B \ C) = μ⌞A (B \ C)` arbitrarily small
+  have : IsFiniteMeasure (μ.restrict A) := isFiniteMeasure_restrict.mpr hμA
+  have approx : ∀ B, B ⊆ A → MeasurableSet B → ∀ η : ℝ≥0∞, η ≠ 0 →
+      ∃ C ⊆ B, IsCompact C ∧ μ (B \ C) < η := by
+    intro B hBA hB η hη
+    obtain ⟨C, hCB, hC, hlt⟩ :=
+      hB.exists_isCompact_sdiff_lt (μ := μ.restrict A) (measure_ne_top _ _) hη
+    exact ⟨C, hCB, hC, by rwa [Measure.restrict_eq_self _ (sdiff_subset.trans hBA)] at hlt⟩
+  -- a countable basis `(O_k)` of `Y`, and weights `η_k > 0` with `∑ η_k < ε`
+  obtain ⟨O, hO⟩ := TopologicalSpace.exists_seq_basis Y
+  obtain ⟨η, hη, hηε⟩ := ENNReal.exists_pos_sum_of_countable' hε ℕ
+  have hS : ∀ k, MeasurableSet (g ⁻¹' O k) :=
+    fun k => hg (hO.isOpen (mem_range_self k)).measurableSet
+  -- compact `C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)`, each with defect `< η_k / 2`
+  choose C hCA hC hCμ using fun k =>
+    approx (A ∩ g ⁻¹' O k) inter_subset_left (hA.inter (hS k)) (η k / 2)
+      (ENNReal.half_pos (hη k).ne').ne'
+  choose D hDA hD hDμ using fun k =>
+    approx (A \ g ⁻¹' O k) sdiff_subset (hA.diff (hS k)) (η k / 2)
+      (ENNReal.half_pos (hη k).ne').ne'
+  -- `E_k = C_k ∪ D_k` misses less than `η_k` of `A`
+  have hE : ∀ k, μ (A \ (C k ∪ D k)) < η k := by
+    intro k
+    calc μ (A \ (C k ∪ D k))
+        ≤ μ ((A ∩ g ⁻¹' O k) \ C k ∪ (A \ g ⁻¹' O k) \ D k) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxO : g x ∈ O k
+          · exact Or.inl ⟨⟨hx.1, hxO⟩, fun hxC => hx.2 (Or.inl hxC)⟩
+          · exact Or.inr ⟨⟨hx.1, hxO⟩, fun hxD => hx.2 (Or.inr hxD)⟩
+      _ ≤ μ ((A ∩ g ⁻¹' O k) \ C k) + μ ((A \ g ⁻¹' O k) \ D k) := measure_union_le _ _
+      _ < η k / 2 + η k / 2 := ENNReal.add_lt_add (hCμ k) (hDμ k)
+      _ = η k := ENNReal.add_halves _
+  -- `K = ⋂ₖ E_k` is closed inside the compact `E_0 ⊆ A`
+  refine ⟨⋂ k, (C k ∪ D k), ?_, ?_, ?_, ?_⟩
+  · exact ((hC 0).union (hD 0)).of_isClosed_subset
+      (isClosed_iInter fun k => ((hC k).union (hD k)).isClosed) (iInter_subset _ 0)
+  · exact (iInter_subset _ 0).trans
+      (union_subset ((hCA 0).trans inter_subset_left) ((hDA 0).trans sdiff_subset))
+  · calc μ (A \ ⋂ k, (C k ∪ D k)) = μ (⋃ k, A \ (C k ∪ D k)) := by rw [sdiff_iInter]
+      _ ≤ ∑' k, μ (A \ (C k ∪ D k)) := measure_iUnion_le _
+      _ ≤ ∑' k, η k := ENNReal.tsum_le_tsum fun k => (hE k).le
+      _ < ε := hηε
+  -- on `K`, `g x ∈ O_k ↔ x ∉ D_k`, so `g⁻¹(O_k) ∩ K = D_kᶜ ∩ K` is relatively open
+  · rw [hO.continuousOn_iff]
+    rintro _ ⟨k, rfl⟩
+    refine ⟨(D k)ᶜ, (hD k).isClosed.isOpen_compl, ?_⟩
+    ext x
+    refine ⟨fun ⟨hxO, hxK⟩ => ⟨fun hxD => (hDA k hxD).2 hxO, hxK⟩, fun ⟨hxD, hxK⟩ => ⟨?_, hxK⟩⟩
+    rcases mem_iInter.mp hxK k with hxC | hxD'
+    · exact (hCA k hxC).2
+    · exact absurd hxD' hxD
+
+/-- **Upper semicontinuity of closed-ball mass** (for Egoroff's theorem in Simon Ch. 3, proof of
+Theorem 1.6, (7)–(8)): for a finite measure `μ` on `ℝᴾ`, `ρ ∈ ℝ` and `s ∈ [0, ∞]`, the set
+`{y : s ≤ μ(B̄_ρ(y))}` is closed.  If `yᵢ → y` and `s ≤ μ(B̄_ρ(yᵢ))` for all `i`, the open
+complements `U = B̄_ρ(y)ᶜ` and `Uᵢ = B̄_ρ(yᵢ)ᶜ` satisfy `1_U ≤ liminf 1_{Uᵢ}`, so Fatou's lemma
+gives `μ(U) ≤ liminf μ(Uᵢ) ≤ μ(ℝᴾ) − s`; as `μ` is finite and `s ≤ μ(ℝᴾ)`,
+`μ(B̄_ρ(y)) = μ(ℝᴾ) − μ(U) ≥ s`. -/
+theorem Submission.cbrr_ud_isClosed_closedBall_mass_ge : ∀ (P : ℕ) (μ : Measure (Euclid P)) [IsFiniteMeasure μ] (ρ : ℝ) (s : ℝ≥0∞), IsClosed {y : Euclid P | s ≤ μ (closedBall y ρ)} := by
+  intro P μ _ ρ s
+  -- Step 1: `ℝᴾ` is a sequential space; let `yᵢ → y` with `s ≤ μ(B̄_ρ(yᵢ))` for all `i`
+  refine IsSeqClosed.isClosed fun ys y hys hlim => ?_
+  replace hys : ∀ i, s ≤ μ (closedBall (ys i) ρ) := hys
+  show s ≤ μ (closedBall y ρ)
+  -- Step 2: the complements `U = B̄_ρ(y)ᶜ` and `Uᵢ = B̄_ρ(yᵢ)ᶜ` are open, hence Borel
+  have hU : ∀ x : Euclid P, MeasurableSet (closedBall x ρ)ᶜ :=
+    fun x => measurableSet_closedBall.compl
+  -- Step 3: `1_U ≤ liminf 1_{Uᵢ}`: if `|z − y| > ρ`, then `|z − yᵢ| > ρ` for all large `i`
+  have hpt : ∀ z, (closedBall y ρ)ᶜ.indicator 1 z ≤
+      liminf (fun i => (closedBall (ys i) ρ)ᶜ.indicator (1 : Euclid P → ℝ≥0∞) z) atTop := by
+    intro z
+    by_cases hz : z ∈ closedBall y ρ
+    · rw [indicator_of_notMem (not_not.mpr hz)]
+      exact zero_le
+    · rw [mem_closedBall, not_le] at hz
+      refine le_liminf_of_le (by isBoundedDefault) ?_
+      filter_upwards [(tendsto_const_nhds.dist hlim).eventually (lt_mem_nhds hz)] with i hi
+      rw [indicator_of_mem (not_le.mpr hz), indicator_of_mem (not_le.mpr hi)]
+  -- Step 4: Fatou's lemma gives `μ(U) ≤ liminf μ(Uᵢ)`
+  have hfatou : μ (closedBall y ρ)ᶜ ≤ liminf (fun i => μ (closedBall (ys i) ρ)ᶜ) atTop :=
+    calc μ (closedBall y ρ)ᶜ = ∫⁻ z, (closedBall y ρ)ᶜ.indicator 1 z ∂μ :=
+          (lintegral_indicator_one (hU y)).symm
+      _ ≤ ∫⁻ z, liminf (fun i => (closedBall (ys i) ρ)ᶜ.indicator 1 z) atTop ∂μ :=
+          lintegral_mono hpt
+      _ ≤ liminf (fun i => ∫⁻ z, (closedBall (ys i) ρ)ᶜ.indicator 1 z ∂μ) atTop :=
+          lintegral_liminf_le fun i => measurable_one.indicator (hU (ys i))
+      _ = liminf (fun i => μ (closedBall (ys i) ρ)ᶜ) atTop := by
+          simp_rw [lintegral_indicator_one (hU _)]
+  -- Step 5: `μ(Uᵢ) = μ(ℝᴾ) − μ(B̄_ρ(yᵢ)) ≤ μ(ℝᴾ) − s` for every `i`, so `μ(U) ≤ μ(ℝᴾ) − s`
+  have hUle : μ (closedBall y ρ)ᶜ ≤ μ univ - s := by
+    refine hfatou.trans (liminf_le_of_frequently_le' (Frequently.of_forall fun i => ?_))
+    rw [measure_compl measurableSet_closedBall (measure_ne_top _ _)]
+    exact tsub_le_tsub_left (hys i) _
+  -- Step 6: `s ≤ μ(B̄_ρ(y₀)) ≤ μ(ℝᴾ) < ∞`, so
+  -- `μ(B̄_ρ(y)) = μ(ℝᴾ) − μ(U) ≥ μ(ℝᴾ) − (μ(ℝᴾ) − s) = s`
+  have hs : s ≤ μ univ := (hys 0).trans (measure_mono (subset_univ _))
+  calc s = μ univ - (μ univ - s) := (ENNReal.sub_sub_cancel (measure_ne_top _ _) hs).symm
+    _ ≤ μ univ - μ (closedBall y ρ)ᶜ := tsub_le_tsub_left hUle _
+    _ = μ (closedBall y ρ) := by
+        rw [← measure_compl (hU y) (measure_ne_top _ _), compl_compl]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
