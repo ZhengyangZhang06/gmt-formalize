@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "weighted_tangent|tangent_transfer|blowup_integral|continuity_error|remainder_vanishes|lpf_wtc|HasWeightedApproximateTangentSpaceAt|blowUpMap",
+        "norm_integral_le_lintegral_norm|setIntegral_union₀|theorem integral_add |theorem integral_const_mul |of_ae_sdiff_eq_zero|integrableOn_of_bounded",
+        "theorem tendsto_toReal|lemma tendsto_toReal|theorem top_div_of_ne_top|theorem toReal_mono|theorem toReal_div|theorem lintegral_const_mul\\x27|theorem lintegral_indicator",
+        "lpf_wtc_wtt_blowup_integral_split",
+        "lpf_wtc_wtt_continuity_error_vanishes",
+        "lpf_wtc_wtt_remainder_vanishes",
+        "git log --all --format='%H %s' -S lpf_wtc_wtt -- GMT/Ch06",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Scratch/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-08162f69d6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-08162f69d6/decomposition-v2.json",
+        "/tmp/wtt2_scratch_Eaxecg/Scratch/Full.lean",
+        "/tmp/wtt2_scratch_Eaxecg/Scratch/Chal_blowup_integral_split.lean",
+        "/tmp/wtt2_scratch_Eaxecg/Scratch/Chal_continuity_error_vanishes.lean",
+        "/tmp/wtt2_scratch_Eaxecg/Scratch/Chal_remainder_vanishes.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of inspected library files and compiler inputs. No existing child declarations were found in the project snapshot, current 220-node DAG, or searched Git history. All names are valid bare identifiers. Each exact one-line proposition independently elaborates in comparator scope without its implementation. Independently rerunning Full.lean confirmed all three child proofs use only propext, Classical.choice, and Quot.sound. Its parent assembly proves the exact frozen target relative to the two matching sibling contracts; those sibling stubs remain the assembly's only sorry dependencies. The split appropriately isolates three substantive analytic obligations. Their empty dependency lists are correct, and inherited prerequisite edges are acyclic. Together with the declared siblings, their conclusions establish the selected weighted tangent theorem. No matrix-unit constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_integral_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match with all hypotheses explicit. Compact support localizes the integrands; local integrability and finite measure establish every integrability needed for extension by zero and integral additivity. Null-measurability and inclusion justify the disjoint partition. The supplied proof establishes the exact eventual identity without circular reliance."
+    },
+    {
+      "key": "continuity_error_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated generality, including no membership or integrability assumption. The proof correctly combines within-set continuity, the rescaled density bound, and restricted almost-everywhere membership. It establishes a finite lintegral upper bound before applying toReal monotonicity. The explicit epsilon choice completes convergence, including zero constants and n = 0."
+    },
+    {
+      "key": "remainder_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. The density limit yields eventual finiteness of the localized lintegral. Nonnegativity on the null-measurable set gives the required norm bound; indicator integration and finite constant extraction require no measurability of the weight. The unconditional Bochner bound, justified toReal conversion, exact rescaling, and squeeze argument prove the stated limit without integrability or circular assumptions."
+    }
+  ],
+  "required_changes": []
+}
