@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0a81c27f6c8ed00730a08ef35ca1972e39a9346fec62587b432f565a76b042d2",
+  "git_delta": {
+    "base_commit": "ac67cd9f75ba0f6762267ca1ccb55e597ff3b0b4",
+    "candidate_commit": "8f220efff156e3270a4d358b9ffa8961121fbc5d",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "90fcd369f1e1acaef8cc2c6f7d5a4d66f9fa3ea53f30fc70e7c0309df953fe3e",
+    "source_sha256": "becf31b9680e4c8864833bf90eefd51952e2a7aa0b77ebda899588ebdb48affa",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_integer_multiplicity_ae",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → IsIntegerMultiplicity T → ∀ᵐ t ∂(volume : Measure ℝ), ∀ S : GeometricCurrentOn U m, IsSlice T f t S → IsIntegerMultiplicity S",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
