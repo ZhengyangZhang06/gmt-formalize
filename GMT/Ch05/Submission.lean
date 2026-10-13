@@ -458,6 +458,92 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): difference-quotient bounds.**
+Let `g` be differentiable on an open `U ⊇ B_{4R}(x̄)` with `‖Dg‖ ≤ S` and
+`‖Dg(z) − Dg(w)‖ ≤ H ‖z − w‖^α` on `B_{4R}(x̄)`.  If `‖e‖ ≤ 1` and `0 < |d| < R`, then on
+`B̆_{2R}(x̄)` the difference quotient `d⁻¹ (g(x + d e) − g(x))` is bounded by `S` and is
+`α`-Hölder with constant `H`.
+Proof: for `z ∈ B̆_{2R}(x̄)` and `|s| ≤ |d|`, `z + s e ∈ B_{4R}(x̄) ⊆ U`.  The mean value inequality
+on this convex ball gives `‖g(x + d e) − g(x)‖ ≤ S |d|`.  For the second bound,
+`h(s) = g(x + s e) − g(y + s e)` has `‖h'(s)‖ = ‖(Dg(x + s e) − Dg(y + s e)) e‖ ≤ H ‖x − y‖^α`
+for `s` between `0` and `d`, so `‖h(d) − h(0)‖ ≤ H ‖x − y‖^α |d|`; divide by `|d|`. -/
+theorem dohr_eb_lhr_dqub_dq_mean_value : ∀ (E F : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] (α : ℝ) (U : Set E) (g : E → F) (xb e : E) (R S H d : ℝ), IsOpen U → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → DifferentiableOn ℝ g U → (∀ z ∈ closedBall xb (4 * R), ‖fderiv ℝ g z‖ ≤ S) → (∀ z ∈ closedBall xb (4 * R), ∀ w ∈ closedBall xb (4 * R), ‖fderiv ℝ g z - fderiv ℝ g w‖ ≤ H * ‖z - w‖ ^ α) → d ≠ 0 → |d| < R → ∀ x ∈ ball xb (2 * R), ∀ y ∈ ball xb (2 * R), ‖d⁻¹ • (g (x + d • e) - g x)‖ ≤ S ∧ ‖d⁻¹ • (g (x + d • e) - g x) - d⁻¹ • (g (y + d • e) - g y)‖ ≤ H * ‖x - y‖ ^ α := by
+  intro E F _ _ _ _ α U g xb e R S H d hU hKU he hg hS hH hd hdR x hx y hy
+  have hdpos : 0 < |d| := abs_pos.mpr hd
+  -- Step 2: for `z ∈ ball xb (2 * R)` and `|s| ≤ |d|`, `z + s • e ∈ closedBall xb (4 * R)`.
+  have hgeo : ∀ z ∈ ball xb (2 * R), ∀ s : ℝ, |s| ≤ |d| → z + s • e ∈ closedBall xb (4 * R) := by
+    intro z hz s hs
+    rw [mem_ball, dist_eq_norm] at hz
+    rw [mem_closedBall, dist_eq_norm]
+    have hse : ‖s • e‖ ≤ |d| := by
+      rw [norm_smul, Real.norm_eq_abs]
+      calc |s| * ‖e‖ ≤ |d| * 1 := mul_le_mul hs he (norm_nonneg e) (abs_nonneg d)
+        _ = |d| := mul_one _
+    calc ‖z + s • e - xb‖ = ‖(z - xb) + s • e‖ := by congr 1; abel
+      _ ≤ ‖z - xb‖ + ‖s • e‖ := norm_add_le _ _
+      _ ≤ 4 * R := by linarith [abs_nonneg d]
+  -- Step 3: `g` is differentiable at every point of `closedBall xb (4 * R) ⊆ U`.
+  have hdiff : ∀ z ∈ closedBall xb (4 * R), DifferentiableAt ℝ g z := fun z hz =>
+    (hg z (hKU hz)).differentiableAt (hU.mem_nhds (hKU hz))
+  have hx0 : x ∈ closedBall xb (4 * R) := by
+    have h := hgeo x hx 0 (by simp)
+    rwa [zero_smul, add_zero] at h
+  constructor
+  · -- Step 4: part (a), the mean value inequality on `closedBall xb (4 * R)`.
+    have hmv : ‖g (x + d • e) - g x‖ ≤ S * ‖x + d • e - x‖ :=
+      (convex_closedBall xb (4 * R)).norm_image_sub_le_of_norm_fderiv_le hdiff hS hx0
+        (hgeo x hx d le_rfl)
+    have hS0 : 0 ≤ S := (norm_nonneg _).trans (hS x hx0)
+    have hde : ‖d • e‖ ≤ |d| := by
+      rw [norm_smul, Real.norm_eq_abs]
+      exact mul_le_of_le_one_right (abs_nonneg d) he
+    rw [add_sub_cancel_left] at hmv
+    rw [norm_smul, norm_inv, Real.norm_eq_abs, inv_mul_le_iff₀ hdpos]
+    calc ‖g (x + d • e) - g x‖ ≤ S * ‖d • e‖ := hmv
+      _ ≤ S * |d| := mul_le_mul_of_nonneg_left hde hS0
+      _ = |d| * S := mul_comm _ _
+  · -- Steps 5–8: part (b), the mean value inequality for `s ↦ g (x + s • e) - g (y + s • e)`.
+    have hI : ∀ s ∈ uIcc (0 : ℝ) d, |s| ≤ |d| := by
+      intro s hs
+      simpa using Set.abs_sub_left_of_mem_uIcc hs
+    have hlin : ∀ (z : E) (s : ℝ), HasDerivAt (fun σ : ℝ => z + σ • e) e s := by
+      intro z s
+      simpa using ((hasDerivAt_id s).smul_const e).const_add z
+    have hderiv : ∀ s ∈ uIcc (0 : ℝ) d, HasDerivWithinAt
+        (fun σ : ℝ => g (x + σ • e) - g (y + σ • e))
+        (fderiv ℝ g (x + s • e) e - fderiv ℝ g (y + s • e) e) (uIcc (0 : ℝ) d) s := by
+      intro s hs
+      have hxs := hdiff _ (hgeo x hx s (hI s hs))
+      have hys := hdiff _ (hgeo y hy s (hI s hs))
+      exact ((hxs.hasFDerivAt.comp_hasDerivAt s (hlin x s)).sub
+        (hys.hasFDerivAt.comp_hasDerivAt s (hlin y s))).hasDerivWithinAt
+    have hbound : ∀ s ∈ uIcc (0 : ℝ) d,
+        ‖fderiv ℝ g (x + s • e) e - fderiv ℝ g (y + s • e) e‖ ≤ H * ‖x - y‖ ^ α := by
+      intro s hs
+      have hxy : x + s • e - (y + s • e) = x - y := add_sub_add_right_eq_sub x y (s • e)
+      calc ‖fderiv ℝ g (x + s • e) e - fderiv ℝ g (y + s • e) e‖
+          = ‖(fderiv ℝ g (x + s • e) - fderiv ℝ g (y + s • e)) e‖ := by rw [sub_apply]
+        _ ≤ ‖fderiv ℝ g (x + s • e) - fderiv ℝ g (y + s • e)‖ * ‖e‖ :=
+            ContinuousLinearMap.le_opNorm _ _
+        _ ≤ ‖fderiv ℝ g (x + s • e) - fderiv ℝ g (y + s • e)‖ :=
+            mul_le_of_le_one_right (norm_nonneg _) he
+        _ ≤ H * ‖x + s • e - (y + s • e)‖ ^ α :=
+            hH _ (hgeo x hx s (hI s hs)) _ (hgeo y hy s (hI s hs))
+        _ = H * ‖x - y‖ ^ α := by rw [hxy]
+    have hmv := (convex_uIcc (0 : ℝ) d).norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
+      Set.left_mem_uIcc Set.right_mem_uIcc
+    simp only [zero_smul, add_zero, sub_zero, Real.norm_eq_abs] at hmv
+    have hrw : d⁻¹ • (g (x + d • e) - g x) - d⁻¹ • (g (y + d • e) - g y) =
+        d⁻¹ • ((g (x + d • e) - g (y + d • e)) - (g x - g y)) := by
+      rw [← smul_sub]; congr 1; abel
+    rw [hrw, norm_smul, norm_inv, Real.norm_eq_abs, inv_mul_le_iff₀ hdpos]
+    calc ‖(g (x + d • e) - g (y + d • e)) - (g x - g y)‖ ≤ H * ‖x - y‖ ^ α * |d| := hmv
+      _ = |d| * (H * ‖x - y‖ ^ α) := mul_comm _ _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
