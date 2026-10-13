@@ -613,6 +613,147 @@ theorem allard52_am_radial_identity : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V
   -- Step 7: integrals of `μ_V`-a.e. equal functions agree.
   rw [← key]
   exact integral_congr_ae hae
+/-- **Simon Ch. 4, §3 (p. 90) and 4.7 (p. 94)**: the radial cutoffs of the monotonicity argument,
+with `ε ↓ 0`.  There are `C¹` nonincreasing `φ k : ℝ → [0, 1]` with `φ k = 1` on `(-∞, 1]` and
+`φ k = 0` on `[1 + ε k, ∞)`, where `0 < ε k ≤ 1` and `ε k → 0`.
+With `S = Real.smoothTransition` (`C^∞`, monotone, `[0, 1]`-valued, `0` on `(-∞, 0]` and `1` on
+`[1, ∞)`) take `ε k = 1 / (k + 2)` and `φ k u = 1 - S ((u - 1) (k + 2))`: the argument
+`(u - 1) (k + 2)` is `≤ 0` for `u ≤ 1` and `≥ 1` for `u ≥ 1 + ε k`. -/
+theorem allard52_amcl_cutoff_sequence : ∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), (∀ k, 0 < ε k ∧ ε k ≤ 1) ∧ Tendsto ε atTop (𝓝 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, Antitone (φ k)) ∧ (∀ k u, 0 ≤ φ k u ∧ φ k u ≤ 1) ∧ (∀ k u, u ≤ 1 → φ k u = 1) ∧ (∀ k u, 1 + ε k ≤ u → φ k u = 0) := by
+  have hk : ∀ k : ℕ, (0 : ℝ) < (k : ℝ) + 2 := fun k => by positivity
+  refine ⟨fun k u => 1 - Real.smoothTransition ((u - 1) * ((k : ℝ) + 2)),
+    fun k => 1 / ((k : ℝ) + 2), fun k => ⟨by positivity, ?_⟩, ?_, fun k => ?_, fun k u v huv => ?_,
+    fun k u => ⟨?_, ?_⟩, fun k u hu => ?_, fun k u hu => ?_⟩
+  -- (a) `ε k ≤ 1 / 2 ≤ 1`
+  · rw [div_le_one (hk k)]
+    linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  -- (b) `ε k → 0` since `k + 2 → ∞`
+  · exact tendsto_const_nhds.div_atTop
+      (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+  -- (c) a constant minus `S` composed with an affine map
+  · exact contDiff_const.sub (Real.smoothTransition.contDiff.comp
+      ((contDiff_id.sub contDiff_const).mul contDiff_const))
+  -- (d) `u ≤ v` gives `(u - 1) (k + 2) ≤ (v - 1) (k + 2)`, and `S` is monotone
+  · exact sub_le_sub_left (Real.smoothTransition.monotone
+      (mul_le_mul_of_nonneg_right (sub_le_sub_right huv 1) (hk k).le)) 1
+  -- (e) `0 ≤ S ≤ 1`
+  · exact sub_nonneg.2 (Real.smoothTransition.le_one _)
+  · exact sub_le_self _ (Real.smoothTransition.nonneg _)
+  -- (f) `u ≤ 1` makes the argument `≤ 0`, where `S = 0`
+  · dsimp only
+    rw [Real.smoothTransition.zero_of_nonpos
+      (mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 hu) (hk k).le), sub_zero]
+  -- (g) `u ≥ 1 + ε k` makes the argument `≥ 1`, where `S = 1`
+  · dsimp only at hu ⊢
+    have h1 : 1 / ((k : ℝ) + 2) ≤ u - 1 := by linarith
+    rw [div_le_iff₀ (hk k)] at h1
+    rw [Real.smoothTransition.one_of_one_le h1, sub_self]
+/-- **Simon Ch. 4, 4.7–4.8 (p. 94)**: the `ε ↓ 0` limit of the cutoff integrals over `(0, t]`.
+With `β = n / p ∈ [0, 1)` and `κ = (p - n) / (4p)`, the majorant `2κΛR⁻¹ (τ / R)^{-β}` equals
+`C τ^{-β}` with `C = 2κΛR⁻¹ R^β`; it is integrable on `[0, t]` with integral
+`C t^{1-β} / (1 - β) = (Λ / 2) (t / R)^{1-β}`, since `2κ / (1 - β) = 1 / 2`.  Dominated convergence
+gives the limit, and the eventual bound `|∫₀ᵗ a k| ≤ ∫₀ᵗ C τ^{-β}` passes to it. -/
+theorem allard52_amcl_interval_limit : ∀ (n : ℕ) (p R Λ t : ℝ) (a : ℕ → ℝ → ℝ) (g : ℝ → ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < t → (∀ᶠ k in atTop, ∀ τ : ℝ, 0 < τ → τ ≤ t → ContinuousAt (a k) τ ∧ |a k τ| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (τ / R) ^ (-((n : ℝ) / p))) → (∀ τ : ℝ, 0 < τ → τ ≤ t → Tendsto (fun k => a k τ) atTop (𝓝 (g τ))) → Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (∫ τ in (0)..t, g τ)) ∧ |∫ τ in (0)..t, g τ| ≤ Λ / 2 * (t / R) ^ (1 - (n : ℝ) / p) := by
+  intro n p R Λ t a g hnp hR _hΛ ht hev hlim
+  have hp : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hnp
+  set β : ℝ := (n : ℝ) / p with hβ
+  have hβ1 : β < 1 := (div_lt_one hp).2 hnp
+  set C : ℝ := 2 * ((p - n) / (4 * p)) * Λ / R * R ^ β with hC
+  -- (1) the majorant is `C τ^{-β}` for `τ ≥ 0`
+  have hb_eq : ∀ τ : ℝ, 0 ≤ τ →
+      2 * ((p - n) / (4 * p)) * Λ / R * (τ / R) ^ (-β) = C * τ ^ (-β) := by
+    intro τ hτ
+    rw [Real.div_rpow hτ hR.le, Real.rpow_neg hR.le, div_inv_eq_mul, hC]
+    ring
+  have hI : uIoc (0 : ℝ) t = Ioc 0 t := uIoc_of_le ht.le
+  -- (2) `C τ^{-β}` is integrable on `[0, t]` since `-β > -1`
+  have hb_int : IntervalIntegrable (fun τ => C * τ ^ (-β)) volume 0 t :=
+    (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul C
+  -- (3) its integral is `C t^{1-β} / (1 - β) = (Λ / 2) (t / R)^{1-β}`, as `0^{1-β} = 0`
+  have hb_val : ∫ τ in (0 : ℝ)..t, C * τ ^ (-β) = Λ / 2 * (t / R) ^ (1 - β) := by
+    have h1β : 1 - β ≠ 0 := by linarith
+    rw [intervalIntegral.integral_const_mul, integral_rpow (Or.inl (by linarith)), neg_add_eq_sub,
+      Real.zero_rpow h1β, sub_zero, Real.div_rpow ht.le hR.le, Real.rpow_sub hR, Real.rpow_one, hC]
+    have hpn : p - n ≠ 0 := by linarith
+    have h1β' : 1 - β = (p - n) / p := by rw [hβ]; field_simp
+    rw [h1β']
+    have hRβ : R ^ β ≠ 0 := (Real.rpow_pos_of_pos hR β).ne'
+    generalize t ^ ((p - n) / p) = T
+    field_simp
+    ring
+  -- (4) dominated convergence on `Ι 0 t = (0, t]`: eventually `a k` is continuous there, hence
+  -- measurable, and dominated by `C τ^{-β}`
+  have hmeas : ∀ᶠ k in atTop, AEStronglyMeasurable (a k) (volume.restrict (uIoc 0 t)) := by
+    filter_upwards [hev] with k hk
+    rw [hI]
+    exact ContinuousOn.aestronglyMeasurable
+      (fun τ hτ => (hk τ hτ.1 hτ.2).1.continuousWithinAt) measurableSet_Ioc
+  have hbound : ∀ᶠ k in atTop, ∀ᵐ τ ∂volume, τ ∈ uIoc 0 t → ‖a k τ‖ ≤ C * τ ^ (-β) := by
+    filter_upwards [hev] with k hk
+    refine Eventually.of_forall (fun τ hτ => ?_)
+    rw [hI] at hτ
+    rw [Real.norm_eq_abs, ← hb_eq τ hτ.1.le]
+    exact (hk τ hτ.1 hτ.2).2
+  have hlim' : ∀ᵐ τ ∂volume, τ ∈ uIoc 0 t → Tendsto (fun k => a k τ) atTop (𝓝 (g τ)) := by
+    refine Eventually.of_forall (fun τ hτ => ?_)
+    rw [hI] at hτ
+    exact hlim τ hτ.1 hτ.2
+  have hT : Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (∫ τ in (0)..t, g τ)) :=
+    intervalIntegral.tendsto_integral_filter_of_dominated_convergence _ hmeas hbound hb_int hlim'
+  refine ⟨hT, ?_⟩
+  -- (5) eventually `|∫₀ᵗ a k| ≤ ∫₀ᵗ C τ^{-β}`, and this passes to the limit
+  have hk_le : ∀ᶠ k in atTop, |∫ τ in (0)..t, a k τ| ≤ ∫ τ in (0 : ℝ)..t, C * τ ^ (-β) := by
+    filter_upwards [hbound] with k hk
+    rw [← Real.norm_eq_abs]
+    refine intervalIntegral.norm_integral_le_of_norm_le ht.le ?_ hb_int
+    filter_upwards [hk] with τ hτ h
+    exact hτ (hI ▸ h)
+  rw [← hb_val]
+  exact le_of_tendsto hT.abs hk_le
+/-- **Simon Ch. 4, 4.7 (p. 94)**: the limit `ε ↓ 0` of "integrating from `σ` to `ρ` and letting
+`ε ↓ 0`", for any `g : ℝ^{n+ℓ} → [0, ∞]` (no measurability is needed).  If `s > 0`, `ε k → 0`,
+`c k → L` and eventually `∫_{B_r(y) \ B̆_{(1 + ε k) s}(y)} g dμ ≤ c k`, then
+`∫_{B_r(y) \ B_s(y)} g dμ ≤ L`.
+The sets `D j = B_r(y) \ B̆_{(1 + 1 / (j + 1)) s}(y)` increase to `B_r(y) \ B_s(y)` (Archimedean
+property), and each `D j` eventually lies in `B_r(y) \ B̆_{(1 + ε k) s}(y)`, so `∫_{D j} g ≤ L`;
+the lower integral is continuous along directed countable unions
+(`setLIntegral_iUnion_of_directed`). -/
+theorem allard52_amcl_annular_lintegral_le : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ≥0∞) (y : Amb n ℓ) (ε c : ℕ → ℝ) (s r L : ℝ), 0 < s → Tendsto ε atTop (𝓝 0) → Tendsto c atTop (𝓝 L) → (∀ᶠ k in atTop, ∫⁻ x in closedBall y r \ ball y ((1 + ε k) * s), g x ∂μ ≤ ENNReal.ofReal (c k)) → ∫⁻ x in closedBall y r \ closedBall y s, g x ∂μ ≤ ENNReal.ofReal L := by
+  intro n ℓ μ g y ε c s r L hs hε hc hbound
+  set D : ℕ → Set (Amb n ℓ) := fun j => closedBall y r \ ball y ((1 + 1 / ((j : ℝ) + 1)) * s)
+  -- the `D j` increase, since `1 / (j + 1)` decreases
+  have hmono : Monotone D := by
+    intro i j hij x hx
+    simp only [D, Set.mem_sdiff, mem_closedBall, mem_ball, not_lt] at hx ⊢
+    refine ⟨hx.1, le_trans ?_ hx.2⟩
+    gcongr
+  -- `⋃ j, D j = B_r(y) \ B_s(y)`: if `s < |x - y|`, pick `1 / (j + 1) < (|x - y| - s) / s`
+  have hU : closedBall y r \ closedBall y s = ⋃ j, D j := by
+    ext x
+    simp only [D, Set.mem_sdiff, mem_closedBall, mem_ball, not_le, not_lt, mem_iUnion]
+    constructor
+    · rintro ⟨hxr, hxs⟩
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt (div_pos (sub_pos.2 hxs) hs)
+      refine ⟨j, hxr, ?_⟩
+      rw [lt_div_iff₀ hs] at hj
+      linarith
+    · rintro ⟨j, hxr, hxj⟩
+      refine ⟨hxr, lt_of_lt_of_le ?_ hxj⟩
+      have : 0 < 1 / ((j : ℝ) + 1) := by positivity
+      nlinarith
+  rw [hU, setLIntegral_iUnion_of_directed _ hmono.directed_le]
+  refine iSup_le fun j => ?_
+  have hδ : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+  -- eventually `ε k < 1 / (j + 1)`, so `D j ⊆ B_r(y) \ B̆_{(1 + ε k) s}(y)`
+  have hev : ∀ᶠ k in atTop, ∫⁻ x in D j, g x ∂μ ≤ ENNReal.ofReal (c k) := by
+    filter_upwards [hbound, hε.eventually (eventually_lt_nhds hδ)] with k hk hεk
+    refine le_trans (lintegral_mono_set ?_) hk
+    intro x hx
+    simp only [D, Set.mem_sdiff, mem_closedBall, mem_ball, not_lt] at hx ⊢
+    refine ⟨hx.1, le_trans ?_ hx.2⟩
+    gcongr
+  -- `ofReal (c k) → ofReal L`
+  exact ge_of_tendsto (ENNReal.tendsto_ofReal hc) hev
 /-- **Simon Ch. 4, 4.2** (the scaled `Lᵖ` condition on the mean curvature).  Let `p > n`,
 `R, Λ > 0`, `t ≤ R`, `κ = (p − n)/(4p)` and `Q_s = ∫_{B_s(y)} |H|ᵖ dμ ∈ [0, ∞]`.  If
 `(R^{p−n} Q_R)^{1/p} ≤ κ Λ` in `[0, ∞]`, then `Q_t < ∞` and `Q_t^{1/p} ≤ κ Λ R^{n/p − 1}`.
@@ -1576,6 +1717,66 @@ theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧
 
 namespace Submission
 
+theorem allard52_amcl_radial_cutoff_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ) (R t : ℝ), 0 < t → t < R → IntegrableOn f (closedBall y R) μ → (∀ k, Continuous (φ k)) → (∀ k u, 0 ≤ φ k u ∧ φ k u ≤ 1) → (∀ k u, u ≤ 1 → φ k u = 1) → (∀ k u, 1 + ε k ≤ u → φ k u = 0) → Tendsto ε atTop (𝓝 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall y t, f x ∂μ)) := by
+  intro n ℓ μ f y φ ε R t ht htR hf hφc hφb hφ1 hφ0 hε
+  -- Step 1: eventually `ε k < R / t - 1`, i.e. `(1 + ε k) t < R`.
+  have hδ : 0 < R / t - 1 := by
+    rw [sub_pos, one_lt_div ht]
+    exact htR
+  have hev : ∀ᶠ k in atTop, ε k < R / t - 1 := hε.eventually (gt_mem_nhds hδ)
+  -- Step 2: for such `k` the integrand vanishes off `B_R(y)`, so the whole-space integral is the
+  -- integral against `ν = μ ⌞ B_R(y)` (no integrability needed).
+  have heq : ∀ᶠ k in atTop, ∫ x in closedBall y R, φ k (‖x - y‖ / t) * f x ∂μ =
+      ∫ x, φ k (‖x - y‖ / t) * f x ∂μ := by
+    filter_upwards [hev] with k hk
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    have hkt : (1 + ε k) * t < R := (lt_div_iff₀ ht).1 (by linarith)
+    have hk1 : 1 + ε k ≤ ‖x - y‖ / t := by
+      rw [le_div_iff₀ ht]
+      linarith
+    rw [hφ0 k _ hk1, zero_mul]
+  -- Step 3: the target is the `ν`-integral of `1_{B_t(y)} f`, since `B_t(y) ⊆ B_R(y)`.
+  have htarget : ∫ x in closedBall y R, (closedBall y t).indicator f x ∂μ =
+      ∫ x in closedBall y t, f x ∂μ := by
+    rw [integral_indicator measurableSet_closedBall,
+      Measure.restrict_restrict_of_subset (closedBall_subset_closedBall htR.le)]
+  -- Steps 4-5: dominated convergence for `ν` with dominating function `‖f‖`.
+  have hdct : Tendsto (fun k => ∫ x in closedBall y R, φ k (‖x - y‖ / t) * f x ∂μ) atTop
+      (𝓝 (∫ x in closedBall y R, (closedBall y t).indicator f x ∂μ)) := by
+    refine tendsto_integral_of_dominated_convergence (fun x => ‖f x‖) (fun k => ?_) hf.norm
+      (fun k => ?_) ?_
+    · -- (b) measurability: `x ↦ φ k (‖x - y‖ / t)` is continuous and `f` is `ν`-integrable.
+      exact (((hφc k).comp ((continuous_norm.comp
+        (continuous_id.sub continuous_const)).div_const t)).aestronglyMeasurable).mul
+        hf.aestronglyMeasurable
+    · -- (c) domination: `0 ≤ φ k ≤ 1`.
+      refine Eventually.of_forall (fun x => ?_)
+      have hb := hφb k (‖x - y‖ / t)
+      rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg hb.1]
+      exact mul_le_of_le_one_left (norm_nonneg _) hb.2
+    · -- (d) pointwise limit `1_{B_t(y)} f`.
+      refine Eventually.of_forall (fun x => ?_)
+      by_cases hx : x ∈ closedBall y t
+      · rw [indicator_of_mem hx]
+        rw [mem_closedBall, dist_eq_norm] at hx
+        have hle : ‖x - y‖ / t ≤ 1 := (div_le_one ht).2 hx
+        have h1 : ∀ k, φ k (‖x - y‖ / t) * f x = f x := fun k => by
+          rw [hφ1 k _ hle, one_mul]
+        simp only [h1]
+        exact tendsto_const_nhds
+      · rw [indicator_of_notMem hx]
+        rw [mem_closedBall, dist_eq_norm, not_le] at hx
+        have hu : 1 < ‖x - y‖ / t := (one_lt_div ht).2 hx
+        have hev2 : ∀ᶠ k in atTop, ε k < ‖x - y‖ / t - 1 :=
+          hε.eventually (gt_mem_nhds (by linarith))
+        apply tendsto_const_nhds.congr'
+        filter_upwards [hev2] with k hk
+        rw [hφ0 k _ (by linarith), zero_mul]
+  -- Step 6: conclusion.
+  rw [← htarget]
+  exact hdct.congr' heq
 theorem allard52_am_fc_cutoff_facts : ∀ (φ : ℝ → ℝ) (ε : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → (∀ u : ℝ, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u : ℝ, deriv φ u ≤ 0) ∧ (∀ u : ℝ, 1 + ε < u → deriv φ u = 0) ∧ Continuous (deriv φ) ∧ ∃ C : ℝ, ∀ u : ℝ, |deriv φ u| ≤ C := by
   intro φ ε hε hφ hanti h1 h0
   -- Step 1: `0 ≤ φ ≤ 1`, by monotonicity and the boundary values `φ (1 + ε) = 0`, `φ 1 = 1`.
@@ -1812,6 +2013,144 @@ theorem allard52_am_fixed_cutoff : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (
     rw [intervalIntegral.integral_const_mul, ← hIF] at hmono
     exact (Submission.allard52_am_annular_tonelli n ℓ μ w y φ R ε s r hε hμR hw hw01 hφ hanti hφ1
       hφ0 hs hsr hrR).trans (ENNReal.ofReal_le_ofReal hmono)
+
+/-- **Simon Ch. 4, 4.5–4.8** (steps 1 and 5–9 of the annular monotonicity argument: the passage
+`ε → 0` in the radial cutoff).  Let `n ≥ 1`, `p > n`, `R > 0`, `0 < Λ ≤ 1`, `κ = (p − n)/(4p)`;
+let `μ(B_R(y)) < ∞`, `H` be `μ`-integrable on `B_R(y)` with `(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ)^{1/p} ≤ κΛ`,
+`0 ≤ w ≤ 1` `μ`-a.e. in `B̆_R(y)`, and assume the radial first-variation identity for all `C¹`
+cutoffs.  Then some `F` (here `F = exp(−G)`, `G(t) = ∫₀ᵗ a₀`,
+`a₀(t) = t^{−n−1} ∫_{B_t(y)} (x − y)·H dμ / (1 + t^{−n} μ(B_t(y)))`) satisfies, with
+`Φ(r) = F(r) r^{−n} μ(B_r(y)) + F(r) − 1`:
+(i) `e^{−Λ} ≤ F ≤ e^{Λ}` and `|F(r) − 1| ≤ Λ (r/R)^{1−n/p}` on `(0, R)`;
+(ii) `Φ` is nondecreasing on `(0, R)`, and
+`∫_{B_r(y) \ B_s(y)} w/|x − y|ⁿ dμ ≤ e^{Λ} (Φ(r) − Φ(s))` for `0 < s ≤ r < R`.
+Proof: `allard52_am_fixed_cutoff` for the cutoffs `φ k` of `allard52_amcl_cutoff_sequence`
+gives the bound `|a_k| ≤ 2κΛR⁻¹(τ/R)^{−n/p}`, the monotonicity of
+`Φ̃_k = exp(−∫₀ a_k)(1 + I_k/tⁿ)` and the per-`k` annular estimate; dominated convergence
+(`allard52_amcl_radial_cutoff_tendsto`) gives `I_k(t) → μ(B_t(y))`, `E_k(t) → E₀(t)`, hence
+`a_k(t) → a₀(t)`; `allard52_amcl_interval_limit` gives `∫₀ᵗ a_k → G(t)` and
+`|G(t)| ≤ (Λ/2)(t/R)^{1−n/p}`, whence (i) by `|eᶻ − 1| ≤ 2|z|`; the monotonicity passes to the
+limit, and Fatou's lemma (`allard52_amcl_annular_lintegral_le`) gives the annular bound with
+`e^{Λ/2} ≤ e^{Λ}`. -/
+theorem allard52_am_cutoff_limit : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R Λ : ℝ), 0 < R → 0 < Λ → Λ ≤ 1 → μ (closedBall y R) < ⊤ → IntegrableOn H (closedBall y R) μ → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → (∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ < R → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - w x)) ∂μ = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → ∃ F : ℝ → ℝ, (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p)) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1 ∧ ∫⁻ x in closedBall y r \ closedBall y s, ENNReal.ofReal (w x / ‖x - y‖ ^ n) ∂μ ≤ ENNReal.ofReal (Real.exp Λ * ((F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) - (F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1)))) := by
+  intro n ℓ hn p hp μ H w y R Λ hR hΛ hΛ1 hμR hH hHp hw hw01 hrad
+  -- Steps 1–2: `C¹` nonincreasing cutoffs, `1` on `(-∞, 1]` and `0` on `[1 + ε k, ∞)`, `ε k → 0`.
+  obtain ⟨φ, ε, hε, hεt, hφC, hφA, hφ01, hφ1, hφ0⟩ := Submission.allard52_amcl_cutoff_sequence
+  -- The cutoff quantities `I_k, E_k, a_k` and their limits `m, E₀, a₀, G` and `F = exp(−G)`.
+  obtain ⟨I, hI⟩ : ∃ I : ℕ → ℝ → ℝ, ∀ k t, I k t = ∫ x, φ k (‖x - y‖ / t) ∂μ :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨E, hE⟩ : ∃ E : ℕ → ℝ → ℝ, ∀ k t,
+      E k t = ∫ x, φ k (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨a, ha⟩ : ∃ a : ℕ → ℝ → ℝ, ∀ k t, a k t = E k t / t ^ (n + 1) / (1 + I k t / t ^ n) :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨m, hm⟩ : ∃ m : ℝ → ℝ, ∀ t, m t = (μ (closedBall y t)).toReal := ⟨_, fun _ => rfl⟩
+  obtain ⟨E₀, hE₀⟩ : ∃ E₀ : ℝ → ℝ, ∀ t,
+      E₀ t = ∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ := ⟨_, fun _ => rfl⟩
+  obtain ⟨a₀, ha₀⟩ : ∃ a₀ : ℝ → ℝ, ∀ t, a₀ t = E₀ t / t ^ (n + 1) / (1 + m t / t ^ n) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨G, hG⟩ : ∃ G : ℝ → ℝ, ∀ t, G t = ∫ τ in (0)..t, a₀ τ := ⟨_, fun _ => rfl⟩
+  obtain ⟨F, hF⟩ : ∃ F : ℝ → ℝ, ∀ t, F t = Real.exp (-G t) := ⟨_, fun _ => rfl⟩
+  -- Step 3: `fixed_cutoff` for every `k`, the radial identity being the hypothesis at `T = 1 + ε k`.
+  have hfix := fun k => Submission.allard52_am_fixed_cutoff n ℓ hn p hp μ H w y R Λ (ε k) (φ k)
+    (I k) (E k) (a k) hR hΛ (hε k).1 (hε k).2 hμR hH hHp hw hw01 (hφC k) (hφA k) (hφ1 k)
+    (hφ0 k) (fun ρ hρ hρR => hrad (φ k) (1 + ε k) ρ (hφC k) (hφ1 k) (hφ0 k) hρ hρR) (hI k)
+    (hE k) (ha k)
+  -- `(1 + ε k) t < R` for all large `k`, whenever `t < R`.
+  have hev : ∀ t, t < R → ∀ᶠ k in atTop, (1 + ε k) * t < R := by
+    intro t ht
+    have h : Tendsto (fun k => (1 + ε k) * t) atTop (𝓝 ((1 + 0) * t)) :=
+      (hεt.const_add 1).mul_const t
+    rw [add_zero, one_mul] at h
+    exact h.eventually (eventually_lt_nhds ht)
+  -- Step 5: dominated convergence at a fixed radius `t ∈ (0, R)`.
+  have hint1 : IntegrableOn (fun _ => (1 : ℝ)) (closedBall y R) μ := integrableOn_const hμR.ne
+  have hintH : IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y R) μ := by
+    refine Integrable.mono' ((Integrable.norm hH).const_mul R)
+      ((continuous_inner (𝕜 := ℝ)).comp_aestronglyMeasurable
+        ((continuous_sub_right y).aestronglyMeasurable.prodMk
+          (Integrable.aestronglyMeasurable hH))) ?_
+    filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+    have hxR : ‖x - y‖ ≤ R := by rw [← dist_eq_norm]; exact mem_closedBall.1 hx
+    exact (norm_inner_le_norm (𝕜 := ℝ) _ _).trans (mul_le_mul_of_nonneg_right hxR (norm_nonneg _))
+  have hIlim : ∀ t, 0 < t → t < R → Tendsto (fun k => I k t) atTop (𝓝 (m t)) := by
+    intro t ht htR
+    have h := Submission.allard52_amcl_radial_cutoff_tendsto n ℓ μ (fun _ => 1) y φ ε R t ht htR
+      hint1 (fun k => (hφC k).continuous) hφ01 hφ1 hφ0 hεt
+    simp only [mul_one, setIntegral_const, smul_eq_mul, measureReal_def] at h
+    simpa only [hI, hm] using h
+  have hElim : ∀ t, 0 < t → t < R → Tendsto (fun k => E k t) atTop (𝓝 (E₀ t)) := by
+    intro t ht htR
+    simpa only [hE, hE₀] using Submission.allard52_amcl_radial_cutoff_tendsto n ℓ μ
+      (fun x => inner ℝ (x - y) (H x)) y φ ε R t ht htR hintH (fun k => (hφC k).continuous)
+      hφ01 hφ1 hφ0 hεt
+  have halim : ∀ t, 0 < t → t < R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t)) := by
+    intro t ht htR
+    have hm0 : 0 ≤ m t / t ^ n := div_nonneg (by rw [hm]; exact ENNReal.toReal_nonneg)
+      (pow_nonneg ht.le n)
+    rw [show (fun k => a k t) = fun k => E k t / t ^ (n + 1) / (1 + I k t / t ^ n) from
+      funext fun k => ha k t, ha₀]
+    exact ((hElim t ht htR).div_const (t ^ (n + 1))).div
+      (((hIlim t ht htR).div_const (t ^ n)).const_add 1) (by linarith)
+  -- Step 6: `∫₀ᵗ a_k → G(t)`, with `|G(t)| ≤ (Λ/2)(t/R)^{1−n/p}`, and `Φ̃_k(t) → F(t)(1 + m(t)/tⁿ)`.
+  have hGlim : ∀ t, 0 < t → t < R → Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (G t)) ∧
+      |G t| ≤ Λ / 2 * (t / R) ^ (1 - (n : ℝ) / p) := by
+    intro t ht htR
+    rw [hG]
+    refine Submission.allard52_amcl_interval_limit n p R Λ t a a₀ hp hR hΛ ht ?_
+      (fun τ hτ hτt => halim τ hτ (lt_of_le_of_lt hτt htR))
+    filter_upwards [hev t htR] with k hk
+    intro τ hτ hτt
+    exact (hfix k).1 τ hτ
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_left hτt (by linarith [(hε k).1])) hk)
+  have hΦlim : ∀ t, 0 < t → t < R → Tendsto (fun k => Real.exp (-∫ τ in (0)..t, a k τ) *
+      (1 + I k t / t ^ n)) atTop (𝓝 (F t * (1 + m t / t ^ n))) := by
+    intro t ht htR
+    rw [hF]
+    exact (hGlim t ht htR).1.neg.rexp.mul (((hIlim t ht htR).div_const _).const_add 1)
+  refine ⟨F, ?_, ?_⟩
+  -- Step 7: conclusion (i).
+  · rintro r ⟨hr0, hrR⟩
+    have hp0 : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hp
+    have hrR1 : 0 ≤ r / R ∧ r / R ≤ 1 := ⟨div_nonneg hr0.le hR.le, (div_le_one hR).2 hrR.le⟩
+    have hpow1 : (r / R) ^ (1 - (n : ℝ) / p) ≤ 1 :=
+      Real.rpow_le_one hrR1.1 hrR1.2 (sub_nonneg.2 ((div_le_one hp0).2 hp.le))
+    have hGr := (hGlim r hr0 hrR).2
+    have hGr' : |G r| ≤ Λ / 2 :=
+      hGr.trans ((mul_le_mul_of_nonneg_left hpow1 (by linarith)).trans (mul_one _).le)
+    obtain ⟨hGl, hGu⟩ := abs_le.1 hGr'
+    rw [hF]
+    refine ⟨Real.exp_le_exp.2 (by linarith), Real.exp_le_exp.2 (by linarith), ?_⟩
+    calc |Real.exp (-G r) - 1| ≤ 2 * |-G r| :=
+          Real.abs_exp_sub_one_le (by rw [abs_neg]; linarith)
+      _ = 2 * |G r| := by rw [abs_neg]
+      _ ≤ 2 * (Λ / 2 * (r / R) ^ (1 - (n : ℝ) / p)) := by linarith
+      _ = Λ * (r / R) ^ (1 - (n : ℝ) / p) := by ring
+  -- Steps 8–9: conclusion (ii).
+  · intro s r hs hsr hrR
+    have hsR : s < R := lt_of_le_of_lt hsr hrR
+    have hr0 : 0 < r := lt_of_lt_of_le hs hsr
+    -- Monotonicity of `Φ̃_k` passes to the limit.
+    have hmono : F s * (1 + m s / s ^ n) ≤ F r * (1 + m r / r ^ n) :=
+      le_of_tendsto_of_tendsto (hΦlim s hs hsR) (hΦlim r hr0 hrR) (by
+        filter_upwards [hev r hrR] with k hk
+        exact ((hfix k).2 s r hs hsr hk).1)
+    have hD : (F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) -
+        (F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1) =
+        F r * (1 + m r / r ^ n) - F s * (1 + m s / s ^ n) := by
+      rw [hm, hm]; ring
+    refine ⟨by linarith, ?_⟩
+    -- Fatou's lemma along the annuli `B_r(y) \ B̆_{(1 + ε k) s}(y)`.
+    have hann := Submission.allard52_amcl_annular_lintegral_le n ℓ μ
+      (fun x => ENNReal.ofReal (w x / ‖x - y‖ ^ n)) y ε
+      (fun k => Real.exp (Λ / 2) * (Real.exp (-∫ τ in (0)..r, a k τ) * (1 + I k r / r ^ n) -
+        Real.exp (-∫ τ in (0)..s, a k τ) * (1 + I k s / s ^ n))) s r
+      (Real.exp (Λ / 2) * (F r * (1 + m r / r ^ n) - F s * (1 + m s / s ^ n))) hs hεt
+      (((hΦlim r hr0 hrR).sub (hΦlim s hs hsR)).const_mul _) (by
+        filter_upwards [hev r hrR] with k hk
+        exact ((hfix k).2 s r hs hsr hk).2)
+    rw [hD]
+    exact hann.trans (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right
+      (Real.exp_le_exp.2 (by linarith)) (sub_nonneg.2 hmono)))
 
 end Submission
 
