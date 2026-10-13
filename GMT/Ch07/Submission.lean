@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Exterior derivative of a function times a constant covector** (used for the boundary weak
+derivatives in the graph-cycle regularity step of Simon 7.4.3).  If `a : ℝᴾ → ℝ` is
+differentiable at `x` and `β` is a fixed `m`-covector, then
+`d(a β)(x)(w₀, …, w_m) = Σᵢ (−1)ⁱ Da(x)wᵢ · β(w₀, …, ŵᵢ, …, w_m)`, i.e. `d(a β) = da ∧ β`:
+each term of the alternating sum differentiates `y ↦ a(y) β(w₀, …, ŵᵢ, …, w_m)`. -/
+theorem Submission.dgcr_bwd_extDeriv_smul_const : ∀ (P m : ℕ) (a : Euclid P → ℝ) (β : Covector (Euclid P) m) (x : Euclid P) (w : Fin (m + 1) → Euclid P), DifferentiableAt ℝ a x → exteriorDerivative (fun y => a y • β) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ a x (w i) * β (i.removeNth w)) := by
+  intro P m a β x w ha
+  rw [exteriorDerivative_apply (ha.smul_const β) w]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  have h1 : (fun y => (a y • β) (i.removeNth w)) = fun y => a y * β (i.removeNth w) := by
+    funext y
+    simp [ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+  rw [h1, fderiv_mul_const ha]
+  simp [zsmul_eq_mul, mul_comm]
+
+/-- **Vanishing of `∫ Dφ[v] dν` on a set of directions extends to its span** (the linearity step
+of the constant-planes argument for the closure and boundary rectifiability in the compactness
+theorem).  If `ν` is finite on compact sets and `φ : ℝᴾ → ℝ` is `C^∞` with compact support, then
+each `y ↦ Dφ(y)[v]` is continuous with compact support, hence `ν`-integrable, so
+`v ↦ ∫ Dφ(y)[v] dν(y)` is linear; if it vanishes on `S`, it vanishes on `span S`. -/
+theorem Submission.cbr_ci_cp_dir_integral_fderiv_span : ∀ (P : ℕ) (ν : Measure (Euclid P)) (φ : Euclid P → ℝ) (S : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ v ∈ S, ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ v ∈ Submodule.span ℝ S, ∫ y, fderiv ℝ φ y v ∂ν = 0 := by
+  intro P ν φ S hν hφ hφc hS
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  have hint : ∀ v, Integrable (fun y => fderiv ℝ φ y v) ν := by
+    intro v
+    have hc : Continuous (fun y => fderiv ℝ φ y v) :=
+      (hφ.continuous_fderiv (by simp)).clm_apply continuous_const
+    exact hc.integrable_of_hasCompactSupport (hφc.fderiv_apply (𝕜 := ℝ) v)
+  intro v hv
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact hS x hx
+  | zero => simp
+  | add x y _ _ hx hy =>
+    simp only [map_add]
+    rw [integral_add (hint x) (hint y), hx, hy, add_zero]
+  | smul c x _ hx =>
+    simp only [map_smul, smul_eq_mul]
+    rw [integral_const_mul, hx, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
