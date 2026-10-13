@@ -555,6 +555,102 @@ theorem Submission.slicing_im_ll_smooth_leibniz :
     simp only [hT η₃, tauAction, hη₃]
   rw [← h₁, ← h₂, ← h₃, hb]
   ring
+/-- The tangent vector field dual to `θ ⟨· ∧ ω, ξ⟩` (Simon Ch. 6, proof of Lemma 4.5(2),
+(1)–(3)): for a rectifiable triple `(M, θ, ξ)` of dimension `n = m + 1` and `ω ∈ 𝒟ᵐ(U)` there is
+`Y : ℝ^P → ℝ^P` with `φ(Y(x)) = θ(x) ⟨φ ∧ ω(x), ξ(x)⟩` for all `x` and all functionals `φ`,
+`Y ∈ L¹(Hⁿ ⌞ M)`, and `Y(x)` lies in every weighted approximate tangent plane at `Hⁿ`-a.e.
+`x ∈ M`.  Take the Riesz representative `Y(x) = ∑ᵢ θ(x) ⟨eᵢ♭ ∧ ω(x), ξ(x)⟩ eᵢ`.  A.e. on `M`,
+`ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so `|ξ(x)(β)| ≤ ‖β‖` and `|Y| ≤ C |θ| 1_{spt ω}`;
+and for `w ⊥ span τ`, `(w♭ ∧ ω(x))(τ) = ∑ᵢ (-1)ⁱ ⟨w, τᵢ⟩ ω(x)(τ without τᵢ) = 0`, so
+`Y(x) ∈ (span τ)ᗮᗮ = span τ`, the unique weighted tangent plane (`θ(x) > 0`). -/
+theorem Submission.slicing_im_ll_tangent_dual_field :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)),
+      IsRectifiableTriple U (m + 1) M θ ξ → ∀ ω : TestFormOn U m,
+      ∃ Y : Eucl P → Eucl P, Integrable Y ((μHE[m + 1] : Measure (Eucl P)).restrict M) ∧
+        (∀ (x : Eucl P) (φ : Eucl P →L[ℝ] ℝ), φ (Y x) = θ x * ξ x
+          (ContinuousAlternatingMap.alternatizeUncurryFin
+            (φ.smulRight ((ω : DifferentialForm (Eucl P) m) x)))) ∧
+        ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+          HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → Y x ∈ Q := by
+  intro P m U M θ ξ hT ω
+  set f : DifferentialForm (Eucl P) m := (ω : DifferentialForm (Eucl P) m)
+  -- `Λ x φ = θ(x) ⟨φ ∧ ω(x), ξ(x)⟩` is a continuous linear functional of `φ`.
+  let Λ : Eucl P → (Eucl P →L[ℝ] ℝ) →L[ℝ] ℝ := fun x =>
+    θ x • (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+      ((ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)).flip (f x)))
+  have hΛ : ∀ x φ, Λ x φ = θ x * ξ x
+      (ContinuousAlternatingMap.alternatizeUncurryFin (φ.smulRight (f x))) := fun x φ => rfl
+  -- `Y(x) = ∑ᵢ Λ x (eᵢ♭) eᵢ`; every functional is `φ = ∑ᵢ φ(eᵢ) eᵢ♭`, so `φ(Y(x)) = Λ x φ`.
+  let b := EuclideanSpace.basisFun (Fin P) ℝ
+  let Y : Eucl P → Eucl P := fun x => ∑ i, Λ x (innerSL ℝ (b i)) • b i
+  have hdual : ∀ φ : Eucl P →L[ℝ] ℝ, ∑ i, φ (b i) • innerSL ℝ (b i) = φ := by
+    intro φ
+    ext y
+    conv_rhs => rw [← b.sum_repr' y]
+    simp [map_sum, map_smul, mul_comm]
+  have hY : ∀ x (φ : Eucl P →L[ℝ] ℝ), φ (Y x) = Λ x φ := by
+    intro x φ
+    conv_rhs => rw [← hdual φ]
+    simp [Y, map_sum, map_smul, mul_comm]
+  refine ⟨Y, ?_, fun x φ => (hY x φ).trans (hΛ x φ), ?_⟩
+  · -- Integrability: each coordinate `x ↦ Λ x (eᵢ♭)` is integrable.
+    have hω : IsTestForm f ∧ tsupport f ⊆ U := ω.2
+    have hfc : Continuous f := ContDiff.continuous hω.1.1
+    have hθK : IntegrableOn θ (tsupport f ∩ M) (μHE[m + 1] : Measure (Eucl P)) := by
+      rw [inter_comm]
+      exact hT.integrableOn _ hω.1.2 hω.2
+    -- A.e. on `M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so `|ξ(x)(β)| ≤ ‖β‖`.
+    have hξb : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M),
+        ∀ β : Covector (Eucl P) (m + 1), ‖ξ x β‖ ≤ ‖β‖ := by
+      filter_upwards [hT.orients] with x hx β
+      obtain ⟨τ, hτ, -, hξ⟩ := hx
+      have h1 : ‖β τ‖ ≤ ‖β‖ := by
+        simpa [hτ.1] using β.le_opNorm τ
+      rcases hξ with h | h <;> simpa [h] using h1
+    refine integrable_finsetSum _ fun i _ => Integrable.smul_const ?_ (b i)
+    -- `βᵢ(x) = eᵢ♭ ∧ ω(x)` is continuous with compact support, hence bounded.
+    let β : Eucl P → Covector (Eucl P) (m + 1) := fun x =>
+      ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (b i)))) (f x)
+    have hβc : Continuous β := (ContinuousLinearMap.continuous _).comp hfc
+    have hβs : HasCompactSupport β := hω.1.2.comp_left (map_zero _)
+    obtain ⟨C, hC⟩ := hβc.bounded_above_of_compact_support hβs
+    have hΛβ : ∀ x, Λ x (innerSL ℝ (b i)) = θ x * ξ x (β x) := fun x => rfl
+    -- The coordinate vanishes off `spt ω`, where `θ` is integrable.
+    have hsupp : Function.support (fun x => Λ x (innerSL ℝ (b i))) ⊆ tsupport f := by
+      intro x hx
+      by_contra hxK
+      have h0 : β x = 0 := by
+        dsimp only [β]
+        rw [image_eq_zero_of_notMem_tsupport hxK, map_zero]
+      have h1 : Λ x (innerSL ℝ (b i)) = 0 := by
+        rw [hΛβ, h0, map_zero, mul_zero]
+      exact hx h1
+    rw [← integrableOn_iff_integrable_of_support_subset hsupp, IntegrableOn,
+      Measure.restrict_restrict (isClosed_tsupport f).measurableSet]
+    have hmono : (μHE[m + 1] : Measure (Eucl P)).restrict (tsupport f ∩ M) ≤
+        (μHE[m + 1] : Measure (Eucl P)).restrict M :=
+      Measure.restrict_mono inter_subset_right le_rfl
+    have hg : AEStronglyMeasurable (fun x => ξ x (β x))
+        ((μHE[m + 1] : Measure (Eucl P)).restrict M) :=
+      (continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable
+        (hT.aestronglyMeasurable.prodMk hβc.aestronglyMeasurable)
+    simp only [hΛβ]
+    refine hθK.mul_bdd (hg.mono_measure hmono) (c := C) ?_
+    filter_upwards [ae_mono hmono hξb] with x hx
+    exact (hx (β x)).trans (hC x)
+  · -- Tangency: `⟨u, Y(x)⟩ = θ(x) ⟨u♭ ∧ ω(x), ±τ⟩ = 0` for `u ⊥ span τ`.
+    filter_upwards [hT.orients, ae_restrict_mem₀ hT.nullMeasurableSet] with x hx hxM
+    obtain ⟨τ, -, hW, hξ⟩ := hx
+    intro Q hQ
+    rw [HasWeightedApproximateTangentSpaceAt.unique (hT.pos x hxM).ne' hQ hW,
+      ← Submodule.orthogonal_orthogonal (Submodule.span ℝ (range τ)), Submodule.mem_orthogonal]
+    intro u hu
+    have hτu : ∀ i, inner ℝ u (τ i) = 0 := fun i =>
+      Submodule.inner_left_of_mem_orthogonal (Submodule.subset_span (mem_range_self i)) hu
+    rw [← innerSL_apply_apply, hY, hΛ]
+    rcases hξ with h | h <;>
+      simp [h, ContinuousAlternatingMap.alternatizeUncurryFin_apply, hτu]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
