@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1.im_partial_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1",
+  "depth": 4,
+  "title": "Finite partial sums of integer multiplicity currents are integer multiplicity, with subadditive mass (parent steps 1–2)",
+  "statement": "Let P, n ∈ ℕ and U ⊆ ℝ^P. Assume (IS_U): for all integer multiplicity A, B ∈ 𝒟_n(U), the current A − B is integer multiplicity. Let Y_i ∈ 𝒟_n(U) (i ∈ ℕ) all be integer multiplicity. Then for every N ∈ ℕ there is an integer multiplicity Z ∈ 𝒟_n(U) such that:\n- Z(ω) = Σ_{i=0}^{N} Y_i(ω) for every ω ∈ 𝒟^n(U), and\n- M_G(Z) ≤ Σ_{i=0}^{N} M_G(Y_i) in [0, ∞] for every set G ⊆ ℝ^P.\n\nConventions:\n- 𝒟_n(U) = SimonGMT GeometricCurrentOn U n, and 𝒟^n(U) = TestFormOn U n is the space of test n-forms in U.\n- Integer multiplicity is the contract predicate IsIntegerMultiplicity.\n- A − B is the contract subtraction (instance Sub), which acts by (A − B)(ω) = A(ω) − B(ω).\n- M_G(T) = T.massOn G is the supremum in [0, ∞] of ENNReal.ofReal(T(ω)) over ω ∈ 𝒟^n(U) with tsupport ω ⊆ G and covectorEuclideanNorm(ω(x)) ≤ 1 for all x.\n- Σ_{i=0}^{N} denotes the sum over Finset.range (N + 1).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (Y : ℕ → GeometricCurrentOn U n), (∀ A B : GeometricCurrentOn U n, IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ i, IsIntegerMultiplicity (Y i)) → ∀ N : ℕ, ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ (∀ ω : TestFormOn U n, Z ω = ∑ i ∈ Finset.range (N + 1), Y i ω) ∧ ∀ G : Set (Euclid P), Z.massOn G ≤ ∑ i ∈ Finset.range (N + 1), (Y i).massOn G",
+  "lean_name": "cmc_fc_sl_im_partial_sum",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1.mass_triangle-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1.mass_triangle-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-b770db587f-a1"
+}
