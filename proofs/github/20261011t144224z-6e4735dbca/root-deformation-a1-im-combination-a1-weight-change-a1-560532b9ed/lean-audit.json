@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11ca0c19cb4b6e9b6062aaa758460387f73ff22d61f1457436db097138fa95d6",
+  "git_delta": {
+    "base_commit": "03acb1a5bf68e8fd50e98720b52aaccbea36ff9a",
+    "candidate_commit": "efee9a8cf5a668d785c96e279840e7dca21155eb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_imcomb_weight_change",
+    "diff_sha256": "f14d8dec95857f80cb3853ae85d919c246dbf761ccf55e63607dbc8a409c0694",
+    "source_sha256": "0a9097d5f378fbf2df5a466d4d3bef56dcda4c39fd390ec6ec8935f66f40a2f1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_imcomb_weight_change",
+      "statement": "∀ (N k : ℕ) (E : Set (Eucl N)) (θ θ' : Eucl N → ℝ), NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E ∩ K) < ∞) → (∀ x ∈ E, 0 < θ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (E ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ' (E ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k E θ x Q → HasWeightedApproximateTangentSpaceAt k E θ' x Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
