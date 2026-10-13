@@ -972,6 +972,186 @@ theorem Submission.iwl_cr_radial_operator :
         ⟨ht.1.le, ht.2⟩ x hx
     have h := intervalIntegral.norm_integral_le_of_norm_le_const hle
     rwa [sub_zero, abs_one, mul_one] at h
+/-- Pointwise integrand identity of the radial homotopy formula: for `L : E →L[ℝ] Λ^{k+1}(E)`,
+`α ∈ Λ^{k+1}(E)`, `x ∈ E`, `u ∈ E^{k+1}`, `t ∈ ℝ` and `û_j = removeNth j u`,
+`t^{k+1} Alt(L)(x, u) + ∑_j (-1)^j t^k (t L(u_j)(x, û_j) + α(u_j, û_j))
+  = t^{k+1} L(x)(u) + (k + 1) t^k α(u)`.
+Expanding `Alt(L)(x, u) = L(x)(u) - ∑_j (-1)^j L(u_j)(x, û_j)` cancels the `t^{k+1}` cross
+terms, and `alternatizeUncurryFin (curryLeft α) = (k + 1) • α` evaluates the `α`-sum. -/
+theorem Submission.iwl_cr_rh_integrand_identity :
+    ∀ (P k : ℕ) (L : Eucl P →L[ℝ] Covector (Eucl P) (k + 1)) (α : Covector (Eucl P) (k + 1))
+      (x : Eucl P) (u : Fin (k + 1) → Eucl P) (t : ℝ),
+      t ^ (k + 1) * ContinuousAlternatingMap.alternatizeUncurryFin L (Fin.cons x u) +
+          ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+            (t ^ k * (t * L (u j) (Fin.cons x (Fin.removeNth j u)) +
+              α (Fin.cons (u j) (Fin.removeNth j u)))) =
+        t ^ (k + 1) * L x u + ((k : ℝ) + 1) * t ^ k * α u := by
+  intro P k L α x u t
+  -- `removeNth (j + 1) (x, u) = (x, removeNth j u)`.
+  have hrem : ∀ j : Fin (k + 1),
+      Fin.removeNth j.succ (Fin.cons x u : Fin (k + 2) → Eucl P) =
+        Fin.cons x (Fin.removeNth j u) :=
+    fun j => Fin.cons_comp_succ_succAbove x u j
+  -- Split `Alt(L)(x, u)` into the index `0` and the indices `j.succ`.
+  have hA : ContinuousAlternatingMap.alternatizeUncurryFin L (Fin.cons x u) =
+      L x u - ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+        L (u j) (Fin.cons x (Fin.removeNth j u)) := by
+    rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero, Fin.removeNth_zero, Fin.tail_cons,
+      Fin.val_succ, Fin.cons_succ, hrem, zsmul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one,
+      pow_succ, mul_neg, mul_one, neg_mul, Finset.sum_neg_distrib, sub_eq_add_neg]
+  -- `∑_j (-1)^j α(u_j, û_j) = (k + 1) α(u)`: evaluate `Alt(curryLeft α) = (k + 1) • α` at `u`.
+  have hB : ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) * α (Fin.cons (u j) (Fin.removeNth j u)) =
+      ((k : ℝ) + 1) * α u := by
+    have h := congrArg (fun f => f u) (ContinuousAlternatingMap.alternatizeUncurryFin_curryLeft α)
+    simp only [ContinuousAlternatingMap.alternatizeUncurryFin_apply,
+      ContinuousAlternatingMap.curryLeft_apply_apply, ContinuousAlternatingMap.smul_apply,
+      zsmul_eq_mul, nsmul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one, Nat.cast_add,
+      Nat.cast_one] at h
+    exact h
+  -- Distribute `(-1)^j t^k (t a_j + b_j) = t^{k+1} (-1)^j a_j + t^k (-1)^j b_j` over the sum.
+  have hsum : ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+        (t ^ k * (t * L (u j) (Fin.cons x (Fin.removeNth j u)) +
+          α (Fin.cons (u j) (Fin.removeNth j u)))) =
+      t ^ (k + 1) * ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+          L (u j) (Fin.cons x (Fin.removeNth j u)) +
+        t ^ k * ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+          α (Fin.cons (u j) (Fin.removeNth j u)) := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    ring
+  rw [hA, hsum, hB]
+  ring
+
+/-- Radial fundamental theorem of calculus: for a smooth form `φ`,
+`∫₀¹ (t^(m+1) Dφ(t x)[x](u) + (m + 1) t^m φ(t x)(u)) dt = φ(x)(u)`, since the integrand is the
+derivative of `g(t) = t^(m+1) φ(t x)(u)` and `g(1) - g(0) = φ(x)(u)`. -/
+theorem Submission.iwl_cr_rh_radial_ftc :
+    ∀ (P n m : ℕ) (φ : DifferentialForm (Eucl P) n), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ →
+      ∀ (x : Eucl P) (u : Fin n → Eucl P),
+        ∫ t in (0 : ℝ)..1, (t ^ (m + 1) * fderiv ℝ φ (t • x) x u +
+          ((m : ℝ) + 1) * t ^ m * φ (t • x) u) = φ x u := by
+  intro P n m φ hφ x u
+  have hdiff : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hcont : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  -- `g(s) = s^(m+1) φ(s x)(u)` has the integrand as derivative at every `t`.
+  have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+      HasDerivAt (fun s : ℝ => s ^ (m + 1) * φ (s • x) u)
+        (t ^ (m + 1) * fderiv ℝ φ (t • x) x u + ((m : ℝ) + 1) * t ^ m * φ (t • x) u) t := by
+    intro t _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 : HasDerivAt (fun s : ℝ => φ (s • x)) (fderiv ℝ φ (t • x) x) t :=
+      (hdiff (t • x)).hasFDerivAt.comp_hasDerivAt t h1
+    have h3 : HasDerivAt (fun s : ℝ => φ (s • x) u) (fderiv ℝ φ (t • x) x u) t :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ u).hasFDerivAt.comp_hasDerivAt t h2
+    refine ((hasDerivAt_pow (m + 1) t).fun_mul h3).congr_deriv ?_
+    rw [Nat.add_sub_cancel]
+    push_cast
+    ring
+  -- The integrand is continuous, hence interval integrable.
+  have hint : IntervalIntegrable (fun t : ℝ => t ^ (m + 1) * fderiv ℝ φ (t • x) x u +
+      ((m : ℝ) + 1) * t ^ m * φ (t • x) u) volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    have hc1 : Continuous fun t : ℝ => fderiv ℝ φ (t • x) x u := by
+      have : Continuous fun t : ℝ => fderiv ℝ φ (t • x) x :=
+        (hcont.comp (continuous_id.smul continuous_const)).clm_apply continuous_const
+      exact (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ u).continuous.comp this
+    have hc2 : Continuous fun t : ℝ => φ (t • x) u :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ u).continuous.comp
+        (hφ.continuous.comp (continuous_id.smul continuous_const))
+    exact ((continuous_pow (m + 1)).mul hc1).add
+      ((continuous_const.mul (continuous_pow m)).mul hc2)
+  -- Fundamental theorem of calculus on `[0, 1]`: `g(1) - g(0) = φ(x)(u) - 0`.
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  simp
+
+/-- Radial homotopy formula in degree zero: if `χ(x)(v) = ∫₀¹ t⁰ dφ(t x)(x, v) dt` for a smooth
+`0`-form `φ`, then `χ(x) = φ(x) - φ(0)` (fundamental theorem of calculus along `t ↦ t x`). -/
+theorem Submission.iwl_cr_rh_degree_zero :
+    ∀ (P : ℕ) (φ χ : DifferentialForm (Eucl P) 0), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ →
+      (∀ (x : Eucl P) (v : Fin 0 → Eucl P),
+        χ x v = ∫ t in (0 : ℝ)..1, t ^ 0 * extDeriv φ (t • x) (Fin.cons x v)) →
+      ∀ x, χ x = φ x - φ 0 := by
+  intro P φ χ hφ hχ x
+  ext v
+  -- `dφ(t x)(x, v) = Dφ(t x)[x](v)`: the alternating sum has the single term `i = 0`.
+  have hd : ∀ t : ℝ, extDeriv φ (t • x) (Fin.cons x v) = fderiv ℝ φ (t • x) x v := by
+    intro t
+    rw [extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_one]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero]
+    exact congrArg _ (Subsingleton.elim _ _)
+  rw [hχ x v, ContinuousAlternatingMap.sub_apply]
+  simp only [pow_zero, one_mul, hd]
+  have hdiff : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hcont : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  -- `s ↦ φ(s x)(v)` has derivative `Dφ(t x)[x](v)` at every `t`.
+  have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+      HasDerivAt (fun s : ℝ => φ (s • x) v) (fderiv ℝ φ (t • x) x v) t := by
+    intro t _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 : HasDerivAt (fun s : ℝ => φ (s • x)) (fderiv ℝ φ (t • x) x) t :=
+      (hdiff (t • x)).hasFDerivAt.comp_hasDerivAt t h1
+    exact (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).hasFDerivAt.comp_hasDerivAt t h2
+  have hint : IntervalIntegrable (fun t : ℝ => fderiv ℝ φ (t • x) x v) volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    have : Continuous fun t : ℝ => fderiv ℝ φ (t • x) x :=
+      (hcont.comp (continuous_id.smul continuous_const)).clm_apply continuous_const
+    exact (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ v).continuous.comp this
+  -- Fundamental theorem of calculus on `[0, 1]`.
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  simp
+
+/-- **Radial homotopy formula on `ℝ^P`** (the form version of Simon Ch. 6, 2.25–2.26 and 2.31 for
+the homotopy `(t, x) ↦ t x`, used by the cone construction in the proof of 8.2).
+(a) If `φ` is a smooth `(k + 1)`-form, `Dψ(x)[w](v) = ∫₀¹ tᵏ (t Dφ(tx)[w](x, v) + φ(tx)(w, v)) dt`
+and `χ(x)(v) = ∫₀¹ tᵏ⁺¹ dφ(tx)(x, v) dt`, then `χ + dψ = φ`, i.e. `H(dφ) + d(H′φ) = φ`.
+(b) For a smooth `0`-form `φ`, `H(dφ)(x) = φ(x) − φ(0)`.
+
+For (a), `dψ(x)(u) = ∑ⱼ (-1)ʲ Dψ(x)[uⱼ](ûⱼ)` with `ûⱼ = removeNth j u`.  All integrands are
+continuous, so `χ(x)(u) + dψ(x)(u)` is a single integral over `[0, 1]`.  The cross terms cancel and
+`∑ⱼ (-1)ʲ α(uⱼ, ûⱼ) = (k + 1) α(u)`, so its integrand is `tᵏ⁺¹ Dφ(tx)[x](u) + (k + 1) tᵏ φ(tx)(u)`,
+the derivative of `t ↦ tᵏ⁺¹ φ(tx)(u)`, whose integral over `[0, 1]` is `φ(x)(u)`. -/
+theorem Submission.iwl_cr_radial_homotopy : (∀ (P k : ℕ) (φ : DifferentialForm (Eucl P) (k + 1)) (ψ : DifferentialForm (Eucl P) k) (χ : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → (∀ (x w : Eucl P) (v : Fin k → Eucl P), fderiv ℝ ψ x w v = ∫ t in (0 : ℝ)..1, t ^ k * (t * fderiv ℝ φ (t • x) w (Fin.cons x v) + φ (t • x) (Fin.cons w v))) → (∀ (x : Eucl P) (v : Fin (k + 1) → Eucl P), χ x v = ∫ t in (0 : ℝ)..1, t ^ (k + 1) * extDeriv φ (t • x) (Fin.cons x v)) → ∀ x, χ x + extDeriv ψ x = φ x) ∧ (∀ (P : ℕ) (φ χ : DifferentialForm (Eucl P) 0), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → (∀ (x : Eucl P) (v : Fin 0 → Eucl P), χ x v = ∫ t in (0 : ℝ)..1, t ^ 0 * extDeriv φ (t • x) (Fin.cons x v)) → ∀ x, χ x = φ x - φ 0) := by
+  refine ⟨fun P k φ ψ χ hφ hψ hχ x => ?_, Submission.iwl_cr_rh_degree_zero⟩
+  -- `φ`, `Dφ`, `dφ = alternatizeUncurryFinCLM ∘ Dφ` and `t ↦ t • x` are continuous.
+  have hφc : Continuous φ := hφ.continuous
+  have hDφ : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  have hdφ : Continuous (extDeriv φ) :=
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).continuous.comp hDφ
+  have hsx : Continuous fun t : ℝ => t • x := continuous_id.smul continuous_const
+  ext u
+  -- The `j`-th integrand of `dψ(x)(u)` and the integrand of `χ(x)(u)` are continuous in `t`.
+  have hg : ∀ j : Fin (k + 1), Continuous fun t : ℝ => t ^ k * (t * fderiv ℝ φ (t • x) (u j)
+      (Fin.cons x (Fin.removeNth j u)) + φ (t • x) (Fin.cons (u j) (Fin.removeNth j u))) := by
+    intro j
+    have h1 : Continuous fun t : ℝ => fderiv ℝ φ (t • x) (u j) (Fin.cons x (Fin.removeNth j u)) :=
+      ((hDφ.comp hsx).clm_apply continuous_const).eval_const _
+    have h2 : Continuous fun t : ℝ => φ (t • x) (Fin.cons (u j) (Fin.removeNth j u)) :=
+      (hφc.comp hsx).eval_const _
+    exact (continuous_pow k).mul ((continuous_id.mul h1).add h2)
+  have hf : Continuous fun t : ℝ => t ^ (k + 1) * extDeriv φ (t • x) (Fin.cons x u) :=
+    (continuous_pow (k + 1)).mul ((hdφ.comp hsx).eval_const _)
+  -- `dψ(x)(u) = ∑ⱼ (-1)ʲ Dψ(x)[uⱼ](ûⱼ) = ∑ⱼ (-1)ʲ ∫₀¹ tᵏ (t Dφ(tx)[uⱼ](x, ûⱼ) + φ(tx)(uⱼ, ûⱼ)) dt`.
+  have hdψ : extDeriv ψ x u = ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+      ∫ t in (0 : ℝ)..1, t ^ k * (t * fderiv ℝ φ (t • x) (u j) (Fin.cons x (Fin.removeNth j u)) +
+        φ (t • x) (Fin.cons (u j) (Fin.removeNth j u))) := by
+    rw [extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [hψ x (u j) (Fin.removeNth j u), zsmul_eq_mul]
+    push_cast
+    rfl
+  rw [ContinuousAlternatingMap.add_apply, hχ x u, hdψ]
+  -- Collect `χ(x)(u) + dψ(x)(u)` into a single integral over `[0, 1]`.
+  simp_rw [← intervalIntegral.integral_const_mul]
+  rw [← intervalIntegral.integral_finsetSum fun j _ => ((hg j).const_mul _).intervalIntegrable 0 1,
+    ← intervalIntegral.integral_add (hf.intervalIntegrable 0 1)
+      ((continuous_finsetSum _ fun j _ => (hg j).const_mul _).intervalIntegrable 0 1)]
+  -- Its integrand is `tᵏ⁺¹ Dφ(tx)[x](u) + (k + 1) tᵏ φ(tx)(u)`, so the integral is `φ(x)(u)`.
+  rw [← Submission.iwl_cr_rh_radial_ftc P (k + 1) k φ hφ x u]
+  refine intervalIntegral.integral_congr fun t _ => ?_
+  exact Submission.iwl_cr_rh_integrand_identity P k (fderiv ℝ φ (t • x)) (φ (t • x)) x u t
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

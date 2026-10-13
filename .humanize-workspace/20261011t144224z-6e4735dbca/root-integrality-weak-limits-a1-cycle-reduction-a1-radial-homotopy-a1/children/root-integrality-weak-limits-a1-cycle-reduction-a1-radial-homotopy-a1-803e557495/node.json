@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1.radial_ftc-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1",
+  "depth": 4,
+  "title": "Radial fundamental theorem of calculus for forms",
+  "statement": "Let P, n, m ∈ ℕ. Let φ : ℝ^P → Λ^n(ℝ^P) (DifferentialForm (Eucl P) n) be C^∞, i.e. ContDiff ℝ of order ((⊤ : ℕ∞) : WithTop ℕ∞). Let x ∈ ℝ^P and u ∈ (ℝ^P)^n (u : Fin n → ℝ^P). Then ∫_0^1 ( t^{m+1}·(Dφ(t·x)[x])(u) + (m+1)·t^m·φ(t·x)(u) ) dt = φ(x)(u). Here D = fderiv ℝ, and the integral is the interval integral from 0 to 1.",
+  "lean_statement": "∀ (P n m : ℕ) (φ : DifferentialForm (Eucl P) n), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → ∀ (x : Eucl P) (u : Fin n → Eucl P), ∫ t in (0 : ℝ)..1, (t ^ (m + 1) * fderiv ℝ φ (t • x) x u + ((m : ℝ) + 1) * t ^ m * φ (t • x) u) = φ x u",
+  "lean_name": "iwl_cr_rh_radial_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1-803e557495-a1"
+}
