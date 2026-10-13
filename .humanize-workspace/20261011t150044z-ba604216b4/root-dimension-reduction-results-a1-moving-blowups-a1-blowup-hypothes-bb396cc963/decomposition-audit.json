@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "orthogonalProjectionOnto_mem_subspace_eq_self|def starProjection|theorem starProjection_norm_le|def orthogonalProjectionOnto",
+        "def ofInjective|theorem ofInjective_apply|def toContinuousLinearEquiv",
+        "toOpenPartialHomeomorph|mem_toOpenPartialHomeomorph_source|to_localInverse|contDiffAt_symm",
+        "norm_image_sub_le_of_norm_fderiv_le|continuousOn_fderiv_of_isOpen|hasStrictFDerivAt",
+        "subset_compl_ball|unitsEquiv|isCompact_insert_range|theorem IsCompact.tendsto_subseq|isOpen_inter_preimage",
+        "instMul|one_def|mul_def|norm_def|def opNorm|instance.*Norm",
+        "retraction|dimred_mbl_bh_lr_left_inverse_projection",
+        "git show 349a0378e821d9b7d2c594e64d499b488449c145:GMT/Ch07/Submission.lean",
+        "git show fe444362e7b3a74c2589e7fa4b1cb9588f469adc:GMT/Ch07/Submission.lean",
+        "git show 86bfd8a49d86a2f862e42d3fc25bcfe12b6a7bcd:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dimred_lr_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dimred_lr_independent_audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dimred_lr_independent_audit/Verified.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypothes-bb396cc963/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypothes-bb396cc963/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/lean-audit-v1.json",
+        "GMT/Ch07/Submission.lean",
+        "/tmp/dimred_lr_independent_audit/Types.lean",
+        "/tmp/dimred_lr_independent_audit/Assembly.lean",
+        "/tmp/dimred_lr_independent_audit/Verified.lean"
+      ],
+      "conclusion": "Verified project pin b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d; the workspace contract and submission match the snapshot contract. No retraction or proposed new declaration name matched the snapshot project search. The required projection, inverse-function, compactness and mean-value interfaces exist with the stated hypotheses. All frozen types independently elaborate without child implementations. Continuous-linear-map multiplication is composition and its norm is the operator norm, also checked by compilation. The three reused declarations have comparator-passed records and byte-identical frozen types; their proof blocks match their candidate commits. The new name has no DAG reservation. Independently rebuilt checks compile successfully: the supplied assembly proves the exact selected parent from the four child types, and all four complete proofs plus the parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: its four independent obligations cover the substantive steps, have no cyclic dependency, and establish this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "left_inverse_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose and includes injectivity. Finite dimensionality supplies the projection and continuous inverse onto range L. The explicit construction A = e⁻¹∘p proves both A.comp L = id and L.comp A = starProjection, hence the required norm bound, including dimension zero. The proof is complete and non-circular; the bare declaration name is unreserved."
+    },
+    {
+      "key": "local_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match the independent one-line type. The proof obtains strict differentiability, constructs the local inverse, restricts to an open region of invertible derivatives, verifies both mapping and inverse identities, and proves C¹ regularity and the derivative identity. Units are taken in the bundled continuous-linear endomorphism algebra. No circular reliance occurs. Reuse of the bare name is valid: commit 349a0378e821d9b7d2c594e64d499b488449c145 is comparator-accepted with the identical frozen type."
+    },
+    {
+      "key": "chart_image_nhds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type contain exactly the needed hypotheses. The constructed sequence and its limit form a compact subset of W; properness yields a subsequential limit in V, openness excludes V₀, continuity within V identifies its image, and injectivity gives the contradiction. No openness of V or closedness of N is silently assumed. This complete, non-circular proof supplies precisely the neighbourhood inclusion needed by the parent. Reuse at fe444362e7b3a74c2589e7fa4b1cb9588f469adc has an identical comparator-accepted type."
+    },
+    {
+      "key": "lipschitz_near_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The independent one-line type matches all prose hypotheses and quantifiers. Positive δ places x inside the differentiability region; derivative continuity supplies the radius, the triangle inequality bounds the derivative, and the convex mean-value inequality proves the stated estimate. A separate assumption c ≥ 0 is unnecessary because the derivative-norm bound implies it. The proof is complete and non-circular. Reuse at 86bfd8a49d86a2f862e42d3fc25bcfe12b6a7bcd has the identical comparator-accepted type."
+    }
+  ],
+  "required_changes": []
+}
