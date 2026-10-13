@@ -859,6 +859,133 @@ theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N :
       fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
     exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
 
+/-- **The orientation of `N` along a `C¹` graph through `x` is the normalized Jacobian
+orientation** (steps 11–15 of the oriented graph chart of `N` at `x` used for Simon 7.5.3–7.5.5;
+tangent spaces as in Ch. 2, §4, orientations as in Ch. 6, 2.2).  Let `Γ(v) = x + ιv + ι'u(v)` on
+`B = B_δ(0)`, with `u` of class `C¹`, `u(0) = 0`, `Du(0) = 0`, `Γ(B) ⊆ N` and
+`ξ_N(x) = ιe₀ ∧ ⋯ ∧ ιeₙ`.  The Jacobian orientation `ξ` of the graph (with `ξ(β) = 1` on `Γ(B)`)
+satisfies `α(DΓ(v)e) = J(v) ξ(Γ v)(α)`, `J = √det(DΓ* ∘ DΓ)`, and orients `range DΓ(v)`, which
+lies in `T_{Γ(v)}N` and has the same dimension `n + 1`; so `ξ_N(Γ v) = ±ξ(Γ v)`.  The sign
+`s(v) = ξ_N(Γ v)(β(Γ v)) = ±1` is continuous on the connected ball, and `s(0) = 1` since
+`DΓ(0) = ι` and `J(0) = 1`; hence `ξ_N ∘ Γ = ξ ∘ Γ` on `B`. -/
+theorem Submission.codim1_zsl_gc_orientation_along_graph : ∀ (n k : ℕ) (N : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (x : Euclid (n + 1 + k)) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ : ℝ), IsOrientation (n + 1) N ξN → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < δ → ContDiffOn ℝ 1 u (ball 0 δ) → u 0 = 0 → fderiv ℝ u 0 = 0 → (∀ v ∈ ball (0 : Euclid (n + 1)) δ, x + ι v + ι' (u v) ∈ N) → (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξN x α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) → ∀ v ∈ ball (0 : Euclid (n + 1)) δ, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α := by
+  intro n k N ξN x ι ι' u δ hor horth hδ hu hu0 hDu0 hΓN hξx
+  -- the Jacobian orientation `ξ` of the graph `Γ(B)` and its dual covector field `β`
+  obtain ⟨ξ, β, hξc, hβc, hξβ, hξor, hJ⟩ :=
+    Submission.dgcr_graph_orientation_jacobian (n + 1) k ι ι' u x δ (Nat.succ_pos n) horth hδ hu
+  have h0 : (0 : Euclid (n + 1)) ∈ ball (0 : Euclid (n + 1)) δ := mem_ball_self hδ
+  -- `Γ` is `C¹` on the ball and maps it into `N`
+  have hΓC1 : ContDiffOn ℝ 1 (fun v => x + ι v + ι' (u v)) (ball (0 : Euclid (n + 1)) δ) := by
+    have h1 : ContDiffOn ℝ 1 (fun v : Euclid (n + 1) => x + ι v) (ball (0 : Euclid (n + 1)) δ) :=
+      contDiffOn_const.add ι.contDiff.contDiffOn
+    exact h1.add (ι'.contDiff.comp_contDiffOn hu)
+  have hΓcont : ContinuousOn (fun v => x + ι v + ι' (u v)) (ball (0 : Euclid (n + 1)) δ) :=
+    hΓC1.continuousOn
+  have hΓmaps : MapsTo (fun v => x + ι v + ι' (u v)) (ball (0 : Euclid (n + 1)) δ) N :=
+    fun v hv => hΓN v hv
+  have hΓimg : (fun v => x + ι v + ι' (u v)) '' (ball (0 : Euclid (n + 1)) δ) ⊆ N :=
+    hΓmaps.image_subset
+  -- `range DΓ(v) ⊆ T_{Γ(v)}N`
+  have hrange := Submission.dsmc_chart_range_subset_tangentSpace (n + 1 + k) 1 (n + 1) N
+    (ball (0 : Euclid (n + 1)) δ) (fun v => x + ι v + ι' (u v)) le_rfl isOpen_ball
+    (by exact_mod_cast hΓC1) hΓimg
+  -- a subspace with a unit `(n + 1)`-orientation has dimension `n + 1`
+  have hfin : ∀ (ζ : MultiVector (n + 1 + k) (n + 1)) (Q : Submodule ℝ (Euclid (n + 1 + k))),
+      IsUnitOrientationOf ζ Q → Module.finrank ℝ Q = n + 1 := by
+    rintro ζ Q ⟨τ, hτ, hspan, -⟩
+    rw [← hspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- pointwise, `range DΓ(v) = T_{Γ(v)}N` and so `ξ_N(Γ v) = ±ξ(Γ v)`
+  have hsign : ∀ v ∈ ball (0 : Euclid (n + 1)) δ,
+      ξN (x + ι v + ι' (u v)) = ξ (x + ι v + ι' (u v)) ∨
+        ξN (x + ι v + ι' (u v)) = -ξ (x + ι v + ι' (u v)) := by
+    intro v hv
+    obtain ⟨Q, hQ, hξNQ⟩ := hor.2 _ (hΓN v hv)
+    have hle : LinearMap.range (fderiv ℝ (fun v => x + ι v + ι' (u v)) v :
+        Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1 + k)) ≤ Q := by
+      rintro y ⟨w, rfl⟩
+      have hmem : (fderiv ℝ (fun v => x + ι v + ι' (u v)) v) w ∈
+          tangentSpace N (x + ι v + ι' (u v)) := hrange v hv ⟨w, rfl⟩
+      rw [← hQ] at hmem
+      exact hmem
+    have heq := Submodule.eq_of_le_of_finrank_eq hle
+      (by rw [hfin _ _ (hξor v hv), hfin _ _ hξNQ])
+    have hξQ : IsUnitOrientationOf (ξ (x + ι v + ι' (u v))) Q := heq ▸ hξor v hv
+    exact Submission.rsdic_unitOrientation_eq_or_eq_neg _ _ _ _ Q hξQ hξNQ
+  -- the sign `s(v) = ξ_N(Γ v)(β(Γ v))` is continuous on the ball and takes the values `±1`
+  have hs_cont : ContinuousOn (fun v => ξN (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))))
+      (ball (0 : Euclid (n + 1)) δ) := by
+    have h1 : ContinuousOn (fun v => ξN (x + ι v + ι' (u v))) (ball (0 : Euclid (n + 1)) δ) :=
+      hor.1.comp hΓcont hΓmaps
+    have h2 : ContinuousOn (fun v => β (x + ι v + ι' (u v))) (ball (0 : Euclid (n + 1)) δ) :=
+      hβc.comp hΓcont (mapsTo_image _ _)
+    exact h1.clm_apply h2
+  have hs_val : ∀ v ∈ ball (0 : Euclid (n + 1)) δ,
+      ξN (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))) = 1 ∨
+        ξN (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))) = -1 := by
+    intro v hv
+    have h1 : ξ (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))) = 1 := hξβ _ ⟨v, hv, rfl⟩
+    rcases hsign v hv with h | h
+    · left; rw [h, h1]
+    · right; rw [h, neg_apply, h1]
+  -- at `0`: `Γ(0) = x`, `DΓ(0) = ι`, `J(0) = 1`, so `ξ_N(x) = ξ(x)` and `s(0) = 1`
+  have hΓ0 : x + ι 0 + ι' (u 0) = x := by simp [hu0]
+  have hu_diff : DifferentiableAt ℝ u 0 :=
+    (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds h0)
+  have hD0 : fderiv ℝ (fun v => x + ι v + ι' (u v)) 0 = ι.toContinuousLinearMap := by
+    have h1 : HasFDerivAt (fun v : Euclid (n + 1) => x + ι v) ι.toContinuousLinearMap 0 :=
+      ι.toContinuousLinearMap.hasFDerivAt.const_add x
+    have h2 : HasFDerivAt (fun v => ι' (u v)) (ι'.toContinuousLinearMap.comp (fderiv ℝ u 0)) 0 :=
+      ι'.toContinuousLinearMap.hasFDerivAt.comp 0 hu_diff.hasFDerivAt
+    rw [hDu0, ContinuousLinearMap.comp_zero] at h2
+    have h3 := h1.add h2
+    rw [add_zero] at h3
+    exact h3.fderiv
+  have hdet0 : Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) 0).adjoint ∘L
+      fderiv ℝ (fun v => x + ι v + ι' (u v)) 0).det) = 1 := by
+    rw [hD0, LinearIsometry.adjoint_comp_self]
+    show Real.sqrt (LinearMap.det ((1 : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) :
+      Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1))) = 1
+    rw [ContinuousLinearMap.toLinearMap_one, map_one, Real.sqrt_one]
+  have hξ0 : ξN x = ξ x := by
+    ext α
+    have h1 := hJ 0 h0 α
+    rw [hdet0, one_mul, hΓ0, hD0] at h1
+    rw [hξx α, ← h1]
+    rfl
+  have hs0 : ξN (x + ι 0 + ι' (u 0)) (β (x + ι 0 + ι' (u 0))) = 1 := by
+    have h1 := hξβ (x + ι 0 + ι' (u 0)) ⟨0, h0, rfl⟩
+    rw [hΓ0] at h1 ⊢
+    rw [hξ0]
+    exact h1
+  -- `s ≡ 1` on the preconnected ball, by the intermediate value theorem
+  have hconst : ∀ v ∈ ball (0 : Euclid (n + 1)) δ,
+      ξN (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))) = 1 := by
+    intro v hv
+    rcases hs_val v hv with h | h
+    · exact h
+    · exfalso
+      have hIcc := (convex_ball (0 : Euclid (n + 1)) δ).isPreconnected.intermediate_value hv h0
+        hs_cont
+      have hmem : (0 : ℝ) ∈ Icc (ξN (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))))
+          (ξN (x + ι 0 + ι' (u 0)) (β (x + ι 0 + ι' (u 0)))) := by
+        rw [h, hs0]
+        constructor <;> norm_num
+      obtain ⟨w, hw, hw0⟩ := hIcc hmem
+      have hw0' : ξN (x + ι w + ι' (u w)) (β (x + ι w + ι' (u w))) = 0 := hw0
+      rcases hs_val w hw with h' | h' <;> rw [h'] at hw0' <;> norm_num at hw0'
+  -- hence `ξ_N(Γ v) = ξ(Γ v)`, and the Jacobian identity of `ξ` is the claim
+  intro v hv α
+  have hpos : ξN (x + ι v + ι' (u v)) = ξ (x + ι v + ι' (u v)) := by
+    rcases hsign v hv with h | h
+    · exact h
+    · exfalso
+      have h1 := hconst v hv
+      have h2 : ξ (x + ι v + ι' (u v)) (β (x + ι v + ι' (u v))) = 1 := hξβ _ ⟨v, hv, rfl⟩
+      rw [h, neg_apply, h2] at h1
+      norm_num at h1
+  rw [hpos]
+  exact hJ v hv α
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
