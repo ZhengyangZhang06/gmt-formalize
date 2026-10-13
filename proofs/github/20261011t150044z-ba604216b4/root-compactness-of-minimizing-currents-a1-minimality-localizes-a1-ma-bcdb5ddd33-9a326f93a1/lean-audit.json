@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "210c9d5f3d932d04e821e5f6380400819ca46db6b46d8fcda835b279f5d60833",
+  "git_delta": {
+    "base_commit": "7932845b23ede395dc5396fbed1a4351cfeedd25",
+    "candidate_commit": "2c8f61f4db6716e5439706bd48040c3f52e3df38",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_ml_massOn_eq_of_disjoint_sub_support",
+    "diff_sha256": "1ff5260ff631370d5dcb856308e10e7f11e9674911326121638ec1a87ca7d085",
+    "source_sha256": "2425a97becf3f8b69072c1a338347a92430d0b5fbf31493eddd19d47a3754bfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_ml_massOn_eq_of_disjoint_sub_support",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K G : Set (Euclid P)), (S - T).support ⊆ K → Disjoint G K → S.massOn G = T.massOn G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
