@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3461d49e8bdbbb0db32f5e2c9729660c3e79249f1f287fcee1b53269dd96374e",
+  "git_delta": {
+    "base_commit": "132255a2791420f73b669a65006571337f249492",
+    "candidate_commit": "dfd0db6338c7fb8fa0f51534724e3b5fbe3aaaf8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_caf_lipschitz_localization",
+    "diff_sha256": "5cf2a85ee642e9360a676b079fdd047136048300ebeb956238596bfeb0baf4a3",
+    "source_sha256": "409cd270a4808e59527357a71c8ddd0ff5d157ad03b70ad53c70270e4a984c1f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_caf_lipschitz_localization",
+      "statement": "∀ (P n : ℕ) (Z : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → ∃ (V Zs : ℕ → Set (Euclid P)) (G : ℕ → Euclid P → Euclid n), (∀ l, IsOpen (V l)) ∧ (∀ l, V l ⊆ Z) ∧ (∀ l, MeasurableSet (Zs l)) ∧ (∀ l, Zs l ⊆ V l) ∧ Pairwise (fun l l' => Disjoint (Zs l) (Zs l')) ∧ (⋃ l, Zs l) = Z ∧ (∀ l, ∃ K : NNReal, LipschitzWith K (G l)) ∧ ∀ l, EqOn F (G l) (V l)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
