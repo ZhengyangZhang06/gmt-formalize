@@ -504,6 +504,31 @@ theorem Submission.dpf_exists_orthonormal_frame_det_gram : ∀ (P n : ℕ) (v : 
     calc |inner ℝ (σ i) (v i)| ≤ ‖σ i‖ * ‖v i‖ := abs_real_inner_le_norm _ _
       _ = ‖v i‖ := by rw [show ‖σ i‖ = 1 from b.norm_eq_one i, one_mul]
 
+/-- Hadamard's inequality for Gram determinants: `det(⟨vᵢ, vⱼ⟩) ≤ ∏ᵢ |vᵢ|²`.  If `v` is
+linearly dependent, a nonzero `c` with `∑ⱼ cⱼ vⱼ = 0` lies in the kernel of the Gram matrix, so
+its determinant vanishes; if `v` is independent, the Gram–Schmidt frame of
+`dpf_exists_orthonormal_frame_det_gram` gives `det(⟨vᵢ, vⱼ⟩) = (det A)²` with
+`|det A| ≤ ∏ᵢ |vᵢ|`. -/
+theorem Submission.dtc_bc_lc_pf_gram_det_le_prod_norm_sq : ∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ ∏ i, ‖v i‖ ^ 2 := by
+  intro P n v
+  by_cases hv : LinearIndependent ℝ v
+  · -- independent: square `|det A| ≤ ∏ᵢ |vᵢ|`
+    obtain ⟨σ, -, -, hG, -, hA⟩ := Submission.dpf_exists_orthonormal_frame_det_gram P n v hv
+    rw [hG, Finset.prod_pow, ← sq_abs]
+    exact pow_le_pow_left₀ (abs_nonneg _) hA 2
+  · -- dependent: a nonzero kernel vector `c` of the Gram matrix
+    obtain ⟨c, hc, i₀, hi₀⟩ := Fintype.not_linearIndependent_iff.mp hv
+    have hdet : Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) = 0 := by
+      rw [← Matrix.exists_mulVec_eq_zero_iff]
+      refine ⟨c, fun h => hi₀ (congrFun h i₀), funext fun i => ?_⟩
+      simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
+      have : ∑ j, inner ℝ (v i) (v j) * c j = inner ℝ (v i) (∑ j, c j • v j) := by
+        rw [inner_sum]
+        exact Finset.sum_congr rfl fun j _ => by rw [real_inner_smul_right, mul_comm]
+      rw [this, hc, inner_zero_right]
+    rw [hdet]
+    exact Finset.prod_nonneg fun i _ => sq_nonneg _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
