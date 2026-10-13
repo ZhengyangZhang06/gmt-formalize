@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.action_translation_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "depth": 4,
+  "title": "An action annihilating all v-directional derivatives is invariant under translation by v",
+  "statement": "Let P, n ∈ ℕ, R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) and v ∈ ℝ^P. Assume R.action(γ) = 0 for all test forms β, γ ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with γ(y) = Dβ(y)[v] (fderiv ℝ β y v) for every y. Then R.action(y ↦ ω(v + y)) = R.action(ω) for every ω ∈ 𝒟ⁿ(ℝ^P).",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), (∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = fderiv ℝ (β : DifferentialForm (Euclid P) n) y v) → R.action (γ : DifferentialForm (Euclid P) n) = 0) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, R.action (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) = R.action (ω : DifferentialForm (Euclid P) n)",
+  "lean_name": "dimred_cs_ti_action_translation_invariant",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.translate_derivative-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.translate_derivative-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-de5919aa84-a1"
+}
