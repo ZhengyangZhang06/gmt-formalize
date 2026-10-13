@@ -704,6 +704,20 @@ theorem Submission.iwl_cr_ce_cutoff_radial_operator : ∀ (P m : ℕ) (r : ℝ),
     ext v
     rw [Pi.add_apply, ContinuousAlternatingMap.add_apply, hψformula, hψformula, hψformula,
       ← intervalIntegral.integral_add (hint ω x _) (hint ω' x _)]
+/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
+(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
+theorem Submission.cmb_abs_apply_le_of_massOn_le :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
+      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      |T ω| ≤ B * C := by
+  intro P n U W T ω B C hB hM hW hC
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
     congr 1
     funext t
     simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add]
@@ -786,6 +800,230 @@ theorem Submission.iwl_cr_ce_cutoff_radial_operator : ∀ (P m : ℕ) (r : ℝ),
       linarith
     change (ζ x • ψ ω x) v = _
     rw [ζ.one_of_mem_closedBall hx', one_smul, hψformula]
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
+
+/-- **Radial coefficient bound** (for the cone mass estimate, Simon Ch. 6, 2.27 and 2.30,
+pp. 140–141, in the proof of 8.2, p. 177).  If `|ω(y)| ≤ 1` for all `y` and
+`β(v) = ∫₀¹ tᵐ ω(tx)(x, v) dt` for all `v`, then `|β| ≤ P^{2m+1} |x|`, `|·|` the Euclidean
+coefficient norm of Remark 2.6.  Put `K = P^{m+1} |x|`.  If `|u_i| ≤ 1` for all `i`, then
+`α(x, u) = |x| α(x/|x|, u)`, so `|α(x, u)| ≤ K |α|` by `isoperimetric_abs_covector_apply_le`.
+Hence `|β(e_I)| ≤ K` for each of the `P^m` maps `I : Fin m → Fin P`, and
+`|β| ≤ (P^m K²)^{1/2} ≤ P^m K = P^{2m+1} |x|`. -/
+theorem Submission.iwl_cr_cest_radial_coeff_bound : ∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (x : Eucl P) (β : Covector (Eucl P) m), (∀ y, covectorEuclideanNorm (ω y) ≤ 1) → (∀ v : Fin m → Eucl P, β v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → covectorEuclideanNorm β ≤ (P : ℝ) ^ (2 * m + 1) * ‖x‖ := by
+  intro P m ω x β hω hβ
+  classical
+  set K : ℝ := (P : ℝ) ^ (m + 1) * ‖x‖ with hK
+  have hK0 : 0 ≤ K := mul_nonneg (pow_nonneg (Nat.cast_nonneg P) _) (norm_nonneg x)
+  -- Step 1: `|α(x, u)| ≤ K |α|` whenever `|u_i| ≤ 1` for all `i`.
+  have hcoef : ∀ (α : Covector (Eucl P) (m + 1)) (u : Fin m → Eucl P), (∀ i, ‖u i‖ ≤ 1) →
+      |α (Fin.cons x u)| ≤ K * covectorEuclideanNorm α := by
+    intro α u hu
+    by_cases hx : x = 0
+    · -- The first argument vanishes.
+      have h0 : α (Fin.cons x u) = 0 := α.map_coord_zero 0 (by simp [hx])
+      rw [h0, abs_zero]
+      exact mul_nonneg hK0 (covectorEuclideanNorm_nonneg α)
+    · -- `α(x, u) = |x| α(τ)` for `τ = (x/|x|, u)`, whose entries have norm at most `1`.
+      have hx0 : 0 < ‖x‖ := norm_pos_iff.mpr hx
+      set τ : Fin (m + 1) → Eucl P := Fin.cons (‖x‖⁻¹ • x) u
+      have hτ : ∀ j, ‖τ j‖ ≤ 1 := by
+        intro j
+        refine Fin.cases ?_ (fun i => ?_) j
+        · simp [τ, norm_smul, inv_mul_cancel₀ hx0.ne']
+        · simpa [τ] using hu i
+      have hxu : (Fin.cons x u : Fin (m + 1) → Eucl P) = Function.update τ 0 (‖x‖ • τ 0) := by
+        funext j
+        refine Fin.cases ?_ (fun i => ?_) j
+        · simp [τ, smul_smul, mul_inv_cancel₀ hx0.ne']
+        · simp [τ]
+      rw [hxu, α.map_update_smul, Function.update_eq_self, smul_eq_mul, abs_mul,
+        abs_of_pos hx0]
+      calc ‖x‖ * |α τ| ≤ ‖x‖ * ((P : ℝ) ^ (m + 1) * covectorEuclideanNorm α) :=
+            mul_le_mul_of_nonneg_left
+              (Submission.isoperimetric_abs_covector_apply_le P (m + 1) α τ hτ) hx0.le
+        _ = K * covectorEuclideanNorm α := by rw [hK]; ring
+  -- Step 2: `|β(e_I)| ≤ K` for every `I : Fin m → Fin P`.
+  have hcoord : ∀ I : Fin m → Fin P,
+      |β (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ K := by
+    intro I
+    have he : ∀ i, ‖EuclideanSpace.basisFun (Fin P) ℝ (I i)‖ ≤ 1 := fun i =>
+      ((EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.1 (I i)).le
+    -- On `Ι(0, 1) = (0, 1]`, `0 ≤ tᵐ ≤ 1` and `|ω(tx)(x, e_I)| ≤ K |ω(tx)| ≤ K`.
+    have hbound : ∀ t ∈ Set.uIoc (0 : ℝ) 1,
+        ‖t ^ m * ω (t • x) (Fin.cons x fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))‖ ≤ K := by
+      intro t ht
+      rw [Set.uIoc_of_le zero_le_one] at ht
+      have htm : 0 ≤ t ^ m := pow_nonneg ht.1.le m
+      have htm1 : t ^ m ≤ 1 := pow_le_one₀ ht.1.le ht.2
+      have hval := (hcoef (ω (t • x)) _ he).trans
+        (mul_le_of_le_one_right hK0 (hω (t • x)))
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg htm]
+      exact (mul_le_of_le_one_left (abs_nonneg _) htm1).trans hval
+    have h := intervalIntegral.norm_integral_le_of_norm_le_const hbound
+    rw [Real.norm_eq_abs, sub_zero, abs_one, mul_one] at h
+    rw [hβ]
+    exact h
+  -- Step 3: `|β|² ≤ P^m K² ≤ (P^m K)²`, as `P^m ≤ (P^m)²`.
+  unfold covectorEuclideanNorm
+  refine (Real.sqrt_le_sqrt (y := ((P : ℝ) ^ m * K) ^ 2) ?_).trans_eq ?_
+  · calc _ ≤ ∑ _I : Fin m → Fin P, K ^ 2 := by
+          refine Finset.sum_le_sum fun I _ => ?_
+          split_ifs
+          · simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hcoord I) 2
+          · positivity
+      _ = (P : ℝ) ^ m * K ^ 2 := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+            Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
+      _ ≤ ((P : ℝ) ^ m) ^ 2 * K ^ 2 := by
+          refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg K)
+          exact_mod_cast Nat.le_self_pow two_ne_zero (P ^ m)
+      _ = ((P : ℝ) ^ m * K) ^ 2 := (mul_pow _ _ 2).symm
+  · rw [Real.sqrt_sq (mul_nonneg (pow_nonneg (Nat.cast_nonneg P) m) hK0), hK]
+    ring
+
+/-- **Cut-off radial form** (cone construction, Simon Ch. 6, 2.30–2.32 (pp. 141–142), as used in
+the proof of 8.2).  Let `ψ₀(x)(v) = ∫₀¹ tᵐ ω(t x)(x, v) dt` be smooth and `0 < r < s`.  For the
+bump function `ζ` equal to `1` on `B̄_r(0)` with support `B_s(0)`, `ψ = ζ ψ₀` is a test form
+agreeing with `ψ₀` on `B_r(0)`.  If `|ω| ≤ 1`, then `|ψ(x)| = ζ(x) |ψ₀(x)|`, which is at most
+`P^{2m+1} ‖x‖ ≤ P^{2m+1} s` for `‖x‖ < s` and `0` otherwise. -/
+theorem Submission.iwl_cr_cest_cutoff_radial_form : ∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (ψ₀ : DifferentialForm (Eucl P) m) (r s : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ₀ → (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ₀ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → 0 < r → r < s → ∃ ψ : TestFormOn (univ : Set (Eucl P)) m, (∀ x ∈ ball (0 : Eucl P) r, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ((∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) m) x) ≤ (P : ℝ) ^ (2 * m + 1) * s) := by
+  intro P m ω ψ₀ r s hψ₀ hrad hr hrs
+  -- Step 1: the bump function `ζ = 1` on `B̄_r(0)`, `support ζ = B_s(0)`, `0 ≤ ζ ≤ 1`.
+  obtain ⟨ζ, hζr, hζs⟩ : ∃ ζ : ContDiffBump (0 : Eucl P), ζ.rIn = r ∧ ζ.rOut = s :=
+    ⟨⟨r, s, hr, hrs⟩, rfl, rfl⟩
+  -- Step 2: `ζ ψ₀` is smooth with compact support, i.e. a test form on `ℝ^P`.
+  have hmem : (ζ : Eucl P → ℝ) • ψ₀ ∈ testFormOnSubmodule (univ : Set (Eucl P)) m :=
+    ⟨⟨ζ.contDiff.smul hψ₀, ζ.hasCompactSupport.smul_right⟩, subset_univ _⟩
+  refine ⟨⟨(ζ : Eucl P → ℝ) • ψ₀, hmem⟩, fun x hx v => ?_, fun hω x => ?_⟩
+  -- Step 3: `ζ = 1` on `B_r(0)`, so there `ψ = ψ₀` satisfies the radial formula.
+  · have hζx : ζ x = 1 := ζ.one_of_mem_closedBall (by rw [hζr]; exact ball_subset_closedBall hx)
+    change ((ζ : Eucl P → ℝ) • ψ₀) x v = _
+    rw [Pi.smul_apply', ContinuousAlternatingMap.smul_apply, hζx, one_smul, hrad]
+  -- Step 4: homogeneity `|a α| = |a| |α|` of the Euclidean coefficient norm.
+  · have hsmul : ∀ (a : ℝ) (α : Covector (Eucl P) m),
+        covectorEuclideanNorm (a • α) = |a| * covectorEuclideanNorm α := by
+      intro a α
+      unfold covectorEuclideanNorm
+      rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg a), Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+      · rw [mul_zero]
+    -- Step 5: `|ψ(x)| = ζ(x) |ψ₀(x)|`; bound it on `B_s(0)` and note it vanishes outside.
+    change covectorEuclideanNorm (((ζ : Eucl P → ℝ) • ψ₀) x) ≤ _
+    rw [Pi.smul_apply', hsmul, abs_of_nonneg ζ.nonneg]
+    have hc : 0 ≤ (P : ℝ) ^ (2 * m + 1) := pow_nonneg (Nat.cast_nonneg P) _
+    by_cases hxs : ‖x‖ < s
+    · have hψ₀x : covectorEuclideanNorm (ψ₀ x) ≤ (P : ℝ) ^ (2 * m + 1) * ‖x‖ :=
+        Submission.iwl_cr_cest_radial_coeff_bound P m ω x (ψ₀ x) hω (hrad x)
+      calc ζ x * covectorEuclideanNorm (ψ₀ x) ≤ 1 * ((P : ℝ) ^ (2 * m + 1) * ‖x‖) :=
+            mul_le_mul ζ.le_one hψ₀x (covectorEuclideanNorm_nonneg _) zero_le_one
+        _ ≤ (P : ℝ) ^ (2 * m + 1) * s := by
+            rw [one_mul]
+            exact mul_le_mul_of_nonneg_left hxs.le hc
+    · have hζx : ζ x = 0 := by
+        rw [← Function.notMem_support, ζ.support_eq, hζs, mem_ball_zero_iff]
+        exact hxs
+      rw [hζx, zero_mul]
+      exact mul_nonneg hc (hr.trans hrs).le
+/-- **Support of the cone** (the cone `0 ⨯ X` of Simon Ch. 6, 2.30, p. 141).  Suppose
+`spt X ⊆ B̄_R(0)` and `C(ω) = X(ψ)` whenever `ψ` agrees on an open neighbourhood of `spt X` with
+the radial form `x ↦ ∫_0^1 t^m ω(tx)(x, ·) dt`.  Then `spt C ⊆ B̄_R(0)`: for `‖p‖ > R` and
+`r = (‖p‖ − R)/2`, a test form `ω` supported in `B_r(p)` vanishes at `tx` for `x ∈ B_{R+r}(0)`,
+`t ∈ [0, 1]`, so `ψ = 0` is admissible and `C(ω) = X(0) = 0`; thus `C` vanishes on `B_r(p)`
+and `p ∉ spt C`. -/
+theorem Submission.iwl_cr_cest_cone_support : ∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → C.support ⊆ closedBall 0 R := by
+  intro P m R X C hX hcone p hp
+  -- Suppose `‖p‖ > R` and put `r = (‖p‖ - R) / 2 > 0`.
+  by_contra hpR
+  rw [mem_closedBall_zero_iff, not_le] at hpR
+  set r := (‖p‖ - R) / 2 with hr_def
+  have hr : 0 < r := by rw [hr_def]; linarith
+  -- `C` vanishes on `B_r(p)`: for `tsupport ω ⊆ B_r(p)`, `ψ = 0` satisfies the radial formula
+  -- on `N = B_{R+r}(0) ⊇ spt X`, so `C ω = X 0 = 0`.
+  have hvan : C.VanishesOn (ball p r) := by
+    intro ω hω
+    have hC := hcone ω 0
+      ⟨ball 0 (R + r), isOpen_ball, hX.trans (closedBall_subset_ball (by linarith)), ?_⟩
+    · rw [hC, map_zero]
+    intro x hx v
+    have hx' : ‖x‖ < R + r := mem_ball_zero_iff.mp hx
+    -- For `t ∈ [0, 1]`, `‖tx‖ ≤ ‖x‖ < R + r = ‖p‖ - r`, so `tx ∉ B_r(p) ⊇ tsupport ω`.
+    have hzero : EqOn (fun t : ℝ =>
+        t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v))
+        (fun _ => 0) (uIcc 0 1) := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      have htx : t • x ∉ tsupport (ω : DifferentialForm (Eucl P) (m + 1)) := by
+        intro hmem
+        have h1 : dist (t • x) p < r := hω hmem
+        rw [dist_eq_norm] at h1
+        have h2 : ‖t • x‖ ≤ ‖x‖ := by
+          rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+          exact mul_le_of_le_one_left (norm_nonneg _) ht.2
+        have h3 : ‖p‖ ≤ ‖t • x‖ + ‖t • x - p‖ := by
+          have h4 := norm_le_insert' p (t • x)
+          rwa [norm_sub_rev] at h4
+        linarith
+      simp only [image_eq_zero_of_notMem_tsupport htx, ContinuousAlternatingMap.coe_zero,
+        Pi.zero_apply, mul_zero]
+    simp only [Submodule.coe_zero, Pi.zero_apply, ContinuousAlternatingMap.coe_zero]
+    rw [intervalIntegral.integral_congr hzero, intervalIntegral.integral_zero]
+  -- Hence `B_r(p)` lies in the zero region of `C`, contradicting `p ∈ spt C`.
+  exact hp.2 ⟨ball p r, ⟨isOpen_ball, by rw [closure_ball p hr.ne']; exact isCompact_closedBall p r,
+    subset_univ _, hvan⟩, mem_ball_self hr⟩
+/-- Mass comparison through bounded transfer forms: if for every mass-admissible `ω` and `δ > 0`
+there is a test form `ψ` with `C(ω) = X(ψ)` and `|ψ(x)| ≤ c (R + δ)` everywhere, then
+`M(C) ≤ c R · M(X)`. -/
+theorem Submission.iwl_cr_cest_mass_le_of_forms :
+    ∀ (P n k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) n)
+      (C : GeometricCurrentOn (univ : Set (Eucl P)) k) (c R : ℝ), 0 ≤ c → 0 ≤ R → X.mass < ∞ →
+      (∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) k univ, ∀ δ : ℝ, 0 < δ →
+        ∃ ψ : TestFormOn (univ : Set (Eucl P)) n, C ω = X ψ ∧
+          ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) n) x) ≤ c * (R + δ)) →
+      C.mass ≤ ENNReal.ofReal (c * R) * X.mass := by
+  intro P n k X C c R hc hR hX hforms
+  -- `M(X) = ofReal B` with `B = M(X).toReal ≥ 0`.
+  set B := X.mass.toReal
+  have hB : 0 ≤ B := ENNReal.toReal_nonneg
+  have hXB : X.mass = ENNReal.ofReal B := (ENNReal.ofReal_toReal hX.ne).symm
+  -- Every admissible `ω` has `C(ω) ≤ c R B`: use the transfer form for `δ = ε / (B c + 1)`.
+  have key : ∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) k univ, C ω ≤ c * R * B := by
+    intro ω hω
+    refine le_of_forall_pos_lt_add fun ε hε => ?_
+    have hBc : 0 ≤ B * c := mul_nonneg hB hc
+    have hBc1 : 0 < B * c + 1 := by linarith
+    have hδ : 0 < ε / (B * c + 1) := div_pos hε hBc1
+    obtain ⟨ψ, hCψ, hψ⟩ := hforms ω hω (ε / (B * c + 1)) hδ
+    have habs := Submission.cmb_abs_apply_le_of_massOn_le P n univ univ X ψ B
+      (c * (R + ε / (B * c + 1))) hB hXB.le (subset_univ _) hψ
+    have hBcδ : B * c * (ε / (B * c + 1)) < ε := by
+      have e : B * c * (ε / (B * c + 1)) + ε / (B * c + 1) = ε := by field_simp
+      linarith
+    calc C ω = X ψ := hCψ
+      _ ≤ |X ψ| := le_abs_self _
+      _ ≤ B * (c * (R + ε / (B * c + 1))) := habs
+      _ = c * R * B + B * c * (ε / (B * c + 1)) := by ring
+      _ < c * R * B + ε := by linarith
+  -- Take the supremum over admissible `ω`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  calc ENNReal.ofReal (C ω) ≤ ENNReal.ofReal (c * R * B) :=
+        ENNReal.ofReal_le_ofReal (key ω hω)
+    _ = ENNReal.ofReal (c * R) * ENNReal.ofReal B := ENNReal.ofReal_mul (mul_nonneg hc hR)
+    _ = ENNReal.ofReal (c * R) * X.mass := by rw [hXB]
 /-- Smoothness of a parametric interval integral, with all derivatives under the integral sign:
 for `G : ℝ × ℝ^P → V` of class `C^∞` (`V` complete), `g x = ∫_a^b G(t, x) dt` is `C^∞`, every
 `x`-derivative `(t, x) ↦ ∂_x^j G(t, x)` is continuous, and `D^j g(x) = ∫_a^b ∂_x^j G(t, x) dt`.
@@ -1479,6 +1717,48 @@ theorem Submission.iwl_cr_cone_exists : ∀ (P m : ℕ) (R : ℝ) (X : Geometric
     (N ∩ ball 0 (max R 0 + 1)) (hN.inter isOpen_ball) (subset_inter hXN hXr)
     fun x hx => ContinuousAlternatingMap.ext fun v =>
       (hΦH ω x hx.2 v).trans (hψN x hx.1 v).symm
+
+/-- **Cone estimates** (items 3–4 of the cycle reduction; cf. the cone 2.30 and the mass bound
+2.27 of Simon Ch. 6).  With `c = P^{2m+1}` and `R ≥ 0`: if `spt X ⊆ B̄_R(0)` and `C` is a cone
+over `X`, i.e. `C(ω) = X(ψ)` whenever `ψ(x)(v) = ∫₀¹ t^m ω(tx)(x, v) dt` near `spt X`, then
+`spt C ⊆ B̄_R(0)` and `M(C) ≤ c R M(X)`; and if `X_j ⇀ X` (all supported in `B̄_R(0)`), the
+cones `C_j` over `X_j` converge weakly to `C`.  Each `ω` is tested through one cut-off radial
+form `ψ = ζ ψ_ω`, with `ζ = 1` near `B̄_R(0)`. -/
+theorem Submission.iwl_cr_cone_estimates : ∀ (P m : ℕ), ∃ c : ℝ, 0 ≤ c ∧ ∀ R : ℝ, 0 ≤ R → (∀ (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → C.support ⊆ closedBall 0 R ∧ (X.mass < ∞ → C.mass ≤ ENNReal.ofReal (c * R) * X.mass)) ∧ (∀ (Xj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) m) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (Cj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, (Xj j).support ⊆ closedBall 0 R) → X.support ⊆ closedBall 0 R → (∀ j, (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ (Xj j).support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → (Cj j) ω = (Xj j) ψ)) → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → WeaklyConvergesOn Xj X → WeaklyConvergesOn Cj C) := by
+  intro P m
+  -- Step 1: for `0 < r < s`, `ω` has a cut-off radial form `ψ`, satisfying the radial formula on
+  -- `B_r(0)` and `|ψ| ≤ P^{2m+1} s` if `|ω| ≤ 1`.
+  have hcut : ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (r s : ℝ), 0 < r → r < s →
+      ∃ ψ : TestFormOn (univ : Set (Eucl P)) m,
+        (∀ x ∈ ball (0 : Eucl P) r, ∀ v : Fin m → Eucl P,
+          (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1,
+            t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) ∧
+        ((∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) (m + 1)) y) ≤ 1) →
+          ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) m) x) ≤
+            (P : ℝ) ^ (2 * m + 1) * s) := by
+    intro ω r s hr hrs
+    obtain ⟨ψ₀, hψ₀, hψ₀eq, -⟩ :=
+      Submission.iwl_cr_radial_operator P m m (ω : DifferentialForm (Eucl P) (m + 1))
+        ω.property.1.1
+    exact Submission.iwl_cr_cest_cutoff_radial_form P m ω ψ₀ r s hψ₀ hψ₀eq hr hrs
+  refine ⟨(P : ℝ) ^ (2 * m + 1), by positivity, fun R hR => ⟨?_, ?_⟩⟩
+  · -- Step 2 (a): support, and mass with `ψ` cut off between `B_{R+δ/2}(0)` and `B_{R+δ}(0)`.
+    intro X C hX hcone
+    refine ⟨Submission.iwl_cr_cest_cone_support P m R X C hX hcone, fun hXm => ?_⟩
+    refine Submission.iwl_cr_cest_mass_le_of_forms P m (m + 1) X C ((P : ℝ) ^ (2 * m + 1)) R
+      (by positivity) hR hXm fun ω hω δ hδ => ?_
+    obtain ⟨ψ, hψeq, hψle⟩ := hcut ω (R + δ / 2) (R + δ) (by linarith) (by linarith)
+    exact ⟨ψ, hcone ω ψ ⟨ball 0 (R + δ / 2), isOpen_ball,
+      hX.trans (closedBall_subset_ball (by linarith)), hψeq⟩, hψle hω.2⟩
+  · -- Step 3 (b): one `ψ`, cut off between `B_{R+1}(0)` and `B_{R+2}(0)`, serves every `j`, so
+    -- `C_j(ω) = X_j(ψ) → X(ψ) = C(ω)`.
+    intro Xj X Cj C hXj hX hconej hcone hconv ω
+    obtain ⟨ψ, hψeq, -⟩ := hcut ω (R + 1) (R + 2) (by linarith) (by linarith)
+    have hj : ∀ j, Cj j ω = Xj j ψ := fun j => hconej j ω ψ ⟨ball 0 (R + 1), isOpen_ball,
+      (hXj j).trans (closedBall_subset_ball (by linarith)), hψeq⟩
+    rw [hcone ω ψ ⟨ball 0 (R + 1), isOpen_ball,
+      hX.trans (closedBall_subset_ball (by linarith)), hψeq⟩]
+    exact (hconv ψ).congr fun j => (hj j).symm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "theorem norm_integral_le_of_norm_le_const|theorem integral_congr|theorem integral_zero",
+        "structure ContDiffBump|theorem one_of_mem_closedBall|theorem support_eq|protected theorem hasCompactSupport|protected theorem contDiff|theorem nonneg|theorem le_one",
+        "iwl_cr_cest_|isoperimetric_abs_covector_apply_le|cmb_abs_apply_le_of_massOn_le",
+        "ofReal_mul|ofReal_toReal|ofReal_le_ofReal_iff",
+        "git show 8c000d1fa9feee2acb018915bef93ab6fe6393ef:GMT/Ch06/Submission.lean",
+        "git show ba202ac0407b6e93210594416fcd0729874b2eff:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-estimates-audit-gkzhdj94/RecheckedFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-estimates-audit-gkzhdj94/IndependentAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-covector-eval-bound-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/accepted-candidate.json",
+        "/tmp/cone-estimates-audit-gkzhdj94/RecheckedFull.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/IndependentAssembly.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/covector_bound_Challenge.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/mass_bound_Challenge.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/radial_coeff_bound_Challenge.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/cutoff_radial_form_Challenge.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/cone_support_Challenge.lean",
+        "/tmp/cone-estimates-audit-gkzhdj94/mass_le_of_forms_Challenge.lean"
+      ],
+      "conclusion": "Verified project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the snapshot Contract and workspace Contract/Submission are byte-identical. The pinned definitions and integral, bump-function, and ENNReal lemmas support the supplied proofs. No proposed declaration was found in the snapshot project. DAG and decomposition-record scans found no conflicting reservation for the four new bare names; both reused declarations have comparator acceptance and identical frozen types. Dependencies are correctly directed and acyclic. All six independently generated comparator challenges compiled without child implementations. Recompiling the supplied proofs confirmed that every child uses only propext, Classical.choice, and Quot.sound. An independently written assembly, taking the exact child conclusions and inherited radial-operator contract as hypotheses, compiled with only standard axioms and proves the exact selected parent type. The split is appropriate: support, coefficient control, cutoff construction, and mass comparison are genuine obligations; weak continuity follows using one common cutoff. The radial operator remains an unresolved pre-existing dependency, not an accepted reuse or a circular child assumption."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean type agree exactly with the accepted reuse. Sorting injective index tuples bounds each coefficient; alternation handles repeated indices. Multilinear expansion and coordinate bounds give the stated factor P^n, including zero-dimensional and degree-zero cases. No circular reliance occurs."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration and includes every hypothesis. The proof derives C ≥ 0, establishes admissibility of both signed rescalings, correctly uses B ≥ 0 to unpack ofReal inequalities, and supplies an explicit limiting argument. It works for arbitrary U and W."
+    },
+    {
+      "key": "radial_coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully includes the absence of regularity assumptions. Normalizing the first argument, applying covector_bound, using the integrability-free constant interval-integral bound, and summing coefficient squares prove the exact estimate. The cardinality argument handles P = 0 and m = 0. Only the declared dependency is used."
+    },
+    {
+      "key": "cutoff_radial_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The smooth input form and radius hypotheses are explicit and correctly formalized. The bump construction supplies one compactly supported smooth test form before assuming the conditional norm bound. Homogeneity and radial_coeff_bound establish that bound; the vanishing case includes ‖x‖ = s. No hidden radial-existence obligation remains."
+    },
+    {
+      "key": "cone_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inline cone predicate exactly matches the prose. The compact-neighborhood argument places each hypothetical exterior support point in the zero region, using the zero test form and the stated triangle inequality. The proof also covers negative R, including an empty formula neighborhood, so no omitted nonnegativity assumption is needed."
+    },
+    {
+      "key": "mass_le_of_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The transfer-form hypothesis and all nonnegativity and finiteness assumptions match the Lean type. Finite mass justifies conversion to B = M(X).toReal; the explicit positive δ gives the limiting evaluation bound. ofReal multiplication and the defining supremum then yield precisely the claimed mass inequality, using only mass_bound."
+    }
+  ],
+  "required_changes": []
+}
