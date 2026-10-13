@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1b4cb9ed9ff51024c14af20d003e4e96bf4b2e7c55c65d0d43530531a6861992",
+  "git_delta": {
+    "base_commit": "c653aad9bf6b4fe6a49c1eccd5a9d94680aed18c",
+    "candidate_commit": "c96caa82cb60583839c479ecee879106dfbaaf42",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "22085fc4fb506acf27704c3779f8a0c0aa30b7b0a7265e6c059aaca2586baa3e",
+    "source_sha256": "dbd42f8ebbcf79d7b211b19dd7d5ac1431df423719561e941dd6454b801bfac6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_measure_le_massOn",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → R.measure W ≤ T.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
