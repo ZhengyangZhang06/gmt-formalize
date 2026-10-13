@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 10 (B4), the lemma on weak continuity of Jacobians, stated for globally Lipschitz maps; the only change is that ω may be any continuous compactly supported n-form (the proof never differentiates ω). No hypotheses and no sibling results are used.
+
+Notation. e_1, …, e_n is the standard basis of ℝⁿ = Euclid n, du is Lebesgue measure (volume on Euclid n, which corresponds to the product Lebesgue measure on Fin n → ℝ, Mathlib PiLp.volume_preserving_ofLp). For a map K : ℝⁿ → ℝ^{N'} write DK(u) := fderiv ℝ K u (= 0 where K is not differentiable) and Φ_K(u) := ω(K(u))(DK(u)e_1, …, DK(u)e_n). An L-Lipschitz map is differentiable Lⁿ-a.e. (Rademacher, Mathlib LipschitzWith.ae_differentiableAt) with ‖DK(u)‖ ≤ L wherever it is differentiable, and u ↦ DK(u) is Borel (Mathlib measurable_fderiv). We must show ∫ w Φ_{H_j} du → ∫ w Φ_H du.
+
+1. Bounds and measurability. C_ω := sup_y ‖ω(y)‖ < ∞ (operator norm of the continuous multilinear map ω(y); finite because ω is continuous with compact support). For every u, |Φ_K(u)| ≤ C_ω Π_a |DK(u)e_a| ≤ C_ω Lⁿ for K ∈ {H_j, H} (‖DK(u)‖ ≤ L, or DK(u) = 0). Φ_K is Borel (K continuous, ω continuous, DK Borel, evaluation continuous). Since w ∈ L¹, all integrals exist and |∫ w Φ_K| ≤ C_ωLⁿ‖w‖_{L¹}.
+
+2. Case n = 0. Then Φ_K(u) = ω(K(u))() (no arguments). ω is uniformly continuous and H_j → H uniformly, so Φ_{H_j} → Φ_H uniformly, and |∫ w(Φ_{H_j} − Φ_H)| ≤ ‖w‖_{L¹} sup|Φ_{H_j} − Φ_H| → 0. From now on n ≥ 1.
+
+3. Reduction to smooth compactly supported w. Given ε > 0 choose w̃ ∈ C^∞_c(ℝⁿ) with ‖w − w̃‖_{L¹} < ε (density of C^∞_c in L¹). By step 1, |∫(w − w̃)Φ_K| ≤ C_ωLⁿε for every K ∈ {H_j, H}, uniformly in j. Hence it suffices to prove the claim for w ∈ C^∞_c(ℝⁿ).
+
+4. Expansion in minors. Let e'_1, …, e'_{N'} be the standard basis of ℝ^{N'}. Expanding each argument z_b = Σ_c (z_b)_c e'_c by multilinearity and using alternation (terms with a repeated index vanish; an injective index map is uniquely J∘σ with J strictly increasing and σ a permutation), ω(y)(z_1, …, z_n) = Σ_J ω_J(y)·det[(z_b)_{J(a)}]_{a,b}, the sum over strictly increasing J : Fin n → Fin N', with ω_J(y) := ω(y)(e'_{J(1)}, …, e'_{J(n)}), a continuous compactly supported function. At every point u where K is differentiable, (z_b)_{J(a)} = ∂_bK^{J(a)}(u), so Φ_K(u) = Σ_J ω_J(K(u))·det DK^J(u), where K^J := (K^{J(1)}, …, K^{J(n)}) : ℝⁿ → ℝⁿ is L-Lipschitz (a coordinate projection has norm ≤ 1); this identity holds Lⁿ-a.e. It therefore suffices to show, for one fixed J, ∫ w·ω_J(H_j)·det DH_j^J du → ∫ w·ω_J(H)·det DH^J du.
+
+5. Splitting. ∫ wω_J(H_j)det DH_j^J − ∫ wω_J(H)det DH^J = ∫ w(ω_J(H_j) − ω_J(H))det DH_j^J + ∫ wω_J(H)(det DH_j^J − det DH^J). For a square matrix A, |det A| ≤ ‖A‖ⁿ (Hadamard), so |det DH_j^J| ≤ Lⁿ a.e.; ω_J is uniformly continuous, so ω_J∘H_j → ω_J∘H uniformly, and the first term is at most ‖w‖_{L¹}Lⁿ sup|ω_J∘H_j − ω_J∘H| → 0. For the second term put c := w·(ω_J∘H) ∈ C_c(ℝⁿ), v_j := H_j^J, v := H^J; these are L-Lipschitz maps ℝⁿ → ℝⁿ with v_j → v uniformly, so step 6 shows ∫ c det Dv_j → ∫ c det Dv.
+
+6. Claim: for c ∈ C_c(ℝⁿ) and L-Lipschitz v_j, v : ℝⁿ → ℝⁿ with v_j → v uniformly, ∫ c·det Dv_j du → ∫ c·det Dv du.
+ For a Lipschitz function g put dg := Σ_b ∂_bg dx^b (a.e. partial derivatives, bounded and measurable); for bounded measurable compactly supported coefficients, identify an n-form f dx^1 ∧ ⋯ ∧ dx^n with f for integration. Concretely, for an (n − r)-form β = Σ_I β_I dx^I (I increasing of length n − r) the n-form β ∧ dv^{a_1} ∧ ⋯ ∧ dv^{a_r} is (Σ_I ±β_I·det[∂_{b}v^{a_m}]_{m ≤ r, b ∉ I}) dx^1 ∧ ⋯ ∧ dx^n, with the r×r minors of the matrix of a.e. partial derivatives taken on the complementary columns and the sign of the shuffle (I, I^c); all statements below are statements about these coordinate integrals, and the exterior-algebra notation is only bookkeeping for them. Prove by induction on r = 0, …, n the statement (P_r): for every continuous compactly supported (n − r)-form β on ℝⁿ and all a_1, …, a_r ∈ {1, …, n}, ∫ β ∧ dv_j^{a_1} ∧ ⋯ ∧ dv_j^{a_r} → ∫ β ∧ dv^{a_1} ∧ ⋯ ∧ dv^{a_r}. The claim is (P_n) with β = c and a = (1, …, n), because c·dv^1 ∧ ⋯ ∧ dv^n = c·det Dv·dx^1 ∧ ⋯ ∧ dx^n.
+ (P_0) holds trivially (no dependence on j). Assume (P_{r−1}) with r ≥ 1.
+ (i) Integration by parts for Lipschitz functions: for β ∈ C^∞_c (an (n − r)-form) and Lipschitz g, u_2, …, u_r: ∫ β ∧ dg ∧ du_2 ∧ ⋯ ∧ du_r = (−1)^{n−r+1}∫ g dβ ∧ du_2 ∧ ⋯ ∧ du_r. For C^∞ functions this is ∫ d(gβ ∧ du_2 ∧ ⋯ ∧ du_r) = 0 (Stokes for a compactly supported exact n-form, i.e. ∫∂_b(·) = 0 for compactly supported C^1 coefficients), together with d(gβ ∧ du_2 ∧ ⋯ ∧ du_r) = dg ∧ β ∧ du_2 ∧ ⋯ + g dβ ∧ du_2 ∧ ⋯ (d(du_i) = 0) and dg ∧ β = (−1)^{n−r}β ∧ dg. For Lipschitz functions mollify g and all u_i simultaneously: for each Lipschitz h, h∗ϕ_δ → h uniformly, D(h∗ϕ_δ) = (Dh)∗ϕ_δ (the a.e. derivative of a Lipschitz function is its weak derivative, Mathlib LipschitzWith.integral_lineDeriv_mul_eq) → Dh a.e. (Mathlib ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable) and |D(h∗ϕ_δ)| ≤ Lip(h); dominated convergence on the compact set spt β gives the identity in the limit.
+ (ii) Smooth β. With R_j := dv_j^{a_2} ∧ ⋯ ∧ dv_j^{a_r} and R := dv^{a_2} ∧ ⋯ ∧ dv^{a_r}, (i) gives ∫ β ∧ dv_j^{a_1} ∧ R_j − ∫ β ∧ dv^{a_1} ∧ R = ±[∫(v_j^{a_1} − v^{a_1}) dβ ∧ R_j + ∫ v^{a_1} dβ ∧ (R_j − R)]. The first integral is at most sup|v_j − v|·C_β·(C_nL)^{r−1}·Lⁿ(spt β) → 0 (the coefficients of R_j are sums of products of r − 1 partial derivatives, each bounded by L). The second tends to 0 by (P_{r−1}) applied to the continuous compactly supported (n − r + 1)-form v^{a_1}dβ.
+ (iii) Continuous β. Given ε > 0 choose a smooth β̃ with support in a fixed compact K ⊇ spt β and sup|β − β̃| < ε (mollification). Then |∫(β − β̃) ∧ dv_j^{a_1} ∧ ⋯ ∧ dv_j^{a_r}| ≤ ε·C_n·L^r·Lⁿ(K) uniformly in j, and the same bound holds with v in place of v_j; with (ii) for β̃ this gives (P_r).
+ This completes the induction and proves the claim.
+
+7. Conclusion. By steps 3–6 (and step 2 for n = 0), ∫ w(u)·ω(H_j(u))(DH_j(u)e_1, …, DH_j(u)e_n) du → ∫ w(u)·ω(H(u))(DH(u)e_1, …, DH(u)e_n) du; in Lean the vectors DH(u)e_a are fderiv ℝ H u (EuclideanSpace.single a 1). ∎
+
+## Key steps
+
+1. Uniform bound |Φ_K| ≤ C_ωLⁿ; the case n = 0 by uniform convergence.
+2. Reduce to w ∈ C^∞_c by L¹ density.
+3. Expand ω in the minors det DH^J with continuous coefficients ω_J; uniform convergence handles ω_J∘H_j.
+4. Induction (P_r) on wedge factors with integration by parts for Lipschitz functions (mollification) gives ∫ c det Dv_j → ∫ c det Dv.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git rev-parse HEAD of the workspace (b4d606db) and of SNAPSHOT/mathlib (25730c7c); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean workspace GMT/Ch07/Submission.lean (identical)`
+- `rg -c "dimred_mbl_dt_lp" SNAPSHOT lake-packages-25730c7c/simongmt (no match); python3 scan of RUN/dag.json lean_names for the six new names (none) and for the three reused names (accepted nodes with byte-identical lean_statement)`
+- `rg -n -i "lipschitz.*push|pushforward.*lipschitz|weak continuity|jacobian.*weak|cylinder|\[\[0, ?1\]\]" SNAPSHOT/project/GMT -g "*.lean" (only the unproved Ch06 specification IsLipschitzPushforward / LipschitzPushforwardIntegerMultiplicity in Ch06/Contract.lean; Ch07 does not import Ch06)`
+- `python3 scans of accepted RUN/dag.json lean_statements for covectorEuclideanNorm, curryLeft, compContinuousLinearMap, HasApproximateTangentSpaceAt, CountablyRectifiable, LipschitzWith, Orthonormal, ApproximatesLinearOn/AntilipschitzWith (found covectorEuclideanNorm_gram_bounds, regcomp_covector_eval_orthonormal_le, dpf_rectifiable_bilipschitz_pieces, ptd_piece_image_approxTangent_ae, dpf_approxTangent_ae_bilipschitz_piece; no Lipschitz push-forward, cylinder, Jacobian weak continuity or map-partition lemma)`
+- `grep of SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap, HasApproximateTangentSpaceAt.unique, countablyRectifiable_range, CountablyRectifiable.mono, countablyRectifiable_of_measure_zero), Chapter06 Currents/Mass/CurrentLocalEquality/Forms (GeometricCurrentOn, boundary, ext, boundary_boundary, tsupport_exteriorDerivative_subset, exteriorDerivativeTestOn, WeaklyConvergesOn.boundary, covectorEuclideanNorm, massOn, mass, le_massOn, massOn_le_liminf, support, zeroRegion, exteriorDerivative_apply, exteriorDerivativeOn_pullbackFormWithin), Chapter02 AreaDomain/AreaCritical (injective_area_formula_lipschitzOn, weighted_area_formula_lipschitzOn_fiberSum, area_image_criticalSet_eq_zero, areaJacobianWithin)`
+- `grep -rnE "(theorem|lemma) ..." SNAPSHOT/mathlib/Mathlib for exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, ContinuousAlternatingMap.hasStrictFDerivAt_compContinuousLinearMap, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, PiLp.volume_preserving_ofLp, volume_preserving_piFinSuccAbove, lipschitz_infDist_pt, infDist_zero_of_mem, hausdorffMeasure_image_le, MeasurableSet.image_of_continuousOn_injOn, tendsto_tsum_of_dominated_convergence, integral_lineDeriv_mul_eq, ae_convolution_tendsto_right_of_locallyIntegrable, measurableSet_of_differentiableAt, measurable_fderiv, LinearMap.exists_antilipschitzWith, ae_tendsto_measure_inter_div_of_measurableSet, ae_tendsto_average_norm_sub, Orthonormal.exists_orthonormalBasis_extension (all found)`
+- `python3/cat of the twin node root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1 decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json and decomposition-scope-v1.json; sentence diff of the two parent-supplied proofs`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem, _solve_children, _accepted_checkpoint, _install_parent_supplied_child_handoff, _overlay_accepted_children) and store.py ensure; verifier gmt-compare.py contract_scope/child_modules; both validate_lean_statement implementations on all nine types`
+- `lake env lean /tmp/dmlp/lean/Types.lean, /tmp/dmlp/lean/Challenge_<key>.lean for all nine keys (only sorry warnings), /tmp/dmlp/lean/Assembly.lean (#print axioms GMT.Ch07.DmlpAsm.assembly: propext, Classical.choice, Quot.sound), /tmp/dmlp/lean/Reexport.lean, /tmp/dmlp/lean/InstCheck.lean (clean)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9889d5f42e/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9889d5f42e/decomposition-audit-v1.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dmlp/lean/Types.lean`
+- `/tmp/dmlp/lean/Assembly.lean`
+- `/tmp/dmlp/lean/Reexport.lean`
+- `/tmp/dmlp/lean/InstCheck.lean`
+
+Pins match: project b4d606db, Mathlib 25730c7c, and the workspace Submission is byte-identical to the frozen Ch07 contract. Neither the snapshot project nor Mathlib nor SimonGMT contains a Lipschitz push-forward of currents, a product with [[0,1]], or a weak-continuity lemma for Jacobians; the snapshot's Ch06 push-forward specification is unproved and not imported by Ch07. So covector_bounds, cylinder, operators, jacobian_continuity, im_pushforward and im_cylinder are new obligations under fresh, unused names (dimred_mbl_dt_lp_*). Three needed steps already exist as accepted DAG declarations with exactly the required types and are reused verbatim: covectorEuclideanNorm_gram_bounds (L3), dpf_rectifiable_bilipschitz_pieces (B1) and ptd_piece_image_approxTangent_ae (B2). Every cited Mathlib and SimonGMT name exists. All nine types elaborate in the comparator's challenge form and pass both validators. A Lean assembly derives the exact selected type from the operators, im_pushforward, im_cylinder and IMS types, using only propext, Classical.choice and Quot.sound.

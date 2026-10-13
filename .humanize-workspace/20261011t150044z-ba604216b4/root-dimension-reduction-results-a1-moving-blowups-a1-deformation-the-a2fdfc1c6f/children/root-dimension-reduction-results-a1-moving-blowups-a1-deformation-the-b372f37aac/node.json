@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1",
+  "depth": 5,
+  "title": "Weak continuity of pulled-back n-forms under uniform convergence with bounded Lipschitz constants (parent B4 lemma)",
+  "statement": "For n, N' ∈ ℕ, L ∈ ℝ≥0, L-Lipschitz maps H_j, H : ℝⁿ → ℝ^{N'} (j ∈ ℕ) with H_j → H uniformly on ℝⁿ, a Lebesgue integrable w : ℝⁿ → ℝ and a continuous, compactly supported n-form ω on ℝ^{N'}: ∫ w(u)·ω(H_j(u))(DH_j(u)e_1, …, DH_j(u)e_n) du → ∫ w(u)·ω(H(u))(DH(u)e_1, …, DH(u)e_n) du as j → ∞, where DK(u) = fderiv ℝ K u and e_a = EuclideanSpace.single a 1.",
+  "lean_statement": "∀ (n N' : ℕ) (L : NNReal) (Hs : ℕ → Euclid n → Euclid N') (H : Euclid n → Euclid N') (w : Euclid n → ℝ) (ω : DifferentialForm (Euclid N') n), (∀ j, LipschitzWith L (Hs j)) → LipschitzWith L H → TendstoUniformly Hs H atTop → Integrable w → Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ u, w u * ω (Hs j u) (fun a => fderiv ℝ (Hs j) u (EuclideanSpace.single a 1))) atTop (𝓝 (∫ u, w u * ω (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))))",
+  "lean_name": "dimred_mbl_dt_lp_jacobian_weak_continuity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b372f37aac-a1"
+}
