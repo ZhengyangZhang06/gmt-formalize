@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c6cd3f0f5ae7849ec58c9cbbefb0b7737acb360603fc179f7104e0a8a8f7922",
+  "git_delta": {
+    "base_commit": "98ba6f673b29e7e384c7192b26e5438efb541d17",
+    "candidate_commit": "d2404e07b92330212c5ef77ce6974c1fdb9992cb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_perturbation_diffeo",
+    "diff_sha256": "c86118e95569378739a907a5c62ae915c637a470ecb523c5ff838c36c1dff9fe",
+    "source_sha256": "76f185adb198dbef9f7a4f970c998087a07320be7523c48987f870a68a9c8c63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_perturbation_diffeo",
+      "statement": "∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → Bijective (fun x => x + t • Z x) ∧ (∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x)) ∧ ∃ Λ : NNReal, LipschitzWith Λ (fun x => x + t • Z x) ∧ AntilipschitzWith Λ (fun x => x + t • Z x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
