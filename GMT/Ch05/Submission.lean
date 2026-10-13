@@ -4103,6 +4103,111 @@ theorem dohr_local_monotonicity : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
     (fun r hr => (Real.exp_pos _).le.trans (hFb r hr).2.1) hF1 hmono'
   exact ⟨F, hFb, hF1, hmono', t, ht0, hdens, hlim⟩
 
+theorem dohr_local_multiplicity_one : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) → ∀ ξ ∈ U, V.HasDensity ξ 1 → ∀ (R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), 0 < R → closedBall ξ R ⊆ U → ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → ∃ s > 0, s ≤ R ∧ (∀ᵐ x ∂V.weight, x ∈ ball ξ s → V.mult x = 1) ∧ (μHE[n] : Measure (Amb n ℓ)) (symmDiff (V.carrier ∩ ball ξ s) (V.support ∩ ball ξ s)) = 0 ∧ V.weight.restrict (ball ξ s) = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball ξ s) ∧ (∀ y ∈ ball ξ s ∩ V.support, V.HasDensity y 1) ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ s → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (Q '' ((fun x => x - ξ) '' V.carrier) ∩ ball 0 ρ) (graphOver u {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ})) = 0 := by
+  intro n ℓ hn U hU V H p hp hH hLp hint ξ _hξU hξ R Q u hR hBR hu hgraph
+  -- Unit density of the graph, hence finiteness and unit density of `spt V` in `B̆_R(ξ)`.
+  obtain ⟨hfin, hdensS⟩ :=
+    Submission.dohr_lmo_graph_support_density n ℓ V.support ξ R Q u hu hgraph
+      (Submission.dohr_c1_graph_density_one n ℓ hn R u hu)
+  -- On `B̆_R(ξ)` the tangent projections are measurable and project onto `n`-planes.
+  obtain ⟨hmeasTP, hTP⟩ :=
+    Submission.dohr_graph_tangent_planes n ℓ hn U hU V ξ R R Q u hR le_rfl hBR hu hgraph
+  have hrank := Submission.dohr_lmo_graph_tangent_rank n ℓ U V ξ R Q u
+    (ball_subset_closedBall.trans hBR) hu.differentiableOn_one hgraph hTP
+  -- The monotonicity formula with a vanishing error, uniformly near `B̆_{R/2}(ξ)`.
+  obtain ⟨t₁, ht₁, Λ, hΛ, hunif⟩ :=
+    Submission.dohr_lmo_uniform_monotonicity_bound n ℓ U V H p ξ R hp hR hBR
+      (Submission.dohr_local_monotonicity n ℓ hn U hU V H p hp hH) hrank hmeasTP
+      (hLp _ (isCompact_closedBall ξ R) hBR)
+  -- Since `Θ(ξ) = 1 < 2`, every density near `ξ` is `< 2`.
+  obtain ⟨d, hd, hd2⟩ :=
+    Submission.dohr_lmo_density_usc n ℓ U V ξ t₁ Λ ht₁ hΛ
+      (hunif ξ (mem_ball_self (half_pos hR))) 1 zero_le_one hξ 2 one_lt_two
+  -- The radius `s`.
+  obtain ⟨s, hs, hsR2, hsd⟩ : ∃ s : ℝ, 0 < s ∧ s ≤ R / 2 ∧ s ≤ d :=
+    ⟨min (R / 2) d, lt_min (half_pos hR) hd, min_le_left _ _, min_le_right _ _⟩
+  have hsR : s ≤ R := hsR2.trans (half_le_self hR.le)
+  have hBs : closedBall ξ s ⊆ U := (closedBall_subset_closedBall hsR).trans hBR
+  -- `Θ = θ` `μ_V`-a.e. on `B̆_s(ξ)`, and `Θ = 0` at `Hⁿ`-a.e. point of `spt V \ M` there.
+  obtain ⟨hΘθ, hΘ0⟩ :=
+    Submission.dohr_lmo_density_eq_mult_ae n ℓ U V ξ s hBs
+      (hfin s (hsR2.trans_lt (half_lt_self hR)))
+      (fun y hy => hdensS y ⟨hy.1, ball_subset_ball hsR hy.2⟩)
+  -- Densities are unique.
+  have huniq : ∀ (z : Amb n ℓ) (a b : ℝ), V.HasDensity z a → V.HasDensity z b →
+      ENNReal.ofReal a = ENNReal.ofReal b := fun _ _ _ ha hb => tendsto_nhds_unique ha hb
+  -- `Θ ≥ 1` at every point of `spt V ∩ B̆_s(ξ)`.
+  have hge1 : ∀ y ∈ V.support ∩ ball ξ s, ∃ Θ : ℝ, 1 ≤ Θ ∧ V.HasDensity y Θ := by
+    rintro y ⟨hyS, hys⟩
+    have hyR2 : y ∈ ball ξ (R / 2) := ball_subset_ball hsR2 hys
+    obtain ⟨Θy, hΘy0, hΘy, -⟩ := hunif y hyR2 t₁ ⟨ht₁, le_rfl⟩ y (mem_closedBall_self ht₁.le)
+    refine ⟨Θy, not_lt.1 fun hlt => ?_, hΘy⟩
+    obtain ⟨d', hd', hd'1⟩ :=
+      Submission.dohr_lmo_density_usc n ℓ U V y t₁ Λ ht₁ hΛ (hunif y hyR2) Θy hΘy0 hΘy 1 hlt
+    have hpos : V.weight (ball y d' ∩ ball ξ s) ≠ 0 := by
+      have hyW : y ∈ V.weight.support := (show y ∈ U ∩ V.weight.support from hyS).2
+      exact ((Measure.mem_support_iff_forall y).1 hyW _
+        (Filter.inter_mem (ball_mem_nhds y hd') (isOpen_ball.mem_nhds hys))).ne'
+    obtain ⟨z, ⟨hzd, hzs⟩, hzΘ, k, hk, hzk⟩ :=
+      Measure.exists_mem_of_measure_ne_zero_of_ae hpos (ae_restrict_of_ae (hΘθ.and hint))
+    obtain ⟨Θ, hΘ1, hΘ⟩ := hd'1 z (ball_subset_closedBall hzd)
+    have heq := huniq z _ _ (hzΘ hzs) hΘ
+    rw [hzk] at heq
+    have h1 : (1 : ℝ≥0∞) ≤ ENNReal.ofReal (k : ℝ) :=
+      ENNReal.one_le_ofReal.2 (by exact_mod_cast hk)
+    rw [heq] at h1
+    exact absurd (ENNReal.ofReal_lt_one.2 hΘ1) (not_lt.2 h1)
+  -- Carrier and support agree up to an `Hⁿ`-null set on `B̆_s(ξ)`.
+  have hsymm := Submission.dohr_lmo_carrier_support_null n ℓ U V (ball ξ s) measurableSet_ball
+    (ball_subset_closedBall.trans hBs) hΘ0 hge1
+  -- Multiplicity one, since `θ` is an integer `≥ 1` equal to a density `< 2`.
+  have hmult1 : ∀ᵐ x ∂V.weight, x ∈ ball ξ s → V.mult x = 1 := by
+    filter_upwards [hΘθ, hint] with x hxΘ hxk hxs
+    obtain ⟨k, hk, hxk⟩ := hxk
+    obtain ⟨Θ, hΘ2, hΘ⟩ := hd2 x (ball_subset_closedBall (ball_subset_ball hsd hxs))
+    have heq := huniq x _ _ (hxΘ hxs) hΘ
+    rw [hxk] at heq ⊢
+    have hk2 : (k : ℝ) < 2 := by
+      have h : ENNReal.ofReal (k : ℝ) < ENNReal.ofReal 2 := by
+        rw [heq]; exact (ENNReal.ofReal_lt_ofReal_iff two_pos).2 hΘ2
+      exact (ENNReal.ofReal_lt_ofReal_iff_of_nonneg (Nat.cast_nonneg k)).1 h
+    have hk1 : k = 1 := by
+      have : k < 2 := by exact_mod_cast hk2
+      omega
+    simp [hk1]
+  -- `μ_V ⌞ B̆_s(ξ) = Hⁿ ⌞ (spt V ∩ B̆_s(ξ))`.
+  have hweight :=
+    Submission.dohr_lmo_weight_restrict_eq n ℓ U V (ball ξ s) measurableSet_ball hmult1 hsymm
+  -- Density one at every point of `spt V ∩ B̆_s(ξ)`.
+  have hdens1 : ∀ y ∈ ball ξ s ∩ V.support, V.HasDensity y 1 := by
+    rintro y ⟨hys, hyS⟩
+    have hlim := hdensS y ⟨hyS, ball_subset_ball hsR hys⟩
+    have hδ : 0 < s - dist y ξ := sub_pos.2 (mem_ball.1 hys)
+    unfold RectifiableVarifold.HasDensity
+    rw [ENNReal.ofReal_one]
+    refine Tendsto.congr' ?_ hlim
+    filter_upwards [Ioo_mem_nhdsGT hδ] with r hr
+    have hsub : closedBall y r ⊆ ball ξ s := by
+      intro z hz
+      rw [mem_ball]
+      calc dist z ξ ≤ dist z y + dist y ξ := dist_triangle _ _ _
+        _ ≤ r + dist y ξ := by gcongr; exact mem_closedBall.1 hz
+        _ < s := by linarith [hr.2]
+    congr 1
+    rw [← Measure.restrict_eq_self V.weight hsub, hweight,
+      Measure.restrict_apply measurableSet_closedBall]
+    congr 1
+    ext z
+    constructor
+    · rintro ⟨hzS, hzr⟩
+      exact ⟨hzr, hzS, hsub hzr⟩
+    · rintro ⟨hzr, hzS, -⟩
+      exact ⟨hzS, hzr⟩
+  -- Transport of the null symmetric difference to graph coordinates.
+  exact ⟨s, hs, hsR, hmult1, hsymm, hweight, hdens1,
+    Submission.dohr_lmo_carrier_graph_symmDiff n ℓ V.carrier V.support ξ R s Q u hsR hgraph
+      hsymm⟩
+
 end Submission
 
 end GMT.Ch05
