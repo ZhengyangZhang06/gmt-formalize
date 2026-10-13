@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1",
+  "parent_id": "root.polyhedral_approximation-a1",
+  "depth": 2,
+  "title": "Lattice-chain approximation of finite-mass integer multiplicity currents in ℝ^{n+ℓ} (Simon 6.2, first paragraph)",
+  "statement": "Assume DeformationTheorem. Let m, ℓ ∈ ℕ with ℓ ≥ 1, and let X_k ∈ D_{m+1}(ℝ^{m+1+ℓ}) (k ∈ ℕ) be integer multiplicity currents with M(X_k) + M(∂X_k) < ∞. Then there exist:\n- ρ : ℕ → ℝ with ρ_k > 0, ρ antitone and ρ_k → 0;\n- integer coefficients β_k : LatticeFaceIndex (m+1) (m+1+ℓ) → ℤ;\n- currents Pc_k ∈ D_{m+1}(ℝ^{m+1+ℓ}) with IsLatticeChain ρ_k β_k Pc_k for every k;\nsuch that Pc_k(ω) − X_k(ω) → 0 for every ω ∈ D^{m+1}(ℝ^{m+1+ℓ}).",
+  "lean_statement": "DeformationTheorem → ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ X : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), (∀ k, IsIntegerMultiplicity (X k)) → (∀ k, (X k).mass + (X k).boundary.mass < ∞) → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℤ) (Pc : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pc k)) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0)",
+  "lean_name": "polyhedral_approx_finite_mass_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-finite-mass-approximation-a1-a1"
+}
