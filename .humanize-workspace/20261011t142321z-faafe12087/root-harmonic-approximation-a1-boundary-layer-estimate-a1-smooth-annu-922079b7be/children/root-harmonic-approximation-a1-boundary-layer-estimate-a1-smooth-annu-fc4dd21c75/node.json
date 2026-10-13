@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.annulus_kernel_bound-a1",
+  "parent_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1",
+  "depth": 4,
+  "title": "Averaged dilation over the annulus (function term and kernel bound)",
+  "statement": "Let n ∈ ℕ and let R^n := EuclideanSpace ℝ (Fin n) carry Lebesgue measure. Let F : R^n → [0, ∞] be measurable, and let r, s, τ be reals with 1/2 ≤ r < 1, s > 0 and τ ≥ 1/2. Put B_ρ := ball(0, ρ) (open) and A := B_s \\ B_{rs}. Then ∫_{[τ,1]} ∫_A F(t x) dx dt ≤ 2^{n+1} (1 - r) ∫_{B_s} F(y) dy. All integrals are lintegrals, the outer one over Icc τ 1 for Lebesgue measure on ℝ, and the constant enters via ENNReal.ofReal.",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ≥0∞), Measurable F → ∀ r s τ : ℝ, 1 / 2 ≤ r → r < 1 → 0 < s → 1 / 2 ≤ τ → ∫⁻ t in Icc τ 1, ∫⁻ x in ball (0 : Rn n) s \\ ball 0 (r * s), F (t • x) ≤ ENNReal.ofReal (2 ^ (n + 1) * (1 - r)) * ∫⁻ y in ball (0 : Rn n) s, F y",
+  "lean_name": "ble_sac_annulus_dilation_avg_le",
+  "depends_on": [
+    "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.dilation_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.dilation_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-boundary-layer-estimate-a1-smooth-annu-fc4dd21c75-a1"
+}

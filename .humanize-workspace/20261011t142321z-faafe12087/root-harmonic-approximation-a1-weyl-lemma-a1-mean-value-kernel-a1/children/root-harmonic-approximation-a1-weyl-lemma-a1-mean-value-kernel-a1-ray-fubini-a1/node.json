@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.ray_fubini-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+  "depth": 4,
+  "title": "Kernel-averaged fundamental theorem of calculus along rays (FTC plus Fubini)",
+  "statement": "Let n in N, let rho : R^n -> R be continuous with rho(z) = 0 whenever |z| >= 1, let h : R^n -> R be of class C^1, x0 in R^n and t >= 0. Then int_{R^n} rho(z) h(x0 + t z) dz = (int_{R^n} rho) h(x0) + int_0^t ( int_{R^n} rho(z) Dh(x0 + sigma z)[z] dz ) dsigma. Here Dh(y)[v] = fderiv R h y v, the integrals over R^n are with respect to Lebesgue measure, and the outer integral on the right is the interval integral.",
+  "lean_statement": "∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 ≤ t → Continuous ρ → (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ 1 h → ∫ z, ρ z * h (x₀ + t • z) = (∫ z, ρ z) * h x₀ + ∫ σ in (0 : ℝ)..t, ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z",
+  "lean_name": "mvk_integral_ray_fubini",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1-ray-fubini-a1-a1"
+}

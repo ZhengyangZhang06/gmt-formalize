@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1",
+  "parent_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1",
+  "depth": 3,
+  "title": "Annulus L^2 estimate for C^1 functions (smooth boundary-layer estimate)",
+  "statement": "Let n >= 1, let phi : R^n -> R be C^1, let 1/2 <= r < 1 and 0 < s <= 1, and put a := sqrt(1 - r). Let B_rho := ball(0, rho) denote the open ball in R^n = EuclideanSpace R (Fin n) and A := B_s \\ B_{rs}. Then int_A |phi|^2 <= 2^{n+3} a (int_{B_s} |phi|^2 + int_{B_s} |grad phi|^2), where all integrals are Lebesgue lintegrals (values in [0, infinity]) of squared extended norms and grad phi is Mathlib's gradient.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ r s : ℝ, 1 / 2 ≤ r → r < 1 → 0 < s → s ≤ 1 → ∫⁻ x in ball (0 : Rn n) s \\ ball 0 (r * s), ‖φ x‖ₑ ^ 2 ≤ ENNReal.ofReal (2 ^ (n + 3) * Real.sqrt (1 - r)) * ((∫⁻ x in ball (0 : Rn n) s, ‖φ x‖ₑ ^ 2) + ∫⁻ x in ball (0 : Rn n) s, ‖gradient φ x‖ₑ ^ 2)",
+  "lean_name": "ble_smooth_annulus_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-boundary-layer-estimate-a1-smooth-annu-922079b7be-a1"
+}

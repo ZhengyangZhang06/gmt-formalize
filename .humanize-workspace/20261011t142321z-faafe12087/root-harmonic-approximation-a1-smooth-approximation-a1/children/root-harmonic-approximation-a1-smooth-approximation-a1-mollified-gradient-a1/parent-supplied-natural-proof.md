@@ -1,0 +1,129 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.harmonic_approximation-a1.smooth_approximation-a1`
+- Child DAG node: `root.harmonic_approximation-a1.smooth_approximation-a1.mollified_gradient-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source and role. These are steps 3 and 4 of the parent proof (w12_ball_smooth_approximation): a mollified W^{1,2}(B) function is C^infinity, and in the interior its gradient is the mollified weak gradient (cf. Evans, Partial Differential Equations, Section 5.3.1 (interior approximation by smooth functions); Gilbarg-Trudinger, Elliptic Partial Differential Equations of Second Order, Section 7.3 (weak derivatives)). The parent uses the first conjunct for the smoothness of phi_j and the second for grad phi_j = rho_j * G on B_r.
+
+Notation.
+- n is a natural number, mu := Lebesgue measure (volume) on R^n, B := ball(0, 1) (open), <.,.> the Euclidean inner product, D the Frechet derivative and grad Mathlib's gradient: grad u(x) is the unique vector with <grad u(x), v> = Du(x)v for all v.
+- Hypothesis IsW12WithGradient f g B: f in L^2(B), g in L^2(B; R^n), and int_B f(y) grad zeta(y) dy = - int_B zeta(y) g(y) dy for every zeta in C^infinity(R^n) with compact support and tsupport zeta inside B.
+- rho : R^n -> R is C^infinity, eps in R, and rho(z) = 0 whenever ||z|| >= eps.
+- F := 1_B f and G := 1_B g (Set.indicator, zero outside B); Phi(x) := int rho(z) F(x - z) dz.
+
+Proof.
+1. Compact support of rho. If rho(z) is nonzero then ||z|| < eps. Hence support rho lies in ball(0, eps) and tsupport rho lies in closedBall(0, eps), which is compact (finite dimension). So rho is C^infinity with compact support, and D rho and grad rho are continuous and vanish outside closedBall(0, eps); in particular they are bounded and measurable. (If eps <= 0 then rho = 0 and everything below holds trivially by the same argument.)
+
+2. Integrability of F and G. By hypothesis f is in L^2(B) and g in L^2(B; R^n). Since mu(B) < infinity, Hoelder (Cauchy-Schwarz) gives int_B |f| <= mu(B)^(1/2) (int_B |f|^2)^(1/2) < infinity, and likewise for g (MemLp.mono_exponent for the finite measure mu restricted to B). Hence F = 1_B f and G = 1_B g are integrable on R^n (integrable_indicator_iff), in particular locally integrable.
+
+3. Smoothness. Phi is the convolution rho * F for the scalar-multiplication bilinear map (convolution_lsmul). Since rho is C^infinity with compact support and F is locally integrable, Phi is C^infinity (HasCompactSupport.contDiff_convolution_left; Lebesgue measure is invariant under translations and under negation). This is the first claim.
+
+4. The derivative of Phi. By differentiation under the integral sign (HasCompactSupport.hasFDerivAt_convolution_left, rho being C^1 with compact support and F locally integrable), Phi has at every x the Frechet derivative D Phi(x) = int F(x - t) D rho(t) dt, a Bochner integral of continuous linear maps R^n -> R (in Mathlib: (fderiv rho *[(lsmul R R).precompL R^n, volume] F)(x)). Fix x. The function t -> F(x - t) is integrable (t -> x - t preserves mu), and D rho and grad rho are continuous and bounded (step 1). Hence the map-valued integrand t -> F(x - t) D rho(t) is a.e. strongly measurable with norm at most (sup ||D rho||) |F(x - t)|, so it is integrable, and evaluation at v commutes with the integral (ContinuousLinearMap.integral_apply): D Phi(x) v = int F(x - t) D rho(t) v dt for all v in R^n. Likewise t -> F(x - t) grad rho(t) is integrable; put w := int F(x - t) grad rho(t) dt. For every v, the inner product with v commutes with the integral (integral_inner, or ContinuousLinearMap.integral_comp_comm applied to the functional <., v>), so <w, v> = int F(x - t) <grad rho(t), v> dt = int F(x - t) D rho(t) v dt = D Phi(x) v. As grad Phi(x) is the unique vector with <grad Phi(x), v> = D Phi(x) v for all v, grad Phi(x) = w. Substituting y = x - t (t -> x - t preserves mu; integral_sub_left_eq_self) and using F = 1_B f,
+grad Phi(x) = int F(y) grad rho(x - y) dy = int_B f(y) grad rho(x - y) dy.
+
+5. The reflected, translated kernel is a test function. Fix x with ||x|| < 1 - eps and put zeta(y) := rho(x - y). Then zeta is C^infinity (rho composed with the affine map y -> x - y). If zeta(y) is nonzero then ||x - y|| < eps; hence tsupport zeta lies in closedBall(x, eps), which is compact, so zeta has compact support. If ||y - x|| <= eps then ||y|| <= ||x|| + eps < 1; hence tsupport zeta lies in closedBall(x, eps), which lies in B. By the chain rule D zeta(y) = - D rho(x - y), so grad zeta(y) = - grad rho(x - y).
+
+6. Weak identity. The hypothesis IsW12WithGradient f g B applied to zeta gives int_B f(y) grad zeta(y) dy = - int_B zeta(y) g(y) dy, i.e. - int_B f(y) grad rho(x - y) dy = - int_B rho(x - y) g(y) dy. Negating both sides,
+int_B f(y) grad rho(x - y) dy = int_B rho(x - y) g(y) dy.
+
+7. Conclusion. By steps 4 and 6, using G = 1_B g and the substitution z = x - y (which preserves mu),
+grad Phi(x) = int_B rho(x - y) g(y) dy = int rho(x - y) G(y) dy = int rho(z) G(x - z) dz.
+This holds for every x with ||x|| < 1 - eps, which is the second claim. QED
+
+Formalization note. All lemmas cited above except integral_inner are available under the imports of the frozen contract (checked with lake env lean against Mathlib 25730c7c). integral_inner lives in Mathlib.MeasureTheory.Function.L2Space; either import it in GMT/Ch05/Submission.lean or use ContinuousLinearMap.integral_comp_comm with the functional <., v>, which is available. The gradient of the reflected kernel, grad (y -> rho(x - y)) = - grad rho(x - y), follows from HasFDerivAt.comp with (hasFDerivAt_const x y).sub (hasFDerivAt_id y), then gradient, HasFDerivAt.fderiv and map_neg. A kernel-checked Lean template for steps 4-6 is WeakDerivativesZero.fderiv_convolution_eq_zero in the pinned simongmt package (Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean): it tests the weak identity with the reflected kernel y -> phi(x - y) (compact support via HasCompactSupport.comp_homeomorph (Homeomorph.subLeft x), tsupport via tsupport_comp_subset_preimage) and differentiates the convolution with HasCompactSupport.hasFDerivAt_convolution_right and convolution_precompR_apply; there the kernel is on the right, here on the left (convolution_flip). In the Lean statement Phi is written as fun x => int rho(z) . (ball 0 1).indicator f (x - z) dz, which is definitionally rho *[lsmul R R, volume] F.
+
+## Key steps
+
+1. rho has compact support in closedBall(0, eps); F = 1_B f and G = 1_B g are integrable
+2. Phi = rho * F is C^infinity and grad Phi(x) = int F(x - t) grad rho(t) dt = int_B f(y) grad rho(x - y) dy
+3. For ||x|| < 1 - eps, zeta(y) = rho(x - y) is a test function in B with grad zeta(y) = -grad rho(x - y)
+4. The weak identity for zeta gives int_B f grad rho(x - .) = int_B rho(x - .) g = int rho(z) G(x - z) dz
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "theorem _root_\.HasCompactSupport\.(contDiff_convolution_left|hasFDerivAt_convolution_left|hasFDerivAt_convolution_right|contDiff_convolution_right)" -A 8 <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `rg -n "theorem convolution_lsmul|theorem convolution_def|theorem convolution_flip|theorem convolution_eq_swap|theorem integral_sub_left_eq_self|theorem integral_sub_right_eq_self|theorem convolution_tendsto_right|theorem dist_convolution_le|theorem convolution_precompR_apply|theorem convolution_sub|theorem ConvolutionExistsAt|theorem _root_.HasCompactSupport.convolutionExists" <snapshot>/mathlib/Mathlib/Analysis/Convolution.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `rg -n -i young <snapshot>/mathlib/Mathlib -l; rg -n "eLpNorm_convolution|convolution.*eLpNorm|memLp_convolution|MemLp.convolution|Lp.*convolution|convolution_memLp" <snapshot>/mathlib/Mathlib`
+- `rg -n "^theorem|^lemma|^protected theorem|^variable|^instance|^noncomputable def|^def|^protected def" <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean; rg -n instance <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean`
+- `rg -n "theorem setLIntegral_le_lintegral|theorem setLIntegral_congr_fun|theorem memLp_indicator_iff_restrict|theorem integrable_indicator_iff|theorem MemLp.mono_exponent|theorem MemLp.locallyIntegrable|theorem tendsto_of_tendsto_of_tendsto_of_le_of_le " <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le" -B 2 -A 6 <snapshot>/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `rg -n "continuous_convolution_left|continuous_convolution_right" <snapshot>/mathlib/Mathlib/Analysis/Convolution.lean; rg -n "(lemma|theorem) (lintegral|integral)_(sub|div)_(right|left)_eq_self" <snapshot>/mathlib/Mathlib; rg -n "(lemma|theorem) (quasiMeasurePreserving|measurePreserving)_(sub|div)" <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem lintegral_mul_le_Lp_mul_Lq|theorem lintegral_lintegral_swap|theorem enorm_integral_le_lintegral_enorm|theorem ofReal_integral_eq_lintegral_ofReal|theorem eLpNorm_add_le |uniformContinuous_of_continuous" <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem eLpNorm_of_not_aestronglyMeasurable" -A 4 <snapshot>/mathlib/Mathlib; sed -n 87,99p <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean`
+- `rg -n "integral_inner\b|theorem integral_apply|theorem lintegral_mul_const" <snapshot>/mathlib/Mathlib`
+- `rg -l -i "convolution|mollif|ContDiffBump" .lake/packages/simongmt/Poincare; rg -n "^(theorem|lemma) .*(convolution|mollif|Mollif)" .lake/packages/simongmt/Poincare; rg -n -i "young|approximate identity|eLpNorm.*convolution" .lake/packages/simongmt/Poincare`
+- `for nm in mollifier_l2_contraction mollifier_l2_tendsto w12_ball_mollification_gradient; do rg -l $nm <run-dir> .lake/packages/simongmt/Poincare; done`
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean`
+- `lake env lean /tmp/sa-decomp-check/Check1.lean (byte copy of the frozen contract + the 3 child types as sorry stubs, contract imports only)`
+- `lake env lean /tmp/sa-decomp-check/Check2.lean (contract + BumpFunction.Normed/InnerProduct imports + children as sorry stubs + complete Lean proof of w12_ball_smooth_approximation + #print axioms)`
+- `lake env lean /tmp/sa-decomp-check/Probe.lean, ProbeAvail2.lean, ProbeAvail4.lean, ProbeAvail6.lean (instantiation of the cited lemmas on Rn n with volume; availability under the contract imports alone)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/TriangleInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-smooth-approximation-a1/parent-child-handoff.json`
+- `/tmp/sa-decomp-check/Check1.lean`
+- `/tmp/sa-decomp-check/Check2.lean`
+- `/tmp/sa-decomp-check/Probe.lean`
+- `/tmp/sa-decomp-check/ProbeAvail6.lean`
+
+Paths: <snapshot> = .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7 (manifest: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d). The snapshot's Contract.lean is byte-identical to the workspace contract (cmp), and Submission.lean is currently byte-identical to the contract.
+
+No-match results (these justify the children):
+- Mathlib has no Young convolution inequality and no L^p approximate-identity theorem. 'young' hits only Young diagrams/tableaux and the product inequality in MeanInequalities.lean. The only L^p convolution results are pointwise bounds: eLpNorm_convolution_integrand_le, ConvolutionExists.of_memLp_memLp and enorm_convolution_le (Analysis/Convolution.lean:536-561). Hence the l2_contraction and l2_approximate_identity children.
+- simongmt has no L^2 mollifier convergence either. Its 'Young' hits in Chapter05 are the elementary Cauchy-Young product inequality.
+
+Usable items, all verified to exist and to instantiate on Rn n with volume (Probe.lean):
+- Convolution calculus: HasCompactSupport.contDiff_convolution_left and hasFDerivAt_convolution_left (ContDiff/Convolution.lean:427, 91); HasCompactSupport.continuous_convolution_left (Convolution.lean:724); convolution_lsmul (Convolution.lean:423, rfl); dist_convolution_le (Convolution.lean:814).
+- Density: MemLp.exists_hasCompactSupport_eLpNorm_sub_le (ContinuousMapDense.lean:141).
+- Lintegral and measure tools: ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202); lintegral_lintegral_swap (Measure/Prod.lean:1071); lintegral_sub_right_eq_self, Measure.measurePreserving_sub_left and quasiMeasurePreserving_sub (additive versions of Group/LIntegral.lean:69, Group/Measure.lean:393, Group/Prod.lean:458); enorm_integral_le_lintegral_enorm (Bochner/Basic.lean:333).
+- L^p norms: eLpNorm_add_le (TriangleInequality.lean:54) has no measurability hypothesis. However, eLpNorm is defined to be infinity for functions that are not a.e. strongly measurable (LpSeminorm/Defs.lean:87-99), so the mollifier_l2_tendsto proof tracks measurability.
+- Bump kernels: ContDiffBump.normed with contDiff_normed, continuous_normed, nonneg_normed, integral_normed and support_normed_eq (BumpFunction/Normed.lean:37-72), plus the HasContDiffBump instance for inner product spaces (BumpFunction/InnerProduct.lean:57).
+- Zero extension and squeezing: memLp_indicator_iff_restrict (LpSeminorm/Indicator.lean:154); MemLp.mono_exponent (CompareExp.lean:137); integrable_indicator_iff (IntegrableOn.lean:340); setLIntegral_congr_fun and setLIntegral_le_lintegral (Lebesgue/Basic.lean:298, 258).
+- Map-valued and inner-product integrals: ContinuousLinearMap.integral_apply (Bochner/ContinuousLinearMap.lean:73); integral_inner (Function/L2Space.lean:89).
+
+Import availability: everything above is available under the contract's imports except three items (lake env lean probes ProbeAvail2/4/6): MemLp.exists_hasCompactSupport_eLpNorm_sub_le (ContinuousMapDense), ContDiffBump.normed (BumpFunction.Normed/InnerProduct) and integral_inner (L2Space). The child notes say so, and the comparator byte-checks only the contract and build inputs.
+
+Reuse template: simongmt Chapter08/DistributionalConstancy.lean, WeakDerivativesZero.fderiv_convolution_eq_zero, is a kernel-checked template for the mollified_gradient child. It uses the reflected kernel as a test function and differentiates the convolution.
+
+Name check: the three proposed names have no hits in the run directory (dag.json, nodes) or in simongmt.
+
+Lean checks:
+- Check1.lean: the three child types elaborate in GMT.Ch05.Submission with the contract imports alone.
+- Check2.lean: the exact frozen parent type (byte-compared with the handoff) is proved from the three children with no sorry of its own; #print axioms shows sorryAx only through the stubs.
+
+Web: a quick search could not confirm exact Gilbarg-Trudinger and Evans lemma numbers, so the child proofs cite them at section level (GT 7.2-7.3; Evans 5.3.1 and Appendix C).

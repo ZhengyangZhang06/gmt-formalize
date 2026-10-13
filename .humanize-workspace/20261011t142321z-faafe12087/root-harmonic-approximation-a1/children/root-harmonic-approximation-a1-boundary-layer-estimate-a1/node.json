@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Boundary-layer L^2 estimate for W^{1,2}(B)",
+  "statement": "For every n >= 1 there is C >= 0 (C = 2^{n+3} works) with the following property. For all f, g with IsW12WithGradient f g B (B the open unit ball of R^n) and every r in (0,1): int_{B \\ B_r} |f|^2 <= C sqrt(1-r) (int_B |f|^2 + int_B |g|^2), where B_r := ball(0,r) and all integrals are lintegrals of squared extended norms.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ r : ℝ, 0 < r → r < 1 → ∫⁻ x in ball (0 : Rn n) 1 \\ ball 0 r, ‖f x‖ₑ ^ 2 ≤ ENNReal.ofReal (C * Real.sqrt (1 - r)) * ((∫⁻ x in ball (0 : Rn n) 1, ‖f x‖ₑ ^ 2) + ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2)",
+  "lean_name": "w12_ball_boundary_layer_estimate",
+  "depends_on": [
+    "root.harmonic_approximation-a1.smooth_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-boundary-layer-estimate-a1-a1"
+}
