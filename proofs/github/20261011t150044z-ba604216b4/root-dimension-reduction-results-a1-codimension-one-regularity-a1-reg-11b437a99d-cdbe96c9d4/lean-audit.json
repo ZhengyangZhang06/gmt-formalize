@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4db0ca175844f8de310f2d639fa1d563f319f5c23fa210441e2b44f9980ff8bd",
+  "git_delta": {
+    "base_commit": "8dd08089ab7876234af1222f48bf863a6a9b9115",
+    "candidate_commit": "5070482c8514ea9297419543f67d814c2688f07a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_massOn_pos_of_mem_support",
+    "diff_sha256": "6e9b491cd7418961d1ed2a24a453e4755b934a9335e18fd68b02784fe7c8b856",
+    "source_sha256": "ce12633bcc9ca8565fe485621058cd0aa0bbb136d3688abeeae327905dda0274",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_massOn_pos_of_mem_support",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P), IsOpen U → IsOpen W → x ∈ W → x ∈ T.support → 0 < T.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
