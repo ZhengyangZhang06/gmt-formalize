@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1",
+  "depth": 5,
+  "title": "Two-sided Hausdorff density bounds at a good point",
+  "statement": "Let P, n ∈ ℕ, Hⁿ = μHE[n], ω_n = unitBallVolume n, |·| = covectorEuclideanNorm, ‖·‖ the operator norm on MultiVector P n = Λ_n(ℝ^P) and ‖·‖ₑ its [0,∞]-valued version. Let M ⊆ ℝ^P be Borel, θ : ℝ^P → ℝ Borel with θ(x) > 0 for x ∈ M, ζ : ℝ^P → Λ_n(ℝ^P) strongly measurable with |ζ(x)(α)| ≤ |α| for all x and all n-covectors α, and for each x ∈ M an n-covector β with |β| ≤ 1 and ζ(x)(β) = 1; let μ = (Hⁿ⌞M) with density x ↦ ofReal θ(x). Let a ∈ M and η₁ > 0 with (L) ofReal η₁ ≤ liminf_{r↓0} μ(B_r(a))/(ω_n·ofReal(rⁿ)), (U) limsup_{r↓0} Hⁿ(M ∩ B̄_r(a))/(ω_n·ofReal(rⁿ)) ≤ 1, and (D) (∫⁻_{M∩B̄_r(a)} ‖θ(x)ζ(x) − θ(a)ζ(a)‖ₑ dHⁿ(x))/(ω_n·ofReal(rⁿ)) → 0 as r ↓ 0 (limits along 𝓝[>] 0). Then there is r₀ > 0 such that for all r with 0 < r < r₀: ofReal(η₁/(4θ(a)))·(ω_n·ofReal(rⁿ)) ≤ Hⁿ(M ∩ B_r(a)) and Hⁿ(M ∩ B̄_r(a)) ≤ 2·(ω_n·ofReal(rⁿ)).",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (η₁ : ℝ), MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ → ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤ μHE[n] (M ∩ ball a r) ∧ μHE[n] (M ∩ closedBall a r) ≤ 2 * (unitBallVolume n * ENNReal.ofReal (r ^ n))",
+  "lean_name": "cbr_ci_bl_density_bounds",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.covector_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.covector_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1",
+  "depth": 5,
+  "title": "Uniform bounds and L¹-closeness for the rescaled Hausdorff measures at a good point",
+  "statement": "Let P, n ∈ ℕ, Hⁿ = μHE[n], ω_n = unitBallVolume n, |·| = covectorEuclideanNorm, ‖·‖ the operator norm on MultiVector P n = Λ_n(ℝ^P) and ‖·‖ₑ its [0,∞]-valued version. Let M ⊆ ℝ^P be Borel, θ : ℝ^P → ℝ Borel with θ(x) > 0 for x ∈ M, ζ : ℝ^P → Λ_n(ℝ^P) strongly measurable with |ζ(x)(α)| ≤ |α| for all x and all n-covectors α, and for each x ∈ M an n-covector β with |β| ≤ 1 and ζ(x)(β) = 1; let μ = (Hⁿ⌞M) with density x ↦ ofReal θ(x). Let a ∈ M and η₁ > 0 with (L) ofReal η₁ ≤ liminf_{r↓0} μ(B_r(a))/(ω_n·ofReal(rⁿ)), (U) limsup_{r↓0} Hⁿ(M ∩ B̄_r(a))/(ω_n·ofReal(rⁿ)) ≤ 1, and (D) (∫⁻_{M∩B̄_r(a)} ‖θ(x)ζ(x) − θ(a)ζ(a)‖ₑ dHⁿ(x))/(ω_n·ofReal(rⁿ)) → 0 as r ↓ 0 (limits along 𝓝[>] 0). Assume moreover Hⁿ(M) < ∞, and let λ_i > 0 (i ∈ ℕ) with λ_i → 0. Put N_i := blowUpMap a λ_i '' M = {λ_i⁻¹(x − a) : x ∈ M} and ν_i := Hⁿ⌞N_i. Then: (a) sup_i ν_i(K) < ∞ for every compact K ⊆ ℝ^P; (b) limsup_i ν_i(B̄_R(0)) ≤ ω_n·ofReal(Rⁿ) for every R > 0; (c) for every R > 0, eventually in i, ofReal(η₁/(4θ(a)))·(ω_n·ofReal(Rⁿ)) ≤ ν_i(B̄_R(0)); (d) for every R > 0, ∫⁻_{B̄_R(0)} ‖θ(a + λ_iy)ζ(a + λ_iy) − θ(a)ζ(a)‖ₑ dν_i(y) → 0 as i → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (η₁ : ℝ) (lams : ℕ → ℝ), μHE[n] M < ∞ → MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → (∀ K : Set (Euclid P), IsCompact K → ⨆ i, (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) K < ∞) ∧ (∀ R : ℝ, 0 < R → limsup (fun i => (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) (closedBall 0 R)) atTop ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) ∧ (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (R ^ n)) ≤ (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) (closedBall 0 R)) ∧ (∀ R : ℝ, 0 < R → Tendsto (fun i => ∫⁻ y in closedBall (0 : Euclid P) R, ‖θ (a + lams i • y) • ζ (a + lams i • y) - θ a • ζ a‖ₑ ∂(μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))) atTop (𝓝 0))",
+  "lean_name": "cbr_ci_bl_rescaled_bounds",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.blowup_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.blowup_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6264bc6f37-a1"
+}

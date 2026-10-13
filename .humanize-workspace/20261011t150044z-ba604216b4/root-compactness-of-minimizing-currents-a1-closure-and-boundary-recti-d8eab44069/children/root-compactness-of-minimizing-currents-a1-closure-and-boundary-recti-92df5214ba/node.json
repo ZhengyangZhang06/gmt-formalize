@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.blowup_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1",
+  "depth": 5,
+  "title": "Hausdorff and mass measures under the blow-up map",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P a Borel set, θ : ℝ^P → ℝ Borel measurable, a ∈ ℝ^P and λ > 0. Let Hⁿ = μHE[n], η := blowUpMap a λ, η(y) = λ⁻¹(y − a), and let dilation a λ be the contract's map y ↦ −λ⁻¹a + λ⁻¹y (dilationCLM). Write ofReal(λ^{−n}) for ENNReal.ofReal(λ⁻¹ ^ n), _# for Measure.map and ⌞ for Measure.restrict. Then (i) η(M) is a Borel set; (ii) Hⁿ⌞η(M) = ofReal(λ^{−n})·(dilation a λ)_#(Hⁿ⌞M); (iii) ofReal(λ^{−n})·(dilation a λ)_#((Hⁿ⌞M) with density x ↦ ofReal θ(x)) = (Hⁿ⌞η(M)) with density y ↦ ofReal θ(a + λy).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (a : Euclid P) (lam : ℝ), MeasurableSet M → Measurable θ → 0 < lam → MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) ∧ μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) = ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) (μHE[n].restrict M) ∧ ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) ((μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x))) = (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)).withDensity (fun y => ENNReal.ofReal (θ (a + lam • y)))",
+  "lean_name": "cbr_ci_bl_blowUp_restrict_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-92df5214ba-a1"
+}

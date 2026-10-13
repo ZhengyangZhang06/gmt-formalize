@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.covector_norm-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1",
+  "depth": 5,
+  "title": "Operator norm of an n-covector is at most P^n times its Euclidean coefficient norm",
+  "statement": "Let P, n ∈ ℕ and let α be an n-covector on ℝ^P, i.e. a continuous alternating n-linear map α : (ℝ^P)^n → ℝ (Covector (Euclid P) n). Let ‖α‖ be its operator norm (the norm of continuous alternating maps, ‖α‖ = sup{|α(v_0,…,v_{n−1})| : ‖v_k‖ ≤ 1}) and |α| := covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)},…,e_{I(n−1)})²)^{1/2}, where e_i = EuclideanSpace.basisFun (Fin P) ℝ i is the standard orthonormal basis. Then ‖α‖ ≤ P^n·|α|.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n), ‖α‖ ≤ (P : ℝ) ^ n * covectorEuclideanNorm α",
+  "lean_name": "cbr_ci_bl_covector_opNorm_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9d402d3e08-a1"
+}
