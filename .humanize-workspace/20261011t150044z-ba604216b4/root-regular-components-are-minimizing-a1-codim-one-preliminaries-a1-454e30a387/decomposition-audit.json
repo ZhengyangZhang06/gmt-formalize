@@ -1,0 +1,97 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsUnitOrientationOf|structure IMRep|def IMRep.action|def IMRep.Represents|def IsMinimizingIn|def IsEmbeddedSubmanifold|def IsOrientation|def regularSet|regcomp_cop_zdr|dor_zdm|dor_zero_dim_minimizing",
+        "theorem (hausdorffMeasure_zero_singleton|one_le_hausdorffMeasure_zero_of_nonempty|euclideanHausdorffMeasure_zero|setIntegral_indicator|setIntegral_eq_zero_of_forall_eq_zero|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|integral_singleton|restrict_restrict)|def constOfIsEmpty",
+        "def covectorEuclideanNorm|def massAdmissibleOn|def.*massOn|theorem.*le_massOn|def HasApproximateTangentSpaceAt|def CountablyRectifiable|def TestFormOnConverges|structure GeometricCurrentOn|def zeroRegion|def support|def VanishesOn",
+        "regcomp_cop_zdr|dor_zdm|dor_zero_dim_minimizing",
+        "git for-each-ref --format=%(objectname)",
+        "regcomp_cop_zdr",
+        "git show 39634bad5eec4be8528431168a20eb2a5ff79a28:GMT/Ch07/Submission.lean",
+        "git show c422ce6d42cad51b65569bae3c7157fcb4ad3880:GMT/Ch07/Submission.lean",
+        "git show 875f0d753a561be402314aa66e9223945c55ed93:GMT/Ch07/Submission.lean",
+        ". GMT/Scratch/regcomp_cop_zdr_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/zdr-independent-review-kqd7b5px/FrozenTypes.lean",
+        ". GMT/Scratch/regcomp_cop_zdr_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/zdr-independent-review-kqd7b5px/AuditAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-454e30a387/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-im-4b50b377f9/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-po-5decd78813/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-im-66bc505ba7/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/regcomp_cop_zdr_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/regcomp_cop_zdr_decomposition/decomposition_final.json",
+        "/tmp/zdr-independent-review-kqd7b5px/FrozenTypes.lean",
+        "/tmp/zdr-independent-review-kqd7b5px/AuditAssembly.lean"
+      ],
+      "conclusion": "The eight-child split is appropriate and proves exactly regcomp_cop_zero_dim_regularSet_empty through the supplied atom-deletion argument. The snapshot contract is byte-identical to the workspace Submission.lean, and the active mathlib revision matches the manifest. Local sources confirm the degree-zero measure, integral, covector, bump, current, support and mass facts used. The snapshot project has no regcomp_cop_zdr, dor_zdm or dor_zero_dim_minimizing match. All names are bare identifiers; the five new names have no DAG reservation or match in Submission.lean across 1074 distinct git ref tips. The three reused declarations have successful comparator records, identical frozen types and verbatim accepted proofs. Declared dependencies exactly match proof references and are acyclic. Every frozen type independently elaborates without child implementations. The complete assembly and explicit checks against all nine frozen types compile successfully; each child and the selected parent depend only on propext, Classical.choice and Quot.sound. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree. Uniqueness of the empty frame reduces the two orientation alternatives to s = 1 or s = −1. The proof is complete, independent and correctly handles the empty-family evaluation."
+    },
+    {
+      "key": "isolated_point_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits nonmeasurable C and arbitrary F. Measurability of K suffices for the indicator restriction identity. The singleton and empty-intersection cases prove precisely C.indicator F x, without missing integrability or measurability assumptions."
+    },
+    {
+      "key": "bump_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and four conclusions match the Lean proposition. The supplied proof establishes the degree-zero coefficient norm, constructs the smooth constant-covector bump, and verifies compact support, domain containment, centre value, vanishing and norm bound. No openness of U is needed."
+    },
+    {
+      "key": "imrep_zero_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted type. The proof independently establishes all four conclusions, including the otherwise unused measure-support equality: counting measure gives countability, local finiteness and pointwise orientation; positivity and local finiteness give the support characterization when U is open."
+    },
+    {
+      "key": "point_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted type. The proof covers arbitrary degree, derives sequential continuity from order-zero convergence, and proves both support inclusions using bumps and relatively compact balls. Openness, x ∈ U and nonzero ξ₀ are used correctly."
+    },
+    {
+      "key": "imrep_zero_erase_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with exactly the declared structure dependency. The proof transfers approximate tangents by eventual equality of blow-up integrals, checks every IMRep field, proves the measure identity, and establishes integrability before splitting the action integral. The ENNReal scalar acts on measures as intended; arbitrary U is sufficient."
+    },
+    {
+      "key": "regular_local_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree without an unnecessary openness hypothesis. The zero-dimensional chart isolates y; the orientation child supplies s; nonzero integral multiplicity yields |m s| ≥ 1. The integral child then proves the stated action formula without assuming M measurable. Dependencies are complete and correctly directed."
+    },
+    {
+      "key": "isolated_carrier_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the exact type. Local finiteness produces an isolating ball at any competing carrier point; the bump and integral children give contradictory evaluations. A second bump proves y belongs to the carrier using c ≠ 0. The proof uses exactly its declared dependencies and supplies the isolation needed for the parent's admissible deletion competitor."
+    }
+  ],
+  "required_changes": []
+}
