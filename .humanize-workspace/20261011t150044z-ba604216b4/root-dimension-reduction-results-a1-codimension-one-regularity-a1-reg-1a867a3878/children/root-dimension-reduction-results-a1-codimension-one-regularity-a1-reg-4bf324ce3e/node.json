@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.det_covector-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1",
+  "depth": 6,
+  "title": "The determinant covector a ↦ det[p, Aa_0, …, Aa_{n−1}] as a continuous linear function of p (supplied step 4)",
+  "statement": "Let P, n ∈ ℕ and let A : ℝ^P → ℝ^{n+1} be a continuous linear map. Then there is a continuous linear map Λ from ℝ^{n+1} into the space Λ^n(ℝ^P) = Covector (Euclid P) n of continuous alternating n-linear forms on ℝ^P such that, for all p ∈ ℝ^{n+1} and a_0, …, a_{n−1} ∈ ℝ^P, Λ(p)(a_0, …, a_{n−1}) = det[p, Aa_0, …, Aa_{n−1}], the determinant of the (n+1)×(n+1) real matrix whose column 0 is p and whose column k+1 is Aa_k (entry (r, c) is the r-th coordinate of the c-th of the vectors p, Aa_0, …, Aa_{n−1}).",
+  "lean_statement": "∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)), ∃ Λ : Euclid (n + 1) →L[ℝ] Covector (Euclid P) n, ∀ (p : Euclid (n + 1)) (a : Fin n → Euclid P), Λ p a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r)",
+  "lean_name": "codim1_lur_det_covector_clm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4bf324ce3e-a1"
+}

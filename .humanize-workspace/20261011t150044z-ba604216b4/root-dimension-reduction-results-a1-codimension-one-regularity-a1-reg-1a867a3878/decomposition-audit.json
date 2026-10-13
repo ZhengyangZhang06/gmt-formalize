@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep.measure|def IsIntegerMultiplicity|def IsBoundaryOfRegion|abbrev Euclid",
+        "det_succ_column_zero|theorem det_apply|theorem det_le|def curryLeft|curryLeft_apply_apply|compContinuousLinearMapCLM|def mkContinuous|volumeForm_robust|abs_volumeForm_apply_le|measurable_piecewise",
+        "codim1_lur_det_laplace_first_column|codim1_lur_det_covector_clm|codim1_lur_det_covector_norm_le|codim1_lur_graph_chart_adjoint_identities|codim1_lur_chart_test_form_exists",
+        "python3 /tmp/chart-perimeter-independent-audit/run_checks.py Types det_laplace det_covector coeff_bound",
+        "python3 /tmp/chart-perimeter-independent-audit/run_checks.py chart_geometry test_form compact_measure_finite Chain",
+        "python3 /tmp/chart-perimeter-independent-audit/run_checks.py Inst Reuse_rsd_imrep_compact_measure_ne_top Reuse_cmr_abs_apply_le_massOn Reuse_dor_ims_massOn_le_measure Availability"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-1a867a3878/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-1a867a3878/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/accepted-candidate.json",
+        "/tmp/chart-perimeter-independent-audit/Types.lean",
+        "/tmp/chart-perimeter-independent-audit/Inst.lean",
+        "/tmp/chart-perimeter-independent-audit/Chain.lean",
+        "/tmp/chart-perimeter-independent-audit/Chain.log"
+      ],
+      "conclusion": "The split is appropriate and establishes the exact selected parent. Project, Mathlib and SimonGMT revisions match the pins; the frozen contract and workspace Submission are byte-identical. All seven types independently elaborate as closed one-line propositions without child implementations. Matrix column order, operator norms, adjoints, indicators and smoothness order were checked; no problematic IsUnit construction occurs. The five new bare names have no reservations in the 995-node DAG or matches at 1790 inspected reference tips. Both reused declarations have identical comparator-accepted frozen types and verified candidate source hashes. Fresh compilation verifies every supplied appendix, both reused implementations, and the combined assembly. All child proofs use only standard axioms; the assembled parent additionally uses exactly its inherited chart_divergence and mass_upper_bound contracts, with no sorryAx or ancestor reliance. Dependencies are acyclic and correctly directed. Matrix.det_le and MultilinearMap.continuous_of_finiteDimensional are unavailable in the import closure; the supplied Leibniz and Hadamard arguments successfully avoid them."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_laplace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses the stated column determinant identity. Laplace expansion leaves the identity minor at row j; every other minor has a zero row. The complete proof also handles n = 0 and compiles independently."
+    },
+    {
+      "key": "det_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuous-linear existence statement matches the prose. Hadamard bounds the standard determinant form; currying and pullback by A construct Λ with precisely the required column formula. No unstated hypothesis or circular dependency is used."
+    },
+    {
+      "key": "coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the specified Euclidean coefficient norm and bound. The Leibniz estimate bounds each coefficient by (n+1)!, and summation over P^n tuples followed by square-root monotonicity proves the conclusion, including degenerate dimensions."
+    },
+    {
+      "key": "chart_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and identities match. Orthogonality gives A∘u = 0 on the open ball; differentiability there permits differentiation to obtain A∘Du = 0. Together with Aι = id, this proves every asserted chart identity without using another child or the parent."
+    },
+    {
+      "key": "test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit squared-norm cutoff produces a smooth form with compact support in Z and the stated closed ball. The coefficient estimate and cofactor identity prove the norm bound and exact indicator-field equality, including outside D. The proof uses exactly its four declared siblings. Its conclusion supplies the test form required by the selected parent's divergence and mass estimates."
+    },
+    {
+      "key": "compact_measure_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse is valid: the frozen type is identical to the comparator-accepted declaration. The withDensity and restriction identities identify the weighted measure with the finite multiplicity integral; multiplicity positivity bounds the unweighted measure. The supplied proof is complete and independently compiles with standard axioms."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse preserves the exact comparator-accepted type. Homogeneity makes both signed (r+ε)⁻¹ rescalings admissible; finite mass converts their bounds to real inequalities. Letting ε decrease to zero proves the claim, including r = 0. The natural proof is complete, and the accepted implementation independently passes the axiom check."
+    }
+  ],
+  "required_changes": []
+}
