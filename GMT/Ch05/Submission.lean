@@ -458,6 +458,61 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 4.5, step 1(v): a `C¹` function with `tsupport ζ ⊆ B̆_r(0)` and
+`|∇ζ| ≤ M` satisfies `|ζ| ≤ M r`. For `|y| < r` pick a unit vector `w` with `|y − r w| ≤ r`
+(`w = y/|y|`, or a standard basis vector if `y = 0`, which needs `n ≥ 1`); then `ζ(r w) = 0` and
+the mean value inequality (`Convex.norm_image_sub_le_of_norm_fderiv_le`, with
+`‖Dζ‖ = ‖∇ζ‖` since the Riesz map is an isometry) gives `|ζ(y)| ≤ M |y − r w| ≤ M r`. -/
+theorem gwe_vfv_abs_le_grad_bound_mul_radius : ∀ n : ℕ, 1 ≤ n → ∀ (ζ : Rn n → ℝ) (r M : ℝ), 0 ≤ r → Differentiable ℝ ζ → tsupport ζ ⊆ ball 0 r → (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ y, |ζ y| ≤ M * r := by
+  intro n hn ζ r M hr hζ hsupp hM y
+  -- `M ≥ ‖∇ζ(0)‖ ≥ 0`
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  -- `ζ` vanishes off `B̆_r(0)`
+  have hzero : ∀ z : Rn n, r ≤ ‖z‖ → ζ z = 0 := by
+    intro z hz
+    by_contra h
+    have hz' := hsupp (subset_tsupport ζ h)
+    rw [mem_ball_zero_iff] at hz'
+    linarith
+  -- `‖Dζ(x)‖ = ‖∇ζ(x)‖ ≤ M`, the Riesz map being a linear isometry equivalence
+  have hD : ∀ x, ‖fderiv ℝ ζ x‖ ≤ M := by
+    intro x
+    have h := hM x
+    rwa [gradient, LinearIsometryEquiv.norm_map] at h
+  rcases le_or_gt r ‖y‖ with hy | hy
+  · rw [hzero y hy, abs_zero]
+    exact mul_nonneg hM0 hr
+  -- a unit vector `w` with `‖y − r w‖ ≤ r`
+  obtain ⟨w, hw1, hw2⟩ : ∃ w : Rn n, ‖w‖ = 1 ∧ ‖y - r • w‖ ≤ r := by
+    rcases eq_or_ne y 0 with hy0 | hy0
+    · refine ⟨EuclideanSpace.single ⟨0, hn⟩ 1, by simp, ?_⟩
+      rw [hy0, zero_sub, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_nonneg hr]
+      simp
+    · have hy' : 0 < ‖y‖ := norm_pos_iff.mpr hy0
+      refine ⟨‖y‖⁻¹ • y, ?_, ?_⟩
+      · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hy'.ne']
+      · have hyw : y - r • (‖y‖⁻¹ • y) = (1 - r * ‖y‖⁻¹) • y := by
+          rw [smul_smul, sub_smul, one_smul]
+        have hc : 1 - r * ‖y‖⁻¹ ≤ 0 := by
+          rw [sub_nonpos, ← div_eq_mul_inv, le_div_iff₀ hy', one_mul]
+          exact hy.le
+        rw [hyw, norm_smul, Real.norm_eq_abs, abs_of_nonpos hc, neg_sub, sub_mul, mul_assoc,
+          inv_mul_cancel₀ hy'.ne', mul_one, one_mul]
+        linarith
+  -- `ζ(r w) = 0`, and the mean value inequality on `ℝⁿ`
+  have hrw : ζ (r • w) = 0 :=
+    hzero _ (by rw [norm_smul, hw1, Real.norm_eq_abs, abs_of_nonneg hr, mul_one])
+  have hmv : ‖ζ y - ζ (r • w)‖ ≤ M * ‖y - r • w‖ :=
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun x _ => hζ x) (fun x _ => hD x)
+      (mem_univ _) (mem_univ _)
+  calc |ζ y| = ‖ζ y - ζ (r • w)‖ := by rw [hrw, sub_zero, Real.norm_eq_abs]
+    _ ≤ M * ‖y - r • w‖ := hmv
+    _ ≤ M * r := mul_le_mul_of_nonneg_left hw2 hM0
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
