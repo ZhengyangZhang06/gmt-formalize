@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff of snapshot project/GMT/Ch06/Contract.lean against workspace GMT/Ch06/Contract.lean (identical)",
+        "python3 scan of dag.json: lean_name/lean_statement/status/depends_on of root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.* ; scan of all nodes for dependencies on non-siblings (none); grep -c 'lpf_wtc_cat_|fderiv_lower_bound|rescaled_integral_tendsto|gram_jacobian_continuous' dag.json DAG.md dag.mmd issue-workers.json problem.json (0 hits)",
+        "inspection of parent-child-handoff.json of children of split nodes that have uncle dependencies (nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-*): children carry only sibling deps; the split parent uses its own resolved deps in its assembly",
+        "sed -n 1,160p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt)",
+        "contract_scope and child_modules from verifier/gmt-compare.py (CHILD_TARGET = HumanizeNodeComparator.target) to generate the exact child-scope prefix and NodeChallenge/NodeSolution files; lean_contract.validate_lean_statement on the 3 child statements",
+        "lean -R . -o out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean in /tmp/cat_decomp_scratch_e41b with LEAN_PATH = lake-packages-25730c7c/*/.lake/build/lib/lean; lean Scratch/Stmts.lean, Scratch/Assembly.lean, Scratch/ProveAC.lean, Scratch/ProveB.lean; simulated sim/GMT/Ch06/Submission.lean with the 3 children and the parent; lean sim/Scratch/*_NodeSolution.lean and sim/Scratch/AllNodes.lean (#print axioms)",
+        "rg -n 'integral_comp_smul_of_nonneg|integral_add_left_eq_self|tendsto_slope_zero_right|tendsto_integral_filter_of_dominated_convergence' Mathlib/MeasureTheory Mathlib/Analysis/Calculus; rg -n for Continuous.matrix_det, ContDiff.continuous_fderiv, HasFDerivAt.comp_hasDerivAt_of_eq, LinearMap.finrank_range_of_inj, coe_range, comp_homeomorph, integral_mul_left_eq_self in the snapshot mathlib",
+        "rg -n 'theorem .*(antilip|Antilip)' simongmt/Poincare/SimonGMT; rg -ln 'Matrix.of fun i j => inner|Gram' simongmt/Poincare/SimonGMT"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8ee6679021/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8ee6679021/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaBranches.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/tmp/cat_decomp_scratch_e41b/Scratch/Assembly.lean",
+        "/tmp/cat_decomp_scratch_e41b/Scratch/ProveAC.lean",
+        "/tmp/cat_decomp_scratch_e41b/Scratch/ProveB.lean",
+        "/tmp/cat_decomp_scratch_e41b/sim/GMT/Ch06/Submission.lean"
+      ],
+      "conclusion": "The snapshot pins project d8d46c95 and Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace contract.\n\nThe child scope is `import GMT.Ch06.Submission`, then `open MeasureTheory Filter Set Metric` and `open scoped ENNReal NNReal Topology`, then `namespace GMT.Ch06` with its opens, then `noncomputable section` … `end`. It was derived with gmt-compare.py contract_scope.\n\nDefinitions checked in simongmt Chapter03/Rectifiable.lean:\n- `blowUpMap x r y := r⁻¹ • (y - x)`. So the sibling outputs match the child-B integrand by rfl.\n- `HasApproximateTangentSpaceAt n M x P := finrank ℝ P = n ∧ ∀ f : C_c(E, ℝ), Tendsto (fun r ↦ ∫ y in blowUpMap x r '' M, f y ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in (P : Set E), f y ∂μHE[n]))`.\n\nDAG checks:\n- No existing node depends on a non-sibling. So the children cannot cite the sibling nodes BLOWUP/AREA, and they are designed not to need them.\n- No lpf_wtc_cat_* name is reserved, and no existing declaration has these statements.\n\nLibrary search: no SimonGMT lemma states the derivative lower bound, the rescaled dominated-convergence limit, or continuity of the Gram Jacobian. The only antilipschitz lemma is ApproximatesLinearOn.injOn_of_antilipschitz in Chapter02/AreaBranches.lean; the Chapter05 Gram files concern graph area expansions.\n\nMathlib lemmas used, as located in the snapshot:\n- Measure.integral_comp_smul_of_nonneg (Haar/NormedSpace.lean:115);\n- integral_add_left_eq_self (additive form of Group/Integral.lean:91);\n- HasDerivAt.tendsto_slope_zero_right (Deriv/Slope.lean:89);\n- tendsto_integral_filter_of_dominated_convergence (Integral/DominatedConvergence.lean:67);\n- HasFDerivAt.comp_hasDerivAt_of_eq (Deriv/Comp.lean:380);\n- ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n- Continuous.matrix_det (Topology/Instances/Matrix.lean:212);\n- LinearMap.finrank_range_of_inj (Dimension/Finrank.lean:127);\n- LinearMap.coe_range (Submodule/Range.lean:60);\n- HasCompactSupport.comp_homeomorph (additive form of Topology/Algebra/Support.lean:562).\n\nAll 3 child statements pass validate_lean_statement and elaborate in the exact scope. The needed instances are found: IsAddHaarMeasure for volume on Eucl n, and IsCountablyGenerated for 𝓝[>] 0.\n\nAll 3 children were fully proved in Lean with only standard axioms. The frozen parent was kernel-checked from them plus sorry-stubs of the two sibling declarations."
+    }
+  ],
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1",
+  "child_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.gram_jacobian_continuous-a1",
+  "subproblem": {
+    "key": "gram_jacobian_continuous",
+    "title": "Continuity of the Gram-determinant Jacobian √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩) of a C¹ map",
+    "statement": "Let Q, n ∈ ℕ and Φ : ℝⁿ → ℝ^Q be C¹ (ContDiff ℝ 1 Φ). Then the function v ↦ √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)_{i,j=1..n} is continuous on ℝⁿ. Here DΦ(v) = fderiv ℝ Φ v, eᵢ = EuclideanSpace.single i 1 are the standard basis vectors, ⟨·,·⟩ is the Euclidean inner product and √ is Real.sqrt.",
+    "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q), ContDiff ℝ 1 Φ → Continuous (fun v : Eucl n => Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det)",
+    "lean_name": "lpf_wtc_cat_gram_jacobian_continuous",
+    "depends_on": [],
+    "natural_proof": "Source: step 2 of the parent proof (continuity of JΦ). The expression is verbatim the Jacobian of the sibling area formula.\n\n1. (Continuity of the derivative.) Φ is C¹, i.e. ContDiff ℝ 1 Φ with order 1 ≠ 0. Hence v ↦ DΦ(v) = fderiv ℝ Φ v is continuous from ℝⁿ into the space of continuous linear maps ℝⁿ →L[ℝ] ℝ^Q with the operator-norm topology (ContDiff.continuous_fderiv).\n\n2. (Columns.) For fixed i ∈ Fin n, v ↦ DΦ(v)eᵢ is continuous. It is evaluation of the continuous family v ↦ DΦ(v) at the constant vector eᵢ, and evaluation (A, x) ↦ A x is jointly continuous. Lean: Continuous.clm_apply with continuous_const.\n\n3. (Gram entries.) For fixed i, j, v ↦ ⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩ is continuous, since the inner product of two continuous ℝ^Q-valued maps is continuous (Continuous.inner).\n\n4. (Gram matrix.) An n×n real matrix is a function Fin n → Fin n → ℝ with the product topology. By step 3 and continuous_pi applied twice, v ↦ Matrix.of (fun i j => ⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩) is continuous.\n\n5. (Determinant.) The determinant is a polynomial in the matrix entries, and ℝ is a topological ring. So v ↦ det(Matrix.of (…)) is continuous (Continuous.matrix_det).\n\n6. (Square root.) Real.sqrt is continuous (Real.continuous_sqrt). Composing with step 5 shows v ↦ √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩) is continuous. ∎\n\nLean remark. The following proof was verified in the exact comparator scope as `theorem Submission.lpf_wtc_cat_gram_jacobian_continuous : (<frozen statement>) := by` inside `namespace GMT.Ch06`. Axioms: propext, Classical.choice, Quot.sound.\n  intro Q n Φ hΦ\n  have hD : Continuous (fderiv ℝ Φ) := hΦ.continuous_fderiv (by norm_num)\n  refine Real.continuous_sqrt.comp ?_\n  refine Continuous.matrix_det ?_\n  refine continuous_pi fun i => continuous_pi fun j => ?_\n  exact (hD.clm_apply continuous_const).inner (hD.clm_apply continuous_const)",
+    "proof_key_steps": [
+      "C¹ implies v ↦ fderiv ℝ Φ v is continuous (ContDiff.continuous_fderiv).",
+      "Each column v ↦ DΦ(v)eᵢ is continuous (Continuous.clm_apply), so each Gram entry is continuous (Continuous.inner).",
+      "The Gram matrix is continuous entrywise (continuous_pi twice), so its determinant is continuous (Continuous.matrix_det).",
+      "Compose with the continuous square root (Real.continuous_sqrt)."
+    ]
+  },
+  "audit": {
+    "key": "gram_jacobian_continuous",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The standalone proposition exactly expresses the stated Gram-Jacobian continuity and matches AREA's Jacobian. Matrix.of constructs the intended real square matrix; no problematic function-valued IsUnit expression occurs. Continuity of the derivative, evaluation, inner product, determinant, and Real.sqrt proves the conclusion without needing determinant positivity. The supplied proof is complete, non-circular, and independently compiles with standard axioms."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-90b97c9ccd/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-90b97c9ccd/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-90b97c9ccd/parent-supplied-natural-proof.json"
+}
