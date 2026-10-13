@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def Represents|def IsUnitOrientationOf|def BoundaryVanishes|def IsIntegerMultiplicity|def measure|def action|abbrev MultiVector|def MultiVector",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "measurableSet_of_differentiableAt|theorem measurable_fderiv",
+        "theorem norm_integral_le_of_norm_le",
+        "theorem norm_compContinuousLinearMap_le",
+        "theorem area_image_criticalSet_eq_zero|theorem injective_area_formula_lipschitzOn|theorem weighted_area_formula_lipschitz_injOn|theorem weighted_area_formula_lipschitzOn_fiberSum|theorem exteriorDerivativeOn_pullbackFormWithin|simon_theorem_3_6",
+        "rg -n 'pushforward|Pushforward' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06 --glob '*.lean'",
+        "axiom|kernel|error|passed",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pf-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pf-independent-audit/AllTypes.lean > /tmp/pf-independent-audit/AllTypes.log 2>&1"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa14/20261012T183837Z-ch07-root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangen-s2u8tx5w/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa14/20261012T183837Z-ch07-root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangen-s2u8tx5w/comparator.log",
+        "/tmp/pf-independent-audit/AllTypes.lean",
+        "/tmp/pf-independent-audit/AllTypes.log",
+        "/tmp/pf-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected dimred_mbl_pushforward contract. All 11 raw one-line types independently elaborate as Prop with autoImplicit disabled and without declaring any child. The conditional assembly proves the exact selected parent type using only propext, Classical.choice and Quot.sound. Dependencies are correctly directed and acyclic, including the reused declarations' transitive dependencies. All names are bare identifiers; the eight new names have no DAG reservation. The three reuses have identical frozen types, matching retained candidate hashes, compatible frozen definitions, and comparator acceptance under the three-axiom policy. The pinned current push-forward API supplies affine push-forward, not the nonlinear theorem being split. No inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match the accepted declaration exactly. Unit-orientation duality proves the upper bound; localized Lusin approximation and norm-preserving mollification prove the lower bound, including infinite mass. The zero-region argument establishes the stated relative support equality without circularity."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses and their hypotheses match. Local finite-measure exhaustion and density zero establish tangent locality; restriction preserves the IMRep fields and current continuity; signed overlap cancellation constructs the difference representation. The orientation bound follows independently from Cauchy–Binet. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "blowup_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the full statement, including arbitrary sets M and N. Positive plane integration, approximate-tangent convergence, and Lipschitz preservation of null sets yield a point for every sufficiently small positive scale. Neither measurability of M nor an unstated positive-degree assumption is needed. Accepted reuse is exact."
+    },
+    {
+      "key": "orient_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Hilbert–Schmidt calculation proves the Euclidean covector norm estimate with the correct factorial normalization. Evaluation on an orthonormal family gives clause (a); fixing its span gives clause (b). Degree zero is covered, and the proposition uses the intended continuous-linear-map norms and composition."
+    },
+    {
+      "key": "carrier_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sole declared dependency supplies mass and measure-support equality. Conull measure support and positive multiplicity give the carrier null-set statement; compact local integrability gives finite mass. Closedness and the difference-support inclusion follow directly from zero regions for arbitrary currents."
+    },
+    {
+      "key": "pf_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis appears in the matching type. Localization to K establishes genuine integrability despite arbitrary behavior outside O. The uniform bound proves linearity and current continuity; vanishing away from f(K), together with f(K) contained in U, proves support inclusion and compactness. No representation-independence claim is assumed."
+    },
+    {
+      "key": "extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff and mollifications are chosen before Y and R, as required by the quantifier order. Carrier localization and local integrability bound the evaluation error by a fixed finite constant times the uniform approximation error. This proves the exact common-sequence limit and supports both representation independence and subtraction."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weaker hypotheses are sufficient: the pinned norm_integral_le_of_norm_le theorem does not require integrability of the bounded integrand itself. The proof correctly handles L < 0, applies orient_comp almost everywhere, converts finite mass through ENNReal.toReal, and takes the defining mass supremum."
+    },
+    {
+      "key": "identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No compact-support hypothesis is silently introduced. Carrier localization and blowup_points produce secants through fixed points; differentiability forces Df to fix the approximate tangent plane. Orientation invariance then identifies the integrands almost everywhere, proving equality of currents by extensionality."
+    },
+    {
+      "key": "pf_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and BoundaryVanishes type agree, including degree zero. Compact cutoffs and C¹ mollification justify convergence of evaluations. Naturality and locality of exterior differentiation reduce each approximating boundary evaluation to that of X. Globally smooth zero-extended test forms make an additional f(K) subset U hypothesis unnecessary."
+    },
+    {
+      "key": "pf_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "TL is an explicit antecedent, supplied by im_calculus in the parent assembly. The proof supplies the algebra, disjoint compact parametrization, globally Lipschitz tangent lemma, area transport, summability, common-plane orientation alignment, and cancellation on nonzero multiplicity. These verify every IMRep field and the exact representation formula without relying on this child or the parent theorem."
+    }
+  ],
+  "required_changes": []
+}

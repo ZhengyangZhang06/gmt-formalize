@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.carrier_facts-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1",
+  "depth": 4,
+  "title": "Carrier, mass and support facts for integer multiplicity currents in ℝ^P",
+  "statement": "Let P, n ∈ ℕ and write 𝒟_n(ℝ^P) for GeometricCurrentOn univ n. (1) Let Y ∈ 𝒟_n(ℝ^P) be represented by an integer multiplicity triple R = (M, θ, ξ) in ℝ^P (IMRep univ n, R.Represents Y), and let μ_R := θ·Hⁿ⌞M (R.measure, Hⁿ = μHE[n]). Then Hⁿ(M ∖ spt Y) = 0, the total mass satisfies M(Y) = μ_R(ℝ^P) (Y.mass = R.measure univ), and if spt Y is compact then μ_R(ℝ^P) < ∞. (2) For all Y₁, Y₂ ∈ 𝒟_n(ℝ^P): spt Y₁ is closed, and spt(Y₁ − Y₂) ⊆ spt Y₁ ∪ spt Y₂, where Y₁ − Y₂ is the pointwise difference of currents.",
+  "lean_statement": "∀ (P n : ℕ), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → μHE[n] (R.carrier \\ Y.support) = 0 ∧ Y.mass = R.measure univ ∧ (IsCompact Y.support → R.measure univ ≠ ∞)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y₁.support ∧ (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support",
+  "lean_name": "dimred_mbl_pf_imrep_carrier_mass_support",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-f5067fe842-a1"
+}

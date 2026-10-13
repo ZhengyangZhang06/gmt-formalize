@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1",
+  "depth": 4,
+  "title": "The push-forward of an integer multiplicity current by a C¹ map is integer multiplicity (Simon 6.3.3–3.9)",
+  "statement": "Assume (TL): for all P', n' ∈ ℕ, every open U' ⊆ ℝ^{P'} and all Borel sets A ⊆ B ⊆ U' with Hⁿ'(B ∩ C) < ∞ for every compact C ⊆ U', for Hⁿ'-a.e. x ∈ A and every linear subspace Q, B has approximate tangent space Q at x (HasApproximateTangentSpaceAt n' B x Q) if and only if A does. Let P, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), K ⊆ U compact with Hⁿ(M ∖ K) = 0 (Hⁿ = μHE[n]), O ⊆ ℝ^P open with K ⊆ O, f : ℝ^P → ℝ^P of class C¹ on O with f(K) ⊆ U, and Q ∈ 𝒟_n(U) with Q(ω) = ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (Df(x) = fderiv ℝ f x, ω(f(x))∘Df(x) := (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)). Then Q is integer multiplicity: Q = τ(N', θ', ξ') for some integer multiplicity triple in U (IsIntegerMultiplicity Q).",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (Q : GeometricCurrentOn U n), IsOpen U → 0 < n → IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → IsIntegerMultiplicity Q",
+  "lean_name": "dimred_mbl_pf_pushforward_isIntegerMultiplicity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d9628d89ea-a1"
+}
