@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5045333559f717a148b24d9a212353e992754f4b305bac17f15ae7b81e67a94",
+  "git_delta": {
+    "base_commit": "9dbc6697717dbca6a9a56a822fd6ccd6d4355376",
+    "candidate_commit": "a9498567192a51707e757f8ed8389a866266f288",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_dr_withDensity_carrier_of_absolutelyContinuous",
+    "diff_sha256": "57fe1d305448fc274569ad78b6fb31f2f50299c63f27cbe0c8d4d60cfcceebe5",
+    "source_sha256": "14f2531a6a393906c9d56d25fb60bf1c8a8694e604cef264795f4bfe0db7d72a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_dr_withDensity_carrier_of_absolutelyContinuous",
+      "statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (M₀ : Set (Euclid P)), μ univ < ∞ → MeasurableSet M₀ → ν M₀ < ∞ → μ M₀ᶜ = 0 → (∀ E : Set (Euclid P), ν E = 0 → μ E = 0) → ∃ (M : Set (Euclid P)) (θ : Euclid P → ℝ), MeasurableSet M ∧ M ⊆ M₀ ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ μ = (ν.restrict M).withDensity (fun x => ENNReal.ofReal (θ x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
