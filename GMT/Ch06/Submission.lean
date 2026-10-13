@@ -359,6 +359,28 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, §4 (Eilenberg's inequality in the coarea step): if for every `k` the sets
+`T k i` (`i ∈ ℕ`) cover `s` and have diameter `≤ r k`, where `r k → 0`, then
+`μH[d](s) ≤ liminf_k ∑ᵢ (ediam T k i)^d`, empty pieces contributing `0`.  Reindexing the `k`-th
+cover by its nonempty pieces `{i // (T k i).Nonempty}` (a countable type) keeps a cover of `s`
+with the same diameter bound, so Mathlib's `hausdorffMeasure_le_liminf_tsum` bounds `μH[d](s)` by
+the liminf of the reindexed sums; each reindexed sum is at most the sum over all `i`. -/
+theorem Submission.slicing_im_coarea_eil_liminf_cover_bound :
+    ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r : ℕ → ℝ≥0∞) (T : ℕ → ℕ → Set X), Tendsto r atTop (𝓝 0) → (∀ k i, ediam (T k i) ≤ r k) → (∀ k, s ⊆ ⋃ i, T k i) → (μH[d] : Measure X) s ≤ liminf (fun k => ∑' i, ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d) atTop := by
+  intro X _ _ _ d s r T hr hT hs
+  calc (μH[d] : Measure X) s
+      ≤ liminf (fun k => ∑' j : {i // (T k i).Nonempty}, ediam (T k j) ^ d) atTop :=
+        Measure.hausdorffMeasure_le_liminf_tsum (ι := fun k => {i // (T k i).Nonempty}) d s r hr
+          (fun k j => T k j) (.of_forall fun k j => hT k j) (.of_forall fun k x hx => by
+            -- a piece containing `x` is nonempty
+            obtain ⟨i, hi⟩ := mem_iUnion.1 (hs k hx)
+            exact mem_iUnion.2 ⟨⟨i, x, hi⟩, hi⟩)
+    _ ≤ liminf (fun k => ∑' i, ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d) atTop :=
+        liminf_le_liminf (.of_forall fun k =>
+          (ENNReal.tsum_le_tsum fun j => le_iSup_of_le j.2 le_rfl).trans
+            (ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective
+              fun i => ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
