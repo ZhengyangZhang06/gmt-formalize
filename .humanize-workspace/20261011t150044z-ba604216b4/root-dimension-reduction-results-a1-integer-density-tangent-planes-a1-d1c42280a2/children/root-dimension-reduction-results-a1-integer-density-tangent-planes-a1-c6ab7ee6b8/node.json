@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1.great_circle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1",
+  "depth": 5,
+  "title": "Great-circle parametrisation: unit norm, 1-Lipschitz bound, orthonormal backward frame and rotation identity",
+  "statement": "Let P ∈ ℕ and z, e ∈ ℝ^P with |z| = |e| = 1 and ⟨z, e⟩ = 0; write γ(φ) := cos φ·z + sin φ·e and ν(φ) := sin φ·z − cos φ·e. Then for all φ, ψ ∈ ℝ: (1) |γ(φ)| = 1; (2) |γ(φ) − γ(ψ)| ≤ |φ − ψ|; (3) |ν(φ)| = 1; (4) ⟨γ(φ), ν(φ)⟩ = 0; (5) cos ψ·γ(φ) + sin ψ·ν(φ) = γ(φ − ψ).",
+  "lean_statement": "∀ (P : ℕ) (z e : Euclid P), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → (∀ φ : ℝ, ‖Real.cos φ • z + Real.sin φ • e‖ = 1) ∧ (∀ φ ψ : ℝ, ‖(Real.cos φ • z + Real.sin φ • e) - (Real.cos ψ • z + Real.sin ψ • e)‖ ≤ |φ - ψ|) ∧ ∀ φ : ℝ, ‖Real.sin φ • z - Real.cos φ • e‖ = 1 ∧ inner ℝ (Real.cos φ • z + Real.sin φ • e) (Real.sin φ • z - Real.cos φ • e) = 0 ∧ ∀ ψ : ℝ, Real.cos ψ • (Real.cos φ • z + Real.sin φ • e) + Real.sin ψ • (Real.sin φ • z - Real.cos φ • e) = Real.cos (φ - ψ) • z + Real.sin (φ - ψ) • e",
+  "lean_name": "idtp_tdc_acont_great_circle",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c6ab7ee6b8-a1"
+}

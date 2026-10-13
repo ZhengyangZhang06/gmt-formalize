@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1.real_induction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1",
+  "depth": 5,
+  "title": "Real induction on [0, L) for a right-open, left-closed property",
+  "statement": "Let G be a predicate on ℝ and L ∈ ℝ. Assume (a) G(0); (b) for every φ with 0 ≤ φ < L and G(φ) there is ε > 0 such that G(ψ) holds for every ψ with φ < ψ < φ + ε; (c) for every φ with 0 < φ < L such that G(ψ) holds for every ψ with 0 ≤ ψ < φ, G(φ) holds. Then G(φ) holds for every φ with 0 ≤ φ < L.",
+  "lean_statement": "∀ (G : ℝ → Prop) (L : ℝ), G 0 → (∀ φ : ℝ, 0 ≤ φ → φ < L → G φ → ∃ ε : ℝ, 0 < ε ∧ ∀ ψ : ℝ, φ < ψ → ψ < φ + ε → G ψ) → (∀ φ : ℝ, 0 < φ → φ < L → (∀ ψ : ℝ, 0 ≤ ψ → ψ < φ → G ψ) → G φ) → ∀ φ : ℝ, 0 ≤ φ → φ < L → G φ",
+  "lean_name": "idtp_tdc_acont_real_induction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c6264abf71-a1"
+}
