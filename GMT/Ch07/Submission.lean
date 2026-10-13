@@ -562,6 +562,99 @@ theorem Submission.cmr_tdn_directional_bound : ∀ (n : ℕ) (X : Type) [Measura
     exact mul_le_mul_of_nonneg_left (key (s • z) w hw) (norm_nonneg _)
   rw [heq]
   simpa using intervalIntegral.norm_integral_le_of_norm_le_const hbound
+/-- **Ball-averaging estimate** (step 3 of the parent proof).  With `B = B_r(0)` and
+`V = λ(B) ∈ (0, ∞)`, Fubini on `ν ⊗ λ⌞B` gives
+`V ∫ h(x) a(q x) dν = ∫∫ h(x) a(q x + z) − ∫∫ h(x) (a(q x + z) − a(q x))`.  The second double
+integral is at most `V Λ r` by the directional bound (`‖z‖ < r` on `B`), and the first at most
+`(∫ |h| dν) ∫ a` since `0 ≤ ∫_B a(q x + z) dz ≤ ∫ a` by translation invariance.  Divide by `V`. -/
+theorem Submission.cmr_tdn_ball_average_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ) (a : Euclid n → ℝ) (r : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → 0 ≤ Λ → Continuous a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → (∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖) → 0 < r → |∫ x, h x * a (q x) ∂ν| ≤ r * Λ + (volume (ball (0 : Euclid n) r)).toReal⁻¹ * (∫ x, |h x| ∂ν) * ∫ y, a y := by
+  intro n X mX ν q h Λ a r hν hq hh hΛ ha ha_supp ha0 ha1 hdir hr
+  -- the ball `B = B_r(0)`: measurable, inside `‖z‖ ≤ r`, of measure `λ(B) ∈ (0, ∞)`
+  have hBm : MeasurableSet (ball (0 : Euclid n) r) := measurableSet_ball
+  have hBr : ∀ z ∈ ball (0 : Euclid n) r, ‖z‖ ≤ r := fun z hz => (mem_ball_zero_iff.1 hz).le
+  have hBpos : 0 < volume (ball (0 : Euclid n) r) := measure_ball_pos volume 0 hr
+  have hBfin : volume (ball (0 : Euclid n) r) < ∞ := measure_ball_lt_top
+  generalize ball (0 : Euclid n) r = B at hBm hBr hBpos hBfin ⊢
+  have hV : 0 < (volume B).toReal := ENNReal.toReal_pos hBpos.ne' hBfin.ne
+  have : IsFiniteMeasure (volume.restrict B) := isFiniteMeasure_restrict.2 hBfin.ne
+  have hμB : (volume.restrict B).real univ = (volume B).toReal := by
+    rw [measureReal_def, Measure.restrict_apply_univ]
+  generalize (volume B).toReal = V at hV hμB ⊢
+  -- `a` is integrable, and so are its translates
+  have ha_int : Integrable a volume := ha.integrable_of_hasCompactSupport ha_supp
+  -- the integrands on `ν ⊗ λ⌞B`, dominated by `|h x|`
+  have hm₁ : Measurable fun p : X × Euclid n => a (q p.1 + p.2) :=
+    ha.measurable.comp ((hq.comp measurable_fst).add measurable_snd)
+  have hm₀ : Measurable fun p : X × Euclid n => a (q p.1) :=
+    ha.measurable.comp (hq.comp measurable_fst)
+  have hh₁ : AEStronglyMeasurable (fun p : X × Euclid n => h p.1) (ν.prod (volume.restrict B)) :=
+    hh.aestronglyMeasurable.comp_fst
+  have hdom : Integrable (fun p : X × Euclid n => |h p.1|) (ν.prod (volume.restrict B)) :=
+    hh.abs.comp_fst _
+  have hG₂ : Integrable (fun p : X × Euclid n => h p.1 * a (q p.1 + p.2))
+      (ν.prod (volume.restrict B)) := by
+    refine hdom.mono' (hh₁.mul hm₁.aestronglyMeasurable) (Eventually.of_forall fun p => ?_)
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (ha0 _)]
+    exact mul_le_of_le_one_right (abs_nonneg _) (ha1 _)
+  have hG₁ : Integrable (fun p : X × Euclid n => h p.1 * (a (q p.1 + p.2) - a (q p.1)))
+      (ν.prod (volume.restrict B)) := by
+    refine hdom.mono' (hh₁.mul (hm₁.sub hm₀).aestronglyMeasurable)
+      (Eventually.of_forall fun p => ?_)
+    rw [Real.norm_eq_abs, abs_mul]
+    refine mul_le_of_le_one_right (abs_nonneg _) (abs_sub_le_iff.2 ⟨?_, ?_⟩)
+    · linarith [ha0 (q p.1), ha1 (q p.1 + p.2)]
+    · linarith [ha0 (q p.1 + p.2), ha1 (q p.1)]
+  -- `V F = ∫∫ h(x) a(q x + z) - ∫∫ h(x) (a(q x + z) - a(q x))` over `ν ⊗ λ⌞B`
+  have hsplit : V * ∫ x, h x * a (q x) ∂ν =
+      (∫ p, h p.1 * a (q p.1 + p.2) ∂(ν.prod (volume.restrict B))) -
+        ∫ p, h p.1 * (a (q p.1 + p.2) - a (q p.1)) ∂(ν.prod (volume.restrict B)) := by
+    rw [← integral_sub hG₂ hG₁]
+    have hfun : (fun p : X × Euclid n =>
+        h p.1 * a (q p.1 + p.2) - h p.1 * (a (q p.1 + p.2) - a (q p.1))) =
+        fun p => h p.1 * a (q p.1) := by
+      funext p
+      ring
+    rw [hfun, integral_fun_fst (fun x => h x * a (q x)), hμB, smul_eq_mul]
+  -- Fubini and the directional bound: `|∫∫ h(x) (a(q x + z) - a(q x))| ≤ V Λ r`
+  have hJ : |∫ p, h p.1 * (a (q p.1 + p.2) - a (q p.1)) ∂(ν.prod (volume.restrict B))| ≤
+      V * (Λ * r) := by
+    rw [integral_prod_symm _ hG₁]
+    have hb : ∀ᵐ z ∂(volume.restrict B), ‖∫ x, h x * (a (q x + z) - a (q x)) ∂ν‖ ≤ Λ * r := by
+      filter_upwards [ae_restrict_mem hBm] with z hz
+      rw [Real.norm_eq_abs]
+      exact (hdir z).trans (mul_le_mul_of_nonneg_left (hBr z hz) hΛ)
+    have := norm_integral_le_of_norm_le (integrable_const (Λ * r)) hb
+    rw [integral_const, hμB, smul_eq_mul, Real.norm_eq_abs] at this
+    exact this
+  -- translation invariance: `|∫∫ h(x) a(q x + z)| ≤ (∫ |h|) ∫ a`
+  have hM : |∫ p, h p.1 * a (q p.1 + p.2) ∂(ν.prod (volume.restrict B))| ≤
+      (∫ x, |h x| ∂ν) * ∫ y, a y := by
+    rw [integral_prod _ hG₂]
+    have hb : ∀ x, ‖∫ z, h x * a (q x + z) ∂(volume.restrict B)‖ ≤ |h x| * ∫ y, a y := by
+      intro x
+      rw [integral_const_mul, Real.norm_eq_abs, abs_mul]
+      refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+      have h0 : 0 ≤ ∫ z, a (q x + z) ∂(volume.restrict B) := integral_nonneg fun z => ha0 _
+      rw [abs_of_nonneg h0]
+      exact (setIntegral_le_integral (ha_int.comp_add_left (q x))
+        (Eventually.of_forall fun z => ha0 _)).trans_eq (integral_add_left_eq_self a (q x))
+    have := norm_integral_le_of_norm_le (hh.abs.mul_const (∫ y, a y)) (Eventually.of_forall hb)
+    rw [integral_mul_const, Real.norm_eq_abs] at this
+    exact this
+  -- conclusion: `V |F| ≤ (∫ |h|) ∫ a + V Λ r`, then divide by `V > 0`
+  have key : V * |∫ x, h x * a (q x) ∂ν| ≤ (∫ x, |h x| ∂ν) * (∫ y, a y) + V * (Λ * r) := by
+    rw [← abs_of_pos hV, ← abs_mul, abs_of_pos hV, hsplit]
+    exact (abs_sub _ _).trans (add_le_add hM hJ)
+  generalize ∫ x, h x * a (q x) ∂ν = F at key ⊢
+  generalize ∫ x, |h x| ∂ν = H at key ⊢
+  generalize ∫ y, a y = A at key ⊢
+  have hV0 : V ≠ 0 := hV.ne'
+  calc |F| ≤ (H * A + V * (Λ * r)) / V := by
+        rw [le_div_iff₀ hV]
+        linarith
+    _ = r * Λ + V⁻¹ * H * A := by
+        field_simp
+        ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
