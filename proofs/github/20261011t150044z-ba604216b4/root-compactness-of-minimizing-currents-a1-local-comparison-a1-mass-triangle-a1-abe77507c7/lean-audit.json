@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c10949df89b563e36407bd0d60ec8bfc65ae0983a97ea55c4d459915cfa0e8c2",
+  "git_delta": {
+    "base_commit": "12109df833ff2617a5885984291ddf40eb23621d",
+    "candidate_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcmp_massOn_le_add_of_eval_eq",
+    "diff_sha256": "cd10e689e3401151f2340569431b74d73098f984720223ac1fbfff630686d06a",
+    "source_sha256": "c69fe4ab7cf5c7af03ba5787a6db1dfcb71ce2effdbb7384435ee5a69c47a8f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcmp_massOn_le_add_of_eval_eq",
+      "statement": "∀ (P k : ℕ) (U G : Set (Euclid P)) (X Y Z : GeometricCurrentOn U k) (c : ℝ), |c| ≤ 1 → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ G → Z ω = X ω + c * Y ω) → Z.massOn G ≤ X.massOn G + Y.massOn G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
