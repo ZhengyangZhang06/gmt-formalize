@@ -1,0 +1,46 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "any_radius_gr_ht_ae_transfer|any_radius_gr_ht_pointwise_height",
+        "theorem (lintegral_const_mul.|lintegral_mono_set|lintegral_eq_zero_iff.|measure_toMeasurable|subset_toMeasurable|measurableSet_toMeasurable|lintegral_indicator_one|ae_eq_mk|measurable_mk|lintegral_congr_ae|lintegral_mono_ae|ae_restrict_mem)|norm_image_sub_le_of_norm_fderiv_le|ContinuousOn.aemeasurable",
+        "EuclideanSpace.norm_sq_eq|theorem sqrt_le_left|lemma sqrt_le_left|theorem pow_le_pow_left₀|lemma sq_le_sq₀|theorem sq_le_sq₀|theorem div_le_iff₀|theorem Continuous.clm_apply|theorem AEMeasurable.ennreal_ofReal|theorem ContDiffOn.differentiableOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-height-transfer-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-height-transfer-a1/decomposition-v1.json",
+        "/tmp/height-transfer-independent-audit-nbbuhqcl/proj/Checks/Types.lean",
+        "/tmp/height-transfer-independent-audit-nbbuhqcl/proj/Checks/Proofs.lean"
+      ],
+      "conclusion": "The split appropriately isolates null-set transport and the pointwise height estimate. Its assembly proves exactly any_radius_gr_height_transfer using the declared la_basics and plane_projections prerequisites, without assuming a measurable graph image or positive radius. The dependency closure is acyclic. Scanning 2395 lean_name fields found both names only in this node's own proposal/retry; neither occurs in the snapshot project. Both names are valid bare identifiers, with no declaration reuse. The pinned definitions confirm Euclidean vector norms, operator norms and real arithmetic; no matrix-unit construction occurs. Relevant Mathlib sources match the compiler revision 25730c7c759d108ef87ab70af2342a196760f79d. In a fresh snapshot copy, both exact child types elaborated before their implementations. The supplied child proofs, exact Submission.X checks, and parent assembly with the exact frozen prerequisite types compiled successfully. All three proved declarations depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches every stated hypothesis and conclusion. Steps 1–2 construct a measurable representative and null hull; steps 3–5 correctly use Borel-test domination and AEMeasurable F to transport the exceptional set; step 6 concludes by a.e. integral congruence. No sigma-finiteness, completeness or unstated measurability is needed. The proof is complete, non-circular and directly applies to the parent's restricted measures."
+    },
+    {
+      "key": "pointwise_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including all four hypotheses and division by zero. The proof derives both coordinate identities from graphPoint, handles x = 0, uses H1 for the residual identity and H2 plus the slope bound for the numerator estimate, then establishes positive denominators and combines the power bounds to obtain exactly 2^(n+4). Degenerate dimensions are covered. No additional projection property is assumed; the parent's declared plane_projections prerequisite supplies precisely H1 and H2. The proof is complete and independent of the parent and sibling child."
+    }
+  ],
+  "required_changes": []
+}

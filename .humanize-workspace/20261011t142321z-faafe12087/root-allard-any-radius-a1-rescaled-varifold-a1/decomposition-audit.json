@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'any_radius_rv_' project",
+        "sed -n '110,170p' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n 'integrableOn_map_iff|def IntegrableAtFilter' mathlib/Mathlib/MeasureTheory/Integral mathlib/Mathlib/MeasureTheory/Function",
+        "rg -n 'support_map|support_smul' mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "sed -n '20,45p;90,105p;320,345p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/ChalAll.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/SolAll.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rv-independent-audit-khhx9zx2/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-rescaled-varifold-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-rescaled-varifold-a1/decomposition-v1.json",
+        "/tmp/rv-decomp-xMtC66/proj/Checks/All.lean",
+        "/tmp/rv-decomp-xMtC66/proj/Checks/ChalAll.lean",
+        "/tmp/rv-decomp-xMtC66/proj/Checks/SolAll.lean",
+        "/tmp/rv-independent-audit-khhx9zx2/Instances.lean"
+      ],
+      "conclusion": "Independently verified the pinned project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and matching frozen workspace/scratch files. Snapshot-relative searches confirmed the required scaling, measurable-embedding, integration and support APIs; no any_radius_rv_ declaration exists in the snapshot project, and Support.lean has no support_map/support_smul match. A recursive scan of 2268 run JSON files found 441 distinct lean_names; the six proposed names occur only in this selected node's proposal/retry, with no other-branch collision. All are bare identifiers suitable for Submission.X. Each frozen statement is an exact one-line proposition matching its prose, passes validate_lean_statement, and elaborates independently in comparator scope. Independently reran All.lean, ChalAll.lean and SolAll.lean in /tmp/rv-decomp-xMtC66/proj: the six complete proofs and assembly of the exact frozen selected parent compile; proof axioms are only propext, Classical.choice and Quot.sound. Explicit instance inspection confirms Measure.instSMul for measure scaling and WithLp.instSMul for ambient real scaling. The split is appropriate: its only child dependencies are exists_structure and weight_eq on map_hausdorff, correctly directed and acyclic. Support and curvature transport take the necessary identities as explicit hypotheses. The children establish this selected rescaled-varifold contract, without invoking an ancestor or requiring further proof planning."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "map_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including n = 0. Translation invariance and inverse dilation give precisely the R^{-n} pushforward factor; measure extensionality completes the proof. All scalar positivity and finiteness requirements follow from R > 0."
+    },
+    {
+      "key": "exists_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six structure fields are proved using the declared map_hausdorff dependency, measurable-embedding transport and Lipschitz reparametrization. Finite measure scaling justifies integrability, and the constructed carrier and multiplicity satisfy the exact identities everywhere. No openness hypothesis is needed."
+    },
+    {
+      "key": "weight_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The withDensity calculation and inverse-map set identity prove the exact weight equality for arbitrary U and U'. Measurable-embedding change of variables handles arbitrary carrier restrictions without silently assuming Borel measurability. The sole sibling dependency is correctly declared."
+    },
+    {
+      "key": "support_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse homeomorphisms transfer neighborhood positivity in both directions, and the nonzero scaling constant preserves support. Intersecting with the specified domains yields the contract support identity. The weight identity is an explicit hypothesis, so no sibling dependency is missing."
+    },
+    {
+      "key": "tangent_proj_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The blow-up and multiplicity identities identify the integral functions, while positive radius scaling proves equivalence of their limits. Equality of the tangent predicates and proof irrelevance justify equality of Classical.choose and starProjection, including off-carrier points. Both dependent-if branches are covered."
+    },
+    {
+      "key": "mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Relative-neighborhood transport proves the exact local-integrability clause for arbitrary U. The transported test field has the required smoothness and support; its derivative, divergence and pairing identities give the stated curvature scaling. The cited Bochner change-of-variables identities are unconditional, so non-integrable cases introduce no gap."
+    }
+  ],
+  "required_changes": []
+}

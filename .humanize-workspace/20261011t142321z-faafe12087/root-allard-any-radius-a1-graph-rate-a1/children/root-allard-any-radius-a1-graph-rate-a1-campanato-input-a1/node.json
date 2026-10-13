@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.campanato_input-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Campanato input on a graph piece: L^2 oscillation of Du controlled by the tilt-excess at the graph point (step 9 of the rate proof)",
+  "statement": "Let n, l >= 0, U any set, and V a contract rectifiable n-varifold in U with weight mu such that y -> p_y := V.tangentProj y is mu-a.e. strongly measurable. Let q be a linear isometry of R^(n+l), u : R^n -> R^l continuous on a set Omega in R^n, F(x) := q(graphPoint(x, u x)), Du(x) := fderiv u x, and for linear A let P_A be the orthogonal projection onto q(span{graphPoint(v, A v)}). Assume:\n(E1) for every Borel A contained in Omega and every Borel g : R^(n+l) -> [0, infinity], the lower integral over A of g(F(x)) dx is at most the lower integral over F(A) of g d mu;\n(E2) p_{F(x)} = P_{Du(x)} for Lebesgue-a.e. x in Omega.\nLet S be a linear subspace, z in R^n, r real and s > 0 such that:\n- the closed ball B_r(z) is contained in Omega;\n- hsNorm(Du(x)) <= 1/4 and |F(x) - F(z)| <= s for all x in B_r(z);\n- P_{Du(z)} = S.starProjection;\n- mu(B_s(F(z))) < infinity.\nThen the lower integral over B_r(z) of ofReal(hsNormSq(Du(x) - Du(z))) dx is at most ofReal(s^n V.tiltExcess (F(z)) s S).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), AEStronglyMeasurable V.tangentProj V.weight → ContinuousOn u Ω → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂V.weight) → (∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) → ∀ (S : Submodule ℝ (Amb n ℓ)) (z : Rn n) (r s : ℝ), 0 < s → closedBall z r ⊆ Ω → (∀ x ∈ closedBall z r, hsNorm (fderiv ℝ u x) ≤ 1 / 4) → (∀ x ∈ closedBall z r, ‖q (graphPoint x (u x)) - q (graphPoint z (u z))‖ ≤ s) → (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u z v)))).starProjection = S.starProjection → V.weight (closedBall (q (graphPoint z (u z))) s) < ⊤ → ∫⁻ x in closedBall z r, ENNReal.ofReal (hsNormSq (fderiv ℝ u x - fderiv ℝ u z)) ≤ ENNReal.ofReal (s ^ n * V.tiltExcess (q (graphPoint z (u z))) s S)",
+  "lean_name": "any_radius_gr_campanato_input",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.tilt_integrals-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.tilt_integrals-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-campanato-input-a1-a1"
+}

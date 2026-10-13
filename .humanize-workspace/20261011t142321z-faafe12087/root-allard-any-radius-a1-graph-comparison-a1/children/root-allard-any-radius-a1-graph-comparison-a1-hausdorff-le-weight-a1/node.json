@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_comparison-a1.hausdorff_le_weight-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+  "depth": 3,
+  "title": "H^n on a set of positive lower density is dominated by the weight when theta >= 1",
+  "statement": "Let n, l be natural numbers, U a set in R^(n+l), V = v(M, theta) a contract rectifiable n-varifold in U with weight mu = V.weight = (H^n restricted to M) with density ofReal(theta), O an open set with mu(O) < infinity, and Gamma a subset of O. Assume theta >= 1 mu-a.e., and every y in Gamma has positive lower density: there are c > 0 and s_0 > 0 with ofReal(c s^n) <= mu(B_s(y)) for all 0 < s < s_0. Then H^n restricted to Gamma is <= mu as measures; in particular H^n(Gamma \\ M) = 0, and H^n(B cap Gamma) <= mu(B) for every set B.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O Γ : Set (Amb n ℓ)), IsOpen O → V.weight O < ⊤ → Γ ⊆ O → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → (∀ y ∈ Γ, ∃ c s₀ : ℝ, 0 < c ∧ 0 < s₀ ∧ ∀ s : ℝ, 0 < s → s < s₀ → ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)).restrict Γ ≤ V.weight",
+  "lean_name": "anyrad_gc_hausdorff_restrict_le_weight",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.upper_density_zero-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.upper_density_zero-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1-a1",
+      "result_commit": "066406829f5683c27ac3a01e8406376a154ff75a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-hausdorff-le-weight-a1-a1"
+}

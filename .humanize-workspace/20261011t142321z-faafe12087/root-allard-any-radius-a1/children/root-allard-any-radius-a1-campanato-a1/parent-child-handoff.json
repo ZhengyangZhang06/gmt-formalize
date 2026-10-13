@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean",
+        "rg -l 'any_radius_' <snapshot>/project",
+        "python3 -I scan of every lean_name field in dag.json and nodes/*/*.json of this run (reservation check)",
+        "rg -l -t lean 'Campanato' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem measurePreserving_homeomorphUnitSphereProd|^def toSphere|theorem toSphere_apply_univ' <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        "rg -n 'lemma toSphere|theorem toSphere|def volumeIoiPow' <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        "rg -n 'theorem ae_tendsto_average_norm_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "rg -n 'protected def vitaliFamily|theorem tendsto_filterAt' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "rg -n 'hausdorffMeasure_smul' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n 'localInverse' <snapshot>/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "rg -n 'theorem volume_closedBall' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "rg -n 'theorem MeasurableSet.image_of_continuousOn_injOn' <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "rg -n 'norm_image_sub_le_of_norm_fderivWithin_le' <snapshot>/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "rg -n 'tendsto_log_mul_rpow_nhdsGT_zero' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Asymptotics.lean",
+        "rg -n 'Measure.support|support_mem_ae' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "grep -n 'def HasWeightedApproximateTangentSpaceAt|def blowUpMap|def CountablyRectifiable|theorem HasWeightedApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n 'def lpMeanCurvatureKappa|structure LpAnnularCorrection|exists_lpAnnularCorrection|one_le_stationaryDensityReal_of_mem_support_lp' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean Chapter04/LpAnnular.lean Chapter04/LpLowerDensity.lean; rg -c '\\bsorry\\b' .lake/packages/simongmt/Poincare/SimonGMT",
+        "lake build GMT.Ch05.Submission in the scratch copy /tmp/anyrad-v2/proj of the pinned project (packages symlinked to the workspace .lake/packages)",
+        "lake env lean Checks/Types.lean (import GMT.Ch05.Submission; namespace GMT.Ch05; the 12 child types)",
+        "lake env lean Checks/Final.lean (12 child types + ParentSkeleton.parent_assembly + RateSkeleton.rate_skeleton + 6.1 shape check)",
+        "lake env lean Checks/Inst.lean (set_option pp.explicit true; #check of the weight smul, real scalars and rpow expressions)",
+        "lake env lean Checks/Axioms.lean (#print axioms of the cited library results)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Asymptotics.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-audit-v1.json",
+        "/tmp/anyrad-v2/proj/Checks/Types.lean",
+        "/tmp/anyrad-v2/proj/Checks/Final.lean",
+        "/tmp/anyrad-v2/proj/Checks/Inst.lean",
+        "/tmp/anyrad-v2/proj/Checks/Axioms.lean"
+      ],
+      "conclusion": "Snapshot and reservations\n- Pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json).\n- Its Contract.lean and Submission.lean are byte-identical to the workspace copies (cmp).\n- No-match results: 'any_radius_' occurs in 0 snapshot project files; within the run it appears only in this node's own v1 proposal. 'Campanato' matches 0 Mathlib files, so campanato is proved from scratch.\n- dag.json and all nodes/*/*.json reserve only: the 12 first-level names, the tilt_excess_height_estimate children (rectifiableVarifold_ae_tangentProj_starProjection, divM_height_test_field_eq, hsNorm_starProjection_trace_identities, exists_smooth_cutoff_half_ball_grad_le), and the aal_/allard52_/lgc_/lip_approx_/w12_ proposal names. No any_radius_* name collides.\n\nMathlib in the snapshot, by child\n- radial_height (polar coordinates): measurePreserving_homeomorphUnitSphereProd (Constructions/HaarToSphere.lean:142), toSphere (:51), toSphere_apply_univ (:87), volumeIoiPow (:113).\n- graph_comparison (Besicovitch differentiation): VitaliFamily.ae_tendsto_average_norm_sub (Covering/Differentiation.lean:837), with Besicovitch.vitaliFamily (Covering/Besicovitch.lean:1021) and tendsto_filterAt (:1060). It needs a measure that is locally finite on the whole space, hence mu restricted to B_rho(0).\n- rescaled_varifold: Measure.hausdorffMeasure_smul₀ (Measure/Hausdorff.lean:753).\n- patching: HasStrictFDerivAt.localInverse and to_localInverse (Calculus/InverseFunctionTheorem/FDeriv.lean:149).\n- campanato: InnerProductSpace.volume_closedBall (Measure/Lebesgue/VolumeOfBalls.lean:354; EuclideanSpace version :324).\n- Shared tools:\n  - MeasurableSet.image_of_continuousOn_injOn (Constructions/Polish/Basic.lean:821);\n  - Convex.norm_image_sub_le_of_norm_fderivWithin_le (Calculus/MeanValue.lean:484);\n  - tendsto_log_mul_rpow_nhdsGT_zero (SpecialFunctions/Pow/Asymptotics.lean:401), for the delta^(1/4)|log delta| thresholds;\n  - Measure.support and support_mem_ae (Measure/Support.lean).\n\nPinned SimonGMT package (outside the snapshot; rg finds 0 sorry)\n- HasWeightedApproximateTangentSpaceAt (Chapter03/Rectifiable.lean:330) uses Bochner blow-up integrals over blowUpMap x r '' M (:96). Its uniqueness where theta != 0 (:345) justifies rescaled_varifold's exact tangent transport and tangent_ae's identification of tangentProj.\n- monotonicity_bounds uses the corrected monotonicity:\n  - lpMeanCurvatureKappa = (p-n)/(4p) (Chapter04/LpMeanCurvature.lean:76);\n  - LpAnnularCorrection (LpAnnular.lean:335);\n  - exists_lpAnnularCorrection and its _of_memLp variant (:358, :407);\n  - one_le_stationaryDensityReal_of_mem_support_lp (LpLowerDensity.lean:43).\n\n  These are stated for Chapter04.RectifiableVarifold, so the bridge via tangent_ae is spelled out.\n\nLean checks\n- GMT.Ch05.Submission was built in a scratch copy of the pinned project. All 12 child types elaborate after 'import GMT.Ch05.Submission' in namespace GMT.Ch05.\n- Three skeletons type-check, with only routine glue left as sorry:\n  - the parent assembly (children + AllardRegularityTheorem + ConicalApproximationTheorem + TiltExcessDecayTheorem gives AllardRegularityAnyRadius);\n  - graph_rate, with the C_II/C_III normalisation proved;\n  - a shape check of 6.1.\n- pp.explicit shows Measure.instSMul (ENNReal) and WithLp.instSMul (real scalars).\n- #print axioms of every cited library result gives only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.allard_any_radius-a1",
+  "child_id": "root.allard_any_radius-a1.campanato-a1",
+  "subproblem": {
+    "key": "campanato",
+    "title": "Campanato-type estimate: integral decay of the oscillation implies Hoelder continuity",
+    "statement": "Let n >= 1, r, s_0 > 0, A >= 0, alpha > 0 and g : R^n -> L(R^n, R^l) continuous on B_{r+s_0}(0). Suppose that for L^n-a.e. z in B_r(0) and every s in (0, s_0], the integral over B_{s/2}(z) of |g(x) - g(z)|^2 dx (Hilbert-Schmidt norm, lower integral) is at most A s^(n + 2 alpha). Then |g(x) - g(y)| <= (2^(2n+2+2 alpha) A/omega_n)^(1/2) |x - y|^alpha for all x, y in B_r(0) with |x - y| <= s_0/2.",
+    "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (r s₀ A α : ℝ), 0 < r → 0 < s₀ → 0 ≤ A → 0 < α → ContinuousOn g (closedBall 0 (r + s₀)) → (∀ᵐ z ∂(volume.restrict (closedBall (0 : Rn n) r)), ∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (g x - g z)) ≤ ENNReal.ofReal (A * s ^ ((n : ℝ) + 2 * α))) → ∀ x ∈ closedBall (0 : Rn n) r, ∀ y ∈ closedBall (0 : Rn n) r, ‖x - y‖ ≤ s₀ / 2 → hsNorm (g x - g y) ≤ Real.sqrt (2 ^ (2 * (n : ℝ) + 2 + 2 * α) * A / unitBallVolume n) * ‖x - y‖ ^ α",
+    "lean_name": "any_radius_campanato",
+    "depends_on": [],
+    "natural_proof": "Source: the averaging (Campanato) argument of step 7(e) of the parent proof. Notation: |A| := hsNorm A (Hilbert-Schmidt norm), so |A|^2 = hsNormSq A = sum_i |A e_i|^2; B_s(z) closed balls in R^n; L^n(B_s(z)) = omega_n s^n with omega_n = unitBallVolume n (Mathlib InnerProductSpace.volume_closedBall).\n\n1. Elementary inequality. For linear maps A, B, C: |A - B|^2 <= 2|A - C|^2 + 2|C - B|^2, applying |a + b|^2 <= 2|a|^2 + 2|b|^2 to each column (A - B) e_i = (A - C) e_i + (C - B) e_i and summing; also |-A| = |A|.\n\n2. Good points. Let G be the set of z in B_r(0) for which the integral hypothesis holds for every s in (0, s_0]; L^n(B_r(0) minus G) = 0. Since r > 0, every nonempty relatively open subset of B_r(0) has positive Lebesgue measure (B_r(0) is the closure of its interior), so G is dense in B_r(0).\n\n3. Measurability. For z in B_r(0) and s <= s_0, the ball B_{s/2}(z) is contained in B_{r+s_0}(0), on which g is continuous; hence x -> hsNormSq(g x - g z) is continuous on B_{s/2}(z), and the lower integrals in the hypothesis are ordinary integrals of nonnegative continuous functions.\n\n4. Pairs of good points. Let x_1, x_2 be in G with 0 < d := |x_1 - x_2| <= s_0/2 and let m := (x_1 + x_2)/2. Then B_{d/2}(m) is contained in B_d(x_1) cap B_d(x_2) (|y - x_i| <= |y - m| + d/2 <= d). For y in B_{d/2}(m), step 1 gives |g(x_1) - g(x_2)|^2 <= 2|g(y) - g(x_1)|^2 + 2|g(y) - g(x_2)|^2. Integrating over B_{d/2}(m), which has volume omega_n (d/2)^n, and using the hypothesis at x_1 and at x_2 with s := 2d <= s_0 (so that B_{s/2}(x_i) = B_d(x_i) contains B_{d/2}(m)):\n omega_n (d/2)^n |g(x_1) - g(x_2)|^2 <= 2 A (2d)^(n + 2 alpha) + 2 A (2d)^(n + 2 alpha).\n Hence |g(x_1) - g(x_2)|^2 <= 4 A 2^n 2^(n + 2 alpha) d^(2 alpha)/omega_n = 2^(2n + 2 + 2 alpha) A d^(2 alpha)/omega_n, i.e. |g(x_1) - g(x_2)| <= (2^(2n+2+2 alpha) A/omega_n)^(1/2) d^alpha.\n\n5. All pairs. Let x, y be in B_r(0) with |x - y| <= s_0/2. If x = y both sides vanish (0^alpha = 0 as alpha > 0). Otherwise, for 0 < eta < 1/4 put x_eta := x + eta (y - x) and y_eta := y - eta (y - x); they lie in B_r(0) by convexity and |x_eta - y_eta| = (1 - 2 eta)|x - y|. By density (step 2) choose x', y' in G with |x' - x_eta|, |y' - y_eta| < eta |x - y|/2; then 0 < |x' - y'| <= (1 - eta)|x - y| <= s_0/2, and step 4 gives |g(x') - g(y')| <= (2^(2n+2+2 alpha) A/omega_n)^(1/2) |x' - y'|^alpha. As eta -> 0 we may take x' -> x and y' -> y; by continuity of g on B_r(0) and of t -> t^alpha, hsNorm(g x - g y) <= sqrt(2^(2n+2+2 alpha) A/omega_n) |x - y|^alpha.",
+    "proof_key_steps": [
+      "|A - B|^2 <= 2|A - C|^2 + 2|C - B|^2 columnwise for the Hilbert-Schmidt norm",
+      "Good points have full measure, hence are dense in B_r(0)",
+      "For good x_1, x_2 at distance d, average over B_{d/2}(midpoint), which lies in B_d(x_1) cap B_d(x_2), and use the hypothesis with s = 2d",
+      "Extend to all pairs by density and continuity of g"
+    ]
+  },
+  "audit": {
+    "key": "campanato",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Averaging over the midpoint ball gives exactly 2^(2n+2+2α)/omega_n before taking square roots. Full-measure density and inward perturbations extend the estimate to every closed-ball pair, including the distance threshold. The type includes all needed continuity and positivity hypotheses."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-campanato-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-campanato-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-campanato-a1/parent-supplied-natural-proof.json"
+}

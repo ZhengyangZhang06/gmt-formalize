@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "any_radius_gr_",
+        "integral_undef|integral_eq_lintegral_of_nonneg_ae|integral_map_equiv",
+        "lintegral_map_equiv|lintegral_mono_set",
+        "map_restrict|map_apply|ae_map_iff",
+        "measurable_mk|ae_eq_mk|stronglyMeasurable_mk|exists_measurable_superset_of_null|measure_toMeasurable",
+        "python3 -I Checks/run_lean.py Checks/Contracts.lean",
+        "python3 -I Checks/run_lean.py Checks/LpBall.lean",
+        "python3 -I Checks/run_lean.py Checks/Iface.lean",
+        "python3 -I Checks/run_lean.py Checks/LibraryAxioms.lean",
+        "python3 -I Checks/run_lean.py Checks/AdjointAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-v2.json",
+        "/tmp/gr-independent-audit-qfpg8gtv/proj/Checks/Contracts.lean",
+        "/tmp/gr-independent-audit-qfpg8gtv/proj/Checks/LpBall.lean",
+        "/tmp/gr-independent-audit-qfpg8gtv/proj/Checks/Iface.lean",
+        "/tmp/gr-independent-audit-qfpg8gtv/proj/Checks/LibraryAxioms.lean",
+        "/tmp/gr-independent-audit-qfpg8gtv/proj/Checks/AdjointAxioms.lean"
+      ],
+      "conclusion": "Verified project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. All eight child types and the selected parent type independently elaborate under the frozen base without declaring the children. The exact-type lp_ball_bounds proof and 14 interface checks compile without sorry; checked proof/library axiom closures contain only propext, Classical.choice and Quot.sound. Projection instances are ordinary continuous-linear-map projections; no matrix-unit construction occurs. All names are distinct bare identifiers, with no conflicting reservation in DAG/node records and no declaration matches in the snapshot project or 728 local Git refs. Child and inherited dependency graphs are acyclic, and prerequisite frozen types match the active DAG. The split appropriately establishes this selected graph-rate theorem: height transfer, fixed-scale tilt, translated decay, tangent identification and Campanato yield its three conclusions, with the justified explicit choice L_0 = 1/4."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "la_basics",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all nine prose clauses. Coordinate decomposition, orthogonal-projection characterization, basis dimension and termwise Cauchy–Schwarz prove every assertion, including zero-dimensional cases. No undeclared prerequisite or circular reliance occurs."
+    },
+    {
+      "key": "plane_projections",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the prose and follow from la_basics and the supplied Hilbert–Schmidt calculations. The projection splitting proves the stated key inequality; (17/16)^2 ≤ 2 then establishes P4 with L_0 = 1/4. Earlier proved clauses are used without circularity."
+    },
+    {
+      "key": "tilt_integrals",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen definition makes each tangentProj value a projection or zero. The bound 4(n+ℓ), together with the explicit measurability hypothesis, supplies integrability on finite-mass balls. This justifies T1 and T2; nonnegativity also proves T3 when the Bochner integral is undefined."
+    },
+    {
+      "key": "height_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles empty domains and zero denominators, transports the Borel-null exceptional set using E1, and combines the derivative bound with Nor to obtain exactly 2^(n+4). Lower-integral monotonicity and a.e. replacement then establish the stated conclusion under precisely the listed hypotheses."
+    },
+    {
+      "key": "lp_ball_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The corrected split concerns integrability of f = ‖H‖, the actual integrand. Its nonintegrable case uses integral_undef correctly; its integrable case supplies exactly the measurability needed for Hölder. Positive scaling and finite-value ENNReal conversion are justified. The exact frozen proposition was independently recompiled with only standard axioms."
+    },
+    {
+      "key": "translate_identities",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation is a measurable equivalence, so the stated push-forward and restricted change-of-variables identities hold without extra integrand measurability. The supplied weight, multiplicity and tangent identities prove all four conclusions, including arbitrary real radii and exponents."
+    },
+    {
+      "key": "tangent_identification",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive finite ball mass permits normalization. The Hilbert–Schmidt inequality and T1 give ofReal(D) ≤ 2 Avg_s + 2 ofReal(E_s/c). Both terms tend to zero on the specified right-neighborhood filter, forcing D = 0 and the exact projection equality by la_basics."
+    },
+    {
+      "key": "campanato_input",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Negative radii are handled separately; otherwise the center satisfies the required derivative bound. Continuity and E1 transfer the Borel-null exceptional set, E2 supplies the a.e. projection identity, and P4 followed by T1 proves the exact lower-integral estimate. No additional differentiability assumption is needed."
+    }
+  ],
+  "required_changes": []
+}

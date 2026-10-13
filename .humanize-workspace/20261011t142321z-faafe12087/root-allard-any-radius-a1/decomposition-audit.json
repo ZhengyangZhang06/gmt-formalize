@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "any_radius_|Campanato|HasWeightedApproximateTangentSpaceAt|CountablyRectifiable",
+        "Campanato|[Cc]ampanato",
+        "structure RectifiableVarifold|def HasGeneralizedMeanCurvatureIn",
+        "to_localInverse|contDiff.*localInverse|localInverse.*contDiff|hausdorffMeasure_smul₀|image_of_continuousOn_injOn|norm_image_sub_le_of_norm_fderivWithin_le",
+        "lean_name",
+        "depends_on",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/anyrad-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Inst.lean",
+        "git -C .lake/packages/simongmt status --porcelain --untracked-files=no"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json",
+        "/tmp/anyrad-independent-audit/Types.lean",
+        "/tmp/anyrad-v2/proj/Checks/Axioms.lean",
+        "/tmp/anyrad-v2/proj/Checks/Inst.lean",
+        "/tmp/anyrad-v2/proj/Checks/Final.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract files; inspected Mathlib files also match the installed copies, and SimonGMT has no tracked modifications. No any_radius_* declaration occurs in the snapshot project or another branch's lean_name reservations. No Campanato result was found in snapshot Mathlib. All 12 exact, single-line propositions elaborate independently without child declarations or sorry; checked library results use only propext, Classical.choice and Quot.sound. Explicit elaboration confirms ENNReal measure scaling, real vector scaling and real powers; no Matrix/IsUnit construction occurs. The existing DAG with the proposed obligations remains acyclic. The split is appropriate: each obligation contributes to the selected AllardRegularityAnyRadius proof. The supplied assembly satisfies the patching hypotheses, supplies graph_rate's hypotheses, and obtains the closed-ball AllardConclusion with C = 3 max(CR,0). Skeletons containing sorry were treated only as interface checks, not proof certificates."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on all three conclusions. Localization, finite-measure Lusin pieces, complementary-density estimates and blow-up convergence establish existence; uniqueness identifies tangentProj, and the Borel representative and cutoff squeeze prove measurability and density. These foundations agree with Simon, Ch. 3 §§1.7–1.9 ([text](https://web.stanford.edu/class/math285/ts-gmt))."
+    },
+    {
+      "key": "rescaled_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All structure fields and transport identities are justified, including arbitrary centres and n = 0. Equality of the tangent predicates supports pointwise equality of Classical.choose projections even off the carrier. The transformed test field gives precisely the stated curvature scaling."
+    },
+    {
+      "key": "monotonicity_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three conclusions match their Lean formulations. The localized Chapter04 adapter, corrected kappa, integrating-factor bounds and density argument justify M1–M3. Finite masses, the possibly nonpositive lower bound, and the open-ball limit are handled."
+    },
+    {
+      "key": "tilt_height_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses ensure the required integrability. The cutoff field, projection trace identity and Young absorption yield exactly the constants 144 and 4. The support-wise height bound transfers to the measure almost everywhere without an additional density hypothesis."
+    },
+    {
+      "key": "tilt_iteration",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Repeated applications of the explicit decay hypothesis remain within its admissible scales. Lower density controls consecutive projections; their geometric-series limit is a rank-n orthogonal projection. Upper density gives the stated all-scale estimate with the supplied constants."
+    },
+    {
+      "key": "graph_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lower-density and upper-density arguments establish Hausdorff-measure domination on the graph. The projection inequality proves E1, localized blow-ups identify the tangent plane for E2, and differentiation of the finite restricted measure proves E3. Null-set transfers and small-ball positivity are justified."
+    },
+    {
+      "key": "radial_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The revised quantifier order correctly makes C independent of codimension. The cap estimate, polar integration, radial Cauchy–Schwarz inequality and 2-Lipschitz oscillation estimate give the exact exponent and coefficient form. The proof covers n = 1, zero energy and the r₁ boundary."
+    },
+    {
+      "key": "campanato",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Averaging over the midpoint ball gives exactly 2^(2n+2+2α)/omega_n before taking square roots. Full-measure density and inward perturbations extend the estimate to every closed-ball pair, including the distance threshold. The type includes all needed continuity and positivity hypotheses."
+    },
+    {
+      "key": "patching",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The parameter inequalities support every local construction. Contraction and inverse-function arguments give slope 1/7; injectivity and the open-and-closed projection argument produce the global graph. Closedness, both graph inclusions and agreement with u₀ near zero are sufficient for the exact conclusion."
+    },
+    {
+      "key": "pinching",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both centre cases are proved at the same fixed scale. The dilation factors and all conical-approximation hypotheses match the frozen contract. Monotonicity transfers the comparison estimate to cs rho, and the finitely many thresholds are positive and independent of the varifold data."
+    },
+    {
+      "key": "cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof independently establishes its density and curvature inputs from its declared dependencies. Conical approximation forces a support point inside the small-radius hypothesis; homogeneity then gives the stronger bound (5/7) kappa |y|. No dimension hypothesis on T is needed."
+    },
+    {
+      "key": "graph_rate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The height, fixed-scale tilt, translated decay, tangent identification and Campanato steps prove all three stated bounds. The corrected radius margins keep each ball admissible. Normalizing CII and CIII is justified by nonnegative excess, and every threshold and final constant is chosen before the varifold and graph data."
+    }
+  ],
+  "required_changes": []
+}

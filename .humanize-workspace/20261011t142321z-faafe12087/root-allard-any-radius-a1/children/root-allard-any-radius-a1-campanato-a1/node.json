@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.campanato-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Campanato-type estimate: integral decay of the oscillation implies Hoelder continuity",
+  "statement": "Let n >= 1, r, s_0 > 0, A >= 0, alpha > 0 and g : R^n -> L(R^n, R^l) continuous on B_{r+s_0}(0). Suppose that for L^n-a.e. z in B_r(0) and every s in (0, s_0], the integral over B_{s/2}(z) of |g(x) - g(z)|^2 dx (Hilbert-Schmidt norm, lower integral) is at most A s^(n + 2 alpha). Then |g(x) - g(y)| <= (2^(2n+2+2 alpha) A/omega_n)^(1/2) |x - y|^alpha for all x, y in B_r(0) with |x - y| <= s_0/2.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (r s₀ A α : ℝ), 0 < r → 0 < s₀ → 0 ≤ A → 0 < α → ContinuousOn g (closedBall 0 (r + s₀)) → (∀ᵐ z ∂(volume.restrict (closedBall (0 : Rn n) r)), ∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (g x - g z)) ≤ ENNReal.ofReal (A * s ^ ((n : ℝ) + 2 * α))) → ∀ x ∈ closedBall (0 : Rn n) r, ∀ y ∈ closedBall (0 : Rn n) r, ‖x - y‖ ≤ s₀ / 2 → hsNorm (g x - g y) ≤ Real.sqrt (2 ^ (2 * (n : ℝ) + 2 + 2 * α) * A / unitBallVolume n) * ‖x - y‖ ^ α",
+  "lean_name": "any_radius_campanato",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-campanato-a1-a1"
+}
