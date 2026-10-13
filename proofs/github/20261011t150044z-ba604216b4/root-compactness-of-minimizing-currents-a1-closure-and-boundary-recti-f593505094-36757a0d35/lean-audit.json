@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "647d7e59f06148cfb6ebc41ed14dbbde57d081c9e78fca0955e266d78766a4eb",
+  "git_delta": {
+    "base_commit": "a9ce4b614dc35888a311d2d71f1620ecb6a8767f",
+    "candidate_commit": "547023ad9f634b0a2d9f32219e956e119431b4d6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cipi_plane_extDeriv_coords",
+    "diff_sha256": "3858cd207211d0c67749af399140455f7dafeeeda1dbb030a1a0c099bce6b77f",
+    "source_sha256": "7cd077d2659d6cb42f07b1423755ba0b20f778daa1125d9728f7a60a8de68110",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cipi_plane_extDeriv_coords",
+      "statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ i : Fin (d + 1), ContDiff ℝ 1 (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) ∧ HasCompactSupport (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v))) ∧ ∀ z : Fin (d + 1) → ℝ, exteriorDerivative (φ : DifferentialForm (Euclid P) d) (∑ j, z j • v j) v = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) z (Pi.single i 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
