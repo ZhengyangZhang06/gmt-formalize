@@ -2226,6 +2226,81 @@ theorem Submission.adr_finite_of_dim_zero : ∀ (P n Q : ℕ) (F : Set (Euclid P
     (by rw [hz]; norm_num) fun t ht _ => by simpa using (hray t ht z).2 hzψ
   exact hseg.ne' (hnull ψ hψ)
 
+/-- **Simon A.4 (Theorem, pp. 226–228)**, with the additional hypothesis (H0) that members of `F`
+agreeing `μH[n]`-a.e. are equal.  Let `d` be the largest dimension of a subspace `L` such that some
+`ψ ∈ F` with `sing ψ ≠ ∅` satisfies `ψ(y + λx) = ψ(x)` for all `y ∈ L`, `λ > 0`.  A tangent
+function at a singular point in `B₁(0)` (A.2, A.3(2), A.3(3)) shows that `L = {0}` qualifies, and
+Remark A.5 with A.3(1) gives `d ≤ n − 1`.  The dimension bound, `sing ψ = L` for an extremal `ψ`
+and finiteness when `d = 0` are `adr_dimension_bound`, `adr_extremal_sing_eq` and
+`adr_finite_of_dim_zero`. -/
+theorem Submission.abstract_dimension_reduction : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (L : Submodule ℝ (Euclid P)) (c : Euclid Q), Module.finrank ℝ L = n → φ = Set.indicator (L : Set (Euclid P)) (fun _ => c) → sing φ = ∅) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → (∀ φ ∈ F, ball (0 : Euclid P) 1 ∩ sing φ = ∅) ∨ ∃ d : ℕ, d + 1 ≤ n ∧ (∀ φ ∈ F, ∀ α : ℝ, 0 < α → μH[(d : ℝ) + α] (sing φ ∩ ball (0 : Euclid P) 1) = 0) ∧ (∃ ψ ∈ F, ∃ L : Submodule ℝ (Euclid P), Module.finrank ℝ L = d ∧ sing ψ = (L : Set (Euclid P)) ∧ ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) ∧ (d = 0 → ∀ φ ∈ F, ∀ σ : ℝ, σ < 1 → (sing φ ∩ ball (0 : Euclid P) σ).Finite) := by
+  intro P n Q F sing hH0 hH1 hA1 hA2 hclosed hplane hA32 hA33
+  by_cases hI : ∀ φ ∈ F, ball (0 : Euclid P) 1 ∩ sing φ = ∅
+  · exact Or.inl hI
+  refine Or.inr ?_
+  obtain ⟨φ₀, hφ₀, x₀, hx₀, hx₀s⟩ : ∃ φ ∈ F, (ball (0 : Euclid P) 1 ∩ sing φ).Nonempty := by
+    by_contra h
+    exact hI fun φ hφ => Set.not_nonempty_iff_eq_empty.1 fun hne => h ⟨φ, hφ, hne⟩
+  -- `D`: dimensions of subspaces leaving invariant a member of `F` with nonempty singular set
+  obtain ⟨D, hD⟩ : ∃ D : Set ℕ, ∀ m, m ∈ D ↔ ∃ ψ ∈ F, ∃ L : Submodule ℝ (Euclid P),
+      (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) ∧ (sing ψ).Nonempty ∧
+        Module.finrank ℝ L = m :=
+    ⟨_, fun _ => Iff.rfl⟩
+  -- Remark A.5 and A.3(1): `D` lies below `n`
+  have hDlt : ∀ m ∈ D, m < n := by
+    intro m hm
+    obtain ⟨ψ, hψ, L, hinv, hne, rfl⟩ := (hD m).1 hm
+    by_contra hle
+    obtain ⟨L', hL', hψL'⟩ :=
+      Submission.adr_invariant_eq_indicator P n Q ψ L (hH1 ψ hψ) (not_lt.1 hle) hinv
+    exact hne.ne_empty (hplane ψ hψ L' (ψ 0) hL' hψL')
+  -- A.2, A.3(2) and Lemma T: a homogeneous tangent function at `x₀` is singular at `0`
+  have hD0 : 0 ∈ D := by
+    have hx₀n : ‖x₀‖ < 1 := mem_ball_zero_iff.1 hx₀
+    have hr : 0 < 1 - ‖x₀‖ := sub_pos.2 hx₀n
+    set lams : ℕ → ℝ := fun k => (1 - ‖x₀‖) / ((k : ℝ) + 2)
+    have hpos : ∀ k, 0 < lams k := fun k => div_pos hr (by positivity)
+    have hsmall : ∀ k, lams k < 1 - ‖x₀‖ := fun k =>
+      div_lt_self hr (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
+    have hanti : StrictAnti lams := fun a b hab =>
+      div_lt_div_of_pos_left hr (by positivity) (by linarith [(Nat.cast_lt.2 hab : (a : ℝ) < b)])
+    have hlim : Tendsto lams atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop
+        (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
+    obtain ⟨sub, ψ, -, hψ, hconv, hhom⟩ := hA2 φ₀ hφ₀ x₀ hx₀n lams hpos hanti hlim
+    have hk : ∀ k, 0 < lams (sub k) ∧ lams (sub k) < 1 ∧ ‖x₀‖ ≤ 1 - lams (sub k) := fun k =>
+      ⟨hpos _, by linarith [hsmall (sub k), norm_nonneg x₀], by linarith [hsmall (sub k)]⟩
+    have hsing0 : (0 : Euclid P) ∈ sing ψ :=
+      Submission.adr_sing_mem_of_tendsto P n Q F sing hclosed hA33 ψ hψ
+        (fun k x => φ₀ (x₀ + lams (sub k) • x))
+        (fun k => hA1 φ₀ hφ₀ x₀ _ (hk k).1 (hk k).2.1 (hk k).2.2) hconv (fun _ => 0) 0
+        (fun k => ⟨mem_ball_self one_pos, by
+          rw [hA32 φ₀ hφ₀ x₀ _ (hk k).1 (hk k).2.1 (hk k).2.2, Set.mem_preimage, smul_zero,
+            add_zero]
+          exact hx₀s⟩)
+        tendsto_const_nhds
+    refine (hD 0).2 ⟨ψ, hψ, ⊥, fun y hy lam hlam x => ?_, ⟨0, hsing0⟩, finrank_bot ℝ (Euclid P)⟩
+    rw [(Submodule.mem_bot ℝ).1 hy, zero_add]
+    exact hhom lam hlam x
+  -- `d := max D`
+  obtain ⟨d, hdD, hdmax⟩ : ∃ d ∈ D, ∀ m ∈ D, m ≤ d :=
+    have hbdd : BddAbove D := ⟨n, fun m hm => (hDlt m hm).le⟩
+    ⟨sSup D, Nat.sSup_mem ⟨0, hD0⟩ hbdd, fun m hm => le_csSup hbdd hm⟩
+  have hd : ∀ ψ ∈ F, ∀ L : Submodule ℝ (Euclid P),
+      (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → (sing ψ).Nonempty →
+        Module.finrank ℝ L ≤ d :=
+    fun ψ hψ L hinv hne => hdmax _ ((hD _).2 ⟨ψ, hψ, L, hinv, hne, rfl⟩)
+  have hdim := Submission.adr_dimension_bound P n Q F sing hH0 hH1 hA1 hA2 hclosed hA32 hA33 d hd
+  obtain ⟨ψ, hψ, L, hinv, hne, hL⟩ := (hD d).1 hdD
+  refine ⟨d, hDlt d hdD, hdim, ⟨ψ, hψ, L, hL, ?_, hinv⟩, fun hd0 => ?_⟩
+  · exact Submission.adr_extremal_sing_eq P n Q F sing hH0 hH1 hA1 hA2 hclosed hA32 hA33 d hd
+      ψ hψ L hL hinv hne
+  · subst hd0
+    refine Submission.adr_finite_of_dim_zero P n Q F sing hA1 hA2 hclosed hA32 hA33
+      fun φ hφ => ?_
+    have h1 := hdim φ hφ 1 one_pos
+    rwa [Nat.cast_zero, zero_add] at h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
