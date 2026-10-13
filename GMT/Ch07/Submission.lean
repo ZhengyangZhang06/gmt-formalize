@@ -532,6 +532,64 @@ theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N :
       fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
     exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
 
+/-- **Simon Ch. 2, §4, (4.3)** for a map with a continuous affine left inverse: if `Φ` is `C¹` on
+`D = B_s(0) ⊆ ℝᵈ` and `L(Φ(v) − z) = v` for `v ∈ D`, then `T_{Φ(v₀)}Φ(D) = DΦ(v₀)(ℝᵈ)` for every
+`v₀ ∈ D`.  `⊆` is `dgce_left_inverse_tangentSpace_subset_range`.  For `⊇` and `a ∈ ℝᵈ`, take the
+constant curve if `a = 0`.  Otherwise, with `c₀ = (s − |v₀|) / (2|a|)` and `θ(t) = c₀ sin(t / c₀)`
+(smooth, `θ(0) = 0`, `θ'(0) = 1`, `|θ| ≤ c₀`), the curve `γ(t) = Φ(v₀ + θ(t) a)` stays in `Φ(D)`
+and has velocity `DΦ(v₀) a`. -/
+theorem Submission.dgce_left_inverse_tangentSpace_eq_range : ∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → ∀ v ∈ ball (0 : Euclid d) s, tangentSpace (Φ '' ball (0 : Euclid d) s) (Φ v) = (LinearMap.range (fderiv ℝ Φ v : Euclid d →ₗ[ℝ] Euclid P) : Set (Euclid P)) := by
+  intro d P Φ L z s hΦ hL v₀ hv₀
+  refine Subset.antisymm
+    (Submission.dgce_left_inverse_tangentSpace_subset_range d P Φ L z s hΦ hL v₀ hv₀) ?_
+  rintro _ ⟨a, rfl⟩
+  -- `Φ` is `C¹` on the open ball `D`, hence differentiable at `v₀`
+  have hΦv₀ : HasFDerivAt Φ (fderiv ℝ Φ v₀) v₀ :=
+    (hΦ.differentiableOn_one.differentiableAt (isOpen_ball.mem_nhds hv₀)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `Φ(v₀)` has velocity `0 = DΦ(v₀) 0`
+    subst ha
+    refine ⟨fun _ => Φ v₀, contDiffOn_const, fun _ _ => mem_image_of_mem Φ hv₀, rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (Φ v₀)
+  · -- `a ≠ 0`: `κ(t) = v₀ + θ(t) a` with `θ(t) = c₀ sin(t / c₀)`, `c₀ = (s − |v₀|) / (2|a|)`
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    have hv₀s : ‖v₀‖ < s := mem_ball_zero_iff.mp hv₀
+    set c₀ : ℝ := (s - ‖v₀‖) / (2 * ‖a‖) with hc₀_def
+    have hc₀ : 0 < c₀ := div_pos (sub_pos.mpr hv₀s) (by positivity)
+    set θ : ℝ → ℝ := fun t => c₀ * Real.sin (t / c₀) with hθ_def
+    -- (a) `θ` is smooth
+    have hθ_cd : ContDiff ℝ 1 θ :=
+      contDiff_const.mul (Real.contDiff_sin.comp (contDiff_id.div_const c₀))
+    -- (b) `θ(0) = 0` and `θ'(0) = c₀ cos 0 / c₀ = 1`
+    have hθ0 : θ 0 = 0 := by simp [hθ_def]
+    have hθ_deriv : HasDerivAt θ 1 0 := by
+      have h := ((Real.hasDerivAt_sin (0 / c₀)).comp 0
+        ((hasDerivAt_id' (x := (0 : ℝ))).div_const c₀)).const_mul c₀
+      rw [zero_div, Real.cos_zero, one_mul, mul_one_div_cancel hc₀.ne'] at h
+      exact h
+    -- (c) `|θ(t)| ≤ c₀`
+    have hθ_bd : ∀ t, |θ t| ≤ c₀ := fun t => by
+      rw [hθ_def, abs_mul, abs_of_pos hc₀]
+      exact mul_le_of_le_one_right hc₀.le (Real.abs_sin_le_one _)
+    -- `κ` stays in `D`, `κ(0) = v₀` and `κ'(0) = a`
+    set κ : ℝ → Euclid d := fun t => v₀ + θ t • a with hκ_def
+    have hκD : ∀ t, κ t ∈ ball (0 : Euclid d) s := fun t => by
+      rw [mem_ball_zero_iff]
+      calc ‖κ t‖ ≤ ‖v₀‖ + |θ t| * ‖a‖ := by
+            simpa only [hκ_def, norm_smul, Real.norm_eq_abs] using norm_add_le v₀ (θ t • a)
+        _ ≤ ‖v₀‖ + c₀ * ‖a‖ := by gcongr; exact hθ_bd t
+        _ = ‖v₀‖ + (s - ‖v₀‖) / 2 := by rw [hc₀_def]; field_simp
+        _ < s := by linarith
+    have hκ0 : κ 0 = v₀ := by simp [hκ_def, hθ0]
+    have hκ_cd : ContDiff ℝ 1 κ := contDiff_const.add (hθ_cd.smul contDiff_const)
+    have hκ_deriv : HasDerivAt κ a 0 := by
+      have := HasDerivAt.const_add v₀ (hθ_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = Φ ∘ κ` is `C¹` on `(-1, 1)`, lies in `Φ(D)`, and `γ'(0) = DΦ(v₀) a`
+    refine ⟨Φ ∘ κ, hΦ.comp hκ_cd.contDiffOn fun t _ => hκD t,
+      fun t _ => mem_image_of_mem Φ (hκD t), by simp [hκ0], ?_⟩
+    exact hΦv₀.comp_hasDerivAt_of_eq 0 hκ_deriv hκ0.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
