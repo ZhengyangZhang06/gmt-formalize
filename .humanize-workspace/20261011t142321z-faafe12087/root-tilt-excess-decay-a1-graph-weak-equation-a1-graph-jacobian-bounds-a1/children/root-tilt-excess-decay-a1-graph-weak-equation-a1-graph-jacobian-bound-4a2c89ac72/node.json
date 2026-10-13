@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1.det_one_add_bounds-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1",
+  "depth": 4,
+  "title": "Determinant bounds 1 <= det(I + G) <= exp(trace G) for a symmetric positive semidefinite real matrix G",
+  "statement": "For every natural number n and every real n x n matrix G (G : Matrix (Fin n) (Fin n) ℝ) assume two things: G is symmetric, G^T = G (Matrix.IsSymm G); and G is positive semidefinite, x . (G x) = sum_a x_a sum_b G_ab x_b >= 0 for every x : Fin n -> R (0 <= dotProduct x (Matrix.mulVec G x)). Let I be the n x n identity matrix and I + G the entrywise sum. Then 1 <= det(I + G) and det(I + G) <= exp(trace G).",
+  "lean_statement": "∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) ℝ), Matrix.IsSymm G → (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec G x)) → 1 ≤ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ∧ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ≤ Real.exp (Matrix.trace G)",
+  "lean_name": "gwe_gjb_det_one_add_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-jacobian-bound-4a2c89ac72-a1"
+}

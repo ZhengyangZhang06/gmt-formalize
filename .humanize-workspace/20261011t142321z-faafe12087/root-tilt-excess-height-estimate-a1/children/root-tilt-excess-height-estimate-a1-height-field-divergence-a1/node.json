@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.height_field_divergence-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1",
+  "depth": 2,
+  "title": "Tangential divergence of the height test field ζ^2 · p_{T⊥}(x − ξ)",
+  "statement": "Let n, l ∈ N, U ⊆ R^{n+l} any set, and V a rectifiable n-varifold in U (contract structure). Let ζ : R^{n+l} → R, ξ, x ∈ R^{n+l}, and P, T n-dimensional linear subspaces. Assume ζ is differentiable at x and V.tangentProj x = p_P. Then the field X(y) := ζ(y)^2 p_{T⊥}(y − ξ) satisfies\n  div_M X(x) = trace(DX(x) ∘ p_P) = ζ(x)^2 · (1/2)|p_P − p_T|^2 + 2ζ(x) · Dζ(x)((p_P − p_T) p_{T⊥}(x − ξ)),\nwhere |·|^2 = hsNormSq.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ζ : Amb n ℓ → ℝ) (ξ x : Amb n ℓ) (P T : Submodule ℝ (Amb n ℓ)), DifferentiableAt ℝ ζ x → Module.finrank ℝ P = n → Module.finrank ℝ T = n → V.tangentProj x = P.starProjection → V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - ξ)) x = ζ x ^ 2 * (hsNormSq (P.starProjection - T.starProjection) / 2) + 2 * ζ x * fderiv ℝ ζ x ((P.starProjection - T.starProjection) (Tᗮ.starProjection (x - ξ)))",
+  "lean_name": "divM_height_test_field_eq",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.projection_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-height-field-divergence-a1-a1"
+}

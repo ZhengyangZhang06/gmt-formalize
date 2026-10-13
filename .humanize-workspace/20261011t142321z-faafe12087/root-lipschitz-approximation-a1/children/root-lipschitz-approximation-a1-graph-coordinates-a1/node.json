@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Graph coordinates and the projection onto the rotated plane",
+  "statement": "For all n, l and every linear isometry q of R^(n+l): (i) graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') for a, a' in R^n, b, b' in R^l; (ii) |graphPoint a b|^2 = |a|^2 + |b|^2; (iii) every z in R^(n+l) equals graphPoint a b for some a in R^n, b in R^l; (iv) the orthogonal projection P onto T_0 = rotatedPlane q = q(R^n x {0}) satisfies P(q(graphPoint a b)) = q(graphPoint a 0).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0))",
+  "lean_name": "lip_approx_graph_coordinates",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.ball_lintegral_ofreal-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1",
+  "depth": 4,
+  "title": "Lower integral over the closed ball equals the Bochner integral over the open ball (Simon 4.5, proof step (20a))",
+  "statement": "Let n be a natural number, φ : R^n → R and r > 0, where R^n = EuclideanSpace R (Fin n) carries Lebesgue measure L^n = volume. Assume φ is continuous on the closed ball B̄_r(0) and φ(x) >= 0 for every x in B̄_r(0). Then ∫⁻_{B̄_r(0)} ofReal(φ) dL^n = ofReal(∫_{B_r(0)} φ dL^n), where B_r(0) is the open ball and the right-hand integral is the Bochner integral.",
+  "lean_statement": "∀ (n : ℕ) (φ : Rn n → ℝ) (r : ℝ), 0 < r → ContinuousOn φ (closedBall 0 r) → (∀ x ∈ closedBall (0 : Rn n) r, 0 ≤ φ x) → ∫⁻ x in closedBall (0 : Rn n) r, ENNReal.ofReal (φ x) = ENNReal.ofReal (∫ x in ball (0 : Rn n) r, φ x)",
+  "lean_name": "tdo_ghe_lintegral_closedBall_ofReal_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-b-9c6287c6af-a1"
+}
