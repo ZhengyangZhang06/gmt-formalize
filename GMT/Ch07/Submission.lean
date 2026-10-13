@@ -662,6 +662,34 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
 
+/-- **Gram determinant of a restricted adjoint square** (the Jacobian notation of the area
+formula, Simon Ch. 2, 4.11–4.13).  Let `T ⊆ ℝᴾ` be a subspace with the induced inner product,
+`B : ℝᴾ → ℝᴾ` linear and `σ` an orthonormal frame spanning `T`.  Then
+`det((B ∘ ι_T)*(B ∘ ι_T)) = det[⟨Bσᵢ, Bσⱼ⟩]`.  Viewed in `T`, `σ` is orthonormal, and it spans
+`T` since `dim T = k`, so it is an orthonormal basis `b` of `T`.  In `b` the matrix of
+`(B ∘ ι_T)*(B ∘ ι_T)` has entries `⟨bᵢ, (B ∘ ι_T)*(B ∘ ι_T) bⱼ⟩ = ⟨Bσᵢ, Bσⱼ⟩` (adjoint). -/
+theorem Submission.codim1_hcp_af_adjoint_det_eq_gram : ∀ (P k : ℕ) (T : Submodule ℝ (Euclid P)) (B : Euclid P →L[ℝ] Euclid P) (σ : Fin k → Euclid P), Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = T → ((B.comp T.subtypeL).adjoint ∘L (B.comp T.subtypeL)).det = Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (B (σ i)) (B (σ j))) := by
+  intro P k T B σ hσ hT
+  -- each `σ i` lies in `T`, and `σ`, viewed in `T`, is orthonormal
+  have hσT : ∀ i, σ i ∈ T := fun i => hT ▸ Submodule.subset_span (mem_range_self i)
+  have hb : Orthonormal ℝ fun i => (⟨σ i, hσT i⟩ : T) := hσ.codRestrict T hσT
+  -- `dim T = k`, so this family spans `T` and is an orthonormal basis `b` of `T`
+  have hk : Fintype.card (Fin k) = Module.finrank ℝ T := by
+    rw [← hT, finrank_span_eq_card hσ.linearIndependent]
+  obtain ⟨b, hbσ⟩ : ∃ b : OrthonormalBasis (Fin k) ℝ T, ∀ i, (b i : Euclid P) = σ i :=
+    ⟨OrthonormalBasis.mk hb (hb.linearIndependent.span_eq_top_of_card_eq_finrank' hk).ge,
+      fun i => by simp only [OrthonormalBasis.coe_mk]⟩
+  -- the determinant is that of the matrix in `b`, whose `(i, j)` entry is
+  -- `⟪b i, (B ∘ ι_T)† ((B ∘ ι_T) (b j))⟫ = ⟪B (σ i), B (σ j)⟫`
+  rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b.toBasis]
+  congr 1
+  ext i j
+  rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+    OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, ContinuousLinearMap.coe_coe,
+    ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_right]
+  simp only [ContinuousLinearMap.comp_apply, Submodule.coe_subtypeL, Submodule.subtype_apply, hbσ,
+    Matrix.of_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
