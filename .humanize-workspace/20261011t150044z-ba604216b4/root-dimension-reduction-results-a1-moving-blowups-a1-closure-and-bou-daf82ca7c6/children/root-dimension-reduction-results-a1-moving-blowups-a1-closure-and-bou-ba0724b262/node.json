@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.boundary_im-a1.extension_masses-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.boundary_im-a1",
+  "depth": 5,
+  "title": "A compactly supported current in ℝ^P has mass and boundary mass at most those of its restriction to an open set containing its support",
+  "statement": "Assume (VO): for all P, n, U ⊆ ℝ^P, S ∈ 𝒟_n(U) and ω ∈ 𝒟ⁿ(U) with tsupport ω disjoint from spt S, S(ω) = 0 (the exact frozen statement of dtc_vanish_off_support, appearing verbatim as the first hypothesis). Let P, k ∈ ℕ, U ⊆ ℝ^P open, C ⊆ U compact and Y ∈ 𝒟_{k+1}(ℝ^P) with spt Y ⊆ C. Then M(Y) ≤ M(Y|_U) and M(∂Y) ≤ M(∂(Y|_U)), where Y|_U = Y.restrictDomain (subset_univ U), M(Y) = M_{ℝ^P}(Y) and M(Y|_U) = M_U(Y|_U).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (U C : Set (Euclid P)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), IsOpen U → IsCompact C → C ⊆ U → Y.support ⊆ C → Y.mass ≤ (Y.restrictDomain (subset_univ U)).mass ∧ Y.boundary.mass ≤ (Y.restrictDomain (subset_univ U)).boundary.mass",
+  "lean_name": "dmcbr_bim_extension_mass_bounds",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a-a1",
+      "result_commit": "a3cc98d1f008606225ddd111bbd6688136867146",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-ba0724b262-a1"
+}
