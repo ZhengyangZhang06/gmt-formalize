@@ -483,6 +483,41 @@ theorem Submission.dph_sa_mollify_lipschitz :
       · rw [hρz w (not_lt.1 hw), zero_mul, zero_mul]
     simp_rw [h2]
     rw [integral_mul_const, hρ1, one_mul]
+/-- Multilinear-algebra step of the smoothing argument in the proof of the Deformation Theorem
+(Simon Ch. 6, §5): a `k`-covector `γ` on `ℝ^{m'}` with `γ(e_{α(0)}, …, e_{α(k-1)}) = 0` pulls back
+to `0` under every linear `T` with image in `span {e_{α(q)}}`.  With `S c = ∑_q c_q e_{α(q)}` on
+`ℝ^k`, `T v = S ((T v)_{α(q)})_q`, and the alternating `k`-form `γ ∘ S` on `ℝ^k` vanishes because
+its value on the standard basis is `γ(e_{α(0)}, …, e_{α(k-1)}) = 0`. -/
+theorem Submission.dph_sa_covector_comp_eq_zero :
+    ∀ (m m' k : ℕ) (α : SimonMultiIndex k m') (γ : Eucl m' [⋀^Fin k]→L[ℝ] ℝ) (T : Eucl m →L[ℝ] Eucl m'), γ (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0 → (∀ (v : Eucl m) (i : Fin m'), i ∉ range α → T v i = 0) → γ.compContinuousLinearMap T = 0 := by
+  intro m m' k α γ T hγ hT
+  -- `S c = ∑_q c_q e_{α(q)}` on `ℝ^k`.
+  let S : (Fin k → ℝ) →ₗ[ℝ] Eucl m' :=
+    Fintype.linearCombination ℝ fun q => EuclideanSpace.single (α q) (1 : ℝ)
+  -- `T` factors through `S`: coordinates in `range α` agree as `α` is injective, the others vanish.
+  have hfac : ∀ v, T v = S fun q => T v (α q) := by
+    intro v
+    refine PiLp.ext fun i => ?_
+    simp only [S, Fintype.linearCombination_apply, WithLp.ofLp_sum, Finset.sum_apply,
+      PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+    by_cases hi : i ∈ range α
+    · obtain ⟨q₀, rfl⟩ := hi
+      simp [α.injective.eq_iff]
+    · rw [hT v i hi, Finset.sum_eq_zero fun q _ => ite_eq_right fun h => hi ⟨q, h.symm⟩]
+  -- The alternating `k`-form `γ ∘ S` on `ℝ^k` vanishes on the standard basis, hence is `0`.
+  have h0 : γ.toAlternatingMap.compLinearMap S = 0 := by
+    have hb : (fun q => S (Pi.basisFun ℝ (Fin k) q)) =
+        fun j => EuclideanSpace.single (α j) (1 : ℝ) := by
+      funext q
+      simp [S]
+    rw [← AlternatingMap.map_basis_eq_zero_iff (Pi.basisFun ℝ (Fin k)),
+      AlternatingMap.compLinearMap_apply, ContinuousAlternatingMap.coe_toAlternatingMap, hb]
+    exact hγ
+  refine ContinuousAlternatingMap.ext fun v => ?_
+  simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply,
+    ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+  rw [show ⇑T ∘ v = fun p => S fun q => T (v p) (α q) from funext fun p => hfac (v p)]
+  exact AlternatingMap.congr_fun h0 fun p q => T (v p) (α q)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
