@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.mass_add-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1",
+  "depth": 4,
+  "title": "Subadditivity of local mass",
+  "statement": "Let P, d ∈ ℕ, U ⊆ ℝ^P and V ⊆ ℝ^P, and let X, Y, Z ∈ 𝒟_d(U) satisfy X(ω) = Y(ω) + Z(ω) for every ω ∈ 𝒟^d(U). Then M_V(X) ≤ M_V(Y) + M_V(Z) in [0, ∞], where M_V = massOn V.",
+  "lean_statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (X Y Z : GeometricCurrentOn U d) (V : Set (Euclid P)), (∀ ω : TestFormOn U d, X ω = Y ω + Z ω) → X.massOn V ≤ Y.massOn V + Z.massOn V",
+  "lean_name": "cmc_fcl_massOn_le_add",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-dc88cf1feb-a1"
+}

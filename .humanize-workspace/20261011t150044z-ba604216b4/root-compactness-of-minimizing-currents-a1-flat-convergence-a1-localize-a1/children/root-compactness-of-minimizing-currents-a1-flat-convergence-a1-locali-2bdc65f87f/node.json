@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.imrep_data-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1",
+  "depth": 4,
+  "title": "Integral data of an integer multiplicity representation",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and Z ∈ 𝒟_n(U), and let R = (M, θ, ξ) be an IMRep in U (contract structure IMRep U n) representing Z. That is, Z(ω) = R.action(ω) = ∫_M θ(x)⟨ω(x), ξ(x)⟩ dHⁿ(x) for every ω ∈ 𝒟ⁿ(U), where Hⁿ = μHE[n] and ⟨ω(x), ξ(x)⟩ = ξ(x)(ω(x)). Let R.measure = (Hⁿ⌞M).withDensity θ. Then:\n(a) R.measure(K) < ∞ for every compact K ⊆ U;\n(b) ξ is R.measure-a.e. strongly measurable;\n(c) if for Hⁿ⌞M-a.e. x one has |⟨α, ξ(x)⟩| ≤ |α| for every n-covector α (|α| = covectorEuclideanNorm α), then the same holds for R.measure-a.e. x;\n(d) Z(ω) = ∫ ⟨ω(x), ξ(x)⟩ dR.measure(x) for every ω ∈ 𝒟ⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (Z : GeometricCurrentOn U n) (R : IMRep U n), R.Represents Z → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ((∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) → ∀ᵐ x ∂R.measure, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) ∧ ∀ ω : TestFormOn U n, Z ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure",
+  "lean_name": "cmc_fcl_imrep_integral_data",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-2bdc65f87f-a1"
+}
