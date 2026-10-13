@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d0d532c61d26da0e498eec4b32fc40e98c4844b989c24452b17fa9caef1e32ed",
+  "git_delta": {
+    "base_commit": "4803e675baa01c3fe36fb7d49e46bc81fdeb6eb6",
+    "candidate_commit": "fc243d0a96fcd9abfe56b146339fc11e52fdf627",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrz_finset_integral_hausdorff_zero",
+    "diff_sha256": "3e67eb12af576aef72ad1e6b2888a91598a062d4d9ac96dad52aa11af6da492c",
+    "source_sha256": "cfc80662fc2fd6035b7e06f37ba89f89092fc990f1daed791d01a97795abbe21",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrz_finset_integral_hausdorff_zero",
+      "statement": "∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞), (∫ x in (F : Set (Euclid P)), f x ∂μHE[0]) = ∑ x ∈ F, f x ∧ (∫⁻ x in (F : Set (Euclid P)), g x ∂μHE[0]) = ∑ x ∈ F, g x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
