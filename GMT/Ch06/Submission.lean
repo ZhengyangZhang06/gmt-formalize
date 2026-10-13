@@ -1267,6 +1267,75 @@ theorem Submission.iwl_imc_normalized_lebesgue_points : ∀ (P k : ℕ) (U M : S
   obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.1 hxT
   exact hx p hp hxp
 
+/-- Simon Ch. 3, Remark 1.8(1): on a set `E` of locally finite `Hᵏ`-measure, weighted approximate
+tangent spaces do not depend on the positive multiplicity.  At `Hᵏ⌞E`-a.e. `x`, both `θ` and
+`θ'` have normalized Lebesgue points.  With `c θ(x) = θ'(x)`, Definition 1.7 is homogeneous in
+the weight, so `Q` is tangent for `(E, c θ)`; and `|c θ - θ'| ≤ |c| |θ - θ(x)| + |θ' - θ'(x)|`
+lets tangent locality pass from `(E, c θ)` to `(E, θ')`. -/
+theorem Submission.deformation_imcomb_weight_change : ∀ (N k : ℕ) (E : Set (Eucl N)) (θ θ' : Eucl N → ℝ), NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E ∩ K) < ∞) → (∀ x ∈ E, 0 < θ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (E ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ' (E ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k E θ x Q → HasWeightedApproximateTangentSpaceAt k E θ' x Q := by
+  intro N k E θ θ' hE hfin hpos hθ hθ'
+  set H : Measure (Eucl N) := (μHE[k] : Measure (Eucl N))
+  -- Normalized Lebesgue points of `θ` and `θ'` on `E` (with `U = ℝ^N`).
+  have hleb : ∀ f : Eucl N → ℝ, (∀ K : Set (Eucl N), IsCompact K → IntegrableOn f (E ∩ K) H) →
+      ∀ᵐ x ∂(H.restrict E), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) *
+        ∫⁻ y in E ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂H) (𝓝[>] 0) (𝓝 0) := fun f hf =>
+    Submission.iwl_imc_normalized_lebesgue_points N k univ E f isOpen_univ (subset_univ E) hE
+      (fun K hK _ => hfin K hK) (fun K hK _ => hf K hK)
+  filter_upwards [hleb θ hθ, hleb θ' hθ', ae_restrict_mem₀ hE] with x hx hx' hxE Q hQ
+  obtain ⟨c, hcx⟩ : ∃ c : ℝ, c * θ x = θ' x :=
+    ⟨θ' x / θ x, div_mul_cancel₀ _ (hpos x hxE).ne'⟩
+  -- Definition 1.7 is homogeneous in the multiplicity: `Q` is tangent for `(E, c θ)`.
+  have hQc : HasWeightedApproximateTangentSpaceAt k E (fun y => c * θ y) x Q := by
+    obtain ⟨hQk, hf⟩ := hQ
+    refine ⟨hQk, fun f => ?_⟩
+    have h := (hf f).const_mul c
+    rw [← mul_assoc] at h
+    refine h.congr fun r => ?_
+    rw [← integral_const_mul]
+    congr 1
+    funext y
+    dsimp only
+    ring
+  -- `c θ(x) = θ'(x)`, so tangent locality applies to `(E, c θ)` and `(E, θ')`.
+  refine (Submission.iwl_weighted_tangent_locality N k E E (fun y => c * θ y) θ' x hE hE hcx
+    ⟨1, one_pos, Integrable.const_mul (hθ _ (isCompact_closedBall x 1)) c,
+      hθ' _ (isCompact_closedBall x 1)⟩ (fun R hR => ?_) Q).1 hQc
+  have hupper := (ENNReal.Tendsto.const_mul (hx R hR) (Or.inr (enorm_ne_top (x := c)))).add
+    (hx' R hR)
+  rw [mul_zero, zero_add] at hupper
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hupper
+    (fun _ => zero_le) (fun r => ?_)
+  -- `r⁻ᵏ ∫_{B̄_{Rr}(x)} |1_E c θ - 1_E θ'| ≤ |c| r⁻ᵏ ∫_{E ∩ B̄_{Rr}(x)} |θ - θ(x)| +
+  -- r⁻ᵏ ∫_{E ∩ B̄_{Rr}(x)} |θ' - θ'(x)|`.
+  have hEB : NullMeasurableSet E (H.restrict (closedBall x (R * r))) :=
+    hE.mono Measure.restrict_le_self
+  have hmeas : AEMeasurable (fun y => ‖c‖ₑ * ‖θ y - θ x‖ₑ)
+      (H.restrict (E ∩ closedBall x (R * r))) :=
+    ((hθ _ (isCompact_closedBall x (R * r))).aestronglyMeasurable.sub
+      aestronglyMeasurable_const).enorm.const_mul _
+  calc ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in closedBall x (R * r),
+        ‖E.indicator (fun y => c * θ y) z - E.indicator θ' z‖ₑ ∂H
+      = ENNReal.ofReal ((r ^ k)⁻¹) *
+          ∫⁻ z in E ∩ closedBall x (R * r), ‖c * θ z - θ' z‖ₑ ∂H := by
+        rw [← setLIntegral_indicator₀ _ hEB]
+        congr 1
+        refine lintegral_congr fun z => ?_
+        by_cases hz : z ∈ E <;> simp [hz]
+    _ ≤ ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in E ∩ closedBall x (R * r),
+          (‖c‖ₑ * ‖θ z - θ x‖ₑ + ‖θ' z - θ' x‖ₑ) ∂H := by
+        gcongr with z
+        calc ‖c * θ z - θ' z‖ₑ = ‖c * (θ z - θ x) - (θ' z - θ' x)‖ₑ := by
+              rw [mul_sub, hcx]
+              ring_nf
+          _ ≤ ‖c * (θ z - θ x)‖ₑ + ‖θ' z - θ' x‖ₑ := enorm_sub_le
+          _ = ‖c‖ₑ * ‖θ z - θ x‖ₑ + ‖θ' z - θ' x‖ₑ := by rw [enorm_mul]
+    _ = ‖c‖ₑ * (ENNReal.ofReal ((r ^ k)⁻¹) *
+            ∫⁻ y in E ∩ closedBall x (R * r), ‖θ y - θ x‖ₑ ∂H) +
+          ENNReal.ofReal ((r ^ k)⁻¹) *
+            ∫⁻ y in E ∩ closedBall x (R * r), ‖θ' y - θ' x‖ₑ ∂H := by
+        rw [lintegral_add_left' hmeas, lintegral_const_mul' _ _ enorm_ne_top]
+        ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
