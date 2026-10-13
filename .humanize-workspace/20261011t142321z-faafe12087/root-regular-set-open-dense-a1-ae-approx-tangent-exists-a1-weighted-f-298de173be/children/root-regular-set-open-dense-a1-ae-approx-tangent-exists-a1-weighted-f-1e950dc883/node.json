@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.closed_piece_tangent-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1",
+  "depth": 4,
+  "title": "Weighted approximate tangent space at a good point of a Lusin piece (Simon Remark 3.1.8(1), pointwise)",
+  "statement": "Let n, ℓ ∈ ℕ and Hⁿ := μHE[n] on ℝ^{n+ℓ}. Assume:\n- A ⊆ ℝ^{n+ℓ} is Borel with Hⁿ(A) < ∞, and ϑ : ℝ^{n+ℓ} → ℝ is Hⁿ-integrable on A;\n- C ⊆ A is Borel, and x ∈ ℝ^{n+ℓ} is a point at which ϑ is continuous relative to C (ContinuousWithinAt ϑ C x);\n- P is a linear subspace that is the approximate tangent space of C at x (Simon Def. 3.1.4; Chapter03.HasApproximateTangentSpaceAt n C x P);\n- with μ' := (Hⁿ⌞A).withDensity(‖ϑ‖ₑ), (ρⁿ)⁻¹·μ'.real((A ∖ C) ∩ B_ρ(x)) → 0 as ρ ↓ 0, where B_ρ(x) is the closed ball.\nThen P is the approximate tangent space of A at x with respect to ϑ (Simon Def. 3.1.7; Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A C : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → MeasurableSet C → C ⊆ A → ContinuousWithinAt ϑ C x → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ)).real ((A \\ C) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P",
+  "lean_name": "rsod_wfu_weightedApproxTangent_of_closed_piece",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.ball_mass_bound-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.tail_vanish-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.freeze_weight-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc-a1",
+      "result_commit": "98fd790d5bc2f705d0efa953dadfb274b5462997",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.ball_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.tail_vanish-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.freeze_weight-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-f-1e950dc883-a1"
+}

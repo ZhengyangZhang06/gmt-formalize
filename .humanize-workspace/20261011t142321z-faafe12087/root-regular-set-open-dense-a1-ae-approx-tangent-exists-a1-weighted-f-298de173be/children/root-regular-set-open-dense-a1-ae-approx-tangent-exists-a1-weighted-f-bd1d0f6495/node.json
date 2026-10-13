@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.freeze_weight-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1",
+  "depth": 4,
+  "title": "Freezing a relatively continuous weight in blow-up integrals under a bounded density ratio",
+  "statement": "Let n, ℓ ∈ ℕ and Hⁿ := μHE[n] on ℝ^{n+ℓ}. Let C ⊆ ℝ^{n+ℓ} be Borel with Hⁿ(C) < ∞, ϑ : ℝ^{n+ℓ} → ℝ any function, and x ∈ ℝ^{n+ℓ} such that ϑ is continuous at x relative to C (ContinuousWithinAt ϑ C x). Suppose that for every R > 0 there is Λ ∈ ℝ with (rⁿ)⁻¹·Hⁿ(C ∩ B_{rR}(x)) ≤ Λ eventually as r ↓ 0, where the measure is taken as a real number and B is the closed ball. Then for every f ∈ C_c(ℝ^{n+ℓ}, ℝ), (rⁿ)⁻¹·∫_C f(η_{x,r}(z))·(ϑ(z) − ϑ(x)) dHⁿ(z) → 0 as r ↓ 0, where η_{x,r} = Chapter03.blowUpMap x r.",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ), MeasurableSet C → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → ContinuousWithinAt ϑ C x → (∀ R : ℝ, 0 < R → ∃ Λ : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), (r ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (C ∩ closedBall x (r * R)) ≤ Λ) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (ϑ z - ϑ x) ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "rsod_wfu_blowUp_freeze_weight_tendsto_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-f-bd1d0f6495-a1"
+}
