@@ -1,0 +1,78 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.finite_difference-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 3, the finite-difference form of the first displays of printed (10) (Simon Ch. 3, 4.3, chapter-03.txt l. 690-733). Dependency: annular_cutoff (Submission.codim1_rdo_dg_vdl_annular_cutoff).
+0. Notation. E := ℝ^{m+1}, L := volume, B_r := B_r(y), B̄_r := B̄_r(y), p := (m+1)/m > 0 and q := m/(m+1) > 0 (using m ≥ 1). Subsets of closed balls have finite L-measure; for such S write L(S)_ℝ := L(S).toReal, so V(r) = L(G ∩ B̄_r)_ℝ ≥ 0. Let C₀ > 0 be the constant of annular_cutoff and put K := 2c(C₁ + C₀) > 0.
+1. Fix ρ > 0, δ > 0 with ρ + δ < ρ₁, and let η := δ/2. Apply annular_cutoff with P := m + 1, centre y and radii ρ and η. It gives ζ : E → ℝ, C¹ with compact support, such that tsupport ζ ⊆ B̄_{ρ+η}, 0 ≤ ζ ≤ 1, ζ = 1 on B̄_ρ, ‖Dζ(z)‖ ≤ C₀/η for all z, and Dζ(z) = 0 for z ∉ A₁ := B_{ρ+η} ∖ B̄_ρ.
+2. Since ρ + η < ρ + δ < ρ₁, tsupport ζ ⊆ B̄_{ρ+η} ⊆ B̄_{ρ₁} ⊆ D, and ζ ≥ 0. So (S) gives
+ (2.1) (∫_G ζ^p dL)^q ≤ c·(∫ ζ dμ + ∫_G ‖Dζ‖ dL).
+3. Left side. ζ^p is continuous, because ζ is continuous with values in [0, 1] and t ↦ t^p is continuous on [0, ∞) for p > 0. It is nonnegative, and it is zero wherever ζ is zero (0^p = 0 as p ≠ 0); hence it has compact support and is integrable on G. Pointwise ζ^p ≥ 1_{B̄_ρ} (ζ^p = 1 on B̄_ρ and ≥ 0 elsewhere), and 1_{B̄_ρ} is integrable on G. So ∫_G ζ^p dL ≥ ∫_G 1_{B̄_ρ} dL = L(G ∩ B̄_ρ)_ℝ = V(ρ) ≥ 0. Since t ↦ t^q is nondecreasing on [0, ∞), V(ρ)^q ≤ (∫_G ζ^p dL)^q.
+4. μ-term. Pointwise 0 ≤ ζ ≤ 1_{B̄_{ρ+η}}, because ζ ≤ 1 and ζ = 0 off tsupport ζ ⊆ B̄_{ρ+η}. Since μ(B̄_{ρ+η}) ≤ μ(B̄_{ρ₁}) < ∞, 1_{B̄_{ρ+η}} is μ-integrable, and integral_mono_of_nonneg (which needs no μ-integrability of ζ) gives ∫ ζ dμ ≤ μ(B̄_{ρ+η})_ℝ. Apply (A) at radius ρ + η with increment η (valid: ρ + η > 0, η > 0, (ρ + η) + η = ρ + δ < ρ₁): ofReal(η)·μ(B̄_{ρ+η}) ≤ ofReal(C₁)·L(G ∩ A₂), where A₂ := B_{ρ+δ} ∖ B̄_{ρ+η}. The right side is finite, so taking toReal (toReal_mono, toReal_mul, toReal_ofReal, using η ≥ 0 and C₁ ≥ 0) gives η·μ(B̄_{ρ+η})_ℝ ≤ C₁·L(G ∩ A₂)_ℝ. Hence
+ (4.1) ∫ ζ dμ ≤ (C₁/η)·L(G ∩ A₂)_ℝ.
+5. Gradient term. Pointwise ‖Dζ‖ ≤ (C₀/η)·1_{A₁}, because Dζ = 0 off A₁ and ‖Dζ‖ ≤ C₀/η everywhere. Also (C₀/η)·1_{A₁} is integrable on G (L(A₁) < ∞). So
+ (5.1) ∫_G ‖Dζ‖ dL ≤ (C₀/η)·L(G ∩ A₁)_ℝ.
+6. Annuli. A₁ ⊆ B_{ρ+η} ⊆ B̄_{ρ+η} and A₂ ∩ B̄_{ρ+η} = ∅, so A₁ ∩ A₂ = ∅. Both A₁ and A₂ are disjoint from B̄_ρ (as B̄_ρ ⊆ B̄_{ρ+η}) and contained in B̄_{ρ+δ}. Hence G ∩ B̄_ρ, G ∩ A₁ and G ∩ A₂ are pairwise disjoint measurable subsets of G ∩ B̄_{ρ+δ}, all of finite measure. Additivity and monotonicity of L give V(ρ) + L(G ∩ A₁)_ℝ + L(G ∩ A₂)_ℝ ≤ V(ρ+δ). With a₁ := L(G ∩ A₁)_ℝ ≥ 0 and a₂ := L(G ∩ A₂)_ℝ ≥ 0, this says a₁ + a₂ ≤ V(ρ+δ) − V(ρ).
+7. Combining step 3, (2.1), (4.1) and (5.1), and using c > 0 and C₁, C₀ ≥ 0:
+ V(ρ)^q ≤ c·((C₁/η)a₂ + (C₀/η)a₁) ≤ (c(C₁ + C₀)/η)(a₁ + a₂) ≤ (c(C₁ + C₀)/η)(V(ρ+δ) − V(ρ)) = (K/δ)(V(ρ+δ) − V(ρ)),
+ because η = δ/2 and K = 2c(C₁ + C₀). Since ρ and δ were arbitrary, K > 0 has the required property. ∎
+Validation note (not part of the proof): a Lean proof of exactly this frozen statement from annular_cutoff compiled against the frozen import closure (scratch file /tmp/vdl-split-check/C/Proof.lean, outside the repository).
+
+## Key steps
+
+1. Take the cut-off ζ from annular_cutoff with radii ρ and δ/2. Since tsupport ζ ⊆ B̄_{ρ₁}(y) ⊆ D, the Sobolev hypothesis (S) applies.
+2. Left side: ζ^{(m+1)/m} ≥ 1_{B̄_ρ}, so V(ρ)^{m/(m+1)} ≤ (∫_G ζ^{(m+1)/m})^{m/(m+1)}.
+3. μ-term: ∫ζ dμ ≤ μ(B̄_{ρ+δ/2}) ≤ (2C₁/δ)·L(G ∩ (B_{ρ+δ} ∖ B̄_{ρ+δ/2})) by the annular hypothesis (A).
+4. Gradient term: ∫_G ‖Dζ‖ ≤ (2C₀/δ)·L(G ∩ (B_{ρ+δ/2} ∖ B̄_ρ)).
+5. The two annuli are disjoint subsets of B̄_{ρ+δ} ∖ B̄_ρ, so their measures sum to at most V(ρ+δ) − V(ρ). Take K := 2c(C₁ + C₀).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); git status / git log in the workspace (clean, HEAD b4d606db = snapshot project commit)`
+- `python3 scans of dag.json: frozen types of de_giorgi-a1 children (cutoff_estimates-a1, sobolev_perimeter-a1, selected volume_density_lower-a1); regex scan for trace/fderiv/cutoff/bump/rpow statements; collision check of the 7 proposed codim1_rdo_dg_vdl_* names and 5 scratch helper names (0 hits among 974 nodes)`
+- `git show bc0bc2b9 -- GMT/Ch07/Submission.lean (accepted Submission.dorag_th_radial_cutoff technique and type)`
+- `rg in snapshot mathlib: integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable, integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable, tendsto_integral_filter_of_dominated_convergence, integral_add_compl, trace_eq_sum_inner, geom_mean_le_arith_mean_weighted, norm_fderiv_le_of_lipschitz, HasCompactSupport.fderiv, hasDerivAt_iff_tendsto_slope_zero, contDiff_one_iff_deriv, Continuous.integral_hasStrictDerivAt`
+- `lake env lean -DautoImplicit=false /tmp/vdl-split-check/Avail.lean (#check of the above inside the frozen import closure of GMT.Ch07.Submission)`
+- `sed -n 640,760p book/chapter-03.txt (Simon Ch. 3, 4.3, (10)-(11))`
+- `sed of runtime.py (_decompose, _solve_children, _existing_lean_name_problem), prompts.py (DECOMPOSITION_AUDIT, RLCR_LEAN_TASK), verifier/gmt-compare.py header; cat swarm-project.json (max_depth 6, max_children 12)`
+- `lake env lean -DautoImplicit=false on /tmp/vdl-split-check/Assembly.lean, /tmp/vdl-split-check/EndToEnd.lean and /tmp/vdl-split-check/{A,B,C,D,E,F,G}/Proof.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0c71c3da25/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/vdl-split-check/Assembly.lean`
+- `/tmp/vdl-split-check/EndToEnd.lean`
+- `/tmp/vdl-split-check/A/Proof.lean`
+- `/tmp/vdl-split-check/B/Proof.lean`
+- `/tmp/vdl-split-check/C/Proof.lean`
+- `/tmp/vdl-split-check/D/Proof.lean`
+- `/tmp/vdl-split-check/E/Proof.lean`
+- `/tmp/vdl-split-check/F/Proof.lean`
+- `/tmp/vdl-split-check/G/Proof.lean`
+
+Pins: the snapshot manifest (project b4d606db, Mathlib 25730c7c) matches the clean workspace HEAD. Library: Mathlib's integration-by-parts lemmas exist in the snapshot (IntegrationByParts.lean:179-226) but are NOT in the frozen import closure of GMT.Ch07.Submission (Lean reports Unknown identifier). divergence_integral_zero therefore uses integral_add_right_eq_self, tendsto_integral_filter_of_dominated_convergence (DominatedConvergence.lean:67) and LinearMap.trace_eq_sum_inner (InnerProductSpace/Trace.lean:25). All of the following are available: AM-GM (MeanInequalities.lean:129), integral_add_compl (Bochner/Set.lean:158), norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), HasCompactSupport.fderiv (FDeriv/Const.lean:389), hasDerivAt_iff_tendsto_slope_zero (Deriv/Slope.lean:82), contDiff_one_iff_deriv (ContDiff/Deriv.lean:98), Continuous.integral_hasStrictDerivAt (FundThmCalculus.lean:656) and Real.smoothTransition. No local or accepted DAG declaration states any of the following: the thin-annulus C1 cut-off with O(1/delta) gradient, the discrete integration lemma, the finite-difference inequality, int div phi = 0, or the complement Gauss-Green identity. The accepted dorag_th_radial_cutoff (commit bc0bc2b9) has a fixed r/2-to-r ratio, and doragm_sab_cutoff_profile has no gradient bound, so no identical-type reuse is possible. DAG: the 7 proposed codim1_rdo_dg_vdl_* names and the 5 scratch helper names occur in none of the 974 nodes. Lean: all 7 child types elaborate in the contract scope. Assembly.lean proves the parent's exact frozen type from the 7 children plus stubs of the 2 resolved sibling dependencies. EndToEnd.lean compiles real proofs of all 7 children (#print axioms: propext, Classical.choice, Quot.sound for each) together with the assembly (parent axioms: propext, sorryAx, Classical.choice, Quot.sound, where sorryAx comes only from the two sibling stubs). Runtime: depth 5 < max_depth 6, so the children are leaves. The child comparator elaborates the frozen type in the contract scope and checks it with exact Submission.<lean_name>.
