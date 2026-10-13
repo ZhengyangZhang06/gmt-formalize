@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_image_measurable_finite-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "The image of a C¹ antilipschitz chart is Borel and locally Hⁿ-finite",
+  "statement": "Let Φ : ℝⁿ → ℝ^Q be C¹, let Ω ⊆ ℝⁿ be open, and let c > 0 with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω. Then Φ(Ω) is a Borel subset of ℝ^Q, and Hⁿ(Φ(Ω) ∩ K) < ∞ for every compact K ⊆ ℝ^Q (Hⁿ = μHE[n] on ℝ^Q).",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → MeasurableSet (Φ '' Ω) ∧ ∀ K : Set (Eucl Q), IsCompact K → (μHE[n] : Measure (Eucl Q)) (Φ '' Ω ∩ K) < ∞",
+  "lean_name": "lpf_wtc_chart_image_measurable_locally_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-1f4173ea67-a1"
+}

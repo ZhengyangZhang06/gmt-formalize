@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.im_closure-a1.density_zero_off_set-a1.quotient_rescale-a1",
+  "parent_id": "root.integrality_weak_limits-a1.im_closure-a1.density_zero_off_set-a1",
+  "depth": 4,
+  "title": "Rescaling a vanishing normalized quotient: F(ρ)/ρᵏ → 0 implies r⁻ᵏ·F(Rr) → 0 for every R > 0",
+  "statement": "Let k ∈ ℕ and let F : ℝ → [0, ∞] be any function (no measurability or continuity is assumed) such that F(ρ) / ENNReal.ofReal(ρᵏ) → 0 in [0, ∞] as ρ → 0+ (along 𝓝[>] 0). Then for every real R > 0, ENNReal.ofReal((rᵏ)⁻¹) · F(R·r) → 0 in [0, ∞] as r → 0+.",
+  "lean_statement": "∀ (k : ℕ) (F : ℝ → ℝ≥0∞), Tendsto (fun ρ : ℝ => F ρ / ENNReal.ofReal (ρ ^ k)) (𝓝[>] 0) (𝓝 0) → ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * F (R * r)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "iwl_imc_quotient_rescale_tendsto_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-density-zero-off-set-a1-5ae7522cf5-a1"
+}
