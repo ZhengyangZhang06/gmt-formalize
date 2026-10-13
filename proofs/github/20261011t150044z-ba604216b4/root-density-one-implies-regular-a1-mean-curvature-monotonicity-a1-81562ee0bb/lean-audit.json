@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cdd7a909ef857fd6ab1def5b95436d120249c6aa2a5e709f63535c6d32add1dd",
+  "git_delta": {
+    "base_commit": "30e5f41e9e143f308a0a26da7367b756465f9778",
+    "candidate_commit": "63a7ad678b142cc99f4a56441cc5af6af06f3e97",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a1519cd69ac029621eb8a77cde0fb1e71ce01aa515a7a3bd05fcb8a53da8676b",
+    "source_sha256": "a811f6f158108d51547258b9d2fcebd6b3de7673278d84dee2cd76e16aa72a6d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_stationary_mean_curvature_monotonicity",
+      "statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (y₀ : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → y₀ ∈ N ∩ U → ∃ r₀ κ : ℝ, 0 < r₀ ∧ 0 ≤ κ ∧ closedBall y₀ (3 * r₀) ⊆ U ∧ ∀ (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → T.support ⊆ N → R.IsStationaryAlong N → (∃ H : Euclid (n + k) → Euclid (n + k), AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ κ) ∧ ∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r₀) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) ∧ ∀ z ∈ ball y₀ r₀, ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ ≤ r₀ → ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * R.measure (ball z σ) ≤ ENNReal.ofReal (Real.exp (κ * ρ) / ρ ^ n) * R.measure (ball z ρ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
