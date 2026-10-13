@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b2be067ea69f619fa70425be7dbdde5f939543eaaa7f28f334c5b43d7e96aa3a",
+  "git_delta": {
+    "base_commit": "b91e0c1538ec9d10d4275f36593251683d51732a",
+    "candidate_commit": "cc7e5b19a93e9f857a433ce9746013fcfc7ba856",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fcl_imrep_integral_data",
+    "diff_sha256": "63fa050f7b215d38726aa1e1c16e649fc0eb33b437ec54f66f7ef87a07225cb2",
+    "source_sha256": "fe2e5509c0f31fb5d7cbd13386232c5b8aeba7071c40f3c294b6feb6dee4c6b8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fcl_imrep_integral_data",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (Z : GeometricCurrentOn U n) (R : IMRep U n), R.Represents Z → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ((∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) → ∀ᵐ x ∂R.measure, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) ∧ ∀ ω : TestFormOn U n, Z ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
