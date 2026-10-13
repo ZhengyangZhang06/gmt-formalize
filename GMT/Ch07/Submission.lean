@@ -6,6 +6,8 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Mathlib.Analysis.FunctionalSpaces.SobolevInequality
+import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -526,6 +528,71 @@ theorem Submission.codim1_rdo_dg_sp_gauss_green_variation : ∀ (P : ℕ) (D F :
     norm_integral_le_of_norm_le hI3.integrableOn (Eventually.of_forall hb2)
   rw [hkey, show ∀ a b : ℝ, -a - b = -(a + b) from fun a b => by ring, abs_neg]
   exact (abs_add_le _ _).trans (add_le_add hA hB)
+
+/-- **The Sobolev inequality for `ζ 1_F`** (Simon Ch. 3, proof of Theorem 4.3 (De Giorgi),
+chapter-03.txt lines 689–712: `(∫ (ζ 1_F)^{(n+1)/n})^{n/(n+1)} ≤ c ∫ |D(ζ 1_F)| ≤
+c (∫ ζ dμ + ∫_F |Dζ|)`, with the mollification Lemma Ch. 2, 2.5).  For `m ≥ 1` the exponent
+`p = (m+1)/m` is the Hölder conjugate of `dim ℝ^{m+1} = m+1`, so Mathlib's Gagliardo–Nirenberg–
+Sobolev inequality gives the constant `c`.  Given the Gauss–Green identity, `u = 1_F ζ` has
+variation at most `M = ∫ ζ dμ + ∫_F |Dζ|`; the normalized bump functions of radius `1/(k+1)` are
+even, nonnegative, unit-mass `C¹` kernels whose mollifications converge to `u` a.e. (Lebesgue
+differentiation), and the Sobolev bound passes from the mollifications to `u`. -/
+theorem Submission.codim1_rdo_dg_sobolev_perimeter : ∀ (m : ℕ), 1 ≤ m → ∃ c : ℝ, 0 < c ∧ ∀ (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → (∫ z in F, ζ z ^ ((m + 1 : ℝ) / m)) ^ ((m : ℝ) / (m + 1)) ≤ c * (∫ z, ζ z ∂μ + ∫ z in F, ‖fderiv ℝ ζ z‖) := by
+  intro m hm
+  -- Step 0: `p = (m+1)/m` is the Hölder conjugate of `m + 1`; GNS gives the constant `c`
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hp : (0 : ℝ) < (m + 1 : ℝ) / m := by positivity
+  have hHC : Real.HolderConjugate (Module.finrank ℝ (Euclid (m + 1)) : ℝ) ((m + 1 : ℝ) / m) := by
+    rw [finrank_euclideanSpace_fin]
+    refine ⟨?_, by positivity, hp⟩
+    push_cast
+    field_simp
+    ring
+  obtain ⟨c, hc, hS⟩ := Submission.codim1_rdo_dg_sp_gns_real_of_lintegral (m + 1)
+    ((m + 1 : ℝ) / m) (lintegralPowLePowLIntegralFDerivConst volume ((m + 1 : ℝ) / m)) hp
+    fun w hw hwc => lintegral_pow_le_pow_lintegral_fderiv volume hw hwc hHC
+  refine ⟨c, hc, ?_⟩
+  intro D F μ ν hD hF hμD hμK hν hν1 hGG ζ hζ hζc hζD hζ0
+  -- Step 1: `u = 1_F ζ` is integrable with compact support; its variation bound `M` is
+  -- `gauss_green_variation` (used below)
+  have hu : Integrable (F.indicator ζ) :=
+    (hζ.continuous.integrable_of_hasCompactSupport hζc).indicator hF
+  have huc : HasCompactSupport (F.indicator ζ) :=
+    hζc.mono fun z hz h0 => hz (by simp [h0])
+  -- Step 2: even, nonnegative, unit-mass `C¹` kernels of radius `1/(k+1)`
+  let φ : ℕ → ContDiffBump (0 : Euclid (m + 1)) := fun k =>
+    { rIn := 1 / ((k : ℝ) + 1) / 2
+      rOut := 1 / ((k : ℝ) + 1)
+      rIn_pos := by positivity
+      rIn_lt_rOut := by
+        have : (0 : ℝ) < 1 / ((k : ℝ) + 1) := by positivity
+        linarith }
+  have hφ0 : Tendsto (fun k => (φ k).rOut) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have hφK : ∀ᶠ k in atTop, (φ k).rOut ≤ 2 * (φ k).rIn :=
+    Eventually.of_forall fun k => by
+      change 1 / ((k : ℝ) + 1) ≤ 2 * (1 / ((k : ℝ) + 1) / 2)
+      linarith
+  -- Lebesgue differentiation: the mollifications converge to `u` almost everywhere
+  have hae := ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (μ := volume)
+    hφ0 hφK hu.locallyIntegrable
+  -- Steps 3–4: GNS for the mollifications and passage to the limit
+  have key := Submission.codim1_rdo_dg_sp_sobolev_limit (m + 1) ((m + 1 : ℝ) / m) c hp hc.le hS
+    (F.indicator ζ) (∫ z, ζ z ∂μ + ∫ z in F, ‖fderiv ℝ ζ z‖) hu huc
+    (fun g hg hgc hg1 => Submission.codim1_rdo_dg_sp_gauss_green_variation (m + 1) D F μ ν hD hF
+      hμD hμK hν hν1 hGG ζ hζ hζc hζD hζ0 g hg hgc hg1)
+    (fun k => (φ k).normed volume) (fun k => (φ k).contDiff_normed)
+    (fun k => (φ k).hasCompactSupport_normed) (fun k => (φ k).nonneg_normed)
+    (fun k => (φ k).normed_neg) (fun k => (φ k).integral_normed) hae
+  -- Conclusion: `∫ |1_F ζ|^p = ∫_F ζ^p` and `p⁻¹ = m/(m+1)`
+  have hint : ∫ z, |F.indicator ζ z| ^ ((m + 1 : ℝ) / m) = ∫ z in F, ζ z ^ ((m + 1 : ℝ) / m) := by
+    rw [← integral_indicator hF]
+    congr 1
+    ext z
+    by_cases hz : z ∈ F
+    · simp [hz, abs_of_nonneg (hζ0 z)]
+    · simp [hz, Real.zero_rpow hp.ne']
+  rwa [hint, inv_div] at key
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
