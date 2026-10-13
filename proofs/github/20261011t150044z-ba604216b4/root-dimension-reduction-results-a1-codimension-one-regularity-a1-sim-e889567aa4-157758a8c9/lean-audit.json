@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c888961aedb2178ca4b5b2bfc9338b13d822dc1344e604ce4c43507db12c30d",
+  "git_delta": {
+    "base_commit": "fda5c19e0a3e6416dd19e8fca70fbd503c3435c0",
+    "candidate_commit": "b5214521a10514e0cca8f461ee5b8f74f354a0b4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fv_tangent_projection_continuousOn",
+    "diff_sha256": "bab16cdf580dd514bbad44891fde6b931fa4276a93530f1d95bea884e939c8c0",
+    "source_sha256": "4e3151fcb494e9ea8adda5333ffcaf5c7c29ff71df36d803ac52c7bec0b07367",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fv_tangent_projection_continuousOn",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → (∀ x ∈ M, Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = m) ∧ ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection) M ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → ContinuousOn (fun x => LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap)) M",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
