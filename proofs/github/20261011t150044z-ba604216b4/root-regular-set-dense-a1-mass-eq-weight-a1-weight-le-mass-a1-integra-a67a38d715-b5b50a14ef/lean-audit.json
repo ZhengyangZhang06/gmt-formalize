@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5874e0ca78c3b2a2343c6ea5ed2c343a3dd181155c174fa01059f073cb31e200",
+  "git_delta": {
+    "base_commit": "3193cd9eb7c6d3f466d04fa3e5e033b517260b4f",
+    "candidate_commit": "989e2891b0a5f456826244cca3751346faca9a99",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_wlm_sub_lt_integral",
+    "diff_sha256": "ed9b8c5468894abc357b1c12804ec702e58c00b749d0215f8ea79afa22c68eeb",
+    "source_sha256": "3f653800a0272a66d84fdda1b33e3bbe64d4780db3af6462201abaa5d9ec0f40",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_wlm_sub_lt_integral",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β ω : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → Continuous ω → (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → (∀ᵐ x ∂ν, (∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ ξ x (β x) = 1) → ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε → (ν univ).toReal - ε < ∫ x, ξ x (ω x) ∂ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
