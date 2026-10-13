@@ -204,19 +204,23 @@ No statement and no proof body was changed.
   `theorem Submission.X` at top level as equal to `theorem X` inside `namespace Submission`,
   since both declare `GMT.Ch05.Submission.X`.
 
-### Revision of this document (prose only)
+### Revisions of this document (prose only)
 
-The first version of this document was committed in `dc91aaf9`. The controller's prose audit
-`nodes/root/publication-prose-audit-v1.json` reviewed exactly that version: its `proof_blob`
-`e3d4f77233cd` is the blob of this file in `dc91aaf9`. It did not accept that version. Its two
-issues both concern the conical-approximation exposition in §4.9, and ask to:
+The first version of this document was committed in `dc91aaf9`. It has been revised twice.
+Neither revision changes `GMT/Ch05/Submission.lean` or any other comparator input; these are
+byte-identical to `26012c4a`.
+
+**First revision (`20f58c4d`).** The controller's prose audit
+`nodes/root/publication-prose-audit-v1.json` reviewed exactly the first version: its
+`proof_blob` `e3d4f77233cd` is the blob of this file in `dc91aaf9`. It did not accept that
+version. Its two issues both concern the conical-approximation exposition in §4.9, and ask to:
 
 1. state a support condition that makes the field `X(x) = x ∫_1^{1/τ} s^{n−1} g(sx) ds`
    admissible in `U`, and check it for the cutoffs used;
 2. keep the dimensional constant in the bound for `∫_{B_1 ∖ B_λ} |x|^{1−n} |H| dμ`, and define
    the three annular integrals.
 
-This revision rewrites §4.9 to follow the Lean proof step by step:
+The first revision rewrote §4.9 to follow the Lean proof step by step:
 
 * Step 2 states the hypothesis `tsupport g ⊆ B_β(0) ⊆ U` of `conical_P1` and explains why it is
   needed.
@@ -226,16 +230,45 @@ This revision rewrites §4.9 to follow the Lean proof step by step:
   `(ω_n + 3) δL`, `(Λ + 3)(1 + nL)` and `δ(1 + (n − 1)L) ≤ nδL`.
 * Step 9 absorbs these constants into the final `C`.
 
-The revision also makes these changes:
+It also made these changes:
 
 * §6 and §7 list the Mathlib declarations that §4.9 now names.
 * The header cites the public copy of the book.
 * §3 points to the evidence directory for the rejected run's log.
-* §8 describes this commit.
+* §8 describes the commit.
 
-The audit record and the root's historical outline and plan are unchanged.
-`GMT/Ch05/Submission.lean` and every other comparator input are byte-identical to `dc91aaf9`
-and `26012c4a`.
+**Second revision (this commit).** The audit `nodes/root/publication-prose-audit-v2.json`
+reviewed exactly the first revision: its `proof_blob` `ee8bae68875e` is the blob of this file
+in `20f58c4d`. It found that the previous objections were addressed. It did not accept that
+version, because of one remaining issue in step 12 of §4.9. That step claimed that all sets
+involved lie in `B_1`. This is false for `B_{(1+d)ρ}(ξ)`: at the allowed endpoint `ρ = θ`,
+`|ξ| + (1+d)ρ = 1 + dθ > 1`, and the finiteness of the mass of this ball is not established.
+The audit asks to keep `A = B_{(1+d)ρ}(ξ) ∩ B_1` through the limit and the conversion to
+`[0, ∞]`, and to enlarge `A` to the ball only by monotonicity in `[0, ∞]`.
+
+The Lean proof already argues exactly this way (`hconv2`, line 50697). Only its description was
+wrong. This revision corrects the description:
+
+* The notation and step 0(c) of §4.9 say when a mass is used as a real number, and that the
+  hypotheses give no bound for the mass of a set not contained in `U`.
+* Step 6 introduces `A` and the two real inequalities (R1) and (R2) between masses of subsets
+  of `B_1`, and proves them in the trivial case.
+* Step 11 shows `g_k ≤ 1_A` and the domination by `1_{B_1}`, and ends with (R2) for `μ(A)`, not
+  for the mass of the ball. Step 10 ends with (R1).
+* Step 12 converts (R1) and (R2) to `[0, ∞]`, and enlarges `μ(A)` to `μ(B_{(1+d)ρ}(ξ))` only
+  there, by monotonicity. It also explains why the ball's mass is never used as a real number.
+* The claim of §4.9 now says that the inequalities hold in `[0, ∞]`. Its introduction gives
+  the Lean locations of `hμsub`, `hconv`, `hconv2`, `hfirst` and `hsecond`.
+* Step 8 no longer lists `κ ≥ 0` among the hypotheses of `conical_P4`. The Lean proof derives
+  it from `|φ′| ≤ κ/ρ`.
+* The notation describes `K_S` as the Lean proof obtains it: some bound `K_S ≥ 0` for `|S′|`,
+  not necessarily `sup |S′|`.
+* §6 and §7 add the Mathlib declarations that steps 0, 6, 11 and 12 now name (the
+  `ENNReal.ofReal`/`toReal` conversion lemmas, `measure_mono` and `measure_diff_null`), with
+  their locations in the pinned snapshot.
+* §8 lists the comparator runs on the revisions.
+
+The audit records and the root's historical outline and plan are unchanged.
 
 ## 4. Proof of each conjunct (the accepted children)
 
@@ -393,10 +426,14 @@ It calls `Submission.allard_regularity_theorem` directly.
 
 ### 4.9 Theorem 6.1 — `conical_approximation_theorem` (issue #123, PR #3057, checkpoint `0f113e83c542`)
 
-This section was rewritten in this revision (§3). It follows the Lean proof: the local lemmas
-`conical_P1` (step 2 below, line 48199), `conical_P3` (step 3, line 48466), `conical_P2`
-(step 4, line 48686), `conical_P4` (step 8, line 49255), the tangent-plane lemma `lemmaT`
-(step 1, line 49747) and the final assembly (steps 0 and 5–12, from line 50462).
+This section was rewritten in the first revision of this document and corrected in the second
+(§3). It follows the Lean proof: the local lemmas `conical_P1` (step 2 below, line 48199),
+`conical_P3` (step 3, line 48466), `conical_P2` (step 4, line 48686), `conical_P4` (step 8,
+line 49255), the tangent-plane lemma `lemmaT` (step 1, line 49747) and the final assembly
+(steps 0 and 5–12, from line 50462). In the assembly, `hμsub` (line 50591) is the finiteness
+statement of 0(c), and `hconv` and `hconv2` (lines 50690 and 50697) are the two conversions of
+step 12. The trivial case starts at line 50723 (`by_cases htriv`), (R1) for `dL ≤ 1` is
+`hfirst` (line 50984), and (R2) for `dL ≤ 1` is `hsecond` (line 51287).
 
 **Claim.** Fix `n ≥ 1`, `ℓ` and `Λ > 0`. Let `λ, θ, δ ∈ (0, 1/4)` and `|ξ| = 1 − θ`. Let
 `U ⊇ B_1(0)` be open. Let `V` have generalized mean curvature `H` in `U`, and write
@@ -404,7 +441,7 @@ This section was rewritten in this revision (§3). It follows the Lean proof: th
 
 * (H) `|μ(B_1)/ω_n − μ(B_λ)/(ω_n λⁿ)| + r^{1−n} ∫_{B_r} |H| dμ ≤ δ` for every `r ∈ [λ, 1]`.
 
-Then for all `ρ ∈ (0, θ]` and `τ ∈ [2λ, 1]`:
+Then for all `ρ ∈ (0, θ]` and `τ ∈ [2λ, 1]`, in `[0, ∞]`:
 
 * `μ(B_{(1−d)ρ}(ξ)) ≤ τ^{-n} μ(B_{τρ}(τξ)) + C d L`;
 * `τ^{-n} μ(B_{τρ}(τξ)) ≤ μ(B_{(1+d)ρ}(ξ)) + C d L`.
@@ -414,6 +451,9 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
 
 **Notation.**
 
+* `μ` takes values in `[0, ∞]`. In steps 0–11, every mass used as a real number is `μ(S)` for a
+  set `S ⊆ B_1`. Such a mass is finite by 0(c), and `μ(S)` then denotes the real number
+  `(V.weight S).toReal`. Step 12 converts the resulting real inequalities to `[0, ∞]`.
 * `p_x = p_{T_x M}` (`V.tangentProj x`) and `x^⊥ = x − p_x x`.
 * For every `x`, `p_x` is either `0` or an orthogonal projection, by the definition of
   `tangentProj`. Hence, for all `x`:
@@ -421,15 +461,23 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
   * (ii) `⟨x, x^⊥⟩ = |x^⊥|²`.
 * `S` is Mathlib's smooth step `Real.smoothTransition`. It is `C^∞` and nondecreasing, takes
   values in `[0, 1]`, and has `S = 0` on `(−∞, 0]` and `S = 1` on `[1, ∞)`.
-* `K_S = sup |S′|`. This is finite, because `S′` is continuous and vanishes outside `[0, 1]`.
+* `K_S ≥ 0` is a bound for `S′`: `|S′(t)| ≤ K_S` for all `t`. It exists because `S′` is
+  continuous and vanishes outside `[0, 1]`. The Lean proof takes `K_S = max(K, 0)`, where `K`
+  bounds `|S′|` on `[0, 1]`; any such bound works below.
 
 0. **Consequences of the hypotheses.**
    * (a) The first summand in (H) is nonnegative. So `∫_{B_t} |H| dμ ≤ δ t^{n−1}` for every
      `t ∈ [λ, 1]`.
    * (b) Take `r = 1` in (H) and multiply by `ω_n`: `|μ(B_1) − λ^{-n} μ(B_λ)| ≤ ω_n δ`.
    * (c) `μ(B_r) < ∞` for `r ≤ 1`, because the multiplicity `θ_V` of `V = v(M, θ_V)` is
-     integrable on compact subsets of `U` (`V.integrableOn_mult`). Also, `H` is `μ`-integrable
-     on every compact subset of `U`; this is part of `HasGeneralizedMeanCurvature`.
+     integrable on compact subsets of `U` (`V.integrableOn_mult`). Hence `μ(S) ≤ μ(B_1) < ∞`
+     for every `S ⊆ B_1` (`hμsub`). The hypothesis `μ(B_1) ≤ ofReal Λ` gives the real bound
+     `μ(B_1) ≤ Λ`, since `Λ > 0` (`ENNReal.toReal_le_of_le_ofReal`, `hΛ1`). For real masses
+     of subsets of `B_1`, `S ⊆ S′` implies `μ(S) ≤ μ(S′)` (`ENNReal.toReal_mono`). The
+     hypotheses bound `μ` only on compact subsets of `U`. They give no bound for the mass of a
+     set that is not contained in `U`, such as a ball reaching outside `U`. Also, `H` is
+     `μ`-integrable on every compact subset of `U`; this is part of
+     `HasGeneralizedMeanCurvature`.
    * (d) `L = log(1/λ) > log 4 > 1`.
    * (e) Geometry:
      * `|ξ| + ρ ≤ (1 − θ) + θ = 1`, so `B_ρ(ξ) ⊆ B_1`;
@@ -541,10 +589,19 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
      `I_⊥(σ) ≥ 0`, `log σ^{-1} ≤ L` and `L > 1`.
    * (b) `I_⊥(λ) ≤ |μ(B_1) − λ^{-n} μ(B_λ)| + δ (2 + L) ≤ ω_n δ + 2δ + δL ≤ (ω_n + 3) δ L`.
      This uses 0(b) and `L > 1`.
-6. **Trivial case `dL > 1`.** The constant `C` of step 9 satisfies `C ≥ Λ + 3`.
-   * *First inequality.* `μ(B_{(1−d)ρ}(ξ)) ≤ μ(B_1) ≤ Λ ≤ C ≤ C d L`.
-   * *Second inequality.* Use 5(a) with `σ = τ`, then `δ ≤ d` and `dL ≥ 1`:
+6. **Trivial case `dL > 1`.** The constant `C` of step 9 satisfies `C ≥ Λ + 3`. Put
+   `A = B_{(1+d)ρ}(ξ) ∩ B_1`; step 11 uses the same set. In both cases (`dL > 1` here,
+   `dL ≤ 1` in steps 7–11), the proof establishes two real inequalities between masses of
+   subsets of `B_1`:
+   * (R1) `μ(B_{(1−d)ρ}(ξ)) ≤ τ^{-n} μ(B_{τρ}(τξ)) + C d L`;
+   * (R2) `τ^{-n} μ(B_{τρ}(τξ)) ≤ μ(A) + C d L`.
+
+   Step 12 turns them into the two frozen inequalities. In the present case:
+   * *(R1).* `μ(B_{(1−d)ρ}(ξ)) ≤ μ(B_1) ≤ Λ ≤ C ≤ C d L`, using 0(c), 0(e) and `dL > 1`.
+     Adding the nonnegative term `τ^{-n} μ(B_{τρ}(τξ))` gives (R1).
+   * *(R2).* Use 5(a) with `σ = τ`, then `δ ≤ d` and `dL ≥ 1`:
      `τ^{-n} μ(B_{τρ}(τξ)) ≤ τ^{-n} μ(B_τ) ≤ Λ + 3δL ≤ Λ + 3dL ≤ (Λ + 3) dL ≤ C d L`.
+     Since `μ(A) ≥ 0`, this gives (R2).
 
    The remaining steps treat the case `dL ≤ 1`.
 7. **The three annular integrals.** Since `dL ≤ 1`, also `δL ≤ dL ≤ 1`. So 5(a) gives
@@ -567,10 +624,11 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
 8. **(P4) Comparison for conical test functions.**
 
    *Hypotheses.*
-   * `0 < λ ≤ τa`, `b ≤ 1`, `τ ∈ (0, 1]`, `ρ > 0`, `ε > 0` and `κ ≥ 0`;
+   * `0 < λ ≤ τa`, `b ≤ 1`, `τ ∈ (0, 1]`, `ρ > 0` and `ε > 0`;
    * `χ, φ : ℝ → [0, 1]` are `C¹`;
    * `∫_α^β |χ′| ≤ 2` for all `α ≤ β`;
-   * `|φ′| ≤ κ/ρ`, and `φ(t) = 0` for `t ≥ 2ρ`;
+   * `|φ′| ≤ κ/ρ`, and `φ(t) = 0` for `t ≥ 2ρ`. This forces `κ ≥ 0`, since
+     `0 ≤ |φ′(0)| ≤ κ/ρ` and `ρ > 0`; the Lean proof derives `κ ≥ 0` this way;
    * `g(y) = χ(|y|) φ(|y − ξ|)` is `C¹`, and `g(y) ≠ 0` implies `a < |y| < b`.
 
    *Conclusion.*
@@ -623,8 +681,11 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
     * `y ↦ φ_ρ(|y − ξ|)` is `C¹`, being `≡ 1` near `ξ`;
     * if `g(y) ≠ 0`, then `|y − ξ| < ρ`, so `1/2 < |ξ| − ρ < |y| < b`.
 
-    Since `φ_ρ(|x/τ − ξ|) ≤ 1_{B_{τρ}(τξ)}(x)`,
+    Since `0 ≤ φ_ρ ≤ 1`, `φ_ρ = 1` on `(−∞, (1−d)ρ]` and `φ_ρ = 0` on `[ρ, ∞)`, we have
+    `1_{B_{(1−d)ρ}(ξ)}(x) ≤ φ_ρ(|x − ξ|)` and `φ_ρ(|x/τ − ξ|) ≤ 1_{B_{τρ}(τξ)}(x)`. With step 8
+    and `E ≤ C′ d L ≤ C d L` (step 9),
     `μ(B_{(1−d)ρ}(ξ)) ≤ ∫ φ_ρ(|x − ξ|) dμ ≤ τ^{-n} ∫ φ_ρ(|x/τ − ξ|) dμ + E ≤ τ^{-n} μ(B_{τρ}(τξ)) + C d L`.
+    This is (R1). Both balls lie in `B_1`, by 0(e).
 11. **Second inequality.** For `k ≥ 1`, apply step 8 with `a = 1/2`, `b = |ξ| + ρ`,
     `φ = φ_{(1+d)ρ}` and `χ_k(u) = S(k(u − 1/2)) · S(k(b − u))`. The hypotheses hold:
     * `χ_k = f₁ f₂`, where `f₁` is nondecreasing, `f₂` is nonincreasing, and both take values
@@ -636,10 +697,15 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
       `B̆_{1/2}(0)`, hence near `0`. Away from `0`, `χ_k(|y|)` is a composition of `C¹` maps,
       and `φ_{(1+d)ρ}(|y − ξ|)` is `C¹` because it is `≡ 1` near `ξ`.
 
-    Step 8 gives
-    `τ^{-n} ∫ g_k(x/τ) dμ ≤ ∫ g_k dμ + E ≤ μ(B_{(1+d)ρ}(ξ) ∩ B_1) + C′ d L`.
-    Let `k → ∞`, with dominating function `1_{B_1}`. Then
-    `g_k(x/τ) → G(x) = 1{1/2 < |x/τ| < b} φ_{(1+d)ρ}(|x/τ − ξ|)`.
+    Step 8 gives `τ^{-n} ∫ g_k(x/τ) dμ ≤ ∫ g_k dμ + E`. If `g_k(y) ≠ 0`, then `|y| < b ≤ 1`
+    and `|y − ξ| < (1+d)ρ`, so `y ∈ A = B_{(1+d)ρ}(ξ) ∩ B_1`, the set of step 6. As
+    `0 ≤ g_k ≤ 1`, this gives `g_k ≤ 1_A`. With `E ≤ C′ d L ≤ C d L` (step 9), for every `k`,
+    `τ^{-n} ∫ g_k(x/τ) dμ ≤ μ(A) + C d L`.
+
+    Let `k → ∞`. For every `x`, `g_k(x/τ) → G(x) = 1{1/2 < |x/τ| < b} φ_{(1+d)ρ}(|x/τ − ξ|)`.
+    The functions `x ↦ g_k(x/τ)` are dominated by `1_{B_1}`, which is `μ`-integrable by 0(c):
+    they take values in `[0, 1]`, and `g_k(x/τ) ≠ 0` forces `|x| < τb ≤ 1`. By dominated
+    convergence, `τ^{-n} ∫ G dμ ≤ μ(A) + C d L`.
 
     Next, `G = 1` on `B_{τρ}(τξ) ∖ {p}`, where `p = τ(1 + ρ/|ξ|)ξ`. Indeed, let `y = x/τ` with
     `|y − ξ| ≤ ρ`. Then:
@@ -648,11 +714,28 @@ Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and 
       length `ρ`, i.e. `y = (1 + ρ/|ξ|)ξ`;
     * `φ_{(1+d)ρ}(|y − ξ|) = 1`.
 
-    Also `μ({p}) = 0`, since `μ ≪ Hⁿ` and `Hⁿ{p} = 0` for `n ≥ 1`. Hence
-    `μ(B_{τρ}(τξ)) ≤ ∫ G dμ`, and
-    `τ^{-n} μ(B_{τρ}(τξ)) ≤ μ(B_{(1+d)ρ}(ξ)) + C d L`.
-12. **Extended reals.** All sets involved lie in `B_1`, and `μ(B_1) < ∞`. So the real
-    inequalities give the frozen inequalities in `[0, ∞]`.
+    Also `μ({p}) = 0`, since `μ ≪ Hⁿ` and `Hⁿ{p} = 0` for `n ≥ 1`. As `G ≥ 0`, this gives
+    `μ(B_{τρ}(τξ)) = μ(B_{τρ}(τξ) ∖ {p}) ≤ ∫ G dμ`. Therefore
+    `τ^{-n} μ(B_{τρ}(τξ)) ≤ τ^{-n} ∫ G dμ ≤ μ(A) + C d L`.
+    This is (R2). Here `B_{τρ}(τξ) ⊆ B_1` by 0(e), and `A ⊆ B_1`.
+12. **Extended reals.** The real inequalities (R1) and (R2) involve only the masses of
+    `B_{(1−d)ρ}(ξ)`, `B_{τρ}(τξ)` and `A`. All three sets lie in `B_1`, so their masses are
+    finite by 0(c), and each mass equals `ofReal` of its real value (`ENNReal.ofReal_toReal`).
+    The map `ofReal : ℝ → [0, ∞]` is monotone and preserves sums and products of nonnegative
+    reals. Since `τ^{-n} ≥ 0` and `C d L ≥ 0`:
+    * (R1) gives `μ(B_{(1−d)ρ}(ξ)) ≤ ofReal(τ^{-n}) μ(B_{τρ}(τξ)) + ofReal(C d L)`. This is the
+      first frozen inequality (`hconv` in the Lean proof).
+    * (R2) gives `ofReal(τ^{-n}) μ(B_{τρ}(τξ)) ≤ μ(A) + ofReal(C d L)`. Since
+      `A ⊆ B_{(1+d)ρ}(ξ)`, monotonicity of `μ` in `[0, ∞]` gives `μ(A) ≤ μ(B_{(1+d)ρ}(ξ))`.
+      Together these give the second frozen inequality (`hconv2`).
+
+    The proof never uses `μ(B_{(1+d)ρ}(ξ))` as a real number and never claims that it is
+    finite. The ball `B_{(1+d)ρ}(ξ)` need not lie in `B_1`: at the allowed endpoint `ρ = θ`,
+    `|ξ| + (1+d)ρ = 1 + dθ > 1`. It need not lie in `U` either, and then 0(c) gives no bound
+    for its mass. In Lean, `(V.weight S).toReal = 0` when `V.weight S = ∞`. So the real
+    inequality with `μ(B_{(1+d)ρ}(ξ))` in place of `μ(A)` could fail if this mass were
+    infinite, which is why the proof keeps `A`. The monotonicity step
+    `μ(A) ≤ μ(B_{(1+d)ρ}(ξ))` holds in `[0, ∞]` in every case.
 
 **Relation to the book.** The book's proof (ll. 1182–1300) combines (1)–(3) with first
 variation for homogeneous degree-zero test functions, the co-area formula 2.9 of Ch. 3
@@ -806,7 +889,14 @@ of them is presented as new work.
     * `intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'` and
       `intervalIntegral.tendsto_integral_filter_of_dominated_convergence`;
     * `MeasureTheory.integral_integral_swap` (Fubini in step 3);
-    * `MeasureTheory.Measure.nullSingletonClass_hausdorff` (`Hⁿ{p} = 0` in step 11).
+    * `MeasureTheory.Measure.nullSingletonClass_hausdorff` (`Hⁿ{p} = 0` in step 11);
+    * `MeasureTheory.measure_diff_null`, a deprecated alias of
+      `MeasureTheory.measure_sdiff_null` (`μ(B_{τρ}(τξ) ∖ {p}) = μ(B_{τρ}(τξ))` in step 11);
+    * for the conversions between real and extended-real masses (steps 0, 6 and 12):
+      `ENNReal.ofReal_toReal`, `ENNReal.ofReal_mul`, `ENNReal.ofReal_add`,
+      `ENNReal.ofReal_le_ofReal`, `ENNReal.toReal_nonneg`, `ENNReal.toReal_mono` and
+      `ENNReal.toReal_le_of_le_ofReal`, and monotonicity of measures,
+      `MeasureTheory.measure_mono`.
 * **Proved in this run, not reused.** Several results are not in Mathlib or `simongmt`; they are
   proved by accepted nodes of this run:
   * the Poincaré inequality on balls (`w12_ball_poincare_inequality`);
@@ -882,6 +972,18 @@ of them is presented as new work.
       `intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'` (l. 619);
     * `MeasureTheory/Integral/Prod.lean`: `integral_integral_swap` (l. 478);
     * `MeasureTheory/Measure/Hausdorff.lean`: `nullSingletonClass_hausdorff` (l. 615).
+  * Locations of the Mathlib items added for the second revision of §4.9 (step 12 and its
+    inputs). In this Mathlib revision, `Mathlib/Data/ENNReal/*.lean` are deprecated modules
+    that only re-export `Mathlib/Basic/ENNReal/*.lean`. For example, `Data/ENNReal/Real.lean`
+    consists of `public import Mathlib.Basic.ENNReal.Real` and `deprecated_module`. So
+    `rg "(theorem|lemma) ofReal_toReal " mathlib/Mathlib/Data/ENNReal` finds **no match**, and
+    the declarations are in:
+    * `Basic/ENNReal/Basic.lean`: `ofReal_toReal` (l. 248) and `toReal_nonneg` (l. 276);
+    * `Basic/ENNReal/Real.lean`: `ofReal_add` (l. 52), `toReal_mono` (l. 67),
+      `ofReal_le_ofReal` (l. 137), `toReal_le_of_le_ofReal` (l. 283) and `ofReal_mul`
+      (l. 297);
+    * `MeasureTheory/OuterMeasure/Basic.lean`: `measure_mono` (l. 51), `measure_sdiff_null`
+      (l. 99) and its deprecated alias `measure_diff_null` (l. 105).
   * `rg -n "conical_approximation_theorem|conical_P1|conical_P2|conical_P3|conical_P4" project`:
     **no match**. `rg -n "ConicalApproximationTheorem" project` finds only the frozen definition
     (`Contract.lean` and `Submission.lean`, l. 391), the `main_theorem` stubs (l. 461) and the
@@ -917,18 +1019,27 @@ All results below are for the final Lean file `GMT/Ch05/Submission.lean` (67617 
 * **Evidence.** `cluster-state/verification/results/hoa63/20261013T143228Z-ch05-root-jq_k7qwl`,
   verdict key `bdb024590ba7fbf13282b2ca2a07bf69ad51a5c54d69eacf7a550703383470de`. The log
   contains no error, no redeclaration and no `dupNamespace` diagnostic.
-* **Later commits.** Two later commits change only this document, so no comparator input
+* **Later commits.** Three later commits change only this document, so no comparator input
   changes:
   * `dc91aaf9` added it;
-  * the prose-only revision described in §3 revised it.
+  * `20f58c4d` is its first revision (§3);
+  * this commit is its second revision (§3).
 
-  Their Lean and Lake inputs are byte-identical to `26012c4a`, and the comparator's verdict key
-  depends only on those inputs and the pinned verifier, so they have the same verdict key. The
-  controller's run of the same comparator on `dc91aaf9` confirms this:
-  `cluster-state/verification/results/hoa63/20261013T164526Z-ch05-root-tqevxcdb` has status
-  `passed` with the same verdict key, reusing the evidence above ("identical inputs already
-  passed every check"). Its log is the run's `nodes/root/comparator-v1.log`, and
-  `nodes/root/isolated-comparator-result.json` records `passed: true` for candidate `dc91aaf9`.
+  Their Lean and Lake inputs are byte-identical to `26012c4a`. The comparator's verdict key
+  depends only on those inputs and the pinned verifier, so all of these commits have the same
+  verdict key. The controller's runs of the same comparator on the first two confirm this. Each
+  printed "identical inputs already passed every check" and "Your solution is okay!", and its
+  `result.json` has status `passed`, the verdict key above, and `cached_from` pointing to the
+  evidence directory above:
+  * on `dc91aaf9`: `cluster-state/verification/results/hoa63/20261013T164526Z-ch05-root-tqevxcdb`
+    (log `nodes/root/comparator-v1.log`);
+  * on `20f58c4d`: `cluster-state/verification/results/hoa63/20261013T171557Z-ch05-root-y12amzmv`
+    (log `nodes/root/comparator-v2.log`). `nodes/root/isolated-comparator-result.json` records
+    `passed: true` for candidate `20f58c4d`.
+
+  The receipts do not name the commit. The commit of each run is the branch head at that time.
+  The first run started at 16:16:30 UTC and finished at 16:45:26, between `dc91aaf9`
+  (16:12:28) and `20f58c4d` (17:14:52). The second started at 17:15:56, after `20f58c4d`.
 
 ### Child interfaces and axioms (scratch compile)
 
