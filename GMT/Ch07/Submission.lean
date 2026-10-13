@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 1, Remark 3.11(3)** (via the Besicovitch Covering Lemma 3.12), with the balls
+chosen inside an open set as in the proof of Theorem 3.13: let `μ` be finite on compact subsets of
+`ℝᴾ`, `W` open and `E ⊆ W` (not necessarily measurable).  If every `x ∈ E` admits arbitrarily small
+radii `ρ > 0` with `Q x ρ`, then countably many pairwise disjoint closed balls
+`B̄_{r(x)}(x) ⊆ W`, `x ∈ t ⊆ E`, with `Q x (r x)`, cover `μ`-almost all of `E`.  Apply the
+measurable Besicovitch covering theorem to the admissible radii `{ρ | B̄_ρ(x) ⊆ W ∧ Q x ρ}`. -/
+theorem Submission.cbrldvc_exists_disjoint_closedBall_cover : ∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → ℝ → Prop) (E W : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → IsOpen W → E ⊆ W → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ Q x ρ) → ∃ (t : Set (Euclid P)) (r : Euclid P → ℝ), t.Countable ∧ t ⊆ E ∧ (∀ x ∈ t, 0 < r x ∧ closedBall x (r x) ⊆ W ∧ Q x (r x)) ∧ t.PairwiseDisjoint (fun x => closedBall x (r x)) ∧ μ (E \ ⋃ x ∈ t, closedBall x (r x)) = 0 := by
+  intro P μ Q E W hK hW hEW hQ
+  -- finite on compacts, hence s-finite on the proper space `ℝᴾ`
+  have : IsFiniteMeasureOnCompacts μ := ⟨hK⟩
+  -- admissible radii: shrink below the radius `R` of an open ball `B_R(x) ⊆ W`
+  have hf : ∀ x ∈ E, ∀ δ > 0, ({ρ | closedBall x ρ ⊆ W ∧ Q x ρ} ∩ Ioo 0 δ).Nonempty := by
+    intro x hx δ hδ
+    obtain ⟨R, hR, hRW⟩ := Metric.isOpen_iff.1 hW x (hEW hx)
+    obtain ⟨ρ, hρ, hρδ, hQρ⟩ := hQ x hx (min δ R) (lt_min hδ hR)
+    exact ⟨ρ, ⟨(closedBall_subset_ball (hρδ.trans_le (min_le_right _ _))).trans hRW, hQρ⟩, hρ,
+      hρδ.trans_le (min_le_left _ _)⟩
+  obtain ⟨t, r, ht, htE, hr, hμ, hdisj⟩ := Besicovitch.exists_disjoint_closedBall_covering_ae μ
+    (fun x => {ρ | closedBall x ρ ⊆ W ∧ Q x ρ}) E hf (fun _ => 1) fun _ _ => zero_lt_one
+  exact ⟨t, r, ht, htE, fun x hx => ⟨(hr x hx).2.1, (hr x hx).1.1, (hr x hx).1.2⟩, hdisj, hμ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
