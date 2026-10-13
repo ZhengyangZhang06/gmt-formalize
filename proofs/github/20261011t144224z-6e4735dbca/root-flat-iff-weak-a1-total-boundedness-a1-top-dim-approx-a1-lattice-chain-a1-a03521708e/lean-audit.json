@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c0701561fac48043808f09cce6d12e23761a9170f678d979e87cede80110b67",
+  "git_delta": {
+    "base_commit": "2c2e33b03d7fbf44fd048442d262f025d36763d3",
+    "candidate_commit": "81167a2ae0e1a106d3684a0c4b99b814d3501eb6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_lattice_chain",
+    "diff_sha256": "11f0e4c094c689b6d5647fe052fe4ddcb363ee721245500798fe4ad888474925",
+    "source_sha256": "974aefdfee3222d21c8a74bd18b478596e42c097c9be0f0a7d615321b1f7d29e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_lattice_chain",
+      "statement": "∀ (m : ℕ) (ρ : ℝ), 0 < ρ → ∀ β : LatticeFaceIndex (m + 1) (m + 1) → ℝ, (∀ F, ∃ k : ℤ, β F = k) → (∑' F, ENNReal.ofReal (|β F| * ρ ^ (m + 1))) < ∞ → ∃ (Pc : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (v : Eucl (m + 1) → ℝ), IsLatticeChain ρ β Pc ∧ IsIntegerMultiplicity Pc ∧ Integrable v ∧ (∀ F, ∀ᵐ x ∂((volume : Measure (Eucl (m + 1))).restrict (latticeFace ρ F)), v x = β F) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), Pc ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
