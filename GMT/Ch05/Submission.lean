@@ -770,6 +770,269 @@ theorem exists_smooth_cutoff_half_ball_grad_le : ∀ (m : ℕ) (ξ : Rn m) (ρ :
   · -- The profile is `3`-Lipschitz, so `|Dζ(x)| ≤ 3/ρ`.
     have h := Submission.norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφ_lip x
     rwa [NNReal.coe_ofNat] at h
+/-- **The Gram matrix of a linear map** (Simon Ch. 5, proof of Theorem 4.5, p. 119: the graph
+Jacobian `J_F = √det(δ_ij + D_i f · D_j f)`).  For `D : ℝⁿ →L[ℝ] ℝ^ℓ` let `G_ab = ⟨D e_a, D e_b⟩`.
+Then (i) `G` is symmetric, since the real inner product is; (ii) `G` is positive semidefinite:
+`x · Gx = Σ_{a,b} x_a x_b ⟨D e_a, D e_b⟩ = |Σ_a x_a D e_a|² ≥ 0` by bilinearity; and
+(iii) `trace G = Σ_a |D e_a|² = |D|²` (`hsNormSq`). -/
+theorem gwe_gjb_gram_symm_psd_trace : ∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), Matrix.IsSymm (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) ∧ (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) x)) ∧ Matrix.trace (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) = hsNormSq D := by
+  intro n ℓ D
+  refine ⟨?_, fun x => ?_, ?_⟩
+  · -- (i) `G_ba = ⟨D e_b, D e_a⟩ = ⟨D e_a, D e_b⟩ = G_ab`.
+    refine Matrix.IsSymm.ext fun a b => ?_
+    simp only [Matrix.of_apply]
+    exact real_inner_comm _ _
+  · -- (ii) `x · Gx = ⟨w, w⟩` for `w = Σ_a x_a • D e_a`, by bilinearity.
+    have h : dotProduct x (Matrix.mulVec (Matrix.of fun a b : Fin n =>
+        inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) x) =
+        inner ℝ (∑ a, x a • D (EuclideanSpace.single a (1 : ℝ)))
+          (∑ b, x b • D (EuclideanSpace.single b (1 : ℝ))) := by
+      simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, sum_inner, inner_sum,
+        real_inner_smul_left, real_inner_smul_right, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+      rw [real_inner_comm (D (EuclideanSpace.single a (1 : ℝ)))]
+      ring
+    rw [h]
+    exact real_inner_self_nonneg
+  · -- (iii) `trace G = Σ_a ⟨D e_a, D e_a⟩ = Σ_a ‖D e_a‖² = hsNormSq D`.
+    simp only [Matrix.trace, Matrix.diag, Matrix.of_apply, hsNormSq, real_inner_self_eq_norm_sq]
+/-- **Determinant bounds for `I + G`** (graph Jacobian bounds in the tilt-excess decay argument):
+if `G` is a symmetric real `n × n` matrix with `0 ≤ x ⬝ᵥ G x` for all `x`, then
+`1 ≤ det (I + G) ≤ exp (trace G)`.  By Gaussian elimination: `A = I + G` satisfies
+`x ⬝ᵥ x ≤ x ⬝ᵥ A x`, so its pivot `a = A₀₀` is at least `1`, and clearing the first column gives
+`det A = a * det S` for the Schur complement `S = C - a⁻¹ b bᵀ`.  `S` is again symmetric with
+`x ⬝ᵥ x ≤ x ⬝ᵥ S x` (test `A` on `(-(b ⬝ᵥ x) / a, x)`) and `trace S ≤ trace A - a`, so induction
+gives `1 ≤ det A ≤ exp (trace A - n)` using `a ≤ exp (a - 1)`; finally `trace (I + G) = n + trace G`.
+-/
+theorem gwe_gjb_det_one_add_bounds : ∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) ℝ), Matrix.IsSymm G → (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec G x)) → 1 ≤ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ∧ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ≤ Real.exp (Matrix.trace G) := by
+  -- Induction on the size: a symmetric `A` with `x ⬝ᵥ x ≤ x ⬝ᵥ A x` for all `x` satisfies
+  -- `1 ≤ det A ≤ exp (trace A - m)`.
+  have key : ∀ (m : ℕ) (A : Matrix (Fin m) (Fin m) ℝ), (∀ i j, A j i = A i j) →
+      (∀ x : Fin m → ℝ, dotProduct x x ≤ dotProduct x (Matrix.mulVec A x)) →
+      1 ≤ A.det ∧ A.det ≤ Real.exp (A.trace - m) := by
+    intro m
+    induction m with
+    | zero =>
+      intro A _ _
+      simp [Matrix.det_fin_zero, Matrix.trace]
+    | succ m ih =>
+      intro A hA hq
+      -- The pivot `a = A₀₀ = e₀ ⬝ᵥ A e₀` is at least `e₀ ⬝ᵥ e₀ = 1`.
+      have ha : 1 ≤ A 0 0 := by
+        have h := hq (Pi.single 0 1)
+        simpa using h
+      have ha0 : A 0 0 ≠ 0 := (by linarith : (0 : ℝ) < A 0 0).ne'
+      -- The Schur complement `S = C - a⁻¹ b bᵀ` of the pivot.
+      obtain ⟨S, hS⟩ : ∃ S : Matrix (Fin m) (Fin m) ℝ,
+          S = Matrix.of fun i j => A i.succ j.succ - A i.succ 0 / A 0 0 * A 0 j.succ := ⟨_, rfl⟩
+      have hSs : ∀ i j, S j i = S i j := by
+        intro i j
+        rw [hS, Matrix.of_apply, Matrix.of_apply, hA i.succ j.succ, hA 0 i.succ, hA 0 j.succ]
+        ring
+      -- `x ⬝ᵥ S x = y ⬝ᵥ A y` for `y = (-(b ⬝ᵥ x) / a, x)`, and `y ⬝ᵥ y ≥ x ⬝ᵥ x`.
+      have hSq : ∀ x : Fin m → ℝ, dotProduct x x ≤ dotProduct x (Matrix.mulVec S x) := by
+        intro x
+        obtain ⟨b, hb⟩ : ∃ b : ℝ, b = ∑ j : Fin m, A 0 j.succ * x j := ⟨_, rfl⟩
+        obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = ∑ i : Fin m, x i * ∑ j : Fin m, A i.succ j.succ * x j :=
+          ⟨_, rfl⟩
+        have hrow : ∀ i : Fin m,
+            Matrix.mulVec S x i = ∑ j, A i.succ j.succ * x j - A 0 i.succ / A 0 0 * b := by
+          intro i
+          simp only [Matrix.mulVec, dotProduct, hS, Matrix.of_apply]
+          rw [hb, Finset.mul_sum, ← Finset.sum_sub_distrib]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [hA 0 i.succ]
+          ring
+        have eS : dotProduct x (Matrix.mulVec S x) = Q - b * b / A 0 0 := by
+          calc dotProduct x (Matrix.mulVec S x)
+              = ∑ i, (x i * ∑ j, A i.succ j.succ * x j - A 0 i.succ * x i * (b / A 0 0)) := by
+                simp only [dotProduct]
+                refine Finset.sum_congr rfl fun i _ => ?_
+                rw [hrow i]
+                ring
+            _ = Q - b * b / A 0 0 := by
+                rw [Finset.sum_sub_distrib, ← Finset.sum_mul, ← hQ, ← hb]
+                ring
+        have eA : ∀ t : ℝ, dotProduct (Fin.cons t x : Fin (m + 1) → ℝ)
+            (Matrix.mulVec A (Fin.cons t x)) = A 0 0 * t * t + 2 * t * b + Q := by
+          intro t
+          simp only [dotProduct, Matrix.mulVec, Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
+          have h1 : ∑ i : Fin m, x i * (A i.succ 0 * t + ∑ j, A i.succ j.succ * x j) =
+              t * b + Q := by
+            rw [hb, hQ, Finset.mul_sum, ← Finset.sum_add_distrib]
+            refine Finset.sum_congr rfl fun i _ => ?_
+            rw [hA 0 i.succ]
+            ring
+          rw [h1, ← hb]
+          ring
+        have eI : ∀ t : ℝ, dotProduct (Fin.cons t x : Fin (m + 1) → ℝ) (Fin.cons t x) =
+            t * t + dotProduct x x := by
+          intro t
+          simp only [dotProduct, Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
+        have h := hq (Fin.cons (-b / A 0 0) x)
+        rw [eA, eI] at h
+        rw [eS]
+        have e : A 0 0 * (-b / A 0 0) * (-b / A 0 0) + 2 * (-b / A 0 0) * b + Q =
+            Q - b * b / A 0 0 := by
+          field_simp
+          ring
+        nlinarith [mul_self_nonneg (-b / A 0 0)]
+      -- Eliminating the first column below the pivot: `det A = a * det S`.
+      have hdet : A.det = A 0 0 * S.det := by
+        obtain ⟨c, hc⟩ : ∃ c : Fin (m + 1) → ℝ,
+            c = Fin.cons 0 (fun i : Fin m => A i.succ 0 / A 0 0) := ⟨_, rfl⟩
+        obtain ⟨E, hE⟩ : ∃ E : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ,
+            E = Matrix.of fun i j => A i j - c i * A 0 j := ⟨_, rfl⟩
+        have hc0 : c 0 = 0 := by rw [hc]; rfl
+        have hE0 : ∀ j, E 0 j = A 0 j := by
+          intro j
+          rw [hE, Matrix.of_apply, hc0]
+          ring
+        have hAE : A.det = E.det :=
+          Matrix.det_eq_of_forall_row_eq_smul_add_const c 0 hc0 fun i j => by
+            rw [hE0, hE, Matrix.of_apply]
+            ring
+        have hcol : ∀ i : Fin m, E i.succ 0 = 0 := by
+          intro i
+          rw [hE, Matrix.of_apply, hc, Fin.cons_succ, div_mul_cancel₀ _ ha0, sub_self]
+        have hsub : E.submatrix Fin.succ Fin.succ = S := by
+          ext i j
+          simp only [Matrix.submatrix_apply, hE, hS, Matrix.of_apply, hc, Fin.cons_succ]
+        rw [hAE, Matrix.det_succ_column_zero, Fin.sum_univ_succ]
+        simp only [hcol, mul_zero, zero_mul, Finset.sum_const_zero, add_zero, Fin.val_zero,
+          pow_zero, one_mul, Fin.succAbove_zero, hE0, hsub]
+      -- `trace A = a + trace S + Σᵢ bᵢ² / a`.
+      have htr : A.trace = A 0 0 + S.trace + ∑ i : Fin m, A 0 i.succ ^ 2 / A 0 0 := by
+        simp only [Matrix.trace, Matrix.diag, Fin.sum_univ_succ, hS, Matrix.of_apply]
+        rw [Finset.sum_sub_distrib]
+        have e : ∀ i : Fin m, A i.succ 0 / A 0 0 * A 0 i.succ = A 0 i.succ ^ 2 / A 0 0 := by
+          intro i
+          rw [hA 0 i.succ]
+          ring
+        simp only [e]
+        ring
+      obtain ⟨h1, h2⟩ := ih S hSs hSq
+      have hsum : 0 ≤ ∑ i : Fin m, A 0 i.succ ^ 2 / A 0 0 :=
+        Finset.sum_nonneg fun i _ => div_nonneg (sq_nonneg _) (by linarith)
+      have hexp : A 0 0 ≤ Real.exp (A 0 0 - 1) := by
+        have := Real.add_one_le_exp (A 0 0 - 1)
+        linarith
+      refine ⟨?_, ?_⟩
+      · rw [hdet]
+        nlinarith
+      · rw [hdet]
+        calc A 0 0 * S.det ≤ Real.exp (A 0 0 - 1) * Real.exp (S.trace - m) :=
+              mul_le_mul hexp h2 (by linarith) (Real.exp_pos _).le
+          _ = Real.exp (A 0 0 - 1 + (S.trace - m)) := (Real.exp_add _ _).symm
+          _ ≤ Real.exp (A.trace - ↑(m + 1)) := by
+              apply Real.exp_le_exp.mpr
+              rw [htr]
+              push_cast
+              linarith
+  intro n G hG hpos
+  have hsymm : ∀ i j, ((1 : Matrix (Fin n) (Fin n) ℝ) + G) j i =
+      ((1 : Matrix (Fin n) (Fin n) ℝ) + G) i j :=
+    (Matrix.isSymm_one.add hG).apply
+  have hquad : ∀ x : Fin n → ℝ,
+      dotProduct x x ≤ dotProduct x (Matrix.mulVec ((1 : Matrix (Fin n) (Fin n) ℝ) + G) x) := by
+    intro x
+    rw [Matrix.add_mulVec, Matrix.one_mulVec, dotProduct_add]
+    linarith [hpos x]
+  obtain ⟨h1, h2⟩ := key n _ hsymm hquad
+  refine ⟨h1, h2.trans_eq ?_⟩
+  rw [Matrix.trace_add, Matrix.trace_one, Fintype.card_fin]
+  congr 1
+  ring
+/-- **Scalar exponential bound** for the area Jacobian of a linear graph (used with `s = |D|²`,
+`T = n` in `J(D) ≤ exp(|D|²/2) ≤ 1 + (e^{n/2}/2)|D|²`): for `0 ≤ s ≤ T`,
+`exp(s/2) ≤ 1 + (exp(T/2)/2) s`.  With `t = s/2`, `1 - t ≤ exp(-t)` (`add_one_le_exp` at `-t`)
+times `exp t > 0` gives `exp t ≤ 1 + t exp t`, and `t exp t ≤ t exp(T/2)` by monotonicity of
+`exp` and `0 ≤ t ≤ T/2`. -/
+theorem gwe_gjb_exp_half_le : ∀ (s T : ℝ), 0 ≤ s → s ≤ T → Real.exp (s / 2) ≤ 1 + Real.exp (T / 2) / 2 * s := by
+  intro s T hs hsT
+  -- `1 - s/2 ≤ exp (-(s/2))`: `add_one_le_exp` at `-(s/2)`.
+  have h1 : 1 - s / 2 ≤ Real.exp (-(s / 2)) := by
+    linarith [Real.add_one_le_exp (-(s / 2))]
+  -- Multiply by `exp (s/2) > 0`, using `exp (-(s/2)) * exp (s/2) = exp 0 = 1`.
+  have h2 : (1 - s / 2) * Real.exp (s / 2) ≤ 1 := by
+    calc (1 - s / 2) * Real.exp (s / 2) ≤ Real.exp (-(s / 2)) * Real.exp (s / 2) :=
+          mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+      _ = 1 := by rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  -- `exp` is monotone, `s/2 ≤ T/2` and `0 ≤ s/2`.
+  have h4 : s / 2 * Real.exp (s / 2) ≤ s / 2 * Real.exp (T / 2) :=
+    mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by linarith)
+  -- `exp (s/2) ≤ 1 + (s/2) exp (s/2) ≤ 1 + (s/2) exp (T/2)`.
+  linarith
+/-- **Hilbert–Schmidt versus operator norm** (Simon, Notation p. ix), as used in the hole estimate
+of the proof of Ch. 5, Corollary 2.7 (`‖A‖ ≤ |A|`).  For `A : ℝᵐ →L ℝᵏ` the squared Hilbert–Schmidt
+norm `|A|² = Σᵢ |A eᵢ|²` is continuous in `A` (a finite sum of squared norms of the evaluations
+`A ↦ A eᵢ`) and satisfies `0 ≤ |A|² ≤ m ‖A‖²` (`|A eᵢ| ≤ ‖A‖ |eᵢ| = ‖A‖`).  Moreover
+`|A v|² ≤ |A|² |v|²`: expanding `v = Σᵢ vᵢ eᵢ` gives `|A v| ≤ Σᵢ |vᵢ| |A eᵢ|`, and Cauchy–Schwarz
+bounds the square of the right side by `(Σᵢ |vᵢ|²)(Σᵢ |A eᵢ|²) = |v|² |A|²`. -/
+theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2 := by
+  intro m k
+  refine ⟨?_, fun A => ⟨?_, ?_, fun v => ?_⟩⟩
+  · -- Continuity: a finite sum of `‖A eᵢ‖ ^ 2`, each continuous in `A`.
+    unfold hsNormSq
+    fun_prop
+  · unfold hsNormSq
+    positivity
+  · -- `‖A eᵢ‖ ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` summands.
+    unfold hsNormSq
+    calc ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1:ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = m * ‖A‖ ^ 2 := by simp
+  · unfold hsNormSq
+    set e : Fin m → Rn m := fun i => EuclideanSpace.single i 1 with he
+    -- Expand `v` in the standard basis and apply the triangle inequality.
+    have hv : v = ∑ i, v i • e i := by
+      ext j
+      simp [he, Pi.single_apply]
+    have hAv : A v = ∑ i, v i • A (e i) := by
+      conv_lhs => rw [hv]
+      simp [map_sum, map_smul]
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (e i)‖ := by
+      rw [hAv]
+      calc _ ≤ ∑ i, ‖v i • A (e i)‖ := norm_sum_le _ _
+        _ = _ := by simp [norm_smul]
+    -- Cauchy–Schwarz for the finite sums, and `‖v‖² = Σᵢ |vᵢ|²`.
+    have h2 : (∑ i, |v i| * ‖A (e i)‖) ^ 2 ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ‖v‖ ^ 2 = ∑ i, |v i| ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      simp [sq_abs]
+    have h0 : 0 ≤ ‖A v‖ := norm_nonneg _
+    calc ‖A v‖ ^ 2 ≤ (∑ i, |v i| * ‖A (e i)‖) ^ 2 := by gcongr
+      _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
+      _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
+
+/-- **Area Jacobian of a linear graph** (Simon Ch. 5, proof of Theorem 4.5, p. 119:
+`1 ≤ J_F ≤ 1 + C |∇f|²`).  For `D : ℝⁿ →L ℝ^ℓ` with Gram matrix `G = (⟨D eₐ, D e_b⟩)_{a,b}`, the
+area Jacobian of `v ↦ (v, D v)` is `J(D) = √det(I + G)`; then `1 ≤ J(D)`, and `‖D‖ ≤ 1` implies
+`J(D) ≤ 1 + (e^{n/2}/2) |D|²`.  `G` is symmetric positive semidefinite with `trace G = |D|²`, so
+`1 ≤ det(I + G) ≤ exp |D|²` and `1 ≤ J(D) ≤ exp(|D|²/2)`.  If `‖D‖ ≤ 1` then `0 ≤ |D|² ≤ n ‖D‖² ≤ n`,
+and `exp(s/2) ≤ 1 + (e^{T/2}/2) s` for `0 ≤ s ≤ T` (with `s = |D|²`, `T = n`). -/
+theorem gwe_graph_jacobian_bounds : ∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), 1 ≤ Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ))))) ∧ (‖D‖ ≤ 1 → Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ))))) ≤ 1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq D) := by
+  intro n ℓ D
+  -- Steps 1, 2, 6: the Gram matrix `G` of `D` is symmetric positive semidefinite, `trace G = |D|²`.
+  obtain ⟨hsymm, hpsd, htr⟩ := Submission.gwe_gjb_gram_symm_psd_trace n ℓ D
+  -- Steps 3, 4, 7: `1 ≤ det(I + G) ≤ exp (trace G) = exp |D|²`.
+  obtain ⟨hdet, hdet_le⟩ := Submission.gwe_gjb_det_one_add_bounds n _ hsymm hpsd
+  rw [htr] at hdet_le
+  refine ⟨?_, fun hD => ?_⟩
+  · -- Step 5: `J(D) = √det(I + G) ≥ √1 = 1`.
+    exact Real.one_le_sqrt.2 hdet
+  · -- Step 9: `0 ≤ |D|² ≤ n ‖D‖² ≤ n`, since `‖D‖ ≤ 1`.
+    obtain ⟨h0, hle, -⟩ := (Submission.lgc_hsNormSq_bounds n ℓ).2 D
+    have hn : hsNormSq D ≤ n :=
+      hle.trans (mul_le_of_le_one_right (Nat.cast_nonneg n) (pow_le_one₀ (norm_nonneg D) hD))
+    -- Steps 8, 10, 11: `J(D) ≤ √(exp |D|²) = exp (|D|²/2) ≤ 1 + (e^{n/2}/2) |D|²`.
+    calc Real.sqrt _ ≤ Real.sqrt (Real.exp (hsNormSq D)) := Real.sqrt_le_sqrt hdet_le
+      _ = Real.exp (hsNormSq D / 2) := (Real.exp_half _).symm
+      _ ≤ 1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq D := Submission.gwe_gjb_exp_half_le _ _ h0 hn
 
 end Submission
 
