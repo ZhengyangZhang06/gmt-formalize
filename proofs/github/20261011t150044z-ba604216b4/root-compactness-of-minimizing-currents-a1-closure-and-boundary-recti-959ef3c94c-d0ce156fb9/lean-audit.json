@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61eddaf2b9a70d943f9a6b642b1df88d12194ca41a5d053082fe57e9ebebd473",
+  "git_delta": {
+    "base_commit": "f4c8d16e83febf8bc0f9c5545026cdae91d41b6f",
+    "candidate_commit": "ef833280210e2a76d19989de42138b03535941cf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_vague_portmanteau",
+    "diff_sha256": "7598e67243c5b846898325fdb5ba374ada55db2b0dcdd0686007146e70cfe55b",
+    "source_sha256": "3dff62aea804794e780d6e7abf3a97eccdbbc2a4a49bc3478629fec9dec92c79",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_vague_portmanteau",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (νs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), IsOpen U → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → K ⊆ U → νs j K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (∫ x, f x ∂μ))) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => νs j K) atTop ≤ μ K) ∧ (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => νs j G) atTop)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
