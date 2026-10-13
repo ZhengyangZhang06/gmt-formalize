@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "On the planar sector, almost every point lies in the carrier with multiplicity k and tangent plane Q",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_2(ℝ^P), Q a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, δ > 0 and k ∈ ℕ with k ≥ 1, and assume that for all t > 0 and φ ∈ (0, δ) the point y := t(cos φ·a + sin φ·e) satisfies HasMassDensity C y k and spt C ∩ B_r(y) ⊆ Q for some r > 0. Let R = (M, θ, ξ) ∈ IMRep(ℝ^P, 2) represent C. Then for Lebesgue-almost every p = (t, α) ∈ ℝ × ℝ with t > 0, 0 < α < δ and α < 1, the point x_Q(p) := t(cos α·a + sin α·e) satisfies x_Q(p) ∈ M, θ(x_Q(p)) = k and approxTangentPlane 2 M x_Q(p) = Q.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ) (R : IMRep (univ : Set (Euclid P)) 2), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → R.Represents C → ∀ᵐ p : ℝ × ℝ, 0 < p.1 → 0 < p.2 → p.2 < δ → p.2 < 1 → (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) ∈ R.carrier ∧ R.mult (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = k ∧ approxTangentPlane 2 R.carrier (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = Q",
+  "lean_name": "idtp_cse_sector_carrier_points",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64-a1"
+}

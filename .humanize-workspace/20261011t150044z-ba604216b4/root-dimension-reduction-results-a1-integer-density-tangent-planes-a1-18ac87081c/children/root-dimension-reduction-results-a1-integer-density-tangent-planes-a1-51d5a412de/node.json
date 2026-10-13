@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "At the edge point a of a planar sector every tangent cone is ±m[[Q]], and spt C lies in a cusp around Q near a",
+  "statement": "Let P ∈ ℕ and C ∈ 𝒟_2(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn C univ), with ∂C = 0 and a cone (IsConeCurrent C). Let Q be a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, δ > 0 and k ∈ ℕ with k ≥ 1. Assume a ∈ spt C and that for all t > 0 and φ ∈ (0, δ) the point y := t(cos φ·a + sin φ·e) satisfies HasMassDensity C y k and spt C ∩ B_r(y) ⊆ Q for some r > 0. Then there is m ∈ ℕ with m ≥ 1 and HasMassDensity C a m such that: (1) for every sequence λ_j > 0 with λ_j → 0 there are a strictly increasing φ : ℕ → ℕ, C' ∈ 𝒟_2(ℝ^P) and c ∈ ℤ with |c| = m such that blowUp C a λ_{φ(j)} ⇀ C' (ConvergesWeakly), C'(ω) = c·∫_Q ω(x)(a, e) dH²(x) for every ω ∈ 𝒟²(ℝ^P) (H² = μHE[2], ω(x)(a, e) = ω(x) applied to ![a, e]), and, for every integer multiplicity representation R of C and every continuous compactly supported g : ℝ^P → ℝ, λ_{φ(j)}^{−2}·∫ g(η_j(x)) dR.measure(x) → m·∫_Q g dH², where η_j := dilation a λ_{φ(j)} (η_j(x) = λ_{φ(j)}^{−1}(x − a)); and (2) there is s₀ with 0 < s₀ ≤ 1/4 such that for every s' ∈ (0, s₀] and every x ∈ spt C with ⟨x, a⟩ > 0, ||x| − 1| < s', |arctan(⟨x, e⟩/⟨x, a⟩)| < s' and |x − πx| ≤ 2s₀|x| (π := Q.starProjection) one has |x − πx| < (s'/4)|x| and |x − a| < 3s'.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∃ m : ℕ, 1 ≤ m ∧ HasMassDensity C a m ∧ (∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (c : ℤ), StrictMono φ ∧ c.natAbs = m ∧ ConvergesWeakly (fun j => blowUp C a (lams (φ j)) (hlams (φ j)).ne') C' ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Q : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x ![a, e] ∂μHE[2]) ∧ ∀ R : IMRep (univ : Set (Euclid P)) 2, R.Represents C → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂R.measure) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) ∧ ∃ s₀ : ℝ, 0 < s₀ ∧ s₀ ≤ 1 / 4 ∧ (∀ s' : ℝ, 0 < s' → s' ≤ s₀ → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s₀ * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s')",
+  "lean_name": "idtp_cse_edge_tangent_plane",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.mass_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.mass_lower_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-51d5a412de-a1"
+}

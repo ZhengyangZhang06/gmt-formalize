@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_",
+        "def (IsConeCurrent|approxTangentPlane|IMRep.firstVariation|tangentialDivergence|MassMeasuresConverge)|def HasMassDensity|def IsEmbeddedSubmanifold",
+        "lintegral_comp_polarCoord_symm|ae_eq_zero_of_integral_contDiff_smul_eq_zero|euclideanHausdorffMeasure_smul₀|support_mem_ae|lintegral_withDensity_eq_lintegral_mul_non_measurable|volume_preserving_finTwoArrow",
+        "idtp_cse_|ae_eq_const_of_weak_coordinate_derivatives_zero|hasApproximateTangentSpaceAt_submodule|theorem HasApproximateTangentSpaceAt.unique|theorem HasApproximateTangentSpaceAt.finrank_eq|countablyRectifiable_range",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cse_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cse_independent_audit/Parent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v2.json",
+        "/tmp/cse_independent_audit/Types.lean",
+        "/tmp/cse_independent_audit/Parent.lean",
+        "/tmp/cse_independent_audit/PrerequisiteEvidence.json"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match their pins. The snapshot definitions and inspected library lemmas support the stated uses. All 11 exact child propositions independently elaborate without child implementations; no forbidden matrix-unit construction occurs. Names are bare identifiers, absent from DAG reservations and other nodes' records, with no snapshot declaration collision. Internal dependencies are correctly directed and acyclic; no external prerequisite reaches the selected node. Accepted prerequisite types match their comparator records, whose checks permit only standard axioms. Pending prerequisites remain separate DAG obligations. Splitting is appropriate: the supplied proofs establish distinct stages of the selected endpoint-density argument. The assembly from the exact edge_tangent_plane, box_mass_limits and fibre_count types was independently kernel-checked, proving the exact selected parent with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match. The proof handles P < 2, supplies the Euclidean monotonicity hypotheses, and correctly converts the density lower bound into the stated ENNReal mass inequality."
+    },
+    {
+      "key": "stationary_radial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The general-dimensional contract matches its prose, including degenerate dimensions. Stationarity follows from minimality, and cone measure scaling supplies exactly the hypotheses of radial tangency."
+    },
+    {
+      "key": "tangent_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes Hausdorff-null symmetric differences of dilated carriers and transports exceptional sets using measure homogeneity. Dilation invariance and uniqueness then prove precisely the asserted almost-everywhere equality."
+    },
+    {
+      "key": "edge_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The proof obtains m independently of k, forces the limiting plane to equal Q, handles orientation and mass convergence, and proves the cusp and stated localization constants without assuming endpoint density k."
+    },
+    {
+      "key": "fibre_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-s contract and both weighted identities match the prose. The proof verifies the carrier-area hypotheses, computes the Jacobian using radial tangency, and handles measurability, coordinate transport and ENNReal fibre sums."
+    },
+    {
+      "key": "rotation_conservation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs a globally C¹ compactly supported field. Radial tangency and the gap hypothesis eliminate the extra derivative terms; the remaining term gives the exact integral identity with the required integrability."
+    },
+    {
+      "key": "alpha_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The analytic statement matches its Lean type. The countable test-family argument resolves exceptional-set quantifiers, distributional constancy removes angular dependence, and scaling plus Fubini yields c·t on the stated s/8 window."
+    },
+    {
+      "key": "box_mass_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both exact normalized limits. Localization and rescaled-square bounds give the mass limit; weak-current testing gives tilt decay and hence the flux limit, without relying on flux_density."
+    },
+    {
+      "key": "sector_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weaker hypotheses are sufficient and match the type. Density identifies carrier membership and multiplicity; local null-difference arguments identify Q as tangent plane, and polar coordinates transfer the exceptional set to parameter-space measure zero."
+    },
+    {
+      "key": "flux_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All dependency interfaces match. The proof justifies finite signed integrals and the direction of dilation scaling, obtains H = c·t from the analytic child, and identifies c = m using the independently established flux limit."
+    },
+    {
+      "key": "fibre_count",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles infinite fibre sums separately and uses positive integer multiplicities for finite fibres. It proves k ≤ m and the exact excess-mass bound when k < m; that bound contradicts box_mass_limits in the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

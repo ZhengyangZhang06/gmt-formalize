@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "Real-analysis rigidity: an α-independent, degree-one homogeneous density on a box is c·t",
+  "statement": "Let 0 < s ≤ 1 and let H : ℝ × ℝ → ℝ be integrable on O_s := (1 − s, 1 + s) × (−s, s) (Lebesgue measure). Assume (α) ∫_{ℝ×ℝ} ψ'(α)·l(t)·H(t, α) d(t, α) = 0 for all ψ, l ∈ C¹(ℝ) with tsupport ψ ⊆ (−s, s) and tsupport l ⊆ (1 − s, 1 + s); and (β) ∫ l(t/r)·ψ(α)·H(t, α) d(t, α) = r²·∫ l(t)·ψ(α)·H(t, α) d(t, α) for all l, ψ ∈ C¹(ℝ) with tsupport l ⊆ (1 − s/2, 1 + s/2), tsupport ψ ⊆ (−s, s), and every r ∈ ℝ with |r − 1| < s/4. Then there is c ∈ ℝ with H(t, α) = c·t for almost every (t, α) ∈ (1 − s/8, 1 + s/8) × (−s, s).",
+  "lean_statement": "∀ (s : ℝ) (H : ℝ × ℝ → ℝ), 0 < s → s ≤ 1 → IntegrableOn H (Ioo (1 - s) (1 + s) ×ˢ Ioo (-s) s) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → (∀ (l ψ : ℝ → ℝ) (r : ℝ), ContDiff ℝ 1 l → ContDiff ℝ 1 ψ → tsupport l ⊆ Ioo (1 - s / 2) (1 + s / 2) → tsupport ψ ⊆ Ioo (-s) s → |r - 1| < s / 4 → ∫ p : ℝ × ℝ, l (p.1 / r) * ψ p.2 * H p = r ^ 2 * ∫ p : ℝ × ℝ, l p.1 * ψ p.2 * H p) → ∃ c : ℝ, ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → H p = c * p.1",
+  "lean_name": "idtp_cse_alpha_invariant_homogeneous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-132cdbbb80-a1"
+}
