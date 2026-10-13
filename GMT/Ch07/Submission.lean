@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integrability of `χ κ`.**  If `κ` is continuous on `(a, b)` and `χ` is continuous with
+compact support `tsupport χ ⊆ (a, b)`, then `x ↦ χ x * κ x` is integrable on `ℝ`: it is
+continuous on the compact set `K = tsupport χ`, hence integrable on `K`, and it vanishes
+off `K`. -/
+theorem Submission.idtp_ccd_scsp_dbr_integrable : ∀ (a b : ℝ) (κ χ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → Continuous χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → Integrable (fun x => χ x * κ x) := by
+  intro a b κ χ hκ hχ hχc hsupp
+  -- `χ κ` is continuous on the compact set `K = tsupport χ ⊆ (a, b)`, so integrable on `K`
+  have hK : IntegrableOn (fun x => χ x * κ x) (tsupport χ) :=
+    (hχ.continuousOn.mul (hκ.mono hsupp)).integrableOn_compact hχc.isCompact
+  -- off `K` we have `χ x = 0`, so `χ x * κ x = 0`
+  exact hK.integrable_of_forall_notMem_eq_zero fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport hx, zero_mul]
+
+/-- Fundamental lemma of the calculus of variations on `(a, b)` (continuous version): if `g` is
+continuous on `(a, b)` and `∫ χ g = 0` for every smooth compactly supported `χ` with
+`tsupport χ ⊆ (a, b)`, then `g = 0` on `(a, b)`.  If some such `h` had `h(x₀) > 0`, continuity
+would give `r > 0` with `[x₀ - r, x₀ + r] ⊆ (a, b)` and `h > h(x₀) / 2` there; the bump `χ` at `x₀`
+with radii `r / 2 < r` makes `χ h ≥ 0` integrable (`idtp_ccd_scsp_dbr_integrable`) and positive
+on `(x₀ - r / 2, x₀ + r / 2)`, so `∫ χ h > 0`.  Applying this to `g` and `-g` gives `g(x₀) = 0`. -/
+theorem Submission.idtp_ccd_scsp_dbr_fundamental_lemma : ∀ (a b : ℝ) (g : ℝ → ℝ), ContinuousOn g (Ioo a b) → (∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → ∫ x, χ x * g x = 0) → ∀ x ∈ Ioo a b, g x = 0 := by
+  intro a b g hg hint x₀ hx₀
+  -- Claim: no `h` satisfying the hypotheses is positive at `x₀`.
+  have claim : ∀ h : ℝ → ℝ, ContinuousOn h (Ioo a b) →
+      (∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b →
+        ∫ x, χ x * h x = 0) → ¬ 0 < h x₀ := by
+    intro h hh hhint hpos
+    -- `closedBall x₀ (ρ / 2) ⊆ (a, b)`, and `h > h x₀ / 2` there
+    have hev : ∀ᶠ y in 𝓝 x₀, y ∈ Ioo a b ∧ h x₀ / 2 < h y :=
+      (isOpen_Ioo.eventually_mem hx₀).and ((hh.continuousAt (isOpen_Ioo.mem_nhds hx₀)).eventually
+        (lt_mem_nhds (half_lt_self hpos)))
+    obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff_ball.1 hev
+    have hr : 0 < ρ / 2 := half_pos hρ
+    have hclosed : ∀ y ∈ closedBall x₀ (ρ / 2), y ∈ Ioo a b ∧ h x₀ / 2 < h y := fun y hy =>
+      hball y (closedBall_subset_ball (half_lt_self hρ) hy)
+    -- the bump `χ` at `x₀` with radii `ρ / 4 < ρ / 2`
+    let χ : ContDiffBump x₀ := ⟨ρ / 2 / 2, ρ / 2, half_pos hr, half_lt_self hr⟩
+    have hχ : tsupport χ ⊆ Ioo a b := by
+      rw [χ.tsupport_eq]
+      exact fun y hy => (hclosed y hy).1
+    have hnonneg : 0 ≤ fun y => χ y * h y := fun y => by
+      by_cases hy : y ∈ closedBall x₀ (ρ / 2)
+      · exact mul_nonneg χ.nonneg ((half_pos hpos).le.trans (hclosed y hy).2.le)
+      · exact (mul_eq_zero_of_left (χ.zero_of_le_dist (not_le.1 (mt mem_closedBall.2 hy)).le)
+          (h y)).ge
+    have hint' : Integrable fun y => χ y * h y :=
+      Submission.idtp_ccd_scsp_dbr_integrable a b h χ hh χ.continuous χ.hasCompactSupport hχ
+    have hsupp : ball x₀ (ρ / 2 / 2) ⊆ support fun y => χ y * h y := by
+      intro y hy
+      rw [mem_support, χ.one_of_mem_closedBall (ball_subset_closedBall hy), one_mul]
+      exact ((half_pos hpos).trans (hclosed y (closedBall_subset_closedBall (half_lt_self hr).le
+        (ball_subset_closedBall hy))).2).ne'
+    have hpos' : 0 < ∫ y, χ y * h y := by
+      rw [integral_pos_iff_support_of_nonneg hnonneg hint']
+      refine lt_of_lt_of_le ?_ (measure_mono hsupp)
+      rw [Real.volume_ball, ENNReal.ofReal_pos]
+      positivity
+    exact hpos'.ne' (hhint χ χ.contDiff χ.hasCompactSupport hχ)
+  have hneg : ¬ 0 < -g x₀ := claim (fun y => -g y) hg.neg fun χ hχ hχc hχs => by
+    simp only [mul_neg, integral_neg, hint χ hχ hχc hχs, neg_zero]
+  linarith [not_lt.1 (claim g hg hint), not_lt.1 hneg]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
