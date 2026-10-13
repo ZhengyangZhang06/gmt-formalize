@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9691a7b041d8cd0dc167f73ffc5851f27763e1894bd634e4502b29869d0432c2",
+  "git_delta": {
+    "base_commit": "b1e0ea232c11811092fa94603c58b428c52de6ac",
+    "candidate_commit": "f4c5e5ae53d184780d0cbb464701b08f06dbee78",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_td_scalar_smooth_dense",
+    "diff_sha256": "23d3d8c6228f3489994fa1617c22546b715f674a4e2707f9e515943d3aa226e6",
+    "source_sha256": "f17a4191615cb4f83e7eaad98e32be99d63390bb3908da4638199f278125fd13",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_td_scalar_smooth_dense",
+      "statement": "∀ (k : ℕ) (Ω : Set (Eucl k)) (η : Eucl k → ℝ), IsOpen Ω → IntegrableOn η Ω (volume : Measure (Eucl k)) → ∀ ε : ℝ, 0 < ε → ∃ φ : Eucl k → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω ∧ ∫ w in Ω, |η w - φ w| ∂(volume : Measure (Eucl k)) < ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

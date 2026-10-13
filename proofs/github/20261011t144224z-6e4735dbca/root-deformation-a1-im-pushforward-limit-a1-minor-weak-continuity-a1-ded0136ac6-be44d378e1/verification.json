@@ -1,0 +1,17 @@
+{
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.test_density-a1.scalar_dense-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5161",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f4c5e5ae53d184780d0cbb464701b08f06dbee78",
+  "integrated_commit": "",
+  "proof_base_commit": "f78479edb606723df4b96eccb0afcfa8af02c1d9",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.test_density-a1",
+  "requires": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1.smooth_dense-a1"
+  ]
+}
