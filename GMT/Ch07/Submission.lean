@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`Hⁿ` of a disc in the span of an orthonormal family**: if `τ₁, …, τₙ` are orthonormal in
+`ℝᴾ`, `Q = span{τ₁, …, τₙ}`, `y ∈ Q` and `ρ > 0`, then `Hⁿ(B_ρ(y) ∩ Q) = ωₙρⁿ`.  The map
+`ψ(a) = Σᵢ aᵢτᵢ` is a linear isometry `ℝⁿ → ℝᴾ` with range `Q`, so `ψ(B_ρ(b)) = B_ρ(y) ∩ Q` for
+`y = ψ(b)`; `Hⁿ` is invariant under isometries and equals Lebesgue measure on `ℝⁿ`, and
+`Lⁿ(B_ρ(b)) = ρⁿ Lⁿ(B₁(0))`. -/
+theorem Submission.idtp_cttp_span_ball_measure : ∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → ∀ y ∈ Submodule.span ℝ (Set.range τ), ∀ ρ : ℝ, 0 < ρ → μHE[n] (ball y ρ ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n τ hτ y hy ρ hρ
+  -- Step 1: `ψ(a) = Σᵢ aᵢτᵢ` is a linear isometry `ℝⁿ → ℝᴾ`
+  let f : Euclid n →ₗ[ℝ] Euclid P :=
+    (Fintype.linearCombination ℝ τ).comp (WithLp.linearEquiv 2 ℝ (Fin n → ℝ)).toLinearMap
+  have hf : ∀ a, f a = ∑ i, a i • τ i := fun a => by
+    simp [f, Fintype.linearCombination_apply]
+  -- the basis `v` is passed explicitly: leaving it implicit makes unification time out
+  let v : Module.Basis (Fin n) ℝ (Euclid n) := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have hv : Orthonormal ℝ v := by
+    rw [OrthonormalBasis.coe_toBasis]
+    exact (EuclideanSpace.basisFun (Fin n) ℝ).orthonormal
+  have hfv : f ∘ v = τ := by
+    funext i
+    simp [hf, v]
+  let ψ : Euclid n →ₗᵢ[ℝ] Euclid P := f.isometryOfOrthonormal hv (by rw [hfv]; exact hτ)
+  have hψ : ∀ a, ψ a = ∑ i, a i • τ i := fun a => by
+    rw [LinearMap.coe_isometryOfOrthonormal, hf]
+  -- Step 2: `range ψ = Q`
+  have hrange : range ψ = (Submodule.span ℝ (range τ) : Set (Euclid P)) := by
+    ext z
+    constructor
+    · rintro ⟨a, rfl⟩
+      rw [hψ]
+      exact Submodule.sum_mem _ fun i _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · intro hz
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hz
+      exact ⟨WithLp.toLp 2 c, by rw [hψ]; simpa using hc⟩
+  -- Step 3: `ψ(B_ρ(b)) = B_ρ(y) ∩ Q`, where `y = ψ(b)`
+  obtain ⟨b, rfl⟩ : y ∈ range ψ := by rw [hrange]; exact hy
+  have himage : ψ '' ball b ρ =
+      ball (ψ b) ρ ∩ (Submodule.span ℝ (range τ) : Set (Euclid P)) := by
+    rw [← hrange]
+    ext z
+    constructor
+    · rintro ⟨a, ha, rfl⟩
+      exact ⟨by rw [mem_ball, ψ.isometry.dist_eq]; exact ha, ⟨a, rfl⟩⟩
+    · rintro ⟨hz, ⟨a, rfl⟩⟩
+      exact ⟨a, by rw [mem_ball, ← ψ.isometry.dist_eq]; exact hz, rfl⟩
+  -- Step 4: isometry invariance of `Hⁿ`, `Hⁿ = Lⁿ` on `ℝⁿ`, and scaling of Haar measure of balls
+  rw [← himage, ψ.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_ball_of_pos _ _ hρ,
+    finrank_euclideanSpace_fin, mul_comm]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
