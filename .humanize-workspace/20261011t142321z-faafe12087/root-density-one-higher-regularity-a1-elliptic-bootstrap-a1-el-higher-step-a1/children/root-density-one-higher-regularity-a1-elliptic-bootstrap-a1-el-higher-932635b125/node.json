@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1",
+  "depth": 4,
+  "title": "Differentiated weak Euler-Lagrange system for a C^2 weak solution (difference quotients)",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) (= Rn n →L[ℝ] Rn ℓ, operator norm) and Psi : L -> R of class C^2. Let U ⊆ R^n be open and u, g : R^n -> R^l with u of class C^2 on U and g continuous on U. Suppose that ∫_U DPsi(Du(x))[Dphi(x)] dx = -∫_U <phi(x), g(x)> dx for every C^1 map phi : R^n -> R^l with compact support and tsupport phi ⊆ U. Then for every e ∈ R^n and every C^1 map zeta : R^n -> R^l with compact support and tsupport zeta ⊆ U, ∫_U D^2Psi(Du(x))[Dv_e(x)][Dzeta(x)] dx = ∫_U <g(x), Dzeta(x)e> dx. Here v_e(z) := Du(z)e = fderiv R u z e and D^2Psi(P)[Q][Q'] := fderiv R (fderiv R Psi) P Q Q'.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ContinuousOn g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → ∀ (e : Rn n) (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x) (fderiv ℝ (fun z => fderiv ℝ u z e) x) (fderiv ℝ ζ x) = ∫ x in U, inner ℝ (g x) (fderiv ℝ ζ x e)",
+  "lean_name": "dohr_eb_ehs_differentiated_el",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-932635b125-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1.test_admissible-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1.differentiated_el-a1",
+  "depth": 5,
+  "title": "Admissibility and derivative of the difference-quotient test maps",
+  "statement": "Let n, l be natural numbers, U ⊆ R^n open, zeta : R^n -> R^l a C^1 map with compact support and tsupport zeta ⊆ U, and e in R^n. Then for all real h ≠ 0 close enough to 0 (eventually along 𝓝[≠] 0) the map phi_h(x) := h^{-1}(zeta(x) - zeta(x - he)) is C^1, has compact support, satisfies tsupport phi_h ⊆ U, and Dphi_h(y) = h^{-1}(Dzeta(y) - Dzeta(y - he)) for every y in R^n.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (ζ : Rn n → Rn ℓ) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∀ᶠ h in 𝓝[≠] (0 : ℝ), ContDiff ℝ 1 (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ∧ HasCompactSupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ∧ tsupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆ U ∧ ∀ y, fderiv ℝ (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) y = h⁻¹ • (fderiv ℝ ζ y - fderiv ℝ ζ (y - h • e))",
+  "lean_name": "dohr_eb_ehs_del_test_admissible",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-b176c0813d-a1"
+}
