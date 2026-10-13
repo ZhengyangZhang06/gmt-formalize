@@ -451,6 +451,106 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Angle-parametrized unit curve** (step 6 of the parent proof).  Differentiating
+`⟨γ, γ⟩ = ‖γ‖² ≡ 1` gives `⟨γ, γ′⟩ = 0`.  With `A = ⟨γ, u⟩ > 0` and `B = ⟨γ, e⟩`, the quotient
+and chain rules differentiate `arctan (B / A) ≡ α` to `(1 + (B / A)²)⁻¹ (B′ A − B A′) / A² = 1`,
+i.e. `A B′ − B A′ = A² + B²`; the right side is positive, so `γ′ ≠ 0`. -/
+theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s : ℝ) (γ : ℝ → Euclid P), ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → ∀ α ∈ Ioo (-s) s, inner ℝ (γ α) (deriv γ α) = 0 ∧ inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u = inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 ∧ deriv γ α ≠ 0 := by
+  intro P u e s γ hγ hprop α hα
+  -- `(-s, s)` is a neighbourhood of `α` on which `γ` is differentiable
+  have hI : Ioo (-s) s ∈ 𝓝 α := Ioo_mem_nhds hα.1 hα.2
+  have hd : HasDerivAt γ (deriv γ α) α :=
+    ((hγ.differentiableOn one_ne_zero).differentiableAt hI).hasDerivAt
+  -- orthogonality: `⟨γ, γ⟩ = ‖γ‖² ≡ 1` near `α`, so its derivative `2 ⟨γ, γ′⟩` vanishes
+  have hn1 : (fun t => inner ℝ (γ t) (γ t)) =ᶠ[𝓝 α] fun _ => (1 : ℝ) := by
+    filter_upwards [hI] with t ht
+    rw [real_inner_self_eq_norm_sq, (hprop t ht).1, one_pow]
+  have h0 := (hd.inner ℝ hd).unique ((hasDerivAt_const α (1 : ℝ)).congr_of_eventuallyEq hn1)
+  rw [real_inner_comm (γ α) (deriv γ α)] at h0
+  have horth : inner ℝ (γ α) (deriv γ α) = 0 := by linarith
+  -- the angle: `A = ⟨γ, u⟩`, `B = ⟨γ, e⟩` and `arctan (B / A) ≡ id` near `α`
+  have hA : 0 < inner ℝ (γ α) u := (hprop α hα).2.1
+  have hAd : HasDerivAt (fun t => inner ℝ (γ t) u) (inner ℝ (deriv γ α) u) α := by
+    simpa using hd.inner ℝ (hasDerivAt_const α u)
+  have hBd : HasDerivAt (fun t => inner ℝ (γ t) e) (inner ℝ (deriv γ α) e) α := by
+    simpa using hd.inner ℝ (hasDerivAt_const α e)
+  have hid : (fun t => Real.arctan (((fun t => inner ℝ (γ t) e) / fun t => inner ℝ (γ t) u) t))
+      =ᶠ[𝓝 α] fun t => t := by
+    filter_upwards [hI] with t ht
+    exact (hprop t ht).2.2
+  have h1 := ((hBd.div hAd hA.ne').arctan).unique ((hasDerivAt_id' α).congr_of_eventuallyEq hid)
+  simp only [Pi.div_apply] at h1
+  -- clearing `(1 + (B / A)²) A² = A² + B² > 0` from `h1` gives the angle identity
+  have hpos : 0 < inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by positivity
+  have hkey : inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u =
+      inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by
+    field_simp at h1
+    linarith
+  -- non-degeneracy: `γ′ = 0` would make the left side `0`
+  refine ⟨horth, hkey, fun h => ?_⟩
+  rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
+  exact hpos.ne' hkey.symm
+
+/-- **Tangential derivative of the angle–radius profile** (steps 1 and 6(iii) of the parent
+proof).  With `a = ⟨x, u⟩ > 0` and `b = ⟨x, e⟩`, the inverse and product rules differentiate
+`q = ⟨·, e⟩ / ⟨·, u⟩` to `h ↦ a⁻¹ ⟨h, e⟩ − b (a²)⁻¹ ⟨h, u⟩`, and the chain rule multiplies this
+by `(1 + (b / a)²)⁻¹ = a² / (a² + b²)` for `arctan ∘ q`.  The norm `‖y‖ = √(‖y‖²)` has derivative
+`h ↦ ⟨x, h⟩ / ‖x‖`, which vanishes for `⟨x, h⟩ = 0`, so the product rule leaves only the angular
+term.  `C¹` regularity follows from `a ≠ 0` and `x ≠ 0`. -/
+theorem Submission.idtp_ccd_scsp_tf_profile_deriv : ∀ (P : ℕ) (u e x : Euclid P) (φ lam : ℝ → ℝ), ContDiff ℝ 1 φ → ContDiff ℝ 1 lam → 0 < inner ℝ x u → ContDiffAt ℝ 1 (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) x ∧ ∀ h : Euclid P, inner ℝ x h = 0 → fderiv ℝ (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) x h = deriv φ (Real.arctan (inner ℝ x e / inner ℝ x u)) * lam ‖x‖ * ((inner ℝ x u * inner ℝ h e - inner ℝ x e * inner ℝ h u) / (inner ℝ x u ^ 2 + inner ℝ x e ^ 2)) := by
+  intro P u e x φ lam hφ hlam hxu
+  -- non-degeneracy: `a = ⟨x, u⟩ ≠ 0`, hence `x ≠ 0`
+  have ha : inner ℝ x u ≠ 0 := hxu.ne'
+  have hx : x ≠ 0 := by
+    rintro rfl
+    simp at hxu
+  refine ⟨?_, fun h hh => ?_⟩
+  · -- `C¹`: a quotient with nonvanishing denominator, `arctan`, and the norm away from `0`
+    have hq : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y e / inner ℝ y u) x :=
+      (contDiffAt_id.inner ℝ contDiffAt_const).div (contDiffAt_id.inner ℝ contDiffAt_const) ha
+    exact (hφ.contDiffAt.comp x hq.arctan).mul (hlam.contDiffAt.comp x (contDiffAt_norm ℝ hx))
+  · -- the linear coordinates `y ↦ ⟨y, z⟩` are `innerSL ℝ z`
+    have hlin : ∀ z : Euclid P, HasFDerivAt (fun y : Euclid P => inner ℝ y z) (innerSL ℝ z) x := by
+      intro z
+      have hz : (fun y : Euclid P => inner ℝ y z) = innerSL ℝ z := by
+        funext y
+        rw [innerSL_apply_apply, real_inner_comm]
+      rw [hz]
+      exact (innerSL ℝ z).hasFDerivAt
+    -- the quotient `q = ⟨·, e⟩ · ⟨·, u⟩⁻¹`
+    have hinv : HasFDerivAt (fun y : Euclid P => (inner ℝ y u)⁻¹)
+        ((-(inner ℝ x u ^ 2)⁻¹) • innerSL ℝ u) x :=
+      (hasDerivAt_inv ha).comp_hasFDerivAt x (hlin u)
+    have hq : HasFDerivAt (fun y : Euclid P => inner ℝ y e / inner ℝ y u)
+        (inner ℝ x e • ((-(inner ℝ x u ^ 2)⁻¹) • innerSL ℝ u) +
+          (inner ℝ x u)⁻¹ • innerSL ℝ e) x := by
+      simp only [div_eq_mul_inv]
+      exact (hlin e).fun_mul hinv
+    -- the angle `arctan ∘ q` and the outer profile `φ`
+    have hΦ := (hφ.differentiable one_ne_zero
+      (Real.arctan (inner ℝ x e / inner ℝ x u))).hasDerivAt.comp_hasFDerivAt x hq.arctan
+    -- the norm `‖y‖ = √(‖y‖²)` and the radial profile `lam`
+    have hN : HasFDerivAt (fun y : Euclid P => ‖y‖)
+        ((1 / (2 * √(‖x‖ ^ 2))) • (2 • innerSL ℝ x)) x := by
+      have hs := (hasStrictFDerivAt_norm_sq x).hasFDerivAt.sqrt
+        (pow_ne_zero 2 (norm_ne_zero_iff.2 hx))
+      have hfun : (fun y : Euclid P => √(‖y‖ ^ 2)) = fun y => ‖y‖ := by
+        funext y
+        exact Real.sqrt_sq (norm_nonneg y)
+      rwa [hfun] at hs
+    have hL := (hlam.differentiable one_ne_zero ‖x‖).hasDerivAt.comp_hasFDerivAt x hN
+    -- the product rule; the radial term `⟨x, h⟩ / ‖x‖` vanishes since `⟨x, h⟩ = 0`
+    have hF : HasFDerivAt
+        (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) _ x :=
+      hΦ.fun_mul hL
+    rw [hF.fderiv]
+    simp only [add_apply, smul_apply, innerSL_apply_apply, smul_eq_mul, Function.comp_apply, hh,
+      smul_zero, mul_zero, zero_add]
+    -- clearing `1 + (b / a)² = (a² + b²) / a²` with `a ≠ 0`
+    rw [real_inner_comm h u, real_inner_comm h e]
+    field_simp
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
