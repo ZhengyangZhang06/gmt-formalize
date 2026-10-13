@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "851e0d8a594ee4e6b1cea3d310d215a0b9159f836c6acb15308987aa437f58fe",
+  "git_delta": {
+    "base_commit": "6d7f0f0a7c5af282ea77c91cd1696e571908eccc",
+    "candidate_commit": "863f6d9cf6039f8d589e99100765452f47833535",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "97e872eefd6215cf6b067ab533f987af64bb75b3c2b13a5a8ccdd07d967e56f6",
+    "source_sha256": "90596b9f2357c74864f9279c8eb0b8097d0b5248a6373667c9914830b66d9d63",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_unitOrientation_map_gramNormalized",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n) (L : Euclid P →L[ℝ] Euclid P) (J : ℝ), IsUnitOrientationOf ξ Q → Injective L → J = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j)))) → 0 < J ∧ J ≤ ‖L‖ ^ n ∧ IsUnitOrientationOf (J⁻¹ • ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid P) Q)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
