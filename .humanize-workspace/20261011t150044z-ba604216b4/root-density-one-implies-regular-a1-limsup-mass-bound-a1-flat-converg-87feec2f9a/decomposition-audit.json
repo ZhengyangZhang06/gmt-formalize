@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "massOn_sub|mass_sub|massOn_add|mass_add|massOn_neg|diagonal_subseq|Sub \\(GeometricCurrentOn",
+        "massAdmissibleOn|def massOn|def mass |le_massOn|covectorEuclideanNorm_neg",
+        "theorem Finite.exists_infinite_fiber|theorem Infinite.exists_gt|theorem strictMono_nat_of_lt_succ|theorem inv_two_add_inv_two|theorem Finite.biUnion |theorem ofReal_add_le|theorem pow_pos|mulTSupport_inv|theorem coe_neg",
+        "git show ea5c1199c9160b359cf351e442ec9e8b76e9a258 -- GMT/Ch07/Submission.lean",
+        "git show b046f226689afca88f2ceb966c9010ac5e581de0 -- GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/cauchy-independent-audit-ebujqrhm/generate.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cauchy-independent-audit-ebujqrhm/Challenge_mass_sub_le.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cauchy-independent-audit-ebujqrhm/Challenge_diagonal_subseq.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cauchy-independent-audit-ebujqrhm/Reuse.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Lattice.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Interval/Finset/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Monotone/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-87feec2f9a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-87feec2f9a/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-117cbe2a8e/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-81bbc80940/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        "/tmp/dor-cauchy-decomp/lean/Assembly.lean",
+        "/tmp/cauchy-independent-audit-ebujqrhm/generate.py",
+        "/tmp/cauchy-independent-audit-ebujqrhm/Reuse.lean"
+      ],
+      "conclusion": "Verified snapshot revisions b4d606db and 25730c7c, contract and compiler-input compatibility, and the imported definitions of mass, subtraction and boundary. Searches found no relevant existing mass-difference or diagonal_subseq declaration in the snapshot project or SimonGMT. The cited Mathlib tools support both proofs. Both reused names have exactly one DAG owner, comparator acceptance, byte-identical frozen types and verified candidate-source hashes. Their proofs recompiled with only propext, Classical.choice and Quot.sound; both standalone types elaborated as Prop without their implementations. The split appropriately isolates the supremum estimate and recursive extraction. Its relevant dependency graph is acyclic. The reviewed assembly compiles at the exact selected parent type, conditional only on the registered, accepted im_calculus dependency: finite fibres provide the diagonal hypothesis, common centres cancel, IM differences follow using openness, and two dyadic errors give the required bound. No ancestor theorem is used."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_sub_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary U and G without openness assumptions. Each proof step is valid: reduce the supremum to admissible evaluations, verify admissibility of negation, expand contract subtraction using linearity, apply ofReal subadditivity, and bound both terms by their masses. This handles infinite masses without extra assumptions and proves the child independently. Subtraction and boundary evaluation were also checked by definitional equality in Lean. The bare name legitimately reuses the identically typed comparator-accepted declaration."
+    },
+    {
+      "key": "diagonal_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes exactly the stated refinement hypothesis for arbitrary relations C. Choice supplies infinite refinements; recursion preserves infinitude and nesting; unboundedness supplies increasing choices. The indexing is correct: φ(r) belongs to I_(r+1), while φ(r+1) belongs to I_(r+2), a subset of I_(r+1). Thus the required ordered relation C r (φ(r+1)) (φ(r)) follows without symmetry or transitivity assumptions. The proof is complete and non-circular. The bare name legitimately reuses the identically typed comparator-accepted declaration."
+    }
+  ],
+  "required_changes": []
+}
