@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.injective_unit_orientation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "Normalized evaluation at F e is a unit orientation of range F, and det(F*∘F) > 0, for injective F",
+  "statement": "Let P, n ∈ ℕ and let F : ℝⁿ → ℝᴾ be an injective continuous linear map; write b := (F e₁, …, F eₙ) with eⱼ = EuclideanSpace.single j 1. Then (i) det(F*∘F) > 0 (determinant of the endomorphism F.adjoint ∘L F of ℝⁿ), and (ii) every ξ ∈ MultiVector P n (a continuous linear functional on n-covectors of ℝᴾ) satisfying α(b) = √(det(F*∘F))·ξ(α) for every n-covector α is a unit orientation of the subspace range F, i.e. IsUnitOrientationOf ξ (range F): there is an orthonormal τ : Fin n → ℝᴾ with span(range τ) = range F such that either ξ(α) = α(τ) for all α, or ξ(α) = −α(τ) for all α.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → 0 < (F.adjoint ∘L F).det ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, α (fun i => F (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt ((F.adjoint ∘L F).det) * ξ α) → IsUnitOrientationOf ξ (LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "dgoj_unitOrientation_of_injective",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.adjoint_det_frame_sq-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.orthonormal_frame_range-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.adjoint_det_frame_sq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.orthonormal_frame_range-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b87b86ed4f-a1"
+}
