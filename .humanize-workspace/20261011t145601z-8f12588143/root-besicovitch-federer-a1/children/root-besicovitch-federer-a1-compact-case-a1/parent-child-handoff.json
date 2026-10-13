@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n \"^def ForAlmostAllProjections|^noncomputable def frameProjection|^def BesicovitchFedererProjectionTheorem\" project/GMT/Ch03/Contract.lean",
+        "rg -n \"theorem measurable_rectifiable_purelyUnrectifiable_decomposition|theorem PurelyUnrectifiable.mono|theorem countablyRectifiable_iUnion\" simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n \"theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn\" simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "rg -n \"theorem exists_disjoint_subfamily_covering_enlargement|theorem exists_disjoint_covering_ae\" mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "rg -n \"theorem _root_.Monotone.measure_iUnion\" mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "rg -n \"theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi\" mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "rg -n \"theorem ae_tendsto_measure_inter_div\" mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "rg -n \"instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace\" mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "rg -n \"InnerProductSpace.euclideanHausdorffMeasure_eq_volume|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_zero\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n \"theorem hausdorffMeasure_zero_singleton\" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n \"theorem starProjection_norm_le\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "rg -n \"theorem finrank_span_eq_card\" mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "rg -n \"lemma isMulInvariant_eq_smul_of_compactSpace\" mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "rg -n \"IsTopologicalGroup \\(unitary R\\)\" mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean",
+        "rg -l -i \"besicovitch.?federer|purely.?unrectifiable\" mathlib/Mathlib",
+        "rg -l -i \"CompactSpace \\(Matrix.orthogonalGroup|orthogonalGroup.*CompactSpace\" mathlib/Mathlib",
+        "rg -n -i \"orthogonalGroup|haar|grassmann\" simongmt/Poincare/SimonGMT (only Ch02 additive-Haar area lemmas and a Ch08 Grassmannian type; no O(N) Haar measure)",
+        "lake env lean on comparator-scope test files (import GMT.Ch03.Submission + replayed contract scope) elaborating all 8 child types and three Lean assemblies (parent; compact_case; cone_density_positive)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SymmetricVitali.lean"
+      ],
+      "conclusion": "Pinned snapshot (project d09bc8a, Mathlib 25730c7c) plus the pinned simongmt package. Reused by the children: SimonGMT measurable_rectifiable_purelyUnrectifiable_decomposition (measurable Lemma 3.2, used by compact_reduction instead of the sibling node, avoiding a cycle), PurelyUnrectifiable.mono, CountablyRectifiable.mono/countablyRectifiable_iUnion, euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz image bound for μHE); Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement (5r-lemma) and Vitali.exists_disjoint_covering_ae, Monotone.measure_iUnion (continuity from below for arbitrary sets), LipschitzOnWith.extend_real/extend_pi (McShane), Besicovitch.ae_tendsto_measure_inter_div (density theorem for finite measures), InnerRegularCompactLTTop for all measures on Polish spaces, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_zero + hausdorffMeasure_zero_singleton, Submodule.starProjection_norm_le, finrank_span_eq_card, Haar uniqueness on compact groups (isMulInvariant_eq_smul_of_compactSpace), IsTopologicalGroup (unitary R). No match: neither Mathlib nor SimonGMT contains the Besicovitch–Federer theorem, the cone lemmas, a CompactSpace instance or Haar measure for the orthogonal group, or invariant measures on Grassmannians/spheres in Hausdorff normalization; these are supplied by the children's proofs (cone_trichotomy carries the O(N) Haar-averaging argument)."
+    }
+  ],
+  "parent_id": "root.besicovitch_federer-a1",
+  "child_id": "root.besicovitch_federer-a1.compact_case-a1",
+  "subproblem": {
+    "key": "compact_case",
+    "title": "Besicovitch–Federer for compact purely unrectifiable sets of finite measure, given Eilenberg's inequality (Dall'Alba, proof of Thm 5.1)",
+    "statement": "Assume Eilenberg's inequality in the exact frozen form of the root-level node eilenberg_upper_integral_inequality (as in the sibling infinite_fibres). Then for all n ≥ 1, ℓ ≥ 1 and every compact, purely n-unrectifiable A ⊆ ℝ^{n+ℓ} with Hⁿ(A) < ∞: for Lebesgue-a.e. v ∈ (ℝ^{n+ℓ})ⁿ, if v is linearly independent then Hⁿ(frameProjection v(A)) = 0, i.e. ForAlmostAllProjections (n+ℓ) n (fun p ↦ Hⁿ(p(A)) = 0).",
+    "lean_statement": "(∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ A : Set (Rn (n + ℓ)), IsCompact A → PurelyUnrectifiable n A → μHE[n] A < ∞ → ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] (p '' A) = 0)",
+    "lean_name": "bf_compact_projection_null",
+    "depends_on": [
+      "cone_density_positive",
+      "cone_density_infinite",
+      "infinite_fibres",
+      "cone_trichotomy"
+    ],
+    "natural_proof": "Source. This is Step 10 of the parent proof (M. G. Dall'Alba, The Besicovitch-Federer Projection Theorem, proof of Theorem 5.1), combining the siblings cone_density_positive (parent Step 5), cone_density_infinite (Step 6), infinite_fibres (Step 7) and cone_trichotomy (Steps 8–9). The hypothesis (Eil) is the exact frozen statement of the root-level sibling eilenberg_upper_integral_inequality; it is only passed on to infinite_fibres.\n\nSetting. Assume (Eil); let n ≥ 1, ℓ ≥ 1, N := n + ℓ, and A ⊆ ℝ^N compact, purely n-unrectifiable, with Hⁿ(A) < ∞ (Hⁿ := μHE[n]). Goal: for Lebesgue-a.e. v ∈ (ℝ^N)ⁿ, if v is linearly independent then Hⁿ(frameProjection v '' A) = 0.\n\n1. Scales and conditions. For i ∈ ℕ let δ_i := 1/(i+1) > 0. For a linear p : ℝ^N → ℝ^N and a ∈ ℝ^N write X_p(a, r, s) := {x : |p(x − a)| < s|x − a|} ∩ B(a, r) and\n Φ0_i(a, p): ∀c > 0 ∃ε > 0 ∀s ∈ (0, ε) ∀r ∈ (0, δ_i): Hⁿ(A ∩ X_p(a, r, s)) ≤ c(rs)ⁿ;\n Φ∞_i(a, p): ∀K ∈ ℝ ∀ε > 0 ∃s ∈ (0, ε) ∃r ∈ (0, δ_i): K(rs)ⁿ ≤ Hⁿ(A ∩ X_p(a, r, s));\n Ax_i(a, p): ∃b ∈ A with b ≠ a, |b − a| < δ_i and p(b − a) = 0.\n (These are verbatim the conditions in the statements of the siblings, with δ := δ_i.)\n\n2. Good frames. For each i, cone_trichotomy (applied with n, ℓ ≥ 1, the compact set A with Hⁿ(A) < ∞, and δ := δ_i) gives: for Lebesgue-a.e. v, if v is linearly independent then Hⁿ(G_i(v)) = 0, where G_i(v) := {a ∈ A : not (Φ0_i ∨ Φ∞_i ∨ Ax_i)(a, frameProjection v)}. A countable intersection of full-measure sets has full measure (Mathlib ae_all_iff), so for Lebesgue-a.e. v: for every i, if v is linearly independent then Hⁿ(G_i(v)) = 0. Fix such a v that is linearly independent; it suffices to show Hⁿ(frameProjection v '' A) = 0.\n\n3. The plane of v. Let W := span{v_1, …, v_n}. Since v is linearly independent, finrank W = n (Mathlib finrank_span_eq_card). By the definition of frameProjection, P := frameProjection v = W.starProjection. P is linear with operator norm ≤ 1 (Submodule.starProjection_norm_le), hence 1-Lipschitz, so Hⁿ(P(S)) ≤ Hⁿ(S) for every S ⊆ ℝ^N (Lipschitz image bound for Hausdorff measure; SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn with constant 1).\n\n4. Exceptional sets. For i ∈ ℕ put G_i := G_i(v), A1_i := {a ∈ A : Φ0_i(a, P)}, A2_i := {a ∈ A : Φ∞_i(a, P)}, and A3 := {a ∈ A : {b ∈ A : Pb = Pa} is infinite}. Then:\n – Hⁿ(G_i) = 0 by 2;\n – Hⁿ(A1_i) = 0 by cone_density_positive (n ≥ 1, finrank W = n, A purely n-unrectifiable, δ_i > 0);\n – Hⁿ(P(A2_i)) = 0 by cone_density_infinite (n ≥ 1, finrank W = n, A compact with Hⁿ(A) < ∞, δ_i > 0);\n – Hⁿ(P(A3)) = 0 by infinite_fibres (applied to (Eil), n, ℓ, W with finrank W = n, and A with Hⁿ(A) < ∞).\n\n5. Covering. Claim: A ⊆ ⋃_i (G_i ∪ A1_i) ∪ ⋃_i A2_i ∪ A3. Let a ∈ A lie in no G_i, A1_i, A2_i. For each i: a ∉ G_i gives (Φ0_i ∨ Φ∞_i ∨ Ax_i)(a, P); a ∉ A1_i and a ∉ A2_i exclude the first two alternatives, so Ax_i(a, P) holds: there is b_i ∈ A with b_i ≠ a, |b_i − a| < 1/(i+1) and P(b_i − a) = 0, i.e. Pb_i = Pa. Suppose S := {b ∈ A : Pb = Pa} were finite. Then S ∖ {a} is finite, hence closed, and does not contain a, so there is ε > 0 with B(a, ε) ∩ (S ∖ {a}) = ∅. Choose i with 1/(i+1) < ε; then b_i ∈ (S ∖ {a}) ∩ B(a, ε), a contradiction. Hence S is infinite and a ∈ A3.\n\n6. Conclusion. By 5, P(A) ⊆ P(⋃_i (G_i ∪ A1_i)) ∪ ⋃_i P(A2_i) ∪ P(A3). By 3 and 4, Hⁿ(P(⋃_i (G_i ∪ A1_i))) ≤ Hⁿ(⋃_i (G_i ∪ A1_i)) ≤ Σ_i (Hⁿ(G_i) + Hⁿ(A1_i)) = 0, and Hⁿ(P(A2_i)) = 0 = Hⁿ(P(A3)). By countable subadditivity Hⁿ(P(A)) = 0, i.e. μHE[n] (frameProjection v '' A) = 0. Since this holds for Lebesgue-a.e. v whenever v is linearly independent, ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] (p '' A) = 0). ∎",
+    "proof_key_steps": [
+      "Apply cone_trichotomy for δ_i = 1/(i+1) and intersect the countably many full-measure sets of frames.",
+      "For a fixed good independent frame v, P := frameProjection v = (span v).starProjection with finrank n, and P is 1-Lipschitz.",
+      "Exceptional sets: zero density (cone_density_positive, Hⁿ-null), infinite density (cone_density_infinite, null projection), infinite fibres (infinite_fibres with Eilenberg, null projection), trichotomy failure (null).",
+      "A point outside all of them has points of A ∖ {a} in a + V arbitrarily close to a, so its fibre is infinite.",
+      "Hence P(A) is covered by countably many Hⁿ-null sets."
+    ]
+  },
+  "audit": {
+    "key": "compact_case",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "All four dependencies apply with their stated hypotheses. Intersecting the full-measure frame sets over 1/(i+1), the remaining axis witnesses force an infinite fibre. The resulting cover has null projection. The exact conditional Lean conclusion was independently checked by replaying the assembly with the proposed child types."
+  },
+  "resolved_dependencies": [
+    "root.besicovitch_federer-a1.cone_density_positive-a1",
+    "root.besicovitch_federer-a1.cone_density_infinite-a1",
+    "root.besicovitch_federer-a1.infinite_fibres-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-compact-case-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-compact-case-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-compact-case-a1/parent-supplied-natural-proof.json"
+}

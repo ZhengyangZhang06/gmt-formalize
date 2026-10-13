@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_projection_continuous-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+  "depth": 3,
+  "title": "Continuity of the frame projection on linearly independent frames (Step 1.5(b))",
+  "statement": "For all N, n ∈ ℕ, consider the map v ↦ frameProjection v = (span{v_1, …, v_n}).starProjection from (ℝ^N)ⁿ = (Fin n → EuclideanSpace ℝ (Fin N)), with the product topology, to the space of continuous linear maps ℝ^N → ℝ^N with the operator-norm topology. This map is continuous on the set of linearly independent frames (ContinuousOn).",
+  "lean_statement": "∀ (N n : ℕ), ContinuousOn (fun v : Fin n → Rn N ↦ frameProjection v) {v | LinearIndependent ℝ v}",
+  "lean_name": "bf_frameProjection_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-projection-continuous-a1-a1"
+}

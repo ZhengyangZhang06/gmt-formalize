@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "def euclideanHausdorffMeasure|Isometry.euclideanHausdorffMeasure_image|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|isAddHaarMeasure_euclideanHausdorffMeasure",
+        "theorem addHaar_ball_of_pos|theorem addHaar_ball ",
+        "finrank_add_inf_finrank_orthogonal",
+        "theorem starProjection_eq_self_iff|theorem starProjection_apply_eq_zero_iff|theorem starProjection_norm_le",
+        "theorem finite_cover_balls|theorem measure_biUnion_lt_top|irreducible_def stdOrthonormalBasis|theorem mem_orthogonal_singleton_iff_inner_left",
+        "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "hausdorffMeasure_image_le",
+        "bf_planeBall_measure_uniform|bf_sphereCap_lower_comparison|bf_sphereCap_upper_comparison",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/SphereCapBoundsEndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/sphere_cap_independent_audit_q87nzmrt.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsEndToEnd.lean",
+        "/tmp/sphere_cap_independent_audit_q87nzmrt.lean"
+      ],
+      "conclusion": "The pinned references support the normalization, isometry invariance, positive-radius Haar scaling (including dimension zero), projection estimates, Lipschitz image inequality and finite-cover argument. Searches found no proposed-name collisions in the snapshot project, current declarations or DAG. All names are valid bare identifiers; no accepted declaration is being reused with a changed type. Independently compiled the exact child propositions without implementing them, checked the real and ENNReal arithmetic instances, and compiled the supplied complete child proofs and exact frozen parent assembly. All four proofs use only propext, Classical.choice and Quot.sound. The split is appropriate and acyclic: the children have no sibling dependencies, and their conclusions establish this selected parent through the uniform flat-ball constant, compactness, c = ω/2^n and C = 2^n max(ω, σ)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "flat_ball_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match, including uniformity in ambient dimension, plane and center. The proof establishes positive finite unit-ball volume, constructs the isometric parametrization, proves the image equality, and applies normalization and positive-radius Haar scaling. The ENNReal conversion is justified by finiteness. Dimension zero is covered without a Nontrivial assumption. No circular reliance or additional planning is needed."
+    },
+    {
+      "key": "cap_lower_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match, with the dimension-n plane chosen before the radius. The dimension calculation, projection properties and explicit lift are justified. The estimate gives strict membership in the open cap even at ρ = 2, and the 1-Lipschitz image inequality proves the stated comparison without measurability assumptions. The argument also covers n = 0 and uses neither the parent theorem nor another child."
+    },
+    {
+      "key": "cap_upper_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree; independently checked that 1/2 is real and the factor 2^n uses ENNReal multiplication. The proof establishes the positive-root graph representation, the flat-disc radius bound and the square-root difference estimate, yielding a 2-Lipschitz graph map. Monotonicity and the image inequality give the exact conclusion, including ρ = 1/2 and n = 0. The plane is radius-independent, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

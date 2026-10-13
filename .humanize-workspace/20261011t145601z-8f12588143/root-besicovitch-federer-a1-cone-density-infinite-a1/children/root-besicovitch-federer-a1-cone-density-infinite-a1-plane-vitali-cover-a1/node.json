@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_density_infinite-a1.plane_vitali_cover-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+  "depth": 3,
+  "title": "Vitali covering for Hⁿ by closed discs in an n-plane",
+  "statement": "Let n, N ∈ ℕ, let W be a linear subspace of ℝ^N = EuclideanSpace ℝ (Fin N) with dim W = n, and Hⁿ := μHE[n] on ℝ^N. Let ι be a type, S ⊆ W an arbitrary (not necessarily measurable) set, t ⊆ ι, c : ι → ℝ^N and ρ : ι → ℝ such that c(i) ∈ W and ρ(i) > 0 for every i ∈ t, and suppose the family is fine at S: for every x ∈ S and ε > 0 there is i ∈ t with c(i) = x and ρ(i) ≤ ε. Then there is a countable u ⊆ t such that the sets D_i := W ∩ B̄(c(i), ρ(i)) (i ∈ u) are pairwise disjoint as an indexed family (D_i ∩ D_k = ∅ for distinct i, k ∈ u) and Hⁿ(S ∖ ⋃_{i∈u} D_i) = 0.",
+  "lean_statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → ∀ (ι : Type) (S : Set (Rn N)) (t : Set ι) (c : ι → Rn N) (ρ : ι → ℝ), S ⊆ (W : Set (Rn N)) → (∀ i ∈ t, c i ∈ W ∧ 0 < ρ i) → (∀ x ∈ S, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, c i = x ∧ ρ i ≤ ε) → ∃ u ⊆ t, u.Countable ∧ u.PairwiseDisjoint (fun i ↦ (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) ∧ μHE[n] (S \\ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i))) = 0",
+  "lean_name": "bf_plane_vitali_disjoint_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1-a1"
+}

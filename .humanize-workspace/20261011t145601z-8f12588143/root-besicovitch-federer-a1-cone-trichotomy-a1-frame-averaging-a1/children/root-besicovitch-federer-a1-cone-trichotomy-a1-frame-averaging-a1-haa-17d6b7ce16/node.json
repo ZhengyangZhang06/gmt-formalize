@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.haar_stabilizer-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "Bi-invariant Haar probability on the orthogonal stabilizer of a subspace (Step 1)",
+  "statement": "Let N ∈ ℕ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and let 𝓛 := E →L[ℝ] E carry the Borel σ-algebra of its operator-norm topology. Write g* for the adjoint of g ∈ 𝓛 and gk for composition. Let U ⊆ E be a linear subspace and K_U := {g ∈ 𝓛 : g*g = 1 and gx = x for all x ∈ U}, the orthogonal maps fixing U pointwise. Then there is a Borel probability measure θ on 𝓛 with two properties. First, θ-a.e. g lies in K_U. Second, θ is left and right K_U-invariant: for every k ∈ 𝓛 with k*k = 1 and kx = x for all x ∈ U, the images of θ under g ↦ kg and under g ↦ gk both equal θ.",
+  "lean_statement": "∀ (N : ℕ) (U : Submodule ℝ (Rn N)), ∃ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ ∧ (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ U, g x = x) ∧ ∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ U, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ",
+  "lean_name": "bf_orthStabilizer_haar_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-haa-17d6b7ce16-a1"
+}

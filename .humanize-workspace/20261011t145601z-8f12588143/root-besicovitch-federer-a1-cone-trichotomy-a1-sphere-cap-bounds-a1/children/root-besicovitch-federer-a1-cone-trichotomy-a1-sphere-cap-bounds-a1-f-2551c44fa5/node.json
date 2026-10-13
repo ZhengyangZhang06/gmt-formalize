@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1.flat_ball_uniform-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+  "depth": 4,
+  "title": "Uniform Hⁿ-measure of open balls in n-planes (parent step 1)",
+  "statement": "Let n ∈ ℕ. There is a real number ω > 0, depending only on n, with the following property. For every N ∈ ℕ, every linear subspace T of ℝᴺ = EuclideanSpace ℝ (Fin N) with dim T = n, every w ∈ T and every ρ > 0: Hⁿ(T ∩ B(w, ρ)) = ofReal(ω ρⁿ). Here Hⁿ = μHE[n] (Euclidean Hausdorff measure, applied to arbitrary sets as an outer measure), B(w, ρ) is the open ball and ofReal = ENNReal.ofReal.",
+  "lean_statement": "∀ n : ℕ, ∃ ω : ℝ, 0 < ω ∧ ∀ (N : ℕ) (T : Submodule ℝ (Rn N)), finrank ℝ T = n → ∀ w ∈ T, ∀ ρ : ℝ, 0 < ρ → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball w ρ) = ENNReal.ofReal (ω * ρ ^ n)",
+  "lean_name": "bf_planeBall_measure_uniform",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1-f-2551c44fa5-a1"
+}

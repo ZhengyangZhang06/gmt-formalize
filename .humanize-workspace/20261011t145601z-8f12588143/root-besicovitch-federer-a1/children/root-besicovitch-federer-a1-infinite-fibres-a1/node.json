@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.infinite_fibres-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Points with infinite fibre have Hⁿ-null projection, given Eilenberg's inequality (Dall'Alba Lemma 5.4)",
+  "statement": "Assume Eilenberg's inequality in the exact frozen form of the root-level node eilenberg_upper_integral_inequality: for all N, m, k ∈ ℕ there is C ≥ 0 such that for every A ⊆ ℝ^N, every L ≥ 0 and every L-Lipschitz f : ℝ^N → ℝ^m there is a measurable g : ℝ^m → [0, ∞] with Hᵏ(A ∩ f⁻¹{y}) ≤ g(y) for all y and ∫ g dLᵐ ≤ C·Lᵐ·H^{m+k}(A). Then for all n, ℓ ∈ ℕ, every n-dimensional subspace W ⊆ ℝ^{n+ℓ} with orthogonal projection P := W.starProjection, and every A ⊆ ℝ^{n+ℓ} with Hⁿ(A) < ∞: Hⁿ(P({a ∈ A : {b ∈ A : Pb = Pa} is infinite})) = 0 (note {b ∈ A : Pb = Pa} = A ∩ (a + W^⊥)).",
+  "lean_statement": "(∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), μHE[n] A < ∞ → μHE[n] (W.starProjection '' {a | a ∈ A ∧ {b | b ∈ A ∧ W.starProjection b = W.starProjection a}.Infinite}) = 0",
+  "lean_name": "bf_infiniteFibre_projection_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-infinite-fibres-a1-a1"
+}

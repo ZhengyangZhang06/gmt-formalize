@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.stabilizer_orbit_null-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "Orbit law under the stabilizer of V^⊥: Hⁿ-null sphere sets have θ′-null preimages (Step 4)",
+  "statement": "Let N, n ∈ ℕ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and let 𝓛 := E →L[ℝ] E carry the Borel σ-algebra of its norm topology; g* is the adjoint. Let Hⁿ := μHE[n], V ⊆ E a linear subspace, S(V) := {x ∈ V : |x| = 1}, and K := {g ∈ 𝓛 : g*g = 1 and gx = x for all x ∈ V^⊥}. Let θ be a Borel probability measure on 𝓛 such that θ-a.e. g lies in K and, for every k ∈ K, the images of θ under g ↦ kg and g ↦ gk equal θ. Assume 0 < Hⁿ(S(V)) < ∞. Then for every ζ ∈ V with |ζ| = 1 and every Borel set Y ⊆ E with Hⁿ(Y ∩ S(V)) = 0, θ({g ∈ 𝓛 : gζ ∈ Y}) = 0.",
+  "lean_statement": "∀ (N n : ℕ) (V : Submodule ℝ (Rn N)) (θ : Measure (Rn N →L[ℝ] Rn N)), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ Vᗮ, g x = x) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ Vᗮ, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ) → 0 < μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} → μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} < ∞ → ∀ ζ ∈ V, ‖ζ‖ = 1 → ∀ Y : Set (Rn N), MeasurableSet Y → μHE[n] (Y ∩ {x : Rn N | x ∈ V ∧ ‖x‖ = 1}) = 0 → θ {g | g ζ ∈ Y} = 0",
+  "lean_name": "bf_stabilizerOrbit_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-sta-eedf577cd7-a1"
+}
