@@ -1,0 +1,81 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.dual_dist_count-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the supplied proof of the selected parent dimred_mbl_dt_skeleton_retraction [its parent's Lemma D = Simon Ch. 6, Lemma 5.4, with the documented 3/4 → 1/4 erratum]: the centre a + b of the cube G = b + C and the cone K_G of its closing Remark (the planes {u : u_i = b_i + a_i (i ∈ J')}, J' ⊆ {1, …, P}, |J'| = n + 1 = m + 2, through that centre; in step (5b) the corresponding cone is K₀) lie in L*(a), so d(x) ≤ dist(x, K_G). This child is the coordinate form of that comparison; in the parent assembly it starts the sibling face_induction on the cube b + C with ρ := d(x)/√(m + 2). No hypothesis on a is needed.
+1. Put d := infDist(x, L*(a)) ≥ 0 and S := {i : |x_i − b_i − a_i| < d/√(m + 2)}. Suppose, for a contradiction, that |S| ≥ m + 2, and choose s ⊆ S with |s| = m + 2 (Finset.exists_subset_card_eq).
+2. Define w ∈ ℝ^P by w_i := b_i + a_i for i ∈ s and w_i := x_i for i ∉ s (WithLp.toLp). For i ∈ s, w_i − a_i = b_i ∈ ℤ, and |s| = m + 2, so w ∈ L*(a) (w lies on the plane of K_G with J' = s). Hence d ≤ |x − w| (Metric.infDist_le_dist_of_mem).
+3. By EuclideanSpace.dist_eq, |x − w|² = Σ_i (x_i − w_i)² = Σ_{i ∈ s} (x_i − b_i − a_i)². For i ∈ s we have 0 ≤ |x_i − b_i − a_i| < d/√(m + 2), so (x_i − b_i − a_i)² < d²/(m + 2). Since s has m + 2 ≥ 1 elements, summing gives |x − w|² < (m + 2)·d²/(m + 2) = d², hence |x − w| < d (both sides are nonnegative).
+4. Steps 2 and 3 give d ≤ |x − w| < d, a contradiction. Hence |S| ≤ m + 1. (If d = 0, S is empty, and the conclusion is immediate; the argument above covers this case too.) ∎
+Lean reference (not part of the argument): a complete Lean proof of exactly this type, using only propext, Classical.choice and Quot.sound, is the declaration GMT.Ch07.Submission.dimred_mbl_dtsr_dual_dist_count (proved there by GMT.Ch07.ElemCheck.dual_dist_count) in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/EndToEnd.lean; its structure follows the numbered steps above. That file is git-ignored scratch, and its auxiliary declarations (namespaces ElemCheck, RadCheck, RevCheck, IndCheck; an identical block exists in the twin node's scratch file) are not part of this contract: the problem requires every new named helper to have its own theorem node, so an implementation inlines such auxiliary facts (e.g. as have-steps inside the proof) instead of copying them as separate declarations.
+
+## Key steps
+
+1. Assume m + 2 coordinates satisfy |x_i − b_i − a_i| < d/√(m + 2) and keep exactly m + 2 of them.
+2. Moving those coordinates to b_i + a_i gives a point w ∈ L*(a) (on the cone K_G of the cube centre), so d ≤ |x − w|.
+3. |x − w|² < (m + 2)·d²/(m + 2) = d² gives the contradiction.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n -i 'skeleton|cubical|retraction|dual skeleton|radial' SNAPSHOT/project/GMT -g '*.lean' (only Ch06 LatticeFaceIndex/latticeFace at GMT/Ch06/Contract.lean:158 and Ch04 normalRadialSq; Ch07 Contract imports no Ch06 module)`
+- `rg -n -i -l 'deformation' SNAPSHOT/project/GMT -g '*.lean' (Ch02 and Ch06 unproved specifications only)`
+- `rg -n 'theorem IsClosed.Icc_subset_of_forall_mem_nhdsWithin|theorem infDist_le_dist_of_mem|theorem infDist_le_infDist_add_dist|theorem exists_mem_eq_sup'|theorem ContinuousOn.preimage_isClosed_of_isClosed|theorem dist_apply_le|theorem EuclideanSpace.dist_eq|def piFinset|theorem eventually_all|theorem mem_nhdsWithin_iff' over SNAPSHOT/mathlib/Mathlib/{Topology/Order/IntermediateValue,Topology/MetricSpace/HausdorffDistance,Data/Finset/Lattice/Fold,Topology/ContinuousOn,Analysis/Normed/Lp/PiLp,Analysis/InnerProductSpace/PiL2,Data/Fintype/Pi,Order/Filter/Finite,Topology/MetricSpace/Pseudo/Defs}.lean (all found: IntermediateValue.lean:435, HausdorffDistance.lean:500/518, Fold.lean:763, ContinuousOn.lean:197, PiLp.lean:652, PiL2.lean:158, Pi.lean:31, Finite.lean:247, Defs.lean:852)`
+- `rg -c 'dimred_mbl_dtsr' SNAPSHOT/project SNAPSHOT/mathlib/Mathlib GMT lake-packages-25730c7c/simongmt RUN/dag.json (no match, exit 1); python3 scan of dag.json lean_name and lean_statement (no collision for the six names; nodes with this node's frozen type: cmcdt_skeleton_retraction waiting-children with unaccepted cmcdtsr_* children, dor_lmb_fcd_retraction decomposing)`
+- `python3 reads of the twin's decomposition-v2.json, decomposition-audit-v1.json, decomposition-audit-v2.json, decomposition-review-receipt-v2.json, decomposition-scope-v2.json and parent-child-handoff.json (diff of supplied proofs: same steps 1–6, this node adds the closing Remark of step 5)`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem) and lean_contract.py; python3 validate_lean_statement (runtime and verifier copies) on all six types (accepted unchanged); verifier/gmt-compare.py contract_scope/child_modules used to generate chal/Challenge_*.lean`
+- `grep -n -i helper RUN/problem.md (line 471: every new named helper must have its own theorem node)`
+- `lake env lean GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/EndToEnd.lean (twin's reviewer file recompiled: 0 errors, axioms propext, Classical.choice, Quot.sound)`
+- `lake env lean GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/{Types,Instances,Assembly,EndToEnd}.lean and chal/Challenge_{segment_lipschitz,cube_cover,dual_dist_count,face_radial,retraction_family,face_induction,PARENT}.lean (all exit 0; Assembly axioms = standard + five child axioms; EndToEnd: every axiom list exactly propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Lattice/Fold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2258cbddcb/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2258cbddcb/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2258cbddcb/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/decomposition-review-receipt-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/decomposition-scope-v2.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/EndToEnd.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Types.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Instances.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/EndToEnd.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/chal/Challenge_PARENT.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/chal/Challenge_face_induction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/subproblems.json`
+
+Pins match (project b4d606db, Mathlib 25730c7c), and the snapshot's Ch07 Contract is byte-identical to the workspace Submission.lean and Contract.lean. The snapshot project has no skeleton-retraction, radial-retraction or segment-Lipschitz theorem. Its only cubical-lattice objects are the Ch06 LatticeFaceIndex and latticeFace definitions (GMT/Ch06/Contract.lean:158), which Ch07 does not import, so the child types use inline face formulas. Every Mathlib lemma cited in the child proofs exists at the pinned revision and uses only standard axioms. No dimred_mbl_dtsr_* name occurs in the snapshot, the workspace, SimonGMT or dag.json. Two other nodes carry this node's frozen type. The twin cmcdt_skeleton_retraction has a twice-audited six-child split whose children are unaccepted, so their names cannot be shared, and this proposal reuses its six types under fresh names. The Lean files in GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition prove all six child declarations with byte-identical frozen types and derive the exact parent type from them, using only propext, Classical.choice and Quot.sound. problem.md requires every new named helper to have its own node, so the child proofs tell implementers to inline the scratch helpers.

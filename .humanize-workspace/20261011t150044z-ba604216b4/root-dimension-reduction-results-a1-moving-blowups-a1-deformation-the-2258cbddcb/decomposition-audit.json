@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'skeleton|cubical|retraction|dual skeleton|radial' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "Icc_subset_of_forall_mem_nhdsWithin|infDist_le_dist_of_mem|infDist_le_infDist_add_dist|exists_mem_eq_sup'|ContinuousOn.preimage_isClosed_of_isClosed|theorem dist_apply_le|theorem EuclideanSpace.dist_eq|def piFinset|theorem eventually_all|theorem mem_nhdsWithin_iff",
+        "rg -n 'dimred_mbl_dtsr_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib GMT/Ch07 .lake/packages/simongmt/Poincare -g '*.lean'",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Lattice/Fold.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2258cbddcb/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2258cbddcb/decomposition-v1.json",
+        "GMT/Ch07/Submission.lean",
+        "GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Types.lean",
+        "GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Instances.lean",
+        "GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/Assembly.lean",
+        "GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/EndToEnd.lean",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical Ch07 contract, and independently recomputed the required parent digest. The snapshot supplies the cited elementary lemmas but no existing skeleton-retraction result. All six names are bare identifiers and unreserved in the DAG; dependencies are acyclic and correctly directed. Both statement validators accept every type unchanged. All four Lean checks exited successfully. Types elaborate independently of child implementations; instance checks confirm Euclidean L2 distance, real maxima, casts and neighbourhoods. EndToEnd proves the exact six types and selected parent using only propext, Classical.choice and Quot.sound. The split is appropriate: its distinct obligations establish the selected contract, with c = 2√(m+2)c₀ + 4√P + 1. Acceptance follows from independent proof review and these checks, not the twin's earlier audits."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including K ≥ 0 and ambient neighbourhood bounds at every segment point. The proof derives continuity, closedness of the comparison set and right extension, then applies the pinned continuous-induction theorem. It proves the endpoint inequality without circularity, including degenerate cases."
+    },
+    {
+      "key": "cube_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite corner set and both coverage conclusions match exactly. The integer/noninteger coordinate cases supply neighbourhoods; their finite intersection and coordinatewise choice establish the claimed cover. P = 0 is covered. This supplies the parent's passage from relative cube estimates to an ambient estimate."
+    },
+    {
+      "key": "dual_dist_count",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No dimensional or strip hypothesis is missing. Selecting m+2 close coordinates constructs a dual-skeleton point whose squared distance is strictly below d², contradicting infDist ≤ distance. The positive square-root denominator and nonempty selected set justify the strict inequality; d = 0 and empty-skeleton cases are sound."
+    },
+    {
+      "key": "face_radial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six conclusions and their hypotheses match the explicit Lean formula. The strip bounds ensure positive denominators; noncentrality ensures N(x)>0. Maximum attainment proves boundary landing, boundary coordinates force N=1, and the 4-Lipschitz gauge estimate yields precisely the stated radial bound. No conclusion improperly divides by a zero gauge."
+    },
+    {
+      "key": "retraction_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the totalized recursion, including face centres. Distinct equal-dimensional faces meet at boundary points, where face_radial makes both maps the identity. Classical face selection and natural-number recursion therefore construct the required family. The sole declared prerequisite, face_radial, is sufficient and correctly directed."
+    },
+    {
+      "key": "face_induction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully states the uniform constant, arbitrary family satisfying the recursion, counting hypothesis and three conclusions. The proof establishes noncentrality near x, the base case, exact scaling to ρ/N(x), and finite-face neighbourhood control. The inductive and radial factors cancel, giving the claimed constant. It needs only face_radial: family existence is supplied separately to the parent. Together with counting, cube coverage and the segment lemma, these conclusions prove the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
