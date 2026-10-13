@@ -1083,6 +1083,31 @@ theorem Submission.regcomp_cop_zero_dim_regularSet_empty : ∀ (P : ℕ) (U A : 
   rw [hTω, nonpos_iff_eq_zero, ENNReal.ofReal_eq_zero] at h1
   linarith
 
+/-- **Step 1 of Corollary 7.5.11** (Simon 7.5, pp. 197 and 202, setting 5.1).  Let `N ∈ 𝒪` with
+orientation `ξN`, `E ⊆ N ∩ U`, `T = ∂[[E]]` in `U`, and `T` minimizing in `N ∩ U`.  Then (i)
+`k ≥ 1`, as `N` is a nonempty embedded `(n+1)`-dimensional submanifold of `ℝ^{n+k}`; (ii)
+`spt T ⊆ N`, as `T` vanishes on balls missing `N̄` and `(N̄ \ N) ∩ U = ∅`; (iii) `∂T = 0` in `U`,
+as `∂∂[[E]] = 0`; (iv) if `n = 0`, then `reg T = ∅`, since a `0`-current minimizing in `N ∩ U`
+with `spt T ⊆ N ∩ U` has no regular points. -/
+theorem Submission.regcomp_codim_one_preliminaries : ∀ (n k : ℕ) (U N E : Set (Euclid (n + k))) (ξN : Euclid (n + k) → MultiVector (n + k) (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → InClassO n U N ξN → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsMinimizingIn T (N ∩ U) → 1 ≤ k ∧ T.support ⊆ N ∧ BoundaryVanishes T ∧ (n = 0 → regularSet T = ∅) := by
+  intro n k U N E ξN T hU hN hE hT hmin
+  obtain ⟨hNemb, -, hNcl, hNU⟩ := hN
+  -- (i) `N ≠ ∅` is an embedded `(n+1)`-dimensional submanifold of `ℝ^{n+k}`
+  have hdim : n + 1 ≤ n + k :=
+    Submission.regcomp_cop_dim_le_of_embedded (n + k) (n + 1) 2 N hNemb
+      (hNU.mono inter_subset_left)
+  -- (ii) `T = ∂[[E]]` with `E ⊆ N` vanishes off `N̄`, and `N̄ ∩ U ⊆ N`
+  have hspt : T.support ⊆ N :=
+    Submission.regcomp_cop_region_support_subset (n + k) n U N E ξN T hU hNcl
+      (hE.trans inter_subset_left) hT
+  -- (iii) `∂T = ∂∂[[E]] = 0`
+  refine ⟨by omega, hspt,
+    Submission.regcomp_cop_region_boundary_vanishes (n + k) n U E ξN T hT, fun hn => ?_⟩
+  -- (iv) for `n = 0`, `T` is minimizing in `N ∩ U ⊇ spt T`
+  subst hn
+  exact Submission.regcomp_cop_zero_dim_regularSet_empty (0 + k) U (N ∩ U) T hU hmin
+    (subset_inter hspt T.support_subset_domain)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
