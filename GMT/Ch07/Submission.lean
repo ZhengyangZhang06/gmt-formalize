@@ -476,6 +476,55 @@ theorem Submission.codim1_zsl_ga_lc_graph_fderiv : ∀ (m k : ℕ) (ι : Euclid 
   rw [hsq]
   exact le_add_of_nonneg_right (sq_nonneg _)
 
+/-- Local `(1 ± ε)`-bi-Lipschitz comparison of a `C¹` graph map with its linearization (Simon 2.3.2,
+by the approximation argument from the linear case 2.3.1): for linear isometries
+`ι : ℝᵐ → ℝ^{m+k}`, `ι' : ℝᵏ → ℝ^{m+k}` with `⟨ιv, ι'w⟩ = 0`, `g` of class `C¹` on the open set
+`D ∋ w₀`, `G(w) = ιw + ι'g(w)` and `L₀ = DG(w₀)`, there is `r > 0` with `B_r(w₀) ⊆ D` and
+`(1 - ε)|L₀x - L₀y| ≤ |G(x) - G(y)| ≤ (1 + ε)|L₀x - L₀y|` for `x, y ∈ B_r(w₀)`.  With
+`B₀ = Dg(w₀)` and `‖Dg(w) - B₀‖ < ε` on `B_r(w₀)`, the mean value inequality bounds
+`e = g(x) - g(y) - B₀(x - y)` by `ε|x - y| ≤ ε|L₀(x - y)|`, and
+`G(x) - G(y) = (L₀x - L₀y) + ι'e`. -/
+theorem Submission.codim1_zsl_ga_lc_local_bilipschitz : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (ε : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 0 < ε → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ x ∈ ball w₀ r, ∀ y ∈ ball w₀ r, (1 - ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖ ≤ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ∧ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ≤ (1 + ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖ := by
+  intro m k ι ι' g D ε w₀ horth hD hg hε hw₀
+  -- Step 1: `g` is differentiable at every point of the open set `D`
+  have hdiff : ∀ w ∈ D, DifferentiableAt ℝ g w := fun w hw =>
+    (hg.differentiableOn one_ne_zero).differentiableAt (hD.mem_nhds hw)
+  -- Step 2: `L₀ = ι + ι' ∘ B₀` and `|h| ≤ |L₀h|` (sibling `graph_fderiv`)
+  obtain ⟨hL₀, hlow⟩ :=
+    Submission.codim1_zsl_ga_lc_graph_fderiv m k ι ι' g w₀ horth (hdiff w₀ hw₀)
+  set L₀ := fderiv ℝ (fun w => ι w + ι' (g w)) w₀
+  set B₀ := fderiv ℝ g w₀
+  have hL₀app : ∀ h, L₀ h = ι h + ι' (B₀ h) := fun h => by rw [hL₀]; rfl
+  -- Step 3: `r = min(r₁, r₂)` with `B_{r₁}(w₀) ⊆ D` and `‖Dg(w) - B₀‖ < ε` on `B_{r₂}(w₀)`
+  obtain ⟨r₁, hr₁, hr₁D⟩ := Metric.isOpen_iff.mp hD w₀ hw₀
+  obtain ⟨r₂, hr₂, hr₂B⟩ := Metric.continuousAt_iff.mp
+    ((hg.continuousOn_fderiv_of_isOpen hD le_rfl).continuousAt (hD.mem_nhds hw₀)) ε hε
+  have hrD : ball w₀ (min r₁ r₂) ⊆ D := (ball_subset_ball (min_le_left _ _)).trans hr₁D
+  refine ⟨min r₁ r₂, lt_min hr₁ hr₂, hrD, fun x hx y hy => ?_⟩
+  -- Step 4: mean value inequality for `g - B₀` on the convex ball
+  have hmvi : ‖g x - g y - B₀ (x - y)‖ ≤ ε * ‖x - y‖ :=
+    (convex_ball w₀ (min r₁ r₂)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun z hz => hdiff z (hrD hz))
+      (fun z hz => by
+        rw [← dist_eq_norm]
+        exact (hr₂B ((mem_ball.mp hz).trans_le (min_le_right _ _))).le) hy hx
+  -- Step 5: `G(x) - G(y) = (L₀x - L₀y) + ι'e` with `e = g(x) - g(y) - B₀(x - y)`
+  have hdecomp : ι x + ι' (g x) - (ι y + ι' (g y)) =
+      (L₀ x - L₀ y) + ι' (g x - g y - B₀ (x - y)) := by
+    rw [hL₀app, hL₀app]
+    simp only [map_sub]
+    abel
+  -- Step 6: `|ι'e| = |e| ≤ ε|x - y| ≤ ε|L₀(x - y)| = ε|L₀x - L₀y|`
+  have herr : ‖ι' (g x - g y - B₀ (x - y))‖ ≤ ε * ‖L₀ x - L₀ y‖ := by
+    rw [ι'.norm_map, ← map_sub L₀ x y]
+    exact hmvi.trans (mul_le_mul_of_nonneg_left (hlow (x - y)) hε.le)
+  -- Step 7: the triangle inequality in both directions
+  have h1 := norm_add_le (L₀ x - L₀ y) (ι' (g x - g y - B₀ (x - y)))
+  have h2 := norm_sub_le (L₀ x - L₀ y + ι' (g x - g y - B₀ (x - y))) (ι' (g x - g y - B₀ (x - y)))
+  rw [add_sub_cancel_right] at h2
+  rw [hdecomp]
+  constructor <;> linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
