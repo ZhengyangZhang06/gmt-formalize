@@ -961,6 +961,240 @@ theorem Submission.dor_ims_smooth_unit_approx : ∀ (P n : ℕ) (K V : Set (Eucl
   rw [← hgK x hx]
   exact hωg x
 
+/-- **Local mass of `m₀[[M]]`** (Simon Ch. 6, 2.5 and Remark 3.2(3) with constant multiplicity;
+step 3 of the density computation at points of `reg T`).  If `T(ω) = m₀ ∫_M ⟨ω, ξ⟩ dHⁿ` for every
+test form `ω` with `spt ω ⊆ W`, where `W ⊆ U` is open, `ξ` is a continuous unit orientation on `M`
+and `Hⁿ(M ∩ W) < ∞`, then `M_W(T) = |m₀| Hⁿ(M ∩ W)`.  Upper bound: `|ξ(α)| ≤ |α|`, so
+`|⟨ω, ξ⟩| ≤ 1_W` on `M` and `T(ω) ≤ |m₀| Hⁿ(M ∩ W)` for admissible `ω`.  Lower bound: take a
+compact `K ⊆ M ∩ W` with `Hⁿ((M ∩ W) \ K) < η` (inner regularity of the finite measure
+`Hⁿ⌞(M ∩ W)`) and an admissible `ω` with `|ω - β| ≤ η` on `K`, where `β = sgn(m₀) L(ξ)` has
+`m₀ ⟨β, ξ⟩ = |m₀|`; then `T(ω) ≥ |m₀| a - |m₀| η (2 + a)` with `a = Hⁿ(M ∩ W)`, and `η → 0`. -/
+theorem Submission.dimred_rpd_massOn_eq_mult_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (M W : Set (Euclid P)) (m₀ : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen W → W ⊆ U → MeasurableSet M → ContinuousOn ξ M → (∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ x) Q) → μHE[n] (M ∩ W) ≠ ∞ → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → T ω = m₀ * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → T.massOn W = (m₀.natAbs : ℝ≥0∞) * μHE[n] (M ∩ W) := by
+  intro P n U T M W m₀ ξ hW hWU hM hξc hξu hfin hrep
+  -- Step 1: the dual map `L`, and `|ξ x α| ≤ |α|` for `x ∈ M`
+  obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P n
+  have hMW : MeasurableSet (M ∩ W) := hM.inter hW.measurableSet
+  have hdual : ∀ x ∈ M, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α := by
+    intro x hx α
+    obtain ⟨Q, hQ⟩ := hξu x hx
+    exact (hL (ξ x) Q hQ).1 α
+  -- Step 2: `1_W` is integrable on `M` with integral `Hⁿ(M ∩ W)`
+  have hind : Integrable (W.indicator (fun _ => (1 : ℝ)))
+      ((μHE[n] : Measure (Euclid P)).restrict M) := by
+    rw [integrable_indicator_iff hW.measurableSet]
+    refine integrableOn_const ?_
+    rw [Measure.restrict_apply hW.measurableSet, inter_comm]
+    exact hfin
+  have hind_int : ∫ x in M, W.indicator (fun _ => (1 : ℝ)) x ∂μHE[n] =
+      (μHE[n] : Measure (Euclid P)).real (M ∩ W) := by
+    rw [integral_indicator hW.measurableSet, setIntegral_const, smul_eq_mul, mul_one,
+      Measure.real, Measure.real, Measure.restrict_apply hW.measurableSet, inter_comm]
+  -- `|⟨ω, ξ⟩| ≤ 1_W` on `M` if `spt ω ⊆ W` and `|ω| ≤ 1`, so `⟨ω, ξ⟩` is integrable on `M`
+  have hbound : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ 1) →
+      ∀ x ∈ M, ‖ξ x ((ω : DifferentialForm (Euclid P) n) x)‖ ≤
+        W.indicator (fun _ => (1 : ℝ)) x := by
+    intro ω hωW hω1 x hx
+    by_cases hxW : x ∈ W
+    · rw [indicator_of_mem hxW, Real.norm_eq_abs]
+      exact (hdual x hx _).trans (hω1 x)
+    · rw [indicator_of_notMem hxW]
+      have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h => hxW (hωW h))
+      simp [h0]
+  have hcontf : ∀ ω : TestFormOn U n,
+      ContinuousOn (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) M := by
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ω.property.1.1.continuous
+    exact hξc.clm_apply hωc.continuousOn
+  have hintf : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ 1) →
+      Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x))
+        ((μHE[n] : Measure (Euclid P)).restrict M) := by
+    intro ω hωW hω1
+    refine hind.mono' ((hcontf ω).aestronglyMeasurable hM) ?_
+    exact (ae_restrict_iff' hM).2 (Eventually.of_forall (hbound ω hωW hω1))
+  have hcast : ENNReal.ofReal |(m₀ : ℝ)| = (m₀.natAbs : ℝ≥0∞) := by
+    rw [← Int.cast_abs, ← Int.natCast_natAbs, Int.cast_natCast, ENNReal.ofReal_natCast]
+  apply le_antisymm
+  · -- Step 3: upper bound, `T(ω) ≤ |m₀| Hⁿ(M ∩ W)` for every admissible `ω`
+    apply sSup_le
+    rintro r ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+    have hI : ‖∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]‖ ≤
+        (μHE[n] : Measure (Euclid P)).real (M ∩ W) := by
+      calc ‖∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]‖
+          ≤ ∫ x in M, ‖ξ x ((ω : DifferentialForm (Euclid P) n) x)‖ ∂μHE[n] :=
+            norm_integral_le_integral_norm _
+        _ ≤ ∫ x in M, W.indicator (fun _ => (1 : ℝ)) x ∂μHE[n] :=
+            integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _) hind
+              ((ae_restrict_iff' hM).2 (Eventually.of_forall (hbound ω hωW hω1)))
+        _ = _ := hind_int
+    have hTω : T ω ≤ |(m₀ : ℝ)| * (μHE[n] : Measure (Euclid P)).real (M ∩ W) := by
+      rw [hrep ω hωW]
+      calc (m₀ : ℝ) * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]
+          ≤ |(m₀ : ℝ) * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]| :=
+            le_abs_self _
+        _ = |(m₀ : ℝ)| * ‖∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]‖ := by
+            rw [abs_mul, Real.norm_eq_abs]
+        _ ≤ _ := mul_le_mul_of_nonneg_left hI (abs_nonneg _)
+    calc ENNReal.ofReal (T ω)
+        ≤ ENNReal.ofReal (|(m₀ : ℝ)| * (μHE[n] : Measure (Euclid P)).real (M ∩ W)) :=
+          ENNReal.ofReal_le_ofReal hTω
+      _ = (m₀.natAbs : ℝ≥0∞) * μHE[n] (M ∩ W) := by
+          rw [ENNReal.ofReal_mul (abs_nonneg _), Measure.real, ENNReal.ofReal_toReal hfin, hcast]
+  · -- Step 4: lower bound; `m₀ = 0` is trivial, otherwise `s₀ = sgn m₀` has `m₀ s₀ = |m₀|`
+    rcases eq_or_ne m₀ 0 with rfl | hm₀
+    · simp
+    set a : ℝ := (μHE[n] : Measure (Euclid P)).real (M ∩ W) with ha
+    have ha0 : 0 ≤ a := measureReal_nonneg
+    set s₀ : ℝ := if (0 : ℝ) < m₀ then 1 else -1 with hs₀
+    have hs₀m : (m₀ : ℝ) * s₀ = |(m₀ : ℝ)| := by
+      rw [hs₀]
+      split_ifs with h
+      · rw [mul_one, abs_of_pos h]
+      · rw [abs_of_nonpos (not_lt.1 h)]; ring
+    have hs₀abs : s₀ = 1 ∨ s₀ = -1 := by
+      rw [hs₀]; split_ifs <;> simp
+    -- Step 5: the dual field `β = s₀ L(ξ)`: continuous on `M`, `|β| ≤ 1` and `m₀ ⟨β, ξ⟩ = |m₀|`
+    set β : Euclid P → Covector (Euclid P) n := fun x => s₀ • L (ξ x) with hβ
+    have hβc : ContinuousOn β M :=
+      (L.continuous.comp_continuousOn hξc).const_smul s₀
+    have hβ1 : ∀ x ∈ M, covectorEuclideanNorm (β x) ≤ 1 := by
+      intro x hx
+      obtain ⟨Q, hQ⟩ := hξu x hx
+      have h1 := (hL (ξ x) Q hQ).2.1
+      rcases hs₀abs with h | h
+      · have hx' : β x = L (ξ x) := by
+          simp only [hβ, h]; exact one_smul ℝ (L (ξ x))
+        rw [hx']; exact h1
+      · have hx' : β x = -(L (ξ x)) := by
+          simp only [hβ, h]; exact neg_one_smul ℝ (L (ξ x))
+        rw [hx', covectorEuclideanNorm_neg]; exact h1
+    have hβξ : ∀ x ∈ M, (m₀ : ℝ) * ξ x (β x) = |(m₀ : ℝ)| := by
+      intro x hx
+      obtain ⟨Q, hQ⟩ := hξu x hx
+      have h1 := (hL (ξ x) Q hQ).2.2
+      simp only [hβ, map_smul, smul_eq_mul, h1, mul_one]
+      exact hs₀m
+    -- Steps 6–7: `|m₀| a - |m₀| η (2 + a) ≤ M_W(T)` for every `η > 0`
+    have hmain : ∀ η : ℝ, 0 < η →
+        ENNReal.ofReal (|(m₀ : ℝ)| * a - |(m₀ : ℝ)| * η * (2 + a)) ≤ T.massOn W := by
+      intro η hη
+      -- Step 6(a): a compact `K ⊆ M ∩ W` with `Hⁿ((M ∩ W) \ K) < η`
+      have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict (M ∩ W)) :=
+        ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
+      have hνA : ((μHE[n] : Measure (Euclid P)).restrict (M ∩ W)) (M ∩ W) ≠ ∞ := measure_ne_top _ _
+      obtain ⟨K, hKA, hKc, hKsmall⟩ :=
+        hMW.exists_isCompact_sdiff_lt (μ := (μHE[n] : Measure (Euclid P)).restrict (M ∩ W)) hνA
+          (ENNReal.ofReal_pos.2 hη).ne'
+      rw [Measure.restrict_apply (hMW.diff hKc.measurableSet)] at hKsmall
+      have hdiffeq : (M ∩ W) \ K ∩ (M ∩ W) = (M ∩ W) \ K := by
+        ext x; simp only [mem_inter_iff, Set.mem_sdiff]; tauto
+      rw [hdiffeq] at hKsmall
+      -- Step 6(b)–(c): an admissible `ω` with `|ω - β| ≤ η` on `K`
+      obtain ⟨ω₀, hω₀test, hω₀W, hω₀1, hω₀K⟩ := Submission.dor_ims_smooth_unit_approx P n K W β η
+        hKc hW (hKA.trans inter_subset_right) (hβc.mono (hKA.trans inter_subset_left))
+        (fun x hx => hβ1 x (hKA hx).1) hη
+      let ω : TestFormOn U n := ⟨ω₀, hω₀test, hω₀W.trans hWU⟩
+      have hωW : tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W := hω₀W
+      have hω1 : ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ 1 := hω₀1
+      have hadm : ω ∈ massAdmissibleOn U n W := ⟨hωW, hω1⟩
+      have hle := T.le_massOn hadm
+      refine le_trans ?_ hle
+      apply ENNReal.ofReal_le_ofReal
+      -- Step 7: `T(ω) = ∫_K f + ∫_{M \ K} f` with `f = m₀ ⟨ω, ξ⟩`
+      set f : Euclid P → ℝ := fun x => (m₀ : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) n) x)
+        with hf
+      have hfint : Integrable f ((μHE[n] : Measure (Euclid P)).restrict M) :=
+        (hintf ω hωW hω1).const_mul _
+      have hTω : T ω = ∫ x in M, f x ∂μHE[n] := by
+        rw [hrep ω hωW, hf, integral_const_mul]
+      have hKM : K ⊆ M := hKA.trans inter_subset_left
+      have hsplit : ∫ x in M, f x ∂μHE[n] = ∫ x in K, f x ∂μHE[n] + ∫ x in M \ K, f x ∂μHE[n] := by
+        rw [← setIntegral_union disjoint_sdiff_right (hM.diff hKc.measurableSet)
+          (hfint.mono_measure (Measure.restrict_mono hKM le_rfl))
+          (hfint.mono_measure (Measure.restrict_mono sdiff_subset le_rfl)),
+          union_sdiff_cancel hKM]
+      -- Step 7(c): `a - η ≤ Hⁿ(K) ≤ a`
+      have hKfin : μHE[n] K ≠ ∞ := ne_top_of_le_ne_top hfin (measure_mono hKA)
+      have hKle : (μHE[n] : Measure (Euclid P)).real K ≤ a :=
+        measureReal_mono hKA hfin
+      have hKge : a - η ≤ (μHE[n] : Measure (Euclid P)).real K := by
+        have h1 : (μHE[n] : Measure (Euclid P)) (M ∩ W) ≤ μHE[n] K + μHE[n] ((M ∩ W) \ K) := by
+          calc (μHE[n] : Measure (Euclid P)) (M ∩ W) ≤ μHE[n] (K ∪ (M ∩ W) \ K) :=
+                measure_mono (fun x hx => by by_cases h : x ∈ K <;> simp_all)
+            _ ≤ _ := measure_union_le _ _
+        have h2 : (μHE[n] : Measure (Euclid P)) (M ∩ W) ≤ μHE[n] K + ENNReal.ofReal η :=
+          h1.trans (add_le_add le_rfl hKsmall.le)
+        have h3 := ENNReal.toReal_mono (by finiteness) h2
+        rw [ENNReal.toReal_add hKfin ENNReal.ofReal_ne_top, ENNReal.toReal_ofReal hη.le] at h3
+        simp only [Measure.real, ha] at h3 ⊢
+        linarith
+      -- Step 7(a): on `K`, `f ≥ |m₀| (1 - η)`
+      have hKpart : |(m₀ : ℝ)| * (1 - η) * (μHE[n] : Measure (Euclid P)).real K ≤
+          ∫ x in K, f x ∂μHE[n] := by
+        have hconst : ∀ x ∈ K, |(m₀ : ℝ)| * (1 - η) ≤ f x := by
+          intro x hxK
+          have hxM : x ∈ M := hKM hxK
+          have hsplitx : f x = (m₀ : ℝ) * ξ x (β x) +
+              (m₀ : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) n) x - β x) := by
+            simp only [hf, map_sub]; ring
+          rw [hsplitx, hβξ x hxM]
+          have hd : |(m₀ : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) n) x - β x)| ≤
+              |(m₀ : ℝ)| * η := by
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_left ((hdual x hxM _).trans (hω₀K x hxK)) (abs_nonneg _)
+          have := neg_abs_le ((m₀ : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) n) x - β x))
+          nlinarith
+        have := setIntegral_ge_of_const_le_real hKc.measurableSet hKfin hconst
+          (hfint.mono_measure (Measure.restrict_mono hKM le_rfl))
+        simpa [Measure.real] using this
+      -- Step 7(b): on `M \ K`, `|f| ≤ |m₀| 1_W`, so `|∫_{M \ K} f| ≤ |m₀| Hⁿ((M ∩ W) \ K) ≤ |m₀| η`
+      have hRest : |∫ x in M \ K, f x ∂μHE[n]| ≤ |(m₀ : ℝ)| * η := by
+        have hb : ∀ x ∈ M \ K, ‖f x‖ ≤ |(m₀ : ℝ)| * W.indicator (fun _ => (1 : ℝ)) x := by
+          intro x hx
+          rw [hf, norm_mul, Real.norm_eq_abs]
+          exact mul_le_mul_of_nonneg_left (hbound ω hωW hω1 x hx.1) (abs_nonneg _)
+        have hint2 : Integrable (fun x => |(m₀ : ℝ)| * W.indicator (fun _ => (1 : ℝ)) x)
+            ((μHE[n] : Measure (Euclid P)).restrict (M \ K)) :=
+          (hind.mono_measure (Measure.restrict_mono sdiff_subset le_rfl)).const_mul _
+        calc |∫ x in M \ K, f x ∂μHE[n]| = ‖∫ x in M \ K, f x ∂μHE[n]‖ := (Real.norm_eq_abs _).symm
+          _ ≤ ∫ x in M \ K, ‖f x‖ ∂μHE[n] := norm_integral_le_integral_norm _
+          _ ≤ ∫ x in M \ K, |(m₀ : ℝ)| * W.indicator (fun _ => (1 : ℝ)) x ∂μHE[n] :=
+              integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _) hint2
+                ((ae_restrict_iff' (hM.diff hKc.measurableSet)).2 (Eventually.of_forall hb))
+          _ = |(m₀ : ℝ)| * (μHE[n] : Measure (Euclid P)).real ((M \ K) ∩ W) := by
+              rw [integral_const_mul, integral_indicator hW.measurableSet, setIntegral_const,
+                smul_eq_mul, mul_one, Measure.real, Measure.real,
+                Measure.restrict_apply hW.measurableSet, inter_comm]
+          _ ≤ |(m₀ : ℝ)| * η := by
+              apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
+              have hset : (M \ K) ∩ W = (M ∩ W) \ K := by
+                ext x; simp only [mem_inter_iff, Set.mem_sdiff]; tauto
+              rw [hset]
+              have := ENNReal.toReal_mono ENNReal.ofReal_ne_top hKsmall.le
+              rwa [ENNReal.toReal_ofReal hη.le] at this
+      -- combining (a)–(c): `T(ω) ≥ |m₀| a - |m₀| η (2 + a)`
+      rw [hTω, hsplit]
+      have hRest' := neg_abs_le (∫ x in M \ K, f x ∂μHE[n])
+      have hm0 : 0 ≤ |(m₀ : ℝ)| := abs_nonneg _
+      have e1 := mul_le_mul_of_nonneg_left hKge hm0
+      have e2 := mul_le_mul_of_nonneg_left hKle (mul_nonneg hm0 hη.le)
+      nlinarith [e1, e2, hKpart, hRest, hRest']
+    -- Step 8: let `η → 0`
+    have hlim : Tendsto (fun η : ℝ => ENNReal.ofReal (|(m₀ : ℝ)| * a - |(m₀ : ℝ)| * η * (2 + a)))
+        (𝓝[>] 0) (𝓝 (ENNReal.ofReal (|(m₀ : ℝ)| * a))) := by
+      apply ENNReal.tendsto_ofReal
+      have : Tendsto (fun η : ℝ => |(m₀ : ℝ)| * a - |(m₀ : ℝ)| * η * (2 + a)) (𝓝 0)
+          (𝓝 (|(m₀ : ℝ)| * a - |(m₀ : ℝ)| * 0 * (2 + a))) := by
+        exact (tendsto_const_nhds.sub ((tendsto_const_nhds.mul tendsto_id).mul tendsto_const_nhds))
+      simpa using this.mono_left nhdsWithin_le_nhds
+    have hge := le_of_tendsto hlim (eventually_nhdsWithin_of_forall fun η hη => hmain η hη)
+    calc (m₀.natAbs : ℝ≥0∞) * μHE[n] (M ∩ W) = ENNReal.ofReal (|(m₀ : ℝ)| * a) := by
+          rw [ENNReal.ofReal_mul (abs_nonneg _), ha, Measure.real, ENNReal.ofReal_toReal hfin,
+            hcast]
+      _ ≤ T.massOn W := hge
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
