@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Smooth unit-norm approximation of a continuous covector field on a compact set",
+  "statement": "Let P, n be natural numbers, K ⊆ V ⊆ ℝ^P with K compact and V open, β : ℝ^P → Λⁿ(ℝ^P) continuous on K with |β(x)| ≤ 1 for x ∈ K (|·| = covectorEuclideanNorm), and δ > 0. Then there is an n-form ω : ℝ^P → Λⁿ(ℝ^P) such that:\n- ω is C^∞ with compact support (IsTestForm ω);\n- tsupport ω ⊆ V;\n- |ω(x)| ≤ 1 for all x ∈ ℝ^P;\n- |ω(x) − β(x)| ≤ δ for all x ∈ K.",
+  "lean_statement": "∀ (P n : ℕ) (K V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n) (δ : ℝ), IsCompact K → IsOpen V → K ⊆ V → ContinuousOn β K → (∀ x ∈ K, covectorEuclideanNorm (β x) ≤ 1) → 0 < δ → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x ∈ K, covectorEuclideanNorm (ω x - β x) ≤ δ",
+  "lean_name": "dor_ims_smooth_unit_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-49478a38c9-a1"
+}
