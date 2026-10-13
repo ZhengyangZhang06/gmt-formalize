@@ -359,6 +359,29 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **A directional derivative of a compactly supported `C¹` function has integral `0`.**  For
+`h : ℝᵏ → ℝ` of class `C¹` with compact support and `e ∈ ℝᵏ`, `∫ Dh(w)(e) dw = 0`, where
+`Dh(w) = fderiv ℝ h w`.  `h` is Lipschitz, so integration by parts for Lipschitz functions against
+the constant function `1` gives `∫ ∂ₑ1 · h = ∫ ∂₋ₑh · 1`.  The left side vanishes and, `h` being
+differentiable, `∂₋ₑh(w) = Dh(w)(-e) = -Dh(w)(e)`, so the right side is `-∫ Dh(w)(e) dw`. -/
+theorem Submission.deformation_ipl_mwc_mis_integral_fderiv_eq_zero :
+    ∀ (k : ℕ) (h : Eucl k → ℝ) (e : Eucl k), ContDiff ℝ 1 h → HasCompactSupport h →
+      ∫ w, fderiv ℝ h w e ∂(volume : Measure (Eucl k)) = 0 := by
+  intro k h e hh hcs
+  -- `h` is Lipschitz; integrate by parts against the constant function `1`.
+  obtain ⟨D, hD⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hcs hh one_ne_zero
+  have key := LipschitzWith.integral_lineDeriv_mul_eq (μ := (volume : Measure (Eucl k)))
+    (LipschitzWith.const (α := Eucl k) (1 : ℝ)) hD hcs e
+  -- Both functions are differentiable, so their line derivatives are Fréchet derivatives.
+  have h1 : ∀ w, lineDeriv ℝ (fun _ : Eucl k => (1 : ℝ)) w e = 0 := fun w => by
+    rw [(differentiableAt_const (1 : ℝ)).lineDeriv_eq_fderiv]
+    simp
+  have h2 : ∀ w, lineDeriv ℝ h w (-e) = -fderiv ℝ h w e := fun w => by
+    rw [((hh.differentiable one_ne_zero) w).lineDeriv_eq_fderiv]
+    simp
+  simp only [h1, h2, zero_mul, integral_zero, mul_one, integral_neg] at key
+  linarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
