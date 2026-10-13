@@ -451,6 +451,262 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform `C¹` approximation with support control** (Simon Ch. 3, proof of Theorem 4.3
+(De Giorgi): "mollifying, there is `f_θ ∈ C_c^∞` with `spt f_θ ⊆ B_{R+1}(0)` and
+`‖f − f_θ‖_∞ ≤ θ`").  `f` has compact support, so it is uniformly continuous; pick a modulus
+`δ ≤ 1` for `θ`.  Convolving `f` with a nonnegative `C¹` bump `ψ`, `∫ ψ = 1`,
+`spt ψ ⊆ B_δ(0)`, gives a `C¹` function `g` with `spt g ⊆ B_δ(0) + B̄_R(0) ⊆ B̄_{R+1}(0)` and
+`|g(x) − f(x)| ≤ ∫ ψ(t) |f(x − t) − f(x)| dt ≤ θ`. -/
+theorem Submission.codim1_rdo_dg_tma_smooth_approx : ∀ (P : ℕ) (f : Euclid P → ℝ) (R θ : ℝ), Continuous f → tsupport f ⊆ closedBall (0 : Euclid P) R → 0 < θ → ∃ g : Euclid P → ℝ, ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ tsupport g ⊆ closedBall (0 : Euclid P) (R + 1) ∧ ∀ x, |f x - g x| ≤ θ := by
+  intro P f R θ hf hR hθ
+  -- `f` is uniformly continuous; `δ = min δ₀ 1` is a modulus for `θ`
+  have hfc : HasCompactSupport f :=
+    (isCompact_closedBall (0 : Euclid P) R).of_isClosed_subset (isClosed_tsupport f) hR
+  have huc : UniformContinuous f := hfc.uniformContinuous_of_continuous hf
+  obtain ⟨δ₀, hδ₀, hδ⟩ := Metric.uniformContinuous_iff.1 huc θ hθ
+  set δ := min δ₀ 1 with hδdef
+  have hδpos : 0 < δ := lt_min hδ₀ one_pos
+  -- the normalized bump `ψ = c⁻¹ ψ₀`, `c = ∫ ψ₀ > 0`
+  obtain ⟨ψ₀, hψ₀ts, hψ₀c, hψ₀s, hψ₀r, hψ₀0⟩ :=
+    exists_contDiff_tsupport_subset (E := Euclid P) (s := ball (0 : Euclid P) δ) (x := 0)
+      (n := 1) (ball_mem_nhds 0 hδpos)
+  have hψ₀nn : ∀ x, 0 ≤ ψ₀ x := fun x => (hψ₀r ⟨x, rfl⟩).1
+  set c := ∫ x, ψ₀ x with hcdef
+  have hc : 0 < c :=
+    hψ₀s.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hψ₀c hψ₀nn
+      (by rw [hψ₀0]; norm_num)
+  set ψ : Euclid P → ℝ := fun x => c⁻¹ * ψ₀ x with hψdef
+  have hψs : ContDiff ℝ 1 ψ := contDiff_const.mul hψ₀s
+  have hψc : HasCompactSupport ψ := hψ₀c.mul_left
+  have hψnn : ∀ x, 0 ≤ ψ x := fun x => mul_nonneg (inv_nonneg.2 hc.le) (hψ₀nn x)
+  have hψint : ∫ x, ψ x = 1 := by
+    rw [hψdef, integral_const_mul, ← hcdef, inv_mul_cancel₀ hc.ne']
+  have hψsupp : ∀ t, ψ t ≠ 0 → ‖t‖ < δ := by
+    intro t ht
+    have : t ∈ tsupport ψ₀ := subset_tsupport ψ₀ (fun h0 => ht (by simp [hψdef, h0]))
+    simpa using hψ₀ts this
+  -- `g = ψ ⋆ f` is `C¹`
+  set g : Euclid P → ℝ := convolution ψ f (ContinuousLinearMap.lsmul ℝ ℝ) volume with hgdef
+  have hg : ContDiff ℝ 1 g :=
+    hψc.contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hψs hf.locallyIntegrable
+  have hgval : ∀ x, g x = ∫ t, ψ t * f (x - t) := by
+    intro x
+    rw [hgdef, convolution_def]
+    simp
+  -- `spt g ⊆ spt ψ + spt f ⊆ B̄_{R+1}(0)`
+  have hgsupp : support g ⊆ closedBall (0 : Euclid P) (R + 1) := by
+    refine (support_convolution_subset _).trans ?_
+    rintro _ ⟨a, ha, b, hb, rfl⟩
+    have ha' : ‖a‖ < δ := hψsupp a ha
+    have hb' : ‖b‖ ≤ R := by simpa using hR (subset_tsupport f hb)
+    rw [mem_closedBall, dist_zero_right]
+    calc ‖a + b‖ ≤ ‖a‖ + ‖b‖ := norm_add_le _ _
+      _ ≤ R + 1 := by
+          have : δ ≤ 1 := min_le_right _ _
+          linarith
+  have hgts : tsupport g ⊆ closedBall (0 : Euclid P) (R + 1) :=
+    closure_minimal hgsupp isClosed_closedBall
+  refine ⟨g, hg, (isCompact_closedBall _ _).of_isClosed_subset (isClosed_tsupport g) hgts,
+    hgts, fun x => ?_⟩
+  -- `g x − f x = ∫ ψ(t) (f(x − t) − f(x)) dt`, and the integrand is at most `ψ(t) θ`
+  have hint1 : Integrable (fun t => ψ t * f (x - t)) :=
+    (hψs.continuous.mul (hf.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hψc.mul_right
+  have hint2 : Integrable (fun t => ψ t * f x) :=
+    (hψs.continuous.integrable_of_hasCompactSupport hψc).mul_const _
+  have hdiff : g x - f x = ∫ t, ψ t * (f (x - t) - f x) := by
+    simp_rw [hgval, mul_sub]
+    rw [integral_sub hint1 hint2, integral_mul_const, hψint, one_mul]
+  rw [abs_sub_comm, hdiff]
+  calc |∫ t, ψ t * (f (x - t) - f x)| ≤ ∫ t, ψ t * θ := by
+        rw [← Real.norm_eq_abs]
+        refine norm_integral_le_of_norm_le
+          ((hψs.continuous.integrable_of_hasCompactSupport hψc).mul_const _)
+          (Eventually.of_forall fun t => ?_)
+        rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψnn t)]
+        by_cases ht : ψ t = 0
+        · simp [ht]
+        · refine mul_le_mul_of_nonneg_left ?_ (hψnn t)
+          have h1 : dist (x - t) x < δ₀ := by
+            rw [dist_eq_norm, sub_sub_cancel_left, norm_neg]
+            exact (hψsupp t ht).trans_le (min_le_left _ _)
+          exact (by simpa [Real.dist_eq] using (hδ h1).le)
+    _ = θ := by rw [integral_mul_const, hψint, one_mul]
+
+/-- **Blow-up convergence extends from `C¹` to continuous test functions** (Simon Ch. 3, 4.3 (†),
+step 5 of the tangent-measure argument in De Giorgi's theorem; used for 7.5.8).  Let
+`μ(B̄_ρ(y)) ≤ C ρⁿ` for `0 < ρ < ρ₁` and let `τ` be finite on closed balls.  If
+`r⁻ⁿ ∫ g(r⁻¹(z − y)) dμ(z) → ∫ g dτ` as `r ↓ 0` for every `C¹` compactly supported `g`, the same
+holds for every continuous compactly supported `f`.  With `tsupport f ⊆ B̄_R(0)`, `S = R + 1` and
+`g` the `θ`-approximation of `f` given by `Submission.codim1_rdo_dg_tma_smooth_approx`,
+`|r⁻ⁿ ∫ (f − g)(r⁻¹(z − y)) dμ| ≤ θ C Sⁿ` whenever `rS < ρ₁`, and `|∫ (f − g) dτ| ≤ θ τ(B̄_S(0))`;
+take `θ = ε/(4K)` with `K = C Sⁿ + τ(B̄_S(0)) + 1`. -/
+theorem Submission.codim1_rdo_dg_tma_continuous_extension : ∀ (P n : ℕ) (μ τ : Measure (Euclid P)) (y : Euclid P) (ρ₁ C : ℝ), 0 < ρ₁ → 0 ≤ C → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ R : ℝ, τ (closedBall (0 : Euclid P) R) ≠ ∞) → (∀ g : Euclid P → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z, g z ∂τ))) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z, f z ∂τ)) := by
+  intro P n μ τ y ρ₁ C hρ₁ hC hdens hτ hsmooth f hf hfc
+  -- Step 1: `tsupport f ⊆ B̄_R(0)` with `R ≥ 0`, and `S = R + 1`.
+  obtain ⟨R₀, hR₀⟩ := hfc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  set R := max R₀ 0 with hRdef
+  have hR0 : 0 ≤ R := le_max_right _ _
+  have hR : tsupport f ⊆ closedBall 0 R :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  set S := R + 1 with hSdef
+  have hS : 0 < S := by positivity
+  -- Step 2: if `φ` is continuous, `|φ| ≤ c`, `φ = 0` off `B̄_S(0)` and `rS < ρ₁`, then
+  -- `z ↦ φ(r⁻¹(z − y))` vanishes off `B̄_{rS}(y)`, is `μ`-integrable, and
+  -- `|r⁻ⁿ ∫ φ(r⁻¹(z − y)) dμ| ≤ r⁻ⁿ c μ(B̄_{rS}(y)) ≤ c C Sⁿ`.
+  have key : ∀ (φ : Euclid P → ℝ) (c r : ℝ), Continuous φ → (∀ w, |φ w| ≤ c) →
+      (∀ w, φ w ≠ 0 → w ∈ closedBall (0 : Euclid P) S) → 0 < r → r * S < ρ₁ →
+      Integrable (fun z => φ (r⁻¹ • (z - y))) μ ∧
+        |(r ^ n)⁻¹ * ∫ z, φ (r⁻¹ • (z - y)) ∂μ| ≤ c * (C * S ^ n) := by
+    intro φ c r hφ hφc hφs hr hrS
+    set B := closedBall y (r * S) with hBdef
+    have hBfin : μ B ≠ ∞ :=
+      ((hdens (r * S) (by positivity) hrS).trans_lt ENNReal.ofReal_lt_top).ne
+    have hsupp : ∀ z, z ∉ B → φ (r⁻¹ • (z - y)) = 0 := by
+      intro z hz
+      by_contra hne
+      have h1 := hφs _ hne
+      apply hz
+      rw [mem_closedBall, dist_zero_right, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le)]
+        at h1
+      rw [hBdef, mem_closedBall, dist_eq_norm]
+      calc ‖z - y‖ = r * (r⁻¹ * ‖z - y‖) := by field_simp
+        _ ≤ r * S := mul_le_mul_of_nonneg_left h1 hr.le
+    have hcont : Continuous (fun z => φ (r⁻¹ • (z - y))) := by fun_prop
+    have hint : Integrable (fun z => φ (r⁻¹ • (z - y))) μ := by
+      refine IntegrableOn.integrable_of_forall_notMem_eq_zero ?_ hsupp
+      exact Measure.integrableOn_of_bounded hBfin hcont.aestronglyMeasurable (M := c)
+        (Eventually.of_forall fun z => by simpa [Real.norm_eq_abs] using hφc _)
+    refine ⟨hint, ?_⟩
+    have hc0 : 0 ≤ c := (abs_nonneg _).trans (hφc 0)
+    have hle : |∫ z, φ (r⁻¹ • (z - y)) ∂μ| ≤ c * (μ B).toReal := by
+      have h2 : ‖∫ z, φ (r⁻¹ • (z - y)) ∂μ‖ ≤ ∫ z, B.indicator (fun _ => c) z ∂μ := by
+        refine norm_integral_le_of_norm_le
+          ((integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hBfin))
+          (Eventually.of_forall fun z => ?_)
+        by_cases hz : z ∈ B
+        · rw [indicator_of_mem hz]
+          simpa [Real.norm_eq_abs] using hφc _
+        · rw [indicator_of_notMem hz, hsupp z hz, norm_zero]
+      rw [integral_indicator_const _ measurableSet_closedBall, smul_eq_mul, Measure.real] at h2
+      simpa [Real.norm_eq_abs, mul_comm] using h2
+    have hμ : (μ B).toReal ≤ C * (r * S) ^ n :=
+      ENNReal.toReal_le_of_le_ofReal (by positivity) (hdens _ (by positivity) hrS)
+    rw [abs_mul, abs_of_pos (inv_pos.2 (pow_pos hr n))]
+    calc (r ^ n)⁻¹ * |∫ z, φ (r⁻¹ • (z - y)) ∂μ|
+        ≤ (r ^ n)⁻¹ * (c * (C * (r * S) ^ n)) := by
+          gcongr
+          exact hle.trans (mul_le_mul_of_nonneg_left hμ hc0)
+      _ = c * (C * S ^ n) := by
+          rw [mul_pow]
+          field_simp
+  -- Step 3: for `φ` as in step 2, `φ` is `τ`-integrable and `|∫ φ dτ| ≤ c T`,
+  -- `T = τ(B̄_S(0))`.
+  set T := (τ (closedBall (0 : Euclid P) S)).toReal with hTdef
+  have keyτ : ∀ (φ : Euclid P → ℝ) (c : ℝ), Continuous φ → (∀ w, |φ w| ≤ c) →
+      (∀ w, φ w ≠ 0 → w ∈ closedBall (0 : Euclid P) S) →
+      Integrable φ τ ∧ |∫ z, φ z ∂τ| ≤ c * T := by
+    intro φ c hφ hφc hφs
+    have hBfin := hτ S
+    have hsupp : ∀ z, z ∉ closedBall (0 : Euclid P) S → φ z = 0 := by
+      intro z hz
+      by_contra hne
+      exact hz (hφs z hne)
+    have hint : Integrable φ τ := by
+      refine IntegrableOn.integrable_of_forall_notMem_eq_zero ?_ hsupp
+      exact Measure.integrableOn_of_bounded hBfin hφ.aestronglyMeasurable (M := c)
+        (Eventually.of_forall fun z => by simpa [Real.norm_eq_abs] using hφc _)
+    refine ⟨hint, ?_⟩
+    have h2 : ‖∫ z, φ z ∂τ‖ ≤ ∫ z, (closedBall (0 : Euclid P) S).indicator (fun _ => c) z ∂τ := by
+      refine norm_integral_le_of_norm_le
+        ((integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hBfin))
+        (Eventually.of_forall fun z => ?_)
+      by_cases hz : z ∈ closedBall (0 : Euclid P) S
+      · rw [indicator_of_mem hz]
+        simpa [Real.norm_eq_abs] using hφc _
+      · rw [indicator_of_notMem hz, hsupp z hz, norm_zero]
+    rw [integral_indicator_const _ measurableSet_closedBall, smul_eq_mul, Measure.real] at h2
+    simpa [Real.norm_eq_abs, mul_comm, hTdef] using h2
+  -- `f` is bounded and vanishes off `B̄_S(0)`; `K = C Sⁿ + T + 1 > 0`.
+  have hfs : ∀ w, f w ≠ 0 → w ∈ closedBall (0 : Euclid P) S := by
+    intro w hw
+    have := hR (subset_tsupport f hw)
+    exact closedBall_subset_closedBall (by linarith) this
+  obtain ⟨Mf, hMf⟩ := hf.bounded_above_of_compact_support hfc
+  have hMf' : ∀ w, |f w| ≤ Mf := fun w => by simpa [Real.norm_eq_abs] using hMf w
+  set K := C * S ^ n + T + 1 with hKdef
+  have hT0 : 0 ≤ T := ENNReal.toReal_nonneg
+  have hK : 0 < K := by positivity
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Step 4: `g ∈ C¹_c` with `tsupport g ⊆ B̄_S(0)` and `|f − g| ≤ θ = ε/(4K)`.
+  set θ := ε / (4 * K) with hθdef
+  have hθ : 0 < θ := by positivity
+  obtain ⟨g, hg, hgc, hgs, hfg⟩ :=
+    Submission.codim1_rdo_dg_tma_smooth_approx P f R θ hf hR hθ
+  have hgs' : ∀ w, g w ≠ 0 → w ∈ closedBall (0 : Euclid P) S := fun w hw =>
+    hgs (subset_tsupport g hw)
+  obtain ⟨Mg, hMg⟩ := hg.continuous.bounded_above_of_compact_support hgc
+  have hMg' : ∀ w, |g w| ≤ Mg := fun w => by simpa [Real.norm_eq_abs] using hMg w
+  -- Step 5: eventually `|r⁻ⁿ ∫ g(r⁻¹(z − y)) dμ − ∫ g dτ| < ε/2`, and `r < ρ₁/S`.
+  have hlim := Metric.tendsto_nhds.1 (hsmooth g hg hgc) (ε / 2) (by positivity)
+  have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r < ρ₁ / S :=
+    nhdsWithin_le_nhds (gt_mem_nhds (div_pos hρ₁ hS))
+  filter_upwards [hlim, self_mem_nhdsWithin, hsmall] with r hr1 hr hrS
+  have hrS' : r * S < ρ₁ := by
+    have := (lt_div_iff₀ hS).mp hrS
+    linarith
+  -- Step 6: the `θ`-bounds for `f − g` from steps 2 and 3.
+  have hdiff_s : ∀ w, (f - g) w ≠ 0 → w ∈ closedBall (0 : Euclid P) S := by
+    intro w hw
+    by_cases hfw : f w = 0
+    · have : g w ≠ 0 := by
+        intro hgw
+        apply hw
+        simp [hfw, hgw]
+      exact hgs' w this
+    · exact hfs w hfw
+  have hd : ∀ w, |(f - g) w| ≤ θ := fun w => by simpa using hfg w
+  obtain ⟨hint_f, -⟩ := key f Mf r hf hMf' hfs hr hrS'
+  obtain ⟨hint_g, -⟩ := key g Mg r hg.continuous hMg' hgs' hr hrS'
+  obtain ⟨-, hest⟩ := key (f - g) θ r (hf.sub hg.continuous) hd hdiff_s hr hrS'
+  obtain ⟨hτf, -⟩ := keyτ f Mf hf hMf' hfs
+  obtain ⟨hτg, -⟩ := keyτ g Mg hg.continuous hMg' hgs'
+  obtain ⟨-, hestτ⟩ := keyτ (f - g) θ (hf.sub hg.continuous) hd hdiff_s
+  have e1 : (r ^ n)⁻¹ * ∫ z, (f - g) (r⁻¹ • (z - y)) ∂μ =
+      (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ - (r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ := by
+    rw [← mul_sub, ← integral_sub hint_f hint_g]
+    rfl
+  have e2 : ∫ z, (f - g) z ∂τ = ∫ z, f z ∂τ - ∫ z, g z ∂τ := by
+    rw [← integral_sub hτf hτg]
+    rfl
+  rw [e1] at hest
+  rw [e2] at hestτ
+  -- Step 7: the triangle inequality gives `< θ K + ε/2 = 3ε/4`.
+  rw [Real.dist_eq] at hr1 ⊢
+  have hθK : θ * (C * S ^ n) + θ * T ≤ ε / 2 := by
+    have h1 : θ * (C * S ^ n) + θ * T ≤ θ * K := by
+      rw [hKdef]
+      nlinarith
+    have h2 : θ * K = ε / 4 := by
+      rw [hθdef]
+      field_simp
+    linarith
+  calc |(r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ - ∫ z, f z ∂τ|
+      = |((r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ - (r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ)
+          + ((r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ - ∫ z, g z ∂τ)
+          - (∫ z, f z ∂τ - ∫ z, g z ∂τ)| := by ring_nf
+    _ ≤ |(r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ - (r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ|
+          + |(r ^ n)⁻¹ * ∫ z, g (r⁻¹ • (z - y)) ∂μ - ∫ z, g z ∂τ|
+          + |∫ z, f z ∂τ - ∫ z, g z ∂τ| := by
+        refine (abs_sub _ _).trans ?_
+        gcongr
+        exact abs_add_le _ _
+    _ < θ * (C * S ^ n) + ε / 2 + θ * T := by
+        have := hr1
+        linarith
+    _ ≤ ε := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
