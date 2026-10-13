@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.du_bois_reymond-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "One-dimensional constancy theorem: zero distributional derivative on (0, ∞) forces a.e. constancy (du Bois-Reymond; Simon 6.2.34 for n = 1)",
+  "statement": "Let g : ℝ → ℝ be locally integrable on (0, ∞). Suppose that ∫_{(0,∞)} g(t)·φ'(t) dt = 0 for every C^∞ function φ : ℝ → ℝ (ContDiff of order ((⊤ : ℕ∞) : WithTop ℕ∞), i.e. infinitely differentiable) with compact support and tsupport φ ⊆ (0, ∞), where φ' = deriv φ. Then there is a constant c ∈ ℝ with g(t) = c for almost every t ∈ (0, ∞).",
+  "lean_statement": "∀ g : ℝ → ℝ, LocallyIntegrableOn g (Ioi 0) → (∀ φ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioi 0 → ∫ t in Ioi (0 : ℝ), g t * deriv φ t = 0) → ∃ c : ℝ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), g t = c",
+  "lean_name": "idtp_fons_odc_du_bois_reymond",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-73ec6af104-a1"
+}

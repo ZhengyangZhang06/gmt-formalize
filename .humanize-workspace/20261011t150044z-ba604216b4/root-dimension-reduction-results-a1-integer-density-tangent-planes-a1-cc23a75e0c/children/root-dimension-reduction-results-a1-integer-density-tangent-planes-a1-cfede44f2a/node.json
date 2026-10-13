@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_action-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "The action of an integer multiplicity 1-triple carried by finitely many rays is a sum of ray integrals with integer densities (parent step 4)",
+  "statement": "Let P ∈ ℕ, let R = (M, θ, ξ) be a 1-dimensional integer multiplicity triple in ℝ^P (IMRep univ 1), and let F be a finite set of unit vectors with H¹(M ∖ ⋃_{e∈F} ray(e)) = 0, where H¹ = μHE[1] and ray(e) := {te : t > 0}. Then there are functions g_e : ℝ → ℝ (one for each e ∈ ℝ^P) such that for every e ∈ F, g_e is locally integrable on (0, ∞) and g_e(t) ∈ ℤ for almost every t > 0, and for every test 1-form ω ∈ 𝒟¹(ℝ^P): R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH¹(x) = Σ_{e∈F} ∫_{(0,∞)} g_e(t)·ω(te)(e) dt.",
+  "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∃ g : Euclid P → ℝ → ℝ, (∀ e ∈ F, LocallyIntegrableOn (g e) (Ioi 0)) ∧ (∀ e ∈ F, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g e t = k) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, R.action (ω : DifferentialForm (Euclid P) 1) = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), g e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)",
+  "lean_name": "idtp_fons_odc_ray_action",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cfede44f2a-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "A 1-homogeneous locally finite measure with density at least 1 on its support lives on finitely many rays (parent step 3)",
+  "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that (i) μ(K) < ∞ for every compact K ⊆ ℝ^P; (ii) μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P, where λW := {λx : x ∈ W}; (iii) for every x ∈ ℝ^P with μ(B_ε(x)) ≠ 0 for all ε > 0 (that is, x ∈ spt μ), ρ ≤ μ(B_ρ(x)) holds for all sufficiently small ρ > 0 (eventually as ρ ↓ 0). Then there is a finite set F of unit vectors such that μ(ℝ^P ∖ ⋃_{e∈F} ray(e)) = 0, where ray(e) := {te : t > 0}.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → (∀ x : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball x ε) ≠ 0) → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ μ (ball x ρ)) → ∃ F : Finset (Euclid P), (∀ e ∈ F, ‖e‖ = 1) ∧ μ ((⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0",
+  "lean_name": "idtp_fons_odc_finite_rays",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd-a1"
+}

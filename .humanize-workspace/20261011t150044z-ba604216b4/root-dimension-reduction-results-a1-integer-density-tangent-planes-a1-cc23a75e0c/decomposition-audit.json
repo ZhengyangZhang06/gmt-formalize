@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "def (HasMassDensity|IsMinimizingIn|BoundaryVanishes|IsConeCurrent)|structure IMRep|def (unitBallVolume|Represents)|namespace|^import",
+        "restrict_map|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "rg -n -i 'constancy' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "idtp_fons_odc_",
+        "axiom|sorry|kernel|passed|success|error|olean|identical",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_odc_independent_audit/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_odc_independent_audit/MonotonicityType.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/odc_fons_check/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cc23a75e0c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cc23a75e0c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T175431Z-ch07-root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1-prg1j_a6/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T175431Z-ch07-root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1-prg1j_a6/comparator.log",
+        "/tmp/idtp_odc_independent_audit/FrozenTypes.lean",
+        "/tmp/idtp_odc_independent_audit/MonotonicityType.lean",
+        "/tmp/odc_fons_check/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate: its measure, constancy, current-construction and comparison obligations establish this selected theorem. Project and dependency revisions match the pins. The library supports Hausdorff transport, restrictions for arbitrary parameter sets, and the distributional fundamental lemma; no current constancy theorem was found in SimonGMT Chapter06. All twelve exact one-line propositions independently elaborate without child implementations. The assembly's assumptions match the frozen child types and registered monotonicity type; recompilation proves the exact selected parent using only propext, Classical.choice and Quot.sound. Dependencies, including external dependency closures, are acyclic and do not return to the selected parent. All names are bare identifiers; the ten new names are unreserved. Both reused declarations have identical frozen types, matching comparator input hashes and successful checks permitting only standard axioms. Inline constructions have the intended types; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match all three conclusions. Pointwise duality and smooth approximation establish the mass identity; zero regions establish support equality; measure uniqueness establishes representation independence. Exact-type accepted reuse and axiom provenance are verified."
+    },
+    {
+      "key": "cone_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rescaled IMRep construction checks its defining fields and action, then the existing accepted uniqueness dependency yields the stated homogeneity. The reused declaration has the identical frozen type and retains its non-circular registered dependency."
+    },
+    {
+      "key": "line_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The isometry argument proves measurable embedding, measure transport and normalization. The pinned restriction theorem applies to arbitrary I, so the prose and Lean type correctly require no measurability hypothesis on I."
+    },
+    {
+      "key": "finite_rays",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three hypotheses match. The thin-cone estimate and separation argument bound every finite collection of unit support directions. Homogeneity removes the origin's atom, and second countability removes off-support mass, proving the exact conclusion."
+    },
+    {
+      "key": "ray_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Ray isolation and the null carrier error force the approximate tangent line through the supplied test-function contradiction. Degree-one unit orientations of that line are exactly ±ev_e. The almost-everywhere restriction matches the Lean statement."
+    },
+    {
+      "key": "ray_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The signed densities are explicitly constructed. Compact-piece integrability, orientation-based integrality, measure transport and the finite disjoint decomposition prove every conjunct, without assuming downstream constancy."
+    },
+    {
+      "key": "du_bois_reymond",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactly supported primitives of zero-integral tests yield annihilation of g minus a constant; the pinned fundamental lemma gives the exact almost-everywhere conclusion. The smoothness order denotes C∞, as required."
+    },
+    {
+      "key": "ray_constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The constructed smooth tests isolate each ray. The declared constancy dependency and almost-everywhere integrality produce integer coefficients; testing a bump at the origin proves their sum is zero. All required support and integrability conditions are justified."
+    },
+    {
+      "key": "polygonal_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes current continuity and every IMRep field. The closure-overlap hypothesis ensures local agreement with one line outside a null set. Explicit integration gives both the action and measure formulas, including zero coefficients."
+    },
+    {
+      "key": "ray_current_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is a valid specialization of polygonal_current. Distinct unit rays avoid each other's closures, and equality on every test form transfers the resulting representation to C with the stated measure."
+    },
+    {
+      "key": "antipodal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chord competitor satisfies integer multiplicity, equal boundary and compact support of the difference. The explicit mass comparison forces distance at least two, hence antipodality. No additional boundaryless or cone hypothesis is needed."
+    },
+    {
+      "key": "line_conclusion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation measure is concentrated on the two specified rays. Balls centred on their line have mass 2kρ; normalization by unitBallVolume 1 = 2 proves the exact density statement, including k = 0."
+    }
+  ],
+  "required_changes": []
+}

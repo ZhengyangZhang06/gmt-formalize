@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "A boundaryless 1-current with integer densities on finitely many rays has constant integer multiplicities summing to zero (parent step 4)",
+  "statement": "Let P ∈ ℕ and C ∈ 𝒟_1(ℝ^P) with ∂C = 0 (C.boundary = 0). Let F be a finite set of unit vectors and g : ℝ^P → ℝ → ℝ such that, for every e ∈ F, g_e := g(e) is locally integrable on (0, ∞) and g_e(t) ∈ ℤ for almost every t > 0, and suppose C(ω) = Σ_{e∈F} ∫_{(0,∞)} g_e(t)·ω(te)(e) dt for every ω ∈ 𝒟¹(ℝ^P). Then there is m : ℝ^P → ℤ with Σ_{e∈F} m(e) = 0 and C(ω) = Σ_{e∈F} m(e)·∫_{(0,∞)} ω(te)(e) dt for every ω ∈ 𝒟¹(ℝ^P).",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), C.boundary = 0 → ∀ F : Finset (Euclid P), (∀ e ∈ F, ‖e‖ = 1) → ∀ g : Euclid P → ℝ → ℝ, (∀ e ∈ F, LocallyIntegrableOn (g e) (Ioi 0)) → (∀ e ∈ F, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g e t = k) → (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), g e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∃ m : Euclid P → ℤ, ∑ e ∈ F, m e = 0 ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)",
+  "lean_name": "idtp_fons_odc_ray_constancy",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.du_bois_reymond-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.du_bois_reymond-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a005df247f-a1"
+}

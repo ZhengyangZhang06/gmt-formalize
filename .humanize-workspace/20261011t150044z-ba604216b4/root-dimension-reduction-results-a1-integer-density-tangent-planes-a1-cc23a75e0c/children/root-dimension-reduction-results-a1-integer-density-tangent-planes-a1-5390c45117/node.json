@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "Isometric lines carry Lebesgue measure to H¹, and ω₁ = 2",
+  "statement": "(i) ω₁ := unitBallVolume 1, the Lebesgue measure of the open unit ball of ℝ¹ (Euclid 1), equals 2. (ii) Let P ∈ ℕ and p, v ∈ ℝ^P with ‖v‖ = 1, and put γ(t) := p + t·v for t ∈ ℝ. Then γ is a measurable embedding ℝ → ℝ^P, and for every set I ⊆ ℝ the restriction of H¹ = μHE[1] (on ℝ^P) to γ(I) equals the push-forward γ_#(ℒ¹⌞I) of Lebesgue measure restricted to I, and H¹(γ(I)) = ℒ¹(I).",
+  "lean_statement": "unitBallVolume 1 = 2 ∧ ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → MeasurableEmbedding (fun t : ℝ => p + t • v) ∧ ∀ I : Set ℝ, (μHE[1] : Measure (Euclid P)).restrict ((fun t : ℝ => p + t • v) '' I) = Measure.map (fun t : ℝ => p + t • v) (volume.restrict I) ∧ (μHE[1] : Measure (Euclid P)) ((fun t : ℝ => p + t • v) '' I) = volume I",
+  "lean_name": "idtp_fons_odc_line_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5390c45117-a1"
+}
