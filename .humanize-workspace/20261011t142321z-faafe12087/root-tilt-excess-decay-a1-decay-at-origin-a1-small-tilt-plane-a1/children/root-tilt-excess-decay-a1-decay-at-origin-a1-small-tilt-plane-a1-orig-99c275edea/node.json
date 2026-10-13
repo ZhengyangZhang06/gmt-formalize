@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1.origin_affine_plane-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1",
+  "depth": 4,
+  "title": "Affine approximation at the origin at scale 2 delta rho: a plane of small tilt and small height (Simon 4.5 proof, the plane T~ = T(0, 2 sigma))",
+  "statement": "Assume the contract Prop AffineApproximationLemma (Simon 2.5). For n >= 1, l and p > n there is C > 0, depending only on n, l, p, with the property: if U is open, V is a contract rectifiable n-varifold in U, H : R^{n+l} -> R^{n+l}, 0 < delta <= 1/4, AllardHypotheses H p delta rho hold, and K(0, 2 delta rho) <= delta, where K(y, r) = V.scaledLpNorm H p y r = (r^{p-n} int_{B_r(y)} |H|^p dmu)^{1/p} in [0, oo], then there is an n-dimensional subspace T with E(0, delta rho, T) <= C (delta^gamma)^2 and dist(x, T) <= C delta^gamma (delta rho) for all x in spt V cap B_{2 delta rho}(0) (closed balls), where gamma = 1/(2n+2), E = V.tiltExcess and dist(x, T) = infDist x T.",
+  "lean_statement": "AffineApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → V.scaledLpNorm H p 0 (2 * (δ * ρ)) ≤ ENNReal.ofReal δ → ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ V.tiltExcess 0 (δ * ρ) T ≤ C * (δ ^ (1 / (2 * (n : ℝ) + 2))) ^ 2 ∧ ∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (T : Set (Amb n ℓ)) ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ)",
+  "lean_name": "tdo_stp_origin_affine_plane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-small-tilt-plane-a1-orig-99c275edea-a1"
+}
