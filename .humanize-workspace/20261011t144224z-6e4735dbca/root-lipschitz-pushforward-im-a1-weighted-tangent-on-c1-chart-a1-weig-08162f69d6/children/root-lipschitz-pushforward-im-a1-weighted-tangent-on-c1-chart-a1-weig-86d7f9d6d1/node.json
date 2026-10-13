@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.remainder_vanishes-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1",
+  "depth": 4,
+  "title": "Zero θ-weighted n-density of a set D at y makes its normalized blow-up integrals vanish (parent Step 7, I₃ → 0)",
+  "statement": "Let Q, n ∈ ℕ. Let D ⊆ ℝ^Q be Hⁿ-null-measurable (Hⁿ = μHE[n] on ℝ^Q), and let θ : ℝ^Q → ℝ satisfy θ(x) ≥ 0 for every x ∈ D. Let y ∈ ℝ^Q and φ ∈ C_c(ℝ^Q, ℝ), and write η_t(x) = blowUpMap y t x = t⁻¹(x − y). Suppose\n (∫⁻_{D ∩ B̄_ρ(y)} ENNReal.ofReal(θ) dHⁿ) / ENNReal.ofReal(ρⁿ) → 0 in [0, ∞] as ρ → 0+.\nThen (tⁿ)⁻¹ ∫_D φ(η_t(x)) θ(x) dHⁿ(x) → 0 in ℝ as t → 0+. Here ∫_D is the Bochner set integral, and no integrability of θ is assumed.",
+  "lean_statement": "∀ (Q n : ℕ) (D : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (φ : CompactlySupportedContinuousMap (Eucl Q) ℝ), NullMeasurableSet D (μHE[n] : Measure (Eucl Q)) → (∀ x ∈ D, 0 ≤ θ x) → Tendsto (fun ρ : ℝ => (∫⁻ x in D ∩ closedBall y ρ, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun t : ℝ => (t ^ n)⁻¹ * ∫ x in D, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "lpf_wtc_wtt_remainder_vanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-86d7f9d6d1-a1"
+}

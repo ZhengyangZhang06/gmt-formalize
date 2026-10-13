@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.tangent_transfer-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "Transfer of approximate tangent planes across sets with zero-density symmetric difference (proof of Simon 1.6 ⇒)",
+  "statement": "Let C, N ⊆ ℝ^Q be Hⁿ-null-measurable, y ∈ ℝ^Q and T a linear subspace of ℝ^Q. Assume T is the (unweighted, Def. 1.4) approximate tangent space of N at y, Hⁿ(N ∩ B̄_r(y)) < ∞ for some r > 0, and Hⁿ((C ∖ N) ∩ B̄_ρ(y))/ENNReal.ofReal(ρⁿ) → 0 and Hⁿ((N ∖ C) ∩ B̄_ρ(y))/ENNReal.ofReal(ρⁿ) → 0 in [0, ∞] as ρ → 0+. Then T is the approximate tangent space of C at y.",
+  "lean_statement": "∀ (Q n : ℕ) (C N : Set (Eucl Q)) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet N (μHE[n] : Measure (Eucl Q)) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (N ∩ closedBall y r) < ∞) → Tendsto (fun ρ : ℝ => (μHE[n] : Measure (Eucl Q)) ((C \\ N) ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => (μHE[n] : Measure (Eucl Q)) ((N \\ C) ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T",
+  "lean_name": "lpf_wtc_tangent_transfer",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-tang-d8e31ab936-a1"
+}
