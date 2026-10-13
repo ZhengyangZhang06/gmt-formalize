@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8e36b2af2a0a093d7167811bfc78a20673007f340f56a4a916877f2117c7a2a2",
+  "git_delta": {
+    "base_commit": "e3f3c38afca563f68b54a57dec0a0597b2c96c89",
+    "candidate_commit": "84cbaa5125b30abe26d88198606cd3721ddf1b8d",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_graph_piece_lintegral_le_fibre_sum",
+    "diff_sha256": "11f2e87cda5ad9d834050d632bbf71cf1dbc7dfe31539177ffbdba1a6fd8eef5",
+    "source_sha256": "3ad99a5bcc5b26b5fbd246c67e496ee07527a6eeeb8d52d168b03584e3d4a2e0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_graph_piece_lintegral_le_fibre_sum",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → NullMeasurableSet A (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in A, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ A ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

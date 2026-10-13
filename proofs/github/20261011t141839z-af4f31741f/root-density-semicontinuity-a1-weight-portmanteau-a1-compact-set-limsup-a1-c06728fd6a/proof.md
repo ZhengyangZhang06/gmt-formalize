@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_semicontinuity-a1.weight_portmanteau-a1`
+- Child DAG node: `root.density_semicontinuity-a1.weight_portmanteau-a1.compact_set_limsup-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 5 of the parent proof (proof of (P2)), stated for general measures. Steps 2–3 enter through the sibling lemma exists_urysohn_integral_sandwich.
+
+Hypotheses:
+- U is open.
+- (H1) μ_i(K) ≠ ∞ for all i and all compact K ⊆ U.
+- (H2) μ(K) ≠ ∞ for all compact K ⊆ U.
+- (H3) ∫ g dμ_i → ∫ g dμ for every continuous compactly supported g with tsupport g ⊆ U.
+Let K ⊆ U be compact.
+
+1. K is compact, U is open and K ⊆ U, so there is δ > 0 with cthickening(δ, K) ⊆ U (IsCompact.exists_cthickening_subset_open).
+
+2. For m ∈ ℕ put r_m := δ/(m+1) and O_m := thickening(r_m, K). Then 0 < r_m ≤ δ, and r_{m'} ≤ r_m whenever m ≤ m'.
+ (a) O_m is open (isOpen_thickening), and K ⊆ O_m (self_subset_thickening, since r_m > 0).
+ (b) O_m ⊆ cthickening(r_m, K) ⊆ cthickening(δ, K) ⊆ U (thickening_subset_cthickening_of_le, since r_m ≤ δ).
+ (c) (O_m) is decreasing: for m ≤ m', r_{m'} ≤ r_m, so O_{m'} ⊆ O_m (thickening_mono).
+ (d) ⋂_m O_m = K. The inclusion ⊇ is (a). Conversely, let x ∈ O_m for every m, and let ε > 0. Choose a natural m > δ/ε (exists_nat_gt). Then δ < εm < ε(m+1), so r_m = δ/(m+1) < ε, and x ∈ O_m ⊆ thickening(ε, K) (thickening_mono). Hence x ∈ ⋂_{ε>0} thickening(ε, K) = closure K (closure_eq_iInter_thickening). Finally closure K = K, because K is compact, hence closed.
+ (e) μ(O_0) ≤ μ(cthickening(δ, K)) < ∞. The first inequality follows from (b) and monotonicity. The second follows from (H2), because cthickening(δ, K) is compact (IsCompact.cthickening; ℝ^N is proper) and contained in U.
+
+3. Continuity of measure from above (tendsto_measure_iInter_atTop) applies: each O_m is open, hence measurable; (O_m) is decreasing by (c); and μ(O_0) < ∞ by (e). Using (d), μ(O_m) → μ(⋂_m O_m) = μ(K) as m → ∞.
+
+4. Fix m. Apply exists_urysohn_integral_sandwich to the compact set K and the open set O_m ⊇ K. It gives a continuous g with compact support and tsupport g ⊆ O_m such that ν(K) ≤ ofReal(∫ g dν) ≤ ν(O_m) for every measure ν finite on all compact subsets of O_m. Since O_m ⊆ U, (H1) and (H2) show that ν = μ_i (for each i) and ν = μ qualify.
+
+5. tsupport g ⊆ O_m ⊆ U, so (H3) gives ∫ g dμ_i → ∫ g dμ. By continuity of ENNReal.ofReal, ofReal(∫ g dμ_i) → ofReal(∫ g dμ) (ENNReal.tendsto_ofReal). Hence limsup_i ofReal(∫ g dμ_i) = ofReal(∫ g dμ) (Tendsto.limsup_eq).
+
+6. Combine:
+ - limsup_i μ_i(K) ≤ limsup_i ofReal(∫ g dμ_i), since μ_i(K) ≤ ofReal(∫ g dμ_i) for every i (step 4 with ν = μ_i) and limsup is monotone (limsup_le_limsup; boundedness is automatic in ℝ≥0∞);
+ - limsup_i ofReal(∫ g dμ_i) = ofReal(∫ g dμ), by step 5;
+ - ofReal(∫ g dμ) ≤ μ(O_m), by step 4 with ν = μ.
+
+7. So limsup_i μ_i(K) ≤ μ(O_m) for every m, and μ(O_m) → μ(K) by step 3. Since ℝ≥0∞ is order-closed, passing to the limit gives limsup_i μ_i(K) ≤ μ(K) (ge_of_tendsto'). ∎
+
+## Key steps
+
+1. Take δ > 0 with cthickening(δ, K) ⊆ U and set O_m := thickening(δ/(m+1), K). Each O_m is open, contains K, lies in U, and the sequence decreases; ⋂ O_m = closure K = K and μ(O_0) < ∞.
+2. μ(O_m) → μ(K) (tendsto_measure_iInter_atTop).
+3. For each m, take the sandwich function g for K ⊆ O_m; (H1) and (H2) make every μ_i and μ admissible.
+4. limsup_i μ_i(K) ≤ limsup_i ofReal ∫ g dμ_i = ofReal ∫ g dμ ≤ μ(O_m).
+5. ge_of_tendsto' gives limsup_i μ_i(K) ≤ μ(K).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `grep -n 'RadonConverges\|def weight\|domainMeasure\|weight_finite_on_compact\|isOpen_domain\|structure Varifold\|map_domainMeasure' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean; cat Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `rg -n 'theorem exists_continuous_one_zero_of_isCompact|theorem exists_compact_between|theorem exists_continuous_nonneg_pos' mathlib/Mathlib`
+- `rg -n 'exists_iUnion_isClosed|theorem Monotone.measure_iUnion|theorem tendsto_measure_iInter_atTop|theorem IsCompact.exists_cthickening_subset_open|theorem closure_eq_iInter_thickening|theorem ofReal_integral_eq_lintegral_ofReal|IsCompact.cthickening|theorem self_subset_thickening|theorem thickening_subset_cthickening|theorem thickening_mono' mathlib/Mathlib`
+- `rg -n 'theorem le_liminf_measure_open|theorem limsup_measure_closed_le|le_liminf_measure|limsup_measure.*_le' mathlib/Mathlib; rg -il vague mathlib/Mathlib (no match)`
+- `rg -n 'lintegral_indicator_one|integrableOn_iff_integrable_of_support_subset|lemma Measure.integrableOn_of_bounded|theorem tendsto_ofReal|isCompact_preimage'|theorem image_eq_one_of_notMem_mulTSupport|theorem intro \[' in MeasureTheory/Integral/{Lebesgue/Basic,IntegrableOn}.lean, Topology/Instances/ENNReal/Lemmas.lean, Topology/Compactness/Compact.lean, Topology/Algebra/Support.lean`
+- `python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') replay -> namespace GMT.Ch08 + contract opens; lean_contract.validate_lean_statement on the 4 child lean_statements (all OK, unchanged)`
+- `lake env lean /tmp/wp-portmanteau-scratch/Stmts.lean (parent type + 4 child types elaborate in the replayed scope)`
+- `lake env lean /tmp/wp-portmanteau-final/Final.lean (complete proofs of the 4 exact child statements as GMT.Ch08.Submission.X, comparator-style `exact Submission.X` targets for each, parent assembly of weight_portmanteau_of_radonConverges, #print axioms -> [propext, Classical.choice, Quot.sound])`
+- `python3 -I dag.json lean_name scan (no duplicates; 4 proposed names free); git show <each local branch>:GMT/Ch08/Submission.lean | grep -E the 4 proposed names (no matches)`
+- `grep -n -i 'liminf\|lim inf\|C_c' book/chapter-08.txt; sed -n 336,385p book/chapter-08.txt (3.7 proof step (3) uses P1 unproved); sed -n 1740,1800p book/chapter-01.txt (4.16 convergence notion)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1-weight-portmanteau-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/wp-portmanteau-scratch/Stmts.lean`
+- `/tmp/wp-portmanteau-final/Final.lean`
+
+Snapshot: project 63436ae6 + Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+SimonGMT supplies the varifold API the transfer child needs: structure Varifold, domainMeasure and map_domainMeasure (Varifold.lean:335/347/387); weight = measure.map Prod.fst (:557); weight_finite_on_compact (:576); RadonConverges (VarifoldConvergence.lean:35). Its divergenceDomainTest uses the same lifting pattern (IsInducing.subtypeVal.isCompact_preimage' plus MeasurableEmbedding.integral_map).
+
+Neither SimonGMT nor Mathlib proves a portmanteau for vague convergence. Portmanteau.lean only covers weak convergence of finite/probability measures (FiniteMeasure.limsup_measure_closed_le_of_tendsto :281, ProbabilityMeasure.le_liminf_measure_open_of_tendsto :326), and 'vague' has no match. Chapter 8's 3.7 uses (P1) in step (3) without proof.
+
+Mathlib provides every tool the children use:
+- exists_compact_between (LocallyCompact.lean:172)
+- exists_continuous_one_zero_of_isCompact (UrysohnsLemma.lean:404)
+- Measure.integrableOn_of_bounded (IntegrableOn.lean:716) and integrableOn_iff_integrable_of_support_subset (:462)
+- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)
+- lintegral_indicator_one (Lebesgue/Basic.lean:572)
+- IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207)
+- Monotone.measure_iUnion and tendsto_measure_iInter_atTop (Measure/Continuity.lean:71, :220)
+- IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, closure_eq_iInter_thickening, thickening_mono, self_subset_thickening, thickening_subset_cthickening_of_le (Thickening.lean:426/283/524/88/309/272)
+- ENNReal.tendsto_ofReal (ENNReal/Lemmas.lean:72)
+- Topology.IsInducing.isCompact_preimage' (Compact.lean:1011)
+- HasCompactSupport.intro and image_eq_zero_of_notMem_tsupport (to_additive forms of Support.lean:232 and :111)
+
+All four child lean_statements pass validate_lean_statement and elaborate in the replayed contract scope. In a scratch file that imports GMT.Ch08.Submission, the following compile with axioms propext, Classical.choice and Quot.sound only: complete proofs of all four exact statements, comparator-style exact checks for each, and the parent assembly of the frozen weight_portmanteau_of_radonConverges type. The four proposed bare names do not occur in dag.json or on any local branch.

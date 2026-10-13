@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6fceec34bb2483f095ed6e9b77b6f76eb8156886f538da9a8a74fabea1de2762",
+  "git_delta": {
+    "base_commit": "d347ebb51a9349d97abcd886cf3eb72865e79885",
+    "candidate_commit": "c8f015ccaf09d3096cc6290836bfc7b60141cc8e",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_tpr_hausdorff_null_of_weight_null",
+    "diff_sha256": "d653d14192ec639c199d0bf128a2a538c8e195c5e5ea889cdefd3965048ee89e",
+    "source_sha256": "9ca9ce3e3974404274288d00280a3b037dc8ac08b98547fbfb92567c7d4e5144",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_tpr_hausdorff_null_of_weight_null",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (Z : Set (Euclidean N)) (θ : Euclidean N → ℝ), (∀ K : Set (Euclidean N), IsCompact K → μ K ≠ ∞) → μ Z = 0 → (∀ x ∈ Z, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → μHE[n] Z = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

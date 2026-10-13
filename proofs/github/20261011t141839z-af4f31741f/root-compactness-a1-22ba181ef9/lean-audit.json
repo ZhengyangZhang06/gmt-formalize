@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a7fe744bc05b31f8da0ea02f9aca1cd1ca673a62d8f53663a1955056ededcd7e",
+  "git_delta": {
+    "base_commit": "c52214a67d63623321c8ca8c34eda402f6e7dcf8",
+    "candidate_commit": "4dc8f412869dbbe85603ed5c6022f00ef2b2764d",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "compactness_theorem",
+    "diff_sha256": "8b6aeb3a52b73912fce0a418113af56b02ede17f25550a7d31aebbeaccd28369",
+    "source_sha256": "eafa0a399a48fe3b8dc814d764289e78ff2d1215c6d674fb6b5ecac714021d6c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.compactness_theorem",
+      "statement": "CompactnessTheorem",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

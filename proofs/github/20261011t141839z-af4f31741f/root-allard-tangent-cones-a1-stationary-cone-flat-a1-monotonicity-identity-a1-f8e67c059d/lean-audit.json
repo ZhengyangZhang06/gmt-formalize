@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "781b007ba4fedb809b5eb04f1b84a07b99fc0080f22566e283e3060821a306c6",
+  "git_delta": {
+    "base_commit": "ad0b959554ea648f0f24bf0bde4f12b9a617c2a0",
+    "candidate_commit": "d1de406f3e87b135eccaa529246535e54124fd2a",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_scf_monotonicity_identity",
+    "diff_sha256": "74cbba729bbc797334043113b15d5f7caa9df34182a3ef427c943e14dcd9ca9a",
+    "source_sha256": "8aeafee015a9bd63b06bc819538a2b1d8b354ef99e1ac7440a7d017764a599fc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_scf_monotonicity_identity",
+      "statement": "StationaryMonotonicityIdentity → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → ∀ y : Euclidean N, (∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ∀ ρ : ℝ, 0 < ρ → θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) = densityRatio n C.weight y ρ) ∧ MonotoneOn (densityRatio n C.weight y) (Ioi 0)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f9377a0f450777401992dd307f109004ee15ad1e77daf6cade6cd54a863c5ce3",
+  "git_delta": {
+    "base_commit": "87c5fa6e5c125affdde2662b3845a029a4f6f835",
+    "candidate_commit": "2d86d13cadffe0f67d5041f89ba83e4829b6d07f",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_ccb_one_point_ball_bound",
+    "diff_sha256": "4e1613e280512ca92b5e4589a3b6828dd3fc22a650c40d3f7b5e78cc82c70647",
+    "source_sha256": "63526cf7c72dcfdf2b3742fcbf5ec25a0ceffc0a0a60b4fa3daa0975881cbeba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_ccb_one_point_ball_bound",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x y : Euclidean N) (δ ε σ : ℝ), 0 < δ → δ ≤ 1 / 2 → 0 < ε → ε ≤ δ ^ 4 → ‖y - x‖ < ε → MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * μ (closedBall y r) / ENNReal.ofReal r ^ n) (Ioo 0 1) → 0 < σ → σ ≤ δ ^ 2 → μ (closedBall y σ) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

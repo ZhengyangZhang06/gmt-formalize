@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a133c7d6a207375a4d413f647660711ed7b56108aebf5e4d55c62896bcdd2092",
+  "git_delta": {
+    "base_commit": "5ffa397ce43392a23e1d5b96347e3dac80391b4f",
+    "candidate_commit": "8a562da58737438b5fd1bf387a3c01bb1f649bdd",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "stationary_constancy_tangentGraph_measure",
+    "diff_sha256": "d7e85028d52ce66d9c4c72396d2e3d9ffcb9a01b0e0675023b9aaefa0e6a754a",
+    "source_sha256": "2bfe544d0cd3525f6c5be29f504ae04c1343e5b08ea2db206abf2e12bfbc3263",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stationary_constancy_tangentGraph_measure",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)), V.Stationary → Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 M → U ∩ V.weight.support ⊆ M → IsPreconnected (M ∩ U) → M.Nonempty → ∃ (c : ℝ≥0∞) (T : Euclidean N → Grassmannian N n), c ≠ ∞ ∧ Measurable T ∧ V.measure = (c • (μHE[n] : Measure (Euclidean N)).restrict (M ∩ U)).map (fun x ↦ (x, T x)) ∧ (c ≠ 0 → ∀ x ∈ M ∩ U, ((T x).plane : Set (Euclidean N)) = classicalTangentSpace M x)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

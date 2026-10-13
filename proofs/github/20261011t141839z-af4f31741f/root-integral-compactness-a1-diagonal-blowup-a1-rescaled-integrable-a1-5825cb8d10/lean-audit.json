@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f5a7d93ba80eacfecd26d926e5dbf16b9c949de6400b7cf4b57323c3c11a9f5",
+  "git_delta": {
+    "base_commit": "edf6403e8f3705cbe1236f62087253a7ffede563",
+    "candidate_commit": "916dff12c88b530595661269a515abd8b8106e32",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_diag_rescaled_integrable",
+    "diff_sha256": "66ab545685d5abe6eafe4efa1c02046e772cb31a613c3d11bc5350d19339fc85",
+    "source_sha256": "abde53add56d3f9283355393e2edd95e5624bf98463993bab16686bbe8770264",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_diag_rescaled_integrable",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ) (F : C_c(Euclidean N × Grassmannian N n, ℝ)), 0 < t → (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Integrable (fun z ↦ F z) (rescaledMeasure V ξ t)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

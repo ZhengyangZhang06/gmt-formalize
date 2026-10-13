@@ -1,0 +1,31 @@
+{
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/899",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4370",
+  "candidate_commit": "d06132309b444dc599c9773b2ecfa8b4427288a5",
+  "integrated_commit": "",
+  "proof_base_commit": "f46dc3621587385d3197e223b3f18d11b98724ea",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1",
+  "requires": [
+    "root.integral_compactness-a1.integral_density-a1",
+    "root.integral_compactness-a1.canonical_representation-a1",
+    "root.integral_compactness-a1.allard_lemma-a1",
+    "root.integral_compactness-a1.graph_fibre_bound-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.tilt_cutoff-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.canonical_domination-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.compact_mass_eventually-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.unit_disc_mass-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.tilt_excess_eventually-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.tangent_tilt_bound-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.good_mass_estimate-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.flat_claim-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.dim_zero-a1"
+  ]
+}

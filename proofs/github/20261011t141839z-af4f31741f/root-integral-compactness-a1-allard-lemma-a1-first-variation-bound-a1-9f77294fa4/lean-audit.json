@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f528197240598914f4f0fb908572585f1570172116cd334c0c16c8da7052754",
+  "git_delta": {
+    "base_commit": "da0a42e7aedc725ac5ffbc928f22fa400f8e7a89",
+    "candidate_commit": "b61202877270c213b051846c142ef3bc1e3a4bd5",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_first_variation_le_sup_mul",
+    "diff_sha256": "cbece629f37b7c87c7e0f0f5e8e3aacb2c36242c8c6f66c02a1a7b53cb6864e6",
+    "source_sha256": "944d43fea6c015a32aaa2e53e51d151f0678e80ef905972c69994a91bcfc9d17",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_first_variation_le_sup_mul",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (X : Euclidean N → Euclidean N) (K : Set (Euclidean N)) (B : ℝ), W.HasLocallyBoundedFirstVariation → ContDiff ℝ 1 X → IsCompact K → K ⊆ U → tsupport X ⊆ K → (∀ z, ‖X z‖ ≤ B) → ENNReal.ofReal |W.firstVariation X| ≤ ENNReal.ofReal B * variationMeasure W K",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

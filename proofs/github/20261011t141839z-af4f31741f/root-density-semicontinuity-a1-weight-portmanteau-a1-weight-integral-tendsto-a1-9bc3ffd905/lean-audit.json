@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "592fb830e6693c47f96d2394c959a35c50e3bedd1ed703a7ab89ed3751b212e0",
+  "git_delta": {
+    "base_commit": "40bbec30ecede19c434acffd69a1d81de70808ff",
+    "candidate_commit": "7a4194d18972b8c58a4f8564aca17791fead41bb",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_weight_integral_tendsto_of_radonConverges",
+    "diff_sha256": "f26536133d2983b42807d17e1e177b91ed202b707251b4e27d309fc13ba40dd5",
+    "source_sha256": "120daf6e02e949415d399bc0a826e2a6a5014f4d3e72b7b4a0d57d10c743b8e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_weight_integral_tendsto_of_radonConverges",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(Vi i).weight) atTop (𝓝 (∫ x, g x ∂V.weight))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

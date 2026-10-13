@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8c51dd691565c9186e18efe040c0d6f73a10dae1aa5f7b1ec967810ed38e25f3",
+  "git_delta": {
+    "base_commit": "a4c64435f912b2f7eaf0a927198b65da81fc5e90",
+    "candidate_commit": "0e81510a03fcc0f9a1b6c28db5926790b6de3d28",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_ri_weightedApproxTangent_inter_open_iff",
+    "diff_sha256": "f91c2c0b84ef3550f0fecc4218af571c4b619103f3137d04ac05822dba9c1f2f",
+    "source_sha256": "05b16ffe6a29a19c80c59024ce3c7032fb31330ea693970be09499d644e708a5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_ri_weightedApproxTangent_inter_open_iff",
+      "statement": "∀ (N n : ℕ) (O M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (y : Euclidean N) (P : Submodule ℝ (Euclidean N)), IsOpen O → y ∈ O → (Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ M) θ y P ↔ Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

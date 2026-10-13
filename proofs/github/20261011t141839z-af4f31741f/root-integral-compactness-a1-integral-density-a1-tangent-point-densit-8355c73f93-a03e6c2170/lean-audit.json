@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "28f79b82b151ecb822b43cc17e749d3f91adc9890c590f92febc1d8889a74c8c",
+  "git_delta": {
+    "base_commit": "4a5669408ffa9deeddf73aab7f038c6dbddb7cb2",
+    "candidate_commit": "d97efa97206641f74287746ee0f5411ccc090c46",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_tpd_plane_closedBall_hausdorff",
+    "diff_sha256": "08cff9492e1d411b7a65ec96f248bb694ae9532b3b1c66a293a33023493d6e23",
+    "source_sha256": "c4b72bff23f476c5c74257275dca0f157aa805a14652781969722920746aaa67",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_tpd_plane_closedBall_hausdorff",
+      "statement": "∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)) (r : ℝ), Module.finrank ℝ P = n → 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((P : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

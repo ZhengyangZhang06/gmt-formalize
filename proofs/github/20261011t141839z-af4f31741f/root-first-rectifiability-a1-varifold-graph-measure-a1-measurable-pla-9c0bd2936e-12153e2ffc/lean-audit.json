@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68b249afd8ca551a67e6b92926f54627715dcb9ed47989b065916a4285cc7040",
+  "git_delta": {
+    "base_commit": "7c6faf557c0dd52e581c8670828673d8d7b26a0a",
+    "candidate_commit": "e0acc5c2111701cc0239ce6ebac984510643d91e",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_mps_limit_selection",
+    "diff_sha256": "1a447e5ef4a0c29ac47228df829a8d8aefe4573163826d19416f699ebe78c0b5",
+    "source_sha256": "ad0193d428c488d125a1a20ee913009f7b48293eb5edf8a7de003ad90bf83766",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_mps_limit_selection",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (N n : ℕ), Nonempty (Grassmannian N n) → ∀ (a : ℕ → X → Fin N → Fin N → ℝ), (∀ (k : ℕ) (i j : Fin N), Measurable (fun x ↦ a k x i j)) → ∃ τ : X → Grassmannian N n, Measurable τ ∧ ∀ (x : X) (T : Grassmannian N n), (∀ i j : Fin N, Tendsto (fun k ↦ a k x i j) atTop (𝓝 (T.1 i j))) → τ x = T",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

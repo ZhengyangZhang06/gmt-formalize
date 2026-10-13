@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6d222e86f8840482b734b70bf34418d954996ecea64104ee36d479fb52fa7f18",
+  "git_delta": {
+    "base_commit": "12dc129aa96facdbf458ec37ce46472f0ae57c21",
+    "candidate_commit": "cc22d38987f65d791107f002a2283a571506eead",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "f30dfc274387533efe76f726945dd99037bae734455f124760fd1eb3761b4c1d",
+    "source_sha256": "866b73223465830061a23a6995797e7b12242073730282f3d1450871bcf17541",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.first_rectifiability_theorem",
+      "statement": "FirstRectifiabilityTheorem",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

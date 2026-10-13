@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11ee45ea15f63ad65629fe946d7f0621343c596ad696d0e08eb63f3be993d5fb",
+  "git_delta": {
+    "base_commit": "ad1b8b8463162b7ddadc6460ba99ac0c23b63114",
+    "candidate_commit": "c0657ab4d3eb6d122b18bc79061fb03d377757c6",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "radon_exists_measure_of_tendsto_integral",
+    "diff_sha256": "01ac89a0e08e7a48b3b5dac7566fe82f6c146b774794da084820d204fd68e99c",
+    "source_sha256": "1d592cc46fbc36bcebbd64a2254ea1dda8be7c2782dba885629d25b1416b5429",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.radon_exists_measure_of_tendsto_integral",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [MeasurableSpace X] [BorelSpace X] (μ : ℕ → Measure X), (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) → (∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 L)) → ∃ ν : Measure X, IsLocallyFiniteMeasure ν ∧ ∀ f : C_c(X, ℝ), Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 (∫ x, f x ∂ν))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

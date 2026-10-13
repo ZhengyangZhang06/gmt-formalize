@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8a1b8422eb47b09fc07ae49e8ea86d3ca79b4db8fc443db37709dd3cbfe0af55",
+  "git_delta": {
+    "base_commit": "ad1b8b8463162b7ddadc6460ba99ac0c23b63114",
+    "candidate_commit": "2721e20337252ca8e1f6204843570bd04ba673c8",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "radon_compactlySupported_countable_approx",
+    "diff_sha256": "942b96a5596092d784c8e9321acf7918c18ea9bb90144af0b53118c19339f942",
+    "source_sha256": "b4e7c4694ea7a8b69c589ff1c2f3c90eb4acb704bfe0847e49cdb51f492ab7f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.radon_compactlySupported_countable_approx",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X], ∃ g : ℕ → C_c(X, ℝ), ∀ f : C_c(X, ℝ), ∃ K : Set X, IsCompact K ∧ tsupport f ⊆ K ∧ ∀ η : ℝ, 0 < η → ∃ k : ℕ, tsupport (g k) ⊆ K ∧ ∀ x : X, |f x - g k x| ≤ η",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

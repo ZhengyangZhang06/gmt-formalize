@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8b829f216fafa2789e4696ba5995bf5b69c1c109568b658b682ce49b8825959e",
+  "git_delta": {
+    "base_commit": "8d0ae9ce2ddd0252ae41642e0c98005b2c32f6b0",
+    "candidate_commit": "75c8fd1499450c2309ffc178ba125ad71c9e86b3",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "4952a7d1074a57b6625b7a3e84195d8d07b6c8db1149a62000cd4cdb7cc9bbff",
+    "source_sha256": "9066686d7bb4341ad45ff979bddf8e9356eb0b64f80588f7dd5eb38677439434",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.density_semicontinuity_theorem",
+      "statement": "DensitySemicontinuity",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

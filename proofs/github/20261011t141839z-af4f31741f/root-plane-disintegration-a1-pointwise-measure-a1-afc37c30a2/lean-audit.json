@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8bf13fb788d399654933a8f12ae9970af0ab8e76712697dfacc540592b4df691",
+  "git_delta": {
+    "base_commit": "07af73351490aa99c7caa357e15ea23c0627dcee",
+    "candidate_commit": "fb766d9613ad279289aab46cb1ef1de31bffec3a",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "plane_disint_pointwise_measure",
+    "diff_sha256": "8556f8340064d73f497dd96400d644a7bc45ced6436423229c7f3fc84b205e9c",
+    "source_sha256": "2c7763473cb6eb2952d43aa8c90ccc6b195977d0eca2751d7d2869feffcebb9b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.plane_disint_pointwise_measure",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∀ᵐ x ∂V.weight, ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂η))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

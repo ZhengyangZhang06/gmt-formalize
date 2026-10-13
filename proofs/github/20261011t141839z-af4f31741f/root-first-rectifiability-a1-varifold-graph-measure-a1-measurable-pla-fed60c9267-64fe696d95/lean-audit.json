@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1bb305667a53ad2e0082fd2933576ec15f583b003f610fe891ed5c473a43c9ee",
+  "git_delta": {
+    "base_commit": "7c6faf557c0dd52e581c8670828673d8d7b26a0a",
+    "candidate_commit": "91f07322d2129c5b1b341ad5ffdf41f755e71672",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_mps_weight_closedBall_measurable",
+    "diff_sha256": "b7c395a45da76771492a8b3b2a058146db19d600a117cc063e5962c17b1a278e",
+    "source_sha256": "5796c568c0435db86dfee1a99a5c43f79a1531917c275ec1641a4e533f42ea19",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_mps_weight_closedBall_measurable",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)), SFinite μ → ∀ r : ℝ, Measurable (fun x : Euclidean N ↦ μ (closedBall x r))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a8b38b4f9666b94b0021ecf04632e80fe82c9e7bcb830bef6e6d65ebc924eaa3",
+  "git_delta": {
+    "base_commit": "6cd7485f01bdb2ffebc7ee7f7b64e03ecd8795ae",
+    "candidate_commit": "d4df867dc561bfc59b5b85e05bed54805ee72dc8",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_cnm_exists_uniform_densityRatio_lower",
+    "diff_sha256": "60911d8a7880179d522384358709e4261e075d94c09df320a42ae5b6898cdc2d",
+    "source_sha256": "6f9eb54f5fedcf4254ebcbd38cf39ab1b6b8047575e11a39d86827eef2b6c649",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_cnm_exists_uniform_densityRatio_lower",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (t : ℝ≥0∞), 0 < t → HasDensity n μ x t → ∃ m k : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((k : ℝ) + 1) → (2 * ((m : ℝ≥0∞) + 1))⁻¹ ≤ densityRatio n μ x ρ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e288a2d3d6c697d072c85acf71e2c88ddf1f4354a475b15a491462349e812b8b",
+  "git_delta": {
+    "base_commit": "e764c1a0ae2e51830cb754e178427e84f8ff8763",
+    "candidate_commit": "e701f44b497c1839862dc3bbb1071837c53e7661",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "simon_chart_classicalTangentSpace_eq_range",
+    "diff_sha256": "dde03090fee9d6501a4e26e18f953937415c3f2992dd9647a9de7a70f8682ee6",
+    "source_sha256": "6b7ce9733679b5c7a62efc3f3cd8fbbeb35b7f65eb6e9a6776cc473760188c9e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_chart_classicalTangentSpace_eq_range",
+      "statement": "∀ (N n : ℕ) (M W : Set (Euclidean N)) (D : Set (Euclidean n)) (φ : Euclidean n → Euclidean N) (a : Euclidean n), Chapter02.IsSimonLocalRepresentation 2 M D W φ → a ∈ D → classicalTangentSpace M (φ a) = Set.range (fderiv ℝ φ a)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "76745b56b2d97e1b065d4af69e05b9e642d4e2216dcb1bd6490a466755462099",
+  "git_delta": {
+    "base_commit": "b861be503297cb5c98a900b6914dbb43a4961744",
+    "candidate_commit": "032d344034436ce00115e8922453e435312de9de",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "mono833_exp_weighted_density_limit",
+    "diff_sha256": "f4422e6405885361677ba6fb6af2cb3df47531d0a0269ed1a26830ce358b6cfd",
+    "source_sha256": "e467baad0f90338e82969ba5b4aef1f36cafbb4c2525124a5aa32a8590ba75f1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mono833_exp_weighted_density_limit",
+      "statement": "∀ (P : ℝ → ℝ≥0∞) (ρ₀ Λ : ℝ), 0 < ρ₀ → MonotoneOn (fun ρ : ℝ ↦ ENNReal.ofReal (Real.exp (Λ * ρ)) * P ρ) (Ioo 0 ρ₀) → P (ρ₀ / 2) ≠ ∞ → ∃ θ : ℝ≥0∞, Tendsto P (𝓝[>] 0) (𝓝 θ) ∧ θ ≠ ∞ ∧ ∀ σ : ℝ, 0 < σ → σ < ρ₀ → θ ≤ ENNReal.ofReal (Real.exp (Λ * σ)) * P σ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

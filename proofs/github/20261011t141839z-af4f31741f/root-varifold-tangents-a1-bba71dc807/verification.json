@@ -1,0 +1,27 @@
+{
+  "node_id": "root.varifold_tangents-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/324",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4096",
+  "candidate_commit": "7e5f6a9c460e336178a8f3872c810345bf411b36",
+  "integrated_commit": "",
+  "proof_base_commit": "c0da5d4e53f1a1e1c8f676ede5196978f7099231",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.first_variation-a1",
+    "root.monotonicity_density-a1",
+    "root.radon_compactness-a1",
+    "root.density_semicontinuity-a1",
+    "root.varifold_tangents-a1.rescaled_ball_mass-a1",
+    "root.varifold_tangents-a1.rescaled_divergence_bound-a1",
+    "root.varifold_tangents-a1.limit_stationary-a1",
+    "root.varifold_tangents-a1.limit_ball_mass-a1",
+    "root.varifold_tangents-a1.radial_homogeneity-a1",
+    "root.varifold_tangents-a1.restrict_radon_converges-a1",
+    "root.varifold_tangents-a1.density_lower_bound-a1"
+  ]
+}

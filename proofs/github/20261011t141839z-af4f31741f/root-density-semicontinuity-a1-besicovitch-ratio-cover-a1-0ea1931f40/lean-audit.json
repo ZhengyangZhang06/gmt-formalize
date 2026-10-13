@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "974ea1006d1296d1d23a902c1602968032b9aa4f4727353d8fd6ea394c362173",
+  "git_delta": {
+    "base_commit": "54295e6c79ed665caddb17eb13d33a48b75e033b",
+    "candidate_commit": "b70dd9d5e02268a56fe635fac6f34398f3674925",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "besicovitch_ratio_cover_estimate",
+    "diff_sha256": "6dcb631d2816dfc3886e4dfdb3ad15dd4c5cdb859348421282612d45c7c52c78",
+    "source_sha256": "2da4708c8b32d9bdd1bcc413e6f435f24133b07ca1fcf716102dc902f78e7c3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.besicovitch_ratio_cover_estimate",
+      "statement": "∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A : Set (Euclidean N)) (ρ₀ : ℝ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧ μ (closedBall x σ) ≤ t * ν (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν (thickening ρ₀ A)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

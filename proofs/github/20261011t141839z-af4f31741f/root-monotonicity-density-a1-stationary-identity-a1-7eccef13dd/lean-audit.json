@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7f0d78b548d1428716e76ac91d56a914bdc338b94d0378945db5fdd989ad29c5",
+  "git_delta": {
+    "base_commit": "bff499ecc8d90c88f4298b4dbd8a49aff16d8f3e",
+    "candidate_commit": "e163fc58e786f6e1d09778b6af00bb997d28a43e",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "eb72d17ac086e60440f2e09354408706dd3fc27fd51d244b7feef44a5a891a30",
+    "source_sha256": "d7033769ef52ef969b076fcaf5d735e55fc63a93266beb3914e4b629d3bf7966",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stationary_monotonicity_identity_8_3_4",
+      "statement": "StationaryMonotonicityIdentity",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

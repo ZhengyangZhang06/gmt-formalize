@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7e460bb80e90af40bf249fbf3c3c5fd9385d2a05dda72596fa671221b46f6a3e",
+  "git_delta": {
+    "base_commit": "a849db8a40b9b1e9480c47959a280128e2ba1f37",
+    "candidate_commit": "5fc31e9506d9a0049a220ed9228f3b7bf2114a17",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_weight_hull",
+    "diff_sha256": "e5ecc3102d01c1bf316bff9db679f5b1c6e1eec7198ee45c6652e573eac2d62e",
+    "source_sha256": "bef12ea294f22e98b4f23741538a9ed12e87074975c4257ac47a1fe20dfd15d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_weight_hull",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf V M θ → ∃ T : Set (Euclidean N), MeasurableSet T ∧ {x | x ∈ M ∧ ∃ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane} ⊆ T ∧ V.weight = (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun x ↦ ENNReal.ofReal (θ x)).restrict T ∧ ∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ x in {x | x ∈ M ∧ ∃ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane} ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

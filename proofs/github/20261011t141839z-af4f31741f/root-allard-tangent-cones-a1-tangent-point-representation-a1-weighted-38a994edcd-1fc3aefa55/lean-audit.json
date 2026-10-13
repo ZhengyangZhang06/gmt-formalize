@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d9e0c6ca34af7eb543cea949b4c2ed81f8952a6624ca01992b78b92be84d9710",
+  "git_delta": {
+    "base_commit": "c30757de7b4594f2934ef4b57c83ec80fed78bcd",
+    "candidate_commit": "39c7ab7a96d6c438ee1d6a6aab544b5aa2713fcc",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_tpr_weighted_approx_tangent_iff",
+    "diff_sha256": "e10cd8accd9dc1bdaa899184cdf08a3dd49abf4269d26cfa6583ec8cdc7aeed0",
+    "source_sha256": "5bc50d05317040edcc1e85b0b1a9c188e20b7a60385ec45e1b8a4dd1a77e42b1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_tpr_weighted_approx_tangent_iff",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in M ∩ B, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

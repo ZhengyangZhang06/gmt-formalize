@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97e83e637181ab9a3e05cd19bacffdd0f0d130b95fb4e35b0c863178f925396e",
+  "git_delta": {
+    "base_commit": "150bb9d0ce633e97e691b0c69438702ad319c1d3",
+    "candidate_commit": "088f75cf0931497e9dcde1e39274c068173a9dcb",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "plane_disint_slice_density",
+    "diff_sha256": "6eeb3a8af980656ff167bcc768024c1660e1c858e85bcf5a8c13d344c9673542",
+    "source_sha256": "70f43979b3be0271f66ef31204ffc5a442dcee244c8f2d8027c1388db9543d0d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.plane_disint_slice_density",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (β : C(Grassmannian N n, ℝ)), (∀ S, 0 ≤ β S) → ∃ e : Euclidean N → ℝ, Measurable e ∧ (∀ᵐ x ∂V.weight, Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (e x))) ∧ ∀ A : Set (Euclidean N), MeasurableSet A → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (e x) ∂V.weight",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

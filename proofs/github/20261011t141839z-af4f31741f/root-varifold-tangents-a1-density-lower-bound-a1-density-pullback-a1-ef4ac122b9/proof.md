@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.varifold_tangents-a1.density_lower_bound-a1`
+- Child DAG node: `root.varifold_tangents-a1.density_lower_bound-a1.density_pullback-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 9 of the parent proof (the transfer from C_Ω back to C), stated for an arbitrary varifold V. The parent applies it with V = C, W = C_Ω and c = (ofReal τ)⁻¹, so that c⁻¹ = ofReal τ (inv_inv).
+
+1. Ω is open (W.isOpen_domain), hence Borel.
+
+2. (Weight identity.) We show μ_W = c • (μ_V⌞Ω). For Borel A:
+  μ_W(A) = W.measure(A × G)   (Varifold.weight_apply)
+    = c·V.measure((A × G) ∩ (Ω × G))   (Measure.smul_apply; Measure.restrict_apply, A × G Borel)
+    = c·V.measure((A ∩ Ω) × G)   (prod_inter_prod, inter_univ)
+    = c·μ_V(A ∩ Ω)   (Varifold.weight_apply, A ∩ Ω Borel)
+    = c·(μ_V⌞Ω)(A)   (Measure.restrict_apply).
+  Measures that agree on all Borel sets are equal (Measure.ext).
+
+3. (Null sets.) Since c ≠ 0, μ_V⌞Ω ≪ c • (μ_V⌞Ω) = μ_W (Measure.absolutelyContinuous_smul). So the hypothesis 'for μ_W-a.e. y, ∃θ, HasDensity n μ_W y θ ∧ 1 ≤ θ' also holds μ_V⌞Ω-a.e. (AbsolutelyContinuous.ae_le). Since Ω is Borel, ae_restrict_iff' turns this into: for μ_V-a.e. y, y ∈ Ω ⇒ ∃θ, HasDensity n μ_W y θ ∧ 1 ≤ θ.
+
+4. (Ball masses near a good point.) Fix such a y ∈ Ω and its θ. Since Ω is open, there is δ > 0 with ball y δ ⊆ Ω (Metric.isOpen_iff). For 0 < ρ < δ, closedBall y ρ ⊆ ball y δ ⊆ Ω (closedBall_subset_ball). So by step 2, μ_W(closedBall y ρ) = c·μ_V(closedBall y ρ ∩ Ω) = c·μ_V(closedBall y ρ). As 0 < c < ∞, c⁻¹·c = 1 (ENNReal.inv_mul_cancel), hence
+  μ_V(closedBall y ρ) = c⁻¹·μ_W(closedBall y ρ) = c⁻¹·(ofReal((1⁻¹)^n)·μ_W(closedBall y (1·ρ))),
+  using ofReal((1⁻¹)^n) = ofReal 1 = 1 and 1·ρ = ρ.
+
+5. (Apply the scaling lemma.) Apply the sibling density_scaling (Submission.varifold_tangents_dlb_hasDensity_of_closedBall_scaling) with (μ, ν, y, z, t, δ, c, θ) := (μ_W, μ_V, y, y, 1, δ, c⁻¹, θ). Its hypotheses are:
+  - 1 > 0 and δ > 0;
+  - c⁻¹ ≠ ∞, because c ≠ 0 (ENNReal.inv_ne_top);
+  - the identity of step 4 for every ρ ∈ (0,δ);
+  - HasDensity n μ_W y θ.
+  It gives HasDensity n μ_V y (c⁻¹·θ). Finally c⁻¹ = c⁻¹·1 ≤ c⁻¹·θ because 1 ≤ θ. So θ' := c⁻¹·θ witnesses the claim at y, and by step 3 this holds for μ_V-a.e. y ∈ Ω. ∎
+
+## Key steps
+
+1. Ω is open (the domain of W), hence Borel.
+2. μ_W = c • (μ_V⌞Ω), by evaluating both on Borel sets.
+3. μ_V⌞Ω ≪ μ_W (c ≠ 0) and ae_restrict_iff' give: for μ_V-a.e. y ∈ Ω, W has a density θ ≥ 1 at y.
+4. For such y, closedBall y ρ ⊆ Ω for small ρ, so μ_V(B_ρ(y)) = c⁻¹·μ_W(B_ρ(y)).
+5. Sibling density_scaling with t = 1 and constant c⁻¹ gives HasDensity n μ_V y (c⁻¹θ), and c⁻¹θ ≥ c⁻¹.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum <snapshot>/project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -n 'rescaledMeasure|densityRatio|HasDensity' <snapshot>/project/GMT/Ch08/Contract.lean`
+- `rg -c 'varifold_tangents|rescaledMeasure_prod|hasDensity_of_closedBall' <snapshot>/project (exit 1: no match)`
+- `rg -n 'lemma absolutelyContinuous_smul|theorem integral_smul_measure|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem measure_toMeasurable|theorem subset_toMeasurable|theorem measurableSet_toMeasurable|protected theorem Tendsto.const_mul|theorem measure_ball_pos|theorem measure_ball_lt_top|theorem ae_restrict_iff\'|theorem restrict_apply_le|theorem restrict_le_self|theorem tendsto_add_atTop_iff_nat|theorem ofReal_inv_of_pos|protected theorem mul_inv|protected theorem inv_mul_cancel|protected theorem mul_inv_cancel|protected theorem inv_pow|theorem ofReal_pow|theorem ae_all_iff|theorem tendsto_nhdsWithin_iff|Ioo_mem_nhdsGT' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem|^def|^structure|^abbrev' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean, VarifoldConvergence.lean, FirstVariationRiesz.lean, TangentRescaling.lean`
+- `sed -n 540,630p book/sources/chapter-08-source.txt (printed 5.5–5.7)`
+- `python dag.json scan of all node ids/lean_names/lean_statements; grep -o 'varifold_tangents_dlb[A-Za-z0-9_]*' dag.json, node dirs, cluster-state/verification/results; git grep over all 138 refs (no match)`
+- `lake env lean /tmp/dlb-decomp/T1.lean (statement elaboration), T2.lean (parent glue from sorry'd children + sibling stubs), T3.lean/T4.lean (child proofs), T5.lean (#print axioms), T6.lean (comparator-scope replay 'exact Submission.X')`
+- `python lean_contract.validate_lean_statement and gmt-compare.contract_scope on the 7 statements`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-08-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-density-lower-bound-a1/parent-child-handoff.json`
+
+Snapshot = project 63436ae6 + Mathlib 25730c7c. Its project/GMT/Ch08/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+No match: the snapshot project has no declaration for any proposed child (varifold_tangents*, rescaledMeasure_prod*, hasDensity_of_closedBall* all absent), so each child is a new obligation.
+
+What the children rely on:
+- Mathlib (snapshot): Measure.absolutelyContinuous_smul (AbsolutelyContinuous.lean:169); integral_smul_measure (Bochner/Basic.lean:1052); setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486); toMeasurable lemmas (MeasureSpaceDef.lean:333–348); ENNReal.Tendsto.const_mul (Instances/ENNReal/Lemmas.lean:354); measure_ball_pos (OpenPos.lean:212) and measure_ball_lt_top (Typeclasses/Finite.lean:373); ae_restrict_iff', restrict_apply_le and restrict_le_self (Restrict.lean); tendsto_add_atTop_iff_nat (AtTopBot/Basic.lean:337); ENNReal.mul_inv, inv_mul_cancel, mul_inv_cancel and inv_pow (Basic/ENNReal/Inv.lean); ofReal_pow (Basic/ENNReal/Real.lean:306); ae_all_iff (AE.lean:151); tendsto_nhdsWithin_iff (NhdsWithin.lean:474); Ioo_mem_nhdsGT (used at LeftRightNhds.lean:58).
+- SimonGMT (pinned): Varifold.weight_apply, weight_finite_on_compact, finite_on_compact, isOpen_domain and support_tangentialDivergence_subset (Varifold.lean), and firstVariationRieszMeasure_eq_norm (FirstVariationRiesz.lean:218). TangentRescaling.blowUpMeasure has the same form as the contract's rescaledMeasure but is not needed.
+- Printed source: Simon Ch. 8, 5.5 steps (3)–(7) and 5.7, at chapter-08-source.txt:540–630. It invokes 3.7 only in one line, so the child proofs are extracted from the parent-supplied steps 2, 3, 5, 6, 7 and 9.
+
+Lean checks:
+- All 7 statements elaborate in the comparator scope, pass validate_lean_statement, and replay with 'exact Submission.X'.
+- All 7 are fully proved, using only propext, Classical.choice and Quot.sound.
+- The parent glue proves the selected frozen type verbatim from the children plus the two sibling contracts.
+
+Names: varifold_tangents_dlb_* is free in the whole run.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f918c35a46a25ccdd929158192f15558ec679addb9a990209c915ee09e29b094",
+  "git_delta": {
+    "base_commit": "a6438c7c6a5b5669cdbb4c489b362287b0905045",
+    "candidate_commit": "252ba10bd8a56a0037d309012b98f4c779c43906",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "13d0f3e5ee9f2a2ab5f8c38d07a96c4c898e79ab5aae465710fbcec4039bc65b",
+    "source_sha256": "9ccc681d8171d83fb4bf607e2d9aaf6bf615b283d3facedbb7176db5cdc3bc67",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_scaling_continuous",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

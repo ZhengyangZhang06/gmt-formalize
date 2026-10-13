@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9970775409ff466a160b7ee76a6207a4be025123db2b569cedafcb811c299262",
+  "git_delta": {
+    "base_commit": "6d95acfed062dda9ad45f0aca042f711afb3154d",
+    "candidate_commit": "5f004b7f24da2a1f95c1b1e284e7c7546588dc4d",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_vdb_open_thickening_exhaustion",
+    "diff_sha256": "0daaafe1eb9532c04bc7d9ba2a7ed945d9f3e608f6eb6354b17374726cd61c02",
+    "source_sha256": "5bd5b98b82c940520c3312e96d26b6084ffbe76f9490b9d63734376eb34dda0e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_vdb_open_thickening_exhaustion",
+      "statement": "∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ (W : ℕ → Set (Euclidean N)) (r : ℕ → ℝ), (∀ p, 0 < r p) ∧ (∀ p, IsRelCompactOpenIn (thickening (r p) (W p)) U) ∧ U ⊆ ⋃ p, W p",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

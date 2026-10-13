@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a3c96c9604285f0b7321a9b564f3ced1816092e6d61fefd55095430c9daace81",
+  "git_delta": {
+    "base_commit": "a2c4103a0df45a8bfa65249437c465348713c0ad",
+    "candidate_commit": "cfe16d73c334126ef0dc1bb81176d2d1d8f2514d",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "122ee78f7c905ffcd4bd17ab75eb26ac0cfc72a8a8aedd78341c85c6d618cf63",
+    "source_sha256": "0d0199227fc5f425fd4d4498f091d6e48cc72fbad86fe47eadc7d05210a6b10a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_weight_null_of_hausdorff_null",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (Z : Set (Euclidean N)), μHE[n] Z = 0 → (∀ x ∈ Z, ∃ θ : ℝ≥0∞, θ ≠ ∞ ∧ HasDensity n μ x θ) → μ Z = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

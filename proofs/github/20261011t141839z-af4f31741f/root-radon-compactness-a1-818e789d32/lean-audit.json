@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4abeca62ad1e11a758bac209c26936b1f077f3fcfec31b92c598bc849b9d3837",
+  "git_delta": {
+    "base_commit": "1cbf1826aad98e3b1ab5bf48e2944519dfae9605",
+    "candidate_commit": "6277cbb0dabaf2614cb3be032d5c38930d56243e",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "0f7ce4b8e26a28416836be9886747e2d6ab0c8e8d8cf36a61c930b864f1c8ddd",
+    "source_sha256": "a8e2e00bb6b5a5a10b3822619bb8bb3ac0f937a65bfc2d3494d5444068a11529",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_radon_compactness",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : ℕ → Measure (Euclidean N × Grassmannian N n)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j (K ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ V : Varifold N n U, ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ U ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun j ↦ ∫ z, f z ∂(μ (φ j))) atTop (𝓝 (∫ z, f z ∂V.measure))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

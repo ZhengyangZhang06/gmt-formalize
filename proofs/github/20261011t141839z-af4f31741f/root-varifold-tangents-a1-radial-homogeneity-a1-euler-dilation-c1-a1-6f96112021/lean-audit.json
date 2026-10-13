@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "39715e3efd1ce42dea30007de710787e42c1ed763fc72aa984c460cfee96aa86",
+  "git_delta": {
+    "base_commit": "b0134d61ca44fc9ea399ceddc228bd08f44ca4e4",
+    "candidate_commit": "b7e2b99daeeb8575ce63258dc4213ac863f3d819",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "ea3cccb9d7c2e9ed685ed1a64e413ed521a4fb795b4f993531f5ea8ab193403d",
+    "source_sha256": "f5855bbdae5e80e358ee1cef1aa25bbd36d24cd640b9ca0742621d8a06b06c38",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_scaling_of_euler_identity",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂μ = 0) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ s : ℝ, 0 < s → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

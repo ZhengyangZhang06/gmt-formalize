@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8632ba98369a615320cd79592fe8959a77740332dd3015df72e6f37ff1943f63",
+  "git_delta": {
+    "base_commit": "150bb9d0ce633e97e691b0c69438702ad319c1d3",
+    "candidate_commit": "21b19ab73ec5a63a6a4810e0701d2a21336d5637",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "plane_disint_riesz_limit",
+    "diff_sha256": "f4aea1469eab82c231ae760b95395d67b150a9ec69dca716a133a2b89c138252",
+    "source_sha256": "d96f5c37b2e6f10387d142c07e4323064d370e24213155e9b1d3607eff3af001",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.plane_disint_riesz_limit",
+      "statement": "∀ (N n : ℕ) (l : Filter ℝ) (m : ℝ → Measure (Grassmannian N n)) (D : Set C(Grassmannian N n, ℝ)), l.NeBot → (∀ᶠ ρ in l, IsProbabilityMeasure (m ρ)) → Dense D → (∀ f ∈ D, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 c)) → ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧ ∀ f : C(Grassmannian N n, ℝ), Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 (∫ S, f S ∂η))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

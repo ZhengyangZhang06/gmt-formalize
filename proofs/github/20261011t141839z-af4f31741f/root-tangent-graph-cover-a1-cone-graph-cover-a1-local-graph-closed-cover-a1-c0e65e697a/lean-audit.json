@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "101a10b91d1aa1f249a1b3c81c07efd340fe49b9bdfe9c431113abe02a82f8e9",
+  "git_delta": {
+    "base_commit": "f655c2c741000d831c4a15244568a5aff87abd80",
+    "candidate_commit": "8ab6d6be7d9630d2b9d83f374c9acb8ad0e794d2",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_local_graph_closed_cover",
+    "diff_sha256": "0cc5c0b043731f90d427f815211149a593cffdfe8abbf17630cba80cd149f5ca",
+    "source_sha256": "808d4e5a321a0a50a486cc157d58099dd8fae5b6e683185abb4e68501ab93453",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_local_graph_closed_cover",
+      "statement": "∀ (N n : ℕ) (L r : ℝ) (P : Grassmannian N n) (E : Set (Euclidean N)), 0 < r → (∀ y ∈ E, ∀ z ∈ E, ‖y - z‖ ≤ r → ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ E, ∃ i, x ∈ Γ i",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

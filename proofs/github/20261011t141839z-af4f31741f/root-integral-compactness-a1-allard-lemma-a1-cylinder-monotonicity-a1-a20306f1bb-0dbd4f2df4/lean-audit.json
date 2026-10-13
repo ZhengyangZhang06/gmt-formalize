@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c23b05d00c6661c2c55b7ef18ca2a7450761142607b6df0f864d582e3403d40c",
+  "git_delta": {
+    "base_commit": "c945379e02def02467361ecb59eb13f87bad2151",
+    "candidate_commit": "76dfa07f07aac87e60c5fa5b3bfe35bbb697a5fc",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_cm_radial_cutoff",
+    "diff_sha256": "4d53d38d19b567cc724944f90442aaacb6156990310cad5069c85b74c5ce8b6c",
+    "source_sha256": "40ef953222505ccf497ec948bab2f44d621ac6fdd92b200646b9c1a5400ca775",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_cm_radial_cutoff",
+      "statement": "∀ A : ℝ, 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) ∧ (∀ s, s ≤ 1 → φ s = 1) ∧ (∀ s, A ^ 2 ≤ s → φ s = 0)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

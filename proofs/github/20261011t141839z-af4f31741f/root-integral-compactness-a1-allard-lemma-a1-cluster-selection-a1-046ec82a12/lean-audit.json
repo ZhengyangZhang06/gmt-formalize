@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa42e0508fcfd02396e3febda93ccc099c7f90b661a2ae86928bc0f7fbf0b75b",
+  "git_delta": {
+    "base_commit": "da0a42e7aedc725ac5ffbc928f22fa400f8e7a89",
+    "candidate_commit": "37474d21d289b130fa3d3d605d2b1c13b78ef5ae",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_cluster_selection",
+    "diff_sha256": "247e86577a267bfa53fe2779368b86e037b14889fe1af901dee06c359e6332e8",
+    "source_sha256": "af347aec0a5ed95cb268659faeacd948f126ca9e8086afc6c5ff58e2d7f2ab81",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_cluster_selection",
+      "statement": "∀ (N : ℕ) (s : Finset (Euclidean N)) (d : ℝ), 2 ≤ s.card → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → (∃ y ∈ s, ∃ y' ∈ s, y ≠ y' ∧ ‖y - y'‖ ≤ d) → ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ s ∧ Z.card < s.card ∧ 0 ≤ S ∧ S ≤ (10 * (s.card : ℝ)) ^ s.card * d ∧ (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧ ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

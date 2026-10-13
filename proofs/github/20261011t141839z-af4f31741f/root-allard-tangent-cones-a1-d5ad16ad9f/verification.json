@@ -1,0 +1,32 @@
+{
+  "node_id": "root.allard_tangent_cones-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/335",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4813",
+  "candidate_commit": "746efc2d59f5f3d29872ee689d1bdba5d0a73c74",
+  "integrated_commit": "",
+  "proof_base_commit": "c0da5d4e53f1a1e1c8f676ede5196978f7099231",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.first_variation-a1",
+    "root.monotonicity_density-a1",
+    "root.constancy-a1",
+    "root.varifold_tangents-a1",
+    "root.plane_disintegration-a1",
+    "root.first_rectifiability-a1",
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+    "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+    "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+    "root.allard_tangent_cones-a1.unique_tangent_plane-a1",
+    "root.allard_tangent_cones-a1.allard_rectifiability-a1",
+    "root.allard_tangent_cones-a1.tangent_plane_density-a1",
+    "root.allard_tangent_cones-a1.tangent_plane_dilation-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+    "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+    "root.allard_tangent_cones-a1.tangent_cones_rectifiable-a1"
+  ]
+}

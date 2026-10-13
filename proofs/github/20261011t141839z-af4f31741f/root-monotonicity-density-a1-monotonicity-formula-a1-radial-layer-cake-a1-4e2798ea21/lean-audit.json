@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "edc7590c5140c53402d93dcb6409a3a7c45d3fd72328a996094f19920d7c93b0",
+  "git_delta": {
+    "base_commit": "b861be503297cb5c98a900b6914dbb43a4961744",
+    "candidate_commit": "a5480bd91e20d8b9b2eafd1f5175ab38b4073d3b",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "mono833_radial_layer_cake_le",
+    "diff_sha256": "921daf860d7e3f8dec7a2cdc0fd819feb8b62990c9b33c5feb6af3408fde8714",
+    "source_sha256": "9931b628e798cd913c331a59b40bfd9f08fb13faadf248ecb31432269cc4c160",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mono833_radial_layer_cake_le",
+      "statement": "∀ (N : ℕ) (ν μ : Measure (Euclidean N)) (x : Euclidean N) (ρ₀ Λ A t : ℝ) (φ : ℝ → ℝ), (∀ r : ℝ, 0 < r → r < ρ₀ → ν (closedBall x r) ≤ ENNReal.ofReal Λ * μ (closedBall x r)) → Continuous φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, A ^ 2 ≤ s → φ s = 0) → 0 < A → 0 < t → t * A < ρ₀ → ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂ν ≤ ENNReal.ofReal Λ * ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂μ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

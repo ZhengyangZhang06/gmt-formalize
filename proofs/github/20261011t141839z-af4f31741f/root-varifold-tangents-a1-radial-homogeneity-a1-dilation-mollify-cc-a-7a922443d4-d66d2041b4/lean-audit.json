@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7876e7c255b32ea7140a3c81f0da4c42f66238006f5bf3dad499576a61e7690a",
+  "git_delta": {
+    "base_commit": "343d3f6ee30b69edc5f9677504f431e2fff6484f",
+    "candidate_commit": "9901c58000f141198610583f093dbfa111dbe92c",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rh_mc_tendsto_integral_of_uniform",
+    "diff_sha256": "0746b0b12d0f102f1f1d2aad84b996d59d10f7e6d572c0ff7b668a14288b3d1a",
+    "source_sha256": "ba51f2f3c8198faaf60aef925f80083343ba516069ee9b211370170d50a5fed7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (K : Set (Euclidean N)) (F : ℕ → Euclidean N → ℝ) (G : Euclidean N → ℝ), IsFiniteMeasureOnCompacts μ → IsCompact K → (∀ k, Integrable (F k) μ) → Integrable G μ → (∀ k, ∀ y ∉ K, F k y = G y) → (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |F k y - G y| ≤ ε) → Tendsto (fun k => ∫ y, F k y ∂μ) atTop (𝓝 (∫ y, G y ∂μ))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "05000bcaa3c53da1067e6b2277d7b4b5e60ad57037fb53186a36a7abc428182d",
+  "git_delta": {
+    "base_commit": "21665563c519bee38f69b972ca15018c406976b6",
+    "candidate_commit": "34de3745af71e30f9e1dc2394c2cb0d5b6a14a63",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_limit_stationary",
+    "diff_sha256": "28ed0f80c0978f56bcefa30555068648111ec56eaf2fc8b09afde3e0dc405c2b",
+    "source_sha256": "a4ad0af7d7f57c5b01bdaf23cf6700c2515026e6130cc28a6c14af953da5b393",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_limit_stationary",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (C : Varifold N n (univ : Set (Euclidean N))), V.HasLocallyBoundedFirstVariation → x ∈ U → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → IsVarifoldTangent V x C → C.Stationary",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
