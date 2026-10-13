@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "55ffc84e7e8bc8dd489c4698a88c4c32e2d070155c2547fda5c84802da56ec9a",
+  "git_delta": {
+    "base_commit": "d5f1f05dad02edf1e7fc5374e1473d72ec84ae55",
+    "candidate_commit": "0275f7af0debb1829d8d32fb68dd75515a8fc26b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_st_closedBall_measure_scaling",
+    "diff_sha256": "77680fa3f7e3ae7aac3efd7b805e3781d6bd7afc519f564f4f990abf3fb2b87f",
+    "source_sha256": "8d23d4261c9ab9eb97a802f99ea4014c99494b847b1edc048c5a6453c9026ece",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_st_closedBall_measure_scaling",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (L : Submodule ℝ (Euclid P)), (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => y + x) ⁻¹' A) = μ A) → (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * μ A) → ∀ z ∈ L, ∀ ρ : ℝ, 0 < ρ → μ (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * μ (closedBall z 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
