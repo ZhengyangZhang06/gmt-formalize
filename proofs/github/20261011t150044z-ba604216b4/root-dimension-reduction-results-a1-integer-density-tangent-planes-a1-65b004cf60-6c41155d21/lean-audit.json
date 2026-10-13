@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "00e0e28293f0c9f9259622b04257e1f63857ff4c91bdf2f8f2750fb62be22857",
+  "git_delta": {
+    "base_commit": "6b816ca66bff01e36d70588b0092b9453303b063",
+    "candidate_commit": "ee1e2fe57f7c9131c8ba453da7f789f729501a72",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fc_planar_fibre_geometry",
+    "diff_sha256": "b3fa7d8fcd33bc2ab1bbd8b334671f4d1d3d7ac7e9a01224e2b2cedc3343e0b7",
+    "source_sha256": "48c524a9bd1db295c337eedfd8d28e5a82ae4b5592eb8a1ff45fa706bd284467",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fc_planar_fibre_geometry",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ (T : Submodule ℝ (Euclid P)) (x : Euclid P), ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ≤ ‖Q.starProjection x‖ ∧ ‖Q.starProjection x‖ ≤ ‖x‖) ∧ ∀ t α : ℝ, 0 < t → |α| < Real.pi / 2 → (0 < inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a ∧ ‖t • (Real.cos α • a + Real.sin α • e)‖ = t ∧ Real.arctan (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e / inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a) = α ∧ Q.starProjection (t • (Real.cos α • a + Real.sin α • e)) = t • (Real.cos α • a + Real.sin α • e) ∧ ‖Q.starProjection (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a • e - inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e • a)‖ = t) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ‖x‖ = t → Real.arctan (inner ℝ x e / inner ℝ x a) = α → x ≠ t • (Real.cos α • a + Real.sin α • e) → ‖Q.starProjection x‖ < t",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
