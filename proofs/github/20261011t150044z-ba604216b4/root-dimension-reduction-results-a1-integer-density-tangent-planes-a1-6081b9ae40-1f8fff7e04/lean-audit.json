@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "21fe3ebe026b601afd74f207a98db58866c806931a464baee2e52b4351dd4256",
+  "git_delta": {
+    "base_commit": "6b816ca66bff01e36d70588b0092b9453303b063",
+    "candidate_commit": "cfc46d81371c2ddbe563a56a54850b30381933d6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fc_tsum_count_arith",
+    "diff_sha256": "4677371ab2ffb9dae1393f16f929910efa0ffcfeab5239e4da3e1cc9b12835d8",
+    "source_sha256": "be3eb4845bcf7a2d4709318a2d0de4b383e41419bffa2e1e99d193017bad6f82",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fc_tsum_count_arith",
+      "statement": "∀ (ι : Type) (θ : ι → ℕ) (w : ι → ℝ) (t : ℝ) (m : ℕ), 0 < t → (∀ i, w i ≤ t) → ∑' i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) = ENNReal.ofReal ((m : ℝ) * t) → (m : ℝ≥0∞) ≤ ∑' i, (θ i : ℝ≥0∞) ∧ ∀ (i₀ : ι) (k : ℕ), (∀ i, 1 ≤ θ i) → θ i₀ = k → w i₀ = t → (∀ i, i ≠ i₀ → w i < t) → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' i, (θ i : ℝ≥0∞))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
