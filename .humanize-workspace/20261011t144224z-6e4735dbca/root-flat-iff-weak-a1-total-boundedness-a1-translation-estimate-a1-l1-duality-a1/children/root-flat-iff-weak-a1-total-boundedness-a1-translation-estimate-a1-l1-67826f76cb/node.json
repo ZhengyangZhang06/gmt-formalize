@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.l1_duality-a1.compact_sign_approx-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.l1_duality-a1",
+  "depth": 5,
+  "title": "Compact approximation of the sign of an integrable function",
+  "statement": "Let n ∈ ℕ, let w : ℝ^n → ℝ be Lebesgue integrable and let ε > 0. Then there are disjoint compact sets K₁, K₂ ⊆ ℝ^n with the following property. Every Lebesgue a.e.-strongly measurable g : ℝ^n → ℝ with |g(x)| ≤ 1 for all x, g = 1 on K₁ and g = −1 on K₂ satisfies (∫ |w(x)| dx) < (∫ w(x)·g(x) dx) + ε.",
+  "lean_statement": "∀ (n : ℕ) (w : Eucl n → ℝ), Integrable w → ∀ ε : ℝ, 0 < ε → ∃ K₁ K₂ : Set (Eucl n), IsCompact K₁ ∧ IsCompact K₂ ∧ Disjoint K₁ K₂ ∧ ∀ g : Eucl n → ℝ, AEStronglyMeasurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ K₁, g x = 1) → (∀ x ∈ K₂, g x = -1) → (∫ x, |w x|) < (∫ x, w x * g x) + ε",
+  "lean_name": "fiw_tb_te_l1d_compact_sign_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-l1-67826f76cb-a1"
+}
