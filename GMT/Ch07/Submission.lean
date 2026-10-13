@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `(2M+1)^r` lattice points of a subspace `V ⊆ ℝᴾ` of dimension `r`, pairwise at distance
+`≥ 2` and of norm `≤ 2M√r` (the packing step of the growth bound for the dimension of `V`).
+For an orthonormal basis `e` of `V`, `c ↦ Σⱼ cⱼ eⱼ` is a linear isometry `ℓ²(ℝʳ) ≃ V`; take
+`u_k = 2 Σⱼ kⱼ eⱼ` for `k` in the box `([−M, M] ∩ ℤ)ʳ`.  Distinct integer vectors differ by
+`≥ 1` in some coordinate, so `‖u_k − u_l‖ ≥ 2`, and `‖u_k‖² = Σⱼ (2kⱼ)² ≤ r(2M)²`. -/
+theorem Submission.cbr_ci_cp_gd_subspace_lattice_packing : ∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) (M : ℕ), ∃ S : Finset (Euclid P), S.card = (2 * M + 1) ^ Module.finrank ℝ V ∧ (∀ x ∈ S, x ∈ V) ∧ (∀ x ∈ S, ‖x‖ ≤ 2 * M * Real.sqrt (Module.finrank ℝ V)) ∧ (∀ x ∈ S, ∀ y ∈ S, x ≠ y → 2 ≤ dist x y) := by
+  intro P V M
+  classical
+  -- orthonormal coordinates `e.repr.symm : ℓ²(ℝʳ) ≃ₗᵢ V` and the points `u_k = e.repr.symm (2k)`
+  let e := stdOrthonormalBasis ℝ V
+  let c : (Fin (Module.finrank ℝ V) → ℤ) → EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) :=
+    fun k => WithLp.toLp 2 fun j => 2 * (k j : ℝ)
+  let u : (Fin (Module.finrank ℝ V) → ℤ) → Euclid P := fun k => (e.repr.symm (c k) : Euclid P)
+  have hnorm : ∀ k, ‖u k‖ = ‖c k‖ := fun k => by
+    simp only [u, Submodule.norm_coe, LinearIsometryEquiv.norm_map]
+  have hdist : ∀ k l, dist (u k) (u l) = dist (c k) (c l) := fun k l => by
+    simp only [dist_eq_norm, u, ← Submodule.coe_sub, ← map_sub, Submodule.norm_coe,
+      LinearIsometryEquiv.norm_map]
+  -- distinct integer vectors give points at distance `≥ 2`
+  have hsep : ∀ k l, k ≠ l → 2 ≤ dist (u k) (u l) := by
+    intro k l hkl
+    obtain ⟨j, hj⟩ := Function.ne_iff.mp hkl
+    have h1 : (1 : ℝ) ≤ |(k j : ℝ) - l j| := by
+      rw [← Int.cast_sub, ← Int.cast_abs]
+      exact_mod_cast Int.one_le_abs (sub_ne_zero.mpr hj)
+    calc (2 : ℝ) ≤ dist (c k j) (c l j) := by
+          simp only [c, Real.dist_eq, ← mul_sub, abs_mul, abs_two]
+          linarith
+      _ ≤ dist (c k) (c l) := PiLp.dist_apply_le _ _ _
+      _ = dist (u k) (u l) := (hdist k l).symm
+  have hinj : Function.Injective u := fun k l hkl => by
+    by_contra h
+    have := hsep k l h
+    rw [hkl, dist_self] at this
+    norm_num at this
+  -- the box `Λ_M = ([−M, M] ∩ ℤ)ʳ`
+  refine ⟨(Fintype.piFinset fun _ => Finset.Icc (-(M : ℤ)) M).image u, ?_, ?_, ?_, ?_⟩
+  · rw [Finset.card_image_of_injective _ hinj, Fintype.card_piFinset, Int.card_Icc,
+      Fin.prod_const]
+    congr 1
+    omega
+  · simp only [Finset.mem_image]
+    rintro x ⟨k, -, rfl⟩
+    exact (e.repr.symm (c k)).2
+  · simp only [Finset.mem_image, Fintype.mem_piFinset, Finset.mem_Icc]
+    rintro x ⟨k, hk, rfl⟩
+    rw [hnorm]
+    have hM : (0 : ℝ) ≤ 2 * M * Real.sqrt (Module.finrank ℝ V) := by positivity
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) hM two_ne_zero).mp ?_
+    rw [EuclideanSpace.norm_sq_eq, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+    calc ∑ j, ‖c k j‖ ^ 2 ≤ ∑ _j : Fin (Module.finrank ℝ V), (2 * (M : ℝ)) ^ 2 := by
+          refine Finset.sum_le_sum fun j _ => ?_
+          rw [Real.norm_eq_abs, sq_abs]
+          have hkj : -(M : ℝ) ≤ k j ∧ (k j : ℝ) ≤ M :=
+            ⟨by exact_mod_cast (hk j).1, by exact_mod_cast (hk j).2⟩
+          simp only [c]
+          nlinarith [hkj.1, hkj.2]
+      _ = (2 * M) ^ 2 * Module.finrank ℝ V := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_comm]
+  · simp only [Finset.mem_image]
+    rintro x ⟨k, -, rfl⟩ y ⟨l, -, rfl⟩ hxy
+    exact hsep k l fun h => hxy (h ▸ rfl)
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
