@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.tangent_space_dilation-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes are invariant under dilation (parent step 3, orientation bullet)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P an arbitrary set, c > 0, z ∈ ℝ^P and Q a linear subspace of ℝ^P. If Q is an approximate tangent space of M at cz in the sense of Simon Ch. 3, 1.4 (SimonGMT HasApproximateTangentSpaceAt n M (cz) Q: finrank Q = n and, for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{cz,r}(M)} f dH^n → ∫_Q f dH^n as r → 0⁺, where η_{x,r}(y) = r^{-1}(y − x)), then Q is an approximate tangent space of {x : cx ∈ M} = c^{-1}M at z.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (c : ℝ) (z : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < c → HasApproximateTangentSpaceAt n M (c • z) Q → HasApproximateTangentSpaceAt n ((fun x => c • x) ⁻¹' M) z Q",
+  "lean_name": "approx_tangent_space_smul_preimage",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-3550cdd808-a1"
+}
