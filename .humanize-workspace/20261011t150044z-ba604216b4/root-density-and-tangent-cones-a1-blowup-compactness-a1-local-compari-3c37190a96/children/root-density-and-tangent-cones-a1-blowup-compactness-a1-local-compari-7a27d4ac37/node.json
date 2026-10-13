@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1.lower_lipschitz-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+  "depth": 6,
+  "title": "Uniform lower Lipschitz bound for an injective C¹ immersion on a compact set (step 2, lower bound)",
+  "statement": "Let P, d ∈ ℕ, let U ⊆ ℝ^d be open and K ⊆ U compact, and let g : ℝ^d → ℝ^P be C¹ on U (ContDiffOn ℝ 1 g U). Assume g is injective on K and Dg(z) = fderiv ℝ g z is injective for every z ∈ K. Then there is m > 0 such that m|a − b| ≤ |g(a) − g(b)| for all a, b ∈ K (Euclidean norms).",
+  "lean_statement": "∀ (P d : ℕ) (g : Euclid d → Euclid P) (U K : Set (Euclid d)), IsOpen U → IsCompact K → K ⊆ U → ContDiffOn ℝ 1 g U → InjOn g K → (∀ z ∈ K, Injective (fderiv ℝ g z)) → ∃ m : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖g a - g b‖",
+  "lean_name": "dtc_bc_lc_sl_c1t_lower_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-7a27d4ac37-a1"
+}

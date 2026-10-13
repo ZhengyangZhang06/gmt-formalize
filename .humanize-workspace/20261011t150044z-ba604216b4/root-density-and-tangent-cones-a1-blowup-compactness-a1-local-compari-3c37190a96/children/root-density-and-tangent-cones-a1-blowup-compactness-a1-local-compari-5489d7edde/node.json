@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1.rescaled_tendsto-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+  "depth": 6,
+  "title": "Dominated convergence of the rescaled area integrals on a compact neighbourhood (steps 4–6)",
+  "statement": "Let P, n ∈ ℕ, g : ℝ^n → ℝ^P, h : ℝ^n → ℝ, B ⊆ ℝ^n, z ∈ ℝ^n, m ∈ ℝ and f : ℝ^P → ℝ. Assume: B is compact and is a neighbourhood of z; g and h are continuous on B; g is differentiable at z; m > 0; m|a − z| ≤ |g(a) − g(z)| for every a ∈ B; m|v| ≤ |Dg(z)v| for every v ∈ ℝ^n, where Dg(z) = fderiv ℝ g z; f is continuous with compact support. Then, as s ↓ 0 (along 𝓝[>] 0), ∫_{B_s} h(z + sb)·f(s⁻¹(g(z + sb) − g(z))) db → h(z)·∫_{ℝ^n} f(Dg(z)b) db, where B_s := {b ∈ ℝ^n : z + sb ∈ B}. Both are Bochner integrals for Lebesgue measure (volume) on ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (h : Euclid n → ℝ) (B : Set (Euclid n)) (z : Euclid n) (m : ℝ) (f : Euclid P → ℝ), IsCompact B → B ∈ 𝓝 z → ContinuousOn g B → DifferentiableAt ℝ g z → ContinuousOn h B → 0 < m → (∀ a ∈ B, m * ‖a - z‖ ≤ ‖g a - g z‖) → (∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g z v‖) → Continuous f → HasCompactSupport f → Tendsto (fun s : ℝ => ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0) (𝓝 (h z * ∫ b, f (fderiv ℝ g z b)))",
+  "lean_name": "dtc_bc_lc_sl_c1t_rescaled_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-5489d7edde-a1"
+}

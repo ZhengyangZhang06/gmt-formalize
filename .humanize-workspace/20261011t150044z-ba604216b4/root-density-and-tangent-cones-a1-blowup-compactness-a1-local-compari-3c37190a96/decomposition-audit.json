@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hasStrictFDerivAt|continuousOn_fderiv_of_isOpen",
+        "HasFDerivAt.lim|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|tendsto_integral_filter_of_dominated_convergence",
+        "integral_area_formula_of_injective_derivative|weighted_area_formula_volume_of_injective_derivative|areaJacobianAt_eq_sqrt_det_adjoint_comp|weighted_linear_area_formula",
+        "dtc_bc_lc_sl_c1t_lower_lipschitz",
+        "dtc_bc_lc_sl_c1t_rescaled_tendsto",
+        "git show dd15d7b50028a3284c1c01e841a7e3fec08f834c:GMT/Ch07/Submission.lean",
+        "git show e2ca8aea7f750f814f3e397dbad4dc044ce49509:GMT/Ch07/Submission.lean",
+        "git show 9a707fe9c28d0546f758603c7a8f03ca191416d9:GMT/Ch07/Submission.lean",
+        "git show 9ff76906722dcb8bcc007644718f45ab2b7ad407:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1t_independent_review/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1t_independent_review/NewChildren.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1t_independent_review/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLinearWeighted.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-3c37190a96/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-3c37190a96/decomposition-v1.json",
+        "/tmp/c1t_independent_review/FrozenTypes.lean",
+        "/tmp/c1t_independent_review/NewChildren.lean",
+        "/tmp/c1t_independent_review/Accepted_fderiv_lower_bound.lean",
+        "/tmp/c1t_independent_review/Accepted_rescaled_area_formula.lean",
+        "/tmp/c1t_independent_review/Accepted_linear_range_integral.lean",
+        "/tmp/c1t_independent_review/EndToEnd.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and the relevant declarations. All five frozen statements are standalone one-line propositions, pass validation, and elaborate independently in the frozen contract scope. All names are bare identifiers; neither new name has a DAG reservation. The three reused declarations are accepted, have identical frozen types, and preserve the frozen definitions and imports. Their proofs are byte-identical in the composed commit. Independently compiled the supplied new proof appendices and the exact selected-parent assembly: all five children and the parent depend only on propext, Classical.choice and Quot.sound. The sole compilation warning concerns the unused original root placeholder. The split is appropriate and proves this selected closed-ball tangent theorem. Empty dependency lists are correct: bounds are explicit hypotheses, instantiated by the parent, so no child relies on another child or the parent. The Jacobians use continuous-linear-map composition and determinant; no ambiguous Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lower_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match with all hypotheses present. The compact normalized-secant argument is complete: distinct limits contradict injectivity of g, while coincident limits contradict derivative injectivity via strict differentiability. This correctly handles arbitrary compact K without assuming convexity. The supplied appendix independently compiles."
+    },
+    {
+      "key": "rescaled_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement is proved by localization to closedBall(0,R/m), eventual containment in B_s, restricted measurability, uniform domination and pointwise convergence. The derivative lower bound correctly identifies the full-space limit. Continuity is used only where supplied, and no positivity of h is assumed. The supplied appendix independently compiles."
+    },
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration at dd15d7b50028a3284c1c01e841a7e3fec08f834c. The proof obtains eventual membership in U, divides the inequality by positive t, and passes to the directional-derivative limit. It correctly allows arbitrary real m and is independent of sibling results."
+    },
+    {
+      "key": "rescaled_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration at e2ca8aea7f750f814f3e397dbad4dc044ce49509. The derivative cancellation, injectivity and image equality justify applying the pinned Bochner area formula. That formula supports arbitrary integrands, including non-integrable cases. No assumption z ∈ B is needed, and the Jacobian and measure normalization are correct."
+    },
+    {
+      "key": "linear_range_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration at 9a707fe9c28d0546f758603c7a8f03ca191416d9. The supplied proof correctly specializes the area formula to L, identifies its range and constant Jacobian, normalizes the source measure, and factors the constant from the Bochner integral. No missing integrability assumption or circular reliance occurs."
+    }
+  ],
+  "required_changes": []
+}
