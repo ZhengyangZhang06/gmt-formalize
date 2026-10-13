@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "At a Lebesgue point of the multiplicity, the approximate tangent plane of a containing set is a weighted approximate tangent plane",
+  "statement": "Let n, l be natural numbers, M, S subsets of R^(n+l), theta : R^(n+l) -> R, y in R^(n+l), P a linear subspace and eps > 0. Assume M is H^n-null-measurable, theta is a.e.-measurable for H^n restricted to M, H^n((M cap Bo_eps(y)) minus S) = 0, H^n(S cap Bo_eps(y)) < infinity, P is the approximate tangent space of S at y (Simon Ch. 3, Def. 1.4: Chapter03.HasApproximateTangentSpaceAt n S y P), and ENNReal.ofReal (r^{-n}) * (lintegral over S cap B_r(y) of |1_M theta(w) - theta(y)|_e dH^n(w)) tends to 0 as r -> 0+, where 1_M theta = M.indicator theta. Then P is the approximate tangent space of M with respect to theta at y (Simon Ch. 3, Def. 1.7: Chapter03.HasWeightedApproximateTangentSpaceAt n M theta y P). Here H^n = muHE[n], Bo is the open and B the closed ball.",
+  "lean_statement": "∀ (n ℓ : ℕ) (M S : Set (Amb n ℓ)) (θ : Amb n ℓ → ℝ) (y : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)) (ε : ℝ), 0 < ε → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ ball y ε) \\ S) = 0 → (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball y ε) ≠ ⊤ → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y P → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ w in S ∩ closedBall y r, ‖M.indicator θ w - θ y‖ₑ ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P",
+  "lean_name": "dohr_tp_weighted_tangent_of_lebesgue_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-weighte-2b8750410f-a1"
+}
