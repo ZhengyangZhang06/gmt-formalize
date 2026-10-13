@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1389d52983d1508113c0cd152e8e58ab192b4cbcbeb9a008e4db9f7d2233c573",
+  "git_delta": {
+    "base_commit": "970dc2e33c4bc5e5cf47fd2dcf21d817b8c16a0f",
+    "candidate_commit": "a7a07277ab927316e8035083d83f294929560027",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_cd_c1c_singular_compression",
+    "diff_sha256": "5586d3ef48329bc77ea5d43f34cf0a8719001970bea4185f7c987a4af0e1c7aa",
+    "source_sha256": "ddfd01554913864560f767ed60637b215a20089508d823153f46a98d30936c01",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_cd_c1c_singular_compression",
+      "statement": "∀ (n P : ℕ) (f : Eucl n → Eucl P) (A : Eucl n →L[ℝ] Eucl P) (S : Set (Eucl n)) (t : ℝ≥0), 0 < t → t ≤ 1 → ¬ Function.Injective A → ApproximatesLinearOn f A S (t ^ 2) → (μHE[n] : Measure (Eucl P)) (f '' S) ≤ ((‖A‖₊ + t : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * (volume : Measure (Eucl n)) S)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
