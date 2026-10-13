@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.erase_point-a1",
+  "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+  "depth": 3,
+  "title": "Deleting a point from a 0-dimensional integer multiplicity triple",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, and let R = (M, θ, ξ) ∈ IMRep U 0 be a 0-dimensional integer multiplicity triple in U as frozen in the contract, with H⁰ = μHE[0]. That is:\n- M = R.carrier is Borel, M ⊆ U, and M is countably 0-rectifiable;\n- θ = R.mult is measurable, ℕ-valued and positive on M, with ∫⁻_{M∩K} θ dH⁰ < ∞ for every compact K ⊆ U;\n- ξ = R.orient is H⁰⌞M-a.e. strongly measurable, and for H⁰⌞M-a.e. x there is Q with HasApproximateTangentSpaceAt 0 M x Q and IsUnitOrientationOf (ξ x) Q.\nLet p ∈ M.\n\nThen there exists R' ∈ IMRep U 0 with R'.carrier = M ∖ {p}, R'.mult = θ and R'.orient = ξ such that for every ω ∈ 𝒟⁰(U) (TestFormOn U 0):\nR.action ω = R'.action ω + θ(p)·ξ(p)(ω(p)),\nwhere R.action ω = ∫_M θ(x)·ξ(x)(ω(x)) dH⁰(x).",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \\ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p)",
+  "lean_name": "dimred_zdv_erase_point",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.carrier_finite-a1",
+    "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.tangent_erase-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.carrier_finite-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.tangent_erase-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.carrier_finite-a1",
+  "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+  "depth": 3,
+  "title": "Carriers of 0-dimensional integer multiplicity triples are finite on compact sets",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P (= Euclid P) be an arbitrary set, let K ⊆ ℝ^P be compact with K ⊆ U, and let R = (M, θ, ξ) ∈ IMRep U 0 be a 0-dimensional integer multiplicity triple in U as frozen in the contract. That is:\n- M = R.carrier is a Borel subset of U that is countably 0-rectifiable;\n- θ = R.mult : ℝ^P → ℕ is measurable with θ(x) > 0 for every x ∈ M, and ∫⁻_{M∩K'} θ dH⁰ < ∞ for every compact K' ⊆ U (field locallyIntegrable_mult, with H⁰ = μHE[0]);\n- ξ = R.orient is the orientation.\nThen M ∩ K is a finite set.",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite",
+  "lean_name": "dimred_zdv_carrier_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1-a1"
+}

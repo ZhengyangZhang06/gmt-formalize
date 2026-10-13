@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|def SameBoundary|def IsMinimizingIn|def IsUnitOrientationOf|MultiVector|CompactlyContained|^import |^namespace |^open ",
+        "euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_union|theorem integral_singleton|theorem lintegral_finset|theorem integrableOn_finite_biUnion|theorem IntegrableOn.of_forall_sdiff_eq_zero|theorem integrableOn_singleton|theorem Infinite.exists_subset_card_eq|tendsto_nat_nhds_top",
+        "pointGeometricCurrentOn|TestFormOnConverges.tendsto_eval",
+        "dimred_zdv",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/zdv-independent-audit/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/zdv-independent-audit/ConditionalAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/decomposition-review-retry.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json",
+        "/tmp/zdv-check/Full.lean",
+        "/tmp/zdv-independent-audit/ChallengeTypes.lean",
+        "/tmp/zdv-independent-audit/ConditionalAssembly.lean"
+      ],
+      "conclusion": "Verified project b4d606d, mathlib 25730c7c and SimonGMT 2b36630 against the pinned sources. The relevant definitions and integral lemmas support every supplied proof step. All four proposed one-line types independently elaborate as Prop before their declarations exist; their bare names have no conflicting DAG or other-branch reservation. Point-current helpers are absent from the permitted import environment. Independently compiled the supplied child proofs and parent assembly, replacing only the existing dimred_im_mass_measure prerequisite with an explicit hypothesis of its exact frozen type. Every resulting theorem uses only propext, Classical.choice and Quot.sound. Thus the children establish the exact selected dimred_zero_dim_minimizing_eq_zero contract conditional on its already-declared sibling dependency. The split is appropriate and its prerequisite graph is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "carrier_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U and compact K ⊆ U. Singleton H⁰-measure one and positive integer multiplicities bound every finite subset's cardinality by the finite local integral. Arbitrarily large finite subsets therefore contradict local integrability. The argument is complete and independent."
+    },
+    {
+      "key": "tangent_erase",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice, without requiring p ∈ M or x ∈ M. For small positive radii the deleted point's image lies outside the test function's support. Injectivity identifies the punctured image, and the explicit inverse proves image measurability. The cited set-integral equality requires no hidden integrability assumption, so eventual equality transfers the tangent limit."
+    },
+    {
+      "key": "erase_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement preserves precisely the carrier, multiplicity, orientation and action data specified by the Lean type. Every IMRep field is verified; tangent_erase supplies the necessary change in the orientation predicate. carrier_finite proves integrability on each test form's support before the disjoint integral split. Both dependencies are correctly directed, and the singleton term has the stated coefficient and sign."
+    },
+    {
+      "key": "point_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the independently elaborated type for arbitrary p and degree n. Linearity and continuity follow from point evaluation, with both cases of membership in the common compact support covered. Openness and Euclidean properness provide the required relatively compact neighborhoods away from p, proving support containment. No hypothesis p ∈ U or unimported point-current theorem is needed."
+    }
+  ],
+  "required_changes": []
+}
