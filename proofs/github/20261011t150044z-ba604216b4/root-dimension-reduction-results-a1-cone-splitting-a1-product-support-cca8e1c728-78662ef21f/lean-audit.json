@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "39337005a12068c40df4f7fd7dcc8f410f1e5facc853c09ccb4d84f489a3466c",
+  "git_delta": {
+    "base_commit": "4cbff0f7aedf9a69292f3a299bb8a94148f1761a",
+    "candidate_commit": "e5450112d6f0c0c8acba82475f5af35a162db88a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_psd_ball_volume_slice",
+    "diff_sha256": "566ada2be1955fb61a38fb2f2f2e2ca0e3c9766e0395fa706c0f55a012094a10",
+    "source_sha256": "19ab8321274c14e7f1fba6d0df13c8d95d9266633d68d58586e48155055946ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_psd_ball_volume_slice",
+      "statement": "∀ (d m : ℕ) (ρ : ℝ), 0 ≤ ρ → volume (ball (0 : Euclid (d + m)) ρ) = ∫⁻ σ : Euclid d, volume (ball (0 : Euclid m) (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

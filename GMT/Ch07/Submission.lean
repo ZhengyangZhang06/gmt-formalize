@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cavalieri slicing of Euclidean balls**: for `ρ ≥ 0`,
+`L^{d+m}(B_ρ(0)) = ∫_{ℝᵈ} Lᵐ(B_{√(ρ² − ‖σ‖²)}(0)) dLᵈ(σ)`.  Reindexing along
+`Fin d ⊕ Fin m ≃ Fin (d + m)` and splitting the blocks is a linear isometry
+`ℝ^{d+m} ≃ ℝᵈ × ℝᵐ` (L² product norm), hence carries `L^{d+m}` to `Lᵈ ⊗ Lᵐ`; it maps `B_ρ(0)`
+onto `Q = {(u, v) : ‖u‖² + ‖v‖² < ρ²}`, whose slice over `σ` is `B_{√(ρ² − ‖σ‖²)}(0)`, and Tonelli
+gives the formula. -/
+theorem Submission.dimred_cs_psd_ball_volume_slice : ∀ (d m : ℕ) (ρ : ℝ), 0 ≤ ρ → volume (ball (0 : Euclid (d + m)) ρ) = ∫⁻ σ : Euclid d, volume (ball (0 : Euclid m) (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) := by
+  intro d m ρ hρ
+  -- `Φ = ofLp ∘ e : ℝ^{d+m} → ℝᵈ × ℝᵐ` is volume preserving onto `Lᵈ ⊗ Lᵐ`
+  let e : Euclid (d + m) ≃ₗᵢ[ℝ] WithLp 2 (Euclid d × Euclid m) :=
+    (LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℝ finSumFinEquiv.symm).trans
+      (PiLp.sumPiLpEquivProdLpPiLp 2 (fun _ => ℝ))
+  have hΦ : MeasurePreserving (fun x => WithLp.ofLp (e x)) volume
+      ((volume : Measure (Euclid d)).prod (volume : Measure (Euclid m))) := by
+    have h := (WithLp.volume_preserving_ofLp (Euclid d) (Euclid m)).comp e.measurePreserving
+    rw [← Measure.volume_eq_prod]
+    exact h
+  -- `B_ρ(0) = Φ⁻¹(Q)`, since `‖x‖² = ‖Φ(x).1‖² + ‖Φ(x).2‖²`
+  set Q : Set (Euclid d × Euclid m) := {p | ‖p.1‖ ^ 2 + ‖p.2‖ ^ 2 < ρ ^ 2}
+  have hQ : MeasurableSet Q :=
+    (isOpen_lt (by fun_prop) (by fun_prop)).measurableSet
+  have hpre : (fun x => WithLp.ofLp (e x)) ⁻¹' Q = ball (0 : Euclid (d + m)) ρ := by
+    ext x
+    simp only [mem_preimage, mem_ofPred_eq, mem_ball_zero_iff, Q]
+    have hn : ‖x‖ ^ 2 = ‖(WithLp.ofLp (e x)).1‖ ^ 2 + ‖(WithLp.ofLp (e x)).2‖ ^ 2 := by
+      rw [← e.norm_map x, WithLp.prod_norm_sq_eq_of_L2]
+      rfl
+    rw [← hn]
+    exact sq_lt_sq₀ (norm_nonneg x) hρ
+  -- Tonelli, and the slice of `Q` over `σ` is `B_{√(ρ² − ‖σ‖²)}(0)`
+  rw [← hpre, hΦ.measure_preimage hQ.nullMeasurableSet, Measure.prod_apply hQ]
+  refine lintegral_congr fun σ => ?_
+  congr 1
+  ext v
+  simp only [mem_preimage, mem_ofPred_eq, mem_ball_zero_iff, Q]
+  rw [Real.lt_sqrt (norm_nonneg v)]
+  constructor <;> intro h <;> linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
