@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fab8d1803ad297e2cde7f172b5629ca2597ab5273bb05795e9659a3103681570",
+  "git_delta": {
+    "base_commit": "0c2d16271a450e91030864c85dfc13383d399940",
+    "candidate_commit": "371040c271e4e83cbb78f30032b14ee36933a7d4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "71458e90987d7613cc9f5b92a1a010a22cd70b718bc235f335120c0fe0261ef5",
+    "source_sha256": "4d25dae32f7559a0a43d391eaf37afcca5480db24d6f11515d59f4486f6fed1b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpfir_bilipschitz_image_imrep_exists",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal) (η : Euclid P → MultiVector P n), Bijective φ → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable η (μHE[n].restrict R.carrier) → (∀ᵐ x ∂(μHE[n].restrict R.carrier), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (φ '' R.carrier) (φ x) Q ∧ IsUnitOrientationOf (η x) Q) → ∃ R' : IMRep U n, R'.carrier = φ '' R.carrier ∧ ∀ x, R'.mult (φ x) = R.mult x ∧ R'.orient (φ x) = η x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
