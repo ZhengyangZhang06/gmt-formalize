@@ -603,6 +603,48 @@ multiple of `det_b`, so `α(τ') = det_b(b') α(τ)` for every `n`-covector `α`
 `det_b(b') = ±1`, the change of orthonormal basis being orthogonal. -/
 theorem Submission.dgcr_unitOrientation_eq_or_neg : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ξ₂ = ξ₁ ∨ ξ₂ = -ξ₁ := by
   rintro P n Q ξ₁ ξ₂ ⟨τ, hτ, hspan, h₁⟩ ⟨τ', hτ', hspan', h₂⟩
+  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
+  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
+      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
+    intro σ hσ hσspan
+    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
+    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
+    have hu : Orthonormal ℝ u := by
+      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
+      exact hσ
+    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
+      rintro ⟨y, hy⟩ -
+      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
+      obtain ⟨c, hc⟩ := hy
+      rw [Submodule.mem_span_range_iff_exists_fun]
+      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
+    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
+  obtain ⟨b, hb⟩ := frame τ hτ hspan
+  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
+  -- `det_b(b') = ±1`
+  have hd := b.det_to_matrix_orthonormalBasis_real b'
+  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
+  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
+    intro α
+    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
+    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
+        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
+      intro c σ hc
+      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
+      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
+    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
+    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
+    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
+  -- `ξ₂ = ±ξ₁`
+  rcases hd with hd | hd <;> rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, one_mul, neg_neg]
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul]
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -1568,11 +1610,6 @@ theorem Submission.unit_orientations_common_unit_covector : ∀ (P n : ℕ) (Q :
       ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
     intro σ hσ hσspan
     have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
-    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
-    have hu : Orthonormal ℝ u := by
-      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
-      exact hσ
-    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
     let w : Fin n → Q := fun i => ⟨σ i, hmem i⟩
     have hw : Orthonormal ℝ w := by
       rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := w)]
@@ -1582,34 +1619,47 @@ theorem Submission.unit_orientations_common_unit_covector : ∀ (P n : ℕ) (Q :
       rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
       obtain ⟨c, hc⟩ := hy
       rw [Submodule.mem_span_range_iff_exists_fun]
-      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
-    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
+      exact ⟨c, Subtype.ext (by simpa [w] using hc)⟩
+    exact ⟨OrthonormalBasis.mk hw hwspan, fun i => by simp [w]⟩
   obtain ⟨b, hb⟩ := frame τ hτ hspan
   obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
-  -- `det_b(b') = ±1`
-  have hd := b.det_to_matrix_orthonormalBasis_real b'
-  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
-  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
-    intro α
-    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
-    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
-        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
-      intro c σ hc
-      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
-      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
-    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
-    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
-    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
-  -- `ξ₂ = ±ξ₁`
-  rcases hd with hd | hd <;> rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
-  · left; ext α; rw [h₂, h₁, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, one_mul, neg_neg]
-  · left; ext α; rw [h₂, h₁, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul]
-  · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
-  · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul]
-  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
+  have : Fact (Module.finrank ℝ Q = n) := ⟨by simpa using Module.finrank_eq_card_basis b.toBasis⟩
+  let o : Orientation ℝ Q (Fin n) := b.toBasis.orientation
+  let π : Euclid P →L[ℝ] Q := Q.orthogonalProjectionOnto
+  -- the frame determinant `δ(w) = det_b (π_Q w)`
+  let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := b.toBasis.det.compLinearMap π.toLinearMap
+  have hA : ∀ w, ‖A w‖ ≤ 1 * ∏ i, ‖w i‖ := by
+    intro w
+    have h1 : |A w| = |o.volumeForm (fun i => π (w i))| :=
+      (o.volumeForm_robust' b (fun i => π (w i))).symm
+    rw [Real.norm_eq_abs, h1, one_mul]
+    refine (o.abs_volumeForm_apply_le _).trans ?_
+    gcongr with i
+    exact Q.norm_orthogonalProjectionOnto_apply_le (w i)
+  let δ : Covector (Euclid P) n := A.mkContinuous 1 hA
+  have hπ : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (i : Fin n), π (c i : Euclid P) = c i :=
+    fun c i => Q.orthogonalProjectionOnto_mem_subspace_eq_self (c i)
+  -- `|δ| = 1` on every orthonormal frame of `Q`
+  have hδ : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
+      (∀ i, (c i : Euclid P) = σ i) → |δ σ| = 1 := by
+    intro c σ hc
+    have h2 : δ σ = b.toBasis.det (fun i => π (σ i)) := rfl
+    have h3 : (fun i => π (σ i)) = c := by
+      funext i
+      rw [← hc i, hπ]
+    rw [h2, h3, ← o.volumeForm_robust' b]
+    exact o.abs_volumeForm_apply_of_orthonormal c
+  refine ⟨δ, ?_, ?_⟩
+  · rcases hξ₁ with h | h
+    · rw [h]
+      exact hδ b τ hb
+    · rw [h, abs_neg]
+      exact hδ b τ hb
+  · rcases hξ₂ with h | h
+    · rw [h]
+      exact hδ b' τ' hb'
+    · rw [h, abs_neg]
+      exact hδ b' τ' hb'
 
 /-- Orientation step of the constancy theorem for an integer multiplicity current carried by an
 `n`-plane (Simon Ch. 3, Definition 1.4; Ch. 6, 3.1): if `Hⁿ(M \ Q) = 0` for the plane
@@ -1652,47 +1702,6 @@ theorem Submission.idtp_pc_orient_ae_eq_or_neg : ∀ (P n : ℕ) (U : Set (Eucli
   rcases Submission.dgcr_unitOrientation_eq_or_neg P n Q ξQ (R.orient x) hξQo hor with h | h
   · left; intro α; rw [h]; exact hξQ α
   · right; intro α; rw [h]; rfl
-      exact ⟨c, Subtype.ext (by simpa [w] using hc)⟩
-    exact ⟨OrthonormalBasis.mk hw hwspan, fun i => by simp [w]⟩
-  obtain ⟨b, hb⟩ := frame τ hτ hspan
-  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
-  have : Fact (Module.finrank ℝ Q = n) := ⟨by simpa using Module.finrank_eq_card_basis b.toBasis⟩
-  let o : Orientation ℝ Q (Fin n) := b.toBasis.orientation
-  let π : Euclid P →L[ℝ] Q := Q.orthogonalProjectionOnto
-  -- the frame determinant `δ(w) = det_b (π_Q w)`
-  let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := b.toBasis.det.compLinearMap π.toLinearMap
-  have hA : ∀ w, ‖A w‖ ≤ 1 * ∏ i, ‖w i‖ := by
-    intro w
-    have h1 : |A w| = |o.volumeForm (fun i => π (w i))| :=
-      (o.volumeForm_robust' b (fun i => π (w i))).symm
-    rw [Real.norm_eq_abs, h1, one_mul]
-    refine (o.abs_volumeForm_apply_le _).trans ?_
-    gcongr with i
-    exact Q.norm_orthogonalProjectionOnto_apply_le (w i)
-  let δ : Covector (Euclid P) n := A.mkContinuous 1 hA
-  have hπ : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (i : Fin n), π (c i : Euclid P) = c i :=
-    fun c i => Q.orthogonalProjectionOnto_mem_subspace_eq_self (c i)
-  -- `|δ| = 1` on every orthonormal frame of `Q`
-  have hδ : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
-      (∀ i, (c i : Euclid P) = σ i) → |δ σ| = 1 := by
-    intro c σ hc
-    have h2 : δ σ = b.toBasis.det (fun i => π (σ i)) := rfl
-    have h3 : (fun i => π (σ i)) = c := by
-      funext i
-      rw [← hc i, hπ]
-    rw [h2, h3, ← o.volumeForm_robust' b]
-    exact o.abs_volumeForm_apply_of_orthonormal c
-  refine ⟨δ, ?_, ?_⟩
-  · rcases hξ₁ with h | h
-    · rw [h]
-      exact hδ b τ hb
-    · rw [h, abs_neg]
-      exact hδ b τ hb
-  · rcases hξ₂ with h | h
-    · rw [h]
-      exact hδ b' τ' hb'
-    · rw [h, abs_neg]
-      exact hδ b' τ' hb'
 /-- **Simon Ch. 3, 1.4** (used in Ch. 6, 3.2(3)): approximate tangent spaces only see a set up to
 `Hⁿ`-null sets.  For `r ≠ 0` the blow-up `η_{x,r}(y) = r⁻¹(y - x)` is a translation followed by a
 dilation, so it maps `Hⁿ`-null sets to `Hⁿ`-null sets.  As `η(A) \ η(B) ⊆ η(A \ B)` and
