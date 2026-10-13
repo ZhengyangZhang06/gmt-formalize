@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1.mass_lower_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1",
+  "depth": 4,
+  "title": "Mass lower bound μ(W') ≤ M_W(T) on compactly contained open W' ⊆ W via a norming field (parent step 11)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), μ a measure on ℝ^P, ξ : ℝ^P → Λ_n (MultiVector P n) and β : ℝ^P → Λⁿ (Covector (Euclid P) n). Write |α| := covectorEuclideanNorm α. Assume:\n(i) μ(K) < ∞ for every compact K ⊆ U;\n(ii) ξ is μ-a.e. strongly measurable;\n(iii) |ξ(x)(α)| ≤ |α| for every x and α;\n(iv) T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟ⁿ(U);\n(v) β is μ-a.e. strongly measurable;\n(vi) there is C ∈ ℝ with ‖β(x)‖ ≤ C for every x (operator norm);\n(vii) |β(x)| ≤ 1 for every x;\n(viii) ξ(x)(β(x)) = 1 for μ-a.e. x.\nThen μ(W') ≤ M_W(T) = T.massOn W for all W, W' ⊆ ℝ^P such that W' is open, W' ⊂⊂ U (CompactlyContained W' U: closure W' is compact and contained in U) and W' ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → AEStronglyMeasurable β μ → (∃ C : ℝ, ∀ x, ‖β x‖ ≤ C) → (∀ x, covectorEuclideanNorm (β x) ≤ 1) → (∀ᵐ x ∂μ, ξ x (β x) = 1) → ∀ W W' : Set (Euclid P), IsOpen W' → CompactlyContained W' U → W' ⊆ W → μ W' ≤ T.massOn W",
+  "lean_name": "cmrc_measure_le_massOn_of_norming",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-a1",
+      "result_commit": "bc8485e31491a6762e3f3e385086f4a502e7e036",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-1955ca3d37-a1"
+}
