@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1.cutoff_estimate-a1",
+  "parent_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+  "depth": 3,
+  "title": "Cutoff estimate for the restriction to a sublevel set {φ < s}",
+  "statement": "Setting.\n- P, k ∈ ℕ; U, W ⊆ ℝ^P with W open and W ⊆ U; φ : ℝ^P → ℝ continuous on U; a, s, c ∈ ℝ with a < s.\n- A_s := {x ∈ U : φ(x) < s}, and W_t := {x ∈ W : φ(x) < t} for t ∈ ℝ.\n- Y, S ∈ D_k(U) = GeometricCurrentOn U k, with S a restriction of Y to A_s (IsRestriction Y A_s S).\n- μ is a measure on ℝ^P such that, for every set A and every restriction S′ of Y to A (IsRestriction Y A S′), M_{W′}(S′) = μ(W′ ∩ A) for every open W′ ⊆ U. Here M_V := massOn V.\n- M_W(Y) < ∞.\n- ω, ω′ ∈ D^k(U) = TestFormOn U k satisfy:\n  (1) ω′(x) = 0 for every x ∈ U with φ(x) ≥ s;\n  (2) tsupport(ω − ω′) ⊆ {x ∈ W : a < φ(x)};\n  (3) |ω(x) − ω′(x)| ≤ c for every x ∈ ℝ^P, where |·| = covectorEuclideanNorm.\nThen |S(ω) − Y(ω′)| ≤ c·(M_{W_s}(Y) − M_{W_a}(Y)). Both masses are finite and are taken as real numbers (ENNReal.toReal).",
+  "lean_statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (φ : Eucl P → ℝ) (a s c : ℝ) (Y S : GeometricCurrentOn U k) (μ : Measure (Eucl P)) (ω ω' : TestFormOn U k), IsOpen W → W ⊆ U → ContinuousOn φ U → a < s → IsRestriction Y {x | x ∈ U ∧ φ x < s} S → (∀ (A : Set (Eucl P)) (S' : GeometricCurrentOn U k), IsRestriction Y A S' → ∀ W' : Set (Eucl P), IsOpen W' → W' ⊆ U → S'.massOn W' = μ (W' ∩ A)) → Y.massOn W < ∞ → (∀ x ∈ U, s ≤ φ x → (ω' : DifferentialForm (Eucl P) k) x = 0) → tsupport ((ω : DifferentialForm (Eucl P) k) - (ω' : DifferentialForm (Eucl P) k)) ⊆ {x | x ∈ W ∧ a < φ x} → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x - (ω' : DifferentialForm (Eucl P) k) x) ≤ c) → |S ω - Y ω'| ≤ c * ((Y.massOn {x | x ∈ W ∧ φ x < s}).toReal - (Y.massOn {x | x ∈ W ∧ φ x < a}).toReal)",
+  "lean_name": "iwl_rl_restriction_cutoff_estimate",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mass-bound-a1-a1",
+      "result_commit": "ba202ac0407b6e93210594416fcd0729874b2eff",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-restriction-limit-a1-cutoff-estimate-a1-a1"
+}
