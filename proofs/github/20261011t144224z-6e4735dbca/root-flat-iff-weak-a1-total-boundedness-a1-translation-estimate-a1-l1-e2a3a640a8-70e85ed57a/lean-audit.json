@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f253ac12908b95132a5859a4ee1347e7dda50d1e4127884ef5d73029b761422b",
+  "git_delta": {
+    "base_commit": "798cfdf72f40aea1c31b68c949480e8c2f8c93ea",
+    "candidate_commit": "2d57eebed04b7c965fcdb38cbf0b6153a93ccd8d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_te_l1d_smooth_sign_sep",
+    "diff_sha256": "a0ab7e2fa4ad2cc70c5dc30e3c4b763c08cec6590cc40851d5dad4b52f66c493",
+    "source_sha256": "3d0dc17f399432b51df724b22114b7d6f2a043b0c0346d0a3ca17268f8b3cd67",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_te_l1d_smooth_sign_sep",
+      "statement": "∀ (n : ℕ) (K₁ K₂ : Set (Eucl n)), IsCompact K₁ → IsCompact K₂ → Disjoint K₁ K₂ → ∃ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g ∧ (∀ x, |g x| ≤ 1) ∧ (∀ x ∈ K₁, g x = 1) ∧ (∀ x ∈ K₂, g x = -1)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
