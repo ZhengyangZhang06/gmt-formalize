@@ -3995,6 +3995,66 @@ theorem Submission.slicing_representation_unique :
   obtain ⟨C, hC⟩ := hab β
   exact ⟨C, fun x => (Real.norm_eq_abs (a β x)).symm.le.trans (hC x)⟩
 
+/-- **Mass bound for slices (Simon Ch. 6, 4.9–4.10, pp. 157–158).**  For `W ⊆ U` open,
+`‖Df‖ ≤ L_W` a.e. on `W` and `a < b`, `t ↦ M_W(⟨T, f, t⟩)` has a measurable majorant `g` on
+`(a, b)` with `∫⁻_{(a,b)} g ≤ L_W M_W(T ⌞ {a < f < b})`.  In the normalized representation
+`(μ, v)` of `T`, `M_W(T ⌞ {a < f < b}) = μ(W ∩ {a < f < b})`, and (4.9) bounds `M_W(⟨T, f, t⟩)`
+by `L_W liminf_{h ↓ 0} h⁻¹ μ(W ∩ f⁻¹[t - h, t])`.  This is `L_W` times the lower left density at
+`t` of `ν = f_#(μ ⌞ W)`, which has a measurable majorant with integral `≤ ν(a, b)` (4.10). -/
+theorem Submission.slicing_mass_bound : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ S : ℝ → GeometricCurrentOn U m, (∀ t, IsSlice T f t (S t)) → ∀ W, IsOpen W → W ⊆ U → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → ∀ a b : ℝ, a < b → ∀ R : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ a < f x ∧ f x < b} R → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ t ∈ Ioo a b, (S t).massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (LW : ℝ≥0∞) * R.massOn W := by
+  intro P m U hU T hT f L hf S hS W hW hWU LW hLW a b hab R hR
+  -- Step 1: a normalized representation `(μ, v)` of `T`, finite on compact subsets of `U`.
+  obtain ⟨μ, v, hrep, -, hfin, hnorm, -, hmass⟩ :=
+    Submission.slicing_mass_representation P (m + 1) U hU T fun W' hW' => (hT W' hW').1
+  -- Step 2: `R = T ⌞ A` is also computed in `(μ, v)`, hence `M_W(R) = μ(W ∩ A)`.
+  obtain ⟨hA, μR, vR, hrepR, hRA⟩ := hR
+  have hR' : ∀ ω : TestFormOn U (m + 1), R ω = ∫ x in {x | x ∈ U ∧ a < f x ∧ f x < b},
+      v x ((ω : DifferentialForm (Eucl P) (m + 1)) x) ∂μ := by
+    intro ω
+    rw [hRA ω]
+    exact Submission.slicing_representation_unique P (m + 1) U hU μR μ vR v
+      (fun ω => (hrepR ω).1) (fun ω => (hrep ω).1) univ isOpen_univ
+      (fun ω _ => (hrepR ω).2.symm.trans (hrep ω).2) _ hA ω (subset_univ _)
+  have hRmass : R.massOn W = μ (W ∩ {x | x ∈ U ∧ a < f x ∧ f x < b}) :=
+    hmass _ hA R hR' W hW hWU
+  -- Step 3: `ν = f_#(μ ⌞ W)`, using that `f` is continuous on the open set `W ⊆ U`.
+  have hfm : AEMeasurable f (μ.restrict W) :=
+    (hf.continuousOn.mono hWU).aemeasurable hW.measurableSet
+  have hν : ∀ s : Set ℝ, MeasurableSet s → (μ.restrict W).map f s = μ (W ∩ f ⁻¹' s) := by
+    intro s hs
+    rw [Measure.map_apply_of_aemeasurable hfm hs, Measure.restrict_apply' hW.measurableSet,
+      inter_comm]
+  -- Step 4: (4.10) for `ν`: a measurable majorant `g₀` of the lower left densities of `ν`.
+  obtain ⟨g₀, hg₀, hg₀le, hg₀int⟩ :=
+    Submission.slicing_mb_density_majorant ((μ.restrict W).map f) a b hab
+  refine ⟨fun t => (LW : ℝ≥0∞) * g₀ t, hg₀.const_mul _, fun t ht => ?_, ?_⟩
+  · -- Step 5: (4.9) gives `M_W(S t) ≤ L_W liminf_{h ↓ 0} h⁻¹ ν[t - h, t] ≤ L_W g₀(t)`.
+    have hden : (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) =
+        fun h : ℝ => (μ.restrict W).map f (Icc (t - h) t) / ENNReal.ofReal h := by
+      funext h
+      rw [hν _ measurableSet_Icc]
+    calc (S t).massOn W
+        ≤ (LW : ℝ≥0∞) *
+            liminf (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) :=
+          Submission.slicing_mb_pointwise P m U hU T μ v hrep hfin hnorm f L hf t (S t) (hS t)
+            W hW hWU LW hLW
+      _ ≤ (LW : ℝ≥0∞) * g₀ t := by
+          rw [hden]
+          exact mul_le_mul_right (hg₀le t ht) _
+  · -- Step 6: `∫⁻_{(a,b)} L_W g₀ ≤ L_W ν(a, b) = L_W μ(W ∩ {a < f < b}) = L_W M_W(R)`.
+    have hWab : W ∩ f ⁻¹' Ioo a b = W ∩ {x | x ∈ U ∧ a < f x ∧ f x < b} := by
+      ext x
+      constructor
+      · rintro ⟨hx, h⟩
+        exact ⟨hx, hWU hx, h⟩
+      · rintro ⟨hx, -, h⟩
+        exact ⟨hx, h⟩
+    calc ∫⁻ t in Ioo a b, (LW : ℝ≥0∞) * g₀ t
+        = (LW : ℝ≥0∞) * ∫⁻ t in Ioo a b, g₀ t := lintegral_const_mul _ hg₀
+      _ ≤ (LW : ℝ≥0∞) * (μ.restrict W).map f (Ioo a b) := mul_le_mul_right hg₀int _
+      _ = (LW : ℝ≥0∞) * R.massOn W := by
+          rw [hν _ measurableSet_Ioo, hWab, hRmass]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
