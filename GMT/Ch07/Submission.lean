@@ -3222,6 +3222,33 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Mass-summable series of currents in `ℝᴾ`** (Simon Ch. 6, Lemma 3.13; proof of 7.2, steps
+6(a)–(b)).  If `X_i ∈ 𝒟_{k+1}(ℝᴾ)` with `Σᵢ M(X_i) < ∞`, then `Y(ω) = Σᵢ X_i(ω)` is a current
+with `M(Y) ≤ Σᵢ M(X_i)` and `spt Y ⊆ closure (⋃ᵢ spt X_i)`, since a current vanishes off its
+support (VO).  If every `X_i = τ(R_i)` is integer multiplicity, then `μ_{R_i}(ℝᴾ) = M(X_i)` (MM),
+so `Σᵢ μ_{R_i}(ℝᴾ) < ∞` and one triple `R'` has `Σᵢ R_i(ω) = R'(ω)`; by uniqueness of sums
+`Y(ω) = Σᵢ X_i(ω) = R'(ω)`, i.e. `Y = τ(R')`. -/
+theorem Submission.dtc_bc_lc_fd_series : ∀ (P k : ℕ) (X : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (X i).mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => X i ω) (Y ω)) ∧ Y.mass ≤ ∑' i, (X i).mass ∧ Y.support ⊆ closure (⋃ i, (X i).support) ∧ ((∀ i, IsIntegerMultiplicity (X i)) → IsIntegerMultiplicity Y) := by
+  intro P k X hX
+  -- Steps 1–5: the sum `Y` with its mass and support bounds, using (VO)
+  obtain ⟨Y, hYsum, hYmass, hYsupp⟩ := Submission.cmcdt_ims_series_current
+    Submission.dtc_vanish_off_support P (k + 1) univ X isOpen_univ hX.ne
+  refine ⟨Y, hYsum, hYmass, hYsupp, fun hIM => ?_⟩
+  -- Step 6: `X_i = τ(R_i)` with `μ_{R_i}(ℝᴾ) = M(X_i)` by (MM), so `Σᵢ μ_{R_i}(ℝᴾ) < ∞`
+  choose R hR using hIM
+  have hmeas : ∀ i, (R i).measure univ = (X i).mass := fun i =>
+    (Submission.dtc_mass_eq_measure P (k + 1) univ univ (X i) (R i) isOpen_univ isOpen_univ
+      subset_rfl (hR i)).symm
+  -- one triple `R'` sums the `R_i`; then `Y(ω) = Σᵢ X_i(ω) = Σᵢ R_i(ω) = R'(ω)`
+  obtain ⟨R', hR'⟩ := Submission.cmcdt_ims_imrep_tsum P (k + 1) univ R isOpen_univ
+    (by simpa only [hmeas] using hX.ne)
+  refine ⟨R', fun ω => ?_⟩
+  have hfun : (fun i => X i ω) = fun i => (R i).action (ω : DifferentialForm (Euclid P) (k + 1)) :=
+    funext fun i => hR i ω
+  have h := hYsum ω
+  rw [hfun] at h
+  exact h.unique (hR' ω)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
