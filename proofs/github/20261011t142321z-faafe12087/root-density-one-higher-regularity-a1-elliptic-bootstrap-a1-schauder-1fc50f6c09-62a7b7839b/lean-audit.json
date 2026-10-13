@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15f7d6d375ba3c8fb99529c618a00f0e331e637ec63a3fef50c09bf4d1ce2216",
+  "git_delta": {
+    "base_commit": "e821d88672aa1de5d3985dce6544d905efe7420d",
+    "candidate_commit": "3e1a3228c26d373b164ffe5302b9a171f88196a6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_integral_clm_fderiv_eq_zero",
+    "diff_sha256": "53d3af8443ba7cb69821f39b662d9c7d667fd626335aad40c2d1e7d8d4229c44",
+    "source_sha256": "0e08fe7d5c48b815cd545f2239f7a527846d99b37ea0a20cd1f8acc35fc74119",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_integral_clm_fderiv_eq_zero",
+      "statement": "∀ (n ℓ : ℕ) (c : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, c (fderiv ℝ ζ x) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
