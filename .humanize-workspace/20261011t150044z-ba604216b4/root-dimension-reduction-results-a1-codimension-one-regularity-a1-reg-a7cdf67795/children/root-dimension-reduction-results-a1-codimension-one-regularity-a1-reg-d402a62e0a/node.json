@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1.mollified_lipschitz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1",
+  "depth": 6,
+  "title": "Mollified indicators are uniformly bounded and uniformly Lipschitz",
+  "statement": "Let n ∈ ℕ and let ρ : ℝⁿ → ℝ be C¹ with compact support, ρ ≥ 0 and ∫ ρ dL = 1. Then there is L ∈ ℝ such that for every Borel set F ⊆ ℝⁿ the function v_F(x) := ∫ ρ(y)·1_F(x − y) dy satisfies |v_F(x)| ≤ L and |v_F(x) − v_F(x')| ≤ L·|x − x'| for all x, x' ∈ ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (ρ : Euclid n → ℝ), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → ∃ L : ℝ, ∀ F : Set (Euclid n), MeasurableSet F → (∀ x, |∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)| ≤ L) ∧ ∀ x x', |(∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)) - ∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x' - y)| ≤ L * ‖x - x'‖",
+  "lean_name": "codim1_rdo_dg_bvc_mollified_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-d402a62e0a-a1"
+}
