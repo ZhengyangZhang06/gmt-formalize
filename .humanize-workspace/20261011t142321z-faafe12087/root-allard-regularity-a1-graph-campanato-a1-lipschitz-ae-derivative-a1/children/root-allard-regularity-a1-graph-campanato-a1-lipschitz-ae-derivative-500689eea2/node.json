@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.fderiv_of_line_integral-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "depth": 4,
+  "title": "Frechet differentiability from the integral mean-value formula",
+  "statement": "Let n, l >= 0, f : R^n -> R^l, g : R^n -> L(R^n, R^l), U ⊆ R^n open and x ∈ U. Suppose g is continuous on U and f(y) - f(x) = integral_0^1 g(x + tau(y - x))(y - x) dtau for every y ∈ U. Then f has Frechet derivative g(x) at x.",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (x : Rn n), IsOpen U → x ∈ U → ContinuousOn g U → (∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)) → HasFDerivAt f (g x) x",
+  "lean_name": "allard52_lad_hasFDerivAt_of_line_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-500689eea2-a1"
+}

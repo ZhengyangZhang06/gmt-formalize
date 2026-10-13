@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_ae_center-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1",
+  "depth": 3,
+  "title": "Lebesgue points identify the Campanato centres almost everywhere",
+  "statement": "Let n >= 1, m, k >= 0, G, c : R^n -> L(R^m, R^k) (continuous linear maps with the operator norm ||.||) and A, R, alpha, B real with R > 0 and alpha > 0. Assume G is Borel measurable, ||G(x)|| <= B for every x, and for every z in the closed ball B_{R/4}(0) and every 0 < s <= R/4: lintegral over the closed ball B_{s/2}(z) of ofReal(hsNormSq(G(x) - c(z))) dx <= ofReal(A s^n (s/R)^(2 alpha)), where hsNormSq(T) = sum_i ||T e_i||^2. Then G(z) = c(z) for Lebesgue-almost every z in the open ball B^o_{R/4}(0).",
+  "lean_statement": "∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z",
+  "lean_name": "allard52_campanato_ae_center",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-campanato-ae-center-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_ae_center-a1.hs_lebesgue_ae-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_ae_center-a1",
+  "depth": 4,
+  "title": "Quadratic Hilbert-Schmidt Lebesgue points of a bounded measurable operator field on R^n",
+  "statement": "Let n, m, k >= 0 be natural numbers and let G : R^n -> L(R^m, R^k) be Borel measurable, where L(R^m, R^k) is the space of continuous linear maps with the operator norm ||.||. Let B be real with ||G(x)|| <= B for every x. Write hsNormSq(T) = sum_{i<m} ||T e_i||^2, where e_i is the standard basis of R^m. Write B_t(z) for the closed ball and L^n for Lebesgue measure (volume) on R^n. Then for L^n-almost every z in R^n, L^n(B_t(z))^(-1) * (lintegral over B_t(z) of ofReal(hsNormSq(G(x) - G(z))) dx) tends to 0 in [0, infinity] as t -> 0+.",
+  "lean_statement": "∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (B : ℝ), Measurable G → (∀ x, ‖G x‖ ≤ B) → ∀ᵐ z ∂(volume : Measure (Rn n)), Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "allard52_cae_hsNormSq_lebesgue_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-campanato-ae-center-a1-h-4bb4a33655-a1"
+}

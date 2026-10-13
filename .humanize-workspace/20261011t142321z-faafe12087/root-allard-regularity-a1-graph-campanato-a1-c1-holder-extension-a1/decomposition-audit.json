@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '30,58p' project/GMT/Ch05/Submission.lean",
+        "sed -n '1,145p' mathlib/Mathlib/Topology/ExtendFrom.lean",
+        "sed -n '202,240p' mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        "sum_mul_le_sqrt_mul_sqrt|norm_eq|sum_repr",
+        "allard52_c1h_opNorm_le_hsNorm_continuous|allard52_c1h_holder_extension",
+        "extendFrom|closure|uniformContinuousOn",
+        "sed -n '884,921p' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean src/Submission.lean -o build/GMT/Ch05/Submission.olean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean VerifiedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ExtendFrom.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Holder.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-c1-holder-extension-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-c1-holder-extension-a1/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py",
+        "/tmp/c1h-decomp/check/Full.lean",
+        "/tmp/c1h-independent-audit-2efansyv/ChallengeTypes.lean",
+        "/tmp/c1h-independent-audit-2efansyv/VerifiedProofs.lean"
+      ],
+      "conclusion": "Confirmed project revision ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d; independently recomputed the requested parent digest. Snapshot-relative commands above inspected the pinned definitions and supporting lemmas. continuousOn_extendFrom requires exactly S ⊆ closure Z and existence of the indicated limits, without Z ⊆ S. Holder.lean contains uniform-continuity results but no extendFrom/closure match. Neither proposed declaration name is reserved in the inspected DAG or present in the searched project sources. Both names are bare identifiers; no accepted declaration is being reused. The augmented dependency graph is acyclic. Fresh Lean 4.35.0-rc3 checks elaborate both exact propositions before either child is implemented and confirm ContinuousLinearMap.hasOpNorm, completeness, regularity, and real-power interpretation. Both supplied child proofs compile. The supplied parent assembly also compiles against its exact frozen conclusion with the sibling's exact contract as an explicit hypothesis. All three checked proofs use only propext, Classical.choice, and Quot.sound; none depends on sorryAx. The split appropriately separates linear algebra and extension from the parent's density, differentiability, and C¹ assembly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hs_norm_basics",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition matches both prose conclusions for arbitrary natural dimensions. Independently checked all proof steps: basis expansion, linearity, the finite-sum triangle inequality, Cauchy–Schwarz, and the nonnegative operator-norm bound establish the first conjunct, including dimension zero. Continuous evaluations, squared norms, finite summation, and continuous square root establish the second. The proof is complete, non-circular, and directly formalizable. Its unreserved bare name and standalone type satisfy the comparator requirements."
+    },
+    {
+      "key": "holder_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact Lean proposition includes every prose hypothesis and all three conclusions, including agreement on all of Z. Independently checked the modulus properties, positive small-radius choice, nontrivial Cauchy image filters, completeness, extendFrom construction, continuity on S, agreement on Z by squeezing and uniqueness, and passage of the inequality through a nontrivial product filter. Each hypothesis is used correctly; empty sets and zero dimensions cause no gap. The sole child dependency, hs_norm_basics, is correctly directed and non-circular. The unreserved bare name and standalone type are valid. Together with density and the parent's declared differentiability sibling, these conclusions establish exactly the selected parent's C¹ and Hölder conclusions."
+    }
+  ],
+  "required_changes": []
+}

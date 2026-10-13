@@ -466,6 +466,1233 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- **Weight of a ball as an integral of the multiplicity** (Simon Ch. 4, 1.1).  If
+`B_r(x) ⊆ U`, then `μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ`.  By definition
+`μ_V(B_r(x)) = ∫⁻_{M ∩ B_r(x)} θ dHⁿ`; as `B_r(x)` is compact, `θ` is `Hⁿ`-integrable on
+`M ∩ B_r(x)`, and `θ > 0` on `M`, so this lower integral is the (real) integral. -/
+theorem rsod_weight_closedBall_eq_ofReal_integral : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r : ℝ), closedBall x r ⊆ U → V.weight (closedBall x r) = ENNReal.ofReal (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) := by
+  intro n ℓ U V x r hU
+  -- `θ` is integrable on `M ∩ B_r(x)` (the closed ball is compact and lies in `U`) ...
+  have hint : IntegrableOn V.mult (V.carrier ∩ closedBall x r) (μHE[n] : Measure (Amb n ℓ)) :=
+    V.integrableOn_mult _ (isCompact_closedBall x r) hU
+  -- ... and nonnegative a.e. there, since a.e. point of `M ∩ B_r(x)` lies in `M`.
+  have hnn : 0 ≤ᵐ[(μHE[n] : Measure (Amb n ℓ)).restrict (V.carrier ∩ closedBall x r)] V.mult := by
+    filter_upwards [ae_restrict_mem₀
+      (V.nullMeasurableSet_carrier.inter measurableSet_closedBall.nullMeasurableSet)] with z hz
+    exact (V.mult_pos z hz.1).le
+  rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+    Measure.restrict_restrict measurableSet_closedBall, inter_comm (closedBall x r) V.carrier,
+    ofReal_integral_eq_lintegral_ofReal hint.integrable hnn]
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
+`ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
+`ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
+(i) `(a, b) − (a', b') = (a − a', b − b')`; (ii) `|(a, b)|² = |a|² + |b|²`; (iii) every
+`z ∈ ℝ^{n+ℓ}` is some `(a, b)`; (iv) `p_{T₀}(q(a, b)) = q(a, 0)`.
+The coordinate of `(a, b)` at `castAdd ℓ i` is `a_i` and at `natAdd n j` is `b_j`, and every index
+of `Fin (n + ℓ)` has one of these forms (`Fin.addCases`); this gives (i) and (iii), and (ii) by
+splitting `Σ_k z_k²` with `Fin.sum_univ_add`. For (iv), `(a, 0) = Σ_i a_i e_{castAdd ℓ i}` lies in
+`ℝⁿ × {0}`, `(0, b)` is orthogonal to every `e_{castAdd ℓ i}` and hence to `ℝⁿ × {0}`, and `q`
+preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, b) ⊥ T₀`, which
+characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
+theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
+  intro n ℓ q
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- (i): subtraction is coordinatewise
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  refine ⟨hsub, ?_, ?_, ?_⟩
+  -- (ii): split `‖z‖² = Σ_k ‖z_k‖²` over the two blocks of indices
+  · intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- (iii): read off `a` and `b` from the two blocks of coordinates of `z`
+  · intro z
+    refine ⟨WithLp.toLp 2 (fun i => z (Fin.castAdd ℓ i)),
+      WithLp.toLp 2 (fun j => z (Fin.natAdd n j)), ?_⟩
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · rw [hl]
+    · rw [hr]
+  -- (iv)
+  · intro a b
+    -- `graphPoint a 0 = Σ_i a_i e_{castAdd ℓ i}` lies in `ℝⁿ × {0}`
+    have hmem : graphPoint a 0 ∈ horizontalPlane n ℓ := by
+      have e : graphPoint a 0 =
+          ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+        ext k
+        refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+        · rw [hl]
+          simp only [WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single, Finset.sum_apply,
+            Pi.smul_apply, Pi.single_apply, Fin.castAdd_inj, smul_eq_mul, mul_ite, mul_one,
+            mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
+        · rw [hr]
+          simp only [PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single,
+            Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+          refine (Finset.sum_eq_zero fun x _ => ?_).symm
+          have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+            intro h
+            have h' := congrArg Fin.val h
+            simp only [Fin.val_natAdd, Fin.val_castAdd] at h'
+            have := x.isLt
+            omega
+          rw [Pi.single_eq_of_ne hne, mul_zero]
+      rw [e]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    -- `graphPoint 0 b` is orthogonal to every `e_{castAdd ℓ i}`, hence to `ℝⁿ × {0}`
+    have horth : ∀ h ∈ horizontalPlane n ℓ, inner ℝ (graphPoint 0 b) h = 0 := by
+      have hle : horizontalPlane n ℓ ≤ (ℝ ∙ graphPoint 0 b)ᗮ := by
+        refine Submodule.span_le.mpr ?_
+        rintro _ ⟨i, rfl⟩
+        rw [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right,
+          EuclideanSpace.inner_single_right, hl]
+        simp
+      intro h hh
+      exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp (hle hh)
+    -- `q(a, 0) ∈ T₀`, and `q(a, b) - q(a, 0) = q(0, b)` is orthogonal to `T₀ = q(ℝⁿ × {0})`
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Submodule.mem_map_of_mem hmem) ?_
+    intro w hw
+    obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
+    rw [← map_sub, hsub, sub_self, sub_zero]
+    exact (q.inner_map_map _ _).trans (horth h hh)
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the Hilbert–Schmidt norm
+`|A| = (Σᵢ |A eᵢ|²)^{1/2}` of `A : ℝᵐ → ℝᵏ` is comparable with the operator norm,
+`‖A‖ ≤ |A| ≤ √m ‖A‖`, and satisfies the triangle inequality `|A + B| ≤ |A| + |B|`. -/
+theorem allard52_gpa_hsNorm_bounds : ∀ (m k : ℕ) (A B : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt m * ‖A‖ ∧ hsNorm (A + B) ≤ hsNorm A + hsNorm B := by
+  intro m k A B
+  refine ⟨?_, ?_, ?_⟩
+  · -- (i) `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- (ii) `|A eᵢ| ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` unit vectors, so `|A|² ≤ m ‖A‖²`.
+    have h1 : hsNormSq A ≤ m * ‖A‖ ^ 2 := by
+      calc hsNormSq A = ∑ i : Fin m, ‖A (EuclideanSpace.single i 1)‖ ^ 2 := rfl
+        _ ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+            refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+            simpa using A.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+        _ = m * ‖A‖ ^ 2 := by simp
+    calc hsNorm A = √(hsNormSq A) := rfl
+      _ ≤ √(m * ‖A‖ ^ 2) := Real.sqrt_le_sqrt h1
+      _ = Real.sqrt m * ‖A‖ := by
+          rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  · -- (iii) `|X|` is the norm of `(X eᵢ)ᵢ` in `L²(Fin m; ℝᵏ)`, and `X ↦ (X eᵢ)ᵢ` is additive.
+    let F : (Rn m →L[ℝ] Rn k) → PiLp 2 (fun _ : Fin m => Rn k) :=
+      fun X => WithLp.toLp 2 fun i => X (EuclideanSpace.single i 1)
+    have hF : ∀ X, hsNorm X = ‖F X‖ := fun X => by
+      rw [PiLp.norm_eq_of_L2]; rfl
+    rw [hF, hF, hF]
+    exact norm_add_le (F A) (F B)
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): every `n`-dimensional subspace `T` of `ℝ^{n+ℓ}` is
+a rotated coordinate plane `T = q(ℝⁿ × {0})` for some linear isometry `q` of `ℝ^{n+ℓ}`. -/
+theorem allard52_gpa_exists_rotatedPlane_eq : ∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T := by
+  intro n ℓ T hT
+  -- An orthonormal basis `u₀, …, u_{n-1}` of `T`.
+  let u : OrthonormalBasis (Fin n) ℝ T := (stdOrthonormalBasis ℝ T).reindex (finCongr hT)
+  -- Put `uᵢ` at the first `n` indices and extend to an orthonormal basis `b` of `ℝ^{n+ℓ}`.
+  let v : Fin (n + ℓ) → Amb n ℓ := Fin.addCases (fun i => (u i : Amb n ℓ)) fun _ => 0
+  have hv : Orthonormal ℝ ((Set.range (Fin.castAdd ℓ)).domRestrict v) := by
+    rw [orthonormal_iff_ite]
+    intro x y
+    obtain ⟨i, hi⟩ := x.2
+    obtain ⟨j, hj⟩ := y.2
+    have hxy : x = y ↔ i = j := by
+      rw [Subtype.ext_iff, ← hi, ← hj, Fin.castAdd_inj]
+    simp only [Set.domRestrict_apply, ← hi, ← hj, v, Fin.addCases_left, hxy]
+    rw [← Submodule.coe_inner, orthonormal_iff_ite.mp u.orthonormal i j]
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hv
+  -- `q = b.repr.symm` sends `e_{castAdd i}` to `b (castAdd i) = uᵢ`, so `q(ℝⁿ × {0}) = span{uᵢ} = T`.
+  refine ⟨b.repr.symm, ?_⟩
+  have hq : ∀ i : Fin n,
+      b.repr.symm (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) = (u i : Amb n ℓ) := by
+    intro i
+    rw [b.repr_symm_single, hb _ (Set.mem_range_self i)]
+    simp [v]
+  rw [rotatedPlane, horizontalPlane, Submodule.map_span, ← Set.range_comp]
+  have hcomp : (b.repr.symm.toLinearEquiv.toLinearMap ∘ fun i : Fin n =>
+      EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) = T.subtype ∘ u := by
+    funext i
+    exact hq i
+  rw [hcomp, Set.range_comp, Submodule.span_image, ← u.coe_toBasis, u.toBasis.span_eq,
+    Submodule.map_subtype_top]
+/-- Simon Ch. 5, proof of Theorem 5.2 (pp. 123–124), estimate (Nor): for a linear isometry `q` of
+`ℝ^{n+ℓ}` and a linear map `A : ℝⁿ → ℝ^ℓ` with `‖A‖ ≤ 1`, the vertical deviation `|y − A x|` of
+`(x, y)` from the graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is at most twice the distance from
+`q(x, y)` to `q(Γ_A)`.  Since `Γ_A` is the range of the linear map `v ↦ (v, A v)`, the projection
+of `q(x, y)` onto `q(Γ_A)` is `q(v, A v)` for some `v`, so (as `q` is an isometry) this distance
+is `d = |(x − v, y − A v)|` with `d² = |x − v|² + |y − A v|²` (`Fin.append_left`/`right`,
+`Fin.sum_univ_add`).  Then `|y − A x| ≤ |y − A v| + |A (v − x)| ≤ |y − A v| + |x − v| ≤ √2 d ≤ 2 d`,
+using `‖A‖ ≤ 1` and `2 a c ≤ a² + c²`. -/
+theorem allard52_gpa_graph_normal_bound : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖ := by
+  intro n ℓ q A x y hA
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `graphPoint` is jointly linear
+  have hadd : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b' := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.add_apply, hl]
+    · simp only [PiLp.add_apply, hr]
+  have hsmul : ∀ (c : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (c • a) (c • b) = c • graphPoint a b := by
+    intro c a b
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.smul_apply, hl]
+    · simp only [PiLp.smul_apply, hr]
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  -- Pythagoras: `|(a, b)|² = |a|² + |b|²`
+  have hnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- the graph plane is the range of the linear map `J v = (v, A v)`
+  let J : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun v => graphPoint v (A v)
+      map_add' := fun a a' => by
+        simp only [map_add]
+        exact hadd a a' (A a) (A a')
+      map_smul' := fun c a => by
+        simp only [map_smul, RingHom.id_apply]
+        exact hsmul c a (A a) }
+  have hspan : Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)) =
+      LinearMap.range J := by
+    rw [← Submodule.span_eq (LinearMap.range J), LinearMap.coe_range]
+    rfl
+  -- the projection of `q (x, y)` onto `q(Γ_A)` is `q (v, A v)` for some `v`
+  obtain ⟨z, hz, hzw⟩ := Submodule.mem_map.mp
+    (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map
+      q.toLinearEquiv.toLinearMap).starProjection_apply_mem (q (graphPoint x y)))
+  rw [hspan] at hz
+  obtain ⟨v, rfl⟩ := LinearMap.mem_range.mp hz
+  rw [← hzw]
+  -- its distance to `q (x, y)` is `|(x − v, y − A v)|`, since `q` is an isometry
+  have hd : ‖q (graphPoint x y) - q.toLinearEquiv.toLinearMap (J v)‖ =
+      ‖graphPoint (x - v) (y - A v)‖ := by
+    change ‖q (graphPoint x y) - q (graphPoint v (A v))‖ = _
+    rw [← map_sub, LinearIsometryEquiv.norm_map, hsub]
+  rw [hd]
+  -- `|y − A x| ≤ |y − A v| + |A (v − x)| ≤ |y − A v| + |x − v|` as `‖A‖ ≤ 1`
+  have h1 : ‖y - A x‖ ≤ ‖y - A v‖ + ‖x - v‖ := by
+    have e : y - A x = (y - A v) + A (v - x) := by
+      rw [map_sub]
+      abel
+    calc ‖y - A x‖ = ‖(y - A v) + A (v - x)‖ := by rw [e]
+      _ ≤ ‖y - A v‖ + ‖A (v - x)‖ := norm_add_le _ _
+      _ ≤ ‖y - A v‖ + ‖x - v‖ := by
+        gcongr
+        calc ‖A (v - x)‖ ≤ ‖A‖ * ‖v - x‖ := A.le_opNorm _
+          _ ≤ 1 * ‖v - x‖ := by gcongr
+          _ = ‖x - v‖ := by rw [one_mul, norm_sub_rev]
+  -- `c + a ≤ 2 d` from `d² = a² + c²` and `2 a c ≤ a² + c²`
+  have h2 : ‖y - A v‖ + ‖x - v‖ ≤ 2 * ‖graphPoint (x - v) (y - A v)‖ := by
+    have hsq := hnorm (x - v) (y - A v)
+    have ha := norm_nonneg (x - v)
+    have hc := norm_nonneg (y - A v)
+    have hdn := norm_nonneg (graphPoint (x - v) (y - A v))
+    nlinarith [sq_nonneg (‖x - v‖ - ‖y - A v‖)]
+  linarith
+/-- **Tilt-excess as a lower integral** (Simon Ch. 5, 4.1; proof of 5.2, (10)).  If
+`y ↦ p_{T_y M}` is `μ_V`-a.e. strongly measurable and `μ_V(B_s(ζ)) < ∞`, then
+`∫⁻_{B_s(ζ)} |p_{T_y M} − p_T|² dμ_V = sⁿ E(ζ, s, T)`.  Both projections have operator norm
+`≤ 1`, so the integrand lies in `[0, 4(n + ℓ)]`; it is therefore integrable on the ball, and its
+lower integral is the real integral `∫_{B_s(ζ)} |p_{T_y M} − p_T|² dμ_V = sⁿ E(ζ, s, T)`. -/
+theorem allard52_cft_tilt_lintegral_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (s : ℝ) (T : Submodule ℝ (Amb n ℓ)), 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T) := by
+  intro n ℓ U V hmeas ζ s T hs hfin
+  -- every tangent projection is an orthogonal projection or `0`, so has operator norm `≤ 1`
+  have hp : ∀ y, ‖V.tangentProj y‖ ≤ 1 := by
+    intro y
+    rw [RectifiableVarifold.tangentProj]
+    split
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  -- pointwise bounds `0 ≤ |p_y - p_T|² ≤ 4 (n + ℓ)`, from `‖p_y - p_T‖ ≤ 2` and `|eᵢ| = 1`
+  have hbd : ∀ y, 0 ≤ hsNormSq (V.tangentProj y - T.starProjection) ∧
+      hsNormSq (V.tangentProj y - T.starProjection) ≤ ∑ _i : Fin (n + ℓ), (2 : ℝ) ^ 2 := by
+    intro y
+    have hA : ‖V.tangentProj y - T.starProjection‖ ≤ 2 := by
+      calc ‖V.tangentProj y - T.starProjection‖
+          ≤ ‖V.tangentProj y‖ + ‖T.starProjection‖ := norm_sub_le _ _
+        _ ≤ 1 + 1 := add_le_add (hp y) T.starProjection_norm_le
+        _ = 2 := by norm_num
+    refine ⟨Finset.sum_nonneg fun i _ => sq_nonneg _, Finset.sum_le_sum fun i _ => ?_⟩
+    have h1 := (V.tangentProj y - T.starProjection).le_opNorm (EuclideanSpace.single i 1)
+    rw [PiLp.norm_single, norm_one, mul_one] at h1
+    exact pow_le_pow_left₀ (norm_nonneg _) (h1.trans hA) 2
+  -- `A ↦ |A - p_T|²` is continuous, so `y ↦ |p_y - p_T|²` is a.e. strongly measurable; being
+  -- bounded on the ball of finite measure, it is integrable there
+  have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (A - T.starProjection) := by
+    unfold hsNormSq
+    fun_prop
+  have hint : IntegrableOn (fun y => hsNormSq (V.tangentProj y - T.starProjection))
+      (closedBall ζ s) V.weight :=
+    Measure.integrableOn_of_bounded hfin.ne (hcont.comp_aestronglyMeasurable hmeas)
+      (Eventually.of_forall fun y => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hbd y).1]
+        exact (hbd y).2)
+  -- `sⁿ E(ζ, s, T) = ∫_{B_s(ζ)} |p_y - p_T|² dμ_V`, and the integrand is nonnegative
+  rw [RectifiableVarifold.tiltExcess, mul_inv_cancel_left₀ (pow_ne_zero n hs.ne'),
+    ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun y => (hbd y).1)]
+
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11): for `f` `1`-Lipschitz on `D ⊆ ℝⁿ` and a linear
+isometry `q` of `ℝ^{n+ℓ}`, the graph map `F(x) = q(x, f(x))` is `√2`-Lipschitz on `D`, and
+`|F(x)| ≤ √2 |x|` on `D` when `f(0) = 0` and `0 ∈ D`. By the graph coordinates
+(`lip_approx_graph_coordinates` (i), (ii)) and since `q` is a linear isometry,
+`|F(x) − F(x')|² = |x − x'|² + |f(x) − f(x')|² ≤ 2 |x − x'|²`; and `F(0) = q(0, 0) = 0`. -/
+theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖) := by
+  intro n ℓ q f D hf
+  obtain ⟨hsub, hnorm, -, -⟩ := lip_approx_graph_coordinates n ℓ q
+  have hlip : ∀ x ∈ D, ∀ x' ∈ D,
+      ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖ := by
+    intro x hx x' hx'
+    -- `|f(x) − f(x')| ≤ |x − x'|`
+    have hf' : ‖f x - f x'‖ ≤ ‖x - x'‖ := by
+      have h := hf.dist_le_mul x hx x' hx'
+      rwa [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at h
+    -- `|F(x) − F(x')| = |(x − x', f(x) − f(x'))|`, whose square is at most `2 |x − x'|²`
+    rw [← map_sub, q.norm_map, hsub]
+    have hsq : ‖graphPoint (x - x') (f x - f x')‖ ^ 2 ≤ (Real.sqrt 2 * ‖x - x'‖) ^ 2 := by
+      rw [hnorm, mul_pow, Real.sq_sqrt zero_le_two, two_mul]
+      exact add_le_add le_rfl (pow_le_pow_left₀ (norm_nonneg _) hf' 2)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _)
+      (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) two_ne_zero).mp hsq
+  refine ⟨hlip, fun hf0 h0 x hx => ?_⟩
+  -- `(0, 0) = (0, 0) − (0, 0) = 0`, so `F(0) = 0`; compare `F(x)` with `F(0)`
+  have hzero : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    have h := hsub 0 0 0 0
+    rw [sub_self, sub_self, sub_self] at h
+    exact h.symm
+  have h := hlip x hx 0 h0
+  rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
+
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11) (pp. 123–124): tilt-excess decay gives the
+Campanato estimate for the tangent planes `G(x) = p_{q(graph Df(x))}` of the Lipschitz graph. Fix
+`z ∈ Bⁿ_{R/4}(0)`, `0 < s ≤ R/4`, and put `ζ = q(z, f(z))`, `P = p_{S(ζ)}`, `D = Bⁿ_{s/2}(z)`,
+`B = B_s(ζ)`. As `x ↦ q(x, f(x))` is `√2`-Lipschitz on `Bⁿ_R(0)` and vanishes at `0`:
+`ζ ∈ spt V ∩ B_{R/2}(0)` (by the graph representation of `spt V`), `D ⊆ B̆ⁿ_{R/2}(0)`,
+`q(x, f(x)) ∈ B` for `x ∈ D`, and `B ⊆ B_R(0) ⊆ U`, so `μ_V(B) < ∞` and
+`∫⁻_B |p_{T_y M} − P|² dμ_V = sⁿ E(ζ, s, S(ζ)) ≤ A sⁿ (s/R)^e`. The comparison hypothesis with
+`Φ(w, T) = 1_B(w) |T − P|²` bounds `∫⁻_D |G(x) − P|² dx` by
+`∫⁻_{q(graph f|_D)} Φ(y, p_{T_y M}) dμ_V`, which is at most `∫⁻_B |p_{T_y M} − P|² dμ_V`. -/
+theorem allard52_campanato_from_tilt : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (S : Amb n ℓ → Submodule ℝ (Amb n ℓ)) (R A e : ℝ), 0 < R → closedBall (0 : Amb n ℓ) R ⊆ U → f 0 = 0 → LipschitzOnWith 1 f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → AEStronglyMeasurable V.tangentProj V.weight → (∀ Φ : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ) → ℝ≥0∞, Measurable (Function.uncurry Φ) → ∀ D : Set (Rn n), MeasurableSet D → D ⊆ ball 0 (R / 2) → ∫⁻ x in D, Φ (q (graphPoint x (f x))) ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection ≤ ∫⁻ y in q '' graphOver f D, Φ y (V.tangentProj y) ∂V.weight) → (∀ ζ ∈ V.support ∩ closedBall 0 (R / 2), ∀ s : ℝ, 0 < s → s ≤ R / 2 → V.tiltExcess ζ s (S ζ) ≤ A * (s / R) ^ e) → ∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection - (S (q (graphPoint z (f z)))).starProjection)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ e) := by
+  intro n ℓ U V q f S R A e hR hRU hf0 hlip hspt hae hcomp htilt z hz s hs hsR
+  set ζ : Amb n ℓ := q (graphPoint z (f z))
+  -- the graph map `x ↦ q(x, f(x))` is `√2`-Lipschitz on `Bⁿ_R(0)` and `|q(x, f(x))| ≤ √2 |x|`
+  obtain ⟨hlipF, hnormF⟩ :=
+    Submission.allard52_cft_graph_map_sqrt_two n ℓ q f (closedBall 0 R) hlip
+  have h2 : Real.sqrt 2 ≤ 2 := by
+    nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]
+  have hzn : ‖z‖ ≤ R / 4 := mem_closedBall_zero_iff.mp hz
+  have hzR : z ∈ closedBall (0 : Rn n) R := mem_closedBall_zero_iff.mpr (by linarith)
+  -- `|ζ| ≤ √2 |z| ≤ R/2`
+  have hζn : ‖ζ‖ ≤ R / 2 :=
+    calc ‖ζ‖ ≤ Real.sqrt 2 * ‖z‖ := hnormF hf0 (mem_closedBall_self hR.le) z hzR
+      _ ≤ 2 * (R / 4) := mul_le_mul h2 hzn (norm_nonneg z) (by norm_num)
+      _ = R / 2 := by ring
+  -- `ζ ∈ spt V ∩ B_{R/2}(0)`, as `spt V ∩ B_R(0) = q(graph f) ∩ B_R(0)`
+  have hζspt : ζ ∈ V.support ∩ closedBall 0 (R / 2) := by
+    have hmem : ζ ∈ q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R :=
+      ⟨Set.mem_image_of_mem q (Set.mem_image_of_mem (fun x => graphPoint x (f x)) hzR),
+        mem_closedBall_zero_iff.mpr (by linarith)⟩
+    rw [← hspt] at hmem
+    exact ⟨hmem.1, mem_closedBall_zero_iff.mpr hζn⟩
+  -- `D = Bⁿ_{s/2}(z) ⊆ B̆ⁿ_{R/2}(0)` and `D ⊆ Bⁿ_R(0)`
+  have hDball : closedBall z (s / 2) ⊆ ball (0 : Rn n) (R / 2) :=
+    closedBall_subset_ball' (by rw [dist_zero_right]; linarith)
+  have hDR : closedBall z (s / 2) ⊆ closedBall (0 : Rn n) R :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  -- `q(x, f(x)) ∈ B = B_s(ζ)` for `x ∈ D`
+  have hFB : ∀ x ∈ closedBall z (s / 2), q (graphPoint x (f x)) ∈ closedBall ζ s := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm]
+    have hxz : ‖x - z‖ ≤ s / 2 := by rw [← dist_eq_norm]; exact hx
+    calc ‖q (graphPoint x (f x)) - ζ‖ ≤ Real.sqrt 2 * ‖x - z‖ := hlipF x (hDR hx) z hzR
+      _ ≤ 2 * (s / 2) := mul_le_mul h2 hxz (norm_nonneg _) (by norm_num)
+      _ = s := by ring
+  -- `B ⊆ B_R(0) ⊆ U`, hence `μ_V(B) < ∞`
+  have hBR : closedBall ζ s ⊆ closedBall (0 : Amb n ℓ) R :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  have hBfin : V.weight (closedBall ζ s) < ⊤ := by
+    rw [rsod_weight_closedBall_eq_ofReal_integral n ℓ U V ζ s (hBR.trans hRU)]
+    exact ENNReal.ofReal_lt_top
+  -- `∫⁻_B |p_{T_y M} − P|² dμ_V = sⁿ E(ζ, s, S(ζ)) ≤ A sⁿ (s/R)^e`
+  have hBbound : ∫⁻ y in closedBall ζ s,
+      ENNReal.ofReal (hsNormSq (V.tangentProj y - (S ζ).starProjection)) ∂V.weight ≤
+      ENNReal.ofReal (A * s ^ n * (s / R) ^ e) := by
+    rw [Submission.allard52_cft_tilt_lintegral_eq n ℓ U V hae ζ s (S ζ) hs hBfin]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc s ^ n * V.tiltExcess ζ s (S ζ) ≤ s ^ n * (A * (s / R) ^ e) :=
+          mul_le_mul_of_nonneg_left (htilt ζ hζspt s hs (by linarith)) (pow_pos hs n).le
+      _ = A * s ^ n * (s / R) ^ e := by ring
+  -- the test function `Φ(w, T) = 1_B(w) |T − P|²` is measurable
+  have hg : Measurable fun T : Amb n ℓ →L[ℝ] Amb n ℓ =>
+      ENNReal.ofReal (hsNormSq (T - (S ζ).starProjection)) := by
+    refine ENNReal.measurable_ofReal.comp (Continuous.measurable ?_)
+    unfold hsNormSq
+    refine continuous_finsetSum _ fun i _ => ?_
+    exact ((continuous_id.sub continuous_const).clm_apply continuous_const).norm.pow 2
+  have hΦ : Measurable (Function.uncurry fun (w : Amb n ℓ) (T : Amb n ℓ →L[ℝ] Amb n ℓ) =>
+      (closedBall ζ s).indicator
+        (fun _ => ENNReal.ofReal (hsNormSq (T - (S ζ).starProjection))) w) :=
+    (hg.comp measurable_snd).indicator (measurable_fst measurableSet_closedBall)
+  have hcmp := hcomp _ hΦ (closedBall z (s / 2)) measurableSet_closedBall hDball
+  refine le_trans (le_of_eq ?_) (hcmp.trans ((setLIntegral_le_lintegral _ _).trans
+    (le_trans (le_of_eq ?_) hBbound)))
+  -- on `D` the indicator is `1`, since the graph over `D` lies in `B`
+  · exact setLIntegral_congr_fun measurableSet_closedBall fun x hx => by
+      rw [Set.indicator_of_mem (hFB x hx)]
+  -- `∫⁻ 1_B |p_{T_y M} − P|² dμ_V = ∫⁻_B |p_{T_y M} − P|² dμ_V`
+  · refine (lintegral_congr fun y => ?_).trans (lintegral_indicator measurableSet_closedBall _)
+    by_cases hy : y ∈ closedBall ζ s
+    · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy]
+    · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
+/-- Lebesgue points of a bounded Borel operator field for the squared Hilbert–Schmidt
+oscillation (used in the proof of Simon Ch. 5, Theorem 5.2, p. 123; Lebesgue's differentiation
+theorem, Ch. 1, Theorem 3.23).  If `G : ℝⁿ → L(ℝᵐ, ℝᵏ)` is Borel with `‖G‖ ≤ B`, then for
+`Lⁿ`-a.e. `z`,
+`Lⁿ(B_t(z))⁻¹ ∫_{B_t(z)} |G(x) − G(z)|² dx → 0` as `t → 0⁺`.  Since `|A|² ≤ m ‖A‖²` and
+`‖G(x) − G(z)‖ ≤ 2B`, the integrand is at most `2mB ‖G(x) − G(z)‖`, whose ball averages tend
+to `0` at a.e. `z` by the differentiation theorem for the locally integrable `G` along the
+Vitali family of the doubling measure `Lⁿ`. -/
+theorem allard52_cae_hsNormSq_lebesgue_ae : ∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (B : ℝ), Measurable G → (∀ x, ‖G x‖ ≤ B) → ∀ᵐ z ∂(volume : Measure (Rn n)), Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) := by
+  intro n m k G B hG hB
+  -- A bounded Borel map into the finite-dimensional space `L(ℝᵐ, ℝᵏ)` is locally integrable.
+  have hloc : LocallyIntegrable G (volume : Measure (Rn n)) :=
+    locallyIntegrable_iff.2 fun K hK =>
+      Measure.integrableOn_of_bounded hK.measure_lt_top.ne hG.aestronglyMeasurable
+        (ae_of_all _ hB)
+  -- Pointwise comparison: `|G(x) − G(z)|² ≤ m ‖G(x) − G(z)‖² ≤ 2mB ‖G(x) − G(z)‖`.
+  have hpt : ∀ x z, ENNReal.ofReal (hsNormSq (G x - G z)) ≤
+      ENNReal.ofReal (2 * m * B) * ‖G x - G z‖ₑ := by
+    intro x z
+    have hT : ‖G x - G z‖ ≤ 2 * B := by
+      linarith [norm_sub_le (G x) (G z), hB x, hB z]
+    have hsum : hsNormSq (G x - G z) ≤ m * ‖G x - G z‖ ^ 2 := by
+      unfold hsNormSq
+      calc ∑ i : Fin m, ‖(G x - G z) (EuclideanSpace.single i 1)‖ ^ 2
+          ≤ ∑ _i : Fin m, ‖G x - G z‖ ^ 2 := by
+            gcongr with i
+            calc ‖(G x - G z) (EuclideanSpace.single i 1)‖
+                ≤ ‖G x - G z‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ := (G x - G z).le_opNorm _
+              _ = ‖G x - G z‖ := by simp
+        _ = m * ‖G x - G z‖ ^ 2 := by simp
+    rw [← ofReal_norm, ← ENNReal.ofReal_mul' (norm_nonneg (G x - G z))]
+    apply ENNReal.ofReal_le_ofReal
+    have hm : (0 : ℝ) ≤ m * ‖G x - G z‖ := mul_nonneg (Nat.cast_nonneg m) (norm_nonneg _)
+    nlinarith [mul_le_mul_of_nonneg_left hT hm]
+  -- Lebesgue differentiation along the closed balls `B_t(z)`, `t → 0⁺`.
+  filter_upwards [(IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure (Rn n)) 1).ae_tendsto_lintegral_enorm_sub_div hloc] with z hz
+  have hballs : Tendsto (fun t : ℝ => closedBall z t) (𝓝[>] 0)
+      ((IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure (Rn n)) 1).filterAt z) :=
+    IsUnifLocDoublingMeasure.tendsto_closedBall_filterAt (volume : Measure (Rn n))
+      (fun _ => z) id tendsto_id (by
+        filter_upwards [self_mem_nhdsWithin] with t ht
+        exact mem_closedBall_self (by simpa using (Set.mem_Ioi.1 ht).le))
+  have hlim := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal (2 * m * B)) (hz.comp hballs)
+    (Or.inr ENNReal.ofReal_ne_top)
+  rw [mul_zero] at hlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+    fun t => ?_
+  -- Average the pointwise comparison over `B_t(z)`.
+  calc (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))
+      ≤ (volume (closedBall z t))⁻¹ *
+          ∫⁻ x in closedBall z t, ENNReal.ofReal (2 * m * B) * ‖G x - G z‖ₑ := by
+        gcongr with x
+        exact hpt x z
+    _ = ENNReal.ofReal (2 * m * B) *
+          ((∫⁻ x in closedBall z t, ‖G x - G z‖ₑ) / volume (closedBall z t)) := by
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, ENNReal.div_eq_inv_mul, mul_left_comm]
+/-- At a quadratic Lebesgue point the Campanato centre is the value (Simon Ch. 5, proof of
+Theorem 5.2, p. 123: where `σ⁻ⁿ ∫_{B_σ(ξ)} |p_{T_x G(f)} − p_{S(ξ)}|² dHⁿ → 0`, `S(ξ)` is the
+approximate tangent space).  If `⨍_{B_t(z)} |G(x) − G(z)|² dx → 0` as `t ↓ 0` and
+`∫_{B_{s/2}(z)} |G(x) − T|² dx ≤ A sⁿ (s/R)^{2α}` for `0 < s ≤ s₀` (Hilbert–Schmidt norm), then
+`G(z) = T`: averaging `|G(z) − T|² ≤ 2|G(x) − T|² + 2|G(x) − G(z)|²` over `B_{s/2}(z)`, of volume
+`(s/2)ⁿ Lⁿ(B₁(0))`, gives
+`|G(z) − T|² ≤ 2^{n+1} A (s/R)^{2α} / Lⁿ(B₁(0)) + 2 ⨍_{B_{s/2}(z)} |G(x) − G(z)|² dx → 0`. -/
+theorem allard52_cae_center_eq_at_lebesgue_point : ∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (z : Rn n) (T : Rn m →L[ℝ] Rn k) (A R α s₀ : ℝ), 0 < R → 0 < α → 0 < s₀ → Measurable G → Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - T)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → G z = T := by
+  intro n m k G z T A R α s₀ _hR hα hs₀ hG hleb hcamp
+  -- Hilbert–Schmidt facts: `|S|² ≥ 0`, `|S − S'|² ≤ 2|S|² + 2|S'|²`, `|S|² = 0 ⇒ S = 0`.
+  have hs_nonneg : ∀ S : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq S := fun S =>
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hs_sub : ∀ S S' : Rn m →L[ℝ] Rn k,
+      hsNormSq (S - S') ≤ 2 * hsNormSq S + 2 * hsNormSq S' := by
+    intro S S'
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [sub_apply]
+    have h1 := norm_sub_le (S (EuclideanSpace.single i 1)) (S' (EuclideanSpace.single i 1))
+    have h2 := norm_nonneg (S (EuclideanSpace.single i 1) - S' (EuclideanSpace.single i 1))
+    nlinarith [sq_nonneg (‖S (EuclideanSpace.single i 1)‖ - ‖S' (EuclideanSpace.single i 1)‖)]
+  have hs_zero : ∀ S : Rn m →L[ℝ] Rn k, hsNormSq S = 0 → S = 0 := by
+    intro S hS
+    have hterm : ∀ i, S (EuclideanSpace.single i 1) = 0 := by
+      intro i
+      have := (Finset.sum_eq_zero_iff_of_nonneg
+        (fun i _ => sq_nonneg ‖S (EuclideanSpace.single i 1)‖)).1 hS i (Finset.mem_univ _)
+      simpa using this
+    ext1 w
+    rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr w]
+    simp [map_sum, map_smul, hterm]
+  -- Measurability of `x ↦ |G(x) − T|²`.
+  have hcont : Continuous fun S : Rn m →L[ℝ] Rn k => hsNormSq S := by
+    unfold hsNormSq
+    fun_prop
+  have hmeasT : Measurable fun x => ENNReal.ofReal (hsNormSq (G x - T)) :=
+    ENNReal.measurable_ofReal.comp
+      ((hcont.comp (continuous_id.sub continuous_const)).measurable.comp hG)
+  -- Ball volumes: `Lⁿ(B_t(z)) = tⁿ v` with `v = Lⁿ(B_1(0)) > 0`.
+  set v : ℝ≥0∞ := volume (closedBall (0 : Rn n) 1)
+  have hv0 : v ≠ 0 := (measure_closedBall_pos volume (0 : Rn n) one_pos).ne'
+  have hvol : ∀ t : ℝ, 0 ≤ t → volume (closedBall z t) = ENNReal.ofReal (t ^ n) * v := by
+    intro t ht
+    rw [Measure.addHaar_closedBall' volume z ht, finrank_euclideanSpace_fin]
+  -- Pointwise: `|G(z) − T|² ≤ 2|G(x) − T|² + 2|G(x) − G(z)|²`.
+  set h : ℝ := hsNormSq (G z - T)
+  have hpt : ∀ x, ENNReal.ofReal h ≤
+      2 * ENNReal.ofReal (hsNormSq (G x - T)) + 2 * ENNReal.ofReal (hsNormSq (G x - G z)) := by
+    intro x
+    have h1 : h ≤ 2 * hsNormSq (G x - T) + 2 * hsNormSq (G x - G z) := by
+      have := hs_sub (G x - T) (G x - G z)
+      rwa [sub_sub_sub_cancel_left] at this
+    calc ENNReal.ofReal h
+        ≤ ENNReal.ofReal (2 * hsNormSq (G x - T) + 2 * hsNormSq (G x - G z)) :=
+          ENNReal.ofReal_le_ofReal h1
+      _ = _ := by
+          rw [ENNReal.ofReal_add (mul_nonneg zero_le_two (hs_nonneg _))
+              (mul_nonneg zero_le_two (hs_nonneg _)),
+            ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+  -- For `0 < s ≤ s₀`: `ofReal h ≤ 2 ofReal(2ⁿ A (s/R)^{2α}) v⁻¹ + 2 a(s/2)`.
+  have hbound : ∀ s : ℝ, 0 < s → s ≤ s₀ → ENNReal.ofReal h ≤
+      2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ +
+        2 * ((volume (closedBall z (s / 2)))⁻¹ *
+          ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) := by
+    intro s hs hss
+    have ht : 0 < s / 2 := half_pos hs
+    set W : ℝ≥0∞ := volume (closedBall z (s / 2))
+    have hW0 : W ≠ 0 := (measure_closedBall_pos volume z ht).ne'
+    have hWtop : W ≠ ∞ := measure_closedBall_lt_top.ne
+    have hint : ENNReal.ofReal h * W ≤ 2 * ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) +
+        2 * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z)) := by
+      calc ENNReal.ofReal h * W = ∫⁻ _ in closedBall z (s / 2), ENNReal.ofReal h :=
+            (setLIntegral_const _ _).symm
+        _ ≤ ∫⁻ x in closedBall z (s / 2), (2 * ENNReal.ofReal (hsNormSq (G x - T)) +
+              2 * ENNReal.ofReal (hsNormSq (G x - G z))) := lintegral_mono hpt
+        _ = 2 * (∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - T))) +
+              2 * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z)) := by
+            rw [lintegral_add_left (hmeasT.const_mul 2), lintegral_const_mul 2 hmeasT,
+              lintegral_const_mul' 2 _ ENNReal.ofNat_ne_top]
+        _ ≤ _ := by
+            gcongr
+            exact hcamp s hs hss
+    -- `A sⁿ (s/R)^{2α} = (2ⁿ A (s/R)^{2α}) (s/2)ⁿ` and `W = ofReal((s/2)ⁿ) v`.
+    have hsplit : ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) =
+        ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * ENNReal.ofReal ((s / 2) ^ n) := by
+      rw [← ENNReal.ofReal_mul' (pow_nonneg ht.le n)]
+      congr 1
+      have : s ^ n = 2 ^ n * (s / 2) ^ n := by
+        rw [← mul_pow]
+        congr 1
+        ring
+      rw [this]
+      ring
+    have hq0 : ENNReal.ofReal ((s / 2) ^ n) ≠ 0 := by
+      rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+      exact pow_pos ht n
+    have hqtop : ENNReal.ofReal ((s / 2) ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
+    have hWeq : W = ENNReal.ofReal ((s / 2) ^ n) * v := hvol _ ht.le
+    have hfirst : ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) * W⁻¹ =
+        ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ := by
+      rw [hsplit, hWeq, ENNReal.mul_inv (Or.inl hq0) (Or.inl hqtop), mul_assoc,
+        ← mul_assoc (ENNReal.ofReal ((s / 2) ^ n)), ENNReal.mul_inv_cancel hq0 hqtop, one_mul]
+    calc ENNReal.ofReal h = ENNReal.ofReal h * W * W⁻¹ := by
+          rw [mul_assoc, ENNReal.mul_inv_cancel hW0 hWtop, mul_one]
+      _ ≤ (2 * ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) +
+            2 * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) * W⁻¹ := by
+          gcongr
+      _ = 2 * (ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) * W⁻¹) +
+            2 * (W⁻¹ * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) := by
+          ring
+      _ = _ := by
+          rw [hfirst]
+          ring
+  -- The bound tends to `0` as `s → 0+`.
+  have hlim : Tendsto (fun s : ℝ => 2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ +
+      2 * ((volume (closedBall z (s / 2)))⁻¹ *
+        ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z)))) (𝓝[>] 0) (𝓝 0) := by
+    have hrpow : Tendsto (fun s : ℝ => (s / R) ^ (2 * α)) (𝓝 0) (𝓝 0) := by
+      have hc : ContinuousAt (fun s : ℝ => (s / R) ^ (2 * α)) 0 :=
+        (Real.continuousAt_rpow_const _ _ (Or.inr (by positivity))).comp
+          (continuous_id.div_const R).continuousAt
+      simpa [Real.zero_rpow (show 2 * α ≠ 0 by positivity)] using hc.tendsto
+    have hreal : Tendsto (fun s : ℝ => 2 ^ n * A * (s / R) ^ (2 * α)) (𝓝[>] 0) (𝓝 0) := by
+      have := (hrpow.const_mul (2 ^ n * A)).mono_left (nhdsWithin_le_nhds (s := Ioi 0))
+      simpa using this
+    have h1 : Tendsto (fun s : ℝ => 2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹)
+        (𝓝[>] 0) (𝓝 0) := by
+      have := ENNReal.Tendsto.mul_const
+        (ENNReal.Tendsto.const_mul (ENNReal.tendsto_ofReal hreal) (Or.inr ENNReal.ofNat_ne_top))
+        (Or.inr (ENNReal.inv_ne_top.2 hv0)) (b := v⁻¹) (a := 2 * ENNReal.ofReal 0)
+      simpa using this
+    have hhalf : Tendsto (fun s : ℝ => s / 2) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+      · have : Tendsto (fun s : ℝ => s / 2) (𝓝 0) (𝓝 (0 / 2)) := tendsto_id.div_const 2
+        rw [zero_div] at this
+        exact this.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with s hs
+        exact half_pos (Set.mem_Ioi.mp hs)
+    have h2 := ENNReal.Tendsto.const_mul (hleb.comp hhalf) (Or.inr ENNReal.ofNat_ne_top) (a := 2)
+    simpa using h1.add h2
+  -- Conclusion: `ofReal h ≤ 0`, so `h = 0` and `G z = T`.
+  have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal h ≤
+      2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ +
+        2 * ((volume (closedBall z (s / 2)))⁻¹ *
+          ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) := by
+    filter_upwards [Ioc_mem_nhdsGT hs₀] with s hs
+    exact hbound s hs.1 hs.2
+  have hle : ENNReal.ofReal h ≤ 0 := ge_of_tendsto hlim hev
+  have hh0 : h = 0 :=
+    le_antisymm (ENNReal.ofReal_eq_zero.1 (nonpos_iff_eq_zero.1 hle)) (hs_nonneg _)
+  exact sub_eq_zero.1 (hs_zero _ hh0)
+/-- **Hölder continuity of Campanato centers** (Simon Ch. 5, proof of Theorem 5.2, the Hölder
+step after (11)).  If `∫_{B_{s/2}(z)} |G − c(z)|² ≤ A sⁿ (s/R)^{2α}` for every `z ∈ B_{R/4}(0)` and
+`s ∈ (0, R/4]`, then `|c(x) − c(y)| ≤ C √A (|x − y|/R)^α` for `x, y ∈ B̆_{R/16}(0)`, with
+`C = (4^{n+2} / Lⁿ(B₁(0)))^{1/2}`.
+
+For `x ≠ y` put `d = |x − y| < R/8` and `s = 2d`: the ball `B_{d/2}((x + y)/2)` lies in
+`B_{s/2}(x) ∩ B_{s/2}(y)`, and averaging `|c(x) − c(y)|² ≤ 2|G − c(x)|² + 2|G − c(y)|²` over it
+gives `|c(x) − c(y)|² (d/2)ⁿ Lⁿ(B₁(0)) ≤ 4A (2d)ⁿ (2d/R)^{2α} ≤ 4^{n+2} A (d/R)^{2α} (d/2)ⁿ`. -/
+theorem allard52_campanato_center_holder : ∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α : ℝ), 0 ≤ A → 0 < R → 0 < α → α ≤ 1 → Measurable G → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (c x - c y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ α := by
+  intro n _
+  -- `v = Lⁿ(B₁(0))`, positive and finite; `Lⁿ(B_t(w)) = tⁿ v`.
+  set v : ℝ := (volume (closedBall (0 : Rn n) 1)).toReal with hv_def
+  have hV0 : volume (closedBall (0 : Rn n) 1) ≠ 0 := (measure_closedBall_pos volume 0 one_pos).ne'
+  have hVtop : volume (closedBall (0 : Rn n) 1) ≠ ∞ := measure_closedBall_lt_top.ne
+  have hv : 0 < v := ENNReal.toReal_pos hV0 hVtop
+  refine ⟨Real.sqrt (4 ^ (n + 2) / v), Real.sqrt_nonneg _, ?_⟩
+  intro m k G c A R α hA hR hα hα1 hG hcamp x hx y hy
+  have hRHS : 0 ≤ Real.sqrt (4 ^ (n + 2) / v) * Real.sqrt A * (‖x - y‖ / R) ^ α :=
+    mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+      (Real.rpow_nonneg (div_nonneg (norm_nonneg _) hR.le) _)
+  -- Hilbert–Schmidt facts.
+  have hHS0 : ∀ T : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq T := fun T =>
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hHSsub : ∀ T T' : Rn m →L[ℝ] Rn k,
+      hsNormSq (T - T') ≤ 2 * hsNormSq T + 2 * hsNormSq T' := by
+    intro T T'
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [sub_apply]
+    have h1 := norm_sub_le (T (EuclideanSpace.single i 1)) (T' (EuclideanSpace.single i 1))
+    have h2 := norm_nonneg (T (EuclideanSpace.single i 1) - T' (EuclideanSpace.single i 1))
+    nlinarith [sq_nonneg (‖T (EuclideanSpace.single i 1)‖ - ‖T' (EuclideanSpace.single i 1)‖)]
+  have hHScont : Continuous fun T : Rn m →L[ℝ] Rn k => hsNormSq T := by
+    unfold hsNormSq
+    fun_prop
+  -- The case `x = y`.
+  rcases eq_or_ne x y with rfl | hxy
+  · have h0 : hsNorm (c x - c x) = 0 := by
+      simp [hsNorm, hsNormSq]
+    rw [h0]
+    exact hRHS
+  -- Geometry for `x ≠ y`: `d = ‖x - y‖ < R/8`, `s = 2d`, and the midpoint ball `B_{d/2}(m₀)`.
+  set d := ‖x - y‖ with hd_def
+  have hd : 0 < d := norm_pos_iff.2 (sub_ne_zero.2 hxy)
+  have hxR : ‖x‖ < R / 16 := mem_ball_zero_iff.1 hx
+  have hyR : ‖y‖ < R / 16 := mem_ball_zero_iff.1 hy
+  have hdR : d < R / 8 := by
+    calc d ≤ ‖x‖ + ‖y‖ := norm_sub_le x y
+      _ < R / 16 + R / 16 := add_lt_add hxR hyR
+      _ = R / 8 := by ring
+  have hs0 : 0 < 2 * d := by positivity
+  have hsR : 2 * d ≤ R / 4 := by linarith
+  have hs2 : 2 * d / 2 = d := by ring
+  have hxB : x ∈ closedBall (0 : Rn n) (R / 4) :=
+    mem_closedBall_zero_iff.2 (by linarith)
+  have hyB : y ∈ closedBall (0 : Rn n) (R / 4) :=
+    mem_closedBall_zero_iff.2 (by linarith)
+  set m₀ : Rn n := midpoint ℝ x y with hm₀
+  have hm₀x : dist m₀ x = d / 2 := by
+    rw [hm₀, dist_midpoint_left, dist_eq_norm, Real.norm_two]
+    ring
+  have hm₀y : dist m₀ y = d / 2 := by
+    rw [hm₀, dist_midpoint_right, dist_eq_norm, Real.norm_two]
+    ring
+  have hBx : closedBall m₀ (d / 2) ⊆ closedBall x (2 * d / 2) := by
+    rw [hs2]
+    exact closedBall_subset_closedBall' (by rw [hm₀x]; linarith)
+  have hBy : closedBall m₀ (d / 2) ⊆ closedBall y (2 * d / 2) := by
+    rw [hs2]
+    exact closedBall_subset_closedBall' (by rw [hm₀y]; linarith)
+  -- Pointwise bound.
+  have hpt : ∀ w, ENNReal.ofReal (hsNormSq (c x - c y)) ≤
+      2 * ENNReal.ofReal (hsNormSq (G w - c x)) + 2 * ENNReal.ofReal (hsNormSq (G w - c y)) := by
+    intro w
+    have h := hHSsub (G w - c y) (G w - c x)
+    rw [sub_sub_sub_cancel_left] at h
+    calc ENNReal.ofReal (hsNormSq (c x - c y))
+        ≤ ENNReal.ofReal (2 * hsNormSq (G w - c x) + 2 * hsNormSq (G w - c y)) :=
+          ENNReal.ofReal_le_ofReal (by linarith)
+      _ = 2 * ENNReal.ofReal (hsNormSq (G w - c x)) +
+            2 * ENNReal.ofReal (hsNormSq (G w - c y)) := by
+          rw [ENNReal.ofReal_add (mul_nonneg zero_le_two (hHS0 _))
+              (mul_nonneg zero_le_two (hHS0 _)),
+            ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+  -- Averaging over the midpoint ball.
+  have hmeas : ∀ T₀ : Rn m →L[ℝ] Rn k, Measurable fun w => ENNReal.ofReal (hsNormSq (G w - T₀)) :=
+    fun T₀ => ENNReal.measurable_ofReal.comp
+      ((hHScont.comp (continuous_id.sub continuous_const)).measurable.comp hG)
+  set K : ℝ := A * (2 * d) ^ n * (2 * d / R) ^ (2 * α) with hK_def
+  have hK0 : 0 ≤ K := by positivity
+  have hint : ENNReal.ofReal (hsNormSq (c x - c y)) * volume (closedBall m₀ (d / 2)) ≤
+      4 * ENNReal.ofReal K := by
+    calc ENNReal.ofReal (hsNormSq (c x - c y)) * volume (closedBall m₀ (d / 2))
+        = ∫⁻ _ in closedBall m₀ (d / 2), ENNReal.ofReal (hsNormSq (c x - c y)) :=
+          (setLIntegral_const _ _).symm
+      _ ≤ ∫⁻ w in closedBall m₀ (d / 2),
+            (2 * ENNReal.ofReal (hsNormSq (G w - c x)) +
+              2 * ENNReal.ofReal (hsNormSq (G w - c y))) := lintegral_mono fun w => hpt w
+      _ = 2 * (∫⁻ w in closedBall m₀ (d / 2), ENNReal.ofReal (hsNormSq (G w - c x))) +
+            2 * ∫⁻ w in closedBall m₀ (d / 2), ENNReal.ofReal (hsNormSq (G w - c y)) := by
+          rw [lintegral_add_left ((hmeas (c x)).const_mul 2), lintegral_const_mul 2 (hmeas (c x)),
+            lintegral_const_mul 2 (hmeas (c y))]
+      _ ≤ 2 * (∫⁻ w in closedBall x (2 * d / 2), ENNReal.ofReal (hsNormSq (G w - c x))) +
+            2 * ∫⁻ w in closedBall y (2 * d / 2), ENNReal.ofReal (hsNormSq (G w - c y)) := by
+          gcongr
+      _ ≤ 2 * ENNReal.ofReal K + 2 * ENNReal.ofReal K := by
+          gcongr
+          · exact hcamp x hxB (2 * d) hs0 hsR
+          · exact hcamp y hyB (2 * d) hs0 hsR
+      _ = 4 * ENNReal.ofReal K := by ring
+  -- Arithmetic.
+  have hvolB : volume (closedBall m₀ (d / 2)) = ENNReal.ofReal ((d / 2) ^ n * v) := by
+    rw [Measure.addHaar_closedBall' volume m₀ (by positivity), finrank_euclideanSpace_fin,
+      ENNReal.ofReal_mul (by positivity), hv_def, ENNReal.ofReal_toReal hVtop]
+  rw [hvolB, ← ENNReal.ofReal_mul (hHS0 _), ← ENNReal.ofReal_ofNat 4,
+    ← ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_le_ofReal_iff (by positivity)] at hint
+  have hpow : (2 * d) ^ n = 4 ^ n * (d / 2) ^ n := by
+    rw [← mul_pow]
+    ring
+  have hrpow : (2 * d / R) ^ (2 * α) ≤ 4 * (d / R) ^ (2 * α) := by
+    rw [mul_div_assoc, Real.mul_rpow zero_le_two (by positivity)]
+    gcongr
+    calc (2 : ℝ) ^ (2 * α) ≤ 2 ^ (2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le one_le_two (by linarith)
+      _ = 4 := by norm_num [Real.rpow_two]
+  have hsq : ((d / R) ^ α) ^ 2 = (d / R) ^ (2 * α) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity), mul_comm]
+    norm_num
+  have hdn : 0 < (d / 2) ^ n := by positivity
+  have hmain : hsNormSq (c x - c y) ≤ 4 ^ (n + 2) / v * A * ((d / R) ^ α) ^ 2 := by
+    rw [hsq, div_mul_eq_mul_div, div_mul_eq_mul_div, le_div_iff₀ hv]
+    have h4 : 4 * K ≤ 4 ^ (n + 2) * A * (d / R) ^ (2 * α) * (d / 2) ^ n := by
+      rw [hK_def, hpow]
+      calc 4 * (A * (4 ^ n * (d / 2) ^ n) * (2 * d / R) ^ (2 * α))
+          ≤ 4 * (A * (4 ^ n * (d / 2) ^ n) * (4 * (d / R) ^ (2 * α))) := by gcongr
+        _ = 4 ^ (n + 2) * A * (d / R) ^ (2 * α) * (d / 2) ^ n := by ring
+    have h5 : hsNormSq (c x - c y) * v * (d / 2) ^ n ≤
+        4 ^ (n + 2) * A * (d / R) ^ (2 * α) * (d / 2) ^ n := by
+      calc hsNormSq (c x - c y) * v * (d / 2) ^ n
+          = hsNormSq (c x - c y) * ((d / 2) ^ n * v) := by ring
+        _ ≤ 4 * K := hint
+        _ ≤ _ := h4
+    exact le_of_mul_le_mul_right h5 hdn
+  -- Square roots.
+  unfold hsNorm
+  rw [Real.sqrt_le_left hRHS, mul_pow, mul_pow, Real.sq_sqrt (by positivity),
+    Real.sq_sqrt hA]
+  exact hmain
+/-- **Campanato centres agree with `G` almost everywhere** (Simon Ch. 5, proof of Theorem 5.2:
+identification of the centres by Lebesgue's differentiation theorem in the parameter domain `ℝⁿ`).
+Let `G, c : ℝⁿ → L(ℝᵐ, ℝᵏ)` with `G` Borel and `‖G‖ ≤ B`, and suppose that for every
+`z ∈ B_{R/4}(0)` and `s ∈ (0, R/4]`
+`∫_{B_{s/2}(z)} |G(x) − c(z)|² dx ≤ A sⁿ (s/R)^{2α}` (Hilbert–Schmidt norm, `R, α > 0`).
+Then `G(z) = c(z)` for `Lⁿ`-a.e. `z ∈ B̆_{R/4}(0)`.
+Off the null set of `allard52_cae_hsNormSq_lebesgue_ae`, every `z` is a quadratic Lebesgue point
+of `G`; for `z ∈ B̆_{R/4}(0) ⊆ B_{R/4}(0)` the Campanato bound at `z` is the hypothesis of
+`allard52_cae_center_eq_at_lebesgue_point` with `T = c(z)` and `s₀ = R/4`. -/
+theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z := by
+  intro n m k G c A R α B _hn hR hα hG hB hcamp
+  filter_upwards [Submission.allard52_cae_hsNormSq_lebesgue_ae n m k G B hG hB] with z hz hzR
+  exact Submission.allard52_cae_center_eq_at_lebesgue_point n m k G z (c z) A R α (R / 4) hR hα
+    (by positivity) hG hz (hcamp z (ball_subset_closedBall hzR))
+/-- Linear algebra for the `C¹` extension step in the proof of Simon Ch. 5, Theorem 5.2 (p. 121):
+the operator norm of a linear map `A : ℝᵐ → ℝᵏ` is at most its Hilbert–Schmidt norm `|A|`, and
+`A ↦ |A|` is continuous for the operator-norm topology. -/
+theorem allard52_c1h_opNorm_le_hsNorm_continuous : ∀ (m k : ℕ), (∀ A : Rn m →L[ℝ] Rn k, ‖A‖ ≤ hsNorm A) ∧ Continuous (fun A : Rn m →L[ℝ] Rn k => hsNorm A) := by
+  intro m k
+  refine ⟨fun A => ?_, ?_⟩
+  · -- `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- `|A| = √(Σᵢ ‖A eᵢ‖²)`, and each evaluation `A ↦ A eᵢ` is continuous.
+    exact (continuous_finsetSum _ fun i _ =>
+      (continuous_id.clm_apply continuous_const).norm.pow 2).sqrt
+/-- Continuous extension from a dense set with the same Hölder modulus, used for the `C^{1,α}`
+conclusion in the proof of Simon Ch. 5, Theorem 5.2 (pp. 121–123).  Let `F : ℝⁿ → L(ℝᵐ, ℝᵏ)`
+satisfy `|F(x) − F(y)| ≤ M (‖x − y‖/R)^α` on `Z` (Hilbert–Schmidt norm, `α > 0`), and let
+`S ⊆ closure Z`.  Then `g = extendFrom Z F`, the limit of `F` along `Z`, is continuous on `S`,
+agrees with `F` on `Z`, and satisfies the same bound on `S`.  Since `‖·‖ ≤ |·|` and
+`κ(t) = M (t/R)^α` is continuous with `κ(0) = 0`, the image of `𝓝[Z] x` under `F` is Cauchy, so
+it converges in the complete space `L(ℝᵐ, ℝᵏ)`; the bound passes to the limit along
+`𝓝[Z] x ×ˢ 𝓝[Z] y` because `|·|` is continuous. -/
+theorem allard52_c1h_holder_extension : ∀ (n m k : ℕ) (F : Rn n → (Rn m →L[ℝ] Rn k)) (S Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → S ⊆ closure Z → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (F x - F y) ≤ M * (‖x - y‖ / R) ^ α) → ∃ g : Rn n → (Rn m →L[ℝ] Rn k), ContinuousOn g S ∧ (∀ x ∈ Z, g x = F x) ∧ ∀ x ∈ S, ∀ y ∈ S, hsNorm (g x - g y) ≤ M * (‖x - y‖ / R) ^ α := by
+  intro n m k F S Z M R α _hM _hR hα hSZ hF
+  obtain ⟨hop, hcont⟩ := Submission.allard52_c1h_opNorm_le_hsNorm_continuous m k
+  -- The modulus `κ(t) = M (t/R)^α` is continuous, and `κ(0) = 0` since `α ≠ 0`.
+  have hκc : Continuous fun t : ℝ => M * (t / R) ^ α :=
+    continuous_const.mul ((Real.continuous_rpow_const hα.le).comp (continuous_id.div_const R))
+  have hκ0 : M * ((0 : ℝ) / R) ^ α = 0 := by rw [zero_div, Real.zero_rpow hα.ne', mul_zero]
+  -- `κ(‖p₁ − p₂‖) → κ(‖x − y‖)` along `𝓝[Z] x ×ˢ 𝓝[Z] y = 𝓝[Z ×ˢ Z] (x, y)`.
+  have hmod : ∀ x y : Rn n, Tendsto (fun p : Rn n × Rn n => M * (‖p.1 - p.2‖ / R) ^ α)
+      (𝓝[Z] x ×ˢ 𝓝[Z] y) (𝓝 (M * (‖x - y‖ / R) ^ α)) := by
+    intro x y
+    rw [← nhdsWithin_prod_eq]
+    exact ((hκc.comp (continuous_fst.sub continuous_snd).norm).tendsto (x, y)).mono_left
+      nhdsWithin_le_nhds
+  -- The hypothesis holds eventually along `𝓝[Z] x ×ˢ 𝓝[Z] y`, as `Z ×ˢ Z` belongs to it.
+  have hZ : ∀ x y : Rn n, ∀ᶠ p in 𝓝[Z] x ×ˢ 𝓝[Z] y,
+      hsNorm (F p.1 - F p.2) ≤ M * (‖p.1 - p.2‖ / R) ^ α := by
+    intro x y
+    filter_upwards [prod_mem_prod self_mem_nhdsWithin self_mem_nhdsWithin] with p hp
+    exact hF p.1 hp.1 p.2 hp.2
+  -- At `x ∈ closure Z`, `dist (F p₁) (F p₂) ≤ |F p₁ − F p₂| ≤ κ(‖p₁ − p₂‖) → κ(0) = 0` along
+  -- `𝓝[Z] x ×ˢ 𝓝[Z] x`, so `map F (𝓝[Z] x)` is Cauchy and converges.
+  have hlim : ∀ x ∈ closure Z, ∃ A, Tendsto F (𝓝[Z] x) (𝓝 A) := by
+    intro x hx
+    have := mem_closure_iff_nhdsWithin_neBot.1 hx
+    refine cauchy_map_iff_exists_tendsto.1 (cauchy_map_iff.2 ⟨inferInstance, ?_⟩)
+    have h0 := hmod x x
+    rw [sub_self, norm_zero, hκ0] at h0
+    refine tendsto_uniformity_iff_dist_tendsto_zero.2
+      (squeeze_zero' (Eventually.of_forall fun _ => dist_nonneg) ?_ h0)
+    filter_upwards [hZ x x] with p hp
+    exact (dist_eq_norm _ _).trans_le ((hop _).trans hp)
+  have hg : ∀ x ∈ closure Z, Tendsto F (𝓝[Z] x) (𝓝 (extendFrom Z F x)) := fun x hx =>
+    tendsto_extendFrom (hlim x hx)
+  refine ⟨extendFrom Z F, continuousOn_extendFrom hSZ fun x hx => hlim x (hSZ hx),
+    fun x hx => ?_, fun x hx y hy => ?_⟩
+  · -- On `Z`, `‖F z − F x‖ ≤ κ(‖z − x‖) → 0`, so `F → F x` along `𝓝[Z] x`.
+    refine extendFrom_eq (subset_closure hx) (tendsto_iff_norm_sub_tendsto_zero.2 ?_)
+    have h0 : Tendsto (fun z : Rn n => M * (‖z - x‖ / R) ^ α) (𝓝[Z] x)
+        (𝓝 (M * (‖x - x‖ / R) ^ α)) :=
+      ((hκc.comp (continuous_id.sub continuous_const).norm).tendsto x).mono_left
+        nhdsWithin_le_nhds
+    rw [sub_self, norm_zero, hκ0] at h0
+    refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ h0
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    exact (hop _).trans (hF z hz x hx)
+  · -- Pass to the limit in `|F p₁ − F p₂| ≤ κ(‖p₁ − p₂‖)` along `𝓝[Z] x ×ˢ 𝓝[Z] y`.
+    have := mem_closure_iff_nhdsWithin_neBot.1 (hSZ hx)
+    have := mem_closure_iff_nhdsWithin_neBot.1 (hSZ hy)
+    exact le_of_tendsto_of_tendsto ((hcont.tendsto _).comp
+      (((hg x (hSZ hx)).comp tendsto_fst).sub ((hg y (hSZ hy)).comp tendsto_snd)))
+      (hmod x y) (hZ x y)
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"), Fubini on lines: if `Lⁿ(N) = 0`, then for all `x, h ∈ ℝⁿ` and `Lⁿ`-a.e. `w`
+the line `t ↦ x + w + t h` meets `N` in an `L¹`-null set.  Enclose `N` in a measurable null set
+`N'`.  The set `E = {(w, t) : x + w + t h ∈ N'}` is measurable (a preimage under a continuous map),
+and each `t`-section `{w : w + (x + t h) ∈ N'}` is a translate of `N'`, hence `Lⁿ`-null.  So
+`(Lⁿ × L¹)(E) = 0` by Tonelli, almost every `w`-section of `E` is `L¹`-null, and monotonicity
+passes this from `N'` to `N`. -/
+theorem allard52_lad_segment_null : ∀ (n : ℕ) (N : Set (Rn n)), volume N = 0 → ∀ (x h : Rn n), ∀ᵐ w ∂(volume : Measure (Rn n)), volume {t : ℝ | x + w + t • h ∈ N} = 0 := by
+  intro n N hN x h
+  -- A measurable null envelope `N'` of `N`.
+  obtain ⟨N', hNN', hN'm, hN'0⟩ := exists_measurable_superset_of_null hN
+  -- `E = {(w, t) : x + w + t h ∈ N'}` is measurable.
+  set E : Set (Rn n × ℝ) := {p | x + p.1 + p.2 • h ∈ N'} with hE
+  have hEm : MeasurableSet E :=
+    (show Continuous fun p : Rn n × ℝ => x + p.1 + p.2 • h by fun_prop).measurable hN'm
+  -- Each `t`-section of `E` is the translate `N' - (x + t h)`, hence null.
+  have hsec : ∀ t : ℝ, (volume : Measure (Rn n)) ((fun w => (w, t)) ⁻¹' E) = 0 := by
+    intro t
+    have hset : (fun w => (w, t)) ⁻¹' E = (fun w => w + (x + t • h)) ⁻¹' N' := by
+      ext w
+      simp only [mem_preimage, hE, mem_ofPred_eq]
+      rw [show x + w + t • h = w + (x + t • h) by abel]
+    rw [hset, measure_preimage_add_right]
+    exact hN'0
+  -- Tonelli: `(Lⁿ × L¹)(E) = ∫⁻ Lⁿ(t-section of E) dt = 0`.
+  have hprod : (volume : Measure (Rn n)).prod (volume : Measure ℝ) E = 0 := by
+    rw [Measure.prod_apply_symm hEm]
+    exact (lintegral_congr hsec).trans lintegral_zero
+  -- Hence almost every `w`-section `{t : x + w + t h ∈ N'}` is `L¹`-null, and so is the smaller
+  -- set `{t : x + w + t h ∈ N}`.
+  rw [Measure.measure_prod_null hEm] at hprod
+  filter_upwards [hprod] with w hw
+  exact measure_mono_null (fun t ht => hNN' ht) hw
+
+/-- Fundamental theorem of calculus for a Lipschitz curve with an a.e. derivative (node
+`lipschitz_ftc` of `lipschitz_ae_derivative`): if `φ : ℝ → ℝ^ℓ` is `L`-Lipschitz on `[a, b]`, `k`
+is continuous on `[a, b]` and `φ` has derivative `k(t)` at a.e. `t ∈ (a, b)`, then
+`φ(b) - φ(a) = ∫_a^b k`.  The extension `ψ = φ ∘ projIcc a b` is `L`-Lipschitz on `ℝ`, so the
+difference quotients `h⁻¹ (ψ(t + h) - ψ(t))` are bounded by `L`; as `h → 0⁺` they tend to `k(t)`
+for a.e. `t ∈ (a, b]`, and dominated convergence gives convergence of their integrals over
+`[a, b]` to `∫_a^b k`.  For a primitive `G` of the continuous `ψ` the same integrals equal
+`h⁻¹ (G(b + h) - G(b)) - h⁻¹ (G(a + h) - G(a))`, which tend to `ψ(b) - ψ(a) = φ(b) - φ(a)`. -/
+theorem allard52_lad_lipschitz_ftc : ∀ (ℓ : ℕ) (φ k : ℝ → Rn ℓ) (a b : ℝ) (L : ℝ≥0), a ≤ b → LipschitzOnWith L φ (Icc a b) → ContinuousOn k (Icc a b) → (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → HasDerivAt φ (k t) t) → φ b - φ a = ∫ t in a..b, k t := by
+  intro ℓ φ k a b L hab hφ _ hderiv
+  -- The extension `ψ = φ ∘ projIcc a b` is `L`-Lipschitz on `ℝ` and agrees with `φ` on `[a, b]`.
+  set ψ : ℝ → Rn ℓ := fun t => φ (projIcc a b hab t) with hψ
+  have hψL : LipschitzWith L ψ := by
+    have h := hφ.to_restrict.comp (LipschitzWith.projIcc hab)
+    rw [mul_one] at h
+    exact h
+  have hψc : Continuous ψ := hψL.continuous
+  have hψa : ψ a = φ a := by
+    simp only [hψ, projIcc_left]
+  have hψb : ψ b = φ b := by
+    simp only [hψ, projIcc_right]
+  have hψeq : ∀ t ∈ Ioo a b, ψ =ᶠ[𝓝 t] φ := by
+    intro t ht
+    filter_upwards [Icc_mem_nhds ht.1 ht.2] with s hs
+    simp only [hψ, projIcc_of_mem hab hs]
+  -- The difference quotients of `ψ` are bounded by `L`.
+  have hbound : ∀ h : ℝ, 0 < h → ∀ t : ℝ, ‖h⁻¹ • (ψ (t + h) - ψ t)‖ ≤ L := by
+    intro h hh t
+    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hh, ← dist_eq_norm]
+    have h1 := hψL.dist_le_mul (t + h) t
+    rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos hh] at h1
+    calc h⁻¹ * dist (ψ (t + h)) (ψ t) ≤ h⁻¹ * (L * h) := by gcongr
+      _ = L := by field_simp
+  -- Dominated convergence: the integrals of the difference quotients tend to `∫_a^b k`, since
+  -- `ψ = φ` near every `t ∈ (a, b)` and `{b}` is null.
+  have hlim1 : Tendsto (fun h : ℝ => ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t)) (𝓝[>] 0)
+      (𝓝 (∫ t in a..b, k t)) := by
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence (fun _ => (L : ℝ))
+      ?_ ?_ intervalIntegrable_const ?_
+    · refine Eventually.of_forall (fun h => ?_)
+      exact (((hψc.comp (continuous_id.add continuous_const)).sub hψc).const_smul
+        h⁻¹).aestronglyMeasurable
+    · filter_upwards [self_mem_nhdsWithin] with h hh
+      exact ae_of_all _ (fun t _ => hbound h hh t)
+    · filter_upwards [hderiv, Measure.ae_ne volume b] with t ht htb htI
+      rw [uIoc_of_le hab] at htI
+      have htIoo : t ∈ Ioo a b := ⟨htI.1, lt_of_le_of_ne htI.2 htb⟩
+      exact ((ht htIoo).congr_of_eventuallyEq (hψeq t htIoo)).tendsto_slope_zero_right
+  -- The same integrals are difference quotients at `b` and at `a` of a primitive `G` of `ψ`.
+  set G : ℝ → Rn ℓ := fun x => ∫ t in a..x, ψ t
+  have hGd : ∀ x, HasDerivAt G (ψ x) x := fun x =>
+    (hψc.integral_hasStrictDerivAt a x).hasDerivAt
+  have hGint : ∀ u v, ∫ t in u..v, ψ t = G v - G u := fun u v =>
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hGd x) (hψc.intervalIntegrable u v)
+  have hrepr : ∀ h : ℝ, ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t) =
+      h⁻¹ • (G (b + h) - G b) - h⁻¹ • (G (a + h) - G a) := by
+    intro h
+    have hint : IntervalIntegrable (fun t => ψ (t + h)) volume a b :=
+      (hψc.comp (continuous_id.add continuous_const)).intervalIntegrable a b
+    rw [intervalIntegral.integral_smul,
+      intervalIntegral.integral_sub hint (hψc.intervalIntegrable a b),
+      intervalIntegral.integral_comp_add_right ψ h, hGint (a + h) (b + h), hGint a b, ← smul_sub]
+    congr 1
+    abel
+  have hlim2 : Tendsto (fun h : ℝ => ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t)) (𝓝[>] 0)
+      (𝓝 (ψ b - ψ a)) := by
+    simp only [hrepr]
+    exact (hGd b).tendsto_slope_zero_right.sub (hGd a).tendsto_slope_zero_right
+  rw [← hψa, ← hψb]
+  exact tendsto_nhds_unique hlim2 hlim1
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"): continuity of the segment integral `I(a, b) = ∫₀¹ g(a + τ(b − a))(b − a) dτ`
+on `U × U` for an operator field `g` continuous on an open convex `U`.  At `(a₀, b₀) ∈ U × U` the
+segment `[a₀, b₀] ⊆ U` is compact, so a closed `δ`-thickening of it is a compact subset of `U` on
+which `‖g‖ ≤ M`; it contains `[a, b]` whenever `‖a − a₀‖, ‖b − b₀‖ < δ`, and then
+`‖b − a‖ ≤ ‖b₀ − a₀‖ + 2δ`.  Dominated convergence with the constant bound `M (‖b₀ − a₀‖ + 2δ)`
+gives continuity at `(a₀, b₀)`. -/
+theorem allard52_lad_segment_integral_continuousOn : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ContinuousOn g U → ContinuousOn (fun p : Rn n × Rn n => ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)) (U ×ˢ U) := by
+  intro n ℓ g U hU hconv hg
+  rintro ⟨a₀, b₀⟩ ⟨ha₀, hb₀⟩
+  refine ContinuousAt.continuousWithinAt ?_
+  -- The segment `S₀ = [a₀, b₀]` is compact and lies in `U` by convexity.
+  set S₀ : Set (Rn n) := (fun τ : ℝ => a₀ + τ • (b₀ - a₀)) '' Icc (0 : ℝ) 1
+  have hS₀c : IsCompact S₀ := isCompact_Icc.image (by fun_prop)
+  have hS₀U : S₀ ⊆ U := by
+    rintro _ ⟨τ, hτ, rfl⟩
+    exact hconv.add_smul_sub_mem ha₀ hb₀ hτ
+  -- A closed `δ`-thickening `C` of `S₀` is a compact subset of `U`, on which `‖g‖ ≤ M`.
+  obtain ⟨δ, hδ, hδU⟩ := hS₀c.exists_cthickening_subset_open hU hS₀U
+  obtain ⟨M, hM⟩ := hS₀c.cthickening.exists_bound_of_continuousOn (hg.mono hδU)
+  have hM0 : 0 ≤ M :=
+    (norm_nonneg _).trans (hM a₀ (self_subset_cthickening S₀ ⟨0, ⟨le_rfl, zero_le_one⟩, by simp⟩))
+  -- If `‖a - a₀‖, ‖b - b₀‖ < δ`, the whole segment `[a, b]` lies in `C`.
+  have hmem : ∀ a b : Rn n, dist a a₀ < δ → dist b b₀ < δ → ∀ τ ∈ Icc (0 : ℝ) 1,
+      a + τ • (b - a) ∈ cthickening δ S₀ := by
+    intro a b ha hb τ hτ
+    refine mem_cthickening_of_dist_le _ (a₀ + τ • (b₀ - a₀)) _ _ ⟨τ, hτ, rfl⟩ ?_
+    have heq : a + τ • (b - a) - (a₀ + τ • (b₀ - a₀)) = (1 - τ) • (a - a₀) + τ • (b - b₀) := by
+      module
+    rw [dist_eq_norm] at ha hb ⊢
+    rw [heq]
+    calc ‖(1 - τ) • (a - a₀) + τ • (b - b₀)‖
+        ≤ ‖(1 - τ) • (a - a₀)‖ + ‖τ • (b - b₀)‖ := norm_add_le _ _
+      _ = (1 - τ) * ‖a - a₀‖ + τ * ‖b - b₀‖ := by
+        rw [norm_smul, norm_smul, Real.norm_of_nonneg (sub_nonneg.2 hτ.2),
+          Real.norm_of_nonneg hτ.1]
+      _ ≤ (1 - τ) * δ + τ * δ := by
+        gcongr
+        · exact sub_nonneg.2 hτ.2
+        · exact hτ.1
+      _ = δ := by ring
+  -- ... and `‖b - a‖ ≤ ‖b₀ - a₀‖ + 2δ`.
+  have hlen : ∀ a b : Rn n, dist a a₀ < δ → dist b b₀ < δ → ‖b - a‖ ≤ ‖b₀ - a₀‖ + 2 * δ := by
+    intro a b ha hb
+    rw [dist_eq_norm] at ha hb
+    have heq : b - a = (b₀ - a₀) + (b - b₀) - (a - a₀) := by abel
+    calc ‖b - a‖ = ‖(b₀ - a₀) + (b - b₀) - (a - a₀)‖ := by rw [heq]
+      _ ≤ ‖(b₀ - a₀) + (b - b₀)‖ + ‖a - a₀‖ := norm_sub_le _ _
+      _ ≤ ‖b₀ - a₀‖ + ‖b - b₀‖ + ‖a - a₀‖ := by gcongr; exact norm_add_le _ _
+      _ ≤ ‖b₀ - a₀‖ + 2 * δ := by linarith
+  have hW : ∀ᶠ p : Rn n × Rn n in 𝓝 (a₀, b₀), dist p.1 a₀ < δ ∧ dist p.2 b₀ < δ := by
+    filter_upwards [ball_mem_nhds (a₀, b₀) hδ] with p hp
+    rw [mem_ball, Prod.dist_eq, max_lt_iff] at hp
+    exact hp
+  have hIoc : uIoc (0 : ℝ) 1 ⊆ Icc 0 1 := by
+    rw [uIoc_of_le zero_le_one]
+    exact Ioc_subset_Icc_self
+  -- Dominated convergence with the constant bound `M (‖b₀ - a₀‖ + 2δ)`.
+  refine intervalIntegral.continuousAt_of_dominated_interval
+    (F := fun (p : Rn n × Rn n) (τ : ℝ) => g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1))
+    (bound := fun _ => M * (‖b₀ - a₀‖ + 2 * δ)) ?_ ?_ intervalIntegrable_const ?_
+  · filter_upwards [hW] with p hp
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_uIoc
+    refine ContinuousOn.clm_apply ?_ continuousOn_const
+    exact hg.comp (by fun_prop) fun τ hτ => hδU (hmem p.1 p.2 hp.1 hp.2 τ (hIoc hτ))
+  · filter_upwards [hW] with p hp
+    refine ae_of_all _ fun τ hτ => ?_
+    calc ‖g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)‖
+        ≤ ‖g (p.1 + τ • (p.2 - p.1))‖ * ‖p.2 - p.1‖ := (g _).le_opNorm _
+      _ ≤ M * (‖b₀ - a₀‖ + 2 * δ) :=
+        mul_le_mul (hM _ (hmem p.1 p.2 hp.1 hp.2 τ (hIoc hτ))) (hlen p.1 p.2 hp.1 hp.2)
+          (norm_nonneg _) hM0
+  · refine ae_of_all _ fun τ hτ => ?_
+    have hgτ : ContinuousAt g (a₀ + τ • (b₀ - a₀)) :=
+      hg.continuousAt (hU.mem_nhds (hS₀U ⟨τ, hIoc hτ, rfl⟩))
+    have hseg : ContinuousAt (fun p : Rn n × Rn n => p.1 + τ • (p.2 - p.1)) (a₀, b₀) := by
+      fun_prop
+    exact (hgτ.comp_of_eq hseg rfl).clm_apply (by fun_prop)
+
+/-- Simon Ch. 5, end of the proof of Theorem 5.2 (p. 124: a Lipschitz `f` whose a.e. derivative
+is continuous is `C¹`).  The integral mean-value formula
+`f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for `x, y` in an open convex `U`, when `f` is
+Lipschitz on `U`, `g` is continuous on `U` and `Df = g` a.e. in `U`.  Put
+`F(w) = f(y + w) − f(x + w) − I(x + w, y + w)` with `I` the segment integral.  If the line
+`t ↦ x + w + t(y − x)` meets the null set where `Df = g` fails in an `L¹`-null set, the Lipschitz
+fundamental theorem of calculus along it gives `F(w) = 0`; by Fubini this holds for a.e. `w` near
+`0`, and `F` is continuous there, so `F(0) = 0`. -/
+theorem allard52_lad_line_integral_rep : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (K : ℝ≥0), IsOpen U → Convex ℝ U → LipschitzOnWith K f U → ContinuousOn g U → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ U → HasFDerivAt f (g x) x) → ∀ x ∈ U, ∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x) := by
+  intro n ℓ f g U K hU hUc hf hg hae x hx y hy
+  -- The bad set `N₀ = {p ∈ U : Df(p) ≠ g(p)}` is Lebesgue-null.
+  let N₀ : Set (Rn n) := {p | ¬(p ∈ U → HasFDerivAt f (g p) p)}
+  have hN₀ : volume N₀ = 0 := ae_iff.mp hae
+  -- A ball `B̆_ρ(0)` of translations `w` with `x + w, y + w ∈ U`.
+  obtain ⟨ρ₁, hρ₁, hxU⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨ρ₂, hρ₂, hyU⟩ := Metric.isOpen_iff.mp hU y hy
+  have hρ : 0 < min ρ₁ ρ₂ := lt_min hρ₁ hρ₂
+  have hxw : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂), x + w ∈ U := fun w hw =>
+    hxU (by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+      exact (mem_ball_zero_iff.mp hw).trans_le (min_le_left _ _))
+  have hyw : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂), y + w ∈ U := fun w hw =>
+    hyU (by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+      exact (mem_ball_zero_iff.mp hw).trans_le (min_le_right _ _))
+  -- `F(w) = f(y + w) − f(x + w) − I(x + w, y + w)`; the claim is `F(0) = 0`.
+  let I : Rn n × Rn n → Rn ℓ := fun p =>
+    ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)
+  let F : Rn n → Rn ℓ := fun w => f (y + w) - f (x + w) - I (x + w, y + w)
+  -- `F(w) = 0` if `w ∈ B̆_ρ(0)` and the line `t ↦ x + w + t(y − x)` meets `N₀` in a null set.
+  have hgood : ∀ w ∈ ball (0 : Rn n) (min ρ₁ ρ₂),
+      volume {t : ℝ | x + w + t • (y - x) ∈ N₀} = 0 → F w = 0 := by
+    intro w hw hnull
+    have hseg : ∀ t ∈ Icc (0:ℝ) 1, x + w + t • (y - x) ∈ U := fun t ht => by
+      simpa only [add_sub_add_right_eq_sub] using hUc.add_smul_sub_mem (hxw w hw) (hyw w hw) ht
+    let φ : ℝ → Rn ℓ := fun t => f (x + w + t • (y - x))
+    let k : ℝ → Rn ℓ := fun t => g (x + w + t • (y - x)) (y - x)
+    -- `φ` is `K‖y − x‖`-Lipschitz on `[0, 1]`.
+    have hφ : LipschitzOnWith (K * ‖y - x‖₊) φ (Icc 0 1) := by
+      refine LipschitzOnWith.of_dist_le_mul fun t ht t' ht' => ?_
+      calc dist (φ t) (φ t')
+          ≤ K * dist (x + w + t • (y - x)) (x + w + t' • (y - x)) :=
+            hf.dist_le_mul _ (hseg t ht) _ (hseg t' ht')
+        _ = ↑(K * ‖y - x‖₊) * dist t t' := by
+            rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, Real.dist_eq,
+              Real.norm_eq_abs, NNReal.coe_mul, coe_nnnorm]
+            ring
+    -- `k` is continuous on `[0, 1]`.
+    have hk : ContinuousOn k (Icc 0 1) :=
+      (hg.comp (by fun_prop : Continuous fun t : ℝ => x + w + t • (y - x)).continuousOn
+        fun t ht => hseg t ht).clm_apply continuousOn_const
+    -- For a.e. `t ∈ (0, 1)`, `φ'(t) = k(t)` by the chain rule.
+    have hderiv : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo (0:ℝ) 1 → HasDerivAt φ (k t) t := by
+      filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with t ht htI
+      have hfd : HasFDerivAt f (g (x + w + t • (y - x))) (x + w + t • (y - x)) :=
+        not_not.mp ht (hseg t (Ioo_subset_Icc_self htI))
+      have hσ : HasDerivAt (fun t : ℝ => x + w + t • (y - x)) (y - x) t := by
+        simpa only [one_smul] using ((hasDerivAt_id' t).smul_const (y - x)).const_add (x + w)
+      exact hfd.comp_hasDerivAt t hσ
+    -- The Lipschitz fundamental theorem of calculus for `φ` on `[0, 1]`.
+    have hftc := Submission.allard52_lad_lipschitz_ftc ℓ φ k 0 1 (K * ‖y - x‖₊) zero_le_one hφ
+      hk hderiv
+    have hyx : x + w + (y - x) = y + w := by abel
+    simp only [φ, k, zero_smul, add_zero, one_smul, hyx] at hftc
+    show f (y + w) - f (x + w) - I (x + w, y + w) = 0
+    simp only [I, add_sub_add_right_eq_sub, ← hftc, sub_self]
+  -- By Fubini (`segment_null`), `F = 0` a.e. on `B̆_ρ(0)`.
+  have hFae : F =ᵐ[volume.restrict (ball (0 : Rn n) (min ρ₁ ρ₂))] 0 := by
+    refine (ae_restrict_iff' measurableSet_ball).mpr ?_
+    filter_upwards [Submission.allard52_lad_segment_null n N₀ hN₀ x (y - x)] with w hw hwB
+    exact hgood w hwB hw
+  -- `F` is continuous on `B̆_ρ(0)`: `f` is Lipschitz and `I` is continuous on `U × U`.
+  have hFc : ContinuousOn F (ball (0 : Rn n) (min ρ₁ ρ₂)) := by
+    have hfU : ContinuousOn f U := hf.continuousOn
+    have hIc : ContinuousOn I (U ×ˢ U) :=
+      Submission.allard52_lad_segment_integral_continuousOn n ℓ g U hU hUc hg
+    exact ((hfU.comp (by fun_prop : Continuous fun w : Rn n => y + w).continuousOn hyw).sub
+      (hfU.comp (by fun_prop : Continuous fun w : Rn n => x + w).continuousOn hxw)).sub
+      (hIc.comp (by fun_prop : Continuous fun w : Rn n => (x + w, y + w)).continuousOn
+        fun w hw => ⟨hxw w hw, hyw w hw⟩)
+  -- A continuous function vanishing a.e. on an open set vanishes there; evaluate at `w = 0`.
+  have hF0 : F 0 = 0 :=
+    Measure.eqOn_open_of_ae_eq hFae isOpen_ball hFc continuousOn_const (mem_ball_self hρ)
+  simpa only [F, I, add_zero, sub_eq_zero] using hF0
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"): Fréchet differentiability from the integral mean-value formula.  If `g` is
+continuous on an open `U ∋ x` and `f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `y ∈ U`,
+then `Df(x) = g(x)`.  Given `ε > 0`, pick `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` on
+`B̆_η(x)`; for `‖h‖ < η` the segment `[x, x + h]` lies in `B̆_η(x)`, so the remainder
+`f(x + h) − f(x) − g(x)h = ∫₀¹ (g(x + τh) − g(x))h dτ` has norm at most `ε‖h‖`. -/
+theorem allard52_lad_hasFDerivAt_of_line_integral : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (x : Rn n), IsOpen U → x ∈ U → ContinuousOn g U → (∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)) → HasFDerivAt f (g x) x := by
+  intro n ℓ f g U x hU hx hg hf
+  -- Little-o criterion: for each `ε > 0`, eventually `‖f(x + h) − f(x) − g(x)h‖ ≤ ε‖h‖`.
+  rw [hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_iff]
+  intro ε hε
+  -- Choose `η > 0` with `B̆_η(x) ⊆ U` and `‖g(z) − g(x)‖ < ε` for `z ∈ B̆_η(x)`.
+  obtain ⟨η₁, hη₁, hη₁U⟩ := Metric.isOpen_iff.1 hU x hx
+  obtain ⟨η₂, hη₂, hη₂g⟩ := Metric.continuousAt_iff.1 (hg.continuousAt (hU.mem_nhds hx)) ε hε
+  obtain ⟨η, hη, hηη₁, hηη₂⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ η₁ ∧ η ≤ η₂ :=
+    ⟨min η₁ η₂, lt_min hη₁ hη₂, min_le_left _ _, min_le_right _ _⟩
+  filter_upwards [ball_mem_nhds (0 : Rn n) hη] with h hh
+  rw [mem_ball_zero_iff] at hh
+  -- For `‖h‖ < η` the segment `x + τh`, `τ ∈ [0, 1]`, lies in `B̆_η(x) ⊆ U`.
+  have hseg : ∀ τ ∈ Icc (0 : ℝ) 1, dist (x + τ • h) x < η := by
+    intro τ hτ
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hτ.1]
+    calc τ * ‖h‖ ≤ 1 * ‖h‖ := mul_le_mul_of_nonneg_right hτ.2 (norm_nonneg h)
+      _ < η := by rwa [one_mul]
+  have hsegU : MapsTo (fun τ : ℝ => x + τ • h) (Icc 0 1) U := fun τ hτ =>
+    hη₁U (mem_ball.2 ((hseg τ hτ).trans_le hηη₁))
+  have hfh := hf (x + h) (by simpa using hsegU ⟨zero_le_one, le_rfl⟩)
+  rw [add_sub_cancel_left] at hfh
+  -- The remainder is `∫₀¹ (g(x + τh)h − g(x)h) dτ`.
+  have hint : IntervalIntegrable (fun τ : ℝ => g (x + τ • h) h) volume 0 1 := by
+    refine ContinuousOn.intervalIntegrable ?_
+    rw [uIcc_of_le zero_le_one]
+    exact (hg.comp (by fun_prop) hsegU).clm_apply continuousOn_const
+  have hrem : f (x + h) - f x - g x h = ∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h) := by
+    rw [intervalIntegral.integral_sub hint intervalIntegrable_const, hfh,
+      intervalIntegral.integral_const, sub_zero, one_smul]
+  -- On `uIoc 0 1` the integrand has norm `‖(g(x + τh) − g(x))h‖ ≤ ε‖h‖`.
+  have hbound : ∀ τ ∈ uIoc (0 : ℝ) 1, ‖g (x + τ • h) h - g x h‖ ≤ ε * ‖h‖ := by
+    intro τ hτ
+    rw [uIoc_of_le zero_le_one] at hτ
+    have hgτ : dist (g (x + τ • h)) (g x) < ε :=
+      hη₂g ((hseg τ (Ioc_subset_Icc_self hτ)).trans_le hηη₂)
+    rw [dist_eq_norm] at hgτ
+    calc ‖g (x + τ • h) h - g x h‖ = ‖(g (x + τ • h) - g x) h‖ := by
+          rw [sub_apply]
+      _ ≤ ‖g (x + τ • h) - g x‖ * ‖h‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ ε * ‖h‖ := mul_le_mul_of_nonneg_right hgτ.le (norm_nonneg h)
+  rw [hrem]
+  calc ‖∫ τ in (0:ℝ)..1, (g (x + τ • h) h - g x h)‖ ≤ ε * ‖h‖ * |(1 : ℝ) - 0| :=
+        intervalIntegral.norm_integral_le_of_norm_le_const hbound
+    _ = ε * ‖h‖ := by rw [sub_zero, abs_one, mul_one]
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124: "Since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"), for an arbitrary continuous a.e. derivative: if `f` is `K`-Lipschitz on the
+open ball `B̆_r(c)`, `g` is continuous on `B̆_r(c)` and `Df(x) = g(x)` for `Lⁿ`-a.e.
+`x ∈ B̆_r(c)`, then `Df(x) = g(x)` at every `x ∈ B̆_r(c)`.  The ball is open and convex, so
+`f(y) − f(x) = ∫₀¹ g(x + τ(y − x))(y − x) dτ` for all `x, y ∈ B̆_r(c)`
+(`allard52_lad_line_integral_rep`), and continuity of `g` at `x` turns this formula into
+differentiability at `x` (`allard52_lad_hasFDerivAt_of_line_integral`). -/
+theorem allard52_lipschitz_hasFDerivAt_of_ae : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (c : Rn n) (r : ℝ) (K : ℝ≥0), LipschitzOnWith K f (ball c r) → ContinuousOn g (ball c r) → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x) → ∀ x ∈ ball c r, HasFDerivAt f (g x) x := by
+  intro n ℓ f g c r K hf hg hae x hx
+  -- Steps 0–3: the integral mean-value formula on the open convex ball.
+  have hrep : ∀ y ∈ ball c r, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x) :=
+    Submission.allard52_lad_line_integral_rep n ℓ f g (ball c r) K isOpen_ball
+      (convex_ball c r) hf hg hae x hx
+  -- Step 4: continuity of `g` at `x` upgrades the formula to the Fréchet derivative `g x` at `x`.
+  exact Submission.allard52_lad_hasFDerivAt_of_line_integral n ℓ f g (ball c r) x isOpen_ball hx
+    hg hrep
+/-- **A Lipschitz map whose derivative is Hölder on a full-measure set is `C¹` with the same
+Hölder bound** (Simon Ch. 5, proof of Theorem 5.2: regularity of the graph function `u`).
+Let `f` be `K`-Lipschitz on `B = B̆_r(c)`, differentiable at every point of `Z ⊆ B` with
+`Lⁿ(B \ Z) = 0`, and `|Df(x) − Df(y)| ≤ M (|x − y|/R)^α` for `x, y ∈ Z` (Hilbert–Schmidt norm,
+`M ≥ 0`, `R, α > 0`).  Then `f ∈ C¹(B)` and the same bound holds for all `x, y ∈ B`.
+`B \ closure Z` is an open null set, hence empty, so `allard52_c1h_holder_extension` extends
+`Df|_Z` to a map `g` which is continuous and satisfies the bound on `B`.  `f` has derivative
+`g x` at every `x ∈ Z`, i.e. at a.e. `x ∈ B`, hence at every `x ∈ B` by
+`allard52_lipschitz_hasFDerivAt_of_ae`; so `Df = g` on `B`. -/
+theorem allard52_c1_holder_of_ae_fderiv : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (c : Rn n) (r : ℝ) (K : ℝ≥0) (Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → LipschitzOnWith K f (ball c r) → Z ⊆ ball c r → volume (ball c r \ Z) = 0 → (∀ x ∈ Z, DifferentiableAt ℝ f x) → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α) → ContDiffOn ℝ 1 f (ball c r) ∧ ∀ x ∈ ball c r, ∀ y ∈ ball c r, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α := by
+  intro n ℓ f c r K Z M R α hM hR hα hf _hZ hnull hdiff hhol
+  -- `Z` is dense in `B`: `B \ closure Z` is open and null, hence empty.
+  have hdense : ball c r ⊆ closure Z :=
+    sdiff_eq_empty.mp <| (isOpen_ball.sdiff isClosed_closure).eq_empty_of_measure_zero <|
+      measure_mono_null (sdiff_subset_sdiff_right subset_closure) hnull
+  obtain ⟨g, hg, hgZ, hgB⟩ := Submission.allard52_c1h_holder_extension n n ℓ (fderiv ℝ f)
+    (ball c r) Z M R α hM hR hα hdense hhol
+  -- `f` has derivative `g x` at every `x ∈ Z`, hence at a.e. `x ∈ B`.
+  have hae : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxB
+    have hxZ : x ∈ Z := not_not.mp fun h => hx ⟨hxB, h⟩
+    exact hgZ x hxZ ▸ (hdiff x hxZ).hasFDerivAt
+  have hfd := Submission.allard52_lipschitz_hasFDerivAt_of_ae n ℓ f g c r K hf hg hae
+  have hfg : EqOn (fderiv ℝ f) g (ball c r) := fun x hx => (hfd x hx).fderiv
+  refine ⟨?_, fun x hx y hy => hfg hx ▸ hfg hy ▸ hgB x hx y hy⟩
+  rw [show (1 : WithTop ℕ∞) = 0 + 1 from rfl, contDiffOn_succ_iff_fderiv_of_isOpen isOpen_ball]
+  exact ⟨fun x hx => (hfd x hx).differentiableAt.differentiableWithinAt,
+    fun h => absurd h WithTop.coe_ne_top, contDiffOn_zero.mpr (hg.congr hfg)⟩
 /-- Choice of the constants `δ_P, C_P` for the density bounds in the proof of Simon Ch. 5, 5.2
 (pure real analysis; `κ > 0`, `ω > 0` arbitrary).  With `Λ = t/κ` and `q = (1 + t)/(1 − 3t)ⁿ`, the
 functions `G₊ = e^{2Λ} qω + 2e^Λ Λ`, `G₋ = e^{−Λ}(ω − Λ)` and `G_c = e^Λ(e^Λ qω + Λ − ω)` are `C¹` on
@@ -7087,6 +8314,147 @@ theorem allard52_graph_comparison : ∀ (n : ℕ), 1 ≤ n → ∀ p : ℝ, (n :
         (hArea A hAm (fun y => Φ y (V.tangentProj y))).symm
     _ ≤ ∫⁻ y in F '' A, Φ y (V.tangentProj y) ∂V.weight := lintegral_mono' hmeas_le le_rfl
     _ = ∫⁻ y in q '' graphOver f A, Φ y (V.tangentProj y) ∂V.weight := by rw [hFA]
+
+/-- **Simon Ch. 5, proof of 5.2, (10)–(11) and the Hölder argument after (11)**: a Lipschitz graph
+with decaying tilt-excess is `C^{1,1−n/p}`.  For `n ≥ 1` and `p > n` there are `L ∈ (0, 1/4]`,
+`δ₃ > 0` and `C ≥ 0` (depending only on `n, ℓ, p`) such that, under 2.3 with `0 < δ ≤ δ₃`, if
+`spt V ∩ B_R(0) = q(graph f) ∩ B_R(0)` with `0 < R ≤ δρ`, `f(0) = 0`, `Lip f ≤ L` on `Bⁿ_R(0)`, and
+`A ≥ 0` and the `n`-planes `S(ζ)` satisfy `E(ζ, s, S(ζ)) ≤ A (s/R)^{2(1−n/p)}` for
+`ζ ∈ spt V ∩ B_{R/2}(0)`, `0 < s ≤ R/2`, then `f` is `C¹` on `B̆ⁿ_{R/16}(0)`,
+`|Df(x) − Df(y)| ≤ C √A (|x − y|/R)^{1−n/p}` there, and `q(graph Df(z)) = S(q(z, f(z)))` for every
+`z` in that ball.
+
+Proof: `L = L₀/√n` and `δ₃ = min{δ₂, 1/8}`, with `L₀` from `allard52_graph_plane_algebra` and `δ₂`
+from `allard52_graph_comparison`; `C` is the constant of `allard52_campanato_center_holder`.  Then
+`B_R(0) ⊆ B_ρ(0) ⊆ U` and `f` is 1-Lipschitz, so the graph comparison and the measurability of
+`p_{T_x M}` (`allard52_tangent_ae`) turn the decay into the Campanato bound of
+`allard52_campanato_from_tilt` for `G(x) = p_{q(graph Df(x))}` with centres
+`c(z) = p_{S(q(z, f(z)))}`.  Hence `G = c` a.e. in `B̆ⁿ_{R/4}(0)` (`allard52_campanato_ae_center`)
+and `c` is `(1 − n/p)`-Hölder in `B̆ⁿ_{R/16}(0)` (`allard52_campanato_center_holder`).  On the
+full-measure set `Z` where `f` is differentiable (Rademacher) and `G = c`, `|Df| ≤ √n L = L₀`, so
+`|Df(x) − Df(y)| ≤ |G(x) − G(y)| = |c(x) − c(y)|`, and `allard52_c1_holder_of_ae_fderiv` gives the
+`C¹` and Hölder assertions.  Finally `G` (as `Df` is continuous) and `c` (Hölder) are continuous on
+`B̆ⁿ_{R/16}(0)` and agree a.e., hence everywhere, and a subspace is the range of its orthogonal
+projection. -/
+theorem allard52_graph_campanato : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ L δ₃ C : ℝ, 0 < L ∧ L ≤ 1 / 4 ∧ 0 < δ₃ ∧ 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₃ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), 0 < R → R ≤ δ * ρ → f 0 = 0 → LipschitzOnWith (Real.toNNReal L) f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → ∀ (S : Amb n ℓ → Submodule ℝ (Amb n ℓ)) (A : ℝ), 0 ≤ A → (∀ ζ ∈ V.support ∩ closedBall 0 (R / 2), Module.finrank ℝ (S ζ) = n ∧ ∀ s : ℝ, 0 < s → s ≤ R / 2 → V.tiltExcess ζ s (S ζ) ≤ A * (s / R) ^ (2 * (1 - n / p))) → ContDiffOn ℝ 1 f (ball 0 (R / 16)) ∧ (∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ (1 - n / p)) ∧ ∀ z ∈ ball (0 : Rn n) (R / 16), (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map q.toLinearEquiv.toLinearMap = S (q (graphPoint z (f z))) := by
+  intro n ℓ hn p hp
+  -- Step 1: the constants `L = L₀/√n`, `δ₃ = min{δ₂, 1/8}` and `C = C₃`.
+  obtain ⟨L₀, hL₀pos, hL₀le, hAlg1, -, -, hAlg4, -, hAlg6⟩ :=
+    Submission.allard52_graph_plane_algebra n ℓ hn
+  obtain ⟨δ₂, hδ₂pos, hCmp⟩ := Submission.allard52_graph_comparison n hn p hp
+  obtain ⟨C₃, hC₃, hHolc⟩ := Submission.allard52_campanato_center_holder n hn
+  have hsqrt_ge : 1 ≤ Real.sqrt n := Real.one_le_sqrt.2 (by exact_mod_cast hn)
+  have hsqrt_pos : 0 < Real.sqrt n := one_pos.trans_le hsqrt_ge
+  have hLpos : 0 < L₀ / Real.sqrt n := div_pos hL₀pos hsqrt_pos
+  have hLle : L₀ / Real.sqrt n ≤ 1 / 4 := (div_le_self hL₀pos.le hsqrt_ge).trans hL₀le
+  refine ⟨L₀ / Real.sqrt n, min δ₂ (1 / 8), C₃, hLpos, hLle, lt_min hδ₂pos (by norm_num), hC₃, ?_⟩
+  intro U hU V H δ ρ hδ hδle hAH q f R hR hRle hf0 hfL hgraph S A hA hdecay
+  set α : ℝ := 1 - (n : ℝ) / p
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  have hα0 : 0 < α := sub_pos.2 ((div_lt_one hp0).2 hp)
+  have hα1 : α ≤ 1 := sub_le_self _ (div_nonneg (Nat.cast_nonneg n) hp0.le)
+  -- Step 2: `R ≤ δρ ≤ ρ/8`, so `B_R(0) ⊆ B_ρ(0) ⊆ U`; `f` is 1-Lipschitz, and the graph
+  -- comparison (with `δ ≤ δ₂`) and the measurability of `p_{T_x M}` are available.
+  have hρ : 0 < ρ := hAH.1
+  have hδ₂ : δ ≤ δ₂ := hδle.trans (min_le_left _ _)
+  have hδ8 : δ ≤ 1 / 8 := hδle.trans (min_le_right _ _)
+  have hRρ : R ≤ ρ := by nlinarith
+  have hBRU : closedBall (0 : Amb n ℓ) R ⊆ U :=
+    (closedBall_subset_closedBall hRρ).trans hAH.2.2.2.2.1
+  have hL1 : Real.toNNReal (L₀ / Real.sqrt n) ≤ 1 := by
+    rw [← Real.toNNReal_one]
+    exact Real.toNNReal_le_toNNReal (hLle.trans (by norm_num))
+  have hf1 : LipschitzOnWith 1 f (closedBall 0 R) := hfL.weaken hL1
+  have hcmp := hCmp ℓ U hU V H δ ρ hδ hδ₂ hAH q f R hR hRle hf0 hf1 hgraph
+  obtain ⟨hTmeas, -, -⟩ := Submission.allard52_tangent_ae n ℓ hn U hU V
+  -- Step 3: the Campanato bound (book (10)–(11)) for `G = p_{q(graph Df)}` with centres
+  -- `c(z) = p_{S(q(z, f(z)))}`.
+  have hCamp := Submission.allard52_campanato_from_tilt n ℓ U V q f S R A (2 * α) hR hBRU hf0 hf1
+    hgraph hTmeas hcmp fun ζ hζ => (hdecay ζ hζ).2
+  set G : Rn n → (Amb n ℓ →L[ℝ] Amb n ℓ) := fun x =>
+    ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map
+      q.toLinearEquiv.toLinearMap).starProjection
+  set c : Rn n → (Amb n ℓ →L[ℝ] Amb n ℓ) := fun z => (S (q (graphPoint z (f z)))).starProjection
+  have hGmeas : Measurable G := (hAlg6 q).measurable.comp (measurable_fderiv ℝ f)
+  have hGbd : ∀ x, ‖G x‖ ≤ 1 := fun x => Submodule.starProjection_norm_le _
+  -- Step 4: `G = c` a.e. in `B̆ⁿ_{R/4}(0)` and `c` is `α`-Hölder in `B̆ⁿ_{R/16}(0)`.
+  have hGc := Submission.allard52_campanato_ae_center n (n + ℓ) (n + ℓ) G c A R α 1 hn hR hα0
+    hGmeas hGbd hCamp
+  have hcHol := hHolc (n + ℓ) (n + ℓ) G c A R α hA hR hα0 hα1 hGmeas hCamp
+  -- Step 5: on the full-measure set `Z` of differentiability points (Rademacher) where `G = c`,
+  -- `|Df| ≤ √n L = L₀`, so `|Df(x) − Df(y)| ≤ |G(x) − G(y)| = |c(x) − c(y)|`.
+  have hsub : ball (0 : Rn n) (R / 16) ⊆ closedBall 0 R :=
+    ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))
+  have hfLb : LipschitzOnWith (Real.toNNReal (L₀ / Real.sqrt n)) f (ball 0 (R / 16)) :=
+    hfL.mono hsub
+  have hRad : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball (0 : Rn n) (R / 16) →
+      DifferentiableAt ℝ f x := by
+    filter_upwards [hfLb.ae_differentiableWithinAt_of_mem] with x hx hxb
+    exact (hx hxb).differentiableAt (isOpen_ball.mem_nhds hxb)
+  set Z : Set (Rn n) := {x | x ∈ ball (0 : Rn n) (R / 16) ∧ DifferentiableAt ℝ f x ∧ G x = c x}
+  have hZsub : Z ⊆ ball 0 (R / 16) := fun x hx => hx.1
+  have hZnull : volume (ball (0 : Rn n) (R / 16) \ Z) = 0 := by
+    have h1 : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball (0 : Rn n) (R / 16) → x ∈ Z := by
+      filter_upwards [hRad, hGc] with x hx1 hx2 hxb
+      exact ⟨hxb, hx1 hxb, hx2 (ball_subset_ball (by linarith) hxb)⟩
+    rw [ae_iff] at h1
+    refine measure_mono_null (fun x hx => ?_) h1
+    exact fun h => hx.2 (h hx.1)
+  have hDf : ∀ x ∈ ball (0 : Rn n) (R / 16), hsNorm (fderiv ℝ f x) ≤ L₀ := by
+    intro x hx
+    have h1 : ‖fderiv ℝ f x‖ ≤ L₀ / Real.sqrt n := by
+      simpa only [Real.coe_toNNReal _ hLpos.le] using
+        norm_fderiv_le_of_lipschitzOn ℝ (isOpen_ball.mem_nhds hx) hfLb
+    calc hsNorm (fderiv ℝ f x) ≤ Real.sqrt n * ‖fderiv ℝ f x‖ := (hAlg4 _).2
+      _ ≤ Real.sqrt n * (L₀ / Real.sqrt n) := by gcongr
+      _ = L₀ := mul_div_cancel₀ L₀ hsqrt_pos.ne'
+  have hZHol : ∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤
+      C₃ * Real.sqrt A * (‖x - y‖ / R) ^ α := by
+    intro x hx y hy
+    have h1 := (hAlg1 q (fderiv ℝ f x) (fderiv ℝ f y) (hDf x hx.1) (hDf y hy.1)).1
+    have h2 : G x - G y = c x - c y := by rw [hx.2.2, hy.2.2]
+    refine le_trans (Real.sqrt_le_sqrt ?_) (hcHol x hx.1 y hy.1)
+    rw [← h2]
+    exact h1
+  -- The `C¹` and Hölder assertions.
+  obtain ⟨hC1, hHol⟩ := Submission.allard52_c1_holder_of_ae_fderiv n ℓ f 0 (R / 16)
+    (Real.toNNReal (L₀ / Real.sqrt n)) Z (C₃ * Real.sqrt A) R α
+    (mul_nonneg hC₃ (Real.sqrt_nonneg A)) hR hα0 hfLb hZsub hZnull (fun x hx => hx.2.1) hZHol
+  refine ⟨hC1, hHol, ?_⟩
+  -- Step 6: `G` and `c` are continuous on `B̆ⁿ_{R/16}(0)` and agree a.e., hence everywhere.
+  -- `‖T‖ ≤ |T|` for operators of `ℝ^{n+ℓ}` (`allard52_graph_plane_algebra` at `(n + ℓ, n + ℓ)`).
+  obtain ⟨-, -, -, -, -, -, hAlg4', -, -⟩ :=
+    Submission.allard52_graph_plane_algebra (n + ℓ) (n + ℓ) (by omega)
+  have hGcont : ContinuousOn G (ball (0 : Rn n) (R / 16)) :=
+    (hAlg6 q).comp_continuousOn (hC1.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl)
+  have hccont : ContinuousOn c (ball (0 : Rn n) (R / 16)) := by
+    intro x hx
+    have hlim : Tendsto (fun y : Rn n => C₃ * Real.sqrt A * (‖y - x‖ / R) ^ α) (𝓝 x) (𝓝 0) := by
+      have h0 : Tendsto (fun y : Rn n => ‖y - x‖ / R) (𝓝 x) (𝓝 0) := by
+        have h : Continuous fun y : Rn n => ‖y - x‖ / R := by fun_prop
+        simpa using h.tendsto x
+      have h1 := (Real.continuousAt_rpow_const 0 α (Or.inr hα0.le)).tendsto.comp h0
+      rw [Real.zero_rpow hα0.ne'] at h1
+      simpa using h1.const_mul (C₃ * Real.sqrt A)
+    rw [ContinuousWithinAt, tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero_norm' ?_ (tendsto_nhdsWithin_of_tendsto_nhds hlim)
+    filter_upwards [self_mem_nhdsWithin] with y hy
+    rw [norm_norm]
+    exact (hAlg4' (c y - c x)).1.trans (hcHol y hy x hx)
+  have hEq : EqOn G c (ball (0 : Rn n) (R / 16)) := by
+    refine Measure.eqOn_open_of_ae_eq (μ := (volume : Measure (Rn n))) ?_ isOpen_ball hGcont
+      hccont
+    rw [EventuallyEq, ae_restrict_iff' measurableSet_ball]
+    filter_upwards [hGc] with x hx hxb
+    exact hx (ball_subset_ball (by linarith) hxb)
+  -- A subspace is the range of its orthogonal projection.
+  intro z hz
+  have hPz : ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map
+      q.toLinearEquiv.toLinearMap).starProjection = (S (q (graphPoint z (f z)))).starProjection :=
+    hEq hz
+  rw [← Submodule.range_starProjection
+      ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map
+        q.toLinearEquiv.toLinearMap), hPz, Submodule.range_starProjection]
 
 end Submission
 

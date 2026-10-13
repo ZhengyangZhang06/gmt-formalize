@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.segment_integral_continuous-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "depth": 4,
+  "title": "Continuity of the segment integral of a continuous operator field",
+  "statement": "Let n, l >= 0, let g : R^n -> L(R^n, R^l), and let U ⊆ R^n be open and convex with g continuous on U. Then the map I : R^n x R^n -> R^l, I(a, b) := integral_0^1 g(a + tau(b - a))(b - a) dtau, is continuous on U x U (product topology).",
+  "lean_statement": "∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ContinuousOn g U → ContinuousOn (fun p : Rn n × Rn n => ∫ τ in (0:ℝ)..1, g (p.1 + τ • (p.2 - p.1)) (p.2 - p.1)) (U ×ˢ U)",
+  "lean_name": "allard52_lad_segment_integral_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-7f78788615-a1"
+}
