@@ -451,6 +451,63 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gram determinant bound** (Simon Ch. 4, 1.9 and Ch. 2, §5, where the Jacobian is the square
+root of such a Gram determinant): `det(vᵢ · vⱼ) ≤ exp(Σₐ |vₐ|² − n)` for `v₁, …, vₙ ∈ ℝᴾ`.
+With `V eₐ = vₐ` on `ℝⁿ`, the Gram matrix is the matrix of `S = V*V` in the standard basis, so
+`det G = Πᵢ λᵢ` and `Σₐ |vₐ|² = trace S = Σᵢ λᵢ` for the eigenvalues `λᵢ = |V uᵢ|² ≥ 0` of `S`;
+multiply `λᵢ ≤ e^{λᵢ − 1}` (`s + 1 ≤ eˢ`) over `i`. -/
+theorem Submission.fvmb_gram_det_le_exp_sum_norm_sq_sub : ∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ Real.exp (∑ a, ‖v a‖ ^ 2 - (n : ℝ)) := by
+  intro P n v
+  classical
+  -- `V eₐ = vₐ` and the symmetric operator `S = V*V` on `ℝⁿ`
+  let b := EuclideanSpace.basisFun (Fin n) ℝ
+  let V : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] Euclid P := b.toBasis.constr ℝ v
+  let S := LinearMap.adjoint V ∘ₗ V
+  have hS : S.IsSymmetric := LinearMap.isSymmetric_adjoint_comp_self V
+  have hn : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n := finrank_euclideanSpace_fin
+  have hVe : ∀ a, V (b a) = v a := by
+    intro a
+    have := b.toBasis.constr_basis ℝ v a
+    rw [OrthonormalBasis.coe_toBasis] at this
+    exact this
+  have hSinner : ∀ x y, inner ℝ x (S y) = inner ℝ (V x) (V y) := by
+    intro x y
+    simp [S, LinearMap.adjoint_inner_right]
+  -- the matrix of `S` is the Gram matrix, and `trace S = Σₐ |vₐ|²`
+  have hmat :
+      LinearMap.toMatrix b.toBasis b.toBasis S = Matrix.of fun i j => inner ℝ (v i) (v j) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+      OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, hSinner, hVe, hVe]
+    rfl
+  have hdet : LinearMap.det S = Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) := by
+    rw [← LinearMap.det_toMatrix b.toBasis, hmat]
+  have htr : LinearMap.trace ℝ _ S = ∑ a, ‖v a‖ ^ 2 := by
+    rw [LinearMap.trace_eq_sum_inner S b]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [hSinner, hVe, real_inner_self_eq_norm_sq]
+  -- spectral theorem: `det S = Πᵢ λᵢ`, `trace S = Σᵢ λᵢ`, with `λᵢ = ⟪uᵢ, S uᵢ⟫ = |V uᵢ|² ≥ 0`
+  rw [← hdet, hS.det_eq_prod_eigenvalues hn, ← htr, hS.trace_eq_sum_eigenvalues hn]
+  have hnonneg : ∀ i, 0 ≤ hS.eigenvalues hn i := by
+    intro i
+    have h1 := hS.apply_eigenvectorBasis hn i
+    have hu : ‖hS.eigenvectorBasis hn i‖ = 1 := (hS.eigenvectorBasis hn).orthonormal.1 i
+    have h2 : inner ℝ (hS.eigenvectorBasis hn i) (S (hS.eigenvectorBasis hn i)) =
+        hS.eigenvalues hn i := by
+      rw [h1, inner_smul_right, real_inner_self_eq_norm_sq, hu]
+      simp
+    rw [← h2, hSinner]
+    exact real_inner_self_nonneg
+  -- `0 ≤ λᵢ ≤ e^{λᵢ − 1}`, multiplied over `i`
+  simp only [RCLike.ofReal_real_eq_id, id]
+  calc ∏ i, hS.eigenvalues hn i ≤ ∏ i, Real.exp (hS.eigenvalues hn i - 1) := by
+        refine Finset.prod_le_prod₀ (fun i _ => hnonneg i) (fun i _ => ?_)
+        have := Real.add_one_le_exp (hS.eigenvalues hn i - 1)
+        linarith
+    _ = Real.exp (∑ i, hS.eigenvalues hn i - n) := by
+        rw [← Real.exp_sum, Finset.sum_sub_distrib]
+        simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
