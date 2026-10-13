@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "CompactlySupportedContinuousMap|rieszMeasure|simon_theorem_4_14|IsLocallyBoundedCcFunctional|smr_rb_",
+        "simon_theorem_4_14|IsLocallyBoundedCcFunctional|^variable|^theorem|^def",
+        "NullMeasurable.aemeasurable|theorem integral_trim|MeasurableEmbedding.integral_map|measurable_extend|theorem map_apply|theorem ae_map_iff|isCompact_preimage_iff|continuous_extend_one|tsupport_extend_one_subset|extend_one ",
+        "smr_rb_transfer_functional|smr_rb_borel_riesz_sigma_compact|smr_rb_pushforward_subtype",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Proofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rb-independent-audit-0y8wzb7i/transfer_functional_challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rb-independent-audit-0y8wzb7i/borel_riesz_challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rb-independent-audit-0y8wzb7i/pushforward_challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rb-independent-audit-0y8wzb7i/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rb-independent-audit-0y8wzb7i/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-riesz-borel-a1/parent-child-handoff.json",
+        "/tmp/rb-split-Sjkh67/Scratch/Proofs.lean",
+        "/tmp/rb-independent-audit-0y8wzb7i/transfer_functional_challenge.lean",
+        "/tmp/rb-independent-audit-0y8wzb7i/borel_riesz_challenge.lean",
+        "/tmp/rb-independent-audit-0y8wzb7i/pushforward_challenge.lean",
+        "/tmp/rb-independent-audit-0y8wzb7i/Assembly.lean",
+        "/tmp/rb-independent-audit-0y8wzb7i/Instances.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected library files. The selected handoff matches the DAG contract. The split appropriately separates functional transfer, Borel Riesz representation, and push-forward; the three independent obligations have correctly empty sibling dependencies. All names are bare identifiers, unused across the 217-node DAG and other branch artifacts. Each one-line proposition passes lexical validation and independently elaborates in comparator scope without its implementation. Euclidean and subtype Borel instances, countable generation, the C_c module structure, and subtype sigma-compactness were checked. The project search found only README references, not an existing implementation. The pinned Riesz and completion declarations have the required hypotheses. Independently rerunning the supplied scratch proofs verified all three exact child types and the exact selected parent, using only propext, Classical.choice, and Quot.sound. A separate proof taking only the three child propositions as hypotheses also kernel-checked the parent implication."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "transfer_functional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the Lean proposition. Zero extension has continuous compact support inside U, preserves addition and scalar multiplication, and transfers the local bound. Restriction has compact support because tsupport f lies in the inclusion's range; extending it back recovers f. These steps prove both conclusions without circular reliance."
+    },
+    {
+      "key": "borel_riesz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. The pinned Riesz theorem applies to the stated local bound. Borel hulls establish equality on all sets and the trim identity; sigma-compactness supplies open sigma-finiteness, enabling the Borel modification. Countable generation is required only for the Euclidean target. Normalization and integral_trim prove the exact conclusion, including N = 0, without assuming the child or parent theorem."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree with all hypotheses explicit. The measurable inclusion supports zero extension and push-forward, preserving the asserted null-set and norm properties. Compact preimages establish the required finiteness. The inner-product integrand is measurable, bounded on its finite-measure compact support, and zero elsewhere, proving integrability before the integral identity. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}
