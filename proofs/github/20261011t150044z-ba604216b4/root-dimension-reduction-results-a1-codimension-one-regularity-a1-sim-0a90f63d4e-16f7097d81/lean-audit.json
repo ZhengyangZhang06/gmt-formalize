@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "455c908bb122ad4d4b25cfa5117a209706f23d4d1e9b7befc1ae4bec5a30bf36",
+  "git_delta": {
+    "base_commit": "9559b857bbb6d5eb7aba70d2c8058598b5de4d7c",
+    "candidate_commit": "08a309d7464044bcbd00c337286c706d6b641827",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fcp_immersion_image_open_in_subspace",
+    "diff_sha256": "7b5556a62afcfe227a90b88945979e91ec8bd2366ac3ac639f763aad51a03729",
+    "source_sha256": "aa2c5ddb5c3532a0333eefa1a38edbe4d0c7d116e2168b66a4ac4198cfa8c0b1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fcp_immersion_image_open_in_subspace",
+      "statement": "∀ (P m : ℕ) (H : Submodule ℝ (Euclid P)) (B : Set (Euclid m)) (ψ : Euclid m → Euclid P), Module.finrank ℝ H = m → IsOpen B → ContDiffOn ℝ 1 ψ B → (∀ v ∈ B, Injective (fderiv ℝ ψ v)) → ψ '' B ⊆ (H : Set (Euclid P)) → ∃ O : Set (Euclid P), IsOpen O ∧ O ∩ (H : Set (Euclid P)) = ψ '' B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
