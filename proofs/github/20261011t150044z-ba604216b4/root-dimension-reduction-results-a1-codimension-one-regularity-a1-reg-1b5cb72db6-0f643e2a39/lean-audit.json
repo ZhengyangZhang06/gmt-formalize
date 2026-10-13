@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "82422c228efe7f22d75138157725d9815c47c6fcdc9d42020b9ced971873e5ab",
+  "git_delta": {
+    "base_commit": "5e44197f49620bd95f7fed103c973e850d04c18a",
+    "candidate_commit": "0316f4f5bdf4f20f3e09b76da8ded54dd872fb52",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_ftd_cone_density",
+    "diff_sha256": "0ba58d04d3eb41e354f2bb703fcd35a91b1f0115907418325bba21d627c6b0a3",
+    "source_sha256": "e494568101c4ce2a74757a0270f08acd44baa21c3f2fa5512f65e44a882fbbae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_ftd_cone_density",
+      "statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (y v : Euclid (m + 1)), 1 ≤ m → ‖v‖ = 1 → (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → ∀ α : ℝ, 0 < α → Tendsto (fun r : ℝ => μ ({z | α * ‖z - y‖ ≤ |inner ℝ (z - y) v|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
