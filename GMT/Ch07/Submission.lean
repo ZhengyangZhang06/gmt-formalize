@@ -572,6 +572,18 @@ supported `f`, then `μ(B̄_r(y))/(ωₘrᵐ) → 1` and `μ(B_r(y))/(ωₘrᵐ)
 theorem Submission.codim1_rdo_dg_ftd_ball_density : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (y v : Euclid (m + 1)), 1 ≤ m → ‖v‖ = 1 → (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ (ball y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) := by
   intro m μ y v _hm hv hr₀ hlim
   -- Step 0(a): `P = v^⊥` is an `m`-dimensional subspace of `ℝ^{m+1}`
+
+/-- **The double cone around the normal has density zero** (Simon Ch. 3, Remark 1.5(3), second
+assertion): if `‖v‖ = 1`, `P = v^⊥`, `μ(B̄_{r₀}(y)) < ∞` and `r⁻ᵐ ∫ f(r⁻¹(z − y)) dμ(z) → ∫_P f dHᵐ`
+as `r ↓ 0` for every continuous compactly supported `f`, then for every `α > 0`
+`μ({z : α‖z − y‖ ≤ |⟨z − y, v⟩|} ∩ B̄_r(y)) / rᵐ → 0` (`m ≥ 1`).  With
+`K = {w : α‖w‖ ≤ |⟨w, v⟩|} ∩ B̄₁(0)`, the test function `g = (1 − dist(·, K)/θ)⁺` is `1` on `K` and
+vanishes at points of `P` outside `B_{θ(1+1/α)}(0)`, so `∫_P g dHᵐ ≤ ωₘ(θ(1 + 1/α))ᵐ`; the Markov
+bound then gives `μ(cone ∩ B̄_r(y)) ≤ (ωₘ(θ(1 + 1/α))ᵐ + θ) rᵐ` for small `r`, and `θ ↓ 0`. -/
+theorem Submission.codim1_rdo_dg_ftd_cone_density : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (y v : Euclid (m + 1)), 1 ≤ m → ‖v‖ = 1 → (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → ∀ α : ℝ, 0 < α → Tendsto (fun r : ℝ => μ ({z | α * ‖z - y‖ ≤ |inner ℝ (z - y) v|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0) := by
+  intro m μ y v hm hv hfin hconv α hα
+  -- Step 0: `P = v^⊥` is a closed `m`-dimensional subspace, and `(Hᵐ⌞P)(B_s(0)) = ωₘ sᵐ`
+  set P : Submodule ℝ (Euclid (m + 1)) := (Submodule.span ℝ {v})ᗮ
   have hv0 : v ≠ 0 := by
     rintro rfl
     rw [norm_zero] at hv
@@ -756,6 +768,136 @@ theorem Submission.codim1_rdo_dg_ftd_ball_density : ∀ (m : ℕ) (μ : Measure 
         _ < b := hCb
   exact ⟨hsqueeze (closedBall y) (fun _ => ball_subset_closedBall) (fun _ => subset_rfl),
     hsqueeze (ball y) (fun _ => subset_rfl) (fun _ => ball_subset_closedBall)⟩
+  have hPdim : Module.finrank ℝ P = m := Submodule.finrank_orthogonal_span_singleton hv0
+  have hPmeas : MeasurableSet (P : Set (Euclid (m + 1))) :=
+    P.closed_of_finiteDimensional.measurableSet
+  have hωfin : unitBallVolume m ≠ ∞ := measure_ball_lt_top.ne
+  set ω : ℝ := (unitBallVolume m).toReal
+  have hω0 : 0 ≤ ω := ENNReal.toReal_nonneg
+  have hωeq : unitBallVolume m = ENNReal.ofReal ω := (ENNReal.ofReal_toReal hωfin).symm
+  have hball : ∀ s : ℝ, 0 < s →
+      μHE[m].restrict (P : Set (Euclid (m + 1))) (ball 0 s) = ENNReal.ofReal (ω * s ^ m) := by
+    intro s hs
+    rw [Measure.restrict_apply measurableSet_ball, inter_comm,
+      Submission.codim1_rdo_dg_ftd_plane_ball_measure (m + 1) m P hPdim s hs, hωeq,
+      ← ENNReal.ofReal_mul hω0]
+  -- Step 8: it suffices to bound the ratio eventually by each `ε ∈ (0, ∞)`
+  rw [ENNReal.tendsto_nhds_zero]
+  intro ε hε
+  by_cases hεtop : ε = ∞
+  · exact Eventually.of_forall fun r => hεtop ▸ le_top
+  have ht : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hεtop
+  -- since `m ≥ 1`, `ωₘ(θ(1 + α⁻¹))ᵐ + θ → 0` as `θ → 0`; pick `θ > 0` with this `< ε`
+  have hφ : Tendsto (fun θ : ℝ => ω * (θ * (1 + α⁻¹)) ^ m + θ) (𝓝[>] 0) (𝓝 0) := by
+    have hc : Continuous fun θ : ℝ => ω * (θ * (1 + α⁻¹)) ^ m + θ := by fun_prop
+    have h0 := hc.tendsto 0
+    rw [zero_mul, zero_pow (by omega), mul_zero, add_zero] at h0
+    exact h0.mono_left nhdsWithin_le_nhds
+  obtain ⟨θ, hθt, hθmem⟩ := ((hφ.eventually (gt_mem_nhds ht)).and self_mem_nhdsWithin).exists
+  have hθ : 0 < θ := hθmem
+  set ρ : ℝ := θ * (1 + α⁻¹) with hρ
+  have hρpos : 0 < ρ := mul_pos hθ (add_pos one_pos (inv_pos.mpr hα))
+  -- Step 1: the cone `K` in the closed unit ball contains `0`
+  set K : Set (Euclid (m + 1)) := {w | α * ‖w‖ ≤ |inner ℝ w v|} ∩ closedBall 0 1
+  have hKne : K.Nonempty := ⟨0, by simp [K]⟩
+  -- Step 2: `g = (1 − dist(·, K)/θ)⁺` is continuous, `0 ≤ g ≤ 1`, `g = 1` on `K`, and `g(w) ≠ 0`
+  -- forces `dist(w, k) < θ` for some `k ∈ K`
+  set g : Euclid (m + 1) → ℝ := fun w => max 0 (1 - infDist w K / θ)
+  have hgc : Continuous g :=
+    continuous_const.max (continuous_const.sub ((continuous_infDist_pt K).div_const θ))
+  have hg0 : ∀ w, 0 ≤ g w := fun w => le_max_left _ _
+  have hg1 : ∀ w, g w ≤ 1 := fun w =>
+    max_le zero_le_one (by linarith [div_nonneg (infDist_nonneg (x := w) (s := K)) hθ.le])
+  have hgK : ∀ w ∈ K, 1 ≤ g w := fun w hw =>
+    le_max_of_le_right (by rw [infDist_zero_of_mem hw, zero_div, sub_zero])
+  have hgne : ∀ w, g w ≠ 0 → ∃ k ∈ K, dist w k < θ := by
+    intro w hw
+    rw [← infDist_lt_iff hKne]
+    by_contra hcon
+    have h1 : 1 ≤ infDist w K / θ := by
+      rw [le_div_iff₀ hθ, one_mul]
+      exact not_lt.mp hcon
+    exact hw (max_eq_left (by linarith))
+  -- Step 3: `g` vanishes outside `B̄_{1+θ}(0)`, so it has compact support
+  have hgcs : HasCompactSupport g := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (m + 1)) (1 + θ))
+      fun w hw => ?_
+    by_contra hne
+    obtain ⟨k, hk, hwk⟩ := hgne w hne
+    rw [dist_eq_norm] at hwk
+    have hk1 : ‖k‖ ≤ 1 := mem_closedBall_zero_iff.mp hk.2
+    apply hw
+    rw [mem_closedBall_zero_iff]
+    calc ‖w‖ = ‖(w - k) + k‖ := by rw [sub_add_cancel]
+      _ ≤ ‖w - k‖ + ‖k‖ := norm_add_le _ _
+      _ ≤ 1 + θ := by linarith
+  -- Step 4: on `P`, `g(w) ≠ 0` forces `‖w‖ < ρ = θ(1 + α⁻¹)` (Cauchy–Schwarz, `⟨w, v⟩ = 0`)
+  have hgP : ∀ w ∈ P, ρ ≤ ‖w‖ → g w = 0 := by
+    intro w hwP hwρ
+    by_contra hne
+    obtain ⟨k, hk, hwk⟩ := hgne w hne
+    rw [dist_eq_norm] at hwk
+    have hwv : inner ℝ w v = 0 := Submodule.mem_orthogonal_singleton_iff_inner_left.mp hwP
+    have hαk : α * ‖k‖ < θ :=
+      calc α * ‖k‖ ≤ |inner ℝ k v| := hk.1
+        _ = |inner ℝ (k - w) v| := by rw [inner_sub_left, hwv, sub_zero]
+        _ ≤ ‖k - w‖ * ‖v‖ := abs_real_inner_le_norm _ _
+        _ = ‖w - k‖ := by rw [hv, mul_one, norm_sub_rev]
+        _ < θ := hwk
+    have hkθ : ‖k‖ < θ * α⁻¹ := by
+      rw [← div_eq_mul_inv, lt_div_iff₀ hα]
+      linarith
+    have hwρ' : ‖w‖ < ρ :=
+      calc ‖w‖ = ‖(w - k) + k‖ := by rw [sub_add_cancel]
+        _ ≤ ‖w - k‖ + ‖k‖ := norm_add_le _ _
+        _ < θ + θ * α⁻¹ := add_lt_add hwk hkθ
+        _ = ρ := by rw [hρ]; ring
+    linarith
+  -- Step 5: `∫_P g dHᵐ ≤ ∫_P 1_{B_ρ(0)} dHᵐ = ωₘ ρᵐ`
+  have hIg : ∫ z in (P : Set (Euclid (m + 1))), g z ∂μHE[m] ≤ ω * ρ ^ m := by
+    have hint : Integrable ((ball (0 : Euclid (m + 1)) ρ).indicator (1 : Euclid (m + 1) → ℝ))
+        (μHE[m].restrict (P : Set (Euclid (m + 1)))) := by
+      rw [integrable_indicator_iff measurableSet_ball]
+      exact integrableOn_const (by rw [hball ρ hρpos]; exact ENNReal.ofReal_ne_top)
+    calc ∫ z in (P : Set (Euclid (m + 1))), g z ∂μHE[m]
+        ≤ ∫ z in (P : Set (Euclid (m + 1))),
+            (ball (0 : Euclid (m + 1)) ρ).indicator 1 z ∂μHE[m] := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun w => hg0 w) hint ?_
+          rw [EventuallyLE, ae_restrict_iff' hPmeas]
+          refine Eventually.of_forall fun w hwP => ?_
+          by_cases hwb : w ∈ ball (0 : Euclid (m + 1)) ρ
+          · rw [indicator_of_mem hwb, Pi.one_apply]
+            exact hg1 w
+          · rw [indicator_of_notMem hwb, hgP w hwP (by rwa [mem_ball_zero_iff, not_lt] at hwb)]
+      _ = ω * ρ ^ m := by
+          rw [integral_indicator_one measurableSet_ball, measureReal_def, hball ρ hρpos,
+            ENNReal.toReal_ofReal (mul_nonneg hω0 (pow_nonneg hρpos.le m))]
+  -- Step 6: the Markov bound for `g` and `K`, with `L' = ωₘ ρᵐ + θ`
+  have hev := Submission.codim1_rdo_dg_ftd_test_upper_bound (m + 1) m μ y g K
+    (∫ z in (P : Set (Euclid (m + 1))), g z ∂μHE[m]) (ω * ρ ^ m + θ) hfin hgc hgcs hg0 hgK
+    (hconv g hgc hgcs) (by linarith)
+  -- Steps 7–8: the cone in `B̄_r(y)` rescales into `K`, so the ratio is eventually `≤ ε`
+  filter_upwards [hev, self_mem_nhdsWithin] with r hr hrmem
+  have hr0 : 0 < r := hrmem
+  have hincl : {z | α * ‖z - y‖ ≤ |inner ℝ (z - y) v|} ∩ closedBall y r ⊆
+      {z | r⁻¹ • (z - y) ∈ K} := by
+    rintro z ⟨hz1, hz2⟩
+    refine ⟨?_, ?_⟩
+    · show α * ‖r⁻¹ • (z - y)‖ ≤ |inner ℝ (r⁻¹ • (z - y)) v|
+      rw [norm_smul, real_inner_smul_left, abs_mul, Real.norm_eq_abs, abs_inv, abs_of_pos hr0]
+      calc α * (r⁻¹ * ‖z - y‖) = r⁻¹ * (α * ‖z - y‖) := by ring
+        _ ≤ r⁻¹ * |inner ℝ (z - y) v| := mul_le_mul_of_nonneg_left hz1 (inv_nonneg.mpr hr0.le)
+    · rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr0,
+        inv_mul_le_iff₀ hr0, mul_one]
+      rwa [mem_closedBall, dist_eq_norm] at hz2
+  refine ENNReal.div_le_of_le_mul ?_
+  calc μ ({z | α * ‖z - y‖ ≤ |inner ℝ (z - y) v|} ∩ closedBall y r)
+      ≤ μ {z | r⁻¹ • (z - y) ∈ K} := measure_mono hincl
+    _ ≤ ENNReal.ofReal ((ω * ρ ^ m + θ) * r ^ m) := hr
+    _ ≤ ENNReal.ofReal (ε.toReal * r ^ m) :=
+        ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right hθt.le (pow_nonneg hr0.le m))
+    _ = ε * ENNReal.ofReal (r ^ m) := by
+        rw [ENNReal.ofReal_mul ht.le, ENNReal.ofReal_toReal hεtop]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
