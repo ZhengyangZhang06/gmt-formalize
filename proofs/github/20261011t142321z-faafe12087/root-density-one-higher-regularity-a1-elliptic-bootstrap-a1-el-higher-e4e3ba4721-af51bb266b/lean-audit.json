@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "71588fc89aeb5cb30c2b6bf1b1307e8e6c583e163bd0105f805789d9fd5840ee",
+  "git_delta": {
+    "base_commit": "c044cb3e1decc1bd3f3e37bf385fb0d23a24944f",
+    "candidate_commit": "953020951ee7b5c0416471d8756713c28fa3d650",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ehs_inner_right_holder",
+    "diff_sha256": "b258e459d1c2ab33ae5f57d360afd13edb05696ae62dea649e2d0fbeb7efa278",
+    "source_sha256": "613f12de7efb132808773e8988bd2983c11246aa452d9252a3df59dddda14cd5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ehs_inner_right_holder",
+      "statement": "∀ (n ℓ m : ℕ) (α : ℝ) (U : Set (Rn n)) (g : Rn n → Rn ℓ) (w : Rn ℓ), IsOpen U → IsLocallyHolderCkα m α g U → ContDiffOn ℝ m (fun x => inner ℝ (g x) w) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) x - iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) y‖ ≤ C * ‖x - y‖ ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
