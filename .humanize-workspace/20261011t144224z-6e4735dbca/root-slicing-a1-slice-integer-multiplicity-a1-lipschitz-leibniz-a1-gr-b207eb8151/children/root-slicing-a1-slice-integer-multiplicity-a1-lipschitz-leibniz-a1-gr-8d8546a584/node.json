@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1.smooth_dense-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1",
+  "depth": 5,
+  "title": "Density of C_c^∞ fields supported in Ω in L¹(Ω; ℝⁿ)",
+  "statement": "Let n ∈ ℕ, Ω ⊆ ℝⁿ open, and let c : ℝⁿ → ℝⁿ be Lebesgue integrable on Ω. Then for every δ > 0 there is a C^∞ field b : ℝⁿ → ℝⁿ with compact support and tsupport b ⊆ Ω such that ∫_Ω |c(w) − b(w)| dw < δ. Here C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (smooth, not analytic), and the integral is for Lebesgue measure on ℝⁿ = Eucl n.",
+  "lean_statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (c : Eucl n → Eucl n), IsOpen Ω → IntegrableOn c Ω (volume : Measure (Eucl n)) → ∀ δ : ℝ, 0 < δ → ∃ b : Eucl n → Eucl n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧ HasCompactSupport b ∧ tsupport b ⊆ Ω ∧ ∫ w in Ω, ‖c w - b w‖ < δ",
+  "lean_name": "slicing_im_ll_gws_smooth_dense",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-8d8546a584-a1"
+}
