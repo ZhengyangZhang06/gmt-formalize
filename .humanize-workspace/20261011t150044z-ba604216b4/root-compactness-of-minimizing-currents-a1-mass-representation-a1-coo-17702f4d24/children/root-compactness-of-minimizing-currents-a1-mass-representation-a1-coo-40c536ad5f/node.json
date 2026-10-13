@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_kronecker-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1",
+  "depth": 4,
+  "title": "Kronecker property dx^I(e_J) = δ_IJ for strictly increasing I, J",
+  "statement": "Let P, n ∈ ℕ, let I, J : Fin n → Fin P be strictly increasing, and let θ be an n-covector on ℝ^P (θ ∈ Covector (Euclid P) n) with θ(v) = det(Matrix.of fun k j => v j (I k)) for every v : Fin n → ℝ^P. Let e_i := EuclideanSpace.basisFun (Fin P) ℝ i be the standard basis vectors of ℝ^P. Then θ(fun j => e_{J j}) = 1 if I = J, and θ(fun j => e_{J j}) = 0 if I ≠ J.",
+  "lean_statement": "∀ (P n : ℕ) (I J : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → StrictMono J → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → θ (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = if I = J then 1 else 0",
+  "lean_name": "cmr_cc_det_covector_basis_kronecker",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-40c536ad5f-a1"
+}
