@@ -2699,6 +2699,43 @@ theorem Submission.fiw_im_mass_formula : ∀ (P n : ℕ) (U : Set (Eucl P)), IsO
     exact hmain (Kk k) (hKkc k) (hKkV k)
   exact le_antisymm hle hge
 
+/-- **Integer series of integer multiplicity currents (Simon Ch. 6, Lemma 3.13 for `M`-absolutely
+convergent series, as used for `R^(ℓ)`, `S^(ℓ)` in the proof of 7.2; contains Remark 3.2(1)).**
+If the `T_r` are integer multiplicity and `∑ |c_r| M_W(T_r) < ∞` for every `W ⊂⊂ U`, then
+`S(ω) = ∑ c_r T_r(ω)` (unconditionally) defines an integer multiplicity current with
+`M_W(S) ≤ ∑ |c_r| M_W(T_r)` for every `W`.  `Submission.fiw_ims_series_current` gives the current
+`S` and the mass bound.  Writing `T_r = τ(M_r, θ_r, ξ_r)`, the mass formula 3.2(3)
+(`Submission.fiw_im_mass_formula`) turns the hypothesis into `∑ |c_r| ∫_{M_r ∩ W} θ_r dHⁿ < ∞`, so
+`Submission.fiw_ims_combine`, with tangent locality `Submission.fiw_tangent_locality`, gives an
+integer rectifiable triple `(M', θ', ξ')` with `∑ c_r T_r(ω) = τ(M', θ', ξ')(ω)`.  By uniqueness of
+sums `S = τ(M', θ', ξ')`. -/
+theorem Submission.fiw_im_series : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : ℕ → GeometricCurrentOn U n) (c : ℕ → ℤ), (∀ r, IsIntegerMultiplicity (T r)) → (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) < ∞) → ∃ S : GeometricCurrentOn U n, (∀ ω, HasSum (fun r => (c r : ℝ) * T r ω) (S ω)) ∧ (∀ W, S.massOn W ≤ ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) ∧ IsIntegerMultiplicity S := by
+  intro P n U hU T c hIM hmass
+  -- Steps 1–4: `S(ω) = ∑ c_r T_r(ω)` is a current with `M_W(S) ≤ ∑ |c_r| M_W(T_r)`.
+  obtain ⟨S, hS, hSmass⟩ := Submission.fiw_ims_series_current P n U hU T c hmass
+  -- Step 5: representations `T_r = τ(M_r, θ_r, ξ_r)` with `θ_r` natural-valued on `M_r`.
+  have hIM' : ∀ r, ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+      IsRectifiableTriple U n M θ ξ ∧ (∀ x ∈ M, ∃ k : ℕ, θ x = k) ∧
+        ∀ ω : TestFormOn U n, T r ω = tauAction n M θ ξ ω := hIM
+  choose M θ ξ htri hnat hrep using hIM'
+  -- The mass formula `M_W(T_r) = ∫_{M_r ∩ W} θ_r dHⁿ` (open `W`) rewrites the summability
+  -- hypothesis in terms of the multiplicities.
+  have hint : ∀ W, CompactlyContainedOpen W U →
+      (∑' r, ((c r).natAbs : ℝ≥0∞) *
+        ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞ := by
+    intro W hW
+    have hEq : ∀ r, (T r).massOn W =
+        ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P)) := fun r =>
+      Submission.fiw_im_mass_formula P n U hU (T r) (M r) (θ r) (ξ r) (htri r) (hrep r) W hW.1
+    simpa only [hEq] using hmass W hW
+  -- Steps 6–9: the series of triples is represented by one integer rectifiable triple.
+  obtain ⟨M', θ', ξ', htri', hnat', hsum'⟩ :=
+    Submission.fiw_ims_combine P n U hU (Submission.fiw_tangent_locality P n U hU) M θ ξ c htri
+      hnat hint
+  -- `S = τ(M', θ', ξ')`: both are the sum of `c_r T_r(ω) = c_r τ(M_r, θ_r, ξ_r)(ω)`.
+  refine ⟨S, hS, hSmass, M', θ', ξ', htri', hnat', fun ω => (hS ω).unique ?_⟩
+  simpa only [hrep] using hsum' ω
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
