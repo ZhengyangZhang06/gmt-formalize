@@ -627,6 +627,33 @@ theorem Submission.dpfir_imrep_pairing_continuous_integrable : ∀ (P n : ℕ) (
       (R.aestronglyMeasurable_orient.prodMk hβ.aestronglyMeasurable))
   /- Step 6: dominated by an integrable function. -/
   exact hg.mono' hF hbound
+/-- **Area identity to Bochner integrals** (image representation of the diffeomorphism
+push-forward, used for Simon 7.1.2).  Let `J ≥ 0` and `∫⁻ g dν = ∫⁻ J(x) g(φ(x)) dμ(x)` for every
+`g : ℝᴾ → [0, ∞]`.  If `h` is `ν`-a.e. strongly measurable, `f` is `μ`-integrable and
+`J(x) h(φ(x)) = f(x)` for `μ`-a.e. `x`, then `h` is `ν`-integrable and `∫ h dν = ∫ f dμ`.
+Multiplication by `J(x) ≥ 0` commutes with `|·|`, `t⁺` and `t⁻`; apply the identity to `g = |h|`,
+`h⁺`, `h⁻` and use `∫ F = ∫⁻ F⁺ − ∫⁻ F⁻`. -/
+theorem Submission.dpfir_integral_eq_of_area_lintegral : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (φ : Euclid P → Euclid P) (J h f : Euclid P → ℝ), (∀ x, 0 ≤ J x) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y, g y ∂ν = ∫⁻ x, ENNReal.ofReal (J x) * g (φ x) ∂μ) → AEStronglyMeasurable h ν → Integrable f μ → (∀ᵐ x ∂μ, J x * h (φ x) = f x) → Integrable h ν ∧ ∫ y, h y ∂ν = ∫ x, f x ∂μ := by
+  intro P μ ν φ J h f hJ harea hh hf hfh
+  -- the identity for `g = |h|ₑ`, `ofReal h`, `ofReal (-h)`; the integrands agree `μ`-a.e.
+  have habs : ∫⁻ y, ‖h y‖ₑ ∂ν = ∫⁻ x, ‖f x‖ₑ ∂μ := by
+    refine (harea fun y => ‖h y‖ₑ).trans (lintegral_congr_ae ?_)
+    filter_upwards [hfh] with x hx
+    rw [← hx, enorm_mul, Real.enorm_eq_ofReal (hJ x)]
+  have hpos : ∫⁻ y, ENNReal.ofReal (h y) ∂ν = ∫⁻ x, ENNReal.ofReal (f x) ∂μ := by
+    refine (harea fun y => ENNReal.ofReal (h y)).trans (lintegral_congr_ae ?_)
+    filter_upwards [hfh] with x hx
+    rw [← hx, ENNReal.ofReal_mul (hJ x)]
+  have hneg : ∫⁻ y, ENNReal.ofReal (-h y) ∂ν = ∫⁻ x, ENNReal.ofReal (-f x) ∂μ := by
+    refine (harea fun y => ENNReal.ofReal (-h y)).trans (lintegral_congr_ae ?_)
+    filter_upwards [hfh] with x hx
+    rw [← hx, ← mul_neg, ENNReal.ofReal_mul (hJ x)]
+  -- `h` is `ν`-integrable, and `∫ F = (∫⁻ F⁺) - (∫⁻ F⁻)` on both sides
+  have hint : Integrable h ν :=
+    ⟨hh, hasFiniteIntegral_iff_enorm.2 (habs ▸ hasFiniteIntegral_iff_enorm.1 hf.hasFiniteIntegral)⟩
+  refine ⟨hint, ?_⟩
+  rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint,
+    integral_eq_lintegral_pos_part_sub_lintegral_neg_part hf, hpos, hneg]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
