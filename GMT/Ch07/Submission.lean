@@ -485,6 +485,81 @@ theorem Submission.codim1_rdo_dg_tma_hyperplane_param : ∀ (m : ℕ) (v : Eucli
     -- `ι_# Lᵐ = ι_# μHE[m] = μHE[m]⌞range ι`
     rw [← hrange, ← ι.isometry.map_euclideanHausdorffMeasure,
       EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+/-- **Simon Ch. 3, 4.3 (†)** (boundary-parallel directions): if `⟨u, v⟩ = 0` and `h` is `C¹` with
+compact support, then `∫_H Dh(w)(u) dw = 0` on the half-space `H = {w : ⟨w, v⟩ > 0}`.  `H` is
+invariant under `w ↦ w + t u`, so `Φ(t) = ∫_H h(w + t u) dw` is constant by translation
+invariance of Lebesgue measure; differentiating under the integral sign at `t = 0` gives
+`Φ'(0) = ∫_H Dh(w)(u) dw = 0`. -/
+theorem Submission.codim1_rdo_dg_tma_tangential_halfspace : ∀ (P : ℕ) (v u : Euclid P) (h : Euclid P → ℝ), inner ℝ u v = 0 → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid P | 0 < inner ℝ w v}, fderiv ℝ h w u = 0 := by
+  intro P v u h huv hh hhc
+  set H : Set (Euclid P) := {w | 0 < inner ℝ w v} with hHdef
+  -- Step 1: `H` is open, hence measurable, and invariant under translation along `u`
+  have hHmeas : MeasurableSet H :=
+    (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+  have hHinv : ∀ (t : ℝ) (w : Euclid P), w + t • u ∈ H ↔ w ∈ H := by
+    intro t w
+    simp [hHdef, inner_add_left, real_inner_smul_left, huv]
+  -- Step 2: `Φ(t) = ∫_H h(w + t u) dw` does not depend on `t`
+  have hconst : ∀ t : ℝ, ∫ w in H, h (w + t • u) = ∫ w in H, h w := by
+    intro t
+    rw [← integral_indicator hHmeas, ← integral_indicator hHmeas]
+    have hfun : (fun w => H.indicator (fun w => h (w + t • u)) w) =
+        fun w => H.indicator h (w + t • u) := by
+      funext w
+      by_cases hw : w ∈ H
+      · rw [indicator_of_mem hw, indicator_of_mem ((hHinv t w).2 hw)]
+      · rw [indicator_of_notMem hw, indicator_of_notMem (fun h' => hw ((hHinv t w).1 h'))]
+    rw [hfun, integral_add_right_eq_self (fun w => H.indicator h w) (t • u)]
+  -- Step 3: `|Dh(w + t u)(u)| ≤ M‖u‖ 1_{B̄_{R+‖u‖}(0)}(w)` for `|t| < 1`
+  obtain ⟨R, hR⟩ := hhc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  have hdc : Continuous (fderiv ℝ h) := hh.continuous_fderiv one_ne_zero
+  obtain ⟨M, hM⟩ := hdc.bounded_above_of_compact_support (hhc.fderiv ℝ)
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  set bound : Euclid P → ℝ :=
+    (closedBall (0 : Euclid P) (R + ‖u‖)).indicator (fun _ => M * ‖u‖) with hbound
+  have hhd : Differentiable ℝ h := hh.differentiable one_ne_zero
+  -- Step 4: differentiation under the integral sign at `t = 0`
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (μ := volume.restrict H) (F := fun (t : ℝ) w => h (w + t • u))
+    (F' := fun (t : ℝ) w => fderiv ℝ h (w + t • u) u) (x₀ := (0 : ℝ)) (bound := bound)
+    (ball_mem_nhds (0 : ℝ) one_pos)
+    (Eventually.of_forall fun t => (hh.continuous.comp (by fun_prop)).aestronglyMeasurable)
+    (by
+      simp only [zero_smul, add_zero]
+      exact (hh.continuous.integrable_of_hasCompactSupport hhc).integrableOn)
+    ((hdc.clm_apply continuous_const).comp (by fun_prop)).aestronglyMeasurable
+    (Eventually.of_forall fun w t ht => by
+      by_cases hwt : w + t • u ∈ tsupport h
+      · have h1 : ‖w + t • u‖ ≤ R := by simpa using hR hwt
+        have ht1 : |t| < 1 := by simpa using ht
+        have h2 : ‖w‖ ≤ R + ‖u‖ := by
+          calc ‖w‖ = ‖(w + t • u) - t • u‖ := by simp
+            _ ≤ ‖w + t • u‖ + ‖t • u‖ := norm_sub_le _ _
+            _ ≤ R + ‖u‖ := by
+                rw [norm_smul, Real.norm_eq_abs]
+                nlinarith [abs_nonneg t, norm_nonneg u]
+        rw [hbound, indicator_of_mem (by simpa using h2)]
+        exact (ContinuousLinearMap.le_opNorm _ _).trans
+          (mul_le_mul_of_nonneg_right (hM _) (norm_nonneg _))
+      · have : fderiv ℝ h (w + t • u) = 0 := by
+          by_contra hne
+          exact hwt (support_fderiv_subset ℝ hne)
+        rw [this, zero_apply, norm_zero]
+        exact indicator_nonneg (fun _ _ => mul_nonneg hM0 (norm_nonneg _)) _)
+    ((integrable_indicator_iff measurableSet_closedBall).2
+      (integrableOn_const (measure_closedBall_lt_top).ne)).integrableOn
+    (Eventually.of_forall fun w t _ => by
+      have h1 : HasDerivAt (fun t : ℝ => w + t • u) u t := by
+        simpa using ((hasDerivAt_id t).smul_const u).const_add w
+      exact ((hhd (w + t • u)).hasFDerivAt.comp_hasDerivAt t h1))
+  -- Step 5: `Φ` is constant, so `Φ'(0) = ∫_H Dh(w)(u) dw` vanishes
+  have h0 : HasDerivAt (fun t : ℝ => ∫ w in H, h (w + t • u)) 0 0 := by
+    have hfun : (fun t : ℝ => ∫ w in H, h (w + t • u)) = fun _ => ∫ w in H, h w :=
+      funext hconst
+    rw [hfun]
+    exact hasDerivAt_const _ _
+  have := key.2.unique h0
+  simpa using this
 /-- **Orthogonal Fubini: `(x, s) ↦ ι x + s v` preserves Lebesgue measure** (Simon Ch. 3, 4.3 (†),
 step 2 of the proof).  Let `ι : ℝᵐ → ℝᵐ⁺¹` be a linear isometry and `v` a unit vector orthogonal
 to its range.  The vectors `b_j = ι(e_j)` (`j < m`) and `b_m = v` are orthonormal, so they form an
@@ -702,6 +777,105 @@ theorem Submission.codim1_rdo_dg_tma_normal_halfspace : ∀ (m : ℕ) (ι : Eucl
   split_ifs
   · rw [hderiv]
   · rfl
+
+/-- **Gauss–Green for a half-space** (used in the proof of Simon Ch. 3, Theorem 4.3).  For
+`|v| = 1` and `g ∈ C¹_c(ℝ^{m+1}; ℝ^{m+1})`,
+`∫_{⟨w, v⟩ > 0} div g dL^{m+1} = −∫_{v^⊥} ⟨g, v⟩ dHᵐ`.  With `ι : ℝᵐ → v^⊥` from
+`codim1_rdo_dg_tma_hyperplane_param`, `(ι e₀, …, ι e_{m−1}, v)` is an orthonormal basis `b`, so
+`div g = Σⱼ D⟨bⱼ, g⟩(bⱼ)`.  The `m` tangential terms integrate to `0` over the half-space
+(`codim1_rdo_dg_tma_tangential_halfspace`), the normal term is `−∫ ⟨v, g(ι x)⟩ dx`
+(`codim1_rdo_dg_tma_normal_halfspace`), and `Hᵐ⌞v^⊥ = ι_# Lᵐ` turns it into the boundary
+integral. -/
+theorem Submission.codim1_rdo_dg_tma_halfspace_gauss_green : ∀ (m : ℕ) (v : Euclid (m + 1)) (g : Euclid (m + 1) → Euclid (m + 1)), ‖v‖ = 1 → ContDiff ℝ 1 g → HasCompactSupport g → ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), inner ℝ (g z) v ∂μHE[m] := by
+  intro m v g hv hg hgc
+  have hv0 : v ≠ 0 := by
+    rintro rfl
+    simp at hv
+  obtain ⟨ι, hιv, hmap⟩ := Submission.codim1_rdo_dg_tma_hyperplane_param m v hv0
+  -- the adapted orthonormal basis `(ι e₀, …, ι e_{m-1}, v)`
+  let b : Fin (m + 1) → Euclid (m + 1) :=
+    Fin.lastCases v (fun i => ι (EuclideanSpace.single i (1 : ℝ)))
+  have hb_last : b (Fin.last m) = v := by simp [b]
+  have hb_cs : ∀ i : Fin m, b (Fin.castSucc i) = ι (EuclideanSpace.single i (1 : ℝ)) := by
+    intro i
+    simp [b]
+  have hb : Orthonormal ℝ b := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    induction i using Fin.lastCases with
+    | last =>
+      induction j using Fin.lastCases with
+      | last => simp [hb_last, hv]
+      | cast j =>
+        rw [hb_last, hb_cs, real_inner_comm, hιv, ite_eq_right (Fin.castSucc_lt_last j).ne']
+    | cast i =>
+      induction j using Fin.lastCases with
+      | last => rw [hb_last, hb_cs, hιv, ite_eq_right (Fin.castSucc_lt_last i).ne]
+      | cast j =>
+        rw [hb_cs, hb_cs, LinearIsometry.inner_map_map, EuclideanSpace.inner_single_left]
+        by_cases hij : i = j
+        · subst hij
+          simp
+        · simp [hij, Fin.castSucc_inj]
+  have hcard : Fintype.card (Fin (m + 1)) = Module.finrank ℝ (Euclid (m + 1)) := by simp
+  have hsp : ⊤ ≤ Submodule.span ℝ (Set.range b) := by
+    rw [← coe_basisOfOrthonormalOfCardEqFinrank hb hcard,
+      (basisOfOrthonormalOfCardEqFinrank hb hcard).span_eq]
+  let B : OrthonormalBasis (Fin (m + 1)) ℝ (Euclid (m + 1)) := OrthonormalBasis.mk hb hsp
+  have hB : ∀ i, B i = b i := by
+    intro i
+    simp [B]
+  -- scalar components
+  set h : Fin (m + 1) → Euclid (m + 1) → ℝ := fun i w => inner ℝ (b i) (g w) with hhdef
+  have hh_cd : ∀ i, ContDiff ℝ 1 (h i) := fun i => contDiff_const.inner ℝ hg
+  have hh_cs : ∀ i, HasCompactSupport (h i) := by
+    intro i
+    exact hgc.mono' (fun w hw => by
+      by_contra hgw
+      exact hw (by simp [hhdef, image_eq_zero_of_notMem_tsupport hgw]))
+  have hfd : ∀ i w, fderiv ℝ (h i) w (b i) =
+      inner ℝ (b i) ((fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) (b i)) := by
+    intro i w
+    have hgd : DifferentiableAt ℝ g w := (hg.differentiable one_ne_zero) w
+    rw [hhdef]
+    simp only
+    rw [fderiv_inner_apply ℝ (differentiableAt_const (b i)) hgd]
+    simp
+  have htr : ∀ w, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = ∑ i, fderiv ℝ (h i) w (b i) := by
+    intro w
+    rw [LinearMap.trace_eq_sum_inner _ B]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hfd, hB]
+  have hint : ∀ i, Integrable (fun w => fderiv ℝ (h i) w (b i))
+      (volume.restrict {w : Euclid (m + 1) | 0 < inner ℝ w v}) := by
+    intro i
+    have hc : Continuous (fun w => fderiv ℝ (h i) w (b i)) :=
+      ((hh_cd i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+    have hcs : HasCompactSupport (fun w => fderiv ℝ (h i) w (b i)) :=
+      ((hh_cs i).fderiv ℝ).mono' (fun w hw => by
+        by_contra hne
+        exact hw (by simp [image_eq_zero_of_notMem_tsupport hne]))
+    exact (hc.integrable_of_hasCompactSupport hcs).integrableOn
+  simp_rw [htr]
+  rw [integral_finsetSum _ (fun i _ => hint i), Fin.sum_univ_castSucc]
+  -- the `m` tangential terms vanish
+  have htan : ∀ i : Fin m, ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v},
+      fderiv ℝ (h (Fin.castSucc i)) w (b (Fin.castSucc i)) = 0 := by
+    intro i
+    exact Submission.codim1_rdo_dg_tma_tangential_halfspace (m + 1) v (b (Fin.castSucc i))
+      (h (Fin.castSucc i)) (by rw [hb_cs]; exact hιv _) (hh_cd _) (hh_cs _)
+  simp_rw [htan, Finset.sum_const_zero, zero_add]
+  -- the normal term, and `Hᵐ⌞v^⊥ = ι_# Lᵐ`
+  rw [hb_last]
+  have hnorm := Submission.codim1_rdo_dg_tma_normal_halfspace m ι v (h (Fin.last m)) hv hιv
+    (hh_cd _) (hh_cs _)
+  rw [hnorm, hmap]
+  congr 1
+  have hcont : Continuous (fun z => inner ℝ (g z) v) := hg.continuous.inner continuous_const
+  rw [integral_map ι.continuous.aemeasurable hcont.aestronglyMeasurable]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp [hhdef, hb_last, real_inner_comm]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
