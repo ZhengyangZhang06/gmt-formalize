@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof, i.e. Simon Ch. 6, proof of 7.2, (1)–(3) (chapter-06.txt lines 2047–2091). It rests on the scaled Deformation Theorem 5.3 (lines 1461–1480, proved by Lemma 5.4 and lines 1651–1935). Two conclusions are added to the parent's step 4. First, ∂Q is integer multiplicity with M(∂Q) ≤ cM(∂A); this comes from the bound M(∂P) ≤ CM(∂T) of 5.1/5.3, is what Simon's proof of 6.2 uses, and is needed by the sibling boundary_im. Second, spt R stays in the fixed compact set cthickening(1, K). Two parts of the parent's step 4 are dropped because nothing downstream uses them: the support of S, and integer multiplicity of the net elements (Q cancels in step 5 of the parent). As in the parent, S is just a current.
+
+Cited result (D): Simon 5.1/5.3, used for n = m + 1 ≥ 1 and ℓ := P − n ≥ 1, the range n, ℓ ∈ {1, 2, …} of Simon §5. There is C = C(n, ℓ) ≥ 1 such that for every T ∈ 𝒟_n(ℝ^P) with M(T) + M(∂T) < ∞ and every σ > 0 we have T − P_σ = ∂R + S, where:
+ • P_σ = Σ_{F ∈ 𝓛_n(σ)} β_F[[F]];
+ • M(P_σ) ≤ CM(T), M(∂P_σ) ≤ CM(∂T), M(R) ≤ CσM(T) and M(S) ≤ CσM(∂T);
+ • spt P_σ ∪ spt R ⊆ {x : dist(x, spt T) < 2√P σ} and spt ∂P_σ ∪ spt S ⊆ {x : dist(x, spt ∂T) < 2√P σ};
+ • if T is integer multiplicity, P_σ and R can be chosen integer multiplicity, with all β_F ∈ ℤ.
+Here 𝓛_n(σ) is the set of closed n-faces of the cubical decomposition ⋃_{z∈ℤ^P} σ(z + [0,1]^P). [[F]] ∈ 𝒟_n(ℝ^P) is integration over F with the coordinate orientation e_F of F (Simon 2.2), [[F]](ω) = ∫_F ⟨ω, e_F⟩ dHⁿ, and Hⁿ(F) = σⁿ.
+Siblings used: (IC) cmc_imRep_locality_restrict_sub (c): differences, hence finite integer combinations, of integer multiplicity currents are integer multiplicity. (MM) dtc_mass_eq_measure.
+
+1. (Constant.) Let c := C, the constant of (D) for n and ℓ = P − n ≥ 1. Fix K compact, Λ ≥ 0 and ε ∈ (0, ∞].
+2. (Scale.) Choose σ > 0 with 2√P σ ≤ 1 and 2CσΛ ≤ ε. If ε = ∞, only the first condition is needed.
+3. (Candidate set.) K₁ := cthickening(1, K) is compact. Let ℱ := {F ∈ 𝓛_n(σ) : F ⊆ K₁}. ℱ is finite, because K₁ is bounded and only finitely many cubes σ(z + [0,1]^P) meet a bounded set. Let N := ⌊CΛσ^{−n}⌋ and 𝒬 := {Σ_{F∈ℱ} b_F[[F]] : b ∈ ℤ^ℱ, |b_F| ≤ N for every F}. This is a finite set with at most (2N + 1)^{#ℱ} elements, and it depends only on K, Λ, ε, n and P.
+4. (Deformation.) Let A be integer multiplicity with spt A ⊆ K, M(A) ≤ Λ and M(∂A) ≤ Λ. Then M(A) + M(∂A) < ∞. So (D), with T := A and the σ of step 2, gives an integer multiplicity P := P_σ = Σ β_F[[F]] (β_F ∈ ℤ), an integer multiplicity R and a current S with A − P = ∂R + S, i.e. A − P − S = ∂R.
+5. (Small error.) M(R) + M(S) ≤ CσM(A) + CσM(∂A) ≤ 2CσΛ ≤ ε.
+6. (Support of R.) spt R ⊆ {x : dist(x, spt A) < 2√Pσ} ⊆ {x : dist(x, K) < 1} ⊆ K₁, because spt A ⊆ K and 2√Pσ ≤ 1. If spt A = ∅, the middle set is empty.
+7. (P ∈ 𝒬.)
+ (a) Two distinct faces of 𝓛_n(σ) meet in a set of dimension < n, hence of Hⁿ-measure 0, and the relative interior of a face meets no other n-face. So P = τ(⋃_{β_F≠0} relint F, |β_F|, sign(β_F)e_F). By (MM), M(P) = Σ_F |β_F|Hⁿ(F) = Σ_F |β_F|σⁿ; this is the identity M(P) = Σ|β_F|ρⁿ of Simon's (3). As M(P) ≤ CM(A) ≤ CΛ < ∞, only finitely many β_F are nonzero, and each satisfies |β_F| ≤ CΛσ^{−n}, i.e. |β_F| ≤ N.
+ (b) Let β_F ≠ 0 and x ∈ relint F. Take ω := φ·e^F, where φ ≥ 0 is a bump function at x supported away from the other faces with nonzero coefficient and e^F is the coordinate covector dual to e_F. Then P(ω) = β_F∫_F φ dHⁿ ≠ 0, so x ∈ spt P. Hence relint F ⊆ spt P, and F ⊆ spt P because spt P is closed. By (D), spt P ⊆ {dist(·, spt A) < 2√Pσ} ⊆ K₁, so F ∈ ℱ.
+ Thus Q := P = Σ_{F∈ℱ} β_F[[F]] ∈ 𝒬.
+8. (∂Q.) By Stokes' theorem on the cube F, ∂[[F]] = Σ_G ±[[G]] over the (n − 1)-faces G of F; for n = 1, ∂[[F]] = δ_b − δ_a when F is the segment from a to b. So ∂Q = Σ_{G∈𝓛_{n−1}(σ)} γ_G[[G]] with γ_G ∈ ℤ and only finitely many γ_G ≠ 0. Each [[G]] is integer multiplicity: it is τ(G, 1, e_G), where G lies in an (n − 1)-plane, so G is countably (n − 1)-rectifiable with that plane as approximate tangent space at every relative interior point, and e_G is a unit orientation of the plane. For n − 1 = 0, G is a point, H⁰ is counting measure and e_G = 1. By (IC)(c), with −B = (B − B) − B and A + B = A − (−B), every finite integer combination of integer multiplicity currents is integer multiplicity. Hence ∂Q is integer multiplicity. By (D), M(∂Q) = M(∂P_σ) ≤ CM(∂A) = c·M(∂A).
+9. (Conclusion.) We have Q ∈ 𝒬, R and ∂Q integer multiplicity, A − Q − S = ∂R, M(R) + M(S) ≤ ε, M(∂Q) ≤ c·M(∂A) and spt R ⊆ cthickening(1, K). ∎
+
+## Key steps
+
+1. c := C(n, ℓ) from the deformation theorem 5.3 (n = m + 1 ≥ 1, ℓ = P − n ≥ 1); choose σ with 2√Pσ ≤ 1 and 2CσΛ ≤ ε.
+2. 𝒬 := integer combinations Σ_{F∈ℱ} b_F[[F]] with |b_F| ≤ CΛσ^{−n}, over the finitely many σ-grid n-faces F ⊆ cthickening(1, K).
+3. For A, 5.3 gives A − P − S = ∂R with P and R integer multiplicity, M(R) + M(S) ≤ 2CσΛ ≤ ε and spt R ⊆ cthickening(1, K).
+4. M(P) = Σ|β_F|σⁿ ≤ CΛ, and every face with β_F ≠ 0 lies in spt P ⊆ cthickening(1, K); so P ∈ 𝒬.
+5. ∂P is an integer combination of (n − 1)-faces, hence integer multiplicity, and M(∂P) ≤ CM(∂A).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)`
+- `rg -l 'DeformationTheorem|FlatConvergenceIffWeakConvergence|BoundaryRectifiability|SlicingTheorem|flatDistance' local-references/123e8435b4a2469b/project -g '*.lean' (only GMT/Ch06/Contract.lean and Submission.lean: sorry-based statements in namespace GMT.Ch06, not importable from GMT.Ch07); rg 'deform|flatDistance|IsSlice|BoundaryRectifiability' local-references/123e8435b4a2469b/project/GMT/Ch07 (no match)`
+- `sed -n 95,362p local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean (formulations IsSlice, latticeFace, IsLatticeChain, DeformationTheorem, BoundaryRectifiability, FlatConvergenceIffWeakConvergence; used only as formulation reference)`
+- `grep declarations in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms,WedgeForms,AffineCurrentPushforward}.lean and Chapter03/Rectifiable.lean: GeometricCurrentOn, Zero instance, boundary_apply, massAdmissibleOn, massOn, mass, le_massOn, massOn_mono, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, zeroRegion/support, isOpen_zeroRegion, affinePushforward, countablyRectifiable_of_measure_zero (no deformation theorem, slicing, flat norm, completeness or boundary rectifiability)`
+- `python3 -I scans of the run dag.json (995 nodes): non-accepted related nodes cmc_flat_convergence, cmc_deformation_theorem, cmc_closure_and_boundary_rectifiability, cmcdt_im_series, cmc_fc_series_current, cmc_fc_localize, cmc_fc_total_bounded, dimred_mbl_flat_convergence, dimred_mbl_deformation_theorem, dor_lmb_flat_convergence_cycles and children; accepted helpers cmc_imRep_locality_restrict_sub, dtc_mass_eq_measure, cmc_fc_cs_diagonal_subseq, dtc_vanish_off_support, rsd_cmr_support_subset_of_vanish, cmcs_slice_mass_integral (also seen, not needed: cmc_fc_cauchy_subseq, cmcs_cutoff_defect_bound, lcmp_massOn_le_of_vanish_off_compact, cmc_fc_tb_massOn_sub_le); collision check of the six dtc_bc_lc_fd_ names (none)`
+- `git show <candidate commit>:GMT/Ch07/Submission.lean for the six reused declarations (2af75d6, bff81d3, b046f22, 44ef61f, 02c6122, 9dfa657); whitespace-normalised type comparison with my strings and the DAG (all identical); grep sorry/axiom (only the frozen root theorem, no axiom declarations)`
+- `rg in local-references/123e8435b4a2469b/mathlib: tendsto_of_subseq_tendsto (Order/Filter/AtTopBot/CountablyGenerated.lean:125), ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (Analysis/SpecificLimits/Basic.lean:273), IsCompact.cthickening (Topology/MetricSpace/Thickening.lean:283), tendsto_add_atTop_iff_nat (Order/Filter/AtTopBot/Basic.lean:337), Real.smoothTransition (Analysis/SpecialFunctions/SmoothTransition.lean)`
+- `lake env lean /tmp/fdsplit_check/Types.lean; /tmp/fdsplit_check/Challenges.lean (12 children in comparator challenge form); /tmp/fdsplit_check/Print.lean (pp.coercions); /tmp/fdsplit_check/AllChecks.lean (fd_assembly, fd_cauchy_from, fd_series_limit_from with #print axioms)`
+- `sed book/chapter-06.txt lines 875-1150 (3.11-3.16), 1335-1500 (4.6-5.4), 1925-2160 (6.1-7.2), 2296-2335 (8.2-8.3); book/chapter-03.txt lines 551-606 (4.1-4.3)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-21d9fb1dcd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-81bbc80940/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/fdsplit_check/stmts.json`
+- `/tmp/fdsplit_check/Types.lean`
+- `/tmp/fdsplit_check/Challenges.lean`
+- `/tmp/fdsplit_check/AllChecks.lean`
+
+The pinned snapshot has no deformation theorem, slicing, flat norm, completeness lemma or boundary rectifiability usable from GMT.Ch07. The snapshot's Ch06 contract only states them (sorry-based, namespace GMT.Ch06) and served as a formulation reference. SimonGMT provides currents, boundary, massOn/mass, support/zero region, weak convergence with lower semicontinuity of mass, affine push-forward and countablyRectifiable_of_measure_zero. Six accepted DAG declarations are reused with identical types and the six new names are unique. The flat-convergence, deformation and closure nodes of the cmc, dimred_mbl and dor_lmb branches are not accepted, so they are not reused. deformation, boundary_im and series are stated so that they follow from cmc_deformation_theorem, from the BR conjunct of cmc_closure_and_boundary_rectifiability and from cmcdt_im_series. All Mathlib names used in the Lean checks exist at the pin. The checks prove this node's frozen type from the children, and cauchy_subseq and series_limit from their declared siblings, using only propext, Classical.choice and Quot.sound.

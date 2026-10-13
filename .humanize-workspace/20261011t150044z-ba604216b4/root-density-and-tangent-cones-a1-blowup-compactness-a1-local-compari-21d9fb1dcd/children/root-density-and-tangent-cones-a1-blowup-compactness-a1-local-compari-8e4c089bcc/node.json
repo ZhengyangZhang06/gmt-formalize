@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1",
+  "depth": 5,
+  "title": "Boundary rectifiability for a compactly supported integer multiplicity (m+2)-current of finite mass in ℝ^P (Simon 6.3 via 6.2 and 8.2; Simon 3.14 in codimension zero)",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P, and let R ∈ 𝒟_{m+2}(ℝ^P) be an integer multiplicity current with compact support, M(R) < ∞ and M(∂R) < ∞ (M = mass = M_{ℝ^P}). Then ∂R ∈ 𝒟_{m+1}(ℝ^P) is integer multiplicity.",
+  "lean_statement": "∀ (P m : ℕ) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)), m + 1 < P → IsIntegerMultiplicity R → IsCompact R.support → R.mass < ∞ → R.boundary.mass < ∞ → IsIntegerMultiplicity R.boundary",
+  "lean_name": "dtc_bc_lc_fd_boundary_im",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc-a1"
+}

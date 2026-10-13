@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1",
+  "depth": 5,
+  "title": "Finite nets from the scaled deformation theorem (Simon 5.1–5.4 and the proof of 7.2, (1)–(3))",
+  "statement": "Let P, m ∈ ℕ with n := m + 1 < P. Then there is c ∈ [0, ∞) (NNReal) with the following property. For every compact K ⊆ ℝ^P, every Λ ∈ [0, ∞) and every ε ∈ (0, ∞] there is a finite set 𝒬 ⊆ 𝒟_n(ℝ^P) such that every integer multiplicity A ∈ 𝒟_n(ℝ^P) with spt A ⊆ K, M(A) ≤ Λ and M(∂A) ≤ Λ admits Q ∈ 𝒬, R ∈ 𝒟_{n+1}(ℝ^P) and S ∈ 𝒟_n(ℝ^P) with: R and ∂Q are integer multiplicity; A − Q − S = ∂R (Simon: A − Q = ∂R + S); M(R) + M(S) ≤ ε; M(∂Q) ≤ c·M(∂A); and spt R ⊆ cthickening(1, K) = {x : dist(x, K) ≤ 1}. Masses are in [0, ∞], M = mass = M_{ℝ^P} with the Euclidean coefficient norm, and spt = GeometricCurrentOn.support.",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∃ c : NNReal, ∀ (K : Set (Euclid P)) (Λ : NNReal) (ε : ℝ≥0∞), IsCompact K → 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity A → A.support ⊆ K → A.mass ≤ Λ → A.boundary.mass ≤ Λ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity Q.boundary ∧ A - Q - S = R.boundary ∧ R.mass + S.mass ≤ ε ∧ Q.boundary.mass ≤ c * A.boundary.mass ∧ R.support ⊆ cthickening 1 K",
+  "lean_name": "dtc_bc_lc_fd_deformation",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d-a1"
+}

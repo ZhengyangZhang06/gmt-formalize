@@ -1,0 +1,124 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "DeformationTheorem|FlatConvergenceIffWeakConvergence|BoundaryRectifiability|SlicingTheorem|flatDistance",
+        "deform|flatDistance|BoundaryRectifiability|SlicingTheorem|im_series",
+        "lean_name",
+        "lean_statement",
+        "depends_on",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show bff81d31ecb43002d1bfc77f510d3463c6be155f:GMT/Ch07/Submission.lean",
+        "git show b046f226689afca88f2ceb966c9010ac5e581de0:GMT/Ch07/Submission.lean",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "git show 9dfa6578ac37c7b726ddad9a7e894ee3466d0cc4:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fd_independent_audit_ouqv9773/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fd_independent_audit_ouqv9773/AllChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-21d9fb1dcd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-21d9fb1dcd/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/fd_independent_audit_ouqv9773/Challenges.lean",
+        "/tmp/fd_independent_audit_ouqv9773/AllChecks.lean",
+        "/tmp/fd_independent_audit_ouqv9773/Reuse_im_calculus.lean",
+        "/tmp/fd_independent_audit_ouqv9773/Reuse_mass_eq_measure.lean",
+        "/tmp/fd_independent_audit_ouqv9773/Reuse_diagonal.lean",
+        "/tmp/fd_independent_audit_ouqv9773/Reuse_vanish_off_support.lean",
+        "/tmp/fd_independent_audit_ouqv9773/Reuse_support_of_vanishing.lean",
+        "/tmp/fd_independent_audit_ouqv9773/Reuse_slice_mass_integral.lean"
+      ],
+      "conclusion": "Splitting is appropriate. The dependencies are acyclic and correctly directed, and the children imply this selected node's unchanged frozen type. The pinned Ch06 contract contains specifications backed by a sorry-based root theorem; the searches found no corresponding proved deformation, slicing, flat-distance or boundary-rectifiability result in Ch07 or SimonGMT Chapter06. All twelve propositions independently elaborated against the frozen contract without child implementations. The supplied parent assembly and the cauchy_subseq and series_limit implications recompiled with only propext, Classical.choice and Quot.sound. All six reused declarations have identical accepted types; their source commits preserve the original contract, and independent recompilation and axiom checks likewise returned only those standard axioms. All names are bare identifiers; the six new names are unreserved. The ENNReal arithmetic, NNReal coercions and real-radius cthickening have the intended types; no matrix-unit construction occurs. The mathematical citations and their dimensional ranges were checked against the local book and [Simon's text](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including bounded W without openness or a dimension restriction. Measurable Dini bounds, Fatou extraction, representation restriction and the explicit cutoff calculation establish every conclusion, including the uniform boundary-mass bound."
+    },
+    {
+      "key": "deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose. Simon 5.3 applies in the stated positive dimension and codimension; integer coefficient bounds yield a finite net, and cubical Stokes establishes integer multiplicity of its boundaries independently of boundary_im."
+    },
+    {
+      "key": "cauchy_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite pigeonholing and the declared diagonal lemma give the required increasing subsequence. Subtraction preserves integer multiplicity and support, with exactly the stated geometric mass bound. The implication from the declared dependencies also passed Lean verification."
+    },
+    {
+      "key": "series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all four conclusions. Absolute evaluation bounds construct a continuous current and give its mass and support bounds; the supplied L1 argument for integer multiplicities and orientations establishes the final implication using Simon 3.13."
+    },
+    {
+      "key": "boundary_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Positive codimension is handled by deformation and Simon 8.2 for cycles, whose proof is independent of this parent theorem. The separate Simon 3.14 argument covers P = m + 2, including the required top-dimensional case."
+    },
+    {
+      "key": "series_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact global decomposition from agreement and convergence only on V. Telescoping supplies finite boundary mass, boundary_im supplies integrality, and the tail estimate is exactly 2·2^(-q). The implication from its declared dependencies passed Lean verification."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration with a successful independent axiom check. The supplied proof establishes tangent locality, restriction, subtraction and the orientation bound under precisely the stated hypotheses."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration with a successful independent axiom check. The orientation estimate, compact-set approximation and exhaustion prove equality for the specified Euclidean coefficient norm and open regions."
+    },
+    {
+      "key": "diagonal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration with a successful independent axiom check. The nested infinite sets and recursive increasing choice place both consecutive indices in the required clique, with correct indexing."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration with a successful independent axiom check. Compactness and a subordinate smooth partition of unity prove vanishing for arbitrary U, exactly as stated."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration with a successful independent axiom check. The neighborhood argument excludes U minus K from the support, and support = K minus zeroRegion proves compactness."
+    },
+    {
+      "key": "slice_mass_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration with a successful independent axiom check. The monotone distribution function controls the strip liminf almost everywhere; integration proves the bound even for arbitrary m, with zero, infinite and empty-interval cases covered."
+    }
+  ],
+  "required_changes": []
+}

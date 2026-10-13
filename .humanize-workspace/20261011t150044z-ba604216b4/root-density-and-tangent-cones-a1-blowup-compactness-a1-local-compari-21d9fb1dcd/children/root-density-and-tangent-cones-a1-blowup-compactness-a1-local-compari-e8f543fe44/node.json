@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1",
+  "depth": 5,
+  "title": "Localisation at a good radius: integer multiplicity truncations with uniformly bounded mass and boundary mass (Simon 7.2 proof; computation 4.9–4.11)",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let T_j ∈ 𝒟_n(ℝ^P) (j ∈ ℕ; GeometricCurrentOn univ n) be integer multiplicity currents (IsIntegerMultiplicity) such that sup_j (M_V(T_j) + M_V(∂T_j)) < ∞ for every bounded open V ⊆ ℝ^P, and let W ⊆ ℝ^P be bounded. Then there are a compact K ⊆ ℝ^P, a strictly increasing φ : ℕ → ℕ, Λ ∈ [0, ∞) (NNReal) and integer multiplicity currents T'_j ∈ 𝒟_n(ℝ^P) (j ∈ ℕ) such that for every j: spt T'_j ⊆ K, M(T'_j) ≤ Λ, M(∂T'_j) ≤ Λ, and T'_j(ω) = T_{φ(j)}(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ W. Here M_V = massOn V (SimonGMT mass with the Euclidean coefficient norm), M = mass = M_{ℝ^P} and spt = GeometricCurrentOn.support.",
+  "lean_statement": "∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (W : Set (Euclid P)), Bornology.IsBounded W → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ V : Set (Euclid P), IsOpen V → Bornology.IsBounded V → ⨆ j, ((Ts j).massOn V + (Ts j).boundary.massOn V) < ∞) → ∃ (K : Set (Euclid P)) (φ : ℕ → ℕ) (Λ : NNReal) (Ts' : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K ∧ StrictMono φ ∧ (∀ j, IsIntegerMultiplicity (Ts' j)) ∧ (∀ j, (Ts' j).support ⊆ K) ∧ (∀ j, (Ts' j).mass ≤ Λ ∧ (Ts' j).boundary.mass ≤ Λ) ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W → Ts' j ω = Ts (φ j) ω",
+  "lean_name": "dtc_bc_lc_fd_localize",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a1-a1",
+      "result_commit": "9dfa6578ac37c7b726ddad9a7e894ee3466d0cc4",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e8f543fe44-a1"
+}
