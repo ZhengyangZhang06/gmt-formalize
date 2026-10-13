@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.open_approx-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "depth": 4,
+  "title": "Inner approximation of the weight of an open set by open sets of finite weight",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let R = (M, θ, ξ) be an IMRep in U (Euclid P), with weight μ := R.measure = (H^n⌞M).withDensity θ, where H^n = μHE[n]. Let W ⊆ ℝ^P be open with W ⊆ U, and let c ∈ [0, ∞] with c < μ(W). Then there is an open set V ⊆ ℝ^P with V ⊆ W, c < μ(V) and μ(V) < ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (W : Set (Euclid P)), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < R.measure W → ∃ V : Set (Euclid P), IsOpen V ∧ V ⊆ W ∧ c < R.measure V ∧ R.measure V < ∞",
+  "lean_name": "rsd_mw_wlm_exists_open_measure_between",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "633d420f1240941049592701126b4007de20cde4806ba145aee3a0c465917a5f",
+  "git_delta": {
+    "base_commit": "369a97aea0437e5269f90a756bd4b861088c706e",
+    "candidate_commit": "71a35e92ff3a966996363e5040ecd37921ba6cb9",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ba685cc4f3a2344b4a67fc8d6600627efa6c8ed67942a5c1ee1bb3908a3ba479",
+    "source_sha256": "cef9a8b2e22ab7655a4477e616ccc9bd5168f4a25a0050532932a95a5b959c38",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_ae_hasMassDensity_mult",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ᵐ x ∂R.measure, HasMassDensity T x (R.mult x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
