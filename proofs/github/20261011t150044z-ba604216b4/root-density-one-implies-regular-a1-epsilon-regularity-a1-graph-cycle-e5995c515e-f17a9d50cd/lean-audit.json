@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "79c14cfe85c010dfdc0fdf10678e8feab913c2d3d87608bef5ee1e6b63f8fbd5",
+  "git_delta": {
+    "base_commit": "23d05f6dc5b90a7b85e0ca0da2bf12caf74cdd5e",
+    "candidate_commit": "7ec4b8bc253910dd5ea36b9e446a734e69bc20a2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_bwd_graph_cutoff_lift",
+    "diff_sha256": "0f0ad909dd7ee4f79703f282da56b0e71ab621b66aec623937856d45dd967cc9",
+    "source_sha256": "baf375fc33351aa2cf3f65cdd586cd039cc878af43f64df7814b11ef70a443ba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_bwd_graph_cutoff_lift",
+      "statement": "∀ (m k : ℕ) (U : Set (Euclid (m + 1 + k))) (ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid (m + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + 1 + k)) (u : Euclid (m + 1) → Euclid k) (z : Euclid (m + 1 + k)) (s h : ℝ) (ψ : DifferentialForm (Euclid (m + 1)) m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (m + 1 + k), ∃ v : Euclid (m + 1), ∃ w : Euclid k, x = ι v + ι' w) → 0 < h → ContinuousOn u (ball 0 s) → (∀ v ∈ ball (0 : Euclid (m + 1)) s, u v ∈ ball (0 : Euclid k) h) → {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → IsSmoothForm ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid (m + 1)) s → ∃ φ : TestFormOn U m, tsupport (φ : DifferentialForm (Euclid (m + 1 + k)) m) ⊆ {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ∧ ∀ v ∈ ball (0 : Euclid (m + 1)) s, (φ : DifferentialForm (Euclid (m + 1 + k)) m) =ᶠ[𝓝 (z + ι v + ι' (u v))] affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
