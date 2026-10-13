@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "ae_differentiableAt|integral_lineDeriv_mul_eq|memLp_lineDeriv",
+        "exist_eLpNorm_sub_le",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "theorem measurable_fderiv|norm_fderiv_le_of_lipschitzOn|tsupport_fderiv_subset",
+        "tsupport_fderiv_subset|theorem LipschitzOnWith.extend_real|theorem ContDiff.lipschitzWith_of_hasCompactSupport|theorem IsOpen.exists_iUnion_isClosed|theorem exists_compact_between",
+        "slicing_im_ll_gws_(pairing_bound|lipschitz_ibp|smooth_tendsto|smooth_dense)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gws_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gws_split/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gws_split/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-b207eb8151/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-b207eb8151/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/gws_independent_audit/Types.lean",
+        "/tmp/gws_split/Assembly.lean",
+        "/tmp/gws_split/EndToEnd.lean"
+      ],
+      "conclusion": "The pinned snapshot supplies the cited analytic results. The checked core source files and Contract.lean match the working compiler inputs; Mathlib is at the manifest revision. All four frozen types independently elaborate in comparator scope without child implementations. Their integral parsing, real coercions, Haar-measure instance and smoothness order are correct. Independently rerunning Assembly.lean and EndToEnd.lean succeeded; all audited declarations use only propext, Classical.choice and Quot.sound. The split is appropriate, and the children imply the exact selected parent through the supplied ε/3 argument. The sole sibling dependency is smooth_tendsto → lipschitz_ibp, so the graph is acyclic. All names are bare identifiers, with no reservations among the 554 inspected DAG nodes and no matches in the snapshot; no accepted branch declaration is reused. Public cross-checks confirm Rademacher and scalar integration by parts in [UTK notes](https://web.math.utk.edu/~afreire/teaching/m448s17/Rademacher.pdf), and smooth density in [van Neerven, Proposition 2.29](https://arxiv.org/pdf/2112.11166#page=66)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all stated hypotheses and the difference-of-integrals conclusion. The proof establishes derivative measurability, the bound on the open set, integrability of both pairings, justified integral subtraction, and the L¹ estimate. It is complete and independent of the parent and siblings."
+    },
+    {
+      "key": "lipschitz_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The existential contract correctly chooses one integrable g before quantifying over L and f. The proof constructs this witness as the divergence, verifies support and integrability, extends f, identifies derivatives locally, and applies Rademacher and Lipschitz integration by parts with the correct sign. Every finite-sum interchange is justified; C¹ regularity suffices."
+    },
+    {
+      "key": "smooth_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The proof uses only its declared sibling lipschitz_ibp, obtaining the same g for u and every ug k. Product integrability justifies subtraction, and uniform convergence with η = ε/(2(A+1)) proves the limit without a finite-measure assumption. There is no reliance on the parent theorem."
+    },
+    {
+      "key": "smooth_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the supported smooth approximation obligation; its explicit smoothness order denotes C∞. The proof supplies the compact exhaustion, strict tail bound, global approximation, smooth cutoff and integrable pointwise majorant. Combining a tail error < δ/2 with approximation error ≤ δ/2 gives the required strict inequality. The resulting field is integrable and C¹, as needed by the parent."
+    }
+  ],
+  "required_changes": []
+}
