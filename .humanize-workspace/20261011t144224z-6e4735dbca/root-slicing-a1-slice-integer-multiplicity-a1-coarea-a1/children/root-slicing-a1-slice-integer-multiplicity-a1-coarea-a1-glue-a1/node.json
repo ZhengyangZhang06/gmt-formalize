@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.glue-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "depth": 4,
+  "title": "Countable gluing of co-area identities modulo a slice-null, weight-null remainder",
+  "statement": "Let X be a measurable space, μ and ν measures on X, f : X → ℝ measurable, J, g : X → [0, ∞], M ⊆ X an arbitrary set and (W_i)_{i∈ℕ} pairwise disjoint measurable sets with W_i ⊆ M. Put Z := M ∖ ⋃_i W_i and assume J·g = 0 almost everywhere for μ restricted to Z and ν(Z ∩ f⁻¹{t}) = 0 for Lebesgue-a.e. t ∈ ℝ. If for every i the function t ↦ ∫_{W_i ∩ f⁻¹{t}} g dν is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{W_i ∩ f⁻¹{t}} g dν dt = ∫_{W_i} J g dμ, then t ↦ ∫_{M ∩ f⁻¹{t}} g dν is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{M ∩ f⁻¹{t}} g dν dt = ∫_M J g dμ. Integrals over a set are integrals against the restricted measure, which is defined for arbitrary sets.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ ν : Measure X) (f : X → ℝ) (J g : X → ℝ≥0∞) (M : Set X) (W : ℕ → Set X), Measurable f → (∀ i, MeasurableSet (W i)) → (∀ i, W i ⊆ M) → Pairwise (Function.onFun Disjoint W) → (∀ᵐ x ∂(μ.restrict (M \\ ⋃ i, W i)), J x * g x = 0) → (∀ᵐ t ∂(volume : Measure ℝ), ν ((M \\ ⋃ i, W i) ∩ f ⁻¹' {t}) = 0) → (∀ i, AEMeasurable (fun t : ℝ => ∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in W i, J x * g x ∂μ) → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in M, J x * g x ∂μ",
+  "lean_name": "slicing_im_coarea_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-glue-a1-a1"
+}
