@@ -1,0 +1,27 @@
+{
+  "node_id": "root.lipschitz_pushforward_im-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/319",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "3289485ca49a4dbf893b52910c0328145a85bc66",
+  "integrated_commit": "",
+  "proof_base_commit": "e48d1bc73d07c8dc0241837af86260437b98ac5f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+    "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+    "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+    "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+    "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1"
+  ]
+}
