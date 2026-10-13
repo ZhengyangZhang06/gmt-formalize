@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.1** (proof; local retraction onto `N`, step 1): an injective linear map
+`L : ℝᵈ → ℝᴾ` has a left inverse `A` with `‖L ∘ A‖ ≤ 1`.  With `Q = L(ℝᵈ)`, `p` the orthogonal
+projection of `ℝᴾ` onto `Q` and `e : ℝᵈ ≃ Q`, `e w = L w`, take `A = e⁻¹ ∘ p`: then `A ∘ L = id`,
+and `L ∘ A` is the orthogonal projection of `ℝᴾ` onto `Q`, of norm `≤ 1`. -/
+theorem Submission.dtc_bc_lr_left_inverse_projection : ∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ A : Euclid P →L[ℝ] Euclid d, A.comp L = ContinuousLinearMap.id ℝ (Euclid d) ∧ ‖L.comp A‖ ≤ 1 := by
+  intro P d L hL
+  -- `Q = L(ℝᵈ)` and the isomorphism `e : ℝᵈ ≃ Q`, `e w = L w`
+  let Q : Submodule ℝ (Euclid P) := LinearMap.range (L : Euclid d →ₗ[ℝ] Euclid P)
+  let e : Euclid d ≃L[ℝ] Q :=
+    (LinearEquiv.ofInjective (L : Euclid d →ₗ[ℝ] Euclid P) hL).toContinuousLinearEquiv
+  have he : ∀ w, (e w : Euclid P) = L w := fun w => rfl
+  -- `A = e⁻¹ ∘ p`, `p` the orthogonal projection onto `Q`
+  refine ⟨(e.symm : Q →L[ℝ] Euclid d).comp Q.orthogonalProjectionOnto, ?_, ?_⟩
+  · -- `p (L w) = e w`, so `A (L w) = w`
+    refine ContinuousLinearMap.ext fun w => ?_
+    have hp : Q.orthogonalProjectionOnto (L w) = e w := by
+      rw [← he]
+      exact Q.orthogonalProjectionOnto_mem_subspace_eq_self (e w)
+    simp [hp]
+  · -- `L ∘ A = ι ∘ p` is the orthogonal projection of `ℝᴾ` onto `Q`
+    have hLA : L.comp ((e.symm : Q →L[ℝ] Euclid d).comp Q.orthogonalProjectionOnto) =
+        Q.starProjection := by
+      refine ContinuousLinearMap.ext fun y => ?_
+      rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearEquiv.coe_coe, ← he, ContinuousLinearEquiv.apply_symm_apply,
+        Submodule.starProjection_apply]
+    rw [hLA]
+    exact Q.starProjection_norm_le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
