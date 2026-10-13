@@ -644,6 +644,66 @@ theorem Submission.cmb_exists_compactly_contained_exhaustion :
             ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
         _ < infEDist x₀ Uᶜ := hi₂
         _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
+/-- Simon Ch. 6, proof of Theorem 2.34 (p. 142): `D^β (φ ∗ g) = (D^β φ) ∗ g`, so every derivative
+of a mollification is bounded by the `L¹` norm of the mollified function.  By induction on `q`,
+for a vector-valued smooth compactly supported kernel `f` and a bilinear `L` with
+`‖L u t‖ ≤ B ‖u‖ |t|`: `‖D^q (f ∗_L g)(x)‖ ≤ B · sup ‖D^q f‖ · ∫ |g|`, using
+`D (f ∗_L g) = (D f) ∗_{L.precompL} g` and `‖D^{q+1} h‖ = ‖D^q (D h)‖`. -/
+theorem Submission.constancy_mollifier_iteratedFDeriv_norm_le_integral :
+    ∀ (n : ℕ) (φ : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ →
+      ∀ q : ℕ, ∃ C : ℝ, ∀ g : Eucl n → ℝ, Integrable g volume → ∀ x : Eucl n,
+        ‖iteratedFDeriv ℝ q (convolution φ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ ≤
+          C * ∫ y, |g y| ∂volume := by
+  intro n φ hφ hφc q
+  -- The generalized claim `P(k)`, by induction on `k`.
+  have key : ∀ (k : ℕ) (E F : Type) [NormedAddCommGroup E] [NormedSpace ℝ E]
+      [NormedAddCommGroup F] [NormedSpace ℝ F] (L : E →L[ℝ] ℝ →L[ℝ] F) (B : ℝ), 0 ≤ B →
+      (∀ u t, ‖L u t‖ ≤ B * ‖u‖ * |t|) → ∀ f : Eucl n → E,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∀ S : ℝ,
+      (∀ t, ‖iteratedFDeriv ℝ k f t‖ ≤ S) → ∀ g : Eucl n → ℝ, Integrable g volume →
+      ∀ x, ‖iteratedFDeriv ℝ k (convolution f g L volume) x‖ ≤ B * S * ∫ y, |g y| ∂volume := by
+    intro k
+    induction k with
+    | zero =>
+      intro E F _ _ _ _ L B hB hL f hf hfc S hS g hg x
+      rw [norm_iteratedFDeriv_zero, convolution_def]
+      have hS' : ∀ t, ‖f t‖ ≤ S := fun t => by simpa using hS t
+      calc ‖∫ t, L (f t) (g (x - t)) ∂volume‖
+          ≤ ∫ t, B * S * |g (x - t)| ∂volume := by
+            apply norm_integral_le_of_norm_le
+            · exact (hg.comp_sub_left x).abs.const_mul (B * S)
+            · refine Filter.Eventually.of_forall fun t => ?_
+              calc ‖L (f t) (g (x - t))‖ ≤ B * ‖f t‖ * |g (x - t)| := hL _ _
+                _ ≤ B * S * |g (x - t)| := by gcongr; exact hS' t
+        _ = B * S * ∫ y, |g y| ∂volume := by
+            rw [integral_const_mul]
+            congr 1
+            exact integral_sub_left_eq_self (fun y => |g y|) volume x
+    | succ k ih =>
+      intro E F _ _ _ _ L B hB hL f hf hfc S hS g hg x
+      have hderiv : fderiv ℝ (convolution f g L volume) =
+          convolution (fderiv ℝ f) g (ContinuousLinearMap.precompL (Eucl n) L) volume := by
+        funext y
+        exact (hfc.hasFDerivAt_convolution_left L (hf.of_le (mod_cast le_top))
+          hg.locallyIntegrable y).fderiv
+      rw [← norm_iteratedFDeriv_fderiv, hderiv]
+      refine ih (Eucl n →L[ℝ] E) (Eucl n →L[ℝ] F) (ContinuousLinearMap.precompL (Eucl n) L) B hB
+        ?_ (fderiv ℝ f) (contDiff_infty_iff_fderiv.mp hf).2 (hfc.fderiv ℝ) S ?_ g hg x
+      · intro u t
+        refine ContinuousLinearMap.opNorm_le_bound _
+          (mul_nonneg (mul_nonneg hB (norm_nonneg u)) (abs_nonneg t)) fun v => ?_
+        rw [ContinuousLinearMap.precompL_apply]
+        calc ‖L (u v) t‖ ≤ B * ‖u v‖ * |t| := hL _ _
+          _ ≤ B * (‖u‖ * ‖v‖) * |t| := by gcongr; exact u.le_opNorm v
+          _ = B * ‖u‖ * |t| * ‖v‖ := by ring
+      · intro t
+        rw [norm_iteratedFDeriv_fderiv]
+        exact hS t
+  obtain ⟨S, -, hS⟩ := hφc.exists_bound_iteratedFDeriv hφ q
+  refine ⟨1 * S, fun g hg x => key q ℝ ℝ (ContinuousLinearMap.lsmul ℝ ℝ) 1 zero_le_one ?_ φ hφ
+    hφc S (fun t => hS q le_rfl t) g hg x⟩
+  intro u t
+  simp [Real.norm_eq_abs]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
