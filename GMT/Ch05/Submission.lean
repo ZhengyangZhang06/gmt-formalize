@@ -458,6 +458,54 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Constants `M_B`, `L_B` for the Hessian of the integrand (step 1 of the `C^{2,α}` regularity of
+`C^{1,α}` weak solutions of uniformly convex Euler–Lagrange systems, in the elliptic bootstrap for
+Simon 7.1): if `Ψ : L(ℝⁿ, ℝ^ℓ) → ℝ` is `C³` and `B(P) = D²Ψ(P)`, then for `‖P‖, ‖P'‖ ≤ ε`
+`|B(P)[Q][Q']| ≤ M_B ‖Q‖ ‖Q'‖` and `|B(P)[Q][Q'] - B(P')[Q][Q']| ≤ L_B ‖P - P'‖ ‖Q‖ ‖Q'‖`.
+`B` is `C¹` and the closed ball `‖P‖ ≤ ε` is compact and convex, so `‖B‖` is bounded there and `B`
+is Lipschitz there; `|β[Q][Q']| ≤ ‖β‖ ‖Q‖ ‖Q'‖` for a bilinear form `β` gives both estimates. -/
+theorem dohr_eb_elc2_hessian_bounds : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ), ContDiff ℝ 3 Ψ → ∀ ε : ℝ, ∃ MB LB : ℝ, 0 ≤ MB ∧ 0 ≤ LB ∧ (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) ∧ ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖ := by
+  -- Argue for an abstract finite-dimensional space `X = L(ℝⁿ, ℝ^ℓ)`: this keeps the instances on
+  -- the bilinear forms `X →L[ℝ] X →L[ℝ] ℝ` within the default instance synthesis depth.
+  suffices H : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+      (Ψ : X → ℝ), ContDiff ℝ 3 Ψ → ∀ ε : ℝ, ∃ MB LB : ℝ, 0 ≤ MB ∧ 0 ≤ LB ∧
+        (∀ P : X, ‖P‖ ≤ ε → ∀ Q Q' : X, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) ∧
+        ∀ P P' : X, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : X,
+          |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤
+            LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖ from
+    fun n ℓ => H (Rn n →L[ℝ] Rn ℓ)
+  intro X _ _ _ Ψ hΨ ε
+  -- Step 1: `B = D²Ψ` is `C¹`.
+  have hB : ContDiff ℝ 1 (fderiv ℝ (fderiv ℝ Ψ)) :=
+    (hΨ.fderiv_right (m := 2) (by norm_num)).fderiv_right (by norm_num)
+  -- Step 2: the closed ball `‖P‖ ≤ ε` is compact (finite dimension) and convex.
+  have hK : IsCompact (closedBall (0 : X) ε) := isCompact_closedBall _ _
+  -- Step 3: `‖B‖ ≤ M` on the ball.
+  obtain ⟨M, hM⟩ :=
+    hK.exists_bound_of_continuousOn (E := X →L[ℝ] X →L[ℝ] ℝ) hB.continuous.continuousOn
+  -- Step 4: `B` is `L`-Lipschitz on the ball.
+  obtain ⟨L, hL⟩ := hB.contDiffOn.exists_lipschitzOnWith one_ne_zero (convex_closedBall _ _) hK
+  refine ⟨max M 0, L, le_max_right _ _, L.coe_nonneg, ?_, ?_⟩
+  -- Step 3, bound (i): `|B(P)[Q][Q']| ≤ ‖B(P)‖ ‖Q‖ ‖Q'‖`.
+  · intro P hP Q Q'
+    have h := (fderiv ℝ (fderiv ℝ Ψ) P).le_opNorm₂ Q Q'
+    rw [Real.norm_eq_abs] at h
+    refine h.trans ?_
+    gcongr
+    exact (hM P (mem_closedBall_zero_iff.2 hP)).trans (le_max_left _ _)
+  -- Step 5, bound (ii): the same estimate for the bilinear form `B(P) - B(P')`.
+  · intro P P' hP hP' Q Q'
+    have h := (fderiv ℝ (fderiv ℝ Ψ) P - fderiv ℝ (fderiv ℝ Ψ) P').le_opNorm₂ Q Q'
+    rw [Real.norm_eq_abs] at h
+    simp only [sub_apply] at h
+    refine h.trans ?_
+    gcongr
+    exact hL.norm_sub_le (mem_closedBall_zero_iff.2 hP) (mem_closedBall_zero_iff.2 hP')
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
