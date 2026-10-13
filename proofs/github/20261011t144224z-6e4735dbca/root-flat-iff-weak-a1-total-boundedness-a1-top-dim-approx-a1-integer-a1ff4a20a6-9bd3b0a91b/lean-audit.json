@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a658b785dbdd2737ad8b42e85acf6df4d42b759bfb754b478fad9324bbff057e",
+  "git_delta": {
+    "base_commit": "ac93db3fe6aef91ce48c486165a1a08baa5399da",
+    "candidate_commit": "4e72b5fdaf9e973bb057e95ea618f123ca0cd0d6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_im_median_bounds",
+    "diff_sha256": "65868b76c2ff1a2f59664de163b934b7c6b1b92c8b3e5d52d3d1e0e7dc737c21",
+    "source_sha256": "3a5847b7de82c6fb307467dcee59c0607b26a2dc0a13b59c86676424de60647d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_im_median_bounds",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → Measurable u → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c}) → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c ≤ u x}) → ENNReal.ofReal (|c| * a) ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ ∧ (c ≠ 0 → μ (F ∩ {x | u x ≠ 0}) ≠ 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
