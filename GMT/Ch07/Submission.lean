@@ -640,6 +640,92 @@ theorem Submission.dtc_bc_lr_chart_image_nhds : ∀ (P d : ℕ) (N W : Set (Eucl
   -- Step 8: injectivity gives `a = v₀ ∈ V₀`, a contradiction
   exact haV₀ (hψi haV hv₀V (tendsto_nhds_unique h₁ h₂) ▸ hv₀)
 
+/-- **Local `C¹` retraction onto an embedded `C²` submanifold** (proof of Simon 7.3.1; it stands
+in for the nearest-point projection onto `N`, cf. Simon 7.5).  For `x ∈ N` there are `δ > 0` and
+`π`, `C¹` on `B_δ(x)`, with `π(B_δ(x)) ⊆ N`, `π = id` on `N ∩ B_δ(x)`, and, for every `η > 0`,
+`π` is `(1 + η)`-Lipschitz on some `B_s(x)`, `0 < s ≤ δ`.
+
+* A chart `ψ` with `ψ(v₀) = x`, and a left inverse `A` of `L = Dψ(v₀)` with `‖L ∘ A‖ ≤ 1`.
+* Inverse function theorem for `h = A(ψ − x)`, `Dh(v₀) = A ∘ L = id`: a `C¹` inverse
+  `k : O → V₀` with `Dk(h(v₀)) = id`.
+* Properness of the chart: `N ∩ B_ρ(x) ⊆ ψ(V₀)`.
+* `π(y) = ψ(k(A(y − x)))`, `δ = min(ρ, r₀/(‖A‖ + 1))` with `B_{r₀}(0) ⊆ O`; `π` fixes
+  `N ∩ B_δ(x)` because `A(ψ(v) − x) = h(v)`, and `Dπ(x) = L ∘ A` has norm `≤ 1`. -/
+theorem Submission.dtc_bc_local_retraction : ∀ (P d : ℕ) (N : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 2 d N → x ∈ N → ∃ (δ : ℝ) (π : Euclid P → Euclid P), 0 < δ ∧ ContDiffOn ℝ 1 π (ball x δ) ∧ MapsTo π (ball x δ) N ∧ (∀ y ∈ N ∩ ball x δ, π y = y) ∧ ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖ := by
+  intro P d N x hN hx
+  -- Step 1: a chart `ψ` at `x = ψ v₀`, `L = Dψ(v₀)` and a left inverse `A` of `L`
+  obtain ⟨V, W, ψ, hVo, hWo, hxW, hψ2, hψinj, hψV, hψK, hψD⟩ := hN x hx
+  obtain ⟨v₀, hv₀V, hψv₀⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW, hx⟩
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ2.of_le (by norm_num)
+  have hψv₀D : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+    ((hψ1.contDiffAt (hVo.mem_nhds hv₀V)).differentiableAt one_ne_zero).hasFDerivAt
+  obtain ⟨A, hAL, hLA⟩ :=
+    Submission.dtc_bc_lr_left_inverse_projection P d (fderiv ℝ ψ v₀) (hψD v₀ hv₀V)
+  -- Step 2: the local inverse `k` of `h = A (ψ - x)` near `v₀`
+  set h : Euclid d → Euclid d := fun v => A (ψ v - x) with hh_def
+  have hh1 : ContDiffOn ℝ 1 h V := A.contDiff.comp_contDiffOn (hψ1.sub contDiffOn_const)
+  have hhD : fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) := by
+    rw [← hAL]
+    exact (A.hasFDerivAt.comp v₀ (hψv₀D.sub_const x)).fderiv
+  obtain ⟨V₀, O, k, hV₀o, hOo, hV₀V, hv₀V₀, hhV₀, hkO, hkh, -, hk1, hkD⟩ :=
+    Submission.dtc_bc_lr_local_inverse d h V v₀ hVo hv₀V hh1 hhD
+  have hh0 : h v₀ = 0 := by simp [hh_def, hψv₀]
+  -- Step 3: `ψ(V₀)` is a neighbourhood of `x` in `N`
+  obtain ⟨ρ, hρ, hρV₀⟩ := Submission.dtc_bc_lr_chart_image_nhds P d N W V V₀ ψ v₀ hWo
+    hψ1.continuousOn hψinj hψV hψK hV₀o hV₀V hv₀V₀
+  rw [hψv₀] at hρV₀
+  -- Step 4: `δ` and `π(y) = ψ (k (A (y - x)))`
+  obtain ⟨r₀, hr₀, hr₀O⟩ := Metric.isOpen_iff.1 hOo 0 (by rw [← hh0]; exact hhV₀ hv₀V₀)
+  have hA1 : 0 < ‖A‖ + 1 := by positivity
+  set δ : ℝ := min ρ (r₀ / (‖A‖ + 1))
+  have hδ : 0 < δ := lt_min hρ (div_pos hr₀ hA1)
+  have hAO : MapsTo (fun y => A (y - x)) (ball x δ) O := by
+    intro y hy
+    apply hr₀O
+    rw [mem_ball_zero_iff]
+    have hy' : ‖y - x‖ < r₀ / (‖A‖ + 1) := (mem_ball_iff_norm.1 hy).trans_le (min_le_right _ _)
+    calc ‖A (y - x)‖ ≤ ‖A‖ * ‖y - x‖ := A.le_opNorm _
+      _ ≤ (‖A‖ + 1) * ‖y - x‖ := mul_le_mul_of_nonneg_right (by linarith) (norm_nonneg _)
+      _ < (‖A‖ + 1) * (r₀ / (‖A‖ + 1)) := mul_lt_mul_of_pos_left hy' hA1
+      _ = r₀ := by field_simp
+  -- (i) `π` is `C¹` on `B_δ(x)`
+  have hπ1 : ContDiffOn ℝ 1 (fun y => ψ (k (A (y - x)))) (ball x δ) :=
+    hψ1.comp (hk1.comp (A.contDiff.comp (contDiff_id.sub contDiff_const)).contDiffOn hAO)
+      ((hkO.comp hAO).mono_right hV₀V)
+  -- (ii) `π(B_δ(x)) ⊆ N`
+  have hπN : MapsTo (fun y => ψ (k (A (y - x)))) (ball x δ) N := by
+    intro y hy
+    have hy' : ψ (k (A (y - x))) ∈ ψ '' V := mem_image_of_mem ψ (hV₀V (hkO (hAO hy)))
+    rw [hψV] at hy'
+    exact hy'.2
+  -- (iii) `π` fixes `N ∩ B_δ(x)`
+  have hπfix : ∀ y ∈ N ∩ ball x δ, ψ (k (A (y - x))) = y := by
+    rintro y ⟨hyN, hy⟩
+    obtain ⟨v, hv, rfl⟩ := hρV₀ ⟨hyN, ball_subset_ball (min_le_left _ _) hy⟩
+    exact congrArg ψ (hkh v hv)
+  -- `Dπ(x) = L ∘ Dk(h(v₀)) ∘ A = L ∘ A` has norm `≤ 1`
+  have hπD : ‖fderiv ℝ (fun y => ψ (k (A (y - x)))) x‖ ≤ 1 := by
+    have hg : HasFDerivAt (fun y => A (y - x)) A x := by
+      have := A.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const x)
+      rw [ContinuousLinearMap.comp_id] at this
+      exact this
+    have hgx : A (x - x) = h v₀ := by rw [hh0, sub_self, map_zero]
+    have hk : HasFDerivAt k (ContinuousLinearMap.id ℝ (Euclid d)) (A (x - x)) := by
+      rw [hgx, ← hkD]
+      exact ((hk1.contDiffAt (hOo.mem_nhds (hhV₀ hv₀V₀))).differentiableAt
+        one_ne_zero).hasFDerivAt
+    have hψ' : HasFDerivAt ψ (fderiv ℝ ψ v₀) (k (A (x - x))) := by
+      rw [hgx, hkh v₀ hv₀V₀]
+      exact hψv₀D
+    have hπx : HasFDerivAt (fun y => ψ (k (A (y - x))))
+        ((fderiv ℝ ψ v₀).comp ((ContinuousLinearMap.id ℝ (Euclid d)).comp A)) x :=
+      hψ'.comp x (hk.comp x hg)
+    rw [hπx.fderiv, ContinuousLinearMap.id_comp]
+    exact hLA
+  -- (iv) Lipschitz constant `1 + η` near `x`
+  exact ⟨δ, fun y => ψ (k (A (y - x))), hδ, hπ1, hπN, hπfix,
+    fun η hη => Submission.dtc_bc_lr_lipschitz_near_point P _ x δ 1 hδ hπ1 hπD η hη⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
