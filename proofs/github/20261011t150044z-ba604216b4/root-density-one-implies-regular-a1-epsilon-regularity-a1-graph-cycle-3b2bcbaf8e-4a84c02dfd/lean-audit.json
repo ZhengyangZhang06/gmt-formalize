@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7997afc68683290721dbce70c0b1fcf68206d8d9d5658f000d7b2c303e29cb02",
+  "git_delta": {
+    "base_commit": "35c8da38a930359cb8722602afb7b5fe5d1c9960",
+    "candidate_commit": "42e24164cfdc5445c7426ab7ee11003f8faee961",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_bwd_graph_pullback_extDeriv",
+    "diff_sha256": "777dc81be3ce79f9d6f2bafd1bf1f1cbbe3f7e91a73767fc9789ca80da92321b",
+    "source_sha256": "e64d23c33c9eb864e083500a6b19ef96039d6286b0e381846d2a05aaeb57cc15",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_bwd_graph_pullback_extDeriv",
+      "statement": "∀ (m k : ℕ) (ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid (m + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + 1 + k)) (u : Euclid (m + 1) → Euclid k) (z : Euclid (m + 1 + k)) (ψ : DifferentialForm (Euclid (m + 1)) m) (v : Euclid (m + 1)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsSmoothForm ψ → DifferentiableAt ℝ u v → exteriorDerivative (affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ) (z + ι v + ι' (u v)) (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ))) = exteriorDerivative ψ v (fun i => EuclideanSpace.single i (1 : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
