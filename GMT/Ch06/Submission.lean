@@ -359,6 +359,31 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Reduction of an almost-everywhere property to balls: if `Φ` holds `μ ⌞ (A ∩ B_r(y))`-a.e.
+for every ball with `B̄_r(y) ⊆ U`, then `Φ` holds `μ ⌞ A`-a.e. for `A ⊆ U`, `U` open.  Countably
+many such balls cover `A` (`ℝ^P` is second countable), and `μ ⌞ A`-a.e. is checked on the
+pieces of a countable cover without any measurability assumption. -/
+theorem Submission.fiw_tl_ald_ball_reduction :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (U A : Set (Eucl P)) (Φ : Eucl P → Prop), IsOpen U →
+      A ⊆ U → (∀ (y : Eucl P) (r : ℝ), closedBall y r ⊆ U →
+        ∀ᵐ x ∂(μ.restrict (A ∩ ball y r)), Φ x) → ∀ᵐ x ∂(μ.restrict A), Φ x := by
+  intro P μ U A Φ hU hAU hball
+  -- The balls `B_r(y)` with `B̄_r(y) ⊆ U`, indexed by `ι`; a countable subfamily `T` has the
+  -- same union.
+  let ι := {p : Eucl P × ℝ // closedBall p.1 p.2 ⊆ U}
+  obtain ⟨T, hTc, hT⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun i : ι => ball i.1.1 i.1.2) fun i => isOpen_ball
+  -- `A = ⋃_{i ∈ T} (A ∩ B_i)`: each `x ∈ A ⊆ U` lies in `B_{δ/2}(x)`, and
+  -- `B̄_{δ/2}(x) ⊆ B_δ(x) ⊆ U`.
+  have hA : A = ⋃ i ∈ T, A ∩ ball i.1.1 i.1.2 := by
+    rw [← inter_iUnion₂, hT, eq_comm, inter_eq_left]
+    intro x hx
+    obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 hU x (hAU hx)
+    exact mem_iUnion.2 ⟨⟨(x, δ / 2), (closedBall_subset_ball (half_lt_self hδ)).trans hδU⟩,
+      mem_ball_self (half_pos hδ)⟩
+  rw [hA, ae_restrict_biUnion_iff _ hTc]
+  exact fun i _ => hball i.1.1 i.1.2 i.2
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
