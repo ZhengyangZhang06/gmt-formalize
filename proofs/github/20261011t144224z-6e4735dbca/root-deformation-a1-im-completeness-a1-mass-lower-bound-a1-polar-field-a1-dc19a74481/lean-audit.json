@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "49ef80ecc37b26dbf50c286518f9a3a1590a5ad794376f22afcf4aa7184b8492",
+  "git_delta": {
+    "base_commit": "5c176df9f622bf05010b4dc7d6de8414bb8a911d",
+    "candidate_commit": "6c052c410ac7c66a9a3adeb84e6de2a5ff5e419a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_mlb_exists_unit_field_integral_ge",
+    "diff_sha256": "d1d9a597c44e786b4de1233a20def5f947205a7f361d57b208ef618e4ba5e019",
+    "source_sha256": "28418322960c78e8cedc034efacb4c55467b005548c54bdc14cdc13ca4dfeee5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_mlb_exists_unit_field_integral_ge",
+      "statement": "∀ (N : ℕ) (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (μ : Measure (Eucl N)) (R : ℝ) (g : Eucl N → E), IntegrableOn g (ball (0 : Eucl N) R) μ → ∀ ε : ℝ, 0 < ε → ∃ F : Eucl N → E, Continuous F ∧ tsupport F ⊆ ball (0 : Eucl N) R ∧ (∀ x, ‖F x‖ ≤ 1) ∧ Integrable (fun x => inner ℝ (F x) (g x)) μ ∧ ∫ x in ball (0 : Eucl N) R, ‖g x‖ ∂μ ≤ ∫ x, inner ℝ (F x) (g x) ∂μ + ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
