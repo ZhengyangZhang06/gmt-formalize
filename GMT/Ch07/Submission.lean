@@ -558,6 +558,30 @@ theorem Submission.regcomp_cop_zdr_unitOrientation_zero : ∀ (P : ℕ) (ξ : Mu
   · exact ⟨1, abs_one, fun α => by rw [h α, one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
   · exact ⟨-1, by rw [abs_neg, abs_one],
       fun α => by rw [h α, neg_one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
+/-- **`H⁰`-integral over a set meeting `K` in at most one point** (`H⁰ = μH[0]` is counting
+measure, Simon Ch. 2).  If `F` vanishes off the measurable set `K` and `C ∩ K ⊆ {x}`, then
+`∫_C F dH⁰ = 1_C(x) F(x)` for an arbitrary (possibly non-measurable) set `C`: `F = 1_K F`, so
+`∫_C F dH⁰ = ∫_{C ∩ K} F dH⁰` by measurability of `K` alone, and `C ∩ K` is either `{x}`, of
+`H⁰`-measure `1`, or empty, in which case `x ∈ C` forces `x ∉ K` and `F(x) = 0`. -/
+theorem Submission.regcomp_cop_zdr_setIntegral_eq_indicator : ∀ (P : ℕ) (C K : Set (Euclid P)) (x : Euclid P) (F : Euclid P → ℝ), MeasurableSet K → (∀ z, z ∉ K → F z = 0) → C ∩ K ⊆ {x} → ∫ z in C, F z ∂μHE[0] = C.indicator F x := by
+  intro P C K x F hK hF hCK
+  -- `F = 1_K F`, and `∫_C 1_K F dH⁰ = ∫_{C ∩ K} F dH⁰` as `K` is measurable
+  have hFK : K.indicator F = F := Set.indicator_eq_self.2 fun z hz => by
+    by_contra hzK
+    exact hz (hF z hzK)
+  rw [← hFK, setIntegral_indicator hK]
+  by_cases hx : x ∈ C ∩ K
+  · -- `C ∩ K = {x}` and `H⁰{x} = 1`
+    rw [Set.Subset.antisymm hCK (Set.singleton_subset_iff.2 hx), integral_singleton,
+      measureReal_def, Measure.euclideanHausdorffMeasure_zero,
+      Measure.hausdorffMeasure_zero_singleton, ENNReal.toReal_one, one_smul,
+      Set.indicator_of_mem hx.1, Set.indicator_of_mem hx.2]
+  · -- `C ∩ K = ∅`, and `1_C 1_K F` vanishes at `x`, since `x ∈ C` forces `x ∉ K`
+    rw [Set.eq_empty_of_subset_empty fun z hz => hx (Set.mem_singleton_iff.1 (hCK hz) ▸ hz),
+      setIntegral_empty]
+    by_cases hxC : x ∈ C
+    · rw [Set.indicator_of_mem hxC, Set.indicator_of_notMem fun hxK => hx ⟨hxC, hxK⟩]
+    · rw [Set.indicator_of_notMem hxC]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
