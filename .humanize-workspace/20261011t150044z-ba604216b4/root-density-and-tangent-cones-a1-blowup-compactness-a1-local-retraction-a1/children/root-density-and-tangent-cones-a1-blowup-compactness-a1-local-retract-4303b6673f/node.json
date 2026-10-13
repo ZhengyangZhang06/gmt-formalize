@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.chart_image_nhds-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+  "depth": 4,
+  "title": "Properness makes the chart image of an open parameter set a neighbourhood of ψ(v₀) in N",
+  "statement": "Let P, d ∈ ℕ, N, W ⊆ ℝ^P, V, V₀ ⊆ ℝ^d, ψ : ℝ^d → ℝ^P and v₀ ∈ ℝ^d. Suppose W is open, ψ is continuous on V and injective on V, ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, V₀ is open, V₀ ⊆ V and v₀ ∈ V₀. Then there is ρ > 0 such that N ∩ B_ρ(ψ(v₀)) ⊆ ψ(V₀).",
+  "lean_statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V V₀ : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → IsOpen V₀ → V₀ ⊆ V → v₀ ∈ V₀ → ∃ ρ : ℝ, 0 < ρ ∧ N ∩ ball (ψ v₀) ρ ⊆ ψ '' V₀",
+  "lean_name": "dtc_bc_lr_chart_image_nhds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f-a1"
+}

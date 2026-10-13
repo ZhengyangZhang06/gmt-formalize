@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2956d92adcb5086e4cc3c1cca0e8b44935e2b9a62cd5d36a720e34907357c2e5",
+  "git_delta": {
+    "base_commit": "5e0bb23e873cf52aa05a4f79028348fa548e07a7",
+    "candidate_commit": "8be1187095e77d6b868a3922758596e2685604d3",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "be52004e514d504da552b96c4b830a40715abf8e6b571e3c1261bd0e68a67ad4",
+    "source_sha256": "2e019bfcebaee28b82814f1f1bb9c339d37acfd7771af1ff35eeb1710a1c23dc",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_local_retraction",
+      "statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 2 d N → x ∈ N → ∃ (δ : ℝ) (π : Euclid P → Euclid P), 0 < δ ∧ ContDiffOn ℝ 1 π (ball x δ) ∧ MapsTo π (ball x δ) N ∧ (∀ y ∈ N ∩ ball x δ, π y = y) ∧ ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
