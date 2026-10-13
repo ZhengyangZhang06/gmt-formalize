@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c73148017f7e22622caffc7982aee80e3ddc6aee270cc81bedbc21a4654474dc",
+  "git_delta": {
+    "base_commit": "f27566d453ec7eebec294d9b806d037fbabb8465",
+    "candidate_commit": "c9907ed88f9db1f3a72e6a3821a67254e3f24dfc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_op_translate_tangentSpace_eq",
+    "diff_sha256": "5acd217f108c8364e080b747f1b07ee48a8bedbda0779e84c76dd977a7e23754",
+    "source_sha256": "d556c15ba2a008caf73011f794a2671a3713b45841197d51f2811ca0ef892766",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_op_translate_tangentSpace_eq",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a y : Euclid P), y + a ∈ Q → tangentSpace {z | z + a ∈ Q} y = (Q : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
