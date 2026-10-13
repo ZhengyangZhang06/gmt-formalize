@@ -1,0 +1,15 @@
+{
+  "node_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1.tubes_disjoint-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4814",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "3546960ffc2063409582b3a86fbb9f29b34bd634",
+  "integrated_commit": "",
+  "proof_base_commit": "3740b39bb48bfa04547e4b6c721210a8882816e4",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.good_center-a1.periodic_maximal-a1",
+  "requires": []
+}
