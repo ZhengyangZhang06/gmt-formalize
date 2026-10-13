@@ -512,6 +512,66 @@ theorem Submission.dimred_cs_ti_const_contraction_isTestForm : ∀ (P m : ℕ) (
     rw [h0]
     rfl
 
+/-- **`∂S = 0` and `v ∧ S⃗ = 0` kill directional derivatives** (`L_v S = 0`, the homotopy term of
+Simon Ch. 6, 2.25 and 2.33 for `h(t, x) = x + tv`; the translation counterpart of the Euler-field
+annihilation in the proof of 7.3.1).  Let `S = τ(M, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)`, `n ≥ 1`, with `∂S = 0` and
+`ξ(x)(ι_v α) = 0` for `μ_S`-a.e. `x` and every `(n+1)`-covector `α`.  Then `S(γ) = 0` whenever
+`γ(y) = Dβ(y)[v]` for a test form `β`: by Cartan's formula `Dβ[v] = d(ι_v β) + ι_v dβ` with
+`ι_v β`, `ι_v dβ` test forms, `S(d ι_v β) = ∂S(ι_v β) = 0`, and
+`S(ι_v dβ) = ∫_M θ ξ(ι_v dβ(y)) dHⁿ = 0` since `θ > 0` on `M`. -/
+theorem Submission.dimred_cs_ti_directional_annihilated : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), 0 < n → R.Represents S → BoundaryVanishes S → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β v) = 0) → ∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = fderiv ℝ (β : DifferentialForm (Euclid P) n) y v) → S γ = 0 := by
+  intro P n S R v hn hR hb hw β γ hγ
+  -- Step 1: `n = m + 1`
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  -- Step 2: `ψ = ι_v β` is a test `m`-form and `χ = ι_v dβ` is a test `(m + 1)`-form
+  have hψ : IsTestForm (fun z => ContinuousAlternatingMap.curryLeft
+      ((β : DifferentialForm (Euclid P) (m + 1)) z) v) :=
+    Submission.dimred_cs_ti_const_contraction_isTestForm P m _ v β.property.1
+  let ψ : TestFormOn (univ : Set (Euclid P)) m := ⟨_, hψ, subset_univ _⟩
+  have hdβ : IsTestForm (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1))) :=
+    exteriorDerivative_isTestForm β.property.1
+  have hχ := Submission.dimred_cs_ti_const_contraction_isTestForm P (m + 1) _ v hdβ
+  let χ : TestFormOn (univ : Set (Euclid P)) (m + 1) := ⟨_, hχ, subset_univ _⟩
+  -- Step 3 (Cartan's formula): `γ = Dβ[v] = dψ + χ`
+  have hsplit : γ = exteriorDerivativeTestOn univ m ψ + χ := by
+    apply Subtype.ext
+    funext y
+    have hdiff : DifferentiableAt ℝ (β : DifferentialForm (Euclid P) (m + 1)) y :=
+      (β.property.1.1.differentiable (by simp)).differentiableAt
+    have hc := Submission.dimred_cs_ti_const_cartan P m β v y hdiff
+    rw [hγ y]
+    push_cast
+    exact hc.symm
+  -- Step 4 (boundary term): `S(dψ) = ∂S(ψ) = 0`
+  have hbd : S.boundary = 0 := hb
+  have h1 : S (exteriorDerivativeTestOn univ m ψ) = 0 := by
+    have := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) m => T ψ) hbd
+    simpa [GeometricCurrentOn.boundary_apply] using this
+  -- Step 5 (wedge term): `S(χ) = ∫_M θ ξ(ι_v dβ(x)) dHⁿ = 0`, as `θ > 0` on `M`
+  have h2 : S χ = 0 := by
+    rw [hR χ]
+    unfold IMRep.action
+    apply integral_eq_zero_of_ae
+    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+      measurable_from_nat.comp R.measurable_mult
+    have h' := (ae_withDensity_iff hθ).1 hw
+    have hmem : ∀ᵐ x ∂(μHE[m + 1].restrict R.carrier), x ∈ R.carrier :=
+      ae_restrict_mem R.measurableSet_carrier
+    filter_upwards [h', hmem] with x hx hxM
+    have hpos : (R.mult x : ℝ≥0∞) ≠ 0 := by
+      have := R.mult_pos x hxM
+      exact_mod_cast this.ne'
+    have := hx hpos (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1)) x)
+    simp only [Pi.zero_apply]
+    change (R.mult x : ℝ) * R.orient x (ContinuousAlternatingMap.curryLeft
+      (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1)) x) v) = 0
+    rw [this, mul_zero]
+  -- Step 6 (linearity): `S(γ) = S(dψ) + S(χ) = 0`
+  rw [hsplit]
+  change S.toCurrent (exteriorDerivativeTestOn univ m ψ + χ) = 0
+  rw [map_add]
+  exact (congrArg₂ (· + ·) h1 h2).trans (add_zero 0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
