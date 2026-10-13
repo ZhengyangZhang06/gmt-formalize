@@ -451,6 +451,420 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ` is `Cʳ` (`r ≥ 1`) on an open `V ⊆ ℝᵈ` and `ψ(V) ⊆ N`,
+then every `Dψ(v) a`, `v ∈ V`, is the velocity at `0` of a `C¹` curve in `N` through `ψ(v)`, i.e.
+`Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N`.  For `a = 0` take the constant curve.  Otherwise, with
+`B_{ρ₀}(v) ⊆ V`, `c = ρ₀ / |a|` and `h(t) = t / (1 + t² / c²)` (smooth, `h(0) = 0`, `h'(0) = 1`,
+`|h| ≤ c / 2`), the curve `γ(t) = ψ(v + h(t) a)` stays in `ψ(V)` and has velocity `Dψ(v) a`. -/
+theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → ContDiffOn ℝ r ψ V → ψ '' V ⊆ N → ∀ v ∈ V, Set.range (fderiv ℝ ψ v) ⊆ tangentSpace N (ψ v) := by
+  rintro P r d N V ψ hr hV hψ hN v hv _ ⟨a, rfl⟩
+  -- `ψ` is `C¹` on `V`, hence differentiable at the interior point `v`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `ψ(v)` has velocity `0 = Dψ(v) 0`
+    subst ha
+    refine ⟨fun _ => ψ v, contDiffOn_const, fun _ _ => hN (mem_image_of_mem ψ hv), rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (ψ v)
+  · -- `a ≠ 0`: `β(t) = v + h(t) a` with `h(t) = t / (1 + t² / c²)`, `c = ρ₀ / |a|`
+    obtain ⟨ρ₀, hρ₀, hball⟩ := Metric.isOpen_iff.mp hV v hv
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    set c : ℝ := ρ₀ / ‖a‖ with hc_def
+    have hc : 0 < c := div_pos hρ₀ ha'
+    have hden : ∀ t : ℝ, 0 < 1 + t ^ 2 / c ^ 2 := fun t => by positivity
+    set h : ℝ → ℝ := fun t => t / (1 + t ^ 2 / c ^ 2) with hh_def
+    -- (a) `h` is smooth
+    have h_cd : ContDiff ℝ 1 h :=
+      contDiff_id.div (contDiff_const.add ((contDiff_id.pow 2).div_const _)) fun t => (hden t).ne'
+    -- (b) `h'(0) = 1`
+    have h_deriv : HasDerivAt h 1 0 := by
+      have := hasDerivAt_id' (x := (0 : ℝ)) |>.fun_div
+        (((hasDerivAt_id' (x := (0 : ℝ))).fun_pow 2).div_const (c ^ 2) |>.const_add 1) (hden 0).ne'
+      convert this using 1
+      simp
+    -- (c) `|h(t)| ≤ c / 2`, since `2 c |t| ≤ c² + t²`
+    have h_bd : ∀ t, |h t| ≤ c / 2 := by
+      intro t
+      rw [hh_def, abs_div, abs_of_pos (hden t), div_le_iff₀ (hden t)]
+      have h1 : c / 2 * (1 + t ^ 2 / c ^ 2) = (c ^ 2 + |t| ^ 2) / (2 * c) := by
+        rw [sq_abs]; field_simp
+      rw [h1, le_div_iff₀ (by positivity)]
+      nlinarith [sq_nonneg (c - |t|)]
+    -- `β` stays in `B_{ρ₀}(v) ⊆ V`, `β(0) = v` and `β'(0) = a`
+    set β : ℝ → Euclid d := fun t => v + h t • a with hβ_def
+    have hβV : ∀ t, β t ∈ V := fun t => hball <| by
+      rw [Metric.mem_ball, dist_eq_norm, hβ_def]
+      simp only [add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+      calc |h t| * ‖a‖ ≤ c / 2 * ‖a‖ := by gcongr; exact h_bd t
+        _ = ρ₀ / 2 := by rw [hc_def]; field_simp
+        _ < ρ₀ := by linarith
+    have hβ0 : β 0 = v := by simp [hβ_def, hh_def]
+    have hβ_cd : ContDiff ℝ 1 β := contDiff_const.add (h_cd.smul contDiff_const)
+    have hβ_deriv : HasDerivAt β a 0 := by
+      have := HasDerivAt.const_add v (h_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = ψ ∘ β` is `C¹` on `(-1, 1)`, lies in `ψ(V) ⊆ N`, and `γ'(0) = Dψ(v) a`
+    refine ⟨ψ ∘ β, hψ1.comp hβ_cd.contDiffOn fun t _ => hβV t,
+      fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
+    exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
+/-- Continuity of the inverse of a proper injective chart at a point (Simon Ch. 2, (4.1)–(4.2)):
+if `ψ` is continuous and injective on `V`, `ψ(V) ⊆ W`, and `V ∩ ψ⁻¹(K)` is compact for every
+compact `K ⊆ W`, then `ψ(v') → ψ(v)` with `v' ∈ V` forces `v' → v`.  Otherwise there are `vⱼ ∈ V`
+with `ψ(vⱼ) → ψ(v)` and `|vⱼ - v| ≥ ε`; they lie in the compact set `V ∩ ψ⁻¹({ψ(v)} ∪ {ψ(vⱼ)})`,
+and a limit `w ∈ V` of a subsequence has `ψ(w) = ψ(v)`, so `w = v`, a contradiction. -/
+theorem Submission.dsmc_chart_inverse_continuity : ∀ (P d : ℕ) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), ContinuousOn ψ V → InjOn ψ V → ψ '' V ⊆ W → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → ∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε := by
+  intro P d V W ψ hψ hinj hVW hproper v hv ε hε
+  by_contra! hfar
+  -- `δ = 1/(j+1)` fails: `vⱼ ∈ V`, `|ψ(vⱼ) - ψ(v)| < 1/(j+1)` and `|vⱼ - v| ≥ ε`
+  choose u huV hu_near hu_far using fun j : ℕ => hfar (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hlim : Tendsto (fun j => ψ (u j)) atTop (𝓝 (ψ v)) :=
+    tendsto_iff_dist_tendsto_zero.2 <| squeeze_zero (fun j => dist_nonneg)
+      (fun j => (hu_near j).le) tendsto_one_div_add_atTop_nhds_zero_nat
+  -- `K = {ψ(v)} ∪ {ψ(vⱼ)}` is a compact subset of `W`, so `V ∩ ψ⁻¹(K)` is compact
+  have hKW : insert (ψ v) (range fun j => ψ (u j)) ⊆ W := by
+    rintro _ (rfl | ⟨j, rfl⟩)
+    exacts [hVW (mem_image_of_mem ψ hv), hVW (mem_image_of_mem ψ (huV j))]
+  obtain ⟨w, ⟨hwV, -⟩, φ, hφ, huw⟩ := (hproper _ hKW hlim.isCompact_insert_range).tendsto_subseq
+    (x := u) fun j => ⟨huV j, Or.inr ⟨j, rfl⟩⟩
+  -- `ψ(v_{φ(i)})` tends to `ψ(w)` (continuity on `V`) and to `ψ(v)`, so `w = v`
+  have hw : w = v := hinj hwV hv <| tendsto_nhds_unique
+    ((hψ w hwV).tendsto.comp (tendsto_nhdsWithin_iff.2 ⟨huw, .of_forall fun i => huV (φ i)⟩))
+    (hlim.comp hφ.tendsto_atTop)
+  rw [hw] at huw
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1 huw ε hε
+  exact absurd (hu_far (φ N)) (not_le.2 (hN N le_rfl))
+/-- **Secant estimate at a chart point** (Simon Ch. 2, §4, (4.1)–(4.3)).  Let `ψ(V) = W ∩ N`
+with `W` open, `v ∈ V`, `Dψ(v) = A` injective, and let `ψ⁻¹` be continuous at `ψ(v)` on `ψ(V)`.
+Then every `y ∈ N` near `ψ(v)` has some `a` with `|y − ψ(v) − Aa| ≤ ε|y − ψ(v)|`.
+
+`A` is anti-Lipschitz, `|a| ≤ K|Aa|`.  With `η = min(1, ε)/(2K)`, differentiability gives
+`|ψ(v') − ψ(v) − A(v' − v)| ≤ η|v' − v|` for `|v' − v| < ρ`, hence `|v' − v| ≤ 2K|ψ(v') − ψ(v)|`.
+If `y ∈ N` and `|y − ψ(v)| < min(δ₁, δ₂)`, where `B_{δ₂}(ψ(v)) ⊆ W` and `δ₁` is the
+inverse-continuity radius for `ρ`, then `y = ψ(v')` with `v' ∈ V`, `|v' − v| < ρ`, and
+`a = v' − v` works. -/
+theorem Submission.dsmc_chart_secant_estimate : ∀ (P d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P) (A : Euclid d →L[ℝ] Euclid P) (v : Euclid d), IsOpen W → ψ '' V = W ∩ N → v ∈ V → HasFDerivAt ψ A v → Injective A → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y (ψ v) < δ → ∃ a : Euclid d, ‖y - ψ v - A a‖ ≤ ε * ‖y - ψ v‖ := by
+  intro P d N V W ψ A v hW hψV hv hA hinj hinv ε hε
+  -- `A` is anti-Lipschitz: `‖a‖ ≤ K ‖A a‖`
+  obtain ⟨K, hK, hKA⟩ := (A : Euclid d →ₗ[ℝ] Euclid P).injective_iff_antilipschitz.1 hinj
+  have hbound : ∀ a : Euclid d, ‖a‖ ≤ K * ‖A a‖ := A.bound_of_antilipschitz hKA
+  have hK0 : (0 : ℝ) < K := hK
+  -- differentiability at `v` with `η = min 1 ε / (2K)`
+  set η : ℝ := min 1 ε / (2 * K) with hη_eq
+  have hmin : 0 < min 1 ε := lt_min one_pos hε
+  have hη : 0 < η := div_pos hmin (by positivity)
+  have hKη : K * η = min 1 ε / 2 := by
+    rw [hη_eq]
+    field_simp
+  obtain ⟨ρ, hρ, hdiff⟩ := Metric.eventually_nhds_iff.1 (hA.isLittleO.bound hη)
+  -- inverse continuity at radius `ρ`, and `B_{δ₂}(ψ v) ⊆ W`
+  obtain ⟨δ₁, hδ₁, hδ₁V⟩ := hinv ρ hρ
+  have hψv : ψ v ∈ W ∩ N := hψV ▸ mem_image_of_mem ψ hv
+  obtain ⟨δ₂, hδ₂, hδ₂W⟩ := Metric.isOpen_iff.1 hW (ψ v) hψv.1
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun y hy hyd => ?_⟩
+  -- `y = ψ v'` with `v' ∈ V` and `‖v' - v‖ < ρ`
+  have hyW : y ∈ W := hδ₂W (mem_ball.2 (hyd.trans_le (min_le_right _ _)))
+  obtain ⟨v', hv'V, rfl⟩ : y ∈ ψ '' V := hψV ▸ ⟨hyW, hy⟩
+  have hv'ρ : dist v' v < ρ := hδ₁V v' hv'V (hyd.trans_le (min_le_left _ _))
+  have hest : ‖ψ v' - ψ v - A (v' - v)‖ ≤ η * ‖v' - v‖ := hdiff hv'ρ
+  refine ⟨v' - v, ?_⟩
+  -- `‖v' - v‖ ≤ 2K ‖ψ v' - ψ v‖`
+  have hlow : ‖v' - v‖ ≤ 2 * K * ‖ψ v' - ψ v‖ := by
+    have htri : ‖A (v' - v)‖ ≤ ‖ψ v' - ψ v‖ + ‖ψ v' - ψ v - A (v' - v)‖ :=
+      norm_le_norm_add_norm_sub _ _
+    have h2 : (K : ℝ) * ‖A (v' - v)‖ ≤ K * ‖ψ v' - ψ v‖ + K * η * ‖v' - v‖ := by
+      calc (K : ℝ) * ‖A (v' - v)‖ ≤ K * (‖ψ v' - ψ v‖ + η * ‖v' - v‖) :=
+            mul_le_mul_of_nonneg_left (htri.trans (add_le_add le_rfl hest)) hK0.le
+        _ = K * ‖ψ v' - ψ v‖ + K * η * ‖v' - v‖ := by ring
+    rw [hKη] at h2
+    have h3 : min 1 ε / 2 * ‖v' - v‖ ≤ 1 / 2 * ‖v' - v‖ :=
+      mul_le_mul_of_nonneg_right (by linarith [min_le_left 1 ε]) (norm_nonneg _)
+    linarith [hbound (v' - v)]
+  calc ‖ψ v' - ψ v - A (v' - v)‖ ≤ η * ‖v' - v‖ := hest
+    _ ≤ η * (2 * K * ‖ψ v' - ψ v‖) := mul_le_mul_of_nonneg_left hlow hη.le
+    _ = 2 * (K * η) * ‖ψ v' - ψ v‖ := by ring
+    _ = min 1 ε * ‖ψ v' - ψ v‖ := by rw [hKη]; ring
+    _ ≤ ε * ‖ψ v' - ψ v‖ := mul_le_mul_of_nonneg_right (min_le_right _ _) (norm_nonneg _)
+/-- **Simon Ch. 2, §4, (4.3)**, the inclusion `T_qN ⊆ A(ℝᵈ)`.  Suppose that for each `ε > 0`
+every `y ∈ N` close to `q` has some `a ∈ ℝᵈ` with `|y − q − Aa| ≤ ε|y − q|`, and let `w = γ'(0)`.
+`L = A(ℝᵈ)` is a finite-dimensional, hence closed, subspace.  The difference quotients
+`s(t) = t⁻¹(γ(t) − q)` satisfy `dist(s(t), L) ≤ ε|s(t)|` for small `t`, and `s(t) → w`, so
+`dist(w, L) ≤ ε|w|` for every `ε > 0`.  Thus `dist(w, L) = 0` and `w ∈ L`. -/
+theorem Submission.dsmc_tangentSpace_subset_range_of_secant : ∀ (P d : ℕ) (N : Set (Euclid P)) (q : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y q < δ → ∃ a : Euclid d, ‖y - q - A a‖ ≤ ε * ‖y - q‖) → tangentSpace N q ⊆ Set.range A := by
+  intro P d N q A hsec w hw
+  obtain ⟨γ, -, hγN, hγ0, hγw⟩ := hw
+  -- Step 1: `L = A(ℝᵈ)` is a closed (finite-dimensional) and nonempty subset of `ℝᴾ`
+  have hLc : IsClosed (Set.range A) :=
+    (LinearMap.range (A : Euclid d →ₗ[ℝ] Euclid P)).closed_of_finiteDimensional
+  have hLne : (Set.range A).Nonempty := Set.range_nonempty A
+  -- Step 2: the difference quotients `s(t) = t⁻¹ (γ(t) − q)` tend to `w` as `t → 0`, `t ≠ 0`
+  have hs : Tendsto (slope γ 0) (𝓝[≠] 0) (𝓝 w) := hγw.tendsto_slope
+  -- Steps 3–5: `dist(w, L) ≤ ε |w|` for every `ε > 0`
+  have key : ∀ ε : ℝ, 0 < ε → infDist w (Set.range A) ≤ ε * ‖w‖ := by
+    intro ε hε
+    obtain ⟨δ, hδ, hN⟩ := hsec ε hε
+    -- `γ(t) ∈ N` and `|γ(t) − q| < δ` for `t` near `0`
+    have hball : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ ball q δ := by
+      have hγc := hγw.continuousAt.tendsto
+      rw [hγ0] at hγc
+      exact hγc (ball_mem_nhds q hδ)
+    have hIoo : ∀ᶠ t in 𝓝 (0 : ℝ), t ∈ Ioo (-1 : ℝ) 1 := Ioo_mem_nhds (by norm_num) (by norm_num)
+    -- the secant estimate at `y = γ(t)`, divided by `|t|`
+    have hev : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        infDist (slope γ 0 t) (Set.range A) ≤ ε * ‖slope γ 0 t‖ := by
+      filter_upwards [nhdsWithin_le_nhds (hball.and hIoo)] with t ht
+      obtain ⟨a, ha⟩ := hN (γ t) (hγN ht.2) (mem_ball.mp ht.1)
+      have hst : slope γ 0 t = t⁻¹ • (γ t - q) := by
+        rw [slope_def_module, sub_zero, hγ0]
+      calc infDist (slope γ 0 t) (Set.range A) ≤ dist (slope γ 0 t) (A (t⁻¹ • a)) :=
+            infDist_le_dist_of_mem (Set.mem_range_self _)
+        _ = ‖t⁻¹‖ * ‖γ t - q - A a‖ := by
+            rw [dist_eq_norm, hst, map_smul, ← smul_sub, norm_smul]
+        _ ≤ ‖t⁻¹‖ * (ε * ‖γ t - q‖) := by gcongr
+        _ = ε * ‖slope γ 0 t‖ := by
+            rw [hst, norm_smul]
+            ring
+    -- pass to the limit `t → 0`
+    exact le_of_tendsto_of_tendsto (((continuous_infDist_pt (Set.range A)).tendsto w).comp hs)
+      (hs.norm.const_mul ε) hev
+  -- Step 6: letting `ε → 0`, `dist(w, L) ≤ 0`
+  have h0 : infDist w (Set.range A) ≤ 0 := by
+    have hlim : Tendsto (fun ε : ℝ => ε * ‖w‖) (𝓝[>] 0) (𝓝 0) := by
+      have h : Tendsto (fun ε : ℝ => ε * ‖w‖) (𝓝 0) (𝓝 (0 * ‖w‖)) := tendsto_id.mul_const ‖w‖
+      rw [zero_mul] at h
+      exact tendsto_nhdsWithin_of_tendsto_nhds h
+    exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun ε hε => key ε hε)
+  -- Step 7: `L` is closed, so `dist(w, L) = 0` gives `w ∈ L`
+  exact (hLc.mem_iff_infDist_zero hLne).mpr (le_antisymm h0 infDist_nonneg)
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ : V → W` is a local representation of `N` as in (4.1)
+(`Cʳ`, `r ≥ 1`, 1:1 and proper, `ψ(V) = W ∩ N`, `Dψ` injective), then
+`T_{ψ(v)}N = Dψ(v)(ℝᵈ)` for every `v ∈ V`.  `Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N` because `ψ(V) ⊆ N`.
+Conversely, properness and injectivity make `ψ⁻¹` continuous at `ψ(v)` on `ψ(V)`; with `Dψ(v)`
+injective this gives, for each `ε > 0`, some `a` with `|y − ψ(v) − Dψ(v)a| ≤ ε|y − ψ(v)|` for all
+`y ∈ N` near `ψ(v)`, so the difference quotients of a `C¹` curve in `N` through `ψ(v)` converge
+into the closed subspace `Dψ(v)(ℝᵈ)`. -/
+theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v ∈ V → tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v) := by
+  intro P d r N W V ψ v hr hV hW hψ hinj hψV hproper hDψ hv
+  -- `ψ` is `C¹` on the open set `V`, hence differentiable at `v` with derivative `Dψ(v)`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  -- `ψ(V) = W ∩ N` lies in `W` and in `N`
+  have hVW : ψ '' V ⊆ W := hψV ▸ inter_subset_left
+  have hVN : ψ '' V ⊆ N := hψV ▸ inter_subset_right
+  -- `ψ⁻¹` is continuous at `ψ(v)` on `ψ(V)`
+  have hinv := Submission.dsmc_chart_inverse_continuity P d V W ψ hψ.continuousOn hinj hVW
+    hproper v hv
+  refine Subset.antisymm ?_
+    (Submission.dsmc_chart_range_subset_tangentSpace P r d N V ψ hr hV hψ hVN v hv)
+  -- `T_{ψ(v)}N ⊆ Dψ(v)(ℝᵈ)`, from the secant estimate at `ψ(v)`
+  exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
+    (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
+      (hDψ v hv) hinv)
+/-- **A subspace of dimension at least `2` minus the origin is connected** (used in passing from
+`|A| ≡ 0` to a hyperplane in Simon, App. B, Theorem B.2).  The half-spaces
+`C_v = {x ∈ H : ⟨v, x⟩ > 0}` are convex subsets of `K = H ∖ {0}`.  Fix `x₀ ∈ K`; the dimension
+formula gives `w ∈ K` with `⟨x₀, w⟩ = 0`, and `T = C_{x₀} ∪ C_w ∪ C_{-x₀}` is preconnected because
+`x₀ + w ∈ C_{x₀} ∩ C_w` and `-x₀ + w ∈ C_w ∩ C_{-x₀}`.  Each `C_y`, `y ∈ K`, meets `T` (at `y` or
+at `x₀ + y`), so `T ∪ C_y ⊆ K` is a preconnected set containing `x₀` and `y`. -/
+theorem Submission.codim1_hcp_fcp_punctured_subspace_isConnected : ∀ (P : ℕ) (H : Submodule ℝ (Euclid P)), 2 ≤ Module.finrank ℝ H → IsConnected ((H : Set (Euclid P)) \ {0}) := by
+  intro P H hH
+  -- Step 1: the half-spaces `C_v = {x ∈ H : ⟨v, x⟩ > 0}` are convex, hence preconnected, and
+  -- lie in `K = H ∖ {0}`
+  set C : Euclid P → Set (Euclid P) := fun v => (H : Set (Euclid P)) ∩ {x | 0 < inner ℝ v x}
+  have hCpre : ∀ v, IsPreconnected (C v) := fun v =>
+    (H.convex.inter (convex_halfSpace_gt (innerₛₗ ℝ v).isLinear 0)).isPreconnected
+  have hCK : ∀ v, C v ⊆ (H : Set (Euclid P)) \ {0} := by
+    rintro v x ⟨hxH, hx : 0 < inner ℝ v x⟩
+    refine ⟨hxH, fun h0 => ?_⟩
+    rw [mem_singleton_iff.1 h0, inner_zero_right] at hx
+    exact lt_irrefl 0 hx
+  have hpos : ∀ y : Euclid P, y ≠ 0 → 0 < inner ℝ y y := fun y hy => real_inner_self_pos.2 hy
+  -- Step 2: `H ≠ {0}`, so there is `x₀ ∈ H` with `x₀ ≠ 0`
+  obtain ⟨x₀, hx₀H, hx₀⟩ := Submodule.exists_mem_ne_zero_of_ne_bot
+    (Submodule.one_le_finrank_iff.1 (by omega) : H ≠ ⊥)
+  -- Step 3: a nonzero `w ∈ H ∩ (span{x₀})ᗮ`, by the dimension formula
+  -- `dim (H ⊓ L) = dim H + dim L - dim (H ⊔ L) ≥ dim H - 1 ≥ 1`, `L = (span{x₀})ᗮ`
+  obtain ⟨w, ⟨hwH, hwL⟩, hw⟩ : ∃ w, w ∈ H ⊓ (ℝ ∙ x₀)ᗮ ∧ w ≠ 0 := by
+    refine Submodule.exists_mem_ne_zero_of_ne_bot (Submodule.one_le_finrank_iff.1 ?_)
+    have h1 := Submodule.finrank_sup_add_finrank_inf_eq H (ℝ ∙ x₀)ᗮ
+    have h2 := Submodule.finrank_add_finrank_orthogonal (ℝ ∙ x₀)
+    have h3 := Submodule.finrank_le (H ⊔ (ℝ ∙ x₀)ᗮ)
+    rw [finrank_span_singleton hx₀] at h2
+    omega
+  have hxw : inner ℝ x₀ w = 0 := Submodule.mem_orthogonal_singleton_iff_inner_right.1 hwL
+  have hwx : inner ℝ w x₀ = 0 := (real_inner_comm x₀ w).trans hxw
+  -- Step 4: `T = C_{x₀} ∪ C_w ∪ C_{-x₀}` is preconnected, as `x₀ + w ∈ C_{x₀} ∩ C_w` and
+  -- `-x₀ + w ∈ C_w ∩ C_{-x₀}`
+  have hT : IsPreconnected (C x₀ ∪ C w ∪ C (-x₀)) := by
+    refine ((hCpre x₀).union (x₀ + w) ?_ ?_ (hCpre w)).union (-x₀ + w) (Or.inr ?_) ?_
+      (hCpre (-x₀))
+    · refine ⟨H.add_mem hx₀H hwH, ?_⟩
+      show 0 < inner ℝ x₀ (x₀ + w)
+      rw [inner_add_right, hxw, add_zero]
+      exact hpos x₀ hx₀
+    · refine ⟨H.add_mem hx₀H hwH, ?_⟩
+      show 0 < inner ℝ w (x₀ + w)
+      rw [inner_add_right, hwx, zero_add]
+      exact hpos w hw
+    · refine ⟨H.add_mem (H.neg_mem hx₀H) hwH, ?_⟩
+      show 0 < inner ℝ w (-x₀ + w)
+      rw [inner_add_right, inner_neg_right, hwx, neg_zero, zero_add]
+      exact hpos w hw
+    · refine ⟨H.add_mem (H.neg_mem hx₀H) hwH, ?_⟩
+      show 0 < inner ℝ (-x₀) (-x₀ + w)
+      rw [inner_add_right, inner_neg_left, inner_neg_left, inner_neg_right, hxw, neg_zero,
+        add_zero, neg_neg]
+      exact hpos x₀ hx₀
+  -- Steps 5–7: `K` is nonempty, and every `y ∈ K` lies with `x₀` in a preconnected subset of `K`
+  refine ⟨⟨x₀, hx₀H, hx₀⟩, isPreconnected_of_forall x₀ fun y ⟨hyH, hy⟩ => ?_⟩
+  have hy0 : y ≠ 0 := hy
+  have hyy : y ∈ C y := ⟨hyH, hpos y hy0⟩
+  -- Step 5: `C_y` meets `T`, at `y` if `⟨x₀, y⟩ ≠ 0` and at `x₀ + y` if `⟨x₀, y⟩ = 0`
+  obtain ⟨z, hzT, hzy⟩ : ∃ z, z ∈ C x₀ ∪ C w ∪ C (-x₀) ∧ z ∈ C y := by
+    rcases lt_trichotomy 0 (inner ℝ x₀ y) with h | h | h
+    · exact ⟨y, Or.inl (Or.inl ⟨hyH, h⟩), hyy⟩
+    · refine ⟨x₀ + y, Or.inl (Or.inl ⟨H.add_mem hx₀H hyH, ?_⟩), H.add_mem hx₀H hyH, ?_⟩
+      · show 0 < inner ℝ x₀ (x₀ + y)
+        rw [inner_add_right, ← h, add_zero]
+        exact hpos x₀ hx₀
+      · show 0 < inner ℝ y (x₀ + y)
+        rw [inner_add_right, real_inner_comm x₀ y, ← h, zero_add]
+        exact hpos y hy0
+    · refine ⟨y, Or.inr ⟨hyH, ?_⟩, hyy⟩
+      show 0 < inner ℝ (-x₀) y
+      rw [inner_neg_left]
+      exact neg_pos.2 h
+  -- Step 6: `T ∪ C_y` is a preconnected subset of `K` containing `x₀` and `y`
+  refine ⟨C x₀ ∪ C w ∪ C (-x₀) ∪ C y, ?_, Or.inl (Or.inl (Or.inl ⟨hx₀H, hpos x₀ hx₀⟩)),
+    Or.inr hyy, hT.union z hzT hzy (hCpre y)⟩
+  exact union_subset (union_subset (union_subset (hCK x₀) (hCK w)) (hCK (-x₀))) (hCK y)
+
+/-- **Globalization of local planarity** (the passage from `|A| ≡ 0` to a plane closing the proof
+of Simon, Appendix B, Theorem B.2).  Let `M ⊆ ℝᴾ` be nonempty with `0 ∉ M` and
+`closure M ⊆ M ∪ {0}`, and let `M` agree near each `x ∈ M` with some `m`-dimensional subspace
+`H ⊆ A₀`, where `m ≥ 2` and `dim A₀ = m + 1`.  Then `M = H₀ \ {0}` with `dim H₀ = m`.
+
+Two local planes at one point of `M` coincide (move from the point along `h ∈ H₁` inside both
+neighbourhoods).  Let `U_H` be the union of all open `O` with `O ∩ M = O ∩ H`; it is open and
+`U_H ∩ M = U_H ∩ H`.  If `dim H ≥ 2` and `U_H` meets `M`, then `U_H` and the open set
+`G = ℝᴾ \ closure (U_H ∩ M)` cover the connected set `H \ {0}` (a point of `H \ {0}` in
+`closure (U_H ∩ M)` lies in `M`, and its local plane is `H` by uniqueness at a nearby point of
+`U_H ∩ M`) and are disjoint on it; `H \ {0}` contains a point of `U_H ∩ M`, which is not in `G`,
+so `H \ {0} ⊆ U_H`.  Hence `H₀ \ {0} ⊆ M` for the local plane `H₀` at some `x₀ ∈ M`.  For `y ∈ M`
+with local plane `H_y`, `dim (H₀ ∩ H_y) ≥ 2m − (m + 1) ≥ 1` inside `A₀`, so the two planes share
+some `w ≠ 0`, and uniqueness at `w` gives `H_y = H₀`. -/
+theorem Submission.codim1_hcp_fcp_locally_planar_is_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P))) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \ {0} := by
+  intro P m A₀ M hm hA₀ hMne h0M hcl hloc
+  have hM0 : ∀ y ∈ M, y ∉ ({0} : Set (Euclid P)) := fun y hy h0 => h0M (h0 ▸ hy)
+  -- Step 1: two local planes of `M` at the same point `y ∈ M` coincide
+  have uniq_le : ∀ y ∈ M, ∀ (H₁ H₂ : Submodule ℝ (Euclid P)) (O₁ O₂ : Set (Euclid P)),
+      IsOpen O₁ → IsOpen O₂ → y ∈ O₁ → y ∈ O₂ → O₁ ∩ M = O₁ ∩ (H₁ : Set (Euclid P)) →
+      O₂ ∩ M = O₂ ∩ (H₂ : Set (Euclid P)) → H₁ ≤ H₂ := by
+    intro y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂ h hh
+    have hyH₁ : y ∈ H₁ := (hM₁.subset ⟨hy₁, hy⟩).2
+    have hyH₂ : y ∈ H₂ := (hM₂.subset ⟨hy₂, hy⟩).2
+    -- `z = y + s h` with `0 < s`, `s |h| < ε` lies in `B_ε(y) ⊆ O₁ ∩ O₂`
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hO₁.inter hO₂) y ⟨hy₁, hy₂⟩
+    obtain ⟨s, hs, hsε⟩ : ∃ s : ℝ, 0 < s ∧ s * ‖h‖ < ε := by
+      refine ⟨ε / (2 * (‖h‖ + 1)), by positivity, ?_⟩
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [mul_nonneg hε.le (norm_nonneg h)]
+    have hz : y + s • h ∈ O₁ ∩ O₂ := hball <| by
+      rwa [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hs.le]
+    -- `z ∈ O₁ ∩ H₁ = O₁ ∩ M`, hence `z ∈ O₂ ∩ M = O₂ ∩ H₂`
+    have hzM : y + s • h ∈ M :=
+      (hM₁.symm.subset ⟨hz.1, H₁.add_mem hyH₁ (H₁.smul_mem s hh)⟩).2
+    have hzH₂ : y + s • h ∈ H₂ := (hM₂.subset ⟨hz.2, hzM⟩).2
+    -- `h = s⁻¹ ((y + s h) − y) ∈ H₂`
+    have := H₂.smul_mem s⁻¹ (H₂.sub_mem hzH₂ hyH₂)
+    rwa [add_sub_cancel_left, inv_smul_smul₀ hs.ne'] at this
+  have uniq : ∀ y ∈ M, ∀ (H₁ H₂ : Submodule ℝ (Euclid P)) (O₁ O₂ : Set (Euclid P)),
+      IsOpen O₁ → IsOpen O₂ → y ∈ O₁ → y ∈ O₂ → O₁ ∩ M = O₁ ∩ (H₁ : Set (Euclid P)) →
+      O₂ ∩ M = O₂ ∩ (H₂ : Set (Euclid P)) → H₁ = H₂ :=
+    fun y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂ =>
+      le_antisymm (uniq_le y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂)
+        (uniq_le y hy H₂ H₁ O₂ O₁ hO₂ hO₁ hy₂ hy₁ hM₂ hM₁)
+  -- Step 2: `U_H`, the union of all open `O` with `O ∩ M = O ∩ H`, is open, contains each such
+  -- `O`, and satisfies `U_H ∩ M = U_H ∩ H`
+  obtain ⟨U, hUopen, hUsub, hUeq⟩ : ∃ U : Submodule ℝ (Euclid P) → Set (Euclid P),
+      (∀ H, IsOpen (U H)) ∧
+      (∀ (H : Submodule ℝ (Euclid P)) (O : Set (Euclid P)), IsOpen O →
+        O ∩ M = O ∩ (H : Set (Euclid P)) → O ⊆ U H) ∧
+      ∀ H, U H ∩ M = U H ∩ (H : Set (Euclid P)) := by
+    refine ⟨fun H => ⋃₀ {O | IsOpen O ∧ O ∩ M = O ∩ (H : Set (Euclid P))},
+      fun H => isOpen_sUnion fun O hO => hO.1, fun H O hO hOM => subset_sUnion_of_mem ⟨hO, hOM⟩,
+      fun H => Subset.antisymm ?_ ?_⟩
+    · rintro z ⟨hzU, hzM⟩
+      obtain ⟨O, ⟨-, hOM⟩, hzO⟩ := mem_sUnion.1 hzU
+      exact ⟨hzU, (hOM.subset ⟨hzO, hzM⟩).2⟩
+    · rintro z ⟨hzU, hzH⟩
+      obtain ⟨O, ⟨-, hOM⟩, hzO⟩ := mem_sUnion.1 hzU
+      exact ⟨hzU, (hOM.symm.subset ⟨hzO, hzH⟩).2⟩
+  -- Step 3: if `dim H ≥ 2` and `U_H ∩ M ≠ ∅`, then `H \ {0} ⊆ U_H`
+  have hfill : ∀ H : Submodule ℝ (Euclid P), 2 ≤ Module.finrank ℝ H → (U H ∩ M).Nonempty →
+      (H : Set (Euclid P)) \ {0} ⊆ U H := by
+    rintro H hH ⟨y₀, hy₀U, hy₀M⟩
+    -- (a) `H \ {0} ⊆ U_H ∪ G`, where `G = ℝᴾ \ closure (U_H ∩ M)`
+    have hcover : (H : Set (Euclid P)) \ {0} ⊆ U H ∪ (closure (U H ∩ M))ᶜ := by
+      rintro z ⟨-, hz0⟩
+      by_cases hzc : z ∈ closure (U H ∩ M)
+      · -- `z ∈ closure M \ {0} ⊆ M`; its local plane is `H`, by uniqueness at a nearby point
+        refine Or.inl ?_
+        have hzM : z ∈ M :=
+          (Set.mem_insert_iff.1 (hcl (closure_mono inter_subset_right hzc))).resolve_left hz0
+        obtain ⟨Hz, -, -, Oz, hOz, hzOz, hOzM⟩ := hloc z hzM
+        obtain ⟨y, hyOz, hyU, hyM⟩ := _root_.mem_closure_iff.1 hzc Oz hOz hzOz
+        rw [uniq y hyM Hz H Oz (U H) hOz (hUopen H) hyOz hyU hOzM (hUeq H)] at hOzM
+        exact hUsub H Oz hOz hOzM hzOz
+      · exact Or.inr hzc
+    -- (b) `(H \ {0}) ∩ U_H ∩ G = ∅`, as `U_H ∩ H = U_H ∩ M`
+    have hdisj : ((H : Set (Euclid P)) \ {0}) ∩ (U H ∩ (closure (U H ∩ M))ᶜ) = ∅ :=
+      eq_empty_iff_forall_notMem.2 fun z ⟨hz, hzU, hzG⟩ =>
+        hzG (subset_closure ((hUeq H).symm.subset ⟨hzU, hz.1⟩))
+    -- (c) `H \ {0}` is connected and contains `y₀ ∈ U_H ∩ M`, which is not in `G`
+    rcases isPreconnected_iff_subset_of_disjoint.1
+      (Submission.codim1_hcp_fcp_punctured_subspace_isConnected P H hH).isPreconnected
+      (U H) _ (hUopen H) isClosed_closure.isOpen_compl hcover hdisj with h | h
+    · exact h
+    · have hy₀ : y₀ ∈ (H : Set (Euclid P)) \ {0} :=
+        ⟨((hUeq H).subset ⟨hy₀U, hy₀M⟩).2, hM0 y₀ hy₀M⟩
+      exact absurd (subset_closure (show y₀ ∈ U H ∩ M from ⟨hy₀U, hy₀M⟩)) (h hy₀)
+  -- each local plane `H` (`dim H = m ≥ 2`) of `M` at a point of `M` has `H \ {0} ⊆ U_H`
+  have hplane : ∀ y ∈ M, ∀ (H : Submodule ℝ (Euclid P)) (O : Set (Euclid P)),
+      Module.finrank ℝ H = m → IsOpen O → y ∈ O → O ∩ M = O ∩ (H : Set (Euclid P)) →
+      (H : Set (Euclid P)) \ {0} ⊆ U H :=
+    fun y hy H O hH hO hyO hOM => hfill H (hH ▸ hm) ⟨y, hUsub H O hO hOM hyO, hy⟩
+  -- Step 4: the local plane `H₀` at some `x₀ ∈ M` has `H₀ \ {0} ⊆ U_{H₀} ∩ H₀ ⊆ M`
+  obtain ⟨x₀, hx₀⟩ := hMne
+  obtain ⟨H₀, hH₀, hH₀A, O₀, hO₀, hx₀O₀, hO₀M⟩ := hloc x₀ hx₀
+  have hH₀U := hplane x₀ hx₀ H₀ O₀ hH₀ hO₀ hx₀O₀ hO₀M
+  refine ⟨H₀, hH₀, Subset.antisymm ?_ fun z hz => ((hUeq H₀).symm.subset ⟨hH₀U hz, hz.1⟩).2⟩
+  -- Step 5: `M ⊆ H₀ \ {0}`
+  intro y hy
+  obtain ⟨Hy, hHy, hHyA, Oy, hOy, hyOy, hOyM⟩ := hloc y hy
+  have hHyU := hplane y hy Hy Oy hHy hOy hyOy hOyM
+  -- `dim (H₀ ⊓ H_y) ≥ 2m − (m + 1) ≥ 1`, since `H₀ ⊔ H_y ≤ A₀`
+  have hne : H₀ ⊓ Hy ≠ ⊥ := by
+    intro hbot
+    have hdim := Submodule.finrank_sup_add_finrank_inf_eq H₀ Hy
+    rw [hbot, finrank_bot, add_zero, hH₀, hHy] at hdim
+    have hle : m + m ≤ m + 1 :=
+      calc m + m = Module.finrank ℝ ↥(H₀ ⊔ Hy) := hdim.symm
+        _ ≤ Module.finrank ℝ ↥A₀ := Submodule.finrank_mono (sup_le hH₀A hHyA)
+        _ = m + 1 := hA₀
+    omega
+  obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
+  obtain ⟨hw₀, hwy⟩ := Submodule.mem_inf.1 hw
+  -- `w ∈ M` lies in `U_{H₀}` and `U_{H_y}`, so `H_y = H₀` by uniqueness at `w`
+  have hwU₀ : w ∈ U H₀ := hH₀U (show w ∈ (H₀ : Set (Euclid P)) \ {0} from ⟨hw₀, hw0⟩)
+  have hwUy : w ∈ U Hy := hHyU (show w ∈ (Hy : Set (Euclid P)) \ {0} from ⟨hwy, hw0⟩)
+  have hwM : w ∈ M := ((hUeq H₀).symm.subset ⟨hwU₀, hw₀⟩).2
+  have hHy₀ : Hy = H₀ :=
+    uniq w hwM Hy H₀ (U Hy) (U H₀) (hUopen Hy) (hUopen H₀) hwUy hwU₀ (hUeq Hy) (hUeq H₀)
+  exact ⟨hHy₀ ▸ (hOyM.subset ⟨hyOy, hy⟩).2, hM0 y hy⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
