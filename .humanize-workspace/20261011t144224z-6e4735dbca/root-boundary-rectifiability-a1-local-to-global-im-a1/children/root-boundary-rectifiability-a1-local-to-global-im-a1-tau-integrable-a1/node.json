@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "Integrability of the integrands of τ(M, θ, ξ)",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P be any set, and let M ⊆ ℝ^P, θ : ℝ^P → ℝ, ξ : ℝ^P → Λ_k(ℝ^P) (k-vectors, `NVector`) satisfy IsRectifiableTriple U k M θ ξ. Write H := Hᵏ = μHE[k].\n(a) For every compact K ⊆ U and every k-covector b, the function x ↦ θ(x)·ξ(x)(b) is H-integrable on M ∩ K.\n(b) For every continuous k-covector field ω : ℝ^P → Λᵏ(ℝ^P) with compact support and tsupport ω ⊆ U, the function x ↦ θ(x)·ξ(x)(ω(x)) is H-integrable on M.",
+  "lean_statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P))",
+  "lean_name": "ltg_tau_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-integrable-a1-a1"
+}
