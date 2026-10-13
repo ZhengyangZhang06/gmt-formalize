@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.sup_net-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "Finite sup-norm nets for uniformly bounded, uniformly Lipschitz sequences on a compact set",
+  "statement": "Let n ∈ ℕ, K ⊆ ℝⁿ compact (ℝⁿ = Euclid n), (g_j)_{j∈ℕ} functions ℝⁿ → ℝ and C ∈ ℝ with |g_j(x)| ≤ C and |g_j(x) − g_j(y)| ≤ C‖x − y‖ for all j and all x, y ∈ K. Then for every δ > 0 there is a finite set S ⊆ ℕ such that for every j there is k ∈ S with |g_j(x) − g_k(x)| ≤ δ for all x ∈ K.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Euclid n)) (g : ℕ → Euclid n → ℝ) (C : ℝ), IsCompact K → (∀ j, ∀ x ∈ K, |g j x| ≤ C) → (∀ j, ∀ x ∈ K, ∀ y ∈ K, |g j x - g j y| ≤ C * ‖x - y‖) → ∀ δ : ℝ, 0 < δ → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∀ x ∈ K, |g j x - g k x| ≤ δ",
+  "lean_name": "dorag_ha_rb_sup_net",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-3cd21fc12c-a1"
+}

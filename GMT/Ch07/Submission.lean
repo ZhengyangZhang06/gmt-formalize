@@ -2376,6 +2376,1084 @@ theorem Submission.dorag_ha_poincare_ball : ∀ n : ℕ, 0 < n → ∃ CP : ℝ,
     _ ≤ _ := mul_le_mul_of_nonneg_left
           (Submission.dorag_ha_pb_double_integral_bound n u L hu) (inv_nonneg.mpr hω.le)
     _ = _ := by rw [mul_comm (2 ^ (n + 2) : ℝ), mul_assoc, inv_mul_cancel_left₀ hω.ne']
+namespace Submission
+
+/-- Fundamental theorem of calculus for a Lipschitz `u` along the line `τ ↦ p + τ v`: if `u` is
+differentiable at `p + τ v` for a.e. `τ ∈ [a, b]`, then
+`u(p + b v) − u(p + a v) = ∫_a^b Du(p + τ v) v dτ`.  The difference quotients of
+`φ(τ) = u(p + τ v)` are bounded by `L ‖v‖`, so dominated convergence takes their integrals to
+`∫_a^b Du(p + τ v) v`; the same integrals are boundary averages of `φ`, which tend to
+`φ(b) − φ(a)`. -/
+theorem dorag_ha_rb_line_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (p v : Euclid n) (a b : ℝ), LipschitzWith L u → (∀ᵐ τ : ℝ, τ ∈ Set.uIcc a b → DifferentiableAt ℝ u (p + τ • v)) → u (p + b • v) - u (p + a • v) = ∫ τ in a..b, fderiv ℝ u (p + τ • v) v := by
+  intro n u L p v a b hu hdiff
+  -- `φ τ = u (p + τ • v)` is continuous and `L ‖v‖`-Lipschitz
+  set φ : ℝ → ℝ := fun τ => u (p + τ • v) with hφ
+  have hφcont : Continuous φ :=
+    hu.continuous.comp (continuous_const.add (continuous_id.smul continuous_const))
+  have hφlip : ∀ s t : ℝ, |φ s - φ t| ≤ L * ‖v‖ * |s - t| := by
+    intro s t
+    have h := hu.dist_le_mul (p + s • v) (p + t • v)
+    rw [Real.dist_eq, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul,
+      Real.norm_eq_abs] at h
+    calc |φ s - φ t| ≤ L * (|s - t| * ‖v‖) := h
+      _ = L * ‖v‖ * |s - t| := by ring
+  -- chain rule along the line
+  have hderiv : ∀ τ : ℝ, DifferentiableAt ℝ u (p + τ • v) →
+      HasDerivAt φ (fderiv ℝ u (p + τ • v) v) τ := by
+    intro τ hτ
+    have hγ : HasDerivAt (fun t : ℝ => p + t • v) v τ := by
+      simpa using ((hasDerivAt_id τ).smul_const v).const_add p
+    exact hτ.hasFDerivAt.comp_hasDerivAt τ hγ
+  -- dominated convergence for the difference quotients
+  have hlim1 : Tendsto (fun h : ℝ => ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)) (𝓝[>] 0)
+      (𝓝 (∫ τ in a..b, fderiv ℝ u (p + τ • v) v)) := by
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+      (fun _ => (L : ℝ) * ‖v‖) ?_ ?_ intervalIntegrable_const ?_
+    · filter_upwards with h
+      exact (((hφcont.comp (continuous_id.add continuous_const)).sub hφcont).const_smul
+        h⁻¹).aestronglyMeasurable
+    · filter_upwards [self_mem_nhdsWithin] with h hh
+      filter_upwards with τ _
+      have hh' : (0 : ℝ) < h := hh
+      rw [norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, abs_inv, abs_of_pos hh']
+      have := hφlip (τ + h) τ
+      rw [add_sub_cancel_left, abs_of_pos hh'] at this
+      calc h⁻¹ * |φ (τ + h) - φ τ| ≤ h⁻¹ * (L * ‖v‖ * h) :=
+            mul_le_mul_of_nonneg_left this (inv_nonneg.2 hh'.le)
+        _ = L * ‖v‖ := by field_simp
+    · filter_upwards [hdiff] with τ hτ hτ'
+      exact (hderiv τ (hτ (uIoc_subset_uIcc hτ'))).tendsto_slope_zero_right
+  -- the difference quotients integrate to boundary averages
+  set F : ℝ → ℝ := fun x => ∫ τ in (0 : ℝ)..x, φ τ with hF
+  have hFint : ∀ s t : ℝ, ∫ τ in s..t, φ τ = F t - F s := by
+    intro s t
+    exact (intervalIntegral.integral_interval_sub_left (hφcont.intervalIntegrable _ _)
+      (hφcont.intervalIntegrable _ _)).symm
+  have hkey : ∀ h : ℝ, ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)
+      = h⁻¹ • (F (b + h) - F b) - h⁻¹ • (F (a + h) - F a) := by
+    intro h
+    have hi : IntervalIntegrable (fun τ => φ (τ + h)) volume a b :=
+      (hφcont.comp (continuous_id.add continuous_const)).intervalIntegrable a b
+    rw [intervalIntegral.integral_smul, intervalIntegral.integral_sub hi
+      (hφcont.intervalIntegrable a b), intervalIntegral.integral_comp_add_right (fun τ => φ τ) h,
+      hFint, hFint]
+    simp only [smul_eq_mul]
+    ring
+  have hFd : ∀ x : ℝ, HasDerivAt F (φ x) x := fun x =>
+    (hφcont.integral_hasStrictDerivAt 0 x).hasDerivAt
+  have hlim2 : Tendsto (fun h : ℝ => ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)) (𝓝[>] 0)
+      (𝓝 (φ b - φ a)) := by
+    simp_rw [hkey]
+    exact (hFd b).tendsto_slope_zero_right.sub (hFd a).tendsto_slope_zero_right
+  exact tendsto_nhds_unique hlim2 hlim1
+
+
+end Submission
+
+/-- **FTC along translates of a Lipschitz function, for a.e. base point.**  If `u : ℝⁿ → ℝ` is
+`L`-Lipschitz and `z ∈ ℝⁿ`, then `u(p + z) − u(p) = ∫₀¹ Du(p + τz)z dτ` for a.e. `p ∈ ℝⁿ`.  By
+Rademacher's theorem the measurable set `D` of differentiability points of `u` is conull, so by
+translation invariance `p + τz ∈ D` for a.e. `p`, for every `τ`.  Fubini for the null set of the
+measurable set `{(p, τ) : p + τz ∈ D}` then gives, for a.e. `p`, `p + τz ∈ D` for a.e. `τ`: the
+hypothesis of the line FTC `Submission.dorag_ha_rb_line_ftc` with `v = z`, `a = 0`, `b = 1`. -/
+theorem Submission.dorag_ha_rb_segment_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (z : Euclid n), LipschitzWith L u → ∀ᵐ p : Euclid n, u (p + z) - u p = ∫ τ in (0 : ℝ)..1, fderiv ℝ u (p + τ • z) z := by
+  intro n u L z hu
+  -- step 1: the set `D` of differentiability points of `u` is measurable and conull (Rademacher)
+  have hD : MeasurableSet {y : Euclid n | DifferentiableAt ℝ u y} :=
+    measurableSet_of_differentiableAt ℝ u
+  have hae : ∀ᵐ y : Euclid n, DifferentiableAt ℝ u y := hu.ae_differentiableAt
+  -- step 2: for every `τ`, `p ↦ p + τz` preserves Lebesgue measure, so `p + τz ∈ D` for a.e. `p`
+  have hτ : ∀ τ : ℝ, ∀ᵐ p : Euclid n, DifferentiableAt ℝ u (p + τ • z) := fun τ =>
+    (measurePreserving_add_right volume (τ • z)).quasiMeasurePreserving.ae hae
+  -- step 3: `{(p, τ) : p + τz ∈ D}` is measurable, so Fubini lets us swap the a.e. quantifiers
+  have hmeas : MeasurableSet {q : Euclid n × ℝ | DifferentiableAt ℝ u (q.1 + q.2 • z)} :=
+    hD.preimage (measurable_fst.add (measurable_snd.smul_const z))
+  have hp : ∀ᵐ p : Euclid n, ∀ᵐ τ : ℝ, DifferentiableAt ℝ u (p + τ • z) :=
+    (Measure.ae_ae_comm (p := fun p τ => DifferentiableAt ℝ u (p + τ • z)) hmeas).2
+      (Eventually.of_forall hτ)
+  -- step 4: the line FTC with `v = z`, `a = 0`, `b = 1`, and `1 • z = z`, `p + 0 • z = p`
+  filter_upwards [hp] with p hp
+  have h := Submission.dorag_ha_rb_line_ftc n u L p z 0 1 hu (hp.mono fun τ hτ _ => hτ)
+  rwa [one_smul, zero_smul, add_zero] at h
+/-- FTC along rays through the origin: for an `L`-Lipschitz `u` and a.e. `x`,
+`u(x) − u(tx) = ∫_t^1 Du(σx)x dσ` for every `t`.  By Rademacher the differentiability set `D` of
+`u` is measurable and conull.  For `σ ≠ 0` the dilation `x ↦ σx` pulls null sets back to null sets
+(Haar scaling), so a.e. `x` has `σx ∈ D`; `σ = 0` is a null exception in `ℝ`.  Swapping the two
+a.e. quantifiers (`Measure.ae_ae_comm`, `{(σ, x) : σx ∈ D}` being measurable) gives a.e. `x` with
+`σx ∈ D` for a.e. `σ`, and for such `x` the line FTC `Submission.dorag_ha_rb_line_ftc` with
+`p = 0`, `v = x` applies for every `t`. -/
+theorem Submission.dorag_ha_rb_ray_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∀ᵐ x : Euclid n, ∀ t : ℝ, u x - u (t • x) = ∫ σ in t..1, fderiv ℝ u (σ • x) x := by
+  intro n u L hu
+  -- for `σ ≠ 0`, a.e. `x` has `σ • x` in the (conull) differentiability set
+  have hσ : ∀ᵐ σ : ℝ, ∀ᵐ x : Euclid n, DifferentiableAt ℝ u (σ • x) := by
+    filter_upwards [Measure.ae_ne volume (0 : ℝ)] with σ hσ
+    exact (Measure.quasiMeasurePreserving_smul volume hσ).ae hu.ae_differentiableAt
+  -- swap the quantifiers: `{(σ, x) | DifferentiableAt ℝ u (σ • x)}` is measurable
+  have hx : ∀ᵐ x : Euclid n, ∀ᵐ σ : ℝ, DifferentiableAt ℝ u (σ • x) :=
+    (Measure.ae_ae_comm (p := fun (σ : ℝ) (x : Euclid n) => DifferentiableAt ℝ u (σ • x))
+      ((continuous_smul (M := ℝ) (X := Euclid n)).measurable
+        (measurableSet_of_differentiableAt ℝ u))).1 hσ
+  filter_upwards [hx] with x hx t
+  have h := Submission.dorag_ha_rb_line_ftc n u L 0 x t 1 hu (by
+    filter_upwards [hx] with σ hσ _
+    rwa [zero_add])
+  simpa only [zero_add, one_smul] using h
+
+namespace Submission
+
+/-- Dilation averaging on the boundary annulus `A_s = B₁(0) \ B_{1-s}(0)`: for measurable
+`F ≥ 0` integrable on `B₁(0)` and `0 < s ≤ 1/2`,
+`∫_{A_s} ∫_{1/2}^1 F(t x) dt dx ≤ 2^(n+1) s ∫_{B₁(0)} F`.  In lower integrals: Tonelli, the
+substitution `y = t x` (Jacobian `t⁻ⁿ ≤ 2ⁿ`), Tonelli again, and for each `y` the admissible
+`t` lie in `(‖y‖, ‖y‖ / (1 - s)]`, of length `≤ 2 s`, and only when `‖y‖ < 1`. -/
+theorem dorag_ha_rb_dilation_average : ∀ (n : ℕ) (F : Euclid n → ℝ) (s : ℝ), Measurable F → (∀ y, 0 ≤ F y) → IntegrableOn F (ball (0 : Euclid n) 1) → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), (∫ t in (1 / 2 : ℝ)..1, F (t • x)) ≤ 2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y := by
+  intro n F s hF hF0 hFi hs hs2
+  have hC0 : 0 ≤ 2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y :=
+    mul_nonneg (mul_nonneg (by positivity) hs.le) (integral_nonneg hF0)
+  rw [← ENNReal.ofReal_le_ofReal_iff hC0]
+  -- `ofReal` of a Bochner integral is at most the lower integral of `ofReal`
+  have step1 : ENNReal.ofReal (∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        (∫ t in (1 / 2 : ℝ)..1, F (t • x)))
+      ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := by
+    calc ENNReal.ofReal (∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          (∫ t in (1 / 2 : ℝ)..1, F (t • x)))
+        ≤ ‖∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          (∫ t in (1 / 2 : ℝ)..1, F (t • x))‖ₑ := by
+          rw [Real.enorm_eq_ofReal_abs]; exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+      _ ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          ‖∫ t in (1 / 2 : ℝ)..1, F (t • x)‖ₑ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := by
+          refine lintegral_mono fun x => ?_
+          rw [intervalIntegral.integral_of_le (by norm_num)]
+          calc ‖∫ t in Ioc (1 / 2 : ℝ) 1, F (t • x)‖ₑ
+              ≤ ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ‖F (t • x)‖ₑ := enorm_integral_le_lintegral_enorm _
+            _ = ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := by
+              congr 1; ext t; exact Real.enorm_eq_ofReal (hF0 _)
+  -- Tonelli
+  have hmeas : Measurable (fun p : Euclid n × ℝ => ENNReal.ofReal (F (p.2 • p.1))) :=
+    (hF.comp (measurable_snd.smul measurable_fst)).ennreal_ofReal
+  have step2 : ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x))
+      = ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ENNReal.ofReal (F (t • x)) :=
+    lintegral_lintegral_swap hmeas.aemeasurable
+  -- the region `{(t, y) : t (1 - s) ≤ ‖y‖ < t}` and the integrand on it
+  obtain ⟨T, hT⟩ : ∃ T : Set (ℝ × Euclid n), T = {p | p.1 * (1 - s) ≤ ‖p.2‖ ∧ ‖p.2‖ < p.1} :=
+    ⟨_, rfl⟩
+  have hTm : MeasurableSet T := hT ▸
+    (measurableSet_le (measurable_fst.mul_const _) measurable_snd.norm).inter
+      (measurableSet_lt measurable_snd.norm measurable_fst)
+  obtain ⟨H, hH⟩ : ∃ H : ℝ × Euclid n → ℝ≥0∞, H = T.indicator (fun p => ENNReal.ofReal (F p.2)) :=
+    ⟨_, rfl⟩
+  have hHm : Measurable H := hH ▸ (hF.comp measurable_snd).ennreal_ofReal.indicator hTm
+  -- change of variables `y = t x`
+  have step3 : ∀ t ∈ Ioc (1 / 2 : ℝ) 1,
+      ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), ENNReal.ofReal (F (t • x))
+        ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, H (t, y) := by
+    intro t ht
+    have ht0 : 0 < t := lt_trans (by norm_num) ht.1
+    have hmem : ∀ x : Euclid n,
+        x ∈ ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s) ↔ (t, t • x) ∈ T := by
+      intro x
+      rw [hT]
+      simp only [Set.mem_sdiff, mem_ball_zero_iff, mem_ofPred_eq, norm_smul, Real.norm_eq_abs,
+        abs_of_pos ht0, not_lt]
+      constructor
+      · rintro ⟨h1, h2⟩
+        exact ⟨mul_le_mul_of_nonneg_left h2 ht0.le, mul_lt_of_lt_one_right ht0 h1⟩
+      · rintro ⟨h1, h2⟩
+        exact ⟨lt_of_mul_lt_mul_left (by linarith) ht0.le, le_of_mul_le_mul_left h1 ht0⟩
+    have hind : (ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s)).indicator
+        (fun x => ENNReal.ofReal (F (t • x))) = fun x => H (t, t • x) := by
+      ext x
+      rw [hH]
+      by_cases hx : x ∈ ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s)
+      · rw [indicator_of_mem hx, indicator_of_mem ((hmem x).1 hx)]
+      · rw [indicator_of_notMem hx, indicator_of_notMem (fun h => hx ((hmem x).2 h))]
+    have hHt : Measurable fun y : Euclid n => H (t, y) := hHm.comp measurable_prodMk_left
+    have hjac : ENNReal.ofReal |(t ^ Module.finrank ℝ (Euclid n))⁻¹| ≤ ENNReal.ofReal (2 ^ n) := by
+      apply ENNReal.ofReal_le_ofReal
+      rw [finrank_euclideanSpace_fin, abs_of_pos (by positivity), ← inv_pow]
+      have : t⁻¹ ≤ 2 := by
+        rw [inv_le_comm₀ ht0 (by norm_num)]; linarith [ht.1]
+      exact pow_le_pow_left₀ (by positivity) this n
+    calc ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), ENNReal.ofReal (F (t • x))
+        = ∫⁻ x, H (t, t • x) := by
+          rw [← lintegral_indicator (measurableSet_ball.diff measurableSet_ball), hind]
+      _ = ∫⁻ y, H (t, y) ∂(Measure.map (t • ·) volume) :=
+          (lintegral_map hHt (measurable_const_smul t)).symm
+      _ = ENNReal.ofReal |(t ^ Module.finrank ℝ (Euclid n))⁻¹| * ∫⁻ y, H (t, y) := by
+          rw [Measure.map_addHaar_smul volume ht0.ne', lintegral_smul_measure, smul_eq_mul]
+      _ ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, H (t, y) := by gcongr
+  have step4 : ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ENNReal.ofReal (F (t • x))
+      ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y) := by
+    calc ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+          ENNReal.ofReal (F (t • x))
+        ≤ ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (2 ^ n) * ∫⁻ y, H (t, y) :=
+          setLIntegral_mono' measurableSet_Ioc step3
+      _ = ENNReal.ofReal (2 ^ n) * ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ y, H (t, y) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ = ENNReal.ofReal (2 ^ n) * ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y) := by
+          rw [lintegral_lintegral_swap (f := fun t y => H (t, y)) hHm.aemeasurable]
+  -- length of the admissible parameter interval
+  have step5 : ∀ y : Euclid n, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y)
+      ≤ (ball (0 : Euclid n) 1).indicator
+          (fun y => ENNReal.ofReal (2 * s) * ENNReal.ofReal (F y)) y := by
+    intro y
+    have hSm : MeasurableSet {t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t} :=
+      (measurableSet_le (measurable_id.mul_const _) measurable_const).inter
+        (measurableSet_lt measurable_const measurable_id)
+    have hHy : (fun t => H (t, y)) = {t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t}.indicator
+        (fun _ => ENNReal.ofReal (F y)) := by
+      ext t
+      rw [hH, hT]
+      simp only [indicator, mem_ofPred_eq]
+    rw [hHy, lintegral_indicator_const hSm, Measure.restrict_apply hSm]
+    by_cases hy : ‖y‖ < 1
+    · rw [indicator_of_mem (mem_ball_zero_iff.2 hy), mul_comm]
+      gcongr
+      have h1s : 0 < 1 - s := by linarith
+      calc volume ({t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t} ∩ Ioc (1 / 2 : ℝ) 1)
+          ≤ volume (Ioc ‖y‖ (‖y‖ / (1 - s))) := by
+            apply measure_mono
+            rintro t ⟨⟨h1, h2⟩, -⟩
+            exact ⟨h2, (le_div_iff₀ h1s).2 h1⟩
+        _ = ENNReal.ofReal (‖y‖ / (1 - s) - ‖y‖) := Real.volume_Ioc
+        _ ≤ ENNReal.ofReal (2 * s) := by
+            apply ENNReal.ofReal_le_ofReal
+            rw [sub_le_iff_le_add, div_le_iff₀ h1s]
+            nlinarith [mul_pos hs (show 0 < 2 - 2 * s - ‖y‖ by linarith)]
+    · rw [indicator_of_notMem (by simpa using hy)]
+      have hempty : {t : ℝ | t * (1 - s) ≤ ‖y‖ ∧ ‖y‖ < t} ∩ Ioc (1 / 2 : ℝ) 1 = ∅ := by
+        ext t
+        simp only [mem_inter_iff, mem_ofPred_eq, mem_Ioc, mem_empty_iff_false, iff_false]
+        rintro ⟨⟨-, h2⟩, -, h4⟩
+        exact hy (h2.trans_le h4)
+      rw [hempty, measure_empty, mul_zero]
+  have step6 : ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y)
+      ≤ ENNReal.ofReal (2 * s) * ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y) := by
+    calc ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y)
+        ≤ ∫⁻ y, (ball (0 : Euclid n) 1).indicator
+          (fun y => ENNReal.ofReal (2 * s) * ENNReal.ofReal (F y)) y := lintegral_mono step5
+      _ = ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (2 * s) * ENNReal.ofReal (F y) :=
+          lintegral_indicator measurableSet_ball _
+      _ = ENNReal.ofReal (2 * s) * ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  have hBeq : ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y)
+      = ENNReal.ofReal (∫ y in ball (0 : Euclid n) 1, F y) :=
+    (ofReal_integral_eq_lintegral_ofReal hFi (ae_of_all _ hF0)).symm
+  calc ENNReal.ofReal (∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        (∫ t in (1 / 2 : ℝ)..1, F (t • x)))
+      ≤ ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ENNReal.ofReal (F (t • x)) := step1
+    _ = ∫⁻ t in Ioc (1 / 2 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s),
+        ENNReal.ofReal (F (t • x)) := step2
+    _ ≤ ENNReal.ofReal (2 ^ n) * ∫⁻ y, ∫⁻ t in Ioc (1 / 2 : ℝ) 1, H (t, y) := step4
+    _ ≤ ENNReal.ofReal (2 ^ n) *
+        (ENNReal.ofReal (2 * s) * ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal (F y)) := by
+        gcongr
+    _ = ENNReal.ofReal (2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y) := by
+        rw [hBeq, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+          ← ENNReal.ofReal_mul (by positivity)]
+        congr 1
+        ring
+
+end Submission
+
+/-- **`L²` translation estimate** (cf. Gilbarg–Trudinger, Lemma 7.23; Evans, §5.8.2, Theorem 3),
+for Rellich's theorem in the proof of the harmonic approximation lemma (Simon Ch. 5, 3.1, p. 114:
+"by Rellich's theorem (see [GT01])").  If `u` is Lipschitz on `ℝⁿ` and `r + ‖w‖ ≤ R`, then
+`∫_{B_r} (u(x) − u(x − w))² ≤ ‖w‖² ∫_{B_R} ‖Du‖²`: for a.e. `x`,
+`u(x) − u(x − w) = ∫₀¹ Du(x − w + τw)w dτ`; Cauchy–Schwarz on `(0, 1]` bounds its square by
+`‖w‖² ∫₀¹ ‖Du(x − w + τw)‖² dτ`; for `x ∈ B_r` the segment lies in `B_R`; integrating over `B_r`,
+Fubini and translation invariance of Lebesgue measure give the bound. -/
+theorem Submission.dorag_ha_rb_translation_l2 : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (w : Euclid n) (r R : ℝ), LipschitzWith L u → r + ‖w‖ ≤ R → ∫ x in ball (0 : Euclid n) r, (u x - u (x - w)) ^ 2 ≤ ‖w‖ ^ 2 * ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ u x‖ ^ 2 := by
+  intro n u L w r R hu hrR
+  -- Step 1: `G_R = 1_{B_R} ‖Du‖²`: measurable, `0 ≤ G_R ≤ L²`, integrable, `∫ G_R = ∫_{B_R} ‖Du‖²`
+  obtain ⟨GR, hGR⟩ : ∃ GR : Euclid n → ℝ,
+      GR = (ball (0 : Euclid n) R).indicator fun y => ‖fderiv ℝ u y‖ ^ 2 := ⟨_, rfl⟩
+  have hDu : ∀ y, ‖fderiv ℝ u y‖ ≤ L := fun y => norm_fderiv_le_of_lipschitz ℝ hu
+  have hG_meas : Measurable fun y => ‖fderiv ℝ u y‖ ^ 2 := (measurable_fderiv ℝ u).norm.pow_const 2
+  have hG_le : ∀ y, ‖fderiv ℝ u y‖ ^ 2 ≤ (L : ℝ) ^ 2 := fun y =>
+    pow_le_pow_left₀ (norm_nonneg _) (hDu y) 2
+  have hGR_meas : Measurable GR := by
+    rw [hGR]; exact hG_meas.indicator measurableSet_ball
+  have hGR_nonneg : ∀ y, 0 ≤ GR y := fun y => by
+    rw [hGR]; exact indicator_nonneg (fun y _ => sq_nonneg _) y
+  have hGR_le : ∀ y, GR y ≤ (L : ℝ) ^ 2 := fun y => by
+    by_cases hy : y ∈ ball (0 : Euclid n) R
+    · rw [hGR, indicator_of_mem hy]; exact hG_le y
+    · rw [hGR, indicator_of_notMem hy]; positivity
+  have hGR_int : Integrable GR := by
+    rw [hGR, integrable_indicator_iff measurableSet_ball]
+    refine IntegrableOn.of_bound measure_ball_lt_top hG_meas.aestronglyMeasurable ((L : ℝ) ^ 2)
+      (ae_of_all _ fun y => ?_)
+    rw [Real.norm_of_nonneg (sq_nonneg _)]
+    exact hG_le y
+  have hGR_eq : ∫ y, GR y = ∫ y in ball (0 : Euclid n) R, ‖fderiv ℝ u y‖ ^ 2 := by
+    rw [hGR]; exact integral_indicator measurableSet_ball
+  -- Step 2: the segment FTC transported by `x ↦ x − w`: for a.e. `x`,
+  -- `u x − u (x − w) = ∫_{(0, 1]} Du(x − w + τw)w dτ`
+  have hftc : ∀ᵐ x : Euclid n, u x - u (x - w) =
+      ∫ τ in Ioc (0 : ℝ) 1, fderiv ℝ u (x - w + τ • w) w := by
+    filter_upwards [(measurePreserving_sub_right volume w).quasiMeasurePreserving.ae
+      (Submission.dorag_ha_rb_segment_ftc n u L w hu)] with x hx
+    have hx' : u (x - w + w) - u (x - w) = ∫ τ in (0 : ℝ)..1, fderiv ℝ u (x - w + τ • w) w := hx
+    rwa [sub_add_cancel, intervalIntegral.integral_of_le zero_le_one] at hx'
+  -- Step 3: Cauchy–Schwarz on `(0, 1]`, via `0 ≤ ∫ (h − c)² = ∫ h² − c²` for `c = ∫ h`
+  have hvol : volume.real (Ioc (0 : ℝ) 1) = 1 := by
+    rw [Real.volume_real_Ioc_of_le zero_le_one, sub_zero]
+  have hCS : ∀ h : ℝ → ℝ, IntegrableOn h (Ioc (0 : ℝ) 1) →
+      IntegrableOn (fun τ => h τ ^ 2) (Ioc (0 : ℝ) 1) →
+      (∫ τ in Ioc (0 : ℝ) 1, h τ) ^ 2 ≤ ∫ τ in Ioc (0 : ℝ) 1, h τ ^ 2 := by
+    intro h hi hi2
+    set c := ∫ τ in Ioc (0 : ℝ) 1, h τ with hc
+    have i1 : Integrable (fun τ => 2 * c * h τ) (volume.restrict (Ioc (0 : ℝ) 1)) :=
+      Integrable.const_mul hi _
+    have i2 : Integrable (fun τ => h τ ^ 2 - 2 * c * h τ) (volume.restrict (Ioc (0 : ℝ) 1)) :=
+      Integrable.sub hi2 i1
+    have hexp : ∫ τ in Ioc (0 : ℝ) 1, (h τ - c) ^ 2 = (∫ τ in Ioc (0 : ℝ) 1, h τ ^ 2) - c ^ 2 := by
+      have e : (fun τ => (h τ - c) ^ 2) = fun τ => (h τ ^ 2 - 2 * c * h τ) + c ^ 2 := by
+        funext τ; ring
+      rw [e, integral_add i2 (integrable_const _), integral_sub hi2 i1, integral_const_mul,
+        setIntegral_const, hvol, one_smul, ← hc]
+      ring
+    have h0 : 0 ≤ ∫ τ in Ioc (0 : ℝ) 1, (h τ - c) ^ 2 :=
+      setIntegral_nonneg measurableSet_Ioc fun τ _ => sq_nonneg _
+    linarith
+  -- pointwise bounds `|Du(y)w| ≤ ‖Du(y)‖‖w‖` and `(Du(y)w)² ≤ ‖w‖² ‖Du(y)‖²`
+  have hDuw : ∀ y, |fderiv ℝ u y w| ≤ ‖fderiv ℝ u y‖ * ‖w‖ := fun y => by
+    rw [← Real.norm_eq_abs]; exact (fderiv ℝ u y).le_opNorm w
+  have hsq : ∀ y, fderiv ℝ u y w ^ 2 ≤ ‖w‖ ^ 2 * ‖fderiv ℝ u y‖ ^ 2 := fun y => by
+    calc fderiv ℝ u y w ^ 2 = |fderiv ℝ u y w| ^ 2 := (sq_abs _).symm
+      _ ≤ (‖fderiv ℝ u y‖ * ‖w‖) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) (hDuw y) 2
+      _ = ‖w‖ ^ 2 * ‖fderiv ℝ u y‖ ^ 2 := by ring
+  -- Step 4: for `x ∈ B_r` and `τ ∈ (0, 1]`, `x − w + τw = x − (1 − τ)w ∈ B_R`
+  have hseg : ∀ x ∈ ball (0 : Euclid n) r, ∀ τ ∈ Ioc (0 : ℝ) 1,
+      x - w + τ • w ∈ ball (0 : Euclid n) R := by
+    intro x hx τ hτ
+    rw [mem_ball_zero_iff] at hx ⊢
+    have e : x - w + τ • w = x - (1 - τ) • w := by rw [sub_smul, one_smul]; abel
+    have h1 : (1 - τ) * ‖w‖ ≤ ‖w‖ :=
+      mul_le_of_le_one_left (norm_nonneg w) (by linarith [hτ.1])
+    rw [e]
+    calc ‖x - (1 - τ) • w‖ ≤ ‖x‖ + ‖(1 - τ) • w‖ := norm_sub_le _ _
+      _ = ‖x‖ + (1 - τ) * ‖w‖ := by rw [norm_smul, Real.norm_of_nonneg (sub_nonneg.2 hτ.2)]
+      _ < r + ‖w‖ := by linarith
+      _ ≤ R := hrR
+  -- the integrand `F(x, τ) = G_R(x − w + τw)` on `B_r × (0, 1]`
+  have hF_meas : Measurable fun p : Euclid n × ℝ => GR (p.1 - w + p.2 • w) :=
+    hGR_meas.comp ((measurable_fst.sub_const w).add (measurable_snd.smul_const w))
+  have hint01 : ∀ x : Euclid n, IntegrableOn (fun τ : ℝ => GR (x - w + τ • w)) (Ioc (0 : ℝ) 1) :=
+    fun x => IntegrableOn.of_bound measure_Ioc_lt_top
+      (hGR_meas.comp ((measurable_id.smul_const w).const_add (x - w))).aestronglyMeasurable
+      ((L : ℝ) ^ 2) (ae_of_all _ fun τ => by
+        rw [Real.norm_of_nonneg (hGR_nonneg _)]; exact hGR_le _)
+  -- Steps 3 and 4: for a.e. `x ∈ B_r`, `(u x − u (x − w))² ≤ ‖w‖² ∫_{(0, 1]} F(x, τ) dτ`
+  have hpt : ∀ᵐ x ∂(volume.restrict (ball (0 : Euclid n) r)), (u x - u (x - w)) ^ 2 ≤
+      ‖w‖ ^ 2 * ∫ τ in Ioc (0 : ℝ) 1, GR (x - w + τ • w) := by
+    rw [ae_restrict_iff' measurableSet_ball]
+    filter_upwards [hftc] with x hx hxr
+    have hm : Measurable fun τ : ℝ => fderiv ℝ u (x - w + τ • w) w :=
+      (measurable_fderiv_apply_const ℝ u w).comp ((measurable_id.smul_const w).const_add (x - w))
+    have hi : IntegrableOn (fun τ : ℝ => fderiv ℝ u (x - w + τ • w) w) (Ioc (0 : ℝ) 1) :=
+      IntegrableOn.of_bound measure_Ioc_lt_top hm.aestronglyMeasurable ((L : ℝ) * ‖w‖)
+        (ae_of_all _ fun τ => (Real.norm_eq_abs _).le.trans ((hDuw _).trans
+          (mul_le_mul_of_nonneg_right (hDu _) (norm_nonneg w))))
+    have hi2 : IntegrableOn (fun τ : ℝ => fderiv ℝ u (x - w + τ • w) w ^ 2) (Ioc (0 : ℝ) 1) :=
+      IntegrableOn.of_bound measure_Ioc_lt_top (hm.pow_const 2).aestronglyMeasurable
+        (‖w‖ ^ 2 * (L : ℝ) ^ 2) (ae_of_all _ fun τ => by
+          rw [Real.norm_of_nonneg (sq_nonneg _)]
+          exact (hsq _).trans (mul_le_mul_of_nonneg_left (hG_le _) (sq_nonneg _)))
+    rw [hx]
+    calc (∫ τ in Ioc (0 : ℝ) 1, fderiv ℝ u (x - w + τ • w) w) ^ 2
+        ≤ ∫ τ in Ioc (0 : ℝ) 1, fderiv ℝ u (x - w + τ • w) w ^ 2 := hCS _ hi hi2
+      _ ≤ ∫ τ in Ioc (0 : ℝ) 1, ‖w‖ ^ 2 * GR (x - w + τ • w) := by
+          refine setIntegral_mono_on hi2 (Integrable.const_mul (hint01 x) _) measurableSet_Ioc
+            fun τ hτ => ?_
+          rw [hGR, indicator_of_mem (hseg x hxr τ hτ)]
+          exact hsq _
+      _ = ‖w‖ ^ 2 * ∫ τ in Ioc (0 : ℝ) 1, GR (x - w + τ • w) := integral_const_mul _ _
+  -- Step 5: `F` is bounded on the finite measure space `B_r × (0, 1]`, hence integrable
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) r)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hF_int : Integrable (fun p : Euclid n × ℝ => GR (p.1 - w + p.2 • w))
+      ((volume.restrict (ball (0 : Euclid n) r)).prod (volume.restrict (Ioc (0 : ℝ) 1))) :=
+    Integrable.of_bound hF_meas.aestronglyMeasurable ((L : ℝ) ^ 2)
+      (ae_of_all _ fun p => by rw [Real.norm_of_nonneg (hGR_nonneg _)]; exact hGR_le _)
+  have hΦ_int : Integrable (fun x => ∫ τ in Ioc (0 : ℝ) 1, GR (x - w + τ • w))
+      (volume.restrict (ball (0 : Euclid n) r)) := hF_int.integral_prod_left
+  -- Step 6: Fubini and translation invariance: `∫_{B_r} ∫_{(0, 1]} F ≤ ∫ G_R`
+  have hΦ_le : ∫ x in ball (0 : Euclid n) r, ∫ τ in Ioc (0 : ℝ) 1, GR (x - w + τ • w) ≤
+      ∫ y, GR y := by
+    rw [integral_integral_swap (f := fun x τ => GR (x - w + τ • w)) hF_int]
+    calc ∫ τ in Ioc (0 : ℝ) 1, ∫ x in ball (0 : Euclid n) r, GR (x - w + τ • w)
+        ≤ ∫ τ in Ioc (0 : ℝ) 1, ∫ y, GR y := by
+          refine integral_mono_of_nonneg
+            (ae_of_all _ fun τ => integral_nonneg fun x => hGR_nonneg _) (integrable_const _)
+            (ae_of_all _ fun τ => ?_)
+          have e : (fun x => GR (x - w + τ • w)) = fun x => GR (x + (τ • w - w)) := by
+            funext x; congr 1; abel
+          calc ∫ x in ball (0 : Euclid n) r, GR (x - w + τ • w) ≤ ∫ x, GR (x - w + τ • w) :=
+                setIntegral_le_integral (by rw [e]; exact hGR_int.comp_add_right _)
+                  (ae_of_all _ fun x => hGR_nonneg _)
+            _ = ∫ y, GR y := by rw [e, integral_add_right_eq_self]
+      _ = ∫ y, GR y := by rw [setIntegral_const, hvol, one_smul]
+  -- Step 7: combine
+  calc ∫ x in ball (0 : Euclid n) r, (u x - u (x - w)) ^ 2
+      ≤ ∫ x in ball (0 : Euclid n) r, ‖w‖ ^ 2 * ∫ τ in Ioc (0 : ℝ) 1, GR (x - w + τ • w) :=
+        integral_mono_of_nonneg (ae_of_all _ fun x => sq_nonneg _) (hΦ_int.const_mul _) hpt
+    _ = ‖w‖ ^ 2 * ∫ x in ball (0 : Euclid n) r, ∫ τ in Ioc (0 : ℝ) 1, GR (x - w + τ • w) :=
+        integral_const_mul _ _
+    _ ≤ ‖w‖ ^ 2 * ∫ y, GR y := mul_le_mul_of_nonneg_left hΦ_le (sq_nonneg _)
+    _ = ‖w‖ ^ 2 * ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ u x‖ ^ 2 := by rw [hGR_eq]
+
+/-- Step 3 (boundary layer) of the Rellich compactness argument on the unit ball, used for the
+harmonic approximation in Allard's theorem (Simon 7.4.3): for `L`-Lipschitz `u : ℝⁿ → ℝ` and
+`0 < s ≤ 1/2`, the annulus `A_s = B₁ \ B_{1-s}` satisfies
+`∫_{A_s} u² ≤ 2^{n+3} s (∫_{B₁} u² + ∫_{B₁} ‖Du‖²)`.  Along a.e. ray
+`u(x) - u(tx) = ∫_t^1 Du(σx)x dσ` (`Submission.dorag_ha_rb_ray_ftc`), so Cauchy–Schwarz on
+`[1/2, 1]` gives `u(x)² ≤ 4 ∫_{1/2}^1 u(tx)² dt + ∫_{1/2}^1 ‖Du(tx)‖² dt` for `x ∈ B₁`;
+integrate over `A_s` and average over dilations (`Submission.dorag_ha_rb_dilation_average`). -/
+theorem Submission.dorag_ha_rb_boundary_layer : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (s : ℝ), LipschitzWith L u → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \ ball (0 : Euclid n) (1 - s), u x ^ 2 ≤ 2 ^ (n + 3) * s * ((∫ x in ball (0 : Euclid n) 1, u x ^ 2) + ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2) := by
+  intro n u L s hu hs hs2
+  set B : Set (Euclid n) := ball (0 : Euclid n) 1
+  set A : Set (Euclid n) := B \ ball (0 : Euclid n) (1 - s)
+  have hBm : MeasurableSet B := measurableSet_ball
+  have hAm : MeasurableSet A := hBm.diff measurableSet_ball
+  have hBfin : volume B ≠ ∞ := measure_ball_lt_top.ne
+  have hcont : Continuous u := hu.continuous
+  have hhalf : (1 / 2 : ℝ) ≤ 1 := by norm_num
+  -- `‖Du‖ ≤ L` everywhere and `|u| ≤ |u 0| + L` on the closed unit ball
+  have hDu : ∀ y, ‖fderiv ℝ u y‖ ≤ L := fun y => norm_fderiv_le_of_lipschitz ℝ hu
+  have hu_bd : ∀ y : Euclid n, ‖y‖ ≤ 1 → |u y| ≤ |u 0| + L := by
+    intro y hy
+    have h1 : dist (u y) (u 0) ≤ L * dist y 0 := hu.dist_le_mul y 0
+    rw [Real.dist_eq, dist_zero_right] at h1
+    have h2 : (L : ℝ) * ‖y‖ ≤ L := mul_le_of_le_one_right L.coe_nonneg hy
+    have h3 := abs_sub_abs_le_abs_sub (u y) (u 0)
+    linarith
+  have hsq_bd : ∀ y : Euclid n, ‖y‖ ≤ 1 → ‖u y ^ 2‖ ≤ (|u 0| + L) ^ 2 := fun y hy => by
+    rw [Real.norm_eq_abs, abs_pow]
+    exact pow_le_pow_left₀ (abs_nonneg _) (hu_bd y hy) 2
+  have hDsq_bd : ∀ y : Euclid n, ‖‖fderiv ℝ u y‖ ^ 2‖ ≤ (L : ℝ) ^ 2 := fun y => by
+    rw [Real.norm_eq_abs, abs_pow, abs_norm]
+    exact pow_le_pow_left₀ (norm_nonneg _) (hDu y) 2
+  -- a bounded measurable function is interval integrable
+  have hii : ∀ (f : ℝ → ℝ) (C : ℝ) (a b : ℝ), Measurable f → (∀ σ, ‖f σ‖ ≤ C) →
+      IntervalIntegrable f volume a b := fun f C a b hf hC =>
+    (intervalIntegrable_const (c := C)).mono_fun' hf.aestronglyMeasurable
+      (Eventually.of_forall hC)
+  -- `u²` and `‖Du‖²` are measurable, nonnegative and integrable on `B`
+  have hmF₁ : Measurable fun y => u y ^ 2 := (hcont.pow 2).measurable
+  have hmF₂ : Measurable fun y => ‖fderiv ℝ u y‖ ^ 2 := by fun_prop
+  have hiF₁ : IntegrableOn (fun y => u y ^ 2) B := by
+    refine Measure.integrableOn_of_bounded (M := (|u 0| + L) ^ 2) hBfin
+      hmF₁.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem hBm] with y hy
+    exact hsq_bd y (mem_ball_zero_iff.mp hy).le
+  have hiF₂ : IntegrableOn (fun y => ‖fderiv ℝ u y‖ ^ 2) B :=
+    Measure.integrableOn_of_bounded (M := (L : ℝ) ^ 2) hBfin hmF₂.aestronglyMeasurable
+      (Eventually.of_forall hDsq_bd)
+  -- the dilation averages `I₁(x) = ∫_{1/2}^1 u(tx)² dt` and `J(x) = ∫_{1/2}^1 ‖Du(tx)‖² dt`
+  set I₁ : Euclid n → ℝ := fun x => ∫ t in (1 / 2 : ℝ)..1, u (t • x) ^ 2
+  set J : Euclid n → ℝ := fun x => ∫ t in (1 / 2 : ℝ)..1, ‖fderiv ℝ u (t • x)‖ ^ 2
+  -- the pointwise estimate on a ray along which the fundamental theorem of calculus holds
+  have key : ∀ x : Euclid n, ‖x‖ ≤ 1 →
+      (∀ t : ℝ, u x - u (t • x) = ∫ σ in t..1, fderiv ℝ u (σ • x) x) →
+      u x ^ 2 ≤ 4 * I₁ x + J x := by
+    intro x hx hray
+    have hgm : Measurable fun σ : ℝ => ‖fderiv ℝ u (σ • x)‖ := by fun_prop
+    have hgi : ∀ a b : ℝ, IntervalIntegrable (fun σ : ℝ => ‖fderiv ℝ u (σ • x)‖) volume a b :=
+      fun a b => hii _ L a b hgm fun σ => by rw [norm_norm]; exact hDu _
+    have hg2i : IntervalIntegrable (fun σ : ℝ => ‖fderiv ℝ u (σ • x)‖ ^ 2) volume (1 / 2) 1 :=
+      hii _ ((L : ℝ) ^ 2) _ _ (hgm.pow_const 2) fun σ => hDsq_bd _
+    set γ : ℝ := ∫ σ in (1 / 2 : ℝ)..1, ‖fderiv ℝ u (σ • x)‖ with hγ
+    -- (a) `|u(x) - u(tx)| ≤ ∫_t^1 ‖Du(σx)‖ dσ ≤ γ` for `t ∈ [1/2, 1]`
+    have ha : ∀ t ∈ Icc (1 / 2 : ℝ) 1, |u x - u (t • x)| ≤ γ := by
+      intro t ht
+      rw [hray t, ← Real.norm_eq_abs]
+      calc ‖∫ σ in t..1, fderiv ℝ u (σ • x) x‖
+          ≤ ∫ σ in t..1, ‖fderiv ℝ u (σ • x)‖ :=
+            intervalIntegral.norm_integral_le_of_norm_le ht.2
+              (Eventually.of_forall fun σ _ => ((fderiv ℝ u (σ • x)).le_opNorm x).trans
+                (mul_le_of_le_one_right (norm_nonneg _) hx)) (hgi t 1)
+        _ ≤ γ := intervalIntegral.integral_mono_interval ht.1 ht.2 le_rfl
+              (Eventually.of_forall fun σ => norm_nonneg _) (hgi _ _)
+    -- (b) `u(x)² ≤ 2u(tx)² + 2γ²`
+    have hb : ∀ t ∈ Icc (1 / 2 : ℝ) 1, u x ^ 2 ≤ 2 * u (t • x) ^ 2 + 2 * γ ^ 2 := by
+      intro t ht
+      have h1 := abs_le.mp (ha t ht)
+      have h2 : (u x - u (t • x)) ^ 2 ≤ γ ^ 2 := sq_le_sq' h1.1 h1.2
+      linarith [sq_nonneg (2 * u (t • x) - u x)]
+    -- (c) Cauchy–Schwarz on `[1/2, 1]`: integrating `4γ‖Du(σx)‖ ≤ ‖Du(σx)‖² + 4γ²` gives
+    -- `4γ² ≤ J(x) + 2γ²`
+    have hc : 2 * γ ^ 2 ≤ J x := by
+      have h1 : ∫ σ in (1 / 2 : ℝ)..1, 4 * γ * ‖fderiv ℝ u (σ • x)‖ ≤
+          ∫ σ in (1 / 2 : ℝ)..1, (‖fderiv ℝ u (σ • x)‖ ^ 2 + 4 * γ ^ 2) :=
+        intervalIntegral.integral_mono_on hhalf ((hgi _ _).const_mul _)
+          (hg2i.add intervalIntegrable_const)
+          fun σ _ => by linarith [sq_nonneg (‖fderiv ℝ u (σ • x)‖ - 2 * γ)]
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_add hg2i
+        intervalIntegrable_const, intervalIntegral.integral_const, smul_eq_mul, ← hγ] at h1
+      have hJx : J x = ∫ σ in (1 / 2 : ℝ)..1, ‖fderiv ℝ u (σ • x)‖ ^ 2 := rfl
+      linarith
+    -- (d) averaging (b) over `t ∈ [1/2, 1]` gives `u(x)² ≤ 4I₁(x) + 2γ²`
+    have hd : (1 - 1 / 2 : ℝ) * u x ^ 2 ≤ 2 * I₁ x + (1 - 1 / 2) * (2 * γ ^ 2) := by
+      have hcu : Continuous fun t : ℝ => u (t • x) ^ 2 := by fun_prop
+      have h1 : ∫ t in (1 / 2 : ℝ)..1, u x ^ 2 ≤
+          ∫ t in (1 / 2 : ℝ)..1, (2 * u (t • x) ^ 2 + 2 * γ ^ 2) :=
+        intervalIntegral.integral_mono_on hhalf intervalIntegrable_const
+          (((hcu.intervalIntegrable _ _).const_mul 2).add intervalIntegrable_const) hb
+      rw [intervalIntegral.integral_const, intervalIntegral.integral_add
+        ((hcu.intervalIntegrable _ _).const_mul 2) intervalIntegrable_const,
+        intervalIntegral.integral_const_mul, intervalIntegral.integral_const, smul_eq_mul,
+        smul_eq_mul] at h1
+      have hI₁x : I₁ x = ∫ t in (1 / 2 : ℝ)..1, u (t • x) ^ 2 := rfl
+      linarith
+    linarith
+  -- `I₁` and `J` are strongly measurable (Fubini) and bounded on `B`, hence integrable on `A`
+  have hI₁m : StronglyMeasurable I₁ := by
+    have h : Measurable fun p : Euclid n × ℝ => u (p.2 • p.1) ^ 2 := by fun_prop
+    convert h.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioc (1 / 2 : ℝ) 1))
+      using 1
+    funext x
+    exact intervalIntegral.integral_of_le hhalf
+  have hJm : StronglyMeasurable J := by
+    have h : Measurable fun p : Euclid n × ℝ => ‖fderiv ℝ u (p.2 • p.1)‖ ^ 2 := by fun_prop
+    convert h.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioc (1 / 2 : ℝ) 1))
+      using 1
+    funext x
+    exact intervalIntegral.integral_of_le hhalf
+  have hI₁A : IntegrableOn I₁ A := by
+    refine (Measure.integrableOn_of_bounded (M := (|u 0| + L) ^ 2 * |1 - 1 / 2|) hBfin
+      hI₁m.aestronglyMeasurable ?_).mono_set sdiff_subset
+    filter_upwards [ae_restrict_mem hBm] with x hx
+    refine intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => hsq_bd _ ?_
+    rw [uIoc_of_le hhalf] at ht
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (by linarith [ht.1])]
+    have hx1 : ‖x‖ < 1 := mem_ball_zero_iff.mp hx
+    nlinarith [ht.2, norm_nonneg x]
+  have hJA : IntegrableOn J A :=
+    (Measure.integrableOn_of_bounded (M := (L : ℝ) ^ 2 * |1 - 1 / 2|) hBfin
+      hJm.aestronglyMeasurable (Eventually.of_forall fun x =>
+        intervalIntegral.norm_integral_le_of_norm_le_const fun t _ => hDsq_bd _)).mono_set
+      sdiff_subset
+  -- integrate the pointwise estimate over `A`
+  have hae : ∀ᵐ x ∂(volume.restrict A), u x ^ 2 ≤ 4 * I₁ x + J x := by
+    filter_upwards [ae_restrict_mem hAm,
+      ae_restrict_of_ae (Submission.dorag_ha_rb_ray_ftc n u L hu)] with x hxA hray
+    exact key x (mem_ball_zero_iff.mp hxA.1).le hray
+  have hmain : ∫ x in A, u x ^ 2 ≤ ∫ x in A, (4 * I₁ x + J x) :=
+    integral_mono_of_nonneg (Eventually.of_forall fun x => sq_nonneg (u x))
+      ((hI₁A.const_mul 4).add hJA) hae
+  rw [integral_add (hI₁A.const_mul 4) hJA, integral_const_mul] at hmain
+  -- average over dilations, then `4 · 2^{n+1} = 2^{n+3}`
+  have hdil₁ : ∫ x in A, I₁ x ≤ 2 ^ (n + 1) * s * ∫ y in B, u y ^ 2 :=
+    Submission.dorag_ha_rb_dilation_average n (fun y => u y ^ 2) s hmF₁ (fun y => sq_nonneg _)
+      hiF₁ hs hs2
+  have hdil₂ : ∫ x in A, J x ≤ 2 ^ (n + 1) * s * ∫ y in B, ‖fderiv ℝ u y‖ ^ 2 :=
+    Submission.dorag_ha_rb_dilation_average n (fun y => ‖fderiv ℝ u y‖ ^ 2) s hmF₂
+      (fun y => sq_nonneg _) hiF₂ hs hs2
+  have hJB : 0 ≤ 2 ^ (n + 1) * s * ∫ y in B, ‖fderiv ℝ u y‖ ^ 2 :=
+    mul_nonneg (mul_nonneg (by positivity) hs.le) (setIntegral_nonneg hBm fun y _ => sq_nonneg _)
+  have h2 : (2 : ℝ) ^ (n + 3) = 4 * 2 ^ (n + 1) := by ring
+  rw [h2]
+  linarith
+/-- **Interior `L²` error of a mollification** (step (2a) of the Rellich ball argument): if
+`u : ℝⁿ → ℝ` is Lipschitz, `ρ ≥ 0` is continuous, vanishes where `‖z‖ ≥ 1` and has `∫ ρ = 1`,
+and `0 < ε ≤ s`, then `v(x) = ∫ u(x − εz) ρ(z) dz` satisfies
+`∫_{B_{1−s}} (u − v)² ≤ ε² ∫_{B_1} ‖Du‖²`.  Weighted Jensen gives
+`(u(x) − v(x))² ≤ ∫ (u(x) − u(x − εz))² ρ(z) dz`; the integrand is dominated by `(Lε‖z‖)² ρ(z)`,
+so Fubini swaps the integrals, and `Submission.dorag_ha_rb_translation_l2` (`r = 1 − s`, `R = 1`,
+`w = εz`, `‖εz‖ ≤ ε ≤ s` where `ρ(z) ≠ 0`) bounds each inner integral by `ε² ∫_{B_1} ‖Du‖²`. -/
+theorem Submission.dorag_ha_rb_mollify_l2 : ∀ (n : ℕ) (u ρ : Euclid n → ℝ) (L : NNReal) (ε s : ℝ), LipschitzWith L u → Continuous ρ → (∀ z, 0 ≤ ρ z) → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → 0 < ε → ε ≤ s → ∫ x in ball (0 : Euclid n) (1 - s), (u x - ∫ z, u (x - ε • z) * ρ z) ^ 2 ≤ ε ^ 2 * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2 := by
+  intro n u ρ L ε s hu hρc hρ0 hρ1 hρint hε hεs
+  have huc : Continuous u := hu.continuous
+  -- step 1: `ρ` vanishes off `closedBall 0 1`, so `g ρ` is integrable for every continuous `g`
+  have hρcs : HasCompactSupport ρ :=
+    HasCompactSupport.intro (isCompact_closedBall 0 1) fun z hz =>
+      hρ1 z (not_le.mp (by simpa using hz)).le
+  have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρcs
+  have hgρ : ∀ g : Euclid n → ℝ, Continuous g → Integrable fun z => g z * ρ z := fun g hg =>
+    (hg.mul hρc).integrable_of_hasCompactSupport (hρcs.mul_left (f := g))
+  -- step 2: `u(x) − v(x) = ∫ (u(x) − u(x − εz)) ρ(z) dz`, as `∫ ρ = 1`
+  have hrep : ∀ x, u x - ∫ z, u (x - ε • z) * ρ z = ∫ z, (u x - u (x - ε • z)) * ρ z := by
+    intro x
+    simp_rw [sub_mul]
+    rw [integral_sub (hρi.const_mul (u x)) (hgρ (fun z => u (x - ε • z)) (by fun_prop)),
+      integral_const_mul, hρint, mul_one]
+  -- step 3: weighted Jensen, `(∫ g ρ)² ≤ ∫ g² ρ`, from `0 ≤ ∫ (g − c)² ρ = ∫ g² ρ − c²`
+  have hjensen : ∀ g : Euclid n → ℝ, Continuous g →
+      (∫ z, g z * ρ z) ^ 2 ≤ ∫ z, g z ^ 2 * ρ z := by
+    intro g hg
+    obtain ⟨c, hc⟩ : ∃ c, ∫ z, g z * ρ z = c := ⟨_, rfl⟩
+    have h0 : 0 ≤ ∫ z, (g z - c) ^ 2 * ρ z :=
+      integral_nonneg fun z => mul_nonneg (sq_nonneg _) (hρ0 z)
+    have e : (fun z => (g z - c) ^ 2 * ρ z) =
+        fun z => g z ^ 2 * ρ z - 2 * c * (g z * ρ z) + c ^ 2 * ρ z := by
+      funext z
+      ring
+    have i1 : Integrable fun z => g z ^ 2 * ρ z := hgρ (fun z => g z ^ 2) (hg.pow 2)
+    have i2 : Integrable fun z => 2 * c * (g z * ρ z) := (hgρ g hg).const_mul (2 * c)
+    have i3 : Integrable fun z => g z ^ 2 * ρ z - 2 * c * (g z * ρ z) := i1.sub i2
+    rw [e, integral_add i3 (hρi.const_mul (c ^ 2)), integral_sub i1 i2, integral_const_mul,
+      integral_const_mul, hc, hρint] at h0
+    rw [hc]
+    nlinarith
+  -- step 4: `|u(x) − u(x − εz)| ≤ Lε‖z‖`, so the integrand is dominated by `(Lε‖z‖)² ρ(z)`,
+  -- which is integrable on `B_{1−s} × ℝⁿ`
+  have hlip : ∀ x z : Euclid n, |u x - u (x - ε • z)| ≤ L * (ε * ‖z‖) := by
+    intro x z
+    have h := hu.dist_le_mul x (x - ε • z)
+    rwa [Real.dist_eq, dist_eq_norm, sub_sub_cancel, norm_smul, Real.norm_of_nonneg hε.le] at h
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) (1 - s))) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hint : Integrable (uncurry fun x z => (u x - u (x - ε • z)) ^ 2 * ρ z)
+      ((volume.restrict (ball (0 : Euclid n) (1 - s))).prod volume) := by
+    refine ((hgρ (fun z => (L * (ε * ‖z‖)) ^ 2) (by fun_prop)).comp_snd
+      (volume.restrict (ball (0 : Euclid n) (1 - s)))).mono'
+      (show Continuous fun p : Euclid n × Euclid n => (u p.1 - u (p.1 - ε • p.2)) ^ 2 * ρ p.2
+        by fun_prop).aestronglyMeasurable (ae_of_all _ fun p => ?_)
+    show ‖(u p.1 - u (p.1 - ε • p.2)) ^ 2 * ρ p.2‖ ≤ (L * (ε * ‖p.2‖)) ^ 2 * ρ p.2
+    rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (hρ0 _))]
+    exact mul_le_mul_of_nonneg_right (sq_le_sq.2 ((hlip _ _).trans (le_abs_self _))) (hρ0 _)
+  -- step 5: Jensen pointwise, then Fubini; step 6: the translation estimate for `‖z‖ < 1`
+  -- (`ρ(z) = 0` otherwise); step 7: `∫ ρ = 1`
+  calc ∫ x in ball (0 : Euclid n) (1 - s), (u x - ∫ z, u (x - ε • z) * ρ z) ^ 2
+      ≤ ∫ x in ball (0 : Euclid n) (1 - s), ∫ z, (u x - u (x - ε • z)) ^ 2 * ρ z := by
+        refine integral_mono_of_nonneg (ae_of_all _ fun x => sq_nonneg _)
+          hint.integral_prod_left (ae_of_all _ fun x => ?_)
+        show (u x - ∫ z, u (x - ε • z) * ρ z) ^ 2 ≤ ∫ z, (u x - u (x - ε • z)) ^ 2 * ρ z
+        rw [hrep x]
+        exact hjensen (fun z => u x - u (x - ε • z)) (by fun_prop)
+    _ = ∫ z, ∫ x in ball (0 : Euclid n) (1 - s), (u x - u (x - ε • z)) ^ 2 * ρ z :=
+        integral_integral_swap hint
+    _ ≤ ∫ z, ε ^ 2 * (∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2) * ρ z := by
+        refine integral_mono hint.integral_prod_right (hρi.const_mul _) fun z => ?_
+        show ∫ x in ball (0 : Euclid n) (1 - s), (u x - u (x - ε • z)) ^ 2 * ρ z ≤
+          ε ^ 2 * (∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2) * ρ z
+        rw [integral_mul_const]
+        rcases le_or_gt 1 ‖z‖ with hz | hz
+        · simp [hρ1 z hz]
+        have hw : ‖ε • z‖ ≤ ε := by
+          rw [norm_smul, Real.norm_of_nonneg hε.le]
+          exact mul_le_of_le_one_right hε.le hz.le
+        refine mul_le_mul_of_nonneg_right ?_ (hρ0 z)
+        calc ∫ x in ball (0 : Euclid n) (1 - s), (u x - u (x - ε • z)) ^ 2
+            ≤ ‖ε • z‖ ^ 2 * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2 :=
+              Submission.dorag_ha_rb_translation_l2 n u L (ε • z) (1 - s) 1 hu (by linarith)
+          _ ≤ ε ^ 2 * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2 :=
+              mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hw 2)
+                (integral_nonneg fun x => sq_nonneg _)
+    _ = ε ^ 2 * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2 := by
+        rw [integral_const_mul, hρint, mul_one]
+/-- **Uniform bounds for mollifications** (Rellich compactness step of the harmonic approximation
+lemma, Simon 5.3.1–5.3.4).  Let `ρ` be continuous, zero for `‖z‖ ≥ 1`, bounded by `C` and
+`C`-Lipschitz, `0 < ε ≤ s / 2`, and `v(x) = ∫ u(x − εz)ρ(z) dz`.  On `K = closedBall(0, 1 − s)`
+we have `|v| ≤ ε⁻ⁿC∫_{B₁(0)}|u|` and `v` is `ε⁻⁽ⁿ⁺¹⁾C∫_{B₁(0)}|u|`-Lipschitz.  Substituting
+`y = x − εz` gives `v(x) = ε⁻ⁿ∫ u(y)ρ(ε⁻¹(x − y)) dy`, and for `x ∈ K`, `‖y‖ ≥ 1` we have
+`‖x − y‖ ≥ s ≥ ε`, so the integrand vanishes off `B₁(0)`; the bounds follow from `|ρ| ≤ C` and
+`|ρ(ε⁻¹(x − y)) − ρ(ε⁻¹(x' − y))| ≤ Cε⁻¹‖x − x'‖`. -/
+theorem Submission.dorag_ha_rb_mollify_bounds : ∀ (n : ℕ) (u ρ : Euclid n → ℝ) (C ε s : ℝ), Continuous u → Continuous ρ → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → (∀ z, |ρ z| ≤ C) → (∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖) → 0 < ε → ε ≤ s / 2 → (∀ x ∈ closedBall (0 : Euclid n) (1 - s), |∫ z, u (x - ε • z) * ρ z| ≤ (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u y|) ∧ ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ x' ∈ closedBall (0 : Euclid n) (1 - s), |(∫ z, u (x - ε • z) * ρ z) - ∫ z, u (x' - ε • z) * ρ z| ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u y| := by
+  intro n u ρ C ε s hu hρ hsupp hbd hlip hε hεs
+  have hεn : 0 < (ε ^ n)⁻¹ := inv_pos.mpr (pow_pos hε n)
+  -- (1) support: for `x ∈ K` and `y ∉ B₁(0)`, `‖ε⁻¹(x − y)‖ ≥ 1`, so `ρ(ε⁻¹(x − y)) = 0`
+  have hzero : ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ y ∉ ball (0 : Euclid n) 1,
+      ρ (ε⁻¹ • (x - y)) = 0 := by
+    intro x hx y hy
+    rw [mem_closedBall_zero_iff] at hx
+    rw [mem_ball_zero_iff, not_lt] at hy
+    apply hsupp
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hε.le), one_le_inv_mul₀ hε]
+    calc ε ≤ ‖y‖ - ‖x‖ := by linarith
+      _ ≤ ‖y - x‖ := norm_sub_norm_le _ _
+      _ = ‖x - y‖ := norm_sub_rev _ _
+  -- (2) continuous functions are integrable on `B₁(0)`
+  have hint : ∀ f : Euclid n → ℝ, Continuous f → IntegrableOn f (ball (0 : Euclid n) 1) :=
+    fun f hf => (hf.continuousOn.integrableOn_compact (isCompact_closedBall 0 1)).mono_set
+      ball_subset_closedBall
+  have hcf : ∀ x : Euclid n, Continuous fun y => u y * ρ (ε⁻¹ • (x - y)) := fun x =>
+    hu.mul (hρ.comp ((continuous_const.sub continuous_id).const_smul ε⁻¹))
+  -- (3) change of variables `y = x − εz`: `v(x) = ε⁻ⁿ∫_{B₁(0)} u(y)ρ(ε⁻¹(x − y)) dy`
+  have hcov : ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∫ z, u (x - ε • z) * ρ z =
+      (ε ^ n)⁻¹ * ∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y)) := by
+    intro x hx
+    have h1 := Measure.integral_comp_smul_of_nonneg (volume : Measure (Euclid n))
+      (fun w => u (x - w) * ρ (ε⁻¹ • w)) ε (hR := hε.le)
+    simp only [inv_smul_smul₀ hε.ne', finrank_euclideanSpace_fin, smul_eq_mul] at h1
+    rw [h1, setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by
+      rw [hzero x hx y hy, mul_zero]]
+    congr 1
+    simpa only [sub_sub_cancel] using
+      integral_sub_left_eq_self (fun y => u y * ρ (ε⁻¹ • (x - y))) volume x
+  refine ⟨fun x hx => ?_, fun x hx x' hx' => ?_⟩
+  -- (4) sup bound from `|ρ| ≤ C`
+  · have hb : |∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y))| ≤
+        ∫ y in ball (0 : Euclid n) 1, |u y| * C := by
+      rw [← Real.norm_eq_abs]
+      refine norm_integral_le_of_norm_le ((hint _ hu.abs).mul_const C)
+        (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, abs_mul]
+      exact mul_le_mul_of_nonneg_left (hbd _) (abs_nonneg _)
+    rw [integral_mul_const] at hb
+    rw [hcov x hx, abs_mul, abs_of_pos hεn]
+    calc (ε ^ n)⁻¹ * |∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y))|
+        ≤ (ε ^ n)⁻¹ * ((∫ y in ball (0 : Euclid n) 1, |u y|) * C) :=
+          mul_le_mul_of_nonneg_left hb hεn.le
+      _ = (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u y| := by ring
+  -- (5) Lipschitz bound from `|ρ(ε⁻¹(x − y)) − ρ(ε⁻¹(x' − y))| ≤ Cε⁻¹‖x − x'‖`
+  · have hb : |∫ y in ball (0 : Euclid n) 1,
+          (u y * ρ (ε⁻¹ • (x - y)) - u y * ρ (ε⁻¹ • (x' - y)))| ≤
+        ∫ y in ball (0 : Euclid n) 1, |u y| * (C * ε⁻¹ * ‖x - x'‖) := by
+      rw [← Real.norm_eq_abs]
+      refine norm_integral_le_of_norm_le ((hint _ hu.abs).mul_const _)
+        (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, ← mul_sub, abs_mul]
+      refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+      calc |ρ (ε⁻¹ • (x - y)) - ρ (ε⁻¹ • (x' - y))|
+          ≤ C * ‖ε⁻¹ • (x - y) - ε⁻¹ • (x' - y)‖ := hlip _ _
+        _ = C * ε⁻¹ * ‖x - x'‖ := by
+          rw [← smul_sub, sub_sub_sub_cancel_right, norm_smul,
+            Real.norm_of_nonneg (inv_nonneg.mpr hε.le), mul_assoc]
+    rw [integral_mul_const, integral_sub (hint _ (hcf x)) (hint _ (hcf x'))] at hb
+    rw [hcov x hx, hcov x' hx', ← mul_sub, abs_mul, abs_of_pos hεn]
+    calc (ε ^ n)⁻¹ * |(∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y))) -
+          ∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x' - y))|
+        ≤ (ε ^ n)⁻¹ * ((∫ y in ball (0 : Euclid n) 1, |u y|) * (C * ε⁻¹ * ‖x - x'‖)) :=
+          mul_le_mul_of_nonneg_left hb hεn.le
+      _ = (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u y| := by
+          rw [pow_succ, mul_inv]
+          ring
+/-- **Mollifier kernel** for the Rellich compactness step of the harmonic approximation lemma
+(Simon 5.3.1–5.3.4): a continuous probability density `ρ ≥ 0` on `ℝⁿ`, vanishing for `‖z‖ ≥ 1`,
+bounded by `C` and `C`-Lipschitz.  Take the tent `ρ₀(z) = (1 − ‖z‖)₊`, which is continuous, `0 ≤ ρ₀ ≤ 1`, zero off
+`B_1(0)` and `1`-Lipschitz; `c₀ = ∫ ρ₀ > 0` since `ρ₀` is compactly supported, nonnegative and
+`ρ₀(0) = 1`; then `ρ = c₀⁻¹ρ₀` and `C = c₀⁻¹`. -/
+theorem Submission.dorag_ha_rb_kernel : ∀ (n : ℕ), ∃ (ρ : Euclid n → ℝ) (C : ℝ), Continuous ρ ∧ (∀ z, 0 ≤ ρ z) ∧ (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) ∧ ∫ z, ρ z = 1 ∧ (∀ z, |ρ z| ≤ C) ∧ ∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖ := by
+  intro n
+  -- the tent `ρ₀(z) = (1 − ‖z‖)₊`: continuous, `0 ≤ ρ₀ ≤ 1`, zero off `B_1(0)`, `1`-Lipschitz
+  set ρ₀ : Euclid n → ℝ := fun z => max (1 - ‖z‖) 0 with hρ₀
+  have hcont : Continuous ρ₀ := (continuous_const.sub continuous_norm).max continuous_const
+  have hnonneg : ∀ z, 0 ≤ ρ₀ z := fun z => le_max_right _ _
+  have hle : ∀ z, ρ₀ z ≤ 1 := fun z => max_le (by linarith [norm_nonneg z]) zero_le_one
+  have hvanish : ∀ z : Euclid n, 1 ≤ ‖z‖ → ρ₀ z = 0 := fun z hz => max_eq_right (by linarith)
+  have hlip : ∀ z z', |ρ₀ z - ρ₀ z'| ≤ ‖z - z'‖ := fun z z' =>
+    calc |ρ₀ z - ρ₀ z'| ≤ |(1 - ‖z‖) - (1 - ‖z'‖)| := abs_max_sub_max_le_abs _ _ _
+      _ = |‖z'‖ - ‖z‖| := by ring_nf
+      _ ≤ ‖z' - z‖ := abs_norm_sub_norm_le _ _
+      _ = ‖z - z'‖ := norm_sub_rev _ _
+  -- `c₀ = ∫ ρ₀ > 0`: `ρ₀` is continuous, compactly supported, nonnegative and `ρ₀(0) = 1`
+  have hsupp : HasCompactSupport ρ₀ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) 1) fun z hz =>
+      hvanish z (by simpa using (not_le.mp (by simpa using hz)).le)
+  have hpos : 0 < ∫ z, ρ₀ z :=
+    hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hsupp hnonneg (x := 0) (by simp [hρ₀])
+  -- `ρ = c₀⁻¹ ρ₀` and `C = c₀⁻¹`
+  have hC : 0 ≤ (∫ z, ρ₀ z)⁻¹ := inv_nonneg.mpr hpos.le
+  refine ⟨fun z => (∫ z, ρ₀ z)⁻¹ * ρ₀ z, (∫ z, ρ₀ z)⁻¹, continuous_const.mul hcont,
+    fun z => mul_nonneg hC (hnonneg z), fun z hz => by simp [hvanish z hz], ?_, fun z => ?_,
+    fun z z' => ?_⟩
+  · rw [integral_const_mul]
+    exact inv_mul_cancel₀ hpos.ne'
+  · rw [abs_of_nonneg (mul_nonneg hC (hnonneg z))]
+    exact mul_le_of_le_one_right hC (hle z)
+  · rw [← mul_sub, abs_mul, abs_of_nonneg hC]
+    exact mul_le_mul_of_nonneg_left (hlip z z') hC
+/-- **Finite sup-norm nets** (the total-boundedness half of Arzelà–Ascoli, i.e. the Arzelà–Ascoli
+step of the Rellich compactness argument behind the harmonic approximation lemma, Simon Ch. 5).
+If the `g j` are bounded by `C` and `C`-Lipschitz on the compact set `K`, then for every `δ > 0`
+there is a finite set `S` of indices such that every `g j` is `δ`-close on `K` to some `g k`,
+`k ∈ S`.  With `C' = max C 0 + 1` and `r = δ / (3C')`, cover `K` by finitely many `r`-balls
+centred in `T ⊆ K`; the vectors `(g j y)_{y ∈ T}` lie in a compact ball of `T → ℝ`, so finitely
+many of them form a `δ/3`-net; then `|g j x − g k x| ≤ C'r + δ/3 + C'r = δ`. -/
+theorem Submission.dorag_ha_rb_sup_net : ∀ (n : ℕ) (K : Set (Euclid n)) (g : ℕ → Euclid n → ℝ) (C : ℝ), IsCompact K → (∀ j, ∀ x ∈ K, |g j x| ≤ C) → (∀ j, ∀ x ∈ K, ∀ y ∈ K, |g j x - g j y| ≤ C * ‖x - y‖) → ∀ δ : ℝ, 0 < δ → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∀ x ∈ K, |g j x - g k x| ≤ δ := by
+  intro n K g C hK hbd hlip δ hδ
+  -- Step 1: `C' = max C 0 + 1`, `r = δ / (3C')`, and finitely many `r`-balls centred in `T ⊆ K`
+  -- cover `K`
+  obtain ⟨C', hC'pos, hCC'⟩ : ∃ C' : ℝ, 0 < C' ∧ C ≤ C' :=
+    ⟨max C 0 + 1, by linarith [le_max_right C 0], by linarith [le_max_left C 0]⟩
+  have hr : 0 < δ / (3 * C') := div_pos hδ (mul_pos three_pos hC'pos)
+  have hC'r : C' * (δ / (3 * C')) = δ / 3 := by
+    field_simp
+  obtain ⟨T, hTK, hcover⟩ :=
+    hK.elim_nhds_subcover (fun x => ball x (δ / (3 * C'))) (fun x _ => ball_mem_nhds x hr)
+  -- Step 2: the evaluation vectors `Φ j = (g j y)_{y ∈ T}` lie in a compact ball of `T → ℝ`
+  let Φ : ℕ → T → ℝ := fun j y => g j y
+  have hrange : range Φ ⊆ closedBall 0 C' := by
+    rintro _ ⟨j, rfl⟩
+    rw [mem_closedBall, dist_pi_le_iff hC'pos.le]
+    intro y
+    rw [Pi.zero_apply, Real.dist_eq, sub_zero]
+    exact (hbd j y (hTK y y.2)).trans hCC'
+  have htb : TotallyBounded (range Φ) :=
+    (isCompact_closedBall (0 : T → ℝ) C').totallyBounded.subset hrange
+  -- Step 3: a finite `δ/3`-net `t ⊆ range Φ`; each `q ∈ t` is `Φ (invFun Φ q)`
+  obtain ⟨t, htΦ, htfin, htcover⟩ :=
+    finite_approx_of_totallyBounded htb (δ / 3) (div_pos hδ three_pos)
+  refine ⟨htfin.toFinset.image (Function.invFun Φ), fun j => ?_⟩
+  -- Step 4: `Φ j` is `δ/3`-close to some `q = Φ k ∈ t`, so `|g j - g k| < δ/3` on `T`
+  obtain ⟨q, hqt, hjq⟩ := mem_iUnion₂.1 (htcover (mem_range_self j))
+  refine ⟨Function.invFun Φ q, Finset.mem_image_of_mem _ (htfin.mem_toFinset.2 hqt), ?_⟩
+  have hkq : Φ (Function.invFun Φ q) = q := Function.invFun_eq (htΦ hqt)
+  have hT : ∀ y ∈ T, |g j y - g (Function.invFun Φ q) y| < δ / 3 := fun y hy =>
+    calc |g j y - g (Function.invFun Φ q) y|
+        = dist (Φ j ⟨y, hy⟩) (Φ (Function.invFun Φ q) ⟨y, hy⟩) := rfl
+      _ ≤ dist (Φ j) (Φ (Function.invFun Φ q)) :=
+        dist_le_pi_dist (Φ j) (Φ (Function.invFun Φ q)) ⟨y, hy⟩
+      _ = dist (Φ j) q := by rw [hkq]
+      _ < δ / 3 := hjq
+  -- Step 5: the three-term estimate through a centre `y ∈ T` with `‖x - y‖ < r`
+  intro x hx
+  obtain ⟨y, hyT, hxy⟩ := mem_iUnion₂.1 (hcover hx)
+  have hyK : y ∈ K := hTK y hyT
+  have hxy' : ‖x - y‖ < δ / (3 * C') := by
+    rw [← dist_eq_norm]
+    exact hxy
+  have hCr : C * ‖x - y‖ ≤ δ / 3 :=
+    calc C * ‖x - y‖ ≤ C' * ‖x - y‖ := mul_le_mul_of_nonneg_right hCC' (norm_nonneg _)
+      _ ≤ C' * (δ / (3 * C')) := mul_le_mul_of_nonneg_left hxy'.le hC'pos.le
+      _ = δ / 3 := hC'r
+  have h1 := hlip j x hx y hyK
+  have h2 := hT y hyT
+  have h3 := hlip (Function.invFun Φ q) y hyK x hx
+  rw [norm_sub_rev] at h3
+  calc |g j x - g (Function.invFun Φ q) x|
+      ≤ |g j x - g j y| + |g j y - g (Function.invFun Φ q) x| := abs_sub_le _ _ _
+    _ ≤ |g j x - g j y| +
+          (|g j y - g (Function.invFun Φ q) y| +
+            |g (Function.invFun Φ q) y - g (Function.invFun Φ q) x|) := by
+      gcongr
+      exact abs_sub_le _ _ _
+    _ ≤ δ := by linarith
+/-- **Rellich on `B̆₁(0)`, total boundedness** (parent proof, step 4).  Let the `uⱼ` be Lipschitz
+on `ℝⁿ` with `∫_B uⱼ² ≤ M` and `∫_B ‖Duⱼ‖² ≤ M`, `B = B̆₁(0)`.  Then for every `η > 0` finitely
+many `uₖ` form an `η`-net for `∫_B (uⱼ − uₖ)²`.  Choose `s`, `ε ≤ s/2`, `δ` with `2^{n+6}sM`,
+`6ε²M`, `3δ²Lⁿ(B) ≤ η/3` and mollify, `vⱼ(x) = ∫ uⱼ(x − εz)ρ(z) dz` with the kernel of
+`dorag_ha_rb_kernel`.  As `∫_B |uⱼ| ≤ (Lⁿ(B) + M)/2` (`|a| ≤ (1 + a²)/2`), the `vⱼ` are uniformly
+bounded and uniformly Lipschitz on `B_{1−s}(0)` (`dorag_ha_rb_mollify_bounds`), so finitely many
+`vₖ` are a `δ`-net in the sup norm there (`dorag_ha_rb_sup_net`).  On `B \ B̆_{1−s}(0)` use
+`(a − b)² ≤ 2a² + 2b²` and `dorag_ha_rb_boundary_layer`; on `B̆_{1−s}(0)` use
+`(a + b + c)² ≤ 3(a² + b² + c²)` and `dorag_ha_rb_mollify_l2`. -/
+theorem Submission.dorag_ha_rb_total_bounded : ∀ (n : ℕ) (M : ℝ) (u : ℕ → Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) 1, u j x ^ 2 ≤ M) → (∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ M) → ∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x in ball (0 : Euclid n) 1, (u j x - u k x) ^ 2 ≤ η := by
+  intro n M u hLip hu hDu η hη
+  choose L hL using hLip
+  have hc : ∀ j, Continuous (u j) := fun j => (hL j).continuous
+  -- a function continuous on `B_r(0)` is integrable on `B̆_r(0)`
+  have hint : ∀ (f : Euclid n → ℝ) (r : ℝ), ContinuousOn f (closedBall 0 r) →
+      IntegrableOn f (ball 0 r) := fun f r hf =>
+    (hf.integrableOn_compact (isCompact_closedBall 0 r)).mono_set ball_subset_closedBall
+  have hM : 0 ≤ M := (integral_nonneg fun x => sq_nonneg (u 0 x)).trans (hu 0)
+  obtain ⟨ω, hω⟩ : ∃ ω : ℝ, ω = volume.real (ball (0 : Euclid n) 1) := ⟨_, rfl⟩
+  have hω0 : 0 ≤ ω := by rw [hω]; exact measureReal_nonneg
+  -- Step 1: the constants `s`, `ε ≤ s/2` and `δ`
+  obtain ⟨s, hs0, hs1, hsη⟩ : ∃ s : ℝ, 0 < s ∧ s ≤ 1 / 2 ∧ s * (3 * 2 ^ (n + 6) * (M + 1)) ≤ η :=
+    ⟨min (1 / 2) (η / (3 * 2 ^ (n + 6) * (M + 1))), lt_min (by norm_num) (by positivity),
+      min_le_left _ _, (le_div_iff₀ (by positivity)).mp (min_le_right _ _)⟩
+  obtain ⟨ε, hε0, hεs2, hεη⟩ : ∃ ε : ℝ, 0 < ε ∧ ε ≤ s / 2 ∧ ε * (18 * (M + 1)) ≤ η :=
+    ⟨min (s / 2) (η / (18 * (M + 1))), lt_min (by positivity) (by positivity), min_le_left _ _,
+      (le_div_iff₀ (by positivity)).mp (min_le_right _ _)⟩
+  obtain ⟨δ, hδ0, hδ1, hδη⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ δ * (9 * (ω + 1)) ≤ η :=
+    ⟨min 1 (η / (9 * (ω + 1))), lt_min one_pos (by positivity), min_le_left _ _,
+      (le_div_iff₀ (by positivity)).mp (min_le_right _ _)⟩
+  have hεs : ε ≤ s := by linarith
+  have hε2 : ε ^ 2 ≤ ε := by rw [sq]; exact mul_le_of_le_one_left hε0.le (by linarith)
+  have hδ2 : δ ^ 2 ≤ δ := by rw [sq]; exact mul_le_of_le_one_left hδ0.le hδ1
+  -- Step 2: the mollifications `vⱼ(x) = ∫ uⱼ(x − εz)ρ(z) dz`
+  obtain ⟨ρ, C, hρc, hρ0, hρ1, hρint, hρC, hρL⟩ := Submission.dorag_ha_rb_kernel n
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hρC 0)
+  set v : ℕ → Euclid n → ℝ := fun j x => ∫ z, u j (x - ε • z) * ρ z
+  -- Step 3: `∫_B |uⱼ| ≤ (Lⁿ(B) + M)/2`
+  have hL1 : ∀ j, ∫ x in ball (0 : Euclid n) 1, |u j x| ≤ (ω + M) / 2 := by
+    intro j
+    have i1 : IntegrableOn (fun _ => (1 / 2 : ℝ)) (ball (0 : Euclid n) 1) := integrableOn_const
+    have i2 : IntegrableOn (fun x => u j x ^ 2 / 2) (ball (0 : Euclid n) 1) :=
+      (hint _ 1 ((hc j).pow 2).continuousOn).div_const 2
+    have i12 : IntegrableOn (fun x => 1 / 2 + u j x ^ 2 / 2) (ball (0 : Euclid n) 1) := i1.add i2
+    calc ∫ x in ball (0 : Euclid n) 1, |u j x|
+        ≤ ∫ x in ball (0 : Euclid n) 1, (1 / 2 + u j x ^ 2 / 2) :=
+          setIntegral_mono_on (hint _ 1 (hc j).abs.continuousOn) i12 measurableSet_ball
+            fun x _ => by linarith [sq_abs (u j x), sq_nonneg (|u j x| - 1)]
+      _ = ω / 2 + (∫ x in ball (0 : Euclid n) 1, u j x ^ 2) / 2 := by
+          rw [integral_add i1 i2, setIntegral_const, integral_div, smul_eq_mul, hω]
+          ring
+      _ ≤ (ω + M) / 2 := by linarith [hu j]
+  -- Step 4: the `vⱼ` are uniformly bounded and uniformly Lipschitz on `B_{1−s}(0)`
+  set D : ℝ := (ε ^ n)⁻¹ * C * ((ω + M) / 2) + (ε ^ (n + 1))⁻¹ * C * ((ω + M) / 2)
+  have hvb : ∀ j, ∀ x ∈ closedBall (0 : Euclid n) (1 - s), |v j x| ≤ D := by
+    intro j x hx
+    calc |v j x| ≤ (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u j y| :=
+          (Submission.dorag_ha_rb_mollify_bounds n (u j) ρ C ε s (hc j) hρc hρ1 hρC hρL hε0
+            hεs2).1 x hx
+      _ ≤ (ε ^ n)⁻¹ * C * ((ω + M) / 2) := mul_le_mul_of_nonneg_left (hL1 j) (by positivity)
+      _ ≤ D := le_add_of_nonneg_right (by positivity)
+  have hvl : ∀ j, ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ x' ∈ closedBall (0 : Euclid n) (1 - s),
+      |v j x - v j x'| ≤ D * ‖x - x'‖ := by
+    intro j x hx x' hx'
+    calc |v j x - v j x'|
+        ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u j y| :=
+          (Submission.dorag_ha_rb_mollify_bounds n (u j) ρ C ε s (hc j) hρc hρ1 hρC hρL hε0
+            hεs2).2 x hx x' hx'
+      _ ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ((ω + M) / 2) :=
+          mul_le_mul_of_nonneg_left (hL1 j) (by positivity)
+      _ = (ε ^ (n + 1))⁻¹ * C * ((ω + M) / 2) * ‖x - x'‖ := by ring
+      _ ≤ D * ‖x - x'‖ :=
+          mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (by positivity)) (norm_nonneg _)
+  have hvc : ∀ j, ContinuousOn (v j) (closedBall (0 : Euclid n) (1 - s)) := by
+    intro j
+    refine (LipschitzOnWith.of_dist_le' (f := v j) (s := closedBall (0 : Euclid n) (1 - s))
+      (K := D) fun x hx x' hx' => ?_).continuousOn
+    rw [Real.dist_eq, dist_eq_norm]
+    exact hvl j x hx x' hx'
+  -- Step 5: finitely many `vₖ` form a `δ`-net in the sup norm on `B_{1−s}(0)`
+  obtain ⟨S, hS⟩ := Submission.dorag_ha_rb_sup_net n (closedBall (0 : Euclid n) (1 - s)) v D
+    (isCompact_closedBall 0 (1 - s)) hvb hvl δ hδ0
+  refine ⟨S, fun j => ?_⟩
+  obtain ⟨k, hkS, hjk⟩ := hS j
+  refine ⟨k, hkS, ?_⟩
+  -- Step 6: split `B` into `B̆_{1−s}(0)` and the annulus `B \ B̆_{1−s}(0)`
+  have hsub : ball (0 : Euclid n) (1 - s) ⊆ ball 0 1 := ball_subset_ball (by linarith)
+  have ijk : IntegrableOn (fun x => (u j x - u k x) ^ 2) (ball (0 : Euclid n) 1) :=
+    hint _ 1 (((hc j).sub (hc k)).pow 2).continuousOn
+  have hsplit := setIntegral_sdiff measurableSet_ball ijk hsub
+  -- Step 7: the annulus, by `dorag_ha_rb_boundary_layer`
+  have hann : ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), (u j x - u k x) ^ 2 ≤ η / 3 := by
+    have iA : ∀ i, IntegrableOn (fun x => 2 * u i x ^ 2) (ball (0 : Euclid n) 1 \ ball 0 (1 - s)) :=
+      fun i => ((hint _ 1 ((hc i).pow 2).continuousOn).mono_set sdiff_subset).const_mul 2
+    have iAA : IntegrableOn (fun x => 2 * u j x ^ 2 + 2 * u k x ^ 2)
+        (ball (0 : Euclid n) 1 \ ball 0 (1 - s)) := (iA j).add (iA k)
+    have hbl : ∀ i, ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), u i x ^ 2 ≤
+        2 ^ (n + 3) * s * (M + M) := fun i =>
+      (Submission.dorag_ha_rb_boundary_layer n (u i) (L i) s (hL i) hs0 hs1).trans
+        (mul_le_mul_of_nonneg_left (add_le_add (hu i) (hDu i)) (by positivity))
+    calc ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), (u j x - u k x) ^ 2
+        ≤ ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), (2 * u j x ^ 2 + 2 * u k x ^ 2) :=
+          setIntegral_mono_on (ijk.mono_set sdiff_subset) iAA
+            (measurableSet_ball.diff measurableSet_ball) fun x _ => by
+              linarith [sq_nonneg (u j x + u k x)]
+      _ = 2 * (∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), u j x ^ 2) +
+            2 * ∫ x in ball (0 : Euclid n) 1 \ ball 0 (1 - s), u k x ^ 2 := by
+          rw [integral_add (iA j) (iA k), integral_const_mul, integral_const_mul]
+      _ ≤ 2 * (2 ^ (n + 3) * s * (M + M)) + 2 * (2 ^ (n + 3) * s * (M + M)) := by
+          linarith [hbl j, hbl k]
+      _ = 2 ^ (n + 6) * s * M := by ring
+      _ ≤ η / 3 := by
+          have : 0 < 2 ^ (n + 6) * s := by positivity
+          linarith
+  -- Step 8: the interior, by `dorag_ha_rb_mollify_l2` and the sup-net
+  have hin : ∫ x in ball (0 : Euclid n) (1 - s), (u j x - u k x) ^ 2 ≤ 2 * η / 3 := by
+    have i1 : ∀ i, IntegrableOn (fun x => 3 * (u i x - v i x) ^ 2) (ball (0 : Euclid n) (1 - s)) :=
+      fun i => (hint _ _ (((hc i).continuousOn.sub (hvc i)).pow 2)).const_mul 3
+    have i2 : IntegrableOn (fun _ => 3 * δ ^ 2) (ball (0 : Euclid n) (1 - s)) := integrableOn_const
+    have i12 : IntegrableOn (fun x => 3 * (u j x - v j x) ^ 2 + 3 * δ ^ 2)
+        (ball (0 : Euclid n) (1 - s)) := (i1 j).add i2
+    have i123 : IntegrableOn
+        (fun x => 3 * (u j x - v j x) ^ 2 + 3 * δ ^ 2 + 3 * (u k x - v k x) ^ 2)
+        (ball (0 : Euclid n) (1 - s)) := i12.add (i1 k)
+    have hl2 : ∀ i, ∫ x in ball (0 : Euclid n) (1 - s), (u i x - v i x) ^ 2 ≤ ε ^ 2 * M := fun i =>
+      (Submission.dorag_ha_rb_mollify_l2 n (u i) ρ (L i) ε s (hL i) hρc hρ0 hρ1 hρint hε0
+        hεs).trans (mul_le_mul_of_nonneg_left (hDu i) (sq_nonneg ε))
+    have hvol : volume.real (ball (0 : Euclid n) (1 - s)) ≤ ω := by
+      rw [hω]; exact measureReal_mono hsub
+    calc ∫ x in ball (0 : Euclid n) (1 - s), (u j x - u k x) ^ 2
+        ≤ ∫ x in ball (0 : Euclid n) (1 - s),
+            (3 * (u j x - v j x) ^ 2 + 3 * δ ^ 2 + 3 * (u k x - v k x) ^ 2) := by
+          refine setIntegral_mono_on (ijk.mono_set hsub) i123 measurableSet_ball fun x hx => ?_
+          have h1 := abs_le.mp (hjk x (ball_subset_closedBall hx))
+          have h2 : (v j x - v k x) ^ 2 ≤ δ ^ 2 := sq_le_sq' h1.1 h1.2
+          linarith [sq_nonneg (u j x - v j x - (v j x - v k x)),
+            sq_nonneg (v j x - v k x - (v k x - u k x)),
+            sq_nonneg (u j x - v j x - (v k x - u k x))]
+      _ = 3 * (∫ x in ball (0 : Euclid n) (1 - s), (u j x - v j x) ^ 2) +
+            3 * δ ^ 2 * volume.real (ball (0 : Euclid n) (1 - s)) +
+            3 * ∫ x in ball (0 : Euclid n) (1 - s), (u k x - v k x) ^ 2 := by
+          rw [integral_add i12 (i1 k), integral_add (i1 j) i2, setIntegral_const,
+            integral_const_mul, integral_const_mul, smul_eq_mul]
+          ring
+      _ ≤ 3 * (ε ^ 2 * M) + 3 * δ ^ 2 * ω + 3 * (ε ^ 2 * M) := by
+          have := mul_le_mul_of_nonneg_left hvol (by positivity : (0 : ℝ) ≤ 3 * δ ^ 2)
+          linarith [hl2 j, hl2 k]
+      _ ≤ 2 * η / 3 := by
+          linarith [mul_le_mul_of_nonneg_right hε2 hM, mul_le_mul_of_nonneg_right hδ2 hω0]
+  linarith
+/-- Extraction step of the Rellich argument (step 5 of its proof).  If `f j ∈ L²(μ)` and for every
+`η > 0` finitely many `f k` form an `η`-net for `∫ (f j - f k) ^ 2`, then a subsequence converges
+in `L²(μ)`: the classes of the `f j` form a totally bounded set in the complete space `L²(μ)`. -/
+theorem Submission.dorag_ha_rb_l2_subseq : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : ℕ → α → ℝ), (∀ j, MemLp (f j) 2 μ) → (∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x, (f j x - f k x) ^ 2 ∂μ ≤ η) → ∃ (φ : ℕ → ℕ) (W : α → ℝ), StrictMono φ ∧ MemLp W 2 μ ∧ Tendsto (fun j => ∫ x, (f (φ j) x - W x) ^ 2 ∂μ) atTop (𝓝 0) := by
+  intro α _ μ f hf hnet
+  -- Step 2: for `h ∈ L²`, `‖toLp h‖ ^ 2 = ∫ h ^ 2`
+  have hnorm : ∀ (h : α → ℝ) (hh : MemLp h 2 μ), ‖hh.toLp h‖ ^ 2 = ∫ x, h x ^ 2 ∂μ := by
+    intro h hh
+    have h0 : 0 ≤ ∫ x, h x ^ 2 ∂μ := integral_nonneg fun x => sq_nonneg (h x)
+    rw [Lp.norm_toLp, hh.eLpNorm_eq_integral_rpow_norm two_ne_zero ENNReal.ofNat_ne_top]
+    simp only [ENNReal.toReal_ofNat, Real.norm_eq_abs, Real.rpow_two, sq_abs]
+    rw [ENNReal.toReal_ofReal (Real.rpow_nonneg h0 _), ← Real.rpow_natCast, ← Real.rpow_mul h0]
+    norm_num
+  -- Step 1: the classes `F j ∈ L²`, with `dist (F j) (F k) ^ 2 = ∫ (f j - f k) ^ 2`
+  set F : ℕ → Lp ℝ 2 μ := fun j => (hf j).toLp (f j) with hF
+  have hdist : ∀ j k, dist (F j) (F k) ^ 2 = ∫ x, (f j x - f k x) ^ 2 ∂μ := by
+    intro j k
+    rw [dist_eq_norm, hF, ← MemLp.toLp_sub (hf j) (hf k)]
+    exact hnorm _ _
+  -- Step 3: the hypothesis with `η = ε ^ 2 / 2` gives a finite `ε`-net of `range F`
+  have htb : TotallyBounded (range F) := by
+    rw [Metric.totallyBounded_iff]
+    intro ε hε
+    obtain ⟨S, hS⟩ := hnet (ε ^ 2 / 2) (by positivity)
+    refine ⟨F '' (S : Set ℕ), S.finite_toSet.image F, ?_⟩
+    rintro _ ⟨j, rfl⟩
+    obtain ⟨k, hk, hjk⟩ := hS j
+    refine mem_iUnion₂.2 ⟨F k, mem_image_of_mem F hk, ?_⟩
+    rw [mem_ball]
+    refine lt_of_pow_lt_pow_left₀ 2 hε.le ?_
+    rw [hdist]
+    have : 0 < ε ^ 2 := by positivity
+    linarith
+  -- Steps 4–5: `closure (range F)` is compact in the complete space `L²`, so a subsequence
+  -- `F ∘ φ` converges to some `G`
+  obtain ⟨G, -, φ, hφ, hlim⟩ :=
+    (htb.closure.isCompact_of_isClosed isClosed_closure).tendsto_subseq
+      (x := F) fun j => subset_closure (mem_range_self j)
+  -- Step 6: `W = ⇑G`, and `∫ (f (φ j) - W) ^ 2 = ‖F (φ j) - G‖ ^ 2 → 0`
+  refine ⟨φ, G, hφ, Lp.memLp G, ?_⟩
+  have heq : ∀ j, ‖F (φ j) - G‖ ^ 2 = ∫ x, (f (φ j) x - G x) ^ 2 ∂μ := by
+    intro j
+    have := hnorm _ ((hf (φ j)).sub (Lp.memLp G))
+    rw [MemLp.toLp_sub (hf (φ j)) (Lp.memLp G), Lp.toLp_coeFn] at this
+    exact this
+  have h2 := (tendsto_iff_norm_sub_tendsto_zero.1 hlim).pow 2
+  rw [zero_pow two_ne_zero] at h2
+  exact h2.congr heq
+
+/-- **Rellich compactness in `L²(B̆₁(0))` for Lipschitz functions** (Gilbarg–Trudinger Thm 7.22,
+Evans §5.7 Thm 1; used in Simon Ch. 5, Lemma 3.1).  If the `uⱼ : ℝⁿ → ℝ` are Lipschitz with
+`∫_B uⱼ² ≤ M` and `∫_B ‖Duⱼ‖² ≤ M`, `B = B̆₁(0)`, then a subsequence converges in `L²(B)` to some
+`W ∈ L²(B)`.  Each `uⱼ` is continuous and bounded on `B`, which has finite measure, so
+`uⱼ ∈ L²(B)`.  `dorag_ha_rb_total_bounded` gives finite `L²(B)`-nets of `(uⱼ)` of every radius,
+and `dorag_ha_rb_l2_subseq` extracts the convergent subsequence in the complete space `L²(B)`.
+The hypothesis `n ≥ 1` is not needed. -/
+theorem Submission.dorag_ha_rellich_ball : ∀ (n : ℕ) (M : ℝ) (u : ℕ → Euclid n → ℝ), 0 < n → (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) 1, u j x ^ 2 ≤ M) → (∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ M) → ∃ (φ : ℕ → ℕ) (W : Euclid n → ℝ), StrictMono φ ∧ MemLp W 2 (volume.restrict (ball (0 : Euclid n) 1)) ∧ Tendsto (fun j => ∫ x in ball (0 : Euclid n) 1, (u (φ j) x - W x) ^ 2) atTop (𝓝 0) := by
+  intro n M u _hn hLip hu hDu
+  -- step 1: `B̆₁(0)` has finite Lebesgue measure
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_ne_top
+  -- step 2: an `L`-Lipschitz `uⱼ` is continuous with `|uⱼ| ≤ |uⱼ(0)| + L` on `B̆₁(0)`, so `uⱼ ∈ L²`
+  have hmem : ∀ j, MemLp (u j) 2 (volume.restrict (ball (0 : Euclid n) 1)) := by
+    intro j
+    obtain ⟨L, hL⟩ := hLip j
+    refine MemLp.of_bound hL.continuous.aestronglyMeasurable (|u j 0| + L) ?_
+    refine ae_restrict_of_forall_mem measurableSet_ball fun x hx => ?_
+    have h1 : |u j x - u j 0| ≤ L * ‖x‖ := by
+      simpa only [Real.dist_eq, dist_zero_right] using hL.dist_le_mul x 0
+    have h2 : (L : ℝ) * ‖x‖ ≤ L := mul_le_of_le_one_right L.coe_nonneg (mem_ball_zero_iff.1 hx).le
+    rw [Real.norm_eq_abs]
+    linarith [abs_sub_abs_le_abs_sub (u j x) (u j 0)]
+  -- step 3: finite `L²(B̆₁(0))`-nets of `(uⱼ)` and extraction of a convergent subsequence
+  exact Submission.dorag_ha_rb_l2_subseq (Euclid n) (volume.restrict (ball (0 : Euclid n) 1)) u
+    hmem (Submission.dorag_ha_rb_total_bounded n M u hLip hu hDu)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
