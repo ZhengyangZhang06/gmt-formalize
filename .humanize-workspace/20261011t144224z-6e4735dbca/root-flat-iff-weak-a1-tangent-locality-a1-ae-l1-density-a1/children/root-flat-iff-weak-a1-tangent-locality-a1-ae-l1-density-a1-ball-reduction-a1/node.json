@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1.ball_reduction-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1",
+  "depth": 4,
+  "title": "Countable ball localization of almost-everywhere properties",
+  "statement": "Let P ∈ ℕ, let μ be any measure on ℝ^P, let U ⊆ ℝ^P be open, let A ⊆ U, and let Φ be any predicate on ℝ^P. Suppose that for all y ∈ ℝ^P and r ∈ ℝ with B̄_r(y) ⊆ U, Φ(x) holds for μ⌞(A ∩ B_r(y))-almost every x. Then Φ(x) holds for μ⌞A-almost every x.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (U A : Set (Eucl P)) (Φ : Eucl P → Prop), IsOpen U → A ⊆ U → (∀ (y : Eucl P) (r : ℝ), closedBall y r ⊆ U → ∀ᵐ x ∂(μ.restrict (A ∩ ball y r)), Φ x) → ∀ᵐ x ∂(μ.restrict A), Φ x",
+  "lean_name": "fiw_tl_ald_ball_reduction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1-ball-reduction-a1-a1"
+}

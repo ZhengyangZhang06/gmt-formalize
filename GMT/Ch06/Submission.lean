@@ -678,6 +678,435 @@ theorem Submission.fiw_tl_transfer :
   have h := hD.add ((hT.2 f).const_mul c)
   rw [zero_add, ← mul_assoc, ← hx] at h
   exact h.congr fun r => sub_add_cancel _ _
+/-- Reduction of an almost-everywhere property to balls: if `Φ` holds `μ ⌞ (A ∩ B_r(y))`-a.e.
+for every ball with `B̄_r(y) ⊆ U`, then `Φ` holds `μ ⌞ A`-a.e. for `A ⊆ U`, `U` open.  Countably
+many such balls cover `A` (`ℝ^P` is second countable), and `μ ⌞ A`-a.e. is checked on the
+pieces of a countable cover without any measurability assumption. -/
+theorem Submission.fiw_tl_ald_ball_reduction :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (U A : Set (Eucl P)) (Φ : Eucl P → Prop), IsOpen U →
+      A ⊆ U → (∀ (y : Eucl P) (r : ℝ), closedBall y r ⊆ U →
+        ∀ᵐ x ∂(μ.restrict (A ∩ ball y r)), Φ x) → ∀ᵐ x ∂(μ.restrict A), Φ x := by
+  intro P μ U A Φ hU hAU hball
+  -- The balls `B_r(y)` with `B̄_r(y) ⊆ U`, indexed by `ι`; a countable subfamily `T` has the
+  -- same union.
+  let ι := {p : Eucl P × ℝ // closedBall p.1 p.2 ⊆ U}
+  obtain ⟨T, hTc, hT⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun i : ι => ball i.1.1 i.1.2) fun i => isOpen_ball
+  -- `A = ⋃_{i ∈ T} (A ∩ B_i)`: each `x ∈ A ⊆ U` lies in `B_{δ/2}(x)`, and
+  -- `B̄_{δ/2}(x) ⊆ B_δ(x) ⊆ U`.
+  have hA : A = ⋃ i ∈ T, A ∩ ball i.1.1 i.1.2 := by
+    rw [← inter_iUnion₂, hT, eq_comm, inter_eq_left]
+    intro x hx
+    obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 hU x (hAU hx)
+    exact mem_iUnion.2 ⟨⟨(x, δ / 2), (closedBall_subset_ball (half_lt_self hδ)).trans hδU⟩,
+      mem_ball_self (half_pos hδ)⟩
+  rw [hA, ae_restrict_biUnion_iff _ hTc]
+  exact fun i _ => hball i.1.1 i.1.2 i.2
+/-- Weighted Lebesgue points (for the locality of weighted approximate tangent spaces, Simon
+Ch. 3, 1.5(2), 1.8(1)).  Let `M ⊆ ℝ^P` be `μ`-null-measurable, `θ > 0` on `M`, and `θ`, `θ f`
+`μ`-integrable on `M ∩ B̄_r(y)`.  Then for `μ`-a.e. `x ∈ M ∩ B_r(y)`,
+`∫_{M ∩ B̄_s(x)} θ |f - f(x)| dμ / ∫_{M ∩ B̄_s(x)} θ dμ → 0` as `s ↓ 0`.  The measure
+`ν = θ⁺ μ ⌞ (M ∩ B̄_r(y))` is finite, `μ ⌞ (M ∩ B̄_r(y)) ≪ ν` as `θ > 0` on `M`, and `f ∈ L¹(ν)`
+as `θ f ∈ L¹(μ ⌞ (M ∩ B̄_r(y)))`.  So the Lebesgue differentiation theorem for `ν` along closed
+balls (Simon Ch. 1, 3.17; `VitaliFamily.ae_tendsto_lintegral_enorm_sub_div` for
+`Besicovitch.vitaliFamily ν`) holds `μ ⌞ (M ∩ B_r(y))`-a.e.; for `0 < s < r - |x - y|`,
+`B̄_s(x) ⊆ B̄_r(y)`, so the two `ν`-integrals over `B̄_s(x)` are the two integrals above. -/
+theorem Submission.fiw_tl_ald_ld_weighted_lebesgue_point :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (M : Set (Eucl P)) (θ f : Eucl P → ℝ) (y : Eucl P) (r : ℝ),
+      NullMeasurableSet M μ → (∀ z ∈ M, 0 < θ z) → IntegrableOn θ (M ∩ closedBall y r) μ →
+      IntegrableOn (fun z => θ z * f z) (M ∩ closedBall y r) μ →
+      ∀ᵐ x ∂(μ.restrict (M ∩ ball y r)),
+        Tendsto (fun s : ℝ =>
+          (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) * ‖f z - f x‖ₑ ∂μ) /
+            (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ)) (𝓝[>] 0) (𝓝 0) := by
+  intro P μ M θ f y r hM hpos hθ hθf
+  -- Step 1: `S = M ∩ B̄_r(y)` and `M ∩ B_r(y)` are `μ`-null-measurable.
+  have hS : NullMeasurableSet (M ∩ closedBall y r) μ :=
+    hM.inter measurableSet_closedBall.nullMeasurableSet
+  have hMB : NullMeasurableSet (M ∩ ball y r) μ :=
+    hM.inter measurableSet_ball.nullMeasurableSet
+  set μS := μ.restrict (M ∩ closedBall y r) with hμS
+  set ν := μS.withDensity (fun z => ENNReal.ofReal (θ z)) with hν
+  -- Step 2: `ν = (μ ⌞ S).withDensity θ⁺` is finite, since `θ` is integrable on `S`.
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity_ofReal hθ.2
+  -- Step 3: `μ ⌞ S ≪ ν`, since `θ > 0` on `M`.
+  have hθm : AEMeasurable (fun z => ENNReal.ofReal (θ z)) μS :=
+    hθ.1.aemeasurable.ennreal_ofReal
+  have hmemS : ∀ᵐ z ∂μS, z ∈ M ∩ closedBall y r := ae_restrict_mem₀ hS
+  have hac : μS ≪ ν := by
+    refine withDensity_absolutelyContinuous' hθm ?_
+    filter_upwards [hmemS] with z hz
+    exact (ENNReal.ofReal_pos.2 (hpos z hz.1)).ne'
+  -- Step 4: `f ∈ L¹(ν)`, since `θ.toNNReal • f = θ f` on `S`; hence `f` is `μ ⌞ S`-measurable.
+  have hfν : Integrable f ν := by
+    have hnn : AEMeasurable (fun z => (θ z).toNNReal) μS :=
+      hθ.1.aemeasurable.real_toNNReal
+    have hνeq : ν = μS.withDensity (fun z => ((θ z).toNNReal : ℝ≥0∞)) := rfl
+    rw [hνeq, integrable_withDensity_iff_integrable_smul₀ hnn]
+    refine hθf.congr ?_
+    filter_upwards [hmemS] with z hz
+    rw [NNReal.smul_def, Real.coe_toNNReal _ (hpos z hz.1).le, smul_eq_mul]
+  have hfS : AEStronglyMeasurable f μS := hfν.1.mono_ac hac
+  -- Step 5: Lebesgue differentiation for `ν` along closed balls.
+  have hLeb : ∀ᵐ x ∂ν, Tendsto (fun s : ℝ =>
+      (∫⁻ z in closedBall x s, ‖f z - f x‖ₑ ∂ν) / ν (closedBall x s)) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [(Besicovitch.vitaliFamily ν).ae_tendsto_lintegral_enorm_sub_div
+      hfν.locallyIntegrable] with x hx
+    exact hx.comp (Besicovitch.tendsto_filterAt ν x)
+  -- Step 6: transfer to `μ ⌞ (M ∩ B_r(y)) ≤ μ ⌞ S ≪ ν`.
+  have hlam : μ.restrict (M ∩ ball y r) ≪ ν :=
+    (Measure.absolutelyContinuous_of_le
+      (Measure.restrict_mono (inter_subset_inter_right M ball_subset_closedBall) le_rfl)).trans hac
+  filter_upwards [hlam.ae_le hLeb, ae_restrict_mem₀ hMB] with x hx hxmem
+  -- Step 7: for `0 < s < r - dist x y`, `B̄_s(x) ⊆ B̄_r(y)` and the two quotients agree.
+  refine hx.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 (mem_ball.1 hxmem.2))] with s hs
+  have hsub : closedBall x s ⊆ closedBall y r :=
+    closedBall_subset_closedBall' (by linarith [hs.2])
+  have hinter : closedBall x s ∩ (M ∩ closedBall y r) = M ∩ closedBall x s := by
+    ext z
+    exact ⟨fun hz => ⟨hz.2.1, hz.1⟩, fun hz => ⟨hz.2, hz.1, hsub hz.2⟩⟩
+  have hgm : AEMeasurable (fun z => ‖f z - f x‖ₑ) μS :=
+    (hfS.sub aestronglyMeasurable_const).enorm
+  have hnum : ∫⁻ z in closedBall x s, ‖f z - f x‖ₑ ∂ν =
+      ∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) * ‖f z - f x‖ₑ ∂μ := by
+    rw [hν, setLIntegral_withDensity_eq_lintegral_mul₀ hθm hgm measurableSet_closedBall,
+      hμS, Measure.restrict_restrict measurableSet_closedBall, hinter]
+    rfl
+  have hden : ν (closedBall x s) = ∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ := by
+    rw [hν, withDensity_apply _ measurableSet_closedBall, hμS,
+      Measure.restrict_restrict measurableSet_closedBall, hinter]
+  rw [hnum, hden]
+/-- Weighted density points (for the locality of weighted approximate tangent spaces, Simon
+Ch. 3, 1.5(2), 1.8(1)).  Let `M, E ⊆ ℝ^P` be `μ`-null-measurable with `E ⊆ M`, `θ > 0` on `M` and
+`θ` `μ`-integrable on `M ∩ B̄_r(y)`.  Then for `μ`-a.e. `x ∈ E ∩ B_r(y)`,
+`∫_{E ∩ B̄_s(x)} θ dμ / ∫_{M ∩ B̄_s(x)} θ dμ → 1` as `s ↓ 0`.  The measure
+`ν = θ⁺ μ ⌞ (M ∩ B̄_r(y))` is finite and `μ ⌞ (M ∩ B̄_r(y)) ≪ ν` as `θ > 0` on `M`, so
+`μ ⌞ (E ∩ B_r(y)) ≪ ν ⌞ E` and the Besicovitch density theorem for `ν` and `E`
+(`Besicovitch.ae_tendsto_measure_inter_div`) applies; for `0 < s < r - |x - y|`,
+`B̄_s(x) ⊆ B̄_r(y)`, so `ν(E ∩ B̄_s(x))` and `ν(B̄_s(x))` are the two integrals. -/
+theorem Submission.fiw_tl_ald_ld_weighted_density_point :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (M E : Set (Eucl P)) (θ : Eucl P → ℝ) (y : Eucl P) (r : ℝ),
+      NullMeasurableSet M μ → NullMeasurableSet E μ → E ⊆ M → (∀ z ∈ M, 0 < θ z) →
+      IntegrableOn θ (M ∩ closedBall y r) μ →
+      ∀ᵐ x ∂(μ.restrict (E ∩ ball y r)),
+        Tendsto (fun s : ℝ => (∫⁻ z in E ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ) /
+          (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ)) (𝓝[>] 0) (𝓝 1) := by
+  intro P μ M E θ y r hM hE hEM hθ hint
+  -- Step 1: null-measurability of `S = M ∩ B̄_r(y)` and of `E` for `μ ⌞ S`.
+  have hS : NullMeasurableSet (M ∩ closedBall y r) μ :=
+    hM.inter measurableSet_closedBall.nullMeasurableSet
+  have hES : NullMeasurableSet E (μ.restrict (M ∩ closedBall y r)) :=
+    hE.mono Measure.restrict_le_self
+  -- Step 2: `ν = (μ ⌞ S).withDensity θ⁺` is finite, since `θ` is integrable on `S`.
+  have : IsFiniteMeasure ((μ.restrict (M ∩ closedBall y r)).withDensity
+      fun z => ENNReal.ofReal (θ z)) :=
+    isFiniteMeasure_withDensity_ofReal hint.2
+  -- Step 3: `μ ⌞ S ≪ ν`, since `θ > 0` on `M`.
+  have hac : μ.restrict (M ∩ closedBall y r) ≪ (μ.restrict (M ∩ closedBall y r)).withDensity
+      fun z => ENNReal.ofReal (θ z) := by
+    refine withDensity_absolutelyContinuous' hint.1.aemeasurable.ennreal_ofReal ?_
+    filter_upwards [ae_restrict_mem₀ hS] with z hz
+    exact (ENNReal.ofReal_pos.2 (hθ z hz.1)).ne'
+  -- Step 4: `μ ⌞ (E ∩ B_r(y)) ≤ (μ ⌞ S) ⌞ E ≪ ν ⌞ E`.
+  have hle : μ.restrict (E ∩ ball y r) ≤ (μ.restrict (M ∩ closedBall y r)).restrict E := by
+    rw [Measure.restrict_restrict₀ hES]
+    refine Measure.restrict_mono ?_ le_rfl
+    intro z hz
+    exact ⟨hz.1, hEM hz.1, ball_subset_closedBall hz.2⟩
+  have hlam : μ.restrict (E ∩ ball y r) ≪ ((μ.restrict (M ∩ closedBall y r)).withDensity
+      fun z => ENNReal.ofReal (θ z)).restrict E :=
+    (Measure.absolutelyContinuous_of_le hle).trans (hac.restrict E)
+  -- Step 5: the Besicovitch density theorem for `ν` and `E`, transferred to `μ ⌞ (E ∩ B_r(y))`.
+  filter_upwards [hlam.ae_le (Besicovitch.ae_tendsto_measure_inter_div _ E),
+    ae_restrict_mem₀ (hE.inter measurableSet_ball.nullMeasurableSet)] with x hx hxE
+  -- Step 6: for `0 < s < r - dist x y`, `B̄_s(x) ⊆ B̄_r(y)` and the two quotients agree.
+  refine hx.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 (mem_ball.1 hxE.2))] with s hs
+  have hsub : closedBall x s ⊆ closedBall y r :=
+    closedBall_subset_closedBall' (by linarith [hs.2])
+  have hEs : NullMeasurableSet (E ∩ closedBall x s) (μ.restrict (M ∩ closedBall y r)) :=
+    hES.inter measurableSet_closedBall.nullMeasurableSet
+  have hE' : E ∩ closedBall x s ∩ (M ∩ closedBall y r) = E ∩ closedBall x s :=
+    inter_eq_left.2 fun z hz => ⟨hEM hz.1, hsub hz.2⟩
+  have hM' : closedBall x s ∩ (M ∩ closedBall y r) = M ∩ closedBall x s := by
+    ext z
+    exact ⟨fun hz => ⟨hz.2.1, hz.1⟩, fun hz => ⟨hz.2, hz.1, hsub hz.2⟩⟩
+  rw [withDensity_apply₀ _ hEs, Measure.restrict_restrict₀ hEs, hE',
+    withDensity_apply _ measurableSet_closedBall,
+    Measure.restrict_restrict measurableSet_closedBall, hM']
+/-- Lebesgue differentiation along closed balls: for a finite measure `ν` on `ℝ^P` and
+`g ∈ L¹(ν)`, `ν`-a.e. `x` satisfies `⨍_{B̄_s(x)} |g - g(x)| dν → 0` as `s → 0⁺`.  The closed balls
+`B̄_s(x)` form the Besicovitch Vitali family of `ν` (`ℝ^P` has the Besicovitch covering property),
+along which every locally integrable function has Lebesgue points `ν`-a.e. -/
+theorem Submission.fiw_tl_ald_closedBall_lebesgue_point :
+    ∀ (P : ℕ) (ν : Measure (Eucl P)) [IsFiniteMeasure ν] (g : Eucl P → ℝ), Integrable g ν →
+      ∀ᵐ x ∂ν, Tendsto (fun s : ℝ => (∫⁻ z in closedBall x s, ‖g z - g x‖ₑ ∂ν) /
+        ν (closedBall x s)) (𝓝[>] 0) (𝓝 0) := by
+  intro P ν _ g hg
+  filter_upwards [(Besicovitch.vitaliFamily ν).ae_tendsto_lintegral_enorm_sub_div
+    hg.locallyIntegrable] with x hx
+  exact hx.comp (Besicovitch.tendsto_filterAt ν x)
+
+/-- Local differentiation on a ball: let `θᵢ > 0` on `Mᵢ` be `Hⁿ`-integrable on `Mᵢ ∩ B̄_r(y)` and
+`g = 1_{M₁ ∩ M₂} θ₂/θ₁`.  For `Hⁿ ⌞ (M₁ ∩ M₂ ∩ B_r(y))`-a.e. `x`, as `s → 0⁺`, `x` is a Lebesgue
+point of `g` for `θ₁ Hⁿ ⌞ M₁` and `M₁ ∩ M₂` has density `1` at `x` for `θ₂ Hⁿ ⌞ M₂`, both along
+the closed balls `B̄_s(x)`.  Since `θ₁ g = 1_{M₁ ∩ M₂} θ₂` is integrable on `M₁ ∩ B̄_r(y)`, these
+are the weighted Lebesgue-point lemma for `(M₁, θ₁, g)`, with `g(x) = θ₂(x)/θ₁(x)` on `M₁ ∩ M₂`,
+and the weighted density lemma for `M₁ ∩ M₂ ⊆ M₂`. -/
+theorem Submission.fiw_tl_ald_local_differentiation :
+    ∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (y : Eucl P) (r : ℝ),
+      NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ z ∈ M₁, 0 < θ₁ z) →
+      (∀ z ∈ M₂, 0 < θ₂ z) → IntegrableOn θ₁ (M₁ ∩ closedBall y r) (μHE[n] : Measure (Eucl P)) →
+      IntegrableOn θ₂ (M₂ ∩ closedBall y r) (μHE[n] : Measure (Eucl P)) →
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂ ∩ ball y r)),
+        Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) *
+            ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - θ₂ x / θ₁ x‖ₑ
+              ∂(μHE[n] : Measure (Eucl P))) /
+          (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))))
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z)
+            ∂(μHE[n] : Measure (Eucl P))) /
+          (∫⁻ z in M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z) ∂(μHE[n] : Measure (Eucl P))))
+          (𝓝[>] 0) (𝓝 1) := by
+  intro P n M₁ M₂ θ₁ θ₂ y r hM₁ hM₂ hθ₁ hθ₂ hθ₁i hθ₂i
+  -- `θ₁ g = 1_{M₁ ∩ M₂} θ₂` (as `θ₁ > 0` on `M₁`), which is integrable on `M₁ ∩ B̄_r(y)` because
+  -- `θ₂` is integrable on `M₂ ∩ B̄_r(y)`.
+  have hθ₁g : IntegrableOn (fun z => θ₁ z * (M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z)
+      (M₁ ∩ closedBall y r) (μHE[n] : Measure (Eucl P)) := by
+    have h : (fun z => θ₁ z * (M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z) =
+        (M₁ ∩ M₂).indicator θ₂ := by
+      funext z
+      by_cases hz : z ∈ M₁ ∩ M₂
+      · rw [indicator_of_mem hz, indicator_of_mem hz, mul_div_cancel₀ _ (hθ₁ z hz.1).ne']
+      · rw [indicator_of_notMem hz, indicator_of_notMem hz, mul_zero]
+    rw [h, integrableOn_indicator_iff (hM₁.inter hM₂)]
+    exact hθ₂i.mono_set fun z hz => ⟨hz.1.2, hz.2.2⟩
+  -- (L) holds a.e. on `M₁ ∩ B_r(y) ⊇ M₁ ∩ M₂ ∩ B_r(y)` and (D) a.e. on `M₁ ∩ M₂ ∩ B_r(y)`.
+  filter_upwards [ae_restrict_of_ae_restrict_of_subset
+      (fun z hz => ⟨hz.1.1, hz.2⟩ : M₁ ∩ M₂ ∩ ball y r ⊆ M₁ ∩ ball y r)
+      (Submission.fiw_tl_ald_ld_weighted_lebesgue_point P (μHE[n] : Measure (Eucl P)) M₁ θ₁
+        ((M₁ ∩ M₂).indicator fun w => θ₂ w / θ₁ w) y r hM₁ hθ₁ hθ₁i hθ₁g),
+    Submission.fiw_tl_ald_ld_weighted_density_point P (μHE[n] : Measure (Eucl P)) M₂ (M₁ ∩ M₂)
+      θ₂ y r hM₂ (hM₁.inter hM₂) inter_subset_right hθ₂ hθ₂i,
+    ae_restrict_mem₀ ((hM₁.inter hM₂).inter measurableSet_ball.nullMeasurableSet)]
+    with x hL hD hx
+  -- At `x ∈ M₁ ∩ M₂`, `g(x) = θ₂(x)/θ₁(x)`.
+  have hgx : (M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) x = θ₂ x / θ₁ x :=
+    indicator_of_mem hx.1 _
+  rw [hgx] at hL
+  exact ⟨hL, hD⟩
+/-- Relative `L¹` estimate at a point.  Let `θᵢ > 0` on `Mᵢ` be `Hⁿ`-integrable on
+`Mᵢ ∩ B̄_ρ(x)`, `x ∈ M₁ ∩ M₂`, `c = θ₂(x)/θ₁(x)` and `g = 1_{M₁ ∩ M₂} θ₂/θ₁`.  If, as `s ↓ 0`,
+(L) `∫_{M₁ ∩ B̄_s(x)} θ₁ |g − c| dHⁿ / ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ → 0` and
+(D) `∫_{M₁ ∩ M₂ ∩ B̄_s(x)} θ₂ dHⁿ / ∫_{M₂ ∩ B̄_s(x)} θ₂ dHⁿ → 1`, then for every `ε > 0` and all
+small `s > 0`, `∫_{B̄_s(x)} |1_{M₂} θ₂ − c 1_{M₁} θ₁| dHⁿ ≤ ε ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ`.
+Pointwise `|1_{M₂} θ₂ − c 1_{M₁} θ₁| = 1_{M₁} θ₁ |g − c| + 1_{M₂ ∖ M₁} θ₂`.  With
+`bᵢ = ∫_{Mᵢ ∩ B̄_s(x)} θᵢ dHⁿ`, (L) bounds the first part by `δ b₁` and (D) bounds the second by
+`δ b₂ ≤ 2δ(c + δ) b₁`. -/
+theorem Submission.fiw_tl_ald_pointwise_estimate :
+    ∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (x : Eucl P),
+      NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) →
+      (∀ z ∈ M₁, 0 < θ₁ z) → (∀ z ∈ M₂, 0 < θ₂ z) → x ∈ M₁ ∩ M₂ →
+      (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧
+        IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) →
+      Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) *
+          ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - θ₂ x / θ₁ x‖ₑ
+            ∂(μHE[n] : Measure (Eucl P))) /
+        (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))))
+        (𝓝[>] 0) (𝓝 0) →
+      Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z)
+            ∂(μHE[n] : Measure (Eucl P))) /
+        (∫⁻ z in M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z) ∂(μHE[n] : Measure (Eucl P))))
+        (𝓝[>] 0) (𝓝 1) →
+      ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ),
+        ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - θ₂ x / θ₁ x * M₁.indicator θ₁ z‖ₑ
+            ∂(μHE[n] : Measure (Eucl P)) ≤
+          ENNReal.ofReal ε *
+            ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n M₁ M₂ θ₁ θ₂ x hM₁ hM₂ hθ₁ hθ₂ hx hint hL hD ε hε
+  obtain ⟨ρ, hρ, hi₁, hi₂⟩ := hint
+  generalize (μHE[n] : Measure (Eucl P)) = H at hM₁ hM₂ hi₁ hi₂ hL hD ⊢
+  have hc : 0 < θ₂ x / θ₁ x := div_pos (hθ₂ x hx.2) (hθ₁ x hx.1)
+  generalize θ₂ x / θ₁ x = c at hc hL ⊢
+  -- `δ = min(1/2, ε/(3c+3))`: `0 < δ ≤ 1/2` and `δ(3c+3) ≤ ε`.
+  obtain ⟨δ, hδ, hδ2, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 2 ∧ δ * (3 * c + 3) ≤ ε :=
+    ⟨min (1 / 2) (ε / (3 * c + 3)), lt_min (by norm_num) (div_pos hε (by linarith)),
+      min_le_left _ _, (le_div_iff₀ (by linarith)).1 (min_le_right _ _)⟩
+  -- Eventually `s < ρ`, `a₂/b₂ > 1 − δ` (by (D)) and `I/b₁ < δ` (by (L)).
+  filter_upwards [Ioo_mem_nhdsGT hρ,
+    (tendsto_order.1 hD).1 (ENNReal.ofReal (1 - δ)) (ENNReal.ofReal_lt_one.2 (by linarith)),
+    (tendsto_order.1 hL).2 (ENNReal.ofReal δ) (ENNReal.ofReal_pos.2 hδ)] with s hs hs2 hs3
+  have hBρ : closedBall x s ⊆ closedBall x ρ := closedBall_subset_closedBall hs.2.le
+  have hi₁s : IntegrableOn θ₁ (M₁ ∩ closedBall x s) H :=
+    hi₁.mono_set (inter_subset_inter_right _ hBρ)
+  have hi₂s : IntegrableOn θ₂ (M₂ ∩ closedBall x s) H :=
+    hi₂.mono_set (inter_subset_inter_right _ hBρ)
+  have hBm : MeasurableSet (closedBall x s) := measurableSet_closedBall
+  set B := closedBall x s with hB_def
+  set b₁ := ∫⁻ z in M₁ ∩ B, ENNReal.ofReal (θ₁ z) ∂H with hb₁_def
+  set I := ∫⁻ z in M₁ ∩ B, ENNReal.ofReal (θ₁ z) *
+    ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ ∂H with hI_def
+  set a₂ := ∫⁻ z in M₁ ∩ M₂ ∩ B, ENNReal.ofReal (θ₂ z) ∂H with ha₂_def
+  set b₂ := ∫⁻ z in M₂ ∩ B, ENNReal.ofReal (θ₂ z) ∂H with hb₂_def
+  set d₂ := ∫⁻ z in (M₂ \ M₁) ∩ B, ENNReal.ofReal (θ₂ z) ∂H with hd₂_def
+  have hb₁ : b₁ ≠ ∞ := hi₁s.setLIntegral_lt_top.ne
+  have hb₂ : b₂ ≠ ∞ := hi₂s.setLIntegral_lt_top.ne
+  -- `b₂ = a₂ + d₂`: split `M₂ ∩ B` along `M₁`.
+  have hsplit : b₂ = a₂ + d₂ := by
+    have e : M₁ ∩ M₂ ∩ B = M₂ ∩ B ∩ M₁ := by
+      ext z; simp only [mem_inter_iff]; tauto
+    rw [hb₂_def, ha₂_def, hd₂_def, e, sdiff_inter_right_comm, ← lintegral_add_measure,
+      Measure.restrict_inter_add_sdiff₀ _ hM₁]
+  have ha₂ : a₂ ≠ ∞ := ne_top_of_le_ne_top hb₂ (by rw [hsplit]; exact le_self_add)
+  have hd₂ : d₂ ≠ ∞ := ne_top_of_le_ne_top hb₂ (by rw [hsplit]; exact le_add_self)
+  -- `(1 − δ) b₂ ≤ a₂` and `I ≤ δ b₁`.
+  have h2 : ENNReal.ofReal (1 - δ) * b₂ ≤ a₂ :=
+    ((ENNReal.lt_div_iff_mul_lt (Or.inr ENNReal.ofReal_ne_top) (Or.inl hb₂)).1 hs2).le
+  have h3 : I ≤ ENNReal.ofReal δ * b₁ := by
+    rcases eq_or_ne I 0 with h0 | h0
+    · rw [h0]; exact zero_le
+    · exact ((ENNReal.div_lt_iff (Or.inr h0) (Or.inl hb₁)).1 hs3).le
+  have hI : I ≠ ∞ := ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁) h3
+  -- `a₂ ≤ c b₁ + I`, since `θ₂ ≤ c θ₁ + θ₁ |g − c|` on `M₁ ∩ M₂`.
+  have h4 : a₂ ≤ ENNReal.ofReal c * b₁ + I := by
+    have hA : NullMeasurableSet (M₁ ∩ M₂ ∩ B) H := (hM₁.inter hM₂).inter hBm.nullMeasurableSet
+    have hm : AEMeasurable (fun z => ENNReal.ofReal c * ENNReal.ofReal (θ₁ z))
+        (H.restrict (M₁ ∩ B)) :=
+      hi₁s.aestronglyMeasurable.aemeasurable.ennreal_ofReal.const_mul _
+    calc a₂ ≤ ∫⁻ z in M₁ ∩ M₂ ∩ B, (ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) +
+          ENNReal.ofReal (θ₁ z) * ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) ∂H := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀ hA] with z hz
+          have h1z : 0 < θ₁ z := hθ₁ z hz.1.1
+          have e : θ₁ z * (θ₂ z / θ₁ z) = θ₂ z := mul_div_cancel₀ _ h1z.ne'
+          rw [indicator_of_mem hz.1]
+          calc ENNReal.ofReal (θ₂ z)
+              = ENNReal.ofReal (c * θ₁ z + θ₁ z * (θ₂ z / θ₁ z - c)) := by
+                congr 1; rw [mul_sub, e]; ring
+            _ ≤ ENNReal.ofReal (c * θ₁ z) + ENNReal.ofReal (θ₁ z * (θ₂ z / θ₁ z - c)) :=
+                ENNReal.ofReal_add_le
+            _ ≤ ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) + ‖θ₁ z * (θ₂ z / θ₁ z - c)‖ₑ := by
+                rw [ENNReal.ofReal_mul hc.le]; gcongr; exact Real.ofReal_le_enorm _
+            _ = ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) +
+                ENNReal.ofReal (θ₁ z) * ‖θ₂ z / θ₁ z - c‖ₑ := by
+                rw [enorm_mul, Real.enorm_of_nonneg h1z.le]
+      _ ≤ ∫⁻ z in M₁ ∩ B, (ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) +
+          ENNReal.ofReal (θ₁ z) * ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) ∂H :=
+          lintegral_mono_set fun z hz => ⟨hz.1.1, hz.2⟩
+      _ = ENNReal.ofReal c * b₁ + I := by
+          rw [lintegral_add_left' hm, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  -- Pointwise, `|1_{M₂} θ₂ − c 1_{M₁} θ₁| = 1_{M₁} θ₁ |g − c| + 1_{M₂ ∖ M₁} θ₂`.
+  have hpt : ∀ z, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ≤
+      M₁.indicator (fun z => ENNReal.ofReal (θ₁ z) *
+        ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) z +
+      (M₂ \ M₁).indicator (fun z => ENNReal.ofReal (θ₂ z)) z := by
+    intro z
+    by_cases h1 : z ∈ M₁ <;> by_cases h2 : z ∈ M₂
+    · have h1z : 0 < θ₁ z := hθ₁ z h1
+      have e : θ₁ z * (θ₂ z / θ₁ z) = θ₂ z := mul_div_cancel₀ _ h1z.ne'
+      have hn : z ∉ M₂ \ M₁ := fun h => h.2 h1
+      simp only [indicator_of_mem h1, indicator_of_mem h2, indicator_of_mem (mem_inter h1 h2),
+        indicator_of_notMem hn, add_zero]
+      refine le_of_eq ?_
+      rw [show θ₂ z - c * θ₁ z = θ₁ z * (θ₂ z / θ₁ z - c) by rw [mul_sub, e]; ring, enorm_mul,
+        Real.enorm_of_nonneg h1z.le]
+    · have h1z : 0 < θ₁ z := hθ₁ z h1
+      have hn : z ∉ M₂ \ M₁ := fun h => h.2 h1
+      have hn' : z ∉ M₁ ∩ M₂ := fun h => h2 h.2
+      simp only [indicator_of_mem h1, indicator_of_notMem h2, indicator_of_notMem hn',
+        indicator_of_notMem hn, add_zero]
+      refine le_of_eq ?_
+      rw [show (0 : ℝ) - c * θ₁ z = θ₁ z * (0 - c) by ring, enorm_mul,
+        Real.enorm_of_nonneg h1z.le]
+    · have h2z : 0 < θ₂ z := hθ₂ z h2
+      simp only [indicator_of_notMem h1, indicator_of_mem h2,
+        indicator_of_mem (show z ∈ M₂ \ M₁ from ⟨h2, h1⟩), mul_zero, sub_zero, zero_add]
+      exact (Real.enorm_of_nonneg h2z.le).le
+    · simp only [indicator_of_notMem h1, indicator_of_notMem h2,
+        indicator_of_notMem (show z ∉ M₂ \ M₁ from fun h => h2 h.1), mul_zero, sub_zero,
+        enorm_zero, add_zero, le_refl]
+  -- Hence `∫_B |1_{M₂} θ₂ − c 1_{M₁} θ₁| dH ≤ I + d₂`.
+  have h5 : ∫⁻ z in B, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂H ≤ I + d₂ := by
+    have hGm : AEMeasurable ((M₂ \ M₁).indicator fun z => ENNReal.ofReal (θ₂ z))
+        (H.restrict B) := by
+      rw [aemeasurable_indicator_iff₀ ((hM₂.diff hM₁).mono Measure.restrict_le_self),
+        Measure.restrict_restrict' hBm]
+      exact hi₂s.aestronglyMeasurable.aemeasurable.ennreal_ofReal.mono_set
+        (inter_subset_inter_left _ sdiff_subset)
+    calc ∫⁻ z in B, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂H
+        ≤ ∫⁻ z in B, (M₁.indicator (fun z => ENNReal.ofReal (θ₁ z) *
+            ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) z +
+          (M₂ \ M₁).indicator (fun z => ENNReal.ofReal (θ₂ z)) z) ∂H := lintegral_mono hpt
+      _ = I + d₂ := by
+        rw [lintegral_add_right' _ hGm,
+          setLIntegral_indicator₀ _ (hM₁.mono Measure.restrict_le_self),
+          setLIntegral_indicator₀ _ ((hM₂.diff hM₁).mono Measure.restrict_le_self)]
+  -- Real arithmetic: `I + d₂ ≤ δ b₁ + δ b₂ ≤ δ (1 + 2c + 2δ) b₁ ≤ ε b₁`.
+  have hfin : I + d₂ ≤ ENNReal.ofReal ε * b₁ := by
+    have hcb : ENNReal.ofReal c * b₁ ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁
+    have r1 : b₂.toReal = a₂.toReal + d₂.toReal := by rw [hsplit, ENNReal.toReal_add ha₂ hd₂]
+    have r2 : (1 - δ) * b₂.toReal ≤ a₂.toReal := by
+      have := ENNReal.toReal_mono ha₂ h2
+      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by linarith)] at this
+    have r3 : I.toReal ≤ δ * b₁.toReal := by
+      have := ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁) h3
+      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal hδ.le] at this
+    have r4 : a₂.toReal ≤ c * b₁.toReal + I.toReal := by
+      have := ENNReal.toReal_mono (ENNReal.add_ne_top.2 ⟨hcb, hI⟩) h4
+      rwa [ENNReal.toReal_add hcb hI, ENNReal.toReal_mul, ENNReal.toReal_ofReal hc.le] at this
+    have hB₁ : 0 ≤ b₁.toReal := ENNReal.toReal_nonneg
+    have hB₂ : 0 ≤ b₂.toReal := ENNReal.toReal_nonneg
+    have e1 : 0 ≤ (1 / 2 - δ) * b₂.toReal := mul_nonneg (by linarith) hB₂
+    have hB2 : b₂.toReal ≤ 2 * (c + δ) * b₁.toReal := by linarith
+    have e2 : δ * b₂.toReal ≤ δ * (2 * (c + δ) * b₁.toReal) :=
+      mul_le_mul_of_nonneg_left hB2 hδ.le
+    have e3 : δ * (3 * c + 3) * b₁.toReal ≤ ε * b₁.toReal := mul_le_mul_of_nonneg_right hδε hB₁
+    have e4 : 0 ≤ δ * b₁.toReal * (c + 2 - 2 * δ) :=
+      mul_nonneg (mul_nonneg hδ.le hB₁) (by linarith)
+    rw [← ENNReal.toReal_le_toReal (ENNReal.add_ne_top.2 ⟨hI, hd₂⟩)
+        (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁), ENNReal.toReal_add hI hd₂,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal hε.le]
+    linarith
+  exact h5.trans hfin
+
+/-- Relative `L¹` density of the weighted measures `θᵢ Hⁿ ⌞ Mᵢ`, as used for the locality of
+approximate tangent spaces (Simon Ch. 3, Remark 1.8(1)): for `Hⁿ ⌞ (M₁ ∩ M₂)`-a.e. `x` and every
+`ε > 0`, `∫_{B̄_s(x)} |1_{M₂} θ₂ − (θ₂(x)/θ₁(x)) 1_{M₁} θ₁| dHⁿ ≤ ε ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ` for
+all small `s > 0`.  Cover `U` by balls `B_r(y)` with `B̄_r(y) ⊆ U`.  On each, `θᵢ` is integrable
+on the compact `Mᵢ ∩ B̄_r(y)`, so the weighted Lebesgue-point and Besicovitch density limits hold
+a.e. on `M₁ ∩ M₂ ∩ B_r(y)`; at such `x` they give the estimate, with `ρ = r − dist(x, y)`. -/
+theorem Submission.fiw_tl_ae_l1_density :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ),
+      M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M₁, 0 < θ₁ x) →
+      (∀ x ∈ M₂, 0 < θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+        IntegrableOn θ₁ (M₁ ∩ K) (μHE[n] : Measure (Eucl P))) →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+        IntegrableOn θ₂ (M₂ ∩ K) (μHE[n] : Measure (Eucl P))) →
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ ε : ℝ, 0 < ε →
+        ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in closedBall x s,
+          ‖M₂.indicator θ₂ z - θ₂ x / θ₁ x * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤
+            ENNReal.ofReal ε * ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z)
+              ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n U hU M₁ M₂ θ₁ θ₂ hM₁U _hM₂U hM₁ hM₂ hθ₁ hθ₂ hθ₁i hθ₂i
+  -- Step 1: it suffices to prove the claim a.e. on `M₁ ∩ M₂ ∩ B_r(y)` whenever `B̄_r(y) ⊆ U`.
+  refine Submission.fiw_tl_ald_ball_reduction P _ U (M₁ ∩ M₂) _ hU
+    (inter_subset_left.trans hM₁U) fun y r hyr => ?_
+  -- Steps 2–4: `θᵢ` is integrable on the compact `Mᵢ ∩ B̄_r(y)`, so the weighted Lebesgue-point
+  -- and density limits at `x` hold a.e. on `M₁ ∩ M₂ ∩ B_r(y)`.
+  filter_upwards [Submission.fiw_tl_ald_local_differentiation P n M₁ M₂ θ₁ θ₂ y r hM₁ hM₂ hθ₁ hθ₂
+      (hθ₁i _ (isCompact_closedBall y r) hyr) (hθ₂i _ (isCompact_closedBall y r) hyr),
+    ae_restrict_mem₀ ((hM₁.inter hM₂).inter measurableSet_ball.nullMeasurableSet)]
+    with x ⟨hL, hD⟩ hx
+  -- Steps 5–8: the estimate at `x`, using `B̄_ρ(x) ⊆ B̄_r(y) ⊆ U` for `ρ = r - dist x y > 0`.
+  have hρU : closedBall x (r - dist x y) ⊆ U :=
+    (closedBall_subset_closedBall' (sub_add_cancel r _).le).trans hyr
+  exact Submission.fiw_tl_ald_pointwise_estimate P n M₁ M₂ θ₁ θ₂ x hM₁ hM₂ hθ₁ hθ₂ hx.1
+    ⟨r - dist x y, sub_pos.2 (mem_ball.1 hx.2), hθ₁i _ (isCompact_closedBall x _) hρU,
+      hθ₂i _ (isCompact_closedBall x _) hρU⟩ hL hD
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
