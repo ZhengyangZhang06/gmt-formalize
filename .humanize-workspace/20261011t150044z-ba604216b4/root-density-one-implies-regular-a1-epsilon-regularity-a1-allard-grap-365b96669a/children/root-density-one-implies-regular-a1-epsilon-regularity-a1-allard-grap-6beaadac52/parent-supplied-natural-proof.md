@@ -1,0 +1,116 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Poincaré inequality on a ball cited in parent proof step A2 and in Simon's proof of Lemma 5.3.1 ("by the Poincaré inequality (see e.g. [GT01])"). This is the convex-domain argument of Gilbarg–Trudinger, Lemma 7.16 and (7.45), written out for Lipschitz functions. It gives C_P = 2^{n+2}.
+
+0. (Setup.) B := B̆_1(0), ω := Lⁿ(B) ∈ (0, ∞), and ū := ω^{−1}∫_B u, which is the expression (∫_B u)/(volume B).toReal of the statement. Let L be a Lipschitz constant of u.
+- u is continuous and bounded on B. Du = fderiv ℝ u is Borel measurable (measurable_fderiv) with ‖Du(z)‖ ≤ L for all z (norm_fderiv_le_of_lipschitz). So every integral below is a finite Lebesgue integral of a bounded measurable function over a bounded set.
+- N := {z : u is not differentiable at z} is Borel (measurableSet_of_differentiableAt) and Lⁿ-null (Rademacher: LipschitzWith.ae_differentiableAt).
+
+1. (FTC on segments.) Let x, y ∈ ℝⁿ satisfy L¹({t ∈ [0, 1] : (1 − t)y + tx ∈ N}) = 0. Then u(x) − u(y) = ∫_0^1 Du((1 − t)y + tx)(x − y) dt.
+Proof: φ(t) := u((1 − t)y + tx) is Lipschitz on ℝ, hence absolutely continuous on [0, 1] (LipschitzOnWith.absolutelyContinuousOnInterval). So φ(1) − φ(0) = ∫_0^1 deriv φ (AbsolutelyContinuousOnInterval.integral_deriv_eq_sub). For a.e. t ∈ [0, 1], u is differentiable at (1 − t)y + tx, and the chain rule then gives deriv φ(t) = Du((1 − t)y + tx)(x − y).
+
+2. (Almost every pair.) Let E := {(x, y, t) ∈ ℝⁿ × ℝⁿ × [0, 1] : (1 − t)y + tx ∈ N}, a Borel set.
+- For fixed y and t ∈ (0, 1], the x-section of E is t^{−1}(N − (1 − t)y), which is Lⁿ-null. By Tonelli (integrating first in x; the slice t = 0 is L¹-null), E is null.
+- By Tonelli again (integrating first in t), for Lⁿ⊗Lⁿ-a.e. (x, y) the t-section of E is L¹-null, so step 1 applies.
+Hence for a.e. (x, y): u(x) − u(y) = ∫_0^1 Du((1 − t)y + tx)(x − y) dt.
+
+3. (Pointwise bound.) For a.e. (x, y) ∈ B × B we have |x − y| < 2, so Cauchy–Schwarz on [0, 1] gives
+(u(x) − u(y))² ≤ |x − y|²(∫_0^1 ‖Du((1 − t)y + tx)‖ dt)² ≤ 4∫_0^1 ‖Du((1 − t)y + tx)‖² dt.
+
+4. (Averaging.) For x ∈ B, u(x) − ū = ω^{−1}∫_B (u(x) − u(y)) dy. By Cauchy–Schwarz, (u(x) − ū)² ≤ ω^{−1}∫_B (u(x) − u(y))² dy. Integrate over x ∈ B and use step 3 and Tonelli:
+∫_B (u − ū)² ≤ ω^{−1}∫_B∫_B (u(x) − u(y))² dy dx ≤ 4ω^{−1}∫_0^1 I(t) dt, where I(t) := ∫_B∫_B ‖Du((1 − t)y + tx)‖² dy dx.
+
+5. (Change of variables.) B is convex, so (1 − t)y + tx ∈ B for x, y ∈ B and t ∈ [0, 1].
+- If t ∈ [1/2, 1], fix y ∈ B. The affine bijection x ↦ (1 − t)y + tx has Jacobian tⁿ ≥ 2^{−n} and maps B into B. Hence ∫_B ‖Du((1 − t)y + tx)‖² dx = t^{−n}∫_{(1−t)y+tB} ‖Du‖² ≤ 2ⁿ∫_B ‖Du‖². (Use Measure.setIntegral_comp_smul_of_pos or Measure.map_addHaar_smul, together with translation invariance, for the nonnegative function 1_B‖Du‖².) Integrating over y ∈ B gives I(t) ≤ 2ⁿω∫_B ‖Du‖².
+- If t ∈ [0, 1/2], fix x ∈ B and change variables in y instead; the Jacobian is (1 − t)ⁿ ≥ 2^{−n}. With Tonelli, again I(t) ≤ 2ⁿω∫_B ‖Du‖².
+
+6. (Conclusion.) ∫_B (u − ū)² ≤ 4ω^{−1}·2ⁿω∫_B ‖Du‖² = 2^{n+2}∫_B ‖Du‖². So C_P := 2^{n+2} > 0 works, and it depends only on n. ∎
+
+## Key steps
+
+1. Rademacher: the non-differentiability set of u is a Borel null set, and ‖Du‖ ≤ Lip(u) everywhere.
+2. FTC for the absolutely continuous function t ↦ u((1−t)y + tx), valid for a.e. pair (x, y) by Tonelli.
+3. (u(x) − u(y))² ≤ 4∫_0^1 ‖Du((1−t)y+tx)‖² dt on B × B, and (u(x) − ū)² ≤ ω^{−1}∫_B (u(x) − u(y))² dy.
+4. Affine change of variables in x (t ≥ 1/2) or in y (t ≤ 1/2), with Jacobian ≥ 2^{−n} and convexity of B, bounds each t-slice by 2ⁿω∫_B ‖Du‖².
+5. Conclude with C_P = 2^{n+2}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean && cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (IDENTICAL)`
+- `rg -l -i 'laplacian' <snapshot>/mathlib/Mathlib; rg -n '^(theorem|lemma|def)' Analysis/InnerProductSpace/Harmonic/*.lean; sed -n 110,200p Analysis/InnerProductSpace/Laplacian.lean`
+- `grep -rn -E 'theorem .*(circleAverage|meanValue|mean_value)' Analysis/Complex/Harmonic/`
+- `rg -n 'theorem|lemma' Analysis/Calculus/Rademacher.lean; sed -n 40,210p Analysis/Calculus/Rademacher.lean`
+- `rg -l 'AbsolutelyContinuousOnInterval' <snapshot>/mathlib/Mathlib; sed -n 200,260p MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean; grep -n absolutelyContinuousOnInterval MeasureTheory/Function/AbsolutelyContinuous.lean`
+- `rg -n 'theorem .*ae_tendsto_average|theorem .*tendsto_average|convolution_tendsto_right|ae_convolution_tendsto' <snapshot>/mathlib/Mathlib`
+- `grep -rn -E 'theorem (_root_\.)?HasCompactSupport\.(contDiff|hasFDerivAt)_convolution_(left|right)' Analysis/`
+- `rg -n 'theorem arzela_ascoli' Topology/ContinuousMap/Bounded/ArzelaAscoli.lean; grep -rn -E 'theorem (TotallyBounded\.isCompact|isCompact_iff_totallyBounded)' Topology/UniformSpace; grep -n 'exists_cthickening_subset_open' Topology/MetricSpace/Thickening.lean; grep -rn lipschitzWith_of_hasCompactSupport Analysis/Calculus/ContDiff/RCLike.lean; sed -n 125,160p MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `grep -rln 'rellich\|Rellich\|Kondrachov\|poincare_inequality\|PoincareInequality\|mean_value_property\|weyl_lemma\|WeylLemma' Analysis MeasureTheory  (no match)`
+- `sed -n 1,50p Analysis/Distribution/Sobolev.lean  (Fourier-side Bessel potential spaces only)`
+- `grep -rln -i -E 'harmonic|rellich|kondrachov|weyl|mean.value|poincar[eé].inequality' .lake/packages/simongmt/Poincare; grep -n -E '^(theorem|lemma|def)' Chapter05/HarmonicEnergy.lean Chapter04/Poincare.lean Chapter05/Basic.lean; grep -rn -i -E 'harmonic|poincar|rellich|weyl' <snapshot>/project/GMT`
+- `python3 -I: lean_name scan of dag.json (212 nodes) and nodes/*/*.json (446 names) for the 7 proposed dorag_ha_* names (no collision)`
+- `lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds) /tmp/harmapprox-decomp/Children.lean, Assembly.lean, Assembly2.lean (#print axioms GMT.Ch07.Submission.dorag_harmonic_affine_approximation), Names.lean (#check of cited Mathlib lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/HarmonicEnergy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/tmp/harmapprox-decomp/Children.lean`
+- `/tmp/harmapprox-decomp/Assembly.lean`
+- `/tmp/harmapprox-decomp/Assembly2.lean`
+- `/tmp/harmapprox-decomp/Names.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. GMT/Ch07/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, so the child types are checked in that scope.
+
+What the pinned Mathlib lacks:
+- no Rellich, Poincaré-on-a-ball, Weyl lemma or ℝⁿ mean value property (grep finds no match in Analysis or MeasureTheory);
+- the only harmonic mean value result is HarmonicOnNhd.circleAverage_eq on ℂ (Analysis/Complex/Harmonic/MeanValue.lean);
+- Sobolev.lean has only Fourier-side Bessel-potential spaces, so there is no W^{1,2} on domains.
+
+What the pinned Mathlib supplies, and the child proofs cite:
+- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (Rademacher.lean:385);
+- AbsolutelyContinuousOnInterval.integral_deriv_eq_sub (AbsolutelyContinuousFun.lean:225) and LipschitzOnWith.absolutelyContinuousOnInterval (AbsolutelyContinuous.lean:309);
+- HasCompactSupport.contDiff_convolution_left / hasFDerivAt_convolution_left (ContDiff/Convolution.lean:91,427);
+- VitaliFamily.ae_tendsto_average_norm_sub (Differentiation.lean:837) and tendsto_integral_smul_of_tendsto_average_norm_sub (Average.lean:835);
+- BoundedContinuousFunction.arzela_ascoli (ArzelaAscoli.lean:109), TotallyBounded.isCompact_of_isClosed (Cauchy.lean:746), Measure.setIntegral_comp_smul_of_pos (Haar/NormedSpace.lean:148), ContDiff.lipschitzWith_of_hasCompactSupport, IsCompact.exists_cthickening_subset_open and ContDiffAt.isSymmSndFDerivAt.
+
+The project and SimonGMT have nothing reusable. SimonGMT Chapter05/Basic.lean only re-exports HarmonicOnNhd vocabulary and says compactness and regularity are not formalized. Chapter04/Poincare.lean is the varifold (Michael–Simon type) inequality and Chapter05/HarmonicEnergy.lean the §1 energy estimate, neither the needed Euclidean results. The project's Ch05 HarmonicApproximationLemma is a Prop used only under main_theorem := by sorry. So no comparator-approved declaration can be reused.
+
+Lean checks:
+- all 7 child types elaborate in comparator scope;
+- the exact frozen parent type compiles from dorag_ha_approximation and dorag_ha_interior_estimates alone, with axioms propext, Classical.choice and Quot.sound plus sorryAx from the stubbed children;
+- the 7 dorag_ha_* names are unreserved.

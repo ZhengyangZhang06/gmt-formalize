@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.test_integral_vanish-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1",
+  "depth": 6,
+  "title": "Ball integrals of test-function differences along graph blow-ups tend to zero",
+  "statement": "Let n, k ∈ ℕ. Let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries. Let f : ℝⁿ → ℝᵏ be continuous and differentiable at v ∈ ℝⁿ, with T := Df(v) (Mathlib fderiv ℝ f v). Let ψ : ℝ^{n+k} → ℝ be continuous with compact support, and let R ∈ ℝ. Then, with Lⁿ the Lebesgue measure (volume) on ℝⁿ, U(r) := ∫_{closedBall(0,R)} |ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v)))) − ψ(ιw + ι'(T w))| dLⁿ(w) → 0 as r ↓ 0 (along 𝓝[>] 0).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (ψ : Euclid (n + k) → ℝ), Continuous f → DifferentiableAt ℝ f v → Continuous ψ → HasCompactSupport ψ → ∀ R : ℝ, Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dorwbl_test_fn_diff_quotient_integral_tendsto_zero",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.diff_quotient_uniform-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.diff_quotient_uniform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-217019aea8-a1"
+}
