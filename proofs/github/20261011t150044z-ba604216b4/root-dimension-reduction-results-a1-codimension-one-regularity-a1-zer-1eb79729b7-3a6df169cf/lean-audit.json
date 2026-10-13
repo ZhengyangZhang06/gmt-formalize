@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "df54192f465a198b2e2aba7b1bb3d2499a6b1168949e65d1e4491cbaa29af537",
+  "git_delta": {
+    "base_commit": "193da3c809b0648ffc14dd7bd2e7b9cde2657671",
+    "candidate_commit": "053ab1ab12c13c95113b7705f0e7cbbea8826a54",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_pc_translation_estimate",
+    "diff_sha256": "d7fb751b81ae16c4a194e8cbc16af21fae29059ee22eb220a170feb770732c28",
+    "source_sha256": "1c198b4f81d1c75157723c1b3d922cb68f09c1fde86c0e9f7ff316b18c16772f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_pc_translation_estimate",
+      "statement": "∀ (m : ℕ) (F : Set (Euclid m)) (R c : ℝ), MeasurableSet F → (∀ φ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid m) (R + 2) → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ φ v).toLinearMap ≤ c) → ∀ h : Euclid m, ‖h‖ ≤ 1 → volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal (c * ‖h‖)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
