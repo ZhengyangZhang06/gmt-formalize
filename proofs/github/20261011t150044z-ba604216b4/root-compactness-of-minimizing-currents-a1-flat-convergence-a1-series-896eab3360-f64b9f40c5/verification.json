@@ -1,0 +1,17 @@
+{
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.coeff_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5097",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "827f2b91f9f4bc56c57c61f028ddb49fff28d5b8",
+  "integrated_commit": "",
+  "proof_base_commit": "f0c5e7bd81360d2304d2914a0b48554742fe2e24",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1",
+  "requires": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ]
+}
