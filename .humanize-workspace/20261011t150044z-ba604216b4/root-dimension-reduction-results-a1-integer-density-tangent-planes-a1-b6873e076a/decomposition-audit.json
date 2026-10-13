@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_fa_pj_|polar_gram|gram_det_two_plane",
+        "hasStrictFDerivAt_norm_sq|theorem HasFDerivAt.sqrt|theorem hasFDerivAt_inv|theorem HasFDerivAt.fun_mul|theorem HasFDerivAt.arctan|theorem HasFDerivAt.prodMk",
+        "theorem det_fin_two|sum_inner_mul_inner|sum_sq_inner_left|starProjection_inner_eq_zero|eq_starProjection_of_mem_of_inner_eq_zero|inner_starProjection_left_eq_right|coe_orthogonalProjectionOnto_apply|theorem Submodule.coe_inner|theorem norm_coe|eq_of_le_of_finrank_eq|finrank_span_eq_card|orthonormal_iff_ite|mem_span_range_iff_exists_fun|stdOrthonormalBasis",
+        "rg -n --max-depth 2 --hidden --no-ignore -g 'decomposition-v*.json' '\"lean_name\": \"idtp_cse_fa_pj_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pj-independent-audit-8ygnk3z8/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pj-independent-audit-8ygnk3z8/ParentImplication.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pj-independent-audit-8ygnk3z8/Complete.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/decomposition-v1.json",
+        "/tmp/pj-independent-audit-8ygnk3z8/ChallengeTypes.lean",
+        "/tmp/pj-independent-audit-8ygnk3z8/ParentImplication.lean",
+        "/tmp/pj-independent-audit-8ygnk3z8/Complete.lean"
+      ],
+      "conclusion": "The split appropriately separates calculus, the two-dimensional Gram determinant, and projection geometry. All dependencies are empty and acyclic; the supplied assembly proves the exact selected parent contract. All names are bare identifiers with no reservation by another branch. No identical reusable DAG contract or matching snapshot declaration was found. The inspected library sources match the pinned compiler package byte for byte. Fresh checks elaborated every frozen type before any child implementation and proved all children, the parent implication, and the selected parent using only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "polar_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose. The eight-step proof derives all required nonzero denominators, correctly differentiates the norm and angle, pairs the derivatives, and simplifies to the stated formula. No orthonormality assumption or circular reliance is needed."
+    },
+    {
+      "key": "gram_det_two_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including arbitrary ambient p and q. Matrix.of supplies the intended matrix construction. The Fin n argument, determinant expansion, projection transfer, and Parseval identities establish the conclusion completely without sibling or parent reliance."
+    },
+    {
+      "key": "proj_norm_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both prose and the one-line type. The proof establishes orthonormality, identifies the span with Q by dimension, characterizes the projection by orthogonality, and expands its squared norm. Each step is justified and non-circular."
+    }
+  ],
+  "required_changes": []
+}

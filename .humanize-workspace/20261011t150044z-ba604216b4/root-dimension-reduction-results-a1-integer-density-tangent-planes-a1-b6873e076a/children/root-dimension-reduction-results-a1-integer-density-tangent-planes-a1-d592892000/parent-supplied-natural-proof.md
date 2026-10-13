@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1.polar_fderiv-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 (F3) of the parent-supplied proof, stated for general a, e with ⟨x,a⟩ ≠ 0. Notation: α := ⟨x,a⟩ ≠ 0, β := ⟨x,e⟩, ρ := α² + β², A := αe − βa, F̃(y) := (|y|, arctan(⟨y,e⟩/⟨y,a⟩)).
+1. (Non-degeneracy.) x ≠ 0, since otherwise α = ⟨0,a⟩ = 0. Hence |x| > 0. Also ρ ≥ α² > 0, so ρ ≠ 0.
+2. (Norm.) The map y ↦ |y|² has derivative v ↦ 2⟨x,v⟩ at x (`hasStrictFDerivAt_norm_sq` and `HasStrictFDerivAt.hasFDerivAt`: derivative 2 • innerSL ℝ x). Its value |x|² at x is nonzero, so by the chain rule for the square root (`HasFDerivAt.sqrt`), y ↦ sqrt(|y|²) has derivative v ↦ (1/(2·sqrt(|x|²)))·2⟨x,v⟩ at x. Since sqrt(|y|²) = |y| for every y (`Real.sqrt_sq`, because |y| ≥ 0), the norm y ↦ |y| has this same derivative at x. As sqrt(|x|²) = |x|, its value at v is ⟨x,v⟩/|x|.
+3. (Linear coordinates.) By symmetry of the real inner product (`real_inner_comm`), y ↦ ⟨y,e⟩ equals the continuous linear map innerSL ℝ e : y ↦ ⟨e,y⟩. So it has derivative v ↦ ⟨e,v⟩ at x (`ContinuousLinearMap.hasFDerivAt`). Likewise y ↦ ⟨y,a⟩ has derivative v ↦ ⟨a,v⟩ at x. Transfer along the pointwise identities with `HasFDerivAt.congr_of_eventuallyEq`.
+4. (Reciprocal.) t ↦ t⁻¹ has derivative −(α²)⁻¹ at t = α ≠ 0 (`hasFDerivAt_inv`). By the chain rule (`HasFDerivAt.comp`) and step 3, y ↦ ⟨y,a⟩⁻¹ has derivative v ↦ −⟨a,v⟩/α² at x.
+5. (Product.) By the product rule (`HasFDerivAt.fun_mul`) and steps 3–4, q(y) := ⟨y,e⟩·⟨y,a⟩⁻¹ has derivative v ↦ β·(−⟨a,v⟩/α²) + α⁻¹·⟨e,v⟩ at x.
+6. (Arctan.) arctan has derivative t ↦ 1/(1 + t²) (`HasFDerivAt.arctan`), and q(x) = β·α⁻¹. So y ↦ arctan(q(y)) has derivative v ↦ (1/(1 + (βα⁻¹)²))·(α⁻¹⟨e,v⟩ − β⟨a,v⟩/α²) at x.
+7. (Pair and identification.) By `HasFDerivAt.prodMk` and steps 2 and 6, G(y) := (|y|, arctan(q(y))) has at x the derivative L : v ↦ (⟨x,v⟩·(1/(2·sqrt(|x|²)))·2, (1/(1 + (βα⁻¹)²))·(α⁻¹⟨e,v⟩ − β⟨a,v⟩/α²)). For every y, ⟨y,e⟩/⟨y,a⟩ = ⟨y,e⟩·⟨y,a⟩⁻¹ (`div_eq_mul_inv`, which holds even when ⟨y,a⟩ = 0). So F̃ = G everywhere, and F̃ also has derivative L at x (`HasFDerivAt.congr_of_eventuallyEq`). By uniqueness of the Fréchet derivative (`HasFDerivAt.fderiv`), fderiv ℝ F̃ x = L.
+8. (Simplification.) Fix v. First coordinate: with sqrt(|x|²) = |x| (`Real.sqrt_sq`, |x| ≥ 0), ⟨x,v⟩·(1/(2|x|))·2 = ⟨x,v⟩/|x| since |x| ≠ 0. Second coordinate: 1/(1 + β²/α²) = α²/ρ. Hence (α²/ρ)·(⟨e,v⟩/α − β⟨a,v⟩/α²) = (α⟨e,v⟩ − β⟨a,v⟩)/ρ, using α ≠ 0 and ρ ≠ 0 (`field_simp`, `ring`). Finally ⟨A,v⟩ = ⟨αe − βa, v⟩ = α⟨e,v⟩ − β⟨a,v⟩ (`inner_sub_left`, `real_inner_smul_left`). Therefore fderiv ℝ F̃ x v = (⟨x,v⟩/|x|, ⟨⟨x,a⟩e − ⟨x,e⟩a, v⟩/(⟨x,a⟩² + ⟨x,e⟩²)), as claimed. ∎
+
+## Key steps
+
+1. ⟨x,a⟩ ≠ 0 gives x ≠ 0 and ρ := ⟨x,a⟩² + ⟨x,e⟩² > 0.
+2. The norm is sqrt(|y|²), so its derivative at x is v ↦ ⟨x,v⟩/|x| (hasStrictFDerivAt_norm_sq, HasFDerivAt.sqrt, Real.sqrt_sq).
+3. y ↦ ⟨y,e⟩·⟨y,a⟩⁻¹ is differentiated by the linear-map, inverse, chain and product rules; arctan is then applied (HasFDerivAt.arctan).
+4. Pair with HasFDerivAt.prodMk, then transfer from ⟨y,e⟩·⟨y,a⟩⁻¹ to ⟨y,e⟩/⟨y,a⟩ with congr_of_eventuallyEq and take HasFDerivAt.fderiv.
+5. Field arithmetic: the coordinates are ⟨x,v⟩/|x| and (⟨x,a⟩⟨e,v⟩ − ⟨x,e⟩⟨a,v⟩)/ρ = ⟨⟨x,a⟩e − ⟨x,e⟩a, v⟩/ρ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 over dag.json nodes: ids under ...cone_sector_endpoint_density-a1.fibre_area-a1 (siblings area_formula_prod, polar_jacobian, sector_open_smooth) and lean_names containing 'idtp_cse', 'polar' or 'gram' (dpf_det_gram_stdOrthonormalBasis_eq accepted; idtp_cse_rc_angle_fderiv, idtp_cse_fc_planar_fibre_geometry, idtp_cse_fc_jacobian_upper still decomposing)`
+- `grep -c idtp_cse_fa_pj_ dag.json (0); grep -rl 'idtp_cse_fa_pj_polar_fderiv_apply|idtp_cse_fa_pj_gram_det_two_plane|idtp_cse_fa_pj_starProjection_norm_sq|idtp_cse_fa_pj_' .humanize GMT (no match); rg -n 'idtp_cse_fa_pj_|polar_gram|gram_det_two_plane' local-references/123e8435b4a2469b/project (no match); git grep idtp_cse_fa_pj_ on this node's and the parent's proof/dispatch branches (no match)`
+- `rg -n 'theorem hasStrictFDerivAt_norm_sq|theorem HasFDerivAt.sqrt|theorem hasFDerivAt_inv |theorem HasFDerivAt.mul |theorem HasFDerivAt.arctan|nonrec theorem HasFDerivAt.prodMk|theorem det_fin_two |protected theorem sum_inner_mul_inner|theorem sum_sq_inner_left|theorem starProjection_inner_eq_zero|theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem inner_starProjection_left_eq_right|lemma coe_orthogonalProjectionOnto_apply|theorem norm_coe \[Ring|theorem eq_of_le_of_finrank_eq|theorem finrank_span_eq_card|theorem orthonormal_iff_ite|theorem starProjection_eq_self_iff' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'mem_span_range_iff_exists_fun|theorem Submodule.coe_inner' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -rn 'HasFDerivAt (‖·‖)|hasStrictFDerivAt_norm\b|HasFDerivAt.norm\b|fderiv_norm\b|HasFDerivAt.inv\b|HasFDerivAt.div\b' .lake/packages/mathlib/Mathlib (no closed-form fderiv of the Euclidean norm and no fderiv quotient rule at the pin; hence sqrt ∘ norm_sq and inverse + product rules)`
+- `diff GMT/Ch07/Submission.lean against local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean and against git show 22aa3aa64ed3:GMT/Ch07/Submission.lean (identical); git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `lake env lean /tmp/pj-decomp-4f2a/check/{Stmts,Parent,C1,C2,C3,Full}.lean and /tmp/pj-review-9c1d/{ElabC1,ElabC2,ElabC3,ElabParent,C1,C2,C3,Parent,Full}.lean (+ #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean`
+- `/tmp/pj-decomp-4f2a/check/Stmts.lean`
+- `/tmp/pj-decomp-4f2a/check/Parent.lean`
+- `/tmp/pj-decomp-4f2a/check/C1.lean`
+- `/tmp/pj-decomp-4f2a/check/C2.lean`
+- `/tmp/pj-decomp-4f2a/check/C3.lean`
+- `/tmp/pj-decomp-4f2a/check/Full.lean`
+- `/tmp/pj-review-9c1d/Full.lean`
+- `/tmp/pj-review-9c1d/Parent.lean`
+- `/tmp/pj-review-9c1d/num_check.py`
+
+The pins match. The workspace Submission.lean, the snapshot's project/GMT/Ch07/Submission.lean and the node's proof base 22aa3aa64e are byte-identical. Mathlib is 25730c7c, equal to the snapshot's mathlib_commit, and SimonGMT is 2b36630.
+
+There is nothing to reuse. No accepted DAG declaration gives the polar-map derivative, the 2-plane Gram determinant or the projection-norm identity:
+- dpf_det_gram_stdOrthonormalBasis_eq applies only to L : Euclid P →L Euclid P, not to the ℝ × ℝ-valued Gram matrix.
+- The cousin idtp_cse_rc_angle_fderiv is still decomposing and has a different, conjunctive type.
+
+Every Mathlib name cited in the child proofs exists at the pin, located by rg in the snapshot. The Mathlib at the pin has no closed-form fderiv of the Euclidean norm and no fderiv quotient rule, so child 1 goes through sqrt ∘ norm_sq and the inverse and product rules. The idtp_cse_fa_pj_* names are unreserved.
+
+Kernel checks, all with only propext, Classical.choice and Quot.sound:
+- All three child types elaborate verbatim.
+- The frozen parent type, string-identical to the handoff and dag.json, is proved from the three child types.
+- Each child is fully proved.
+- Full.lean proves Submission.idtp_cse_fa_polar_gram_jacobian outright.
+
+An independent reviewer reproduced all of this and returned ACCEPT.
