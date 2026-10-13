@@ -557,14 +557,6 @@ preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, 
 characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
 theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
   intro n ℓ q
-/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over the Lipschitz graph: for a
-linear isometry `q` of `ℝ^{n+ℓ}` and `f : ℝⁿ → ℝ^ℓ` that is `L`-Lipschitz on `D`, the map
-`F(x) = q(x, f(x))` is `√(1 + L²)`-Lipschitz on `D`.  Since `q` preserves distances and
-`|(x, f x) − (y, f y)|² = |x − y|² + |f(x) − f(y)|²` (split the sum `Σ_k w_k²` over the indices
-`castAdd ℓ i` and `natAdd n j` of `Fin (n + ℓ)` with `Fin.sum_univ_add`), the hypothesis gives
-`|F(x) − F(y)|² ≤ (1 + L²)|x − y|² = (√(1 + L²) |x − y|)²` for `x, y ∈ D`; take square roots. -/
-theorem tdo_gl_graph_map_lipschitzOn : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), LipschitzOnWith L f D → LipschitzOnWith (NNReal.sqrt (1 + L ^ 2)) (fun x => q (graphPoint x (f x))) D := by
-  intro n ℓ q f D L hf
   -- the coordinates of `graphPoint a b`
   have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
     intro a b i
