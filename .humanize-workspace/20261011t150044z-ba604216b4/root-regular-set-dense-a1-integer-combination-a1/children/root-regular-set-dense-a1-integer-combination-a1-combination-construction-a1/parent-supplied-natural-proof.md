@@ -1,0 +1,120 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1.integer_combination-a1`
+- Child DAG node: `root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3–5 of the parent proof. Notation: μ := μHE[n]; M_i := R_i.carrier, θ_i := R_i.mult, ξ_i := R_i.orient; A := M₁ ∪ M₂, a Borel subset of U; sgn : ℤ → {−1, 0, 1} is the sign; for an integer c, |c| ∈ ℕ is its absolute value. For compact K ⊆ U, μ(M_i ∩ K) ≤ ∫⁻_{M_i∩K} θ_i dμ < ∞, because θ_i ≥ 1 on M_i (mult_pos) and by locallyIntegrable_mult.
+
+1. Borel orientations. ξ_i is AEStronglyMeasurable for μ⌞M_i, so there is a strongly measurable (Borel) ξ̃_i : ℝ^P → Λ_n(ℝ^P) with ξ̃_i = ξ_i μ⌞M_i-a.e. (Mathlib AEStronglyMeasurable.mk / ae_eq_mk). Equivalently: for μ-a.e. x, x ∈ M_i ⇒ ξ̃_i(x) = ξ_i(x).
+
+2. Borel sign on the overlap. Define σ(x) := 1 if ξ̃₂(x) = ξ̃₁(x) and σ(x) := −1 otherwise. The set {ξ̃₂ = ξ̃₁} is Borel (both maps are strongly measurable into the metrizable space Λ_n(ℝ^P)), so σ : ℝ^P → ℤ is Borel. Claim: for μ-a.e. x, x ∈ M₁ ∩ M₂ ⇒ ξ̃₂(x) = σ(x)ξ̃₁(x). Indeed, by the sibling lemma overlap_orientation_sign and step 1, for μ⌞(M₁ ∩ M₂)-a.e. x we have ξ̃₁(x) = ξ₁(x), ξ̃₂(x) = ξ₂(x) and ξ₂(x) = ±ξ₁(x), hence ξ̃₂(x) = ξ̃₁(x) or ξ̃₂(x) = −ξ̃₁(x). In the first case σ(x) = 1; in the second case, if ξ̃₂(x) ≠ ξ̃₁(x) then σ(x) = −1 and ξ̃₂(x) = −ξ̃₁(x), while if ξ̃₂(x) = ξ̃₁(x) we are in the first case. In all cases ξ̃₂(x) = σ(x)ξ̃₁(x). (This equality test replaces the parent proof's coordinate test Σ_I⟨e^I, ξ₁⟩⟨e^I, ξ₂⟩ ≥ 0, whose verification needs the Cauchy–Binet identity; only the property ξ̃₂ = σξ̃₁ a.e. on M₁ ∩ M₂ is used below.)
+
+3. Coefficient and orientation field. Define c : ℝ^P → ℤ and ζ : ℝ^P → Λ_n(ℝ^P) by
+   c(x) := p₁θ₁(x)1_{M₁}(x) + p₂θ₂(x)(σ(x)1_{M₁∩M₂}(x) + 1_{M₂∖M₁}(x)),   ζ(x) := ξ̃₁(x) if x ∈ M₁, ζ(x) := ξ̃₂(x) otherwise.
+c is Borel (ℤ is countable with the discrete σ-algebra; c is built from the Borel maps θ₁, θ₂, σ and the indicators of the Borel sets M₁, M₂), ζ is strongly measurable (piecewise on the Borel set M₁), c = 0 off A, and since at most one of 1_{M₁∩M₂}(x), 1_{M₂∖M₁}(x) is nonzero and |σ| = 1,
+   (3a) |c(x)| ≤ |p₁|θ₁(x)1_{M₁}(x) + |p₂|θ₂(x)1_{M₂}(x) for all x.
+
+4. Pointwise identity. Let x satisfy [x ∈ M₁ ∩ M₂ ⇒ ξ̃₂(x) = σ(x)ξ̃₁(x)]. Then p₁1_{M₁}(x)θ₁(x)ξ̃₁(x) + p₂1_{M₂}(x)θ₂(x)ξ̃₂(x) = c(x)ζ(x). Cases: if x ∉ A both sides are 0; if x ∈ M₁ ∖ M₂ both sides equal p₁θ₁(x)ξ̃₁(x); if x ∈ M₂ ∖ M₁ both sides equal p₂θ₂(x)ξ̃₂(x); if x ∈ M₁ ∩ M₂ the left side is p₁θ₁(x)ξ̃₁(x) + p₂θ₂(x)σ(x)ξ̃₁(x) = (p₁θ₁(x) + p₂θ₂(x)σ(x))ξ̃₁(x) = c(x)ζ(x).
+
+5. Definition of R. Let M' := {x ∈ A : c(x) ≠ 0}, θ'(x) := |c(x)| ∈ ℕ and ξ'(x) := sgn(c(x))·ζ(x). Since |c|·sgn(c) = c, and c(x) = 0 whenever x ∉ M' (either x ∉ A, or x ∈ A with c(x) = 0), we have
+   (5a) 1_{M'}(x)θ'(x)ξ'(x) = c(x)ζ(x) for every x ∈ ℝ^P.
+
+6. R = (M', θ', ξ') is an IMRep in U:
+   (a) M' is Borel (A and c are Borel) and M' ⊆ A ⊆ U.
+   (b) M₁ ∪ M₂ is countably n-rectifiable (SimonGMT countablyRectifiable_iUnion applied to the sequence M₁, M₂, M₂, …), hence so is M' ⊆ M₁ ∪ M₂ (CountablyRectifiable.mono).
+   (c) θ' = |c| is Borel and θ' ≥ 1 on M'.
+   (d) For compact K ⊆ U, by (3a): ∫⁻_{M'∩K} θ' dμ ≤ |p₁|∫⁻_{M₁∩K} θ₁ dμ + |p₂|∫⁻_{M₂∩K} θ₂ dμ < ∞.
+   (e) ξ' is strongly measurable (product of the Borel real function sgn∘c and ζ), hence AEStronglyMeasurable for μ⌞M'.
+   (f) Orientation. M' is Borel, M' ⊆ U, and μ(M' ∩ K) ≤ μ(M₁ ∩ K) + μ(M₂ ∩ K) < ∞ for compact K ⊆ U. Apply the sibling lemma imrep_tangent_transfer with R := R₁, B := M' ∩ M₁, C := M': for μ-a.e. x ∈ M' ∩ M₁ there is Q with HasApproximateTangentSpaceAt n M' x Q and IsUnitOrientationOf (ξ₁ x) Q; for a.e. such x also ξ̃₁(x) = ξ₁(x) (step 1), so ξ'(x) = sgn(c(x))ξ₁(x) with sgn(c(x)) = ±1 (c(x) ≠ 0 on M'). A unit orientation multiplied by −1 is a unit orientation of the same plane (same τ, the other sign alternative), so IsUnitOrientationOf (ξ' x) Q. Likewise apply imrep_tangent_transfer with R := R₂, B := M' ∖ M₁ (⊆ M₂ because M' ⊆ M₁ ∪ M₂), C := M': for μ-a.e. x ∈ M' ∖ M₁ there is Q with HasApproximateTangentSpaceAt n M' x Q, IsUnitOrientationOf (ξ₂ x) Q and ξ'(x) = sgn(c(x))ξ̃₂(x) = ±ξ₂(x). Since M' = (M' ∩ M₁) ∪ (M' ∖ M₁), the orients property holds μ⌞M'-a.e.
+
+7. The identity. By steps 1 and 2, for μ-a.e. x: (i) x ∈ M_i ⇒ ξ̃_i(x) = ξ_i(x) for i = 1, 2, and (ii) x ∈ M₁ ∩ M₂ ⇒ ξ̃₂(x) = σ(x)ξ̃₁(x). At every such x, (5a), step 4 and (i) give
+   1_{M'}(x)θ'(x)ξ'(x) = c(x)ζ(x) = p₁1_{M₁}(x)θ₁(x)ξ̃₁(x) + p₂1_{M₂}(x)θ₂(x)ξ̃₂(x) = p₁1_{M₁}(x)θ₁(x)ξ₁(x) + p₂1_{M₂}(x)θ₂(x)ξ₂(x)
+(the indicator 1_{M_i}(x) vanishes when x ∉ M_i). This is the asserted identity, μ-a.e. ∎
+
+## Key steps
+
+1. Replace ξ₁, ξ₂ by Borel versions ξ̃₁, ξ̃₂ equal to them a.e. on M₁, M₂.
+2. Borel sign σ := 1 on {ξ̃₂ = ξ̃₁}, −1 elsewhere; by overlap_orientation_sign, ξ̃₂ = σξ̃₁ a.e. on M₁ ∩ M₂.
+3. c := p₁θ₁1_{M₁} + p₂θ₂(σ1_{M₁∩M₂} + 1_{M₂∖M₁}), ζ := ξ̃₁ on M₁, ξ̃₂ off M₁; then p₁1_{M₁}θ₁ξ̃₁ + p₂1_{M₂}θ₂ξ̃₂ = cζ.
+4. M' := {c ≠ 0} ∩ (M₁ ∪ M₂), θ' := |c|, ξ' := sgn(c)ζ satisfy every IMRep field; orientation via imrep_tangent_transfer on M' ∩ M₁ and M' ∖ M₁.
+5. 1_{M'}θ'ξ' = cζ everywhere, hence equals p₁1_{M₁}θ₁ξ₁ + p₂1_{M₂}θ₂ξ₂ a.e.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean`
+- `cat local-references/123e8435b4a2469b/manifest.json`
+- `grep -n 'HasApproximateTangentSpaceAt|def CountablyRectifiable|^theorem ' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n '^def |^abbrev |^structure |^theorem ' simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean`
+- `grep -n 'theorem ae_tendsto_measure_inter_div |theorem ae_tendsto_measure_inter_div_of_measurableSet' local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -n 'euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image|IsAddRightInvariant' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -rn 'det_to_matrix_orthonormalBasis_real' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'theorem AlternatingMap.eq_smul_basis_det' local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `grep -n 'theorem le_opNorm' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `grep -n "span_eq_top_of_card_eq_finrank'|finrank_span_eq_card|measurableSet_eq_fun|ae_restrict_iff'|ae_restrict_of_ae_restrict_of_subset" in local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -rln 'IMRep|IsIntegerMultiplicity' local-references/123e8435b4a2469b/project/GMT`
+- `python3 listing of dag.json lean_name/lean_statement; grep -c rsdic dag.json; grep -rl rsdic GMT .humanize/.../nodes; grep -rl rsdic --include=*.lean simongmt`
+- `python3 string comparison of the tangent_locality type with dag node root.regular_components_are_minimizing-a1.approx_tangent_locality-a1`
+- `sed -n 750,760p chapter-06.txt; sed -n 86,145p chapter-03.txt; sed -n 296,316p chapter-03.txt; sed -n 900,928p chapter-01.txt`
+- `lake env lean /tmp/rsdic-check/Axioms.lean (#check / #print axioms of cited lemmas)`
+- `lake env lean /tmp/rsdic-check/Sign.lean (sorry-free proof of the orientation_sign type)`
+- `lake env lean /tmp/rsdic-check/Final3.lean (7 frozen child types in the replayed contract scope + parent assembly + glue proofs)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/rsdic-check/Axioms.lean`
+- `/tmp/rsdic-check/Sign.lean`
+- `/tmp/rsdic-check/Final3.lean`
+- `/tmp/rsdic-scripts/children.py`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+No match for a reusable proof of Simon 6.3.2(1) for this contract's IMRep:
+- GMT/Ch06/Contract.lean has its own unproved IsIntegerMultiplicity, in a module Ch07 does not import.
+- SimonGMT has no IMRep.
+
+Reusable facts found, all depending only on propext, Classical.choice and Quot.sound:
+- SimonGMT Chapter03: HasApproximateTangentSpaceAt (Def. 1.4 with Bochner integrals over blowUpMap images), HasApproximateTangentSpaceAt.unique, CountablyRectifiable.mono, countablyRectifiable_iUnion.
+- Mathlib: Besicovitch.ae_tendsto_measure_inter_div, Measure.euclideanHausdorffMeasure_smul₀, OrthonormalBasis.det_to_matrix_orthonormalBasis_real (PiL2.lean:992), AlternatingMap.eq_smul_basis_det, ContinuousAlternatingMap.le_opNorm, LinearIndependent.span_eq_top_of_card_eq_finrank', finrank_span_eq_card, StronglyMeasurable.measurableSet_eq_fun.
+
+FiniteDimensional ℝ (MultiVector P n) is not an available instance, so the child proofs avoid it; strong measurability into a metrizable space suffices.
+
+Names: the rsdic_ prefix occurs nowhere in dag.json, the node directories, GMT or SimonGMT. The tangent_locality type is string-identical to regcomp_approx_tangent_locality, which is still decomposing and so cannot be reused yet.
+
+Lean checks:
+- All seven frozen child types elaborate after import GMT.Ch07.Submission in the comparator's replayed contract scope.
+- The frozen parent type is proved from combination_construction and combination_action.
+- imrep_tangent_transfer is proved from tangent_locality, and overlap_orientation_sign from imrep_tangent_transfer and orientation_sign.
+- These use only the standard axioms plus sorryAx from the child stubs.
+- The orientation_sign type has a complete sorry-free proof using only standard axioms.
