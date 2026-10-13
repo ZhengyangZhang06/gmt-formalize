@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cutoff extension along a projection** (Steps 3.1–3.3 of the graph first-variation estimate):
+if `n ≥ 1`, `ζ ∈ C¹(ℝⁿ)` has `tsupport ζ ⊆ B̆_{r/2}(0)` and `‖Dζ‖ ≤ G`, then
+`ψ = (ζ ∘ φ) h₀`, `φ(x) = P(x − ξ)`, with `h₀` the `ContDiffBump` at `ξ` of radii `7r/8 < r`, is
+`C¹` with compact support in `B_r(ξ)` and `|ψ| ≤ Gr/2` (`ζ` is `G`-Lipschitz and vanishes on the
+sphere `|v| = r/2`).  If `|x − ξ|² ≤ |φ(x)|² + r²/16`, then `Dψ(x) = Dζ(φ(x)) ∘ P`: for
+`|φ(x)| < r/2` we get `|x − ξ| < 7r/8`, so `h₀ = 1` near `x`; for `|φ(x)| ≥ r/2` both sides
+vanish, `φ(x)` lying outside `tsupport ζ`. -/
+theorem Submission.dorag_tes_gv_cutoff_extension : ∀ (n m : ℕ), 0 < n → ∀ (ξ : Euclid m) (r : ℝ) (P : Euclid m →L[ℝ] Euclid n) (ζ : Euclid n → ℝ) (G : ℝ), 0 < r → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) (r / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → ∃ ψ : Euclid m → ℝ, ContDiff ℝ 1 ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ closedBall ξ r ∧ (∀ x, |ψ x| ≤ G * (r / 2)) ∧ ∀ x, ‖x - ξ‖ ^ 2 ≤ ‖P (x - ξ)‖ ^ 2 + r ^ 2 / 16 → fderiv ℝ ψ x = (fderiv ℝ ζ (P (x - ξ))).comp P := by
+  intro n m hn ξ r P ζ G hr hζ hζc hζs hζG
+  have hG : 0 ≤ G := (norm_nonneg _).trans (hζG 0)
+  have hζdiff : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  -- `ζ` is `G`-Lipschitz and vanishes outside `B̆_{r/2}(0)`
+  have hζlip : ∀ v w, |ζ v - ζ w| ≤ G * ‖v - w‖ := by
+    intro v w
+    simpa [Real.norm_eq_abs] using convex_univ.norm_image_sub_le_of_norm_fderiv_le (𝕜 := ℝ)
+      (fun x _ => hζdiff x) (fun x _ => hζG x) (mem_univ w) (mem_univ v)
+  have hζs' : ∀ v, r / 2 ≤ ‖v‖ → v ∉ tsupport ζ := by
+    intro v hv h
+    have := hζs h
+    rw [mem_ball, dist_zero_right] at this
+    linarith
+  -- `|ζ v| ≤ G r/2`: compare `v` with `w = v + (r/2 − |v|) u` on the sphere `|w| = r/2`
+  have hζsup : ∀ v, |ζ v| ≤ G * (r / 2) := by
+    intro v
+    by_cases hv : r / 2 ≤ ‖v‖
+    · rw [image_eq_zero_of_notMem_tsupport (hζs' v hv), abs_zero]
+      positivity
+    · replace hv := not_le.mp hv
+      obtain ⟨u, hu1, hu⟩ : ∃ u : Euclid n, ‖u‖ = 1 ∧ ‖v + (r / 2 - ‖v‖) • u‖ = r / 2 := by
+        by_cases hv0 : v = 0
+        · refine ⟨EuclideanSpace.single ⟨0, hn⟩ (1 : ℝ), by simp, ?_⟩
+          subst hv0
+          simp [norm_smul, abs_of_pos hr]
+        · have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv0
+          refine ⟨‖v‖⁻¹ • v, by rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvpos.ne'], ?_⟩
+          have : v + (r / 2 - ‖v‖) • (‖v‖⁻¹ • v) = ((r / 2) / ‖v‖) • v := by
+            rw [smul_smul, ← one_smul ℝ v, smul_smul, ← add_smul, one_smul]
+            congr 1
+            field_simp
+            ring
+          rw [this, norm_smul, Real.norm_eq_abs, abs_of_pos (by positivity),
+            div_mul_cancel₀ _ hvpos.ne']
+      have hw : ζ (v + (r / 2 - ‖v‖) • u) = 0 := image_eq_zero_of_notMem_tsupport (hζs' _ hu.ge)
+      calc |ζ v| = |ζ v - ζ (v + (r / 2 - ‖v‖) • u)| := by rw [hw, sub_zero]
+        _ ≤ G * ‖v - (v + (r / 2 - ‖v‖) • u)‖ := hζlip _ _
+        _ = G * (r / 2 - ‖v‖) := by
+            rw [sub_add_cancel_left, norm_neg, norm_smul, hu1, mul_one, Real.norm_eq_abs,
+              abs_of_pos (by linarith)]
+        _ ≤ G * (r / 2) := by gcongr; linarith [norm_nonneg v]
+  -- `ψ = (ζ ∘ φ) h₀`, `φ(y) = P(y − ξ)`
+  let h0 : ContDiffBump ξ := ⟨7 * r / 8, r, by positivity, by linarith⟩
+  have hφd : ∀ x, HasFDerivAt (fun y : Euclid m => P (y - ξ)) P x := by
+    intro x
+    have h := P.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const ξ)
+    rwa [ContinuousLinearMap.comp_id] at h
+  have hφc : Continuous (fun y : Euclid m => P (y - ξ)) :=
+    P.continuous.comp (continuous_id.sub continuous_const)
+  refine ⟨fun x => ζ (P (x - ξ)) * h0 x, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (hζ.comp (P.contDiff.comp (contDiff_id.sub contDiff_const))).mul h0.contDiff
+  · exact HasCompactSupport.mul_left (f := fun x => ζ (P (x - ξ))) h0.hasCompactSupport
+  · exact tsupport_mul_subset_right.trans h0.tsupport_eq.subset
+  · intro x
+    rw [abs_mul, abs_of_nonneg h0.nonneg]
+    calc |ζ (P (x - ξ))| * h0 x ≤ G * (r / 2) * 1 :=
+          mul_le_mul (hζsup _) h0.le_one h0.nonneg (by positivity)
+      _ = G * (r / 2) := mul_one _
+  · intro x hx
+    by_cases hφ : ‖P (x - ξ)‖ < r / 2
+    · -- `|x − ξ|² < r²/4 + r²/16 < (7r/8)²`, so `h₀ = 1` near `x` and the chain rule applies
+      have hx' : ‖x - ξ‖ < 7 * r / 8 := by
+        have h1 : ‖x - ξ‖ ^ 2 < (7 * r / 8) ^ 2 := by nlinarith [norm_nonneg (P (x - ξ))]
+        nlinarith [norm_nonneg (x - ξ)]
+      have hev : (fun y => ζ (P (y - ξ)) * h0 y) =ᶠ[𝓝 x] fun y => ζ (P (y - ξ)) := by
+        filter_upwards [h0.eventuallyEq_one_of_mem_ball (show x ∈ ball ξ (7 * r / 8) by
+          rwa [mem_ball, dist_eq_norm])] with y hy
+        rw [hy, Pi.one_apply, mul_one]
+      rw [hev.fderiv_eq]
+      exact ((hζdiff _).hasFDerivAt.comp x (hφd x)).fderiv
+    · -- `φ = P(· − ξ)` maps a neighbourhood of `x` outside `tsupport ζ`: both sides vanish
+      have hns := hζs' _ (not_lt.mp hφ)
+      have hev : (fun y => ζ (P (y - ξ)) * h0 y) =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+        filter_upwards [((isClosed_tsupport ζ).isOpen_compl.preimage hφc).mem_nhds hns] with y hy
+        rw [image_eq_zero_of_notMem_tsupport hy, zero_mul]
+      rw [hev.fderiv_eq, fderiv_of_notMem_tsupport ℝ hns]
+      simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
