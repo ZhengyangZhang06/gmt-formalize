@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2419b359e70597bddbd880ef30057c728e473b962709f4864492d978ad005d8f",
+  "git_delta": {
+    "base_commit": "35c8da38a930359cb8722602afb7b5fe5d1c9960",
+    "candidate_commit": "dcc3f4b7fc0f6beb359e7585fbca8b266cc0f38f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_bwd_coordinate_covector",
+    "diff_sha256": "5e473e2d5957886453909dba98d30051d0d81d631bda8fd785bee0d5af7bf5be",
+    "source_sha256": "4d21ec814ffd54cbf317e025867012b9284c9c8327412dc9699ce5dcaf17813d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_bwd_coordinate_covector",
+      "statement": "∀ (m : ℕ) (j : Fin (m + 1)), ∃ β : Covector (Euclid (m + 1)) m, ∀ i : Fin (m + 1), β (i.removeNth (fun l : Fin (m + 1) => EuclideanSpace.single l (1 : ℝ))) = if i = j then (-1 : ℝ) ^ (j : ℕ) else 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
