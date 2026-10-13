@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1.index_cauchy-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1",
+  "depth": 6,
+  "title": "A real sequence converges if a(q(i)) − a(p(i)) → 0 for all pairs of index maps p, q → ∞ (real-analysis part of supplied Step 6)",
+  "statement": "Let a : ℕ → ℝ. Assume that for all maps p, q : ℕ → ℕ with p(i) → ∞ and q(i) → ∞ as i → ∞ (Tendsto p atTop atTop and Tendsto q atTop atTop), a(q(i)) − a(p(i)) → 0 as i → ∞. Then a converges: there is s ∈ ℝ with a(n) → s as n → ∞.",
+  "lean_statement": "∀ a : ℕ → ℝ, (∀ p q : ℕ → ℕ, Tendsto p atTop atTop → Tendsto q atTop atTop → Tendsto (fun i => a (q i) - a (p i)) atTop (𝓝 0)) → ∃ s : ℝ, Tendsto a atTop (𝓝 s)",
+  "lean_name": "dph_lpfex_tendsto_of_index_maps",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-23fd0e85aa-a1"
+}
