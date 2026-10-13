@@ -904,6 +904,20 @@ theorem Submission.codim1_rdo_dg_ftd_cone_density : ∀ (m : ℕ) (μ : Measure 
     _ = ε * ENNReal.ofReal (r ^ m) := by
         rw [ENNReal.ofReal_mul ht.le, ENNReal.ofReal_toReal hεtop]
 
+/-- **A flat tangent measure gives density one and the cone condition** (Simon Ch. 3,
+Remark 1.5(3), applied to `μ`): if `μ(B̄_{r₀}(y)) < ∞` and `r⁻ᵐ ∫ f(r⁻¹(z − y)) dμ(z) →
+∫_P f dHᵐ` as `r ↓ 0` for every continuous compactly supported `f`, where `P = (span{v})^⊥` and
+`|v| = 1`, then `μ(B̄_r(y))/(ωₘrᵐ) → 1`, `μ(B_r(y))/(ωₘrᵐ) → 1`, and
+`μ({z : α|z − y| ≤ |⟨z − y, v⟩|} ∩ B̄_r(y))/rᵐ → 0` for every `α > 0`.  The ball densities
+sandwich `1_{B̄₁}` between continuous cut-offs; the cone test function
+`(1 − dist(·, K_α)/θ)⁺` lives in `B_{θ(1+1/α)}` on `P`. -/
+theorem Submission.codim1_rdo_dg_flat_tangent_density_cone : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (y v : Euclid (m + 1)), 1 ≤ m → ‖v‖ = 1 → (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ (ball y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ ∀ α : ℝ, 0 < α → Tendsto (fun r : ℝ => μ ({z | α * ‖z - y‖ ≤ |inner ℝ (z - y) v|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0) := by
+  intro m μ y v hm hv hfin hconv
+  -- Step 2: closed and open ball densities tend to `1`
+  obtain ⟨hclosed, hopen⟩ := Submission.codim1_rdo_dg_ftd_ball_density m μ y v hm hv hfin hconv
+  -- Step 3: for every `α > 0` the cone `{α|z − y| ≤ |⟨z − y, v⟩|}` has density `0`
+  exact ⟨hclosed, hopen, Submission.codim1_rdo_dg_ftd_cone_density m μ y v hm hv hfin hconv⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
