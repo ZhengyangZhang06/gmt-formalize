@@ -928,6 +928,80 @@ theorem Submission.dgcr_unitOrientation_eq_or_neg : ∀ (P n : ℕ) (Q : Submodu
   · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- Steps 2 and 9–12(c) of the proof that an integer multiplicity cycle carried by a `C¹` graph is
+regular (Simon 7.4.3, via Allard's theorem): if `spt μ_T ∩ C = Σ := Φ(B_s(0))` for the graph map
+`Φ(v) = z + ιv + ι'u(v)` and the cylinder `C ⊆ U`, then on `C` the current `T = τ(M, θ, ξ_R)` is
+`ω ↦ ∫_Σ g ⟨ω, ξ⟩ dHⁿ` for an integer density `g`, and `g ∘ Φ` is locally integrable.  As
+`Hⁿ(M ∖ spt μ_T) = 0`, `M ∩ C ⊆ Σ` up to an `Hⁿ`-null set; there the approximate tangent plane of
+`M` is `range DΦ`, so `ξ_R = ±ξ` and `g := 1_M θ ξ_R(β) = ±θ`; `Φ_#(Lⁿ⌞B_s(0)) ≤ Hⁿ⌞Σ` transfers
+integrality and local integrability to `g ∘ Φ`. -/
+theorem Submission.dgcr_graph_integer_density_on_graph : ∀ (n k : ℕ) (U : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s h : ℝ) (ξ : Euclid (n + k) → MultiVector (n + k) n) (β : Euclid (n + k) → Covector (Euclid (n + k)) n), 0 < n → R.Represents T → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → 0 < h → ContDiffOn ℝ 1 u (ball 0 s) → {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → R.measure.support ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} = (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s → ContinuousOn β ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) → (∀ x ∈ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ x (β x) = 1) → (∀ v ∈ ball (0 : Euclid n) s, IsUnitOrientationOf (ξ (z + ι v + ι' (u v))) (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v : Euclid n →ₗ[ℝ] Euclid (n + k)))) → ∃ g : Euclid (n + k) → ℝ, LocallyIntegrableOn (fun v => g (z + ι v + ι' (u v))) (ball (0 : Euclid n) s) volume ∧ (∀ᵐ v ∂(volume.restrict (ball (0 : Euclid n) s)), ∃ m : ℤ, g (z + ι v + ι' (u v)) = m) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid (n + k)) n) ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} → T ω = ∫ x in (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, g x * ξ x ((ω : DifferentialForm (Euclid (n + k)) n) x) ∂μHE[n] := by
+  intro n k U T R ι ι' u z s h ξ β _hn hRep horth hs _hh hu hCU hsupp hβ hξβ hξ
+  -- the cylinder `C` is open (orthogonal coordinates), and `Σ = spt μ_T ∩ C ⊆ C` is Borel
+  have hCopen : IsOpen {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h,
+      x = z + ι v + ι' w} :=
+    dgid_orthogonal_cylinder_isOpen n k ι ι' z s h horth
+      (dgcr_orthogonal_coordinates n k ι ι' horth).1
+  have hSigC : (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s ⊆
+      {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} := by
+    rw [← hsupp]; exact inter_subset_right
+  have hSigmeas : MeasurableSet ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) := by
+    rw [← hsupp]; exact R.measure.isClosed_support.measurableSet.inter hCopen.measurableSet
+  -- `Hⁿ((M ∩ C) ∖ Σ) = 0`, since `Hⁿ(M ∖ spt μ_T) = 0`
+  have hnull : μHE[n] ((R.carrier ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h,
+      x = z + ι v + ι' w}) \ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)) = 0 := by
+    refine measure_mono_null ?_ (dgid_carrier_sdiff_measure_support_null (n + k) n U R)
+    rintro x ⟨⟨hxM, hxC⟩, hxSig⟩
+    refine ⟨hxM, fun hxs => hxSig ?_⟩
+    rw [← hsupp]; exact ⟨hxs, hxC⟩
+  -- at `Hⁿ`-a.e. `x = Φ(v) ∈ M ∩ Σ` the approximate tangent plane of `M` is `range DΦ(v)`, which
+  -- both `ξ_R(x)` and `ξ(x)` orient, so `ξ_R(x) = ±ξ(x)`
+  have horient : ∀ᵐ x ∂(μHE[n].restrict
+      (R.carrier ∩ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)),
+      R.orient x = ξ x ∨ R.orient x = -ξ x := by
+    have h1 := ae_restrict_of_ae_restrict_of_subset
+      (inter_subset_left : R.carrier ∩ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s ⊆
+        R.carrier) R.orients
+    filter_upwards [h1, ae_restrict_mem (R.measurableSet_carrier.inter hSigmeas)] with x hx hxmem
+    obtain ⟨Q, hQtan, hQor⟩ := hx
+    obtain ⟨v, hv, rfl⟩ := hxmem.2
+    obtain ⟨r, hr, hrC⟩ := Metric.isOpen_iff.mp hCopen _ (hSigC hxmem.2)
+    have hnull' : μHE[n] ((R.carrier ∩ ball (z + ι v + ι' (u v)) r) \
+        ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)) = 0 :=
+      measure_mono_null (fun y (hy : y ∈ (R.carrier ∩ ball (z + ι v + ι' (u v)) r) \
+        ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)) => (⟨⟨hy.1.1, hrC hy.1.2⟩, hy.2⟩ :
+          y ∈ (R.carrier ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h,
+            x = z + ι v + ι' w}) \ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s))) hnull
+    have hQ := dgcr_approxTangent_eq_graph_tangent n k ι ι' u z s r R.carrier v Q horth hu hv hr
+      hnull' hQtan
+    subst hQ
+    exact dgcr_unitOrientation_eq_or_neg (n + k) n _ _ _ (hξ v hv) hQor
+  -- the signed density `g = 1_M θ ξ_R(β)` represents `T` on `C` as an integral over `Σ`
+  obtain ⟨g, hgm, hgae, hgrep⟩ := dgid_imrep_signed_density_representation (n + k) n U R
+    {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w}
+    ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ξ β hSigmeas hnull
+    (hβ.aestronglyMeasurable hSigmeas) hξβ horient
+  -- transfer to the disc: `Φ_#(Lⁿ⌞B_s(0)) ≤ Hⁿ⌞Σ`, and `1_M θ` has finite integral over the
+  -- compact images `Φ(K) ⊆ C ⊆ U`
+  have hΦcont : ContinuousOn (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) :=
+    (continuousOn_const.add ι.continuous.continuousOn).add
+      (ι'.continuous.comp_continuousOn hu.continuousOn)
+  have hfin : ∀ K : Set (Euclid n), IsCompact K → K ⊆ ball (0 : Euclid n) s →
+      ∫⁻ x in (fun v => z + ι v + ι' (u v)) '' K,
+        R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) x ∂μHE[n] ≠ ∞ := by
+    intro K hK hKD
+    rw [lintegral_indicator R.measurableSet_carrier, Measure.restrict_restrict R.measurableSet_carrier]
+    exact R.locallyIntegrable_mult _ (hK.image_of_continuousOn (hΦcont.mono hKD))
+      ((image_mono hKD).trans (hSigC.trans hCU))
+  obtain ⟨hloc, hint⟩ := dgid_dominated_pullback_integer_locallyIntegrable n (n + k)
+    (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) g
+    (R.carrier.indicator fun y => (R.mult y : ℝ≥0∞)) isOpen_ball hΦcont
+    (dgcr_graph_measure_bounds n k ι ι' u z s horth hs hu).1
+    ((measurable_from_nat.comp R.measurable_mult).indicator R.measurableSet_carrier) hfin hgm hgae
+  refine ⟨g, hloc, hint, fun ω hω => ?_⟩
+  rw [hRep ω]
+  exact hgrep ω hω
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
