@@ -726,6 +726,65 @@ theorem Submission.codim1_zsl_ga_relative_lipschitz_measure : ∀ (n P : ℕ) (F
         mul_le_mul_of_nonneg_left hlo zero_le
     _ = μHE[n] (F '' S) := by rw [← mul_assoc, ha', one_mul]
 
+/-- **Local comparison** for the `C¹` graph map `G(w) = ιw + ι'g(w)` (Simon Ch. 2, 3.2–3.3, by the
+approximation argument based on the linear case 3.1): for `t > 1` and `w₀ ∈ D` there is a ball
+`B_r(w₀) ⊆ D` on which `Hᵐ(G(B)) ≤ t ∫_B J` and `∫_B J ≤ t Hᵐ(G(B))` for every measurable `B`,
+where `J(w) = √det(DG(w)*DG(w))`.  `L₀ = DG(w₀)` is injective, so `J₀ = J(w₀) > 0` and
+`Hᵐ(L₀(B)) = J₀ Lᵐ(B)`.  On a small ball, `G` is `(1 ± ε)`-bi-Lipschitz relative to `L₀` and
+`(1 − ε)J₀ ≤ J ≤ (1 + ε)J₀`, with `ε` chosen so that both sandwiches give the factor `t`. -/
+theorem Submission.codim1_zsl_ga_local_comparison : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (t : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 1 < t → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ B : Set (Euclid m), MeasurableSet B → B ⊆ ball w₀ r → μHE[m] ((fun w => ι w + ι' (g w)) '' B) ≤ ENNReal.ofReal t * ∫⁻ w in B, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) ∧ ∫⁻ w in B, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) ≤ ENNReal.ofReal t * μHE[m] ((fun w => ι w + ι' (g w)) '' B) := by
+  intro m k ι ι' g D t w₀ hperp hD hg ht hw₀
+  -- step 1: `ε ∈ (0, 1)` with `(1 + ε)ᵐ ≤ t(1 − ε)` and `1 + ε ≤ t(1 − ε)ᵐ`
+  obtain ⟨ε, hε0, hε1, hεm, hε1m⟩ := Submission.codim1_zsl_ga_lc_eps_choice m t ht
+  -- step 2: `‖h‖ ≤ ‖L₀ h‖` for `L₀ = DG(w₀)`, so `L₀` is injective, `J₀ = J(w₀) > 0` and
+  -- `Hᵐ(L₀(S)) = J₀ Lᵐ(S)`
+  have hgw₀ : DifferentiableAt ℝ g w₀ :=
+    (hg.differentiableOn one_ne_zero).differentiableAt (hD.mem_nhds hw₀)
+  set L₀ := fderiv ℝ (fun w => ι w + ι' (g w)) w₀
+  have hL₀ : Function.Injective L₀ := by
+    intro x y hxy
+    have h : ‖x - y‖ ≤ ‖L₀ (x - y)‖ :=
+      (Submission.codim1_zsl_ga_lc_graph_fderiv m k ι ι' g w₀ hperp hgw₀).2 (x - y)
+    rw [map_sub, hxy, sub_self, norm_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  obtain ⟨hdet, harea⟩ := Submission.codim1_zsl_ga_linear_area m (m + k) L₀ hL₀
+  set J : Euclid m → ℝ := fun w => Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L
+    fderiv ℝ (fun w => ι w + ι' (g w)) w).det)
+  have hJ₀ : 0 < J w₀ := Real.sqrt_pos.mpr hdet
+  -- step 3: `G` is `C¹` on `D`, so `J` is continuous at `w₀`: `|J − J₀| < εJ₀` on `B_δ(w₀)`
+  have hG : ContDiffOn ℝ 1 (fun w => ι w + ι' (g w)) D :=
+    ι.contDiff.contDiffOn.add (ι'.contDiff.comp_contDiffOn hg)
+  obtain ⟨δ, hδ, hJδ⟩ := Metric.continuousAt_iff.mp
+    ((Submission.codim1_zsl_ga_lc_jacobian_continuousOn m (m + k) _ D hD hG).continuousAt
+      (hD.mem_nhds hw₀)) (ε * J w₀) (mul_pos hε0 hJ₀)
+  -- step 4: `G` is `(1 ± ε)`-bi-Lipschitz relative to `L₀` on `B_{r₁}(w₀) ⊆ D`
+  obtain ⟨r₁, hr₁, hr₁D, hbil⟩ :=
+    Submission.codim1_zsl_ga_lc_local_bilipschitz m k ι ι' g D ε w₀ hperp hD hg hε0 hw₀
+  refine ⟨min r₁ δ, lt_min hr₁ hδ, (Metric.ball_subset_ball (min_le_left _ _)).trans hr₁D,
+    fun B hB hBr => ?_⟩
+  -- step 5: `(1 − ε)ᵐ J₀ Lᵐ(B) ≤ Hᵐ(G(B)) ≤ (1 + ε)ᵐ J₀ Lᵐ(B)`
+  have hB₁ : B ⊆ ball w₀ r₁ := hBr.trans (Metric.ball_subset_ball (min_le_left _ _))
+  obtain ⟨hHlo, hHhi⟩ := Submission.codim1_zsl_ga_relative_lipschitz_measure m (m + k)
+    (fun w => ι w + ι' (g w)) L₀ B (1 - ε) (1 + ε) (by linarith) (by linarith)
+    fun x hx y hy => hbil x (hB₁ hx) y (hB₁ hy)
+  rw [harea B] at hHlo hHhi
+  -- step 6: `(1 − ε) J₀ Lᵐ(B) ≤ ∫_B J ≤ (1 + ε) J₀ Lᵐ(B)`
+  have hJB : ∀ w ∈ B, (1 - ε) * J w₀ ≤ J w ∧ J w ≤ (1 + ε) * J w₀ := by
+    intro w hw
+    have h : |J w - J w₀| < ε * J w₀ :=
+      hJδ ((Metric.mem_ball.mp (hBr hw)).trans_le (min_le_right _ _))
+    rw [abs_sub_lt_iff] at h
+    constructor <;> linarith
+  have hIlo : ENNReal.ofReal ((1 - ε) * J w₀) * volume B ≤ ∫⁻ w in B, ENNReal.ofReal (J w) :=
+    (setLIntegral_const B _).symm.trans_le
+      (setLIntegral_mono' hB fun w hw => ENNReal.ofReal_le_ofReal (hJB w hw).1)
+  have hIhi : ∫⁻ w in B, ENNReal.ofReal (J w) ≤ ENNReal.ofReal ((1 + ε) * J w₀) * volume B :=
+    (setLIntegral_mono' hB fun w hw => ENNReal.ofReal_le_ofReal (hJB w hw).2).trans_eq
+      (setLIntegral_const B _)
+  -- step 7: the two sandwiches and the choice of `ε` give the factor `t`
+  exact Submission.codim1_zsl_ga_lc_sandwich m t ε (J w₀) (volume B) _ _ hε1 hJ₀.le hεm hε1m
+    hHlo hHhi hIlo hIhi
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
