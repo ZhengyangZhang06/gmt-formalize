@@ -553,6 +553,239 @@ theorem Submission.isoperimetric_abs_covector_apply_le : ∀ (P n : ℕ) (α : C
     _ = (P : ℝ) ^ n * covectorEuclideanNorm α := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
           Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
+
+/-- Locality of currents: test forms that agree on an open neighbourhood `N` of `spt T` have the
+same value, since `ψ - φ` vanishes on `N`, so its support lies in the closed set `Nᶜ`, which misses
+`spt T`. -/
+theorem Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ψ φ : TestFormOn U n)
+      (N : Set (Eucl P)), IsOpen N → T.support ⊆ N →
+      (∀ x ∈ N, (ψ : DifferentialForm (Eucl P) n) x = (φ : DifferentialForm (Eucl P) n) x) →
+      T ψ = T φ := by
+  intro P n U T ψ φ N hN hTN hψφ
+  -- `ψ - φ` vanishes on the open set `N`, so `tsupport (ψ - φ) ⊆ Nᶜ`.
+  have hsupp : tsupport ((ψ - φ : TestFormOn U n) : DifferentialForm (Eucl P) n) ⊆ Nᶜ := by
+    refine closure_minimal ?_ hN.isClosed_compl
+    intro x hx hxN
+    apply hx
+    rw [Submodule.coe_sub, Pi.sub_apply, hψφ x hxN, sub_self]
+  -- `Nᶜ` misses `spt T ⊆ N`, so `T (ψ - φ) = 0`.
+  have hzero : T (ψ - φ) = 0 :=
+    Submission.isoperimetric_apply_eq_zero_of_disjoint_support P n U T (ψ - φ)
+      (Set.disjoint_of_subset_left hsupp (Set.disjoint_compl_left_iff_subset.2 hTN))
+  have hsub : T.toCurrent (ψ - φ) = T.toCurrent ψ - T.toCurrent φ := map_sub T.toCurrent ψ φ
+  change T.toCurrent ψ = T.toCurrent φ
+  rw [← sub_eq_zero, ← hsub]
+  exact hzero
+/-- Cut-off of a null sequence: if every derivative of `ψ_l` tends to `0` uniformly on
+`K = tsupport ζ`, then the test forms `φ_l = ζ ψ_l` tend to `0` in `𝒟ᵏ(U)`.  By the Leibniz rule,
+`D^j φ_l` is controlled on `K` by the bounded derivatives of `ζ` and the derivatives of `ψ_l` of
+order `≤ j`. -/
+theorem Submission.iwl_cr_ce_cutoff_converges_zero :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (ζ : Eucl P → ℝ) (ψs : ℕ → DifferentialForm (Eucl P) k)
+      (φs : ℕ → TestFormOn U k), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ U → (∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψs l)) →
+      (∀ l x, (φs l : DifferentialForm (Eucl P) k) x = ζ x • ψs l x) →
+      (∀ (j : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ,
+        ‖iteratedFDeriv ℝ j (ψs l) x‖ ≤ ε) →
+      TestFormOnConverges φs 0 := by
+  intro P k U ζ ψs φs hζ hζc hζU hψ hφ hsmall
+  -- Leibniz estimate, by induction on the order `j`, for a continuous bilinear `B`: if every
+  -- derivative of `f` is bounded on `K = tsupport ζ` and every derivative of `g l` tends to `0`
+  -- uniformly on `K`, then `D^j (B (f ·) (g l ·))` tends to `0` uniformly on `K`.
+  have key : ∀ (j : ℕ) (F₁ F₂ G : Type) [NormedAddCommGroup F₁] [NormedSpace ℝ F₁]
+      [NormedAddCommGroup F₂] [NormedSpace ℝ F₂] [NormedAddCommGroup G] [NormedSpace ℝ G]
+      (B : F₁ →L[ℝ] F₂ →L[ℝ] G) (f : Eucl P → F₁) (g : ℕ → Eucl P → F₂),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (g l)) →
+      (∀ i, ∃ C, ∀ x ∈ tsupport ζ, ‖iteratedFDeriv ℝ i f x‖ ≤ C) →
+      (∀ (i : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ,
+        ‖iteratedFDeriv ℝ i (g l) x‖ ≤ ε) →
+      ∀ ε : ℝ, 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ,
+        ‖iteratedFDeriv ℝ j (fun y => B (f y) (g l y)) x‖ ≤ ε := by
+    intro j
+    induction j with
+    | zero =>
+      intro F₁ F₂ G _ _ _ _ _ _ B f g _ _ hfb hgs ε hε
+      obtain ⟨C, hC⟩ := hfb 0
+      have hA : 0 < ‖B‖ * |C| + 1 := by positivity
+      filter_upwards [hgs 0 (ε / (‖B‖ * |C| + 1)) (div_pos hε hA)] with l hl x hx
+      have h1 := hC x hx
+      have h2 := hl x hx
+      rw [norm_iteratedFDeriv_zero] at h1 h2 ⊢
+      calc ‖B (f x) (g l x)‖ ≤ ‖B‖ * ‖f x‖ * ‖g l x‖ := B.le_opNorm₂ _ _
+        _ ≤ (‖B‖ * |C| + 1) * (ε / (‖B‖ * |C| + 1)) := by
+          apply mul_le_mul _ h2 (norm_nonneg _) hA.le
+          nlinarith [norm_nonneg B, h1.trans (le_abs_self C), norm_nonneg (f x)]
+        _ = ε := by field_simp
+    | succ j ih =>
+      intro F₁ F₂ G _ _ _ _ _ _ B f g hf hg hfb hgs ε hε
+      have hf' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right le_rfl
+      have hg' : ∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ (g l)) :=
+        fun l => (hg l).fderiv_right le_rfl
+      -- `D (B (f ·) (g l ·)) = B (f ·) (D (g l) ·) + B (D f ·) (g l ·)`, with the bilinear maps
+      -- `precompR` and `precompL` built from `B`.
+      have hD : ∀ l, fderiv ℝ (fun y => B (f y) (g l y)) =
+          fun y => B.precompR (Eucl P) (f y) (fderiv ℝ (g l) y) +
+            B.precompL (Eucl P) (fderiv ℝ f y) (g l y) := fun l => funext fun y =>
+        B.fderiv_of_bilinear (hf.differentiable (by simp)).differentiableAt
+          ((hg l).differentiable (by simp)).differentiableAt
+      have h1 := ih F₁ (Eucl P →L[ℝ] F₂) (Eucl P →L[ℝ] G) (B.precompR (Eucl P)) f
+        (fun l => fderiv ℝ (g l)) hf hg' hfb
+        (fun i ε hε => by
+          filter_upwards [hgs (i + 1) ε hε] with l hl x hx
+          rw [norm_iteratedFDeriv_fderiv]
+          exact hl x hx) (ε / 2) (half_pos hε)
+      have h2 := ih (Eucl P →L[ℝ] F₁) F₂ (Eucl P →L[ℝ] G) (B.precompL (Eucl P)) (fderiv ℝ f) g
+        hf' hg (fun i => by
+          obtain ⟨C, hC⟩ := hfb (i + 1)
+          exact ⟨C, fun x hx => by rw [norm_iteratedFDeriv_fderiv]; exact hC x hx⟩)
+        hgs (ε / 2) (half_pos hε)
+      filter_upwards [h1, h2] with l hl1 hl2 x hx
+      have hc1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+          (fun y => B.precompR (Eucl P) (f y) (fderiv ℝ (g l) y)) :=
+        (B.precompR (Eucl P)).isBoundedBilinearMap.contDiff.comp (hf.prodMk (hg' l))
+      have hc2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+          (fun y => B.precompL (Eucl P) (fderiv ℝ f y) (g l y)) :=
+        (B.precompL (Eucl P)).isBoundedBilinearMap.contDiff.comp (hf'.prodMk (hg l))
+      rw [← norm_iteratedFDeriv_fderiv, hD l,
+        fun_iteratedFDeriv_add_apply (hc1.contDiffAt.of_le (mod_cast le_top))
+          (hc2.contDiffAt.of_le (mod_cast le_top))]
+      calc _ ≤ _ := norm_add_le _ _
+        _ ≤ ε / 2 + ε / 2 := add_le_add (hl1 x hx) (hl2 x hx)
+        _ = ε := add_halves ε
+  -- Every derivative of the cut-off is bounded.
+  have hζb : ∀ i, ∃ C, ∀ x ∈ tsupport ζ, ‖iteratedFDeriv ℝ i ζ x‖ ≤ C := fun i => by
+    obtain ⟨C, hC⟩ :=
+      (hζ.continuous_iteratedFDeriv (mod_cast le_top)).bounded_above_of_compact_support
+        (hζc.iteratedFDeriv i)
+    exact ⟨C, fun x _ => hC x⟩
+  have hfun : ∀ l, (φs l : DifferentialForm (Eucl P) k) =
+      fun y => ContinuousLinearMap.lsmul ℝ ℝ (ζ y) (ψs l y) := fun l => funext fun y => by
+    simp only [hφ l y, ContinuousLinearMap.lsmul_apply]
+  refine ⟨tsupport ζ, hζc.isCompact, hζU, fun l => ?_, ?_, fun j => ?_⟩
+  · rw [funext (hφ l)]
+    exact tsupport_smul_subset_left _ _
+  · simp
+  · rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    filter_upwards [key j ℝ (Covector (Eucl P) k) (Covector (Eucl P) k)
+      (ContinuousLinearMap.lsmul ℝ ℝ) ζ ψs hζ hψ hζb hsmall (ε / 2) (half_pos hε)] with l hl x hx
+    rw [hfun l]
+    simp only [Submodule.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left]
+    exact (hl x hx).trans_lt (half_lt_self hε)
+
+/-- **The cut-off radial operator** behind the cone `h#([[(0,1)]] × T)`, `h(t, x) = t x`
+(Simon Ch. 6, 2.30), with `h#` taken through a cut-off `ζ` as in 2.23.  Choose `ψ_ω` as in (H)
+for each `ω ∈ 𝒟ᵐ⁺¹(ℝ^P)`; by (i), `ω ↦ ψ_ω` is linear.  For `r₀ = max r 0` and a bump `ζ` with
+`ζ = 1` on `B̄_{r₀+1}(0)` and `spt ζ = B̄_{r₀+2}(0)`, `Φ(ω) = ζ ψ_ω` is a linear map
+`𝒟ᵐ⁺¹(ℝ^P) → 𝒟ᵐ(ℝ^P)` agreeing with `ψ_ω` on `B_r(0)`.  If `ω_l → 0`, then for `i ≤ j`
+eventually `‖Dⁱω_l‖ ≤ ε / (r₀ + 2 + j)` on all of `ℝ^P`, so (iii) gives `‖Dʲψ_{ω_l}‖ ≤ ε` on
+`spt ζ`, and `iwl_cr_ce_cutoff_converges_zero` yields `Φ(ω_l) → 0`. -/
+theorem Submission.iwl_cr_ce_cutoff_radial_operator : ∀ (P m : ℕ) (r : ℝ), (∀ ω : DifferentialForm (Eucl P) (m + 1), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∃ ψ : DifferentialForm (Eucl P) m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ ∧ (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ∀ (j : ℕ) (R D : ℝ), 0 ≤ D → (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) → ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j ψ x‖ ≤ (R + j) * D) → ∃ Φ : TestFormOn (univ : Set (Eucl P)) (m + 1) →ₗ[ℝ] TestFormOn (univ : Set (Eucl P)) m, (∀ ωs : ℕ → TestFormOn (univ : Set (Eucl P)) (m + 1), TestFormOnConverges ωs 0 → TestFormOnConverges (fun l => Φ (ωs l)) 0) ∧ ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P), x ∈ ball (0 : Eucl P) r → ∀ v : Fin m → Eucl P, (Φ ω : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v) := by
+  intro P m r H
+  -- Step 1: choose `ψ_ω` for every test form `ω` (test forms are `C^∞`).
+  have hsmooth : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) (m + 1)) :=
+    fun ω => ω.2.1.1
+  choose ψ hψsmooth hψformula hψbound using
+    fun ω : TestFormOn (univ : Set (Eucl P)) (m + 1) => H ω (hsmooth ω)
+  -- Step 2: the integrands `t ↦ tᵐ ω(t x)(w)` are continuous, hence interval integrable.
+  have hint : ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P)
+      (w : Fin (m + 1) → Eucl P), IntervalIntegrable
+        (fun t : ℝ => t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) w) volume 0 1 := by
+    intro ω x w
+    apply Continuous.intervalIntegrable
+    exact (continuous_pow m).mul ((continuous_eval_const w).comp
+      ((hsmooth ω).continuous.comp (continuous_id.smul continuous_const)))
+  -- Step 3: by (i) and linearity of the integral, `ω ↦ ψ_ω` is linear.
+  have hadd : ∀ ω ω' : TestFormOn (univ : Set (Eucl P)) (m + 1), ψ (ω + ω') = ψ ω + ψ ω' := by
+    intro ω ω'
+    funext x
+    ext v
+    rw [Pi.add_apply, ContinuousAlternatingMap.add_apply, hψformula, hψformula, hψformula,
+      ← intervalIntegral.integral_add (hint ω x _) (hint ω' x _)]
+    congr 1
+    funext t
+    simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add]
+  have hsmul : ∀ (c : ℝ) (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)),
+      ψ (c • ω) = c • ψ ω := by
+    intro c ω
+    funext x
+    ext v
+    rw [Pi.smul_apply, ContinuousAlternatingMap.smul_apply, hψformula, hψformula, smul_eq_mul,
+      ← intervalIntegral.integral_const_mul]
+    congr 1
+    funext t
+    simp only [SetLike.val_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    ring
+  -- Step 4: a bump `ζ` with `ζ = 1` on `B̄_{r₀+1}(0)` and `tsupport ζ = B̄_{r₀+2}(0)`.
+  set r₀ := max r 0
+  have hr₀ : 0 ≤ r₀ := le_max_right r 0
+  let ζ : ContDiffBump (0 : Eucl P) := ⟨r₀ + 1, r₀ + 2, by linarith, by linarith⟩
+  have hζsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ζ : Eucl P → ℝ) := ζ.contDiff
+  have hζcpt : HasCompactSupport (ζ : Eucl P → ℝ) := ζ.hasCompactSupport
+  -- Step 5: `Φ(ω) = ζ ψ_ω` is a test form, and `Φ` is linear by step 3.
+  have hmem : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      (fun x => ζ x • ψ ω x) ∈ TestFormOn (univ : Set (Eucl P)) m := fun ω =>
+    ⟨⟨hζsmooth.smul (hψsmooth ω), hζcpt.smul_right⟩, subset_univ _⟩
+  let Φ : TestFormOn (univ : Set (Eucl P)) (m + 1) →ₗ[ℝ] TestFormOn (univ : Set (Eucl P)) m :=
+    { toFun := fun ω => ⟨fun x => ζ x • ψ ω x, hmem ω⟩
+      map_add' := by
+        intro ω ω'
+        apply Subtype.ext
+        funext x
+        simp only [hadd, Pi.add_apply, smul_add, AddMemClass.mk_add_mk]
+      map_smul' := by
+        intro c ω
+        apply Subtype.ext
+        funext x
+        simp only [hsmul, Pi.smul_apply, smul_comm (ζ x) c, RingHom.id_apply,
+          SetLike.mk_smul_mk] }
+  refine ⟨Φ, ?_, ?_⟩
+  -- Steps 7–11, property (a): `iwl_cr_ce_cutoff_converges_zero` with `ψ_l = ψ_{ω_l}`.
+  · intro ωs hωs
+    refine Submission.iwl_cr_ce_cutoff_converges_zero P m univ ζ (fun l => ψ (ωs l))
+      (fun l => Φ (ωs l)) hζsmooth hζcpt (subset_univ _) (fun l => hψsmooth _) (fun l x => rfl) ?_
+    intro j ε hε
+    obtain ⟨K, -, -, hsupp, -, hconv⟩ := hωs
+    have hpos : 0 < r₀ + 2 + j := by positivity
+    set D := ε / (r₀ + 2 + j) with hDdef
+    have hD : 0 < D := div_pos hε hpos
+    -- Step 9: eventually `‖Dⁱω_l‖ ≤ D` on all of `ℝ^P` for every `i ≤ j`: on `K` by uniform
+    -- convergence to `Dⁱ0 = 0`, and off `K ⊇ tsupport ω_l` because `Dⁱω_l` vanishes there.
+    have hsmall : ∀ᶠ l in atTop, ∀ i ∈ Finset.range (j + 1), ∀ y,
+        ‖iteratedFDeriv ℝ i (ωs l : DifferentialForm (Eucl P) (m + 1)) y‖ ≤ D := by
+      rw [Filter.eventually_all_finset]
+      intro i _
+      filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hconv i) D hD] with l hl y
+      by_cases hy : y ∈ K
+      · have h1 := hl y hy
+        simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply,
+          dist_zero_left] at h1
+        exact h1.le
+      · have h0 : iteratedFDeriv ℝ i (ωs l : DifferentialForm (Eucl P) (m + 1)) y = 0 :=
+          image_eq_zero_of_notMem_tsupport fun h =>
+            hy (hsupp l (tsupport_iteratedFDeriv_subset i h))
+        rw [h0, norm_zero]
+        exact hD.le
+    -- Step 10: (iii) with `R = r₀ + 2` bounds `‖Dʲψ_{ω_l}‖` by `(r₀ + 2 + j) D = ε` on
+    -- `tsupport ζ = B̄_{r₀+2}(0)`.
+    filter_upwards [hsmall] with l hl x hx
+    rw [ζ.tsupport_eq] at hx
+    calc ‖iteratedFDeriv ℝ j (ψ (ωs l)) x‖ ≤ (r₀ + 2 + j) * D :=
+          hψbound (ωs l) j (r₀ + 2) D hD.le
+            (fun i hi y _ => hl i (Finset.mem_range.2 (Nat.lt_succ_of_le hi)) y) x hx
+      _ = ε := by rw [hDdef]; exact mul_div_cancel₀ ε hpos.ne'
+  -- Step 6, property (b): `ζ = 1` on `B_r(0) ⊆ B̄_{r₀+1}(0)`, so `Φ(ω) = ψ_ω` there; use (i).
+  · intro ω x hx v
+    have hx' : x ∈ closedBall (0 : Eucl P) ζ.rIn := by
+      rw [mem_closedBall, dist_zero_right]
+      rw [mem_ball, dist_zero_right] at hx
+      change ‖x‖ ≤ r₀ + 1
+      have : r ≤ r₀ := le_max_left r 0
+      linarith
+    change (ζ x • ψ ω x) v = _
+    rw [ζ.one_of_mem_closedBall hx', one_smul, hψformula]
 /-- Smoothness of a parametric interval integral, with all derivatives under the integral sign:
 for `G : ℝ × ℝ^P → V` of class `C^∞` (`V` complete), `g x = ∫_a^b G(t, x) dt` is `C^∞`, every
 `x`-derivative `(t, x) ↦ ∂_x^j G(t, x)` is continuous, and `D^j g(x) = ∫_a^b ∂_x^j G(t, x) dt`.
@@ -1222,6 +1455,30 @@ theorem Submission.iwl_cr_support_lemmas :
           (Set.disjoint_left.2 fun y hy hyS => hyS.2 (hcl (subset_closure (hω hy))).1.2)
       rw [hZ ω, e1, e2]
       ring
+
+/-- The cone `0 ⨯ X` over `X ∈ 𝒟ₘ(ℝ^P)` with `spt X ⊆ B̄_R(0)` (**Simon Ch. 6, 2.23, 2.30**):
+`C(ω) := X(Φ ω)` for the cut-off radial operator `Φ ω = ζ · Hω`, which satisfies
+`Hω(x)(v) = ∫₀¹ tᵐ ω(tx)(x, v) dt` on `B_r(0)`, `r = max R 0 + 1`.  `Φ` maps null sequences to
+null sequences, so `C` is a current; a test form `ψ` with the `Hω`-formula on an open `N ⊇ spt X`
+agrees with `Φ ω` on the open `N ∩ B_r(0) ⊇ spt X`, so `X ψ = X (Φ ω) = C ω` by locality. -/
+theorem Submission.iwl_cr_cone_exists : ∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m), X.support ⊆ closedBall 0 R → ∃ C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) := by
+  intro P m R X hX
+  -- The cut-off radial operator on `B_r(0)`, `r = max R 0 + 1`: its hypothesis is the radial
+  -- operator with `k = a = m`, without the derivative formula.
+  obtain ⟨Φ, hΦ, hΦH⟩ := Submission.iwl_cr_ce_cutoff_radial_operator P m (max R 0 + 1)
+    fun ω hω => by
+      obtain ⟨ψ, hψ, hψH, -, hψD⟩ := Submission.iwl_cr_radial_operator P m m ω hω
+      exact ⟨ψ, hψ, hψH, hψD⟩
+  -- `C = X ∘ Φ` is a current, since `Φ` maps null sequences to null sequences.
+  refine ⟨⟨X.toCurrent ∘ₗ Φ, fun ωs hωs => X.continuous' (fun l => Φ (ωs l)) (hΦ ωs hωs)⟩, ?_⟩
+  rintro ω ψ ⟨N, hN, hXN, hψN⟩
+  -- `Φ ω = ψ` on the open set `N ∩ B_r(0) ⊇ spt X`, so `X (Φ ω) = X ψ` by locality.
+  have hXr : X.support ⊆ ball 0 (max R 0 + 1) :=
+    hX.trans (closedBall_subset_ball ((le_max_left R 0).trans_lt (lt_add_one _)))
+  exact Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support P m univ X (Φ ω) ψ
+    (N ∩ ball 0 (max R 0 + 1)) (hN.inter isOpen_ball) (subset_inter hXN hXr)
+    fun x hx => ContinuousAlternatingMap.ext fun v =>
+      (hΦH ω x hx.2 v).trans (hψN x hx.1 v).symm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
