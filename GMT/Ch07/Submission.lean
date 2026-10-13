@@ -451,6 +451,25 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The zero current `0 ∈ 𝒟ₙ(U)` is integer multiplicity (Simon 6.3.1): the triple with empty
+carrier, multiplicity `0` and orientation `0` represents it, since `Hⁿ⌞∅ = 0`. -/
+theorem Submission.cmcsd_zero_isIntegerMultiplicity : ∀ (P n : ℕ) (U : Set (Euclid P)), IsIntegerMultiplicity (0 : GeometricCurrentOn U n) := by
+  intro P n U
+  refine ⟨{ carrier := ∅
+            mult := fun _ => 0
+            orient := fun _ => 0
+            measurableSet_carrier := MeasurableSet.empty
+            carrier_subset := empty_subset U
+            rectifiable :=
+              Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+            measurable_mult := measurable_const
+            mult_pos := fun x hx => by simp at hx
+            locallyIntegrable_mult := fun K _ _ => by simp
+            aestronglyMeasurable_orient := aestronglyMeasurable_const
+            orients := by simp }, ?_⟩
+  intro ω
+  simp [IMRep.action]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
