@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.local_graph-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "An embedded C² submanifold is locally a C¹ graph over a plane containing its tangent space (parent steps 4–8)",
+  "statement": "Let d, k ∈ ℕ, let N ⊆ ℝ^{d+k} be an embedded C² submanifold of dimension d (IsEmbeddedSubmanifold 2 d N), x ∈ N, and let ι : ℝ^d → ℝ^{d+k} and ι' : ℝ^k → ℝ^{d+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, such that every y ∈ ℝ^{d+k} equals ιv + ι'w for some v, w, and such that the tangent space tangentSpace N x (Simon Ch. 2, §4: velocities γ'(0) of C¹ curves γ : (−1, 1) → N with γ(0) = x) is contained in range ι. Then there are an open set O ⊆ ℝ^d with 0 ∈ O, a map u : ℝ^d → ℝ^k and s > 0 such that u is C¹ on O, u(0) = 0, Du(0) = 0 (fderiv ℝ u 0 = 0), x + ιv + ι'u(v) ∈ N for every v ∈ O, and every y ∈ N with |y − x| < s equals x + ιv + ι'u(v) for some v ∈ O.",
+  "lean_statement": "∀ (d k : ℕ) (N : Set (Euclid (d + k))) (x : Euclid (d + k)) (ι : Euclid d →ₗᵢ[ℝ] Euclid (d + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (d + k)), IsEmbeddedSubmanifold 2 d N → x ∈ N → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (d + k), ∃ v w, y = ι v + ι' w) → tangentSpace N x ⊆ Set.range ι → ∃ (O : Set (Euclid d)) (u : Euclid d → Euclid k) (s : ℝ), IsOpen O ∧ (0 : Euclid d) ∈ O ∧ 0 < s ∧ ContDiffOn ℝ 1 u O ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∀ v ∈ O, x + ι v + ι' (u v) ∈ N) ∧ ∀ y ∈ N, dist y x < s → ∃ v ∈ O, y = x + ι v + ι' (u v)",
+  "lean_name": "codim1_zsl_gc_local_graph",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.local_inverse-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.range_subset_tangent-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.local_inverse-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.range_subset_tangent-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b-a1",
+      "result_commit": "8f402cb9186dec35e39aea49d7ea887fd87109ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9-a1",
+      "result_commit": "5e4b215846243d699169f3e42b95b8e007ea2d70",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0083dd2726-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.oriented_frame-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "Orthonormal coordinates adapted to a unit (n+1)-orientation of a plane (parent steps 1–3)",
+  "statement": "Let n, k ∈ ℕ, P := n + 1 + k, let Q ⊆ ℝ^P be a linear subspace and let ξ ∈ Λ_{n+1}(ℝ^P) (MultiVector P (n+1): continuous linear functionals on (n+1)-covectors) be a unit orientation of Q (IsUnitOrientationOf ξ Q: there is an orthonormal family τ : Fin (n+1) → ℝ^P with span(range τ) = Q such that ξ(α) = α(τ) for all α, or ξ(α) = −α(τ) for all α). Then there are linear isometries ι : ℝ^{n+1} → ℝ^P and ι' : ℝ^k → ℝ^P such that ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝ^{n+1}, w ∈ ℝ^k; every y ∈ ℝ^P equals ιv + ι'w for some v, w; range ι = Q (as sets); and ξ(α) = α(ιe_0, …, ιe_n) for every (n+1)-covector α, where e_j = EuclideanSpace.single j 1 is the standard basis of ℝ^{n+1}.",
+  "lean_statement": "∀ (n k : ℕ) (Q : Submodule ℝ (Euclid (n + 1 + k))) (ξ : MultiVector (n + 1 + k) (n + 1)), IsUnitOrientationOf ξ Q → ∃ (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) ∧ Set.range ι = (Q : Set (Euclid (n + 1 + k))) ∧ ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξ α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))",
+  "lean_name": "codim1_zsl_gc_oriented_frame",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.coordinates-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d4e6f64702-a1",
+      "result_commit": "dd8fcf8bcea714d918709c56ea7e24f4d81f39ea",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0a4283d2e3-a1"
+}

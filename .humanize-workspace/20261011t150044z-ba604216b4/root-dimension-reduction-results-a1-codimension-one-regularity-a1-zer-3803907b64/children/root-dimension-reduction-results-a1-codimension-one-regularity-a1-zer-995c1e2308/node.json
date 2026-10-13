@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.graph_cylinder-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "From a local graph representation to an exact graph over a ball inside an orthogonal cylinder (parent steps 9–10)",
+  "statement": "Let d, k ∈ ℕ, N ⊆ ℝ^{d+k}, x ∈ ℝ^{d+k}, let ι : ℝ^d → ℝ^{d+k} and ι' : ℝ^k → ℝ^{d+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let O ⊆ ℝ^d be open with 0 ∈ O, let u : ℝ^d → ℝ^k be continuous at 0 with u(0) = 0, and let s > 0. Write Γ(v) := x + ιv + ι'u(v). Assume Γ(v) ∈ N for every v ∈ O, and every y ∈ N with |y − x| < s equals Γ(v) for some v ∈ O. Then there are δ₁ > 0 and δ₂ > 0 such that ball(0, δ₁) ⊆ O, u(v) ∈ ball(0, δ₂) ⊆ ℝ^k for every v ∈ ball(0, δ₁) ⊆ ℝ^d, and N ∩ {x + ιv + ι'w : |v| < δ₁, |w| < δ₂} = Γ(ball(0, δ₁)).",
+  "lean_statement": "∀ (d k : ℕ) (N : Set (Euclid (d + k))) (x : Euclid (d + k)) (ι : Euclid d →ₗᵢ[ℝ] Euclid (d + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (d + k)) (O : Set (Euclid d)) (u : Euclid d → Euclid k) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen O → (0 : Euclid d) ∈ O → ContinuousAt u 0 → u 0 = 0 → 0 < s → (∀ v ∈ O, x + ι v + ι' (u v) ∈ N) → (∀ y ∈ N, dist y x < s → ∃ v ∈ O, y = x + ι v + ι' (u v)) → ∃ δ₁ δ₂ : ℝ, 0 < δ₁ ∧ 0 < δ₂ ∧ ball (0 : Euclid d) δ₁ ⊆ O ∧ (∀ v ∈ ball (0 : Euclid d) δ₁, u v ∈ ball (0 : Euclid k) δ₂) ∧ N ∩ {y | ∃ v ∈ ball (0 : Euclid d) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid d) δ₁",
+  "lean_name": "codim1_zsl_gc_graph_cylinder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-995c1e2308-a1"
+}
