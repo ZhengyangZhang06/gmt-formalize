@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.orientation_error_vanishes-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1",
+  "depth": 4,
+  "title": "Vanishing of the orientation error term (Steps 6 and 8)",
+  "statement": "Let P, n ∈ ℕ and Hⁿ = μHE[n] on ℝ^P. Let M ⊆ ℝ^P be Hⁿ-null-measurable, θ : ℝ^P → ℝ with θ ≥ 0 on M, ξ : ℝ^P → NVector(ℝ^P, n), x ∈ ℝ^P, and ω : ℝ^P → Λⁿ(ℝ^P) continuous with compact support. Put a(s) := ∫⁻_{M∩B̄_s(x)} ofReal(θ(y))‖ξ(y) − ξ(x)‖ₑ dHⁿ(y) and b(s) := ∫⁻_{M∩B̄_s(x)} ofReal(θ) dHⁿ. Assume: (i) there is C ∈ ℝ≥0 with b(s) ≤ C·ofReal(sⁿ) for all sufficiently small s > 0; (ii) a(s)/b(s) → 0 in [0, ∞] as s → 0⁺. Then E(r) := ∫_M θ(y)·(ξ(y) − ξ(x))((rⁿ)⁻¹•ω(r⁻¹•(y − x))) dHⁿ(y) → 0 as r → 0⁺. E(r) is a Bochner set integral, and no integrability is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (x : Eucl P) (ω : Eucl P → Covector (Eucl P) n), NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M, 0 ≤ θ y) → Continuous ω → HasCompactSupport ω → (∃ C : ℝ≥0, ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)) ≤ C * ENNReal.ofReal (s ^ n)) → Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => ∫ y in M, θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "ind_ab_orientation_error_vanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1-orien-132e11848c-a1"
+}
