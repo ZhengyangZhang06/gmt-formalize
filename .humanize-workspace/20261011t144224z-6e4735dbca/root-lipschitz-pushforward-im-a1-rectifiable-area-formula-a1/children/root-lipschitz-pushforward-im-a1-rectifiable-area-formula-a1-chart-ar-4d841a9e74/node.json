@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_area_formula-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "Area formula on one chart piece from the a.e. Jacobian identity",
+  "statement": "Let P, Q, n ∈ ℕ, U ⊆ ℝ^P open, f : ℝ^P → ℝ^Q locally Lipschitz on U, Ω ⊆ ℝⁿ open, Φ : ℝⁿ → ℝ^P Lipschitz on Ω and c-antilipschitz on Ω for some c > 0, J, h : ℝ^P → [0,∞], and A ⊆ ℝ^P with A ⊆ U, A ⊆ Φ(Ω), A Hⁿ-null-measurable, h and J a.e.-measurable for Hⁿ⌞A. Write JΦ(w) := √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩)_{i,j} and J(f∘Φ)(w) := √det(⟨D(f∘Φ)(w)e_i, D(f∘Φ)(w)e_j⟩)_{i,j}, where D = fderiv ℝ and e_i = EuclideanSpace.single i 1. Suppose J(Φ(w))·ofReal(JΦ(w)) = ofReal(J(f∘Φ)(w)) in [0,∞] for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(A). Then N_A(y) := Σ_{x ∈ A, f(x) = y} h(x) is Hⁿ-a.e. measurable on ℝ^Q and ∫_A h·J dHⁿ = ∫_{ℝ^Q} N_A dHⁿ.",
+  "lean_statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (J h : Eucl P → ℝ≥0∞) (A : Set (Eucl P)), IsOpen U → LocallyLipschitzOn U f → IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ U → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → AEMeasurable h ((μHE[n] : Measure (Eucl P)).restrict A) → AEMeasurable J ((μHE[n] : Measure (Eucl P)).restrict A) → (∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), J (Φ w) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) = ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single i 1)) (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single j 1))).det)) → AEMeasurable (fun y => ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x) (μHE[n] : Measure (Eucl Q)) ∧ ∫⁻ x in A, h x * J x ∂(μHE[n] : Measure (Eucl P)) = ∫⁻ y, ∑' x : {x : Eucl P // x ∈ A ∧ f x = y}, h x ∂(μHE[n] : Measure (Eucl Q))",
+  "lean_name": "lpf_raf_chart_area_formula",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ar-4d841a9e74-a1"
+}
