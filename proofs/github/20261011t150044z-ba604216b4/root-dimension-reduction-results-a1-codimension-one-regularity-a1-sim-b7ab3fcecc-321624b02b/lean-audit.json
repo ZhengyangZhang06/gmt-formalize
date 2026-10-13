@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2dddfcc77c6121435cac205b40855e4da00a23e5e5c98113ba1be5fb5db57d3c",
+  "git_delta": {
+    "base_commit": "3d6ee7480f672753e4b1c07b40bed86f4e31cae9",
+    "candidate_commit": "06f2c3e93b4828e7f7102bdee110416790463aeb",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a37baa4ce514317ece88f5c6a16b1999fcef01c2b4fa1ab5cce55e932acc4f28",
+    "source_sha256": "56fb070fcfdfc2f39c73617ccb165a81c8e473f577ce6d51d39662aae8395a85",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_cone_offvertex_unit_multiplicity_rep",
+      "statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m), 1 ≤ m → IsIntegerMultiplicity C → IsConeCurrent C → (∀ y ∈ C.support, y ≠ 0 → y ∈ regularSet C ∧ HasMassDensity C y 1) → ∃ ξ : Euclid P → MultiVector P m, IsEmbeddedSubmanifold 1 m (C.support \\ {0}) ∧ IsOrientation m (C.support \\ {0}) ξ ∧ (∀ t : ℝ, 0 < t → ∀ x ∈ C.support \\ {0}, t • x ∈ C.support \\ {0}) ∧ (∀ K : Set (Euclid P), IsCompact K → μHE[m] ((C.support \\ {0}) ∩ K) ≠ ∞) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, C ω = ∫ x in C.support \\ {0}, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
