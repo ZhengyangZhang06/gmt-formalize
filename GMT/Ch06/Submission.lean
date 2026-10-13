@@ -7529,6 +7529,152 @@ theorem Submission.slicing_im_st_slice_geometry :
     obtain ⟨j, i, v, hv, hΨv, hrange⟩ := key x hxMt hpx
     rw [← hrange Q hQ]
     exact hx j i v hv hΨv
+/-- Orthonormal frames of the same subspace have the same simple `n`-vector up to sign (Simon
+Ch. 6, 3.1: `ξ(x) = τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` is determined by `TₓM` up
+to sign).  `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q = span τ = span τ'`.  Restricted to
+`Q`, an `n`-covector `ω` is an alternating `n`-form on the `n`-dimensional space `Q`, so
+`ω(τ') = b.det(b') ω(τ)` (`AlternatingMap.eq_smul_basis_det`, as in the determinant computation
+after (3.4), p. 147), and `b.det(b') = ±1` because the change of basis between orthonormal bases
+is orthogonal (`OrthonormalBasis.det_to_matrix_orthonormalBasis_real`). -/
+theorem Submission.fiw_ims_frame_sign :
+    ∀ (P n : ℕ) (τ τ' : Fin n → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ τ' →
+      Submodule.span ℝ (range τ) = Submodule.span ℝ (range τ') →
+      simpleNVector τ' = simpleNVector τ ∨ simpleNVector τ' = -simpleNVector τ := by
+  intro P n τ τ' hτ hτ' hspan
+  set Q : Submodule ℝ (Eucl P) := Submodule.span ℝ (range τ)
+  -- Step 1: `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`.
+  let b : Module.Basis (Fin n) ℝ Q := Module.Basis.span hτ.linearIndependent
+  let b' : Module.Basis (Fin n) ℝ Q :=
+    (Module.Basis.span hτ'.linearIndependent).map (LinearEquiv.ofEq _ _ hspan.symm)
+  have hb : Q.subtype ∘ b = τ :=
+    funext fun i => Module.Basis.coe_span_apply hτ.linearIndependent i
+  have hb' : Q.subtype ∘ b' = τ' := by
+    funext i
+    simp [b']
+  have hbo : Orthonormal ℝ b := by
+    rw [← Q.subtypeₗᵢ.orthonormal_comp_iff, Submodule.coe_subtypeₗᵢ, hb]
+    exact hτ
+  have hbo' : Orthonormal ℝ b' := by
+    rw [← Q.subtypeₗᵢ.orthonormal_comp_iff, Submodule.coe_subtypeₗᵢ, hb']
+    exact hτ'
+  -- Step 2: the restriction `f = ω ∘ Q.subtype` of an `n`-covector `ω` is an alternating
+  -- `n`-form on `Q`, so `f = f b • b.det`; evaluated at `b'` this is `ω τ' = b.det b' * ω τ`.
+  have key : ∀ ω : Covector (Eucl P) n, ω τ' = b.det b' * ω τ := by
+    intro ω
+    have h := DFunLike.congr_fun
+      ((ω.toAlternatingMap.compLinearMap Q.subtype).eq_smul_basis_det b) ⇑b'
+    rw [AlternatingMap.smul_apply, smul_eq_mul] at h
+    change ω (Q.subtype ∘ b') = ω (Q.subtype ∘ b) * b.det b' at h
+    rw [hb, hb'] at h
+    rw [h, mul_comm]
+  -- Step 3: `b.det b' = ±1`, the change of basis between orthonormal bases being orthogonal.
+  have hd : b.det b' = 1 ∨ b.det b' = -1 := by
+    simpa using (b.toOrthonormalBasis hbo).det_to_matrix_orthonormalBasis_real
+      (b'.toOrthonormalBasis hbo')
+  -- Step 4: extensionality, as `simpleNVector v ω = ω v`.
+  rcases hd with hd | hd
+  · left
+    refine ContinuousLinearMap.ext fun ω => ?_
+    rw [simpleNVector_apply, simpleNVector_apply, key ω, hd, one_mul]
+  · right
+    refine ContinuousLinearMap.ext fun ω => ?_
+    rw [_root_.neg_apply, simpleNVector_apply, simpleNVector_apply, key ω, hd, neg_one_mul]
+
+/-- Interior product of a unit simple `(m+1)`-vector with a unit vector of its plane (Simon Ch. 6,
+4.3).  Let `τ` be an orthonormal frame of `T = span τ`, `0 ≠ g ∈ T`, `ν = |g|⁻¹ g`, and
+`w = ±τ₁ ∧ ⋯ ∧ τₘ₊₁`.  The contraction `w ⌞ ν : α ↦ w(ν♭ ∧ α)`, where
+`(ν♭ ∧ α)(v) = ∑ᵢ (-1)ⁱ ⟨ν, vᵢ⟩ α(v₀, …, v̂ᵢ, …, vₘ)` (`alternatizeUncurryFin_apply`), is
+`±τ'₁ ∧ ⋯ ∧ τ'ₘ` for an orthonormal basis `τ'` of `S = T ∩ g^⊥`.  Indeed `S` has dimension `m`
+(`finrank_add_inf_finrank_orthogonal'`), `σ = (τ', ν)` is an orthonormal basis of `T`, so
+`w = ±simpleNVector σ` (`Submission.fiw_ims_frame_sign`), and `(ν♭ ∧ α)(σ) = (-1)^m α(τ')` because
+`⟨ν, τ'ₖ⟩ = 0`, `|ν| = 1` and `removeNth (last m) σ = τ'`. -/
+theorem Submission.slicing_im_st_interior_product :
+    ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (g : Eucl P) (w : NVector (Eucl P) (m + 1)), Orthonormal ℝ τ → g ∈ Submodule.span ℝ (range τ) → g ≠ 0 → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∃ τ' : Fin m → Eucl P, Orthonormal ℝ τ' ∧ Submodule.span ℝ (range τ') = Submodule.span ℝ (range τ) ⊓ (ℝ ∙ g)ᗮ ∧ (w.comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖g‖⁻¹ • g)))) = simpleNVector τ' ∨ w.comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖g‖⁻¹ • g)))) = -simpleNVector τ') := by
+  intro P m τ g w hτ hg hg0 hw
+  set T : Submodule ℝ (Eucl P) := Submodule.span ℝ (range τ) with hTdef
+  set S : Submodule ℝ (Eucl P) := T ⊓ (ℝ ∙ g)ᗮ with hSdef
+  set ν : Eucl P := ‖g‖⁻¹ • g with hνdef
+  -- Step 1: `S` has dimension `m`, as `ℝ ∙ g ≤ T` has dimension `1` and `T` dimension `m + 1`.
+  have hT : Module.finrank ℝ T = m + 1 := by
+    rw [hTdef, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  have hgT : (ℝ ∙ g) ≤ T := (Submodule.span_singleton_le_iff_mem g T).2 hg
+  have hS : Module.finrank ℝ S = m := by
+    rw [hSdef, inf_comm]
+    exact Submodule.finrank_add_inf_finrank_orthogonal' hgT
+      (by rw [finrank_span_singleton hg0, hT, add_comm])
+  -- Step 2: an orthonormal basis `τ'` of `S`, indexed by `Fin m`.
+  let b : OrthonormalBasis (Fin m) ℝ S := (stdOrthonormalBasis ℝ S).reindex (finCongr hS)
+  let τ' : Fin m → Eucl P := fun i => (b i : Eucl P)
+  have hτ' : Orthonormal ℝ τ' := b.orthonormal.comp_linearIsometry S.subtypeₗᵢ
+  have hτ'S : ∀ k, τ' k ∈ S := fun k => (b k).2
+  have hspan' : Submodule.span ℝ (range τ') = S := by
+    have hr : range τ' = S.subtype '' range b := by
+      rw [← range_comp]
+      rfl
+    have htop : Submodule.span ℝ (range b) = ⊤ := by
+      simpa using b.toBasis.span_eq
+    rw [hr, Submodule.span_image, htop, Submodule.map_subtype_top]
+  -- Step 3: the adapted frame `σ = (τ', ν)` is an orthonormal basis of `T`.
+  have hνT : ν ∈ T := T.smul_mem _ hg
+  have hν1 : ‖ν‖ = 1 := by
+    simpa [hνdef] using norm_smul_inv_norm (𝕜 := ℝ) hg0
+  have hτ'ν : ∀ k, inner ℝ (τ' k) ν = 0 := by
+    intro k
+    have hk : inner ℝ g (τ' k) = 0 :=
+      Submodule.mem_orthogonal_singleton_iff_inner_right.1 (hτ'S k).2
+    rw [hνdef, inner_smul_right, real_inner_comm, hk, mul_zero]
+  have hντ' : ∀ k, inner ℝ ν (τ' k) = 0 := fun k => by
+    rw [real_inner_comm]
+    exact hτ'ν k
+  set σ : Fin (m + 1) → Eucl P := Fin.snoc (α := fun _ => Eucl P) τ' ν with hσdef
+  have hσ : Orthonormal ℝ σ := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    refine Fin.lastCases ?_ (fun a => ?_) i <;> refine Fin.lastCases ?_ (fun c => ?_) j
+    · simp [σ, hν1]
+    · simp [σ, hντ', (Fin.castSucc_ne_last c).symm]
+    · simp [σ, hτ'ν, Fin.castSucc_ne_last a]
+    · simp only [σ, Fin.snoc_castSucc, Fin.castSucc_inj]
+      exact orthonormal_iff_ite.1 hτ' a c
+  have hσT : Submodule.span ℝ (range σ) = T := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      refine Fin.lastCases ?_ (fun a => ?_) i
+      · simpa [σ] using hνT
+      · simpa [σ] using (hτ'S a).1
+    · rw [finrank_span_eq_card hσ.linearIndependent, Fintype.card_fin, hT]
+  -- Step 4: frame sign, `w = ± simpleNVector σ`.
+  have hwσ : w = simpleNVector σ ∨ w = -simpleNVector σ := by
+    rcases Submission.fiw_ims_frame_sign P (m + 1) τ σ hτ hσ hσT.symm with hs | hs <;>
+      rcases hw with rfl | rfl
+    · exact Or.inl hs.symm
+    · exact Or.inr (by rw [hs])
+    · exact Or.inr (by rw [hs]; exact (neg_neg (simpleNVector τ)).symm)
+    · exact Or.inl (by rw [hs])
+  -- Step 5: evaluation, `(ν♭ ∧ α)(σ) = (-1)^m α(τ')`.
+  have hc : (simpleNVector σ).comp
+      ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ ν))) =
+      ((-1 : ℝ) ^ m) • simpleNVector τ' := by
+    ext α
+    simp only [ContinuousLinearMap.comp_apply, simpleNVector_apply, smul_apply, smul_eq_mul,
+      ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply,
+      ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+    rw [Fin.sum_univ_castSucc]
+    simp [σ, Fin.removeNth_last, Fin.init_snoc, hντ', hν1]
+  -- Step 6: conclusion, `w ⌞ ν = ± (-1)^m simpleNVector τ'`.
+  refine ⟨τ', hτ', hspan', ?_⟩
+  rcases neg_one_pow_eq_or ℝ m with hm | hm <;> rcases hwσ with rfl | rfl
+  · left
+    rw [hc, hm, one_smul]
+  · right
+    rw [ContinuousLinearMap.neg_comp, hc, hm, one_smul]
+  · right
+    rw [hc, hm, neg_one_smul ℝ (simpleNVector τ')]
+  · left
+    rw [ContinuousLinearMap.neg_comp, hc, hm, neg_one_smul ℝ (simpleNVector τ')]
+    exact neg_neg (simpleNVector τ')
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
