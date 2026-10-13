@@ -1438,6 +1438,108 @@ theorem Submission.constancy_approx_identity_iteratedFDeriv_tendstoUniformly :
     hΨc.aestronglyMeasurable fun y hy => (hsΨ hy).le) (half_lt_self hε)
   exact (subset_tsupport _).trans ((hψs k).trans (closedBall_subset_ball hk))
 
+/-- **Simon Ch. 6, Theorem 2.34 (Constancy Theorem), proof pp. 142–143: `T = c [[B_r(x₀)]]` near
+each point.**  If `T(ω) = 0` whenever `ω(·)(e₁, …, eₙ) = D_j a` for a `C^∞` compactly supported
+`a` with `spt a ⊆ U` (the printed `T(dω_j) = ∂T(ω_j) = 0`), then every `x₀ ∈ U` has a ball
+`B_r(x₀) ⊆ U` with `T(ω) = c ∫ ω(x)(e₁, …, eₙ) dLⁿ(x)` whenever `spt ω ⊆ B_r(x₀)`.  Write
+`T(ω) = u(ω(·)(e))`.  For normalized smooth bumps `ψ_k` with `spt ψ_k ⊆ B̄_{ε_k}(0)`, `ε_k ↓ 0`,
+the functional `f ↦ u(ψ_k ∗ 1_B f)` is bounded on `L¹(B)`, hence equals `f ↦ ∫_B f θ_k` (Riesz),
+and `θ_k` is a.e. constant on `B` (printed display (2)); letting `k → ∞` gives `u(b) = c ∫ b`
+for `spt b ⊆ B`.  (Book `n = m + 1`.) -/
+theorem Submission.constancy_local_on_balls : ∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ∀ (j : Fin (m + 1)) (ω : TestFormOn U (m + 1)), (∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) → T ω = 0) → ∀ x₀ ∈ U, ∃ r : ℝ, 0 < r ∧ ball x₀ r ⊆ U ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ ball x₀ r → T ω = c * ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume := by
+  intro m U hU T hH x₀ hx₀
+  -- Step 0: radii `ρ = R₀ / 4 < R = R₀ / 2 < R₀`, so `B̄_R(x₀) ⊆ B_{R₀}(x₀) ⊆ U`.
+  obtain ⟨R₀, hR₀, hR₀U⟩ := Metric.isOpen_iff.mp hU x₀ hx₀
+  obtain ⟨ρ, hρdef⟩ : ∃ ρ : ℝ, ρ = R₀ / 4 := ⟨_, rfl⟩
+  obtain ⟨R, hRdef⟩ : ∃ R : ℝ, R = R₀ / 2 := ⟨_, rfl⟩
+  have hρ : 0 < ρ := by rw [hρdef]; positivity
+  have hKU : closedBall x₀ R ⊆ U := (closedBall_subset_ball (by linarith)).trans hR₀U
+  refine ⟨ρ, hρ, (ball_subset_ball (by linarith)).trans hR₀U, ?_⟩
+  -- Step 1: `T ω = u(ω(·)(e))` for a linear, sequentially continuous scalar functional `u`.
+  obtain ⟨u, hTu, hlift, hadd, hsmul, hC⟩ := Submission.constancy_topForm_scalar_reduction m U T
+  -- (1f): by the hypothesis on `T`, `u(D_j a) = 0` for every admissible `a`.
+  have hD : ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a →
+      tsupport a ⊆ U → ∀ j : Fin (m + 1),
+        u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) = 0 := by
+    intro a ha hac has j
+    obtain ⟨ω, hω⟩ := hlift (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)))
+      ((contDiff_infty_iff_fderiv.mp ha).2.clm_apply contDiff_const) (hac.fderiv_apply ℝ _)
+      ((tsupport_fderiv_apply_subset ℝ _).trans has)
+    calc u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)))
+        = u (fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+            (fun i => EuclideanSpace.single i (1 : ℝ))) := by
+          congr 1
+          funext x
+          exact (hω x).symm
+      _ = T ω := (hTu ω).symm
+      _ = 0 := hH a ha hac has j ω hω
+  -- Step 2: mollifiers `ψ_k`, normalized smooth bumps with `spt ψ_k ⊆ B̄_{ε_k}(0)`, where
+  -- `ε_k = ρ / (k + 2) ↓ 0`, so that `ρ + ε_k ≤ R`.
+  obtain ⟨ε, hεdef⟩ : ∃ ε : ℕ → ℝ, ∀ k, ε k = ρ / ((k : ℝ) + 2) := ⟨_, fun _ => rfl⟩
+  have hε : ∀ k, 0 < ε k := fun k => by rw [hεdef]; positivity
+  have hεR : ∀ k, ρ + ε k ≤ R := fun k => by
+    have h : ε k ≤ ρ := by
+      rw [hεdef]
+      exact div_le_self hρ.le (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
+    linarith
+  have hεlim : Tendsto ε atTop (𝓝 0) := by
+    rw [show ε = fun k : ℕ => ρ / ((k : ℝ) + 2) from funext hεdef]
+    exact tendsto_const_nhds.div_atTop
+      (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
+  have hmoll : ∀ δ : ℝ, 0 < δ → ∃ φ : Eucl (m + 1) → ℝ,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ closedBall 0 δ ∧
+        Continuous φ ∧ (∀ x, 0 ≤ φ x) ∧ ∫ x, φ x ∂volume = 1 := by
+    intro δ hδ
+    let f : ContDiffBump (0 : Eucl (m + 1)) := ⟨δ / 2, δ, half_pos hδ, half_lt_self hδ⟩
+    have hI : 0 < ∫ x, f x ∂volume :=
+      f.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero f.hasCompactSupport
+        (fun x => f.nonneg) (x := 0)
+        (by rw [f.one_of_mem_closedBall (mem_closedBall_self f.rIn_pos.le)]; exact one_ne_zero)
+    refine ⟨fun x => f x / ∫ y, f y ∂volume, f.contDiff.div_const _,
+      f.hasCompactSupport.comp_left (g := fun t : ℝ => t / ∫ y, f y ∂volume) (zero_div _),
+      (tsupport_comp_subset (g := fun t : ℝ => t / ∫ y, f y ∂volume) (zero_div _) f).trans
+        f.tsupport_eq.subset,
+      f.continuous.div_const _, fun x => div_nonneg f.nonneg hI.le, ?_⟩
+    show ∫ x, f x / (∫ y, f y ∂volume) ∂volume = 1
+    rw [integral_div, div_self hI.ne']
+  choose ψ hψs hψc hψt hψcont hψnn hψint using fun k => hmoll (ε k) (hε k)
+  -- Steps 3–4: for each `k`, `u(ψ_k ∗ 1_B f) = c_k ∫_B f` for every `f` integrable on `B`.
+  have hck : ∀ k, ∃ c : ℝ, ∀ f : Eucl (m + 1) → ℝ, IntegrableOn f (ball x₀ ρ) volume →
+      u (convolution (ψ k) ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) =
+        c * ∫ x in ball x₀ ρ, f x ∂volume := by
+    intro k
+    have hball : closedBall x₀ (ρ + ε k) ⊆ U := (closedBall_subset_closedBall (hεR k)).trans hKU
+    -- `F(f) = u(ψ_k ∗ 1_B f)` is linear and `L¹(B)`-bounded.
+    obtain ⟨hFadd, hFsmul, C, hFC⟩ := Submission.constancy_mollified_functional_l1_bounded (m + 1)
+      U u hadd hsmul hC x₀ ρ (ε k) hρ (hε k) hball (ψ k) (hψs k) (hψc k) (hψt k)
+      (Submission.constancy_mollifier_iteratedFDeriv_norm_le_integral (m + 1) (ψ k) (hψs k)
+        (hψc k))
+    -- Riesz: `F(f) = ∫_B f θ` for a bounded measurable `θ` (corrected printed display (1)).
+    obtain ⟨θ, hθ, hθM, hθF⟩ := Submission.constancy_riesz_l1_dual_bounded_density
+      (volume.restrict (ball x₀ ρ)) (isFiniteMeasure_restrict.mpr measure_ball_lt_top.ne)
+      (fun f => u (convolution (ψ k) ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ)
+        volume)) C hFadd hFsmul hFC
+    -- Printed display (2): `θ` is a.e. constant on `B`.
+    exact Submission.constancy_mollified_density_const (m + 1) U u hD x₀ ρ (ε k) hρ (hε k) hball
+      (ψ k) (hψs k) (hψc k) (hψt k) θ hθ hθM hθF
+  choose c hc using hck
+  -- Step 5: letting `ε_k ↓ 0`, `u(b) = c₀ ∫ b` for every admissible `b` with `spt b ⊆ B`.
+  obtain ⟨c₀, hc₀⟩ := Submission.constancy_local_of_mollified_const (m + 1) U u hC x₀ ρ R hρ hKU
+    ψ ε hψcont hψt (fun k => (hε k).le) hεR
+    (fun b hb hbc q => Submission.constancy_approx_identity_iteratedFDeriv_tendstoUniformly
+      (m + 1) b hb hbc ψ ε hψcont hψnn hψint hψt hεlim q) c hc
+  -- Step 6: `T ω = u(a_ω) = c₀ ∫ a_ω`, since `a_ω = ω(·)(e)` is admissible with `spt a_ω ⊆ B`.
+  refine ⟨c₀, fun ω hω => ?_⟩
+  have hωp := ω.property
+  rw [hTu ω]
+  exact hc₀ _
+    ((ContinuousAlternatingMap.apply ℝ (Eucl (m + 1)) ℝ
+      (fun i => EuclideanSpace.single i (1 : ℝ))).contDiff.comp hωp.1.1)
+    (hωp.1.2.comp_left (g := fun α : Covector (Eucl (m + 1)) (m + 1) =>
+      α (fun i => EuclideanSpace.single i (1 : ℝ))) rfl)
+    ((tsupport_comp_subset (g := fun α : Covector (Eucl (m + 1)) (m + 1) =>
+      α (fun i => EuclideanSpace.single i (1 : ℝ))) rfl _).trans hω)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
