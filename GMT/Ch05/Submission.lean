@@ -540,6 +540,82 @@ theorem dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn : ∀ (n : ℕ) (E : Type) [N
       gcongr
       rw [div_lt_one he1]; linarith
     _ = η := mul_one η
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): the derivative of a directional
+derivative of a `C²` map.**
+If `v : ℝⁿ → ℝ^ℓ` is `C²` on an open `U` and `e ∈ ℝⁿ`, then at every `x ∈ U` the directional
+derivative `v_e(z) = Dv(z) e` has derivative `D(v_e)(x) = D(Dv)(x) e` (symmetry of the second
+derivative, proved here by difference quotients since `FDeriv.Symmetric` is not imported).
+Proof: choose `r > 0` with `B_r(x) ⊆ U`.  By `dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn` for the
+`C¹` map `Dv`, `T_d = d⁻¹ (Dv(· + d e) − Dv) → D(Dv)(·) e` uniformly on `B_r(x)` as `d → 0`,
+`d ≠ 0`.  For `|d| < (r/2)/(‖e‖ + 1)` and `z ∈ B̆_{r/2}(x)` the points `z`, `z + d e` lie in `U`, so
+`w_d = d⁻¹ (v(· + d e) − v)` has derivative `T_d(z)` at `z`.  For `y ∈ U`, `w_d(y) → Dv(y) e` (slope
+of `t ↦ v(y + t e)` at `0`).  The theorem on uniform limits of derivatives
+(`hasFDerivAt_of_tendstoUniformlyOnFilter`) gives `D(v_e)(x) = D(Dv)(x) e`. -/
+theorem dohr_eb_lhr_ds_fderiv_dirDeriv_eq : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (v : Rn n → Rn ℓ) (e : Rn n), IsOpen U → ContDiffOn ℝ 2 v U → ∀ x ∈ U, fderiv ℝ (fun z => fderiv ℝ v z e) x = fderiv ℝ (fderiv ℝ v) x e := by
+  intro n ℓ U v e hU hv x hx
+  -- Step 1: a closed ball `B_r(x) ⊆ U`; `v` is differentiable on `U` and `Dv` is `C¹` on `U`.
+  obtain ⟨r, hr, hrU⟩ := Metric.nhds_basis_closedBall.mem_iff.mp (hU.mem_nhds hx)
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ v z := fun z hz =>
+    (hv.differentiableOn two_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hDv : ContDiffOn ℝ 1 (fderiv ℝ v) U := hv.fderiv_of_isOpen hU (by norm_num)
+  -- Steps 2–3: `T_d → D(Dv)(·) e` uniformly on `B_r(x)`, hence uniformly on the filter `𝓝 x`.
+  have hunif : TendstoUniformlyOn
+      (fun (d : ℝ) (z : Rn n) => d⁻¹ • (fderiv ℝ v (z + d • e) - fderiv ℝ v z))
+      (fun z => fderiv ℝ (fderiv ℝ v) z e) (𝓝[≠] 0) (closedBall x r) :=
+    Submission.dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn n (Rn n →L[ℝ] Rn ℓ) (fderiv ℝ v) U
+      (closedBall x r) e hU hDv (isCompact_closedBall x r) hrU
+  have hunif' : TendstoUniformlyOnFilter
+      (fun (d : ℝ) (z : Rn n) => d⁻¹ • (fderiv ℝ v (z + d • e) - fderiv ℝ v z))
+      (fun z => fderiv ℝ (fderiv ℝ v) z e) (𝓝[≠] 0) (𝓝 x) :=
+    hunif.tendstoUniformlyOnFilter.mono_right (le_principal_iff.mpr (closedBall_mem_nhds x hr))
+  -- Step 4: `w_d` has derivative `T_d(z)` at `z` for `|d| < (r/2)/(‖e‖ + 1)`, `z ∈ B̆_{r/2}(x)`.
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hρ : 0 < r / 2 / (‖e‖ + 1) := by positivity
+  have hdev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < r / 2 / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hρ] with d hd
+    simpa [Real.dist_eq] using hd
+  have hzev : ∀ᶠ z in 𝓝 x, z ∈ ball x (r / 2) := Metric.ball_mem_nhds x (half_pos hr)
+  have hderiv : ∀ᶠ p : ℝ × Rn n in 𝓝[≠] 0 ×ˢ 𝓝 x,
+      HasFDerivAt (fun z => p.1⁻¹ • (v (z + p.1 • e) - v z))
+        (p.1⁻¹ • (fderiv ℝ v (p.2 + p.1 • e) - fderiv ℝ v p.2)) p.2 := by
+    filter_upwards [hdev.prod_mk hzev] with p hp
+    obtain ⟨d, z⟩ := p
+    obtain ⟨hd, hz⟩ := hp
+    have hzr : dist z x < r / 2 := hz
+    have hzU : z ∈ U := hrU (mem_closedBall.mpr (hzr.le.trans (half_le_self hr.le)))
+    have hde : ‖d • e‖ < r / 2 := by
+      rw [norm_smul, Real.norm_eq_abs]
+      calc |d| * ‖e‖ ≤ |d| * (‖e‖ + 1) := by gcongr; linarith
+        _ < r / 2 / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+        _ = r / 2 := div_mul_cancel₀ _ he1.ne'
+    have hzdU : z + d • e ∈ U := by
+      refine hrU (mem_closedBall.mpr ?_)
+      calc dist (z + d • e) x = ‖(z - x) + d • e‖ := by rw [dist_eq_norm, add_sub_right_comm]
+        _ ≤ ‖z - x‖ + ‖d • e‖ := norm_add_le _ _
+        _ ≤ r := by rw [← dist_eq_norm]; linarith
+    -- chain rule for the translation `z ↦ z + d e`, then difference and constant multiple rules
+    have htr : HasFDerivAt (fun z => v (z + d • e)) (fderiv ℝ v (z + d • e)) z :=
+      (hasFDerivAt_comp_add_right (d • e)).mpr (hdiff _ hzdU).hasFDerivAt
+    exact (htr.sub (hdiff z hzU).hasFDerivAt).const_smul d⁻¹
+  -- Step 5: `w_d(y) → Dv(y) e` for every `y ∈ U`: slopes of `t ↦ v(y + t e)` at `t = 0`.
+  have hpt : ∀ᶠ y in 𝓝 x,
+      Tendsto (fun d : ℝ => d⁻¹ • (v (y + d • e) - v y)) (𝓝[≠] 0) (𝓝 (fderiv ℝ v y e)) := by
+    filter_upwards [hU.mem_nhds hx] with y hy
+    have hline : HasDerivAt (fun t : ℝ => y + t • e) e 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const e).const_add y
+    have hvy : HasFDerivAt v (fderiv ℝ v y) (y + (0 : ℝ) • e) := by
+      rw [zero_smul, add_zero]
+      exact (hdiff y hy).hasFDerivAt
+    have hcomp : HasDerivAt (fun t : ℝ => v (y + t • e)) (fderiv ℝ v y e) 0 :=
+      hvy.comp_hasDerivAt (0 : ℝ) hline
+    simpa using hcomp.tendsto_slope_zero
+  -- Step 6: uniform limits of derivatives (`f d = w_d`, `f' d = T_d`, `g = v_e`).
+  exact (hasFDerivAt_of_tendstoUniformlyOnFilter
+    (f := fun (d : ℝ) (z : Rn n) => d⁻¹ • (v (z + d • e) - v z))
+    (f' := fun (d : ℝ) (z : Rn n) => d⁻¹ • (fderiv ℝ v (z + d • e) - fderiv ℝ v z))
+    (g := fun z => fderiv ℝ v z e) (g' := fun z => fderiv ℝ (fderiv ℝ v) z e)
+    hunif' hderiv hpt).fderiv
 
 end Submission
 
