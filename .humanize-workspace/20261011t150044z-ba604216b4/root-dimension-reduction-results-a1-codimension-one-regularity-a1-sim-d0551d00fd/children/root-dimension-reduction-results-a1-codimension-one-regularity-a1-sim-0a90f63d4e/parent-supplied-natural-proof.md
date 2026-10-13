@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.immersion_open-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 4 of the supplied proof of the parent (Submission.codim1_hcp_flat_cone_is_plane): "By the inverse function theorem (applied to ψ|_B as a C¹ map into H_c ≅ ℝ^m), ψ|_B is an open map into H_c, so ψ(B) is an open subset of H_c". Here it is proved for an arbitrary open B and an arbitrary m-dimensional subspace H, with the fact that Dψ(v) maps into H derived from ψ(B) ⊆ H. Book anchor: Simon, Appendix B, Theorem B.2 (book/chapter-B.txt lines 37–39); the printed proof ends with '|A|² ≡ 0 on M' (line 282) and leaves the passage from |A| ≡ 0 to a hyperplane implicit; the parent's supplied proof makes that passage explicit, and this child carries out part of it.
+
+1. Notation. Regard H as a finite-dimensional real inner product space, hence complete, with the norm and topology induced from ℝ^P; write ι : H → ℝ^P for the inclusion. Let π : ℝ^P → H be the orthogonal projection onto H (Mathlib: H.orthogonalProjectionOnto). π is continuous and linear, and π(h) = h for every h ∈ H (Mathlib: Submodule.orthogonalProjectionOnto_mem_subspace_eq_self). Put g := π ∘ ψ : ℝ^m → H. Since ψ(B) ⊆ H, ι(g(v)) = ψ(v) for every v ∈ B.
+
+2. Strict differentiability. Fix v ∈ B. B is open and ψ is C¹ on B, so ψ is C¹ on a neighbourhood of v and therefore strictly differentiable at v with strict derivative L := Dψ(v) (Mathlib: ContDiffOn.contDiffAt, then ContDiffAt.hasStrictFDerivAt with 1 ≠ 0). π is continuous linear, so by the chain rule g is strictly differentiable at v with strict derivative π ∘ L.
+
+3. L takes values in H. The map ι ∘ π ∘ ψ coincides with ψ on B (step 1), and B is a neighbourhood of v. By the chain rule ι ∘ π ∘ ψ is differentiable at v with derivative ι ∘ π ∘ L. Two functions that agree on a neighbourhood of v have the same derivative at v, so L = ι ∘ π ∘ L. Hence La = π(La) ∈ H for every a ∈ ℝ^m.
+
+4. π ∘ L is a linear isomorphism ℝ^m → H. If π(La) = π(Lb), then La = π(La) = π(Lb) = Lb by step 3, and a = b because L = Dψ(v) is injective (hypothesis, v ∈ B). So π ∘ L is injective. dim ℝ^m = m = dim H, so the injective linear map π ∘ L : ℝ^m → H is also surjective (rank–nullity; Mathlib: LinearMap.injective_iff_surjective_of_finrank_eq_finrank). Hence π ∘ L is a linear bijection, and, the spaces being finite-dimensional, a continuous linear equivalence E_v : ℝ^m ≃ H (Mathlib: LinearEquiv.ofBijective, then LinearEquiv.toContinuousLinearEquiv). By step 2, g has strict derivative E_v at v.
+
+5. Inverse function theorem. ℝ^m is complete and g has the invertible strict derivative E_v at v, so g maps the neighbourhood filter of v onto the neighbourhood filter of g(v) in H (Mathlib: HasStrictFDerivAt.map_nhds_eq_of_equiv). B is a neighbourhood of v, so g(B) is a neighbourhood of g(v) in H.
+
+6. g(B) is open in H. Every point of g(B) has the form g(v) with v ∈ B, and g(B) is a neighbourhood of it by step 5. Hence g(B) is an open subset of H. By the definition of the subspace topology there is an open set O ⊆ ℝ^P such that, for h ∈ H, ι(h) ∈ O if and only if h ∈ g(B) (Mathlib: isOpen_induced_iff).
+
+7. O ∩ H = ψ(B). (⊆) Let y ∈ O ∩ H. Regarded as an element of H, y lies in g(B) by step 6, so y = ι(g(v)) for some v ∈ B, and ι(g(v)) = ψ(v) by step 1. So y ∈ ψ(B). (⊇) Let y = ψ(v) with v ∈ B. Then y ∈ H by hypothesis. As an element of H, y equals g(v) by step 1, and g(v) ∈ g(B), so y ∈ O by step 6. Thus y ∈ O ∩ H.
+
+8. O is open and O ∩ H = ψ(B), which is the claim. ∎
+
+## Key steps
+
+1. g := π ∘ ψ, with π the orthogonal projection onto H, agrees with ψ on B; since ψ = ι ∘ π ∘ ψ near v, Dψ(v) takes values in H.
+2. π ∘ Dψ(v) is injective, hence, as dim ℝ^m = m = dim H, a continuous linear equivalence ℝ^m ≃ H, and g has this strict derivative at v.
+3. Inverse function theorem: g(B) is a neighbourhood of each g(v), so g(B) is open in H.
+4. The subspace topology gives an open O ⊆ ℝ^P with O ∩ H = ψ(B).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 200,457p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace)`
+- `python3 -I scans of dag.json: hypercone_plane-a1 subtree statuses; nodes with lean_name chart_tangentSpace_eq_range_fderiv | dsmc_chart_inverse_continuity | dsmc_chart_range_subset_tangentSpace | dor_lmb_ret_chart_localization | codim1_ac_sat_chart_localization; regex IsConnected|IsPreconnected|connectedComponent|IsLocallyConstant|IsOpenMap over all lean_statement fields`
+- `grep -rn 'isConnected_compl_singleton_of_one_lt_rank|isPreconnected_iff_subset_of_disjoint|is_const_of_fderiv|map_nhds_eq_of_equiv|finrank_sup_add_finrank_inf_eq|exists_mem_ne_zero_of_ne_bot|ContDiffAt.hasStrictFDerivAt|sup_orthogonal|isPreconnected_of_forall|IsPreconnected.union|Convex.isPreconnected|isOpen_induced_iff|orthogonalProjectionOnto|finrank_span_singleton|finrank_add_finrank_orthogonal' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `lean -DautoImplicit=false Avail.lean / Avail2.lean (#check of the above after import GMT.Ch07.Submission)`
+- `git show d626082a69a0:GMT/Ch07/Submission.lean and git show 7d0e7d04f4a8:GMT/Ch07/Submission.lean: byte comparison of frozen types; compile with #print axioms`
+- `grep codim1_hcp_fcp in dag.json, GMT/, simongmt Poincare/, local-references project; git for-each-ref (2645 objects) | xargs git grep -l codim1_hcp_fcp -- 'GMT/*.lean'`
+- `lean -DautoImplicit=false /tmp/fcp-split/check/{TypesAll,Assembly}.lean and /tmp/fcp-split/proofs/{IFT,Punct,Global,Local,All}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `runtime.py: _existing_lean_name_problem, _accepted_checkpoint, accepted-reuse skip in child dispatch; nodes/*/decomposition-v1.json that reuse chart_tangentSpace_eq_range_fderiv / dsmc_chart_inverse_continuity`
+- `grep -n 'B.2 Theorem|is a hyperplane|as required' book/chapter-B.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-d0551d00fd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-534d529818/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Clopen.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Connected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/PathConnected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order.lean`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt`
+- `/tmp/fcp-split/check/TypesAll.lean`
+- `/tmp/fcp-split/check/Assembly.lean`
+- `/tmp/fcp-split/proofs/All.lean`
+
+Pins match. The manifest records project b4d606db and Mathlib 25730c7c. The snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Mathlib. The snapshot has every tool the children need, inside the import closure of GMT.Ch07.Submission:
+- HasStrictFDerivAt.map_nhds_eq_of_equiv (InverseFunctionTheorem/FDeriv.lean:141) and ContDiffAt.hasStrictFDerivAt (ContDiff/RCLike.lean:62);
+- IsOpen.is_const_of_fderiv_eq_zero (MeanValue.lean:617);
+- isPreconnected_iff_subset_of_disjoint (Connected/Clopen.lean:248), isPreconnected_of_forall and IsPreconnected.union (Connected/Basic.lean:84,120), Convex.isPreconnected (Convex/PathConnected.lean:93);
+- Submodule.finrank_sup_add_finrank_inf_eq (FiniteDimensional/Lemmas.lean:53) and Submodule.sup_orthogonal_of_hasOrthogonalProjection (Projection/Submodule.lean:49);
+- orthogonalProjectionOnto (Projection/Basic.lean:120) and isOpen_induced_iff (Topology/Order.lean:412).
+The one exception is isConnected_compl_singleton_of_one_lt_rank (Normed/Module/Connected.lean:125), which is not imported (#check fails). So punctured_connected gets an elementary half-space proof.
+
+DAG. Three accepted declarations are relevant: chart_tangentSpace_eq_range_fderiv (candidate d626082a), dor_lmb_ret_chart_localization (candidate 7d0e7d04) and dsmc_chart_inverse_continuity. The first two are reused. Their frozen types are byte-identical to the declarations in their candidate commits, and both print only propext, Classical.choice, Quot.sound. The runtime accepts cross-branch reuse of accepted nodes with identical type (_existing_lean_name_problem, _accepted_checkpoint). No existing node states local planarity, punctured connectivity, or open images of immersions. The 4 new codim1_hcp_fcp_ names are unused in dag.json, GMT/, SimonGMT, the snapshot and all 2645 git refs.
+
+Lean.
+- All 6 child types elaborate after import GMT.Ch07.Submission in the contract namespace and opens (TypesAll.lean, exit 0).
+- The selected frozen type is kernel-checked from local_plane and planar_globalize (Assembly.lean). Its axioms are propext, Classical.choice, Quot.sound and those two children.
+- Trial Lean proofs of all four new children and the parent compile (All.lean). Their only non-standard axioms are the two reused accepted lemmas.
+
+Book. Simon App. B, Theorem B.2 is at chapter-B.txt:37–39. Its printed proof ends with |A|² ≡ 0 at line 282, leaving the step to a hyperplane implicit; this node supplies that step.

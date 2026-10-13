@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.local_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1",
+  "depth": 6,
+  "title": "Near each point, a flat C¹ hypercone of A₀ coincides with an m-dimensional subspace of A₀ (parent steps 1, 3, 4)",
+  "statement": "Local flatness. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P; M ⊆ ℝ^P; ν : ℝ^P → ℝ^P. Hypotheses: dim A₀ = m + 1; M ⊆ A₀; M is an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m M); tx ∈ M for every x ∈ M and t > 0; ν is differentiable at every x ∈ M; for every x ∈ M, ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for every v ∈ tangentSpace M x; and Dν(x)v = 0 (fderiv ℝ ν x v = 0) for every x ∈ M and v ∈ tangentSpace M x. Conclusion: for every x ∈ M there are a linear subspace H ⊆ A₀ with dim H = m and an open set O ⊆ ℝ^P with x ∈ O and O ∩ M = O ∩ H.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P))",
+  "lean_name": "codim1_hcp_fcp_local_plane",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.chart_localization-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.immersion_open-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.chart_localization-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-534d529818-a1",
+      "result_commit": "7d0e7d04f4a805e0dbb603168e6eb0fe26a9e491",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.immersion_open-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-fe584d297b-a1"
+}
