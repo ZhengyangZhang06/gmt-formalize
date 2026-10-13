@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (CountablyRectifiable|HasApproximateTangentSpaceAt|blowUpMap)|theorem.*unique",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|image_of_continuousOn_injOn",
+        "areaRegularSet|area_image_compl_regularSet_eq_zero|weighted_area_formula_lipschitz_injOn|def areaJacobianAt",
+        "extDeriv_pullback|extDerivWithin_pullback",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "theorem.*([Pp]ushforward|pushForward)|def.*([Pp]ushforward|pushForward)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-independent-audit-w0ylwgg4/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-independent-audit-w0ylwgg4/Assembly.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-independent-audit-w0ylwgg4/Library.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-comparison-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-comparison-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/pc-independent-audit-w0ylwgg4/Types.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Assembly.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Library.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Reuse_tangent_incl.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Reuse_gram_bounds.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Reuse_frame_det.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Reuse_comb_exists.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Reuse_comb_action.lean",
+        "/tmp/pc-independent-audit-w0ylwgg4/Reuse_density_unique.lean"
+      ],
+      "conclusion": "Verified pinned project b4d606d, mathlib 25730c7c and SimonGMT 2b36630; the frozen definitions match the workspace and all six reused candidates. The library supplies the required partition, area-formula, tangent-uniqueness and distributional-uniqueness results, but no general C¹ current push-forward. Splitting is appropriate. All 12 contracts pass lexical validation and independently elaborate as propositions in comparator scope. All names are bare identifiers; the six new names have no collision in the inspected 728-node DAG, and all six reuses have identical accepted frozen types. Dependencies, including reused prerequisites, are acyclic and do not rely on the selected parent. Fresh compilation confirms that the supplied assembly proves the exact selected parent type from the children and its two existing handoff dependencies. The assembly, six reused declarations and checked library results depend only on propext, Classical.choice and Quot.sound. Matrix constructions use Matrix.of; no prohibited pointwise IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pf_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match. Compact derivative bounds and locally integrable multiplicity justify the integral, linearity and sequential continuity. The zero-region argument establishes support containment and compactness without circular reliance."
+    },
+    {
+      "key": "pf_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact tangent-locality contract is explicitly assumed. Lemma T and the partition construction are proved inline, supplying the injective pieces rather than deferring their construction. The area formula, common image tangents, finite fibres and positive-multiplicity carrier yield every IMRep field and the required action identity, including cancellation."
+    },
+    {
+      "key": "pf_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact perturbation of the identity makes smooth pullbacks admissible in U without requiring f(K) ⊆ U. Naturality applies to the smooth approximations, and the stated domination justifies passage to the C¹ limit. The degree-zero case is covered."
+    },
+    {
+      "key": "orient_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared Gram-bound and frame dependencies prove the coefficient-norm estimate, with dependent and empty families handled. Fixing the orientation plane fixes every frame vector and gives the second conclusion. The proposition exactly matches both assertions."
+    },
+    {
+      "key": "fix_orient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Carrier concentration and the IMRep orientation field allow tangent_incl to apply almost everywhere. The assumed derivative identity then permits orient_comp(b), followed by the justified restriction to M ∩ O. No additional differentiability hypothesis is needed."
+    },
+    {
+      "key": "competitor_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared representation lemmas establish the global almost-everywhere vector-density identity. Compact domination justifies evaluation against the bounded Borel pullback. The fixed-Z and carried-X hypotheses identify S's action, and orient_comp gives the exact ENNReal supremum bound."
+    },
+    {
+      "key": "tangent_incl",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type, independently recompiled with standard axioms only. Chart flatness, null-complement transport and a positive test integral on Q give the claimed pointwise tangent inclusion. Its existing prerequisites do not depend on this parent."
+    },
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type and standard-axiom check passed. The coordinate expansion, Cauchy–Binet identity and Cauchy–Schwarz prove the bound; the determinant covector proves the calibration assertion. Degenerate dimensions are covered."
+    },
+    {
+      "key": "frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type and standard-axiom check passed. Gram–Schmidt gives the triangular coefficient determinant, Parseval gives the Gram identity, and independence and Cauchy–Schwarz prove nonvanishing and the product bound, including n = 0."
+    },
+    {
+      "key": "comb_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type and standard-axiom check passed. Borel orientation versions, signed coefficients and removal of zero multiplicity give the asserted global density identity. The supplied construction verifies integrability and tangent orientation using discharged, non-circular prerequisites."
+    },
+    {
+      "key": "comb_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type and standard-axiom check passed. Compact support and the orientation norm bound ensure integrability; evaluating and integrating the almost-everywhere vector identity proves precisely the action formula. Openness of U is unnecessary."
+    },
+    {
+      "key": "density_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted frozen type and standard-axiom check passed. The weighted vector densities are locally integrable for the restricted union measure. Equality on scalar-times-constant test forms gives vanishing vector moments, and the stated fundamental lemma yields the exact almost-everywhere conclusion."
+    }
+  ],
+  "required_changes": []
+}

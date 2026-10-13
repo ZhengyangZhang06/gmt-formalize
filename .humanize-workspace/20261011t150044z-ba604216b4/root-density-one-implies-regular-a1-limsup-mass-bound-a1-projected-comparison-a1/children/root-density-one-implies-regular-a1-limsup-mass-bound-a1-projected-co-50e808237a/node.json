@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1",
+  "depth": 4,
+  "title": "Unit orientations under linear pull-back: the Hadamard bound and the fixed-plane identity",
+  "statement": "Let P, n ∈ ℕ, Q ⊆ ℝ^P a linear subspace, ξ ∈ Λ_n(ℝ^P) (MultiVector P n) a unit orientation of Q (IsUnitOrientationOf ξ Q: ξ(α) = ±α(τ₁, …, τₙ) for all n-covectors α, for an orthonormal family τ spanning Q), and L : ℝ^P → ℝ^P a continuous linear map. Then: (a) |ξ(α∘L)| ≤ |α|_E·‖L‖ⁿ for every n-covector α, where α∘L := α.compContinuousLinearMap L, |α|_E := covectorEuclideanNorm α is the Euclidean coefficient norm (Simon 6.1.15) and ‖L‖ is the operator norm; (b) if Lv = v for every v ∈ Q, then ξ(α∘L) = ξ(α) for every n-covector α.",
+  "lean_statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α)",
+  "lean_name": "dor_lmb_pc_unitOrientation_comp",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1-a1",
+      "result_commit": "2fd8f6ff9db8d5c94835632a4abd3e7d37106715",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f-a1",
+      "result_commit": "93ec31ab686fa25a7af150db4f17b9bcc26da7df",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-50e808237a-a1"
+}

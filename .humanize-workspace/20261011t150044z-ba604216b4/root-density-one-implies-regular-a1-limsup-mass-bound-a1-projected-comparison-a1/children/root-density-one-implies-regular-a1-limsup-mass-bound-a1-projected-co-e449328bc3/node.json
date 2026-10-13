@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.pf_current-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1",
+  "depth": 4,
+  "title": "C¹ push-forward of an integer multiplicity triple carried by a compact set is a current supported in the image",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), K ⊆ U compact with Hⁿ(M ∖ K) = 0 (Hⁿ = μHE[n]), O ⊆ ℝ^P open with K ⊆ O, and f : ℝ^P → ℝ^P of class C¹ on O with f(K) ⊆ U. Then there is Q ∈ 𝒟_n(U) (GeometricCurrentOn U n) with Q(ω) = ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U), where Df(x) = fderiv ℝ f x and (α∘L)(v₁, …, vₙ) = α(Lv₁, …, Lvₙ) (α.compContinuousLinearMap L); moreover spt Q is compact and spt Q ⊆ f(K). This is f_#τ(M, θ, ξ) of Simon Ch. 6, 2.23–2.24(2).",
+  "lean_statement": "∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → ∃ Q : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) ∧ IsCompact Q.support ∧ Q.support ⊆ f '' K",
+  "lean_name": "dor_lmb_pc_pushforward_current_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-e449328bc3-a1"
+}
