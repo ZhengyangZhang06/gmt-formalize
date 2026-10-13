@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "49087b83ee12f7352e163c76609d5b2c1b36491d820a045d91014436f23b64db",
+  "git_delta": {
+    "base_commit": "d632d20af96d005f342a306f43aaa676162efdc8",
+    "candidate_commit": "1751929c6f263e153adf12491c1a853514c48fcf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrldlf_exists_filling_constant",
+    "diff_sha256": "ce45bff920763ea7ee21f05a9dbaf7834d0632213b6387ee410e32cd01cde0f3",
+    "source_sha256": "0268ff8827f5985ff71730225fb233743b00abc0530d61270ca100644fbc0318",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrldlf_exists_filling_constant",
+      "statement": "∀ (m : ℕ) (c : ℝ), 1 ≤ c → ∃ a : ℝ, 0 < a ∧ ∀ (s F M : ℝ), 0 ≤ s → 0 ≤ F → F ≤ (a * s) ^ (m + 1 + 1) → 0 ≤ M → M ≤ 2 * ((m + 1 + 1 : ℕ) : ℝ) * a * F ^ ((((m + 1 + 1 : ℕ) : ℝ) - 1) / ((m + 1 + 1 : ℕ) : ℝ)) → c * (2 * c * M) ^ ((1 : ℝ) / (m + 1)) * M ≤ F / 2 ∧ (2 * c * M) ^ ((1 : ℝ) / (m + 1)) ≤ s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
