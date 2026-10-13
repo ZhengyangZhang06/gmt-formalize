@@ -1,0 +1,26 @@
+{
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2384",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "9cc90cbe2d0473b3a43f64944a1e11804b6702b0",
+  "integrated_commit": "",
+  "proof_base_commit": "48003458fad021bfb5c2e6033b53fcc6b2f37d85",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.flat_iff_weak-a1.total_boundedness-a1",
+  "requires": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.support_null-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.density-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_cubes-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.locally_constant_im-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.density_current-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.lattice_chain-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.sub_mass-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1"
+  ]
+}
