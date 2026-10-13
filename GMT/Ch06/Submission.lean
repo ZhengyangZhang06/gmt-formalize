@@ -6,7 +6,6 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
-import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -404,7 +403,8 @@ theorem Submission.lpf_c1_local_antilipschitz :
 /-- Simon Ch. 3, proof of Lemma 1.2 (p. 70) and Remark 1.3, for one `C¹` map `G : ℝⁿ → ℝ^P`:
 countably many open sets `O k` on each of which `G` is Lipschitz and bi-Lipschitz onto its image
 cover `G(ℝⁿ)` up to an `Hⁿ`-null set.  Regular points (`DG(w)` injective) lie in some `O k`;
-the image of the critical set is `Hⁿ`-null by the area formula. -/
+the image of the critical set is `Hⁿ`-null: near a critical point, `G` composed with a linear map
+that shrinks the directions orthogonal to a kernel vector has a small Lipschitz constant. -/
 theorem Submission.slicing_im_tg_cc_contDiff_range_chart_cover : ∀ (n P : ℕ) (G : Eucl n → Eucl P), ContDiff ℝ 1 G → ∃ O : ℕ → Set (Eucl n), (∀ k, IsOpen (O k)) ∧ (∀ k, ∃ K : ℝ≥0, LipschitzOnWith K G (O k)) ∧ (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G w - G w'‖) ∧ (μHE[n] : Measure (Eucl P)) (range G \ ⋃ k, G '' O k) = 0 := by
   intro n P G hG
   -- A countable basis `𝔅` of `ℝⁿ`; enumerate `{∅} ∪ {U ∈ 𝔅 : G Lipschitz and antilipschitz on U}`.
@@ -439,14 +439,195 @@ theorem Submission.slicing_im_tg_cc_contDiff_range_chart_cover : ∀ (n P : ℕ)
         ⟨c, hc, fun z hz z' hz' => hcr z (hUs hz).1 z' (hUs hz').1⟩⟩
       obtain ⟨k, hk⟩ : U ∈ range O := hO ▸ mem_insert_of_mem _ hUg
       exact ⟨k, hk ▸ hwU⟩
-    -- The image of the critical set is `Hⁿ`-null (area formula), and it contains every
-    -- uncovered point of `G(ℝⁿ)`.
-    have hcrit := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero
-      (E := Eucl n) (F := Eucl P) G
-    rw [finrank_euclideanSpace_fin] at hcrit
+    -- The critical set `C = {w : DG(w) not injective}` has `Hⁿ`-null image, and `G(C)` contains
+    -- every uncovered point of `G(ℝⁿ)`.
+    set C : Set (Eucl n) := {x | ¬ Function.Injective (fderiv ℝ G x)}
+    have hcrit : (μHE[n] : Measure (Eucl P)) (G '' C) = 0 := by
+      have hD : ∀ x, HasFDerivAt G (fderiv ℝ G x) x :=
+        fun x => ((hG.differentiable one_ne_zero) x).hasFDerivAt
+      -- It suffices to treat the bounded pieces `s = C ∩ B_R(0)`.
+      have hR : ∀ R : ℕ, (μHE[n] : Measure (Eucl P)) (G '' (C ∩ ball 0 R)) = 0 := by
+        intro R
+        set s : Set (Eucl n) := C ∩ ball 0 R
+        have hsfin : volume s ≠ ∞ :=
+          ((measure_mono inter_subset_right).trans_lt measure_ball_lt_top).ne
+        -- Main estimate: `Hⁿ(G(s)) ≤ 2ⁿ ε |s|` for every `0 < ε ≤ 1`.
+        have hkey : ∀ ε : ℝ, 0 < ε → ε ≤ 1 →
+            (μHE[n] : Measure (Eucl P)) (G '' s) ≤ ENNReal.ofReal (2 ^ n * ε) * volume s := by
+          intro ε hε hε1
+          rcases s.eq_empty_or_nonempty with hse | hsne
+          · rw [hse, image_empty, measure_empty]
+            exact zero_le
+          -- Partition `s` into measurable pieces `s ∩ t j` on which `G` is approximated by
+          -- `A j = DG(y)`, `y ∈ s`, up to `δ = ε / (‖A j‖ + 1)ⁿ`.
+          obtain ⟨t, A, htd, htm, hst, hA, hAy⟩ :=
+            exists_partition_approximatesLinearOn_of_hasFDerivWithinAt G s (fderiv ℝ G)
+              (fun x _ => (hD x).hasFDerivWithinAt)
+              (fun B => ⟨ε / (‖B‖ + 1) ^ n, by positivity⟩)
+              (fun B => ne_of_gt
+                (NNReal.coe_pos.1 (show (0 : ℝ) < ε / (‖B‖ + 1) ^ n by positivity)))
+          have hpiece : ∀ j, (μHE[n] : Measure (Eucl P)) (G '' (s ∩ t j)) ≤
+              ENNReal.ofReal (2 ^ n * ε) * volume (s ∩ t j) := by
+            intro j
+            obtain ⟨y, hys, hyA⟩ := hAy hsne j
+            -- A unit vector `u` in the kernel of `A j = DG(y)`.
+            obtain ⟨u, hu1, hAu⟩ : ∃ u : Eucl n, ‖u‖ = 1 ∧ A j u = 0 := by
+              have hni : ¬ Function.Injective (A j) := by rw [hyA]; exact hys.1
+              obtain ⟨v, hv, hv0⟩ : ∃ v, A j v = 0 ∧ v ≠ 0 := by
+                by_contra hcon
+                refine hni ((injective_iff_map_eq_zero (A j)).2 fun v hv => ?_)
+                by_contra hv0
+                exact hcon ⟨v, hv, hv0⟩
+              refine ⟨‖v‖⁻¹ • v, ?_, by rw [map_smul, hv, smul_zero]⟩
+              rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hv0)]
+            -- `L = ‖A j‖ + 1`, `δ = ε / Lⁿ`, `a = δ / L`; `T = a • id + (1 - a) • ⟪u, ·⟫ u`
+            -- shrinks `u⊥` by the factor `a` and fixes `u`.
+            set L : ℝ := ‖A j‖ + 1
+            have hL1 : 1 ≤ L := le_add_of_nonneg_left (norm_nonneg _)
+            have hL0 : 0 < L := by linarith
+            set δ : ℝ := ε / L ^ n with hδ
+            have hδ0 : 0 < δ := by positivity
+            set a : ℝ := δ / L with ha
+            have ha0 : 0 < a := by positivity
+            have ha1 : a ≤ 1 := by
+              rw [ha, hδ, div_div, div_le_one (by positivity)]
+              exact hε1.trans (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hL1) hL1)
+            set T : Eucl n →ₗ[ℝ] Eucl n :=
+              a • LinearMap.id + (1 - a) • (innerₛₗ ℝ u).smulRight u with hT
+            have hTw : ∀ w, T w = a • w + (1 - a) • (inner ℝ u w • u) := fun w => by
+              simp only [hT, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.id_apply,
+                LinearMap.smulRight_apply, innerₛₗ_apply_apply]
+            have hAT : ∀ w, A j (T w) = a • A j w := fun w => by
+              rw [hTw, map_add, map_smul, map_smul, map_smul, hAu, smul_zero, smul_zero, add_zero]
+            have hTn : ∀ w, ‖T w‖ ≤ ‖w‖ := fun w => by
+              rw [hTw]
+              calc ‖a • w + (1 - a) • (inner ℝ u w • u)‖
+                  ≤ ‖a • w‖ + ‖(1 - a) • (inner ℝ u w • u)‖ := norm_add_le _ _
+                _ = a * ‖w‖ + (1 - a) * (|inner ℝ u w| * ‖u‖) := by
+                    rw [norm_smul, norm_smul, norm_smul, Real.norm_of_nonneg ha0.le,
+                      Real.norm_of_nonneg (sub_nonneg.2 ha1), Real.norm_eq_abs]
+                _ ≤ a * ‖w‖ + (1 - a) * ‖w‖ := by
+                    have h1a : 0 ≤ 1 - a := sub_nonneg.2 ha1
+                    have hin : |inner ℝ u w| * ‖u‖ ≤ ‖w‖ := by
+                      rw [hu1, mul_one]
+                      exact (abs_real_inner_le_norm u w).trans (by rw [hu1, one_mul])
+                    gcongr
+                _ = ‖w‖ := by ring
+            -- `det T = aⁿ / a`, computed in the standard basis (matrix determinant lemma).
+            have hdet : LinearMap.det T = a ^ n / a := by
+              set e := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis with he
+              have hM : LinearMap.toMatrix e e T = a • (1 + Matrix.replicateCol Unit
+                  (((1 - a) / a) • fun i => u i) * Matrix.replicateRow Unit (fun i => u i)) := by
+                ext i j
+                rw [LinearMap.toMatrix_apply]
+                simp [he, hT, Matrix.one_apply, Matrix.mul_apply, EuclideanSpace.inner_single_right]
+                have h' : a * ((1 - a) / a) = 1 - a := mul_div_cancel₀ _ ha0.ne'
+                split_ifs <;> linear_combination (-(u i * u j)) * h'
+              have hdot : (fun i => u i) ⬝ᵥ (fun i => u i) = 1 := by
+                have h := EuclideanSpace.norm_sq_eq u
+                rw [hu1, one_pow] at h
+                rw [h, dotProduct]
+                simp [sq]
+              rw [← LinearMap.det_toMatrix e, hM, Matrix.det_smul,
+                Matrix.det_one_add_replicateCol_mul_replicateRow, dotProduct_smul, hdot,
+                Fintype.card_fin, smul_eq_mul, mul_one]
+              field_simp
+              ring
+            have hdet0 : LinearMap.det T ≠ 0 := by rw [hdet]; positivity
+            have hTs : Function.Surjective T := ((Module.End.isUnit_iff T).1
+              ((LinearMap.isUnit_iff_isUnit_det T).2 (isUnit_iff_ne_zero.2 hdet0))).2
+            -- `G ∘ T` is `2δ`-Lipschitz on `T⁻¹(s ∩ t j)`.
+            have hLip : LipschitzOnWith (2 * δ).toNNReal (G ∘ T) (T ⁻¹' (s ∩ t j)) := by
+              refine LipschitzOnWith.of_dist_le_mul fun z hz z' hz' => ?_
+              rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (by positivity)]
+              have h1 : ‖G (T z) - G (T z') - A j (T z - T z')‖ ≤ δ * ‖T z - T z'‖ :=
+                hA j (T z) hz (T z') hz'
+              have h2 : ‖A j (T z - T z')‖ ≤ δ * ‖z - z'‖ := by
+                rw [← map_sub, hAT, norm_smul, Real.norm_of_nonneg ha0.le]
+                calc a * ‖A j (z - z')‖ ≤ a * (L * ‖z - z'‖) := by
+                      gcongr
+                      exact ((A j).le_opNorm _).trans (by gcongr; linarith)
+                  _ = δ * ‖z - z'‖ := by rw [ha]; field_simp
+              have h3 : ‖T z - T z'‖ ≤ ‖z - z'‖ := by rw [← map_sub]; exact hTn _
+              calc ‖(G ∘ T) z - (G ∘ T) z'‖
+                  = ‖(G (T z) - G (T z') - A j (T z - T z')) + A j (T z - T z')‖ := by
+                    rw [sub_add_cancel]; rfl
+                _ ≤ ‖G (T z) - G (T z') - A j (T z - T z')‖ + ‖A j (T z - T z')‖ :=
+                    norm_add_le _ _
+                _ ≤ δ * ‖z - z'‖ + δ * ‖z - z'‖ := by
+                    gcongr
+                    exact h1.trans (by gcongr)
+                _ = 2 * δ * ‖z - z'‖ := by ring
+            -- `Hⁿ(G(s ∩ t j)) ≤ (2δ)ⁿ |T⁻¹(s ∩ t j)| = (2δ)ⁿ a¹⁻ⁿ |s ∩ t j| = 2ⁿ ε L⁻¹ |s ∩ t j|`.
+            calc (μHE[n] : Measure (Eucl P)) (G '' (s ∩ t j))
+                = (μHE[n] : Measure (Eucl P)) ((G ∘ T) '' (T ⁻¹' (s ∩ t j))) := by
+                  rw [image_comp, image_preimage_eq _ hTs]
+              _ ≤ ((2 * δ).toNNReal : ℝ≥0∞) ^ n *
+                    (μHE[n] : Measure (Eucl n)) (T ⁻¹' (s ∩ t j)) :=
+                  Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+                    n hLip
+              _ = ENNReal.ofReal ((2 * δ) ^ n * (a / a ^ n)) * volume (s ∩ t j) := by
+                  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+                    Measure.addHaar_preimage_linearMap volume hdet0, hdet, inv_div,
+                    abs_of_pos (by positivity), ← mul_assoc, ENNReal.ofReal_mul (by positivity),
+                    ENNReal.ofReal_pow (by positivity)]
+                  rfl
+              _ ≤ ENNReal.ofReal (2 ^ n * ε) * volume (s ∩ t j) := by
+                  gcongr ENNReal.ofReal ?_ * _
+                  have hδa : δ = a * L := by rw [ha]; field_simp
+                  have hεδ : ε = δ * L ^ n := by rw [hδ]; field_simp
+                  have hval : (2 * δ) ^ n * (a / a ^ n) = 2 ^ n * ε / L := by
+                    rw [hεδ, hδa, mul_pow, mul_pow]
+                    field_simp
+                  rw [hval]
+                  exact div_le_self (by positivity) hL1
+          calc (μHE[n] : Measure (Eucl P)) (G '' s)
+              ≤ (μHE[n] : Measure (Eucl P)) (⋃ j, G '' (s ∩ t j)) := by
+                refine measure_mono ?_
+                rw [← image_iUnion, ← inter_iUnion]
+                exact image_mono (subset_inter subset_rfl hst)
+            _ ≤ ∑' j, (μHE[n] : Measure (Eucl P)) (G '' (s ∩ t j)) := measure_iUnion_le _
+            _ ≤ ∑' j, ENNReal.ofReal (2 ^ n * ε) * volume (s ∩ t j) :=
+                ENNReal.tsum_le_tsum hpiece
+            _ = ENNReal.ofReal (2 ^ n * ε) * ∑' j, (volume.restrict s) (t j) := by
+                rw [ENNReal.tsum_mul_left]
+                congr 1
+                refine tsum_congr fun j => ?_
+                rw [Measure.restrict_apply (htm j), inter_comm]
+            _ = ENNReal.ofReal (2 ^ n * ε) * (volume.restrict s) (⋃ j, t j) := by
+                rw [measure_iUnion htd htm]
+            _ ≤ ENNReal.ofReal (2 ^ n * ε) * volume s := by
+                gcongr _ * ?_
+                exact (measure_mono (subset_univ _)).trans_eq (Measure.restrict_apply_univ s)
+        -- Let `ε → 0`.
+        refine le_antisymm (ENNReal.le_of_forall_pos_le_add fun η hη _ => ?_) zero_le
+        rw [zero_add]
+        have hη' : (0 : ℝ) < η := NNReal.coe_pos.2 hη
+        have hV0 : 0 ≤ (volume s).toReal := ENNReal.toReal_nonneg
+        have hV1 : 0 < (volume s).toReal + 1 := by linarith
+        obtain ⟨ε, hε, hε1, hεη⟩ : ∃ ε : ℝ, 0 < ε ∧ ε ≤ 1 ∧
+            2 ^ n * ε * (volume s).toReal ≤ η := by
+          refine ⟨min 1 (η / (2 ^ n * ((volume s).toReal + 1))), lt_min one_pos (by positivity),
+            min_le_left _ _, ?_⟩
+          calc 2 ^ n * min 1 (η / (2 ^ n * ((volume s).toReal + 1))) * (volume s).toReal
+              ≤ 2 ^ n * (η / (2 ^ n * ((volume s).toReal + 1))) * ((volume s).toReal + 1) := by
+                gcongr
+                · exact min_le_right _ _
+                · linarith
+            _ = η := by field_simp
+        calc (μHE[n] : Measure (Eucl P)) (G '' s) ≤ ENNReal.ofReal (2 ^ n * ε) * volume s :=
+              hkey ε hε hε1
+          _ = ENNReal.ofReal (2 ^ n * ε * (volume s).toReal) := by
+              rw [ENNReal.ofReal_mul' hV0, ENNReal.ofReal_toReal hsfin]
+          _ ≤ ENNReal.ofReal η := ENNReal.ofReal_le_ofReal hεη
+          _ = η := ENNReal.ofReal_coe_nnreal
+      refine measure_mono_null ?_ (measure_iUnion_null hR)
+      rintro y ⟨x, hx, rfl⟩
+      obtain ⟨R, hRx⟩ := exists_nat_gt ‖x‖
+      exact mem_iUnion.2 ⟨R, x, ⟨hx, mem_ball_zero_iff.2 hRx⟩, rfl⟩
     refine measure_mono_null ?_ hcrit
     rintro y ⟨⟨w, rfl⟩, hy⟩
-    refine ⟨w, ⟨(hG.differentiable one_ne_zero) w, fun hinj => ?_⟩, rfl⟩
+    refine ⟨w, fun hinj => ?_, rfl⟩
     obtain ⟨k, hk⟩ := hreg w hinj
     exact hy (mem_iUnion.2 ⟨k, w, hk, rfl⟩)
 
