@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.subspace_eq_of_inter_ball-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1",
+  "depth": 5,
+  "title": "Two linear subspaces that agree on a ball about a common point are equal",
+  "statement": "Let P ∈ ℕ, let Q₁ and Q₂ be linear subspaces of ℝ^P, let x ∈ Q₁ and t > 0. If Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x), where B_t(x) is the open ball of radius t about x, then Q₁ = Q₂.",
+  "lean_statement": "∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂",
+  "lean_name": "idtp_tdc_csfp_subspace_eq_of_inter_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fbdab790c-a1"
+}

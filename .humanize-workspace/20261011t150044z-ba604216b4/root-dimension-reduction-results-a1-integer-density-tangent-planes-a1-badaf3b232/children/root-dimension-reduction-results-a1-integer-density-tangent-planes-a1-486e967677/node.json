@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.great_circle_local_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1",
+  "depth": 5,
+  "title": "Agreement of a closed locally planar set with a 2-plane near one unit point propagates along the whole great circle",
+  "statement": "Let P ∈ ℕ and let S ⊆ ℝ^P be a closed set such that every p ∈ S with p ≠ 0 has δ > 0 and a 2-dimensional linear subspace Q' of ℝ^P with S ∩ B_δ(p) = Q' ∩ B_δ(p). Let Q be a 2-dimensional linear subspace of ℝ^P, and suppose some x₀ ∈ Q with |x₀| = 1 and some ε₀ > 0 satisfy S ∩ B_ε₀(x₀) = Q ∩ B_ε₀(x₀). Then every x ∈ Q with |x| = 1 has some ε > 0 with S ∩ B_ε(x) = Q ∩ B_ε(x).",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)) (x₀ : Euclid P) (ε₀ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q' : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q' = 2 ∧ S ∩ ball p δ = (Q' : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q = 2 → x₀ ∈ Q → ‖x₀‖ = 1 → 0 < ε₀ → S ∩ ball x₀ ε₀ = (Q : Set (Euclid P)) ∩ ball x₀ ε₀ → ∀ x : Euclid P, x ∈ Q → ‖x‖ = 1 → ∃ ε : ℝ, 0 < ε ∧ S ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε",
+  "lean_name": "idtp_tdc_csfp_great_circle_local_plane",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.subspace_eq_of_inter_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.subspace_eq_of_inter_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-486e967677-a1"
+}
