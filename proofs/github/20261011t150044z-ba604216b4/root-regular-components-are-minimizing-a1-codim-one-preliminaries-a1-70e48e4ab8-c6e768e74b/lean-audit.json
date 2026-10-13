@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "624e2908ec35f7ac9e32e3f63f28bcab80b57b38a0700fa2e869ee2ce2bf8ddf",
+  "git_delta": {
+    "base_commit": "d4e65d96a958c4e7872be8d4524098e159447b45",
+    "candidate_commit": "5c541009d5267a439b7d0ac0e1004c2cc141aae9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_zdr_setIntegral_eq_indicator",
+    "diff_sha256": "7c864240c1b42f946438c062ff2f285cfff4d6d18aa2b57313e9990d25e45d32",
+    "source_sha256": "80d3797fc1ff2b5cf2f413b2798e565b7598a9b32b5b5d105f7a9b562e8b43ab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_zdr_setIntegral_eq_indicator",
+      "statement": "∀ (P : ℕ) (C K : Set (Euclid P)) (x : Euclid P) (F : Euclid P → ℝ), MeasurableSet K → (∀ z, z ∉ K → F z = 0) → C ∩ K ⊆ {x} → ∫ z in C, F z ∂μHE[0] = C.indicator F x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
