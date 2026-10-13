@@ -843,6 +843,76 @@ theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
     linarith [h1]
   exact ge_of_tendsto hnorm hev
 
+/-- Coefficient field on a chart piece (Simon Ch. 6, proof of 4.5(2)): if `Φ` is `C¹`, Lipschitz
+and `κ`-antilipschitz on the open `Ω`, `A ⊆ Φ(Ω)` is `Hⁿ`-null-measurable and `Y` is
+`Hⁿ ⌞ A`-integrable with `Y(x) ∈ range DΦ(w)` for all `w ∈ Ω ∩ Φ⁻¹(x)`, `Hⁿ`-a.e. `x ∈ A`, then
+`c := 1_D Λ(DΦ)(JΦ · Y ∘ Φ)` (`D = Ω ∩ Φ⁻¹(A)`, `Λ` the continuous left inverse) vanishes off
+`D`, is `Lⁿ`-integrable (`|c| ≤ κ⁻¹ JΦ |Y ∘ Φ|`) and `DΦ(w) c(w) = JΦ(w) Y(Φ w)` for `Lⁿ`-a.e.
+`w ∈ D`. -/
+theorem Submission.slicing_im_ll_twl_coefficient_field : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (Y : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → IntegrableOn Y A (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → Y x ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap) → ∃ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) ∧ (∀ w, w ∉ Ω ∩ Φ ⁻¹' A → c w = 0) ∧ ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), fderiv ℝ Φ w (c w) = Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det • Y (Φ w) := by
+  intro P n Φ Ω A Y hΩ hΦ hlip hanti hAΩ hA hY htan
+  obtain ⟨κ, hκ, hκanti⟩ := hanti
+  -- `Λ(B) B = id` and `‖B Λ(B) v‖ ≤ ‖v‖` for injective `B`, and `Λ` is continuous there.
+  obtain ⟨Λ, hΛcont, hΛ⟩ := Submission.lpf_tde_continuous_left_inverse n P
+  -- On `Ω`, `κ ‖s‖ ≤ ‖DΦ(w) s‖`: `DΦ(w)` is injective and `‖Λ(DΦ(w)) v‖ ≤ κ⁻¹ ‖v‖`.
+  have hlow : ∀ w ∈ Ω, ∀ s, κ * ‖s‖ ≤ ‖fderiv ℝ Φ w s‖ := fun w hw =>
+    Submission.lpf_wtc_cat_fderiv_lower_bound P n Φ Ω κ w hΩ hw
+      (hΦ.differentiable one_ne_zero w) hκanti
+  have hinj : ∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w) := by
+    intro w hw s s' h
+    have h1 := hlow w hw (s - s')
+    rw [map_sub, h, sub_self, norm_zero] at h1
+    have h2 : ‖s - s'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hκ (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  have hΛle : ∀ w ∈ Ω, ∀ v, ‖Λ (fderiv ℝ Φ w) v‖ ≤ κ⁻¹ * ‖v‖ := fun w hw v =>
+    (le_inv_mul_iff₀ hκ).2
+      ((hlow w hw (Λ (fderiv ℝ Φ w) v)).trans ((hΛ _ (hinj w hw)).2 v))
+  -- `w ↦ Λ(DΦ(w))` is continuous on `Ω`, hence a.e. strongly measurable on `D = Ω ∩ Φ⁻¹(A)`.
+  have hΛm : AEStronglyMeasurable (fun w => Λ (fderiv ℝ Φ w))
+      ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) :=
+    ((hΛcont.comp (hΦ.continuous_fderiv one_ne_zero).continuousOn fun w hw =>
+      hinj w hw).aestronglyMeasurable hΩ.measurableSet).mono_set inter_subset_left
+  -- The tangency of `Y` holds at `Φ w` for `Lⁿ`-a.e. `w ∈ D`, and `D` is null-measurable.
+  obtain ⟨hDm, hpull⟩ := Submission.lpf_ccr_ae_pullback P n A Φ Ω
+    (fun x => ∀ w ∈ Ω, Φ w = x → Y x ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap)
+    hΩ.measurableSet hΦ.continuous.measurable ⟨κ, hκ, hκanti⟩ hA
+    (ae_restrict_of_ae_restrict_of_subset inter_subset_left htan)
+  -- An integrable `Z` on `D` with `Z(w) ∈ range DΦ(w)` a.e. lifts to `c := 1_D Λ(DΦ) Z`.
+  have key : ∀ Z : Eucl n → Eucl P, IntegrableOn Z (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) →
+      (∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)),
+        Z w ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap) →
+      ∃ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) ∧
+        (∀ w, w ∉ Ω ∩ Φ ⁻¹' A → c w = 0) ∧
+        ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)),
+          fderiv ℝ Φ w (c w) = Z w := by
+    intro Z hZ hZr
+    -- `‖Λ(DΦ(w)) Z(w)‖ ≤ κ⁻¹ ‖Z(w)‖` on `D`.
+    have hf : IntegrableOn (fun w => Λ (fderiv ℝ Φ w) (Z w)) (Ω ∩ Φ ⁻¹' A)
+        (volume : Measure (Eucl n)) := by
+      refine Integrable.mono' ((Integrable.norm hZ).const_mul κ⁻¹)
+        ((ContinuousLinearMap.id ℝ (Eucl P →L[ℝ] Eucl n)).aestronglyMeasurable_comp₂ hΛm
+          hZ.aestronglyMeasurable) ?_
+      filter_upwards [ae_restrict_mem₀ hDm] with w hw
+      exact hΛle w hw.1 (Z w)
+    refine ⟨(Ω ∩ Φ ⁻¹' A).indicator fun w => Λ (fderiv ℝ Φ w) (Z w),
+      (hf.integrable_indicator₀ hDm).integrableOn, fun w hw => indicator_of_notMem hw _, ?_⟩
+    -- `Z(w) = DΦ(w) t` and `Λ(DΦ(w)) DΦ(w) = id` give `DΦ(w) c(w) = Z(w)`.
+    filter_upwards [hZr, ae_restrict_mem₀ hDm] with w hw hwD
+    obtain ⟨t, ht⟩ := LinearMap.mem_range.1 hw
+    have ht' : fderiv ℝ Φ w t = Z w := ht
+    rw [indicator_of_mem hwD]
+    show fderiv ℝ Φ w (Λ (fderiv ℝ Φ w) (Z w)) = Z w
+    rw [← ht', ← ContinuousLinearMap.comp_apply (Λ (fderiv ℝ Φ w)) (fderiv ℝ Φ w),
+      (hΛ _ (hinj w hwD.1)).1, ContinuousLinearMap.id_apply]
+  -- By the area formula on the chart, `JΦ · Y ∘ Φ` is integrable on `D`; it is tangent like `Y`.
+  obtain ⟨-, hZ, -⟩ := Submission.slicing_im_ll_twl_chart_integral_eq (Eucl P) P n Φ Ω A Y hΩ
+    hlip ⟨κ, hκ, hκanti⟩ hAΩ hA hY
+  refine key _ hZ ?_
+  filter_upwards [hpull, ae_restrict_mem₀ hDm] with w hw hwD
+  exact Submodule.smul_mem _ _ (hw w hwD.1 rfl)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
