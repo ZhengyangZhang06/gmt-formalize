@@ -359,6 +359,39 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, §5, proof of 5.1 (p. 164), the inclusion `⊆` of the identity printed after (5):
+the `σ`-neighbourhood of `L(a)` lies in the union of the periodic coordinate cylinders
+`p_J⁻¹(B_σ(p_J(a) + z))`, `|J| = k`, `z ∈ ℤ^J`.  `L(a)` contains `a` (as `k ≤ d`), so
+`dist(x, L(a)) < σ` gives `y ∈ L(a)` with `|x − y| < σ`; for the `J` and the integers
+`z_i = y_i − a_i` (`i ∈ J`) witnessing `y ∈ L(a)`,
+`∑_{i∈J} (x_i − a_i − z_i)² = ∑_{i∈J} (x_i − y_i)² ≤ |x − y|² < σ²`. -/
+theorem Submission.dgc_tube_cover :
+    ∀ (d k : ℕ), k ≤ d → ∀ (a : Eucl d) (La : Set (Eucl d)), La = {y | ∃ J : Finset (Fin d), J.card = k ∧ ∀ i ∈ J, ∃ n : ℤ, y i - a i = n} → ∀ (σ : ℝ) (x : Eucl d), infDist x La < σ → ∃ J : Finset (Fin d), J.card = k ∧ ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2 := by
+  classical
+  intro d k hkd a La hLa σ x hx
+  subst hLa
+  -- `L(a)` is nonempty: `a ∈ L(a)` for any `k` of the `d` coordinates.
+  have hne : {y : Eucl d | ∃ J : Finset (Fin d), J.card = k ∧
+      ∀ i ∈ J, ∃ n : ℤ, y i - a i = n}.Nonempty := by
+    obtain ⟨J₀, -, hJ₀⟩ :=
+      Finset.exists_subset_card_eq (s := (Finset.univ : Finset (Fin d))) (by simpa using hkd)
+    exact ⟨a, J₀, hJ₀, fun i _ => ⟨0, by simp⟩⟩
+  -- A point `y ∈ L(a)` with `|x − y| < σ`, and its lattice coordinates `z_i = y_i − a_i`.
+  obtain ⟨y, ⟨J, hJ, hy⟩, hxy⟩ := (infDist_lt_iff hne).1 hx
+  choose n hn using hy
+  refine ⟨J, hJ, fun i => n i.1 i.2, ?_⟩
+  calc ∑ i : J, (x i - a i - (n i.1 i.2 : ℝ)) ^ 2 = ∑ i ∈ J, (x i - y i) ^ 2 := by
+        rw [← Finset.sum_coe_sort J]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [← hn i.1 i.2]
+        ring
+    _ ≤ ∑ i, (x i - y i) ^ 2 :=
+        Finset.sum_le_univ_sum_of_nonneg fun i => sq_nonneg _
+    _ = dist x y ^ 2 := by
+        rw [EuclideanSpace.dist_sq_eq]
+        simp [Real.dist_eq, sq_abs]
+    _ < σ ^ 2 := by gcongr
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
