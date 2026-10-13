@@ -545,6 +545,55 @@ theorem Submission.cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel : ∀ (P : 
   · filter_upwards [hae, ae_restrict_mem measurableSet_Ioi] with t ht htpos
     exact (ENNReal.tendsto_toReal ((measure_mono (hsub t htpos)).trans_lt hμ).ne).comp ht
 
+/-- **Simon 7.2.4** (proof, last sentence: from (13) and (14) "it now easily follows (by a
+standard approximation argument) that `∫ f dμ_{Tⱼ} → ∫ f dμ_T`"): if `μ(K) < ∞` and
+`limsup_j μ_j(K) ≤ μ(K)` for compact `K ⊆ U`, and `μ(G) ≤ liminf_j μ_j(G)` for open `G ⊆ U`, then
+`∫ f dμ_j → ∫ f dμ` for every continuous `f` with compact support in `U`.  Split `f = f⁺ − f⁻`;
+for each part the superlevel-set measures converge at a.e. level
+(`cmc_rcc_ae_tendsto_measure_superlevel`), hence so do the integrals (layer cake and dominated
+convergence, `cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel`). -/
+theorem Submission.cmc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P U μs μ hfin hsup hinf f hf hfc hfU
+  -- Step 1: `C = spt f` is compact and `C ⊆ U`, so `μ(C) < ∞` and `limsup_j μ_j(C) < ∞`;
+  -- hence `μ_j(C) < ∞` for all large `j`
+  have hμC : μ (tsupport f) < ∞ := hfin _ hfc hfU
+  have hlimC : limsup (fun j => μs j (tsupport f)) atTop < ∞ := (hsup _ hfc hfU).trans_lt hμC
+  have hμsC : ∀ᶠ j in atTop, μs j (tsupport f) < ∞ := eventually_lt_of_limsup_lt hlimC
+  -- a continuous function vanishing outside `C` is `ν`-integrable whenever `ν(C) < ∞`
+  have hint : ∀ (ν : Measure (Euclid P)) (g : Euclid P → ℝ), ν (tsupport f) < ∞ → Continuous g →
+      support g ⊆ support f → Integrable g ν := by
+    intro ν g hν hg hgf
+    have : IsFiniteMeasure (ν.restrict (tsupport f)) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+    exact (integrableOn_iff_integrable_of_support_subset (hgf.trans (subset_tsupport f))).1
+      (hg.integrable_of_hasCompactSupport (hfc.mono hgf))
+  -- Steps 3–5: for continuous `g ≥ 0` vanishing outside `C`, `∫ g dμ_j → ∫ g dμ`
+  have hpos : ∀ g : Euclid P → ℝ, Continuous g → (∀ x, 0 ≤ g x) → support g ⊆ support f →
+      Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ)) := by
+    intro g hg hg0 hgf
+    have hgC : tsupport g ⊆ tsupport f := closure_mono hgf
+    have hgc : HasCompactSupport g := hfc.mono hgf
+    exact Submission.cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel P μs μ g hg hgc hg0
+      ((measure_mono hgC).trans_lt hμC)
+      ((limsup_le_limsup (Eventually.of_forall fun j => measure_mono hgC)).trans_lt hlimC)
+      (Submission.cmc_rcc_ae_tendsto_measure_superlevel P U μs μ hfin hsup hinf g hg hgc
+        (hgC.trans hfU))
+  -- Steps 2 and 6: `f = f⁺ − f⁻`, with `∫ f dν = ∫ f⁺ dν − ∫ f⁻ dν` whenever `ν(C) < ∞`
+  have hfp : Continuous fun x => max (f x) 0 := hf.max continuous_const
+  have hfm : Continuous fun x => max (-f x) 0 := hf.neg.max continuous_const
+  have hsupp_pos : support (fun x => max (f x) 0) ⊆ support f :=
+    support_comp_subset (g := fun y : ℝ => max y 0) (max_self 0) f
+  have hsupp_neg : support (fun x => max (-f x) 0) ⊆ support f :=
+    support_comp_subset (g := fun y : ℝ => max (-y) 0) (by simp) f
+  have hsplit : ∀ ν : Measure (Euclid P), ν (tsupport f) < ∞ →
+      ∫ x, max (f x) 0 ∂ν - ∫ x, max (-f x) 0 ∂ν = ∫ x, f x ∂ν := by
+    intro ν hν
+    rw [← integral_sub (hint ν _ hν hfp hsupp_pos) (hint ν _ hν hfm hsupp_neg)]
+    simp only [max_zero_sub_max_neg_zero_eq_self]
+  have hlim := (hpos _ hfp (fun x => le_max_right _ _) hsupp_pos).sub
+    (hpos _ hfm (fun x => le_max_right _ _) hsupp_neg)
+  rw [hsplit μ hμC] at hlim
+  exact hlim.congr' (hμsC.mono fun j hj => hsplit (μs j) hj)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
