@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Explicit constants for the standing density bounds** (Simon Ch. 5, 2.3–2.4,
+chapter-05.txt lines 266–288, where `δ ≤ δ₀(n)` gives `1 + Cδ ≤ 2`).  Take `δ₁ = 1/(24(n + 1))`
+and `C₁ = 4 + 12n`, so `0 < δ₁ ≤ 1/8` and `C₁δ₁ ≤ 1/2`.  For `0 ≤ δ ≤ δ₁`: `e^δ ≤ 1 + 2δ` (from
+`1 − δ ≤ e^{−δ}`), and Bernoulli `(1 − 4δ)ⁿ ≥ 1 − 4nδ` with `8nδ ≤ 1/3` gives
+`(1 − 4δ)^{−n} ≤ 1 + 8nδ`; hence
+`e^δ(1 + δ)/(1 − 4δ)ⁿ ≤ (1 + 2δ)(1 + δ)(1 + 8nδ) ≤ (1 + 4δ)(1 + 8nδ) ≤ 1 + C₁δ`. -/
+theorem Submission.dorag_dbs_density_constants : ∀ n : ℕ, ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ δ₁ ≤ 1 / 8 ∧ 0 < C₁ ∧ C₁ * δ₁ ≤ 1 / 2 ∧ ∀ δ : ℝ, 0 ≤ δ → δ ≤ δ₁ → Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n ≤ 1 + C₁ * δ := by
+  intro n
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  -- Steps 1–2: `δ₁ = 1/(24(n + 1))` and `C₁ = 4 + 12n`.
+  refine ⟨1 / (24 * (n + 1)), 4 + 12 * n, by positivity, ?_, by positivity, ?_, ?_⟩
+  · rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  · rw [mul_one_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  · -- Step 3: `δ ≤ 1/24` and `nδ ≤ 1/24`.
+    intro δ hδ0 hδ1
+    have hpos : (0 : ℝ) < 24 * (n + 1) := by positivity
+    have hδ' : δ * (24 * (n + 1)) ≤ 1 := (le_div_iff₀ hpos).mp hδ1
+    have hδ24 : δ ≤ 1 / 24 := by nlinarith
+    have hnδ : n * δ ≤ 1 / 24 := by nlinarith
+    have hnδ0 : 0 ≤ (n : ℝ) * δ := mul_nonneg hn0 hδ0
+    -- Step 4: `e^δ ≤ 1 + 2δ`, from `1 − δ ≤ e^{−δ}` and `e^δ e^{−δ} = 1`.
+    have hexp : Real.exp δ ≤ 1 + 2 * δ := by
+      have hlow := Real.add_one_le_exp (-δ)
+      have hprod : Real.exp δ * Real.exp (-δ) = 1 := by rw [← Real.exp_add]; simp
+      have hepos := Real.exp_pos δ
+      nlinarith
+    -- Step 5: Bernoulli `(1 − 4δ)ⁿ ≥ 1 − 4nδ`, hence `1/(1 − 4δ)ⁿ ≤ 1 + 8nδ`.
+    have hbern : 1 + (n : ℝ) * (-4 * δ) ≤ (1 + (-4 * δ)) ^ n :=
+      one_add_mul_le_pow (by linarith) n
+    have hA : 1 + (n : ℝ) * (-4 * δ) = 1 - 4 * n * δ := by ring
+    have hB : (1 + (-4 * δ)) = 1 - 4 * δ := by ring
+    rw [hA, hB] at hbern
+    have hden_pos : 0 < (1 - 4 * δ) ^ n := pow_pos (by linarith) n
+    have h8 : 0 ≤ 1 + 8 * n * δ := by positivity
+    have hden : 1 ≤ (1 + 8 * n * δ) * (1 - 4 * δ) ^ n := by
+      have h1 : (1 + 8 * n * δ) * (1 - 4 * n * δ) ≤ (1 + 8 * n * δ) * (1 - 4 * δ) ^ n :=
+        mul_le_mul_of_nonneg_left hbern h8
+      have h2 : 1 ≤ (1 + 8 * n * δ) * (1 - 4 * n * δ) := by
+        nlinarith [mul_nonneg hnδ0 (by linarith : (0 : ℝ) ≤ 1 - 8 * n * δ)]
+      linarith
+    have hinv : 1 / (1 - 4 * δ) ^ n ≤ 1 + 8 * n * δ := by
+      rw [div_le_iff₀ hden_pos]; linarith
+    -- Step 6: multiply the three factor bounds.
+    have hq1 : (1 + 2 * δ) * (1 + δ) ≤ 1 + 4 * δ := by nlinarith
+    have hq2 : (1 + 4 * δ) * (1 + 8 * n * δ) ≤ 1 + (4 + 12 * n) * δ := by
+      nlinarith [mul_nonneg hnδ0 (by linarith : (0 : ℝ) ≤ 1 - 8 * δ)]
+    calc Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n
+        = Real.exp δ * (1 + δ) * (1 / (1 - 4 * δ) ^ n) := by ring
+      _ ≤ (1 + 2 * δ) * (1 + δ) * (1 + 8 * n * δ) := by
+          apply mul_le_mul _ hinv (by positivity) (by positivity)
+          exact mul_le_mul_of_nonneg_right hexp (by linarith)
+      _ ≤ (1 + 4 * δ) * (1 + 8 * n * δ) := mul_le_mul_of_nonneg_right hq1 h8
+      _ ≤ 1 + (4 + 12 * n) * δ := hq2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
