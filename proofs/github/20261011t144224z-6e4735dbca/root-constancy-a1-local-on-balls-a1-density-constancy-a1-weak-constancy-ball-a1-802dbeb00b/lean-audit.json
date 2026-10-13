@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7240bea21efc1ad6b30c13651a4f8f771275e6f990b1c65e7f58a86dabf14c90",
+  "git_delta": {
+    "base_commit": "14169c8c966fa7613d2e8244a21ecd8487c060ae",
+    "candidate_commit": "8b7f3a46c9150cba9b23f55e3c265bc45b197d4b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_mdc_ae_const_of_weak_partials_vanish",
+    "diff_sha256": "f944d6ce697cc56bd6762b784c469bdda4906b9f0583faa3898682af42f631f9",
+    "source_sha256": "307f188e3f8ae16e33d77bb239ee0547c9da6621418802853c20ea120e3248ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_mdc_ae_const_of_weak_partials_vanish",
+      "statement": "∀ (n : ℕ) (θ : Eucl n → ℝ), LocallyIntegrable θ volume → ∀ (x₀ : Eucl n) (ρ : ℝ), 0 < ρ → (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ ball x₀ ρ → ∀ j : Fin n, ∫ x, θ x * fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) ∂volume = 0) → ∃ c : ℝ, ∀ᵐ x ∂volume.restrict (ball x₀ ρ), θ x = c",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
