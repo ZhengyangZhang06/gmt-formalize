@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "319397f0ffb8af3c62e1550174f1c02e0e8f08a5bb1c375f10d1f7f7df2ec73d",
+  "git_delta": {
+    "base_commit": "ba71f72e01c4ba6f08ece6075135fdafa564fe58",
+    "candidate_commit": "eacd062be19fe131584f9bd37a7639950e5e44d2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_dolr_rep_support_inter",
+    "diff_sha256": "0723ec72d3dcb6dc4e59474194d5d78a474354d893de413278b119755ef1a04e",
+    "source_sha256": "a04c2ebfced45f2938616d8b774c0caaa656d57593b27c4d5ac91acf7ee5f985",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_dolr_rep_support_inter",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (W M : Set (Euclid P)) (k : ℤ) (ξ : Euclid P → MultiVector P m), IsOpen W → W ⊆ U → k ≠ 0 → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → closure M ∩ W ⊆ M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ W → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → T.support ∩ W = M ∩ W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
