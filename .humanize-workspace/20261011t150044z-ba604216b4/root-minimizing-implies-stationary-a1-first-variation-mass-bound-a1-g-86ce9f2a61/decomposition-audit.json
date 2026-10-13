@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "fvmb_perturbed_frame_sum_norm_sq_sub_le|fvmb_sqrt_le_first_order_of_le_exp|sum_norm_sq_sub_le|sqrt_le_first_order_of_le_exp",
+        "abs_exp_sub_one_sub_id_le|sqrt_le_sqrt|sqrt_mul_self|norm_add_sq_real|abs_real_inner_le_norm|theorem le_opNorm",
+        "namespace Real|theorem exp_add|theorem exp_pos|theorem exp_le_exp",
+        "pow_le_pow_left₀|abs_sum_le_sum_abs",
+        "git log --all --format='%h %s' -G 'fvmb_perturbed_frame_sum_norm_sq_sub_le|fvmb_sqrt_le_first_order_of_le_exp' -- GMT/Ch07/Submission.lean",
+        "sed -n '520,665p' ../../verifier/gmt-compare.py",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gjfo_independent_audit_m6huq33a/Types.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gjfo_independent_audit_m6huq33a/Assembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gjfo_independent_audit_m6huq33a/WitnessReplay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/gjfo/Full.lean",
+        "/tmp/gjfo_independent_audit_m6huq33a/Types.lean",
+        "/tmp/gjfo_independent_audit_m6huq33a/Assembly.lean",
+        "/tmp/gjfo_independent_audit_m6huq33a/WitnessReplay.lean"
+      ],
+      "conclusion": "The pinned project and relevant Mathlib sources match the installed compiler context. The cited operator-norm, inner-product, square-root and exponential estimates have the required hypotheses. Searches found no existing child declarations; DAG, other-proposal and declaration-history checks found no name collisions. Both names are valid bare identifiers. Independent Lean checks passed: the frozen propositions elaborate before either child is implemented; definitional-equality checks confirm sum parsing and ordinary matrix multiplication for Matrix.of. Recompiled child witnesses use only propext, Classical.choice and Quot.sound. An independently written assembly proves the exact selected parent from the two child contracts and the exact frozen GE contract, supplied as hypotheses. The split appropriately separates frame estimates from scalar analysis. Both children are independent, and the selected parent's existing GE dependency introduces no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "perturbed_frame_trace_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches both prose conclusions and all hypotheses. Steps 1–7 correctly derive the residual decomposition, unit-vector bounds, Cauchy–Schwarz estimates, squared perturbation bound and finite-sum inequality. Squaring is justified by the derived nonnegative norm bound; no additional sign assumption on η or t is needed. The empty-frame case is valid. The proof is complete, independent of the parent theorem and scalar child, and directly supplies the parent's trace and D bounds."
+    },
+    {
+      "key": "scalar_sqrt_exp_first_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including uniform positive constants, η ≤ 1 and unrestricted real g. Steps 1–9 establish positivity of every denominator, nη ≤ ε/2, the square-root exponential bound, both σ estimates, the applicable exponential remainder estimate and both error bounds. Global monotonicity of Real.sqrt handles negative g without an omitted hypothesis. The argument includes n = 0 and both signs of t. It is complete and non-circular; combined with the frame child and declared GE dependency, it proves precisely the selected parent."
+    }
+  ],
+  "required_changes": []
+}

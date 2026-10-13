@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.trace_projection_frame-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1",
+  "depth": 3,
+  "title": "Tangential divergence in an orthonormal frame: trace(p_Q ∘ B) = Σ τ_a·Bτ_a (Simon Ch. 2, 4.20)",
+  "statement": "Let P, n ∈ ℕ and let τ_1, …, τ_n be an orthonormal family in ℝ^P whose span is the subspace Q ⊆ ℝ^P. Let p_Q : ℝ^P → ℝ^P be the orthogonal projection onto Q, and let B : ℝ^P → ℝ^P be a continuous linear map. Then trace(p_Q ∘ B) = Σ_{a=1}^n τ_a·Bτ_a.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a))",
+  "lean_name": "fvmb_trace_starProjection_comp_eq_sum_inner",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c-a1"
+}
