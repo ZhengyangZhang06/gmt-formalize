@@ -1176,6 +1176,32 @@ theorem Submission.slicing_mb_wn_sq_sum_eq_factorial_mul :
       simp only [Finset.mem_filter, Finset.mem_univ, true_and]
       exact hp.injective.comp σ.injective
     · intro I _
+      funext i
+      simp
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      -- sorting `β ∘ σ` recovers the strictly increasing `β`
+      have hsorted : (β ∘ σ) ∘ Tuple.sort (β ∘ σ) = β := by
+        rw [Tuple.comp_perm_comp_sort_eq_comp_sort,
+          (Tuple.sort_eq_refl_iff_monotone).2 hp.monotone]
+        rfl
+      have hσ : σ * Tuple.sort (β ∘ σ) = 1 := by
+        ext i
+        have := congrFun hsorted i
+        simp only [Function.comp_apply] at this
+        simpa using congrArg Fin.val (hp.injective this)
+      have hinv : (Tuple.sort (β ∘ σ))⁻¹ = σ := by
+        rw [inv_eq_iff_eq_inv]
+        exact eq_inv_of_mul_eq_one_right hσ
+      simp only [hinv, hsorted]
+    · intro I _
+      congr 1
+      funext i
+      simp
+  -- Each permutation contributes `∑_β g β`, and there are `k!` permutations.
+  rw [hL, hbij, hR, Finset.sum_product]
+  simp_rw [hperm]
+  rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
 /-- Slices of a test form `η` on `ℝ^{P+1} = ℝ × ℝ^P` across the first coordinate: with
 `e₀ = (1, 0)` and `ι w = (0, w)`, the form `φ s x = η(s, x)(e₀, ι ·)` is the continuous linear
 contraction `α ↦ α(e₀, ι ·)` applied to `η` along the affine map `x ↦ (s, x) = s • e₀ + ι x`, hence
@@ -1432,31 +1458,79 @@ theorem Submission.dph_iprod_slice_covector_norm_le :
       (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)))
     · intro I I' h
       funext i
-      simp
-    · rintro ⟨σ, β⟩ hp
-      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
-      -- sorting `β ∘ σ` recovers the strictly increasing `β`
-      have hsorted : (β ∘ σ) ∘ Tuple.sort (β ∘ σ) = β := by
-        rw [Tuple.comp_perm_comp_sort_eq_comp_sort,
-          (Tuple.sort_eq_refl_iff_monotone).2 hp.monotone]
-        rfl
-      have hσ : σ * Tuple.sort (β ∘ σ) = 1 := by
-        ext i
-        have := congrFun hsorted i
-        simp only [Function.comp_apply] at this
-        simpa using congrArg Fin.val (hp.injective this)
-      have hinv : (Tuple.sort (β ∘ σ))⁻¹ = σ := by
-        rw [inv_eq_iff_eq_inv]
-        exact eq_inv_of_mul_eq_one_right hσ
-      simp only [hinv, hsorted]
-    · intro I _
-      congr 1
+      have := congrFun h i.succ
+      simpa using this
+    · intro J; split_ifs <;> positivity
+    · intro I
+      by_cases h1 : StrictMono I
+      · have h2 : StrictMono (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)) := by
+          intro a b hab
+          induction a using Fin.cases with
+          | zero =>
+            induction b using Fin.cases with
+            | zero => exact absurd hab (lt_irrefl _)
+            | succ j => simp [Fin.succ_pos]
+          | succ i =>
+            induction b using Fin.cases with
+            | zero => exact absurd hab (Fin.not_lt_zero _)
+            | succ j =>
+              simp only [Fin.cons_succ, Fin.succ_lt_succ_iff] at hab ⊢
+              exact h1 hab
+        rw [ite_eq_left h1, ite_eq_left h2, hγ']
+        apply le_of_eq
+        congr 2
+        funext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp only [Fin.cons_zero]
+          exact hb0 m
+        · simp only [Fin.cons_succ]
+          exact hbι m (I i)
+      · rw [ite_eq_right h1]
+        split_ifs <;> positivity
+  · -- (C2): compare along `I ↦ I + 1`.
+    intro m q γ γ' hγ'
+    unfold covectorEuclideanNorm
+    apply Real.sqrt_le_sqrt
+    apply key (fun I : Fin q → Fin m => (fun i => (I i).succ : Fin q → Fin (m + 1)))
+    · intro I I' h
       funext i
-      simp
-  -- Each permutation contributes `∑_β g β`, and there are `k!` permutations.
-  rw [hL, hbij, hR, Finset.sum_product]
-  simp_rw [hperm]
-  rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+      have := congrFun h i
+      simpa using this
+    · intro J; split_ifs <;> positivity
+    · intro I
+      by_cases h1 : StrictMono I
+      · have h2 : StrictMono (fun i => (I i).succ : Fin q → Fin (m + 1)) :=
+          fun a b hab => Fin.succ_lt_succ_iff.mpr (h1 hab)
+        rw [ite_eq_left h1, ite_eq_left h2, hγ']
+        apply le_of_eq
+        congr 2
+        funext i
+        exact hbι m (I i)
+      · rw [ite_eq_right h1]
+        split_ifs <;> positivity
+  · -- (C3): every coefficient is at most `‖α‖`, and there are `P ^ n` of them.
+    intro P n α
+    have hcoef : ∀ I : Fin n → Fin P,
+        |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
+      intro I
+      have h := ContinuousAlternatingMap.le_opNorm α
+        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+      simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+        Real.norm_eq_abs] at h
+      exact h
+    rw [covectorEuclideanNorm]
+    calc Real.sqrt _ ≤ Real.sqrt ((P : ℝ) ^ n * ‖α‖ ^ 2) := by
+          apply Real.sqrt_le_sqrt
+          calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+                apply Finset.sum_le_sum
+                intro I _
+                split_ifs
+                · rw [← sq_abs]
+                  exact pow_le_pow_left₀ (abs_nonneg _) (hcoef I) 2
+                · positivity
+            _ = (P : ℝ) ^ n * ‖α‖ ^ 2 := by simp [Finset.card_univ]
+      _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
 /-- Basis independence of the full coefficient sum (Parseval's identity, one slot at a time): for
 orthonormal bases `u`, `v` of `ℝ^P` and a `k`-covector `φ`,
 `∑_I φ(u_{I 0}, …, u_{I (k-1)})² = ∑_I φ(v_{I 0}, …, v_{I (k-1)})²`, both sums over all index maps
@@ -2448,66 +2522,6 @@ theorem Submission.dph_lipschitz_smooth_approx :
     rw [image_eq_zero_of_notMem_tsupport hsupp]
     ext v
     simp
-/-- Euclidean coefficient norms `|γ| = covectorEuclideanNorm γ` of slices of covectors, with
-`ι(v) = (0, v) ∈ ℝ^{m+1}` and `e₀ = EuclideanSpace.single 0 1`: (C1) if `γ'(v) = γ(e₀, ι ∘ v)`
-then `|γ'| ≤ |γ|`; (C2) if `γ'(v) = γ(ι ∘ v)` then `|γ'| ≤ |γ|`; (C3) `|α| ≤ √(P^n) · ‖α‖`.
-For (C1) and (C2), `e₀ = b_0` and `ι(b_j) = b_{j+1}` for the standard bases `b`, so the
-coefficients of `γ'` are coefficients of `γ` on distinct strictly increasing multi-indices; for
-(C3), each of the `P^n` coefficients `α(b_{I(0)}, …, b_{I(n-1)})` is at most
-`‖α‖ · ∏ ‖b_{I(i)}‖ = ‖α‖`. -/
-theorem Submission.dph_iprod_slice_covector_norm_le :
-    (∀ (m k : ℕ) (γ : Covector (Eucl (m + 1)) (k + 1)) (γ' : Covector (Eucl m) k),
-      (∀ v : Fin k → Eucl m, γ' v = γ (Fin.cons (EuclideanSpace.single 0 1) fun i =>
-        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-      covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧
-    (∀ (m q : ℕ) (γ : Covector (Eucl (m + 1)) q) (γ' : Covector (Eucl m) q),
-      (∀ v : Fin q → Eucl m, γ' v = γ (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-        (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-      covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧
-    (∀ (P n : ℕ) (α : Covector (Eucl P) n),
-      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖) := by
-  -- `e₀` is the first standard basis vector of `ℝ^{m+1}`.
-  have hb0 : ∀ m : ℕ, (EuclideanSpace.single 0 1 : Eucl (m + 1)) =
-      EuclideanSpace.basisFun (Fin (m + 1)) ℝ 0 := by
-    intro m; simp [EuclideanSpace.basisFun_apply]
-  -- `ι` maps the `j`-th standard basis vector of `ℝ^m` to the `(j+1)`-st one of `ℝ^{m+1}`.
-  have hbι : ∀ (m : ℕ) (j : Fin m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (EuclideanSpace.basisFun (Fin m) ℝ j))) =
-      EuclideanSpace.basisFun (Fin (m + 1)) ℝ j.succ := by
-    intro m j
-    apply (EuclideanSpace.equiv (Fin (m + 1)) ℝ).injective
-    simp only [ContinuousLinearEquiv.apply_symm_apply]
-    funext i
-    refine Fin.cases ?_ (fun i => ?_) i <;> simp [EuclideanSpace.basisFun_apply]
-  -- A sum dominated termwise, along an injection, by nonnegative terms is at most the full sum.
-  have key : ∀ {A B : Type} [Fintype A] [Fintype B] [DecidableEq B] (g : A → B),
-      Function.Injective g → ∀ (F : B → ℝ) (G : A → ℝ), (∀ b, 0 ≤ F b) →
-      (∀ a, G a ≤ F (g a)) → ∑ a, G a ≤ ∑ b, F b := by
-    intro A B _ _ _ g hg F G hF hG
-    calc ∑ a, G a ≤ ∑ a, F (g a) := Finset.sum_le_sum (fun a _ => hG a)
-      _ = ∑ b ∈ Finset.univ.image g, F b := (Finset.sum_image (fun a _ b _ h => hg h)).symm
-      _ ≤ ∑ b, F b :=
-        Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) (fun b _ _ => hF b)
-  refine ⟨?_, ?_, ?_⟩
-  · -- (C1): compare along `I ↦ (0, I + 1)`.
-    intro m k γ γ' hγ'
-    unfold covectorEuclideanNorm
-    apply Real.sqrt_le_sqrt
-    apply key (fun I : Fin k → Fin m =>
-      (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)))
-    · intro I I' h
-    rw [Submodule.coe_sum, Finset.sum_apply]
-    change (ω : DifferentialForm (Eucl P) n) x =
-      ∑ i, f i x • (ω : DifferentialForm (Eucl P) n) x
-    rw [← Finset.sum_smul]
-    by_cases hx : x ∈ tsupport (ω : DifferentialForm (Eucl P) n)
-    · rw [← finsum_eq_sum_of_fintype, f.sum_eq_one hx, one_smul]
-    · rw [image_eq_zero_of_notMem_tsupport hx, smul_zero]
-  change T.toCurrent ω = 0
-  rw [hsum, map_sum]
-  exact Finset.sum_eq_zero fun i _ => hη i
-
 /-- Locality of currents: test forms that agree on an open neighbourhood `N` of `spt T` have the
 same value, since `ψ - φ` vanishes on `N`, so its support lies in the closed set `Nᶜ`, which misses
 `spt T`. -/
@@ -2670,150 +2684,6 @@ theorem Submission.fiw_tb_ext_covectorNorm_smul : ∀ (P q : ℕ) (c : ℝ) (α 
   split_ifs
   · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
   · simp
-/-- Counting identity: for any family `u` of vectors of `ℝ^P` and any `k`-covector `φ`,
-`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = k! ∑_{I strictly increasing} φ(u_{I 0}, …, u_{I (k-1)})²`,
-where `I` ranges over all maps `Fin k → Fin P`. -/
-theorem Submission.slicing_mb_wn_sq_sum_eq_factorial_mul :
-    ∀ (P k : ℕ) (u : Fin P → Eucl P) (φ : Covector (Eucl P) k),
-      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
-        (k.factorial : ℝ) * ∑ I : Fin k → Fin P,
-          if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
-  intro P k u φ
-  classical
-  set g : (Fin k → Fin P) → ℝ := fun I => (φ (fun i => u (I i))) ^ 2
-  -- A non-injective `I` repeats a vector of `u ∘ I`, so `φ (u ∘ I) = 0`.
-  have h0 : ∀ I : Fin k → Fin P, ¬Function.Injective I → g I = 0 := by
-    intro I hI
-    have hv : ¬Function.Injective (fun i => u (I i)) :=
-      fun h => hI fun a b hab => h (by simp only [hab])
-    simp only [g, φ.map_eq_zero_of_not_injective _ hv, ne_eq, OfNat.ofNat_ne_zero,
-      not_false_eq_true, zero_pow]
-  -- `φ (u ∘ I ∘ σ) = sign σ • φ (u ∘ I)`, so the square is invariant under permutations.
-  have hperm : ∀ (I : Fin k → Fin P) (σ : Equiv.Perm (Fin k)), g (I ∘ σ) = g I := by
-    intro I σ
-    have h : φ (fun i => u ((I ∘ σ) i)) = Equiv.Perm.sign σ • φ (fun i => u (I i)) :=
-      φ.toAlternatingMap.map_perm (fun i => u (I i)) σ
-    simp only [g, h]
-    rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h' | h' <;> simp [h']
-  -- Write both sides as sums over the injective, resp. strictly increasing, maps.
-  have hL : ∑ I, g I = ∑ I ∈ Finset.univ.filter Function.Injective, g I := by
-    rw [Finset.sum_filter]
-    refine Finset.sum_congr rfl fun I _ => ?_
-    split_ifs with h
-    · rfl
-    · exact h0 I h
-  have hR : (∑ I : Fin k → Fin P, if StrictMono I then g I else 0) =
-      ∑ I ∈ Finset.univ.filter StrictMono, g I := (Finset.sum_filter _ _).symm
-  -- `(σ, β) ↦ β ∘ σ` is a bijection from permutations × strictly increasing maps onto the
-  -- injective maps, with inverse `I ↦ ((sort I)⁻¹, I ∘ sort I)`.
-  have hbij : ∑ I ∈ Finset.univ.filter Function.Injective, g I =
-      ∑ p ∈ (Finset.univ : Finset (Equiv.Perm (Fin k))) ×ˢ Finset.univ.filter StrictMono,
-        g (p.2 ∘ p.1) := by
-    refine Finset.sum_nbij' (fun I => ((Tuple.sort I)⁻¹, I ∘ Tuple.sort I))
-      (fun p => p.2 ∘ p.1) ?_ ?_ ?_ ?_ ?_
-    · intro I hI
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI
-      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and]
-      exact (Tuple.monotone_sort I).strictMono_of_injective (hI.comp (Tuple.sort I).injective)
-    · rintro ⟨σ, β⟩ hp
-      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      exact hp.injective.comp σ.injective
-    · intro I _
-      funext i
-      simp
-    · rintro ⟨σ, β⟩ hp
-      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
-      -- sorting `β ∘ σ` recovers the strictly increasing `β`
-      have hsorted : (β ∘ σ) ∘ Tuple.sort (β ∘ σ) = β := by
-        rw [Tuple.comp_perm_comp_sort_eq_comp_sort,
-          (Tuple.sort_eq_refl_iff_monotone).2 hp.monotone]
-        rfl
-      have hσ : σ * Tuple.sort (β ∘ σ) = 1 := by
-        ext i
-        have := congrFun hsorted i
-        simp only [Function.comp_apply] at this
-        simpa using congrArg Fin.val (hp.injective this)
-      have hinv : (Tuple.sort (β ∘ σ))⁻¹ = σ := by
-        rw [inv_eq_iff_eq_inv]
-        exact eq_inv_of_mul_eq_one_right hσ
-      simp only [hinv, hsorted]
-    · intro I _
-      congr 1
-      funext i
-      have := congrFun h i.succ
-      simpa using this
-    · intro J; split_ifs <;> positivity
-    · intro I
-      by_cases h1 : StrictMono I
-      · have h2 : StrictMono (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)) := by
-          intro a b hab
-          induction a using Fin.cases with
-          | zero =>
-            induction b using Fin.cases with
-            | zero => exact absurd hab (lt_irrefl _)
-            | succ j => simp [Fin.succ_pos]
-          | succ i =>
-            induction b using Fin.cases with
-            | zero => exact absurd hab (Fin.not_lt_zero _)
-            | succ j =>
-              simp only [Fin.cons_succ, Fin.succ_lt_succ_iff] at hab ⊢
-              exact h1 hab
-        rw [ite_eq_left h1, ite_eq_left h2, hγ']
-        apply le_of_eq
-        congr 2
-        funext i
-        refine Fin.cases ?_ (fun i => ?_) i
-        · simp only [Fin.cons_zero]
-          exact hb0 m
-        · simp only [Fin.cons_succ]
-          exact hbι m (I i)
-      · rw [ite_eq_right h1]
-        split_ifs <;> positivity
-  · -- (C2): compare along `I ↦ I + 1`.
-    intro m q γ γ' hγ'
-    unfold covectorEuclideanNorm
-    apply Real.sqrt_le_sqrt
-    apply key (fun I : Fin q → Fin m => (fun i => (I i).succ : Fin q → Fin (m + 1)))
-    · intro I I' h
-      funext i
-      have := congrFun h i
-      simpa using this
-    · intro J; split_ifs <;> positivity
-    · intro I
-      by_cases h1 : StrictMono I
-      · have h2 : StrictMono (fun i => (I i).succ : Fin q → Fin (m + 1)) :=
-          fun a b hab => Fin.succ_lt_succ_iff.mpr (h1 hab)
-        rw [ite_eq_left h1, ite_eq_left h2, hγ']
-        apply le_of_eq
-        congr 2
-        funext i
-        exact hbι m (I i)
-      · rw [ite_eq_right h1]
-        split_ifs <;> positivity
-  · -- (C3): every coefficient is at most `‖α‖`, and there are `P ^ n` of them.
-    intro P n α
-    have hcoef : ∀ I : Fin n → Fin P,
-        |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
-      intro I
-      have h := ContinuousAlternatingMap.le_opNorm α
-        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
-      simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
-        Real.norm_eq_abs] at h
-      exact h
-    rw [covectorEuclideanNorm]
-    calc Real.sqrt _ ≤ Real.sqrt ((P : ℝ) ^ n * ‖α‖ ^ 2) := by
-          apply Real.sqrt_le_sqrt
-          calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
-                apply Finset.sum_le_sum
-                intro I _
-                split_ifs
-                · rw [← sq_abs]
-                  exact pow_le_pow_left₀ (abs_nonneg _) (hcoef I) 2
-                · positivity
-            _ = (P : ℝ) ^ n * ‖α‖ ^ 2 := by simp [Finset.card_univ]
-      _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
-          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
 /-- A linear functional `T₀` on `𝒟^q(U)` with `|T₀(ω)| ≤ B · sup_x |ω(x)|` (Euclidean coefficient
 norm) is a current of mass at most `B`: test-form convergence makes `sup_x |ω_j(x)| → 0`, since
 `|α| ≤ √(P^q) ‖α‖` (conjunct (C3) of `Submission.dph_iprod_slice_covector_norm_le`), and every
