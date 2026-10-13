@@ -553,6 +553,74 @@ theorem gte_tangentProj_integrands : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V 
     calc ∑ i : Fin (n + ℓ), ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ^ 2
         ≤ ∑ _i : Fin (n + ℓ), (4 : ℝ) := Finset.sum_le_sum fun i _ => hterm i
       _ = 4 * (n + ℓ) := by simp [Finset.sum_const, Finset.card_univ]; ring
+/-- Graph coordinates for the graph tangential estimate (steps 1(i), 1(ii) and 2(iii) of its proof,
+for Simon Ch. 5, Theorem 4.5, displays (8)–(12)).  With `E = EuclideanSpace.finAddEquivProd` and
+`a(z) = (E (q⁻¹ z)).1`: (i) `(x, y) ↦ graphPoint x y` is continuous; (ii) `a` is continuous;
+(iii) `a(q(x, y)) = x`; (iv) if `f` is continuous on `B_R(0)` and `r ≤ R`, then
+`q(graph f|B_R(0))` is compact and `q(graph f|B̆_r(0))` is Borel.  Comparing coordinates
+(`Fin.addCases`), `graphPoint x y = E⁻¹(x, y)`, which gives (i)–(iii).  `q(graph f|B_R(0))` is the
+image of the compact ball under `F x = q(x, f x)`, continuous on it; by (iii) and `r ≤ R`,
+`q(graph f|B̆_r(0)) = q(graph f|B_R(0)) ∩ a⁻¹(B̆_r(0))`, the intersection of a closed and an open
+set. -/
+theorem gte_graph_image_geometry : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) ∧ Continuous (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) ∧ (∀ (x : Rn n) (y : Rn ℓ), (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x) ∧ ∀ (f : Rn n → Rn ℓ) (R r : ℝ), ContinuousOn f (closedBall 0 R) → r ≤ R → IsCompact (q '' graphOver f (closedBall 0 R)) ∧ MeasurableSet (q '' graphOver f (ball 0 r)) := by
+  intro n ℓ q
+  -- Step 1: `graphPoint x y = E⁻¹(x, y)`, comparing coordinates.
+  have hgp : ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y =
+      (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y) := by
+    intro x y
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp [graphPoint]
+    · simp [graphPoint]
+  -- Step 2, (i): `(x, y) ↦ graphPoint x y` is the continuous map `E⁻¹`.
+  have hi : Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) := by
+    have : (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) =
+        (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm := by
+      funext p
+      exact hgp p.1 p.2
+    rw [this]
+    exact ContinuousLinearEquiv.continuous _
+  -- Step 3, (ii): `a = Prod.fst ∘ E ∘ q⁻¹`.
+  have hii : Continuous (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) :=
+    continuous_fst.comp ((ContinuousLinearEquiv.continuous _).comp q.symm.continuous)
+  -- Step 4, (iii): `a(q(x, y)) = (E (E⁻¹(x, y))).1 = x`.
+  have hiii : ∀ (x : Rn n) (y : Rn ℓ),
+      (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x := by
+    intro x y
+    rw [LinearIsometryEquiv.symm_apply_apply, hgp, ContinuousLinearEquiv.apply_symm_apply]
+  refine ⟨hi, hii, hiii, ?_⟩
+  intro f R r hf hrR
+  -- Step 5, (iv) compactness: `q '' graphOver f D = F '' D`, and `F` is continuous on the compact
+  -- ball `B_R(0)`.
+  have himg : ∀ D : Set (Rn n), q '' graphOver f D = (fun x => q (graphPoint x (f x))) '' D := by
+    intro D
+    unfold graphOver
+    rw [Set.image_image]
+  have hFcont : ContinuousOn (fun x => q (graphPoint x (f x))) (closedBall 0 R) :=
+    q.continuous.comp_continuousOn (hi.comp_continuousOn (continuousOn_id.prodMk hf))
+  have hcpt : IsCompact (q '' graphOver f (closedBall 0 R)) := by
+    rw [himg]
+    exact (isCompact_closedBall 0 R).image_of_continuousOn hFcont
+  refine ⟨hcpt, ?_⟩
+  -- Step 6, (iv) Borel: `F(B̆_r(0)) = F(B_R(0)) ∩ a⁻¹(B̆_r(0))` by (iii) and `r ≤ R`.
+  have heq : q '' graphOver f (ball 0 r) =
+      q '' graphOver f (closedBall 0 R) ∩
+        (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) ⁻¹' ball 0 r := by
+    rw [himg, himg]
+    ext z
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      refine ⟨⟨x, (ball_subset_closedBall.trans (closedBall_subset_closedBall hrR)) hx, rfl⟩, ?_⟩
+      show (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x (f x))))).1 ∈ ball 0 r
+      rw [hiii]
+      exact hx
+    · rintro ⟨⟨x, hx, rfl⟩, hz⟩
+      refine ⟨x, ?_, rfl⟩
+      have hz' : (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x (f x))))).1 ∈ ball 0 r :=
+        hz
+      rwa [hiii] at hz'
+  rw [heq]
+  exact hcpt.isClosed.measurableSet.inter (isOpen_ball.preimage hii).measurableSet
 
 end Submission
 
