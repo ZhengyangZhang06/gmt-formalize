@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e96d6adf056e68fc5fe7abe05c0a5851ae1379a9baa4488f0879f28d5845a950",
+  "git_delta": {
+    "base_commit": "a42d42af8789b7b1f8ed807e9ef5b96f351faac9",
+    "candidate_commit": "fd48857def92ad9374485c2592774be3d05c0494",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_ti_const_contraction_isTestForm",
+    "diff_sha256": "46a2c238bb369a8d9c1c51ba53afbc2b06954cacdc299c48a4521eac5652dc29",
+    "source_sha256": "9809b87cae311c266d4aec5cbc24a5f8a57966892a2b7b0fe005b942aeb42e17",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_ti_const_contraction_isTestForm",
+      "statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (v : Euclid P), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
