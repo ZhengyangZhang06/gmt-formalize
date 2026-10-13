@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "58ed1a2cdfaf0f3dc59419a889d9c69ec89ef574d9e783451fdd8e7341ab2b97",
+  "git_delta": {
+    "base_commit": "eb98c8be4da42c6330d7e3171e6a48d4137b0785",
+    "candidate_commit": "bfe4427fb415fb3b2843a49246ce9b8ffc567a01",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_itt_ae_of_ae_pieces",
+    "diff_sha256": "6f42975881fa32fb94f749ce954ca29c1e80c67858d2b7a7e48b7b980299e5ee",
+    "source_sha256": "58c7f0b040bb384bfbaaf15af2c4f515ff3f0eb4429352fc3ca5cae1c67b6a93",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_itt_ae_of_ae_pieces",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (p : Euclid P → Prop), MeasurableSet M → (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) → μHE[n] (M \\ ⋃ i, F i '' B i) = 0 → (∀ i, ∀ᵐ b ∂(volume.restrict (B i)), p (F i b)) → ∀ᵐ x ∂(μHE[n].restrict M), p x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
