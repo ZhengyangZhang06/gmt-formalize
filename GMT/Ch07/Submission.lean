@@ -454,4 +454,78 @@ end
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+namespace Submission
+
+/-- Mollification does not increase the variation (Simon Ch. 2, Lemma 2.5, formula (4)): if
+`|∫ u div g| ≤ M` for every `g ∈ C¹_c(ℝᴾ; ℝᴾ)` with `|g| ≤ 1`, then `∫ |D(η * u)| ≤ M` for an even
+mollifier `η ≥ 0` with `∫ η = 1`.  With `w = η * u`, the field `s = 1_{spt w} |∇w|⁻¹ ∇w`
+(`0⁻¹ = 0`) is Borel, bounded by `1`, compactly supported and has `Dw(s) = |Dw|`;
+`codim1_rdo_dg_sp_mollifier_adjoint` moves `η` onto `s`, and `g = η * s` is admissible. -/
+theorem codim1_rdo_dg_sp_mollify_variation : ∀ (P : ℕ) (u : Euclid P → ℝ) (M : ℝ), Integrable u → HasCompactSupport u → (∀ g : Euclid P → Euclid P, ContDiff ℝ 1 g → HasCompactSupport g → (∀ z, ‖g z‖ ≤ 1) → |∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)| ≤ M) → ∀ η : Euclid P → ℝ, ContDiff ℝ 1 η → HasCompactSupport η → (∀ z, 0 ≤ η z) → (∀ z, η (-z) = η z) → ∫ z, η z = 1 → ∫ z, ‖fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) z‖ ≤ M := by
+  intro P u M hu huc hM η hη hηc hη0 heven hη1
+  -- Step 1: `w = η * u` is `C¹` with compact support `S = spt w`.
+  set w := convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hwc : HasCompactSupport w := hηc.convolution _ huc
+  have hDw : Continuous (fderiv ℝ w) :=
+    (hηc.contDiff_convolution_left _ hη hu.locallyIntegrable).continuous_fderiv one_ne_zero
+  set S := tsupport w
+  have hSm : MeasurableSet S := (isClosed_tsupport w).measurableSet
+  -- Step 2: the gradient `∇w = (toDual)⁻¹ Dw` is continuous, `|∇w| = |Dw|`, `Dw(∇w) = |∇w|²`.
+  set grad : Euclid P → Euclid P :=
+    fun x => (InnerProductSpace.toDual ℝ (Euclid P)).symm (fderiv ℝ w x)
+  have hgc : Continuous grad := (InnerProductSpace.toDual ℝ (Euclid P)).symm.continuous.comp hDw
+  have hgn : ∀ x, ‖grad x‖ = ‖fderiv ℝ w x‖ := fun x => LinearIsometryEquiv.norm_map _ _
+  have hgg : ∀ x, fderiv ℝ w x (grad x) = ‖grad x‖ ^ 2 := by
+    intro x
+    rw [← InnerProductSpace.toDual_symm_apply (𝕜 := ℝ) (x := grad x) (y := fderiv ℝ w x)]
+    exact real_inner_self_eq_norm_sq _
+  -- Step 3: the unit field `f = |∇w|⁻¹ ∇w` (`0⁻¹ = 0`) and `s = 1_S f`.
+  set f : Euclid P → Euclid P := fun x => ‖grad x‖⁻¹ • grad x with hf
+  have hfm : Measurable f := hgc.norm.measurable.inv.smul hgc.measurable
+  have hf1 : ∀ x, ‖f x‖ ≤ 1 := by
+    intro x
+    simp only [hf, norm_smul, norm_inv, norm_norm]
+    rcases eq_or_ne ‖grad x‖ 0 with h | h
+    · simp [h]
+    · rw [inv_mul_cancel₀ h]
+  set s : Euclid P → Euclid P := S.indicator f with hs
+  have hs1 : ∀ x, ‖s x‖ ≤ 1 := fun x => (norm_indicator_le_norm_self f x).trans (hf1 x)
+  have hsc : HasCompactSupport s :=
+    HasCompactSupport.intro hwc.isCompact fun x hx => indicator_of_notMem hx f
+  have hsi : Integrable s := by
+    rw [hs, integrable_indicator_iff hSm]
+    exact Measure.integrableOn_of_bounded hwc.isCompact.measure_lt_top.ne
+      hfm.aestronglyMeasurable (Eventually.of_forall hf1)
+  -- Step 4: `Dw(x)(s x) = |Dw(x)|` for all `x`.
+  have hDs : ∀ x, fderiv ℝ w x (s x) = ‖fderiv ℝ w x‖ := by
+    intro x
+    by_cases hx : x ∈ S
+    · simp only [hs, indicator_of_mem hx, hf, map_smul, hgg, smul_eq_mul, ← hgn]
+      rcases eq_or_ne ‖grad x‖ 0 with h | h
+      · simp [h]
+      · field_simp
+    · rw [fderiv_of_notMem_tsupport ℝ hx]
+      simp
+  -- Step 5: `g = η * s` is admissible: `C¹`, compact support, `|g| ≤ ∫ η = 1`.
+  set g := convolution η s (ContinuousLinearMap.lsmul ℝ ℝ) volume with hg
+  have hgC1 : ContDiff ℝ 1 g := hηc.contDiff_convolution_left _ hη hsi.locallyIntegrable
+  have hgcs : HasCompactSupport g := hηc.convolution _ hsc
+  have hηi : Integrable η := hη.continuous.integrable_of_hasCompactSupport hηc
+  have hg1 : ∀ z, ‖g z‖ ≤ 1 := by
+    intro z
+    rw [hg, convolution_def]
+    refine (norm_integral_le_of_norm_le hηi (Eventually.of_forall fun t => ?_)).trans hη1.le
+    rw [ContinuousLinearMap.lsmul_apply, norm_smul, Real.norm_of_nonneg (hη0 t)]
+    exact mul_le_of_le_one_right (hη0 t) (hs1 _)
+  -- Steps 6–7: the adjoint identity, then the hypothesis for `g`.
+  calc ∫ z, ‖fderiv ℝ w z‖ = ∫ z, fderiv ℝ w z (s z) :=
+        integral_congr_ae (Eventually.of_forall fun z => (hDs z).symm)
+    _ = -∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P) :=
+        Submission.codim1_rdo_dg_sp_mollifier_adjoint P η u s hη hηc heven hu hsi
+    _ ≤ |∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)| :=
+        neg_le_abs _
+    _ ≤ M := hM g hgC1 hgcs hg1
+
+end Submission
+
 end GMT.Ch07
