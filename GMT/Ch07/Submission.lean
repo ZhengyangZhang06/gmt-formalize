@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Regularity of the pulled-back vector field** (Simon Ch. 6, 2.35, used for 7.5).  Let
+`D ⊆ ℝⁿ⁺¹` be open, `G` be `C²` on `D`, `ω` be a smooth `n`-form on `ℝᴾ`, and let
+`C = D ∩ G⁻¹(spt ω)` be compact.  The zero extension `Φ` of
+`Ψ(v) = Σⱼ (−1)ʲ ω(G v)(DG(v)e_{j.succAbove 0}, …, DG(v)e_{j.succAbove (n−1)}) eⱼ` is `C¹` with
+compact support in `D`.  Each coefficient is the smooth evaluation `(α, b) ↦ α b` (a continuous
+multilinear map on the diagonal) of the `C¹` maps `v ↦ ω(G v)` and `v ↦ (DG(v)e_{j.succAbove k})ₖ`,
+so `Ψ` is `C¹` on `D`; `Φ` vanishes off the compact, hence closed, set `C ⊆ D`, so `Φ` is `C¹` on
+the open cover `D ∪ Cᶜ` and `spt Φ ⊆ C`. -/
+theorem Submission.codim1_lur_cd_pullback_field_regularity : ∀ (P n : ℕ) (D : Set (Euclid (n + 1))) (G : Euclid (n + 1) → Euclid P) (ω : DifferentialForm (Euclid P) n) (Φ : Euclid (n + 1) → Euclid (n + 1)), IsOpen D → ContDiffOn ℝ 2 G D → ContDiff ℝ (⊤ : ℕ∞) ω → IsCompact (D ∩ G ⁻¹' tsupport ω) → Φ = D.indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (G v) (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) → ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ D := by
+  intro P n D G ω Φ hD hG hω hC hΦ
+  -- joint evaluation `(α, b) ↦ α b` of continuous multilinear forms: a continuous multilinear
+  -- map restricted to the diagonal, hence smooth
+  have hev : ContDiff ℝ 1 (fun p : ContinuousMultilinearMap ℝ (fun _ : Fin n => Euclid P) ℝ ×
+      (Fin n → Euclid P) => p.1 p.2) :=
+    (ContinuousLinearMap.id ℝ (ContinuousMultilinearMap ℝ (fun _ : Fin n => Euclid P) ℝ)
+      ).continuousMultilinearMapOption.contDiff.comp (contDiff_pi.2 fun _ => contDiff_id)
+  -- `v ↦ ω (G v)` and `v ↦ DG(v)` are `C¹` on `D`
+  have hωG : ContDiffOn ℝ 1 (fun v => (ω (G v)).toContinuousMultilinearMap) D :=
+    (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ).contDiff.comp_contDiffOn
+      ((hω.of_le (by exact_mod_cast le_top)).comp_contDiffOn (hG.of_le (by norm_num)))
+  have hDG : ContDiffOn ℝ 1 (fderiv ℝ G) D := hG.fderiv_of_isOpen hD (by norm_num)
+  have hcoef : ∀ j : Fin (n + 1), ContDiffOn ℝ 1 (fun v => ω (G v)
+      (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) D := fun j =>
+    hev.comp_contDiffOn (hωG.prodMk (contDiffOn_pi.2 fun _ => hDG.clm_apply contDiffOn_const))
+  have hΨ : ContDiffOn ℝ 1 (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (G v)
+      (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) •
+        EuclideanSpace.single j (1 : ℝ)) D :=
+    ContDiffOn.sum fun j _ => (contDiffOn_const.mul (hcoef j)).smul contDiffOn_const
+  -- `Φ` vanishes off the compact, hence closed, set `C = D ∩ G⁻¹(spt ω)`
+  have hsupp : support Φ ⊆ D ∩ G ⁻¹' tsupport ω := by
+    intro v hv
+    by_contra hvC
+    refine hv ?_
+    rw [hΦ]
+    by_cases hvD : v ∈ D
+    · rw [indicator_of_mem hvD]
+      simp [image_eq_zero_of_notMem_tsupport fun h => hvC ⟨hvD, h⟩]
+    · exact indicator_of_notMem hvD _
+  have hCcl : IsClosed (D ∩ G ⁻¹' tsupport ω) := hC.isClosed
+  have htsupp : tsupport Φ ⊆ D ∩ G ⁻¹' tsupport ω := closure_minimal hsupp hCcl
+  refine ⟨?_, hC.of_isClosed_subset (isClosed_tsupport _) htsupp,
+    htsupp.trans inter_subset_left⟩
+  -- glue: `Φ = Ψ` on the open set `D`, `Φ = 0` on the open set `Cᶜ`, and `D ∪ Cᶜ = ℝⁿ⁺¹`
+  refine contDiff_of_contDiffOn_union_of_isOpen (s := D) (t := (D ∩ G ⁻¹' tsupport ω)ᶜ)
+    (hΨ.congr fun v hv => by rw [hΦ, indicator_of_mem hv])
+    ((contDiffOn_const (c := (0 : Euclid (n + 1)))).congr
+      fun v hv => notMem_support.1 fun h => hv (hsupp h)) ?_ hD hCcl.isOpen_compl
+  exact eq_univ_of_forall fun v => (em (v ∈ D)).imp id fun hv h => hv h.1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
