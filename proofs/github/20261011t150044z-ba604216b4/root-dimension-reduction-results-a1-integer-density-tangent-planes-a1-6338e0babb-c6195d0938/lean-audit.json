@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "44e3675ed7afc4c1b6010a659264d56209282a37f17973265334f470be62fc96",
+  "git_delta": {
+    "base_commit": "c5218e542804356c78a917fa2723afcb6107c5c9",
+    "candidate_commit": "92ce8311fafd0049bfd215edfabd7ce66c96214d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_puvd_plane_domain",
+    "diff_sha256": "19b7c6c8a019b91c8cbcd9ab320f7c1d01325aa8462b5e8e27549f5ec81d8299",
+    "source_sha256": "ed98528d2ff98fefc6e9669ad6f70f2e97197e7628d917b95f6020439ff9fa3d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_puvd_plane_domain",
+      "statement": "∀ (P q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)) (i : Fin q), Module.finrank ℝ (Ps i) = 2 → (∀ j, j ≠ i → Ps i ⊓ Ps j = ⊥) → ∃ V : Set (Euclid P), IsOpen V ∧ IsConnected (V ∩ (Ps i : Set (Euclid P))) ∧ (Ps i : Set (Euclid P)) \\ {0} ⊆ V ∧ ∀ j, j ≠ i → Disjoint V (Ps j : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
