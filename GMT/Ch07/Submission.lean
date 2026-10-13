@@ -487,6 +487,106 @@ theorem Submission.doraggt_lipschitz_graph_map_basics : ∀ (n k : ℕ) (ι : Eu
     intro u u'
     rw [dist_eq_norm, dist_eq_norm, hdiff]
     have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth (u - u') (g u - g u'))
+/-- Difference quotients `r⁻¹(f(v + rw) − f(v))` of a map differentiable at `v` converge to
+`Df(v)w` uniformly on every closed ball `B̄_R(0)` as `r ↓ 0` (the `o(|h|)` estimate in the
+weighted blow-up limit of the Allard graph step).  With `R' = max R 1`, pick `ρ > 0` such that
+`|f(v + h) − f(v) − Df(v)h| ≤ ε|h|/(2R')` for `|h| < ρ`.  For `0 < r < ρ/R'` and `|w| ≤ R`,
+`|rw| < ρ`, and linearity of `Df(v)` gives `|Df(v)w − r⁻¹(f(v + rw) − f(v))| ≤ ε|w|/(2R') < ε`. -/
+theorem Submission.dorwbl_diff_quotient_tendstoUniformlyOn : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), DifferentiableAt ℝ f v → ∀ R : ℝ, TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => r⁻¹ • (f (v + r • w) - f v)) (fun w => fderiv ℝ f v w) (𝓝[>] 0) (closedBall (0 : Euclid n) R) := by
+  intro n k f v hf R
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hR : 0 < max R 1 := lt_of_lt_of_le one_pos (le_max_right R 1)
+  have hc : 0 < ε / (2 * max R 1) := by positivity
+  obtain ⟨ρ, hρ, hsmall⟩ := Metric.eventually_nhds_iff.1
+    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).bound hc)
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < ρ / max R 1 by positivity)] with r hr w hw
+  obtain ⟨hr0, hrρ⟩ := hr
+  have hw' : ‖w‖ ≤ max R 1 := (mem_closedBall_zero_iff.1 hw).trans (le_max_left R 1)
+  have hrw : ‖r • w‖ = r * ‖w‖ := by rw [norm_smul, Real.norm_of_nonneg hr0.le]
+  -- `|rw| ≤ rR' < ρ`, so the little-o bound applies to `h = rw`
+  have hbound := hsmall (show dist (r • w) 0 < ρ by
+    rw [dist_zero_right, hrw]
+    calc r * ‖w‖ ≤ r * max R 1 := mul_le_mul_of_nonneg_left hw' hr0.le
+      _ < ρ / max R 1 * max R 1 := mul_lt_mul_of_pos_right hrρ hR
+      _ = ρ := div_mul_cancel₀ ρ hR.ne')
+  -- `Df(v)w − r⁻¹(f(v + rw) − f(v)) = −r⁻¹(f(v + rw) − f(v) − Df(v)(rw))`
+  have hid : fderiv ℝ f v w - r⁻¹ • (f (v + r • w) - f v) =
+      -(r⁻¹ • (f (v + r • w) - f v - fderiv ℝ f v (r • w))) := by
+    simp only [map_smul, smul_sub, smul_smul, inv_mul_cancel₀ hr0.ne', one_smul]
+    abel
+  rw [dist_eq_norm, hid, norm_neg, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le]
+  calc r⁻¹ * ‖f (v + r • w) - f v - fderiv ℝ f v (r • w)‖
+      ≤ r⁻¹ * (ε / (2 * max R 1) * ‖r • w‖) :=
+        mul_le_mul_of_nonneg_left hbound (inv_nonneg.2 hr0.le)
+    _ = ε / (2 * max R 1) * ‖w‖ := by
+        rw [hrw]
+        field_simp
+    _ ≤ ε / (2 * max R 1) * max R 1 := mul_le_mul_of_nonneg_left hw' hc.le
+    _ = ε / 2 := by field_simp
+    _ < ε := half_lt_self hε
+
+/-- Test-function step (Step 8) of the weighted graph blow-up limit used for the tangent planes of
+Lipschitz graphs (cf. Simon Ch. 3, proof of 1.6 "⇒", where `∫_{η_{x,λ}(N)} f dHⁿ → ∫_{T_x N} f dHⁿ`).
+If `f : ℝⁿ → ℝᵏ` is differentiable at `v` and `ψ ∈ C_c(ℝ^{n+k})`, then
+`U(r) = ∫_{B̄_R(0)} |ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v)))) − ψ(ιw + ι'(Df(v)w))| dw → 0` as `r ↓ 0`.
+The difference quotients tend to `Df(v)` uniformly on `B̄_R(0)`; the isometry `ι'` carries this to
+the graph maps, and `ψ` is uniformly continuous, so eventually the integrand is at most
+`ε / (Lⁿ(B̄_R(0)) + 1)` on the ball, which has finite measure.  Continuity of `f` is not used. -/
+theorem Submission.dorwbl_test_fn_diff_quotient_integral_tendsto_zero : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (ψ : Euclid (n + k) → ℝ), Continuous f → DifferentiableAt ℝ f v → Continuous ψ → HasCompactSupport ψ → ∀ R : ℝ, Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|) (𝓝[>] 0) (𝓝 0) := by
+  intro n k ι ι' f v ψ _hf hfv hψ hψc R
+  -- the graph maps `Φ_r w = ι w + ι' (f_{v,r} w)` tend to `Φ w = ι w + ι' (Df(v) w)` uniformly on
+  -- `B̄_R(0)`: `dist (Φ w) (Φ_r w) = dist (Df(v) w) (f_{v,r} w)` since `ι'` is an isometry
+  have hΦ : TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => ι w + ι' (r⁻¹ • (f (v + r • w) - f v)))
+      (fun w => ι w + ι' (fderiv ℝ f v w)) (𝓝[>] 0) (closedBall (0 : Euclid n) R) := by
+    have h := Submission.dorwbl_diff_quotient_tendstoUniformlyOn n k f v hfv R
+    rw [Metric.tendstoUniformlyOn_iff] at h ⊢
+    intro ε hε
+    filter_upwards [h ε hε] with r hr w hw
+    simp only [dist_add_left, LinearIsometry.dist_map]
+    exact hr w hw
+  -- `ψ` is uniformly continuous (continuous with compact support), so `ψ ∘ Φ_r → ψ ∘ Φ` uniformly
+  have hψΦ := (hψc.uniformContinuous_of_continuous hψ).comp_tendstoUniformlyOn hΦ
+  rw [Metric.tendstoUniformlyOn_iff] at hψΦ
+  have hB : volume (closedBall (0 : Euclid n) R) < ∞ := measure_closedBall_lt_top
+  have hV : 0 ≤ volume.real (closedBall (0 : Euclid n) R) := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- with `η = ε / (Lⁿ(B̄_R(0)) + 1)`, eventually `|U(r)| ≤ η Lⁿ(B̄_R(0)) < ε`
+  have hη : 0 < ε / (volume.real (closedBall (0 : Euclid n) R) + 1) := div_pos hε (by linarith)
+  filter_upwards [hψΦ _ hη] with r hr
+  rw [dist_zero_right]
+  refine (norm_setIntegral_le_of_norm_le_const
+    (C := ε / (volume.real (closedBall (0 : Euclid n) R) + 1)) hB fun w hw => ?_).trans_lt ?_
+  · have h1 := hr w hw
+    simp only [Function.comp_apply, Real.dist_eq] at h1
+    rw [Real.norm_eq_abs, abs_abs, abs_sub_comm]
+    exact h1.le
+  · rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    linarith
+
+/-- Weighted blow-up limit at one good point `v`.  Let `f` be continuous and differentiable at
+`v`, `G` Borel with `|G| ≤ C`, and `∫_{B_R(0)} |G(v + r w) - G(v)| dw → 0` as `r ↓ 0` for every
+`R > 0`.  With `Φ_r w = ι w + ι'(r⁻¹(f(v + r w) - f(v)))` and `Φ w = ι w + ι'(Df(v) w)`, every
+continuous compactly supported `ψ` has `∫ ψ(Φ_r w) G(v + r w) dw → G(v) ∫ ψ(Φ w) dw`.
+Orthogonality gives `‖w‖ ≤ ‖ι w + ι' u‖`, so both integrands vanish off `B_R(0)` once
+`spt ψ ⊆ B_R(0)`; there they differ by at most `C |ψ ∘ Φ_r - ψ ∘ Φ| + M |G(v + r ·) - G(v)|`
+(`|ψ| ≤ M`), whose integral tends to `0`. -/
+theorem Submission.dorwbl_weighted_blowup_tendsto_at_point : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (G : Euclid n → ℝ) (C : ℝ) (v : Euclid n), (∀ x y, inner ℝ (ι x) (ι' y) = 0) → Continuous f → Measurable G → (∀ u, |G u| ≤ C) → DifferentiableAt ℝ f v → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |G (v + r • w) - G v|) (𝓝[>] 0) (𝓝 0)) → ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ → Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w)))) := by
+  intro n k ι ι' f G C v horth hf hG hGC hdiff hleb ψ hψ hψc
+  -- `|ψ| ≤ M`, and `tsupport ψ ⊆ closedBall 0 R₀` with `R₀ ≤ R`, `0 < R`.
+  obtain ⟨M, hM⟩ := hψc.exists_bound_of_continuous hψ
+  have hψM : ∀ y, |ψ y| ≤ M := fun y => by rw [← Real.norm_eq_abs]; exact hM y
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hψM 0)
+  have hC0 : 0 ≤ C := (abs_nonneg _).trans (hGC 0)
+  obtain ⟨R₀, hR₀⟩ := hψc.isCompact.isBounded.subset_closedBall (0 : Euclid (n + k))
+  obtain ⟨R, hRpos, hR₀R⟩ : ∃ R : ℝ, 0 < R ∧ R₀ ≤ R :=
+    ⟨max R₀ 1, lt_of_lt_of_le one_pos (le_max_right _ _), le_max_left _ _⟩
+  have hBfin : volume (closedBall (0 : Euclid n) R) ≠ ∞ := measure_closedBall_lt_top.ne
+  -- Pythagoras: `‖w‖ ≤ ‖ι w + ι' u‖`.
+  have hpyth : ∀ (w : Euclid n) (u : Euclid k), ‖w‖ ≤ ‖ι w + ι' u‖ := by
+    intro w u
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth w u)
     rw [LinearIsometry.norm_map, LinearIsometry.norm_map] at h
     refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2 ?_
     rw [h]
@@ -573,6 +673,97 @@ theorem Submission.doraggt_graph_blowup_rescaling : ∀ (n k : ℕ) (ι : Euclid
       refine hf ((((hg.comp (v + r • w) hL).const_smul r).const_add (f v)).congr_of_eventuallyEq
         (Filter.Eventually.of_forall fun u => ?_))
       simp only [Pi.smul_apply, Function.comp_apply, smul_inv_smul₀ hr, add_sub_cancel]
+  -- Both integrands vanish off `closedBall 0 R`.
+  have hvanish : ∀ w : Euclid n, w ∉ closedBall (0 : Euclid n) R → ∀ u : Euclid k,
+      ψ (ι w + ι' u) = 0 := by
+    intro w hw u
+    apply image_eq_zero_of_notMem_tsupport
+    intro hmem
+    apply hw
+    have h1 := hR₀ hmem
+    rw [mem_closedBall_zero_iff] at h1 ⊢
+    exact (hpyth w u).trans (h1.trans hR₀R)
+  -- `C ∫_{B_R} |ψ ∘ Φ_r - ψ ∘ Φ| + M ∫_{B_R} |G(v + r ·) - G(v)| → 0`.
+  have hU := Submission.dorwbl_test_fn_diff_quotient_integral_tendsto_zero n k ι ι' f v ψ hf
+    hdiff hψ hψc R
+  have hV := hleb R hRpos
+  have hlim := (hU.const_mul C).add (hV.const_mul M)
+  rw [mul_zero, mul_zero, add_zero] at hlim
+  -- Pointwise: `a x - G(v) b = (a - b) x + b (x - G(v))`.
+  have hpt : ∀ a b x : ℝ, |b| ≤ M → |x| ≤ C →
+      |a * x - G v * b| ≤ C * |a - b| + M * |x - G v| := by
+    intro a b x hb hx
+    calc |a * x - G v * b| = |(a - b) * x + b * (x - G v)| := by congr 1; ring
+      _ ≤ |(a - b) * x| + |b * (x - G v)| := abs_add_le _ _
+      _ = |a - b| * |x| + |b| * |x - G v| := by rw [abs_mul, abs_mul]
+      _ ≤ |a - b| * C + M * |x - G v| :=
+        add_le_add (mul_le_mul_of_nonneg_left hx (abs_nonneg _))
+          (mul_le_mul_of_nonneg_right hb (abs_nonneg _))
+      _ = C * |a - b| + M * |x - G v| := by ring
+  -- For every `r`, the error is bounded by the quantity in `hlim`.
+  have key : ∀ r : ℝ,
+      ‖(∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) -
+          G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w))‖ ≤
+        C * (∫ w in closedBall (0 : Euclid n) R,
+            |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|) +
+          M * ∫ w in closedBall (0 : Euclid n) R, |G (v + r • w) - G v| := by
+    intro r
+    have hcr : Continuous fun w : Euclid n => ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) := by
+      fun_prop
+    have hc : Continuous fun w : Euclid n => ψ (ι w + ι' (fderiv ℝ f v w)) := by fun_prop
+    have hGr : Measurable fun w : Euclid n => G (v + r • w) :=
+      hG.comp (by fun_prop : Continuous fun w : Euclid n => v + r • w).measurable
+    have ha : IntegrableOn
+        (fun w => ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w))
+        (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := M * C) hBfin
+        (hcr.measurable.mul hGr).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul (hψM _) (hGC _) (abs_nonneg _) hM0)
+    have hb : IntegrableOn (fun w => G v * ψ (ι w + ι' (fderiv ℝ f v w)))
+        (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := C * M) hBfin
+        (hc.measurable.const_mul (G v)).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul (hGC _) (hψM _) (abs_nonneg _) hC0)
+    have hΔ : IntegrableOn
+        (fun w => |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|)
+        (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := M + M) hBfin
+        (continuous_abs.measurable.comp (hcr.measurable.sub hc.measurable)).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_abs]
+          exact (abs_sub _ _).trans (add_le_add (hψM _) (hψM _)))
+    have hg : IntegrableOn (fun w => |G (v + r • w) - G v|) (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := C + C) hBfin
+        (continuous_abs.measurable.comp (hGr.sub measurable_const)).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_abs]
+          exact (abs_sub _ _).trans (add_le_add (hGC _) (hGC _)))
+    have hA : (∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) =
+        ∫ w in closedBall (0 : Euclid n) R,
+          ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w) := by
+      symm
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro w hw
+      rw [hvanish w hw, zero_mul]
+    have hB : G v * (∫ w, ψ (ι w + ι' (fderiv ℝ f v w))) =
+        ∫ w in closedBall (0 : Euclid n) R, G v * ψ (ι w + ι' (fderiv ℝ f v w)) := by
+      rw [← integral_const_mul]
+      symm
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro w hw
+      rw [hvanish w hw, mul_zero]
+    rw [hA, hB, ← integral_sub ha hb, ← integral_const_mul, ← integral_const_mul,
+      ← integral_add (hΔ.const_mul C) (hg.const_mul M)]
+    refine norm_integral_le_of_norm_le ((hΔ.const_mul C).add (hg.const_mul M))
+      (ae_of_all _ fun w => ?_)
+    rw [Real.norm_eq_abs]
+    exact hpt _ _ _ (hψM _) (hGC _)
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun r => norm_nonneg _) key hlim
 /-- **Lebesgue points, rescaled** (Simon Ch. 1, Corollary 3.17, in the Lebesgue-point form of
 Mathlib's `IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub`): if `g : ℝⁿ → ℝ` is locally
 `Lⁿ`-integrable, then for `Lⁿ`-a.e. `v` and every `R > 0`, `∫_{B_R(0)} |g(v + rw) − g(v)| dw → 0`
@@ -626,6 +817,29 @@ theorem Submission.doraggt_ae_rescaled_lebesgue_point : ∀ (n : ℕ) (g : Eucli
   refine hlim.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
   exact (key r hr).symm
+
+/-- **Weighted blow-ups of a Lipschitz graph** (Simon Ch. 2, Theorem 1.4 (Rademacher) and Ch. 1,
+Corollary 3.17).  Let `ι : ℝⁿ → ℝ^{n+k}` and `ι' : ℝᵏ → ℝ^{n+k}` be linear isometries with
+orthogonal ranges, `f : ℝⁿ → ℝᵏ` Lipschitz and `G : ℝⁿ → ℝ` measurable with `|G| ≤ C`.  Then for
+`Lⁿ`-a.e. `v`, `f` is differentiable at `v` and, for every continuous compactly supported `ψ`,
+`∫ ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v)))) G(v + rw) dw → G(v) ∫ ψ(ιw + ι'(Df(v)w)) dw` as `r ↓ 0`.
+The bounded measurable weight `G` is locally integrable, so Rademacher's theorem and the rescaled
+Lebesgue-point property of `G` hold simultaneously at a.e. `v`; at every such `v` the convergence
+is the blow-up limit at a differentiability point that is a rescaled Lebesgue point of `G`. -/
+theorem Submission.doraggt_ae_weighted_graph_blowup_tendsto : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (L : NNReal) (G : Euclid n → ℝ) (C : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L f → Measurable G → (∀ u, |G u| ≤ C) → ∀ᵐ v ∂(volume : Measure (Euclid n)), DifferentiableAt ℝ f v ∧ ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ → Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w)))) := by
+  intro n k ι ι' f L G C horth hf hG hGC
+  -- `G` is bounded and measurable, hence integrable on every compact set
+  have hloc : LocallyIntegrable G volume := by
+    rw [locallyIntegrable_iff]
+    intro K hK
+    exact Measure.integrableOn_of_bounded hK.measure_lt_top.ne hG.aestronglyMeasurable (M := C)
+      (Eventually.of_forall fun u => (Real.norm_eq_abs (G u)).trans_le (hGC u))
+  -- Rademacher and the rescaled Lebesgue-point property of `G` hold simultaneously a.e.
+  filter_upwards [hf.ae_differentiableAt (μ := volume),
+    Submission.doraggt_ae_rescaled_lebesgue_point n G hloc] with v hv hleb
+  -- at such `v`, the blow-up limit holds for every test function `ψ`
+  exact ⟨hv, Submission.dorwbl_weighted_blowup_tendsto_at_point n k ι ι' f G C v horth
+    hf.continuous hG hGC hv hleb⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
