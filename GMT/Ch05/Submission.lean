@@ -520,6 +520,226 @@ theorem density_one_allard_scale : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : 
   · refine le_trans ?_ hS.le
     exact ENNReal.rpow_le_rpow (mul_le_mul' le_rfl (lintegral_mono_set hball))
       (one_div_pos.mpr hp0).le
+/-- **Simon Ch. 5, Theorem 7.1, proof (p. 127): "after applying the appropriate translation".**
+For `τ(x) = x − ξ`, `V' = v(τ(M), θ(· + ξ))` is a rectifiable `n`-varifold in `τ(U)` with
+`μ_{V'} = τ_# μ_V` and `spt V' = τ(spt V)`.  If `V` has generalized mean curvature `H` in `U`,
+then `V'` has generalized mean curvature `H(· + ξ)` in `τ(U)`, and the hypotheses 5.1 of `V` in
+`B_r(ξ)` become the hypotheses 5.1 (`AllardHypotheses`) of `V'` in `B_r(0)`. -/
+theorem exists_translated_varifold_allardHypotheses : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ (∀ x, V'.mult x = V.mult (x + ξ)) ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ V'.support = (fun x => x - ξ) '' V.support ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => H (x + ξ))) ∧ ∀ (H : Amb n ℓ → Amb n ℓ) (p δ r : ℝ), V.HasGeneralizedMeanCurvature H → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ξ ∈ V.support → 0 < r → closedBall ξ r ⊆ U → V.weight (closedBall ξ r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) → V.scaledLpNorm H p ξ r ≤ ENNReal.ofReal δ → V'.AllardHypotheses (fun x => H (x + ξ)) p δ r := by
+  intro n ℓ U V ξ
+  -- Step 1: `τ = (· − ξ)` is an isometric measurable equivalence with inverse `(· + ξ)`; both
+  -- preserve `Hⁿ`, and `τ(S) = (· + ξ)⁻¹(S)`.
+  have himage : ∀ S : Set (Amb n ℓ), (fun x => x - ξ) '' S = (fun x => x + ξ) ⁻¹' S := by
+    intro S
+    ext x
+    constructor
+    · rintro ⟨s, hs, rfl⟩
+      simpa using hs
+    · intro hx
+      exact ⟨x + ξ, hx, by simp⟩
+  have hiso : Isometry (fun x : Amb n ℓ => x - ξ) := (IsometryEquiv.subRight ξ).isometry
+  have hmp_add : MeasurePreserving (fun x : Amb n ℓ => x + ξ) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight ξ).measurePreserving_euclideanHausdorffMeasure n
+  have hmp_sub : MeasurePreserving (fun x : Amb n ℓ => x - ξ) μHE[n] μHE[n] :=
+    (IsometryEquiv.subRight ξ).measurePreserving_euclideanHausdorffMeasure n
+  have hme_add : MeasurableEmbedding (fun x : Amb n ℓ => x + ξ) := measurableEmbedding_addRight ξ
+  have hme_sub : MeasurableEmbedding (fun x : Amb n ℓ => x - ξ) := measurableEmbedding_subRight ξ
+  -- `τ⁻¹(K) ⊆ U` whenever `K ⊆ τ(U)`.
+  have hpre_sub : ∀ K : Set (Amb n ℓ), K ⊆ (fun x => x - ξ) '' U → (fun x => x - ξ) ⁻¹' K ⊆ U := by
+    intro K hKU y hy
+    obtain ⟨u, hu, hu'⟩ := hKU hy
+    have : u = y := by simpa using hu'
+    exact this ▸ hu
+  -- Step 2: the structure fields of `V' = v(τ(M), θ(· + ξ))` in `τ(U)`.
+  have hc_meas : NullMeasurableSet ((fun x => x - ξ) '' V.carrier) (μHE[n] : Measure (Amb n ℓ)) := by
+    rw [himage]
+    exact V.nullMeasurableSet_carrier.preimage hmp_add.quasiMeasurePreserving
+  have hc_rect : Poincare.SimonGMT.Chapter03.CountablyRectifiable n
+      ((fun x => x - ξ) '' V.carrier) := by
+    obtain ⟨M₀, hM₀, F, hF, hcov⟩ := V.countablyRectifiable
+    refine ⟨(fun x => x - ξ) '' M₀, ?_, fun j y => F j y - ξ, fun j => ?_, ?_⟩
+    · rw [hiso.euclideanHausdorffMeasure_image]
+      exact hM₀
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨1 * K, hiso.lipschitzWith.comp hK⟩
+    · rintro _ ⟨x, hx, rfl⟩
+      rcases hcov hx with h | h
+      · exact Or.inl ⟨x, h, rfl⟩
+      · obtain ⟨j, y, rfl⟩ := mem_iUnion.mp h
+        exact Or.inr (mem_iUnion.mpr ⟨j, y, rfl⟩)
+  have hm_pos : ∀ x ∈ (fun x => x - ξ) '' V.carrier, 0 < V.mult (x + ξ) := by
+    rintro _ ⟨x, hx, rfl⟩
+    simpa using V.mult_pos x hx
+  have hm_aemeas : AEMeasurable (fun x => V.mult (x + ξ))
+      ((μHE[n] : Measure (Amb n ℓ)).restrict ((fun x => x - ξ) '' V.carrier)) := by
+    rw [himage]
+    exact V.aemeasurable_mult.comp_quasiMeasurePreserving
+      (hmp_add.restrict_preimage_emb hme_add V.carrier).quasiMeasurePreserving
+  have hm_int : ∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ (fun x => x - ξ) '' U →
+      IntegrableOn (fun x => V.mult (x + ξ)) ((fun x => x - ξ) '' V.carrier ∩ K)
+        (μHE[n] : Measure (Amb n ℓ)) := by
+    intro K hK hKU
+    have hK' : IsCompact ((fun x => x - ξ) ⁻¹' K) := (Homeomorph.subRight ξ).isCompact_preimage.2 hK
+    have h := V.integrableOn_mult _ hK' (hpre_sub K hKU)
+    rw [← hmp_add.integrableOn_comp_preimage hme_add] at h
+    have hset : (fun x => x - ξ) '' V.carrier ∩ K =
+        (fun x => x + ξ) ⁻¹' (V.carrier ∩ (fun x => x - ξ) ⁻¹' K) := by
+      rw [himage]
+      ext x
+      simp
+    rw [hset]
+    exact h
+  obtain ⟨V', hV'c, hV'm⟩ : ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U),
+      V'.carrier = (fun x => x - ξ) '' V.carrier ∧ ∀ x, V'.mult x = V.mult (x + ξ) :=
+    ⟨⟨(fun x => x - ξ) '' V.carrier, fun x => V.mult (x + ξ), image_mono V.carrier_subset,
+      hc_meas, hc_rect, hm_pos, hm_aemeas, hm_int⟩, rfl, fun _ => rfl⟩
+  have hV'mf : V'.mult = fun x => V.mult (x + ξ) := funext hV'm
+  -- Step 3: `μ_{V'} = τ_# μ_V`.
+  have hweight : V'.weight = V.weight.map (fun x => x - ξ) := by
+    have hres : ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).map (fun x => x - ξ) =
+        (μHE[n] : Measure (Amb n ℓ)).restrict ((fun x => x - ξ) '' V.carrier) := by
+      have h1 := hme_sub.restrict_map (μHE[n] : Measure (Amb n ℓ)) ((fun x => x - ξ) '' V.carrier)
+      rw [hmp_sub.map_eq, preimage_image_eq _ hme_sub.injective] at h1
+      exact h1.symm
+    ext s hs
+    rw [Measure.map_apply hme_sub.measurable hs]
+    simp only [RectifiableVarifold.weight]
+    rw [hV'c, hV'mf, withDensity_apply _ hs, withDensity_apply _ (hme_sub.measurable hs),
+      ← hres, hme_sub.restrict_map, hme_sub.lintegral_map]
+    simp
+  -- Step 4: `spt V' = τ(spt V)`, since `spt(τ_# μ) = τ(spt μ)` for the homeomorphism `τ`.
+  have hsupport : V'.support = (fun x => x - ξ) '' V.support := by
+    have hspt : (V.weight.map (fun x => x - ξ)).support =
+        (fun x => x - ξ) '' V.weight.support := by
+      ext x
+      rw [himage, mem_preimage, Measure.mem_support_iff_forall, Measure.mem_support_iff_forall]
+      constructor
+      · intro h N' hN'
+        have hN : (fun y => y + ξ) ⁻¹' N' ∈ 𝓝 x :=
+          (continuous_id.add continuous_const).continuousAt.preimage_mem_nhds hN'
+        have := h _ hN
+        rw [hme_sub.map_apply] at this
+        convert this using 2
+        ext y
+        simp
+      · intro h N hN
+        have hN' : (fun y => y - ξ) ⁻¹' N ∈ 𝓝 (x + ξ) := by
+          apply (continuous_id.sub continuous_const).continuousAt.preimage_mem_nhds
+          simpa using hN
+        rw [hme_sub.map_apply]
+        exact h _ hN'
+    unfold RectifiableVarifold.support
+    rw [hweight, hspt, image_inter hme_sub.injective]
+  -- Step 5: weighted approximate tangent spaces, hence `tangentProj`, are translation equivariant.
+  have htangent : ∀ x, V'.tangentProj x = V.tangentProj (x + ξ) := by
+    intro x
+    have hpred : (fun P => Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n
+        V'.carrier V'.mult x P) =
+        (fun P => Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n
+        V.carrier V.mult (x + ξ) P) := by
+      funext P
+      have hset : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap x r '' V'.carrier =
+          Poincare.SimonGMT.Chapter03.blowUpMap (x + ξ) r '' V.carrier := by
+        intro r
+        rw [hV'c, image_image]
+        congr 1
+        funext m
+        simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+        congr 1
+        abel
+      have hmult : ∀ (r : ℝ) (y : Amb n ℓ), V'.mult (x + r • y) = V.mult (x + ξ + r • y) := by
+        intro r y
+        rw [hV'm]
+        congr 1
+        abel
+      unfold Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt
+      simp only [hset, hmult, hV'm]
+    have hchoose : ∀ {p q : Submodule ℝ (Amb n ℓ) → Prop} (h1 : ∃ P, p P) (h2 : ∃ P, q P),
+        p = q → Classical.choose h1 = Classical.choose h2 := by
+      intro p q h1 h2 h
+      subst h
+      rfl
+    have hproj : ∀ {K L : Submodule ℝ (Amb n ℓ)} [K.HasOrthogonalProjection]
+        [L.HasOrthogonalProjection], K = L → K.starProjection = L.starProjection := by
+      intro K L _ _ h
+      subst h
+      rfl
+    unfold RectifiableVarifold.tangentProj
+    split_ifs with h1 h2 h2
+    · exact hproj (hchoose h1 h2 hpred)
+    · exact absurd (hpred ▸ h1) h2
+    · exact absurd (hpred ▸ h2) h1
+    · rfl
+  -- Step 6: `div_{M'} X ∘ τ = div_M (X ∘ τ)`.
+  have hdiv : ∀ (X : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ),
+      V'.divM X (y - ξ) = V.divM (fun z => X (z - ξ)) y := by
+    intro X y
+    unfold RectifiableVarifold.divM
+    rw [htangent, fderiv_comp_sub, sub_add_cancel]
+  -- Step 7: generalized mean curvature transfers to `V'` with `H' = H(· + ξ)`.
+  have hGMC : ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H →
+      V'.HasGeneralizedMeanCurvature (fun x => H (x + ξ)) := by
+    intro H hH
+    obtain ⟨hloc, hid⟩ := hH
+    let e : Amb n ℓ ≃ᵐ Amb n ℓ := MeasurableEquiv.subRight ξ
+    have he : (fun x : Amb n ℓ => x - ξ) = ⇑e := rfl
+    refine ⟨?_, ?_⟩
+    · rw [hweight]
+      rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨N, hN, hint⟩ := hloc y hy
+      refine ⟨(fun x => x - ξ) '' N, ?_, ?_⟩
+      · have hmap := (Homeomorph.subRight ξ).isEmbedding.map_nhdsWithin_eq U y
+        simp only [Homeomorph.coe_subRight] at hmap
+        rw [← hmap]
+        exact image_mem_map hN
+      · rw [he, integrableOn_map_equiv e, preimage_image_eq _ e.injective]
+        convert hint using 1
+        funext z
+        show H (z - ξ + ξ) = H z
+        rw [sub_add_cancel]
+    · intro X hX hXc hXU
+      rw [hweight]
+      have hI1 : ∫ x, V'.divM X x ∂(V.weight.map (fun x => x - ξ)) =
+          ∫ y, V'.divM X (y - ξ) ∂V.weight := integral_map_equiv e _
+      have hI2 : ∫ x, inner ℝ (X x) (H (x + ξ)) ∂(V.weight.map (fun x => x - ξ)) =
+          ∫ y, inner ℝ (X (y - ξ)) (H (y - ξ + ξ)) ∂V.weight :=
+        integral_map_equiv e (fun x => inner ℝ (X x) (H (x + ξ)))
+      rw [hI1, hI2]
+      simp only [hdiv, sub_add_cancel]
+      have hY1 : ContDiff ℝ 1 (fun z => X (z - ξ)) := hX.comp (contDiff_id.sub contDiff_const)
+      have hY2 : HasCompactSupport (fun z => X (z - ξ)) :=
+        hXc.comp_homeomorph (Homeomorph.subRight ξ)
+      have hY3 : tsupport (fun z => X (z - ξ)) ⊆ U := by
+        have hts : tsupport (fun z => X (z - ξ)) = (fun z => z - ξ) ⁻¹' tsupport X := by
+          have := (Homeomorph.subRight ξ).preimage_closure (Function.support X)
+          simp only [Homeomorph.coe_subRight] at this
+          rw [tsupport, tsupport, this]
+          rfl
+        rw [hts]
+        exact hpre_sub _ hXU
+      exact hid _ hY1 hY2 hY3
+  refine ⟨V', hV'c, hV'm, hweight, hsupport, hGMC, ?_⟩
+  -- Step 8: the hypotheses 5.1 of `V` in `B_r(ξ)` are those of `V'` in `B_r(0)`.
+  intro H p δ r hH hθ hξ hr hball hmass hLp
+  have hball_pre : (fun x => x - ξ) ⁻¹' closedBall (0 : Amb n ℓ) r = closedBall ξ r := by
+    ext y
+    simp [dist_eq_norm]
+  refine ⟨hr, hGMC H hH, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hweight, hme_sub.ae_map_iff]
+    filter_upwards [hθ] with y hy
+    rw [hV'm, sub_add_cancel]
+    exact hy
+  · rw [hsupport]
+    exact ⟨ξ, hξ, sub_self ξ⟩
+  · intro z hz
+    refine ⟨z + ξ, hball ?_, by simp⟩
+    rw [← hball_pre]
+    simpa using hz
+  · rw [hweight, hme_sub.map_apply, hball_pre]
+    exact hmass
+  · unfold RectifiableVarifold.scaledLpNorm at hLp ⊢
+    rw [hweight, hme_sub.restrict_map, hme_sub.lintegral_map, hball_pre]
+    simpa using hLp
 
 end Submission
 
