@@ -2635,4 +2635,72 @@ theorem Submission.codim1_zsl_fl_perimeter_bound : ∀ (n k : ℕ) (Us : ℕ →
   have := mul_le_mul_of_nonneg_left hle hK.le
   rwa [← mul_assoc, mul_inv_cancel₀ hK.ne', one_mul] at this
 
+/-- **Flat limit of the rescaled region boundaries** (Simon 7.5.3, 7.5.5; steps C1, D1, D5 and E3
+of the supplied proof).  Let `Gᵢ(w) = ιw + ι'gᵢ(w)` with `gᵢ → b` in `C¹` on every ball (H1, H2),
+`Sᵢ(ω) = ∫_{Fᵢ ∩ B_R} dω(Gᵢ)(DGᵢ e)` for `spt ω ⊆ B_R(0)` (H3), `Sᵢ` of locally bounded mass (H4),
+and `Sᵢ ⇀ S`.  Then `S = ∂[[F]]` with `ξ_A = ιe₀ ∧ ⋯ ∧ ιeₙ` for a measurable `F` in the plane
+`ι(ℝ^{n+1}) + ι'b`.  `codim1_zsl_fl_perimeter_bound` gives the local perimeter bounds of the `Fᵢ`,
+`codim1_zsl_perimeter_compactness` a subsequence with `F_{σ i} → F'` in `L¹_loc`, and
+`codim1_zsl_fl_graph_integral_tendsto` the limit `∫_{F' ∩ B_R} dω(G)(ιe)`, `G(w) = ιw + ι'b`, of
+the integrals in (H3) along `σ`; with `Sᵢ ⇀ S` this is `S(ω)` when `spt ω ⊆ B_R(0)`.  As
+`|G(w)| ≥ |w|`, the restriction to `B_R` can be dropped, and
+`codim1_zsl_fl_isometry_image_setIntegral` moves the integral to `F := G(F')`. -/
+theorem Submission.codim1_zsl_flat_graph_limit : ∀ (n k : ℕ) (Us : ℕ → Set (Euclid (n + 1 + k))) (Ss : (i : ℕ) → GeometricCurrentOn (Us i) n) (S : GeometricCurrentOn (univ : Set (Euclid (n + 1 + k))) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ξA : MultiVector (n + 1 + k) (n + 1)) (b : Euclid k) (gs : ℕ → Euclid (n + 1) → Euclid k) (Fs : ℕ → Set (Euclid (n + 1))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξA α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) → ConvergesWeakly Ss S → (∀ i, MeasurableSet (Fs i)) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, DifferentiableAt ℝ (gs i) w) → (∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid (n + 1)) R, ‖gs i w - b‖ < ε ∧ ‖fderiv ℝ (gs i) w‖ < ε) → (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) = ∫ w in Fs i ∩ ball 0 R, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (gs i w)) (fun j => fderiv ℝ (fun w => ι w + ι' (gs i w)) w (EuclideanSpace.single j (1 : ℝ)))) → (∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (n + 1 + k)) n) y) ≤ 1) → currentEval (Ss i) (ω : DifferentialForm (Euclid (n + 1 + k)) n) ≤ c) → ∃ F : Set (Euclid (n + 1 + k)), MeasurableSet F ∧ F ⊆ {y | ∃ w, y = ι w + ι' b} ∧ IsBoundaryOfRegion S F (fun _ => ξA) := by
+  intro n k Us Ss S ι ι' ξA b gs Fs hperp hspan hξA hconv hFs hH1 hH2 hH3 hH4
+  -- Part B: (H1)–(H4) give uniform local perimeter bounds for the `Fᵢ`.
+  have hper := Submission.codim1_zsl_fl_perimeter_bound n k Us Ss ι ι' b gs Fs hperp hspan hFs
+    hH1 hH2 hH3 hH4
+  -- C1: BV compactness, `L^{n+1}((F_{σ i} Δ F') ∩ B_R) → 0` for every `R`.
+  obtain ⟨σ, F', hσ, hF', hsymm⟩ := Submission.codim1_zsl_perimeter_compactness (n + 1) Fs hFs hper
+  -- E1–E2: `F := G(F')` is measurable and `∫_F f dH^{n+1} = ∫_{F'} f ∘ G`.
+  obtain ⟨hFmeas, htrans⟩ :=
+    Submission.codim1_zsl_fl_isometry_image_setIntegral (n + 1) (n + 1 + k) ι (ι' b) F' hF'
+  refine ⟨(fun w => ι w + ι' b) '' F', hFmeas, ?_, ?_⟩
+  · rintro y ⟨w, -, rfl⟩
+    exact ⟨w, rfl⟩
+  · intro ω
+    -- D1: `dω` is a test form, and `spt ω ⊆ B_R(0)` for some `R > 0`.
+    have hωtest : IsTestForm (ω : DifferentialForm (Euclid (n + 1 + k)) n) := ω.property.1
+    have hdω := exteriorDerivative_isTestForm hωtest
+    obtain ⟨R, hRpos, hR⟩ :=
+      hωtest.2.isCompact.isBounded.subset_ball_lt 0 (0 : Euclid (n + 1 + k))
+    -- D2–D4: along `σ` the graph integrals tend to the integral over the flat graph `G`.
+    have hσt : Tendsto σ atTop atTop := hσ.tendsto_atTop
+    have hlim := Submission.codim1_zsl_fl_graph_integral_tendsto (n + 1) k (n + 1 + k) ι ι' b R
+      (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n)) (fun i => gs (σ i))
+      (fun i => Fs (σ i)) F' hdω.1.continuous hdω.2 (fun i => hFs (σ i)) hF' (hsymm R)
+      (hσt.eventually (hH1 R hRpos)) (fun ε hε => hσt.eventually (hH2 R ε hRpos hε))
+    -- D5: by (H3) these integrals are eventually `S_{σ i}(ω)`, and `S_{σ i}(ω) → S(ω)`.
+    have heq : (fun i => currentEval (Ss (σ i)) (ω : DifferentialForm (Euclid (n + 1 + k)) n))
+        =ᶠ[atTop] fun i => ∫ w in Fs (σ i) ∩ ball 0 R,
+          exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (gs (σ i) w))
+            (fun j => fderiv ℝ (fun w => ι w + ι' (gs (σ i) w)) w
+              (EuclideanSpace.single j (1 : ℝ))) := by
+      filter_upwards [hσt.eventually (hH3 R hRpos)] with i hi
+      exact hi ω hR
+    have hS := tendsto_nhds_unique (((hconv ω).comp hσt).congr' heq) hlim
+    -- E3: move the integral to `F = G(F')` and use `ξ_A(α) = α(ιe)`.
+    rw [hS, htrans]
+    simp only [hξA]
+    symm
+    -- `dω(G(w)) = 0` for `|w| ≥ R`, since `|G(w)|² = |w|² + |b|²` and `spt dω ⊆ B_R(0)`.
+    apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hF' inter_subset_left
+    rintro w ⟨hwF, hwB⟩
+    have hwB' : R ≤ ‖w‖ := by
+      by_contra hlt
+      exact hwB ⟨hwF, by simpa using (not_le.1 hlt)⟩
+    have hnorm : ‖w‖ ≤ ‖ι w + ι' b‖ := by
+      have h2 : ‖ι w + ι' b‖ ^ 2 = ‖w‖ ^ 2 + ‖b‖ ^ 2 := by
+        rw [norm_add_sq_real, hperp, LinearIsometry.norm_map, LinearIsometry.norm_map]
+        ring
+      nlinarith [norm_nonneg w, norm_nonneg (ι w + ι' b), sq_nonneg ‖b‖]
+    have hnot : ι w + ι' b ∉
+        tsupport (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n)) := by
+      intro hmem
+      have := hR (tsupport_exteriorDerivative_subset _ hmem)
+      rw [mem_ball, dist_zero_right] at this
+      linarith
+    rw [image_eq_zero_of_notMem_tsupport hnot]
+    rfl
+
 end GMT.Ch07
