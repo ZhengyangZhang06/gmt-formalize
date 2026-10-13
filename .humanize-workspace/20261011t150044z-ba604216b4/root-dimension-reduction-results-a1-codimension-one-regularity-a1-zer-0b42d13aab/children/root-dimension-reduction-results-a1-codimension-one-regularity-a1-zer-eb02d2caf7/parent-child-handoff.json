@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; grep -n simongmt -A6 local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "cat decomposition-audit-v1.json decomposition-review-receipt-v1.json; python3 dump of decomposition-v1.json (12 subproblems: statements, lean_statements, natural proofs, key steps, dependencies)",
+        "python3 scan of dag.json: lean_name lookup of the 8 codim1_zsl_* names, the 4 reused names (status, candidate commit, lean_statement byte equality with decomposition-v1.json), dtc_hausdorff_dilation, dor_ims_unitOrientation_dual and codim1_zero_scale_limit_offset_plane; raw count of 'codim1_zsl'; keyword scan 'area formula|BV|perimeter|bvVariation|indicator' over statements and titles",
+        "for r in $(git for-each-ref --format='%(objectname)' | sort -u): git grep -q -e codim1_zsl $r -- 'GMT/*.lean' (1277 commits); positive control: the same loop with dgcr_graph_orientation_jacobian; grep -rl codim1_zsl .lake/packages/simongmt/Poincare GMT",
+        "grep -n 'def IsTestForm|def exteriorDerivative|theorem exteriorDerivative_apply|def covectorEuclideanNorm|def massOn|def zeroRegion|def support|def affinePullbackForm|theorem exteriorDerivative_affinePullbackForm|theorem tsupport_exteriorDerivative_subset' simongmt/Poincare/SimonGMT/Chapter06/*.lean, then sed of Forms.lean 25-135, Mass.lean 25-80, CurrentLocalEquality.lean 95-125, AffineCurrentPushforward.lean 30-50 and 145-160, Currents.lean 120-190",
+        "rg -n 'theorem tsupport_eq|theorem support_eq|protected theorem neg|symmetric :' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'integral_comp_inv_smul_of_nonneg|support_convolution_subset|exists_isCompact_sdiff_lt|exists_isOpen_sdiff_lt|integral_pos_iff_support_of_nonneg|theorem lintegral_tsum' mathlib/Mathlib; rg -n 'namespace Module.Basis|def det' mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "lean -DautoImplicit=false /tmp/zsl-v2/Lib.lean and /tmp/zsl-v2/Lib2.lean (#check of about 70 Mathlib/SimonGMT lemmas cited by the children)",
+        "lean -DautoImplicit=false /tmp/zsl-v2/Bump.lean (ρ := (∫b)⁻¹·b for b : ContDiffBump (0 : Euclid m) with radii 1/2, 1: ContDiff ℝ ⊤, ρ ≥ 0, ρ(−z) = ρ(z), tsupport ρ = closedBall 0 1, ∫ρ = 1)",
+        "lean -DautoImplicit=false /tmp/zsl-v2/TypesV2.lean (12 child types generated from the v2 JSON plus the assembly of the selected type); lean -DautoImplicit=false /tmp/zsl-v2/AssemblyV2.lean (children as axioms, #print axioms)",
+        "grep -n 'def check_source_delta' -A40 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-review-receipt-v1.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "/tmp/zsl-v2/Lib.lean",
+        "/tmp/zsl-v2/Lib2.lean",
+        "/tmp/zsl-v2/Bump.lean",
+        "/tmp/zsl-v2/TypesV2.lean",
+        "/tmp/zsl-v2/AssemblyV2.lean"
+      ],
+      "conclusion": "Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot lake-manifest pins simongmt 2b366308, equal to .lake/packages/simongmt. The snapshot Contract.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\nDAG.\n- The selected node is 'decomposing' with the handoff's exact frozen type.\n- The 4 reused declarations are accepted with types byte-identical to v1: dtc_blowUp_testForm_corr (5e184fbc), setIntegral_blowUpMap_image_eq_inv_pow_mul (713eebc5), rsdic_unitOrientation_eq_or_eq_neg (fe95347b) and dgcr_graph_orientation_jacobian (62aa1f11).\n- The 8 codim1_zsl_* names have 0 occurrences in dag.json, SimonGMT, GMT/ and the 1277 commits reachable from refs. The positive control dgcr_graph_orientation_jacobian was found on 6 of those commits.\n- No accepted node gives an exact graph area formula or BV compactness. The only area-formula nodes are unaccepted (dpf_area_formula_bilipschitz_rectifiable, idtp_carrier_area_formula) and have other types.\nLibrary.\n- The SimonGMT definitions match the children's proofs: exteriorDerivative = extDeriv with the alternating-sum formula, IsTestForm = ContDiff ℝ ∞ ∧ HasCompactSupport, covectorEuclideanNorm, massOn/massAdmissibleOn, zeroRegion/support and affinePullbackForm.\n- In the snapshot Mathlib, ContDiffBump.tsupport_eq (BumpFunction/Basic.lean:157) gives closedBall c rOut. This confirms the v1 defect, so step 1 of bv_compactness now claims only tsupport ρ = closedBall(0, 1). ContDiffBump.neg (:132) gives evenness, and support_eq (:151) gives the open-ball support.\n- Every lemma cited by the corrected proofs exists in the import closure. Examples: integral_comp_inv_smul_of_nonneg (Haar/NormedSpace.lean:129), support_convolution_subset (Convolution.lean:670), MeasurableSet.exists_isCompact_sdiff_lt/exists_isOpen_sdiff_lt (Regular.lean:843/385), exists_continuous_one_zero_of_isCompact and Module.Basis.det (Determinant.lean:591; the old name Basis.det is fixed).\nLean.\n- Bump.lean compiles the corrected mollifier.\n- TypesV2.lean elaborates all 12 frozen types taken verbatim from the v2 JSON and proves the selected type; lean exits 0. Its axioms are propext, sorryAx, Classical.choice and Quot.sound.\n- With the children as axioms, AssemblyV2.lean depends only on propext, Classical.choice, Quot.sound and the 4 direct children.\n- leaf_verification.check_source_delta forbids new declarations and imports in leaf proofs, so the deep lemmas must stay separate children."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.blowup_region-a1",
+  "subproblem": {
+    "key": "blowup_region",
+    "title": "Blow-ups of a region boundary are region boundaries: η_{y,λ#}∂[[E]] = ∂[[η_{y,λ}(E)]] with orientation ξ_N(y + λ·)",
+    "statement": "Let P, n ∈ ℕ, let U, E ⊆ ℝ^P be arbitrary sets, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U) (GeometricCurrentOn U n), y ∈ ℝ^P and λ > 0. Let η := η_{y,λ} (dilation y λ, η(z) = λ^{−1}(z − y)) and η_#T := blowUp T y λ ∈ 𝒟_n(η(U)). If T(ω) = ∫_E ξ_N(z)(dω(z)) dH^{n+1}(z) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N, H^{n+1} = μHE[n+1]), then η_#T(ω) = ∫_{η(E)} ξ_N(y + λw)(dω(w)) dH^{n+1}(w) for every ω ∈ 𝒟^n(η(U)), i.e. IsBoundaryOfRegion (blowUp T y λ) (η(E)) (w ↦ ξ_N(y + λw)).",
+    "lean_statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (y : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsBoundaryOfRegion T E ξN → IsBoundaryOfRegion (blowUp T y lam hlam.ne') (dilation y lam '' E) (fun w => ξN (y + lam • w))",
+    "lean_name": "codim1_zsl_blowUp_isBoundaryOfRegion",
+    "depends_on": [
+      "testform_corr",
+      "blowup_change_of_variables"
+    ],
+    "natural_proof": "Source. Step 1 (first three bullets) of the supplied proof of the parent node: the representation of S_i = η_{x_i,λ_i#}T as a region boundary. Simon Ch. 6, 2.23 (f_#T(ω) = T(f^#ω), chapter-06.txt line 408) and Simon 7.5.1 (T = ∂[[E]], chapter-07.txt line 752). Sibling children used: testform_corr (Submission.dtc_blowUp_testForm_corr) and blowup_change_of_variables (Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul). Neither measurability of E nor openness of U is needed.\n\nNotation. η := dilation y λ, η(z) = −λ^{−1}y + λ^{−1}z = λ^{−1}(z − y). H^{n+1} := μHE[n+1]. dβ := exteriorDerivative β. For a j-covector β and c ∈ ℝ, β(cv_1, …, cv_j) = c^j·β(v_1, …, v_j) (multilinearity; ContinuousAlternatingMap.map_smul_univ).\n\n1. (Test-form correspondence.) Fix ω ∈ 𝒟^n(η(U)) (TestFormOn (dilation y λ '' U) n). By testform_corr (a) there is ω' ∈ 𝒟^n(U) with ω'(z) = ω(η(z)) for all z ∈ ℝ^P, and by testform_corr (c), blowUp T y λ (ω) = λ^{−n}·T(ω').\n\n2. (Hypothesis.) IsBoundaryOfRegion T E ξ_N applied to ω' gives T(ω') = ∫_E ξ_N(z)(dω'(z)) dH^{n+1}(z).\n\n3. (Exterior derivative of ω' = ω∘η.) Let L := λ^{−1}·id (dilationCLM P λ) and b := −λ^{−1}y, so η(z) = b + Lz, and let φ := affinePullbackForm L b ω, i.e. φ(z)(v_1, …, v_n) = ω(η(z))(λ^{−1}v_1, …, λ^{−1}v_n) = λ^{−n}·ω(η(z))(v_1, …, v_n). Thus ω' = λ^n·φ as forms. ω is a test form, in particular smooth, so SimonGMT exteriorDerivative_affinePullbackForm gives dφ = affinePullbackForm L b (dω), i.e. dφ(z)(v_0, …, v_n) = dω(η(z))(λ^{−1}v_0, …, λ^{−1}v_n) = λ^{−(n+1)}·dω(η(z))(v_0, …, v_n). By linearity of d (exteriorDerivative_smul), dω'(z) = λ^n·dφ(z) = λ^{−1}·dω(η(z)) for every z.\n\n4. (Pulling out the scalar.) Each ξ_N(z) is linear, so steps 2–3 give T(ω') = ∫_E λ^{−1}·ξ_N(z)(dω(η(z))) dH^{n+1}(z) = λ^{−1}·∫_E ξ_N(z)(dω(η(z))) dH^{n+1}(z) (integral_const_mul; no integrability is needed).\n\n5. (Rewriting the integrand.) Put g(w) := ξ_N(y + λw)(dω(w)) for w ∈ ℝ^P. For every z, y + λ·η(z) = y + (z − y) = z, hence ξ_N(z)(dω(η(z))) = g(η(z)).\n\n6. (Change of variables.) SimonGMT blowUpMap y λ is z ↦ λ^{−1}(z − y) = −λ^{−1}y + λ^{−1}z, i.e. blowUpMap y λ = η as functions. By blowup_change_of_variables (with n + 1 in place of n, M := E, x := y, r := λ, f := g): ∫_{η(E)} g dH^{n+1} = λ^{−(n+1)}·∫_E g(η(z)) dH^{n+1}(z). Hence ∫_E g(η(z)) dH^{n+1}(z) = λ^{n+1}·∫_{η(E)} g dH^{n+1}.\n\n7. (Conclusion.) By steps 1, 4, 5 and 6: blowUp T y λ (ω) = λ^{−n}·λ^{−1}·λ^{n+1}·∫_{η(E)} g dH^{n+1} = ∫_{η(E)} ξ_N(y + λw)(dω(w)) dH^{n+1}(w). Since ω ∈ 𝒟^n(η(U)) was arbitrary, IsBoundaryOfRegion (blowUp T y λ) (η(E)) (w ↦ ξ_N(y + λw)). ∎",
+    "proof_key_steps": [
+      "blowUp T y λ (ω) = λ^{−n}·T(ω∘η) with ω∘η ∈ 𝒟^n(U) (testform_corr).",
+      "ω∘η = λ^n·(affine pull-back of ω) and d commutes with affine pull-back, so d(ω∘η) = λ^{−1}·(dω)∘η.",
+      "ξ_N(z) = ξ_N(y + λη(z)); the change of variables ∫_E g∘η dH^{n+1} = λ^{n+1}∫_{η(E)} g dH^{n+1} (blowup_change_of_variables) cancels all powers of λ."
+    ]
+  },
+  "audit": {
+    "key": "blowup_region",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof establishes the exact contract for arbitrary U and E. Test-form correspondence, exterior differentiation and the accepted change-of-variables identity cancel the scaling factors correctly without imposing measurability or integrability hypotheses."
+  },
+  "resolved_dependencies": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_change_of_variables-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-eb02d2caf7/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-eb02d2caf7/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-eb02d2caf7/parent-supplied-natural-proof.json"
+}
