@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.projection_continuity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1",
+  "depth": 6,
+  "title": "Continuity of the tangent projection of an embedded C¹ submanifold (parent step 8)",
+  "statement": "Let P, m ∈ ℕ and let M ⊆ ℝ^P be an embedded C¹ m-dimensional submanifold. Then the map x ↦ P_x, where P_x := (Submodule.span ℝ (tangentSpace M x)).starProjection is the orthogonal projection of ℝ^P onto the span of tangentSpace M x, is continuous on M as a map into continuous linear operators on ℝ^P.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection) M",
+  "lean_name": "codim1_hcp_lsa_tangent_projection_continuousOn",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.graph_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.graph_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-ac747a5134-a1"
+}

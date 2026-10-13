@@ -1,0 +1,150 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.measurability-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 8 of the parent proof (part (i): on countably many chart pieces, d^M_xζ(P_xe_j) equals the Borel function x ↦ fderiv(ζ∘G_l)(π_l(x − p_l))(π_l(P_xe_j)) off an H^m-null set). Here the null set comes from child rademacher (instead of Rademacher in each chart), and the statement is proved for the operator x ↦ d^M_xζ∘P_x, which gives the parent's components by evaluation at e_j. Sibling children used: graph_chart, projection_continuity, rademacher, locally_closed. Notation: P_x := starProjection of span(tangentSpace M x); F(x) := fderivWithin ℝ ζ M x ∘ P_x ∈ L(ℝ^P, ℝ); H^m = μHE[m].
+
+1. (Inputs.) M is Borel (locally_closed (a)); for H^m-a.e. x ∈ M, ζ is differentiable within M at x (rademacher); x ↦ P_x is continuous on M (projection_continuity).
+2. (Local claim.) Every p ∈ M has an open W ∋ p such that F is a.e.-strongly measurable for H^m⌞(M ∩ W). Proof:
+ (a) Child graph_chart at p gives pr, G, r, W, Λ (W open, p ∈ W, G C¹ on B_r(0), M ∩ W = G(B_r(0)), pr(G(a) − p) = a, pr∘DG(a) = id and tangentSpace M (G a) = range DG(a) on B_r(0)). M ∩ W is Borel.
+ (b) (A measurable representative.) Ψ(x) := D(ζ∘G)(pr(x − p)) ∘ pr ∘ P_x, where D(ζ∘G) := fderiv ℝ (ζ∘G) (defined everywhere). The map x ↦ D(ζ∘G)(pr(x − p)) is Borel (measurable_fderiv composed with the continuous map x ↦ pr(x − p)); x ↦ pr∘P_x is continuous on M ∩ W (step 1), hence a.e.-strongly measurable for H^m⌞(M ∩ W); composition of operators is a continuous bilinear map (isBoundedBilinearMap_comp). Therefore Ψ is a.e.-strongly measurable for H^m⌞(M ∩ W).
+ (c) (Ψ = F a.e. on M ∩ W.) Let x ∈ M ∩ W be a point where ζ is differentiable within M (H^m-a.e. x ∈ M ∩ W by step 1). Put L := fderivWithin ℝ ζ M x; then ζ has derivative L within M at x. Write x = G(a) with a := pr(x − p) ∈ B_r(0). G has derivative DG(a) at a (C¹ on the open ball) and maps B_r(0) into M, so by the chain rule ζ∘G has derivative L∘DG(a) within B_r(0) at a, hence at a (B_r(0) is a neighbourhood of a): D(ζ∘G)(a) = L∘DG(a). Let v ∈ ℝ^P. P_xv ∈ span(tangentSpace M x) ⊆ range DG(a) (tangentSpace M x = range DG(a), a linear subspace), so P_xv = DG(a)h for some h ∈ ℝ^m, and pr(P_xv) = pr(DG(a)h) = h. Hence Ψ(x)v = D(ζ∘G)(a)(pr(P_xv)) = L(DG(a)h) = L(P_xv) = F(x)v. So Ψ(x) = F(x).
+ (d) By (b) and (c), F is a.e.-strongly measurable for H^m⌞(M ∩ W) (AEStronglyMeasurable.congr).
+3. (Countable cover.) Choose W_p for every p ∈ M as in step 2. By second countability there is a countable T ⊆ M with ⋃_{p∈T} W_p = ⋃_{p∈M} W_p ⊇ M (TopologicalSpace.isOpen_biUnion_countable), so M = ⋃_{p∈T} (M ∩ W_p).
+4. (Conclusion.) A.e.-strong measurability holds on each of the countably many pieces M ∩ W_p, p ∈ T, hence for H^m restricted to their union M (aestronglyMeasurable_iUnion_iff). ∎
+
+Formal check (scratch validation by the decomposition author; not part of the frozen contract). The tactic proof below of `theorem Submission.codim1_hcp_lsa_tangential_derivative_aesm : <exactly the frozen lean_statement> := by`, after `import GMT.Ch07.Submission` inside `namespace GMT.Ch07` with the contract's opens and with the siblings Submission.dimred_rpd_embedded_locally_closed, Submission.codim1_hcp_lsa_c1_graph_chart, Submission.codim1_hcp_lsa_rademacher_on_submanifold and Submission.codim1_hcp_lsa_tangent_projection_continuousOn present with their frozen types, compiled with Lean v4.35.0-rc3 / Mathlib 25730c7c; #print axioms: propext, Classical.choice, Quot.sound and those four siblings.
+```lean
+  intro P m M ζ hM hζ
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  have hdiff := Submission.codim1_hcp_lsa_rademacher_on_submanifold P m M ζ hM hζ
+  have hPc := Submission.codim1_hcp_lsa_tangent_projection_continuousOn P m M hM
+  set F : Euclid P → (Euclid P →L[ℝ] ℝ) := fun x =>
+    (fderivWithin ℝ ζ M x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection with hF
+  -- local statement on chart domains
+  have hloc : ∀ p ∈ M, ∃ O : Set (Euclid P), IsOpen O ∧ p ∈ O ∧
+      AEStronglyMeasurable F (μHE[m].restrict (M ∩ O)) := by
+    intro p hp
+    obtain ⟨pr, G, r, W, Λ, hr, hWo, hpW, hpr, hG0, hGc, hGL, hMW, hleft, hderiv, htan⟩ :=
+      Submission.codim1_hcp_lsa_c1_graph_chart P m M p hM hp
+    refine ⟨W, hWo, hpW, ?_⟩
+    have hMWm : MeasurableSet (M ∩ W) := hMmeas.inter hWo.measurableSet
+    -- the chart representative `Ψ`
+    set Ψ : Euclid P → (Euclid P →L[ℝ] ℝ) := fun x =>
+      (fderiv ℝ (ζ ∘ G) (pr (x - p))).comp (pr.comp (Submodule.span ℝ (tangentSpace M x)).starProjection)
+      with hΨ
+    have hΨm : AEStronglyMeasurable Ψ (μHE[m].restrict (M ∩ W)) := by
+      have h1 : Measurable (fun x : Euclid P => fderiv ℝ (ζ ∘ G) (pr (x - p))) :=
+        (measurable_fderiv ℝ (ζ ∘ G)).comp (by fun_prop)
+      have h2 : ContinuousOn (fun x => pr.comp (Submodule.span ℝ (tangentSpace M x)).starProjection)
+          (M ∩ W) :=
+        ((ContinuousLinearMap.compL ℝ (Euclid P) (Euclid P) (Euclid m) pr).continuous.comp_continuousOn
+          hPc).mono inter_subset_left
+      exact isBoundedBilinearMap_comp.continuous.comp_aestronglyMeasurable
+        (h1.aestronglyMeasurable.prodMk (h2.aestronglyMeasurable hMWm))
+    refine hΨm.congr ?_
+    have hdiff' : ∀ᵐ x ∂(μHE[m].restrict (M ∩ W)), DifferentiableWithinAt ℝ ζ M x :=
+      ae_restrict_of_ae_restrict_of_subset inter_subset_left hdiff
+    filter_upwards [hdiff', ae_restrict_mem hMWm] with x hxd hxMW
+    -- `x = G a` with `a = pr (x - p)`
+    have hxMW' := hxMW
+    rw [hMW] at hxMW'
+    obtain ⟨a, ha, rfl⟩ := hxMW'
+    simp only [hΨ, hF]
+    rw [hleft a ha]
+    have hGM : MapsTo G (ball 0 r) M := fun b hb => (hMW.symm ▸ mem_image_of_mem G hb : G b ∈ M ∩ W).1
+    have hGd : HasFDerivAt G (fderiv ℝ G a) a :=
+      ((hGc.contDiffAt (isOpen_ball.mem_nhds ha)).differentiableAt one_ne_zero).hasFDerivAt
+    have hcomp : HasFDerivAt (ζ ∘ G) ((fderivWithin ℝ ζ M (G a)).comp (fderiv ℝ G a)) a :=
+      (hxd.hasFDerivWithinAt.comp a hGd.hasFDerivWithinAt hGM).hasFDerivAt
+        (isOpen_ball.mem_nhds ha)
+    rw [hcomp.fderiv]
+    ext v
+    simp only [ContinuousLinearMap.comp_apply]
+    -- the projected vector lies in `range (fderiv ℝ G a)`
+    have hmem0 := Submodule.starProjection_apply_mem (Submodule.span ℝ (tangentSpace M (G a))) v
+    have hle : Submodule.span ℝ (tangentSpace M (G a)) ≤
+        LinearMap.range ((fderiv ℝ G a : Euclid m →L[ℝ] Euclid P) : Euclid m →ₗ[ℝ] Euclid P) := by
+      rw [Submodule.span_le, htan a ha]
+      rintro _ ⟨y, rfl⟩
+      exact ⟨y, rfl⟩
+    have hmem : ∃ h, (fderiv ℝ G a) h =
+        (Submodule.span ℝ (tangentSpace M (G a))).starProjection v := LinearMap.mem_range.1 (hle hmem0)
+    obtain ⟨h, hh⟩ := hmem
+    rw [← hh]
+    congr 1
+    have := congrArg (fun L => L h) (hderiv a ha)
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at this
+    rw [this]
+  -- countable cover
+  choose! O hOo hpO hO using hloc
+  obtain ⟨T, hTM, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable M O hOo
+  have hcount : Countable T := hTc.to_subtype
+  have hMU : M = ⋃ i : T, M ∩ O i := by
+    ext x
+    simp only [mem_iUnion, mem_inter_iff]
+    constructor
+    · intro hx
+      have hxU : x ∈ ⋃ p ∈ M, O p := mem_iUnion₂.2 ⟨x, hx, hpO x hx⟩
+      rw [← hTU] at hxU
+      obtain ⟨p, hpT, hxO⟩ := mem_iUnion₂.1 hxU
+      exact ⟨⟨p, hpT⟩, hx, hxO⟩
+    · rintro ⟨i, hx, -⟩; exact hx
+  rw [hMU]
+  exact aestronglyMeasurable_iUnion_iff.2 fun i => hO i.1 (hTM i.2)
+```
+
+Integration check: this proof was also compiled together with the proofs of all eight new sibling children and the assembly of the parent theorem in a single file (only the four reused accepted declarations taken as axioms); the file compiled without errors or `sorry`.
+
+## Key steps
+
+1. On a graph-chart domain, Ψ(x) := D(ζ∘G)(pr(x − p))∘pr∘P_x is a.e.-strongly measurable (measurable_fderiv and continuity of P).
+2. Where ζ is differentiable within M (a.e., by rademacher), D(ζ∘G)(a) = d^M_xζ∘DG(a) and P_xv = DG(a)(pr P_xv). Hence Ψ(x) = d^M_xζ∘P_x.
+3. Countably many chart domains cover M, and a.e.-strong measurability passes to countable unions.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (Euclid, IsEmbeddedSubmanifold, tangentSpace, μHE usage)`
+- `python3 scans of dag.json: selected node (depth 5, max_depth 6), parent hypercone_plane and its decomposition-v1.json, accepted nodes whose statements mention Lipschitz/mollif/convol/graph chart/starProjection/tangentSpace, lean_name collision scan for codim1_hcp_lsa_*`
+- `runtime.py: _decompose (max_depth), _existing_lean_name_problem (reuse of accepted declarations by identical name and type)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for 93f7ea7a3650 (codim1_rdo_gc_local_inverse_c2, dsmc_chart_inverse_continuity), d25d2377 (codim1_zsl_pc_mollify_indicator_l1), and the handoffs of codim1_zsl_gc_local_inverse and dsmc_chart_inverse_continuity`
+- `grep -rn in local-references/123e8435b4a2469b/mathlib/Mathlib: euclideanHausdorffMeasure, ae_differentiableWithinAt_of_mem, LipschitzWith.ae_differentiableAt, measurable_fderiv, tangentConeAt, HasFDerivWithinAt.unique_on, mem_tangentConeAt_of_seq, hasFDerivAt_convolution_left, contDiff_convolution_left, ae_convolution_tendsto_right_of_locallyIntegrable, LocallyLipschitzOn.exists_lipschitzOnWith_of_compact, LocallyLipschitzOn.mul, exists_isSubordinate, exists_contDiff_support_eq_eq_one_iff, sq_sum_le_card_mul_sum_sq, measurePreserving_sub_left`
+- `lean #check probes in the GMT.Ch07.Submission import closure (Imp*.lean, Inst5.lean): SmoothPartitionOfUnity.exists_isSubordinate, ContDiffBump API, ContDiffBump.normed (missing), VitaliFamily.ae_tendsto_average_norm_sub, Besicovitch.tendsto_filterAt, tendsto_integral_smul_of_tendsto_average_norm_sub, aestronglyMeasurable_iUnion_iff, Submodule.eq_starProjection_of_mem_of_inner_eq_zero, NormedRing.inverse_continuousAt, instances HasContDiffBump/HasBesicovitchCovering (Euclid m)`
+- `lean -DautoImplicit=false /tmp/lsa-split/check/{TypesAll,Assembly,N1,N2,N3,N4,N5,N6,N7,N8,Integration}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `git for-each-ref | xargs git grep -l codim1_hcp_lsa -- 'GMT/*.lean' (no match); grep codim1_hcp_lsa dag.json (0); grep -rn codim1_hcp_lsa simongmt (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e9797ac1a5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2511ff6312/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/TangentCone/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/tmp/lsa-split/check/TypesAll.lean`
+- `/tmp/lsa-split/check/Assembly.lean`
+- `/tmp/lsa-split/check/Integration.lean`
+
+Pins match: manifest project b4d606db and Mathlib 25730c7c equal workspace HEAD and .lake/packages/mathlib, and the snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…). The node has depth 5 with max_depth 6, so the children are leaves. Reuse: four accepted declarations (chart_tangentSpace_eq_range_fderiv, dimred_rpd_embedded_locally_closed, codim1_zsl_gc_local_inverse, dsmc_chart_inverse_continuity) are taken with byte-identical frozen types. The C² graph-chart and tangent-projection lemmas (codim1_rdo_gc_graph_over_tangent, submanifold_tangentProjection_c1_extension, dor_lmb_ret_tangent_projection) do not apply to C¹ M. No C¹ graph chart, Rademacher-on-M, tangent-projection continuity or L²-gradient mollification lemma exists in the DAG, SimonGMT or the snapshot, and the 8 codim1_hcp_lsa_ names are unused everywhere. Mathlib in the Submission import closure provides Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem), measurable_fderiv, HasFDerivWithinAt.unique_on with mem_tangentConeAt_of_seq, LipschitzOnWith.hausdorffMeasure_image_le with EuclideanSpace.euclideanHausdorffMeasure_eq_volume, convolution smoothness, ContDiffBump, Besicovitch Lebesgue differentiation, SmoothPartitionOfUnity and exists_contDiff_support_eq_eq_one_iff. It lacks ContDiffBump.normed, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable and sq_sum_le_card_mul_sum_sq; the mollify proof rebuilds the first two by hand, and the assembly uses Finset.sum_mul_sq_le_sq_mul_sq. Lean: all 12 child types elaborate. The selected type is kernel-checked from the child types as axioms. Every new child is proved from exactly its declared siblings. The integrated file (8 proofs plus assembly, only the 4 reused declarations as axioms) compiles without errors or sorry.

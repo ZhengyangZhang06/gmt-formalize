@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.mollify-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1",
+  "depth": 6,
+  "title": "Smooth approximation of a compactly supported Lipschitz function with L²-convergent gradients (parent step 4)",
+  "statement": "Let m ∈ ℕ, let g : ℝ^m → ℝ be K-Lipschitz (K ≥ 0), let S ⊆ ℝ^m be compact with g = 0 outside S, and let δ > 0. Then there are C^∞ functions g_k : ℝ^m → ℝ (k ∈ ℕ) with the following properties: g_k(a) = 0 whenever a ∉ cthickening δ S (the closed δ-neighbourhood of S); g_k → g uniformly on ℝ^m; and ∫⁻ ofReal(‖Dg_k(a) − Dg(a)‖²) da → 0 (Lebesgue measure). Here D = fderiv ℝ, so Dg is the Rademacher derivative (0 where g is not differentiable), and ‖·‖ is the operator norm.",
+  "lean_statement": "∀ (m : ℕ) (g : Euclid m → ℝ) (K : NNReal) (S : Set (Euclid m)) (δ : ℝ), LipschitzWith K g → IsCompact S → (∀ a, a ∉ S → g a = 0) → 0 < δ → ∃ gs : ℕ → Euclid m → ℝ, (∀ k, ContDiff ℝ (⊤ : ℕ∞) (gs k)) ∧ (∀ k a, a ∉ Metric.cthickening δ S → gs k a = 0) ∧ TendstoUniformly gs g atTop ∧ Tendsto (fun k => ∫⁻ a, ENNReal.ofReal (‖fderiv ℝ (gs k) a - fderiv ℝ g a‖ ^ 2)) atTop (𝓝 0)",
+  "lean_name": "codim1_hcp_lsa_mollify_lipschitz_compact_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-3e24646a65-a1"
+}

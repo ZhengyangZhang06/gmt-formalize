@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.tangent_uniqueness-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1",
+  "depth": 6,
+  "title": "Derivatives within a set agree on the span of its curve tangent vectors (parent step 7b)",
+  "statement": "Let P ∈ ℕ, let M ⊆ ℝ^P be any set, f : ℝ^P → ℝ, f' : ℝ^P → ℝ a continuous linear map, and x, v ∈ ℝ^P. If f has derivative f' within M at x (HasFDerivWithinAt f f' M x) and v lies in the linear span of tangentSpace M x (the velocities γ'(0) of C¹ curves γ on (−1,1) with values in M and γ(0) = x), then fderivWithin ℝ f M x v = f'(v).",
+  "lean_statement": "∀ (P : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (f' : Euclid P →L[ℝ] ℝ) (x v : Euclid P), HasFDerivWithinAt f f' M x → v ∈ Submodule.span ℝ (tangentSpace M x) → fderivWithin ℝ f M x v = f' v",
+  "lean_name": "codim1_hcp_lsa_fderivWithin_eq_on_tangent_span",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-37568e58a1-a1"
+}

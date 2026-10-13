@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.lipschitz_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1",
+  "depth": 6,
+  "title": "Hausdorff measure and lower integrals over Lipschitz images (parent steps 7b, 7d)",
+  "statement": "Let m, P ∈ ℕ, G : ℝ^m → ℝ^P, D ⊆ ℝ^m and Λ ≥ 0 with G Λ-Lipschitz on D. Let H^m = μHE[m] on ℝ^P and L^m = volume on ℝ^m. Then (a) H^m(G(N)) ≤ Λ^m·L^m(N) for every N ⊆ D. (b) If D is measurable, then ∫⁻_{G(D)} H dH^m ≤ Λ^m·∫⁻_D H∘G dL^m for every measurable H : ℝ^P → [0, ∞].",
+  "lean_statement": "∀ (m P : ℕ) (G : Euclid m → Euclid P) (D : Set (Euclid m)) (Λ : NNReal), LipschitzOnWith Λ G D → (∀ N ⊆ D, μHE[m] (G '' N) ≤ (Λ : ℝ≥0∞) ^ m * volume N) ∧ (MeasurableSet D → ∀ H : Euclid P → ℝ≥0∞, Measurable H → ∫⁻ x in G '' D, H x ∂μHE[m] ≤ (Λ : ℝ≥0∞) ^ m * ∫⁻ a in D, H (G a))",
+  "lean_name": "codim1_hcp_lsa_lipschitz_image_lintegral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-163760bb4c-a1"
+}

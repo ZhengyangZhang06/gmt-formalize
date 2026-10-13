@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsEmbeddedSubmanifold|def tangentSpace|euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume|hausdorffMeasure_image_le|ae_differentiableWithinAt_of_mem|theorem measurable_fderiv|theorem HasFDerivWithinAt.unique_on|mem_tangentConeAt_of_seq|isUnit_iff_bijective",
+        "exists_lipschitzOnWith_of_compact|tendsto_integral_smul_of_tendsto_average_norm_sub",
+        "HasCompactSupport.contDiff_convolution_left|def LocallyLipschitzOn|exists_isSubordinate|exists_contDiff_support_eq_eq_one_iff",
+        "codim1_hcp_lsa_",
+        "python3 /tmp/lsa-independent-audit/run_lean.py /tmp/lsa-independent-audit/Types.lean",
+        "python3 /tmp/lsa-independent-audit/run_lean.py /tmp/lsa-independent-audit/FromSupplied.lean",
+        "python3 /tmp/lsa-independent-audit/run_lean.py /tmp/lsa-independent-audit/Reused.lean",
+        "python3 /tmp/lsa-independent-audit/run_lean.py /tmp/lsa-independent-audit/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e9797ac1a5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e9797ac1a5/decomposition-review-retry.json",
+        "/tmp/lsa-independent-audit/Types.lean",
+        "/tmp/lsa-independent-audit/FromSupplied.lean",
+        "/tmp/lsa-independent-audit/Reused.lean",
+        "/tmp/lsa-independent-audit/Instances.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected analytic theorem. Project b4d606db and Mathlib 25730c7c match the snapshot. All twelve frozen types independently elaborate as propositions without child implementations; they are one-line types matching their prose, with valid bare names. The eight new names have no collisions in the DAG, 1323 other decompositions, or searched Lean sources. All four reused types are byte-identical to accepted DAG contracts; their candidate proofs recompile against the unchanged definitions and use only propext, Classical.choice and Quot.sound. Dependencies are acyclic and correctly directed. The supplied new proofs and parent assembly independently compile for the exact selected frozen type, without sorryAx or undeclared proof dependencies. Separate instance checks confirm ordinary continuous-linear-map composition multiplication and the intended orthogonal projection. The cited local APIs support Rademacher, derivative measurability, convolution, measure transfer and partition-of-unity assembly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all chart hypotheses. Bounded smooth curves prove one inclusion; properness supplies inverse continuity, and the derivative lower bound puts every curve velocity in the closed derivative range. Reuse and axioms were checked."
+    },
+    {
+      "key": "locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact chart slices prove the small-ball conclusion and M = O ∩ closure M, hence Borel measurability. The argument works for every stated regularity r. The reused type and proof are compatible."
+    },
+    {
+      "key": "local_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite-dimensional injectivity gives an invertible derivative. Restricting the inverse-function neighbourhood to the open invertibility locus proves all inverse identities and C¹ regularity on O. The identical reused contract was independently checked."
+    },
+    {
+      "key": "chart_inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact convergent-image sequence, properness, subsequence convergence and injectivity establish the exact epsilon-delta assertion. No openness assumption is needed. Accepted reuse has the identical type and only standard axioms."
+    },
+    {
+      "key": "graph_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scaled adjoint has norm at most one and gives an invertible coordinate derivative. The supplied inverse and embedding-margin arguments establish the chart equality, Lipschitz bound, derivative left inverse and tangent-range identity using exactly the declared dependencies."
+    },
+    {
+      "key": "tangent_uniqueness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both maps are derivatives within M; uniqueness on the tangent cone applies. Curve velocities belong to that cone, and the linear agreement set contains their span. This proves the exact arbitrary-set statement without assuming ambient UniqueDiff."
+    },
+    {
+      "key": "lipschitz_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The common Hausdorff normalization gives the subset estimate. Domination by the pushforward measure then proves the lower-integral inequality under exactly the stated measurability hypotheses; injectivity and measurable images are unnecessary."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram operator is invertible, its inverse gives the orthogonal projection formula, and chart transport proves continuity on M. IsUnit is applied to continuous linear endomorphisms with composition multiplication; there is no pointwise-function instance error."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies normalized kernels, fixed support and uniform convergence. Dominated difference quotients identify the convolved derivative; Lebesgue differentiation and compact domination establish the exact L² limit. The complete supplied proof independently compiles."
+    },
+    {
+      "key": "rademacher",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Shrunk charts make the coordinate functions Lipschitz. Euclidean Rademacher and Lipschitz transfer give local null exceptions, and the countable cover proves differentiability within M for the stated restricted Hausdorff measure."
+    },
+    {
+      "key": "measurability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart representative is measurable and equals the chosen derivative composed with the tangent projection almost everywhere by the chain rule and derivative left inverse. Countable gluing proves the operator-valued contract; evaluation yields parent part (i)."
+    },
+    {
+      "key": "local_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactly supported coordinate extension is globally Lipschitz. Mollification and the ambient cutoff give all support and uniform-convergence requirements; the projection estimate and measure transfer prove the exact gradient-error limit. Finite partition-of-unity assembly establishes parent part (ii)."
+    }
+  ],
+  "required_changes": []
+}

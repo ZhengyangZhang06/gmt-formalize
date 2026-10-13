@@ -1,0 +1,205 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1.graph_chart-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 1 of the parent proof ("Graph charts", items (1a)–(1b)): Simon Ch. 2, 4.4 (graph representation of an embedded C¹ submanifold over its tangent plane by the inverse function theorem). Sibling children used: chart_tangent_space (Submission.chart_tangentSpace_eq_range_fderiv), local_inverse (Submission.codim1_zsl_gc_local_inverse), chart_inverse_continuity (Submission.dsmc_chart_inverse_continuity). The parent's projection π_p = ι_p* (ι_p an isometry onto T_p) is replaced by pr := ‖A‖⁻¹A*, A = Dψ(v₀); all that is used is ‖pr‖ ≤ 1 and that pr∘Dψ(v₀) is invertible.
+
+Notation. B_s(a) is the open ball, B̄_s(a) the closed ball; A* is the adjoint (ContinuousLinearMap.adjoint); 0⁻¹ := 0.
+
+1. (Chart at p.) By IsEmbeddedSubmanifold 1 m M at p there are open V ⊆ ℝ^m, open W₀ ⊆ ℝ^P with p ∈ W₀ and ψ : ℝ^m → ℝ^P that is C¹ on V, injective on V, with ψ(V) = W₀ ∩ M, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W₀, and Dψ(z) injective for z ∈ V. Since p ∈ W₀ ∩ M = ψ(V) choose v₀ ∈ V with ψ(v₀) = p. As V is open and ψ is C¹ on V, ψ has derivative Dψ(v) = fderiv ℝ ψ v at every v ∈ V.
+2. (The projection pr.) Put A := Dψ(v₀) and pr := ‖A‖⁻¹·A* : ℝ^P → ℝ^m. Since ‖A*‖ = ‖A‖ (the adjoint is an isometry), ‖pr‖ = ‖A‖⁻¹‖A‖ ≤ 1 (it is 0 if A = 0 and 1 otherwise). pr∘A is injective: let pr(Ah) = 0. If ‖A‖ = 0 then A = 0, so Ah = A0 and h = 0 by injectivity of A. Otherwise A*(Ah) = 0, hence ‖Ah‖² = ⟨A*Ah, h⟩ = 0, so Ah = 0 = A0 and h = 0.
+3. (Inverse function theorem.) Let Φ(v) := pr(ψ(v) − p). Φ is C¹ on V with derivative DΦ(v) = pr∘Dψ(v) at v ∈ V (chain rule), and DΦ(v₀) = pr∘A is injective by step 2. Child local_inverse (d = m, φ = Φ, z₀ = v₀) gives open sets V₀, O ⊆ ℝ^m and χ : ℝ^m → ℝ^m with v₀ ∈ V₀ ⊆ V, χ C¹ on O, χ(O) ⊆ V₀, Φ(χ(a)) = a for a ∈ O, and Φ(z) ∈ O, χ(Φ(z)) = z for z ∈ V₀. Since Φ(v₀) = pr(0) = 0 we get 0 ∈ O and χ(0) = v₀.
+4. (Embedding margin.) Choose ε > 0 with B_ε(v₀) ⊆ V₀ (V₀ open). ψ is continuous and injective on V, ψ(V) ⊆ W₀, and proper in the above sense, so child chart_inverse_continuity (at v₀ with this ε) gives δ > 0 such that every v' ∈ V with |ψ(v') − p| < δ satisfies |v' − v₀| < ε, hence v' ∈ V₀.
+5. (The graph map and the radius.) Put G := ψ∘χ. Then G(0) = ψ(v₀) = p, and G is C¹ on O (χ is C¹ on O and maps O into V₀ ⊆ V, where ψ is C¹). Choose r₁ > 0 with B_{r₁}(0) ⊆ O, and r₂ > 0 with G(B_{r₂}(0)) ⊆ B_δ(p) (G is continuous at 0 ∈ O and G(0) = p). Put r := min(r₁/2, r₂) > 0. Then B̄_r(0) ⊆ B_{r₁}(0) ⊆ O, so G is C¹ on B_r(0). DG is continuous on the open set O, hence bounded, say ‖DG‖ ≤ C_b, on the compact set B̄_r(0); by the mean value inequality on the convex set B_r(0) (Convex.lipschitzOnWith_of_nnnorm_fderiv_le), G is Λ-Lipschitz on B_r(0) with Λ := max(C_b, 0).
+6. (The chart domain.) W := W₀ ∩ B_δ(p) ∩ {z : pr(z − p) ∈ B_r(0)} is open (the last set is the preimage of an open ball under a continuous affine map) and contains p (pr(p − p) = 0).
+7. (Left inverse.) For a ∈ B_r(0) ⊆ O: pr(G(a) − p) = Φ(χ(a)) = a.
+8. (M ∩ W = G(B_r(0)).) (⊆) Let x ∈ M ∩ W. Then x ∈ W₀ ∩ M = ψ(V), x = ψ(v') with v' ∈ V, and |ψ(v') − p| < δ, so v' ∈ V₀ by step 4 and χ(Φ(v')) = v'. Put a := Φ(v') = pr(x − p); a ∈ B_r(0) because x ∈ W, and G(a) = ψ(χ(Φ(v'))) = ψ(v') = x. (⊇) Let a ∈ B_r(0). Then χ(a) ∈ V₀ ⊆ V, so G(a) = ψ(χ(a)) ∈ ψ(V) = W₀ ∩ M; G(a) ∈ B_δ(p) because r ≤ r₂; and pr(G(a) − p) = a ∈ B_r(0) by step 7. Hence G(a) ∈ M ∩ W.
+9. (pr∘DG(a) = id.) Let a ∈ B_r(0). The map b ↦ pr(G(b) − p) agrees with the identity on the open ball B_r(0) (step 7), so its derivative at a is id; by the chain rule this derivative is pr∘DG(a).
+10. (Tangent spaces.) Let a ∈ B_r(0) and u := χ(a) ∈ V. By the chain rule DG(a) = Dψ(u)∘Dχ(a). Differentiating Φ∘χ = id on the open set O ∋ a gives DΦ(u)∘Dχ(a) = id, so Dχ(a) is injective, hence surjective (a linear endomorphism of ℝ^m). Therefore range DG(a) = range Dψ(u). Child chart_tangent_space (with r = 1, the chart (V, W₀, ψ) of step 1 and v = u ∈ V) gives T_{ψ(u)}M = range Dψ(u). As G(a) = ψ(u), tangentSpace M (G a) = range DG(a).
+11. (Conclusion.) pr, G, r, W, Λ satisfy: r > 0, W open, p ∈ W, ‖pr‖ ≤ 1 (step 2), G(0) = p, G C¹ and Λ-Lipschitz on B_r(0) (step 5), M ∩ W = G(B_r(0)) (step 8), pr(G(a) − p) = a and pr∘DG(a) = id on B_r(0) (steps 7, 9), and tangentSpace M (G a) = range DG(a) on B_r(0) (step 10). ∎
+
+Formal check (scratch validation by the decomposition author; not part of the frozen contract). The tactic proof below of `theorem Submission.codim1_hcp_lsa_c1_graph_chart : <exactly the frozen lean_statement> := by`, placed after `import GMT.Ch07.Submission` inside `namespace GMT.Ch07` with the contract's opens, compiled with Lean v4.35.0-rc3 / Mathlib 25730c7c, with the three sibling declarations present with their frozen types; #print axioms: propext, Classical.choice, Quot.sound and those three siblings.
+```lean
+  intro P m M p hM hp
+  obtain ⟨V, W₀, ψ, hVo, hW₀o, hpW₀, hψc, hψinj, hψV, hproper, hDψinj⟩ := hM p hp
+  obtain ⟨v₀, hv₀, hψv₀⟩ : p ∈ ψ '' V := by rw [hψV]; exact ⟨hpW₀, hp⟩
+  have hψd : ∀ v ∈ V, HasFDerivAt ψ (fderiv ℝ ψ v) v := fun v hv =>
+    ((hψc.contDiffAt (hVo.mem_nhds hv)).differentiableAt one_ne_zero).hasFDerivAt
+  -- the projection `pr = ‖A‖⁻¹ • Aᴴ`, `A = Dψ(v₀)`
+  set A : Euclid m →L[ℝ] Euclid P := fderiv ℝ ψ v₀ with hA
+  set pr : Euclid P →L[ℝ] Euclid m := ‖A‖⁻¹ • ContinuousLinearMap.adjoint A with hprdef
+  have hpr : ‖pr‖ ≤ 1 := by
+    rw [hprdef, norm_smul, LinearIsometryEquiv.norm_map, norm_inv, norm_norm]
+    rcases eq_or_ne ‖A‖ 0 with h | h
+    · rw [h]; simp
+    · rw [inv_mul_cancel₀ h]
+  have hprA : Function.Injective (pr.comp A) := by
+    refine (injective_iff_map_eq_zero (pr.comp A)).2 fun h hh => ?_
+    have hh' : pr (A h) = 0 := hh
+    rcases eq_or_ne ‖A‖ 0 with h0 | h0
+    · have hA0 : A = 0 := norm_eq_zero.1 h0
+      apply hDψinj v₀ hv₀
+      rw [← hA, hA0, map_zero]; rfl
+    · have h1 : ContinuousLinearMap.adjoint A (A h) = 0 := by
+        have : ‖A‖⁻¹ • ContinuousLinearMap.adjoint A (A h) = 0 := hh'
+        exact (smul_eq_zero.1 this).resolve_left (inv_ne_zero h0)
+      have h2 : ‖A h‖ ^ 2 = 0 := by
+        rw [← real_inner_self_eq_norm_sq, ← ContinuousLinearMap.adjoint_inner_left, h1, inner_zero_left]
+      have h3 : A h = 0 := norm_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 h2)
+      exact hDψinj v₀ hv₀ (by rw [← hA, h3, map_zero])
+  -- the coordinate map `Φ = pr (ψ - p)` and its local inverse `χ`
+  set Φ : Euclid m → Euclid m := fun v => pr (ψ v - p) with hΦ
+  have hΦc : ContDiffOn ℝ 1 Φ V := pr.contDiff.comp_contDiffOn (hψc.sub contDiffOn_const)
+  have hΦd : ∀ v ∈ V, HasFDerivAt Φ (pr.comp (fderiv ℝ ψ v)) v := fun v hv =>
+    pr.hasFDerivAt.comp v ((hψd v hv).sub_const p)
+  have hΦinj : Function.Injective (fderiv ℝ Φ v₀) := by rw [(hΦd v₀ hv₀).fderiv]; exact hprA
+  obtain ⟨V₀, O, χ, hV₀o, hOo, hv₀V₀, hV₀V, hχc, hχmaps, hΦχ, hχΦ⟩ :=
+    Submission.codim1_zsl_gc_local_inverse m Φ V v₀ hVo hv₀ hΦc hΦinj
+  obtain ⟨ε, hε, hεV₀⟩ := Metric.isOpen_iff.1 hV₀o v₀ hv₀V₀
+  obtain ⟨δ, hδ, hδε⟩ := Submission.dsmc_chart_inverse_continuity P m V W₀ ψ hψc.continuousOn hψinj
+    (by rw [hψV]; exact inter_subset_left) hproper v₀ hv₀ ε hε
+  have hΦv₀ : Φ v₀ = 0 := by simp [hΦ, hψv₀]
+  have h0O : (0 : Euclid m) ∈ O := by rw [← hΦv₀]; exact (hχΦ v₀ hv₀V₀).1
+  have hχ0 : χ 0 = v₀ := by rw [← hΦv₀]; exact (hχΦ v₀ hv₀V₀).2
+  -- the graph map `G = ψ ∘ χ`
+  set G : Euclid m → Euclid P := fun a => ψ (χ a) with hGdef
+  have hG0 : G 0 = p := by simp [hGdef, hχ0, hψv₀]
+  have hGc : ContDiffOn ℝ 1 G O := hψc.comp hχc fun a ha => hV₀V (hχmaps ha)
+  obtain ⟨r₁, hr₁, hr₁O⟩ := Metric.isOpen_iff.1 hOo 0 h0O
+  have hGcont0 : ContinuousAt G 0 := hGc.continuousOn.continuousAt (hOo.mem_nhds h0O)
+  obtain ⟨r₂, hr₂, hr₂δ⟩ := Metric.mem_nhds_iff.1
+    (hGcont0.preimage_mem_nhds (by rw [hG0]; exact ball_mem_nhds p hδ))
+  set r : ℝ := min (r₁ / 2) r₂ with hr
+  have hrpos : 0 < r := lt_min (by positivity) hr₂
+  have hcbO : closedBall (0 : Euclid m) r ⊆ O :=
+    (closedBall_subset_ball (lt_of_le_of_lt (min_le_left _ _) (by linarith))).trans hr₁O
+  have hbO : ball (0 : Euclid m) r ⊆ O := ball_subset_closedBall.trans hcbO
+  have hbδ : ∀ a ∈ ball (0 : Euclid m) r, G a ∈ ball p δ := fun a ha =>
+    hr₂δ (ball_subset_ball (min_le_right _ _) ha)
+  -- Lipschitz bound on the ball
+  obtain ⟨Cb, hCb⟩ := (isCompact_closedBall (0 : Euclid m) r).exists_bound_of_continuousOn
+    ((hGc.continuousOn_fderiv_of_isOpen hOo le_rfl).mono hcbO)
+  have hGda : ∀ a ∈ O, HasFDerivAt G (fderiv ℝ G a) a := fun a ha =>
+    ((hGc.contDiffAt (hOo.mem_nhds ha)).differentiableAt one_ne_zero).hasFDerivAt
+  have hGL : LipschitzOnWith (Real.toNNReal Cb) G (ball 0 r) := by
+    refine (convex_ball (0 : Euclid m) r).lipschitzOnWith_of_nnnorm_fderiv_le
+      (fun a ha => (hGda a (hbO ha)).differentiableAt) fun a ha => ?_
+    rw [← NNReal.coe_le_coe, coe_nnnorm]
+    exact (hCb a (ball_subset_closedBall ha)).trans (Real.le_coe_toNNReal Cb)
+  -- the chart domain `W`
+  set W : Set (Euclid P) := W₀ ∩ ball p δ ∩ (fun z => pr (z - p)) ⁻¹' ball 0 r with hW
+  have hWo : IsOpen W := (hW₀o.inter isOpen_ball).inter (isOpen_ball.preimage (by fun_prop))
+  have hpW : p ∈ W := ⟨⟨hpW₀, mem_ball_self hδ⟩, by simp [hrpos]⟩
+  have hleft : ∀ a ∈ ball (0 : Euclid m) r, pr (G a - p) = a := fun a ha => hΦχ a (hbO ha)
+  have hMW : M ∩ W = G '' ball 0 r := by
+    ext x
+    constructor
+    · rintro ⟨hxM, ⟨hxW₀, hxδ⟩, hxr⟩
+      obtain ⟨v', hv', rfl⟩ : x ∈ ψ '' V := by rw [hψV]; exact ⟨hxW₀, hxM⟩
+      have hv'ε : dist v' v₀ < ε := hδε v' hv' (by rw [hψv₀]; exact hxδ)
+      have hv'V₀ : v' ∈ V₀ := hεV₀ hv'ε
+      refine ⟨Φ v', hxr, ?_⟩
+      show ψ (χ (Φ v')) = ψ v'
+      rw [(hχΦ v' hv'V₀).2]
+    · rintro ⟨a, ha, rfl⟩
+      have hχV : χ a ∈ V := hV₀V (hχmaps (hbO ha))
+      have hGa : G a ∈ W₀ ∩ M := by rw [← hψV]; exact mem_image_of_mem ψ hχV
+      refine ⟨hGa.2, ⟨hGa.1, hbδ a ha⟩, ?_⟩
+      show pr (G a - p) ∈ ball 0 r
+      rw [hleft a ha]; exact ha
+  -- `pr ∘ DG(a) = id`
+  have hderiv : ∀ a ∈ ball (0 : Euclid m) r, pr ∘L fderiv ℝ G a = ContinuousLinearMap.id ℝ (Euclid m) := by
+    intro a ha
+    have h1 : HasFDerivAt (fun b => pr (G b - p)) (pr.comp (fderiv ℝ G a)) a :=
+      pr.hasFDerivAt.comp a ((hGda a (hbO ha)).sub_const p)
+    have h2 : (fun b => pr (G b - p)) =ᶠ[𝓝 a] fun b => b := by
+      filter_upwards [isOpen_ball.mem_nhds ha] with b hb using hleft b hb
+    rw [← h1.fderiv, h2.fderiv_eq, fderiv_fun_id]
+  -- tangent spaces
+  have htan : ∀ a ∈ ball (0 : Euclid m) r, tangentSpace M (G a) = Set.range (fderiv ℝ G a) := by
+    intro a ha
+    have haO : a ∈ O := hbO ha
+    have hχV : χ a ∈ V := hV₀V (hχmaps haO)
+    have hχd : HasFDerivAt χ (fderiv ℝ χ a) a :=
+      ((hχc.contDiffAt (hOo.mem_nhds haO)).differentiableAt one_ne_zero).hasFDerivAt
+    have hGfd : fderiv ℝ G a = (fderiv ℝ ψ (χ a)).comp (fderiv ℝ χ a) :=
+      ((hψd (χ a) hχV).comp a hχd).fderiv
+    -- `Dχ(a)` is surjective
+    have hsurj : Function.Surjective (fderiv ℝ χ a) := by
+      have hid : (fderiv ℝ Φ (χ a)).comp (fderiv ℝ χ a) = ContinuousLinearMap.id ℝ (Euclid m) := by
+        have h1 : HasFDerivAt (fun b => Φ (χ b)) ((fderiv ℝ Φ (χ a)).comp (fderiv ℝ χ a)) a :=
+          (hΦd (χ a) hχV).differentiableAt.hasFDerivAt.comp a hχd
+        have h2 : (fun b => Φ (χ b)) =ᶠ[𝓝 a] fun b => b := by
+          filter_upwards [hOo.mem_nhds haO] with b hb using hΦχ b hb
+        rw [← h1.fderiv, h2.fderiv_eq, fderiv_fun_id]
+      have hinj : Function.Injective (fderiv ℝ χ a) := by
+        intro u v huv
+        have := congrArg (fderiv ℝ Φ (χ a)) huv
+        have hu := congrArg (fun L => L u) hid
+        have hv := congrArg (fun L => L v) hid
+        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at hu hv
+        rw [← hu, ← hv]; exact this
+      exact (LinearMap.injective_iff_surjective (f := ((fderiv ℝ χ a : Euclid m →L[ℝ] Euclid m) :
+        Euclid m →ₗ[ℝ] Euclid m))).1 hinj
+    rw [show G a = ψ (χ a) from rfl, Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W₀ V ψ (χ a)
+      le_rfl hVo hW₀o hψc hψinj hψV hproper hDψinj hχV, hGfd, ContinuousLinearMap.coe_comp,
+      hsurj.range_comp]
+  exact ⟨pr, G, r, W, Real.toNNReal Cb, hrpos, hWo, hpW, hpr, hG0, hGc.mono hbO, hGL, hMW, hleft,
+    hderiv, htan⟩
+```
+
+Integration check: this proof was also compiled together with the proofs of all eight new sibling children and the assembly of the parent theorem in a single file (only the four reused accepted declarations taken as axioms); the file compiled without errors or `sorry`.
+
+## Key steps
+
+1. Take a chart ψ at p = ψ(v₀) and pr := ‖Dψ(v₀)‖⁻¹·Dψ(v₀)*. Then ‖pr‖ ≤ 1 and pr∘Dψ(v₀) is injective.
+2. The inverse function theorem (local_inverse) applied to Φ = pr(ψ − p) gives a C¹ local inverse χ near 0. Put G := ψ∘χ, so pr(G(a) − p) = a.
+3. chart_inverse_continuity and a small radius give M ∩ W = G(B_r(0)) for W := W₀ ∩ B_δ(p) ∩ {z : pr(z − p) ∈ B_r(0)}. DG is bounded on B̄_r(0), which gives the Lipschitz bound.
+4. Differentiating pr(G(a) − p) = a gives pr∘DG(a) = id. Since Dχ(a) is invertible, range DG(a) = range Dψ(χ(a)) = T_{G(a)}M by chart_tangent_space.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (Euclid, IsEmbeddedSubmanifold, tangentSpace, μHE usage)`
+- `python3 scans of dag.json: selected node (depth 5, max_depth 6), parent hypercone_plane and its decomposition-v1.json, accepted nodes whose statements mention Lipschitz/mollif/convol/graph chart/starProjection/tangentSpace, lean_name collision scan for codim1_hcp_lsa_*`
+- `runtime.py: _decompose (max_depth), _existing_lean_name_problem (reuse of accepted declarations by identical name and type)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for 93f7ea7a3650 (codim1_rdo_gc_local_inverse_c2, dsmc_chart_inverse_continuity), d25d2377 (codim1_zsl_pc_mollify_indicator_l1), and the handoffs of codim1_zsl_gc_local_inverse and dsmc_chart_inverse_continuity`
+- `grep -rn in local-references/123e8435b4a2469b/mathlib/Mathlib: euclideanHausdorffMeasure, ae_differentiableWithinAt_of_mem, LipschitzWith.ae_differentiableAt, measurable_fderiv, tangentConeAt, HasFDerivWithinAt.unique_on, mem_tangentConeAt_of_seq, hasFDerivAt_convolution_left, contDiff_convolution_left, ae_convolution_tendsto_right_of_locallyIntegrable, LocallyLipschitzOn.exists_lipschitzOnWith_of_compact, LocallyLipschitzOn.mul, exists_isSubordinate, exists_contDiff_support_eq_eq_one_iff, sq_sum_le_card_mul_sum_sq, measurePreserving_sub_left`
+- `lean #check probes in the GMT.Ch07.Submission import closure (Imp*.lean, Inst5.lean): SmoothPartitionOfUnity.exists_isSubordinate, ContDiffBump API, ContDiffBump.normed (missing), VitaliFamily.ae_tendsto_average_norm_sub, Besicovitch.tendsto_filterAt, tendsto_integral_smul_of_tendsto_average_norm_sub, aestronglyMeasurable_iUnion_iff, Submodule.eq_starProjection_of_mem_of_inner_eq_zero, NormedRing.inverse_continuousAt, instances HasContDiffBump/HasBesicovitchCovering (Euclid m)`
+- `lean -DautoImplicit=false /tmp/lsa-split/check/{TypesAll,Assembly,N1,N2,N3,N4,N5,N6,N7,N8,Integration}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `git for-each-ref | xargs git grep -l codim1_hcp_lsa -- 'GMT/*.lean' (no match); grep codim1_hcp_lsa dag.json (0); grep -rn codim1_hcp_lsa simongmt (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e9797ac1a5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2511ff6312/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/TangentCone/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/tmp/lsa-split/check/TypesAll.lean`
+- `/tmp/lsa-split/check/Assembly.lean`
+- `/tmp/lsa-split/check/Integration.lean`
+
+Pins match: manifest project b4d606db and Mathlib 25730c7c equal workspace HEAD and .lake/packages/mathlib, and the snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…). The node has depth 5 with max_depth 6, so the children are leaves. Reuse: four accepted declarations (chart_tangentSpace_eq_range_fderiv, dimred_rpd_embedded_locally_closed, codim1_zsl_gc_local_inverse, dsmc_chart_inverse_continuity) are taken with byte-identical frozen types. The C² graph-chart and tangent-projection lemmas (codim1_rdo_gc_graph_over_tangent, submanifold_tangentProjection_c1_extension, dor_lmb_ret_tangent_projection) do not apply to C¹ M. No C¹ graph chart, Rademacher-on-M, tangent-projection continuity or L²-gradient mollification lemma exists in the DAG, SimonGMT or the snapshot, and the 8 codim1_hcp_lsa_ names are unused everywhere. Mathlib in the Submission import closure provides Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem), measurable_fderiv, HasFDerivWithinAt.unique_on with mem_tangentConeAt_of_seq, LipschitzOnWith.hausdorffMeasure_image_le with EuclideanSpace.euclideanHausdorffMeasure_eq_volume, convolution smoothness, ContDiffBump, Besicovitch Lebesgue differentiation, SmoothPartitionOfUnity and exists_contDiff_support_eq_eq_one_iff. It lacks ContDiffBump.normed, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable and sq_sum_le_card_mul_sum_sq; the mollify proof rebuilds the first two by hand, and the assembly uses Finset.sum_mul_sq_le_sq_mul_sq. Lean: all 12 child types elaborate. The selected type is kernel-checked from the child types as axioms. Every new child is proved from exactly its declared siblings. The integrated file (8 proofs plus assembly, only the 4 reused declarations as axioms) compiles without errors or sorry.
