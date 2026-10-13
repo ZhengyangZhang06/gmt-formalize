@@ -1,0 +1,15 @@
+{
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.gram_det_lower_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4915",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e6cf424d70b1b1a013e2aed4fef54c5bdd3543b3",
+  "integrated_commit": "",
+  "proof_base_commit": "e0dd7ce5b0feca7e9a2ba50c5a63f67f21ebf018",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "requires": []
+}
