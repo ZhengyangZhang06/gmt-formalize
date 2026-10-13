@@ -885,6 +885,79 @@ theorem Submission.dorag_tes_lipschitz_graph_area_bounds : ∀ (n k : ℕ), 0 < 
     filter_upwards [ae_restrict_of_ae hJ] with v hv
     exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal hv.2) zero_le
 
+/-- **Graph parameter transfer** (Simon Ch. 5, proof of 4.5, (14)–(16)).  Let
+`Φ(v) = ξ + ιv + ι'f(v)` be the graph map of the `1`-Lipschitz `f`, `D = B̆_{r/2}(0)`,
+`φ(x) = P(x − ξ)` (so `φ ∘ Φ = id`), and `μ = θHⁿ⌞M` with `θ = 1` `μ`-a.e. on `B_r(ξ)`.  Then
+(a) `∫_D g ≤ ∫_{Φ(D)} g ∘ φ dμ + G·a` for measurable `0 ≤ g ≤ G`, and
+(b) `|∫_D g − ∫_{Φ(D)} g ∘ φ dμ| ≤ G(a + 2ⁿ∫_D Σⱼ‖Dfʲ‖²)` for measurable `|g| ≤ G`.
+The exceptional set lemma gives `μ(Φ(D)) < ∞` and a measurable `Z` with `Hⁿ(Φ(Z)) ≤ a` and
+`∫_{Φ(D)} h dμ = ∫_{Φ(D ∖ Z)} h dHⁿ`; the graph area bounds then give `Lⁿ(Z) ≤ a` and
+`∫_{D∖Z} h ≤ ∫_{Φ(D)} h ∘ φ dμ ≤ ∫_{D∖Z} (1 + 2ⁿs)h`, using `Σᵢ|Df eᵢ|² ≤ s = Σⱼ‖Dfʲ‖² ≤ k`;
+the bounded transfer lemma yields (a) and (b). -/
+theorem Submission.dorag_tes_graph_parameter_transfer : ∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (ξ : Euclid (n + k)) (r a : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n) (f : Euclid n → Euclid k), IsOpen W → W ⊆ U → 0 < r → closedBall ξ r ⊆ W → 0 ≤ a → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → (∀ v, ‖f v‖ ≤ r / 4) → (∀ᵐ x ∂R.measure, x ∈ closedBall ξ r → R.mult x = 1) → μHE[n] ((R.measure.support ∩ W) \ R.carrier) = 0 → μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \ R.measure.support) ∩ closedBall ξ r) ≤ ENNReal.ofReal a → (∀ (g : Euclid n → ℝ) (G : ℝ), Measurable g → (∀ v, 0 ≤ g v) → (∀ v, g v ≤ G) → (∫⁻ v in ball (0 : Euclid n) (r / 2), ENNReal.ofReal (g v)) ≤ (∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), ENNReal.ofReal (g (P (x - ξ))) ∂R.measure) + ENNReal.ofReal (G * a)) ∧ ∀ (g : Euclid n → ℝ) (G : ℝ), Measurable g → (∀ v, |g v| ≤ G) → |(∫ v in ball (0 : Euclid n) (r / 2), g v) - (∫ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), g (P (x - ξ)) ∂R.measure)| ≤ G * (a + 2 ^ n * (∫ v in ball (0 : Euclid n) (r / 2), ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2)) := by
+  intro n k hn U W R ξ r a ι ι' P f _hW hWU hr hrW ha horth hPι hPι' hf hfr hmult hspt hF
+  -- Step 0.1: `φ(Φ(v)) = v` for `φ(x) = P(x − ξ)`, and `φ` is measurable
+  have hφΦ : ∀ v, P (ξ + ι v + ι' (f v) - ξ) = v := fun v => by
+    rw [add_assoc, add_sub_cancel_left, map_add, hPι, hPι', add_zero]
+  have hφ : Measurable fun x : Euclid (n + k) => P (x - ξ) :=
+    (P.continuous.comp (continuous_id.sub continuous_const)).measurable
+  -- Steps 1–2: `μ(Φ(D)) < ∞`, and the exceptional set `Z` with `Hⁿ(Φ(Z)) ≤ a` and
+  -- `∫_{Φ(D)} h̃ dμ = ∫_{Φ(D ∖ Z)} h̃ dHⁿ`
+  obtain ⟨hμD, Z, hZ, hΦZ, hμ⟩ :=
+    Submission.dorag_tes_gt_graph_measure_exceptional_set n k U W R ξ r a ι ι' P f hWU hr hrW
+      hPι hPι' hf hfr hmult hspt hF
+  -- Step 1.3: `Lⁿ(Z) ≤ Hⁿ(Φ(Z)) ≤ a`, by the graph area lower bound with `h ≡ 1`
+  have hZa : volume Z ≤ ENNReal.ofReal a := by
+    have h1 := (Submission.dorag_tes_lipschitz_graph_area_bounds n k hn ι ι' ξ f Z
+      (fun _ => 1) horth hf hZ measurable_const).1
+    simp only [setLIntegral_one] at h1
+    exact h1.trans hΦZ
+  -- Step 0.6: each `fʲ` is `1`-Lipschitz, so `0 ≤ s = Σⱼ ‖Dfʲ‖² ≤ k`; `s` is measurable,
+  -- hence integrable on `D`
+  have hfj : ∀ j : Fin k, LipschitzWith 1 fun v => EuclideanSpace.proj j (f v) := fun j =>
+    LipschitzWith.of_dist_le_mul fun v w => by
+      rw [dist_eq_norm, dist_eq_norm, ← map_sub, NNReal.coe_one, one_mul]
+      exact (PiLp.norm_apply_le (f v - f w) j).trans (hf v w)
+  have hs0 : ∀ v, 0 ≤ ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2 :=
+    fun v => Finset.sum_nonneg fun j _ => by positivity
+  have hsD : IntegrableOn
+      (fun v => ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2)
+      (ball (0 : Euclid n) (r / 2)) := by
+    refine IntegrableOn.of_bound measure_ball_lt_top (Measurable.aestronglyMeasurable
+      (Finset.measurable_sum _ fun j _ => (measurable_fderiv ℝ _).norm.pow_const 2)) k
+      (Eventually.of_forall fun v => ?_)
+    rw [Real.norm_of_nonneg (hs0 v)]
+    calc ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2
+        ≤ ∑ _j : Fin k, (1 : ℝ) := Finset.sum_le_sum fun j _ =>
+          pow_le_one₀ (norm_nonneg _) ((norm_fderiv_le_of_lipschitz ℝ (hfj j)).trans_eq
+            NNReal.coe_one)
+      _ = k := by simp
+  -- Step 3, (3a): `∫_{D∖Z} h ≤ ∫_{Φ(D)} h ∘ φ dμ ≤ ∫_{D∖Z} (1 + 2ⁿs) h`, by the graph area
+  -- bounds on `D ∖ Z` and `Σᵢ |Df(v)eᵢ|² ≤ Σⱼ ‖Dfʲ(v)‖²`
+  have hbd : ∀ h : Euclid n → ℝ≥0∞, Measurable h →
+      (∫⁻ v in ball (0 : Euclid n) (r / 2) \ Z, h v) ≤
+        (∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), h (P (x - ξ))
+          ∂R.measure) ∧
+      (∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), h (P (x - ξ))
+          ∂R.measure) ≤
+        ∫⁻ v in ball (0 : Euclid n) (r / 2) \ Z, ENNReal.ofReal (1 + 2 ^ n *
+          ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2) * h v := by
+    intro h hh
+    have hhφ : Measurable fun x => h (P (x - ξ)) := hh.comp hφ
+    rw [hμ _ hhφ]
+    obtain ⟨hlo, hhi⟩ := Submission.dorag_tes_lipschitz_graph_area_bounds n k hn ι ι' ξ f
+      (ball 0 (r / 2) \ Z) _ horth hf (measurableSet_ball.diff hZ) hhφ
+    simp only [hφΦ] at hlo hhi
+    refine ⟨hlo, hhi.trans (lintegral_mono fun v => ?_)⟩
+    gcongr
+    exact Submission.dorag_tes_gt_fderiv_columns_sq_le_rows_sq n k f v
+  -- Steps 4–5: (a) and (b), by the bounded transfer lemma
+  exact Submission.dorag_tes_gt_bounded_transfer_of_lintegral_bounds (Euclid n) (Euclid (n + k))
+    volume R.measure (ball 0 (r / 2)) Z ((fun v => ξ + ι v + ι' (f v)) '' ball 0 (r / 2))
+    (fun x => P (x - ξ))
+    (fun v => ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2) a (2 ^ n)
+    measurableSet_ball hZ hφ measure_ball_lt_top.ne hμD hZa ha (by positivity) hs0 hsD hbd
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
