@@ -565,6 +565,99 @@ theorem Submission.iwl_cr_support_lemmas :
       rw [hZ ω, e1, e2]
       ring
 
+/-- Linearity of the Lipschitz push-forward in the current (Part (III)).  With
+`F = spt X ∪ spt X₁ ⊇ spt X₂`, one reference sequence `G_n` for `F` (with `O = F_{r/2}`, `L = Λ`)
+and one sequence `η_n`, compatible with `(G_n, ω)` near `F` once `G_n` is proper on `F`, are
+admissible for all three push-forwards; so `X₂(η_n) = a X(η_n) + a₁ X₁(η_n)` tends both to
+`S₂(ω)` and to `a S(ω) + a₁ S₁(ω)`. -/
+theorem Submission.dph_lpf_linearity :
+    (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (F : Set (Eucl m)), 0 < r →
+      IsClosed F → LipschitzOnWith Λ G (thickening r F) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) →
+      ∃ Gj : ℕ → Eucl m → Eucl m', (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) ∧
+        (∀ n, ∀ x ∈ thickening (r / 2) F, ‖fderiv ℝ (Gj n) x‖ ≤ Λ) ∧
+        TendstoUniformlyOn Gj G atTop (thickening (r / 2) F) ∧
+        ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ F)) →
+    (∀ (m m' k : ℕ) (X X₁ X₂ : GeometricCurrentOn (univ : Set (Eucl m)) k)
+      (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ)
+      (S S₁ S₂ : GeometricCurrentOn (univ : Set (Eucl m')) k) (a a₁ : ℝ),
+      0 < r → LipschitzOnWith Λ G (thickening r (X.support ∪ X₁.support)) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ (X.support ∪ X₁.support))) →
+      (∀ ω, X₂ ω = a * X ω + a₁ * X₁ ω) →
+      (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O →
+        (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+        (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+        ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+          (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+            (ηj n : DifferentialForm (Eucl m) k) x =
+              ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+                (fderiv ℝ (Gj n) x)) →
+          Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) →
+      (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X₁.support ⊆ O →
+        (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+        (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+        ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+          (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X₁.support ⊆ N ∧ ∀ x ∈ N,
+            (ηj n : DifferentialForm (Eucl m) k) x =
+              ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+                (fderiv ℝ (Gj n) x)) →
+          Tendsto (fun n => X₁ (ηj n)) atTop (𝓝 (S₁ ω))) →
+      (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X₂.support ⊆ O →
+        (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) →
+        (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O →
+        ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k),
+          (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X₂.support ⊆ N ∧ ∀ x ∈ N,
+            (ηj n : DifferentialForm (Eucl m) k) x =
+              ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+                (fderiv ℝ (Gj n) x)) →
+          Tendsto (fun n => X₂ (ηj n)) atTop (𝓝 (S₂ ω))) →
+      ∀ ω, S₂ ω = a * S ω + a₁ * S₁ ω) := by
+  intro hRS m m' k X X₁ X₂ G Λ r S S₁ S₂ a a₁ hr hLip hprop hX₂ hS hS₁ hS₂ ω
+  -- 1. `F = spt X ∪ spt X₁` is closed (supports in `univ` are closed) and contains `spt X₂`.
+  have hFc : IsClosed (X.support ∪ X₁.support) :=
+    (isClosed_univ.sdiff X.isOpen_zeroRegion).union (isClosed_univ.sdiff X₁.isOpen_zeroRegion)
+  have hX₂F : X₂.support ⊆ X.support ∪ X₁.support :=
+    Submission.iwl_cr_support_lemmas.2.2 m k univ isOpen_univ X X₁ X₂ a a₁ hX₂
+  -- 2. One reference sequence `G_n`, admissible on the open `O = F_{r/2} ⊇ F` with `L = Λ`.
+  obtain ⟨Gj, hGs, hGd, hGu, hGp⟩ := hRS m m' G Λ r _ hr hFc hLip hprop
+  have hO : IsOpen (thickening (r / 2) (X.support ∪ X₁.support)) := isOpen_thickening
+  have hFO : X.support ∪ X₁.support ⊆ thickening (r / 2) (X.support ∪ X₁.support) :=
+    self_subset_thickening (half_pos hr) _
+  have hdb : ∀ᶠ n in atTop, ∀ x ∈ thickening (r / 2) (X.support ∪ X₁.support),
+      ‖fderiv ℝ (Gj n) x‖ ≤ (Λ : ℝ) :=
+    Eventually.of_forall hGd
+  -- 3. Test forms `η_n` compatible with `(G_n, ω)` near `F` whenever `G_n` is proper on `F`
+  -- (the cut-off pull-back), and `η_n = 0` otherwise.
+  have hη : ∀ n, ∃ η : TestFormOn (univ : Set (Eucl m)) k,
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ (X.support ∪ X₁.support))) →
+      ∃ N : Set (Eucl m), IsOpen N ∧ X.support ∪ X₁.support ⊆ N ∧ ∀ x ∈ N,
+        (η : DifferentialForm (Eucl m) k) x =
+          ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+            (fderiv ℝ (Gj n) x) := by
+    intro n
+    by_cases hpn : ∀ K : Set (Eucl m'), IsCompact K →
+        IsCompact (Gj n ⁻¹' K ∩ (X.support ∪ X₁.support))
+    · obtain ⟨η, _, N, hN, hFN, _, _, hηN, _⟩ :=
+        Submission.iwl_sp_exists_compatible_testForm m m' k univ univ _ (Gj n) isOpen_univ
+          (subset_univ _) (hGs n) (fun K hK _ => hpn K hK) ω
+      exact ⟨η, fun _ => ⟨N, hN, hFN, hηN⟩⟩
+    · exact ⟨0, fun h => absurd h hpn⟩
+  choose ηj hηj using hη
+  have hcomp : ∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ∪ X₁.support ⊆ N ∧
+      ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x =
+        ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+          (fderiv ℝ (Gj n) x) :=
+    hGp.mono fun n hn => hηj n hn
+  -- 4. The three push-forward limits; `X₂(η_n) = a X(η_n) + a₁ X₁(η_n)` and uniqueness of limits.
+  have h₀ := hS Gj _ Λ hO (subset_union_left.trans hFO) hGs hdb hGu ω ηj
+    (hcomp.mono fun n ⟨N, hN, hFN, hηN⟩ => ⟨N, hN, subset_union_left.trans hFN, hηN⟩)
+  have h₁ := hS₁ Gj _ Λ hO (subset_union_right.trans hFO) hGs hdb hGu ω ηj
+    (hcomp.mono fun n ⟨N, hN, hFN, hηN⟩ => ⟨N, hN, subset_union_right.trans hFN, hηN⟩)
+  have h₂ := hS₂ Gj _ Λ hO (hX₂F.trans hFO) hGs hdb hGu ω ηj
+    (hcomp.mono fun n ⟨N, hN, hFN, hηN⟩ => ⟨N, hN, hX₂F.trans hFN, hηN⟩)
+  exact tendsto_nhds_unique h₂
+    (((h₀.const_mul a).add (h₁.const_mul a₁)).congr fun n => (hX₂ (ηj n)).symm)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
