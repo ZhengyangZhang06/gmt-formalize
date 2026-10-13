@@ -3484,6 +3484,24 @@ theorem Submission.iwl_cr_ci_slice_testForm :
     rw [hL, hΦ s x]
     simp only [hι]
 
+/-- **Products with `[[0,1]]` of integer multiplicity currents are integer multiplicity
+(Simon Ch. 6, 3.2(2)).**  By `iwl_cr_interval_product_im` there is an integer multiplicity
+`Z' = τ(M̃, θ̃, ξ̃)` with the same product characterization `Z'(η) = ∫₀¹ X(φ(s)) ds`.  For a test
+form `η`, `iwl_cr_ci_slice_testForm` gives a `dt`-slice family `φ` of `η` on all of `ℝ`, so both
+characterizations apply and `Z(η) = ∫₀¹ X(φ(s)) ds = Z'(η)`.  Hence `Z = τ(M̃, θ̃, ξ̃)` on every
+test form, and the triple of `Z'` shows that `Z` is integer multiplicity. -/
+theorem Submission.dph_interval_product_im : ∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1)), IsIntegerMultiplicity X → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → IsIntegerMultiplicity Z := by
+  intro m k X Z hX hZ
+  -- The product current `Z' = [[(0,1)]] × X` exists and is integer multiplicity.
+  obtain ⟨Z', hZ'IM, hZ'⟩ := Submission.iwl_cr_interval_product_im m k X hX
+  -- `Z` and `Z'` agree on every test form: test both characterizations with a slice family.
+  have hEq : ∀ η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1), Z η = Z' η := by
+    intro η
+    obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm m k η
+    rw [hZ η φ (fun s _ x v => hφ s x v), hZ' η φ (fun s _ x v => hφ s x v)]
+  obtain ⟨M, θ, ξ, hT, hN, hτ⟩ := hZ'IM
+  exact ⟨M, θ, ξ, hT, hN, fun ω => (hEq ω).trans (hτ ω)⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
