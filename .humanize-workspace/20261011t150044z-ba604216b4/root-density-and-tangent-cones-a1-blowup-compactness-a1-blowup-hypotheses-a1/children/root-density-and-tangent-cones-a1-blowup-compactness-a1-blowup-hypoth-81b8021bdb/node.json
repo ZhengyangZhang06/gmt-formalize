@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.blowup_hypotheses-a1.rescaled_retraction-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.blowup_hypotheses-a1",
+  "depth": 4,
+  "title": "Rescaled local retractions onto N are C¹ retractions onto the blown-up set with Lipschitz constants tending to 1",
+  "statement": "Let P ∈ ℕ, U, N ⊆ ℝ^P with U open, x ∈ U ∩ N, δ > 0 and π : ℝ^P → ℝ^P such that (i) π is C¹ on B_δ(x) = ball x δ; (ii) π(B_δ(x)) ⊆ N; (iii) π(y) = y for every y ∈ N ∩ B_δ(x); (iv) for every η > 0 there is s with 0 < s ≤ δ and |π(y) − π(z)| ≤ (1 + η)|y − z| for all y, z ∈ B_s(x). Let λ_j > 0 (j ∈ ℕ) with λ_j → 0 and η_j := dilation x λ_j (η_j(y) = λ_j⁻¹(y − x)). Then for every G > 0 there are maps π_j : ℝ^P → ℝ^P (j ∈ ℕ) such that, for all large j, π_j is C¹ on B_G(0), maps B_G(0) into η_j(U ∩ N), satisfies π_j(y) = y for y ∈ η_j(U ∩ N) ∩ B_G(0), and |π_j(y)| ≤ 2|y| for y ∈ B_G(0); and such that for every η > 0, for all large j, |π_j(y) − π_j(z)| ≤ (1 + η)|y − z| for all y, z ∈ B_G(0). ('For all large j' means eventually in atTop; (i)–(iv) are the conclusion of local_retraction.)",
+  "lean_statement": "∀ (P : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (π : Euclid P → Euclid P), IsOpen U → x ∈ U → x ∈ N → 0 < δ → ContDiffOn ℝ 1 π (ball x δ) → MapsTo π (ball x δ) N → (∀ y ∈ N ∩ ball x δ, π y = y) → (∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖) → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid P → Euclid P, (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation x (lams j) '' (U ∩ N)) ∧ (∀ y ∈ dilation x (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖",
+  "lean_name": "dtc_bc_bh_rescaled_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-blowup-hypoth-81b8021bdb-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.blowup_hypotheses-a1.domain_boundary-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.blowup_hypotheses-a1",
+  "depth": 4,
+  "title": "Blow-up domains are open and exhaust ℝ^P, and blow-up boundaries vanish on growing balls",
+  "statement": "Let P, m ∈ ℕ, let U ⊆ ℝ^P be open, T ∈ 𝒟_{m+1}(U), and x ∈ U with x ∉ spt ∂T (x ∉ boundarySupport T, which in degree m + 1 is T.boundary.support). Let λ_j > 0 (j ∈ ℕ) with λ_j → 0, η_j := dilation x λ_j (η_j(y) = λ_j⁻¹(y − x)) and S_j := blowUp T x λ_j ∈ 𝒟_{m+1}(η_j(U)). Then (1) η_j(U) is open for every j; (2) for every R ∈ ℝ, closedBall(0, R) ⊆ η_j(U) for all large j; (3) for every R ∈ ℝ, for all large j, ∂S_j(β) = 0 for every β ∈ 𝒟^m(η_j(U)) (TestFormOn (η_j(U)) m) with tsupport β ⊆ B_R(0) = ball 0 R. ('For all large j' means eventually in atTop.)",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0)",
+  "lean_name": "dtc_bc_bh_blowUp_domain_boundary",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1-a1",
+      "result_commit": "f64597f33dbddb264b249a7f03156a1073cce7da",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-blowup-hypoth-f7a82decab-a1"
+}
