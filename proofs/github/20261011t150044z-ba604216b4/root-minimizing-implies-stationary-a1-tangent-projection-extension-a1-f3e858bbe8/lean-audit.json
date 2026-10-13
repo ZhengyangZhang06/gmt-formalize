@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6c949254bbbb48645a0d0316da3b0c7f9e31283bcfa0a52e0a5c838e051c2ad",
+  "git_delta": {
+    "base_commit": "c5fc4fb99141bf5735e586319eb242cc9b4eb67b",
+    "candidate_commit": "ec353cb7f1bd250a1e96e4861d4bb4d3a0259a89",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "submanifold_tangentProjection_c1_extension",
+    "diff_sha256": "19a58da8580e56db5aa3d613607fa91ac2fddcdd8b3555ca5c5f052c5749b720",
+    "source_sha256": "093de8c2719ac1b668311aa2734b12503f59f94d9579a85234dc6702fd2898c5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.submanifold_tangentProjection_c1_extension",
+      "statement": "∀ (P d : ℕ) (N : Set (Euclid P)), IsEmbeddedSubmanifold 2 d N → ∃ (O : Set (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)), IsOpen O ∧ N ⊆ O ∧ ContDiffOn ℝ 1 pr O ∧ ∀ z ∈ N, pr z = (Submodule.span ℝ (tangentSpace N z)).starProjection",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
