@@ -448,6 +448,105 @@ theorem Submission.intcpt_fli_plane_ball_measure :
   · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_ball, hvol,
       Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin, unitBallVolume,
       ENNReal.ofReal_pow hr.le, mul_comm]
+/-- Weight form of flat convergence (Simon Ch. 8, proof of 5.9, pp. 218–219): if
+`∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c(ℝ^N × G(N,n))` with `spt f ⊆ B°_5(0) × G(N,n)`, then
+`∫ g dμ_{W_k} → θ₀ ∫_P g dH^n` for every `g ∈ C_c(ℝ^N)` with `spt g ⊆ B°_5(0)`. -/
+theorem Submission.intcpt_fli_weight_integral_tendsto :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclidean N) 5 → Tendsto (fun k ↦ ∫ x, g x ∂(W k).weight) atTop (𝓝 (θ₀ * ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N)))) := by
+  intro N n P θ₀ W hconv g hg hgc hg5
+  -- Steps 1–3: the lift `F (z, S) = g z` has `tsupport F ⊆ spt g × G(N,n)`, a compact set as
+  -- `G(N,n)` is compact, so `F ∈ C_c(ℝ^N × G(N,n))`.
+  have hFsupp : tsupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) ⊆
+      tsupport g ×ˢ (univ : Set (Grassmannian N n)) :=
+    closure_minimal (fun z hz ↦ ⟨subset_tsupport g hz, mem_univ _⟩)
+      ((isClosed_tsupport g).prod isClosed_univ)
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    { toFun := fun z ↦ g z.1
+      continuous_toFun := hg.comp continuous_fst
+      hasCompactSupport' :=
+        (hgc.isCompact.prod isCompact_univ).of_isClosed_subset (isClosed_tsupport _) hFsupp }
+  -- Step 4: `tsupport f ⊆ B°_5(0) × G(N,n)`, so the hypothesis applies to `f`.
+  have hlim := hconv f (hFsupp.trans (Set.prod_mono hg5 subset_rfl))
+  -- Step 5: `∫ f dW_k = ∫ g dμ_{W_k}`, by `integral_map` along `Prod.fst`.
+  have hleft : ∀ k, ∫ z, f z ∂(W k).measure = ∫ x, g x ∂(W k).weight := fun k ↦ by
+    rw [Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+    rfl
+  -- Step 6: `∫ f dv(P) = ∫_P g dH^n`, by `integral_map` along `y ↦ (y, P)`.
+  have hright : ∫ z, f z ∂(planeVarifoldMeasure P) =
+      ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N)) := by
+    rw [planeVarifoldMeasure, integral_map measurable_prodMk_right.aemeasurable
+      (map_continuous f).aestronglyMeasurable]
+    rfl
+  -- Step 7: substitute steps 5 and 6 into step 4.
+  simpa only [hleft, hright] using hlim
+
+/-- Mass bounds on compact sets under flat convergence (Simon Ch. 8, proof of 5.9, step 0(a),
+pp. 218–219): if `θ₀ > 0` and `∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c(ℝ^N × G(N,n))` with
+`spt f ⊆ B°_5(0) × G(N,n)`, then `μ_{W_k}(K) < c` for all large `k` whenever `K ⊆ O ⊆ B°_5(0)` with
+`K` compact, `O` open and `θ₀ H^n(P ∩ O) < c`. -/
+theorem Submission.intcpt_fli_weight_compact_eventually_lt :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ (K O : Set (Euclidean N)) (c : ℝ≥0∞), IsCompact K → IsOpen O → K ⊆ O → O ⊆ ball (0 : Euclidean N) 5 → ENNReal.ofReal θ₀ * (μHE[n] : Measure (Euclidean N)) ((P.plane : Set (Euclidean N)) ∩ O) < c → ∀ᶠ k in atTop, (W k).weight K < c := by
+  intro N n P θ₀ W hθ₀ hconv K O c hK hO hKO hO5 hc
+  -- Step 1: Urysohn gives a continuous `g : ℝ^N → [0,1]` with `g = 1` on `K` and compact support
+  -- in `O`.
+  obtain ⟨g, hgK, hgc, hgO, hg01⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen hK hO hKO
+  -- Step 2: `A = H^n(P ∩ O)` is finite, as `θ₀ > 0` and `θ₀ A < c ≤ ∞`.
+  set A := (μHE[n] : Measure (Euclidean N)) ((P.plane : Set (Euclidean N)) ∩ O)
+  have hA : A ≠ ∞ := by
+    intro hAtop
+    rw [hAtop, ENNReal.mul_top (ENNReal.ofReal_pos.2 hθ₀).ne'] at hc
+    exact not_top_lt hc
+  -- Step 3: `tsupport g ⊆ O ⊆ B°_5(0)`, so `∫ g dμ_k → θ₀ I` with `I = ∫_P g dH^n`.
+  set I := ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N))
+  have hlim : Tendsto (fun k ↦ ∫ x, g x ∂(W k).weight) atTop (𝓝 (θ₀ * I)) :=
+    Submission.intcpt_fli_weight_integral_tendsto N n P θ₀ W hconv g g.continuous hgc
+      (hgO.trans hO5)
+  -- Step 4: `I ≤ A`, as `0 ≤ g ≤ 1_O` and `1_O` is `H^n ⌞ P`-integrable with integral `A < ∞`.
+  have hOA : ((μHE[n] : Measure (Euclidean N)).restrict (P.plane : Set (Euclidean N))) O = A := by
+    rw [Measure.restrict_apply hO.measurableSet, inter_comm]
+  have hgO1 : ∀ x, g x ≤ O.indicator 1 x := by
+    intro x
+    by_cases hx : x ∈ O
+    · rw [indicator_of_mem hx]
+      exact (hg01 x).2
+    · rw [indicator_of_notMem hx, image_eq_zero_of_notMem_tsupport fun h ↦ hx (hgO h)]
+  have hIA : I ≤ A.toReal :=
+    calc I ≤ ∫ x in (P.plane : Set (Euclidean N)), O.indicator 1 x
+          ∂(μHE[n] : Measure (Euclidean N)) :=
+          integral_mono_of_nonneg (Eventually.of_forall fun x ↦ (hg01 x).1)
+            ((integrable_indicator_iff hO.measurableSet).2 (integrableOn_const (hOA ▸ hA)))
+            (Eventually.of_forall hgO1)
+      _ = A.toReal := by rw [integral_indicator_one hO.measurableSet, Measure.real, hOA]
+  -- Step 5: `ofReal (θ₀ I) ≤ ofReal (θ₀ A) = ofReal θ₀ · A < c`.
+  have hIc : ENNReal.ofReal (θ₀ * I) < c :=
+    calc ENNReal.ofReal (θ₀ * I) ≤ ENNReal.ofReal (θ₀ * A.toReal) :=
+          ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hIA hθ₀.le)
+      _ = ENNReal.ofReal θ₀ * A := by rw [ENNReal.ofReal_mul hθ₀.le, ENNReal.ofReal_toReal hA]
+      _ < c := hc
+  -- Step 6: by continuity of `ofReal`, `ofReal (∫ g dμ_k) < c` for all large `k`.
+  have hev : ∀ᶠ k in atTop, ENNReal.ofReal (∫ x, g x ∂(W k).weight) < c :=
+    ((ENNReal.continuous_ofReal.tendsto _).comp hlim).eventually_lt_const hIc
+  -- Step 7: `μ_k(K) ≤ ofReal (∫ g dμ_k)`: `g` is `μ_k`-integrable (`|g| ≤ 1` and `g` vanishes off
+  -- the compact set `tsupport g ⊆ B°_5(0)`, of finite `μ_k`-measure), and `1_K ≤ ofReal ∘ g`.
+  have hKg : ∀ k, (W k).weight K ≤ ENNReal.ofReal (∫ x, g x ∂(W k).weight) := by
+    intro k
+    have hint : Integrable g (W k).weight :=
+      (integrableOn_iff_integrable_of_support_subset (subset_tsupport g)).1
+        (Measure.integrableOn_of_bounded ((W k).weight_finite_on_compact _ hgc (hgO.trans hO5))
+          g.continuous.aestronglyMeasurable (M := 1)
+          (Eventually.of_forall fun x ↦ by
+            rw [Real.norm_eq_abs, abs_of_nonneg (hg01 x).1]
+            exact (hg01 x).2))
+    rw [ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun x ↦ (hg01 x).1),
+      ← lintegral_indicator_one (μ := (W k).weight) hK.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ K
+    · rw [indicator_of_mem hx, hgK hx]
+      simp
+    · rw [indicator_of_notMem hx]
+      exact zero_le
+  -- Step 8: combine steps 6 and 7.
+  exact hev.mono fun k hk ↦ (hKg k).trans_lt hk
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
