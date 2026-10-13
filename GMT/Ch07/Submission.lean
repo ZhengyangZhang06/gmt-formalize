@@ -451,6 +451,70 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §5** (frame trace bound for a first-order perturbation of the identity): if
+`‖B‖ ≤ A`, `‖L − I − tB‖ ≤ η|t|` with `η ≤ 1`, and `τ₁, …, τₙ` is orthonormal in `ℝᴾ`, then
+(i) `|Σₐ τₐ · Bτₐ| ≤ nA` and (ii) `Σₐ |Lτₐ|² − n ≤ 2t Σₐ τₐ · Bτₐ + 2nη|t| + n(A + 1)²t²`.
+With `E = L − I − tB` and `wₐ = tBτₐ + Eτₐ` we have `Lτₐ = τₐ + wₐ`, `|wₐ| ≤ (A + 1)|t|` and
+`τₐ · Eτₐ ≤ η|t|`; expand `|τₐ + wₐ|² = 1 + 2t τₐ · Bτₐ + 2 τₐ · Eτₐ + |wₐ|²` and sum over `a`. -/
+theorem Submission.fvmb_perturbed_frame_sum_norm_sq_sub_le : ∀ (P n : ℕ) (A η t : ℝ) (B L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), η ≤ 1 → ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → Orthonormal ℝ τ → |∑ a, inner ℝ (τ a) (B (τ a))| ≤ (n : ℝ) * A ∧ ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ) ≤ 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
+  intro P n A η t B L τ hη hB hE hτ
+  -- `E = L − I − tB`, so `‖E‖ ≤ η|t|`
+  set E : Euclid P →L[ℝ] Euclid P := L - ContinuousLinearMap.id ℝ (Euclid P) - t • B with hEdef
+  have hτ1 : ∀ a, ‖τ a‖ = 1 := hτ.1
+  -- unit vectors: `|Bτₐ| ≤ A`, `|Eτₐ| ≤ η|t|` and `|τₐ · Bτₐ| ≤ A`
+  have hBa : ∀ a, ‖B (τ a)‖ ≤ A := fun a =>
+    calc ‖B (τ a)‖ ≤ ‖B‖ * ‖τ a‖ := B.le_opNorm _
+      _ = ‖B‖ := by rw [hτ1 a, mul_one]
+      _ ≤ A := hB
+  have hEa : ∀ a, ‖E (τ a)‖ ≤ η * |t| := fun a =>
+    calc ‖E (τ a)‖ ≤ ‖E‖ * ‖τ a‖ := E.le_opNorm _
+      _ = ‖E‖ := by rw [hτ1 a, mul_one]
+      _ ≤ η * |t| := hE
+  have hDa : ∀ a, |inner ℝ (τ a) (B (τ a))| ≤ A := fun a =>
+    calc |inner ℝ (τ a) (B (τ a))| ≤ ‖τ a‖ * ‖B (τ a)‖ := abs_real_inner_le_norm _ _
+      _ = ‖B (τ a)‖ := by rw [hτ1 a, one_mul]
+      _ ≤ A := hBa a
+  refine ⟨?_, ?_⟩
+  · calc |∑ a, inner ℝ (τ a) (B (τ a))| ≤ ∑ a, |inner ℝ (τ a) (B (τ a))| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _a : Fin n, A := Finset.sum_le_sum fun a _ => hDa a
+      _ = (n : ℝ) * A := by rw [Finset.sum_const, Finset.card_fin, nsmul_eq_mul]
+  · -- one column: `|Lτₐ|² = |τₐ + wₐ|²` with `wₐ = tBτₐ + Eτₐ`
+    have hcol : ∀ a, ‖L (τ a)‖ ^ 2 ≤
+        1 + 2 * t * inner ℝ (τ a) (B (τ a)) + 2 * η * |t| + (A + 1) ^ 2 * t ^ 2 := by
+      intro a
+      have hL : L (τ a) = τ a + (t • B (τ a) + E (τ a)) := by
+        simp only [hEdef, sub_apply, smul_apply, ContinuousLinearMap.id_apply]
+        abel
+      have hw : ‖t • B (τ a) + E (τ a)‖ ≤ (A + 1) * |t| :=
+        calc ‖t • B (τ a) + E (τ a)‖ ≤ ‖t • B (τ a)‖ + ‖E (τ a)‖ := norm_add_le _ _
+          _ = |t| * ‖B (τ a)‖ + ‖E (τ a)‖ := by rw [norm_smul, Real.norm_eq_abs]
+          _ ≤ |t| * A + η * |t| :=
+              add_le_add (mul_le_mul_of_nonneg_left (hBa a) (abs_nonneg t)) (hEa a)
+          _ ≤ |t| * A + 1 * |t| := by gcongr
+          _ = (A + 1) * |t| := by ring
+      have hwsq : ‖t • B (τ a) + E (τ a)‖ ^ 2 ≤ (A + 1) ^ 2 * t ^ 2 :=
+        calc ‖t • B (τ a) + E (τ a)‖ ^ 2 ≤ ((A + 1) * |t|) ^ 2 :=
+              pow_le_pow_left₀ (norm_nonneg _) hw 2
+          _ = (A + 1) ^ 2 * t ^ 2 := by rw [mul_pow, sq_abs]
+      have hcross : inner ℝ (τ a) (E (τ a)) ≤ η * |t| :=
+        calc inner ℝ (τ a) (E (τ a)) ≤ ‖τ a‖ * ‖E (τ a)‖ := real_inner_le_norm _ _
+          _ = ‖E (τ a)‖ := by rw [hτ1 a, one_mul]
+          _ ≤ η * |t| := hEa a
+      rw [hL, norm_add_sq_real, hτ1 a, inner_add_right, real_inner_smul_right]
+      linarith
+    calc ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ)
+        ≤ ∑ a, (1 + 2 * t * inner ℝ (τ a) (B (τ a)) + 2 * η * |t| + (A + 1) ^ 2 * t ^ 2) -
+            (n : ℝ) := by
+          gcongr with a
+          exact hcol a
+      _ = 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| +
+            (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
+          rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib,
+            Finset.sum_const, Finset.sum_const, Finset.sum_const, ← Finset.mul_sum,
+            Finset.card_fin, nsmul_eq_mul, nsmul_eq_mul, nsmul_eq_mul]
+          ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
