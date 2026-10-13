@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e8cb13d4f66d87984cf333c667f5c8174576c79812dc1bc36591641599ab6009",
+  "git_delta": {
+    "base_commit": "7698e7fb47cb7464ef7ba86129d6ee8d1ea59334",
+    "candidate_commit": "8754debe32ed1c34153c7d8ad0014d0ffd0864fc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cidc_dilation_isIntegerMultiplicity",
+    "diff_sha256": "0c223d207062e4ec85196de2e62d8ba74c6203d5c3c6c8d5e018a651e4f700b3",
+    "source_sha256": "477ae194df119e395a732c0be7e1f5e0a3fbc3adf1921fad58fdf71a2055cc1e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cidc_dilation_isIntegerMultiplicity",
+      "statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → IsIntegerMultiplicity X → IsIntegerMultiplicity X'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
