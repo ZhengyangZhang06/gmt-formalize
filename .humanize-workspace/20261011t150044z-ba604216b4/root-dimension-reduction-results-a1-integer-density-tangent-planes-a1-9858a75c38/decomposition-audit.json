@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "integrableOn_compact|integrable_of_hasCompactSupport|locallyIntegrableOn|integrable_of_forall_notMem_eq_zero",
+        "structure ContDiffBump|theorem (contDiff|support_eq|tsupport_eq|hasCompactSupport|continuous|one_of_mem_closedBall|nonneg)|hasContDiffBump_of_innerProductSpace|integral_pos_iff_support_of_nonneg|theorem volume_ball",
+        "integral_hasStrictDerivAt|Continuous.deriv_integral|integral_eq_integral_of_support_subset|integral_zero_ae|contDiff_one_iff_deriv",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|eqOn_open_of_ae_eq|sInf_mem|sSup_mem|tsupport_mul_subset_right|mulTSupport_div|theorem intro",
+        "ℕ∞ω|scoped.*∞|notation.*∞|coe_top_lt_top",
+        "rg -n 'du Bois|DuBois|fundamental lemma of (the )?calculus of variations' Mathlib",
+        "idtp_ccd_scsp_dbr_",
+        "\\b(sorry|admit|axiom)\\b",
+        "lake env lean /tmp/dbr_probe/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9858a75c38/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9858a75c38/decomposition-v1.json",
+        "../.swarm-worktrees",
+        "/tmp/dbr_probe/Children.lean",
+        "/tmp/dbr_probe/Full.lean"
+      ],
+      "conclusion": "Project and mathlib revisions match the manifest; the contract and 15 inspected mathlib files match their snapshots byte-for-byte. Pinned declarations support compact-set integrability, smooth bumps, integral positivity, the antiderivative construction, and both fundamental-lemma proofs. The named du Bois-Reymond/fundamental-lemma search returned no match. FTaylorSeries.lean explicitly identifies the coerced (⊤ : ℕ∞) with smoothness ∞, distinct from analyticity ω; the integrals use real Lebesgue volume. All four contracts are self-contained one-line propositions matching their prose, with fresh bare identifiers. No conflicting reservation appeared in the DAG, other saved decompositions, or 1,437 worktree Submission files. No previously accepted DAG declaration is reused. The sole sibling dependency is dbr_fundamental_lemma on dbr_integrable, correctly directed and acyclic. The split appropriately factors this selected parent: normalization and a zero-mean primitive give vanishing tests against κ−c, then the fundamental lemma gives pointwise constancy; the empty interval is handled separately. Supplied scratch signatures match all frozen types exactly, and inspected proof sources contain no admissions or new axioms. A compiler/transitive-axiom rerun was unavailable because lake is not installed in this shell; this verdict rests on independent mathematical and source inspection."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dbr_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every prose hypothesis. Continuity on the compact tsupport gives integrability there, and exact vanishing outside extends it globally. This correctly allows κ to be arbitrary outside the interval and covers empty support. The proof is complete and independent."
+    },
+    {
+      "key": "dbr_normalized_bump",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type states precisely the requested normalized C∞ bump. The specified radii are positive and place its closed support strictly inside the interval. Nonnegativity, integrability, and positive support measure justify division by its nonzero integral. Scaling preserves smoothness and compact support and gives integral one."
+    },
+    {
+      "key": "dbr_antiderivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the continuous, compactly supported, zero-mean hypothesis and global derivative equality. Empty support is handled explicitly. Compact extrema provide interior endpoints; the FTC gives a C¹ primitive. Vanishing on the left and zero total integral on the right confine its support to a closed interval inside (a,b). No circular dependency occurs."
+    },
+    {
+      "key": "dbr_fundamental_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all hypotheses and the pointwise conclusion. The supplied proof obtains an interior sign-preserving neighbourhood, constructs an admissible smooth bump, uses the declared integrability dependency, and contradicts zero integral through positive support measure. Applying the argument to g and −g covers both signs. The alternative pinned-library proof also supplies the required almost-everywhere-to-pointwise step. The sign-localization method is corroborated by [Liberzon, Lemma 2.1](https://liberzon.csl.illinois.edu/teaching/cvoc/node28.html)."
+    }
+  ],
+  "required_changes": []
+}
