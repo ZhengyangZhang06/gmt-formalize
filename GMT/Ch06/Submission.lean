@@ -3895,6 +3895,56 @@ theorem Submission.slicing_im_ll_twl_chart_hasFDerivAt : ∀ (P n : ℕ) (Φ : E
   rw [← key]
   exact hdiff.hasFDerivAt
 
+/-- Slicing (Simon Ch. 6, §4), tangential weak limit, step (9a)–(9b): over a chart piece
+`A ⊆ Φ(Ω)`, tangential integrals are parameter integrals against one field `c`,
+`∫_A Df(Y) dHⁿ = ∫_Ω D(f∘Φ)(c)` and `∫_A ⟨G, Y⟩ dHⁿ = ∫_Ω D(h∘Φ)(c)`.  Here `c` is the
+coefficient field (`DΦ(w) c(w) = JΦ(w) Y(Φ(w))` a.e. on `Ω ∩ Φ⁻¹(A)`, `c = 0` off it); both
+identities are the chart integral formula combined with the chain rule. -/
+theorem Submission.slicing_im_ll_twl_chart_representation : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (h : Eucl P → ℝ) (L : ℝ≥0) (G Y : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → LipschitzWith L h → Measurable G → (∀ x, ‖G x‖ ≤ L) → IntegrableOn Y A (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → Y x ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∃ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) ∧ (∀ (f : Eucl P → ℝ) (K : ℝ≥0), Differentiable ℝ f → LipschitzWith K f → ∫ x in A, fderiv ℝ f x (Y x) ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω, fderiv ℝ (f ∘ Φ) w (c w)) ∧ ∫ x in A, inner ℝ (G x) (Y x) ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω, fderiv ℝ (h ∘ Φ) w (c w) := by
+  intro P n Φ Ω A h L G Y hΩ hΦ hLip hanti hAΦ hA hh hGm hGL hY hae
+  -- Step 1: the coefficient field `c`.
+  obtain ⟨c, hc, hc0, hcD⟩ := Submission.slicing_im_ll_twl_coefficient_field P n Φ Ω A Y hΩ hΦ
+    hLip hanti hAΦ hA hY (hae.mono fun x hx w hw hwx => (hx w hw hwx).1)
+  -- Step 2: the differential of `h ∘ Φ` on `Ω ∩ Φ⁻¹(A)`.
+  have hhD := Submission.slicing_im_ll_twl_chart_hasFDerivAt P n Φ Ω A h L G hΩ hΦ hLip hanti hA
+    hh (hae.mono fun x hx w hw hwx => (hx w hw hwx).2)
+  have hΦd : Differentiable ℝ Φ := hΦ.differentiable one_ne_zero
+  have hY' : Integrable Y ((μHE[n] : Measure (Eucl P)).restrict A) := hY
+  -- Step 3: `c` vanishes off `Ω ∩ Φ⁻¹(A)`, so integrals over `Ω` reduce to it.
+  have hred : ∀ g : Eucl n → (Eucl n →L[ℝ] ℝ),
+      ∫ w in Ω, g w (c w) = ∫ w in Ω ∩ Φ ⁻¹' A, g w (c w) := fun g =>
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hΩ.measurableSet inter_subset_left
+      fun w hw => by rw [hc0 w hw.2, map_zero]
+  refine ⟨c, hc, fun f K hf hfK => ?_, ?_⟩
+  · -- Step 4: identity (i), with `F = Df(Y)`, `|F| ≤ K |Y|`.
+    have hF : IntegrableOn (fun x => fderiv ℝ f x (Y x)) A (μHE[n] : Measure (Eucl P)) := by
+      refine Integrable.mono' (hY'.norm.const_mul (K : ℝ))
+        ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂
+          (measurable_fderiv ℝ f).aestronglyMeasurable hY'.aestronglyMeasurable)
+        (Eventually.of_forall fun x => ?_)
+      calc ‖fderiv ℝ f x (Y x)‖ ≤ ‖fderiv ℝ f x‖ * ‖Y x‖ := (fderiv ℝ f x).le_opNorm (Y x)
+        _ ≤ K * ‖Y x‖ :=
+          mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hfK) (norm_nonneg _)
+    rw [(Submission.slicing_im_ll_twl_chart_integral_eq ℝ P n Φ Ω A _ hΩ hLip hanti hAΦ hA
+      hF).2.2, hred (fderiv ℝ (f ∘ Φ))]
+    refine integral_congr_ae ?_
+    filter_upwards [hcD] with w hw
+    rw [fderiv_comp w (hf (Φ w)) (hΦd w), ContinuousLinearMap.comp_apply, hw, map_smul]
+  · -- Step 5: identity (ii), with `F = ⟨G, Y⟩`, `|F| ≤ L |Y|`.
+    have hF : IntegrableOn (fun x => inner ℝ (G x) (Y x)) A (μHE[n] : Measure (Eucl P)) := by
+      refine Integrable.mono' (hY'.norm.const_mul (L : ℝ))
+        (continuous_inner.comp_aestronglyMeasurable₂ hGm.aestronglyMeasurable
+          hY'.aestronglyMeasurable)
+        (Eventually.of_forall fun x => ?_)
+      calc ‖inner ℝ (G x) (Y x)‖ ≤ ‖G x‖ * ‖Y x‖ := norm_inner_le_norm _ _
+        _ ≤ L * ‖Y x‖ := mul_le_mul_of_nonneg_right (hGL x) (norm_nonneg _)
+    rw [(Submission.slicing_im_ll_twl_chart_integral_eq ℝ P n Φ Ω A _ hΩ hLip hanti hAΦ hA
+      hF).2.2, hred (fderiv ℝ (h ∘ Φ))]
+    refine integral_congr_ae ?_
+    filter_upwards [hcD, hhD] with w hw hw'
+    rw [hw'.fderiv, ContinuousLinearMap.comp_apply, hw, innerSL_apply_apply,
+      real_inner_smul_right, smul_eq_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
