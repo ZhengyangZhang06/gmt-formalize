@@ -513,6 +513,53 @@ theorem Submission.slicing_im_ll_gws_smooth_dense :
     _ < δ / 2 + δ / 2 := add_lt_add_of_lt_of_le h1 h2
     _ = δ := add_halves δ
 
+/-- `C_c^∞(Ω)` is dense in `L¹(Ω)` for real functions: for `Ω ⊆ ℝᵏ` open, `η` integrable on `Ω`
+and `ε > 0` there is a smooth `φ` with compact support, `spt φ ⊆ Ω` and `∫_Ω |η − φ| < ε`.  For
+`k = 0` the space is a point, so `Ω = ∅` (take `φ = 0`) or `Ω = ℝ⁰` (take `φ = η`, a constant).
+For `k ≥ 1` the field `c = η e₀` is approximated by `b` (`slicing_im_ll_gws_smooth_dense`) and
+`φ = b₀` is its first coordinate, so `|η − φ| = |(c − b)₀| ≤ |c − b|`. -/
+theorem Submission.deformation_ipl_mwc_td_scalar_smooth_dense :
+    ∀ (k : ℕ) (Ω : Set (Eucl k)) (η : Eucl k → ℝ), IsOpen Ω → IntegrableOn η Ω (volume : Measure (Eucl k)) → ∀ ε : ℝ, 0 < ε → ∃ φ : Eucl k → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω ∧ ∫ w in Ω, |η w - φ w| ∂(volume : Measure (Eucl k)) < ε := by
+  intro k Ω η hΩ hη ε hε
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · -- `k = 0`: `Eucl 0` is a single point, so `Ω = ∅` or `Ω = univ`.
+    by_cases hΩe : Ω = ∅
+    · subst hΩe
+      exact ⟨0, contDiff_const, HasCompactSupport.zero, by simp, by simpa using hε⟩
+    · have hΩu : Ω = univ := by
+        obtain ⟨x, hx⟩ := nonempty_iff_ne_empty.2 hΩe
+        exact eq_univ_of_forall fun y => Subsingleton.elim x y ▸ hx
+      have hconst : η = fun _ => η 0 := funext fun x => congrArg η (Subsingleton.elim x 0)
+      refine ⟨η, ?_, ?_, by simp [hΩu], by simpa using hε⟩
+      · rw [hconst]
+        exact contDiff_const
+      · exact subsingleton_of_subsingleton.isCompact.of_isClosed_subset (isClosed_tsupport _)
+          (subset_univ _)
+  · -- `k ≥ 1`: carry `η` as the first coordinate of a vector field and project back.
+    let i₀ : Fin k := ⟨0, hk⟩
+    let e : Eucl k := EuclideanSpace.single i₀ (1 : ℝ)
+    have he : e i₀ = 1 := by simp [e]
+    have hc : IntegrableOn (fun w => η w • e) Ω := hη.smul_const e
+    obtain ⟨b, hb, hbc, hbΩ, hbε⟩ :=
+      Submission.slicing_im_ll_gws_smooth_dense k Ω (fun w => η w • e) hΩ hc ε hε
+    let p : Eucl k →L[ℝ] ℝ := EuclideanSpace.proj i₀
+    have hp : ∀ v : Eucl k, p v = v i₀ := fun v => rfl
+    have hp0 : p 0 = 0 := map_zero p
+    have hφ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (p ∘ b) := p.contDiff.comp hb
+    have hφc : HasCompactSupport (p ∘ b) := hbc.comp_left hp0
+    refine ⟨p ∘ b, hφ, hφc, (tsupport_comp_subset hp0 b).trans hbΩ, ?_⟩
+    have hbi : Integrable b := hb.continuous.integrable_of_hasCompactSupport hbc
+    have hφi : Integrable (p ∘ b) := hφ.continuous.integrable_of_hasCompactSupport hφc
+    -- `|η − φ| = |(c − b)₀| ≤ ‖c − b‖` pointwise, and both sides are integrable on `Ω`.
+    have hptw : ∀ w, |η w - (p ∘ b) w| ≤ ‖η w • e - b w‖ := fun w => by
+      have h1 : (η w • e - b w) i₀ = η w - (p ∘ b) w := by
+        simp [Function.comp, hp, he]
+      rw [← h1, ← Real.norm_eq_abs]
+      exact PiLp.norm_apply_le _ _
+    calc ∫ w in Ω, |η w - (p ∘ b) w| ≤ ∫ w in Ω, ‖η w • e - b w‖ :=
+          setIntegral_mono (hη.sub hφi.integrableOn).abs (hc.sub hbi.integrableOn).norm hptw
+      _ < ε := hbε
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
