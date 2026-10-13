@@ -614,6 +614,55 @@ theorem Submission.cmcs_rc_order_zero_current : ∀ (P n : ℕ) (U : Set (Euclid
       rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
       nlinarith [abs_nonneg c]
 
+/-- **Restriction of a measure-represented current** (Simon Ch. 6, 2.9:
+`T ⌞ A(ω) = ∫_A ⟨ω, T⃗⟩ dμ_T`), for an arbitrary pair `(μ, ξ)` and an arbitrary set `E`: if `μ` is
+finite on compact subsets of `U` and `ξ` is `μ`-a.e. strongly measurable with
+`|⟨α, ξ(x)⟩| ≤ |α|` (Euclidean coefficient norm) for `μ`-a.e. `x`, then
+`ω ↦ ∫_E ⟨ω(x), ξ(x)⟩ dμ(x)` is a current in `U`.  By `rsd_mw_tfa_norm_props`, `|α| ≤ C ‖α‖`.
+For `ω` supported in a compact `K ⊆ U` with `‖ω‖ ≤ M`, `cmcs_rc_pairing_integrable_abs_le` then
+gives integrability on `μ ⌞ E` and `|∫_E ⟨ω, ξ⟩ dμ| ≤ C M μ(K)`.  The functional is linear
+(`integral_add`, `integral_const_mul`), and `cmcs_rc_order_zero_current` turns the order-zero
+bound into Simon's sequential continuity. -/
+theorem Submission.cmcs_restrict_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ := by
+  intro P n U μ ξ E hμK hξm hξb
+  -- Step 1: `|α| ≤ C ‖α‖` for every `n`-covector `α`
+  obtain ⟨-, -, ⟨C, hC0, hC⟩, -⟩ := Submission.rsd_mw_tfa_norm_props P n
+  -- Steps 2 and 4: for `ω` supported in a compact `K ⊆ U` with `‖ω‖ ≤ M`, the pairing is
+  -- `μ ⌞ E`-integrable and `|∫_E ⟨ω, ξ⟩ dμ| ≤ C M μ(K)`
+  have hpair : ∀ (ω : TestFormOn U n) (K : Set (Euclid P)) (M : ℝ), IsCompact K → K ⊆ U →
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K →
+      (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ M) →
+      Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) (μ.restrict E) ∧
+        |∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ| ≤ C * M * (μ K).toReal := by
+    intro ω K M hK hKU hsupp hM
+    exact Submission.cmcs_rc_pairing_integrable_abs_le P n μ ξ E K
+      (ω : DifferentialForm (Euclid P) n) (C * M) hξm hξb ω.property.1.1.continuous
+      hK.measurableSet (hμK K hK hKU)
+      (fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hsupp h))
+      (fun x => (hC _).trans (mul_le_mul_of_nonneg_left (hM x) hC0))
+  -- Step 2: every test form is admissible, with `K = tsupport ω` and `M = sup ‖ω‖ < ∞`
+  have hint : ∀ ω : TestFormOn U n,
+      Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) (μ.restrict E) := by
+    intro ω
+    obtain ⟨M, hM⟩ := ω.property.1.1.continuous.bounded_above_of_compact_support ω.property.1.2
+    exact (hpair ω _ M ω.property.1.2 ω.property.2 subset_rfl hM).1
+  -- Step 3: `ω ↦ ∫_E ⟨ω, ξ⟩ dμ` is linear
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ
+      map_add' := fun ω₁ ω₂ => by
+        simp only [Submodule.coe_add, Pi.add_apply, map_add]
+        exact integral_add (hint ω₁) (hint ω₂)
+      map_smul' := fun c ω => by
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul, RingHom.id_apply]
+        exact integral_const_mul c _ }
+  -- Steps 4 and 5: the order-zero bound with `c_K = C μ(K)` makes `L` a current
+  obtain ⟨S, hS⟩ := Submission.cmcs_rc_order_zero_current P n U L fun K hK hKU =>
+    ⟨C * (μ K).toReal, fun ω M hsupp hM => by
+      calc |L ω| = |∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ| := rfl
+        _ ≤ C * M * (μ K).toReal := (hpair ω K M hK hKU hsupp hM).2
+        _ = C * (μ K).toReal * M := by ring⟩
+  exact ⟨S, hS⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
