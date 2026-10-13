@@ -414,6 +414,93 @@ theorem Submission.fiw_tb_te_l1d_smooth_sign_sep : ∀ (n : ℕ) (K₁ K₂ : Se
       · exact h
       · rw [h2] at h; norm_num at h
     simp [h1, h2]
+/-- Compact approximation of the sign of an integrable `w : ℝ^n → ℝ`: for `ε > 0` there are
+disjoint compact sets `K₁, K₂` such that every a.e.-strongly measurable `g` with `|g| ≤ 1`,
+`g = 1` on `K₁` and `g = -1` on `K₂` satisfies `∫ |w| < ∫ w g + ε`.
+For a Borel representative `v` of `w`, the finite measure `ν = |v| dx` is inner regular, so there
+are compact `K₁ ⊆ {v > 0}` and `K₂ ⊆ {v < 0}` with `ν({v > 0} \ K₁), ν({v < 0} \ K₂) < ε/4`.
+Off `S = ({v > 0} \ K₁) ∪ ({v < 0} \ K₂)` we have `v g = |v|`, and on `S` we have `v g ≥ -|v|`,
+so `∫ |v| ≤ ∫ v g + 2 ν(S) < ∫ v g + ε`. -/
+theorem Submission.fiw_tb_te_l1d_compact_sign_approx : ∀ (n : ℕ) (w : Eucl n → ℝ), Integrable w → ∀ ε : ℝ, 0 < ε → ∃ K₁ K₂ : Set (Eucl n), IsCompact K₁ ∧ IsCompact K₂ ∧ Disjoint K₁ K₂ ∧ ∀ g : Eucl n → ℝ, AEStronglyMeasurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ K₁, g x = 1) → (∀ x ∈ K₂, g x = -1) → (∫ x, |w x|) < (∫ x, w x * g x) + ε := by
+  intro n w hw ε hε
+  -- A Borel representative `v` of `w` and the finite measure `ν = |v| dx`.
+  set v : Eucl n → ℝ := hw.aestronglyMeasurable.mk w with hv_def
+  have hv_meas : StronglyMeasurable v := hw.aestronglyMeasurable.stronglyMeasurable_mk
+  have hwv : w =ᵐ[volume] v := hw.aestronglyMeasurable.ae_eq_mk
+  have hvi : Integrable v := hw.congr hwv
+  set ν : Measure (Eucl n) := volume.withDensity (fun x => ENNReal.ofReal |v x|) with hν
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity_ofReal hvi.abs.hasFiniteIntegral
+  -- Inner approximation of `{v > 0}` and `{v < 0}` by compact sets.
+  set Ap : Set (Eucl n) := {x | 0 < v x} with hAp_def
+  set Am : Set (Eucl n) := {x | v x < 0} with hAm_def
+  have hAp : MeasurableSet Ap := measurableSet_lt measurable_const hv_meas.measurable
+  have hAm : MeasurableSet Am := measurableSet_lt hv_meas.measurable measurable_const
+  have hε4 : ENNReal.ofReal (ε / 4) ≠ 0 := (ENNReal.ofReal_pos.mpr (by linarith)).ne'
+  obtain ⟨Kp, hKpA, hKp, hKpν⟩ := hAp.exists_isCompact_sdiff_lt (measure_ne_top ν Ap) hε4
+  obtain ⟨Km, hKmA, hKm, hKmν⟩ := hAm.exists_isCompact_sdiff_lt (measure_ne_top ν Am) hε4
+  have hdisj : Disjoint Kp Km := by
+    rw [Set.disjoint_left]
+    intro x hp hm
+    have h1 : 0 < v x := hKpA hp
+    have h2 : v x < 0 := hKmA hm
+    linarith
+  refine ⟨Kp, Km, hKp, hKm, hdisj, ?_⟩
+  intro g hg hg1 hgp hgm
+  -- The pointwise inequality `|v| - 2·1_S|v| ≤ v g`.
+  set S : Set (Eucl n) := (Ap \ Kp) ∪ (Am \ Km) with hS_def
+  have hS : MeasurableSet S := (hAp.diff hKp.measurableSet).union (hAm.diff hKm.measurableSet)
+  have hpt : ∀ x, |v x| - 2 * S.indicator (fun y => |v y|) x ≤ v x * g x := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx]
+      have h : |v x * g x| ≤ |v x| := by
+        rw [abs_mul]
+        exact mul_le_of_le_one_right (abs_nonneg _) (hg1 x)
+      linarith [(abs_le.mp h).1]
+    · rw [indicator_of_notMem hx]
+      have hx' : (0 < v x → x ∈ Kp) ∧ (v x < 0 → x ∈ Km) := by
+        constructor
+        · intro h
+          by_contra hK
+          exact hx (Or.inl ⟨h, hK⟩)
+        · intro h
+          by_contra hK
+          exact hx (Or.inr ⟨h, hK⟩)
+      rcases lt_trichotomy (v x) 0 with h | h | h
+      · rw [hgm x (hx'.2 h), abs_of_neg h]
+        linarith
+      · rw [h]
+        simp
+      · rw [hgp x (hx'.1 h), abs_of_pos h]
+        linarith
+  -- Integrate.
+  have hvg : Integrable (fun x => v x * g x) :=
+    hvi.mul_bdd hg (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hg1 x)
+  have hind : Integrable (fun x => S.indicator (fun y => |v y|) x) := hvi.abs.indicator hS
+  have hlhs : Integrable (fun x => |v x| - 2 * S.indicator (fun y => |v y|) x) :=
+    hvi.abs.sub (hind.const_mul 2)
+  have hmono := integral_mono hlhs hvg hpt
+  rw [integral_sub hvi.abs (hind.const_mul 2), integral_const_mul, integral_indicator hS] at hmono
+  -- `∫_S |v| = (ν S).toReal < ε / 2`.
+  have hνS : ν S = ∫⁻ x in S, ENNReal.ofReal |v x| := withDensity_apply _ hS
+  have hSint : ∫ x in S, |v x| = (ν S).toReal := by
+    rw [hνS, integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => abs_nonneg _)
+      hvi.abs.aestronglyMeasurable.restrict]
+  have hνS_lt : ν S < ENNReal.ofReal (ε / 2) := by
+    calc ν S ≤ ν (Ap \ Kp) + ν (Am \ Km) := measure_union_le _ _
+      _ < ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) := ENNReal.add_lt_add hKpν hKmν
+      _ = ENNReal.ofReal (ε / 2) := by
+        rw [← ENNReal.ofReal_add (by linarith) (by linarith)]
+        ring_nf
+  have hSlt : ∫ x in S, |v x| < ε / 2 := by
+    rw [hSint]
+    exact ENNReal.toReal_lt_of_lt_ofReal hνS_lt
+  -- Transfer back from `v` to `w`.
+  have h1 : ∫ x, |w x| = ∫ x, |v x| := integral_congr_ae (hwv.fun_comp abs)
+  have h2 : ∫ x, w x * g x = ∫ x, v x * g x :=
+    integral_congr_ae (hwv.mono fun x hx => by simp only [hx])
+  rw [h1, h2]
+  linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
