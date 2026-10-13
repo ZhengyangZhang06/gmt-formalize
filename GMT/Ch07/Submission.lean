@@ -1554,6 +1554,39 @@ theorem Submission.dimred_cs_st_tangent_sub_of_ball_ratio : ∀ (P n : ℕ) (R :
   · rw [mem_closedBall, dist_eq_norm, not_le, one_div_lt hk0 hxpos, one_div]
     linarith [le_max_right ‖x - z‖ ‖x - z‖⁻¹]
 
+/-- **Spine tangency** (a step of Simon 7.3.5, whose proof is left to the reader, chapter-07.txt
+lines 407–418; argued as in the proof of 7.3.1, lines 355–360).  Let `R = (M, θ, ξ)` be an integer
+multiplicity triple in `ℝᴾ` with `V = v(M, θ)` stationary and `L ⊆ ℝᴾ` a subspace such that
+`μ_V = θHⁿ⌞M` is invariant under translation by every `y ∈ L` and `μ_V(λA) = λⁿμ_V(A)` for
+`λ > 0`.  Then `x ∈ TₓM` and `L ⊆ TₓM` for `μ_V`-a.e. `x`.  For `z ∈ L`,
+`μ_V(B̄_ρ(z)) = ρⁿμ_V(B̄_1(z))` (`dimred_cs_st_closedBall_measure_scaling`), so the monotonicity
+identity (Ch. 4, 3.6) forces `x − z ∈ TₓM` for `μ_V`-a.e. `x`
+(`dimred_cs_st_tangent_sub_of_ball_ratio`).  Apply this to `z = 0` and to every `z` in a finite
+set `S` spanning `L` (in place of a countable dense subset of `L`): for `μ_V`-a.e. `x`, `x ∈ TₓM`
+and `z = x − (x − z) ∈ TₓM` for `z ∈ S`, so the subspace `TₓM` contains `span S = L`. -/
+theorem Submission.dimred_cs_spine_tangent_of_invariant_measure : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), 0 < n → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => y + x) ⁻¹' A) = R.measure A) → (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x ∧ ∀ v ∈ L, (approxTangentPlane n R.carrier x).starProjection v = v := by
+  intro P n R L _hn hstat htrans hhom
+  -- for each `z ∈ L` the ball ratios at `z` are constant, so `x - z ∈ TₓM` for `μ_V`-a.e. `x`
+  have htan : ∀ z ∈ L, ∀ᵐ x ∂R.measure,
+      (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z := fun z hz =>
+    Submission.dimred_cs_st_tangent_sub_of_ball_ratio P n R z hstat
+      (Submission.dimred_cs_st_closedBall_measure_scaling P n R.measure L htrans hhom z hz)
+  -- a finite set `S ⊆ L` spanning `L`
+  obtain ⟨S, hS⟩ : L.FG := IsNoetherian.noetherian L
+  have hSL : ∀ z ∈ S, z ∈ L := fun z hz => hS ▸ Submodule.subset_span (Finset.mem_coe.2 hz)
+  filter_upwards [htan 0 L.zero_mem, (eventually_all_finset S).2 fun z hz => htan z (hSL z hz)]
+    with x hx0 hxS
+  rw [sub_zero] at hx0
+  have hxT : x ∈ approxTangentPlane n R.carrier x := Submodule.starProjection_eq_self_iff.1 hx0
+  -- `z = x - (x - z) ∈ TₓM` for `z ∈ S`, so `L = span S ≤ TₓM`
+  have hLT : L ≤ approxTangentPlane n R.carrier x := by
+    rw [← hS, Submodule.span_le]
+    intro z hz
+    have h := (approxTangentPlane n R.carrier x).sub_mem hxT
+      (Submodule.starProjection_eq_self_iff.1 (hxS z (Finset.mem_coe.1 hz)))
+    rwa [sub_sub_cancel] at h
+  exact ⟨hx0, fun v hv => Submodule.starProjection_eq_self_iff.2 (hLT hv)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
