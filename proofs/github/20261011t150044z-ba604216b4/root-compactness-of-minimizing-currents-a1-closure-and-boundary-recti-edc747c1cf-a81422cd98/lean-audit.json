@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ba006690e694c8e7cbaf4338775b9c57e3b304816e4490f127d924a10ac904a9",
+  "git_delta": {
+    "base_commit": "d632d20af96d005f342a306f43aaa676162efdc8",
+    "candidate_commit": "8dc7218dd1177e6a9b14a1a0aa4deb0efa1af3f6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrldlf_exists_small_scale_of_lower_density",
+    "diff_sha256": "84caead99a9f769aa745c9374243ec182b1a8f9bd390d4570337f4c756dc80d9",
+    "source_sha256": "c888783af0ca5601f40002275e0b792e025e9005781ad7a67a75d1cd73f46885",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrldlf_exists_small_scale_of_lower_density",
+      "statement": "∀ n : ℕ, 0 < (unitBallVolume n).toReal ∧ ∀ (P : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (η₀ δ : ℝ), 0 < δ → liminf (fun r : ℝ => μ (ball x₁ r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) < ENNReal.ofReal η₀ → ∃ s : ℝ, 0 < s ∧ s < δ ∧ μ (ball x₁ s) < ENNReal.ofReal (η₀ * (unitBallVolume n).toReal * s ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
