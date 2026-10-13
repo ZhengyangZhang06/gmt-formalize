@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'skeleton|cubical|retraction|latticeFace|dual skeleton|cmcdtsr_' project/GMT -g '*.lean'",
+        "rg -n 'cmcdtsr_' project mathlib/Mathlib -g '*.lean'",
+        "rg -n 'IsClosed.Icc_subset_of_forall_mem_nhdsWithin|infDist_le_dist_of_mem|infDist_le_infDist_add_dist|infDist_nonneg|infDist_empty|EuclideanSpace.dist_eq|theorem dist_apply_le|exists_mem_eq_sup.|exists_subset_card_eq|preimage_isClosed_of_isClosed|abs_max_sub_max_le_max' mathlib/Mathlib/Topology/Order/IntermediateValue.lean mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean mathlib/Mathlib/Data/Finset/Lattice/Fold.lean mathlib/Mathlib/Data/Finset/Card.lean mathlib/Mathlib/Topology/ContinuousOn.lean mathlib/Mathlib/Algebra/Order/Group/MinMax.lean",
+        "rg -n 'cmcdtsr_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmcdtsr-independent-audit-4fn8j7tt/TypeChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Lattice/Fold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-2b0c475fa4/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/Instances.lean",
+        "/tmp/cmcdtsr-independent-audit-4fn8j7tt/TypeChecks.lean"
+      ],
+      "conclusion": "The pinned Ch07 contract matches Submission.lean; mathlib matches revision 25730c7c759d108ef87ab70af2342a196760f79d with no tracked modifications. Searches found lattice-face definitions but no reusable skeleton-retraction theorem or cmcdtsr_ declaration. All six names are bare identifiers suitable for Submission.X, with no reservation in the current DAG. All six frozen types and the selected parent type independently elaborate as propositions in namespace Submission without child declarations. Instance checks confirm Euclidean L2 distance, pointwise vector coordinates, real finite maxima and Metric.infDist. The supplied EndToEnd.lean recompiles, has exact matching theorem signatures, and proves the selected parent using only propext, Classical.choice and Quot.sound. The split is appropriate: its acyclic dependencies support the face construction, counting induction, finite-cube gluing and segment argument, yielding the exact parent with c = 2√(m+2)c₀ + 4√P + 1."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all stated hypotheses. The proof derives continuity from the neighbourhood inequalities, establishes closedness and right extension, then applies continuous induction. It proves the exact endpoint bound without circularity, including degenerate segments and K = 0."
+    },
+    {
+      "key": "cube_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the finite neighbourhood cover. The floor-interval argument handles integer boundary coordinates on both sides; the finite product and coordinate-neighbourhood intersection establish both conclusions. No dimension or boundary hypothesis is missing."
+    },
+    {
+      "key": "dual_dist_count",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree without requiring admissibility of a or a dimension inequality. Selecting m+2 coordinates and replacing them by b_i+a_i produces a dual-skeleton point strictly closer than infDist, a valid contradiction. The proof also covers zero distance and an empty dual skeleton."
+    },
+    {
+      "key": "face_radial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes the coordinate formula, face membership, nonempty index set and noncentre hypotheses. The proof establishes positive denominators, gauge bounds, boundary attainment and fixation, then derives the exact asymmetric radial estimate using the 4-Lipschitz gauge and Euclidean norm. Every conclusion is justified independently."
+    },
+    {
+      "key": "retraction_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact recursion contract matches the prose, including the centre convention. Distinct equal-dimensional faces meet at boundary points, where face_radial makes their maps agree. Classical face selection followed by well-founded recursion constructs the required family. Its sole dependency on face_radial is correctly directed."
+    },
+    {
+      "key": "face_induction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the universal conditional statement about Ψ and all three conclusions. The detailed induction establishes N(x) ≥ ρ, nearby noncentre conditions, radius scaling to ρ/N(x), and a common neighbourhood across finitely many boundary faces. Cancellation of N(x) gives the stated bound with c = (1+4√P)^P. It needs only face_radial, assumes no parent conclusion, and leaves no proof-search obligation."
+    }
+  ],
+  "required_changes": []
+}
