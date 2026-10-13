@@ -874,6 +874,229 @@ theorem dohr_eb_sch_bu_contDiff_of_fderiv_tendsto : ∀ (n ℓ : ℕ) (W : ℕ �
     fun z => (hderiv z).fderiv⟩
   rw [hfd]
   exact hVc
+/-- Localization of integrals: if `f : ℝⁿ → ℝ` is continuous on an open `O` and vanishes off a
+compact `T ⊆ O`, then `f` is continuous, integrable, and `∫_O f = ∫_{ℝⁿ} f`.  At a point of `O`,
+`f` is continuous because `O` is open; a point outside `O` lies in the open set `Tᶜ` (`T` is
+closed), where `f = 0`.  So `f` is continuous with compact support (`HasCompactSupport.intro`),
+hence integrable (`Continuous.integrable_of_hasCompactSupport`), and it vanishes off `O`
+(`setIntegral_eq_integral_of_forall_compl_eq_zero`). -/
+theorem dohr_eb_sch_bu_wel_localized_integral : ∀ (n : ℕ) (f : Rn n → ℝ) (O T : Set (Rn n)), IsOpen O → IsCompact T → T ⊆ O → ContinuousOn f O → (∀ z, z ∉ T → f z = 0) → Continuous f ∧ Integrable f ∧ ∫ z in O, f z = ∫ z, f z := by
+  intro n f O T hO hT hTO hf hfT
+  have hcont : Continuous f := by
+    refine continuous_iff_continuousAt.2 fun z => ?_
+    by_cases hz : z ∈ O
+    · exact hf.continuousAt (hO.mem_nhds hz)
+    · -- `z ∉ T`, and `f = 0` on the open neighbourhood `Tᶜ` of `z`.
+      have hzT : z ∉ T := fun h => hz (hTO h)
+      have hev : (fun _ => (0 : ℝ)) =ᶠ[𝓝 z] f :=
+        Filter.mem_of_superset (hT.isClosed.isOpen_compl.mem_nhds hzT) fun w hw => (hfT w hw).symm
+      exact continuousAt_const.congr hev
+  refine ⟨hcont, hcont.integrable_of_hasCompactSupport (HasCompactSupport.intro hT hfT), ?_⟩
+  exact setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => hfT z fun h => hz (hTO h)
+/-- Convergence of integrals under uniform convergence on a compact set containing the supports
+(steps 4 and 5d of the weak-equation limit in the blow-up argument for the Schauder estimate): if
+`K ⊆ ℝⁿ` is compact, `g` and eventually every `f k` are integrable and vanish off `K`, and
+`f k → g` uniformly on `K`, then `∫ f k → ∫ g`.  For `ε > 0` put `M = 𝓛ⁿ(K) < ∞` and
+`δ = ε / (M + 1)`; for large `k`, `|∫ f k - ∫ g| = |∫_K (f k - g)| ≤ δ M < ε`. -/
+theorem dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn : ∀ (n : ℕ) (K : Set (Rn n)) (f : ℕ → Rn n → ℝ) (g : Rn n → ℝ), IsCompact K → (∀ᶠ k in atTop, Integrable (f k)) → Integrable g → (∀ᶠ k in atTop, ∀ z, z ∉ K → f k z = 0) → (∀ z, z ∉ K → g z = 0) → TendstoUniformlyOn f g atTop K → Tendsto (fun k => ∫ z, f k z) atTop (𝓝 (∫ z, g z)) := by
+  intro n K f g hK hfi hgi hfK hgK hfg
+  -- Step 1: `K` is compact, so `M = 𝓛ⁿ(K)` is finite (and `M ≥ 0`).
+  have hKfin : (volume : Measure (Rn n)) K < ∞ := hK.measure_lt_top
+  have hM : 0 ≤ (volume : Measure (Rn n)).real K := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Step 2: with `δ = ε / (M + 1) > 0`, for all large `k` the function `f k` is integrable,
+  -- vanishes off `K`, and `|g - f k| < δ` on `K`.
+  have hδ : 0 < ε / ((volume : Measure (Rn n)).real K + 1) := div_pos hε (by linarith)
+  filter_upwards [hfi, hfK, Metric.tendstoUniformlyOn_iff.1 hfg _ hδ] with k hk1 hk2 hk3
+  -- Steps 3–4: `∫ f k - ∫ g = ∫ (f k - g) = ∫_K (f k - g)`, as `f k - g` vanishes off `K`.
+  have h4 : ∫ z in K, (f k z - g z) = ∫ z, (f k z - g z) :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => by
+      rw [hk2 z hz, hgK z hz, sub_zero]
+  rw [dist_eq_norm, ← integral_sub hk1 hgi, ← h4]
+  -- Step 5: `|∫_K (f k - g)| ≤ δ M`.
+  have h5 : ‖∫ z in K, (f k z - g z)‖ ≤
+      ε / ((volume : Measure (Rn n)).real K + 1) * (volume : Measure (Rn n)).real K :=
+    norm_setIntegral_le_of_norm_le_const hKfin fun z hz => by
+      rw [← dist_eq_norm, dist_comm]
+      exact (hk3 z hz).le
+  -- Step 6: `δ M = ε M / (M + 1) < ε`.
+  have h6 : ε / ((volume : Measure (Rn n)).real K + 1) * (volume : Measure (Rn n)).real K < ε := by
+    rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    linarith
+  exact h5.trans_lt h6
+
+end Submission
+/-- **Uniform limits of the perturbed pairings and of the error forms** (steps 4 and 5a–c of the
+weak-equation limit in the Schauder blow-up estimate for Simon 7.1).  Let `A` be a continuous
+bilinear form on `L = L(ℝⁿ, ℝ^ℓ)`, let `U_k → V` uniformly on `K`, and let `‖z‖ ≤ r`, `‖Q z‖ ≤ Z`
+and `‖V z‖ ≤ N` on `K`.  If `c_k → 0`, `d_k → 0` and, for all large `k` and all `z ∈ K`,
+`|ah_k(z)[P][P'] − A[P][P']| ≤ c_k (1 + ‖z‖^α) ‖P‖ ‖P'‖` and `|Ψ_k(z)[P]| ≤ d_k ‖z‖^α ‖P‖`, then
+`ah_k(z)[U_k(z)][Q(z)] → A[V(z)][Q(z)]` and `Ψ_k(z)[Q(z)] → 0` uniformly on `K`.  The bound
+`|A[P][P']| ≤ C_A ‖P‖ ‖P'‖` comes from `ContinuousLinearMap.isBoundedBilinearMap`. -/
+theorem Submission.dohr_eb_sch_bu_wel_pairing_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (α r Z N : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V Q : Rn n → (Rn n →L[ℝ] Rn ℓ)) (K : Set (Rn n)) (c d : ℕ → ℝ), 0 ≤ α → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → TendstoUniformlyOn U V atTop K → (∀ z ∈ K, ‖z‖ ≤ r) → (∀ z ∈ K, ‖Q z‖ ≤ Z) → (∀ z ∈ K, ‖V z‖ ≤ N) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P P' : Rn n →L[ℝ] Rn ℓ, |ah k z P P' - A P P'| ≤ c k * (1 + ‖z‖ ^ α) * ‖P‖ * ‖P'‖) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P : Rn n →L[ℝ] Rn ℓ, |Ψ k z P| ≤ d k * ‖z‖ ^ α * ‖P‖) → TendstoUniformlyOn (fun k z => ah k z (U k z) (Q z)) (fun z => A (V z) (Q z)) atTop K ∧ TendstoUniformlyOn (fun k z => Ψ k z (Q z)) (fun _ => (0 : ℝ)) atTop K := by
+  intro n ℓ α r Z N A ah Ψ U V Q K c d hα hc hd hUV hr hZ hN hah hΨ
+  -- Step 1: nonnegative bounds on `K`: `‖z‖ ^ α ≤ R := (max r 0) ^ α`, `‖Q z‖ ≤ Z₀ := max Z 0`
+  -- and `‖V z‖ ≤ N₀ := max N 0` (no case split when `K` is empty).
+  obtain ⟨R, hR0, hR⟩ : ∃ R : ℝ, 0 ≤ R ∧ ∀ z ∈ K, ‖z‖ ^ α ≤ R :=
+    ⟨max r 0 ^ α, Real.rpow_nonneg (le_max_right r 0) α, fun z hz =>
+      Real.rpow_le_rpow (norm_nonneg z) ((hr z hz).trans (le_max_left r 0)) hα⟩
+  obtain ⟨Z₀, hZ₀0, hZ₀⟩ : ∃ Z₀ : ℝ, 0 ≤ Z₀ ∧ ∀ z ∈ K, ‖Q z‖ ≤ Z₀ :=
+    ⟨max Z 0, le_max_right Z 0, fun z hz => (hZ z hz).trans (le_max_left Z 0)⟩
+  obtain ⟨N₀, hN₀0, hN₀⟩ : ∃ N₀ : ℝ, 0 ≤ N₀ ∧ ∀ z ∈ K, ‖V z‖ ≤ N₀ :=
+    ⟨max N 0, le_max_right N 0, fun z hz => (hN z hz).trans (le_max_left N 0)⟩
+  -- Step 2: the bilinear bound `‖A P P'‖ ≤ C_A ‖P‖ ‖P'‖`.
+  obtain ⟨CA, hCA0, hCA⟩ : ∃ CA > 0, ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖A P P'‖ ≤ CA * ‖P‖ * ‖P'‖ :=
+    A.isBoundedBilinearMap.bound
+  refine ⟨?_, ?_⟩
+  · -- Claim (i).  Step 3: with `C₁ = (1 + R)(N₀ + 1) Z₀` and `C₂ = C_A Z₀`, eventually
+    -- `|c_k| < (ε/2)/(C₁ + 1)`, `‖U_k z − V z‖ < min 1 ((ε/2)/(C₂ + 1))` on `K`, and the
+    -- coefficient bound holds on `K`.
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hC₁ : 0 < (1 + R) * (N₀ + 1) * Z₀ + 1 := by positivity
+    have hC₂ : 0 < CA * Z₀ + 1 := by positivity
+    have hδ₁ : 0 < ε / 2 / ((1 + R) * (N₀ + 1) * Z₀ + 1) := by positivity
+    have hδ₂ : 0 < min 1 (ε / 2 / (CA * Z₀ + 1)) := by positivity
+    filter_upwards [Metric.tendsto_nhds.mp hc _ hδ₁, Metric.tendstoUniformlyOn_iff.mp hUV _ hδ₂,
+      hah] with k hck hUk hahk z hz
+    rw [Real.dist_eq, sub_zero] at hck
+    have hP : ‖U k z - V z‖ < min 1 (ε / 2 / (CA * Z₀ + 1)) := by
+      rw [← dist_eq_norm, dist_comm]
+      exact hUk z hz
+    have hP₁ : ‖U k z - V z‖ ≤ 1 := hP.le.trans (min_le_left _ _)
+    have hP₂ : ‖U k z - V z‖ < ε / 2 / (CA * Z₀ + 1) := hP.trans_le (min_le_right _ _)
+    -- Step 4: `‖U_k z‖ ≤ ‖V z‖ + ‖U_k z − V z‖ ≤ N₀ + 1`.
+    have hUn : ‖U k z‖ ≤ N₀ + 1 :=
+      calc ‖U k z‖ = ‖V z + (U k z - V z)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖V z‖ + ‖U k z - V z‖ := norm_add_le _ _
+        _ ≤ N₀ + 1 := add_le_add (hN₀ z hz) hP₁
+    -- Step 5: `A[V][Q] − ah_k[U_k][Q] = −((ah_k − A)[U_k][Q] + A[U_k − V][Q])`.
+    have hdec : A (V z) (Q z) - ah k z (U k z) (Q z) =
+        -((ah k z (U k z) (Q z) - A (U k z) (Q z)) + A (U k z - V z) (Q z)) := by
+      rw [map_sub, sub_apply]
+      ring
+    -- Step 6: the first term is `≤ |c_k| C₁ < ε/2`.
+    have h₁ : |ah k z (U k z) (Q z) - A (U k z) (Q z)| < ε / 2 := by
+      have hQ := hZ₀ z hz
+      have hRz := hR z hz
+      calc |ah k z (U k z) (Q z) - A (U k z) (Q z)|
+          ≤ c k * (1 + ‖z‖ ^ α) * ‖U k z‖ * ‖Q z‖ := hahk z hz _ _
+        _ ≤ |c k| * (1 + ‖z‖ ^ α) * ‖U k z‖ * ‖Q z‖ := by
+            gcongr
+            exact le_abs_self (c k)
+        _ ≤ |c k| * (1 + R) * (N₀ + 1) * Z₀ := by gcongr
+        _ ≤ |c k| * ((1 + R) * (N₀ + 1) * Z₀ + 1) := by
+            nlinarith [abs_nonneg (c k)]
+        _ < ε / 2 := (lt_div_iff₀ hC₁).mp hck
+    -- Step 7: the second term is `≤ ‖U_k z − V z‖ C₂ < ε/2`.
+    have h₂ : |A (U k z - V z) (Q z)| < ε / 2 := by
+      have hQ := hZ₀ z hz
+      calc |A (U k z - V z) (Q z)| = ‖A (U k z - V z) (Q z)‖ := (Real.norm_eq_abs _).symm
+        _ ≤ CA * ‖U k z - V z‖ * ‖Q z‖ := hCA _ _
+        _ ≤ CA * ‖U k z - V z‖ * Z₀ := by gcongr
+        _ ≤ ‖U k z - V z‖ * (CA * Z₀ + 1) := by
+            nlinarith [norm_nonneg (U k z - V z)]
+        _ < ε / 2 := (lt_div_iff₀ hC₂).mp hP₂
+    -- Step 8: the triangle inequality.
+    rw [Real.dist_eq, hdec, abs_neg]
+    calc |(ah k z (U k z) (Q z) - A (U k z) (Q z)) + A (U k z - V z) (Q z)|
+        ≤ |ah k z (U k z) (Q z) - A (U k z) (Q z)| + |A (U k z - V z) (Q z)| := abs_add_le _ _
+      _ < ε / 2 + ε / 2 := add_lt_add h₁ h₂
+      _ = ε := add_halves ε
+  · -- Claim (ii), Step 9: with `C₃ = R Z₀`, eventually `|d_k| < ε/(C₃ + 1)` and the error bound
+    -- holds on `K`, so `|Ψ_k z (Q z)| ≤ |d_k| C₃ < ε`.
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hC₃ : 0 < R * Z₀ + 1 := by positivity
+    have hδ : 0 < ε / (R * Z₀ + 1) := by positivity
+    filter_upwards [Metric.tendsto_nhds.mp hd _ hδ, hΨ] with k hdk hΨk z hz
+    rw [Real.dist_eq, sub_zero] at hdk
+    have hQ := hZ₀ z hz
+    have hRz := hR z hz
+    rw [Real.dist_eq, zero_sub, abs_neg]
+    calc |Ψ k z (Q z)| ≤ d k * ‖z‖ ^ α * ‖Q z‖ := hΨk z hz _
+      _ ≤ |d k| * ‖z‖ ^ α * ‖Q z‖ := by
+          gcongr
+          exact le_abs_self (d k)
+      _ ≤ |d k| * R * Z₀ := by gcongr
+      _ ≤ |d k| * (R * Z₀ + 1) := by nlinarith [abs_nonneg (d k)]
+      _ < ε := (lt_div_iff₀ hC₃).mp hdk
+
+namespace Submission
+
+/-- **Limit of the weak equations on growing balls** (blow-up step of the Schauder estimate behind
+Simon 7.1).  Let `R_k → ∞`, `c_k, d_k → 0`, `V` continuous and `U_k → V` uniformly on every closed
+ball `B_r(0)`.  Suppose that on `B̆_{R_k}(0)` the coefficients `â_k`, `Ψ_k` are continuous with
+`|â_k(z)[P][Q] − A[P][Q]| ≤ c_k (1 + |z|^α) ‖P‖ ‖Q‖` and `|Ψ_k(z)[Q]| ≤ d_k |z|^α ‖Q‖`, and that
+`∫_{B̆_{R_k}(0)} â_k[U_k][Dζ] = ∫_{B̆_{R_k}(0)} Ψ_k[Dζ]` for every `C¹` map `ζ` with compact support
+in `B̆_{R_k}(0)`.  Then `∫ A[V][Dζ] = 0` for every compactly supported `C¹` map `ζ : ℝⁿ → ℝ^ℓ`: if
+`spt ζ ⊆ B_r(0)`, then for `k` large `B_r(0) ⊆ B̆_{R_k}(0)`, the integrands vanish off `B_r(0)` and
+converge uniformly on it, to `A[V][Dζ]` and to `0`, so
+`∫ A[V][Dζ] = lim ∫ â_k[U_k][Dζ] = lim ∫ Ψ_k[Dζ] = 0`. -/
+theorem dohr_eb_sch_bu_weak_eq_limit : ∀ (n ℓ : ℕ) (α : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)) (R c d : ℕ → ℝ), 0 ≤ α → Tendsto R atTop atTop → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → Continuous V → (∀ r : ℝ, TendstoUniformlyOn U V atTop (closedBall (0 : Rn n) r)) → (∀ k, ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) => ah k p.1 p.2.1 p.2.2) (ball (0 : Rn n) (R k) ×ˢ univ)) → (∀ k, ContinuousOn (Ψ k) (ball (0 : Rn n) (R k))) → (∀ k, ContinuousOn (U k) (ball (0 : Rn n) (R k))) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ P Q : Rn n →L[ℝ] Rn ℓ, |ah k z P Q - A P Q| ≤ c k * (1 + ‖z‖ ^ α) * ‖P‖ * ‖Q‖) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ Q : Rn n →L[ℝ] Rn ℓ, |Ψ k z Q| ≤ d k * ‖z‖ ^ α * ‖Q‖) → (∀ k, ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) (R k) → ∫ z in ball (0 : Rn n) (R k), ah k z (U k z) (fderiv ℝ ζ z) = ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z, A (V z) (fderiv ℝ ζ z) = 0 := by
+  intro n ℓ α A ah Ψ U V R c d hα hR hc hd hVc hUV hahc hΨc hUc hah hΨ hweak ζ hζ hζc
+  -- Step 1: `tsupport ζ ⊆ B_r(0)`; `Z` bounds `‖Dζ‖` and `N` bounds `‖V‖` on `B_r(0)`.
+  have hT : IsCompact (tsupport ζ) := hζc.isCompact
+  obtain ⟨r, hTr⟩ := hT.isBounded.subset_closedBall (0 : Rn n)
+  have hK : IsCompact (closedBall (0 : Rn n) r) := isCompact_closedBall 0 r
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  obtain ⟨Z, hZ⟩ := hDζ.bounded_above_of_compact_support (hζc.fderiv ℝ)
+  obtain ⟨N, hN⟩ := hK.exists_bound_of_continuousOn hVc.continuousOn
+  -- `Dζ` vanishes off `tsupport ζ`, hence off `B_r(0)`.
+  have hDζ0 : ∀ z, z ∉ tsupport ζ → fderiv ℝ ζ z = 0 := fun z hz =>
+    Function.notMem_support.1 fun h => hz (support_fderiv_subset ℝ h)
+  have hDζK : ∀ z, z ∉ closedBall (0 : Rn n) r → fderiv ℝ ζ z = 0 := fun z hz =>
+    hDζ0 z fun h => hz (hTr h)
+  -- Step 2: for `k` large, `r < R_k`, so `B_r(0) ⊆ B̆_{R_k}(0)`.
+  have hRr : ∀ᶠ k in atTop, r < R k := hR.eventually_gt_atTop r
+  -- Step 3: for `k` large both integrands are integrable, and the weak equation on `B̆_{R_k}(0)`
+  -- becomes `∫ â_k[U_k][Dζ] = ∫ Ψ_k[Dζ]` over `ℝⁿ`; `A[V][Dζ]` is integrable.
+  have hloc : ∀ᶠ k in atTop,
+      (Integrable fun z => ah k z (U k z) (fderiv ℝ ζ z)) ∧
+      (Integrable fun z => Ψ k z (fderiv ℝ ζ z)) ∧
+      ∫ z, ah k z (U k z) (fderiv ℝ ζ z) = ∫ z, Ψ k z (fderiv ℝ ζ z) := by
+    filter_upwards [hRr] with k hk
+    have hTR : tsupport ζ ⊆ ball (0 : Rn n) (R k) := hTr.trans (closedBall_subset_ball hk)
+    have hFk : (Integrable fun z => ah k z (U k z) (fderiv ℝ ζ z)) ∧
+        ∫ z in ball (0 : Rn n) (R k), ah k z (U k z) (fderiv ℝ ζ z) =
+          ∫ z, ah k z (U k z) (fderiv ℝ ζ z) :=
+      (Submission.dohr_eb_sch_bu_wel_localized_integral n
+        (fun z => ah k z (U k z) (fderiv ℝ ζ z)) _ _ isOpen_ball hT hTR
+        ((hahc k).comp (continuousOn_id.prodMk ((hUc k).prodMk hDζ.continuousOn))
+          fun z hz => ⟨hz, mem_univ _⟩)
+        fun z hz => by simp only [hDζ0 z hz, map_zero]).2
+    have hEk : (Integrable fun z => Ψ k z (fderiv ℝ ζ z)) ∧
+        ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z) = ∫ z, Ψ k z (fderiv ℝ ζ z) :=
+      (Submission.dohr_eb_sch_bu_wel_localized_integral n (fun z => Ψ k z (fderiv ℝ ζ z)) _ _
+        isOpen_ball hT hTR ((hΨc k).clm_apply hDζ.continuousOn)
+        fun z hz => by simp only [hDζ0 z hz, map_zero]).2
+    exact ⟨hFk.1, hEk.1, by rw [← hFk.2, ← hEk.2]; exact hweak k ζ hζ hζc hTR⟩
+  have hF0 : Integrable fun z => A (V z) (fderiv ℝ ζ z) :=
+    (Submission.dohr_eb_sch_bu_wel_localized_integral n (fun z => A (V z) (fderiv ℝ ζ z)) univ _
+      isOpen_univ hT (subset_univ _) ((A.continuous.comp hVc).clm_apply hDζ).continuousOn
+      fun z hz => by simp only [hDζ0 z hz, map_zero]).2.1
+  -- Steps 4–5, pointwise: on `B_r(0)`, `â_k[U_k][Dζ] → A[V][Dζ]` and `Ψ_k[Dζ] → 0` uniformly.
+  obtain ⟨hF, hE⟩ := Submission.dohr_eb_sch_bu_wel_pairing_tendstoUniformlyOn n ℓ α r Z N A ah Ψ
+    U V (fderiv ℝ ζ) (closedBall 0 r) c d hα hc hd (hUV r)
+    (fun z hz => mem_closedBall_zero_iff.1 hz) (fun z _ => hZ z) hN
+    (hRr.mono fun k hk z hz P P' => hah k z (closedBall_subset_ball hk hz) P P')
+    (hRr.mono fun k hk z hz P => hΨ k z (closedBall_subset_ball hk hz) P)
+  -- Steps 4–5, integrals: all integrands vanish off `B_r(0)`, so
+  -- `∫ â_k[U_k][Dζ] → ∫ A[V][Dζ]` and `∫ Ψ_k[Dζ] → 0`.
+  have hFlim := Submission.dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn n
+    (closedBall 0 r) (fun k z => ah k z (U k z) (fderiv ℝ ζ z))
+    (fun z => A (V z) (fderiv ℝ ζ z)) hK (hloc.mono fun k hk => hk.1) hF0
+    (Eventually.of_forall fun k z hz => by simp only [hDζK z hz, map_zero])
+    (fun z hz => by simp only [hDζK z hz, map_zero]) hF
+  have hElim := Submission.dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn n
+    (closedBall 0 r) (fun k z => Ψ k z (fderiv ℝ ζ z)) (fun _ => (0 : ℝ)) hK
+    (hloc.mono fun k hk => hk.2.1) (integrable_zero _ _ _)
+    (Eventually.of_forall fun k z hz => by simp only [hDζK z hz, map_zero])
+    (fun _ _ => rfl) hE
+  -- Step 6: `∫ A[V][Dζ] = lim ∫ â_k[U_k][Dζ] = lim ∫ Ψ_k[Dζ] = 0`.
+  rw [integral_zero] at hElim
+  exact tendsto_nhds_unique hFlim (hElim.congr' (hloc.mono fun k hk => hk.2.2.symm))
 
 end Submission
 
