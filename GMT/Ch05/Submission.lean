@@ -462,6 +462,151 @@ theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧
 
 namespace Submission
 
+/-- Iterated Caccioppoli along the chain `U_j = (d_u)^j (d_w W)` inside a class `S` closed under
+directional derivatives: the energy of `D U_n` on `B_ρ(0)` is `O(ρ^{2α-2-n})`, hence zero. -/
+theorem dohr_eb_sch_liou_chain_vanish : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Set (Rn n → Rn ℓ)) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 ≤ K → 0 ≤ C → (∀ V ∈ S, ContDiff ℝ 1 V) → (∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S) → (∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ, ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2) → W ∈ S → (∀ x : Rn n, ‖fderiv ℝ W x - fderiv ℝ W 0‖ ≤ K * ‖x‖ ^ α) → ∀ u w y : Rn n, fderiv ℝ ((fun g : Rn n → Rn ℓ => fun z => fderiv ℝ g z u)^[n] (fun z => fderiv ℝ W z w)) y = 0 := by
+  intro n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS hgrowth u w y
+  set D : (Rn n → Rn ℓ) → (Rn n → Rn ℓ) := fun g z => fderiv ℝ g z u with hD
+  set U : ℕ → Rn n → Rn ℓ := fun j => D^[j] (fun z => fderiv ℝ W z w) with hU
+  have hUS : ∀ j, U j ∈ S := by
+    intro j
+    induction j with
+    | zero => exact hS2 W hWS w
+    | succ j ih =>
+      simp only [hU] at ih ⊢
+      rw [Function.iterate_succ_apply']
+      exact hS2 _ ih u
+  have hUsucc : ∀ j, U (j + 1) = fun z => fderiv ℝ (U j) z u := by
+    intro j
+    simp only [hU]
+    rw [Function.iterate_succ_apply']
+  set E : ℕ → ℝ → ℝ≥0∞ := fun j ρ => ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ (U j) x‖ₑ ^ 2 with hE
+  set ω : ℝ := (volume (ball (0 : Rn n) 1)).toReal with hω
+  have hω0 : 0 ≤ ω := ENNReal.toReal_nonneg
+  have hvol : ∀ r : ℝ, 0 < r → volume (ball (0 : Rn n) r) = ENNReal.ofReal (r ^ n * ω) := by
+    intro r hr
+    rw [Measure.addHaar_ball_of_pos volume 0 hr, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_mul (by positivity), hω, ENNReal.ofReal_toReal measure_ball_lt_top.ne]
+  set e0 : ℝ := (n : ℝ) + 2 * α - 2 with he0
+  set M0 : ℝ := C * K ^ 2 * ‖w‖ ^ 2 * (2 : ℝ) ^ ((n : ℝ) + 2 * α) * ω with hM0
+  have hM0nn : 0 ≤ M0 := by positivity
+  -- base estimate (Caccioppoli with c = DW(0) w)
+  have hbase : ∀ ρ : ℝ, 0 < ρ → E 0 ρ ≤ ENNReal.ofReal (M0 * ρ ^ e0) := by
+    intro ρ hρ
+    have h1 := hS3 (U 0) (hUS 0) ρ hρ (fderiv ℝ W 0 w)
+    refine h1.trans ?_
+    have hc : 0 ≤ K * (2 * ρ) ^ α * ‖w‖ := by positivity
+    have h2 : ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖U 0 x - fderiv ℝ W 0 w‖ₑ ^ 2 ≤
+        ∫⁻ x in ball (0 : Rn n) (2 * ρ), ENNReal.ofReal ((K * (2 * ρ) ^ α * ‖w‖) ^ 2) := by
+      apply setLIntegral_mono measurable_const
+      intro x hx
+      have hx' : ‖x‖ < 2 * ρ := by simpa using hx
+      have hle : ‖U 0 x - fderiv ℝ W 0 w‖ ≤ K * (2 * ρ) ^ α * ‖w‖ := by
+        simp only [hU, Function.iterate_zero, id]
+        calc ‖fderiv ℝ W x w - fderiv ℝ W 0 w‖ = ‖(fderiv ℝ W x - fderiv ℝ W 0) w‖ := by simp
+          _ ≤ ‖fderiv ℝ W x - fderiv ℝ W 0‖ * ‖w‖ := ContinuousLinearMap.le_opNorm _ _
+          _ ≤ K * ‖x‖ ^ α * ‖w‖ := by gcongr; exact hgrowth x
+          _ ≤ K * (2 * ρ) ^ α * ‖w‖ := by
+            gcongr
+      rw [← ofReal_norm, ← ENNReal.ofReal_pow (norm_nonneg _)]
+      exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (norm_nonneg _) hle 2)
+    calc ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖U 0 x - fderiv ℝ W 0 w‖ₑ ^ 2
+        ≤ ENNReal.ofReal (C / ρ ^ 2) *
+            ∫⁻ x in ball (0 : Rn n) (2 * ρ), ENNReal.ofReal ((K * (2 * ρ) ^ α * ‖w‖) ^ 2) := by
+          gcongr
+      _ = ENNReal.ofReal (C / ρ ^ 2) * (ENNReal.ofReal ((K * (2 * ρ) ^ α * ‖w‖) ^ 2) *
+            ENNReal.ofReal ((2 * ρ) ^ n * ω)) := by
+          rw [setLIntegral_const, hvol (2 * ρ) (by positivity)]
+      _ = ENNReal.ofReal (C / ρ ^ 2 * ((K * (2 * ρ) ^ α * ‖w‖) ^ 2 * ((2 * ρ) ^ n * ω))) := by
+          rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
+      _ = ENNReal.ofReal (M0 * ρ ^ e0) := by
+          congr 1
+          have h2ρ : (2 * ρ) ^ α = 2 ^ α * ρ ^ α := Real.mul_rpow (by norm_num) hρ.le
+          have hpow : ρ ^ e0 = ρ ^ n * (ρ ^ α) ^ 2 / ρ ^ 2 := by
+            rw [he0, Real.rpow_sub hρ, Real.rpow_add hρ, Real.rpow_natCast, Real.rpow_two,
+              ← Real.rpow_natCast (ρ ^ α) 2, ← Real.rpow_mul hρ.le]
+            push_cast; ring_nf
+          have h2pow : (2 : ℝ) ^ ((n : ℝ) + 2 * α) = 2 ^ n * (2 ^ α) ^ 2 := by
+            rw [Real.rpow_add (by norm_num), Real.rpow_natCast, ← Real.rpow_natCast ((2:ℝ) ^ α) 2,
+              ← Real.rpow_mul (by norm_num)]
+            push_cast; ring_nf
+          rw [hpow, hM0, h2pow, h2ρ, mul_pow]
+          field_simp
+          ring
+  -- iteration (Caccioppoli with c = 0)
+  have hiter : ∀ j : ℕ, ∃ M : ℝ, 0 ≤ M ∧ ∀ ρ : ℝ, 0 < ρ →
+      E j ρ ≤ ENNReal.ofReal (M * ρ ^ (e0 - 2 * (j : ℝ))) := by
+    intro j
+    induction j with
+    | zero => exact ⟨M0, hM0nn, fun ρ hρ => by simpa using hbase ρ hρ⟩
+    | succ j ih =>
+      obtain ⟨M, hM, hb⟩ := ih
+      refine ⟨C * ‖u‖ ^ 2 * M * 2 ^ (e0 - 2 * (j : ℝ)), by positivity, fun ρ hρ => ?_⟩
+      have hstep : ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖U (j + 1) x - 0‖ₑ ^ 2 ≤
+          ENNReal.ofReal (‖u‖ ^ 2) * E j (2 * ρ) := by
+        simp only [hE]
+        rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+        apply lintegral_mono
+        intro x
+        simp only [hUsucc j, sub_zero]
+        calc ‖fderiv ℝ (U j) x u‖ₑ ^ 2 ≤ (‖fderiv ℝ (U j) x‖ₑ * ‖u‖ₑ) ^ 2 := by
+              gcongr; exact ContinuousLinearMap.le_opENorm _ _
+          _ = ENNReal.ofReal (‖u‖ ^ 2) * ‖fderiv ℝ (U j) x‖ₑ ^ 2 := by
+              rw [ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]; ring
+      calc E (j + 1) ρ ≤ ENNReal.ofReal (C / ρ ^ 2) *
+            ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖U (j + 1) x - 0‖ₑ ^ 2 :=
+            hS3 _ (hUS (j + 1)) ρ hρ 0
+        _ ≤ ENNReal.ofReal (C / ρ ^ 2) * (ENNReal.ofReal (‖u‖ ^ 2) * E j (2 * ρ)) := by
+            gcongr
+        _ ≤ ENNReal.ofReal (C / ρ ^ 2) * (ENNReal.ofReal (‖u‖ ^ 2) *
+              ENNReal.ofReal (M * (2 * ρ) ^ (e0 - 2 * (j : ℝ)))) := by
+            gcongr; exact hb (2 * ρ) (by positivity)
+        _ = ENNReal.ofReal (C / ρ ^ 2 * (‖u‖ ^ 2 * (M * (2 * ρ) ^ (e0 - 2 * (j : ℝ))))) := by
+            rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
+        _ = ENNReal.ofReal (C * ‖u‖ ^ 2 * M * 2 ^ (e0 - 2 * (j : ℝ)) *
+              ρ ^ (e0 - 2 * ((j + 1 : ℕ) : ℝ))) := by
+            congr 1
+            have h2ρ : (2 * ρ) ^ (e0 - 2 * (j : ℝ)) =
+                2 ^ (e0 - 2 * (j : ℝ)) * ρ ^ (e0 - 2 * (j : ℝ)) :=
+              Real.mul_rpow (by norm_num) hρ.le
+            have hpow : ρ ^ (e0 - 2 * ((j + 1 : ℕ) : ℝ)) = ρ ^ (e0 - 2 * (j : ℝ)) / ρ ^ 2 := by
+              rw [← Real.rpow_two, ← Real.rpow_sub hρ]; push_cast; ring_nf
+            rw [h2ρ, hpow]
+            field_simp
+  -- decay: the energy of D U_n vanishes on every ball
+  obtain ⟨M, hM, hb⟩ := hiter n
+  have hneg : e0 - 2 * (n : ℝ) < 0 := by rw [he0]; linarith
+  have hEn : ∀ ρ0 : ℝ, 0 < ρ0 → E n ρ0 = 0 := by
+    intro ρ0 hρ0
+    have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (M * ρ ^ (e0 - 2 * (n : ℝ)))) atTop
+        (𝓝 0) := by
+      have h1 : Tendsto (fun ρ : ℝ => ρ ^ (e0 - 2 * (n : ℝ))) atTop (𝓝 0) := by
+        have := tendsto_rpow_neg_atTop (y := -(e0 - 2 * (n : ℝ))) (by linarith)
+        simpa using this
+      have h2 := h1.const_mul M
+      rw [mul_zero] at h2
+      have := ENNReal.tendsto_ofReal h2
+      simpa using this
+    have hle : E n ρ0 ≤ 0 := by
+      refine ge_of_tendsto hlim (eventually_atTop.2 ⟨ρ0, fun ρ hρ => ?_⟩)
+      exact (lintegral_mono_set (ball_subset_ball hρ)).trans (hb ρ (lt_of_lt_of_le hρ0 hρ))
+    exact le_antisymm hle zero_le
+  -- pointwise vanishing (continuity + open sets have positive measure)
+  have hcont : Continuous (fderiv ℝ (U n)) := (hS1 _ (hUS n)).continuous_fderiv one_ne_zero
+  have hρy : 0 < ‖y‖ + 1 := by positivity
+  have hE0 := hEn (‖y‖ + 1) hρy
+  have hmeas : Measurable (fun x => ‖fderiv ℝ (U n) x‖ₑ ^ 2) :=
+    ((ENNReal.continuous_pow 2).comp hcont.enorm).measurable
+  simp only [hE] at hE0
+  rw [lintegral_eq_zero_iff hmeas] at hE0
+  have hEq : EqOn (fun x => ‖fderiv ℝ (U n) x‖ₑ ^ 2) 0 (ball (0 : Rn n) (‖y‖ + 1)) :=
+    Measure.eqOn_open_of_ae_eq hE0 isOpen_ball
+      ((ENNReal.continuous_pow 2).comp hcont.enorm).continuousOn continuousOn_const
+  have hy : y ∈ ball (0 : Rn n) (‖y‖ + 1) := by simp
+  have := hEq hy
+  simp only [Pi.zero_apply, pow_eq_zero_iff two_ne_zero] at this
+  rw [← ofReal_norm, ENNReal.ofReal_eq_zero, norm_le_zero_iff] at this
+  exact this
 /-- 1-D lemma: a function with an explicit derivative chain ending in `0` (a polynomial of
 degree `< m`) and sublinear growth `‖G₀ t − G₀ 0‖ ≤ C |t|^α`, `α < 1`, is constant. -/
 theorem dohr_eb_sch_liou_poly_sublinear_const : ∀ (ℓ m : ℕ) (α C : ℝ) (G : ℕ → ℝ → Rn ℓ), α < 1 → (∀ j < m, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t) → (∀ t : ℝ, G m t = 0) → (∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ C * |t| ^ α) → ∀ t : ℝ, G 0 t = G 0 0 := by
@@ -814,5 +959,62 @@ theorem dohr_eb_sch_liou_chain_vanish : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Se
   exact this
 
 end Submission
+
+/-- Abstract Liouville theorem.  Let `S` be a class of `C¹` maps `ℝⁿ → ℝ^ℓ` that is closed under
+directional derivatives and satisfies the Caccioppoli inequality on balls centred at `0`.  If
+`W ∈ S` satisfies `‖DW(x) - DW(0)‖ ≤ K |x|^α` with `0 < α < 1`, then `DW` is constant. -/
+theorem Submission.dohr_eb_sch_liou_abstract : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Set (Rn n → Rn ℓ)) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 ≤ K → 0 ≤ C → (∀ V ∈ S, ContDiff ℝ 1 V) → (∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S) → (∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ, ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2) → W ∈ S → (∀ x : Rn n, ‖fderiv ℝ W x - fderiv ℝ W 0‖ ≤ K * ‖x‖ ^ α) → ∀ x : Rn n, fderiv ℝ W x = fderiv ℝ W 0 := by
+  intro n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS hgrowth x
+  -- It suffices to show `DW(x) w = DW(0) w` for every `w`.
+  ext1 w
+  -- `D g = (z ↦ Dg(z) x)` is the directional derivative along `x`.
+  set D : (Rn n → Rn ℓ) → (Rn n → Rn ℓ) := fun g z => fderiv ℝ g z x with hD
+  -- `U_j := D^[j] (z ↦ DW(z) w)` lies in `S` by (S2), hence is `C¹` by (S1).
+  have hUS : ∀ j : ℕ, (D^[j] (fun z => fderiv ℝ W z w)) ∈ S := by
+    intro j
+    induction j with
+    | zero => exact hS2 W hWS w
+    | succ j ih =>
+      rw [Function.iterate_succ_apply']
+      exact hS2 _ ih x
+  -- `G_j(t) := U_j(t x)`; by the chain rule `G_j' = G_{j+1}`.
+  let G : ℕ → ℝ → Rn ℓ := fun j t => (D^[j] (fun z => fderiv ℝ W z w)) (t • x)
+  have hderiv : ∀ j < n + 1, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t := by
+    intro j _ t
+    have hdiff : DifferentiableAt ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) :=
+      ((hS1 _ (hUS j)).differentiable one_ne_zero) _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 := hdiff.hasFDerivAt.comp_hasDerivAt t h1
+    have h3 : G (j + 1) t = fderiv ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) x := by
+      simp only [G]
+      rw [Function.iterate_succ_apply']
+    rw [h3]
+    exact h2
+  -- `G_{n+1}(t) = DU_n(t x) x = 0` by `chain_vanish` with `u := x`.
+  have hzero : ∀ t : ℝ, G (n + 1) t = 0 := by
+    intro t
+    simp only [G]
+    rw [Function.iterate_succ_apply']
+    have := Submission.dohr_eb_sch_liou_chain_vanish n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS
+      hgrowth x w (t • x)
+    simp only [hD] at this ⊢
+    rw [this]
+    rfl
+  -- Growth: `|G_0(t) - G_0(0)| ≤ (K |x|^α |w|) |t|^α`.
+  have hgrow : ∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
+    intro t
+    simp only [G, Function.iterate_zero, id, zero_smul]
+    calc ‖fderiv ℝ W (t • x) w - fderiv ℝ W 0 w‖
+        = ‖(fderiv ℝ W (t • x) - fderiv ℝ W 0) w‖ := by simp
+      _ ≤ ‖fderiv ℝ W (t • x) - fderiv ℝ W 0‖ * ‖w‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ (K * ‖t • x‖ ^ α) * ‖w‖ := by gcongr; exact hgrowth _
+      _ = (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
+        rw [norm_smul, Real.norm_eq_abs, Real.mul_rpow (abs_nonneg _) (norm_nonneg _)]
+        ring
+  -- `poly_sublinear_const` with `m := n + 1` gives `G_0(1) = G_0(0)`, i.e. `DW(x) w = DW(0) w`.
+  have := Submission.dohr_eb_sch_liou_poly_sublinear_const ℓ (n + 1) α (K * ‖x‖ ^ α * ‖w‖) G
+    hα1 hderiv hzero hgrow 1
+  simpa [G] using this
 
 end GMT.Ch05
