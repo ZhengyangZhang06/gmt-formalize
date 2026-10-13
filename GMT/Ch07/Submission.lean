@@ -451,6 +451,79 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 3.14–3.15**: the mean curvature field `H(x) = Σⱼ (Dpr(x)[p(x)eⱼ])^*(p(x)eⱼ)`
+on `N ∩ U`, `H = 0` elsewhere, is `μ`-a.e. strongly measurable and bounded on compact `K ⊆ U`.
+`N ∩ U = N̄ ∩ U` is Borel, `x ↦ (Dpr(x), p(x))` is a.e. strongly measurable and
+`(B, q) ↦ Σⱼ (B(qeⱼ))^*(qeⱼ)` is continuous; for compact `K ⊆ U`, `K ∩ N̄ ⊆ N ⊆ O` is compact and
+`Dpr` is continuous on the open `O`, so `‖H‖ ≤ P max(sup_{K ∩ N̄} ‖Dpr‖, 0)` on `K`. -/
+theorem Submission.mcs_exists_meanCurvature_field : ∀ (P : ℕ) (μ : Measure (Euclid P)) (U N O : Set (Euclid P)) (pr p : Euclid P → (Euclid P →L[ℝ] Euclid P)), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \ N) ∩ U = ∅ → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H μ ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, ∀ x ∈ K, ‖H x‖ ≤ Λ) ∧ ∀ x ∈ N ∩ U, H x = ∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1)) := by
+  intro P μ U N O pr p hU hO hNO hpr hNU hp hp1
+  -- `F(B, q) = Σⱼ (B(qeⱼ))^*(qeⱼ)`, `eⱼ` the standard basis of `ℝᴾ`, is continuous
+  let F : (Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)) × (Euclid P →L[ℝ] Euclid P) → Euclid P :=
+    fun q => ∑ j : Fin P, ContinuousLinearMap.adjoint (q.1 (q.2 (EuclideanSpace.single j 1)))
+      (q.2 (EuclideanSpace.single j 1))
+  have hF : Continuous F := by
+    refine continuous_finsetSum _ fun j _ => ?_
+    have hq : Continuous fun q : (Euclid P →L[ℝ] (Euclid P →L[ℝ] Euclid P)) ×
+        (Euclid P →L[ℝ] Euclid P) => q.2 (EuclideanSpace.single j 1) :=
+      continuous_snd.clm_apply continuous_const
+    exact (ContinuousLinearMap.adjoint.continuous.comp (continuous_fst.clm_apply hq)).clm_apply hq
+  -- `N ∩ U = N̄ ∩ U` is Borel
+  have hG : N ∩ U = closure N ∩ U := by
+    refine Subset.antisymm (inter_subset_inter_left _ subset_closure) fun z hz => ⟨?_, hz.2⟩
+    by_contra hzN
+    have hz' : z ∈ (closure N \ N) ∩ U := ⟨⟨hz.1, hzN⟩, hz.2⟩
+    rw [hNU] at hz'
+    exact hz'
+  have hGm : MeasurableSet (N ∩ U) := by
+    rw [hG]
+    exact isClosed_closure.measurableSet.inter hU.measurableSet
+  -- `H = 1_{N ∩ U} F(Dpr, p)`
+  refine ⟨(N ∩ U).indicator fun x => F (fderiv ℝ pr x, p x), ?_, ?_,
+    fun x hx => indicator_of_mem hx _⟩
+  · exact (hF.comp_aestronglyMeasurable
+      ((measurable_fderiv ℝ pr).aestronglyMeasurable.prodMk hp)).indicator hGm
+  -- `‖Dpr‖ ≤ C` on the compact `K ∩ N̄ ⊆ N ⊆ O`, so `‖H‖ ≤ P max(C, 0)` on `K`
+  intro K hK hKU
+  have hKN : K ∩ closure N ⊆ N ∩ U := fun x hx => by
+    rw [hG]
+    exact ⟨hx.2, hKU hx.1⟩
+  obtain ⟨C, hC⟩ := (hK.inter_right isClosed_closure).exists_bound_of_continuousOn
+    ((hpr.continuousOn_fderiv_of_isOpen hO le_rfl).mono fun x hx => hNO (hKN hx).1)
+  refine ⟨P * max C 0, fun x hxK => ?_⟩
+  by_cases hx : x ∈ N ∩ U
+  · rw [indicator_of_mem hx]
+    have hDx : ‖fderiv ℝ pr x‖ ≤ max C 0 :=
+      (hC x ⟨hxK, subset_closure hx.1⟩).trans (le_max_left _ _)
+    have hj : ∀ j : Fin P, ‖ContinuousLinearMap.adjoint
+        (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1))‖ ≤
+        max C 0 := by
+      intro j
+      have hu : ‖p x (EuclideanSpace.single j 1)‖ ≤ 1 :=
+        calc ‖p x (EuclideanSpace.single j 1)‖
+            ≤ ‖p x‖ * ‖(EuclideanSpace.single j 1 : Euclid P)‖ := (p x).le_opNorm _
+          _ = ‖p x‖ := by simp
+          _ ≤ 1 := hp1 x
+      calc ‖ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1)))
+              (p x (EuclideanSpace.single j 1))‖
+          ≤ ‖ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1)))‖ *
+              ‖p x (EuclideanSpace.single j 1)‖ := ContinuousLinearMap.le_opNorm _ _
+        _ = ‖fderiv ℝ pr x (p x (EuclideanSpace.single j 1))‖ *
+              ‖p x (EuclideanSpace.single j 1)‖ := by rw [LinearIsometryEquiv.norm_map]
+        _ ≤ ‖fderiv ℝ pr x‖ * ‖p x (EuclideanSpace.single j 1)‖ *
+              ‖p x (EuclideanSpace.single j 1)‖ :=
+            mul_le_mul_of_nonneg_right (ContinuousLinearMap.le_opNorm _ _) (norm_nonneg _)
+        _ ≤ max C 0 * 1 * 1 := by gcongr
+        _ = max C 0 := by ring
+    calc ‖F (fderiv ℝ pr x, p x)‖
+        ≤ ∑ j : Fin P, ‖ContinuousLinearMap.adjoint
+            (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1))‖ :=
+          norm_sum_le _ _
+      _ ≤ ∑ _j : Fin P, max C 0 := Finset.sum_le_sum fun j _ => hj j
+      _ = P * max C 0 := by simp
+  · rw [indicator_of_notMem hx, norm_zero]
+    exact mul_nonneg (Nat.cast_nonneg _) (le_max_right _ _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

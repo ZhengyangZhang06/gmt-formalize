@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5cbeeb827f37263a8dd198bc11ae3287fa8043017b752ff76bde50f21377540",
+  "git_delta": {
+    "base_commit": "746413bca1269e387309439c20a291b01229cca6",
+    "candidate_commit": "18130bdbdd76d57e888da71cce314b6be96a42f7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "mcs_exists_meanCurvature_field",
+    "diff_sha256": "ea077c6c3d8bb627210e8ee58509be68a5c0cfd4f4fde3658c8e979228e95739",
+    "source_sha256": "879c2c1e6faefeab2b6235b77288091857e0c32e55539b11f768352e303c62ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcs_exists_meanCurvature_field",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (U N O : Set (Euclid P)) (pr p : Euclid P → (Euclid P →L[ℝ] Euclid P)), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \\ N) ∩ U = ∅ → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H μ ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, ∀ x ∈ K, ‖H x‖ ≤ Λ) ∧ ∀ x ∈ N ∩ U, H x = ∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
