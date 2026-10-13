@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e794fa33572faa9a64b9fe1d72e8ba8ba59f352b028c31fc68a4f3c68eefc285",
+  "git_delta": {
+    "base_commit": "7ee8df637a5b75e412a86d19fe0757528d647361",
+    "candidate_commit": "0c71ffcf56b44b9e0508393f6cd112dd574e7815",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_gs_aqf_liminf_le_seq",
+    "diff_sha256": "417a76ca651a14913e9bbc2ddab9ed73d39b28a0dafe44880ebb050c35d1a6cf",
+    "source_sha256": "e0eee8af018444dd01e7ea3c9e50d3dcb13223be96c810514b5bc8f20bb034f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_gs_aqf_liminf_le_seq",
+      "statement": "∀ (μ : Measure ℝ) (a b t : ℝ), t ∈ Ioo a b → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (Ioo (t - h) t)) (𝓝[>] 0) ≤ liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * (μ.restrict (Icc a b)) (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
