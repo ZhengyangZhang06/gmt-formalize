@@ -483,6 +483,38 @@ theorem Submission.dimred_cs_ti_blowUp_translate_eval : ∀ (P n : ℕ) (S : Geo
   change (ω : DifferentialForm (Euclid P) n) (-((1 : ℝ)⁻¹ • -v) + dilationCLM P 1 y)
       (fun i => dilationCLM P 1 (w i)) = (ω : DifferentialForm (Euclid P) n) (v + y) w
   simp [dilationCLM]
+/-- `v ∧ ξ(x) = 0` a.e. when `v` lies in the approximate tangent plane a.e. (the translation part of
+the proof of Simon Lemma 7.3.5): `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM`, and
+`y ↦ β(y, τ₁, …, τₙ)` is linear and vanishes on each `τᵢ` (repeated entry), hence on `TₓM ∋ v`. -/
+theorem Submission.dimred_cs_ti_wedge_vanishes : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (v : Euclid P), (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection v = v) → ∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β v) = 0 := by
+  intro P n U R v hproj
+  -- `μ = θ Hⁿ⌞M ≪ Hⁿ⌞M`, so `ξ` orients an approximate tangent plane `μ`-a.e.
+  filter_upwards [hproj, (withDensity_absolutelyContinuous _ _).ae_le R.orients]
+    with x hx hor β
+  obtain ⟨Q, hQ, τ, -, hspan, hξ⟩ := hor
+  -- `TₓM = Q` by uniqueness of approximate tangent planes, so `v ∈ Q`
+  have hT : approxTangentPlane n R.carrier x = Q := by
+    have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec.unique hQ
+  have hvQ : v ∈ Q := hT ▸ Submodule.starProjection_eq_self_iff.mp hx
+  -- `y ↦ β(y, τ)` vanishes on `Q = span(range τ)`
+  have hβ : ∀ y ∈ Q, ContinuousAlternatingMap.curryLeft β y τ = 0 := by
+    intro y hy
+    rw [← hspan] at hy
+    induction hy using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨b, rfl⟩ := hy
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      exact β.map_eq_zero_of_eq _ (i := 0) (j := b.succ) (by simp) (Fin.succ_ne_zero b).symm
+    | zero => simp
+    | add y z _ _ hy hz =>
+      rw [map_add, ContinuousAlternatingMap.add_apply, hy, hz, add_zero]
+    | smul a y _ hy =>
+      rw [map_smul, ContinuousAlternatingMap.smul_apply, hy, smul_zero]
+  rcases hξ with hξ | hξ
+  · rw [hξ, hβ v hvQ]
+  · rw [hξ, hβ v hvQ, neg_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
