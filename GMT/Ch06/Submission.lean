@@ -520,6 +520,44 @@ theorem Submission.lpf_raf_local_lipschitz_area : ∀ (n Q : ℕ) (Ω D : Set (E
         (fderiv ℝ u x (EuclideanSpace.single j 1))).det))
     D ∅ B (fun m => (hBDV m).trans inter_subset_left) hBd hBm (hDB.trans subset_union_right)
     measure_empty (by rw [image_empty, measure_empty]) hpiece
+/-- Antilipschitz charts pull back `Hⁿ`-null sets to `Lⁿ`-null sets (Simon Ch. 3, proof of 2.6;
+used for Ch. 6, 3.9): if `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` on `Ω` with `c > 0`, then `Φ` has a
+`c⁻¹`-Lipschitz inverse `Ψ` on `Φ(Ω)` with `Ω ∩ Φ⁻¹(Z) ⊆ Ψ(Φ(Ω) ∩ Z)`, so `Hⁿ(Z) = 0` gives
+`Lⁿ(Ω ∩ Φ⁻¹(Z)) = Hⁿ(Ω ∩ Φ⁻¹(Z)) = 0`. -/
+theorem Submission.lpf_raf_chart_preimage_null : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (c : ℝ), 0 < c → (∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ Z : Set (Eucl P), (μHE[n] : Measure (Eucl P)) Z = 0 → (volume : Measure (Eucl n)) (Ω ∩ Φ ⁻¹' Z) = 0 := by
+  intro P n Φ Ω c hc hΦ Z hZ
+  -- `Φ` is injective on `Ω`, so `Ψ := invFunOn Φ Ω` is a left inverse of `Φ` on `Ω`.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' h
+    have h1 := hΦ w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hc (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  set Ψ := Function.invFunOn Φ Ω
+  have hleft : LeftInvOn Ψ Φ Ω := hinj.leftInvOn_invFunOn
+  -- `Ψ` is `c⁻¹`-Lipschitz on `Φ '' Ω`.
+  have hlip : LipschitzOnWith (Real.toNNReal c⁻¹) Ψ (Φ '' Ω) := by
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨w, hw, rfl⟩ _ ⟨w', hw', rfl⟩
+    rw [hleft hw, hleft hw', dist_eq_norm, dist_eq_norm,
+      Real.coe_toNNReal _ (inv_nonneg.mpr hc.le), inv_mul_eq_div, le_div_iff₀ hc, mul_comm]
+    exact hΦ w hw w' hw'
+  -- `Ω ∩ Φ⁻¹(Z) ⊆ Ψ(Φ(Ω) ∩ Z)`, and the latter is `Hⁿ`-null by the Lipschitz image bound.
+  have hsub : Ω ∩ Φ ⁻¹' Z ⊆ Ψ '' (Φ '' Ω ∩ Z) := by
+    rintro w ⟨hw, hwZ⟩
+    exact ⟨Φ w, ⟨⟨w, hw, rfl⟩, hwZ⟩, hleft hw⟩
+  have himg : (μHE[n] : Measure (Eucl n)) (Ψ '' (Φ '' Ω ∩ Z)) = 0 := by
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (A := Φ '' Ω ∩ Z) n (hlip.mono fun _ hy => hy.1)
+    have h2 : (μHE[n] : Measure (Eucl P)) (Φ '' Ω ∩ Z) = 0 :=
+      measure_mono_null (fun _ hy => hy.2) hZ
+    rw [h2, mul_zero] at h1
+    exact nonpos_iff_eq_zero.mp h1
+  -- On `ℝⁿ`, `Hⁿ = Lⁿ`.
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  exact measure_mono_null hsub himg
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
