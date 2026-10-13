@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_normal_bound-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "(Nor): vertical deviation from a rotated graph plane is controlled by the distance to it",
+  "statement": "For natural numbers n, l, a linear isometry equivalence q of R^(n+l), a continuous linear map A : R^n -> R^l with operator norm ||A|| <= 1, and x in R^n, y in R^l: let Gamma_A = span{graphPoint v (A v) : v in R^n}, K = q(Gamma_A) = Gamma_A.map q, P the orthogonal projection (starProjection) of R^(n+l) onto K, and w = q(graphPoint x y). Then ||y - A x|| <= 2 ||w - P w||.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖",
+  "lean_name": "allard52_gpa_graph_normal_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-normal-bound-a1-a1"
+}
