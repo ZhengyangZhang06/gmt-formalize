@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem ae_ae_comm|theorem measurable_measure_prodMk_left|theorem prod_apply_symm|theorem prod_apply |theorem _root_.Monotone.measure_iUnion|theorem _root_.Directed.measure_iUnion|theorem measure_biUnion_eq_iSup",
+        "limsup_add_le|limsup_const_mul_of_ne_top",
+        "measure_univ_of_isMulLeftInvariant|measure_preimage_mul_right",
+        "mickle|besicovitch.federer|purely.unrectifiable|rectifiability_bf_",
+        "git show 751505bb80698c2cb140348e42263479a3537d60:GMT/Ch06/Submission.lean",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env lean '/tmp/bft-independent-audit-ue4uw4g6/FrozenTypes.lean'",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env lean '/tmp/bft-independent-audit-ue4uw4g6/ProofsAndComparators.lean'"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-bf-trichotomy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-bf-trichotomy-a1/decomposition-v1.json",
+        "/tmp/bft-independent-audit-ue4uw4g6/FrozenTypes.lean",
+        "/tmp/bft-independent-audit-ue4uw4g6/ProofsAndComparators.lean"
+      ],
+      "conclusion": "Splitting is appropriate: the six new analytic obligations and two accepted reuses form an acyclic graph and establish the exact selected trichotomy through the supplied assembly. The snapshot confirms the required section-measurability, continuity, Fubini, translation and density APIs; the searched Mickle–Radó/Besicovitch–Federer names had no relevant matches. All eight frozen propositions independently elaborate without child implementations. Euclidean, Borel, Haar and s-finite instances check correctly. The supplied appendices, accepted reuse subtree and exact parent assembly independently compile; every audited declaration has only propext, Classical.choice and Quot.sound as axioms. All names are bare identifiers. DAG and 2,324 other-branch decomposition-file checks found no conflicting new-name reservations; both reused frozen types match their accepted declarations exactly. The slice method is also corroborated by [Hovila et al., Lemma 2.5](https://arxiv.org/pdf/1104.3453)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "limsup_eq_iinf",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with identical accepted frozen type. The neighbourhood-basis formula and cofinality of 1/(n+1) prove both inequalities for arbitrary ENNReal-valued functions, without circular reliance."
+    },
+    {
+      "key": "mickle_rado",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with identical accepted frozen type. Ball continuity supplies measurability; the countable truncation, compact density-point argument and Vitali estimate prove the exact outer-measure dichotomy. The positivity assumptions and covering constants are sufficient."
+    },
+    {
+      "key": "limsup_sup_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include all required hypotheses. Tonelli, directed continuity over rational radii and the scaling estimate justify both rational reductions and the countable measurable formula. The proof handles k=0 and arbitrary δ and uses only its declared sibling."
+    },
+    {
+      "key": "witness_set_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact exhaustion, bounded closed witness sets and Archimedean choice of l establish the asserted countable union of compact projections. This proves the exact Borel statement for arbitrary δ, with no missing hypothesis or dependency."
+    },
+    {
+      "key": "cone_ratio_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cone family is jointly open, monotone in aperture and left continuous in radius. The supplied proof verifies every hypothesis of its declared abstract measurability sibling and obtains exactly the frozen proposition."
+    },
+    {
+      "key": "cone_ratio_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The zero-limsup argument gives the uniform radius bound. The infinite-limsup argument correctly derives δ>0, uses measurable push-forward and cone containment, and matches the pinned closed-ball density normalization with positive finite ω_k. No finiteness assumption on μ is needed."
+    },
+    {
+      "key": "fibre_cone_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate fibre identity and both inclusions are correct. The √N estimate, finite subadditivity, direct limsup-sum argument and positive rescaling give the exact inequalities. The separate N=0 argument covers the degenerate case."
+    },
+    {
+      "key": "slice_density_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the required outer measure and verifies ball continuity, Borelness and ψ(D)=0 using the stated support hypothesis. Its translation identity correctly identifies densities without binder capture. The declared siblings and measurable Tonelli/translation argument prove the exact parameter-null conclusion; s-finiteness suffices."
+    }
+  ],
+  "required_changes": []
+}

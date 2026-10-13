@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mickle_rado-a1.vitali_bound-a1",
+  "parent_id": "root.rectifiability-a1.mickle_rado-a1",
+  "depth": 3,
+  "title": "Vitali covering estimate off a ψ-null closed set",
+  "statement": "Let m ∈ ℕ, k := m+1, ψ an outer measure on ℝᵏ = EuclideanSpace ℝ (Fin k), K ⊆ ℝᵏ closed with ψ(K) = 0, C ∈ [0,∞] and r ∈ ℝ such that ψ(B(z,τ)) ≤ C·τᵏ for all z ∈ K and all 0 < τ < r (B open balls). Then for every c₀ ∈ K and every real t with 0 < t and 6t ≤ r: ψ(B(c₀,t))·Lᵏ(B(0,1)) ≤ C·6ᵏ·Lᵏ(B(c₀,2t)∖K). Here Lᵏ is Lebesgue measure, τᵏ means ENNReal.ofReal(τᵏ), and arithmetic is in [0,∞] with 0·∞ = 0.",
+  "lean_statement": "∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ c₀ ∈ K, ∀ t : ℝ, 0 < t → 6 * t ≤ r → ψ (ball c₀ t) * (volume : Measure (Eucl (m + 1))) (ball 0 1) ≤ C * 6 ^ (m + 1) * (volume : Measure (Eucl (m + 1))) (ball c₀ (2 * t) \\ K)",
+  "lean_name": "rectifiability_mickle_rado_vitali_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-vitali-bound-a1-a1"
+}
