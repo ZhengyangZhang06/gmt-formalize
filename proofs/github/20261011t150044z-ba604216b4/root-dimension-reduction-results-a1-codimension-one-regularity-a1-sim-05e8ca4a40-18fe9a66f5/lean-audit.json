@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ddfef1924a18bc9bef7fc9d6a4b8149c0998db70cc45f2c5a83c6e480e0aed08",
+  "git_delta": {
+    "base_commit": "e3f98515e13a400a79e3d5aaadd55c07577b0d22",
+    "candidate_commit": "fb7e8f5df42d0eb19dfd65401bf6c25a8759c019",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_diffeo_image_submanifold",
+    "diff_sha256": "27baf39386e7838531c9a307a51c3429174c3b16299cdb9e1efa7943a6283f80",
+    "source_sha256": "45731266f9c602e31bf3bc2f220570ffc35c0c61ca21f6e68474437f7e79e2c0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_diffeo_image_submanifold",
+      "statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (Φ : Euclid P → Euclid P) (Λ : NNReal), IsEmbeddedSubmanifold 1 d N → ContDiff ℝ 1 Φ → Bijective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → AntilipschitzWith Λ Φ → IsEmbeddedSubmanifold 1 d (Φ '' N) ∧ ∀ x ∈ N, tangentSpace (Φ '' N) (Φ x) = (fderiv ℝ Φ x) '' tangentSpace N x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
