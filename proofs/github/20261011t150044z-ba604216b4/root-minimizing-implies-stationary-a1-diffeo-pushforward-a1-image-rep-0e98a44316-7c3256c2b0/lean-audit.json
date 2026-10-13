@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e40c565ae3fc759be98cf1c9130dd8a0a277967bf5f56105527b3b0c36877046",
+  "git_delta": {
+    "base_commit": "36ccfd75a5ad75be680d05a3b98377e25d1b0d35",
+    "candidate_commit": "df4d2f905b5c222cc16b76ff5ad81cc644b85d53",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpfir_imrep_pairing_continuous_integrable",
+    "diff_sha256": "77de9b2c8a06b46704053caa6875741273e1377050e9b95747cfb5ef75d2b65f",
+    "source_sha256": "6435d4b942775d6e791b35fa385fcbb62edbaff23910487a6e5677aba70e2762",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpfir_imrep_pairing_continuous_integrable",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (β : Euclid P → Covector (Euclid P) n), Continuous β → HasCompactSupport β → tsupport β ⊆ U → Integrable (fun x => (R.mult x : ℝ) * R.orient x (β x)) (μHE[n].restrict R.carrier)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
