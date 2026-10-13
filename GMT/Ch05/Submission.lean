@@ -458,6 +458,64 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Coefficient bounds for the linear system in the proof of Simon Ch. 5, Theorem 7.1 (second
+assertion, p. 127), steps 1, 2 and 6: on a finite-dimensional real normed space `L` with basis
+`E₀, …, E_{N-1}`, every continuous bilinear form satisfies
+`|B(P)(Q)| ≤ c (∑_{r,t} |B(E_r)(E_t)|) ‖P‖ ‖Q‖`, and likewise for the difference `B − B'` of two
+forms, with `c = c₀²`, `c₀ = ∑_r ‖π_r‖` the sum of the norms of the coordinate functionals. -/
+theorem dohr_eb_lhr_cub_bilinear_basis_bound : ∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (E : Fin N → L) (c : ℝ), 0 ≤ c ∧ (∀ (B : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t)|) * ‖P‖ * ‖Q‖) ∧ ∀ (B B' : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q - B' P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t) - B' (E r) (E t)|) * ‖P‖ * ‖Q‖ := by
+  intro L _ _ _
+  -- Step 1: a basis `b` of `L` and its continuous coordinate functionals `π r`.
+  let b := Module.finBasis ℝ L
+  let π : Fin (Module.finrank ℝ L) → L →L[ℝ] ℝ := fun r =>
+    LinearMap.toContinuousLinearMap (b.coord r)
+  have hπ : ∀ r P, π r P = b.repr P r := fun r P => by simp [π]
+  -- Step 2: `|P_r| ≤ c₀ ‖P‖` with `c₀ = ∑ r, ‖π r‖`.
+  let c₀ : ℝ := ∑ r, ‖π r‖
+  have hc₀ : 0 ≤ c₀ := Finset.sum_nonneg fun r _ => norm_nonneg (π r)
+  have hcoord : ∀ r P, |b.repr P r| ≤ c₀ * ‖P‖ := by
+    intro r P
+    rw [← hπ, ← Real.norm_eq_abs]
+    calc ‖π r P‖ ≤ ‖π r‖ * ‖P‖ := (π r).le_opNorm P
+      _ ≤ c₀ * ‖P‖ := mul_le_mul_of_nonneg_right
+          (Finset.single_le_sum (fun s _ => norm_nonneg (π s)) (Finset.mem_univ r)) (norm_nonneg P)
+  -- Step 3: `B P Q = ∑ r, ∑ t, P_r Q_t B (b r) (b t)`.
+  have hexp : ∀ (B : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L),
+      B P Q = ∑ r, ∑ t, b.repr P r * b.repr Q t * B (b r) (b t) := by
+    intro B P Q
+    conv_lhs => rw [← b.sum_repr P, ← b.sum_repr Q]
+    simp only [map_sum, map_smul, sum_apply, smul_apply, smul_eq_mul, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun t _ => by ring
+  -- Step 4: `|∑ r, ∑ t, P_r Q_t β r t| ≤ c₀² (∑ r, ∑ t, |β r t|) ‖P‖ ‖Q‖` for any array `β`.
+  have harr : ∀ (β : Fin (Module.finrank ℝ L) → Fin (Module.finrank ℝ L) → ℝ) (P Q : L),
+      |∑ r, ∑ t, b.repr P r * b.repr Q t * β r t| ≤
+        c₀ ^ 2 * (∑ r, ∑ t, |β r t|) * ‖P‖ * ‖Q‖ := by
+    intro β P Q
+    calc |∑ r, ∑ t, b.repr P r * b.repr Q t * β r t|
+        ≤ ∑ r, |∑ t, b.repr P r * b.repr Q t * β r t| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ r, ∑ t, |b.repr P r * b.repr Q t * β r t| :=
+          Finset.sum_le_sum fun r _ => Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ r, ∑ t, c₀ * ‖P‖ * (c₀ * ‖Q‖) * |β r t| := by
+          refine Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun t _ => ?_
+          rw [abs_mul, abs_mul]
+          exact mul_le_mul_of_nonneg_right
+            (mul_le_mul (hcoord r P) (hcoord t Q) (abs_nonneg _) (by positivity)) (abs_nonneg _)
+      _ = c₀ ^ 2 * (∑ r, ∑ t, |β r t|) * ‖P‖ * ‖Q‖ := by
+          simp only [← Finset.mul_sum]
+          ring
+  -- Step 5: take `E = b` and `c = c₀²`; for `B − B'` subtract the two expansions termwise.
+  refine ⟨Module.finrank ℝ L, b, c₀ ^ 2, by positivity, fun B P Q => ?_, fun B B' P Q => ?_⟩
+  · rw [hexp B P Q]
+    exact harr _ P Q
+  · rw [hexp B P Q, hexp B' P Q]
+    simp only [← Finset.sum_sub_distrib, ← mul_sub]
+    exact harr _ P Q
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
