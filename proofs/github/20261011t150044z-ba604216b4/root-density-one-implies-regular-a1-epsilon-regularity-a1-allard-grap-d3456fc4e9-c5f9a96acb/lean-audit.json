@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d3a0ed8620a7c00b9d224c3957b650f7e62615cfe8d3fd68b4f939285bcdcf41",
+  "git_delta": {
+    "base_commit": "a3e477788e945e55f646aa60463f27f50afde5b4",
+    "candidate_commit": "d45b59bb0ec161aeb907a93ce85b9e4ad3c12953",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_translation_l2",
+    "diff_sha256": "6d247dc82d9ed66fcda04bfc61c3367dcbcf328cd308e56b156f0d132a3d8eab",
+    "source_sha256": "c62f57131e64252ff85d25dd4e30f0e0ab360aead55cb3b19b1497ce116ef7d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_translation_l2",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (w : Euclid n) (r R : ℝ), LipschitzWith L u → r + ‖w‖ ≤ R → ∫ x in ball (0 : Euclid n) r, (u x - u (x - w)) ^ 2 ≤ ‖w‖ ^ 2 * ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ u x‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
