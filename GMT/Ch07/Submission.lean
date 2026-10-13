@@ -488,6 +488,38 @@ theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
     simp [NNReal.smul_def]
 
+/-- **Countable disjoint Borel refinement of a local open cover** (Lindelöf): if every point of
+`U ⊆ ℝᴾ` has an open neighbourhood `W ⊆ U` with property `p`, then countably many such sets `Wᵢ`
+cover `U` (`ℝᴾ` is second countable), and the pieces `Aᵢ = Wᵢ \ ⋃_{j<i} Wⱼ` are pairwise disjoint
+Borel sets with `Aᵢ ⊆ Wᵢ` and `⋃ᵢ Aᵢ = U`.  The index type is empty when `U = ∅`. -/
+theorem Submission.cbrg_exists_countable_disjoint_refinement : ∀ (P : ℕ) (U : Set (Euclid P)) (p : Set (Euclid P) → Prop), (∀ x ∈ U, ∃ W : Set (Euclid P), IsOpen W ∧ x ∈ W ∧ W ⊆ U ∧ p W) → ∃ (ι : Type) (_ : Countable ι) (W A : ι → Set (Euclid P)), (∀ i, IsOpen (W i)) ∧ (∀ i, W i ⊆ U) ∧ (∀ i, p (W i)) ∧ (∀ i, MeasurableSet (A i)) ∧ (∀ i, A i ⊆ W i) ∧ Pairwise (fun i j => Disjoint (A i) (A j)) ∧ ⋃ i, A i = U := by
+  intro P U p h
+  choose! V hVo hxV hVU hpV using h
+  let s : U → Set (Euclid P) := fun x => V x
+  -- Lindelöf: countably many of the open sets `s x` already cover `⋃ x, s x = U`
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable s (fun x => hVo x x.2)
+  have hsU : ⋃ x, s x = U := by
+    apply subset_antisymm
+    · exact iUnion_subset fun x => hVU x x.2
+    · intro y hy
+      exact mem_iUnion.2 ⟨⟨y, hy⟩, hxV y hy⟩
+  rcases T.eq_empty_or_nonempty with hT | hT
+  · -- `T = ∅` forces `U = ∅`: take the empty index type
+    have hU : U = ∅ := by
+      rw [← hsU, ← hTU, hT]
+      simp
+    refine ⟨Empty, inferInstance, Empty.elim, Empty.elim, fun i => i.elim, fun i => i.elim,
+      fun i => i.elim, fun i => i.elim, fun i => i.elim, fun i => i.elim, ?_⟩
+    rw [hU]
+    exact iUnion_of_empty _
+  · -- enumerate `T = range f` and disjointify `Wₙ = s (f n)`
+    obtain ⟨f, hf⟩ := hTc.exists_eq_range hT
+    let W : ℕ → Set (Euclid P) := fun n => s (f n)
+    refine ⟨ℕ, inferInstance, W, disjointed W, fun n => hVo _ (f n).2, fun n => hVU _ (f n).2,
+      fun n => hpV _ (f n).2, MeasurableSet.disjointed (fun n => (hVo _ (f n).2).measurableSet),
+      disjointed_subset W, disjoint_disjointed W, ?_⟩
+    rw [iUnion_disjointed, ← hsU, ← hTU, hf, biUnion_range]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
