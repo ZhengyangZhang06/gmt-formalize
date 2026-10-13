@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.single_plane-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1",
+  "depth": 5,
+  "title": "Weights at least one with total at most one force a single plane through the origin",
+  "statement": "Let P, N ∈ ℕ, m and ν measures on ℝ^P, V a linear subspace of ℝ^P, w_1, …, w_N ∈ ℝ^P and α_1, …, α_N ∈ ℝ (indices in Fin N). Assume α_i ≥ 1 for every i, Σ_iα_i ≤ 1, w_{i₀} = 0 for some i₀, and ν = Σ_i ofReal(α_i)·(m⌞{y : y − w_i ∈ V}). Then ν = m⌞V.",
+  "lean_statement": "∀ (P N : ℕ) (m ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, 1 ≤ α i) → ∑ i, α i ≤ 1 → (∃ i, w i = 0) → ν = ∑ i, ENNReal.ofReal (α i) • m.restrict {y : Euclid P | y - w i ∈ V} → ν = m.restrict (V : Set (Euclid P))",
+  "lean_name": "cbr_ci_pw_single_plane_of_unit_weights",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1bbf36c885-a1"
+}

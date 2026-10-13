@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1",
+  "depth": 5,
+  "title": "Orthonormal frames with the same values on all n-covectors span the same plane",
+  "statement": "Let P, n ∈ ℕ and let v = (v_1, …, v_n) and v' = (v'_1, …, v'_n) be orthonormal families in ℝ^P (Orthonormal ℝ v, Orthonormal ℝ v'). Assume β(v_1, …, v_n) = β(v'_1, …, v'_n) for every n-covector β on ℝ^P, i.e. every continuous alternating n-linear form β : (ℝ^P)^n → ℝ (β ∈ Covector (Euclid P) n). Then span{v_1, …, v_n} = span{v'_1, …, v'_n}, i.e. Submodule.span ℝ (Set.range v) = Submodule.span ℝ (Set.range v').",
+  "lean_statement": "∀ (P n : ℕ) (v v' : Fin n → Euclid P), Orthonormal ℝ v → Orthonormal ℝ v' → (∀ β : Covector (Euclid P) n, β v = β v') → Submodule.span ℝ (Set.range v) = Submodule.span ℝ (Set.range v')",
+  "lean_name": "cbr_ci_pw_span_eq_of_covector_eval_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6-a1"
+}

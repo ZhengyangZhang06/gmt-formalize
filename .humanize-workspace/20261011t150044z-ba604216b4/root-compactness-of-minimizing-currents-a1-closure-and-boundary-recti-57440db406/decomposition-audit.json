@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_pw_",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|abbrev Covector|def Covector|boundary_apply",
+        "cramer_apply|cramer_one|detRowAlternating|det_eq_zero_of_column_eq_zero|def updateCol",
+        "tendsto_of_subseq_tendsto|liminf_const_mul_of_ne_top|absolutelyContinuous_smul|integral_smul_measure|ofReal_div_of_pos",
+        "python3 -I /tmp/pointwise-independent-audit-upsnfrrb/run_check.py plane_unique",
+        "python3 -I /tmp/pointwise-independent-audit-upsnfrrb/run_check.py tangent_subseq",
+        "python3 -I /tmp/pointwise-independent-audit-upsnfrrb/run_check.py limit_density",
+        "python3 -I /tmp/pointwise-independent-audit-upsnfrrb/run_check.py single_plane",
+        "python3 -I /tmp/pointwise-independent-audit-upsnfrrb/run_check.py assembly"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-57440db406/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-57440db406/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-57440db406/parent-supplied-natural-proof.json",
+        "/tmp/pointwise-independent-audit-upsnfrrb/plane_unique.lean",
+        "/tmp/pointwise-independent-audit-upsnfrrb/tangent_subseq.lean",
+        "/tmp/pointwise-independent-audit-upsnfrrb/limit_density.lean",
+        "/tmp/pointwise-independent-audit-upsnfrrb/single_plane.lean",
+        "/tmp/pointwise-independent-audit-upsnfrrb/assembly.lean"
+      ],
+      "conclusion": "The split is appropriate. Each child isolates a genuine step of the selected proof; the remaining assembly proves the exact frozen parent type from these children and its four declared sibling prerequisites. Dependencies are correctly directed and acyclic. All four names are fresh bare identifiers: no collision was found in the DAG, other proposed decompositions, snapshot project, workspace declarations, or SimonGMT library. Every contract is a standalone one-line proposition matching its prose, without placeholders, aliases, or self-reference. Snapshot compatibility and the supplied parent contract digest were independently verified. All four child proofs and the hypothesis-only parent assembly compiled successfully with the pinned toolchain; each uses only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including n = 0. The supplied determinant bound constructs genuine continuous alternating covectors. Their evaluations force each orthogonal residual to vanish, giving both span inclusions. Matrix.of and the explicitly typed matrix identity select the intended matrix operations. The proof is complete and non-circular."
+    },
+    {
+      "key": "tangent_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose and the actual approximate-tangent definition. Eventual positivity supplies the required positive tail; the subsequence hypothesis and countably generated filter criterion establish convergence for every compactly supported continuous test function. The given dimension equality completes the conclusion without additional hypotheses."
+    },
+    {
+      "key": "limit_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The full LD and ISP assumptions are explicitly present and match the prose. The proof verifies every premise for the scaled measure and constant field, transfers the almost-everywhere bound in the correct direction, commutes finite scalar multiplication with liminf, and divides by a nonzero finite scalar. The nonpositive η₀ case is explicitly covered; no integrability or circularity gap remains."
+    },
+    {
+      "key": "single_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-measure proposition exactly matches its prose. The zero-offset witness ensures a nonempty index set; two distinct indices contradict the total-weight bound. The unique coefficient equals one, so the measure sum reduces to the stated restriction. All steps are supplied and require no additional assumptions."
+    }
+  ],
+  "required_changes": []
+}
