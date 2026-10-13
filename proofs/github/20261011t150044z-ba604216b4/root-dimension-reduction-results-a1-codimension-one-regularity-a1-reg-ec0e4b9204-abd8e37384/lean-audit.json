@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f6db5b1860cdde6bc17c5401441d71498f3bea8b1d301b5abaf9bc85da14ce20",
+  "git_delta": {
+    "base_commit": "f177ec242f450c42a6edfbd20593d92f27b32c1f",
+    "candidate_commit": "12e74edc2f87670883f4d67e2d52fc0830d265e7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1cov_local_lower_lipschitz",
+    "diff_sha256": "c170bcf29b017db7821225908184a223133d83563a3373f14d7d653a0be22c4f",
+    "source_sha256": "dbfce95f4882d3c92d4b34da2a02d98ea3cef2fe98cc76c14b51d67541aab5d0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1cov_local_lower_lipschitz",
+      "statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (x : Euclid n), ContDiff ℝ 1 G → Injective (fderiv ℝ G x) → ∃ δ μ : ℝ, 0 < δ ∧ 0 < μ ∧ ∀ a ∈ ball x δ, ∀ b ∈ ball x δ, μ * ‖a - b‖ ≤ ‖G a - G b‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
