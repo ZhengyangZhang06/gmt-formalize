@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.finite_tangent-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1",
+  "depth": 4,
+  "title": "A finite set has approximate tangent space {0} in dimension 0 at each of its points",
+  "statement": "Let P ∈ ℕ, let F ⊆ ℝ^P be a finite set and let y ∈ F. Then HasApproximateTangentSpaceAt 0 F y ⊥ holds (Simon Ch. 3, 1.4 with n = 0). Explicitly: the zero subspace ⊥ = {0} has dimension 0, and for every compactly supported continuous f : ℝ^P → ℝ, ∫_{η_{y,ρ}(F)} f dH⁰ → ∫_{{0}} f dH⁰ = f(0) as ρ → 0 with ρ > 0. Here η_{y,ρ}(z) = ρ⁻¹(z − y) is SimonGMT blowUpMap y ρ and H⁰ = μHE[0].",
+  "lean_statement": "∀ (P : ℕ) (F : Set (Euclid P)) (y : Euclid P), F.Finite → y ∈ F → HasApproximateTangentSpaceAt 0 F y ⊥",
+  "lean_name": "cbrz_approxTangent_finite_zero",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-737fdc7436-a1"
+}

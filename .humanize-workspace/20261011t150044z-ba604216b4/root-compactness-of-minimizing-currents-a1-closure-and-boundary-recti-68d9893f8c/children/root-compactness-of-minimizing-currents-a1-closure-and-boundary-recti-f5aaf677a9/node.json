@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.point_sum_limit-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1",
+  "depth": 4,
+  "title": "Limits of bounded weighted point sums in a compact set are finite integer point sums",
+  "statement": "Let P, C ∈ ℕ and let K ⊆ ℝ^P be compact. Let N : ℕ → ℕ, w : ℕ → ℕ → ℤ and x : ℕ → ℕ → ℝ^P satisfy x_{j,l} ∈ K and w_{j,l} ≠ 0 whenever l < N_j, and Σ_{l<N_j} |w_{j,l}| ≤ C for every j. Let ι be a type, and for k ∈ ι let g_k : ℝ^P → ℝ be continuous and t_k ∈ ℝ, such that Σ_{l<N_j} w_{j,l} g_k(x_{j,l}) → t_k as j → ∞ for every k. Then there are M ∈ ℕ, v : ℕ → ℤ and y : ℕ → ℝ^P with y_l ∈ K for l < M and t_k = Σ_{l<M} v_l g_k(y_l) for every k ∈ ι.",
+  "lean_statement": "∀ (P : ℕ) (K : Set (Euclid P)) (C : ℕ) (N : ℕ → ℕ) (w : ℕ → ℕ → ℤ) (x : ℕ → ℕ → Euclid P) (ι : Type) (g : ι → Euclid P → ℝ) (t : ι → ℝ), IsCompact K → (∀ j l, l < N j → x j l ∈ K) → (∀ j l, l < N j → w j l ≠ 0) → (∀ j, (∑ l ∈ Finset.range (N j), (w j l).natAbs) ≤ C) → (∀ k, Continuous (g k)) → (∀ k, Tendsto (fun j => ∑ l ∈ Finset.range (N j), (w j l : ℝ) * g k (x j l)) atTop (𝓝 (t k))) → ∃ (M : ℕ) (v : ℕ → ℤ) (y : ℕ → Euclid P), (∀ l < M, y l ∈ K) ∧ ∀ k, t k = ∑ l ∈ Finset.range M, (v l : ℝ) * g k (y l)",
+  "lean_name": "cbrz_point_sum_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f5aaf677a9-a1"
+}
