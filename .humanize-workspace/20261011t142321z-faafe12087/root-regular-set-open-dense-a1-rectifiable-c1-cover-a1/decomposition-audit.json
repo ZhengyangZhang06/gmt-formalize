@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'rsod_lipschitz|rsod_c1_|C1Approx|c1_approx|IsC1Submanifold' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "measurableSet_of_differentiableAt|^theorem measurable_fderiv|^theorem measurable_fderiv_apply_const",
+        "rg -n -A 50 -B 5 '^theorem exists_contDiff_one_extension_of_whitney' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "rg -n -A 18 -B 5 '^theorem area_image_criticalSet_eq_zero' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "rg -l 'rsod_lipschitz_c1_approx_closedBall|rsod_lipschitz_range_subset_c1_ranges|rsod_c1_immersion_ball_isC1Submanifold|rsod_c1_range_subset_submanifold_cover' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes GMT .lake/packages/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rc1c-independent-audit-fcygyka7/ContractsAndParent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rc1c-independent-audit-fcygyka7/Libraries.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1/parent-child-handoff.json",
+        "/tmp/rc1c-independent-audit-fcygyka7/ContractsAndParent.lean",
+        "/tmp/rc1c-independent-audit-fcygyka7/Libraries.lean"
+      ],
+      "conclusion": "Verified the project and Mathlib pins and agreement between the handoff and selected DAG contract. No proposed name is reserved elsewhere in the active DAG or declared in the searched project/package sources. All names are valid bare identifiers. All four one-line propositions passed lexical validation and compiled from frozen contract definitions before any child declaration existed; none contains a placeholder, implementation-dependent alias, or matrix-instance ambiguity. The exact selected parent compiled with children lipschitz_range_c1_cover and c1_range_submanifold_cover supplied as hypotheses. Dependencies are correctly directed and acyclic: the former uses c1_approx_ball, and the latter uses immersion_ball_chart. This establishes that the split serves the selected theorem. The pinned APIs provide the required regularity, differentiation, normalized Hausdorff measure, Whitney compatibility, and countable-cover results. Independent axiom checks of Whitney extension, Lusin, Rademacher, critical-image nullity, and the Lipschitz-image estimate found only propext, Classical.choice, and Quot.sound. The private library build used for these checks has all 212 SimonGMT Lean source files identical to the pinned package."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approx_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary real radius, dimension zero, and infinite positive tolerance. The proof supplies finite-measure Lusin sets, measurable bounded remainder suprema, their pointwise convergence, and a closed set of uniform convergence. These establish exactly the pinned Whitney compatibility condition and the strict discrepancy estimate. The argument is complete and independent of the child and parent conclusions."
+    },
+    {
+      "key": "lipschitz_range_c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated Lipschitz-range cover. Coordinate tolerances using d+1 handle zero-dimensional targets. The proof establishes the null exceptional set, transfers nullity through the normalized Hausdorff Lipschitz estimate, proves coverage off that set, and enumerates the C¹ maps. Its sole child dependency is c1_approx_ball, correctly declared."
+    },
+    {
+      "key": "immersion_ball_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type and prose agree without an unstated positive-dimension assumption. The lower derivative bound and mean value estimate give injectivity and Lipschitz control on the closed ball. The proposed chart satisfies every frozen IsC1Submanifold clause, including properness through exclusion of the sphere image. The normalized Hausdorff estimate proves finite measure. No circular dependency occurs."
+    },
+    {
+      "key": "c1_range_submanifold_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type specify the same cover. The critical-image theorem applies with source finrank n; global C¹ regularity places every nonregular point in its critical set. The declared immersion dependency supplies finite-measure patches, and second countability supplies the countable cover. Enumeration and the empty regular-set case are explicitly justified. The resulting conclusion combines with the Lipschitz-range cover to prove the selected parent."
+    }
+  ],
+  "required_changes": []
+}

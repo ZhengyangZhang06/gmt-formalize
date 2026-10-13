@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "A C¹ submanifold has an approximate tangent space at each of its points",
+  "statement": "Let m ≥ 1, N ∈ ℕ and S ⊆ ℝ^N with IsC1Submanifold m S. Then for every x ∈ S there is a linear subspace P of ℝ^N that is the approximate tangent space of S at x in the sense of Simon Ch. 3, Def. 1.4 with Hᵐ := μHE[m] (Chapter03.HasApproximateTangentSpaceAt m S x P). That is, finrank P = m and ∫_{η_{x,r}(S)} f dHᵐ → ∫_P f dHᵐ as r ↓ 0 for every f ∈ C_c(ℝ^N, ℝ). (P is the classical tangent space Dφ(v₀)(ℝᵐ) of any chart φ with φ(v₀) = x.)",
+  "lean_statement": "∀ (m N : ℕ), 1 ≤ m → ∀ (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → ∀ x ∈ S, ∃ P : Submodule ℝ (EuclideanSpace ℝ (Fin N)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P",
+  "lean_name": "rsod_isC1Submanifold_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-3373b6823b-a1"
+}

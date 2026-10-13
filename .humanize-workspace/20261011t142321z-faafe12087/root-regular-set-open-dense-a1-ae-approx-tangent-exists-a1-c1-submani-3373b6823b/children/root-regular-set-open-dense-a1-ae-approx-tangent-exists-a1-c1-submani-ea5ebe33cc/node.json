@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1.chart_separation-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+  "depth": 4,
+  "title": "Separation of remote chart parameters by properness and injectivity",
+  "statement": "Let m, N ∈ ℕ, let V ⊆ ℝᵐ be an arbitrary set, let W ⊆ ℝ^N be an open set, and let φ : ℝᵐ → ℝ^N be continuous on V and injective on V. Let v₀ ∈ V with φ(v₀) ∈ W, and assume that V ∩ φ⁻¹(K) is compact for every compact K ⊆ W. Then for every δ > 0 there is ε > 0 such that ε ≤ ‖φ(v) − φ(v₀)‖ for every v ∈ V with δ ≤ ‖v − v₀‖.",
+  "lean_statement": "∀ (m N : ℕ) (V : Set (Rn m)) (W : Set (EuclideanSpace ℝ (Fin N))) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m), IsOpen W → ContinuousOn φ V → InjOn φ V → v₀ ∈ V → φ v₀ ∈ W → (∀ K : Set (EuclideanSpace ℝ (Fin N)), IsCompact K → K ⊆ W → IsCompact (V ∩ φ ⁻¹' K)) → ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖",
+  "lean_name": "rsod_c1tan_chart_separation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-ea5ebe33cc-a1"
+}
