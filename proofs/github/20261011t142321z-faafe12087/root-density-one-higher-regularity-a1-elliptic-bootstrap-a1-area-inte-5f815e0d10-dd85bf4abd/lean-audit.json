@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d13d67fc2bc907471dda9ea7b10f0da134aaaced4f121cdf5aa599a1de5dbeb",
+  "git_delta": {
+    "base_commit": "9a8a03041411292a5b3c1e46effb42b6a8a0e80b",
+    "candidate_commit": "fa53baa75dd62733a80fa12446dbfa14be39e96c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_line_second_deriv",
+    "diff_sha256": "eef8ed4680dc976bed2e7109d6484fe28aaab5a046edc357771dbef5f536b367",
+    "source_sha256": "b914fbe40a74576a0a79d72ce933add91a2d2dec396f2cfb940360481b4aa56d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_line_second_deriv",
+      "statement": "∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x v : E, deriv (deriv (fun t : ℝ => F (x + t • v))) 0 = fderiv ℝ (fderiv ℝ F) x v v",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
