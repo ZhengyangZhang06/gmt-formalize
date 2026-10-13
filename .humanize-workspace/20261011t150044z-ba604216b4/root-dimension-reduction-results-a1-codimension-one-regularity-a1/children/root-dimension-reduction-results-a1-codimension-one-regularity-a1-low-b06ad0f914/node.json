@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.low_density_regular-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1",
+  "depth": 3,
+  "title": "Low-density points of minimizing currents are regular: Allard's theorem at the point (Simon 7.4.2–7.4.4 with Ch. 5, 5.2)",
+  "statement": "Low-density points of minimizing currents are regular (Allard's theorem at the point; Simon 7.4.2–7.4.4 with Ch. 5, 5.2).\nFor all P ∈ ℕ and n ≥ 1 there is δ > 0, depending only on P and n, such that the following holds.\nData: d ∈ ℕ with n ≤ d ≤ P; U, N ⊆ ℝ^P; T ∈ 𝒟_n(U).\nHypotheses:\n- U is open;\n- N is an embedded C² d-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 2 d N) and (closure N ∖ N) ∩ U = ∅;\n- T is minimizing in U ∩ N (in particular integer multiplicity);\n- spt T ⊆ U ∩ N, and ∂T = 0 in U (BoundaryVanishes T).\nConclusion: every x ∈ spt T at which Θ^n(μ_T, x) = θ with θ < 1 + δ is a regular point, x ∈ regularSet T. That is, for some ρ > 0 with B_ρ(x) ⊆ U there are:\n- m ∈ ℤ ∖ {0};\n- an embedded C¹ n-dimensional submanifold M ∋ x with a continuous unit orientation ξ_M of its tangent spaces, and H^n(M ∩ K) < ∞ for compact K ⊆ B_ρ(x);\nsuch that T(ω) = m∫_M ⟨ω, ξ_M⟩ dH^n whenever tsupport ω ⊆ B_ρ(x).",
+  "lean_statement": "(∀ (P n : ℕ), 1 ≤ n → ∃ δ : ℝ, 0 < δ ∧ ∀ (d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, ∀ θ : ℝ, HasMassDensity T x θ → θ < 1 + δ → x ∈ regularSet T)",
+  "lean_name": "codim1_low_density_points_regular",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-b06ad0f914-a1"
+}

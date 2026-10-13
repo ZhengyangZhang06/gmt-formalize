@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1",
+  "depth": 3,
+  "title": "Simons' theorem for minimizing hypercones that are regular with multiplicity one off the vertex (Simon B.1–B.2)",
+  "statement": "Simons' theorem for minimizing hypercones that are regular with multiplicity one off the vertex (Simon B.2).\nData: P, m ∈ ℕ with 2 ≤ m ≤ 6; C ∈ 𝒟_m(ℝ^P); A₀ ⊆ ℝ^P a linear subspace with dim A₀ = m + 1.\nHypotheses:\n- C is minimizing in ℝ^P and ∂C = 0;\n- C is a cone: η_{0,λ#}C = C for every λ > 0 (IsConeCurrent C);\n- spt C ⊆ A₀;\n- every y ∈ spt C ∖ {0} is a regular point of C (y ∈ regularSet C) with Θ^m(μ_C, y) = 1.\nConclusion: every θ with Θ^m(μ_C, 0) = θ satisfies θ ≤ 1.",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (A₀ : Submodule ℝ (Euclid P)), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → C.support ⊆ (A₀ : Set (Euclid P)) → (∀ y ∈ C.support, y ≠ 0 → y ∈ regularSet C ∧ HasMassDensity C y 1) → ∀ θ : ℝ, HasMassDensity C 0 θ → θ ≤ 1",
+  "lean_name": "codim1_simons_regular_cone_density",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-27e5a07a68-a1",
+      "result_commit": "52115c22ec2d028a20c63361e75b9f6ee1c485bd",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd-a1"
+}

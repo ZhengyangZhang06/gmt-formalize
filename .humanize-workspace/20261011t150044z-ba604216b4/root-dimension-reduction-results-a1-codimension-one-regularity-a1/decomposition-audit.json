@@ -1,0 +1,123 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(def|structure|theorem|abbrev) (CodimensionOneRegularity|IsEmbeddedSubmanifold|IsOrientation|IsUnitOrientationOf|IsMinimizingIn|HasMassDensity|regularSet|InClassO|IMRep|BoundaryVanishes|IsBoundaryOfRegion|ConvergesWeakly)|^import|^namespace|^open",
+        "finrank_add_inf_finrank_orthogonal|theorem IsCompact.tendsto_subseq|theorem isOpen_iUnion_countable|codim1_|BVCompact|DeGiorgi|Allard",
+        "def massOn|massOn_mono|def zeroRegion|def support|def covectorEuclideanNorm|not.*(Allard|Giorgi)|Allard|De Giorgi|compactness|theorem bvVariationOn_le_liminf_of_locallyL1|theorem cone_simonsDefect_lower_bound",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "#print axioms Submission.dimred_codimension_one_regularity",
+        "#print axioms Submission.dtc_vanish_off_support",
+        "#print axioms Submission.cone_current_apply_dilation_pullback",
+        "#print axioms Submission.dtc_hausdorff_dilation",
+        "#print axioms Submission.dor_ims_unitOrientation_dual",
+        "#print axioms Submission.rsdic_unitOrientation_eq_or_eq_neg"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/README.md",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-v6.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-scope-v5.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-05-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+        "/tmp/codim1-v6/check/Types.lean",
+        "/tmp/codim1-v6/check/Assembly.lean",
+        "/tmp/codim1-independent-audit-1p5zjfo3/vanish_off_support.lean",
+        "/tmp/codim1-independent-audit-1p5zjfo3/cone_pullback_identity.lean",
+        "/tmp/codim1-independent-audit-1p5zjfo3/hausdorff_dilation.lean",
+        "/tmp/codim1-independent-audit-1p5zjfo3/unit_orientation_dual.lean",
+        "/tmp/codim1-independent-audit-1p5zjfo3/orientation_sign.lean"
+      ],
+      "conclusion": "The selected contract is Submission.dimred_codimension_one_regularity : CodimensionOneRegularity; its handoff, digest and proof hash agree. Project, Mathlib and SimonGMT revisions match their pins. All eleven proposed types elaborate and independently reference only frozen definitions. All names are bare identifiers; the six new names have no DAG reservation, and the five reused declarations have identical comparator-accepted types. Fresh compilation of those five declarations against their proposed types reports only propext, Classical.choice and Quot.sound. The dependency graph, including existing prerequisites, is acyclic. Independently rerunning and inspecting Assembly.lean confirms that the children and existing prerequisite contracts imply this selected theorem, with no root-theorem or sorryAx dependency. The assembly remains conditional on those obligations. The split appropriately separates substantive analytic tasks: the pinned library supplies supporting mass, topology and Simons algebra results, but not the full De Giorgi, BV compactness or Allard theorems. Their cited book statements support the supplied proof applications. No matrix-unit inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary U. Compactness provides a finite cover by vanishing regions; the subordinate smooth partition splits the test form into annihilated pieces. Reuse has an identical accepted type and passes the fresh axiom check."
+    },
+    {
+      "key": "cone_pullback_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly establishes the full blow-up domain, unfolds the proper affine push-forward, and obtains the stated inverse-dilation power by multilinearity. No dimension case is omitted. Exact accepted reuse and axioms were verified."
+    },
+    {
+      "key": "hausdorff_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation invariance and Hausdorff homogeneity give the image formula; applying it to the inverse dilation gives the correctly directed push-forward factor. The proof covers n = 0. Exact accepted reuse and axioms were verified."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinate expansion and the supplied Cauchy–Binet argument establish the coefficient-norm bound and both identities for the continuous linear dual map. Degenerate dimensions are handled. Exact accepted reuse and axioms were verified."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthonormal change-of-basis determinant is ±1 and acts uniformly on every top-degree covector, proving equality up to sign, including degree zero. Exact accepted reuse and axioms were verified."
+    },
+    {
+      "key": "oriented_piece_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All representation and measurability hypotheses match the type. Infinite weight is handled separately; finite weight permits domination and the Lusin–Tietze–mollification construction yielding the matching lower bound. Only the declared orientation-duality dependency is used."
+    },
+    {
+      "key": "region_support_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A nonempty embedded chart gives the dimension inequality. Relative closedness of N supplies vanishing neighbourhoods outside N, and d² = 0 proves the cycle condition, with degree zero handled explicitly. No extra measurability or minimality assumption is required."
+    },
+    {
+      "key": "region_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proper-chart argument justifies graph coordinates and orientation transport. Projected test forms establish finite perimeter before De Giorgi is applied; the resulting finite-area representation, mass identity and rectifiable density theorem yield a density-one support point in every prescribed ball."
+    },
+    {
+      "key": "zero_scale_limit_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses only the stated local mass bound and weak convergence. Nonempty limiting support bounds the normal offsets; graph convergence, the projected-current identity and perimeter bounds precede BV compactness. The final test-form limit establishes the exact Borel-region boundary conclusion in an oriented offset plane."
+    },
+    {
+      "key": "simons_regular_cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The argument handles the zero-current case, identifies multiplicity-one geometry off the vertex, and verifies admissible competitors, stationarity, smoothness and stability before applying the detailed Simons inequality argument. Connectedness and vertex negligibility then give the required vertex-density bound without invoking the parent theorem."
+    },
+    {
+      "key": "low_density_regular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives mass/support identities and bounded generalized mean curvature from the stated hypotheses, verifies Allard's small-scale assumptions with a dimension-only constant, and uses the cycle condition to obtain a nonzero constant integer multiplicity on the graph. The full-dimensional and impossible-dimension cases are covered; unresolved root regularity results are not assumed."
+    }
+  ],
+  "required_changes": []
+}

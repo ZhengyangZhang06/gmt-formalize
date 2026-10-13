@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1",
+  "depth": 3,
+  "title": "Zero-scale limits of blow-ups of codimension-one boundaries with moving centres are boundaries of regions in offset planes (Simon 7.5.3–7.5.5)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, U, N, E ⊆ ℝ^P, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U), x ∈ U, points x_i → x of ℝ^P, scales λ_i > 0 with λ_i → 0, and S ∈ 𝒟_n(ℝ^P). Assume U is open, InClassO n U N ξ_N, E is measurable with E ⊆ N ∩ U, T(ω) = ∫_E ξ_N(y)(dω(y)) dH^{n+1}(y) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N), and (a) there are C ∈ ℝ and r₀ > 0 with M_{B_ρ(y)}(T) ≤ ofReal(Cρ^n) (T.massOn (ball y ρ) ≤ ENNReal.ofReal (C·ρ^n)) for all y ∈ B_{r₀}(x) and 0 < ρ < r₀; (b) the blow-ups η_{x_i,λ_i#}T (blowUp T x_i λ_i, η_{y,λ}(w) = λ^{−1}(w − y)) converge weakly to S in ℝ^P (ConvergesWeakly); (c) spt S ≠ ∅. Then there are a linear subspace Q ⊆ ℝ^P with dim Q = n + 1, a ∈ ℝ^P, a Borel set F ⊆ ℝ^P and ξ_A ∈ Λ_{n+1}(ℝ^P) such that, with A := {y : y + a ∈ Q} = Q − a: InClassO n ℝ^P A (y ↦ ξ_A) (A is an affine (n+1)-plane in class 𝒪 of ℝ^P, oriented by the constant ξ_A); F ⊆ A; and S = ∂[[F]] in ℝ^P, i.e. S(ω) = ∫_F ξ_A(dω(y)) dH^{n+1}(y) for every ω ∈ 𝒟^n(ℝ^P) (IsBoundaryOfRegion S F (y ↦ ξ_A)).",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → S.support.Nonempty → ∃ (Q : Submodule ℝ (Euclid P)) (a : Euclid P) (F : Set (Euclid P)) (ξA : MultiVector P (n + 1)), Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξA) ∧ MeasurableSet F ∧ F ⊆ {y | y + a ∈ Q} ∧ IsBoundaryOfRegion S F (fun _ => ξA)",
+  "lean_name": "codim1_zero_scale_limit_offset_plane",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1-a1",
+      "result_commit": "8d70b3ea227291cb887ab3333a9ac3315b713e3f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab-a1"
+}
