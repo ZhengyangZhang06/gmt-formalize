@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.dim_zero-a1",
+  "parent_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "depth": 3,
+  "title": "Dimension zero: limits θ₀v(P) of integral 0-varifolds have θ₀ ∈ ℕ (step 1)",
+  "statement": "Let N ∈ ℕ, P ∈ G(N,0), θ₀ > 0 and W_k (k ∈ ℕ) integral 0-varifolds on B°_5(0) such that ∫ f dW_k → θ₀∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,0), ℝ) with tsupport f ⊆ B°_5(0) × G(N,0). Then θ₀ = m for some m ∈ ℕ. Notation: G(N,0) := Grassmannian N 0; μ_W := W.weight; v(P) := planeVarifoldMeasure P; B°_ρ(y) := ball y ρ.",
+  "lean_statement": "∀ (N : ℕ) (P : Grassmannian N 0) (θ₀ : ℝ) (W : ℕ → Varifold N 0 (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ f : C_c(Euclidean N × Grassmannian N 0, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N 0)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ m : ℕ, θ₀ = m",
+  "lean_name": "intcpt_fli_dim_zero_integer",
+  "depends_on": [
+    "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-dim-zero-a1-a1"
+}
