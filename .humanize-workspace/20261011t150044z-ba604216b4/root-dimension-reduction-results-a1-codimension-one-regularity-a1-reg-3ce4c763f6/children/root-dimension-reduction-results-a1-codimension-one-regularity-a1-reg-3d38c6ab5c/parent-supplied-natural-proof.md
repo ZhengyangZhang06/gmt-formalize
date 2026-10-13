@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.normal_average_lower-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof step 1. This is the quantitative form of Simon Ch. 3, 4.3 (1) (chapter-03.txt lines 604–612), which states lim_{ρ↓0} ∫_{B_ρ} ν^{n+1} dμ_E / μ_E(B_ρ) = 1 once ν_E(0) has been rotated to e_{n+1}.
+
+Notation. B̄_r := B̄_r(y) and A(r) := μ(B̄_r)_ℝ^{−1} ∫_{B̄_r} ν dμ, with 0^{−1} = 0 and μ(·)_ℝ := ENNReal.toReal.
+
+1. Since w ↦ ⟨w, v⟩ is continuous, ⟨A(r), v⟩ → ⟨v, v⟩ = |v|² = 1 as r ↓ 0. As 1 > 1/2, there is ε > 0 with ⟨A(r), v⟩ > 1/2 for all r ∈ (0, ε); this is the definition of the limit along 𝓝[>]0.
+
+2. Put ρ₂ := min(ε, ρ₀); then 0 < ρ₂ ≤ ρ₀. Fix r with 0 < r < ρ₂. Then r < ε and B̄_r ⊆ B̄_{ρ₀}, so μ(B̄_r) ≤ μ(B̄_{ρ₀}) < ∞.
+
+3. ν is μ-integrable on B̄_r: it is measurable, |ν| ≤ 1, and μ(B̄_r) < ∞. Integration commutes with the continuous linear functional ⟨·, v⟩, so ∫_{B̄_r} ⟨ν, v⟩ dμ = ⟨∫_{B̄_r} ν dμ, v⟩. (Lean: (innerSL ℝ v).integral_comp_comm. The lemma integral_inner lives in L2Space, which the contract does not import.)
+
+4. If μ(B̄_r) = 0, both sides of the claim vanish: ½·0 = 0 = ∫_{B̄_r} ⟨ν, v⟩ dμ.
+
+5. Otherwise a := μ(B̄_r)_ℝ > 0, since μ(B̄_r) is finite and nonzero. Then ∫_{B̄_r} ν dμ = a·(a^{−1}∫_{B̄_r} ν dμ) = a·A(r). By steps 3 and 1, ∫_{B̄_r} ⟨ν, v⟩ dμ = a⟨A(r), v⟩ ≥ a/2 = ½ μ(B̄_r)_ℝ. ∎
+
+Appendix (non-normative). A kernel-checked Lean proof of exactly this frozen statement was found during decomposition (workspace file GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/Full.lean, git-ignored; it uses only the contract imports, compiles without warnings after `import GMT.Ch07.Submission` inside `namespace GMT.Ch07` with the contract opens, and `#print axioms` gives [propext, Classical.choice, Quot.sound]):
+
+```lean
+theorem Submission.codim1_rdo_dg_ce_normal_average_lower : ∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₀ : ℝ), 0 < ρ₀ → μ (closedBall y ρ₀) ≠ ∞ → Measurable ν → (∀ z, ‖ν z‖ ≤ 1) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∃ ρ₂ : ℝ, 0 < ρ₂ ∧ ρ₂ ≤ ρ₀ ∧ ∀ r : ℝ, 0 < r → r < ρ₂ → (1 / 2 : ℝ) * (μ (closedBall y r)).toReal ≤ ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ := by
+  intro P μ ν y v ρ₀ hρ₀ hfin hν hν1 hv hT
+  -- Step 1: ⟨A(r), v⟩ → 1, so eventually > 1/2.
+  have hT' : Tendsto (fun ρ : ℝ => inner ℝ ((μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) v)
+      (𝓝[>] 0) (𝓝 (inner ℝ v v)) := hT.inner tendsto_const_nhds
+  rw [real_inner_self_eq_norm_sq, hv, one_pow] at hT'
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (1 / 2 : ℝ) < inner ℝ ((μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) v :=
+    hT'.eventually (lt_mem_nhds (by norm_num))
+  obtain ⟨ε, hε, hεsub⟩ := (mem_nhdsGT_iff_exists_Ioo_subset).1 hev
+  refine ⟨min ε ρ₀, lt_min hε hρ₀, min_le_right _ _, ?_⟩
+  intro r hr hr2
+  have hrε : r < ε := lt_of_lt_of_le hr2 (min_le_left _ _)
+  have hrρ₀ : r ≤ ρ₀ := (lt_of_lt_of_le hr2 (min_le_right _ _)).le
+  have hBfin : μ (closedBall y r) ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono (closedBall_subset_closedBall hrρ₀))
+  have hint : IntegrableOn ν (closedBall y r) μ :=
+    Measure.integrableOn_of_bounded hBfin hν.aestronglyMeasurable (Eventually.of_forall hν1)
+  have hkey : (1 / 2 : ℝ) < inner ℝ ((μ (closedBall y r)).toReal⁻¹ • ∫ z in closedBall y r, ν z ∂μ) v :=
+    hεsub ⟨hr, hrε⟩
+  have hcomm : ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ = inner ℝ (∫ z in closedBall y r, ν z ∂μ) v := by
+    have := (innerSL ℝ v).integral_comp_comm hint
+    simp only [innerSL_apply_apply] at this
+    simpa only [real_inner_comm v] using this
+  by_cases hμ0 : μ (closedBall y r) = 0
+  · rw [hμ0, ENNReal.toReal_zero, mul_zero, setIntegral_measure_zero _ hμ0]
+  · have hpos : 0 < (μ (closedBall y r)).toReal := ENNReal.toReal_pos hμ0 hBfin
+    have hI : ∫ z in closedBall y r, ν z ∂μ = (μ (closedBall y r)).toReal •
+        ((μ (closedBall y r)).toReal⁻¹ • ∫ z in closedBall y r, ν z ∂μ) := by
+      rw [smul_smul, mul_inv_cancel₀ hpos.ne', one_smul]
+    rw [hcomm, hI, real_inner_smul_left]
+    nlinarith [hkey, hpos]
+```
+
+## Key steps
+
+1. ⟨A(r), v⟩ → |v|² = 1, so ⟨A(r), v⟩ > 1/2 for r ∈ (0, ε).
+2. Take ρ₂ = min(ε, ρ₀); then μ(B̄_r) ≤ μ(B̄_{ρ₀}) < ∞ and ν is integrable on B̄_r.
+3. If μ(B̄_r) = 0 the claim is trivial; otherwise ∫_{B̄_r}⟨ν,v⟩ = ⟨∫_{B̄_r}ν, v⟩ = μ(B̄_r)_ℝ⟨A(r), v⟩ ≥ ½μ(B̄_r)_ℝ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `python3 scans of dag.json: de_giorgi-a1 children (status, lean_name, depth); accepted nodes whose title/statement matches cut-off|bump|smoothstep|layer|Fubini|integration by parts|divergence; statements of dorag_th_radial_cutoff, doragm_sab_cutoff_profile, dorag_ha_mv_radial_potential, dsmc_em_cutoff_tendsto_ball, doragm_sab_cutoff_mass_sandwich, doragm_sab_annulus_increment_sandwich, dorag_ha_lsc_ibp_c1_ball, regcomp_smooth_cutoff_product; collision check of the five codim1_rdo_dg_ce_* names (974 nodes: all free)`
+- `grep -rn codim1_rdo_dg_ce /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt (no match)`
+- `rg -n 'theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|theorem integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable|lemma trace_smulRight|theorem trace_eq_matrix_trace |theorem addHaar_ball |theorem volume_ball|theorem contDiffAt_norm|theorem norm_fderiv_le_of_lipschitz|theorem fderiv_smul_const|theorem HasCompactSupport.smul_right|theorem integral_integral_swap|theorem lintegral_eq_lintegral_meas_le|theorem inner_neg_neg|theorem finrank_euclideanSpace_fin|theorem addHaar_sphere|trace_eq_sum_inner' <snapshot>/mathlib/Mathlib`
+- `rg -n for contDiff_one_iff_deriv, lipschitzWith_of_nnnorm_deriv_le, IsLocalMax.fderiv_eq_zero, IsLocalMin.fderiv_eq_zero, support_fderiv_subset, Continuous.integrable_of_hasCompactSupport, integral_inner, antitone_of_deriv_nonpos, mem_nhdsGT_iff_exists_Ioo_subset, def basisFun, Integrable.integral_prod_right, setIntegral_eq_integral_of_forall_compl_eq_zero, integral_add_compl, HasDerivWithinAt.union, norm_integral_le_of_norm_le, integral_indicator_const, integrableOn_of_bounded, IsCompact.sSup_mem, HasCompactSupport.intro, LipschitzWith.of_dist_le_mul, mul_le_mul_right' in <snapshot>/mathlib/Mathlib`
+- `sed -n 560,700p book/chapter-03.txt; grep -n of the numbered steps (1)-(6), '4.3 Theorem' and 'Proof: By 1.6' in book/chapter-03.txt`
+- `git show 46877ce9:GMT/Ch07/Submission.lean; git show 296e19be:GMT/Ch07/Submission.lean (accepted IBP proofs keep the contract imports; LipschitzWith.integral_lineDeriv_mul_eq usage)`
+- `lake env lean -DautoImplicit=false /tmp/ce-split-check/Types.lean (five child types elaborate; sorry warnings only)`
+- `lake env lean -DautoImplicit=false /tmp/ce-split-check/Assembly.lean (frozen parent type proved from child stubs; type byte-identical to handoff lean_statement; #print axioms = propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean -DautoImplicit=false GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/Full.lean and /tmp/ce-split-check/FromPayload.lean (all five children proved and the parent proved from them; no warnings; #print axioms = [propext, Classical.choice, Quot.sound] for all six)`
+- `sed -n 1380,1440p and grep -n _existing_lean_name_problem /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py; cat swarm-project.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LocalExtr/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/child_statements.json`
+- `/tmp/ce-split-check/Types.lean`
+- `/tmp/ce-split-check/Assembly.lean`
+- `/tmp/ce-split-check/FromPayload.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+
+Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c. The workspace HEAD is b4d606db, and Contract.lean and Submission.lean are byte-identical. Library. No local declaration has the exact types needed for the annulus cut-off, the signed layer cake, ∫ div φ = 0 or the quantitative normal-average bound. The closest accepted nodes differ: dorag_th_radial_cutoff, doragm_sab_cutoff_profile, dorag_ha_mv_radial_potential, dorag_ha_lsc_ibp_c1_ball. So all five children are new, with fresh codim1_rdo_dg_ce_* names that are free among 974 DAG nodes and in SimonGMT. Snapshot Mathlib supplies every tool used: LinearMap.trace_smulRight, LinearMap.trace_eq_sum_inner, fderiv_smul_const, contDiffAt_norm, norm_fderiv_le_of_lipschitz, lipschitzWith_of_nnnorm_deriv_le, IsLocalMax/IsLocalMin.fderiv_eq_zero, integral_integral_swap, Integrable.integral_prod_right, Measure.addHaar_ball, finrank_euclideanSpace_fin, Measure.integrableOn_of_bounded, and LipschitzWith.integral_lineDeriv_mul_eq (Rademacher, imported). integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (LineDeriv/IntegrationByParts.lean) and integral_inner (L2Space.lean) exist in the snapshot but are not imported by the contract; accepted submissions 46877ce9 and 296e19be keep the contract imports. Book. Simon Ch. 3, 4.3 steps (1) and (3)–(6) at chapter-03.txt lines 604–652 match the parent's cited source. Lean. The five child types elaborate. The parent's frozen type is proved from the children, with a byte-identical type. Complete proofs of all five children and of the parent build with axioms [propext, Classical.choice, Quot.sound]; they are saved in GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition and repeated as appendices. Runtime. The node is at depth 5 < max_depth 6, so the children (depth 6) are leaves, and the name-collision rule is satisfied.
