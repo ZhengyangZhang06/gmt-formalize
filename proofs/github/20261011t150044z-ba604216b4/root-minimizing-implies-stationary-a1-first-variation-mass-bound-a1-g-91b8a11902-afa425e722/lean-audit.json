@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1133d1946e3c5aa5fd3a363e3476b2ed8eaabdd621045dc0756e92f883624da",
+  "git_delta": {
+    "base_commit": "5809272ba2935f36d462fc0da25e7b2b173efb4b",
+    "candidate_commit": "a8c9ddaa711f25cc2a37c28bb973326c78d73962",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "fvmb_sqrt_le_first_order_of_le_exp",
+    "diff_sha256": "8fb2a0ba1bbd1dfcf7383338c3b768e8eb486a001935f828c6c5916b11ba75a4",
+    "source_sha256": "83f1bce9a653f067c6f582292d3f58b2a0761e0c6fe692aac840d5ad964a25a8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fvmb_sqrt_le_first_order_of_le_exp",
+      "statement": "∀ (n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t D g : ℝ, |t| < δ → |D| ≤ (n : ℝ) * A → g ≤ Real.exp (2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2) → Real.sqrt g ≤ 1 + t * D + ε * |t|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
