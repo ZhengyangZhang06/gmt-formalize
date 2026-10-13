@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4dd4807e7895572735392426f26735e4a733fc55cb813cafaab024cbb11398cd",
+  "git_delta": {
+    "base_commit": "255b98a4fae750bab76dc1dd38ef1932ecc90739",
+    "candidate_commit": "212a3746ede223e1b4aa30a1eb389baa33b2cb10",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fv_subspace_jacobian_first_order",
+    "diff_sha256": "4816c69e717d6e26b2636c15f5edd7358921bc3f5961c2035c0aa502c838ddd3",
+    "source_sha256": "8cc99b83fbb7184ee3909de65869aac3f135ec79a323a0b0578f1d81440fcd8d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fv_subspace_jacobian_first_order",
+      "statement": "∀ (P n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ (K : Submodule ℝ (Euclid P)) (B : Euclid P →L[ℝ] Euclid P), Module.finrank ℝ K = n → ‖B‖ ≤ A → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • B).comp K.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • B).comp K.subtypeL)).det) ≤ 1 + t * LinearMap.trace ℝ (Euclid P) (K.starProjection.toLinearMap ∘ₗ B.toLinearMap) + ε * |t|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
