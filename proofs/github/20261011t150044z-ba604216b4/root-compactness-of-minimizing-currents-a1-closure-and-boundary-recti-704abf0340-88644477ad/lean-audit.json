@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "96776fad8a8bf123625f7b59ea286ed0c5b36f1ca53c991da2c4778b6dfdb5f4",
+  "git_delta": {
+    "base_commit": "9dc17c8dc5d7c52b6a919191b5886ec21688d002",
+    "candidate_commit": "ef7677842289a1bcdad8840a90c69bf34fbd7b2a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_exists_orthonormal_frame_of_finrank_eq",
+    "diff_sha256": "b0c2f621fbfe3ddda65f746f80a3bcb87e5ad2df3d39991be350c931c3ce2c56",
+    "source_sha256": "4536a62fbf57f6b0c50a02cb213f2805a74913cc9e93cb80729e09c3a4cd8387",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_exists_orthonormal_frame_of_finrank_eq",
+      "statement": "∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → ∃ v : Fin n → Euclid P, Orthonormal ℝ v ∧ Submodule.span ℝ (Set.range v) = V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
