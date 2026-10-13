@@ -575,6 +575,102 @@ theorem Submission.slicing_im_si_borel_density :
       rw [hsm, ContinuousAlternatingMap.alternatizeUncurryFin_smul, map_smul, smul_eq_mul, ← hβx,
         part1 hG0]
       ring
+/-- Signed co-area identity on a level band (Simon Ch. 6, Remark 4.2): if the co-area formula
+`∫ ∫_{M ∩ f⁻¹{t}} h dν dt = ∫_M |G| h dμ` holds for every Borel `h ≥ 0` and `|G| g` is
+`μ⌞M`-integrable, then `t ↦ ∫_{M ∩ f⁻¹{t}} g dν` is integrable and
+`∫_{M ∩ f⁻¹(a, b)} |G| g dμ = ∫_{(a, b)} ∫_{M ∩ f⁻¹{t}} g dν dt` (split `g = g⁺ - g⁻`). -/
+theorem Submission.slicing_im_si_signed_coarea :
+    ∀ (P : ℕ) (μ ν : Measure (Eucl P)) (M : Set (Eucl P)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P) (g : Eucl P → ℝ), Measurable f → Measurable G → Measurable g → Integrable (fun x => ‖G x‖ * g x) (μ.restrict M) → (∀ h : Eucl P → ℝ≥0∞, Measurable h → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, h x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, h x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * h x ∂μ) → Integrable (fun t : ℝ => ∫ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∀ a b : ℝ, ∫ x in M ∩ f ⁻¹' Ioo a b, ‖G x‖ * g x ∂μ = ∫ t in Ioo a b, (∫ x in M ∩ f ⁻¹' {t}, g x ∂ν) := by
+  intro P μ ν M f G g hf hG hg hGg CA
+  -- positive and negative parts `g⁺ = ofReal g`, `g⁻ = ofReal (-g)`
+  have hgp : Measurable (fun x => ENNReal.ofReal (g x)) := ENNReal.measurable_ofReal.comp hg
+  have hgn : Measurable (fun x => ENNReal.ofReal (-g x)) := ENNReal.measurable_ofReal.comp hg.neg
+  obtain ⟨hφpm, hφp⟩ := CA _ hgp
+  obtain ⟨hφnm, hφn⟩ := CA _ hgn
+  have hprod : ∀ x, ‖G x‖ₑ * ENNReal.ofReal (g x) = ENNReal.ofReal (‖G x‖ * g x) := by
+    intro x; rw [ENNReal.ofReal_mul (norm_nonneg _), ofReal_norm]
+  have hprodn : ∀ x, ‖G x‖ₑ * ENNReal.ofReal (-g x) = ENNReal.ofReal (-(‖G x‖ * g x)) := by
+    intro x; rw [← mul_neg, ENNReal.ofReal_mul (norm_nonneg _), ofReal_norm]
+  -- both slice integrals of the parts have finite total integral, hence are a.e. finite
+  have hfinp : ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (g x) ∂ν) ∂(volume : Measure ℝ) ≠ ∞ := by
+    rw [hφp]; simp_rw [hprod]; exact hGg.lintegral_lt_top.ne
+  have hfinn : ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (-g x) ∂ν) ∂(volume : Measure ℝ) ≠ ∞ := by
+    rw [hφn]; simp_rw [hprodn]; exact hGg.neg.lintegral_lt_top.ne
+  have hltp := ae_lt_top' hφpm hfinp
+  have hltn := ae_lt_top' hφnm hfinn
+  -- the slice integral equals the difference of the parts for a.e. `t`
+  have hae : (fun t : ℝ => ∫ x in M ∩ f ⁻¹' {t}, g x ∂ν) =ᵐ[volume]
+      fun t => (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (g x) ∂ν).toReal -
+        (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (-g x) ∂ν).toReal := by
+    filter_upwards [hltp, hltn] with t htp htn
+    have hint : Integrable g (ν.restrict (M ∩ f ⁻¹' {t})) := by
+      refine ⟨hg.aestronglyMeasurable, ?_⟩
+      unfold HasFiniteIntegral
+      have : (fun x => ‖g x‖ₑ) = fun x => ENNReal.ofReal (g x) + ENNReal.ofReal (-g x) := by
+        funext x
+        rw [Real.enorm_eq_ofReal_abs]
+        rcases le_total 0 (g x) with h | h
+        · rw [abs_of_nonneg h, ENNReal.ofReal_of_nonpos (by linarith : -g x ≤ 0), add_zero]
+        · rw [abs_of_nonpos h, ENNReal.ofReal_of_nonpos h, zero_add]
+      rw [this, lintegral_add_left hgp]
+      exact ENNReal.add_lt_top.2 ⟨htp, htn⟩
+    exact integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint
+  have hψ : Integrable (fun t => (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (g x) ∂ν).toReal -
+        (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (-g x) ∂ν).toReal) (volume : Measure ℝ) :=
+    (integrable_toReal_of_lintegral_ne_top hφpm hfinp).sub
+      (integrable_toReal_of_lintegral_ne_top hφnm hfinn)
+  refine ⟨hψ.congr hae.symm, fun a b => ?_⟩
+  have hE : MeasurableSet (f ⁻¹' Ioo a b) := hf measurableSet_Ioo
+  -- band identity for a nonnegative Borel function: apply (CA) to `1_{f⁻¹(a, b)} h`
+  have part : ∀ h : Eucl P → ℝ≥0∞, Measurable h →
+      ∫⁻ x in M ∩ f ⁻¹' Ioo a b, ‖G x‖ₑ * h x ∂μ = ∫⁻ t in Ioo a b, (∫⁻ x in M ∩ f ⁻¹' {t}, h x ∂ν) := by
+    intro h hh
+    obtain ⟨-, hCA⟩ := CA ((f ⁻¹' Ioo a b).indicator h) (hh.indicator hE)
+    have hL : ∀ t, ∫⁻ x in M ∩ f ⁻¹' {t}, (f ⁻¹' Ioo a b).indicator h x ∂ν =
+        (Ioo a b).indicator (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, h x ∂ν) t := by
+      intro t
+      have hft : ∀ᵐ x ∂(ν.restrict (M ∩ f ⁻¹' {t})), f x = t := by
+        have hmeas : MeasurableSet {a | ¬f a = t} := (hf (measurableSet_singleton t)).compl
+        rw [ae_iff, Measure.restrict_apply hmeas]
+        convert measure_empty (μ := ν)
+        ext x
+        simp only [mem_inter_iff, mem_ofPred_eq, mem_preimage, mem_singleton_iff,
+          mem_empty_iff_false, iff_false, not_and]
+        intro h1 _ h2
+        exact h1 h2
+      by_cases ht : t ∈ Ioo a b
+      · rw [indicator_of_mem ht]
+        apply lintegral_congr_ae
+        filter_upwards [hft] with x hx
+        rw [indicator_of_mem (show x ∈ f ⁻¹' Ioo a b by simp [mem_preimage, hx, ht])]
+      · rw [indicator_of_notMem ht]
+        rw [← lintegral_zero]
+        apply lintegral_congr_ae
+        filter_upwards [hft] with x hx
+        rw [indicator_of_notMem (show x ∉ f ⁻¹' Ioo a b by simp [mem_preimage, hx, ht])]
+    simp_rw [hL] at hCA
+    rw [lintegral_indicator measurableSet_Ioo] at hCA
+    rw [hCA]
+    have : ∀ x, ‖G x‖ₑ * (f ⁻¹' Ioo a b).indicator h x = (f ⁻¹' Ioo a b).indicator (fun x => ‖G x‖ₑ * h x) x := by
+      intro x
+      by_cases hx : x ∈ f ⁻¹' Ioo a b
+      · simp [indicator_of_mem hx]
+      · simp [indicator_of_notMem hx]
+    simp_rw [this]
+    rw [lintegral_indicator hE, Measure.restrict_restrict hE, inter_comm]
+  have hpp := part _ hgp
+  have hnn := part _ hgn
+  have hGgE : Integrable (fun x => ‖G x‖ * g x) (μ.restrict (M ∩ f ⁻¹' Ioo a b)) :=
+    hGg.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+  -- subtract the finite parts on both sides
+  rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hGgE]
+  simp_rw [← hprod, ← hprodn]
+  rw [hpp, hnn]
+  rw [integral_congr_ae (ae_restrict_of_ae hae)]
+  rw [integral_sub (integrable_toReal_of_lintegral_ne_top hφpm hfinp).restrict
+    (integrable_toReal_of_lintegral_ne_top hφnm hfinn).restrict]
+  rw [integral_toReal hφpm.restrict (ae_restrict_of_ae hltp),
+    integral_toReal hφnm.restrict (ae_restrict_of_ae hltn)]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
