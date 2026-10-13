@@ -451,6 +451,66 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Slicing (Simon Ch. 6, §4), chart pieces, step 8: the gradient bound at density points**
+(the estimate behind `|∇ᴹf| ≤ Lip f`, cf. Simon Ch. 3, 2.1 and Ch. 2, 4.10).  Let `F = f ∘ ψ` on
+a Borel set `Z ⊆ ℝᵐ`, with `F` and `ψ` differentiable at every point of `Z` and `f`
+`L`-Lipschitz.  Assuming the direction property (DD) of density points, `|DF(y)e| ≤ L |Dψ(y)e|`
+for `Lᵐ`-a.e. `y ∈ Z` and every `e`.  By the Lebesgue density theorem
+(`Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet`) a.e. `y ∈ Z` is a density point of
+`Z`.  For a unit vector `v`, (DD) gives `yᵢ ∈ Z ∖ {y}` with `yᵢ → y` and
+`(yᵢ − y)/|yᵢ − y| → v`.  The difference quotients satisfy `|F(yᵢ) − F(y)| ≤ L |ψ(yᵢ) − ψ(y)|`
+and converge to `DF(y)v` and `Dψ(y)v` (`HasFDerivWithinAt.lim`), so `|DF(y)v| ≤ L |Dψ(y)v|`.
+A general `e ≠ 0` follows by linearity from `v = e/|e|`. -/
+theorem Submission.dor_lmbsf_cp_gradient_bound_ae : (∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (m P : ℕ) (Z : Set (Euclid m)) (F : Euclid m → ℝ) (ψ : Euclid m → Euclid P) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet Z → (∀ y ∈ Z, DifferentiableAt ℝ F y ∧ DifferentiableAt ℝ ψ y) → (∀ y ∈ Z, f (ψ y) = F y) → LipschitzWith L f → ∀ᵐ y ∂volume, y ∈ Z → ∀ e : Euclid m, |fderiv ℝ F y e| ≤ (L : ℝ) * ‖fderiv ℝ ψ y e‖ := by
+  intro DD m P Z F ψ f L hZ hdiff heq hf
+  -- step 1: almost every point of `Z` is a Lebesgue density point of `Z`
+  filter_upwards [Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet volume hZ] with y hy hyZ
+  have hdens : Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r))
+      (𝓝[>] 0) (𝓝 1) := by
+    simpa [Set.indicator_of_mem hyZ] using hy
+  -- steps 2–5: the bound in a unit direction `v`
+  have hunit : ∀ v : Euclid m, ‖v‖ = 1 → |fderiv ℝ F y v| ≤ (L : ℝ) * ‖fderiv ℝ ψ y v‖ := by
+    intro v hv
+    -- step 2: points `yᵢ ∈ Z ∖ {y}`, `yᵢ → y`, approaching `y` from the direction `v`
+    obtain ⟨ys, hys, hlim, hdir⟩ := DD m Z y hdens v hv
+    -- step 3: `|F(yᵢ) − F(y)| = |f(ψ(yᵢ)) − f(ψ(y))| ≤ L |ψ(yᵢ) − ψ(y)|`, divided by `|yᵢ − y|`
+    have hineq : ∀ i, |‖ys i - y‖⁻¹ • (F (ys i) - F y)| ≤
+        (L : ℝ) * ‖‖ys i - y‖⁻¹ • (ψ (ys i) - ψ y)‖ := by
+      intro i
+      have hci : 0 ≤ ‖ys i - y‖⁻¹ := inv_nonneg.2 (norm_nonneg _)
+      rw [smul_eq_mul, abs_mul, abs_of_nonneg hci, norm_smul, Real.norm_of_nonneg hci,
+        ← heq _ (hys i).1, ← heq y hyZ]
+      have h1 := hf.dist_le_mul (ψ (ys i)) (ψ y)
+      rw [Real.dist_eq, dist_eq_norm] at h1
+      calc ‖ys i - y‖⁻¹ * |f (ψ (ys i)) - f (ψ y)|
+          ≤ ‖ys i - y‖⁻¹ * ((L : ℝ) * ‖ψ (ys i) - ψ y‖) := mul_le_mul_of_nonneg_left h1 hci
+        _ = (L : ℝ) * (‖ys i - y‖⁻¹ * ‖ψ (ys i) - ψ y‖) := by ring
+    -- step 4: the difference quotients along `yᵢ − y` converge to `DF(y)v` and `Dψ(y)v`
+    have hd0 : Tendsto (fun i => ys i - y) atTop (𝓝 0) := by
+      simpa using hlim.sub_const y
+    have hF' := ((hdiff y hyZ).1.hasFDerivAt.hasFDerivWithinAt (s := univ)).lim hd0
+      (Eventually.of_forall fun _ => mem_univ _) hdir
+    have hψ' := ((hdiff y hyZ).2.hasFDerivAt.hasFDerivWithinAt (s := univ)).lim hd0
+      (Eventually.of_forall fun _ => mem_univ _) hdir
+    simp only [add_sub_cancel] at hF' hψ'
+    -- step 5: the non-strict inequality passes to the limit
+    exact le_of_tendsto_of_tendsto' hF'.abs (hψ'.norm.const_mul _) hineq
+  -- step 6: a general `e ≠ 0` by linearity, from the unit vector `‖e‖⁻¹ • e`
+  intro e
+  by_cases he : e = 0
+  · simp [he]
+  · have hne : ‖e‖ ≠ 0 := norm_ne_zero_iff.2 he
+    have hv : ‖‖e‖⁻¹ • e‖ = 1 := by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hne]
+    have h := hunit _ hv
+    rw [map_smul, map_smul, smul_eq_mul, abs_mul, norm_smul, abs_inv, abs_norm, norm_inv,
+      norm_norm] at h
+    have hpos : 0 < ‖e‖⁻¹ := inv_pos.2 (norm_pos_iff.2 he)
+    have h2 : ‖e‖⁻¹ * |fderiv ℝ F y e| ≤ ‖e‖⁻¹ * ((L : ℝ) * ‖fderiv ℝ ψ y e‖) := by
+      calc ‖e‖⁻¹ * |fderiv ℝ F y e| ≤ (L : ℝ) * (‖e‖⁻¹ * ‖fderiv ℝ ψ y e‖) := h
+        _ = ‖e‖⁻¹ * ((L : ℝ) * ‖fderiv ℝ ψ y e‖) := by ring
+    exact le_of_mul_le_mul_left h2 hpos
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
