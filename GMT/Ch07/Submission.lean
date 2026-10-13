@@ -549,6 +549,53 @@ theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid
     exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
       tendsto_one_div_add_atTop_nhds_zero_nat
 
+/-- **Continuous left inverse of an immersion's derivative.**  If `ψ` is `C¹` on the open set
+`V ⊆ ℝᵈ` and `A(y) = Dψ(y)` is injective for every `y ∈ V`, then `R(y) = Γ(y)⁻¹ A(y)*`, with
+`Γ(y) = A(y)* A(y)` the Gram operator, is a left inverse of `A(y)` depending continuously on
+`y ∈ V`.  `Γ` is continuous on `V`, and `Γ(y)` is injective since `⟨Γ(y)z, z⟩ = |A(y)z|²`, hence
+a unit of `L(ℝᵈ, ℝᵈ)`; `Ring.inverse` is continuous at units. -/
+theorem Submission.dor_lmbsf_pwl_immersion_left_inverse : ∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ∃ R : Euclid d → (Euclid P →L[ℝ] Euclid d), ContinuousOn R V ∧ ∀ y ∈ V, (R y).comp (fderiv ℝ ψ y) = ContinuousLinearMap.id ℝ (Euclid d) := by
+  intro P d V ψ hV hψ hinj
+  let A : Euclid d → (Euclid d →L[ℝ] Euclid P) := fun y => fderiv ℝ ψ y
+  -- the Gram operator `Γ(y) = A(y)* A(y)`
+  let Γ : Euclid d → (Euclid d →L[ℝ] Euclid d) :=
+    fun y => (ContinuousLinearMap.adjoint (A y)).comp (A y)
+  -- `Γ(y)` is injective (`⟨Γ(y)z, z⟩ = |A(y)z|²`), hence bijective and a unit
+  have hunit : ∀ y ∈ V, IsUnit (Γ y) := by
+    intro y hy
+    rw [ContinuousLinearMap.isUnit_iff_bijective]
+    have hinjΓ : Injective (Γ y) := by
+      intro z₁ z₂ hz
+      have h0 : Γ y (z₁ - z₂) = 0 := by rw [map_sub, hz, sub_self]
+      have h1 : inner ℝ (A y (z₁ - z₂)) (A y (z₁ - z₂)) = 0 := by
+        rw [← ContinuousLinearMap.adjoint_inner_left]
+        change inner ℝ (Γ y (z₁ - z₂)) (z₁ - z₂) = 0
+        rw [h0, inner_zero_left]
+      have h2 : A y (z₁ - z₂) = 0 := by
+        simpa using h1
+      have h3 : z₁ - z₂ = 0 := by
+        apply hinj y hy
+        rw [h2, map_zero]
+      exact sub_eq_zero.1 h3
+    have hsurj : Surjective (Γ y : Euclid d →ₗ[ℝ] Euclid d) :=
+      LinearMap.injective_iff_surjective.1 hinjΓ
+    exact ⟨hinjΓ, hsurj⟩
+  refine ⟨fun y => (Ring.inverse (Γ y)).comp (ContinuousLinearMap.adjoint (A y)), ?_, ?_⟩
+  · have hA : ContinuousOn A V := hψ.continuousOn_fderiv_of_isOpen hV le_rfl
+    have hAd : ContinuousOn (fun y => ContinuousLinearMap.adjoint (A y)) V :=
+      ContinuousLinearMap.adjoint.continuous.comp_continuousOn hA
+    have hΓ : ContinuousOn Γ V := hAd.clm_comp hA
+    -- `Ring.inverse` is continuous at every unit
+    have hinv : ContinuousOn (fun y => Ring.inverse (Γ y)) V := by
+      intro y hy
+      have := NormedRing.inverse_continuousAt (hunit y hy).unit
+      rw [IsUnit.unit_spec] at this
+      exact this.comp_continuousWithinAt (hΓ y hy)
+    exact hinv.clm_comp hAd
+  · intro y hy
+    rw [ContinuousLinearMap.comp_assoc]
+    exact Ring.inverse_mul_cancel _ (hunit y hy)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
