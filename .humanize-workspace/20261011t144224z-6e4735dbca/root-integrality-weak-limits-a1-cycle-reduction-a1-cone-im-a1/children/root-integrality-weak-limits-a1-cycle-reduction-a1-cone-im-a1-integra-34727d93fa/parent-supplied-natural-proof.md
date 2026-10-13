@@ -1,0 +1,111 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 8 (Exchange of X and ∫ ds) of the parent proof: Fubini on the representation X = τ(M, θ, ξ), with the slice family abstracted to any jointly continuous, uniformly supported family φ and ψ its pointwise s-integral; filled in.
+
+Notation: E := ℝ^P = Eucl P; μ := μHE[m] (the Hausdorff measure H^m on E); ν := volume.restrict (Ioc 0 1) on ℝ, a finite measure; an m-vector w ∈ NVector E m = (Covector E m →L[ℝ] ℝ) acts on an m-covector α by w(α).
+
+1. (Representation.) As X is integer multiplicity there are M, θ, ξ with IsRectifiableTriple univ m M θ ξ, θ(x) ∈ ℕ for x ∈ M, and X(ω) = ∫_{x ∈ M} θ(x) ξ(x)(ω(x)) dμ for every ω ∈ D^m(E) (tauAction). For x ∈ M, θ(x) > 0 (field pos) and θ(x) = k ∈ ℕ, hence θ(x) ≥ 1.
+2. (A finite measure.) K is compact, hence closed and measurable, and K ⊆ univ, so θ is μ-integrable on M ∩ K (field integrableOn). M ∩ K is μ-null-measurable (field nullMeasurableSet), so μ.restrict (M ∩ K)-a.e. x lies in M ∩ K (ae_restrict_mem₀) and satisfies 1 ≤ θ(x). Therefore μ(M ∩ K) = ∫⁻_{M∩K} 1 dμ ≤ ∫⁻_{M∩K} ofReal(θ) dμ ≤ ∫⁻_{M∩K} ‖θ‖ₑ dμ < ∞, the last bound because θ is integrable on M ∩ K (HasFiniteIntegral). Let μ_K := μ.restrict (M ∩ K): a finite measure, for which θ is integrable and θ ≥ 1 a.e., and for which ξ is AEStronglyMeasurable (restrict the field aestronglyMeasurable from μ.restrict M to the smaller set; AEStronglyMeasurable.mono_measure, Measure.restrict_mono).
+3. (Vanishing off K.) For s ∈ [0, 1] and x ∉ K we have x ∉ tsupport φ(s), so φ(s)(x) = 0 (image_eq_zero_of_notMem_tsupport). For x ∉ K and any v, ψ(x)(v) = ∫_0^1 φ(s)(x)(v) ds = 0, because the integrand vanishes for s ∈ uIcc 0 1 = [0, 1] (intervalIntegral.integral_congr); hence ψ(x) = 0. Consequently, for s ∈ [0, 1], x ↦ θ(x) ξ(x)(φ(s)(x)) coincides with its product with the indicator of K, and so does x ↦ θ(x) ξ(x)(ψ(x)). By setIntegral_indicator (K measurable): X(φ(s)) = ∫ θ(x) ξ(x)(φ(s)(x)) dμ_K(x) for s ∈ [0, 1], and X(ψ) = ∫ θ(x) ξ(x)(ψ(x)) dμ_K(x).
+4. (Uniform bound.) The continuous map (s, x) ↦ φ(s)(x) is bounded in norm on the compact set [0, 1] × K: there is B ≥ 0 with ‖φ(s)(x)‖ ≤ B for s ∈ [0, 1], x ∈ K (IsCompact.exists_bound_of_continuousOn); by step 3 the bound holds for all x ∈ E when s ∈ [0, 1]. By the field orients, for μ.restrict M-a.e. x (hence μ_K-a.e. x) there is an orthonormal τ : Fin m → E with ξ(x) = simpleNVector τ or ξ(x) = −simpleNVector τ; then for every m-covector α, |ξ(x)(α)| = |α(τ)| ≤ ‖α‖ ∏_i ‖τ_i‖ = ‖α‖ (simpleNVector_apply, ContinuousAlternatingMap.le_opNorm, ‖τ_i‖ = 1). Together with θ ≥ 0 μ_K-a.e. (step 2): for every s ∈ [0, 1] and μ_K-a.e. x, |θ(x) ξ(x)(φ(s)(x))| ≤ B θ(x).
+5. (Integrability on the product.) Let F(s, x) := θ(x) ξ(x)(φ(s)(x)) on ℝ × E, with the measure ν.prod μ_K (both factors finite, hence s-finite).
+   (a) F is AEStronglyMeasurable: (s, x) ↦ θ(x) and (s, x) ↦ ξ(x) are AEStronglyMeasurable for ν.prod μ_K (AEStronglyMeasurable.snd); (s, x) ↦ φ(s)(x) is continuous (Continuous.aestronglyMeasurable); the evaluation (w, α) ↦ w(α) is continuous (bilinear), so (s, x) ↦ ξ(x)(φ(s)(x)) is AEStronglyMeasurable (Continuous.comp_aestronglyMeasurable₂), and so is the product F.
+   (b) G(s, x) := B · θ(x) is ν.prod μ_K-integrable: the constant B is ν-integrable (ν finite) and θ is μ_K-integrable, so Integrable.mul_prod applies.
+   (c) |F| ≤ G holds ν.prod μ_K-a.e.: ν-a.e. s lies in Ioc 0 1 ⊆ [0, 1] (ae_restrict_mem), the bound of step 4 holds for μ_K-a.e. x, and since Prod.fst and Prod.snd are quasi-measure-preserving (Measure.quasiMeasurePreserving_fst/snd) both statements hold ν.prod μ_K-a.e.
+   Hence F is ν.prod μ_K-integrable (Integrable.mono').
+6. (Fubini.) By MeasureTheory.integral_integral_swap applied to F: ∫ (∫ F(s, x) dμ_K(x)) dν(s) = ∫ (∫ F(s, x) dν(s)) dμ_K(x).
+7. (Left side.) For s ∈ Ioc 0 1 ⊆ [0, 1], ∫ F(s, x) dμ_K(x) = X(φ(s)) by step 3. Hence the left side of step 6 is ∫_{Ioc 0 1} X(φ(s)) ds (setIntegral_congr_fun on the measurable set Ioc 0 1), which is ∫_0^1 X(φ(s)) ds (intervalIntegral.integral_of_le, as 0 ≤ 1).
+8. (Inner integral of the right side.) Fix x ∈ E. The map s ↦ φ(s)(x) is continuous, hence bounded on [0, 1] and ν-integrable. For each v : Fin m → E, evaluation α ↦ α(v) is a continuous linear functional on m-covectors (e.g. ContinuousMultilinearMap.apply composed with ContinuousAlternatingMap.toContinuousMultilinearMapCLM), so by ContinuousLinearMap.integral_comp_comm, (∫ φ(s)(x) dν(s))(v) = ∫ φ(s)(x)(v) dν(s) = ∫_0^1 φ(s)(x)(v) ds = ψ(x)(v); hence ∫ φ(s)(x) dν(s) = ψ(x) (ContinuousAlternatingMap.ext). Since ξ(x) is a continuous linear functional and θ(x) does not depend on s, integral_mul_left and ContinuousLinearMap.integral_comp_comm give ∫ F(s, x) dν(s) = θ(x) ξ(x)(∫ φ(s)(x) dν(s)) = θ(x) ξ(x)(ψ(x)).
+9. (Right side.) By step 8 the right side of step 6 is ∫ θ(x) ξ(x)(ψ(x)) dμ_K(x), which equals X(ψ) by step 3.
+10. Combining steps 6, 7 and 9: ∫_0^1 X(φ(s)) ds = X(ψ). ∎
+
+## Key steps
+
+1. Write X = τ(M, θ, ξ); θ ≥ 1 on M makes μ_K := H^m⌞(M ∩ K) a finite measure on which θ is integrable.
+2. All φ(s) (s ∈ [0,1]) and ψ vanish off K, so X(φ(s)) and X(ψ) are integrals against μ_K.
+3. |θ ξ(φ(s)(x))| ≤ B θ(x) with B = sup_{[0,1]×K} ‖φ‖ and |ξ(x)(α)| ≤ ‖α‖ (ξ = ±simple unit m-vector), so F(s,x) = θ(x) ξ(x)(φ(s)(x)) is integrable on L¹⌞(0,1] ⊗ μ_K.
+4. Fubini (integral_integral_swap) and ξ(x)(∫ φ(s)(x) ds) = ξ(x)(ψ(x)) (continuous linear maps commute with the Bochner integral) give ∫_0^1 X(φ(s)) ds = X(ψ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; sha256sum GMT/Ch06/Contract.lean`
+- `python3 -I: read nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md} and nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json (reused-child format)`
+- `python3 -I: dag.json status and frozen lean_statement of iwl_cr_cone_integer_multiplicity, iwl_cr_interval_product_im, iwl_cr_radial_operator, isoperimetric_apply_eq_zero_of_disjoint_support, iwl_sp_exists_compatible_testForm, slicing_mb_lb_smul_testForm, fiw_tb_ext_smul_testForm, iwl_sp_sn_signed_simpleNVector_bound_ne_zero, cmb_abs_apply_le_of_massOn_le`
+- `python3 -I: collision scan of dag.json and nodes/*/decomposition-v*.json for the 7 proposed lean_names and the prefix iwl_cr_ci_`
+- `grep -rn compContinuousLinearMap mathlib/Mathlib --include=*.lean | grep -i 'contDiff|hasStrictFDeriv|hasFDeriv|differentiable'`
+- `grep -rn 'def curryLeft|theorem curryLeft_apply|curryLeftLI|analyticOnNhd_compContinuousLinearMapCLM' mathlib/Mathlib/Analysis/Normed/Module/Alternating mathlib/Mathlib/Analysis/Analytic mathlib/Mathlib/LinearAlgebra/Alternating`
+- `grep -n 'theorem|lemma' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean; grep -rn 'contDiff_comp_iff|comp_contDiff_iff' mathlib/Mathlib`
+- `grep -rn 'theorem Integrable.mul_prod|integrable_prod_iff' mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `grep -n '^theorem|^def|^abbrev|^structure' simongmt Chapter06/{Forms,Currents,Mass,FormsDuality,CurrentLocalEquality,Product,AffineCurrentPushforward,ParametricCurrentContinuity,GeometricPointProduct,FixedSupportCurrentTopology}.lean`
+- `grep -rn 'ContDiff.*ullback|ullback.*isSmoothForm|integral_integral_swap' simongmt/Poincare/SimonGMT/Chapter06`
+- `python3 -I /tmp/ci_decomp/scripts/gen.py (verifier gmt-compare.py child_modules in contract scope + lean_contract.validate_lean_statement) -> /tmp/ci_decomp/gen2/*__NodeChallenge.lean`
+- `lake env lean on each of the 7 generated NodeChallenge files and on /tmp/ci_decomp/probe/AllChallenges.lean`
+- `lake env lean /tmp/ci_decomp/probe/Assembly2.lean (frozen parent type from sorry-stubbed children and dependencies, #print axioms)`
+- `lake env lean /tmp/ci_decomp/probe/Names.lean (#check of the cited Mathlib/SimonGMT declarations)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/ParametricCurrentContinuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ci_decomp/scripts/gen.py`
+- `/tmp/ci_decomp/probe/AllChallenges.lean`
+- `/tmp/ci_decomp/probe/Assembly2.lean`
+- `/tmp/ci_decomp/probe/Names.lean`
+
+Snapshot identity:
+- Project d8d46c95, Mathlib 25730c7c.
+- The snapshot's Ch06 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0ddd08be5db…).
+
+DAG findings:
+- isoperimetric_apply_eq_zero_of_disjoint_support is accepted with exactly the type reused here.
+- The frozen types of this node's dependencies iwl_cr_interval_product_im and iwl_cr_radial_operator were used verbatim in the assembly.
+- The compatible-form construction of another branch (iwl_sp_exists_compatible_testForm) is only rlcr-lean, so it is not reused.
+- No existing node supplies hyperplane slices, product-current support, the cone-map derivative or a Fubini exchange for τ(M,θ,ξ).
+- The prefix iwl_cr_ci_ is unused anywhere in dag.json or the decomposition files.
+
+Library findings:
+- No ContDiff lemma for compContinuousLinearMap in Mathlib; there are only HasFDerivAt/Differentiable versions in FDeriv/ContinuousAlternatingMap.lean.
+- Mathlib CPolynomial.lean:271 has ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM, which with AnalyticOnNhd.contDiff gives smoothness of the pull-back.
+- Alternating/Curry.lean has curryLeft, curryLeft_apply_apply and curryLeftLI.
+- MeasureTheory/Integral/Prod.lean has integral_integral_swap and Integrable.mul_prod. Integrable.prod_mul does not exist; this was corrected.
+- SimonGMT has only affine pull-back smoothness (affinePullbackForm_isSmoothForm) and pointSlice_isTestForm, which is the model for slice_forms. It has no nonlinear pull-back smoothness and no current/integral exchange; ParametricCurrentContinuity only proves continuity of parameter-slice values.
+
+Lean checks:
+- All 7 child statements elaborate in the comparator's exact challenge form.
+- The sorry-stubbed assembly proves the byte-identical frozen parent type with no errors.
+- Every other cited declaration name type-checks.
