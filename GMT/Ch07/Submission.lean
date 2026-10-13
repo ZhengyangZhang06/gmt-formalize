@@ -2727,6 +2727,102 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **`C¹` pieces along one chart** (Simon Ch. 3, proof of 2.4; Ch. 2, Theorem 1.5).  Let
+`M ⊆ ℝᴾ` be Borel, `f : ℝᴾ → ℝ` Lipschitz, `ψ : ℝᴺ → ℝᴾ` of class `C¹` and `V ⊆ ℝᴺ` open.  Borel
+sets `Y k` with compact closure in `V` and `ψ(Y k) ⊆ M`, and `F k ∈ C¹` with `f ∘ ψ = F k` on
+`Y k`, cover `M ∩ ψ(V)` up to an `Hᴺ`-null set.  Cover `V` by compact sets `K m`; `ψ` is Lipschitz
+on `K m`, so `f ∘ ψ` restricted to `K m` has a Lipschitz extension `u m` (McShane), and 1.5 gives
+`g m k ∈ C¹` with `Lᴺ{u m ≠ g m k} < 1/k`.  The pieces are `K m ∩ {u m = g m k} ∩ ψ⁻¹(M)`; the
+rest of `M ∩ ψ(V)` lies in `⋃ₘ ψ(Z m)`, `Z m = K m ∩ ⋂ₖ {u m ≠ g m k}`, and `Lᴺ(Z m) = 0`. -/
+theorem Submission.dtc_bc_lc_sl_cp_chart_refinement : ∀ (P N : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (ψ : Euclid N → Euclid P) (V : Set (Euclid N)), MeasurableSet M → LipschitzWith L f → IsOpen V → ContDiff ℝ 1 ψ → ∃ (Y : ℕ → Set (Euclid N)) (F : ℕ → Euclid N → ℝ), (∀ k, ContDiff ℝ 1 (F k) ∧ MeasurableSet (Y k) ∧ IsCompact (closure (Y k)) ∧ closure (Y k) ⊆ V ∧ ψ '' Y k ⊆ M ∧ ∀ y ∈ Y k, f (ψ y) = F k y) ∧ μHE[N] ((M ∩ ψ '' V) \ ⋃ k, ψ '' Y k) = 0 := by
+  intro P N M f L ψ V hM hf hV hψ
+  -- Step 1: compact sets `K m ⊆ V` covering `V` (the open `V` is σ-compact)
+  obtain ⟨K, hKc, hKV, hKU⟩ : ∃ K : ℕ → Set (Euclid N), (∀ m, IsCompact (K m)) ∧
+      (∀ m, K m ⊆ V) ∧ ⋃ m, K m = V := by
+    have : LocallyCompactSpace V := hV.locallyCompactSpace
+    obtain ⟨K', hK'c, hK'U⟩ := SigmaCompactSpace.exists_compact_covering (X := V)
+    refine ⟨fun m => Subtype.val '' K' m, fun m => (hK'c m).image continuous_subtype_val,
+      fun m => image_subset_iff.2 fun y _ => y.2, ?_⟩
+    ext y
+    simp only [mem_iUnion, mem_image]
+    constructor
+    · rintro ⟨m, z, -, rfl⟩
+      exact z.2
+    · intro hy
+      obtain ⟨m, hm⟩ := mem_iUnion.1 (hK'U.symm ▸ mem_univ (⟨y, hy⟩ : V))
+      exact ⟨m, ⟨y, hy⟩, hm, rfl⟩
+  -- Step 2: `ψ` is `C m`-Lipschitz on the compact `K m`
+  choose C hC using fun m => LocallyLipschitzOn.exists_lipschitzOnWith_of_compact (hKc m)
+    hψ.locallyLipschitz.locallyLipschitzOn
+  -- Step 3: a Lipschitz (McShane) extension `u m` of `f ∘ ψ` from `K m`
+  choose u hu hfu using fun m => (hf.comp_lipschitzOnWith (hC m)).extend_real
+  -- Step 4: `C¹` functions `g m k` with `Lᴺ({u m ≠ g m k}) < 1 / k`
+  choose g hg hgvol using fun m (k : ℕ) => Submission.codim1_rdo_c1_approximation N (u m)
+    (L * C m) (hu m) (k : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top k))
+  -- Step 5: `Z m = K m ∩ ⋂ k, {u m ≠ g m k}` is null, and so is `ψ(Z m)`
+  obtain ⟨Z, hZ⟩ : ∃ Z : ℕ → Set (Euclid N), ∀ m, Z m = K m ∩ ⋂ k, {y | u m y ≠ g m k y} :=
+    ⟨_, fun _ => rfl⟩
+  have hZnull : ∀ m, μHE[N] (ψ '' Z m) = 0 := by
+    intro m
+    have hvol : volume (Z m) = 0 := by
+      refine le_antisymm (ge_of_tendsto' ENNReal.tendsto_inv_nat_nhds_zero fun k => ?_) zero_le
+      refine (measure_mono fun y hy => ?_).trans (hgvol m k).le
+      rw [hZ] at hy
+      exact Or.inl (mem_iInter.1 hy.2 k)
+    have hH : μH[(N : ℝ)] (Z m) = 0 := by
+      have h0 : μHE[N] (Z m) = 0 := by
+        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+        exact hvol
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul,
+        mul_eq_zero, ENNReal.coe_eq_zero] at h0
+      exact h0.resolve_left (Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero N)
+    have hZK : Z m ⊆ K m := by
+      rw [hZ]
+      exact inter_subset_left
+    have hH' : μH[(N : ℝ)] (ψ '' Z m) = 0 := by
+      refine le_antisymm ?_ zero_le
+      calc μH[(N : ℝ)] (ψ '' Z m) ≤ (C m : ℝ≥0∞) ^ (N : ℝ) * μH[(N : ℝ)] (Z m) :=
+            ((hC m).mono hZK).hausdorffMeasure_image_le (Nat.cast_nonneg N)
+        _ = 0 := by rw [hH, mul_zero]
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH', smul_zero]
+  -- Step 6: the pieces `Y' m k = K m ∩ {u m = g m k} ∩ ψ⁻¹(M)`
+  obtain ⟨Y', hY'⟩ : ∃ Y' : ℕ → ℕ → Set (Euclid N), ∀ m k,
+      Y' m k = K m ∩ {y | u m y = g m k y} ∩ ψ ⁻¹' M := ⟨_, fun _ _ => rfl⟩
+  have hpiece : ∀ m k, ContDiff ℝ 1 (g m k) ∧ MeasurableSet (Y' m k) ∧
+      IsCompact (closure (Y' m k)) ∧ closure (Y' m k) ⊆ V ∧ ψ '' Y' m k ⊆ M ∧
+      ∀ y ∈ Y' m k, f (ψ y) = g m k y := by
+    intro m k
+    have hYK : closure (Y' m k) ⊆ K m := by
+      refine closure_minimal ?_ (hKc m).isClosed
+      rw [hY']
+      exact inter_subset_left.trans inter_subset_left
+    refine ⟨hg m k, ?_, (hKc m).of_isClosed_subset isClosed_closure hYK, hYK.trans (hKV m), ?_, ?_⟩
+    · rw [hY']
+      exact ((hKc m).isClosed.measurableSet.inter
+        (isClosed_eq (hu m).continuous (hg m k).continuous).measurableSet).inter
+        (hM.preimage hψ.continuous.measurable)
+    · rintro _ ⟨y, hy, rfl⟩
+      rw [hY'] at hy
+      exact hy.2
+    · intro y hy
+      rw [hY'] at hy
+      exact (hfu m hy.1.1).trans hy.1.2
+  refine ⟨fun b => Y' (Nat.unpair b).1 (Nat.unpair b).2,
+    fun b => g (Nat.unpair b).1 (Nat.unpair b).2, fun b => hpiece _ _, ?_⟩
+  -- Step 7: the uncovered part of `M ∩ ψ(V)` lies in `⋃ m, ψ(Z m)`
+  refine measure_mono_null ?_ (measure_iUnion_null hZnull)
+  rintro x ⟨⟨hxM, y, hyV, rfl⟩, hx⟩
+  rw [← hKU] at hyV
+  obtain ⟨m, hym⟩ := mem_iUnion.1 hyV
+  refine mem_iUnion.2 ⟨m, y, ?_, rfl⟩
+  rw [hZ]
+  refine ⟨hym, mem_iInter.2 fun k => ?_⟩
+  intro hk
+  refine hx (mem_iUnion.2 ⟨Nat.pair m k, y, ?_, rfl⟩)
+  simp only [Nat.unpair_pair]
+  rw [hY']
+  exact ⟨⟨hym, hk⟩, hxM⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
