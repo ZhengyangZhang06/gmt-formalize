@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f7eb474949c3062dc8505b2d05b4c0cc33ea99f6ac9d38d5d5e4da4e50593eeb",
+  "git_delta": {
+    "base_commit": "d2e76876e244ae1304e60c66d03c4402c58215af",
+    "candidate_commit": "38be5de80b68cdfdf5d5967a7c838fcd2aea020a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_dir_integral_fderiv_span",
+    "diff_sha256": "bc131f7fe42e315a9e559b4ff6be95caf417f04430d1e739aeb4f91bffa07ece",
+    "source_sha256": "70a49d8760287a86fb1c3cb7ed804287fe7942dc647ea1666c196d1c73892273",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_dir_integral_fderiv_span",
+      "statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (φ : Euclid P → ℝ) (S : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ v ∈ S, ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ v ∈ Submodule.span ℝ S, ∫ y, fderiv ℝ φ y v ∂ν = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
