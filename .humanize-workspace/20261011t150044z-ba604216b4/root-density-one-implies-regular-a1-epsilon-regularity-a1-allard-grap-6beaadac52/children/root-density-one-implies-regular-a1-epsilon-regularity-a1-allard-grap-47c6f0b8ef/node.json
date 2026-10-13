@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.segment_null-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1",
+  "depth": 6,
+  "title": "Almost every segment meets a Lebesgue-null set in a null set of parameters",
+  "statement": "Let n ∈ ℕ and N ⊆ ℝⁿ (ℝⁿ = Euclid n) a measurable set with Lⁿ(N) = 0. Then for Lⁿ⊗Lⁿ-almost every p = (x, y) ∈ ℝⁿ × ℝⁿ (the measure volume on Euclid n × Euclid n), and for L¹-almost every t ∈ [0, 1], (1 − t)y + tx ∉ N.",
+  "lean_statement": "∀ (n : ℕ) (N : Set (Euclid n)), MeasurableSet N → volume N = 0 → ∀ᵐ p : Euclid n × Euclid n, ∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)), (1 - t) • p.2 + t • p.1 ∉ N",
+  "lean_name": "dorag_ha_pb_segment_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-47c6f0b8ef-a1"
+}
