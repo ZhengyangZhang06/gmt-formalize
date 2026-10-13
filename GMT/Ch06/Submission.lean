@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -1474,6 +1475,124 @@ theorem Submission.lpf_c1_local_antilipschitz :
       _ ≤ ‖G z - G z'‖ + ‖G z - G z' - A (z - z')‖ := norm_sub_le _ _
   rw [hcK] at h1 ⊢
   linarith
+
+/-- Simon Ch. 3, Lemma 1.2 ("only if" part, p. 70), with each chart restricted, as in the printed
+proof, to a small neighbourhood of a point where its differential is injective, so that it is both
+Lipschitz and antilipschitz: a countably `n`-rectifiable `M ⊆ ℝ^P` is covered, up to an `Hⁿ`-null
+set, by countably many images `Φ_i(Ω_i)` of open sets `Ω_i ⊆ ℝⁿ` under `C¹` maps `Φ_i` with
+`c_i |w − w'| ≤ |Φ_i(w) − Φ_i(w')| ≤ K_i |w − w'|` on `Ω_i`.  The `C¹` Approximation Theorem
+(Ch. 2, 1.5) gives `C¹` maps `G_{j,k}` that agree to first order with the Lipschitz
+parametrizations `F_j` off sets of measure `< 1/(k+1)`; the area formula makes the image of the
+critical set of `F_j` null; near points where `DG_{j,k}` is injective, `G_{j,k}` is a chart on a
+small basic open set. -/
+theorem Submission.slicing_im_coarea_chart_cover : ∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \ ⋃ j, Φ j '' Ω j) = 0 := by
+  intro P n M hM
+  classical
+  -- Step 1: `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and `F_j` `Λ_j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hMsub⟩ := hM
+  choose Λ hΛ using hF
+  -- Step 2: the `C¹` Approximation Theorem for `F_j` with `ε = (k+1)⁻¹`: a closed `A_{j,k}` with
+  -- `Lⁿ(ℝⁿ ∖ A_{j,k}) < (k+1)⁻¹` and a `C¹` map `G_{j,k}` such that `F_j = G_{j,k}` and
+  -- `DF_j = DG_{j,k}` on `A_{j,k}`.
+  have hε : ∀ k : ℕ, (0 : ℝ≥0∞) < ((k : ℝ≥0∞) + 1)⁻¹ := fun k => ENNReal.inv_pos.2 (by simp)
+  choose A G hAc hAm hG hAG using
+    fun (j k : ℕ) => Submission.lpf_c1_approximation_eucl n P (F j) (Λ j) (hΛ j) _ (hε k)
+  -- Step 4 (Lindelöf): a countable basis `{e p}` of the topology of `ℝⁿ`.
+  obtain ⟨b, hbc, -, hb⟩ := TopologicalSpace.exists_countable_basis (Eucl n)
+  have hbne : b.Nonempty := by
+    obtain ⟨s, hs, -, -⟩ := hb.mem_nhds_iff.1 (univ_mem : (univ : Set (Eucl n)) ∈ 𝓝 0)
+    exact ⟨s, hs⟩
+  obtain ⟨e, rfl⟩ := hbc.exists_eq_range hbne
+  -- `s` is a chart domain for `G_{j,k}` if `G_{j,k}` is Lipschitz and antilipschitz on `s`;
+  -- `Ω'_{j,k,p}` is the basic set `e p` if it is a chart domain for `G_{j,k}`, and `∅` otherwise.
+  let good : ℕ → ℕ → Set (Eucl n) → Prop := fun j k s =>
+    (∃ K : ℝ≥0, LipschitzOnWith K (G j k) s) ∧
+      ∃ c : ℝ, 0 < c ∧ ∀ w ∈ s, ∀ w' ∈ s, c * ‖w - w'‖ ≤ ‖G j k w - G j k w'‖
+  let Ω' : ℕ → ℕ → ℕ → Set (Eucl n) := fun j k p => if good j k (e p) then e p else ∅
+  have hΩ'pos : ∀ j k p, good j k (e p) → Ω' j k p = e p := fun j k p h => by
+    simp only [Ω', h, ↓reduceIte]
+  have hΩ'neg : ∀ j k p, ¬ good j k (e p) → Ω' j k p = ∅ := fun j k p h => by
+    simp only [Ω', h, ↓reduceIte]
+  have hΩ'open : ∀ j k p, IsOpen (Ω' j k p) := by
+    intro j k p
+    by_cases h : good j k (e p)
+    · rw [hΩ'pos j k p h]; exact hb.isOpen (mem_range_self p)
+    · rw [hΩ'neg j k p h]; exact isOpen_empty
+  -- The empty set is a chart domain vacuously (`K = 0`, `c = 1`).
+  have hΩ'good : ∀ j k p, good j k (Ω' j k p) := by
+    intro j k p
+    by_cases h : good j k (e p)
+    · rw [hΩ'pos j k p h]; exact h
+    · rw [hΩ'neg j k p h]
+      exact ⟨⟨0, fun x hx => absurd hx (notMem_empty x)⟩, 1, one_pos,
+        fun w hw => absurd hw (notMem_empty w)⟩
+  -- If `DG_{j,k}(x)` is injective, `G_{j,k}` is antilipschitz on a ball `B_r(x)` (inverse function
+  -- estimate) and Lipschitz on a neighbourhood `t` of `x` (it is `C¹`); a basic set
+  -- `x ∈ e p ⊆ B_r(x) ∩ t` is then a chart domain, so `x ∈ Ω'_{j,k,p}`.
+  have hcover : ∀ j k x, Function.Injective (fderiv ℝ (G j k) x) → ∃ p, x ∈ Ω' j k p := by
+    intro j k x hinj
+    obtain ⟨r, hr, c, hc, hanti⟩ :=
+      Submission.lpf_c1_local_antilipschitz n P (G j k) x (hG j k) hinj
+    obtain ⟨K, t, ht, hLip⟩ := ((hG j k).contDiffAt (x := x)).exists_lipschitzOnWith
+    have hnhds : ball x r ∩ t ∈ 𝓝 x := inter_mem (ball_mem_nhds x hr) ht
+    obtain ⟨s, hs, hxs, hsub⟩ := hb.mem_nhds_iff.1 hnhds
+    obtain ⟨p, rfl⟩ := hs
+    have hg : good j k (e p) := ⟨⟨K, hLip.mono (hsub.trans inter_subset_right)⟩, c, hc,
+      fun w hw w' hw' => hanti w (hsub hw).1 w' (hsub hw').1⟩
+    exact ⟨p, by rw [hΩ'pos j k p hg]; exact hxs⟩
+  -- Step 5: enumerate `(j, k, p) ∈ ℕ³` by `i ↦ ((unpair i).1, unpair (unpair i).2)` and set
+  -- `Φ_i = G_{j,k}`, `Ω_i = Ω'_{j,k,p}`.
+  let Φ : ℕ → Eucl n → Eucl P := fun i => G (Nat.unpair i).1 (Nat.unpair (Nat.unpair i).2).1
+  let Ω : ℕ → Set (Eucl n) := fun i =>
+    Ω' (Nat.unpair i).1 (Nat.unpair (Nat.unpair i).2).1 (Nat.unpair (Nat.unpair i).2).2
+  refine ⟨Φ, Ω, fun i => hΩ'open _ _ _, fun i => hG _ _, fun i => (hΩ'good _ _ _).1,
+    fun i => (hΩ'good _ _ _).2, ?_⟩
+  -- Step 6: `M ∖ ⋃_i Φ_i(Ω_i) ⊆ M₀ ∪ ⋃_j (F_j(N_j) ∪ F_j(C_j))`, where `N_j = ℝⁿ ∖ ⋃_k A_{j,k}`
+  -- and `C_j` is the critical set of `F_j`.
+  let N : ℕ → Set (Eucl n) := fun j => (⋃ k, A j k)ᶜ
+  let C : ℕ → Set (Eucl n) := fun j =>
+    {x | DifferentiableAt ℝ (F j) x ∧ ¬ Function.Injective (fderiv ℝ (F j) x)}
+  have hsub : M \ ⋃ i, Φ i '' Ω i ⊆ M₀ ∪ ⋃ j, (F j '' N j ∪ F j '' C j) := by
+    rintro y ⟨hyM, hyU⟩
+    rcases hMsub hyM with hy0 | hy
+    · exact Or.inl hy0
+    right
+    obtain ⟨j, x, rfl⟩ := mem_iUnion.1 hy
+    refine mem_iUnion.2 ⟨j, ?_⟩
+    by_cases hxN : x ∈ N j
+    · exact Or.inl ⟨x, hxN, rfl⟩
+    right
+    -- `x ∈ A_{j,k}` for some `k`, so `F_j` is differentiable at `x` with `DF_j(x) = DG_{j,k}(x)`;
+    -- if this were injective, `F_j(x) = G_{j,k}(x)` would lie in some `Φ_i(Ω_i)`.
+    have hxA : x ∈ ⋃ k, A j k := not_not.1 hxN
+    obtain ⟨k, hxk⟩ := mem_iUnion.1 hxA
+    obtain ⟨hval, hder⟩ := hAG j k x hxk
+    refine ⟨x, ⟨hder.differentiableAt, ?_⟩, rfl⟩
+    rw [hder.fderiv]
+    intro hinj
+    obtain ⟨p, hp⟩ := hcover j k x hinj
+    apply hyU
+    refine mem_iUnion.2 ⟨Nat.pair j (Nat.pair k p), x, ?_, ?_⟩
+    · simp only [Ω, Nat.unpair_pair]; exact hp
+    · simp only [Φ, Nat.unpair_pair]; exact hval.symm
+  apply measure_mono_null hsub
+  refine measure_union_null hM₀ (measure_iUnion_null fun j => measure_union_null ?_ ?_)
+  · -- Step 3(a): `Lⁿ(N_j) ≤ Lⁿ(ℝⁿ ∖ A_{j,k}) < (k+1)⁻¹` for every `k`, so `Lⁿ(N_j) = 0`, and
+    -- `Hⁿ(F_j(N_j)) ≤ Λ_jⁿ Hⁿ(N_j) = Λ_jⁿ Lⁿ(N_j) = 0`.
+    have hvol : (volume : Measure (Eucl n)) (N j) = 0 := by
+      by_contra hne
+      obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hne
+      have h1 : (volume : Measure (Eucl n)) (N j) ≤ volume (A j k)ᶜ :=
+        measure_mono (compl_subset_compl.2 (subset_iUnion (A j) k))
+      have h2 : ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+      exact absurd (lt_of_le_of_lt h1 ((hAm j k).trans_le h2)) (not_lt.2 hk.le)
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      ((hΛ j).lipschitzOnWith (s := N j))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hvol, mul_zero] at h
+    exact nonpos_iff_eq_zero.1 h
+  · -- Step 3(b): the image of the critical set is `Hⁿ`-null (area formula).
+    have h := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero (F j)
+    rwa [finrank_euclideanSpace_fin] at h
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
