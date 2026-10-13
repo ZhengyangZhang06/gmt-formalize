@@ -1523,6 +1523,89 @@ theorem Submission.rectifiability_bf_slice_density_null : ∀ (N m : ℕ) (μ : 
   · exact h
   · exact absurd h ENNReal.top_ne_zero
 
+/-- **Besicovitch–Federer trichotomy for almost every linear map** (Mattila, *Geometry of Sets and
+Measures in Euclidean Spaces*, Lemma 18.9; Hovila–Järvenpää–Järvenpää–Ledrappier, Geom. Dedicata
+161 (2012), Lemma 2.4).  Let `k = m + 1`, `μ = Hᵏ⌞E`, `L_v x = (⟨v_i, x⟩)_i`,
+`X_v(a,r,s) = {x : |x − a| < r, |L_v(x − a)| < s|x − a|}` and
+`Φ(a,v) = limsup_{s↓0} sup_{0<r<δ} μ(X_v(a,r,s))/(rs)ᵏ`.  Fix `a`.  By Mickle–Radó on the slices
+`v ⊕_j c`, for a.e. `v` without a fibre witness (T3) every fibre density `ϑ_j(v)` lies in `{0, ∞}`,
+and `ϑ_j ≤ Φ ≤ N^{k/2} Σ_j ϑ_j` puts `Φ(a,v)` in `{0, ∞}`.  The set of such `(a,v)` is Borel, so
+Fubini gives the same for a.e. `v` and `μ`-a.e. `a`; `Φ = 0` is (T1) and `Φ = ∞` gives the
+infinite projected density (T2). -/
+theorem Submission.rectifiability_bf_trichotomy : ∀ (N m : ℕ) (E : Set (Eucl N)) (δ : ℝ), IsSigmaCompact E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → 0 < δ → ∀ᵐ v ∂(volume : Measure (Fin (m + 1) → Eucl N)), ∀ᵐ a ∂((μHE[m + 1] : Measure (Eucl N)).restrict E), (∀ η : ℝ, 0 < η → ∃ s ∈ Ioo (0 : ℝ) 1, ∀ r ∈ Ioo (0 : ℝ) δ, (μHE[m + 1] : Measure (Eucl N)) (E ∩ {x | dist x a < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) (x - a)) : Eucl (m + 1))‖ < s * ‖x - a‖}) ≤ ENNReal.ofReal (η * (r * s) ^ (m + 1))) ∨ dimensionalUpperDensity (Measure.map (fun x : Eucl N => (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1))) ((μHE[m + 1] : Measure (Eucl N)).restrict E)).toOuterMeasure ((m + 1 : ℕ) : ℝ) univ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) a) : Eucl (m + 1)) = ⊤ ∨ ∃ x ∈ E, x ≠ a ∧ dist x a < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) a) : Eucl (m + 1)) := by
+  intro N m E δ hE hEfin _
+  -- step 1: `E` is Borel and `μ = Hᵏ⌞E` is a finite measure carried by `E`
+  have hEmeas : MeasurableSet E := by
+    obtain ⟨K, hK, hKE⟩ := hE
+    rw [← hKE]
+    exact MeasurableSet.iUnion fun n => (hK n).measurableSet
+  have : IsFiniteMeasure ((μHE[m + 1] : Measure (Eucl N)).restrict E) :=
+    isFiniteMeasure_restrict.2 hEfin.ne
+  have hμE : ((μHE[m + 1] : Measure (Eucl N)).restrict E) Eᶜ = 0 := by
+    rw [Measure.restrict_apply' hEmeas, compl_inter_self, measure_empty]
+  have hμS : ∀ S : Set (Eucl N),
+      (μHE[m + 1] : Measure (Eucl N)) (E ∩ S) = ((μHE[m + 1] : Measure (Eucl N)).restrict E) S := by
+    intro S
+    rw [Measure.restrict_apply' hEmeas, inter_comm]
+  set μ : Measure (Eucl N) := (μHE[m + 1] : Measure (Eucl N)).restrict E
+  -- step 2: the cone ratio `Φ(a,v)` and the fibre-witness set `W` of (T3) are Borel in `(a,v)`
+  set Φ : Eucl N × (Fin (m + 1) → Eucl N) → ℝ≥0∞ := fun p => limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x p.1 < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) (x - p.1)) : Eucl (m + 1))‖ < s * ‖x - p.1‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0)
+  set W : Set (Eucl N × (Fin (m + 1) → Eucl N)) := {p | ∃ x ∈ E, x ≠ p.1 ∧ dist x p.1 < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) p.1) : Eucl (m + 1))}
+  have hΦ : Measurable Φ := Submission.rectifiability_bf_cone_ratio_measurable N m μ δ inferInstance
+  have hW : MeasurableSet W := Submission.rectifiability_bf_witness_set_measurable N m E δ hE
+  have hG : MeasurableSet
+      {p : Eucl N × (Fin (m + 1) → Eucl N) | (Φ (p.1, p.2) = 0 ∨ Φ (p.1, p.2) = ⊤) ∨ (p.1, p.2) ∈ W} :=
+    ((hΦ (measurableSet_singleton 0)).union (hΦ (measurableSet_singleton ⊤))).union hW
+  -- step 3: for every `a`, `Φ(a,v) ∈ {0, ∞}` or (T3) holds for a.e. `v`
+  have hslice : ∀ a : Eucl N, ∀ᵐ v ∂(volume : Measure (Fin (m + 1) → Eucl N)),
+      (Φ (a, v) = 0 ∨ Φ (a, v) = ⊤) ∨ (a, v) ∈ W := by
+    intro a
+    set ϑ : Fin N → (Fin (m + 1) → Eucl N) → ℝ≥0∞ := fun j u => limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0)
+    -- Mickle–Radó on the slices: `0 < ϑ_j(v) < ∞` without (T3) only for a null set of `v`
+    have hnull : ∀ j : Fin N, ∀ᵐ u ∂(volume : Measure (Fin (m + 1) → Eucl N)),
+        ¬ ((a, u) ∉ W ∧ 0 < ϑ j u ∧ ϑ j u < ⊤) := by
+      intro j
+      filter_upwards [measure_eq_zero_iff_ae_notMem.1
+        (Submission.rectifiability_bf_slice_density_null N m μ E δ a j inferInstance hE hμE)]
+        with u hu
+      exact hu
+    filter_upwards [ae_all_iff.2 hnull] with u hu
+    by_cases hT3 : (a, u) ∈ W
+    · exact Or.inr hT3
+    refine Or.inl ?_
+    -- cones versus unions of fibres: `ϑ_j ≤ Φ ≤ N^{k/2} Σ_j ϑ_j`
+    obtain ⟨hle, hge⟩ := Submission.rectifiability_bf_fibre_cone_comparison N m μ δ a u
+    have hle' : ∀ j, ϑ j u ≤ Φ (a, u) := hle
+    have hge' : Φ (a, u) ≤ ENNReal.ofReal (Real.sqrt (N : ℝ) ^ (m + 1)) * ∑ j : Fin N, ϑ j u :=
+      hge
+    have h0top : ∀ j, ϑ j u = 0 ∨ ϑ j u = ⊤ := by
+      intro j
+      by_contra hcon
+      exact hu j ⟨hT3, pos_iff_ne_zero.2 (not_or.1 hcon).1, lt_top_iff_ne_top.2 (not_or.1 hcon).2⟩
+    by_cases htop : ∃ j, ϑ j u = ⊤
+    · obtain ⟨j, hj⟩ := htop
+      have h := hle' j
+      rw [hj, top_le_iff] at h
+      exact Or.inr h
+    · refine Or.inl (nonpos_iff_eq_zero.1 (hge'.trans_eq ?_))
+      rw [Finset.sum_eq_zero fun j _ => (h0top j).resolve_right (not_exists.1 htop j), mul_zero]
+  -- step 4: Fubini turns `∀ a, ∀ᵐ v` into `∀ᵐ v, ∀ᵐ a ∂μ`
+  have hswap : ∀ᵐ v ∂(volume : Measure (Fin (m + 1) → Eucl N)), ∀ᵐ a ∂μ,
+      (Φ (a, v) = 0 ∨ Φ (a, v) = ⊤) ∨ (a, v) ∈ W :=
+    (Measure.ae_ae_comm (μ := μ) (ν := (volume : Measure (Fin (m + 1) → Eucl N)))
+      (p := fun a v => (Φ (a, v) = 0 ∨ Φ (a, v) = ⊤) ∨ (a, v) ∈ W) hG).1
+      (Eventually.of_forall hslice)
+  -- step 5: `Φ = 0` gives (T1) and `Φ = ∞` gives (T2)
+  filter_upwards [hswap] with v hv
+  filter_upwards [hv] with a ha
+  rcases ha with (h0 | htop) | hT3
+  · refine Or.inl fun η hη => ?_
+    obtain ⟨s, hs, hsr⟩ :=
+      (Submission.rectifiability_bf_cone_ratio_reduction N m μ δ a v).1 h0 η hη
+    exact ⟨s, hs, fun r hr => (hμS _).trans_le (hsr r hr)⟩
+  · exact Or.inr (Or.inl ((Submission.rectifiability_bf_cone_ratio_reduction N m μ δ a v).2 htop))
+  · exact Or.inr (Or.inr hT3)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
