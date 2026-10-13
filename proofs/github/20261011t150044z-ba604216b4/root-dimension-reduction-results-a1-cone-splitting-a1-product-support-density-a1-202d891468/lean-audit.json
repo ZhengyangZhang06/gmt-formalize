@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cbcd83cbf1e35722de4fd6dc450ebd296f7ca172f9ea89d59a17b678587c4f81",
+  "git_delta": {
+    "base_commit": "04e7c5c3bb6c81ee1621edc0b9fe9ce36da94017",
+    "candidate_commit": "5fb51c7164ca27c88dbd1589fa610d0f3d19c736",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "77f413debff4a0dc84bc7dc273f00e7774794e7f886d01ad438cb5766458ad3d",
+    "source_sha256": "e7f7114f48c5046f01943d90b7fbff751b14cbc9881b52c11c08dbaf301dfab4",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_product_support_density",
+      "statement": "∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R : IMRep (univ : Set (Euclid P)) n) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)), Module.finrank ℝ L < n → R.Represents S → R₀.Represents S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → (∀ y ∈ Lᗮ, ∃ θ : ℝ, HasMassDensity S₀ y θ) → (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

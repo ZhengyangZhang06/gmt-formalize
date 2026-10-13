@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "lintegral_map|lintegral_const_mul\\x27|lintegral_sub_right_eq_self",
+        "volume_preserving_ofLp|theorem.*measurePreserving|prod_norm_sq_eq_of_L2|piLpCongrLeft|sumPiLpEquivProdLpPiLp",
+        "addHaar_ball_of_pos|addHaar_ball ",
+        "theorem prod_apply|volume_eq_prod",
+        "dimred_cs_psd_[[:alnum:]_]+",
+        "git show 01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/psd-independent-review-mit6mrg9/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/psd-independent-review-mit6mrg9/NewChildren.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/psd-independent-review-mit6mrg9/AcceptedAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-product-support-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-product-support-density-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/accepted-candidate.json",
+        "/tmp/psd-independent-review-mit6mrg9/Types.lean",
+        "/tmp/psd-independent-review-mit6mrg9/NewChildren.lean",
+        "/tmp/psd-independent-review-mit6mrg9/AcceptedAndAssembly.lean"
+      ],
+      "conclusion": "The project and library revisions match the pins; the frozen definitions are unchanged. The snapshot supplies the required Hausdorff normalization, volume-preserving Euclidean decomposition, ball volumes, and lower-integral identities without extra measurability assumptions. All five one-line types independently elaborate with autoImplicit disabled before child implementation. The four verbatim supplied implementations, the immutable accepted mass–measure source, and the exact selected parent assembly independently compile; every audited theorem uses only propext, Classical.choice, and Quot.sound. No new-name collision was found in the DAG or 523 other decomposition records. All names are bare identifiers. The split is appropriate: its four analytic obligations and identical-type accepted reuse establish precisely the selected parent. The only new sibling dependency is radial_density → ball_volume_slice; the reused node's dependency closure does not contain the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree on all hypotheses and three conclusions. Independently checked duality, Radon regularity, the approximation argument for the lower mass bound, both support implications, and measure uniqueness. Reuse is valid: the comparator-accepted declaration has an identical frozen type, compatible definitions, standard axioms only, and no circular dependency."
+    },
+    {
+      "key": "ball_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Concentration and Pythagoras give the exact slices, including empty slices when the square-root argument is nonpositive. The isometric parametrization carries volume to normalized Hausdorff measure restricted to L; translation gives the stated formula. Measurable-embedding change of variables justifies the lower integral without additional assumptions. The supplied implementation independently passes."
+    },
+    {
+      "key": "ball_volume_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The volume-preserving decomposition uses the intended L² product norm via WithLp 2. The measurable quadratic region, Tonelli formula, and square-root slice calculation prove the exact proposition, including zero radius and zero-dimensional factors. No child or parent theorem is assumed; the supplied implementation independently passes."
+    },
+    {
+      "key": "radial_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two-sided comparison proves the full extended-nonnegative limit, including θ = 0 or ∞. It correctly uses f(0) = 0 for zero-radius slices, positive finite normalizers, and finite comparison constants; lower-integral monotonicity requires no measurability assumption. Its sole sibling dependency is correctly directed to ball_volume_slice. The supplied implementation independently passes."
+    },
+    {
+      "key": "radial_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Monotonicity forces a zero integrand whenever f(ε) = 0. Conversely, the positive-measure ball of radius ε/2 supplies the nonzero indicator lower bound. This handles d = 0 and infinite profile values without requiring f(0) = 0. The prose matches the standalone type, and the supplied implementation independently passes."
+    }
+  ],
+  "required_changes": []
+}

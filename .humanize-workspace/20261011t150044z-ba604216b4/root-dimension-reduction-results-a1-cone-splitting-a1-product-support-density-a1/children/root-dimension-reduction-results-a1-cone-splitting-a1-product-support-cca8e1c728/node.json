@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.ball_volume_slice-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1",
+  "depth": 4,
+  "title": "Cavalieri slicing of Euclidean balls: L^{d+m}(B_ρ) = ∫_{ℝ^d} L^m(B_{√(ρ²−‖σ‖²)}) dσ",
+  "statement": "For all d, m ∈ ℕ and ρ ≥ 0, the Lebesgue measure of the open ball B_ρ(0) ⊂ ℝ^{d+m} (Euclid (d + m)) equals ∫_{ℝ^d} L^m(B_{√(ρ² − ‖σ‖²)}(0)) dL^d(σ), the inner balls lying in ℝ^m (Euclid m); here √ = Real.sqrt (√c = 0 for c ≤ 0) and B_0(0) = ∅.",
+  "lean_statement": "∀ (d m : ℕ) (ρ : ℝ), 0 ≤ ρ → volume (ball (0 : Euclid (d + m)) ρ) = ∫⁻ σ : Euclid d, volume (ball (0 : Euclid m) (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)))",
+  "lean_name": "dimred_cs_psd_ball_volume_slice",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-product-support-cca8e1c728-a1"
+}

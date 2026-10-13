@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Blow-up compactness with moving centres (Simon Remark 7.2.5(2))",
+  "statement": "Let n, k, ℓ ∈ ℕ with 1 ≤ n and ℓ ≤ k, let U ⊆ ℝ^{n+k} be open, let N be an embedded C² (n+ℓ)-dimensional submanifold of ℝ^{n+k} with (closure N ∖ N) ∩ U = ∅, and let T ∈ 𝒟_n(U) be minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U. Let x ∈ U, let x_j → x be points of ℝ^{n+k} and let λ_j > 0 with λ_j → 0. Then there are a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^{n+k}) such that the blow-ups S_j := η_{x_{φ(j)},λ_{φ(j)}#}T (blowUp T x_{φ(j)} λ_{φ(j)}, currents in η_{x_{φ(j)},λ_{φ(j)}}(U), η_{a,λ}(w) = λ^{−1}(w − a)) converge weakly to C in ℝ^{n+k} (ConvergesWeakly), μ_{S_j} → μ_C as Radon measures on ℝ^{n+k} for all integer multiplicity representations (MassMeasuresConverge), C is minimizing in ℝ^{n+k} (IsMinimizingIn C univ) and ∂C = 0.",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C",
+  "lean_name": "dimred_blowup_limit_moving_centres",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-a1"
+}

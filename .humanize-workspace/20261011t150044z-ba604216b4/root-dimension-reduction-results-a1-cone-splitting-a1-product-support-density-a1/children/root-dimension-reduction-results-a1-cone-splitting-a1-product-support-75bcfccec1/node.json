@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.ball_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1",
+  "depth": 4,
+  "title": "Balls of a product measure H^d⌞L ⊗ μ₀ as a radial integral over ℝ^d",
+  "statement": "Let P ∈ ℕ, L ⊆ ℝ^P a linear subspace with d := dim L (Module.finrank ℝ L), and μ, μ₀ measures on the Borel sets of ℝ^P such that μ₀(ℝ^P ∖ L^⊥) = 0 and μ(A) = ∫_L μ₀({y' : s + y' ∈ A}) dH^d(s) for every Borel set A ⊆ ℝ^P (H^d = μHE[d] on ℝ^P, the integral over the set L). Then for all t ∈ L, y ∈ L^⊥ and ρ > 0: μ(B_ρ(t + y)) = ∫_{ℝ^d} μ₀(B_{√(ρ² − ‖σ‖²)}(y)) dL^d(σ), where ℝ^d = Euclid d with Lebesgue measure L^d, √ = Real.sqrt (√c = 0 for c ≤ 0) and B_0(y) = ∅.",
+  "lean_statement": "∀ (P : ℕ) (L : Submodule ℝ (Euclid P)) (μ μ₀ : Measure (Euclid P)), μ₀ (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → μ A = ∫⁻ t in (L : Set (Euclid P)), μ₀ ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ ρ : ℝ, 0 < ρ → μ (ball (t + y) ρ) = ∫⁻ σ : Euclid (Module.finrank ℝ L), μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)))",
+  "lean_name": "dimred_cs_psd_ball_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-product-support-75bcfccec1-a1"
+}

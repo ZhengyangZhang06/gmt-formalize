@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Monotonicity, existence of densities and the density lower bound for minimizing cycles in a submanifold",
+  "statement": "Let P, n, d ∈ ℕ with 1 ≤ n ≤ d ≤ P, let U ⊆ ℝ^P be open, let N ⊆ ℝ^P be an embedded C² d-dimensional submanifold (IsEmbeddedSubmanifold 2 d N) with (closure N ∖ N) ∩ U = ∅, and let T ∈ 𝒟_n(U) be minimizing in U ∩ N (IsMinimizingIn T (U ∩ N)) with spt T ⊆ U ∩ N and ∂T = 0 in U (BoundaryVanishes T). Then: (i) for every compact K ⊆ U there is Λ ≥ 0 such that for every y ∈ ℝ^P and R > 0 with closedBall y R ⊆ K the function ρ ↦ e^{Λρ}ρ^{−n}·M_{B_ρ(y)}(T) (in [0, ∞], written ofReal(e^{Λρ}/ρ^n)·T.massOn (ball y ρ)) is nondecreasing on (0, R); (ii) if N = ℝ^P, then for every y and R with B_R(y) ⊆ U the function ρ ↦ ρ^{−n}·M_{B_ρ(y)}(T) is nondecreasing on (0, R); (iii) there is Θ : ℝ^P → ℝ with HasMassDensity T y (Θ(y)) (Θ^n(μ_T, y) = Θ(y)) for every y ∈ U and Θ upper semicontinuous on U; (iv) if y ∈ spt T and HasMassDensity T y θ, then θ ≥ 1.",
+  "lean_statement": "∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ",
+  "lean_name": "dimred_minimizing_monotonicity",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-a1"
+}

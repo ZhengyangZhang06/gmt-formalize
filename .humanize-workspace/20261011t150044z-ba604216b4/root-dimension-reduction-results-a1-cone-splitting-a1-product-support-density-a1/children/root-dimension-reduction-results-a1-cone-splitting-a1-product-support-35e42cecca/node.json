@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.radial_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1",
+  "depth": 4,
+  "title": "A radial integral of a nondecreasing profile charges every radius iff the profile does",
+  "statement": "Let d ∈ ℕ and f : ℝ → [0, ∞] be nondecreasing (Monotone f). Then [for every ε > 0, ∫_{ℝ^d} f(√(ε² − ‖σ‖²)) dL^d(σ) ≠ 0] if and only if [for every ε > 0, f(ε) ≠ 0], where √ = Real.sqrt and L^d is Lebesgue measure on ℝ^d = Euclid d.",
+  "lean_statement": "∀ (d : ℕ) (f : ℝ → ℝ≥0∞), Monotone f → ((∀ ε : ℝ, 0 < ε → (∫⁻ σ : Euclid d, f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2))) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → f ε ≠ 0)",
+  "lean_name": "dimred_cs_psd_radial_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-product-support-35e42cecca-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.coeff_norm_rep-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+  "depth": 4,
+  "title": "The Euclidean coefficient norm is a Euclidean norm pulled back by a continuous linear map",
+  "statement": "Let P, n be natural numbers and Λ := Covector (Euclid P) n, the space of continuous alternating n-linear forms on ℝ^P. Let |α| := covectorEuclideanNorm α = (∑_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2}, where (e_j) is the standard orthonormal basis of ℝ^P (EuclideanSpace.basisFun). Then there is a continuous linear map A : Λ → EuclideanSpace ℝ (Fin n → Fin P) with |α| = ‖A α‖ (Euclidean norm) for every α ∈ Λ.",
+  "lean_statement": "∀ (P n : ℕ), ∃ A : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖A α‖",
+  "lean_name": "dor_ims_sua_coeff_norm_rep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-d3b83d7be5-a1"
+}
