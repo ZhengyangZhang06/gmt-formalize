@@ -694,15 +694,15 @@ theorem Submission.dph_iprod_horizontal_ftc :
   have hc0 : 0 ≤ c := hc ▸ Real.sqrt_nonneg _
   -- The form `ψ' = Dψ(·)(e₀)` is continuous with compact support.
   obtain ⟨e₀, he₀⟩ : ∃ e₀ : Eucl (m + 1), e₀ = EuclideanSpace.single 0 1 := ⟨_, rfl⟩
-  obtain ⟨ψ', hψ'def⟩ : ∃ ψ' : Eucl (m + 1) → Covector (Eucl (m + 1)) q,
+  obtain ⟨ψ', hψ'eq⟩ : ∃ ψ' : Eucl (m + 1) → Covector (Eucl (m + 1)) q,
       ψ' = fun y => fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) y e₀ := ⟨_, rfl⟩
   have hψd : Differentiable ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) :=
     ψ.property.1.1.differentiable (by simp)
   have hψ'c : Continuous ψ' := by
-    rw [hψ'def]
+    rw [hψ'eq]
     exact (ψ.property.1.1.continuous_fderiv (by simp)).clm_apply continuous_const
   have hψ's : HasCompactSupport ψ' := by
-    rw [hψ'def]
+    rw [hψ'eq]
     exact (ψ.property.1.2.fderiv ℝ).comp_left
       (g := fun L : Eucl (m + 1) →L[ℝ] Covector (Eucl (m + 1)) q => L e₀) rfl
   have hΨ'2 : ∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ' s : DifferentialForm (Eucl m) q) x v =
@@ -710,7 +710,7 @@ theorem Submission.dph_iprod_horizontal_ftc :
         (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
           (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) := by
     intro s x v
-    rw [hΨ' s x v, hψ'def, he₀]
+    rw [hΨ' s x v, hψ'eq, he₀]
   -- Continuity of `s ↦ X(Ψ'(s))`.
   have hcont := (hC.2 m q X hX ψ' Ψ' hψ'c hψ's hΨ'2).1
   -- Lines in the time direction: `cons(s + τ, x) = cons(s, x) + τ e₀`.
@@ -761,7 +761,7 @@ theorem Submission.dph_iprod_horizontal_ftc :
           simpa using ((hasDerivAt_id τ).smul_const e₀).const_add y
         have h2 : HasDerivAt (fun τ : ℝ => (ψ : DifferentialForm (Eucl (m + 1)) q) (y + τ • e₀))
             (ψ' (y + τ • e₀)) τ := by
-          rw [hψ'def]
+          rw [hψ'eq]
           exact (hψd _).hasFDerivAt.comp_hasDerivAt τ h1
         have h3 : HasDerivAt (fun τ : ℝ => τ • ψ' y) (ψ' y) τ := by
           simpa using (hasDerivAt_id τ).smul_const (ψ' y)
