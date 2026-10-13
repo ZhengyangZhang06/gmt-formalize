@@ -968,6 +968,75 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
+/-- The linear algebra of Simon Ch. 5, proof of Theorem 4.5, displays (7), (10), (11) and (13)
+(pp. 118–119). For a linear isometry `q` of `ℝ^{n+ℓ}` and a linear map `D : ℝⁿ → ℝ^ℓ` with
+`‖D‖ ≤ 1`, let `p` be the orthogonal projection onto the rotated graph plane
+`S = span{q(v, Dv) : v ∈ ℝⁿ}` and `P` the one onto `T = q(ℝⁿ × {0})`. Then
+(a) `|D|² ≤ (ℓ + ½)|p − P|²`, and (b) `|⟨p e'_j, p q(w, 0)⟩ − ⟨r, w⟩| ≤ |p − P|² |w|` whenever `r`
+is the `j`-th row of `D`, where `e'_j = q(0, ε_j)`.
+The horizontal vectors `q(a, 0)` lie in `T`, with `|q(a, 0)| = |a|` and
+`⟨q(a, 0), q(b, 0)⟩ = ⟨a, b⟩`. By (7), `p e'_j = p q(r, 0)`, so the projection defect (10)–(11)
+on `T` bounds the error in (b) by `|p − P|² |r| |w|`, and `|r| ≤ ‖D‖ ≤ 1`. For (a), the same
+bound with `u = w = q(r_j, 0)` gives `|r_j|² ≤ |p e'_j|² + |p − P|²`. Summing over `j` and using
+`|D|² = Σ_j |r_j|²` and the trace identity `Σ_j |p e'_j|² = ½|p − P|²` (13), valid because
+`dim S = n`, gives (a). -/
+theorem gwe_graph_tilt_algebra : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Rn n →L[ℝ] Rn ℓ), ‖D‖ ≤ 1 → hsNormSq D ≤ ((ℓ : ℝ) + 1 / 2) * hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection - (rotatedPlane q).starProjection) ∧ ∀ (j : Fin ℓ) (r w : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → |inner ℝ ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint w 0))) - inner ℝ r w| ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection - (rotatedPlane q).starProjection) * ‖w‖ := by
+  intro n ℓ q D hD
+  -- (L4) and (IP) for graph points, and (L5) `P(q(a, b)) = q(a, 0)`
+  obtain ⟨-, -, -, -, -, hnorm, hinner⟩ := Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  obtain ⟨hproj, -, -⟩ := Submission.any_radius_gr_la_rotatedPlane_facts n ℓ q
+  -- the horizontal vectors `q(a, 0)` lie in `T`, have norm `|a|` and inner products `⟨a, b⟩`
+  have hmem : ∀ a : Rn n, q (graphPoint a 0) ∈ rotatedPlane q := fun a =>
+    Submodule.starProjection_eq_self_iff.mp (hproj a 0)
+  have hnorm0 : ∀ a : Rn n, ‖q (graphPoint a 0)‖ = ‖a‖ := fun a => by
+    have h := hnorm a 0
+    rw [norm_zero, zero_pow two_ne_zero, add_zero] at h
+    rw [LinearIsometryEquiv.norm_map]
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  have hinner0 : ∀ a b : Rn n,
+      inner ℝ (q (graphPoint a 0)) (q (graphPoint b 0)) = inner ℝ a b := fun a b => by
+    rw [LinearIsometryEquiv.inner_map_map, hinner, inner_zero_left, add_zero]
+  -- the rows `R j` of `D`; Simon (7); the trace identity (13) for `S`, of dimension `n`; and the
+  -- projection defect (10)–(11) for `S` and `T`
+  obtain ⟨hrow, R, hR, hRsum⟩ := Submission.gwe_gta_row_bounds n ℓ D
+  have horth := Submission.gwe_gta_graph_row_orthogonal n ℓ q D
+  have hvert := Submission.gwe_gta_vertical_trace_sum n ℓ q _
+    (Submission.tdo_gpd_graph_plane_finrank n ℓ q D)
+  have hdefect := Submission.gwe_gta_proj_inner_defect (n + ℓ)
+    (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))) (rotatedPlane q)
+  generalize Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v))) = S
+    at horth hvert hdefect ⊢
+  have hE : 0 ≤ hsNormSq (S.starProjection - (rotatedPlane q).starProjection) :=
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  generalize hsNormSq (S.starProjection - (rotatedPlane q).starProjection) = E
+    at hvert hdefect hE ⊢
+  refine ⟨?_, ?_⟩
+  -- (a): `|R j|² ≤ |p e'_j|² + E` for every row, and `Σ_j |p e'_j|² = E / 2`
+  · have hj : ∀ j : Fin ℓ, ‖R j‖ ^ 2 ≤
+        ‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 + E := by
+      intro j
+      have h := hdefect _ _ (hmem (R j)) (hmem (R j))
+      rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq, ← horth j (R j) (hR j),
+        hnorm0] at h
+      have h1 : ‖R j‖ ≤ 1 := (hrow j (R j) (hR j)).trans hD
+      have h2 : E * (‖R j‖ * ‖R j‖) ≤ E :=
+        mul_le_of_le_one_right hE ((mul_le_of_le_one_left (norm_nonneg _) h1).trans h1)
+      linarith [(abs_le.mp h).1]
+    calc hsNormSq D = ∑ j : Fin ℓ, ‖R j‖ ^ 2 := hRsum.symm
+      _ ≤ ∑ j : Fin ℓ,
+            (‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 + E) :=
+          Finset.sum_le_sum fun j _ => hj j
+      _ = E / 2 + ℓ * E := by
+          rw [Finset.sum_add_distrib, hvert, Finset.sum_const, Finset.card_univ,
+            Fintype.card_fin, nsmul_eq_mul]
+      _ = ((ℓ : ℝ) + 1 / 2) * E := by ring
+  -- (b): by (7), `p e'_j = p q(r, 0)`; then the projection defect and `|r| ≤ ‖D‖ ≤ 1`
+  · intro j r w hr
+    rw [horth j r hr]
+    have h := hdefect _ _ (hmem r) (hmem w)
+    rw [hinner0, hnorm0, hnorm0] at h
+    have h1 : ‖r‖ ≤ 1 := (hrow j r hr).trans hD
+    exact h.trans (mul_le_mul_of_nonneg_left (mul_le_of_le_one_left (norm_nonneg w) h1) hE)
 
 end Submission
 
