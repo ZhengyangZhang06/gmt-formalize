@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbr_ci_cp_atm_|idtp_tdc_subspace_ball_measure|liminf_density_le_atom|transversal_carried|sum_planes_of_carried|ball_le_transversal_ball' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "tendsto_measure_biInter_gt|countable_meas_level_set_pos",
+        "theorem div_le_of_le_mul",
+        "theorem lintegral_tsum|theorem lintegral_const_mul |theorem lintegral_indicator_const|theorem lintegral_indicator_one|theorem setLIntegral_const|theorem setLIntegral_mono.",
+        "starProjection_apply_mem|sub_starProjection_mem_orthogonal|starProjection_eq_self_iff|starProjection_apply_eq_zero_iff|starProjection_orthogonal_val|def starProjection",
+        "git show a029156d2b71053da5c6d27b9abcc46011c9cfac:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atoms-independent-audit-i583ypgc/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atoms-independent-audit-i583ypgc/CheckedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atoms-independent-audit-i583ypgc/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Sum.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-751fa659ad/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-751fa659ad/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee/isolated-comparator-result.json",
+        "/tmp/atoms-independent-audit-i583ypgc/Challenges.lean",
+        "/tmp/atoms-independent-audit-i583ypgc/CheckedProofs.lean",
+        "/tmp/atoms-independent-audit-i583ypgc/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected atomic-transversal theorem. The snapshot contract matches the workspace, and 16 inspected Mathlib files match compiler revision 25730c7c759d108ef87ab70af2342a196760f79d. The project search found no matching child declarations. All five exact one-line propositions elaborate before their implementations exist and match their prose hypotheses. Independent recompilation of the supplied proofs and a hypothesis-only assembly proves the exact frozen parent type; all axiom reports contain only propext, Classical.choice and Quot.sound. Parent countability follows from finiteness on compacts and c > 0. Dependencies are correctly directed and acyclic: only ball_bound and carried require subspace_ball. In the final 1569-node DAG check, all four new bare names remain unreserved; subspace_ball reuses the identical comparator-accepted type at a029156d. Projection, ENNReal arithmetic, measure scalar multiplication and Measure.sum have the intended interpretations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "subspace_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type exactly matches the accepted declaration and prose. The reproduced proof independently derives the formula through the inclusion isometry, normalized Hausdorff measure equaling volume, Haar scaling and orthonormal coordinates. It covers n = 0 and has no parent reliance."
+    },
+    {
+      "key": "ball_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Pythagoras gives both required ball inclusions; concentration on Vᗮ gives the indicator bound. Monotonicity of the lower integral and the declared subspace_ball dependency then prove the exact inequality. No unstated measurability or local-finiteness assumption is needed."
+    },
+    {
+      "key": "density_atom",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The generic function contract matches the prose. ENNReal.div_le_of_le_mul justifies division without additional denominator conditions. Compact-ball finiteness supplies continuity from above, the shrinking intersection is exactly {z}, and liminf monotonicity yields the conclusion. Measurability of f is unnecessary."
+    },
+    {
+      "key": "carried",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes that E is Borel, ν-null and invariant under V-translations. The product formula gives σ(E)·Hⁿ(V) = 0; subspace_ball supplies Hⁿ(V) > 0, including n = 0. Concentration on Vᗮ then gives σ(Zᶜ) = 0. All assumptions and dependencies are explicit."
+    },
+    {
+      "key": "sum_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Countable additivity over disjoint singletons establishes the atomic expansion. The measurable nonnegative summands justify exchanging sum and integral without σ-finiteness. Translation isometry identifies each restricted plane measure, and Measure.sum_apply plus extensionality proves the exact identity. Neither dim V = n nor Z ⊆ Vᗮ is needed."
+    }
+  ],
+  "required_changes": []
+}

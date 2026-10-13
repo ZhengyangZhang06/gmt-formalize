@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1.sum_planes-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1",
+  "depth": 6,
+  "title": "A product measure whose transversal measure is carried by a countable set is a countable sum of weighted parallel planes",
+  "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P a linear subspace, σ a Borel measure on ℝ^P, and Z ⊆ ℝ^P a countable set with σ(ℝ^P∖Z) = 0. Let ν be a Borel measure on ℝ^P with ν(A) = ∫⁻_{t∈V}σ({y : t + y ∈ A}) dHⁿ(t) for every Borel A ⊆ ℝ^P (Hⁿ = μHE[n]). Then ν = Σ_{w∈Z}σ({w})·Hⁿ⌞{y : y − w ∈ V}. That is, ν is the Measure.sum, over the subtype Z, of the measures σ({w})•(Hⁿ restricted to {y : y − w ∈ V}).",
+  "lean_statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Z.Countable → σ Zᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V})",
+  "lean_name": "cbr_ci_cp_atm_sum_planes_of_carried",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d7e3ae1b67-a1"
+}

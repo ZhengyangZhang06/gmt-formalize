@@ -1,0 +1,80 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1.density_atom-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 ("Density bound") of the parent proof. It is stated for an arbitrary function f in place of r ↦ ν(B_r(x)) and an arbitrary point z in place of q x = x − p_V x; in the parent, the domination f(r) ≤ ω_nrⁿσ(B_r(q x)) is step 1.
+Notation: a(r) := ω_n·ofReal(rⁿ) ∈ [0, ∞]. All arithmetic is in [0, ∞]. B_r(z) is the open ball and B̄_r(z) the closed ball.
+1. (Pointwise quotient bound.) Let r > 0. By hypothesis f(r) ≤ a(r)·σ(B_r(z)) = σ(B_r(z))·a(r). In [0, ∞], u ≤ v·w implies u/w ≤ v for all u, v, w (Mathlib ENNReal.div_le_of_le_mul). No side condition on w is needed: if w = 0 then u ≤ v·0 = 0, so u/w = 0·∞ = 0 ≤ v; if w = ∞ then u/w = u·0 = 0 ≤ v; otherwise divide. Hence f(r)/a(r) ≤ σ(B_r(z)) for every r > 0. The set (0, ∞) belongs to the filter 𝓝[>] 0 (self_mem_nhdsWithin), so this inequality holds eventually along 𝓝[>] 0.
+2. (Shrinking balls.) For 0 < i ≤ j, B_i(z) ⊆ B_j(z) (ball_subset_ball), and every B_r(z) is open, hence Borel. The intersection ⋂_{r>0}B_r(z) equals {z}: z ∈ B_r(z) for every r > 0 because dist(z, z) = 0 < r; and if y ≠ z then r := dist(y, z) > 0 while y ∉ B_r(z). Finally σ(B_1(z)) ≤ σ(B̄_1(z)) < ∞, because B_1(z) ⊆ B̄_1(z), the closed ball B̄_1(z) is compact in the proper space ℝ^P (isCompact_closedBall), and σ is finite on compact sets.
+3. (Continuity from above.) By step 2, the family s(r) := B_r(z), r > 0, consists of measurable sets, is monotone in r on (0, ∞), and has a member of finite measure (r = 1). Continuity of measures from above along r ↓ 0 (Mathlib tendsto_measure_biInter_gt with a = 0) therefore gives σ(B_r(z)) → σ(⋂_{r>0}B_r(z)) = σ({z}) as r → 0 along 𝓝[>] 0.
+4. (Liminf.) By step 1 and monotonicity of liminf under an eventual inequality (Filter.liminf_le_liminf), liminf_{r→0+}f(r)/a(r) ≤ liminf_{r→0+}σ(B_r(z)); in the complete lattice [0, ∞] the boundedness side conditions of that lemma hold automatically. The filter 𝓝[>] 0 on ℝ is nontrivial, so by step 3 the right-hand liminf equals the limit σ({z}) (Filter.Tendsto.liminf_eq). Hence liminf_{r→0+}f(r)/(ω_n·ofReal(rⁿ)) ≤ σ({z}). ∎
+
+## Key steps
+
+1. For r > 0, f(r) ≤ σ(B_r(z))·a(r) gives f(r)/a(r) ≤ σ(B_r(z)) in [0, ∞] (ENNReal.div_le_of_le_mul, no side condition), eventually along 𝓝[>] 0.
+2. The balls B_r(z) are Borel, increase with r, have intersection {z} over r > 0, and σ(B_1(z)) ≤ σ(B̄_1(z)) < ∞.
+3. Continuity from above (tendsto_measure_biInter_gt) gives σ(B_r(z)) → σ({z}) along 𝓝[>] 0.
+4. Monotonicity of liminf and Tendsto.liminf_eq give liminf f(r)/a(r) ≤ σ({z}).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `grep -rn 'cbr_ci_cp_atm\|liminf_density_le_atom\|transversal_carried\|sum_planes_of_carried\|ball_le_transversal_ball' <snapshot>/project (no match)`
+- `python3 -I /tmp/atoms-decomp-scripts/check.py on fresh copies of dag.json (1538, then 1552 nodes): the four cbr_ci_cp_atm_* names are unused; idtp_tdc_subspace_ball_measure is accepted (candidate a029156d) with byte-identical lean_statement; validate_lean_statement passes on all five strings; key/name regexes; acyclic order`
+- `git show a029156d2b71053da5c6d27b9abcc46011c9cfac:GMT/Ch07/Submission.lean | grep -n idtp_tdc_subspace_ball_measure (theorem Submission.idtp_tdc_subspace_ball_measure with the identical type, inside namespace GMT.Ch07 after the closed noncomputable section)`
+- `grep in <snapshot>/mathlib/Mathlib for measure_inter_conull, measure_iUnion, tsum_measure_preimage_singleton, countable_meas_level_set_pos, isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts, sigmaFinite_of_locallyFinite, setLIntegral_mono', lintegral_indicator_const, lintegral_indicator_one, setLIntegral_congr_fun, setLIntegral_const, lintegral_tsum, lintegral_const_mul, tendsto_measure_biInter_gt, Filter.Tendsto.liminf_eq, liminf_le_liminf, ENNReal div_le_of_le_mul, Isometry.euclideanHausdorffMeasure_image, isometry_mul_right (to_additive isometry_add_right), measure_ball_pos, starProjection_apply_mem, sub_starProjection_mem_orthogonal, starProjection_eq_self_iff, starProjection_apply_eq_zero_iff, starProjection_orthogonal_val, inner_right_of_mem_orthogonal, norm_add_sq_eq_norm_sq_add_norm_sq_real, Measure.sum_apply, Measure.smul_apply, Measure.restrict_apply, Measure.ext, ae_iff, measure_union_null, measure_mono_null (all found)`
+- `lake env lean /tmp/atoms-decomp/Probe.lean (#check of the cited Mathlib lemmas after import GMT.Ch07.Submission: all reachable)`
+- `lake env lean /tmp/atoms-decomp/Stmts.lean: five child lean_statements elaborate; hypothesis-only theorem atoms_assembly (hypotheses = four new child types verbatim, conclusion = frozen parent type) compiles; #print axioms: propext, Classical.choice, Quot.sound`
+- `lake env lean /tmp/atoms-decomp/Children.lean, Children2.lean, EndToEnd.lean: real proofs of the four children and of Submission.cbr_ci_cp_atomic_transversal from them compile without errors or warnings; #print axioms of all five declarations: propext, Classical.choice, Quot.sound`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose max_depth check, _existing_lean_name_problem, _accepted_checkpoint, cross-branch accepted children linked rather than re-provisioned), leaf_verification.py check_source_delta, prompts.py DECOMPOSE/DECOMPOSITION_AUDIT`
+- `read this node's parent-child-handoff.json and parent-supplied-natural-proof.md; parent decomposition-v1.json (node dir ...-6c861e5511) for the subspace_ball reuse convention; accepted subspace_ball node's parent-supplied-natural-proof.json (node dir ...-661fba5cee)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Sum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-751fa659ad/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-751fa659ad/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6c861e5511/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee/parent-supplied-natural-proof.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/atoms-decomp/Stmts.lean`
+- `/tmp/atoms-decomp/EndToEnd.lean`
+- `/tmp/atoms-decomp-scripts/check.py`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). The comparator-accepted idtp_tdc_subspace_ball_measure (candidate a029156d) is reused with a byte-identical type. The four new cbr_ci_cp_atm_* names are fresh in the DAG and absent from the snapshot project. No accepted DAG lemma or Mathlib declaration already provides the transversal ball estimate, the null-set transfer through the product formula or the plane decomposition, so these are new children. Every Mathlib lemma cited in the child proofs exists in the snapshot and is reachable from import GMT.Ch07.Submission, as confirmed by compilation. All five child types elaborate and pass validate_lean_statement. In Lean, the four new child types imply the exact frozen parent type, and real proofs of all four children plus the parent assembly compile end-to-end using only propext, Classical.choice and Quot.sound.
