@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Smooth plateaus converge weakly to `1_{(p, q)}`.**  For real `p, q` the `C¹` functions
+`χ_k(α) = σ(k(α - p)) σ(k(q - α))`, `σ = Real.smoothTransition`, satisfy `0 ≤ χ_k ≤ 1` and vanish
+off `(p, q)`, so `tsupport χ_k ⊆ [p, q]`; for `p < α < q`, `χ_k(α) = 1` once
+`k ≥ max (1/(α - p)) (1/(q - α))`.  Dominated convergence with bound `|g|` then gives
+`∫ χ_k g → ∫_{(p, q)} g` for every integrable `g`. -/
+theorem Submission.idtp_cse_ah_cst_plateau_weak_limit : ∀ p q : ℝ, ∃ χ : ℕ → ℝ → ℝ, (∀ k, ContDiff ℝ 1 (χ k)) ∧ (∀ k, tsupport (χ k) ⊆ Icc p q) ∧ ∀ g : ℝ → ℝ, Integrable g → Tendsto (fun k => ∫ α, χ k α * g α) atTop (𝓝 (∫ α in Ioo p q, g α)) := by
+  intro p q
+  -- `χ_k(α) = σ(k(α - p)) σ(k(q - α))`, with `σ` the smooth transition from `0` (on `(-∞, 0]`)
+  -- to `1` (on `[1, ∞)`)
+  have hzero : ∀ (k : ℕ) (α : ℝ), α ∉ Ioo p q →
+      Real.smoothTransition (k * (α - p)) * Real.smoothTransition (k * (q - α)) = 0 := by
+    intro k α hα
+    rcases not_and_or.1 hα with h | h
+    · rw [Real.smoothTransition.zero_of_nonpos
+        (mul_nonpos_of_nonneg_of_nonpos k.cast_nonneg (sub_nonpos.2 (not_lt.1 h))), zero_mul]
+    · rw [Real.smoothTransition.zero_of_nonpos
+        (mul_nonpos_of_nonneg_of_nonpos k.cast_nonneg (sub_nonpos.2 (not_lt.1 h))), mul_zero]
+  refine ⟨fun k α => Real.smoothTransition (k * (α - p)) * Real.smoothTransition (k * (q - α)),
+    fun k => ?_, fun k => ?_, fun g hg => ?_⟩
+  · exact (Real.smoothTransition.contDiff.comp
+      (contDiff_const.mul (contDiff_id.sub contDiff_const))).mul
+      (Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_const.sub contDiff_id)))
+  · -- `χ_k` vanishes off `(p, q)`, so its closed support lies in `[p, q]`
+    exact closure_minimal (fun α hα => Ioo_subset_Icc_self (by_contra fun h => hα (hzero k α h)))
+      isClosed_Icc
+  · -- dominated convergence with bound `|g|`, the limit being `1_{(p, q)} g`
+    rw [← integral_indicator measurableSet_Ioo]
+    refine tendsto_integral_of_dominated_convergence (fun α => ‖g α‖) (fun k => ?_) hg.norm
+      (fun k => Eventually.of_forall fun α => ?_) (Eventually.of_forall fun α => ?_)
+    · exact (((Real.smoothTransition.continuous.comp (continuous_const.mul
+        (continuous_id.sub continuous_const))).mul (Real.smoothTransition.continuous.comp
+        (continuous_const.mul (continuous_const.sub continuous_id)))).aestronglyMeasurable).mul
+        hg.aestronglyMeasurable
+    · -- `0 ≤ χ_k ≤ 1`
+      rw [norm_mul]
+      refine mul_le_of_le_one_left (norm_nonneg _) ?_
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.smoothTransition.nonneg _)
+        (Real.smoothTransition.nonneg _))]
+      exact (mul_le_of_le_one_left (Real.smoothTransition.nonneg _)
+        (Real.smoothTransition.le_one _)).trans (Real.smoothTransition.le_one _)
+    · by_cases hα : α ∈ Ioo p q
+      · -- `χ_k(α) = 1` once `k ≥ max (1/(α - p)) (1/(q - α))`
+        rw [indicator_of_mem hα]
+        obtain ⟨N, hN⟩ := exists_nat_ge (max (1 / (α - p)) (1 / (q - α)))
+        have hp : 0 < α - p := sub_pos.2 hα.1
+        have hq : 0 < q - α := sub_pos.2 hα.2
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [eventually_ge_atTop N] with k hk
+        have hk' : max (1 / (α - p)) (1 / (q - α)) ≤ k := hN.trans (Nat.cast_le.2 hk)
+        have h1 : 1 ≤ (k : ℝ) * (α - p) := by
+          have := (le_max_left _ _).trans hk'
+          rwa [div_le_iff₀ hp] at this
+        have h2 : 1 ≤ (k : ℝ) * (q - α) := by
+          have := (le_max_right _ _).trans hk'
+          rwa [div_le_iff₀ hq] at this
+        rw [Real.smoothTransition.one_of_one_le h1, Real.smoothTransition.one_of_one_le h2, one_mul,
+          one_mul]
+      · -- `χ_k(α) = 0` for every `k`
+        rw [indicator_of_notMem hα]
+        simp only [hzero _ α hα, zero_mul]
+        exact tendsto_const_nhds
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
