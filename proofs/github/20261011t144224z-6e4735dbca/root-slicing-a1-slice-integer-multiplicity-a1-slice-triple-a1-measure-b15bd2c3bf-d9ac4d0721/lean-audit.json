@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "267a20286b2a3383afbaf379e888379989d13f219601afb8b92298fe7fe6f56c",
+  "git_delta": {
+    "base_commit": "7e059088a934e7a445be516674614eaf254bcb39",
+    "candidate_commit": "034bfcd73baa5aea7db73b5648a5a63fd29c11d0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_mf_contraction_lipschitz",
+    "diff_sha256": "26123003b372aca5de2c8d43e2dc75c471f0d92bf206d4f230063e38db759608",
+    "source_sha256": "6f11aab68ba4270823c971c5fe1e17861d5f7f0ddc9c295d9441bba5a4eaab4b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_mf_contraction_lipschitz",
+      "statement": "∀ (P m : ℕ), LipschitzWith ((m : ℝ≥0) + 1) (fun v : Eucl P => (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ v)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
