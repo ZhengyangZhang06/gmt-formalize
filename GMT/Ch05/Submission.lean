@@ -458,6 +458,54 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Density of the varifold weight with respect to `Hⁿ`** (Simon Ch. 4, 1.1: `μ_V = Hⁿ ⌞ θ`,
+with `θ = 0` off `M`).  Writing `g = 1_M θ`: (i) `g` has a Borel representative that is `≥ 0`
+everywhere; (ii) `∫_S φ dμ_V = ∫_S g φ dHⁿ` for every Borel `S` and every `φ ≥ 0` (not necessarily
+measurable).  `g ≥ 0` because `θ > 0` on `M`, and `g` is `Hⁿ`-a.e. measurable since `M` is
+`Hⁿ`-null-measurable and `θ` is a.e. measurable on `M`; `max(mk g, 0)` is the representative.
+For (ii), `μ_V⌞S = ((Hⁿ⌞M)⌞S) ⌞ ofReal ∘ θ`, the finite density can be multiplied in without
+measurability of `φ`, `(Hⁿ⌞M)⌞S = (Hⁿ⌞S)⌞M`, and integrating over `M` is integrating `1_M`. -/
+theorem gwe_vgt_weight_density : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∃ g : Amb n ℓ → ℝ, Measurable g ∧ (∀ y, 0 ≤ g y) ∧ g =ᵐ[(μHE[n] : Measure (Amb n ℓ))] V.carrier.indicator V.mult) ∧ ∀ S : Set (Amb n ℓ), MeasurableSet S → ∀ φ : Amb n ℓ → ℝ≥0∞, ∫⁻ y in S, φ y ∂V.weight = ∫⁻ y in S, ENNReal.ofReal (V.carrier.indicator V.mult y) * φ y ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ U V
+  have hM : NullMeasurableSet V.carrier (μHE[n] : Measure (Amb n ℓ)) :=
+    V.nullMeasurableSet_carrier
+  -- `g = 1_M θ ≥ 0` everywhere, since `θ > 0` on `M`.
+  have hg0 : ∀ y, 0 ≤ V.carrier.indicator V.mult y := by
+    intro y
+    by_cases hy : y ∈ V.carrier
+    · rw [indicator_of_mem hy]
+      exact (V.mult_pos y hy).le
+    · rw [indicator_of_notMem hy]
+  refine ⟨?_, ?_⟩
+  · -- (i) `g` is `Hⁿ`-a.e. measurable; `max(mk g, 0)` is a nonnegative Borel representative.
+    have hae : AEMeasurable (V.carrier.indicator V.mult) (μHE[n] : Measure (Amb n ℓ)) :=
+      (aemeasurable_indicator_iff₀ hM).2 V.aemeasurable_mult
+    refine ⟨fun y => max (hae.mk _ y) 0, hae.measurable_mk.max measurable_const,
+      fun y => le_max_right _ _, ?_⟩
+    filter_upwards [hae.ae_eq_mk] with y hy
+    rw [← hy]
+    exact max_eq_left (hg0 y)
+  · -- (ii) Remove the finite density `ofReal ∘ θ`, then rearrange the restrictions.
+    intro S hS φ
+    have hρ : AEMeasurable (fun x => ENNReal.ofReal (V.mult x))
+        (((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).restrict S) :=
+      V.aemeasurable_mult.ennreal_ofReal.restrict
+    have hMS : NullMeasurableSet V.carrier ((μHE[n] : Measure (Amb n ℓ)).restrict S) :=
+      hM.mono Measure.restrict_le_self
+    rw [RectifiableVarifold.weight, restrict_withDensity hS,
+      lintegral_withDensity_eq_lintegral_mul_non_measurable₀ _ hρ
+        (ae_of_all _ fun _ => ENNReal.ofReal_lt_top),
+      Measure.restrict_restrict hS, inter_comm, ← Measure.restrict_restrict₀ hMS,
+      ← lintegral_indicator₀ hMS]
+    refine lintegral_congr fun y => ?_
+    by_cases hy : y ∈ V.carrier
+    · simp [indicator_of_mem hy]
+    · simp [indicator_of_notMem hy]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
