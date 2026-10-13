@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e45c7190a100d3c1de736f210c05fabf73845dd7e70ac1fc276261e41d0a96ad",
+  "git_delta": {
+    "base_commit": "eec32c409a10db4136a61af8a4fbd12a9e15e100",
+    "candidate_commit": "f555cc2f9d9bfed049983a7222a8ff812c453c17",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_dim_le_of_embedded",
+    "diff_sha256": "887d4bb0065a1f6d19731a1683a9719a5f0b2dfd241f4c75b98a6bcb42f88b89",
+    "source_sha256": "c5e701f0b601128907363cf94b9684390e51e55b1ad053977d2ee4e1e8b70ef9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_dim_le_of_embedded",
+      "statement": "∀ (P d r : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → M.Nonempty → d ≤ P",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
