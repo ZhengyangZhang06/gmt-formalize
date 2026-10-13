@@ -451,6 +451,96 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Limits of weighted point sums `∑_{l < N_j} w_{j,l} g(x_{j,l})` with points in a compact `K`,
+nonzero integer weights and `∑_l |w_{j,l}| ≤ C` are again such sums (the case `n = 0` of the
+closure theorem, Simon 6.8.2): `N_j ≤ C` and `|w_{j,l}| ≤ C`, so a subsequence has constant count
+and weights; a further subsequence has convergent points, and the limit is read off by continuity
+of each `g_k`, along one subsequence for all `k`. -/
+theorem Submission.cbrz_point_sum_limit : ∀ (P : ℕ) (K : Set (Euclid P)) (C : ℕ) (N : ℕ → ℕ) (w : ℕ → ℕ → ℤ) (x : ℕ → ℕ → Euclid P) (ι : Type) (g : ι → Euclid P → ℝ) (t : ι → ℝ), IsCompact K → (∀ j l, l < N j → x j l ∈ K) → (∀ j l, l < N j → w j l ≠ 0) → (∀ j, (∑ l ∈ Finset.range (N j), (w j l).natAbs) ≤ C) → (∀ k, Continuous (g k)) → (∀ k, Tendsto (fun j => ∑ l ∈ Finset.range (N j), (w j l : ℝ) * g k (x j l)) atTop (𝓝 (t k))) → ∃ (M : ℕ) (v : ℕ → ℤ) (y : ℕ → Euclid P), (∀ l < M, y l ∈ K) ∧ ∀ k, t k = ∑ l ∈ Finset.range M, (v l : ℝ) * g k (y l) := by
+  intro P K C N w x ι g t hK hxK hw0 hC hg ht
+  classical
+  -- `|w j l| ≥ 1` for `l < N j`, so `N j ≤ C` and `|w j l| ≤ C`
+  have hNC : ∀ j, N j ≤ C := by
+    intro j
+    calc N j = ∑ l ∈ Finset.range (N j), 1 := by simp
+      _ ≤ ∑ l ∈ Finset.range (N j), (w j l).natAbs :=
+          Finset.sum_le_sum fun l hl => Int.natAbs_pos.mpr (hw0 j l (Finset.mem_range.mp hl))
+      _ ≤ C := hC j
+  have hwC : ∀ j l, l < N j → (w j l).natAbs ≤ C := by
+    intro j l hl
+    calc (w j l).natAbs ≤ ∑ l' ∈ Finset.range (N j), (w j l').natAbs :=
+          Finset.single_le_sum (f := fun l' => (w j l').natAbs) (fun _ _ => Nat.zero_le _)
+            (Finset.mem_range.mpr hl)
+      _ ≤ C := hC j
+  -- the type `(N j, padded weights)` lies in a finite set, so one type occurs infinitely often
+  let δ : ℕ → ℕ × (Fin C → ℤ) := fun j => (N j, fun l => if (l : ℕ) < N j then w j l else 0)
+  let S : Finset (ℕ × (Fin C → ℤ)) :=
+    Finset.range (C + 1) ×ˢ Fintype.piFinset fun _ => Finset.Icc (-(C : ℤ)) C
+  have hδS : ∀ j, δ j ∈ S := by
+    intro j
+    simp only [S, δ, Finset.mem_product, Finset.mem_range, Fintype.mem_piFinset, Finset.mem_Icc]
+    refine ⟨Nat.lt_succ_of_le (hNC j), fun l => ?_⟩
+    split_ifs with hl
+    · have := hwC j l hl
+      constructor <;> omega
+    · constructor <;> omega
+  let δ' : ℕ → S := fun j => ⟨δ j, hδS j⟩
+  obtain ⟨d, hd⟩ := Finite.exists_infinite_fiber δ'
+  have hfreq : ∃ᶠ j in atTop, δ' j = d := by
+    rw [Nat.frequently_atTop_iff_infinite]
+    exact Set.infinite_coe_iff.mp hd
+  obtain ⟨φ₁, hφ₁mono, hφ₁⟩ := extraction_of_frequently_atTop hfreq
+  obtain ⟨⟨N₀, u₀⟩, hdS⟩ := d
+  have hNφ : ∀ j, N (φ₁ j) = N₀ := by
+    intro j
+    have := congrArg (fun z : S => (z : ℕ × (Fin C → ℤ)).1) (hφ₁ j)
+    simpa [δ', δ] using this
+  have hwφ : ∀ j (l : Fin C), (l : ℕ) < N₀ → w (φ₁ j) l = u₀ l := by
+    intro j l hl
+    have := congrArg (fun z : S => (z : ℕ × (Fin C → ℤ)).2 l) (hφ₁ j)
+    simp only [δ', δ] at this
+    rw [hNφ j, ite_eq_left hl] at this
+    exact this
+  have hN₀C : N₀ ≤ C := by rw [← hNφ 0]; exact hNC _
+  -- along `φ₁` the points lie in the compact `K ^ N₀`; extract a convergent subsequence
+  let X : ℕ → (Fin N₀ → Euclid P) := fun j l => x (φ₁ j) l
+  have hXK : ∀ j, X j ∈ Set.pi univ fun _ => K := by
+    intro j l _
+    exact hxK (φ₁ j) l (by rw [hNφ j]; exact l.isLt)
+  obtain ⟨a, haK, φ₂, hφ₂mono, hXa⟩ :=
+    (isCompact_univ_pi fun _ : Fin N₀ => hK).tendsto_subseq hXK
+  refine ⟨N₀, fun l => if h : l < C then u₀ ⟨l, h⟩ else 0,
+    fun l => if h : l < N₀ then a ⟨l, h⟩ else 0, ?_, ?_⟩
+  · intro l hl
+    simp only [dite_eq_left hl]
+    exact haK ⟨l, hl⟩ (mem_univ _)
+  · -- along `φ₁ ∘ φ₂` the sums tend to `t k` and, by continuity of `g k`, to `∑ u₀ l * g k (a l)`
+    intro k
+    have hψ : StrictMono (φ₁ ∘ φ₂) := hφ₁mono.comp hφ₂mono
+    have h1 := (ht k).comp hψ.tendsto_atTop
+    have h2 : Tendsto (fun j => ∑ l : Fin N₀,
+        (u₀ ⟨l, lt_of_lt_of_le l.isLt hN₀C⟩ : ℝ) * g k (X (φ₂ j) l)) atTop
+        (𝓝 (∑ l : Fin N₀, (u₀ ⟨l, lt_of_lt_of_le l.isLt hN₀C⟩ : ℝ) * g k (a l))) := by
+      apply tendsto_finsetSum
+      intro l _
+      apply Tendsto.const_mul
+      exact ((hg k).tendsto (a l)).comp (((continuous_apply l).tendsto a).comp hXa)
+    have h3 : (fun j => ∑ l ∈ Finset.range (N (φ₁ (φ₂ j))),
+        (w (φ₁ (φ₂ j)) l : ℝ) * g k (x (φ₁ (φ₂ j)) l)) =
+        (fun j => ∑ l : Fin N₀,
+          (u₀ ⟨l, lt_of_lt_of_le l.isLt hN₀C⟩ : ℝ) * g k (X (φ₂ j) l)) := by
+      funext j
+      rw [hNφ, Finset.sum_range]
+      refine Finset.sum_congr rfl fun l _ => ?_
+      rw [hwφ (φ₂ j) ⟨l, lt_of_lt_of_le l.isLt hN₀C⟩ l.isLt]
+    have h1' : Tendsto (fun j => ∑ l : Fin N₀,
+        (u₀ ⟨l, lt_of_lt_of_le l.isLt hN₀C⟩ : ℝ) * g k (X (φ₂ j) l)) atTop (𝓝 (t k)) := by
+      rw [← h3]
+      exact h1
+    rw [tendsto_nhds_unique h1' h2, Finset.sum_range]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    simp only [dite_eq_left (lt_of_lt_of_le l.isLt hN₀C), dite_eq_left l.isLt]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
