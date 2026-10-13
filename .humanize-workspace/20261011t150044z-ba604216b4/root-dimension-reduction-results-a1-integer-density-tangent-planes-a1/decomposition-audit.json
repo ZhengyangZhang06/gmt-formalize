@@ -1,0 +1,111 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "normDet_comp|normDet_sq_eq_det_gram|exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|ae_tendsto_measure_inter_div|lintegral_sum_measure|ae_tendsto_average_norm_sub",
+        "weighted_area_formula_lipschitz_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitz|weighted_area_formula_lipschitz_injOn|area_image_compl_regularSet_eq_zero|measurableSet_areaRegularSet|integral_area_formula_of_injective_derivative|weightedAreaFiberSum_iUnion",
+        "CountablyRectifiable|HasApproximateTangentSpaceAt|ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite|ae_eq_const_of_weak_coordinate_derivatives_zero",
+        "C1Approximation|c1_approximation|lusin_c1|tangentialJacobian|weighted.*rectifiable|rectifiable.*area_formula",
+        "idtp_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_ce6aeb_independent_yvprpz18/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_ce6aeb_independent_yvprpz18/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_ce6aeb_independent_yvprpz18/Gram.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_ce6aeb_independent_yvprpz18/LibraryAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-v3.json",
+        "/tmp/idtp_ce6aeb_independent_yvprpz18/Types.lean",
+        "/tmp/idtp_ce6aeb_independent_yvprpz18/Assembly.lean",
+        "/tmp/idtp_ce6aeb_independent_yvprpz18/Gram.lean",
+        "/tmp/idtp_ce6aeb_independent_yvprpz18/LibraryAxioms.lean",
+        "/tmp/idtp_ce6aeb_independent_yvprpz18/ReuseEvidence.json"
+      ],
+      "conclusion": "The split is appropriate for the selected IntegerDensityAndTangentPlanes contract. Project b4d606db, mathlib 25730c7c and SimonGMT 2b366308 match the pins; the workspace contract and Submission are byte-identical to the snapshot contract. All eleven exact proposition strings elaborate independently without declaring their children. The conditional assembly proves the selected parent, including n = 0 and E ⊆ F, with only propext, Classical.choice and Quot.sound. The Matrix.of Gram expression was independently checked against the restricted derivative's normDet, with the same standard axioms. The supplied carrier-area proof fills a genuine library gap: searches found no rectifiable-carrier area formula or C¹ approximation theorem. Relevant area, density, constancy and linear-algebra library declarations passed axiom checks. Eighteen accepted prerequisites have matching frozen types and successful comparator/kernel evidence without sorryAx. Proposed dependencies and inherited prerequisite closures are acyclic and do not return to the selected node. All names are bare identifiers; none is reserved in another branch's decomposition or among 645 inspected candidate Submission files."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weak_limit_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the varying-domain statement, including arbitrary W and an extended-real bound. Eventual support containment makes each admissible form transferable; continuity of ofReal and the supremum definition prove the conclusion."
+    },
+    {
+      "key": "density_eq_multiplicity_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The global compact-finiteness hypothesis is present and used. The proof establishes density one for the carrier from approximate tangents, transfers multiplicity through Lusin pieces, and separately proves zero density off the carrier, giving the exact global Hausdorff-a.e. conclusion."
+    },
+    {
+      "key": "planar_constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type retains openness, positive degree, orthonormality, integer multiplicity, vanishing boundary, support containment and nonempty connectedness. Orientation reduction and distributional constancy establish both the signed current identity and the absolute-multiplicity mass identity."
+    },
+    {
+      "key": "carrier_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches every stated hypothesis, the subtype fibre sum and the Gram-determinant Jacobian. The proof supplies the bi-Lipschitz decomposition, tangent identification, Jacobian chain rule, measurable-weight reduction and both null-set transfers. The library formulas have the hypotheses used, and Matrix.of has the intended matrix interpretation."
+    },
+    {
+      "key": "cone_tangent_cone_planar",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof preserves the requested subsequence and mass convergence, proves boundary vanishing and translation invariance of the limit, and applies splitting, one-dimensional classification and planar constancy. It obtains p ∈ Q, the signed current formula and the positive integral density required by the exact type."
+    },
+    {
+      "key": "cone_constant_density_planar",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Multiplicity normalization is justified, including minimality via scaled competitors and extension by zero. Density-one regularity is an acyclic prerequisite. The rotation conservation law proves local planarity, and constancy yields the stated mass identity and support equality."
+    },
+    {
+      "key": "cone_sector_endpoint_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sector hypotheses and endpoint conclusion match the Lean type. The proof establishes the common tangent plane, cusp localization, conservation law, radial scaling and tilt/mass limits. It checks the carrier-area hypotheses explicitly and uses finite integral fibre multiplicities to exclude both k < Θ(a) and k > Θ(a)."
+    },
+    {
+      "key": "two_dim_cone_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied finite-mass arc argument and sector rigidity eliminate density jumps, yielding finitely many planes; planar constancy then computes an integer vertex density. The empty-support case is covered. This proves the claim without assuming the classification, also corroborated by [Chang, Appendix A, pp. 761–762](https://www.math.stonybrook.edu/~bishop/classes/math638.F20/Chang_Reg_Min_2_currents.pdf)."
+    },
+    {
+      "key": "integer_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All parent hypotheses and the positive-degree restriction are explicit. Uniform bounds pass to admissible limits; the two threshold-reduction exclusions use the declared density and cone prerequisites. Countable covering gives the exact real-exponent estimate, with E empty in dimensions one and two."
+    },
+    {
+      "key": "flat_off_null_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies the rescaling family, exhausting-domain diagonal convergence, normalized density functions, domain recovery and singular-map hypotheses. Splitting excludes the maximal stratum. The final choice of arbitrarily small rational balls establishes the stronger ∀ β > 0, ∀ R > 0 flatness conclusion actually frozen in Lean."
+    },
+    {
+      "key": "flat_point_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact flatness hypothesis supplies scales tending to zero. Frame compactness and tangent-cone existence yield a nonzero cycle; weak mass bounds confine its support to the limiting plane. Planar constancy proves equality of supports, furnishing precisely HasTangentPlaneAt."
+    }
+  ],
+  "required_changes": []
+}
