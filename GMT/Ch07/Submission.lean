@@ -473,6 +473,57 @@ theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (E
   · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
       smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
 
+/-- **Weak limits of blow-ups of a cycle are cycles** (`∂C = 0` for the blow-up limit `C` in the
+proof of Simon 7.3.3(2), chapter-07.txt line 512 ff.; cf. the proof of 7.3.1, lines 335–336,
+where `∂η_{x,λⱼ#}T = 0` in `B_{MR}(0)` for large `j`, and Ch. 6, 2.13 and 2.24(1)).  If
+`∂T = 0` in `U`, `λᵢ > 0`, `λᵢ → 0` and `η_{x,λᵢ#}T ⇀ C` in `ℝᴾ`, then `∂C = 0`: for
+`ω ∈ 𝒟ᵐ(ℝᴾ)`, the compact set `spt ω ⊇ spt dω` lies in `η_{x,λᵢ}(U)` for all large `i`
+(`idtp_tpf_blowUp_domain_eventually`), and there
+`η_{x,λᵢ#}T(dω) = ∂(η_{x,λᵢ#}T)(ω) = η_{x,λᵢ#}(∂T)(ω) = 0`; hence
+`∂C(ω) = C(dω) = limᵢ η_{x,λᵢ#}T(dω) = 0`. -/
+theorem Submission.idtp_tpf_blowUp_limit_boundaryVanishes : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → BoundaryVanishes T → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T x (lams i) (hlams i).ne') C → BoundaryVanishes C := by
+  intro P n U T x lams hlams C hU hx hT hlim hconv
+  cases n with
+  | zero => trivial
+  | succ m =>
+    -- step 1: `∂T = 0`, and it suffices that `∂C(ω) = C(dω) = 0` for every `ω ∈ 𝒟ᵐ(ℝᴾ)`
+    change T.boundary = 0 at hT
+    change C.boundary = 0
+    ext ω
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+    -- step 2: the compact set `spt ω` lies in `η_{x,λᵢ}(U)` for all large `i`
+    have hev := Submission.idtp_tpf_blowUp_domain_eventually P U x lams hU hx hlams hlim
+      (tsupport (ω : DifferentialForm (Euclid P) m)) ω.property.1.2.isCompact.isBounded
+    -- steps 3–4: for such `i`, `η_{x,λᵢ#}T(dω) = ∂(η_{x,λᵢ#}T)(ω) = η_{x,λᵢ#}(∂T)(ω) = 0`
+    have hzero : ∀ᶠ i in atTop, currentEval (blowUp T x (lams i) (hlams i).ne')
+        (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) = 0 := by
+      filter_upwards [hev] with i hi
+      -- `∂` commutes with the affine push-forward `η_{x,λᵢ#}` (Simon 6.2.24(1)) ...
+      have hB : (blowUp T x (lams i) (hlams i).ne').boundary =
+          blowUp T.boundary x (lams i) (hlams i).ne' := by
+        unfold blowUp
+        rw [GeometricCurrentOn.boundary_affinePushforward]
+        rfl
+      -- ... and the blow-up of the zero current is zero
+      have h0 : blowUp (0 : GeometricCurrentOn U m) x (lams i) (hlams i).ne' = 0 := by
+        ext η
+        unfold blowUp
+        rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
+          GeometricCurrentOn.zero_apply, GeometricCurrentOn.zero_apply]
+      -- `ω` is a test form in `η_{x,λᵢ}(U)`, and `currentEval` evaluates the blow-up on `dω`
+      let ωi : TestFormOn (dilation x (lams i) '' U) m := ⟨ω, ω.property.1, hi⟩
+      have hd : IsTestForm (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) ∧
+          tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) ⊆
+            dilation x (lams i) '' U :=
+        ⟨exteriorDerivative_isTestForm ω.property.1,
+          (tsupport_exteriorDerivative_subset _).trans hi⟩
+      rw [currentEval, dite_eq_left hd]
+      change (blowUp T x (lams i) (hlams i).ne').boundary ωi = 0
+      rw [hB, hT, h0, GeometricCurrentOn.zero_apply]
+    -- step 5: `C(dω)` is the limit of a sequence that is eventually `0`
+    exact tendsto_nhds_unique (hconv (exteriorDerivativeTestOn univ m ω))
+      (tendsto_const_nhds.congr' (hzero.mono fun i hi => hi.symm))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
