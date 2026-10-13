@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.localized_cycles-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1",
+  "depth": 4,
+  "title": "Localization of planar-converging cycles to a thin cylinder (printed (8)–(9))",
+  "statement": "Assume SlicingTheorem and the statement (RWL) of iwl_restriction_weak_limit (exact frozen Lean type, as an antecedent). Let P, m ∈ ℕ, n := m + 1, τ : Fin n → ℝ^P orthonormal, Q := span τ, c ∈ ℝ, p : ℝ^P → ℝⁿ continuous linear with p(y)_i = ⟪τ_i, y⟫, d : ℝ^P → ℝ with d(y) = ‖y − Σ_i ⟪τ_i, y⟫ τ_i‖, and W′ := {y : ‖p(y)‖ < 1, d(y) < 3/4}. Let Y_k ∈ D_n(ℝ^P) (k ∈ ℕ) be integer multiplicity with ∂Y_k = 0, sup_k M_{B_2(0)}(Y_k) < ∞ and Y_k(ω) → c∫_Q ω(z)(τ_1,…,τ_n) dHⁿ(z) (Hⁿ = μHE[n]) for every ω ∈ D^n(ℝ^P) with tsupport ω ⊆ B_2(0). Then there are γ ∈ ℝ with 0 ≤ γ < 3/4 and currents Z_k ∈ D_n(W′) such that: every Z_k is integer multiplicity; spt Z_k ⊆ {d ≤ γ}; sup_k (M(Z_k) + M(∂Z_k)) < ∞, where M = mass on W′; and Z_k(ω) → c∫_Q ω(z)(τ) dHⁿ(z) for every ω ∈ D^n(W′).",
+  "lean_statement": "SlicingTheorem → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R)) → ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (c : ℝ) (Y : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (p : Eucl P →L[ℝ] Eucl (m + 1)) (d : Eucl P → ℝ), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → (∀ k, IsIntegerMultiplicity (Y k)) → (∀ k, (Y k).boundary = 0) → (⨆ k, (Y k).massOn (ball (0 : Eucl P) 2)) < ∞ → (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ ball (0 : Eucl P) 2 → Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))) → ∃ (γ : ℝ) (Z : ℕ → GeometricCurrentOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1)), 0 ≤ γ ∧ γ < 3 / 4 ∧ (∀ k, IsIntegerMultiplicity (Z k)) ∧ (∀ k, (Z k).support ⊆ {y | d y ≤ γ}) ∧ (⨆ k, ((Z k).mass + (Z k).boundary.mass)) < ∞ ∧ ∀ ω : TestFormOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1), Tendsto (fun k => Z k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))",
+  "lean_name": "ind_pi_localized_cycles",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.frame_geometry-a1",
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.span_integral-a1",
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.const_vector_current-a1",
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.restriction_open_im-a1",
+    "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.frame_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.span_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.const_vector_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.restriction_open_im-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-l-5288b63fc6-a1"
+}
